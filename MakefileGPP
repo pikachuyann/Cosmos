@@ -1,0 +1,25 @@
+all: Generator 
+	
+Generator: classes
+	g++  Obj/ModelGenerator/mainGPP.o Obj/ModelGenerator/Eval/Eval-parser.tab.o  Obj/ModelGenerator/Eval/Eval.o \
+ Obj/ModelGenerator/GspnParser/Gspn-parser.tab.o  Obj/ModelGenerator/GspnParser/Gspn-Reader.o \
+ Obj/ModelGenerator/LhaParser/Lha-Reader.o Obj/ModelGenerator/LhaParser/Lha-parser.tab.o  \
+ Obj/Cosmos/Event.o Obj/Cosmos/EventsQueue.o  \
+ Obj/Cosmos/StandardNormalDist.o Obj/Cosmos/ap.o \
+ -o bin/CosmosGPP
+
+classes: 
+	g++ -c SOURCES/ModelGenerator/Eval/Eval-parser.tab.cc -o Obj/ModelGenerator/Eval/Eval-parser.tab.o
+	g++ -c SOURCES/ModelGenerator/Eval/Eval.cpp -o Obj/ModelGenerator/Eval/Eval.o
+	g++ -c SOURCES/ModelGenerator/GspnParser/Gspn-parser.tab.cc -o Obj/ModelGenerator/GspnParser/Gspn-parser.tab.o
+	g++ -c SOURCES/ModelGenerator/GspnParser/Gspn-Reader.cpp -o Obj/ModelGenerator/GspnParser/Gspn-Reader.o	
+	g++ -c SOURCES/ModelGenerator/LhaParser/Lha-parser.tab.cc -o Obj/ModelGenerator/LhaParser/Lha-parser.tab.o
+	g++ -c SOURCES/ModelGenerator/LhaParser/Lha-Reader.cpp -o Obj/ModelGenerator/LhaParser/Lha-Reader.o
+	g++ -c SOURCES/ModelGenerator/mainGPP.cpp -o Obj/ModelGenerator/mainGPP.o	
+	g++ -c SOURCES/Cosmos/Event.cpp -o Obj/Cosmos/Event.o
+	g++ -c SOURCES/Cosmos/EventsQueue.cpp -o  Obj/Cosmos/EventsQueue.o
+	g++ -c SOURCES/Cosmos/tab.cpp -o Obj/Cosmos/tab.o
+	g++ -c SOURCES/Cosmos/StandardNormalDist.cpp -o Obj/Cosmos/StandardNormalDist.o
+	g++ -c SOURCES/Cosmos/ap.cpp -o Obj/Cosmos/ap.o
+
+

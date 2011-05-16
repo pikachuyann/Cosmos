@@ -1,0 +1,2754 @@
+Terminals unused in grammar
+
+   chr
+   GspnName
+
+
+Grammar
+
+    0 $accept: GSPN "end of file"
+
+    1 IntStringFormula: ival
+    2                 | str
+    3                 | LB IntStringFormula RB
+    4                 | IntStringFormula PLUS IntStringFormula
+    5                 | IntStringFormula MINUS IntStringFormula
+    6                 | IntStringFormula MUL IntStringFormula
+    7                 | IntStringFormula POWER IntStringFormula
+    8                 | FLOOR LB IntStringFormula RB
+    9                 | FLOOR LB IntStringFormula DIV IntStringFormula RB
+   10                 | MIN LB IntStringFormula COMMA IntStringFormula RB
+   11                 | MAX LB IntStringFormula COMMA IntStringFormula RB
+
+   12 RealStringFormula: rval
+   13                  | ival
+   14                  | str
+   15                  | LB RealStringFormula RB
+   16                  | RealStringFormula DIV RealStringFormula
+   17                  | RealStringFormula PLUS RealStringFormula
+   18                  | RealStringFormula MINUS RealStringFormula
+   19                  | RealStringFormula MUL RealStringFormula
+   20                  | RealStringFormula POWER RealStringFormula
+   21                  | FLOOR LB RealStringFormula RB
+   22                  | MIN LB RealStringFormula COMMA RealStringFormula RB
+   23                  | MAX LB RealStringFormula COMMA RealStringFormula RB
+
+   24 GSPN: declarations definitions
+   25     | declarations definitions redifinitions
+
+   26 declarations: Constants Sizes Lists
+   27             | Sizes Lists
+
+   28 Constants: Constant
+   29          | Constant Constants
+
+   30 Sizes: NbPlaces NbTransitions
+   31      | NbTransitions NbPlaces
+
+   32 Constant: Const INT str EQ IntStringFormula SEMICOLON
+   33         | Const DOUBLE str EQ RealStringFormula SEMICOLON
+
+   34 Lists: PlacesList TransitionsList
+   35      | TransitionsList PlacesList
+
+   36 NbPlaces: NbPl EQ ival SEMICOLON
+   37         | NbPl EQ str SEMICOLON
+
+   38 NbTransitions: NbTr EQ ival SEMICOLON
+   39              | NbTr EQ str SEMICOLON
+
+   40 PlacesList: PList EQ '{' PLabels '}' SEMICOLON
+
+   41 PLabels: str
+   42        | PLabels COMMA str
+
+   43 TransitionsList: TList EQ '{' TLabels '}' SEMICOLON
+
+   44 TLabels: str
+   45        | TLabels COMMA str
+
+   46 definitions: PlacesDef TransitionsDef InArcs OutArcs
+   47            | PlacesDef TransitionsDef InArcs OutArcs Inhibitors
+
+   48 PlacesDef: marking EQ '{' PLACES '}' SEMICOLON
+
+   49 PLACES: PLACE
+   50       | PLACES PLACE
+
+   51 PLACE: LB str COMMA IntStringFormula RB SEMICOLON
+
+   52 TransitionsDef: transitions EQ '{' TRANSITIONS '}' SEMICOLON
+
+   53 TRANSITIONS: TRANSITION
+   54            | TRANSITIONS TRANSITION
+
+   55 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
+   56           | LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
+   57           | LB str COMMA IMDT COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
+
+   58 WEIGHT: RealStringFormula
+
+   59 PRIORITY: RealStringFormula
+
+   60 SERVICE: SINGLE
+   61        | INFINITE
+   62        | MULTIPLE LB ival RB
+   63        | MULTIPLE LB str RB
+
+   64 dist: str LB params RB
+
+   65 params: param
+   66       | params COMMA param
+
+   67 param: RealStringFormula
+
+   68 InArcs: in EQ '{' incells '}' SEMICOLON
+
+   69 incells: incell
+   70        | incells incell
+
+   71 incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON
+   72       | LB str COMMA str RB SEMICOLON
+
+   73 OutArcs: out EQ '{' outcells '}' SEMICOLON
+
+   74 outcells: outcell
+   75         | outcells outcell
+
+   76 outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON
+   77        | LB str COMMA str RB SEMICOLON
+
+   78 Inhibitors: inhibitor EQ '{' inhibcells '}' SEMICOLON
+
+   79 inhibcells: inhibcell
+   80           | inhibcells inhibcell
+
+   81 inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON
+   82          | LB str COMMA str RB SEMICOLON
+
+   83 redifinitions: TransitionsDef
+
+
+Terminals, with rules where they appear
+
+"end of file" (0) 0
+'{' (123) 40 43 48 52 68 73 78
+'}' (125) 40 43 48 52 68 73 78
+error (256)
+str (258) 2 14 32 33 37 39 41 42 44 45 51 55 56 57 63 64 71 72 76 77
+    81 82
+chr (259)
+rval (260) 12
+ival (261) 1 13 36 38 62
+SEMICOLON (262) 32 33 36 37 38 39 40 43 48 51 52 55 56 57 68 71 72
+    73 76 77 78 81 82
+COMMA (263) 10 11 22 23 42 45 51 55 56 57 66 71 72 76 77 81 82
+LB (264) 3 8 9 10 11 15 21 22 23 51 55 56 57 62 63 64 71 72 76 77 81
+    82
+RB (265) 3 8 9 10 11 15 21 22 23 51 55 56 57 62 63 64 71 72 76 77 81
+    82
+EQ (266) 32 33 36 37 38 39 40 43 48 52 68 73 78
+DIV (267) 9 16
+MUL (268) 6 19
+PLUS (269) 4 17
+MINUS (270) 5 18
+POWER (271) 7 20
+GspnName (272)
+NbPl (273) 36 37
+NbTr (274) 38 39
+PList (275) 40
+TList (276) 43
+in (277) 68
+out (278) 73
+marking (279) 48
+transitions (280) 52
+Const (281) 32 33
+INT (282) 32
+DOUBLE (283) 33
+inhibitor (284) 78
+MIN (285) 10 22
+MAX (286) 11 23
+FLOOR (287) 8 9 21
+SINGLE (288) 60
+INFINITE (289) 61
+MULTIPLE (290) 62 63
+IMDT (291) 57
+EXPO (292) 56
+
+
+Nonterminals, with rules where they appear
+
+$accept (40)
+    on left: 0
+IntStringFormula (41)
+    on left: 1 2 3 4 5 6 7 8 9 10 11, on right: 3 4 5 6 7 8 9 10 11
+    32 51 71 76 81
+RealStringFormula (42)
+    on left: 12 13 14 15 16 17 18 19 20 21 22 23, on right: 15 16 17
+    18 19 20 21 22 23 33 56 58 59 67
+GSPN (43)
+    on left: 24 25, on right: 0
+declarations (44)
+    on left: 26 27, on right: 24 25
+Constants (45)
+    on left: 28 29, on right: 26 29
+Sizes (46)
+    on left: 30 31, on right: 26 27
+Constant (47)
+    on left: 32 33, on right: 28 29
+Lists (48)
+    on left: 34 35, on right: 26 27
+NbPlaces (49)
+    on left: 36 37, on right: 30 31
+NbTransitions (50)
+    on left: 38 39, on right: 30 31
+PlacesList (51)
+    on left: 40, on right: 34 35
+PLabels (52)
+    on left: 41 42, on right: 40 42
+TransitionsList (53)
+    on left: 43, on right: 34 35
+TLabels (54)
+    on left: 44 45, on right: 43 45
+definitions (55)
+    on left: 46 47, on right: 24 25
+PlacesDef (56)
+    on left: 48, on right: 46 47
+PLACES (57)
+    on left: 49 50, on right: 48 50
+PLACE (58)
+    on left: 51, on right: 49 50
+TransitionsDef (59)
+    on left: 52, on right: 46 47 83
+TRANSITIONS (60)
+    on left: 53 54, on right: 52 54
+TRANSITION (61)
+    on left: 55 56 57, on right: 53 54
+WEIGHT (62)
+    on left: 58, on right: 55 56 57
+PRIORITY (63)
+    on left: 59, on right: 55 56 57
+SERVICE (64)
+    on left: 60 61 62 63, on right: 56
+dist (65)
+    on left: 64, on right: 55
+params (66)
+    on left: 65 66, on right: 64 66
+param (67)
+    on left: 67, on right: 65 66
+InArcs (68)
+    on left: 68, on right: 46 47
+incells (69)
+    on left: 69 70, on right: 68 70
+incell (70)
+    on left: 71 72, on right: 69 70
+OutArcs (71)
+    on left: 73, on right: 46 47
+outcells (72)
+    on left: 74 75, on right: 73 75
+outcell (73)
+    on left: 76 77, on right: 74 75
+Inhibitors (74)
+    on left: 78, on right: 47
+inhibcells (75)
+    on left: 79 80, on right: 78 80
+inhibcell (76)
+    on left: 81 82, on right: 79 80
+redifinitions (77)
+    on left: 83, on right: 25
+
+
+state 0
+
+    0 $accept: . GSPN "end of file"
+
+    NbPl   shift, and go to state 1
+    NbTr   shift, and go to state 2
+    Const  shift, and go to state 3
+
+    GSPN           go to state 4
+    declarations   go to state 5
+    Constants      go to state 6
+    Sizes          go to state 7
+    Constant       go to state 8
+    NbPlaces       go to state 9
+    NbTransitions  go to state 10
+
+
+state 1
+
+   36 NbPlaces: NbPl . EQ ival SEMICOLON
+   37         | NbPl . EQ str SEMICOLON
+
+    EQ  shift, and go to state 11
+
+
+state 2
+
+   38 NbTransitions: NbTr . EQ ival SEMICOLON
+   39              | NbTr . EQ str SEMICOLON
+
+    EQ  shift, and go to state 12
+
+
+state 3
+
+   32 Constant: Const . INT str EQ IntStringFormula SEMICOLON
+   33         | Const . DOUBLE str EQ RealStringFormula SEMICOLON
+
+    INT     shift, and go to state 13
+    DOUBLE  shift, and go to state 14
+
+
+state 4
+
+    0 $accept: GSPN . "end of file"
+
+    "end of file"  shift, and go to state 15
+
+
+state 5
+
+   24 GSPN: declarations . definitions
+   25     | declarations . definitions redifinitions
+
+    marking  shift, and go to state 16
+
+    definitions  go to state 17
+    PlacesDef    go to state 18
+
+
+state 6
+
+   26 declarations: Constants . Sizes Lists
+
+    NbPl  shift, and go to state 1
+    NbTr  shift, and go to state 2
+
+    Sizes          go to state 19
+    NbPlaces       go to state 9
+    NbTransitions  go to state 10
+
+
+state 7
+
+   27 declarations: Sizes . Lists
+
+    PList  shift, and go to state 20
+    TList  shift, and go to state 21
+
+    Lists            go to state 22
+    PlacesList       go to state 23
+    TransitionsList  go to state 24
+
+
+state 8
+
+   28 Constants: Constant .
+   29          | Constant . Constants
+
+    Const  shift, and go to state 3
+
+    $default  reduce using rule 28 (Constants)
+
+    Constants  go to state 25
+    Constant   go to state 8
+
+
+state 9
+
+   30 Sizes: NbPlaces . NbTransitions
+
+    NbTr  shift, and go to state 2
+
+    NbTransitions  go to state 26
+
+
+state 10
+
+   31 Sizes: NbTransitions . NbPlaces
+
+    NbPl  shift, and go to state 1
+
+    NbPlaces  go to state 27
+
+
+state 11
+
+   36 NbPlaces: NbPl EQ . ival SEMICOLON
+   37         | NbPl EQ . str SEMICOLON
+
+    str   shift, and go to state 28
+    ival  shift, and go to state 29
+
+
+state 12
+
+   38 NbTransitions: NbTr EQ . ival SEMICOLON
+   39              | NbTr EQ . str SEMICOLON
+
+    str   shift, and go to state 30
+    ival  shift, and go to state 31
+
+
+state 13
+
+   32 Constant: Const INT . str EQ IntStringFormula SEMICOLON
+
+    str  shift, and go to state 32
+
+
+state 14
+
+   33 Constant: Const DOUBLE . str EQ RealStringFormula SEMICOLON
+
+    str  shift, and go to state 33
+
+
+state 15
+
+    0 $accept: GSPN "end of file" .
+
+    $default  accept
+
+
+state 16
+
+   48 PlacesDef: marking . EQ '{' PLACES '}' SEMICOLON
+
+    EQ  shift, and go to state 34
+
+
+state 17
+
+   24 GSPN: declarations definitions .
+   25     | declarations definitions . redifinitions
+
+    transitions  shift, and go to state 35
+
+    $default  reduce using rule 24 (GSPN)
+
+    TransitionsDef  go to state 36
+    redifinitions   go to state 37
+
+
+state 18
+
+   46 definitions: PlacesDef . TransitionsDef InArcs OutArcs
+   47            | PlacesDef . TransitionsDef InArcs OutArcs Inhibitors
+
+    transitions  shift, and go to state 35
+
+    TransitionsDef  go to state 38
+
+
+state 19
+
+   26 declarations: Constants Sizes . Lists
+
+    PList  shift, and go to state 20
+    TList  shift, and go to state 21
+
+    Lists            go to state 39
+    PlacesList       go to state 23
+    TransitionsList  go to state 24
+
+
+state 20
+
+   40 PlacesList: PList . EQ '{' PLabels '}' SEMICOLON
+
+    EQ  shift, and go to state 40
+
+
+state 21
+
+   43 TransitionsList: TList . EQ '{' TLabels '}' SEMICOLON
+
+    EQ  shift, and go to state 41
+
+
+state 22
+
+   27 declarations: Sizes Lists .
+
+    $default  reduce using rule 27 (declarations)
+
+
+state 23
+
+   34 Lists: PlacesList . TransitionsList
+
+    TList  shift, and go to state 21
+
+    TransitionsList  go to state 42
+
+
+state 24
+
+   35 Lists: TransitionsList . PlacesList
+
+    PList  shift, and go to state 20
+
+    PlacesList  go to state 43
+
+
+state 25
+
+   29 Constants: Constant Constants .
+
+    $default  reduce using rule 29 (Constants)
+
+
+state 26
+
+   30 Sizes: NbPlaces NbTransitions .
+
+    $default  reduce using rule 30 (Sizes)
+
+
+state 27
+
+   31 Sizes: NbTransitions NbPlaces .
+
+    $default  reduce using rule 31 (Sizes)
+
+
+state 28
+
+   37 NbPlaces: NbPl EQ str . SEMICOLON
+
+    SEMICOLON  shift, and go to state 44
+
+
+state 29
+
+   36 NbPlaces: NbPl EQ ival . SEMICOLON
+
+    SEMICOLON  shift, and go to state 45
+
+
+state 30
+
+   39 NbTransitions: NbTr EQ str . SEMICOLON
+
+    SEMICOLON  shift, and go to state 46
+
+
+state 31
+
+   38 NbTransitions: NbTr EQ ival . SEMICOLON
+
+    SEMICOLON  shift, and go to state 47
+
+
+state 32
+
+   32 Constant: Const INT str . EQ IntStringFormula SEMICOLON
+
+    EQ  shift, and go to state 48
+
+
+state 33
+
+   33 Constant: Const DOUBLE str . EQ RealStringFormula SEMICOLON
+
+    EQ  shift, and go to state 49
+
+
+state 34
+
+   48 PlacesDef: marking EQ . '{' PLACES '}' SEMICOLON
+
+    '{'  shift, and go to state 50
+
+
+state 35
+
+   52 TransitionsDef: transitions . EQ '{' TRANSITIONS '}' SEMICOLON
+
+    EQ  shift, and go to state 51
+
+
+state 36
+
+   83 redifinitions: TransitionsDef .
+
+    $default  reduce using rule 83 (redifinitions)
+
+
+state 37
+
+   25 GSPN: declarations definitions redifinitions .
+
+    $default  reduce using rule 25 (GSPN)
+
+
+state 38
+
+   46 definitions: PlacesDef TransitionsDef . InArcs OutArcs
+   47            | PlacesDef TransitionsDef . InArcs OutArcs Inhibitors
+
+    in  shift, and go to state 52
+
+    InArcs  go to state 53
+
+
+state 39
+
+   26 declarations: Constants Sizes Lists .
+
+    $default  reduce using rule 26 (declarations)
+
+
+state 40
+
+   40 PlacesList: PList EQ . '{' PLabels '}' SEMICOLON
+
+    '{'  shift, and go to state 54
+
+
+state 41
+
+   43 TransitionsList: TList EQ . '{' TLabels '}' SEMICOLON
+
+    '{'  shift, and go to state 55
+
+
+state 42
+
+   34 Lists: PlacesList TransitionsList .
+
+    $default  reduce using rule 34 (Lists)
+
+
+state 43
+
+   35 Lists: TransitionsList PlacesList .
+
+    $default  reduce using rule 35 (Lists)
+
+
+state 44
+
+   37 NbPlaces: NbPl EQ str SEMICOLON .
+
+    $default  reduce using rule 37 (NbPlaces)
+
+
+state 45
+
+   36 NbPlaces: NbPl EQ ival SEMICOLON .
+
+    $default  reduce using rule 36 (NbPlaces)
+
+
+state 46
+
+   39 NbTransitions: NbTr EQ str SEMICOLON .
+
+    $default  reduce using rule 39 (NbTransitions)
+
+
+state 47
+
+   38 NbTransitions: NbTr EQ ival SEMICOLON .
+
+    $default  reduce using rule 38 (NbTransitions)
+
+
+state 48
+
+   32 Constant: Const INT str EQ . IntStringFormula SEMICOLON
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 62
+
+
+state 49
+
+   33 Constant: Const DOUBLE str EQ . RealStringFormula SEMICOLON
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 70
+
+
+state 50
+
+   48 PlacesDef: marking EQ '{' . PLACES '}' SEMICOLON
+
+    LB  shift, and go to state 71
+
+    PLACES  go to state 72
+    PLACE   go to state 73
+
+
+state 51
+
+   52 TransitionsDef: transitions EQ . '{' TRANSITIONS '}' SEMICOLON
+
+    '{'  shift, and go to state 74
+
+
+state 52
+
+   68 InArcs: in . EQ '{' incells '}' SEMICOLON
+
+    EQ  shift, and go to state 75
+
+
+state 53
+
+   46 definitions: PlacesDef TransitionsDef InArcs . OutArcs
+   47            | PlacesDef TransitionsDef InArcs . OutArcs Inhibitors
+
+    out  shift, and go to state 76
+
+    OutArcs  go to state 77
+
+
+state 54
+
+   40 PlacesList: PList EQ '{' . PLabels '}' SEMICOLON
+
+    str  shift, and go to state 78
+
+    PLabels  go to state 79
+
+
+state 55
+
+   43 TransitionsList: TList EQ '{' . TLabels '}' SEMICOLON
+
+    str  shift, and go to state 80
+
+    TLabels  go to state 81
+
+
+state 56
+
+    2 IntStringFormula: str .
+
+    $default  reduce using rule 2 (IntStringFormula)
+
+
+state 57
+
+    1 IntStringFormula: ival .
+
+    $default  reduce using rule 1 (IntStringFormula)
+
+
+state 58
+
+    3 IntStringFormula: LB . IntStringFormula RB
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 82
+
+
+state 59
+
+   10 IntStringFormula: MIN . LB IntStringFormula COMMA IntStringFormula RB
+
+    LB  shift, and go to state 83
+
+
+state 60
+
+   11 IntStringFormula: MAX . LB IntStringFormula COMMA IntStringFormula RB
+
+    LB  shift, and go to state 84
+
+
+state 61
+
+    8 IntStringFormula: FLOOR . LB IntStringFormula RB
+    9                 | FLOOR . LB IntStringFormula DIV IntStringFormula RB
+
+    LB  shift, and go to state 85
+
+
+state 62
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+   32 Constant: Const INT str EQ IntStringFormula . SEMICOLON
+
+    SEMICOLON  shift, and go to state 86
+    MUL        shift, and go to state 87
+    PLUS       shift, and go to state 88
+    MINUS      shift, and go to state 89
+    POWER      shift, and go to state 90
+
+
+state 63
+
+   14 RealStringFormula: str .
+
+    $default  reduce using rule 14 (RealStringFormula)
+
+
+state 64
+
+   12 RealStringFormula: rval .
+
+    $default  reduce using rule 12 (RealStringFormula)
+
+
+state 65
+
+   13 RealStringFormula: ival .
+
+    $default  reduce using rule 13 (RealStringFormula)
+
+
+state 66
+
+   15 RealStringFormula: LB . RealStringFormula RB
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 91
+
+
+state 67
+
+   22 RealStringFormula: MIN . LB RealStringFormula COMMA RealStringFormula RB
+
+    LB  shift, and go to state 92
+
+
+state 68
+
+   23 RealStringFormula: MAX . LB RealStringFormula COMMA RealStringFormula RB
+
+    LB  shift, and go to state 93
+
+
+state 69
+
+   21 RealStringFormula: FLOOR . LB RealStringFormula RB
+
+    LB  shift, and go to state 94
+
+
+state 70
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   33 Constant: Const DOUBLE str EQ RealStringFormula . SEMICOLON
+
+    SEMICOLON  shift, and go to state 95
+    DIV        shift, and go to state 96
+    MUL        shift, and go to state 97
+    PLUS       shift, and go to state 98
+    MINUS      shift, and go to state 99
+    POWER      shift, and go to state 100
+
+
+state 71
+
+   51 PLACE: LB . str COMMA IntStringFormula RB SEMICOLON
+
+    str  shift, and go to state 101
+
+
+state 72
+
+   48 PlacesDef: marking EQ '{' PLACES . '}' SEMICOLON
+   50 PLACES: PLACES . PLACE
+
+    LB   shift, and go to state 71
+    '}'  shift, and go to state 102
+
+    PLACE  go to state 103
+
+
+state 73
+
+   49 PLACES: PLACE .
+
+    $default  reduce using rule 49 (PLACES)
+
+
+state 74
+
+   52 TransitionsDef: transitions EQ '{' . TRANSITIONS '}' SEMICOLON
+
+    LB  shift, and go to state 104
+
+    TRANSITIONS  go to state 105
+    TRANSITION   go to state 106
+
+
+state 75
+
+   68 InArcs: in EQ . '{' incells '}' SEMICOLON
+
+    '{'  shift, and go to state 107
+
+
+state 76
+
+   73 OutArcs: out . EQ '{' outcells '}' SEMICOLON
+
+    EQ  shift, and go to state 108
+
+
+state 77
+
+   46 definitions: PlacesDef TransitionsDef InArcs OutArcs .
+   47            | PlacesDef TransitionsDef InArcs OutArcs . Inhibitors
+
+    inhibitor  shift, and go to state 109
+
+    $default  reduce using rule 46 (definitions)
+
+    Inhibitors  go to state 110
+
+
+state 78
+
+   41 PLabels: str .
+
+    $default  reduce using rule 41 (PLabels)
+
+
+state 79
+
+   40 PlacesList: PList EQ '{' PLabels . '}' SEMICOLON
+   42 PLabels: PLabels . COMMA str
+
+    COMMA  shift, and go to state 111
+    '}'    shift, and go to state 112
+
+
+state 80
+
+   44 TLabels: str .
+
+    $default  reduce using rule 44 (TLabels)
+
+
+state 81
+
+   43 TransitionsList: TList EQ '{' TLabels . '}' SEMICOLON
+   45 TLabels: TLabels . COMMA str
+
+    COMMA  shift, and go to state 113
+    '}'    shift, and go to state 114
+
+
+state 82
+
+    3 IntStringFormula: LB IntStringFormula . RB
+    4                 | IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+
+    RB     shift, and go to state 115
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 83
+
+   10 IntStringFormula: MIN LB . IntStringFormula COMMA IntStringFormula RB
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 116
+
+
+state 84
+
+   11 IntStringFormula: MAX LB . IntStringFormula COMMA IntStringFormula RB
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 117
+
+
+state 85
+
+    8 IntStringFormula: FLOOR LB . IntStringFormula RB
+    9                 | FLOOR LB . IntStringFormula DIV IntStringFormula RB
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 118
+
+
+state 86
+
+   32 Constant: Const INT str EQ IntStringFormula SEMICOLON .
+
+    $default  reduce using rule 32 (Constant)
+
+
+state 87
+
+    6 IntStringFormula: IntStringFormula MUL . IntStringFormula
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 119
+
+
+state 88
+
+    4 IntStringFormula: IntStringFormula PLUS . IntStringFormula
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 120
+
+
+state 89
+
+    5 IntStringFormula: IntStringFormula MINUS . IntStringFormula
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 121
+
+
+state 90
+
+    7 IntStringFormula: IntStringFormula POWER . IntStringFormula
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 122
+
+
+state 91
+
+   15 RealStringFormula: LB RealStringFormula . RB
+   16                  | RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+
+    RB     shift, and go to state 123
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    PLUS   shift, and go to state 98
+    MINUS  shift, and go to state 99
+    POWER  shift, and go to state 100
+
+
+state 92
+
+   22 RealStringFormula: MIN LB . RealStringFormula COMMA RealStringFormula RB
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 124
+
+
+state 93
+
+   23 RealStringFormula: MAX LB . RealStringFormula COMMA RealStringFormula RB
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 125
+
+
+state 94
+
+   21 RealStringFormula: FLOOR LB . RealStringFormula RB
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 126
+
+
+state 95
+
+   33 Constant: Const DOUBLE str EQ RealStringFormula SEMICOLON .
+
+    $default  reduce using rule 33 (Constant)
+
+
+state 96
+
+   16 RealStringFormula: RealStringFormula DIV . RealStringFormula
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 127
+
+
+state 97
+
+   19 RealStringFormula: RealStringFormula MUL . RealStringFormula
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 128
+
+
+state 98
+
+   17 RealStringFormula: RealStringFormula PLUS . RealStringFormula
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 129
+
+
+state 99
+
+   18 RealStringFormula: RealStringFormula MINUS . RealStringFormula
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 130
+
+
+state 100
+
+   20 RealStringFormula: RealStringFormula POWER . RealStringFormula
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 131
+
+
+state 101
+
+   51 PLACE: LB str . COMMA IntStringFormula RB SEMICOLON
+
+    COMMA  shift, and go to state 132
+
+
+state 102
+
+   48 PlacesDef: marking EQ '{' PLACES '}' . SEMICOLON
+
+    SEMICOLON  shift, and go to state 133
+
+
+state 103
+
+   50 PLACES: PLACES PLACE .
+
+    $default  reduce using rule 50 (PLACES)
+
+
+state 104
+
+   55 TRANSITION: LB . str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
+   56           | LB . str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
+   57           | LB . str COMMA IMDT COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
+
+    str  shift, and go to state 134
+
+
+state 105
+
+   52 TransitionsDef: transitions EQ '{' TRANSITIONS . '}' SEMICOLON
+   54 TRANSITIONS: TRANSITIONS . TRANSITION
+
+    LB   shift, and go to state 104
+    '}'  shift, and go to state 135
+
+    TRANSITION  go to state 136
+
+
+state 106
+
+   53 TRANSITIONS: TRANSITION .
+
+    $default  reduce using rule 53 (TRANSITIONS)
+
+
+state 107
+
+   68 InArcs: in EQ '{' . incells '}' SEMICOLON
+
+    LB  shift, and go to state 137
+
+    incells  go to state 138
+    incell   go to state 139
+
+
+state 108
+
+   73 OutArcs: out EQ . '{' outcells '}' SEMICOLON
+
+    '{'  shift, and go to state 140
+
+
+state 109
+
+   78 Inhibitors: inhibitor . EQ '{' inhibcells '}' SEMICOLON
+
+    EQ  shift, and go to state 141
+
+
+state 110
+
+   47 definitions: PlacesDef TransitionsDef InArcs OutArcs Inhibitors .
+
+    $default  reduce using rule 47 (definitions)
+
+
+state 111
+
+   42 PLabels: PLabels COMMA . str
+
+    str  shift, and go to state 142
+
+
+state 112
+
+   40 PlacesList: PList EQ '{' PLabels '}' . SEMICOLON
+
+    SEMICOLON  shift, and go to state 143
+
+
+state 113
+
+   45 TLabels: TLabels COMMA . str
+
+    str  shift, and go to state 144
+
+
+state 114
+
+   43 TransitionsList: TList EQ '{' TLabels '}' . SEMICOLON
+
+    SEMICOLON  shift, and go to state 145
+
+
+state 115
+
+    3 IntStringFormula: LB IntStringFormula RB .
+
+    $default  reduce using rule 3 (IntStringFormula)
+
+
+state 116
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+   10                 | MIN LB IntStringFormula . COMMA IntStringFormula RB
+
+    COMMA  shift, and go to state 146
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 117
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+   11                 | MAX LB IntStringFormula . COMMA IntStringFormula RB
+
+    COMMA  shift, and go to state 147
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 118
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+    8                 | FLOOR LB IntStringFormula . RB
+    9                 | FLOOR LB IntStringFormula . DIV IntStringFormula RB
+
+    RB     shift, and go to state 148
+    DIV    shift, and go to state 149
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 119
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    6                 | IntStringFormula MUL IntStringFormula .
+    7                 | IntStringFormula . POWER IntStringFormula
+
+    POWER  shift, and go to state 90
+
+    $default  reduce using rule 6 (IntStringFormula)
+
+
+state 120
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    4                 | IntStringFormula PLUS IntStringFormula .
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+
+    MUL    shift, and go to state 87
+    POWER  shift, and go to state 90
+
+    $default  reduce using rule 4 (IntStringFormula)
+
+
+state 121
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    5                 | IntStringFormula MINUS IntStringFormula .
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+
+    MUL    shift, and go to state 87
+    POWER  shift, and go to state 90
+
+    $default  reduce using rule 5 (IntStringFormula)
+
+
+state 122
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+    7                 | IntStringFormula POWER IntStringFormula .
+
+    $default  reduce using rule 7 (IntStringFormula)
+
+
+state 123
+
+   15 RealStringFormula: LB RealStringFormula RB .
+
+    $default  reduce using rule 15 (RealStringFormula)
+
+
+state 124
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   22                  | MIN LB RealStringFormula . COMMA RealStringFormula RB
+
+    COMMA  shift, and go to state 150
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    PLUS   shift, and go to state 98
+    MINUS  shift, and go to state 99
+    POWER  shift, and go to state 100
+
+
+state 125
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   23                  | MAX LB RealStringFormula . COMMA RealStringFormula RB
+
+    COMMA  shift, and go to state 151
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    PLUS   shift, and go to state 98
+    MINUS  shift, and go to state 99
+    POWER  shift, and go to state 100
+
+
+state 126
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   21                  | FLOOR LB RealStringFormula . RB
+
+    RB     shift, and go to state 152
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    PLUS   shift, and go to state 98
+    MINUS  shift, and go to state 99
+    POWER  shift, and go to state 100
+
+
+state 127
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   16                  | RealStringFormula DIV RealStringFormula .
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+
+    POWER  shift, and go to state 100
+
+    $default  reduce using rule 16 (RealStringFormula)
+
+
+state 128
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   19                  | RealStringFormula MUL RealStringFormula .
+   20                  | RealStringFormula . POWER RealStringFormula
+
+    POWER  shift, and go to state 100
+
+    $default  reduce using rule 19 (RealStringFormula)
+
+
+state 129
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   17                  | RealStringFormula PLUS RealStringFormula .
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    POWER  shift, and go to state 100
+
+    $default  reduce using rule 17 (RealStringFormula)
+
+
+state 130
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   18                  | RealStringFormula MINUS RealStringFormula .
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    POWER  shift, and go to state 100
+
+    $default  reduce using rule 18 (RealStringFormula)
+
+
+state 131
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   20                  | RealStringFormula POWER RealStringFormula .
+
+    $default  reduce using rule 20 (RealStringFormula)
+
+
+state 132
+
+   51 PLACE: LB str COMMA . IntStringFormula RB SEMICOLON
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 153
+
+
+state 133
+
+   48 PlacesDef: marking EQ '{' PLACES '}' SEMICOLON .
+
+    $default  reduce using rule 48 (PlacesDef)
+
+
+state 134
+
+   55 TRANSITION: LB str . COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
+   56           | LB str . COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
+   57           | LB str . COMMA IMDT COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
+
+    COMMA  shift, and go to state 154
+
+
+state 135
+
+   52 TransitionsDef: transitions EQ '{' TRANSITIONS '}' . SEMICOLON
+
+    SEMICOLON  shift, and go to state 155
+
+
+state 136
+
+   54 TRANSITIONS: TRANSITIONS TRANSITION .
+
+    $default  reduce using rule 54 (TRANSITIONS)
+
+
+state 137
+
+   71 incell: LB . str COMMA str COMMA IntStringFormula RB SEMICOLON
+   72       | LB . str COMMA str RB SEMICOLON
+
+    str  shift, and go to state 156
+
+
+state 138
+
+   68 InArcs: in EQ '{' incells . '}' SEMICOLON
+   70 incells: incells . incell
+
+    LB   shift, and go to state 137
+    '}'  shift, and go to state 157
+
+    incell  go to state 158
+
+
+state 139
+
+   69 incells: incell .
+
+    $default  reduce using rule 69 (incells)
+
+
+state 140
+
+   73 OutArcs: out EQ '{' . outcells '}' SEMICOLON
+
+    LB  shift, and go to state 159
+
+    outcells  go to state 160
+    outcell   go to state 161
+
+
+state 141
+
+   78 Inhibitors: inhibitor EQ . '{' inhibcells '}' SEMICOLON
+
+    '{'  shift, and go to state 162
+
+
+state 142
+
+   42 PLabels: PLabels COMMA str .
+
+    $default  reduce using rule 42 (PLabels)
+
+
+state 143
+
+   40 PlacesList: PList EQ '{' PLabels '}' SEMICOLON .
+
+    $default  reduce using rule 40 (PlacesList)
+
+
+state 144
+
+   45 TLabels: TLabels COMMA str .
+
+    $default  reduce using rule 45 (TLabels)
+
+
+state 145
+
+   43 TransitionsList: TList EQ '{' TLabels '}' SEMICOLON .
+
+    $default  reduce using rule 43 (TransitionsList)
+
+
+state 146
+
+   10 IntStringFormula: MIN LB IntStringFormula COMMA . IntStringFormula RB
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 163
+
+
+state 147
+
+   11 IntStringFormula: MAX LB IntStringFormula COMMA . IntStringFormula RB
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 164
+
+
+state 148
+
+    8 IntStringFormula: FLOOR LB IntStringFormula RB .
+
+    $default  reduce using rule 8 (IntStringFormula)
+
+
+state 149
+
+    9 IntStringFormula: FLOOR LB IntStringFormula DIV . IntStringFormula RB
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 165
+
+
+state 150
+
+   22 RealStringFormula: MIN LB RealStringFormula COMMA . RealStringFormula RB
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 166
+
+
+state 151
+
+   23 RealStringFormula: MAX LB RealStringFormula COMMA . RealStringFormula RB
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 167
+
+
+state 152
+
+   21 RealStringFormula: FLOOR LB RealStringFormula RB .
+
+    $default  reduce using rule 21 (RealStringFormula)
+
+
+state 153
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+   51 PLACE: LB str COMMA IntStringFormula . RB SEMICOLON
+
+    RB     shift, and go to state 168
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 154
+
+   55 TRANSITION: LB str COMMA . dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
+   56           | LB str COMMA . EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
+   57           | LB str COMMA . IMDT COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
+
+    str   shift, and go to state 169
+    IMDT  shift, and go to state 170
+    EXPO  shift, and go to state 171
+
+    dist  go to state 172
+
+
+state 155
+
+   52 TransitionsDef: transitions EQ '{' TRANSITIONS '}' SEMICOLON .
+
+    $default  reduce using rule 52 (TransitionsDef)
+
+
+state 156
+
+   71 incell: LB str . COMMA str COMMA IntStringFormula RB SEMICOLON
+   72       | LB str . COMMA str RB SEMICOLON
+
+    COMMA  shift, and go to state 173
+
+
+state 157
+
+   68 InArcs: in EQ '{' incells '}' . SEMICOLON
+
+    SEMICOLON  shift, and go to state 174
+
+
+state 158
+
+   70 incells: incells incell .
+
+    $default  reduce using rule 70 (incells)
+
+
+state 159
+
+   76 outcell: LB . str COMMA str COMMA IntStringFormula RB SEMICOLON
+   77        | LB . str COMMA str RB SEMICOLON
+
+    str  shift, and go to state 175
+
+
+state 160
+
+   73 OutArcs: out EQ '{' outcells . '}' SEMICOLON
+   75 outcells: outcells . outcell
+
+    LB   shift, and go to state 159
+    '}'  shift, and go to state 176
+
+    outcell  go to state 177
+
+
+state 161
+
+   74 outcells: outcell .
+
+    $default  reduce using rule 74 (outcells)
+
+
+state 162
+
+   78 Inhibitors: inhibitor EQ '{' . inhibcells '}' SEMICOLON
+
+    LB  shift, and go to state 178
+
+    inhibcells  go to state 179
+    inhibcell   go to state 180
+
+
+state 163
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+   10                 | MIN LB IntStringFormula COMMA IntStringFormula . RB
+
+    RB     shift, and go to state 181
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 164
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+   11                 | MAX LB IntStringFormula COMMA IntStringFormula . RB
+
+    RB     shift, and go to state 182
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 165
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+    9                 | FLOOR LB IntStringFormula DIV IntStringFormula . RB
+
+    RB     shift, and go to state 183
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 166
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   22                  | MIN LB RealStringFormula COMMA RealStringFormula . RB
+
+    RB     shift, and go to state 184
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    PLUS   shift, and go to state 98
+    MINUS  shift, and go to state 99
+    POWER  shift, and go to state 100
+
+
+state 167
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   23                  | MAX LB RealStringFormula COMMA RealStringFormula . RB
+
+    RB     shift, and go to state 185
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    PLUS   shift, and go to state 98
+    MINUS  shift, and go to state 99
+    POWER  shift, and go to state 100
+
+
+state 168
+
+   51 PLACE: LB str COMMA IntStringFormula RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 186
+
+
+state 169
+
+   64 dist: str . LB params RB
+
+    LB  shift, and go to state 187
+
+
+state 170
+
+   57 TRANSITION: LB str COMMA IMDT . COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
+
+    COMMA  shift, and go to state 188
+
+
+state 171
+
+   56 TRANSITION: LB str COMMA EXPO . LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
+
+    LB  shift, and go to state 189
+
+
+state 172
+
+   55 TRANSITION: LB str COMMA dist . COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
+
+    COMMA  shift, and go to state 190
+
+
+state 173
+
+   71 incell: LB str COMMA . str COMMA IntStringFormula RB SEMICOLON
+   72       | LB str COMMA . str RB SEMICOLON
+
+    str  shift, and go to state 191
+
+
+state 174
+
+   68 InArcs: in EQ '{' incells '}' SEMICOLON .
+
+    $default  reduce using rule 68 (InArcs)
+
+
+state 175
+
+   76 outcell: LB str . COMMA str COMMA IntStringFormula RB SEMICOLON
+   77        | LB str . COMMA str RB SEMICOLON
+
+    COMMA  shift, and go to state 192
+
+
+state 176
+
+   73 OutArcs: out EQ '{' outcells '}' . SEMICOLON
+
+    SEMICOLON  shift, and go to state 193
+
+
+state 177
+
+   75 outcells: outcells outcell .
+
+    $default  reduce using rule 75 (outcells)
+
+
+state 178
+
+   81 inhibcell: LB . str COMMA str COMMA IntStringFormula RB SEMICOLON
+   82          | LB . str COMMA str RB SEMICOLON
+
+    str  shift, and go to state 194
+
+
+state 179
+
+   78 Inhibitors: inhibitor EQ '{' inhibcells . '}' SEMICOLON
+   80 inhibcells: inhibcells . inhibcell
+
+    LB   shift, and go to state 178
+    '}'  shift, and go to state 195
+
+    inhibcell  go to state 196
+
+
+state 180
+
+   79 inhibcells: inhibcell .
+
+    $default  reduce using rule 79 (inhibcells)
+
+
+state 181
+
+   10 IntStringFormula: MIN LB IntStringFormula COMMA IntStringFormula RB .
+
+    $default  reduce using rule 10 (IntStringFormula)
+
+
+state 182
+
+   11 IntStringFormula: MAX LB IntStringFormula COMMA IntStringFormula RB .
+
+    $default  reduce using rule 11 (IntStringFormula)
+
+
+state 183
+
+    9 IntStringFormula: FLOOR LB IntStringFormula DIV IntStringFormula RB .
+
+    $default  reduce using rule 9 (IntStringFormula)
+
+
+state 184
+
+   22 RealStringFormula: MIN LB RealStringFormula COMMA RealStringFormula RB .
+
+    $default  reduce using rule 22 (RealStringFormula)
+
+
+state 185
+
+   23 RealStringFormula: MAX LB RealStringFormula COMMA RealStringFormula RB .
+
+    $default  reduce using rule 23 (RealStringFormula)
+
+
+state 186
+
+   51 PLACE: LB str COMMA IntStringFormula RB SEMICOLON .
+
+    $default  reduce using rule 51 (PLACE)
+
+
+state 187
+
+   64 dist: str LB . params RB
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 197
+    params             go to state 198
+    param              go to state 199
+
+
+state 188
+
+   57 TRANSITION: LB str COMMA IMDT COMMA . PRIORITY COMMA WEIGHT RB SEMICOLON
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 200
+    PRIORITY           go to state 201
+
+
+state 189
+
+   56 TRANSITION: LB str COMMA EXPO LB . RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 202
+
+
+state 190
+
+   55 TRANSITION: LB str COMMA dist COMMA . PRIORITY COMMA WEIGHT RB SEMICOLON
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 200
+    PRIORITY           go to state 203
+
+
+state 191
+
+   71 incell: LB str COMMA str . COMMA IntStringFormula RB SEMICOLON
+   72       | LB str COMMA str . RB SEMICOLON
+
+    COMMA  shift, and go to state 204
+    RB     shift, and go to state 205
+
+
+state 192
+
+   76 outcell: LB str COMMA . str COMMA IntStringFormula RB SEMICOLON
+   77        | LB str COMMA . str RB SEMICOLON
+
+    str  shift, and go to state 206
+
+
+state 193
+
+   73 OutArcs: out EQ '{' outcells '}' SEMICOLON .
+
+    $default  reduce using rule 73 (OutArcs)
+
+
+state 194
+
+   81 inhibcell: LB str . COMMA str COMMA IntStringFormula RB SEMICOLON
+   82          | LB str . COMMA str RB SEMICOLON
+
+    COMMA  shift, and go to state 207
+
+
+state 195
+
+   78 Inhibitors: inhibitor EQ '{' inhibcells '}' . SEMICOLON
+
+    SEMICOLON  shift, and go to state 208
+
+
+state 196
+
+   80 inhibcells: inhibcells inhibcell .
+
+    $default  reduce using rule 80 (inhibcells)
+
+
+state 197
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   67 param: RealStringFormula .
+
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    PLUS   shift, and go to state 98
+    MINUS  shift, and go to state 99
+    POWER  shift, and go to state 100
+
+    $default  reduce using rule 67 (param)
+
+
+state 198
+
+   64 dist: str LB params . RB
+   66 params: params . COMMA param
+
+    COMMA  shift, and go to state 209
+    RB     shift, and go to state 210
+
+
+state 199
+
+   65 params: param .
+
+    $default  reduce using rule 65 (params)
+
+
+state 200
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   59 PRIORITY: RealStringFormula .
+
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    PLUS   shift, and go to state 98
+    MINUS  shift, and go to state 99
+    POWER  shift, and go to state 100
+
+    $default  reduce using rule 59 (PRIORITY)
+
+
+state 201
+
+   57 TRANSITION: LB str COMMA IMDT COMMA PRIORITY . COMMA WEIGHT RB SEMICOLON
+
+    COMMA  shift, and go to state 211
+
+
+state 202
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   56 TRANSITION: LB str COMMA EXPO LB RealStringFormula . RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
+
+    RB     shift, and go to state 212
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    PLUS   shift, and go to state 98
+    MINUS  shift, and go to state 99
+    POWER  shift, and go to state 100
+
+
+state 203
+
+   55 TRANSITION: LB str COMMA dist COMMA PRIORITY . COMMA WEIGHT RB SEMICOLON
+
+    COMMA  shift, and go to state 213
+
+
+state 204
+
+   71 incell: LB str COMMA str COMMA . IntStringFormula RB SEMICOLON
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 214
+
+
+state 205
+
+   72 incell: LB str COMMA str RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 215
+
+
+state 206
+
+   76 outcell: LB str COMMA str . COMMA IntStringFormula RB SEMICOLON
+   77        | LB str COMMA str . RB SEMICOLON
+
+    COMMA  shift, and go to state 216
+    RB     shift, and go to state 217
+
+
+state 207
+
+   81 inhibcell: LB str COMMA . str COMMA IntStringFormula RB SEMICOLON
+   82          | LB str COMMA . str RB SEMICOLON
+
+    str  shift, and go to state 218
+
+
+state 208
+
+   78 Inhibitors: inhibitor EQ '{' inhibcells '}' SEMICOLON .
+
+    $default  reduce using rule 78 (Inhibitors)
+
+
+state 209
+
+   66 params: params COMMA . param
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 197
+    param              go to state 219
+
+
+state 210
+
+   64 dist: str LB params RB .
+
+    $default  reduce using rule 64 (dist)
+
+
+state 211
+
+   57 TRANSITION: LB str COMMA IMDT COMMA PRIORITY COMMA . WEIGHT RB SEMICOLON
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 220
+    WEIGHT             go to state 221
+
+
+state 212
+
+   56 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB . COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
+
+    COMMA  shift, and go to state 222
+
+
+state 213
+
+   55 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA . WEIGHT RB SEMICOLON
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 220
+    WEIGHT             go to state 223
+
+
+state 214
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+   71 incell: LB str COMMA str COMMA IntStringFormula . RB SEMICOLON
+
+    RB     shift, and go to state 224
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 215
+
+   72 incell: LB str COMMA str RB SEMICOLON .
+
+    $default  reduce using rule 72 (incell)
+
+
+state 216
+
+   76 outcell: LB str COMMA str COMMA . IntStringFormula RB SEMICOLON
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 225
+
+
+state 217
+
+   77 outcell: LB str COMMA str RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 226
+
+
+state 218
+
+   81 inhibcell: LB str COMMA str . COMMA IntStringFormula RB SEMICOLON
+   82          | LB str COMMA str . RB SEMICOLON
+
+    COMMA  shift, and go to state 227
+    RB     shift, and go to state 228
+
+
+state 219
+
+   66 params: params COMMA param .
+
+    $default  reduce using rule 66 (params)
+
+
+state 220
+
+   16 RealStringFormula: RealStringFormula . DIV RealStringFormula
+   17                  | RealStringFormula . PLUS RealStringFormula
+   18                  | RealStringFormula . MINUS RealStringFormula
+   19                  | RealStringFormula . MUL RealStringFormula
+   20                  | RealStringFormula . POWER RealStringFormula
+   58 WEIGHT: RealStringFormula .
+
+    DIV    shift, and go to state 96
+    MUL    shift, and go to state 97
+    PLUS   shift, and go to state 98
+    MINUS  shift, and go to state 99
+    POWER  shift, and go to state 100
+
+    $default  reduce using rule 58 (WEIGHT)
+
+
+state 221
+
+   57 TRANSITION: LB str COMMA IMDT COMMA PRIORITY COMMA WEIGHT . RB SEMICOLON
+
+    RB  shift, and go to state 229
+
+
+state 222
+
+   56 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA . PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 200
+    PRIORITY           go to state 230
+
+
+state 223
+
+   55 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT . RB SEMICOLON
+
+    RB  shift, and go to state 231
+
+
+state 224
+
+   71 incell: LB str COMMA str COMMA IntStringFormula RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 232
+
+
+state 225
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+   76 outcell: LB str COMMA str COMMA IntStringFormula . RB SEMICOLON
+
+    RB     shift, and go to state 233
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 226
+
+   77 outcell: LB str COMMA str RB SEMICOLON .
+
+    $default  reduce using rule 77 (outcell)
+
+
+state 227
+
+   81 inhibcell: LB str COMMA str COMMA . IntStringFormula RB SEMICOLON
+
+    str    shift, and go to state 56
+    ival   shift, and go to state 57
+    LB     shift, and go to state 58
+    MIN    shift, and go to state 59
+    MAX    shift, and go to state 60
+    FLOOR  shift, and go to state 61
+
+    IntStringFormula  go to state 234
+
+
+state 228
+
+   82 inhibcell: LB str COMMA str RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 235
+
+
+state 229
+
+   57 TRANSITION: LB str COMMA IMDT COMMA PRIORITY COMMA WEIGHT RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 236
+
+
+state 230
+
+   56 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY . COMMA WEIGHT COMMA SERVICE RB SEMICOLON
+
+    COMMA  shift, and go to state 237
+
+
+state 231
+
+   55 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 238
+
+
+state 232
+
+   71 incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON .
+
+    $default  reduce using rule 71 (incell)
+
+
+state 233
+
+   76 outcell: LB str COMMA str COMMA IntStringFormula RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 239
+
+
+state 234
+
+    4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
+    5                 | IntStringFormula . MINUS IntStringFormula
+    6                 | IntStringFormula . MUL IntStringFormula
+    7                 | IntStringFormula . POWER IntStringFormula
+   81 inhibcell: LB str COMMA str COMMA IntStringFormula . RB SEMICOLON
+
+    RB     shift, and go to state 240
+    MUL    shift, and go to state 87
+    PLUS   shift, and go to state 88
+    MINUS  shift, and go to state 89
+    POWER  shift, and go to state 90
+
+
+state 235
+
+   82 inhibcell: LB str COMMA str RB SEMICOLON .
+
+    $default  reduce using rule 82 (inhibcell)
+
+
+state 236
+
+   57 TRANSITION: LB str COMMA IMDT COMMA PRIORITY COMMA WEIGHT RB SEMICOLON .
+
+    $default  reduce using rule 57 (TRANSITION)
+
+
+state 237
+
+   56 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA . WEIGHT COMMA SERVICE RB SEMICOLON
+
+    str    shift, and go to state 63
+    rval   shift, and go to state 64
+    ival   shift, and go to state 65
+    LB     shift, and go to state 66
+    MIN    shift, and go to state 67
+    MAX    shift, and go to state 68
+    FLOOR  shift, and go to state 69
+
+    RealStringFormula  go to state 220
+    WEIGHT             go to state 241
+
+
+state 238
+
+   55 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON .
+
+    $default  reduce using rule 55 (TRANSITION)
+
+
+state 239
+
+   76 outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON .
+
+    $default  reduce using rule 76 (outcell)
+
+
+state 240
+
+   81 inhibcell: LB str COMMA str COMMA IntStringFormula RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 242
+
+
+state 241
+
+   56 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT . COMMA SERVICE RB SEMICOLON
+
+    COMMA  shift, and go to state 243
+
+
+state 242
+
+   81 inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON .
+
+    $default  reduce using rule 81 (inhibcell)
+
+
+state 243
+
+   56 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA . SERVICE RB SEMICOLON
+
+    SINGLE    shift, and go to state 244
+    INFINITE  shift, and go to state 245
+    MULTIPLE  shift, and go to state 246
+
+    SERVICE  go to state 247
+
+
+state 244
+
+   60 SERVICE: SINGLE .
+
+    $default  reduce using rule 60 (SERVICE)
+
+
+state 245
+
+   61 SERVICE: INFINITE .
+
+    $default  reduce using rule 61 (SERVICE)
+
+
+state 246
+
+   62 SERVICE: MULTIPLE . LB ival RB
+   63        | MULTIPLE . LB str RB
+
+    LB  shift, and go to state 248
+
+
+state 247
+
+   56 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE . RB SEMICOLON
+
+    RB  shift, and go to state 249
+
+
+state 248
+
+   62 SERVICE: MULTIPLE LB . ival RB
+   63        | MULTIPLE LB . str RB
+
+    str   shift, and go to state 250
+    ival  shift, and go to state 251
+
+
+state 249
+
+   56 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 252
+
+
+state 250
+
+   63 SERVICE: MULTIPLE LB str . RB
+
+    RB  shift, and go to state 253
+
+
+state 251
+
+   62 SERVICE: MULTIPLE LB ival . RB
+
+    RB  shift, and go to state 254
+
+
+state 252
+
+   56 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON .
+
+    $default  reduce using rule 56 (TRANSITION)
+
+
+state 253
+
+   63 SERVICE: MULTIPLE LB str RB .
+
+    $default  reduce using rule 63 (SERVICE)
+
+
+state 254
+
+   62 SERVICE: MULTIPLE LB ival RB .
+
+    $default  reduce using rule 62 (SERVICE)
