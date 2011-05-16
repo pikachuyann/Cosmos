@@ -1656,10 +1656,202 @@ void SPN::fire_t30() {
 
 vector<double> SPN::GetDistParameters(int t){
    vector<double> P(1);
-   P[0]= ComputeDistr(Marking,t,gammaprob,Origine_Rate_Sum);
+   double origin_rate = (SPN::GetDistParametersOrigin(t))[0];
+   P[0]= ComputeDistr(Marking,t,gammaprob,origin_rate,Origine_Rate_Sum);
    return P;
 }
  
+vector<double> SPN::GetDistParametersOrigin(int t){
+   switch(t){
+     case 0: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 1: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 2: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 3: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 4: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 5: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 6: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 7: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 8: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 9: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 10: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 11: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 12: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 13: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 14: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 15: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 16: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 17: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 18: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 19: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 20: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 21: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 22: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 23: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 24: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 25: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 26: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 27: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 28: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 29: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 30: {
+       vector<double> P(1);
+       P[0]= ( double ) 0 *  Marking[ 0 ] ;
+       return P;
+       break;
+     }
+   }
+}
+
 double SPN::GetPriority(int t){
    switch(t){
      case 0: {

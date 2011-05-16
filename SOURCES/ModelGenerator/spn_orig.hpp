@@ -99,6 +99,10 @@ public:
     void fire(int); // fire a given transition
     bool IsEnabled(int); // Check if a given transition is enabled
     vector<double> GetDistParameters(int); // compute the the parameters value of a given distribution 
+   //------------ Rare Event ---------------------
+  vector<double> GetDistParametersOrigin(int);
+  //------------ /Rare Event -------------------
+
     double GetWeight(int); // compute the the weight value of a given transition
     double GetPriority(int); // compute the the priority value of a given transition
 

@@ -100,25 +100,26 @@ bool ParseBuild(string filename, SimParam& P) {
     cout << "Parsing OK.\n" << endl;
     cout << "Start building ... " << endl;
     string cmd;
-    cmd = "g++ " + P.Path + "../SOURCES/Cosmos/spn.cpp -c -o " + P.Path + "../Obj/Cosmos/spn.o";
+    string options = "g++ -Wno-deprecated ";
+    cmd = options + P.Path + "../SOURCES/Cosmos/spn.cpp -c -o " + P.Path + "../Obj/Cosmos/spn.o";
 
     if (system(cmd.c_str())) return false;
 
-    cmd = "g++ " + P.Path + "../SOURCES/Cosmos/LHA.cpp -c -o " + P.Path + "../Obj/Cosmos/LHA.o";
+    cmd = options + P.Path + "../SOURCES/Cosmos/LHA.cpp -c -o " + P.Path + "../Obj/Cosmos/LHA.o";
     if (system(cmd.c_str())) return false;
 
 
 
-    cmd = "g++ " + P.Path + "../SOURCES/Cosmos/main.cpp -c -o " + P.Path + "../Obj/Cosmos/main.o";
+    cmd = options + P.Path + "../SOURCES/Cosmos/main.cpp -c -o " + P.Path + "../Obj/Cosmos/main.o";
     if (system(cmd.c_str())) return false;
 
-    cmd = "g++ " + P.Path + "../SOURCES/Cosmos/Simulator.cpp -c -o " + P.Path + "../Obj/Cosmos/Simulator.o";
+    cmd = options + P.Path + "../SOURCES/Cosmos/Simulator.cpp -c -o " + P.Path + "../Obj/Cosmos/Simulator.o";
     if (system(cmd.c_str())) return false;
 
-    cmd = "g++ " + P.Path + "../SOURCES/Cosmos/RareEvent.cpp -c -o " + P.Path + "../Obj/Cosmos/RareEvent.o";
+    cmd = options + P.Path + "../SOURCES/Cosmos/RareEvent.cpp -c -o " + P.Path + "../Obj/Cosmos/RareEvent.o";
     if (system(cmd.c_str())) return false;
 
-    cmd = "g++  " + P.Path + "../Obj/Cosmos/main.o " + P.Path + "../Obj/Cosmos/Event.o " + P.Path + "../Obj/Cosmos/EventsQueue.o ";
+    cmd = options + P.Path + "../Obj/Cosmos/main.o " + P.Path + "../Obj/Cosmos/Event.o " + P.Path + "../Obj/Cosmos/EventsQueue.o ";
     cmd = cmd + P.Path + "../Obj/Cosmos/LHA.o  \\" + P.Path + "../Obj/Cosmos/Simulator.o " + P.Path + "../Obj/Cosmos/StandardNormalDist.o ";
     cmd = cmd + P.Path + "../Obj/Cosmos/ap.o  " + P.Path + "../Obj/Cosmos/RareEvent.o "+ P.Path + "../Obj/Cosmos/tab.o " +  P.Path + "../Obj/Cosmos/spn.o -o " + P.Path + "SimGPP";
     if (system(cmd.c_str())) return false;

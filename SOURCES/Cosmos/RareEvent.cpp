@@ -31,20 +31,7 @@ double mu(TAB &gammaprob, int nthink,int nwait,int nserv){
   return(gammaprob.M[pos]);
 }
 
-double ComputeDistr(vector<int>& Mark , int i , TAB &gammaprob, double tprob2){
-
-  double distrorigin;
-  switch(i % 3){
-    case 0:
-      distrorigin = fork1;
-      break;
-    case 1:
-      distrorigin = fork2;
-      break;
-    case 2:
-      distrorigin = eat;
-      break;
-  };
+double ComputeDistr(vector<int>& Mark , int i , TAB &gammaprob, double distrorigin, double tprob2){
 
   if(!ImportanceSampling){
     return distrorigin;
