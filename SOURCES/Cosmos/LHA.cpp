@@ -151,9 +151,9 @@ void LHA::Load(){
     LocLabel[4]="lf";
     StrLocProperty[0]="true";
     StrLocProperty[1]="true";
-    StrLocProperty[2]=" Marking[ 40 ]  == 0 &&  Marking[ 43 ]  == 0";
+    StrLocProperty[2]=" Marking[ 20 ]  == 0 &&  Marking[ 23 ]  == 0";
     StrLocProperty[3]="true";
-    StrLocProperty[4]=" Marking[ 42 ]  == 10 ||  Marking[ 43 ]  > 0";
+    StrLocProperty[4]=" Marking[ 22 ]  == 5 ||  Marking[ 23 ]  > 0";
     Edge[0].Index=0;
     Edge[0].Source=0;
     Edge[0].Target=1;
@@ -293,16 +293,10 @@ void LHA::Load(){
     Out_A_Edges[4].insert(5);
 
     vector< set <string> > vStrSet(6);
-    vector< set<int> > vSetInt(31);
+    vector< set<int> > vSetInt(16);
     vector < vector < set <int> > > vvSetInt(NbLoc,vSetInt);
     EdgeActions=vStrSet;
     ActionEdges=vvSetInt;
-    EdgeActions[1].insert("Philo10_eat");
-    ActionEdges[1][29].insert(1);
-    EdgeActions[1].insert("Philo10_fork1");
-    ActionEdges[1][27].insert(1);
-    EdgeActions[1].insert("Philo10_fork2");
-    ActionEdges[1][28].insert(1);
     EdgeActions[1].insert("Philo1_eat");
     ActionEdges[1][2].insert(1);
     EdgeActions[1].insert("Philo1_fork1");
@@ -333,32 +327,8 @@ void LHA::Load(){
     ActionEdges[1][12].insert(1);
     EdgeActions[1].insert("Philo5_fork2");
     ActionEdges[1][13].insert(1);
-    EdgeActions[1].insert("Philo6_eat");
-    ActionEdges[1][17].insert(1);
-    EdgeActions[1].insert("Philo6_fork1");
-    ActionEdges[1][15].insert(1);
-    EdgeActions[1].insert("Philo6_fork2");
-    ActionEdges[1][16].insert(1);
-    EdgeActions[1].insert("Philo7_eat");
-    ActionEdges[1][20].insert(1);
-    EdgeActions[1].insert("Philo7_fork1");
-    ActionEdges[1][18].insert(1);
-    EdgeActions[1].insert("Philo7_fork2");
-    ActionEdges[1][19].insert(1);
-    EdgeActions[1].insert("Philo8_eat");
-    ActionEdges[1][23].insert(1);
-    EdgeActions[1].insert("Philo8_fork1");
-    ActionEdges[1][21].insert(1);
-    EdgeActions[1].insert("Philo8_fork2");
-    ActionEdges[1][22].insert(1);
-    EdgeActions[1].insert("Philo9_eat");
-    ActionEdges[1][26].insert(1);
-    EdgeActions[1].insert("Philo9_fork1");
-    ActionEdges[1][24].insert(1);
-    EdgeActions[1].insert("Philo9_fork2");
-    ActionEdges[1][25].insert(1);
     EdgeActions[1].insert("Puittrans");
-    ActionEdges[1][30].insert(1);
+    ActionEdges[1][15].insert(1);
     if(true){
     			vector<double> vL(1,0);
     			LinForm=vL;
@@ -421,13 +391,13 @@ bool LHA::CheckLocation(int loc, vector<int>& Marking){
          return true;
          break;
      case 2:
-         return  Marking[ 40 ]  == 0 &&  Marking[ 43 ]  == 0;
+         return  Marking[ 20 ]  == 0 &&  Marking[ 23 ]  == 0;
          break;
      case 3:
          return true;
          break;
      case 4:
-         return  Marking[ 42 ]  == 10 ||  Marking[ 43 ]  > 0;
+         return  Marking[ 22 ]  == 5 ||  Marking[ 23 ]  > 0;
          break;
     }
 }

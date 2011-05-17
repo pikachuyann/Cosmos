@@ -31,7 +31,7 @@ void Simulator::Load() {
     IndexDist["GEOMETRIC"] = 6;
 
 
-    RandomNumber.seed(time(NULL));
+    RandomNumber.seed((int)time(NULL));
     srand(time(NULL));
 
     BatchSize = 1000;

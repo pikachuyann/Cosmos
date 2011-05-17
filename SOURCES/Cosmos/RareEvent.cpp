@@ -11,7 +11,7 @@
 #include <cmath>
 
 
-const int n = 10;
+const int n = 5;
 const bool ImportanceSampling = true;
 const double fork1 = 1.000000;
 const double fork2 = 100.000000;
