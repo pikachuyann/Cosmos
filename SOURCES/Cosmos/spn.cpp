@@ -956,37 +956,6 @@ void SPN::Load(){
 vector <double> Rate_Table_init (tr);
 Rate_Table = Rate_Table_init;
 Origine_Rate_Table = Rate_Table_init;
-Origine_Rate_Table[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[1]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[2]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[3]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[4]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[5]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[6]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[7]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[8]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[9]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[10]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[11]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[12]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[13]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[14]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[15]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[16]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[17]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[18]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[19]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[20]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[21]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[22]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[23]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[24]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[25]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[26]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[27]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[28]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[29]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
-Origine_Rate_Table[30]= ( double ) 0 *  Marking[ 0 ] ;
 }
 
 bool SPN::IsEnabled(int t){
@@ -1655,9 +1624,10 @@ void SPN::fire_t30() {
 }
 
 vector<double> SPN::GetDistParameters(int t){
-   vector<double> P(1);
+   vector<double> P(2);
    double origin_rate = (SPN::GetDistParametersOrigin(t))[0];
    P[0]= ComputeDistr(Marking,t,gammaprob,origin_rate,Origine_Rate_Sum);
+   P[1]= origin_rate;
    return P;
 }
  

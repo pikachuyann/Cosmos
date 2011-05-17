@@ -43,31 +43,28 @@ double ComputeDistr(vector<int>& Mark , int i , TAB &gammaprob, double distrorig
   int nserv  = Mark[4*n+2];
   
   
-  /*if(tgamma ==0){
-    cout << "tgamma=0" << "mu:" << gammaprob.M[nthink][nwait][nserv] << endl;
-    cout << "nthink:"<< nthink << "nwait:" << nwait << "nserv" << nserv << endl; 
-    };*/
-  
-
-  //cout << "tprob: " << tprob << "\ttgamma: " << tgamma << endl;
-  //cout << "gamma:     nthink:\t" << nthink << " nwait:\t" << nwait << "nserv:\t" << nserv << "gamma:\t" << gammaprob.M[nthink][nwait][nserv] << endl;
-  
   double distr;
   double mux = mu(gammaprob,nthink , nwait ,nserv);
   
-   double tprob = 0.0;
-    
-   for(int j=0;j<=n-1;j++){
-     tprob += ( fork1 * Mark[4*j]*Mark[4*j+3]
-		+ fork2 * Mark[4*j+1]*Mark[4*((j+n-1)%n)+3]
-		+ eat * Mark[4*j+2]);
-   }
+  
    
+ 
 
   //cout << "i: " << i << endl;
   if(i==3*n){
 
+    double tprob = 0.0;
     double tgamma = 0.0;
+
+    for(int j=0;j<=n-1;j++){
+      tprob += ( fork1  * Mark[4*j]*Mark[4*j+3]
+		 +fork2 * Mark[4*j+1]*Mark[4*((j+n-1)%n)+3]
+		 + eat  * Mark[4*j+2]);
+    };
+
+    /*if(tprob != tprob2 && mux >0){
+      cout << "tprob :" << tprob << " tprob2 :" << tprob2 << endl;
+      };*/
 
     for(int j=0;j<=n-1;j++){
       
@@ -88,7 +85,7 @@ double ComputeDistr(vector<int>& Mark , int i , TAB &gammaprob, double distrorig
     //cout << "rapport sum / mu: " << (tgamma / gammaprob.M[nthink][nwait  ][nserv])<< endl;
     if( mux >= tgamma){
       //cout << " mu >= sum: rate: " << (gammaprob.M[nthink][nwait  ][nserv] - tgamma) /  gammaprob.M[nthink  ][nwait  ][nserv] << endl;
-      return( (mux - tgamma) / mux  );
+      return( tprob * (mux - tgamma) / mux  );
     }else{ 
       return 0.0 ;};
   };
@@ -105,19 +102,19 @@ double ComputeDistr(vector<int>& Mark , int i , TAB &gammaprob, double distrorig
 	 //cout << "transition 0" ;
 	 //cout << "gammanext: nthink:\t " << nthink-1 << " nwait:\t" << nwait+1 << "nserv:\t" << nserv << "gamma:\t" << gammaprob.M[nthink-1][nwait+1][nserv] << endl;
 	 //distr = (fork1 /tprob) *( mu(gammaprob,nthink -1, nwait+1 ,nserv) / mux);
-	 distr = (fork1/tprob) *( mu(gammaprob,nthink -1, nwait+1 ,nserv) / mux);
+	 distr = (fork1) *( mu(gammaprob,nthink -1, nwait+1 ,nserv) / mux);
 	 break;
        case 1:
 	 //cout << "transition 1" ;
 	 //cout << "gammanext: nthink:\t" << nthink << " nwait:\t" << nwait-1 << "nserv:\t" << nserv << "gamma:\t" << gammaprob.M[nthink][nwait-1][nserv] << endl;
 	 //distr = (fork2 / tprob) *( mu(gammaprob,nthink , nwait-1 ,nserv) / mux);
-	 distr = (fork2/tprob) *( mu(gammaprob,nthink , nwait-1 ,nserv) / mux);
+	 distr = (fork2) *( mu(gammaprob,nthink , nwait-1 ,nserv) / mux);
 	 break;
        case 2:
 	 //cout << "transition 2";
 	 //cout << "gammanext: nthink:\t" << nthink+1 << " nwait:\t" << nwait << "nserv:\t" << nserv +1 << "gamma:\t" << gammaprob.M[nthink+1][nwait][nserv+1] << endl;
 	 //distr = (eat / tprob) *(  mu(gammaprob,nthink+1 , nwait ,nserv+1) / mux );;
-	 distr = (eat/tprob) *(  mu(gammaprob,nthink+1 , nwait ,nserv+1) / mux );
+	 distr = (eat) *(  mu(gammaprob,nthink+1 , nwait ,nserv+1) / mux );
 	 break;
      };   
      

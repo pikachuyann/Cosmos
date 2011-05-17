@@ -239,9 +239,9 @@ void Gspn_Reader::WriteFile(string& Pref) {
     SpnCppFile << "vector <double> Rate_Table_init (tr);" << endl;
     SpnCppFile << "Rate_Table = Rate_Table_init;" << endl;
     SpnCppFile << "Origine_Rate_Table = Rate_Table_init;" << endl;
-    for(int i =0;i<MyGspn.tr;i++){
+    /*for(int i =0;i<MyGspn.tr;i++){
       SpnCppFile << "Origine_Rate_Table["<<i<<"]= ( double ) " <<  MyGspn.Dist[i].Param[0] << ";" << endl;
-    };
+      };*/
     
     //------------- /Rare Event ----------------- 
 
@@ -335,9 +335,11 @@ void Gspn_Reader::WriteFile(string& Pref) {
     
     //-------------- Rare Event -------------------------
     SpnCppFile << "vector<double> SPN::GetDistParameters(int t){"<< endl;
-    SpnCppFile << "   vector<double> P(1);" << endl;
+    SpnCppFile << "   vector<double> P(2);" << endl;
     SpnCppFile << "   double origin_rate = (SPN::GetDistParametersOrigin(t))[0];"<< endl;
     SpnCppFile << "   P[0]= ComputeDistr(Marking,t,gammaprob,origin_rate,Origine_Rate_Sum);" << endl;
+    SpnCppFile << "   P[1]= origin_rate;" << endl;
+
     SpnCppFile << "   return P;" << endl;
     SpnCppFile << "}\n " << endl;
     
