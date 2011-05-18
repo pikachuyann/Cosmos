@@ -51,7 +51,8 @@ public:
     void ViewParameters();
 
 
-    void GenerateEvent(Event &, int);
+  void GenerateEvent(Event &, int);
+  void GenerateDummyEvent(Event &, int);
     double GenerateTime(string&, vector<double>&);
 
     double max(double, double);

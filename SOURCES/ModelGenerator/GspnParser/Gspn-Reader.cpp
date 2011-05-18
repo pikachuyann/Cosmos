@@ -337,7 +337,7 @@ void Gspn_Reader::WriteFile(string& Pref) {
     SpnCppFile << "vector<double> SPN::GetDistParameters(int t){"<< endl;
     SpnCppFile << "   vector<double> P(2);" << endl;
     SpnCppFile << "   double origin_rate = (SPN::GetDistParametersOrigin(t))[0];"<< endl;
-    SpnCppFile << "   P[0]= ComputeDistr(Marking,t,gammaprob,origin_rate,Origine_Rate_Sum);" << endl;
+    SpnCppFile << "   P[0]= ComputeDistr(Marking,t,gammaprob,origin_rate,Origine_Rate_Sum,Rate_Sum,tr-1);" << endl;
     SpnCppFile << "   P[1]= origin_rate;" << endl;
 
     SpnCppFile << "   return P;" << endl;

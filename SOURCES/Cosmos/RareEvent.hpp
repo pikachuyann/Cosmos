@@ -8,6 +8,6 @@
 #include <stdlib.h>
 #include "tab.hpp"
 
-double ComputeDistr(  vector<int>& , int i , TAB &gammaprob, double distrorigin, double tprob);
+double ComputeDistr(  vector<int>& , int i , TAB &gammaprob, double distrorigin, double tprob,double tgamma,int puit);
 
   

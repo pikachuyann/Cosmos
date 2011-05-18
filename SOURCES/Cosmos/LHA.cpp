@@ -151,9 +151,9 @@ void LHA::Load(){
     LocLabel[4]="lf";
     StrLocProperty[0]="true";
     StrLocProperty[1]="true";
-    StrLocProperty[2]=" Marking[ 60 ]  == 0 &&  Marking[ 63 ]  == 0";
+    StrLocProperty[2]=" Marking[ 72 ]  == 0 &&  Marking[ 75 ]  == 0";
     StrLocProperty[3]="true";
-    StrLocProperty[4]=" Marking[ 62 ]  == 15 ||  Marking[ 63 ]  > 0";
+    StrLocProperty[4]=" Marking[ 74 ]  == 18 ||  Marking[ 75 ]  > 0";
     Edge[0].Index=0;
     Edge[0].Source=0;
     Edge[0].Target=1;
@@ -293,7 +293,7 @@ void LHA::Load(){
     Out_A_Edges[4].insert(5);
 
     vector< set <string> > vStrSet(6);
-    vector< set<int> > vSetInt(46);
+    vector< set<int> > vSetInt(55);
     vector < vector < set <int> > > vvSetInt(NbLoc,vSetInt);
     EdgeActions=vStrSet;
     ActionEdges=vvSetInt;
@@ -333,6 +333,24 @@ void LHA::Load(){
     ActionEdges[1][42].insert(1);
     EdgeActions[1].insert("Philo15_fork2");
     ActionEdges[1][43].insert(1);
+    EdgeActions[1].insert("Philo16_eat");
+    ActionEdges[1][47].insert(1);
+    EdgeActions[1].insert("Philo16_fork1");
+    ActionEdges[1][45].insert(1);
+    EdgeActions[1].insert("Philo16_fork2");
+    ActionEdges[1][46].insert(1);
+    EdgeActions[1].insert("Philo17_eat");
+    ActionEdges[1][50].insert(1);
+    EdgeActions[1].insert("Philo17_fork1");
+    ActionEdges[1][48].insert(1);
+    EdgeActions[1].insert("Philo17_fork2");
+    ActionEdges[1][49].insert(1);
+    EdgeActions[1].insert("Philo18_eat");
+    ActionEdges[1][53].insert(1);
+    EdgeActions[1].insert("Philo18_fork1");
+    ActionEdges[1][51].insert(1);
+    EdgeActions[1].insert("Philo18_fork2");
+    ActionEdges[1][52].insert(1);
     EdgeActions[1].insert("Philo1_eat");
     ActionEdges[1][2].insert(1);
     EdgeActions[1].insert("Philo1_fork1");
@@ -388,7 +406,7 @@ void LHA::Load(){
     EdgeActions[1].insert("Philo9_fork2");
     ActionEdges[1][25].insert(1);
     EdgeActions[1].insert("Puittrans");
-    ActionEdges[1][45].insert(1);
+    ActionEdges[1][54].insert(1);
     if(true){
     			vector<double> vL(1,0);
     			LinForm=vL;
@@ -451,13 +469,13 @@ bool LHA::CheckLocation(int loc, vector<int>& Marking){
          return true;
          break;
      case 2:
-         return  Marking[ 60 ]  == 0 &&  Marking[ 63 ]  == 0;
+         return  Marking[ 72 ]  == 0 &&  Marking[ 75 ]  == 0;
          break;
      case 3:
          return true;
          break;
      case 4:
-         return  Marking[ 62 ]  == 15 ||  Marking[ 63 ]  > 0;
+         return  Marking[ 74 ]  == 18 ||  Marking[ 75 ]  > 0;
          break;
     }
 }

@@ -203,6 +203,24 @@ public:
     bool IsEnabled_t44();
     void fire_t45();
     bool IsEnabled_t45();
+    void fire_t46();
+    bool IsEnabled_t46();
+    void fire_t47();
+    bool IsEnabled_t47();
+    void fire_t48();
+    bool IsEnabled_t48();
+    void fire_t49();
+    bool IsEnabled_t49();
+    void fire_t50();
+    bool IsEnabled_t50();
+    void fire_t51();
+    bool IsEnabled_t51();
+    void fire_t52();
+    bool IsEnabled_t52();
+    void fire_t53();
+    bool IsEnabled_t53();
+    void fire_t54();
+    bool IsEnabled_t54();
 private:
 };
 #endif	/* _SPN_HPP */

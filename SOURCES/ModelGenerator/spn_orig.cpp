@@ -124,8 +124,8 @@ void SPN::EnabledDisabledTr() {
                 }
             }
 	//-------------- Rare Event -----------------
-	//  (*PossiblyEnabled)[t1] = V;    Ligne original
-	(*PossiblyEnabled)[t1]=AllEnabled;
+	(*PossiblyEnabled)[t1] = V;    //Ligne original
+	//(*PossiblyEnabled)[t1]=AllEnabled;
 	//------------- /Rare Event -----------------
     }
 

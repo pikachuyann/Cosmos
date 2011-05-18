@@ -124,8 +124,8 @@ void SPN::EnabledDisabledTr() {
                 }
             }
 	//-------------- Rare Event -----------------
-	//  (*PossiblyEnabled)[t1] = V;    Ligne original
-	(*PossiblyEnabled)[t1]=AllEnabled;
+	(*PossiblyEnabled)[t1] = V;    //Ligne original
+	//(*PossiblyEnabled)[t1]=AllEnabled;
 	//------------- /Rare Event -----------------
     }
 
@@ -158,8 +158,8 @@ double SPN::max(double x1, double x2) {
 void SPN::Load(){
     Path ="../philosophe";
     gammaprob.load();
-    pl =64;
-    tr =46;
+    pl =76;
+    tr =55;
     IntVector Null_Pl_Vector(pl, 0);
     IntMatrix Null_PlxTr_Matrix(tr, Null_Pl_Vector);
     inArcs = Null_PlxTr_Matrix;
@@ -168,321 +168,393 @@ void SPN::Load(){
     Marking = Null_Pl_Vector;;
     inArcs[0][0]=1;
     inArcs[0][3]=1;
-    inArcs[0][60]=1;
+    inArcs[0][72]=1;
 
     inArcs[1][1]=1;
-    inArcs[1][59]=1;
-    inArcs[1][61]=1;
+    inArcs[1][71]=1;
+    inArcs[1][73]=1;
 
     inArcs[2][2]=1;
 
     inArcs[3][4]=1;
     inArcs[3][7]=1;
-    inArcs[3][60]=1;
+    inArcs[3][72]=1;
 
     inArcs[4][3]=1;
     inArcs[4][5]=1;
-    inArcs[4][61]=1;
+    inArcs[4][73]=1;
 
     inArcs[5][6]=1;
 
     inArcs[6][8]=1;
     inArcs[6][11]=1;
-    inArcs[6][60]=1;
+    inArcs[6][72]=1;
 
     inArcs[7][7]=1;
     inArcs[7][9]=1;
-    inArcs[7][61]=1;
+    inArcs[7][73]=1;
 
     inArcs[8][10]=1;
 
     inArcs[9][12]=1;
     inArcs[9][15]=1;
-    inArcs[9][60]=1;
+    inArcs[9][72]=1;
 
     inArcs[10][11]=1;
     inArcs[10][13]=1;
-    inArcs[10][61]=1;
+    inArcs[10][73]=1;
 
     inArcs[11][14]=1;
 
     inArcs[12][16]=1;
     inArcs[12][19]=1;
-    inArcs[12][60]=1;
+    inArcs[12][72]=1;
 
     inArcs[13][15]=1;
     inArcs[13][17]=1;
-    inArcs[13][61]=1;
+    inArcs[13][73]=1;
 
     inArcs[14][18]=1;
 
     inArcs[15][20]=1;
     inArcs[15][23]=1;
-    inArcs[15][60]=1;
+    inArcs[15][72]=1;
 
     inArcs[16][19]=1;
     inArcs[16][21]=1;
-    inArcs[16][61]=1;
+    inArcs[16][73]=1;
 
     inArcs[17][22]=1;
 
     inArcs[18][24]=1;
     inArcs[18][27]=1;
-    inArcs[18][60]=1;
+    inArcs[18][72]=1;
 
     inArcs[19][23]=1;
     inArcs[19][25]=1;
-    inArcs[19][61]=1;
+    inArcs[19][73]=1;
 
     inArcs[20][26]=1;
 
     inArcs[21][28]=1;
     inArcs[21][31]=1;
-    inArcs[21][60]=1;
+    inArcs[21][72]=1;
 
     inArcs[22][27]=1;
     inArcs[22][29]=1;
-    inArcs[22][61]=1;
+    inArcs[22][73]=1;
 
     inArcs[23][30]=1;
 
     inArcs[24][32]=1;
     inArcs[24][35]=1;
-    inArcs[24][60]=1;
+    inArcs[24][72]=1;
 
     inArcs[25][31]=1;
     inArcs[25][33]=1;
-    inArcs[25][61]=1;
+    inArcs[25][73]=1;
 
     inArcs[26][34]=1;
 
     inArcs[27][36]=1;
     inArcs[27][39]=1;
-    inArcs[27][60]=1;
+    inArcs[27][72]=1;
 
     inArcs[28][35]=1;
     inArcs[28][37]=1;
-    inArcs[28][61]=1;
+    inArcs[28][73]=1;
 
     inArcs[29][38]=1;
 
     inArcs[30][40]=1;
     inArcs[30][43]=1;
-    inArcs[30][60]=1;
+    inArcs[30][72]=1;
 
     inArcs[31][39]=1;
     inArcs[31][41]=1;
-    inArcs[31][61]=1;
+    inArcs[31][73]=1;
 
     inArcs[32][42]=1;
 
     inArcs[33][44]=1;
     inArcs[33][47]=1;
-    inArcs[33][60]=1;
+    inArcs[33][72]=1;
 
     inArcs[34][43]=1;
     inArcs[34][45]=1;
-    inArcs[34][61]=1;
+    inArcs[34][73]=1;
 
     inArcs[35][46]=1;
 
     inArcs[36][48]=1;
     inArcs[36][51]=1;
-    inArcs[36][60]=1;
+    inArcs[36][72]=1;
 
     inArcs[37][47]=1;
     inArcs[37][49]=1;
-    inArcs[37][61]=1;
+    inArcs[37][73]=1;
 
     inArcs[38][50]=1;
 
     inArcs[39][52]=1;
     inArcs[39][55]=1;
-    inArcs[39][60]=1;
+    inArcs[39][72]=1;
 
     inArcs[40][51]=1;
     inArcs[40][53]=1;
-    inArcs[40][61]=1;
+    inArcs[40][73]=1;
 
     inArcs[41][54]=1;
 
     inArcs[42][56]=1;
     inArcs[42][59]=1;
-    inArcs[42][60]=1;
+    inArcs[42][72]=1;
 
     inArcs[43][55]=1;
     inArcs[43][57]=1;
-    inArcs[43][61]=1;
+    inArcs[43][73]=1;
 
     inArcs[44][58]=1;
 
+    inArcs[45][60]=1;
+    inArcs[45][63]=1;
+    inArcs[45][72]=1;
+
+    inArcs[46][59]=1;
+    inArcs[46][61]=1;
+    inArcs[46][73]=1;
+
+    inArcs[47][62]=1;
+
+    inArcs[48][64]=1;
+    inArcs[48][67]=1;
+    inArcs[48][72]=1;
+
+    inArcs[49][63]=1;
+    inArcs[49][65]=1;
+    inArcs[49][73]=1;
+
+    inArcs[50][66]=1;
+
+    inArcs[51][68]=1;
+    inArcs[51][71]=1;
+    inArcs[51][72]=1;
+
+    inArcs[52][67]=1;
+    inArcs[52][69]=1;
+    inArcs[52][73]=1;
+
+    inArcs[53][70]=1;
+
 
     outArcs[0][1]=1;
-    outArcs[0][61]=1;
+    outArcs[0][73]=1;
 
     outArcs[1][2]=1;
 
     outArcs[2][0]=1;
     outArcs[2][3]=1;
-    outArcs[2][59]=1;
-    outArcs[2][60]=1;
-    outArcs[2][62]=1;
+    outArcs[2][71]=1;
+    outArcs[2][72]=1;
+    outArcs[2][74]=1;
 
     outArcs[3][5]=1;
-    outArcs[3][61]=1;
+    outArcs[3][73]=1;
 
     outArcs[4][6]=1;
 
     outArcs[5][3]=1;
     outArcs[5][4]=1;
     outArcs[5][7]=1;
-    outArcs[5][60]=1;
-    outArcs[5][62]=1;
+    outArcs[5][72]=1;
+    outArcs[5][74]=1;
 
     outArcs[6][9]=1;
-    outArcs[6][61]=1;
+    outArcs[6][73]=1;
 
     outArcs[7][10]=1;
 
     outArcs[8][7]=1;
     outArcs[8][8]=1;
     outArcs[8][11]=1;
-    outArcs[8][60]=1;
-    outArcs[8][62]=1;
+    outArcs[8][72]=1;
+    outArcs[8][74]=1;
 
     outArcs[9][13]=1;
-    outArcs[9][61]=1;
+    outArcs[9][73]=1;
 
     outArcs[10][14]=1;
 
     outArcs[11][11]=1;
     outArcs[11][12]=1;
     outArcs[11][15]=1;
-    outArcs[11][60]=1;
-    outArcs[11][62]=1;
+    outArcs[11][72]=1;
+    outArcs[11][74]=1;
 
     outArcs[12][17]=1;
-    outArcs[12][61]=1;
+    outArcs[12][73]=1;
 
     outArcs[13][18]=1;
 
     outArcs[14][15]=1;
     outArcs[14][16]=1;
     outArcs[14][19]=1;
-    outArcs[14][60]=1;
-    outArcs[14][62]=1;
+    outArcs[14][72]=1;
+    outArcs[14][74]=1;
 
     outArcs[15][21]=1;
-    outArcs[15][61]=1;
+    outArcs[15][73]=1;
 
     outArcs[16][22]=1;
 
     outArcs[17][19]=1;
     outArcs[17][20]=1;
     outArcs[17][23]=1;
-    outArcs[17][60]=1;
-    outArcs[17][62]=1;
+    outArcs[17][72]=1;
+    outArcs[17][74]=1;
 
     outArcs[18][25]=1;
-    outArcs[18][61]=1;
+    outArcs[18][73]=1;
 
     outArcs[19][26]=1;
 
     outArcs[20][23]=1;
     outArcs[20][24]=1;
     outArcs[20][27]=1;
-    outArcs[20][60]=1;
-    outArcs[20][62]=1;
+    outArcs[20][72]=1;
+    outArcs[20][74]=1;
 
     outArcs[21][29]=1;
-    outArcs[21][61]=1;
+    outArcs[21][73]=1;
 
     outArcs[22][30]=1;
 
     outArcs[23][27]=1;
     outArcs[23][28]=1;
     outArcs[23][31]=1;
-    outArcs[23][60]=1;
-    outArcs[23][62]=1;
+    outArcs[23][72]=1;
+    outArcs[23][74]=1;
 
     outArcs[24][33]=1;
-    outArcs[24][61]=1;
+    outArcs[24][73]=1;
 
     outArcs[25][34]=1;
 
     outArcs[26][31]=1;
     outArcs[26][32]=1;
     outArcs[26][35]=1;
-    outArcs[26][60]=1;
-    outArcs[26][62]=1;
+    outArcs[26][72]=1;
+    outArcs[26][74]=1;
 
     outArcs[27][37]=1;
-    outArcs[27][61]=1;
+    outArcs[27][73]=1;
 
     outArcs[28][38]=1;
 
     outArcs[29][35]=1;
     outArcs[29][36]=1;
     outArcs[29][39]=1;
-    outArcs[29][60]=1;
-    outArcs[29][62]=1;
+    outArcs[29][72]=1;
+    outArcs[29][74]=1;
 
     outArcs[30][41]=1;
-    outArcs[30][61]=1;
+    outArcs[30][73]=1;
 
     outArcs[31][42]=1;
 
     outArcs[32][39]=1;
     outArcs[32][40]=1;
     outArcs[32][43]=1;
-    outArcs[32][60]=1;
-    outArcs[32][62]=1;
+    outArcs[32][72]=1;
+    outArcs[32][74]=1;
 
     outArcs[33][45]=1;
-    outArcs[33][61]=1;
+    outArcs[33][73]=1;
 
     outArcs[34][46]=1;
 
     outArcs[35][43]=1;
     outArcs[35][44]=1;
     outArcs[35][47]=1;
-    outArcs[35][60]=1;
-    outArcs[35][62]=1;
+    outArcs[35][72]=1;
+    outArcs[35][74]=1;
 
     outArcs[36][49]=1;
-    outArcs[36][61]=1;
+    outArcs[36][73]=1;
 
     outArcs[37][50]=1;
 
     outArcs[38][47]=1;
     outArcs[38][48]=1;
     outArcs[38][51]=1;
-    outArcs[38][60]=1;
-    outArcs[38][62]=1;
+    outArcs[38][72]=1;
+    outArcs[38][74]=1;
 
     outArcs[39][53]=1;
-    outArcs[39][61]=1;
+    outArcs[39][73]=1;
 
     outArcs[40][54]=1;
 
     outArcs[41][51]=1;
     outArcs[41][52]=1;
     outArcs[41][55]=1;
-    outArcs[41][60]=1;
-    outArcs[41][62]=1;
+    outArcs[41][72]=1;
+    outArcs[41][74]=1;
 
     outArcs[42][57]=1;
-    outArcs[42][61]=1;
+    outArcs[42][73]=1;
 
     outArcs[43][58]=1;
 
     outArcs[44][55]=1;
     outArcs[44][56]=1;
     outArcs[44][59]=1;
-    outArcs[44][60]=1;
-    outArcs[44][62]=1;
+    outArcs[44][72]=1;
+    outArcs[44][74]=1;
 
-    outArcs[45][63]=1;
+    outArcs[45][61]=1;
+    outArcs[45][73]=1;
+
+    outArcs[46][62]=1;
+
+    outArcs[47][59]=1;
+    outArcs[47][60]=1;
+    outArcs[47][63]=1;
+    outArcs[47][72]=1;
+    outArcs[47][74]=1;
+
+    outArcs[48][65]=1;
+    outArcs[48][73]=1;
+
+    outArcs[49][66]=1;
+
+    outArcs[50][63]=1;
+    outArcs[50][64]=1;
+    outArcs[50][67]=1;
+    outArcs[50][72]=1;
+    outArcs[50][74]=1;
+
+    outArcs[51][69]=1;
+    outArcs[51][73]=1;
+
+    outArcs[52][70]=1;
+
+    outArcs[53][67]=1;
+    outArcs[53][68]=1;
+    outArcs[53][71]=1;
+    outArcs[53][72]=1;
+    outArcs[53][74]=1;
+
+    outArcs[54][75]=1;
+
+
+
+
+
+
+
+
+
 
 
 
@@ -560,13 +632,19 @@ void SPN::Load(){
     Marking[55]=1;
     Marking[56]=1;
     Marking[59]=1;
-    Marking[60]=15;
+    Marking[60]=1;
+    Marking[63]=1;
+    Marking[64]=1;
+    Marking[67]=1;
+    Marking[68]=1;
+    Marking[71]=1;
+    Marking[72]=18;
 
    initMarking = Marking;
 
-    vector <spn_trans> t(46);
+    vector <spn_trans> t(55);
     Transition = t;
-    vector <spn_place> p(64);
+    vector <spn_place> p(76);
     Place = p;
     Place[3].Id =3;
     Place[3].label =" Fork1";
@@ -589,6 +667,15 @@ void SPN::Load(){
     Place[59].Id =59;
     Place[59].label =" Fork15";
     PlaceIndex[" Fork15"] =59;
+    Place[63].Id =63;
+    Place[63].label =" Fork16";
+    PlaceIndex[" Fork16"] =63;
+    Place[67].Id =67;
+    Place[67].label =" Fork17";
+    PlaceIndex[" Fork17"] =67;
+    Place[71].Id =71;
+    Place[71].label =" Fork18";
+    PlaceIndex[" Fork18"] =71;
     Place[7].Id =7;
     Place[7].label =" Fork2";
     PlaceIndex[" Fork2"] =7;
@@ -667,6 +754,33 @@ void SPN::Load(){
     Place[57].Id =57;
     Place[57].label =" Philo15_fork";
     PlaceIndex[" Philo15_fork"] =57;
+    Place[60].Id =60;
+    Place[60].label =" Philo16_Think";
+    PlaceIndex[" Philo16_Think"] =60;
+    Place[62].Id =62;
+    Place[62].label =" Philo16_eat";
+    PlaceIndex[" Philo16_eat"] =62;
+    Place[61].Id =61;
+    Place[61].label =" Philo16_fork";
+    PlaceIndex[" Philo16_fork"] =61;
+    Place[64].Id =64;
+    Place[64].label =" Philo17_Think";
+    PlaceIndex[" Philo17_Think"] =64;
+    Place[66].Id =66;
+    Place[66].label =" Philo17_eat";
+    PlaceIndex[" Philo17_eat"] =66;
+    Place[65].Id =65;
+    Place[65].label =" Philo17_fork";
+    PlaceIndex[" Philo17_fork"] =65;
+    Place[68].Id =68;
+    Place[68].label =" Philo18_Think";
+    PlaceIndex[" Philo18_Think"] =68;
+    Place[70].Id =70;
+    Place[70].label =" Philo18_eat";
+    PlaceIndex[" Philo18_eat"] =70;
+    Place[69].Id =69;
+    Place[69].label =" Philo18_fork";
+    PlaceIndex[" Philo18_fork"] =69;
     Place[0].Id =0;
     Place[0].label =" Philo1_Think";
     PlaceIndex[" Philo1_Think"] =0;
@@ -748,18 +862,18 @@ void SPN::Load(){
     Place[33].Id =33;
     Place[33].label =" Philo9_fork";
     PlaceIndex[" Philo9_fork"] =33;
-    Place[63].Id =63;
-    Place[63].label =" Puit";
-    PlaceIndex[" Puit"] =63;
-    Place[62].Id =62;
-    Place[62].label =" nServ";
-    PlaceIndex[" nServ"] =62;
-    Place[60].Id =60;
-    Place[60].label =" nThink";
-    PlaceIndex[" nThink"] =60;
-    Place[61].Id =61;
-    Place[61].label =" nWait";
-    PlaceIndex[" nWait"] =61;
+    Place[75].Id =75;
+    Place[75].label =" Puit";
+    PlaceIndex[" Puit"] =75;
+    Place[74].Id =74;
+    Place[74].label =" nServ";
+    PlaceIndex[" nServ"] =74;
+    Place[72].Id =72;
+    Place[72].label =" nThink";
+    PlaceIndex[" nThink"] =72;
+    Place[73].Id =73;
+    Place[73].label =" nWait";
+    PlaceIndex[" nWait"] =73;
     Transition[29].Id =29;
     Transition[29].label ="Philo10_eat";
     TransitionIndex["Philo10_eat"]=29;
@@ -814,6 +928,33 @@ void SPN::Load(){
     Transition[43].Id =43;
     Transition[43].label ="Philo15_fork2";
     TransitionIndex["Philo15_fork2"]=43;
+    Transition[47].Id =47;
+    Transition[47].label ="Philo16_eat";
+    TransitionIndex["Philo16_eat"]=47;
+    Transition[45].Id =45;
+    Transition[45].label ="Philo16_fork1";
+    TransitionIndex["Philo16_fork1"]=45;
+    Transition[46].Id =46;
+    Transition[46].label ="Philo16_fork2";
+    TransitionIndex["Philo16_fork2"]=46;
+    Transition[50].Id =50;
+    Transition[50].label ="Philo17_eat";
+    TransitionIndex["Philo17_eat"]=50;
+    Transition[48].Id =48;
+    Transition[48].label ="Philo17_fork1";
+    TransitionIndex["Philo17_fork1"]=48;
+    Transition[49].Id =49;
+    Transition[49].label ="Philo17_fork2";
+    TransitionIndex["Philo17_fork2"]=49;
+    Transition[53].Id =53;
+    Transition[53].label ="Philo18_eat";
+    TransitionIndex["Philo18_eat"]=53;
+    Transition[51].Id =51;
+    Transition[51].label ="Philo18_fork1";
+    TransitionIndex["Philo18_fork1"]=51;
+    Transition[52].Id =52;
+    Transition[52].label ="Philo18_fork2";
+    TransitionIndex["Philo18_fork2"]=52;
     Transition[2].Id =2;
     Transition[2].label ="Philo1_eat";
     TransitionIndex["Philo1_eat"]=2;
@@ -895,9 +1036,9 @@ void SPN::Load(){
     Transition[25].Id =25;
     Transition[25].label ="Philo9_fork2";
     TransitionIndex["Philo9_fork2"]=25;
-    Transition[45].Id =45;
-    Transition[45].label ="Puittrans";
-    TransitionIndex["Puittrans"]=45;
+    Transition[54].Id =54;
+    Transition[54].label ="Puittrans";
+    TransitionIndex["Puittrans"]=54;
     Transition[0].transType = Timed;
     Transition[0].DistType = "EXPONENTIAL";
     Transition[0].DistParams.push_back(" 1 * ( 1 + 0 *  Marking[ 0 ]  )" );
@@ -1215,118 +1356,202 @@ void SPN::Load(){
 
     Transition[45].transType = Timed;
     Transition[45].DistType = "EXPONENTIAL";
-    Transition[45].DistParams.push_back(" 0 *  Marking[ 0 ] " );
+    Transition[45].DistParams.push_back(" 1 * ( 1 + 0 *  Marking[ 0 ]  )" );
     Transition[45].priority = "1";
     Transition[45].MarkingDependent = 1;
     Transition[45].weight = "1 ";
 
-    vector < vector <int> > vec(46);
+    Transition[46].transType = Timed;
+    Transition[46].DistType = "EXPONENTIAL";
+    Transition[46].DistParams.push_back(" 100 * ( 1 + 0 *  Marking[ 0 ]  )" );
+    Transition[46].priority = "1";
+    Transition[46].MarkingDependent = 1;
+    Transition[46].weight = "1 ";
+
+    Transition[47].transType = Timed;
+    Transition[47].DistType = "EXPONENTIAL";
+    Transition[47].DistParams.push_back(" 10 * ( 1 + 0 *  Marking[ 0 ]  )" );
+    Transition[47].priority = "1";
+    Transition[47].MarkingDependent = 1;
+    Transition[47].weight = "1 ";
+
+    Transition[48].transType = Timed;
+    Transition[48].DistType = "EXPONENTIAL";
+    Transition[48].DistParams.push_back(" 1 * ( 1 + 0 *  Marking[ 0 ]  )" );
+    Transition[48].priority = "1";
+    Transition[48].MarkingDependent = 1;
+    Transition[48].weight = "1 ";
+
+    Transition[49].transType = Timed;
+    Transition[49].DistType = "EXPONENTIAL";
+    Transition[49].DistParams.push_back(" 100 * ( 1 + 0 *  Marking[ 0 ]  )" );
+    Transition[49].priority = "1";
+    Transition[49].MarkingDependent = 1;
+    Transition[49].weight = "1 ";
+
+    Transition[50].transType = Timed;
+    Transition[50].DistType = "EXPONENTIAL";
+    Transition[50].DistParams.push_back(" 10 * ( 1 + 0 *  Marking[ 0 ]  )" );
+    Transition[50].priority = "1";
+    Transition[50].MarkingDependent = 1;
+    Transition[50].weight = "1 ";
+
+    Transition[51].transType = Timed;
+    Transition[51].DistType = "EXPONENTIAL";
+    Transition[51].DistParams.push_back(" 1 * ( 1 + 0 *  Marking[ 0 ]  )" );
+    Transition[51].priority = "1";
+    Transition[51].MarkingDependent = 1;
+    Transition[51].weight = "1 ";
+
+    Transition[52].transType = Timed;
+    Transition[52].DistType = "EXPONENTIAL";
+    Transition[52].DistParams.push_back(" 100 * ( 1 + 0 *  Marking[ 0 ]  )" );
+    Transition[52].priority = "1";
+    Transition[52].MarkingDependent = 1;
+    Transition[52].weight = "1 ";
+
+    Transition[53].transType = Timed;
+    Transition[53].DistType = "EXPONENTIAL";
+    Transition[53].DistParams.push_back(" 10 * ( 1 + 0 *  Marking[ 0 ]  )" );
+    Transition[53].priority = "1";
+    Transition[53].MarkingDependent = 1;
+    Transition[53].weight = "1 ";
+
+    Transition[54].transType = Timed;
+    Transition[54].DistType = "EXPONENTIAL";
+    Transition[54].DistParams.push_back(" 0 *  Marking[ 0 ] " );
+    Transition[54].priority = "1";
+    Transition[54].MarkingDependent = 1;
+    Transition[54].weight = "1 ";
+
+    vector < vector <int> > vec(55);
     PredT = vec;
     PredT[0].push_back(0);
     PredT[0].push_back(3);
-    PredT[0].push_back(60);
+    PredT[0].push_back(72);
     PredT[1].push_back(1);
-    PredT[1].push_back(59);
-    PredT[1].push_back(61);
+    PredT[1].push_back(71);
+    PredT[1].push_back(73);
     PredT[2].push_back(2);
     PredT[3].push_back(4);
     PredT[3].push_back(7);
-    PredT[3].push_back(60);
+    PredT[3].push_back(72);
     PredT[4].push_back(3);
     PredT[4].push_back(5);
-    PredT[4].push_back(61);
+    PredT[4].push_back(73);
     PredT[5].push_back(6);
     PredT[6].push_back(8);
     PredT[6].push_back(11);
-    PredT[6].push_back(60);
+    PredT[6].push_back(72);
     PredT[7].push_back(7);
     PredT[7].push_back(9);
-    PredT[7].push_back(61);
+    PredT[7].push_back(73);
     PredT[8].push_back(10);
     PredT[9].push_back(12);
     PredT[9].push_back(15);
-    PredT[9].push_back(60);
+    PredT[9].push_back(72);
     PredT[10].push_back(11);
     PredT[10].push_back(13);
-    PredT[10].push_back(61);
+    PredT[10].push_back(73);
     PredT[11].push_back(14);
     PredT[12].push_back(16);
     PredT[12].push_back(19);
-    PredT[12].push_back(60);
+    PredT[12].push_back(72);
     PredT[13].push_back(15);
     PredT[13].push_back(17);
-    PredT[13].push_back(61);
+    PredT[13].push_back(73);
     PredT[14].push_back(18);
     PredT[15].push_back(20);
     PredT[15].push_back(23);
-    PredT[15].push_back(60);
+    PredT[15].push_back(72);
     PredT[16].push_back(19);
     PredT[16].push_back(21);
-    PredT[16].push_back(61);
+    PredT[16].push_back(73);
     PredT[17].push_back(22);
     PredT[18].push_back(24);
     PredT[18].push_back(27);
-    PredT[18].push_back(60);
+    PredT[18].push_back(72);
     PredT[19].push_back(23);
     PredT[19].push_back(25);
-    PredT[19].push_back(61);
+    PredT[19].push_back(73);
     PredT[20].push_back(26);
     PredT[21].push_back(28);
     PredT[21].push_back(31);
-    PredT[21].push_back(60);
+    PredT[21].push_back(72);
     PredT[22].push_back(27);
     PredT[22].push_back(29);
-    PredT[22].push_back(61);
+    PredT[22].push_back(73);
     PredT[23].push_back(30);
     PredT[24].push_back(32);
     PredT[24].push_back(35);
-    PredT[24].push_back(60);
+    PredT[24].push_back(72);
     PredT[25].push_back(31);
     PredT[25].push_back(33);
-    PredT[25].push_back(61);
+    PredT[25].push_back(73);
     PredT[26].push_back(34);
     PredT[27].push_back(36);
     PredT[27].push_back(39);
-    PredT[27].push_back(60);
+    PredT[27].push_back(72);
     PredT[28].push_back(35);
     PredT[28].push_back(37);
-    PredT[28].push_back(61);
+    PredT[28].push_back(73);
     PredT[29].push_back(38);
     PredT[30].push_back(40);
     PredT[30].push_back(43);
-    PredT[30].push_back(60);
+    PredT[30].push_back(72);
     PredT[31].push_back(39);
     PredT[31].push_back(41);
-    PredT[31].push_back(61);
+    PredT[31].push_back(73);
     PredT[32].push_back(42);
     PredT[33].push_back(44);
     PredT[33].push_back(47);
-    PredT[33].push_back(60);
+    PredT[33].push_back(72);
     PredT[34].push_back(43);
     PredT[34].push_back(45);
-    PredT[34].push_back(61);
+    PredT[34].push_back(73);
     PredT[35].push_back(46);
     PredT[36].push_back(48);
     PredT[36].push_back(51);
-    PredT[36].push_back(60);
+    PredT[36].push_back(72);
     PredT[37].push_back(47);
     PredT[37].push_back(49);
-    PredT[37].push_back(61);
+    PredT[37].push_back(73);
     PredT[38].push_back(50);
     PredT[39].push_back(52);
     PredT[39].push_back(55);
-    PredT[39].push_back(60);
+    PredT[39].push_back(72);
     PredT[40].push_back(51);
     PredT[40].push_back(53);
-    PredT[40].push_back(61);
+    PredT[40].push_back(73);
     PredT[41].push_back(54);
     PredT[42].push_back(56);
     PredT[42].push_back(59);
-    PredT[42].push_back(60);
+    PredT[42].push_back(72);
     PredT[43].push_back(55);
     PredT[43].push_back(57);
-    PredT[43].push_back(61);
+    PredT[43].push_back(73);
     PredT[44].push_back(58);
+    PredT[45].push_back(60);
+    PredT[45].push_back(63);
+    PredT[45].push_back(72);
+    PredT[46].push_back(59);
+    PredT[46].push_back(61);
+    PredT[46].push_back(73);
+    PredT[47].push_back(62);
+    PredT[48].push_back(64);
+    PredT[48].push_back(67);
+    PredT[48].push_back(72);
+    PredT[49].push_back(63);
+    PredT[49].push_back(65);
+    PredT[49].push_back(73);
+    PredT[50].push_back(66);
+    PredT[51].push_back(68);
+    PredT[51].push_back(71);
+    PredT[51].push_back(72);
+    PredT[52].push_back(67);
+    PredT[52].push_back(69);
+    PredT[52].push_back(73);
+    PredT[53].push_back(70);
     EnabledDisabledTr();
 vector <double> Rate_Table_init (tr);
 Rate_Table = Rate_Table_init;
@@ -1473,20 +1698,47 @@ bool SPN::IsEnabled(int t){
      case 45:
        return IsEnabled_t45();
        break;
+     case 46:
+       return IsEnabled_t46();
+       break;
+     case 47:
+       return IsEnabled_t47();
+       break;
+     case 48:
+       return IsEnabled_t48();
+       break;
+     case 49:
+       return IsEnabled_t49();
+       break;
+     case 50:
+       return IsEnabled_t50();
+       break;
+     case 51:
+       return IsEnabled_t51();
+       break;
+     case 52:
+       return IsEnabled_t52();
+       break;
+     case 53:
+       return IsEnabled_t53();
+       break;
+     case 54:
+       return IsEnabled_t54();
+       break;
    }
 }
 
 bool SPN::IsEnabled_t0() {
     if (Marking[0] < 1) return false;
     if (Marking[3] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t1() {
     if (Marking[1] < 1) return false;
-    if (Marking[59] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[71] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1498,14 +1750,14 @@ bool SPN::IsEnabled_t2() {
 bool SPN::IsEnabled_t3() {
     if (Marking[4] < 1) return false;
     if (Marking[7] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t4() {
     if (Marking[3] < 1) return false;
     if (Marking[5] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1517,14 +1769,14 @@ bool SPN::IsEnabled_t5() {
 bool SPN::IsEnabled_t6() {
     if (Marking[8] < 1) return false;
     if (Marking[11] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t7() {
     if (Marking[7] < 1) return false;
     if (Marking[9] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1536,14 +1788,14 @@ bool SPN::IsEnabled_t8() {
 bool SPN::IsEnabled_t9() {
     if (Marking[12] < 1) return false;
     if (Marking[15] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t10() {
     if (Marking[11] < 1) return false;
     if (Marking[13] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1555,14 +1807,14 @@ bool SPN::IsEnabled_t11() {
 bool SPN::IsEnabled_t12() {
     if (Marking[16] < 1) return false;
     if (Marking[19] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t13() {
     if (Marking[15] < 1) return false;
     if (Marking[17] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1574,14 +1826,14 @@ bool SPN::IsEnabled_t14() {
 bool SPN::IsEnabled_t15() {
     if (Marking[20] < 1) return false;
     if (Marking[23] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t16() {
     if (Marking[19] < 1) return false;
     if (Marking[21] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1593,14 +1845,14 @@ bool SPN::IsEnabled_t17() {
 bool SPN::IsEnabled_t18() {
     if (Marking[24] < 1) return false;
     if (Marking[27] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t19() {
     if (Marking[23] < 1) return false;
     if (Marking[25] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1612,14 +1864,14 @@ bool SPN::IsEnabled_t20() {
 bool SPN::IsEnabled_t21() {
     if (Marking[28] < 1) return false;
     if (Marking[31] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t22() {
     if (Marking[27] < 1) return false;
     if (Marking[29] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1631,14 +1883,14 @@ bool SPN::IsEnabled_t23() {
 bool SPN::IsEnabled_t24() {
     if (Marking[32] < 1) return false;
     if (Marking[35] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t25() {
     if (Marking[31] < 1) return false;
     if (Marking[33] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1650,14 +1902,14 @@ bool SPN::IsEnabled_t26() {
 bool SPN::IsEnabled_t27() {
     if (Marking[36] < 1) return false;
     if (Marking[39] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t28() {
     if (Marking[35] < 1) return false;
     if (Marking[37] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1669,14 +1921,14 @@ bool SPN::IsEnabled_t29() {
 bool SPN::IsEnabled_t30() {
     if (Marking[40] < 1) return false;
     if (Marking[43] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t31() {
     if (Marking[39] < 1) return false;
     if (Marking[41] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1688,14 +1940,14 @@ bool SPN::IsEnabled_t32() {
 bool SPN::IsEnabled_t33() {
     if (Marking[44] < 1) return false;
     if (Marking[47] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t34() {
     if (Marking[43] < 1) return false;
     if (Marking[45] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1707,14 +1959,14 @@ bool SPN::IsEnabled_t35() {
 bool SPN::IsEnabled_t36() {
     if (Marking[48] < 1) return false;
     if (Marking[51] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t37() {
     if (Marking[47] < 1) return false;
     if (Marking[49] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1726,14 +1978,14 @@ bool SPN::IsEnabled_t38() {
 bool SPN::IsEnabled_t39() {
     if (Marking[52] < 1) return false;
     if (Marking[55] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t40() {
     if (Marking[51] < 1) return false;
     if (Marking[53] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1745,14 +1997,14 @@ bool SPN::IsEnabled_t41() {
 bool SPN::IsEnabled_t42() {
     if (Marking[56] < 1) return false;
     if (Marking[59] < 1) return false;
-    if (Marking[60] < 1) return false;
+    if (Marking[72] < 1) return false;
     return true;
 }
 
 bool SPN::IsEnabled_t43() {
     if (Marking[55] < 1) return false;
     if (Marking[57] < 1) return false;
-    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
     return true;
 }
 
@@ -1762,6 +2014,63 @@ bool SPN::IsEnabled_t44() {
 }
 
 bool SPN::IsEnabled_t45() {
+    if (Marking[60] < 1) return false;
+    if (Marking[63] < 1) return false;
+    if (Marking[72] < 1) return false;
+    return true;
+}
+
+bool SPN::IsEnabled_t46() {
+    if (Marking[59] < 1) return false;
+    if (Marking[61] < 1) return false;
+    if (Marking[73] < 1) return false;
+    return true;
+}
+
+bool SPN::IsEnabled_t47() {
+    if (Marking[62] < 1) return false;
+    return true;
+}
+
+bool SPN::IsEnabled_t48() {
+    if (Marking[64] < 1) return false;
+    if (Marking[67] < 1) return false;
+    if (Marking[72] < 1) return false;
+    return true;
+}
+
+bool SPN::IsEnabled_t49() {
+    if (Marking[63] < 1) return false;
+    if (Marking[65] < 1) return false;
+    if (Marking[73] < 1) return false;
+    return true;
+}
+
+bool SPN::IsEnabled_t50() {
+    if (Marking[66] < 1) return false;
+    return true;
+}
+
+bool SPN::IsEnabled_t51() {
+    if (Marking[68] < 1) return false;
+    if (Marking[71] < 1) return false;
+    if (Marking[72] < 1) return false;
+    return true;
+}
+
+bool SPN::IsEnabled_t52() {
+    if (Marking[67] < 1) return false;
+    if (Marking[69] < 1) return false;
+    if (Marking[73] < 1) return false;
+    return true;
+}
+
+bool SPN::IsEnabled_t53() {
+    if (Marking[70] < 1) return false;
+    return true;
+}
+
+bool SPN::IsEnabled_t54() {
     return true;
 }
 
@@ -1951,6 +2260,42 @@ void SPN::fire(int t){
        fire_t45();
        break;
      } 
+     case 46: {
+       fire_t46();
+       break;
+     } 
+     case 47: {
+       fire_t47();
+       break;
+     } 
+     case 48: {
+       fire_t48();
+       break;
+     } 
+     case 49: {
+       fire_t49();
+       break;
+     } 
+     case 50: {
+       fire_t50();
+       break;
+     } 
+     case 51: {
+       fire_t51();
+       break;
+     } 
+     case 52: {
+       fire_t52();
+       break;
+     } 
+     case 53: {
+       fire_t53();
+       break;
+     } 
+     case 54: {
+       fire_t54();
+       break;
+     } 
    }
 }
 
@@ -1958,39 +2303,39 @@ void SPN::fire_t0() {
     Marking[0] -= 1;
     Marking[1] += 1;
     Marking[3] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t1() {
     Marking[1] -= 1;
     Marking[2] += 1;
-    Marking[59] -= 1;
-    Marking[61] -= 1;
+    Marking[71] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t2() {
     Marking[0] += 1;
     Marking[2] -= 1;
     Marking[3] += 1;
-    Marking[59] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[71] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t3() {
     Marking[4] -= 1;
     Marking[5] += 1;
     Marking[7] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t4() {
     Marking[3] -= 1;
     Marking[5] -= 1;
     Marking[6] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t5() {
@@ -1998,23 +2343,23 @@ void SPN::fire_t5() {
     Marking[4] += 1;
     Marking[6] -= 1;
     Marking[7] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t6() {
     Marking[8] -= 1;
     Marking[9] += 1;
     Marking[11] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t7() {
     Marking[7] -= 1;
     Marking[9] -= 1;
     Marking[10] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t8() {
@@ -2022,23 +2367,23 @@ void SPN::fire_t8() {
     Marking[8] += 1;
     Marking[10] -= 1;
     Marking[11] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t9() {
     Marking[12] -= 1;
     Marking[13] += 1;
     Marking[15] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t10() {
     Marking[11] -= 1;
     Marking[13] -= 1;
     Marking[14] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t11() {
@@ -2046,23 +2391,23 @@ void SPN::fire_t11() {
     Marking[12] += 1;
     Marking[14] -= 1;
     Marking[15] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t12() {
     Marking[16] -= 1;
     Marking[17] += 1;
     Marking[19] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t13() {
     Marking[15] -= 1;
     Marking[17] -= 1;
     Marking[18] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t14() {
@@ -2070,23 +2415,23 @@ void SPN::fire_t14() {
     Marking[16] += 1;
     Marking[18] -= 1;
     Marking[19] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t15() {
     Marking[20] -= 1;
     Marking[21] += 1;
     Marking[23] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t16() {
     Marking[19] -= 1;
     Marking[21] -= 1;
     Marking[22] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t17() {
@@ -2094,23 +2439,23 @@ void SPN::fire_t17() {
     Marking[20] += 1;
     Marking[22] -= 1;
     Marking[23] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t18() {
     Marking[24] -= 1;
     Marking[25] += 1;
     Marking[27] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t19() {
     Marking[23] -= 1;
     Marking[25] -= 1;
     Marking[26] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t20() {
@@ -2118,23 +2463,23 @@ void SPN::fire_t20() {
     Marking[24] += 1;
     Marking[26] -= 1;
     Marking[27] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t21() {
     Marking[28] -= 1;
     Marking[29] += 1;
     Marking[31] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t22() {
     Marking[27] -= 1;
     Marking[29] -= 1;
     Marking[30] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t23() {
@@ -2142,23 +2487,23 @@ void SPN::fire_t23() {
     Marking[28] += 1;
     Marking[30] -= 1;
     Marking[31] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t24() {
     Marking[32] -= 1;
     Marking[33] += 1;
     Marking[35] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t25() {
     Marking[31] -= 1;
     Marking[33] -= 1;
     Marking[34] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t26() {
@@ -2166,23 +2511,23 @@ void SPN::fire_t26() {
     Marking[32] += 1;
     Marking[34] -= 1;
     Marking[35] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t27() {
     Marking[36] -= 1;
     Marking[37] += 1;
     Marking[39] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t28() {
     Marking[35] -= 1;
     Marking[37] -= 1;
     Marking[38] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t29() {
@@ -2190,23 +2535,23 @@ void SPN::fire_t29() {
     Marking[36] += 1;
     Marking[38] -= 1;
     Marking[39] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t30() {
     Marking[40] -= 1;
     Marking[41] += 1;
     Marking[43] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t31() {
     Marking[39] -= 1;
     Marking[41] -= 1;
     Marking[42] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t32() {
@@ -2214,23 +2559,23 @@ void SPN::fire_t32() {
     Marking[40] += 1;
     Marking[42] -= 1;
     Marking[43] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t33() {
     Marking[44] -= 1;
     Marking[45] += 1;
     Marking[47] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t34() {
     Marking[43] -= 1;
     Marking[45] -= 1;
     Marking[46] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t35() {
@@ -2238,23 +2583,23 @@ void SPN::fire_t35() {
     Marking[44] += 1;
     Marking[46] -= 1;
     Marking[47] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t36() {
     Marking[48] -= 1;
     Marking[49] += 1;
     Marking[51] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t37() {
     Marking[47] -= 1;
     Marking[49] -= 1;
     Marking[50] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t38() {
@@ -2262,23 +2607,23 @@ void SPN::fire_t38() {
     Marking[48] += 1;
     Marking[50] -= 1;
     Marking[51] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t39() {
     Marking[52] -= 1;
     Marking[53] += 1;
     Marking[55] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t40() {
     Marking[51] -= 1;
     Marking[53] -= 1;
     Marking[54] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t41() {
@@ -2286,23 +2631,23 @@ void SPN::fire_t41() {
     Marking[52] += 1;
     Marking[54] -= 1;
     Marking[55] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t42() {
     Marking[56] -= 1;
     Marking[57] += 1;
     Marking[59] -= 1;
-    Marking[60] -= 1;
-    Marking[61] += 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
 }
 
 void SPN::fire_t43() {
     Marking[55] -= 1;
     Marking[57] -= 1;
     Marking[58] += 1;
-    Marking[61] -= 1;
+    Marking[73] -= 1;
 }
 
 void SPN::fire_t44() {
@@ -2310,18 +2655,90 @@ void SPN::fire_t44() {
     Marking[56] += 1;
     Marking[58] -= 1;
     Marking[59] += 1;
-    Marking[60] += 1;
-    Marking[62] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
 }
 
 void SPN::fire_t45() {
+    Marking[60] -= 1;
+    Marking[61] += 1;
+    Marking[63] -= 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
+}
+
+void SPN::fire_t46() {
+    Marking[59] -= 1;
+    Marking[61] -= 1;
+    Marking[62] += 1;
+    Marking[73] -= 1;
+}
+
+void SPN::fire_t47() {
+    Marking[59] += 1;
+    Marking[60] += 1;
+    Marking[62] -= 1;
     Marking[63] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
+}
+
+void SPN::fire_t48() {
+    Marking[64] -= 1;
+    Marking[65] += 1;
+    Marking[67] -= 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
+}
+
+void SPN::fire_t49() {
+    Marking[63] -= 1;
+    Marking[65] -= 1;
+    Marking[66] += 1;
+    Marking[73] -= 1;
+}
+
+void SPN::fire_t50() {
+    Marking[63] += 1;
+    Marking[64] += 1;
+    Marking[66] -= 1;
+    Marking[67] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
+}
+
+void SPN::fire_t51() {
+    Marking[68] -= 1;
+    Marking[69] += 1;
+    Marking[71] -= 1;
+    Marking[72] -= 1;
+    Marking[73] += 1;
+}
+
+void SPN::fire_t52() {
+    Marking[67] -= 1;
+    Marking[69] -= 1;
+    Marking[70] += 1;
+    Marking[73] -= 1;
+}
+
+void SPN::fire_t53() {
+    Marking[67] += 1;
+    Marking[68] += 1;
+    Marking[70] -= 1;
+    Marking[71] += 1;
+    Marking[72] += 1;
+    Marking[74] += 1;
+}
+
+void SPN::fire_t54() {
+    Marking[75] += 1;
 }
 
 vector<double> SPN::GetDistParameters(int t){
    vector<double> P(2);
    double origin_rate = (SPN::GetDistParametersOrigin(t))[0];
-   P[0]= ComputeDistr(Marking,t,gammaprob,origin_rate,Origine_Rate_Sum);
+   P[0]= ComputeDistr(Marking,t,gammaprob,origin_rate,Origine_Rate_Sum,Rate_Sum,tr-1);
    P[1]= origin_rate;
    return P;
 }
@@ -2600,6 +3017,60 @@ vector<double> SPN::GetDistParametersOrigin(int t){
      }
      case 45: {
        vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 46: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 47: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 48: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 49: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 50: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 51: {
+       vector<double> P(1);
+       P[0]= ( double ) 1 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 52: {
+       vector<double> P(1);
+       P[0]= ( double ) 100 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 53: {
+       vector<double> P(1);
+       P[0]= ( double ) 10 * ( 1 + 0 *  Marking[ 0 ]  );
+       return P;
+       break;
+     }
+     case 54: {
+       vector<double> P(1);
        P[0]= ( double ) 0 *  Marking[ 0 ] ;
        return P;
        break;
@@ -2793,6 +3264,42 @@ double SPN::GetPriority(int t){
        return (double)1;
        break;
      } 
+     case 46: {
+       return (double)1;
+       break;
+     } 
+     case 47: {
+       return (double)1;
+       break;
+     } 
+     case 48: {
+       return (double)1;
+       break;
+     } 
+     case 49: {
+       return (double)1;
+       break;
+     } 
+     case 50: {
+       return (double)1;
+       break;
+     } 
+     case 51: {
+       return (double)1;
+       break;
+     } 
+     case 52: {
+       return (double)1;
+       break;
+     } 
+     case 53: {
+       return (double)1;
+       break;
+     } 
+     case 54: {
+       return (double)1;
+       break;
+     } 
    }
 }
 
@@ -2934,6 +3441,33 @@ double SPN::GetWeight(int t){
        return (double)1;
        break;
      case 45:
+       return (double)1;
+       break;
+     case 46:
+       return (double)1;
+       break;
+     case 47:
+       return (double)1;
+       break;
+     case 48:
+       return (double)1;
+       break;
+     case 49:
+       return (double)1;
+       break;
+     case 50:
+       return (double)1;
+       break;
+     case 51:
+       return (double)1;
+       break;
+     case 52:
+       return (double)1;
+       break;
+     case 53:
+       return (double)1;
+       break;
+     case 54:
        return (double)1;
        break;
    }

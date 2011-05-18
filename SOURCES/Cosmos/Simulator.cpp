@@ -87,6 +87,10 @@ void Simulator::InitialEventsQueue() {
     ent = N.enabledTrans();
     set<int>::iterator it;
     Event E;
+    //----------- Rare Event --------------
+    N.Rate_Sum = 0;
+    N.Origine_Rate_Sum = 0;
+    //----------- /Rare Event -------------
     for (it = ent.begin(); it != ent.end(); it++) {
         GenerateEvent(E, (*it));
         (*EQ).insert(E);
@@ -118,7 +122,7 @@ void Simulator::SimulateSinglePath() {
   simTime = 0;
   Event F;
   
-  
+  //cout << "new trajectory" << endl;
   
   Simulator::InitialEventsQueue();
   
@@ -167,6 +171,7 @@ void Simulator::SimulateSinglePath() {
       //-------------- Rare Event -----------------
       N.Rate_Sum = 0;
       N.Origine_Rate_Sum = 0;
+      
       for(int i=0; i< (*EQ).getSize(); i++){
 	N.Origine_Rate_Sum = N.Origine_Rate_Sum + N.Origine_Rate_Table[(*EQ).InPosition(i).transition];
 	N.Rate_Sum = N.Rate_Sum + N.Rate_Table[(*EQ).InPosition(i).transition];
@@ -178,8 +183,6 @@ void Simulator::SimulateSinglePath() {
         N.Rate_Sum <<"\torigine rate: "<< N.Origine_Rate_Table[E1_transitionNum] <<
 	"\torigine sum: " <<N.Origine_Rate_Sum << "\tLikelihood: " << A.Likelihood << endl << endl << endl << endl;*/
       
-      //N.Origine_Rate_Sum =0;
-      //cout << "init";
       //-------------- /Rare Event ----------------
       
       while (E1.time >= AE.FiringTime) {
@@ -260,11 +263,10 @@ void Simulator::SimulateSinglePath() {
 	    }
 	    }*/
 	
-	  if(N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled
-	    
-	    GenerateEvent(F, E1_transitionNum);
-	    (*EQ).replace(F, 0); //replace the transition with the new generated time
-	    
+	  if(N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled 
+	    //------------- Rare Event -------------------
+	    //GenerateEvent(F, E1_transitionNum);
+	    //(*EQ).replace(F, 0); //replace the transition with the new generated time
 	  } else (*EQ).remove(0);
 
 	  
@@ -275,22 +277,21 @@ void Simulator::SimulateSinglePath() {
 	  for (vector<int>::iterator it = V.begin(); it != V.end(); it++) {
 	    if (N.IsEnabled(*it)) {
 	      if ((*EQ).TransTabValue(*it) < 0) {
-		GenerateEvent(F, (*it));
+		//--------- Rare Event ---------------
+		//GenerateEvent(F, (*it));
+		GenerateDummyEvent(F, (*it));
+		//--------- /Rare Event ---------------
 		(*EQ).insert(F);
-		
-		
 	      } else {
-		if (N.Transition[(*it)].MarkingDependent) {
+		//--------- Rare Event ---------------
+		/*if (N.Transition[(*it)].MarkingDependent) {
 		  GenerateEvent(F, (*it));
-		  (*EQ).replace(F, (*EQ).TransTabValue(*it));
-		  
-		}
-		
+		  (*EQ).replace(F, (*EQ).TransTabValue(*it)); 
+		  }*/	
+		//--------- /Rare Event ---------------
 	      }
 	    }
-	    
 	  }
-	  
 	  
 	  // Possibly removing Events corresponding to newly disabled-transitions
 	  V = (N.PossiblyDis(E1_transitionNum)); //list of transitions that may disabled after firing TR
@@ -300,14 +301,32 @@ void Simulator::SimulateSinglePath() {
 	      if (!N.IsEnabled(*it))
 		(*EQ).remove((*EQ).TransTabValue(*it));
 	      else {
-		if (N.Transition[(*it)].MarkingDependent) {
+		//--------- Rare Event ---------------
+		/*if (N.Transition[(*it)].MarkingDependent) {
 		  GenerateEvent(F, (*it));
 		  (*EQ).replace(F, (*EQ).TransTabValue(*it));
-		  
-		}
+		  }*/
+	      //--------- /Rare Event ---------------
 	      }
 	    }
-	    }
+	  }
+
+	  //--------- Rare Event ---------------
+	  N.Rate_Sum = 0;
+	  N.Origine_Rate_Sum = 0;
+	  vector<int> Enabled_trans;
+	  for(int i=0; i< (*EQ).getSize(); i++){ 
+	    Enabled_trans.push_back((*EQ).InPosition(i).transition); 
+	  };
+	  for (vector<int>::iterator it = Enabled_trans.begin(); it != Enabled_trans.end(); it++) {
+	    if(*it != N.tr-1){
+	      GenerateEvent(F, (*it));
+	      (*EQ).replace(F, (*EQ).TransTabValue(*it));
+	    }; 
+	  };
+	  GenerateEvent(F, (N.tr-1));
+	  (*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
+	  //--------- /Rare Event ---------------
 	  
 	  AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 	  QueueIsEmpty = (*EQ).isEmpty();
@@ -315,6 +334,13 @@ void Simulator::SimulateSinglePath() {
       }
     }
   }
+}
+
+void Simulator::GenerateDummyEvent(Event& E, int Id) {
+    E.transition = Id;
+    E.time = 0.0;
+    E.priority = N.GetPriority(Id);
+    E.weight = 0.0;
 }
 
 void Simulator::GenerateEvent(Event& E, int Id) {
@@ -326,7 +352,8 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 	//-------------- Rare Event -----------------
 	N.Rate_Table[Id] = Param[0];
 	N.Origine_Rate_Table[Id] = Param[1];
-	//N.Origine_Rate_Sum = N.Origine_Rate_Sum + Param[1];
+	N.Rate_Sum = N.Rate_Sum + Param[0];
+	N.Origine_Rate_Sum = N.Origine_Rate_Sum + Param[1];
 	//------------- /Rare Event -----------------
     }
     double w;
@@ -481,7 +508,7 @@ void Simulator::RunSimulation() {
     
     RelErr = CurrentWidth / max(1, abs(Mean));
     
-  } while ((RelErr > ConfWidth) && (K < MaxRuns));
+  } while (/*(RelErr > ConfWidth) &&*/ (K < MaxRuns));
   
   
   
