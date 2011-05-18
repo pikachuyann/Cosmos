@@ -226,7 +226,7 @@ void DirectSim(string filename, SimParam& P) {
 void LoadSimParam(SimParam& P) {
     P.Level = 0.99;
     P.Width = 0.00000000000000000000001;
-    P.Batch = 1000;
+    P.Batch =   1000;
     P.MaxRuns = 1000000;
 }
 

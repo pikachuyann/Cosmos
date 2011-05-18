@@ -34,8 +34,8 @@ void Simulator::Load() {
     RandomNumber.seed((int)time(NULL));
     srand(time(NULL));
 
-    BatchSize = 1000;
-    MaxRuns = 1000000;
+    BatchSize = 1000000;
+    MaxRuns =   1000000;
 
     ConfWidth = 0.001;
     ConfLevel = 0.99;
@@ -170,13 +170,13 @@ void Simulator::SimulateSinglePath() {
       for(int i=0; i< (*EQ).getSize(); i++){
 	N.Origine_Rate_Sum = N.Origine_Rate_Sum + N.Origine_Rate_Table[(*EQ).InPosition(i).transition];
 	N.Rate_Sum = N.Rate_Sum + N.Rate_Table[(*EQ).InPosition(i).transition];
-	}
+      }
       A.Likelihood = (N.Origine_Rate_Table[E1_transitionNum] 
 		      / N.Origine_Rate_Sum) * 
 	(N.Rate_Sum / N.Rate_Table[E1_transitionNum]);
-      cout <<"Transition: "<< E1_transitionNum<<"\trate: " <<N.Rate_Table[E1_transitionNum] <<"\tsum rate: "<<
+      /*cout <<"Transition: "<< E1_transitionNum<<"\trate: " <<N.Rate_Table[E1_transitionNum] <<"\tsum rate: "<<
         N.Rate_Sum <<"\torigine rate: "<< N.Origine_Rate_Table[E1_transitionNum] <<
-	"\torigine sum: " <<N.Origine_Rate_Sum << "\tLikelihood: " << A.Likelihood << endl << endl << endl << endl;
+	"\torigine sum: " <<N.Origine_Rate_Sum << "\tLikelihood: " << A.Likelihood << endl << endl << endl << endl;*/
       
       //N.Origine_Rate_Sum =0;
       //cout << "init";
@@ -243,7 +243,7 @@ void Simulator::SimulateSinglePath() {
 	  
 	} else {
 
-	  N.Origine_Rate_Sum =0;
+	  /*N.Origine_Rate_Sum =0;
 	  for(int transition=0; transition<N.tr; transition++){
 	    if (N.IsEnabled(transition)) {
 	      GenerateEvent(F, (transition));
@@ -258,9 +258,9 @@ void Simulator::SimulateSinglePath() {
 		(*EQ).remove((*EQ).TransTabValue(transition));
 	      }
 	    }
-	  }
+	    }*/
 	
-	  /*if(N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled
+	  if(N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled
 	    
 	    GenerateEvent(F, E1_transitionNum);
 	    (*EQ).replace(F, 0); //replace the transition with the new generated time
@@ -307,7 +307,7 @@ void Simulator::SimulateSinglePath() {
 		}
 	      }
 	    }
-	    }*/
+	    }
 	  
 	  AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 	  QueueIsEmpty = (*EQ).isEmpty();
@@ -326,7 +326,7 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 	//-------------- Rare Event -----------------
 	N.Rate_Table[Id] = Param[0];
 	N.Origine_Rate_Table[Id] = Param[1];
-	N.Origine_Rate_Sum = N.Origine_Rate_Sum + Param[1];
+	//N.Origine_Rate_Sum = N.Origine_Rate_Sum + Param[1];
 	//------------- /Rare Event -----------------
     }
     double w;
@@ -476,9 +476,7 @@ void Simulator::RunSimulation() {
     Ksucc_sqrt = sqrt(Ksucc);
     CurrentWidth = 2 * z_percentile * stdev / Ksucc_sqrt;
     //-------------- Rare Event -----------------
-    if(((int)K % 1000) == 0){
       cout << "\033[A\033[2K" << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
-    };
     //------------- /Rare Event -----------------
     
     RelErr = CurrentWidth / max(1, abs(Mean));
