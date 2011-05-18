@@ -143,6 +143,36 @@ public:
     bool IsEnabled_t14();
     void fire_t15();
     bool IsEnabled_t15();
+    void fire_t16();
+    bool IsEnabled_t16();
+    void fire_t17();
+    bool IsEnabled_t17();
+    void fire_t18();
+    bool IsEnabled_t18();
+    void fire_t19();
+    bool IsEnabled_t19();
+    void fire_t20();
+    bool IsEnabled_t20();
+    void fire_t21();
+    bool IsEnabled_t21();
+    void fire_t22();
+    bool IsEnabled_t22();
+    void fire_t23();
+    bool IsEnabled_t23();
+    void fire_t24();
+    bool IsEnabled_t24();
+    void fire_t25();
+    bool IsEnabled_t25();
+    void fire_t26();
+    bool IsEnabled_t26();
+    void fire_t27();
+    bool IsEnabled_t27();
+    void fire_t28();
+    bool IsEnabled_t28();
+    void fire_t29();
+    bool IsEnabled_t29();
+    void fire_t30();
+    bool IsEnabled_t30();
 private:
 };
 #endif	/* _SPN_HPP */

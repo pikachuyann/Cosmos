@@ -11,7 +11,7 @@
 #include <cmath>
 
 
-const int n = 5;
+const int n = 10;
 const bool ImportanceSampling = true;
 const double fork1 = 1.000000;
 const double fork2 = 100.000000;
@@ -62,9 +62,9 @@ double ComputeDistr(vector<int>& Mark , int i , TAB &gammaprob, double distrorig
 		 + eat  * Mark[4*j+2]);
     };
 
-    /*if(tprob != tprob2 && mux >0){
+    if(tprob != tprob2 ){
       cout << "tprob :" << tprob << " tprob2 :" << tprob2 << endl;
-      };*/
+      };
 
     for(int j=0;j<=n-1;j++){
       

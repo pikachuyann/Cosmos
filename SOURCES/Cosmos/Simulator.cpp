@@ -35,7 +35,7 @@ void Simulator::Load() {
     srand(time(NULL));
 
     BatchSize = 1000;
-    MaxRuns = 100000000;
+    MaxRuns = 1000000;
 
     ConfWidth = 0.001;
     ConfLevel = 0.99;
@@ -174,9 +174,9 @@ void Simulator::SimulateSinglePath() {
       A.Likelihood = (N.Origine_Rate_Table[E1_transitionNum] 
 		      / N.Origine_Rate_Sum) * 
 	(N.Rate_Sum / N.Rate_Table[E1_transitionNum]);
-      /*cout <<"Transition: "<< E1_transitionNum<<"\trate: " <<N.Rate_Table[E1_transitionNum] <<"\tsum rate: "<<
+      cout <<"Transition: "<< E1_transitionNum<<"\trate: " <<N.Rate_Table[E1_transitionNum] <<"\tsum rate: "<<
         N.Rate_Sum <<"\torigine rate: "<< N.Origine_Rate_Table[E1_transitionNum] <<
-	"\torigine sum: " <<N.Origine_Rate_Sum << "\tLikelihood: " << A.Likelihood << endl << endl << endl << endl;*/
+	"\torigine sum: " <<N.Origine_Rate_Sum << "\tLikelihood: " << A.Likelihood << endl << endl << endl << endl;
       
       //N.Origine_Rate_Sum =0;
       //cout << "init";
@@ -242,7 +242,25 @@ void Simulator::SimulateSinglePath() {
 	  return;
 	  
 	} else {
-	  if(N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled
+
+	  N.Origine_Rate_Sum =0;
+	  for(int transition=0; transition<N.tr; transition++){
+	    if (N.IsEnabled(transition)) {
+	      GenerateEvent(F, (transition));
+	      if ((*EQ).TransTabValue(transition) < 0) {
+		(*EQ).insert(F);
+	      } else {
+		(*EQ).replace(F, (*EQ).TransTabValue(transition));
+	      }
+	      
+	    } else {
+	      if ((*EQ).TransTabValue(transition) >= 0) {
+		(*EQ).remove((*EQ).TransTabValue(transition));
+	      }
+	    }
+	  }
+	
+	  /*if(N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled
 	    
 	    GenerateEvent(F, E1_transitionNum);
 	    (*EQ).replace(F, 0); //replace the transition with the new generated time
@@ -289,7 +307,7 @@ void Simulator::SimulateSinglePath() {
 		}
 	      }
 	    }
-	    }
+	    }*/
 	  
 	  AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 	  QueueIsEmpty = (*EQ).isEmpty();
@@ -308,7 +326,7 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 	//-------------- Rare Event -----------------
 	N.Rate_Table[Id] = Param[0];
 	N.Origine_Rate_Table[Id] = Param[1];
-	//N.Origine_Rate_Sum += Param[1];
+	N.Origine_Rate_Sum = N.Origine_Rate_Sum + Param[1];
 	//------------- /Rare Event -----------------
     }
     double w;
