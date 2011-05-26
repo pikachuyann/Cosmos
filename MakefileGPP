@@ -22,6 +22,7 @@ classes:
 	$(CC) $(OPTIONS) -c SOURCES/Cosmos/Event.cpp -o Obj/Cosmos/Event.o
 	$(CC) $(OPTIONS) -c SOURCES/Cosmos/EventsQueue.cpp -o  Obj/Cosmos/EventsQueue.o
 	$(CC) $(OPTIONS) -c SOURCES/Cosmos/tab.cpp -o Obj/Cosmos/tab.o
+	$(CC) $(OPTIONS) -c SOURCES/Cosmos/RareEvent.cpp -o Obj/Cosmos/RareEvent.o
 	$(CC) $(OPTIONS) -c SOURCES/Cosmos/StandardNormalDist.cpp -o Obj/Cosmos/StandardNormalDist.o
 	$(CC) $(OPTIONS) -c SOURCES/Cosmos/ap.cpp -o Obj/Cosmos/ap.o
 

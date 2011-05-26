@@ -43,6 +43,7 @@ public:
   vector <double> Origine_Rate_Table;
   double Rate_Sum;
   double Origine_Rate_Sum;
+  vector <int> Msimpletab;
   TAB gammaprob;
   
 
@@ -78,7 +79,7 @@ public:
     double min(double, double); //return the minimum of two numbers
     double max(double, double); //return the maximum of two numbers
 
-
+  void Msimple();
 
 
     vector<int> getMarking(); //return  the current marking

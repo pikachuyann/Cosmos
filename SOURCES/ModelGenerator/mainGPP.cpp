@@ -116,9 +116,6 @@ bool ParseBuild(string filename, SimParam& P) {
     cmd = options + P.Path + "../SOURCES/Cosmos/Simulator.cpp -c -o " + P.Path + "../Obj/Cosmos/Simulator.o";
     if (system(cmd.c_str())) return false;
 
-    cmd = options + P.Path + "../SOURCES/Cosmos/RareEvent.cpp -c -o " + P.Path + "../Obj/Cosmos/RareEvent.o";
-    if (system(cmd.c_str())) return false;
-
     cmd = options + P.Path + "../Obj/Cosmos/main.o " + P.Path + "../Obj/Cosmos/Event.o " + P.Path + "../Obj/Cosmos/EventsQueue.o ";
     cmd = cmd + P.Path + "../Obj/Cosmos/LHA.o  \\" + P.Path + "../Obj/Cosmos/Simulator.o " + P.Path + "../Obj/Cosmos/StandardNormalDist.o ";
     cmd = cmd + P.Path + "../Obj/Cosmos/ap.o  " + P.Path + "../Obj/Cosmos/RareEvent.o "+ P.Path + "../Obj/Cosmos/tab.o " +  P.Path + "../Obj/Cosmos/spn.o -o " + P.Path + "SimGPP";

@@ -4,34 +4,26 @@
 #include <vector>
 #include <map>
 #include <stdio.h>
-#include <hash_map>
 #include "RareEvent.hpp"
 #include "tab.hpp"
 
 #include <cmath>
 
-
-const int n = 5;
-const bool ImportanceSampling = true;
-const int l1 = 7;
-const int l2 = 8;
-const double p = 0.300000;
-const double q = 0.700000;
-
-double mu(TAB &gammaprob, vector<int>& Mark){
+double mu(TAB &gammaprob, SPN &N){
  
-  vector<int> vect ((2*n+1)*(l1+l2) - (2*n)*(l1+l2));
-  for(int j= (2*n)*(l1+l2) ; j< (2*n+1)*(l1+l2) ; j++){
-    vect[j-(2*n)*(l1+l2)] = Mark[j];
-   }
+  vector<int> vect (N.Msimpletab.size());
+  for(int i=0; i< N.Msimpletab.size();i++){
+    vect[i] = N.Marking[N.Msimpletab[i]];
+    //cout << i << " : " << N.Msimpletab[i] << " : " << N.Marking[N.Msimpletab[i]] << endl;
+  };
+  
   return(gammaprob.find(&vect));
-
 }
 
 
 double ComputeDistr(SPN &N, int t , double origin_rate){
  
-  double mux = mu(N.gammaprob,N.Marking);
+  double mux = mu(N.gammaprob,N);
   if( mux==0.0 || mux==1.0) return(origin_rate);
     
   if(t== N.tr-1){
@@ -43,7 +35,7 @@ double ComputeDistr(SPN &N, int t , double origin_rate){
 
   double distr;
   N.fire(t);
-  distr = origin_rate *( mu(N.gammaprob,N.Marking) / mux);
+  distr = origin_rate *( mu(N.gammaprob,N) / mux);
   N.unfire(t);
   return(distr);
 }

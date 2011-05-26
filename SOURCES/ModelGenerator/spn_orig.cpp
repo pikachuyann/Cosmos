@@ -49,8 +49,8 @@ void SPN::EnabledDisabledTr() {
     PossiblyEnabled = new Dim2;
     PossiblyDisabled = new Dim2;
     //-------------- Rare Event -----------------
-    vector<int> AllEnabled;
-    for (int i =0; i< tr; i++){ AllEnabled.push_back(i); };
+    /*vector<int> AllEnabled;
+      for (int i =0; i< tr; i++){ AllEnabled.push_back(i); };*/
     //------------- /Rare Event -----------------
 
     for (int t1 = 0; t1 < tr; t1++) {
@@ -154,3 +154,14 @@ double SPN::max(double x1, double x2) {
     else return x2;
 }
 
+void SPN::Msimple(){
+  vector<int> tab;
+  for(vector<spn_place>::iterator it=Place.begin(); it != Place.end(); it++){
+    //cout << (*it).label<< " : " << (*it).label.substr(0,3) << endl;
+    if((*it).label.substr(0,4).compare(" RE_") == 0){
+      tab.push_back((*it).Id);
+      //cout << ":"<<(*it).label << endl;
+    }
+  }
+  Msimpletab = tab;
+}

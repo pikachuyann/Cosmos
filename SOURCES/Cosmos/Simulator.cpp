@@ -103,7 +103,7 @@ void Simulator::reset() {
     A.reset(N.initMarking);
     simTime = 0;
     (*EQ).reset();
-    //RandomNumber.seed(RandomNumber());
+    RandomNumber.seed(RandomNumber());
 
     boost::mt19937 r(rand); //added 15/07/10   
     RandomNumber = r;
@@ -166,13 +166,13 @@ void Simulator::SimulateSinglePath() {
       int E1_transitionNum = E1.transition;
       
       //-------------- Rare Event -----------------
-      N.Rate_Sum = 0;
+      /*N.Rate_Sum = 0;
       N.Origine_Rate_Sum = 0;
       
       for(int i=0; i< (*EQ).getSize(); i++){
 	N.Origine_Rate_Sum = N.Origine_Rate_Sum + N.Origine_Rate_Table[(*EQ).InPosition(i).transition];
 	N.Rate_Sum = N.Rate_Sum + N.Rate_Table[(*EQ).InPosition(i).transition];
-	}
+	}*/
       A.Likelihood = (N.Origine_Rate_Table[E1_transitionNum] 
 		      / N.Origine_Rate_Sum) * 
 	(N.Rate_Sum / N.Rate_Table[E1_transitionNum]);

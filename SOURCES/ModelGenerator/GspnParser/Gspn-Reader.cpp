@@ -235,7 +235,7 @@ void Gspn_Reader::WriteFile(string& Pref) {
     SpnCppFile << "    EnabledDisabledTr();" << endl;
 
     //-------------- Rare Event -----------------
-
+    SpnCppFile << "    Msimple();" << endl;
     SpnCppFile << "vector <double> Rate_Table_init (tr);" << endl;
     SpnCppFile << "Rate_Table = Rate_Table_init;" << endl;
     SpnCppFile << "Origine_Rate_Table = Rate_Table_init;" << endl;
