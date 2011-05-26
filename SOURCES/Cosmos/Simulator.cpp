@@ -10,7 +10,6 @@
 #include "boost/random.hpp"
 #include "boost/generator_iterator.hpp"
 
-
 using namespace std;
 
 Simulator::Simulator() {
@@ -34,13 +33,13 @@ void Simulator::Load() {
     RandomNumber.seed((int)time(NULL));
     srand(time(NULL));
 
-    BatchSize = 1000000;
+    BatchSize = 1000;
     MaxRuns =   1000000;
 
     ConfWidth = 0.001;
     ConfLevel = 0.99;
 
-
+ 
 
 }
 
@@ -104,8 +103,10 @@ void Simulator::reset() {
     A.reset(N.initMarking);
     simTime = 0;
     (*EQ).reset();
-    RandomNumber.seed(RandomNumber());
+    //RandomNumber.seed(RandomNumber());
 
+    boost::mt19937 r(rand); //added 15/07/10   
+    RandomNumber = r;
 
 }
 
@@ -151,15 +152,11 @@ void Simulator::SimulateSinglePath() {
 	  A.UpdateFormulaVal();
 	  Result.first = true;
 	  Result.second = A.FormulaVal;
-	  
 	  return;
 		    
 	} else {
 	  AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
-
 	}
-	
-	
       }
       Result.first = false;
       return;
@@ -175,13 +172,11 @@ void Simulator::SimulateSinglePath() {
       for(int i=0; i< (*EQ).getSize(); i++){
 	N.Origine_Rate_Sum = N.Origine_Rate_Sum + N.Origine_Rate_Table[(*EQ).InPosition(i).transition];
 	N.Rate_Sum = N.Rate_Sum + N.Rate_Table[(*EQ).InPosition(i).transition];
-      }
+	}
       A.Likelihood = (N.Origine_Rate_Table[E1_transitionNum] 
 		      / N.Origine_Rate_Sum) * 
 	(N.Rate_Sum / N.Rate_Table[E1_transitionNum]);
-      /*cout <<"Transition: "<< E1_transitionNum<<"\trate: " <<N.Rate_Table[E1_transitionNum] <<"\tsum rate: "<<
-        N.Rate_Sum <<"\torigine rate: "<< N.Origine_Rate_Table[E1_transitionNum] <<
-	"\torigine sum: " <<N.Origine_Rate_Sum << "\tLikelihood: " << A.Likelihood << endl << endl << endl << endl;*/
+      //cout <<"Transition: "<< E1_transitionNum<<"\trate: " <<N.Rate_Table[E1_transitionNum] <<"\tsum rate: "<< N.Rate_Sum <<"\torigine rate: "<< N.Origine_Rate_Table[E1_transitionNum] << "\torigine sum: " <<N.Origine_Rate_Sum << "\tLikelihood: " << A.Likelihood << endl << endl << endl << endl;
       
       //-------------- /Rare Event ----------------
       
@@ -196,23 +191,17 @@ void Simulator::SimulateSinglePath() {
 	simTime = A.CurrentTime;
 	A.CurrentLocation = A.Edge[AE.Index].Target;
 	
-	
-	
 	if (A.isFinal(A.CurrentLocation)) {
 	  A.UpdateLinForm(N.Marking);
 	  A.UpdateLhaFunc(A.CurrentTime, D);
 	  A.UpdateFormulaVal();
 	  Result.first = true;
 	  Result.second = A.FormulaVal;
-	  
 	  return;
 	  
 	} else {
-	  AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
-	  
+	  AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking); 
 	}
-	
-	
       }
       
       vector<int> OldMarking = N.Marking;
@@ -246,29 +235,12 @@ void Simulator::SimulateSinglePath() {
 	  
 	} else {
 
-	  /*N.Origine_Rate_Sum =0;
-	  for(int transition=0; transition<N.tr; transition++){
-	    if (N.IsEnabled(transition)) {
-	      GenerateEvent(F, (transition));
-	      if ((*EQ).TransTabValue(transition) < 0) {
-		(*EQ).insert(F);
-	      } else {
-		(*EQ).replace(F, (*EQ).TransTabValue(transition));
-	      }
-	      
-	    } else {
-	      if ((*EQ).TransTabValue(transition) >= 0) {
-		(*EQ).remove((*EQ).TransTabValue(transition));
-	      }
-	    }
-	    }*/
-	
-	  if(N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled 
+	  
+	   if(N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled 
 	    //------------- Rare Event -------------------
 	    //GenerateEvent(F, E1_transitionNum);
 	    //(*EQ).replace(F, 0); //replace the transition with the new generated time
-	  } else (*EQ).remove(0);
-
+	    } else (*EQ).remove(0);
 	  
 	  // Possibly adding Events corresponding to newly enabled-transitions
 	  Dim1 V;
@@ -286,7 +258,9 @@ void Simulator::SimulateSinglePath() {
 		//--------- Rare Event ---------------
 		/*if (N.Transition[(*it)].MarkingDependent) {
 		  GenerateEvent(F, (*it));
-		  (*EQ).replace(F, (*EQ).TransTabValue(*it)); 
+		  (*EQ).remove((*EQ).TransTabValue(*it));
+		  (*EQ).insert(F);
+		  //(*EQ).replace(F, (*EQ).TransTabValue(*it)); 
 		  }*/	
 		//--------- /Rare Event ---------------
 	      }
@@ -304,7 +278,10 @@ void Simulator::SimulateSinglePath() {
 		//--------- Rare Event ---------------
 		/*if (N.Transition[(*it)].MarkingDependent) {
 		  GenerateEvent(F, (*it));
-		  (*EQ).replace(F, (*EQ).TransTabValue(*it));
+		  (*EQ).remove((*EQ).TransTabValue(*it));
+		  (*EQ).insert(F);
+		  //(*EQ).replace(F, (*EQ).TransTabValue(*it));
+		  
 		  }*/
 	      //--------- /Rare Event ---------------
 	      }
@@ -314,9 +291,9 @@ void Simulator::SimulateSinglePath() {
 	  //--------- Rare Event ---------------
 	  N.Rate_Sum = 0;
 	  N.Origine_Rate_Sum = 0;
-	  vector<int> Enabled_trans;
+	  vector<int> Enabled_trans ((*EQ).getSize());
 	  for(int i=0; i< (*EQ).getSize(); i++){ 
-	    Enabled_trans.push_back((*EQ).InPosition(i).transition); 
+	    Enabled_trans[i] = (*EQ).InPosition(i).transition; 
 	  };
 	  for (vector<int>::iterator it = Enabled_trans.begin(); it != Enabled_trans.end(); it++) {
 	    if(*it != N.tr-1){
@@ -327,6 +304,8 @@ void Simulator::SimulateSinglePath() {
 	  GenerateEvent(F, (N.tr-1));
 	  (*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
 	  //--------- /Rare Event ---------------
+	  
+	  //(*EQ).view();
 	  
 	  AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 	  QueueIsEmpty = (*EQ).isEmpty();
@@ -373,7 +352,7 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
     case 1:
       {//UNIF			
 	boost::uniform_real<> UNIF(param[0], param[1]);
-	boost::variate_generator<boost::rand48&, boost::uniform_real<> > gen(RandomNumber, UNIF);
+	boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
 	return gen();
 	break;
       }
@@ -396,7 +375,7 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 	}
 	
 	boost::exponential_distribution<> EXP(param[0]);
-	boost::variate_generator<boost::rand48&, boost::exponential_distribution<> > gen(RandomNumber, EXP);
+	boost::variate_generator<boost::mt19937&, boost::exponential_distribution<> > gen(RandomNumber, EXP);
 	return gen();
 	
       }
@@ -409,20 +388,20 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
     case 4:
       {//LogNormal
 	boost::lognormal_distribution<> LOGNORMAL(param[0], param[1]);
-	boost::variate_generator<boost::rand48&, boost::lognormal_distribution<> > gen(RandomNumber, LOGNORMAL);
+	boost::variate_generator<boost::mt19937&, boost::lognormal_distribution<> > gen(RandomNumber, LOGNORMAL);
 	return gen();
       }
       
     case 5:
       {//Triangle
 	boost::triangle_distribution<> TRIANGLE(param[0], param[1], param[2]);
-	boost::variate_generator<boost::rand48&, boost::triangle_distribution<> > gen(RandomNumber, TRIANGLE);
+	boost::variate_generator<boost::mt19937&, boost::triangle_distribution<> > gen(RandomNumber, TRIANGLE);
 	return gen();
       }
     case 6:
       {//GOEMETRIC
 	boost::uniform_real<> UNIF(0, 1);
-	boost::variate_generator<boost::rand48&, boost::uniform_real<> > gen(RandomNumber, UNIF);
+	boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
 	double p = gen();
 	if (p >= param[0]) return param[1];
 	else return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
@@ -479,6 +458,7 @@ void Simulator::RunSimulation() {
       if (Result.first) {
 	//------------------ Rare Event -----------------
 	logvalue << Result.second << endl ;
+	//cout << "result:" << Result.second << endl;
 	//----------------- /Rare Event -----------------
 	Ksucc++;
 	Isucc++;

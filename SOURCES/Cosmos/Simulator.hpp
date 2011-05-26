@@ -76,7 +76,7 @@ private:
     bool Initialized;
 
     map<string, int> IndexDist;
-    boost::rand48 RandomNumber;
+    boost::mt19937 RandomNumber;
 
 
 

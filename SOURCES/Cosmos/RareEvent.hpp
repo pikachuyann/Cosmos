@@ -7,7 +7,8 @@
 
 #include <stdlib.h>
 #include "tab.hpp"
+#include "spn.hpp"
 
-double ComputeDistr(  vector<int>& , int i , TAB &gammaprob, double distrorigin, double tprob,double tgamma,int puit);
+double ComputeDistr(SPN &N, int i, double origin_rate);
 
   

@@ -97,6 +97,7 @@ public:
 
 
     void fire(int); // fire a given transition
+    void unfire(int); // unfire a given transition
     bool IsEnabled(int); // Check if a given transition is enabled
     vector<double> GetDistParameters(int); // compute the the parameters value of a given distribution 
    //------------ Rare Event ---------------------

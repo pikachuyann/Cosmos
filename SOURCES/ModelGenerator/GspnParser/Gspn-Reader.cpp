@@ -304,40 +304,65 @@ void Gspn_Reader::WriteFile(string& Pref) {
         SpnCppFile << "       break;" << endl;
         SpnCppFile << "     } " << endl;
     }
+    SpnCppFile << "   }" << endl;
+    SpnCppFile << "}\n" << endl;
 
+    SpnCppFile << "void SPN::unfire(int t){" << endl;
+    SpnCppFile << "   switch(t){" << endl;
+    for (int t = 0; t < MyGspn.tr; t++) {
+        SpnCppFile << "     case " << t << ": {" << endl;
+        SpnCppFile << "       unfire_t" << t << "();" << endl;
+        SpnCppFile << "       break;" << endl;
+        SpnCppFile << "     } " << endl;
+    }
 
     SpnCppFile << "   }" << endl;
     SpnCppFile << "}\n" << endl;
 
     for (int t = 0; t < MyGspn.tr; t++) {
-        SpnCppFile << "void SPN::fire_t" << t << "() {" << endl;
-        for (int p = 0; p < MyGspn.pl; p++) {
-            if (MyGspn.inArcs[t][p] > 0) {
-                if (MyGspn.inArcsStr[t][p] == " ")
-                    SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.inArcs[t][p] << ";" << endl;
-                else
-                    SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.inArcsStr[t][p] << ";" << endl;
-            }
-
-            if (MyGspn.outArcs[t][p] > 0) {
-                if (MyGspn.outArcsStr[t][p] == " ")
-                    SpnCppFile << "    Marking[" << p << "] += " << MyGspn.outArcs[t][p] << ";" << endl;
-                else
-                    SpnCppFile << "    Marking[" << p << "] += " << MyGspn.outArcsStr[t][p] << ";" << endl;
-
-            }
-        }
-
-
-        SpnCppFile << "}\n" << endl;
+      SpnCppFile << "void SPN::fire_t" << t << "() {" << endl;
+      for (int p = 0; p < MyGspn.pl; p++) {
+	if (MyGspn.inArcs[t][p] > 0) {
+	  if (MyGspn.inArcsStr[t][p] == " ")
+	    SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.inArcs[t][p] << ";" << endl;
+	  else
+	    SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.inArcsStr[t][p] << ";" << endl;
+	}
 	
+	if (MyGspn.outArcs[t][p] > 0) {
+	  if (MyGspn.outArcsStr[t][p] == " ")
+	    SpnCppFile << "    Marking[" << p << "] += " << MyGspn.outArcs[t][p] << ";" << endl;
+	  else
+	    SpnCppFile << "    Marking[" << p << "] += " << MyGspn.outArcsStr[t][p] << ";" << endl;
+	}
+      }
+      SpnCppFile << "}\n" << endl;
+      
+      SpnCppFile << "void SPN::unfire_t" << t << "() {" << endl;
+      for (int p = 0; p < MyGspn.pl; p++) {
+	if (MyGspn.inArcs[t][p] > 0) {
+	  if (MyGspn.inArcsStr[t][p] == " ")
+	    SpnCppFile << "    Marking[" << p << "] += " << MyGspn.inArcs[t][p] << ";" << endl;
+	  else
+	    SpnCppFile << "    Marking[" << p << "] += " << MyGspn.inArcsStr[t][p] << ";" << endl;
+	}
+	
+	if (MyGspn.outArcs[t][p] > 0) {
+	  if (MyGspn.outArcsStr[t][p] == " ")
+	    SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.outArcs[t][p] << ";" << endl;
+	  else
+	    SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.outArcsStr[t][p] << ";" << endl;
+	}
+      }
+      SpnCppFile << "}\n" << endl;
+
     }
     
     //-------------- Rare Event -------------------------
     SpnCppFile << "vector<double> SPN::GetDistParameters(int t){"<< endl;
     SpnCppFile << "   vector<double> P(2);" << endl;
     SpnCppFile << "   double origin_rate = (SPN::GetDistParametersOrigin(t))[0];"<< endl;
-    SpnCppFile << "   P[0]= ComputeDistr(Marking,t,gammaprob,origin_rate,Origine_Rate_Sum,Rate_Sum,tr-1);" << endl;
+    SpnCppFile << "   P[0]= ComputeDistr( *this ,t, origin_rate);" << endl;
     SpnCppFile << "   P[1]= origin_rate;" << endl;
 
     SpnCppFile << "   return P;" << endl;
@@ -450,6 +475,7 @@ for (int t = 0; t < MyGspn.tr; t++) {
     for (int t = 0; t < MyGspn.tr; t++) {
 
         SpnHppFile << "    void fire_t" << t << "();" << endl;
+	SpnHppFile << "    void unfire_t" << t << "();" << endl;
         SpnHppFile << "    bool IsEnabled_t" << t << "();" << endl;
     }
 

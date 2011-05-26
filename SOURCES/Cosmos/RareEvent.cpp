@@ -11,112 +11,39 @@
 #include <cmath>
 
 
-const int n = 18;
+const int n = 5;
 const bool ImportanceSampling = true;
-const double fork1 = 1.000000;
-const double fork2 = 100.000000;
-const double eat   = 10.000000;
+const int l1 = 7;
+const int l2 = 8;
+const double p = 0.300000;
+const double q = 0.700000;
 
-double mu(TAB &gammaprob, int nthink,int nwait,int nserv){
-  char pos[64];
-  hash_prob::iterator it;
-  int neat = n-nthink-nwait ;
-  /*for (it = gammaprob.M.begin(); it != gammaprob.M.end(); it++)
-    cout << * new string (it->first) << " " << it->second << endl ;*/
-  snprintf(pos, 64, "(%i,%i,%i,%i,%i)", nthink,nwait,neat,nserv, n-nwait-2*neat);
-  /*cout << pos << ":" << gammaprob.M[pos]
-       << "-" << strlen (pos)
-       << endl;*/
+double mu(TAB &gammaprob, vector<int>& Mark){
+ 
+  vector<int> vect ((2*n+1)*(l1+l2) - (2*n)*(l1+l2));
+  for(int j= (2*n)*(l1+l2) ; j< (2*n+1)*(l1+l2) ; j++){
+    vect[j-(2*n)*(l1+l2)] = Mark[j];
+   }
+  return(gammaprob.find(&vect));
 
-  return(gammaprob.M[pos]);
 }
 
-double ComputeDistr(vector<int>& Mark , int i , TAB &gammaprob, double distrorigin, double tprob2,double tgamma2, int puit){
 
-  if(!ImportanceSampling){
-    return distrorigin;
-  };
-
-
-  int nthink = Mark[4*n];
-  int nwait  = Mark[4*n+1];
-  int nserv  = Mark[4*n+2];
-  
-  
-  double distr;
-  double mux = mu(gammaprob,nthink , nwait ,nserv);
-  
-  
-  //cout << "i: " << i << endl;
-  if(i==puit){
-
-    /*double tprob = 0.0;
-    double tgamma = 0.0;
-
-    for(int j=0;j<=n-1;j++){
-      tprob += ( fork1  * Mark[4*j]*Mark[4*j+3]
-		 +fork2 * Mark[4*j+1]*Mark[4*((j+n-1)%n)+3]
-		 + eat  * Mark[4*j+2]);
-    };
-
-
-    for(int j=0;j<=n-1;j++){
-      
-      if(Mark[4*j]*Mark[4*j+3]>0){
-	tgamma += (fork1/tprob)*mu(gammaprob,nthink-1 , nwait+1 ,nserv);
-      }
-      
-      if(Mark[4*j+1]*Mark[4*((j+n-1)%n)+3]>0){
-	tgamma += (fork2/tprob)*mu(gammaprob,nthink , nwait-1 ,nserv);
-      }
-      
-      if(Mark[4*j+2]>0){
-	tgamma += (eat/tprob) * mu(gammaprob,nthink+1 , nwait ,nserv+1);
-      }
-      }*/
-
-    /*if(tprob != tprob2){*/
-    /*cout << "tprob :" << tprob << " tprob2 :" << tprob2 << endl;
-      cout << "tgamma :" << tgamma << " tgamma2 :" << tgamma2*mux/tprob << endl;*/
-
-    //cout << "rapport sum / mu: " << (tgamma / gammaprob.M[nthink][nwait  ][nserv])<< endl;
-    if( tprob2 > tgamma2){
-      //cout << " mu >= sum: rate: " << (gammaprob.M[nthink][nwait  ][nserv] - tgamma) /  gammaprob.M[nthink  ][nwait  ][nserv] << endl;
-      return( tprob2 - tgamma2 );
+double ComputeDistr(SPN &N, int t , double origin_rate){
+ 
+  double mux = mu(N.gammaprob,N.Marking);
+  if( mux==0.0 || mux==1.0) return(origin_rate);
+    
+  if(t== N.tr-1){
+    if(N.Origine_Rate_Sum >= N.Rate_Sum){
+      return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
     }else{ 
       return 0.0 ;};
   };
 
-
-  if( mux==0.0 || mux==1.0){
-    //cout << "\nstuck" << endl;
-    return distrorigin;
-  }else{
-  
-    //cout << "transition " << i;
-     switch(i % 3){
-       case 0:
-	 //cout << "transition 0" ;
-	 //cout << "gammanext: nthink:\t " << nthink-1 << " nwait:\t" << nwait+1 << "nserv:\t" << nserv << "gamma:\t" << gammaprob.M[nthink-1][nwait+1][nserv] << endl;
-	 //distr = (fork1 /tprob) *( mu(gammaprob,nthink -1, nwait+1 ,nserv) / mux);
-	 distr = fork1 *( mu(gammaprob,nthink -1, nwait+1 ,nserv) / mux);
-	 break;
-       case 1:
-	 //cout << "transition 1" ;
-	 //cout << "gammanext: nthink:\t" << nthink << " nwait:\t" << nwait-1 << "nserv:\t" << nserv << "gamma:\t" << gammaprob.M[nthink][nwait-1][nserv] << endl;
-	 //distr = (fork2 / tprob) *( mu(gammaprob,nthink , nwait-1 ,nserv) / mux);
-	 distr = fork2 *( mu(gammaprob,nthink , nwait-1 ,nserv) / mux);
-	 break;
-       case 2:
-	 //cout << "transition 2";
-	 //cout << "gammanext: nthink:\t" << nthink+1 << " nwait:\t" << nwait << "nserv:\t" << nserv +1 << "gamma:\t" << gammaprob.M[nthink+1][nwait][nserv+1] << endl;
-	 //distr = (eat / tprob) *(  mu(gammaprob,nthink+1 , nwait ,nserv+1) / mux );;
-	 distr = eat *(  mu(gammaprob,nthink+1 , nwait ,nserv+1) / mux );
-	 break;
-     };   
-     
-     //cout << "distr: " << distr << endl;
-
-     return distr;
-  };
-};
+  double distr;
+  N.fire(t);
+  distr = origin_rate *( mu(N.gammaprob,N.Marking) / mux);
+  N.unfire(t);
+  return(distr);
+}
