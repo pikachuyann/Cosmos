@@ -297,16 +297,24 @@ void Simulator::SimulateSinglePath() {
 	  };
 	  for (vector<int>::iterator it = Enabled_trans.begin(); it != Enabled_trans.end(); it++) {
 	    if(*it != N.tr-1){
-	      GenerateEvent(F, (*it));
-	      (*EQ).replace(F, (*EQ).TransTabValue(*it));
+	      if(N.IsEnabled(*it)){
+		GenerateEvent(F, (*it));
+		(*EQ).replace(F, (*EQ).TransTabValue(*it));
+	      }else {
+		(*EQ).remove((*EQ).TransTabValue(*it));
+	      }
 	    }; 
 	  };
 	  GenerateEvent(F, (N.tr-1));
 	  (*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
 	  //--------- /Rare Event ---------------
 	  
-	  //(*EQ).view();
-	  
+	  /*(*EQ).view();
+	  for(int i =0; i< N.Marking.size();i++){
+	    cout << N.Place[i].label <<" = "<< N.Marking[i] << " ; ";
+	  };
+	  cout << endl;*/
+
 	  AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 	  QueueIsEmpty = (*EQ).isEmpty();
 	}

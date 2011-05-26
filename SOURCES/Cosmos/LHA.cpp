@@ -121,27 +121,28 @@ double LHA::Integral(double& OldInt, double& t, double& Delta, double& x, double
 
 
 void LHA::Load(){
-    NbLoc =5;
-    NbVar =2;
+    NbLoc =6;
+    NbVar =4;
     InitLoc.insert(0);
     FinalLoc.insert(3);
     LocIndex["l0"]=1;
     LocIndex["l1"]=2;
     LocIndex["l2"]=3;
     LocIndex["lf"]=4;
+    LocIndex["lf2"]=5;
     LocIndex["li"]=0;
 
     vector<string> vlstr(NbLoc);
     LocLabel= vlstr;
     StrLocProperty= vlstr;
 
-    vector < vector <string> >  vestr(6);
+    vector < vector <string> >  vestr(8);
     ConstraintsRelOp= vestr;
     ConstraintsConstants= vestr;
-    vector < vector< vector <string> > > mvestr(6);
+    vector < vector< vector <string> > > mvestr(8);
     ConstraintsCoeffs= mvestr;
 
-    vector<LhaEdge> ve(6);
+    vector<LhaEdge> ve(8);
     Edge= ve;
 
     LocLabel[0]="li";
@@ -149,11 +150,13 @@ void LHA::Load(){
     LocLabel[2]="l1";
     LocLabel[3]="l2";
     LocLabel[4]="lf";
+    LocLabel[5]="lf2";
     StrLocProperty[0]="true";
     StrLocProperty[1]="true";
-    StrLocProperty[2]=" Marking[ 20 ]  == 0 &&  Marking[ 25 ]  == 0";
+    StrLocProperty[2]="(  Marking[ 0 ]  +  Marking[ 1 ]  == 50 ) && (  Marking[ 6 ]  == 0 )";
     StrLocProperty[3]="true";
-    StrLocProperty[4]=" Marking[ 23 ]  == 5 ||  Marking[ 25 ]  > 0";
+    StrLocProperty[4]="(  Marking[ 0 ]  +  Marking[ 1 ]  == 0 ) && (  Marking[ 6 ]  == 0 )";
+    StrLocProperty[5]="(  Marking[ 6 ]  > 0 )";
     Edge[0].Index=0;
     Edge[0].Source=0;
     Edge[0].Target=1;
@@ -175,9 +178,17 @@ void LHA::Load(){
     Edge[4].Target=4;
     Edge[4].Type= Auto ;
     Edge[5].Index=5;
-    Edge[5].Source=4;
-    Edge[5].Target=3;
+    Edge[5].Source=1;
+    Edge[5].Target=5;
     Edge[5].Type= Auto ;
+    Edge[6].Index=6;
+    Edge[6].Source=4;
+    Edge[6].Target=3;
+    Edge[6].Type= Auto ;
+    Edge[7].Index=7;
+    Edge[7].Source=5;
+    Edge[7].Target=3;
+    Edge[7].Type= Auto ;
 
     if (true){
     vector <string> vcstr(1);
@@ -191,6 +202,8 @@ void LHA::Load(){
     ConstraintsConstants[0][0]="0";
     ConstraintsCoeffs[0][0][0]="1";
     ConstraintsCoeffs[0][0][1]="";
+    ConstraintsCoeffs[0][0][2]="";
+    ConstraintsCoeffs[0][0][3]="";
 
     if (true){
     vector <string> vcstr(1);
@@ -204,6 +217,8 @@ void LHA::Load(){
     ConstraintsConstants[1][0]="0";
     ConstraintsCoeffs[1][0][0]="1";
     ConstraintsCoeffs[1][0][1]="";
+    ConstraintsCoeffs[1][0][2]="";
+    ConstraintsCoeffs[1][0][3]="";
 
     if (true){
     vector <string> vcstr(1);
@@ -217,6 +232,8 @@ void LHA::Load(){
     ConstraintsConstants[2][0]="0";
     ConstraintsCoeffs[2][0][0]="1";
     ConstraintsCoeffs[2][0][1]="";
+    ConstraintsCoeffs[2][0][2]="";
+    ConstraintsCoeffs[2][0][3]="";
 
     if (true){
     vector <string> vcstr(1);
@@ -230,6 +247,8 @@ void LHA::Load(){
     ConstraintsConstants[3][0]="0";
     ConstraintsCoeffs[3][0][0]="1";
     ConstraintsCoeffs[3][0][1]="";
+    ConstraintsCoeffs[3][0][2]="";
+    ConstraintsCoeffs[3][0][3]="";
 
     if (true){
     vector <string> vcstr(1);
@@ -243,6 +262,8 @@ void LHA::Load(){
     ConstraintsConstants[4][0]="0";
     ConstraintsCoeffs[4][0][0]="1";
     ConstraintsCoeffs[4][0][1]="";
+    ConstraintsCoeffs[4][0][2]="";
+    ConstraintsCoeffs[4][0][3]="";
 
     if (true){
     vector <string> vcstr(1);
@@ -256,6 +277,38 @@ void LHA::Load(){
     ConstraintsConstants[5][0]="0";
     ConstraintsCoeffs[5][0][0]="1";
     ConstraintsCoeffs[5][0][1]="";
+    ConstraintsCoeffs[5][0][2]="";
+    ConstraintsCoeffs[5][0][3]="";
+
+    if (true){
+    vector <string> vcstr(1);
+    ConstraintsRelOp[6]=vcstr;
+    ConstraintsConstants[6]=vcstr;
+    vector <string>  vcvstr(NbVar, "");
+    vector < vector <string> > v2cvstr(1,vcvstr);
+    ConstraintsCoeffs[6]=v2cvstr;
+    }
+    ConstraintsRelOp[6][0]=">=";
+    ConstraintsConstants[6][0]="0";
+    ConstraintsCoeffs[6][0][0]="1";
+    ConstraintsCoeffs[6][0][1]="";
+    ConstraintsCoeffs[6][0][2]="";
+    ConstraintsCoeffs[6][0][3]="";
+
+    if (true){
+    vector <string> vcstr(1);
+    ConstraintsRelOp[7]=vcstr;
+    ConstraintsConstants[7]=vcstr;
+    vector <string>  vcvstr(NbVar, "");
+    vector < vector <string> > v2cvstr(1,vcvstr);
+    ConstraintsCoeffs[7]=v2cvstr;
+    }
+    ConstraintsRelOp[7][0]=">=";
+    ConstraintsConstants[7][0]="0";
+    ConstraintsCoeffs[7][0][0]="1";
+    ConstraintsCoeffs[7][0][1]="";
+    ConstraintsCoeffs[7][0][2]="";
+    ConstraintsCoeffs[7][0][3]="";
 
     vector<double> vdouble(NbVar);
     vector<string> VarStr(NbVar);
@@ -267,20 +320,40 @@ void LHA::Load(){
     Var[1]=0;
     VarLabel[1]="x";
     VarIndex["x"]=1;
+    Var[2]=0;
+    VarLabel[2]="y";
+    VarIndex["y"]=2;
+    Var[3]=0;
+    VarLabel[3]="r";
+    VarIndex["r"]=3;
 
     vector<string> vStr(NbVar);
     vector< vector <string > > vvStr(NbLoc,vStr);
     StrFlow=vvStr;
     StrFlow[0][0]="";
     StrFlow[0][1]="";
+    StrFlow[0][2]="";
+    StrFlow[0][3]="";
     StrFlow[1][0]="";
     StrFlow[1][1]="";
+    StrFlow[1][2]="";
+    StrFlow[1][3]="";
     StrFlow[2][0]="";
     StrFlow[2][1]="";
+    StrFlow[2][2]="";
+    StrFlow[2][3]="";
     StrFlow[3][0]="";
     StrFlow[3][1]="";
+    StrFlow[3][2]="";
+    StrFlow[3][3]="";
     StrFlow[4][0]="";
     StrFlow[4][1]="";
+    StrFlow[4][2]="";
+    StrFlow[4][3]="";
+    StrFlow[5][0]="";
+    StrFlow[5][1]="";
+    StrFlow[5][2]="";
+    StrFlow[5][3]="";
 
     vector< set < int > > vset(NbLoc);
     Out_S_Edges =vset;
@@ -290,45 +363,27 @@ void LHA::Load(){
     Out_A_Edges[1].insert(2);
     Out_A_Edges[2].insert(3);
     Out_A_Edges[1].insert(4);
-    Out_A_Edges[4].insert(5);
+    Out_A_Edges[1].insert(5);
+    Out_A_Edges[4].insert(6);
+    Out_A_Edges[5].insert(7);
 
-    vector< set <string> > vStrSet(6);
-    vector< set<int> > vSetInt(16);
+    vector< set <string> > vStrSet(8);
+    vector< set<int> > vSetInt(6);
     vector < vector < set <int> > > vvSetInt(NbLoc,vSetInt);
     EdgeActions=vStrSet;
     ActionEdges=vvSetInt;
-    EdgeActions[1].insert("Philo1_eat");
-    ActionEdges[1][2].insert(1);
-    EdgeActions[1].insert("Philo1_fork1");
+    EdgeActions[1].insert("LambdaT");
     ActionEdges[1][0].insert(1);
-    EdgeActions[1].insert("Philo1_fork2");
-    ActionEdges[1][1].insert(1);
-    EdgeActions[1].insert("Philo2_eat");
-    ActionEdges[1][5].insert(1);
-    EdgeActions[1].insert("Philo2_fork1");
-    ActionEdges[1][3].insert(1);
-    EdgeActions[1].insert("Philo2_fork2");
-    ActionEdges[1][4].insert(1);
-    EdgeActions[1].insert("Philo3_eat");
-    ActionEdges[1][8].insert(1);
-    EdgeActions[1].insert("Philo3_fork1");
-    ActionEdges[1][6].insert(1);
-    EdgeActions[1].insert("Philo3_fork2");
-    ActionEdges[1][7].insert(1);
-    EdgeActions[1].insert("Philo4_eat");
-    ActionEdges[1][11].insert(1);
-    EdgeActions[1].insert("Philo4_fork1");
-    ActionEdges[1][9].insert(1);
-    EdgeActions[1].insert("Philo4_fork2");
-    ActionEdges[1][10].insert(1);
-    EdgeActions[1].insert("Philo5_eat");
-    ActionEdges[1][14].insert(1);
-    EdgeActions[1].insert("Philo5_fork1");
-    ActionEdges[1][12].insert(1);
-    EdgeActions[1].insert("Philo5_fork2");
-    ActionEdges[1][13].insert(1);
     EdgeActions[1].insert("Puittrans");
-    ActionEdges[1][15].insert(1);
+    ActionEdges[1][5].insert(1);
+    EdgeActions[1].insert("rho1T");
+    ActionEdges[1][1].insert(1);
+    EdgeActions[1].insert("rho1Tp");
+    ActionEdges[1][2].insert(1);
+    EdgeActions[1].insert("rho2T");
+    ActionEdges[1][3].insert(1);
+    EdgeActions[1].insert("rho2Tp");
+    ActionEdges[1][4].insert(1);
     if(true){
     			vector<double> vL(1,0);
     			LinForm=vL;
@@ -357,6 +412,9 @@ double LHA::GetFlow(int v, int loc, vector<int>& Marking){
          case 4:
              return 1;
              break;
+         case 5:
+             return 1;
+             break;
        }
        break;
     case 1:
@@ -376,6 +434,53 @@ double LHA::GetFlow(int v, int loc, vector<int>& Marking){
          case 4:
              return 0;
              break;
+         case 5:
+             return 0;
+             break;
+       }
+       break;
+    case 2:
+         switch(loc){
+         case 0:
+             return 0;
+             break;
+         case 1:
+             return 0;
+             break;
+         case 2:
+             return 0;
+             break;
+         case 3:
+             return 0;
+             break;
+         case 4:
+             return 0;
+             break;
+         case 5:
+             return 0;
+             break;
+       }
+       break;
+    case 3:
+         switch(loc){
+         case 0:
+             return 0;
+             break;
+         case 1:
+             return 0;
+             break;
+         case 2:
+             return 0;
+             break;
+         case 3:
+             return 0;
+             break;
+         case 4:
+             return 0;
+             break;
+         case 5:
+             return 0;
+             break;
        }
        break;
 	}
@@ -391,13 +496,16 @@ bool LHA::CheckLocation(int loc, vector<int>& Marking){
          return true;
          break;
      case 2:
-         return  Marking[ 20 ]  == 0 &&  Marking[ 25 ]  == 0;
+         return (  Marking[ 0 ]  +  Marking[ 1 ]  == 50 ) && (  Marking[ 6 ]  == 0 );
          break;
      case 3:
          return true;
          break;
      case 4:
-         return  Marking[ 23 ]  == 5 ||  Marking[ 25 ]  > 0;
+         return (  Marking[ 0 ]  +  Marking[ 1 ]  == 0 ) && (  Marking[ 6 ]  == 0 );
+         break;
+     case 5:
+         return (  Marking[ 6 ]  > 0 );
          break;
     }
 }
@@ -430,7 +538,17 @@ bool LHA::CheckEdgeContraints(int ed, double DeltaT, vector<int>& Marking){
          break;
      }
     case 5: {
+         if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,1, Marking))>=0)) return false;
+         return true; 
+         break;
+     }
+    case 6: {
          if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,4, Marking))>=0)) return false;
+         return true; 
+         break;
+     }
+    case 7: {
+         if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,5, Marking))>=0)) return false;
          return true; 
          break;
      }
@@ -456,6 +574,12 @@ t_interval LHA::GetEdgeEnablingTime(int ed, vector<int>& Marking){
          break;
      case 5:
          return GetEdgeEnablingTime_5( Marking);
+         break;
+     case 6:
+         return GetEdgeEnablingTime_6( Marking);
+         break;
+     case 7:
+         return GetEdgeEnablingTime_7( Marking);
          break;
     }
 }
@@ -655,7 +779,79 @@ t_interval LHA::GetEdgeEnablingTime_5(vector<int>& Marking){
     double SumAX;
 
 
+    SumAF=+(1)*GetFlow(0,1, Marking);
+    SumAX=+(1)*Var[0];
+
+    if(SumAF==0){
+         if(!(SumAX>=0))
+             return EmptyInterval;
+    }
+    else{
+         double t=CurrentTime+(0-SumAX)/(double)SumAF;
+         if(SumAF>0){
+            if(EnablingT.first<t) EnablingT.first=t;
+            if(EnablingT.second<EnablingT.first) return EmptyInterval;
+             }
+         else{
+            if(EnablingT.second>t) EnablingT.second=t;
+            if(EnablingT.second<EnablingT.first) return EmptyInterval;
+             }
+    }
+    return EnablingT;
+}
+
+t_interval LHA::GetEdgeEnablingTime_6(vector<int>& Marking){
+    t_interval EnablingT;
+
+    EnablingT.first=CurrentTime;
+    EnablingT.second=DBL_MAX;
+
+    t_interval EmptyInterval;
+
+    EmptyInterval.first=0;
+    EmptyInterval.second=-1;
+
+    double SumAF;
+    double SumAX;
+
+
     SumAF=+(1)*GetFlow(0,4, Marking);
+    SumAX=+(1)*Var[0];
+
+    if(SumAF==0){
+         if(!(SumAX>=0))
+             return EmptyInterval;
+    }
+    else{
+         double t=CurrentTime+(0-SumAX)/(double)SumAF;
+         if(SumAF>0){
+            if(EnablingT.first<t) EnablingT.first=t;
+            if(EnablingT.second<EnablingT.first) return EmptyInterval;
+             }
+         else{
+            if(EnablingT.second>t) EnablingT.second=t;
+            if(EnablingT.second<EnablingT.first) return EmptyInterval;
+             }
+    }
+    return EnablingT;
+}
+
+t_interval LHA::GetEdgeEnablingTime_7(vector<int>& Marking){
+    t_interval EnablingT;
+
+    EnablingT.first=CurrentTime;
+    EnablingT.second=DBL_MAX;
+
+    t_interval EmptyInterval;
+
+    EmptyInterval.first=0;
+    EmptyInterval.second=-1;
+
+    double SumAF;
+    double SumAX;
+
+
+    SumAF=+(1)*GetFlow(0,5, Marking);
     SumAX=+(1)*Var[0];
 
     if(SumAF==0){
@@ -696,13 +892,21 @@ void LHA::DoEdgeUpdates(int ed, vector<int>& Marking){
      case 5:
          DoEdgeUpdates_5( Marking);
          break;
+     case 6:
+         DoEdgeUpdates_6( Marking);
+         break;
+     case 7:
+         DoEdgeUpdates_7( Marking);
+         break;
     }
 }
 
 void LHA::DoEdgeUpdates_0(vector<int>& Marking){
     vector<double> TempVar(NbVar);
     TempVar[1]=1;
+    TempVar[2]=1;
     Var[1]=TempVar[1];
+    Var[2]=TempVar[2];
 
     OldLinForm[0]=LinForm[0];
     }
@@ -721,6 +925,9 @@ void LHA::DoEdgeUpdates_2(vector<int>& Marking){
     }
 
 void LHA::DoEdgeUpdates_3(vector<int>& Marking){
+    vector<double> TempVar(NbVar);
+    TempVar[3]=0;
+    Var[3]=TempVar[3];
 
     OldLinForm[0]=LinForm[0];
     }
@@ -728,12 +935,33 @@ void LHA::DoEdgeUpdates_3(vector<int>& Marking){
 void LHA::DoEdgeUpdates_4(vector<int>& Marking){
     vector<double> TempVar(NbVar);
     TempVar[1]=0;
+    TempVar[2]=0;
+    TempVar[3]=Var[1];
     Var[1]=TempVar[1];
+    Var[2]=TempVar[2];
+    Var[3]=TempVar[3];
 
     OldLinForm[0]=LinForm[0];
     }
 
 void LHA::DoEdgeUpdates_5(vector<int>& Marking){
+    vector<double> TempVar(NbVar);
+    TempVar[1]=0;
+    TempVar[2]=0;
+    TempVar[3]=Var[1];
+    Var[1]=TempVar[1];
+    Var[2]=TempVar[2];
+    Var[3]=TempVar[3];
+
+    OldLinForm[0]=LinForm[0];
+    }
+
+void LHA::DoEdgeUpdates_6(vector<int>& Marking){
+
+    OldLinForm[0]=LinForm[0];
+    }
+
+void LHA::DoEdgeUpdates_7(vector<int>& Marking){
 
     OldLinForm[0]=LinForm[0];
     }
