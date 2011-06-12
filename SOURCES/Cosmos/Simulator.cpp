@@ -309,8 +309,8 @@ void Simulator::SimulateSinglePath() {
 	  (*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
 	  //--------- /Rare Event ---------------
 	  
-	  /*(*EQ).view();
-	  for(int i =0; i< N.Marking.size();i++){
+	  //(*EQ).view();
+	  /*for(int i =0; i< N.Marking.size();i++){
 	    cout << N.Place[i].label <<" = "<< N.Marking[i] << " ; ";
 	  };
 	  cout << endl;*/
@@ -492,11 +492,14 @@ void Simulator::RunSimulation() {
     CurrentWidth = 2 * z_percentile * stdev / Ksucc_sqrt;
     //-------------- Rare Event -----------------
       cout << "\033[A\033[2K" << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
+
+    //RelErr = CurrentWidth / max(1, abs(Mean)); <- ligne original
+      RelErr = CurrentWidth /  abs(Mean);
     //------------- /Rare Event -----------------
+
     
-    RelErr = CurrentWidth / max(1, abs(Mean));
     
-  } while (/*(RelErr > ConfWidth) &&*/ (K < MaxRuns));
+  } while ((RelErr > ConfWidth) && (K < MaxRuns));
   
   
   
