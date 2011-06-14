@@ -514,7 +514,7 @@ void Simulator::RunSimulation() {
   cout << "Confidence interval: [" << low << "," << up << "]" << endl;
   cout << "Standard deviation: " << stdev << "\tWidth: " << CurrentWidth << endl;
   cout << "Total paths: " << K << "\tAccepted paths: " << Ksucc << endl;
-  
+  cout << "z_percentile=\t" << z_percentile<< endl;
   
 
   end = clock();

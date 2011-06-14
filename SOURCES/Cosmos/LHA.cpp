@@ -153,10 +153,10 @@ void LHA::Load(){
     LocLabel[5]="lf2";
     StrLocProperty[0]="true";
     StrLocProperty[1]="true";
-    StrLocProperty[2]="(  Marking[ 0 ]  +  Marking[ 1 ]  == 1000 ) && (  Marking[ 6 ]  == 0 )";
+    StrLocProperty[2]="(  Marking[ 2 ]  == 160 ) && (  Marking[ 5 ]  == 0 )";
     StrLocProperty[3]="true";
-    StrLocProperty[4]="(  Marking[ 0 ]  +  Marking[ 1 ]  == 0 ) && (  Marking[ 6 ]  == 0 )";
-    StrLocProperty[5]="(  Marking[ 6 ]  > 0 )";
+    StrLocProperty[4]="(  Marking[ 2 ]  == 0 ) && (  Marking[ 5 ]  == 0 )";
+    StrLocProperty[5]="(  Marking[ 5 ]  > 0 )";
     Edge[0].Index=0;
     Edge[0].Source=0;
     Edge[0].Target=1;
@@ -374,15 +374,15 @@ void LHA::Load(){
     ActionEdges=vvSetInt;
     EdgeActions[1].insert("LambdaT");
     ActionEdges[1][0].insert(1);
+    EdgeActions[1].insert("LambdaTp");
+    ActionEdges[1][1].insert(1);
     EdgeActions[1].insert("Puittrans");
     ActionEdges[1][5].insert(1);
     EdgeActions[1].insert("rho1T");
-    ActionEdges[1][1].insert(1);
-    EdgeActions[1].insert("rho1Tp");
     ActionEdges[1][2].insert(1);
-    EdgeActions[1].insert("rho2T");
+    EdgeActions[1].insert("rho1Tp");
     ActionEdges[1][3].insert(1);
-    EdgeActions[1].insert("rho2Tp");
+    EdgeActions[1].insert("rho2T");
     ActionEdges[1][4].insert(1);
     if(true){
     			vector<double> vL(1,0);
@@ -496,16 +496,16 @@ bool LHA::CheckLocation(int loc, vector<int>& Marking){
          return true;
          break;
      case 2:
-         return (  Marking[ 0 ]  +  Marking[ 1 ]  == 1000 ) && (  Marking[ 6 ]  == 0 );
+         return (  Marking[ 2 ]  == 160 ) && (  Marking[ 5 ]  == 0 );
          break;
      case 3:
          return true;
          break;
      case 4:
-         return (  Marking[ 0 ]  +  Marking[ 1 ]  == 0 ) && (  Marking[ 6 ]  == 0 );
+         return (  Marking[ 2 ]  == 0 ) && (  Marking[ 5 ]  == 0 );
          break;
      case 5:
-         return (  Marking[ 6 ]  > 0 );
+         return (  Marking[ 5 ]  > 0 );
          break;
     }
 }
