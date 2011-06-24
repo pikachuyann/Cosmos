@@ -153,7 +153,7 @@ void LHA::Load(){
     LocLabel[5]="lf2";
     StrLocProperty[0]="true";
     StrLocProperty[1]="true";
-    StrLocProperty[2]="(  Marking[ 2 ]  == 160 ) && (  Marking[ 5 ]  == 0 )";
+    StrLocProperty[2]="(  Marking[ 2 ]  == 1000 ) && (  Marking[ 5 ]  == 0 )";
     StrLocProperty[3]="true";
     StrLocProperty[4]="(  Marking[ 2 ]  == 0 ) && (  Marking[ 5 ]  == 0 )";
     StrLocProperty[5]="(  Marking[ 5 ]  > 0 )";
@@ -496,7 +496,7 @@ bool LHA::CheckLocation(int loc, vector<int>& Marking){
          return true;
          break;
      case 2:
-         return (  Marking[ 2 ]  == 160 ) && (  Marking[ 5 ]  == 0 );
+         return (  Marking[ 2 ]  == 1000 ) && (  Marking[ 5 ]  == 0 );
          break;
      case 3:
          return true;
