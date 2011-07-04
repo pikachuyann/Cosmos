@@ -20,7 +20,7 @@ void TAB::load(){
   int poseq;
   string pos;
   string prob;
-  ifstream myfile ("philoapprox");
+  ifstream myfile ("mu_table");
   if (myfile.is_open())
  { 
     while ( myfile.good() )
@@ -61,6 +61,6 @@ void TAB::load(){
 
     }
 
-  else cout << "Unable to open file"; 
+  else cout << "Unable to open file" << endl ; 
 
 };

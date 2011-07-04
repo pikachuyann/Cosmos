@@ -46,16 +46,9 @@ void SPN::setMarking(vector<int>& M) {
 
 void SPN::EnabledDisabledTr() {
 
-    PossiblyEnabled = new Dim2;
-    PossiblyDisabled = new Dim2;
-    //-------------- Rare Event -----------------
-    /*vector<int> AllEnabled;
-      for (int i =0; i< tr; i++){ AllEnabled.push_back(i); };*/
-    //------------- /Rare Event -----------------
-
     for (int t1 = 0; t1 < tr; t1++) {
-        Dim1 V;
-        Dim1 Vinhib;
+        set<int> S;
+        set<int> Sinhib;
         set<int> INt1;
         for (int p = 0; p < pl; p++) {
             if (inArcs[t1][p] > 0) {
@@ -73,7 +66,7 @@ void SPN::EnabledDisabledTr() {
                         INt1t2.insert(p);
                         if (size == INt1t2.size()) {
                             B = false;
-                            V.push_back(t2);
+                            S.insert(t2);
                         } else size = INt1t2.size();
                     }
                     p++;
@@ -88,7 +81,7 @@ void SPN::EnabledDisabledTr() {
                         INt1t2Inhib.insert(p);
                         if (size == INt1t2Inhib.size()) {
                             B = false;
-                            Vinhib.push_back(t2);
+                            Sinhib.insert(t2);
                         } else size = INt1t2Inhib.size();
                     }
                     p++;
@@ -97,11 +90,12 @@ void SPN::EnabledDisabledTr() {
             }
 
 
-        (*PossiblyDisabled).push_back(V);
-        (*PossiblyEnabled).push_back(Vinhib);
+        PossiblyDisabled.push_back(S);
+        PossiblyEnabled.push_back(Sinhib);
     }
     for (int t1 = 0; t1 < tr; t1++) {
-        Dim1 V = (*PossiblyEnabled)[t1];
+        set<int> S = PossiblyEnabled[t1];
+        set<int> Sinhib = PossiblyDisabled[t1];
         set<int> OUTt1;
         for (int p = 0; p < pl; p++)
             if (outArcs[t1][p] > 0)
@@ -117,27 +111,58 @@ void SPN::EnabledDisabledTr() {
                         OUTt1INt2.insert(p);
                         if (size == OUTt1INt2.size()) {
                             B = false;
-                            V.push_back(t2);
+                            S.insert(t2);
                         } else size = OUTt1INt2.size();
                     }
                     p++;
                 }
+                size = OUTt1.size();
+                set<int> OUTt1t2Inhib = OUTt1;
+                B = true;
+                p = 0;
+                while (B && p < pl) {
+                    if (inhibArcs[t2][p] > 0) {
+                        OUTt1t2Inhib.insert(p);
+                        if (size == OUTt1t2Inhib.size()) {
+                            B = false;
+                            Sinhib.insert(t2);
+                        } else size = OUTt1t2Inhib.size();
+                    }
+                    p++;
+                }
+
             }
-	//-------------- Rare Event -----------------
-	(*PossiblyEnabled)[t1] = V;    //Ligne original
-	//(*PossiblyEnabled)[t1]=AllEnabled;
-	//------------- /Rare Event -----------------
+        PossiblyEnabled[t1] = S;
+        PossiblyDisabled[t1] = Sinhib;
+    }
+
+    set<int> MarkDepT;
+    for (int t = 0; t < tr; t++)
+        if (Transition[t].MarkingDependent)
+            MarkDepT.insert(t);
+
+    for (int t = 0; t < tr; t++) {
+        set<int> S;
+        for (set<int>::iterator it = MarkDepT.begin(); it != MarkDepT.end(); it++) {
+            if ((PossiblyEnabled[t].find((*it)) == PossiblyEnabled[t].end()) && (PossiblyDisabled[t].find((*it)) == PossiblyDisabled[t].end()))
+                S.insert((*it));
+
+        }
+        FreeMarkDepT.push_back(S);
+
     }
 
 
+
+
 }
 
-Dim1 SPN::PossiblyEn(int t) {
-    return (*PossiblyEnabled)[t];
+set<int> SPN::PossiblyEn(int t) {
+    return (PossiblyEnabled)[t];
 }
 
-Dim1 SPN::PossiblyDis(int t) {
-    return (*PossiblyDisabled)[t];
+set<int> SPN::PossiblyDis(int t) {
+    return (PossiblyDisabled)[t];
 }
 
 vector<int> SPN::getMarking() {
@@ -154,6 +179,7 @@ double SPN::max(double x1, double x2) {
     else return x2;
 }
 
+//------------------- Rare Event -----------------------------------------------
 void SPN::Msimple(){
   vector<int> tab;
   for(vector<spn_place>::iterator it=Place.begin(); it != Place.end(); it++){
@@ -165,3 +191,4 @@ void SPN::Msimple(){
   }
   Msimpletab = tab;
 }
+//-------------------/Rare Event -----------------------------------------------

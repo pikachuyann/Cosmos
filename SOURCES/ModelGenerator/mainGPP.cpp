@@ -6,6 +6,7 @@
 #include <sstream>
 #include <unistd.h>
 
+//#include "directsim.hpp"
 #include "./LhaParser/Lha-Reader.hpp"
 #include "./GspnParser/Gspn-Reader.hpp"
 
@@ -33,6 +34,7 @@ void ViewParameters(SimParam& P) {
     cout << "Maximum number of trajectories: " << P.MaxRuns << endl;
     cout << "Batch size:                     " << P.Batch << endl;
 }
+
 
 double StrToDbl(string st) {
 
@@ -209,16 +211,6 @@ void Command(string str, SimParam& P) {
         cout << "Unknown command, for more information type 'help':\n" << endl;
 }
 
-void DirectSim(string filename, SimParam& P) {
-
-    if (ParseBuild(filename, P)) {
-        ostringstream os;
-        if (P.Path == "") os << "./SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
-        else os << P.Path << "SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
-        system((os.str()).c_str());
-
-    }
-}
 
 void LoadSimParam(SimParam& P) {
     P.Level = 0.99;
@@ -246,6 +238,17 @@ void FindPathMac(SimParam& P) {
     //to be done
     cout << "Unknow Cosmos directory" << endl;
     exit(1);
+}
+
+void DirectSim(string filename, SimParam& P) {
+
+    if (ParseBuild(filename, P)) {
+        ostringstream os;
+        if (P.Path == "") os << "./SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
+        else os << P.Path << "SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
+        system((os.str()).c_str());
+
+    }
 }
 
 int main(int argc, char** argv) {

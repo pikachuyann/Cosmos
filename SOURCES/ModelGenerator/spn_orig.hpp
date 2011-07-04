@@ -20,7 +20,8 @@ struct _trans {
     vector<string> DistParams;
     string priority;
     string weight;
-    bool MarkingDependent;
+    bool MarkingDependent; // true if the transition is Marking Dependent
+    bool AgeMemory; // true if the memory policy of the transition is age memory
 };
 typedef struct _trans spn_trans;
 
@@ -37,15 +38,14 @@ typedef vector <IntVector> IntMatrix;
 
 class SPN {
 public:
-
-    // Modification evenements rares.
+  //------------------------- Rare Event ---------------------------------------
   vector <double> Rate_Table;
   vector <double> Origine_Rate_Table;
   double Rate_Sum;
   double Origine_Rate_Sum;
-  vector <int> Msimpletab;
-  TAB gammaprob;
-  
+  vector <int> Msimpletab; //special places
+  TAB gammaprob;  // mu(s) table
+  //-------------------------/Rare Event ---------------------------------------
 
     SPN();
     void Load();
@@ -55,8 +55,14 @@ public:
     int pl; // Number of places
     int tr; // Number of transitions
     set<int, less<int> > enTrans; // the set of current enabled transition
-    IntMatrix* PossiblyEnabled; //a matrix, where a row t of PossiblyEnabled refers to transitions that may be enabled after firing t
-    IntMatrix* PossiblyDisabled; //a matrix, where a row t of PossiblyDisabled refers to transitions that may be disabled after firing t
+    // IntMatrix* PossiblyEnabled; //a matrix, where a row t of PossiblyEnabled refers to transitions that may be enabled after firing t
+    //  IntMatrix* PossiblyDisabled; //a matrix, where a row t of PossiblyDisabled refers to transitions that may be disabled after firing t
+    //  IntMatrix* FreeMarkDepT; //a matrix, where a row t of FreeMarkDepT refers to transitions which are marking dependent
+    //but are not in (PossiblyEnabled[t] or PossiblyDisabled[t])
+
+    vector< set<int> > PossiblyEnabled;
+    vector< set<int> > PossiblyDisabled;
+    vector< set<int> > FreeMarkDepT;
 
     vector <int> Marking; // Current marking
     vector <int> initMarking; //initial marking
@@ -71,15 +77,16 @@ public:
     map <string, int> PlaceIndex; // for a given place label return its index among {0, 1, ..., pl-1}
     map <string, int> TransitionIndex; // for a given transition label return its index among {0, 1, ..., tr-1}
 
-    //  map <int, string> PlaceLabel;// for a given place index return its label
-    //  map <int, string> TransitionLabel;// for a given transition index return its label
+
 
 
 
     double min(double, double); //return the minimum of two numbers
     double max(double, double); //return the maximum of two numbers
 
+  //------------------------- Rare Event ---------------------------------------
   void Msimple();
+  //-------------------------/Rare Event ---------------------------------------
 
 
     vector<int> getMarking(); //return  the current marking
@@ -88,8 +95,8 @@ public:
 
 
     void EnabledDisabledTr(); // contruct for each transition t, the vector of transitions that may be enabled (PossiblyEnabled) and the vector of transitions that may be disabled (PossiblyDisabled) after firing t
-    Dim1 PossiblyEn(int); // for a given transition t, return the vector of transitions that may be enabled after firing t  (it is the row t of PossiblyEnabled)
-    Dim1 PossiblyDis(int); // for a given transition t, return the vector of transitions that may be disabled after firing t  (it is the row t of PossiblyDisabled)
+    set<int> PossiblyEn(int); // for a given transition t, return the vector of transitions that may be enabled after firing t  (it is the row t of PossiblyEnabled)
+    set<int> PossiblyDis(int); // for a given transition t, return the vector of transitions that may be disabled after firing t  (it is the row t of PossiblyDisabled)
 
 
     void reset(); // set the marking to the initial marking
@@ -99,11 +106,13 @@ public:
 
     void fire(int); // fire a given transition
     void unfire(int); // unfire a given transition
+
     bool IsEnabled(int); // Check if a given transition is enabled
     vector<double> GetDistParameters(int); // compute the the parameters value of a given distribution 
-   //------------ Rare Event ---------------------
+  //------------------------- Rare Event ---------------------------------------
   vector<double> GetDistParametersOrigin(int);
-  //------------ /Rare Event -------------------
+  //-------------------------/Rare Event ---------------------------------------
+
 
     double GetWeight(int); // compute the the weight value of a given transition
     double GetPriority(int); // compute the the priority value of a given transition

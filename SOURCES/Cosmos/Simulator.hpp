@@ -28,7 +28,9 @@ public:
     Simulator(const Simulator& orig);
     virtual ~Simulator();
     void SimulateSinglePath();
-    void InitialEventsQueue();
+  void SimulateSinglePathRE();
+  void InitialEventsQueue();
+  void InitialEventsQueueRE();
 
     void RunSimulation();
 
@@ -52,12 +54,13 @@ public:
 
 
   void GenerateEvent(Event &, int);
+  void GenerateEventRE(Event &, int);
   void GenerateDummyEvent(Event &, int);
-    double GenerateTime(string&, vector<double>&);
+  double GenerateTime(string&, vector<double>&);
 
-    double max(double, double);
-
-    void resetSimVarsTable();
+  double max(double, double);
+  
+  void resetSimVarsTable();
     void reset();
 
     SPN N;
