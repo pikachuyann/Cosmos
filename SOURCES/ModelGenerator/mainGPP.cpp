@@ -290,7 +290,7 @@ int main(int argc, char** argv) {
         string str;
         cout << "COSMOS: ";
         getline(cin, str);
-        if (str == "stop")
+        if (str == "stop" || cin.eof())
             break;
         else Command(str, P);
 
