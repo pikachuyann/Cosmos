@@ -26,6 +26,7 @@ using namespace std;
     int Batch;
     long int MaxRuns;
     string Path;
+   bool RareEvent;
 };
 
 void ViewParameters(SimParam& P) {
@@ -33,6 +34,7 @@ void ViewParameters(SimParam& P) {
     cout << "Confidence interval level:      " << P.Level << endl;
     cout << "Maximum number of trajectories: " << P.MaxRuns << endl;
     cout << "Batch size:                     " << P.Batch << endl;
+    cout << "Rare Event:                     " << P.RareEvent << endl;
 }
 
 
@@ -139,6 +141,7 @@ void Command(string str, SimParam& P) {
             ostringstream os;
             if (P.Path == "") os << "./SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
             else os << P.Path << "SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
+	    if(P.RareEvent){ os << " " << "-RE"; };
             system((os.str()).c_str());
 
         }
@@ -193,7 +196,17 @@ void Command(string str, SimParam& P) {
             P.MaxRuns = y;
             cout << "New maxpaths: " << y << endl;
         }
-
+    } else if (str == "rareevent") {
+      string st;
+      cout << "Type true for Rare Event acceleration: ";
+      getline(cin, st);
+      
+      if (st == "true")
+	P.RareEvent = true;
+      else {
+	P.RareEvent = false;
+      }
+      
     } else if (str == "params") {
 
         ViewParameters(P);
@@ -204,6 +217,7 @@ void Command(string str, SimParam& P) {
         cout << "\tlevel" << endl;
         cout << "\tbatch" << endl;
         cout << "\tmaxpaths" << endl;
+	cout << "\trareevent" << endl;
         cout << "\tparams" << endl;
         cout << "\thelp" << endl;
         cout << "\tstop\n" << endl;
@@ -217,6 +231,7 @@ void LoadSimParam(SimParam& P) {
     P.Width = 0.001;
     P.Batch =   1000;
     P.MaxRuns = 2000000;
+    P.RareEvent = false;
 }
 
 void FindPathLinux(SimParam& P) {
@@ -246,6 +261,8 @@ void DirectSim(string filename, SimParam& P) {
         ostringstream os;
         if (P.Path == "") os << "./SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
         else os << P.Path << "SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
+	if(P.RareEvent){ os << " " << "-RE"; };
+	cout << "command: " << os << endl;
         system((os.str()).c_str());
 
     }

@@ -20,6 +20,7 @@ Simulator::Simulator() {
 }
 
 void Simulator::Load() {
+  RareEvent_mode = false;
   N.Load();
   A.Load();
   int n = N.tr;
@@ -445,8 +446,12 @@ void Simulator::RunSimulation() {
         Isucc = 0;
         while ((Isucc < BatchSize) && (K <= MaxRuns)) {
 
-	  //SimulateSinglePath();
-	  SimulateSinglePathRE();
+	  if(RareEvent_mode){
+	    SimulateSinglePathRE();
+	  }else{
+	    SimulateSinglePath();
+	  };
+	  
 
             if (Result.first) {
 	      //------------------ Rare Event -----------------

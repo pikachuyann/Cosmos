@@ -64,6 +64,12 @@ int main(int argc, char** argv) {
     str = argv[4];
     mySim.SetMaxRuns(StrToLongInt(str));
 
+    if(argc > 5){
+      str = argv[5];
+      if(str== "-RE")mySim.RareEvent_mode=true;
+    };
+    
+
     mySim.RunSimulation();
 
     return (EXIT_SUCCESS);

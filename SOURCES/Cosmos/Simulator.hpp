@@ -22,6 +22,9 @@ typedef pair<bool, double> SimOutput;
 
 class Simulator {
 public:
+
+  bool RareEvent_mode;
+
     Simulator();
     void Load();
 
