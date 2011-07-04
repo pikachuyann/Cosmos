@@ -163,7 +163,7 @@ void Lha_Reader::WriteFile(string& Pref) {
     for (int i = 0; i < MyLha.Edge.size(); i++) {
 
         int NbC = MyLha.ConstraintsRelOp[i].size();
-        // cout<<i<<" Nbc="<< MyLha.ConstraintsCoeffs[i].size()<<endl;
+
         LhaCppFile << "\n    if (true){" << endl;
         LhaCppFile << "    vector <string> vcstr(" << NbC << ");" << endl;
         LhaCppFile << "    ConstraintsRelOp[" << i << "]=vcstr;" << endl;
@@ -332,12 +332,12 @@ void Lha_Reader::WriteFile(string& Pref) {
 
         LhaCppFile << "    double SumAF;" << endl;
         LhaCppFile << "    double SumAX;" << endl;
-        //LhaCppFile << "    string RelOP;\n" << endl;
+
 
 
         LhaCppFile << "\n" << endl;
 
-        //cout << "edge" << e << " (" <<  MyLha.Edge[e].Source << "," <<  MyLha.Edge[e].Target << "): " <<  MyLha.ConstraintsRelOp[e].size() << endl;
+
         for (int c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
 
             LhaCppFile << "    SumAF=";

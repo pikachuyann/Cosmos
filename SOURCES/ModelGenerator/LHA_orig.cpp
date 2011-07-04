@@ -75,9 +75,10 @@ void LHA::resetVarsTable() {
 }
 
 void LHA::reset(vector<int>& Marking) {
-    LHA::resetVarsTable();
-    CurrentLocation = EnabledInitLocation(Marking);
-    CurrentTime = 0;
+  Likelihood = 1.0;
+  LHA::resetVarsTable();
+  CurrentLocation = EnabledInitLocation(Marking);
+  CurrentTime = 0;
 }
 
 void LHA::setCurrentLocation(unsigned int loc) {

@@ -75,9 +75,10 @@ void LHA::resetVarsTable() {
 }
 
 void LHA::reset(vector<int>& Marking) {
-    LHA::resetVarsTable();
-    CurrentLocation = EnabledInitLocation(Marking);
-    CurrentTime = 0;
+  Likelihood = 1.0;
+  LHA::resetVarsTable();
+  CurrentLocation = EnabledInitLocation(Marking);
+  CurrentTime = 0;
 }
 
 void LHA::setCurrentLocation(unsigned int loc) {
@@ -122,7 +123,7 @@ double LHA::Integral(double& OldInt, double& t, double& Delta, double& x, double
 
 void LHA::Load(){
     NbLoc =6;
-    NbVar =4;
+    NbVar =1;
     InitLoc.insert(0);
     FinalLoc.insert(3);
     LocIndex["l0"]=1;
@@ -153,7 +154,7 @@ void LHA::Load(){
     LocLabel[5]="lf2";
     StrLocProperty[0]="true";
     StrLocProperty[1]="true";
-    StrLocProperty[2]="(  Marking[ 0 ]  +  Marking[ 1 ]  == 10 ) && (  Marking[ 6 ]  == 0 )";
+    StrLocProperty[2]="(  Marking[ 0 ]  +  Marking[ 1 ]  == 50 ) && (  Marking[ 6 ]  == 0 )";
     StrLocProperty[3]="true";
     StrLocProperty[4]="(  Marking[ 0 ]  +  Marking[ 1 ]  == 0 ) && (  Marking[ 6 ]  == 0 )";
     StrLocProperty[5]="(  Marking[ 6 ]  > 0 )";
@@ -191,169 +192,94 @@ void LHA::Load(){
     Edge[7].Type= Auto ;
 
     if (true){
-    vector <string> vcstr(1);
+    vector <string> vcstr(0);
     ConstraintsRelOp[0]=vcstr;
     ConstraintsConstants[0]=vcstr;
     vector <string>  vcvstr(NbVar, "");
-    vector < vector <string> > v2cvstr(1,vcvstr);
+    vector < vector <string> > v2cvstr(0,vcvstr);
     ConstraintsCoeffs[0]=v2cvstr;
     }
-    ConstraintsRelOp[0][0]=">=";
-    ConstraintsConstants[0][0]="0";
-    ConstraintsCoeffs[0][0][0]="1";
-    ConstraintsCoeffs[0][0][1]="";
-    ConstraintsCoeffs[0][0][2]="";
-    ConstraintsCoeffs[0][0][3]="";
 
     if (true){
-    vector <string> vcstr(1);
+    vector <string> vcstr(0);
     ConstraintsRelOp[1]=vcstr;
     ConstraintsConstants[1]=vcstr;
     vector <string>  vcvstr(NbVar, "");
-    vector < vector <string> > v2cvstr(1,vcvstr);
+    vector < vector <string> > v2cvstr(0,vcvstr);
     ConstraintsCoeffs[1]=v2cvstr;
     }
-    ConstraintsRelOp[1][0]=">=";
-    ConstraintsConstants[1][0]="0";
-    ConstraintsCoeffs[1][0][0]="1";
-    ConstraintsCoeffs[1][0][1]="";
-    ConstraintsCoeffs[1][0][2]="";
-    ConstraintsCoeffs[1][0][3]="";
 
     if (true){
-    vector <string> vcstr(1);
+    vector <string> vcstr(0);
     ConstraintsRelOp[2]=vcstr;
     ConstraintsConstants[2]=vcstr;
     vector <string>  vcvstr(NbVar, "");
-    vector < vector <string> > v2cvstr(1,vcvstr);
+    vector < vector <string> > v2cvstr(0,vcvstr);
     ConstraintsCoeffs[2]=v2cvstr;
     }
-    ConstraintsRelOp[2][0]=">=";
-    ConstraintsConstants[2][0]="0";
-    ConstraintsCoeffs[2][0][0]="1";
-    ConstraintsCoeffs[2][0][1]="";
-    ConstraintsCoeffs[2][0][2]="";
-    ConstraintsCoeffs[2][0][3]="";
 
     if (true){
-    vector <string> vcstr(1);
+    vector <string> vcstr(0);
     ConstraintsRelOp[3]=vcstr;
     ConstraintsConstants[3]=vcstr;
     vector <string>  vcvstr(NbVar, "");
-    vector < vector <string> > v2cvstr(1,vcvstr);
+    vector < vector <string> > v2cvstr(0,vcvstr);
     ConstraintsCoeffs[3]=v2cvstr;
     }
-    ConstraintsRelOp[3][0]=">=";
-    ConstraintsConstants[3][0]="0";
-    ConstraintsCoeffs[3][0][0]="1";
-    ConstraintsCoeffs[3][0][1]="";
-    ConstraintsCoeffs[3][0][2]="";
-    ConstraintsCoeffs[3][0][3]="";
 
     if (true){
-    vector <string> vcstr(1);
+    vector <string> vcstr(0);
     ConstraintsRelOp[4]=vcstr;
     ConstraintsConstants[4]=vcstr;
     vector <string>  vcvstr(NbVar, "");
-    vector < vector <string> > v2cvstr(1,vcvstr);
+    vector < vector <string> > v2cvstr(0,vcvstr);
     ConstraintsCoeffs[4]=v2cvstr;
     }
-    ConstraintsRelOp[4][0]=">=";
-    ConstraintsConstants[4][0]="0";
-    ConstraintsCoeffs[4][0][0]="1";
-    ConstraintsCoeffs[4][0][1]="";
-    ConstraintsCoeffs[4][0][2]="";
-    ConstraintsCoeffs[4][0][3]="";
 
     if (true){
-    vector <string> vcstr(1);
+    vector <string> vcstr(0);
     ConstraintsRelOp[5]=vcstr;
     ConstraintsConstants[5]=vcstr;
     vector <string>  vcvstr(NbVar, "");
-    vector < vector <string> > v2cvstr(1,vcvstr);
+    vector < vector <string> > v2cvstr(0,vcvstr);
     ConstraintsCoeffs[5]=v2cvstr;
     }
-    ConstraintsRelOp[5][0]=">=";
-    ConstraintsConstants[5][0]="0";
-    ConstraintsCoeffs[5][0][0]="1";
-    ConstraintsCoeffs[5][0][1]="";
-    ConstraintsCoeffs[5][0][2]="";
-    ConstraintsCoeffs[5][0][3]="";
 
     if (true){
-    vector <string> vcstr(1);
+    vector <string> vcstr(0);
     ConstraintsRelOp[6]=vcstr;
     ConstraintsConstants[6]=vcstr;
     vector <string>  vcvstr(NbVar, "");
-    vector < vector <string> > v2cvstr(1,vcvstr);
+    vector < vector <string> > v2cvstr(0,vcvstr);
     ConstraintsCoeffs[6]=v2cvstr;
     }
-    ConstraintsRelOp[6][0]=">=";
-    ConstraintsConstants[6][0]="0";
-    ConstraintsCoeffs[6][0][0]="1";
-    ConstraintsCoeffs[6][0][1]="";
-    ConstraintsCoeffs[6][0][2]="";
-    ConstraintsCoeffs[6][0][3]="";
 
     if (true){
-    vector <string> vcstr(1);
+    vector <string> vcstr(0);
     ConstraintsRelOp[7]=vcstr;
     ConstraintsConstants[7]=vcstr;
     vector <string>  vcvstr(NbVar, "");
-    vector < vector <string> > v2cvstr(1,vcvstr);
+    vector < vector <string> > v2cvstr(0,vcvstr);
     ConstraintsCoeffs[7]=v2cvstr;
     }
-    ConstraintsRelOp[7][0]=">=";
-    ConstraintsConstants[7][0]="0";
-    ConstraintsCoeffs[7][0][0]="1";
-    ConstraintsCoeffs[7][0][1]="";
-    ConstraintsCoeffs[7][0][2]="";
-    ConstraintsCoeffs[7][0][3]="";
 
     vector<double> vdouble(NbVar);
     vector<string> VarStr(NbVar);
     Var=vdouble;
     VarLabel=VarStr;
     Var[0]=0;
-    VarLabel[0]="t";
-    VarIndex["t"]=0;
-    Var[1]=0;
-    VarLabel[1]="x";
-    VarIndex["x"]=1;
-    Var[2]=0;
-    VarLabel[2]="y";
-    VarIndex["y"]=2;
-    Var[3]=0;
-    VarLabel[3]="r";
-    VarIndex["r"]=3;
+    VarLabel[0]="x";
+    VarIndex["x"]=0;
 
     vector<string> vStr(NbVar);
     vector< vector <string > > vvStr(NbLoc,vStr);
     StrFlow=vvStr;
     StrFlow[0][0]="";
-    StrFlow[0][1]="";
-    StrFlow[0][2]="";
-    StrFlow[0][3]="";
     StrFlow[1][0]="";
-    StrFlow[1][1]="";
-    StrFlow[1][2]="";
-    StrFlow[1][3]="";
     StrFlow[2][0]="";
-    StrFlow[2][1]="";
-    StrFlow[2][2]="";
-    StrFlow[2][3]="";
     StrFlow[3][0]="";
-    StrFlow[3][1]="";
-    StrFlow[3][2]="";
-    StrFlow[3][3]="";
     StrFlow[4][0]="";
-    StrFlow[4][1]="";
-    StrFlow[4][2]="";
-    StrFlow[4][3]="";
     StrFlow[5][0]="";
-    StrFlow[5][1]="";
-    StrFlow[5][2]="";
-    StrFlow[5][3]="";
 
     vector< set < int > > vset(NbLoc);
     Out_S_Edges =vset;
@@ -398,72 +324,6 @@ double LHA::GetFlow(int v, int loc, vector<int>& Marking){
     case 0:
          switch(loc){
          case 0:
-             return 1;
-             break;
-         case 1:
-             return 1;
-             break;
-         case 2:
-             return 1;
-             break;
-         case 3:
-             return 1;
-             break;
-         case 4:
-             return 1;
-             break;
-         case 5:
-             return 1;
-             break;
-       }
-       break;
-    case 1:
-         switch(loc){
-         case 0:
-             return 0;
-             break;
-         case 1:
-             return 0;
-             break;
-         case 2:
-             return 0;
-             break;
-         case 3:
-             return 0;
-             break;
-         case 4:
-             return 0;
-             break;
-         case 5:
-             return 0;
-             break;
-       }
-       break;
-    case 2:
-         switch(loc){
-         case 0:
-             return 0;
-             break;
-         case 1:
-             return 0;
-             break;
-         case 2:
-             return 0;
-             break;
-         case 3:
-             return 0;
-             break;
-         case 4:
-             return 0;
-             break;
-         case 5:
-             return 0;
-             break;
-       }
-       break;
-    case 3:
-         switch(loc){
-         case 0:
              return 0;
              break;
          case 1:
@@ -496,7 +356,7 @@ bool LHA::CheckLocation(int loc, vector<int>& Marking){
          return true;
          break;
      case 2:
-         return (  Marking[ 0 ]  +  Marking[ 1 ]  == 10 ) && (  Marking[ 6 ]  == 0 );
+         return (  Marking[ 0 ]  +  Marking[ 1 ]  == 50 ) && (  Marking[ 6 ]  == 0 );
          break;
      case 3:
          return true;
@@ -513,42 +373,34 @@ bool LHA::CheckLocation(int loc, vector<int>& Marking){
 bool LHA::CheckEdgeContraints(int ed, double DeltaT, vector<int>& Marking){
     switch(ed){
     case 0: {
-         if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,0, Marking))>=0)) return false;
          return true; 
          break;
      }
     case 1: {
-         if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,1, Marking))>=0)) return false;
          return true; 
          break;
      }
     case 2: {
-         if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,1, Marking))>=0)) return false;
          return true; 
          break;
      }
     case 3: {
-         if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,2, Marking))>=0)) return false;
          return true; 
          break;
      }
     case 4: {
-         if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,1, Marking))>=0)) return false;
          return true; 
          break;
      }
     case 5: {
-         if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,1, Marking))>=0)) return false;
          return true; 
          break;
      }
     case 6: {
-         if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,4, Marking))>=0)) return false;
          return true; 
          break;
      }
     case 7: {
-         if(!( +(1)*(Var[0]+DeltaT*GetFlow(0,5, Marking))>=0)) return false;
          return true; 
          break;
      }
@@ -599,24 +451,6 @@ t_interval LHA::GetEdgeEnablingTime_0(vector<int>& Marking){
     double SumAX;
 
 
-    SumAF=+(1)*GetFlow(0,0, Marking);
-    SumAX=+(1)*Var[0];
-
-    if(SumAF==0){
-         if(!(SumAX>=0))
-             return EmptyInterval;
-    }
-    else{
-         double t=CurrentTime+(0-SumAX)/(double)SumAF;
-         if(SumAF>0){
-            if(EnablingT.first<t) EnablingT.first=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-         else{
-            if(EnablingT.second>t) EnablingT.second=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-    }
     return EnablingT;
 }
 
@@ -635,24 +469,6 @@ t_interval LHA::GetEdgeEnablingTime_1(vector<int>& Marking){
     double SumAX;
 
 
-    SumAF=+(1)*GetFlow(0,1, Marking);
-    SumAX=+(1)*Var[0];
-
-    if(SumAF==0){
-         if(!(SumAX>=0))
-             return EmptyInterval;
-    }
-    else{
-         double t=CurrentTime+(0-SumAX)/(double)SumAF;
-         if(SumAF>0){
-            if(EnablingT.first<t) EnablingT.first=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-         else{
-            if(EnablingT.second>t) EnablingT.second=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-    }
     return EnablingT;
 }
 
@@ -671,24 +487,6 @@ t_interval LHA::GetEdgeEnablingTime_2(vector<int>& Marking){
     double SumAX;
 
 
-    SumAF=+(1)*GetFlow(0,1, Marking);
-    SumAX=+(1)*Var[0];
-
-    if(SumAF==0){
-         if(!(SumAX>=0))
-             return EmptyInterval;
-    }
-    else{
-         double t=CurrentTime+(0-SumAX)/(double)SumAF;
-         if(SumAF>0){
-            if(EnablingT.first<t) EnablingT.first=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-         else{
-            if(EnablingT.second>t) EnablingT.second=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-    }
     return EnablingT;
 }
 
@@ -707,24 +505,6 @@ t_interval LHA::GetEdgeEnablingTime_3(vector<int>& Marking){
     double SumAX;
 
 
-    SumAF=+(1)*GetFlow(0,2, Marking);
-    SumAX=+(1)*Var[0];
-
-    if(SumAF==0){
-         if(!(SumAX>=0))
-             return EmptyInterval;
-    }
-    else{
-         double t=CurrentTime+(0-SumAX)/(double)SumAF;
-         if(SumAF>0){
-            if(EnablingT.first<t) EnablingT.first=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-         else{
-            if(EnablingT.second>t) EnablingT.second=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-    }
     return EnablingT;
 }
 
@@ -743,24 +523,6 @@ t_interval LHA::GetEdgeEnablingTime_4(vector<int>& Marking){
     double SumAX;
 
 
-    SumAF=+(1)*GetFlow(0,1, Marking);
-    SumAX=+(1)*Var[0];
-
-    if(SumAF==0){
-         if(!(SumAX>=0))
-             return EmptyInterval;
-    }
-    else{
-         double t=CurrentTime+(0-SumAX)/(double)SumAF;
-         if(SumAF>0){
-            if(EnablingT.first<t) EnablingT.first=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-         else{
-            if(EnablingT.second>t) EnablingT.second=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-    }
     return EnablingT;
 }
 
@@ -779,24 +541,6 @@ t_interval LHA::GetEdgeEnablingTime_5(vector<int>& Marking){
     double SumAX;
 
 
-    SumAF=+(1)*GetFlow(0,1, Marking);
-    SumAX=+(1)*Var[0];
-
-    if(SumAF==0){
-         if(!(SumAX>=0))
-             return EmptyInterval;
-    }
-    else{
-         double t=CurrentTime+(0-SumAX)/(double)SumAF;
-         if(SumAF>0){
-            if(EnablingT.first<t) EnablingT.first=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-         else{
-            if(EnablingT.second>t) EnablingT.second=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-    }
     return EnablingT;
 }
 
@@ -815,24 +559,6 @@ t_interval LHA::GetEdgeEnablingTime_6(vector<int>& Marking){
     double SumAX;
 
 
-    SumAF=+(1)*GetFlow(0,4, Marking);
-    SumAX=+(1)*Var[0];
-
-    if(SumAF==0){
-         if(!(SumAX>=0))
-             return EmptyInterval;
-    }
-    else{
-         double t=CurrentTime+(0-SumAX)/(double)SumAF;
-         if(SumAF>0){
-            if(EnablingT.first<t) EnablingT.first=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-         else{
-            if(EnablingT.second>t) EnablingT.second=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-    }
     return EnablingT;
 }
 
@@ -851,24 +577,6 @@ t_interval LHA::GetEdgeEnablingTime_7(vector<int>& Marking){
     double SumAX;
 
 
-    SumAF=+(1)*GetFlow(0,5, Marking);
-    SumAX=+(1)*Var[0];
-
-    if(SumAF==0){
-         if(!(SumAX>=0))
-             return EmptyInterval;
-    }
-    else{
-         double t=CurrentTime+(0-SumAX)/(double)SumAF;
-         if(SumAF>0){
-            if(EnablingT.first<t) EnablingT.first=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-         else{
-            if(EnablingT.second>t) EnablingT.second=t;
-            if(EnablingT.second<EnablingT.first) return EmptyInterval;
-             }
-    }
     return EnablingT;
 }
 
@@ -903,18 +611,13 @@ void LHA::DoEdgeUpdates(int ed, vector<int>& Marking){
 
 void LHA::DoEdgeUpdates_0(vector<int>& Marking){
     vector<double> TempVar(NbVar);
-    TempVar[1]=1;
-    TempVar[2]=1;
-    Var[1]=TempVar[1];
-    Var[2]=TempVar[2];
+    TempVar[0]=1;
+    Var[0]=TempVar[0];
 
     OldLinForm[0]=LinForm[0];
     }
 
 void LHA::DoEdgeUpdates_1(vector<int>& Marking){
-    vector<double> TempVar(NbVar);
-    TempVar[1]=Var [1] * Likelihood;
-    Var[1]=TempVar[1];
 
     OldLinForm[0]=LinForm[0];
     }
@@ -925,33 +628,16 @@ void LHA::DoEdgeUpdates_2(vector<int>& Marking){
     }
 
 void LHA::DoEdgeUpdates_3(vector<int>& Marking){
-    vector<double> TempVar(NbVar);
-    TempVar[3]=0;
-    Var[3]=TempVar[3];
 
     OldLinForm[0]=LinForm[0];
     }
 
 void LHA::DoEdgeUpdates_4(vector<int>& Marking){
-    vector<double> TempVar(NbVar);
-    TempVar[1]=0;
-    TempVar[2]=0;
-    TempVar[3]=Var[1];
-    Var[1]=TempVar[1];
-    Var[2]=TempVar[2];
-    Var[3]=TempVar[3];
 
     OldLinForm[0]=LinForm[0];
     }
 
 void LHA::DoEdgeUpdates_5(vector<int>& Marking){
-    vector<double> TempVar(NbVar);
-    TempVar[1]=0;
-    TempVar[2]=0;
-    TempVar[3]=Var[1];
-    Var[1]=TempVar[1];
-    Var[2]=TempVar[2];
-    Var[3]=TempVar[3];
 
     OldLinForm[0]=LinForm[0];
     }
@@ -967,7 +653,7 @@ void LHA::DoEdgeUpdates_7(vector<int>& Marking){
     }
 
 void LHA::UpdateLinForm(vector<int>& Marking){
-    LinForm[0]=Var[1];
+    LinForm[0]=Var[0];
     }
 
 void LHA::UpdateLhaFunc(double& t, double& Delta ){
