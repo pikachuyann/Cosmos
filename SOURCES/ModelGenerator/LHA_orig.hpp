@@ -56,7 +56,7 @@ public:
   
   map <string, int> LocIndex; //for a given Location label returns its index among {0, 1, ..., NLoc-1}
   vector <string> LocLabel;
-  
+ 
   vector <string> StrLocProperty;
   
   
