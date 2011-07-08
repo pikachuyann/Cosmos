@@ -114,11 +114,11 @@ bool ParseBuild(string filename, SimParam& P) {
 
 
 
-    cmd = options + P.Path + "../SOURCES/Cosmos/main.cpp -c -o " + P.Path + "../Obj/Cosmos/main.o";
+    /*cmd = options + P.Path + "../SOURCES/Cosmos/main.cpp -c -o " + P.Path + "../Obj/Cosmos/main.o";
     if (system(cmd.c_str())) return false;
 
     cmd = options + P.Path + "../SOURCES/Cosmos/Simulator.cpp -c -o " + P.Path + "../Obj/Cosmos/Simulator.o";
-    if (system(cmd.c_str())) return false;
+    if (system(cmd.c_str())) return false;*/
 
     cmd = options + P.Path + "../Obj/Cosmos/main.o " + P.Path + "../Obj/Cosmos/Event.o " + P.Path + "../Obj/Cosmos/EventsQueue.o ";
     cmd = cmd + P.Path + "../Obj/Cosmos/LHA.o  \\" + P.Path + "../Obj/Cosmos/Simulator.o " + P.Path + "../Obj/Cosmos/StandardNormalDist.o ";
