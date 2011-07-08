@@ -4,7 +4,6 @@
 #include <float.h>
 #include <iostream>
 #include <fstream>
-#include <hash_map>
 #include <cstring>
 
 using namespace std;

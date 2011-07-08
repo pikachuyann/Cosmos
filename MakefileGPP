@@ -4,12 +4,12 @@ OPTIONS=-Wno-deprecated
 all: classes Generator 
 	
 classes:
-	cd SOURCES/Cosmos; make classes
+	make -C SOURCES/Cosmos classes
 
 Generator:
-	cd SOURCES/ModelGenerator; make Generator
+	make -C SOURCES/ModelGenerator Generator
 
 
 clean:
-	cd SOURCES/Cosmos; make clean
-	cd SOURCES/ModelGenerator; make clean
+	make -C SOURCES/Cosmos clean
+	make -C SOURCES/ModelGenerator clean

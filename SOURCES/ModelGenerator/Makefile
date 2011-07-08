@@ -1,5 +1,5 @@
 CC=g++
-OPTIONS=-Wno-deprecated
+OPTIONS=
 OBJPATH=../../Obj/ModelGenerator
 BINPATH=../../bin
 
@@ -32,3 +32,4 @@ clean:
 	rm $(OBJPATH)/LhaParser/*.o
 	rm $(OBJPATH)/*.o
 	rm $(BINPATH)/CosmosGPP	
+	rm $(BINPATH)/SimGPP	

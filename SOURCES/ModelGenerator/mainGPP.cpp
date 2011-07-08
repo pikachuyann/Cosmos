@@ -104,7 +104,7 @@ bool ParseBuild(string filename, SimParam& P) {
     cout << "Parsing OK.\n" << endl;
     cout << "Start building ... " << endl;
     string cmd;
-    string options = "g++ -Wno-deprecated ";
+    /*string options = "g++ -Wno-deprecated ";
     cmd = options + P.Path + "../SOURCES/Cosmos/spn.cpp -c -o " + P.Path + "../Obj/Cosmos/spn.o";
 
     if (system(cmd.c_str())) return false;
@@ -114,15 +114,18 @@ bool ParseBuild(string filename, SimParam& P) {
 
 
 
-    /*cmd = options + P.Path + "../SOURCES/Cosmos/main.cpp -c -o " + P.Path + "../Obj/Cosmos/main.o";
+    cmd = options + P.Path + "../SOURCES/Cosmos/main.cpp -c -o " + P.Path + "../Obj/Cosmos/main.o";
     if (system(cmd.c_str())) return false;
 
     cmd = options + P.Path + "../SOURCES/Cosmos/Simulator.cpp -c -o " + P.Path + "../Obj/Cosmos/Simulator.o";
-    if (system(cmd.c_str())) return false;*/
+    if (system(cmd.c_str())) return false;
 
     cmd = options + P.Path + "../Obj/Cosmos/main.o " + P.Path + "../Obj/Cosmos/Event.o " + P.Path + "../Obj/Cosmos/EventsQueue.o ";
     cmd = cmd + P.Path + "../Obj/Cosmos/LHA.o  \\" + P.Path + "../Obj/Cosmos/Simulator.o " + P.Path + "../Obj/Cosmos/StandardNormalDist.o ";
     cmd = cmd + P.Path + "../Obj/Cosmos/ap.o  " + P.Path + "../Obj/Cosmos/RareEvent.o "+ P.Path + "../Obj/Cosmos/tab.o " +  P.Path + "../Obj/Cosmos/spn.o -o " + P.Path + "SimGPP";
+    */
+    
+    cmd = "make -s -C " + P.Path + "../SOURCES/Cosmos sim";
     if (system(cmd.c_str())) return false;
 
     cout << "Building OK.\n" << endl;
@@ -262,7 +265,6 @@ void DirectSim(string filename, SimParam& P) {
         if (P.Path == "") os << "./SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
         else os << P.Path << "SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
 	if(P.RareEvent){ os << " " << "-RE"; };
-	cout << "command: " << os << endl;
         system((os.str()).c_str());
 
     }

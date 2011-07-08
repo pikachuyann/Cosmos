@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 #include <cstring>
-#include <hash_map>
+#include <unordered_map>
 
 using namespace std;
 using namespace __gnu_cxx;
@@ -28,7 +28,7 @@ struct hashvect{
   }
 };
 
-typedef hash_map<const vector<int>*, double , hashvect , eqvect > hash_prob;
+typedef unordered_map<const vector<int>*, double , hashvect , eqvect > hash_prob;
 class TAB {
 public:
   hash_prob M;

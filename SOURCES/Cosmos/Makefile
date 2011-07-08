@@ -1,5 +1,5 @@
-C=g++
-OPTIONS=-Wno-deprecated
+CC=g++
+OPTIONS=-std=gnu++0x
 OBJPATH=../../Obj/Cosmos
 BINPATH=../../bin
 
@@ -25,3 +25,19 @@ clean:
 	rm LHA.cpp
 	rm LHA.hpp
 	rm $(OBJPATH)/*.o
+
+sim:
+	$(CC) $(OPTIONS) -c spn.cpp -o $(OBJPATH)/spn.o
+	$(CC) $(OPTIONS) -c LHA.cpp -o $(OBJPATH)/LHA.o
+	$(CC) $(OPTIONS) \
+		$(OBJPATH)/main.o \
+		$(OBJPATH)/Event.o \
+		$(OBJPATH)/EventsQueue.o \
+		$(OBJPATH)/tab.o \
+		$(OBJPATH)/RareEvent.o \
+		$(OBJPATH)/StandardNormalDist.o \
+		$(OBJPATH)/ap.o \
+		$(OBJPATH)/Simulator.o \
+		$(OBJPATH)/spn.o \
+		$(OBJPATH)/LHA.o \
+	-o $(BINPATH)/SimGPP
