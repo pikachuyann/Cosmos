@@ -56,7 +56,7 @@ public:
   
   map <string, int> LocIndex; //for a given Location label returns its index among {0, 1, ..., NLoc-1}
   vector <string> LocLabel;
-  
+ 
   vector <string> StrLocProperty;
   
   
@@ -169,9 +169,19 @@ public:
 t_interval GetEdgeEnablingTime_0(vector<int>& );
 t_interval GetEdgeEnablingTime_1(vector<int>& );
 t_interval GetEdgeEnablingTime_2(vector<int>& );
+t_interval GetEdgeEnablingTime_3(vector<int>& );
+t_interval GetEdgeEnablingTime_4(vector<int>& );
+t_interval GetEdgeEnablingTime_5(vector<int>& );
+t_interval GetEdgeEnablingTime_6(vector<int>& );
+t_interval GetEdgeEnablingTime_7(vector<int>& );
 void DoEdgeUpdates_0(vector<int>& );
 void DoEdgeUpdates_1(vector<int>& );
 void DoEdgeUpdates_2(vector<int>& );
+void DoEdgeUpdates_3(vector<int>& );
+void DoEdgeUpdates_4(vector<int>& );
+void DoEdgeUpdates_5(vector<int>& );
+void DoEdgeUpdates_6(vector<int>& );
+void DoEdgeUpdates_7(vector<int>& );
 private:
 };
 #endif	/* _Lha_HPP */
