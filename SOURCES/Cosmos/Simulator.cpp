@@ -385,6 +385,61 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 
 #include "SimulatorRE.cpp"
 
+BatchResult* Simulator::RunBatch(){
+  double Isucc = 0;
+  double I = 0;
+  double Mean = 0;
+  double M2 = 0;
+  bool IsBernoulli = true;
+  double Dif=0;
+  double Y = 0;
+  BatchResult* batchR = new BatchResult();
+  
+  while (Isucc < BatchSize) {
+    
+    if(RareEvent_mode){
+      //cout << "rareevent";
+      SimulateSinglePathRE();
+    }else{
+      //cout << "not rare event";
+      SimulateSinglePath();
+    };
+    
+    
+    if (Result.first) {
+      //------------------ Rare Event -----------------
+      //logvalue << Result.second << endl ;
+      //----------------- /Rare Event -----------------
+      Isucc++;
+      if (Result.second * (1 - Result.second) != 0) IsBernoulli = false;
+
+      
+      Dif = Result.second - Mean;
+      Mean = Mean + Dif / Isucc;
+      
+      Dif = pow(Result.second, 2) - M2;
+      M2 = M2 + Dif / Isucc;
+      
+      /*if (Isucc > 1) {
+	Dif = pow(Result.second, 2) - Y;
+	Y = Y + Dif / (Isucc - 1);
+	} else x1sqr = pow(Result.second, 2);*/
+    }
+    
+    reset();
+    I++;
+    
+  }
+
+  batchR->I = I;
+  batchR->Isucc = Isucc;
+  batchR->Mean = Mean;
+  batchR->M2 = M2;
+  
+  return (batchR);
+  
+}
+
 void Simulator::RunSimulation() {
 
     time_t start, end;
@@ -443,7 +498,7 @@ void Simulator::RunSimulation() {
 
 
     do {
-        Isucc = 0;
+      /*Isucc = 0;
         while ((Isucc < BatchSize) && (K <= MaxRuns)) {
 
 	  if(RareEvent_mode){
@@ -476,11 +531,29 @@ void Simulator::RunSimulation() {
             reset();
             K++;
 
+      
+
         }
         if (Ksucc > 1) {
             M2 = x1sqr / (Ksucc - 1) + Y;
             Var = M2 - (Ksucc / (Ksucc - 1)) * pow(Mean, 2);
-        }
+	    }*/
+
+      BatchResult* batchR = RunBatch();
+      K = K + batchR->I;
+      Ksucc = Ksucc + batchR->Isucc;
+
+      Dif = batchR->Mean - Mean;
+      Mean = Mean + batchR->Isucc * Dif / Ksucc;
+
+      Dif = batchR->M2 - M2;
+      M2 = M2 + batchR->Isucc * Dif / Ksucc;
+
+      delete batchR;
+
+      Var = M2 - pow(Mean, 2);
+      
+
         stdev = sqrt(Var);
         Ksucc_sqrt = sqrt(Ksucc);
         CurrentWidth = 2 * Normal_quantile * stdev / Ksucc_sqrt;

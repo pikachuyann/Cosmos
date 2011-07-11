@@ -20,6 +20,14 @@ using namespace std;
 
 typedef pair<bool, double> SimOutput;
 
+class BatchResult {
+public:
+  double I;
+  double Isucc;
+  double Mean;
+  double M2;
+};
+
 class Simulator {
 public:
 
@@ -35,8 +43,9 @@ public:
   void InitialEventsQueue();
   void InitialEventsQueueRE();
 
-    void RunSimulation();
-
+  
+  void RunSimulation();
+  BatchResult* RunBatch();
 
 
     SimOutput Result;

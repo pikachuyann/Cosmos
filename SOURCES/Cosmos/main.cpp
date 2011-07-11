@@ -50,8 +50,16 @@ int main(int argc, char** argv) {
  
     Simulator mySim;
     mySim.RareEvent_mode = false;
+    string str;
 
-    string str = argv[1];
+    if(argc > 5){
+      str = argv[5];
+      if(str== "-RE")mySim.RareEvent_mode=true;
+    };
+    
+    mySim.Load();
+
+    str = argv[1];
     mySim.SetConfLevel(StrToDbl(str));
 
     str = argv[2];
@@ -63,12 +71,7 @@ int main(int argc, char** argv) {
     str = argv[4];
     mySim.SetMaxRuns(StrToLongInt(str));
 
-    if(argc > 5){
-      str = argv[5];
-      if(str== "-RE")mySim.RareEvent_mode=true;
-    };
-
-    mySim.Load();
+   
 
     mySim.RunSimulation();
 
