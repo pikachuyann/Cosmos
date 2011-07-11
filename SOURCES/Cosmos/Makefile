@@ -17,11 +17,11 @@ classes: init
 	$(CC) $(OPTIONS2) -c main.cpp -o $(OBJPATH)/main.o
 
 clean:
-	rm spn.cpp
-	rm spn.hpp
-	rm LHA.cpp
-	rm LHA.hpp
 	rm $(OBJPATH)/*.o
+	rm spn.hpp
+	rm LHA.hpp
+	rm LHA.cpp
+	rm spn.cpp
 
 sim:
 	$(CC) $(OPTIONS2) -c spn.cpp -o $(OBJPATH)/spn.o

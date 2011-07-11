@@ -125,7 +125,7 @@ bool ParseBuild(string filename, SimParam& P) {
     cmd = cmd + P.Path + "../Obj/Cosmos/ap.o  " + P.Path + "../Obj/Cosmos/RareEvent.o "+ P.Path + "../Obj/Cosmos/tab.o " +  P.Path + "../Obj/Cosmos/spn.o -o " + P.Path + "SimGPP";
     */
     
-    cmd = "make -s -C " + P.Path + "../SOURCES/Cosmos sim";
+    cmd = "make -s -C " + P.Path + ".. sim";
     if (system(cmd.c_str())) return false;
 
     cout << "Building OK.\n" << endl;

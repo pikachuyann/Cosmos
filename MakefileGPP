@@ -13,3 +13,6 @@ Generator:
 clean:
 	make -C SOURCES/Cosmos clean
 	make -C SOURCES/ModelGenerator clean
+
+sim:
+	make -C SOURCES/Cosmos sim
