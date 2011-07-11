@@ -1,3 +1,4 @@
+CC=g++
 OBJPATH=../../Obj/Cosmos
 BINPATH=../../bin
 OPTIONS2= -Wno-deprecated $(OPTIONS) 
@@ -38,3 +39,26 @@ sim:
 		$(OBJPATH)/spn.o \
 		$(OBJPATH)/LHA.o \
 	-o $(BINPATH)/SimGPP
+
+client: 
+	$(CC) $(OPTIONS2) -c clientsim.cpp -o $(OBJPATH)/clientsim.o
+	$(CC) $(OPTIONS2) -c spn.cpp -o $(OBJPATH)/spn.o
+	$(CC) $(OPTIONS2) -c LHA.cpp -o $(OBJPATH)/LHA.o
+	$(CC) $(OPTIONS2) \
+		$(OBJPATH)/clientsim.o \
+		$(OBJPATH)/Event.o \
+		$(OBJPATH)/EventsQueue.o \
+		$(OBJPATH)/tab.o \
+		$(OBJPATH)/RareEvent.o \
+		$(OBJPATH)/StandardNormalDist.o \
+		$(OBJPATH)/ap.o \
+		$(OBJPATH)/Simulator.o \
+		$(OBJPATH)/spn.o \
+		$(OBJPATH)/LHA.o \
+	-o $(BINPATH)/ClientSim
+
+server:
+	$(CC) $(OPTIONS2) -c serversim.cpp -o $(OBJPATH)/serversim.o
+	$(CC) $(OPTIONS2) \
+		$(OBJPATH)/serversim.o \
+	-o $(BINPATH)/ServerSim
