@@ -47,10 +47,9 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-
-
+ 
     Simulator mySim;
-    mySim.Load();
+    mySim.RareEvent_mode = false;
 
     string str = argv[1];
     mySim.SetConfLevel(StrToDbl(str));
@@ -68,7 +67,8 @@ int main(int argc, char** argv) {
       str = argv[5];
       if(str== "-RE")mySim.RareEvent_mode=true;
     };
-    
+
+    mySim.Load();
 
     mySim.RunSimulation();
 

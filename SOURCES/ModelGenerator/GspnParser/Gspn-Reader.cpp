@@ -122,7 +122,7 @@ void Gspn_Reader::WriteFile(string& Pref) {
     SpnCppFile << "    Path =\"" << MyGspn.Path << "\";" << endl;
 
     //-------------- Rare Event -----------------
-    SpnCppFile << "    gammaprob.load();" << endl;
+    //SpnCppFile << "    gammaprob.load();" << endl;
     //------------- /Rare Event -----------------
 
     SpnCppFile << "    pl =" << MyGspn.pl << ";" << endl;

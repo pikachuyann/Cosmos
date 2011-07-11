@@ -20,8 +20,8 @@ Simulator::Simulator() {
 }
 
 void Simulator::Load() {
-  RareEvent_mode = false;
   N.Load();
+  if(RareEvent_mode)N.gammaprob.load();
   A.Load();
   int n = N.tr;
   EQ = new EventsQueue(n);
@@ -112,7 +112,7 @@ void Simulator::reset() {
 }
 
 void Simulator::SimulateSinglePath() {
-
+  
 
     bool QueueIsEmpty;
     AutEdge AE;
@@ -447,8 +447,10 @@ void Simulator::RunSimulation() {
         while ((Isucc < BatchSize) && (K <= MaxRuns)) {
 
 	  if(RareEvent_mode){
+	    //cout << "rareevent";
 	    SimulateSinglePathRE();
 	  }else{
+	    //cout << "not rare event";
 	    SimulateSinglePath();
 	  };
 	  
