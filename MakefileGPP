@@ -1,5 +1,5 @@
 export CC=g++
-export OPTIONS=-std=gnu++0x
+export OPTIONS=
 
 all: classes Generator 
 	
