@@ -1,6 +1,6 @@
 OBJPATH=../../Obj/Cosmos
 BINPATH=../../bin
-OPTIONS2=-Wno-deprecated $(OPTIONS) 
+OPTIONS2=-Wno-deprecated -std=gnu++0x $(OPTIONS) 
 
 init:
 	cat ../ModelGenerator/LHA_orig.hpp end.cpp > LHA.hpp
