@@ -1,5 +1,5 @@
-CC=g++
-OPTIONS=-Wno-deprecated
+export CC=g++
+export OPTIONS=-std=gnu++0x
 
 all: classes Generator 
 	

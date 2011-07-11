@@ -1,5 +1,3 @@
-CC=g++
-OPTIONS=
 OBJPATH=../../Obj/ModelGenerator
 BINPATH=../../bin
 

@@ -1,5 +1,3 @@
-CC=g++
-OPTIONS=-std=gnu++0x
 OBJPATH=../../Obj/Cosmos
 BINPATH=../../bin
 
