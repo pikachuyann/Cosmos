@@ -4,10 +4,8 @@ OBJPATH=../../Obj/Cosmos
 BINPATH=../../bin
 
 init:
-	cp ../ModelGenerator/LHA_orig.hpp LHA.hpp
-	echo "};\n#endif\n" >> LHA.hpp
-	cp ../ModelGenerator/spn_orig.hpp spn.hpp
-	echo "};\n#endif\n" >> spn.hpp
+	cat ../ModelGenerator/LHA_orig.hpp end.cpp > LHA.hpp
+	cat ../ModelGenerator/spn_orig.hpp end.cpp > spn.hpp
 
 classes: init
 	$(CC) $(OPTIONS) -c Event.cpp -o $(OBJPATH)/Event.o
