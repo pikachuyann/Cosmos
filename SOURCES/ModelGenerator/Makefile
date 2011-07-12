@@ -8,9 +8,11 @@ Generator:
 	$(CC) $(OPTIONS) -c GspnParser/Gspn-Reader.cpp -o $(OBJPATH)/GspnParser/Gspn-Reader.o	
 	$(CC) $(OPTIONS) -c LhaParser/Lha-parser.tab.cc -o $(OBJPATH)/LhaParser/Lha-parser.tab.o
 	$(CC) $(OPTIONS) -c LhaParser/Lha-Reader.cpp -o $(OBJPATH)/LhaParser/Lha-Reader.o
+	$(CC) $(OPTIONS) -c server.cpp -o $(OBJPATH)/server.o	
 	$(CC) $(OPTIONS) -c mainGPP.cpp -o $(OBJPATH)/mainGPP.o	
 
 	$(CC) $(OPTIONS) \
+		$(OBJPATH)/server.o \
 		$(OBJPATH)/mainGPP.o \
 		$(OBJPATH)/Eval/Eval-parser.tab.o \
 		$(OBJPATH)/Eval/Eval.o \
@@ -20,8 +22,6 @@ Generator:
 		$(OBJPATH)/LhaParser/Lha-parser.tab.o  \
 		$(OBJPATH)/../Cosmos/Event.o \
 		$(OBJPATH)/../Cosmos/EventsQueue.o  \
-		$(OBJPATH)/../Cosmos/StandardNormalDist.o \
-		$(OBJPATH)/../Cosmos/ap.o \
 	 -o $(BINPATH)/CosmosGPP
 
 clean:

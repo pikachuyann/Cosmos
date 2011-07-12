@@ -22,6 +22,7 @@
 #include <time.h>
 //#include <unistd.h>
 
+#include "server.hpp"
 
 using namespace std;
 
@@ -59,11 +60,8 @@ long int StrToLongInt(string st) {
 
 
 fd_set client_list;
-int Njob = 2;
 vector<FILE*> clientstream;
 int max_client=0 ;
-
-string cmd = "./ClientSim 1000";
 
 double BatchSize = 1000;
 double MaxRuns = 100000000;
@@ -71,9 +69,15 @@ double ConfWidth = 0.001;
 double ConfLevel = 0.99;
 bool RareEvent_mode = false;
 
-void lauch_clients(){
-  for(int i = 0;i<Njob;i++){
-    FILE* stream = popen(cmd.c_str(), "r");
+void lauch_clients(SimParam& P){
+  ostringstream os;
+  if (P.Path == "") os << "./ClientSim " << P.Batch;
+  else os << P.Path << "ClientSim " << P.Batch;
+  if(P.RareEvent){ os << " " << "-RE"; };
+  //cout << os.str() << endl;
+  
+  for(int i = 0;i<P.Njob;i++){
+    FILE* stream = popen((os.str()).c_str(), "r");
     clientstream.push_back(stream);
     int streamfd = fileno(stream);
     if(streamfd >max_client)max_client = streamfd;
@@ -82,7 +86,7 @@ void lauch_clients(){
 
 }
 
-void makeselectlist(){
+void makeselectlist(int Njob){
   FD_ZERO(&client_list);
   for(int it = 0;it<Njob;it++){
     int fl = fileno(clientstream[it]);
@@ -91,32 +95,20 @@ void makeselectlist(){
 
 }
 
-int main(int argc, char** argv){
+void LauchServer(SimParam& P){
 
   double read;
 
   //Simulator mySim;
-  RareEvent_mode = false;
   string str;
-
-  if(argc > 5){
-    str = argv[5];
-    if(str== "-RE")RareEvent_mode=true;
-  };
 
   //mySim.Load();
 
-  str = argv[1];
-  ConfLevel=StrToDbl(str);
-
-  str = argv[2];
-  ConfWidth=StrToDbl(str);
-
-  str = argv[3];
-  BatchSize=StrToDbl(str);
-
-  str = argv[4];
-  MaxRuns=StrToLongInt(str);
+  ConfLevel=P.Level;
+  ConfWidth=P.Width;
+  BatchSize=P.Batch;
+  MaxRuns=P.MaxRuns;
+  RareEvent_mode=P.RareEvent;
 
 
   //stream = popen(cmd.c_str(), "r");
@@ -124,11 +116,7 @@ int main(int argc, char** argv){
   time_t start, end;
   double cpu_time_used;
 
-
-
   time(&start);
-
-
 
   double K = 0; //counter of generated paths
   double Ksucc = 0; //counter of succesfull generated paths
@@ -152,7 +140,7 @@ int main(int argc, char** argv){
   double Dif;
 
   //------------------ Rare Event -----------------
-  ofstream logvalue("logvalue.dat",ios::out | ios::trunc);
+  //ofstream logvalue("logvalue.dat",ios::out | ios::trunc);
   //----------------- /Rare Event -----------------
 
   cout << "START SIMULATION ..." << endl;
@@ -172,8 +160,8 @@ int main(int argc, char** argv){
   // z(1-alpha/2)=z(1-(1-l)/2) = z(0.5+l/2)
   ////////////////////////////////////////////////////////////////////////////
 
-  lauch_clients();
-  makeselectlist();
+  lauch_clients(P);
+  makeselectlist(P.Njob);
 
   boost::math::normal norm;
   Normal_quantile = quantile(norm, 0.5 + ConfLevel / 2.0);
@@ -187,7 +175,7 @@ int main(int argc, char** argv){
         exit(1);
       }
     //cout << "stop select" << endl;
-    for(int it = 0;it<Njob;it++){
+    for(int it = 0;it<P.Njob;it++){
       if(FD_ISSET(fileno(clientstream[it]), &cs_cp)){
         BatchResult* batchR = new BatchResult;
 	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);

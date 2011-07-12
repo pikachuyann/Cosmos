@@ -9,6 +9,7 @@
 //#include "directsim.hpp"
 #include "./LhaParser/Lha-Reader.hpp"
 #include "./GspnParser/Gspn-Reader.hpp"
+#include "server.hpp"
 
 #ifdef __APPLE__
 #define FindPath FindPathMac   
@@ -20,47 +21,16 @@
 
 using namespace std;
 
- struct SimParam {
-    double Level;
-    double Width;
-    int Batch;
-    long int MaxRuns;
-    string Path;
-   bool RareEvent;
-};
-
 void ViewParameters(SimParam& P) {
     cout << "Confidence interval width:      " << P.Width << endl;
     cout << "Confidence interval level:      " << P.Level << endl;
     cout << "Maximum number of trajectories: " << P.MaxRuns << endl;
     cout << "Batch size:                     " << P.Batch << endl;
     cout << "Rare Event:                     " << P.RareEvent << endl;
+    cout << "Number of parallel execution:   " << P.Njob << endl;
 }
 
 
-double StrToDbl(string st) {
-
-    std::istringstream iss(st);
-    double x;
-    iss >> x;
-    return x;
-}
-
-int StrToInt(string st) {
-
-    std::istringstream iss(st);
-    int x;
-    iss >> x;
-    return x;
-}
-
-long int StrToLongInt(string st) {
-
-    std::istringstream iss(st);
-    long int x;
-    iss >> x;
-    return x;
-}
 
 bool ParseBuild(string filename, SimParam& P) {
     Gspn_Reader gReader;
@@ -133,6 +103,21 @@ bool ParseBuild(string filename, SimParam& P) {
     return true;
 }
 
+void DirectSim(string filename, SimParam& P) {
+
+    if (ParseBuild(filename, P)) {
+        
+      LauchServer(P);
+
+      /*ostringstream os;
+        if (P.Path == "") os << "./SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
+        else os << P.Path << "SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
+	if(P.RareEvent){ os << " " << "-RE"; };
+        system((os.str()).c_str());*/
+
+    }
+}
+
 void Command(string str, SimParam& P) {
 
     if (str == "sim") {
@@ -140,14 +125,7 @@ void Command(string str, SimParam& P) {
         cout << "Type the path of the files: ";
         string filename;
         getline(cin, filename);
-        if (ParseBuild(filename, P)) {
-            ostringstream os;
-            if (P.Path == "") os << "./SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
-            else os << P.Path << "SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
-	    if(P.RareEvent){ os << " " << "-RE"; };
-            system((os.str()).c_str());
-
-        }
+	DirectSim(filename, P);
     }
     else if (str == "width") {
         string st;
@@ -210,6 +188,13 @@ void Command(string str, SimParam& P) {
 	P.RareEvent = false;
       }
       
+    } 
+    else if (str == "Njob") {
+      string st;
+      cout << "Number of parallel execution: ";
+      getline(cin, st);
+      P.Njob = StrToInt(st);
+      
     } else if (str == "params") {
 
         ViewParameters(P);
@@ -224,6 +209,7 @@ void Command(string str, SimParam& P) {
         cout << "\tparams" << endl;
         cout << "\thelp" << endl;
         cout << "\tstop\n" << endl;
+	cout << "\tNjob\n" << endl;
     } else
         cout << "Unknown command, for more information type 'help':\n" << endl;
 }
@@ -235,6 +221,7 @@ void LoadSimParam(SimParam& P) {
     P.Batch =   1000;
     P.MaxRuns = 2000000;
     P.RareEvent = false;
+    P.Njob = 1;
 }
 
 void FindPathLinux(SimParam& P) {
@@ -256,18 +243,6 @@ void FindPathMac(SimParam& P) {
     //to be done
     cout << "Unknow Cosmos directory" << endl;
     exit(1);
-}
-
-void DirectSim(string filename, SimParam& P) {
-
-    if (ParseBuild(filename, P)) {
-        ostringstream os;
-        if (P.Path == "") os << "./SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
-        else os << P.Path << "SimGPP " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns;
-	if(P.RareEvent){ os << " " << "-RE"; };
-        system((os.str()).c_str());
-
-    }
 }
 
 int main(int argc, char** argv) {

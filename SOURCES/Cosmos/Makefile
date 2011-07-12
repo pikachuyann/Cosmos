@@ -12,9 +12,8 @@ classes: init
 	$(CC) $(OPTIONS2) -c EventsQueue.cpp -o  $(OBJPATH)/EventsQueue.o
 	$(CC) $(OPTIONS2) -c tab.cpp -o $(OBJPATH)/tab.o
 	$(CC) $(OPTIONS2) -c RareEvent.cpp -o $(OBJPATH)/RareEvent.o
-	$(CC) $(OPTIONS2) -c StandardNormalDist.cpp -o $(OBJPATH)/StandardNormalDist.o
-	$(CC) $(OPTIONS2) -c ap.cpp -o $(OBJPATH)/ap.o
 	$(CC) $(OPTIONS2) -c Simulator.cpp -o $(OBJPATH)/Simulator.o
+	$(CC) $(OPTIONS2) -c clientsim.cpp -o $(OBJPATH)/clientsim.o
 	$(CC) $(OPTIONS2) -c main.cpp -o $(OBJPATH)/main.o
 
 clean:
@@ -24,7 +23,7 @@ clean:
 	rm LHA.cpp
 	rm spn.cpp
 
-sim:
+simsauv:
 	$(CC) $(OPTIONS2) -c spn.cpp -o $(OBJPATH)/spn.o
 	$(CC) $(OPTIONS2) -c LHA.cpp -o $(OBJPATH)/LHA.o
 	$(CC) $(OPTIONS2) \
@@ -33,15 +32,12 @@ sim:
 		$(OBJPATH)/EventsQueue.o \
 		$(OBJPATH)/tab.o \
 		$(OBJPATH)/RareEvent.o \
-		$(OBJPATH)/StandardNormalDist.o \
-		$(OBJPATH)/ap.o \
 		$(OBJPATH)/Simulator.o \
 		$(OBJPATH)/spn.o \
 		$(OBJPATH)/LHA.o \
 	-o $(BINPATH)/SimGPP
 
-client: 
-	$(CC) $(OPTIONS2) -c clientsim.cpp -o $(OBJPATH)/clientsim.o
+sim: 
 	$(CC) $(OPTIONS2) -c spn.cpp -o $(OBJPATH)/spn.o
 	$(CC) $(OPTIONS2) -c LHA.cpp -o $(OBJPATH)/LHA.o
 	$(CC) $(OPTIONS2) \
@@ -50,8 +46,6 @@ client:
 		$(OBJPATH)/EventsQueue.o \
 		$(OBJPATH)/tab.o \
 		$(OBJPATH)/RareEvent.o \
-		$(OBJPATH)/StandardNormalDist.o \
-		$(OBJPATH)/ap.o \
 		$(OBJPATH)/Simulator.o \
 		$(OBJPATH)/spn.o \
 		$(OBJPATH)/LHA.o \
@@ -59,8 +53,5 @@ client:
 
 server:
 	$(CC) $(OPTIONS2) -c serversim.cpp -o $(OBJPATH)/serversim.o
-	$(CC) $(OPTIONS2) \
-		$(OBJPATH)/serversim.o \
-		$(OBJPATH)/StandardNormalDist.o \
-		$(OBJPATH)/ap.o \
+	$(CC) $(OPTIONS2) $(OBJPATH)/serversim.o \
 	-o $(BINPATH)/ServerSim
