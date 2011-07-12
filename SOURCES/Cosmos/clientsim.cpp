@@ -34,37 +34,28 @@ int main(int argc, char** argv) {
     mySim.RareEvent_mode = false;
     string str;
 
-    if(argc > 5){
-      str = argv[5];
+    if(argc > 2){
+      str = argv[2];
       if(str== "-RE")mySim.RareEvent_mode=true;
     };
     
     mySim.Load();
 
     str = argv[1];
-    mySim.SetConfLevel(StrToDbl(str));
-
-    str = argv[2];
-    mySim.SetConfWidth(StrToDbl(str));
-
-    str = argv[3];
     mySim.SetBatchSize(StrToDbl(str));
 
-    str = argv[4];
-    mySim.SetMaxRuns(StrToLongInt(str));
-
-   
     while( !cin.eof() ){
       BatchResult* batchR = mySim.RunBatch();
 
-      write(STDOUT_FILENO,(void *)&batchR->I,sizeof(double));
-      write(STDOUT_FILENO,(void *)&batchR->Isucc,sizeof(double));
-      write(STDOUT_FILENO,(void *)&batchR->Mean,sizeof(double));
-      write(STDOUT_FILENO,(void *)&batchR->M2,sizeof(double));
-
-      //cout << batchR->I <<":"<< batchR->Isucc <<":"<< batchR->Mean 
-      // << ":" << batchR->M2 << endl;
+      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->I),sizeof(double));
+      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->Isucc),sizeof(double));
+      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->Mean),sizeof(double));
+      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->M2),sizeof(double));
+      fflush(stdout);
       
+      
+      /*cout << batchR->I <<":"<< batchR->Isucc <<":"<< batchR->Mean 
+	<< ":" << batchR->M2 << endl;*/
 
       delete batchR;
       
