@@ -27,6 +27,7 @@ using namespace std;
 
 class BatchResult {
 public:
+  bool IsBernoulli;
   double I;
   double Isucc;
   double Mean;
@@ -92,8 +93,6 @@ void makeselectlist(){
 }
 
 int main(int argc, char** argv){
-
-  double read;
 
   //Simulator mySim;
   RareEvent_mode = false;
@@ -189,7 +188,11 @@ int main(int argc, char** argv){
     //cout << "stop select" << endl;
     for(int it = 0;it<Njob;it++){
       if(FD_ISSET(fileno(clientstream[it]), &cs_cp)){
+	bool readb;
+	double read;
         BatchResult* batchR = new BatchResult;
+	fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, clientstream[it]);
+	IsBernoulli= IsBernoulli && readb;
 	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);
 	batchR->I=read;
 	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);

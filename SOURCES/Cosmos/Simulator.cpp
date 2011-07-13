@@ -386,11 +386,12 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 #include "SimulatorRE.cpp"
 
 BatchResult* Simulator::RunBatch(){
-  bool IsBernoulli = true;
+  //bool IsBernoulli = true;
   double Dif=0;
   double Y = 0;
   BatchResult* batchR = new BatchResult();
 
+  batchR->IsBernoulli = true;
   batchR->I = 0;
   batchR->Isucc = 0;
   batchR->Mean = 0;
@@ -412,7 +413,8 @@ BatchResult* Simulator::RunBatch(){
       //logvalue << Result.second << endl ;
       //----------------- /Rare Event -----------------
       batchR->Isucc++;
-      if (Result.second * (1 - Result.second) != 0) IsBernoulli = false;
+
+      if (Result.second * (1 - Result.second) != 0) batchR->IsBernoulli = false;
 
 
       Dif = Result.second - batchR->Mean;

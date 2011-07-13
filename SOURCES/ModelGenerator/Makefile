@@ -30,4 +30,4 @@ clean:
 	rm $(OBJPATH)/LhaParser/*.o
 	rm $(OBJPATH)/*.o
 	rm $(BINPATH)/CosmosGPP	
-	rm $(BINPATH)/SimGPP	
+	rm $(BINPATH)/ClientSim	

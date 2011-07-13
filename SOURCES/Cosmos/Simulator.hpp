@@ -22,6 +22,7 @@ typedef pair<bool, double> SimOutput;
 
 class BatchResult {
 public:
+  bool IsBernoulli;
   double I;
   double Isucc;
   double Mean;

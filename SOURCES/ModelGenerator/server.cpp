@@ -28,6 +28,7 @@ using namespace std;
 
 class BatchResult {
 public:
+  bool IsBernoulli;
   double I;
   double Isucc;
   double Mean;
@@ -96,8 +97,6 @@ void makeselectlist(int Njob){
 }
 
 void LauchServer(SimParam& P){
-
-  double read;
 
   //Simulator mySim;
   string str;
@@ -177,7 +176,12 @@ void LauchServer(SimParam& P){
     //cout << "stop select" << endl;
     for(int it = 0;it<P.Njob;it++){
       if(FD_ISSET(fileno(clientstream[it]), &cs_cp)){
-        BatchResult* batchR = new BatchResult;
+        double read;
+	bool readb;
+	BatchResult* batchR = new BatchResult;
+
+	fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, clientstream[it]);
+	batchR->IsBernoulli=readb;
 	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);
 	batchR->I=read;
 	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);
@@ -189,6 +193,7 @@ void LauchServer(SimParam& P){
 
 	//cout << "client: " << it << " :"<< read << endl;
 
+	IsBernoulli = IsBernoulli && batchR->IsBernoulli;
 
         K = K + batchR->I;
         Ksucc = Ksucc + batchR->Isucc;
