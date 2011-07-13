@@ -87,6 +87,15 @@ void lauch_clients(SimParam& P){
 
 }
 
+void kill_client(){
+   while (!clientstream.empty())
+  {
+    pclose(clientstream.back());
+    clientstream.pop_back();
+  }
+}
+
+
 void makeselectlist(int Njob){
   FD_ZERO(&client_list);
   for(int it = 0;it<Njob;it++){
@@ -225,7 +234,7 @@ void LauchServer(SimParam& P){
 
   }while ((RelErr > ConfWidth) && (K < MaxRuns));
 
-
+  kill_client();
 
     low = Mean - CurrentWidth / 2.0;
     up = Mean + CurrentWidth / 2.0;
