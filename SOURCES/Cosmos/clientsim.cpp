@@ -53,8 +53,8 @@ int main(int argc, char** argv) {
       BatchResult* batchR = mySim.RunBatch();
 
       write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->IsBernoulli),sizeof(bool));
-      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->I),sizeof(double));
-      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->Isucc),sizeof(double));
+      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->I),sizeof(int));
+      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->Isucc),sizeof(int));
       write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->Mean),sizeof(double));
       write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->M2),sizeof(double));
       fflush(stdout);

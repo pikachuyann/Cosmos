@@ -18,8 +18,8 @@ using namespace std;
 class BatchResult {
 public:
   bool IsBernoulli;
-  double I;
-  double Isucc;
+  int I;
+  int Isucc;
   double Mean;
   double M2;
   };
@@ -166,14 +166,15 @@ void LauchServer(SimParam& P){
       if(FD_ISSET(fileno(clientstream[it]), &cs_cp)){
         double read;
 	bool readb;
+	int readi;
 	BatchResult* batchR = new BatchResult;
 
 	fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, clientstream[it]);
 	batchR->IsBernoulli=readb;
-	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);
-	batchR->I=read;
-	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);
-	batchR->Isucc=read;
+	fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, clientstream[it]);
+	batchR->I=readi;
+	fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, clientstream[it]);
+	batchR->Isucc=readi;
 	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);
 	batchR->Mean=read;
 	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);

@@ -23,8 +23,8 @@ typedef pair<bool, double> SimOutput;
 class BatchResult {
 public:
   bool IsBernoulli;
-  double I;
-  double Isucc;
+  int I;
+  int Isucc;
   double Mean;
   double M2;
 };
@@ -46,7 +46,6 @@ public:
   void InitialEventsQueueRE();
 
 
-  void RunSimulation();
   BatchResult* RunBatch();
 
 

@@ -221,8 +221,8 @@ void Command(string str, SimParam& P) {
     cout << "\tdoubleIS" << endl;
     cout << "\tparams" << endl;
     cout << "\thelp" << endl;
-    cout << "\tstop\n" << endl;
-    cout << "\tNjob\n" << endl;
+    cout << "\tstop" << endl;
+    cout << "\tNjob" << endl;
   } else
     cout << "Unknown command, for more information type 'help':\n" << endl;
 }

@@ -14,7 +14,6 @@ classes: init
 	$(CC) $(OPTIONS2) -c RareEvent.cpp -o $(OBJPATH)/RareEvent.o
 	$(CC) $(OPTIONS2) -c Simulator.cpp -o $(OBJPATH)/Simulator.o
 	$(CC) $(OPTIONS2) -c clientsim.cpp -o $(OBJPATH)/clientsim.o
-	$(CC) $(OPTIONS2) -c main.cpp -o $(OBJPATH)/main.o
 
 clean:
 	rm $(OBJPATH)/*.o
