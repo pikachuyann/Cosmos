@@ -5,22 +5,11 @@
 #include <iostream>
 #include <vector>
 #include <sys/select.h>
-//#include "Simulator.hpp"
-//#include "spn.hpp"
-//#include "LHA.hpp"
-//#include "EventsQueue.hpp"
-//#include "SimulatorRE.h"
 #include <iostream>
 #include <fstream>
-//#include <set>
-//#include <math.h>
-//#include <float.h>
-//#include <boost/random.hpp>
-//#include <boost/generator_iterator.hpp>
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
 #include <time.h>
-//#include <unistd.h>
 
 #include "server.hpp"
 
@@ -64,17 +53,16 @@ fd_set client_list;
 vector<FILE*> clientstream;
 int max_client=0 ;
 
-double BatchSize = 1000;
-double MaxRuns = 100000000;
-double ConfWidth = 0.001;
-double ConfLevel = 0.99;
-bool RareEvent_mode = false;
 
 void lauch_clients(SimParam& P){
   ostringstream os;
   if (P.Path == "") os << "./ClientSim " << P.Batch;
   else os << P.Path << "ClientSim " << P.Batch;
-  if(P.RareEvent){ os << " " << "-RE"; };
+  if(P.DoubleIS){ 
+    os << " " << "-RE2"; 
+  } else {
+    if(P.RareEvent) os << " " << "-RE";
+  };
   //cout << os.str() << endl;
   
   for(int i = 0;i<P.Njob;i++){
@@ -111,15 +99,6 @@ void LauchServer(SimParam& P){
   string str;
 
   //mySim.Load();
-
-  ConfLevel=P.Level;
-  ConfWidth=P.Width;
-  BatchSize=P.Batch;
-  MaxRuns=P.MaxRuns;
-  RareEvent_mode=P.RareEvent;
-
-
-  //stream = popen(cmd.c_str(), "r");
 
   time_t start, end;
   double cpu_time_used;
@@ -172,7 +151,7 @@ void LauchServer(SimParam& P){
   makeselectlist(P.Njob);
 
   boost::math::normal norm;
-  Normal_quantile = quantile(norm, 0.5 + ConfLevel / 2.0);
+  Normal_quantile = quantile(norm, 0.5 + P.Level / 2.0);
 
   do{
     fd_set cs_cp = client_list;
@@ -232,7 +211,7 @@ void LauchServer(SimParam& P){
       }
     }
 
-  }while ((RelErr > ConfWidth) && (K < MaxRuns));
+  }while ((RelErr > P.Width) && (K < P.MaxRuns));
 
   kill_client();
 
@@ -274,7 +253,7 @@ void LauchServer(SimParam& P){
       ResultsFile << "Accepted paths:\t" << Ksucc << endl;
       ResultsFile << "Simulation time :\t" << cpu_time_used << endl;
 
-      ResultsFile << "\nConfidence level:\t" << ConfLevel << endl;
+      ResultsFile << "\nConfidence level:\t" << P.Level << endl;
       cout << "Results are saved in '" << fn << "'" << endl;
       ResultsFile.close();
 

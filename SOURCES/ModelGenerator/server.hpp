@@ -12,6 +12,7 @@ using namespace std;
    long int MaxRuns;
    string Path;
    bool RareEvent;
+   bool DoubleIS;
 };
 
 double StrToDbl(string st);

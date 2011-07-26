@@ -32,11 +32,16 @@ int main(int argc, char** argv) {
   
     Simulator mySim;
     mySim.RareEvent_mode = false;
+    mySim.doubleIS_mode = false;
     string str;
 
     if(argc > 2){
       str = argv[2];
       if(str== "-RE")mySim.RareEvent_mode=true;
+      if(str== "-RE2"){
+	mySim.RareEvent_mode=true;
+	mySim.doubleIS_mode=true;
+      }
     };
     
     mySim.Load();

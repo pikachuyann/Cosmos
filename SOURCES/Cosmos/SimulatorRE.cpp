@@ -78,10 +78,15 @@ void Simulator::SimulateSinglePathRE() {
       Event E1 = (*EQ).InPosition(0);
       double E1_time = E1.time;
       int E1_transitionNum = E1.transition;
-      
-      A.Likelihood = A.Likelihood * 
-	(N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) * 
-	(N.Rate_Sum / N.Rate_Table[E1_transitionNum]);
+      if(doubleIS_mode){
+	A.Likelihood = A.Likelihood * 
+	  (N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) * 
+	  ((N.Rate_Sum-N.Rate_Table[N.tr-1]) / N.Rate_Table[E1_transitionNum]);
+      }else{
+	A.Likelihood = A.Likelihood * 
+        (N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) *
+        (N.Rate_Sum / N.Rate_Table[E1_transitionNum]);
+      }
       //cout <<"Transition: "<< E1_transitionNum<<"\trate: " <<N.Rate_Table[E1_transitionNum] <<"\tsum rate: "<< N.Rate_Sum <<"\torigine rate: "<< N.Origine_Rate_Table[E1_transitionNum] << "\torigine sum: " <<N.Origine_Rate_Sum << "\tLikelihood: " << A.Likelihood << endl << endl << endl << endl;
       
       
@@ -219,7 +224,9 @@ void Simulator::SimulateSinglePathRE() {
 	    }; 
 	  };
 	  GenerateEventRE(F, (N.tr-1));
-	  (*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
+	  if(!doubleIS_mode){
+	    (*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
+	  }
 	  //--------- /Rare Event ---------------
 	  
 	  //(*EQ).view();
