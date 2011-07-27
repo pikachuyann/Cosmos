@@ -105,10 +105,10 @@ void LauchServer(SimParam& P){
 
   time(&start);
 
-  double K = 0; //counter of generated paths
-  double Ksucc = 0; //counter of succesfull generated paths
+  int K = 0; //counter of generated paths
+  int Ksucc = 0; //counter of succesfull generated paths
   double Ksucc_sqrt; //square root of Ksucc
-  double Isucc;
+  int Isucc;
 
 
   double CurrentWidth = 1;
