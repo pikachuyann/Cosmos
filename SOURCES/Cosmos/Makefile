@@ -1,4 +1,3 @@
-CC=g++
 OBJPATH=../../Obj/Cosmos
 BINPATH=../../bin
 OPTIONS2= -Wno-deprecated $(OPTIONS) 
