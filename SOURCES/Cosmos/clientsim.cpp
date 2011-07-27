@@ -1,5 +1,6 @@
 #include "spn.hpp"
 #include "LHA.hpp"
+#include "BatchR.hpp"
 #include "Simulator.hpp"
 
 double StrToDbl(string st) {
@@ -50,20 +51,14 @@ int main(int argc, char** argv) {
     mySim.SetBatchSize(StrToDbl(str));
 
     while( !cin.eof() ){
-      BatchResult* batchR = mySim.RunBatch();
+      BatchR* batchResult = mySim.RunBatch();
 
-      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->IsBernoulli),sizeof(bool));
-      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->I),sizeof(int));
-      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->Isucc),sizeof(int));
-      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->Mean),sizeof(double));
-      write(STDOUT_FILENO,reinterpret_cast<char*>(&batchR->M2),sizeof(double));
-      fflush(stdout);
-      
+      batchResult->outputR();
       
       /*cout << batchR->I <<":"<< batchR->Isucc <<":"<< batchR->Mean 
 	<< ":" << batchR->M2 << endl;*/
 
-      delete batchR;
+      delete batchResult;
       
     }
 

@@ -5,24 +5,24 @@
 #include <iostream>
 #include <vector>
 #include <sys/select.h>
-#include <iostream>
 #include <fstream>
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
 #include <time.h>
 
+#include "../Cosmos/BatchR.hpp"
 #include "server.hpp"
 
 using namespace std;
 
-class BatchResult {
+/*class BatchResult {
 public:
   bool IsBernoulli;
   int I;
   int Isucc;
   double Mean;
   double M2;
-  };
+  };*/
 
 double StrToDbl(string st) {
 
@@ -167,31 +167,21 @@ void LauchServer(SimParam& P){
         double read;
 	bool readb;
 	int readi;
-	BatchResult* batchR = new BatchResult;
-
-	fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, clientstream[it]);
-	batchR->IsBernoulli=readb;
-	fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, clientstream[it]);
-	batchR->I=readi;
-	fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, clientstream[it]);
-	batchR->Isucc=readi;
-	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);
-	batchR->Mean=read;
-	fread(reinterpret_cast<char*>( &read ), sizeof read ,1, clientstream[it]);
-	batchR->M2=read;
+	BatchR* batchResult = new BatchR;
+	batchResult->inputR(clientstream[it]);
 
 	//cout << "client: " << it << " :"<< read << endl;
 
-	IsBernoulli = IsBernoulli && batchR->IsBernoulli;
+	IsBernoulli = IsBernoulli && batchResult->IsBernoulli;
 
-        K = K + batchR->I;
-        Ksucc = Ksucc + batchR->Isucc;
+        K = K + batchResult->I;
+        Ksucc = Ksucc + batchResult->Isucc;
 
-        Dif = batchR->Mean - Mean;
-        Mean = Mean + batchR->Isucc * Dif / Ksucc;
+        Dif = batchResult->Mean - Mean;
+        Mean = Mean + batchResult->Isucc * Dif / Ksucc;
 
-        Dif = batchR->M2 - M2;
-        M2 = M2 + batchR->Isucc * Dif / Ksucc;
+        Dif = batchResult->M2 - M2;
+        M2 = M2 + batchResult->Isucc * Dif / Ksucc;
 
 
         Var = M2 - pow(Mean, 2);
@@ -201,7 +191,7 @@ void LauchServer(SimParam& P){
         Ksucc_sqrt = sqrt(Ksucc);
         CurrentWidth = 2 * Normal_quantile * stdev / Ksucc_sqrt;
 
-	delete batchR;
+	delete batchResult;
         //-------------- Rare Event -----------------
         cout << "\033[A\033[2K" << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
 

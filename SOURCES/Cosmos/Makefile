@@ -8,6 +8,7 @@ init:
 	cat ../ModelGenerator/spn_orig.hpp end.cpp > spn.hpp
 
 classes: init
+	$(CC) $(OPTIONS2) -c BatchR.cpp -o $(OBJPATH)/BatchR.o
 	$(CC) $(OPTIONS2) -c Event.cpp -o $(OBJPATH)/Event.o
 	$(CC) $(OPTIONS2) -c EventsQueue.cpp -o  $(OBJPATH)/EventsQueue.o
 	$(CC) $(OPTIONS2) -c tab.cpp -o $(OBJPATH)/tab.o
@@ -41,6 +42,7 @@ sim:
 	$(CC) $(OPTIONS2) -c LHA.cpp -o $(OBJPATH)/LHA.o
 	$(CC) $(OPTIONS2) \
 		$(OBJPATH)/clientsim.o \
+		$(OBJPATH)/BatchR.o \
 		$(OBJPATH)/Event.o \
 		$(OBJPATH)/EventsQueue.o \
 		$(OBJPATH)/tab.o \

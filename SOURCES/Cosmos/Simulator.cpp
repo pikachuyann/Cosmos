@@ -385,19 +385,13 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 
 #include "SimulatorRE.cpp"
 
-BatchResult* Simulator::RunBatch(){
-  //bool IsBernoulli = true;
+BatchR* Simulator::RunBatch(){
   double Dif=0;
   double Y = 0;
-  BatchResult* batchR = new BatchResult();
+  BatchR* batchResult = new BatchR();
 
-  batchR->IsBernoulli = true;
-  batchR->I = 0;
-  batchR->Isucc = 0;
-  batchR->Mean = 0;
-  batchR->M2 = 0;
 
-  while (batchR->Isucc < BatchSize) {
+  while (batchResult->Isucc < BatchSize) {
 
     if(RareEvent_mode){
       //cout << "rareevent";
@@ -412,16 +406,16 @@ BatchResult* Simulator::RunBatch(){
       //------------------ Rare Event -----------------
       //logvalue << Result.second << endl ;
       //----------------- /Rare Event -----------------
-      batchR->Isucc++;
+      batchResult->Isucc++;
 
-      if (Result.second * (1 - Result.second) != 0) batchR->IsBernoulli = false;
+      if (Result.second * (1 - Result.second) != 0) batchResult->IsBernoulli = false;
 
 
-      Dif = Result.second - batchR->Mean;
-      batchR->Mean += Dif / batchR->Isucc;
+      Dif = Result.second - batchResult->Mean;
+      batchResult->Mean += Dif / batchResult->Isucc;
 
-      Dif = pow(Result.second, 2) - batchR->M2;
-      batchR->M2 += Dif / batchR->Isucc;
+      Dif = pow(Result.second, 2) - batchResult->M2;
+      batchResult->M2 += Dif / batchResult->Isucc;
 
       /*if (Isucc > 1) {
         Dif = pow(Result.second, 2) - Y;
@@ -430,10 +424,10 @@ BatchResult* Simulator::RunBatch(){
     }
 
     reset();
-    batchR->I++;
+    batchResult->I++;
 
   }
 
-  return (batchR);
+  return (batchResult);
 
 }

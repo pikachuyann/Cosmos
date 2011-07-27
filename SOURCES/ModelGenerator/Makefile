@@ -20,6 +20,7 @@ Generator:
 		$(OBJPATH)/GspnParser/Gspn-Reader.o \
 		$(OBJPATH)/LhaParser/Lha-Reader.o \
 		$(OBJPATH)/LhaParser/Lha-parser.tab.o  \
+		$(OBJPATH)/../Cosmos/BatchR.o \
 		$(OBJPATH)/../Cosmos/Event.o \
 		$(OBJPATH)/../Cosmos/EventsQueue.o  \
 	 -o $(BINPATH)/CosmosGPP

@@ -166,5 +166,12 @@ public:
     //#endif	/* _LHA_HPP */
 
 
+t_interval GetEdgeEnablingTime_0(vector<int>& );
+t_interval GetEdgeEnablingTime_1(vector<int>& );
+t_interval GetEdgeEnablingTime_2(vector<int>& );
+void DoEdgeUpdates_0(vector<int>& );
+void DoEdgeUpdates_1(vector<int>& );
+void DoEdgeUpdates_2(vector<int>& );
+private:
 };
-#endif
+#endif	/* _Lha_HPP */

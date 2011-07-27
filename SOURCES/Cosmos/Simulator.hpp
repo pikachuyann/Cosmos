@@ -3,6 +3,7 @@
 #include "LHA.hpp"
 #include "spn.hpp"
 #include "EventsQueue.hpp"
+#include "BatchR.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -20,14 +21,14 @@ using namespace std;
 
 typedef pair<bool, double> SimOutput;
 
-class BatchResult {
+/*class BatchResult {
 public:
   bool IsBernoulli;
   int I;
   int Isucc;
   double Mean;
   double M2;
-};
+  };*/
 
 class Simulator {
 public:
@@ -46,7 +47,7 @@ public:
   void InitialEventsQueueRE();
 
 
-  BatchResult* RunBatch();
+  BatchR* RunBatch();
 
 
   SimOutput Result;
