@@ -3,14 +3,6 @@
 #include "BatchR.hpp"
 #include "Simulator.hpp"
 
-double StrToDbl(string st) {
-
-    std::istringstream iss(st);
-    double x;
-    iss >> x;
-    return x;
-}
-
 int StrToInt(string st) {
 
     std::istringstream iss(st);
@@ -18,15 +10,6 @@ int StrToInt(string st) {
     iss >> x;
     return x;
 }
-
-long int StrToLongInt(string st) {
-
-    std::istringstream iss(st);
-    long int x;
-    iss >> x;
-    return x;
-}
-
 
 int main(int argc, char** argv) {
   
@@ -48,7 +31,7 @@ int main(int argc, char** argv) {
     mySim.Load();
 
     str = argv[1];
-    mySim.SetBatchSize(StrToDbl(str));
+    mySim.SetBatchSize(StrToInt(str));
 
     while( !cin.eof() ){
       BatchR* batchResult = mySim.RunBatch();
