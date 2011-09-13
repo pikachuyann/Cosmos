@@ -33,7 +33,7 @@ This is the user manual for the tool Cosmos version 1.
 \section{File Format}
 \subsection{Generalized Stochastic Petri Net (.gspn)}
 This file format is used to describe GSPN.
-First we describe an example:
+First we describe an example:\\
 \begin{figure}[h]
   \centering
   \input{figures/spn}
@@ -104,6 +104,17 @@ The list of place name and transition name is given in the
 \verb|PlacesList| and \verb|TransitionsList| statement.\\
 The initial marking of the net is given as a set of pairs
 in the \verb|Marking| statement.\\
+The transition distribution is given as a set of tuples like
+this one:\\ \verb|(Arrive_1,EXPONENTIAL(lambda1),1,1, SINGLE)|
+each tuple contain first the name of the transition then
+the probability distribution with some parameters, then two positive
+reals define the priority and weight of the event generated.
+For exponential distribution we can specify the policy of service
+which can be \verb|SINGLE,INFINITE,MULTIPLE(n)|.\\
+Finally come the description of arcs of the net with the 
+\verb|InArcs|,\verb|OutArcs| and \verb|InhibitorsArcs| statements.
+
+
 
 \subsubsection{Grammar}
 the complete grammar is:
