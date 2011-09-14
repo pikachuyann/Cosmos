@@ -3,7 +3,7 @@ Terminals unused in grammar
    LhaName
 
 
-Grammar
+Grammaire
 
     0 $accept: LHA "end of file"
 
@@ -169,64 +169,65 @@ Grammar
   121        | Updates COMMA Update
 
   122 Update: str EQ RealVarMarkingFormula
+  123       | str EQ LIKELIHOOD MUL str
 
-  123 HaslExp: AVG LB AlgExpr RB SEMICOLON
+  124 HaslExp: AVG LB AlgExpr RB SEMICOLON
 
-  124 AlgExpr: LhaFunc
-  125        | MIN LB AlgExpr COMMA AlgExpr RB
-  126        | MAX LB AlgExpr COMMA AlgExpr RB
-  127        | MINUS AlgExpr
-  128        | FLOOR LB AlgExpr RB
-  129        | LB AlgExpr RB
-  130        | AlgExpr POWER AlgExpr
-  131        | AlgExpr PLUS AlgExpr
-  132        | AlgExpr MINUS AlgExpr
-  133        | AlgExpr MUL AlgExpr
-  134        | AlgExpr DIV AlgExpr
+  125 AlgExpr: LhaFunc
+  126        | MIN LB AlgExpr COMMA AlgExpr RB
+  127        | MAX LB AlgExpr COMMA AlgExpr RB
+  128        | MINUS AlgExpr
+  129        | FLOOR LB AlgExpr RB
+  130        | LB AlgExpr RB
+  131        | AlgExpr POWER AlgExpr
+  132        | AlgExpr PLUS AlgExpr
+  133        | AlgExpr MINUS AlgExpr
+  134        | AlgExpr MUL AlgExpr
+  135        | AlgExpr DIV AlgExpr
 
-  135 LhaFunc: LAST LB LinForm RB
-  136        | LhaMIN LB LinForm RB
-  137        | LhaMAX LB LinForm RB
-  138        | INTEGRAL LB LinForm RB
+  136 LhaFunc: LAST LB LinForm RB
+  137        | LhaMIN LB LinForm RB
+  138        | LhaMAX LB LinForm RB
+  139        | INTEGRAL LB LinForm RB
 
-  139 LinForm: VarTerm
-  140        | LinForm MINUS VarTerm
-  141        | LinForm PLUS VarTerm
+  140 LinForm: VarTerm
+  141        | LinForm MINUS VarTerm
+  142        | LinForm PLUS VarTerm
 
-  142 VarTerm: str
-  143        | LB RealMarkingFormula RB MUL str
-  144        | ival MUL str
-  145        | rval MUL str
-  146        | str MUL str
-  147        | MINUS str
-  148        | MINUS LB RealMarkingFormula RB MUL str
-  149        | MINUS ival MUL str
-  150        | MINUS rval MUL str
-  151        | MINUS str MUL str
+  143 VarTerm: str
+  144        | LB RealMarkingFormula RB MUL str
+  145        | ival MUL str
+  146        | rval MUL str
+  147        | str MUL str
+  148        | MINUS str
+  149        | MINUS LB RealMarkingFormula RB MUL str
+  150        | MINUS ival MUL str
+  151        | MINUS rval MUL str
+  152        | MINUS str MUL str
 
 
-Terminals, with rules where they appear
+Terminaux, suivis des règles où ils apparaissent
 
 "end of file" (0) 0
 '{' (123) 52 55 60 63 68 88 96 118
 '}' (125) 52 55 60 63 68 88 96 118
 error (256)
 str (258) 5 18 31 46 47 53 54 56 57 61 62 64 65 71 72 75 91 97 98 108
-    109 110 111 112 113 114 115 116 117 122 142 143 144 145 146 147
-    148 149 150 151
-rval (259) 16 29 111 116 145 150
-ival (260) 4 17 30 48 49 110 115 144 149
-SEMICOLON (261) 46 47 48 49 52 55 60 63 68 71 72 88 91 123
+    109 110 111 112 113 114 115 116 117 122 123 143 144 145 146 147
+    148 149 150 151 152
+rval (259) 16 29 111 116 146 151
+ival (260) 4 17 30 48 49 110 115 145 150
+SEMICOLON (261) 46 47 48 49 52 55 60 63 68 71 72 88 91 124
 COLON (262) 75
-COMMA (263) 14 15 27 28 40 41 54 57 62 65 71 72 74 91 98 121 125 126
+COMMA (263) 14 15 27 28 40 41 54 57 62 65 71 72 74 91 98 121 126 127
 LB (264) 6 12 13 14 15 19 26 27 28 32 39 40 41 71 72 81 91 109 114
-    123 125 126 128 129 135 136 137 138 143 148
+    124 126 127 129 130 136 137 138 139 144 149
 RB (265) 6 12 13 14 15 19 26 27 28 32 39 40 41 71 72 81 91 109 114
-    123 125 126 128 129 135 136 137 138 143 148
+    124 126 127 129 130 136 137 138 139 144 149
 SHARP (266) 92 101 119
 ALL (267) 93 94
 BackSlash (268) 94
-EQ (269) 46 47 48 49 52 55 60 63 68 83 88 102 122
+EQ (269) 46 47 48 49 52 55 60 63 68 83 88 102 122 123
 GEQ (270) 85 104
 LEQ (271) 84 103
 LL (272) 86
@@ -238,21 +239,21 @@ TRUE (277) 76
 FALSE (278) 77
 DOUBLE (279) 47
 INT (280) 46
-DIV (281) 13 21 34 134
-MUL (282) 10 24 37 109 110 111 112 114 115 116 117 133 143 144 145
-    146 148 149 150 151
-PLUS (283) 8 22 35 107 131 141
-MINUS (284) 7 9 20 23 33 36 106 113 114 115 116 117 127 132 140 147
-    148 149 150 151
-POWER (285) 11 25 38 130
-FLOOR (286) 12 13 26 39 128
-MIN (287) 14 27 40 125
-MAX (288) 15 28 41 126
-LhaMIN (289) 136
-LhaMAX (290) 137
-AVG (291) 123
-LAST (292) 135
-INTEGRAL (293) 138
+DIV (281) 13 21 34 135
+MUL (282) 10 24 37 109 110 111 112 114 115 116 117 123 134 144 145
+    146 147 149 150 151 152
+PLUS (283) 8 22 35 107 132 142
+MINUS (284) 7 9 20 23 33 36 106 113 114 115 116 117 128 133 141 148
+    149 150 151 152
+POWER (285) 11 25 38 131
+FLOOR (286) 12 13 26 39 129
+MIN (287) 14 27 40 126
+MAX (288) 15 28 41 127
+LhaMIN (289) 137
+LhaMAX (290) 138
+AVG (291) 124
+LAST (292) 136
+INTEGRAL (293) 139
 LhaName (294)
 Const (295) 46 47
 NbLoc (296) 49
@@ -263,999 +264,1000 @@ Iloc (300) 60
 Floc (301) 63
 locations (302) 68
 edges (303) 88
-NEG (304)
+LIKELIHOOD (304) 123
+NEG (305)
 
 
-Nonterminals, with rules where they appear
+Non-terminaux, suivis des règles où ils apparaissent
 
-$accept (52)
-    on left: 0
-LHA (53)
-    on left: 1, on right: 0
-declarations (54)
-    on left: 2 3, on right: 1
-IntMarkingFormula (55)
-    on left: 4 5 6 7 8 9 10 11 12 13 14 15, on right: 6 7 8 9 10 11
-    12 13 14 15 46
-RealMarkingFormula (56)
-    on left: 16 17 18 19 20 21 22 23 24 25 26 27 28, on right: 19 20
-    21 22 23 24 25 26 27 28 47 75 83 84 85 86 87 102 103 104 109 114
-    143 148
-RealVarMarkingFormula (57)
-    on left: 29 30 31 32 33 34 35 36 37 38 39 40 41, on right: 32 33
-    34 35 36 37 38 39 40 41 122
-Sizes (58)
-    on left: 42 43, on right: 2 3
-Constants (59)
-    on left: 44 45, on right: 2 45
-Constant (60)
-    on left: 46 47, on right: 44 45
-NbVariables (61)
-    on left: 48, on right: 42 43
-NbLocations (62)
-    on left: 49, on right: 42 43
-Lists (63)
-    on left: 50 51, on right: 2 3
-VariablesList (64)
-    on left: 52, on right: 50 51
-VLabels (65)
-    on left: 53 54, on right: 52 54
-LocationsList (66)
-    on left: 55, on right: 50 51
-LLabels (67)
-    on left: 56 57, on right: 55 57
-InitFinal (68)
-    on left: 58 59, on right: 1
-init (69)
-    on left: 60, on right: 58 59
-iLLabels (70)
-    on left: 61 62, on right: 60 62
-final (71)
-    on left: 63, on right: 58 59
-fLLabels (72)
-    on left: 64 65, on right: 63 65
-definitions (73)
-    on left: 66 67, on right: 1
-LocationsDef (74)
-    on left: 68, on right: 66 67
-LOCATIONS (75)
-    on left: 69 70, on right: 68 70
-LOCATION (76)
-    on left: 71 72, on right: 69 70
-FLOWS (77)
-    on left: 73 74, on right: 71 74
-FLOW (78)
-    on left: 75, on right: 73 74
-LogExpr (79)
-    on left: 76 77 78 79 80 81 82, on right: 71 72 79 80 81 82
-CompExpr (80)
-    on left: 83 84 85 86 87, on right: 78
-EdgesDef (81)
-    on left: 88, on right: 66 67
-EDGES (82)
-    on left: 89 90, on right: 88 90
-EDGE (83)
-    on left: 91, on right: 89 90
-ACTIONS (84)
-    on left: 92 93 94 95, on right: 91
-SetOfActions (85)
-    on left: 96, on right: 94 95
-Actions (86)
-    on left: 97 98, on right: 96 98
-CONSTRAINTS (87)
-    on left: 99 100 101, on right: 91 100
-CONSTRAINT (88)
-    on left: 102 103 104, on right: 99 100
-LinearExp (89)
-    on left: 105 106 107, on right: 102 103 104 106 107
-term (90)
-    on left: 108 109 110 111 112 113 114 115 116 117, on right: 105
-    106 107
-UPDATES (91)
-    on left: 118 119, on right: 91
-Updates (92)
-    on left: 120 121, on right: 118 121
-Update (93)
-    on left: 122, on right: 120 121
-HaslExp (94)
-    on left: 123, on right: 2 3
-AlgExpr (95)
-    on left: 124 125 126 127 128 129 130 131 132 133 134, on right:
-    123 125 126 127 128 129 130 131 132 133 134
-LhaFunc (96)
-    on left: 135 136 137 138, on right: 124
-LinForm (97)
-    on left: 139 140 141, on right: 135 136 137 138 140 141
-VarTerm (98)
-    on left: 142 143 144 145 146 147 148 149 150 151, on right: 139
-    140 141
+$accept (53)
+    à gauche: 0
+LHA (54)
+    à gauche: 1, à droite: 0
+declarations (55)
+    à gauche: 2 3, à droite: 1
+IntMarkingFormula (56)
+    à gauche: 4 5 6 7 8 9 10 11 12 13 14 15, à droite: 6 7 8 9 10
+    11 12 13 14 15 46
+RealMarkingFormula (57)
+    à gauche: 16 17 18 19 20 21 22 23 24 25 26 27 28, à droite: 19
+    20 21 22 23 24 25 26 27 28 47 75 83 84 85 86 87 102 103 104 109
+    114 144 149
+RealVarMarkingFormula (58)
+    à gauche: 29 30 31 32 33 34 35 36 37 38 39 40 41, à droite: 32
+    33 34 35 36 37 38 39 40 41 122
+Sizes (59)
+    à gauche: 42 43, à droite: 2 3
+Constants (60)
+    à gauche: 44 45, à droite: 2 45
+Constant (61)
+    à gauche: 46 47, à droite: 44 45
+NbVariables (62)
+    à gauche: 48, à droite: 42 43
+NbLocations (63)
+    à gauche: 49, à droite: 42 43
+Lists (64)
+    à gauche: 50 51, à droite: 2 3
+VariablesList (65)
+    à gauche: 52, à droite: 50 51
+VLabels (66)
+    à gauche: 53 54, à droite: 52 54
+LocationsList (67)
+    à gauche: 55, à droite: 50 51
+LLabels (68)
+    à gauche: 56 57, à droite: 55 57
+InitFinal (69)
+    à gauche: 58 59, à droite: 1
+init (70)
+    à gauche: 60, à droite: 58 59
+iLLabels (71)
+    à gauche: 61 62, à droite: 60 62
+final (72)
+    à gauche: 63, à droite: 58 59
+fLLabels (73)
+    à gauche: 64 65, à droite: 63 65
+definitions (74)
+    à gauche: 66 67, à droite: 1
+LocationsDef (75)
+    à gauche: 68, à droite: 66 67
+LOCATIONS (76)
+    à gauche: 69 70, à droite: 68 70
+LOCATION (77)
+    à gauche: 71 72, à droite: 69 70
+FLOWS (78)
+    à gauche: 73 74, à droite: 71 74
+FLOW (79)
+    à gauche: 75, à droite: 73 74
+LogExpr (80)
+    à gauche: 76 77 78 79 80 81 82, à droite: 71 72 79 80 81 82
+CompExpr (81)
+    à gauche: 83 84 85 86 87, à droite: 78
+EdgesDef (82)
+    à gauche: 88, à droite: 66 67
+EDGES (83)
+    à gauche: 89 90, à droite: 88 90
+EDGE (84)
+    à gauche: 91, à droite: 89 90
+ACTIONS (85)
+    à gauche: 92 93 94 95, à droite: 91
+SetOfActions (86)
+    à gauche: 96, à droite: 94 95
+Actions (87)
+    à gauche: 97 98, à droite: 96 98
+CONSTRAINTS (88)
+    à gauche: 99 100 101, à droite: 91 100
+CONSTRAINT (89)
+    à gauche: 102 103 104, à droite: 99 100
+LinearExp (90)
+    à gauche: 105 106 107, à droite: 102 103 104 106 107
+term (91)
+    à gauche: 108 109 110 111 112 113 114 115 116 117, à droite:
+    105 106 107
+UPDATES (92)
+    à gauche: 118 119, à droite: 91
+Updates (93)
+    à gauche: 120 121, à droite: 118 121
+Update (94)
+    à gauche: 122 123, à droite: 120 121
+HaslExp (95)
+    à gauche: 124, à droite: 2 3
+AlgExpr (96)
+    à gauche: 125 126 127 128 129 130 131 132 133 134 135, à droite:
+    124 126 127 128 129 130 131 132 133 134 135
+LhaFunc (97)
+    à gauche: 136 137 138 139, à droite: 125
+LinForm (98)
+    à gauche: 140 141 142, à droite: 136 137 138 139 141 142
+VarTerm (99)
+    à gauche: 143 144 145 146 147 148 149 150 151 152, à droite:
+    140 141 142
 
 
-state 0
+état 0
 
     0 $accept: . LHA "end of file"
 
-    NbLoc  shift, and go to state 1
-    NbVar  shift, and go to state 2
+    NbLoc  décalage et aller à l'état 1
+    NbVar  décalage et aller à l'état 2
 
-    LHA           go to state 3
-    declarations  go to state 4
-    Sizes         go to state 5
-    NbVariables   go to state 6
-    NbLocations   go to state 7
+    LHA           aller à l'état 3
+    declarations  aller à l'état 4
+    Sizes         aller à l'état 5
+    NbVariables   aller à l'état 6
+    NbLocations   aller à l'état 7
 
 
-state 1
+état 1
 
    49 NbLocations: NbLoc . EQ ival SEMICOLON
 
-    EQ  shift, and go to state 8
+    EQ  décalage et aller à l'état 8
 
 
-state 2
+état 2
 
    48 NbVariables: NbVar . EQ ival SEMICOLON
 
-    EQ  shift, and go to state 9
+    EQ  décalage et aller à l'état 9
 
 
-state 3
+état 3
 
     0 $accept: LHA . "end of file"
 
-    "end of file"  shift, and go to state 10
+    "end of file"  décalage et aller à l'état 10
 
 
-state 4
+état 4
 
     1 LHA: declarations . InitFinal definitions
 
-    Iloc  shift, and go to state 11
-    Floc  shift, and go to state 12
+    Iloc  décalage et aller à l'état 11
+    Floc  décalage et aller à l'état 12
 
-    InitFinal  go to state 13
-    init       go to state 14
-    final      go to state 15
+    InitFinal  aller à l'état 13
+    init       aller à l'état 14
+    final      aller à l'état 15
 
 
-state 5
+état 5
 
     2 declarations: Sizes . Constants Lists HaslExp
     3             | Sizes . Lists HaslExp
 
-    Const  shift, and go to state 16
-    VList  shift, and go to state 17
-    LList  shift, and go to state 18
+    Const  décalage et aller à l'état 16
+    VList  décalage et aller à l'état 17
+    LList  décalage et aller à l'état 18
 
-    Constants      go to state 19
-    Constant       go to state 20
-    Lists          go to state 21
-    VariablesList  go to state 22
-    LocationsList  go to state 23
+    Constants      aller à l'état 19
+    Constant       aller à l'état 20
+    Lists          aller à l'état 21
+    VariablesList  aller à l'état 22
+    LocationsList  aller à l'état 23
 
 
-state 6
+état 6
 
    43 Sizes: NbVariables . NbLocations
 
-    NbLoc  shift, and go to state 1
+    NbLoc  décalage et aller à l'état 1
 
-    NbLocations  go to state 24
+    NbLocations  aller à l'état 24
 
 
-state 7
+état 7
 
    42 Sizes: NbLocations . NbVariables
 
-    NbVar  shift, and go to state 2
+    NbVar  décalage et aller à l'état 2
 
-    NbVariables  go to state 25
+    NbVariables  aller à l'état 25
 
 
-state 8
+état 8
 
    49 NbLocations: NbLoc EQ . ival SEMICOLON
 
-    ival  shift, and go to state 26
+    ival  décalage et aller à l'état 26
 
 
-state 9
+état 9
 
    48 NbVariables: NbVar EQ . ival SEMICOLON
 
-    ival  shift, and go to state 27
+    ival  décalage et aller à l'état 27
 
 
-state 10
+état 10
 
     0 $accept: LHA "end of file" .
 
-    $default  accept
+    $défaut  accepter
 
 
-state 11
+état 11
 
    60 init: Iloc . EQ '{' iLLabels '}' SEMICOLON
 
-    EQ  shift, and go to state 28
+    EQ  décalage et aller à l'état 28
 
 
-state 12
+état 12
 
    63 final: Floc . EQ '{' fLLabels '}' SEMICOLON
 
-    EQ  shift, and go to state 29
+    EQ  décalage et aller à l'état 29
 
 
-state 13
+état 13
 
     1 LHA: declarations InitFinal . definitions
 
-    locations  shift, and go to state 30
-    edges      shift, and go to state 31
+    locations  décalage et aller à l'état 30
+    edges      décalage et aller à l'état 31
 
-    definitions   go to state 32
-    LocationsDef  go to state 33
-    EdgesDef      go to state 34
+    definitions   aller à l'état 32
+    LocationsDef  aller à l'état 33
+    EdgesDef      aller à l'état 34
 
 
-state 14
+état 14
 
    58 InitFinal: init . final
 
-    Floc  shift, and go to state 12
+    Floc  décalage et aller à l'état 12
 
-    final  go to state 35
+    final  aller à l'état 35
 
 
-state 15
+état 15
 
    59 InitFinal: final . init
 
-    Iloc  shift, and go to state 11
+    Iloc  décalage et aller à l'état 11
 
-    init  go to state 36
+    init  aller à l'état 36
 
 
-state 16
+état 16
 
    46 Constant: Const . INT str EQ IntMarkingFormula SEMICOLON
    47         | Const . DOUBLE str EQ RealMarkingFormula SEMICOLON
 
-    DOUBLE  shift, and go to state 37
-    INT     shift, and go to state 38
+    DOUBLE  décalage et aller à l'état 37
+    INT     décalage et aller à l'état 38
 
 
-state 17
+état 17
 
    52 VariablesList: VList . EQ '{' VLabels '}' SEMICOLON
 
-    EQ  shift, and go to state 39
+    EQ  décalage et aller à l'état 39
 
 
-state 18
+état 18
 
    55 LocationsList: LList . EQ '{' LLabels '}' SEMICOLON
 
-    EQ  shift, and go to state 40
+    EQ  décalage et aller à l'état 40
 
 
-state 19
+état 19
 
     2 declarations: Sizes Constants . Lists HaslExp
 
-    VList  shift, and go to state 17
-    LList  shift, and go to state 18
+    VList  décalage et aller à l'état 17
+    LList  décalage et aller à l'état 18
 
-    Lists          go to state 41
-    VariablesList  go to state 22
-    LocationsList  go to state 23
+    Lists          aller à l'état 41
+    VariablesList  aller à l'état 22
+    LocationsList  aller à l'état 23
 
 
-state 20
+état 20
 
    44 Constants: Constant .
    45          | Constant . Constants
 
-    Const  shift, and go to state 16
+    Const  décalage et aller à l'état 16
 
-    $default  reduce using rule 44 (Constants)
+    $défaut  réduction par utilisation de la règle 44 (Constants)
 
-    Constants  go to state 42
-    Constant   go to state 20
+    Constants  aller à l'état 42
+    Constant   aller à l'état 20
 
 
-state 21
+état 21
 
     3 declarations: Sizes Lists . HaslExp
 
-    AVG  shift, and go to state 43
+    AVG  décalage et aller à l'état 43
 
-    HaslExp  go to state 44
+    HaslExp  aller à l'état 44
 
 
-state 22
+état 22
 
    50 Lists: VariablesList . LocationsList
 
-    LList  shift, and go to state 18
+    LList  décalage et aller à l'état 18
 
-    LocationsList  go to state 45
+    LocationsList  aller à l'état 45
 
 
-state 23
+état 23
 
    51 Lists: LocationsList . VariablesList
 
-    VList  shift, and go to state 17
+    VList  décalage et aller à l'état 17
 
-    VariablesList  go to state 46
+    VariablesList  aller à l'état 46
 
 
-state 24
+état 24
 
    43 Sizes: NbVariables NbLocations .
 
-    $default  reduce using rule 43 (Sizes)
+    $défaut  réduction par utilisation de la règle 43 (Sizes)
 
 
-state 25
+état 25
 
    42 Sizes: NbLocations NbVariables .
 
-    $default  reduce using rule 42 (Sizes)
+    $défaut  réduction par utilisation de la règle 42 (Sizes)
 
 
-state 26
+état 26
 
    49 NbLocations: NbLoc EQ ival . SEMICOLON
 
-    SEMICOLON  shift, and go to state 47
+    SEMICOLON  décalage et aller à l'état 47
 
 
-state 27
+état 27
 
    48 NbVariables: NbVar EQ ival . SEMICOLON
 
-    SEMICOLON  shift, and go to state 48
+    SEMICOLON  décalage et aller à l'état 48
 
 
-state 28
+état 28
 
    60 init: Iloc EQ . '{' iLLabels '}' SEMICOLON
 
-    '{'  shift, and go to state 49
+    '{'  décalage et aller à l'état 49
 
 
-state 29
+état 29
 
    63 final: Floc EQ . '{' fLLabels '}' SEMICOLON
 
-    '{'  shift, and go to state 50
+    '{'  décalage et aller à l'état 50
 
 
-state 30
+état 30
 
    68 LocationsDef: locations . EQ '{' LOCATIONS '}' SEMICOLON
 
-    EQ  shift, and go to state 51
+    EQ  décalage et aller à l'état 51
 
 
-state 31
+état 31
 
    88 EdgesDef: edges . EQ '{' EDGES '}' SEMICOLON
 
-    EQ  shift, and go to state 52
+    EQ  décalage et aller à l'état 52
 
 
-state 32
+état 32
 
     1 LHA: declarations InitFinal definitions .
 
-    $default  reduce using rule 1 (LHA)
+    $défaut  réduction par utilisation de la règle 1 (LHA)
 
 
-state 33
+état 33
 
    66 definitions: LocationsDef . EdgesDef
 
-    edges  shift, and go to state 31
+    edges  décalage et aller à l'état 31
 
-    EdgesDef  go to state 53
+    EdgesDef  aller à l'état 53
 
 
-state 34
+état 34
 
    67 definitions: EdgesDef . LocationsDef
 
-    locations  shift, and go to state 30
+    locations  décalage et aller à l'état 30
 
-    LocationsDef  go to state 54
+    LocationsDef  aller à l'état 54
 
 
-state 35
+état 35
 
    58 InitFinal: init final .
 
-    $default  reduce using rule 58 (InitFinal)
+    $défaut  réduction par utilisation de la règle 58 (InitFinal)
 
 
-state 36
+état 36
 
    59 InitFinal: final init .
 
-    $default  reduce using rule 59 (InitFinal)
+    $défaut  réduction par utilisation de la règle 59 (InitFinal)
 
 
-state 37
+état 37
 
    47 Constant: Const DOUBLE . str EQ RealMarkingFormula SEMICOLON
 
-    str  shift, and go to state 55
+    str  décalage et aller à l'état 55
 
 
-state 38
+état 38
 
    46 Constant: Const INT . str EQ IntMarkingFormula SEMICOLON
 
-    str  shift, and go to state 56
+    str  décalage et aller à l'état 56
 
 
-state 39
+état 39
 
    52 VariablesList: VList EQ . '{' VLabels '}' SEMICOLON
 
-    '{'  shift, and go to state 57
+    '{'  décalage et aller à l'état 57
 
 
-state 40
+état 40
 
    55 LocationsList: LList EQ . '{' LLabels '}' SEMICOLON
 
-    '{'  shift, and go to state 58
+    '{'  décalage et aller à l'état 58
 
 
-state 41
+état 41
 
     2 declarations: Sizes Constants Lists . HaslExp
 
-    AVG  shift, and go to state 43
+    AVG  décalage et aller à l'état 43
 
-    HaslExp  go to state 59
+    HaslExp  aller à l'état 59
 
 
-state 42
+état 42
 
    45 Constants: Constant Constants .
 
-    $default  reduce using rule 45 (Constants)
+    $défaut  réduction par utilisation de la règle 45 (Constants)
 
 
-state 43
+état 43
 
-  123 HaslExp: AVG . LB AlgExpr RB SEMICOLON
+  124 HaslExp: AVG . LB AlgExpr RB SEMICOLON
 
-    LB  shift, and go to state 60
+    LB  décalage et aller à l'état 60
 
 
-state 44
+état 44
 
     3 declarations: Sizes Lists HaslExp .
 
-    $default  reduce using rule 3 (declarations)
+    $défaut  réduction par utilisation de la règle 3 (declarations)
 
 
-state 45
+état 45
 
    50 Lists: VariablesList LocationsList .
 
-    $default  reduce using rule 50 (Lists)
+    $défaut  réduction par utilisation de la règle 50 (Lists)
 
 
-state 46
+état 46
 
    51 Lists: LocationsList VariablesList .
 
-    $default  reduce using rule 51 (Lists)
+    $défaut  réduction par utilisation de la règle 51 (Lists)
 
 
-state 47
+état 47
 
    49 NbLocations: NbLoc EQ ival SEMICOLON .
 
-    $default  reduce using rule 49 (NbLocations)
+    $défaut  réduction par utilisation de la règle 49 (NbLocations)
 
 
-state 48
+état 48
 
    48 NbVariables: NbVar EQ ival SEMICOLON .
 
-    $default  reduce using rule 48 (NbVariables)
+    $défaut  réduction par utilisation de la règle 48 (NbVariables)
 
 
-state 49
+état 49
 
    60 init: Iloc EQ '{' . iLLabels '}' SEMICOLON
 
-    str  shift, and go to state 61
+    str  décalage et aller à l'état 61
 
-    iLLabels  go to state 62
+    iLLabels  aller à l'état 62
 
 
-state 50
+état 50
 
    63 final: Floc EQ '{' . fLLabels '}' SEMICOLON
 
-    str  shift, and go to state 63
+    str  décalage et aller à l'état 63
 
-    fLLabels  go to state 64
+    fLLabels  aller à l'état 64
 
 
-state 51
+état 51
 
    68 LocationsDef: locations EQ . '{' LOCATIONS '}' SEMICOLON
 
-    '{'  shift, and go to state 65
+    '{'  décalage et aller à l'état 65
 
 
-state 52
+état 52
 
    88 EdgesDef: edges EQ . '{' EDGES '}' SEMICOLON
 
-    '{'  shift, and go to state 66
+    '{'  décalage et aller à l'état 66
 
 
-state 53
+état 53
 
    66 definitions: LocationsDef EdgesDef .
 
-    $default  reduce using rule 66 (definitions)
+    $défaut  réduction par utilisation de la règle 66 (definitions)
 
 
-state 54
+état 54
 
    67 definitions: EdgesDef LocationsDef .
 
-    $default  reduce using rule 67 (definitions)
+    $défaut  réduction par utilisation de la règle 67 (definitions)
 
 
-state 55
+état 55
 
    47 Constant: Const DOUBLE str . EQ RealMarkingFormula SEMICOLON
 
-    EQ  shift, and go to state 67
+    EQ  décalage et aller à l'état 67
 
 
-state 56
+état 56
 
    46 Constant: Const INT str . EQ IntMarkingFormula SEMICOLON
 
-    EQ  shift, and go to state 68
+    EQ  décalage et aller à l'état 68
 
 
-state 57
+état 57
 
    52 VariablesList: VList EQ '{' . VLabels '}' SEMICOLON
 
-    str  shift, and go to state 69
+    str  décalage et aller à l'état 69
 
-    VLabels  go to state 70
+    VLabels  aller à l'état 70
 
 
-state 58
+état 58
 
    55 LocationsList: LList EQ '{' . LLabels '}' SEMICOLON
 
-    str  shift, and go to state 71
+    str  décalage et aller à l'état 71
 
-    LLabels  go to state 72
+    LLabels  aller à l'état 72
 
 
-state 59
+état 59
 
     2 declarations: Sizes Constants Lists HaslExp .
 
-    $default  reduce using rule 2 (declarations)
+    $défaut  réduction par utilisation de la règle 2 (declarations)
 
 
-state 60
+état 60
 
-  123 HaslExp: AVG LB . AlgExpr RB SEMICOLON
+  124 HaslExp: AVG LB . AlgExpr RB SEMICOLON
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 82
-    LhaFunc  go to state 83
+    AlgExpr  aller à l'état 82
+    LhaFunc  aller à l'état 83
 
 
-state 61
+état 61
 
    61 iLLabels: str .
 
-    $default  reduce using rule 61 (iLLabels)
+    $défaut  réduction par utilisation de la règle 61 (iLLabels)
 
 
-state 62
+état 62
 
    60 init: Iloc EQ '{' iLLabels . '}' SEMICOLON
    62 iLLabels: iLLabels . COMMA str
 
-    COMMA  shift, and go to state 84
-    '}'    shift, and go to state 85
+    COMMA  décalage et aller à l'état 84
+    '}'    décalage et aller à l'état 85
 
 
-state 63
+état 63
 
    64 fLLabels: str .
 
-    $default  reduce using rule 64 (fLLabels)
+    $défaut  réduction par utilisation de la règle 64 (fLLabels)
 
 
-state 64
+état 64
 
    63 final: Floc EQ '{' fLLabels . '}' SEMICOLON
    65 fLLabels: fLLabels . COMMA str
 
-    COMMA  shift, and go to state 86
-    '}'    shift, and go to state 87
+    COMMA  décalage et aller à l'état 86
+    '}'    décalage et aller à l'état 87
 
 
-state 65
+état 65
 
    68 LocationsDef: locations EQ '{' . LOCATIONS '}' SEMICOLON
 
-    LB  shift, and go to state 88
+    LB  décalage et aller à l'état 88
 
-    LOCATIONS  go to state 89
-    LOCATION   go to state 90
+    LOCATIONS  aller à l'état 89
+    LOCATION   aller à l'état 90
 
 
-state 66
+état 66
 
    88 EdgesDef: edges EQ '{' . EDGES '}' SEMICOLON
 
-    LB  shift, and go to state 91
+    LB  décalage et aller à l'état 91
 
-    EDGES  go to state 92
-    EDGE   go to state 93
+    EDGES  aller à l'état 92
+    EDGE   aller à l'état 93
 
 
-state 67
+état 67
 
    47 Constant: Const DOUBLE str EQ . RealMarkingFormula SEMICOLON
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 102
+    RealMarkingFormula  aller à l'état 102
 
 
-state 68
+état 68
 
    46 Constant: Const INT str EQ . IntMarkingFormula SEMICOLON
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 110
+    IntMarkingFormula  aller à l'état 110
 
 
-state 69
+état 69
 
    53 VLabels: str .
 
-    $default  reduce using rule 53 (VLabels)
+    $défaut  réduction par utilisation de la règle 53 (VLabels)
 
 
-state 70
+état 70
 
    52 VariablesList: VList EQ '{' VLabels . '}' SEMICOLON
    54 VLabels: VLabels . COMMA str
 
-    COMMA  shift, and go to state 111
-    '}'    shift, and go to state 112
+    COMMA  décalage et aller à l'état 111
+    '}'    décalage et aller à l'état 112
 
 
-state 71
+état 71
 
    56 LLabels: str .
 
-    $default  reduce using rule 56 (LLabels)
+    $défaut  réduction par utilisation de la règle 56 (LLabels)
 
 
-state 72
+état 72
 
    55 LocationsList: LList EQ '{' LLabels . '}' SEMICOLON
    57 LLabels: LLabels . COMMA str
 
-    COMMA  shift, and go to state 113
-    '}'    shift, and go to state 114
+    COMMA  décalage et aller à l'état 113
+    '}'    décalage et aller à l'état 114
 
 
-state 73
+état 73
 
-  129 AlgExpr: LB . AlgExpr RB
+  130 AlgExpr: LB . AlgExpr RB
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 115
-    LhaFunc  go to state 83
-
-
-state 74
-
-  127 AlgExpr: MINUS . AlgExpr
-
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
-
-    AlgExpr  go to state 116
-    LhaFunc  go to state 83
+    AlgExpr  aller à l'état 115
+    LhaFunc  aller à l'état 83
 
 
-state 75
+état 74
 
-  128 AlgExpr: FLOOR . LB AlgExpr RB
+  128 AlgExpr: MINUS . AlgExpr
 
-    LB  shift, and go to state 117
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-
-state 76
-
-  125 AlgExpr: MIN . LB AlgExpr COMMA AlgExpr RB
-
-    LB  shift, and go to state 118
-
-
-state 77
-
-  126 AlgExpr: MAX . LB AlgExpr COMMA AlgExpr RB
-
-    LB  shift, and go to state 119
+    AlgExpr  aller à l'état 116
+    LhaFunc  aller à l'état 83
 
 
-state 78
+état 75
 
-  136 LhaFunc: LhaMIN . LB LinForm RB
+  129 AlgExpr: FLOOR . LB AlgExpr RB
 
-    LB  shift, and go to state 120
-
-
-state 79
-
-  137 LhaFunc: LhaMAX . LB LinForm RB
-
-    LB  shift, and go to state 121
+    LB  décalage et aller à l'état 117
 
 
-state 80
+état 76
 
-  135 LhaFunc: LAST . LB LinForm RB
+  126 AlgExpr: MIN . LB AlgExpr COMMA AlgExpr RB
 
-    LB  shift, and go to state 122
-
-
-state 81
-
-  138 LhaFunc: INTEGRAL . LB LinForm RB
-
-    LB  shift, and go to state 123
+    LB  décalage et aller à l'état 118
 
 
-state 82
+état 77
 
-  123 HaslExp: AVG LB AlgExpr . RB SEMICOLON
-  130 AlgExpr: AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
+  127 AlgExpr: MAX . LB AlgExpr COMMA AlgExpr RB
 
-    RB     shift, and go to state 124
-    DIV    shift, and go to state 125
-    MUL    shift, and go to state 126
-    PLUS   shift, and go to state 127
-    MINUS  shift, and go to state 128
-    POWER  shift, and go to state 129
+    LB  décalage et aller à l'état 119
 
 
-state 83
+état 78
 
-  124 AlgExpr: LhaFunc .
+  137 LhaFunc: LhaMIN . LB LinForm RB
 
-    $default  reduce using rule 124 (AlgExpr)
+    LB  décalage et aller à l'état 120
 
 
-state 84
+état 79
+
+  138 LhaFunc: LhaMAX . LB LinForm RB
+
+    LB  décalage et aller à l'état 121
+
+
+état 80
+
+  136 LhaFunc: LAST . LB LinForm RB
+
+    LB  décalage et aller à l'état 122
+
+
+état 81
+
+  139 LhaFunc: INTEGRAL . LB LinForm RB
+
+    LB  décalage et aller à l'état 123
+
+
+état 82
+
+  124 HaslExp: AVG LB AlgExpr . RB SEMICOLON
+  131 AlgExpr: AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
+
+    RB     décalage et aller à l'état 124
+    DIV    décalage et aller à l'état 125
+    MUL    décalage et aller à l'état 126
+    PLUS   décalage et aller à l'état 127
+    MINUS  décalage et aller à l'état 128
+    POWER  décalage et aller à l'état 129
+
+
+état 83
+
+  125 AlgExpr: LhaFunc .
+
+    $défaut  réduction par utilisation de la règle 125 (AlgExpr)
+
+
+état 84
 
    62 iLLabels: iLLabels COMMA . str
 
-    str  shift, and go to state 130
+    str  décalage et aller à l'état 130
 
 
-state 85
+état 85
 
    60 init: Iloc EQ '{' iLLabels '}' . SEMICOLON
 
-    SEMICOLON  shift, and go to state 131
+    SEMICOLON  décalage et aller à l'état 131
 
 
-state 86
+état 86
 
    65 fLLabels: fLLabels COMMA . str
 
-    str  shift, and go to state 132
+    str  décalage et aller à l'état 132
 
 
-state 87
+état 87
 
    63 final: Floc EQ '{' fLLabels '}' . SEMICOLON
 
-    SEMICOLON  shift, and go to state 133
+    SEMICOLON  décalage et aller à l'état 133
 
 
-state 88
+état 88
 
    71 LOCATION: LB . str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
    72         | LB . str COMMA LogExpr RB SEMICOLON
 
-    str  shift, and go to state 134
+    str  décalage et aller à l'état 134
 
 
-state 89
+état 89
 
    68 LocationsDef: locations EQ '{' LOCATIONS . '}' SEMICOLON
    70 LOCATIONS: LOCATIONS . LOCATION
 
-    LB   shift, and go to state 88
-    '}'  shift, and go to state 135
+    LB   décalage et aller à l'état 88
+    '}'  décalage et aller à l'état 135
 
-    LOCATION  go to state 136
+    LOCATION  aller à l'état 136
 
 
-state 90
+état 90
 
    69 LOCATIONS: LOCATION .
 
-    $default  reduce using rule 69 (LOCATIONS)
+    $défaut  réduction par utilisation de la règle 69 (LOCATIONS)
 
 
-state 91
+état 91
 
    91 EDGE: LB . LB str COMMA str RB COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB SEMICOLON
 
-    LB  shift, and go to state 137
+    LB  décalage et aller à l'état 137
 
 
-state 92
+état 92
 
    88 EdgesDef: edges EQ '{' EDGES . '}' SEMICOLON
 
-    '}'  shift, and go to state 138
+    '}'  décalage et aller à l'état 138
 
 
-state 93
+état 93
 
    89 EDGES: EDGE .
    90      | EDGE . EDGES
 
-    LB  shift, and go to state 91
+    LB  décalage et aller à l'état 91
 
-    $default  reduce using rule 89 (EDGES)
+    $défaut  réduction par utilisation de la règle 89 (EDGES)
 
-    EDGES  go to state 139
-    EDGE   go to state 93
+    EDGES  aller à l'état 139
+    EDGE   aller à l'état 93
 
 
-state 94
+état 94
 
    18 RealMarkingFormula: str .
 
-    $default  reduce using rule 18 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 18 (RealMarkingFormula)
 
 
-state 95
+état 95
 
    16 RealMarkingFormula: rval .
 
-    $default  reduce using rule 16 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 16 (RealMarkingFormula)
 
 
-state 96
+état 96
 
    17 RealMarkingFormula: ival .
 
-    $default  reduce using rule 17 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 17 (RealMarkingFormula)
 
 
-state 97
+état 97
 
    19 RealMarkingFormula: LB . RealMarkingFormula RB
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 140
+    RealMarkingFormula  aller à l'état 140
 
 
-state 98
+état 98
 
    20 RealMarkingFormula: MINUS . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 141
+    RealMarkingFormula  aller à l'état 141
 
 
-state 99
+état 99
 
    26 RealMarkingFormula: FLOOR . LB RealMarkingFormula RB
 
-    LB  shift, and go to state 142
+    LB  décalage et aller à l'état 142
 
 
-state 100
+état 100
 
    27 RealMarkingFormula: MIN . LB RealMarkingFormula COMMA RealMarkingFormula RB
 
-    LB  shift, and go to state 143
+    LB  décalage et aller à l'état 143
 
 
-state 101
+état 101
 
    28 RealMarkingFormula: MAX . LB RealMarkingFormula COMMA RealMarkingFormula RB
 
-    LB  shift, and go to state 144
+    LB  décalage et aller à l'état 144
 
 
-state 102
+état 102
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -1264,81 +1266,81 @@ state 102
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    47 Constant: Const DOUBLE str EQ RealMarkingFormula . SEMICOLON
 
-    SEMICOLON  shift, and go to state 145
-    DIV        shift, and go to state 146
-    MUL        shift, and go to state 147
-    PLUS       shift, and go to state 148
-    MINUS      shift, and go to state 149
-    POWER      shift, and go to state 150
+    SEMICOLON  décalage et aller à l'état 145
+    DIV        décalage et aller à l'état 146
+    MUL        décalage et aller à l'état 147
+    PLUS       décalage et aller à l'état 148
+    MINUS      décalage et aller à l'état 149
+    POWER      décalage et aller à l'état 150
 
 
-state 103
+état 103
 
     5 IntMarkingFormula: str .
 
-    $default  reduce using rule 5 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 5 (IntMarkingFormula)
 
 
-state 104
+état 104
 
     4 IntMarkingFormula: ival .
 
-    $default  reduce using rule 4 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 4 (IntMarkingFormula)
 
 
-state 105
+état 105
 
     6 IntMarkingFormula: LB . IntMarkingFormula RB
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 151
+    IntMarkingFormula  aller à l'état 151
 
 
-state 106
+état 106
 
     7 IntMarkingFormula: MINUS . IntMarkingFormula
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 152
+    IntMarkingFormula  aller à l'état 152
 
 
-state 107
+état 107
 
    12 IntMarkingFormula: FLOOR . LB IntMarkingFormula RB
    13                  | FLOOR . LB IntMarkingFormula DIV IntMarkingFormula RB
 
-    LB  shift, and go to state 153
+    LB  décalage et aller à l'état 153
 
 
-state 108
+état 108
 
    14 IntMarkingFormula: MIN . LB IntMarkingFormula COMMA IntMarkingFormula RB
 
-    LB  shift, and go to state 154
+    LB  décalage et aller à l'état 154
 
 
-state 109
+état 109
 
    15 IntMarkingFormula: MAX . LB IntMarkingFormula COMMA IntMarkingFormula RB
 
-    LB  shift, and go to state 155
+    LB  décalage et aller à l'état 155
 
 
-state 110
+état 110
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     9                  | IntMarkingFormula . MINUS IntMarkingFormula
@@ -1346,353 +1348,353 @@ state 110
    11                  | IntMarkingFormula . POWER IntMarkingFormula
    46 Constant: Const INT str EQ IntMarkingFormula . SEMICOLON
 
-    SEMICOLON  shift, and go to state 156
-    MUL        shift, and go to state 157
-    PLUS       shift, and go to state 158
-    MINUS      shift, and go to state 159
-    POWER      shift, and go to state 160
+    SEMICOLON  décalage et aller à l'état 156
+    MUL        décalage et aller à l'état 157
+    PLUS       décalage et aller à l'état 158
+    MINUS      décalage et aller à l'état 159
+    POWER      décalage et aller à l'état 160
 
 
-state 111
+état 111
 
    54 VLabels: VLabels COMMA . str
 
-    str  shift, and go to state 161
+    str  décalage et aller à l'état 161
 
 
-state 112
+état 112
 
    52 VariablesList: VList EQ '{' VLabels '}' . SEMICOLON
 
-    SEMICOLON  shift, and go to state 162
+    SEMICOLON  décalage et aller à l'état 162
 
 
-state 113
+état 113
 
    57 LLabels: LLabels COMMA . str
 
-    str  shift, and go to state 163
+    str  décalage et aller à l'état 163
 
 
-state 114
+état 114
 
    55 LocationsList: LList EQ '{' LLabels '}' . SEMICOLON
 
-    SEMICOLON  shift, and go to state 164
+    SEMICOLON  décalage et aller à l'état 164
 
 
-state 115
+état 115
 
-  129 AlgExpr: LB AlgExpr . RB
-  130        | AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
+  130 AlgExpr: LB AlgExpr . RB
+  131        | AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
 
-    RB     shift, and go to state 165
-    DIV    shift, and go to state 125
-    MUL    shift, and go to state 126
-    PLUS   shift, and go to state 127
-    MINUS  shift, and go to state 128
-    POWER  shift, and go to state 129
+    RB     décalage et aller à l'état 165
+    DIV    décalage et aller à l'état 125
+    MUL    décalage et aller à l'état 126
+    PLUS   décalage et aller à l'état 127
+    MINUS  décalage et aller à l'état 128
+    POWER  décalage et aller à l'état 129
 
 
-state 116
+état 116
 
-  127 AlgExpr: MINUS AlgExpr .
-  130        | AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
+  128 AlgExpr: MINUS AlgExpr .
+  131        | AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
 
-    DIV    shift, and go to state 125
-    MUL    shift, and go to state 126
-    POWER  shift, and go to state 129
+    DIV    décalage et aller à l'état 125
+    MUL    décalage et aller à l'état 126
+    POWER  décalage et aller à l'état 129
 
-    $default  reduce using rule 127 (AlgExpr)
+    $défaut  réduction par utilisation de la règle 128 (AlgExpr)
 
 
-state 117
+état 117
 
-  128 AlgExpr: FLOOR LB . AlgExpr RB
+  129 AlgExpr: FLOOR LB . AlgExpr RB
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 166
-    LhaFunc  go to state 83
+    AlgExpr  aller à l'état 166
+    LhaFunc  aller à l'état 83
 
 
-state 118
+état 118
 
-  125 AlgExpr: MIN LB . AlgExpr COMMA AlgExpr RB
+  126 AlgExpr: MIN LB . AlgExpr COMMA AlgExpr RB
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 167
-    LhaFunc  go to state 83
+    AlgExpr  aller à l'état 167
+    LhaFunc  aller à l'état 83
 
 
-state 119
+état 119
 
-  126 AlgExpr: MAX LB . AlgExpr COMMA AlgExpr RB
+  127 AlgExpr: MAX LB . AlgExpr COMMA AlgExpr RB
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 168
-    LhaFunc  go to state 83
+    AlgExpr  aller à l'état 168
+    LhaFunc  aller à l'état 83
 
 
-state 120
+état 120
 
-  136 LhaFunc: LhaMIN LB . LinForm RB
+  137 LhaFunc: LhaMIN LB . LinForm RB
 
-    str    shift, and go to state 169
-    rval   shift, and go to state 170
-    ival   shift, and go to state 171
-    LB     shift, and go to state 172
-    MINUS  shift, and go to state 173
+    str    décalage et aller à l'état 169
+    rval   décalage et aller à l'état 170
+    ival   décalage et aller à l'état 171
+    LB     décalage et aller à l'état 172
+    MINUS  décalage et aller à l'état 173
 
-    LinForm  go to state 174
-    VarTerm  go to state 175
+    LinForm  aller à l'état 174
+    VarTerm  aller à l'état 175
 
 
-state 121
+état 121
 
-  137 LhaFunc: LhaMAX LB . LinForm RB
+  138 LhaFunc: LhaMAX LB . LinForm RB
 
-    str    shift, and go to state 169
-    rval   shift, and go to state 170
-    ival   shift, and go to state 171
-    LB     shift, and go to state 172
-    MINUS  shift, and go to state 173
+    str    décalage et aller à l'état 169
+    rval   décalage et aller à l'état 170
+    ival   décalage et aller à l'état 171
+    LB     décalage et aller à l'état 172
+    MINUS  décalage et aller à l'état 173
 
-    LinForm  go to state 176
-    VarTerm  go to state 175
+    LinForm  aller à l'état 176
+    VarTerm  aller à l'état 175
 
 
-state 122
+état 122
 
-  135 LhaFunc: LAST LB . LinForm RB
+  136 LhaFunc: LAST LB . LinForm RB
 
-    str    shift, and go to state 169
-    rval   shift, and go to state 170
-    ival   shift, and go to state 171
-    LB     shift, and go to state 172
-    MINUS  shift, and go to state 173
+    str    décalage et aller à l'état 169
+    rval   décalage et aller à l'état 170
+    ival   décalage et aller à l'état 171
+    LB     décalage et aller à l'état 172
+    MINUS  décalage et aller à l'état 173
 
-    LinForm  go to state 177
-    VarTerm  go to state 175
+    LinForm  aller à l'état 177
+    VarTerm  aller à l'état 175
 
 
-state 123
+état 123
 
-  138 LhaFunc: INTEGRAL LB . LinForm RB
+  139 LhaFunc: INTEGRAL LB . LinForm RB
 
-    str    shift, and go to state 169
-    rval   shift, and go to state 170
-    ival   shift, and go to state 171
-    LB     shift, and go to state 172
-    MINUS  shift, and go to state 173
+    str    décalage et aller à l'état 169
+    rval   décalage et aller à l'état 170
+    ival   décalage et aller à l'état 171
+    LB     décalage et aller à l'état 172
+    MINUS  décalage et aller à l'état 173
 
-    LinForm  go to state 178
-    VarTerm  go to state 175
+    LinForm  aller à l'état 178
+    VarTerm  aller à l'état 175
 
 
-state 124
+état 124
 
-  123 HaslExp: AVG LB AlgExpr RB . SEMICOLON
+  124 HaslExp: AVG LB AlgExpr RB . SEMICOLON
 
-    SEMICOLON  shift, and go to state 179
+    SEMICOLON  décalage et aller à l'état 179
 
 
-state 125
+état 125
 
-  134 AlgExpr: AlgExpr DIV . AlgExpr
+  135 AlgExpr: AlgExpr DIV . AlgExpr
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 180
-    LhaFunc  go to state 83
+    AlgExpr  aller à l'état 180
+    LhaFunc  aller à l'état 83
 
 
-state 126
+état 126
 
-  133 AlgExpr: AlgExpr MUL . AlgExpr
+  134 AlgExpr: AlgExpr MUL . AlgExpr
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 181
-    LhaFunc  go to state 83
+    AlgExpr  aller à l'état 181
+    LhaFunc  aller à l'état 83
 
 
-state 127
+état 127
 
-  131 AlgExpr: AlgExpr PLUS . AlgExpr
+  132 AlgExpr: AlgExpr PLUS . AlgExpr
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 182
-    LhaFunc  go to state 83
+    AlgExpr  aller à l'état 182
+    LhaFunc  aller à l'état 83
 
 
-state 128
+état 128
 
-  132 AlgExpr: AlgExpr MINUS . AlgExpr
+  133 AlgExpr: AlgExpr MINUS . AlgExpr
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 183
-    LhaFunc  go to state 83
+    AlgExpr  aller à l'état 183
+    LhaFunc  aller à l'état 83
 
 
-state 129
+état 129
 
-  130 AlgExpr: AlgExpr POWER . AlgExpr
+  131 AlgExpr: AlgExpr POWER . AlgExpr
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 184
-    LhaFunc  go to state 83
+    AlgExpr  aller à l'état 184
+    LhaFunc  aller à l'état 83
 
 
-state 130
+état 130
 
    62 iLLabels: iLLabels COMMA str .
 
-    $default  reduce using rule 62 (iLLabels)
+    $défaut  réduction par utilisation de la règle 62 (iLLabels)
 
 
-state 131
+état 131
 
    60 init: Iloc EQ '{' iLLabels '}' SEMICOLON .
 
-    $default  reduce using rule 60 (init)
+    $défaut  réduction par utilisation de la règle 60 (init)
 
 
-state 132
+état 132
 
    65 fLLabels: fLLabels COMMA str .
 
-    $default  reduce using rule 65 (fLLabels)
+    $défaut  réduction par utilisation de la règle 65 (fLLabels)
 
 
-state 133
+état 133
 
    63 final: Floc EQ '{' fLLabels '}' SEMICOLON .
 
-    $default  reduce using rule 63 (final)
+    $défaut  réduction par utilisation de la règle 63 (final)
 
 
-state 134
+état 134
 
    71 LOCATION: LB str . COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
    72         | LB str . COMMA LogExpr RB SEMICOLON
 
-    COMMA  shift, and go to state 185
+    COMMA  décalage et aller à l'état 185
 
 
-state 135
+état 135
 
    68 LocationsDef: locations EQ '{' LOCATIONS '}' . SEMICOLON
 
-    SEMICOLON  shift, and go to state 186
+    SEMICOLON  décalage et aller à l'état 186
 
 
-state 136
+état 136
 
    70 LOCATIONS: LOCATIONS LOCATION .
 
-    $default  reduce using rule 70 (LOCATIONS)
+    $défaut  réduction par utilisation de la règle 70 (LOCATIONS)
 
 
-state 137
+état 137
 
    91 EDGE: LB LB . str COMMA str RB COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB SEMICOLON
 
-    str  shift, and go to state 187
+    str  décalage et aller à l'état 187
 
 
-state 138
+état 138
 
    88 EdgesDef: edges EQ '{' EDGES '}' . SEMICOLON
 
-    SEMICOLON  shift, and go to state 188
+    SEMICOLON  décalage et aller à l'état 188
 
 
-state 139
+état 139
 
    90 EDGES: EDGE EDGES .
 
-    $default  reduce using rule 90 (EDGES)
+    $défaut  réduction par utilisation de la règle 90 (EDGES)
 
 
-state 140
+état 140
 
    19 RealMarkingFormula: LB RealMarkingFormula . RB
    21                   | RealMarkingFormula . DIV RealMarkingFormula
@@ -1701,15 +1703,15 @@ state 140
    24                   | RealMarkingFormula . MUL RealMarkingFormula
    25                   | RealMarkingFormula . POWER RealMarkingFormula
 
-    RB     shift, and go to state 189
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    RB     décalage et aller à l'état 189
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 141
+état 141
 
    20 RealMarkingFormula: MINUS RealMarkingFormula .
    21                   | RealMarkingFormula . DIV RealMarkingFormula
@@ -1718,149 +1720,149 @@ state 141
    24                   | RealMarkingFormula . MUL RealMarkingFormula
    25                   | RealMarkingFormula . POWER RealMarkingFormula
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 20 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 20 (RealMarkingFormula)
 
 
-state 142
+état 142
 
    26 RealMarkingFormula: FLOOR LB . RealMarkingFormula RB
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 190
+    RealMarkingFormula  aller à l'état 190
 
 
-state 143
+état 143
 
    27 RealMarkingFormula: MIN LB . RealMarkingFormula COMMA RealMarkingFormula RB
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 191
+    RealMarkingFormula  aller à l'état 191
 
 
-state 144
+état 144
 
    28 RealMarkingFormula: MAX LB . RealMarkingFormula COMMA RealMarkingFormula RB
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 192
+    RealMarkingFormula  aller à l'état 192
 
 
-state 145
+état 145
 
    47 Constant: Const DOUBLE str EQ RealMarkingFormula SEMICOLON .
 
-    $default  reduce using rule 47 (Constant)
+    $défaut  réduction par utilisation de la règle 47 (Constant)
 
 
-state 146
+état 146
 
    21 RealMarkingFormula: RealMarkingFormula DIV . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 193
+    RealMarkingFormula  aller à l'état 193
 
 
-state 147
+état 147
 
    24 RealMarkingFormula: RealMarkingFormula MUL . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 194
+    RealMarkingFormula  aller à l'état 194
 
 
-state 148
+état 148
 
    22 RealMarkingFormula: RealMarkingFormula PLUS . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 195
+    RealMarkingFormula  aller à l'état 195
 
 
-state 149
+état 149
 
    23 RealMarkingFormula: RealMarkingFormula MINUS . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 196
+    RealMarkingFormula  aller à l'état 196
 
 
-state 150
+état 150
 
    25 RealMarkingFormula: RealMarkingFormula POWER . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 197
+    RealMarkingFormula  aller à l'état 197
 
 
-state 151
+état 151
 
     6 IntMarkingFormula: LB IntMarkingFormula . RB
     8                  | IntMarkingFormula . PLUS IntMarkingFormula
@@ -1868,14 +1870,14 @@ state 151
    10                  | IntMarkingFormula . MUL IntMarkingFormula
    11                  | IntMarkingFormula . POWER IntMarkingFormula
 
-    RB     shift, and go to state 198
-    MUL    shift, and go to state 157
-    PLUS   shift, and go to state 158
-    MINUS  shift, and go to state 159
-    POWER  shift, and go to state 160
+    RB     décalage et aller à l'état 198
+    MUL    décalage et aller à l'état 157
+    PLUS   décalage et aller à l'état 158
+    MINUS  décalage et aller à l'état 159
+    POWER  décalage et aller à l'état 160
 
 
-state 152
+état 152
 
     7 IntMarkingFormula: MINUS IntMarkingFormula .
     8                  | IntMarkingFormula . PLUS IntMarkingFormula
@@ -1883,446 +1885,446 @@ state 152
    10                  | IntMarkingFormula . MUL IntMarkingFormula
    11                  | IntMarkingFormula . POWER IntMarkingFormula
 
-    MUL    shift, and go to state 157
-    POWER  shift, and go to state 160
+    MUL    décalage et aller à l'état 157
+    POWER  décalage et aller à l'état 160
 
-    $default  reduce using rule 7 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 7 (IntMarkingFormula)
 
 
-state 153
+état 153
 
    12 IntMarkingFormula: FLOOR LB . IntMarkingFormula RB
    13                  | FLOOR LB . IntMarkingFormula DIV IntMarkingFormula RB
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 199
+    IntMarkingFormula  aller à l'état 199
 
 
-state 154
+état 154
 
    14 IntMarkingFormula: MIN LB . IntMarkingFormula COMMA IntMarkingFormula RB
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 200
+    IntMarkingFormula  aller à l'état 200
 
 
-state 155
+état 155
 
    15 IntMarkingFormula: MAX LB . IntMarkingFormula COMMA IntMarkingFormula RB
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 201
+    IntMarkingFormula  aller à l'état 201
 
 
-state 156
+état 156
 
    46 Constant: Const INT str EQ IntMarkingFormula SEMICOLON .
 
-    $default  reduce using rule 46 (Constant)
+    $défaut  réduction par utilisation de la règle 46 (Constant)
 
 
-state 157
+état 157
 
    10 IntMarkingFormula: IntMarkingFormula MUL . IntMarkingFormula
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 202
+    IntMarkingFormula  aller à l'état 202
 
 
-state 158
+état 158
 
     8 IntMarkingFormula: IntMarkingFormula PLUS . IntMarkingFormula
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 203
+    IntMarkingFormula  aller à l'état 203
 
 
-state 159
+état 159
 
     9 IntMarkingFormula: IntMarkingFormula MINUS . IntMarkingFormula
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 204
+    IntMarkingFormula  aller à l'état 204
 
 
-state 160
+état 160
 
    11 IntMarkingFormula: IntMarkingFormula POWER . IntMarkingFormula
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 205
+    IntMarkingFormula  aller à l'état 205
 
 
-state 161
+état 161
 
    54 VLabels: VLabels COMMA str .
 
-    $default  reduce using rule 54 (VLabels)
+    $défaut  réduction par utilisation de la règle 54 (VLabels)
 
 
-state 162
+état 162
 
    52 VariablesList: VList EQ '{' VLabels '}' SEMICOLON .
 
-    $default  reduce using rule 52 (VariablesList)
+    $défaut  réduction par utilisation de la règle 52 (VariablesList)
 
 
-state 163
+état 163
 
    57 LLabels: LLabels COMMA str .
 
-    $default  reduce using rule 57 (LLabels)
+    $défaut  réduction par utilisation de la règle 57 (LLabels)
 
 
-state 164
+état 164
 
    55 LocationsList: LList EQ '{' LLabels '}' SEMICOLON .
 
-    $default  reduce using rule 55 (LocationsList)
+    $défaut  réduction par utilisation de la règle 55 (LocationsList)
 
 
-state 165
+état 165
 
-  129 AlgExpr: LB AlgExpr RB .
+  130 AlgExpr: LB AlgExpr RB .
 
-    $default  reduce using rule 129 (AlgExpr)
+    $défaut  réduction par utilisation de la règle 130 (AlgExpr)
 
 
-state 166
+état 166
 
-  128 AlgExpr: FLOOR LB AlgExpr . RB
-  130        | AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
+  129 AlgExpr: FLOOR LB AlgExpr . RB
+  131        | AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
 
-    RB     shift, and go to state 206
-    DIV    shift, and go to state 125
-    MUL    shift, and go to state 126
-    PLUS   shift, and go to state 127
-    MINUS  shift, and go to state 128
-    POWER  shift, and go to state 129
+    RB     décalage et aller à l'état 206
+    DIV    décalage et aller à l'état 125
+    MUL    décalage et aller à l'état 126
+    PLUS   décalage et aller à l'état 127
+    MINUS  décalage et aller à l'état 128
+    POWER  décalage et aller à l'état 129
 
 
-state 167
+état 167
 
-  125 AlgExpr: MIN LB AlgExpr . COMMA AlgExpr RB
-  130        | AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
+  126 AlgExpr: MIN LB AlgExpr . COMMA AlgExpr RB
+  131        | AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
 
-    COMMA  shift, and go to state 207
-    DIV    shift, and go to state 125
-    MUL    shift, and go to state 126
-    PLUS   shift, and go to state 127
-    MINUS  shift, and go to state 128
-    POWER  shift, and go to state 129
+    COMMA  décalage et aller à l'état 207
+    DIV    décalage et aller à l'état 125
+    MUL    décalage et aller à l'état 126
+    PLUS   décalage et aller à l'état 127
+    MINUS  décalage et aller à l'état 128
+    POWER  décalage et aller à l'état 129
 
 
-state 168
+état 168
 
-  126 AlgExpr: MAX LB AlgExpr . COMMA AlgExpr RB
-  130        | AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
+  127 AlgExpr: MAX LB AlgExpr . COMMA AlgExpr RB
+  131        | AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
 
-    COMMA  shift, and go to state 208
-    DIV    shift, and go to state 125
-    MUL    shift, and go to state 126
-    PLUS   shift, and go to state 127
-    MINUS  shift, and go to state 128
-    POWER  shift, and go to state 129
+    COMMA  décalage et aller à l'état 208
+    DIV    décalage et aller à l'état 125
+    MUL    décalage et aller à l'état 126
+    PLUS   décalage et aller à l'état 127
+    MINUS  décalage et aller à l'état 128
+    POWER  décalage et aller à l'état 129
 
 
-state 169
+état 169
 
-  142 VarTerm: str .
-  146        | str . MUL str
+  143 VarTerm: str .
+  147        | str . MUL str
 
-    MUL  shift, and go to state 209
+    MUL  décalage et aller à l'état 209
 
-    $default  reduce using rule 142 (VarTerm)
+    $défaut  réduction par utilisation de la règle 143 (VarTerm)
 
 
-state 170
+état 170
 
-  145 VarTerm: rval . MUL str
+  146 VarTerm: rval . MUL str
 
-    MUL  shift, and go to state 210
+    MUL  décalage et aller à l'état 210
 
 
-state 171
+état 171
 
-  144 VarTerm: ival . MUL str
+  145 VarTerm: ival . MUL str
 
-    MUL  shift, and go to state 211
+    MUL  décalage et aller à l'état 211
 
 
-state 172
+état 172
 
-  143 VarTerm: LB . RealMarkingFormula RB MUL str
+  144 VarTerm: LB . RealMarkingFormula RB MUL str
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 212
+    RealMarkingFormula  aller à l'état 212
 
 
-state 173
+état 173
 
-  147 VarTerm: MINUS . str
-  148        | MINUS . LB RealMarkingFormula RB MUL str
-  149        | MINUS . ival MUL str
-  150        | MINUS . rval MUL str
-  151        | MINUS . str MUL str
+  148 VarTerm: MINUS . str
+  149        | MINUS . LB RealMarkingFormula RB MUL str
+  150        | MINUS . ival MUL str
+  151        | MINUS . rval MUL str
+  152        | MINUS . str MUL str
 
-    str   shift, and go to state 213
-    rval  shift, and go to state 214
-    ival  shift, and go to state 215
-    LB    shift, and go to state 216
+    str   décalage et aller à l'état 213
+    rval  décalage et aller à l'état 214
+    ival  décalage et aller à l'état 215
+    LB    décalage et aller à l'état 216
 
 
-state 174
+état 174
 
-  136 LhaFunc: LhaMIN LB LinForm . RB
-  140 LinForm: LinForm . MINUS VarTerm
-  141        | LinForm . PLUS VarTerm
+  137 LhaFunc: LhaMIN LB LinForm . RB
+  141 LinForm: LinForm . MINUS VarTerm
+  142        | LinForm . PLUS VarTerm
 
-    RB     shift, and go to state 217
-    PLUS   shift, and go to state 218
-    MINUS  shift, and go to state 219
+    RB     décalage et aller à l'état 217
+    PLUS   décalage et aller à l'état 218
+    MINUS  décalage et aller à l'état 219
 
 
-state 175
+état 175
 
-  139 LinForm: VarTerm .
+  140 LinForm: VarTerm .
 
-    $default  reduce using rule 139 (LinForm)
+    $défaut  réduction par utilisation de la règle 140 (LinForm)
 
 
-state 176
+état 176
 
-  137 LhaFunc: LhaMAX LB LinForm . RB
-  140 LinForm: LinForm . MINUS VarTerm
-  141        | LinForm . PLUS VarTerm
+  138 LhaFunc: LhaMAX LB LinForm . RB
+  141 LinForm: LinForm . MINUS VarTerm
+  142        | LinForm . PLUS VarTerm
 
-    RB     shift, and go to state 220
-    PLUS   shift, and go to state 218
-    MINUS  shift, and go to state 219
+    RB     décalage et aller à l'état 220
+    PLUS   décalage et aller à l'état 218
+    MINUS  décalage et aller à l'état 219
 
 
-state 177
+état 177
 
-  135 LhaFunc: LAST LB LinForm . RB
-  140 LinForm: LinForm . MINUS VarTerm
-  141        | LinForm . PLUS VarTerm
+  136 LhaFunc: LAST LB LinForm . RB
+  141 LinForm: LinForm . MINUS VarTerm
+  142        | LinForm . PLUS VarTerm
 
-    RB     shift, and go to state 221
-    PLUS   shift, and go to state 218
-    MINUS  shift, and go to state 219
+    RB     décalage et aller à l'état 221
+    PLUS   décalage et aller à l'état 218
+    MINUS  décalage et aller à l'état 219
 
 
-state 178
+état 178
 
-  138 LhaFunc: INTEGRAL LB LinForm . RB
-  140 LinForm: LinForm . MINUS VarTerm
-  141        | LinForm . PLUS VarTerm
+  139 LhaFunc: INTEGRAL LB LinForm . RB
+  141 LinForm: LinForm . MINUS VarTerm
+  142        | LinForm . PLUS VarTerm
 
-    RB     shift, and go to state 222
-    PLUS   shift, and go to state 218
-    MINUS  shift, and go to state 219
+    RB     décalage et aller à l'état 222
+    PLUS   décalage et aller à l'état 218
+    MINUS  décalage et aller à l'état 219
 
 
-state 179
+état 179
 
-  123 HaslExp: AVG LB AlgExpr RB SEMICOLON .
+  124 HaslExp: AVG LB AlgExpr RB SEMICOLON .
 
-    $default  reduce using rule 123 (HaslExp)
+    $défaut  réduction par utilisation de la règle 124 (HaslExp)
 
 
-state 180
+état 180
 
-  130 AlgExpr: AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
-  134        | AlgExpr DIV AlgExpr .
+  131 AlgExpr: AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
+  135        | AlgExpr DIV AlgExpr .
 
-    POWER  shift, and go to state 129
+    POWER  décalage et aller à l'état 129
 
-    $default  reduce using rule 134 (AlgExpr)
+    $défaut  réduction par utilisation de la règle 135 (AlgExpr)
 
 
-state 181
+état 181
 
-  130 AlgExpr: AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  133        | AlgExpr MUL AlgExpr .
-  134        | AlgExpr . DIV AlgExpr
+  131 AlgExpr: AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  134        | AlgExpr MUL AlgExpr .
+  135        | AlgExpr . DIV AlgExpr
 
-    POWER  shift, and go to state 129
+    POWER  décalage et aller à l'état 129
 
-    $default  reduce using rule 133 (AlgExpr)
+    $défaut  réduction par utilisation de la règle 134 (AlgExpr)
 
 
-state 182
+état 182
 
-  130 AlgExpr: AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  131        | AlgExpr PLUS AlgExpr .
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
+  131 AlgExpr: AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  132        | AlgExpr PLUS AlgExpr .
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
 
-    DIV    shift, and go to state 125
-    MUL    shift, and go to state 126
-    POWER  shift, and go to state 129
+    DIV    décalage et aller à l'état 125
+    MUL    décalage et aller à l'état 126
+    POWER  décalage et aller à l'état 129
 
-    $default  reduce using rule 131 (AlgExpr)
+    $défaut  réduction par utilisation de la règle 132 (AlgExpr)
 
 
-state 183
+état 183
 
-  130 AlgExpr: AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  132        | AlgExpr MINUS AlgExpr .
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
+  131 AlgExpr: AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  133        | AlgExpr MINUS AlgExpr .
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
 
-    DIV    shift, and go to state 125
-    MUL    shift, and go to state 126
-    POWER  shift, and go to state 129
+    DIV    décalage et aller à l'état 125
+    MUL    décalage et aller à l'état 126
+    POWER  décalage et aller à l'état 129
 
-    $default  reduce using rule 132 (AlgExpr)
+    $défaut  réduction par utilisation de la règle 133 (AlgExpr)
 
 
-state 184
+état 184
 
-  130 AlgExpr: AlgExpr . POWER AlgExpr
-  130        | AlgExpr POWER AlgExpr .
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
+  131 AlgExpr: AlgExpr . POWER AlgExpr
+  131        | AlgExpr POWER AlgExpr .
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
 
-    $default  reduce using rule 130 (AlgExpr)
+    $défaut  réduction par utilisation de la règle 131 (AlgExpr)
 
 
-state 185
+état 185
 
    71 LOCATION: LB str COMMA . LogExpr COMMA LB FLOWS RB RB SEMICOLON
    72         | LB str COMMA . LogExpr RB SEMICOLON
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 223
-    NOT    shift, and go to state 224
-    TRUE   shift, and go to state 225
-    FALSE  shift, and go to state 226
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 223
+    NOT    décalage et aller à l'état 224
+    TRUE   décalage et aller à l'état 225
+    FALSE  décalage et aller à l'état 226
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 227
-    LogExpr             go to state 228
-    CompExpr            go to state 229
+    RealMarkingFormula  aller à l'état 227
+    LogExpr             aller à l'état 228
+    CompExpr            aller à l'état 229
 
 
-state 186
+état 186
 
    68 LocationsDef: locations EQ '{' LOCATIONS '}' SEMICOLON .
 
-    $default  reduce using rule 68 (LocationsDef)
+    $défaut  réduction par utilisation de la règle 68 (LocationsDef)
 
 
-state 187
+état 187
 
    91 EDGE: LB LB str . COMMA str RB COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB SEMICOLON
 
-    COMMA  shift, and go to state 230
+    COMMA  décalage et aller à l'état 230
 
 
-state 188
+état 188
 
    88 EdgesDef: edges EQ '{' EDGES '}' SEMICOLON .
 
-    $default  reduce using rule 88 (EdgesDef)
+    $défaut  réduction par utilisation de la règle 88 (EdgesDef)
 
 
-state 189
+état 189
 
    19 RealMarkingFormula: LB RealMarkingFormula RB .
 
-    $default  reduce using rule 19 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 19 (RealMarkingFormula)
 
 
-state 190
+état 190
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -2331,15 +2333,15 @@ state 190
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    26                   | FLOOR LB RealMarkingFormula . RB
 
-    RB     shift, and go to state 231
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    RB     décalage et aller à l'état 231
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 191
+état 191
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -2348,15 +2350,15 @@ state 191
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    27                   | MIN LB RealMarkingFormula . COMMA RealMarkingFormula RB
 
-    COMMA  shift, and go to state 232
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    COMMA  décalage et aller à l'état 232
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 192
+état 192
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -2365,15 +2367,15 @@ state 192
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    28                   | MAX LB RealMarkingFormula . COMMA RealMarkingFormula RB
 
-    COMMA  shift, and go to state 233
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    COMMA  décalage et aller à l'état 233
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 193
+état 193
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    21                   | RealMarkingFormula DIV RealMarkingFormula .
@@ -2382,12 +2384,12 @@ state 193
    24                   | RealMarkingFormula . MUL RealMarkingFormula
    25                   | RealMarkingFormula . POWER RealMarkingFormula
 
-    POWER  shift, and go to state 150
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 21 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 21 (RealMarkingFormula)
 
 
-state 194
+état 194
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -2396,12 +2398,12 @@ state 194
    24                   | RealMarkingFormula MUL RealMarkingFormula .
    25                   | RealMarkingFormula . POWER RealMarkingFormula
 
-    POWER  shift, and go to state 150
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 24 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 24 (RealMarkingFormula)
 
 
-state 195
+état 195
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -2410,14 +2412,14 @@ state 195
    24                   | RealMarkingFormula . MUL RealMarkingFormula
    25                   | RealMarkingFormula . POWER RealMarkingFormula
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 22 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 22 (RealMarkingFormula)
 
 
-state 196
+état 196
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -2426,14 +2428,14 @@ state 196
    24                   | RealMarkingFormula . MUL RealMarkingFormula
    25                   | RealMarkingFormula . POWER RealMarkingFormula
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 23 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 23 (RealMarkingFormula)
 
 
-state 197
+état 197
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -2442,17 +2444,17 @@ state 197
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    25                   | RealMarkingFormula POWER RealMarkingFormula .
 
-    $default  reduce using rule 25 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 25 (RealMarkingFormula)
 
 
-state 198
+état 198
 
     6 IntMarkingFormula: LB IntMarkingFormula RB .
 
-    $default  reduce using rule 6 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 6 (IntMarkingFormula)
 
 
-state 199
+état 199
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     9                  | IntMarkingFormula . MINUS IntMarkingFormula
@@ -2461,15 +2463,15 @@ state 199
    12                  | FLOOR LB IntMarkingFormula . RB
    13                  | FLOOR LB IntMarkingFormula . DIV IntMarkingFormula RB
 
-    RB     shift, and go to state 234
-    DIV    shift, and go to state 235
-    MUL    shift, and go to state 157
-    PLUS   shift, and go to state 158
-    MINUS  shift, and go to state 159
-    POWER  shift, and go to state 160
+    RB     décalage et aller à l'état 234
+    DIV    décalage et aller à l'état 235
+    MUL    décalage et aller à l'état 157
+    PLUS   décalage et aller à l'état 158
+    MINUS  décalage et aller à l'état 159
+    POWER  décalage et aller à l'état 160
 
 
-state 200
+état 200
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     9                  | IntMarkingFormula . MINUS IntMarkingFormula
@@ -2477,14 +2479,14 @@ state 200
    11                  | IntMarkingFormula . POWER IntMarkingFormula
    14                  | MIN LB IntMarkingFormula . COMMA IntMarkingFormula RB
 
-    COMMA  shift, and go to state 236
-    MUL    shift, and go to state 157
-    PLUS   shift, and go to state 158
-    MINUS  shift, and go to state 159
-    POWER  shift, and go to state 160
+    COMMA  décalage et aller à l'état 236
+    MUL    décalage et aller à l'état 157
+    PLUS   décalage et aller à l'état 158
+    MINUS  décalage et aller à l'état 159
+    POWER  décalage et aller à l'état 160
 
 
-state 201
+état 201
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     9                  | IntMarkingFormula . MINUS IntMarkingFormula
@@ -2492,14 +2494,14 @@ state 201
    11                  | IntMarkingFormula . POWER IntMarkingFormula
    15                  | MAX LB IntMarkingFormula . COMMA IntMarkingFormula RB
 
-    COMMA  shift, and go to state 237
-    MUL    shift, and go to state 157
-    PLUS   shift, and go to state 158
-    MINUS  shift, and go to state 159
-    POWER  shift, and go to state 160
+    COMMA  décalage et aller à l'état 237
+    MUL    décalage et aller à l'état 157
+    PLUS   décalage et aller à l'état 158
+    MINUS  décalage et aller à l'état 159
+    POWER  décalage et aller à l'état 160
 
 
-state 202
+état 202
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     9                  | IntMarkingFormula . MINUS IntMarkingFormula
@@ -2507,12 +2509,12 @@ state 202
    10                  | IntMarkingFormula MUL IntMarkingFormula .
    11                  | IntMarkingFormula . POWER IntMarkingFormula
 
-    POWER  shift, and go to state 160
+    POWER  décalage et aller à l'état 160
 
-    $default  reduce using rule 10 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 10 (IntMarkingFormula)
 
 
-state 203
+état 203
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     8                  | IntMarkingFormula PLUS IntMarkingFormula .
@@ -2520,13 +2522,13 @@ state 203
    10                  | IntMarkingFormula . MUL IntMarkingFormula
    11                  | IntMarkingFormula . POWER IntMarkingFormula
 
-    MUL    shift, and go to state 157
-    POWER  shift, and go to state 160
+    MUL    décalage et aller à l'état 157
+    POWER  décalage et aller à l'état 160
 
-    $default  reduce using rule 8 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 8 (IntMarkingFormula)
 
 
-state 204
+état 204
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     9                  | IntMarkingFormula . MINUS IntMarkingFormula
@@ -2534,13 +2536,13 @@ state 204
    10                  | IntMarkingFormula . MUL IntMarkingFormula
    11                  | IntMarkingFormula . POWER IntMarkingFormula
 
-    MUL    shift, and go to state 157
-    POWER  shift, and go to state 160
+    MUL    décalage et aller à l'état 157
+    POWER  décalage et aller à l'état 160
 
-    $default  reduce using rule 9 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 9 (IntMarkingFormula)
 
 
-state 205
+état 205
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     9                  | IntMarkingFormula . MINUS IntMarkingFormula
@@ -2548,242 +2550,242 @@ state 205
    11                  | IntMarkingFormula . POWER IntMarkingFormula
    11                  | IntMarkingFormula POWER IntMarkingFormula .
 
-    $default  reduce using rule 11 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 11 (IntMarkingFormula)
 
 
-state 206
+état 206
 
-  128 AlgExpr: FLOOR LB AlgExpr RB .
+  129 AlgExpr: FLOOR LB AlgExpr RB .
 
-    $default  reduce using rule 128 (AlgExpr)
-
-
-state 207
-
-  125 AlgExpr: MIN LB AlgExpr COMMA . AlgExpr RB
-
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
-
-    AlgExpr  go to state 238
-    LhaFunc  go to state 83
+    $défaut  réduction par utilisation de la règle 129 (AlgExpr)
 
 
-state 208
+état 207
 
-  126 AlgExpr: MAX LB AlgExpr COMMA . AlgExpr RB
+  126 AlgExpr: MIN LB AlgExpr COMMA . AlgExpr RB
 
-    LB        shift, and go to state 73
-    MINUS     shift, and go to state 74
-    FLOOR     shift, and go to state 75
-    MIN       shift, and go to state 76
-    MAX       shift, and go to state 77
-    LhaMIN    shift, and go to state 78
-    LhaMAX    shift, and go to state 79
-    LAST      shift, and go to state 80
-    INTEGRAL  shift, and go to state 81
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
 
-    AlgExpr  go to state 239
-    LhaFunc  go to state 83
-
-
-state 209
-
-  146 VarTerm: str MUL . str
-
-    str  shift, and go to state 240
+    AlgExpr  aller à l'état 238
+    LhaFunc  aller à l'état 83
 
 
-state 210
+état 208
 
-  145 VarTerm: rval MUL . str
+  127 AlgExpr: MAX LB AlgExpr COMMA . AlgExpr RB
 
-    str  shift, and go to state 241
+    LB        décalage et aller à l'état 73
+    MINUS     décalage et aller à l'état 74
+    FLOOR     décalage et aller à l'état 75
+    MIN       décalage et aller à l'état 76
+    MAX       décalage et aller à l'état 77
+    LhaMIN    décalage et aller à l'état 78
+    LhaMAX    décalage et aller à l'état 79
+    LAST      décalage et aller à l'état 80
+    INTEGRAL  décalage et aller à l'état 81
+
+    AlgExpr  aller à l'état 239
+    LhaFunc  aller à l'état 83
 
 
-state 211
+état 209
 
-  144 VarTerm: ival MUL . str
+  147 VarTerm: str MUL . str
 
-    str  shift, and go to state 242
+    str  décalage et aller à l'état 240
 
 
-state 212
+état 210
+
+  146 VarTerm: rval MUL . str
+
+    str  décalage et aller à l'état 241
+
+
+état 211
+
+  145 VarTerm: ival MUL . str
+
+    str  décalage et aller à l'état 242
+
+
+état 212
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
    23                   | RealMarkingFormula . MINUS RealMarkingFormula
    24                   | RealMarkingFormula . MUL RealMarkingFormula
    25                   | RealMarkingFormula . POWER RealMarkingFormula
-  143 VarTerm: LB RealMarkingFormula . RB MUL str
+  144 VarTerm: LB RealMarkingFormula . RB MUL str
 
-    RB     shift, and go to state 243
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
-
-
-state 213
-
-  147 VarTerm: MINUS str .
-  151        | MINUS str . MUL str
-
-    MUL  shift, and go to state 244
-
-    $default  reduce using rule 147 (VarTerm)
+    RB     décalage et aller à l'état 243
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 214
+état 213
 
-  150 VarTerm: MINUS rval . MUL str
+  148 VarTerm: MINUS str .
+  152        | MINUS str . MUL str
 
-    MUL  shift, and go to state 245
+    MUL  décalage et aller à l'état 244
 
-
-state 215
-
-  149 VarTerm: MINUS ival . MUL str
-
-    MUL  shift, and go to state 246
+    $défaut  réduction par utilisation de la règle 148 (VarTerm)
 
 
-state 216
+état 214
 
-  148 VarTerm: MINUS LB . RealMarkingFormula RB MUL str
+  151 VarTerm: MINUS rval . MUL str
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
-
-    RealMarkingFormula  go to state 247
+    MUL  décalage et aller à l'état 245
 
 
-state 217
+état 215
 
-  136 LhaFunc: LhaMIN LB LinForm RB .
+  150 VarTerm: MINUS ival . MUL str
 
-    $default  reduce using rule 136 (LhaFunc)
-
-
-state 218
-
-  141 LinForm: LinForm PLUS . VarTerm
-
-    str    shift, and go to state 169
-    rval   shift, and go to state 170
-    ival   shift, and go to state 171
-    LB     shift, and go to state 172
-    MINUS  shift, and go to state 173
-
-    VarTerm  go to state 248
+    MUL  décalage et aller à l'état 246
 
 
-state 219
+état 216
 
-  140 LinForm: LinForm MINUS . VarTerm
+  149 VarTerm: MINUS LB . RealMarkingFormula RB MUL str
 
-    str    shift, and go to state 169
-    rval   shift, and go to state 170
-    ival   shift, and go to state 171
-    LB     shift, and go to state 172
-    MINUS  shift, and go to state 173
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    VarTerm  go to state 249
-
-
-state 220
-
-  137 LhaFunc: LhaMAX LB LinForm RB .
-
-    $default  reduce using rule 137 (LhaFunc)
+    RealMarkingFormula  aller à l'état 247
 
 
-state 221
+état 217
 
-  135 LhaFunc: LAST LB LinForm RB .
+  137 LhaFunc: LhaMIN LB LinForm RB .
 
-    $default  reduce using rule 135 (LhaFunc)
-
-
-state 222
-
-  138 LhaFunc: INTEGRAL LB LinForm RB .
-
-    $default  reduce using rule 138 (LhaFunc)
+    $défaut  réduction par utilisation de la règle 137 (LhaFunc)
 
 
-state 223
+état 218
+
+  142 LinForm: LinForm PLUS . VarTerm
+
+    str    décalage et aller à l'état 169
+    rval   décalage et aller à l'état 170
+    ival   décalage et aller à l'état 171
+    LB     décalage et aller à l'état 172
+    MINUS  décalage et aller à l'état 173
+
+    VarTerm  aller à l'état 248
+
+
+état 219
+
+  141 LinForm: LinForm MINUS . VarTerm
+
+    str    décalage et aller à l'état 169
+    rval   décalage et aller à l'état 170
+    ival   décalage et aller à l'état 171
+    LB     décalage et aller à l'état 172
+    MINUS  décalage et aller à l'état 173
+
+    VarTerm  aller à l'état 249
+
+
+état 220
+
+  138 LhaFunc: LhaMAX LB LinForm RB .
+
+    $défaut  réduction par utilisation de la règle 138 (LhaFunc)
+
+
+état 221
+
+  136 LhaFunc: LAST LB LinForm RB .
+
+    $défaut  réduction par utilisation de la règle 136 (LhaFunc)
+
+
+état 222
+
+  139 LhaFunc: INTEGRAL LB LinForm RB .
+
+    $défaut  réduction par utilisation de la règle 139 (LhaFunc)
+
+
+état 223
 
    19 RealMarkingFormula: LB . RealMarkingFormula RB
    81 LogExpr: LB . LogExpr RB
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 223
-    NOT    shift, and go to state 224
-    TRUE   shift, and go to state 225
-    FALSE  shift, and go to state 226
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 223
+    NOT    décalage et aller à l'état 224
+    TRUE   décalage et aller à l'état 225
+    FALSE  décalage et aller à l'état 226
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 250
-    LogExpr             go to state 251
-    CompExpr            go to state 229
+    RealMarkingFormula  aller à l'état 250
+    LogExpr             aller à l'état 251
+    CompExpr            aller à l'état 229
 
 
-state 224
+état 224
 
    82 LogExpr: NOT . LogExpr
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 223
-    NOT    shift, and go to state 224
-    TRUE   shift, and go to state 225
-    FALSE  shift, and go to state 226
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 223
+    NOT    décalage et aller à l'état 224
+    TRUE   décalage et aller à l'état 225
+    FALSE  décalage et aller à l'état 226
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 227
-    LogExpr             go to state 252
-    CompExpr            go to state 229
+    RealMarkingFormula  aller à l'état 227
+    LogExpr             aller à l'état 252
+    CompExpr            aller à l'état 229
 
 
-state 225
+état 225
 
    76 LogExpr: TRUE .
 
-    $default  reduce using rule 76 (LogExpr)
+    $défaut  réduction par utilisation de la règle 76 (LogExpr)
 
 
-state 226
+état 226
 
    77 LogExpr: FALSE .
 
-    $default  reduce using rule 77 (LogExpr)
+    $défaut  réduction par utilisation de la règle 77 (LogExpr)
 
 
-state 227
+état 227
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -2796,251 +2798,251 @@ state 227
    86         | RealMarkingFormula . LL RealMarkingFormula
    87         | RealMarkingFormula . GG RealMarkingFormula
 
-    EQ     shift, and go to state 253
-    GEQ    shift, and go to state 254
-    LEQ    shift, and go to state 255
-    LL     shift, and go to state 256
-    GG     shift, and go to state 257
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    EQ     décalage et aller à l'état 253
+    GEQ    décalage et aller à l'état 254
+    LEQ    décalage et aller à l'état 255
+    LL     décalage et aller à l'état 256
+    GG     décalage et aller à l'état 257
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 228
+état 228
 
    71 LOCATION: LB str COMMA LogExpr . COMMA LB FLOWS RB RB SEMICOLON
    72         | LB str COMMA LogExpr . RB SEMICOLON
    79 LogExpr: LogExpr . AND LogExpr
    80        | LogExpr . OR LogExpr
 
-    COMMA  shift, and go to state 258
-    RB     shift, and go to state 259
-    AND    shift, and go to state 260
-    OR     shift, and go to state 261
+    COMMA  décalage et aller à l'état 258
+    RB     décalage et aller à l'état 259
+    AND    décalage et aller à l'état 260
+    OR     décalage et aller à l'état 261
 
 
-state 229
+état 229
 
    78 LogExpr: CompExpr .
 
-    $default  reduce using rule 78 (LogExpr)
+    $défaut  réduction par utilisation de la règle 78 (LogExpr)
 
 
-state 230
+état 230
 
    91 EDGE: LB LB str COMMA . str RB COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB SEMICOLON
 
-    str  shift, and go to state 262
+    str  décalage et aller à l'état 262
 
 
-state 231
+état 231
 
    26 RealMarkingFormula: FLOOR LB RealMarkingFormula RB .
 
-    $default  reduce using rule 26 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 26 (RealMarkingFormula)
 
 
-state 232
+état 232
 
    27 RealMarkingFormula: MIN LB RealMarkingFormula COMMA . RealMarkingFormula RB
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 263
+    RealMarkingFormula  aller à l'état 263
 
 
-state 233
+état 233
 
    28 RealMarkingFormula: MAX LB RealMarkingFormula COMMA . RealMarkingFormula RB
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 264
+    RealMarkingFormula  aller à l'état 264
 
 
-state 234
+état 234
 
    12 IntMarkingFormula: FLOOR LB IntMarkingFormula RB .
 
-    $default  reduce using rule 12 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 12 (IntMarkingFormula)
 
 
-state 235
+état 235
 
    13 IntMarkingFormula: FLOOR LB IntMarkingFormula DIV . IntMarkingFormula RB
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 265
+    IntMarkingFormula  aller à l'état 265
 
 
-state 236
+état 236
 
    14 IntMarkingFormula: MIN LB IntMarkingFormula COMMA . IntMarkingFormula RB
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 266
+    IntMarkingFormula  aller à l'état 266
 
 
-state 237
+état 237
 
    15 IntMarkingFormula: MAX LB IntMarkingFormula COMMA . IntMarkingFormula RB
 
-    str    shift, and go to state 103
-    ival   shift, and go to state 104
-    LB     shift, and go to state 105
-    MINUS  shift, and go to state 106
-    FLOOR  shift, and go to state 107
-    MIN    shift, and go to state 108
-    MAX    shift, and go to state 109
+    str    décalage et aller à l'état 103
+    ival   décalage et aller à l'état 104
+    LB     décalage et aller à l'état 105
+    MINUS  décalage et aller à l'état 106
+    FLOOR  décalage et aller à l'état 107
+    MIN    décalage et aller à l'état 108
+    MAX    décalage et aller à l'état 109
 
-    IntMarkingFormula  go to state 267
-
-
-state 238
-
-  125 AlgExpr: MIN LB AlgExpr COMMA AlgExpr . RB
-  130        | AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
-
-    RB     shift, and go to state 268
-    DIV    shift, and go to state 125
-    MUL    shift, and go to state 126
-    PLUS   shift, and go to state 127
-    MINUS  shift, and go to state 128
-    POWER  shift, and go to state 129
+    IntMarkingFormula  aller à l'état 267
 
 
-state 239
+état 238
 
-  126 AlgExpr: MAX LB AlgExpr COMMA AlgExpr . RB
-  130        | AlgExpr . POWER AlgExpr
-  131        | AlgExpr . PLUS AlgExpr
-  132        | AlgExpr . MINUS AlgExpr
-  133        | AlgExpr . MUL AlgExpr
-  134        | AlgExpr . DIV AlgExpr
+  126 AlgExpr: MIN LB AlgExpr COMMA AlgExpr . RB
+  131        | AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
 
-    RB     shift, and go to state 269
-    DIV    shift, and go to state 125
-    MUL    shift, and go to state 126
-    PLUS   shift, and go to state 127
-    MINUS  shift, and go to state 128
-    POWER  shift, and go to state 129
-
-
-state 240
-
-  146 VarTerm: str MUL str .
-
-    $default  reduce using rule 146 (VarTerm)
+    RB     décalage et aller à l'état 268
+    DIV    décalage et aller à l'état 125
+    MUL    décalage et aller à l'état 126
+    PLUS   décalage et aller à l'état 127
+    MINUS  décalage et aller à l'état 128
+    POWER  décalage et aller à l'état 129
 
 
-state 241
+état 239
 
-  145 VarTerm: rval MUL str .
+  127 AlgExpr: MAX LB AlgExpr COMMA AlgExpr . RB
+  131        | AlgExpr . POWER AlgExpr
+  132        | AlgExpr . PLUS AlgExpr
+  133        | AlgExpr . MINUS AlgExpr
+  134        | AlgExpr . MUL AlgExpr
+  135        | AlgExpr . DIV AlgExpr
 
-    $default  reduce using rule 145 (VarTerm)
-
-
-state 242
-
-  144 VarTerm: ival MUL str .
-
-    $default  reduce using rule 144 (VarTerm)
-
-
-state 243
-
-  143 VarTerm: LB RealMarkingFormula RB . MUL str
-
-    MUL  shift, and go to state 270
+    RB     décalage et aller à l'état 269
+    DIV    décalage et aller à l'état 125
+    MUL    décalage et aller à l'état 126
+    PLUS   décalage et aller à l'état 127
+    MINUS  décalage et aller à l'état 128
+    POWER  décalage et aller à l'état 129
 
 
-state 244
+état 240
 
-  151 VarTerm: MINUS str MUL . str
+  147 VarTerm: str MUL str .
 
-    str  shift, and go to state 271
-
-
-state 245
-
-  150 VarTerm: MINUS rval MUL . str
-
-    str  shift, and go to state 272
+    $défaut  réduction par utilisation de la règle 147 (VarTerm)
 
 
-state 246
+état 241
 
-  149 VarTerm: MINUS ival MUL . str
+  146 VarTerm: rval MUL str .
 
-    str  shift, and go to state 273
+    $défaut  réduction par utilisation de la règle 146 (VarTerm)
 
 
-state 247
+état 242
+
+  145 VarTerm: ival MUL str .
+
+    $défaut  réduction par utilisation de la règle 145 (VarTerm)
+
+
+état 243
+
+  144 VarTerm: LB RealMarkingFormula RB . MUL str
+
+    MUL  décalage et aller à l'état 270
+
+
+état 244
+
+  152 VarTerm: MINUS str MUL . str
+
+    str  décalage et aller à l'état 271
+
+
+état 245
+
+  151 VarTerm: MINUS rval MUL . str
+
+    str  décalage et aller à l'état 272
+
+
+état 246
+
+  150 VarTerm: MINUS ival MUL . str
+
+    str  décalage et aller à l'état 273
+
+
+état 247
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
    23                   | RealMarkingFormula . MINUS RealMarkingFormula
    24                   | RealMarkingFormula . MUL RealMarkingFormula
    25                   | RealMarkingFormula . POWER RealMarkingFormula
-  148 VarTerm: MINUS LB RealMarkingFormula . RB MUL str
+  149 VarTerm: MINUS LB RealMarkingFormula . RB MUL str
 
-    RB     shift, and go to state 274
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
-
-
-state 248
-
-  141 LinForm: LinForm PLUS VarTerm .
-
-    $default  reduce using rule 141 (LinForm)
+    RB     décalage et aller à l'état 274
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 249
+état 248
 
-  140 LinForm: LinForm MINUS VarTerm .
+  142 LinForm: LinForm PLUS VarTerm .
 
-    $default  reduce using rule 140 (LinForm)
+    $défaut  réduction par utilisation de la règle 142 (LinForm)
 
 
-state 250
+état 249
+
+  141 LinForm: LinForm MINUS VarTerm .
+
+    $défaut  réduction par utilisation de la règle 141 (LinForm)
+
+
+état 250
 
    19 RealMarkingFormula: LB RealMarkingFormula . RB
    21                   | RealMarkingFormula . DIV RealMarkingFormula
@@ -3054,183 +3056,183 @@ state 250
    86         | RealMarkingFormula . LL RealMarkingFormula
    87         | RealMarkingFormula . GG RealMarkingFormula
 
-    RB     shift, and go to state 189
-    EQ     shift, and go to state 253
-    GEQ    shift, and go to state 254
-    LEQ    shift, and go to state 255
-    LL     shift, and go to state 256
-    GG     shift, and go to state 257
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    RB     décalage et aller à l'état 189
+    EQ     décalage et aller à l'état 253
+    GEQ    décalage et aller à l'état 254
+    LEQ    décalage et aller à l'état 255
+    LL     décalage et aller à l'état 256
+    GG     décalage et aller à l'état 257
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 251
+état 251
 
    79 LogExpr: LogExpr . AND LogExpr
    80        | LogExpr . OR LogExpr
    81        | LB LogExpr . RB
 
-    RB   shift, and go to state 275
-    AND  shift, and go to state 260
-    OR   shift, and go to state 261
+    RB   décalage et aller à l'état 275
+    AND  décalage et aller à l'état 260
+    OR   décalage et aller à l'état 261
 
 
-state 252
+état 252
 
    79 LogExpr: LogExpr . AND LogExpr
    80        | LogExpr . OR LogExpr
    82        | NOT LogExpr .
 
-    $default  reduce using rule 82 (LogExpr)
+    $défaut  réduction par utilisation de la règle 82 (LogExpr)
 
 
-state 253
+état 253
 
    83 CompExpr: RealMarkingFormula EQ . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 276
+    RealMarkingFormula  aller à l'état 276
 
 
-state 254
+état 254
 
    85 CompExpr: RealMarkingFormula GEQ . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 277
+    RealMarkingFormula  aller à l'état 277
 
 
-state 255
+état 255
 
    84 CompExpr: RealMarkingFormula LEQ . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 278
+    RealMarkingFormula  aller à l'état 278
 
 
-state 256
+état 256
 
    86 CompExpr: RealMarkingFormula LL . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 279
+    RealMarkingFormula  aller à l'état 279
 
 
-state 257
+état 257
 
    87 CompExpr: RealMarkingFormula GG . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 280
+    RealMarkingFormula  aller à l'état 280
 
 
-state 258
+état 258
 
    71 LOCATION: LB str COMMA LogExpr COMMA . LB FLOWS RB RB SEMICOLON
 
-    LB  shift, and go to state 281
+    LB  décalage et aller à l'état 281
 
 
-state 259
+état 259
 
    72 LOCATION: LB str COMMA LogExpr RB . SEMICOLON
 
-    SEMICOLON  shift, and go to state 282
+    SEMICOLON  décalage et aller à l'état 282
 
 
-state 260
+état 260
 
    79 LogExpr: LogExpr AND . LogExpr
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 223
-    NOT    shift, and go to state 224
-    TRUE   shift, and go to state 225
-    FALSE  shift, and go to state 226
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 223
+    NOT    décalage et aller à l'état 224
+    TRUE   décalage et aller à l'état 225
+    FALSE  décalage et aller à l'état 226
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 227
-    LogExpr             go to state 283
-    CompExpr            go to state 229
+    RealMarkingFormula  aller à l'état 227
+    LogExpr             aller à l'état 283
+    CompExpr            aller à l'état 229
 
 
-state 261
+état 261
 
    80 LogExpr: LogExpr OR . LogExpr
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 223
-    NOT    shift, and go to state 224
-    TRUE   shift, and go to state 225
-    FALSE  shift, and go to state 226
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 223
+    NOT    décalage et aller à l'état 224
+    TRUE   décalage et aller à l'état 225
+    FALSE  décalage et aller à l'état 226
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 227
-    LogExpr             go to state 284
-    CompExpr            go to state 229
+    RealMarkingFormula  aller à l'état 227
+    LogExpr             aller à l'état 284
+    CompExpr            aller à l'état 229
 
 
-state 262
+état 262
 
    91 EDGE: LB LB str COMMA str . RB COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB SEMICOLON
 
-    RB  shift, and go to state 285
+    RB  décalage et aller à l'état 285
 
 
-state 263
+état 263
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -3239,15 +3241,15 @@ state 263
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    27                   | MIN LB RealMarkingFormula COMMA RealMarkingFormula . RB
 
-    RB     shift, and go to state 286
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    RB     décalage et aller à l'état 286
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 264
+état 264
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -3256,15 +3258,15 @@ state 264
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    28                   | MAX LB RealMarkingFormula COMMA RealMarkingFormula . RB
 
-    RB     shift, and go to state 287
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    RB     décalage et aller à l'état 287
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 265
+état 265
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     9                  | IntMarkingFormula . MINUS IntMarkingFormula
@@ -3272,14 +3274,14 @@ state 265
    11                  | IntMarkingFormula . POWER IntMarkingFormula
    13                  | FLOOR LB IntMarkingFormula DIV IntMarkingFormula . RB
 
-    RB     shift, and go to state 288
-    MUL    shift, and go to state 157
-    PLUS   shift, and go to state 158
-    MINUS  shift, and go to state 159
-    POWER  shift, and go to state 160
+    RB     décalage et aller à l'état 288
+    MUL    décalage et aller à l'état 157
+    PLUS   décalage et aller à l'état 158
+    MINUS  décalage et aller à l'état 159
+    POWER  décalage et aller à l'état 160
 
 
-state 266
+état 266
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     9                  | IntMarkingFormula . MINUS IntMarkingFormula
@@ -3287,14 +3289,14 @@ state 266
    11                  | IntMarkingFormula . POWER IntMarkingFormula
    14                  | MIN LB IntMarkingFormula COMMA IntMarkingFormula . RB
 
-    RB     shift, and go to state 289
-    MUL    shift, and go to state 157
-    PLUS   shift, and go to state 158
-    MINUS  shift, and go to state 159
-    POWER  shift, and go to state 160
+    RB     décalage et aller à l'état 289
+    MUL    décalage et aller à l'état 157
+    PLUS   décalage et aller à l'état 158
+    MINUS  décalage et aller à l'état 159
+    POWER  décalage et aller à l'état 160
 
 
-state 267
+état 267
 
     8 IntMarkingFormula: IntMarkingFormula . PLUS IntMarkingFormula
     9                  | IntMarkingFormula . MINUS IntMarkingFormula
@@ -3302,70 +3304,70 @@ state 267
    11                  | IntMarkingFormula . POWER IntMarkingFormula
    15                  | MAX LB IntMarkingFormula COMMA IntMarkingFormula . RB
 
-    RB     shift, and go to state 290
-    MUL    shift, and go to state 157
-    PLUS   shift, and go to state 158
-    MINUS  shift, and go to state 159
-    POWER  shift, and go to state 160
+    RB     décalage et aller à l'état 290
+    MUL    décalage et aller à l'état 157
+    PLUS   décalage et aller à l'état 158
+    MINUS  décalage et aller à l'état 159
+    POWER  décalage et aller à l'état 160
 
 
-state 268
+état 268
 
-  125 AlgExpr: MIN LB AlgExpr COMMA AlgExpr RB .
+  126 AlgExpr: MIN LB AlgExpr COMMA AlgExpr RB .
 
-    $default  reduce using rule 125 (AlgExpr)
-
-
-state 269
-
-  126 AlgExpr: MAX LB AlgExpr COMMA AlgExpr RB .
-
-    $default  reduce using rule 126 (AlgExpr)
+    $défaut  réduction par utilisation de la règle 126 (AlgExpr)
 
 
-state 270
+état 269
 
-  143 VarTerm: LB RealMarkingFormula RB MUL . str
+  127 AlgExpr: MAX LB AlgExpr COMMA AlgExpr RB .
 
-    str  shift, and go to state 291
-
-
-state 271
-
-  151 VarTerm: MINUS str MUL str .
-
-    $default  reduce using rule 151 (VarTerm)
+    $défaut  réduction par utilisation de la règle 127 (AlgExpr)
 
 
-state 272
+état 270
 
-  150 VarTerm: MINUS rval MUL str .
+  144 VarTerm: LB RealMarkingFormula RB MUL . str
 
-    $default  reduce using rule 150 (VarTerm)
-
-
-state 273
-
-  149 VarTerm: MINUS ival MUL str .
-
-    $default  reduce using rule 149 (VarTerm)
+    str  décalage et aller à l'état 291
 
 
-state 274
+état 271
 
-  148 VarTerm: MINUS LB RealMarkingFormula RB . MUL str
+  152 VarTerm: MINUS str MUL str .
 
-    MUL  shift, and go to state 292
+    $défaut  réduction par utilisation de la règle 152 (VarTerm)
 
 
-state 275
+état 272
+
+  151 VarTerm: MINUS rval MUL str .
+
+    $défaut  réduction par utilisation de la règle 151 (VarTerm)
+
+
+état 273
+
+  150 VarTerm: MINUS ival MUL str .
+
+    $défaut  réduction par utilisation de la règle 150 (VarTerm)
+
+
+état 274
+
+  149 VarTerm: MINUS LB RealMarkingFormula RB . MUL str
+
+    MUL  décalage et aller à l'état 292
+
+
+état 275
 
    81 LogExpr: LB LogExpr RB .
 
-    $default  reduce using rule 81 (LogExpr)
+    $défaut  réduction par utilisation de la règle 81 (LogExpr)
 
 
-state 276
+état 276
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -3374,16 +3376,16 @@ state 276
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    83 CompExpr: RealMarkingFormula EQ RealMarkingFormula .
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 83 (CompExpr)
+    $défaut  réduction par utilisation de la règle 83 (CompExpr)
 
 
-state 277
+état 277
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -3392,16 +3394,16 @@ state 277
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    85 CompExpr: RealMarkingFormula GEQ RealMarkingFormula .
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 85 (CompExpr)
+    $défaut  réduction par utilisation de la règle 85 (CompExpr)
 
 
-state 278
+état 278
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -3410,16 +3412,16 @@ state 278
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    84 CompExpr: RealMarkingFormula LEQ RealMarkingFormula .
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 84 (CompExpr)
+    $défaut  réduction par utilisation de la règle 84 (CompExpr)
 
 
-state 279
+état 279
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -3428,16 +3430,16 @@ state 279
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    86 CompExpr: RealMarkingFormula LL RealMarkingFormula .
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 86 (CompExpr)
+    $défaut  réduction par utilisation de la règle 86 (CompExpr)
 
 
-state 280
+état 280
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -3446,223 +3448,223 @@ state 280
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    87 CompExpr: RealMarkingFormula GG RealMarkingFormula .
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 87 (CompExpr)
+    $défaut  réduction par utilisation de la règle 87 (CompExpr)
 
 
-state 281
+état 281
 
    71 LOCATION: LB str COMMA LogExpr COMMA LB . FLOWS RB RB SEMICOLON
 
-    str  shift, and go to state 293
+    str  décalage et aller à l'état 293
 
-    FLOWS  go to state 294
-    FLOW   go to state 295
+    FLOWS  aller à l'état 294
+    FLOW   aller à l'état 295
 
 
-state 282
+état 282
 
    72 LOCATION: LB str COMMA LogExpr RB SEMICOLON .
 
-    $default  reduce using rule 72 (LOCATION)
+    $défaut  réduction par utilisation de la règle 72 (LOCATION)
 
 
-state 283
+état 283
 
    79 LogExpr: LogExpr . AND LogExpr
    79        | LogExpr AND LogExpr .
    80        | LogExpr . OR LogExpr
 
-    $default  reduce using rule 79 (LogExpr)
+    $défaut  réduction par utilisation de la règle 79 (LogExpr)
 
 
-state 284
+état 284
 
    79 LogExpr: LogExpr . AND LogExpr
    80        | LogExpr . OR LogExpr
    80        | LogExpr OR LogExpr .
 
-    AND  shift, and go to state 260
+    AND  décalage et aller à l'état 260
 
-    $default  reduce using rule 80 (LogExpr)
+    $défaut  réduction par utilisation de la règle 80 (LogExpr)
 
 
-state 285
+état 285
 
    91 EDGE: LB LB str COMMA str RB . COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB SEMICOLON
 
-    COMMA  shift, and go to state 296
+    COMMA  décalage et aller à l'état 296
 
 
-state 286
+état 286
 
    27 RealMarkingFormula: MIN LB RealMarkingFormula COMMA RealMarkingFormula RB .
 
-    $default  reduce using rule 27 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 27 (RealMarkingFormula)
 
 
-state 287
+état 287
 
    28 RealMarkingFormula: MAX LB RealMarkingFormula COMMA RealMarkingFormula RB .
 
-    $default  reduce using rule 28 (RealMarkingFormula)
+    $défaut  réduction par utilisation de la règle 28 (RealMarkingFormula)
 
 
-state 288
+état 288
 
    13 IntMarkingFormula: FLOOR LB IntMarkingFormula DIV IntMarkingFormula RB .
 
-    $default  reduce using rule 13 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 13 (IntMarkingFormula)
 
 
-state 289
+état 289
 
    14 IntMarkingFormula: MIN LB IntMarkingFormula COMMA IntMarkingFormula RB .
 
-    $default  reduce using rule 14 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 14 (IntMarkingFormula)
 
 
-state 290
+état 290
 
    15 IntMarkingFormula: MAX LB IntMarkingFormula COMMA IntMarkingFormula RB .
 
-    $default  reduce using rule 15 (IntMarkingFormula)
+    $défaut  réduction par utilisation de la règle 15 (IntMarkingFormula)
 
 
-state 291
+état 291
 
-  143 VarTerm: LB RealMarkingFormula RB MUL str .
+  144 VarTerm: LB RealMarkingFormula RB MUL str .
 
-    $default  reduce using rule 143 (VarTerm)
-
-
-state 292
-
-  148 VarTerm: MINUS LB RealMarkingFormula RB MUL . str
-
-    str  shift, and go to state 297
+    $défaut  réduction par utilisation de la règle 144 (VarTerm)
 
 
-state 293
+état 292
+
+  149 VarTerm: MINUS LB RealMarkingFormula RB MUL . str
+
+    str  décalage et aller à l'état 297
+
+
+état 293
 
    75 FLOW: str . COLON RealMarkingFormula
 
-    COLON  shift, and go to state 298
+    COLON  décalage et aller à l'état 298
 
 
-state 294
+état 294
 
    71 LOCATION: LB str COMMA LogExpr COMMA LB FLOWS . RB RB SEMICOLON
    74 FLOWS: FLOWS . COMMA FLOW
 
-    COMMA  shift, and go to state 299
-    RB     shift, and go to state 300
+    COMMA  décalage et aller à l'état 299
+    RB     décalage et aller à l'état 300
 
 
-state 295
+état 295
 
    73 FLOWS: FLOW .
 
-    $default  reduce using rule 73 (FLOWS)
+    $défaut  réduction par utilisation de la règle 73 (FLOWS)
 
 
-state 296
+état 296
 
    91 EDGE: LB LB str COMMA str RB COMMA . ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB SEMICOLON
 
-    SHARP  shift, and go to state 301
-    ALL    shift, and go to state 302
-    '{'    shift, and go to state 303
+    SHARP  décalage et aller à l'état 301
+    ALL    décalage et aller à l'état 302
+    '{'    décalage et aller à l'état 303
 
-    ACTIONS       go to state 304
-    SetOfActions  go to state 305
-
-
-state 297
-
-  148 VarTerm: MINUS LB RealMarkingFormula RB MUL str .
-
-    $default  reduce using rule 148 (VarTerm)
+    ACTIONS       aller à l'état 304
+    SetOfActions  aller à l'état 305
 
 
-state 298
+état 297
+
+  149 VarTerm: MINUS LB RealMarkingFormula RB MUL str .
+
+    $défaut  réduction par utilisation de la règle 149 (VarTerm)
+
+
+état 298
 
    75 FLOW: str COLON . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 306
+    RealMarkingFormula  aller à l'état 306
 
 
-state 299
+état 299
 
    74 FLOWS: FLOWS COMMA . FLOW
 
-    str  shift, and go to state 293
+    str  décalage et aller à l'état 293
 
-    FLOW  go to state 307
+    FLOW  aller à l'état 307
 
 
-state 300
+état 300
 
    71 LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB . RB SEMICOLON
 
-    RB  shift, and go to state 308
+    RB  décalage et aller à l'état 308
 
 
-state 301
+état 301
 
    92 ACTIONS: SHARP .
 
-    $default  reduce using rule 92 (ACTIONS)
+    $défaut  réduction par utilisation de la règle 92 (ACTIONS)
 
 
-state 302
+état 302
 
    93 ACTIONS: ALL .
    94        | ALL . BackSlash SetOfActions
 
-    BackSlash  shift, and go to state 309
+    BackSlash  décalage et aller à l'état 309
 
-    $default  reduce using rule 93 (ACTIONS)
+    $défaut  réduction par utilisation de la règle 93 (ACTIONS)
 
 
-state 303
+état 303
 
    96 SetOfActions: '{' . Actions '}'
 
-    str  shift, and go to state 310
+    str  décalage et aller à l'état 310
 
-    Actions  go to state 311
+    Actions  aller à l'état 311
 
 
-state 304
+état 304
 
    91 EDGE: LB LB str COMMA str RB COMMA ACTIONS . COMMA CONSTRAINTS COMMA UPDATES RB SEMICOLON
 
-    COMMA  shift, and go to state 312
+    COMMA  décalage et aller à l'état 312
 
 
-state 305
+état 305
 
    95 ACTIONS: SetOfActions .
 
-    $default  reduce using rule 95 (ACTIONS)
+    $défaut  réduction par utilisation de la règle 95 (ACTIONS)
 
 
-state 306
+état 306
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -3671,147 +3673,147 @@ state 306
    25                   | RealMarkingFormula . POWER RealMarkingFormula
    75 FLOW: str COLON RealMarkingFormula .
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 75 (FLOW)
+    $défaut  réduction par utilisation de la règle 75 (FLOW)
 
 
-state 307
+état 307
 
    74 FLOWS: FLOWS COMMA FLOW .
 
-    $default  reduce using rule 74 (FLOWS)
+    $défaut  réduction par utilisation de la règle 74 (FLOWS)
 
 
-state 308
+état 308
 
    71 LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB . SEMICOLON
 
-    SEMICOLON  shift, and go to state 313
+    SEMICOLON  décalage et aller à l'état 313
 
 
-state 309
+état 309
 
    94 ACTIONS: ALL BackSlash . SetOfActions
 
-    '{'  shift, and go to state 303
+    '{'  décalage et aller à l'état 303
 
-    SetOfActions  go to state 314
+    SetOfActions  aller à l'état 314
 
 
-state 310
+état 310
 
    97 Actions: str .
 
-    $default  reduce using rule 97 (Actions)
+    $défaut  réduction par utilisation de la règle 97 (Actions)
 
 
-state 311
+état 311
 
    96 SetOfActions: '{' Actions . '}'
    98 Actions: Actions . COMMA str
 
-    COMMA  shift, and go to state 315
-    '}'    shift, and go to state 316
+    COMMA  décalage et aller à l'état 315
+    '}'    décalage et aller à l'état 316
 
 
-state 312
+état 312
 
    91 EDGE: LB LB str COMMA str RB COMMA ACTIONS COMMA . CONSTRAINTS COMMA UPDATES RB SEMICOLON
 
-    str    shift, and go to state 317
-    rval   shift, and go to state 318
-    ival   shift, and go to state 319
-    LB     shift, and go to state 320
-    SHARP  shift, and go to state 321
-    MINUS  shift, and go to state 322
+    str    décalage et aller à l'état 317
+    rval   décalage et aller à l'état 318
+    ival   décalage et aller à l'état 319
+    LB     décalage et aller à l'état 320
+    SHARP  décalage et aller à l'état 321
+    MINUS  décalage et aller à l'état 322
 
-    CONSTRAINTS  go to state 323
-    CONSTRAINT   go to state 324
-    LinearExp    go to state 325
-    term         go to state 326
+    CONSTRAINTS  aller à l'état 323
+    CONSTRAINT   aller à l'état 324
+    LinearExp    aller à l'état 325
+    term         aller à l'état 326
 
 
-state 313
+état 313
 
    71 LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON .
 
-    $default  reduce using rule 71 (LOCATION)
+    $défaut  réduction par utilisation de la règle 71 (LOCATION)
 
 
-state 314
+état 314
 
    94 ACTIONS: ALL BackSlash SetOfActions .
 
-    $default  reduce using rule 94 (ACTIONS)
+    $défaut  réduction par utilisation de la règle 94 (ACTIONS)
 
 
-state 315
+état 315
 
    98 Actions: Actions COMMA . str
 
-    str  shift, and go to state 327
+    str  décalage et aller à l'état 327
 
 
-state 316
+état 316
 
    96 SetOfActions: '{' Actions '}' .
 
-    $default  reduce using rule 96 (SetOfActions)
+    $défaut  réduction par utilisation de la règle 96 (SetOfActions)
 
 
-state 317
+état 317
 
   108 term: str .
   112     | str . MUL str
 
-    MUL  shift, and go to state 328
+    MUL  décalage et aller à l'état 328
 
-    $default  reduce using rule 108 (term)
+    $défaut  réduction par utilisation de la règle 108 (term)
 
 
-state 318
+état 318
 
   111 term: rval . MUL str
 
-    MUL  shift, and go to state 329
+    MUL  décalage et aller à l'état 329
 
 
-state 319
+état 319
 
   110 term: ival . MUL str
 
-    MUL  shift, and go to state 330
+    MUL  décalage et aller à l'état 330
 
 
-state 320
+état 320
 
   109 term: LB . RealMarkingFormula RB MUL str
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 331
+    RealMarkingFormula  aller à l'état 331
 
 
-state 321
+état 321
 
   101 CONSTRAINTS: SHARP .
 
-    $default  reduce using rule 101 (CONSTRAINTS)
+    $défaut  réduction par utilisation de la règle 101 (CONSTRAINTS)
 
 
-state 322
+état 322
 
   113 term: MINUS . str
   114     | MINUS . LB RealMarkingFormula RB MUL str
@@ -3819,30 +3821,30 @@ state 322
   116     | MINUS . rval MUL str
   117     | MINUS . str MUL str
 
-    str   shift, and go to state 332
-    rval  shift, and go to state 333
-    ival  shift, and go to state 334
-    LB    shift, and go to state 335
+    str   décalage et aller à l'état 332
+    rval  décalage et aller à l'état 333
+    ival  décalage et aller à l'état 334
+    LB    décalage et aller à l'état 335
 
 
-state 323
+état 323
 
    91 EDGE: LB LB str COMMA str RB COMMA ACTIONS COMMA CONSTRAINTS . COMMA UPDATES RB SEMICOLON
 
-    COMMA  shift, and go to state 336
+    COMMA  décalage et aller à l'état 336
 
 
-state 324
+état 324
 
    99 CONSTRAINTS: CONSTRAINT .
   100            | CONSTRAINT . AND CONSTRAINTS
 
-    AND  shift, and go to state 337
+    AND  décalage et aller à l'état 337
 
-    $default  reduce using rule 99 (CONSTRAINTS)
+    $défaut  réduction par utilisation de la règle 99 (CONSTRAINTS)
 
 
-state 325
+état 325
 
   102 CONSTRAINT: LinearExp . EQ RealMarkingFormula
   103           | LinearExp . LEQ RealMarkingFormula
@@ -3850,49 +3852,49 @@ state 325
   106 LinearExp: LinearExp . MINUS term
   107          | LinearExp . PLUS term
 
-    EQ     shift, and go to state 338
-    GEQ    shift, and go to state 339
-    LEQ    shift, and go to state 340
-    PLUS   shift, and go to state 341
-    MINUS  shift, and go to state 342
+    EQ     décalage et aller à l'état 338
+    GEQ    décalage et aller à l'état 339
+    LEQ    décalage et aller à l'état 340
+    PLUS   décalage et aller à l'état 341
+    MINUS  décalage et aller à l'état 342
 
 
-state 326
+état 326
 
   105 LinearExp: term .
 
-    $default  reduce using rule 105 (LinearExp)
+    $défaut  réduction par utilisation de la règle 105 (LinearExp)
 
 
-state 327
+état 327
 
    98 Actions: Actions COMMA str .
 
-    $default  reduce using rule 98 (Actions)
+    $défaut  réduction par utilisation de la règle 98 (Actions)
 
 
-state 328
+état 328
 
   112 term: str MUL . str
 
-    str  shift, and go to state 343
+    str  décalage et aller à l'état 343
 
 
-state 329
+état 329
 
   111 term: rval MUL . str
 
-    str  shift, and go to state 344
+    str  décalage et aller à l'état 344
 
 
-state 330
+état 330
 
   110 term: ival MUL . str
 
-    str  shift, and go to state 345
+    str  décalage et aller à l'état 345
 
 
-state 331
+état 331
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -3901,205 +3903,205 @@ state 331
    25                   | RealMarkingFormula . POWER RealMarkingFormula
   109 term: LB RealMarkingFormula . RB MUL str
 
-    RB     shift, and go to state 346
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    RB     décalage et aller à l'état 346
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 332
+état 332
 
   113 term: MINUS str .
   117     | MINUS str . MUL str
 
-    MUL  shift, and go to state 347
+    MUL  décalage et aller à l'état 347
 
-    $default  reduce using rule 113 (term)
+    $défaut  réduction par utilisation de la règle 113 (term)
 
 
-state 333
+état 333
 
   116 term: MINUS rval . MUL str
 
-    MUL  shift, and go to state 348
+    MUL  décalage et aller à l'état 348
 
 
-state 334
+état 334
 
   115 term: MINUS ival . MUL str
 
-    MUL  shift, and go to state 349
+    MUL  décalage et aller à l'état 349
 
 
-state 335
+état 335
 
   114 term: MINUS LB . RealMarkingFormula RB MUL str
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 350
+    RealMarkingFormula  aller à l'état 350
 
 
-state 336
+état 336
 
    91 EDGE: LB LB str COMMA str RB COMMA ACTIONS COMMA CONSTRAINTS COMMA . UPDATES RB SEMICOLON
 
-    SHARP  shift, and go to state 351
-    '{'    shift, and go to state 352
+    SHARP  décalage et aller à l'état 351
+    '{'    décalage et aller à l'état 352
 
-    UPDATES  go to state 353
+    UPDATES  aller à l'état 353
 
 
-state 337
+état 337
 
   100 CONSTRAINTS: CONSTRAINT AND . CONSTRAINTS
 
-    str    shift, and go to state 317
-    rval   shift, and go to state 318
-    ival   shift, and go to state 319
-    LB     shift, and go to state 320
-    SHARP  shift, and go to state 321
-    MINUS  shift, and go to state 322
+    str    décalage et aller à l'état 317
+    rval   décalage et aller à l'état 318
+    ival   décalage et aller à l'état 319
+    LB     décalage et aller à l'état 320
+    SHARP  décalage et aller à l'état 321
+    MINUS  décalage et aller à l'état 322
 
-    CONSTRAINTS  go to state 354
-    CONSTRAINT   go to state 324
-    LinearExp    go to state 325
-    term         go to state 326
+    CONSTRAINTS  aller à l'état 354
+    CONSTRAINT   aller à l'état 324
+    LinearExp    aller à l'état 325
+    term         aller à l'état 326
 
 
-state 338
+état 338
 
   102 CONSTRAINT: LinearExp EQ . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 355
+    RealMarkingFormula  aller à l'état 355
 
 
-state 339
+état 339
 
   104 CONSTRAINT: LinearExp GEQ . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 356
+    RealMarkingFormula  aller à l'état 356
 
 
-state 340
+état 340
 
   103 CONSTRAINT: LinearExp LEQ . RealMarkingFormula
 
-    str    shift, and go to state 94
-    rval   shift, and go to state 95
-    ival   shift, and go to state 96
-    LB     shift, and go to state 97
-    MINUS  shift, and go to state 98
-    FLOOR  shift, and go to state 99
-    MIN    shift, and go to state 100
-    MAX    shift, and go to state 101
+    str    décalage et aller à l'état 94
+    rval   décalage et aller à l'état 95
+    ival   décalage et aller à l'état 96
+    LB     décalage et aller à l'état 97
+    MINUS  décalage et aller à l'état 98
+    FLOOR  décalage et aller à l'état 99
+    MIN    décalage et aller à l'état 100
+    MAX    décalage et aller à l'état 101
 
-    RealMarkingFormula  go to state 357
+    RealMarkingFormula  aller à l'état 357
 
 
-state 341
+état 341
 
   107 LinearExp: LinearExp PLUS . term
 
-    str    shift, and go to state 317
-    rval   shift, and go to state 318
-    ival   shift, and go to state 319
-    LB     shift, and go to state 320
-    MINUS  shift, and go to state 322
+    str    décalage et aller à l'état 317
+    rval   décalage et aller à l'état 318
+    ival   décalage et aller à l'état 319
+    LB     décalage et aller à l'état 320
+    MINUS  décalage et aller à l'état 322
 
-    term  go to state 358
+    term  aller à l'état 358
 
 
-state 342
+état 342
 
   106 LinearExp: LinearExp MINUS . term
 
-    str    shift, and go to state 317
-    rval   shift, and go to state 318
-    ival   shift, and go to state 319
-    LB     shift, and go to state 320
-    MINUS  shift, and go to state 322
+    str    décalage et aller à l'état 317
+    rval   décalage et aller à l'état 318
+    ival   décalage et aller à l'état 319
+    LB     décalage et aller à l'état 320
+    MINUS  décalage et aller à l'état 322
 
-    term  go to state 359
+    term  aller à l'état 359
 
 
-state 343
+état 343
 
   112 term: str MUL str .
 
-    $default  reduce using rule 112 (term)
+    $défaut  réduction par utilisation de la règle 112 (term)
 
 
-state 344
+état 344
 
   111 term: rval MUL str .
 
-    $default  reduce using rule 111 (term)
+    $défaut  réduction par utilisation de la règle 111 (term)
 
 
-state 345
+état 345
 
   110 term: ival MUL str .
 
-    $default  reduce using rule 110 (term)
+    $défaut  réduction par utilisation de la règle 110 (term)
 
 
-state 346
+état 346
 
   109 term: LB RealMarkingFormula RB . MUL str
 
-    MUL  shift, and go to state 360
+    MUL  décalage et aller à l'état 360
 
 
-state 347
+état 347
 
   117 term: MINUS str MUL . str
 
-    str  shift, and go to state 361
+    str  décalage et aller à l'état 361
 
 
-state 348
+état 348
 
   116 term: MINUS rval MUL . str
 
-    str  shift, and go to state 362
+    str  décalage et aller à l'état 362
 
 
-state 349
+état 349
 
   115 term: MINUS ival MUL . str
 
-    str  shift, and go to state 363
+    str  décalage et aller à l'état 363
 
 
-state 350
+état 350
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -4108,46 +4110,46 @@ state 350
    25                   | RealMarkingFormula . POWER RealMarkingFormula
   114 term: MINUS LB RealMarkingFormula . RB MUL str
 
-    RB     shift, and go to state 364
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    RB     décalage et aller à l'état 364
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
 
-state 351
+état 351
 
   119 UPDATES: SHARP .
 
-    $default  reduce using rule 119 (UPDATES)
+    $défaut  réduction par utilisation de la règle 119 (UPDATES)
 
 
-state 352
+état 352
 
   118 UPDATES: '{' . Updates '}'
 
-    str  shift, and go to state 365
+    str  décalage et aller à l'état 365
 
-    Updates  go to state 366
-    Update   go to state 367
+    Updates  aller à l'état 366
+    Update   aller à l'état 367
 
 
-state 353
+état 353
 
    91 EDGE: LB LB str COMMA str RB COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES . RB SEMICOLON
 
-    RB  shift, and go to state 368
+    RB  décalage et aller à l'état 368
 
 
-state 354
+état 354
 
   100 CONSTRAINTS: CONSTRAINT AND CONSTRAINTS .
 
-    $default  reduce using rule 100 (CONSTRAINTS)
+    $défaut  réduction par utilisation de la règle 100 (CONSTRAINTS)
 
 
-state 355
+état 355
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -4156,16 +4158,16 @@ state 355
    25                   | RealMarkingFormula . POWER RealMarkingFormula
   102 CONSTRAINT: LinearExp EQ RealMarkingFormula .
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 102 (CONSTRAINT)
+    $défaut  réduction par utilisation de la règle 102 (CONSTRAINT)
 
 
-state 356
+état 356
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -4174,16 +4176,16 @@ state 356
    25                   | RealMarkingFormula . POWER RealMarkingFormula
   104 CONSTRAINT: LinearExp GEQ RealMarkingFormula .
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 104 (CONSTRAINT)
+    $défaut  réduction par utilisation de la règle 104 (CONSTRAINT)
 
 
-state 357
+état 357
 
    21 RealMarkingFormula: RealMarkingFormula . DIV RealMarkingFormula
    22                   | RealMarkingFormula . PLUS RealMarkingFormula
@@ -4192,229 +4194,239 @@ state 357
    25                   | RealMarkingFormula . POWER RealMarkingFormula
   103 CONSTRAINT: LinearExp LEQ RealMarkingFormula .
 
-    DIV    shift, and go to state 146
-    MUL    shift, and go to state 147
-    PLUS   shift, and go to state 148
-    MINUS  shift, and go to state 149
-    POWER  shift, and go to state 150
+    DIV    décalage et aller à l'état 146
+    MUL    décalage et aller à l'état 147
+    PLUS   décalage et aller à l'état 148
+    MINUS  décalage et aller à l'état 149
+    POWER  décalage et aller à l'état 150
 
-    $default  reduce using rule 103 (CONSTRAINT)
+    $défaut  réduction par utilisation de la règle 103 (CONSTRAINT)
 
 
-state 358
+état 358
 
   107 LinearExp: LinearExp PLUS term .
 
-    $default  reduce using rule 107 (LinearExp)
+    $défaut  réduction par utilisation de la règle 107 (LinearExp)
 
 
-state 359
+état 359
 
   106 LinearExp: LinearExp MINUS term .
 
-    $default  reduce using rule 106 (LinearExp)
+    $défaut  réduction par utilisation de la règle 106 (LinearExp)
 
 
-state 360
+état 360
 
   109 term: LB RealMarkingFormula RB MUL . str
 
-    str  shift, and go to state 369
+    str  décalage et aller à l'état 369
 
 
-state 361
+état 361
 
   117 term: MINUS str MUL str .
 
-    $default  reduce using rule 117 (term)
+    $défaut  réduction par utilisation de la règle 117 (term)
 
 
-state 362
+état 362
 
   116 term: MINUS rval MUL str .
 
-    $default  reduce using rule 116 (term)
+    $défaut  réduction par utilisation de la règle 116 (term)
 
 
-state 363
+état 363
 
   115 term: MINUS ival MUL str .
 
-    $default  reduce using rule 115 (term)
+    $défaut  réduction par utilisation de la règle 115 (term)
 
 
-state 364
+état 364
 
   114 term: MINUS LB RealMarkingFormula RB . MUL str
 
-    MUL  shift, and go to state 370
+    MUL  décalage et aller à l'état 370
 
 
-state 365
+état 365
 
   122 Update: str . EQ RealVarMarkingFormula
+  123       | str . EQ LIKELIHOOD MUL str
 
-    EQ  shift, and go to state 371
+    EQ  décalage et aller à l'état 371
 
 
-state 366
+état 366
 
   118 UPDATES: '{' Updates . '}'
   121 Updates: Updates . COMMA Update
 
-    COMMA  shift, and go to state 372
-    '}'    shift, and go to state 373
+    COMMA  décalage et aller à l'état 372
+    '}'    décalage et aller à l'état 373
 
 
-state 367
+état 367
 
   120 Updates: Update .
 
-    $default  reduce using rule 120 (Updates)
+    $défaut  réduction par utilisation de la règle 120 (Updates)
 
 
-state 368
+état 368
 
    91 EDGE: LB LB str COMMA str RB COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB . SEMICOLON
 
-    SEMICOLON  shift, and go to state 374
+    SEMICOLON  décalage et aller à l'état 374
 
 
-state 369
+état 369
 
   109 term: LB RealMarkingFormula RB MUL str .
 
-    $default  reduce using rule 109 (term)
+    $défaut  réduction par utilisation de la règle 109 (term)
 
 
-state 370
+état 370
 
   114 term: MINUS LB RealMarkingFormula RB MUL . str
 
-    str  shift, and go to state 375
+    str  décalage et aller à l'état 375
 
 
-state 371
+état 371
 
   122 Update: str EQ . RealVarMarkingFormula
+  123       | str EQ . LIKELIHOOD MUL str
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str         décalage et aller à l'état 376
+    rval        décalage et aller à l'état 377
+    ival        décalage et aller à l'état 378
+    LB          décalage et aller à l'état 379
+    MINUS       décalage et aller à l'état 380
+    FLOOR       décalage et aller à l'état 381
+    MIN         décalage et aller à l'état 382
+    MAX         décalage et aller à l'état 383
+    LIKELIHOOD  décalage et aller à l'état 384
 
-    RealVarMarkingFormula  go to state 384
+    RealVarMarkingFormula  aller à l'état 385
 
 
-state 372
+état 372
 
   121 Updates: Updates COMMA . Update
 
-    str  shift, and go to state 365
+    str  décalage et aller à l'état 365
 
-    Update  go to state 385
+    Update  aller à l'état 386
 
 
-state 373
+état 373
 
   118 UPDATES: '{' Updates '}' .
 
-    $default  reduce using rule 118 (UPDATES)
+    $défaut  réduction par utilisation de la règle 118 (UPDATES)
 
 
-state 374
+état 374
 
    91 EDGE: LB LB str COMMA str RB COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB SEMICOLON .
 
-    $default  reduce using rule 91 (EDGE)
+    $défaut  réduction par utilisation de la règle 91 (EDGE)
 
 
-state 375
+état 375
 
   114 term: MINUS LB RealMarkingFormula RB MUL str .
 
-    $default  reduce using rule 114 (term)
+    $défaut  réduction par utilisation de la règle 114 (term)
 
 
-state 376
+état 376
 
    31 RealVarMarkingFormula: str .
 
-    $default  reduce using rule 31 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 31 (RealVarMarkingFormula)
 
 
-state 377
+état 377
 
    29 RealVarMarkingFormula: rval .
 
-    $default  reduce using rule 29 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 29 (RealVarMarkingFormula)
 
 
-state 378
+état 378
 
    30 RealVarMarkingFormula: ival .
 
-    $default  reduce using rule 30 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 30 (RealVarMarkingFormula)
 
 
-state 379
+état 379
 
    32 RealVarMarkingFormula: LB . RealVarMarkingFormula RB
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 386
+    RealVarMarkingFormula  aller à l'état 387
 
 
-state 380
+état 380
 
    33 RealVarMarkingFormula: MINUS . RealVarMarkingFormula
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 387
+    RealVarMarkingFormula  aller à l'état 388
 
 
-state 381
+état 381
 
    39 RealVarMarkingFormula: FLOOR . LB RealVarMarkingFormula RB
 
-    LB  shift, and go to state 388
+    LB  décalage et aller à l'état 389
 
 
-state 382
+état 382
 
    40 RealVarMarkingFormula: MIN . LB RealVarMarkingFormula COMMA RealVarMarkingFormula RB
 
-    LB  shift, and go to state 389
+    LB  décalage et aller à l'état 390
 
 
-state 383
+état 383
 
    41 RealVarMarkingFormula: MAX . LB RealVarMarkingFormula COMMA RealVarMarkingFormula RB
 
-    LB  shift, and go to state 390
+    LB  décalage et aller à l'état 391
 
 
-state 384
+état 384
+
+  123 Update: str EQ LIKELIHOOD . MUL str
+
+    MUL  décalage et aller à l'état 392
+
+
+état 385
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    35                      | RealVarMarkingFormula . PLUS RealVarMarkingFormula
@@ -4423,23 +4435,23 @@ state 384
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
   122 Update: str EQ RealVarMarkingFormula .
 
-    DIV    shift, and go to state 391
-    MUL    shift, and go to state 392
-    PLUS   shift, and go to state 393
-    MINUS  shift, and go to state 394
-    POWER  shift, and go to state 395
+    DIV    décalage et aller à l'état 393
+    MUL    décalage et aller à l'état 394
+    PLUS   décalage et aller à l'état 395
+    MINUS  décalage et aller à l'état 396
+    POWER  décalage et aller à l'état 397
 
-    $default  reduce using rule 122 (Update)
+    $défaut  réduction par utilisation de la règle 122 (Update)
 
 
-state 385
+état 386
 
   121 Updates: Updates COMMA Update .
 
-    $default  reduce using rule 121 (Updates)
+    $défaut  réduction par utilisation de la règle 121 (Updates)
 
 
-state 386
+état 387
 
    32 RealVarMarkingFormula: LB RealVarMarkingFormula . RB
    34                      | RealVarMarkingFormula . DIV RealVarMarkingFormula
@@ -4448,15 +4460,15 @@ state 386
    37                      | RealVarMarkingFormula . MUL RealVarMarkingFormula
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
 
-    RB     shift, and go to state 396
-    DIV    shift, and go to state 391
-    MUL    shift, and go to state 392
-    PLUS   shift, and go to state 393
-    MINUS  shift, and go to state 394
-    POWER  shift, and go to state 395
+    RB     décalage et aller à l'état 398
+    DIV    décalage et aller à l'état 393
+    MUL    décalage et aller à l'état 394
+    PLUS   décalage et aller à l'état 395
+    MINUS  décalage et aller à l'état 396
+    POWER  décalage et aller à l'état 397
 
 
-state 387
+état 388
 
    33 RealVarMarkingFormula: MINUS RealVarMarkingFormula .
    34                      | RealVarMarkingFormula . DIV RealVarMarkingFormula
@@ -4465,149 +4477,156 @@ state 387
    37                      | RealVarMarkingFormula . MUL RealVarMarkingFormula
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
 
-    DIV    shift, and go to state 391
-    MUL    shift, and go to state 392
-    POWER  shift, and go to state 395
+    DIV    décalage et aller à l'état 393
+    MUL    décalage et aller à l'état 394
+    POWER  décalage et aller à l'état 397
 
-    $default  reduce using rule 33 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 33 (RealVarMarkingFormula)
 
 
-state 388
+état 389
 
    39 RealVarMarkingFormula: FLOOR LB . RealVarMarkingFormula RB
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 397
+    RealVarMarkingFormula  aller à l'état 399
 
 
-state 389
+état 390
 
    40 RealVarMarkingFormula: MIN LB . RealVarMarkingFormula COMMA RealVarMarkingFormula RB
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 398
+    RealVarMarkingFormula  aller à l'état 400
 
 
-state 390
+état 391
 
    41 RealVarMarkingFormula: MAX LB . RealVarMarkingFormula COMMA RealVarMarkingFormula RB
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 399
+    RealVarMarkingFormula  aller à l'état 401
 
 
-state 391
+état 392
+
+  123 Update: str EQ LIKELIHOOD MUL . str
+
+    str  décalage et aller à l'état 402
+
+
+état 393
 
    34 RealVarMarkingFormula: RealVarMarkingFormula DIV . RealVarMarkingFormula
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 400
+    RealVarMarkingFormula  aller à l'état 403
 
 
-state 392
+état 394
 
    37 RealVarMarkingFormula: RealVarMarkingFormula MUL . RealVarMarkingFormula
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 401
+    RealVarMarkingFormula  aller à l'état 404
 
 
-state 393
+état 395
 
    35 RealVarMarkingFormula: RealVarMarkingFormula PLUS . RealVarMarkingFormula
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 402
+    RealVarMarkingFormula  aller à l'état 405
 
 
-state 394
+état 396
 
    36 RealVarMarkingFormula: RealVarMarkingFormula MINUS . RealVarMarkingFormula
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 403
+    RealVarMarkingFormula  aller à l'état 406
 
 
-state 395
+état 397
 
    38 RealVarMarkingFormula: RealVarMarkingFormula POWER . RealVarMarkingFormula
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 404
+    RealVarMarkingFormula  aller à l'état 407
 
 
-state 396
+état 398
 
    32 RealVarMarkingFormula: LB RealVarMarkingFormula RB .
 
-    $default  reduce using rule 32 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 32 (RealVarMarkingFormula)
 
 
-state 397
+état 399
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    35                      | RealVarMarkingFormula . PLUS RealVarMarkingFormula
@@ -4616,15 +4635,15 @@ state 397
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
    39                      | FLOOR LB RealVarMarkingFormula . RB
 
-    RB     shift, and go to state 405
-    DIV    shift, and go to state 391
-    MUL    shift, and go to state 392
-    PLUS   shift, and go to state 393
-    MINUS  shift, and go to state 394
-    POWER  shift, and go to state 395
+    RB     décalage et aller à l'état 408
+    DIV    décalage et aller à l'état 393
+    MUL    décalage et aller à l'état 394
+    PLUS   décalage et aller à l'état 395
+    MINUS  décalage et aller à l'état 396
+    POWER  décalage et aller à l'état 397
 
 
-state 398
+état 400
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    35                      | RealVarMarkingFormula . PLUS RealVarMarkingFormula
@@ -4633,15 +4652,15 @@ state 398
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
    40                      | MIN LB RealVarMarkingFormula . COMMA RealVarMarkingFormula RB
 
-    COMMA  shift, and go to state 406
-    DIV    shift, and go to state 391
-    MUL    shift, and go to state 392
-    PLUS   shift, and go to state 393
-    MINUS  shift, and go to state 394
-    POWER  shift, and go to state 395
+    COMMA  décalage et aller à l'état 409
+    DIV    décalage et aller à l'état 393
+    MUL    décalage et aller à l'état 394
+    PLUS   décalage et aller à l'état 395
+    MINUS  décalage et aller à l'état 396
+    POWER  décalage et aller à l'état 397
 
 
-state 399
+état 401
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    35                      | RealVarMarkingFormula . PLUS RealVarMarkingFormula
@@ -4650,15 +4669,22 @@ state 399
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
    41                      | MAX LB RealVarMarkingFormula . COMMA RealVarMarkingFormula RB
 
-    COMMA  shift, and go to state 407
-    DIV    shift, and go to state 391
-    MUL    shift, and go to state 392
-    PLUS   shift, and go to state 393
-    MINUS  shift, and go to state 394
-    POWER  shift, and go to state 395
+    COMMA  décalage et aller à l'état 410
+    DIV    décalage et aller à l'état 393
+    MUL    décalage et aller à l'état 394
+    PLUS   décalage et aller à l'état 395
+    MINUS  décalage et aller à l'état 396
+    POWER  décalage et aller à l'état 397
 
 
-state 400
+état 402
+
+  123 Update: str EQ LIKELIHOOD MUL str .
+
+    $défaut  réduction par utilisation de la règle 123 (Update)
+
+
+état 403
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    34                      | RealVarMarkingFormula DIV RealVarMarkingFormula .
@@ -4667,12 +4693,12 @@ state 400
    37                      | RealVarMarkingFormula . MUL RealVarMarkingFormula
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
 
-    POWER  shift, and go to state 395
+    POWER  décalage et aller à l'état 397
 
-    $default  reduce using rule 34 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 34 (RealVarMarkingFormula)
 
 
-state 401
+état 404
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    35                      | RealVarMarkingFormula . PLUS RealVarMarkingFormula
@@ -4681,12 +4707,12 @@ state 401
    37                      | RealVarMarkingFormula MUL RealVarMarkingFormula .
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
 
-    POWER  shift, and go to state 395
+    POWER  décalage et aller à l'état 397
 
-    $default  reduce using rule 37 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 37 (RealVarMarkingFormula)
 
 
-state 402
+état 405
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    35                      | RealVarMarkingFormula . PLUS RealVarMarkingFormula
@@ -4695,14 +4721,14 @@ state 402
    37                      | RealVarMarkingFormula . MUL RealVarMarkingFormula
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
 
-    DIV    shift, and go to state 391
-    MUL    shift, and go to state 392
-    POWER  shift, and go to state 395
+    DIV    décalage et aller à l'état 393
+    MUL    décalage et aller à l'état 394
+    POWER  décalage et aller à l'état 397
 
-    $default  reduce using rule 35 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 35 (RealVarMarkingFormula)
 
 
-state 403
+état 406
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    35                      | RealVarMarkingFormula . PLUS RealVarMarkingFormula
@@ -4711,14 +4737,14 @@ state 403
    37                      | RealVarMarkingFormula . MUL RealVarMarkingFormula
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
 
-    DIV    shift, and go to state 391
-    MUL    shift, and go to state 392
-    POWER  shift, and go to state 395
+    DIV    décalage et aller à l'état 393
+    MUL    décalage et aller à l'état 394
+    POWER  décalage et aller à l'état 397
 
-    $default  reduce using rule 36 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 36 (RealVarMarkingFormula)
 
 
-state 404
+état 407
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    35                      | RealVarMarkingFormula . PLUS RealVarMarkingFormula
@@ -4727,49 +4753,49 @@ state 404
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
    38                      | RealVarMarkingFormula POWER RealVarMarkingFormula .
 
-    $default  reduce using rule 38 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 38 (RealVarMarkingFormula)
 
 
-state 405
+état 408
 
    39 RealVarMarkingFormula: FLOOR LB RealVarMarkingFormula RB .
 
-    $default  reduce using rule 39 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 39 (RealVarMarkingFormula)
 
 
-state 406
+état 409
 
    40 RealVarMarkingFormula: MIN LB RealVarMarkingFormula COMMA . RealVarMarkingFormula RB
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 408
+    RealVarMarkingFormula  aller à l'état 411
 
 
-state 407
+état 410
 
    41 RealVarMarkingFormula: MAX LB RealVarMarkingFormula COMMA . RealVarMarkingFormula RB
 
-    str    shift, and go to state 376
-    rval   shift, and go to state 377
-    ival   shift, and go to state 378
-    LB     shift, and go to state 379
-    MINUS  shift, and go to state 380
-    FLOOR  shift, and go to state 381
-    MIN    shift, and go to state 382
-    MAX    shift, and go to state 383
+    str    décalage et aller à l'état 376
+    rval   décalage et aller à l'état 377
+    ival   décalage et aller à l'état 378
+    LB     décalage et aller à l'état 379
+    MINUS  décalage et aller à l'état 380
+    FLOOR  décalage et aller à l'état 381
+    MIN    décalage et aller à l'état 382
+    MAX    décalage et aller à l'état 383
 
-    RealVarMarkingFormula  go to state 409
+    RealVarMarkingFormula  aller à l'état 412
 
 
-state 408
+état 411
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    35                      | RealVarMarkingFormula . PLUS RealVarMarkingFormula
@@ -4778,15 +4804,15 @@ state 408
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
    40                      | MIN LB RealVarMarkingFormula COMMA RealVarMarkingFormula . RB
 
-    RB     shift, and go to state 410
-    DIV    shift, and go to state 391
-    MUL    shift, and go to state 392
-    PLUS   shift, and go to state 393
-    MINUS  shift, and go to state 394
-    POWER  shift, and go to state 395
+    RB     décalage et aller à l'état 413
+    DIV    décalage et aller à l'état 393
+    MUL    décalage et aller à l'état 394
+    PLUS   décalage et aller à l'état 395
+    MINUS  décalage et aller à l'état 396
+    POWER  décalage et aller à l'état 397
 
 
-state 409
+état 412
 
    34 RealVarMarkingFormula: RealVarMarkingFormula . DIV RealVarMarkingFormula
    35                      | RealVarMarkingFormula . PLUS RealVarMarkingFormula
@@ -4795,23 +4821,23 @@ state 409
    38                      | RealVarMarkingFormula . POWER RealVarMarkingFormula
    41                      | MAX LB RealVarMarkingFormula COMMA RealVarMarkingFormula . RB
 
-    RB     shift, and go to state 411
-    DIV    shift, and go to state 391
-    MUL    shift, and go to state 392
-    PLUS   shift, and go to state 393
-    MINUS  shift, and go to state 394
-    POWER  shift, and go to state 395
+    RB     décalage et aller à l'état 414
+    DIV    décalage et aller à l'état 393
+    MUL    décalage et aller à l'état 394
+    PLUS   décalage et aller à l'état 395
+    MINUS  décalage et aller à l'état 396
+    POWER  décalage et aller à l'état 397
 
 
-state 410
+état 413
 
    40 RealVarMarkingFormula: MIN LB RealVarMarkingFormula COMMA RealVarMarkingFormula RB .
 
-    $default  reduce using rule 40 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 40 (RealVarMarkingFormula)
 
 
-state 411
+état 414
 
    41 RealVarMarkingFormula: MAX LB RealVarMarkingFormula COMMA RealVarMarkingFormula RB .
 
-    $default  reduce using rule 41 (RealVarMarkingFormula)
+    $défaut  réduction par utilisation de la règle 41 (RealVarMarkingFormula)

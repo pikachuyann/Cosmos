@@ -211,7 +211,8 @@ namespace lha {
      Floc = 301,
      locations = 302,
      edges = 303,
-     NEG = 304
+     LIKELIHOOD = 304,
+     NEG = 305
    };
 
     };
@@ -388,7 +389,7 @@ namespace lha {
 } // lha
 
 /* Line 35 of lalr1.cc  */
-#line 392 "Lha-parser.tab.hh"
+#line 393 "Lha-parser.tab.hh"
 
 
 
