@@ -20,12 +20,12 @@ Simulator::Simulator() {
 }
 
 void Simulator::Load() {
-  N.Load();
-  if(RareEvent_mode)N.gammaprob.load();
-  A.Load();
-  int n = N.tr;
-  EQ = new EventsQueue(n);
-  simTime = 0;
+  N.Load();//load the GSPN
+  if(RareEvent_mode)N.gammaprob.load();//load the hashtable for rare event
+  A.Load(); //load the LHA
+  int n = N.tr; //n his the number of transition
+  EQ = new EventsQueue(n); //initialization of the event queue
+  simTime = 0; //initialization of the time
   Initialized = false;
   IndexDist["UNIFORM"] = 1;
   IndexDist["EXPONENTIAL"] = 2;
@@ -34,18 +34,11 @@ void Simulator::Load() {
   IndexDist["TRIANGLE"] = 5;
   IndexDist["GEOMETRIC"] = 6;
 
-
+  //Initialize random generator
   RandomNumber.seed(time(NULL));
   srand(time(NULL));
 
   BatchSize = 1000;
-  MaxRuns = 100000000;
-
-  ConfWidth = 0.001;
-  ConfLevel = 0.99;
-
-
-
 }
 
 Simulator::Simulator(const Simulator& orig) {
@@ -54,27 +47,8 @@ Simulator::Simulator(const Simulator& orig) {
 Simulator::~Simulator() {
 }
 
-void Simulator::SetConfWidth(double w) {
-  ConfWidth = w;
-}
-
-void Simulator::SetConfLevel(double l) {
-  ConfLevel = l;
-}
-
 void Simulator::SetBatchSize(int RI) {
   BatchSize = RI;
-}
-
-void Simulator::SetMaxRuns(long int RX) {
-  MaxRuns = RX;
-}
-
-void Simulator::ViewParameters() {
-  cout << "Confidence interval width:      " << ConfWidth << endl;
-  cout << "Confidence interval level:      " << ConfLevel << endl;
-  cout << "Maximum number of trajectories: " << MaxRuns << endl;
-  cout << "Batch size:                     " << BatchSize << endl;
 }
 
 double Simulator::max(double a, double b) {
@@ -83,9 +57,7 @@ double Simulator::max(double a, double b) {
 }
 
 void Simulator::InitialEventsQueue() {
-
   Initialized = true;
-
 
   set<int, less <int> > ent;
   ent = N.enabledTrans();
@@ -94,7 +66,6 @@ void Simulator::InitialEventsQueue() {
   for (it = ent.begin(); it != ent.end(); it++) {
     GenerateEvent(E, (*it));
     (*EQ).insert(E);
-
   }
 }
 
@@ -108,15 +79,12 @@ void Simulator::reset() {
   RandomNumber.seed(RandomNumber());
   RandomNumber.seed(rand());
 
-
 }
 
 void Simulator::SimulateSinglePath() {
 
-
   bool QueueIsEmpty;
   AutEdge AE;
-
 
   double D = 0.0;
   A.CurrentLocation = A.EnabledInitLocation(N.Marking);

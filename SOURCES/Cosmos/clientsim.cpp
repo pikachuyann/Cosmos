@@ -3,18 +3,22 @@
 #include "BatchR.hpp"
 #include "Simulator.hpp"
 
+// convert a string to an integer
 int StrToInt(string st) {
-
     std::istringstream iss(st);
     int x;
     iss >> x;
     return x;
 }
 
+// main function it read the options given as arguments and initialyse 
+// the simulator.
+// Then it start a while loop which compute a batch of trajectory
+// and output the result.
+// The loop stop only when the programme receive end_of_file on
+// his standart input
 int main(int argc, char** argv) {
-  
-  
-    Simulator mySim;
+    Simulator mySim; 
     mySim.RareEvent_mode = false;
     mySim.doubleIS_mode = false;
     string str;
@@ -28,15 +32,15 @@ int main(int argc, char** argv) {
       }
     };
     
-    mySim.Load();
+    mySim.Load(); //initialize the simulator
 
     str = argv[1];
-    mySim.SetBatchSize(StrToInt(str));
+    mySim.SetBatchSize(StrToInt(str)); //set the batch size
 
     while( !cin.eof() ){
-      BatchR* batchResult = mySim.RunBatch();
+      BatchR* batchResult = mySim.RunBatch(); //simulate a batch of trajectory
 
-      batchResult->outputR();
+      batchResult->outputR();// output the result on the standart output
       
       /*cout << batchR->I <<":"<< batchR->Isucc <<":"<< batchR->Mean 
 	<< ":" << batchR->M2 << endl;*/

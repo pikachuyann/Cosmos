@@ -21,15 +21,6 @@ using namespace std;
 
 typedef pair<bool, double> SimOutput;
 
-/*class BatchResult {
-public:
-  bool IsBernoulli;
-  int I;
-  int Isucc;
-  double Mean;
-  double M2;
-  };*/
-
 class Simulator {
 public:
 
@@ -54,17 +45,7 @@ public:
   double simTime;
 
   int BatchSize;
-  long int MaxRuns;
-
-  double ConfWidth;
-  double ConfLevel;
-
-  void SetConfWidth(double);
-  void SetConfLevel(double);
-
   void SetBatchSize(int);
-  void SetMaxRuns(long int);
-  void ViewParameters();
 
 
   void GenerateEvent(Event &, int);
@@ -82,20 +63,12 @@ public:
 
   time_t SysTime;
 
-
-
-
-
   EventsQueue* EQ;
 private:
 
-
   bool Initialized;
-
   map<string, int> IndexDist;
   boost::mt19937 RandomNumber;
-
-
 
 };
 
