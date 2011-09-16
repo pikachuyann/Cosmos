@@ -25,6 +25,26 @@ Generator:
 		$(OBJPATH)/../Cosmos/EventsQueue.o  \
 	 -o $(BINPATH)/CosmosGPP
 
+
+$(OBJPATH)/%.o: %.cpp
+	$(CC) $(OPTIONS) -c $*.cpp -o $@	
+$(OBJPATH)/%.o: %.cc
+	$(CC) $(OPTIONS) -c $*.cc -o $@
+
+$(BINPATH)/CosmosGPP: $(OBJPATH)/server.o \
+		$(OBJPATH)/mainGPP.o \
+		$(OBJPATH)/Eval/Eval-parser.tab.o \
+		$(OBJPATH)/Eval/Eval.o \
+		$(OBJPATH)/GspnParser/Gspn-parser.tab.o \
+		$(OBJPATH)/GspnParser/Gspn-Reader.o \
+		$(OBJPATH)/LhaParser/Lha-Reader.o \
+		$(OBJPATH)/LhaParser/Lha-parser.tab.o  \
+		$(OBJPATH)/../Cosmos/BatchR.o \
+		$(OBJPATH)/../Cosmos/Event.o \
+		$(OBJPATH)/../Cosmos/EventsQueue.o
+	$(CC) $(OPTIONS) $^ -o $@
+
+
 clean:
 	rm $(OBJPATH)/Eval/*.o
 	rm $(OBJPATH)/GspnParser/*.o

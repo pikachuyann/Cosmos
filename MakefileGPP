@@ -7,7 +7,7 @@ classes:
 	make -C SOURCES/Cosmos classes
 
 Generator:
-	make -C SOURCES/ModelGenerator Generator
+	make -C SOURCES/ModelGenerator ../../bin/CosmosGPP
 
 
 clean:
