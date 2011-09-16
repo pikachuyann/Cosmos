@@ -18,15 +18,12 @@ spn.hpp:
 $(OBJPATH)/%.o: %.cpp
 	$(CC) $(OPTIONS2) -c $*.cpp -o $@	
 
-.PHONY: classes clean sim
-
+.PHONY: classes clean
 
 classes: LHA.hpp spn.hpp $(CLASSES)
 
 $(BINPATH)/ClientSim: $(OBJPATH)/spn.o $(OBJPATH)/LHA.o $(CLASSES)
 	$(CC) $(OPTIONS) $^ -o $@
-
-sim: $(BINPATH)/ClientSim
 
 clean:
 	rm $(OBJPATH)/*.o

@@ -1,18 +1,19 @@
 export CC=g++
 export OPTIONS=-O3
 
+.PHONY: classes Generator clean sim
+
 all: classes Generator 
 	
 classes:
-	make -C SOURCES/Cosmos classes
+	@(cd SOURCES/Cosmos && $(MAKE) $@)
 
 Generator:
-	make -C SOURCES/ModelGenerator ../../bin/CosmosGPP
-
+	@(cd SOURCES/ModelGenerator && $(MAKE) ../../bin/CosmosGPP)
 
 clean:
-	make -C SOURCES/Cosmos clean
-	make -C SOURCES/ModelGenerator clean
+	@(cd SOURCES/Cosmos && $(MAKE) $@)
+	@(cd SOURCES/ModelGenerator && $(MAKE) $@)
 
 sim:
-	make -C SOURCES/Cosmos sim
+	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/ClientSim)
