@@ -198,12 +198,12 @@ void LauchServer(SimParam& P){
         //RelErr = CurrentWidth / max(1, abs(Mean)); <- ligne original
         RelErr = CurrentWidth /  abs(Mean);
         //------------- /Rare Event -----------------
-
+	
       }
     }
-
   }while ((RelErr > P.Width) && (K < P.MaxRuns));
 
+  time(&end);
   kill_client();
 
     low = Mean - CurrentWidth / 2.0;
@@ -222,7 +222,7 @@ void LauchServer(SimParam& P){
 
 
 
-    time(&end);
+    
     cpu_time_used = difftime(end, start);
 
 
