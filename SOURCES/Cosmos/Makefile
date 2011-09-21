@@ -10,6 +10,8 @@ CLASSES= $(OBJPATH)/BatchR.o \
 	$(OBJPATH)/Simulator.o \
 	$(OBJPATH)/clientsim.o
 
+$(OBJPATH)/Simulator.o: SimulatorRE.cpp
+
 LHA.hpp:
 	cat ../ModelGenerator/LHA_orig.hpp end.cpp > LHA.hpp
 spn.hpp:
@@ -20,7 +22,7 @@ $(OBJPATH)/%.o: %.cpp
 
 .PHONY: classes clean
 
-classes: LHA.hpp spn.hpp $(CLASSES)
+classes: SimulatorRE.cpp LHA.hpp spn.hpp $(CLASSES)
 
 $(BINPATH)/ClientSim: $(OBJPATH)/spn.o $(OBJPATH)/LHA.o $(CLASSES)
 	$(CC) $(OPTIONS) $^ -o $@
