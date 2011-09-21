@@ -34,6 +34,8 @@ void Simulator::Load() {
   IndexDist["TRIANGLE"] = 5;
   IndexDist["GEOMETRIC"] = 6;
 
+  logvalue.open("outcosmos",fstream::out);
+
   //Initialize random generator
   RandomNumber.seed(time(NULL));
   srand(time(NULL));
@@ -358,9 +360,6 @@ BatchR* Simulator::RunBatch(){
   double Y = 0;
   BatchR* batchResult = new BatchR();
 
-  fstream logvalue;
-  logvalue.open("outcosmos",fstream::out);
-
   while (batchResult->Isucc < BatchSize) {
 
     if(RareEvent_mode){
@@ -398,7 +397,6 @@ BatchR* Simulator::RunBatch(){
 
   }
 
-  logvalue.close();
   return (batchResult);
 
 }

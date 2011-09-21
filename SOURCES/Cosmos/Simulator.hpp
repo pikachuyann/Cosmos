@@ -26,6 +26,7 @@ public:
 
   bool RareEvent_mode;
   bool doubleIS_mode;
+  fstream logvalue;
 
   Simulator();
   void Load();
