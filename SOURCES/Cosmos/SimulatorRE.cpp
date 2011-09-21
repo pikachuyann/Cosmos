@@ -88,7 +88,7 @@ void Simulator::SimulateSinglePathRE() {
         (N.Rate_Sum / N.Rate_Table[E1_transitionNum]);
       }
       
-      logvalue <<"Location:"<< A.CurrentLocation <<"\tTransition: "<< E1_transitionNum<<"\trate: " <<N.Rate_Table[E1_transitionNum] <<"\tsum rate: "<< N.Rate_Sum <<"\torigine rate: "<< N.Origine_Rate_Table[E1_transitionNum] << "\torigine sum: " <<N.Origine_Rate_Sum << "\tLikelihood: " << A.Likelihood << endl << endl << endl << endl;
+      //logvalue <<"Location:"<< A.CurrentLocation <<"\tTransition: "<< E1_transitionNum<<"\trate: " <<N.Rate_Table[E1_transitionNum] <<"\tsum rate: "<< N.Rate_Sum <<"\torigine rate: "<< N.Origine_Rate_Table[E1_transitionNum] << "\torigine sum: " <<N.Origine_Rate_Sum << "\tLikelihood: " << A.Likelihood << endl << endl << endl << endl;
       
       
       while (E1.time >= AE.FiringTime) {
