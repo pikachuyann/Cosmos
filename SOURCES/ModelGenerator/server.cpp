@@ -51,6 +51,7 @@ long int StrToLongInt(string st) {
 
 fd_set client_list;
 vector<FILE*> clientstream;
+vector<int> clientPID;
 int max_client=0 ;
 
 
