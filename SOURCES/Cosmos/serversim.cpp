@@ -205,8 +205,8 @@ int main(int argc, char** argv){
 	//cout << "client: " << it << " :"<< read << endl;
 
 
-        K = K + batchR->I;
-        Ksucc = Ksucc + batchR->Isucc;
+		  K = K + batchR->I;
+		  Ksucc = Ksucc + batchR->Isucc;
 
         Dif = batchR->Mean - Mean;
         Mean = Mean + batchR->Isucc * Dif / Ksucc;

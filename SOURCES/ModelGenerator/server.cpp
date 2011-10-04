@@ -109,9 +109,7 @@ void LauchServer(SimParam& P){
   int K = 0; //counter of generated paths
   int Ksucc = 0; //counter of succesfull generated paths
   double Ksucc_sqrt; //square root of Ksucc
-  int Isucc;
-
-
+  
   double CurrentWidth = 1;
   double RelErr = 1;
 
@@ -119,8 +117,6 @@ void LauchServer(SimParam& P){
   double Var = 0; //variance
   double stdev = 0; //standard deviation
   double M2 = 0;
-  double Y = 0;
-  double x1sqr;
   double Normal_quantile;
 
   double low, up;
@@ -165,11 +161,8 @@ void LauchServer(SimParam& P){
     //cout << "stop select" << endl;
     for(int it = 0;it<P.Njob;it++){
       if(FD_ISSET(fileno(clientstream[it]), &cs_cp)){
-        double read;
-	bool readb;
-	int readi;
-	BatchR* batchResult = new BatchR;
-	batchResult->inputR(clientstream[it]);
+		  BatchR* batchResult = new BatchR;
+		  batchResult->inputR(clientstream[it]);
 
 	//cout << "client: " << it << " :"<< read << endl;
 

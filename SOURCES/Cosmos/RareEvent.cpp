@@ -54,7 +54,7 @@ double ComputeDistr(SPN &N, int t , double origin_rate){
       return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
     }else{ 
       return 0.0 ;};
-  };
+  }; 
 
   double distr;
   N.fire(t);

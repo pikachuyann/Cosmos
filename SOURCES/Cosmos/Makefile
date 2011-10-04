@@ -39,3 +39,5 @@ server:
 	$(CC) $(OPTIONS2) -c serversim.cpp -o $(OBJPATH)/serversim.o
 	$(CC) $(OPTIONS2) $(OBJPATH)/serversim.o \
 	-o $(BINPATH)/ServerSim
+# DO NOT DELETE
+SimulatorRE.o: SimulatorRE.cpp
