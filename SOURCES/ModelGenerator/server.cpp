@@ -5,10 +5,13 @@
 #include <iostream>
 #include <vector>
 #include <sys/select.h>
+#include <sys/types.h>
 #include <fstream>
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
 #include <time.h>
+#include <unistd.h>
+#include <signal.h>
 
 #include "../Cosmos/BatchR.hpp"
 #include "server.hpp"
@@ -51,13 +54,15 @@ long int StrToLongInt(string st) {
 
 fd_set client_list;
 vector<FILE*> clientstream;
-vector<int> clientPID;
+vector<pid_t> clientPID;
 int max_client=0 ;
 
 
 void lauch_clients(SimParam& P){
-  ostringstream os;
-  if (P.Path == "") os << "./ClientSim " << P.Batch;
+	ostringstream os;
+	pid_t readpid;
+	int size;
+	if (P.Path == "") os << "./ClientSim " << P.Batch;
   else os << P.Path << "ClientSim " << P.Batch;
   if(P.DoubleIS){ 
     os << " " << "-RE2"; 
@@ -72,15 +77,21 @@ void lauch_clients(SimParam& P){
     int streamfd = fileno(stream);
     if(streamfd >max_client)max_client = streamfd;
 
+	size = fread(reinterpret_cast<char*>( &readpid ), sizeof(readpid) ,1, stream);
+	  clientPID.push_back(readpid);
+	  //cout << "pid:" << readpid << endl<<endl;
+	  
   }
 
 }
 
 void kill_client(){
-   while (!clientstream.empty())
+   while (!clientPID.empty())
   {
-    pclose(clientstream.back());
+	  
+    kill(clientPID.back(),9);
     clientstream.pop_back();
+	  clientPID.pop_back();
   }
 }
 
@@ -197,7 +208,7 @@ void LauchServer(SimParam& P){
     }
   }while ((RelErr > P.Width) && (K < P.MaxRuns));
 
-  time(&end);
+  
   kill_client();
 
     low = Mean - CurrentWidth / 2.0;
@@ -216,7 +227,7 @@ void LauchServer(SimParam& P){
 
 
 
-    
+    time(&end);
     cpu_time_used = difftime(end, start);
 
 
