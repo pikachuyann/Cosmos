@@ -1,5 +1,5 @@
 export CC=g++
-export OPTIONS=-O3
+export OPTIONS=-O3 -I../libgml/include/libgml -L/usr/lib/ -lexpat.1.5.2
 
 .PHONY: classes Generator clean sim
 

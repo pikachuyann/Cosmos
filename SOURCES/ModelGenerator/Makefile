@@ -1,5 +1,6 @@
 OBJPATH=../../Obj/ModelGenerator
 BINPATH=../../bin
+LIBGMLPATH=../../libgml/src
 
 FILES=$(OBJPATH)/server.o \
 	$(OBJPATH)/mainGPP.o \
@@ -7,14 +8,21 @@ FILES=$(OBJPATH)/server.o \
 	$(OBJPATH)/Eval/Eval.o \
 	$(OBJPATH)/GspnParser/Gspn-parser.tab.o \
 	$(OBJPATH)/GspnParser/Gspn-Reader.o \
+	$(OBJPATH)/GspnParser/Gspn_gmlparser.o \
 	$(OBJPATH)/LhaParser/Lha-Reader.o \
 	$(OBJPATH)/LhaParser/Lha-parser.tab.o  \
 	$(OBJPATH)/../Cosmos/BatchR.o \
+	$(OBJPATH)/expatmodelparser.o \
+	$(OBJPATH)/modelwriter.o
+
+$(OBJPATH)/GspnParser/Gspn-Reader.o: GspnParser/Gspn-Reader.cpp GspnParser/Gspn_gmlparser.cpp
 
 $(OBJPATH)/%.o: %.cpp
 	$(CC) $(OPTIONS) -c $*.cpp -o $@	
 $(OBJPATH)/%.o: %.cc
 	$(CC) $(OPTIONS) -c $*.cc -o $@
+$(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
+	$(CC) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
 
 $(BINPATH)/CosmosGPP: $(FILES)
 	$(CC) $(OPTIONS) $^ -o $@

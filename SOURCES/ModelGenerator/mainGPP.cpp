@@ -36,10 +36,11 @@ void ViewParameters(SimParam& P) {
 bool ParseBuild(string filename, SimParam& P) {
   Gspn_Reader gReader;
   string GspnFileName = filename;
-  GspnFileName.append(".gspn");
+	
+  GspnFileName.append(".gml");
 
   cout << "Start Parsing ... " << endl;
-  if (!gReader.parse_file(GspnFileName)) {
+  if (!gReader.parse_gml_file(GspnFileName)) {
 
     gReader.MyGspn.Path = filename;
     gReader.WriteFile(P.Path);

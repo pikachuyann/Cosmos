@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 	pid_t pid =getpid();
 	write(STDOUT_FILENO,reinterpret_cast<char*>(&pid),sizeof(pid));
 	fflush(stdout);
-	cerr << "pid : "<< pid << endl;
+	//cerr << "pid : "<< pid << endl;
     Simulator mySim; 
     mySim.RareEvent_mode = false;
     mySim.doubleIS_mode = false;

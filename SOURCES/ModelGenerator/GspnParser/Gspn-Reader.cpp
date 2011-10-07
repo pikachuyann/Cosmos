@@ -2,6 +2,7 @@
 
 #include "Gspn-parser.tab.hh"
 #include "Gspn-Reader.hpp"
+#include "Gspn_gmlparser.hpp";
 
 #include "string.h"
 
@@ -83,6 +84,17 @@ int Gspn_Reader::parse_file(string &filename) {
     }
 }
 
+//#include "Gspn_gmlparser.cpp";
+int Gspn_Reader::parse_gml_file(string &filename) {
+	cout << "parse GML:" << filename << endl;
+	ModelHandlerPtr handlerPtr(new MyModelHandler(&MyGspn));
+    ExpatModelParser parser = ExpatModelParser(handlerPtr);
+    parser.parse_file(filename);
+	cout << "end parse GML:"<< MyGspn.pl << endl;
+	
+	return 0;
+}
+
 void
 Gspn_Reader::error(const gspn::location& l, const std::string& m) {
     std::cerr << l << ": " << m << std::endl;
@@ -99,11 +111,13 @@ void Gspn_Reader::WriteFile(string& Pref) {
     string loc;
 
     loc = Pref + "../SOURCES/Cosmos/spn.cpp";
-    ofstream SpnCppFile(loc.c_str(), ios::out | ios::trunc); // ouverture en écriture avec effacement du SpnCppFile ouvert
-
+    //loc= "/Users/barbot/Documents/Cosmos/SOURCES/Cosmos/spn.cpp";
+	ofstream SpnCppFile(loc.c_str(), ios::out | ios::trunc); // ouverture en écriture avec effacement du SpnCppFile ouvert
+	cout << loc << endl;
 
     loc = Pref + "../SOURCES/ModelGenerator/spn_orig.cpp";
-    ifstream SpnCppFile_orig(loc.c_str(), ios::in);
+    //loc = "/Users/barbot/Documents/Cosmos/SOURCES/ModelGenerator/spn_orig.cpp";
+	ifstream SpnCppFile_orig(loc.c_str(), ios::in);
 
 
 

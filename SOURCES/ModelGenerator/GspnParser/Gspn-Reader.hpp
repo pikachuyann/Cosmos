@@ -9,6 +9,8 @@
 #include <vector>
 #include <map>
 #include <set>
+#include "expatmodelparser.hh"
+#include "modelhandler.hh"
 
 using namespace std;
 
@@ -96,6 +98,7 @@ public:
 
     int parse(std::string&);
     int parse_file(std::string&);
+	int parse_gml_file(std::string&);
     void WriteFile(string&);
 
     bool trace_parsing;
