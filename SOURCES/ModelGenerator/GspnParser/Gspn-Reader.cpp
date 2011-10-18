@@ -113,12 +113,13 @@ void Gspn_Reader::WriteFile(string& Pref) {
     loc = Pref + "../SOURCES/Cosmos/spn.cpp";
     //loc= "/Users/barbot/Documents/Cosmos/SOURCES/Cosmos/spn.cpp";
 	ofstream SpnCppFile(loc.c_str(), ios::out | ios::trunc); // ouverture en écriture avec effacement du SpnCppFile ouvert
-	cout << loc << endl;
+	//cout << loc << endl;
 
     loc = Pref + "../SOURCES/ModelGenerator/spn_orig.cpp";
     //loc = "/Users/barbot/Documents/Cosmos/SOURCES/ModelGenerator/spn_orig.cpp";
 	ifstream SpnCppFile_orig(loc.c_str(), ios::in);
 
+	//cout << "Generating " << loc << endl;
 
 
 
@@ -131,6 +132,7 @@ void Gspn_Reader::WriteFile(string& Pref) {
         SpnCppFile << LineFile << endl;
     }
     SpnCppFile_orig.close();
+	
 
     SpnCppFile << "void SPN::Load(){" << endl;
     SpnCppFile << "    Path =\"" << MyGspn.Path << "\";" << endl;
@@ -475,7 +477,7 @@ for (int t = 0; t < MyGspn.tr; t++) {
     loc = Pref + "../SOURCES/ModelGenerator/spn_orig.hpp";
     ifstream SpnHppFile_orig(loc.c_str(), ios::in);
 
-
+	//cout << "generating hpp"<< endl;
 
 
     while (!SpnHppFile_orig.eof()) {

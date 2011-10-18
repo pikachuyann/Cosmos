@@ -7,8 +7,6 @@
 #include "Gspn-parser.tab.hh"
 #include "../Eval/Eval.hpp"
 #include <vector>
-#include <map>
-#include <set>
 #include "expatmodelparser.hh"
 #include "modelhandler.hh"
 

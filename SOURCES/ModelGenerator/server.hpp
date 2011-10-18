@@ -13,6 +13,7 @@ using namespace std;
    string Path;
    bool RareEvent;
    bool DoubleIS;
+	 bool GMLinput;
 };
 
 double StrToDbl(string st);

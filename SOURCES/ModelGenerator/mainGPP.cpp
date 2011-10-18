@@ -12,7 +12,7 @@
 #include "server.hpp"
 
 #ifdef __APPLE__
-#define FindPath FindPathLinux
+#define FindPath FindPathMac
 #elif __linux__
 #define FindPath FindPathLinux
 #else
@@ -29,6 +29,7 @@ void ViewParameters(SimParam& P) {
   cout << "Rare Event:                     " << P.RareEvent << endl;
   cout << "Double Important Sampling:      " << P.DoubleIS << endl;
   cout << "Number of parallel execution:   " << P.Njob << endl;
+	cout << "Read GML file as input:         " << P.GMLinput << endl;  
 }
 
 
@@ -37,11 +38,23 @@ bool ParseBuild(string filename, SimParam& P) {
   Gspn_Reader gReader;
   string GspnFileName = filename;
 	
-  GspnFileName.append(".gml");
+	if(P.GMLinput){
+		GspnFileName.append(".gml");
+	}else {
+		GspnFileName.append(".gspn");
+	}
 
-  cout << "Start Parsing ... " << endl;
-  if (!gReader.parse_gml_file(GspnFileName)) {
 
+  cout << "Start Parsing " << GspnFileName << endl;
+	int parseresult;
+	
+	if(P.GMLinput){
+		parseresult = gReader.parse_gml_file(GspnFileName);
+	}else {
+		parseresult = gReader.parse_file(GspnFileName);
+	}
+	
+  if (!parseresult) {
     gReader.MyGspn.Path = filename;
     gReader.WriteFile(P.Path);
   } else {
@@ -62,6 +75,7 @@ bool ParseBuild(string filename, SimParam& P) {
   string LhaFileName = filename;
   LhaFileName.append(".lha");
 
+	cout << "Start Parsing " << LhaFileName << endl;
   if (!lReader.parse_file(LhaFileName)) {
     lReader.WriteFile(P.Path);
 
@@ -164,6 +178,17 @@ void Command(string str, SimParam& P) {
       P.RareEvent = false;
     }
 
+  } else if (str == "GMLinput") {
+	  string st;
+	  cout << "Type true to use GML input: ";
+	  getline(cin, st);
+	  
+	  if (st == "true")
+		  P.GMLinput = true;
+	  else {
+		  P.GMLinput = false;
+	  }
+	  
   } else if (str == "doubleIS") {
     string st;
     cout << "Type true for double Important Sampling: ";
@@ -198,6 +223,7 @@ void Command(string str, SimParam& P) {
     cout << "\thelp" << endl;
     cout << "\tstop" << endl;
     cout << "\tNjob" << endl;
+	  cout << "\tGMLinput" << endl;
   } else
     cout << "Unknown command, for more information type 'help':\n" << endl;
 }
@@ -211,6 +237,7 @@ void LoadSimParam(SimParam& P) {
   P.RareEvent = false;
   P.DoubleIS = false;
   P.Njob = 1;
+	P.GMLinput = false;
 }
 
 void FindPathLinux(SimParam& P) {

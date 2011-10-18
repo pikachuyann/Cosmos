@@ -15,8 +15,6 @@ FILES=$(OBJPATH)/server.o \
 	$(OBJPATH)/expatmodelparser.o \
 	$(OBJPATH)/modelwriter.o
 
-$(OBJPATH)/GspnParser/Gspn-Reader.o: GspnParser/Gspn-Reader.cpp GspnParser/Gspn_gmlparser.cpp
-
 $(OBJPATH)/%.o: %.cpp
 	$(CC) $(OPTIONS) -c $*.cpp -o $@	
 $(OBJPATH)/%.o: %.cc
@@ -25,7 +23,7 @@ $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
 	$(CC) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
 
 $(BINPATH)/CosmosGPP: $(FILES)
-	$(CC) $(OPTIONS) $^ -o $@
+	$(CC) $(OPTIONS) -L/usr/lib/ -lexpat.1.5.2 $^ -o $@
 
 clean:
 	rm $(OBJPATH)/Eval/*.o

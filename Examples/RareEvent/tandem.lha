@@ -1,9 +1,9 @@
 
 
-NbVariables = 1;
+NbVariables = 4;
 NbLocations = 6;
-const int N=50;
-VariablesList = {x} ;
+const int N=10;
+VariablesList = {t,x,y,r} ;
 
 LocationsList = {li ,l0, l1, l2, lf, lf2};AVG(Last(x));
 InitialLocations={li};
@@ -11,21 +11,23 @@ InitialLocations={li};
 FinalLocations={ l2 };
 
 Locations={
-(li, TRUE );
-(l0, TRUE );
-(l1, (Queue1 + Queue2 = N) & (Puit = 0) );
-(lf, (Queue1 + Queue2 = 0) & (Puit = 0) );
-(lf2,(Puit > 0) );
-(l2, TRUE );
+(li, TRUE ,   (t:1));
+(l0, TRUE ,(t:1));
+(l1, (Queue2 = N) & (Puit = 0) ,(t:1));
+(lf, (RE_Queue1 = N) & (Puit = 0) , (t:1));
+(lf2,(Puit > 0) , (t:1));
+(l2, TRUE ,   (t:1));
 }; 
 
 Edges={
-((li,l0)  ,#  ,  # , {x= 1});
-((l0,l0)  ,ALL,  # , #);
-((l0,l1)  ,#  ,  # , #);
-((l1,l2)  ,#  ,  # , #);
-((l0,lf)  ,#  ,  # , #);
-((l0,lf2) ,#  ,  # , #);
-((lf,l2)  ,#  ,  # , #);
-((lf2,l2) ,#  ,  # , #);
+((li,l0) ,# ,  t>=0, {x= 1,y=1.});
+
+((l0,l0)  ,ALL ,  t>=0,{x= Likelihood * x } );
+
+((l0,l1)  ,#   ,  t>=0, #);
+((l1,l2)  ,#       ,  t>=0, {r=0.} );
+((l0,lf)  ,# ,  t>=0, {r=x,x = 0,y=0.});
+((l0,lf2)  ,# ,  t>=0, {r=x,x = 0,y=0.});
+((lf,l2)  ,#       ,  t>=0, # );
+((lf2,l2)  ,#       ,  t>=0, #);
 };

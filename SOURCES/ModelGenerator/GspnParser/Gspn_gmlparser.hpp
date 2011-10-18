@@ -4,12 +4,17 @@
 #include "expatmodelparser.hh"
 #include "modelhandler.hh"
 #include "Gspn-Reader.hpp"
-
+#include <map>
 
 class MyModelHandler: public ModelHandler
 {
 private:
 	int countPl;
+	int countTr;
+	bool ParsePl;
+	map<int,bool> IsPlace;
+	map<int,int> Gml2Place;
+	map<int,int> Gml2Trans;
 	GSPN* MyGspn;
 public:
     MyModelHandler(GSPN* ) ;
