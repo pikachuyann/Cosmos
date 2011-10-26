@@ -1,6 +1,6 @@
 OBJPATH=../../Obj/ModelGenerator
 BINPATH=../../bin
-LIBGMLPATH=../../libgml/src
+LIBGMLPATH=../libgml/
 
 FILES=$(OBJPATH)/server.o \
 	$(OBJPATH)/mainGPP.o \
@@ -23,7 +23,7 @@ $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
 	$(CC) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
 
 $(BINPATH)/CosmosGPP: $(FILES)
-	$(CC) $(OPTIONS) -L/usr/lib/ -lexpat.1.5.2 $^ -o $@
+	$(CC) $(OPTIONS) -L/usr/lib/ -lexpat $^ -o $@
 
 clean:
 	rm $(OBJPATH)/Eval/*.o
