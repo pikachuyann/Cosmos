@@ -133,9 +133,9 @@ void Gspn_Reader::WriteFile(string& Pref) {
     }
     SpnCppFile_orig.close();
 	
-	for (map<string,int>::iterator it= MyGspn.IntConstant.begin(); it!= MyGspn.IntConstant.end() ; it++) {
+    /*for (map<string,int>::iterator it= MyGspn.IntConstant.begin(); it!= MyGspn.IntConstant.end() ; it++) {
 		SpnCppFile << "    const int " << it->first << "=" << it->second << ";" << endl;
-	}
+		}*/
 	for (map<string,double>::iterator it= MyGspn.RealConstant.begin(); it!= MyGspn.RealConstant.end() ; it++) {
 		SpnCppFile << "    const double " << it->first << "=" << it->second << ";" << endl;
 	}

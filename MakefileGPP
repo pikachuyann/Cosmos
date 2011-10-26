@@ -1,5 +1,5 @@
 export CC=g++
-export OPTIONS=-O3
+export OPTIONS=-O3 -I../libgml/
 
 .PHONY: classes Generator clean sim
 
