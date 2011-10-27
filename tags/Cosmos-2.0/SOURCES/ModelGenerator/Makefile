@@ -7,7 +7,6 @@ FILES=$(OBJPATH)/server.o \
 	$(OBJPATH)/Eval/Eval.o \
 	$(OBJPATH)/GspnParser/Gspn-parser.tab.o \
 	$(OBJPATH)/GspnParser/Gspn-Reader.o \
-	$(OBJPATH)/GspnParser/Gspn_gmlparser.o \
 	$(OBJPATH)/LhaParser/Lha-Reader.o \
 	$(OBJPATH)/LhaParser/Lha-parser.tab.o  \
 	$(OBJPATH)/../Cosmos/BatchR.o \
