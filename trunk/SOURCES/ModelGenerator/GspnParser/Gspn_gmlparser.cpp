@@ -50,6 +50,57 @@ string* simplifyString(string str)
 	return new string(str.substr(n1, n2-n1+1));
 }
 
+void appendSimplify(string *st, string str)
+{
+	int n1 = str.find_first_not_of(" \n");
+	int n2 = str.find_last_not_of(" \n");
+	st->append(str.substr(n1, n2-n1+1));
+}
+
+/*void evalinfix(string *st, tree<string>::pre_order_iterator it , string str){
+	st->append("(");
+	for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
+		if(it2!= it.begin()) st->append(str);
+		eval_expr( st, it2);
+	}
+	st->append(")");
+}*/
+
+void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it )
+{
+	if((*it).compare("value")==0){
+		appendSimplify(st,it.node->first_child->data);
+	}else if ((*it).compare("intConst")==0) {
+		appendSimplify(st,it.node->first_child->data);
+	}else if ((*it).compare("realConst")==0) {
+		appendSimplify(st,it.node->first_child->data);
+	}else if ((*it).compare("marking")==0) {
+		*is_mark_dep =true;
+		st->append("Marking[_nb_Place_");
+		appendSimplify(st,it.node->first_child->data);
+		st->append("]");
+	}else if ((*it).compare("plus")==0) {
+		st->append("(");
+		for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
+			if(it2!= it.begin()) st->append("+");
+			eval_expr(is_mark_dep, st, it2);
+		}
+		st->append(")");
+		;
+	} else if ((*it).compare("mult")==0) {
+		st->append("(");
+		for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
+			if(it2!= it.begin()) st->append("*");
+			eval_expr(is_mark_dep, st, it2);
+		}
+		st->append(")");
+		;
+	}else cout << "failevaltree" <<endl;
+
+	
+}
+
+
 
 MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 	//Initialisation
@@ -169,26 +220,20 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 							} else if ((*it2).compare("param")==0) {
 								
 								int number = 0;
-								string* value = new string("0");
+								string* value = new string("");
 								for (tree<string>::sibling_iterator it3 = it2.begin() ; it3 != it2.end() ; ++it3 ) {
 									string* leaf = simplifyString(*(it3.begin()));
 									if ((*it3).compare("number")==0) {
 										number = atoi((*leaf).c_str());
 									} else if ((*it3).compare("realFormula")==0) {
-										value = leaf;
+										eval_expr(&markingdependant, value, it3.begin() );
+										dist.Param.push_back(*value);
 									} else cout << "fail to parse gml: param"<< endl;
 								}
 								cout << "\t\t\t" << "number" << ":" << number << endl;
 								cout << "\t\t\t" << "realFormula" << ":" << *value << endl;
 								
 								
-								if(Evaluate_gml.parse(*value)){
-									dist.Param.push_back(*value);
-									markingdependant=true;
-								} else {
-									std::ostringstream s;s<<Evaluate_gml.RealResult;
-									dist.Param.push_back(s.str());
-								}
 							} else cout << "fail to parse gml: transition"<< endl;
 							//cout << "finish distr";
 						}
