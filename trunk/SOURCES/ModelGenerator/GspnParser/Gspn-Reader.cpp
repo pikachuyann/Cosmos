@@ -139,7 +139,10 @@ void Gspn_Reader::WriteFile(string& Pref) {
 	for (map<string,double>::iterator it= MyGspn.RealConstant.begin(); it!= MyGspn.RealConstant.end() ; it++) {
 		SpnCppFile << "    const double " << it->first << "=" << it->second << ";" << endl;
 	}
-	
+	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
+        int k = MyGspn.PlacesId[*it];
+		SpnCppFile << "    const int _nb_Place_"<< *it << "=" << k << ";" << endl;
+    }
 
     SpnCppFile << "void SPN::Load(){" << endl;
     SpnCppFile << "    Path =\"" << MyGspn.Path << "\";" << endl;

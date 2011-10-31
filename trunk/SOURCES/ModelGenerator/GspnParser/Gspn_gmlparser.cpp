@@ -30,6 +30,7 @@ Eval Evaluate_gml;
 
 using namespace std;
 
+
 /*void print_tree(const tree<string>& tr, tree<string>::pre_order_iterator it, tree<string>::pre_order_iterator end)
 {
     if(!tr.is_valid(it)) return;
@@ -79,25 +80,77 @@ void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator i
 		st->append("Marking[_nb_Place_");
 		appendSimplify(st,it.node->first_child->data);
 		st->append("]");
-	}else if ((*it).compare("plus")==0) {
+	}else if (	(*it).compare("plus")==0  || (*it).compare("mult")==0
+			 || (*it).compare("iplus")==0 || (*it).compare("imult")==0  
+	         || (*it).compare("min")==0   || (*it).compare("max")==0
+			 || (*it).compare("imin")==0  || (*it).compare("imax")==0
+			 || (*it).compare("ipower")==0|| (*it).compare("iminus")==0
+			 || (*it).compare("floor")==0 || (*it).compare("minus")==0
+			 || (*it).compare("div")==0   || (*it).compare("power")==0)  {
+		
+		
+		if ((*it).compare("min")==0 || (*it).compare("imin")==0 ) st->append("min");
+		if ((*it).compare("max")==0 || (*it).compare("imax")==0 ) st->append("max");
+		if ((*it).compare("floor")==0 ) st->append("floor");
+		
 		st->append("(");
 		for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
-			if(it2!= it.begin()) st->append("+");
+			if(it2!= it.begin()) {
+				if ((*it).compare("plus")==0  || (*it).compare("iplus")==0) { st->append("+"); }
+				else if ((*it).compare("mult")==0  || (*it).compare("imult")==0) { st->append("*"); }
+				else if ((*it).compare("minus")==0  || (*it).compare("iminus")==0) { st->append("-"); }
+				else if ((*it).compare("div")==0) { st->append("/"); }
+				else if ((*it).compare("power")==0) { st->append("^"); }
+				else st->append(",");
+			}
 			eval_expr(is_mark_dep, st, it2);
 		}
 		st->append(")");
 		;
-	} else if ((*it).compare("mult")==0) {
-		st->append("(");
-		for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
-			if(it2!= it.begin()) st->append("*");
-			eval_expr(is_mark_dep, st, it2);
-		}
-		st->append(")");
-		;
-	}else cout << "failevaltree" <<endl;
+	} else cout << "failevaltree" <<endl;
+}
 
-	
+int eval_str (string s){
+	string* val = simplifyString(s);
+	int intval = atoi( (*val).c_str() );
+	delete val;
+	return intval;
+}
+
+int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it )
+{
+	if((*it).compare("intFormula")==0){
+		cout << *(it.begin()) << endl;
+		return eval_intFormula(intconst,it.begin());
+	}else if((*it).compare("value")==0){
+		return eval_str(it.node->first_child->data);
+	}else if ((*it).compare("intConst")==0) {
+		string* val = simplifyString(it.node->first_child->data);
+		int intval = intconst[(*val).c_str()];
+		delete val;
+		return intval;
+	}else if ((*it).compare("iplus")==0 || (*it).compare("imult")==0  
+			  || (*it).compare("imin")==0  || (*it).compare("imax")==0
+			  || (*it).compare("ipower")==0|| (*it).compare("iminus")==0)  {
+		
+		int v1,v2;
+		for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
+			if(it2!= it.begin()) { v1 = eval_intFormula(intconst, it2);
+			} else {
+				v2 = eval_intFormula(intconst, it2);
+			}
+
+		}
+		
+		if ((*it).compare("iplus")==0) { return v1+v2; }
+		else if ((*it).compare("imult")==0) { return v1*v2; }
+		else if ((*it).compare("iminus")==0) { return v1-v2; }
+		else if ((*it).compare("imin")==0) { return min(v1,v2); }
+		else if ((*it).compare("imax")==0) {  return max(v1,v2); }
+		else if ((*it).compare("ipower")==0) {  return v1^v2; }
+		else cout << "faileval int Formula" <<endl;
+		
+	}else cout << "faileval int Formula" <<endl;
 }
 
 
@@ -129,16 +182,24 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 				for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 					if ((*it2).compare("intConstDeclaration")==0) { // const is int or double
 						string* constname = simplifyString((find(it2.begin(),it2.end(),"constName")).node->first_child->data);
-						string constvalue =(find(it2.begin(),it2.end(),"intFormula")).node->first_child->data;
+						//string constvalue =(find(it2.begin(),it2.end(),"intFormula")).node->first_child->data;
+						//cout <<  (find(it2.begin(),it2.end(),"intFormula")).node->first_child->data << endl;
+						int constvalue = eval_intFormula(MyGspn->IntConstant, find(it2.begin(),it2.end(),"intFormula"));
 						
-						Evaluate_gml.parse(constvalue);
-						MyGspn->IntConstant[*constname]=Evaluate_gml.IntResult;
-						MyGspn->RealConstant[*constname]=Evaluate_gml.RealResult;
-						cout << "\tconst int " << *constname << "=" << Evaluate_gml.IntResult << endl;
+						//Evaluate_gml.parse(constvalue);
+						MyGspn->IntConstant[*constname]=constvalue; //Evaluate_gml.IntResult;
+						MyGspn->RealConstant[*constname]= constvalue; //Evaluate_gml.RealResult;
+						cout << "\tconst int " << *constname << "=" << constvalue << endl;
 							
 					} else if ((*it2).compare("realConstDeclaration")==0) {
 						string* constname = simplifyString((find(it2.begin(),it2.end(),"constName")).node->first_child->data);
-						string constvalue =(find(it2.begin(),it2.end(),"realFormula")).node->first_child->data;
+						//string constvalue =(find(it2.begin(),it2.end(),"realFormula")).node->first_child->data;
+						
+						bool ismarkdep=false;
+						string constvalue;
+						eval_expr( &ismarkdep, &constvalue, find(it2.begin(),it2.end(),"realFormula").begin());
+						//cout << constvalue<< endl;
+						if(ismarkdep)cout<< "constante are not makring dependant!" << endl;
 						Evaluate_gml.parse(constvalue);
 						MyGspn->RealConstant[*constname]=Evaluate_gml.RealResult;
 						cout << "\tconst double " << *constname << "=" << Evaluate_gml.RealResult << endl;
@@ -167,10 +228,11 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 			
 			for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
 				if((*(it->second.begin())).compare("marking")==0){
-					string Plmark = *(++(it->second.begin()));
-					Evaluate_gml.parse(Plmark);
-					cout << "\tmarking:" << Plmark << endl ;
-					MyGspn->Marking.push_back(Evaluate_gml.IntResult);
+					int mark = eval_intFormula(MyGspn->IntConstant, it->second.begin().begin());
+					//string Plmark = *(++(it->second.begin()));
+					//Evaluate_gml.parse(Plmark);
+					cout << "\tmarking:" << mark << endl ;
+					MyGspn->Marking.push_back(mark);
 							
 				} else if((*(it->second.begin())).compare("name")==0){
 					string* Plname = simplifyString(*(++(it->second.begin())));
@@ -234,13 +296,39 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 								cout << "\t\t\t" << "realFormula" << ":" << *value << endl;
 								
 								
+								
 							} else cout << "fail to parse gml: transition"<< endl;
 							//cout << "finish distr";
 						}
 						MyGspn->Dist.push_back(dist);
 						
 					} else if ((*(it->second.begin())).compare("service")==0) {
-						if ((*(++(it->second.begin()))).compare("Infinite")==0) {
+						bool markingdependant=false;
+						string* value = new string("");
+						if ((*(++(it->second.begin()))).compare("intFormula")==0) {
+							eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
+							if(markingdependant==false) {
+								if(Evaluate_gml.parse(*value)){
+									cout << " Fail to parse GML: transition,service"<< endl;
+								}
+								else {
+									int nserv=Evaluate_gml.IntResult;
+									delete value;
+									if(nserv == 1 ) {
+										nbserver =1;
+									}else {
+										singleservice=false;
+										nbserver=nbserver;
+									}
+
+								}
+								
+							}else {
+								cout<<"Weight is not marking dependent "<<endl;
+							}
+						} else cout << " Fail to parse GML: transition,weight"<< endl;
+						
+						/*if ((*(++(it->second.begin()))).compare("Infinite")==0) {
 							singleservice=false;
 							nbserver=INT_MAX;
 						} else {
@@ -249,32 +337,32 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 								singleservice=false;
 								nbserver=nbserver;
 							}
-						}
+						}*/
 					} else if ((*(it->second.begin())).compare("weight")==0) {
-						string st=*(++(it->second.begin()));
-						if(Evaluate_gml.parse(st)) {
-								cout<<"Weight is not marking dependent: '"<<st<<"'"<<endl;
-						} else {  
-							if(Evaluate_gml.RealResult<0){
-								cout<<"Weight is a positive value: '"<<st<<"'"<<endl;
-							} else { 
-								std::ostringstream s;s<<Evaluate_gml.RealResult;
-								weight= s.str();
-							} 
-						}
+						bool markingdependant=false;
+						string* value = new string("");
+						if ((*(++(it->second.begin()))).compare("realFormula")==0) {
+							eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
+							if(markingdependant==false) {
+								weight = *value;
+							}else {
+								cout<<"Weight is not marking dependent "<<endl;
+							}
+						} else cout << " Fail to parse GML: transition,weight"<< endl;
+						
 						
 					} else if ((*(it->second.begin())).compare("priority")==0) {
-						string st=*(++(it->second.begin()));
-						if(Evaluate_gml.parse(st)) {
-							cout<<"Priority is not marking dependent: '"<<st<<"'"<<endl;
-						} else {  
-							if(Evaluate_gml.RealResult<0){
-								cout<<"Priority is a positive value: '"<<st<<"'"<<endl;
-							} else { 
-								std::ostringstream s;s<<Evaluate_gml.RealResult;
-								priority= s.str();
-							} 
-						}
+						bool markingdependant=false;
+						string* value = new string("");
+						if ((*(++(it->second.begin()))).compare("realFormula")==0) {
+							eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
+							if(markingdependant==false) {
+								priority = *value;
+							}else {
+								cout<<"Priority is not marking dependent "<<endl;
+							}
+						} else cout << " Fail to parse GML: transition,priority"<< endl;
+						
 						
 					} else cout << "fail to parse gml"<< endl;
 
@@ -353,38 +441,52 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 		}
 		
         //cout << "read arc : " << id << ", " << arcType << ", " << source << " -> " << target << endl;
-		string valuation;
+		string* valuation = new string("");
 		//cout << arcType << endl;
 		
         for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
 			if((*(it->second.begin())).compare("valuation")==0){
-				valuation = *(++(it->second.begin()));
+				
+				bool markingdependant=false;
+				if ((*(++(it->second.begin()))).compare("intFormula")==0) {
+					eval_expr(&markingdependant, valuation, (++(it->second.begin())).begin() );
+				} else cout << " Fail to parse GML: arc,valuation"<< endl;
+				
 			}else cout << "fail to parse gml"<< endl;
 				
         }
 		int sourceGML = atoi(source.c_str());
 		if(IsPlace[sourceGML]){
 			if(arcType.compare("inhibitorarc")==0){
-				if(Evaluate_gml.parse(valuation)){
+				if(Evaluate_gml.parse(*valuation)){
 					MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=1;
-					MyGspn->inhibArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= *(new string(valuation));
+					MyGspn->inhibArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= *valuation;
 				}
-				else MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=Evaluate_gml.IntResult;
+				else {	
+					MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=Evaluate_gml.IntResult;
+					delete valuation;
+				}
 				//MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
 			}else {
-				if(Evaluate_gml.parse(valuation)){
+				if(Evaluate_gml.parse(*valuation)){
 					MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=1;
-					MyGspn->inArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=*(new string(valuation));
+					MyGspn->inArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=*valuation;
 				}
-				else MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=Evaluate_gml.IntResult;
+				else {
+					MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=Evaluate_gml.IntResult;
+					delete valuation;
+				}
 				//MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
 			}
 		}else {
-			if(Evaluate_gml.parse(valuation)){
+			if(Evaluate_gml.parse(*valuation)){
 				MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=1;
-				MyGspn->outArcsStr[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=*(new string(valuation));
+				MyGspn->outArcsStr[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=*valuation;
 			}
-			else MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=Evaluate_gml.IntResult;
+			else {
+				MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=Evaluate_gml.IntResult;
+				delete valuation;
+			}
 			//MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=valuation;
 		}
 
