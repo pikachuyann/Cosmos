@@ -175,9 +175,9 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 		// read model attribute
 		for(tree<string>::sibling_iterator it = attribute.begin(); it != attribute.end(); ++it) {
 			//cout << *it << ":" << endl;
-			if((*it).compare("constDeclaration")==0){
+			if((*it).compare("declarations")==0){
 				//const definition
-				cout << "const declaration:" << endl;
+				//cout << "const declarations:" << endl;
 				
 				for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 					if ((*it2).compare("intConstDeclaration")==0) { // const is int or double
@@ -189,7 +189,7 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 						//Evaluate_gml.parse(constvalue);
 						MyGspn->IntConstant[*constname]=constvalue; //Evaluate_gml.IntResult;
 						MyGspn->RealConstant[*constname]= constvalue; //Evaluate_gml.RealResult;
-						cout << "\tconst int " << *constname << "=" << constvalue << endl;
+						//cout << "\tconst int " << *constname << "=" << constvalue << endl;
 							
 					} else if ((*it2).compare("realConstDeclaration")==0) {
 						string* constname = simplifyString((find(it2.begin(),it2.end(),"constName")).node->first_child->data);
@@ -202,7 +202,7 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 						if(ismarkdep)cout<< "constante are not makring dependant!" << endl;
 						Evaluate_gml.parse(constvalue);
 						MyGspn->RealConstant[*constname]=Evaluate_gml.RealResult;
-						cout << "\tconst double " << *constname << "=" << Evaluate_gml.RealResult << endl;
+						//cout << "\tconst double " << *constname << "=" << Evaluate_gml.RealResult << endl;
 					} else cout << "fail to parse gml: const declaration"<< endl;
 					
 				}
@@ -219,7 +219,7 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 					  const XmlStringList& references) {
         //cout << "read node : " << id << ", " << nodeType << endl;
 		if(nodeType.compare("place")==0){
-			cout << "place:"<<endl;
+			//cout << "place:"<<endl;
 			flush(cout);
 			MyGspn->pl++;
 			int id2 = atoi(id.c_str());
@@ -231,12 +231,12 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 					int mark = eval_intFormula(MyGspn->IntConstant, it->second.begin().begin());
 					//string Plmark = *(++(it->second.begin()));
 					//Evaluate_gml.parse(Plmark);
-					cout << "\tmarking:" << mark << endl ;
+					//cout << "\tmarking:" << mark << endl ;
 					MyGspn->Marking.push_back(mark);
 							
 				} else if((*(it->second.begin())).compare("name")==0){
 					string* Plname = simplifyString(*(++(it->second.begin())));
-					cout << "\tname:" << *Plname << endl ;
+					//cout << "\tname:" << *Plname << endl ;
 					//string& Plname2 = *(new string(Plname));
 					MyGspn->PlacesList.insert(*Plname);
 					MyGspn->PlacesId[*Plname]=countPl;
@@ -265,15 +265,15 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 				for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
 					if((*(it->second.begin())).compare("name")==0){
 						string* Trname = simplifyString(*(++(it->second.begin())));
-						cout << "\tname:" << *Trname << endl ;
+						//cout << "\tname:" << *Trname << endl ;
 						//string& Trname2 = *(new string(Trname));
 						MyGspn->TransList.insert(*Trname);
 						MyGspn->TransId[*Trname]=countTr;
 					} else if ((*(it->second.begin())).compare("distribution")==0) {
-						cout << "\tdistribution:" << endl ;
+						//cout << "\tdistribution:" << endl ;
 						ProbabiliteDistribution& dist = *(new ProbabiliteDistribution);
 						for (tree<string>::sibling_iterator it2 = (it->second.begin()).begin() ; it2 != (it->second.begin()).end() ; ++it2 ) {
-							cout << "\t\t" << (*it2) << ":" << endl;
+							//cout << "\t\t" << (*it2) << ":" << endl;
 							if ((*it2).compare("type")==0) {
 								cout << "\t\t\t" << *(it2.begin()) << endl; 
 								string* Trtype = simplifyString(*(it2.begin()));
@@ -292,8 +292,8 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 										dist.Param.push_back(*value);
 									} else cout << "fail to parse gml: param"<< endl;
 								}
-								cout << "\t\t\t" << "number" << ":" << number << endl;
-								cout << "\t\t\t" << "realFormula" << ":" << *value << endl;
+								//cout << "\t\t\t" << "number" << ":" << number << endl;
+								//cout << "\t\t\t" << "realFormula" << ":" << *value << endl;
 								
 								
 								
@@ -324,9 +324,9 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 								}
 								
 							}else {
-								cout<<"Weight is not marking dependent "<<endl;
+								cout<<"service is not marking dependent "<<endl;
 							}
-						} else cout << " Fail to parse GML: transition,weight"<< endl;
+						} else cout << " Fail to parse GML: transition,service"<< endl;
 						
 						/*if ((*(++(it->second.begin()))).compare("Infinite")==0) {
 							singleservice=false;

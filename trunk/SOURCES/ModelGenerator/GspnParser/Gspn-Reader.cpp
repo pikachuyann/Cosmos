@@ -115,23 +115,53 @@ void Gspn_Reader::WriteFile(string& Pref) {
 	ofstream SpnCppFile(loc.c_str(), ios::out | ios::trunc); // ouverture en écriture avec effacement du SpnCppFile ouvert
 	//cout << loc << endl;
 
-    loc = Pref + "../SOURCES/ModelGenerator/spn_orig.cpp";
+    /*loc = Pref + "../SOURCES/ModelGenerator/spn_orig.cpp";
     //loc = "/Users/barbot/Documents/Cosmos/SOURCES/ModelGenerator/spn_orig.cpp";
 	ifstream SpnCppFile_orig(loc.c_str(), ios::in);
 
 	//cout << "Generating " << loc << endl;
-
-
-
-
-
 
     while (!SpnCppFile_orig.eof()) {
         string LineFile;
         getline(SpnCppFile_orig, LineFile);
         SpnCppFile << LineFile << endl;
     }
-    SpnCppFile_orig.close();
+    SpnCppFile_orig.close();*/
+	
+	SpnCppFile << "#include \"spn_orig.hpp\"" << endl;
+	
+	SpnCppFile << "#ifndef _SPN_HPP" << endl;
+	SpnCppFile << "#define	_SPN_HPP" << endl;
+	
+	SpnCppFile << "class SPN: " << endl << "public SPN_ORIG {" << endl;
+	SpnCppFile << "public:"<< endl;
+	SpnCppFile << "    void Load();" <<endl;
+	SpnCppFile << "    bool IsEnabled(int);" << endl;
+	SpnCppFile << "    void fire(int);" << endl; 
+	SpnCppFile << "    void unfire(int);" << endl;
+	SpnCppFile << "    vector<double> GetDistParameters(int);" << endl;
+	SpnCppFile << "    vector<double> GetDistParametersOrigin(int);" << endl;
+	SpnCppFile << "    double GetPriority(int);" << endl;
+	SpnCppFile << "    double GetWeight(int);" << endl;
+	
+	
+	
+	SpnCppFile << "private:" << endl;
+	
+    for (int t = 0; t < MyGspn.tr; t++) {
+		
+		SpnCppFile << "    void fire_t" << t << "();" << endl;
+		SpnCppFile << "    void unfire_t" << t << "();" << endl;
+        SpnCppFile << "    bool IsEnabled_t" << t << "();" << endl;
+    }
+	
+    SpnCppFile << "};" << endl;
+	
+	
+	SpnCppFile << "#endif	/* _SPN_HPP */" << endl;
+	
+	
+	SpnCppFile << "#include \"RareEvent.hpp\"" << endl;
 	
     /*for (map<string,int>::iterator it= MyGspn.IntConstant.begin(); it!= MyGspn.IntConstant.end() ; it++) {
 		SpnCppFile << "    const int " << it->first << "=" << it->second << ";" << endl;
@@ -480,11 +510,11 @@ for (int t = 0; t < MyGspn.tr; t++) {
 
     SpnCppFile.close();
 
-
+	/*
     loc = Pref + "../SOURCES/Cosmos/spn.hpp";
     ofstream SpnHppFile(loc.c_str(), ios::out | ios::trunc);
-
-    loc = Pref + "../SOURCES/ModelGenerator/spn_orig.hpp";
+*/
+    /*loc = Pref + "../SOURCES/ModelGenerator/spn_orig.hpp";
     ifstream SpnHppFile_orig(loc.c_str(), ios::in);
 
 	//cout << "generating hpp"<< endl;
@@ -496,28 +526,33 @@ for (int t = 0; t < MyGspn.tr; t++) {
         SpnHppFile << LineFile << endl;
     }
 
-    SpnHppFile_orig.close();
+    SpnHppFile_orig.close();*/
+	
+	/*
+	SpnHppFile << "#ifndef _SPN_HPP" << endl;
+	SpnHppFile << "#define	_SPN_HPP" << endl;
+	
+	SpnHppFile << "#include \"spn_orig.hpp\"" << endl;
+
+	SpnHppFile << "class SPN: " << endl << "public SPN_ORIG {" << endl;
+
+	
+	SpnHppFile << "private:" << endl;
 
     for (int t = 0; t < MyGspn.tr; t++) {
 
-        SpnHppFile << "    void fire_t" << t << "();" << endl;
-	SpnHppFile << "    void unfire_t" << t << "();" << endl;
+		SpnHppFile << "    void fire_t" << t << "();" << endl;
+		SpnHppFile << "    void unfire_t" << t << "();" << endl;
         SpnHppFile << "    bool IsEnabled_t" << t << "();" << endl;
     }
-
-
-
-
-
-    SpnHppFile << "private:" << endl;
 
     SpnHppFile << "};" << endl;
 
 
+*/
+    //SpnHppFile << "#endif	/* _SPN_HPP */" << endl;
 
-    SpnHppFile << "#endif	/* _SPN_HPP */" << endl;
-
-    SpnHppFile.close();
+    //SpnHppFile.close();
 
 
 

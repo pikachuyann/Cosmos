@@ -5,7 +5,6 @@
 #include <map>
 #include <stdio.h>
 #include "RareEvent.hpp"
-#include "tab.hpp"
 
 #include <cmath>
 

@@ -5,12 +5,12 @@
 #include <vector>
 #include <map>
 
-#include "spn.hpp"
+#include "spn_orig.hpp"
 
 #include <stdlib.h>
 
-#ifndef _LHA_HPP
-#define	_LHA_HPP
+#ifndef _LHA_ORIG_HPP
+#define	_LHA_ORIG_HPP
 
 
 typedef pair <double, double> t_interval;
@@ -36,13 +36,13 @@ struct _AutEdge {
 };
 typedef struct _AutEdge AutEdge;
 
-class LHA {
+class LHA_ORIG {
 public:
-  LHA();
-  void Load();
-  LHA(unsigned int, unsigned int);
-  LHA(const LHA& orig);
-  virtual ~LHA();
+  LHA_ORIG();
+  //virtual void Load();
+  LHA_ORIG(unsigned int, unsigned int);
+  LHA_ORIG(const LHA_ORIG& orig);
+	~LHA_ORIG();
   double Likelihood;
   string label;
   unsigned int NbLoc; // number of locations   
@@ -99,11 +99,11 @@ public:
 
     int EnabledInitLocation(vector<int>&);
 
-    double GetFlow(int, int, vector<int>&);
-    bool CheckLocation(int, vector<int>&);
-    bool CheckEdgeContraints(int, double, vector<int>&);
+    virtual double GetFlow(int, int, vector<int>&);
+    virtual bool CheckLocation(int, vector<int>&);
+    virtual bool CheckEdgeContraints(int, double, vector<int>&);
 
-    t_interval GetEdgeEnablingTime(int, vector<int>&);
+    virtual t_interval GetEdgeEnablingTime(int, vector<int>&);
 
 
     int GetEnabled_S_Edges(int, int, double, vector<int>&, vector<int>&);
@@ -114,8 +114,9 @@ public:
 
     void setCurrentLocation(unsigned int);
 
-    void DoEdgeUpdates(int, vector<int>&);
-    void doPathVarsUpdate(double, double, vector<int>&);
+    //virtual void DoEdgeUpdates(int, vector<int>&);
+    
+	void doPathVarsUpdate(double, double, vector<int>&);
 
 
 
@@ -148,9 +149,9 @@ public:
     vector<double> LhaFunc;
     double FormulaVal;
     double OldFormulaVal;
-    void UpdateFormulaVal();
-    void UpdateLinForm(vector<int>&);
-    void UpdateLhaFunc(double&, double&);
+    //virtual void UpdateFormulaVal();
+    //virtual void UpdateLinForm(vector<int>&);
+    //virtual void UpdateLhaFunc(double&, double&);
 
 
 
@@ -161,7 +162,7 @@ public:
 
     //private:
 
-    //};
+    };
 
-    //#endif	/* _LHA_HPP */
+    #endif	/* _LHA_ORIG_HPP */
 

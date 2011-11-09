@@ -3,12 +3,15 @@ BINPATH=../../bin
 OPTIONS2= -Wno-deprecated $(OPTIONS) 
 
 CLASSES= $(OBJPATH)/BatchR.o \
+	$(OBJPATH)/spn_orig.o \
+	$(OBJPATH)/LHA_orig.o \
 	$(OBJPATH)/Event.o \
 	$(OBJPATH)/EventsQueue.o \
 	$(OBJPATH)/tab.o \
 	$(OBJPATH)/RareEvent.o \
 	$(OBJPATH)/Simulator.o \
 	$(OBJPATH)/clientsim.o
+
 
 $(OBJPATH)/Simulator.o: SimulatorRE.cpp
 
@@ -22,15 +25,15 @@ $(OBJPATH)/%.o: %.cpp
 
 .PHONY: classes clean
 
-classes: SimulatorRE.cpp LHA.hpp spn.hpp $(CLASSES)
+classes: SimulatorRE.cpp $(CLASSES)
 
 $(BINPATH)/ClientSim: $(OBJPATH)/spn.o $(OBJPATH)/LHA.o $(CLASSES)
 	$(CC) $(OPTIONS) $^ -o $@
 
 clean:
 	rm $(OBJPATH)/*.o
-	rm spn.hpp
-	rm LHA.hpp
+#	rm spn.hpp
+#	rm LHA.hpp
 	rm LHA.cpp
 	rm spn.cpp
 

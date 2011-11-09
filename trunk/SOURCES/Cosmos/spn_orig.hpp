@@ -1,5 +1,5 @@
-#ifndef _SPN_HPP
-#define	_SPN_HPP
+#ifndef _SPN_ORIG_HPP
+#define	_SPN_ORIG_HPP
 #include <set>
 #include <utility>
 #include <string>
@@ -36,7 +36,7 @@ typedef vector <int> IntVector;
 typedef vector <Dim1> Dim2;
 typedef vector <IntVector> IntMatrix;
 
-class SPN {
+class SPN_ORIG {
 public:
   //------------------------- Rare Event ---------------------------------------
   vector <double> Rate_Table;
@@ -47,10 +47,10 @@ public:
   TAB gammaprob;  // mu(s) table
   //-------------------------/Rare Event ---------------------------------------
 
-    SPN();
-    void Load();
-    SPN(const SPN& orig);
-    virtual ~SPN();
+    SPN_ORIG();
+	//virtual void Load();
+    SPN_ORIG(const SPN_ORIG& orig);
+	~SPN_ORIG();
     string Path;
     int pl; // Number of places
     int tr; // Number of transitions
@@ -104,20 +104,20 @@ public:
 
 
 
-    void fire(int); // fire a given transition
-    void unfire(int); // unfire a given transition
+    //virtual void fire(int); // fire a given transition
+    //virtual void unfire(int); // unfire a given transition
 
-    bool IsEnabled(int); // Check if a given transition is enabled
-    vector<double> GetDistParameters(int); // compute the the parameters value of a given distribution 
+	virtual bool IsEnabled(int); // Check if a given transition is enabled
+    //virtual vector<double> GetDistParameters(int); // compute the the parameters value of a given distribution 
   //------------------------- Rare Event ---------------------------------------
-  vector<double> GetDistParametersOrigin(int);
+  //virtual vector<double> GetDistParametersOrigin(int);
   //-------------------------/Rare Event ---------------------------------------
 
 
-    double GetWeight(int); // compute the the weight value of a given transition
-    double GetPriority(int); // compute the the priority value of a given transition
+    //virtual double GetWeight(int); // compute the the weight value of a given transition
+    //virtual double GetPriority(int); // compute the the priority value of a given transition
 
-
+	
     //private:
-    //};
-    //#endif	/* _SPN_HPP */
+    };
+    #endif	/* _SPN_ORIG_HPP */

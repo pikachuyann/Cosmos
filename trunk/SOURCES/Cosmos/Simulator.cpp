@@ -1,6 +1,4 @@
 #include "Simulator.hpp"
-#include "spn.hpp"
-#include "LHA.hpp"
 #include "EventsQueue.hpp"
 //#include "SimulatorRE.h"
 #include <iostream>

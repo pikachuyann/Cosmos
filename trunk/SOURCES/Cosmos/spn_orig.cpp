@@ -1,4 +1,4 @@
-#include "spn.hpp" 
+#include "spn_orig.hpp" 
 
 #include <iostream>
 #include <string>
@@ -15,17 +15,20 @@
 #include <limits.h> 
 #include "RareEvent.hpp"
 
-SPN::SPN() {
+
+using namespace std;
+
+SPN_ORIG::SPN_ORIG() {
 }
 
-SPN::~SPN() {
+SPN_ORIG::~SPN_ORIG() {
 }
 
-SPN::SPN(const SPN & orig) {
+SPN_ORIG::SPN_ORIG(const SPN_ORIG & orig) {
 
 }
 
-set<int, less <int> > SPN::enabledTrans() {
+set<int, less <int> > SPN_ORIG::enabledTrans() {
     set<int, less<int> > eTrans;
     for (int i = 0; i < (this->tr); i++) {
         if (IsEnabled(i)) {
@@ -36,15 +39,15 @@ set<int, less <int> > SPN::enabledTrans() {
     return eTrans;
 }
 
-void SPN::reset() {
+void SPN_ORIG::reset() {
     Marking = initMarking;
 }
 
-void SPN::setMarking(vector<int>& M) {
+void SPN_ORIG::setMarking(vector<int>& M) {
     Marking = M;
 }
 
-void SPN::EnabledDisabledTr() {
+void SPN_ORIG::EnabledDisabledTr() {
 
     for (int t1 = 0; t1 < tr; t1++) {
         set<int> S;
@@ -157,30 +160,30 @@ void SPN::EnabledDisabledTr() {
 
 }
 
-set<int> SPN::PossiblyEn(int t) {
+set<int> SPN_ORIG::PossiblyEn(int t) {
     return (PossiblyEnabled)[t];
 }
 
-set<int> SPN::PossiblyDis(int t) {
+set<int> SPN_ORIG::PossiblyDis(int t) {
     return (PossiblyDisabled)[t];
 }
 
-vector<int> SPN::getMarking() {
+vector<int> SPN_ORIG::getMarking() {
     return Marking;
 }
 
-double SPN::min(double x1, double x2) {
+double SPN_ORIG::min(double x1, double x2) {
     if (x1 < x2) return x1;
     else return x2;
 }
 
-double SPN::max(double x1, double x2) {
+double SPN_ORIG::max(double x1, double x2) {
     if (x1 > x2) return x1;
     else return x2;
 }
 
 //------------------- Rare Event -----------------------------------------------
-void SPN::Msimple(){
+void SPN_ORIG::Msimple(){
   vector<int> tab;
   for(vector<spn_place>::iterator it=Place.begin(); it != Place.end(); it++){
     //cout << (*it).label<< " : " << (*it).label.substr(0,3) << endl;
@@ -192,3 +195,8 @@ void SPN::Msimple(){
   Msimpletab = tab;
 }
 //-------------------/Rare Event -----------------------------------------------
+
+bool SPN_ORIG::IsEnabled(int i) {
+	cerr << "Fail:IsEnabled" << endl;
+	return true;
+};

@@ -1,19 +1,22 @@
-#include "LHA.hpp"
+#include "LHA_orig.hpp"
 
 #include <map>
 #include <float.h>
 #include <math.h>
 
-LHA::LHA() {
+
+using namespace std;
+
+LHA_ORIG::LHA_ORIG() {
 }
 
-LHA::~LHA() {
+LHA_ORIG::~LHA_ORIG() {
 }
 
-LHA::LHA(const LHA & orig) {
+LHA_ORIG::LHA_ORIG(const LHA_ORIG & orig) {
 }
 
-int LHA::EnabledInitLocation(vector<int>& Marking) {
+int LHA_ORIG::EnabledInitLocation(vector<int>& Marking) {
 
     for (set<int>::iterator l = InitLoc.begin(); l != InitLoc.end(); l++) {
         if (CheckLocation((*l), Marking))
@@ -22,7 +25,7 @@ int LHA::EnabledInitLocation(vector<int>& Marking) {
     return (-1);
 }
 
-int LHA::GetEnabled_S_Edges(int cl, int PetriNetTransition, double DeltaT, vector<int>& Marking, vector<int>& NextMarking) {
+int LHA_ORIG::GetEnabled_S_Edges(int cl, int PetriNetTransition, double DeltaT, vector<int>& Marking, vector<int>& NextMarking) {
     for (set<int>::iterator it = ActionEdges[cl][PetriNetTransition].begin(); it != ActionEdges[cl][PetriNetTransition].end(); it++) {
         if ((CheckLocation(Edge[(*it)].Target, NextMarking))) {
             if (CheckEdgeContraints((*it), DeltaT, Marking)) return (*it);
@@ -33,7 +36,7 @@ int LHA::GetEnabled_S_Edges(int cl, int PetriNetTransition, double DeltaT, vecto
 
 }
 
-AutEdge LHA::GetEnabled_A_Edges(unsigned int cl, vector<int>& Marking) {
+AutEdge LHA_ORIG::GetEnabled_A_Edges(unsigned int cl, vector<int>& Marking) {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
@@ -55,7 +58,7 @@ AutEdge LHA::GetEnabled_A_Edges(unsigned int cl, vector<int>& Marking) {
 
 }
 
-void LHA::DoElapsedTimeUpdate(double DeltaT, vector<int>& Marking) {
+void LHA_ORIG::DoElapsedTimeUpdate(double DeltaT, vector<int>& Marking) {
 
     for (int v = 0; v < NbVar; v++) {
         Var[v] += GetFlow(v, CurrentLocation, Marking) * DeltaT;
@@ -63,7 +66,7 @@ void LHA::DoElapsedTimeUpdate(double DeltaT, vector<int>& Marking) {
 
 }
 
-void LHA::resetVarsTable() {
+void LHA_ORIG::resetVarsTable() {
     for (int v = 0; v < NbVar; v++)
         Var[v] = 0;
     for (int i = 0; i < LinForm.size(); i++) {
@@ -74,42 +77,42 @@ void LHA::resetVarsTable() {
         LhaFunc[i] = 0;
 }
 
-void LHA::reset(vector<int>& Marking) {
+void LHA_ORIG::reset(vector<int>& Marking) {
   Likelihood = 1.0;
-  LHA::resetVarsTable();
+  LHA_ORIG::resetVarsTable();
   CurrentLocation = EnabledInitLocation(Marking);
   CurrentTime = 0;
 }
 
-void LHA::setCurrentLocation(unsigned int loc) {
+void LHA_ORIG::setCurrentLocation(unsigned int loc) {
     CurrentLocation = loc;
 }
 
-bool LHA::isFinal(unsigned int l) {
+bool LHA_ORIG::isFinal(unsigned int l) {
     return ( (FinalLoc.find(l) != FinalLoc.end()) ? true : false);
 }
 
-double LHA::min(double& a, double& b) {
+double LHA_ORIG::min(double& a, double& b) {
     if (a <= b)return a;
     else return b;
 }
 
-double LHA::max(double& a, double& b) {
+double LHA_ORIG::max(double& a, double& b) {
     if (a >= b)return a;
     else return b;
 }
 
-double LHA::Min(double& a, double& b, double& c) {
+double LHA_ORIG::Min(double& a, double& b, double& c) {
     double x = min(b, c);
     return min(a, x);
 }
 
-double LHA::Max(double& a, double& b, double& c) {
+double LHA_ORIG::Max(double& a, double& b, double& c) {
     double x = max(b, c);
     return max(a, x);
 }
 
-double LHA::Integral(double& OldInt, double& t, double& Delta, double& x, double& y) {
+double LHA_ORIG::Integral(double& OldInt, double& t, double& Delta, double& x, double& y) {
     if (x * y >= 0) return (OldInt + Delta * (x + y) / 2);
     double a = (y - x) / Delta;
     double b = x - a*t;
@@ -117,6 +120,26 @@ double LHA::Integral(double& OldInt, double& t, double& Delta, double& x, double
     return (OldInt + (t0 - t) * x / 2 + (t + Delta - t0) * y / 2);
 }
 
+// All the folowing function will be replace at runtime by model dependant one.
+t_interval LHA_ORIG::GetEdgeEnablingTime(int i,vector<int>& Marking){
+    t_interval EnablingT;
+	cerr << "Fail:GetEdgeEnablingTime" << endl;
+	return EnablingT;
+}
 
+bool LHA_ORIG::CheckLocation(int, vector<int>&){
+	cerr << "Fail:CheckLocation" << endl;
+	return true;
+}
+
+bool LHA_ORIG::CheckEdgeContraints(int, double, vector<int>&){
+	cerr << "Fail:CheckEdgeContraints" << endl;
+	return true;
+}
+
+double LHA_ORIG::GetFlow(int, int, vector<int>&){
+	cerr << "Fail:GetFlow" << endl;
+	return -1.;
+}
 
 

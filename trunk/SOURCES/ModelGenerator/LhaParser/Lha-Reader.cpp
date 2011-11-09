@@ -99,7 +99,7 @@ void Lha_Reader::WriteFile(string& Pref) {
     loc = Pref + "../SOURCES/Cosmos/LHA.cpp";
     ofstream LhaCppFile(loc.c_str(), ios::out | ios::trunc);
 
-    loc = Pref + "../SOURCES/ModelGenerator/LHA_orig.cpp";
+    /*loc = Pref + "../SOURCES/ModelGenerator/LHA_orig.cpp";
     ifstream LhaCppFile_orig(loc.c_str(), ios::in);
 
     while (!LhaCppFile_orig.eof()) {
@@ -109,7 +109,39 @@ void Lha_Reader::WriteFile(string& Pref) {
         LhaCppFile << LineFile << endl;
     }
     LhaCppFile_orig.close();
-
+	*/
+	
+	LhaCppFile << "#include \"LHA_orig.hpp\"" << endl;
+	LhaCppFile << "#include <math.h>" << endl;
+	LhaCppFile << "#include <float.h>" << endl;
+	
+	LhaCppFile << "class LHA: " << endl << "public LHA_ORIG {" << endl;
+	LhaCppFile << "public:"<< endl;
+	LhaCppFile << "    void Load();" <<endl;
+	LhaCppFile << "    double GetFlow(int, int, vector<int>&);" <<endl;
+	LhaCppFile << "    bool CheckLocation(int, vector<int>&);" <<endl;
+	LhaCppFile << "    bool CheckEdgeContraints(int, double, vector<int>&);" <<endl;
+	LhaCppFile << "    t_interval GetEdgeEnablingTime(int, vector<int>&);" <<endl;
+	LhaCppFile << "    int GetEnabled_S_Edges(int, int, double, vector<int>&, vector<int>&);" <<endl;
+	LhaCppFile << "    void DoEdgeUpdates(int, vector<int>&);" <<endl;
+	LhaCppFile << "    void UpdateLinForm(vector<int>&);" <<endl;
+	LhaCppFile << "    void UpdateLhaFunc(double&, double&);" <<endl;
+	LhaCppFile << "    void UpdateFormulaVal();" <<endl;
+	
+	
+	LhaCppFile << "private:" << endl;
+	
+	for (int e = 0; e < MyLha.Edge.size(); e++)
+        LhaCppFile << "t_interval GetEdgeEnablingTime_" << e << "(vector<int>& );" << endl;
+	
+    for (int e = 0; e < MyLha.Edge.size(); e++)
+        LhaCppFile << "void DoEdgeUpdates_" << e << "(vector<int>& );" << endl;
+	
+    
+	
+	LhaCppFile << "};"<< endl;
+	
+	
 
     LhaCppFile << "void LHA::Load(){" << endl;
 
@@ -486,7 +518,7 @@ void Lha_Reader::WriteFile(string& Pref) {
     LhaCppFile.close();
 
 
-    loc = Pref + "../SOURCES/Cosmos/LHA.hpp";
+    /*loc = Pref + "../SOURCES/Cosmos/LHA.hpp";
     ofstream LhaHppFile(loc.c_str(), ios::out | ios::trunc);
 
     loc = Pref + "../SOURCES/ModelGenerator/LHA_orig.hpp";
@@ -501,9 +533,9 @@ void Lha_Reader::WriteFile(string& Pref) {
         LhaHppFile << LineFile << endl;
     }
 
-    LhaHppFile_orig.close();
+    LhaHppFile_orig.close();*/
 
-    for (int e = 0; e < MyLha.Edge.size(); e++)
+    /*for (int e = 0; e < MyLha.Edge.size(); e++)
         LhaHppFile << "t_interval GetEdgeEnablingTime_" << e << "(vector<int>& );" << endl;
 
     for (int e = 0; e < MyLha.Edge.size(); e++)
@@ -512,11 +544,11 @@ void Lha_Reader::WriteFile(string& Pref) {
     LhaHppFile << "private:" << endl;
 
     LhaHppFile << "};" << endl;
+*/
 
 
+    //LhaHppFile << "#endif	/* _Lha_HPP */" << endl;
 
-    LhaHppFile << "#endif	/* _Lha_HPP */" << endl;
-
-    LhaHppFile.close();
+    //LhaHppFile.close();
 
 }
