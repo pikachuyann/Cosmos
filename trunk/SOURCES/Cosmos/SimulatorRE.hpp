@@ -21,7 +21,7 @@ public:
 	void InitialEventsQueue();
 		
 	void returnResult(double);
-	void updateLHA(AutEdge);
+	void updateLHA(AutEdge, vector<int>);
 	void GenerateEvent(Event &, int);
 	void GenerateDummyEvent(Event &, int);
 private:

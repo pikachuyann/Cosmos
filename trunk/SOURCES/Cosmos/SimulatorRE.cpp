@@ -49,16 +49,17 @@ void SimulatorRE::returnResult(double D){
 	return;
 }
 
-void SimulatorRE::updateLHA(AutEdge AE){
+void SimulatorRE::updateLHA(AutEdge AE,vector<int> marking){
 	double DeltaT = AE.FiringTime - A.CurrentTime;
-	A.DoElapsedTimeUpdate(DeltaT, N.Marking);
-	A.UpdateLinForm(N.Marking);
+	A.DoElapsedTimeUpdate(DeltaT, marking);
+	A.UpdateLinForm(marking);
 	A.UpdateLhaFunc(A.CurrentTime, DeltaT);
-	A.DoEdgeUpdates(AE.Index, N.Marking);
+	A.DoEdgeUpdates(AE.Index, marking);
 	A.CurrentTime += DeltaT;
 	simTime = A.CurrentTime;
 	A.CurrentLocation = A.Edge[AE.Index].Target;
 }
+
 
 void SimulatorRE::SimulateSinglePath() {
 	//cerr << "test Simulate Single Path" << endl;
@@ -88,7 +89,7 @@ void SimulatorRE::SimulateSinglePath() {
 		if (QueueIsEmpty) {
 			while (AE.Index>-1) {
 				
-				updateLHA(AE);
+				updateLHA(AE, N.Marking);
 				
 				if (A.isFinal(A.CurrentLocation)) {
 					returnResult(D);
@@ -122,7 +123,7 @@ void SimulatorRE::SimulateSinglePath() {
 			
 			while (E1.time >= AE.FiringTime) {
 				
-				updateLHA(AE);
+				updateLHA(AE,N.Marking);
 				
 				if (A.isFinal(A.CurrentLocation)) {
 					returnResult(D);
