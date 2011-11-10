@@ -15,11 +15,7 @@
 using namespace std;
 
 Simulator::Simulator() {
-}
-
-void Simulator::Load() {
   N.Load();//load the GSPN
-  //if(RareEvent_mode)//load the hashtable for rare event
   A.Load(); //load the LHA
   int n = N.tr; //n his the number of transition
   EQ = new EventsQueue(n); //initialization of the event queue

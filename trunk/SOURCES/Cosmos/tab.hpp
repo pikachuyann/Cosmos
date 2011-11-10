@@ -38,7 +38,7 @@ class TAB {
 public:
   hash_prob M;
   TAB();
-  void load();
+  void Load();
   double find(const vector<int>* vect){
     hash_prob::iterator it = M.find (vect);
     if (it != M.end ())

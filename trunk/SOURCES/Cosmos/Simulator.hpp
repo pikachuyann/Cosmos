@@ -27,7 +27,7 @@ public:
   fstream logvalue;
 
   Simulator();
-  void Load();
+  //void Load();
 
   Simulator(const Simulator& orig);
   ~Simulator();

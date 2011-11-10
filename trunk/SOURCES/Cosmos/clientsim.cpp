@@ -46,12 +46,8 @@ int main(int argc, char** argv) {
     } else {
 		mySim= (new Simulator);
 	}
-	
     
-    
-    cerr << "start client"<< endl;
-    mySim->Load(); //initialize the simulator
-cerr << "start client"<< endl;
+    //mySim->Load(); //initialize the simulator
 	
     str = argv[1];
     mySim->SetBatchSize(StrToInt(str)); //set the batch size

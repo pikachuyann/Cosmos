@@ -15,11 +15,7 @@ using namespace std;
 
 SimulatorRE::SimulatorRE(bool b) {
 	doubleIS_mode=b;
-}
-
-void SimulatorRE::Load(){
-	Simulator::Load();
-	N.gammaprob.load();
+	N.gammaprob.Load();
 }
 
 void SimulatorRE::InitialEventsQueue() {
@@ -43,7 +39,7 @@ void SimulatorRE::InitialEventsQueue() {
 }
 
 void SimulatorRE::SimulateSinglePath() {
-  
+  //cerr << "test Simulate Single Path" << endl;
 
   bool QueueIsEmpty;
   AutEdge AE;

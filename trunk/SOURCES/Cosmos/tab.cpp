@@ -13,7 +13,7 @@ using namespace __gnu_cxx;
 TAB::TAB(){
 }
 
-void TAB::load(){
+void TAB::Load(){
   //cout << "load table"<< endl;
   string line;
   int poseq;
