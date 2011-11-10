@@ -38,9 +38,26 @@ void SimulatorRE::InitialEventsQueue() {
 	}
 }
 
-void SimulatorRE::returnResult(){
-	
-	
+void SimulatorRE::returnResult(double D){
+	A.UpdateLinForm(N.Marking);
+	A.UpdateLhaFunc(A.CurrentTime, D);
+	A.UpdateFormulaVal();
+	Result.first = true;
+	//----------------- Rare Event ----------------------------------
+	Result.second = A.Likelihood * A.FormulaVal;
+	//-----------------/Rare Event ----------------------------------
+	return;
+}
+
+void SimulatorRE::updateLHA(AutEdge AE){
+	double DeltaT = AE.FiringTime - A.CurrentTime;
+	A.DoElapsedTimeUpdate(DeltaT, N.Marking);
+	A.UpdateLinForm(N.Marking);
+	A.UpdateLhaFunc(A.CurrentTime, DeltaT);
+	A.DoEdgeUpdates(AE.Index, N.Marking);
+	A.CurrentTime += DeltaT;
+	simTime = A.CurrentTime;
+	A.CurrentLocation = A.Edge[AE.Index].Target;
 }
 
 void SimulatorRE::SimulateSinglePath() {
@@ -71,25 +88,11 @@ void SimulatorRE::SimulateSinglePath() {
 		if (QueueIsEmpty) {
 			while (AE.Index>-1) {
 				
-				double DeltaT = AE.FiringTime - A.CurrentTime;
-				A.DoElapsedTimeUpdate(DeltaT, N.Marking);
-				A.UpdateLinForm(N.Marking);
-				A.UpdateLhaFunc(A.CurrentTime, DeltaT);
-				A.DoEdgeUpdates(AE.Index, N.Marking);
-				A.CurrentTime += DeltaT;
-				simTime = A.CurrentTime;
-				A.CurrentLocation = A.Edge[AE.Index].Target;
+				updateLHA(AE);
 				
 				if (A.isFinal(A.CurrentLocation)) {
-					A.UpdateLinForm(N.Marking);
-					A.UpdateLhaFunc(A.CurrentTime, D);
-					A.UpdateFormulaVal();
-					Result.first = true;
-					//----------------- Rare Event ----------------------------------
-					Result.second = A.Likelihood * A.FormulaVal;
-					//-----------------/Rare Event ----------------------------------
+					returnResult(D);
 					return;
-					
 				} else {
 					AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 				}
@@ -119,23 +122,10 @@ void SimulatorRE::SimulateSinglePath() {
 			
 			while (E1.time >= AE.FiringTime) {
 				
-				double DeltaT = AE.FiringTime - A.CurrentTime;
-				A.DoElapsedTimeUpdate(DeltaT, N.Marking);
-				A.UpdateLinForm(N.Marking);
-				A.UpdateLhaFunc(A.CurrentTime, DeltaT);
-				A.DoEdgeUpdates(AE.Index, N.Marking);
-				A.CurrentTime += DeltaT;
-				simTime = A.CurrentTime;
-				A.CurrentLocation = A.Edge[AE.Index].Target;
+				updateLHA(AE);
 				
 				if (A.isFinal(A.CurrentLocation)) {
-					A.UpdateLinForm(N.Marking);
-					A.UpdateLhaFunc(A.CurrentTime, D);
-					A.UpdateFormulaVal();
-					Result.first = true;
-					//----------------- Rare Event ----------------------------------
-					Result.second = A.Likelihood * A.FormulaVal;
-					//-----------------/Rare Event ----------------------------------
+					returnResult(D);
 					return;
 					
 				} else {
@@ -167,14 +157,7 @@ void SimulatorRE::SimulateSinglePath() {
 				A.CurrentLocation = A.Edge[SE].Target;
 				
 				if (A.isFinal(A.CurrentLocation)) {
-					A.UpdateLinForm(OldMarking);
-					A.UpdateLhaFunc(A.CurrentTime, D);
-					A.UpdateFormulaVal();
-					Result.first = true;
-					//----------------- Rare Event ----------------------------------
-					Result.second = A.Likelihood * A.FormulaVal;
-					//-----------------/Rare Event ----------------------------------
-					
+					returnResult(D);
 					return;
 					
 				} else {

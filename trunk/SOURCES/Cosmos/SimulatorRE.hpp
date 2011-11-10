@@ -20,6 +20,8 @@ public:
 	void SimulateSinglePath();
 	void InitialEventsQueue();
 		
+	void returnResult(double);
+	void updateLHA(AutEdge);
 	void GenerateEvent(Event &, int);
 	void GenerateDummyEvent(Event &, int);
 private:
