@@ -24,19 +24,18 @@ typedef pair<bool, double> SimOutput;
 class Simulator {
 public:
 
-  bool RareEvent_mode;
-  bool doubleIS_mode;
   fstream logvalue;
 
   Simulator();
   void Load();
 
   Simulator(const Simulator& orig);
-  virtual ~Simulator();
-  void SimulateSinglePath();
-  void SimulateSinglePathRE();
+  ~Simulator();
+	
+  virtual void SimulateSinglePath();
+  //void SimulateSinglePathRE();
   void InitialEventsQueue();
-  void InitialEventsQueueRE();
+  //void InitialEventsQueueRE();
 
 
   BatchR* RunBatch();
@@ -50,8 +49,6 @@ public:
 
 
   void GenerateEvent(Event &, int);
-  void GenerateEventRE(Event &, int);
-  void GenerateDummyEvent(Event &, int);
   double GenerateTime(string&, vector<double>&);
 
   double max(double, double);
@@ -65,7 +62,7 @@ public:
   time_t SysTime;
 
   EventsQueue* EQ;
-private:
+protected:
 
   bool Initialized;
   map<string, int> IndexDist;

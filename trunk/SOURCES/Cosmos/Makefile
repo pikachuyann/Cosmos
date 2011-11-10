@@ -10,10 +10,11 @@ CLASSES= $(OBJPATH)/BatchR.o \
 	$(OBJPATH)/tab.o \
 	$(OBJPATH)/RareEvent.o \
 	$(OBJPATH)/Simulator.o \
+	$(OBJPATH)/SimulatorRE.o \
 	$(OBJPATH)/clientsim.o
 
 
-$(OBJPATH)/Simulator.o: SimulatorRE.cpp
+#$(OBJPATH)/Simulator.o: SimulatorRE.cpp
 
 LHA.hpp:
 	cat ../ModelGenerator/LHA_orig.hpp end.cpp > LHA.hpp
@@ -42,5 +43,3 @@ server:
 	$(CC) $(OPTIONS2) -c serversim.cpp -o $(OBJPATH)/serversim.o
 	$(CC) $(OPTIONS2) $(OBJPATH)/serversim.o \
 	-o $(BINPATH)/ServerSim
-# DO NOT DELETE
-SimulatorRE.o: SimulatorRE.cpp

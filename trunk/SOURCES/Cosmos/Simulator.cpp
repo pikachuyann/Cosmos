@@ -19,7 +19,7 @@ Simulator::Simulator() {
 
 void Simulator::Load() {
   N.Load();//load the GSPN
-  if(RareEvent_mode)N.gammaprob.load();//load the hashtable for rare event
+  //if(RareEvent_mode)//load the hashtable for rare event
   A.Load(); //load the LHA
   int n = N.tr; //n his the number of transition
   EQ = new EventsQueue(n); //initialization of the event queue
@@ -351,7 +351,7 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 
 }
 
-#include "SimulatorRE.cpp"
+//#include "SimulatorRE.cpp"
 
 BatchR* Simulator::RunBatch(){
   double Dif=0;
@@ -360,13 +360,8 @@ BatchR* Simulator::RunBatch(){
 
   while (batchResult->Isucc < BatchSize) {
 
-    if(RareEvent_mode){
-      //cout << "rareevent";
-      SimulateSinglePathRE();
-    }else{
-      //cout << "not rare event";
-      SimulateSinglePath();
-    };
+    
+	SimulateSinglePath();
 
 
     if (Result.first) {

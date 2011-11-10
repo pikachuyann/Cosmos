@@ -1,5 +1,28 @@
+#include "EventsQueue.hpp"
+#include <iostream>
+#include <set>
+#include <math.h>
+#include <float.h>
+#include <boost/random.hpp>
+#include <boost/generator_iterator.hpp>
+#include <boost/math/distributions/normal.hpp>
+#include <boost/math/distributions/binomial.hpp>
+#include <time.h>
 
-void Simulator::InitialEventsQueueRE() {
+#include "SimulatorRE.hpp"
+
+using namespace std;
+
+SimulatorRE::SimulatorRE(bool b) {
+	doubleIS_mode=b;
+}
+
+void SimulatorRE::Load(){
+	Simulator::Load();
+	N.gammaprob.load();
+}
+
+void SimulatorRE::InitialEventsQueue() {
 
   Initialized = true;
 
@@ -13,13 +36,13 @@ void Simulator::InitialEventsQueueRE() {
   N.Origine_Rate_Sum = 0;
   //----------- /Rare Event -------------
   for (it = ent.begin(); it != ent.end(); it++) {
-    GenerateEventRE(E, (*it));
+    GenerateEvent(E, (*it));
     (*EQ).insert(E);
 
   }
 }
 
-void Simulator::SimulateSinglePathRE() {
+void SimulatorRE::SimulateSinglePath() {
   
 
   bool QueueIsEmpty;
@@ -35,7 +58,7 @@ void Simulator::SimulateSinglePathRE() {
   
   //cout << "new trajectory" << endl;
   
-  Simulator::InitialEventsQueueRE();
+  SimulatorRE::InitialEventsQueue();
   
   QueueIsEmpty = (*EQ).isEmpty();
   
@@ -219,14 +242,14 @@ void Simulator::SimulateSinglePathRE() {
 	  for (vector<int>::iterator it = Enabled_trans.begin(); it != Enabled_trans.end(); it++) {
 	    if(*it != N.tr-1){
 	      if(N.IsEnabled(*it)){
-		GenerateEventRE(F, (*it));
+		GenerateEvent(F, (*it));
 		(*EQ).replace(F, (*EQ).TransTabValue(*it));
 	      }else {
 		(*EQ).remove((*EQ).TransTabValue(*it));
 	      }
 	    }; 
 	  };
-	  GenerateEventRE(F, (N.tr-1));
+	  GenerateEvent(F, (N.tr-1));
 	  if(!doubleIS_mode){
 	    (*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
 	  }
@@ -246,14 +269,14 @@ void Simulator::SimulateSinglePathRE() {
   }
 }
 
-void Simulator::GenerateDummyEvent(Event& E, int Id) {
+void SimulatorRE::GenerateDummyEvent(Event& E, int Id) {
     E.transition = Id;
     E.time = 0.0;
     E.priority = N.GetPriority(Id);
     E.weight = 0.0;
 }
 
-void Simulator::GenerateEventRE(Event& E, int Id) {
+void SimulatorRE::GenerateEvent(Event& E, int Id) {
 
     double t = simTime;
     if (N.Transition[Id].transType == Timed) {
