@@ -17,13 +17,15 @@
 class SimulatorRE: public Simulator{
 public:
 	SimulatorRE(bool);
-	void SimulateSinglePath();
+	//void SimulateSinglePath();
 	void InitialEventsQueue();
 		
-	void returnResult(double);
-	void updateLHA(AutEdge, vector<int>);
+	void returnResultTrue(vector<int>, double);
+	void returnResultFalse();
+	void updateSPN(int);
 	void GenerateEvent(Event &, int);
 	void GenerateDummyEvent(Event &, int);
+	void updateLikelihood(int);
 private:
 	bool doubleIS_mode;
 };

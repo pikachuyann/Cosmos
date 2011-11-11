@@ -34,7 +34,7 @@ public:
 	
   virtual void SimulateSinglePath();
   //void SimulateSinglePathRE();
-  void InitialEventsQueue();
+  virtual void InitialEventsQueue();
   //void InitialEventsQueueRE();
 
 
@@ -47,15 +47,22 @@ public:
   int BatchSize;
   void SetBatchSize(int);
 
-
-  void GenerateEvent(Event &, int);
-  double GenerateTime(string&, vector<double>&);
-
   double max(double, double);
-
+	
   void resetSimVarsTable();
   void reset();
+	
+  virtual void GenerateEvent(Event &, int);
+  virtual double GenerateTime(string&, vector<double>&);
 
+	
+  virtual void returnResultTrue(vector<int>, double);
+  virtual void returnResultFalse();
+  virtual void updateLHA(int, double, vector<int>);
+
+  virtual void updateSPN(int);
+  virtual void updateLikelihood(int);
+	
   SPN N;
   LHA A;
 
