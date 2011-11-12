@@ -13,11 +13,18 @@
 #ifndef _SIMULATOR_RE_HPP
 #define _SIMULATOR_RE_HPP
 
+/* This class inherit the class of Simulator and modify 
+ * several intern function to implement rare event acceleration.
+ */
+
 
 class SimulatorRE: public Simulator{
 public:
 	SimulatorRE(bool);
-	//void SimulateSinglePath();
+	
+protected:
+	bool doubleIS_mode;
+	
 	void InitialEventsQueue();
 		
 	void returnResultTrue(vector<int>, double);
@@ -26,8 +33,7 @@ public:
 	void GenerateEvent(Event &, int);
 	void GenerateDummyEvent(Event &, int);
 	void updateLikelihood(int);
-private:
-	bool doubleIS_mode;
+	
 };
 
 

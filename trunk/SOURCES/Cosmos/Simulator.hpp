@@ -17,64 +17,60 @@ using namespace std;
 #ifndef _SIMULATOR_HPP
 #define _SIMULATOR_HPP
 
-
+/* This object do the main computation of the programm
+ * it contains the SPN and the LHA
+ */
 
 typedef pair<bool, double> SimOutput;
 
 class Simulator {
 public:
-
-  fstream logvalue;
-
-  Simulator();
-  //void Load();
-
-  Simulator(const Simulator& orig);
-  ~Simulator();
+	Simulator();
+	Simulator(const Simulator& orig);
+	~Simulator();
 	
-  virtual void SimulateSinglePath();
-  //void SimulateSinglePathRE();
-  virtual void InitialEventsQueue();
-  //void InitialEventsQueueRE();
-
-
-  BatchR* RunBatch();
-
-
-  SimOutput Result;
-  double simTime;
-
-  int BatchSize;
-  void SetBatchSize(int);
-
-  double max(double, double);
+	BatchR* RunBatch(); //main entry point of the object simulate a batch of trajectory
+	void SetBatchSize(int); // set the batch size
 	
-  void resetSimVarsTable();
-  void reset();
-	
-  virtual void GenerateEvent(Event &, int);
-  virtual double GenerateTime(string&, vector<double>&);
-
-	
-  virtual void returnResultTrue(vector<int>, double);
-  virtual void returnResultFalse();
-  virtual void updateLHA(int, double, vector<int>);
-
-  virtual void updateSPN(int);
-  virtual void updateLikelihood(int);
-	
-  SPN N;
-  LHA A;
-
-  time_t SysTime;
-
-  EventsQueue* EQ;
 protected:
-
-  bool Initialized;
-  map<string, int> IndexDist;
-  boost::mt19937 RandomNumber;
-
+	fstream logvalue; // file to log value
+	SimOutput Result; // store result beetween two trajectory simulation
+	double simTime; 
+	time_t SysTime;
+	
+	int BatchSize;
+	
+	SPN N; //The object representing the SPN
+	LHA A; //The object representing the LHA
+	
+	
+	EventsQueue* EQ;
+	
+	bool Initialized;
+	map<string, int> IndexDist;
+	boost::mt19937 RandomNumber;
+	
+	
+  	
+	double max(double, double);
+	
+	virtual void SimulateSinglePath(); //Simulate a single path this function do most of the simulation job
+	
+	virtual void InitialEventsQueue(); //initialize the event queue
+	virtual void resetSimVarsTable();
+	virtual void reset();
+	
+	virtual void GenerateEvent(Event &, int); 
+	virtual double GenerateTime(string&, vector<double>&);
+	
+	
+	virtual void returnResultTrue(vector<int>, double);
+	virtual void returnResultFalse();
+	virtual void updateLHA(int, double, vector<int>);
+	
+	virtual void updateSPN(int);
+	virtual void updateLikelihood(int);
+	
 };
 
 

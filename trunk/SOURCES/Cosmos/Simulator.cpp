@@ -182,24 +182,17 @@ void Simulator::SimulateSinglePath() {
 	simTime = 0;
 	
 	Simulator::InitialEventsQueue();
-	
 	QueueIsEmpty = (*EQ).isEmpty();
-	
 	AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 	
 	while (!QueueIsEmpty || AE.Index > -1) {
-		
 		if (QueueIsEmpty) {
 			while (AE.Index>-1) {
-				
 				updateLHA(AE.Index,AE.FiringTime - A.CurrentTime, N.Marking);
-				
 				if (A.isFinal(A.CurrentLocation)) {
 					returnResultTrue(N.Marking,D);
 					return;
-				} else {
-					AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
-				}
+				} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 			}
 			returnResultFalse();
 			return;
@@ -211,21 +204,13 @@ void Simulator::SimulateSinglePath() {
 			
 			while (E1.time >= AE.FiringTime) {
 				updateLHA(AE.Index,AE.FiringTime - A.CurrentTime, N.Marking);
-				
 				if (A.isFinal(A.CurrentLocation)) {
 					returnResultTrue(N.Marking, D);
 					return;
-					
-				} else {
-					AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
-					
-				}
-				
-				
+				} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 			}
 			
 			vector<int> OldMarking = N.Marking;
-			
 			N.fire(E1_transitionNum);
 			
 			double DeltaT = E1.time - A.CurrentTime;
@@ -236,14 +221,11 @@ void Simulator::SimulateSinglePath() {
 				return;
 			} else {
 				updateLHA(SE, DeltaT, OldMarking);
-				 
 				if (A.isFinal(A.CurrentLocation)) {
 					returnResultTrue(OldMarking, D);					
 					return;
-					
 				} else {
 					updateSPN(E1_transitionNum);
-					
 					AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 					QueueIsEmpty = (*EQ).isEmpty();
 				}
