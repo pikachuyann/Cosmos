@@ -2,6 +2,7 @@
 
 #include "Lha-parser.tab.hh"
 #include "Lha-Reader.hpp"
+#include "Lha_gmlparser.hpp"
 
 #include "string.h"
 
@@ -70,6 +71,15 @@ int Lha_Reader::parse_file(string &filename) {
         cout << "Can't open : " << filename << endl;
         return 1;
     }
+}
+int Lha_Reader::parse_gml_file(string &filename) {
+	cout << "parse GML:" << filename << endl;
+	ModelHandlerPtr handlerPtr(new MyLhaModelHandler(&MyLha));
+    ExpatModelParser parser = ExpatModelParser(handlerPtr);
+    parser.parse_file(filename);
+	cout << "end parse GML:"<< endl;
+	
+	return 0;
 }
 
 string Lha_Reader::InvRelOp(string& str) {

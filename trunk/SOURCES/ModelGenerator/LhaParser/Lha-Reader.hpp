@@ -114,6 +114,7 @@ public:
 
     int parse(std::string&);
     int parse_file(std::string&);
+	int parse_gml_file(std::string&);
 
     string InvRelOp(string &);
     void WriteFile(string&);
