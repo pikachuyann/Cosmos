@@ -11,6 +11,7 @@ FILES=$(OBJPATH)/server.o \
 	$(OBJPATH)/GspnParser/Gspn_gmlparser.o \
 	$(OBJPATH)/LhaParser/Lha-Reader.o \
 	$(OBJPATH)/LhaParser/Lha-parser.tab.o  \
+	$(OBJPATH)/LhaParser/Lha_gmlparser.o  \
 	$(OBJPATH)/../Cosmos/BatchR.o \
 	$(OBJPATH)/expatmodelparser.o \
 	$(OBJPATH)/modelwriter.o

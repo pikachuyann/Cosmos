@@ -1,10 +1,10 @@
 ctmc
-const int n = 50;
+const int n = 5;
 const int r = 5;
 
 const double lambda = 0.100000;
-const double rho1 = 0.450000;
-const double rho2 = 0.450000;
+const double rho1 = 0.10000;
+const double rho2 = 0.10000;
 
 module Tandem
 	Queue1 : [0..n] init 1;	Queue2 : [0..r] init 0;
