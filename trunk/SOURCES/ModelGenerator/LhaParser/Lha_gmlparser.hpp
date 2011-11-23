@@ -25,9 +25,6 @@ private:
 	int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it );
 	Eval Evaluate_gml;
 	
-	vector<string> StrFlowVector;
-	vector<string> FuncFlowVector;
-	
 	vector<string> FuncUpdateVector;
 	
 	set <string> PetriTransitions;

@@ -16,6 +16,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <map>
 #include <string>
 #include <algorithm>
 #include "expatmodelparser.hh"
@@ -69,6 +70,7 @@ void MyLhaModelHandler::appendSimplify(string *st, string str)
 
 void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it )
 {
+	//cout << (*it) << endl;
 	if((*it).compare("value")==0){
 		appendSimplify(st,it.node->first_child->data);
 	}else if ((*it).compare("boolValue")==0) {
@@ -222,14 +224,14 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 					Evaluate_gml.parse(constvalue);
 					MyLHA->LhaRealConstant[*constname]=Evaluate_gml.RealResult;
 					//cout << "\tconst double " << *constname << "=" << Evaluate_gml.RealResult << endl;
-				} else if ((*it2).compare("variableDeclaration")==0) {
+				} else if ((*it2).compare("variable")==0) {
 					string* constname = simplifyString((find(it2.begin(),it2.end(),"varName")).node->first_child->data);
 					MyLHA->VarLabel.push_back(*constname);
 					MyLHA->Var.push_back(0.0);
 					MyLHA->VarIndex[*constname]=countVar;
 					countVar++;
 					
-					cout << "\tvar " << *constname << "index: " << countVar-1 << endl;
+					//cout << "\tvar " << *constname << " index: " << countVar-1 << endl;
 				}else cout << "fail to parse gml: const declaration"<< endl;
 				
 			}
@@ -252,19 +254,37 @@ void MyLhaModelHandler::on_read_node(const XmlString& id,
 		int id2 = atoi(id.c_str());
 		Gml2Loc[id2]=countLoc;
 		
-		for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
-							
-			 if((*(it->second.begin())).compare("name")==0){
-				string* Plname = simplifyString(*(++(it->second.begin())));
-				//cout << "\tname:" << *Plname << endl ;
-				//string& Plname2 = *(new string(Plname));
-				MyLHA->LocLabel.push_back(*Plname);
-				MyLHA->LocIndex[*Plname]=countLoc;
-				
-				
-			} else cout << "fail to parse gml"<< endl;
+		bool markdep=false;
+		
+		//cout << "name: " << *(attributes.find("name")->second.begin()) << " and " << *((attributes.find("name")->second.begin().begin()))<< endl;
+		
+		string* Plname = simplifyString(*(attributes.find("name")->second.begin().begin()));
+		MyLHA->LocLabel.push_back(*Plname);
+		MyLHA->LocIndex[*Plname]=countLoc;
+		
+		string* inv = new string("");
+		eval_expr(&markdep, inv, attributes.find("invariant")->second.begin().begin().begin());
+		MyLHA->StrLocProperty.push_back(*inv);
+		MyLHA->FuncLocProperty.push_back(*inv);
+		
+		vector<string> v1(MyLHA->NbVar,"");
+		vector<string> StrFlowVector=v1;
+		vector<string> FuncFlowVector=v1;
+		tree<string> itflow = attributes.find("flow")->second.begin().begin();
+		for(tree<string>::sibling_iterator it2 = itflow.begin(); it2!=itflow.end();++it2){
+			string* var;
+			string* varflow = new string("");
+			cout << "var flow:" << endl;
+			for(tree<string>::sibling_iterator it3 = it2.begin(); it3!=it2.end();++it3){
+				if((*it3).compare("variable")==0)var = simplifyString(*(it3.begin()));
+				if((*it3).compare("realFormula")==0)eval_expr(&markdep, varflow, it3.begin() );
+			}
+			int vindex = MyLHA->VarIndex[var->c_str()];
+			cout << " var: " << *var << " index: " << vindex << " flow: " << *varflow << endl;
 			
 		}
+		
+		
 		countLoc++ ;
 		
 	}
@@ -293,8 +313,6 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 			
 		vector< vector<string> > vv(MyLHA->NbLoc,v1);  
 			
-		StrFlowVector=v1;
-		FuncFlowVector=v1;
 		FuncUpdateVector=v1;
 		CoeffsVector=v1;
 		MyLHA->FuncFlow=vv;
@@ -368,7 +386,7 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 			if((*actionstr).compare("ALL")==0){
 				SubSet= PetriTransitions;
 			}else{
-				for(tree<string>::sibling_iterator it2 = (++(it->second.begin())).begin(); it2!=(++(it->second.begin())).end();++it){
+				for(tree<string>::sibling_iterator it2 = (++(it->second.begin())).begin(); it2!=(++(it->second.begin())).end();++it2){
 					if ((*it2).compare("actionName")==0) {
 						string* actionstr2 = simplifyString(*(it2.begin()));
 						SubSet.insert(*actionstr2); 

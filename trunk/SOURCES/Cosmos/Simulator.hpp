@@ -57,7 +57,7 @@ protected:
 	virtual void SimulateSinglePath(); //Simulate a single path this function do most of the simulation job
 	
 	virtual void InitialEventsQueue(); //initialize the event queue
-	virtual void resetSimVarsTable();
+	//virtual void resetSimVarsTable();
 	virtual void reset();
 	
 	virtual void GenerateEvent(Event &, int); 

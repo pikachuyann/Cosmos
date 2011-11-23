@@ -77,7 +77,7 @@ int Lha_Reader::parse_gml_file(string &filename) {
 	ModelHandlerPtr handlerPtr(new MyLhaModelHandler(&MyLha));
     ExpatModelParser parser = ExpatModelParser(handlerPtr);
     parser.parse_file(filename);
-	cout << "end parse GML:"<< endl;
+	cout << "end parse GML"<< endl;
 	
 	return 0;
 }

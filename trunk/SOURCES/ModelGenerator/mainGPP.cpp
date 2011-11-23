@@ -54,6 +54,7 @@ bool ParseBuild(string filename, SimParam& P) {
 		parseresult = gReader.parse_file(GspnFileName);
 	}
 	
+	
 	if (!parseresult) {
 		gReader.MyGspn.Path = filename;
 		gReader.WriteFile(P.Path);
@@ -66,11 +67,14 @@ bool ParseBuild(string filename, SimParam& P) {
 	
 	Lha_Reader lReader;
 	
+	
 	lReader.MyLha.TransitionIndex = gReader.MyGspn.TransId;
 	lReader.MyLha.PlaceIndex = gReader.MyGspn.PlacesId;
 	
+	
 	Gspn_Reader gr;
 	gReader = gr;
+	
 	
 	string LhaFileName = filename;
 	
@@ -275,7 +279,6 @@ void FindPathMac(SimParam& P) {
 		printf("buffer too small; need size %u\n", size);
 		exit(0);
 	}
-		
 	
 	P.Path=path;
 	std::string::size_type t = P.Path.find_last_of("/");

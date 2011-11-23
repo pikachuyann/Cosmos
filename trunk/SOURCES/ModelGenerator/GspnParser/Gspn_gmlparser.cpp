@@ -120,7 +120,7 @@ int eval_str (string s){
 int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it )
 {
 	if((*it).compare("intFormula")==0){
-		cout << *(it.begin()) << endl;
+		//cout << *(it.begin()) << endl;
 		return eval_intFormula(intconst,it.begin());
 	}else if((*it).compare("value")==0){
 		return eval_str(it.node->first_child->data);
@@ -159,7 +159,9 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 	//Initialisation
 		MyGspn= MyGspn2;
 		countPl=0;
+		MyGspn->pl=0;
 		countTr=0;
+		MyGspn->tr=0;
 		ParsePl=true;
 	}
 	//~MyModelHandler() { }
@@ -249,7 +251,7 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 		
 		}else {
 			if (nodeType.compare("transition")==0){
-				cout << "transition:"<<endl;
+				//cout << "transition:"<<endl;
 				MyGspn->tr++;
 				int id2 = atoi(id.c_str());
 				IsPlace[id2]=false;
@@ -275,7 +277,7 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
 						for (tree<string>::sibling_iterator it2 = (it->second.begin()).begin() ; it2 != (it->second.begin()).end() ; ++it2 ) {
 							//cout << "\t\t" << (*it2) << ":" << endl;
 							if ((*it2).compare("type")==0) {
-								cout << "\t\t\t" << *(it2.begin()) << endl; 
+								//cout << "\t\t\t" << *(it2.begin()) << endl; 
 								string* Trtype = simplifyString(*(it2.begin()));
 								if((*Trtype).compare("IMDT")==0)timed=unTimed;
 								dist.name = *Trtype;
