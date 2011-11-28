@@ -15,8 +15,42 @@
 
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
+
+void FindPathMac(SimParam& P) {
+	
+	char path[1024];
+	uint32_t size = sizeof(path);
+	if (_NSGetExecutablePath(path, &size) != 0){
+		printf("buffer too small; need size %u\n", size);
+		exit(0);
+	}
+	
+	P.Path=path;
+	std::string::size_type t = P.Path.find_last_of("/");
+	P.Path = P.Path.substr(0, t);
+	P.Path.append("/");
+	//cout << "Unknow Cosmos directory" << endl;
+	//exit(1);
+}
+
+
 #define FindPath FindPathMac
 #elif __linux__
+void FindPathLinux(SimParam& P) {
+	
+	char path[1024];
+	char link[512];
+	sprintf(link, "/proc/%d/exe", getpid());
+	int sz = readlink(link, path, 1024);
+	if (sz >= 0) {
+		path[sz] = 0;
+		P.Path = path;
+		std::string::size_type t = P.Path.find_last_of("/");
+		P.Path = P.Path.substr(0, t);
+		P.Path.append("/");
+	}
+}
+
 #define FindPath FindPathLinux
 #else
 #error "Operating system not supported"
@@ -254,38 +288,6 @@ void LoadSimParam(SimParam& P) {
 	P.DoubleIS = false;
 	P.Njob = 1;
 	P.GMLinput = false;
-}
-
-void FindPathLinux(SimParam& P) {
-	
-	char path[1024];
-	char link[512];
-	sprintf(link, "/proc/%d/exe", getpid());
-	int sz = readlink(link, path, 1024);
-	if (sz >= 0) {
-		path[sz] = 0;
-		P.Path = path;
-		std::string::size_type t = P.Path.find_last_of("/");
-		P.Path = P.Path.substr(0, t);
-		P.Path.append("/");
-	}
-}
-
-void FindPathMac(SimParam& P) {
-	
-	char path[1024];
-	uint32_t size = sizeof(path);
-	if (_NSGetExecutablePath(path, &size) != 0){
-		printf("buffer too small; need size %u\n", size);
-		exit(0);
-	}
-	
-	P.Path=path;
-	std::string::size_type t = P.Path.find_last_of("/");
-	P.Path = P.Path.substr(0, t);
-	P.Path.append("/");
-	//cout << "Unknow Cosmos directory" << endl;
-	//exit(1);
 }
 
 int main2(int argc, char** argv) {
