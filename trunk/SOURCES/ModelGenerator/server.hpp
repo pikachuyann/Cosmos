@@ -4,16 +4,18 @@ using namespace std;
 #define	_SERVER_HPP
 
 
- struct SimParam {
-   int Njob;
-   double Level;
-   double Width;
-   int Batch;
-   long int MaxRuns;
-   string Path;
-   bool RareEvent;
-   bool DoubleIS;
-	 bool GMLinput;
+struct SimParam {
+	int Njob;
+	double Level;
+	double Width;
+	int Batch;
+	long int MaxRuns;
+	string Path;
+	string PathGspn;
+	string PathLha;
+	bool RareEvent;
+	bool DoubleIS;
+	bool GMLinput;
 };
 
 double StrToDbl(string st);

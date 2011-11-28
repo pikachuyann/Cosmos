@@ -151,7 +151,10 @@ void Lha_Reader::WriteFile(string& Pref) {
 	
 	LhaCppFile << "};"<< endl;
 	
-	
+
+	/*for (map<string,double>::iterator it= MyLha.LhaRealConstant.begin(); it!= MyLha.LhaRealConstant.end() ; it++) {
+		LhaCppFile << "    const double " << it->first << "=" << it->second << ";" << endl;
+	}*/
 
     LhaCppFile << "void LHA::Load(){" << endl;
 

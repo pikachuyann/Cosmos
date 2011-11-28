@@ -70,10 +70,10 @@ void MyLhaModelHandler::appendSimplify(string *st, string str)
 
 void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it )
 {
-	//cout << (*it) << endl;
+	cout << (*it) << endl;
 	if((*it).compare("value")==0){
 		appendSimplify(st,it.node->first_child->data);
-	}else if ((*it).compare("boolValue")==0) {
+	}else if ((*it).compare("boolean")==0) {
 		appendSimplify(st,it.node->first_child->data);
 	}else if ((*it).compare("intConst")==0) {
 		appendSimplify(st,it.node->first_child->data);
@@ -81,9 +81,9 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
 		appendSimplify(st,it.node->first_child->data);
 	}else if ((*it).compare("marking")==0) {
 		*is_mark_dep =true;
-		st->append("Marking[_nb_Place_");
-		appendSimplify(st,it.node->first_child->data);
-		st->append("]");
+		string* place = simplifyString(it.node->first_child->data);
+		std::ostringstream s; s<<"Marking["<<MyLHA->PlaceIndex[place->c_str()]<<"]";
+		st->append(s.str());
 	}else if (	(*it).compare("plus")==0  || (*it).compare("mult")==0
 			  || (*it).compare("iplus")==0 || (*it).compare("imult")==0  
 			  || (*it).compare("min")==0   || (*it).compare("max")==0
@@ -126,6 +126,46 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
 		st->append(")");
 		;
 	} else cout << "failevaltree" <<endl;
+}
+
+void MyLhaModelHandler::eval_linexpr(vector<string> CoeffsVector, tree<string>::pre_order_iterator it){
+	cout << (*it) << endl;
+	if((*it).compare("variable")==0){
+		string* var = simplifyString(*(it.begin()));
+		CoeffsVector[MyLHA->VarIndex[var->c_str()]]= "1";
+	} else cout << "fail eval tree : linexp" << endl;
+		
+}
+
+void MyLhaModelHandler::eval_guard(vector<vector<string> > CoeffsMatrix,vector<string> CST, vector<string> comp,tree<string>::pre_order_iterator it)
+{
+	cout << (*it) << endl;
+	if ((*it).compare("boolean")==0) {
+		cout << "\tguard = true" << it.node->first_child->data << endl;
+	}else if ((*it).compare("and")==0){
+		cout << "(";
+		for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
+			eval_guard(CoeffsMatrix,CST,comp,it2);
+		}
+		cout << ")";
+	}else if((*it).compare("equal")==0	
+			  || (*it).compare("greaterEqual")==0 
+			  || (*it).compare("lessEqual")==0 ){
+		if((*it).compare("equal")==0)comp.push_back("==");
+		if((*it).compare("greaterEqual")==0)comp.push_back("<=");
+		if((*it).compare("lessEqual")==0)comp.push_back(">=");
+		
+		vector<string> CoeffsVector(MyLHA->NbVar,"");
+		eval_linexpr(CoeffsVector,it.begin());
+		cout << ";";
+		CoeffsMatrix.push_back(CoeffsVector);
+		string* st= new string("");
+		bool markdep = false;
+		eval_expr(&markdep, st, it.begin().node->next_sibling);
+		cout<< "CST: " << *st << endl;
+		CST.push_back(*st);
+		
+	} else cout << "failevaltree: guard" <<endl;
 }
 
 
@@ -178,7 +218,6 @@ MyLhaModelHandler::MyLhaModelHandler(LHA* MyLHA2) {
 	//Initialisation
 	MyLHA= MyLHA2;
 	countLoc=0;
-	countVar=0;
 	ParseLoc=true;
 	//ParseDecl=true;
 }
@@ -228,10 +267,10 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 					string* constname = simplifyString((find(it2.begin(),it2.end(),"varName")).node->first_child->data);
 					MyLHA->VarLabel.push_back(*constname);
 					MyLHA->Var.push_back(0.0);
-					MyLHA->VarIndex[*constname]=countVar;
-					countVar++;
+					MyLHA->VarIndex[*constname]=MyLHA->NbVar;
+					MyLHA->NbVar++;
 					
-					//cout << "\tvar " << *constname << " index: " << countVar-1 << endl;
+					cout << "\tvar " << *constname << " index: " << MyLHA->NbVar-1 << endl;
 				}else cout << "fail to parse gml: const declaration"<< endl;
 				
 			}
@@ -267,10 +306,8 @@ void MyLhaModelHandler::on_read_node(const XmlString& id,
 		MyLHA->StrLocProperty.push_back(*inv);
 		MyLHA->FuncLocProperty.push_back(*inv);
 		
+		tree<string>::sibling_iterator itflow = attributes.find("flow")->second.begin();
 		vector<string> v1(MyLHA->NbVar,"");
-		vector<string> StrFlowVector=v1;
-		vector<string> FuncFlowVector=v1;
-		tree<string> itflow = attributes.find("flow")->second.begin().begin();
 		for(tree<string>::sibling_iterator it2 = itflow.begin(); it2!=itflow.end();++it2){
 			string* var;
 			string* varflow = new string("");
@@ -280,11 +317,20 @@ void MyLhaModelHandler::on_read_node(const XmlString& id,
 				if((*it3).compare("realFormula")==0)eval_expr(&markdep, varflow, it3.begin() );
 			}
 			int vindex = MyLHA->VarIndex[var->c_str()];
-			cout << " var: " << *var << " index: " << vindex << " flow: " << *varflow << endl;
-			
+			cout << "\tvar: " << *var << " index: " << vindex << " flow: " << *varflow << endl;
+			v1[vindex]= *varflow;
 		}
+		MyLHA->StrFlow.push_back(v1);
+		MyLHA->FuncFlow.push_back(v1);
 		
-		
+		string* type = simplifyString(*(attributes.find("type")->second.begin().begin()));
+		cout << "\ttype:" << *type << endl; 
+		if ((*type).compare("Initial")==0) {
+			MyLHA->InitLoc.insert(countLoc);
+		} else if ((*type).compare("Final")==0) {
+			MyLHA->FinalLoc.insert(countLoc);
+		} 
+	
 		countLoc++ ;
 		
 	}
@@ -306,119 +352,87 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 								 const XmlStringList& references) {
 	if(ParseLoc){
 		ParseLoc=false;
-		MyLHA->NbVar= countVar;
 		MyLHA->NbLoc= countLoc;
 		
 		vector<string> v1(MyLHA->NbVar,"");
 			
 		vector< vector<string> > vv(MyLHA->NbLoc,v1);  
 			
-		FuncUpdateVector=v1;
 		CoeffsVector=v1;
-		MyLHA->FuncFlow=vv;
-		MyLHA->StrFlow=vv;
 		vector<string> v2(MyLHA->NbLoc,"");
-		MyLHA->StrLocProperty=v2;
-		MyLHA->FuncLocProperty=v2;
 		//int sz=MyLHA->TransitionIndex.size();
 		set <string> Pt;
 		PetriTransitions=Pt;
 		for(map<string, int>::iterator it=MyLHA->TransitionIndex.begin();it!=MyLHA->TransitionIndex.end();it++)
 			PetriTransitions.insert((*it).first);
+		
 		vector < set<int> > vi(MyLHA->NbLoc);
 		MyLHA->Out_S_Edges=vi;
 		MyLHA->Out_A_Edges=vi;
 			
-		
-		
-		/*vector<int> vplint(MyLHA->pl,0);
-		vector<string> vStr(MyLHA->pl, " ");
-		
-		//Reader.MyGspn.Marking=v;
-		vector< vector<int> > m1(MyGspn->tr,vplint);  
-		vector< vector<string> > m1Str(MyGspn->tr,vStr);
-		
-		MyGspn->outArcs=m1;
-		MyGspn->inArcs=m1;
-		MyGspn->inhibArcs=m1;
-		
-		MyGspn->outArcsStr=m1Str;
-		MyGspn->inArcsStr=m1Str;
-		MyGspn->inhibArcsStr=m1Str;*/
-		
-		/*vector<TransType> vtrtt(MyGspn->tr);
-		 MyGspn->tType=vtrtt;
-		 
-		 //vector<Distribution> vdistr(MyGspn->tr);
-		 //MyGspn->Dist=vdistr;
-		 
-		 vector<string> vtrstr(MyGspn->tr,"");
-		 MyGspn->Priority=vtrstr;
-		 
-		 vector<string> dtrstr(MyGspn->tr);
-		 MyGspn->Weight=vtrstr;
-		 
-		 
-		 vector<bool> vtrbool(MyGspn->tr);
-		 MyGspn->MarkingDependent=vtrbool;
-		 //MyGspn->AgeMemory=vtrbool;
-		 
-		 //vector<bool> vtrbool(MyGspn->tr);
-		 MyGspn->SingleService=vtrbool;
-		 
-		 vector<int> vtrint(MyGspn->tr);
-		 MyGspn->NbServers=vtrint;*/
-		
-		//MarkingDependent=false;
-		//AgeMemory=false;
-		
+				
 	}
 	
-	//cout << "read arc : " << id << ", " << arcType << ", " << source << " -> " << target << endl;
+	cout << "read arc : " << id << ", " << arcType << ", " << source << " -> " << target << endl;
 	//string* valuation = new string("");
 	//cout << arcType << endl;
 	
-	set <string> SubSet;
-	
-	for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
-		if((*(it->second.begin())).compare("action")==0){
-			string* actionstr = simplifyString(*(++(it->second.begin())));
-			if((*actionstr).compare("ALL")==0){
-				SubSet= PetriTransitions;
-			}else{
-				for(tree<string>::sibling_iterator it2 = (++(it->second.begin())).begin(); it2!=(++(it->second.begin())).end();++it2){
-					if ((*it2).compare("actionName")==0) {
-						string* actionstr2 = simplifyString(*(it2.begin()));
-						SubSet.insert(*actionstr2); 
-					}
-				}
-			}
-			
-		} else if ((*(it->second.begin())).compare("guard")==0) {
-			
-		} else cout << "fail to parse gml"<< endl;
-		
-	}
 	int sourceGML = atoi(source.c_str());
 	int targetGML = atoi(target.c_str());
 
+	LhaEdge edge;
+	edge.Index=MyLHA->Edge.size();
+	edge.Source= Gml2Loc[sourceGML];
+	edge.Target= Gml2Loc[targetGML];
+	MyLHA->Edge.push_back(edge);
+
 	
-	int ne=MyLHA->Edge.size();
-	MyLHA->AnEdge.Index=ne;
-	MyLHA->AnEdge.Source= Gml2Loc[sourceGML];
-	MyLHA->AnEdge.Target= Gml2Loc[targetGML];
-	MyLHA->Edge.push_back(MyLHA->AnEdge);
-	/*MyLHA.EdgeActions.push_back(SubSet);
-	if(SubSet.size()>0) Reader.MyLha.Out_S_Edges[Reader.MyLha.AnEdge.Source].insert(ne);
-	else Reader.MyLha.Out_A_Edges[Reader.MyLha.AnEdge.Source].insert(ne); 
-	SubSet.erase(SubSet.begin(),SubSet.end());
-	Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsConstants.push_back(CST);
-	Reader.MyLha.ConstraintsRelOp.push_back(comp);
-	vector<string> vs;comp=vs;CST=vs;
-	vector <vector <string> > ms;CoeffsMatrix=ms;
-	*/
+	tree<string> itaction = attributes.find("action")->second.begin().begin();
+	set <string> SubSet;
+	string* actionstr = simplifyString(*(itaction.begin()));
+	if((*actionstr).compare("ALL")==0){
+		SubSet= PetriTransitions;
+	}else{
+		for(tree<string>::sibling_iterator it2 = itaction.begin(); it2!=itaction.end();++it2){
+			if ((*it2).compare("actionName")==0) {
+				string* actionstr2 = simplifyString(*(it2.begin()));
+				SubSet.insert(*actionstr2); 
+			}
+		}
+	}
+	MyLHA->EdgeActions.push_back(SubSet);
+	if(SubSet.size()>0) MyLHA->Out_S_Edges[edge.Source].insert(edge.Index);
+	else MyLHA->Out_A_Edges[edge.Source].insert(edge.Index);
 	
-	/*for(XmlStringList::const_iterator it = references.begin(); it != references.end(); ++it) {
-	 cout << "    ref => " << *it << endl;
-	 }*/
+	bool markdep=false;
+
+	tree<string>::sibling_iterator itflow = attributes.find("update")->second.begin();	
+	vector<string> v1(MyLHA->NbVar,"");
+	if ((*(itflow.begin())).compare("updatevar")==0) {
+		for(tree<string>::sibling_iterator it2 = itflow.begin(); it2!=itflow.end();++it2){
+			string* var;
+			string* varflow = new string("");
+			cout << "var update:" << endl;
+			for(tree<string>::sibling_iterator it3 = it2.begin(); it3!=it2.end();++it3){
+				if((*it3).compare("variable")==0)var = simplifyString(*(it3.begin()));
+				if((*it3).compare("realFormula")==0)eval_expr(&markdep, varflow, it3.begin() );
+			}
+			int vindex = MyLHA->VarIndex[var->c_str()];
+			cout << "\tvar: " << *var << " index: " << vindex << " update: " << *varflow << endl;
+			v1[vindex]= *varflow;
+		}
+	}
+	MyLHA->FuncEdgeUpdates.push_back(v1);
+	
+	tree<string>::sibling_iterator itguard = attributes.find("guard")->second.begin();
+	cout << "guard:" << endl;
+	vector<vector<string> > CoeffsMatrix;
+	vector<string> CST;
+	vector<string> comp;
+	eval_guard(CoeffsMatrix,CST,comp,itguard.begin().begin());
+	MyLHA->ConstraintsCoeffs.push_back(CoeffsMatrix);
+	MyLHA->ConstraintsConstants.push_back(CST);
+	MyLHA->ConstraintsRelOp.push_back(comp);
+	
+	
 }

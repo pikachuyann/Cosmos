@@ -6,6 +6,8 @@
 #include <sstream>
 #include <unistd.h>
 
+#include <boost/program_options.hpp>
+
 //#include "directsim.hpp"
 #include "./LhaParser/Lha-Reader.hpp"
 #include "./GspnParser/Gspn-Reader.hpp"
@@ -21,6 +23,7 @@
 #endif
 
 using namespace std;
+namespace po = boost::program_options;
 
 void ViewParameters(SimParam& P) {
 	cout << "Confidence interval width:      " << P.Width << endl;
@@ -35,28 +38,27 @@ void ViewParameters(SimParam& P) {
 
 
 
-bool ParseBuild(string filename, SimParam& P) {
+bool ParseBuild( SimParam& P) {
 	Gspn_Reader gReader;
-	string GspnFileName = filename;
 	
-	if(P.GMLinput){
+	/*if(P.GMLinput){
 		GspnFileName.append(".gml");
 	}else {
 		GspnFileName.append(".gspn");
-	}
+	}*/
 	
-	cout << "Start Parsing " << GspnFileName << endl;
+	cout << "Start Parsing " << P.PathGspn << endl;
 	int parseresult;
 	
 	if(P.GMLinput){
-		parseresult = gReader.parse_gml_file(GspnFileName);
+		parseresult = gReader.parse_gml_file(P.PathGspn);
 	}else {
-		parseresult = gReader.parse_file(GspnFileName);
+		parseresult = gReader.parse_file(P.PathGspn);
 	}
 	
 	
 	if (!parseresult) {
-		gReader.MyGspn.Path = filename;
+		gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
 		gReader.WriteFile(P.Path);
 	} else {
 		Gspn_Reader gr;
@@ -76,20 +78,18 @@ bool ParseBuild(string filename, SimParam& P) {
 	gReader = gr;
 	
 	
-	string LhaFileName = filename;
-	
-	if(P.GMLinput){
+	/*if(P.GMLinput){
 		LhaFileName.append(".lha.gml");
 	}else {
 		LhaFileName.append(".lha");
-	}
+	}*/
 	
-	cout << "Start Parsing " << LhaFileName << endl;
+	cout << "Start Parsing " << P.PathLha << endl;
 	
 	if(P.GMLinput){
-		parseresult = lReader.parse_gml_file(LhaFileName);
+		parseresult = lReader.parse_gml_file(P.PathLha);
 	}else {
-		parseresult = lReader.parse_file(LhaFileName);
+		parseresult = lReader.parse_file(P.PathLha);
 	}
 	
 	if (!parseresult) {
@@ -115,9 +115,9 @@ bool ParseBuild(string filename, SimParam& P) {
 	return true;
 }
 
-void DirectSim(string filename, SimParam& P) {
+void DirectSim(SimParam& P) {
 	
-	if (ParseBuild(filename, P)) {
+	if (ParseBuild(P)) {
 		
 		LauchServer(P);
 		
@@ -131,7 +131,7 @@ void Command(string str, SimParam& P) {
 		cout << "Type the path of the files: ";
 		string filename;
 		getline(cin, filename);
-		DirectSim(filename, P);
+		DirectSim( P);
 	}
 	else if (str == "width") {
 		string st;
@@ -288,7 +288,7 @@ void FindPathMac(SimParam& P) {
 	//exit(1);
 }
 
-int main(int argc, char** argv) {
+int main2(int argc, char** argv) {
 	SimParam P;
 	
 	LoadSimParam(P);
@@ -301,7 +301,7 @@ int main(int argc, char** argv) {
 	
 	if (argc > 1) {
 		st = argv[1];
-		DirectSim(st, P);
+		DirectSim(P);
 		return (EXIT_SUCCESS);
 	}
 	
@@ -315,6 +315,62 @@ int main(int argc, char** argv) {
 		else Command(str, P);
 		
 	}
+	
+	return (EXIT_SUCCESS);
+}
+
+int main(int argc, char** argv) {
+	SimParam P;
+	
+	LoadSimParam(P);
+	
+	// Declare the supported options.
+	po::options_description desc("Allowed options");
+	desc.add_options()
+    ("help", "produce help message")
+	("GspnFile",po::value(&(P.PathGspn)),"Path to the Gspn")
+	("LhaFile",po::value(&(P.PathLha)),"Path to the Lha")
+	("GMLinput,g",po::bool_switch(&(P.GMLinput)),"Change input file format")
+	("RareEvent,r",po::bool_switch(&(P.RareEvent)),"Use Rare Event acceleration")
+	("DoubleIS,d",po::bool_switch(&(P.DoubleIS)),"Use Rare Event acceleration with double Important Sampling")
+	("level",po::value(&(P.Level)),"Set Confidence interval level")
+	("width",po::value(&(P.Width)),"Set Confidence interval width")
+	("batch",po::value(&(P.Batch)),"Set Batch Size")
+	("max-run",po::value(&(P.MaxRuns)),"Set the maximum number of run")
+	("njob",po::value(&(P.Njob)),"Set the number of parallel simulation")	
+	;
+	
+	po::positional_options_description p;
+	p.add("GspnFile", 1);
+	p.add("LhaFile", 2);
+	
+	po::variables_map vm;
+	po::store(po::command_line_parser(argc, argv).
+			  options(desc).positional(p).run(), vm);
+	//po::store(po::parse_command_line(argc, argv, desc), vm);
+	po::notify(vm);    
+	
+	if (vm.count("help")) {
+		cout << desc << "\n";
+		return 1;
+	}
+	
+	//ViewParameters(P);
+	
+	/*if (vm.count("compression")) {
+		cout << "Compression level was set to " 
+		<< vm["compression"].as<int>() << ".\n";
+	} else {
+		cout << "Compression level was not set.\n";
+	}*/
+	
+	string st = argv[0];
+	if (st == "./CosmosGPP") P.Path = "";
+	else if (st == "CosmosGPP")FindPath(P);
+	else P.Path.assign(st.begin(), st.end() - 9);
+	
+	DirectSim(P);
+	
 	
 	return (EXIT_SUCCESS);
 }

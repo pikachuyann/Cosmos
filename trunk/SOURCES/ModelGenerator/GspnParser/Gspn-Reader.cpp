@@ -61,7 +61,7 @@ int Gspn_Reader::parse_file(string &filename) {
             str = str + "\n" + str2;
         }
         file.close();
-        filename.append(".mod");
+        /*filename.append(".mod");
         ifstream Modfile(filename.c_str(), ios::in);
         if (Modfile) {
 
@@ -72,7 +72,7 @@ int Gspn_Reader::parse_file(string &filename) {
                 str = str + "\n" + str2;
             }
 
-        }
+        }*/
         int x = parse(str);
 
         if (x) cout << "Parsing GSPN Description file failed" << endl;

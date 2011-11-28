@@ -24,7 +24,7 @@ $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
 	$(CC) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
 
 $(BINPATH)/CosmosGPP: $(FILES)
-	$(CC) $(OPTIONS) -L/usr/lib/ -lexpat $^ -o $@
+	$(CC) $(OPTIONS) -L/usr/lib/ -lexpat -lboost_program_options $^ -o $@
 
 clean:
 	rm $(OBJPATH)/Eval/*.o
