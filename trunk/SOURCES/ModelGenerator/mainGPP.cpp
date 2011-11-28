@@ -327,11 +327,9 @@ int main(int argc, char** argv) {
 	LoadSimParam(P);
 	
 	// Declare the supported options.
-	po::options_description desc("Allowed options");
+	po::options_description desc("usage: Cosmos [options] GspnFile LhaFile\n\nAllowed options");
 	desc.add_options()
     ("help", "produce help message")
-	("GspnFile",po::value(&(P.PathGspn)),"Path to the Gspn")
-	("LhaFile",po::value(&(P.PathLha)),"Path to the Lha")
 	("GMLinput,g",po::bool_switch(&(P.GMLinput)),"Change input file format")
 	("RareEvent,r",po::bool_switch(&(P.RareEvent)),"Use Rare Event acceleration")
 	("DoubleIS,d",po::bool_switch(&(P.DoubleIS)),"Use Rare Event acceleration with double Important Sampling")
@@ -342,13 +340,22 @@ int main(int argc, char** argv) {
 	("njob",po::value(&(P.Njob)),"Set the number of parallel simulation")	
 	;
 	
+	po::options_description hidden("Hidden options");
+	hidden.add_options()
+	("GspnFile",po::value(&(P.PathGspn)),"Path to the Gspn")
+	("LhaFile",po::value(&(P.PathLha)),"Path to the Lha")
+	;
+	
 	po::positional_options_description p;
 	p.add("GspnFile", 1);
 	p.add("LhaFile", 2);
 	
+	po::options_description visible("Allowed options");
+	visible.add(desc).add(hidden);
+	
 	po::variables_map vm;
 	po::store(po::command_line_parser(argc, argv).
-			  options(desc).positional(p).run(), vm);
+			  options(visible).positional(p).run(), vm);
 	//po::store(po::parse_command_line(argc, argv, desc), vm);
 	po::notify(vm);    
 	
@@ -359,13 +366,11 @@ int main(int argc, char** argv) {
 	
 	//ViewParameters(P);
 	
-	/*if (vm.count("compression")) {
-		cout << "Compression level was set to " 
-		<< vm["compression"].as<int>() << ".\n";
-	} else {
-		cout << "Compression level was not set.\n";
-	}*/
-	
+	if (!vm.count("LhaFile") || !vm.count("GspnFile")) {
+		cout << desc << "\n";
+		//cout << "usage: ... " << endl;
+		return(EXIT_SUCCESS);
+	} 	
 	string st = argv[0];
 	if (st == "./CosmosGPP") P.Path = "";
 	else if (st == "CosmosGPP")FindPath(P);

@@ -217,6 +217,7 @@ int MyLhaModelHandler::eval_intFormula( map<std::string,int> intconst, tree<stri
 MyLhaModelHandler::MyLhaModelHandler(LHA* MyLHA2) {
 	//Initialisation
 	MyLHA= MyLHA2;
+	MyLHA->NbVar = 0;
 	countLoc=0;
 	ParseLoc=true;
 	//ParseDecl=true;
@@ -275,6 +276,9 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 				
 			}
 			
+			
+		} else if((*it).compare("HASL Formula")==0){
+			cout << "export hasl formula" << endl;
 			
 		}
 	}
