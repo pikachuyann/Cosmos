@@ -11,6 +11,9 @@ CLASSES= $(OBJPATH)/BatchR.o \
 	$(OBJPATH)/RareEvent.o \
 	$(OBJPATH)/Simulator.o \
 	$(OBJPATH)/SimulatorRE.o \
+	$(OBJPATH)/SimulatorBoundedRE.o \
+	$(OBJPATH)/stateSpace.o \
+	$(OBJPATH)/numericalSolver.o \
 	$(OBJPATH)/clientsim.o
 
 
@@ -29,7 +32,7 @@ $(OBJPATH)/%.o: %.cpp
 classes: SimulatorRE.cpp $(CLASSES)
 
 $(BINPATH)/ClientSim: $(OBJPATH)/spn.o $(OBJPATH)/LHA.o $(CLASSES)
-	$(CC) $(OPTIONS) $^ -o $@
+	$(CC) -I /usr/local/include -larmadillo -framework Accelerate $(OPTIONS) $^ -o $@
 
 clean:
 	rm $(OBJPATH)/*.o

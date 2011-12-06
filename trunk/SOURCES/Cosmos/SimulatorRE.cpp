@@ -18,6 +18,10 @@ SimulatorRE::SimulatorRE(bool b) {
 	N.gammaprob.Load();
 }
 
+SimulatorRE::SimulatorRE(){
+	SimulatorRE(false);
+}
+
 void SimulatorRE::InitialEventsQueue() {
 	
 	Initialized = true;

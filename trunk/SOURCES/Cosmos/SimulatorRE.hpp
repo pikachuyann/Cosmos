@@ -21,6 +21,7 @@
 class SimulatorRE: public Simulator{
 public:
 	SimulatorRE(bool);
+	SimulatorRE();
 	
 protected:
 	bool doubleIS_mode;

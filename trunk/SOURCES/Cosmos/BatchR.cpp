@@ -1,5 +1,7 @@
 #include "BatchR.hpp"
 
+
+
 BatchR::BatchR() {
   IsBernoulli = true;
   I =0;

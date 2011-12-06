@@ -1,8 +1,9 @@
-#include "spn.hpp"
-#include "LHA.hpp"
+//#include "spn.hpp"
+//#include "LHA.hpp"
 #include "BatchR.hpp"
 #include "Simulator.hpp"
 #include "SimulatorRE.hpp"
+#include "SimulatorBoundedRE.hpp"
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -27,7 +28,6 @@ int main(int argc, char** argv) {
 	fflush(stdout);
 	//cerr << "pid : "<< pid << endl;
     Simulator* mySim; 
-
 	
 	string str;
 	
@@ -40,6 +40,11 @@ int main(int argc, char** argv) {
 		}
 		if(str== "-RE2"){
 			mySim= (new SimulatorRE(true));
+			//mySim->RareEvent_mode=true;
+			//mySim->doubleIS_mode=true;
+		}
+		if(str== "-BURE"){
+			mySim= (new SimulatorBoundedRE());
 			//mySim->RareEvent_mode=true;
 			//mySim->doubleIS_mode=true;
 		}
