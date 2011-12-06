@@ -6,6 +6,12 @@
  *
  */
 
+/*
+ *	This class is used to compute the state space of the synchronized product
+ * between the SPN and the LHA.
+ *
+ */
+
 #include <set>
 #include <utility>
 #include <string>

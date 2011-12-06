@@ -198,7 +198,7 @@ void LauchServer(SimParam& P){
 
 	delete batchResult;
         //-------------- Rare Event -----------------
-        cout << "\033[A\033[2K" << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
+        if(!P.alligatorMode)cout << "\033[A\033[2K" << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
 
         //RelErr = CurrentWidth / max(1, abs(Mean)); <- ligne original
         RelErr = CurrentWidth /  abs(Mean);
@@ -220,11 +220,20 @@ void LauchServer(SimParam& P){
 
     }
 
+	if(P.alligatorMode){
+		cout << "alligatorResult" << endl;
+		cout << Mean << endl;
+		cout << "[" << low << "," << up << "]" << endl;
+		cout << stdev << endl;
+		cout << CurrentWidth << endl;
+		cout << K << endl;
+		cout << Ksucc << endl;
+	} else{
     cout << "\nEstimated value: " << Mean << endl;
     cout << "Confidence interval: [" << low << "," << up << "]" << endl;
     cout << "Standard deviation: " << stdev << "\tWidth: " << CurrentWidth << endl;
     cout << "Total paths: " << K << "\tAccepted paths: " << Ksucc << endl;
-
+	}
 
 
     time(&end);

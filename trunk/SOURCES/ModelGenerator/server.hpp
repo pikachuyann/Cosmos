@@ -16,6 +16,7 @@ struct SimParam {
 	bool RareEvent;
 	bool DoubleIS;
 	bool GMLinput;
+	bool alligatorMode;
 };
 
 double StrToDbl(string st);

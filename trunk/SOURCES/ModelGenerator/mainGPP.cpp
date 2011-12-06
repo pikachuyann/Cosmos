@@ -150,133 +150,11 @@ bool ParseBuild( SimParam& P) {
 }
 
 void DirectSim(SimParam& P) {
-	
 	if (ParseBuild(P)) {
-		
 		LauchServer(P);
-		
 	}
 }
 
-void Command(string str, SimParam& P) {
-	
-	if (str == "sim") {
-		
-		cout << "Type the path of the files: ";
-		string filename;
-		getline(cin, filename);
-		DirectSim( P);
-	}
-	else if (str == "width") {
-		string st;
-		cout << "Type the confidence width: ";
-		getline(cin, st);
-		
-		double y = StrToDbl(st);
-		if (y <= 0 || y >= 1)
-			cout << "width should be in ]0,1[" << endl;
-		else {
-			P.Width = y;
-			cout << "New width: " << y << endl;
-		}
-		
-	} else if (str == "level") {
-		string st;
-		cout << "Type the confidence level: ";
-		getline(cin, st);
-		
-		double y = StrToDbl(st);
-		if (y <= 0 || y >= 1)
-			cout << "level should be in ]0,1[" << endl;
-		else {
-			P.Level = y;
-			cout << "New level: " << y << endl;
-		}
-		
-	} else if (str == "batch") {
-		string st;
-		cout << "Type batch size: ";
-		getline(cin, st);
-		
-		int y = StrToInt(st);
-		if (y > P.MaxRuns || y < 1)
-			cout << "batch size  should be in [1,maxpaths]" << endl;
-		else {
-			P.Batch = y;
-			cout << "New batch size: " << y << endl;
-		}
-	} else if (str == "maxpaths") {
-		string st;
-		cout << "Type maximum number of paths: ";
-		getline(cin, st);
-		
-		long int y = StrToLongInt(st);
-		if (y < P.Batch)
-			cout << "maxpaths  should be >  Batch size" << endl;
-		else {
-			P.MaxRuns = y;
-			cout << "New maxpaths: " << y << endl;
-		}
-	} else if (str == "rareevent") {
-		string st;
-		cout << "Type true for Rare Event acceleration: ";
-		getline(cin, st);
-		
-		if (st == "true")
-			P.RareEvent = true;
-		else {
-			P.RareEvent = false;
-		}
-		
-	} else if (str == "GMLinput") {
-		string st;
-		cout << "Type true to use GML input: ";
-		getline(cin, st);
-		
-		if (st == "true")
-			P.GMLinput = true;
-		else {
-			P.GMLinput = false;
-		}
-		
-	} else if (str == "doubleIS") {
-		string st;
-		cout << "Type true for double Important Sampling: ";
-		getline(cin, st);
-		
-		if (st == "true") {
-			P.RareEvent = true;
-			P.DoubleIS = true;
-		} else {
-			P.DoubleIS = false;
-			P.RareEvent = true;
-		}
-	} else if (str == "Njob") {
-		string st;
-		cout << "Number of parallel execution: ";
-		getline(cin, st);
-		P.Njob = StrToInt(st);
-		
-	} else if (str == "params") {
-		
-		ViewParameters(P);
-	} else if (str == "help") {
-		cout << "Allowed commands\n" << endl;
-		cout << "\tsim" << endl;
-		cout << "\twidth" << endl;
-		cout << "\tlevel" << endl;
-		cout << "\tbatch" << endl;
-		cout << "\tmaxpaths" << endl;
-		cout << "\trareevent" << endl;
-		cout << "\tdoubleIS" << endl;
-		cout << "\tparams" << endl;
-		cout << "\thelp" << endl;
-		cout << "\tstop" << endl;
-		cout << "\tNjob" << endl;
-		cout << "\tGMLinput" << endl;
-	} else
-		cout << "Unknown command, for more information type 'help':\n" << endl;
-}
 
 
 void LoadSimParam(SimParam& P) {
@@ -284,41 +162,12 @@ void LoadSimParam(SimParam& P) {
 	P.Width = 0.001;
 	P.Batch =   1000;
 	P.MaxRuns = 2000000;
+	P.Path = "";
 	P.RareEvent = false;
 	P.DoubleIS = false;
 	P.Njob = 1;
 	P.GMLinput = false;
-}
-
-int main2(int argc, char** argv) {
-	SimParam P;
-	
-	LoadSimParam(P);
-	
-	
-	string st = argv[0];
-	if (st == "./CosmosGPP") P.Path = "";
-	else if (st == "CosmosGPP")FindPath(P);
-	else P.Path.assign(st.begin(), st.end() - 9);
-	
-	if (argc > 1) {
-		st = argv[1];
-		DirectSim(P);
-		return (EXIT_SUCCESS);
-	}
-	
-	
-	while (true) {
-		string str;
-		cout << "COSMOS: ";
-		getline(cin, str);
-		if (str == "stop" || cin.eof())
-			break;
-		else Command(str, P);
-		
-	}
-	
-	return (EXIT_SUCCESS);
+	P.alligatorMode = false;
 }
 
 int main(int argc, char** argv) {
@@ -333,6 +182,8 @@ int main(int argc, char** argv) {
 	("GMLinput,g",po::bool_switch(&(P.GMLinput)),"Change input file format")
 	("RareEvent,r",po::bool_switch(&(P.RareEvent)),"Use Rare Event acceleration")
 	("DoubleIS,d",po::bool_switch(&(P.DoubleIS)),"Use Rare Event acceleration with double Important Sampling")
+	("alligator-mode",po::bool_switch(&(P.alligatorMode)),"alligator mode")
+	("setPath,p",po::value(&(P.Path)),"Set executable path")
 	("level",po::value(&(P.Level)),"Set Confidence interval level")
 	("width",po::value(&(P.Width)),"Set Confidence interval width")
 	("batch",po::value(&(P.Batch)),"Set Batch Size")
@@ -371,10 +222,15 @@ int main(int argc, char** argv) {
 		//cout << "usage: ... " << endl;
 		return(EXIT_SUCCESS);
 	} 	
-	string st = argv[0];
-	if (st == "./CosmosGPP") P.Path = "";
-	else if (st == "CosmosGPP")FindPath(P);
-	else P.Path.assign(st.begin(), st.end() - 9);
+	
+	if(P.Path.compare("")==0){
+		string st = argv[0];
+		if (st == "./CosmosGPP") P.Path = "";
+		else if (st == "CosmosGPP")FindPath(P);
+		else P.Path.assign(st.begin(), st.end() - 9);
+	}
+		
+	//cout << "executable absolute path: "<<P.Path <<endl;
 	
 	DirectSim(P);
 	

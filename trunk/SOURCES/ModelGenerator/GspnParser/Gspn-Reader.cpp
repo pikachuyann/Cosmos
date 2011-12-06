@@ -2,7 +2,7 @@
 
 #include "Gspn-parser.tab.hh"
 #include "Gspn-Reader.hpp"
-#include "Gspn_gmlparser.hpp";
+#include "Gspn_gmlparser.hpp"
 
 #include "string.h"
 
