@@ -66,8 +66,10 @@ void lauch_clients(SimParam& P){
   else os << P.Path << "ClientSim " << P.Batch;
   if(P.DoubleIS){ 
     os << " " << "-RE2"; 
-  } else {
-    if(P.RareEvent) os << " " << "-RE";
+  } else if(P.RareEvent){
+	os << " " << "-RE";
+  }else if(P.BoundedRE){
+	  os << " " << "-BURE";
   };
   //cout << os.str() << endl;
   

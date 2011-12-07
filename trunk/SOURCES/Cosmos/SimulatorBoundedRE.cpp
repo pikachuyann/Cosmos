@@ -15,6 +15,9 @@ using namespace std;
 SimulatorBoundedRE::SimulatorBoundedRE(){
 	numericalSolver numSolv;
 	numSolv.computeMatrix();
+	numSolv.initVect(20);
+	
+	exit(0);
 	
 }
 

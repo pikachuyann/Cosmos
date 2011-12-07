@@ -11,12 +11,23 @@
 #define	_NUMERICAL_SOLVER_HPP
 
 #include "stateSpace.hpp"
+namespace boostmat = boost::numeric::ublas;
 
 class numericalSolver: public stateSpace
 {
 public:
 	numericalSolver();
 	void computeMatrix();
+	void initVect(int);
+	vector<double>* combine;
+	
+	vector<boostmat::vector<double> >* circularvect;
+	int T;
+	int nbVect;
+	int matOffset;
+	boostmat::vector<double> getVect();
+	void stepVect();
+	
 };
 
 

@@ -165,6 +165,7 @@ void LoadSimParam(SimParam& P) {
 	P.Path = "";
 	P.RareEvent = false;
 	P.DoubleIS = false;
+	P.BoundedRE = false;
 	P.Njob = 1;
 	P.GMLinput = false;
 	P.alligatorMode = false;
@@ -182,6 +183,7 @@ int main(int argc, char** argv) {
 	("GMLinput,g",po::bool_switch(&(P.GMLinput)),"Change input file format")
 	("RareEvent,r",po::bool_switch(&(P.RareEvent)),"Use Rare Event acceleration")
 	("DoubleIS,d",po::bool_switch(&(P.DoubleIS)),"Use Rare Event acceleration with double Important Sampling")
+	("BoundedRE,b",po::bool_switch(&(P.BoundedRE )),"Use Bounded Rare Event acceleration")
 	("alligator-mode",po::bool_switch(&(P.alligatorMode)),"alligator mode")
 	("setPath,p",po::value(&(P.Path)),"Set executable path")
 	("level",po::value(&(P.Level)),"Set Confidence interval level")
