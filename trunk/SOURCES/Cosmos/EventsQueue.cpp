@@ -61,10 +61,7 @@ EventsQueue::~EventsQueue() {
 
 void EventsQueue::insert(Event &e) {
 
-
-    int i;
-
-    (*eq)[Qsize] = e;
+	(*eq)[Qsize] = e;
 
     Qsize++;
 
@@ -142,8 +139,9 @@ void EventsQueue::remove(int i) {
 }
 
 void EventsQueue::siftDown(int i) {
-    int parentIndex;
-    int leftChildIndex, rightChildIndex, minIndex, tmp;
+    //int parentIndex;
+    int leftChildIndex, rightChildIndex, minIndex;
+	//int tmp;
     leftChildIndex = getLeftChildIndex(i);
     rightChildIndex = getRightChildIndex(i);
     if (rightChildIndex >= Qsize) {

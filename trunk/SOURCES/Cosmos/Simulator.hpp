@@ -29,7 +29,7 @@ public:
 	Simulator(const Simulator& orig);
 	~Simulator();
 	
-	BatchR* RunBatch(); //main entry point of the object simulate a batch of trajectory
+	virtual BatchR* RunBatch(); //main entry point of the object simulate a batch of trajectory
 	void SetBatchSize(int); // set the batch size
 	
 protected:
@@ -54,7 +54,8 @@ protected:
   	
 	double max(double, double);
 	
-	virtual void SimulateSinglePath(); //Simulate a single path this function do most of the simulation job
+	virtual bool SimulateOneStep(AutEdge*); //Simulate a step of the system, this function do most of the simulation job
+	virtual void SimulateSinglePath(); //Simulate a single path 
 	
 	virtual void InitialEventsQueue(); //initialize the event queue
 	//virtual void resetSimVarsTable();

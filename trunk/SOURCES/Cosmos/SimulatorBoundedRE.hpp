@@ -22,6 +22,7 @@ class SimulatorBoundedRE: public SimulatorRE{
 public:
 	SimulatorBoundedRE();
 	
+	BatchR* RunBatch();
 };
 
 

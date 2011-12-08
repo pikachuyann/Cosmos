@@ -1,5 +1,4 @@
 #include "Simulator.hpp"
-#include "EventsQueue.hpp"
 //#include "SimulatorRE.h"
 #include <iostream>
 #include <set>
@@ -171,66 +170,68 @@ void Simulator::updateLikelihood(int i){
 	return;
 }
 
+bool Simulator::SimulateOneStep(AutEdge* AEref){
+	AutEdge AE = *AEref;
+	if ((*EQ).isEmpty()) {
+		while (AE.Index>-1) {
+			updateLHA(AE.Index,AE.FiringTime - A.CurrentTime, N.Marking);
+			if (A.isFinal(A.CurrentLocation)) {
+				returnResultTrue(N.Marking,0.0);
+				return false;
+			} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
+		}
+		returnResultFalse();
+		return false;
+	} else {
+		Event E1 = (*EQ).InPosition(0);
+		
+		int E1_transitionNum = E1.transition;
+		updateLikelihood(E1_transitionNum);
+		
+		while (E1.time >= AE.FiringTime) {
+			updateLHA(AE.Index,AE.FiringTime - A.CurrentTime, N.Marking);
+			if (A.isFinal(A.CurrentLocation)) {
+				returnResultTrue(N.Marking, 0.0);
+				return false;
+			} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
+		}
+		
+		vector<int> OldMarking = N.Marking;
+		N.fire(E1_transitionNum);
+		
+		double DeltaT = E1.time - A.CurrentTime;
+		int SE = A.GetEnabled_S_Edges(A.CurrentLocation, E1_transitionNum, DeltaT, OldMarking, N.Marking);
+		
+		if (SE < 0) {
+			returnResultFalse();
+			return false;
+		} else {
+			updateLHA(SE, DeltaT, OldMarking);
+			if (A.isFinal(A.CurrentLocation)) {
+				returnResultTrue(OldMarking, 0.0);					
+				return false;
+			} else {
+				updateSPN(E1_transitionNum);
+				AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
+			}
+		}
+	}
+	return true;
+}
+
 void Simulator::SimulateSinglePath() {
 	
-	bool QueueIsEmpty;
 	AutEdge AE;
-	
-	double D = 0.0;
 	A.CurrentLocation = A.EnabledInitLocation(N.Marking);
 	A.CurrentTime = 0;
 	simTime = 0;
 	
 	Simulator::InitialEventsQueue();
-	QueueIsEmpty = (*EQ).isEmpty();
 	AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 	
-	while (!QueueIsEmpty || AE.Index > -1) {
-		if (QueueIsEmpty) {
-			while (AE.Index>-1) {
-				updateLHA(AE.Index,AE.FiringTime - A.CurrentTime, N.Marking);
-				if (A.isFinal(A.CurrentLocation)) {
-					returnResultTrue(N.Marking,D);
-					return;
-				} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
-			}
-			returnResultFalse();
-			return;
-		} else {
-			Event E1 = (*EQ).InPosition(0);
-			
-			int E1_transitionNum = E1.transition;
-			updateLikelihood(E1_transitionNum);
-			
-			while (E1.time >= AE.FiringTime) {
-				updateLHA(AE.Index,AE.FiringTime - A.CurrentTime, N.Marking);
-				if (A.isFinal(A.CurrentLocation)) {
-					returnResultTrue(N.Marking, D);
-					return;
-				} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
-			}
-			
-			vector<int> OldMarking = N.Marking;
-			N.fire(E1_transitionNum);
-			
-			double DeltaT = E1.time - A.CurrentTime;
-			int SE = A.GetEnabled_S_Edges(A.CurrentLocation, E1_transitionNum, DeltaT, OldMarking, N.Marking);
-			
-			if (SE < 0) {
-				returnResultFalse();
-				return;
-			} else {
-				updateLHA(SE, DeltaT, OldMarking);
-				if (A.isFinal(A.CurrentLocation)) {
-					returnResultTrue(OldMarking, D);					
-					return;
-				} else {
-					updateSPN(E1_transitionNum);
-					AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
-					QueueIsEmpty = (*EQ).isEmpty();
-				}
-			}
-		}
+	bool continueb = true;
+	while ((!(*EQ).isEmpty() || AE.Index > -1) && continueb ) {
+		continueb = SimulateOneStep(&AE);
 	}
 }
 
