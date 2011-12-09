@@ -30,12 +30,14 @@ numericalSolver::numericalSolver(){
 void numericalSolver::computeMatrix(){
 	cout << "N: " << nbState << endl;	
 	
-	mat T = zeros(nbState,nbState+1);
+	int nbState2 = nbState;
+	
+	mat T = zeros(nbState,nbState2);
 	boostmat::vector<double> vn = *finalVector;
 	
-	for (int i=0; i<= nbState; i++) {
+	for (int i=0; i< nbState2; i++) {
 		for (int j=0; j<nbState; j++)T(j,i) = vn(j);
-		if(i<nbState)vn = boostmat::prod ((*transitionsMatrix),vn);
+		if(i<nbState2)vn = boostmat::prod ((*transitionsMatrix),vn);
 	}
 	
 	cout << T << endl;
@@ -43,7 +45,7 @@ void numericalSolver::computeMatrix(){
 	mat Q, R;
 	qr(Q,R,trans(T));
 	
-	vec nullvec = Q.col(nbState);
+	vec nullvec = Q.col(nbState2-1);
 	cout << "Q:" << endl << Q;
 	cout << "R:" << endl << R;
 	
@@ -54,7 +56,7 @@ void numericalSolver::computeMatrix(){
 		combine[i];
 	}*/
 	
-	//cout << "Q * nullvec:" << endl << T* nullvec<< endl;
+	cout << "Q * nullvec:" << endl << T* nullvec<< endl;
 		
 	
 	//mat Q2 = Q.submat(0,n,m-1,m-1);

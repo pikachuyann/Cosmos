@@ -17,9 +17,9 @@ FILES=$(OBJPATH)/server.o \
 	$(OBJPATH)/modelwriter.o
 
 $(OBJPATH)/%.o: %.cpp
-	$(CC) $(OPTIONS) -c $*.cpp -o $@	
+	$(CC) -I../libgml/ $(OPTIONS) -c $*.cpp -o $@	
 $(OBJPATH)/%.o: %.cc
-	$(CC) $(OPTIONS) -c $*.cc -o $@
+	$(CC) -I../libgml/ $(OPTIONS) -c $*.cc -o $@
 $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
 	$(CC) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
 
