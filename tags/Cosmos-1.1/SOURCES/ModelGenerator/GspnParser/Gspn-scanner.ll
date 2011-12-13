@@ -1,3 +1,4 @@
+
 %{                                            /* -*- C++ -*- */
 # include <cstdlib>
 # include <errno.h>
@@ -122,6 +123,9 @@ blank [ \t]
 "floor" {gspnlval->name = new std::string (gspntext); return token::FLOOR;
             Reader.error (*gspnlloc, "floor expected");}
 
+"abs" {gspnlval->name = new std::string (gspntext); return token::ABS;
+            Reader.error (*gspnlloc, "abs expected");}
+
 "SINGLE" {gspnlval->name = new std::string (gspntext); return token::SINGLE;
             Reader.error (*gspnlloc, "SINGLE expected");}
 
@@ -179,8 +183,6 @@ void Gspn_Reader::scan_expression (const string& f){
   const char* ch=f.c_str();
 gspnset_debug(trace_scanning);
 
-// GSPN_BUFFER_STATE b=gspn_scan_string(ch);
-// gspn_switch_to_buffer(b);
  gspn_scan_string(ch);
  
 }

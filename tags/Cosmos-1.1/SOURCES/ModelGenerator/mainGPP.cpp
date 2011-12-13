@@ -11,15 +11,64 @@
 #include "./GspnParser/Gspn-Reader.hpp"
 #include "server.hpp"
 
+
+using namespace std;
+
+
 #ifdef __APPLE__
-#define FindPath FindPathMac
+#include <mach-o/dyld.h>
+void FindPathMac(SimParam& P) {
+	char path[1024];
+	uint32_t size = sizeof(path);
+	if (_NSGetExecutablePath(path, &size) != 0){
+		printf("buffer too small; need size %u\n", size);
+		exit(0);
+	}
+	
+	P.Path=path;
+	std::string::size_type t = P.Path.find_last_of("/");
+	P.Path = P.Path.substr(0, t);
+	P.Path.append("/");
+}
+#define FindPath FindPathMac 
+
 #elif __linux__
+void FindPathLinux(SimParam& P) {
+
+    char path[1024];
+    char link[512];
+    sprintf(link, "/proc/%d/exe", getpid());
+    int sz = readlink(link, path, 1024);
+    if (sz >= 0) {
+        path[sz] = 0;
+        P.Path = path;
+        std::string::size_type t = P.Path.find_last_of("/");
+        P.Path = P.Path.substr(0, t);
+        P.Path.append("/");
+    }
+}
 #define FindPath FindPathLinux
+
+#elif __FreeBSD__
+void FindPathFreeBSD(SimParam& P) {
+
+    char path[1024];
+    char link[512];
+    sprintf(link, "/proc/%d/exe", getpid());
+    int sz = readlink(link, path, 1024);
+    if (sz >= 0) {
+        path[sz] = 0;
+        P.Path = path;
+        std::string::size_type t = P.Path.find_last_of("/");
+        P.Path = P.Path.substr(0, t);
+        P.Path.append("/");
+    }
+}
+#define FindPath FindPathFreeBSD
 #else
 #error "Operating system not supported"
 #endif
 
-using namespace std;
 
 void ViewParameters(SimParam& P) {
   cout << "Confidence interval width:      " << P.Width << endl;
@@ -218,26 +267,6 @@ void LoadSimParam(SimParam& P) {
   P.Njob = 1;
 }
 
-void FindPathLinux(SimParam& P) {
-
-  char path[1024];
-  char link[512];
-  sprintf(link, "/proc/%d/exe", getpid());
-  int sz = readlink(link, path, 1024);
-  if (sz >= 0) {
-    path[sz] = 0;
-    P.Path = path;
-    std::string::size_type t = P.Path.find_last_of("/");
-    P.Path = P.Path.substr(0, t);
-    P.Path.append("/");
-  }
-}
-
-void FindPathMac(SimParam& P) {
-  //to be done
-  cout << "Unknow Cosmos directory" << endl;
-  exit(1);
-}
 
 int main(int argc, char** argv) {
   SimParam P;

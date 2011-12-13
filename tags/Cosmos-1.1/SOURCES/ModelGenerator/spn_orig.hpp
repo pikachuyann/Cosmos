@@ -38,7 +38,8 @@ typedef vector <IntVector> IntMatrix;
 
 class SPN {
 public:
-  //------------------------- Rare Event ---------------------------------------
+  
+     //------------------------- Rare Event ---------------------------------------
   vector <double> Rate_Table;
   vector <double> Origine_Rate_Table;
   double Rate_Sum;
@@ -84,7 +85,8 @@ public:
     double min(double, double); //return the minimum of two numbers
     double max(double, double); //return the maximum of two numbers
 
-  //------------------------- Rare Event ---------------------------------------
+
+   //------------------------- Rare Event ---------------------------------------
   void Msimple();
   //-------------------------/Rare Event ---------------------------------------
 
@@ -106,17 +108,17 @@ public:
 
     void fire(int); // fire a given transition
     void unfire(int); // unfire a given transition
-
+      
     bool IsEnabled(int); // Check if a given transition is enabled
     vector<double> GetDistParameters(int); // compute the the parameters value of a given distribution 
-  //------------------------- Rare Event ---------------------------------------
+    //------------------------- Rare Event ---------------------------------------
   vector<double> GetDistParametersOrigin(int);
   //-------------------------/Rare Event ---------------------------------------
-
-
+  
     double GetWeight(int); // compute the the weight value of a given transition
     double GetPriority(int); // compute the the priority value of a given transition
 
+    
 
     //private:
     //};

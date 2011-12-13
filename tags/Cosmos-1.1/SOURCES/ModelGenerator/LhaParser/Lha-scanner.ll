@@ -56,7 +56,7 @@ blank [ \t]
             Reader.error (*lhalloc, ": expected");}
 
 "\\" {lhalval->name = new std::string (lhatext); return token::BackSlash;
-            Reader.error (*lhalloc, ": expected");}
+            Reader.error (*lhalloc, "\\ expected");}
 
 "(" {lhalval->name = new std::string (lhatext); return token::LB;
             Reader.error (*lhalloc, "( expected");}
@@ -65,9 +65,9 @@ blank [ \t]
 "&" {lhalval->name = new std::string (lhatext); return token::AND;
             Reader.error (*lhalloc, "& expected");}
 "|" {lhalval->name = new std::string (lhatext); return token::OR;
-            Reader.error (*lhalloc, "& expected");}
+            Reader.error (*lhalloc, "| expected");}
 "!" {lhalval->name = new std::string (lhatext); return token::NOT;
-            Reader.error (*lhalloc, "& expected");}
+            Reader.error (*lhalloc, "! expected");}
 
 "<=" {lhalval->name = new std::string (lhatext); return token::LEQ;
             Reader.error (*lhalloc, "<= expected");}
@@ -136,6 +136,9 @@ blank [ \t]
 "floor" {lhalval->name = new std::string (lhatext); return token::FLOOR;
             Reader.error (*lhalloc, "floor expected");}
 
+"abs" {lhalval->name = new std::string (lhatext); return token::ABS;
+            Reader.error (*lhalloc, "abs expected");}
+
 
 "min" {lhalval->name = new std::string (lhatext); return token::MIN;
             Reader.error (*lhalloc, "min expected");}
@@ -167,8 +170,12 @@ blank [ \t]
 "Integral" {lhalval->name = new std::string (lhatext); return token::INTEGRAL;
             Reader.error (*lhalloc, "Integral expected");}
 
-"Likelihood" {lhalval->name = new std::string (lhatext); return token::LIKELIHOOD;
-            Reader.error (*lhalloc, "LIKELIHOOD expected");}
+"Mean" {lhalval->name = new std::string (lhatext); return token::MEAN;
+            Reader.error (*lhalloc, "Mean expected");}
+
+"Var" {lhalval->name = new std::string (lhatext); return token::VAR;
+            Reader.error (*lhalloc, "Var expected");}
+
 
 {INT}      {
   errno = 0; 
@@ -204,8 +211,6 @@ void Lha_Reader::scan_expression (const string& f){
   const char* ch=f.c_str();
 lhaset_debug(trace_scanning);
 
-// lha_BUFFER_STATE b=lha_scan_string(ch);
-// lha_switch_to_buffer(b);
  lha_scan_string(ch);
  
 }

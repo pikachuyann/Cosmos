@@ -1,10 +1,10 @@
-Estimated Value:	2.76455e+257
-Standard Deviation:	nan
-Confidence interval:	[nan , nan]
+Estimated Value:	3.78566e-31
+Standard Deviation:	1.28731e-31
+Confidence interval:	[3.76674e-31 , 3.80459e-31]
 
-Width=	nan
-Total paths:	1852534357
-Accepted paths:	544110447
-Simulation time :	0
+Width=	3.78496e-33
+Total paths:	30700
+Accepted paths:	30700
+Simulation time :	19
 
 Confidence level:	0.99

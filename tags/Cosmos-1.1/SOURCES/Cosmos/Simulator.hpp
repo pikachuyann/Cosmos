@@ -44,10 +44,14 @@ public:
 
   SimOutput Result;
   double simTime;
+  
+  vector<double>* ResidualTime; //for transitions with Age Memory Policy
+  vector<double>* ActDate; //for transitions with Age Memory Policy
 
   int BatchSize;
   void SetBatchSize(int);
 
+  int Krand;
 
   void GenerateEvent(Event &, int);
   void GenerateEventRE(Event &, int);

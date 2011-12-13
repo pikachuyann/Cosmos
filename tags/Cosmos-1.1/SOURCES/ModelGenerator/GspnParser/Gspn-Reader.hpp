@@ -1,3 +1,4 @@
+
 #ifndef GSPN_READER_HH
 #define GSPN_READER_HH
 #include <string>
@@ -7,6 +8,8 @@
 #include "Gspn-parser.tab.hh"
 #include "../Eval/Eval.hpp"
 #include <vector>
+#include <map>
+#include <set>
 
 using namespace std;
 
@@ -43,6 +46,7 @@ struct GSPN {
     vector<bool> SingleService;
     vector<bool> MarkingDependent;
     vector<int> NbServers;
+    vector<bool> AgeMemory;
 
 
     vector<TransType> tType;

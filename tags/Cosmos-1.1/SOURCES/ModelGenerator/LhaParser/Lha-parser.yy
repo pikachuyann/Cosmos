@@ -105,6 +105,7 @@ vector <string> comp;
 %token <name>     MINUS
 %token <name>     POWER 
 %token <name>     FLOOR
+%token <name> 	  ABS
 
 %token <name>     MIN
 %token <name>     MAX
@@ -114,6 +115,8 @@ vector <string> comp;
 %token <name> 	  AVG
 %token <name>     LAST
 %token <name> 	  INTEGRAL
+%token <name> 	  MEAN
+%token <name> 	  VAR
 
 %token <name>     LhaName
 
@@ -130,8 +133,6 @@ vector <string> comp;
 
 %token <name>     locations
 %token <name>     edges
-
-%token <name>     LIKELIHOOD
 
 %type<expression> IntMarkingFormula
 %type<expression> RealMarkingFormula
@@ -193,6 +194,7 @@ IntMarkingFormula: ival {sprintf($$,"%d",$1);}
 			| IntMarkingFormula MUL   IntMarkingFormula   {sprintf($$,"%s * %s", $1, $3);  }
 			| IntMarkingFormula POWER IntMarkingFormula   {sprintf($$,"pow(%s , %s)", $1, $3);  }
 			| FLOOR LB IntMarkingFormula RB {sprintf($$,"floor( %s )", $3);  }
+			| ABS   LB IntMarkingFormula RB {sprintf($$,"fabs( %s )", $3);  }
 			| FLOOR LB IntMarkingFormula DIV IntMarkingFormula RB {sprintf($$,"floor( %s /double(%s))", $3,$5);  }
 			| MIN LB IntMarkingFormula COMMA IntMarkingFormula RB {sprintf($$,"min(%s , %s)", $3, $5);  }
 			| MAX LB IntMarkingFormula COMMA IntMarkingFormula RB {sprintf($$,"max(%s , %s)", $3, $5);  };
@@ -218,7 +220,8 @@ RealMarkingFormula:  rval {sprintf($$, "%f",$1);}
 			| RealMarkingFormula MINUS RealMarkingFormula   {sprintf($$,"%s - %s", $1, $3);  }
 			| RealMarkingFormula MUL   RealMarkingFormula   {sprintf($$,"%s * %s", $1, $3);  }
 			| RealMarkingFormula POWER RealMarkingFormula   {sprintf($$,"pow(%s , %s)", $1, $3);  }
-			| FLOOR LB RealMarkingFormula RB {sprintf($$,"floor( %s )", $3);  }			
+			| FLOOR LB RealMarkingFormula RB {sprintf($$,"floor( %s )", $3);  }	
+			| ABS LB RealMarkingFormula RB {sprintf($$,"fabs( %s )", $3);  }	
 			| MIN LB RealMarkingFormula COMMA RealMarkingFormula RB {sprintf($$,"min(%s , %s)", $3, $5);  }
 			| MAX LB RealMarkingFormula COMMA RealMarkingFormula RB {sprintf($$,"max(%s , %s)", $3, $5);  };
 			
@@ -249,7 +252,8 @@ RealVarMarkingFormula:  rval {sprintf($$, "%f",$1);}
 			| RealVarMarkingFormula MINUS RealVarMarkingFormula   {sprintf($$,"%s - %s", $1, $3);  }
 			| RealVarMarkingFormula MUL   RealVarMarkingFormula   {sprintf($$,"%s * %s", $1, $3);  }
 			| RealVarMarkingFormula POWER RealVarMarkingFormula   {sprintf($$,"pow(%s , %s)", $1, $3);  }
-			| FLOOR LB RealVarMarkingFormula RB {sprintf($$,"floor( %s )", $3);  }			
+			| FLOOR LB RealVarMarkingFormula RB {sprintf($$,"floor( %s )", $3);  }
+			| ABS LB RealVarMarkingFormula RB {sprintf($$,"fabs( %s )", $3);  }			
 			| MIN LB RealVarMarkingFormula COMMA RealVarMarkingFormula RB {sprintf($$,"min(%s , %s)", $3, $5);  }
 			| MAX LB RealVarMarkingFormula COMMA RealVarMarkingFormula RB {sprintf($$,"max(%s , %s)", $3, $5);  };
 
@@ -629,18 +633,10 @@ UPDATES: '{' Updates '}' {Reader.MyLha.FuncEdgeUpdates.push_back(FuncUpdateVecto
 Updates: Update
 	|Updates COMMA Update ;
 
-Update: str EQ RealVarMarkingFormula {
-  if(Reader.MyLha.VarIndex.find(*$1)!=Reader.MyLha.VarIndex.end())
-    {FuncUpdateVector[Reader.MyLha.VarIndex[*$1]]= $3;}
-  else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
- }
-| str EQ LIKELIHOOD MUL str {
-  if(Reader.MyLha.VarIndex.find(*$1)!=Reader.MyLha.VarIndex.end())
-    {std::ostringstream s; s<<Reader.MyLha.VarIndex[*$5];
-      FuncUpdateVector[Reader.MyLha.VarIndex[*$1]]= 
-	"Var [" + s.str() + "] * Likelihood"; }
-  else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
- };
+Update: str EQ RealVarMarkingFormula {if(Reader.MyLha.VarIndex.find(*$1)!=Reader.MyLha.VarIndex.end())
+		    {FuncUpdateVector[Reader.MyLha.VarIndex[*$1]]= $3;}
+				   else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
+};
 
 
 HaslExp: AVG LB AlgExpr RB SEMICOLON{Reader.MyLha.Algebraic=$3;};
@@ -651,6 +647,7 @@ AlgExpr:LhaFunc {string ss=$1;
 		|MAX LB AlgExpr COMMA AlgExpr  RB {sprintf($$,"max(%s,%s)", $3,$5);}
 		|MINUS AlgExpr %prec NEG {sprintf($$,"-%s", $2);}
 		|FLOOR LB AlgExpr RB {sprintf($$,"floor(%s)", $3);}
+		|ABS LB AlgExpr RB {sprintf($$,"fabs(%s)", $3);}
 		|LB AlgExpr RB {sprintf($$,"(%s)", $2);}
 		|AlgExpr POWER AlgExpr {sprintf($$,"pow(%s , %s)", $1,$3);}
 		|AlgExpr PLUS AlgExpr {sprintf($$,"(%s + %s)", $1,$3);}
@@ -683,6 +680,26 @@ LhaFunc:  LAST     LB LinForm RB {std::ostringstream s; s<<$3;
 									Reader.MyLha.LhaFuncArg.push_back(Reader.MyLha.LinearForm[s.str()]);
 									Reader.MyLha.LhaFuncType.push_back("Max");
 									string ss="Max("; ss.append(s.str()); ss.append(")");
+									if(Reader.MyLha.LhaFunction.find(ss)==Reader.MyLha.LhaFunction.end()) 
+										{int i=Reader.MyLha.LhaFunction.size();Reader.MyLha.LhaFunction[ss]=i;}
+									sprintf($$,"%s", ss.c_str());
+									}
+		 |MEAN LB LinForm RB{std::ostringstream s; s<<$3;
+									if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end()) 
+										{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
+									Reader.MyLha.LhaFuncArg.push_back(Reader.MyLha.LinearForm[s.str()]);
+									Reader.MyLha.LhaFuncType.push_back("Mean");
+									string ss="Mean("; ss.append(s.str()); ss.append(")");
+									if(Reader.MyLha.LhaFunction.find(ss)==Reader.MyLha.LhaFunction.end()) 
+										{int i=Reader.MyLha.LhaFunction.size();Reader.MyLha.LhaFunction[ss]=i;}
+									sprintf($$,"%s", ss.c_str());
+									}
+		|VAR LB LinForm RB{std::ostringstream s; s<<$3;
+									if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end()) 
+										{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
+									Reader.MyLha.LhaFuncArg.push_back(Reader.MyLha.LinearForm[s.str()]);
+									Reader.MyLha.LhaFuncType.push_back("Var");
+									string ss="Var("; ss.append(s.str()); ss.append(")");
 									if(Reader.MyLha.LhaFunction.find(ss)==Reader.MyLha.LhaFunction.end()) 
 										{int i=Reader.MyLha.LhaFunction.size();Reader.MyLha.LhaFunction[ss]=i;}
 									sprintf($$,"%s", ss.c_str());

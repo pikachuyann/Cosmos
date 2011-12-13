@@ -1,3 +1,4 @@
+
 %{                                            /* -*- C++ -*- */
 # include <cstdlib>
 # include <errno.h>
@@ -71,6 +72,9 @@ blank [ \t]
 
 "floor" {evallval->name = new std::string (evaltext); return token::FLOOR;
             Evaluate.error (*evallloc, "floor expected");}
+"abs" {evallval->name = new std::string (evaltext); return token::ABS;
+            Evaluate.error (*evallloc, "abs expected");}
+
 "double" {evallval->name = new std::string (evaltext); return token::DOUBLE;
             Evaluate.error (*evallloc, "double expected");}
 
@@ -111,8 +115,7 @@ void Eval::scan_expression (const string& f){
   const char* ch=f.c_str();
 evalset_debug(trace_scanning);
 
-// EVAL_BUFFER_STATE b=eval_scan_string(ch);
-// eval_switch_to_buffer(b);
+
  eval_scan_string(ch);
  
 }

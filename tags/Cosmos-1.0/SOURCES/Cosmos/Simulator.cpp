@@ -112,7 +112,6 @@ double Simulator::max(double a, double b) {
 }
 
 void Simulator::InitialEventsQueue() {
-
     Initialized = true;
 	
      for(int t=0;t<N.tr;t++){

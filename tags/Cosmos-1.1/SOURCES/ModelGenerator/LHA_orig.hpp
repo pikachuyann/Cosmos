@@ -38,43 +38,45 @@ typedef struct _AutEdge AutEdge;
 
 class LHA {
 public:
-  LHA();
-  void Load();
-  LHA(unsigned int, unsigned int);
-  LHA(const LHA& orig);
-  virtual ~LHA();
-  double Likelihood;
-  string label;
-  unsigned int NbLoc; // number of locations   
-  unsigned int StartingLoc; // Chosen from the set of lha initial locations according to their properties and Petri net initial marking
-  
-  set <int> InitLoc; // initial locations
-  set <int> FinalLoc; // final locations
-  
-  double CurrentTime;
-  int CurrentLocation;
-  
-  map <string, int> LocIndex; //for a given Location label returns its index among {0, 1, ..., NLoc-1}
-  vector <string> LocLabel;
- 
-  vector <string> StrLocProperty;
-  
-  
-  
-  map<string, int> EdgeIndex;
-  vector <LhaEdge> Edge;
-  vector < set <int> > Out_S_Edges; // for a given location l returns the set of synchronizing edges  starting from l
-  vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l   
-  vector < vector < set <int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...} 
-  
-  vector <string> EdgeConstraints;
-  vector < set<string> > EdgeActions;
-  vector <string> StrEdgeUpdates;
-  
-  vector < vector <vector <string> > > ConstraintsCoeffs;
-  vector < vector <string> > ConstraintsRelOp;
-  vector < vector <string> > ConstraintsConstants;
-  
+    LHA();
+    void Load();
+    LHA(unsigned int, unsigned int);
+    LHA(const LHA& orig);
+    virtual ~LHA();
+     //--------------------Rare events ---------------------
+    double Likelihood;
+    //--------------------/Rare events ---------------------
+    string label;
+    unsigned int NbLoc; // number of locations   
+    unsigned int StartingLoc; // Chosen from the set of lha initial locations according to their properties and Petri net initial marking
+
+    set <int> InitLoc; // initial locations
+    set <int> FinalLoc; // final locations
+
+    double CurrentTime;
+    int CurrentLocation;
+
+    map <string, int> LocIndex; //for a given Location label returns its index among {0, 1, ..., NLoc-1}
+    vector <string> LocLabel;
+
+    vector <string> StrLocProperty;
+
+
+
+    map<string, int> EdgeIndex;
+    vector <LhaEdge> Edge;
+    vector < set <int> > Out_S_Edges; // for a given location l returns the set of synchronizing edges  starting from l
+    vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l   
+    vector < vector < set <int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...} 
+
+    vector <string> EdgeConstraints;
+    vector < set<string> > EdgeActions;
+    vector <string> StrEdgeUpdates;
+
+    vector < vector <vector <string> > > ConstraintsCoeffs;
+    vector < vector <string> > ConstraintsRelOp;
+    vector < vector <string> > ConstraintsConstants;
+
 
 
 
@@ -141,11 +143,14 @@ public:
 
     double Min(double&, double&, double&);
     double Max(double&, double&, double&);
-    double Integral(double&, double&, double&, double&, double&);
+    double Integral(double&, double&, double&);
+    double IntegralP2(double&, double&, double&);
 
     vector<double> LinForm;
     vector<double> OldLinForm;
     vector<double> LhaFunc;
+    vector<double> M1Var;//only used  for Lha func type Var
+    vector<double> M2Var; //only used  for Lha func type Var
     double FormulaVal;
     double OldFormulaVal;
     void UpdateFormulaVal();

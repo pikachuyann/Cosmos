@@ -1,3 +1,4 @@
+
 %skeleton "lalr1.cc"                          /*  -*- C++ -*- */
 %require "2.4"
 %defines
@@ -50,6 +51,7 @@ class Eval;
 %token <name>     MIN
 %token <name>     MAX
 %token <name>	  FLOOR  
+%token <name>	  ABS
 %token <name>	  PLUS 
 %token <name>	  MINUS
 %token <name>	  MUL 
@@ -96,6 +98,7 @@ exp:
 	|MIN   LB exp COMMA exp RB	{if($3<=$5) $$=$3; else $$=$5;}
 	|MAX   LB exp COMMA exp RB	{if($3>=$5) $$=$3;	 else $$=$5;}
 	|FLOOR LB exp  RB			{$$=floor($3);}
+	|ABS LB exp  RB			{$$=fabs($3);};
 	
 %%
 

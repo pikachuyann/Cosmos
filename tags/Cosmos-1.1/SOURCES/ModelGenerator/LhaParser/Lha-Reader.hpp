@@ -101,7 +101,7 @@ public:
     virtual ~Lha_Reader();
 
     LhaType MyLha;
-    map<string, int> IndexDist;
+   
 
 
 

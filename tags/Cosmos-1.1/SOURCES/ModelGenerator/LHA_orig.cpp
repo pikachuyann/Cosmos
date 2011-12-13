@@ -1,3 +1,5 @@
+
+
 #include "LHA.hpp"
 
 #include <map>
@@ -75,10 +77,10 @@ void LHA::resetVarsTable() {
 }
 
 void LHA::reset(vector<int>& Marking) {
-  Likelihood = 1.0;
-  LHA::resetVarsTable();
-  CurrentLocation = EnabledInitLocation(Marking);
-  CurrentTime = 0;
+    Likelihood = 1.0;
+    LHA::resetVarsTable();
+    CurrentLocation = EnabledInitLocation(Marking);
+    CurrentTime = 0;
 }
 
 void LHA::setCurrentLocation(unsigned int loc) {
@@ -109,14 +111,19 @@ double LHA::Max(double& a, double& b, double& c) {
     return max(a, x);
 }
 
-double LHA::Integral(double& OldInt, double& t, double& Delta, double& x, double& y) {
-    if (x * y >= 0) return (OldInt + Delta * (x + y) / 2);
-    double a = (y - x) / Delta;
-    double b = x - a*t;
-    double t0 = -b / a;
-    return (OldInt + (t0 - t) * x / 2 + (t + Delta - t0) * y / 2);
+
+double LHA::Integral(double& LX0, double& LX1, double& Delta){
+    if(Delta==0) return 0;
+    double coef=(LX1-LX0)/Delta;
+    if(coef==0) return Delta * LX0;
+    return (pow(LX1,2)-pow(LX0,2))/(2*coef);
 }
 
-
+double LHA::IntegralP2(double& LX0, double& LX1, double& Delta){
+    if(Delta==0) return 0;
+    double coef=(LX1-LX0)/Delta;
+    if(coef==0) return Delta * pow(LX0,2);
+    return (pow(LX1,3)-pow(LX0,3))/(3*coef);
+}
 
 
