@@ -23,6 +23,8 @@
  *******************************************************************************
  */
 
+
+
 #include <cstdlib>
 #include <stdlib.h>
 #include <fstream>
@@ -98,7 +100,7 @@ bool ParseBuild(string filename, SimParam& P) {
     } else {
         Gspn_Reader gr;
         gReader = gr;
-        return false;
+	return false;
     }
 
 
@@ -127,11 +129,11 @@ bool ParseBuild(string filename, SimParam& P) {
     cout << "Parsing OK.\n" << endl;
     cout << "Start building ... " << endl;
     string cmd;
-    cmd = "g++  -O3 -emit-llvm " + P.Path + "../SOURCES/Cosmos/spn.cpp -c -o " + P.Path + "../Obj/Cosmos/spn.bc";
+    cmd = "g++ -O3  -emit-llvm " + P.Path + "../SOURCES/Cosmos/spn.cpp -c -o " + P.Path + "../Obj/Cosmos/spn.bc";
 
     if (system(cmd.c_str())) return false;
 
-    cmd = "g++  -O3 -emit-llvm " + P.Path + "../SOURCES/Cosmos/LHA.cpp -c -o " + P.Path + "../Obj/Cosmos/LHA.bc";
+    cmd = "g++   -O3 -emit-llvm " + P.Path + "../SOURCES/Cosmos/LHA.cpp -c -o " + P.Path + "../Obj/Cosmos/LHA.bc";
     if (system(cmd.c_str())) return false;
 
     cmd = "llc  " + P.Path + "../Obj/Cosmos/spn.bc -o " + P.Path + "../Obj/Cosmos/spn.s";
@@ -140,10 +142,10 @@ bool ParseBuild(string filename, SimParam& P) {
     cmd = "llc  " + P.Path + "../Obj/Cosmos/LHA.bc -o " + P.Path + "../Obj/Cosmos/LHA.s";
     if (system(cmd.c_str())) return false;
 
-    cmd = "g++  -O3 -emit-llvm " + P.Path + "../SOURCES/Cosmos/main.cpp -c -o " + P.Path + "../Obj/Cosmos/main.bc";
+    cmd = "g++ -O3  -emit-llvm " + P.Path + "../SOURCES/Cosmos/main.cpp -c -o " + P.Path + "../Obj/Cosmos/main.bc";
     if (system(cmd.c_str())) return false;
 
-    cmd = "g++  -O3 -emit-llvm " + P.Path + "../SOURCES/Cosmos/Simulator.cpp -c -o " + P.Path + "../Obj/Cosmos/Simulator.bc";
+    cmd = "g++  -O3  -emit-llvm " + P.Path + "../SOURCES/Cosmos/Simulator.cpp -c -o " + P.Path + "../Obj/Cosmos/Simulator.bc";
     if (system(cmd.c_str())) return false;
 
     cmd = "llc  " + P.Path + "../Obj/Cosmos/main.bc -o " + P.Path + "../Obj/Cosmos/main.s";
@@ -176,7 +178,21 @@ void Command(string str, SimParam& P) {
             system((os.str()).c_str());
 
         }
-    } else if (str == "width") {
+    } 
+    else if (str == "regensim") {
+
+        cout << "Type the path of the files: ";
+        string filename;
+        getline(cin, filename);
+        if (ParseBuild(filename, P)) {
+            ostringstream os;
+            if (P.Path == "") os << "./SimLLVM " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns <<" regen";
+            else os << P.Path << "SimLLVM " << P.Level << " " << P.Width << " " << P.Batch << " " << P.MaxRuns << " regen";
+            system((os.str()).c_str());
+
+        }
+    } 
+    else if (str == "width") {
         string st;
         cout << "Type the confidence width: ";
         getline(cin, st);
@@ -232,7 +248,7 @@ void Command(string str, SimParam& P) {
         ViewParameters(P);
     } else if (str == "help") {
         cout << "Allowed commands\n" << endl;
-        cout << "\tsim" << endl;
+        cout << "\tsim" << endl;	
         cout << "\twidth" << endl;
         cout << "\tlevel" << endl;
         cout << "\tbatch" << endl;

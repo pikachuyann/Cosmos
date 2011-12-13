@@ -23,6 +23,8 @@
  *******************************************************************************
  */
 
+
+
 #include "lex.lha.c"
 
 #include "Lha-parser.tab.hh"
@@ -34,6 +36,8 @@
 #include <sstream>
 #include <fstream>
 #include <set>
+
+
 
 
 
@@ -50,16 +54,6 @@ Lha_Reader::~Lha_Reader() {
 }
 
 int Lha_Reader::parse(string& expr) {
-
-
-
-
-    IndexDist["UNIFORM"] = 1;
-    IndexDist["EXPONENTIAL"] = 2;
-    IndexDist["DETERMINISTIC"] = 3;
-    IndexDist["LOGNORMAL"] = 4;
-    IndexDist["TRIANGLE"] = 5;
-    IndexDist["GEOMETRIC"] = 6;
 
     scan_expression(expr);
 
@@ -268,6 +262,8 @@ void Lha_Reader::WriteFile(string& Pref) {
     LhaCppFile << "    			OldLinForm=vL;" << endl;
     LhaCppFile << "    			vector<double> vF(" << MyLha.LhaFuncArg.size() << ",0);" << endl;
     LhaCppFile << "    			LhaFunc=vF;" << endl;
+    LhaCppFile << "    			M1Var=vF;" << endl;
+    LhaCppFile << "    			M2Var=vF;" << endl;
     LhaCppFile << "    }" << endl;
     LhaCppFile << "}\n" << endl;
 
@@ -481,7 +477,7 @@ void Lha_Reader::WriteFile(string& Pref) {
     }
     LhaCppFile << "    }\n" << endl;
 
-    LhaCppFile << "void LHA::UpdateLhaFunc(double& t, double& Delta ){" << endl;
+    LhaCppFile << "void LHA::UpdateLhaFunc(double& t0, double& Delta ){" << endl;
     for (int i = 0; i < MyLha.LhaFuncArg.size(); i++) {
         if (MyLha.LhaFuncType[i] == "Last")
             LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
@@ -493,15 +489,31 @@ void Lha_Reader::WriteFile(string& Pref) {
                     LhaCppFile << "    LhaFunc[" << i << "]=Max(LhaFunc[" << i << "],LinForm[" << MyLha.LhaFuncArg[i] << "],OldLinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
                 else {
                     if (MyLha.LhaFuncType[i] == "Integral")
-                        LhaCppFile << "    LhaFunc[" << i << "]=Integral(LhaFunc[" << i << "], t, Delta, OldLinForm[" << MyLha.LhaFuncArg[i] << "],LinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
+                        LhaCppFile << "    LhaFunc[" << i << "]=LhaFunc["<<i<<"]+Integral(OldLinForm[" << MyLha.LhaFuncArg[i] << "],LinForm[" << MyLha.LhaFuncArg[i] << "],Delta);" << endl;
+		    else {
+		      if (MyLha.LhaFuncType[i] == "Mean"){
+			  LhaCppFile <<"    if(Delta>0)"<<endl;	
+			  LhaCppFile <<"    	LhaFunc[" << i << "]=(t0*LhaFunc["<<i<<"]+Integral(OldLinForm[" << MyLha.LhaFuncArg[i] << "],LinForm[" << MyLha.LhaFuncArg[i] << "],Delta))/(t0+Delta);" << endl;
+		      }
+		      else {
+			if (MyLha.LhaFuncType[i] == "Var"){
+			    LhaCppFile << "    if(Delta>0){"<<endl;
+			    LhaCppFile << "        M1Var[" << i << "]=(t0*M1Var["<<i<<"]+Integral(OldLinForm[" << MyLha.LhaFuncArg[i] << "],LinForm[" << MyLha.LhaFuncArg[i] << "],Delta))/(t0+Delta);" << endl;
+			    LhaCppFile << "        M2Var[" << i << "]=(t0*M2Var["<<i<<"]+IntegralP2(OldLinForm[" << MyLha.LhaFuncArg[i] << "],LinForm[" << MyLha.LhaFuncArg[i] << "],Delta))/(t0+Delta);" << endl;
+			    LhaCppFile << "        LhaFunc[" << i << "]=M2Var["<<i<<"]-pow(M1Var["<<i<<"],2);"<< endl;
+			    LhaCppFile << "    }"<<endl;
+			  
+			    }
+			  }
+			}
+		    }
 
-                }
-            }
-        }
-
+		}
+	}
     }
 
     LhaCppFile << "\n    }\n" << endl;
+    
     LhaCppFile << "void LHA::UpdateFormulaVal(){" << endl;
     LhaCppFile << "\n    OldFormulaVal=FormulaVal;" << endl;
     LhaCppFile << "    FormulaVal=" << MyLha.Algebraic << ";\n" << endl;

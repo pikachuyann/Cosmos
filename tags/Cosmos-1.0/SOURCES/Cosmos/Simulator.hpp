@@ -23,6 +23,8 @@
  *******************************************************************************
  */
 
+
+
 #include "LHA.hpp"
 #include "spn.hpp"
 #include "EventsQueue.hpp"
@@ -54,16 +56,17 @@ public:
     void InitialEventsQueue();
 
     void RunSimulation();
-
-
-
+    
     SimOutput Result;
     double simTime;
 
-    vector<double>* ResidualTime;
+    vector<double>* ResidualTime; //for transitions with Age Memory Policy
+    vector<double>* ActDate; //for transitions with Age Memory Policy
 
     int BatchSize;
     long int MaxRuns;
+    
+    int Krand;
 
     double ConfWidth;
     double ConfLevel;
@@ -100,8 +103,7 @@ private:
     bool Initialized;
 
     map<string, int> IndexDist;
-    //boost::rand48 RandomNumber;
-	boost::mt19937 RandomNumber;
+    boost::mt19937 RandomNumber;
 
 
 

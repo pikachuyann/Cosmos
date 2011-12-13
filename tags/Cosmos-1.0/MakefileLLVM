@@ -1,7 +1,7 @@
 all: GenSpnLha_LLVM 
-	
+OPTION=-O3	
 GenSpnLha_LLVM: NativeAssembly
-	g++  Obj/ModelGenerator/mainLLVM.s Obj/ModelGenerator/Eval/Eval-parser.tab.s  Obj/ModelGenerator/Eval/Eval.s \
+	g++ $(OPTION)  Obj/ModelGenerator/mainLLVM.s Obj/ModelGenerator/Eval/Eval-parser.tab.s  Obj/ModelGenerator/Eval/Eval.s \
  Obj/ModelGenerator/GspnParser/Gspn-parser.tab.s  Obj/ModelGenerator/GspnParser/Gspn-Reader.s \
  Obj/ModelGenerator/LhaParser/Lha-Reader.s Obj/ModelGenerator/LhaParser/Lha-parser.tab.s  \
  Obj/Cosmos/Event.s Obj/Cosmos/EventsQueue.s Obj/Cosmos/ap.s \
@@ -20,15 +20,15 @@ NativeAssembly: Bitcode
 	llc Obj/Cosmos/ap.bc -o Obj/Cosmos/ap.s
 	
 Bitcode: 
-	g++ -O3 -emit-llvm SOURCES/ModelGenerator/Eval/Eval-parser.tab.cc -c -o Obj/ModelGenerator/Eval/Eval-parser.tab.bc
-	g++ -O3 -emit-llvm SOURCES/ModelGenerator/Eval/Eval.cpp -c -o Obj/ModelGenerator/Eval/Eval.bc	
-	g++ -O3 -emit-llvm SOURCES/ModelGenerator/GspnParser/Gspn-parser.tab.cc -c -o Obj/ModelGenerator/GspnParser/Gspn-parser.tab.bc
-	g++ -O3 -emit-llvm SOURCES/ModelGenerator/GspnParser/Gspn-Reader.cpp -c -o Obj/ModelGenerator/GspnParser/Gspn-Reader.bc	
-	g++ -O3 -emit-llvm SOURCES/ModelGenerator/LhaParser/Lha-parser.tab.cc -c -o Obj/ModelGenerator/LhaParser/Lha-parser.tab.bc
-	g++ -O3 -emit-llvm SOURCES/ModelGenerator/LhaParser/Lha-Reader.cpp -c -o Obj/ModelGenerator/LhaParser/Lha-Reader.bc	
-	g++ -O3 -emit-llvm SOURCES/ModelGenerator/mainLLVM.cpp -c -o Obj/ModelGenerator/mainLLVM.bc
-	g++ -O3 -emit-llvm SOURCES/Cosmos/Event.cpp -c -o Obj/Cosmos/Event.bc
-	g++ -O3 -emit-llvm SOURCES/Cosmos/EventsQueue.cpp -c -o  Obj/Cosmos/EventsQueue.bc
-	g++ -O3 -emit-llvm SOURCES/Cosmos/ap.cpp -c -o Obj/Cosmos/ap.bc
+	g++ $(OPTION) -emit-llvm SOURCES/ModelGenerator/Eval/Eval-parser.tab.cc -c -o Obj/ModelGenerator/Eval/Eval-parser.tab.bc
+	g++ $(OPTION) -emit-llvm SOURCES/ModelGenerator/Eval/Eval.cpp -c -o Obj/ModelGenerator/Eval/Eval.bc	
+	g++ $(OPTION) -emit-llvm SOURCES/ModelGenerator/GspnParser/Gspn-parser.tab.cc -c -o Obj/ModelGenerator/GspnParser/Gspn-parser.tab.bc
+	g++ $(OPTION) -emit-llvm SOURCES/ModelGenerator/GspnParser/Gspn-Reader.cpp -c -o Obj/ModelGenerator/GspnParser/Gspn-Reader.bc	
+	g++ $(OPTION) -emit-llvm SOURCES/ModelGenerator/LhaParser/Lha-parser.tab.cc -c -o Obj/ModelGenerator/LhaParser/Lha-parser.tab.bc
+	g++ $(OPTION) -emit-llvm SOURCES/ModelGenerator/LhaParser/Lha-Reader.cpp -c -o Obj/ModelGenerator/LhaParser/Lha-Reader.bc	
+	g++ $(OPTION) -emit-llvm SOURCES/ModelGenerator/mainLLVM.cpp -c -o Obj/ModelGenerator/mainLLVM.bc
+	g++ $(OPTION) -emit-llvm SOURCES/Cosmos/Event.cpp -c -o Obj/Cosmos/Event.bc
+	g++ $(OPTION) -emit-llvm SOURCES/Cosmos/EventsQueue.cpp -c -o  Obj/Cosmos/EventsQueue.bc
+	g++ $(OPTION) -emit-llvm SOURCES/Cosmos/ap.cpp -c -o Obj/Cosmos/ap.bc
 	
 

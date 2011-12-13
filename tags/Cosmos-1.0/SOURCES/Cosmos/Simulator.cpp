@@ -23,6 +23,8 @@
  *******************************************************************************
  */
 
+
+
 #include "Simulator.hpp"
 #include "spn.hpp"
 #include "LHA.hpp"
@@ -34,7 +36,6 @@
 #include <boost/random.hpp>
 #include <boost/generator_iterator.hpp>
 #include <boost/math/distributions/normal.hpp>
-#include <boost/math/distributions/binomial.hpp>
 #include <time.h>
 
 
@@ -46,8 +47,8 @@ Simulator::Simulator() {
 void Simulator::Load() {
     N.Load();
     A.Load();
-    int n = N.tr;
-    EQ = new EventsQueue(n);
+  
+    EQ = new EventsQueue(N.tr);
     simTime = 0;
     Initialized = false;
     IndexDist["UNIFORM"] = 1;
@@ -56,19 +57,24 @@ void Simulator::Load() {
     IndexDist["LOGNORMAL"] = 4;
     IndexDist["TRIANGLE"] = 5;
     IndexDist["GEOMETRIC"] = 6;
+    IndexDist["ERLANG"] = 7;
+    IndexDist["GAMMA"] = 8;
 
 
     RandomNumber.seed(time(NULL));
     srand(time(NULL));
+    
+    Krand=0;
+    
 
     BatchSize = 1000;
     MaxRuns = 100000000;
 
     ConfWidth = 0.001;
     ConfLevel = 0.99;
-
-
-
+	
+    ResidualTime=new vector<double> (N.tr); 
+    ActDate=new vector<double> (N.tr);
 }
 
 Simulator::Simulator(const Simulator& orig) {
@@ -108,8 +114,11 @@ double Simulator::max(double a, double b) {
 void Simulator::InitialEventsQueue() {
 
     Initialized = true;
-
-
+	
+     for(int t=0;t<N.tr;t++){
+	 (*ResidualTime)[t]=0;
+	 (*ActDate)[t]=-1;
+	}
     set<int, less <int> > ent;
     ent = N.enabledTrans();
     set<int>::iterator it;
@@ -117,7 +126,11 @@ void Simulator::InitialEventsQueue() {
     for (it = ent.begin(); it != ent.end(); it++) {
         GenerateEvent(E, (*it));
         (*EQ).insert(E);
-
+		
+		if(N.Transition[(*it)].AgeMemory){
+		  (*ResidualTime)[(*it)]=E.time;
+		  (*ActDate)[(*it)]=E.time;
+		}		
     }
 }
 
@@ -126,33 +139,32 @@ void Simulator::reset() {
     N.reset();
     A.reset(N.initMarking);
     simTime = 0;
-    (*EQ).reset();
-
-    RandomNumber.seed(RandomNumber());
+    (*EQ).reset();  
+    
+    if(Krand>=10000)
+    {
+      Krand=0;
+      srand(RandomNumber());      
+    }
+    else
+      Krand++;   
+    
     RandomNumber.seed(rand());
-
-
 }
 
 void Simulator::SimulateSinglePath() {
 
 
     bool QueueIsEmpty;
-    AutEdge AE;
-
-   
+    AutEdge AE;   
     double D = 0.0;
     A.CurrentLocation = A.EnabledInitLocation(N.Marking);
     A.CurrentTime = 0;
     simTime = 0;
     Event F;
-
-
-
+    
     Simulator::InitialEventsQueue();
-
     QueueIsEmpty = (*EQ).isEmpty();
-
     AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 
 
@@ -183,8 +195,6 @@ void Simulator::SimulateSinglePath() {
                     AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 
                 }
-
-
             }
             Result.first = false;
 
@@ -195,7 +205,7 @@ void Simulator::SimulateSinglePath() {
             int E1_transitionNum = E1.transition;
 
             while (E1.time >= AE.FiringTime) {
-
+	      
                 double DeltaT = AE.FiringTime - A.CurrentTime;
                 A.DoElapsedTimeUpdate(DeltaT, N.Marking);
                 A.UpdateLinForm(N.Marking);
@@ -204,9 +214,7 @@ void Simulator::SimulateSinglePath() {
                 A.CurrentTime += DeltaT;
                 simTime = A.CurrentTime;
                 A.CurrentLocation = A.Edge[AE.Index].Target;
-
-
-
+		
                 if (A.isFinal(A.CurrentLocation)) {
                     A.UpdateLinForm(N.Marking);
                     A.UpdateLhaFunc(A.CurrentTime, D);
@@ -225,9 +233,7 @@ void Simulator::SimulateSinglePath() {
             }
 
             vector<int> OldMarking = N.Marking;
-
             N.fire(E1_transitionNum);
-
             double DeltaT = E1.time - A.CurrentTime;
             int SE = A.GetEnabled_S_Edges(A.CurrentLocation, E1_transitionNum, DeltaT, OldMarking, N.Marking);
 
@@ -255,19 +261,43 @@ void Simulator::SimulateSinglePath() {
 
                 } else {
                     if (N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled
-
                         GenerateEvent(F, E1_transitionNum);
                         (*EQ).replace(F, 0); //replace the transition with the new generated time
+						if(N.Transition[E1_transitionNum].AgeMemory){
+						  (*ActDate)[E1_transitionNum]=A.CurrentTime;
+						  (*ResidualTime)[E1_transitionNum]=F.time-A.CurrentTime;
+						}
 
-                    } else (*EQ).remove(0);
+                    } else {
+					  (*EQ).remove(0);
+					  if(N.Transition[E1_transitionNum].AgeMemory){
+						  (*ActDate)[E1_transitionNum]=-1;						  
+						}
+					}
 
                     // Possibly adding Events corresponding to newly enabled-transitions
 
                     for (set<int>::iterator it = N.PossiblyEnabled[E1_transitionNum].begin(); it != N.PossiblyEnabled[E1_transitionNum].end(); it++) {
                         if (N.IsEnabled(*it)) {
                             if ((*EQ).TransTabValue(*it) < 0) {
-                                GenerateEvent(F, (*it));
-                                (*EQ).insert(F);
+								if(N.Transition[(*it)].AgeMemory){
+								  if((*ActDate)[(*it)]==-1){
+									GenerateEvent(F, (*it));
+									(*EQ).insert(F);
+									(*ResidualTime)[(*it)]=F.time-A.CurrentTime;
+								  }
+								  else{
+									GenerateEvent(F, (*it));
+									F.time=A.CurrentTime+(*ResidualTime)[(*it)];
+									(*EQ).insert(F);
+									
+								  }
+								  (*ActDate)[(*it)]=A.CurrentTime;								 						  
+								}
+								else{									
+								    GenerateEvent(F, (*it));									
+									(*EQ).insert(F);
+								}
 
 
                             } else {
@@ -287,8 +317,11 @@ void Simulator::SimulateSinglePath() {
 
                     for (set<int>::iterator it = N.PossiblyDisabled[E1_transitionNum].begin(); it != N.PossiblyDisabled[E1_transitionNum].end(); it++) {
                         if ((*EQ).TransTabValue(*it)>-1) {
-                            if (!N.IsEnabled(*it))
-                                (*EQ).remove((*EQ).TransTabValue(*it));
+                            if (!N.IsEnabled(*it)){
+							  (*EQ).remove((*EQ).TransTabValue(*it));
+							  if(N.Transition[(*it)].AgeMemory)
+								(*ResidualTime)[(*it)]=A.CurrentTime-(*ActDate)[(*it)];
+							}
                             else {
                                 if (N.Transition[(*it)].MarkingDependent) {
                                     GenerateEvent(F, (*it));
@@ -384,16 +417,33 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
             boost::variate_generator<boost::mt19937&, boost::triangle_distribution<> > gen(RandomNumber, TRIANGLE);
             return gen();
         }
+        
         case 6:
-        {//GOEMETRIC
+        {//GEOMETRIC           
+            boost::geometric_distribution<> GEO(1-param[0]);
+            boost::variate_generator<boost::mt19937&, boost::geometric_distribution<> > gen(RandomNumber, GEO);            
+	    return param[1]*gen();
+            
+        }
+        
+        case 7:
+        {//ERLANG           
             boost::uniform_real<> UNIF(0, 1);
             boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
-            double p = gen();
-            if (p >= param[0]) return param[1];
-            else return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
+	    double prod=1;
+	    for(int i=0;i<param[0];i++)
+	      prod=prod*gen();
+	    return -log(prod)/param[1];
+            
+        }
+        case 8:
+        {//GAMMA      
+        boost::gamma_distribution<> GAMMA(param[0]);        
+        boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gen(RandomNumber, GAMMA);
+	return param[1]*gen();            
         }
 
-        default: cout << "\nUnknown distribution !" << endl;
+        default: cout << "\nUnknown distribution ' "<<distribution<<" ' ! " << endl;
             break;
     }
     return DBL_MIN;
@@ -424,13 +474,12 @@ void Simulator::RunSimulation() {
     double Var = 0; //variance   
     double stdev = 0; //standard deviation
     double M2 = 0;
-    double Y = 0;
-    double x1sqr;
+   
     double Normal_quantile;
 
     double low, up;
     bool IsBernoulli = true;
-    double Dif;
+   
 
 
     cout << "START SIMULATION ..." << endl;
@@ -465,29 +514,21 @@ void Simulator::RunSimulation() {
                 Ksucc++;
                 Isucc++;
                 if (Result.second * (1 - Result.second) != 0) IsBernoulli = false;
-
-
-                Dif = Result.second - Mean;
-                Mean = Mean + Dif / Ksucc;
-
-                if (Ksucc > 1) {
-                    Dif = pow(Result.second, 2) - Y;
-                    Y = Y + Dif / (Ksucc - 1);
-                } else x1sqr = pow(Result.second, 2);
-            }
-
-            reset();
-            K++;
-
-        }
-        if (Ksucc > 1) {
-            M2 = x1sqr / (Ksucc - 1) + Y;
-            Var = M2 - (Ksucc / (Ksucc - 1)) * pow(Mean, 2);
+		Mean=((Ksucc-1)*Mean+Result.second)/Ksucc;
+		M2=((Ksucc-1)*M2+pow(Result.second,2.0))/Ksucc;   
+		reset();
+		K++;
+	    }
+        
+	}
+        Var=M2-pow(Mean,2.0);
+        if (Ksucc > 1) {            
+            Var = Ksucc * Var / (Ksucc-1); //non biased variance;
         }
         stdev = sqrt(Var);
         Ksucc_sqrt = sqrt(Ksucc);
         CurrentWidth = 2 * Normal_quantile * stdev / Ksucc_sqrt;
-        //        cout << "\r Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth;
+        cout << "\r Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth;
 
 
         RelErr = CurrentWidth / max(1, abs(Mean));
@@ -540,6 +581,3 @@ void Simulator::RunSimulation() {
     }
 
 }
-
-
-

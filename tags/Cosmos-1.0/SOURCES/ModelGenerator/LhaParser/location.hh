@@ -1,9 +1,9 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.4.3.  */
 
 /* Locations for Bison parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2009, 2010 Free Software
+   Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -36,21 +36,18 @@
  ** Define the lha::location class.
  */
 
-#ifndef BISON_LOCATION_HH
-# define BISON_LOCATION_HH
+#ifndef LHA_BISON_LOCATION_HH
+# define LHA_BISON_LOCATION_HH
 
 # include <iostream>
 # include <string>
 # include "position.hh"
 
 
-/* Line 162 of location.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace lha {
 
-/* Line 162 of location.cc  */
-#line 54 "location.hh"
+/* Line 163 of location.cc  */
+#line 51 "location.hh"
 
   /// Abstract a location.
   class location
@@ -160,12 +157,9 @@ namespace lha {
   }
 
 
-/* Line 271 of location.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // lha
 
-/* Line 271 of location.cc  */
-#line 170 "location.hh"
+/* Line 272 of location.cc  */
+#line 164 "location.hh"
 
 #endif // not BISON_LOCATION_HH

@@ -23,6 +23,8 @@
  *******************************************************************************
  */
 
+
+
 #include "spn.hpp"
 #include "LHA.hpp"
 #include "Simulator.hpp"
@@ -88,7 +90,7 @@ int main(int argc, char** argv) {
     str = argv[4];
     mySim.SetMaxRuns(StrToLongInt(str));
 
-    mySim.RunSimulation();
+    mySim.RunSimulation();  
 
     return (EXIT_SUCCESS);
 }

@@ -1,10 +1,9 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.4.3.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
+   Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -39,7 +38,7 @@
 
 
 /* Line 311 of lalr1.cc  */
-#line 43 "Gspn-parser.tab.cc"
+#line 42 "Gspn-parser.tab.cc"
 
 
 #include "Gspn-parser.tab.hh"
@@ -48,7 +47,7 @@
 
 
 /* Line 317 of lalr1.cc  */
-#line 52 "Gspn-parser.tab.cc"
+#line 51 "Gspn-parser.tab.cc"
 /* Unqualified %code blocks.  */
 
 /* Line 318 of lalr1.cc  */
@@ -72,10 +71,10 @@ bool AgeMemory;
 
 
 /* Line 318 of lalr1.cc  */
-#line 76 "Gspn-parser.tab.cc"
+#line 75 "Gspn-parser.tab.cc"
 
 #ifndef YY_
-# if YYENABLE_NLS
+# if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -135,13 +134,10 @@ do {					\
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 
-/* Line 380 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace gspn {
 
 /* Line 380 of lalr1.cc  */
-#line 145 "Gspn-parser.tab.cc"
+#line 141 "Gspn-parser.tab.cc"
 #if YYERROR_VERBOSE
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -214,29 +210,29 @@ namespace gspn {
         case 3: /* "str" */
 
 /* Line 449 of lalr1.cc  */
-#line 110 "Gspn-parser.yy"
+#line 111 "Gspn-parser.yy"
 	{ debug_stream () << *(yyvaluep->name); };
 
 /* Line 449 of lalr1.cc  */
-#line 222 "Gspn-parser.tab.cc"
+#line 218 "Gspn-parser.tab.cc"
 	break;
       case 5: /* "rval" */
 
 /* Line 449 of lalr1.cc  */
-#line 114 "Gspn-parser.yy"
+#line 115 "Gspn-parser.yy"
 	{ debug_stream () << (yyvaluep->RealVal); };
 
 /* Line 449 of lalr1.cc  */
-#line 231 "Gspn-parser.tab.cc"
+#line 227 "Gspn-parser.tab.cc"
 	break;
       case 6: /* "ival" */
 
 /* Line 449 of lalr1.cc  */
-#line 113 "Gspn-parser.yy"
+#line 114 "Gspn-parser.yy"
 	{ debug_stream () << (yyvaluep->IntVal); };
 
 /* Line 449 of lalr1.cc  */
-#line 240 "Gspn-parser.tab.cc"
+#line 236 "Gspn-parser.tab.cc"
 	break;
        default:
 	  break;
@@ -271,11 +267,11 @@ namespace gspn {
         case 3: /* "str" */
 
 /* Line 480 of lalr1.cc  */
-#line 111 "Gspn-parser.yy"
+#line 112 "Gspn-parser.yy"
 	{ delete (yyvaluep->name); };
 
 /* Line 480 of lalr1.cc  */
-#line 279 "Gspn-parser.tab.cc"
+#line 275 "Gspn-parser.tab.cc"
 	break;
 
 	default:
@@ -339,7 +335,7 @@ namespace gspn {
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
-    location_type yyerror_range[2];
+    location_type yyerror_range[3];
 
     /// $$.
     semantic_type yyval;
@@ -468,14 +464,14 @@ namespace gspn {
 	  case 2:
 
 /* Line 678 of lalr1.cc  */
-#line 126 "Gspn-parser.yy"
+#line 127 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%d",(yysemantic_stack_[(1) - (1)].IntVal));}
     break;
 
   case 3:
 
 /* Line 678 of lalr1.cc  */
-#line 127 "Gspn-parser.yy"
+#line 128 "Gspn-parser.yy"
     {
 				   if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end()) 
 						{std::ostringstream s; s<<" Marking[ "<<Reader.MyGspn.PlacesId[*(yysemantic_stack_[(1) - (1)].name)]<<" ] ";
@@ -492,84 +488,91 @@ namespace gspn {
   case 4:
 
 /* Line 678 of lalr1.cc  */
-#line 138 "Gspn-parser.yy"
+#line 139 "Gspn-parser.yy"
     {sprintf((yyval.expression),"( %s )", (yysemantic_stack_[(3) - (2)].expression));       }
     break;
 
   case 5:
 
 /* Line 678 of lalr1.cc  */
-#line 139 "Gspn-parser.yy"
+#line 140 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%s + %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 6:
 
 /* Line 678 of lalr1.cc  */
-#line 140 "Gspn-parser.yy"
+#line 141 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%s - %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 7:
 
 /* Line 678 of lalr1.cc  */
-#line 141 "Gspn-parser.yy"
+#line 142 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%s * %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 8:
 
 /* Line 678 of lalr1.cc  */
-#line 142 "Gspn-parser.yy"
+#line 143 "Gspn-parser.yy"
     {sprintf((yyval.expression),"pow(%s , %s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 9:
 
 /* Line 678 of lalr1.cc  */
-#line 143 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"floor( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
+#line 144 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"fabs( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
     break;
 
   case 10:
 
 /* Line 678 of lalr1.cc  */
-#line 144 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"floor( %s /double(%s)", (yysemantic_stack_[(6) - (3)].expression),(yysemantic_stack_[(6) - (5)].expression));  }
+#line 145 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"floor( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
     break;
 
   case 11:
 
 /* Line 678 of lalr1.cc  */
-#line 145 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"min(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
+#line 146 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"floor( %s /double(%s)", (yysemantic_stack_[(6) - (3)].expression),(yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 12:
 
 /* Line 678 of lalr1.cc  */
-#line 146 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"max(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
+#line 147 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"min(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 13:
 
 /* Line 678 of lalr1.cc  */
-#line 149 "Gspn-parser.yy"
-    {sprintf((yyval.expression), "%f",(yysemantic_stack_[(1) - (1)].RealVal));}
+#line 148 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"max(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 14:
 
 /* Line 678 of lalr1.cc  */
-#line 150 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"%d",(yysemantic_stack_[(1) - (1)].IntVal));}
+#line 151 "Gspn-parser.yy"
+    {sprintf((yyval.expression), "%f",(yysemantic_stack_[(1) - (1)].RealVal));}
     break;
 
   case 15:
 
 /* Line 678 of lalr1.cc  */
-#line 151 "Gspn-parser.yy"
+#line 152 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"%d",(yysemantic_stack_[(1) - (1)].IntVal));}
+    break;
+
+  case 16:
+
+/* Line 678 of lalr1.cc  */
+#line 153 "Gspn-parser.yy"
     {
 				   if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end()) 
 						{std::ostringstream s; s<<" Marking[ "<<Reader.MyGspn.PlacesId[*(yysemantic_stack_[(1) - (1)].name)]<<" ] ";
@@ -582,73 +585,80 @@ namespace gspn {
 					else{cout<<"'"<<*(yysemantic_stack_[(1) - (1)].name)<<"' has not been declared"<<endl;YYABORT;}}
     break;
 
-  case 16:
-
-/* Line 678 of lalr1.cc  */
-#line 161 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"( %s )", (yysemantic_stack_[(3) - (2)].expression));       }
-    break;
-
   case 17:
 
 /* Line 678 of lalr1.cc  */
-#line 162 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"%s /double(%s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
+#line 163 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"( %s )", (yysemantic_stack_[(3) - (2)].expression));       }
     break;
 
   case 18:
 
 /* Line 678 of lalr1.cc  */
-#line 163 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"%s + %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
+#line 164 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"%s /double(%s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 19:
 
 /* Line 678 of lalr1.cc  */
-#line 164 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"%s - %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
+#line 165 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"%s + %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 20:
 
 /* Line 678 of lalr1.cc  */
-#line 165 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"%s * %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
+#line 166 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"%s - %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 21:
 
 /* Line 678 of lalr1.cc  */
-#line 166 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"pow(%s , %s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
+#line 167 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"%s * %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 22:
 
 /* Line 678 of lalr1.cc  */
-#line 167 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"floor( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
+#line 168 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"pow(%s , %s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 23:
 
 /* Line 678 of lalr1.cc  */
-#line 168 "Gspn-parser.yy"
-    {sprintf((yyval.expression),"min(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
+#line 169 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"fabs( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
     break;
 
   case 24:
 
 /* Line 678 of lalr1.cc  */
-#line 169 "Gspn-parser.yy"
+#line 170 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"floor( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
+    break;
+
+  case 25:
+
+/* Line 678 of lalr1.cc  */
+#line 171 "Gspn-parser.yy"
+    {sprintf((yyval.expression),"min(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
+    break;
+
+  case 26:
+
+/* Line 678 of lalr1.cc  */
+#line 172 "Gspn-parser.yy"
     {sprintf((yyval.expression),"max(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
-  case 33:
+  case 35:
 
 /* Line 678 of lalr1.cc  */
-#line 188 "Gspn-parser.yy"
+#line 191 "Gspn-parser.yy"
     {if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(6) - (3)].name))!=Reader.MyGspn.RealConstant.end()) 
 							{cout<<"Constant "<<*(yysemantic_stack_[(6) - (3)].name)<<" already defined."<<endl; YYABORT;}
 					    else {string st=(yysemantic_stack_[(6) - (5)].expression);
@@ -657,10 +667,10 @@ namespace gspn {
 						}
     break;
 
-  case 34:
+  case 36:
 
 /* Line 678 of lalr1.cc  */
-#line 195 "Gspn-parser.yy"
+#line 198 "Gspn-parser.yy"
     {if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(6) - (3)].name))!=Reader.MyGspn.RealConstant.end()) 
 							{cout<<"Constant "<<*(yysemantic_stack_[(6) - (3)].name)<<" already defined."<<endl; YYABORT;}
 					    else {string st=(yysemantic_stack_[(6) - (5)].expression);
@@ -669,19 +679,19 @@ namespace gspn {
 						}
     break;
 
-  case 37:
+  case 39:
 
 /* Line 678 of lalr1.cc  */
-#line 205 "Gspn-parser.yy"
+#line 208 "Gspn-parser.yy"
     {Reader.MyGspn.pl=(yysemantic_stack_[(4) - (3)].IntVal);
                                     
 }
     break;
 
-  case 38:
+  case 40:
 
 /* Line 678 of lalr1.cc  */
-#line 208 "Gspn-parser.yy"
+#line 211 "Gspn-parser.yy"
     {if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))==Reader.MyGspn.IntConstant.end())
 					    {
 					    std::cout<<*(yysemantic_stack_[(4) - (3)].name)<<" was not declared"<<std::endl;
@@ -692,19 +702,19 @@ namespace gspn {
 }
     break;
 
-  case 39:
+  case 41:
 
 /* Line 678 of lalr1.cc  */
-#line 217 "Gspn-parser.yy"
+#line 220 "Gspn-parser.yy"
     {Reader.MyGspn.tr=(yysemantic_stack_[(4) - (3)].IntVal);
                                        
 }
     break;
 
-  case 40:
+  case 42:
 
 /* Line 678 of lalr1.cc  */
-#line 220 "Gspn-parser.yy"
+#line 223 "Gspn-parser.yy"
     {if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))==Reader.MyGspn.IntConstant.end())
 					    {
 					    std::cout<<*(yysemantic_stack_[(4) - (3)].name)<<" was not declared"<<std::endl;
@@ -715,10 +725,10 @@ namespace gspn {
 }
     break;
 
-  case 41:
+  case 43:
 
 /* Line 678 of lalr1.cc  */
-#line 229 "Gspn-parser.yy"
+#line 232 "Gspn-parser.yy"
     {
 						if(Reader.MyGspn.PlacesId.size()!=Reader.MyGspn.pl){
 						std::cout<<"Place label missing or redeclared, please check your places list"<<std::endl;
@@ -773,10 +783,6 @@ namespace gspn {
 												vector<int> d(Reader.MyGspn.tr);
                                                     Reader.MyGspn.NbServers=d;
 											  }
-											  if(true){
-											      vector<string> d;
-											      Par=d;
-											    }
 
 											MarkingDependent=false;
 											AgeMemory=false;
@@ -787,10 +793,10 @@ namespace gspn {
 }
     break;
 
-  case 42:
+  case 44:
 
 /* Line 678 of lalr1.cc  */
-#line 292 "Gspn-parser.yy"
+#line 295 "Gspn-parser.yy"
     {
               
                 Reader.MyGspn.PlacesList.insert(*(yysemantic_stack_[(1) - (1)].name));
@@ -799,10 +805,10 @@ namespace gspn {
 }
     break;
 
-  case 43:
+  case 45:
 
 /* Line 678 of lalr1.cc  */
-#line 298 "Gspn-parser.yy"
+#line 301 "Gspn-parser.yy"
     {Reader.MyGspn.PlacesList.insert(*(yysemantic_stack_[(3) - (3)].name));
                             int sz=Reader.MyGspn.PlacesId.size();
                             Reader.MyGspn.PlacesId[*(yysemantic_stack_[(3) - (3)].name)]=sz;
@@ -810,10 +816,10 @@ namespace gspn {
 }
     break;
 
-  case 44:
+  case 46:
 
 /* Line 678 of lalr1.cc  */
-#line 304 "Gspn-parser.yy"
+#line 307 "Gspn-parser.yy"
     {
 						      if(Reader.MyGspn.TransId.size()!=Reader.MyGspn.tr){
 						      std::cout<<"Transition label missing or redeclared, please check your transitions list"<<std::endl;
@@ -823,10 +829,10 @@ namespace gspn {
                                                     }
     break;
 
-  case 45:
+  case 47:
 
 /* Line 678 of lalr1.cc  */
-#line 312 "Gspn-parser.yy"
+#line 315 "Gspn-parser.yy"
     {Reader.MyGspn.TransList.insert(*(yysemantic_stack_[(1) - (1)].name));
                int sz=Reader.MyGspn.TransId.size();
                Reader.MyGspn.TransId[*(yysemantic_stack_[(1) - (1)].name)]=sz;
@@ -834,10 +840,10 @@ namespace gspn {
                 }
     break;
 
-  case 46:
+  case 48:
 
 /* Line 678 of lalr1.cc  */
-#line 317 "Gspn-parser.yy"
+#line 320 "Gspn-parser.yy"
     {Reader.MyGspn.TransList.insert(*(yysemantic_stack_[(3) - (3)].name));
                             int sz=Reader.MyGspn.TransId.size();
                             Reader.MyGspn.TransId[*(yysemantic_stack_[(3) - (3)].name)]=sz;
@@ -845,17 +851,17 @@ namespace gspn {
                             }
     break;
 
-  case 49:
+  case 51:
 
 /* Line 678 of lalr1.cc  */
-#line 327 "Gspn-parser.yy"
+#line 330 "Gspn-parser.yy"
     {}
     break;
 
-  case 52:
+  case 54:
 
 /* Line 678 of lalr1.cc  */
-#line 333 "Gspn-parser.yy"
+#line 336 "Gspn-parser.yy"
     { if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
 					    {cout<<"'"<<*(yysemantic_stack_[(6) - (2)].name)<<"' has not been declared"<<endl;
 					    YYABORT;
@@ -869,10 +875,10 @@ namespace gspn {
 				}
     break;
 
-  case 53:
+  case 55:
 
 /* Line 678 of lalr1.cc  */
-#line 346 "Gspn-parser.yy"
+#line 349 "Gspn-parser.yy"
     {
 				  for(int i=0; i<Reader.MyGspn.Priority.size();i++){
 					  if(Reader.MyGspn.Priority[i]=="")
@@ -884,24 +890,24 @@ namespace gspn {
   }
     break;
 
-  case 54:
-
-/* Line 678 of lalr1.cc  */
-#line 356 "Gspn-parser.yy"
-    {}
-    break;
-
-  case 55:
-
-/* Line 678 of lalr1.cc  */
-#line 357 "Gspn-parser.yy"
-    {}
-    break;
-
   case 56:
 
 /* Line 678 of lalr1.cc  */
 #line 359 "Gspn-parser.yy"
+    {}
+    break;
+
+  case 57:
+
+/* Line 678 of lalr1.cc  */
+#line 360 "Gspn-parser.yy"
+    {}
+    break;
+
+  case 58:
+
+/* Line 678 of lalr1.cc  */
+#line 362 "Gspn-parser.yy"
     {
 					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(10) - (2)].name))==Reader.MyGspn.TransList.end())
 						{
@@ -922,10 +928,10 @@ namespace gspn {
                         }
     break;
 
-  case 57:
+  case 59:
 
 /* Line 678 of lalr1.cc  */
-#line 377 "Gspn-parser.yy"
+#line 380 "Gspn-parser.yy"
     {
 					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(12) - (2)].name))==Reader.MyGspn.TransList.end())
 						{
@@ -947,10 +953,10 @@ namespace gspn {
                         }
     break;
 
-  case 58:
+  case 60:
 
 /* Line 678 of lalr1.cc  */
-#line 396 "Gspn-parser.yy"
+#line 399 "Gspn-parser.yy"
     {
 					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(15) - (2)].name))==Reader.MyGspn.TransList.end())
 						{
@@ -965,7 +971,7 @@ namespace gspn {
 							  {MarkingDependent=true;v[0]=st;
 							   }
 						else{ if (Evaluate.RealResult<= 0 ) {
-							  cout << "In exponential ditribution Lambda > 0" << endl;
+							  cout << "In exponential distribution Lambda > 0" << endl;
 							  YYABORT;
 							  }
 						std::ostringstream s;s<<Evaluate.RealResult;
@@ -986,10 +992,10 @@ namespace gspn {
 						}
     break;
 
-  case 59:
+  case 61:
 
 /* Line 678 of lalr1.cc  */
-#line 430 "Gspn-parser.yy"
+#line 433 "Gspn-parser.yy"
     {
 					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(17) - (2)].name))==Reader.MyGspn.TransList.end())
 						{
@@ -1004,7 +1010,7 @@ namespace gspn {
 							  {MarkingDependent=true;v[0]=st;
 							   }
 						else{ if (Evaluate.RealResult<= 0 ) {
-							  cout << "In exponential ditribution Lambda > 0" << endl;
+							  cout << "In exponential distribution Lambda > 0" << endl;
 							  YYABORT;
 							  }
 						std::ostringstream s;s<<Evaluate.RealResult;
@@ -1025,10 +1031,10 @@ namespace gspn {
 						}
     break;
 
-  case 60:
+  case 62:
 
 /* Line 678 of lalr1.cc  */
-#line 464 "Gspn-parser.yy"
+#line 467 "Gspn-parser.yy"
     {
 					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(10) - (2)].name))==Reader.MyGspn.TransList.end())
 						{
@@ -1049,10 +1055,10 @@ namespace gspn {
                         }
     break;
 
-  case 61:
+  case 63:
 
 /* Line 678 of lalr1.cc  */
-#line 488 "Gspn-parser.yy"
+#line 491 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
 				 if(Evaluate.parse(st)) 
 					{cout<<"Weight is not marking dependent: '"<<st<<"'"<<endl;YYABORT; }
@@ -1065,10 +1071,10 @@ namespace gspn {
 			  }
     break;
 
-  case 62:
+  case 64:
 
 /* Line 678 of lalr1.cc  */
-#line 499 "Gspn-parser.yy"
+#line 502 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
 				 if(Evaluate.parse(st)) 
 					{cout<<"Priority is not marking dependent: '"<<st<<"'"<<endl;YYABORT; }
@@ -1081,24 +1087,24 @@ namespace gspn {
 			  }
     break;
 
-  case 63:
-
-/* Line 678 of lalr1.cc  */
-#line 510 "Gspn-parser.yy"
-    {SingleService=true; NbServers=1;}
-    break;
-
-  case 64:
-
-/* Line 678 of lalr1.cc  */
-#line 511 "Gspn-parser.yy"
-    {SingleService=false;NbServers=INT_MAX;}
-    break;
-
   case 65:
 
 /* Line 678 of lalr1.cc  */
-#line 512 "Gspn-parser.yy"
+#line 513 "Gspn-parser.yy"
+    {SingleService=true; NbServers=1;}
+    break;
+
+  case 66:
+
+/* Line 678 of lalr1.cc  */
+#line 514 "Gspn-parser.yy"
+    {SingleService=false;NbServers=INT_MAX;}
+    break;
+
+  case 67:
+
+/* Line 678 of lalr1.cc  */
+#line 515 "Gspn-parser.yy"
     {NbServers= (yysemantic_stack_[(4) - (3)].IntVal);
 					  if(NbServers<1) 
 					  { cout<<"Number of servers should be at least one"<<endl;
@@ -1111,10 +1117,10 @@ namespace gspn {
 }
     break;
 
-  case 66:
+  case 68:
 
 /* Line 678 of lalr1.cc  */
-#line 522 "Gspn-parser.yy"
+#line 525 "Gspn-parser.yy"
     {
 					   if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))!=Reader.MyGspn.IntConstant.end()){
 					   NbServers=Reader.MyGspn.IntConstant[*(yysemantic_stack_[(4) - (3)].name)];
@@ -1130,24 +1136,24 @@ namespace gspn {
 }
     break;
 
-  case 67:
-
-/* Line 678 of lalr1.cc  */
-#line 536 "Gspn-parser.yy"
-    {AgeMemory=true;}
-    break;
-
-  case 68:
-
-/* Line 678 of lalr1.cc  */
-#line 537 "Gspn-parser.yy"
-    {AgeMemory=false;}
-    break;
-
   case 69:
 
 /* Line 678 of lalr1.cc  */
+#line 539 "Gspn-parser.yy"
+    {AgeMemory=true;}
+    break;
+
+  case 70:
+
+/* Line 678 of lalr1.cc  */
 #line 540 "Gspn-parser.yy"
+    {AgeMemory=false;}
+    break;
+
+  case 71:
+
+/* Line 678 of lalr1.cc  */
+#line 543 "Gspn-parser.yy"
     {
 		distrib=*(yysemantic_stack_[(4) - (1)].name);
 		int np=Par.size();
@@ -1156,7 +1162,7 @@ namespace gspn {
         case 1:
 		{
             if (np != 2){
-                cout << "Uniform ditribution has two parameters: min and max where 0<=min<max" << endl;
+                cout << "Uniform distribution has two parameters: min and max where 0<=min<max" << endl;
                 YYABORT;
             }
 			double p1,p2;
@@ -1165,7 +1171,7 @@ namespace gspn {
 			st=Par[1];
 			Evaluate.parse(st);p2=Evaluate.RealResult;
             if ((p1>=p2) || (p1<0)) {
-               cout << "In uniform ditribution 0 <= min< max " << endl;
+               cout << "In uniform distribution 0 <= min< max " << endl;
                YYABORT;
             }
 	   break;
@@ -1174,7 +1180,7 @@ namespace gspn {
         case 2:
 		{ 
             if (np != 1) {
-                cout << "exponential ditribution has one parameter: Lambda > 0" << endl;
+                cout << "Exponential distribution has one parameter: Lambda > 0" << endl;
                 YYABORT;
             } 
                 
@@ -1182,7 +1188,7 @@ namespace gspn {
 			string st=Par[0];
 			Evaluate.parse(st);p1=Evaluate.RealResult;			
             if (p1<= 0 ) {
-               cout << "In exponential ditribution Lambda > 0" << endl;
+               cout << "In exponential distribution Lambda > 0" << endl;
                YYABORT;
             }
 	    break;
@@ -1191,7 +1197,7 @@ namespace gspn {
         case 3:
 		{
             if (np != 1) {
-                cout << "Deterministic ditribution has one parameter:  T >= 0" << endl;
+                cout << "Deterministic distribution has one parameter:  T >= 0" << endl;
                 YYABORT;
             }
             
@@ -1199,7 +1205,7 @@ namespace gspn {
 			string st=Par[0];
 			Evaluate.parse(st);p1=Evaluate.RealResult;			
             if (p1<0 ) {
-               cout << "In Deterministic ditribution Lambda > 0" << endl;
+               cout << "In Deterministic distribution T > 0" << endl;
                YYABORT;
             } 
 	    break;
@@ -1208,7 +1214,7 @@ namespace gspn {
         case 4:
 		{
             if (np != 2) {
-                cout << "Lognormal ditribution has two parameters: mu and sigma^2, where mu > 0 sigma^2 > 0" << endl;
+                cout << "Lognormal distribution has two parameters: mu and sigma^2, with sigma^2 > 0" << endl;
                 YYABORT;
             }
             
@@ -1217,17 +1223,22 @@ namespace gspn {
 			Evaluate.parse(st);p1=Evaluate.RealResult;
 			st=Par[1];
 			Evaluate.parse(st);p2=Evaluate.RealResult;
-            if ((p1<=0) || (p2<=0)) {
-               cout << "In Lognormal ditribution mu > 0 sigma^2 > 0" << endl;
+            if (p2<=0) {
+               cout << "In Lognormal distribution sigma^2 > 0" << endl;
                YYABORT;
-            } 
+            }
+			double x;	      
+			stringstream os;
+			x=sqrt(p2);
+			os << x;	    
+			Par[1]=os.str();
             break;
 	  }
 
         case 5:
 		{
             if (np != 3) {
-                cout << "Triangle ditribution has three parameters: 0 <= b <= c <= a" << endl;
+                cout << "Triangle distribution has three parameters: 0 <= b <= c <= a" << endl;
                 YYABORT;
             }
             double p1,p2,p3;
@@ -1238,7 +1249,7 @@ namespace gspn {
 			st=Par[2];
 			Evaluate.parse(st);p3=Evaluate.RealResult;
             if ((p1<0) || (p2<p1) || (p3<p2)) {
-               cout << "In Triangle ditribution: 0 <= b <= c<= a" << endl;
+               cout << "In Triangle distribution: 0 <= b <= c<= a" << endl;
                YYABORT;
             }
 
@@ -1249,7 +1260,7 @@ namespace gspn {
 	  case 6:
 		{
             if (np != 2) {
-                cout << "Geometric ditribution has two parameters: 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
+                cout << "Geometric distribution has two parameters: 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
                 YYABORT;
             }
 			double p1,p2;
@@ -1258,10 +1269,56 @@ namespace gspn {
 			st=Par[1];
 			Evaluate.parse(st);p2=Evaluate.RealResult;
             if ((p1<0) || (p1>1) || p2<=0) {
-               cout << "In Geometric ditribution 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
+               cout << "In Geometric distribution 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
                YYABORT;
             }            
 	    break;
+	  }
+        case 7:
+		{
+            if (np != 2) {
+                cout << "Erlang distribution has two parameters: Shape and Rate, where Shape is a positive integer and Rate > 0" << endl;
+                YYABORT;
+            }
+            
+            
+			string st=Par[0];
+			Evaluate.parse(st);
+			if(Evaluate.RealResult != Evaluate.IntResult || Evaluate.IntResult < 1){
+               cout << "In Erlang distribution Shape is a positive integer" << endl;
+               YYABORT;
+            } 
+			
+			st=Par[1];
+			Evaluate.parse(st);
+            if (Evaluate.RealResult<=0) {
+               cout << "In Erlang distribution Rate > 0" << endl;
+               YYABORT;
+            } 
+            break;
+	  }
+	  case 8:
+		{
+            if (np != 2) {
+                cout << "Gamma distribution has two parameters: Shape>0 and Scale>0" << endl;
+                YYABORT;
+            }
+            
+            
+			string st=Par[0];
+			Evaluate.parse(st);
+			if(Evaluate.RealResult<=0){
+               cout << "In Gamma distribution Shape > 0" << endl;
+               YYABORT;
+            } 
+			
+			st=Par[1];
+			Evaluate.parse(st);
+            if (Evaluate.RealResult<=0) {
+               cout << "In Gamma distribution Scale > 0" << endl;
+               YYABORT;
+            } 
+            break;
 	  }
 
         default: cout << "\nUnknown distribution !" << endl;
@@ -1271,44 +1328,44 @@ namespace gspn {
 }
     break;
 
-  case 72:
+  case 74:
 
 /* Line 678 of lalr1.cc  */
-#line 669 "Gspn-parser.yy"
+#line 723 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
 				 if(Evaluate.parse(st)) 
-					{cout<<"The exponential ditribution is the only marking dependent distribution: '"<<st<<"'"<<endl;YYABORT; }
+					{cout<<"The exponential distribution is the only marking dependent distribution: '"<<st<<"'"<<endl;YYABORT; }
 				 else{std::ostringstream s;s<<Evaluate.RealResult;
 				 Par.push_back(s.str());
 					} 
 				}
     break;
 
-  case 73:
-
-/* Line 678 of lalr1.cc  */
-#line 678 "Gspn-parser.yy"
-    {}
-    break;
-
-  case 74:
-
-/* Line 678 of lalr1.cc  */
-#line 680 "Gspn-parser.yy"
-    {}
-    break;
-
   case 75:
 
 /* Line 678 of lalr1.cc  */
-#line 681 "Gspn-parser.yy"
+#line 732 "Gspn-parser.yy"
     {}
     break;
 
   case 76:
 
 /* Line 678 of lalr1.cc  */
-#line 683 "Gspn-parser.yy"
+#line 734 "Gspn-parser.yy"
+    {}
+    break;
+
+  case 77:
+
+/* Line 678 of lalr1.cc  */
+#line 735 "Gspn-parser.yy"
+    {}
+    break;
+
+  case 78:
+
+/* Line 678 of lalr1.cc  */
+#line 737 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
 						      {
@@ -1331,10 +1388,10 @@ namespace gspn {
 						  }
     break;
 
-  case 77:
+  case 79:
 
 /* Line 678 of lalr1.cc  */
-#line 703 "Gspn-parser.yy"
+#line 757 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
 						      {
@@ -1351,31 +1408,31 @@ namespace gspn {
 						  }
     break;
 
-  case 78:
-
-/* Line 678 of lalr1.cc  */
-#line 718 "Gspn-parser.yy"
-    {}
-    break;
-
-  case 79:
-
-/* Line 678 of lalr1.cc  */
-#line 720 "Gspn-parser.yy"
-    {}
-    break;
-
   case 80:
 
 /* Line 678 of lalr1.cc  */
-#line 721 "Gspn-parser.yy"
+#line 772 "Gspn-parser.yy"
     {}
     break;
 
   case 81:
 
 /* Line 678 of lalr1.cc  */
-#line 723 "Gspn-parser.yy"
+#line 774 "Gspn-parser.yy"
+    {}
+    break;
+
+  case 82:
+
+/* Line 678 of lalr1.cc  */
+#line 775 "Gspn-parser.yy"
+    {}
+    break;
+
+  case 83:
+
+/* Line 678 of lalr1.cc  */
+#line 777 "Gspn-parser.yy"
     {
 						   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.TransList.end())
 						      {
@@ -1398,10 +1455,10 @@ namespace gspn {
 						  }
     break;
 
-  case 82:
+  case 84:
 
 /* Line 678 of lalr1.cc  */
-#line 743 "Gspn-parser.yy"
+#line 797 "Gspn-parser.yy"
     {
 						   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.TransList.end())
 						      {
@@ -1417,31 +1474,31 @@ namespace gspn {
 						    }
     break;
 
-  case 83:
-
-/* Line 678 of lalr1.cc  */
-#line 759 "Gspn-parser.yy"
-    {}
-    break;
-
-  case 84:
-
-/* Line 678 of lalr1.cc  */
-#line 761 "Gspn-parser.yy"
-    {}
-    break;
-
   case 85:
 
 /* Line 678 of lalr1.cc  */
-#line 762 "Gspn-parser.yy"
+#line 813 "Gspn-parser.yy"
     {}
     break;
 
   case 86:
 
 /* Line 678 of lalr1.cc  */
-#line 764 "Gspn-parser.yy"
+#line 815 "Gspn-parser.yy"
+    {}
+    break;
+
+  case 87:
+
+/* Line 678 of lalr1.cc  */
+#line 816 "Gspn-parser.yy"
+    {}
+    break;
+
+  case 88:
+
+/* Line 678 of lalr1.cc  */
+#line 818 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
 						      {
@@ -1464,10 +1521,10 @@ namespace gspn {
 						  }
     break;
 
-  case 87:
+  case 89:
 
 /* Line 678 of lalr1.cc  */
-#line 785 "Gspn-parser.yy"
+#line 839 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
 						      {
@@ -1487,7 +1544,7 @@ namespace gspn {
 
 
 /* Line 678 of lalr1.cc  */
-#line 1487 "Gspn-parser.tab.cc"
+#line 1548 "Gspn-parser.tab.cc"
 	default:
           break;
       }
@@ -1521,7 +1578,7 @@ namespace gspn {
 	error (yylloc, yysyntax_error_ (yystate, yytoken));
       }
 
-    yyerror_range[0] = yylloc;
+    yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
 	/* If just tried and failed to reuse lookahead token after an
@@ -1556,7 +1613,7 @@ namespace gspn {
     if (false)
       goto yyerrorlab;
 
-    yyerror_range[0] = yylocation_stack_[yylen - 1];
+    yyerror_range[1] = yylocation_stack_[yylen - 1];
     /* Do not reclaim the symbols of the rule which action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -1588,7 +1645,7 @@ namespace gspn {
 	if (yystate_stack_.height () == 1)
 	YYABORT;
 
-	yyerror_range[0] = yylocation_stack_[0];
+	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
 		     yystos_[yystate],
 		     &yysemantic_stack_[0], &yylocation_stack_[0]);
@@ -1597,10 +1654,10 @@ namespace gspn {
 	YY_STACK_PRINT ();
       }
 
-    yyerror_range[1] = yylloc;
+    yyerror_range[2] = yylloc;
     // Using YYLLOC is tempting, but would change the location of
     // the lookahead.  YYLOC is available though.
-    YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
+    YYLLOC_DEFAULT (yyloc, yyerror_range, 2);
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yyloc);
 
@@ -1692,37 +1749,38 @@ namespace gspn {
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  const short int Gspn_parser::yypact_ninf_ = -210;
+  const short int Gspn_parser::yypact_ninf_ = -215;
   const short int
   Gspn_parser::yypact_[] =
   {
-        -7,    44,    62,     7,    13,    35,    48,    73,    58,    69,
-      85,    59,   155,   120,   127,  -210,   162,   147,   147,    73,
-     169,   175,  -210,   158,   176,  -210,  -210,  -210,   188,   195,
-     196,   202,   199,   206,   183,   213,  -210,  -210,   194,  -210,
-     203,   204,  -210,  -210,  -210,  -210,  -210,  -210,    55,    51,
-     222,   207,   234,   223,   245,   246,  -210,  -210,    55,   241,
-     242,   243,     9,  -210,  -210,  -210,    51,   244,   247,   248,
-      56,   251,     0,  -210,   249,   215,   250,   230,  -210,    -5,
-    -210,    -2,   161,    55,    55,    55,  -210,    55,    55,    55,
-      55,    64,    51,    51,    51,  -210,    51,    51,    51,    51,
-      51,   252,   255,  -210,   260,     1,  -210,   256,   226,   253,
-    -210,   264,   261,   266,   263,  -210,   101,   105,   112,   257,
-       2,     2,  -210,  -210,    83,    92,   119,   258,   258,   217,
-     217,  -210,    55,  -210,   267,   265,  -210,   268,     5,  -210,
-     269,   236,  -210,  -210,  -210,  -210,    55,    55,  -210,    55,
-      51,    51,  -210,   168,    -1,  -210,   271,   270,  -210,   277,
-      11,  -210,   272,   177,   184,   191,   129,   136,   275,   274,
-     276,   278,   280,   282,  -210,   281,   279,  -210,   287,    12,
-    -210,  -210,  -210,  -210,  -210,  -210,  -210,    51,    51,    51,
-      51,    -3,   288,  -210,   284,   286,  -210,   141,   224,  -210,
-     141,   289,   153,   290,    55,   292,   227,   291,  -210,    51,
-    -210,    51,   293,    51,   198,  -210,    55,   295,   228,  -210,
-     141,   285,    51,   231,   296,   205,  -210,    55,   297,   298,
-     299,   100,   301,  -210,   302,   212,  -210,  -210,    51,  -210,
-    -210,   300,  -210,  -210,   304,   305,   307,  -210,    77,  -210,
-    -210,  -210,   303,   232,   182,   100,   308,   306,   309,   310,
-    -210,  -210,  -210,   311,  -210
+        47,     4,    30,    72,    93,    34,    56,    62,    81,   101,
+     127,    10,   158,   124,   131,  -215,   182,   155,   155,    62,
+     193,   200,  -215,   148,   183,  -215,  -215,  -215,   203,   210,
+     211,   217,   214,   221,   190,   228,  -215,  -215,   216,  -215,
+     204,   205,  -215,  -215,  -215,  -215,  -215,  -215,    58,    54,
+     250,   219,   251,   238,   260,   261,  -215,  -215,    58,   256,
+     257,   258,   259,    55,  -215,  -215,  -215,    54,   262,   263,
+     264,   265,     7,   266,     0,  -215,   267,   229,   268,   246,
+    -215,    -5,  -215,    -2,   176,    58,    58,    58,    58,  -215,
+      58,    58,    58,    58,   109,    54,    54,    54,    54,  -215,
+      54,    54,    54,    54,    54,   269,   271,  -215,   277,     1,
+    -215,   272,   241,   273,  -215,   280,   278,   283,   281,  -215,
+      98,   102,   116,   185,   274,   149,   149,  -215,  -215,    64,
+      89,   123,   137,   275,   275,    -8,    -8,  -215,    58,  -215,
+     279,   282,  -215,   289,     2,  -215,   284,   253,  -215,  -215,
+    -215,  -215,    58,    58,  -215,    58,  -215,    54,    54,  -215,
+    -215,   192,    -1,  -215,   287,   290,  -215,   293,     3,  -215,
+     291,   199,   206,   213,   144,   161,   292,   294,   296,   297,
+     299,   295,  -215,   300,   298,  -215,   306,     8,  -215,  -215,
+    -215,  -215,  -215,  -215,  -215,    54,    54,    54,    54,    84,
+     307,  -215,   303,   305,  -215,   128,   186,  -215,   128,   308,
+     169,   309,    58,   311,   243,   310,  -215,    54,  -215,    54,
+     312,    54,   220,  -215,    58,   314,   244,  -215,   128,   304,
+      54,   247,   315,   227,  -215,    58,   316,   317,   318,   150,
+     320,  -215,   321,   234,  -215,  -215,    54,  -215,  -215,   319,
+    -215,  -215,   323,   324,   326,  -215,    -9,  -215,  -215,  -215,
+     322,   248,   160,   150,   327,   325,   328,   329,  -215,  -215,
+    -215,   330,  -215
   };
 
   /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -1731,53 +1789,54 @@ namespace gspn {
   const unsigned char
   Gspn_parser::yydefact_[] =
   {
-         0,     0,     0,     0,     0,     0,     0,     0,    29,     0,
-       0,     0,     0,     0,     0,     1,     0,    25,     0,     0,
-       0,     0,    28,     0,     0,    30,    31,    32,     0,     0,
-       0,     0,     0,     0,     0,     0,    88,    26,     0,    27,
-       0,     0,    35,    36,    38,    37,    40,    39,     0,     0,
+         0,     0,     0,     0,     0,     0,     0,     0,    31,     0,
+       0,     0,     0,     0,     0,     1,     0,    27,     0,     0,
+       0,     0,    30,     0,     0,    32,    33,    34,     0,     0,
+       0,     0,     0,     0,     0,     0,    90,    28,     0,    29,
+       0,     0,    37,    38,    40,    39,    42,    41,     0,     0,
        0,     0,     0,     0,     0,     0,     3,     2,     0,     0,
-       0,     0,     0,    15,    13,    14,     0,     0,     0,     0,
-       0,     0,     0,    50,     0,     0,     0,    47,    42,     0,
-      45,     0,     0,     0,     0,     0,    33,     0,     0,     0,
-       0,     0,     0,     0,     0,    34,     0,     0,     0,     0,
-       0,     0,     0,    51,     0,     0,    54,     0,     0,     0,
-      48,     0,     0,     0,     0,     4,     0,     0,     0,     7,
-       5,     6,     8,    16,     0,     0,     0,    17,    20,    18,
-      19,    21,     0,    49,     0,     0,    55,     0,     0,    74,
-       0,     0,    43,    41,    46,    44,     0,     0,     9,     0,
-       0,     0,    22,     0,     0,    53,     0,     0,    75,     0,
-       0,    79,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    73,     0,     0,    80,     0,     0,
-      84,    11,    12,    10,    23,    24,    52,     0,     0,     0,
-       0,     0,     0,    78,     0,     0,    85,    72,     0,    70,
-      62,     0,     0,     0,     0,     0,     0,     0,    83,     0,
-      69,     0,     0,     0,     0,    77,     0,     0,     0,    71,
-      61,     0,     0,     0,     0,     0,    82,     0,     0,     0,
-       0,     0,     0,    76,     0,     0,    87,    60,     0,    68,
-      67,     0,    56,    81,     0,     0,     0,    86,     0,    57,
-      63,    64,     0,     0,     0,     0,     0,     0,     0,     0,
-      58,    66,    65,     0,    59
+       0,     0,     0,     0,    16,    14,    15,     0,     0,     0,
+       0,     0,     0,     0,     0,    52,     0,     0,     0,    49,
+      44,     0,    47,     0,     0,     0,     0,     0,     0,    35,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    36,
+       0,     0,     0,     0,     0,     0,     0,    53,     0,     0,
+      56,     0,     0,     0,    50,     0,     0,     0,     0,     4,
+       0,     0,     0,     0,     7,     5,     6,     8,    17,     0,
+       0,     0,     0,    18,    21,    19,    20,    22,     0,    51,
+       0,     0,    57,     0,     0,    76,     0,     0,    45,    43,
+      48,    46,     0,     0,    10,     0,     9,     0,     0,    24,
+      23,     0,     0,    55,     0,     0,    77,     0,     0,    81,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    75,     0,     0,    82,     0,     0,    86,    12,
+      13,    11,    25,    26,    54,     0,     0,     0,     0,     0,
+       0,    80,     0,     0,    87,    74,     0,    72,    64,     0,
+       0,     0,     0,     0,     0,     0,    85,     0,    71,     0,
+       0,     0,     0,    79,     0,     0,     0,    73,    63,     0,
+       0,     0,     0,     0,    84,     0,     0,     0,     0,     0,
+       0,    78,     0,     0,    89,    62,     0,    70,    69,     0,
+      58,    83,     0,     0,     0,    88,     0,    59,    65,    66,
+       0,     0,     0,     0,     0,     0,     0,     0,    60,    68,
+      67,     0,    61
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const short int
   Gspn_parser::yypgoto_[] =
   {
-      -210,   -57,   -49,  -210,  -210,   313,   294,  -210,   312,   314,
-     316,   315,  -210,   273,  -210,  -210,  -210,  -210,   254,   317,
-    -210,   201,  -209,  -182,  -210,    67,  -210,  -210,   108,  -210,
-    -210,   185,  -210,  -210,   167,  -210,  -210,   149,  -210
+      -215,   -57,   -49,  -215,  -215,   332,   313,  -215,   331,   333,
+     335,   301,  -215,   334,  -215,  -215,  -215,  -215,   285,   336,
+    -215,   232,  -214,  -174,  -215,    38,  -215,  -215,    85,  -215,
+    -215,   171,  -215,  -215,   168,  -215,  -215,   159,  -215
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
   const short int
   Gspn_parser::yydefgoto_[] =
   {
-        -1,    62,   200,     4,     5,     6,     7,     8,    22,     9,
-      10,    23,    79,    24,    81,    17,    18,    72,    73,    36,
-     105,   106,   221,   201,   253,   241,   172,   198,   199,    53,
-     138,   139,    77,   160,   161,   110,   179,   180,    37
+        -1,    63,   208,     4,     5,     6,     7,     8,    22,     9,
+      10,    23,    81,    24,    83,    17,    18,    74,    75,    36,
+     109,   110,   229,   209,   261,   249,   180,   206,   207,    53,
+     144,   145,    79,   168,   169,   114,   187,   188,    37
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -1787,80 +1846,84 @@ namespace gspn {
   const unsigned short int
   Gspn_parser::yytable_[] =
   {
-        70,    82,   169,   111,   223,   204,   113,   205,   203,    71,
-     104,     1,     2,    15,   137,    87,    86,    91,    90,     3,
-     159,   178,    87,    88,    89,    90,   116,   117,   118,   245,
-     119,   120,   121,   122,    13,    14,   112,   170,   171,   114,
-     230,   102,   135,   124,   125,   126,   157,   127,   128,   129,
-     130,   131,   176,   195,    63,    11,    64,    65,    56,    16,
-      66,    57,    28,    95,    58,    29,     1,     2,    96,    97,
-      98,    99,   100,    12,   123,   153,    96,    97,    98,    99,
-     100,    67,    68,    69,     3,    59,    60,    61,     2,   163,
-     164,   150,   165,    20,    21,    96,    97,    98,    99,   100,
-     151,   166,   167,     1,    96,    97,    98,    99,   100,   146,
-     250,   251,   252,   147,    87,    88,    89,    90,    87,    88,
-      89,    90,   148,    32,   149,    87,    88,    89,    90,   152,
-      33,    96,    97,    98,    99,   100,   239,   240,   197,   184,
-     202,    96,    97,    98,    99,   100,   185,   214,    96,    97,
-      98,    99,   100,    96,    97,    98,    99,   100,    30,   225,
-     197,    31,   220,   212,   220,    96,    97,    98,    99,   100,
-     235,   115,    35,    34,    87,    88,    89,    90,   168,    21,
-      40,    87,    88,    89,    90,   257,    41,   181,   258,   220,
-      87,    88,    89,    90,   182,    44,    20,    87,    88,    89,
-      90,   183,    45,    46,    87,    88,    89,    90,   224,    47,
-      48,    87,    88,    89,    90,   234,    52,    49,    87,    88,
-      89,    90,   244,    50,    51,    87,    88,    89,    90,    96,
-      97,    71,   209,   100,   210,   216,   227,   217,   228,   231,
-     255,   232,   256,    54,    55,    75,    76,    74,    78,    80,
-      83,    84,    85,    92,   101,   107,    93,    94,   104,   109,
-     132,   108,   133,   134,   141,   137,   140,   142,   143,   144,
-     145,   156,   155,    90,   100,   154,   162,   174,   159,   173,
-     175,   178,   186,   187,   188,   191,   193,   189,   190,   192,
-     194,   206,   207,   208,   218,   229,    42,   211,   213,   215,
-      19,   222,   226,   233,   236,   237,   136,   238,   242,   243,
-     246,   247,   254,   248,   249,   260,   261,   219,   264,   262,
-     263,    25,   259,   158,    27,    26,   103,   177,   196,     0,
-       0,    39,     0,     0,     0,    38,     0,     0,     0,    43
+        72,    84,   177,   115,   100,   101,   117,   231,   104,    73,
+     108,   143,   167,    28,    99,    11,    29,   186,    94,   100,
+     101,   102,   103,   104,   211,   258,   259,   260,   120,   121,
+     122,   123,   253,   124,   125,   126,   127,   116,   178,   179,
+     118,    12,   106,   141,   165,   184,   129,   130,   131,   132,
+     203,   133,   134,   135,   136,   137,   238,    64,    16,    65,
+      66,    56,    89,    67,    57,     1,     2,    58,    90,    91,
+      92,    93,   157,     3,     1,     2,   100,   101,   102,   103,
+     104,   161,    20,    21,    68,    69,    70,    71,    59,    60,
+      61,    62,   212,    15,   213,   171,   172,   158,   173,    13,
+      14,   100,   101,   102,   103,   104,   152,     3,   174,   175,
+     153,    90,    91,    92,    93,    90,    91,    92,    93,   128,
+       2,   100,   101,   102,   103,   104,   154,    32,   155,    90,
+      91,    92,    93,   159,    33,   100,   101,   102,   103,   104,
+     100,   101,   102,   103,   104,     1,   205,   160,   210,   100,
+     101,   102,   103,   104,   192,   222,   100,   101,   102,   103,
+     104,    30,    90,   265,    31,    93,   266,   233,   205,    21,
+     228,   193,   228,   100,   101,   102,   103,   104,   243,   220,
+      35,   100,   101,   102,   103,   104,   119,   247,   248,    90,
+      91,    92,    93,    34,   217,   156,   218,   228,    90,    91,
+      92,    93,   176,    20,    40,    90,    91,    92,    93,   189,
+      44,    41,    90,    91,    92,    93,   190,    45,    46,    90,
+      91,    92,    93,   191,    47,    48,    90,    91,    92,    93,
+     232,    50,    49,    90,    91,    92,    93,   242,    52,    51,
+      90,    91,    92,    93,   252,    54,    55,    90,    91,    92,
+      93,   224,   235,   225,   236,   239,   263,   240,   264,    73,
+      76,    78,    77,    80,    82,    85,    86,    87,    88,   105,
+     111,    95,    96,    97,    98,   113,   108,   138,   139,   112,
+     140,   143,   146,   148,   147,   149,   150,   162,   151,   163,
+      93,   104,   164,   167,   170,   181,   183,   182,   199,   194,
+     186,   267,   227,   195,   196,   201,   197,   198,   200,   202,
+     214,   215,   216,   226,   237,   166,   219,   221,   223,    19,
+     230,   234,   241,   244,   245,    43,   246,   250,   251,   254,
+     255,   262,   256,   257,   268,   269,   185,   272,   270,   271,
+      25,   142,     0,    27,    26,     0,   204,     0,     0,     0,
+      39,     0,     0,     0,    38,     0,     0,    42,     0,   107
   };
 
   /* YYCHECK.  */
   const short int
   Gspn_parser::yycheck_[] =
   {
-        49,    58,     3,     8,   213,     8,     8,    10,   190,     9,
-       9,    18,    19,     0,     9,    13,     7,    66,    16,    26,
-       9,     9,    13,    14,    15,    16,    83,    84,    85,   238,
-      87,    88,    89,    90,    27,    28,    41,    38,    39,    41,
-     222,    41,    41,    92,    93,    94,    41,    96,    97,    98,
-      99,   100,    41,    41,     3,    11,     5,     6,     3,    24,
-       9,     6,     3,     7,     9,     6,    18,    19,    12,    13,
-      14,    15,    16,    11,    10,   132,    12,    13,    14,    15,
-      16,    30,    31,    32,    26,    30,    31,    32,    19,   146,
-     147,     8,   149,    20,    21,    12,    13,    14,    15,    16,
-       8,   150,   151,    18,    12,    13,    14,    15,    16,     8,
-      33,    34,    35,     8,    13,    14,    15,    16,    13,    14,
-      15,    16,    10,     3,    12,    13,    14,    15,    16,    10,
-       3,    12,    13,    14,    15,    16,    36,    37,   187,    10,
-     189,    12,    13,    14,    15,    16,    10,   204,    12,    13,
-      14,    15,    16,    12,    13,    14,    15,    16,     3,   216,
-     209,     6,   211,    10,   213,    12,    13,    14,    15,    16,
-     227,    10,    25,    11,    13,    14,    15,    16,    10,    21,
-      11,    13,    14,    15,    16,     3,    11,    10,     6,   238,
-      13,    14,    15,    16,    10,     7,    20,    13,    14,    15,
-      16,    10,     7,     7,    13,    14,    15,    16,    10,     7,
-      11,    13,    14,    15,    16,    10,    22,    11,    13,    14,
-      15,    16,    10,    40,    11,    13,    14,    15,    16,    12,
-      13,     9,     8,    16,    10,     8,     8,    10,    10,     8,
-       8,    10,    10,    40,    40,    11,    23,    40,     3,     3,
-       9,     9,     9,     9,     3,    40,     9,     9,     9,    29,
-       8,    11,     7,     3,    11,     9,    40,     3,     7,     3,
-       7,     3,     7,    16,    16,     8,    40,     7,     9,     8,
-       3,     9,     7,     9,     8,     3,     7,     9,     8,     8,
-       3,     3,     8,     7,     3,    10,    23,     8,     8,     7,
-       6,     8,     7,     7,     7,     7,   105,     8,     7,     7,
-      10,     7,     9,     8,     7,     7,    10,   209,     7,    10,
-      10,     8,   255,   138,    10,     9,    72,   160,   179,    -1,
-      -1,    19,    -1,    -1,    -1,    18,    -1,    -1,    -1,    24
+        49,    58,     3,     8,    12,    13,     8,   221,    16,     9,
+       9,     9,     9,     3,     7,    11,     6,     9,    67,    12,
+      13,    14,    15,    16,   198,    34,    35,    36,    85,    86,
+      87,    88,   246,    90,    91,    92,    93,    42,    39,    40,
+      42,    11,    42,    42,    42,    42,    95,    96,    97,    98,
+      42,   100,   101,   102,   103,   104,   230,     3,    24,     5,
+       6,     3,     7,     9,     6,    18,    19,     9,    13,    14,
+      15,    16,     8,    26,    18,    19,    12,    13,    14,    15,
+      16,   138,    20,    21,    30,    31,    32,    33,    30,    31,
+      32,    33,     8,     0,    10,   152,   153,     8,   155,    27,
+      28,    12,    13,    14,    15,    16,     8,    26,   157,   158,
+       8,    13,    14,    15,    16,    13,    14,    15,    16,    10,
+      19,    12,    13,    14,    15,    16,    10,     3,    12,    13,
+      14,    15,    16,    10,     3,    12,    13,    14,    15,    16,
+      12,    13,    14,    15,    16,    18,   195,    10,   197,    12,
+      13,    14,    15,    16,    10,   212,    12,    13,    14,    15,
+      16,     3,    13,     3,     6,    16,     6,   224,   217,    21,
+     219,    10,   221,    12,    13,    14,    15,    16,   235,    10,
+      25,    12,    13,    14,    15,    16,    10,    37,    38,    13,
+      14,    15,    16,    11,     8,    10,    10,   246,    13,    14,
+      15,    16,    10,    20,    11,    13,    14,    15,    16,    10,
+       7,    11,    13,    14,    15,    16,    10,     7,     7,    13,
+      14,    15,    16,    10,     7,    11,    13,    14,    15,    16,
+      10,    41,    11,    13,    14,    15,    16,    10,    22,    11,
+      13,    14,    15,    16,    10,    41,    41,    13,    14,    15,
+      16,     8,     8,    10,    10,     8,     8,    10,    10,     9,
+      41,    23,    11,     3,     3,     9,     9,     9,     9,     3,
+      41,     9,     9,     9,     9,    29,     9,     8,     7,    11,
+       3,     9,    41,     3,    11,     7,     3,     8,     7,     7,
+      16,    16,     3,     9,    41,     8,     3,     7,     3,     7,
+       9,   263,   217,     9,     8,     7,     9,     8,     8,     3,
+       3,     8,     7,     3,    10,   144,     8,     8,     7,     6,
+       8,     7,     7,     7,     7,    24,     8,     7,     7,    10,
+       7,     9,     8,     7,     7,    10,   168,     7,    10,    10,
+       8,   109,    -1,    10,     9,    -1,   187,    -1,    -1,    -1,
+      19,    -1,    -1,    -1,    18,    -1,    -1,    23,    -1,    74
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -1868,33 +1931,34 @@ namespace gspn {
   const unsigned char
   Gspn_parser::yystos_[] =
   {
-         0,    18,    19,    26,    45,    46,    47,    48,    49,    51,
-      52,    11,    11,    27,    28,     0,    24,    57,    58,    48,
-      20,    21,    50,    53,    55,    47,    52,    51,     3,     6,
-       3,     6,     3,     3,    11,    25,    61,    80,    61,    50,
-      11,    11,    55,    53,     7,     7,     7,     7,    11,    11,
-      40,    11,    22,    71,    40,    40,     3,     6,     9,    30,
-      31,    32,    43,     3,     5,     6,     9,    30,    31,    32,
-      44,     9,    59,    60,    40,    11,    23,    74,     3,    54,
-       3,    56,    43,     9,     9,     9,     7,    13,    14,    15,
-      16,    44,     9,     9,     9,     7,    12,    13,    14,    15,
-      16,     3,    41,    60,     9,    62,    63,    40,    11,    29,
-      77,     8,    41,     8,    41,    10,    43,    43,    43,    43,
-      43,    43,    43,    10,    44,    44,    44,    44,    44,    44,
-      44,    44,     8,     7,     3,    41,    63,     9,    72,    73,
-      40,    11,     3,     7,     3,     7,     8,     8,    10,    12,
-       8,     8,    10,    43,     8,     7,     3,    41,    73,     9,
-      75,    76,    40,    43,    43,    43,    44,    44,    10,     3,
-      38,    39,    68,     8,     7,     3,    41,    76,     9,    78,
-      79,    10,    10,    10,    10,    10,     7,     9,     8,     9,
-       8,     3,     8,     7,     3,    41,    79,    44,    69,    70,
-      44,    65,    44,    65,     8,    10,     3,     8,     7,     8,
-      10,     8,    10,     8,    43,     7,     8,    10,     3,    70,
-      44,    64,     8,    64,    10,    43,     7,     8,    10,    10,
-      65,     8,    10,     7,    10,    43,     7,     7,     8,    36,
-      37,    67,     7,     7,    10,    64,    10,     7,     8,     7,
-      33,    34,    35,    66,     9,     8,    10,     3,     6,    67,
-       7,    10,    10,    10,     7
+         0,    18,    19,    26,    46,    47,    48,    49,    50,    52,
+      53,    11,    11,    27,    28,     0,    24,    58,    59,    49,
+      20,    21,    51,    54,    56,    48,    53,    52,     3,     6,
+       3,     6,     3,     3,    11,    25,    62,    81,    62,    51,
+      11,    11,    56,    54,     7,     7,     7,     7,    11,    11,
+      41,    11,    22,    72,    41,    41,     3,     6,     9,    30,
+      31,    32,    33,    44,     3,     5,     6,     9,    30,    31,
+      32,    33,    45,     9,    60,    61,    41,    11,    23,    75,
+       3,    55,     3,    57,    44,     9,     9,     9,     9,     7,
+      13,    14,    15,    16,    45,     9,     9,     9,     9,     7,
+      12,    13,    14,    15,    16,     3,    42,    61,     9,    63,
+      64,    41,    11,    29,    78,     8,    42,     8,    42,    10,
+      44,    44,    44,    44,    44,    44,    44,    44,    10,    45,
+      45,    45,    45,    45,    45,    45,    45,    45,     8,     7,
+       3,    42,    64,     9,    73,    74,    41,    11,     3,     7,
+       3,     7,     8,     8,    10,    12,    10,     8,     8,    10,
+      10,    44,     8,     7,     3,    42,    74,     9,    76,    77,
+      41,    44,    44,    44,    45,    45,    10,     3,    39,    40,
+      69,     8,     7,     3,    42,    77,     9,    79,    80,    10,
+      10,    10,    10,    10,     7,     9,     8,     9,     8,     3,
+       8,     7,     3,    42,    80,    45,    70,    71,    45,    66,
+      45,    66,     8,    10,     3,     8,     7,     8,    10,     8,
+      10,     8,    44,     7,     8,    10,     3,    71,    45,    65,
+       8,    65,    10,    44,     7,     8,    10,    10,    66,     8,
+      10,     7,    10,    44,     7,     7,     8,    37,    38,    68,
+       7,     7,    10,    65,    10,     7,     8,     7,    34,    35,
+      36,    67,     9,     8,    10,     3,     6,    68,     7,    10,
+      10,    10,     7
   };
 
 #if YYDEBUG
@@ -1907,7 +1971,7 @@ namespace gspn {
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
-     123,   125
+     295,   123,   125
   };
 #endif
 
@@ -1915,15 +1979,16 @@ namespace gspn {
   const unsigned char
   Gspn_parser::yyr1_[] =
   {
-         0,    42,    43,    43,    43,    43,    43,    43,    43,    43,
-      43,    43,    43,    44,    44,    44,    44,    44,    44,    44,
-      44,    44,    44,    44,    44,    45,    45,    46,    46,    47,
+         0,    43,    44,    44,    44,    44,    44,    44,    44,    44,
+      44,    44,    44,    44,    45,    45,    45,    45,    45,    45,
+      45,    45,    45,    45,    45,    45,    45,    46,    46,    47,
       47,    48,    48,    49,    49,    50,    50,    51,    51,    52,
-      52,    53,    54,    54,    55,    56,    56,    57,    57,    58,
-      59,    59,    60,    61,    62,    62,    63,    63,    63,    63,
-      63,    64,    65,    66,    66,    66,    66,    67,    67,    68,
-      69,    69,    70,    71,    72,    72,    73,    73,    74,    75,
-      75,    76,    76,    77,    78,    78,    79,    79,    80
+      52,    53,    53,    54,    55,    55,    56,    57,    57,    58,
+      58,    59,    60,    60,    61,    62,    63,    63,    64,    64,
+      64,    64,    64,    65,    66,    67,    67,    67,    67,    68,
+      68,    69,    70,    70,    71,    72,    73,    73,    74,    74,
+      75,    76,    76,    77,    77,    78,    79,    79,    80,    80,
+      81
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -1931,14 +1996,15 @@ namespace gspn {
   Gspn_parser::yyr2_[] =
   {
          0,     2,     1,     1,     3,     3,     3,     3,     3,     4,
-       6,     6,     6,     1,     1,     1,     3,     3,     3,     3,
-       3,     3,     4,     6,     6,     2,     3,     3,     2,     1,
-       2,     2,     2,     6,     6,     2,     2,     4,     4,     4,
-       4,     6,     1,     3,     6,     1,     3,     4,     5,     6,
-       1,     2,     6,     6,     1,     2,    10,    12,    15,    17,
-      10,     1,     1,     1,     1,     4,     4,     1,     1,     4,
-       1,     3,     1,     6,     1,     2,     8,     6,     6,     1,
-       2,     8,     6,     6,     1,     2,     8,     6,     1
+       4,     6,     6,     6,     1,     1,     1,     3,     3,     3,
+       3,     3,     3,     4,     4,     6,     6,     2,     3,     3,
+       2,     1,     2,     2,     2,     6,     6,     2,     2,     4,
+       4,     4,     4,     6,     1,     3,     6,     1,     3,     4,
+       5,     6,     1,     2,     6,     6,     1,     2,    10,    12,
+      15,    17,    10,     1,     1,     1,     1,     4,     4,     1,
+       1,     4,     1,     3,     1,     6,     1,     2,     8,     6,
+       6,     1,     2,     8,     6,     6,     1,     2,     8,     6,
+       1
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -1951,15 +2017,15 @@ namespace gspn {
   "SEMICOLON", "COMMA", "LB", "RB", "EQ", "DIV", "MUL", "PLUS", "MINUS",
   "POWER", "GspnName", "NbPl", "NbTr", "PList", "TList", "in", "out",
   "marking", "transitions", "Const", "INT", "DOUBLE", "inhibitor", "MIN",
-  "MAX", "FLOOR", "SINGLE", "INFINITE", "MULTIPLE", "ENABLINGMEMORY",
-  "AGEMEMORY", "IMDT", "EXPO", "'{'", "'}'", "$accept", "IntStringFormula",
-  "RealStringFormula", "GSPN", "declarations", "Constants", "Sizes",
-  "Constant", "Lists", "NbPlaces", "NbTransitions", "PlacesList",
-  "PLabels", "TransitionsList", "TLabels", "definitions", "PlacesDef",
-  "PLACES", "PLACE", "TransitionsDef", "TRANSITIONS", "TRANSITION",
-  "WEIGHT", "PRIORITY", "SERVICE", "MEMORY", "dist", "params", "param",
-  "InArcs", "incells", "incell", "OutArcs", "outcells", "outcell",
-  "Inhibitors", "inhibcells", "inhibcell", "redifinitions", 0
+  "MAX", "FLOOR", "ABS", "SINGLE", "INFINITE", "MULTIPLE",
+  "ENABLINGMEMORY", "AGEMEMORY", "IMDT", "EXPO", "'{'", "'}'", "$accept",
+  "IntStringFormula", "RealStringFormula", "GSPN", "declarations",
+  "Constants", "Sizes", "Constant", "Lists", "NbPlaces", "NbTransitions",
+  "PlacesList", "PLabels", "TransitionsList", "TLabels", "definitions",
+  "PlacesDef", "PLACES", "PLACE", "TransitionsDef", "TRANSITIONS",
+  "TRANSITION", "WEIGHT", "PRIORITY", "SERVICE", "MEMORY", "dist",
+  "params", "param", "InArcs", "incells", "incell", "OutArcs", "outcells",
+  "outcell", "Inhibitors", "inhibcells", "inhibcell", "redifinitions", 0
   };
 #endif
 
@@ -1968,49 +2034,50 @@ namespace gspn {
   const Gspn_parser::rhs_number_type
   Gspn_parser::yyrhs_[] =
   {
-        45,     0,    -1,     6,    -1,     3,    -1,     9,    43,    10,
-      -1,    43,    14,    43,    -1,    43,    15,    43,    -1,    43,
-      13,    43,    -1,    43,    16,    43,    -1,    32,     9,    43,
-      10,    -1,    32,     9,    43,    12,    43,    10,    -1,    30,
-       9,    43,     8,    43,    10,    -1,    31,     9,    43,     8,
-      43,    10,    -1,     5,    -1,     6,    -1,     3,    -1,     9,
-      44,    10,    -1,    44,    12,    44,    -1,    44,    14,    44,
-      -1,    44,    15,    44,    -1,    44,    13,    44,    -1,    44,
-      16,    44,    -1,    32,     9,    44,    10,    -1,    30,     9,
-      44,     8,    44,    10,    -1,    31,     9,    44,     8,    44,
-      10,    -1,    46,    57,    -1,    46,    57,    80,    -1,    47,
-      48,    50,    -1,    48,    50,    -1,    49,    -1,    49,    47,
-      -1,    51,    52,    -1,    52,    51,    -1,    26,    27,     3,
-      11,    43,     7,    -1,    26,    28,     3,    11,    44,     7,
-      -1,    53,    55,    -1,    55,    53,    -1,    18,    11,     6,
+        46,     0,    -1,     6,    -1,     3,    -1,     9,    44,    10,
+      -1,    44,    14,    44,    -1,    44,    15,    44,    -1,    44,
+      13,    44,    -1,    44,    16,    44,    -1,    33,     9,    44,
+      10,    -1,    32,     9,    44,    10,    -1,    32,     9,    44,
+      12,    44,    10,    -1,    30,     9,    44,     8,    44,    10,
+      -1,    31,     9,    44,     8,    44,    10,    -1,     5,    -1,
+       6,    -1,     3,    -1,     9,    45,    10,    -1,    45,    12,
+      45,    -1,    45,    14,    45,    -1,    45,    15,    45,    -1,
+      45,    13,    45,    -1,    45,    16,    45,    -1,    33,     9,
+      45,    10,    -1,    32,     9,    45,    10,    -1,    30,     9,
+      45,     8,    45,    10,    -1,    31,     9,    45,     8,    45,
+      10,    -1,    47,    58,    -1,    47,    58,    81,    -1,    48,
+      49,    51,    -1,    49,    51,    -1,    50,    -1,    50,    48,
+      -1,    52,    53,    -1,    53,    52,    -1,    26,    27,     3,
+      11,    44,     7,    -1,    26,    28,     3,    11,    45,     7,
+      -1,    54,    56,    -1,    56,    54,    -1,    18,    11,     6,
        7,    -1,    18,    11,     3,     7,    -1,    19,    11,     6,
-       7,    -1,    19,    11,     3,     7,    -1,    20,    11,    40,
-      54,    41,     7,    -1,     3,    -1,    54,     8,     3,    -1,
-      21,    11,    40,    56,    41,     7,    -1,     3,    -1,    56,
-       8,     3,    -1,    58,    61,    71,    74,    -1,    58,    61,
-      71,    74,    77,    -1,    24,    11,    40,    59,    41,     7,
-      -1,    60,    -1,    59,    60,    -1,     9,     3,     8,    43,
-      10,     7,    -1,    25,    11,    40,    62,    41,     7,    -1,
-      63,    -1,    62,    63,    -1,     9,     3,     8,    68,     8,
-      65,     8,    64,    10,     7,    -1,     9,     3,     8,    68,
-       8,    65,     8,    64,     8,    67,    10,     7,    -1,     9,
-       3,     8,    39,     9,    44,    10,     8,    65,     8,    64,
-       8,    66,    10,     7,    -1,     9,     3,     8,    39,     9,
-      44,    10,     8,    65,     8,    64,     8,    66,     8,    67,
-      10,     7,    -1,     9,     3,     8,    38,     8,    65,     8,
-      64,    10,     7,    -1,    44,    -1,    44,    -1,    33,    -1,
-      34,    -1,    35,     9,     6,    10,    -1,    35,     9,     3,
-      10,    -1,    37,    -1,    36,    -1,     3,     9,    69,    10,
-      -1,    70,    -1,    69,     8,    70,    -1,    44,    -1,    22,
-      11,    40,    72,    41,     7,    -1,    73,    -1,    72,    73,
-      -1,     9,     3,     8,     3,     8,    43,    10,     7,    -1,
-       9,     3,     8,     3,    10,     7,    -1,    23,    11,    40,
-      75,    41,     7,    -1,    76,    -1,    75,    76,    -1,     9,
-       3,     8,     3,     8,    43,    10,     7,    -1,     9,     3,
-       8,     3,    10,     7,    -1,    29,    11,    40,    78,    41,
-       7,    -1,    79,    -1,    78,    79,    -1,     9,     3,     8,
-       3,     8,    43,    10,     7,    -1,     9,     3,     8,     3,
-      10,     7,    -1,    61,    -1
+       7,    -1,    19,    11,     3,     7,    -1,    20,    11,    41,
+      55,    42,     7,    -1,     3,    -1,    55,     8,     3,    -1,
+      21,    11,    41,    57,    42,     7,    -1,     3,    -1,    57,
+       8,     3,    -1,    59,    62,    72,    75,    -1,    59,    62,
+      72,    75,    78,    -1,    24,    11,    41,    60,    42,     7,
+      -1,    61,    -1,    60,    61,    -1,     9,     3,     8,    44,
+      10,     7,    -1,    25,    11,    41,    63,    42,     7,    -1,
+      64,    -1,    63,    64,    -1,     9,     3,     8,    69,     8,
+      66,     8,    65,    10,     7,    -1,     9,     3,     8,    69,
+       8,    66,     8,    65,     8,    68,    10,     7,    -1,     9,
+       3,     8,    40,     9,    45,    10,     8,    66,     8,    65,
+       8,    67,    10,     7,    -1,     9,     3,     8,    40,     9,
+      45,    10,     8,    66,     8,    65,     8,    67,     8,    68,
+      10,     7,    -1,     9,     3,     8,    39,     8,    66,     8,
+      65,    10,     7,    -1,    45,    -1,    45,    -1,    34,    -1,
+      35,    -1,    36,     9,     6,    10,    -1,    36,     9,     3,
+      10,    -1,    38,    -1,    37,    -1,     3,     9,    70,    10,
+      -1,    71,    -1,    70,     8,    71,    -1,    45,    -1,    22,
+      11,    41,    73,    42,     7,    -1,    74,    -1,    73,    74,
+      -1,     9,     3,     8,     3,     8,    44,    10,     7,    -1,
+       9,     3,     8,     3,    10,     7,    -1,    23,    11,    41,
+      76,    42,     7,    -1,    77,    -1,    76,    77,    -1,     9,
+       3,     8,     3,     8,    44,    10,     7,    -1,     9,     3,
+       8,     3,    10,     7,    -1,    29,    11,    41,    79,    42,
+       7,    -1,    80,    -1,    79,    80,    -1,     9,     3,     8,
+       3,     8,    44,    10,     7,    -1,     9,     3,     8,     3,
+      10,     7,    -1,    62,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -2019,29 +2086,31 @@ namespace gspn {
   Gspn_parser::yyprhs_[] =
   {
          0,     0,     3,     5,     7,    11,    15,    19,    23,    27,
-      32,    39,    46,    53,    55,    57,    59,    63,    67,    71,
-      75,    79,    83,    88,    95,   102,   105,   109,   113,   116,
-     118,   121,   124,   127,   134,   141,   144,   147,   152,   157,
-     162,   167,   174,   176,   180,   187,   189,   193,   198,   204,
-     211,   213,   216,   223,   230,   232,   235,   246,   259,   275,
-     293,   304,   306,   308,   310,   312,   317,   322,   324,   326,
-     331,   333,   337,   339,   346,   348,   351,   360,   367,   374,
-     376,   379,   388,   395,   402,   404,   407,   416,   423
+      32,    37,    44,    51,    58,    60,    62,    64,    68,    72,
+      76,    80,    84,    88,    93,    98,   105,   112,   115,   119,
+     123,   126,   128,   131,   134,   137,   144,   151,   154,   157,
+     162,   167,   172,   177,   184,   186,   190,   197,   199,   203,
+     208,   214,   221,   223,   226,   233,   240,   242,   245,   256,
+     269,   285,   303,   314,   316,   318,   320,   322,   327,   332,
+     334,   336,   341,   343,   347,   349,   356,   358,   361,   370,
+     377,   384,   386,   389,   398,   405,   412,   414,   417,   426,
+     433
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned short int
   Gspn_parser::yyrline_[] =
   {
-         0,   126,   126,   127,   138,   139,   140,   141,   142,   143,
-     144,   145,   146,   149,   150,   151,   161,   162,   163,   164,
-     165,   166,   167,   168,   169,   173,   174,   176,   177,   181,
-     182,   184,   185,   187,   194,   202,   203,   205,   208,   217,
-     220,   229,   292,   298,   304,   312,   317,   324,   325,   327,
-     329,   330,   332,   346,   356,   357,   359,   377,   396,   430,
-     464,   487,   498,   510,   511,   512,   522,   536,   537,   540,
-     664,   665,   669,   678,   680,   681,   683,   703,   718,   720,
-     721,   723,   743,   759,   761,   762,   764,   785,   802
+         0,   127,   127,   128,   139,   140,   141,   142,   143,   144,
+     145,   146,   147,   148,   151,   152,   153,   163,   164,   165,
+     166,   167,   168,   169,   170,   171,   172,   176,   177,   179,
+     180,   184,   185,   187,   188,   190,   197,   205,   206,   208,
+     211,   220,   223,   232,   295,   301,   307,   315,   320,   327,
+     328,   330,   332,   333,   335,   349,   359,   360,   362,   380,
+     399,   433,   467,   490,   501,   513,   514,   515,   525,   539,
+     540,   543,   718,   719,   723,   732,   734,   735,   737,   757,
+     772,   774,   775,   777,   797,   813,   815,   816,   818,   839,
+     856
   };
 
   // Print the state stack on the debug stream.
@@ -2093,7 +2162,7 @@ namespace gspn {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    40,     2,    41,     2,     2,     2,     2,
+       2,     2,     2,    41,     2,    42,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -2110,7 +2179,7 @@ namespace gspn {
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38,    39
+      35,    36,    37,    38,    39,    40
     };
     if ((unsigned int) t <= yyuser_token_number_max_)
       return translate_table[t];
@@ -2119,29 +2188,26 @@ namespace gspn {
   }
 
   const int Gspn_parser::yyeof_ = 0;
-  const int Gspn_parser::yylast_ = 339;
+  const int Gspn_parser::yylast_ = 359;
   const int Gspn_parser::yynnts_ = 39;
   const int Gspn_parser::yyempty_ = -2;
   const int Gspn_parser::yyfinal_ = 15;
   const int Gspn_parser::yyterror_ = 1;
   const int Gspn_parser::yyerrcode_ = 256;
-  const int Gspn_parser::yyntokens_ = 42;
+  const int Gspn_parser::yyntokens_ = 43;
 
-  const unsigned int Gspn_parser::yyuser_token_number_max_ = 294;
+  const unsigned int Gspn_parser::yyuser_token_number_max_ = 295;
   const Gspn_parser::token_number_type Gspn_parser::yyundef_token_ = 2;
 
-
-/* Line 1054 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 } // gspn
 
 /* Line 1054 of lalr1.cc  */
-#line 2137 "Gspn-parser.tab.cc"
+#line 2207 "Gspn-parser.tab.cc"
 
 
 /* Line 1056 of lalr1.cc  */
-#line 804 "Gspn-parser.yy"
+#line 858 "Gspn-parser.yy"
 
 
 void

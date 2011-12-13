@@ -23,6 +23,8 @@
  *******************************************************************************
  */
 
+
+
 #include "lex.gspn.c"
 
 #include "Gspn-parser.tab.hh"
@@ -60,6 +62,8 @@ int Gspn_Reader::parse(string& expr) {
     IndexDist["LOGNORMAL"] = 4;
     IndexDist["TRIANGLE"] = 5;
     IndexDist["GEOMETRIC"] = 6;
+    IndexDist["ERLANG"] = 7;
+    IndexDist["GAMMA"] = 8;
 
     scan_expression(expr);
 

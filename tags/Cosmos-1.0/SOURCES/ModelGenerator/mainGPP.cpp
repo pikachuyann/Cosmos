@@ -23,6 +23,7 @@
  *******************************************************************************
  */
 
+
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -44,13 +45,13 @@
 
 using namespace std;
 
-typedef struct SimParam {
+typedef struct  {
     double Level;
     double Width;
     int Batch;
     long int MaxRuns;
     string Path;
-};
+} SimParam;
 
 void ViewParameters(SimParam& P) {
     cout << "Confidence interval width:      " << P.Width << endl;
@@ -125,24 +126,24 @@ bool ParseBuild(string filename, SimParam& P) {
     cout << "Parsing OK.\n" << endl;
     cout << "Start building ... " << endl;
     string cmd;
-    cmd = "g++ " + P.Path + "../SOURCES/Cosmos/spn.cpp -c -o " + P.Path + "../Obj/Cosmos/spn.o";
+    cmd = "g++ -O3 " + P.Path + "../SOURCES/Cosmos/spn.cpp -c -o " + P.Path + "../Obj/Cosmos/spn.o";
 
     if (system(cmd.c_str())) return false;
 
-    cmd = "g++ " + P.Path + "../SOURCES/Cosmos/LHA.cpp -c -o " + P.Path + "../Obj/Cosmos/LHA.o";
-    if (system(cmd.c_str())) return false;
-
-
-
-    cmd = "g++ " + P.Path + "../SOURCES/Cosmos/main.cpp -c -o " + P.Path + "../Obj/Cosmos/main.o";
-    if (system(cmd.c_str())) return false;
-
-    cmd = "g++ " + P.Path + "../SOURCES/Cosmos/Simulator.cpp -c -o " + P.Path + "../Obj/Cosmos/Simulator.o";
+    cmd = "g++ -O3 " + P.Path + "../SOURCES/Cosmos/LHA.cpp -c -o " + P.Path + "../Obj/Cosmos/LHA.o";
     if (system(cmd.c_str())) return false;
 
 
 
-    cmd = "g++  " + P.Path + "../Obj/Cosmos/main.o " + P.Path + "../Obj/Cosmos/Event.o " + P.Path + "../Obj/Cosmos/EventsQueue.o ";
+    cmd = "g++ -O3 " + P.Path + "../SOURCES/Cosmos/main.cpp -c -o " + P.Path + "../Obj/Cosmos/main.o";
+    if (system(cmd.c_str())) return false;
+
+    cmd = "g++ -O3 " + P.Path + "../SOURCES/Cosmos/Simulator.cpp -c -o " + P.Path + "../Obj/Cosmos/Simulator.o";
+    if (system(cmd.c_str())) return false;
+
+
+
+    cmd = "g++  -O3 " + P.Path + "../Obj/Cosmos/main.o " + P.Path + "../Obj/Cosmos/Event.o " + P.Path + "../Obj/Cosmos/EventsQueue.o ";
     cmd = cmd + P.Path + "../Obj/Cosmos/LHA.o  \\" + P.Path + "../Obj/Cosmos/Simulator.o ";
     cmd = cmd + P.Path + "../Obj/Cosmos/ap.o  " + P.Path + "../Obj/Cosmos/spn.o -o " + P.Path + "SimGPP";
     if (system(cmd.c_str())) return false;

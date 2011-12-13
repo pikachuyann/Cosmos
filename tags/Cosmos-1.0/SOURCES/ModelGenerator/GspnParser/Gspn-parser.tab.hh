@@ -1,10 +1,9 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.4.3.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
+   Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -57,7 +56,7 @@ class Gspn_Reader;
 
 
 /* Line 35 of lalr1.cc  */
-#line 61 "Gspn-parser.tab.hh"
+#line 60 "Gspn-parser.tab.hh"
 
 
 #include <string>
@@ -65,23 +64,17 @@ class Gspn_Reader;
 #include "stack.hh"
 
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace gspn {
 
 /* Line 35 of lalr1.cc  */
-#line 75 "Gspn-parser.tab.hh"
+#line 71 "Gspn-parser.tab.hh"
   class position;
   class location;
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 } // gspn
 
 /* Line 35 of lalr1.cc  */
-#line 85 "Gspn-parser.tab.hh"
+#line 78 "Gspn-parser.tab.hh"
 
 #include "location.hh"
 
@@ -123,13 +116,10 @@ do {							\
 #endif
 
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace gspn {
 
 /* Line 35 of lalr1.cc  */
-#line 133 "Gspn-parser.tab.hh"
+#line 123 "Gspn-parser.tab.hh"
 
   /// A Bison parser.
   class Gspn_parser
@@ -153,7 +143,7 @@ namespace gspn {
 
 
 /* Line 35 of lalr1.cc  */
-#line 157 "Gspn-parser.tab.hh"
+#line 147 "Gspn-parser.tab.hh"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -196,13 +186,14 @@ namespace gspn {
      MIN = 285,
      MAX = 286,
      FLOOR = 287,
-     SINGLE = 288,
-     INFINITE = 289,
-     MULTIPLE = 290,
-     ENABLINGMEMORY = 291,
-     AGEMEMORY = 292,
-     IMDT = 293,
-     EXPO = 294
+     ABS = 288,
+     SINGLE = 289,
+     INFINITE = 290,
+     MULTIPLE = 291,
+     ENABLINGMEMORY = 292,
+     AGEMEMORY = 293,
+     IMDT = 294,
+     EXPO = 295
    };
 
     };
@@ -373,13 +364,10 @@ namespace gspn {
     Gspn_Reader& Reader;
   };
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // gspn
 
 /* Line 35 of lalr1.cc  */
-#line 383 "Gspn-parser.tab.hh"
+#line 371 "Gspn-parser.tab.hh"
 
 
 

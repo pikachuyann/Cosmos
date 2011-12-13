@@ -23,6 +23,8 @@
  *******************************************************************************
  */
 
+
+
 #ifndef LHA_READER_HH
 #define LHA_READER_HH
 #include <string>
@@ -126,7 +128,7 @@ public:
     virtual ~Lha_Reader();
 
     LhaType MyLha;
-    map<string, int> IndexDist;
+   
 
 
 

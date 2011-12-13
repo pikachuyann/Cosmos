@@ -23,6 +23,8 @@
  *******************************************************************************
  */
 
+
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -165,11 +167,14 @@ public:
 
     double Min(double&, double&, double&);
     double Max(double&, double&, double&);
-    double Integral(double&, double&, double&, double&, double&);
+    double Integral(double&, double&, double&);
+    double IntegralP2(double&, double&, double&);
 
     vector<double> LinForm;
     vector<double> OldLinForm;
     vector<double> LhaFunc;
+    vector<double> M1Var;//only used  for Lha func type Var
+    vector<double> M2Var; //only used  for Lha func type Var
     double FormulaVal;
     double OldFormulaVal;
     void UpdateFormulaVal();

@@ -26,7 +26,6 @@
 
 
 
-
 /********************************************************************
 AP library.
 See www.alglib.net or alglib.sources.ru for details.

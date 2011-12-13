@@ -1,10 +1,9 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.4.3.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
+   Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -39,7 +38,7 @@
 
 
 /* Line 311 of lalr1.cc  */
-#line 43 "Eval-parser.tab.cc"
+#line 42 "Eval-parser.tab.cc"
 
 
 #include "Eval-parser.tab.hh"
@@ -48,7 +47,7 @@
 
 
 /* Line 317 of lalr1.cc  */
-#line 52 "Eval-parser.tab.cc"
+#line 51 "Eval-parser.tab.cc"
 /* Unqualified %code blocks.  */
 
 /* Line 318 of lalr1.cc  */
@@ -62,10 +61,10 @@
 
 
 /* Line 318 of lalr1.cc  */
-#line 66 "Eval-parser.tab.cc"
+#line 65 "Eval-parser.tab.cc"
 
 #ifndef YY_
-# if YYENABLE_NLS
+# if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -125,13 +124,10 @@ do {					\
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 
-/* Line 380 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace eval {
 
 /* Line 380 of lalr1.cc  */
-#line 135 "Eval-parser.tab.cc"
+#line 131 "Eval-parser.tab.cc"
 #if YYERROR_VERBOSE
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -204,38 +200,38 @@ namespace eval {
         case 3: /* "str" */
 
 /* Line 449 of lalr1.cc  */
-#line 67 "Eval-parser.yy"
+#line 68 "Eval-parser.yy"
 	{ debug_stream () << *(yyvaluep->name); };
 
 /* Line 449 of lalr1.cc  */
-#line 212 "Eval-parser.tab.cc"
+#line 208 "Eval-parser.tab.cc"
 	break;
       case 4: /* "rval" */
 
 /* Line 449 of lalr1.cc  */
-#line 71 "Eval-parser.yy"
+#line 72 "Eval-parser.yy"
 	{ debug_stream () << (yyvaluep->RealVal); };
 
 /* Line 449 of lalr1.cc  */
-#line 221 "Eval-parser.tab.cc"
+#line 217 "Eval-parser.tab.cc"
 	break;
       case 5: /* "ival" */
 
 /* Line 449 of lalr1.cc  */
-#line 70 "Eval-parser.yy"
+#line 71 "Eval-parser.yy"
 	{ debug_stream () << (yyvaluep->IntVal); };
 
 /* Line 449 of lalr1.cc  */
-#line 230 "Eval-parser.tab.cc"
+#line 226 "Eval-parser.tab.cc"
 	break;
-      case 21: /* "exp" */
+      case 22: /* "exp" */
 
 /* Line 449 of lalr1.cc  */
-#line 71 "Eval-parser.yy"
+#line 72 "Eval-parser.yy"
 	{ debug_stream () << (yyvaluep->RealVal); };
 
 /* Line 449 of lalr1.cc  */
-#line 239 "Eval-parser.tab.cc"
+#line 235 "Eval-parser.tab.cc"
 	break;
        default:
 	  break;
@@ -270,11 +266,11 @@ namespace eval {
         case 3: /* "str" */
 
 /* Line 480 of lalr1.cc  */
-#line 68 "Eval-parser.yy"
+#line 69 "Eval-parser.yy"
 	{ delete (yyvaluep->name); };
 
 /* Line 480 of lalr1.cc  */
-#line 278 "Eval-parser.tab.cc"
+#line 274 "Eval-parser.tab.cc"
 	break;
 
 	default:
@@ -338,7 +334,7 @@ namespace eval {
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
-    location_type yyerror_range[2];
+    location_type yyerror_range[3];
 
     /// $$.
     semantic_type yyval;
@@ -467,77 +463,77 @@ namespace eval {
 	  case 2:
 
 /* Line 678 of lalr1.cc  */
-#line 81 "Eval-parser.yy"
+#line 82 "Eval-parser.yy"
     {Evaluate.IntResult=(int) (yysemantic_stack_[(1) - (1)].RealVal);Evaluate.RealResult=(yysemantic_stack_[(1) - (1)].RealVal);}
     break;
 
   case 3:
 
 /* Line 678 of lalr1.cc  */
-#line 83 "Eval-parser.yy"
+#line 84 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(1) - (1)].IntVal);}
     break;
 
   case 4:
 
 /* Line 678 of lalr1.cc  */
-#line 84 "Eval-parser.yy"
+#line 85 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(1) - (1)].RealVal);}
     break;
 
   case 5:
 
 /* Line 678 of lalr1.cc  */
-#line 85 "Eval-parser.yy"
+#line 86 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (2)].RealVal);}
     break;
 
   case 6:
 
 /* Line 678 of lalr1.cc  */
-#line 86 "Eval-parser.yy"
+#line 87 "Eval-parser.yy"
     {YYABORT; }
     break;
 
   case 7:
 
 /* Line 678 of lalr1.cc  */
-#line 87 "Eval-parser.yy"
+#line 88 "Eval-parser.yy"
     {(yyval.RealVal)=-(yysemantic_stack_[(2) - (2)].RealVal);}
     break;
 
   case 8:
 
 /* Line 678 of lalr1.cc  */
-#line 88 "Eval-parser.yy"
+#line 89 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)+(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 9:
 
 /* Line 678 of lalr1.cc  */
-#line 89 "Eval-parser.yy"
+#line 90 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)*(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 10:
 
 /* Line 678 of lalr1.cc  */
-#line 90 "Eval-parser.yy"
+#line 91 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)-(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 11:
 
 /* Line 678 of lalr1.cc  */
-#line 91 "Eval-parser.yy"
+#line 92 "Eval-parser.yy"
     {(yyval.RealVal)=double((yysemantic_stack_[(2) - (2)].RealVal));}
     break;
 
   case 12:
 
 /* Line 678 of lalr1.cc  */
-#line 92 "Eval-parser.yy"
+#line 93 "Eval-parser.yy"
     {if((yysemantic_stack_[(3) - (3)].RealVal)==0)	  {cout<<"Division by zero !";YYABORT;} 
 					 else (yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)/double (yysemantic_stack_[(3) - (3)].RealVal);
 					}
@@ -546,35 +542,42 @@ namespace eval {
   case 13:
 
 /* Line 678 of lalr1.cc  */
-#line 95 "Eval-parser.yy"
+#line 96 "Eval-parser.yy"
     {(yyval.RealVal)=pow((yysemantic_stack_[(3) - (1)].RealVal),(yysemantic_stack_[(3) - (3)].RealVal));}
     break;
 
   case 14:
 
 /* Line 678 of lalr1.cc  */
-#line 96 "Eval-parser.yy"
+#line 97 "Eval-parser.yy"
     {if((yysemantic_stack_[(6) - (3)].RealVal)<=(yysemantic_stack_[(6) - (5)].RealVal)) (yyval.RealVal)=(yysemantic_stack_[(6) - (3)].RealVal); else (yyval.RealVal)=(yysemantic_stack_[(6) - (5)].RealVal);}
     break;
 
   case 15:
 
 /* Line 678 of lalr1.cc  */
-#line 97 "Eval-parser.yy"
+#line 98 "Eval-parser.yy"
     {if((yysemantic_stack_[(6) - (3)].RealVal)>=(yysemantic_stack_[(6) - (5)].RealVal)) (yyval.RealVal)=(yysemantic_stack_[(6) - (3)].RealVal);	 else (yyval.RealVal)=(yysemantic_stack_[(6) - (5)].RealVal);}
     break;
 
   case 16:
 
 /* Line 678 of lalr1.cc  */
-#line 98 "Eval-parser.yy"
+#line 99 "Eval-parser.yy"
     {(yyval.RealVal)=floor((yysemantic_stack_[(4) - (3)].RealVal));}
+    break;
+
+  case 17:
+
+/* Line 678 of lalr1.cc  */
+#line 100 "Eval-parser.yy"
+    {(yyval.RealVal)=fabs((yysemantic_stack_[(4) - (3)].RealVal));}
     break;
 
 
 
 /* Line 678 of lalr1.cc  */
-#line 578 "Eval-parser.tab.cc"
+#line 581 "Eval-parser.tab.cc"
 	default:
           break;
       }
@@ -608,7 +611,7 @@ namespace eval {
 	error (yylloc, yysyntax_error_ (yystate, yytoken));
       }
 
-    yyerror_range[0] = yylloc;
+    yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
 	/* If just tried and failed to reuse lookahead token after an
@@ -643,7 +646,7 @@ namespace eval {
     if (false)
       goto yyerrorlab;
 
-    yyerror_range[0] = yylocation_stack_[yylen - 1];
+    yyerror_range[1] = yylocation_stack_[yylen - 1];
     /* Do not reclaim the symbols of the rule which action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -675,7 +678,7 @@ namespace eval {
 	if (yystate_stack_.height () == 1)
 	YYABORT;
 
-	yyerror_range[0] = yylocation_stack_[0];
+	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
 		     yystos_[yystate],
 		     &yysemantic_stack_[0], &yylocation_stack_[0]);
@@ -684,10 +687,10 @@ namespace eval {
 	YY_STACK_PRINT ();
       }
 
-    yyerror_range[1] = yylloc;
+    yyerror_range[2] = yylloc;
     // Using YYLLOC is tempting, but would change the location of
     // the lookahead.  YYLOC is available though.
-    YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
+    YYLLOC_DEFAULT (yyloc, yyerror_range, 2);
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yyloc);
 
@@ -779,14 +782,15 @@ namespace eval {
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  const signed char Eval_parser::yypact_ninf_ = -12;
+  const signed char Eval_parser::yypact_ninf_ = -13;
   const signed char
   Eval_parser::yypact_[] =
   {
-        14,   -12,   -12,   -12,   -11,   -10,     9,    14,    14,    14,
-      11,    67,    14,    14,    14,    -3,    39,   -12,   -12,    14,
-      14,    14,    14,    14,    23,    31,    46,   -12,    -3,    -3,
-      12,    12,   -12,    14,    14,   -12,    53,    60,   -12,   -12
+        15,   -13,   -13,   -13,   -12,   -11,    10,    12,    15,    15,
+      15,    31,    75,    15,    15,    15,    15,    -3,    40,   -13,
+     -13,    15,    15,    15,    15,    15,    24,    32,    47,    54,
+     -13,    -3,    -3,    -2,    -2,   -13,    15,    15,   -13,   -13,
+      61,    68,   -13,   -13
   };
 
   /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -796,23 +800,24 @@ namespace eval {
   Eval_parser::yydefact_[] =
   {
          0,     6,     4,     3,     0,     0,     0,     0,     0,     0,
-       0,     2,     0,     0,     0,     7,     0,    11,     1,     0,
-       0,     0,     0,     0,     0,     0,     0,     5,     8,    10,
-       9,    12,    13,     0,     0,    16,     0,     0,    14,    15
+       0,     0,     2,     0,     0,     0,     0,     7,     0,    11,
+       1,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       5,     8,    10,     9,    12,    13,     0,     0,    16,    17,
+       0,     0,    14,    15
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const signed char
   Eval_parser::yypgoto_[] =
   {
-       -12,   -12,    -7
+       -13,   -13,    -8
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
   const signed char
   Eval_parser::yydefgoto_[] =
   {
-        -1,    10,    11
+        -1,    11,    12
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -822,30 +827,30 @@ namespace eval {
   const unsigned char
   Eval_parser::yytable_[] =
   {
-        15,    16,    17,    12,    13,    24,    25,    26,    21,    22,
-      23,    18,    28,    29,    30,    31,    32,     1,     2,     3,
-       4,     5,     6,    14,     7,    23,    36,    37,     8,     0,
-       0,     9,    19,    20,    21,    22,    23,     0,     0,    33,
-      19,    20,    21,    22,    23,     0,     0,    34,    19,    20,
-      21,    22,    23,     0,    27,    19,    20,    21,    22,    23,
-       0,    35,    19,    20,    21,    22,    23,     0,    38,    19,
-      20,    21,    22,    23,     0,    39,    19,    20,    21,    22,
-      23
+        17,    18,    19,    13,    14,    26,    27,    28,    29,    23,
+      24,    25,    25,    31,    32,    33,    34,    35,     1,     2,
+       3,     4,     5,     6,     7,    15,     8,    16,    40,    41,
+       9,    20,     0,    10,    21,    22,    23,    24,    25,     0,
+       0,    36,    21,    22,    23,    24,    25,     0,     0,    37,
+      21,    22,    23,    24,    25,     0,    30,    21,    22,    23,
+      24,    25,     0,    38,    21,    22,    23,    24,    25,     0,
+      39,    21,    22,    23,    24,    25,     0,    42,    21,    22,
+      23,    24,    25,     0,    43,    21,    22,    23,    24,    25
   };
 
   /* YYCHECK.  */
   const signed char
   Eval_parser::yycheck_[] =
   {
-         7,     8,     9,    14,    14,    12,    13,    14,    11,    12,
-      13,     0,    19,    20,    21,    22,    23,     3,     4,     5,
-       6,     7,     8,    14,    10,    13,    33,    34,    14,    -1,
-      -1,    17,     9,    10,    11,    12,    13,    -1,    -1,    16,
-       9,    10,    11,    12,    13,    -1,    -1,    16,     9,    10,
-      11,    12,    13,    -1,    15,     9,    10,    11,    12,    13,
-      -1,    15,     9,    10,    11,    12,    13,    -1,    15,     9,
-      10,    11,    12,    13,    -1,    15,     9,    10,    11,    12,
-      13
+         8,     9,    10,    15,    15,    13,    14,    15,    16,    12,
+      13,    14,    14,    21,    22,    23,    24,    25,     3,     4,
+       5,     6,     7,     8,     9,    15,    11,    15,    36,    37,
+      15,     0,    -1,    18,    10,    11,    12,    13,    14,    -1,
+      -1,    17,    10,    11,    12,    13,    14,    -1,    -1,    17,
+      10,    11,    12,    13,    14,    -1,    16,    10,    11,    12,
+      13,    14,    -1,    16,    10,    11,    12,    13,    14,    -1,
+      16,    10,    11,    12,    13,    14,    -1,    16,    10,    11,
+      12,    13,    14,    -1,    16,    10,    11,    12,    13,    14
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -853,10 +858,11 @@ namespace eval {
   const unsigned char
   Eval_parser::yystos_[] =
   {
-         0,     3,     4,     5,     6,     7,     8,    10,    14,    17,
-      20,    21,    14,    14,    14,    21,    21,    21,     0,     9,
-      10,    11,    12,    13,    21,    21,    21,    15,    21,    21,
-      21,    21,    21,    16,    16,    15,    21,    21,    15,    15
+         0,     3,     4,     5,     6,     7,     8,     9,    11,    15,
+      18,    21,    22,    15,    15,    15,    15,    22,    22,    22,
+       0,    10,    11,    12,    13,    14,    22,    22,    22,    22,
+      16,    22,    22,    22,    22,    22,    17,    17,    16,    16,
+      22,    22,    16,    16
   };
 
 #if YYDEBUG
@@ -866,7 +872,7 @@ namespace eval {
   Eval_parser::yytoken_number_[] =
   {
          0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274
   };
 #endif
 
@@ -874,8 +880,8 @@ namespace eval {
   const unsigned char
   Eval_parser::yyr1_[] =
   {
-         0,    19,    20,    21,    21,    21,    21,    21,    21,    21,
-      21,    21,    21,    21,    21,    21,    21
+         0,    20,    21,    22,    22,    22,    22,    22,    22,    22,
+      22,    22,    22,    22,    22,    22,    22,    22
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -883,7 +889,7 @@ namespace eval {
   Eval_parser::yyr2_[] =
   {
          0,     2,     1,     1,     1,     3,     1,     2,     3,     3,
-       3,     2,     3,     3,     6,     6,     4
+       3,     2,     3,     3,     6,     6,     4,     4
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -893,8 +899,8 @@ namespace eval {
   const Eval_parser::yytname_[] =
   {
     "\"end of file\"", "error", "$undefined", "str", "rval", "ival", "MIN",
-  "MAX", "FLOOR", "PLUS", "MINUS", "MUL", "DIV", "POWER", "LB", "RB",
-  "COMMA", "DOUBLE", "NEG", "$accept", "ArithmethicExp", "exp", 0
+  "MAX", "FLOOR", "ABS", "PLUS", "MINUS", "MUL", "DIV", "POWER", "LB",
+  "RB", "COMMA", "DOUBLE", "NEG", "$accept", "ArithmethicExp", "exp", 0
   };
 #endif
 
@@ -903,12 +909,13 @@ namespace eval {
   const Eval_parser::rhs_number_type
   Eval_parser::yyrhs_[] =
   {
-        20,     0,    -1,    21,    -1,     5,    -1,     4,    -1,    14,
-      21,    15,    -1,     3,    -1,    10,    21,    -1,    21,     9,
-      21,    -1,    21,    11,    21,    -1,    21,    10,    21,    -1,
-      17,    21,    -1,    21,    12,    21,    -1,    21,    13,    21,
-      -1,     6,    14,    21,    16,    21,    15,    -1,     7,    14,
-      21,    16,    21,    15,    -1,     8,    14,    21,    15,    -1
+        21,     0,    -1,    22,    -1,     5,    -1,     4,    -1,    15,
+      22,    16,    -1,     3,    -1,    11,    22,    -1,    22,    10,
+      22,    -1,    22,    12,    22,    -1,    22,    11,    22,    -1,
+      18,    22,    -1,    22,    13,    22,    -1,    22,    14,    22,
+      -1,     6,    15,    22,    17,    22,    16,    -1,     7,    15,
+      22,    17,    22,    16,    -1,     8,    15,    22,    16,    -1,
+       9,    15,    22,    16,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -917,15 +924,15 @@ namespace eval {
   Eval_parser::yyprhs_[] =
   {
          0,     0,     3,     5,     7,     9,    13,    15,    18,    22,
-      26,    30,    33,    37,    41,    48,    55
+      26,    30,    33,    37,    41,    48,    55,    60
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned char
   Eval_parser::yyrline_[] =
   {
-         0,    81,    81,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    95,    96,    97,    98
+         0,    82,    82,    84,    85,    86,    87,    88,    89,    90,
+      91,    92,    93,    96,    97,    98,    99,   100
   };
 
   // Print the state stack on the debug stream.
@@ -992,7 +999,7 @@ namespace eval {
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18
+      15,    16,    17,    18,    19
     };
     if ((unsigned int) t <= yyuser_token_number_max_)
       return translate_table[t];
@@ -1001,29 +1008,26 @@ namespace eval {
   }
 
   const int Eval_parser::yyeof_ = 0;
-  const int Eval_parser::yylast_ = 80;
+  const int Eval_parser::yylast_ = 89;
   const int Eval_parser::yynnts_ = 3;
   const int Eval_parser::yyempty_ = -2;
-  const int Eval_parser::yyfinal_ = 18;
+  const int Eval_parser::yyfinal_ = 20;
   const int Eval_parser::yyterror_ = 1;
   const int Eval_parser::yyerrcode_ = 256;
-  const int Eval_parser::yyntokens_ = 19;
+  const int Eval_parser::yyntokens_ = 20;
 
-  const unsigned int Eval_parser::yyuser_token_number_max_ = 273;
+  const unsigned int Eval_parser::yyuser_token_number_max_ = 274;
   const Eval_parser::token_number_type Eval_parser::yyundef_token_ = 2;
 
-
-/* Line 1054 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 } // eval
 
 /* Line 1054 of lalr1.cc  */
-#line 1023 "Eval-parser.tab.cc"
+#line 1027 "Eval-parser.tab.cc"
 
 
 /* Line 1056 of lalr1.cc  */
-#line 100 "Eval-parser.yy"
+#line 102 "Eval-parser.yy"
 
 
 void

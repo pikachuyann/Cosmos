@@ -1,10 +1,9 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.4.3.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
+   Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -56,7 +55,7 @@ class Eval;
 
 
 /* Line 35 of lalr1.cc  */
-#line 60 "Eval-parser.tab.hh"
+#line 59 "Eval-parser.tab.hh"
 
 
 #include <string>
@@ -64,23 +63,17 @@ class Eval;
 #include "stack.hh"
 
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace eval {
 
 /* Line 35 of lalr1.cc  */
-#line 74 "Eval-parser.tab.hh"
+#line 70 "Eval-parser.tab.hh"
   class position;
   class location;
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 } // eval
 
 /* Line 35 of lalr1.cc  */
-#line 84 "Eval-parser.tab.hh"
+#line 77 "Eval-parser.tab.hh"
 
 #include "location.hh"
 
@@ -122,13 +115,10 @@ do {							\
 #endif
 
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace eval {
 
 /* Line 35 of lalr1.cc  */
-#line 132 "Eval-parser.tab.hh"
+#line 122 "Eval-parser.tab.hh"
 
   /// A Bison parser.
   class Eval_parser
@@ -150,7 +140,7 @@ namespace eval {
 
 
 /* Line 35 of lalr1.cc  */
-#line 154 "Eval-parser.tab.hh"
+#line 144 "Eval-parser.tab.hh"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -169,16 +159,17 @@ namespace eval {
      MIN = 261,
      MAX = 262,
      FLOOR = 263,
-     PLUS = 264,
-     MINUS = 265,
-     MUL = 266,
-     DIV = 267,
-     POWER = 268,
-     LB = 269,
-     RB = 270,
-     COMMA = 271,
-     DOUBLE = 272,
-     NEG = 273
+     ABS = 264,
+     PLUS = 265,
+     MINUS = 266,
+     MUL = 267,
+     DIV = 268,
+     POWER = 269,
+     LB = 270,
+     RB = 271,
+     COMMA = 272,
+     DOUBLE = 273,
+     NEG = 274
    };
 
     };
@@ -349,13 +340,10 @@ namespace eval {
     Eval& Evaluate;
   };
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // eval
 
 /* Line 35 of lalr1.cc  */
-#line 359 "Eval-parser.tab.hh"
+#line 347 "Eval-parser.tab.hh"
 
 
 
