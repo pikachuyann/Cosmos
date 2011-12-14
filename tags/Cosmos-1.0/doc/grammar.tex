@@ -194,8 +194,8 @@ which  exponentially  distributed will be defined differently from  those with o
 <Transition> : <Exp> ; <NonExp> .
 \end{grammar}
 
-A transition with an exponential distribution can be marking dependent parameter. A priority and weight will be given. Then a memory policy  
-and a service will be chosen:
+A transition with an exponential distribution can be marking dependent parameter. 
+A priority and a weight will be given. A service policy will be chosen. 
 \begin{grammar}
 [(colon){$::=$ }]
 [(semicolon){$|$ }]
@@ -203,13 +203,15 @@ and a service will be chosen:
 [(period){\\ }]
 [(quote){"}{" }]
 [(nonterminal){$\langle$}{$\rangle$ }]
-<Exp> : "(" <TTag> "," "EXPONENTIAL" "(" <MRFormula> ")" "," <Priority> "," <Weight>"," <Memory>  "," <Service> ")".
+<Exp> : "(" <TTag> "," "EXPONENTIAL" "(" <MRFormula> ")" "," <Priority> "," <Weight>  "," <Service> "," <Memory>  ")"
+;"(" <TTag> "," "EXPONENTIAL" "(" <MRFormula> ")" "," <Priority> "," <Weight>  "," <Service> ")".
 <Service> : "SINGLE" ; "INFINITE" ; "MULTIPLE" "("<integer>")".
 <Memory> :  "ENABLEDMEMORY" ; "AGEMEMORY".
 \end{grammar}
 
-A transition with non exponential distribution can't be marking dependent parameters. A priority and weight will be given. Then  a memory policy 
-will be chosen There is no service policy to chose (the only possible is single service). 
+A transition with non exponential distribution can't be marking dependent parameters. 
+A priority and weight will be given. There is no service policy to chose (the only possible is single service). 
+Then  A memory policy can be chosen, by default the policy is enabled memory:  
 \begin{grammar}
 [(colon){$::=$ }]
 [(semicolon){$|$ }]
@@ -217,7 +219,8 @@ will be chosen There is no service policy to chose (the only possible is single 
 [(period){\\ }]
 [(quote){"}{" }]
 [(nonterminal){$\langle$}{$\rangle$ }]
-<NonExp> :  "(" <TTag> "," <Dist> "," <Priority> "," <Weight> "," <Memory>  ")".
+<NonExp> :  "(" <TTag> "," <Dist> "," <Priority> "," <Weight> "," <Memory>  ")" ; 
+"(" <TTag> "," <Dist> "," <Priority> "," <Weight>  ")" .
 <Dist> : "IMMEDIATE"; "DETERMINISTIC" "(" <Real> ")" ; "UNIFORM" "(" <Real> "," <Real> ")"
 "ERLANG" "(" <Integer> "," <Real> ")" ; "GAMMA" "(" <Real> "," <Real> ")" ; "TRIANGLE" "(" <Real> "," <Real> "," <Real> ")"; 
 "GEOMETRIC" "(" <Real> "," <Real> ")" ; "LOGNORMAL" "(" <Real> "," <Real> ")".
