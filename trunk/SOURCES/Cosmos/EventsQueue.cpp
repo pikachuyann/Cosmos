@@ -57,6 +57,8 @@ EventsQueue::EventsQueue(const EventsQueue& orig) {
 }
 
 EventsQueue::~EventsQueue() {
+	delete eq;
+	delete TransTable;
 }
 
 void EventsQueue::insert(Event &e) {

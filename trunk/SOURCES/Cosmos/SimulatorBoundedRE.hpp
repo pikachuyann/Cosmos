@@ -8,7 +8,7 @@
  */
 
 #include "SimulatorRE.hpp"
-
+#include "numericalSolver.hpp"
 
 #ifndef _SIMULATOR_BOUNDED_RE_HPP
 #define _SIMULATOR_BOUNDED_RE_HPP
@@ -23,27 +23,49 @@ private:
 	int LHAstate;
 	int LHAcurrentTime;
 	AutEdge AE;
-	EventsQueue* EQ;
+	EventsQueue *EQ;
 	double timeS;
+	
+	vector<double> VarLHA;
+	vector<double> LinFormLHA;
+	vector<double> OldLinFormLHA;
+	vector<double> LhaFuncLHA;
+	
 public:
-	void saveState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue* EQsim, double* t){
+	simulationState(){
+		//EQ = new EventsQueue(n);
+	};
+	~simulationState(){
+		//delete EQ;
+	};
+	
+	void saveState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim, double* t){
 		marking = N->Marking;
-		/*cout << "marking: ";
-		for (int i=0; i< marking.size(); i++)cout << marking[i] << " ; ";
-		cout << endl;*/
 		LHAstate= A->CurrentLocation;
 		LHAcurrentTime= A->CurrentTime;
 		AE = *AEsim;
-		EQ = EQsim;
+		EQ = *EQsim; //new EventsQueue(*EQsim);
 		timeS = *t;
+		
+		
+		VarLHA=A->Var;
+		LinFormLHA=A->LinForm;
+		OldLinFormLHA=A->OldLinForm;
+		LhaFuncLHA=A->LhaFunc;
 	};
-	void loadState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue* EQsim,double* t){
+	void loadState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim,double* t){
+		
 		N->Marking = marking;
 		A->CurrentLocation = LHAstate;
 		A->CurrentTime = LHAcurrentTime;
 		*AEsim = AE; 
-		EQsim = EQ;
+		*EQsim = EQ;
 		*t = timeS;
+		
+		A->Var = VarLHA;
+		A->LinForm = LinFormLHA;
+		A->OldLinForm = OldLinFormLHA;
+		A->LhaFunc = LhaFuncLHA;
 	};
 	
 };
@@ -51,8 +73,9 @@ public:
 class SimulatorBoundedRE: public Simulator{
 public:
 	SimulatorBoundedRE();
-	
 	BatchR* RunBatch();
+protected:
+	numericalSolver numSolv;
 };
 
 

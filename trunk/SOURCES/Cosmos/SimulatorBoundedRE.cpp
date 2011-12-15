@@ -8,17 +8,24 @@
  */
 
 #include "SimulatorBoundedRE.hpp"
-#include "numericalSolver.hpp"
 #include <list>
 
 using namespace std;
 
 SimulatorBoundedRE::SimulatorBoundedRE(){
-	//numericalSolver numSolv;
-	//numSolv.computeMatrix();
-	//numSolv.initVect(20);
+	delete EQ;
+	int T =40;
 	
-	//exit(0);
+	//numericalSolver numSolv;
+	numSolv.computeMatrix();
+	numSolv.initVect(T);
+	
+	for(int i=0;i<T-1;i++){
+		numSolv.stepVect();
+		cout << "itvect:"<<i<< "->" << numSolv.getVect() << endl;
+	};
+	
+	exit(0);
 	
 }
 
@@ -29,33 +36,37 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	BatchR* batchResult = new BatchR();
 	
 	list<simulationState> statevect(BatchSize);
+	//delete EQ;
 	
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
+		EQ = new EventsQueue(N.tr);
 		reset();
-		simTime = 0.0;
 		AutEdge AE;
 		A.CurrentLocation = A.EnabledInitLocation(N.Marking);
 		A.CurrentTime = 0;
-		simTime = 0;
+		
 		
 		Simulator::InitialEventsQueue();
+		
 		AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 		
-		(*it).saveState(&N,&A,&AE,EQ, &simTime);
+		(*it).saveState(&N,&A,&AE,&EQ, &simTime);
 	}
 	
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
-		//cout << "new round" << endl;
+		cout << "new round" << endl;
+		numSolv.stepVect();
+		
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
 			AutEdge AE;
 			
-			(*it).loadState(&N,&A,&AE,EQ, &simTime);
-			
+			(*it).loadState(&N,&A,&AE,&EQ, &simTime);
+					
 			bool continueb = SimulateOneStep(&AE);
 			
 			if((!EQ->isEmpty() || AE.Index > -1) && continueb ) {
-				(*it).saveState(&N,&A,&AE,EQ, &simTime);
+				(*it).saveState(&N,&A,&AE,&EQ, &simTime);
 			} else {
 				if (Result.first) {
 					
@@ -72,9 +83,8 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 					
 				}
 				
-				//reset();
 				batchResult->I++;
-				//cout << "erase sim" << endl;
+				delete EQ;
 				it = statevect.erase(it);
 				it--;
 			}
@@ -84,6 +94,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 		}
 	}
 	
+	//cerr << "test" << endl;
 	//exit(0);
 	return (batchResult);
 

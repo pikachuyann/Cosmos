@@ -8,7 +8,7 @@
       </attribute>
       <attribute name="realFormula">
         <attribute name="value">
-          0.1
+          0.33
         </attribute>
       </attribute>
     </attribute>
@@ -18,7 +18,7 @@
       </attribute>
       <attribute name="realFormula">
         <attribute name="value">
-          0.45
+          0.33
         </attribute>
       </attribute>
     </attribute>
@@ -28,7 +28,7 @@
       </attribute>
       <attribute name="realFormula">
         <attribute name="value">
-          0.45
+          0.33
         </attribute>
       </attribute>
     </attribute>
