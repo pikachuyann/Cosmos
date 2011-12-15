@@ -1,9 +1,10 @@
 /*******************************************************************************
  *									       *
- * Cosmos:(C)oncept et (O)utils (S)tatistique pour les (Mo)dels (S)tochastique *
+ * Cosmos:(C)oncept et (O)utils (S)tatistique pour les (Mo)deles               *
+ * (S)tochastiques                                                             *
  *									       *
- * Copyright (C) 2009-2011 LSV, ENS Cachan & CNRS & INRIA                      *
- * Author: Paolo Ballarini & Hilal Djafri                                      *
+ * Copyright (C) 2009-2011 LSV & LACL                                          *
+ * Authors: Paolo Ballarini & Hilal Djafri                                     *
  * Website: http://www.lsv.ens-cachan.fr/Software/Cosmos                       *
  *                                                                             *
  * This program is free software; you can redistribute it and/or modify        *
