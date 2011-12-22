@@ -49,7 +49,7 @@ Simulator::Simulator() {
 void Simulator::Load() {
     N.Load();
     A.Load();
-  
+
     EQ = new EventsQueue(N.tr);
     simTime = 0;
     Initialized = false;
@@ -65,18 +65,18 @@ void Simulator::Load() {
 
     RandomNumber.seed(time(NULL));
     srand(time(NULL));
-    
-    Krand=0;
-    
+
+    Krand = 0;
+
 
     BatchSize = 1000;
     MaxRuns = 100000000;
 
     ConfWidth = 0.001;
     ConfLevel = 0.99;
-	
-    ResidualTime=new vector<double> (N.tr); 
-    ActDate=new vector<double> (N.tr);
+
+    ResidualTime = new vector<double> (N.tr);
+    ActDate = new vector<double> (N.tr);
 }
 
 Simulator::Simulator(const Simulator& orig) {
@@ -115,11 +115,11 @@ double Simulator::max(double a, double b) {
 
 void Simulator::InitialEventsQueue() {
     Initialized = true;
-	
-     for(int t=0;t<N.tr;t++){
-	 (*ResidualTime)[t]=0;
-	 (*ActDate)[t]=-1;
-	}
+
+    for (int t = 0; t < N.tr; t++) {
+        (*ResidualTime)[t] = 0;
+        (*ActDate)[t] = -1;
+    }
     set<int, less <int> > ent;
     ent = N.enabledTrans();
     set<int>::iterator it;
@@ -127,11 +127,11 @@ void Simulator::InitialEventsQueue() {
     for (it = ent.begin(); it != ent.end(); it++) {
         GenerateEvent(E, (*it));
         (*EQ).insert(E);
-		
-		if(N.Transition[(*it)].AgeMemory){
-		  (*ResidualTime)[(*it)]=E.time;
-		  (*ActDate)[(*it)]=E.time;
-		}		
+
+        if (N.Transition[(*it)].AgeMemory) {
+            (*ResidualTime)[(*it)] = E.time;
+            (*ActDate)[(*it)] = E.time;
+        }
     }
 }
 
@@ -140,16 +140,14 @@ void Simulator::reset() {
     N.reset();
     A.reset(N.initMarking);
     simTime = 0;
-    (*EQ).reset();  
-    
-    if(Krand>=10000)
-    {
-      Krand=0;
-      srand(RandomNumber());      
-    }
-    else
-      Krand++;   
-    
+    (*EQ).reset();
+
+    if (Krand >= 10000) {
+        Krand = 0;
+        srand(RandomNumber());
+    } else
+        Krand++;
+
     RandomNumber.seed(rand());
 }
 
@@ -157,13 +155,13 @@ void Simulator::SimulateSinglePath() {
 
 
     bool QueueIsEmpty;
-    AutEdge AE;   
+    AutEdge AE;
     double D = 0.0;
     A.CurrentLocation = A.EnabledInitLocation(N.Marking);
     A.CurrentTime = 0;
     simTime = 0;
     Event F;
-    
+
     Simulator::InitialEventsQueue();
     QueueIsEmpty = (*EQ).isEmpty();
     AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
@@ -202,11 +200,11 @@ void Simulator::SimulateSinglePath() {
             return;
         } else {
             Event E1 = (*EQ).InPosition(0);
-            
+
             int E1_transitionNum = E1.transition;
 
             while (E1.time >= AE.FiringTime) {
-	      
+
                 double DeltaT = AE.FiringTime - A.CurrentTime;
                 A.DoElapsedTimeUpdate(DeltaT, N.Marking);
                 A.UpdateLinForm(N.Marking);
@@ -215,7 +213,7 @@ void Simulator::SimulateSinglePath() {
                 A.CurrentTime += DeltaT;
                 simTime = A.CurrentTime;
                 A.CurrentLocation = A.Edge[AE.Index].Target;
-		
+
                 if (A.isFinal(A.CurrentLocation)) {
                     A.UpdateLinForm(N.Marking);
                     A.UpdateLhaFunc(A.CurrentTime, D);
@@ -264,41 +262,39 @@ void Simulator::SimulateSinglePath() {
                     if (N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled
                         GenerateEvent(F, E1_transitionNum);
                         (*EQ).replace(F, 0); //replace the transition with the new generated time
-						if(N.Transition[E1_transitionNum].AgeMemory){
-						  (*ActDate)[E1_transitionNum]=A.CurrentTime;
-						  (*ResidualTime)[E1_transitionNum]=F.time-A.CurrentTime;
-						}
+                        if (N.Transition[E1_transitionNum].AgeMemory) {
+                            (*ActDate)[E1_transitionNum] = A.CurrentTime;
+                            (*ResidualTime)[E1_transitionNum] = F.time - A.CurrentTime;
+                        }
 
                     } else {
-					  (*EQ).remove(0);
-					  if(N.Transition[E1_transitionNum].AgeMemory){
-						  (*ActDate)[E1_transitionNum]=-1;						  
-						}
-					}
+                        (*EQ).remove(0);
+                        if (N.Transition[E1_transitionNum].AgeMemory) {
+                            (*ActDate)[E1_transitionNum] = -1;
+                        }
+                    }
 
                     // Possibly adding Events corresponding to newly enabled-transitions
 
                     for (set<int>::iterator it = N.PossiblyEnabled[E1_transitionNum].begin(); it != N.PossiblyEnabled[E1_transitionNum].end(); it++) {
                         if (N.IsEnabled(*it)) {
                             if ((*EQ).TransTabValue(*it) < 0) {
-								if(N.Transition[(*it)].AgeMemory){
-								  if((*ActDate)[(*it)]==-1){
-									GenerateEvent(F, (*it));
-									(*EQ).insert(F);
-									(*ResidualTime)[(*it)]=F.time-A.CurrentTime;
-								  }
-								  else{
-									GenerateEvent(F, (*it));
-									F.time=A.CurrentTime+(*ResidualTime)[(*it)];
-									(*EQ).insert(F);
-									
-								  }
-								  (*ActDate)[(*it)]=A.CurrentTime;								 						  
-								}
-								else{									
-								    GenerateEvent(F, (*it));									
-									(*EQ).insert(F);
-								}
+                                if (N.Transition[(*it)].AgeMemory) {
+                                    if ((*ActDate)[(*it)] == -1) {
+                                        GenerateEvent(F, (*it));
+                                        (*EQ).insert(F);
+                                        (*ResidualTime)[(*it)] = F.time - A.CurrentTime;
+                                    } else {
+                                        GenerateEvent(F, (*it));
+                                        F.time = A.CurrentTime + (*ResidualTime)[(*it)];
+                                        (*EQ).insert(F);
+
+                                    }
+                                    (*ActDate)[(*it)] = A.CurrentTime;
+                                } else {
+                                    GenerateEvent(F, (*it));
+                                    (*EQ).insert(F);
+                                }
 
 
                             } else {
@@ -314,16 +310,13 @@ void Simulator::SimulateSinglePath() {
                     }
 
                     // Possibly removing Events corresponding to newly disabled-transitions
-
-
                     for (set<int>::iterator it = N.PossiblyDisabled[E1_transitionNum].begin(); it != N.PossiblyDisabled[E1_transitionNum].end(); it++) {
                         if ((*EQ).TransTabValue(*it)>-1) {
-                            if (!N.IsEnabled(*it)){
-							  (*EQ).remove((*EQ).TransTabValue(*it));
-							  if(N.Transition[(*it)].AgeMemory)
-								(*ResidualTime)[(*it)]=A.CurrentTime-(*ActDate)[(*it)];
-							}
-                            else {
+                            if (!N.IsEnabled(*it)) {
+                                (*EQ).remove((*EQ).TransTabValue(*it));
+                                if (N.Transition[(*it)].AgeMemory)
+                                    (*ResidualTime)[(*it)] = (*ResidualTime)[(*it)]-(A.CurrentTime - (*ActDate)[(*it)]);
+                            } else {
                                 if (N.Transition[(*it)].MarkingDependent) {
                                     GenerateEvent(F, (*it));
                                     (*EQ).replace(F, (*EQ).TransTabValue(*it));
@@ -394,7 +387,7 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
                 exit(1);
             }
 
-            boost::exponential_distribution<> EXP(param[0]);            
+            boost::exponential_distribution<> EXP(param[0]);
             boost::variate_generator<boost::mt19937&, boost::exponential_distribution<> > gen(RandomNumber, EXP);
             return gen();
 
@@ -418,33 +411,33 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
             boost::variate_generator<boost::mt19937&, boost::triangle_distribution<> > gen(RandomNumber, TRIANGLE);
             return gen();
         }
-        
+
         case 6:
         {//GEOMETRIC           
-            boost::geometric_distribution<> GEO(1-param[0]);
-            boost::variate_generator<boost::mt19937&, boost::geometric_distribution<> > gen(RandomNumber, GEO);            
-	    return param[1]*gen();
-            
+            boost::geometric_distribution<> GEO(1 - param[0]);
+            boost::variate_generator<boost::mt19937&, boost::geometric_distribution<> > gen(RandomNumber, GEO);
+            return param[1] * gen();
+
         }
-        
+
         case 7:
         {//ERLANG           
             boost::uniform_real<> UNIF(0, 1);
             boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
-	    double prod=1;
-	    for(int i=0;i<param[0];i++)
-	      prod=prod*gen();
-	    return -log(prod)/param[1];
-            
+            double prod = 1;
+            for (int i = 0; i < param[0]; i++)
+                prod = prod * gen();
+            return -log(prod) / param[1];
+
         }
         case 8:
         {//GAMMA      
-        boost::gamma_distribution<> GAMMA(param[0]);        
-        boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gen(RandomNumber, GAMMA);
-	return param[1]*gen();            
+            boost::gamma_distribution<> GAMMA(param[0]);
+            boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gen(RandomNumber, GAMMA);
+            return param[1] * gen();
         }
 
-        default: cout << "\nUnknown distribution ' "<<distribution<<" ' ! " << endl;
+        default: cout << "\nUnknown distribution ' " << distribution << " ' ! " << endl;
             break;
     }
     return DBL_MIN;
@@ -475,12 +468,12 @@ void Simulator::RunSimulation() {
     double Var = 0; //variance   
     double stdev = 0; //standard deviation
     double M2 = 0;
-   
+
     double Normal_quantile;
 
     double low, up;
     bool IsBernoulli = true;
-   
+
 
 
     cout << "START SIMULATION ..." << endl;
@@ -515,16 +508,16 @@ void Simulator::RunSimulation() {
                 Ksucc++;
                 Isucc++;
                 if (Result.second * (1 - Result.second) != 0) IsBernoulli = false;
-		Mean=((Ksucc-1)*Mean+Result.second)/Ksucc;
-		M2=((Ksucc-1)*M2+pow(Result.second,2.0))/Ksucc;   
-		reset();
-		K++;
-	    }
-        
-	}
-        Var=M2-pow(Mean,2.0);
-        if (Ksucc > 1) {            
-            Var = Ksucc * Var / (Ksucc-1); //non biased variance;
+                Mean = ((Ksucc - 1) * Mean + Result.second) / Ksucc;
+                M2 = ((Ksucc - 1) * M2 + pow(Result.second, 2.0)) / Ksucc;
+                reset();
+                K++;
+            }
+
+        }
+        Var = M2 - pow(Mean, 2.0);
+        if (Ksucc > 1) {
+            Var = Ksucc * Var / (Ksucc - 1); //non biased variance;
         }
         stdev = sqrt(Var);
         Ksucc_sqrt = sqrt(Ksucc);
