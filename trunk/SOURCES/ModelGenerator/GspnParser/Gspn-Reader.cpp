@@ -140,7 +140,7 @@ void Gspn_Reader::WriteFile(string& Pref) {
 	SpnCppFile << "    void fire(int);" << endl; 
 	SpnCppFile << "    void unfire(int);" << endl;
 	SpnCppFile << "    vector<double> GetDistParameters(int);" << endl;
-	SpnCppFile << "    vector<double> GetDistParametersOrigin(int);" << endl;
+	//SpnCppFile << "    vector<double> GetDistParametersOrigin(int);" << endl;
 	SpnCppFile << "    double GetPriority(int);" << endl;
 	SpnCppFile << "    double GetWeight(int);" << endl;
 	
@@ -415,17 +415,17 @@ void Gspn_Reader::WriteFile(string& Pref) {
     }
     
     //-------------- Rare Event -------------------------
-    SpnCppFile << "vector<double> SPN::GetDistParameters(int t){"<< endl;
+    /*SpnCppFile << "vector<double> SPN::GetDistParameters(int t){"<< endl;
     SpnCppFile << "   vector<double> P(2);" << endl;
     SpnCppFile << "   double origin_rate = (SPN::GetDistParametersOrigin(t))[0];"<< endl;
     SpnCppFile << "   P[0]= ComputeDistr( *this ,t, origin_rate);" << endl;
     SpnCppFile << "   P[1]= origin_rate;" << endl;
 
     SpnCppFile << "   return P;" << endl;
-    SpnCppFile << "}\n " << endl;
+    SpnCppFile << "}\n " << endl;*/
     
     
-    SpnCppFile << "vector<double> SPN::GetDistParametersOrigin(int t){" << endl;
+    SpnCppFile << "vector<double> SPN::GetDistParameters(int t){" << endl;
     //-------------- /Rare Event -------------------------
     SpnCppFile << "   switch(t){" << endl;
     for (int t = 0; t < MyGspn.tr; t++) {

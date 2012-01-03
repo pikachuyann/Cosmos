@@ -8,6 +8,7 @@
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
 #include <time.h>
+#include "RareEvent.hpp"
 
 #include "SimulatorRE.hpp"
 
@@ -120,11 +121,21 @@ void SimulatorRE::GenerateDummyEvent(Event& E, int Id) {
     E.weight = 0.0;
 }
 
+vector<double> SimulatorRE::getParams(int Id){
+	//return N.GetDistParameters(Id);
+
+	vector<double> P(2);
+	double origin_rate = (N.GetDistParameters(Id))[0];
+	P[0]= ComputeDistr( N ,Id, origin_rate);
+	P[1]= origin_rate;
+	return P;
+}
+	
 void SimulatorRE::GenerateEvent(Event& E, int Id) {
 	
     double t = simTime;
     if (N.Transition[Id].transType == Timed) {
-        vector<double> Param = N.GetDistParameters(Id);
+        vector<double> Param = getParams(Id);
         t += GenerateTime(N.Transition[Id].DistType, Param);
 		
 		N.Rate_Table[Id] = Param[0];

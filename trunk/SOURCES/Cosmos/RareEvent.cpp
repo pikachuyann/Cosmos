@@ -21,29 +21,6 @@ double mu(TAB &gammaprob, SPN &N){
 
 
 double ComputeDistr(SPN &N, int t , double origin_rate){
- 
-  //modif
-  /*
-   double distrorigin;
-  
-  switch(t){
-    case 0:
-      distrorigin = 0.40;
-      break;
-    case 1:
-      distrorigin = 0.45;
-      break;
-    case 2:
-      distrorigin = 0.15;
-      break;
-    case 3:
-      distrorigin = 0.0;
-      break;
-  };
-
-  return distrorigin;
-  */
-  ///modif
 
   double mux = mu(N.gammaprob,N);
   if( mux==0.0 || mux==1.0) return(origin_rate);

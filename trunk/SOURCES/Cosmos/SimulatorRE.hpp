@@ -34,6 +34,7 @@ protected:
 	void GenerateEvent(Event &, int);
 	void GenerateDummyEvent(Event &, int);
 	void updateLikelihood(int);
+	vector<double> getParams(int);
 	
 };
 
