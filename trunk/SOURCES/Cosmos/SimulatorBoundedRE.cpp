@@ -22,7 +22,7 @@ SimulatorBoundedRE::SimulatorBoundedRE(){
 	
 	for(int i=0;i<T-1;i++){
 		numSolv.stepVect();
-		cout << "itvect:"<<i<< "->" << numSolv.getVect() << endl;
+		cerr << "itvect:"<<i<< "->" << numSolv.getVect() << endl;
 	};
 	
 	exit(0);
@@ -55,7 +55,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
-		cout << "new round" << endl;
+		cerr << "new round" << endl;
 		numSolv.stepVect();
 		
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {

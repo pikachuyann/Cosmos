@@ -239,7 +239,7 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 	
 	double t = simTime;
 	if (N.Transition[Id].transType == Timed) {
-		vector<double> Param = N.GetDistParameters(Id);
+		vector<double> Param = getParams(Id); //N.GetDistParameters(Id);
 		t += GenerateTime(N.Transition[Id].DistType, Param);
 	}
 	double w;
@@ -253,6 +253,10 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 	
 }
 
+vector<double> Simulator::getParams(int Id){
+	return N.GetDistParameters(Id);
+}
+	
 double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 	
 	switch (IndexDist[distribution]) {

@@ -48,6 +48,14 @@ int main(int argc, char** argv) {
 			//mySim->RareEvent_mode=true;
 			//mySim->doubleIS_mode=true;
 		}
+		if(str== "-STSP"){
+			stateSpace states;
+			states.exploreStateSpace();
+			states.buildTransitionMatrix();
+			states.printP();
+			states.outputMat();
+			exit(EXIT_SUCCESS);
+		}
     } else {
 		mySim= (new Simulator);
 	}

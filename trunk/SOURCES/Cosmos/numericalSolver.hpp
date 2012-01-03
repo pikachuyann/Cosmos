@@ -10,10 +10,9 @@
 #ifndef _NUMERICAL_SOLVER_HPP
 #define	_NUMERICAL_SOLVER_HPP
 
-#include </usr/include/armadillo>
+
 #include "stateSpace.hpp"
 namespace boostmat = boost::numeric::ublas;
-using namespace arma;
 
 class numericalSolver: public stateSpace
 {
@@ -23,7 +22,6 @@ public:
 	void initVect(int);
 	vector<double>* combine;
 	
-	vec combineLin;
 	vector<boostmat::vector<double> >* circularvect;
 	vector<boostmat::vector<double> >* vectortest;
 	int T;

@@ -72,6 +72,8 @@ protected:
 	virtual void updateSPN(int);
 	virtual void updateLikelihood(int);
 	
+	virtual vector<double> getParams(int);
+	
 };
 
 

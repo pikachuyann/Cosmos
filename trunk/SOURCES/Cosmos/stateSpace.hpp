@@ -78,6 +78,8 @@ public:
 	LHA A; //The object representing the LHA
 	
 	void printP();
+	void outputMat();
+	void inputMat();
 	
 private:
 	stack<pair<pair<vector<int>, vector<int> >,double > > transitionsList;

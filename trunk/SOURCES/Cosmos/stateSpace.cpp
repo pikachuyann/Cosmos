@@ -10,7 +10,13 @@
 #include "stateSpace.hpp"
 #include <deque>
 #include <set>
-
+#include <iostream>
+#include <fstream>
+#include <boost/numeric/ublas/matrix_sparse.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/matrix_expression.hpp>
+#include <boost/numeric/ublas/io.hpp>
+namespace boostmat = boost::numeric::ublas;
 //using namespace boost::numeric::ublas;
 
 stateSpace::stateSpace(){
@@ -153,7 +159,78 @@ void stateSpace::printP(){
 		cerr << (*finalVector)(i);
 		cerr << endl;
 	}
+}
+
+void stateSpace::outputMat(){
+	fstream outputFile;
+	outputFile.open("matrixFile",fstream::out);
 	
+	outputFile << *transitionsMatrix;
+	outputFile << *finalVector << endl;
 	
+	for(hash_state::iterator it= S.begin() ; it != S.end(); it++){
+		outputFile << "(";
+		vector<int> vect = *(*it).first;
+		for(int i =0; i< vect.size(); i++){
+			if(i>0)outputFile << ",";
+			outputFile << vect[i];
+		}
+		outputFile << ")=";
+		outputFile << (*it).second << endl;
+	}
 		
+	outputFile.close();
+}
+
+void stateSpace::inputMat(){
+	fstream inputFile;
+	inputFile.open("matrixFile",fstream::in);
+	
+	boostmat::matrix<double> m1;
+	inputFile >> m1;
+	nbState = m1.size1();
+	boostmat::compressed_matrix<double> m (nbState,nbState);
+	for (unsigned i = 0; i < nbState; ++ i)
+        for (unsigned j = 0; j < nbState; ++ j)
+            if(m1 (i,j) != 0.)  m (i, j) = m1 (i,j);
+	transitionsMatrix = new boostmat::compressed_matrix<double>(m);
+	
+	cerr << *transitionsMatrix << endl;
+	
+	boostmat::vector<double> v1;
+	inputFile >> v1;
+	finalVector = new boostmat::vector<double>(v1);
+	
+	string line;
+	int poseq;
+	string pos;
+	string stateid;
+	while ( inputFile.good() )
+    {
+		getline (inputFile,line);
+		//cerr << line << endl;
+		poseq = line.find("=");
+		
+		if(poseq > 0){
+			pos = line.substr(1,poseq-2);
+			stateid = line.substr(poseq+1,line.size());
+			
+			vector<int> vect;
+			int it = 0;
+			while(it < pos.length()){
+				int it2 = pos.find(",",it);
+				if(it2 == -1) it2 = pos.length();
+				vect.push_back(atoi((pos.substr(it,it2-it)).c_str() ));
+				it = it2+1;
+			}
+			
+			S[new vector<int>(vect)] = (int)atoi(stateid.c_str());
+			
+		}
+	}
+	
+	inputFile.close();
+	
+	cerr << *finalVector << endl;
+	
 }
