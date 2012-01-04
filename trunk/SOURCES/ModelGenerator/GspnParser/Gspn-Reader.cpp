@@ -161,7 +161,7 @@ void Gspn_Reader::WriteFile(string& Pref) {
 	SpnCppFile << "#endif	/* _SPN_HPP */" << endl;
 	
 	
-	SpnCppFile << "#include \"RareEvent.hpp\"" << endl;
+	//SpnCppFile << "#include \"RareEvent.hpp\"" << endl;
 	
     /*for (map<string,int>::iterator it= MyGspn.IntConstant.begin(); it!= MyGspn.IntConstant.end() ; it++) {
 		SpnCppFile << "    const int " << it->first << "=" << it->second << ";" << endl;

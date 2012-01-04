@@ -8,7 +8,7 @@
  */
 
 #include "Simulator.hpp"
-
+#include "tab.hpp"
 
 #ifndef _SIMULATOR_RE_HPP
 #define _SIMULATOR_RE_HPP
@@ -24,6 +24,9 @@ public:
 	SimulatorRE();
 	
 protected:
+	
+	TAB muprob;  // mu(s) table
+	
 	bool doubleIS_mode;
 	
 	void InitialEventsQueue();
@@ -36,6 +39,8 @@ protected:
 	void updateLikelihood(int);
 	vector<double> getParams(int);
 	
+	double mu();
+	double ComputeDistr(int i, double origin_rate);
 };
 
 

@@ -44,7 +44,6 @@ public:
   double Rate_Sum;
   double Origine_Rate_Sum;
   vector <int> Msimpletab; //special places
-  TAB gammaprob;  // mu(s) table
   //-------------------------/Rare Event ---------------------------------------
 
     SPN_ORIG();

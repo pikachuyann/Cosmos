@@ -8,7 +8,6 @@ CLASSES= $(OBJPATH)/BatchR.o \
 	$(OBJPATH)/Event.o \
 	$(OBJPATH)/EventsQueue.o \
 	$(OBJPATH)/tab.o \
-	$(OBJPATH)/RareEvent.o \
 	$(OBJPATH)/Simulator.o \
 	$(OBJPATH)/SimulatorRE.o \
 	$(OBJPATH)/SimulatorBoundedRE.o \

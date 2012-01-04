@@ -8,7 +8,7 @@
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
 #include <time.h>
-#include "RareEvent.hpp"
+//#include "RareEvent.hpp"
 
 #include "SimulatorRE.hpp"
 
@@ -16,7 +16,7 @@ using namespace std;
 
 SimulatorRE::SimulatorRE(bool b) {
 	doubleIS_mode=b;
-	N.gammaprob.Load();
+	muprob.Load();
 }
 
 SimulatorRE::SimulatorRE(){
@@ -120,16 +120,6 @@ void SimulatorRE::GenerateDummyEvent(Event& E, int Id) {
     E.priority = N.GetPriority(Id);
     E.weight = 0.0;
 }
-
-vector<double> SimulatorRE::getParams(int Id){
-	//return N.GetDistParameters(Id);
-
-	vector<double> P(2);
-	double origin_rate = (N.GetDistParameters(Id))[0];
-	P[0]= ComputeDistr( N ,Id, origin_rate);
-	P[1]= origin_rate;
-	return P;
-}
 	
 void SimulatorRE::GenerateEvent(Event& E, int Id) {
 	
@@ -153,5 +143,45 @@ void SimulatorRE::GenerateEvent(Event& E, int Id) {
     E.priority = N.GetPriority(Id);
     E.weight = w;
 	
+}
+
+vector<double> SimulatorRE::getParams(int Id){
+	
+	vector<double> P(2);
+	double origin_rate = (N.GetDistParameters(Id))[0];
+	P[0]= ComputeDistr( Id, origin_rate);
+	P[1]= origin_rate;
+	return P;
+}
+
+
+double SimulatorRE::mu(){
+	
+	vector<int> vect (N.Msimpletab.size());
+	for(int i=0; i< N.Msimpletab.size();i++){
+		vect[i] = N.Marking[N.Msimpletab[i]];
+		//cout << i << " : " << N.Msimpletab[i] << " : " << N.Marking[N.Msimpletab[i]] << endl;
+	};
+	
+	return(muprob.find(&vect));
+}
+
+double SimulatorRE::ComputeDistr(int t , double origin_rate){
+	
+	double mux = mu();
+	if( mux==0.0 || mux==1.0) return(origin_rate);
+    
+	if(t== N.tr-1){
+		if(N.Origine_Rate_Sum >= N.Rate_Sum){
+			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
+		}else{ 
+			return 0.0 ;};
+	}; 
+	
+	double distr;
+	N.fire(t);
+	distr = origin_rate *( mu() / mux);
+	N.unfire(t);
+	return(distr);
 }
 
