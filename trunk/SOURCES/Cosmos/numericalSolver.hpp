@@ -23,13 +23,13 @@ protected:
 	
 public:
 	numericalSolver();
-	void initVect(int);
+	virtual void initVect(int);
 	int T;
-	void reset();
-	boostmat::vector<double> getVect();
-	double getMu(int);
-	void previousVect();
-	void stepVect();
+	virtual void reset();
+	virtual boostmat::vector<double> getVect();
+	virtual double getMu(int);
+	virtual void previousVect();
+	virtual void stepVect();
 	
 };
 
