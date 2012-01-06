@@ -23,10 +23,10 @@ protected:
 	
 public:
 	numericalSolver();
-	virtual void initVect(int);
+	virtual void initVect(int T); //initialise for an horizon point T
 	int T;
-	virtual void reset();
-	virtual boostmat::vector<double> getVect();
+	virtual void reset(); //this function is call before each batch
+	virtual boostmat::vector<double> getVect(); 
 	virtual double getMu(int);
 	virtual void previousVect();
 	virtual void stepVect();

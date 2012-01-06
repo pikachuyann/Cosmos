@@ -10,12 +10,14 @@
 #include "SimulatorBoundedRE.hpp"
 #include <list>
 #include "numSolverBB.hpp"
+#include "numSolverSH.hpp"
 
 using namespace std;
 
 SimulatorBoundedRE::SimulatorBoundedRE(){
 	//numSolv = new numericalSolver();
-	numSolv = new numSolverBB();
+	//numSolv = new numSolverBB();
+	numSolv = new numSolverSH();
 	
 	delete EQ;
 	int T =10000;
