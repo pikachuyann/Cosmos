@@ -9,14 +9,16 @@
 
 #include "SimulatorBoundedRE.hpp"
 #include <list>
+#include "numSolverBB.hpp"
 
 using namespace std;
 
 SimulatorBoundedRE::SimulatorBoundedRE(){
-	numSolv = new numericalSolver();
+	//numSolv = new numericalSolver();
+	numSolv = new numSolverBB();
 	
 	delete EQ;
-	int T =200;
+	int T =10000;
 	
 	//numericalSolver numSolv;
 	//numSolv.computeMatrix();
@@ -33,7 +35,9 @@ SimulatorBoundedRE::SimulatorBoundedRE(){
 
 
 BatchR* SimulatorBoundedRE::RunBatch(){
+	//cerr << "test(";
 	numSolv->reset();
+	//cerr << ")" << endl;
 	
 	double Dif=0;
 	//double Y = 0;

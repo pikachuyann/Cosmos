@@ -9,7 +9,18 @@
 
 #include "numericalSolver.hpp"
 
-class numSolveBB: public numericalSolver{
+class numSolverBB: public numericalSolver{
 public:
+	void initVect(int);
+	void previousVect();
+	void stepVect();
+	void reset();
 
+protected:
+	
+	vector<boostmat::vector<double> >* checkPoint;
+	int l;
+	int u;
+	int lastCP;
+	
 };
