@@ -19,11 +19,8 @@ void numSolverBB::initVect(int nT){
 	
 	lastCP = (T/l)*l;
 	boostmat::vector<double> itervect = *finalVector;
-	//boostmat::vector<double> itervect2 = *finalVector;
 	for(int i=1; i<=lastCP ; i++){
-		//cerr << itervect << endl;
 		itervect = boostmat::prod ((*transitionsMatrix), itervect);
-		//itervect=itervect2;
 		if( i % l ==0) (*checkPoint)[i/l]= itervect;
 	}
 	

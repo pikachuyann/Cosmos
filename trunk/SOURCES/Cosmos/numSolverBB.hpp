@@ -15,12 +15,9 @@ public:
 	void previousVect();
 	void stepVect();
 	void reset();
-
 protected:
-	
 	vector<boostmat::vector<double> >* checkPoint;
 	int l;
 	int u;
 	int lastCP;
-	
 };
