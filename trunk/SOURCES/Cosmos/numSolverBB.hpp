@@ -7,7 +7,9 @@
  *
  */
 
+#include "numericalSolver.hpp"
+
 class numSolveBB: public numericalSolver{
+public:
 
-
-}
+};
