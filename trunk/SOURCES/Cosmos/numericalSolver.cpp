@@ -24,35 +24,44 @@ numericalSolver::numericalSolver(){
 	inputMat();
 }
 
-void numericalSolver::computeMatrix(){
-	cerr << "N: " << nbState << endl;	
-	
-}
 
 void numericalSolver::initVect(int nT){
-
+	T=nT;
 	circularvect = new vector< boostmat::vector<double> > (nT+1, *finalVector);
 	(*circularvect)[0] = *finalVector;
-	cerr << "itervect:" << 0 << ":"<< (*circularvect)[0] << endl;
+	//cerr << "itervect:" << 0 << ":"<< (*circularvect)[0] << endl;
 	for(int i=1; i<=nT ; i++){
 		(*circularvect)[i] = boostmat::prod ((*transitionsMatrix), (*circularvect)[i-1]);
-		cerr << "itervect:" << i << ":"<< (*circularvect)[i] << endl;
+		//cerr << "itervect:" << i << ":"<< (*circularvect)[i] << endl;
 	}
 	nbVect = nT;
 	matOffset = nT;
 	
 }
 
+void numericalSolver::reset(){
+	matOffset=T;
+	//cerr << (*circularvect)[matOffset] << endl;
+
+}
+
 boostmat::vector<double> numericalSolver::getVect(){
-	//cout << "prob vect: " <<matOffset << ":"<< (*circularvect)[matOffset] << endl;
 	return (*circularvect)[matOffset];
+}
+
+double numericalSolver::getMu(int i){
+	if (matOffset>=0) return (*circularvect)[matOffset][i];
+	else return 0.0;
 }
 
 void numericalSolver::stepVect(){
 	matOffset--;
+	//cerr << " # "<< matOffset <<" # ";
 }
 
-
+void numericalSolver::previousVect(){
+	matOffset++;
+}
 
 
 

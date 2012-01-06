@@ -16,18 +16,19 @@ namespace boostmat = boost::numeric::ublas;
 
 class numericalSolver: public stateSpace
 {
+protected:
+	vector<boostmat::vector<double> >* circularvect;
+	int matOffset;
+	int nbVect;
+	
 public:
 	numericalSolver();
-	void computeMatrix();
 	void initVect(int);
-	vector<double>* combine;
-	
-	vector<boostmat::vector<double> >* circularvect;
-	vector<boostmat::vector<double> >* vectortest;
 	int T;
-	int nbVect;
-	int matOffset;
+	void reset();
 	boostmat::vector<double> getVect();
+	double getMu(int);
+	void previousVect();
 	void stepVect();
 	
 };

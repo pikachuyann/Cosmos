@@ -51,6 +51,6 @@ void TAB::Load(){
 		
     }
 	
-	else cout << "Unable to open file" << endl ; 
+	else cout << "Unable to open file "<< "mu_table" << endl ; 
 	
 };

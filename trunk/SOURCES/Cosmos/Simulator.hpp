@@ -59,20 +59,23 @@ protected:
 	
 	virtual void InitialEventsQueue(); //initialize the event queue
 	//virtual void resetSimVarsTable();
-	virtual void reset();
+	virtual void reset(); // reset the simulator
 	
-	virtual void GenerateEvent(Event &, int); 
-	virtual double GenerateTime(string&, vector<double>&);
+	virtual void GenerateEvent(Event &, int); // generate a new event use Generate Time
+	
+	// generate a time acording to the distribution d with parameters p
+	virtual double GenerateTime(string& d, vector<double>& p); 
 	
 	
-	virtual void returnResultTrue(vector<int>, double);
+	virtual void returnResultTrue(vector<int>, double); 
 	virtual void returnResultFalse();
-	virtual void updateLHA(int, double, vector<int>);
 	
-	virtual void updateSPN(int);
-	virtual void updateLikelihood(int);
+	virtual void updateLHA(int, double, vector<int>); // update value in the LHA after a transition
+	virtual void updateSPN(int); // update value in the SPN after a transition
 	
-	virtual vector<double> getParams(int);
+	virtual void updateLikelihood(int); // update the likelyhood for the Rare event case 
+	
+	virtual vector<double> getParams(int); // return the parameters of a transition distribution
 	
 };
 

@@ -13,6 +13,7 @@ CLASSES= $(OBJPATH)/BatchR.o \
 	$(OBJPATH)/SimulatorBoundedRE.o \
 	$(OBJPATH)/stateSpace.o \
 	$(OBJPATH)/numericalSolver.o \
+	$(OBJPATH)/numSolverBB.o \
 	$(OBJPATH)/clientsim.o
 
 

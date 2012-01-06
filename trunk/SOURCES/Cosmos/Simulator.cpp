@@ -65,7 +65,7 @@ void Simulator::InitialEventsQueue() {
 }
 
 void Simulator::reset() {
-	
+	//cerr << "test" << endl;
 	N.reset();
 	A.reset(N.initMarking);
 	simTime = 0;
@@ -322,7 +322,6 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 	
 }
 
-//#include "SimulatorRE.cpp"
 
 BatchR* Simulator::RunBatch(){
 	double Dif=0;

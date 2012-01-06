@@ -109,6 +109,8 @@ void SimulatorRE::updateLikelihood(int E1_transitionNum){
 		((N.Rate_Sum-N.Rate_Table[N.tr-1]) / N.Rate_Table[E1_transitionNum]);
 	}else{
 		A.Likelihood = A.Likelihood * 
+		//
+		//(N.Origine_Rate_Table[E1_transitionNum] / 1.0) *
 		(N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) *
 		(N.Rate_Sum / N.Rate_Table[E1_transitionNum]);
 	}
@@ -143,6 +145,12 @@ void SimulatorRE::GenerateEvent(Event& E, int Id) {
     E.priority = N.GetPriority(Id);
     E.weight = w;
 	
+}
+
+void SimulatorRE::reset(){
+	Simulator::reset();
+	N.Origine_Rate_Sum=0;
+	N.Rate_Sum=0;
 }
 
 vector<double> SimulatorRE::getParams(int Id){

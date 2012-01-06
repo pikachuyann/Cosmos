@@ -26,6 +26,14 @@ stateSpace::stateSpace(){
 	A.Load(); //load the LHA
 }
 
+double stateSpace::findHash(const vector<int>* vect){
+    hash_state::iterator it = S.find (vect);
+    if (it != S.end ())
+		return(it->second); // found
+    else
+		return(-1);
+}
+
 
 void stateSpace::exploreStateSpace(){
 	// apply a Dijkstra algorithm on the product of the SPN an the LHA to produce
@@ -171,7 +179,7 @@ void stateSpace::outputMat(){
 	for(hash_state::iterator it= S.begin() ; it != S.end(); it++){
 		outputFile << "(";
 		vector<int> vect = *(*it).first;
-		for(int i =0; i< vect.size(); i++){
+		for(int i =0; i< vect.size()-1; i++){
 			if(i>0)outputFile << ",";
 			outputFile << vect[i];
 		}
@@ -195,7 +203,7 @@ void stateSpace::inputMat(){
             if(m1 (i,j) != 0.)  m (i, j) = m1 (i,j);
 	transitionsMatrix = new boostmat::compressed_matrix<double>(m);
 	
-	cerr << *transitionsMatrix << endl;
+	//cerr << *transitionsMatrix << endl;
 	
 	boostmat::vector<double> v1;
 	inputFile >> v1;
@@ -231,6 +239,6 @@ void stateSpace::inputMat(){
 	
 	inputFile.close();
 	
-	cerr << *finalVector << endl;
+	//cerr << *finalVector << endl;
 	
 }

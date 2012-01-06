@@ -25,11 +25,19 @@ private:
 	AutEdge AE;
 	EventsQueue *EQ;
 	double timeS;
-	
 	vector<double> VarLHA;
 	vector<double> LinFormLHA;
 	vector<double> OldLinFormLHA;
 	vector<double> LhaFuncLHA;
+	
+	//rare event variable
+	double likelihood;
+
+	vector <double> Rate_Table;
+	vector <double> Origine_Rate_Table;
+	double Rate_Sum;
+	double Origine_Rate_Sum;
+	
 	
 public:
 	simulationState(){
@@ -47,11 +55,17 @@ public:
 		EQ = *EQsim; //new EventsQueue(*EQsim);
 		timeS = *t;
 		
-		
 		VarLHA=A->Var;
 		LinFormLHA=A->LinForm;
 		OldLinFormLHA=A->OldLinForm;
 		LhaFuncLHA=A->LhaFunc;
+		
+		likelihood = A->Likelihood;
+		Rate_Table = N->Rate_Table;
+		Origine_Rate_Table = N->Origine_Rate_Table;
+		Rate_Sum = N->Rate_Sum;
+		Origine_Rate_Sum= N-> Origine_Rate_Sum;
+		
 	};
 	void loadState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim,double* t){
 		
@@ -62,20 +76,30 @@ public:
 		*EQsim = EQ;
 		*t = timeS;
 		
+		
 		A->Var = VarLHA;
 		A->LinForm = LinFormLHA;
 		A->OldLinForm = OldLinFormLHA;
 		A->LhaFunc = LhaFuncLHA;
+		
+		A->Likelihood = likelihood; 
+		N->Rate_Table = Rate_Table;
+		N->Origine_Rate_Table = Origine_Rate_Table;
+		N->Rate_Sum = Rate_Sum;
+		N->Origine_Rate_Sum = Origine_Rate_Sum ;
 	};
 	
 };
 
-class SimulatorBoundedRE: public Simulator{
+class SimulatorBoundedRE: public SimulatorRE{
 public:
 	SimulatorBoundedRE();
 	BatchR* RunBatch();
 protected:
-	numericalSolver numSolv;
+	numericalSolver* numSolv;
+	
+	virtual double mu();
+	virtual double ComputeDistr(int i, double origin_rate);
 };
 
 

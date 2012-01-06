@@ -29,18 +29,19 @@ protected:
 	
 	bool doubleIS_mode;
 	
-	void InitialEventsQueue();
+	virtual void InitialEventsQueue();
 		
-	void returnResultTrue(vector<int>, double);
-	void returnResultFalse();
-	void updateSPN(int);
-	void GenerateEvent(Event &, int);
-	void GenerateDummyEvent(Event &, int);
-	void updateLikelihood(int);
-	vector<double> getParams(int);
+	virtual void returnResultTrue(vector<int>, double);
+	virtual void returnResultFalse();
+	virtual void updateSPN(int);
+	virtual void GenerateEvent(Event &, int);
+	virtual void GenerateDummyEvent(Event &, int);
+	virtual void updateLikelihood(int);
+	virtual vector<double> getParams(int);
+	virtual void reset();
 	
-	double mu();
-	double ComputeDistr(int i, double origin_rate);
+	virtual double mu();
+	virtual double ComputeDistr(int i, double origin_rate);
 };
 
 

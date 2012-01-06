@@ -65,6 +65,8 @@ class stateSpace {
 public:
 	stateSpace();
 	hash_state S;
+	double findHash(const vector<int>* vect);	
+	
 	int nbState;
 	int nbTrans;
 	boost::numeric::ublas::compressed_matrix<double>* transitionsMatrix;

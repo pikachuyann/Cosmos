@@ -13,7 +13,7 @@
       </attribute>
       <attribute name="intFormula">
         <attribute name="value">
-          4  
+          10 
         </attribute>
       </attribute>
     </attribute>
