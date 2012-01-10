@@ -246,6 +246,6 @@ void stateSpace::inputMat(){
 	
 	inputFile.close();
 	
-	//cerr << *finalVector << endl;
+	cerr << "CTMC size:" << finalVector->size() << endl;
 	
 }
