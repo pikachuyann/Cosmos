@@ -51,11 +51,11 @@ void stateSpace::exploreStateSpace(){
 	toBeExplore.push(init);
 	S[new vector<int>(init)] = nbState;
 	nbState++;
-	//cerr << "state: " << nbState-1 << " -> ";
+	/*cerr << "state: " << nbState-1 << " -> ";
 	for (vector<int>::iterator it=init.begin(); it!= init.end() ; it++) {
 		cerr << *it << ":";
 	}
-	//cerr << endl;
+	cerr << endl;*/
 	
 	//cerr << "boucle"<< endl;
 	
@@ -105,6 +105,7 @@ void stateSpace::exploreStateSpace(){
 		}
 		
 	}
+    cerr << nbState << " states found" << endl;
 }
 
 double stateSpace::findState(const vector<int>* vect){
