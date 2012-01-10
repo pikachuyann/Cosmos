@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
 			stateSpace states;
 			states.exploreStateSpace();
 			states.buildTransitionMatrix();
-			states.printP();
+			//states.printP();
 			states.outputMat();
 			exit(EXIT_SUCCESS);
 		}

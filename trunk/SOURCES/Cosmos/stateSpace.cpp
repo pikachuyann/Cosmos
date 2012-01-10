@@ -39,6 +39,9 @@ void stateSpace::exploreStateSpace(){
 	// apply a Dijkstra algorithm on the product of the SPN an the LHA to produce
 	// the state space. The list of state is store in the hash table S and 
 	// the transition list is stored in transitionList.
+
+    cerr << "Exploring state space" << endl;
+    
 	stack<vector<int> ,vector<vector<int> > > toBeExplore;
 	vector<int> init = N.initMarking;
 	
@@ -48,11 +51,11 @@ void stateSpace::exploreStateSpace(){
 	toBeExplore.push(init);
 	S[new vector<int>(init)] = nbState;
 	nbState++;
-	cerr << "state: " << nbState-1 << " -> ";
+	//cerr << "state: " << nbState-1 << " -> ";
 	for (vector<int>::iterator it=init.begin(); it!= init.end() ; it++) {
 		cerr << *it << ":";
 	}
-	cerr << endl;
+	//cerr << endl;
 	
 	//cerr << "boucle"<< endl;
 	
@@ -87,11 +90,11 @@ void stateSpace::exploreStateSpace(){
 				hash_state::iterator its = S.find (&marking);
 				if (its == S.end ()){
 					
-					cerr << "state:"<< nbState << " -> ";
+					//cerr << "state:"<< nbState << " -> ";
 					for (vector<int>::iterator it=marking.begin(); it!= marking.end() ; it++) {
-						cerr << *it << ":";
+						//cerr << *it << ":";
 					}
-					cerr << endl;
+					//cerr << endl;
 					
 					toBeExplore.push(marking);
 					S[new vector<int>(marking)] = nbState;
@@ -114,6 +117,8 @@ double stateSpace::findState(const vector<int>* vect){
 
 void stateSpace::buildTransitionMatrix()
 {
+    cerr << "Building transition matrix" << endl;
+    
 	// transform the transition list into a sparse transition probability matrix 
 	boost::numeric::ublas::compressed_matrix<double> mat(nbState, nbState, nbTrans);
 	
@@ -145,7 +150,7 @@ void stateSpace::buildTransitionMatrix()
 	for(hash_state::iterator it=S.begin();  it!=S.end() ; it++){
 		if(A.isFinal(it->first->back())){
 			vect(it->second)=1.0;
-			cerr << "final:" << it->second << endl;
+			//cerr << "final:" << it->second << endl;
 		}else {
 			vect(it->second)=0.0;
 		}
@@ -170,6 +175,8 @@ void stateSpace::printP(){
 }
 
 void stateSpace::outputMat(){
+    cerr << "Exporting the transition matrix" << endl;
+    
 	fstream outputFile;
 	outputFile.open("matrixFile",fstream::out);
 	

@@ -8,12 +8,12 @@ VariablesList = {x} ;
 LocationsList = {l1, lp, lm };AVG(Last(x));
 InitialLocations={l1};
 
-FinalLocations={ lp,lm };
+FinalLocations={ lp  };
 
 Locations={
-(l1, (Queue1 + Queue2 > 0) & (Queue1 + Queue2 < N) & (Puit = 0)) ;
-(lp, (Queue1 + Queue2 = N) & (Puit = 0) );
-(lm, (Queue1 + Queue2 = 0) | (Puit > 0) );
+(l1, (Queue1 + Queue2 > 0) & (Queue1 + Queue2 < N) ) ;
+(lp, (Queue1 + Queue2 = N)  );
+(lm, (Queue1 + Queue2 = 0)  );
 }; 
 
 Edges={

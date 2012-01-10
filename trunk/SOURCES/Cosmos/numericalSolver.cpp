@@ -21,11 +21,14 @@ using namespace std;
 
 
 numericalSolver::numericalSolver(){
+    cerr << "Initialising the simulator" << endl;
+
 	inputMat();
 }
 
 
 void numericalSolver::initVect(int nT){
+        
 	T=nT;
 	circularvect = new vector< boostmat::vector<double> > (nT+1, *finalVector);
 	(*circularvect)[0] = *finalVector;
@@ -36,7 +39,7 @@ void numericalSolver::initVect(int nT){
 	}
 	nbVect = nT;
 	matOffset = nT;
-	
+	cerr << "Starting the simulation" << endl;
 }
 
 void numericalSolver::reset(){

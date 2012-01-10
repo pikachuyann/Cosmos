@@ -1,9 +1,9 @@
 
 
-const double Lambda   = 0.100000;
-const double rho1 = 0.450000;
-const double rho2   = 0.450000;
-const int r = 4;
+const double Lambda   = 0.320000;
+const double rho1 = 0.340000;
+const double rho2   = 0.340000;
+const int r = 30;
 NbPlaces = 7;
 NbTransitions = 8;
 
