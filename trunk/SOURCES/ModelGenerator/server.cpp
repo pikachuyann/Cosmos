@@ -64,12 +64,15 @@ void lauch_clients(SimParam& P){
 	int size;
 	if (P.Path == "") os << "./ClientSim " << P.Batch;
   else os << P.Path << "ClientSim " << P.Batch;
+    
   if(P.DoubleIS){ 
     os << " " << "-RE2"; 
   } else if(P.RareEvent){
 	os << " " << "-RE";
-  }else if(P.BoundedRE){
+  } else if(P.BoundedRE){
 	  os << " " << "-BURE";
+  } else if(P.computeStateSpace){
+      os << " " << "-STSP";
   };
   //cout << os.str() << endl;
   
