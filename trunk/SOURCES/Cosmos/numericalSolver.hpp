@@ -20,6 +20,7 @@ protected:
 	vector<boostmat::vector<double> >* circularvect;
 	int matOffset;
 	int nbVect;
+    void sparseProd(boostmat::vector<double> *result,boostmat::vector<double> *vect, boostmat::compressed_matrix<double> *mat);
 	
 public:
 	numericalSolver();

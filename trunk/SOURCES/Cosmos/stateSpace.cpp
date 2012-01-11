@@ -16,6 +16,9 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_expression.hpp>
 #include <boost/numeric/ublas/io.hpp>
+
+#include "sparse_io.hpp";
+
 namespace boostmat = boost::numeric::ublas;
 //using namespace boost::numeric::ublas;
 
@@ -181,7 +184,7 @@ void stateSpace::outputMat(){
 	fstream outputFile;
 	outputFile.open("matrixFile",fstream::out);
 	
-	outputFile << *transitionsMatrix;
+	outputFile << boostmat::io::sparse(*transitionsMatrix);
 	outputFile << *finalVector << endl;
 	
 	for(hash_state::iterator it= S.begin() ; it != S.end(); it++){
@@ -202,13 +205,15 @@ void stateSpace::inputMat(){
 	fstream inputFile;
 	inputFile.open("matrixFile",fstream::in);
 	
-	boostmat::matrix<double> m1;
+	/*boostmat::matrix<double> m1;
 	inputFile >> m1;
-	nbState = m1.size1();
-	boostmat::compressed_matrix<double> m (nbState,nbState);
-	for (unsigned i = 0; i < nbState; ++ i)
+	nbState = m1.size1();*/
+	boostmat::compressed_matrix<double , boostmat::row_major> m;
+    inputFile >> boostmat::io::sparse(m);
+    
+	/*for (unsigned i = 0; i < nbState; ++ i)
         for (unsigned j = 0; j < nbState; ++ j)
-            if(m1 (i,j) != 0.)  m (i, j) = m1 (i,j);
+            if(m1 (i,j) != 0.)  m (i, j) = m1 (i,j);*/
 	transitionsMatrix = new boostmat::compressed_matrix<double>(m);
 	
 	//cerr << *transitionsMatrix << endl;
@@ -247,6 +252,6 @@ void stateSpace::inputMat(){
 	
 	inputFile.close();
 	
-	cerr << "CTMC size:" << finalVector->size() << endl;
+	cerr << "DTMC size:" << finalVector->size() << endl;
 	
 }
