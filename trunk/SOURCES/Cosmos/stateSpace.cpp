@@ -17,7 +17,7 @@
 #include <boost/numeric/ublas/matrix_expression.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
-#include "sparse_io.hpp";
+#include "sparse_io.hpp"
 
 namespace boostmat = boost::numeric::ublas;
 //using namespace boost::numeric::ublas;

@@ -15,8 +15,8 @@
 using namespace std;
 
 SimulatorBoundedRE::SimulatorBoundedRE(){
-	numSolv = new numericalSolver();
-	//numSolv = new numSolverBB();
+	//numSolv = new numericalSolver();
+	numSolv = new numSolverBB();
 	//numSolv = new numSolverSH();
 	
 	delete EQ;
