@@ -13,9 +13,14 @@ void numSolverBB::initVect(int nT){
 	T=nT;
 	u=T;
 	l = sqrt(T);
+    time_t start, endt;
+    time(&start);
 	
 	circularvect = new vector< boostmat::vector<double> > (l+1, boostmat::zero_vector<double> (finalVector->size()));
 	checkPoint = new vector< boostmat::vector<double> > (T/l+1, *finalVector);
+    
+    time(&endt);
+    cerr << "time for allocation:" << difftime(endt, start) << endl;
     
 	lastCP = (T/l)*l;
 	boostmat::vector<double> itervect = *finalVector;
@@ -28,9 +33,16 @@ void numSolverBB::initVect(int nT){
 		if( i % l ==0) (*checkPoint)[i/l]= itervect;
 	}
 	
+    time(&endt);
+    cerr << "time for precalculation:" << difftime(endt, start) << endl;
+    
+	cerr << "Starting the simulation" << endl;
 }
 
 void numSolverBB::reset(){
+    time_t start, endt;
+    time(&start);
+
 	(*circularvect)[0]=(*checkPoint)[lastCP/l];
 	
 	/*for(int i=1; i<=T-lastCP ; i++){
@@ -42,6 +54,8 @@ void numSolverBB::reset(){
         
 		//cerr << "itervect:" << i << ":"<< (*circularvect)[i] << endl;
 	}
+    time(&endt);
+    cerr << "time for reset:" << difftime(endt, start) << endl << endl;
     
 	
 	u=T;
