@@ -126,7 +126,7 @@ void stateSpace::buildTransitionMatrix()
 	// transform the transition list into a sparse transition probability matrix 
 	boost::numeric::ublas::compressed_matrix<double> mat(nbState, nbState, nbTrans);
 	
-	
+	cerr << "Exploring graph" << endl;
 	while (!transitionsList.empty()) {
 		pair<pair<vector<int>, vector<int> >,double > trans = transitionsList.top();
 		transitionsList.pop();
@@ -134,6 +134,7 @@ void stateSpace::buildTransitionMatrix()
 		mat (findState(&(trans.first.first)),findState(&(trans.first.second))) = trans.second;
 	}
 	
+    cerr << "Adding self loop" << endl;
 	// Add self loop to ensure that mat is a probability matrix.
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator1 it1_t;
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator2 it2_t;
@@ -142,14 +143,16 @@ void stateSpace::buildTransitionMatrix()
 	{
 		double sum = 1.0;
 		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
-			//cerr << "test" << *it2;
+			//cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
 			if(it2.index1()!= it2.index2())sum -= *it2;
 		}
 		mat(it1.index1(),it1.index1())= sum;
 	}
 	
+    cerr << " copping" << endl;
+    
 	transitionsMatrix = new boost::numeric::ublas::compressed_matrix<double>(mat);
-
+    
 	boost::numeric::ublas::vector<double> vect(nbState);
 	for(hash_state::iterator it=S.begin();  it!=S.end() ; it++){
 		if(A.isFinal(it->first->back())){

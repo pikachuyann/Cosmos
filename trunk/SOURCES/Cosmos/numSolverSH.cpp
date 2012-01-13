@@ -87,17 +87,22 @@ void numSolverSH::reset(){
 	}
 	cerr << "finish2";
 	previous_vect = itervect;
+    current_vect= boostmat::zero_vector<double> (itervect.size());
     sparseProd(&current_vect, &itervect, transitionsMatrix);
 	//current_vect = boostmat::prod ((*transitionsMatrix), itervect);
-	
+	cerr << "finish reset" << endl; 
+    
+    
 }
 
 
 void numSolverSH::stepVect(){
+    cerr << "step vect" << endl;
 	u--;
 	if(is_previous){ is_previous=false;}
 	else {
 		
+        
 	}
 
 	
