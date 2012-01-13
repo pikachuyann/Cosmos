@@ -37,7 +37,7 @@ SimulatorBoundedRE::SimulatorBoundedRE(int m){
 	//numSolv = new numSolverSH();
 	
 	delete EQ;
-	int T =10000;
+	int T =121;
 	
 	//numericalSolver numSolv;
 	//numSolv.computeMatrix();

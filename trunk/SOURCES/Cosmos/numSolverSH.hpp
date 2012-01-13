@@ -20,11 +20,14 @@ public:
 protected:
 	vector<boostmat::vector<double> >* powTVect;
 	vector<boostmat::vector<double> >* lastOne;
+    vector<double>* ktable; 
 	int l;
 	int u;
 	int lastPowT;
+    void compPow(int,int);
 	
 	bool is_previous;
+
 	boostmat::vector<double> current_vect;
 	boostmat::vector<double> previous_vect;
 };

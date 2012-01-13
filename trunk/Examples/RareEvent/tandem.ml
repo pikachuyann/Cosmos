@@ -20,12 +20,11 @@ Unix.chdir dir;;
 
 let gspnagr = open_out "tandem_agr.gspn" in
 
-Printf.fprintf gspnagr "
-
-const double mu   = %f;
+Printf.fprintf gspnagr "const double mu   = %f;
 const double rho1 = %f;
 const double rho2   = %f;
-const int r = %i;" mu rho1 rho2 r;
+const int r = %i;
+" mu rho1 rho2 r;
 
 Printf.fprintf gspnagr "
 NbPlaces = 3;
@@ -57,7 +56,8 @@ OutArcs={
 (mu ,Queue1   ,1);
 (rho1,Queue2   ,1);
 (rho2,AQueue2  ,1);
-};";
+};
+";
 close_out gspnagr;;
 
 let lhaagr = open_out "tandem_agr.lha";;

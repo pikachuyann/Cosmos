@@ -22,10 +22,10 @@ void numSolverSH::initVect(int nT){
 	
 	cerr << "T:l " <<T << ":" << l << endl;
 	
-	cerr << "xor: " <<120 << ":" << 119 << ":" << (120^119) << endl;
 	
 	powTVect = new vector< boostmat::vector<double> > (l+1, *finalVector);
 	lastOne = new vector< boostmat::vector<double> > (l+1, *finalVector);
+    ktable = new vector< double > (l+1,0);
 	lastPowT= 1<<l;
 	
 	//cerr << "lastPow" << lastPowT << " log(T) " << l << endl;
@@ -54,17 +54,21 @@ void numSolverSH::initVect(int nT){
 	cerr << "finish" << endl;
 }
 
-void numSolverSH::reset(){
-	is_previous=true;
-	u=T;
-	
-	int k = l-1;
-	int m = 1<<k;
-	(*lastOne)[l] = (*powTVect)[l];
-	boostmat::vector<double> itervect = (*powTVect)[l];
+void numSolverSH::compPow(int kp,int up){
+    int k = kp-1;
+    boostmat::vector<double> itervect = (*lastOne)[k];
 	boostmat::vector<double> itervect2 = 
-        boostmat::zero_vector<double> (finalVector->size());   
-    for (int i = lastPowT+1; i<=T; i++) {
+    boostmat::zero_vector<double> (finalVector->size());   
+    
+    while (k>0 && readbit(up, k)==0){
+        (*lastOne)[k]=itervect;
+        (*ktable)[k] =(*ktable)[kp];
+        cerr << "k--" << endl;
+        k--;
+    }
+    
+	int m = 1<<k;
+    for (int i = (*ktable)[kp]+1; i<=up; i++) {
 		cerr << "i:" << i << "k:" << k << "m:" << m << endl;
         itervect2.clear();
         sparseProd(&itervect2,&itervect, transitionsMatrix);
@@ -73,10 +77,12 @@ void numSolverSH::reset(){
 		m--;
 		if(m==0){
 			(*lastOne)[k]=itervect;
+            (*ktable)[k] = i;
 			k--;
 			cerr << "k--" << endl;
-			while (k>0 && readbit(T, k)==0){
+			while (k>0 && readbit(up, k)==0){
 				(*lastOne)[k]=itervect;
+                (*ktable)[k] =i;
 				cerr << "k--" << endl;
 				k--;
 			}
@@ -95,13 +101,28 @@ void numSolverSH::reset(){
     
 }
 
+void numSolverSH::reset(){
+	is_previous=true;
+	u=T;
+	
+    (*ktable)[l] = lastPowT;
+    compPow(l, T);
+    
+	cerr << "finish reset" << endl; 
+    
+    
+}
+
 
 void numSolverSH::stepVect(){
     cerr << "step vect" << endl;
 	u--;
 	if(is_previous){ is_previous=false;}
 	else {
-		
+		int kp = log2((u^(u+1))+1);
+        cerr << "u: " << u<< ": kp: " << kp << endl;
+        
+        compPow(kp, u);
         
 	}
 
