@@ -31,13 +31,18 @@ void numSolverSH::initVect(int nT){
 	//cerr << "lastPow" << lastPowT << " log(T) " << l << endl;
 	
 	boostmat::vector<double> itervect = *finalVector;
+    boostmat::vector<double> itervect2=
+        boostmat::zero_vector<double> (finalVector->size());
+    
 	int nextPow =1;
 	int currPow =0;
 	
 	for(int i=1; i<=lastPowT ; i++){
 		//cerr << "currPow " << currPow << " newPow " << nextPow << endl;
-		
-		itervect = boostmat::prod ((*transitionsMatrix), itervect);
+        itervect2.clear();
+        sparseProd(&itervect2,&itervect, transitionsMatrix);
+        itervect=itervect2;
+		//itervect = boostmat::prod ((*transitionsMatrix), itervect);
 		if( i == nextPow){
 			cerr << "test: " << currPow << ":" << nextPow << endl;
 			(*powTVect)[currPow]=itervect;
@@ -57,9 +62,14 @@ void numSolverSH::reset(){
 	int m = 1<<k;
 	(*lastOne)[l] = (*powTVect)[l];
 	boostmat::vector<double> itervect = (*powTVect)[l];
-	for (int i = lastPowT+1; i<=T; i++) {
+	boostmat::vector<double> itervect2 = 
+        boostmat::zero_vector<double> (finalVector->size());   
+    for (int i = lastPowT+1; i<=T; i++) {
 		cerr << "i:" << i << "k:" << k << "m:" << m << endl;
-		itervect = boostmat::prod ((*transitionsMatrix), itervect);
+        itervect2.clear();
+        sparseProd(&itervect2,&itervect, transitionsMatrix);
+        itervect=itervect2;
+		//itervect = boostmat::prod ((*transitionsMatrix), itervect);
 		m--;
 		if(m==0){
 			(*lastOne)[k]=itervect;
@@ -77,7 +87,8 @@ void numSolverSH::reset(){
 	}
 	cerr << "finish2";
 	previous_vect = itervect;
-	current_vect = boostmat::prod ((*transitionsMatrix), itervect);
+    sparseProd(&current_vect, &itervect, transitionsMatrix);
+	//current_vect = boostmat::prod ((*transitionsMatrix), itervect);
 	
 }
 

@@ -15,12 +15,29 @@
 using namespace std;
 
 SimulatorBoundedRE::SimulatorBoundedRE(){
+    SimulatorBoundedRE(0);
+}
+
+SimulatorBoundedRE::SimulatorBoundedRE(int m){
+    switch (m) {
+        case 1:
+            numSolv = new numericalSolver();
+            break;
+            
+        case 2:
+            numSolv = new numSolverBB();
+            break;
+            
+        case 3:
+            numSolv = new numSolverSH();
+            break;
+    }
 	//numSolv = new numericalSolver();
-	numSolv = new numSolverBB();
+	//numSolv = new numSolverBB();
 	//numSolv = new numSolverSH();
 	
 	delete EQ;
-	int T =10000;
+	int T =100;
 	
 	//numericalSolver numSolv;
 	//numSolv.computeMatrix();
