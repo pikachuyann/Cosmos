@@ -2,7 +2,7 @@ const double mu=0.32;
 const double rho1=0.34;
 const double rho2=0.34;
 
-const int r = 87;
+const int r = 5;
 
 NbPlaces = 3;
 NbTransitions = 3;
