@@ -6,7 +6,7 @@
  *  Copyright 2012 __MyCompanyName__. All rights reserved.
  *
  */
-
+#include <time.h>
 #include "numSolverSH.hpp"
 
 bool readbit(int a,int b){
@@ -16,6 +16,9 @@ bool readbit(int a,int b){
 
 
 void numSolverSH::initVect(int nT){
+    time_t start, endt;
+    time(&start);
+    
 	T=nT;
 	u=T;
 	l = log2(T);
@@ -34,6 +37,7 @@ void numSolverSH::initVect(int nT){
     boostmat::vector<double> itervect2=
         boostmat::zero_vector<double> (finalVector->size());
     
+    cerr << "time for allocation:" << difftime(endt, start) << endl;
 	
 	for(int i=1; i<=lastPowT ; i++){
 		//cerr << "currPow " << currPow << " newPow " << nextPow << endl;
@@ -47,6 +51,9 @@ void numSolverSH::initVect(int nT){
     (*ktable)[l] = lastPowT;
     (*ktable)[l+1] = 0;
 	
+    cerr << "time for precalculation:" << difftime(endt, start) << endl;
+    
+	cerr << "Starting the simulation" << endl;
 	//cerr << "finish init" << endl;
 }
 
