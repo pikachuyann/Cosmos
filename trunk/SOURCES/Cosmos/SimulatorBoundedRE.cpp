@@ -37,7 +37,7 @@ SimulatorBoundedRE::SimulatorBoundedRE(int m){
 	//numSolv = new numSolverSH();
 	
 	delete EQ;
-	int T =10;
+	int T =50000;
 	
 	//numericalSolver numSolv;
 	//numSolv.computeMatrix();
@@ -126,7 +126,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	}
 	
 	//cerr << "test" << endl;
-	exit(0);
+	//exit(0);
 	return (batchResult);
 }
 

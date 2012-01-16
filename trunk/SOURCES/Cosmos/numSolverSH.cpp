@@ -20,7 +20,7 @@ void numSolverSH::initVect(int nT){
 	u=T;
 	l = log2(T);
 	
-	cerr << "T: " <<T << " l: " << l << endl;
+	//cerr << "T: " <<T << " l: " << l << endl;
 	
 	
 	//powTVect = new vector< boostmat::vector<double> > (l+1, *finalVector);
@@ -40,18 +40,18 @@ void numSolverSH::initVect(int nT){
         itervect2.clear();
         sparseProd(&itervect2,&itervect, transitionsMatrix);
         itervect=itervect2;
-        cerr << "i: " <<i << " v: " <<itervect << endl;
+        //cerr << "i: " <<i << " v: " <<itervect << endl;
 		//itervect = boostmat::prod ((*transitionsMatrix), itervect);
 	}
     (*lastOne)[l]= itervect;
     (*ktable)[l] = lastPowT;
     (*ktable)[l+1] = 0;
 	
-	cerr << "finish init" << endl;
+	//cerr << "finish init" << endl;
 }
 
 void numSolverSH::compPow(int kp,int up){
-    cerr << "compPow("<< kp << "," << up << ")" << endl;
+    //cerr << "compPow("<< kp << "," << up << ")" << endl;
     
     int k = kp-1;
     boostmat::vector<double> itervect = (*lastOne)[kp];
@@ -62,13 +62,13 @@ void numSolverSH::compPow(int kp,int up){
         //cerr << itervect<< endl;
         (*lastOne)[k]=itervect;
         (*ktable)[k] =(*ktable)[kp];
-        cerr << "k--" << endl;
+        //cerr << "k--" << endl;
         k--;
     }
     
 	int m = 1<<k;
     for (int i = (*ktable)[kp]+1; i<=up; i++) {
-		cerr << "i: " << i << " k: " << k << " m: " << m << endl;
+		//cerr << "i: " << i << " k: " << k << " m: " << m << endl;
         itervect2.clear();
         sparseProd(&itervect2,&itervect, transitionsMatrix);
         itervect=itervect2;
@@ -78,11 +78,11 @@ void numSolverSH::compPow(int kp,int up){
 			(*lastOne)[k]=itervect;
             (*ktable)[k] = i;
 			k--;
-			cerr << "k--1" << endl;
+			//cerr << "k--1" << endl;
 			while (k>0 && readbit(up, k)==0){
 				(*lastOne)[k]=itervect;
                 (*ktable)[k] =i;
-				cerr << "k--" << endl;
+				//cerr << "k--" << endl;
 				k--;
 			}
 			
@@ -90,8 +90,8 @@ void numSolverSH::compPow(int kp,int up){
 		}
 		
 	}
-	cerr << "finish";
-    cerr << itervect << endl;
+	//cerr << "finish";
+    //cerr << itervect << endl;
 	previous_vect = current_vect;
     current_vect=itervect;
     is_previous=false;
@@ -108,14 +108,14 @@ void numSolverSH::reset(){
 	u=T;
     compPow(l, T);
     
-	cerr << "finish reset" << endl; 
+	//cerr << "finish reset" << endl; 
     
     
 }
 
 
 void numSolverSH::stepVect(){
-    cerr << "step vect" << endl;
+    //cerr << "step vect" << endl;
 	u--;
 	if(is_previous){ is_previous=false;}
 	else {
@@ -124,7 +124,7 @@ void numSolverSH::stepVect(){
             current_vect = *finalVector;
         }else{
             int kp = log2((u^(u+1))+1);
-            cerr << "u: " << u<< ": kp: " << kp << endl;
+            //cerr << "u: " << u<< ": kp: " << kp << endl;
             compPow(kp, u);
         }
     }
