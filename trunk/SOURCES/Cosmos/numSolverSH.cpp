@@ -37,6 +37,7 @@ void numSolverSH::initVect(int nT){
     boostmat::vector<double> itervect2=
         boostmat::zero_vector<double> (finalVector->size());
     
+    time(&endt);
     cerr << "time for allocation:" << difftime(endt, start) << endl;
 	
 	for(int i=1; i<=lastPowT ; i++){
@@ -51,6 +52,7 @@ void numSolverSH::initVect(int nT){
     (*ktable)[l] = lastPowT;
     (*ktable)[l+1] = 0;
 	
+    time(&endt);
     cerr << "time for precalculation:" << difftime(endt, start) << endl;
     
 	cerr << "Starting the simulation" << endl;
