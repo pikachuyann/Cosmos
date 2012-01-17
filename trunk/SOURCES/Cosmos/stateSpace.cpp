@@ -62,6 +62,7 @@ void stateSpace::exploreStateSpace(){
 	
 	//cerr << "boucle"<< endl;
 	
+    
 	while (!toBeExplore.empty()) {
 		vector<int> place = toBeExplore.top();
 		toBeExplore.pop();
@@ -136,6 +137,10 @@ void stateSpace::buildTransitionMatrix()
 	
 	init.push_back( *(A.InitLoc.begin()) );
 	toBeExplore.push(init);
+    vector<bool> already_seen(nbState, false);
+    
+    already_seen[findState(&init)] = true;
+    
 	while (!toBeExplore.empty()) {
 		vector<int> place = toBeExplore.top();
 		toBeExplore.pop();
@@ -163,9 +168,8 @@ void stateSpace::buildTransitionMatrix()
 				vector<double> Param = N.GetDistParameters(*it);
                 mat (findState(&currentstate),findState(&marking)) = Param[0];
                 
-				
-				hash_state::iterator its = S.find (&marking);
-				if (its == S.end ()){
+				int state = findState(&marking);
+				if (!already_seen[state]){
 					
 					//cerr << "state:"<< nbState << " -> ";
 					for (vector<int>::iterator it=marking.begin(); it!= marking.end() ; it++) {
@@ -173,6 +177,7 @@ void stateSpace::buildTransitionMatrix()
 					}
 					//cerr << endl;
 					
+                    already_seen[state]=true;
 					toBeExplore.push(marking);
 					
 				}
@@ -181,9 +186,6 @@ void stateSpace::buildTransitionMatrix()
 		}
 		
 	}
-    cerr << nbState << " states found" << endl;
-    
-    
     
     cerr << "Adding self loop" << endl;
 	// Add self loop to ensure that mat is a probability matrix.

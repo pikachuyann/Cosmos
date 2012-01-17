@@ -17,6 +17,8 @@
 #include <boost/numeric/ublas/matrix_expression.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/operation_sparse.hpp>
+#include <boost/numeric/ublas/operation.hpp>
+#include <boost/numeric/ublas/vector.hpp>
 
 #define BOOST_UBLAS_NDEBUG
 
@@ -34,8 +36,12 @@ numericalSolver::numericalSolver(){
     
 }
 
+
 void numericalSolver::sparseProd(boostmat::vector<double> *result,boostmat::vector<double> *vect, boostmat::compressed_matrix<double> *mat){
     //*result = boostmat::zero_vector<double> (vect->size());
+    
+    //boostmat::axpy_prod(mat,vect,result,false);
+       
     for(boostmat::compressed_matrix<double>::iterator1 it = mat->begin1(); it!= mat->end1(); it++){
         for(boostmat::compressed_matrix<double>::iterator2 it2 = it.begin(); it2!= it.end(); it2++){
             //cerr << "iteration: " << it.index1() << ":" << it2.index2() << endl;
