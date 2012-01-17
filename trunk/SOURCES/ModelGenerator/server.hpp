@@ -16,6 +16,7 @@ struct SimParam {
 	bool RareEvent;
 	bool DoubleIS;
 	int BoundedRE;
+    int horizon;
 	bool GMLinput;
     bool computeStateSpace;
 	bool alligatorMode;

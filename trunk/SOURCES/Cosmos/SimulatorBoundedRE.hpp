@@ -93,8 +93,8 @@ public:
 
 class SimulatorBoundedRE: public SimulatorRE{
 public:
-	SimulatorBoundedRE();
-    SimulatorBoundedRE(int m);
+	//SimulatorBoundedRE();
+    SimulatorBoundedRE(int m,int T);
 	BatchR* RunBatch();
 protected:
 	numericalSolver* numSolv;

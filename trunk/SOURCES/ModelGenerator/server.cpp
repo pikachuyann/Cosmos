@@ -71,7 +71,7 @@ void lauch_clients(SimParam& P){
     } else if(P.RareEvent){
         os << " " << "-RE";
     } else if(P.BoundedRE>0){
-        os << " " << "-BURE" << " " << P.BoundedRE;
+        os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
     } else if(P.computeStateSpace){
         os << " " << "-STSP";
     };

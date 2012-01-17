@@ -166,6 +166,7 @@ void LoadSimParam(SimParam& P) {
 	P.RareEvent = false;
 	P.DoubleIS = false;
 	P.BoundedRE = 0;
+    P.horizon =100;
 	P.Njob = 1;
 	P.GMLinput = false;
     P.computeStateSpace = false;
@@ -185,6 +186,7 @@ int main(int argc, char** argv) {
 	("RareEvent,r",po::bool_switch(&(P.RareEvent)),"Use Rare Event acceleration")
 	("DoubleIS,d",po::bool_switch(&(P.DoubleIS)),"Use Rare Event acceleration with double Important Sampling")
 	("BoundedRE,b",po::value(&(P.BoundedRE )),"Use Bounded Rare Event acceleration")
+    ("set-Horizon",po::value(&(P.horizon )),"Set the horizon for bounded until")
     ("StateSpace,s",po::bool_switch(&(P.computeStateSpace)),"Generate the state space of the systeme")
 	("alligator-mode",po::bool_switch(&(P.alligatorMode)),"alligator mode")
 	("setPath,p",po::value(&(P.Path)),"Set executable path")
