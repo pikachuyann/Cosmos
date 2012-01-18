@@ -11,6 +11,7 @@
 #include <list>
 #include "numSolverBB.hpp"
 #include "numSolverSH.hpp"
+#include <sys/resource.h>
 
 using namespace std;
 
@@ -127,6 +128,12 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	
 	//cerr << "test" << endl;
 	//exit(0);
+    
+    rusage ruse;
+    getrusage(RUSAGE_SELF, &ruse);
+    cerr <<endl << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
+    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl; 
+    
 	return (batchResult);
 }
 

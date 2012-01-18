@@ -6,11 +6,11 @@ open Printf
 let n = int_of_string (Sys.argv.(1));;
 let r = int_of_string (Sys.argv.(2));;
 
-let mu = 0.36;;
-let rho1 = 0.32;;
-let rho2 = 0.32;;
+let mu = 0.40;;
+let rho1 = 0.3;;
+let rho2 = 0.3;;
 
-let dir = sprintf "tandem%i_%i" n r;;
+let dir = sprintf "tandem%i_%i_%f" n r mu;;
 
 
 try 

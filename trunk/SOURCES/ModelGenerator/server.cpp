@@ -64,7 +64,7 @@ void lauch_clients(SimParam& P){
 	pid_t readpid;
 	int size;
 	if (P.Path == "") os << "./ClientSim " << P.Batch;
-    else os << "/usr/bin/time -v " << P.Path << "ClientSim " << P.Batch;
+    else os <<  P.Path << "ClientSim " << P.Batch;
     
     if(P.DoubleIS){ 
         os << " " << "-RE2"; 
