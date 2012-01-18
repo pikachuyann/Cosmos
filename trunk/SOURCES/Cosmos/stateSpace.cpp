@@ -37,6 +37,13 @@ double stateSpace::findHash(const vector<int>* vect){
 		return(-1);
 }
 
+void stateSpace::add_state(vector<int> v){
+    vector<int>* v2 = new vector<int>(v);
+    S[v2] = nbState;
+    findstate->push_back(*v2);
+	nbState++;
+    
+}
 
 void stateSpace::exploreStateSpace(){
 	// apply a Dijkstra algorithm on the product of the SPN an the LHA to produce
@@ -52,8 +59,7 @@ void stateSpace::exploreStateSpace(){
 	
 	init.push_back( *(A.InitLoc.begin()) );
 	toBeExplore.push(init);
-	S[new vector<int>(init)] = nbState;
-	nbState++;
+    add_state(init);
 	/*cerr << "state: " << nbState-1 << " -> ";
 	for (vector<int>::iterator it=init.begin(); it!= init.end() ; it++) {
 		cerr << *it << ":";
@@ -101,8 +107,7 @@ void stateSpace::exploreStateSpace(){
 					//cerr << endl;
 					
 					toBeExplore.push(marking);
-					S[new vector<int>(marking)] = nbState;
-					nbState++;
+                    add_state(marking);
 				}
 			}
 			

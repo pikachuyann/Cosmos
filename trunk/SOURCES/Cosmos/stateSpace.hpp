@@ -66,12 +66,12 @@ public:
 	stateSpace();
 	hash_state S;
 	double findHash(const vector<int>* vect);	
-	
+    
 	int nbState;
 	int nbTrans;
 	boost::numeric::ublas::compressed_matrix<double>* transitionsMatrix;
 	boost::numeric::ublas::vector<double>* finalVector;
-	
+    
 	void exploreStateSpace();
 	void buildTransitionMatrix();
 	double findState(const vector<int>*);
@@ -84,7 +84,8 @@ public:
 	void inputMat();
 	
 private:
-	stack<pair<pair<vector<int>, vector<int> >,double > > transitionsList;
+    vector<vector<int> > *findstate;
+    void add_state(vector<int> v);
 };
 
 #endif
