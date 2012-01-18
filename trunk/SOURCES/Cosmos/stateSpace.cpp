@@ -59,6 +59,7 @@ void stateSpace::exploreStateSpace(){
 	
 	init.push_back( *(A.InitLoc.begin()) );
 	toBeExplore.push(init);
+    findstate = new vector<vector<int> >(0);
     add_state(init);
 	/*cerr << "state: " << nbState-1 << " -> ";
 	for (vector<int>::iterator it=init.begin(); it!= init.end() ; it++) {
@@ -94,7 +95,7 @@ void stateSpace::exploreStateSpace(){
 				
 				nbTrans++;
 				marking.push_back( A.Edge[SE].Target );
-				vector<double> Param = N.GetDistParameters(*it);
+				//vector<double> Param = N.GetDistParameters(*it);
 				//transitionsList.push( make_pair(make_pair(currentstate, marking),Param[0] ));
 				
 				hash_state::iterator its = S.find (&marking);
@@ -135,21 +136,8 @@ void stateSpace::buildTransitionMatrix()
 	
 	cerr << "Exploring graph" << endl;
     
-	stack<vector<int> ,vector<vector<int> > > toBeExplore;
-	vector<int> init = N.initMarking;
-	
-	set <int, less<int> > ::iterator it;
-	
-	init.push_back( *(A.InitLoc.begin()) );
-	toBeExplore.push(init);
-    vector<bool> already_seen(nbState, false);
-    
-    already_seen[findState(&init)] = true;
-    
-	while (!toBeExplore.empty()) {
-		vector<int> place = toBeExplore.top();
-		toBeExplore.pop();
-		
+    for (int i=0; i<nbState; i++) {
+        vector<int> place = (*findstate)[i];
 		vector<int> currentstate = place;
 		
 		A.setCurrentLocation(place.back());
@@ -159,10 +147,10 @@ void stateSpace::buildTransitionMatrix()
 		set<int, less <int> > ent;
 		ent = N.enabledTrans();
 		set<int>::iterator it;
+        mat (i,i) = 1.0;
 		for (it = ent.begin(); it != ent.end(); it++) {
 			
 			N.fire(*it);
-			//cerr << "transition:" << *it << endl;
 			vector<int> marking = N.Marking;
 			N.unfire(*it);
 			
@@ -171,27 +159,16 @@ void stateSpace::buildTransitionMatrix()
 				
 				marking.push_back( A.Edge[SE].Target );
 				vector<double> Param = N.GetDistParameters(*it);
-                mat (findState(&currentstate),findState(&marking)) = Param[0];
-                
-				int state = findState(&marking);
-				if (!already_seen[state]){
-					
-					//cerr << "state:"<< nbState << " -> ";
-					for (vector<int>::iterator it=marking.begin(); it!= marking.end() ; it++) {
-						//cerr << *it << ":";
-					}
-					//cerr << endl;
-					
-                    already_seen[state]=true;
-					toBeExplore.push(marking);
-					
-				}
+				
+				int j = findHash(&marking);
+                mat (i,j) = Param[0];
 			}
 			
 		}
-		
-	}
-    
+
+        
+    }
+	    
     cerr << "Adding self loop" << endl;
 	// Add self loop to ensure that mat is a probability matrix.
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator1 it1_t;
