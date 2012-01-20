@@ -194,8 +194,8 @@ Edges={
 };" n;
 close_out lha;;
 
-Sys.command "CosmosGPP tandem_agr.gspn tandem_agr.lha -s &> logcosmos";;
+Sys.command "CosmosGPP tandem_agr.gspn tandem_agr.lha -s > logcosmos  2>&1";;
 
-let command = Printf.sprintf "CosmosGPP tandem.gspn tandem.lha --batch 1000 --max-run 1000 -b %i --set-Horizon %i &> logcosmosCalc" methode horizon;; 
+let command = Printf.sprintf "CosmosGPP tandem.gspn tandem.lha --batch 1000 --max-run 1000 -b %i --set-Horizon %i > logcosmosCalc  2>&1" methode horizon;; 
 
 Sys.command command;;
