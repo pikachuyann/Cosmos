@@ -19,20 +19,22 @@ let dir = sprintf "tandem%i_%i_%.2f_%i_%i" n r mu horizon methode;;
  
 
 
-try 
-  Unix.mkdir dir 0o770;
-with _ -> exit 0;;
+let exist = try 
+	      Unix.mkdir dir 0o770;
+	      false;
+  with _ -> true;;
 Unix.chdir dir;;
 
-let gspnagr = open_out "tandem_agr.gspn" in
+if !exist then (
+  let gspnagr = open_out "tandem_agr.gspn" in
 
-Printf.fprintf gspnagr "const double mu   = %f;
+  Printf.fprintf gspnagr "const double mu   = %f;
 const double rho1 = %f;
 const double rho2   = %f;
 const int r = %i;
 " mu rho1 rho2 r;
 
-Printf.fprintf gspnagr "
+  Printf.fprintf gspnagr "
 NbPlaces = 3;
 NbTransitions = 3;
 
@@ -64,10 +66,10 @@ OutArcs={
 (rho2,AQueue2  ,1);
 };
 ";
-close_out gspnagr;;
+  close_out gspnagr;
 
-let lhaagr = open_out "tandem_agr.lha";;
-Printf.fprintf lhaagr "
+  let lhaagr = open_out "tandem_agr.lha" in
+  Printf.fprintf lhaagr "
 
 NbVariables = 1;
 NbLocations = 3;
@@ -90,17 +92,17 @@ Edges={
 ((l1,lp)  ,ALL,  # , {x=1});
 ((l1,lm)  ,ALL,  # , {x=0});
 };" n;
-close_out lhaagr;;
+  close_out lhaagr;
 
-let gspn = open_out "tandem.gspn";;
-Printf.fprintf gspn "
+  let gspn = open_out "tandem.gspn" in
+  Printf.fprintf gspn "
 const double Lambda   = %f;
 const double rho1 = %f;
 const double rho2   = %f;
 const int r = %i;
 " mu rho1 rho2 r;
 
-Printf.fprintf gspn "
+  Printf.fprintf gspn "
 NbPlaces = 7;
 NbTransitions = 8;
 
@@ -166,10 +168,10 @@ InhibitorArcs={
 (Queue1,dummyrho1,1);
 (Queue2,dummyrho2,1);
 };";
-close_out gspn;;
+  close_out gspn;
 
-let lha = open_out "tandem.lha";;
-Printf.fprintf lha "
+  let lha = open_out "tandem.lha" in
+  Printf.fprintf lha "
 
 NbVariables = 1;
 NbLocations = 3;
@@ -192,12 +194,13 @@ Edges={
 ((l1,lp)  ,ALL,  # , {x=1});
 ((l1,lm)  ,ALL,  # , {x=0});
 };" n;
-close_out lha;;
+  close_out lha;
 
-let com1 =  "CosmosGPP tandem_agr.gspn tandem_agr.lha -s > logcosmos  2>&1";;
+  let com1 =  "CosmosGPP tandem_agr.gspn tandem_agr.lha -s > logcosmos  2>&1";
 
-print_endline com1;;
-Sys.command com1;;
+    print_endline com1;
+    Sys.command com1;
+)
 
 let com2 = Printf.sprintf "CosmosGPP tandem.gspn tandem.lha --batch 1000 --max-run 1000 -b %i --set-Horizon %i > logcosmosCalc  2>&1" methode horizon;; 
 
