@@ -196,8 +196,12 @@ close_out lha;;
 
 let com1 =  "CosmosGPP tandem_agr.gspn tandem_agr.lha -s > logcosmos  2>&1";;
 
-let command = Printf.sprintf "%s; CosmosGPP tandem.gspn tandem.lha --batch 1000 --max-run 1000 -b %i --set-Horizon %i > logcosmosCalc  2>&1" com1 methode horizon;; 
+print_endline com1;
+Sys.command com1;
 
-print_endline command;;
+let com2 = Printf.sprintf "CosmosGPP tandem.gspn tandem.lha --batch 1000 --max-run 1000 -b %i --set-Horizon %i > logcosmosCalc  2>&1" methode horizon;; 
 
-Sys.command command;;
+print_endline com2;;
+Sys.command com2;;
+
+Sys.command "cat logcosmosCalc";
