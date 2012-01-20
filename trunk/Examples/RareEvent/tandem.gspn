@@ -3,7 +3,7 @@
 const double Lambda   = 0.320000;
 const double rho1 = 0.340000;
 const double rho2   = 0.340000;
-const int r = 5;
+const int r = 149;
 NbPlaces = 7;
 NbTransitions = 8;
 

@@ -1,4 +1,4 @@
-#!/opt/local/bin/ocaml
+#!/usr/bin/ocaml
 #load "unix.cma";;
 (*#use "../script.ml" *)
 open Printf
@@ -6,11 +6,17 @@ open Printf
 let n = int_of_string (Sys.argv.(1));;
 let r = int_of_string (Sys.argv.(2));;
 
-let mu = 0.40;;
-let rho1 = 0.3;;
-let rho2 = 0.3;;
+let mu = float_of_string (Sys.argv.(3));;
 
-let dir = sprintf "tandem%i_%i_%f" n r mu;;
+let horizon = int_of_string (Sys.argv.(4));;
+
+let methode = int_of_string (Sys.argv.(5));;
+
+let rho1 = (1. -. mu) /. 2. ;;
+let rho2 = (1. -. mu) /. 2. ;;
+
+let dir = sprintf "tandem%i_%i_%.2f_%i_%i" n r mu horizon methode;;
+ 
 
 
 try 
@@ -188,4 +194,8 @@ Edges={
 };" n;
 close_out lha;;
 
-Sys.command "../../../bin/CosmosGPP tandem_agr.gspn tandem_agr.lha -s &> logcosmos"
+Sys.command "CosmosGPP tandem_agr.gspn tandem_agr.lha -s &> logcosmos";;
+
+let command = sprintf "CosmosGPP tandem.gspn tandem.lha --batch 1000 --max-run 1000 -b %i --set-Horizon %i &> logcosmosCalc" method horizon;; 
+
+Sys.command command;;
