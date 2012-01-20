@@ -210,4 +210,7 @@ let com2 = Printf.sprintf "CosmosGPP tandem.gspn tandem.lha --batch 1000 --max-r
 print_endline com2;;
 Sys.command com2;;
 
-Sys.command "cat logcosmosCalc";;
+
+Sys.command "grep Memory logcosmosCalc";;
+Sys.command "grep Mean logcosmosCalc";;
+
