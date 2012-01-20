@@ -16,16 +16,9 @@ let rho1 = (1. -. mu) /. 2. ;;
 let rho2 = (1. -. mu) /. 2. ;;
 
 let dir = sprintf "tandem%i_%i_%.2f_%i_%i" n r mu horizon methode;;
- 
 
 
-let exist = try 
-	      Unix.mkdir dir 0o770;
-	      false;
-  with _ -> true;;
-Unix.chdir dir;;
-
-if !exist then (
+let genere () =
   let gspnagr = open_out "tandem_agr.gspn" in
 
   Printf.fprintf gspnagr "const double mu   = %f;
@@ -195,12 +188,22 @@ Edges={
 ((l1,lm)  ,ALL,  # , {x=0});
 };" n;
   close_out lha;
+  
+  let com1 =  "CosmosGPP tandem_agr.gspn tandem_agr.lha -s > logcosmos  2>&1" in
+  print_endline com1;
+  ignore (Sys.command com1);;
 
-  let com1 =  "CosmosGPP tandem_agr.gspn tandem_agr.lha -s > logcosmos  2>&1";
 
-    print_endline com1;
-    Sys.command com1;
-)
+
+let exist = try 
+	      Unix.mkdir dir 0o770;
+	      false;
+  with _ -> true;;
+
+Unix.chdir dir;;
+
+if not exist then genere ();;
+
 
 let com2 = Printf.sprintf "CosmosGPP tandem.gspn tandem.lha --batch 1000 --max-run 1000 -b %i --set-Horizon %i > logcosmosCalc  2>&1" methode horizon;; 
 
