@@ -212,5 +212,6 @@ Sys.command com2;;
 
 
 Sys.command "grep Memory logcosmosCalc";;
+print_newline ();
 Sys.command "grep Mean logcosmosCalc";;
 
