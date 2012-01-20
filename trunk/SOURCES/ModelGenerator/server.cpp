@@ -93,11 +93,11 @@ void lauch_clients(SimParam& P){
 
 void kill_client(){
     
-    rusage ruse;
+    /*rusage ruse;
     getrusage(RUSAGE_CHILDREN, &ruse);
     cout <<endl << "Total Time: "
         << ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
-    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl; 
+    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl; */
     
     while (!clientPID.empty())
     {
