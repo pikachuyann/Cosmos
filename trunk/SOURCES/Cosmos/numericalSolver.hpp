@@ -9,6 +9,8 @@
 
 /*
  *  This class implement some function of a numerical solver.
+ *  It is used to compute Bounded Until importance sampling.
+ * 
  */
 
 #ifndef _NUMERICAL_SOLVER_HPP

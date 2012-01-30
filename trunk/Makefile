@@ -1,11 +1,20 @@
-gpp:
-	make -f MakefileGPP
+export CC=g++
+export OPTIONS=-O3 
 
-sim:    
-	make -f MakefileGPP sim
+.PHONY: classes Generator clean sim
+
+all: classes Generator 
+
+
+classes:
+	@(cd SOURCES/Cosmos && $(MAKE) $@)
+
+Generator:
+	@(cd SOURCES/ModelGenerator && $(MAKE) ../../bin/CosmosGPP)
 
 clean:
-	make -f MakefileGPP clean
+	@(cd SOURCES/Cosmos && $(MAKE) $@)
+	@(cd SOURCES/ModelGenerator && $(MAKE) $@)
 
-llvm:
-	make -f MakefileLLVM
+sim:
+	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/ClientSim)

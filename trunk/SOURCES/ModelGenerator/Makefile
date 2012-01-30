@@ -23,7 +23,7 @@ $(OBJPATH)/%.o: %.cc
 $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
 	$(CC) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
 
-$(BINPATH)/CosmosGPP: $(FILES)
+$(BINPATH)/Cosmos: $(FILES)
 	$(CC) $(OPTIONS) -L/usr/lib/ -lexpat -lboost_program_options $^ -o $@
 
 clean:
@@ -31,5 +31,5 @@ clean:
 	rm $(OBJPATH)/GspnParser/*.o
 	rm $(OBJPATH)/LhaParser/*.o
 	rm $(OBJPATH)/*.o
-	rm $(BINPATH)/CosmosGPP	
+	rm $(BINPATH)/Cosmos
 	rm $(BINPATH)/ClientSim	
