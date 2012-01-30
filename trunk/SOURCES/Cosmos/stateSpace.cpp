@@ -61,14 +61,6 @@ void stateSpace::exploreStateSpace(){
 	toBeExplore.push(init);
     findstate = new vector<vector<int> >(0);
     add_state(init);
-	/*cerr << "state: " << nbState-1 << " -> ";
-	for (vector<int>::iterator it=init.begin(); it!= init.end() ; it++) {
-		cerr << *it << ":";
-	}
-	cerr << endl;*/
-	
-	//cerr << "boucle"<< endl;
-	
     
 	while (!toBeExplore.empty()) {
 		vector<int> place = toBeExplore.top();
@@ -117,14 +109,6 @@ void stateSpace::exploreStateSpace(){
 	}
     cerr << nbState << " states found" << endl 
         << nbTrans << " transitions found" << endl;
-}
-
-double stateSpace::findState(const vector<int>* vect){
-    hash_state::iterator it = S.find (vect);
-    if (it != S.end ())
-		return(it->second); // found
-    else
-		return(0.0);
 }
 
 void stateSpace::buildTransitionMatrix()
@@ -276,7 +260,7 @@ void stateSpace::inputVect(){
 			}
 		}
 		myfile.close();
-		
+		nbState = n;
 		
     }
 	

@@ -1,3 +1,9 @@
+/*
+ * This file implement input/output operation on sparse matrix
+ * It has been found on the internet. No Copyright.
+ */
+
+
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
@@ -5,6 +11,7 @@
 #include <boost/numeric/ublas/operation.hpp>
 
 #include <iostream>
+
 
 namespace boost { namespace numeric { namespace ublas {
 
@@ -191,64 +198,3 @@ namespace boost { namespace numeric { namespace ublas {
     }
 
 }}}
-
-
-/*int main(int argc, char *argv[])
-{
-  using namespace boost::numeric::ublas;
-  using std::cin;
-  using std::cout;
-  using std::endl;
-
-  const size_t size = 5;
-  const size_t i_index[5] = { 0, 0, 1, 2, 4 };
-  const size_t j_index[5] = { 0, 2, 0, 4, 4 };
-
-  {
-    compressed_matrix<double, row_major> RM(size,size);
-    for (size_t i=0; i<size; ++i) RM.insert_element(i_index[i], j_index[i], 1.0);
-
-    compressed_matrix<double, column_major> CM(size,size);
-    for (size_t i=0; i<size; ++i) CM.insert_element(i_index[i], j_index[i], 1.0);
-
-    cout << io::sparse(RM) << endl;
-    cout << io::sparse(CM) << endl;
-  }
-
-  {
-    compressed_matrix<double, row_major> RM;
-    cin >> io::sparse(RM);
-    cout << RM << endl;
-
-    compressed_matrix<double, column_major> CM;
-    cin >> io::sparse(CM);
-    cout << CM << endl;
-  }
-
-  return EXIT_SUCCESS;
-}*/
-
-/* Examples:
-
-$ echo '[1,1]((0,0:2))[2,2]((1,0:1),(2,0:1))' | ./sparse_io
-[5,5]((0,0:1),(0,2:1);(1,0:1);(2,4:1);(4,4:1))
-[5,5]((0,0:1),(1,0:1);(0,2:1);(2,4:1),(4,4:1))
-[1,1]((2))
-[2,2]((0,0),(1,0))
-$ echo '' | ./sparse_io | ./sparse_io
-[5,5]((0,0:1),(0,2:1);(1,0:1);(2,4:1);(4,4:1))
-[5,5]((0,0:1),(1,0:1);(0,2:1);(2,4:1),(4,4:1))
-[5,5]((1,0,1,0,0),(1,0,0,0,0),(0,0,0,0,1),(0,0,0,0,0),(0,0,0,0,1))
-[5,5]((1,0,1,0,0),(1,0,0,0,0),(0,0,0,0,1),(0,0,0,0,0),(0,0,0,0,1))
-$ echo '[1,1]((0,0:2))[2,2]((1,1:1),(2,0:1))' | ./sparse_io
-[5,5]((0,0:1),(0,2:1);(1,0:1);(2,4:1);(4,4:1))
-[5,5]((0,0:1),(1,0:1);(0,2:1);(2,4:1),(4,4:1))
-[1,1]((2))
-Check failed in file /home/a11aguwi/include/boost/numeric/ublas/matrix_sparse.hpp at line 3081:
-(filled1_ == element1 + 2 && (filled2_ == zero_based (index1_data_ [filled1_ - 2]) || index2_data_ [filled2_ - 1] < k_based (element2)))
-terminate called after throwing an instance of 'boost::numeric::ublas::external_logic'
-  what():  external logic
-Abgebrochen
-  ( data was row major, but container was column major )
-
- */

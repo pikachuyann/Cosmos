@@ -10,6 +10,8 @@
  *	This class is used to compute the state space of the synchronized product
  * between the SPN and the LHA.
  *
+ * This class also export and import this state space and the transition matrix
+ *
  */
 
 #include <set>
@@ -60,7 +62,18 @@ struct hashstate{
 	}
 };
 
+/* 
+ * The hash_map structure implement a mapping between a state as a vector
+ * of integer and its indice.
+ */
 typedef hash_map<const vector<int>*, int , hashstate , eqstate > hash_state;
+
+/*
+ * This class manage the state space of the model. The state space is
+ * stored as a mapping between the states and [0..nbState] the number of state.
+ * This class can generate the state space by exploring it.
+ *
+ */
 class stateSpace {
 public:
 	stateSpace();
@@ -75,8 +88,7 @@ public:
     
 	void exploreStateSpace();
 	void buildTransitionMatrix();
-	double findState(const vector<int>*);
-	
+		
 	SPN N; //The object representing the SPN
 	LHA A; //The object representing the LHA
 	
