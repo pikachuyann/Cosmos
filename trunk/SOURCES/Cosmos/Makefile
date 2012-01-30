@@ -7,7 +7,6 @@ CLASSES= $(OBJPATH)/BatchR.o \
 	$(OBJPATH)/LHA_orig.o \
 	$(OBJPATH)/Event.o \
 	$(OBJPATH)/EventsQueue.o \
-	$(OBJPATH)/tab.o \
 	$(OBJPATH)/Simulator.o \
 	$(OBJPATH)/SimulatorRE.o \
 	$(OBJPATH)/SimulatorBoundedRE.o \
