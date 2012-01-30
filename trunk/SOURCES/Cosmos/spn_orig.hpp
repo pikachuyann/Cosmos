@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "tab.hpp"
 using namespace std;
 
 enum TransType {
