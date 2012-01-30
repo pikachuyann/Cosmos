@@ -7,15 +7,16 @@
  *
  */
 
+/* This class inherit the class of Simulator and modify 
+ * several intern function to implement rare event acceleration.
+ */
+
 #include "SimulatorRE.hpp"
 #include "numericalSolver.hpp"
 
 #ifndef _SIMULATOR_BOUNDED_RE_HPP
 #define _SIMULATOR_BOUNDED_RE_HPP
 
-/* This class inherit the class of Simulator and modify 
- * several intern function to implement rare event acceleration.
- */
 
 class simulationState{
 private:

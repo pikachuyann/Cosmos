@@ -1,3 +1,7 @@
+/* This object do the main computation of the programm
+ * it contains the SPN and the LHA
+ */
+
 
 
 #include "LHA.hpp"
@@ -16,10 +20,6 @@ using namespace std;
 
 #ifndef _SIMULATOR_HPP
 #define _SIMULATOR_HPP
-
-/* This object do the main computation of the programm
- * it contains the SPN and the LHA
- */
 
 typedef pair<bool, double> SimOutput;
 

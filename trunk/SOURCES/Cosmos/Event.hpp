@@ -1,3 +1,7 @@
+/*
+ *  This file implement an object for Event of the system
+ */
+
 #ifndef _EVENT_HPP
 #define	_EVENT_HPP
 

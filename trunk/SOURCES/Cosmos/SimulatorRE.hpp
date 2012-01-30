@@ -7,16 +7,17 @@
  *
  */
 
+/* This class inherit the class of Simulator and modify 
+ * several intern function to implement rare event acceleration.
+ */
+
+
 #include "Simulator.hpp"
-//#include "tab.hpp"
 #include "stateSpace.hpp"
 
 #ifndef _SIMULATOR_RE_HPP
 #define _SIMULATOR_RE_HPP
 
-/* This class inherit the class of Simulator and modify 
- * several intern function to implement rare event acceleration.
- */
 
 
 class SimulatorRE: public Simulator{

@@ -1,5 +1,3 @@
-//#include "spn.hpp"
-//#include "LHA.hpp"
 #include "BatchR.hpp"
 #include "Simulator.hpp"
 #include "SimulatorRE.hpp"

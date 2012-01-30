@@ -7,6 +7,10 @@
  *
  */
 
+/*
+ *  This class implement some function of a numerical solver.
+ */
+
 #ifndef _NUMERICAL_SOLVER_HPP
 #define	_NUMERICAL_SOLVER_HPP
 
