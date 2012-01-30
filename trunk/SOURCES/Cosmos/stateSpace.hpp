@@ -71,6 +71,7 @@ public:
 	int nbTrans;
 	boost::numeric::ublas::compressed_matrix<double>* transitionsMatrix;
 	boost::numeric::ublas::vector<double>* finalVector;
+    vector<double>* muvect;
     
 	void exploreStateSpace();
 	void buildTransitionMatrix();
@@ -82,6 +83,7 @@ public:
 	void printP();
 	void outputMat();
 	void inputMat();
+    void inputVect();
 	
 private:
     vector<vector<int> > *findstate;

@@ -75,7 +75,7 @@ void numSolverSH::compPow(int kp,int up){
         k--;
     }
     
-	int m = 1<<k;
+	int m = 1<<k;  // (m = 2^k 
     for (int i = (*ktable)[kp]+1; i<=up; i++) {
 		//cerr << "i: " << i << " k: " << k << " m: " << m << endl;
         itervect2.clear();
@@ -113,9 +113,14 @@ void numSolverSH::compPow(int kp,int up){
 }
 
 void numSolverSH::reset(){
-	//is_previous=true;
+    time_t start, endt;
+    time(&start);
+    
 	u=T;
     compPow(l, T);
+    
+    time(&endt);
+    cerr << "time for reset:" << difftime(endt, start) << endl << endl;
     
 	//cerr << "finish reset" << endl; 
     

@@ -16,7 +16,7 @@ using namespace std;
 
 SimulatorRE::SimulatorRE(bool b) {
 	doubleIS_mode=b;
-	muprob.Load();
+	muprob.inputVect();
 }
 
 SimulatorRE::SimulatorRE(){
@@ -171,7 +171,7 @@ double SimulatorRE::mu(){
 		//cout << i << " : " << N.Msimpletab[i] << " : " << N.Marking[N.Msimpletab[i]] << endl;
 	};
 	
-	return(muprob.find(&vect));
+	return((*muprob.muvect)[muprob.findHash(&vect)]);
 }
 
 double SimulatorRE::ComputeDistr(int t , double origin_rate){

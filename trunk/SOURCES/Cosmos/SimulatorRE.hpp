@@ -8,7 +8,8 @@
  */
 
 #include "Simulator.hpp"
-#include "tab.hpp"
+//#include "tab.hpp"
+#include "stateSpace.hpp"
 
 #ifndef _SIMULATOR_RE_HPP
 #define _SIMULATOR_RE_HPP
@@ -25,8 +26,9 @@ public:
 	
 protected:
 	
-	TAB muprob;  // mu(s) table
-	
+	//TAB muprob;  // mu(s) table
+    stateSpace muprob;
+    
 	bool doubleIS_mode;
 	
 	virtual void InitialEventsQueue();

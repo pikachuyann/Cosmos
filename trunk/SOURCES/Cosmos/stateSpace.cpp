@@ -239,6 +239,51 @@ void stateSpace::outputMat(){
 	outputFile.close();
 }
 
+void stateSpace::inputVect(){
+    string line;
+	int poseq;
+	string pos;
+	string prob;
+	ifstream myfile ("mu_table");
+	if (myfile.is_open())
+	{ 
+        muvect = new vector<double>;
+        int n=0;
+		while ( myfile.good() )
+		{
+			getline (myfile,line);
+			poseq = line.find("=");
+			
+			if(poseq > 0){
+				pos = line.substr(1,poseq-2);
+				prob = line.substr(poseq+1,line.size());
+				
+				vector<int> vect;
+				int it = 0;
+				while(it < pos.length()){
+					int it2 = pos.find(",",it);
+					if(it2 == -1) it2 = pos.length();
+					//cout << "test:" << it<< ":" << it2 << endl;
+					vect.push_back(atoi((pos.substr(it,it2-it)).c_str() ));
+					it = it2+1;
+				}
+				
+                muvect->push_back(atof(prob.c_str()));
+				S[new vector<int>(vect)] = n;
+                n++;
+				
+				
+			}
+		}
+		myfile.close();
+		
+		
+    }
+	
+	else cerr << "Unable to open file "<< "mu_table" << endl ; 
+    
+}
+
 void stateSpace::inputMat(){
 	fstream inputFile;
 	inputFile.open("matrixFile",fstream::in);
