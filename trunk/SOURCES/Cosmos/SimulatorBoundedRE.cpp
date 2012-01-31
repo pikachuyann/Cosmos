@@ -15,10 +15,6 @@
 
 using namespace std;
 
-/*SimulatorBoundedRE::SimulatorBoundedRE(){
-    SimulatorBoundedRE(0);
-}*/
-
 SimulatorBoundedRE::SimulatorBoundedRE(int m,int T){
     switch (m) {
         case 1:
@@ -33,26 +29,15 @@ SimulatorBoundedRE::SimulatorBoundedRE(int m,int T){
             numSolv = new numSolverSH();
             break;
     }
-	//numSolv = new numericalSolver();
-	//numSolv = new numSolverBB();
-	//numSolv = new numSolverSH();
+    
+    delete EQ;
 	
-	delete EQ;
-	//int T =50000;
-	
-	//numericalSolver numSolv;
-	//numSolv.computeMatrix();
-	numSolv->initVect(T);
-	
-	/*for(int i=0;i<T-1;i++){
-		cerr << "itvect:"<<i<< "->" << numSolv.getVect() << endl;
-		numSolv.stepVect();
-	};*/
-	
-	//exit(0);
-	
+	//numSolv->initVect(T);
 }
 
+void SimulatorBoundedRE::initVect(int T){
+    numSolv->initVect(T);
+}
 
 BatchR* SimulatorBoundedRE::RunBatch(){
 	//cerr << "test(";
@@ -143,18 +128,9 @@ double SimulatorBoundedRE::mu(){
 	vector<int> vect (N.Msimpletab.size());
 	for(int i=0; i< N.Msimpletab.size();i++){
 		vect[i] = N.Marking[N.Msimpletab[i]];
-		//cout << i << " : " << N.Msimpletab[i] << " : " << N.Marking[N.Msimpletab[i]] << endl;
 	};
-	//vect[vect.size()-1]=A.CurrentLocation;
-	
 	
 	int stateN = numSolv->findHash(&vect);
-	
-	/*for (int i=0; i<vect.size(); i++) {
-		cerr << vect[i];
-	}*/
-	//cerr << " state:"<< stateN << " prob:" << numSolv.getMu(stateN) << " -> ";
-	
 	 
 	if(stateN<0){
 		cerr << numSolv->getVect()<< endl;

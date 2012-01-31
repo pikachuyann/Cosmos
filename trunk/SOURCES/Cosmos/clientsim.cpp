@@ -44,7 +44,10 @@ int main(int argc, char** argv) {
 		if(str== "-BURE"){
             int m = atoi(argv[3]);
             int T = atoi(argv[4]);
-			mySim= (new SimulatorBoundedRE(m,T));
+            SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(m,T);
+            myBoundedSim->initVect(T);
+			mySim= myBoundedSim;
+            //(SimulatorBoundedRE)mySim->initVect(T);
 			//mySim->RareEvent_mode=true;
 			//mySim->doubleIS_mode=true;
 		}

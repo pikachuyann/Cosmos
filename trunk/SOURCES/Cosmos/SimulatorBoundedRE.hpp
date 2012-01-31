@@ -97,6 +97,7 @@ public:
 	//SimulatorBoundedRE();
     SimulatorBoundedRE(int m,int T);
 	BatchR* RunBatch();
+    void initVect(int T);
 protected:
 	numericalSolver* numSolv;
 	
