@@ -1,10 +1,10 @@
-Estimated Value:	3.78566e-31
-Standard Deviation:	1.28731e-31
-Confidence interval:	[3.76674e-31 , 3.80459e-31]
+Estimated Value:	3.80825e-31
+Standard Deviation:	1.25739e-31
+Confidence interval:	[3.77586e-31 , 3.84064e-31]
 
-Width=	3.78496e-33
-Total paths:	30700
-Accepted paths:	30700
-Simulation time :	19
+Width=	6.47766e-33
+Total paths:	10000
+Accepted paths:	10000
+Simulation time :	7
 
 Confidence level:	0.99
