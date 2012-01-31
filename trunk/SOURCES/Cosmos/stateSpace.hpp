@@ -92,6 +92,8 @@ public:
 	SPN N; //The object representing the SPN
 	LHA A; //The object representing the LHA
 	
+    double maxRate();
+    
 	void printP();
 	void outputMat();
 	void inputMat();

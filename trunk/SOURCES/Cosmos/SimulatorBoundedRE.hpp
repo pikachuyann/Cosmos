@@ -95,7 +95,7 @@ public:
 class SimulatorBoundedRE: public SimulatorRE{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedRE(int m,int T);
+    SimulatorBoundedRE(int m);
 	BatchR* RunBatch();
     void initVect(int T);
 protected:

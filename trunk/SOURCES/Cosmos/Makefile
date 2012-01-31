@@ -10,10 +10,12 @@ CLASSES= $(OBJPATH)/BatchR.o \
 	$(OBJPATH)/Simulator.o \
 	$(OBJPATH)/SimulatorRE.o \
 	$(OBJPATH)/SimulatorBoundedRE.o \
+    $(OBJPATH)/SimulatorContinuousBounded.o \
 	$(OBJPATH)/stateSpace.o \
 	$(OBJPATH)/numericalSolver.o \
 	$(OBJPATH)/numSolverBB.o \
     $(OBJPATH)/numSolverSH.o \
+    $(OBJPATH)/foxglynn.o \
 	$(OBJPATH)/clientsim.o
 
 
@@ -26,6 +28,9 @@ spn.hpp:
 
 $(OBJPATH)/%.o: %.cpp
 	$(CC) $(OPTIONS2) -c $*.cpp -o $@	
+    
+$(OBJPATH)/%.o: %.c
+	$(CC) $(OPTIONS) -c $*.c -o $@
 
 .PHONY: classes clean
 

@@ -15,7 +15,7 @@
 
 using namespace std;
 
-SimulatorBoundedRE::SimulatorBoundedRE(int m,int T){
+SimulatorBoundedRE::SimulatorBoundedRE(int m){
     switch (m) {
         case 1:
             numSolv = new numericalSolver();

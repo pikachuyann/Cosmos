@@ -2,6 +2,7 @@
 #include "Simulator.hpp"
 #include "SimulatorRE.hpp"
 #include "SimulatorBoundedRE.hpp"
+#include "SimulatorContinuousBounded.hpp"
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -44,12 +45,17 @@ int main(int argc, char** argv) {
 		if(str== "-BURE"){
             int m = atoi(argv[3]);
             int T = atoi(argv[4]);
-            SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(m,T);
+            SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(m);
             myBoundedSim->initVect(T);
 			mySim= myBoundedSim;
-            //(SimulatorBoundedRE)mySim->initVect(T);
-			//mySim->RareEvent_mode=true;
-			//mySim->doubleIS_mode=true;
+		}
+        if(str== "-COBURE"){
+            int m = atoi(argv[3]);
+            double t = atof(argv[4]);
+            double e = atof(argv[5]);
+            SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(m,e);
+            myBoundedSim->initVectCo(t);
+			mySim= myBoundedSim;
 		}
 		if(str== "-STSP"){
 			stateSpace states;

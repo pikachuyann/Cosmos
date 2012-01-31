@@ -10,13 +10,16 @@
 #define Cosmos_SimulatorContinuousBounded_h
 
 #include "SimulatorBoundedRE.hpp"
-
+#include "foxglynn.h"
 
 class SimulatorContinuousBounded: public SimulatorBoundedRE{
 public:
-	SimulatorContinuousBounded(int m,int T);
+	SimulatorContinuousBounded(int m,double e);
+    void initVectCo(double t);
+    double epsilon;
     
 protected:
+    FoxGlynn* fg;
 	
 };
 

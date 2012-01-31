@@ -186,6 +186,18 @@ void stateSpace::buildTransitionMatrix()
 	finalVector = new boost::numeric::ublas::vector<double> (vect);
 }
 
+double stateSpace::maxRate(){
+    double t = 0.0;
+    for(boost::numeric::ublas::compressed_matrix<double>::iterator1 it 
+        = transitionsMatrix->begin1(); it!= transitionsMatrix->end1(); it++){
+        for(boost::numeric::ublas::compressed_matrix<double>::iterator2 it2 
+            = it.begin(); it2!= it.end(); it2++){
+                t = max(t,*it2);
+        };        
+    };
+    return(t);
+}
+
 void stateSpace::printP(){
 	cerr << "Probability transition matrix:" << endl;
 	for(int i=0; i< transitionsMatrix->size1() ; i++){
