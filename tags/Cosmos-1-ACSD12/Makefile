@@ -10,7 +10,7 @@ classes:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
 
 Generator:
-	@(cd SOURCES/ModelGenerator && $(MAKE) ../../bin/CosmosGPP)
+	@(cd SOURCES/ModelGenerator && $(MAKE) ../../bin/Cosmos)
 
 clean:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
