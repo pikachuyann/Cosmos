@@ -192,7 +192,7 @@ double stateSpace::maxRate(){
         = transitionsMatrix->begin1(); it!= transitionsMatrix->end1(); it++){
         for(boost::numeric::ublas::compressed_matrix<double>::iterator2 it2 
             = it.begin(); it2!= it.end(); it2++){
-                t = max(t,*it2);
+                if(it.index1() != it2.index2())t = max(t,*it2);
         };        
     };
     return(t);

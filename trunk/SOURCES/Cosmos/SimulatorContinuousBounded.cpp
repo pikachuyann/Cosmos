@@ -18,8 +18,9 @@ SimulatorContinuousBounded::SimulatorContinuousBounded(int m,double e):Simulator
 
 void SimulatorContinuousBounded::initVectCo(double t){
     double lambda = numSolv->maxRate();
-    if (fox_glynn(lambda * t, DBL_EPSILON, DBL_MIN, DBL_MAX, &fg)){
-        
+    cerr << "lambda:" << lambda<< endl;
+    if (fox_glynn(lambda * t, DBL_MIN, DBL_MAX,epsilon, &fg)){
+        cerr << "fox_glyn:" << fg->left << "," << fg->right << endl;
     }
     
 }
