@@ -231,9 +231,9 @@ int main(int argc, char** argv) {
 	
 	if(P.Path.compare("")==0){
 		string st = argv[0];
-		if (st == "./CosmosGPP") P.Path = "";
-		else if (st == "CosmosGPP")FindPath(P);
-		else P.Path.assign(st.begin(), st.end() - 9);
+		if (st == "./Cosmos") P.Path = "";
+		else if (st == "Cosmos")FindPath(P);
+		else P.Path.assign(st.begin(), st.end() - 6);
 	}
 		
 	//cout << "executable absolute path: "<<P.Path <<endl;
