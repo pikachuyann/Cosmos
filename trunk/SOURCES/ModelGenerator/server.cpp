@@ -59,7 +59,7 @@ vector<pid_t> clientPID;
 int max_client=0 ;
 
 
-void lauch_clients(SimParam& P){
+void lauch_clients(parameters& P){
 	ostringstream os;
 	pid_t readpid;
 	int size;
@@ -119,7 +119,7 @@ void makeselectlist(int Njob){
     
 }
 
-void LauchServer(SimParam& P){
+void LauchServer(parameters& P){
     
     //Simulator mySim;
     string str;

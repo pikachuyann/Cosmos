@@ -6,17 +6,16 @@
 #include <sstream>
 #include <unistd.h>
 
-#include <boost/program_options.hpp>
-
 //#include "directsim.hpp"
 #include "./LhaParser/Lha-Reader.hpp"
 #include "./GspnParser/Gspn-Reader.hpp"
 #include "server.hpp"
+#include "parameters.hpp"
 
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
 
-void FindPathMac(SimParam& P) {
+void FindPathMac(parameters& P) {
 	
 	char path[1024];
 	uint32_t size = sizeof(path);
@@ -36,7 +35,7 @@ void FindPathMac(SimParam& P) {
 
 #define FindPath FindPathMac
 #elif __linux__
-void FindPathLinux(SimParam& P) {
+void FindPathLinux(parameters& P) {
 	
 	char path[1024];
 	char link[512];
@@ -57,22 +56,10 @@ void FindPathLinux(SimParam& P) {
 #endif
 
 using namespace std;
-namespace po = boost::program_options;
-
-void ViewParameters(SimParam& P) {
-	cout << "Confidence interval width:      " << P.Width << endl;
-	cout << "Confidence interval level:      " << P.Level << endl;
-	cout << "Maximum number of trajectories: " << P.MaxRuns << endl;
-	cout << "Batch size:                     " << P.Batch << endl;
-	cout << "Rare Event:                     " << P.RareEvent << endl;
-	cout << "Double Important Sampling:      " << P.DoubleIS << endl;
-	cout << "Number of parallel execution:   " << P.Njob << endl;
-	cout << "Read GML file as input:         " << P.GMLinput << endl;  
-}
 
 
 
-bool ParseBuild( SimParam& P) {
+bool ParseBuild(parameters& P) {
 	Gspn_Reader gReader;
 	
 	/*if(P.GMLinput){
@@ -149,86 +136,20 @@ bool ParseBuild( SimParam& P) {
 	return true;
 }
 
-void DirectSim(SimParam& P) {
+void DirectSim(parameters& P) {
 	if (ParseBuild(P)) {
 		LauchServer(P);
 	}
 }
 
 
-
-void LoadSimParam(SimParam& P) {
-	P.Level = 0.99;
-	P.Width = 0.001;
-	P.Batch =   1000;
-	P.MaxRuns = 2000000;
-	P.Path = "";
-	P.RareEvent = false;
-	P.DoubleIS = false;
-	P.BoundedRE = 0;
-    P.horizon =100;
-	P.Njob = 1;
-	P.GMLinput = false;
-    P.computeStateSpace = false;
-	P.alligatorMode = false;
-}
-
 int main(int argc, char** argv) {
-	SimParam P;
+	parameters P;
 	
-	LoadSimParam(P);
+    P.parseCommandLine(argc,argv);
 	
 	// Declare the supported options.
-	po::options_description desc("usage: Cosmos [options] GspnFile LhaFile\n\nAllowed options");
-	desc.add_options()
-    ("help", "produce help message")
-	("GMLinput,g",po::bool_switch(&(P.GMLinput)),"Change input file format")
-	("RareEvent,r",po::bool_switch(&(P.RareEvent)),"Use Rare Event acceleration")
-	("DoubleIS,d",po::bool_switch(&(P.DoubleIS)),"Use Rare Event acceleration with double Important Sampling")
-	("BoundedRE,b",po::value(&(P.BoundedRE )),"Use Bounded Rare Event acceleration")
-    ("set-Horizon",po::value(&(P.horizon )),"Set the horizon for bounded until")
-    ("StateSpace,s",po::bool_switch(&(P.computeStateSpace)),"Generate the state space of the systeme")
-	("alligator-mode",po::bool_switch(&(P.alligatorMode)),"alligator mode")
-	("setPath,p",po::value(&(P.Path)),"Set executable path")
-	("level",po::value(&(P.Level)),"Set Confidence interval level")
-	("width",po::value(&(P.Width)),"Set Confidence interval width")
-	("batch",po::value(&(P.Batch)),"Set Batch Size")
-	("max-run",po::value(&(P.MaxRuns)),"Set the maximum number of run")
-	("njob",po::value(&(P.Njob)),"Set the number of parallel simulation")	
-	;
-	
-	po::options_description hidden("Hidden options");
-	hidden.add_options()
-	("GspnFile",po::value(&(P.PathGspn)),"Path to the Gspn")
-	("LhaFile",po::value(&(P.PathLha)),"Path to the Lha")
-	;
-	
-	po::positional_options_description p;
-	p.add("GspnFile", 1);
-	p.add("LhaFile", 2);
-	
-	po::options_description visible("Allowed options");
-	visible.add(desc).add(hidden);
-	
-	po::variables_map vm;
-	po::store(po::command_line_parser(argc, argv).
-			  options(visible).positional(p).run(), vm);
-	//po::store(po::parse_command_line(argc, argv, desc), vm);
-	po::notify(vm);    
-	
-	if (vm.count("help")) {
-		cout << desc << "\n";
-		return 1;
-	}
-	
-	//ViewParameters(P);
-	
-	if (!vm.count("LhaFile") || !vm.count("GspnFile")) {
-		cout << desc << "\n";
-		//cout << "usage: ... " << endl;
-		return(EXIT_SUCCESS);
-	} 	
-	
+		
 	if(P.Path.compare("")==0){
 		string st = argv[0];
 		if (st == "./Cosmos") P.Path = "";
