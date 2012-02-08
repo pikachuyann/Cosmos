@@ -16,6 +16,7 @@ namespace po = boost::program_options;
 
 parameters::parameters() {
 	Level = 0.99;
+    epsilon = 0.0000001;
 	Width = 0.001;
 	Batch =   1000;
 	MaxRuns = 2000000;
@@ -24,6 +25,7 @@ parameters::parameters() {
 	DoubleIS = false;
 	BoundedRE = 0;
     horizon =100;
+    BoundedContinuous = false;
 	Njob = 1;
 	GMLinput = false;
     computeStateSpace = false;
@@ -51,7 +53,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 	("RareEvent,r",po::bool_switch(&RareEvent),"Use Rare Event acceleration")
 	("DoubleIS,d",po::bool_switch(&DoubleIS),"Use Rare Event acceleration with double Important Sampling")
 	("BoundedRE,b",po::value(&BoundedRE),"Use Bounded Rare Event acceleration")
-    ("BoundedContinuous,r",po::value(&BoundedContinuous),"Use Continuous Rare Event acceleration")
+    ("BoundedContinuous,c",po::bool_switch(&BoundedContinuous),"Use Continuous Rare Event acceleration")
     ("set-Horizon",po::value(&horizon),"Set the horizon for bounded until")
     ("StateSpace,s",po::bool_switch(&computeStateSpace),"Generate the state space of the systeme")
 	("alligator-mode",po::bool_switch(&alligatorMode),"alligator mode")

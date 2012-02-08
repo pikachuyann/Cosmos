@@ -15,6 +15,7 @@ using namespace std;
 
 struct parameters {
 	int Njob;
+    double epsilon;
 	double Level;
 	double Width;
 	int Batch;
