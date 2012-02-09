@@ -70,10 +70,10 @@ void lauch_clients(parameters& P){
         os << " " << "-RE2"; 
     } else if(P.RareEvent){
         os << " " << "-RE";
-    } else if(P.BoundedRE>0){
-        os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
     } else if(P.BoundedContinuous){
         os << " " << "-COBURE" << " " << P.BoundedRE << " " << P.horizon << " " << P.epsilon;
+    } else if(P.BoundedRE>0){
+        os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
     } else if(P.computeStateSpace){
         os << " " << "-STSP";
     };

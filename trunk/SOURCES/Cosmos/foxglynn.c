@@ -91,15 +91,15 @@ static BOOL finder(const int m, const double lambda, const double tau, const dou
 	/*Simple bad cases, when we quit*/
 	if( lambda == 0.0 )
 	{
-	  printf("ERROR: Fox-Glynn: lambda = 0, terminating the algorithm\n");
+	  fprintf(stderr,"ERROR: Fox-Glynn: lambda = 0, terminating the algorithm\n");
 	  return FALSE;
 	}
 	/* The requested error level must not be smaller than the minimum machine precision
 	   (needed to guarantee the convergence of the error conditions) */
 	if( epsilon < tau)
 	{
-	  printf("ERROR: Fox-Glynn: epsilon < tau, invalid error level, terminating the algorithm\n");
-	  printf("epsilon %f, tau %f\n",epsilon,tau);
+	  fprintf(stderr,"ERROR: Fox-Glynn: epsilon < tau, invalid error level, terminating the algorithm\n");
+	  fprintf(stderr,"epsilon %f, tau %f\n",epsilon,tau);
 	  return FALSE;
 	}
 	/* zero is used as left truncation point for lambda <= 25 */
@@ -112,7 +112,7 @@ static BOOL finder(const int m, const double lambda, const double tau, const dou
 	{
 		if( exp( -lambda ) <= tau )
 		{
-			printf("ERROR: Fox-Glynn: 0 < lambda < 25, underflow. The results are UNRELIABLE.\n");
+			fprintf(stderr,"ERROR: Fox-Glynn: 0 < lambda < 25, underflow. The results are UNRELIABLE.\n");
 		}
 	}
 
@@ -188,12 +188,12 @@ static BOOL finder(const int m, const double lambda, const double tau, const dou
 			else
 			{
 				/*NOTE: It will be an underflow error*/;
-				printf("ERROR: Fox-Glynn: lambda >= 25, underflow. The results are UNRELIABLE.\n");
+				fprintf(stderr,"ERROR: Fox-Glynn: lambda >= 25, underflow. The results are UNRELIABLE.\n");
 			}
 		}
 		if ( result * omega / ( 1.0e+10 * ( pFG->right - pFG->left ) ) <= tau )
 		{
-			printf("ERROR: Fox-Glynn: lambda >= 25, underflow. The results are UNRELIABLE.\n");
+			fprintf(stderr,"ERROR: Fox-Glynn: lambda >= 25, underflow. The results are UNRELIABLE.\n");
 		}
 	}
 
@@ -209,7 +209,7 @@ static BOOL finder(const int m, const double lambda, const double tau, const dou
 		result = c_m_inf * exp( - pow( k_prime + 1.0 , 2.0 ) / 2.0 );
 		if( result * omega / ( 1.0e+10 * ( pFG->right - pFG->left ) ) <= tau)
 		{
-			printf("ERROR: Fox-Glynn: lambda >= 400, underflow. The results are UNRELIABLE.\n");
+			fprintf(stderr,"ERROR: Fox-Glynn: lambda >= 400, underflow. The results are UNRELIABLE.\n");
 		}
 	}
 	/*Time to set the initial value for weights*/
@@ -256,7 +256,7 @@ static BOOL weighter(const double lambda, const double tau, const double omega, 
 		/*Perform the underflow check, according to Fox-Glynn*/
 		if( pFG->right > 600 )
 		{
-			printf("ERROR: Fox-Glynn: pFG->right > 600, underflow is possible\n");
+			fprintf(stderr,"ERROR: Fox-Glynn: pFG->right > 600, underflow is possible\n");
 			return FALSE;
 		}
 		/*Compute weights*/

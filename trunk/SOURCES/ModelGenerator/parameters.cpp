@@ -33,6 +33,7 @@ parameters::parameters() {
 }
 
 
+
 void parameters::View() {
 	cout << "Confidence interval width:      " << Width << endl;
 	cout << "Confidence interval level:      " << Level << endl;

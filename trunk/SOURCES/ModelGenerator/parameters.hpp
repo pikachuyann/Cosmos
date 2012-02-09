@@ -26,7 +26,7 @@ struct parameters {
 	bool RareEvent;
 	bool DoubleIS;
 	int BoundedRE;
-    int horizon;
+    double horizon;
     bool BoundedContinuous;
     
 	bool GMLinput;

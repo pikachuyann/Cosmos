@@ -22,5 +22,6 @@ void SimulatorContinuousBounded::initVectCo(double t){
     if (fox_glynn(lambda * t, DBL_MIN, DBL_MAX,epsilon, &fg)){
         cerr << "fox_glyn:" << fg->left << "," << fg->right << endl;
     }
+    initVect(fg->right);
     
 }
