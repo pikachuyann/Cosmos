@@ -23,6 +23,7 @@ public:
   double M2;
   void outputR();
   void inputR(FILE* f);
+  void print();
 
 };
 

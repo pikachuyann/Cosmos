@@ -30,6 +30,7 @@ int main(int argc, char** argv) {
 	
 	string str;
 	
+    
 	if(argc > 2){
 
 		str = argv[2];

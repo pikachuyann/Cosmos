@@ -16,7 +16,7 @@ namespace po = boost::program_options;
 
 parameters::parameters() {
 	Level = 0.99;
-    epsilon = 0.0000001;
+    epsilon = 0.01;
 	Width = 0.001;
 	Batch =   1000;
 	MaxRuns = 2000000;

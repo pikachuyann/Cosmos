@@ -1,6 +1,6 @@
 #include "BatchR.hpp"
 
-
+using namespace std;
 
 BatchR::BatchR() {
   IsBernoulli = true;
@@ -40,4 +40,12 @@ void BatchR::inputR(FILE* f) {
   size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
   M2=read;
 
+}
+
+void BatchR::print(){
+    cerr << "IsBernoulli:\t" << IsBernoulli << endl
+    << "I:\t" << I << endl
+    << "Isucc:\t" << Isucc << endl
+    << "Mean:\t" << Mean << endl
+    << "M2:\t" << M2 << endl;
 }

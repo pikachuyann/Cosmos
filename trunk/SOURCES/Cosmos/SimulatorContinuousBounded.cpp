@@ -17,10 +17,15 @@ SimulatorContinuousBounded::SimulatorContinuousBounded(int m,double e):Simulator
 }
 
 void SimulatorContinuousBounded::initVectCo(double t){
+    
     double lambda = numSolv->uniformizeMatrix();
     cerr << "lambda:" << lambda<< endl;
-    if (fox_glynn(lambda * t, DBL_MIN, DBL_MAX,epsilon, &fg)){
-        cerr << "fox_glyn:" << fg->left << "," << fg->right << endl;
+    fg=NULL;
+    if (fox_glynn(lambda * t, 1e-16, 1e+16,epsilon, &fg)){
+        cerr << "fox_glyn:" << fg->left << "," << fg->right << "Total weigts:"<< fg->total_weight<< endl;
+        /*for(int i = 0; i<= fg->right - fg->left; i++){
+            cerr << "i:\t"<< fg->left+i<< "\tcoeff:\t" << fg->weights[i]<< endl;
+        }*/
     }
     initVect(fg->right);
     
@@ -30,8 +35,14 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	//cerr << "test(";
 	numSolv->reset();
 	//cerr << ")" << endl;
-	
-	double Dif=0;
+    int Nmax = fg->right -fg->left;
+    
+    vector<double> MeanN (Nmax,0.0);
+    vector<double> M2N (Nmax,0.0);
+	vector<int> IsuccN (Nmax,0);
+    int n =0;
+    
+	double Dif=0.0;
 	//double Y = 0;
 	BatchR* batchResult = new BatchR();
 	
@@ -59,7 +70,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		numSolv->stepVect();
 		//cerr << "new round" << endl;
 		//cerr << numSolv.getVect() << endl;
-		
+		n++;
+        
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
 			AutEdge AE;
 			
@@ -71,20 +83,24 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 			if((!EQ->isEmpty() || AE.Index > -1) && continueb) {
 				(*it).saveState(&N,&A,&AE,&EQ, &simTime);
 			} else {
-				if (Result.first) {
-					//écerr << endl<<"Result:" << Result.second << endl;
-					
+				if (Result.first && n >= fg->left) {
+					//cerr << endl<<"Result:" << Result.second << endl;
 					batchResult->Isucc++;
 					
+                    cerr << "finish" << endl;
+                    
 					if (Result.second * (1 - Result.second) != 0) batchResult->IsBernoulli = false;
 					
+                    for (int i=0; i<=n-fg->left; i++) {
+                        IsuccN[i]++;
+                    
+                        Dif = Result.second - MeanN[i];
+                        MeanN[i] += Dif / IsuccN[i];
 					
-					Dif = Result.second - batchResult->Mean;
-					batchResult->Mean += Dif / batchResult->Isucc;
-					
-					Dif = pow(Result.second, 2) - batchResult->M2;
-					batchResult->M2 += Dif / batchResult->Isucc;
-					
+                        Dif = pow(Result.second, 2) - M2N[i];
+                        M2N[i] += Dif / IsuccN[i];
+					}
+                        
 				}
 				
 				batchResult->I++;
@@ -96,15 +112,30 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 			
 			
 		}
+        
 	}
 	
-	//cerr << "test" << endl;
+	cerr << "test" << endl;
 	//exit(0);
+    int Isucc =0;
+    
+    for(int i=0; i< fg->right- fg->left; i++){
+        cerr << "Mean:\t"  << MeanN[i] << endl<< "M2:\t" << M2N[i] <<
+        endl << "coeff:\t" << fg->weights[i] << endl;
+        Isucc += IsuccN[i];
+        Dif = MeanN[i] - batchResult->Mean;
+        batchResult->Mean += (IsuccN[i] * fg->weights[i] * Dif / Isucc)/fg->total_weight;
+        
+        Dif = M2N[i] - batchResult->M2; 
+        batchResult->M2 +=  (IsuccN[i] * fg->weights[i] * Dif / Isucc)/fg->total_weight ;
+    }
+    //batchResult->Isucc = IsuccN[0];
     
     rusage ruse;
     getrusage(RUSAGE_SELF, &ruse);
     cerr <<endl << endl << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl; 
     
+    batchResult->print();
 	return (batchResult);
 }
