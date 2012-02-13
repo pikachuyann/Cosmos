@@ -17,6 +17,7 @@ public:
 	SimulatorContinuousBounded(int m,double e);
     void initVectCo(double t);
     double epsilon;
+    BatchR* RunBatch();
     
 protected:
     FoxGlynn* fg;

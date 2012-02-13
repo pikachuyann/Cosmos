@@ -155,6 +155,7 @@ void stateSpace::buildTransitionMatrix()
 	    
     cerr << "Adding self loop" << endl;
 	// Add self loop to ensure that mat is a probability matrix.
+    // If the model is a CTMC the value on diagonal are wrong. 
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator1 it1_t;
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator2 it2_t;
 	
@@ -168,7 +169,7 @@ void stateSpace::buildTransitionMatrix()
 		mat(it1.index1(),it1.index1())= sum;
 	}
 	
-    cerr << " copping" << endl;
+    cerr << " copying" << endl;
     
 	transitionsMatrix = new boost::numeric::ublas::compressed_matrix<double>(mat);
     
@@ -186,7 +187,7 @@ void stateSpace::buildTransitionMatrix()
 	finalVector = new boost::numeric::ublas::vector<double> (vect);
 }
 
-double stateSpace::maxRate(){
+/*double stateSpace::maxRate(){
     double t = 0.0;
     for(boost::numeric::ublas::compressed_matrix<double>::iterator1 it 
         = transitionsMatrix->begin1(); it!= transitionsMatrix->end1(); it++){
@@ -196,6 +197,39 @@ double stateSpace::maxRate(){
         };        
     };
     return(t);
+}*/
+
+double stateSpace::uniformizeMatrix(){
+    //First Compute infinitesimal generator
+    //replace all value on the diagonal by opposite of the sum
+    typedef boost::numeric::ublas::compressed_matrix<double>::iterator1 it1_t;
+	typedef boost::numeric::ublas::compressed_matrix<double>::iterator2 it2_t;
+	
+    double lambda = 0.0;
+	for (it1_t it1 = transitionsMatrix->begin1(); it1 != transitionsMatrix->end1(); it1++)
+	{
+		double sum = 0.0;
+		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
+			//cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
+			if(it2.index1()!= it2.index2())sum += *it2;
+		}
+        lambda = max(lambda ,sum);
+		(*transitionsMatrix)(it1.index1(),it1.index1())= -sum;
+	}
+    // Divide each coefficient of the matrix by lambda
+    // and add 1 on the diagonal
+    
+    for (it1_t it1 = transitionsMatrix->begin1(); it1 != transitionsMatrix->end1(); it1++)
+	{
+		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
+			//cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
+            *it2 /= lambda;
+			if(it2.index1()== it2.index2())*it2 +=1.0;
+		}
+	}
+    
+    
+    return lambda;
 }
 
 void stateSpace::printP(){

@@ -62,6 +62,7 @@ int main(int argc, char** argv) {
 			states.exploreStateSpace();
 			states.buildTransitionMatrix();
 			//states.printP();
+            //states.uniformizeMatrix();
 			states.outputMat();
 			exit(EXIT_SUCCESS);
 		}
