@@ -87,7 +87,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 					//cerr << endl<<"Result:" << Result.second << endl;
 					batchResult->Isucc++;
 					
-                    cerr << "finish" << endl;
+                    //cerr << "finish(" << endl;
                     
 					if (Result.second * (1 - Result.second) != 0) batchResult->IsBernoulli = false;
 					
@@ -100,13 +100,17 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                         Dif = pow(Result.second, 2) - M2N[i];
                         M2N[i] += Dif / IsuccN[i];
 					}
+                    //cerr << ")finish" << endl;
                         
 				}
 				
 				batchResult->I++;
-				delete EQ;
+				
+                
+                delete EQ;
 				it = statevect.erase(it);
-				it--;
+				
+                it--;
 			}
 			
 			
