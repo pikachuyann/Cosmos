@@ -19,7 +19,7 @@ SimulatorContinuousBounded::SimulatorContinuousBounded(int m,double e):Simulator
 
 void SimulatorContinuousBounded::initVectCo(double t){
     
-    double lambda = numSolv->uniformizeMatrix();
+    lambda = numSolv->uniformizeMatrix();
     cerr << "lambda:" << lambda<< endl;
     fg=NULL;
     if (fox_glynn(lambda * t, 1e-16, 1e+16,epsilon, &fg)){
@@ -92,7 +92,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     
 					if (Result.second * (1 - Result.second) != 0) batchResult->IsBernoulli = false;
 					
-                    for (int i=0; i<n-fg->left; i++) {
+                    for (int i= 0; i<n-fg->left; i++) {
                         IsuccN[i]++;
                     
                         Dif = Result.second - MeanN[i];
@@ -144,4 +144,66 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     //batchResult->print();
     //exit(0);
 	return (batchResult);
+}
+
+void SimulatorContinuousBounded::updateSPN(int E1_transitionNum){
+	Event F;
+	
+	if( ! N.IsEnabled(E1_transitionNum)) (*EQ).remove(0);
+	
+	for (set<int>::iterator it = N.PossiblyEnabled[E1_transitionNum].begin(); it != N.PossiblyEnabled[E1_transitionNum].end(); it++) {
+		if (N.IsEnabled(*it)) {
+			if ((*EQ).TransTabValue(*it) < 0) {
+				GenerateDummyEvent(F, (*it));
+				(*EQ).insert(F);
+			} 
+		}
+	}
+	
+	for (set<int>::iterator it = N.PossiblyDisabled[E1_transitionNum].begin(); it != N.PossiblyDisabled[E1_transitionNum].end(); it++) {
+		if ((*EQ).TransTabValue(*it)>-1) {
+			if (!N.IsEnabled(*it))
+				(*EQ).remove((*EQ).TransTabValue(*it));
+		}
+	}
+	
+	
+	N.Rate_Sum = 0;
+	N.Origine_Rate_Sum = 0;
+	vector<int> Enabled_trans ((*EQ).getSize());
+	for(int i=0; i< (*EQ).getSize(); i++){ 
+		Enabled_trans[i] = (*EQ).InPosition(i).transition; 
+	};
+	
+	for (vector<int>::iterator it = Enabled_trans.begin(); it != Enabled_trans.end(); it++) {
+		if(*it != N.tr-1 && *it != N.tr-2){
+			if(N.IsEnabled(*it)){
+				GenerateEvent(F, (*it));
+				(*EQ).replace(F, (*EQ).TransTabValue(*it));
+			}else {
+				(*EQ).remove((*EQ).TransTabValue(*it));
+			}
+		}; 
+	};
+	
+    GenerateEvent(F, (N.tr-2));
+	if(!doubleIS_mode){
+		(*EQ).replace(F, (*EQ).TransTabValue(N.tr-2));
+	}
+    
+	GenerateEvent(F, (N.tr-1));
+	if(!doubleIS_mode){
+		(*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
+	}
+	
+};
+
+vector<double> SimulatorContinuousBounded::getParams(int Id){
+	
+	vector<double> P(2);
+	double origin_rate = (N.GetDistParameters(Id))[0];
+    if(Id== N.tr-2)origin_rate = lambda - N.Origine_Rate_Sum;
+    P[0]= ComputeDistr( Id, origin_rate);
+	P[1]= origin_rate;
+	return P;
 }

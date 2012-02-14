@@ -17,11 +17,14 @@ public:
 	SimulatorContinuousBounded(int m,double e);
     void initVectCo(double t);
     double epsilon;
+    double lambda;
     BatchR* RunBatch();
     
 protected:
     FoxGlynn* fg;
-	
+    vector<double> getParams(int Id);
+    void updateSPN(int E1_transitionNum);
+	//double ComputeDistr(int t , double origin_rate);
 };
 
 
