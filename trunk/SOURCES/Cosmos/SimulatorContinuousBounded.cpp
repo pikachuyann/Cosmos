@@ -138,7 +138,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     
     rusage ruse;
     getrusage(RUSAGE_SELF, &ruse);
-    cerr <<endl << endl << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
+    cerr << "\033[A\033[2K"<< "\033[A\033[2K" << "\033[A\033[2K" << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl; 
     
     //batchResult->print();
