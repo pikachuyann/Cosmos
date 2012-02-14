@@ -10,6 +10,7 @@
 #include "SimulatorContinuousBounded.hpp"
 #include "float.h"
 #include "math.h"
+#include <sys/resource.h>
 
 
 SimulatorContinuousBounded::SimulatorContinuousBounded(int m,double e):SimulatorBoundedRE(m){
