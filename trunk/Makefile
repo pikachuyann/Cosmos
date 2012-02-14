@@ -1,6 +1,6 @@
 export CC=g++
-export OPTIONS=-O3 
-
+export OPTIONS=-O3
+ 
 .PHONY: classes Generator clean sim
 
 all: classes Generator 

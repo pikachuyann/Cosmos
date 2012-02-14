@@ -92,7 +92,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     
 					if (Result.second * (1 - Result.second) != 0) batchResult->IsBernoulli = false;
 					
-                    for (int i=0; i<=n-fg->left; i++) {
+                    for (int i=0; i<n-fg->left; i++) {
                         IsuccN[i]++;
                     
                         Dif = Result.second - MeanN[i];
@@ -125,8 +125,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     int Isucc =0;
     
     for(int i=0; i< fg->right- fg->left; i++){
-        cerr << "Mean:\t"  << MeanN[i] << endl<< "M2:\t" << M2N[i] <<
-        endl << "coeff:\t" << fg->weights[i] << endl;
+        //cerr << "Mean:\t"  << MeanN[i] << endl<< "M2:\t" << M2N[i] <<
+        //endl << "coeff:\t" << fg->weights[i] << endl;
         Isucc += IsuccN[i];
         Dif = MeanN[i] - batchResult->Mean;
         batchResult->Mean += (IsuccN[i] * fg->weights[i] * Dif / Isucc)/fg->total_weight;
@@ -141,7 +141,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     cerr <<endl << endl << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl; 
     
-    batchResult->print();
-    exit(0);
+    //batchResult->print();
+    //exit(0);
 	return (batchResult);
 }
