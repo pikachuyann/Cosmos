@@ -103,6 +103,7 @@ void SimulatorRE::updateSPN(int E1_transitionNum){
 };
 
 void SimulatorRE::updateLikelihood(int E1_transitionNum){
+    //cerr << "initialised?:\t" << E1_transitionNum << endl;
 	if(doubleIS_mode){	
 		A.Likelihood = A.Likelihood * 
 		(N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) * 

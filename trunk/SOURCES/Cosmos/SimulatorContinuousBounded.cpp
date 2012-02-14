@@ -141,5 +141,6 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl; 
     
     batchResult->print();
+    exit(0);
 	return (batchResult);
 }
