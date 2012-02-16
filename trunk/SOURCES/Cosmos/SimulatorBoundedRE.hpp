@@ -31,6 +31,7 @@ private:
 	vector<double> OldLinFormLHA;
 	vector<double> LhaFuncLHA;
 	
+    
 	//rare event variable
 	double likelihood;
 
@@ -41,8 +42,10 @@ private:
 	
 	
 public:
+    int maxStep;
 	simulationState(){
 		//EQ = new EventsQueue(n);
+        maxStep=0;
 	};
 	~simulationState(){
 		//delete EQ;

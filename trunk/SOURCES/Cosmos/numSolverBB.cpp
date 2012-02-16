@@ -15,12 +15,17 @@ void numSolverBB::initVect(int nT){
 	l = sqrt(T);
     time_t start, endt;
     time(&start);
+    
+    int minT = -1;
 	
 	circularvect = new vector< boostmat::vector<double> > (l+1, boostmat::zero_vector<double> (finalVector->size()));
 	checkPoint = new vector< boostmat::vector<double> > (T/l+1, *finalVector);
     
     time(&endt);
     cerr << "time for allocation:" << difftime(endt, start) << endl;
+    
+    //We suppose here that the initial state is the first of the vector
+    if((*circularvect)[0] (0) != 0.0)minT=0;
     
 	lastCP = (T/l)*l;
 	boostmat::vector<double> itervect = *finalVector;
@@ -29,6 +34,9 @@ void numSolverBB::initVect(int nT){
         itervect2.clear();
         sparseProd(&itervect2, &itervect, transitionsMatrix);
         itervect = itervect2;
+        
+        if((itervect (0) != 0.0) && (minT== -1))minT=i;
+        
 		//itervect = boostmat::prod ((*transitionsMatrix), itervect);
 		if( i % l ==0) (*checkPoint)[i/l]= itervect;
 	}
@@ -37,6 +45,7 @@ void numSolverBB::initVect(int nT){
     cerr << "time for precalculation:" << difftime(endt, start) << endl;
     
 	cerr << "Starting the simulation" << endl;
+    
 }
 
 void numSolverBB::reset(){
@@ -51,6 +60,7 @@ void numSolverBB::reset(){
     for(int i=1; i<=T-lastCP ; i++){
         ((*circularvect)[i]).clear();
         sparseProd(&((*circularvect)[i]), &((*circularvect)[i-1]), transitionsMatrix);
+        if(((*circularvect)[i] (0) != 0.0) && (minT= -1))minT=i+lastCP;
         
 		//cerr << "itervect:" << i << ":"<< (*circularvect)[i] << endl;
 	}

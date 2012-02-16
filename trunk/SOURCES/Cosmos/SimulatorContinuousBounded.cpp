@@ -23,9 +23,9 @@ void SimulatorContinuousBounded::initVectCo(double t){
     cerr << "lambda:" << lambda<< endl;
     fg=NULL;
     if (fox_glynn(lambda * t, 1e-16, 1e+16,epsilon, &fg)){
-        cerr << "fox_glyn:" << fg->left << "," << fg->right << "Total weigts:"<< fg->total_weight<< endl;
+        cerr << "fox_glyn:" << fg->left << "," << fg->right << " Total weigts:"<< fg->total_weight<< endl;
         /*for(int i = 0; i<= fg->right - fg->left; i++){
-            cerr << "i:\t"<< fg->left+i<< "\tcoeff:\t" << fg->weights[i]<< endl;
+            cerr << "i:\t"<< fg->left+i<< "\tcoeff:\t" << fg->weights[i]/ fg->total_weight << endl;
         }*/
     }
     initVect(fg->right);
@@ -37,6 +37,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	numSolv->reset();
 	//cerr << ")" << endl;
     int Nmax = fg->right -fg->left;
+    cerr << "Nmax:\t" << Nmax << endl;
     
     vector<double> MeanN (Nmax,0.0);
     vector<double> M2N (Nmax,0.0);
@@ -47,13 +48,17 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	//double Y = 0;
 	BatchR* batchResult = new BatchR();
 	
-	list<simulationState> statevect(BatchSize);
+	list<simulationState> statevect(Nmax*BatchSize);
 	//delete EQ;
 	
+    int c =0;
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
 		EQ = new EventsQueue(N.tr);
 		reset();
-		
+        it->maxStep = fg->right - (c/BatchSize);
+		//cerr << "new path:\t" << it->maxStep << endl;
+        
+        c++;
 		AutEdge AE;
 		A.CurrentLocation = A.EnabledInitLocation(N.Marking);
 		A.CurrentTime = 0;
@@ -69,64 +74,70 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		numSolv->stepVect();
-		//cerr << "new round" << endl;
-		//cerr << numSolv.getVect() << endl;
+		cerr << numSolv->getVect() << endl;
 		n++;
+        cerr << "new round:"<< n << endl;
         
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
-			AutEdge AE;
-			
-			(*it).loadState(&N,&A,&AE,&EQ, &simTime);
-			//cerr << A.Likelihood << endl;		
-			
-			bool continueb = SimulateOneStep(&AE);
-			
-			if((!EQ->isEmpty() || AE.Index > -1) && continueb) {
-				(*it).saveState(&N,&A,&AE,&EQ, &simTime);
-			} else {
-				if (Result.first && n >= fg->left) {
-					//cerr << endl<<"Result:" << Result.second << endl;
-					batchResult->Isucc++;
-					
-                    //cerr << "finish(" << endl;
+            if(it->maxStep >= fg->right -n+1){
                     
-					if (Result.second * (1 - Result.second) != 0) batchResult->IsBernoulli = false;
-					
-                    for (int i= 0; i<n-fg->left; i++) {
-                        IsuccN[i]++;
-                    
-                        Dif = Result.second - MeanN[i];
-                        MeanN[i] += Dif / IsuccN[i];
-					
-                        Dif = pow(Result.second, 2) - M2N[i];
-                        M2N[i] += Dif / IsuccN[i];
-					}
-                    //cerr << ")finish" << endl;
-                        
-				}
-				
-				batchResult->I++;
-				
+                cerr << "vect:\t" << it->maxStep <<endl;
+                AutEdge AE;
                 
-                delete EQ;
-				it = statevect.erase(it);
-				
-                it--;
+                it->loadState(&N,&A,&AE,&EQ, &simTime);
+                //cerr << A.Likelihood << endl;		
+                
+                bool continueb = SimulateOneStep(&AE);
+                
+                if((!EQ->isEmpty() || AE.Index > -1) && continueb) {
+                    it->saveState(&N,&A,&AE,&EQ, &simTime);
+                } else {
+                    if (Result.first) {
+                        cerr << "n:\t" << n <<" Result:" << Result.second << " maxStep:\t" << it->maxStep <<endl;
+                        batchResult->Isucc++;
+                        
+                        //cerr << "finish(" << endl;
+                        
+                        if (Result.second * (1 - Result.second) != 0) batchResult->IsBernoulli = false;
+                        
+                        //for (int i= max(0,n-fg->left); i<fg->right - fg->left; i++) 
+                        {
+                            int i = it->maxStep - fg->left-1;
+                            //cerr << "i:\t" << i << endl;
+                            IsuccN[i]++;
+                            
+                            Dif = Result.second - MeanN[i];
+                            MeanN[i] += Dif / IsuccN[i];
+                            
+                            Dif = pow(Result.second, 2) - M2N[i];
+                            M2N[i] += Dif / IsuccN[i];
+                        }
+                        //cerr << ")finish" << endl;
+                        
+                    }
+                    
+                    batchResult->I++;
+                    
+                    
+                    delete EQ;
+                    it = statevect.erase(it);
+                    
+                    it--;
+                }
+                
 			}
-			
-			
 			
 		}
         
 	}
 	
-	cerr << "test" << endl;
+	//cerr << "test" << endl;
 	//exit(0);
     int Isucc =0;
     
     for(int i=0; i< fg->right- fg->left; i++){
-        //cerr << "Mean:\t"  << MeanN[i] << endl<< "M2:\t" << M2N[i] <<
-        //endl << "coeff:\t" << fg->weights[i] << endl;
+        cerr << "Mean:\t"  << MeanN[i] << endl<< "M2:\t" << M2N[i] <<
+        endl << "coeff:\t" << fg->weights[i]/fg->total_weight << endl;
         Isucc += IsuccN[i];
         Dif = MeanN[i] - batchResult->Mean;
         batchResult->Mean += (IsuccN[i] * fg->weights[i] * Dif / Isucc)/fg->total_weight;
@@ -138,8 +149,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     
     rusage ruse;
     getrusage(RUSAGE_SELF, &ruse);
-    cerr << "\033[A\033[2K"<< "\033[A\033[2K" << "\033[A\033[2K" << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
-    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl; 
+    //cerr << "\033[A\033[2K" << "\033[A\033[2K" << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
+    //<< "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl; 
     
     //batchResult->print();
     //exit(0);

@@ -27,9 +27,11 @@ protected:
 	int matOffset;
 	int nbVect;
     void sparseProd(boostmat::vector<double> *result,boostmat::vector<double> *vect, boostmat::compressed_matrix<double> *mat);
-	
+	int minT;
+    
 public:
 	numericalSolver();
+    virtual int getMinT(){return minT;};
 	virtual void initVect(int T); //initialise for an horizon point T
 	int T;
 	virtual void reset(); //this function is call before each batch

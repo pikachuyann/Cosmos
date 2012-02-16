@@ -40,11 +40,16 @@ void numSolverSH::initVect(int nT){
     time(&endt);
     cerr << "time for allocation:" << difftime(endt, start) << endl;
 	
+    //We suppose here that the initial state is the first of the vector
+    if((*circularvect)[0] (0) != 0.0)minT=0;
+    
 	for(int i=1; i<=lastPowT ; i++){
 		//cerr << "currPow " << currPow << " newPow " << nextPow << endl;
         itervect2.clear();
         sparseProd(&itervect2,&itervect, transitionsMatrix);
         itervect=itervect2;
+        
+        if((itervect (0) != 0.0) && (minT== -1))minT=i;
         //cerr << "i: " <<i << " v: " <<itervect << endl;
 		//itervect = boostmat::prod ((*transitionsMatrix), itervect);
 	}
@@ -81,6 +86,9 @@ void numSolverSH::compPow(int kp,int up){
         itervect2.clear();
         sparseProd(&itervect2,&itervect, transitionsMatrix);
         itervect=itervect2;
+        
+        if((itervect (0) != 0.0) && (minT== -1))minT=i;
+        
 		//itervect = boostmat::prod ((*transitionsMatrix), itervect);
 		m--;
 		if(m==0){

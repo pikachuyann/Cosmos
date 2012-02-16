@@ -39,6 +39,7 @@ void SimulatorBoundedRE::initVect(int T){
     numSolv->initVect(T);
 }
 
+
 BatchR* SimulatorBoundedRE::RunBatch(){
 	//cerr << "test(";
 	numSolv->reset();
@@ -63,7 +64,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 		Simulator::InitialEventsQueue();
 		
 		AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
-		
+        
 		(*it).saveState(&N,&A,&AE,&EQ, &simTime);
 	}
 	
