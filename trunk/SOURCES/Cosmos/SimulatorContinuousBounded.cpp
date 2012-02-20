@@ -149,16 +149,23 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	
 	//cerr << "test" << endl;
 	//exit(0);
-    int Isucc =0;
+    //int Isucc =0;
     
     for(int i=0; i<= fg->right- left; i++){
         cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tM2:\t" << M2N[i] << "\tcoeff:\t" << fg->weights[i]/fg->total_weight << endl;
-        Isucc += IsuccN[i];
-        Dif = (fg->weights[i] * MeanN[i])/fg->total_weight - batchResult->Mean;
-        batchResult->Mean += (IsuccN[i] * Dif / Isucc);       
-        Dif = M2N[i] - batchResult->M2; 
-        batchResult->M2 +=  (IsuccN[i] * fg->weights[i] * Dif / Isucc)/ fg->total_weight; 
+        
+        batchResult->Mean += fg->weights[i] * MeanN[i] ;
+        batchResult->M2 += fg->weights[i] * M2N[i];
+        
+        //Isucc += IsuccN[i];
+        //Dif = (fg->weights[i] * MeanN[i])/fg->total_weight - batchResult->Mean;
+        //batchResult->Mean += (IsuccN[i] * Dif / Isucc);       
+        //Dif = M2N[i] - batchResult->M2; 
+        //batchResult->M2 +=  (IsuccN[i] * fg->weights[i] * Dif / Isucc)/ fg->total_weight; 
     }
+    batchResult->Mean /= fg->total_weight;
+    batchResult->M2 /= fg->total_weight;
+    
     //batchResult->Isucc = IsuccN[0];
     cerr << endl;
     
