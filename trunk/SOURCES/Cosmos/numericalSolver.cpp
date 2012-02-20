@@ -33,7 +33,6 @@ numericalSolver::numericalSolver(){
 	inputMat();
     time(&endt);
     cerr << "time for input:" << endt-start << endl;
-    
 }
 
 
@@ -62,6 +61,7 @@ void numericalSolver::sparseProd(boostmat::vector<double> *result,boostmat::vect
 void numericalSolver::initVect(int nT){
     time_t start, endt;
     time(&start);
+    minT=-1;
     
 	T=nT;
 	circularvect = new vector< boostmat::vector<double> > (nT+1, boostmat::zero_vector<double> (finalVector->size()));
@@ -72,7 +72,8 @@ void numericalSolver::initVect(int nT){
 	//cerr << "itervect:" << 0 << ":"<< (*circularvect)[0] << endl;
     
     //We suppose here that the initial state is the first of the vector
-    if((*circularvect)[0] (0) != 0.0)minT=0;
+    if( !((*circularvect)[0] (0) == 0))minT=0;
+    
     
     //int test=0;
     boostmat::vector<double> itervect = boostmat::vector<double>(*finalVector);
@@ -81,7 +82,9 @@ void numericalSolver::initVect(int nT){
         
         sparseProd(&((*circularvect)[i]), &((*circularvect)[i-1]), transitionsMatrix);
         
-        if(((*circularvect)[i] (0) != 0.0) && (minT== -1))minT=i;
+        if(((*circularvect)[i] (0) != 0) && (minT== -1))minT=i;
+        //cerr << "i:" << i<< "\t"<<(*circularvect)[i] (0) << endl;
+
         
         //boostmat::sparse_prod(transitionsMatrix, (*circularvect)[i] , (*circularvect)[i-1] );
         

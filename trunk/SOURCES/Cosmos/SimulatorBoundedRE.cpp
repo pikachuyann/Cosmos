@@ -77,11 +77,14 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
 			AutEdge AE;
 			
+            
 			(*it).loadState(&N,&A,&AE,&EQ, &simTime);
+            
 			//cerr << A.Likelihood << endl;		
-			
+			//cerr << "mu:\t" << mu() << " ->\t";
 			bool continueb = SimulateOneStep(&AE);
-			
+			//cerr << mu() << endl;
+            
 			if((!EQ->isEmpty() || AE.Index > -1) && continueb) {
 				(*it).saveState(&N,&A,&AE,&EQ, &simTime);
 			} else {
