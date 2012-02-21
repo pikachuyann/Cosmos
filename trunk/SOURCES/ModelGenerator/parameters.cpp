@@ -63,7 +63,8 @@ void parameters::parseCommandLine(int argc, char** argv){
 	("width",po::value(&Width),"Set Confidence interval width")
 	("batch",po::value(&Batch),"Set Batch Size")
 	("max-run",po::value(&MaxRuns),"Set the maximum number of run")
-	("njob",po::value(&Njob),"Set the number of parallel simulation")	
+	("njob",po::value(&Njob),"Set the number of parallel simulation")
+	("epsilon",po::value(&epsilon),"Set epsilon value for fox-glynn algorith")
 	;
 	
 	po::options_description hidden("Hidden options");
