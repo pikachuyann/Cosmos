@@ -39,9 +39,9 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	//cerr << ")" << endl;
     int left = max(numSolv->getMinT(),fg->left);
     int Nmax = fg->right - left;
-    cerr << "minT:\t" << numSolv->getMinT() << endl;
+    //cerr << "minT:\t" << numSolv->getMinT() << endl;
     cerr << "Nmax:\t" << Nmax << endl;
-    cerr << "left:\t" << left << endl;
+    //cerr << "left:\t" << left << endl;
     
     vector<double> MeanN (Nmax+1,0.0);
     vector<double> M2N (Nmax+1,0.0);
@@ -109,7 +109,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     } else {
                         if (Result.first) {
                             //cerr << "n:\t" << n <<" Result:" << Result.second << " maxStep:\t" << it->maxStep <<endl;
-                            batchResult->Isucc++;
+                            //batchResult->Isucc++;
                             
                             //cerr << "finish(" << endl;
                             
@@ -159,10 +159,11 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         double stdevN = 0.0;
         if(var>0)stdevN = sqrt(var); 
         
-        cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;
+        /*cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;*/
         
         batchResult->Mean += fg->weights[i+leftdec] * MeanN[i] ;
         stdev += fg->weights[i+leftdec] * stdevN;
+        batchResult->Isucc = batchResult->I;
         
         //batchResult->M2 += pow(fg->weights[i+leftdec]/fg->total_weight,2) * M2N[i];
         
@@ -186,7 +187,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     cerr << "\033[A\033[2K" << "\033[A\033[2K" << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl; 
     
-    batchResult->print();
+    //batchResult->print();
     //exit(0);
 	return (batchResult);
 }

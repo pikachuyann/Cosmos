@@ -16,5 +16,8 @@ clean:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
 	@(cd SOURCES/ModelGenerator && $(MAKE) $@)
 
+cleansim:
+	@(cd SOURCES/Cosmos && $(MAKE) clean)
+
 sim:
 	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/ClientSim)
