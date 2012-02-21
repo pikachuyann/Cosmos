@@ -24,8 +24,8 @@ protected:
     FoxGlynn* fg;
     vector<double> getParams(int Id);
     void updateSPN(int E1_transitionNum);
-    virtual void updateLikelihood(int);
-    virtual double ComputeDistr(int t , double origin_rate);
+    //virtual void updateLikelihood(int);
+    //virtual double ComputeDistr(int t , double origin_rate);
 
 	//double ComputeDistr(int t , double origin_rate);
 };

@@ -22,7 +22,7 @@ void SimulatorContinuousBounded::initVectCo(double t){
     lambda = numSolv->uniformizeMatrix();
     cerr << "lambda:" << lambda<< endl;
     fg=NULL;
-    if (fox_glynn(lambda * t, 1e-16, 1e+16,epsilon, &fg)){
+    if (fox_glynn(lambda * t, DBL_EPSILON , 1/DBL_EPSILON ,epsilon, &fg)){
         cerr << "fox_glyn:" << fg->left << "," << fg->right << " Total weigts:"<< fg->total_weight<< endl;
         /*for(int i = 0; i<= fg->right - fg->left; i++){
             cerr << "i:\t"<< fg->left+i<< "\tcoeff:\t" << fg->weights[i]/ fg->total_weight << endl;
@@ -233,16 +233,6 @@ void SimulatorContinuousBounded::updateSPN(int E1_transitionNum){
 	
 };
 
-void SimulatorContinuousBounded::updateLikelihood(int E1_transitionNum){
-    //cerr << "initialised?:\t" << E1_transitionNum << endl;
-    A.Likelihood = A.Likelihood * 
-    //
-    //(N.Origine_Rate_Table[E1_transitionNum] / 1.0) *
-    (N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) *
-    (N.Rate_Sum / N.Rate_Table[E1_transitionNum]);
-}
-
-
 vector<double> SimulatorContinuousBounded::getParams(int Id){
 	
 	vector<double> P(2);
@@ -256,26 +246,3 @@ vector<double> SimulatorContinuousBounded::getParams(int Id){
 	return P;
 }
 
-double SimulatorContinuousBounded::ComputeDistr(int t , double origin_rate){
-	
-	double mux = mu();
-    //cerr << "mu:\t"<< mux;
-	if( mux==0.0 || mux==1.0) return(origin_rate);
-    
-	if(t== N.tr-1){
-        //cerr << endl;
-		if(N.Origine_Rate_Sum >= N.Rate_Sum){
-			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
-		}else{ 
-			return 0.0 ;};
-	}; 
-	
-	double distr;
-	N.fire(t);
-    numSolv->stepVect();
-    //cerr << "\t->\t" << mu() << endl;
-	distr = origin_rate *( mu() / mux);
-	numSolv->previousVect();
-    N.unfire(t);
-	return(distr);
-}
