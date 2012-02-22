@@ -22,6 +22,7 @@ public:
     
 protected:
     FoxGlynn* fg;
+    double mu();
     vector<double> getParams(int Id);
     void updateSPN(int E1_transitionNum);
     //virtual void updateLikelihood(int);

@@ -245,6 +245,29 @@ void SimulatorContinuousBounded::updateSPN(int E1_transitionNum){
 	
 };
 
+double SimulatorContinuousBounded::mu(){
+	
+	vector<int> vect (N.Msimpletab.size());
+	for(int i=0; i< N.Msimpletab.size();i++){
+		vect[i] = N.Marking[N.Msimpletab[i]];
+	};
+	
+    //cerr << "test(" << endl;
+    N.lumpingFun(&vect);
+    //cerr << "test)" << endl;
+	int stateN = numSolv->findHash(&vect);
+    
+	if(stateN<0){
+		cerr << numSolv->getVect()<< endl << "vect:";
+        for (vector<int>::iterator it = vect.begin(); it != vect.end(); it++) {
+            cerr << *it<< " , ";
+        }
+		cerr << endl << "state not found" << endl;
+	}
+    
+	return(numSolv->getMu(stateN));
+}
+
 vector<double> SimulatorContinuousBounded::getParams(int Id){
 	
 	vector<double> P(2);

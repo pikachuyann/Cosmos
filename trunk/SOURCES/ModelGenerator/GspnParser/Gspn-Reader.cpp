@@ -143,6 +143,7 @@ void Gspn_Reader::WriteFile(string& Pref) {
 	//SpnCppFile << "    vector<double> GetDistParametersOrigin(int);" << endl;
 	SpnCppFile << "    double GetPriority(int);" << endl;
 	SpnCppFile << "    double GetWeight(int);" << endl;
+    SpnCppFile << "    void lumpingFun(vector<int>*);" << endl;
 	
 	
 	
@@ -173,6 +174,8 @@ void Gspn_Reader::WriteFile(string& Pref) {
         int k = MyGspn.PlacesId[*it];
 		SpnCppFile << "    const int _nb_Place_"<< *it << "=" << k << ";" << endl;
     }
+    
+    SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
 
     SpnCppFile << "void SPN::Load(){" << endl;
     SpnCppFile << "    Path =\"" << MyGspn.Path << "\";" << endl;

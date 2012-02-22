@@ -194,6 +194,10 @@ void SPN_ORIG::Msimple(){
   }
   Msimpletab = tab;
 }
+
+/*void SPN_ORIG::lumpingFun(vector<int>* ve) {
+    cerr << "Should never be print" << endl;
+}*/
 //-------------------/Rare Event -----------------------------------------------
 
 bool SPN_ORIG::IsEnabled(int i) {

@@ -12,6 +12,7 @@ public:
 	vector<double> GetDistParameters(int); // compute the the parameters value of a given distribution 
 	//------------------------- Rare Event ---------------------------------------
 	vector<double> GetDistParametersOrigin(int);
+    void lumpingFun(vector<int>*); 
 	//-------------------------/Rare Event ---------------------------------------
 	
 	

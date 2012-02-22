@@ -258,10 +258,15 @@ void stateSpace::outputMat(){
 	for(hash_state::iterator it= S.begin() ; it != S.end(); it++){
 		outputFile << "(";
 		vector<int> vect = *(*it).first;
-		for(int i =0; i< vect.size()-1; i++){
+        for(int i=0; i< N.Msimpletab.size();i++){
+            if(i>0)outputFile << ",";
+            outputFile << vect[N.Msimpletab[i]];
+        };
+        
+		/*for(int i =0; i< vect.size()-1; i++){
 			if(i>0)outputFile << ",";
 			outputFile << vect[i];
-		}
+		}*/
 		outputFile << ")=";
 		outputFile << (*it).second << endl;
 	}
