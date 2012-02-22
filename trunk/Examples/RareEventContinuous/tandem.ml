@@ -12,7 +12,7 @@ let horizon = int_of_string (Sys.argv.(4));;
 
 let methode = int_of_string (Sys.argv.(5));;
 
-let k = 5;;
+let k = = int_of_string (Sys.argv.(5));;
 
 let rho = (1. -. mu) /. 2. ;;
 
