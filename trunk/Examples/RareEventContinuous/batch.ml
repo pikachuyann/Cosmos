@@ -12,7 +12,7 @@ let joblist = [
 ];;
 
 let lauchsim (n,r,mu,h,m,k) =
-  ignore (Sys.command (sprintf "./tandem.ml %i %i %f %i %i %i" n r mu h m k));
+  ignore (Sys.command (sprintf "ocaml tandem.ml %i %i %f %i %i %i" n r mu h m k));
   printf "Finish tandem.ml %i %i %f %i %i %i\n" n r mu h m k;;
 
 
