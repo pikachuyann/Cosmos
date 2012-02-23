@@ -41,7 +41,7 @@ void numSolverSH::initVect(int nT){
     cerr << "time for allocation:" << difftime(endt, start) << endl;
 	
     //We suppose here that the initial state is the first of the vector
-    if((*circularvect)[0] (0) != 0.0)minT=0;
+    if(itervect (0) != 0.0)minT=0;
     
 	for(int i=1; i<=lastPowT ; i++){
 		//cerr << "currPow " << currPow << " newPow " << nextPow << endl;

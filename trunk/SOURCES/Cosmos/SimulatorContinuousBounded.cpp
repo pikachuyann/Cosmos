@@ -256,6 +256,7 @@ double SimulatorContinuousBounded::mu(){
     N.lumpingFun(&vect);
     //cerr << "test)" << endl;
 	int stateN = numSolv->findHash(&vect);
+    //cerr <<"StateN : " << stateN << endl;
     
 	if(stateN<0){
 		cerr << numSolv->getVect()<< endl << "vect:";
