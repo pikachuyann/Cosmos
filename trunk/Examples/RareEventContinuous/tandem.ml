@@ -250,7 +250,7 @@ if not exist then genere ();;
 let com2 = Printf.sprintf "Cosmos tandem.gspn tandem.lha --batch 1000 --max-run 1000 -c -b %i --set-Horizon %i --epsilon %e > logcosmosCalc  2>&1" methode horizon epsilon;; 
 
 print_endline com2;;
-(*Sys.command com2;;*)
+Sys.command com2;;
 
 
 Sys.command "grep Memory logcosmosCalc";;
