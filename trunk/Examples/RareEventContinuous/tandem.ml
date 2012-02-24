@@ -227,6 +227,12 @@ close_out sm;
   print_endline com1;
   ignore (Sys.command com1);;
 
+let prism1 = "prism tandem_agr.sm ../tandem.csl -fixdl -v -maxiters 100000000 > prismout" in
+  print_endline prism1;
+  ignore (Sys.command prism1);;
+
+  ignore (Sys.command "../traduittable.ml prismout");;
+
 
 
 let exist = try 
