@@ -211,7 +211,7 @@ module file2
 endmodule";
 
 for i =3 to k do 
-  Printf.fprintf sm "module file%i = file2[buffer2=buffer%i, rho1=rho%i, rho2=rho%i] endmodule" i i (i-1) i;
+  Printf.fprintf sm "module file%i = file2[buffer2=buffer%i, rho1=rho%i, rho2=rho%i] endmodule\n" i i (i-1) i;
 done;
 let sum2 = ref "buffer1 " in
   for i =2 to k do
@@ -248,7 +248,7 @@ if not exist then genere ();;
 let com2 = Printf.sprintf "Cosmos tandem.gspn tandem.lha --batch 1000 --max-run 1000 -c -b %i --set-Horizon %i --epsilon %e > logcosmosCalc  2>&1" methode horizon epsilon;; 
 
 print_endline com2;;
-Sys.command com2;;
+(*Sys.command com2;;*)
 
 
 Sys.command "grep Memory logcosmosCalc";;
