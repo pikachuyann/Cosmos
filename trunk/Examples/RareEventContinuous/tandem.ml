@@ -208,7 +208,9 @@ module file2
 	buffer2 : [0..r] init 0;
 	[rho1] buffer2<r -> 1: (buffer2'=buffer2+1) ;
 	[rho2] buffer2>0 -> rho: (buffer2'=buffer2-1) ;
-endmodule";
+endmodule
+
+";
 
 for i =3 to k do 
   Printf.fprintf sm "module file%i = file2[buffer2=buffer%i, rho1=rho%i, rho2=rho%i] endmodule\n" i i (i-1) i;
