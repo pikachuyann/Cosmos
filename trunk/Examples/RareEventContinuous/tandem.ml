@@ -225,11 +225,11 @@ close_out sm;
 
   let com1 =  "Cosmos tandem_agr.gspn tandem_agr.lha -s > logcosmos  2>&1" in
   print_endline com1;
-  ignore (Sys.command com1);;
+  ignore (Sys.command com1);
 
 let prism1 = "prism tandem_agr.sm ../tandem.csl -fixdl -v -maxiters 100000000 > prismout" in
   print_endline prism1;
-  ignore (Sys.command prism1);;
+  ignore (Sys.command prism1);
 
   ignore (Sys.command "../traduittable.ml prismout");;
 
