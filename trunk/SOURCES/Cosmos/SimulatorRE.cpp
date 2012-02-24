@@ -172,6 +172,8 @@ double SimulatorRE::mu(){
 		//cout << i << " : " << N.Msimpletab[i] << " : " << N.Marking[N.Msimpletab[i]] << endl;
 	};
 	
+    N.lumpingFun(&vect);
+    
 	return((*muprob.muvect)[muprob.findHash(&vect)]);
 }
 
