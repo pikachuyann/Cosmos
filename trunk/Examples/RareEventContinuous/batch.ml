@@ -2,7 +2,7 @@
 #load "unix.cma";;
 open Printf
 
-let epsilon = 1e-10;;
+let epsilon = "0.00000000001";;
 
 let nparraljob = 12;;
 let joblist = [
@@ -14,8 +14,8 @@ let joblist = [
 ];;
 
 let lauchsim (n,r,mu,h,m,k) =
-  ignore (Sys.command (sprintf "ocaml tandem.ml %i %i %f %i %i %i %e" n r mu h m k epsilon));
-  printf "Finish tandem.ml %i %i %f %i %i %i %e\n" n r mu h m k epsilon;;
+  ignore (Sys.command (sprintf "ocaml tandem.ml %i %i %f %i %i %i %s" n r mu h m k epsilon));
+  printf "Finish tandem.ml %i %i %f %i %i %i %s\n" n r mu h m k epsilon;;
 
 
 
