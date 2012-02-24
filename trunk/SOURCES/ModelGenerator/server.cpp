@@ -204,13 +204,20 @@ void LauchServer(parameters& P){
                 Dif = batchResult->M2 - M2;
                 M2 = M2 + batchResult->Isucc * Dif / Ksucc;
                 
-                
                 Var = M2 - pow(Mean, 2);
                 
                 
                 stdev = sqrt(Var);
                 Ksucc_sqrt = sqrt(Ksucc);
                 CurrentWidth = 2 * Normal_quantile * stdev / Ksucc_sqrt;
+                
+                low = Mean - CurrentWidth / 2.0;
+                up = Mean + CurrentWidth / 2.0;
+                
+                if(P.BoundedContinuous){
+                    low = low * (1 - P.epsilon);
+                    CurrentWidth = up - low;
+                }
                 
                 delete batchResult;
                 //-------------- Rare Event -----------------
@@ -227,8 +234,8 @@ void LauchServer(parameters& P){
     
     kill_client();
     
-    low = Mean - CurrentWidth / 2.0;
-    up = Mean + CurrentWidth / 2.0;
+    //low = Mean - CurrentWidth / 2.0;
+    //up = Mean + CurrentWidth / 2.0;
     if (IsBernoulli) {
         low = (0 > low) ? 0.0 : low;
         up = (1 < up) ? 1.0 : up;

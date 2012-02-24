@@ -11,10 +11,12 @@
 #include "float.h"
 #include "math.h"
 #include <sys/resource.h>
-
+//#include <boost/math/distributions/normal.hpp>
 
 SimulatorContinuousBounded::SimulatorContinuousBounded(int m,double e):SimulatorBoundedRE(m){
     epsilon = e;
+    //boost::math::normal norm;
+    //Normal_quantile = quantile(norm, 0.5 + 0.99 / 2.0);
 }
 
 void SimulatorContinuousBounded::initVectCo(double t){
@@ -153,17 +155,19 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     
     double stdev = 0.0;
     int leftdec = left- fg->left;
+        
     for(int i=0; i<= fg->right- left; i++){
        
         double var = M2N[i]- pow(MeanN[i],2);
         double stdevN = 0.0;
         if(var>0)stdevN = sqrt(var); 
         
-        /*cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;*/
+        //cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;
         
         batchResult->Mean += fg->weights[i+leftdec] * MeanN[i] ;
         stdev += fg->weights[i+leftdec] * stdevN;
-        batchResult->Isucc = batchResult->I;
+        batchResult->Isucc = IsuccN[0];
+        batchResult->I = IsuccN[0];
         
         //batchResult->M2 += pow(fg->weights[i+leftdec]/fg->total_weight,2) * M2N[i];
         
@@ -175,6 +179,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     }
     batchResult->Mean /= fg->total_weight;
     stdev /= fg->total_weight;
+    
     
     batchResult->M2 = pow(stdev, 2) + pow(batchResult->Mean,2);
     //batchResult->M2 /= pow(fg->total_weight,2);
