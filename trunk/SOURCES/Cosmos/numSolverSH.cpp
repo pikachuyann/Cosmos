@@ -137,21 +137,21 @@ void numSolverSH::reset(){
 
 
 void numSolverSH::stepVect(){
-    //cerr << "step vect" << endl;
+    //cerr << "step vect u:" << u << "->" << u-1 << "(";
 	u--;
 	if(is_previous){ is_previous=false;}
 	else {
         if(u==0){
             previous_vect = current_vect;
             current_vect = *finalVector;
-        }else{
+        }else if(u>0){
             int kp = log2((u^(u+1))+1);
             //cerr << "u: " << u<< ": kp: " << kp << endl;
             compPow(kp, u);
         }
     }
 
-	
+	//cerr << ")" << endl;
 }
 
 void numSolverSH::previousVect(){
