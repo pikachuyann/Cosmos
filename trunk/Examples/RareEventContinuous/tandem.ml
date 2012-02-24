@@ -187,7 +187,42 @@ Edges={
 ((l1,lm)  ,ALL,  # , {x=0});
 };" n !sum !sum !sum !sum;
   close_out lha;
-  
+
+  let sm = open_out "tandem_agr.sm" in
+
+  Printf.fprintf sm "ctmc
+const int n = %i;
+const int u = %i;
+const int r = %i;
+
+const double mu = %f;
+const double rho = %f;" n horizon r mu rho;
+Printf.fprintf sm "
+module file1
+	buffer1 :  [0..n] init 1;
+	[lambda] buffer1<n -> mu: (buffer1'=buffer1+1) ;
+	[rho1] buffer1>0 -> rho: (buffer1'=buffer1-1) ;
+endmodule
+
+module file2
+	buffer2 : [0..r] init 0;
+	[rho1] buffer2<r -> 1: (buffer2'=buffer2+1) ;
+	[rho2] buffer2>0 -> rho: (buffer2'=buffer2-1) ;
+endmodule";
+
+for i =3 to k do 
+  Printf.fprintf sm "module file%i = file2[buffer2=buffer%i, rho1=rho%i, rho2=rho%i] endmodule" i i (i-1) i;
+done;
+let sum2 = ref "buffer1 " in
+  for i =2 to k do
+    sum2 := Printf.sprintf "%s + buffer%i " !sum2 i;
+  done;
+Printf.fprintf sm"
+formula win = %s=n;
+formula notloose = %s>0;" !sum2 !sum2;
+
+close_out sm;
+
   let com1 =  "Cosmos tandem_agr.gspn tandem_agr.lha -s > logcosmos  2>&1" in
   print_endline com1;
   ignore (Sys.command com1);;
