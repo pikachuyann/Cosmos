@@ -14,9 +14,11 @@ let methode = int_of_string (Sys.argv.(5));;
 
 let k = int_of_string (Sys.argv.(6));;
 
+let epsilon = float_of_string (Sys.argv.(7));;
+
 let rho = (1. -. mu) /. 2. ;;
 
-let dir = sprintf "tandem%i_%i_%.2f_%i_%i_%i" n r mu horizon methode k;;
+let dir = sprintf "tandem%i_%i_%.2f_%i_%i_%i_%f" n r mu horizon methode k epsilon;;
 
 
 let genere () =
@@ -202,7 +204,7 @@ Unix.chdir dir;;
 if not exist then genere ();;
 
 
-let com2 = Printf.sprintf "Cosmos tandem.gspn tandem.lha --batch 1000 --max-run 1000 -c -b %i --set-Horizon %i > logcosmosCalc  2>&1" methode horizon;; 
+let com2 = Printf.sprintf "Cosmos tandem.gspn tandem.lha --batch 1000 --max-run 1000 -c -b %i --set-Horizon %i --epsilon %f> logcosmosCalc  2>&1" methode horizon epsilon;; 
 
 print_endline com2;;
 Sys.command com2;;
