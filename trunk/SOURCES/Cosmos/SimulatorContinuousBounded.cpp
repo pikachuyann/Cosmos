@@ -27,7 +27,7 @@ void SimulatorContinuousBounded::initVectCo(double t){
     if (fox_glynn(lambda * t, DBL_EPSILON , 1/DBL_EPSILON ,epsilon, &fg)){
         cerr << "fox_glyn:" << fg->left << "," << fg->right << " Total weigts:"<< fg->total_weight<< endl;
         /*for(int i = 0; i<= fg->right - fg->left; i++){
-            cerr << "i:\t"<< fg->left+i<< "\tcoeff:\t" << fg->weights[i]/ fg->total_weight << endl;
+            cerr << fg->left+i << " " << fg->weights[i]/ fg->total_weight << endl;
         }*/
     }
     //fg->right = 10; 
