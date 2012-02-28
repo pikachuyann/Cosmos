@@ -6,6 +6,12 @@ void SPN::lumpingFun(vector<int>* vect){
         if((*vect)[i]>r){
             reste += (*vect)[i]-r ;
             (*vect)[i]=r;
+        } else if((*vect)[i]+reste>r){
+            reste -= (r -(*vect)[i]);
+            (*vect)[i]=r;
+        } else {
+            (*vect)[i] += reste;
+            reste =0;
         }
     }
     (*vect)[0] += reste;
