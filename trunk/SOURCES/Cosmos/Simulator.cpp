@@ -27,7 +27,7 @@ Simulator::Simulator() {
 	IndexDist["TRIANGLE"] = 5;
 	IndexDist["GEOMETRIC"] = 6;
 	
-	logvalue.open("outcosmos",fstream::out);
+	//logvalue.open("outcosmos",fstream::out);
 	
 	//Initialize random generator
 	RandomNumber.seed(time(NULL));
@@ -336,7 +336,7 @@ BatchR* Simulator::RunBatch(){
 		
 		if (Result.first) {
 			//------------------ Rare Event -----------------
-			logvalue << Result.second << endl ;
+			//logvalue << Result.second << endl ;
 			//----------------- /Rare Event -----------------
 			batchResult->Isucc++;
 			
