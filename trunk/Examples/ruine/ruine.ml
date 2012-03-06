@@ -4,31 +4,33 @@
 open Printf
  
 let n = int_of_string (Sys.argv.(1));;
-let l1= 2;;
-let l2= 2;;
+let l1= (int_of_string (Sys.argv.(2))) / 2;;
+let l2= l1;;
 
-let p = 0.3;;
+let p = float_of_string (Sys.argv.(3));;
 let q = 1. -. p;;
 
-let dir = sprintf "ruine%i_%i" n (l1+l2);;
+let horizon = float_of_string (Sys.argv.(4));;
+let methode = int_of_string (Sys.argv.(5));;
+let epsilon = float_of_string (Sys.argv.(6));;
 
-try 
-  Unix.mkdir dir 0o770;
-with _ -> ();;
-Unix.chdir dir;;
+let dir = sprintf "ruine%i_%i_%f_%i" n (l1+l2) horizon methode;;
 
 let log = open_out "logscript";;
 
+let genere () =
 let gspn = open_out "ruine.gspn" in
 
 Printf.fprintf gspn "
 const double p = %f;
 const double q = %f;
+const int l =%i;
+const int n =%i;
 
 NbPlaces = %i;
 NbTransitions = %i;
 
-PlacesList = { " p q  ((l1+l2)*n*2+1) ((l1+l2-2)*n*2 +2);
+PlacesList = { " p q (l1+l2) n ((l1+l2)*n*2+1) ((l1+l2-2)*n*2 +2);
 for i =1 to n do
   for j = 1 to l1+l2 do
     Printf.fprintf gspn "RE_Place%i_%i, " i j;
@@ -104,10 +106,11 @@ for i =1 to n do
     if j>1 then (
       Printf.fprintf gspn "(Avance%i_%i, RE_Place%i_%i,1);\n " i j i (j+1);
       (*Printf.fprintf gspn "(Avance%i_%i, RE_nPlace%i,1);\n " i j (j+1);*)
-      Printf.fprintf gspn "(Avance%i_%i, AntiPlace%i_%i,1);\n " i j i j);
+      Printf.fprintf gspn "(Avance%i_%i, AntiPlace%i_%i,1);\n " i j i j;
+      if i<n then Printf.fprintf gspn "(Avance%i_%i, AntiPlace%i_%i,1);\n " i j (i+1) j;
+    );
 
     if j<l1+l2-1 then (
-      if i<n then Printf.fprintf gspn "(Avance%i_%i, AntiPlace%i_%i,1);\n " i j (i+1) j;
       Printf.fprintf gspn "(Recule%i_%i, RE_Place%i_%i,1);\n " i j i j;
       (*Printf.fprintf gspn "(Recule%i_%i, RE_nPlace%i,1);\n " i j j;*)
       Printf.fprintf gspn "(Recule%i_%i, AntiPlace%i_%i,1);\n " i j i (j+1)
@@ -116,15 +119,14 @@ for i =1 to n do
 done;
 
 Printf.fprintf gspn "(Puittrans, Puit,1); } ;";
-close_out gspn;;
-
+close_out gspn;
 
 let lha = open_out "ruine.lha" in
-let winstate = ref "RE_Place1_1"
-and loosestate = ref (sprintf "RE_Place1_%i" (l1+l2)) in
+let loosestate = ref "RE_Place1_1"
+and winstate = ref (sprintf "RE_Place1_%i" (l1+l2)) in
 for i=2 to n do
-  winstate := sprintf "%s + RE_Place%i_1" !winstate i;
-  loosestate := sprintf "%s + RE_Place%i_%i" !loosestate i (l1+l2);
+  winstate := sprintf "%s + RE_Place%i_%i" !winstate i (l1+l2);
+  loosestate := sprintf "%s + RE_Place%i_1" !loosestate i;
 done; 
 
 Printf.fprintf lha "
@@ -146,8 +148,8 @@ InitialLocations={li};
 
 FinalLocations={ lp, lm };
 
-Locations={
-(li, TRUE );\n" ;
+Locations={\n";
+Printf.fprintf lha "(li, ( %s + %s < N) & (Puit=0) );\n" !winstate !loosestate ;
 Printf.fprintf lha "(lp, ( %s + %s = N) & (%s <  %s) & (Puit = 0));\n" !winstate !loosestate !loosestate !winstate;
 Printf.fprintf lha "(lm, (%s + %s = N) & (%s >= %s) | (Puit > 0));\n" !winstate !loosestate !loosestate !winstate;
 
@@ -156,25 +158,27 @@ Printf.fprintf lha "
 
 Edges={
 ((li,li)  ,ALL ,  # , #);
-((li,lp)  ,# ,  # , {x=1});
-((li,lm)  ,# ,  # , #);
+((li,lp)  ,ALL ,  # , {x=1});
+((li,lm)  ,ALL ,  # , {x=0});
 };";
 
-close_out lha;;
+close_out lha;
 
 let gspn = open_out "ruine_agr.gspn" in
 
 fprintf gspn "
 const double p = %f;
 const double q = %f;
+const int l = %i;
+const int n = %i;
 
 NbPlaces = %i;
 NbTransitions = %i;
 
-PlacesList = { " p q  (l1+l2) ((l1+l2-2)*2);
+PlacesList = { " p q (l1+l2) n (l1+l2) ((l1+l2-2)*2);
 
 for j = 1 to l1+l2 do
-  fprintf gspn "Place%i" j;
+  fprintf gspn "RE_Place%i" j;
   if j< l1+l2  then fprintf gspn ", ";
 done;
 Printf.fprintf gspn " } ;
@@ -190,9 +194,9 @@ Printf.fprintf gspn " } ;
 Marking = { ";
   for j =1 to l1+l2 do
     if j = l1 then 
-      Printf.fprintf gspn "(Place%i,%i); " j n
+      Printf.fprintf gspn "(RE_Place%i,%i); " j n
     else 
-      Printf.fprintf gspn "(Place%i,0); " j;
+      Printf.fprintf gspn "(RE_Place%i,0); " j;
   done;
 
 Printf.fprintf gspn " } ;
@@ -209,21 +213,21 @@ fprintf gspn "   } ;
 InArcs = { ";
 
   for j = 1 to l1+l2-2 do 
-    Printf.fprintf gspn "(Place%i, Avance%i,1);\n " (j+1) (j+1);
-    Printf.fprintf gspn "(Place%i, Recule%i,1);\n " (j+1) (j);
+    Printf.fprintf gspn "(RE_Place%i, Avance%i,1);\n " (j+1) (j+1);
+    Printf.fprintf gspn "(RE_Place%i, Recule%i,1);\n " (j+1) (j);
   done;
 Printf.fprintf gspn " } ;
 
 OutArcs = { ";
 
   for j = 1 to l1+l2-2 do 
-    Printf.fprintf gspn "(Avance%i, Place%i,1);\n " (j+1) (j+2);
-    Printf.fprintf gspn "(Recule%i, Place%i,1);\n " j j;
+    Printf.fprintf gspn "(Avance%i, RE_Place%i,1);\n " (j+1) (j+2);
+    Printf.fprintf gspn "(Recule%i, RE_Place%i,1);\n " j j;
   done;
 
 Printf.fprintf gspn " } ;";
 
-close_out gspn;;
+close_out gspn;
 
 let lha_agr = open_out "ruine_agr.lha" in
 Printf.fprintf lha_agr "
@@ -240,19 +244,18 @@ InitialLocations={li};
 FinalLocations={ lp };
 
 Locations={
-(li, TRUE );
-(lp, ( Place1 + Place%i = N) & (Place%i <  Place1));
-(lm, ( Place1 + Place%i = N) & (Place%i >= Place1));
+(li, ( RE_Place1 + RE_Place%i < N) );
+(lp, ( RE_Place1 + RE_Place%i = N) & (RE_Place1 <  RE_Place%i));
+(lm, ( RE_Place1 + RE_Place%i = N) & (RE_Place1 >= RE_Place%i));
 
 }; 
 
 Edges={
 ((li,li)  ,ALL ,  # , #);
-((li,lp)  ,# ,  # , {x=1});
-((li,lm)  ,# ,  # , #);
-};" n (l1+l2) (l1+l2) (l1+l2) (l1+l2);
-close_out lha_agr;;
-
+((li,lp)  ,ALL ,  # , {x=1});
+((li,lm)  ,ALL ,  # , {x=0});
+};" n (l1+l2) (l1+l2) (l1+l2) (l1+l2) (l1+l2);
+close_out lha_agr;
 
 let prisme = open_out "ruine.sm" in
 Printf.fprintf prisme "ctmc
@@ -299,7 +302,7 @@ for i =1 to n-1 do Printf.fprintf prisme "+ Joueur%i" i; done;
 Printf.fprintf prisme ">((l1+l2-1)*n)/2);
 formula loose = dl & !win;";
 
-close_out prisme;;
+close_out prisme;
 
 let prisme_decol = open_out "ruine_agr.sm" in
 Printf.fprintf prisme_decol "ctmc
@@ -326,17 +329,39 @@ endmodule
 
 formula win = (place%i+place%i=n) & (place%i>place%i);\n" (l1+l2) 1 (l1+l2) 1;
 Printf.fprintf prisme_decol "formula loose = (place%i+place%i=n) & (place%i<=place%i);\n" (l1+l2) 1 (l1+l2) 1;
-close_out prisme_decol;;
+close_out prisme_decol;
 
-output_string log "genere ok\n";;
+let com1 =  "Cosmos ruine_agr.gspn ruine_agr.lha -s > logcosmos  2>&1" in
+  print_endline com1;
+  ignore (Sys.command com1);;
 
-execu "prism ruine_agr.sm ../ruine.csl -fixdl -v -maxiters 100000000 > prismout";;
+output_string log "genere ok\n";
+
+(*execu "prism ruine_agr.sm ../ruine.csl -fixdl -v -maxiters 100000000 > prismout";;
 output_string log "prisme ok\n";;
 
 execu "../traduittable.ml prismout";;
-output_string log "traduction ok\n";;
+output_string log "traduction ok\n";;*)
 
 close_out log;;
 
-execu "echo 'doubleIS\ntrue\nwidth\n0.1\nsim\nruine\nstop\n' |CosmosGPP > logCosmos";;
+let exist = try 
+	      Unix.mkdir dir 0o770;
+	      false;
+  with _ -> true;;
+
+Unix.chdir dir;;
+
+if not exist then genere ();;
+
+
+let com2 = Printf.sprintf "Cosmos ruine.gspn ruine.lha --batch 1000 --max-run 1000 -c -b %i --set-Horizon %f --epsilon %e > logcosmosCalc  2>&1" methode horizon epsilon;; 
+
+print_endline com2;;
+Sys.command com2;;
+
+
+Sys.command "grep Memory logcosmosCalc";;
+print_newline ();
+Sys.command "grep Mean logcosmosCalc";;
 
