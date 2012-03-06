@@ -14,7 +14,7 @@
 using namespace std;
 
 Simulator::Simulator() {
-    verbose=0;
+    verbose=2;
 	N.Load();//load the GSPN
 	A.Load(); //load the LHA
 	int n = N.tr; //n his the number of transition
@@ -279,7 +279,8 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 			//------------- /Rare Event -----------------
 			
 			if (param[0] <= 0) {
-				cout << "Exponential ditribution should be with rate > 0\n End of Simulation" << endl;
+				cout << "Exponential ditribution should be with rate > 0 not "
+                << param[0] << "\n End of Simulation" << endl;
 				exit(1);
 			}
 			

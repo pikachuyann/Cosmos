@@ -4,6 +4,7 @@ open Printf
 
 let epsilon = 1e-10;;
 
+
 let nparraljob = 12;;
 let joblist = [
   50, 5, 0.25 , 100 , 1 , 7;

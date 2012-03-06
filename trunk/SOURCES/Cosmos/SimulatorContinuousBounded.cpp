@@ -268,6 +268,10 @@ double SimulatorContinuousBounded::mu(){
         for (vector<int>::iterator it = vect.begin(); it != vect.end(); it++) {
             cerr << *it<< " , ";
         }
+        cerr << endl << "marquage:";
+        for(int i=0; i< N.Msimpletab.size();i++){
+            cerr << N.Marking[N.Msimpletab[i]] << " , ";
+        };
 		cerr << endl << "state not found" << endl;
 	}
     

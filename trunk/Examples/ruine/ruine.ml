@@ -204,8 +204,8 @@ Printf.fprintf gspn " } ;
 Transitions = {";
 
   for j=1 to l1+l2-2 do
-    fprintf gspn "(Avance%i,EXPONENTIAL(p),1,1,SINGLE);\n " (j+1);
-    fprintf gspn "(Recule%i,EXPONENTIAL(q),1,1,SINGLE);\n " j;
+    fprintf gspn "(Avance%i,EXPONENTIAL(p*RE_Place%i),1,1,SINGLE);\n " (j+1) (j+1);
+    fprintf gspn "(Recule%i,EXPONENTIAL(q*RE_Place%i),1,1,SINGLE);\n " j (j+1);
   done;
 
 fprintf gspn "   } ;
