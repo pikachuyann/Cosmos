@@ -29,6 +29,7 @@ public:
 	Simulator(const Simulator& orig);
 	~Simulator();
 	
+    int verbose;
 	virtual BatchR* RunBatch(); //main entry point of the object simulate a batch of trajectory
 	void SetBatchSize(int); // set the batch size
 	

@@ -71,8 +71,10 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		numSolv->stepVect();
-		//cerr << "new round" << endl;
-		//cerr << numSolv.getVect() << endl;
+        if(verbose==1){
+            cerr << "new round" << endl;
+            cerr << numSolv->getVect() << endl;
+        }
 		
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
 			AutEdge AE;
@@ -138,8 +140,9 @@ double SimulatorBoundedRE::mu(){
 	int stateN = numSolv->findHash(&vect);
 	 
 	if(stateN<0){
-		cerr << numSolv->getVect()<< endl;
-		cerr << "state not found" << endl;
+		cerr << numSolv->getVect()<< endl<< "statevect(";
+        for(int i =0 ; i<vect.size() ; i++)cerr << vect[i]<< ",";
+		cerr << ")" << endl<<"state not found" << endl;
 	}
 		
 	return(numSolv->getMu(stateN));

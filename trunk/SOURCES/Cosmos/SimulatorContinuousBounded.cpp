@@ -80,9 +80,9 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		numSolv->stepVect();
-		//cerr << numSolv->getVect() << endl;
+		if(verbose>=1)cerr << numSolv->getVect() << endl;
 		n++;
-        //cerr << "new round:"<< n << endl;
+        if(verbose>=1)cerr << "new round:"<< n << endl;
         
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
             if(it->maxStep >= fg->right -n){
@@ -162,7 +162,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         double stdevN = 0.0;
         if(var>0)stdevN = sqrt(var); 
         
-        //cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;
+        if(verbose>=2)cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;
         
         batchResult->Mean += fg->weights[i+leftdec] * MeanN[i] ;
         stdev += fg->weights[i+leftdec] * stdevN;
