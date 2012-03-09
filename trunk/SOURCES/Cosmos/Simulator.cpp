@@ -275,7 +275,7 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 			
 			//-------------- Rare Event -----------------
 			//cout << "rate:" << param[0] << endl;
-			if(param[0] == 0) { return 1e200; };
+			if(param[0] <= 0) { return 1e200; };
 			//------------- /Rare Event -----------------
 			
 			if (param[0] <= 0) {
