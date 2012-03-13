@@ -35,4 +35,4 @@ package: generator
 	cp cosmosTool package/
 	cp Readme.txt package/
 	cp COPYING package/
-	zip -r package-alligator.zip package
+	zip -r cosmosService-0.9.zip package
