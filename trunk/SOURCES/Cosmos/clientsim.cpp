@@ -57,9 +57,9 @@ int main(int argc, char** argv) {
 	string str;
 	
     
-	if(argc > 2){
+	if(argc > 3){
 
-		str = argv[2];
+		str = argv[3];
 		if(str== "-RE"){
 			mySim= (new SimulatorRE(false));
 			//mySim->RareEvent_mode=true;
@@ -70,16 +70,16 @@ int main(int argc, char** argv) {
 			//mySim->doubleIS_mode=true;
 		}
 		if(str== "-BURE"){
-            int m = atoi(argv[3]);
-            int T = atoi(argv[4]);
+            int m = atoi(argv[4]);
+            int T = atoi(argv[5]);
             SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(m);
             myBoundedSim->initVect(T);
 			mySim= myBoundedSim;
 		}
         if(str== "-COBURE"){
-            int m = atoi(argv[3]);
-            double t = atof(argv[4]);
-            double e = atof(argv[5]);
+            int m = atoi(argv[4]);
+            double t = atof(argv[5]);
+            double e = atof(argv[6]);
             SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(m,e);
             myBoundedSim->initVectCo(t);
 			mySim= myBoundedSim;
@@ -101,7 +101,9 @@ int main(int argc, char** argv) {
 	
     str = argv[1];
     mySim->SetBatchSize(StrToInt(str)); //set the batch size
-
+    str = argv[2];
+    mySim->verbose = StrToInt(str);
+    
     while( !cin.eof() ){
       BatchR* batchResult = mySim->RunBatch(); //simulate a batch of trajectory
 

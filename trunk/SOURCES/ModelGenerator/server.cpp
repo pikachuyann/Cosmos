@@ -88,8 +88,8 @@ void lauch_clients(parameters& P){
 	ostringstream os;
 	pid_t readpid;
 	int size;
-	if (P.Path == "") os << "./ClientSim " << P.Batch;
-    else os <<  P.Path << "ClientSim " << P.Batch;
+	if (P.Path == "") os << "./ClientSim " << P.Batch << " " << P.verbose;
+    else os <<  P.Path << "ClientSim " << P.Batch << " " << P.verbose;
     
     if(P.DoubleIS){ 
         os << " " << "-RE2"; 
