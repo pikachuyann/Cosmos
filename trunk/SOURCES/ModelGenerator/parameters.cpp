@@ -15,6 +15,7 @@ namespace po = boost::program_options;
 
 
 parameters::parameters() {
+    verbose =1;
 	Level = 0.99;
     epsilon = 0.000001;
 	Width = 0.001;
@@ -56,6 +57,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 	("BoundedRE,b",po::value(&BoundedRE),"Use Bounded Rare Event acceleration")
     ("BoundedContinuous,c",po::bool_switch(&BoundedContinuous),"Use Continuous Rare Event acceleration")
     ("set-Horizon",po::value(&horizon),"Set the horizon for bounded until")
+    ("verbose,v",po::value(&verbose),"Set the verbose level")
     ("StateSpace,s",po::bool_switch(&computeStateSpace),"Generate the state space of the systeme")
 	("alligator-mode",po::bool_switch(&alligatorMode),"alligator mode")
 	("setPath,p",po::value(&Path),"Set executable path")

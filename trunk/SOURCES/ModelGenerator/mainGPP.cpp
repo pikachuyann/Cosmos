@@ -68,7 +68,7 @@ bool ParseBuild(parameters& P) {
 		GspnFileName.append(".gspn");
 	}*/
 	
-	cout << "Start Parsing " << P.PathGspn << endl;
+	if(P.verbose>0)cout << "Start Parsing " << P.PathGspn << endl;
 	int parseresult;
 	
 	if(P.GMLinput){
@@ -105,7 +105,7 @@ bool ParseBuild(parameters& P) {
 		LhaFileName.append(".lha");
 	}*/
 	
-	cout << "Start Parsing " << P.PathLha << endl;
+	if(P.verbose>0)cout << "Start Parsing " << P.PathLha << endl;
 	
 	if(P.GMLinput){
 		parseresult = lReader.parse_gml_file(P.PathLha);
@@ -124,14 +124,16 @@ bool ParseBuild(parameters& P) {
 	}
 	Lha_Reader lr;
 	lr = lReader;
-	cout << "Parsing OK.\n" << endl;
-	cout << "Start building ... " << endl;
+	if(P.verbose>0){
+        cout << "Parsing OK.\n" << endl;
+        cout << "Start building ... " << endl;
+    }
 	string cmd;
 	
 	cmd = "make -s -C " + P.Path + ".. sim";
 	if (system(cmd.c_str())) return false;
 	
-	cout << "Building OK.\n" << endl;
+	if(P.verbose>0)cout << "Building OK.\n" << endl;
 	
 	return true;
 }

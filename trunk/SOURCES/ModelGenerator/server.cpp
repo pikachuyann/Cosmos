@@ -263,7 +263,7 @@ void LauchServer(parameters& P){
     cpu_time_used = difftime(end, start);
     
     
-    cout << "\nSimulation Time: " << cpu_time_used << endl;
+    if(P.verbose>0)cout << "\nSimulation Time: " << cpu_time_used << endl;
     string fn = "Result";  //N.Path;
     fn.append(".res");
     ofstream ResultsFile(fn.c_str(), ios::out | ios::trunc);

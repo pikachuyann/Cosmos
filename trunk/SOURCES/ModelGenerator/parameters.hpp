@@ -14,6 +14,7 @@
 using namespace std;
 
 struct parameters {
+    int verbose;
 	int Njob;
     double epsilon;
 	double Level;
