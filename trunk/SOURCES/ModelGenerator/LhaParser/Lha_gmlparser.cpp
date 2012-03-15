@@ -258,7 +258,7 @@ void MyLhaModelHandler::on_read_model(const XmlString& formalismUrl) {
 
 string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 	
-	//cout << *it << ":" << endl;
+	cout << *it << ":" << endl;
 	if((*it).compare("avg")==0){
 		string* lhafunc = exportHASL(it.begin());
 		stringstream ss;
@@ -266,7 +266,7 @@ string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 		return new string(ss.str());
 		
 	}else if((*it).compare("last")==0){
-		//cout << *(it.begin()) << endl;
+		cout << *(it.begin()) << endl;
 		string* linForm = exportHASL(it.begin());
 		const char* linformc = linForm->c_str();
 		if(MyLHA->LinearForm.find(linformc)==MyLHA->LinearForm.end()){
@@ -340,7 +340,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 			}
 			
 			
-		} else if((*it).compare("HASL Formula")==0){
+		} else if((*it).compare("HASLFormula")==0){
 			//cout << "export hasl formula" << endl;
 			string* haslAlg = exportHASL(it.begin());
 			MyLHA->Algebraic= *haslAlg;
