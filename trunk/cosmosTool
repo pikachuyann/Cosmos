@@ -1,5 +1,9 @@
 #!/bin/bash
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/bin/Cosmos"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-$DIR $@
+cd $DIR
+
+make -s
+
+bin/Cosmos $@

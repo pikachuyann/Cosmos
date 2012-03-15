@@ -1,6 +1,8 @@
 export CC=g++
 export OPTIONS=-O3
 
+files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
+
 .PHONY: classes generator clean sim
 
 all: classes generator 
@@ -26,11 +28,16 @@ sim:
 package: generator
 	mkdir package
 	mkdir package/bin
-	mkdir package/Obj
-	mkdir -p package/SOURCES/Cosmos
-	cp bin/Cosmos package/bin/
-	cp SOURCES/Cosmos/*.cpp package/SOURCES/Cosmos/
-	cp SOURCES/Cosmos/*.hpp package/SOURCES/Cosmos/
+	mkdir -p package/Obj/Cosmos
+#	mkdir -p package/Obj/ModelGenerator
+#	mkdir -p package/SOURCES/Cosmos
+	mkdir -p package/Obj/ModelGenerator/Eval
+	mkdir -p package/Obj/ModelGenerator/GspnParser
+	mkdir -p package/Obj/ModelGenerator/LhaParser
+#	cp bin/Cosmos package/bin/
+#	cp -r SOURCES package/
+	svn export SOURCES package/SOURCES
+	find package/SOURCES -name "*.yy" -delete
 	cp Makefile package/
 	cp cosmosTool package/
 	cp Readme.txt package/
