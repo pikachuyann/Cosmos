@@ -194,7 +194,7 @@ MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
     void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 		// read model attribute
 		for(tree<string>::sibling_iterator it = attribute.begin(); it != attribute.end(); ++it) {
-			//cout << *it << ":" << endl;
+			cout << *it << ":" << endl;
 			if((*it).compare("declarations")==0){
 				//const definition
 				//cout << "const declarations:" << endl;

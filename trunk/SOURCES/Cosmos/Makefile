@@ -28,7 +28,7 @@ spn.hpp:
 
 $(OBJPATH)/%.o: %.cpp
 	$(CC) $(OPTIONS2) -c $*.cpp -o $@	
-    
+
 $(OBJPATH)/%.o: %.c
 	$(CC) $(OPTIONS) -c $*.c -o $@
 
