@@ -38,6 +38,8 @@ package: generator
 #	cp -r SOURCES package/
 	svn export SOURCES package/SOURCES
 	find package/SOURCES -name "*.yy" -delete
+	find package/SOURCES -name "*.ll" -delete
+	cp SOURCES/Cosmos/lumpingfuntriv.cpp package/SOURCES/Cosmos/lumpingfun.cpp
 	cp Makefile package/
 	cp cosmosTool package/
 	cp Readme.txt package/
