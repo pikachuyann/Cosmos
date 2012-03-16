@@ -268,6 +268,11 @@ void LauchServer(parameters& P){
         
     }
     
+    
+    time(&end);
+    cpu_time_used = difftime(end, start);
+
+    
 	if(P.alligatorMode){
 		cout << "alligatorResult" << endl;
 		cout << Mean << endl;
@@ -276,6 +281,7 @@ void LauchServer(parameters& P){
 		cout << CurrentWidth << endl;
 		cout << K << endl;
 		cout << Ksucc << endl;
+        cout << cpu_time_used << endl;
 	} else{
         cout << "\nEstimated value: " << Mean << endl;
         cout << "Confidence interval: [" << low << "," << up << "]" << endl;
@@ -283,10 +289,7 @@ void LauchServer(parameters& P){
         cout << "Total paths: " << K << "\tAccepted paths: " << Ksucc << endl;
 	}
     
-    
-    time(&end);
-    cpu_time_used = difftime(end, start);
-    
+       
     
     if(P.verbose>0)cout << "\nSimulation Time: " << cpu_time_used << endl;
     string fn = "Result";  //N.Path;
