@@ -44,8 +44,8 @@ package: generator
 	cp cosmosTool package/
 	cp Readme.txt package/
 	cp COPYING package/
-	cd package && zip -r ../cosmosService-0.9.zip *
-	rm -rf package
+#	cd package && zip -r ../cosmosService-0.9.zip *
+#	rm -rf package
 
 packagemac: package
 	mv cosmosService-0.9.zip cosmosService-0.9-darwin.zip
