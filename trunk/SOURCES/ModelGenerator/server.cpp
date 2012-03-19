@@ -248,8 +248,9 @@ void LauchServer(parameters& P){
                 //-------------- Rare Event -----------------
                 if(!P.alligatorMode)cout << "\033[A\033[2K" << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
                 
-                //RelErr = CurrentWidth / max(1, abs(Mean)); <- ligne original
-                RelErr = CurrentWidth /  abs(Mean);
+                if(P.RareEvent || P.BoundedRE>0){
+                    RelErr = CurrentWidth /  abs(Mean);
+                }else RelErr = CurrentWidth / max(1.0, abs(Mean)); 
                 //------------- /Rare Event -----------------
                 
             }
