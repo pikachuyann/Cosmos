@@ -8,10 +8,10 @@ files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 all: dir classes generator 
 
 dir:
-	mkdir -p package/Obj/Cosmos
-	mkdir -p package/Obj/ModelGenerator/Eval
-	mkdir -p package/Obj/ModelGenerator/GspnParser
-	mkdir -p package/Obj/ModelGenerator/LhaParser
+	mkdir -p Obj/Cosmos
+	mkdir -p Obj/ModelGenerator/Eval
+	mkdir -p Obj/ModelGenerator/GspnParser
+	mkdir -p Obj/ModelGenerator/LhaParser
 
 classes:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
