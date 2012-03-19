@@ -3,9 +3,14 @@ export OPTIONS=-O3
 
 files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 
-.PHONY: classes generator clean sim
+.PHONY: classes generator clean sim dir
 
-all: classes generator 
+all: dir classes generator 
+
+dir:
+	mkdir -p package/Obj/ModelGenerator/Eval
+	mkdir -p package/Obj/ModelGenerator/GspnParser
+	mkdir -p package/Obj/ModelGenerator/LhaParser
 
 classes:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
@@ -39,7 +44,7 @@ package: generator
 	svn export SOURCES package/SOURCES
 	find package/SOURCES -name "*.yy" -delete
 	find package/SOURCES -name "*.ll" -delete
-	cp SOURCES/Cosmos/lumpingfuntriv.cpp package/SOURCES/Cosmos/lumpingfun.cpp
+	Cp SOURCES/Cosmos/lumpingfuntriv.cpp package/SOURCES/Cosmos/lumpingfun.cpp
 	cp Makefile package/
 	cp cosmosTool package/
 	cp Readme.txt package/
