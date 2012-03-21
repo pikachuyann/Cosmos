@@ -57,6 +57,7 @@ double stateSpace::findHash(const vector<int>* vect){
 void stateSpace::add_state(vector<int> v){
     vector<int>* v2 = new vector<int>(v);
     S[v2] = nbState;
+    revertHash.push_back(v2);
     findstate->push_back(*v2);
 	nbState++;
     
@@ -290,6 +291,48 @@ void stateSpace::outputMat(){
 		
 	outputFile.close();
 }
+
+void stateSpace::outputPrism(){
+    cerr << "Exporting the model for Prism" << endl;
+    
+	fstream outputFile;
+	outputFile.open("prismState",fstream::out);
+	
+    outputFile << "(" ;
+    for(int i=0; i< N.Msimpletab.size();i++){
+        if(i>0)outputFile << ",";
+        outputFile << N.Place[N.Msimpletab[i]].label ;
+    };
+    outputFile << ")" << endl;
+	
+	for(hash_state::iterator it= S.begin() ; it != S.end(); it++){
+		outputFile << (*it).second << ":(";
+		vector<int> vect = *(*it).first;
+        for(int i=0; i< N.Msimpletab.size();i++){
+            if(i>0)outputFile << ",";
+            outputFile << vect[N.Msimpletab[i]];
+        };
+        
+		outputFile << ")" << endl;
+    }
+    
+	outputFile.close();
+    
+    fstream outputMatrixFile;
+    outputMatrixFile.open("prismMatrix",fstream::out);
+    outputMatrixFile << nbState << " " << nbTrans << endl;
+    typedef boost::numeric::ublas::compressed_matrix<double>::iterator1 it1_t;
+	typedef boost::numeric::ublas::compressed_matrix<double>::iterator2 it2_t;
+	
+	for (it1_t it1 = transitionsMatrix->begin1(); it1 != transitionsMatrix->end1(); it1++)
+	{
+		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
+			outputMatrixFile << it2.index1() << " " << it2.index2() << " " << *it2 << endl;
+		}
+	}
+    
+}
+
 
 void stateSpace::inputVect(){
     string line;

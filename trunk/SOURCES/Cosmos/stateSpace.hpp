@@ -96,6 +96,7 @@ class stateSpace {
 public:
 	stateSpace();
 	hash_state S;
+    vector<const vector<int>* > revertHash;
 	double findHash(const vector<int>* vect);	
     
 	int nbState;
@@ -117,6 +118,7 @@ public:
 	void outputMat();
 	void inputMat();
     void inputVect();
+    void outputPrism();
 	
 private:
     vector<vector<int> > *findstate;

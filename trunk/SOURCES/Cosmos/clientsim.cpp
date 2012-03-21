@@ -91,6 +91,7 @@ int main(int argc, char** argv) {
 			//states.printP();
             //states.uniformizeMatrix();
 			states.outputMat();
+            states.outputPrism();
 			exit(EXIT_SUCCESS);
 		}
     } else {
