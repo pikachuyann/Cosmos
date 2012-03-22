@@ -300,18 +300,19 @@ void stateSpace::outputPrism(){
 	
     outputFile << "(" ;
     for(int i=0; i< N.Msimpletab.size();i++){
-        if(i>0)outputFile << ",";
         outputFile << N.Place[N.Msimpletab[i]].label ;
+        outputFile << ",";
     };
-    outputFile << ")" << endl;
+    outputFile << "automata)" << endl;
 	
 	for(hash_state::iterator it= S.begin() ; it != S.end(); it++){
 		outputFile << (*it).second << ":(";
 		vector<int> vect = *(*it).first;
         for(int i=0; i< N.Msimpletab.size();i++){
-            if(i>0)outputFile << ",";
             outputFile << vect[N.Msimpletab[i]];
+            outputFile << ",";
         };
+        outputFile << vect[vect.size()-1];
         
 		outputFile << ")" << endl;
     }
