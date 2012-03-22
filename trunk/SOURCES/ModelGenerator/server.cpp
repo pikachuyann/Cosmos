@@ -83,6 +83,16 @@ vector<FILE*> clientstream;
 vector<pid_t> clientPID;
 int max_client=0 ;
 
+void LauchExport(parameters& P){
+    
+    ostringstream os;
+	if (P.Path == "") os << "./ClientSim 1 " << P.verbose;
+    else os <<  P.Path << "ClientSim 1 " << P.verbose;
+    os << " " << "-STSP";
+    
+    FILE* stream = popen((os.str()).c_str(), "r");
+    while (true) {};
+}
 
 void lauch_clients(parameters& P){
 	ostringstream os;
@@ -99,9 +109,7 @@ void lauch_clients(parameters& P){
         os << " " << "-COBURE" << " " << P.BoundedRE << " " << P.horizon << " " << P.epsilon;
     } else if(P.BoundedRE>0){
         os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
-    } else if(P.computeStateSpace){
-        os << " " << "-STSP";
-    };
+    } 
     //cout << os.str() << endl;
     
     for(int i = 0;i<P.Njob;i++){

@@ -34,6 +34,7 @@ double StrToDbl(string st);
 int StrToInt(string st);
 long int StrToLongInt(string st);
 
+void LauchExport(parameters& P);
 void LauchServer(parameters& P);
 
 

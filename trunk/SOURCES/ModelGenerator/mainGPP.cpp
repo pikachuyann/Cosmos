@@ -165,7 +165,9 @@ bool ParseBuild(parameters& P) {
 
 void DirectSim(parameters& P) {
 	if (ParseBuild(P)) {
-		LauchServer(P);
+        if(P.computeStateSpace){
+            LauchExport(P);
+        } else LauchServer(P);
 	}
 }
 
