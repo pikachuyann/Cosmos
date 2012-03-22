@@ -296,7 +296,7 @@ void stateSpace::outputPrism(){
     cerr << "Exporting the model for Prism" << endl;
     
 	fstream outputFile;
-	outputFile.open("prismState",fstream::out);
+	outputFile.open("prismStates.sta",fstream::out);
 	
     outputFile << "(" ;
     for(int i=0; i< N.Msimpletab.size();i++){
@@ -305,9 +305,9 @@ void stateSpace::outputPrism(){
     };
     outputFile << "automata)" << endl;
 	
-	for(hash_state::iterator it= S.begin() ; it != S.end(); it++){
-		outputFile << (*it).second << ":(";
-		vector<int> vect = *(*it).first;
+	for(int it=0 ; it < revertHash.size(); it++){
+		outputFile << it << ":(";
+		vector<int> vect = *(revertHash[it]);
         for(int i=0; i< N.Msimpletab.size();i++){
             outputFile << vect[N.Msimpletab[i]];
             outputFile << ",";
@@ -320,7 +320,7 @@ void stateSpace::outputPrism(){
 	outputFile.close();
     
     fstream outputMatrixFile;
-    outputMatrixFile.open("prismMatrix",fstream::out);
+    outputMatrixFile.open("prismMatrix.tra",fstream::out);
     outputMatrixFile << nbState << " " << nbTrans << endl;
     typedef boost::numeric::ublas::compressed_matrix<double>::iterator1 it1_t;
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator2 it2_t;
@@ -328,9 +328,22 @@ void stateSpace::outputPrism(){
 	for (it1_t it1 = transitionsMatrix->begin1(); it1 != transitionsMatrix->end1(); it1++)
 	{
 		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
+            if( *it2 >= (10^-16)){
 			outputMatrixFile << it2.index1() << " " << it2.index2() << " " << *it2 << endl;
+            }
 		}
 	}
+    outputMatrixFile.close();
+    
+    fstream outputProperty;
+    outputProperty.open("prismProperty.ctl",fstream::out);
+    outputProperty << "P=? [ (true) U (";
+    for(set<int>::iterator it = A.FinalLoc.begin() ;it != A.FinalLoc.end(); it++){
+        if (it!=A.FinalLoc.begin()) outputProperty << "|";
+        outputProperty << "(automata = " << *it << ")";
+    }
+    outputProperty << ")]";
+    outputProperty.close();
     
 }
 
