@@ -92,6 +92,7 @@ int main(int argc, char** argv) {
             //states.uniformizeMatrix();
 			states.outputMat();
             states.outputPrism();
+            cout << "Finish Exporting" << endl;
 			exit(EXIT_SUCCESS);
 		}
     } else {

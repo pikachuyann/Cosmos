@@ -345,6 +345,11 @@ void stateSpace::outputPrism(){
     outputProperty << ")]";
     outputProperty.close();
     
+    fstream outputLabel;
+    outputLabel.open("prismLabel.lbl",fstream::out);
+    outputLabel << "0='init' 1='deadlock'\n0: 0";
+    outputLabel.close();
+
 }
 
 

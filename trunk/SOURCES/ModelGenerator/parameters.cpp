@@ -50,6 +50,8 @@ parameters::parameters() {
 	GMLinput = false;
     computeStateSpace = false;
 	alligatorMode = false;
+    prismPath = "/Applications/prism-4.0.2-osx64/bin/prism";
+
 }
 
 

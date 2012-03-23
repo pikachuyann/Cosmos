@@ -38,6 +38,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <signal.h>
+#include <cstdlib>
 
 #include "../Cosmos/BatchR.hpp"
 #include "server.hpp"
@@ -90,8 +91,16 @@ void LauchExport(parameters& P){
     else os <<  P.Path << "ClientSim 1 " << P.verbose;
     os << " " << "-STSP";
     
-    FILE* stream = popen((os.str()).c_str(), "r");
-    while (true) {};
+    if (system(os.str().c_str()) == 0){
+        cout << "Export Finish" << endl;
+    }else{
+        cout << "Export Fail" << endl;
+    }
+    
+    cout<< "Starting Prism"<< endl;
+    string cmd =P.prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
+    cout << "Prism finish" << endl;
+    system(cmd.c_str());
 }
 
 void lauch_clients(parameters& P){

@@ -8,7 +8,7 @@ VariablesList = {x} ;
 LocationsList = {l1, lp, lm };AVG(Last(x));
 InitialLocations={l1};
 
-FinalLocations={ lp ,lm };
+FinalLocations={ lp };
 
 Locations={
 (l1, (Queue1 + Queue2 > 0) & (Queue1 + Queue2 < N) & (Puit = 0)) ;
