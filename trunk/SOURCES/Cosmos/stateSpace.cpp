@@ -353,6 +353,7 @@ void stateSpace::outputPrism(){
 }
 
 
+
 void stateSpace::inputVect(){
     string line;
 	int poseq;

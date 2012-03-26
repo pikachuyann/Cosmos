@@ -4,7 +4,6 @@ LIBGMLPATH=../libgml/
 
 FILES= $(OBJPATH)/parameters.o \
     $(OBJPATH)/server.o \
-    $(OBJPATH)/exportFile.o \
 	$(OBJPATH)/mainGPP.o \
 	$(OBJPATH)/Eval/Eval-parser.tab.o \
 	$(OBJPATH)/Eval/Eval.o \
