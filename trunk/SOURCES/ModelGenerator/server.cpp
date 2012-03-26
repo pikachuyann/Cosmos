@@ -42,6 +42,7 @@
 
 #include "../Cosmos/BatchR.hpp"
 #include "server.hpp"
+#include "exportFile.hpp"
 
 using namespace std;
 
@@ -84,24 +85,6 @@ vector<FILE*> clientstream;
 vector<pid_t> clientPID;
 int max_client=0 ;
 
-void LauchExport(parameters& P){
-    
-    ostringstream os;
-	if (P.Path == "") os << "./ClientSim 1 " << P.verbose;
-    else os <<  P.Path << "ClientSim 1 " << P.verbose;
-    os << " " << "-STSP";
-    
-    if (system(os.str().c_str()) == 0){
-        cout << "Export Finish" << endl;
-    }else{
-        cout << "Export Fail" << endl;
-    }
-    
-    cout<< "Starting Prism"<< endl;
-    string cmd =P.prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
-    cout << "Prism finish" << endl;
-    system(cmd.c_str());
-}
 
 void lauch_clients(parameters& P){
 	ostringstream os;

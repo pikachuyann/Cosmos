@@ -26,4 +26,32 @@
  */
 
 
+#include <string>
+#include "exportFile.hpp"
 #include <iostream>
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+
+using namespace std;
+
+void LauchExport(parameters& P){
+    
+    ostringstream os;
+	if (P.Path == "") os << "./ClientSim 1 " << P.verbose;
+    else os <<  P.Path << "ClientSim 1 " << P.verbose;
+    os << " " << "-STSP";
+    
+    if (system(os.str().c_str()) == 0){
+        cout << "Export Finish" << endl;
+    }else{
+        cout << "Export Fail" << endl;
+    }
+    
+    cout<< "Starting Prism"<< endl;
+    string cmd =P.prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
+    cout << "Prism finish" << endl;
+    system(cmd.c_str());
+}

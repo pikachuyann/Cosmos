@@ -25,9 +25,11 @@
  *******************************************************************************
  */
 
+#include "parameters.hpp"
+
 #ifndef Cosmos_exportFile_h
 #define Cosmos_exportFile_h
 
-
+void LauchExport(parameters& P);
 
 #endif
