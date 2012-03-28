@@ -115,11 +115,17 @@ public:
     double uniformizeMatrix();
     
 	void printP();
-	void outputMat();
-	void inputMat();
-    void inputVect();
-    void outputPrism();
 	
+    void outputMat();
+	void inputMat();
+    
+    void inputVect();
+    void outputVect();
+    
+    void outputPrism();
+    void launchPrism(string prismPath);
+	void importPrism();
+    
 private:
     vector<vector<int> > *findstate;
     void add_state(vector<int> v);

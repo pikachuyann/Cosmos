@@ -84,14 +84,22 @@ int main(int argc, char** argv) {
             myBoundedSim->initVectCo(t);
 			mySim= myBoundedSim;
 		}
-		if(str== "-STSP"){
+		if(str== "-STSPBU"){
 			stateSpace states;
 			states.exploreStateSpace();
 			states.buildTransitionMatrix();
-			//states.printP();
-            //states.uniformizeMatrix();
 			states.outputMat();
+            cout << "Finish Exporting" << endl;
+			exit(EXIT_SUCCESS);
+		}
+        if(str== "-STSP"){
+			stateSpace states;
+			states.exploreStateSpace();
+			states.buildTransitionMatrix();
             states.outputPrism();
+            states.launchPrism(argv[4]);
+            states.importPrism();
+            states.outputVect();
             cout << "Finish Exporting" << endl;
 			exit(EXIT_SUCCESS);
 		}

@@ -352,14 +352,99 @@ void stateSpace::outputPrism(){
 
 }
 
+void stateSpace::launchPrism(string prismPath){
+    cout<< "Starting Prism"<< endl;
+    string cmd = prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
+    cout << "Prism finish" << endl;
+    system(cmd.c_str());
+}
 
+void stateSpace::importPrism(){
+    string line;
+	int poseq =1;
+	string pos;
+	string prob;
+    ifstream myfile ("prismOutput");
+	if (myfile.is_open())
+	{
+        do{
+            getline (myfile,line);
+        }while(myfile.good() && 
+               line != "Probabilities (non-zero only) for all states:");
+        
+        muvect = new vector<double>;
+        int n=0;
+		while ( myfile.good() && poseq>0)
+		{
+			getline (myfile,line);
+            //cerr << line << endl;
+			poseq = line.find("=");
+			
+			if(poseq > 0){
+                //cout << line << endl;
+				pos = line.substr(1,poseq-2);
+				prob = line.substr(poseq+1,line.size());
+				
+				vector<int> vect;
+				int it = 0;
+				while(it < pos.length()){
+					int it2 = pos.find(",",it);
+					if(it2 == -1) it2 = pos.length();
+					//cout << "test:" << it<< ":" << it2 << endl;
+					vect.push_back(atoi((pos.substr(it,it2-it)).c_str() ));
+					it = it2+1;
+				}
+				
+                muvect->push_back(atof(prob.c_str()));
+				S[new vector<int>(vect)] = n;
+                n++;
+				
+				
+			}
+		}
+		myfile.close();
+		nbState = n;
+    }
+}
+
+void stateSpace::outputVect(){
+    cerr << "Exporting the probability vector" << endl;
+    
+	fstream outputFile;
+	outputFile.open("muFile",fstream::out);
+	
+    outputFile << "[" << muvect->size() << "](";
+    for (int i =0; i<muvect->size(); i++) {
+        if(i>0)outputFile << ",";
+        outputFile << (*muvect)[i];
+    }
+    outputFile << ")" << endl;
+	
+	for(hash_state::iterator it= S.begin() ; it != S.end(); it++){
+		outputFile << "(";
+		vector<int> vect = *(*it).first;
+        for(int i=0; i< N.Msimpletab.size();i++){
+            if(i>0)outputFile << ",";
+            outputFile << vect[N.Msimpletab[i]];
+        };
+        
+		/*for(int i =0; i< vect.size()-1; i++){
+         if(i>0)outputFile << ",";
+         outputFile << vect[i];
+         }*/
+		outputFile << ")=";
+		outputFile << (*it).second << endl;
+	}
+    
+	outputFile.close();
+}
 
 void stateSpace::inputVect(){
     string line;
 	int poseq;
 	string pos;
 	string prob;
-	ifstream myfile ("mu_table");
+	ifstream myfile ("muFile");
 	if (myfile.is_open())
 	{ 
         muvect = new vector<double>;
@@ -395,7 +480,7 @@ void stateSpace::inputVect(){
 		
     }
 	
-	else cerr << "Unable to open file "<< "mu_table" << endl ; 
+	else cerr << "Unable to open file "<< "muFile" << endl ; 
     
 }
 

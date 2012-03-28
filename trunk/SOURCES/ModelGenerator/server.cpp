@@ -150,7 +150,9 @@ void LauchExport(parameters& P){
     ostringstream os;
 	if (P.Path == "") os << "./ClientSim 1 " << P.verbose;
     else os <<  P.Path << "ClientSim 1 " << P.verbose;
-    os << " " << "-STSP";
+    os << " " << "-STSP " << P.prismPath;
+    
+    if(P.verbose >1)cout << os.str() << endl;
     
     if (system(os.str().c_str()) == 0){
         cout << "Export Finish" << endl;
@@ -158,10 +160,7 @@ void LauchExport(parameters& P){
         cout << "Export Fail" << endl;
     }
     
-    cout<< "Starting Prism"<< endl;
-    string cmd =P.prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
-    cout << "Prism finish" << endl;
-    system(cmd.c_str());
+    
 }
 
 
