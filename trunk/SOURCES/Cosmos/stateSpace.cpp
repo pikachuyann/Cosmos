@@ -57,7 +57,8 @@ double stateSpace::findHash(const vector<int>* vect){
 void stateSpace::add_state(vector<int> v){
     vector<int>* v2 = new vector<int>(v);
     S[v2] = nbState;
-    revertHash.push_back(v2);
+    //for(int i = 0  ; i< v2->size(); i++)cerr << (*v2)[i]<< ",";
+    //cerr << endl;
     findstate->push_back(*v2);
 	nbState++;
     
@@ -299,17 +300,17 @@ void stateSpace::outputPrism(){
 	outputFile.open("prismStates.sta",fstream::out);
 	
     outputFile << "(" ;
-    for(int i=0; i< N.Msimpletab.size();i++){
-        outputFile << N.Place[N.Msimpletab[i]].label ;
+    for(int i=0; i< N.Place.size();i++){
+        outputFile << N.Place[i].label ;
         outputFile << ",";
     };
     outputFile << "automata)" << endl;
 	
-	for(int it=0 ; it < revertHash.size(); it++){
+	for(int it=0 ; it < findstate->size(); it++){
 		outputFile << it << ":(";
-		vector<int> vect = *(revertHash[it]);
-        for(int i=0; i< N.Msimpletab.size();i++){
-            outputFile << vect[N.Msimpletab[i]];
+		vector<int> vect = (*findstate)[it];
+        for(int i=0; i< N.Place.size();i++){
+            outputFile << vect[i];
             outputFile << ",";
         };
         outputFile << vect[vect.size()-1];
@@ -355,11 +356,12 @@ void stateSpace::outputPrism(){
 void stateSpace::launchPrism(string prismPath){
     cout<< "Starting Prism"<< endl;
     string cmd = prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
-    cout << "Prism finish" << endl;
     system(cmd.c_str());
+    cout << "Prism finish" << endl;
 }
 
 void stateSpace::importPrism(){
+    cerr << "Importing Prism result" << endl;
     string line;
 	int poseq =1;
 	string pos;
@@ -372,8 +374,8 @@ void stateSpace::importPrism(){
         }while(myfile.good() && 
                line != "Probabilities (non-zero only) for all states:");
         
-        muvect = new vector<double>;
-        int n=0;
+        muvect = new vector<double> (nbState,0.0);
+        //int n=0;
 		while ( myfile.good() && poseq>0)
 		{
 			getline (myfile,line);
@@ -382,28 +384,37 @@ void stateSpace::importPrism(){
 			
 			if(poseq > 0){
                 //cout << line << endl;
-				pos = line.substr(1,poseq-2);
+                int si = 1+line.find("(",0);
+				pos = line.substr(si,poseq-1-si);
+                //cerr << "pos:" << pos << endl;
 				prob = line.substr(poseq+1,line.size());
 				
 				vector<int> vect;
 				int it = 0;
+                //cerr << "v:";
 				while(it < pos.length()){
 					int it2 = pos.find(",",it);
 					if(it2 == -1) it2 = pos.length();
 					//cout << "test:" << it<< ":" << it2 << endl;
 					vect.push_back(atoi((pos.substr(it,it2-it)).c_str() ));
+                    //cerr << atoi((pos.substr(it,it2-it)).c_str() ) << ",";
 					it = it2+1;
 				}
-				
-                muvect->push_back(atof(prob.c_str()));
-				S[new vector<int>(vect)] = n;
-                n++;
+				//cerr << endl;
+                
+                int state = findHash(&vect);
+                //cerr << "state" << state << ":";
+                (*muvect)[state] = atof(prob.c_str());
+                //cerr << atof(prob.c_str());
+                //muvect->push_back(atof(prob.c_str()));
+				//S[new vector<int>(vect)] = n;
+                //n++;
 				
 				
 			}
 		}
 		myfile.close();
-		nbState = n;
+		//nbState = n;
     }
 }
 
@@ -440,48 +451,48 @@ void stateSpace::outputVect(){
 }
 
 void stateSpace::inputVect(){
-    string line;
-	int poseq;
-	string pos;
-	string prob;
-	ifstream myfile ("muFile");
-	if (myfile.is_open())
-	{ 
-        muvect = new vector<double>;
-        int n=0;
-		while ( myfile.good() )
-		{
-			getline (myfile,line);
-			poseq = line.find("=");
-			
-			if(poseq > 0){
-				pos = line.substr(1,poseq-2);
-				prob = line.substr(poseq+1,line.size());
-				
-				vector<int> vect;
-				int it = 0;
-				while(it < pos.length()){
-					int it2 = pos.find(",",it);
-					if(it2 == -1) it2 = pos.length();
-					//cout << "test:" << it<< ":" << it2 << endl;
-					vect.push_back(atoi((pos.substr(it,it2-it)).c_str() ));
-					it = it2+1;
-				}
-				
-                muvect->push_back(atof(prob.c_str()));
-				S[new vector<int>(vect)] = n;
-                n++;
-				
-				
-			}
-		}
-		myfile.close();
-		nbState = n;
-		
+    cerr<< "Start reading muFile" << endl;
+    ifstream inputFile;
+	inputFile.open("muFile",fstream::in);
+    
+    boostmat::vector<double> v1;
+	inputFile >> v1;
+    nbState = v1.size();
+	muvect = new vector<double>(nbState);
+    for(int i=0; i< nbState; i++){
+        (*muvect)[i] = v1 (i);
     }
 	
-	else cerr << "Unable to open file "<< "muFile" << endl ; 
-    
+	string line;
+	int poseq;
+	string pos;
+	string stateid;
+	while ( inputFile.good() )
+    {
+		getline (inputFile,line);
+		cerr << line << endl;
+		poseq = line.find("=");
+		
+		if(poseq > 0){
+			pos = line.substr(1,poseq-2);
+			stateid = line.substr(poseq+1,line.size());
+			
+			vector<int> vect;
+			int it = 0;
+			while(it < pos.length()){
+				int it2 = pos.find(",",it);
+				if(it2 == -1) it2 = pos.length();
+				vect.push_back(atoi((pos.substr(it,it2-it)).c_str() ));
+				it = it2+1;
+			}
+			
+			S[new vector<int>(vect)] = (int)atoi(stateid.c_str());
+			
+		}
+	}
+	
+	inputFile.close();
+	cerr<< "Finished reading muFile" << endl;
 }
 
 void stateSpace::inputMat(){

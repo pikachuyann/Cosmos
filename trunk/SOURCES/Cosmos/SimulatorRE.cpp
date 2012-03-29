@@ -200,7 +200,8 @@ double SimulatorRE::mu(){
 	
     N.lumpingFun(&vect);
     
-	return((*muprob.muvect)[muprob.findHash(&vect)]);
+    int i = muprob.findHash(&vect);
+	return((*muprob.muvect)[i]);
 }
 
 double SimulatorRE::ComputeDistr(int t , double origin_rate){
