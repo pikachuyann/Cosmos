@@ -199,8 +199,17 @@ double SimulatorRE::mu(){
 	};
 	
     N.lumpingFun(&vect);
-    
+    //cerr << "test(";
     int i = muprob.findHash(&vect);
+    if(i<0){
+        cerr << "state:(";
+        for (int j =0; j < vect.size(); j++) {
+            cerr << vect[j] << ",";
+        }
+        cerr << ") ->" << i << endl;
+       // exit(EXIT_FAILURE);
+    }
+    //cerr << ")" << endl;
 	return((*muprob.muvect)[i]);
 }
 

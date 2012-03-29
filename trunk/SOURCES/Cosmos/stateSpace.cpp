@@ -470,7 +470,7 @@ void stateSpace::inputVect(){
 	while ( inputFile.good() )
     {
 		getline (inputFile,line);
-		cerr << line << endl;
+		//cerr << line << endl;
 		poseq = line.find("=");
 		
 		if(poseq > 0){
