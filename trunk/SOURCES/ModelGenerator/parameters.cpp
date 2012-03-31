@@ -112,16 +112,6 @@ void parameters::parseCommandLine(int argc, char** argv){
         
         switch (c)
         {
-            case 0:
-                /* If this option set a flag, do nothing else now. */
-                if (long_options[option_index].flag != 0)
-                    break;
-                printf ("option %s", long_options[option_index].name);
-                if (optarg)
-                    printf (" with arg %s", optarg);
-                printf ("\n");
-                break;
-               
             case 'h':
                 cout << "display help";
                 break;
@@ -149,14 +139,6 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'n': Njob = atoi(optarg);      break;
             case  'e': epsilon = atof(optarg);  break;
                 
-            case 'd':
-                printf ("option -d with value `%s'\n", optarg);
-                break;
-                
-            case 'f':
-                printf ("option -f with value `%s'\n", optarg);
-                break;
-                
             case '?':
                 /* getopt_long already printed an error message. */
                 break;
@@ -172,7 +154,6 @@ void parameters::parseCommandLine(int argc, char** argv){
     /* Print any remaining command line arguments (not options). */
     if (optind < argc)
     {
-        printf ("non-option ARGV-elements: ");
         
         PathGspn = argv[optind];
         PathLha  = argv[optind+1];
