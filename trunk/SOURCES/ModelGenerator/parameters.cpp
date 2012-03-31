@@ -28,6 +28,7 @@
 #include "parameters.hpp"
 //#include <boost/program_options.hpp>
 #include <iostream>
+#include <stdlib.h>
 #include <getopt.h>
 
 //namespace po = boost::program_options;
