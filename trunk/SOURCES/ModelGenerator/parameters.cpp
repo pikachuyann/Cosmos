@@ -28,7 +28,7 @@
 #include "parameters.hpp"
 #include <boost/program_options.hpp>
 #include <iostream>
-
+#include <getopt.h>
 
 namespace po = boost::program_options;
 
@@ -67,6 +67,117 @@ void parameters::View() {
 	cout << "Read GML file as input:         " << GMLinput << endl;  
 }
 
+
+void parameters::parseCommandLine2(int argc, char** argv){
+    int c;
+    
+    while (1)
+    {
+        static struct option long_options[] =
+        {
+            /* These options set a flag. */
+            {"verbose", required_argument, 0, 'v'},
+            
+            /* These options don't set a flag.
+             We distinguish them by their indices. */
+            {"gmlinput" ,no_argument,       0, 'g'},
+            {"rareevent",no_argument,       0, 'r'},
+            {"boundedcountiniousRE",no_argument,       0, 'c'},
+            {"boundedRE",required_argument,       0, 'b'},
+            
+            {"help" , no_argument , 0 , 'h'},
+            {"set-Horizon", required_argument , 0 , 1},
+            {"stateSpace" , no_argument , 0 , 's'},
+            {"alligator-mode", no_argument, 0, 'a'},
+            
+            {"level" , required_argument, 0, 'l'},
+            {"width" , required_argument, 0, 'w'},
+            {"batch" , required_argument, 0, 2},
+            {"max-run", required_argument, 0 , 'm'},
+            {"njob" , required_argument, 0 , 'n'},
+            {"epsilon" , required_argument,0, 'e'},
+                        
+            {0, 0, 0, 0}
+        };
+        /* getopt_long stores the option index here. */
+        int option_index = 0;
+        
+        c = getopt_long (argc, argv, "ghsrb:c:v:",
+                         long_options, &option_index);
+        
+        /* Detect the end of the options. */
+        if (c == -1)
+            break;
+        
+        switch (c)
+        {
+            case 0:
+                /* If this option set a flag, do nothing else now. */
+                if (long_options[option_index].flag != 0)
+                    break;
+                printf ("option %s", long_options[option_index].name);
+                if (optarg)
+                    printf (" with arg %s", optarg);
+                printf ("\n");
+                break;
+               
+            case 'h':
+                cout << "display help";
+                break;
+                
+            case 'v':verbose = atoi(optarg);   break;
+                
+            case 'g':GMLinput = true;          break;
+                
+            case 'r':RareEvent = true;          break;
+                
+            case 'b':BoundedRE = atoi(optarg);  break;
+                
+            case 'c':BoundedContinuous = true;  break;
+               
+            case  1:horizon = atof(optarg);     break;
+                
+            case 's':computeStateSpace= true;  break;
+                
+            case 'a':alligatorMode = true;  break;
+                            
+            case  'l':Level = atof(optarg);     break;
+            case  'w':Width = atof(optarg);     break;
+            case  2: Batch = atoi(optarg);      break;
+            case  'm': MaxRuns = atoi(optarg);      break;
+            case  'n': Njob = atoi(optarg);      break;
+            case  'e': epsilon = atof(optarg);  break;
+                
+            case 'd':
+                printf ("option -d with value `%s'\n", optarg);
+                break;
+                
+            case 'f':
+                printf ("option -f with value `%s'\n", optarg);
+                break;
+                
+            case '?':
+                /* getopt_long already printed an error message. */
+                break;
+                
+            default:
+                abort ();
+        }
+    }
+    /* Instead of reporting ‘--verbose’
+     and ‘--brief’ as they are encountered,
+     we report the final status resulting from them. */
+    
+    /* Print any remaining command line arguments (not options). */
+    if (optind < argc)
+    {
+        printf ("non-option ARGV-elements: ");
+        
+        PathGspn = argv[optind];
+        PathLha  = argv[optind+1];
+        
+    }
+}
 
 void parameters::parseCommandLine(int argc, char** argv){
     po::options_description desc("usage: Cosmos [options] GspnFile LhaFile\n\nAllowed options");
