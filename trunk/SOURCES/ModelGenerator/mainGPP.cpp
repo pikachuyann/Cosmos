@@ -174,7 +174,7 @@ void DirectSim(parameters& P) {
 int main(int argc, char** argv) {
 	parameters P;
 	
-    P.parseCommandLine2(argc,argv);
+    P.parseCommandLine(argc,argv);
 	
 	// Declare the supported options.
 		

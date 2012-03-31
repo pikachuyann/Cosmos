@@ -25,7 +25,7 @@ $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
 	$(CC) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
 
 $(BINPATH)/Cosmos: $(FILES)
-	$(CC) $(OPTIONS) -L/usr/lib/ -lexpat -lboost_program_options $^ -o $@
+	$(CC) $(OPTIONS) -L/usr/lib/ -lexpat $^ -o $@
 
 clean:
 	rm $(OBJPATH)/Eval/*.o

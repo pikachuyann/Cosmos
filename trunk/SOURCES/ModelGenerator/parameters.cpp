@@ -26,11 +26,11 @@
  */
 
 #include "parameters.hpp"
-#include <boost/program_options.hpp>
+//#include <boost/program_options.hpp>
 #include <iostream>
 #include <getopt.h>
 
-namespace po = boost::program_options;
+//namespace po = boost::program_options;
 
 
 parameters::parameters() {
@@ -68,7 +68,7 @@ void parameters::View() {
 }
 
 
-void parameters::parseCommandLine2(int argc, char** argv){
+void parameters::parseCommandLine(int argc, char** argv){
     int c;
     
     while (1)
@@ -179,7 +179,7 @@ void parameters::parseCommandLine2(int argc, char** argv){
     }
 }
 
-void parameters::parseCommandLine(int argc, char** argv){
+/*void parameters::parseCommandLine(int argc, char** argv){
     po::options_description desc("usage: Cosmos [options] GspnFile LhaFile\n\nAllowed options");
 	desc.add_options()
     ("help", "produce help message")
@@ -233,4 +233,4 @@ void parameters::parseCommandLine(int argc, char** argv){
 		exit(EXIT_FAILURE);
 	} 	
 
-}
+}*/
