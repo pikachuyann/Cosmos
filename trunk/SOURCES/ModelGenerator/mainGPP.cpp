@@ -175,6 +175,10 @@ int main(int argc, char** argv) {
 	parameters P;
 	
     P.parseCommandLine(argc,argv);
+    
+    if (P.verbose>0) {
+        cout << "Cosmos" << endl;
+    }
 	
 	// Declare the supported options.
 		

@@ -55,6 +55,7 @@ struct parameters {
     
     parameters();
     void View();
+    void usage();
     void parseCommandLine(int argc, char** argv);
     //void parseCommandLine2(int argc, char** argv);
     string prismPath;

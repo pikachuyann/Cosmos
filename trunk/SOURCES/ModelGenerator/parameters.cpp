@@ -26,13 +26,9 @@
  */
 
 #include "parameters.hpp"
-//#include <boost/program_options.hpp>
 #include <iostream>
 #include <cstdlib>
 #include <getopt.h>
-
-//namespace po = boost::program_options;
-
 
 parameters::parameters() {
     verbose =1;
@@ -55,8 +51,6 @@ parameters::parameters() {
 
 }
 
-
-
 void parameters::View() {
 	cout << "Confidence interval width:      " << Width << endl;
 	cout << "Confidence interval level:      " << Level << endl;
@@ -68,6 +62,27 @@ void parameters::View() {
 	cout << "Read GML file as input:         " << GMLinput << endl;  
 }
 
+void parameters::usage(){
+    cout << "usage: Cosmos [-ghsr] [-vb arg] ";
+    cout << "[--alligator-mode] ";
+    cout << "[--level arg] [--width arg] [--batch arg] [--max-run arg] ";
+    cout << "[--set-Horizon arg] [--njob arg] ";
+    cout << "gspn_file lha_file" << endl;
+    
+    cout << "General options:" << endl;
+    cout << "\t-v,--verbose arg\tset the verbose level"<< endl;
+    cout << "\t-h,--help \tdisplay this message" << endl;
+    cout << "\t--njob    \tset the number of parralel thread"<< endl;
+    cout << "Option of simulation:" << endl;
+    cout << "\t--level \tset the confidence level for the simulation (default=0.99)"<< endl;
+    cout << "\t--width \tset the width of the confidence interval (default=0.001)"<< endl;
+    cout << "\t--batch \tset the size of batch of simulation (default=1000)"<< endl;
+    cout << "\t--max-run \tset the maximal number of run (default=2000000)" << endl;
+    cout << "Miscellanous options:" << endl;
+    cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
+    cout << "\t--alligator-mode \toutput easy to parse result"<< endl;
+}
+    
 
 void parameters::parseCommandLine(int argc, char** argv){
     int c;
@@ -76,34 +91,35 @@ void parameters::parseCommandLine(int argc, char** argv){
     {
         static struct option long_options[] =
         {
-            /* These options set a flag. */
-            {"verbose", required_argument, 0, 'v'},
-            
-            /* These options don't set a flag.
-             We distinguish them by their indices. */
-            {"gmlinput" ,no_argument,       0, 'g'},
-            {"rareevent",no_argument,       0, 'r'},
-            {"boundedcountiniousRE",no_argument,       0, 'c'},
-            {"boundedRE",required_argument,       0, 'b'},
-            
-            {"help" , no_argument , 0 , 'h'},
-            {"set-Horizon", required_argument , 0 , 1},
-            {"stateSpace" , no_argument , 0 , 's'},
-            {"alligator-mode", no_argument, 0, 'a'},
-            
+            /* Options for the simulator*/
             {"level" , required_argument, 0, 'l'},
             {"width" , required_argument, 0, 'w'},
-            {"batch" , required_argument, 0, 2},
-            {"max-run", required_argument, 0 , 'm'},
+            {"batch" , required_argument, 0,  2 },
+            {"max-run",required_argument, 0, 'm'},
+            
+            /* Options for the rare event engine */
+            {"rareevent",   no_argument,        0, 'r'},
+            {"boundedcountiniousRE",no_argument,0, 'c'},
+            {"boundedRE",   required_argument,  0, 'b'},
+            {"epsilon" ,    required_argument,  0, 'e'},
+            {"set-Horizon", required_argument , 0,  1 },
+            {"stateSpace" , no_argument ,       0, 's'},
+
+            /* CosyVerif Options */
+            {"gmlinput" ,      no_argument, 0, 'g'},
+            {"alligator-mode", no_argument, 0, 'a'},
+
+            /* Miscellanious options */
             {"njob" , required_argument, 0 , 'n'},
-            {"epsilon" , required_argument,0, 'e'},
-                        
+            {"verbose", required_argument, 0, 'v'},
+            {"help" , no_argument , 0 , 'h'},
+            
             {0, 0, 0, 0}
         };
         /* getopt_long stores the option index here. */
         int option_index = 0;
         
-        c = getopt_long (argc, argv, "ghsrb:c:v:",
+        c = getopt_long (argc, argv, "ghscrb:v:",
                          long_options, &option_index);
         
         /* Detect the end of the options. */
@@ -113,7 +129,8 @@ void parameters::parseCommandLine(int argc, char** argv){
         switch (c)
         {
             case 'h':
-                cout << "display help";
+                usage();
+                exit(EXIT_SUCCESS);
                 break;
                 
             case 'v':verbose = atoi(optarg);   break;
@@ -140,79 +157,17 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'e': epsilon = atof(optarg);  break;
                 
             case '?':
-                /* getopt_long already printed an error message. */
-                break;
+                usage();
+                exit(EXIT_FAILURE);
                 
             default:
                 abort ();
         }
     }
-    /* Instead of reporting ‘--verbose’
-     and ‘--brief’ as they are encountered,
-     we report the final status resulting from them. */
-    
-    /* Print any remaining command line arguments (not options). */
+   
     if (optind < argc)
     {
-        
         PathGspn = argv[optind];
         PathLha  = argv[optind+1];
-        
     }
 }
-
-/*void parameters::parseCommandLine(int argc, char** argv){
-    po::options_description desc("usage: Cosmos [options] GspnFile LhaFile\n\nAllowed options");
-	desc.add_options()
-    ("help", "produce help message")
-	("GMLinput,g",po::bool_switch(&GMLinput),"Change input file format")
-	("RareEvent,r",po::bool_switch(&RareEvent),"Use Rare Event acceleration")
-	("DoubleIS,d",po::bool_switch(&DoubleIS),"Use Rare Event acceleration with double Important Sampling")
-	("BoundedRE,b",po::value(&BoundedRE),"Use Bounded Rare Event acceleration")
-    ("BoundedContinuous,c",po::bool_switch(&BoundedContinuous),"Use Continuous Rare Event acceleration")
-    ("set-Horizon",po::value(&horizon),"Set the horizon for bounded until")
-    ("verbose,v",po::value(&verbose),"Set the verbose level")
-    ("StateSpace,s",po::bool_switch(&computeStateSpace),"Generate the state space of the systeme")
-	("alligator-mode",po::bool_switch(&alligatorMode),"alligator mode")
-	("setPath,p",po::value(&Path),"Set executable path")
-	("level",po::value(&Level),"Set Confidence interval level")
-	("width",po::value(&Width),"Set Confidence interval width")
-	("batch",po::value(&Batch),"Set Batch Size")
-	("max-run",po::value(&MaxRuns),"Set the maximum number of run")
-	("njob",po::value(&Njob),"Set the number of parallel simulation")
-	("epsilon",po::value(&epsilon),"Set epsilon value for fox-glynn algorith")
-	;
-	
-	po::options_description hidden("Hidden options");
-	hidden.add_options()
-	("GspnFile",po::value(&PathGspn),"Path to the Gspn")
-	("LhaFile",po::value(&PathLha),"Path to the Lha")
-	;
-	
-	po::positional_options_description p;
-	p.add("GspnFile", 1);
-	p.add("LhaFile", 2);
-	
-	po::options_description visible("Allowed options");
-	visible.add(desc).add(hidden);
-	
-	po::variables_map vm;
-	po::store(po::command_line_parser(argc, argv).
-			  options(visible).positional(p).run(), vm);
-	//po::store(po::parse_command_line(argc, argv, desc), vm);
-	po::notify(vm);    
-	
-	if (vm.count("help")) {
-		cout << desc << "\n";
-		exit(EXIT_FAILURE);
-	}
-	
-	//ViewParameters(P);
-	
-	if (!vm.count("LhaFile") || !vm.count("GspnFile")) {
-		cout << desc << "\n";
-		//cout << "usage: ... " << endl;
-		exit(EXIT_FAILURE);
-	} 	
-
-}*/
