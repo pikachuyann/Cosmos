@@ -85,7 +85,19 @@ vector<pid_t> clientPID;
 int max_client=0 ;
 
 
+void signalHandler( int signum )
+{
+    cout << "Simulator Crash" << endl;
+    
+    exit(EXIT_FAILURE);  
+    
+}
+
+
+
+
 void lauch_clients(parameters& P){
+    signal(SIGCHLD , signalHandler); 
 	ostringstream os;
 	pid_t readpid;
 	int size;
