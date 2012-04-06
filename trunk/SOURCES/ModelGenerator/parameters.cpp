@@ -165,9 +165,12 @@ void parameters::parseCommandLine(int argc, char** argv){
         }
     }
    
-    if (optind < argc)
-    {
+    if (optind+1 < argc){
         PathGspn = argv[optind];
         PathLha  = argv[optind+1];
+    }else{
+        cout << "Two files are require." << endl;
+        usage();
+        exit(EXIT_FAILURE);
     }
 }

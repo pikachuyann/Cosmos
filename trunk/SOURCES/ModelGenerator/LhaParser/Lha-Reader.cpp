@@ -98,13 +98,20 @@ int Lha_Reader::parse_file(string &filename) {
     }
 }
 int Lha_Reader::parse_gml_file(string &filename) {
-	cout << "parse GML:" << filename << endl;
-	ModelHandlerPtr handlerPtr(new MyLhaModelHandler(&MyLha));
-    ExpatModelParser parser = ExpatModelParser(handlerPtr);
-    parser.parse_file(filename);
-	cout << "end parse GML"<< endl;
+    ifstream ifile(filename.c_str());
+    if(ifile){
+        //cout << "parse GML:" << filename << endl;
+        ModelHandlerPtr handlerPtr(new MyLhaModelHandler(&MyLha));
+        ExpatModelParser parser = ExpatModelParser(handlerPtr);
+        parser.parse_file(filename);
+        //cout << "end parse GML"<< endl;
+        return 0;
+    }else{
+        cout << "File " << filename << " does not exist!" << endl;
+        exit(EXIT_FAILURE);
+    }
+    
 	
-	return 0;
 }
 
 string Lha_Reader::InvRelOp(string& str) {

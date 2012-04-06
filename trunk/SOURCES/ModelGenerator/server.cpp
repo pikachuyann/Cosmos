@@ -160,7 +160,6 @@ void LauchExport(parameters& P){
         cout << "Export Fail" << endl;
     }
     
-    
 }
 
 
@@ -199,7 +198,7 @@ void LauchServer(parameters& P){
     
     cout << "START SIMULATION ..." << endl;
     
-    /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
     // Some remarks about the estimation of the confidence interval adopted here
     // Let l=ConfLevel, the confidence level
     // l=1-alpha
@@ -212,7 +211,7 @@ void LauchServer(parameters& P){
     // [x-z(1-alpha/2) * StandardDeviation / sqrt(NumberOfObservations) ,  x+z(1-alpha/2) * StandardDeviation / sqrt(NumberOfObservations)]
     
     // z(1-alpha/2)=z(1-(1-l)/2) = z(0.5+l/2)
-    ////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
     
     lauch_clients(P);
     makeselectlist(P.Njob);

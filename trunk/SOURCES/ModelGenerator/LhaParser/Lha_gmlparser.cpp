@@ -307,7 +307,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 				if ((*it2).compare("intConstDeclaration")==0) { // const is int or double
 					string* constname = simplifyString((find(it2.begin(),it2.end(),"constName")).node->first_child->data);
 					//string constvalue =(find(it2.begin(),it2.end(),"intFormula")).node->first_child->data;
-					cout <<  (find(it2.begin(),it2.end(),"intFormula")).node->first_child->data << endl;
+					//cout <<  (find(it2.begin(),it2.end(),"intFormula")).node->first_child->data << endl;
 					int constvalue = eval_intFormula(MyLHA->LhaIntConstant, find(it2.begin(),it2.end(),"intFormula"));
 					
 					//Evaluate_gml.parse(constvalue);

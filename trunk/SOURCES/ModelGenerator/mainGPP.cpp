@@ -86,12 +86,6 @@ using namespace std;
 bool ParseBuild(parameters& P) {
 	Gspn_Reader gReader;
 	
-	/*if(P.GMLinput){
-		GspnFileName.append(".gml");
-	}else {
-		GspnFileName.append(".gspn");
-	}*/
-	
 	if(P.verbose>0)cout << "Start Parsing " << P.PathGspn << endl;
 	int parseresult;
 	
