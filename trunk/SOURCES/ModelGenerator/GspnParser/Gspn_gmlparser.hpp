@@ -28,14 +28,26 @@
 #ifndef _SPN_GML_HPP
 #define	_SPN_GML_HPP
 
+
 #include "expatmodelparser.hh"
 #include "modelhandler.hh"
 #include "Gspn-Reader.hpp"
 #include <map>
 
+#include <exception>
+class gmlinputexception: public exception
+{
+    virtual const char* what() const throw()
+    {
+        return "The input file could not be imported";
+    }
+};
+
+
 class MyModelHandler: public ModelHandler
 {
 private:
+    int verbose;
 	int countPl;
 	int countTr;
 	bool ParsePl;
@@ -43,6 +55,9 @@ private:
 	map<int,int> Gml2Place;
 	map<int,int> Gml2Trans;
 	GSPN* MyGspn;
+    void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it );
+    int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it );
+    
 public:
     MyModelHandler(GSPN* ) ;
 	//~MyModelHandler() { }

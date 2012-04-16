@@ -89,22 +89,26 @@ bool ParseBuild(parameters& P) {
 	if(P.verbose>0)cout << "Start Parsing " << P.PathGspn << endl;
 	int parseresult;
 	
-	if(P.GMLinput){
-		parseresult = gReader.parse_gml_file(P.PathGspn);
-	}else {
-		parseresult = gReader.parse_file(P.PathGspn);
-	}
-	
-	
-	if (!parseresult) {
-		gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
-		gReader.WriteFile(P.Path);
-	} else {
-		Gspn_Reader gr;
-		gReader = gr;
-		return false;
-	}
-	
+    try{
+        if(P.GMLinput){
+            parseresult = gReader.parse_gml_file(P.PathGspn);
+        }else {
+            parseresult = gReader.parse_file(P.PathGspn);
+        }
+        
+        
+        if (!parseresult) {
+            gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
+            gReader.WriteFile(P.Path);
+        } else {
+            Gspn_Reader gr;
+            gReader = gr;
+            return false;
+        }
+	}catch (exception& e)
+    {
+        cerr << "The following exception append during import: "<< e.what() << endl;
+    }
 	
 	Lha_Reader lReader;
 	
