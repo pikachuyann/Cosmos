@@ -35,13 +35,6 @@
 #include <map>
 
 #include <exception>
-class gmlinputexception: public exception
-{
-    virtual const char* what() const throw()
-    {
-        return "The input file could not be imported";
-    }
-};
 
 
 class MyModelHandler: public ModelHandler

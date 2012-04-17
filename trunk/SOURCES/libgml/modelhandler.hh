@@ -12,11 +12,23 @@
 #include <tr1/memory>
 
 #include "tree/tree.hh"
+#include <exception>
+
+
+/** An exception throw when the parsing of an XML document fail. */
+class gmlinputexception: public std::exception {
+    virtual const char* what() const throw()
+    {
+        return "The input file could not be imported";
+    }
+};
+
 
 // Types definitions
 
 /** Type representing a string from an XML document. */
 typedef std::string XmlString;
+
 
 /** Type representing a GML attribute element.
  * Ex:
@@ -38,6 +50,7 @@ typedef std::string XmlString;
  *               …
  */
 typedef tree<XmlString> Attribute;
+typedef tree<std::string>::sibling_iterator treeSI;
 
 /** Type representing a map of Attribute. */
 typedef std::map<XmlString, Attribute> AttributeMap;

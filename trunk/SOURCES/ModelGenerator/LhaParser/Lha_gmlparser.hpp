@@ -61,7 +61,7 @@ private:
 	vector <string> CST;
 	vector <string> comp;
 	
-	
+	int verbose;
 	int countLoc;
 	bool ParseLoc;
 	//bool ParseDecl;

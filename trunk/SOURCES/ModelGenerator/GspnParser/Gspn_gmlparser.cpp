@@ -79,7 +79,7 @@ void appendSimplify(string *st, string str)
 
 /*void evalinfix(string *st, tree<string>::pre_order_iterator it , string str){
  st->append("(");
- for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
+ for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
  if(it2!= it.begin()) st->append(str);
  eval_expr( st, it2);
  }
@@ -115,7 +115,7 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
 		if ((*it).compare("floor")==0 ) st->append("floor");
 		
 		st->append("(");
-		for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
+		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 			if(it2!= it.begin()) {
 				if ((*it).compare("+")==0) { st->append("+"); }
 				else if ((*it).compare("*")==0) { st->append("*"); }
@@ -159,7 +159,7 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
 			  || (*it).compare("power")==0|| (*it).compare("-")==0)  {
 		
 		int v1,v2;
-		for (tree<string>::sibling_iterator it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
+		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 			if(it2!= it.begin()) { v1 = eval_intFormula(intconst, it2);
 			} else {
 				v2 = eval_intFormula(intconst, it2);
@@ -181,10 +181,10 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
     }
 }
 
-tree<string>::sibling_iterator findbranch(tree<string>::sibling_iterator t, string branch){
+treeSI findbranch(treeSI t, string branch){
     if( branch.compare("")==0)return t;
     int nextnode = branch.find_first_of("/");
-    for (tree<string>::sibling_iterator it = (t.begin()) ; it != (t.end()) ; ++it) {
+    for (treeSI it = (t.begin()) ; it != (t.end()) ; ++it) {
         if((*it).compare(branch.substr(0,nextnode))==0){
             return findbranch(it, branch.substr(nextnode+1,branch.length()-nextnode-1));
         }
@@ -215,11 +215,11 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
     // read model attribute 
     // If the file is well formed the only attributes are constant declaration.
     
-    for(tree<string>::sibling_iterator it = attribute.begin(); it != attribute.end(); ++it) {
+    for(treeSI it = attribute.begin(); it != attribute.end(); ++it) {
         if(verbose>1)cout << *it << ":" << endl;
         if((*it).compare("declaration")==0){
-            tree<string>::sibling_iterator t1 = findbranch(it, "constants/intConsts/");
-            for (tree<string>::sibling_iterator it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
+            treeSI t1 = findbranch(it, "constants/intConsts/");
+            for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
                 if(verbose>1)cout << "\t" <<  *it2 << ":" << endl;
                 if ((*it2).compare("intConst")==0) { // const is int or double
                     string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
@@ -234,8 +234,8 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                 } else throw(gmlioexc);
             }
             
-            tree<string>::sibling_iterator t2 = findbranch(it, "constants/realConsts/");
-            for (tree<string>::sibling_iterator it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
+            treeSI t2 = findbranch(it, "constants/realConsts/");
+            for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
                 if(verbose>1)cout << "\t" <<  *it2 << ":" << endl;
                 if ((*it2).compare("realConst")==0) {
                     if(verbose>1)cout << "\t" <<  *it2 << ":" << endl;
@@ -310,7 +310,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                 } else if ((*(it->second.begin())).compare("distribution")==0) {
                     if(verbose>1)cout << "\tdistribution:" << endl ;
                     ProbabiliteDistribution& dist = *(new ProbabiliteDistribution);
-                    for (tree<string>::sibling_iterator it2 = (it->second.begin()).begin() ; it2 != (it->second.begin()).end() ; ++it2 ) {
+                    for (treeSI it2 = (it->second.begin()).begin() ; it2 != (it->second.begin()).end() ; ++it2 ) {
                         if(verbose>1)cout << "\t" << (*it2) << ":" << endl;
                         if ((*it2).compare("type")==0) {
                             string* Trtype = simplifyString(*(it2.begin()));
@@ -321,7 +321,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                             
                             int number = 0;
                             string* value = new string("");
-                            for (tree<string>::sibling_iterator it3 = it2.begin() ; it3 != it2.end() ; ++it3 ) {
+                            for (treeSI it3 = it2.begin() ; it3 != it2.end() ; ++it3 ) {
                                 string* leaf = simplifyString(*(it3.begin()));
                                 if ((*it3).compare("number")==0) {
                                     number = atoi((*leaf).c_str());
