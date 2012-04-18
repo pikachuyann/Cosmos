@@ -87,12 +87,10 @@ int max_client=0 ;
 void signalHandler( int signum )
 {
     cout << "Simulator Crash" << endl;
-    
     exit(EXIT_FAILURE);  
-    
 }
 
-
+void signalHandlerOK(int signum){};
 
 
 void lauch_clients(parameters& P){
@@ -135,6 +133,9 @@ void kill_client(){
     cout <<endl << "Total Time: "
         << ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl; */
+    
+    //Discard signal of child terminating
+    signal(SIGCHLD , signalHandlerOK);
     
     while (!clientPID.empty())
     {

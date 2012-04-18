@@ -209,7 +209,7 @@ int MyLhaModelHandler::eval_str (string s){
 
 int MyLhaModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it )
 {
-    if(verbose>2)cout << (*it) << endl;
+    if(verbose>2)cout << "intformula: " <<(*it) << endl;
 	if((*it).compare("expr")==0){
 		return eval_intFormula(intconst,it.begin());
 	}else if((*it).compare("numValue")==0){
@@ -247,7 +247,7 @@ int MyLhaModelHandler::eval_intFormula( map<std::string,int> intconst, tree<stri
 
 MyLhaModelHandler::MyLhaModelHandler(LHA* MyLHA2) {
 	//Initialisation
-    verbose=2;
+    verbose=1;
 	MyLHA= MyLHA2;
 	MyLHA->NbVar = 0;
 	countLoc=0;
@@ -324,18 +324,23 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 	for(treeSI it = attribute.begin(); it != attribute.end(); ++it) {
 		if(verbose>1)cout << *it << ":" << endl;
 		if((*it).compare("declaration")==0){
+            //cout<< "start int const" << endl;
             treeSI t1 = findbranchlha(it, "constants/intConsts/");
+            //cout << "find branch" << endl;
 			for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
                 if ((*it2).compare("intConst")==0) {
+                    //cout << "start intConst" << endl;
                     string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-                    
-                    int constvalue = eval_intFormula(MyLHA->LhaIntConstant, find(it2.begin(),it2.end(),"expr"));
-                    
+                    //cout << "finish name:"<< *constname << endl;
+                    //treeSI test = find(it2.begin(),it2.end(),"expr");
+                    //cout << "find expr" << endl;
+                    int constvalue = eval_intFormula(MyLHA->LhaIntConstant,find(it2.begin(),it2.end(),"expr"));
+                    //cout << "finish expr" << endl;
                     //Evaluate_gml.parse(constvalue);
                     MyLHA->LhaIntConstant[*constname]=constvalue; //Evaluate_gml.IntResult;
                     MyLHA->LhaRealConstant[*constname]= constvalue; //Evaluate_gml.RealResult;
                     if(verbose>1)cout << "\tconst int " << *constname << "=" << constvalue << endl;
-                }else throw lhagmlioexc;
+                }
 			}
             //cout << "finished intconst" << endl;
             treeSI t2 = findbranchlha(it, "constants/realConsts/");
@@ -354,7 +359,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
                     Evaluate_gml.parse(constvalue);
                     MyLHA->LhaRealConstant[*constname]=Evaluate_gml.RealResult;
                     if(verbose>1)cout << "\tconst double " << *constname << "=" << Evaluate_gml.RealResult << endl;
-                }//else throw lhagmlioexc;
+                }
             }
             //cout << "finished realconst" << endl;
             treeSI t3 = findbranchlha(it, "variables/reals/");
@@ -367,7 +372,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
                     MyLHA->NbVar++;
                     
                     if(verbose>1)cout << "\tvar " << *constname << " index: " << MyLHA->NbVar-1 << endl;
-                }//else throw lhagmlioexc;
+                }
             }
             //cout << "finished realvar" << endl;
             treeSI t4 = findbranchlha(it, "variables/discretes/");
@@ -380,7 +385,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
                     MyLHA->NbVar++;
                     
                     if(verbose>1)cout << "\tvar " << *constname << " index: " << MyLHA->NbVar-1 << endl;
-                }//else throw lhagmlioexc;
+                }
             }
 			//cout << "finished discrete var" << endl;
 		} else if((*it).compare("HASLFormula")==0){

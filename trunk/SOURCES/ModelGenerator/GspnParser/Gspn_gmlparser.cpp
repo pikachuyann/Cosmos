@@ -231,7 +231,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                     MyGspn->RealConstant[*constname]= constvalue; //Evaluate_gml.RealResult;
                     //cout << "\tconst int " << *constname << "=" << constvalue << endl;
                     
-                } else throw(gmlioexc);
+                } 
             }
             
             treeSI t2 = findbranch(it, "constants/realConsts/");
@@ -247,7 +247,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                     Evaluate_gml.parse(constvalue);
                     MyGspn->RealConstant[*constname]=Evaluate_gml.RealResult;
                     if(verbose>1)cout << "\tconst double " << *constname << "=" << Evaluate_gml.RealResult << endl;
-                } else throw(gmlioexc);
+                } 
             }
         }
     }
