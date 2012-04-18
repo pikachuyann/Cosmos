@@ -52,6 +52,7 @@ package: generator
 	cp Readme.txt package/
 	cp COPYING package/
 	cp Examples/RareEventUnbounded/mu_table package/
+	@(cd package && $(MAKE) all)
 	cd package && zip -r ../cosmosService-0.9.zip *
 	rm -rf package
 
