@@ -4,7 +4,7 @@ LIBGMLPATH=../libgml/
 
 FILES= $(OBJPATH)/parameters.o \
     $(OBJPATH)/server.o \
-	$(OBJPATH)/mainGPP.o \
+	$(OBJPATH)/Cosmos.o \
 	$(OBJPATH)/Eval/Eval-parser.tab.o \
 	$(OBJPATH)/Eval/Eval.o \
 	$(OBJPATH)/GspnParser/Gspn-parser.tab.o \
