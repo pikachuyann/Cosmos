@@ -247,7 +247,7 @@ int MyLhaModelHandler::eval_intFormula( map<std::string,int> intconst, tree<stri
 
 MyLhaModelHandler::MyLhaModelHandler(LHA* MyLHA2) {
 	//Initialisation
-    verbose=1;
+    verbose=0;
 	MyLHA= MyLHA2;
 	MyLHA->NbVar = 0;
 	countLoc=0;

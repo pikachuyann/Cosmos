@@ -90,7 +90,9 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
 {
     if(verbose>1)cout << (*it) << endl;
     
-	if((*it).compare("expr")==0){
+	if((*it).compare("function")==0){
+		eval_expr(is_mark_dep, st, it.begin());
+	}else if((*it).compare("expr")==0){
 		eval_expr(is_mark_dep, st, it.begin());
 	}else if((*it).compare("numValue")==0){
 		appendSimplify(st,it.node->first_child->data);
