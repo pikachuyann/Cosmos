@@ -1,187 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<model formalismUrl="http://alligator.lip6.fr/lha.fml" xmlns="http://gml.lip6.fr/model">
-  <attribute name="declarations">
-    <attribute name="variable">
-      <attribute name="varName">
-        x
+<model formalismUrl="http://alligator.lip6.fr/HASL-formula.fml" xmlns="http://gml.lip6.fr/model">
+  <attribute name="declaration">
+    <attribute name="constants">
+      <attribute name="intConsts">
+        <attribute name="intConst">
+          <attribute name="name">
+            N
+          </attribute>
+          <attribute name="expr">
+            <attribute name="numValue">
+              5
+            </attribute>
+          </attribute>
+        </attribute>
+      </attribute>
+      <attribute name="realConsts">
       </attribute>
     </attribute>
-    <attribute name="intConstDeclaration">
-      <attribute name="constName">
-        N
-      </attribute>
-      <attribute name="intFormula">
-        <attribute name="value">
-          5
+    <attribute name="variables">
+      <attribute name="reals">
+        <attribute name="real">
+          <attribute name="name">
+            x
+          </attribute>
         </attribute>
+      </attribute>
+      <attribute name="discretes">
       </attribute>
     </attribute>
   </attribute>
   <attribute name="HASLFormula">
-    <attribute name="avg">
-      <attribute name="last">
-        <attribute name="variable">
-          x
+    <attribute name="AVG">
+      <attribute name="YHF">
+        <attribute name="last">
+          <attribute name="expr"><attribute name="name">
+            x
+          </attribute></attribute>
         </attribute>
       </attribute>
     </attribute>
   </attribute>
-  <node id="3" nodeType="location">
+  <node id="3" nodeType="state">
     <attribute name="invariant">
-      <attribute name="boolFormula">
-        <attribute name="and">
-          <attribute name="greater">
-            <attribute name="plus">
-              <attribute name="marking">
-                Queue1
-              </attribute>
-              <attribute name="marking">
-                Queue2
-              </attribute>
-            </attribute>
-            <attribute name="value">
-              0
-            </attribute>
-          </attribute>
-          <attribute name="less">
-            <attribute name="plus">
-              <attribute name="marking">
-                Queue1
-              </attribute>
-              <attribute name="marking">
-                Queue2
-              </attribute>
-            </attribute>
-            <attribute name="intConst">
-              N
-            </attribute>
-          </attribute>
-        </attribute>
-      </attribute>
+      <attribute name="boolExpr"><attribute name="and">
+        <attribute name="boolExpr"><attribute name="less">
+          <attribute name="expr"><attribute name="function"><attribute name="+">
+            <attribute name="expr"><attribute name="name">
+              Queue1
+            </attribute></attribute>
+            <attribute name="expr"><attribute name="name">
+              Queue2
+            </attribute></attribute>
+          </attribute></attribute></attribute>
+          <attribute name="expr"><attribute name="name">
+            N
+          </attribute></attribute>
+        </attribute></attribute>
+        <attribute name="boolExpr"><attribute name="greater">
+          <attribute name="expr"><attribute name="function"><attribute name="+">
+            <attribute name="expr"><attribute name="name">
+              Queue1
+            </attribute></attribute>
+            <attribute name="expr"><attribute name="name">
+              Queue2
+            </attribute></attribute>
+          </attribute></attribute></attribute>
+          <attribute name="expr"><attribute name="numValue">
+            0
+          </attribute></attribute>
+        </attribute></attribute>
+      </attribute></attribute>
     </attribute>
     <attribute name="name">
-      l1
+      s0
     </attribute>
-    <attribute name="flow">
+    <attribute name="flows">
     </attribute>
     <attribute name="type">
       Initial
     </attribute>
   </node>
-  <node id="4" nodeType="location">
+  <node id="4" nodeType="state">
     <attribute name="invariant">
-      <attribute name="boolFormula">
-        <attribute name="equal">
-          <attribute name="plus">
-            <attribute name="marking">
-              Queue1
-            </attribute>
-            <attribute name="marking">
-              Queue2
-            </attribute>
-          </attribute>
-          <attribute name="intConst">
-            N
-          </attribute>
-        </attribute>
-      </attribute>
+      <attribute name="boolExpr"><attribute name="equal">
+        <attribute name="expr"><attribute name="function"><attribute name="+">
+          <attribute name="expr"><attribute name="name">
+            Queue1
+          </attribute></attribute>
+          <attribute name="expr"><attribute name="name">
+            Queue2
+          </attribute></attribute>
+        </attribute></attribute></attribute>
+        <attribute name="expr"><attribute name="name">
+          N
+        </attribute></attribute>
+      </attribute></attribute>
     </attribute>
     <attribute name="name">
-      lp
+      sp
     </attribute>
-    <attribute name="flow">
+    <attribute name="flows">
     </attribute>
     <attribute name="type">
       Final
     </attribute>
   </node>
-  <node id="5" nodeType="location">
+  <node id="5" nodeType="state">
     <attribute name="invariant">
-      <attribute name="boolFormula">
-        <attribute name="equal">
-          <attribute name="plus">
-            <attribute name="marking">
-              Queue1
-            </attribute>
-            <attribute name="marking">
-              Queue2
-            </attribute>
-          </attribute>
-          <attribute name="value">
-            0
-          </attribute>
-        </attribute>
-      </attribute>
+      <attribute name="boolExpr"><attribute name="equal">
+        <attribute name="expr"><attribute name="function"><attribute name="+">
+          <attribute name="expr"><attribute name="name">
+            Queue1
+          </attribute></attribute>
+          <attribute name="expr"><attribute name="name">
+            Queue2
+          </attribute></attribute>
+        </attribute></attribute></attribute>
+        <attribute name="expr"><attribute name="numValue">
+          0
+        </attribute></attribute>
+      </attribute></attribute>
     </attribute>
     <attribute name="name">
-      lm
+      sm
     </attribute>
-    <attribute name="flow">
+    <attribute name="flows">
     </attribute>
     <attribute name="type">
       Final
     </attribute>
   </node>
-  <arc id="6" arcType="arc" source="3" target="3">
-    <attribute name="update">
-    </attribute>
-    <attribute name="guard">
-      <attribute name="boolFormula">
-        <attribute name="boolean">
-          true
+  <arc id="6" arcType="transition" source="3" target="4">
+    <attribute name="updates">
+      <attribute name="update">
+        <attribute name="name">
+          x
         </attribute>
+        <attribute name="expr"><attribute name="numValue">
+          1
+        </attribute></attribute>
       </attribute>
     </attribute>
-    <attribute name="action">
+    <attribute name="guard">
+      <attribute name="boolExpr"><attribute name="boolValue">
+        true
+      </attribute></attribute>
+    </attribute>
+    <attribute name="label">
       ALL
     </attribute>
   </arc>
-  <arc id="7" arcType="arc" source="3" target="5">
-    <attribute name="update">
-      <attribute name="updatevar">
-        <attribute name="variable">
+  <arc id="7" arcType="transition" source="3" target="5">
+    <attribute name="updates">
+      <attribute name="update">
+        <attribute name="name">
           x
         </attribute>
-        <attribute name="realFormula">
-          <attribute name="value">
-            0
-          </attribute>
-        </attribute>
+        <attribute name="expr"><attribute name="numValue">
+          0
+        </attribute></attribute>
       </attribute>
     </attribute>
     <attribute name="guard">
-      <attribute name="boolFormula">
-        <attribute name="boolean">
-          true
-        </attribute>
-      </attribute>
+      <attribute name="boolExpr"><attribute name="boolValue">
+        true
+      </attribute></attribute>
     </attribute>
-    <attribute name="action">
+    <attribute name="label">
       ALL
     </attribute>
   </arc>
-  <arc id="8" arcType="arc" source="3" target="4">
-    <attribute name="update">
-      <attribute name="updatevar">
-        <attribute name="variable">
-          x
-        </attribute>
-        <attribute name="realFormula">
-          <attribute name="value">
-            1
-          </attribute>
-        </attribute>
-      </attribute>
+  <arc id="8" arcType="transition" source="3" target="3">
+    <attribute name="updates">
     </attribute>
     <attribute name="guard">
-      <attribute name="boolFormula">
-        <attribute name="boolean">
-          true
-        </attribute>
-      </attribute>
+      <attribute name="boolExpr"><attribute name="boolValue">
+        true
+      </attribute></attribute>
     </attribute>
-    <attribute name="action">
+    <attribute name="label">
       ALL
     </attribute>
   </arc>

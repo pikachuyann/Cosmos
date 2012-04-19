@@ -155,6 +155,14 @@ bool ParseBuild(parameters& P) {
         cout << "Parsing OK.\n" << endl;
         cout << "Start building ... " << endl;
     }
+    
+    if(!P.RareEvent){
+        string lumpfunpath = P.Path + "../SOURCES/Cosmos/lumpingfun.cpp";
+        ofstream lumpfun(lumpfunpath.c_str(), ios::out | ios::trunc);
+        lumpfun << "void SPN::lumpingFun(vector<int>* vect){}" << endl;
+        lumpfun.close();
+    }
+    
 	string cmd;
 	
 	cmd = "make -s -C " + P.Path + ".. sim";

@@ -46,15 +46,16 @@ package: generator
 	svn export SOURCES package/SOURCES
 	find package/SOURCES -name "*.yy" -delete
 	find package/SOURCES -name "*.ll" -delete
-	Cp SOURCES/Cosmos/lumpingfuntriv.cpp package/SOURCES/Cosmos/lumpingfun.cpp
+	cp SOURCES/Cosmos/lumpingfuntriv.cpp package/SOURCES/Cosmos/lumpingfun.cpp
 	cp Makefile package/
 	cp cosmosTool package/
 	cp Readme.txt package/
 	cp COPYING package/
 	cp Examples/RareEventUnbounded/mu_table package/
 	@(cd package && $(MAKE) all)
-	cd package && zip -r ../cosmosService-0.9.zip *
-	rm -rf package
+	rm -rf package/Obj/ModelGenerator
+#	cd package && zip -r ../cosmosService-0.9.zip *
+#	rm -rf package
 
 packagemac: package
 	mv cosmosService-0.9.zip cosmosService-0.9-darwin.zip

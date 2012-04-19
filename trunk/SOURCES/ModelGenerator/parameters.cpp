@@ -139,9 +139,13 @@ void parameters::parseCommandLine(int argc, char** argv){
                 
             case 'r':RareEvent = true;          break;
                 
-            case 'b':BoundedRE = atoi(optarg);  break;
+            case 'b':BoundedRE = atoi(optarg);
+                RareEvent=true;
+                break;
                 
-            case 'c':BoundedContinuous = true;  break;
+            case 'c':BoundedContinuous = true;
+                RareEvent=true;
+                break;
                
             case  1:horizon = atof(optarg);     break;
                 
