@@ -1,6 +1,6 @@
 open Str
 open Printf
-#load "Str.cma"
+(*#load "Str.cma"*)
 
 let dots = regexp ":\t"
 let confintdel = regexp "\\[\\| , \\|\\]"
