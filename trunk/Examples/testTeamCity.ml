@@ -40,7 +40,7 @@ let test_result n v =
   let result = parse_result "Result.res" in
   printf "result: %f\nconfint: [%f,%f]\n" result.mean (fst result.confInt) (snd result.confInt);
   if v > (fst result.confInt) & (snd result.confInt) > v 
-  then printf "##teamcity[testFinished name='%s' message='expected result %f is in confidence interval [%f,%f]']\n" n v (fst result.confInt) (snd result.confInt) 
+  then printf "##teamcity[testFinished name='%s' message='expected result %f is in confidence interval |[%f,%f|]']\n" n v (fst result.confInt) (snd result.confInt) 
   else printf "##teamcity[testFailed name='%s' message='Test %s fail: expected result %f is outside confidence interval |[%f,%f|]']\n" n n v (fst result.confInt) (snd result.confInt) 
 
 let test_cosmos_gspn n v o =
