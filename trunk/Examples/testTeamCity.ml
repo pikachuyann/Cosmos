@@ -47,5 +47,5 @@ let test_cosmos_gspn n v o =
   printf "##teamcity[testStarted name='%s' captureStandardOutput='<true>']\n" n;
   flush stdout;
   let ret = Sys.command (sprintf "Cosmos %s %s.gspn %s.lha" o n n) in
-  if ret <> 0 then printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i\n" n n ret
+  if ret <> 0 then printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" n n ret
   else test_result n v
