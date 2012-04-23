@@ -1,4 +1,3 @@
-#use "../test.ml"
+#use "../testTeamCity.ml";;
 
-let result = parse_result "Result.res";;
-print_float result.mean;;
+test_cosmos_gspn "tqn" 0.1752 "--max-run 5000"
