@@ -1,6 +1,6 @@
 open Str
 open Printf
-(*#load "Str.cma"*)
+#load "str.cma"
 
 let dots = regexp ":\t"
 let confintdel = regexp "\\[\\| , \\|\\]"
@@ -48,4 +48,6 @@ let test_cosmos_gspn n v o =
   flush stdout;
   let ret = Sys.command (sprintf "../../bin/Cosmos %s %s.gspn %s.lha" o n n) in
   if ret <> 0 then printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" n n ret
-  else test_result n v
+  else test_result n v;;
+
+test_cosmos_gspn Sys.argv.(1) (float_of_string Sys.argv.(2)) Sys.argv.(3)
