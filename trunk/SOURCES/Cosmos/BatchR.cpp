@@ -25,6 +25,7 @@
  */
 
 #include "BatchR.hpp"
+#include <unistd.h>
 
 using namespace std;
 
