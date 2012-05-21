@@ -34,8 +34,8 @@ double StrToDbl(string st);
 int StrToInt(string st);
 long int StrToLongInt(string st);
 
-void LauchExport(parameters& P);
-void LauchServer(parameters& P);
+void launchExport(parameters& P);
+void launchServer(parameters& P);
 
 
 #endif	/* _SERVER_HPP */

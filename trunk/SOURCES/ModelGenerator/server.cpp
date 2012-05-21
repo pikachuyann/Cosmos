@@ -44,23 +44,13 @@
 
 using namespace std;
 
-/*class BatchResult {
- public:
- bool IsBernoulli;
- int I;
- int Isucc;
- double Mean;
- double M2;
- };*/
-
+// Straightforward conversion function:
 double StrToDbl(string st) {
-    
     std::istringstream iss(st);
     double x;
     iss >> x;
     return x;
 }
-
 int StrToInt(string st) {
     
     std::istringstream iss(st);
@@ -68,7 +58,6 @@ int StrToInt(string st) {
     iss >> x;
     return x;
 }
-
 long int StrToLongInt(string st) {
     
     std::istringstream iss(st);
@@ -83,7 +72,7 @@ vector<FILE*> clientstream;
 vector<pid_t> clientPID;
 int max_client=0 ;
 
-
+// Handler for crash of the simulator
 void signalHandler( int signum )
 {
     cout << "Simulator Crash" << endl;
@@ -93,7 +82,8 @@ void signalHandler( int signum )
 void signalHandlerOK(int signum){};
 
 
-void lauch_clients(parameters& P){
+// Launch the P.Njob copy of the simulator with the parameters define in P
+void launch_clients(parameters& P){
     signal(SIGCHLD , signalHandler); 
 	ostringstream os;
 	pid_t readpid;
@@ -126,15 +116,15 @@ void lauch_clients(parameters& P){
     
 }
 
-void kill_client(){
-    
+//Kill all the copy of the simulators at the end of the computation
+void kill_client(){    
     /*rusage ruse;
     getrusage(RUSAGE_CHILDREN, &ruse);
     cout <<endl << "Total Time: "
         << ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl; */
     
-    //Discard signal of child terminating
+    //Discard signal of child terminating
     signal(SIGCHLD , signalHandlerOK);
     
     while (!clientPID.empty())
@@ -147,7 +137,8 @@ void kill_client(){
     
 }
 
-
+// Build a list of input files of all the simulators to collect results
+// This list is made to be used with the function <sys/select.h>/select
 void makeselectlist(int Njob){
     FD_ZERO(&client_list);
     for(int it = 0;it<Njob;it++){
@@ -157,7 +148,7 @@ void makeselectlist(int Njob){
     
 }
 
-void LauchExport(parameters& P){
+void launchExport(parameters& P){
     
     ostringstream os;
 	if (P.Path == "") os << "./ClientSim 1 " << P.verbose;
@@ -170,12 +161,13 @@ void LauchExport(parameters& P){
         cout << "Export Finish" << endl;
     }else{
         cout << "Export Fail" << endl;
-    }
-    
+    }    
 }
 
-
-void LauchServer(parameters& P){
+// This function is the main function.
+// This function launch a set of simulator and stop them once
+// The precision criterion is reach.
+void launchServer(parameters& P){
     
     //Simulator mySim;
     string str;
@@ -225,7 +217,7 @@ void LauchServer(parameters& P){
     // z(1-alpha/2)=z(1-(1-l)/2) = z(0.5+l/2)
 ////////////////////////////////////////////////////////////////////////////
     
-    lauch_clients(P);
+    launch_clients(P);
     makeselectlist(P.Njob);
     
     boost::math::normal norm;
@@ -274,13 +266,11 @@ void LauchServer(parameters& P){
                 }
                 
                 delete batchResult;
-                //-------------- Rare Event -----------------
                 if(!P.alligatorMode)cout << "\033[A\033[2K" << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
                 
                 if(P.RareEvent || P.BoundedRE>0){
                     RelErr = CurrentWidth /  abs(Mean);
                 }else RelErr = CurrentWidth / max(1.0, abs(Mean)); 
-                //------------- /Rare Event -----------------
                 
             }
         }
