@@ -30,6 +30,7 @@
 #include <vector>
 #include <sys/select.h>
 #include <sys/types.h>
+#include <sys/ioctl.h>
 #include <sys/resource.h>
 #include <fstream>
 #include <boost/math/distributions/normal.hpp>
@@ -164,6 +165,15 @@ void launchExport(parameters& P){
     }    
 }
 
+void printProgress(int i, int j){
+    int t = 100;
+    int u = (t * i)/j; 
+    cout << "[";
+    for(int k = 1;k<u;k++)cout<<"|";
+    for(int k = u;k<t;k++)cout<<" ";
+    cout << "]"<< endl;
+}
+
 // This function is the main function.
 // This function launch a set of simulator and stop them once
 // The precision criterion is reach.
@@ -222,6 +232,7 @@ void launchServer(parameters& P){
     
     boost::math::normal norm;
     Normal_quantile = quantile(norm, 0.5 + P.Level / 2.0);
+
     
     do{
         fd_set cs_cp = client_list;
@@ -266,7 +277,13 @@ void launchServer(parameters& P){
                 }
                 
                 delete batchResult;
-                if(!P.alligatorMode)cout << "\033[A\033[2K" << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
+                if(!P.alligatorMode){
+                    cout << "\033[A\033[2K"<< "\033[A\033[2K" << "\033[A\033[2K" << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
+                    cout << "% of run:\t";
+                    printProgress(Ksucc, P.MaxRuns);
+                    cout << "% of width:\t";
+                    printProgress(1000*pow(-log(CurrentWidth),0.5), 1000*pow(-log(P.Width),0.5));
+                }
                 
                 if(P.RareEvent || P.BoundedRE>0){
                     RelErr = CurrentWidth /  abs(Mean);
@@ -281,6 +298,9 @@ void launchServer(parameters& P){
     
     //low = Mean - CurrentWidth / 2.0;
     //up = Mean + CurrentWidth / 2.0;
+    
+    cout << endl;
+    
     if (IsBernoulli) {
         low = (0 > low) ? 0.0 : low;
         up = (1 < up) ? 1.0 : up;
@@ -291,7 +311,6 @@ void launchServer(parameters& P){
     
     time(&end);
     cpu_time_used = difftime(end, start);
-
     
 	if(P.alligatorMode){
 		cout << "alligatorResult" << endl;
@@ -303,8 +322,22 @@ void launchServer(parameters& P){
 		cout << Ksucc << endl;
         cout << cpu_time_used << endl;
 	} else{
-        cout << "\nEstimated value: " << Mean << endl;
+        cout << "Estimated value: " << Mean << endl;
         cout << "Confidence interval: [" << low << "," << up << "]" << endl;
+        if(IsBernoulli){
+            cout << "The distribution look like a binomial!" << endl;
+            using namespace boost::math;
+            double successes = Ksucc * Mean;
+            double l = binomial_distribution<>::find_lower_bound_on_p(
+                    Ksucc, successes, (1-P.Level)/2);
+            double u = binomial_distribution<>::find_upper_bound_on_p(
+                    Ksucc, successes, (1-P.Level)/2);
+            // Print Clopper Pearson Limits:
+            cout << "Binomiale Confidence Interval: [" << l << "," << u << "]"<< endl;
+            cout << "Binomiale Width: "<< u-l << endl;
+            
+        }
+        
         cout << "Standard deviation: " << stdev << "\tWidth: " << CurrentWidth << endl;
         cout << "Total paths: " << K << "\tAccepted paths: " << Ksucc << endl;
 	}

@@ -367,7 +367,10 @@ BatchR* Simulator::RunBatch(){
 			//----------------- /Rare Event -----------------
 			batchResult->Isucc++;
 			
-			if (Result.second * (1 - Result.second) != 0) batchResult->IsBernoulli = false;
+			if (Result.second * (1 - Result.second) != 0){
+                batchResult->IsBernoulli = false;
+                //cerr << "not Bernoulli "<< Result.second << endl;
+            }
 			
 			
 			Dif = Result.second - batchResult->Mean;
