@@ -174,6 +174,29 @@ void printProgress(int i, int j){
     cout << "]"<< endl;
 }
 
+
+bool updateResult(BatchR& batchresult,parameters& P){
+    int K = 0; //counter of generated paths
+    int Ksucc = 0; //counter of succesfull generated paths
+    double Ksucc_sqrt; //square root of Ksucc
+    
+    double CurrentWidth = 1;
+    double RelErr = 1;
+    
+    double Mean = 0;
+    double Var = 0; //variance
+    double stdev = 0; //standard deviation
+    double M2 = 0;
+    boost::math::normal norm;
+    const double Normal_quantile = quantile(norm, 0.5 + P.Level / 2.0);
+    
+    double low, up;
+    bool IsBernoulli = true;
+    double Dif;
+
+    
+}
+
 // This function is the main function.
 // This function launch a set of simulator and stop them once
 // The precision criterion is reach.
