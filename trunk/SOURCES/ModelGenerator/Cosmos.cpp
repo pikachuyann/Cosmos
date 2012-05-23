@@ -75,7 +75,6 @@ void FindPathLinux(parameters& P) {
 
 using namespace std;
 
-
 bool ParseBuild(parameters& P) {
 	Gspn_Reader gReader;
 	
@@ -157,15 +156,6 @@ bool ParseBuild(parameters& P) {
 	return true;
 }
 
-void DirectSim(parameters& P) {
-	if (ParseBuild(P)) {
-        if(P.computeStateSpace){
-            launchExport(P);
-        } else launchServer(P);
-	}
-}
-
-
 int main(int argc, char** argv) {
 	parameters P;
 	
@@ -181,7 +171,14 @@ int main(int argc, char** argv) {
 		else if (st == "Cosmos")FindPath(P);
 		else P.Path.assign(st.begin(), st.end() - 6);
 	}
-	DirectSim(P);
+	if (ParseBuild(P)) {
+        if(P.computeStateSpace){
+            launchExport(P);
+        } else launchServer(P);
+	} else {
+        cout << "Fail to build the model.";
+        return(EXIT_FAILURE);
+    }
 	
 	return (EXIT_SUCCESS);
 }
