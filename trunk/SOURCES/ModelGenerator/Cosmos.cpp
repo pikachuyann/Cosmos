@@ -38,9 +38,7 @@
 
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
-
 void FindPathMac(parameters& P) {
-	
 	char path[1024];
 	uint32_t size = sizeof(path);
 	if (_NSGetExecutablePath(path, &size) != 0){
@@ -52,15 +50,11 @@ void FindPathMac(parameters& P) {
 	std::string::size_type t = P.Path.find_last_of("/");
 	P.Path = P.Path.substr(0, t);
 	P.Path.append("/");
-	//cout << "Unknow Cosmos directory" << endl;
-	//exit(1);
 }
-
 
 #define FindPath FindPathMac
 #elif __linux__
 void FindPathLinux(parameters& P) {
-	
 	char path[1024];
 	char link[512];
 	sprintf(link, "/proc/%d/exe", getpid());
@@ -80,7 +74,6 @@ void FindPathLinux(parameters& P) {
 #endif
 
 using namespace std;
-
 
 
 bool ParseBuild(parameters& P) {
@@ -112,20 +105,11 @@ bool ParseBuild(parameters& P) {
 	
 	Lha_Reader lReader;
 	
-	
 	lReader.MyLha.TransitionIndex = gReader.MyGspn.TransId;
 	lReader.MyLha.PlaceIndex = gReader.MyGspn.PlacesId;
 	
-	
 	Gspn_Reader gr;
 	gReader = gr;
-	
-	
-	/*if(P.GMLinput){
-		LhaFileName.append(".lha.gml");
-	}else {
-		LhaFileName.append(".lha");
-	}*/
 	
 	if(P.verbose>0)cout << "Start Parsing " << P.PathLha << endl;
 	
@@ -191,19 +175,13 @@ int main(int argc, char** argv) {
         cout << "Cosmos" << endl;
     }
 	
-	// Declare the supported options.
-		
 	if(P.Path.compare("")==0){
 		string st = argv[0];
 		if (st == "./Cosmos") P.Path = "";
 		else if (st == "Cosmos")FindPath(P);
 		else P.Path.assign(st.begin(), st.end() - 6);
 	}
-		
-	//cout << "executable absolute path: "<<P.Path <<endl;
-	
 	DirectSim(P);
-	
 	
 	return (EXIT_SUCCESS);
 }
