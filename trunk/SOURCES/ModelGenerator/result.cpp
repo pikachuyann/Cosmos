@@ -146,7 +146,7 @@ void result::printResult(){
     }
     
     cout << "Estimated value: " << Mean << endl;
-    cout << "Confidence interval: [" << low << "," << up << "]" << endl;
+    cout << "Confidence interval: [" << low << " , " << up << "]" << endl;
     if(IsBernoulli){
         cout << "The distribution look like a binomial!" << endl;
         using namespace boost::math;
@@ -156,7 +156,7 @@ void result::printResult(){
         double u = binomial_distribution<>::find_upper_bound_on_p(
             Ksucc, successes, (1-P.Level)/2);
         // Print Clopper Pearson Limits:
-        cout << "Binomiale Confidence Interval: [" << l << "," << u << "]"<< endl;
+        cout << "Binomiale Confidence Interval: [" << l << " , " << u << "]"<< endl;
         cout << "Binomiale Width: "<< u-l << endl;
         
     }
@@ -171,8 +171,8 @@ void result::printResultFile(string f){
     if (!ResultsFile) cout << "File '" << f << "' not Created" << endl;
     else {
         
-        ResultsFile << "Estimated value: " << Mean << endl;
-        ResultsFile << "Confidence interval: [" << low << "," << up << "]" << endl;
+        ResultsFile << "Estimated value:\t" << Mean << endl;
+        ResultsFile << "Confidence interval:\t[" << low << " , " << up << "]" << endl;
         if(IsBernoulli){
             ResultsFile << "The distribution look like a binomial!" << endl;
             using namespace boost::math;
@@ -182,13 +182,13 @@ void result::printResultFile(string f){
             double u = binomial_distribution<>::find_upper_bound_on_p(
                 Ksucc, successes, (1-P.Level)/2);
             // Print Clopper Pearson Limits:
-            ResultsFile << "Binomiale Confidence Interval: [" << l << "," << u << "]"<< endl;
-            ResultsFile << "Binomiale Width: "<< u-l << endl;
+            ResultsFile << "Binomiale Confidence Interval:\t[" << l << " , " << u << "]"<< endl;
+            ResultsFile << "Binomiale Width:\t"<< u-l << endl;
             
         }
-        ResultsFile << "Standard deviation: " << stdev << "\tWidth: " << CurrentWidth << endl;
-        ResultsFile << "Total paths: " << K << "\tAccepted paths: " << Ksucc << endl;
-        ResultsFile << "Time for simulation:"<< cpu_time_used << "s" << endl;
+        ResultsFile << "Standard deviation:\t" << stdev << "\tWidth:\t" << CurrentWidth << endl;
+        ResultsFile << "Total paths:\t" << K << "\tAccepted paths:\t" << Ksucc << endl;
+        ResultsFile << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
         
         cout << "Results are saved in '" << f << "'" << endl;
         ResultsFile.close();
