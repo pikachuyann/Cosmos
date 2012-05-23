@@ -44,28 +44,6 @@
 
 using namespace std;
 
-// Straightforward conversion function:
-double StrToDbl(string st) {
-    std::istringstream iss(st);
-    double x;
-    iss >> x;
-    return x;
-}
-int StrToInt(string st) {
-    std::istringstream iss(st);
-    int x;
-    iss >> x;
-    return x;
-}
-long int StrToLongInt(string st) {
-    
-    std::istringstream iss(st);
-    long int x;
-    iss >> x;
-    return x;
-}
-
-
 fd_set client_list;
 vector<FILE*> clientstream;
 vector<pid_t> clientPID;
@@ -74,12 +52,11 @@ int max_client=0 ;
 // Handler for crash of the simulator
 void signalHandler( int signum )
 {
-    cout << "Simulator Crash" << endl;
+    cout << "Simulator Crash!" << endl;
     exit(EXIT_FAILURE);  
 }
 
 void signalHandlerOK(int signum){};
-
 
 // Launch the P.Njob copy of the simulator with the parameters define in P
 void launch_clients(parameters& P){
@@ -99,8 +76,7 @@ void launch_clients(parameters& P){
     } else if(P.BoundedRE>0){
         os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
     } 
-    //cout << os.str() << endl;
-    
+
     for(int i = 0;i<P.Njob;i++){
         FILE* stream = popen((os.str()).c_str(), "r");
         clientstream.push_back(stream);
@@ -109,8 +85,6 @@ void launch_clients(parameters& P){
         
         size = fread(reinterpret_cast<char*>( &readpid ), sizeof(readpid) ,1, stream);
         clientPID.push_back(readpid);
-        //cout << "pid:" << readpid << endl<<endl;
-        
     }
     
 }
@@ -128,7 +102,6 @@ void kill_client(){
     
     while (!clientPID.empty())
     {
-        
         kill(clientPID.back(),9);
         clientstream.pop_back();
         clientPID.pop_back();
@@ -165,41 +138,37 @@ void launchExport(parameters& P){
 // This function launch a set of simulators and stop them once
 // The precision criterion is reach.
 void launchServer(parameters& P){
-    
-    string str;
     cout << "START SIMULATION ..." << endl;
     
+    //Init result
     result Result(P);
+    //Launch a set of simulators
     launch_clients(P);
+    //Make a list of file system for polling
     makeselectlist(P.Njob);
     
     do{
         fd_set cs_cp = client_list;
-        if(select(max_client+1, &cs_cp, NULL, NULL, NULL) == -1)
-        {
+        //wait for a simulator to return some result
+        if(select(max_client+1, &cs_cp, NULL, NULL, NULL) == -1){
             perror("Server-select() error!");
             exit(1);
         }
         for(int it = 0;it<P.Njob;it++){
             if(FD_ISSET(fileno(clientstream[it]), &cs_cp)){
-                BatchR* batchResult = new BatchR;
-                batchResult->inputR(clientstream[it]);
-    
-                Result.addBatch(batchResult);
-                
-                delete batchResult;
-                if(!P.alligatorMode){
-                    Result.printProgress();
-                }
+                //aggregate the new result to the total result
+                BatchR batchResult;
+                batchResult.inputR(clientstream[it]);
+                Result.addBatch(&batchResult);
+                if(!P.alligatorMode)Result.printProgress();
             }
         }
-    }while (Result.continueSim());
+    }while(Result.continueSim());
     
-    
+    //Kill all the simulator
     kill_client();
     
     cout << endl;
-    
     Result.stopclock();
     
 	if(P.alligatorMode){
@@ -207,7 +176,6 @@ void launchServer(parameters& P){
 	} else{
         Result.printResult();
 	}
-    
     
     string fn = "Result";
     fn.append(".res");
