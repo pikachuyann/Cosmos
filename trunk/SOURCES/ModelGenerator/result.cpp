@@ -178,9 +178,9 @@ void result::printResultFile(string f){
             using namespace boost::math;
             double successes = Ksucc * Mean;
             double l = binomial_distribution<>::find_lower_bound_on_p(
-                                                                      Ksucc, successes, (1-P.Level)/2);
+                Ksucc, successes, (1-P.Level)/2);
             double u = binomial_distribution<>::find_upper_bound_on_p(
-                                                                      Ksucc, successes, (1-P.Level)/2);
+                Ksucc, successes, (1-P.Level)/2);
             // Print Clopper Pearson Limits:
             ResultsFile << "Binomiale Confidence Interval: [" << l << "," << u << "]"<< endl;
             ResultsFile << "Binomiale Width: "<< u-l << endl;
