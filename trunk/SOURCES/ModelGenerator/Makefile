@@ -4,6 +4,7 @@ LIBGMLPATH=../libgml/
 
 FILES= $(OBJPATH)/parameters.o \
     $(OBJPATH)/server.o \
+    $(OBJPATH)/result.o \
 	$(OBJPATH)/Cosmos.o \
 	$(OBJPATH)/Eval/Eval-parser.tab.o \
 	$(OBJPATH)/Eval/Eval.o \
