@@ -73,11 +73,10 @@ void SimulatorRE::returnResultTrue(vector<int> marking, double D){
 	A.UpdateFormulaVal();
 	Result.first = true;
 	Result.second = A.Likelihood * A.FormulaVal;
-	return;
 }
 
 void SimulatorRE::returnResultFalse(){
-	Result.first =true;
+	Result.first = true;
 	Result.second =0.0;
 }
 

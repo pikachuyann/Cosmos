@@ -108,11 +108,9 @@ void Simulator::returnResultTrue(vector<int>marking, double D){
 	A.UpdateFormulaVal();
 	Result.first = true;
 	Result.second = A.FormulaVal;
-	return;
 }
 void Simulator::returnResultFalse(){
 	Result.first = false;
-	return;
 }
 
 
