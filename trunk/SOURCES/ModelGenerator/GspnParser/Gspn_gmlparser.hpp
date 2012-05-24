@@ -50,9 +50,10 @@ private:
 	GSPN* MyGspn;
     void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it );
     int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it );
+    bool rareEvent;
     
 public:
-    MyModelHandler(GSPN* ) ;
+    MyModelHandler(GSPN* ,bool) ;
 	//~MyModelHandler() { }
 	
 	

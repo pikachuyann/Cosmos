@@ -110,14 +110,15 @@ int Gspn_Reader::parse_file(string &filename) {
 }
 
 //#include "Gspn_gmlparser.cpp";
-int Gspn_Reader::parse_gml_file(string &filename) {
+int Gspn_Reader::parse_gml_file(string &filename,bool re) {
     ifstream ifile(filename.c_str());
     if(ifile){
 	//cout << "parse GML:" << filename << endl;
-	ModelHandlerPtr handlerPtr(new MyModelHandler(&MyGspn));
+        ModelHandlerPtr handlerPtr(new MyModelHandler(&MyGspn,re));
     ExpatModelParser parser = ExpatModelParser(handlerPtr);
     parser.parse_file(filename);
 	//cout << "end parse GML:"<< MyGspn.pl << endl;
+        if (re)addSinkTrans();
 	return 0;
     }else{
         cout << "File " << filename << " does not exist!" << endl;
@@ -134,6 +135,35 @@ Gspn_Reader::error(const gspn::location& l, const std::string& m) {
 void
 Gspn_Reader::error(const std::string& m) {
     std::cerr << m << std::endl;
+}
+
+/*void Gspn_Reader::addSink(){
+    //Add a place
+    MyGspn.Marking.push_back(0);
+    string Plname = "Puit";
+    MyGspn.PlacesList.insert(Plname);
+    MyGspn.PlacesId[Plname]=MyGspn.pl;
+    MyGspn.pl++;
+    
+    //Add a transition
+    string Trname = "Puittrans";
+    MyGspn.TransList.insert(Trname);
+    MyGspn.TransId[Trname]=MyGspn.tr;
+    ProbabiliteDistribution& dist = *(new ProbabiliteDistribution);
+    dist.name = "EXPONENTIAL";
+    dist.Param.push_back("0");
+    MyGspn.Dist.push_back(dist);
+    MyGspn.tType.push_back(Timed);
+    MyGspn.Priority.push_back("1");
+    MyGspn.Weight.push_back("1");
+    MyGspn.SingleService.push_back(true);
+    MyGspn.MarkingDependent.push_back(true);
+    MyGspn.NbServers.push_back(1);
+    MyGspn.tr++;
+}*/
+
+void Gspn_Reader::addSinkTrans(){
+    (MyGspn.outArcs)[MyGspn.tr-1][MyGspn.pl-1]=1;
 }
 
 void Gspn_Reader::WriteFile(string& Pref) {

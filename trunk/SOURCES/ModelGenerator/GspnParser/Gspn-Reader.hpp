@@ -121,7 +121,7 @@ public:
 
     int parse(std::string&);
     int parse_file(std::string&);
-	int parse_gml_file(std::string&);
+	int parse_gml_file(std::string&,bool);
     void WriteFile(string&);
 
     bool trace_parsing;
@@ -129,7 +129,10 @@ public:
 
     void error(const gspn::location& l, const std::string& m);
     void error(const std::string& m);
-
+    
+    //void addSink();
+    void addSinkTrans();
+    
     void view();
 };
 #endif // ! GSPN_READER_HH

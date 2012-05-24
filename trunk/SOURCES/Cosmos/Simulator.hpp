@@ -55,17 +55,21 @@ public:
 	~Simulator();
 	
     int verbose;
+    
 	virtual BatchR* RunBatch(); //main entry point of the object simulate a batch of trajectory
 	void SetBatchSize(int); // set the batch size
-	
+	void logValue();
+    
 protected:
 	fstream logvalue; // file to log value
+    
 	SimOutput Result; // store result beetween two trajectory simulation
 	double simTime; 
 	time_t SysTime;
 	
 	int BatchSize;
-	
+	bool logResult;
+    
 	SPN N; //The object representing the SPN
 	LHA A; //The object representing the LHA
 	

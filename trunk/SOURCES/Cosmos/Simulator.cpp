@@ -52,8 +52,8 @@ Simulator::Simulator() {
 	IndexDist["LOGNORMAL"] = 4;
 	IndexDist["TRIANGLE"] = 5;
 	IndexDist["GEOMETRIC"] = 6;
-	
-	//logvalue.open("outcosmos",fstream::out);
+    
+    logResult=false;
 	
 	//Initialize random generator
 	RandomNumber.seed(time(NULL));
@@ -66,6 +66,11 @@ Simulator::Simulator(const Simulator& orig) {
 }
 
 Simulator::~Simulator() {
+}
+
+void Simulator::logValue(){
+    logvalue.open("outcosmos",fstream::out);
+    logResult=true;
 }
 
 void Simulator::SetBatchSize(int RI) {
@@ -361,7 +366,7 @@ BatchR* Simulator::RunBatch(){
 		
 		if (Result.first) {
 			//------------------ Rare Event -----------------
-			//logvalue << Result.second << endl ;
+			if(logResult)logvalue << Result.second << endl ;
 			//----------------- /Rare Event -----------------
 			batchResult->Isucc++;
 			

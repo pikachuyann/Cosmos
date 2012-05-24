@@ -83,11 +83,10 @@ bool ParseBuild(parameters& P) {
 	
     try{
         if(P.GMLinput){
-            parseresult = gReader.parse_gml_file(P.PathGspn);
+            parseresult = gReader.parse_gml_file(P.PathGspn,P.RareEvent);
         }else {
             parseresult = gReader.parse_file(P.PathGspn);
         }
-        
         
         if (!parseresult) {
             gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));

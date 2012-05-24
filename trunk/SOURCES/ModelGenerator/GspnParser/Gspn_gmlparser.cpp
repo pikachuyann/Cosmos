@@ -194,9 +194,10 @@ treeSI findbranch(treeSI t, string branch){
     throw gmlioexc;
 }
 
-MyModelHandler::MyModelHandler(GSPN* MyGspn2) {
+MyModelHandler::MyModelHandler(GSPN* MyGspn2,bool re) {
 	//Initialisation
     verbose =0;
+    rareEvent = re;
     MyGspn= MyGspn2;
     countPl=0;
     MyGspn->pl=0;
@@ -430,6 +431,31 @@ void MyModelHandler::on_read_arc(const XmlString& id,
                                  const XmlStringList& references) {
     if(ParsePl){
         ParsePl=false;
+        
+        if(rareEvent){
+            //Add a place
+            MyGspn->Marking.push_back(0);
+            string Plname = "Puit";
+            MyGspn->PlacesList.insert(Plname);
+            MyGspn->PlacesId[Plname]=MyGspn->pl;
+            MyGspn->pl++;
+            
+            //Add a transition
+            string Trname = "Puittrans";
+            MyGspn->TransList.insert(Trname);
+            MyGspn->TransId[Trname]=MyGspn->tr;
+            ProbabiliteDistribution& dist = *(new ProbabiliteDistribution);
+            dist.name = "EXPONENTIAL";
+            dist.Param.push_back("0");
+            MyGspn->Dist.push_back(dist);
+            MyGspn->tType.push_back(Timed);
+            MyGspn->Priority.push_back("1");
+            MyGspn->Weight.push_back("1");
+            MyGspn->SingleService.push_back(true);
+            MyGspn->MarkingDependent.push_back(true);
+            MyGspn->NbServers.push_back(1);
+            MyGspn->tr++;
+        }
         
         vector<int> vplint(MyGspn->pl,0);
         vector<string> vStr(MyGspn->pl, " ");
