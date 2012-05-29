@@ -200,9 +200,17 @@ void Simulator::updateLikelihood(int i){
 }
 
 bool Simulator::SimulateOneStep(AutEdge* AEref){
+    if(verbose>2){
+        cerr << "Marking:\t";
+        for(int i =0; i < N.Marking.size();i++){
+            cerr << N.Place[i].label << ":" << N.Marking[i] << "\t,";
+        }
+        cerr << "Automate:" << A.LocLabel[A.CurrentLocation] << endl;
+    }
 	AutEdge AE = *AEref;
 	if ((*EQ).isEmpty()) {
 		while (AE.Index>-1) {
+            //cerr << "Clean automata transition";
 			updateLHA(AE.Index,AE.FiringTime - A.CurrentTime, N.Marking);
 			if (A.isFinal(A.CurrentLocation)) {
 				returnResultTrue(N.Marking,0.0);
@@ -213,11 +221,13 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
 		return false;
 	} else {
 		Event E1 = (*EQ).InPosition(0);
-		
+		if(verbose>2)cerr << "transition:" << E1.transition << endl;
+        
 		int E1_transitionNum = E1.transition;
 		updateLikelihood(E1_transitionNum);
 		
 		while (E1.time >= AE.FiringTime) {
+            //cerr << "looping on autonomous edge";
 			updateLHA(AE.Index,AE.FiringTime - A.CurrentTime, N.Marking);
 			if (A.isFinal(A.CurrentLocation)) {
 				returnResultTrue(N.Marking, 0.0);
@@ -258,10 +268,14 @@ void Simulator::SimulateSinglePath() {
 	Simulator::InitialEventsQueue();
 	AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 	
+    //cerr << "start path"<< endl;
+    
 	bool continueb = true;
 	while ((!(*EQ).isEmpty() || AE.Index > -1) && continueb ) {
+        //cerr << "continue path"<< endl;
 		continueb = SimulateOneStep(&AE);
 	}
+    //cerr << "finish path"<< endl;
 }
 
 void Simulator::GenerateEvent(Event& E, int Id) {

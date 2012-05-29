@@ -76,7 +76,7 @@ void SimulatorRE::returnResultTrue(vector<int> marking, double D){
 }
 
 void SimulatorRE::returnResultFalse(){
-	Result.first = true;
+	Result.first = false;
 	Result.second =0.0;
 }
 
