@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
     mySim->SetBatchSize(StrToInt(str)); //set the batch size
     str = argv[2];
     mySim->verbose = StrToInt(str);
-    mySim->logValue();
+    //mySim->logValue();
     
     
     while( !cin.eof() ){

@@ -423,7 +423,8 @@ void stateSpace::outputVect(){
     
 	fstream outputFile;
 	outputFile.open("muFile",fstream::out);
-	
+	outputFile.precision(15);
+    
     outputFile << "[" << muvect->size() << "](";
     for (int i =0; i<muvect->size(); i++) {
         if(i>0)outputFile << ",";

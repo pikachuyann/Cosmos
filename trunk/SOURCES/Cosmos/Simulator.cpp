@@ -70,6 +70,7 @@ Simulator::~Simulator() {
 
 void Simulator::logValue(){
     logvalue.open("outcosmos",fstream::out);
+    logvalue.precision(15);
     logResult=true;
 }
 
