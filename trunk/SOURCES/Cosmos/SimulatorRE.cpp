@@ -142,6 +142,10 @@ void SimulatorRE::updateLikelihood(int E1_transitionNum){
 	}
 }
 
+bool SimulatorRE::transitionSink(int i){
+    return (i==N.tr-1);
+}
+
 void SimulatorRE::GenerateDummyEvent(Event& E, int Id) {
     E.transition = Id;
     E.time = 0.0;

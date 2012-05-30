@@ -200,6 +200,10 @@ void Simulator::updateLikelihood(int i){
 	return;
 }
 
+bool Simulator::transitionSink(int i){
+    return false;
+}
+
 bool Simulator::SimulateOneStep(AutEdge* AEref){
     if(verbose>2){
         cerr << "Marking:\t";
@@ -225,7 +229,12 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
 		if(verbose>2)cerr << "transition:" << E1.transition << endl;
         
 		int E1_transitionNum = E1.transition;
-		updateLikelihood(E1_transitionNum);
+		if(transitionSink(E1_transitionNum)){
+            returnResultFalse();
+            return false;
+        }
+        
+        updateLikelihood(E1_transitionNum);
 		
 		while (E1.time >= AE.FiringTime) {
             //cerr << "looping on autonomous edge";
@@ -373,7 +382,7 @@ BatchR* Simulator::RunBatch(){
 	//double Y = 0;
 	BatchR* batchResult = new BatchR();
 	
-	while (batchResult->Isucc < BatchSize) {
+	while (batchResult->I < BatchSize) {
 		
 		
 		SimulateSinglePath();

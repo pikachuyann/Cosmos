@@ -104,6 +104,7 @@ protected:
 	virtual void updateSPN(int); // update value in the SPN after a transition
 	
 	virtual void updateLikelihood(int); // update the likelyhood for the Rare event case 
+    virtual bool transitionSink(int); // Stop the simulation if sink transition is taken
 	
 	virtual vector<double> getParams(int); // return the parameters of a transition distribution
 	

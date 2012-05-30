@@ -53,6 +53,7 @@ protected:
 	virtual void GenerateEvent(Event &, int);
 	virtual void GenerateDummyEvent(Event &, int);
 	virtual void updateLikelihood(int);
+    virtual bool transitionSink(int);
 	virtual vector<double> getParams(int);
 	virtual void reset();
 	
