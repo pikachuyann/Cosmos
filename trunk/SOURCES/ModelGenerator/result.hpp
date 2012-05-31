@@ -29,6 +29,7 @@
 #include "../Cosmos/BatchR.hpp"
 #include <istream>
 #include <fstream>
+#include <ostream>
 #include <time.h>
 
 #ifndef Cosmos_result_h
@@ -63,7 +64,7 @@ public:
     bool continueSim();
     void printProgress();
     void stopclock();
-    void printResult();
+    void print(ostream &s);
     void printResultFile(string);
     void printAlligator();
 };

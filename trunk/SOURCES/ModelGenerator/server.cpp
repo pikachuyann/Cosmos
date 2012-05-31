@@ -174,7 +174,7 @@ void launchServer(parameters& P){
 	if(P.alligatorMode){
 		Result.printAlligator();
 	} else{
-        Result.printResult();
+        Result.print(cout);
 	}
     
     string fn = "Result";

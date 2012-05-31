@@ -131,7 +131,10 @@ void result::printProgress(){
     cout << "% of run:\t";
     printPercent(Ksucc, P.MaxRuns);
     cout << "% of width:\t";
-    printPercent(1000*pow(-log(CurrentWidth),0.5), 1000*pow(-log(P.Width),0.5));
+    double initwidth = 2 * Normal_quantile * stdev / sqrt(P.Batch);
+    if(CurrentWidth != 0 ){
+        printPercent(1000*pow(initwidth/CurrentWidth,2.0), 1000*pow(initwidth/P.Width,2.0));
+    } else cout << endl;
 }
 
 void result::stopclock(){
@@ -139,7 +142,8 @@ void result::stopclock(){
     cpu_time_used = difftime(end, start);
 }
 
-void result::printResult(){
+void result::print(ostream &s){
+    
     if (IsBernoulli) {
         low = (0 > low) ? 0.0 : low;
         up = (1 < up) ? 1.0 : up;
@@ -148,22 +152,22 @@ void result::printResult(){
     }
     
     if(P.RareEvent){
-        cout << "Rare Event Result" << endl;
-        cout << "Mean:  " << Mean*Ksucc/K << endl;
+        s << "Rare Event Result" << endl;
+        s << "Mean:  " << Mean*Ksucc/K << endl;
         using namespace boost::math;
         double l = binomial_distribution<>::find_lower_bound_on_p(
                                                                   K, Ksucc, (1-P.Level)/2);
         double u = binomial_distribution<>::find_upper_bound_on_p(
                                                                   K, Ksucc, (1-P.Level)/2);
         // Print Clopper Pearson Limits:
-        cout << "Binomiale Confidence Interval: [" << l*Mean << " , " << u*Mean << "]"<< endl;
-        cout << "Binomiale Width: "<< (u-l)*Mean << endl <<endl;
+        s << "Binomiale Confidence Interval: [" << l*Mean << " , " << u*Mean << "]"<< endl;
+        s << "Binomiale Width: "<< (u-l)*Mean << endl <<endl;
     } else {
-        cout << "Estimated value: " << Mean << endl;
-        cout << "Confidence interval: [" << low << " , " << up << "]" << endl;
+        s << "Estimated value: " << Mean << endl;
+        s << "Confidence interval: [" << low << " , " << up << "]" << endl;
         
         if(IsBernoulli){
-            cout << "The distribution look like a binomial!" << endl;
+            s << "The distribution look like a binomial!" << endl;
             using namespace boost::math;
             double successes = Ksucc * Mean;
             double l = binomial_distribution<>::find_lower_bound_on_p(
@@ -171,14 +175,14 @@ void result::printResult(){
             double u = binomial_distribution<>::find_upper_bound_on_p(
                                                                       Ksucc, successes, (1-P.Level)/2);
             // Print Clopper Pearson Limits:
-            cout << "Binomiale Confidence Interval: [" << l << " , " << u << "]"<< endl;
-            cout << "Binomiale Width: "<< u-l << endl;
+            s << "Binomiale Confidence Interval: [" << l << " , " << u << "]"<< endl;
+            s << "Binomiale Width: "<< u-l << endl;
             
         }
-        cout << "Standard deviation: " << stdev << "\tWidth: " << CurrentWidth << endl;
+        s << "Standard deviation: " << stdev << "\tWidth: " << CurrentWidth << endl;
     }
-    cout << "Total paths: " << K << "\tAccepted paths: " << Ksucc << endl;
-    cout << "Time for simulation:"<< cpu_time_used << "s" << endl;
+    s << "Total paths: " << K << "\tAccepted paths: " << Ksucc << endl;
+    s << "Time for simulation:"<< cpu_time_used << "s" << endl;
 }
 
 void result::printResultFile(string f){
@@ -186,32 +190,10 @@ void result::printResultFile(string f){
     
     if (!ResultsFile) cout << "File '" << f << "' not Created" << endl;
     else {
-        
-        ResultsFile << "Estimated value:\t" << Mean << endl;
-        ResultsFile << "Confidence interval:\t[" << low << " , " << up << "]" << endl;
-        if(IsBernoulli){
-            ResultsFile << "The distribution look like a binomial!" << endl;
-            using namespace boost::math;
-            double successes = Ksucc * Mean;
-            double l = binomial_distribution<>::find_lower_bound_on_p(
-                Ksucc, successes, (1-P.Level)/2);
-            double u = binomial_distribution<>::find_upper_bound_on_p(
-                Ksucc, successes, (1-P.Level)/2);
-            // Print Clopper Pearson Limits:
-            ResultsFile << "Binomiale Confidence Interval:\t[" << l << " , " << u << "]"<< endl;
-            ResultsFile << "Binomiale Width:\t"<< u-l << endl;
-            
-        }
-        ResultsFile << "Standard deviation:\t" << stdev << "\tWidth:\t" << CurrentWidth << endl;
-        ResultsFile << "Total paths:\t" << K << "\tAccepted paths:\t" << Ksucc << endl;
-        ResultsFile << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
-        
+        print(ResultsFile);
         cout << "Results are saved in '" << f << "'" << endl;
         ResultsFile.close();
-        
-        
     }
-
 }
 
 void result::printAlligator(){

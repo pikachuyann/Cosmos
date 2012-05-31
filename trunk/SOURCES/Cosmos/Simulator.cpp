@@ -226,7 +226,7 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
 		return false;
 	} else {
 		Event E1 = (*EQ).InPosition(0);
-		if(verbose>2)cerr << "transition:" << E1.transition << endl;
+		if(verbose>2)cerr << "transition:" << N.Transition[E1.transition].label << endl;
         
 		int E1_transitionNum = E1.transition;
 		if(transitionSink(E1_transitionNum)){
