@@ -181,7 +181,7 @@ void result::print(ostream &s){
             s << "Binomiale Width:\t"<< u-l << endl;
             
         }
-        s << "Standard deviation:\t" << stdev << end;
+        s << "Standard deviation:\t" << stdev << endl;
         s << "Width:\t" << CurrentWidth << endl;
     }
     s << "Total paths:\t" << K << endl;
