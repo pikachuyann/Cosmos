@@ -10,7 +10,7 @@
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              50
+              5
             </attribute>
           </attribute>
         </attribute>

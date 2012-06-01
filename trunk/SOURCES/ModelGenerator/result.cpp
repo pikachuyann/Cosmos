@@ -142,47 +142,51 @@ void result::stopclock(){
     cpu_time_used = difftime(end, start);
 }
 
+double binomlow(int i,int j , double l){
+    return boost::math::binomial_distribution<>::find_lower_bound_on_p(i,j,l);
+}
+
+double binomup(int i,int j , double l){
+    return boost::math::binomial_distribution<>::find_upper_bound_on_p(i,j,l);
+}
+
 void result::print(ostream &s){
     
     if (IsBernoulli) {
         low = (0 > low) ? 0.0 : low;
         up = (1 < up) ? 1.0 : up;
         CurrentWidth = up - low;
-        
     }
     
     if(P.RareEvent){
         s << "Rare Event Result" << endl;
         s << "Mean:  " << Mean*Ksucc/K << endl;
-        using namespace boost::math;
-        double l = binomial_distribution<>::find_lower_bound_on_p(
-                                                                  K, Ksucc, (1-P.Level)/2);
-        double u = binomial_distribution<>::find_upper_bound_on_p(
-                                                                  K, Ksucc, (1-P.Level)/2);
+        double l = binomlow(K, Ksucc, (1-P.Level)/2);
+        double u = binomup(K, Ksucc, (1-P.Level)/2);
         // Print Clopper Pearson Limits:
         s << "Binomiale Confidence Interval: [" << l*Mean << " , " << u*Mean << "]"<< endl;
         s << "Binomiale Width: "<< (u-l)*Mean << endl <<endl;
     } else {
-        s << "Estimated value: " << Mean << endl;
-        s << "Confidence interval: [" << low << " , " << up << "]" << endl;
+        s << "Estimated value:\t" << Mean << endl;
+        s << "Confidence interval:\t[" << low << " , " << up << "]" << endl;
         
         if(IsBernoulli){
             s << "The distribution look like a binomial!" << endl;
             using namespace boost::math;
             double successes = Ksucc * Mean;
-            double l = binomial_distribution<>::find_lower_bound_on_p(
-                                                                      Ksucc, successes, (1-P.Level)/2);
-            double u = binomial_distribution<>::find_upper_bound_on_p(
-                                                                      Ksucc, successes, (1-P.Level)/2);
+            double l = binomlow(Ksucc, successes, (1-P.Level)/2);
+            double u = binomup(Ksucc, successes, (1-P.Level)/2);
             // Print Clopper Pearson Limits:
-            s << "Binomiale Confidence Interval: [" << l << " , " << u << "]"<< endl;
-            s << "Binomiale Width: "<< u-l << endl;
+            s << "Binomiale Confidence Interval:\t[" << l << " , " << u << "]"<< endl;
+            s << "Binomiale Width:\t"<< u-l << endl;
             
         }
-        s << "Standard deviation: " << stdev << "\tWidth: " << CurrentWidth << endl;
+        s << "Standard deviation:\t" << stdev << end;
+        s << "Width:\t" << CurrentWidth << endl;
     }
-    s << "Total paths: " << K << "\tAccepted paths: " << Ksucc << endl;
-    s << "Time for simulation:"<< cpu_time_used << "s" << endl;
+    s << "Total paths:\t" << K << endl;
+    s << "Accepted paths:\t" << Ksucc << endl;
+    s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
 }
 
 void result::printResultFile(string f){
