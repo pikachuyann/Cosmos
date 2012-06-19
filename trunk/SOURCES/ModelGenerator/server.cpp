@@ -121,6 +121,11 @@ void makeselectlist(int Njob){
 
 void launchExport(parameters& P){
     
+    ostringstream setuppr;
+    setuppr << "cd " << P.Path << "../prism ; ./install.sh"; 
+    cout << "setup prism:" << setuppr.str() << endl;
+    system(setuppr.str().c_str());
+    
     ostringstream os;
 	if (P.Path == "") os << "./ClientSim 1 " << P.verbose;
     else os <<  P.Path << "ClientSim 1 " << P.verbose;
