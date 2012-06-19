@@ -124,7 +124,7 @@ void launchExport(parameters& P){
     ostringstream os;
 	if (P.Path == "") os << "./ClientSim 1 " << P.verbose;
     else os <<  P.Path << "ClientSim 1 " << P.verbose;
-    os << " " << "-STSP " << P.prismPath;
+    os << " " << "-STSP " << P.Path << "../" << P.prismPath;
     
     if(P.verbose >1)cout << os.str() << endl;
     
