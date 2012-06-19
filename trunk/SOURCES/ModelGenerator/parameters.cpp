@@ -47,7 +47,7 @@ parameters::parameters() {
 	GMLinput = false;
     computeStateSpace = false;
 	alligatorMode = false;
-    prismPath = "/Applications/prism-4.0.2-osx64/bin/prism";
+    prismPath = "prism/bin/prism";
     //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
 
 }
