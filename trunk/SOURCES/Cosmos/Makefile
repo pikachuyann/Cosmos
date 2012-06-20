@@ -1,6 +1,7 @@
 OBJPATH=../../Obj/Cosmos
 BINPATH=../../bin
 OPTIONS2= -Wno-deprecated $(OPTIONS) 
+BOOSTPATH=../
 
 CLASSES= $(OBJPATH)/BatchR.o \
 	$(OBJPATH)/spn_orig.o \
@@ -27,7 +28,7 @@ spn.hpp:
 	cat ../ModelGenerator/spn_orig.hpp end.cpp > spn.hpp
 
 $(OBJPATH)/%.o: %.cpp
-	$(CC) $(OPTIONS2) -c $*.cpp -o $@	
+	$(CC) -I$(BOOSTPATH) $(OPTIONS2) -c $*.cpp -o $@	
 
 $(OBJPATH)/%.o: %.c
 	$(CC) $(OPTIONS) -c $*.c -o $@
