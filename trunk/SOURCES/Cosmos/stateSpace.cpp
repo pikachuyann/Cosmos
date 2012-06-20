@@ -451,6 +451,10 @@ void stateSpace::outputVect(){
 	outputFile.close();
 }
 
+double stateSpace::returnPrismResult(){
+    return (*muvect)[0];
+}
+
 void stateSpace::inputVect(){
     cerr<< "Start reading muFile" << endl;
     ifstream inputFile;

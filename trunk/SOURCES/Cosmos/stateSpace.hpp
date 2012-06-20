@@ -120,6 +120,7 @@ public:
     
     void inputVect();
     void outputVect();
+    double returnPrismResult();
     
     void outputPrism();
     void launchPrism(string prismPath);

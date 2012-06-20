@@ -100,6 +100,7 @@ int main(int argc, char** argv) {
             states.importPrism();
             states.outputVect();
             cout << "Finish Exporting" << endl;
+            cout << "Prism Result:\t"<< states.returnPrismResult() << endl;
 			exit(EXIT_SUCCESS);
 		}
     } else {

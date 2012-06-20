@@ -152,6 +152,9 @@ double binomup(int i,int j , double l){
 
 void result::print(ostream &s){
     
+    if(!P.computeStateSpace){
+        
+        
     if (IsBernoulli) {
         low = (0 > low) ? 0.0 : low;
         up = (1 < up) ? 1.0 : up;
@@ -187,6 +190,8 @@ void result::print(ostream &s){
     s << "Total paths:\t" << K << endl;
     s << "Accepted paths:\t" << Ksucc << endl;
     s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
+
+    }
 }
 
 void result::printResultFile(string f){
