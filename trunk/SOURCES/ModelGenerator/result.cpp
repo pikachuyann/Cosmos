@@ -130,11 +130,13 @@ void result::printProgress(){
     cout << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
     cout << "% of run:\t";
     printPercent(Ksucc, P.MaxRuns);
-    cout << "% of width:\t";
-    double initwidth = 2 * Normal_quantile * stdev / sqrt(P.Batch);
-    if(CurrentWidth != 0 ){
-        printPercent(1000*pow(initwidth/CurrentWidth,2.0), 1000*pow(initwidth/P.Width,2.0));
-    } else cout << endl;
+    if(!P.RareEvent){
+        cout << "% of width:\t";
+        double initwidth = 2 * Normal_quantile * stdev / sqrt(P.Batch);
+        if(CurrentWidth != 0 ){
+            printPercent(1000*pow(initwidth/CurrentWidth,2.0), 1000*pow(initwidth/P.Width,2.0));
+        } else cout << endl;
+    }else cout << endl;
 }
 
 void result::stopclock(){
