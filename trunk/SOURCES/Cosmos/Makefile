@@ -1,7 +1,7 @@
 OBJPATH=../../Obj/Cosmos
 BINPATH=../../bin
 OPTIONS2= -Wno-deprecated $(OPTIONS) 
-BOOSTPATH=/data/usr64
+BOOSTPATH=/data/usr64/include
 
 CLASSES= $(OBJPATH)/BatchR.o \
 	$(OBJPATH)/spn_orig.o \
