@@ -1,5 +1,6 @@
 export CC=g++
 export OPTIONS=-O3
+export BOOSTPATH=/data/usr64/include
 
 files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 

@@ -19,7 +19,7 @@ FILES= $(OBJPATH)/parameters.o \
 	$(OBJPATH)/modelwriter.o
 
 $(OBJPATH)/%.o: %.cpp
-	$(CC) -I../libgml/ $(OPTIONS) -c $*.cpp -o $@	
+	$(CC) -I../libgml/ -I$(BOOSTPATH) $(OPTIONS) -c $*.cpp -o $@	
 $(OBJPATH)/%.o: %.cc
 	$(CC) -I../libgml/ $(OPTIONS) -c $*.cc -o $@
 $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
