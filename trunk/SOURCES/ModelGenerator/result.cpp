@@ -115,7 +115,7 @@ bool result::continueSim(){
     return (RelErr > P.Width) && (K < P.MaxRuns);
 }
 
-void printPercent(int i, int j){
+void printPercent(double i, double j){
     int t = 100;
     int u = (t * i)/j; 
     cout << "[";
@@ -135,7 +135,7 @@ void result::printProgress(){
         cout << "% of width:\t";
         double initwidth = 2 * Normal_quantile * stdev / sqrt(P.Batch);
         if(CurrentWidth != 0 ){
-            printPercent(1000*pow(initwidth/CurrentWidth,2.0), 1000*pow(initwidth/P.Width,2.0));
+            printPercent( pow(initwidth/CurrentWidth,2.0), pow(initwidth/P.Width,2.0));
         } else cout << endl;
     }else cout << endl;
 }
