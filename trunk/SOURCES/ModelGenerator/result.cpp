@@ -90,8 +90,9 @@ void result::addBatch(BatchR *batchResult){
     Dif = batchResult->M2 - M2;
     M2 = M2 + batchResult->Isucc * Dif / Ksucc;
     
-    Var = M2 - pow(Mean, 2);
-    
+    Var = (Ksucc/(Ksucc-1)) * (M2 - pow(Mean, 2));
+    // The factor (Isucc/Isucc-1) ensuire that var is an unbiased estimator of
+    // the true variance
     
     stdev = sqrt(Var);
     Ksucc_sqrt = sqrt(Ksucc);
