@@ -29,44 +29,78 @@
 
 using namespace std;
 
+/*BatchR::BatchR(int i) {
+ IsBernoulli = true;
+ I =0;
+ Isucc=0;
+ Mean=0;
+ M2=0;
+ TableLength=i;
+ //    vector<double> MeanTable(i);
+ //    vector<double> M2Table(i);
+ }
+ 
+ BatchR::BatchR(){
+ BatchR(0);
+ }*/
+
+
 BatchR::BatchR() {
-  IsBernoulli = true;
-  I =0;
-  Isucc=0;
-  Mean=0;
-  M2=0;
+    IsBernoulli = true;
+    I =0;
+    Isucc=0;
+    Mean=0;
+    M2=0;
+    TableLength=0;
 }
 
 BatchR::~BatchR() {
 }
 
 void BatchR::outputR() {
-  int size;
-  size = write(STDOUT_FILENO,reinterpret_cast<char*>(&IsBernoulli),sizeof(bool));
-  size = write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(int));
-  size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(int));
-  size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean),sizeof(double));
-  size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2),sizeof(double));
-  fflush(stdout);
+    int size;
+    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&IsBernoulli),sizeof(bool));
+    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(int));
+    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(int));
+    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean),sizeof(double));
+    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2),sizeof(double));
+    
+    //write table
+    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&TableLength),sizeof(int));
+    for(int i =0; i< TableLength; i++){
+        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&MeanTable[i]),sizeof(double));
+        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2Table[i]),sizeof(double));
+    }
+    fflush(stdout);
 }
 
 void BatchR::inputR(FILE* f) {
-  double read;
-  bool readb;
-  int readi;
-  int size;
-
-  size = fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, f);
-  IsBernoulli=readb;
-  size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
-  I=readi;
-  size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
-  Isucc=readi;
-  size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-  Mean=read;
-  size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-  M2=read;
-
+    double read;
+    bool readb;
+    int readi;
+    int size;
+    
+    size = fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, f);
+    IsBernoulli=readb;
+    size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
+    I=readi;
+    size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
+    Isucc=readi;
+    size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
+    Mean=read;
+    size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
+    M2=read;
+    
+    //read table
+    size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
+    TableLength=readi;
+    for(int i =0; i< TableLength; i++){
+        size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
+        MeanTable.push_back(read);
+        size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
+        M2Table.push_back(read);
+    }
+    fflush(stdout);
 }
 
 void BatchR::print(){

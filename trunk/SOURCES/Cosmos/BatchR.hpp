@@ -31,7 +31,7 @@
  * It is used both by the simulator and the main program.
  */
 
-
+#include <vector>
 #include <iostream>
 #include <fstream>
 
@@ -40,17 +40,22 @@
 
 class BatchR {
 public:
-  BatchR();
-  virtual ~BatchR();
-  bool IsBernoulli;
-  int I;
-  int Isucc;
-  double Mean;
-  double M2;
-  void outputR();
-  void inputR(FILE* f);
-  void print();
-
+    BatchR();
+    BatchR(int i);
+    virtual ~BatchR();
+    bool IsBernoulli;
+    int I;
+    int Isucc;
+    double Mean;
+    double M2;
+    int TableLength;
+    std::vector<double> MeanTable;
+    std::vector<double> M2Table;
+    
+    void outputR();
+    void inputR(FILE* f);
+    void print();
+    
 };
 
 
