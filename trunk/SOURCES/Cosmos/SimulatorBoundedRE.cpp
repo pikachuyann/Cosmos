@@ -62,8 +62,6 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	numSolv->reset();
 	//cerr << ")" << endl;
 	
-	double Dif=0;
-	//double Y = 0;
 	BatchR* batchResult = new BatchR();
 	
 	list<simulationState> statevect(BatchSize);
@@ -107,23 +105,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 			if((!EQ->isEmpty() || AE.Index > -1) && continueb) {
 				(*it).saveState(&N,&A,&AE,&EQ, &simTime);
 			} else {
-				if (Result.first) {
-					//écerr << endl<<"Result:" << Result.second << endl;
-					
-					batchResult->Isucc++;
-					
-					if (Result.second * (1 - Result.second) != 0) batchResult->IsBernoulli = false;
-					
-					
-					Dif = Result.second - batchResult->Mean;
-					batchResult->Mean += Dif / batchResult->Isucc;
-					
-					Dif = pow(Result.second, 2) - batchResult->M2;
-					batchResult->M2 += Dif / batchResult->Isucc;
-					
-				}
-				
-				batchResult->I++;
+				batchResult->addSim(&Result);
 				delete EQ;
 				it = statevect.erase(it);
 				it--;

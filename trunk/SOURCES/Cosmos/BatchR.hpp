@@ -38,6 +38,8 @@
 #ifndef _BATCHR_HPP
 #define	_BATCHR_HPP
 
+typedef std::pair<bool, double> SimOutput;
+
 class BatchR {
 public:
     BatchR();
@@ -52,6 +54,7 @@ public:
     std::vector<double> MeanTable;
     std::vector<double> M2Table;
     
+    void addSim(SimOutput*);
     void outputR();
     void inputR(FILE* f);
     void print();

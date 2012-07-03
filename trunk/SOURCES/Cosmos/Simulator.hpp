@@ -46,7 +46,7 @@ using namespace std;
 #ifndef _SIMULATOR_HPP
 #define _SIMULATOR_HPP
 
-typedef pair<bool, double> SimOutput;
+
 
 class Simulator {
 public:

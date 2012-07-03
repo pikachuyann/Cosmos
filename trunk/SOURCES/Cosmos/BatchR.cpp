@@ -26,6 +26,8 @@
 
 #include "BatchR.hpp"
 #include <unistd.h>
+#include <math.h>
+#include <float.h>
 
 using namespace std;
 
@@ -55,6 +57,30 @@ BatchR::BatchR() {
 }
 
 BatchR::~BatchR() {
+}
+
+void BatchR::addSim(SimOutput *Result){
+    I++;
+    if (Result->first) {
+        double Dif=0;
+        
+        Isucc++;
+        
+        if (Result->second * (1 - Result->second) != 0){
+            IsBernoulli = false;
+        }
+        
+        Dif = Result->second - Mean;
+        Mean += Dif / Isucc;
+        
+        Dif = pow(Result->second, 2) - M2;
+        M2 += Dif / Isucc;
+        
+        /*if (Isucc > 1) {
+         Dif = pow(Result.second, 2) - Y;
+         Y = Y + Dif / (Isucc - 1);
+         } else x1sqr = pow(Result.second, 2);*/
+    }
 }
 
 void BatchR::outputR() {
