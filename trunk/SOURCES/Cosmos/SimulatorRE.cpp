@@ -72,12 +72,12 @@ void SimulatorRE::returnResultTrue(vector<int> marking, double D){
 	A.UpdateLhaFunc(A.CurrentTime, D);
 	A.UpdateFormulaVal();
 	Result.first = true;
-	Result.second = A.Likelihood * A.FormulaVal;
+	Result.second[0] = A.Likelihood * A.FormulaVal;
 }
 
 void SimulatorRE::returnResultFalse(){
 	Result.first = false;
-	Result.second =0.0;
+	Result.second[0] =0.0;
 }
 
 void SimulatorRE::updateSPN(int E1_transitionNum){

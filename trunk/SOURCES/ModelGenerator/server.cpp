@@ -162,8 +162,9 @@ void launchServer(parameters& P){
         for(int it = 0;it<P.Njob;it++){
             if(FD_ISSET(fileno(clientstream[it]), &cs_cp)){
                 //aggregate the new result to the total result
-                BatchR batchResult;
+                BatchR batchResult(1);
                 batchResult.inputR(clientstream[it]);
+                //batchResult.print();
                 Result.addBatch(&batchResult);
                 if(!P.alligatorMode)Result.printProgress();
             }

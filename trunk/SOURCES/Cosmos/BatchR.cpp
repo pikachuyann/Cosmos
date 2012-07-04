@@ -46,14 +46,15 @@ using namespace std;
  BatchR(0);
  }*/
 
-
-BatchR::BatchR() {
+BatchR::BatchR(int i) {
     IsBernoulli = true;
     I =0;
     Isucc=0;
-    Mean=0;
-    M2=0;
-    TableLength=0;
+//    Mean=0;
+//    M2=0;
+    TableLength=i;
+    MeanTable=vector<double>(i,0.0);
+    M2Table=vector<double>(i,0.0);
 }
 
 BatchR::~BatchR() {
@@ -62,24 +63,36 @@ BatchR::~BatchR() {
 void BatchR::addSim(SimOutput *Result){
     I++;
     if (Result->first) {
+        Isucc++;
         double Dif=0;
         
-        Isucc++;
-        
-        if (Result->second * (1 - Result->second) != 0){
-            IsBernoulli = false;
+        for(int i =0; i< TableLength; i++){
+            
+            if (Result->second[i] * (1 - Result->second[i]) != 0){
+                IsBernoulli = false;
+            }
+            
+            Dif = Result->second[i] - MeanTable[i];
+            MeanTable[i] += Dif / Isucc;
+            
+            Dif = pow(Result->second[i], 2) - M2Table[i];
+            M2Table[i] += Dif / Isucc;
         }
+    }
+}
+
+void BatchR::unionR(BatchR *batch){
+    double Dif;
+    
+    I += batch->I;
+    Isucc += batch->Isucc;
+    
+    for(int i =0; i< TableLength; i++){
+        Dif = batch->MeanTable[i] - MeanTable[i];
+        MeanTable[i] += batch->Isucc * Dif / Isucc;
         
-        Dif = Result->second - Mean;
-        Mean += Dif / Isucc;
-        
-        Dif = pow(Result->second, 2) - M2;
-        M2 += Dif / Isucc;
-        
-        /*if (Isucc > 1) {
-         Dif = pow(Result.second, 2) - Y;
-         Y = Y + Dif / (Isucc - 1);
-         } else x1sqr = pow(Result.second, 2);*/
+        Dif = batch->M2Table[i] - M2Table[i];
+        M2Table[i] += batch->Isucc * Dif / Isucc;
     }
 }
 
@@ -88,8 +101,8 @@ void BatchR::outputR() {
     size = write(STDOUT_FILENO,reinterpret_cast<char*>(&IsBernoulli),sizeof(bool));
     size = write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(int));
     size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(int));
-    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean),sizeof(double));
-    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2),sizeof(double));
+//    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean),sizeof(double));
+//    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2),sizeof(double));
     
     //write table
     size = write(STDOUT_FILENO,reinterpret_cast<char*>(&TableLength),sizeof(int));
@@ -97,6 +110,8 @@ void BatchR::outputR() {
         size = write(STDOUT_FILENO,reinterpret_cast<char*>(&MeanTable[i]),sizeof(double));
         size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2Table[i]),sizeof(double));
     }
+    
+    //print();
     fflush(stdout);
 }
 
@@ -112,19 +127,19 @@ void BatchR::inputR(FILE* f) {
     I=readi;
     size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
     Isucc=readi;
-    size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
+/*    size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
     Mean=read;
     size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-    M2=read;
+    M2=read;*/
     
     //read table
     size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
     TableLength=readi;
     for(int i =0; i< TableLength; i++){
         size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-        MeanTable.push_back(read);
+        MeanTable[i]=read;
         size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-        M2Table.push_back(read);
+        M2Table[i]=read;
     }
     fflush(stdout);
 }
@@ -133,6 +148,6 @@ void BatchR::print(){
     cerr << "IsBernoulli:\t" << IsBernoulli << endl
     << "I:\t" << I << endl
     << "Isucc:\t" << Isucc << endl
-    << "Mean:\t" << Mean << endl
-    << "M2:\t" << M2 << endl;
+    << "Mean:\t" << MeanTable[0] << endl
+    << "M2:\t" << M2Table[0] << endl;
 }

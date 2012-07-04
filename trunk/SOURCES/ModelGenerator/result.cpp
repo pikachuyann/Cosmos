@@ -84,10 +84,10 @@ void result::addBatch(BatchR *batchResult){
     K = K + batchResult->I;
     Ksucc = Ksucc + batchResult->Isucc;
     
-    Dif = batchResult->Mean - Mean;
+    Dif = batchResult->MeanTable[0] - Mean;
     Mean = Mean + batchResult->Isucc * Dif / Ksucc;
     
-    Dif = batchResult->M2 - M2;
+    Dif = batchResult->M2Table[0] - M2;
     M2 = M2 + batchResult->Isucc * Dif / Ksucc;
     
     Var = (Ksucc/(Ksucc-1)) * (M2 - pow(Mean, 2));

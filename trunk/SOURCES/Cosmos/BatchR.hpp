@@ -42,19 +42,20 @@ typedef std::pair<bool, std::vector<double> > SimOutput;
 
 class BatchR {
 public:
-    BatchR();
+//    BatchR();
     BatchR(int i);
     virtual ~BatchR();
     bool IsBernoulli;
     int I;
     int Isucc;
-    double Mean;
-    double M2;
+    //double Mean;
+    //double M2;
     int TableLength;
     std::vector<double> MeanTable;
     std::vector<double> M2Table;
     
     void addSim(SimOutput*);
+    void unionR(BatchR*);
     void outputR();
     void inputR(FILE* f);
     void print();

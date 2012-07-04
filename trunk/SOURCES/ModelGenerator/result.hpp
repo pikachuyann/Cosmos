@@ -53,6 +53,9 @@ public:
     double M2;
     double Normal_quantile;
     
+    vector<double> MeanTable;
+    vector<double> M2Table;
+    
     double low, up;
     bool IsBernoulli;
     double Dif;

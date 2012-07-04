@@ -113,7 +113,7 @@ void Simulator::returnResultTrue(vector<int>marking, double D){
 	A.UpdateLhaFunc(A.CurrentTime, D);
 	A.UpdateFormulaVal();
 	Result.first = true;
-	Result.second = A.FormulaVal;
+	Result.second = vector<double>(1,A.FormulaVal);
 }
 void Simulator::returnResultFalse(){
 	Result.first = false;
@@ -378,7 +378,7 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 
 
 BatchR* Simulator::RunBatch(){
-	BatchR* batchResult = new BatchR();
+	BatchR* batchResult = new BatchR(1);
 	
 	while (batchResult->I < BatchSize) {
 		
@@ -389,7 +389,7 @@ BatchR* Simulator::RunBatch(){
 		
 		if (Result.first) {
 			//------------------ Rare Event -----------------
-			if(logResult)logvalue << Result.second << endl ;
+			if(logResult)logvalue << Result.second[0] << endl ;
 			//----------------- /Rare Event -----------------
 		}
 		

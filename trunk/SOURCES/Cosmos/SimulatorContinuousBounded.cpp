@@ -71,7 +71,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     
 	double Dif=0.0;
 	//double Y = 0;
-	BatchR* batchResult = new BatchR();
+	BatchR* batchResult = new BatchR(1);
 	
 	list<simulationState> statevect((Nmax+1)*BatchSize);
 	//delete EQ;
@@ -134,7 +134,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                             
                             //cerr << "finish(" << endl;
                             
-                            if (Result.second * (1 - Result.second) != 0) batchResult->IsBernoulli = false;
+                            if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult->IsBernoulli = false;
                             
                             //for (int i= max(0,n-fg->left); i<fg->right - fg->left; i++) 
                             {
@@ -142,10 +142,10 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                                 //cerr << "i:\t" << i << endl;
                                 IsuccN[i]++;
                                 
-                                Dif = Result.second - MeanN[i];
+                                Dif = Result.second[0] - MeanN[i];
                                 MeanN[i] += Dif / IsuccN[i];
                                 
-                                Dif = pow(Result.second, 2) - M2N[i];
+                                Dif = pow(Result.second[0] , 2) - M2N[i];
                                 M2N[i] += Dif / IsuccN[i];
                             }
                             //cerr << ")finish" << endl;
@@ -183,7 +183,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         
         if(verbose>=2)cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;
         
-        batchResult->Mean += fg->weights[i+leftdec] * MeanN[i] ;
+        batchResult->MeanTable[0] += fg->weights[i+leftdec] * MeanN[i] ;
         stdev += fg->weights[i+leftdec] * stdevN;
         batchResult->Isucc = IsuccN[0];
         batchResult->I = IsuccN[0];
@@ -196,11 +196,11 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         //Dif = M2N[i] - batchResult->M2; 
         //batchResult->M2 +=  (IsuccN[i] * fg->weights[i] * Dif / Isucc)/ fg->total_weight; 
     }
-    batchResult->Mean /= fg->total_weight;
+    batchResult->MeanTable[0] /= fg->total_weight;
     stdev /= fg->total_weight;
     
     
-    batchResult->M2 = pow(stdev, 2) + pow(batchResult->Mean,2);
+    batchResult->M2Table[0] = pow(stdev, 2) + pow(batchResult->MeanTable[0],2);
     //batchResult->M2 /= pow(fg->total_weight,2);
     
     //batchResult->Isucc = IsuccN[0];

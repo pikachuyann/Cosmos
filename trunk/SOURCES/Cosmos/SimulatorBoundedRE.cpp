@@ -62,7 +62,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	numSolv->reset();
 	//cerr << ")" << endl;
 	
-	BatchR* batchResult = new BatchR();
+	BatchR* batchResult = new BatchR(1);
 	
 	list<simulationState> statevect(BatchSize);
 	//delete EQ;
