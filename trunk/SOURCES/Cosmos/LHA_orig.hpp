@@ -172,8 +172,12 @@ public:
     vector<double> LinForm;
     vector<double> OldLinForm;
     vector<double> LhaFunc;
-    double FormulaVal;
-    double OldFormulaVal;
+    //double FormulaVal;
+    //double OldFormulaVal;
+    
+    vector<double> FormulaVal;
+    vector<double> OldFormulaVal;
+    
     //virtual void UpdateFormulaVal();
     //virtual void UpdateLinForm(vector<int>&);
     //virtual void UpdateLhaFunc(double&, double&);

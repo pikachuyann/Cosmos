@@ -38,7 +38,7 @@
 #ifndef _BATCHR_HPP
 #define	_BATCHR_HPP
 
-typedef std::pair<bool, double> SimOutput;
+typedef std::pair<bool, std::vector<double> > SimOutput;
 
 class BatchR {
 public:
