@@ -105,7 +105,7 @@ void BatchR::outputR() {
 //    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2),sizeof(double));
     
     //write table
-    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&TableLength),sizeof(int));
+//    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&TableLength),sizeof(int));
     for(int i =0; i< TableLength; i++){
         size = write(STDOUT_FILENO,reinterpret_cast<char*>(&MeanTable[i]),sizeof(double));
         size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2Table[i]),sizeof(double));
@@ -133,8 +133,8 @@ void BatchR::inputR(FILE* f) {
     M2=read;*/
     
     //read table
-    size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
-    TableLength=readi;
+//    size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
+//    TableLength=readi;
     for(int i =0; i< TableLength; i++){
         size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
         MeanTable[i]=read;
