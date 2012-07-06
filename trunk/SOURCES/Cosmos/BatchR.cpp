@@ -31,27 +31,11 @@
 
 using namespace std;
 
-/*BatchR::BatchR(int i) {
- IsBernoulli = true;
- I =0;
- Isucc=0;
- Mean=0;
- M2=0;
- TableLength=i;
- //    vector<double> MeanTable(i);
- //    vector<double> M2Table(i);
- }
- 
- BatchR::BatchR(){
- BatchR(0);
- }*/
 
 BatchR::BatchR(int i) {
     IsBernoulli = true;
     I =0;
     Isucc=0;
-//    Mean=0;
-//    M2=0;
     TableLength=i;
     MeanTable=vector<double>(i,0.0);
     M2Table=vector<double>(i,0.0);

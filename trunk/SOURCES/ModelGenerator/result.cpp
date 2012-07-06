@@ -37,6 +37,9 @@ using namespace std;
 result::result(parameters &Q){
     P= Q;
     K = 0;
+    
+//    BatchR result(1);
+    
     Ksucc = 0; //counter of succesfull generated paths
     Ksucc_sqrt =0 ; //square root of Ksucc
     
@@ -116,8 +119,8 @@ bool result::continueSim(){
 }
 
 void printPercent(double i, double j){
-    int t = 100;
-    int u = (t * i)/j; 
+    double t = 100;
+    double u = (t * i)/j; 
     cout << "[";
     for(int k = 1; k<t;k++){
         if(k<u){cout<<"|";}
