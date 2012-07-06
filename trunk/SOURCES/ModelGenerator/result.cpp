@@ -130,6 +130,7 @@ void printPercent(double i, double j){
 }
 
 void result::printProgress(){
+    cout.precision(15);
     cout << "\033[A\033[2K"<< "\033[A\033[2K" << "\033[A\033[2K";
     cout << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
     cout << "% of run:\t";
@@ -157,6 +158,7 @@ double binomup(int i,int j , double l){
 }
 
 void result::print(ostream &s){
+    s.precision(15);
     
     if(!P.computeStateSpace){
         
