@@ -35,8 +35,8 @@
  ** Define the lha::location class.
  */
 
-#ifndef BISON_LOCATION_HH
-# define BISON_LOCATION_HH
+#ifndef LHA_BISON_LOCATION_HH
+# define LHA_BISON_LOCATION_HH
 
 # include <iostream>
 # include <string>

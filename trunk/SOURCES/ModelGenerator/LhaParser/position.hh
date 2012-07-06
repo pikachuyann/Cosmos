@@ -35,8 +35,8 @@
  ** Define the lha::position class.
  */
 
-#ifndef BISON_POSITION_HH
-# define BISON_POSITION_HH
+#ifndef LHA_BISON_POSITION_HH
+# define LHA_BISON_POSITION_HH
 
 # include <iostream>
 # include <string>

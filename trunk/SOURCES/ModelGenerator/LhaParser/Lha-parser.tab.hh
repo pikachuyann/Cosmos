@@ -32,8 +32,8 @@
 
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef PARSER_HEADER_H
-# define PARSER_HEADER_H
+#ifndef LHA_PARSER_HEADER_H
+# define LHA_PARSER_HEADER_H
 
 /* "%code requires" blocks.  */
 

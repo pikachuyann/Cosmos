@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef BISON_STACK_HH
-# define BISON_STACK_HH
+#ifndef LHA_BISON_STACK_HH
+# define LHA_BISON_STACK_HH
 
 #include <deque>
 
