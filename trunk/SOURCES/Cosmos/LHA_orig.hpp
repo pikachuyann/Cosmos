@@ -172,7 +172,7 @@ public:
     vector<double> LinForm;
     vector<double> OldLinForm;
     vector<double> LhaFunc;
-    double FormulaVal;
+    vector<double> FormulaVal;
     double OldFormulaVal;
     
     /*vector<double> FormulaVal;

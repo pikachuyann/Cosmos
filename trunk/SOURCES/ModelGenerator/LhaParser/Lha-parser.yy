@@ -168,8 +168,8 @@ vector <string> comp;
 LHA: declarations InitFinal definitions;
 
 
-declarations:  Sizes Constants Lists HaslExp
-	    | Sizes  Lists HaslExp ; 
+declarations:  Sizes Constants Lists HaslExps
+	    | Sizes  Lists HaslExps ; 
 
 
 
@@ -643,7 +643,9 @@ Update: str EQ RealVarMarkingFormula {
  };
 
 
-HaslExp: AVG LB AlgExpr RB SEMICOLON{Reader.MyLha.Algebraic=$3;};
+HaslExps:HaslExp | HaslExp HaslExps;
+
+HaslExp: AVG LB AlgExpr RB SEMICOLON{Reader.MyLha.Algebraic.push_back($3);};
 AlgExpr:LhaFunc {string ss=$1;
 				 sprintf($$,"LhaFunc[%d]", Reader.MyLha.LhaFunction[ss]);
 				}

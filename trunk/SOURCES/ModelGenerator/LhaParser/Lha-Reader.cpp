@@ -320,6 +320,8 @@ void Lha_Reader::WriteFile(string& Pref) {
     LhaCppFile << "    			OldLinForm=vL;" << endl;
     LhaCppFile << "    			vector<double> vF(" << MyLha.LhaFuncArg.size() << ",0);" << endl;
     LhaCppFile << "    			LhaFunc=vF;" << endl;
+    LhaCppFile << "    			vector<double> vA(" << MyLha.Algebraic.size() << ",0);" << endl;
+    LhaCppFile << "    			FormulaVal=vA;" << endl;
     LhaCppFile << "    }" << endl;
     LhaCppFile << "}\n" << endl;
 
@@ -554,10 +556,12 @@ void Lha_Reader::WriteFile(string& Pref) {
     }
 
     LhaCppFile << "\n    }\n" << endl;
-    LhaCppFile << "void LHA::UpdateFormulaVal(){" << endl;
-    LhaCppFile << "\n    OldFormulaVal=FormulaVal;" << endl;
-    LhaCppFile << "    FormulaVal=" << MyLha.Algebraic << ";\n" << endl;
-    LhaCppFile << "    }\n" << endl;
+    LhaCppFile << "void LHA::UpdateFormulaVal(){\n" << endl;    
+    for(int i=0;i<MyLha.Algebraic.size();i++){
+      LhaCppFile << "    OldFormulaVal=FormulaVal["<<i<<"];" << endl;
+      LhaCppFile << "    FormulaVal["<<i<<"]=" << MyLha.Algebraic[i] << ";\n" << endl;
+    }
+    LhaCppFile << "}\n" << endl;
 
 
     LhaCppFile.close();

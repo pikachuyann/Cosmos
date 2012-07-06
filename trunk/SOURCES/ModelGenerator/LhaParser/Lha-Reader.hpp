@@ -97,7 +97,7 @@ struct LHA {
     map<string, int> LinearForm;
     vector<int> LhaFuncArg;
     vector<string> LhaFuncType;
-    string Algebraic;
+    vector<string> Algebraic;
 
     map <std::string, int> LhaIntConstant; //contains constants defined like int
     map <std::string, double> LhaRealConstant; //contains constants defined like double and constants defined linke int
