@@ -113,7 +113,7 @@ void Simulator::returnResultTrue(vector<int>marking, double D){
 	A.UpdateLhaFunc(A.CurrentTime, D);
 	A.UpdateFormulaVal();
 	Result.first = true;
-	Result.second = vector<double>(1,A.FormulaVal);
+	Result.second = vector<double>(A.FormulaVal);
 }
 void Simulator::returnResultFalse(){
 	Result.first = false;
