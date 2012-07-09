@@ -29,6 +29,7 @@
 #define Cosmos_parameters_h
 
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -59,6 +60,8 @@ struct parameters {
     void parseCommandLine(int argc, char** argv);
     //void parseCommandLine2(int argc, char** argv);
     string prismPath;
+    
+    vector<string> HaslFormulas;
 };
 
 #endif

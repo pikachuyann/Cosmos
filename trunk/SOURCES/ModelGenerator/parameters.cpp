@@ -49,7 +49,6 @@ parameters::parameters() {
 	alligatorMode = false;
     prismPath = "prism/bin/prism";
     //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
-
 }
 
 void parameters::View() {
@@ -60,7 +59,10 @@ void parameters::View() {
 	cout << "Rare Event:                     " << RareEvent << endl;
 	cout << "Double Important Sampling:      " << DoubleIS << endl;
 	cout << "Number of parallel execution:   " << Njob << endl;
-	cout << "Read GML file as input:         " << GMLinput << endl;  
+	cout << "Read GML file as input:         " << GMLinput << endl;
+    for (int i =0; i<HaslFormulas.size() ; i++) {
+        cout << "Hasl Formula " << i << ": " << HaslFormulas[i] << endl;
+    }
 }
 
 void parameters::usage(){
