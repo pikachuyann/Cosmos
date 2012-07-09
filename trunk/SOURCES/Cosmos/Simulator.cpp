@@ -378,7 +378,7 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 
 
 BatchR* Simulator::RunBatch(){
-	BatchR* batchResult = new BatchR(1);
+	BatchR* batchResult = new BatchR(A.FormulaVal.size());
 	
 	while (batchResult->I < BatchSize) {
 		

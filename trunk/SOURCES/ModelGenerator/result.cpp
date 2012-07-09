@@ -36,32 +36,27 @@ using namespace std;
 
 result::result(parameters &Q){
     P= Q;
-    K = 0;
-    
-//    BatchR result(1);
-    
-    Ksucc = 0; //counter of succesfull generated paths
-    Ksucc_sqrt =0 ; //square root of Ksucc
+   
+    MeanM2 = new BatchR(P.HaslFormulas.size());
     
     CurrentWidth = 1;
-    RelErr = 1;
+    RelErr = 0;
     
-    Mean = 0;
-    Var = 0; //variance
-    stdev = 0; //standard deviation
-    M2 = 0;
+    Var = vector<double>(P.HaslFormulas.size()); //variance
+    stdev = vector<double>(P.HaslFormulas.size()); //standard deviation
+    width = vector<double>(P.HaslFormulas.size()); //Confidence interval width
+    
     Normal_quantile = quantile(norma, 0.5 + P.Level / 2.0);
     
-    low=0;
-    up=0;
-    IsBernoulli = true;
-    Dif=0;
+    low = vector<double>(P.HaslFormulas.size()); //standard deviation
+    up = vector<double>(P.HaslFormulas.size()); //standard deviation
     
     time(&start);
     cout << endl << endl << endl;
 }
 
 result::~result(){
+    delete MeanM2;
 }
 
 void result::addBatch(BatchR *batchResult){
@@ -82,40 +77,37 @@ void result::addBatch(BatchR *batchResult){
     // z(1-alpha/2)=z(1-(1-l)/2) = z(0.5+l/2)
     ////////////////////////////////////////////////////////////////////////////
     
-    IsBernoulli = IsBernoulli && batchResult->IsBernoulli;
-    
-    K = K + batchResult->I;
-    Ksucc = Ksucc + batchResult->Isucc;
-    
-    Dif = batchResult->MeanTable[0] - Mean;
-    Mean = Mean + batchResult->Isucc * Dif / Ksucc;
-    
-    Dif = batchResult->M2Table[0] - M2;
-    M2 = M2 + batchResult->Isucc * Dif / Ksucc;
-    
-    Var = (Ksucc/(Ksucc-1)) * (M2 - pow(Mean, 2));
+    MeanM2->unionR(batchResult);
+     
     // The factor (Isucc/Isucc-1) ensuire that var is an unbiased estimator of
     // the true variance
+    double corrvar = MeanM2->Isucc/(MeanM2->Isucc-1);
     
-    stdev = sqrt(Var);
-    Ksucc_sqrt = sqrt(Ksucc);
-    CurrentWidth = 2 * Normal_quantile * stdev / Ksucc_sqrt;
-    
-    low = Mean - CurrentWidth / 2.0;
-    up = Mean + CurrentWidth / 2.0;
-    
-    if(P.BoundedContinuous){
-        low = low * (1 - P.epsilon);
-        CurrentWidth = up - low;
+    double Ksucc_sqrt= sqrt(MeanM2->Isucc);
+    for(int i =0; i<P.HaslFormulas.size(); i++){
+        //cout<< "vari:" << i<< endl;
+        Var[i] = corrvar * (MeanM2->M2[i] - pow(MeanM2->Mean[i], 2));
+        stdev[i] = sqrt(Var[i]);
+        width[i] = 2 * Normal_quantile * stdev[i] / Ksucc_sqrt;
+        
+        low[i] = MeanM2->Mean[i] - width[i] / 2.0;
+        up[i] = MeanM2->Mean[i] + width[i] / 2.0;
+        
+        if(P.BoundedContinuous){
+            low[i] = low[i] * (1 - P.epsilon);
+            width[i] = up[i] - low[i];
+        }
+        
+        if(P.RareEvent || P.BoundedRE>0){
+            RelErr = max(RelErr, width[i] /  abs(MeanM2->Mean[i]));
+        }else RelErr = max(RelErr , width[i] / max(1.0, abs(MeanM2->Mean[i])));
+        
     }
-    
-    if(P.RareEvent || P.BoundedRE>0){
-        RelErr = CurrentWidth /  abs(Mean);
-    }else RelErr = CurrentWidth / max(1.0, abs(Mean));
+   
 }
 
 bool result::continueSim(){
-    return (RelErr > P.Width) && (K < P.MaxRuns);
+    return (RelErr > P.Width) && (MeanM2->I < P.MaxRuns);
 }
 
 void printPercent(double i, double j){
@@ -131,17 +123,23 @@ void printPercent(double i, double j){
 
 void result::printProgress(){
     cout.precision(15);
-    cout << "\033[A\033[2K"<< "\033[A\033[2K" << "\033[A\033[2K";
-    cout << "Total paths: " << K << "\t accepted paths: " << Ksucc << "\t Mean" << "=" << Mean << "\t stdev=" << stdev << "\t  width=" << CurrentWidth << endl;
+    //cout<<"\033[A\033[2K"<< "\033[A\033[2K"<< "\033[A\033[2K" ;
+    for(int i=0; i<2+P.HaslFormulas.size();i++){
+        cout << "\033[A\033[2K";
+    }
+    cout << "Total paths: " << MeanM2->I << "\t accepted paths: " << MeanM2->Isucc << endl;
+    for(int i=0; i<P.HaslFormulas.size(); i++){
+        cout << P.HaslFormulas[i] << ":\t Mean" << "=" << MeanM2->Mean[i] << "\t stdev=" << stdev[i] << "\t  width=" << width[i] << endl;
+    }
     cout << "% of run:\t";
-    printPercent(Ksucc, P.MaxRuns);
-    if(!P.RareEvent){
-        cout << "% of width:\t";
-        double initwidth = 2 * Normal_quantile * stdev / sqrt(P.Batch);
-        if(CurrentWidth != 0 ){
-            printPercent( pow(initwidth/CurrentWidth,2.0), pow(initwidth/P.Width,2.0));
-        } else cout << endl;
-    }else cout << endl;
+    printPercent(MeanM2->Isucc, P.MaxRuns);
+    /*if(!P.RareEvent){
+     cout << "% of width:\t";
+     double initwidth = 2 * Normal_quantile * stdev / sqrt(P.Batch);
+     if(CurrentWidth != 0 ){
+     printPercent( pow(initwidth/CurrentWidth,2.0), pow(initwidth/P.Width,2.0));
+     } else cout << endl;
+     }else cout << endl;*/
 }
 
 void result::stopclock(){
@@ -162,43 +160,44 @@ void result::print(ostream &s){
     
     if(!P.computeStateSpace){
         
-        
-    if (IsBernoulli) {
-        low = (0 > low) ? 0.0 : low;
-        up = (1 < up) ? 1.0 : up;
-        CurrentWidth = up - low;
-    }
-    
-    if(P.RareEvent){
-        s << "Rare Event Result" << endl;
-        s << "Mean:  " << Mean*Ksucc/K << endl;
-        double l = binomlow(K, Ksucc, (1-P.Level)/2);
-        double u = binomup(K, Ksucc, (1-P.Level)/2);
-        // Print Clopper Pearson Limits:
-        s << "Binomiale Confidence Interval: [" << l*Mean << " , " << u*Mean << "]"<< endl;
-        s << "Binomiale Width: "<< (u-l)*Mean << endl <<endl;
-    } else {
-        s << "Estimated value:\t" << Mean << endl;
-        s << "Confidence interval:\t[" << low << " , " << up << "]" << endl;
-        
-        if(IsBernoulli){
-            s << "The distribution look like a binomial!" << endl;
-            using namespace boost::math;
-            double successes = Ksucc * Mean;
-            double l = binomlow(Ksucc, successes, (1-P.Level)/2);
-            double u = binomup(Ksucc, successes, (1-P.Level)/2);
-            // Print Clopper Pearson Limits:
-            s << "Binomiale Confidence Interval:\t[" << l << " , " << u << "]"<< endl;
-            s << "Binomiale Width:\t"<< u-l << endl;
+        for(int i =0; i<P.HaslFormulas.size(); i++){
+            if (MeanM2->IsBernoulli[i]) {
+                low[i] = (0 > low[i]) ? 0.0 : low[i];
+                up[i] = (1 < up[i]) ? 1.0 : up[i];
+                width[i] = up[i] - low[i];
+            }
             
+            if(P.RareEvent){
+                s << "Rare Event Result" << endl;
+                s << "Mean:  " << MeanM2->Mean[i]*(MeanM2->Isucc/MeanM2->I) << endl;
+                double l = binomlow(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
+                double u = binomup(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
+                // Print Clopper Pearson Limits:
+                s << "Binomiale Confidence Interval: [" << l*MeanM2->Mean[i] << " , " << u*MeanM2->Mean[i] << "]"<< endl;
+                s << "Binomiale Width: "<< (u-l)*MeanM2->Mean[i] << endl <<endl;
+            } else {
+                s << "Estimated value:\t" << MeanM2->Mean[i] << endl;
+                s << "Confidence interval:\t[" << low[i] << " , " << up[i] << "]" << endl;
+                
+                if(MeanM2->IsBernoulli[i]){
+                    s << "The distribution look like a binomial!" << endl;
+                    using namespace boost::math;
+                    double successes = MeanM2->Isucc * MeanM2->Mean[i];
+                    double l = binomlow(MeanM2->Isucc, successes, (1-P.Level)/2);
+                    double u = binomup(MeanM2->Isucc, successes, (1-P.Level)/2);
+                    // Print Clopper Pearson Limits:
+                    s << "Binomiale Confidence Interval:\t[" << l << " , " << u << "]"<< endl;
+                    s << "Binomiale Width:\t"<< u-l << endl;
+                    
+                }
+                s << "Standard deviation:\t" << stdev[i] << endl;
+                s << "Width:\t" << width[i] << endl;
+            }
         }
-        s << "Standard deviation:\t" << stdev << endl;
-        s << "Width:\t" << CurrentWidth << endl;
-    }
-    s << "Total paths:\t" << K << endl;
-    s << "Accepted paths:\t" << Ksucc << endl;
-    s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
-
+        s << "Total paths:\t" << MeanM2->I << endl;
+        s << "Accepted paths:\t" << MeanM2->Isucc << endl;
+        s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
+        
     }
 }
 
@@ -215,11 +214,13 @@ void result::printResultFile(string f){
 
 void result::printAlligator(){
     cout << "alligatorResult" << endl;
-    cout << Mean << endl;
-    cout << "[" << low << "," << up << "]" << endl;
-    cout << stdev << endl;
-    cout << CurrentWidth << endl;
-    cout << K << endl;
-    cout << Ksucc << endl;
+    for (int i=0; i<P.HaslFormulas.size(); i++){
+        cout << MeanM2->Mean[i] << endl;
+        cout << "[" << low[i] << "," << up[i] << "]" << endl;
+        cout << stdev[i] << endl;
+        cout << width[i] << endl;
+    }
+    cout << MeanM2->I << endl;
+    cout << MeanM2->Isucc << endl;
     //cout << cpu_time_used << endl;
 }

@@ -40,26 +40,20 @@ public:
     result(parameters &Q);
     ~result();
     parameters P;
-    int K; //counter of generated paths
-    int Ksucc; //counter of succesfull generated paths
-    double Ksucc_sqrt; //square root of Ksucc
+    
+    BatchR* MeanM2;
     
     double CurrentWidth;
     double RelErr;
-    
-    double Mean;
-    double Var; //variance
-    double stdev; //standard deviation
-    double M2;
+   
+    vector<double> Var; //variance
+    vector<double> stdev; //standard deviation
+    vector<double> width;
+
     double Normal_quantile;
     
-    vector<double> MeanTable;
-    vector<double> M2Table;
-    
-    double low, up;
-    bool IsBernoulli;
-    double Dif;
-    
+    vector<double> low, up;
+     
     time_t start, end;
     double cpu_time_used;
     

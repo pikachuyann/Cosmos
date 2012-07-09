@@ -45,14 +45,12 @@ public:
 //    BatchR();
     BatchR(int i);
     virtual ~BatchR();
-    bool IsBernoulli;
     int I;
     int Isucc;
-    //double Mean;
-    //double M2;
     int TableLength;
-    std::vector<double> MeanTable;
-    std::vector<double> M2Table;
+    std::vector<bool> IsBernoulli;
+    std::vector<double> Mean;
+    std::vector<double> M2;
     
     void addSim(SimOutput*);
     void unionR(BatchR*);

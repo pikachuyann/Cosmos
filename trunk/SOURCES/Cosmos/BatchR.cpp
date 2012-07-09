@@ -33,12 +33,12 @@ using namespace std;
 
 
 BatchR::BatchR(int i) {
-    IsBernoulli = true;
     I =0;
     Isucc=0;
     TableLength=i;
-    MeanTable=vector<double>(i,0.0);
-    M2Table=vector<double>(i,0.0);
+    IsBernoulli= vector<bool>(i,true);
+    Mean=vector<double>(i,0.0);
+    M2=vector<double>(i,0.0);
 }
 
 BatchR::~BatchR() {
@@ -53,14 +53,14 @@ void BatchR::addSim(SimOutput *Result){
         for(int i =0; i< TableLength; i++){
             
             if (Result->second[i] * (1 - Result->second[i]) != 0){
-                IsBernoulli = false;
+                IsBernoulli[i] = false;
             }
             
-            Dif = Result->second[i] - MeanTable[i];
-            MeanTable[i] += Dif / Isucc;
+            Dif = Result->second[i] - Mean[i];
+            Mean[i] += Dif / Isucc;
             
-            Dif = pow(Result->second[i], 2) - M2Table[i];
-            M2Table[i] += Dif / Isucc;
+            Dif = pow(Result->second[i], 2) - M2[i];
+            M2[i] += Dif / Isucc;
         }
     }
 }
@@ -72,27 +72,25 @@ void BatchR::unionR(BatchR *batch){
     Isucc += batch->Isucc;
     
     for(int i =0; i< TableLength; i++){
-        Dif = batch->MeanTable[i] - MeanTable[i];
-        MeanTable[i] += batch->Isucc * Dif / Isucc;
+        IsBernoulli[i] = IsBernoulli[i] && batch->IsBernoulli[i];
         
-        Dif = batch->M2Table[i] - M2Table[i];
-        M2Table[i] += batch->Isucc * Dif / Isucc;
+        Dif = batch->Mean[i] - Mean[i];
+        Mean[i] += batch->Isucc * Dif / Isucc;
+        
+        Dif = batch->M2[i] - M2[i];
+        M2[i] += batch->Isucc * Dif / Isucc;
     }
 }
 
 void BatchR::outputR() {
     int size;
-    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&IsBernoulli),sizeof(bool));
     size = write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(int));
     size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(int));
-//    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean),sizeof(double));
-//    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2),sizeof(double));
-    
-    //write table
-//    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&TableLength),sizeof(int));
+
     for(int i =0; i< TableLength; i++){
-        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&MeanTable[i]),sizeof(double));
-        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2Table[i]),sizeof(double));
+        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&IsBernoulli[i]),sizeof(bool));
+        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(double));
+        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(double));
     }
     
     //print();
@@ -105,33 +103,25 @@ void BatchR::inputR(FILE* f) {
     int readi;
     int size;
     
-    size = fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, f);
-    IsBernoulli=readb;
     size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
     I=readi;
     size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
     Isucc=readi;
-/*    size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-    Mean=read;
-    size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-    M2=read;*/
-    
-    //read table
-//    size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
-//    TableLength=readi;
+
     for(int i =0; i< TableLength; i++){
+        size = fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, f);
+        IsBernoulli[i]=readb;
         size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-        MeanTable[i]=read;
+        Mean[i]=read;
         size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-        M2Table[i]=read;
+        M2[i]=read;
     }
     fflush(stdout);
 }
 
 void BatchR::print(){
-    cerr << "IsBernoulli:\t" << IsBernoulli << endl
-    << "I:\t" << I << endl
-    << "Isucc:\t" << Isucc << endl
-    << "Mean:\t" << MeanTable[0] << endl
-    << "M2:\t" << M2Table[0] << endl;
+    cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl;
+    for(int i =0; i< TableLength; i++){
+        cerr << "Mean:\t" << Mean[i] << endl << "M2:\t" << M2[i] << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
+    }
 }
