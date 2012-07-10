@@ -171,7 +171,9 @@ void result::print(ostream &s){
             
             if(P.RareEvent){
                 s << "Rare Event Result" << endl;
-                s << "Mean:  " << MeanM2->Mean[i]*((MeanM2->Isucc)/(MeanM2->I)) << endl;
+                double mean = (double)MeanM2->Isucc / (double)MeanM2->I;
+                mean *= MeanM2->Mean[i];
+                s << "Mean:  " << mean << endl;
                 double l = binomlow(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
                 double u = binomup(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
                 // Print Clopper Pearson Limits:
