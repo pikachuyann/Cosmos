@@ -51,6 +51,8 @@ result::result(parameters &Q){
     low = vector<double>(P.HaslFormulas.size()); //standard deviation
     up = vector<double>(P.HaslFormulas.size()); //standard deviation
     
+    endline = 0;
+    
     time(&start);
     cout << endl << endl << endl;
 }
@@ -124,22 +126,27 @@ void printPercent(double i, double j){
 void result::printProgress(){
     cout.precision(15);
     //cout<<"\033[A\033[2K"<< "\033[A\033[2K"<< "\033[A\033[2K" ;
-    for(int i=0; i<2+P.HaslFormulas.size();i++){
+    while(endline>=0){
+        endline--;
         cout << "\033[A\033[2K";
     }
     cout << "Total paths: " << MeanM2->I << "\t accepted paths: " << MeanM2->Isucc << endl;
+    endline++;
     for(int i=0; i<P.HaslFormulas.size(); i++){
         cout << P.HaslFormulas[i] << ":\t Mean" << "=" << MeanM2->Mean[i] << "\t stdev=" << stdev[i] << "\t  width=" << width[i] << endl;
+        endline++;
+        if(!P.RareEvent){
+            cout << "% of width:\t";
+            double initwidth = 2 * Normal_quantile * stdev[i] / sqrt(P.Batch);
+            if(width[i] != 0 ){
+                printPercent( pow(initwidth/width[i],2.0), pow(initwidth/P.Width,2.0));
+                endline++;
+            } 
+        }
     }
     cout << "% of run:\t";
     printPercent(MeanM2->Isucc, P.MaxRuns);
-    /*if(!P.RareEvent){
-     cout << "% of width:\t";
-     double initwidth = 2 * Normal_quantile * stdev / sqrt(P.Batch);
-     if(CurrentWidth != 0 ){
-     printPercent( pow(initwidth/CurrentWidth,2.0), pow(initwidth/P.Width,2.0));
-     } else cout << endl;
-     }else cout << endl;*/
+    endline++;
 }
 
 void result::stopclock(){

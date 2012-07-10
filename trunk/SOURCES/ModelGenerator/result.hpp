@@ -57,6 +57,8 @@ public:
     time_t start, end;
     double cpu_time_used;
     
+    int endline;
+    
     void addBatch(BatchR*);
     bool continueSim();
     void printProgress();
