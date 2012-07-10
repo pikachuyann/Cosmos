@@ -167,9 +167,11 @@ void result::print(ostream &s){
                 width[i] = up[i] - low[i];
             }
             
+            s << P.HaslFormulas[i] << ":" << endl;
+            
             if(P.RareEvent){
                 s << "Rare Event Result" << endl;
-                s << "Mean:  " << MeanM2->Mean[i]*(MeanM2->Isucc/MeanM2->I) << endl;
+                s << "Mean:  " << MeanM2->Mean[i]*((MeanM2->Isucc)/(MeanM2->I)) << endl;
                 double l = binomlow(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
                 double u = binomup(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
                 // Print Clopper Pearson Limits:

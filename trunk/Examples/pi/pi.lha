@@ -5,6 +5,10 @@ VariablesList = {x, y,r,OK} ;
 LocationsList = {l0, l1, l2, lp ,lm};
 
 AVG(Last(OK));
+AVG(Last(r));
+AVG(Last(x));
+AVG(Last(y));
+
 
 InitialLocations = {l0};
 

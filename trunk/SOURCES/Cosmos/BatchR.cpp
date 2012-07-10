@@ -88,7 +88,8 @@ void BatchR::outputR() {
     size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(int));
 
     for(int i =0; i< TableLength; i++){
-        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&IsBernoulli[i]),sizeof(bool));
+        bool tmpbool = IsBernoulli[i];
+        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
         size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(double));
         size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(double));
     }
