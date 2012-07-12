@@ -29,7 +29,6 @@ int main(int argc, char** argv) {
     M[4][2]=1;
     
     
-    
     generateLHAfun(N,Plast);
     generateSPNfun(M);
     
