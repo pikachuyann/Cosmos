@@ -10,7 +10,10 @@
 
 using namespace std;
 
+void generateLHAfun(int N,vector< vector<double> >&);
 #include "generateLHA.cpp"
+
+void generateSPNfun(int N,vector< vector<double> >&);
 #include "generateSPN.cpp"
 
 int main(int argc, char** argv) {
@@ -32,5 +35,6 @@ int main(int argc, char** argv) {
     generateLHAfun(N,Plast);
     generateSPNfun(M);
     
-    return 0;
+    system("cat generated.gspn");
+    return(EXIT_SUCCESS);
 }
