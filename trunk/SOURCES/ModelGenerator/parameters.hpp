@@ -60,6 +60,7 @@ struct parameters {
     void parseCommandLine(int argc, char** argv);
     //void parseCommandLine2(int argc, char** argv);
     string prismPath;
+    string dataoutput;
     
     vector<string> HaslFormulas;
 };

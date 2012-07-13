@@ -57,6 +57,8 @@ public:
     time_t start, end;
     double cpu_time_used;
     
+    fstream outdatastream;
+    
     int endline;
     
     void addBatch(BatchR*);
@@ -66,6 +68,7 @@ public:
     void print(ostream &s);
     void printResultFile(string);
     void printAlligator();
+    void outputData();
 };
 
 

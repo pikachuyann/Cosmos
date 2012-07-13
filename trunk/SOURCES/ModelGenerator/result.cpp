@@ -53,6 +53,12 @@ result::result(parameters &Q){
     
     endline = 0;
     
+    if(P.dataoutput.compare("")){
+        cout << "Output Data to: " << P.dataoutput << endl;
+        outdatastream.open(P.dataoutput.c_str(),fstream::out);
+        outdatastream.precision(15);
+    }
+    
     time(&start);
     cout << endl << endl << endl;
 }
@@ -105,6 +111,7 @@ void result::addBatch(BatchR *batchResult){
         }else RelErr = max(RelErr , width[i] / max(1.0, abs(MeanM2->Mean[i])));
         
     }
+    if(outdatastream.is_open())outputData();
    
 }
 
@@ -210,6 +217,14 @@ void result::print(ostream &s){
         s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
         
     }
+}
+
+void result::outputData(){
+    outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;
+    for(int i =0; i<P.HaslFormulas.size(); i++){
+        outdatastream << " "<<MeanM2->Mean[i] << " "<< MeanM2->M2[i] << " " << low[i] << " " << up[i]; 
+    }
+    outdatastream << endl;
 }
 
 void result::printResultFile(string f){

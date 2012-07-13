@@ -48,6 +48,7 @@ parameters::parameters() {
     computeStateSpace = false;
 	alligatorMode = false;
     prismPath = "prism/bin/prism";
+    dataoutput = "";
     //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
 }
 
@@ -115,6 +116,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             /* Miscellanious options */
             {"njob" , required_argument, 0 , 'n'},
             {"verbose", required_argument, 0, 'v'},
+            {"outputdata", required_argument, 0, 'd'},
             {"help" , no_argument , 0 , 'h'},
             
             {0, 0, 0, 0}
@@ -122,7 +124,7 @@ void parameters::parseCommandLine(int argc, char** argv){
         /* getopt_long stores the option index here. */
         int option_index = 0;
         
-        c = getopt_long (argc, argv, "ghscrb:v:",
+        c = getopt_long (argc, argv, "ghscrb:v:d:",
                          long_options, &option_index);
         
         /* Detect the end of the options. */
@@ -162,6 +164,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'm': MaxRuns = atoi(optarg);      break;
             case  'n': Njob = atoi(optarg);      break;
             case  'e': epsilon = atof(optarg);  break;
+            case  'd': dataoutput = optarg; break;
                 
             case '?':
                 usage();
