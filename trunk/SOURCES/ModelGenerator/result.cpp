@@ -57,6 +57,11 @@ result::result(parameters &Q){
         cout << "Output Data to: " << P.dataoutput << endl;
         outdatastream.open(P.dataoutput.c_str(),fstream::out);
         outdatastream.precision(15);
+        outdatastream << "#Number of trajectory, Number of successfull trajectory ";
+        for(int i =0; i<P.HaslFormulas.size(); i++){
+            outdatastream << ", Mean["<<i<<"], Second Moment["<<i<<"], Confidence interval lower bound ["<<i<<"] ,Confidence interval upper bound ["<<i<<"]";
+        }
+        outdatastream << endl;
     }
     
     time(&start);
