@@ -4,13 +4,13 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-//#include <cstdlib>
+#include <cstdlib>
 #include <sstream>
 //#include <unistd.h>
 
 using namespace std;
 
-void generateLHAfun(int N,vector< vector<double> >&);
+void generateLHAfun(int N,vector<int>&, double H);
 #include "generateLHA.cpp"
 
 void generateSPNfun(int N,vector< vector<double> >&);
@@ -18,8 +18,11 @@ void generateSPNfun(int N,vector< vector<double> >&);
 
 int main(int argc, char** argv) {
     int N =5;
+    double H=1000; //simulation horizon
     vector< vector<double> > M(N,vector<double>(N,0) );
     vector< vector<double> > Plast(N,vector<double>(N,0) );
+    vector<int>  W(N,0);//sensor satatus
+    
     
     M[0][1]=1;
     M[1][1]=0.3;
@@ -32,7 +35,7 @@ int main(int argc, char** argv) {
     M[4][2]=1;
     
     
-    generateLHAfun(N,Plast);
+    generateLHAfun(N,W,H);
     generateSPNfun(M);
     
     system("cat generated.gspn");
