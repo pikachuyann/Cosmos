@@ -38,6 +38,5 @@ int main(int argc, char** argv) {
     generateLHAfun(N,W,H);
     generateSPNfun(M);
     
-    system("cat generated.gspn");
     return(EXIT_SUCCESS);
 }

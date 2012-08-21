@@ -97,6 +97,7 @@ void result::addBatch(BatchR *batchResult){
     double corrvar = MeanM2->Isucc/(MeanM2->Isucc-1);
     
     double Ksucc_sqrt= sqrt(MeanM2->Isucc);
+    RelErr = 0;
     for(int i =0; i<P.HaslFormulas.size(); i++){
         //cout<< "vari:" << i<< endl;
         Var[i] = corrvar * (MeanM2->M2[i] - pow(MeanM2->Mean[i], 2));
@@ -217,6 +218,7 @@ void result::print(ostream &s){
                 s << "Width:\t" << width[i] << endl;
             }
         }
+        s << "Relative Error:\t" << RelErr << endl;
         s << "Total paths:\t" << MeanM2->I << endl;
         s << "Accepted paths:\t" << MeanM2->Isucc << endl;
         s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
