@@ -84,6 +84,8 @@ double Simulator::max(double a, double b) {
 }
 
 void Simulator::InitialEventsQueue() {
+    //Check each transition. If a transition is enabled then his fire
+    //time is simulated and added to the structure.
 	Initialized = true;
 	
 	set<int, less <int> > ent;
@@ -97,7 +99,9 @@ void Simulator::InitialEventsQueue() {
 }
 
 void Simulator::reset() {
-	//cerr << "test" << endl;
+	//Reset The Petri net, the automaton, the event Queue and the 
+    //random generator
+    
 	N.reset();
 	A.reset(N.initMarking);
 	simTime = 0;
@@ -105,10 +109,13 @@ void Simulator::reset() {
 	
 	RandomNumber.seed(RandomNumber());
 	RandomNumber.seed(rand());
-	
 }
 
 void Simulator::returnResultTrue(vector<int>marking, double D){
+    //This function is called when an accepting state is reached in 
+    //the automaton. It update the automaton variable before updating the
+    //Hasl formula.
+    
 	A.UpdateLinForm(marking);
 	A.UpdateLhaFunc(A.CurrentTime, D);
 	A.UpdateFormulaVal();
@@ -121,6 +128,7 @@ void Simulator::returnResultFalse(){
 
 
 void Simulator::updateLHA(int EdgeIndex, double DeltaT,vector<int> marking){
+    //This function update the automaton after a transition of the Petri net
 	A.DoElapsedTimeUpdate(DeltaT, marking);
 	A.UpdateLinForm(marking);
 	A.UpdateLhaFunc(A.CurrentTime, DeltaT);
@@ -132,28 +140,27 @@ void Simulator::updateLHA(int EdgeIndex, double DeltaT,vector<int> marking){
 
 
 void Simulator::updateSPN(int E1_transitionNum){
+    //This function update the Petri net according to a transition.
+    //In particular it update the set of enabled transition.
+    
 	Event F;
-	if (N.IsEnabled(E1_transitionNum)) {//check if the current transition is still enabled
-		
+    //check if the current transition is still enabled
+	if (N.IsEnabled(E1_transitionNum)) {		
 		GenerateEvent(F, E1_transitionNum);
 		(*EQ).replace(F, 0); //replace the transition with the new generated time
 		
 	} else (*EQ).remove(0);
 	
 	// Possibly adding Events corresponding to newly enabled-transitions
-	
 	for (set<int>::iterator it = N.PossiblyEnabled[E1_transitionNum].begin(); it != N.PossiblyEnabled[E1_transitionNum].end(); it++) {
 		if (N.IsEnabled(*it)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
                 GenerateEvent(F, (*it));
                 (*EQ).insert(F);
-				
-				
 			} else {
                 if (N.Transition[(*it)].MarkingDependent) {
 					GenerateEvent(F, (*it));
 					(*EQ).replace(F, (*EQ).TransTabValue(*it));
-					
                 }
 				
 			}
@@ -162,8 +169,6 @@ void Simulator::updateSPN(int E1_transitionNum){
 	}
 	
 	// Possibly removing Events corresponding to newly disabled-transitions
-	
-	
 	for (set<int>::iterator it = N.PossiblyDisabled[E1_transitionNum].begin(); it != N.PossiblyDisabled[E1_transitionNum].end(); it++) {
 		if ((*EQ).TransTabValue(*it)>-1) {
 			if (!N.IsEnabled(*it))
@@ -177,15 +182,14 @@ void Simulator::updateSPN(int E1_transitionNum){
 			}
 		}
 	}
-	
-	//
+
+    // Update transition which have no precondition on the Marking
 	for (set<int>::iterator it = N.FreeMarkDepT[E1_transitionNum].begin(); it != N.FreeMarkDepT[E1_transitionNum].end(); it++) {
 		
 		if (N.IsEnabled(*it)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
                 GenerateEvent(F, (*it));
                 (*EQ).insert(F);
-				
 				
 			} else {
                 GenerateEvent(F, (*it));
@@ -196,16 +200,23 @@ void Simulator::updateSPN(int E1_transitionNum){
 	}
 }
 
+// Only used in the Rare Event context
 void Simulator::updateLikelihood(int i){
 	return;
 }
 
+//Only used in the Rare Event context
 bool Simulator::transitionSink(int i){
     return false;
 }
 
+//Simulate one step of simulation
+//the return value is true iff the simulation did not reach
+//An accpting are refusing state.
 bool Simulator::SimulateOneStep(AutEdge* AEref){
     if(verbose>2){
+        //Print marking and location of the automata
+        //Usefull to track a simulation
         cerr << "Marking:\t";
         for(int i =0; i < N.Marking.size();i++){
             cerr << N.Place[i].label << ":" << N.Marking[i] << "\t,";
@@ -213,6 +224,10 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
         cerr << "Automate:" << A.LocLabel[A.CurrentLocation] << endl;
     }
 	AutEdge AE = *AEref;
+    
+    //If there is no enabled transition in the Petri net
+    //try to reach an accepting state by using autonomous edge of 
+    //the automata refuse the simulation otherwise.
 	if ((*EQ).isEmpty()) {
 		while (AE.Index>-1) {
             //cerr << "Clean automata transition";
@@ -225,10 +240,14 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
 		returnResultFalse();
 		return false;
 	} else {
+        //Take the first event in the queue
 		Event E1 = (*EQ).InPosition(0);
 		if(verbose>2)cerr << "transition:" << N.Transition[E1.transition].label << endl;
         
 		int E1_transitionNum = E1.transition;
+        
+        //If this transition is the sink transition refuse the simulation
+        //Only usefull for Rare Event handling.
 		if(transitionSink(E1_transitionNum)){
             returnResultFalse();
             return false;
@@ -236,6 +255,8 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
         
         updateLikelihood(E1_transitionNum);
 		
+        //Take all autonomous edge in the automata befor the fire time
+        //of the transition of the Petri net.
 		while (E1.time >= AE.FiringTime) {
             //cerr << "looping on autonomous edge";
 			updateLHA(AE.Index,AE.FiringTime - A.CurrentTime, N.Marking);
@@ -245,9 +266,11 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
 			} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 		}
 		
+        //Save the OldMarking before firing the transition.
 		vector<int> OldMarking = N.Marking;
 		N.fire(E1_transitionNum);
 		
+        //Check if there exist a valid transition in the automata and update it.
 		double DeltaT = E1.time - A.CurrentTime;
 		int SE = A.GetEnabled_S_Edges(A.CurrentLocation, E1_transitionNum, DeltaT, OldMarking, N.Marking);
 		
@@ -268,6 +291,7 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
 	return true;
 }
 
+//Simlulate a whole trajectory in the system. Result is store in SimOutput
 void Simulator::SimulateSinglePath() {
 	
 	AutEdge AE;
@@ -288,6 +312,8 @@ void Simulator::SimulateSinglePath() {
     //cerr << "finish path"<< endl;
 }
 
+
+//Generate an event based on the type of his distribution
 void Simulator::GenerateEvent(Event& E, int Id) {
 	
 	double t = simTime;
@@ -295,10 +321,16 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 		vector<double> Param = getParams(Id); //N.GetDistParameters(Id);
 		t += GenerateTime(N.Transition[Id].DistType, Param);
 	}
+    
+    //The weight of a transition is always distributed exponentially
+    //It is used to solved conflict of two transitions with same time 
+    //and same priority.
 	double w;
 	vector<double> wParam(1, N.GetWeight(Id));
 	string dist = "EXPONENTIAL";
 	w = GenerateTime(dist, wParam);
+    
+    
 	E.transition = Id;
 	E.time = t;
 	E.priority = N.GetPriority(Id);
@@ -306,10 +338,12 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 	
 }
 
+//Return the parameter of a transition
 vector<double> Simulator::getParams(int Id){
 	return N.GetDistParameters(Id);
 }
 	
+//Call the random generator to generate fire time.
 double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 	
 	switch (IndexDist[distribution]) {
@@ -376,7 +410,7 @@ double Simulator::GenerateTime(string& distribution, vector<double> &param) {
 	
 }
 
-
+//Run a batch of simulation, the result is return as a BatchR structure.
 BatchR* Simulator::RunBatch(){
 	BatchR* batchResult = new BatchR(A.FormulaVal.size());
 	

@@ -45,15 +45,20 @@ public:
 //    BatchR();
     BatchR(int i);
     virtual ~BatchR();
-    int I;
-    int Isucc;
-    int TableLength;
-    std::vector<bool> IsBernoulli;
+    int I;              //Number of simulation
+    int Isucc;          //Number of succesfull simulation
+    int TableLength;    //Number of mesured variable
+    std::vector<bool> IsBernoulli;  //Is a variable a boolean.
     std::vector<double> Mean;
     std::vector<double> M2;
     
+    //Add the result of one simulation to the Batch
     void addSim(SimOutput*);
+    
+    //Merge the result of two batch of simulation
     void unionR(BatchR*);
+    
+    
     void outputR();
     void inputR(FILE* f);
     void print();

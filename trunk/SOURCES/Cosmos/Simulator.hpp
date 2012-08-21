@@ -54,30 +54,37 @@ public:
 	Simulator(const Simulator& orig);
 	~Simulator();
 	
-    int verbose;
+    int verbose;    //Set the verbose level
     
-	virtual BatchR* RunBatch(); //main entry point of the object simulate a batch of trajectory
-	void SetBatchSize(int); // set the batch size
-	void logValue();
+    void SetBatchSize(int); // set the batch size
+	void logValue();    //Make the simulator output each result in a file
+    
+    //main entry point of the object simulate a batch of trajectory
+    virtual BatchR* RunBatch(); 
     
 protected:
 	fstream logvalue; // file to log value
     
 	SimOutput Result; // store result beetween two trajectory simulation
-	double simTime; 
+
+	double simTime;  //Time for the simulation
 	time_t SysTime;
 	
-	int BatchSize;
+	int BatchSize;  
 	bool logResult;
     
 	SPN N; //The object representing the SPN
 	LHA A; //The object representing the LHA
 	
-	
-	EventsQueue* EQ;
+    
+    //A datastructure containing the enabled transitions with
+    //the time at wich they will be fire if still enabled
+	EventsQueue* EQ;   
 	
 	bool Initialized;
 	map<string, int> IndexDist;
+    
+    //The random Generator Mersenne Twister from the boost library
 	boost::mt19937 RandomNumber;
 	
 	

@@ -32,6 +32,7 @@
 using namespace std;
 
 
+//Initialize the batch with zeros
 BatchR::BatchR(int i) {
     I =0;
     Isucc=0;
@@ -44,6 +45,8 @@ BatchR::BatchR(int i) {
 BatchR::~BatchR() {
 }
 
+//Add a simulation to the batch
+//If the simulation is a success then The Mean and second Moment are updated
 void BatchR::addSim(SimOutput *Result){
     I++;
     if (Result->first) {
@@ -82,6 +85,8 @@ void BatchR::unionR(BatchR *batch){
     }
 }
 
+//This function write a batch on the standart output it is suposed to
+//be read by the function BatchR::inputR
 void BatchR::outputR() {
     int size;
     size = write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(int));
@@ -98,6 +103,7 @@ void BatchR::outputR() {
     fflush(stdout);
 }
 
+//Read a batch from a file.
 void BatchR::inputR(FILE* f) {
     double read;
     bool readb;
@@ -120,6 +126,7 @@ void BatchR::inputR(FILE* f) {
     fflush(stdout);
 }
 
+//Print human readable version of batch on stdout.
 void BatchR::print(){
     cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl;
     for(int i =0; i< TableLength; i++){
