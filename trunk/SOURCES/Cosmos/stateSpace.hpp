@@ -82,7 +82,7 @@ struct hashstate{
 
 /* 
  * The hash_map structure implement a mapping between a state as a vector
- * of integer and its indice.
+ * of integer and its index.
  */
 typedef hash_map<const vector<int>*, int , hashstate , eqstate > hash_state;
 

@@ -1,8 +1,31 @@
 
 
-void generateLHAfun(int N, vector<int>  &W, double H ){
+void generateStrat(vector< vector<double> >& Plast,int N,int x,int y,double ron,double rdet,ostream f){
+    //f<< "{";
+    for (int i =0;i<N;i++){
+        //if (i>0)f<<" , ";
+        f << "W" << i << "=";
+        if (ron + Plast[y][i]*rdet<0)f<<"0";
+        else f<<"1";
+    }
+    f<<",Plast"<<x<<"_"<<y<<"=Plast"<<x<<"_"<<y<<"+1, Out"<<x<<"=Out"<<x<<"+1";
+    
+    //f<< "}";
+    
+}
+
+void generateLHAfun(double ron,double rdet,int N, vector<int>  &W,vector< vector<double> >& Plast , double H ){
     
     cout << "generate LHA" << endl;
+    
+    //Compute strategie
+    
+    vector< vector< bool > > strat(N,N);
+    for (int i =0;i<N;i++){
+        for( int j =0;j<N;j++){
+            strat[i][j] = ron + Plast[i][j]*rdet >= 0;
+        }
+    }
     
     ofstream LhaFile("generated.lha", ios::out | ios::trunc);
     
@@ -13,6 +36,10 @@ void generateLHAfun(int N, vector<int>  &W, double H ){
     LhaFile << "const double H = "<< H << ";" << endl; 
     
 
+    /* time record the elapsed time;
+        Xlast is equal to 0 if the drone is currently detected and 1 otherwise
+     */
+    
     LhaFile << "VariablesList = {time,Xlast";
     for(int i=0;i<N;i++)
       LhaFile << ", W"<<i;
@@ -20,7 +47,7 @@ void generateLHAfun(int N, vector<int>  &W, double H ){
       LhaFile << ", Out"<<i;
     for(int i=0;i<N;i++)
 	for(int j=0;j<N;j++)
-	  LhaFile << ", Plast"<<i<<j;	
+	  LhaFile << ", Plast"<<i<<"_"<<j;	
     LhaFile << "} ;"<< endl; 
     
     
@@ -32,7 +59,7 @@ void generateLHAfun(int N, vector<int>  &W, double H ){
     
     for(int i=0;i<N;i++)
       for(int j=0;j<N;j++)
-	LhaFile << "AVG(Last(Plast"<<i<<j<<"));"<<endl;    
+	LhaFile << "AVG(Last(Plast"<<i<<"_"<<j<<"));"<<endl;    
    
 
     LhaFile << "InitialLocations = {l0};"<< endl; 
@@ -44,29 +71,56 @@ void generateLHAfun(int N, vector<int>  &W, double H ){
     LhaFile << "(lf, TRUE, (time:1));"<< endl; 
     LhaFile << "(la, TRUE, (time:1));"<< endl; 
     for(int i=0;i<N;i++)
-       LhaFile << "(lp"<<i<<", V"<<i<<"=1, (time:1));"<< endl;     
+       LhaFile << "(lp"<<i<<", V"<<i<<"=1 | Xlast >0  , (time:1));"<< endl;     
+     
     LhaFile << "};"<<endl; 
 
     LhaFile << "Edges={"<< endl; 
-    LhaFile << "((li,la),ALL,  time <= H,#);"<< endl; 
-    LhaFile << "((li,lf),#,  time = H,{Plast00=Plast00/Out0";
+    for (int v=0 ; v<N; v++) {
+        //Drone undetected => selfloop
+        LhaFile << "((lp"<<v<<",lp"<<v<<"),";
+        LhaFile << "ALL, time <=H & (";
+        //The Drone is in location i where the sensor is turn off
+        for (int i =0;i<N;i++){
+            if(i>0)LhaFile<< " | ";
+            if (ron + Plast[v][i]*rdet<0)LhaFile<<"V"<<i<<"=1";
+        }
+        LhaFile << "), { Xlast=Xlast+1 });"<< endl;
+        
+        //Drone detected
+        for (int x=0 ; x<N; x++) {
+            if (ron + Plast[v][x]*rdet>=0){
+                
+            LhaFile << "((lp"<<v<<",lp"<<x<<"),";
+            LhaFile << "ALL, time <=H, { Xlast=0 ,";
+           
+                LhaFile<<",Plast"<<v<<"_"<<x<<"=Plast"<<v<<"_"<<x<<"+1, Out"<<v<<"=Out"<<v<<"+1});"<<endl;
+            
+            }
+        }
+    }
+    
+    
+    
+    /*LhaFile << "((li,la),ALL,  time <= H,#);"<< endl; 
+    LhaFile << "((li,lf),#,  time = H,{Plast0_0=Plast0_0/Out0";
     for(int i=0; i<N;i++)
       for(int j=0; j<N; j++)
 	if(i!=0 && j!=0)
-	  LhaFile <<", Plast"<<i<<j<<"=Plast"<<i<<j<<"/Out"<<j;
+	  LhaFile <<", Plast"<<i<<"_"<<j<<"=Plast"<<i<<"_"<<j<<"/Out"<<j;
     LhaFile <<"});"<< endl; 
     
     for(int i=0; i< N;i++)      
       for(int j=0; j<N; j++){
-	 LhaFile << "((la,lp"<<i<<"),#, Xlast="<<j<<"& W"<<i<<"=0,{Plast"<<j<<0<<"=Plast"<<j<<0<<"+1, Out"<<j<<"=Out"<<j<<"+1});"<< endl;
-	 LhaFile << "((la,lp"<<i<<"),#, Xlast="<<j<<"& W"<<i<<"=1,{Plast"<<j<<i<<"=Plast"<<j<<i<<"+1, Out"<<j<<"=Out"<<j<<"+1,Xlast="<<i<<"});"<< endl;
+	 LhaFile << "((la,lp"<<i<<"),#, Xlast="<<j<<"& W"<<i<<"=0,{Plast"<<j<<"_"<<0<<"=Plast"<<j<<"_"<<0<<"+1, Out"<<j<<"=Out"<<j<<"+1});"<< endl;
+	 LhaFile << "((la,lp"<<i<<"),#, Xlast="<<j<<"& W"<<i<<"=1,{Plast"<<j<<"_"<<i<<"=Plast"<<j<<"_"<<i<<"+1, Out"<<j<<"=Out"<<j<<"+1,Xlast="<<i<<"});"<< endl;
 	
       }
       
    for(int i=0; i< N;i++)    
       LhaFile << "((lp"<<i<<", li),#, #, #);"<< endl;
       
-   
+   */
     LhaFile << "};"<< endl; 
     
     LhaFile.close();

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-void generateLHAfun(int N,vector<int>&, double H);
+void generateLHAfun(double,double,int N,vector<int>&, vector< vector<double> >&, double H);
 #include "generateLHA.cpp"
 
 void generateSPNfun(int N,vector< vector<double> >&);
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     M[4][2]=1;
     
     
-    generateLHAfun(N,W,H);
+    generateLHAfun(-0.1,0.5,N,W,Plast,H);
     generateSPNfun(M);
     
     return(EXIT_SUCCESS);
