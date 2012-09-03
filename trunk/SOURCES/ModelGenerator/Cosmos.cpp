@@ -75,6 +75,8 @@ void FindPathLinux(parameters& P) {
 
 using namespace std;
 
+//Parse the input file
+//Return true iff the parsing was successfull 
 bool ParseBuild(parameters& P) {
 	Gspn_Reader gReader;
 	
@@ -99,6 +101,7 @@ bool ParseBuild(parameters& P) {
 	}catch (exception& e)
     {
         cerr << "The following exception append during import: "<< e.what() << endl;
+        return false;
     }
 	
 	Lha_Reader lReader;
@@ -131,6 +134,7 @@ bool ParseBuild(parameters& P) {
     }catch (exception& e)
     {
         cerr << "The following exception append during import: "<< e.what() << endl;
+        return false;
     }
 	Lha_Reader lr;
 	lr = lReader;
