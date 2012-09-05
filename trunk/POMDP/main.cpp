@@ -18,9 +18,9 @@ void generateSPNfun(int N,vector< vector<double> >&);
 
 int main(int argc, char** argv) {
     int N =5;
-    double H=1000; //simulation horizon
+    double H=2; //simulation horizon
     vector< vector<double> > M(N,vector<double>(N,0) );
-    vector< vector<double> > Plast(N,vector<double>(N,0) );
+    vector< vector<double> > Plast(N,vector<double>(N,0.2) );
     vector<int>  W(N,0);//sensor satatus
     
     
