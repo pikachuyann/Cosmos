@@ -16,6 +16,9 @@ void generateLHAfun(double,double,int N,vector<int>&, vector< vector<double> >&,
 void generateSPNfun(int N,vector< vector<double> >&);
 #include "generateSPN.cpp"
 
+void readPlastfun(int N,string , vector< vector<double> >&);
+#include "readPlast.cpp"
+
 int main(int argc, char** argv) {
     int N =5;
     double H=2; //simulation horizon

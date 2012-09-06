@@ -82,7 +82,7 @@ void parameters::usage(){
     cout << "\t--width \tset the width of the confidence interval (default=0.001)"<< endl;
     cout << "\t--batch \tset the size of batch of simulation (default=1000)"<< endl;
     cout << "\t--max-run \tset the maximal number of run (default=2000000)" << endl;
-    cout << "Miscellanous options:" << endl;
+    cout << "Miscellaneous options:" << endl;
     cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
     cout << "\t--alligator-mode \toutput easy to parse result"<< endl;
 }
@@ -113,7 +113,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"gmlinput" ,      no_argument, 0, 'g'},
             {"alligator-mode", no_argument, 0, 'a'},
 
-            /* Miscellanious options */
+            /* Miscellaneous options */
             {"njob" , required_argument, 0 , 'n'},
             {"verbose", required_argument, 0, 'v'},
             {"outputdata", required_argument, 0, 'd'},
