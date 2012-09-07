@@ -20,14 +20,6 @@ void generateLHAfun(double ron,double rdet,int N, vector<int>  &W,vector< vector
     
     cout << "generate LHA" << endl;
     
-    //Compute strategie
-    
-    /*vector< vector< bool > > strat(N,N);
-    for (int i =0;i<N;i++){
-        for( int j =0;j<N;j++){
-            strat[i][j] = ron + Plast[i][j]*rdet >= 0;
-        }
-    }*/
     
     ofstream LhaFile("generated.lha", ios::out | ios::trunc);
     
