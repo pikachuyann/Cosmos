@@ -24,7 +24,7 @@ void generateLHAfun(double ron,double rdet,int N, vector<int>  &W,vector< vector
     ofstream LhaFile("generated.lha", ios::out | ios::trunc);
     
     
-    LhaFile << "NbVariables = " << N*N+N+1 << ";" << endl; 
+    LhaFile << "NbVariables = " << N*N+1 << ";" << endl; 
     LhaFile << "NbLocations = "<< N*(Xlastmax+1)+1 << ";" << endl; 
 
     LhaFile << "const double H = "<< H << ";" << endl; 
@@ -37,11 +37,11 @@ void generateLHAfun(double ron,double rdet,int N, vector<int>  &W,vector< vector
     LhaFile << "VariablesList = {time";
     /*for(int i=0;i<N;i++)
       LhaFile << ", W"<<i;*/
+    /*for(int i=0;i<N;i++)
+      LhaFile << ", Out"<<i;*/
     for(int i=0;i<N;i++)
-      LhaFile << ", Out"<<i;
-    for(int i=0;i<N;i++)
-	for(int j=0;j<N;j++)
-	  LhaFile << ", Plast"<<i<<"_"<<j;	
+        for(int j=0;j<N;j++)
+            LhaFile << ", Plast"<<i<<"_"<<j;	
     LhaFile << "} ;"<< endl; 
     
     
@@ -112,7 +112,9 @@ void generateLHAfun(double ron,double rdet,int N, vector<int>  &W,vector< vector
                 for(int Xlast=0;Xlast<=Xlastmax;Xlast++){
                     LhaFile << "((lp"<<v<<"_"<< Xlast <<",lp"<<x<<"_0),";
                     LhaFile << "ALL, time <=H, { ";
-                    LhaFile<<"Plast"<<v<<"_"<<x<<"=Plast"<<v<<"_"<<x<<"+1, Out"<<v<<"=Out"<<v<<"+1});"<<endl;
+                    LhaFile <<"Plast"<<v<<"_"<<x<<"=Plast"<<v<<"_"<<x<<"+1";
+                    //LhaFile << ", Out"<<v<<"=Out"<<v<<"+1";
+                    LhaFile << "});"<<endl;
                 }
             }
         }

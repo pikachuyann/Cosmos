@@ -27,15 +27,23 @@ void readPlastfun(int N,string PlastPath, vector< vector<double> >&Plast){
         PlastFile >> dumbint >> dumbint;
         
         for (int i=0; i < N ; i++) {
+            double outi = 0.0;
             for (int j=0; j<N; j++) {
                 double val;
                 PlastFile >> val;
                 Plast[i][j] = val;
+                outi += val;
                 PlastFile >> dumbdouble >> dumbdouble >> dumbdouble;                
-                cout << "Plast("<<i<<","<< j<<") = "<< Plast[i][j]<< endl;
-                
             }
+            for (int j=0; j<N; j++) {
+                Plast[i][j] /= outi;
+                cout << "Plast("<<i<<","<< j<<") = "<< Plast[i][j]<< endl;
+            }
+            
         }
+        
+        
+        
     }else{
         cout << "Fail to open Plast file:"<< PlastPath << endl;
     }
