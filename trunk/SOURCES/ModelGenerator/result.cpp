@@ -127,7 +127,10 @@ bool result::continueSim(){
 
 void printPercent(double i, double j){
     double t = 100;
-    double u = (t * i)/j; 
+    double u;
+    if(j != 0){
+       u = (t * i)/j;      
+    }else u=0;
     cout << "[";
     for(int k = 1; k<t;k++){
         if(k<u){cout<<"|";}
@@ -149,9 +152,9 @@ void result::printProgress(){
         cout << P.HaslFormulas[i] << ":\t Mean" << "=" << MeanM2->Mean[i] << "\t stdev=" << stdev[i] << "\t  width=" << width[i] << endl;
         endline++;
         if(!P.RareEvent){
-            cout << "% of width:\t";
             double initwidth = 2 * Normal_quantile * stdev[i] / sqrt(P.Batch);
             if(width[i] != 0 ){
+                cout << "% of width:\t";
                 printPercent( pow(initwidth/width[i],2.0), pow(initwidth/P.Width,2.0));
                 endline++;
             } 

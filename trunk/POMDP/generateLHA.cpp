@@ -22,6 +22,7 @@ void generateLHAfun(double ron,double rdet,int N, vector<int>  &W,vector< vector
     
     
     ofstream LhaFile("generated.lha", ios::out | ios::trunc);
+    ofstream StrategieFile("Strat",ios::out | ios::trunc);
     
     
     LhaFile << "NbVariables = " << N*N+1 << ";" << endl; 
@@ -69,11 +70,35 @@ void generateLHAfun(double ron,double rdet,int N, vector<int>  &W,vector< vector
     //LhaFile << "(la, TRUE, (time:1));"<< endl; 
     for(int i=0;i<N;i++){
         LhaFile << "(lp"<<i<<"_0, V"<<i<<"=1 , (time:1));"<< endl;
+        StrategieFile << "Strategy for drone last located in "<<i;
+        
+        //Print strategy
+        StrategieFile << ", "<< 0 << " round ago" << endl;
+        //The drone must not be in a activate sensor location
+        for (int j =1;j<N;j++){ 
+            StrategieFile << "\tSensor " << j;
+            //j start at 1 because 0 is the bottom position no sensor
+            if (ron + Plast[i][j]*rdet>=0){
+                StrategieFile << " on" << endl;
+            }else{
+                StrategieFile << " off" << endl;
+            }
+        }
+
         for(int Xlast=1;Xlast<=Xlastmax;Xlast++){
             LhaFile << "(lp"<<i<<"_"<<Xlast<< ", (TRUE";
+            StrategieFile << "Strategy for drone last located in "<< i;
+            StrategieFile <<", "<< Xlast << " round ago" << endl;
             //The drone must not be in a activate sensor location
-            for (int j =0;j<N;j++){
-                if (ron + Plast[i][j]*rdet>=0)LhaFile<<"& V"<<j<<"=0";
+            for (int j =1;j<N;j++){ 
+                StrategieFile << "\tSensor " << j;
+                //j start at 1 because 0 is the bottom position no sensor
+                if (ron + Plast[i][j]*rdet>=0){
+                    LhaFile<<"& V"<<j<<"=0";
+                    StrategieFile << " on" << endl;
+                }else{
+                    StrategieFile << " off" << endl;
+                }
             }
 
             LhaFile << ") , (time:1));"<< endl;     
@@ -107,7 +132,8 @@ void generateLHAfun(double ron,double rdet,int N, vector<int>  &W,vector< vector
         }
             
         //Drone detected
-        for (int x=0 ; x<N; x++) {
+        for (int x=1 ; x<N; x++) {
+            //x start in 1 because there is no sensor in 0les
             if (ron + Plast[v][x]*rdet>=0){
                 for(int Xlast=0;Xlast<=Xlastmax;Xlast++){
                     LhaFile << "((lp"<<v<<"_"<< Xlast <<",lp"<<x<<"_0),";
@@ -144,6 +170,7 @@ void generateLHAfun(double ron,double rdet,int N, vector<int>  &W,vector< vector
     LhaFile << "};"<< endl; 
     
     LhaFile.close();
+    StrategieFile.close();
     
     
 }
