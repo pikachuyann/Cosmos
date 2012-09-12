@@ -21,7 +21,7 @@ void readPlastfun(int N,string , vector< vector<double> >&);
 
 int main(int argc, char** argv) {
     int N =5;
-    double H=10; //simulation horizon
+    double H=100; //simulation horizon
     vector< vector<double> > M(N,vector<double>(N,0) );
     vector< vector<double> > Plast(N,vector<double>(N,1.0) );
     vector<int>  W(N,0);//sensor satatus
@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
         readPlastfun(N, argv[1], Plast);
     }
     
-    generateLHAfun(-0.1,0.3,N,W,Plast,H);
+    generateLHAfun(-0.1,0.4,N,W,Plast,H);
     generateSPNfun(M);
     
     return(EXIT_SUCCESS);
