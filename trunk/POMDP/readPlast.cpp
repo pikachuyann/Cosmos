@@ -11,7 +11,7 @@
 using namespace std;
 
 
-void readPlastfun(int N,string PlastPath, vector< vector<double> >&Plast){
+void readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&Plast){
     ifstream PlastFile(PlastPath.c_str(), ios::in);
     
     int dumbint;
@@ -27,17 +27,22 @@ void readPlastfun(int N,string PlastPath, vector< vector<double> >&Plast){
         PlastFile >> dumbint >> dumbint;
         
         for (int i=0; i < N ; i++) {
-            double outi = 0.0;
-            for (int j=0; j<N; j++) {
-                double val;
-                PlastFile >> val;
-                Plast[i][j] = val;
-                outi += val;
-                PlastFile >> dumbdouble >> dumbdouble >> dumbdouble;                
-            }
-            for (int j=0; j<N; j++) {
-                Plast[i][j] /= outi;
-                cout << "Plast("<<i<<","<< j<<") = "<< Plast[i][j]<< endl;
+            for (int Xlast=0; Xlast < Plast[i].size(); Xlast++) {
+                double outi = 0.0;
+                for (int j=0; j<N; j++) {
+                    
+                    double val;
+                    PlastFile >> val;
+                    Plast[i][Xlast][j] = val;
+                    outi += val;
+                    PlastFile >> dumbdouble >> dumbdouble >> dumbdouble;                
+                    
+                }
+                for (int j=0; j<N; j++) {
+                    if(outi>0)
+                        Plast[i][Xlast][j] /= outi;
+                    cout << "Plast("<<i<<","<< Xlast << ","<< j<<") = "<< Plast[i][Xlast][j]<< endl;
+                }
             }
             
         }

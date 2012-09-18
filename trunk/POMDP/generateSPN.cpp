@@ -24,7 +24,7 @@ void generateSPNfun(vector< vector<double> > M){
         for(int j = 0; j< M.size()  ;j++){
             if(M[i][j] != 0){
                 if (nbtr>0)SpnFile << " , ";
-                SpnFile << "Tr" << nbtr << "_" << i << "_" << j;
+                SpnFile << "Tr" << i << "_" << j;
                 nbtr++;
             }
         }
@@ -40,7 +40,7 @@ void generateSPNfun(vector< vector<double> > M){
     for(int i =0; i<M.size(); i++){
         for(int j = 0; j< M.size()  ;j++){
             if(M[i][j] != 0){
-                SpnFile <<"\t(Tr" << nbtr << "_" << i << "_" << j;
+                SpnFile <<"\t(Tr" << i << "_" << j;
                 SpnFile <<" , EXPONENTIAL("<<M[i][j]<< "),1, 1,SINGLE);"<<endl;
                 nbtr++;
             }
@@ -54,7 +54,7 @@ void generateSPNfun(vector< vector<double> > M){
         for(int j = 0; j< M.size()  ;j++){
             if(M[i][j] != 0){
                 SpnFile <<"\t(V"<< i ;
-                SpnFile << " ,Tr" << nbtr << "_" << i << "_" << j;
+                SpnFile << " ,Tr" << i << "_" << j;
                 SpnFile <<" , 1);"<<endl;
                 nbtr++;
             }
@@ -67,7 +67,7 @@ void generateSPNfun(vector< vector<double> > M){
     for(int i =0; i<M.size(); i++){
         for(int j = 0; j< M.size()  ;j++){
             if(M[i][j] != 0){
-                SpnFile <<"\t(Tr" << nbtr << "_" << i << "_" << j;
+                SpnFile <<"\t(Tr" << i << "_" << j;
                 SpnFile <<", V"<< j << " , 1);"<<endl;
                 nbtr++;
             }
