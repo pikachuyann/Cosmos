@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.6.2.  */
 
 /* Stack handling for Bison parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -32,24 +30,24 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef GSPN_BISON_STACK_HH
-# define GSPN_BISON_STACK_HH
+/**
+ ** \file stack.hh
+ ** Define the gspn::stack class.
+ */
 
-#include <deque>
+#ifndef GSPN_STACK_HH
+# define GSPN_STACK_HH
 
+# include <deque>
 
-/* Line 1067 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 namespace gspn {
-
-/* Line 1067 of lalr1.cc  */
-#line 48 "stack.hh"
+/* Line 37 of stack.hh  */
+#line 47 "stack.hh"
   template <class T, class S = std::deque<T> >
   class stack
   {
   public:
-
     // Hide our reversed order.
     typedef typename S::reverse_iterator iterator;
     typedef typename S::const_reverse_iterator const_iterator;
@@ -88,7 +86,7 @@ namespace gspn {
     pop (unsigned int n = 1)
     {
       for (; n; --n)
-	seq_.pop_front ();
+        seq_.pop_front ();
     }
 
     inline
@@ -102,7 +100,6 @@ namespace gspn {
     inline const_iterator end () const { return seq_.rend (); }
 
   private:
-
     S seq_;
   };
 
@@ -111,10 +108,9 @@ namespace gspn {
   class slice
   {
   public:
-
-    slice (const S& stack,
-	   unsigned int range) : stack_ (stack),
-				 range_ (range)
+    slice (const S& stack, unsigned int range)
+      : stack_ (stack)
+      , range_ (range)
     {
     }
 
@@ -126,18 +122,12 @@ namespace gspn {
     }
 
   private:
-
     const S& stack_;
     unsigned int range_;
   };
 
-/* Line 1153 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // gspn
+/* Line 119 of stack.hh  */
+#line 132 "stack.hh"
 
-/* Line 1153 of lalr1.cc  */
-#line 141 "stack.hh"
-
-#endif // not BISON_STACK_HH[]dnl
-
+#endif /* !GSPN_STACK_HH  */

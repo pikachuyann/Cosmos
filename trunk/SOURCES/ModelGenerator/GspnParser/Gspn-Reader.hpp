@@ -70,7 +70,7 @@ struct GSPN {
     vector<bool> SingleService;
     vector<bool> MarkingDependent;
     vector<int> NbServers;
-
+    vector<bool> AgeMemory;
 
     vector<TransType> tType;
 
