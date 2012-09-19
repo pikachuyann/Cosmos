@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
         readPlastfun(N, argv[1], Plast);
     }
     
-    generateLHAfun(-0.1,0.275,N,Plast,H,M);
+    generateLHAfun(-0.1,0.4,N,Plast,H,M);
     generateSPNfun(M);
     
     return(EXIT_SUCCESS);
