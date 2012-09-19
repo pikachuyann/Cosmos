@@ -135,29 +135,21 @@ void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> 
                 if (ron + Plast[v][Xlast][x]*rdet>=0)nbSensorOn++;
             
             //Drone undetected => Xlast++ 
-            //Check first that the transition is possible:
+            LhaFile << "((lp"<<v<<"_"<< Xlast <<",lp"<<v<<"_";
+            LhaFile << min(Xlast+1,(int)Xlastmax) <<"),ALL";
             int compt = 0;
             for (int x=0 ; x<N; x++) {
-                if ((M[v][x]>0) & ((ron + Plast[v][Xlast][x]*rdet<0) | (x==0))){
+                if ((M[v][x]>0) & ((ron + Plast[v][Xlast][x]*rdet>=0) & (x>0))){
+                    if(compt >0){LhaFile << " ,";}
+                    else LhaFile << "\\{";
                     compt++;
+                    LhaFile << "Tr" << v << "_" << x << " ";
                 }
             }
-            //If the transition is possible then add it
-            if(compt > 0){
-                LhaFile << "((lp"<<v<<"_"<< Xlast <<",lp"<<v<<"_";
-                LhaFile << min(Xlast+1,(int)Xlastmax) <<"),{";
-                compt = 0;
-                for (int x=0 ; x<N; x++) {
-                    if ((M[v][x]>0) & ((ron + Plast[v][Xlast][x]*rdet<0) | (x==0))){
-                        if (compt >0)LhaFile << " ,";
-                        compt++;
-                        LhaFile << "Tr" << v << "_" << x << " ";
-                    }
-                }
-                LhaFile << "}, time <=H, { ";
-                LhaFile << "Reward = Reward " << ron * nbSensorOn;
-                LhaFile << " });"<< endl;
-            }
+            if(compt>0)LhaFile << "}";
+            LhaFile << ", time <=H, { ";
+            LhaFile << "Reward = Reward " << ron * nbSensorOn;
+            LhaFile << " });"<< endl;
             
             //Drone detected in location x_0
             for (int x=1 ; x<N; x++) {
