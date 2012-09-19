@@ -16,7 +16,7 @@ void generateLHAfun(double,double,int N, vector< vector< vector<double> > >&, do
 void generateSPNfun(int N,vector< vector<double> >&);
 #include "generateSPN.cpp"
 
-void readPlastfun(int N,string , vector< vector< vector<double> > >&);
+double readPlastfun(int N,string , vector< vector< vector<double> > >&);
 #include "readPlast.cpp"
 
 vector< vector<double> > generateMatrix(int n);
@@ -36,12 +36,17 @@ int main(int argc, char** argv) {
     vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
     
     
+    
+
     if (argc>1) {
-        readPlastfun(N, argv[1], Plast);
+        double reward = readPlastfun(N, argv[1], Plast);
+        cout << "reward: "<< reward << endl;
     }
     
     generateLHAfun(-0.1,0.4,N,Plast,H,M);
     generateSPNfun(M);
+    
+    
     
     return(EXIT_SUCCESS);
 }

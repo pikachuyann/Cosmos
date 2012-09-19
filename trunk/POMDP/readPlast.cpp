@@ -11,7 +11,7 @@
 using namespace std;
 
 
-void readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&Plast){
+double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&Plast){
     ifstream PlastFile(PlastPath.c_str(), ios::in);
     
     int dumbint;
@@ -47,10 +47,14 @@ void readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&Pla
             
         }
         
+        double reward;
+        PlastFile >> reward;
+        return reward;
         
         
     }else{
         cout << "Fail to open Plast file:"<< PlastPath << endl;
+        exit(EXIT_FAILURE);
     }
     
     
