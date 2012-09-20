@@ -60,7 +60,7 @@ result::result(parameters &Q){
         outdatastream << "#Number of trajectory, Number of successfull trajectory ";
         for(int i =0; i<P.HaslFormulas.size(); i++){
 			string iname = P.HaslFormulas[i];
-			if(iname.compare("")){
+			if(!iname.compare("")){
 				outdatastream << ", Mean["<<i<<"], Second Moment["<<i<<"], Confidence interval lower bound [" << i <<"] ,Confidence interval upper bound ["<<i<<"]";
 			}else{
             outdatastream << ", Mean["<<iname<<"], Second Moment["<<iname<<"], Confidence interval lower bound ["<<iname<<"] ,Confidence interval upper bound ["<<iname<<"]";

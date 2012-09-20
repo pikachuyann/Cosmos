@@ -58,10 +58,12 @@ void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> 
     
     for(int i=0;i<N;i++)
         for(int Xlast=0;Xlast<=Xlastmax;Xlast++)
-            for(int j=0;j<N;j++)
-                LhaFile << "AVG(Last(Plast"<<i<<"_"<<Xlast<<"_"<<j<<"));"<<endl;    
+            for(int j=0;j<N;j++){
+				LhaFile << "Plast"<<i<<"_"<<Xlast<<"_"<<j<<" =";
+                LhaFile << "AVG(Last(Plast"<<i<<"_"<<Xlast<<"_"<<j<<"));"<<endl;   
+			}
     
-    LhaFile << "AVG(Last(Reward));"<<endl;
+    LhaFile << "Reward=AVG(Last(Reward));"<<endl;
     
     LhaFile << "InitialLocations = {lp0_0};"<< endl; 
 
