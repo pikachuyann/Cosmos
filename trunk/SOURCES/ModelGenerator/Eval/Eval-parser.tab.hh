@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.6.2.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -32,14 +30,18 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/**
+ ** \file Eval-parser.tab.hh
+ ** Define the eval::parser class.
+ */
+
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef EVAL_PARSER_HEADER_H
-# define EVAL_PARSER_HEADER_H
+#ifndef EVAL_EVAL_PARSER_TAB_HH
+# define EVAL_EVAL_PARSER_TAB_HH
 
 /* "%code requires" blocks.  */
-
-/* Line 35 of lalr1.cc  */
+/* Line 36 of lalr1.cc  */
 #line 6 "Eval-parser.yy"
 
 #include <math.h>
@@ -54,34 +56,13 @@ class Eval;
 
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 60 "Eval-parser.tab.hh"
+/* Line 36 of lalr1.cc  */
+#line 61 "Eval-parser.tab.hh"
 
 
 #include <string>
 #include <iostream>
 #include "stack.hh"
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-namespace eval {
-
-/* Line 35 of lalr1.cc  */
-#line 74 "Eval-parser.tab.hh"
-  class position;
-  class location;
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-} // eval
-
-/* Line 35 of lalr1.cc  */
-#line 84 "Eval-parser.tab.hh"
-
 #include "location.hh"
 
 /* Enabling traces.  */
@@ -89,46 +70,10 @@ namespace eval {
 # define YYDEBUG 1
 #endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 1
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
-
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)		\
-do {							\
-  if (N)						\
-    {							\
-      (Current).begin = (Rhs)[1].begin;			\
-      (Current).end   = (Rhs)[N].end;			\
-    }							\
-  else							\
-    {							\
-      (Current).begin = (Current).end = (Rhs)[0].end;	\
-    }							\
-} while (false)
-#endif
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 namespace eval {
-
-/* Line 35 of lalr1.cc  */
-#line 132 "Eval-parser.tab.hh"
+/* Line 36 of lalr1.cc  */
+#line 77 "Eval-parser.tab.hh"
 
   /// A Bison parser.
   class Eval_parser
@@ -138,8 +83,7 @@ namespace eval {
 #ifndef YYSTYPE
     union semantic_type
     {
-
-/* Line 35 of lalr1.cc  */
+/* Line 36 of lalr1.cc  */
 #line 30 "Eval-parser.yy"
 
   double       RealVal;
@@ -148,9 +92,8 @@ namespace eval {
   
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 154 "Eval-parser.tab.hh"
+/* Line 36 of lalr1.cc  */
+#line 97 "Eval-parser.tab.hh"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -252,6 +195,14 @@ namespace eval {
     /// The location stack.
     location_stack_type yylocation_stack_;
 
+    /// Whether the given \c yypact_ value indicates a defaulted state.
+    /// \param yyvalue   the value to check
+    static bool yy_pact_value_is_default_ (int yyvalue);
+
+    /// Whether the given \c yytable_ value indicates a syntax error.
+    /// \param yyvalue   the value to check
+    static bool yy_table_value_is_error_ (int yyvalue);
+
     /// Internal symbol numbers.
     typedef unsigned char token_number_type;
     /* Tables.  */
@@ -259,7 +210,7 @@ namespace eval {
     static const signed char yypact_[];
     static const signed char yypact_ninf_;
 
-    /// For a state, default rule to reduce.
+    /// For a state, default reduction number.
     /// Unless\a  yytable_ specifies something else to do.
     /// Zero means the default is an error.
     static const unsigned char yydefact_[];
@@ -283,18 +234,14 @@ namespace eval {
     /// For a rule, its LHS.
     static const unsigned char yyr1_[];
     /// For a rule, its RHS length.
-    static const unsigned char yyr2_[];
+    static const unsigned char yyr2_[]; 
 
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    static std::string yytnamerr_ (const char *n);
+
+
     /// For a symbol, its name in clear.
     static const char* const yytname_[];
-#endif
-
-#if YYERROR_VERBOSE
-    /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    virtual std::string yytnamerr_ (const char *n);
-#endif
-
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
     typedef signed char rhs_number_type;
@@ -349,14 +296,10 @@ namespace eval {
     Eval& Evaluate;
   };
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // eval
-
-/* Line 35 of lalr1.cc  */
-#line 359 "Eval-parser.tab.hh"
-
+/* Line 36 of lalr1.cc  */
+#line 302 "Eval-parser.tab.hh"
 
 
-#endif /* ! defined PARSER_HEADER_H */
+
+#endif /* !EVAL_EVAL_PARSER_TAB_HH  */

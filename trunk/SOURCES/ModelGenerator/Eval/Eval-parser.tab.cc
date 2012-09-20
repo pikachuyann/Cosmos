@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.6.2.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -37,21 +35,18 @@
 
 /* First part of user declarations.  */
 
-
-/* Line 311 of lalr1.cc  */
-#line 43 "Eval-parser.tab.cc"
+/* Line 278 of lalr1.cc  */
+#line 40 "Eval-parser.tab.cc"
 
 
 #include "Eval-parser.tab.hh"
 
 /* User implementation prologue.  */
 
-
-/* Line 317 of lalr1.cc  */
-#line 52 "Eval-parser.tab.cc"
+/* Line 284 of lalr1.cc  */
+#line 48 "Eval-parser.tab.cc"
 /* Unqualified %code blocks.  */
-
-/* Line 318 of lalr1.cc  */
+/* Line 285 of lalr1.cc  */
 #line 37 "Eval-parser.yy"
 
 #include "Eval.hpp"
@@ -60,12 +55,20 @@
 
 
 
+/* Line 285 of lalr1.cc  */
+#line 60 "Eval-parser.tab.cc"
 
-/* Line 318 of lalr1.cc  */
-#line 66 "Eval-parser.tab.cc"
+
+# ifndef YY_NULL
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULL nullptr
+#  else
+#   define YY_NULL 0
+#  endif
+# endif
 
 #ifndef YY_
-# if YYENABLE_NLS
+# if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -75,6 +78,27 @@
 #  define YY_(msgid) msgid
 # endif
 #endif
+
+#define YYRHSLOC(Rhs, K) ((Rhs)[K])
+/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
+   If N is 0, then set CURRENT to the empty location which ends
+   the previous symbol: RHS[0] (always defined).  */
+
+# ifndef YYLLOC_DEFAULT
+#  define YYLLOC_DEFAULT(Current, Rhs, N)                               \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).begin  = YYRHSLOC (Rhs, 1).begin;                   \
+          (Current).end    = YYRHSLOC (Rhs, N).end;                     \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
+        }                                                               \
+    while (/*CONSTCOND*/ false)
+# endif
+
 
 /* Suppress unused-variable warnings by "using" E.  */
 #define YYUSE(e) ((void) (e))
@@ -125,14 +149,9 @@ do {					\
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 
-/* Line 380 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace eval {
-
-/* Line 380 of lalr1.cc  */
-#line 135 "Eval-parser.tab.cc"
-#if YYERROR_VERBOSE
+/* Line 352 of lalr1.cc  */
+#line 155 "Eval-parser.tab.cc"
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -171,7 +190,6 @@ namespace eval {
     return yystr;
   }
 
-#endif
 
   /// Build a parser object.
   Eval_parser::Eval_parser (Eval& Evaluate_yyarg)
@@ -199,43 +217,38 @@ namespace eval {
   {
     YYUSE (yylocationp);
     YYUSE (yyvaluep);
+    std::ostream& yyo = debug_stream ();
+    std::ostream& yyoutput = yyo;
+    YYUSE (yyoutput);
     switch (yytype)
       {
-        case 3: /* "str" */
-
-/* Line 449 of lalr1.cc  */
+        case 3: /* str */
+/* Line 422 of lalr1.cc  */
 #line 67 "Eval-parser.yy"
-	{ debug_stream () << *(yyvaluep->name); };
-
-/* Line 449 of lalr1.cc  */
-#line 212 "Eval-parser.tab.cc"
+	{ debug_stream () << *((*yyvaluep).name); };
+/* Line 422 of lalr1.cc  */
+#line 231 "Eval-parser.tab.cc"
 	break;
-      case 4: /* "rval" */
-
-/* Line 449 of lalr1.cc  */
+      case 4: /* rval */
+/* Line 422 of lalr1.cc  */
 #line 71 "Eval-parser.yy"
-	{ debug_stream () << (yyvaluep->RealVal); };
-
-/* Line 449 of lalr1.cc  */
-#line 221 "Eval-parser.tab.cc"
+	{ debug_stream () << ((*yyvaluep).RealVal); };
+/* Line 422 of lalr1.cc  */
+#line 238 "Eval-parser.tab.cc"
 	break;
-      case 5: /* "ival" */
-
-/* Line 449 of lalr1.cc  */
+      case 5: /* ival */
+/* Line 422 of lalr1.cc  */
 #line 70 "Eval-parser.yy"
-	{ debug_stream () << (yyvaluep->IntVal); };
-
-/* Line 449 of lalr1.cc  */
-#line 230 "Eval-parser.tab.cc"
+	{ debug_stream () << ((*yyvaluep).IntVal); };
+/* Line 422 of lalr1.cc  */
+#line 245 "Eval-parser.tab.cc"
 	break;
-      case 21: /* "exp" */
-
-/* Line 449 of lalr1.cc  */
+      case 21: /* exp */
+/* Line 422 of lalr1.cc  */
 #line 71 "Eval-parser.yy"
-	{ debug_stream () << (yyvaluep->RealVal); };
-
-/* Line 449 of lalr1.cc  */
-#line 239 "Eval-parser.tab.cc"
+	{ debug_stream () << ((*yyvaluep).RealVal); };
+/* Line 422 of lalr1.cc  */
+#line 252 "Eval-parser.tab.cc"
 	break;
        default:
 	  break;
@@ -267,14 +280,12 @@ namespace eval {
 
     switch (yytype)
       {
-        case 3: /* "str" */
-
-/* Line 480 of lalr1.cc  */
+        case 3: /* str */
+/* Line 453 of lalr1.cc  */
 #line 68 "Eval-parser.yy"
-	{ delete (yyvaluep->name); };
-
-/* Line 480 of lalr1.cc  */
-#line 278 "Eval-parser.tab.cc"
+	{ delete ((*yyvaluep).name); };
+/* Line 453 of lalr1.cc  */
+#line 289 "Eval-parser.tab.cc"
 	break;
 
 	default:
@@ -317,6 +328,18 @@ namespace eval {
   }
 #endif
 
+  inline bool
+  Eval_parser::yy_pact_value_is_default_ (int yyvalue)
+  {
+    return yyvalue == yypact_ninf_;
+  }
+
+  inline bool
+  Eval_parser::yy_table_value_is_error_ (int yyvalue)
+  {
+    return yyvalue == yytable_ninf_;
+  }
+
   int
   Eval_parser::parse ()
   {
@@ -338,7 +361,7 @@ namespace eval {
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
-    location_type yyerror_range[2];
+    location_type yyerror_range[3];
 
     /// $$.
     semantic_type yyval;
@@ -376,7 +399,7 @@ namespace eval {
 
     /* Try to take a decision without lookahead.  */
     yyn = yypact_[yystate];
-    if (yyn == yypact_ninf_)
+    if (yy_pact_value_is_default_ (yyn))
       goto yydefault;
 
     /* Read a lookahead token.  */
@@ -409,8 +432,8 @@ namespace eval {
     yyn = yytable_[yyn];
     if (yyn <= 0)
       {
-	if (yyn == 0 || yyn == yytable_ninf_)
-	goto yyerrlab;
+	if (yy_table_value_is_error_ (yyn))
+	  goto yyerrlab;
 	yyn = -yyn;
 	goto yyreduce;
       }
@@ -465,78 +488,67 @@ namespace eval {
     switch (yyn)
       {
 	  case 2:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 81 "Eval-parser.yy"
     {Evaluate.IntResult=(int) (yysemantic_stack_[(1) - (1)].RealVal);Evaluate.RealResult=(yysemantic_stack_[(1) - (1)].RealVal);}
     break;
 
   case 3:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 83 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(1) - (1)].IntVal);}
     break;
 
   case 4:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 84 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(1) - (1)].RealVal);}
     break;
 
   case 5:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 85 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (2)].RealVal);}
     break;
 
   case 6:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 86 "Eval-parser.yy"
     {YYABORT; }
     break;
 
   case 7:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 87 "Eval-parser.yy"
     {(yyval.RealVal)=-(yysemantic_stack_[(2) - (2)].RealVal);}
     break;
 
   case 8:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 88 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)+(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 9:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 89 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)*(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 10:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 90 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)-(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 11:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 91 "Eval-parser.yy"
     {(yyval.RealVal)=double((yysemantic_stack_[(2) - (2)].RealVal));}
     break;
 
   case 12:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 92 "Eval-parser.yy"
     {if((yysemantic_stack_[(3) - (3)].RealVal)==0)	  {cout<<"Division by zero !";YYABORT;} 
 					 else (yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)/double (yysemantic_stack_[(3) - (3)].RealVal);
@@ -544,40 +556,46 @@ namespace eval {
     break;
 
   case 13:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 95 "Eval-parser.yy"
     {(yyval.RealVal)=pow((yysemantic_stack_[(3) - (1)].RealVal),(yysemantic_stack_[(3) - (3)].RealVal));}
     break;
 
   case 14:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 96 "Eval-parser.yy"
     {if((yysemantic_stack_[(6) - (3)].RealVal)<=(yysemantic_stack_[(6) - (5)].RealVal)) (yyval.RealVal)=(yysemantic_stack_[(6) - (3)].RealVal); else (yyval.RealVal)=(yysemantic_stack_[(6) - (5)].RealVal);}
     break;
 
   case 15:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 97 "Eval-parser.yy"
     {if((yysemantic_stack_[(6) - (3)].RealVal)>=(yysemantic_stack_[(6) - (5)].RealVal)) (yyval.RealVal)=(yysemantic_stack_[(6) - (3)].RealVal);	 else (yyval.RealVal)=(yysemantic_stack_[(6) - (5)].RealVal);}
     break;
 
   case 16:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 98 "Eval-parser.yy"
     {(yyval.RealVal)=floor((yysemantic_stack_[(4) - (3)].RealVal));}
     break;
 
 
-
-/* Line 678 of lalr1.cc  */
-#line 578 "Eval-parser.tab.cc"
+/* Line 661 of lalr1.cc  */
+#line 585 "Eval-parser.tab.cc"
 	default:
           break;
       }
+    /* User semantic actions sometimes alter yychar, and that requires
+       that yytoken be updated with the new translation.  We take the
+       approach of translating immediately before every use of yytoken.
+       One alternative is translating here after every semantic action,
+       but that translation would be missed if the semantic action
+       invokes YYABORT, YYACCEPT, or YYERROR immediately after altering
+       yychar.  In the case of YYABORT or YYACCEPT, an incorrect
+       destructor might then be invoked immediately.  In the case of
+       YYERROR, subsequent parser actions might lead to an incorrect
+       destructor call or verbose syntax error message before the
+       lookahead is translated.  */
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
 
     yypop_ (yylen);
@@ -601,14 +619,20 @@ namespace eval {
   | yyerrlab -- here on detecting error |
   `------------------------------------*/
   yyerrlab:
+    /* Make sure we have latest lookahead translation.  See comments at
+       user semantic actions for why this is necessary.  */
+    yytoken = yytranslate_ (yychar);
+
     /* If not already recovering from an error, report this error.  */
     if (!yyerrstatus_)
       {
 	++yynerrs_;
+	if (yychar == yyempty_)
+	  yytoken = yyempty_;
 	error (yylloc, yysyntax_error_ (yystate, yytoken));
       }
 
-    yyerror_range[0] = yylloc;
+    yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
 	/* If just tried and failed to reuse lookahead token after an
@@ -643,7 +667,7 @@ namespace eval {
     if (false)
       goto yyerrorlab;
 
-    yyerror_range[0] = yylocation_stack_[yylen - 1];
+    yyerror_range[1] = yylocation_stack_[yylen - 1];
     /* Do not reclaim the symbols of the rule which action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -660,7 +684,7 @@ namespace eval {
     for (;;)
       {
 	yyn = yypact_[yystate];
-	if (yyn != yypact_ninf_)
+	if (!yy_pact_value_is_default_ (yyn))
 	{
 	  yyn += yyterror_;
 	  if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
@@ -675,7 +699,7 @@ namespace eval {
 	if (yystate_stack_.height () == 1)
 	YYABORT;
 
-	yyerror_range[0] = yylocation_stack_[0];
+	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
 		     yystos_[yystate],
 		     &yysemantic_stack_[0], &yylocation_stack_[0]);
@@ -684,10 +708,10 @@ namespace eval {
 	YY_STACK_PRINT ();
       }
 
-    yyerror_range[1] = yylloc;
+    yyerror_range[2] = yylloc;
     // Using YYLLOC is tempting, but would change the location of
     // the lookahead.  YYLOC is available though.
-    YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
+    YYLLOC_DEFAULT (yyloc, yyerror_range, 2);
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yyloc);
 
@@ -710,7 +734,13 @@ namespace eval {
 
   yyreturn:
     if (yychar != yyempty_)
-      yydestruct_ ("Cleanup: discarding lookahead", yytoken, &yylval, &yylloc);
+      {
+        /* Make sure we have latest lookahead translation.  See comments
+           at user semantic actions for why this is necessary.  */
+        yytoken = yytranslate_ (yychar);
+        yydestruct_ ("Cleanup: discarding lookahead", yytoken, &yylval,
+                     &yylloc);
+      }
 
     /* Do not reclaim the symbols of the rule which action triggered
        this YYABORT or YYACCEPT.  */
@@ -729,51 +759,97 @@ namespace eval {
 
   // Generate an error message.
   std::string
-  Eval_parser::yysyntax_error_ (int yystate, int tok)
+  Eval_parser::yysyntax_error_ (int yystate, int yytoken)
   {
-    std::string res;
-    YYUSE (yystate);
-#if YYERROR_VERBOSE
-    int yyn = yypact_[yystate];
-    if (yypact_ninf_ < yyn && yyn <= yylast_)
+    std::string yyres;
+    // Number of reported tokens (one for the "unexpected", one per
+    // "expected").
+    size_t yycount = 0;
+    // Its maximum.
+    enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
+    // Arguments of yyformat.
+    char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+
+    /* There are many possibilities here to consider:
+       - If this state is a consistent state with a default action, then
+         the only way this function was invoked is if the default action
+         is an error action.  In that case, don't check for expected
+         tokens because there are none.
+       - The only way there can be no lookahead present (in yytoken) is
+         if this state is a consistent state with a default action.
+         Thus, detecting the absence of a lookahead is sufficient to
+         determine that there is no unexpected or expected token to
+         report.  In that case, just report a simple "syntax error".
+       - Don't assume there isn't a lookahead just because this state is
+         a consistent state with a default action.  There might have
+         been a previous inconsistent state, consistent state with a
+         non-default action, or user semantic action that manipulated
+         yychar.
+       - Of course, the expected token list depends on states to have
+         correct lookahead information, and it depends on the parser not
+         to perform extra reductions after fetching a lookahead from the
+         scanner and before detecting a syntax error.  Thus, state
+         merging (from LALR or IELR) and default reductions corrupt the
+         expected token list.  However, the list is correct for
+         canonical LR with one exception: it will still contain any
+         token that will not be accepted due to an error action in a
+         later state.
+    */
+    if (yytoken != yyempty_)
       {
-	/* Start YYX at -YYN if negative to avoid negative indexes in
-	   YYCHECK.  */
-	int yyxbegin = yyn < 0 ? -yyn : 0;
-
-	/* Stay within bounds of both yycheck and yytname.  */
-	int yychecklim = yylast_ - yyn + 1;
-	int yyxend = yychecklim < yyntokens_ ? yychecklim : yyntokens_;
-	int count = 0;
-	for (int x = yyxbegin; x < yyxend; ++x)
-	  if (yycheck_[x + yyn] == x && x != yyterror_)
-	    ++count;
-
-	// FIXME: This method of building the message is not compatible
-	// with internationalization.  It should work like yacc.c does it.
-	// That is, first build a string that looks like this:
-	// "syntax error, unexpected %s or %s or %s"
-	// Then, invoke YY_ on this string.
-	// Finally, use the string as a format to output
-	// yytname_[tok], etc.
-	// Until this gets fixed, this message appears in English only.
-	res = "syntax error, unexpected ";
-	res += yytnamerr_ (yytname_[tok]);
-	if (count < 5)
-	  {
-	    count = 0;
-	    for (int x = yyxbegin; x < yyxend; ++x)
-	      if (yycheck_[x + yyn] == x && x != yyterror_)
-		{
-		  res += (!count++) ? ", expecting " : " or ";
-		  res += yytnamerr_ (yytname_[x]);
-		}
-	  }
+        yyarg[yycount++] = yytname_[yytoken];
+        int yyn = yypact_[yystate];
+        if (!yy_pact_value_is_default_ (yyn))
+          {
+            /* Start YYX at -YYN if negative to avoid negative indexes in
+               YYCHECK.  In other words, skip the first -YYN actions for
+               this state because they are default actions.  */
+            int yyxbegin = yyn < 0 ? -yyn : 0;
+            /* Stay within bounds of both yycheck and yytname.  */
+            int yychecklim = yylast_ - yyn + 1;
+            int yyxend = yychecklim < yyntokens_ ? yychecklim : yyntokens_;
+            for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
+              if (yycheck_[yyx + yyn] == yyx && yyx != yyterror_
+                  && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
+                {
+                  if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
+                    {
+                      yycount = 1;
+                      break;
+                    }
+                  else
+                    yyarg[yycount++] = yytname_[yyx];
+                }
+          }
       }
-    else
-#endif
-      res = YY_("syntax error");
-    return res;
+
+    char const* yyformat = YY_NULL;
+    switch (yycount)
+      {
+#define YYCASE_(N, S)                         \
+        case N:                               \
+          yyformat = S;                       \
+        break
+        YYCASE_(0, YY_("syntax error"));
+        YYCASE_(1, YY_("syntax error, unexpected %s"));
+        YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+#undef YYCASE_
+      }
+
+    // Argument number.
+    size_t yyi = 0;
+    for (char const* yyp = yyformat; *yyp; ++yyp)
+      if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
+        {
+          yyres += yytnamerr_ (yyarg[yyi++]);
+          ++yyp;
+        }
+      else
+        yyres += *yyp;
+    return yyres;
   }
 
 
@@ -789,9 +865,9 @@ namespace eval {
       12,    12,   -12,    14,    14,   -12,    53,    60,   -12,   -12
   };
 
-  /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
-     doesn't specify something else to do.  Zero means the default is an
-     error.  */
+  /* YYDEFACT[S] -- default reduction number in state S.  Performed when
+     YYTABLE doesn't specify something else to do.  Zero means the
+     default is an error.  */
   const unsigned char
   Eval_parser::yydefact_[] =
   {
@@ -817,7 +893,7 @@ namespace eval {
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
      positive, shift that token.  If negative, reduce the rule which
-     number is the opposite.  If zero, do what YYDEFACT says.  */
+     number is the opposite.  If YYTABLE_NINF_, syntax error.  */
   const signed char Eval_parser::yytable_ninf_ = -1;
   const unsigned char
   Eval_parser::yytable_[] =
@@ -886,7 +962,7 @@ namespace eval {
        3,     2,     3,     3,     6,     6,     4
   };
 
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
+
   /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
      First, the terminals, then, starting at \a yyntokens_, nonterminals.  */
   const char*
@@ -894,9 +970,8 @@ namespace eval {
   {
     "\"end of file\"", "error", "$undefined", "str", "rval", "ival", "MIN",
   "MAX", "FLOOR", "PLUS", "MINUS", "MUL", "DIV", "POWER", "LB", "RB",
-  "COMMA", "DOUBLE", "NEG", "$accept", "ArithmethicExp", "exp", 0
+  "COMMA", "DOUBLE", "NEG", "$accept", "ArithmethicExp", "exp", YY_NULL
   };
-#endif
 
 #if YYDEBUG
   /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -1013,16 +1088,10 @@ namespace eval {
   const Eval_parser::token_number_type Eval_parser::yyundef_token_ = 2;
 
 
-/* Line 1054 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // eval
-
-/* Line 1054 of lalr1.cc  */
-#line 1023 "Eval-parser.tab.cc"
-
-
-/* Line 1056 of lalr1.cc  */
+/* Line 1106 of lalr1.cc  */
+#line 1094 "Eval-parser.tab.cc"
+/* Line 1107 of lalr1.cc  */
 #line 100 "Eval-parser.yy"
 
 
@@ -1032,4 +1101,3 @@ eval::Eval_parser::error (const eval::Eval_parser::location_type& l,
 {
  Evaluate.error (l, m);
 }
-

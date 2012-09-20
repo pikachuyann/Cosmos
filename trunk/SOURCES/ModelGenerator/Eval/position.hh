@@ -1,9 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.6.2.  */
 
 /* Positions for Bison parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+      Copyright (C) 2002-2007, 2009-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -36,59 +35,67 @@
  ** Define the eval::position class.
  */
 
-#ifndef EVAL_BISON_POSITION_HH
-# define EVAL_BISON_POSITION_HH
+#ifndef EVAL_POSITION_HH
+# define EVAL_POSITION_HH
 
-# include <iostream>
+# include <algorithm> // std::max
+# include <iosfwd>
 # include <string>
-# include <algorithm>
 
+# ifndef YY_NULL
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULL nullptr
+#  else
+#   define YY_NULL 0
+#  endif
+# endif
 
-/* Line 38 of location.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 namespace eval {
-
 /* Line 38 of location.cc  */
-#line 54 "position.hh"
+#line 57 "position.hh"
   /// Abstract a position.
   class position
   {
   public:
 
     /// Construct a position.
-    position ()
-      : filename (0), line (1), column (1)
+    explicit position (std::string* f = YY_NULL,
+                       unsigned int l = 1u,
+                       unsigned int c = 1u)
+      : filename (f)
+      , line (l)
+      , column (c)
     {
     }
 
 
     /// Initialization.
-    inline void initialize (std::string* fn)
+    void initialize (std::string* fn = YY_NULL,
+                     unsigned int l = 1u,
+                     unsigned int c = 1u)
     {
       filename = fn;
-      line = 1;
-      column = 1;
+      line = l;
+      column = c;
     }
 
     /** \name Line and Column related manipulators
      ** \{ */
-  public:
     /// (line related) Advance to the COUNT next lines.
-    inline void lines (int count = 1)
+    void lines (int count = 1)
     {
-      column = 1;
+      column = 1u;
       line += count;
     }
 
     /// (column related) Advance to the COUNT next columns.
-    inline void columns (int count = 1)
+    void columns (int count = 1)
     {
       column = std::max (1u, column + count);
     }
     /** \} */
 
-  public:
     /// File name to which this position refers.
     std::string* filename;
     /// Current line number.
@@ -131,10 +138,11 @@ namespace eval {
   inline bool
   operator== (const position& pos1, const position& pos2)
   {
-    return
-      (pos1.filename == pos2.filename
-       || pos1.filename && pos2.filename && *pos1.filename == *pos2.filename)
-      && pos1.line == pos2.line && pos1.column == pos2.column;
+    return (pos1.line == pos2.line
+            && pos1.column == pos2.column
+            && (pos1.filename == pos2.filename
+                || (pos1.filename && pos2.filename
+                    && *pos1.filename == *pos2.filename)));
   }
 
   /// Compare two position objects.
@@ -157,11 +165,7 @@ namespace eval {
   }
 
 
-/* Line 144 of location.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // eval
-
-/* Line 144 of location.cc  */
-#line 167 "position.hh"
-#endif // not BISON_POSITION_HH
+/* Line 149 of location.cc  */
+#line 171 "position.hh"
+#endif /* !EVAL_POSITION_HH  */
