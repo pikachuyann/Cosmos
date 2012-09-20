@@ -122,7 +122,7 @@ bool ParseBuild(parameters& P) {
         }
         
         if (!parseresult) {
-            P.HaslFormulas = vector<string>(lReader.MyLha.Algebraic);
+            P.HaslFormulas = vector<string>(lReader.MyLha.HASLname);
             lReader.WriteFile(P.Path);
             
         } else {

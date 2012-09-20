@@ -645,7 +645,15 @@ Update: str EQ RealVarMarkingFormula {
 
 HaslExps:HaslExp | HaslExp HaslExps;
 
-HaslExp: AVG LB AlgExpr RB SEMICOLON{Reader.MyLha.Algebraic.push_back($3);};
+HaslExp: str EQ AVG LB AlgExpr RB SEMICOLON {
+		Reader.MyLha.Algebraic.push_back($5);
+		Reader.MyLha.HASLname.push_back(*$1);
+	};
+	| AVG LB AlgExpr RB SEMICOLON {
+		Reader.MyLha.Algebraic.push_back($3);
+		Reader.MyLha.HASLname.push_back("");
+	};
+
 AlgExpr:LhaFunc {string ss=$1;
 				 sprintf($$,"LhaFunc[%d]", Reader.MyLha.LhaFunction[ss]);
 				}
