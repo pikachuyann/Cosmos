@@ -1,6 +1,9 @@
 export CC=g++
 export OPTIONS=-O3
 export BOOSTPATH=/data/usr64/include
+export BISON=/opt/local/bin/bison
+export FLEX=/opt/local/bin/flex
+
 
 files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 
@@ -25,13 +28,19 @@ clean:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
 	@(cd SOURCES/ModelGenerator && $(MAKE) $@)
 	@(rm package-alligator.zip)
-	@(rm -rf package)
+#	@(rm -rf package)
 
 cleansim:
 	@(cd SOURCES/Cosmos && $(MAKE) clean)
 
 sim:
 	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/ClientSim)
+
+parser:
+	@(cd SOURCES/ModelGenerator && $(MAKE) parser)
+	
+cleanparser:
+	@(cd SOURCES/ModelGenerator && $(MAKE) cleanparser)
 
 package: generator
 	mkdir package

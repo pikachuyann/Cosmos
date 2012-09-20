@@ -19,6 +19,7 @@ FILES= $(OBJPATH)/parameters.o \
 	$(OBJPATH)/modelwriter.o
 
 
+
 $(OBJPATH)/%.o: %.cpp
 	$(CC) -I../libgml/ -I$(BOOSTPATH) $(OPTIONS) -c $*.cpp -o $@	
 $(OBJPATH)/%.o: %.cc
@@ -29,9 +30,18 @@ $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
 $(BINPATH)/Cosmos: $(FILES) 
 	$(CC) $(OPTIONS) -L/usr/lib/ -lexpat $^ -o $@
 
-clean:
+parser:
+	@(cd LhaParser && $(MAKE))
+	@(cd GspnParser && $(MAKE))
+	@(cd Eval && $(MAKE))
+
+cleanparser:
 	@(cd LhaParser && $(MAKE) clean)
 	@(cd GspnParser && $(MAKE) clean)
+	@(cd Eval && $(MAKE) clean)
+
+
+clean:
 	rm $(OBJPATH)/Eval/*.o
 	rm $(OBJPATH)/GspnParser/*.o
 	rm $(OBJPATH)/LhaParser/*.o
