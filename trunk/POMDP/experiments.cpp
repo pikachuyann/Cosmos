@@ -12,7 +12,8 @@ using namespace std;
 
 
 int main(int argc, char** argv) {
-    system("./linear");
+    
+    system("./linear");    
     system("./grid");
     return(EXIT_SUCCESS);
 }

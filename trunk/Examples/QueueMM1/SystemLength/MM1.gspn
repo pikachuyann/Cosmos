@@ -7,6 +7,7 @@ NbPlaces = 1;
 NbTransitions = 2;
 
 
+
 PlacesList = { Queue} ;
 TransitionsList = { Arrive, Serve} ;
 
