@@ -2,7 +2,9 @@ all: exec
 
 
 generator: generateLHA.cpp generateSPN.cpp readPlast.cpp main.cpp
-	g++ -o $@ main.cpp
+	g++ -o swn main.cpp
+	g++ linear.cpp
+	g++ grid.cpp
 
 generate: generator
 	./generator
