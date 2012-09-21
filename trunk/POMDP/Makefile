@@ -3,8 +3,8 @@ all: exec
 
 generator: generateLHA.cpp generateSPN.cpp readPlast.cpp main.cpp
 	g++ -o swn main.cpp
-	g++ linear.cpp
-	g++ grid.cpp
+	g++ -o linear linear.cpp
+	g++ -o grid grid.cpp
 
 generate: generator
 	./generator
