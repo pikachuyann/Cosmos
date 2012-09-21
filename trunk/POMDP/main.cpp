@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 12 -d test --max-run 100000 --batch 10000";
+	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 12 -d test --max-run 100000 --batch 5000";
 	
 	// initial iteration
 	
