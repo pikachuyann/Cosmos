@@ -102,19 +102,20 @@ int main(int argc, char** argv) {
 	
 	// initial iteration
 	
-	//generateLHAfun(ron,rdet,N,Plast,H,M);
-	//generateSPNfun(M);
+	generateLHAfun(ron,rdet,N,Plast,H,M);
+	generateSPNfun(M);
 	
-	//system(Cosmoscmd.c_str());
+	system(Cosmoscmd.c_str());
 	//
 	//loop
 	double Prec=1e-4; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=1;
-	int It=10;
+	int MaxIteration=10;
+	int It=1;
 	
-	//system("tail -n 1 test > test2");
+	system("head -n 1 test > test2");
+	system("tail -n 1 test >> test2");
 	Reward = readPlastfun(N, "test2", Plast);
 	cout <<"Iteration:" <<It<< " reward: "<< Reward << endl;
 	RewardFile<<It<<" "<<Reward<<endl;
@@ -124,7 +125,8 @@ int main(int argc, char** argv) {
 		generateLHAfun(ron,rdet,N,Plast,H,M);
 		system(Cosmoscmd.c_str());
 		OldReward=Reward;
-		system("tail -n 1 test > test2");
+		system("head -n 1 test > test2");
+		system("tail -n 1 test >> test2");
 		Reward = readPlastfun(N, "test2", Plast);
 		RelDiff=fabs((Reward-OldReward)/OldReward);
 		

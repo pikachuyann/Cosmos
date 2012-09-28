@@ -42,6 +42,7 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 				int source = atoi(transname.substr(4,posXlast-4).c_str());
 				int Xlast = atoi(transname.substr(posXlast+1,posArrow-posXlast-1).c_str());
 				
+				cout << "\t nbfield: "<<nbfield;
 				cout << "\t source: "<< source;
 				cout << "\t Xlast: "<< Xlast;
 				if (posXlast2!= string::npos) {
@@ -49,11 +50,18 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 					int Xlast2= atoi(transname.substr(posXlast2+1,transname.length()-1-posXlast2).c_str());
 					
 					cout << "\t cible: "<< cible;
-					cout << "\t Xlast2: "<< transname.substr(posXlast2+1,transname.length()-1-posXlast2);
+					cout << "\t Xlast2: "<< Xlast2;
 					
+					if (Xlast==0) {
+						bij.push_back(make_pair(make_pair(source, Xlast),cible));
+					}else{
+						bij.push_back(make_pair(make_pair(-1,0),0));
+					}
+				}else{
+					bij.push_back(make_pair(make_pair(-1,0),0));
 				}
+
 				cout << endl;
-				
 				nbfield++;
 			}
 			//if(line.find("\n",0)>=0)rendofline=true;
@@ -65,27 +73,25 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
         PlastFile >> reward;
         PlastFile >> dumbdouble >> dumbdouble >> dumbdouble; 
 		
-		//Dump transition to lf
-		for (int i=0; i<N*Plast[i].size(); i++) {
-			PlastFile >> dumbdouble >> dumbdouble >> dumbdouble >> dumbdouble;
+		int nbfield2 =1;
+		
+		while (nbfield2 < nbfield) {
+			double val;
+			PlastFile >> val;
+			PlastFile >> dumbdouble >> dumbdouble >> dumbdouble; 
+			
+			if(bij[nbfield2].first.first>=0){
+				Plast[bij[nbfield2].first.first][bij[nbfield2].first.second][bij[nbfield2].second] = val;
+				cout << "lp"<<bij[nbfield2].first.first<< "_" << bij[nbfield2].first.second << "->" << bij[nbfield2].second << "\t "<< val<<endl;
+			}
+			nbfield2++;
 		}
 		
         for (int i=0; i < N ; i++) {
             for (int Xlast=0; Xlast < Plast[i].size(); Xlast++) {
                 double outi = 0.0;
                 for (int j=0; j<N; j++) {
-                    
-					//Dump transition to li_Xlast2 where Xlast2 > 0
-					for (int Xlast2=Plast[i].size()-1; Xlast2 > 0; Xlast2--) {
-						PlastFile >> dumbdouble >> dumbdouble >> dumbdouble >> dumbdouble;
-					}
-						
-                    double val;
-                    PlastFile >> val;
-                    Plast[i][Xlast][j] = val;
-                    outi += val;
-                    PlastFile >> dumbdouble >> dumbdouble >> dumbdouble;                
-                    
+                    outi += Plast[i][Xlast][j];
                 }
                 for (int j=0; j<N; j++) {
                     if(outi>0)
