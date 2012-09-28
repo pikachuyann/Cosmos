@@ -49,6 +49,8 @@ parameters::parameters() {
 	alligatorMode = false;
     prismPath = "prism/bin/prism";
     dataoutput = "";
+	CountTrans = false;
+	StringInSpnLHA = false;
     //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
 }
 
@@ -85,8 +87,10 @@ void parameters::usage(){
     cout << "Miscellaneous options:" << endl;
     cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
     cout << "\t--alligator-mode \toutput easy to parse result"<< endl;
+	cout << "\t--count-transition \tAdd a Hasl formula for wich count the number of time each transition occurs"<< endl;
+	cout << "\t--debug-string \tAdd transition and place name to the compile file for debuging"<< endl;
 }
-    
+
 
 void parameters::parseCommandLine(int argc, char** argv){
     int c;
@@ -108,16 +112,18 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"epsilon" ,    required_argument,  0, 'e'},
             {"set-Horizon", required_argument , 0,  1 },
             {"stateSpace" , no_argument ,       0, 's'},
-
+			
             /* CosyVerif Options */
             {"gmlinput" ,      no_argument, 0, 'g'},
             {"alligator-mode", no_argument, 0, 'a'},
-
+			
             /* Miscellaneous options */
             {"njob" , required_argument, 0 , 'n'},
             {"verbose", required_argument, 0, 'v'},
             {"outputdata", required_argument, 0, 'd'},
             {"help" , no_argument , 0 , 'h'},
+			{"count-transition", no_argument, 0, 't'},
+			{"debug-string", no_argument, 0, 3},
             
             {0, 0, 0, 0}
         };
@@ -151,13 +157,13 @@ void parameters::parseCommandLine(int argc, char** argv){
             case 'c':BoundedContinuous = true;
                 RareEvent=true;
                 break;
-               
+				
             case  1:horizon = atof(optarg);     break;
                 
             case 's':computeStateSpace= true;  break;
                 
             case 'a':alligatorMode = true;  break;
-                            
+				
             case  'l':Level = atof(optarg);     break;
             case  'w':Width = atof(optarg);     break;
             case  2: Batch = atoi(optarg);      break;
@@ -165,21 +171,29 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'n': Njob = atoi(optarg);      break;
             case  'e': epsilon = atof(optarg);  break;
             case  'd': dataoutput = optarg; break;
-                
+			case  't': CountTrans = true;	break;
+			case  3  : StringInSpnLHA = true; break;
+				
             case '?':
                 usage();
                 exit(EXIT_FAILURE);
                 
             default:
-                abort ();
+                usage();
+                exit(EXIT_FAILURE);
         }
     }
-   
-    if (optind+1 < argc){
+	
+    if (optind+2 == argc){
         PathGspn = argv[optind];
         PathLha  = argv[optind+1];
     }else{
-        cout << "Two files are require." << endl;
+		if (optind+2 > argc) {
+			cout << "Two files are require." << endl;
+		}else{
+			cout << "Unrecognize option:"<<argv[optind+2]<<endl;
+		}
+        
         usage();
         exit(EXIT_FAILURE);
     }

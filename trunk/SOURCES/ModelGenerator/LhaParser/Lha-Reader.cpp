@@ -134,7 +134,8 @@ void Lha_Reader::view() {
 
 }
 
-void Lha_Reader::WriteFile(string& Pref) {
+void Lha_Reader::WriteFile(parameters& P) {
+	string Pref = P.Path;
 
     string loc;
 
@@ -214,7 +215,8 @@ void Lha_Reader::WriteFile(string& Pref) {
 
     LhaCppFile << "    ConstraintsCoeffs= mvestr;\n" << endl;
 
-
+	if(P.CountTrans)
+		LhaCppFile << "    EdgeCounter = vector<int>("<<MyLha.Edge.size()<<",0);"<< endl;
     LhaCppFile << "    vector<LhaEdge> ve(" << MyLha.Edge.size() << ");" << endl;
     LhaCppFile << "    Edge= ve;\n" << endl;
     for (int i = 0; i < MyLha.LocLabel.size(); i++)
@@ -255,16 +257,8 @@ void Lha_Reader::WriteFile(string& Pref) {
             LhaCppFile << "    ConstraintsConstants[" << i << "][" << c << "]=\"" << MyLha.ConstraintsConstants[i][c] << "\";" << endl;
             for (int v = 0; v < MyLha.NbVar; v++)
                 LhaCppFile << "    ConstraintsCoeffs[" << i << "][" << c << "][" << v << "]=\"" << MyLha.ConstraintsCoeffs[i][c][v] << "\";" << endl;
-
-
-
-
         }
-
-
-
     }
-
 
 
     LhaCppFile << "\n    vector<double> vdouble(NbVar);" << endl;
@@ -276,9 +270,6 @@ void Lha_Reader::WriteFile(string& Pref) {
         LhaCppFile << "    Var[" << v << "]=" << 0 << ";" << endl;
         LhaCppFile << "    VarLabel[" << v << "]=\"" << MyLha.VarLabel[v] << "\";" << endl;
         LhaCppFile << "    VarIndex[\"" << MyLha.VarLabel[v] << "\"]=" << v << ";" << endl;
-
-
-
     }
 
     LhaCppFile << "\n    vector<string> vStr(NbVar);" << endl;
@@ -287,7 +278,6 @@ void Lha_Reader::WriteFile(string& Pref) {
     for (int l = 0; l < MyLha.NbLoc; l++)
         for (int v = 0; v < MyLha.NbVar; v++) {
             LhaCppFile << "    StrFlow[" << l << "][" << v << "]=\"" << MyLha.StrFlow[l][v] << "\";" << endl;
-
         }
 
     LhaCppFile << "\n    vector< set < int > > vset(NbLoc);" << endl;
@@ -298,7 +288,6 @@ void Lha_Reader::WriteFile(string& Pref) {
             LhaCppFile << "    Out_A_Edges[" << MyLha.Edge[e].Source << "].insert(" << e << ");" << endl;
         else
             LhaCppFile << "    Out_S_Edges[" << MyLha.Edge[e].Source << "].insert(" << e << ");" << endl;
-
     }
 
     LhaCppFile << "\n    vector< set <string> > vStrSet(" << MyLha.Edge.size() << ");" << endl;
@@ -311,7 +300,6 @@ void Lha_Reader::WriteFile(string& Pref) {
         for (set<string>::iterator it = MyLha.EdgeActions[e].begin(); it != MyLha.EdgeActions[e].end(); it++) {
             LhaCppFile << "    EdgeActions[" << e << "].insert(\"" << *it << "\");" << endl;
             LhaCppFile << "    ActionEdges[" << MyLha.Edge[e].Source << "][" << MyLha.TransitionIndex[*it] << "].insert(" << e << ");" << endl;
-
         }
     }
     LhaCppFile << "    if(true){" << endl;
@@ -320,12 +308,15 @@ void Lha_Reader::WriteFile(string& Pref) {
     LhaCppFile << "    			OldLinForm=vL;" << endl;
     LhaCppFile << "    			vector<double> vF(" << MyLha.LhaFuncArg.size() << ",0);" << endl;
     LhaCppFile << "    			LhaFunc=vF;" << endl;
-    LhaCppFile << "    			vector<double> vA(" << MyLha.Algebraic.size() << ",0);" << endl;
-    LhaCppFile << "    			FormulaVal=vA;" << endl;
+	if(P.CountTrans){
+		LhaCppFile << "    			vector<double> vA(" << MyLha.Algebraic.size() + MyLha.Edge.size() << ",0);" << endl;
+	} else {
+		LhaCppFile << "    			vector<double> vA(" << MyLha.Algebraic.size() << ",0);" << endl;
+    }
+		
+	LhaCppFile << "    			FormulaVal=vA;" << endl;
     LhaCppFile << "    }" << endl;
     LhaCppFile << "}\n" << endl;
-
-
 
 
     LhaCppFile << "double LHA::GetFlow(int v, int loc, vector<int>& Marking){" << endl;
@@ -501,6 +492,8 @@ void Lha_Reader::WriteFile(string& Pref) {
     for (int e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "void LHA::DoEdgeUpdates_" << e << "(vector<int>& Marking){" << endl;
         int k = 0;
+		if(P.CountTrans)
+			LhaCppFile << "    EdgeCounter[" << e << "]++ ;"<< endl;
         for (int v = 0; v < MyLha.NbVar; v++)
             if (MyLha.FuncEdgeUpdates[e][v] != "") {
                 k++;
@@ -556,48 +549,21 @@ void Lha_Reader::WriteFile(string& Pref) {
     }
 
     LhaCppFile << "\n    }\n" << endl;
-    LhaCppFile << "void LHA::UpdateFormulaVal(){\n" << endl;    
+    LhaCppFile << "void LHA::UpdateFormulaVal(){\n" << endl;
     for(int i=0;i<MyLha.Algebraic.size();i++){
       LhaCppFile << "    OldFormulaVal=FormulaVal["<<i<<"];" << endl;
       LhaCppFile << "    FormulaVal["<<i<<"]=" << MyLha.Algebraic[i] << ";\n" << endl;
     }
+	if (P.CountTrans) {
+			for(int i=0;i<MyLha.Edge.size();i++){
+				int j = i+ MyLha.Algebraic.size();
+				LhaCppFile << "    FormulaVal["<<j<<"]= EdgeCounter[" << i << "];\n";
+			}
+	}
     LhaCppFile << "}\n" << endl;
 
 
     LhaCppFile.close();
 
-
-    /*loc = Pref + "../SOURCES/Cosmos/LHA.hpp";
-    ofstream LhaHppFile(loc.c_str(), ios::out | ios::trunc);
-
-    loc = Pref + "../SOURCES/ModelGenerator/LHA_orig.hpp";
-    ifstream LhaHppFile_orig(loc.c_str(), ios::in);
-
-
-
-
-    while (!LhaHppFile_orig.eof()) {
-        string LineFile;
-        getline(LhaHppFile_orig, LineFile);
-        LhaHppFile << LineFile << endl;
-    }
-
-    LhaHppFile_orig.close();*/
-
-    /*for (int e = 0; e < MyLha.Edge.size(); e++)
-        LhaHppFile << "t_interval GetEdgeEnablingTime_" << e << "(vector<int>& );" << endl;
-
-    for (int e = 0; e < MyLha.Edge.size(); e++)
-        LhaHppFile << "void DoEdgeUpdates_" << e << "(vector<int>& );" << endl;
-
-    LhaHppFile << "private:" << endl;
-
-    LhaHppFile << "};" << endl;
-*/
-
-
-    //LhaHppFile << "#endif	/* _Lha_HPP */" << endl;
-
-    //LhaHppFile.close();
 
 }

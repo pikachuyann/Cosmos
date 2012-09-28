@@ -49,6 +49,8 @@ struct parameters {
 	int BoundedRE;
     double horizon;
     bool BoundedContinuous;
+	bool CountTrans;
+	bool StringInSpnLHA;
     
 	bool GMLinput;
     bool computeStateSpace;

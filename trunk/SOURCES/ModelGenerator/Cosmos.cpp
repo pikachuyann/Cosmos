@@ -123,7 +123,18 @@ bool ParseBuild(parameters& P) {
         
         if (!parseresult) {
             P.HaslFormulas = vector<string>(lReader.MyLha.HASLname);
-            lReader.WriteFile(P.Path);
+			if(P.CountTrans){
+				for (int tr=0; tr < lReader.MyLha.Edge.size(); tr++) {
+					std::stringstream transname;
+					transname << "P_";
+					transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Source];
+					transname << "->";
+					transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Target];
+					P.HaslFormulas.push_back(transname.str());
+				}
+			}
+			
+            lReader.WriteFile(P);
             
         } else {
             Lha_Reader lr;

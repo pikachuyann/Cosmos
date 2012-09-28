@@ -25,7 +25,7 @@ void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> 
     ofstream StrategieFile("Strat",ios::out | ios::trunc);
     
     
-    LhaFile << "NbVariables = " << N*N*(Xlastmax+1)+2 << ";" << endl; 
+    LhaFile << "NbVariables = " << /*N*N*(Xlastmax+1)+*/ 2 << ";" << endl; 
     LhaFile << "NbLocations = "<< N*(Xlastmax+1)+1 << ";" << endl; 
 
     LhaFile << "const double H = "<< H << ";" << endl; 
@@ -40,10 +40,10 @@ void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> 
       LhaFile << ", W"<<i;*/
     /*for(int i=0;i<N;i++)
       LhaFile << ", Out"<<i;*/
-    for(int i=0;i<N;i++)
+    /*for(int i=0;i<N;i++)
         for(int Xlast=0;Xlast<=Xlastmax;Xlast++)
             for(int j=0;j<N;j++)
-                LhaFile << ", Plast"<<i<<"_"<< Xlast <<"_"<<j;	
+                LhaFile << ", Plast"<<i<<"_"<< Xlast <<"_"<<j;	*/
     LhaFile << "} ;"<< endl; 
     
     
@@ -56,12 +56,12 @@ void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> 
     LhaFile << "} ;"<< endl; 
     
     
-    for(int i=0;i<N;i++)
+    /*for(int i=0;i<N;i++)
         for(int Xlast=0;Xlast<=Xlastmax;Xlast++)
             for(int j=0;j<N;j++){
 				LhaFile << "Plast"<<i<<"_"<<Xlast<<"_"<<j<<" =";
                 LhaFile << "AVG(Last(Plast"<<i<<"_"<<Xlast<<"_"<<j<<"));"<<endl;   
-			}
+			}*/
     
     LhaFile << "Reward=AVG(Last(Reward));"<<endl;
     
@@ -160,7 +160,7 @@ void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> 
                     LhaFile << "((lp"<<v<<"_"<< Xlast <<",lp"<<x<<"_0),";
                     LhaFile << "ALL, time <=H, { ";
                     LhaFile << "Reward = Reward + " << rdet + ron * nbSensorOn;
-                    LhaFile <<", Plast"<<v<<"_"<<Xlast<<"_"<<x<<"=Plast"<<v<<"_"<< Xlast <<"_"<<x<<"+1";
+                    //LhaFile <<", Plast"<<v<<"_"<<Xlast<<"_"<<x<<"=Plast"<<v<<"_"<< Xlast <<"_"<<x<<"+1";
                     //LhaFile << ", Out"<<v<<"=Out"<<v<<"+1";
                     LhaFile << "});"<<endl;
                 }

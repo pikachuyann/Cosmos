@@ -29,6 +29,7 @@
 #include <map>
 #include <set>
 
+#include "../parameters.hpp"
 #include "Lha-parser.tab.hh"
 #include <vector>
 #include <map>
@@ -143,7 +144,7 @@ public:
 	int parse_gml_file(std::string&);
 
     string InvRelOp(string &);
-    void WriteFile(string&);
+    void WriteFile(parameters&);
 
     bool trace_parsing;
 
