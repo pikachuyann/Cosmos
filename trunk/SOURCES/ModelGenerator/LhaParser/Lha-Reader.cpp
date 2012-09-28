@@ -275,10 +275,13 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "\n    vector<string> vStr(NbVar);" << endl;
     LhaCppFile << "    vector< vector <string > > vvStr(NbLoc,vStr);" << endl;
     LhaCppFile << "    StrFlow=vvStr;" << endl;
-    for (int l = 0; l < MyLha.NbLoc; l++)
+    
+	if(P.StringInSpnLHA){
+	for (int l = 0; l < MyLha.NbLoc; l++)
         for (int v = 0; v < MyLha.NbVar; v++) {
             LhaCppFile << "    StrFlow[" << l << "][" << v << "]=\"" << MyLha.StrFlow[l][v] << "\";" << endl;
         }
+	}
 
     LhaCppFile << "\n    vector< set < int > > vset(NbLoc);" << endl;
     LhaCppFile << "    Out_S_Edges =vset;" << endl;
