@@ -75,6 +75,11 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 		
 		int nbfield2 =1;
 		
+		for (int i=0; i < N ; i++)
+            for (int Xlast=0; Xlast < Plast[i].size(); Xlast++) 
+                for (int j=0; j<N; j++)
+					Plast[i][Xlast][j]=0;		
+		
 		while (nbfield2 < nbfield) {
 			double val;
 			PlastFile >> val;
