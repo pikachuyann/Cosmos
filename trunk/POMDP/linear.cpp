@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
   
   ofstream file("linear.txt", ios::out | ios::trunc);
   file.close();
-  for(int i=4;i<=8;i++){
+  for(int i=4;i<=20;i++){
     std::ostringstream st;
     st<<"./swn linear "<<i<<" "<<i;
     ss=st.str();

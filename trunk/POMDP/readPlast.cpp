@@ -34,7 +34,7 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 			unsigned long pos2 = line.find("]", pos);
 			if(pos != string::npos){
 				string transname = line.substr(pos+5,pos2-pos-5);
-				cout<< transname;
+				//cout<< transname;
 				unsigned long posXlast = transname.find("_", 4);
 				unsigned long posArrow = transname.find("->l", posXlast+1);
 				unsigned long posXlast2 = transname.find("_",posArrow+4);
@@ -42,15 +42,15 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 				int source = atoi(transname.substr(4,posXlast-4).c_str());
 				int Xlast = atoi(transname.substr(posXlast+1,posArrow-posXlast-1).c_str());
 				
-				cout << "\t nbfield: "<<nbfield;
-				cout << "\t source: "<< source;
-				cout << "\t Xlast: "<< Xlast;
+				//cout << "\t nbfield: "<<nbfield;
+				//cout << "\t source: "<< source;
+				//cout << "\t Xlast: "<< Xlast;
 				if (posXlast2!= string::npos) {
 					int cible = atoi(transname.substr(posArrow+4,posXlast2-posArrow-4).c_str());
-					int Xlast2= atoi(transname.substr(posXlast2+1,transname.length()-1-posXlast2).c_str());
+					//int Xlast2= atoi(transname.substr(posXlast2+1,transname.length()-1-posXlast2).c_str());
 					
-					cout << "\t cible: "<< cible;
-					cout << "\t Xlast2: "<< Xlast2;
+					//cout << "\t cible: "<< cible;
+					//cout << "\t Xlast2: "<< Xlast2;
 					
 					if (Xlast==0) {
 						bij.push_back(make_pair(make_pair(source, Xlast),cible));
@@ -61,7 +61,7 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 					bij.push_back(make_pair(make_pair(-1,0),0));
 				}
 
-				cout << endl;
+				//cout << endl;
 				nbfield++;
 			}
 			//if(line.find("\n",0)>=0)rendofline=true;
@@ -87,7 +87,7 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 			
 			if(bij[nbfield2].first.first>=0){
 				Plast[bij[nbfield2].first.first][bij[nbfield2].first.second][bij[nbfield2].second] = val;
-				cout << "lp"<<bij[nbfield2].first.first<< "_" << bij[nbfield2].first.second << "->" << bij[nbfield2].second << "\t "<< val<<endl;
+				//cout << "lp"<<bij[nbfield2].first.first<< "_" << bij[nbfield2].first.second << "->" << bij[nbfield2].second << "\t "<< val<<endl;
 			}
 			nbfield2++;
 		}
