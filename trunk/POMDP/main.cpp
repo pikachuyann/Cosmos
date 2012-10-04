@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
 	system(Cosmoscmd.c_str());
 	//
 	//loop
-	double Prec=1e-4; //precision
+	double Prec=1e-2; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
 	int MaxIteration=10;

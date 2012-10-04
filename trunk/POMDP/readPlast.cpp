@@ -21,11 +21,11 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
     if (PlastFile.is_open()) {
     
         /*PlastFile>> line;
-        cout << line << endl;
-        */
+        cout << line << endl;*/
+        
 		vector<pair<pair<int, int>, int> > bij;
 		
-		cout << "Parse first line" << endl;
+		//cout << "Parse first line" << endl;
 		getline(PlastFile,line);
 		unsigned long pos = 0;
 		int nbfield=0;
@@ -47,12 +47,12 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 				//cout << "\t Xlast: "<< Xlast;
 				if (posXlast2!= string::npos) {
 					int cible = atoi(transname.substr(posArrow+4,posXlast2-posArrow-4).c_str());
-					//int Xlast2= atoi(transname.substr(posXlast2+1,transname.length()-1-posXlast2).c_str());
+					int Xlast2= atoi(transname.substr(posXlast2+1,transname.length()-1-posXlast2).c_str());
 					
 					//cout << "\t cible: "<< cible;
 					//cout << "\t Xlast2: "<< Xlast2;
 					
-					if (Xlast==0) {
+					if (Xlast2==0) {
 						bij.push_back(make_pair(make_pair(source, Xlast),cible));
 					}else{
 						bij.push_back(make_pair(make_pair(-1,0),0));
