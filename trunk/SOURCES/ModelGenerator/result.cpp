@@ -141,7 +141,7 @@ void printPercent(double i, double j){
         if(k<u){cout<<"|";}
         else cout<<" ";
     };
-    cout << "]"<< endl;
+    cout << "]\t"<< (int)i << "/" << (int)j << endl;
 }
 
 void result::printProgress(){
@@ -160,7 +160,7 @@ void result::printProgress(){
             double initwidth = 2 * Normal_quantile * stdev[i] / sqrt(P.Batch);
             if(width[i] != 0 ){
                 cout << "% of width:\t";
-                printPercent( pow(initwidth/width[i],2.0), pow(initwidth/P.Width,2.0));
+                printPercent( pow(initwidth/RelErr,2.0), pow(initwidth/P.Width,2.0));
                 endline++;
             } 
         }
