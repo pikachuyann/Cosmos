@@ -19,8 +19,47 @@ vector< vector<double> > generateMatrix(int n){
 vector< vector<double> > generateLinearMatrix(int n, double p, double q){
    
     vector< vector<double> > M(n+1,vector<double>(n+1,0) );
-    
-    M[0][0]=1-p-q;
+    double c1 = 1.2;
+	double c2 = 0.75;
+	double c3 = 0.75;
+	
+	int k = n/2+1;
+	
+	{
+		double out0 = c3;
+		M[0][0] = c3;
+		for(int j= 1;j<=k;j++){M[0][j]= c1/j; out0+=c1/j;}
+		for(int j= k+1;j<=n;j++){M[0][j]= c1/(2*k-j); out0+=c1/(2*k-j);}
+		//for(int j= 0;j<=n;j++)M[0][j]/= out0;
+	}
+	for(int i=1;i<=n;i++){
+		
+		if (i<=k) M[i][0] = c2/i;
+		else M[i][0] = c2/(2*k-i);
+		
+		double outi = M[i][0];
+		for(int j=1;j<=n;j++){
+			int d = abs(i-j);
+			if (i==j)M[i][j] = c3;
+			else 
+				if(i ==k) M[i][j] = c2/d;
+				else 
+					if((i<j && i<=k) || (i>j && i>=k)) M[i][j]= c1/d;
+					else 
+						if((i<j && i>=k) || (i>j && i<=k)) M[i][j]= c2/d;
+			outi += M[i][j];
+		}
+		//for(int j= 0;j<=n;j++)M[i][j]/= outi;
+	}
+	
+	for(int i=0;i<=n;i++){
+		for(int j=0;j<=n;j++){
+			std::cout << M[i][j]<< "\t";
+		}
+		std::cout << endl;
+	}
+	
+    /*M[0][0]=1-p-q;
     M[0][1]=q;
     M[0][n]=p;
     
@@ -32,7 +71,7 @@ vector< vector<double> > generateLinearMatrix(int n, double p, double q){
       M[i][i]=1-p-q;
       M[i][i+1]=q;
       M[i][i-1]=p;
-    }
+    }*/
     
     
     return M;
