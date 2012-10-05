@@ -48,9 +48,11 @@ result::result(parameters &Q){
     
     Normal_quantile = quantile(norma, 0.5 + P.Level / 2.0);
     
-    low = vector<double>(P.HaslFormulas.size()); //standard deviation
-    up = vector<double>(P.HaslFormulas.size()); //standard deviation
+    low = vector<double>(P.HaslFormulas.size()); //confidence interval lowerbound
+    up = vector<double>(P.HaslFormulas.size()); //confidence interval upperbound
     
+	RelErrArray = vector<double>(P.HaslFormulas.size()); //relative error
+	
     endline = 0;
     
     if(P.dataoutput.compare("")){
@@ -118,8 +120,10 @@ void result::addBatch(BatchR *batchResult){
         }
         
         if(P.RareEvent || P.BoundedRE>0){
-            RelErr = max(RelErr, width[i] /  abs(MeanM2->Mean[i]));
-        }else RelErr = max(RelErr , width[i] / max(1.0, abs(MeanM2->Mean[i])));
+            RelErrArray[i] =  width[i] /  abs(MeanM2->Mean[i]);
+        }else RelErrArray[i] = width[i] / max(1.0, abs(MeanM2->Mean[i]));
+		
+		RelErr = max(RelErr,RelErrArray[i]);
         
     }
     if(outdatastream.is_open())outputData();
@@ -141,7 +145,7 @@ void printPercent(double i, double j){
         if(k<u){cout<<"|";}
         else cout<<" ";
     };
-    cout << "]\t"<< endl 
+    cout << "]\t"<< endl;
 	//(long unsigned int)i << "/" << (long unsigned int)j << endl;
 }
 
@@ -161,7 +165,7 @@ void result::printProgress(){
             double initwidth = 2 * Normal_quantile * stdev[i] / sqrt(P.Batch);
             if(width[i] != 0 ){
                 cout << "% of width:\t";
-                printPercent( pow(initwidth/RelErr,2.0), pow(initwidth/P.Width,2.0));
+                printPercent( pow(initwidth/RelErrArray[i],2.0), pow(initwidth/P.Width,2.0));
                 endline++;
             } 
         }

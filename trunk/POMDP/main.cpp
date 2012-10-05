@@ -22,7 +22,7 @@ double readPlastfun(int N,string , vector< vector< vector<double> > >&);
 
 vector< vector<double> > generateMatrix(int n);
 vector< vector<double> > generateLinearMatrix(int n, double p, double q);
-vector<double > generateLinearReward(int n);
+vector<double > generateLinearReward(int n,double Rmax);
 vector< vector<double> > generateGridMatrix(int n, int m, double u, double r, double d, double l);
 vector<double > generateGridReward(int n,int m);
 
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     string ExpFileName;
     string RewardTrace;
     string st;
-    int n,m,k;
+    int n,m;
 	//    vector<int>  W(N,0);//sensor satatus
     
     
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 		st >> n;
 		
 		M = generateLinearMatrix(n,p,q);
-		RewardArray = generateLinearReward(n);
+		RewardArray = generateLinearReward(n,10);
 		ron=-1;
 		rdet=10;
 		ExpFileName="linear.txt";

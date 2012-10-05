@@ -1,5 +1,7 @@
 all: exec
 
+linear: generator
+	./swn linear 5 5
 
 generator: generateLHA.cpp generateSPN.cpp readPlast.cpp main.cpp
 	g++ -o swn main.cpp

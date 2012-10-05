@@ -161,7 +161,7 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
                 if ((ron + Plast[v][Xlast][x]*RewardArray[x]>=0) &(Xlast>0 | M[v][x]>0) ){
                     LhaFile << "((lp"<<v<<"_"<< Xlast <<",lp"<<x<<"_0),";
                     LhaFile << "ALL, time <=H, { ";
-                    LhaFile << "Reward = Reward + " << RewardArray[x] + ron * nbSensorOn;
+                    LhaFile << "Reward = Reward + " << RewardArray[x] << "+"<< ron * nbSensorOn;
                     //LhaFile <<", Plast"<<v<<"_"<<Xlast<<"_"<<x<<"=Plast"<<v<<"_"<< Xlast <<"_"<<x<<"+1";
                     //LhaFile << ", Out"<<v<<"=Out"<<v<<"+1";
                     LhaFile << "});"<<endl;

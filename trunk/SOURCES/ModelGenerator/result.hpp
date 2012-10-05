@@ -49,6 +49,7 @@ public:
     vector<double> Var; //variance
     vector<double> stdev; //standard deviation
     vector<double> width;
+	vector<double> RelErrArray;
 
     double Normal_quantile;
     
