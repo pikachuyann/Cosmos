@@ -141,7 +141,8 @@ void printPercent(double i, double j){
         if(k<u){cout<<"|";}
         else cout<<" ";
     };
-    cout << "]\t"<< (int)i << "/" << (int)j << endl;
+    cout << "]\t"<< endl 
+	//(long unsigned int)i << "/" << (long unsigned int)j << endl;
 }
 
 void result::printProgress(){
