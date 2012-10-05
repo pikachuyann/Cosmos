@@ -14,7 +14,7 @@
     
 }*/
 
-void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> > >& Plast , double H, vector< vector<double> >& M){
+void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,vector<double>& RewardArray, double H, vector< vector<double> >& M){
     
     unsigned long Xlastmax = Plast[0].size()-1;
     
@@ -84,7 +84,7 @@ void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> 
         for (int j =1;j<N;j++){ 
             StrategieFile << "\tSensor " << j;
             //j start at 1 because 0 is the bottom position no sensor
-            if (ron + Plast[i][0][j]*rdet>=0){
+            if (ron + Plast[i][0][j]*RewardArray[j] >=0){
                 StrategieFile << " on" << endl;
             }else{
                 StrategieFile << " off" << endl;
@@ -103,7 +103,7 @@ void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> 
                 for (int j =1;j<N;j++){ 
                     StrategieFile << "\tSensor " << j;
                     //j start at 1 because 0 is the bottom position no sensor
-                    if (ron + Plast[i][Xlast][j]*rdet>=0 ){
+                    if (ron + Plast[i][Xlast][j]*RewardArray[j] >=0 ){
                         LhaFile<<"& V"<<j<<"=0";
                         StrategieFile << " on" << endl;
                     }else{
@@ -134,14 +134,14 @@ void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> 
             //count the number of on sensor
             int nbSensorOn = 0;
             for(int x=1;x<N;x++)
-                if (ron + Plast[v][Xlast][x]*rdet>=0)nbSensorOn++;
+                if (ron + Plast[v][Xlast][x]*RewardArray[x] >=0)nbSensorOn++;
             
             //Drone undetected => Xlast++ 
             LhaFile << "((lp"<<v<<"_"<< Xlast <<",lp"<<v<<"_";
             LhaFile << min(Xlast+1,(int)Xlastmax) <<"),ALL";
             int compt = 0;
             for (int x=0 ; x<N; x++) {
-                if ((M[v][x]>0) & ((ron + Plast[v][Xlast][x]*rdet>=0) & (x>0))){
+                if ((M[v][x]>0) & ((ron + Plast[v][Xlast][x]*RewardArray[x] >=0) & (x>0))){
                     if(compt >0){LhaFile << " ,";}
                     else LhaFile << "\\{";
                     compt++;
@@ -149,17 +149,19 @@ void generateLHAfun(double ron,double rdet,int N,vector< vector< vector<double> 
                 }
             }
             if(compt>0)LhaFile << "}";
-            LhaFile << ", time <=H, { ";
-            LhaFile << "Reward = Reward " << ron * nbSensorOn;
-            LhaFile << " });"<< endl;
+            LhaFile << ", time <=H,";
+			if(nbSensorOn>0){
+				LhaFile << "{Reward = Reward " << ron * nbSensorOn << " }";
+			} else LhaFile << "#";
+            LhaFile << ");"<< endl;
             
             //Drone detected in location x_0
             for (int x=1 ; x<N; x++) {
                 //x start in 1 because there is no sensor in 0
-                if ((ron + Plast[v][Xlast][x]*rdet>=0) &(Xlast>0 | M[v][x]>0) ){
+                if ((ron + Plast[v][Xlast][x]*RewardArray[x]>=0) &(Xlast>0 | M[v][x]>0) ){
                     LhaFile << "((lp"<<v<<"_"<< Xlast <<",lp"<<x<<"_0),";
                     LhaFile << "ALL, time <=H, { ";
-                    LhaFile << "Reward = Reward + " << rdet + ron * nbSensorOn;
+                    LhaFile << "Reward = Reward + " << RewardArray[x] + ron * nbSensorOn;
                     //LhaFile <<", Plast"<<v<<"_"<<Xlast<<"_"<<x<<"=Plast"<<v<<"_"<< Xlast <<"_"<<x<<"+1";
                     //LhaFile << ", Out"<<v<<"=Out"<<v<<"+1";
                     LhaFile << "});"<<endl;

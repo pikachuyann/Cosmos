@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void generateLHAfun(double,double,int N, vector< vector< vector<double> > >&, double H,vector< vector<double> >& M);
+void generateLHAfun(double,int N, vector< vector< vector<double> > >&,vector<double>&, double H,vector< vector<double> >& M);
 #include "generateLHA.cpp"
 
 void generateSPNfun(int N,vector< vector<double> >&);
@@ -22,7 +22,10 @@ double readPlastfun(int N,string , vector< vector< vector<double> > >&);
 
 vector< vector<double> > generateMatrix(int n);
 vector< vector<double> > generateLinearMatrix(int n, double p, double q);
+vector<double > generateLinearReward(int n);
 vector< vector<double> > generateGridMatrix(int n, int m, double u, double r, double d, double l);
+vector<double > generateGridReward(int n,int m);
+
 #include "exPapier.cpp"
 
 int main(int argc, char** argv) {
@@ -39,7 +42,7 @@ int main(int argc, char** argv) {
     //vector< vector<double> > M = generateMatrix(0);
     
     vector< vector<double> > M;
-    
+    vector< double > RewardArray;
 	
     st=argv[1];
     if(st=="linear"){
@@ -51,6 +54,7 @@ int main(int argc, char** argv) {
 		st >> n;
 		
 		M = generateLinearMatrix(n,p,q);
+		RewardArray = generateLinearReward(n);
 		ron=-1;
 		rdet=10;
 		ExpFileName="linear.txt";
@@ -72,6 +76,7 @@ int main(int argc, char** argv) {
 		st2 >> m;
 		
 		M = generateGridMatrix(n,m,u,r,d,l);
+		RewardArray = generateGridReward(n,m);
 		ron=-5;
 		rdet=100;
 		
@@ -83,6 +88,7 @@ int main(int argc, char** argv) {
     
     else{
 		M = generateMatrix(0);
+		RewardArray = vector<double>(M.size(),4);
 		ExpFileName="default.txt";
 		RewardTrace="default";
 		ron=-1;
@@ -98,11 +104,11 @@ int main(int argc, char** argv) {
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 12 -d test --max-run 100000 --batch 1000 --count-transition";
+	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 12 -d test --max-run 100000 --batch 1000 --count-transition --width 0.01";
 	
 	// initial iteration
 	
-	generateLHAfun(ron,rdet,N,Plast,H,M);
+	generateLHAfun(ron,N,Plast,RewardArray,H,M);
 	generateSPNfun(M);
 	
 	system(Cosmoscmd.c_str());
@@ -122,7 +128,7 @@ int main(int argc, char** argv) {
 	while(RelDiff>Prec && It<MaxIteration){
 		//while(It<MaxIteration){
 		It++;    
-		generateLHAfun(ron,rdet,N,Plast,H,M);
+		generateLHAfun(ron,N,Plast,RewardArray,H,M);
 		system(Cosmoscmd.c_str());
 		OldReward=Reward;
 		system("head -n 1 test > test2");

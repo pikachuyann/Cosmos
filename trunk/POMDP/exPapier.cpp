@@ -38,6 +38,10 @@ vector< vector<double> > generateLinearMatrix(int n, double p, double q){
     return M;
 }
 
+vector<double> generateLinearReward(int n){
+	return vector<double>(n+1,10);
+}
+
 
 vector< vector<double> > generateGridMatrix(int n, int m, double u, double r, double d, double l){
   int Dim=n*m+1;
@@ -128,4 +132,8 @@ vector< vector<double> > generateGridMatrix(int n, int m, double u, double r, do
        
     return M;
   
+}
+
+vector<double> generateGridReward(int n,int m){
+	return vector<double>(n*m+1,10);
 }
