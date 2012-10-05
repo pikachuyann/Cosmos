@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 		st >> n;
 		
 		M = generateLinearMatrix(n,p,q);
-		RewardArray = generateLinearReward(n,10);
+		RewardArray = generateLinearReward(n,15);
 		ron=-1;
 		rdet=10;
 		ExpFileName="linear.txt";
@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 12 -d test --max-run 100000 --batch 1000 --count-transition --width 0.01";
+	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 2 -d test --max-run 100000 --batch 1000 --count-transition --width 0.01";
 	
 	// initial iteration
 	
