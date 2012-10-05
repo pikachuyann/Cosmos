@@ -115,8 +115,8 @@ int main(int argc, char** argv) {
     mySim->verbose = StrToInt(str);
     //mySim->logValue();
     
-    
-    while( !cin.eof() ){
+    if(mySim->verbose==4)mySim->RunBatch();
+    else while( !cin.eof() ){
       BatchR* batchResult = mySim->RunBatch(); //simulate a batch of trajectory
 
       batchResult->outputR();// output the result on the standart output

@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
 	double Prec=1e-2; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=2;
+	int MaxIteration=4;
 	int It=1;
 	
 	system("head -n 1 test > test2");
