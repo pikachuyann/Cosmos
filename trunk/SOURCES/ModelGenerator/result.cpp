@@ -161,15 +161,15 @@ void result::printProgress(){
     for(int i=0; i<P.HaslFormulas.size(); i++){
         cout << P.HaslFormulas[i] << ":\t Mean" << "=" << MeanM2->Mean[i] << "\t stdev=" << stdev[i] << "\t  width=" << width[i] << endl;
         endline++;
-        if(!P.RareEvent){
-            double initwidth = 2 * Normal_quantile * stdev[i] / sqrt(P.Batch);
-            if(width[i] != 0 ){
-                cout << "% of width:\t";
-                printPercent( pow(initwidth/RelErrArray[i],2.0), pow(initwidth/P.Width,2.0));
-                endline++;
-            } 
+        if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >1){
+			cout << "% of width:\t";
+			printPercent( pow(RelErrArray[i],-2.0), pow(P.Width,-2.0));
+			endline++;
         }
     }
+	cout << "% of rel Err:\t";
+	printPercent( pow(RelErr,-2.0), pow(P.Width,-2.0));
+	endline++;
     cout << "% of run:\t";
     printPercent(MeanM2->Isucc, P.MaxRuns);
     endline++;
