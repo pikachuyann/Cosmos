@@ -172,14 +172,16 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "    void UpdateFormulaVal();" <<endl;
 	
 	
-	LhaCppFile << "private:" << endl;
+	//LhaCppFile << "private:" << endl;
 	
+	/*
 	for (int e = 0; e < MyLha.Edge.size(); e++)
         LhaCppFile << "t_interval GetEdgeEnablingTime_" << e << "(vector<int>& );" << endl;
-	
+	 */
+	/*
     for (int e = 0; e < MyLha.Edge.size(); e++)
         LhaCppFile << "void DoEdgeUpdates_" << e << "(vector<int>& );" << endl;
-	
+	*/
     
 	
 	LhaCppFile << "};"<< endl;
@@ -384,96 +386,93 @@ void Lha_Reader::WriteFile(parameters& P) {
     for (int e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "     case " << e << ":" << endl;
 
-        LhaCppFile << "         return GetEdgeEnablingTime_" << e << "( Marking);" << endl;
-        LhaCppFile << "         break;" << endl;
-    }
-    LhaCppFile << "    }" << endl;
-
-
-    LhaCppFile << "}\n" << endl;
-
-
-
-    for (int e = 0; e < MyLha.Edge.size(); e++) {
-        LhaCppFile << "t_interval LHA::GetEdgeEnablingTime_" << e << "(vector<int>& Marking){" << endl;
-        LhaCppFile << "    t_interval EnablingT;\n" << endl;
-        LhaCppFile << "    EnablingT.first=CurrentTime;" << endl;
-        LhaCppFile << "    EnablingT.second=DBL_MAX;\n" << endl;
-        LhaCppFile << "    t_interval EmptyInterval;\n" << endl;
-        LhaCppFile << "    EmptyInterval.first=0;" << endl;
-        LhaCppFile << "    EmptyInterval.second=-1;\n" << endl;
-
-        LhaCppFile << "    double SumAF;" << endl;
-        LhaCppFile << "    double SumAX;" << endl;
-
-
-
+        //LhaCppFile << "         return GetEdgeEnablingTime_" << e << "( Marking);" << endl;
+		LhaCppFile << "         {" << endl;
+		
+		LhaCppFile << "             t_interval EnablingT;\n" << endl;
+        LhaCppFile << "             EnablingT.first=CurrentTime;" << endl;
+        LhaCppFile << "             EnablingT.second=DBL_MAX;\n" << endl;
+        LhaCppFile << "             t_interval EmptyInterval;\n" << endl;
+        LhaCppFile << "             EmptyInterval.first=0;" << endl;
+        LhaCppFile << "             EmptyInterval.second=-1;\n" << endl;
+		
+        LhaCppFile << "             double SumAF;" << endl;
+        LhaCppFile << "             double SumAX;" << endl;
+		
+		
+		
         LhaCppFile << "\n" << endl;
-
-
+		
+		
         for (int c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
-
-            LhaCppFile << "    SumAF=";
+			
+            LhaCppFile << "             SumAF=";
             for (int v = 0; v < MyLha.NbVar; v++)
                 if (MyLha.ConstraintsCoeffs[e][c][v] != "")
                     LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*GetFlow(" << v << "," << MyLha.Edge[e].Source << ", Marking)";
-            LhaCppFile << ";\n    SumAX=";
+            LhaCppFile << ";\n             SumAX=";
             for (int v = 0; v < MyLha.NbVar; v++)
                 if (MyLha.ConstraintsCoeffs[e][c][v] != "")
                     LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Var[" << v << "]";
             LhaCppFile << ";\n" << endl;
-
+			
             string RelOp = MyLha.ConstraintsRelOp[e][c];
-
-            LhaCppFile << "    if(SumAF==0){" << endl;
-            LhaCppFile << "         if(!(SumAX" << MyLha.ConstraintsRelOp[e][c] << MyLha.ConstraintsConstants[e][c] << "))" << endl;
-            LhaCppFile << "             return EmptyInterval;" << endl;
-            LhaCppFile << "    }" << endl;
-            LhaCppFile << "    else{" << endl;
-            LhaCppFile << "         double t=CurrentTime+(" << MyLha.ConstraintsConstants[e][c] << "-SumAX)/(double)SumAF;" << endl;
+			
+            LhaCppFile << "             if(SumAF==0){" << endl;
+            LhaCppFile << "                  if(!(SumAX" << MyLha.ConstraintsRelOp[e][c] << MyLha.ConstraintsConstants[e][c] << "))" << endl;
+            LhaCppFile << "                      return EmptyInterval;" << endl;
+            LhaCppFile << "             }" << endl;
+            LhaCppFile << "             else{" << endl;
+            LhaCppFile << "                  double t=CurrentTime+(" << MyLha.ConstraintsConstants[e][c] << "-SumAX)/(double)SumAF;" << endl;
             if (RelOp == "==") {
-
-                LhaCppFile << "         if(t>=EnablingT.first && t<=EnablingT.second){" << endl;
-                LhaCppFile << "             EnablingT.first=t; EnablingT.second=t;" << endl;
-                LhaCppFile << "         }" << endl;
-                LhaCppFile << "         else return EmptyInterval;" << endl;
-
+				
+                LhaCppFile << "                  if(t>=EnablingT.first && t<=EnablingT.second){" << endl;
+                LhaCppFile << "                      EnablingT.first=t; EnablingT.second=t;" << endl;
+                LhaCppFile << "                  }" << endl;
+                LhaCppFile << "                  else return EmptyInterval;" << endl;
+				
             } else {
-                LhaCppFile << "         if(SumAF>0){" << endl;
+                LhaCppFile << "                  if(SumAF>0){" << endl;
                 if (RelOp == "<=") {
-                    LhaCppFile << "            if(EnablingT.second>t) EnablingT.second=t;" << endl;
-                    LhaCppFile << "            if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
-
+                    LhaCppFile << "                     if(EnablingT.second>t) EnablingT.second=t;" << endl;
+                    LhaCppFile << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
+					
                 } else {
-                    LhaCppFile << "            if(EnablingT.first<t) EnablingT.first=t;" << endl;
-                    LhaCppFile << "            if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
+                    LhaCppFile << "                     if(EnablingT.first<t) EnablingT.first=t;" << endl;
+                    LhaCppFile << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
                 }
-
-                LhaCppFile << "             }" << endl;
-
-                LhaCppFile << "         else{" << endl;
+				
+                LhaCppFile << "                      }" << endl;
+				
+                LhaCppFile << "                  else{" << endl;
                 RelOp = InvRelOp(RelOp);
                 if (RelOp == "<=") {
-                    LhaCppFile << "            if(EnablingT.second>t) EnablingT.second=t;" << endl;
-                    LhaCppFile << "            if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
-
+                    LhaCppFile << "                     if(EnablingT.second>t) EnablingT.second=t;" << endl;
+                    LhaCppFile << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
+					
                 } else {
-                    LhaCppFile << "            if(EnablingT.first<t) EnablingT.first=t;" << endl;
-                    LhaCppFile << "            if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
+                    LhaCppFile << "                     if(EnablingT.first<t) EnablingT.first=t;" << endl;
+                    LhaCppFile << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
                 }
-
-                LhaCppFile << "             }" << endl;
+				
+                LhaCppFile << "                      }" << endl;
             }
-            LhaCppFile << "    }" << endl;
-
-
-
-
-
+            LhaCppFile << "             }" << endl;			
+			
         }
+		
+        LhaCppFile << "             return EnablingT;" << endl;
+		LhaCppFile << "         }"<< endl;
+		
+		
+		//LhaCppFile << "         }" << endl;
+        //LhaCppFile << "         break;" << endl;
+		
+	}
+    
+	LhaCppFile << "    }" << endl;
 
-        LhaCppFile << "    return EnablingT;\n}\n" << endl;
-    }
+    LhaCppFile << "}\n" << endl;
 
 
 
@@ -481,9 +480,38 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "    switch(ed){" << endl;
     for (int e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "     case " << e << ":" << endl;
+		LhaCppFile << "         {"<< endl;
 
-        LhaCppFile << "         DoEdgeUpdates_" << e << "( Marking);" << endl;
-        LhaCppFile << "         break;" << endl;
+		int k = 0;
+		if(P.CountTrans)
+			LhaCppFile << "         EdgeCounter[" << e << "]++ ;"<< endl;
+        for (int v = 0; v < MyLha.NbVar; v++)
+            if (MyLha.FuncEdgeUpdates[e][v] != "") {
+                k++;
+                break;
+            }
+        if (k > 0) {
+            LhaCppFile << "         vector<double> TempVar(NbVar);" << endl;
+            for (int v = 0; v < MyLha.NbVar; v++)
+                if (MyLha.FuncEdgeUpdates[e][v] != "")
+                    LhaCppFile << "         TempVar[" << v << "]=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
+			
+            for (int v = 0; v < MyLha.NbVar; v++)
+                if (MyLha.FuncEdgeUpdates[e][v] != "") {
+                    LhaCppFile << "         Var[" << v << "]=TempVar[" << v << "];" << endl;
+					
+					
+                }
+        }
+        LhaCppFile << endl;
+        for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++) {
+            LhaCppFile << "         OldLinForm[" << (*it).second << "]=LinForm[" << (*it).second << "];" << endl;
+			
+        }
+		
+        //LhaCppFile << "         DoEdgeUpdates_" << e << "( Marking);" << endl;
+        LhaCppFile << "         }"<< endl;
+		LhaCppFile << "         break;" << endl;
     }
     LhaCppFile << "    }" << endl;
 
@@ -492,37 +520,11 @@ void Lha_Reader::WriteFile(parameters& P) {
 
 
 
-    for (int e = 0; e < MyLha.Edge.size(); e++) {
+    /*for (int e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "void LHA::DoEdgeUpdates_" << e << "(vector<int>& Marking){" << endl;
-        int k = 0;
-		if(P.CountTrans)
-			LhaCppFile << "    EdgeCounter[" << e << "]++ ;"<< endl;
-        for (int v = 0; v < MyLha.NbVar; v++)
-            if (MyLha.FuncEdgeUpdates[e][v] != "") {
-                k++;
-                break;
-            }
-        if (k > 0) {
-            LhaCppFile << "    vector<double> TempVar(NbVar);" << endl;
-            for (int v = 0; v < MyLha.NbVar; v++)
-                if (MyLha.FuncEdgeUpdates[e][v] != "")
-                    LhaCppFile << "    TempVar[" << v << "]=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
-
-            for (int v = 0; v < MyLha.NbVar; v++)
-                if (MyLha.FuncEdgeUpdates[e][v] != "") {
-                    LhaCppFile << "    Var[" << v << "]=TempVar[" << v << "];" << endl;
-
-
-                }
-
-        }
-        LhaCppFile << endl;
-        for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++) {
-            LhaCppFile << "    OldLinForm[" << (*it).second << "]=LinForm[" << (*it).second << "];" << endl;
-
-        }
+        
         LhaCppFile << "    }\n" << endl;
-    }
+    }*/
 
     LhaCppFile << "void LHA::UpdateLinForm(vector<int>& Marking){" << endl;
     for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++) {
