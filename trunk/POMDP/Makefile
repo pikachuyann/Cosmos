@@ -1,9 +1,9 @@
-all: exec
+all: generator
 
 linear: generator
 	./swn linear 5 5
 
-generator: generateLHA.cpp generateSPN.cpp readPlast.cpp main.cpp
+generator: exPapier.cpp generateLHA.cpp generateSPN.cpp readPlast.cpp main.cpp
 	g++ -o swn main.cpp
 	g++ -o linear linear.cpp
 	g++ -o grid grid.cpp

@@ -104,7 +104,7 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
                     StrategieFile << "\tSensor " << j;
                     //j start at 1 because 0 is the bottom position no sensor
                     if (ron + Plast[i][Xlast][j]*RewardArray[j] >=0 ){
-                        LhaFile<<"& V"<<j<<"=0";
+                        //LhaFile<<"& V"<<j<<"=0";
                         StrategieFile << " on" << endl;
                     }else{
                         StrategieFile << " off" << endl;

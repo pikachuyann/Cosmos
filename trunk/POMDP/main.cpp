@@ -18,6 +18,7 @@ void generateSPNfun(int N,vector< vector<double> >&);
 #include "generateSPN.cpp"
 
 double readPlastfun(int N,string , vector< vector< vector<double> > >&);
+void fillMemory( vector< vector< vector<double> > >&,int);
 #include "readPlast.cpp"
 
 vector< vector<double> > generateMatrix(int n);
@@ -96,8 +97,6 @@ int main(int argc, char** argv) {
 		
     }
 	
-    int N = M.size();
-    vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
     
     RewardTrace=RewardTrace+argv[2]+".txt";
     ofstream RewardFile(RewardTrace.c_str(), ios::out | ios::trunc);
@@ -108,21 +107,25 @@ int main(int argc, char** argv) {
 	
 	// initial iteration
 	
+	
+	int N = (int)M.size();
+    vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
+	
 	generateLHAfun(ron,N,Plast,RewardArray,H,M);
 	generateSPNfun(M);
-	
 	system(Cosmoscmd.c_str());
 	//
 	//loop
 	double Prec=1e-2; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=10;
+	int MaxIteration=2;
 	int It=1;
 	
 	system("head -n 1 test > test2");
 	system("tail -n 1 test >> test2");
 	Reward = readPlastfun(N, "test2", Plast);
+	fillMemory(Plast,1);
 	cout <<"Iteration:" <<It<< " reward: "<< Reward << endl;
 	RewardFile<<It<<" "<<Reward<<endl;
 	while(RelDiff>Prec && It<MaxIteration){

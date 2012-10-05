@@ -113,6 +113,15 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
         exit(EXIT_FAILURE);
     }
     
-    
+}
+
+
+void fillMemory( vector< vector< vector<double> > >& Plast, int l){
+	for (int i= 0; i<Plast.size(); i++) 
+		for (int Xlast=l; Xlast<Plast[0].size(); Xlast++) 
+			for (int j=0; j< Plast[0][0].size(); j++) 
+				Plast[i][Xlast][j] = 1.0;
+	
+	
 }
 
