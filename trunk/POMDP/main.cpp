@@ -111,25 +111,25 @@ int main(int argc, char** argv) {
 	int N = (int)M.size();
     vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
 	
-	generateLHAfun(ron,N,Plast,RewardArray,H,M);
+	/*generateLHAfun(ron,N,Plast,RewardArray,H,M);
 	generateSPNfun(M);
-	system(Cosmoscmd.c_str());
+	system(Cosmoscmd.c_str());*/
 	//
 	//loop
 	double Prec=1e-2; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=4;
-	int It=1;
+	int MaxIteration=1;
+	int It=0;
 	
-	system("head -n 1 test > test2");
+	/*system("head -n 1 test > test2");
 	system("tail -n 1 test >> test2");
 	Reward = readPlastfun(N, "test2", Plast);
 	fillMemory(Plast,1);
 	cout <<"Iteration:" <<It<< " reward: "<< Reward << endl;
-	RewardFile<<It<<" "<<Reward<<endl;
+	RewardFile<<It<<" "<<Reward<<endl;*/
+	generateSPNfun(M);
 	while(RelDiff>Prec && It<MaxIteration){
-		//while(It<MaxIteration){
 		It++;    
 		generateLHAfun(ron,N,Plast,RewardArray,H,M);
 		system(Cosmoscmd.c_str());
@@ -137,8 +137,11 @@ int main(int argc, char** argv) {
 		system("head -n 1 test > test2");
 		system("tail -n 1 test >> test2");
 		Reward = readPlastfun(N, "test2", Plast);
-		RelDiff=fabs((Reward-OldReward)/OldReward);
-		
+		if(It==1){
+			fillMemory(Plast,1);
+		}else{
+			RelDiff=fabs((Reward-OldReward)/OldReward);
+		}
 		cout <<"Iteration:" <<It<< " reward: "<< Reward <<" RelDiff: "<<RelDiff<< endl;
 		RewardFile<<It<<" "<<Reward<<endl;
 	}
