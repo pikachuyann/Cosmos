@@ -31,7 +31,7 @@ vector<double > generateGridReward(int n,int m);
 
 int main(int argc, char** argv) {
     int Memory = 2;
-    double H=100; //simulation horizon
+    double H=1000; //simulation horizon
     double ron, rdet;
     string ExpFileName;
     string RewardTrace;
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 2 -d test --max-run 100000 --batch 1000 --count-transition --width 0.01";
+	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 2 -d test --max-run 10000 --batch 100 --count-transition --width 0.01";
 	
 	// initial iteration
 	
