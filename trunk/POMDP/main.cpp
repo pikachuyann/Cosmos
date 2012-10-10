@@ -19,6 +19,7 @@ void generateSPNfun(int N,vector< vector<double> >&);
 
 double readPlastfun(int N,string , vector< vector< vector<double> > >&);
 void fillMemory( vector< vector< vector<double> > >&,int);
+void printPlast(vector< vector< vector<double> > >&);
 #include "readPlast.cpp"
 
 vector< vector<double> > generateMatrix(int n);
@@ -131,6 +132,7 @@ int main(int argc, char** argv) {
 	generateSPNfun(M);
 	while(RelDiff>Prec && It<MaxIteration){
 		It++;    
+		printPlast(Plast);
 		generateLHAfun(ron,N,Plast,RewardArray,H,M);
 		system(Cosmoscmd.c_str());
 		OldReward=Reward;

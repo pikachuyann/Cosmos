@@ -101,7 +101,7 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
                 for (int j=0; j<N; j++) {
                     if(outi>0)
                         Plast[i][Xlast][j] /= outi;
-                    cout << "Plast("<<i<<","<< Xlast << ","<< j<<") = "<< Plast[i][Xlast][j]<< endl;
+                    //cout << "Plast("<<i<<","<< Xlast << ","<< j<<") = "<< Plast[i][Xlast][j]<< endl;
                 }
             }
             
@@ -115,6 +115,19 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
     
 }
 
+void printPlast(  vector< vector< vector<double> > >& Plast ){
+	for (int i= 0; i<Plast.size(); i++){ 
+		cout << i<< "\t[";
+		for (int j=0; j< Plast[0][0].size(); j++){
+			cout << "->"<<j<<"[";
+			for (int Xlast=0; Xlast<Plast[0].size(); Xlast++){
+				cout<<"\t;"<< Plast[i][Xlast][j];
+			}
+			cout << "]\t";
+		}
+		cout << "]"<< endl;
+	}
+}
 
 void fillMemory( vector< vector< vector<double> > >& Plast, int l){
 	for (int i= 0; i<Plast.size(); i++) 
