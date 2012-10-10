@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 2 -d test --max-run 10000 --batch 100 --count-transition --width 0.01";
+	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 11 -d test --max-run 10000 --batch 100 --count-transition --width 0.01";
 	
 	// initial iteration
 	
@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
 	double Prec=1e-2; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=1;
+	int MaxIteration=2;
 	int It=0;
 	
 	/*system("head -n 1 test > test2");
