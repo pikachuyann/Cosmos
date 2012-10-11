@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 
 using namespace std;
@@ -121,7 +122,7 @@ void printPlast(  vector< vector< vector<double> > >& Plast ){
 		for (int j=0; j< Plast[0][0].size(); j++){
 			cout << "->"<<j<<"[";
 			for (int Xlast=0; Xlast<Plast[0].size(); Xlast++){
-				cout<<"\t;"<< Plast[i][Xlast][j];
+				cout<<"\t"<< setw(7)<< Plast[i][Xlast][j];
 			}
 			cout << "]\t";
 		}
