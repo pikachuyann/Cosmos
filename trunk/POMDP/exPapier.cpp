@@ -78,11 +78,12 @@ vector< vector<double> > generateLinearMatrix(int n, double p, double q){
 }
 
 vector<double> generateLinearReward(int n,double Rmax){
+	double Rmax2 = Rmax * n;
 	vector<double> reward(n+1,0.0);
 	int k = n/2+1;
 	reward[0]=0.0;
 	for(int i =1 ; i<=n ;i++){
-		reward[i]= (Rmax/(abs(k-i)+1));
+		reward[i]= (Rmax2/(abs(k-i)+1));
 		std::cout <<"reward"<< i <<" : "<<"k:"<<k <<" : "<< reward[i] << endl;
 	}
 		
