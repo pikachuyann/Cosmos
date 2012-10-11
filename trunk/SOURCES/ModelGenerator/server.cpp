@@ -180,7 +180,7 @@ void launchServer(parameters& P){
 	if(P.alligatorMode){
 		Result.printAlligator();
 	} else{
-        if(verbose>1)Result.print(cout);
+        if(P.verbose>1)Result.print(cout);
 	}
     
     string fn = "Result";
