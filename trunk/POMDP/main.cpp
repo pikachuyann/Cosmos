@@ -138,7 +138,7 @@ int main(int argc, char** argv) {
 		OldReward=Reward;
 		system("head -n 1 test > test2");
 		system("tail -n 1 test >> test2");
-		Reward = readPlastfun(N, "test2", Plast);
+		Reward = readPlastfun(N, "test2", Plast)/H;
 		if(It==1){
 			fillMemory(Plast,1);
 		}else{
