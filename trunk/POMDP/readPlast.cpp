@@ -118,11 +118,11 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 
 void printPlast(  vector< vector< vector<double> > >& Plast ){
 	for (int i= 0; i<Plast.size(); i++){ 
-		cout << i<< "\t[";
+		cout << i<< "\t["<< setprecision(6);
 		for (int j=0; j< Plast[0][0].size(); j++){
 			cout << "->"<<j<<"[";
 			for (int Xlast=0; Xlast<Plast[0].size(); Xlast++){
-				cout<<"\t"<< setw(7)<< Plast[i][Xlast][j];
+				cout<< setw(10)<< Plast[i][Xlast][j];
 			}
 			cout << "]\t";
 		}
