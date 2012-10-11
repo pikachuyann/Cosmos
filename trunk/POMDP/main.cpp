@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 		st >> n;
 		
 		M = generateLinearMatrix(n,p,q);
-		RewardArray = generateLinearReward(n,3);
+		RewardArray = generateLinearReward(n,5);
 		ron=-1;
 		rdet=10;
 		ExpFileName="linear.txt";
