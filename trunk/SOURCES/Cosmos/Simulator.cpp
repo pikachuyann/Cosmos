@@ -214,7 +214,7 @@ bool Simulator::transitionSink(int i){
 //the return value is true iff the simulation did not reach
 //An accpting are refusing state.
 bool Simulator::SimulateOneStep(AutEdge* AEref){
-    if(verbose>2){
+    if(verbose>3){
         //Print marking and location of the automata
         //Usefull to track a simulation
         cerr << "Marking:\t";
@@ -242,7 +242,7 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
 	} else {
         //Take the first event in the queue
 		Event E1 = (*EQ).InPosition(0);
-		if(verbose>2)cerr << "transition:" << N.Transition[E1.transition].label << endl;
+		if(verbose>3)cerr << "transition:" << N.Transition[E1.transition].label << endl;
         
 		int E1_transitionNum = E1.transition;
         

@@ -143,7 +143,7 @@ void launchExport(parameters& P){
 // This function launch a set of simulators and stop them once
 // The precision criterion is reach.
 void launchServer(parameters& P){
-    cout << "START SIMULATION ..." << endl;
+    if(P.verbose>0)cout << "START SIMULATION ..." << endl;
     
     //Init result
     result Result(P);
@@ -180,7 +180,7 @@ void launchServer(parameters& P){
 	if(P.alligatorMode){
 		Result.printAlligator();
 	} else{
-        Result.print(cout);
+        if(verbose>1)Result.print(cout);
 	}
     
     string fn = "Result";

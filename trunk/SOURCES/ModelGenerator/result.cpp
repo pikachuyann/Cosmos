@@ -156,17 +156,21 @@ void result::printProgress(){
         endline--;
         cout << "\033[A\033[2K";
     }
-    cout << "Total paths: " << MeanM2->I << "\t accepted paths: " << MeanM2->Isucc << endl;
+    cout << "Total paths: " << MeanM2->I << "\t accepted paths: ";
+	cout << MeanM2->Isucc << endl;
     endline++;
-    for(int i=0; i<P.HaslFormulas.size(); i++){
-        cout << P.HaslFormulas[i] << ":\t Mean" << "=" << MeanM2->Mean[i] << "\t stdev=" << stdev[i] << "\t  width=" << width[i] << endl;
-        endline++;
-        if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >1){
-			cout << "% of width:\t";
-			printPercent( pow(RelErrArray[i],-2.0), pow(P.Width,-2.0));
+	if(P.verbose >1){
+		for(int i=0; i<P.HaslFormulas.size(); i++){
+			cout << P.HaslFormulas[i] << ":\t Mean" << "=" << MeanM2->Mean[i];
+			cout << "\t stdev=" << stdev[i] << "\t  width=" << width[i] << endl;
 			endline++;
-        }
-    }
+			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2){
+				cout << "% of width:\t";
+				printPercent( pow(RelErrArray[i],-2.0), pow(P.Width,-2.0));
+				endline++;
+			}
+		}
+	}
 	cout << "% of rel Err:\t";
 	printPercent( pow(RelErr,-2.0), pow(P.Width,-2.0));
 	endline++;

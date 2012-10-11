@@ -31,7 +31,7 @@
 #include <getopt.h>
 
 parameters::parameters() {
-    verbose =1;
+    verbose =2;
 	Level = 0.99;
     epsilon = 0.000001;
 	Width = 0.001;
