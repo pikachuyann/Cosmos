@@ -56,7 +56,7 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 					if (Xlast2==0) {
 						bij.push_back(make_pair(make_pair(source, Xlast),cible));
 					}else{
-						bij.push_back(make_pair(make_pair(-1,0),0));
+						bij.push_back(make_pair(make_pair(source, Xlast),0));
 					}
 				}else{
 					bij.push_back(make_pair(make_pair(-1,0),0));
