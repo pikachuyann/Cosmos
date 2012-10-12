@@ -87,7 +87,7 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 			PlastFile >> dumbdouble >> dumbdouble >> dumbdouble; 
 			
 			if(bij[nbfield2].first.first>=0){
-				Plast[bij[nbfield2].first.first][bij[nbfield2].first.second][bij[nbfield2].second] = val;
+				Plast[bij[nbfield2].first.first][bij[nbfield2].first.second][bij[nbfield2].second] += val;
 				//cout << "lp"<<bij[nbfield2].first.first<< "_" << bij[nbfield2].first.second << "->" << bij[nbfield2].second << "\t "<< val<<endl;
 			}
 			nbfield2++;
