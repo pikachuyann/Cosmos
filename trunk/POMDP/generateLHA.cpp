@@ -86,12 +86,12 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
 					cout << " on ";
 				}else{
 					cout << " off";
-					
 				}
-				cout << "]";
+				
 			}
-			cout << "]"<< endl;
+			cout << "]";
 		}
+		cout << "]"<< endl;
 		
         for(int Xlast=1;Xlast<=Xlastmax;Xlast++){
             
