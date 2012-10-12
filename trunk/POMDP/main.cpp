@@ -131,13 +131,13 @@ int main(int argc, char** argv) {
 	generateSPNfun(M);
 	while(RelDiff>Prec && It<MaxIteration){
 		It++;    
-		printPlast(Plast);
 		generateLHAfun(ron,N,Plast,RewardArray,H,M);
 		system(Cosmoscmd.c_str());
 		OldReward=Reward;
 		system("head -n 1 test > test2");
 		system("tail -n 1 test >> test2");
 		Reward = readPlastfun(N, "test2", Plast)/H;
+		printPlast(Plast);
 		if(It==1){
 			fillMemory(Plast,1);
 		}else{
