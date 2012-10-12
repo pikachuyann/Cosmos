@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 		st >> n;
 		
 		M = generateLinearMatrix(n,p,q);
-		RewardArray = generateLinearReward(n,5);
+		RewardArray = generateLinearReward(n,3);
 		ron=-1;
 		rdet=10;
 		ExpFileName="linear.txt";
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 11 -d test --max-run 10000 --batch 100 --count-transition --width 0.01";
+    string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 11 -d test --max-run 10000 --batch 100 --count-transition --width 0.01 -v 1";
 	
 	// initial iteration
 	
@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
 	double Prec=1e-2; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=2;
+	int MaxIteration=6;
 	int It=0;
 	
 	/*system("head -n 1 test > test2");
