@@ -1,18 +1,5 @@
+#include <iomanip>
 
-
-/*void generateStrat(vector< vector<double> >& Plast,int N,int x,int y,double ron,double rdet,ostream f){
-    //f<< "{";
-    for (int i =0;i<N;i++){
-        //if (i>0)f<<" , ";
-        f << "W" << i << "=";
-        if (ron + Plast[y][i]*rdet<0)f<<"0";
-        else f<<"1";
-    }
-    f<<",Plast"<<x<<"_"<<y<<"=Plast"<<x<<"_"<<y<<"+1, Out"<<x<<"=Out"<<x<<"+1";
-    
-    //f<< "}";
-    
-}*/
 
 void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,vector<double>& RewardArray, double H, vector< vector<double> >& M){
     
@@ -91,6 +78,22 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
             }
         }
         
+		
+		cout <<setw(4)<< i<< "[";
+		for (int j=0; j< Plast[0][0].size(); j++){
+			cout << "->"<<setw(3)<<j<<"[";
+			for (int Xlast=0; Xlast<Plast[0].size(); Xlast++){
+				if (ron + Plast[i][Xlast][j]*RewardArray[j] >=0){
+					StrategieFile << " on " << endl;
+				}else{
+					StrategieFile << " off" << endl;
+					
+				}
+				cout << "]";
+			}
+			cout << "]"<< endl;
+		}
+		
         for(int Xlast=1;Xlast<=Xlastmax;Xlast++){
             
             /*
