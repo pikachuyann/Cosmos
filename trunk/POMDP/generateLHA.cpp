@@ -78,15 +78,14 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
             }
         }
         
-		
 		cout <<setw(4)<< i<< "[";
 		for (int j=0; j< Plast[0][0].size(); j++){
 			cout << "->"<<setw(3)<<j<<"[";
 			for (int Xlast=0; Xlast<Plast[0].size(); Xlast++){
 				if (ron + Plast[i][Xlast][j]*RewardArray[j] >=0){
-					StrategieFile << " on " << endl;
+					cout << " on ";
 				}else{
-					StrategieFile << " off" << endl;
+					cout << " off";
 					
 				}
 				cout << "]";
