@@ -257,7 +257,7 @@ void result::printResultFile(string f){
     if (!ResultsFile) cout << "File '" << f << "' not Created" << endl;
     else {
         print(ResultsFile);
-        cout << "Results are saved in '" << f << "'" << endl;
+        if(P.verbose>0)cout << "Results are saved in '" << f << "'" << endl;
         ResultsFile.close();
     }
 }

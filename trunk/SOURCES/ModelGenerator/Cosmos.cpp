@@ -176,9 +176,7 @@ int main(int argc, char** argv) {
 	
     P.parseCommandLine(argc,argv);
     
-    if (P.verbose>0) {
-        cout << "Cosmos" << endl;
-    }
+    if (P.verbose>0)cout << "Cosmos" << endl;
 	
 	if(P.Path.compare("")==0){
 		string st = argv[0];

@@ -174,7 +174,7 @@ void launchServer(parameters& P){
     //Kill all the simulator
     kill_client();
     
-    cout << endl;
+    if(P.verbose>0)cout << endl;
     Result.stopclock();
     
 	if(P.alligatorMode){

@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
   file.close();
   for(int i=4;i<=20;i++){
     std::ostringstream st;
-    st<<"./swn linear "<<i<<" "<<i;
+    st<<"./swn linear "<<i<<" "<<i << " > linearlog"<<i;
     ss=st.str();
     system(ss.c_str());
   }

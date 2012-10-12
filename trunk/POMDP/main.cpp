@@ -71,7 +71,6 @@ int main(int argc, char** argv) {
 		double d=0.1;
 		double l=0.05;
 		
-		
 		std::istringstream st1( argv[3]);
 		st1 >> n;
 		std::istringstream st2( argv[4]);
