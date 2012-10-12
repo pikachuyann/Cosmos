@@ -147,7 +147,8 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
                     if(compt >0){LhaFile << " ,";}
                     else LhaFile << "\\{";
                     compt++;
-                    LhaFile << "Tr" << v << "_" << x << " ";
+					for(int xnb=0 ; xnb<N; xnb++)
+						LhaFile << "Tr" << xnb << "_" << x << " ";
                 }
             }
             if(compt>0)LhaFile << "}";
