@@ -144,11 +144,12 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
             int compt = 0;
             for (int x=0 ; x<N; x++) {
                 if ((M[v][x]>0) & ((ron + Plast[v][Xlast][x]*RewardArray[x] >=0) & (x>0))){
-                    if(compt >0){LhaFile << " ,";}
-                    else LhaFile << "\\{";
-                    compt++;
-					for(int xnb=0 ; xnb<N; xnb++)
+					for(int xnb=0 ; xnb<N; xnb++){
+						if(compt >0){LhaFile << " ,";}
+						else LhaFile << "\\{";
+						compt++;
 						LhaFile << "Tr" << xnb << "_" << x << " ";
+					}
                 }
             }
             if(compt>0)LhaFile << "}";
