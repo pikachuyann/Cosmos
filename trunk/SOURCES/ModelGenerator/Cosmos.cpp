@@ -29,6 +29,8 @@
 #include <cstdlib>
 #include <sstream>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <err.h>
 
 //#include "directsim.hpp"
 #include "./LhaParser/Lha-Reader.hpp"
@@ -92,7 +94,7 @@ bool ParseBuild(parameters& P) {
         
         if (!parseresult) {
             gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
-            gReader.WriteFile(P.Path);
+            gReader.WriteFile(P.tmpPath);
         } else {
             Gspn_Reader gr;
             gReader = gr;
@@ -155,20 +157,37 @@ bool ParseBuild(parameters& P) {
     }
     
     if(!P.RareEvent){
-        string lumpfunpath = P.Path + "../SOURCES/Cosmos/lumpingfun.cpp";
-        ofstream lumpfun(lumpfunpath.c_str(), ios::out | ios::trunc);
+        //string lumpfunpath = P.Path + "../SOURCES/Cosmos/lumpingfun.cpp";
+        string lumpfunpath = P.tmpPath + "/lumpingfun.cpp";
+		ofstream lumpfun(lumpfunpath.c_str(), ios::out | ios::trunc);
         lumpfun << "void SPN::lumpingFun(vector<int>* vect){}" << endl;
         lumpfun.close();
     }
     
 	string cmd;
 	
-	cmd = "make -s -C " + P.Path + ".. sim";
+	cmd = "g++ -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
 	if (system(cmd.c_str())) return false;
 	
+	cmd = "g++ -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
+	if (system(cmd.c_str())) return false;
+	
+	cmd = "g++ -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
+	if (system(cmd.c_str())) return false;
+	
+	
+	/*cmd = "make -s -C " + P.Path + ".. sim";
+	if (system(cmd.c_str())) return false;
+	*/
 	if(P.verbose>0)cout << "Building OK.\n" << endl;
 	
 	return true;
+}
+
+void cleanTmp(string path){
+	string cmd;
+	cmd = "rm -rf " + path;
+	system(cmd.c_str());
 }
 
 int main(int argc, char** argv) {
@@ -176,6 +195,10 @@ int main(int argc, char** argv) {
 	
     P.parseCommandLine(argc,argv);
     
+	if(mkdir(P.tmpPath.c_str(), 0777) != 0){
+		err(EXIT_FAILURE,"Fail to build temporary directory:%s",P.tmpPath.c_str());
+	}
+	
     if (P.verbose>0)cout << "Cosmos" << endl;
 	
 	if(P.Path.compare("")==0){
@@ -190,8 +213,10 @@ int main(int argc, char** argv) {
         } else launchServer(P);
 	} else {
         cout << "Fail to build the model.";
+		cleanTmp(P.tmpPath);
         return(EXIT_FAILURE);
     }
+	cleanTmp(P.tmpPath);
 	
 	return (EXIT_SUCCESS);
 }

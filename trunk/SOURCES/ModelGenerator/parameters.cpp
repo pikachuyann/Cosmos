@@ -47,6 +47,7 @@ parameters::parameters() {
 	GMLinput = false;
     computeStateSpace = false;
 	alligatorMode = false;
+	tmpPath = "tmp";
     prismPath = "prism/bin/prism";
     dataoutput = "";
 	CountTrans = false;

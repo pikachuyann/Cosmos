@@ -41,6 +41,7 @@ struct parameters {
 	double Width;
 	int Batch;
 	long int MaxRuns;
+	string tmpPath;
 	string Path;
 	string PathGspn;
 	string PathLha;

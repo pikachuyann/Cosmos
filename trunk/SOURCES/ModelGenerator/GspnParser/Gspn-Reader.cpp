@@ -171,7 +171,8 @@ void Gspn_Reader::WriteFile(string& Pref) {
 
     string loc;
 
-    loc = Pref + "../SOURCES/Cosmos/spn.cpp";
+    //loc = Pref + "../SOURCES/Cosmos/spn.cpp";
+	loc = Pref + "/spn.cpp";
     //loc= "/Users/barbot/Documents/Cosmos/SOURCES/Cosmos/spn.cpp";
 	ofstream SpnCppFile(loc.c_str(), ios::out | ios::trunc); // ouverture en écriture avec effacement du SpnCppFile ouvert
 	//cout << loc << endl;

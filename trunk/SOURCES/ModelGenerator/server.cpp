@@ -64,8 +64,7 @@ void launch_clients(parameters& P){
 	ostringstream os;
 	pid_t readpid;
 	int size;
-	if (P.Path == "") os << "./ClientSim " << P.Batch << " " << P.verbose;
-    else os <<  P.Path << "ClientSim " << P.Batch << " " << P.verbose;
+	os << P.tmpPath<<"/ClientSim " << P.Batch << " " << P.verbose;
     
     if(P.DoubleIS){ 
         os << " " << "-RE2"; 
@@ -127,8 +126,7 @@ void launchExport(parameters& P){
     system(setuppr.str().c_str());
     
     ostringstream os;
-	if (P.Path == "") os << "./ClientSim 1 " << P.verbose;
-    else os <<  P.Path << "ClientSim 1 " << P.verbose;
+	os << P.tmpPath << "/ClientSim 1 " << P.verbose;
     os << " " << "-STSP " << P.Path << "../" << P.prismPath;
     
     if(P.verbose >1)cout << os.str() << endl;

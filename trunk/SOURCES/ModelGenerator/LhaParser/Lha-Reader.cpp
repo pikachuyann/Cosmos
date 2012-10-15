@@ -135,12 +135,14 @@ void Lha_Reader::view() {
 }
 
 void Lha_Reader::WriteFile(parameters& P) {
-	string Pref = P.Path;
+	string Pref = P.tmpPath;
 
     string loc;
 
-    loc = Pref + "../SOURCES/Cosmos/LHA.cpp";
-    ofstream LhaCppFile(loc.c_str(), ios::out | ios::trunc);
+    //loc = Pref + "../SOURCES/Cosmos/LHA.cpp";
+    loc = Pref + "/LHA.cpp";
+	
+	ofstream LhaCppFile(loc.c_str(), ios::out | ios::trunc);
 
     /*loc = Pref + "../SOURCES/ModelGenerator/LHA_orig.cpp";
     ifstream LhaCppFile_orig(loc.c_str(), ios::in);
