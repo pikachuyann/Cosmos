@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <math.h>
+#include <time.h>
 //#include <unistd.h>
 
 using namespace std;
@@ -121,6 +122,8 @@ int main(int argc, char** argv) {
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
 	int MaxIteration=6;
 	int It=0;
+	time_t start,end;
+	
 	
 	/*system("head -n 1 test > test2");
 	system("tail -n 1 test >> test2");
@@ -129,6 +132,7 @@ int main(int argc, char** argv) {
 	cout <<"Iteration:" <<It<< " reward: "<< Reward << endl;
 	RewardFile<<It<<" "<<Reward<<endl;*/
 	generateSPNfun(M);
+	time(&start);
 	while(RelDiff>Prec && It<MaxIteration){
 		It++;    
 		generateLHAfun(ron,N,Plast,RewardArray,H,M);
@@ -144,7 +148,9 @@ int main(int argc, char** argv) {
 			RelDiff=fabs((Reward-OldReward)/OldReward);
 		}
 		cout <<"Iteration:" <<It<< " reward: "<< Reward <<" RelDiff: "<<RelDiff<< endl;
-		RewardFile<<It<<" "<<Reward<<endl;
+		time(&end);
+		RewardFile<<It<<" "<<Reward<< "\t time: "<< 
+			difftime(end, start) << "s"<< endl;
 	}
     st=argv[1];
 	if(st=="linear"){
