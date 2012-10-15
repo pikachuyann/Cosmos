@@ -7,9 +7,9 @@ export FLEX=/opt/local/bin/flex
 
 files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 
-.PHONY: classes generator clean sim dir
+.PHONY: lib generator clean sim dir
 
-all: dir classes generator 
+all: dir lib generator 
 
 dir:
 	mkdir -p bin
@@ -18,7 +18,7 @@ dir:
 	mkdir -p Obj/ModelGenerator/GspnParser
 	mkdir -p Obj/ModelGenerator/LhaParser
 
-classes:
+lib:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
 
 generator:
