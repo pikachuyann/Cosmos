@@ -56,6 +56,8 @@ struct parameters {
 	bool GMLinput;
     bool computeStateSpace;
 	bool alligatorMode;
+	
+	string gcccmd;
     
     parameters();
     void View();

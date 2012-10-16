@@ -52,6 +52,7 @@ parameters::parameters() {
     dataoutput = "";
 	CountTrans = false;
 	StringInSpnLHA = false;
+	gcccmd = "g++";
     //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
 }
 

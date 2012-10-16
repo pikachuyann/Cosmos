@@ -167,13 +167,13 @@ bool ParseBuild(parameters& P) {
     
 	string cmd;
 	
-	cmd = "g++ -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
+	cmd = P.gcccmd + " -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
 	if (system(cmd.c_str())) return false;
 	
-	cmd = "g++ -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
+	cmd = P.gcccmd + " -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
 	if (system(cmd.c_str())) return false;
 	
-	cmd = "g++ -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
+	cmd = P.gcccmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
 	if (system(cmd.c_str())) return false;
 	
 	

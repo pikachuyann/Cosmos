@@ -47,4 +47,3 @@ clean:
 	rm $(OBJPATH)/LhaParser/*.o
 	rm $(OBJPATH)/*.o
 	rm $(BINPATH)/Cosmos
-	rm $(BINPATH)/ClientSim	

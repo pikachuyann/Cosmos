@@ -36,7 +36,7 @@ $(OBJPATH)/%.o: %.c
 
 classes: SimulatorRE.cpp $(CLASSES)
 
-lib: $(CLASSES)
+$(BINPATH)/libClientSim.a: $(CLASSES)
 #	$(CC) -shared -o $(BINPATH)/libClientSim.so $(CLASSES)
 	ar rcs $(BINPATH)/libClientSim.a $(CLASSES)
 
@@ -45,10 +45,11 @@ $(BINPATH)/ClientSim: $(OBJPATH)/spn.o $(OBJPATH)/LHA.o $(CLASSES)
 
 clean:
 	rm $(OBJPATH)/*.o
+	rm $(BINPATH)/libClientSim.a
 #	rm spn.hpp
 #	rm LHA.hpp
-	rm LHA.cpp
-	rm spn.cpp
+#	rm LHA.cpp
+#	rm spn.cpp
 
 
 server:

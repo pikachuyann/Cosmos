@@ -19,7 +19,7 @@ dir:
 	mkdir -p Obj/ModelGenerator/LhaParser
 
 lib:
-	@(cd SOURCES/Cosmos && $(MAKE) $@)
+	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/libClientSim.a)
 
 generator:
 	@(cd SOURCES/ModelGenerator && $(MAKE) ../../bin/Cosmos)
@@ -27,7 +27,7 @@ generator:
 clean:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
 	@(cd SOURCES/ModelGenerator && $(MAKE) $@)
-	@(rm package-alligator.zip)
+	@(rm -rf package-alligator.zip)
 #	@(rm -rf package)
 
 cleansim:
