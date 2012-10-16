@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <err.h>
+#include <errno.h>
 
 //#include "directsim.hpp"
 #include "./LhaParser/Lha-Reader.hpp"
@@ -196,7 +197,9 @@ int main(int argc, char** argv) {
     P.parseCommandLine(argc,argv);
     
 	if(mkdir(P.tmpPath.c_str(), 0777) != 0){
-		err(EXIT_FAILURE,"Fail to build temporary directory:%s",P.tmpPath.c_str());
+		if(errno != EEXIST){
+			err(EXIT_FAILURE,"Fail to build temporary directory:%s",P.tmpPath.c_str());
+		}
 	}
 	
     if (P.verbose>0)cout << "Cosmos" << endl;

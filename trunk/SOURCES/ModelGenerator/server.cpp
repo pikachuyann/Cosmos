@@ -56,11 +56,17 @@ void signalHandler( int signum )
     exit(EXIT_FAILURE);  
 }
 
+
 void signalHandlerOK(int signum){};
+
+void interuptHandler( int signum){
+	signal(SIGCHLD , signalHandlerOK);
+}
 
 // Launch the P.Njob copy of the simulator with the parameters define in P
 void launch_clients(parameters& P){
     signal(SIGCHLD , signalHandler); 
+	signal(SIGINT, interuptHandler);
 	ostringstream os;
 	pid_t readpid;
 	int size;
@@ -101,7 +107,7 @@ void kill_client(){
     
     while (!clientPID.empty())
     {
-        kill(clientPID.back(),9);
+        kill(clientPID.back(),2);
         clientstream.pop_back();
         clientPID.pop_back();
     }
@@ -154,6 +160,10 @@ void launchServer(parameters& P){
         fd_set cs_cp = client_list;
         //wait for a simulator to return some result
         if(select(max_client+1, &cs_cp, NULL, NULL, NULL) == -1){
+			if(errno == EINTR){
+				break;
+			}
+			
             perror("Server-select() error!");
             exit(1);
         }
