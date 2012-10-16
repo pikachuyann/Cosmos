@@ -95,7 +95,7 @@ bool ParseBuild(parameters& P) {
         
         if (!parseresult) {
             gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
-            gReader.WriteFile(P.tmpPath);
+            if(P.tmpStatus==0||P.tmpStatus==2)gReader.WriteFile(P.tmpPath);
         } else {
             Gspn_Reader gr;
             gReader = gr;
@@ -137,7 +137,7 @@ bool ParseBuild(parameters& P) {
 				}
 			}
 			
-            lReader.WriteFile(P);
+            if(P.tmpStatus==0||P.tmpStatus==2)lReader.WriteFile(P);
             
         } else {
             Lha_Reader lr;
@@ -152,6 +152,7 @@ bool ParseBuild(parameters& P) {
     }
 	Lha_Reader lr;
 	lr = lReader;
+	if(P.tmpStatus==1||P.tmpStatus==3)return true;
 	if(P.verbose>0){
         cout << "Parsing OK.\n" << endl;
         cout << "Start building ... " << endl;
@@ -185,10 +186,12 @@ bool ParseBuild(parameters& P) {
 	return true;
 }
 
-void cleanTmp(string path){
-	string cmd;
-	cmd = "rm -rf " + path;
-	system(cmd.c_str());
+void cleanTmp(parameters& P){
+	if(P.tmpStatus==0 || P.tmpStatus==1){
+		string cmd;
+		cmd = "rm -rf " + P.tmpPath;
+		system(cmd.c_str());
+	}
 }
 
 int main(int argc, char** argv) {
@@ -210,16 +213,16 @@ int main(int argc, char** argv) {
 		else if (st == "Cosmos")FindPath(P);
 		else P.Path.assign(st.begin(), st.end() - 6);
 	}
-	if (ParseBuild(P)) {
-        if(P.computeStateSpace){
-            launchExport(P);
-        } else launchServer(P);
-	} else {
-        cout << "Fail to build the model.";
-		cleanTmp(P.tmpPath);
-        return(EXIT_FAILURE);
-    }
-	cleanTmp(P.tmpPath);
+	if ( ! ParseBuild(P)) {
+		cout << "Fail to build the model.";
+		cleanTmp(P);
+		return(EXIT_FAILURE);
+	}
+	if(P.computeStateSpace){
+		launchExport(P);
+	} else launchServer(P);
+	
+	cleanTmp(P);
 	
 	return (EXIT_SUCCESS);
 }
