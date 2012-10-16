@@ -28,6 +28,6 @@ module file4 = file2[buffer2=buffer4, rho1=rho3, rho2=rho4] endmodule
 formula win = buffer1 + buffer2+buffer3 +buffer4=n;
 formula notloose = buffer1 + buffer2 +buffer3 +buffer4>0;
 
-//formula win = buffer1 + buffer2 +buffer3 +buffer4+buffer5 =n;
-//formula notloose = buffer1 + buffer2 +buffer3+buffer4+buffer5 >0;
+formula win = buffer1 + buffer2 +buffer3 +buffer4+buffer5 =n;
+formula notloose = buffer1 + buffer2 +buffer3+buffer4+buffer5 >0;
 

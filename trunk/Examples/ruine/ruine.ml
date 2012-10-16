@@ -355,7 +355,7 @@ Unix.chdir dir;;
 if not exist then genere ();;
 
 
-let com2 = Printf.sprintf "Cosmos ruine.gspn ruine.lha --batch 1000 --max-run 1000 -c -b %i --set-Horizon %f --epsilon %e > logcosmosCalc  2>&1" methode horizon epsilon;; 
+let com2 = Printf.sprintf "Cosmos ruine.gspn ruine.lha --batch 1000 --width 0.1 -c -b %i --set-Horizon %f --epsilon %e > logcosmosCalc  2>&1" methode horizon epsilon;; 
 
 print_endline com2;;
 Sys.command com2;;

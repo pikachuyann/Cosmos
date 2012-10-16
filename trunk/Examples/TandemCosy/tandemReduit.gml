@@ -10,7 +10,7 @@
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              5
+              200
             </attribute>
           </attribute>
         </attribute>
@@ -22,7 +22,7 @@
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              0.45
+              0.34
             </attribute>
           </attribute>
         </attribute>
@@ -32,7 +32,7 @@
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              0.1
+              0.32
             </attribute>
           </attribute>
         </attribute>

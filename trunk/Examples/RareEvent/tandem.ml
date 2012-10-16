@@ -1,4 +1,4 @@
-#!/opt/local/bin/ocaml
+#!/usr/bin/ocaml
 #load "unix.cma";;
 (*#use "../script.ml" *)
 open Printf
