@@ -72,7 +72,7 @@ result::result(parameters &Q){
     }
     
     time(&start);
-    cout << endl << endl << endl;
+    if(P.verbose>0)cout << endl << endl << endl;
 }
 
 result::~result(){
