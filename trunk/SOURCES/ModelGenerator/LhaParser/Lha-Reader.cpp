@@ -203,36 +203,35 @@ void Lha_Reader::WriteFile(parameters& P) {
     for (set<unsigned int>::iterator it = MyLha.FinalLoc.begin(); it != MyLha.FinalLoc.end(); it++)
         LhaCppFile << "    FinalLoc.insert(" << (*it) << ");" << endl;
 
-	if(P.verbose>=4)
-		for (map <string, int>::iterator it = MyLha.LocIndex.begin(); it != MyLha.LocIndex.end(); it++)
-			LhaCppFile << "    LocIndex[\"" << (*it).first << "\"]=" << (*it).second << ";" << endl;
-	
-    LhaCppFile << "\n    vector<string> vlstr(NbLoc);" << endl;
-    LhaCppFile << "    LocLabel= vlstr;" << endl;
-    LhaCppFile << "    StrLocProperty= vlstr;\n" << endl;
-
-    LhaCppFile << "    vector < vector <string> >  vestr(" << MyLha.Edge.size() << ");" << endl;
-    LhaCppFile << "    ConstraintsRelOp= vestr;" << endl;
-    LhaCppFile << "    ConstraintsConstants= vestr;" << endl;
-
-
-    LhaCppFile << "    vector < vector< vector <string> > > mvestr(" << MyLha.Edge.size() << ");" << endl;
-
-    LhaCppFile << "    ConstraintsCoeffs= mvestr;\n" << endl;
-
 	if(P.CountTrans)
 		LhaCppFile << "    EdgeCounter = vector<int>("<<MyLha.Edge.size()<<",0);"<< endl;
     LhaCppFile << "    vector<LhaEdge> ve(" << MyLha.Edge.size() << ");" << endl;
     LhaCppFile << "    Edge= ve;\n" << endl;
 	
-	if(P.verbose>=4)
+	if(P.StringInSpnLHA){
+		for (map <string, int>::iterator it = MyLha.LocIndex.begin(); it != MyLha.LocIndex.end(); it++)
+			LhaCppFile << "    LocIndex[\"" << (*it).first << "\"]=" << (*it).second << ";" << endl;
+		
+		LhaCppFile << "\n    vector<string> vlstr(NbLoc);" << endl;
+		LhaCppFile << "    LocLabel= vlstr;" << endl;
+		LhaCppFile << "    StrLocProperty= vlstr;\n" << endl;
+		
+		LhaCppFile << "    vector < vector <string> >  vestr(" << MyLha.Edge.size() << ");" << endl;
+		LhaCppFile << "    ConstraintsRelOp= vestr;" << endl;
+		LhaCppFile << "    ConstraintsConstants= vestr;" << endl;
+		
+		
+		LhaCppFile << "    vector < vector< vector <string> > > mvestr(" << MyLha.Edge.size() << ");" << endl;
+		
+		LhaCppFile << "    ConstraintsCoeffs= mvestr;\n" << endl;
+	
 		for (int i = 0; i < MyLha.LocLabel.size(); i++)
 			LhaCppFile << "    LocLabel[" << i << "]=\"" << MyLha.LocLabel[i] << "\";" << endl;
 
-    if(P.verbose>=4)
 		for (int i = 0; i < MyLha.StrLocProperty.size(); i++)
 			LhaCppFile << "    StrLocProperty[" << i << "]=\"" << MyLha.StrLocProperty[i] << "\";" << endl;
-
+	}
+		
     for (map <string, int>::iterator it = MyLha.EdgeIndex.begin(); it != MyLha.EdgeIndex.end(); it++)
         LhaCppFile << "    EdgeIndex[\"" << (*it).first << "\"]=" << (*it).second << ";" << endl;
 
@@ -248,42 +247,49 @@ void Lha_Reader::WriteFile(parameters& P) {
     }
 
     for (int i = 0; i < MyLha.Edge.size(); i++) {
-
-        int NbC = MyLha.ConstraintsRelOp[i].size();
-
-        LhaCppFile << "\n    {" << endl;
-        LhaCppFile << "    vector <string> vcstr(" << NbC << ");" << endl;
-        LhaCppFile << "    ConstraintsRelOp[" << i << "]=vcstr;" << endl;
-        LhaCppFile << "    ConstraintsConstants[" << i << "]=vcstr;" << endl;
-        LhaCppFile << "    vector <string>  vcvstr(NbVar, \"\");" << endl;
-        LhaCppFile << "    vector < vector <string> > v2cvstr(" << NbC << ",vcvstr);" << endl;
-        LhaCppFile << "    ConstraintsCoeffs[" << i << "]=v2cvstr;" << endl;
-        LhaCppFile << "    }" << endl;
 		
-		if(P.verbose>=4)
+        int NbC = MyLha.ConstraintsRelOp[i].size();
+		
+		if(P.StringInSpnLHA){
+			LhaCppFile << "\n    {" << endl;
+			LhaCppFile << "    vector <string> vcstr(" << NbC << ");" << endl;
+			LhaCppFile << "    ConstraintsRelOp[" << i << "]=vcstr;" << endl;
+			LhaCppFile << "    ConstraintsConstants[" << i << "]=vcstr;" << endl;
+			LhaCppFile << "    vector <string>  vcvstr(NbVar, \"\");" << endl;
+			LhaCppFile << "    vector < vector <string> > v2cvstr(" << NbC << ",vcvstr);" << endl;
+			LhaCppFile << "    ConstraintsCoeffs[" << i << "]=v2cvstr;" << endl;
+			LhaCppFile << "    }" << endl;
+			
 			for (int c = 0; c < NbC; c++) {
 				LhaCppFile << "    ConstraintsRelOp[" << i << "][" << c << "]=\"" << MyLha.ConstraintsRelOp[i][c] << "\";" << endl;
 				LhaCppFile << "    ConstraintsConstants[" << i << "][" << c << "]=\"" << MyLha.ConstraintsConstants[i][c] << "\";" << endl;
 				for (int v = 0; v < MyLha.NbVar; v++)
 					LhaCppFile << "    ConstraintsCoeffs[" << i << "][" << c << "][" << v << "]=\"" << MyLha.ConstraintsCoeffs[i][c][v] << "\";" << endl;
 			}
+		}
     }
-
+	
 
     LhaCppFile << "\n    vector<double> vdouble(NbVar);" << endl;
-    LhaCppFile << "    vector<string> VarStr(NbVar);" << endl;
     LhaCppFile << "    Var=vdouble;" << endl;
-    LhaCppFile << "    VarLabel=VarStr;" << endl;
-
+	if(P.StringInSpnLHA){
+		LhaCppFile << "    vector<string> VarStr(NbVar);" << endl;
+		LhaCppFile << "    VarLabel=VarStr;" << endl;
+	}
+		
     for (int v = 0; v < MyLha.NbVar; v++) {
         LhaCppFile << "    Var[" << v << "]=" << 0 << ";" << endl;
-        LhaCppFile << "    VarLabel[" << v << "]=\"" << MyLha.VarLabel[v] << "\";" << endl;
-        LhaCppFile << "    VarIndex[\"" << MyLha.VarLabel[v] << "\"]=" << v << ";" << endl;
-    }
+		if(P.StringInSpnLHA){
+			LhaCppFile << "    VarLabel[" << v << "]=\"" << MyLha.VarLabel[v] << "\";" << endl;
+			LhaCppFile << "    VarIndex[\"" << MyLha.VarLabel[v] << "\"]=" << v << ";" << endl;
+		}
+	}
 
-    LhaCppFile << "\n    vector<string> vStr(NbVar);" << endl;
-    LhaCppFile << "    vector< vector <string > > vvStr(NbLoc,vStr);" << endl;
-    LhaCppFile << "    StrFlow=vvStr;" << endl;
+	if(P.StringInSpnLHA){
+		LhaCppFile << "\n    vector<string> vStr(NbVar);" << endl;
+		LhaCppFile << "    vector< vector <string > > vvStr(NbLoc,vStr);" << endl;
+		LhaCppFile << "    StrFlow=vvStr;" << endl;
+	}
     
 	if(P.StringInSpnLHA){
 	for (int l = 0; l < MyLha.NbLoc; l++)
@@ -302,15 +308,18 @@ void Lha_Reader::WriteFile(parameters& P) {
             LhaCppFile << "    Out_S_Edges[" << MyLha.Edge[e].Source << "].insert(" << e << ");" << endl;
     }
 
-    LhaCppFile << "\n    vector< set <string> > vStrSet(" << MyLha.Edge.size() << ");" << endl;
+	if(P.StringInSpnLHA){
+		LhaCppFile << "\n    vector< set <string> > vStrSet(" << MyLha.Edge.size() << ");" << endl;
+		LhaCppFile << "    EdgeActions=vStrSet;" << endl;
+	}
+		
     LhaCppFile << "    vector< set<int> > vSetInt(" << MyLha.TransitionIndex.size() << ");" << endl;
     LhaCppFile << "    vector < vector < set <int> > > vvSetInt(NbLoc,vSetInt);" << endl;
 
-    LhaCppFile << "    EdgeActions=vStrSet;" << endl;
     LhaCppFile << "    ActionEdges=vvSetInt;" << endl;
     for (int e = 0; e < MyLha.Edge.size(); e++) {
         for (set<string>::iterator it = MyLha.EdgeActions[e].begin(); it != MyLha.EdgeActions[e].end(); it++) {
-            if(P.verbose>=4)LhaCppFile << "    EdgeActions[" << e << "].insert(\"" << *it << "\");" << endl;
+            if(P.StringInSpnLHA)LhaCppFile << "    EdgeActions[" << e << "].insert(\"" << *it << "\");" << endl;
             LhaCppFile << "    ActionEdges[" << MyLha.Edge[e].Source << "][" << MyLha.TransitionIndex[*it] << "].insert(" << e << ");" << endl;
         }
     }

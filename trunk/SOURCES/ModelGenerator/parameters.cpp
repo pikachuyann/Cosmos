@@ -92,7 +92,8 @@ void parameters::usage(){
     cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
     cout << "\t--alligator-mode \toutput easy to parse result"<< endl;
 	cout << "\t--count-transition \tAdd a Hasl formula for wich count the number of time each transition occurs"<< endl;
-	cout << "\t--tmpStatus arg \tDo not remove or do not rebuild tmp directory: 0 default->rebuild,destroy; 1->do not build;do not destroy; do not build nor destroy";
+	cout << "\t--tmpPath arg \tPath to the temporary directory by default ./tmp/"<< endl;
+	cout << "\t--tmpStatus arg \tDo not remove or do not rebuild tmp directory: 0 default->rebuild,destroy; 1->do not build;do not destroy; do not build nor destroy"<<endl;
 	cout << "\t--debug-string \tAdd transition and place name to the compile file for debuging"<< endl;
 }
 
@@ -129,7 +130,8 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"help" , no_argument ,			 0, 'h'},
 			{"count-transition", no_argument,0, 't'},
 			{"debug-string", no_argument,	 0,  3 },
-			{"tmpStatus", required_argument, 0,	 4 },
+			{"tmpPath" , required_argument,	 0,	 4 },
+			{"tmpStatus", required_argument, 0,	 5 },
             
             {0, 0, 0, 0}
         };
@@ -179,7 +181,8 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'd': dataoutput = optarg; break;
 			case  't': CountTrans = true;	break;
 			case  3  : StringInSpnLHA = true; break;
-			case  4	 : tmpStatus = atoi(optarg); break;
+			case  4  : tmpPath = optarg; break;
+			case  5	 : tmpStatus = atoi(optarg); break;
 				
             case '?':
                 usage();
