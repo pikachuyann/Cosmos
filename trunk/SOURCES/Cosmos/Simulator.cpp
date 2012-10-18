@@ -325,11 +325,12 @@ void Simulator::GenerateEvent(Event& E, int Id) {
     //The weight of a transition is always distributed exponentially
     //It is used to solved conflict of two transitions with same time 
     //and same priority.
-	double w;
-	vector<double> wParam(1, N.GetWeight(Id));
-	string dist = "EXPONENTIAL";
-	w = GenerateTime(dist, wParam);
-    
+	double w=0.0;
+	if (IndexDist[N.Transition[Id].DistType] > 2) {
+		vector<double> wParam(1, N.GetWeight(Id));
+		string dist = "EXPONENTIAL";
+		w = GenerateTime(dist, wParam);
+    }
     
 	E.transition = Id;
 	E.time = t;
