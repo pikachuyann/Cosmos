@@ -177,6 +177,14 @@ bool ParseBuild(parameters& P) {
 	cmd = P.gcccmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
 	if (system(cmd.c_str())) return false;
 	
+	if(P.RareEvent){
+		cmd = "cp muFile " + P.tmpPath +"/muFile";
+		if (system(cmd.c_str())) return false;
+		cmd = "cp lumpingfun.cpp " + P.tmpPath +"/lumpingfun.cpp";
+		if (system(cmd.c_str())) return false;
+	}
+	
+	
 	
 	/*cmd = "make -s -C " + P.Path + ".. sim";
 	if (system(cmd.c_str())) return false;

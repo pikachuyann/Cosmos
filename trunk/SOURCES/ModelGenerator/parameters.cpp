@@ -152,13 +152,19 @@ void parameters::parseCommandLine(int argc, char** argv){
                 exit(EXIT_SUCCESS);
                 break;
                 
-            case 'v':verbose = atoi(optarg);   break;
+            case 'v':verbose = atoi(optarg);
+				if(verbose>=4)StringInSpnLHA = true;	
+				break;
                 
             case 'g':GMLinput = true;          break;
                 
-            case 'r':RareEvent = true;          break;
+            case 'r':RareEvent = true;        
+				StringInSpnLHA =true; // Need to know the name of place to find 
+				// place begining with "RE_"
+				break;
                 
             case 'b':BoundedRE = atoi(optarg);
+				StringInSpnLHA =true;
                 RareEvent=true;
                 break;
                 
