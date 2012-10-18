@@ -161,7 +161,7 @@ void SimulatorRE::GenerateEvent(Event& E, int Id) {
     double t = simTime;
     if (N.Transition[Id].transType == Timed) {
         vector<double> Param = getParams(Id);
-        t += GenerateTime(N.Transition[Id].DistType, Param);
+        t += GenerateTime(N.Transition[Id].DistTypeIndex, Param);
 		
 		N.Rate_Table[Id] = Param[0];
 		N.Origine_Rate_Table[Id] = Param[1];
@@ -171,8 +171,7 @@ void SimulatorRE::GenerateEvent(Event& E, int Id) {
     }
     double w;
     vector<double> wParam(1, N.GetWeight(Id));
-    string dist = "EXPONENTIAL";
-    w = GenerateTime(dist, wParam);
+    w = GenerateTime(2, wParam);
     E.transition = Id;
     E.time = t;
     E.priority = N.GetPriority(Id);

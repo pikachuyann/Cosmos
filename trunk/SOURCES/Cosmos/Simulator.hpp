@@ -82,7 +82,6 @@ protected:
 	EventsQueue* EQ;   
 	
 	bool Initialized;
-	map<string, int> IndexDist;
     
     //The random Generator Mersenne Twister from the boost library
 	boost::mt19937 RandomNumber;
@@ -101,7 +100,7 @@ protected:
 	virtual void GenerateEvent(Event &, int); // generate a new event use Generate Time
 	
 	// generate a time acording to the distribution d with parameters p
-	virtual double GenerateTime(string& d, vector<double>& p); 
+	virtual double GenerateTime(int, vector<double>& p); 
 	
 	
 	virtual void returnResultTrue(vector<int>, double); 

@@ -41,6 +41,7 @@ struct _trans {
     string label;
     TransType transType; // Time or unTimed
     string DistType;
+	int DistTypeIndex;
     vector<string> DistParams;
     string priority;
     string weight;

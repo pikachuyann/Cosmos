@@ -29,6 +29,8 @@
 #include <map>
 #include <set>
 
+
+#include "../parameters.hpp"
 #include "Gspn-parser.tab.hh"
 #include "../Eval/Eval.hpp"
 #include <vector>
@@ -122,7 +124,7 @@ public:
     int parse(std::string&);
     int parse_file(std::string&);
 	int parse_gml_file(std::string&,bool);
-    void WriteFile(string&);
+    void WriteFile(parameters&);
 
     bool trace_parsing;
 

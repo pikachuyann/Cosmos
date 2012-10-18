@@ -46,12 +46,6 @@ Simulator::Simulator() {
 	EQ = new EventsQueue(n); //initialization of the event queue
 	simTime = 0; //initialization of the time
 	Initialized = false;
-	IndexDist["UNIFORM"] = 1;
-	IndexDist["EXPONENTIAL"] = 2;
-	IndexDist["DETERMINISTIC"] = 3;
-	IndexDist["LOGNORMAL"] = 4;
-	IndexDist["TRIANGLE"] = 5;
-	IndexDist["GEOMETRIC"] = 6;
     
     logResult=false;
 	
@@ -319,17 +313,16 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 	double t = simTime;
 	if (N.Transition[Id].transType == Timed) {
 		vector<double> Param = getParams(Id); //N.GetDistParameters(Id);
-		t += GenerateTime(N.Transition[Id].DistType, Param);
+		t += GenerateTime(N.Transition[Id].DistTypeIndex, Param);
 	}
     
     //The weight of a transition is always distributed exponentially
     //It is used to solved conflict of two transitions with same time 
     //and same priority.
 	double w=0.0;
-	if (IndexDist[N.Transition[Id].DistType] > 2) {
+	if (N.Transition[Id].DistTypeIndex > 2) {
 		vector<double> wParam(1, N.GetWeight(Id));
-		string dist = "EXPONENTIAL";
-		w = GenerateTime(dist, wParam);
+		w = GenerateTime(2, wParam);
     }
     
 	E.transition = Id;
@@ -345,9 +338,9 @@ vector<double> Simulator::getParams(int Id){
 }
 	
 //Call the random generator to generate fire time.
-double Simulator::GenerateTime(string& distribution, vector<double> &param) {
+double Simulator::GenerateTime(int distribution, vector<double> &param) {
 	
-	switch (IndexDist[distribution]) {
+	switch (distribution) {
 		case 1:
 		{//UNIF
 			boost::uniform_real<> UNIF(param[0], param[1]);

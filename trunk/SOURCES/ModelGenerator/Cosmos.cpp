@@ -95,7 +95,7 @@ bool ParseBuild(parameters& P) {
         
         if (!parseresult) {
             gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
-            if(P.tmpStatus==0||P.tmpStatus==2)gReader.WriteFile(P.tmpPath);
+            if(P.tmpStatus==0||P.tmpStatus==2)gReader.WriteFile(P);
         } else {
             Gspn_Reader gr;
             gReader = gr;
