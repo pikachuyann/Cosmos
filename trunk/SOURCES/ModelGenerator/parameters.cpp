@@ -168,7 +168,9 @@ void parameters::parseCommandLine(int argc, char** argv){
 				
             case  1:horizon = atof(optarg);     break;
                 
-            case 's':computeStateSpace= true;  break;
+            case 's':computeStateSpace= true; 
+				StringInSpnLHA = true;
+				break;
                 
             case 'a':alligatorMode = true;  break;
 				
