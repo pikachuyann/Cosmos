@@ -29,6 +29,7 @@
 #include "Gspn-Reader.hpp"
 #include "Gspn_gmlparser.hpp"
 
+
 #include "string.h"
 
 #include <string>
@@ -166,9 +167,9 @@ void Gspn_Reader::addSinkTrans(){
     (MyGspn.outArcs)[MyGspn.tr-1][MyGspn.pl-1]=1;
 }
 
-void Gspn_Reader::WriteFile(string& Pref) {
-
-
+void Gspn_Reader::WriteFile(parameters& P){
+	
+	string Pref = P.tmpPath;
     string loc;
 
     //loc = Pref + "../SOURCES/Cosmos/spn.cpp";
@@ -307,17 +308,19 @@ void Gspn_Reader::WriteFile(string& Pref) {
     for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
         int k = MyGspn.PlacesId[*it];
         SpnCppFile << "    Place[" << k << "].Id =" << k << ";" << endl;
-        SpnCppFile << "    Place[" << k << "].label =\" " << *it << "\";" << endl;
-        SpnCppFile << "    PlaceIndex[\" " << *it << "\"] =" << k << ";" << endl;
-
+		if(P.StringInSpnLHA){
+			SpnCppFile << "    Place[" << k << "].label =\" " << *it << "\";" << endl;
+			SpnCppFile << "    PlaceIndex[\" " << *it << "\"] =" << k << ";" << endl;
+		}
     }
 
     for (set<string>::iterator it = MyGspn.TransList.begin(); it != MyGspn.TransList.end(); it++) {
         int k = MyGspn.TransId[*it];
         SpnCppFile << "    Transition[" << k << "].Id =" << k << ";" << endl;
-        SpnCppFile << "    Transition[" << k << "].label =\"" << *it << "\";" << endl;
-        SpnCppFile << "    TransitionIndex[\"" << *it << "\"]=" << k << ";" << endl;
-
+		if(P.StringInSpnLHA){
+			SpnCppFile << "    Transition[" << k << "].label =\"" << *it << "\";" << endl;
+			SpnCppFile << "    TransitionIndex[\"" << *it << "\"]=" << k << ";" << endl;
+		}
     }
 
 
@@ -327,20 +330,26 @@ void Gspn_Reader::WriteFile(string& Pref) {
 
         if (MyGspn.tType[i] == Timed) {
             SpnCppFile << "    Transition[" << i << "].transType = Timed;" << endl;
-            SpnCppFile << "    Transition[" << i << "].DistType = \"" << MyGspn.Dist[i].name << "\";" << endl;
-
-            for (int j = 0; j < MyGspn.Dist[i].Param.size(); j++) {
-                SpnCppFile << "    Transition[" << i << "].DistParams.push_back(\" " << MyGspn.Dist[i].Param[j] << "\" );" << endl;
-            }
+			
+			SpnCppFile << "    Transition[" << i << "].DistTypeIndex = " << IndexDist[MyGspn.Dist[i].name] << ";" << endl;
+			
+			if(P.StringInSpnLHA){
+				SpnCppFile << "    Transition[" << i << "].DistType = \"" << MyGspn.Dist[i].name << "\";" << endl;
+				for (int j = 0; j < MyGspn.Dist[i].Param.size(); j++) {
+					SpnCppFile << "    Transition[" << i << "].DistParams.push_back(\" " << MyGspn.Dist[i].Param[j] << "\" );" << endl;
+				}
+			}
 
         } else {
             SpnCppFile << "    Transition[" << i << "].transType = unTimed;" << endl;
 
 
         }
-        SpnCppFile << "    Transition[" << i << "].priority = \"" << MyGspn.Priority[i] << "\";" << endl;
         SpnCppFile << "    Transition[" << i << "].MarkingDependent = " << MyGspn.MarkingDependent[i] << ";" << endl;
-        SpnCppFile << "    Transition[" << i << "].weight = \"" << MyGspn.Weight[i] << " \";" << endl;
+		if(P.StringInSpnLHA){
+			SpnCppFile << "    Transition[" << i << "].priority = \"" << MyGspn.Priority[i] << "\";" << endl;
+			SpnCppFile << "    Transition[" << i << "].weight = \"" << MyGspn.Weight[i] << " \";" << endl;
+		}
         SpnCppFile << endl;
     }
 
