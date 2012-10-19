@@ -107,7 +107,6 @@
 		0341401515AEC3740009FEFC /* generateSPN.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = generateSPN.cpp; path = ../../POMDP/generateSPN.cpp; sourceTree = "<group>"; };
 		0341401715AEC3740009FEFC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../POMDP/main.cpp; sourceTree = "<group>"; };
 		0341401C15AEF45E0009FEFC /* POMDP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = POMDP; sourceTree = BUILT_PRODUCTS_DIR; };
-		0341402115AEF45E0009FEFC /* POMDP.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = POMDP.1; sourceTree = "<group>"; };
 		0346863714D6ECFE0040753D /* foxglynn.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = foxglynn.c; sourceTree = "<group>"; };
 		0346863A14D6ED300040753D /* foxglynn.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = foxglynn.h; sourceTree = "<group>"; };
 		0346863B14D6ED3F0040753D /* macro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macro.h; sourceTree = "<group>"; };
@@ -254,7 +253,6 @@
 				036F5C63160C4B5E001B82E0 /* grid.cpp */,
 				036F5C64160C4B5E001B82E0 /* linear.cpp */,
 				03CB61CE15F9DE3E00742D57 /* Makefile */,
-				0341402115AEF45E0009FEFC /* POMDP.1 */,
 			);
 			path = POMDP;
 			sourceTree = "<group>";
@@ -723,6 +721,8 @@
 					/opt/local/lib,
 				);
 				PRODUCT_NAME = Cosmos;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				USER_HEADER_SEARCH_PATHS = "/Users/barbot/Documents/AllCosmos/trunk/SOURCES/libgml/ /usr/local/include";
 			};
 			name = Debug;
 		};
@@ -739,6 +739,8 @@
 					/opt/local/lib,
 				);
 				PRODUCT_NAME = Cosmos;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				USER_HEADER_SEARCH_PATHS = "/Users/barbot/Documents/AllCosmos/trunk/SOURCES/libgml/ /usr/local/include";
 			};
 			name = Release;
 		};
