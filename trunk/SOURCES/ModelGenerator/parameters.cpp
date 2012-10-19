@@ -92,8 +92,8 @@ void parameters::usage(){
     cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
     cout << "\t--alligator-mode \toutput easy to parse result"<< endl;
 	cout << "\t--count-transition \tAdd a Hasl formula for wich count the number of time each transition occurs"<< endl;
-	cout << "\t--tmpPath arg \tPath to the temporary directory by default ./tmp/"<< endl;
-	cout << "\t--tmpStatus arg \tDo not remove or do not rebuild tmp directory: 0 default->rebuild,destroy; 1->do not build;do not destroy; do not build nor destroy"<<endl;
+	cout << "\t--tmp-path arg \tPath to the temporary directory by default ./tmp/"<< endl;
+	cout << "\t--tmp-status arg \tDo not remove or do not rebuild tmp directory: 0 default->rebuild,destroy; 1->do not build;do not destroy; do not build nor destroy"<<endl;
 	cout << "\t--debug-string \tAdd transition and place name to the compile file for debuging"<< endl;
 }
 
@@ -130,8 +130,8 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"help" , no_argument ,			 0, 'h'},
 			{"count-transition", no_argument,0, 't'},
 			{"debug-string", no_argument,	 0,  3 },
-			{"tmpPath" , required_argument,	 0,	 4 },
-			{"tmpStatus", required_argument, 0,	 5 },
+			{"tmp-path" , required_argument, 0,	 4 },
+			{"tmp-status", required_argument,0,	 5 },
             
             {0, 0, 0, 0}
         };
