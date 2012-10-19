@@ -54,6 +54,9 @@ Simulator::Simulator() {
 	srand(time(NULL));
 	
 	BatchSize = 1000;
+	
+	RandomNumber.seed(RandomNumber());
+	RandomNumber.seed(rand());
 }
 
 Simulator::Simulator(const Simulator& orig) {
@@ -101,8 +104,6 @@ void Simulator::reset() {
 	simTime = 0;
 	(*EQ).reset();
 	
-	RandomNumber.seed(RandomNumber());
-	RandomNumber.seed(rand());
 }
 
 void Simulator::returnResultTrue(vector<int>marking, double D){

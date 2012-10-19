@@ -238,7 +238,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		SpnCppFile << "    const int _nb_Place_"<< *it << "=" << k << ";" << endl;
     }
     
-    SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
+	SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
 
     SpnCppFile << "void SPN::Load(){" << endl;
     SpnCppFile << "    Path =\"" << MyGspn.Path << "\";" << endl;
