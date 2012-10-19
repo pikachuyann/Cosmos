@@ -38,7 +38,7 @@ classes: SimulatorRE.cpp $(CLASSES)
 
 $(BINPATH)/libClientSim.a: $(CLASSES)
 #	$(CC) -shared -o $(BINPATH)/libClientSim.so $(CLASSES)
-	libtool -o $(BINPATH)/libClientSim.a $(CLASSES)
+	ar rcs $(BINPATH)/libClientSim.a $(CLASSES)
 
 $(BINPATH)/ClientSim: $(OBJPATH)/spn.o $(OBJPATH)/LHA.o $(CLASSES)
 	$(CC) -I /usr/local/include $(OPTIONS) $^ -o $@
