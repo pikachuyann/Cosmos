@@ -44,6 +44,7 @@
 using namespace std;
 
 SPN_ORIG::SPN_ORIG() {
+	ParamDistr = vector<double>(3);
 }
 
 SPN_ORIG::~SPN_ORIG() {

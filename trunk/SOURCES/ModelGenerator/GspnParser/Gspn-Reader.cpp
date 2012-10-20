@@ -202,7 +202,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "    bool IsEnabled(int);" << endl;
 	SpnCppFile << "    void fire(int);" << endl; 
 	SpnCppFile << "    void unfire(int);" << endl;
-	SpnCppFile << "    vector<double> GetDistParameters(int);" << endl;
+	SpnCppFile << "    void GetDistParameters(int);" << endl;
 	//SpnCppFile << "    vector<double> GetDistParametersOrigin(int);" << endl;
 	SpnCppFile << "    double GetPriority(int);" << endl;
 	SpnCppFile << "    double GetWeight(int);" << endl;
@@ -499,17 +499,17 @@ void Gspn_Reader::WriteFile(parameters& P){
     SpnCppFile << "}\n " << endl;*/
     
     
-    SpnCppFile << "vector<double> SPN::GetDistParameters(int t){" << endl;
+    SpnCppFile << "void SPN::GetDistParameters(int t){" << endl;
     //-------------- /Rare Event -------------------------
     SpnCppFile << "   switch(t){" << endl;
     for (int t = 0; t < MyGspn.tr; t++) {
       if (MyGspn.tType[t] == Timed) {
 	SpnCppFile << "     case " << t << ": {" << endl;
-	SpnCppFile << "       vector<double> P(" << MyGspn.Dist[t].Param.size() << ");" << endl;
+	//SpnCppFile << "       vector<double> P(" << MyGspn.Dist[t].Param.size() << ");" << endl;
 	if (MyGspn.SingleService[t])
 	  for (int i = 0; i < MyGspn.Dist[t].Param.size(); i++) {
 	    
-	    SpnCppFile << "       P[" << i << "]= ( double ) " << MyGspn.Dist[t].Param[i] << ";" << endl;
+	    SpnCppFile << "       ParamDistr[" << i << "]= ( double ) " << MyGspn.Dist[t].Param[i] << ";" << endl;
 	  } else {
 	  SpnCppFile << "       double EnablingDegree = INT_MAX; " << endl;
 	  bool AtLeastOneMarkDepArc = false;
@@ -526,21 +526,21 @@ void Gspn_Reader::WriteFile(parameters& P){
 	    }
 	  if (AtLeastOneMarkDepArc) {
 	    if (MyGspn.NbServers[t] >= INT_MAX) {
-	      SpnCppFile << "       if(EnablingDegree < INT_MAX ) P[0] = EnablingDegree * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
-	      SpnCppFile << "       else P[0] = " << MyGspn.Dist[t].Param[0] << " ;" << endl;
+	      SpnCppFile << "       if(EnablingDegree < INT_MAX ) ParamDistr[0] = EnablingDegree * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
+	      SpnCppFile << "       else ParamDistr[0] = " << MyGspn.Dist[t].Param[0] << " ;" << endl;
 	    } else {
 	      SpnCppFile << "       if(EnablingDegree < INT_MAX ) P[0] = min(EnablingDegree , " << MyGspn.NbServers[t] << " ) * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
-	      SpnCppFile << "       else P[0] = " << MyGspn.Dist[t].Param[0] << " ;" << endl;
+	      SpnCppFile << "       else ParamDistr[0] = " << MyGspn.Dist[t].Param[0] << " ;" << endl;
 	    }
 	  } else {
 	    if (MyGspn.NbServers[t] >= INT_MAX)
-	      SpnCppFile << "        P[0] = EnablingDegree  * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
+	      SpnCppFile << "        ParamDistr[0] = EnablingDegree  * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
 	    else
-	      SpnCppFile << "        P[0] = min(EnablingDegree , " << MyGspn.NbServers[t] << " ) * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
+	      SpnCppFile << "        ParamDistr[0] = min(EnablingDegree , " << MyGspn.NbServers[t] << " ) * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
 	  }
 	}
-	SpnCppFile << "       return P;" << endl;
-	SpnCppFile << "       break;" << endl;
+	//SpnCppFile << "       return P;" << endl;
+	//SpnCppFile << "       break;" << endl;
 	SpnCppFile << "     }" << endl;
       }
     }

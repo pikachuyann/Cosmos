@@ -46,6 +46,7 @@ Simulator::Simulator() {
 	EQ = new EventsQueue(n); //initialization of the event queue
 	simTime = 0; //initialization of the time
 	Initialized = false;
+	oldMarking = vector<int>(N.Marking);
     
     logResult=false;
 	
@@ -106,7 +107,7 @@ void Simulator::reset() {
 	
 }
 
-void Simulator::returnResultTrue(vector<int>marking, double D){
+void Simulator::returnResultTrue(vector<int>& marking, double D){
     //This function is called when an accepting state is reached in 
     //the automaton. It update the automaton variable before updating the
     //Hasl formula.
@@ -122,7 +123,7 @@ void Simulator::returnResultFalse(){
 }
 
 
-void Simulator::updateLHA(int EdgeIndex, double DeltaT,vector<int> marking){
+void Simulator::updateLHA(int EdgeIndex, double DeltaT,vector<int> &marking){
     //This function update the automaton after a transition of the Petri net
 	A.DoElapsedTimeUpdate(DeltaT, marking);
 	A.UpdateLinForm(marking);
@@ -208,7 +209,7 @@ bool Simulator::transitionSink(int i){
 //Simulate one step of simulation
 //the return value is true iff the simulation did not reach
 //An accpting are refusing state.
-bool Simulator::SimulateOneStep(AutEdge* AEref){
+bool Simulator::SimulateOneStep(AutEdge& AE){
     if(verbose>3){
         //Print marking and location of the automata
         //Usefull to track a simulation
@@ -218,7 +219,7 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
         }
         cerr << "Automate:" << A.LocLabel[A.CurrentLocation] << endl;
     }
-	AutEdge AE = *AEref;
+	//AutEdge AE = *AEref;
     
     //If there is no enabled transition in the Petri net
     //try to reach an accepting state by using autonomous edge of 
@@ -262,20 +263,20 @@ bool Simulator::SimulateOneStep(AutEdge* AEref){
 		}
 		
         //Save the OldMarking before firing the transition.
-		vector<int> OldMarking = N.Marking;
+		oldMarking = N.Marking;
 		N.fire(E1_transitionNum);
 		
         //Check if there exist a valid transition in the automata and update it.
 		double DeltaT = E1.time - A.CurrentTime;
-		int SE = A.GetEnabled_S_Edges(A.CurrentLocation, E1_transitionNum, DeltaT, OldMarking, N.Marking);
+		int SE = A.GetEnabled_S_Edges(A.CurrentLocation, E1_transitionNum, DeltaT, oldMarking, N.Marking);
 		
 		if (SE < 0) {
 			returnResultFalse();
 			return false;
 		} else {
-			updateLHA(SE, DeltaT, OldMarking);
+			updateLHA(SE, DeltaT, oldMarking);
 			if (A.isFinal(A.CurrentLocation)) {
-				returnResultTrue(OldMarking, 0.0);					
+				returnResultTrue(oldMarking, 0.0);					
 				return false;
 			} else {
 				updateSPN(E1_transitionNum);
@@ -302,7 +303,7 @@ void Simulator::SimulateSinglePath() {
 	bool continueb = true;
 	while ((!(*EQ).isEmpty() || AE.Index > -1) && continueb ) {
         //cerr << "continue path"<< endl;
-		continueb = SimulateOneStep(&AE);
+		continueb = SimulateOneStep(AE);
 	}
     //cerr << "finish path"<< endl;
 }
@@ -313,8 +314,8 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 	
 	double t = simTime;
 	if (N.Transition[Id].transType == Timed) {
-		vector<double> Param = getParams(Id); //N.GetDistParameters(Id);
-		t += GenerateTime(N.Transition[Id].DistTypeIndex, Param);
+		getParams(Id);
+		t += GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);
 	}
     
     //The weight of a transition is always distributed exponentially
@@ -334,8 +335,8 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 }
 
 //Return the parameter of a transition
-vector<double> Simulator::getParams(int Id){
-	return N.GetDistParameters(Id);
+void Simulator::getParams(int Id){
+	N.GetDistParameters(Id);
 }
 	
 //Call the random generator to generate fire time.

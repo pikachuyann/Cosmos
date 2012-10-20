@@ -99,7 +99,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
             
 			//cerr << A.Likelihood << endl;		
 			//cerr << "mu:\t" << mu() << " ->\t";
-			bool continueb = SimulateOneStep(&AE);
+			bool continueb = SimulateOneStep(AE);
 			//cerr << mu() << endl;
             
 			if((!EQ->isEmpty() || AE.Index > -1) && continueb) {

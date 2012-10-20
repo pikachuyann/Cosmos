@@ -89,6 +89,7 @@ public:
     vector< set<int> > FreeMarkDepT;
 
     vector <int> Marking; // Current marking
+	vector<double> ParamDistr;
     vector <int> initMarking; //initial marking
     IntMatrix inArcs; // input arcs
     IntMatrix outArcs; //output arcs

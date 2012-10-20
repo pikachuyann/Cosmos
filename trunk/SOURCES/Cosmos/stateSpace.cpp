@@ -161,10 +161,10 @@ void stateSpace::buildTransitionMatrix()
 			if (SE > -1) {
 				
 				marking.push_back( A.Edge[SE].Target );
-				vector<double> Param = N.GetDistParameters(*it);
+				N.GetDistParameters(*it);
 				
 				int j = findHash(&marking);
-                mat (i,j) = Param[0];
+                mat (i,j) = N.ParamDistr[0];
 			}
 			
 		}

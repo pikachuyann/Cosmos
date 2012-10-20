@@ -160,13 +160,13 @@ void SimulatorRE::GenerateEvent(Event& E, int Id) {
 	
     double t = simTime;
     if (N.Transition[Id].transType == Timed) {
-        vector<double> Param = getParams(Id);
-        t += GenerateTime(N.Transition[Id].DistTypeIndex, Param);
+        getParams(Id);
+        t += GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);
 		
-		N.Rate_Table[Id] = Param[0];
-		N.Origine_Rate_Table[Id] = Param[1];
-		N.Rate_Sum = N.Rate_Sum + Param[0];
-		N.Origine_Rate_Sum = N.Origine_Rate_Sum + Param[1];
+		N.Rate_Table[Id] = N.ParamDistr[0];
+		N.Origine_Rate_Table[Id] = N.ParamDistr[1];
+		N.Rate_Sum = N.Rate_Sum + N.ParamDistr[0];
+		N.Origine_Rate_Sum = N.Origine_Rate_Sum + N.ParamDistr[1];
 		
     }
     double w;
@@ -185,13 +185,11 @@ void SimulatorRE::reset(){
 	N.Rate_Sum=0;
 }
 
-vector<double> SimulatorRE::getParams(int Id){
+void SimulatorRE::getParams(int Id){
 	
-	vector<double> P(2);
-	double origin_rate = (N.GetDistParameters(Id))[0];
-	P[0]= ComputeDistr( Id, origin_rate);
-	P[1]= origin_rate;
-	return P;
+	N.GetDistParameters(Id);
+	N.ParamDistr[1]=N.ParamDistr[0];
+	N.ParamDistr[0]= ComputeDistr( Id, N.ParamDistr[0]);
 }
 
 

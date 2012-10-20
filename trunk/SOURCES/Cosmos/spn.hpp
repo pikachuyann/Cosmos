@@ -34,9 +34,9 @@ public:
 	void fire(int); // fire a given transition
     void unfire(int); // unfire a given transition
 	
-	vector<double> GetDistParameters(int); // compute the the parameters value of a given distribution 
+	void GetDistParameters(int); // compute the the parameters value of a given distribution 
 	//------------------------- Rare Event ---------------------------------------
-	vector<double> GetDistParametersOrigin(int);
+	//vector<double> GetDistParametersOrigin(int);
     void lumpingFun(vector<int>*); 
 	//-------------------------/Rare Event ---------------------------------------
 	

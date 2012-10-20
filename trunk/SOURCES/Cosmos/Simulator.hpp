@@ -80,6 +80,7 @@ protected:
     //A datastructure containing the enabled transitions with
     //the time at wich they will be fire if still enabled
 	EventsQueue* EQ;   
+	vector<int> oldMarking;
 	
 	bool Initialized;
     
@@ -90,7 +91,7 @@ protected:
   	
 	double max(double, double);
 	
-	virtual bool SimulateOneStep(AutEdge*); //Simulate a step of the system, this function do most of the simulation job
+	virtual bool SimulateOneStep(AutEdge&); //Simulate a step of the system, this function do most of the simulation job
 	virtual void SimulateSinglePath(); //Simulate a single path 
 	
 	virtual void InitialEventsQueue(); //initialize the event queue
@@ -103,16 +104,16 @@ protected:
 	virtual double GenerateTime(int, vector<double>& p); 
 	
 	
-	virtual void returnResultTrue(vector<int>, double); 
+	virtual void returnResultTrue(vector<int>&, double); 
 	virtual void returnResultFalse();
 	
-	virtual void updateLHA(int, double, vector<int>); // update value in the LHA after a transition
+	virtual void updateLHA(int, double, vector<int>&); // update value in the LHA after a transition
 	virtual void updateSPN(int); // update value in the SPN after a transition
 	
 	virtual void updateLikelihood(int); // update the likelyhood for the Rare event case 
     virtual bool transitionSink(int); // Stop the simulation if sink transition is taken
 	
-	virtual vector<double> getParams(int); // return the parameters of a transition distribution
+	virtual void getParams(int); // return the parameters of a transition distribution
 	
 };
 

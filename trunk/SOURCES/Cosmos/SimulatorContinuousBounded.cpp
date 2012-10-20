@@ -122,7 +122,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     it->saveState(&N,&A,&AE,&EQ, &simTime);
                 } else {
                     
-                    bool continueb = SimulateOneStep(&AE);
+                    bool continueb = SimulateOneStep(AE);
                     //cerr << "\t" << mu() << endl;
                     
                     if((!EQ->isEmpty() || AE.Index > -1) && continueb) {
@@ -297,16 +297,15 @@ double SimulatorContinuousBounded::mu(){
 	return(numSolv->getMu(stateN));
 }
 
-vector<double> SimulatorContinuousBounded::getParams(int Id){
+void SimulatorContinuousBounded::getParams(int Id){
 	
-	vector<double> P(2);
-	double origin_rate = (N.GetDistParameters(Id))[0];
+	N.GetDistParameters(Id);
+	double origin_rate = N.ParamDistr[0];
     if(Id== N.tr-2){
         origin_rate = lambda - N.Origine_Rate_Sum;
         //cerr << "lambda:\t" << lambda << "\tselfloop:\t" << origin_rate << endl; 
     }    
-    P[0]= ComputeDistr( Id, origin_rate);
-	P[1]= origin_rate;
-	return P;
+    N.ParamDistr[0]= ComputeDistr( Id, origin_rate);
+	N.ParamDistr[1]= origin_rate;
 }
 
