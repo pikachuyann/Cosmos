@@ -46,22 +46,20 @@ Gspn_Reader::Gspn_Reader() {
     trace_scanning = false;
     trace_parsing = false;
 
+	IndexDist["UNIFORM"] = 1;
+    IndexDist["EXPONENTIAL"] = 2;
+    IndexDist["DETERMINISTIC"] = 3;
+    IndexDist["LOGNORMAL"] = 4;
+    IndexDist["TRIANGLE"] = 5;
+    IndexDist["GEOMETRIC"] = 6;
+
+	
 }
 
 Gspn_Reader::~Gspn_Reader() {
 }
 
 int Gspn_Reader::parse(string& expr) {
-
-
-
-
-    IndexDist["UNIFORM"] = 1;
-    IndexDist["EXPONENTIAL"] = 2;
-    IndexDist["DETERMINISTIC"] = 3;
-    IndexDist["LOGNORMAL"] = 4;
-    IndexDist["TRIANGLE"] = 5;
-    IndexDist["GEOMETRIC"] = 6;
 
     scan_expression(expr);
 
@@ -488,16 +486,6 @@ void Gspn_Reader::WriteFile(parameters& P){
 
     }
     
-    //-------------- Rare Event -------------------------
-    /*SpnCppFile << "vector<double> SPN::GetDistParameters(int t){"<< endl;
-    SpnCppFile << "   vector<double> P(2);" << endl;
-    SpnCppFile << "   double origin_rate = (SPN::GetDistParametersOrigin(t))[0];"<< endl;
-    SpnCppFile << "   P[0]= ComputeDistr( *this ,t, origin_rate);" << endl;
-    SpnCppFile << "   P[1]= origin_rate;" << endl;
-
-    SpnCppFile << "   return P;" << endl;
-    SpnCppFile << "}\n " << endl;*/
-    
     
     SpnCppFile << "void SPN::GetDistParameters(int t){" << endl;
     //-------------- /Rare Event -------------------------
@@ -583,51 +571,6 @@ for (int t = 0; t < MyGspn.tr; t++) {
 
 
     SpnCppFile.close();
-
-	/*
-    loc = Pref + "../SOURCES/Cosmos/spn.hpp";
-    ofstream SpnHppFile(loc.c_str(), ios::out | ios::trunc);
-*/
-    /*loc = Pref + "../SOURCES/ModelGenerator/spn_orig.hpp";
-    ifstream SpnHppFile_orig(loc.c_str(), ios::in);
-
-	//cout << "generating hpp"<< endl;
-
-
-    while (!SpnHppFile_orig.eof()) {
-        string LineFile;
-        getline(SpnHppFile_orig, LineFile);
-        SpnHppFile << LineFile << endl;
-    }
-
-    SpnHppFile_orig.close();*/
-	
-	/*
-	SpnHppFile << "#ifndef _SPN_HPP" << endl;
-	SpnHppFile << "#define	_SPN_HPP" << endl;
-	
-	SpnHppFile << "#include \"spn_orig.hpp\"" << endl;
-
-	SpnHppFile << "class SPN: " << endl << "public SPN_ORIG {" << endl;
-
-	
-	SpnHppFile << "private:" << endl;
-
-    for (int t = 0; t < MyGspn.tr; t++) {
-
-		SpnHppFile << "    void fire_t" << t << "();" << endl;
-		SpnHppFile << "    void unfire_t" << t << "();" << endl;
-        SpnHppFile << "    bool IsEnabled_t" << t << "();" << endl;
-    }
-
-    SpnHppFile << "};" << endl;
-
-
-*/
-    //SpnHppFile << "#endif	/* _SPN_HPP */" << endl;
-
-    //SpnHppFile.close();
-
 
 
 }

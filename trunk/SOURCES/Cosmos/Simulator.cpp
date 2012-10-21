@@ -399,7 +399,7 @@ double Simulator::GenerateTime(int distribution, vector<double> &param) {
 			else return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
 		}
 			
-		default: cout << "\nUnknown distribution !" << endl;
+		default: cerr << "Unknown distribution: "<< distribution << endl;
 			break;
 	}
 	return DBL_MIN;
