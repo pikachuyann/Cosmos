@@ -158,7 +158,8 @@ void parameters::parseCommandLine(int argc, char** argv){
                 
             case 'g':GMLinput = true;          break;
                 
-            case 'r':RareEvent = true;        
+            case 'r':
+				RareEvent = true;        
 				StringInSpnLHA =true; // Need to know the name of place to find 
 				// place begining with "RE_"
 				break;

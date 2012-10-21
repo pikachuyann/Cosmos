@@ -175,49 +175,13 @@ void Gspn_Reader::WriteFile(parameters& P){
     //loc= "/Users/barbot/Documents/Cosmos/SOURCES/Cosmos/spn.cpp";
 	ofstream SpnCppFile(loc.c_str(), ios::out | ios::trunc); // ouverture en écriture avec effacement du SpnCppFile ouvert
 	//cout << loc << endl;
-	
-    /*loc = Pref + "../SOURCES/ModelGenerator/spn_orig.cpp";
-	 //loc = "/Users/barbot/Documents/Cosmos/SOURCES/ModelGenerator/spn_orig.cpp";
-	 ifstream SpnCppFile_orig(loc.c_str(), ios::in);
-	 
-	 //cout << "Generating " << loc << endl;
-	 
-	 while (!SpnCppFile_orig.eof()) {
-	 string LineFile;
-	 getline(SpnCppFile_orig, LineFile);
-	 SpnCppFile << LineFile << endl;
-	 }
-	 SpnCppFile_orig.close();*/
+   
 	
 	SpnCppFile << "#include \"spn_orig.hpp\"" << endl;
-	
-	SpnCppFile << "#ifndef _SPN_HPP" << endl;
-	SpnCppFile << "#define	_SPN_HPP" << endl;
-	
-	SpnCppFile << "class SPN: " << endl << "public SPN_ORIG {" << endl;
-	SpnCppFile << "public:"<< endl;
-	SpnCppFile << "    void Load();" <<endl;
-	SpnCppFile << "    bool IsEnabled(int);" << endl;
-	SpnCppFile << "    void fire(int);" << endl; 
-	SpnCppFile << "    void unfire(int);" << endl;
-	SpnCppFile << "    void GetDistParameters(int);" << endl;
-	//SpnCppFile << "    vector<double> GetDistParametersOrigin(int);" << endl;
-	SpnCppFile << "    double GetPriority(int);" << endl;
-	SpnCppFile << "    double GetWeight(int);" << endl;
-    SpnCppFile << "    void lumpingFun(vector<int>*);" << endl;
+	SpnCppFile << "#include \"spn.hpp\"" << endl;
 	
 	
-    SpnCppFile << "};" << endl;
 	
-	
-	SpnCppFile << "#endif	/* _SPN_HPP */" << endl;
-	
-	
-	//SpnCppFile << "#include \"RareEvent.hpp\"" << endl;
-	
-    /*for (map<string,int>::iterator it= MyGspn.IntConstant.begin(); it!= MyGspn.IntConstant.end() ; it++) {
-	 SpnCppFile << "    const int " << it->first << "=" << it->second << ";" << endl;
-	 }*/
 	for (map<string,double>::iterator it= MyGspn.RealConstant.begin(); it!= MyGspn.RealConstant.end() ; it++) {
 		SpnCppFile << "    const double " << it->first << "=" << it->second << ";" << endl;
 	}
