@@ -540,7 +540,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	  }
 	}
 	//SpnCppFile << "       return P;" << endl;
-	//SpnCppFile << "       break;" << endl;
+	SpnCppFile << "       break;" << endl;
 	SpnCppFile << "     }" << endl;
       }
     }
