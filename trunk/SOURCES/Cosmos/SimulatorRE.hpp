@@ -47,7 +47,7 @@ protected:
 	
 	virtual void InitialEventsQueue();
 		
-	virtual void returnResultTrue(vector<int>, double);
+	virtual void returnResultTrue(vector<int> &, double);
 	virtual void returnResultFalse();
 	virtual void updateSPN(int);
 	virtual void GenerateEvent(Event &, int);
