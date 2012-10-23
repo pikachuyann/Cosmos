@@ -32,7 +32,7 @@ vector<double > generateGridReward(int n,int m);
 #include "exPapier.cpp"
 
 int main(int argc, char** argv) {
-    int Memory = 2;
+    int Memory = 4;
     double H=1000; //simulation horizon
     double ron, rdet;
     string ExpFileName;
@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
 	system(Cosmoscmd.c_str());*/
 	//
 	//loop
-	double Prec=1e-2; //precision
+	double Prec=1e-3; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
 	int MaxIteration=6;
@@ -150,8 +150,9 @@ int main(int argc, char** argv) {
 		system("tail -n 1 test >> test2");
 		Reward = readPlastfun(N, "test2", Plast)/H;
 		printPlast(Plast);
+		fillMemory(Plast,It+1);
 		if(It==1){
-			//fillMemory(Plast,1);
+			
 		}else{
 			RelDiff=fabs((Reward-OldReward)/OldReward);
 		}
