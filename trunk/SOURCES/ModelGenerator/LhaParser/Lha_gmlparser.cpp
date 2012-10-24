@@ -425,13 +425,13 @@ void MyLhaModelHandler::on_read_node(const XmlString& id,
 		treeSI itflow = attributes.find("flows")->second.begin();
 		vector<string> v1(MyLHA->NbVar,"");
 		for(treeSI it2 = itflow.begin(); it2!=itflow.end();++it2){
-			if(!is_void(*it2)){
-				string* var;
+			if((*it2).compare("flow")==0){
+				
+				string* var = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 				string* varflow = new string("");
-				for(treeSI it3 = it2.begin(); it3!=it2.end();++it3){
-					if((*it3).compare("name")==0)var = simplifyString(*(it3.begin()));
-					if((*it3).compare("expr")==0)eval_expr(&markdep, varflow, it3.begin() );
-				}
+				
+				eval_expr( &markdep, varflow, find(it2.begin(),it2.end(),"expr").begin());
+
 				int vindex = MyLHA->VarIndex[var->c_str()];
 				if(verbose>1)cout << "\tvar: " << *var << " index: " << vindex << " flow: " << *varflow << endl;
 				v1[vindex]= *varflow;
