@@ -71,8 +71,9 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
 		PlastFile >> dumbint >> dumbint;
 		
         double reward;
+		double conflow,confup;
         PlastFile >> reward;
-        PlastFile >> dumbdouble >> dumbdouble >> dumbdouble; 
+        PlastFile >> dumbdouble >> conflow >> confup;
 		
 		int nbfield2 =1;
 		
@@ -107,6 +108,8 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
             }
             
         }
+		cout<< "Reward: ["<< conflow << " ; "<< confup << "], width:"<< confup-conflow<< endl;
+		
 		return reward;
         
     }else{
