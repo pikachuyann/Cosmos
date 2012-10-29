@@ -18,7 +18,7 @@ void generateLHAfun(double,int N, vector< vector< vector<double> > >&,vector<dou
 void generateSPNfun(int N,vector< vector<double> >&);
 #include "generateSPN.cpp"
 
-double readPlastfun(int N,string , vector< vector< vector<double> > >&);
+double readPlastfun(int N,string , vector< vector< vector<double> > >&,double);
 void fillMemory( vector< vector< vector<double> > >&,int);
 void printPlast(vector< vector< vector<double> > >&);
 #include "readPlast.cpp"
@@ -148,7 +148,7 @@ int main(int argc, char** argv) {
 		OldReward=Reward;
 		system("head -n 1 test > test2");
 		system("tail -n 1 test >> test2");
-		Reward = readPlastfun(N, "test2", Plast)/H;
+		Reward = readPlastfun(N, "test2", Plast,H);
 		printPlast(Plast);
 		fillMemory(Plast,It+1);
 		if(It==1){

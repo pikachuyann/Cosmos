@@ -12,7 +12,7 @@
 using namespace std;
 
 
-double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&Plast){
+double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&Plast,double H){
     ifstream PlastFile(PlastPath.c_str(), ios::in);
     
     int dumbint;
@@ -108,9 +108,9 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
             }
             
         }
-		cout<< "Reward: ["<< conflow << " ; "<< confup << "], width:"<< confup-conflow<< endl;
+		cout<< "Reward: ["<< conflow/H << " ; "<< confup/H << "], width:"<< (confup-conflow)/H<< endl;
 		
-		return reward;
+		return reward/H;
         
     }else{
         cout << "Fail to open Plast file:"<< PlastPath << endl;
