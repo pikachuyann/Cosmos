@@ -1230,6 +1230,53 @@ namespace gspn {
             }            
 	    break;
 	  }
+	  case 7:
+		{
+            if (np != 2) {
+                cout << "Erlang distribution has two parameters: Shape and Rate, where Shape is a positive integer and Rate > 0" << endl;
+                YYABORT;
+            }
+            
+            
+			string st=Par[0];
+			Evaluate.parse(st);
+			if(Evaluate.RealResult != Evaluate.IntResult || Evaluate.IntResult < 1){
+               cout << "In Erlang distribution Shape is a positive integer" << endl;
+               YYABORT;
+            } 
+			
+			st=Par[1];
+			Evaluate.parse(st);
+            if (Evaluate.RealResult<=0) {
+               cout << "In Erlang distribution Rate > 0" << endl;
+               YYABORT;
+            } 
+            break;
+	  }
+	  case 8:
+		{
+            if (np != 2) {
+                cout << "Gamma distribution has two parameters: Shape>0 and Scale>0" << endl;
+                YYABORT;
+            }
+            
+            
+			string st=Par[0];
+			Evaluate.parse(st);
+			if(Evaluate.RealResult<=0){
+               cout << "In Gamma distribution Shape > 0" << endl;
+               YYABORT;
+            } 
+			
+			st=Par[1];
+			Evaluate.parse(st);
+            if (Evaluate.RealResult<=0) {
+               cout << "In Gamma distribution Scale > 0" << endl;
+               YYABORT;
+            } 
+            break;
+	  }
+
 
         default: cout << "\nUnknown distribution !" << endl;
             YYABORT;
@@ -1240,7 +1287,7 @@ namespace gspn {
 
   case 72:
 /* Line 661 of lalr1.cc  */
-#line 669 "Gspn-parser.yy"
+#line 716 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
 				 if(Evaluate.parse(st)) 
 					{cout<<"The exponential ditribution is the only marking dependent distribution: '"<<st<<"'"<<endl;YYABORT; }
@@ -1252,25 +1299,25 @@ namespace gspn {
 
   case 73:
 /* Line 661 of lalr1.cc  */
-#line 678 "Gspn-parser.yy"
+#line 725 "Gspn-parser.yy"
     {}
     break;
 
   case 74:
 /* Line 661 of lalr1.cc  */
-#line 680 "Gspn-parser.yy"
+#line 727 "Gspn-parser.yy"
     {}
     break;
 
   case 75:
 /* Line 661 of lalr1.cc  */
-#line 681 "Gspn-parser.yy"
+#line 728 "Gspn-parser.yy"
     {}
     break;
 
   case 76:
 /* Line 661 of lalr1.cc  */
-#line 683 "Gspn-parser.yy"
+#line 730 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
 						      {
@@ -1295,7 +1342,7 @@ namespace gspn {
 
   case 77:
 /* Line 661 of lalr1.cc  */
-#line 703 "Gspn-parser.yy"
+#line 750 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
 						      {
@@ -1314,25 +1361,25 @@ namespace gspn {
 
   case 78:
 /* Line 661 of lalr1.cc  */
-#line 718 "Gspn-parser.yy"
+#line 765 "Gspn-parser.yy"
     {}
     break;
 
   case 79:
 /* Line 661 of lalr1.cc  */
-#line 720 "Gspn-parser.yy"
+#line 767 "Gspn-parser.yy"
     {}
     break;
 
   case 80:
 /* Line 661 of lalr1.cc  */
-#line 721 "Gspn-parser.yy"
+#line 768 "Gspn-parser.yy"
     {}
     break;
 
   case 81:
 /* Line 661 of lalr1.cc  */
-#line 723 "Gspn-parser.yy"
+#line 770 "Gspn-parser.yy"
     {
 						   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.TransList.end())
 						      {
@@ -1357,7 +1404,7 @@ namespace gspn {
 
   case 82:
 /* Line 661 of lalr1.cc  */
-#line 743 "Gspn-parser.yy"
+#line 790 "Gspn-parser.yy"
     {
 						   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.TransList.end())
 						      {
@@ -1375,25 +1422,25 @@ namespace gspn {
 
   case 83:
 /* Line 661 of lalr1.cc  */
-#line 759 "Gspn-parser.yy"
+#line 806 "Gspn-parser.yy"
     {}
     break;
 
   case 84:
 /* Line 661 of lalr1.cc  */
-#line 761 "Gspn-parser.yy"
+#line 808 "Gspn-parser.yy"
     {}
     break;
 
   case 85:
 /* Line 661 of lalr1.cc  */
-#line 762 "Gspn-parser.yy"
+#line 809 "Gspn-parser.yy"
     {}
     break;
 
   case 86:
 /* Line 661 of lalr1.cc  */
-#line 764 "Gspn-parser.yy"
+#line 811 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
 						      {
@@ -1418,7 +1465,7 @@ namespace gspn {
 
   case 87:
 /* Line 661 of lalr1.cc  */
-#line 785 "Gspn-parser.yy"
+#line 832 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
 						      {
@@ -1437,7 +1484,7 @@ namespace gspn {
 
 
 /* Line 661 of lalr1.cc  */
-#line 1441 "Gspn-parser.tab.cc"
+#line 1488 "Gspn-parser.tab.cc"
 	default:
           break;
       }
@@ -2058,8 +2105,8 @@ namespace gspn {
      220,   229,   292,   298,   304,   312,   317,   324,   325,   327,
      329,   330,   332,   346,   356,   357,   359,   377,   396,   430,
      464,   487,   498,   510,   511,   512,   522,   536,   537,   540,
-     664,   665,   669,   678,   680,   681,   683,   703,   718,   720,
-     721,   723,   743,   759,   761,   762,   764,   785,   802
+     711,   712,   716,   725,   727,   728,   730,   750,   765,   767,
+     768,   770,   790,   806,   808,   809,   811,   832,   849
   };
 
   // Print the state stack on the debug stream.
@@ -2151,9 +2198,9 @@ namespace gspn {
 
 } // gspn
 /* Line 1106 of lalr1.cc  */
-#line 2155 "Gspn-parser.tab.cc"
+#line 2202 "Gspn-parser.tab.cc"
 /* Line 1107 of lalr1.cc  */
-#line 804 "Gspn-parser.yy"
+#line 851 "Gspn-parser.yy"
 
 
 void
