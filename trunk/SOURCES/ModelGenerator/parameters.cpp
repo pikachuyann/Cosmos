@@ -98,6 +98,7 @@ void parameters::usage(){
 	cout << "\t--tmp-path arg \tPath to the temporary directory by default ./tmp/"<< endl;
 	cout << "\t--tmp-status arg \tDo not remove or do not rebuild tmp directory: 0 default->rebuild,destroy; 1->do not build;2->do not destroy;3-> do not build nor destroy"<<endl;
 	cout << "\t--debug-string \tAdd transition and place name to the compile file for debuging"<< endl;
+	cout << "\t-d,--outputdata \tOutput successive result in the blank separated file format"<< endl;
 	
 }
 
