@@ -204,9 +204,11 @@ void cleanTmp(parameters& P){
 
 int main(int argc, char** argv) {
 	parameters P;
+	time_t startbuild,endbuild;
 	
     P.parseCommandLine(argc,argv);
-    
+    time(&startbuild);
+	
 	if(mkdir(P.tmpPath.c_str(), 0777) != 0){
 		if(errno != EEXIST){
 			err(EXIT_FAILURE,"Fail to build temporary directory:%s",P.tmpPath.c_str());
@@ -226,6 +228,9 @@ int main(int argc, char** argv) {
 		cleanTmp(P);
 		return(EXIT_FAILURE);
 	}
+	time(&endbuild);
+	if(P.verbose>0)cout<<"Time for building the simulator:\t"<<difftime(endbuild,startbuild)<< "s"<< endl;
+	
 	if(P.computeStateSpace){
 		launchExport(P);
 	} else launchServer(P);
