@@ -52,6 +52,8 @@ Gspn_Reader::Gspn_Reader() {
     IndexDist["LOGNORMAL"] = 4;
     IndexDist["TRIANGLE"] = 5;
     IndexDist["GEOMETRIC"] = 6;
+	IndexDist["ERLANG"] = 7;
+	IndexDist["GAMMA"] =8;
 	
 	
 }

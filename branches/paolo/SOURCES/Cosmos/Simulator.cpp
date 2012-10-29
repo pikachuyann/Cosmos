@@ -398,6 +398,24 @@ double Simulator::GenerateTime(int distribution, vector<double> &param) {
 			if (p >= param[0]) return param[1];
 			else return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
 		}
+		case 7:
+        {//ERLANG           
+            boost::uniform_real<> UNIF(0, 1);
+            boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
+            double prod = 1;
+            for (int i = 0; i < param[0]; i++)
+                prod = prod * gen();
+            return -log(prod) / param[1];
+			
+        }
+        case 8:
+        {//GAMMA      
+            boost::gamma_distribution<> GAMMA(param[0]);
+            boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gen(RandomNumber, GAMMA);
+            return param[1] * gen();
+        }
+
+			
 			
 		default: cerr << "Unknown distribution: "<< distribution << endl;
 			break;
