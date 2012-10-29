@@ -652,6 +652,53 @@ dist:str LB params RB {
             }            
 	    break;
 	  }
+	  case 7:
+		{
+            if (np != 2) {
+                cout << "Erlang distribution has two parameters: Shape and Rate, where Shape is a positive integer and Rate > 0" << endl;
+                YYABORT;
+            }
+            
+            
+			string st=Par[0];
+			Evaluate.parse(st);
+			if(Evaluate.RealResult != Evaluate.IntResult || Evaluate.IntResult < 1){
+               cout << "In Erlang distribution Shape is a positive integer" << endl;
+               YYABORT;
+            } 
+			
+			st=Par[1];
+			Evaluate.parse(st);
+            if (Evaluate.RealResult<=0) {
+               cout << "In Erlang distribution Rate > 0" << endl;
+               YYABORT;
+            } 
+            break;
+	  }
+	  case 8:
+		{
+            if (np != 2) {
+                cout << "Gamma distribution has two parameters: Shape>0 and Scale>0" << endl;
+                YYABORT;
+            }
+            
+            
+			string st=Par[0];
+			Evaluate.parse(st);
+			if(Evaluate.RealResult<=0){
+               cout << "In Gamma distribution Shape > 0" << endl;
+               YYABORT;
+            } 
+			
+			st=Par[1];
+			Evaluate.parse(st);
+            if (Evaluate.RealResult<=0) {
+               cout << "In Gamma distribution Scale > 0" << endl;
+               YYABORT;
+            } 
+            break;
+	  }
+
 
         default: cout << "\nUnknown distribution !" << endl;
             YYABORT;
