@@ -53,7 +53,8 @@ parameters::parameters() {
     dataoutput = "";
 	CountTrans = false;
 	StringInSpnLHA = false;
-	gcccmd = "g++ -O3";
+	gcccmd = "g++";
+	gccflags = "-O3";
 	
     //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
 }
@@ -83,6 +84,8 @@ void parameters::usage(){
     cout << "\t-v,--verbose arg\tset the verbose level"<< endl;
     cout << "\t-h,--help \tdisplay this message" << endl;
     cout << "\t--njob    \tset the number of parralel thread"<< endl;
+	cout << "\t--gppcmd  \tset the C++ compiler (default g++)"<< endl;
+	cout << "\t--gppflags\tset the C++ compiler flags (default -O3)"<< endl;
     cout << "Option of simulation:" << endl;
     cout << "\t--level \tset the confidence level for the simulation (default=0.99)"<< endl;
     cout << "\t--width \tset the width of the confidence interval (default=0.001)"<< endl;
@@ -95,6 +98,7 @@ void parameters::usage(){
 	cout << "\t--tmp-path arg \tPath to the temporary directory by default ./tmp/"<< endl;
 	cout << "\t--tmp-status arg \tDo not remove or do not rebuild tmp directory: 0 default->rebuild,destroy; 1->do not build;2->do not destroy;3-> do not build nor destroy"<<endl;
 	cout << "\t--debug-string \tAdd transition and place name to the compile file for debuging"<< endl;
+	
 }
 
 
@@ -125,6 +129,8 @@ void parameters::parseCommandLine(int argc, char** argv){
 			
             /* Miscellaneous options */
             {"njob" , required_argument,	 0, 'n'},
+			{"gppcmd",required_argument,	 0,  6 },
+			{"gppflags",required_argument,	 0,  7 },
             {"verbose", required_argument,	 0, 'v'},
             {"outputdata", required_argument,0, 'd'},
             {"help" , no_argument ,			 0, 'h'},
@@ -192,7 +198,9 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  3  : StringInSpnLHA = true; break;
 			case  4  : tmpPath = optarg; break;
 			case  5	 : tmpStatus = atoi(optarg); break;
-				
+			case  6  : gcccmd = optarg; break;
+			case  7  : gccflags = optarg; break;
+
             case '?':
                 usage();
                 exit(EXIT_FAILURE);

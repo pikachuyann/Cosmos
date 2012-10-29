@@ -167,14 +167,15 @@ bool ParseBuild(parameters& P) {
     }
     
 	string cmd;
+	string bcmd = P.gcccmd + " " + P.gccflags;
 	
-	cmd = P.gcccmd + " -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
+	cmd = bcmd + " -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
 	if (system(cmd.c_str())) return false;
 	
-	cmd = P.gcccmd + " -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
+	cmd = bcmd + " -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
 	if (system(cmd.c_str())) return false;
 	
-	cmd = P.gcccmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
+	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
 	if (system(cmd.c_str())) return false;
 	
 	if(P.RareEvent){

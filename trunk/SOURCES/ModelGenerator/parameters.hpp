@@ -60,6 +60,7 @@ struct parameters {
 	bool alligatorMode;
 	
 	string gcccmd;
+	string gccflags;
     
     parameters();
     void View();
