@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-    string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 11 -d test --max-run 2000 --batch 10 --count-transition --width 0.01 -v 1 --gppflags ' ' --tmp-status 2";
+    string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 11 -d test --max-run 10000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang --gppflags -Wno-return-type --tmpstatus 2";
 	
 	// initial iteration
 	
@@ -149,6 +149,7 @@ int main(int argc, char** argv) {
 		system("head -n 1 test > test2");
 		system("tail -n 1 test >> test2");
 		Reward = readPlastfun(N, "test2", Plast,H);
+		cout <<"Iteration:" <<It<< " reward: "<< Reward <<" RelDiff: "<<RelDiff<< endl;
 		printPlast(Plast);
 		fillMemory(Plast,It+1);
 		if(It==1){
@@ -156,7 +157,6 @@ int main(int argc, char** argv) {
 		}else{
 			RelDiff=fabs((Reward-OldReward)/OldReward);
 		}
-		cout <<"Iteration:" <<It<< " reward: "<< Reward <<" RelDiff: "<<RelDiff<< endl;
 		time(&end);
 		RewardFile<<It<<" "<<Reward<< "\t time: "<< 
 			difftime(end, start) << "s"<< endl;
