@@ -32,8 +32,8 @@ vector<double > generateGridReward(int n,int m);
 #include "exPapier.cpp"
 
 int main(int argc, char** argv) {
-    int Memory = 4;
-    double H=1000; //simulation horizon
+    int Memory = 2;
+    double H=10000; //simulation horizon
     double ron, rdet;
     string ExpFileName;
     string RewardTrace;
@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-    string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 11 -d test --max-run 10000 --batch 100 --count-transition --width 0.01 -v 1";
+    string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 11 -d test --max-run 2000 --batch 10 --count-transition --width 0.01 -v 1 --gppflags ' ' --tmp-status 2";
 	
 	// initial iteration
 	
@@ -124,10 +124,10 @@ int main(int argc, char** argv) {
 	system(Cosmoscmd.c_str());*/
 	//
 	//loop
-	double Prec=1e-3; //precision
+	double Prec=1e-4; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=6;
+	int MaxIteration=1;
 	int It=0;
 	time_t start,end;
 	
