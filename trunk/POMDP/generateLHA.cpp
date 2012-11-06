@@ -61,7 +61,7 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
     LhaFile << "(lf, TRUE, (time:1));"<< endl; 
     //LhaFile << "(la, TRUE, (time:1));"<< endl; 
     for(int i=0;i<N;i++){
-        LhaFile << "(lp"<<i<<"_0, V"<<i<<"=1 , (time:1));"<< endl;
+        LhaFile << "(lp"<<i<<"_0, V"<<i<<"=1 , (time:0));"<< endl;
         
         StrategieFile << "Strategy for drone last located in "<<i;
         

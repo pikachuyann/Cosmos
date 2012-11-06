@@ -142,3 +142,36 @@ void fillMemory( vector< vector< vector<double> > >& Plast, int l){
 	
 }
 
+
+void readStrat(int N, string stratPath, vector< pair<int, vector<int> > >& strat){
+	ifstream stratFile(stratPath.c_str(), ios::in);
+	cout << "Opening:"<< stratPath<<endl;
+	if (stratFile.is_open()) {
+		while (stratFile.good()) {
+			
+			int source,obs;
+			stratFile >> source >> obs;
+			cout << source<< " "<<obs<<" ";
+			strat[source].first = obs;
+			for (int i=0; i<N; i++) {
+				char value;
+				stratFile >> value;
+				strat[source].second[i] = value-48;
+				cout << value<<" ";
+			}
+			cout<< endl;
+		}
+	}else cout <<"fail to open"<< endl;
+	cout<<"importing finished"<< endl;
+}
+
+void printStrat(int N, vector< pair<int, vector<int> > >& strat){
+	cout<< "Imported strategie"<< endl;
+	for (int i= 0; i<strat.size(); i++){
+		cout <<i<<" "<< strat[i].first<< " ";
+		for (int action=0; action<strat[0].second.size(); action++){
+			cout << strat[i].second[action]<< " ";
+		}
+		cout << endl;
+	}
+}

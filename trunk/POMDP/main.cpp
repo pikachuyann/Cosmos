@@ -21,6 +21,8 @@ void generateSPNfun(int N,vector< vector<double> >&);
 double readPlastfun(int N,string , vector< vector< vector<double> > >&,double);
 void fillMemory( vector< vector< vector<double> > >&,int);
 void printPlast(vector< vector< vector<double> > >&);
+void readStrat(int N,string, vector< pair<int, vector<int> > >&);
+void printStrat(int N, vector< pair<int, vector<int> > >&);
 #include "readPlast.cpp"
 
 vector< vector<double> > generateMatrix(int n);
@@ -48,7 +50,7 @@ int main(int argc, char** argv) {
     vector< double > RewardArray;
 	
     st=argv[1];
-    if(st=="linear"){
+	if(st=="linear"){
 		double p=0.3;
 		double q=0.2;   
 		
@@ -98,19 +100,22 @@ int main(int argc, char** argv) {
 		
     }
 	
-    
     RewardTrace=RewardTrace+argv[2]+".txt";
     ofstream RewardFile(RewardTrace.c_str(), ios::out | ios::trunc);
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-    string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 11 -d test --max-run 10000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang --gppflags -Wno-return-type --tmpstatus 2";
+    string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 11 -d test --max-run 10000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang++ --gppflags -Wno-return-type --tmp-status 2";
 	
 	// initial iteration
 	
 	
 	int N = (int)M.size();
     vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
+	
+	vector< pair<int, vector<int> > > ImportedStrat(N,make_pair(0,vector<int>(N,0)) );
+	readStrat(N, "pmdp3-1.2-0.75-13292.pg", ImportedStrat);
+	printStrat(N,ImportedStrat);
 	
 	for (int i=0; i<N; i++){
 		double out = 0.0;
@@ -127,7 +132,7 @@ int main(int argc, char** argv) {
 	double Prec=1e-4; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=1;
+	int MaxIteration=5;
 	int It=0;
 	time_t start,end;
 	
