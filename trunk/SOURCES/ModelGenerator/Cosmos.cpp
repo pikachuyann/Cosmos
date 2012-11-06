@@ -39,6 +39,14 @@
 #include "server.hpp"
 #include "parameters.hpp"
 
+
+/*
+	Retrive the real absolute path of the executable of Cosmos
+	This is usefull for finding the library containing all the
+	code for the simulator.
+	Thoses functions fill the variable P.Path
+	This code is system dependant.
+ */
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
 void FindPathMac(parameters& P) {
@@ -78,8 +86,14 @@ void FindPathLinux(parameters& P) {
 
 using namespace std;
 
-//Parse the input file
-//Return true iff the parsing was successfull 
+/*
+ Parse the input file
+ Return true iff the parsing was successfull
+ input file are read as Grml file or .gspn and .lha file
+ according to the P.GMLinput parameters.
+ 
+ 
+ */
 bool ParseBuild(parameters& P) {
 	Gspn_Reader gReader;
 	
