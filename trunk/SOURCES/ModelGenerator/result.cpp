@@ -235,7 +235,7 @@ void result::print(ostream &s){
                 s << "Width:\t" << width[i] << endl;
             }
         }
-		s << "Confidence Level:\t" << level << endl;
+		s << "Confidence Level:\t" << P.Level << endl;
         s << "Relative Error:\t" << RelErr << endl;
         s << "Total paths:\t" << MeanM2->I << endl;
         s << "Accepted paths:\t" << MeanM2->Isucc << endl;
