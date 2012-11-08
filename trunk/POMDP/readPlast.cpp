@@ -151,8 +151,9 @@ void readStrat(int N, string stratPath, vector< pair<int, vector<int> > >& strat
 			
 			int source,obs;
 			stratFile >> source >> obs;
+			if(stratFile.eof())break;
 			cout << source<< " "<<obs<<" ";
-			strat[source].first = obs;
+			strat.push_back(make_pair(obs, vector<int>(N,0)));
 			for (int i=0; i<N; i++) {
 				char value;
 				stratFile >> value;
@@ -165,7 +166,7 @@ void readStrat(int N, string stratPath, vector< pair<int, vector<int> > >& strat
 	cout<<"importing finished"<< endl;
 }
 
-void printStrat(int N, vector< pair<int, vector<int> > >& strat){
+void printStrat(vector< pair<int, vector<int> > >& strat){
 	cout<< "Imported strategie"<< endl;
 	for (int i= 0; i<strat.size(); i++){
 		cout <<i<<" "<< strat[i].first<< " ";

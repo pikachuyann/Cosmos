@@ -12,7 +12,8 @@
 
 using namespace std;
 
-void generateLHAfun(double,int N, vector< vector< vector<double> > >&,vector<double>&, double H,vector< vector<double> >& M);
+void generateLHAfun(double ron ,int N, vector< vector< vector<double> > >& Plast,vector<double>& reward, double H,vector< vector<double> >& M);
+void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& strat, vector<double>& reward, double H,vector< vector<double> >& M);
 #include "generateLHA.cpp"
 
 void generateSPNfun(int N,vector< vector<double> >&);
@@ -22,7 +23,7 @@ double readPlastfun(int N,string , vector< vector< vector<double> > >&,double);
 void fillMemory( vector< vector< vector<double> > >&,int);
 void printPlast(vector< vector< vector<double> > >&);
 void readStrat(int N,string, vector< pair<int, vector<int> > >&);
-void printStrat(int N, vector< pair<int, vector<int> > >&);
+void printStrat(vector< pair<int, vector<int> > >&);
 #include "readPlast.cpp"
 
 vector< vector<double> > generateMatrix(int n);
@@ -113,9 +114,10 @@ int main(int argc, char** argv) {
 	int N = (int)M.size();
     vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
 	
-	vector< pair<int, vector<int> > > ImportedStrat(N,make_pair(0,vector<int>(N,0)) );
-	readStrat(N, "pmdp3-1.2-0.75-13292.pg", ImportedStrat);
-	printStrat(N,ImportedStrat);
+	vector< pair<int, vector<int> > > ImportedStrat(0,make_pair(0,vector<int>(N,0)) );
+	readStrat(N, "/Users/barbot/Documents/AllCosmos/trunk/POMDP/pmdp3-1.2-0.75-13292.pg", ImportedStrat);
+	printStrat(ImportedStrat);
+	generateLHAfromStrat(ron, N, ImportedStrat, RewardArray, H, M);
 	
 	for (int i=0; i<N; i++){
 		double out = 0.0;
@@ -132,7 +134,7 @@ int main(int argc, char** argv) {
 	double Prec=1e-4; //precision
 	double Reward,OldReward;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=5;
+	int MaxIteration=0;
 	int It=0;
 	time_t start,end;
 	
