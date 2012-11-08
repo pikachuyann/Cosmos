@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
     vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
 	
 	vector< pair<int, vector<int> > > ImportedStrat(0,make_pair(0,vector<int>(N,0)) );
-	readStrat(N, "/Users/barbot/Documents/AllCosmos/trunk/POMDP/pmdp3-1.2-0.75-13292.pg", ImportedStrat);
+	readStrat(N, argv[4], ImportedStrat);
 	printStrat(ImportedStrat);
 	generateLHAfromStrat(ron, N, ImportedStrat, RewardArray, H, M);
 	
