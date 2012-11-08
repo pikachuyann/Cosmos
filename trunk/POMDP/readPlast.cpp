@@ -155,10 +155,14 @@ void readStrat(int N, string stratPath, vector< pair<int, vector<int> > >& strat
 			cout << source<< " "<<obs<<" ";
 			strat.push_back(make_pair(obs, vector<int>(N,0)));
 			for (int i=0; i<N; i++) {
-				char value;
-				stratFile >> value;
-				strat[source].second[i] = value-48;
-				cout << value<<" ";
+				string valuestr;
+				stratFile >> valuestr;
+				if(valuestr.compare("-")==0){
+					strat[source].second[i] = -1;
+				}else{
+					strat[source].second[i] = atoi(valuestr.c_str());
+				}
+				cout << strat[source].second[i] <<" ";
 			}
 			cout<< endl;
 		}
