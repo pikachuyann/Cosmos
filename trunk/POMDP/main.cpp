@@ -114,11 +114,13 @@ int main(int argc, char** argv) {
 	int N = (int)M.size();
     vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
 	
+	/*
 	vector< pair<int, vector<int> > > ImportedStrat(0,make_pair(0,vector<int>(N,0)) );
 	readStrat(N, argv[4], ImportedStrat);
 	printStrat(ImportedStrat);
 	generateLHAfromStrat(ron, N, ImportedStrat, RewardArray, H, M);
-	
+	*/
+	 
 	for (int i=0; i<N; i++){
 		double out = 0.0;
 		for (int j=0; j<N; j++)out += M[i][j];
