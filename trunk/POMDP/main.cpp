@@ -181,7 +181,7 @@ int main(int argc, char** argv) {
     }
     ExpFile <<Reward<<endl;
     
-	RewardFile<< "Max: "<< maxReward<<"\t time: "<< maxRewardtime<<endl;
+	RewardFile<< "Max: "<< maxReward<<"\t time: "<< difftime(maxRewardtime,start)<<endl;
     RewardFile.close();
     ExpFile.close();
     return(EXIT_SUCCESS);
