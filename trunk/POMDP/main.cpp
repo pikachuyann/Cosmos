@@ -131,12 +131,12 @@ int main(int argc, char** argv) {
 	system(Cosmoscmd.c_str());*/
 	//
 	//loop
-	double Prec=1e-4; //precision
-	double Reward,OldReward;
+	double Prec=1e-3; //precision
+	double Reward,OldReward,maxReward=0;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=0;
+	int MaxIteration=5;
 	int It=0;
-	time_t start,end;
+	time_t start,end,maxRewardtime;
 	
 	
 	/*system("head -n 1 test > test2");
@@ -165,6 +165,10 @@ int main(int argc, char** argv) {
 			RelDiff=fabs((Reward-OldReward)/OldReward);
 		}
 		time(&end);
+		if(Reward>maxReward){
+			maxReward=Reward;
+			maxRewardtime=end;
+		}
 		RewardFile<<It<<" "<<Reward<< "\t time: "<< 
 			difftime(end, start) << "s"<< endl;
 	}
@@ -177,6 +181,7 @@ int main(int argc, char** argv) {
     }
     ExpFile <<Reward<<endl;
     
+	RewardFile<< "Max: "<< maxReward<<"\t time: "<< maxRewardtime<<endl;
     RewardFile.close();
     ExpFile.close();
     return(EXIT_SUCCESS);
