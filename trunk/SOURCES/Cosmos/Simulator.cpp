@@ -217,7 +217,11 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
         for(int i =0; i < N.Marking.size();i++){
             cerr << N.Place[i].label << ":" << N.Marking[i] << "\t,";
         }
-        cerr << "Automate:" << A.LocLabel[A.CurrentLocation] << endl;
+        cerr << "Automate:" << A.LocLabel[A.CurrentLocation]<< "\t,";
+		for(int i =0 ; i< A.Var.size(); i++){
+			cerr << A.VarLabel[i]<<":"<< A.Var[i]<< "\t,";
+		}
+		cerr << endl;
     }
 	//AutEdge AE = *AEref;
     
