@@ -264,7 +264,9 @@ void result::printResultFile(string f){
 }
 
 void result::printAlligator(){
-    cout << "alligatorResult" << endl;
+	print(cout);
+	
+    /*cout << "alligatorResult" << endl;
     for (int i=0; i<P.HaslFormulas.size(); i++){
         cout << MeanM2->Mean[i] << endl;
         cout << "[" << low[i] << "," << up[i] << "]" << endl;
@@ -272,6 +274,6 @@ void result::printAlligator(){
         cout << width[i] << endl;
     }
     cout << MeanM2->I << endl;
-    cout << MeanM2->Isucc << endl;
+    cout << MeanM2->Isucc << endl;*/
     //cout << cpu_time_used << endl;
 }
