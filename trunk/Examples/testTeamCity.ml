@@ -50,4 +50,11 @@ let test_cosmos_gspn n v o =
   if ret <> 0 then printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" n n ret
   else test_result n v;;
 
-test_cosmos_gspn Sys.argv.(1) (float_of_string Sys.argv.(2)) Sys.argv.(3)
+let test_cosmos_grml n v o =
+  printf "##teamcity[testStarted name='%s' captureStandardOutput='<true>']\n" n;
+  flush stdout;
+  let ret = Sys.command (sprintf "../../bin/Cosmos -g %s %s.grml %slha.grml" o n n) in
+  if ret <> 0 then printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" n n ret
+  else test_result n v;;
+
+(*test_cosmos_gspn Sys.argv.(1) (float_of_string Sys.argv.(2)) Sys.argv.(3)*)
