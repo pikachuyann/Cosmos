@@ -63,11 +63,15 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "3"
+            argument = "5"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "3"
+            argument = "5"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/AllCosmos/trunk/POMDP/pmdp5-1.2-0.75.pg"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

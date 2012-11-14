@@ -104,6 +104,7 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
     }else if((*it).compare("function")==0){
         eval_expr(is_mark_dep, st, it.begin());
     }else if((*it).compare("numValue")==0){
+		if(verbose>2)cout << "\t" << it.node->first_child->data<<endl;
 		appendSimplify(st,it.node->first_child->data);
 	}else if ((*it).compare("boolValue")==0) {
 		appendSimplify(st,it.node->first_child->data);
@@ -111,7 +112,10 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
         string *var = simplifyString(it.node->first_child->data);
         if(MyLHA->LhaIntConstant.count(*var)>0 || 
            MyLHA->LhaRealConstant.count(*var)>0){st->append(*var);
-        }else{
+        }else if(MyLHA->VarIndex.count(*var)>0){
+			std::ostringstream s; s<<"Var["<<MyLHA->VarIndex[var->c_str()]<<"]";
+            st->append(s.str());
+		}else{
             *is_mark_dep =true;
             std::ostringstream s; s<<"Marking["<<MyLHA->PlaceIndex[var->c_str()]<<"]";
             st->append(s.str());
@@ -157,16 +161,31 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
 	} else throw(lhagmlioexc);
 }
 
-void MyLhaModelHandler::eval_linexpr(vector<string> CoeffsVector, tree<string>::pre_order_iterator it){
-	//cout << (*it) << endl;
-	if((*it).compare("name")==0){
+void MyLhaModelHandler::eval_term(vector<string> &CoeffsVector, tree<string>::pre_order_iterator it){
+	if(verbose>2)cout << (*it) << endl;
+	if((*it).compare("expr")==0){
+		eval_term(CoeffsVector, it.begin());
+	}else if((*it).compare("name")==0){
 		string* var = simplifyString(*(it.begin()));
+		if(verbose>2)cout << "\t" << *var << endl;
 		CoeffsVector[MyLHA->VarIndex[var->c_str()]]= "1";
-	} else cout << "fail eval tree : linexp" << endl;
+	}else cout << "fail eval tree : linexp" << endl;
+	
+}
+
+void MyLhaModelHandler::eval_linexpr(vector<string> &CoeffsVector, tree<string>::pre_order_iterator it){
+	if(verbose>2)cout << (*it) << endl;
+	if((*it).compare("expr")==0){
+		eval_linexpr(CoeffsVector, it.begin());
+	}else if((*it).compare("function")==0 && (((*it.begin()).compare("+")==0) || ((*it.begin()).compare("-")==0))){
+		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
+			eval_linexpr(CoeffsVector, it2);
+		}
+	}else eval_term(CoeffsVector, it);
 		
 }
 
-void MyLhaModelHandler::eval_guard(vector<vector<string> > CoeffsMatrix,vector<string> CST, vector<string> comp,tree<string>::pre_order_iterator it)
+void MyLhaModelHandler::eval_guard(vector<vector<string> > &CoeffsMatrix,vector<string> &CST, vector<string> &comp,tree<string>::pre_order_iterator it)
 {
 	if(verbose>2)cout << (*it) << endl;
 	if((*it).compare("boolExpr")==0){
@@ -183,8 +202,8 @@ void MyLhaModelHandler::eval_guard(vector<vector<string> > CoeffsMatrix,vector<s
 			  || (*it).compare("greaterEqual")==0 
 			  || (*it).compare("lessEqual")==0 ){
 		if((*it).compare("equal")==0)comp.push_back("==");
-		if((*it).compare("greaterEqual")==0)comp.push_back("<=");
-		if((*it).compare("lessEqual")==0)comp.push_back(">=");
+		if((*it).compare("lessEqual")==0)comp.push_back("<=");
+		if((*it).compare("greaterEqual")==0)comp.push_back(">=");
 		
 		vector<string> CoeffsVector(MyLHA->NbVar,"");
 		eval_linexpr(CoeffsVector,it.begin());
@@ -193,7 +212,7 @@ void MyLhaModelHandler::eval_guard(vector<vector<string> > CoeffsMatrix,vector<s
 		string* st= new string("");
 		bool markdep = false;
 		eval_expr(&markdep, st, it.begin().node->next_sibling);
-		//cout<< "CST: " << *st << endl;
+		if(verbose>1)cout<< "CST: " << *st << endl;
 		CST.push_back(*st);
 		
 	} else cout << "failevaltree: guard" <<endl;
@@ -541,11 +560,23 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 	MyLHA->FuncEdgeUpdates.push_back(v1);
 	
 	treeSI itguard = attributes.find("guard")->second.begin();
-	//cout << "guard:" << endl;
+	if(verbose>2)cout << "guard:" << endl;
 	vector<vector<string> > CoeffsMatrix;
 	vector<string> CST;
 	vector<string> comp;
 	eval_guard(CoeffsMatrix,CST,comp,itguard.begin().begin());
+	if(verbose>1){
+		cout << "guard:";
+		for (int i=0; i< CoeffsMatrix.size(); i++) {
+			cout << "&(";
+			for (int j =0 ; j<CoeffsMatrix[0].size(); j++) {
+				if(CoeffsMatrix[i][j].compare("")>0)
+					cout << "+" << CoeffsMatrix[i][j]<< "* VAR[" <<j<<"] " ;
+			}
+			cout << comp[i] << CST[i]<<")";
+		}
+		cout << endl;
+	}
 	MyLHA->ConstraintsCoeffs.push_back(CoeffsMatrix);
 	MyLHA->ConstraintsConstants.push_back(CST);
 	MyLHA->ConstraintsRelOp.push_back(comp);
