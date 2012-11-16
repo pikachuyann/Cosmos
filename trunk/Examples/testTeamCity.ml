@@ -24,9 +24,14 @@ let parse_result f =
       let str = input_line fs in
       let ls = split dots str in
       match ls with
+	| "Mean" :: v :: [] -> result.mean <- (float_of_string v)
 	| "Estimated value" :: v :: [] -> result.mean <- (float_of_string v)
 	| "Standard deviation" :: v :: [] -> result.stdDev <- (float_of_string v)
 	| "Confidence interval" :: v :: [] -> 
+	  (match split confintdel v with
+	    | a::b::_ -> result.confInt <- (float_of_string a , float_of_string b) 
+	    | _ -> printf "Fail to parse confidence interval %s\n" v)
+	| "Binomial Confidence Interval" :: v :: [] -> 
 	  (match split confintdel v with
 	    | a::b::_ -> result.confInt <- (float_of_string a , float_of_string b) 
 	    | _ -> printf "Fail to parse confidence interval %s\n" v)
