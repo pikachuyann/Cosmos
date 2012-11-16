@@ -24,14 +24,13 @@ let parse_result f =
       let str = input_line fs in
       let ls = split dots str in
       match ls with
-	| "Mean" :: v :: [] -> result.mean <- (float_of_string v)
 	| "Estimated value" :: v :: [] -> result.mean <- (float_of_string v)
 	| "Standard deviation" :: v :: [] -> result.stdDev <- (float_of_string v)
 	| "Confidence interval" :: v :: [] -> 
 	  (match split confintdel v with
 	    | a::b::_ -> result.confInt <- (float_of_string a , float_of_string b) 
 	    | _ -> printf "Fail to parse confidence interval %s\n" v)
-	| "Binomial Confidence Interval" :: v :: [] -> 
+	| "Binomiale confidence interval" :: v :: [] -> 
 	  (match split confintdel v with
 	    | a::b::_ -> result.confInt <- (float_of_string a , float_of_string b) 
 	    | _ -> printf "Fail to parse confidence interval %s\n" v)
@@ -43,10 +42,10 @@ let parse_result f =
 
 let test_result n v =
   let result = parse_result "Result.res" in
-  printf "result: %f\nconfint: [%f,%f]\n" result.mean (fst result.confInt) (snd result.confInt);
+  printf "result: %e\nconfint: [%e,%e]\n" result.mean (fst result.confInt) (snd result.confInt);
   if v > (fst result.confInt) & (snd result.confInt) > v 
-  then printf "##teamcity[testFinished name='%s' message='expected result %f is in confidence interval |[%f,%f|]']\n" n v (fst result.confInt) (snd result.confInt) 
-  else printf "##teamcity[testFailed name='%s' message='Test %s fail: expected result %f is outside confidence interval |[%f,%f|]']\n" n n v (fst result.confInt) (snd result.confInt) 
+  then printf "##teamcity[testFinished name='%s' message='expected result %e is in confidence interval |[%e,%e|]']\n" n v (fst result.confInt) (snd result.confInt) 
+  else printf "##teamcity[testFailed name='%s' message='Test %s fail: expected result %e is outside confidence interval |[%e,%e|]']\n" n n v (fst result.confInt) (snd result.confInt) 
 
 let test_cosmos_gspn n v o =
   printf "##teamcity[testStarted name='%s' captureStandardOutput='<true>']\n" n;
