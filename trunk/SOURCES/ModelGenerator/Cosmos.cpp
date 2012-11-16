@@ -183,6 +183,13 @@ bool ParseBuild(parameters& P) {
 	string cmd;
 	string bcmd = P.gcccmd + " " + P.gccflags;
 	
+	if(P.RareEvent){
+		cmd = "cp muFile " + P.tmpPath +"/muFile";
+		if (system(cmd.c_str())) return false;
+		cmd = "cp lumpingfun.cpp " + P.tmpPath +"/lumpingfun.cpp";
+		if (system(cmd.c_str())) return false;
+	}
+	
 	cmd = bcmd + " -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
 	if (system(cmd.c_str())) return false;
 	
@@ -191,14 +198,6 @@ bool ParseBuild(parameters& P) {
 	
 	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
 	if (system(cmd.c_str())) return false;
-	
-	if(P.RareEvent){
-		cmd = "cp muFile " + P.tmpPath +"/muFile";
-		if (system(cmd.c_str())) return false;
-		cmd = "cp lumpingfun.cpp " + P.tmpPath +"/lumpingfun.cpp";
-		if (system(cmd.c_str())) return false;
-	}
-	
 	
 	
 	/*cmd = "make -s -C " + P.Path + ".. sim";
