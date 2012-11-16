@@ -10,7 +10,6 @@ VariablesList = {time,N} ;
 LocationsList = {l0, l1};
 
 AVG(Last(N));
-AVG(Last(time));
   
 InitialLocations={l0};
 
