@@ -210,12 +210,12 @@ void result::print(ostream &s){
                 s << "Rare Event Result" << endl;
                 double mean = (double)MeanM2->Isucc / (double)MeanM2->I;
                 mean *= MeanM2->Mean[i];
-                s << "Mean:  " << mean << endl;
+                s << "Estimated value:\t" << mean << endl;
                 double l = binomlow(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
                 double u = binomup(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
                 // Print Clopper Pearson Limits:
-                s << "Binomiale Confidence Interval: [" << l*MeanM2->Mean[i] << " , " << u*MeanM2->Mean[i] << "]"<< endl;
-                s << "Binomiale Width: "<< (u-l)*MeanM2->Mean[i] << endl <<endl;
+                s << "Binomiale confidence interval:\t[" << l*MeanM2->Mean[i] << " , " << u*MeanM2->Mean[i] << "]"<< endl;
+                s << "Binomiale width:\t"<< (u-l)*MeanM2->Mean[i] << endl <<endl;
             } else {
                 s << "Estimated value:\t" << MeanM2->Mean[i] << endl;
                 s << "Confidence interval:\t[" << low[i] << " , " << up[i] << "]" << endl;
@@ -227,16 +227,16 @@ void result::print(ostream &s){
                     double l = binomlow(MeanM2->Isucc, successes, (1-P.Level)/2);
                     double u = binomup(MeanM2->Isucc, successes, (1-P.Level)/2);
                     // Print Clopper Pearson Limits:
-                    s << "Binomiale Confidence Interval:\t[" << l << " , " << u << "]"<< endl;
-                    s << "Binomiale Width:\t"<< u-l << endl;
+                    s << "Binomiale confidence interval:\t[" << l << " , " << u << "]"<< endl;
+                    s << "Binomiale width:\t"<< u-l << endl;
                     
                 }
                 s << "Standard deviation:\t" << stdev[i] << endl;
                 s << "Width:\t" << width[i] << endl;
             }
         }
-		s << "Confidence Level:\t" << P.Level << endl;
-        s << "Relative Error:\t" << RelErr << endl;
+		s << "Confidence level:\t" << P.Level << endl;
+        s << "Relative error:\t" << RelErr << endl;
         s << "Total paths:\t" << MeanM2->I << endl;
         s << "Accepted paths:\t" << MeanM2->Isucc << endl;
         s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
