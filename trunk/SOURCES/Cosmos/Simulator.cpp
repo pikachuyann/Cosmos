@@ -327,8 +327,10 @@ void Simulator::GenerateEvent(Event& E, int Id) {
     //and same priority.
 	double w=0.0;
 	if (N.Transition[Id].DistTypeIndex > 2) {
-		vector<double> wParam(1, N.GetWeight(Id));
-		w = GenerateTime(2, wParam);
+		N.ParamDistr[0]= N.GetWeight(Id);
+		w = GenerateTime(2, N.ParamDistr);
+		//vector<double> wParam(1, N.GetWeight(Id));
+		//w = GenerateTime(2, wParam);
     }
     
 	E.transition = Id;
