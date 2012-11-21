@@ -108,7 +108,7 @@
 		0346863B14D6ED3F0040753D /* macro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macro.h; sourceTree = "<group>"; };
 		036803B11626C53800B1523A /* Eval-parser.tab.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Eval-parser.tab.cc"; sourceTree = "<group>"; };
 		036803B21626C53800B1523A /* Eval-parser.tab.hh */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "Eval-parser.tab.hh"; sourceTree = "<group>"; };
-		036803B31626C53800B1523A /* lex.eval.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lex.eval.c; sourceTree = "<group>"; };
+		036803B31626C53800B1523A /* lex.eval.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = lex.eval.c; sourceTree = "<group>"; };
 		036803B41626C53800B1523A /* location.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = location.hh; sourceTree = "<group>"; };
 		036803B51626C53800B1523A /* position.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = position.hh; sourceTree = "<group>"; };
 		036803B61626C53800B1523A /* stack.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stack.hh; sourceTree = "<group>"; };
@@ -665,7 +665,15 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					/usr/include,
+					/usr/local/include,
+				);
 				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/lib,
+					/usr/local/lib,
+				);
 				PRODUCT_NAME = CosmosSim;
 				ZERO_LINK = NO;
 			};

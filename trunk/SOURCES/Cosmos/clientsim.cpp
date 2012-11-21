@@ -102,17 +102,24 @@ int main(int argc, char** argv) {
             cout << "Finish Exporting" << endl;
             cout << "Prism Result:\t"<< states.returnPrismResult() << endl;
 			exit(EXIT_SUCCESS);
-		}
+		} else mySim= (new Simulator);
+		
     } else {
 		mySim= (new Simulator);
 	}
     
     //mySim->Load(); //initialize the simulator
 	
-    str = argv[1];
-    mySim->SetBatchSize(StrToInt(str)); //set the batch size
-    str = argv[2];
-    mySim->verbose = StrToInt(str);
+	if(argc>=2){
+		str = argv[1];
+		mySim->SetBatchSize(StrToInt(str)); //set the batch size
+		str = argv[2];
+		mySim->verbose = StrToInt(str);
+	}else{
+		//Default value.
+		mySim->SetBatchSize(1000);
+		mySim->verbose =0;
+	}
     //mySim->logValue();
     
     if(mySim->verbose==4)mySim->RunBatch();

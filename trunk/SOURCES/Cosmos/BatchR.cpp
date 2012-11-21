@@ -88,15 +88,14 @@ void BatchR::unionR(BatchR *batch){
 //This function write a batch on the standart output it is suposed to
 //be read by the function BatchR::inputR
 void BatchR::outputR() {
-    int size;
-    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(int));
-    size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(int));
+    write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(int));
+	write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(int));
 
     for(int i =0; i< TableLength; i++){
         bool tmpbool = IsBernoulli[i];
-        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
-        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(double));
-        size = write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(double));
+        write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
+        write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(double));
+        write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(double));
     }
     
     //print();
@@ -108,19 +107,18 @@ void BatchR::inputR(FILE* f) {
     double read;
     bool readb;
     int readi;
-    int size;
     
-    size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
+    fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
     I=readi;
-    size = fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
+    fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
     Isucc=readi;
 
     for(int i =0; i< TableLength; i++){
-        size = fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, f);
+        fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, f);
         IsBernoulli[i]=readb;
-        size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
+        fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
         Mean[i]=read;
-        size = fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
+        fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
         M2[i]=read;
     }
     fflush(stdout);
