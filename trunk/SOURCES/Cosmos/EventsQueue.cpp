@@ -121,7 +121,7 @@ void EventsQueue::siftUp(int i) {
         parentIndex = getParentIndex(i);
 
         if (isPriorer((*eq)[i], (*eq)[parentIndex])) {
-            Event eswap((*eq)[parentIndex]);
+            Event eswap((*eq)[parentIndex]); 
 
 
             (*TransTable)[(*eq)[parentIndex].transition] = i;
