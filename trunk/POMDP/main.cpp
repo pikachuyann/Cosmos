@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 		double q=0.2;   
 		
 		
-		std::istringstream st( argv[3]);
+		std::istringstream st( argv[2]);
 		st >> n;
 		
 		M = generateLinearMatrix(n,p,q);
@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-    string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 11 -d test --max-run 1000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang++ --gppflags -Wno-return-type --tmp-status 2";
+    string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 1 -d test --max-run 1000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang++ --gppflags -Wno-return-type --tmp-status 2";
 	
 	// initial iteration
 	
@@ -114,12 +114,13 @@ int main(int argc, char** argv) {
 	int N = (int)M.size();
     vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
 	
-	/*
-	vector< pair<int, vector<int> > > ImportedStrat(0,make_pair(0,vector<int>(N,0)) );
-	readStrat(N, argv[4], ImportedStrat);
-	printStrat(ImportedStrat);
-	generateLHAfromStrat(ron, N, ImportedStrat, RewardArray, H, M);
-	*/
+	if (argc==4) {
+		vector< pair<int, vector<int> > > ImportedStrat(0,make_pair(0,vector<int>(N,0)) );
+		readStrat(N, argv[3], ImportedStrat);
+		printStrat(ImportedStrat);
+		generateLHAfromStrat(ron, N, ImportedStrat, RewardArray, H, M);
+		exit(EXIT_SUCCESS);
+	}
 	 
 	for (int i=0; i<N; i++){
 		double out = 0.0;
@@ -176,7 +177,7 @@ int main(int argc, char** argv) {
 	}
     st=argv[1];
 	if(st=="linear"){
-		ExpFile << "n="<<argv[3]<<" ";
+		ExpFile << "n="<<argv[2]<<" ";
     }
     else if(st=="grid"){
 		ExpFile << "n="<<argv[3]<<" "<< "m="<<argv[4]<<" ";
