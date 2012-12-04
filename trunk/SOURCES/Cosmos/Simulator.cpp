@@ -242,8 +242,7 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 	} else {
         //Take the first event in the queue
 		Event E1 = (*EQ).InPosition(0);
-		if(verbose>3)cerr << "transition:" << N.Transition[E1.transition].label << endl;
-        
+		        
 		int E1_transitionNum = E1.transition;
         
         //If this transition is the sink transition refuse the simulation
@@ -259,12 +258,24 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
         //of the transition of the Petri net.
 		while (E1.time >= AE.FiringTime) {
             //cerr << "looping on autonomous edge";
+			
 			updateLHA(AE.Index,AE.FiringTime - A.CurrentTime, N.Marking);
+			if(verbose>3){
+				cerr << "Autonomous transition:" << AE.Index << endl;
+				cerr << "Automate:" << A.LocLabel[A.CurrentLocation]<< "\t,";
+				for(int i =0 ; i< A.Var.size(); i++){
+					cerr << A.VarLabel[i]<<":"<< A.Var[i]<< "\t,";
+				}
+				cerr << endl;
+			}
+			
 			if (A.isFinal(A.CurrentLocation)) {
 				returnResultTrue(N.Marking, 0.0);
 				return false;
 			} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 		}
+		if(verbose>3)cerr << "transition:" << N.Transition[E1.transition].label << endl;
+
 		
         //Save the OldMarking before firing the transition.
 		oldMarking = N.Marking;
