@@ -562,11 +562,11 @@ void Lha_Reader::WriteFile(parameters& P) {
                 else {
                     if (MyLha.LhaFuncType[i] == "Integral")
                         LhaCppFile << "    LhaFunc[" << i << "]=Integral(LhaFunc[" << i << "], t, Delta, OldLinForm[" << MyLha.LhaFuncArg[i] << "],LinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
-
+					
                 }
             }
         }
-
+		
     }
 
     LhaCppFile << "\n    }\n" << endl;

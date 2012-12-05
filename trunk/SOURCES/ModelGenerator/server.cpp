@@ -80,7 +80,9 @@ void launch_clients(parameters& P){
         os << " " << "-COBURE" << " " << P.BoundedRE << " " << P.horizon << " " << P.epsilon;
     } else if(P.BoundedRE>0){
         os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
-    } 
+    }
+	
+	if (P.dataraw.compare("")!=0) os << " -log " << P.dataraw;
 
     for(int i = 0;i<P.Njob;i++){
         FILE* stream = popen((os.str()).c_str(), "r");

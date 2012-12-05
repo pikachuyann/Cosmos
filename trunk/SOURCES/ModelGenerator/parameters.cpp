@@ -51,6 +51,7 @@ parameters::parameters() {
     tmpStatus = 0;
 	prismPath = "prism/bin/prism";
     dataoutput = "";
+	dataraw = "";
 	CountTrans = false;
 	StringInSpnLHA = false;
 	gcccmd = "g++";
@@ -99,6 +100,7 @@ void parameters::usage(){
 	cout << "\t--tmp-status arg \tDo not remove or do not rebuild tmp directory: 0 default->rebuild,destroy; 1->do not build;2->do not destroy;3-> do not build nor destroy"<<endl;
 	cout << "\t--debug-string \tAdd transition and place name to the compile file for debuging"<< endl;
 	cout << "\t-d,--outputdata \tOutput successive result in the blank separated file format"<< endl;
+	cout << "\t--outputraw \tOutput the result of each trajectory in a file"<< endl;
 	
 }
 
@@ -134,6 +136,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"gppflags",required_argument,	 0,  7 },
             {"verbose", required_argument,	 0, 'v'},
             {"outputdata", required_argument,0, 'd'},
+			{"outputraw" , required_argument,0,  8 },
             {"help" , no_argument ,			 0, 'h'},
 			{"count-transition", no_argument,0, 't'},
 			{"debug-string", no_argument,	 0,  3 },
@@ -195,6 +198,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'n': Njob = atoi(optarg);      break;
             case  'e': epsilon = atof(optarg);  break;
             case  'd': dataoutput = optarg; break;
+			case  8  : dataraw = optarg; break;
 			case  't': CountTrans = true;	break;
 			case  3  : StringInSpnLHA = true; break;
 			case  4  : tmpPath = optarg; break;

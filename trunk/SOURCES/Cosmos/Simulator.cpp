@@ -66,8 +66,8 @@ Simulator::Simulator(const Simulator& orig) {
 Simulator::~Simulator() {
 }
 
-void Simulator::logValue(){
-    logvalue.open("outcosmos",fstream::out);
+void Simulator::logValue(const char* path){
+    logvalue.open(path,fstream::out);
     logvalue.precision(15);
     logResult=true;
 }

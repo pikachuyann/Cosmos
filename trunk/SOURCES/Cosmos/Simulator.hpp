@@ -56,8 +56,8 @@ public:
 	
     int verbose;    //Set the verbose level
     
-    void SetBatchSize(int); // set the batch size
-	void logValue();    //Make the simulator output each result in a file
+    void SetBatchSize(const int); // set the batch size
+	void logValue(const char*);    //Make the simulator output each result in a file
     
     //main entry point of the object simulate a batch of trajectory
     virtual BatchR* RunBatch(); 

@@ -108,7 +108,11 @@ int main(int argc, char** argv) {
 		mySim= (new Simulator);
 	}
     
-    //mySim->Load(); //initialize the simulator
+	for(int i=1; i<argc ;i++){
+		if(strcmp(argv[i],"-log")==0 && argc>i)
+			mySim->logValue(argv[i+1]); //initialize the simulator
+	}
+    
 	
 	if(argc>=2){
 		str = argv[1];
@@ -120,8 +124,7 @@ int main(int argc, char** argv) {
 		mySim->SetBatchSize(1000);
 		mySim->verbose =0;
 	}
-    //mySim->logValue();
-    
+	   
     if(mySim->verbose==4)mySim->RunBatch();
     else while( !cin.eof() ){
       BatchR* batchResult = mySim->RunBatch(); //simulate a batch of trajectory
