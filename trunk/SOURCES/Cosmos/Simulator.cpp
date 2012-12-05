@@ -452,10 +452,12 @@ BatchR* Simulator::RunBatch(){
 		
         batchResult->addSim(&Result);
 		
-		if (Result.first) {
-			//------------------ Rare Event -----------------
-			if(logResult)logvalue << Result.second[0] << endl ;
-			//----------------- /Rare Event -----------------
+		if (Result.first && logResult){
+			for(int i=0; i<Result.second.size();i++){
+				if (i>0)logvalue << "\t";
+				logvalue << Result.second[i];
+			}
+			logvalue << endl;
 		}
 		
 		reset();
