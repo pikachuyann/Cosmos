@@ -221,7 +221,7 @@ void result::print(ostream &s){
                 s << "Confidence interval:\t[" << low[i] << " , " << up[i] << "]" << endl;
                 
                 if(MeanM2->IsBernoulli[i]){
-                    s << "The distribution look like a binomial!" << endl;
+                    s << "The distribution look like a binomials!" << endl;
                     using namespace boost::math;
                     double successes = MeanM2->Isucc * MeanM2->Mean[i];
                     double l = binomlow(MeanM2->Isucc, successes, (1-P.Level)/2);
