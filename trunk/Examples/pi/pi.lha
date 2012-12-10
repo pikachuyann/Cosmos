@@ -5,7 +5,7 @@ VariablesList = {x, y,r,OK} ;
 LocationsList = {l0, l1, l2, lp ,lm};
 
 pi=AVG(Last(OK));
-
+r=AVG(Last(r));
 
 InitialLocations = {l0};
 
