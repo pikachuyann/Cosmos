@@ -27,6 +27,7 @@
 //#include "SimulatorRE.h"
 #include <iostream>
 #include <set>
+#include <unistd.h>
 #include <math.h>
 #include <float.h>
 #include <sys/time.h>
@@ -54,9 +55,10 @@ Simulator::Simulator() {
 	
 	//Initialize random generator
 	
+	
 	timeval t;
 	gettimeofday(&t,(struct timezone*)0);
-	RandomNumber.seed(t.tv_usec + t.tv_sec);
+	RandomNumber.seed(t.tv_usec + t.tv_sec + getpid());
 	//srand(time(t.tv_usec));
 	
 	/*RandomNumber.seed(RandomNumber());
