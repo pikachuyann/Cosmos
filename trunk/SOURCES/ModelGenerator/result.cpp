@@ -86,29 +86,42 @@ void result::addBatch(BatchR *batchResult){
     // Let l=ConfLevel, the confidence level
     // l=1-alpha
     // Let w=ConfWidth, the size of the confidence interval
-    
+    //
     // Let mu the value to estimate, and x the estimation of mu
     // then Prob(x-w/2 <= mu <= x+w/2) = 1-alpha
     
     // The confidence interval is given by :
-    // [x-z(1-alpha/2) * StandardDeviation / sqrt(NumberOfObservations) ,  
-    //          x+z(1-alpha/2) * StandardDeviation / sqrt(NumberOfObservations)]
-    
+    // [x-z(1-alpha/2) * StandardDeviation~ / sqrt(NumberOfObservations) ,
+    //         x+z(1-alpha/2) * StandardDeviation~ / sqrt(NumberOfObservations)]
+    //
     // z(1-alpha/2)=z(1-(1-l)/2) = z(0.5+l/2)
+	//
+	// StandartDeviation~ = sqrt( Variance +1/n)
+	// This correction come from the Chows and Robbin algorithm to ensure
+	// The correctness of the stopping condition.
+	//
     ////////////////////////////////////////////////////////////////////////////
     
     MeanM2->unionR(batchResult);
      
     // The factor (Isucc/Isucc-1) ensuire that var is an unbiased estimator of
     // the true variance
-    double corrvar = MeanM2->Isucc/(MeanM2->Isucc-1);
+	double corrvar = MeanM2->Isucc/(MeanM2->Isucc-1);
     
     double Ksucc_sqrt= sqrt(MeanM2->Isucc);
     RelErr = 0;
     for(int i =0; i<P.HaslFormulas.size(); i++){
         //cout<< "vari:" << i<< endl;
-        Var[i] = corrvar * (MeanM2->M2[i]/MeanM2->Isucc - pow(MeanM2->Mean[i]/MeanM2->Isucc, 2));
-        stdev[i] = sqrt(Var[i]);
+        //Var[i] = corrvar * (MeanM2->M2[i]/MeanM2->Isucc - pow(MeanM2->Mean[i]/MeanM2->Isucc, 2));
+        
+		Var[i] = ((MeanM2->M2[i])/MeanM2->Isucc - pow(MeanM2->Mean[i]/MeanM2->Isucc, 2));
+		
+		Var[i] += 1.0/MeanM2->Isucc;
+		//Here the +1 come from the Chows and Robbin algorithm
+		
+		
+		
+		stdev[i] = sqrt(Var[i]);
         width[i] = 2 * Normal_quantile * stdev[i] / Ksucc_sqrt;
         
         low[i] = MeanM2->Mean[i]/MeanM2->Isucc - width[i] / 2.0;
