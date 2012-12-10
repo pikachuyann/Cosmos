@@ -56,11 +56,11 @@ Simulator::Simulator() {
 	
 	timeval t;
 	gettimeofday(&t,(struct timezone*)0);
-	RandomNumber.seed(t.tv_usec);
+	RandomNumber.seed(t.tv_usec + t.tv_sec);
 	//srand(time(t.tv_usec));
 	
-	RandomNumber.seed(RandomNumber());
-	RandomNumber.seed(rand());
+	/*RandomNumber.seed(RandomNumber());
+	RandomNumber.seed(rand());*/
 //	boost::random::random_device rng;
 //	RandomNumber.seed(rng);
 
