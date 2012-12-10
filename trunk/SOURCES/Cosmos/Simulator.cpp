@@ -55,7 +55,7 @@ Simulator::Simulator() {
 	//Initialize random generator
 	
 	timeval t;
-	gettimeofday(&t,(struct timeval*)0);
+	gettimeofday(&t,(struct timezone*)0);
 	RandomNumber.seed(t.tv_usec);
 	//srand(time(t.tv_usec));
 	
