@@ -29,8 +29,9 @@
 #include <set>
 #include <math.h>
 #include <float.h>
+#include <sys/time.h>
 #include <boost/random.hpp>
-#include <boost/random/random_device.hpp>
+//#include <boost/random/random_device.hpp>
 #include <boost/generator_iterator.hpp>
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
@@ -53,13 +54,16 @@ Simulator::Simulator() {
 	
 	//Initialize random generator
 	
-	/*RandomNumber.seed(time(NULL));
-	srand(time(NULL));
+	timeval t;
+	void* t2 = NULL;
+	gettimeofday(&t,t2);
+	RandomNumber.seed(t.tv_usec);
+	//srand(time(t.tv_usec));
 	
 	RandomNumber.seed(RandomNumber());
-	RandomNumber.seed(rand());*/
-	
-	RandomNumber.seed(boost::random::random_device()());
+	RandomNumber.seed(rand());
+//	boost::random::random_device rng;
+//	RandomNumber.seed(rng);
 
 	
 	BatchSize = 1000;
