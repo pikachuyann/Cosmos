@@ -56,8 +56,6 @@ Simulator::Simulator() {
 	
 	BatchSize = 1000;
 	
-	RandomNumber.seed(RandomNumber());
-	RandomNumber.seed(rand());
 }
 
 Simulator::Simulator(const Simulator& orig) {
@@ -99,7 +97,9 @@ void Simulator::InitialEventsQueue() {
 void Simulator::reset() {
 	//Reset The Petri net, the automaton, the event Queue and the 
     //random generator
-    
+    RandomNumber.seed(RandomNumber());
+	RandomNumber.seed(rand());
+	
 	N.reset();
 	A.reset(N.initMarking);
 	simTime = 0;
