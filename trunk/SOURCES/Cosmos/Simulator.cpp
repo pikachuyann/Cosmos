@@ -30,6 +30,7 @@
 #include <math.h>
 #include <float.h>
 #include <boost/random.hpp>
+#include <boost/random/random_device.hpp>
 #include <boost/generator_iterator.hpp>
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
@@ -51,8 +52,15 @@ Simulator::Simulator() {
     logResult=false;
 	
 	//Initialize random generator
-	RandomNumber.seed(time(NULL));
+	
+	/*RandomNumber.seed(time(NULL));
 	srand(time(NULL));
+	
+	RandomNumber.seed(RandomNumber());
+	RandomNumber.seed(rand());*/
+	
+	RandomNumber.seed(boost::random::random_device()());
+
 	
 	BatchSize = 1000;
 	
@@ -97,9 +105,7 @@ void Simulator::InitialEventsQueue() {
 void Simulator::reset() {
 	//Reset The Petri net, the automaton, the event Queue and the 
     //random generator
-    RandomNumber.seed(RandomNumber());
-	RandomNumber.seed(rand());
-	
+    	
 	N.reset();
 	A.reset(N.initMarking);
 	simTime = 0;
