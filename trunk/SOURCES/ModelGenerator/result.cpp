@@ -107,12 +107,12 @@ void result::addBatch(BatchR *batchResult){
     RelErr = 0;
     for(int i =0; i<P.HaslFormulas.size(); i++){
         //cout<< "vari:" << i<< endl;
-        Var[i] = corrvar * (MeanM2->M2[i] - pow(MeanM2->Mean[i], 2));
+        Var[i] = corrvar * (MeanM2->M2[i]/MeanM2->Isucc - pow(MeanM2->Mean[i]/MeanM2->Isucc, 2));
         stdev[i] = sqrt(Var[i]);
         width[i] = 2 * Normal_quantile * stdev[i] / Ksucc_sqrt;
         
-        low[i] = MeanM2->Mean[i] - width[i] / 2.0;
-        up[i] = MeanM2->Mean[i] + width[i] / 2.0;
+        low[i] = MeanM2->Mean[i]/MeanM2->Isucc - width[i] / 2.0;
+        up[i] = MeanM2->Mean[i]/MeanM2->Isucc + width[i] / 2.0;
         
         if(P.BoundedContinuous){
             low[i] = low[i] * (1 - P.epsilon);
@@ -120,8 +120,8 @@ void result::addBatch(BatchR *batchResult){
         }
         
         if(P.RareEvent || P.BoundedRE>0){
-            RelErrArray[i] =  width[i] /  abs(MeanM2->Mean[i]);
-        }else RelErrArray[i] = width[i] / max(1.0, abs(MeanM2->Mean[i]));
+            RelErrArray[i] =  width[i] /  abs(MeanM2->Mean[i]/MeanM2->Isucc);
+        }else RelErrArray[i] = width[i] / max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
 		
 		RelErr = max(RelErr,RelErrArray[i]);
         
@@ -161,7 +161,8 @@ void result::printProgress(){
     endline++;
 	if(P.verbose >1){
 		for(int i=0; i<P.HaslFormulas.size(); i++){
-			cout << P.HaslFormulas[i] << ":\t Mean" << "=" << MeanM2->Mean[i];
+			cout<< P.HaslFormulas[i] << ":\t Mean" << "="
+				<< MeanM2->Mean[i]/MeanM2->Isucc;
 			cout << "\t stdev=" << stdev[i] << "\t  width=" << width[i] << endl;
 			endline++;
 			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2){
@@ -217,13 +218,13 @@ void result::print(ostream &s){
                 s << "Binomiale confidence interval:\t[" << l*MeanM2->Mean[i] << " , " << u*MeanM2->Mean[i] << "]"<< endl;
                 s << "Binomiale width:\t"<< (u-l)*MeanM2->Mean[i] << endl <<endl;
             } else {
-                s << "Estimated value:\t" << MeanM2->Mean[i] << endl;
+                s << "Estimated value:\t" << MeanM2->Mean[i]/MeanM2->Isucc << endl;
                 s << "Confidence interval:\t[" << low[i] << " , " << up[i] << "]" << endl;
                 
                 if(MeanM2->IsBernoulli[i]){
                     s << "The distribution look like a binomials!" << endl;
                     using namespace boost::math;
-                    double successes = MeanM2->Isucc * MeanM2->Mean[i];
+                    double successes = MeanM2->Mean[i];
                     double l = binomlow(MeanM2->Isucc, successes, (1-P.Level)/2);
                     double u = binomup(MeanM2->Isucc, successes, (1-P.Level)/2);
                     // Print Clopper Pearson Limits:
@@ -247,7 +248,9 @@ void result::print(ostream &s){
 void result::outputData(){
     outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;
     for(int i =0; i<P.HaslFormulas.size(); i++){
-        outdatastream << " "<<MeanM2->Mean[i] << " "<< MeanM2->M2[i] << " " << low[i] << " " << up[i]; 
+        outdatastream << " "<<MeanM2->Mean[i]/MeanM2->Isucc
+		<< " "<< MeanM2->M2[i]/MeanM2->Isucc
+		<< " " << low[i] << " " << up[i];
     }
     outdatastream << endl;
 }

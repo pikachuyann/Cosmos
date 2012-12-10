@@ -51,7 +51,6 @@ void BatchR::addSim(SimOutput *Result){
     I++;
     if (Result->first) {
         Isucc++;
-        double Dif=0;
         
         for(int i =0; i< TableLength; i++){
             
@@ -59,17 +58,14 @@ void BatchR::addSim(SimOutput *Result){
                 IsBernoulli[i] = false;
             }
             
-            Dif = Result->second[i] - Mean[i];
-            Mean[i] += Dif / Isucc;
-            
-            Dif = pow(Result->second[i], 2) - M2[i];
-            M2[i] += Dif / Isucc;
+            Mean[i] += Result->second[i];
+			
+            M2[i] += pow(Result->second[i], 2);
         }
     }
 }
 
 void BatchR::unionR(BatchR *batch){
-    double Dif;
     
     I += batch->I;
     Isucc += batch->Isucc;
@@ -77,11 +73,9 @@ void BatchR::unionR(BatchR *batch){
     for(int i =0; i< TableLength; i++){
         IsBernoulli[i] = IsBernoulli[i] && batch->IsBernoulli[i];
         
-        Dif = batch->Mean[i] - Mean[i];
-        Mean[i] += batch->Isucc * Dif / Isucc;
+        Mean[i] += batch->Mean[i];
         
-        Dif = batch->M2[i] - M2[i];
-        M2[i] += batch->Isucc * Dif / Isucc;
+        M2[i] += batch->M2[i];
     }
 }
 
@@ -128,6 +122,6 @@ void BatchR::inputR(FILE* f) {
 void BatchR::print(){
     cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl;
     for(int i =0; i< TableLength; i++){
-        cerr << "Mean:\t" << Mean[i] << endl << "M2:\t" << M2[i] << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
+        cerr << "Mean:\t" << Mean[i]/Isucc << endl << "M2:\t" << M2[i]/Isucc << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
     }
 }
