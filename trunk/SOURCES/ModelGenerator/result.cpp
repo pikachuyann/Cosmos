@@ -120,7 +120,6 @@ void result::addBatch(BatchR *batchResult){
 		//Here the +1 come from the Chows and Robbin algorithm
 		
 		
-		
 		stdev[i] = sqrt(Var[i]);
         width[i] = 2 * Normal_quantile * stdev[i] / Ksucc_sqrt;
         
@@ -134,7 +133,7 @@ void result::addBatch(BatchR *batchResult){
         
         if(P.RareEvent || P.BoundedRE>0){
             RelErrArray[i] =  width[i] /  abs(MeanM2->Mean[i]/MeanM2->Isucc);
-        }else RelErrArray[i] = width[i] / max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
+        }else RelErrArray[i] = width[i];//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
 		
 		RelErr = max(RelErr,RelErrArray[i]);
         
