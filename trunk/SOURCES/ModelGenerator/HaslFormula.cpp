@@ -54,10 +54,9 @@ HaslFormulasTop::HaslFormulasTop(double l){
 }
 
 HaslFormulasTop::HaslFormulasTop(int al,double l){
-  boost::math::normal norma;
   TypeOp = EXPECTANCY;
   Level = l;
-  Quantile = quantile(norma , 0.5 + l / 2.0);
+  Quantile = quantile(boost::math::normal() , 0.5 + l / 2.0);
   Algebraic = al;
   left = NULL;
   right = NULL;
