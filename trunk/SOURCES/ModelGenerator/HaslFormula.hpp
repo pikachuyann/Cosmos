@@ -34,8 +34,11 @@
 
 #define EXPECTANCY 0
 #define PROBABILITY 1
-#define HASLPLUS 2
-#define HASLTIME 3
+#define CONSTANT 2
+#define HASL_PLUS 3
+#define HASL_TIME 4
+#define HASL_DIV 5
+
 
 class ConfInt {
 public:
@@ -50,16 +53,17 @@ public:
 
 class HaslFormulasTop {
 public:
-	HaslFormulasTop(double);
-	HaslFormulasTop(int,double);
-	HaslFormulasTop(int, HaslFormulasTop*, HaslFormulasTop*);
+  HaslFormulasTop(double);
+  HaslFormulasTop(double,double);
+  HaslFormulasTop(int,double);
+  HaslFormulasTop(int, HaslFormulasTop*, HaslFormulasTop*);
 	
 	~HaslFormulasTop();
 	
 protected:
 	int TypeOp;
 	double Level;
-	double Quantile;
+	double Value;
 	int Algebraic;
 	HaslFormulasTop* left;
 	HaslFormulasTop* right;

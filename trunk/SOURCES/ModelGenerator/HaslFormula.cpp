@@ -48,7 +48,16 @@ ConfInt::~ConfInt(){}
 HaslFormulasTop::HaslFormulasTop(double l){
 	TypeOp = PROBABILITY;
 	Level =l;
-	Quantile =0;
+	Value =0;
+	Algebraic = -1;
+	left = NULL;
+	right = NULL;
+}
+
+HaslFormulasTop::HaslFormulasTop(double l,double v){
+	TypeOp = PROBABILITY;
+	Level = 1;
+	Value = v;
 	Algebraic = -1;
 	left = NULL;
 	right = NULL;
@@ -57,7 +66,7 @@ HaslFormulasTop::HaslFormulasTop(double l){
 HaslFormulasTop::HaslFormulasTop(int al,double l){
   TypeOp = EXPECTANCY;
   Level = l;
-  Quantile = quantile(boost::math::normal() , 0.5 + l / 2.0);
+  Value = quantile(boost::math::normal() , 0.5 + l / 2.0);
   Algebraic = al;
   left = NULL;
   right = NULL;
@@ -67,7 +76,7 @@ HaslFormulasTop::HaslFormulasTop(int t, HaslFormulasTop* l,HaslFormulasTop* r){
 	TypeOp = t;
 	Algebraic = -1;
 	Level = 1;
-	Quantile = 0;
+	Value = 0;
 	left = l;
 	right = r;
 }
@@ -97,11 +106,14 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 	variance += 1.0/batch.Isucc;
 	//Here the +1 come from the Chows and Robbin algorithm
 	
-	double width = 2 * Quantile * sqrt(variance/batch.Isucc);
+	double width = 2 * Value * sqrt(variance/batch.Isucc);
 	
 	return new ConfInt(mean,width);
       }
       
+    case CONSTANT:
+      return new ConfInt(Value,0);
+
     case HASL_PLUS:
       {
 	ConfInt* lci = left->eval(batch);
