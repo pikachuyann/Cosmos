@@ -29,6 +29,7 @@
 #include "HaslFormula.hpp"
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
+#include <limits>
 
 ConfInt::ConfInt(double meanArg,double width){
 	mean = meanArg;
@@ -101,7 +102,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 	return new ConfInt(mean,width);
       }
       
-    case HASLPLUS:
+    case HASL_PLUS:
       {
 	ConfInt* lci = left->eval(batch);
 	ConfInt* rci = right->eval(batch);
@@ -116,7 +117,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 	return new ConfInt(mean,low,up);
       }
       
-    case HASLTIME:
+    case HASL_TIME:
       {
 	ConfInt* lci = left->eval(batch);
 	ConfInt* rci = right->eval(batch);
@@ -124,6 +125,32 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 	double mean = lci->mean*rci->mean;
 	double low = lci->low*rci->low;
 	double up = lci->up *rci->up;
+	
+	delete lci;
+	delete rci;
+	
+	return new ConfInt(mean,low,up);
+      }
+      
+    case HASL_DIV:
+      {
+	ConfInt* lci = left->eval(batch);
+	ConfInt* rci = right->eval(batch);
+	
+	if(rci->low * rci->up<=0)
+	  return new ConfInt(0,- std::numeric_limits<double>::infinity(),
+			     std::numeric_limits<double>::infinity());
+
+	double mean = lci->mean / rci->mean;
+	double low,up;
+
+	if(rci->low > 0){
+	   low = lci->low / rci->up;
+	   up  = lci->up  / rci->low;
+	}else{
+	   low = lci->low / rci->low;
+	   up  = lci->up  / rci->up;
+	}
 	
 	delete lci;
 	delete rci;
