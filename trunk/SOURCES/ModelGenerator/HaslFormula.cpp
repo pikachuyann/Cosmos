@@ -42,6 +42,8 @@ ConfInt::ConfInt(double meanArg,double lowArg,double upArg){
 	up = upArg;
 }
 
+ConfInt::~ConfInt(){}
+
 HaslFormulasTop::HaslFormulasTop(double l){
 	TypeOp = PROBABILITY;
 	Level =l;
@@ -51,14 +53,14 @@ HaslFormulasTop::HaslFormulasTop(double l){
 	right = NULL;
 }
 
-boost::math::normal norma;
 HaslFormulasTop::HaslFormulasTop(int al,double l){
-	TypeOp = EXPECTANCY;
-	Level = l;
-	Quantile = quantile(norma , 0.5 + l / 2.0);
-	Algebraic = al;
-	left = NULL;
-	right = NULL;
+  boost::math::normal norma;
+  TypeOp = EXPECTANCY;
+  Level = l;
+  Quantile = quantile(norma , 0.5 + l / 2.0);
+  Algebraic = al;
+  left = NULL;
+  right = NULL;
 }
 
 HaslFormulasTop::HaslFormulasTop(int t, HaslFormulasTop* l,HaslFormulasTop* r){
@@ -70,70 +72,68 @@ HaslFormulasTop::HaslFormulasTop(int t, HaslFormulasTop* l,HaslFormulasTop* r){
 	right = r;
 }
 
-double binomlow(int i,int j , double l){
-    return boost::math::binomial_distribution<>::find_lower_bound_on_p(i,j,l);
-}
-
-double binomup(int i,int j , double l){
-    return boost::math::binomial_distribution<>::find_upper_bound_on_p(i,j,l);
+HaslFormulasTop::~HaslFormulasTop(){
+  if(left != NULL) delete left;
+  if(right != NULL) delete right;
 }
 
 ConfInt* HaslFormulasTop::eval(BatchR &batch){
-	switch (TypeOp) {
-		case PROBABILITY:
-		{
-			double mean = batch.Isucc / batch.I;
-			double l = binomlow(batch.I, batch.Isucc, (1-Level)/2);
-			double u = binomup(batch.I, batch.Isucc, (1-Level)/2);
-			return new ConfInt(mean,l,u);
-		}
-			
-		case EXPECTANCY:
-		{
-			double mean = batch.Mean[Algebraic]/batch.Isucc;
-			double m2 = batch.Mean[Algebraic]/batch.Isucc;
-			double variance = m2 - mean * mean;
-			
-			variance += 1.0/batch.Isucc;
-			//Here the +1 come from the Chows and Robbin algorithm
-			
-			double width = 2 * Quantile * sqrt(variance/batch.Isucc);
-			
-			return new ConfInt(mean,width);
-		}
-		
-		case HASLPLUS:
-		{
-			ConfInt* lci = left->eval(batch);
-			ConfInt* rci = right->eval(batch);
-			
-			double mean = lci->mean+rci->mean;
-			double low = lci->low+rci->low;
-			double up = lci->up +rci->up;
-			
-			delete lci;
-			delete rci;
-			
-			return new ConfInt(mean,low,up);
-		}
-			
-		case HASLTIME:
-		{
-			ConfInt* lci = left->eval(batch);
-			ConfInt* rci = right->eval(batch);
-			
-			double mean = lci->mean*rci->mean;
-			double low = lci->low*rci->low;
-			double up = lci->up *rci->up;
-			
-			delete lci;
-			delete rci;
-			
-			return new ConfInt(mean,low,up);
-		}
-			
-		default:
-			std::cerr << "Fail to parse Hasl Formula"<< std::endl;
-			exit(EXIT_FAILURE);
-	}
+  switch (TypeOp) {
+    case PROBABILITY:
+      {
+	double mean = batch.Isucc / batch.I;
+	double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
+	double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
+
+	return new ConfInt(mean,l,u);
+      }
+      
+    case EXPECTANCY:
+      {
+	double mean = batch.Mean[Algebraic]/batch.Isucc;
+	double m2 = batch.Mean[Algebraic]/batch.Isucc;
+	double variance = m2 - mean * mean;
+	
+	variance += 1.0/batch.Isucc;
+	//Here the +1 come from the Chows and Robbin algorithm
+	
+	double width = 2 * Quantile * sqrt(variance/batch.Isucc);
+	
+	return new ConfInt(mean,width);
+      }
+      
+    case HASLPLUS:
+      {
+	ConfInt* lci = left->eval(batch);
+	ConfInt* rci = right->eval(batch);
+	
+	double mean = lci->mean+rci->mean;
+	double low = lci->low+rci->low;
+	double up = lci->up +rci->up;
+	
+	delete lci;
+	delete rci;
+	
+	return new ConfInt(mean,low,up);
+      }
+      
+    case HASLTIME:
+      {
+	ConfInt* lci = left->eval(batch);
+	ConfInt* rci = right->eval(batch);
+	
+	double mean = lci->mean*rci->mean;
+	double low = lci->low*rci->low;
+	double up = lci->up *rci->up;
+	
+	delete lci;
+	delete rci;
+	
+	return new ConfInt(mean,low,up);
+      }
+      
+    default:
+      std::cerr << "Fail to parse Hasl Formula"<< std::endl;
+      exit(EXIT_FAILURE);
+  }
 }
