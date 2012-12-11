@@ -38,6 +38,7 @@
 #define HASLTIME 3
 
 class ConfInt {
+public:
 	ConfInt(double,double);
 	ConfInt(double,double,double);
 	~ConfInt();
@@ -48,16 +49,22 @@ class ConfInt {
 };
 
 class HaslFormulasTop {
+public:
+	HaslFormulasTop(double);
+	HaslFormulasTop(int,double);
+	HaslFormulasTop(int, HaslFormulasTop*, HaslFormulasTop*);
 	
-	HaslFormulasTop();
 	~HaslFormulasTop();
 	
+protected:
 	int TypeOp;
+	double Level;
+	double Quantile;
 	int Algebraic;
 	HaslFormulasTop* left;
 	HaslFormulasTop* right;
 	
-	ConfInt eval(BatchR&);
+	ConfInt* eval(BatchR&);
 };
 
 
