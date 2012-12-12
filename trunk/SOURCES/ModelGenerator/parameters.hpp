@@ -30,6 +30,7 @@
 
 #include <string>
 #include <vector>
+#include "HaslFormula.hpp"
 
 using namespace std;
 
@@ -71,7 +72,8 @@ struct parameters {
     string dataoutput;
 	string dataraw;
     
-    vector<string> HaslFormulas;
+    vector<HaslFormulasTop> HaslFormulas;
+	vector<string> HaslFormulasname;
 };
 
 #endif

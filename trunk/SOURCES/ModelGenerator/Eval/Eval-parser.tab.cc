@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.2.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
@@ -347,17 +347,18 @@ namespace eval {
     int yychar = yyempty_;
     int yytoken = 0;
 
-    /* State.  */
+    // State.
     int yyn;
     int yylen = 0;
     int yystate = 0;
 
-    /* Error handling.  */
+    // Error handling.
     int yynerrs_ = 0;
     int yyerrstatus_ = 0;
 
     /// Semantic value of the lookahead.
-    semantic_type yylval;
+    static semantic_type yyval_default;
+    semantic_type yylval = yyval_default;
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
@@ -408,7 +409,6 @@ namespace eval {
 	YYCDEBUG << "Reading a token: ";
 	yychar = yylex (&yylval, &yylloc, Evaluate);
       }
-
 
     /* Convert token to internal form.  */
     if (yychar <= yyeof_)

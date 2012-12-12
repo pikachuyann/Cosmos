@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.2.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
@@ -37,8 +37,8 @@
 
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef GSPN_GSPN_PARSER_TAB_HH
-# define GSPN_GSPN_PARSER_TAB_HH
+#ifndef YY_GSPN_GSPN_PARSER_TAB_HH_INCLUDED
+# define YY_GSPN_GSPN_PARSER_TAB_HH_INCLUDED
 
 /* "%code requires" blocks.  */
 /* Line 36 of lalr1.cc  */
@@ -326,4 +326,4 @@ namespace gspn {
 
 
 
-#endif /* !GSPN_GSPN_PARSER_TAB_HH  */
+#endif /* !YY_GSPN_GSPN_PARSER_TAB_HH_INCLUDED  */

@@ -172,7 +172,7 @@ void launchServer(parameters& P){
         for(int it = 0;it<P.Njob;it++){
             if(FD_ISSET(fileno(clientstream[it]), &cs_cp)){
                 //aggregate the new result to the total result
-                BatchR batchResult(P.HaslFormulas.size());
+                BatchR batchResult(P.HaslFormulasname.size());
                 batchResult.inputR(clientstream[it]);
                 //batchResult.print();
                 Result.addBatch(&batchResult);

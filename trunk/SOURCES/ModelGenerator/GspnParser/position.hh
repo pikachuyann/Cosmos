@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.2.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Positions for Bison parsers in C++
    
@@ -35,11 +35,11 @@
  ** Define the gspn::position class.
  */
 
-#ifndef GSPN_POSITION_HH
-# define GSPN_POSITION_HH
+#ifndef YY_GSPN_POSITION_HH_INCLUDED
+# define YY_GSPN_POSITION_HH_INCLUDED
 
 # include <algorithm> // std::max
-# include <iosfwd>
+# include <iostream>
 # include <string>
 
 # ifndef YY_NULL
@@ -105,7 +105,7 @@ namespace gspn {
   };
 
   /// Add and assign a position.
-  inline const position&
+  inline position&
   operator+= (position& res, const int width)
   {
     res.columns (width);
@@ -121,7 +121,7 @@ namespace gspn {
   }
 
   /// Add and assign a position.
-  inline const position&
+  inline position&
   operator-= (position& res, const int width)
   {
     return res += -width;
@@ -168,4 +168,4 @@ namespace gspn {
 } // gspn
 /* Line 149 of location.cc  */
 #line 171 "position.hh"
-#endif /* !GSPN_POSITION_HH  */
+#endif /* !YY_GSPN_POSITION_HH_INCLUDED  */

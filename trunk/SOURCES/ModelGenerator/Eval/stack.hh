@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.2.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Stack handling for Bison parsers in C++
    
@@ -35,8 +35,8 @@
  ** Define the eval::stack class.
  */
 
-#ifndef EVAL_STACK_HH
-# define EVAL_STACK_HH
+#ifndef YY_EVAL_STACK_HH_INCLUDED
+# define YY_EVAL_STACK_HH_INCLUDED
 
 # include <deque>
 
@@ -130,4 +130,4 @@ namespace eval {
 /* Line 119 of stack.hh  */
 #line 132 "stack.hh"
 
-#endif /* !EVAL_STACK_HH  */
+#endif /* !YY_EVAL_STACK_HH_INCLUDED  */

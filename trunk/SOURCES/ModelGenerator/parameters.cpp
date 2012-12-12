@@ -70,7 +70,7 @@ void parameters::View() {
 	cout << "Number of parallel execution:   " << Njob << endl;
 	cout << "Read GML file as input:         " << GMLinput << endl;
     for (int i =0; i<HaslFormulas.size() ; i++) {
-        cout << "Hasl Formula " << i << ": " << HaslFormulas[i] << endl;
+        cout << "Hasl Formula " << i << ": " << HaslFormulasname[i] << endl;
     }
 }
 

@@ -26,7 +26,7 @@
 
 #include <iostream>
 #include "result.hpp"
-
+#include "HaslFormula.hpp"
 
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
@@ -37,21 +37,21 @@ using namespace std;
 result::result(parameters &Q){
     P= Q;
    
-    MeanM2 = new BatchR(P.HaslFormulas.size());
+    MeanM2 = new BatchR(P.HaslFormulasname.size());
     
     CurrentWidth = 1;
     RelErr = 0;
     
-    Var = vector<double>(P.HaslFormulas.size()); //variance
-    stdev = vector<double>(P.HaslFormulas.size()); //standard deviation
-    width = vector<double>(P.HaslFormulas.size()); //Confidence interval width
+    Var = vector<double>(P.HaslFormulasname.size()); //variance
+    stdev = vector<double>(P.HaslFormulasname.size()); //standard deviation
+    width = vector<double>(P.HaslFormulasname.size()); //Confidence interval width
     
     Normal_quantile = quantile(norma, 0.5 + P.Level / 2.0);
     
-    low = vector<double>(P.HaslFormulas.size()); //confidence interval lowerbound
-    up = vector<double>(P.HaslFormulas.size()); //confidence interval upperbound
+    low = vector<double>(P.HaslFormulasname.size()); //confidence interval lowerbound
+    up = vector<double>(P.HaslFormulasname.size()); //confidence interval upperbound
     
-	RelErrArray = vector<double>(P.HaslFormulas.size()); //relative error
+	RelErrArray = vector<double>(P.HaslFormulasname.size()); //relative error
 	
     endline = 0;
     
@@ -60,8 +60,8 @@ result::result(parameters &Q){
         outdatastream.open(P.dataoutput.c_str(),fstream::out);
         outdatastream.precision(15);
         outdatastream << "#Number of trajectory, Number of successfull trajectory ";
-        for(int i =0; i<P.HaslFormulas.size(); i++){
-			string iname = P.HaslFormulas[i];
+        for(int i =0; i<P.HaslFormulasname.size(); i++){
+			string iname = P.HaslFormulasname[i];
 			if(!iname.compare("")){
 				outdatastream << ", Mean["<<i<<"], Second Moment["<<i<<"], Confidence interval lower bound [" << i <<"] ,Confidence interval upper bound ["<<i<<"]";
 			}else{
@@ -110,7 +110,7 @@ void result::addBatch(BatchR *batchResult){
     
     double Ksucc_sqrt= sqrt(MeanM2->Isucc);
     RelErr = 0;
-    for(int i =0; i<P.HaslFormulas.size(); i++){
+    for(int i =0; i<P.HaslFormulasname.size(); i++){
         //cout<< "vari:" << i<< endl;
         //Var[i] = corrvar * (MeanM2->M2[i]/MeanM2->Isucc - pow(MeanM2->Mean[i]/MeanM2->Isucc, 2));
         
@@ -172,8 +172,8 @@ void result::printProgress(){
 	cout << MeanM2->Isucc << endl;
     endline++;
 	if(P.verbose >1){
-		for(int i=0; i<P.HaslFormulas.size(); i++){
-			cout<< P.HaslFormulas[i] << ":\t Mean" << "="
+		for(int i=0; i<P.HaslFormulasname.size(); i++){
+			cout<< P.HaslFormulasname[i] << ":\t Mean" << "="
 				<< MeanM2->Mean[i]/MeanM2->Isucc;
 			cout << "\t stdev=" << stdev[i] << "\t  width=" << width[i] << endl;
 			endline++;
@@ -210,14 +210,14 @@ void result::print(ostream &s){
     
     if(!P.computeStateSpace){
         
-        for(int i =0; i<P.HaslFormulas.size(); i++){
+        for(int i =0; i<P.HaslFormulasname.size(); i++){
             if (MeanM2->IsBernoulli[i]) {
                 low[i] = (0 > low[i]) ? 0.0 : low[i];
                 up[i] = (1 < up[i]) ? 1.0 : up[i];
                 width[i] = up[i] - low[i];
             }
             
-            s << P.HaslFormulas[i] << ":" << endl;
+            s << P.HaslFormulasname[i] << ":" << endl;
             
             if(P.RareEvent){
                 s << "Rare Event Result" << endl;
@@ -259,7 +259,7 @@ void result::print(ostream &s){
 
 void result::outputData(){
     outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;
-    for(int i =0; i<P.HaslFormulas.size(); i++){
+    for(int i =0; i<P.HaslFormulasname.size(); i++){
         outdatastream << " "<<MeanM2->Mean[i]/MeanM2->Isucc
 		<< " "<< MeanM2->M2[i]/MeanM2->Isucc
 		<< " " << low[i] << " " << up[i];

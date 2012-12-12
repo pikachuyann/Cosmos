@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.2.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Stack handling for Bison parsers in C++
    
@@ -35,8 +35,8 @@
  ** Define the lha::stack class.
  */
 
-#ifndef LHA_STACK_HH
-# define LHA_STACK_HH
+#ifndef YY_LHA_STACK_HH_INCLUDED
+# define YY_LHA_STACK_HH_INCLUDED
 
 # include <deque>
 
@@ -130,4 +130,4 @@ namespace lha {
 /* Line 119 of stack.hh  */
 #line 132 "stack.hh"
 
-#endif /* !LHA_STACK_HH  */
+#endif /* !YY_LHA_STACK_HH_INCLUDED  */

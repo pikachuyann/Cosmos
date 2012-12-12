@@ -53,12 +53,14 @@ public:
 
 class HaslFormulasTop {
 public:
-  HaslFormulasTop(double);
-  HaslFormulasTop(double,double);
-  HaslFormulasTop(int,double);
-  HaslFormulasTop(int, HaslFormulasTop*, HaslFormulasTop*);
+	HaslFormulasTop(double);
+	HaslFormulasTop(double,double);
+	HaslFormulasTop(int,double);
+	HaslFormulasTop(int, HaslFormulasTop*, HaslFormulasTop*);
 	
 	~HaslFormulasTop();
+	
+	ConfInt* eval(BatchR&);
 	
 protected:
 	int TypeOp;
@@ -67,8 +69,6 @@ protected:
 	int Algebraic;
 	HaslFormulasTop* left;
 	HaslFormulasTop* right;
-	
-	ConfInt* eval(BatchR&);
 };
 
 

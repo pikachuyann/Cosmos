@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.2.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Locations for Bison parsers in C++
    
@@ -35,17 +35,15 @@
  ** Define the lha::location class.
  */
 
-#ifndef LHA_LOCATION_HH
-# define LHA_LOCATION_HH
+#ifndef YY_LHA_LOCATION_HH_INCLUDED
+# define YY_LHA_LOCATION_HH_INCLUDED
 
-# include <iostream>
-# include <string>
 # include "position.hh"
 
 
 namespace lha {
-/* Line 166 of location.cc  */
-#line 49 "location.hh"
+/* Line 164 of location.cc  */
+#line 47 "location.hh"
 
   /// Abstract a location.
   class location
@@ -175,7 +173,7 @@ namespace lha {
 
 
 } // lha
-/* Line 294 of location.cc  */
-#line 180 "location.hh"
+/* Line 292 of location.cc  */
+#line 178 "location.hh"
 
-#endif /* !LHA_LOCATION_HH  */
+#endif /* !YY_LHA_LOCATION_HH_INCLUDED  */

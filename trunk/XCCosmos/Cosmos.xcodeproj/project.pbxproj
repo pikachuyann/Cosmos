@@ -18,6 +18,7 @@
 		03248EE214B74F2A0032B09E /* numSolverSH.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03248EE014B74F2A0032B09E /* numSolverSH.cpp */; };
 		0346863814D6ECFF0040753D /* foxglynn.c in Sources */ = {isa = PBXBuildFile; fileRef = 0346863714D6ECFE0040753D /* foxglynn.c */; };
 		0346863914D6ECFF0040753D /* foxglynn.c in Sources */ = {isa = PBXBuildFile; fileRef = 0346863714D6ECFE0040753D /* foxglynn.c */; };
+		036068F21677967C003372D0 /* HaslFormula.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 036068F01677967C003372D0 /* HaslFormula.cpp */; };
 		036803B71626C53800B1523A /* Eval-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 036803B11626C53800B1523A /* Eval-parser.tab.cc */; };
 		036803B81626C53800B1523A /* lex.eval.c in Sources */ = {isa = PBXBuildFile; fileRef = 036803B31626C53800B1523A /* lex.eval.c */; };
 		0379BDC41462C63D0077D4E9 /* Lha_gmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0379BDC31462C63D0077D4E9 /* Lha_gmlparser.cpp */; };
@@ -106,6 +107,8 @@
 		0346863714D6ECFE0040753D /* foxglynn.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = foxglynn.c; sourceTree = "<group>"; };
 		0346863A14D6ED300040753D /* foxglynn.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = foxglynn.h; sourceTree = "<group>"; };
 		0346863B14D6ED3F0040753D /* macro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macro.h; sourceTree = "<group>"; };
+		036068F01677967C003372D0 /* HaslFormula.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HaslFormula.cpp; sourceTree = "<group>"; };
+		036068F11677967C003372D0 /* HaslFormula.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = HaslFormula.hpp; sourceTree = "<group>"; };
 		036803B11626C53800B1523A /* Eval-parser.tab.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Eval-parser.tab.cc"; sourceTree = "<group>"; };
 		036803B21626C53800B1523A /* Eval-parser.tab.hh */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "Eval-parser.tab.hh"; sourceTree = "<group>"; };
 		036803B31626C53800B1523A /* lex.eval.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c; fileEncoding = 4; path = lex.eval.c; sourceTree = "<group>"; };
@@ -323,6 +326,8 @@
 				03F136B5143A050100944E04 /* server.hpp */,
 				03A194CC14E2C5FA00C17C38 /* parameters.cpp */,
 				03A194CE14E2C63500C17C38 /* parameters.hpp */,
+				036068F01677967C003372D0 /* HaslFormula.cpp */,
+				036068F11677967C003372D0 /* HaslFormula.hpp */,
 			);
 			path = ModelGenerator;
 			sourceTree = "<group>";
@@ -589,6 +594,7 @@
 				0304D2D3156BB5A000D45E5F /* result.cpp in Sources */,
 				036803B71626C53800B1523A /* Eval-parser.tab.cc in Sources */,
 				036803B81626C53800B1523A /* lex.eval.c in Sources */,
+				036068F21677967C003372D0 /* HaslFormula.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

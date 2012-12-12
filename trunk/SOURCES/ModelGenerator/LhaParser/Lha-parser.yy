@@ -37,7 +37,8 @@ class Lha_Reader;
 };
 
 %code {
-# include "Lha-Reader.hpp"
+#include "../HaslFormula.hpp"
+#include "Lha-Reader.hpp"
 #include <set>
 #include <vector>
 
@@ -648,10 +649,12 @@ HaslExps:HaslExp | HaslExp HaslExps;
 HaslExp: str EQ AVG LB AlgExpr RB SEMICOLON {
 		Reader.MyLha.Algebraic.push_back($5);
 		Reader.MyLha.HASLname.push_back(*$1);
+		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,0.5));
 	};
 	| AVG LB AlgExpr RB SEMICOLON {
 		Reader.MyLha.Algebraic.push_back($3);
 		Reader.MyLha.HASLname.push_back("");
+		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,0.5));
 	};
 
 AlgExpr:LhaFunc {string ss=$1;

@@ -31,6 +31,7 @@
 
 #include "../parameters.hpp"
 #include "Lha-parser.tab.hh"
+#include "../HaslFormula.hpp"
 #include <vector>
 #include <map>
 #include <set>
@@ -100,7 +101,8 @@ struct LHA {
     vector<string> LhaFuncType;
     vector<string> Algebraic;
 	vector<string> HASLname;
-
+	vector<HaslFormulasTop> HASLtop;
+	
     map <std::string, int> LhaIntConstant; //contains constants defined like int
     map <std::string, double> LhaRealConstant; //contains constants defined like double and constants defined linke int
     map <std::string, int> LhaFunction;

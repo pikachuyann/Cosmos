@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.2.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Stack handling for Bison parsers in C++
    
@@ -35,8 +35,8 @@
  ** Define the gspn::stack class.
  */
 
-#ifndef GSPN_STACK_HH
-# define GSPN_STACK_HH
+#ifndef YY_GSPN_STACK_HH_INCLUDED
+# define YY_GSPN_STACK_HH_INCLUDED
 
 # include <deque>
 
@@ -130,4 +130,4 @@ namespace gspn {
 /* Line 119 of stack.hh  */
 #line 132 "stack.hh"
 
-#endif /* !GSPN_STACK_HH  */
+#endif /* !YY_GSPN_STACK_HH_INCLUDED  */
