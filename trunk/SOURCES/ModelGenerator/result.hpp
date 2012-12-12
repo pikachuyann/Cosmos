@@ -43,18 +43,11 @@ public:
     
     BatchR* MeanM2;
     
-    double CurrentWidth;
     double RelErr;
-   
-    vector<double> Var; //variance
-    vector<double> stdev; //standard deviation
-    vector<double> width;
 	vector<double> RelErrArray;
+	
+	vector<ConfInt> HaslResult;
 
-    double Normal_quantile;
-    
-    vector<double> low, up;
-     
     time_t start, end;
     double cpu_time_used;
     

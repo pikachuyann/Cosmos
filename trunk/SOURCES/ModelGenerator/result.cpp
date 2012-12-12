@@ -38,19 +38,9 @@ result::result(parameters &Q){
     P= Q;
    
     MeanM2 = new BatchR(P.HaslFormulasname.size());
-    
-    CurrentWidth = 1;
+	HaslResult = vector<ConfInt>(P.HaslFormulasname.size());
+	
     RelErr = 0;
-    
-    Var = vector<double>(P.HaslFormulasname.size()); //variance
-    stdev = vector<double>(P.HaslFormulasname.size()); //standard deviation
-    width = vector<double>(P.HaslFormulasname.size()); //Confidence interval width
-    
-    Normal_quantile = quantile(norma, 0.5 + P.Level / 2.0);
-    
-    low = vector<double>(P.HaslFormulasname.size()); //confidence interval lowerbound
-    up = vector<double>(P.HaslFormulasname.size()); //confidence interval upperbound
-    
 	RelErrArray = vector<double>(P.HaslFormulasname.size()); //relative error
 	
     endline = 0;
@@ -80,66 +70,25 @@ result::~result(){
 }
 
 void result::addBatch(BatchR *batchResult){
-    
-    ////////////////////////////////////////////////////////////////////////////
-    // Some remarks about the estimation of the confidence interval adopted here
-    // Let l=ConfLevel, the confidence level
-    // l=1-alpha
-    // Let w=ConfWidth, the size of the confidence interval
-    //
-    // Let mu the value to estimate, and x the estimation of mu
-    // then Prob(x-w/2 <= mu <= x+w/2) = 1-alpha
-    
-    // The confidence interval is given by :
-    // [x-z(1-alpha/2) * StandardDeviation~ / sqrt(NumberOfObservations) ,
-    //         x+z(1-alpha/2) * StandardDeviation~ / sqrt(NumberOfObservations)]
-    //
-    // z(1-alpha/2)=z(1-(1-l)/2) = z(0.5+l/2)
-	//
-	// StandartDeviation~ = sqrt( Variance +1/n)
-	// This correction come from the Chows and Robbin algorithm to ensure
-	// The correctness of the stopping condition.
-	//
-    ////////////////////////////////////////////////////////////////////////////
-    
     MeanM2->unionR(batchResult);
-     
-    // The factor (Isucc/Isucc-1) ensuire that var is an unbiased estimator of
-    // the true variance
-	double corrvar = MeanM2->Isucc/(MeanM2->Isucc-1);
-    
-    double Ksucc_sqrt= sqrt(MeanM2->Isucc);
-    RelErr = 0;
+	RelErr = 0;
     for(int i =0; i<P.HaslFormulasname.size(); i++){
-        //cout<< "vari:" << i<< endl;
-        //Var[i] = corrvar * (MeanM2->M2[i]/MeanM2->Isucc - pow(MeanM2->Mean[i]/MeanM2->Isucc, 2));
         
-		Var[i] = ((MeanM2->M2[i])/MeanM2->Isucc - pow(MeanM2->Mean[i]/MeanM2->Isucc, 2));
-		
-		Var[i] += 1.0/MeanM2->Isucc;
-		//Here the +1 come from the Chows and Robbin algorithm
-		
-		
-		stdev[i] = sqrt(Var[i]);
-        width[i] = 2 * Normal_quantile * stdev[i] / Ksucc_sqrt;
-        
-        low[i] = MeanM2->Mean[i]/MeanM2->Isucc - width[i] / 2.0;
-        up[i] = MeanM2->Mean[i]/MeanM2->Isucc + width[i] / 2.0;
+		delete &HaslResult[i];
+		HaslResult[i] = *P.HaslFormulas[i].eval(*MeanM2);
         
         if(P.BoundedContinuous){
-            low[i] = low[i] * (1 - P.epsilon);
-            width[i] = up[i] - low[i];
+            HaslResult[i].low *=  (1 - P.epsilon);
         }
-        
+		
         if(P.RareEvent || P.BoundedRE>0){
-            RelErrArray[i] =  width[i] /  abs(MeanM2->Mean[i]/MeanM2->Isucc);
-        }else RelErrArray[i] = width[i];//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
+            RelErrArray[i] =  HaslResult[i].width() /  abs(MeanM2->Mean[i]/MeanM2->Isucc);
+        }else RelErrArray[i] = HaslResult[i].width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
 		
 		RelErr = max(RelErr,RelErrArray[i]);
         
     }
     if(outdatastream.is_open())outputData();
-   
 }
 
 bool result::continueSim(){
@@ -158,12 +107,10 @@ void printPercent(double i, double j){
         else cout<<" ";
     };
     cout << "]\t"<< endl;
-	//(long unsigned int)i << "/" << (long unsigned int)j << endl;
 }
 
 void result::printProgress(){
     cout.precision(15);
-    //cout<<"\033[A\033[2K"<< "\033[A\033[2K"<< "\033[A\033[2K" ;
     while(endline>=0){
         endline--;
         cout << "\033[A\033[2K";
@@ -173,13 +120,10 @@ void result::printProgress(){
     endline++;
 	if(P.verbose >1){
 		for(int i=0; i<P.HaslFormulasname.size(); i++){
-			ConfInt* ci = P.HaslFormulas[i].eval(*MeanM2);
-			cout << "mean ci:" << ci->mean << ":"<< ci->low<< ":" << ci->up<<endl;
-			delete ci;
 			
 			cout<< P.HaslFormulasname[i] << ":\t Mean" << "="
-				<< MeanM2->Mean[i]/MeanM2->Isucc;
-			cout << "\t stdev=" << stdev[i] << "\t  width=" << width[i] << endl;
+			<< HaslResult[i].mean;
+			cout << "\t  width=" << HaslResult[i].width() << endl;
 			endline++;
 			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2){
 				cout << "% of width:\t";
@@ -215,11 +159,11 @@ void result::print(ostream &s){
     if(!P.computeStateSpace){
         
         for(int i =0; i<P.HaslFormulasname.size(); i++){
-            if (MeanM2->IsBernoulli[i]) {
+            /*if (MeanM2->IsBernoulli[i]) {
                 low[i] = (0 > low[i]) ? 0.0 : low[i];
                 up[i] = (1 < up[i]) ? 1.0 : up[i];
                 width[i] = up[i] - low[i];
-            }
+            }*/
             
             s << P.HaslFormulasname[i] << ":" << endl;
             
@@ -234,10 +178,10 @@ void result::print(ostream &s){
                 s << "Binomiale confidence interval:\t[" << l*MeanM2->Mean[i] << " , " << u*MeanM2->Mean[i] << "]"<< endl;
                 s << "Binomiale width:\t"<< (u-l)*MeanM2->Mean[i] << endl <<endl;
             } else {
-                s << "Estimated value:\t" << MeanM2->Mean[i]/MeanM2->Isucc << endl;
-                s << "Confidence interval:\t[" << low[i] << " , " << up[i] << "]" << endl;
+                s << "Estimated value:\t" << HaslResult[i].mean << endl;
+                s << "Confidence interval:\t[" << HaslResult[i].low << " , " << HaslResult[i].up << "]" << endl;
                 
-                if(MeanM2->IsBernoulli[i]){
+                /*if(MeanM2->IsBernoulli[i]){
                     s << "The distribution look like a binomials!" << endl;
                     using namespace boost::math;
                     double successes = MeanM2->Mean[i];
@@ -247,9 +191,9 @@ void result::print(ostream &s){
                     s << "Binomiale confidence interval:\t[" << l << " , " << u << "]"<< endl;
                     s << "Binomiale width:\t"<< u-l << endl;
                     
-                }
-                s << "Standard deviation:\t" << stdev[i] << endl;
-                s << "Width:\t" << width[i] << endl;
+                }*/
+                //s << "Standard deviation:\t" << stdev[i] << endl;
+                s << "Width:\t" << HaslResult[i].width() << endl;
             }
         }
 		s << "Confidence level:\t" << P.Level << endl;
@@ -264,9 +208,9 @@ void result::print(ostream &s){
 void result::outputData(){
     outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;
     for(int i =0; i<P.HaslFormulasname.size(); i++){
-        outdatastream << " "<<MeanM2->Mean[i]/MeanM2->Isucc
-		<< " "<< MeanM2->M2[i]/MeanM2->Isucc
-		<< " " << low[i] << " " << up[i];
+        outdatastream << " "<< HaslResult[i].mean
+		<< " "<< HaslResult[i].width()
+		<< " " << HaslResult[i].low << " " << HaslResult[i].up;
     }
     outdatastream << endl;
 }

@@ -42,6 +42,7 @@
 
 class ConfInt {
 public:
+	ConfInt();
 	ConfInt(double,double);
 	ConfInt(double,double,double);
 	~ConfInt();
@@ -49,6 +50,7 @@ public:
 	double mean;
 	double low;
 	double up;
+	double width(void);
 };
 
 class HaslFormulasTop {

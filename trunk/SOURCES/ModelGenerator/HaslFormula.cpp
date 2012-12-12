@@ -31,6 +31,12 @@
 #include <boost/math/distributions/binomial.hpp>
 #include <limits>
 
+ConfInt::ConfInt(){
+	mean = 0;
+	low = - std::numeric_limits<double>::infinity();
+	up = std::numeric_limits<double>::infinity();
+}
+
 ConfInt::ConfInt(double meanArg,double width){
 	mean = meanArg;
 	low = meanArg - width/2;
@@ -44,6 +50,10 @@ ConfInt::ConfInt(double meanArg,double lowArg,double upArg){
 }
 
 ConfInt::~ConfInt(){}
+
+double ConfInt::width(){
+	return (up-low);
+}
 
 HaslFormulasTop::HaslFormulasTop(double l){
 	TypeOp = PROBABILITY;
@@ -86,6 +96,26 @@ HaslFormulasTop::~HaslFormulasTop(){
 	if(right != NULL) delete right;
 }
 
+////////////////////////////////////////////////////////////////////////////
+// Some remarks about the estimation of the confidence interval adopted here
+// Let l=ConfLevel, the confidence level
+// l=1-alpha
+// Let w=ConfWidth, the size of the confidence interval
+//
+// Let mu the value to estimate, and x the estimation of mu
+// then Prob(x-w/2 <= mu <= x+w/2) = 1-alpha
+//
+// The confidence interval is given by :
+// [x-z(1-alpha/2) * StandardDeviation~ / sqrt(NumberOfObservations) ,
+//         x+z(1-alpha/2) * StandardDeviation~ / sqrt(NumberOfObservations)]
+//
+// z(1-alpha/2)=z(1-(1-l)/2) = z(0.5+l/2)
+//
+// StandartDeviation~ = sqrt( Variance +1/n)
+// This correction come from the Chows and Robbin algorithm to ensure
+// The correctness of the stopping condition.
+//
+////////////////////////////////////////////////////////////////////////////
 ConfInt* HaslFormulasTop::eval(BatchR &batch){
 	switch (TypeOp) {
 		case PROBABILITY:
@@ -150,8 +180,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 			ConfInt* rci = right->eval(batch);
 			
 			if(rci->low * rci->up<=0)
-				return new ConfInt(0,- std::numeric_limits<double>::infinity(),
-								   std::numeric_limits<double>::infinity());
+				return new ConfInt();
 			
 			double mean = lci->mean / rci->mean;
 			double low,up;
