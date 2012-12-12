@@ -28,5 +28,18 @@
          landmarkName = "readStrat(int N, string stratPath, vector&lt; pair&lt;int, vector&lt;int&gt; &gt; &gt;&amp; strat)"
          landmarkType = "7">
       </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/ModelGenerator/LhaParser/Lha-Reader.cpp"
+         timestampString = "377017906.158967"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "90"
+         endingLineNumber = "90"
+         landmarkName = "Lha_Reader::parse_file(parameters&amp; P)"
+         landmarkType = "5">
+      </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

@@ -100,6 +100,7 @@ struct LHA {
     vector<int> LhaFuncArg;
     vector<string> LhaFuncType;
     vector<string> Algebraic;
+	double ConfidenceLevel;
 	vector<string> HASLname;
 	vector<HaslFormulasTop> HASLtop;
 	
@@ -142,8 +143,8 @@ public:
 
 
     int parse(std::string&);
-    int parse_file(std::string&);
-	int parse_gml_file(std::string&);
+    int parse_file(parameters&);
+	int parse_gml_file(parameters&);
 
     string InvRelOp(string &);
     void WriteFile(parameters&);

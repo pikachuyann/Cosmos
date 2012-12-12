@@ -649,12 +649,12 @@ HaslExps:HaslExp | HaslExp HaslExps;
 HaslExp: str EQ AVG LB AlgExpr RB SEMICOLON {
 		Reader.MyLha.Algebraic.push_back($5);
 		Reader.MyLha.HASLname.push_back(*$1);
-		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,0.5));
+		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel));
 	};
 	| AVG LB AlgExpr RB SEMICOLON {
 		Reader.MyLha.Algebraic.push_back($3);
 		Reader.MyLha.HASLname.push_back("");
-		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,0.5));
+		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel));
 	};
 
 AlgExpr:LhaFunc {string ss=$1;

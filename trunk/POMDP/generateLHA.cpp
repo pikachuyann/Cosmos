@@ -4,16 +4,20 @@
 void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,vector<double>& RewardArray, double H, vector< vector<double> >& M){
     
     unsigned long Xlastmax = Plast[0].size()-1;
-    
+	double discount = 0.9;
+    bool discounted = true;
+	
     cout << "generate LHA" << endl;
     
     
     ofstream LhaFile("generated.lha", ios::out | ios::trunc);
     ofstream StrategieFile("Strat",ios::out | ios::trunc);
     
-    
-    LhaFile << "NbVariables = " << /*N*N*(Xlastmax+1)+*/ 2 << ";" << endl; 
-    LhaFile << "NbLocations = "<< N*(Xlastmax+1)+1 << ";" << endl; 
+    if(discounted){LhaFile << "NbVariables = " << 3 << ";" << endl;
+    }else LhaFile << "NbVariables = " << 2 << ";" << endl;
+	
+    if(discounted){LhaFile << "NbLocations = "<< N*(Xlastmax+1)+2 << ";" << endl;
+	}else LhaFile << "NbLocations = "<< N*(Xlastmax+1)+1 << ";" << endl;
 
     LhaFile << "const double H = "<< H << ";" << endl; 
     
@@ -22,10 +26,11 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
         Xlast is equal to 0 if the drone is currently detected and 1 otherwise
      */
     
-    LhaFile << "VariablesList = {time, Reward} ;"<< endl; 
+    if(discounted){LhaFile << "VariablesList = {time, Reward,Discount};"<< endl;
+    }else LhaFile << "VariablesList = {time, Reward} ;"<< endl;
     
-    
-    LhaFile << "LocationsList = { lf";
+    LhaFile << "LocationsList = {lf";
+	if(discounted)LhaFile << ",li";
     for(int i=0;i<N;i++){
         for(int Xlast=0;Xlast<=Xlastmax;Xlast++){
             LhaFile << ", lp"<<i<<"_"<<Xlast;
@@ -36,13 +41,15 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
     
     LhaFile << "Reward=AVG(Last(Reward));"<<endl;
     
-    LhaFile << "InitialLocations = {lp0_0};"<< endl; 
+	if(discounted){LhaFile << "InitialLocations = {li};"<< endl;
+    }else LhaFile << "InitialLocations = {lp0_0};"<< endl;
 
     LhaFile << "FinalLocations = {lf};"<< endl; 
 
     LhaFile << "Locations={"<< endl; 
-    //LhaFile << "(li, TRUE, (time:1));"<< endl; 
-    LhaFile << "(lf, TRUE, (time:0));"<< endl; 
+    //LhaFile << "(li, TRUE, (time:1));"<< endl;
+	if(discounted)LhaFile << "(li, TRUE , (time:1));"<< endl;
+    LhaFile << "(lf, TRUE, (time:0));"<< endl;
     //LhaFile << "(la, TRUE, (time:1));"<< endl; 
     for(int i=0;i<N;i++){
         LhaFile << "(lp"<<i<<"_0, V"<<i<<"=1 , (time:0));"<< endl;
@@ -107,6 +114,8 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
 
     LhaFile << "Edges={"<< endl; 
     
+	if(discounted)LhaFile << "((li,lp0_0),#,time<=0, {Discount = 1} );"<<endl;
+	
     //Edges to the final state.
     for (int v=0 ; v<N; v++) {
         for(int Xlast=0;Xlast<=Xlastmax;Xlast++)
@@ -138,9 +147,10 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
             }
             if(compt>0)LhaFile << "}";
             LhaFile << ", time <=H,";
-			if(nbSensorOn>0){
-				LhaFile << "{time = time+1,Reward = Reward " << ron * nbSensorOn << " }";
-			} else LhaFile << "#";
+			LhaFile << "{time = time+1,Reward = Reward + " << ron * nbSensorOn;
+			if(discounted){LhaFile << "*Discount , Discount = "<< discount <<"* Discount }";
+			}else LhaFile << "}";
+			
             LhaFile << ");"<< endl;
             
             //Drone detected in location x_0
@@ -149,10 +159,14 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
                 if ((ron + Plast[v][Xlast][x]*RewardArray[x]>=0) &(Xlast>0 | M[v][x]>0) ){
                     LhaFile << "((lp"<<v<<"_"<< Xlast <<",lp"<<x<<"_0),";
                     LhaFile << "ALL, time <=H, { ";
-                    LhaFile << "time=time+1,Reward = Reward + " << RewardArray[x] << "+"<< ron * nbSensorOn;
+					
+                    LhaFile << "time=time+1,Reward = Reward + (" << RewardArray[x] << "+"<< ron * nbSensorOn;
                     //LhaFile <<", Plast"<<v<<"_"<<Xlast<<"_"<<x<<"=Plast"<<v<<"_"<< Xlast <<"_"<<x<<"+1";
                     //LhaFile << ", Out"<<v<<"=Out"<<v<<"+1";
-                    LhaFile << "});"<<endl;
+                    if(discounted){LhaFile << ")*Discount , Discount = "<< discount <<"* Discount }";
+					}else LhaFile << ")}";
+					
+					LhaFile << ");"<<endl;
                 }
             }
         }
@@ -172,16 +186,18 @@ int NumberOfSetBits(int i)
 }
 
 void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& strat, vector<double>& reward, double H,vector< vector<double> >& M){
-	
+	double discount = 0.9;
+    bool discounted = true;
     
     cout << "generate LHA" << endl;
     
     
     ofstream LhaFile("generatedFromStrat.lha", ios::out | ios::trunc);
     
-    
-    LhaFile << "NbVariables = " << 2 << ";" << endl;
-    LhaFile << "NbLocations = "<< strat.size()+1 << ";" << endl;
+	if(discounted){LhaFile << "NbVariables = " << 3 << ";" << endl;
+	}else LhaFile << "NbVariables = " <<  2 << ";" << endl;
+	
+	LhaFile << "NbLocations = "<< strat.size()+2 << ";" << endl;
 	
     LhaFile << "const double H = "<< H << ";" << endl;
     
@@ -190,10 +206,11 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
 	 Xlast is equal to 0 if the drone is currently detected and 1 otherwise
      */
     
-    LhaFile << "VariablesList = {time, Reward} ;"<< endl;
+	if(discounted){LhaFile << "VariablesList = {time, Reward,Discount};"<< endl;
+    }else LhaFile << "VariablesList = {time, Reward} ;"<< endl;
+	
     
-    
-    LhaFile << "LocationsList = { lf";
+    LhaFile << "LocationsList = { li, lf";
     for(int i=0;i<strat.size();i++){
 		LhaFile << ", la"<<i;
 	}
@@ -202,12 +219,13 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
     
 	LhaFile << "Reward=AVG(Last(Reward));"<<endl;
     
-    LhaFile << "InitialLocations = {la"<<strat.size()-1<<"};"<< endl;
+    //LhaFile << "InitialLocations = {la"<<strat.size()-1<<"};"<< endl;
+	LhaFile << "InitialLocations = {li};"<< endl;
 	
     LhaFile << "FinalLocations = {lf};"<< endl;
 	
     LhaFile << "Locations={"<< endl;
-    //LhaFile << "(li, TRUE, (time:1));"<< endl;
+    LhaFile << "(li, TRUE, (time:1));"<< endl;
     LhaFile << "(lf, TRUE, (time:0));"<< endl;
     //LhaFile << "(la, TRUE, (time:1));"<< endl;
     for(int i=0;i<strat.size();i++){
@@ -220,6 +238,9 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
 	
     LhaFile << "Edges={"<< endl;
     
+	//Edges to the initial state.
+	LhaFile << "((li,la"<< strat.size()-1 <<"),#,time<=0, {Discount = 1} );"<<endl;
+	
     //Edges to the final state.
     for (int v=0 ; v<strat.size(); v++)
 		LhaFile << "((la"<<v<<",lf),ALL, time>=H,#);"<<endl;
@@ -242,7 +263,12 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
 							}
 						}
 					}
-					LhaFile << "}, time <=H, { time=time+1,Reward = Reward + "<< ron * NumberOfSetBits(strat[v].first);
+					
+					LhaFile << "}, time <=H, {time=time+1,Reward= Reward+ "
+					<< ron * NumberOfSetBits(strat[v].first);
+					if(discounted)
+						LhaFile << "*Discount ,Discount = " << discount << "*Discount";
+						
 				}else{
 					for (int lo =0; lo<N; lo++) {
 								if (firsttrans){firsttrans=false;}
@@ -250,7 +276,11 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
 								
 								LhaFile<< "Tr"<<lo<<"_"<<x;
 					}
-					LhaFile << "}, time <=H, { time=time+1,Reward = Reward + "<< reward[x]<<"+" << ron * NumberOfSetBits(strat[v].first);
+					
+					LhaFile << "},time <=H,{ time=time+1,Reward = Reward+ ("
+						<< reward[x]<<"+"<< ron*NumberOfSetBits(strat[v].first)<<")";
+					if(discounted)
+						LhaFile << "*Discount ,Discount = "<<discount<<"*Discount";
 				}
 				
 				LhaFile << "});"<<endl;

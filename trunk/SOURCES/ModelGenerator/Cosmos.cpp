@@ -133,13 +133,14 @@ bool ParseBuild(parameters& P) {
 	
     try{
         if(P.GMLinput){
-            parseresult = lReader.parse_gml_file(P.PathLha);
+            parseresult = lReader.parse_gml_file(P);
         }else {
-            parseresult = lReader.parse_file(P.PathLha);
+            parseresult = lReader.parse_file(P);
         }
         
         if (!parseresult) {
             P.HaslFormulasname = vector<string>(lReader.MyLha.HASLname);
+			P.HaslFormulas = vector<HaslFormulasTop>(lReader.MyLha.HASLtop);
 			if(P.CountTrans){
 				for (int tr=0; tr < lReader.MyLha.Edge.size(); tr++) {
 					std::stringstream transname;

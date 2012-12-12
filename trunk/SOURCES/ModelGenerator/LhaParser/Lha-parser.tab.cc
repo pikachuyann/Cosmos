@@ -1343,7 +1343,7 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     {
 		Reader.MyLha.Algebraic.push_back((yysemantic_stack_[(7) - (5)].expression));
 		Reader.MyLha.HASLname.push_back(*(yysemantic_stack_[(7) - (1)].name));
-		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,0.5));
+		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel));
 	}
     break;
 
@@ -1353,7 +1353,7 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     {
 		Reader.MyLha.Algebraic.push_back((yysemantic_stack_[(5) - (3)].expression));
 		Reader.MyLha.HASLname.push_back("");
-		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,0.5));
+		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel));
 	}
     break;
 

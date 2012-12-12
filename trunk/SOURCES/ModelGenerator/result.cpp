@@ -173,6 +173,10 @@ void result::printProgress(){
     endline++;
 	if(P.verbose >1){
 		for(int i=0; i<P.HaslFormulasname.size(); i++){
+			ConfInt* ci = P.HaslFormulas[i].eval(*MeanM2);
+			cout << "mean ci:" << ci->mean << ":"<< ci->low<< ":" << ci->up<<endl;
+			delete ci;
+			
 			cout<< P.HaslFormulasname[i] << ":\t Mean" << "="
 				<< MeanM2->Mean[i]/MeanM2->Isucc;
 			cout << "\t stdev=" << stdev[i] << "\t  width=" << width[i] << endl;

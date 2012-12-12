@@ -73,10 +73,11 @@ int Lha_Reader::parse(string& expr) {
     return res;
 }
 
-int Lha_Reader::parse_file(string &filename) {
+int Lha_Reader::parse_file(parameters& P) {
     string str;
+	MyLha.ConfidenceLevel=P.Level;
 
-    ifstream file(filename.c_str(), ios::in);
+    ifstream file(P.PathLha.c_str(), ios::in);
     if (file) {
 
 
@@ -93,21 +94,22 @@ int Lha_Reader::parse_file(string &filename) {
 
         return x;
     } else {
-        cout << "Can't open : " << filename << endl;
+        cout << "Can't open : " << P.PathLha << endl;
         return 1;
     }
 }
-int Lha_Reader::parse_gml_file(string &filename) {
-    ifstream ifile(filename.c_str());
+int Lha_Reader::parse_gml_file(parameters& P) {
+	MyLha.ConfidenceLevel=P.Level;
+    ifstream ifile(P.PathLha.c_str());
     if(ifile){
         //cout << "parse GML:" << filename << endl;
         ModelHandlerPtr handlerPtr(new MyLhaModelHandler(&MyLha));
         ExpatModelParser parser = ExpatModelParser(handlerPtr);
-        parser.parse_file(filename);
+        parser.parse_file(P.PathLha);
         //cout << "end parse GML"<< endl;
         return 0;
     }else{
-        cout << "File " << filename << " does not exist!" << endl;
+        cout << "File " << P.PathLha << " does not exist!" << endl;
         exit(EXIT_FAILURE);
     }
     
