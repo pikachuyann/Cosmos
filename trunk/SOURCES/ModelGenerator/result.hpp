@@ -46,7 +46,7 @@ public:
     double RelErr;
 	vector<double> RelErrArray;
 	
-	vector<ConfInt> HaslResult;
+	vector<ConfInt*> HaslResult;
 
     time_t start, end;
     double cpu_time_used;

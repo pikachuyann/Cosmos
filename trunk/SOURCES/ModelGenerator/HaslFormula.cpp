@@ -65,7 +65,7 @@ HaslFormulasTop::HaslFormulasTop(double l){
 }
 
 HaslFormulasTop::HaslFormulasTop(double l,double v){
-	TypeOp = PROBABILITY;
+	TypeOp = CONSTANT;
 	Level = 1;
 	Value = v;
 	Algebraic = -1;
@@ -130,7 +130,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 		case EXPECTANCY:
 		{
 			double mean = batch.Mean[Algebraic]/batch.Isucc;
-			double m2 = batch.Mean[Algebraic]/batch.Isucc;
+			double m2 = batch.M2[Algebraic]/batch.Isucc;
 			double variance = m2 - mean * mean;
 			
 			variance += 1.0/batch.Isucc;

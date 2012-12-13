@@ -38,7 +38,9 @@ result::result(parameters &Q){
     P= Q;
    
     MeanM2 = new BatchR(P.HaslFormulasname.size());
-	HaslResult = vector<ConfInt>(P.HaslFormulasname.size());
+	for(int i =0; i<P.HaslFormulasname.size(); i++){
+		HaslResult.push_back(new ConfInt());
+	}
 	
     RelErr = 0;
 	RelErrArray = vector<double>(P.HaslFormulasname.size()); //relative error
@@ -73,17 +75,15 @@ void result::addBatch(BatchR *batchResult){
     MeanM2->unionR(batchResult);
 	RelErr = 0;
     for(int i =0; i<P.HaslFormulasname.size(); i++){
-        
-		delete &HaslResult[i];
-		HaslResult[i] = *P.HaslFormulas[i].eval(*MeanM2);
-        
+		delete HaslResult[i];
+		HaslResult[i] = P.HaslFormulas[i].eval(*MeanM2);
         if(P.BoundedContinuous){
-            HaslResult[i].low *=  (1 - P.epsilon);
+            HaslResult[i]->low *=  (1 - P.epsilon);
         }
 		
         if(P.RareEvent || P.BoundedRE>0){
-            RelErrArray[i] =  HaslResult[i].width() /  abs(MeanM2->Mean[i]/MeanM2->Isucc);
-        }else RelErrArray[i] = HaslResult[i].width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
+            RelErrArray[i] =  HaslResult[i]->width() /  abs(MeanM2->Mean[i]/MeanM2->Isucc);
+        }else RelErrArray[i] = HaslResult[i]->width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
 		
 		RelErr = max(RelErr,RelErrArray[i]);
         
@@ -122,8 +122,8 @@ void result::printProgress(){
 		for(int i=0; i<P.HaslFormulasname.size(); i++){
 			
 			cout<< P.HaslFormulasname[i] << ":\t Mean" << "="
-			<< HaslResult[i].mean;
-			cout << "\t  width=" << HaslResult[i].width() << endl;
+			<< HaslResult[i]->mean;
+			cout << "\t  width=" << HaslResult[i]->width() << endl;
 			endline++;
 			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2){
 				cout << "% of width:\t";
@@ -178,8 +178,8 @@ void result::print(ostream &s){
                 s << "Binomiale confidence interval:\t[" << l*MeanM2->Mean[i] << " , " << u*MeanM2->Mean[i] << "]"<< endl;
                 s << "Binomiale width:\t"<< (u-l)*MeanM2->Mean[i] << endl <<endl;
             } else {
-                s << "Estimated value:\t" << HaslResult[i].mean << endl;
-                s << "Confidence interval:\t[" << HaslResult[i].low << " , " << HaslResult[i].up << "]" << endl;
+                s << "Estimated value:\t" << HaslResult[i]->mean << endl;
+                s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
                 
                 /*if(MeanM2->IsBernoulli[i]){
                     s << "The distribution look like a binomials!" << endl;
@@ -193,7 +193,7 @@ void result::print(ostream &s){
                     
                 }*/
                 //s << "Standard deviation:\t" << stdev[i] << endl;
-                s << "Width:\t" << HaslResult[i].width() << endl;
+                s << "Width:\t" << HaslResult[i]->width() << endl;
             }
         }
 		s << "Confidence level:\t" << P.Level << endl;
@@ -208,9 +208,9 @@ void result::print(ostream &s){
 void result::outputData(){
     outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;
     for(int i =0; i<P.HaslFormulasname.size(); i++){
-        outdatastream << " "<< HaslResult[i].mean
-		<< " "<< HaslResult[i].width()
-		<< " " << HaslResult[i].low << " " << HaslResult[i].up;
+        outdatastream << " "<< HaslResult[i]->mean
+		<< " "<< HaslResult[i]->width()
+		<< " " << HaslResult[i]->low << " " << HaslResult[i]->up;
     }
     outdatastream << endl;
 }

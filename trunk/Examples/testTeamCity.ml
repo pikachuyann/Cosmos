@@ -67,10 +67,10 @@ let test_cosmos_grml n v o =
   else test_result n v;;
 
 let test_coverage name v o n =
-  let ret = invoke_cosmos (" --tmp-status 2 --max-run 10 --batch 10 ") (name^".gspn") (name^".lha")  in
+  let _ = invoke_cosmos (" --tmp-status 2 --max-run 10 --batch 10 ") (name^".gspn") (name^".lha")  in
   let succ = ref 0 in
   for i = 1 to n do
-    let ret = invoke_cosmos (o^" --tmp-status 3") (name^".gspn") (name^".lha") in
+    let _ = invoke_cosmos (o^" --tmp-status 3") (name^".gspn") (name^".lha") in
     let result = parse_result "Result.res" in
     if v > (fst result.confInt) & (snd result.confInt) > v then
       incr succ;
