@@ -62,36 +62,31 @@ int main(int argc, char** argv) {
 		if(str== "-RE"){
 			mySim= (new SimulatorRE(false));
 			//mySim->RareEvent_mode=true;
-		}
-		if(str== "-RE2"){
+		}else if(str== "-RE2"){
 			mySim= (new SimulatorRE(true));
 			//mySim->RareEvent_mode=true;
 			//mySim->doubleIS_mode=true;
-		}
-		if(str== "-BURE"){
+		}else if(str== "-BURE"){
             int m = atoi(argv[4]);
             int T = atoi(argv[5]);
             SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(m);
             myBoundedSim->initVect(T);
 			mySim= myBoundedSim;
-		}
-        if(str== "-COBURE"){
+		}else if(str== "-COBURE"){
             int m = atoi(argv[4]);
             double t = atof(argv[5]);
             double e = atof(argv[6]);
             SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(m,e);
             myBoundedSim->initVectCo(t);
 			mySim= myBoundedSim;
-		}
-		if(str== "-STSPBU"){
+		}else if(str== "-STSPBU"){
 			stateSpace states;
 			states.exploreStateSpace();
 			states.buildTransitionMatrix();
 			states.outputMat();
             cout << "Finish Exporting" << endl;
 			exit(EXIT_SUCCESS);
-		}
-        if(str== "-STSP"){
+		}else if(str== "-STSP"){
 			stateSpace states;
 			states.exploreStateSpace();
 			states.buildTransitionMatrix();

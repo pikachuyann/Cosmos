@@ -169,9 +169,14 @@ void SimulatorRE::GenerateEvent(Event& E, int Id) {
 		N.Origine_Rate_Sum = N.Origine_Rate_Sum + N.ParamDistr[1];
 		
     }
-    double w;
-    vector<double> wParam(1, N.GetWeight(Id));
-    w = GenerateTime(2, wParam);
+	double w=0.0;
+	if (N.Transition[Id].DistTypeIndex > 2) {
+		N.ParamDistr[0]= N.GetWeight(Id);
+		w = GenerateTime(2, N.ParamDistr);
+		//vector<double> wParam(1, N.GetWeight(Id));
+		//w = GenerateTime(2, wParam);
+    }
+	
     E.transition = Id;
     E.time = t;
     E.priority = N.GetPriority(Id);
