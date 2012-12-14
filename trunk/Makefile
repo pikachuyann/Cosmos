@@ -1,5 +1,5 @@
 export CC=g++
-export OPTIONS=-O3
+export OPTIONS= -O3
 export BOOSTPATH=/data/usr64/include
 export BISON=/opt/local/bin/bison
 export FLEX=/opt/local/bin/flex

@@ -69,7 +69,6 @@ void launch_clients(parameters& P){
 	signal(SIGINT, interuptHandler);
 	ostringstream os;
 	pid_t readpid;
-	int size;
 	os << P.tmpPath<<"/ClientSim " << P.Batch << " " << P.verbose;
     
     if(P.DoubleIS){ 
@@ -90,7 +89,7 @@ void launch_clients(parameters& P){
         int streamfd = fileno(stream);
         if(streamfd >max_client)max_client = streamfd;
         
-        size = fread(reinterpret_cast<char*>( &readpid ), sizeof(readpid) ,1, stream);
+        fread(reinterpret_cast<char*>( &readpid ), sizeof(readpid) ,1, stream);
         clientPID.push_back(readpid);
     }
     

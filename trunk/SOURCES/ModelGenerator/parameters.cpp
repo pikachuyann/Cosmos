@@ -97,6 +97,7 @@ void parameters::usage(){
     cout << "\t--alligator-mode \toutput easy to parse result"<< endl;
 	cout << "\t--count-transition \tAdd a Hasl formula for wich count the number of time each transition occurs"<< endl;
 	cout << "\t--tmp-path arg \tPath to the temporary directory by default ./tmp/"<< endl;
+	cout << "\t--bin-path arg \tPath to the binary of cosmos (guess automatically)"<< endl;
 	cout << "\t--tmp-status arg \tDo not remove or do not rebuild tmp directory: 0 default->rebuild,destroy; 1->do not build;2->do not destroy;3-> do not build nor destroy"<<endl;
 	cout << "\t--debug-string \tAdd transition and place name to the compile file for debuging"<< endl;
 	cout << "\t-d,--outputdata \tOutput successive result in the blank separated file format"<< endl;
@@ -142,6 +143,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"debug-string", no_argument,	 0,  3 },
 			{"tmp-path" , required_argument, 0,	 4 },
 			{"tmp-status", required_argument,0,	 5 },
+			{"bin-path", required_argument  ,0,	 9 },
             
             {0, 0, 0, 0}
         };
@@ -193,7 +195,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 				
             case  'l':Level = atof(optarg);     break;
             case  'w':Width = atof(optarg);     break;
-            case  2: Batch = atoi(optarg);      break;
+            case  2  : Batch = atoi(optarg);      break;
             case  'm': MaxRuns = atoi(optarg);      break;
             case  'n': Njob = atoi(optarg);      break;
             case  'e': epsilon = atof(optarg);  break;
@@ -202,6 +204,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  't': CountTrans = true;	break;
 			case  3  : StringInSpnLHA = true; break;
 			case  4  : tmpPath = optarg; break;
+			case  9  : Path = optarg; break;
 			case  5	 : tmpStatus = atoi(optarg); break;
 			case  6  : gcccmd = optarg; break;
 			case  7  : gccflags = optarg; break;

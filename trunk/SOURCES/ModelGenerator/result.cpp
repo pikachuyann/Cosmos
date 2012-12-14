@@ -28,9 +28,7 @@
 #include "result.hpp"
 #include "HaslFormula.hpp"
 
-#include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
-boost::math::normal norma;
 
 using namespace std;
 
@@ -183,19 +181,6 @@ void result::print(ostream &s){
             } else {
                 s << "Estimated value:\t" << HaslResult[i]->mean << endl;
                 s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
-                
-                /*if(MeanM2->IsBernoulli[i]){
-                    s << "The distribution look like a binomials!" << endl;
-                    using namespace boost::math;
-                    double successes = MeanM2->Mean[i];
-                    double l = binomlow(MeanM2->Isucc, successes, (1-P.Level)/2);
-                    double u = binomup(MeanM2->Isucc, successes, (1-P.Level)/2);
-                    // Print Clopper Pearson Limits:
-                    s << "Binomiale confidence interval:\t[" << l << " , " << u << "]"<< endl;
-                    s << "Binomiale width:\t"<< u-l << endl;
-                    
-                }*/
-                //s << "Standard deviation:\t" << stdev[i] << endl;
                 s << "Width:\t" << HaslResult[i]->width() << endl;
             }
         }

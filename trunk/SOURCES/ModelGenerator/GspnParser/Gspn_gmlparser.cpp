@@ -160,7 +160,8 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
 			  || (*it).compare("min")==0  || (*it).compare("max")==0
 			  || (*it).compare("power")==0|| (*it).compare("-")==0)  {
 		
-		int v1,v2;
+		int v1=0;
+		int v2=0;
 		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 			if(it2!= it.begin()) { v1 = eval_intFormula(intconst, it2);
 			} else {

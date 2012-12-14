@@ -242,7 +242,8 @@ int MyLhaModelHandler::eval_intFormula( map<std::string,int> intconst, tree<stri
 			  || (*it).compare("min")==0  || (*it).compare("max")==0
 			  || (*it).compare("ipower")==0|| (*it).compare("-")==0)  {
 		
-		int v1,v2;
+		int v1=0;
+		int v2=0;
 		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 			if(it2!= it.begin()) { v1 = eval_intFormula(intconst, it2);
 			} else {
@@ -554,7 +555,8 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 				if((*it3).compare("expr")==0)eval_expr(&markdep, varflow, it3.begin() );
 			}
 			int vindex = MyLHA->VarIndex[var->c_str()];
-			if(verbose>1)cout << "\tvar: " << *var << " index: " << vindex << " update: " << *varflow << endl;
+			if(verbose>1)
+				cout << "\tvar: " << *var << " index: " << vindex << " update: " << *varflow << endl;
 			v1[vindex]= *varflow;
 		}
 	}
