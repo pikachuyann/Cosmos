@@ -169,14 +169,17 @@ void result::print(ostream &s){
             
             if(P.RareEvent){
                 s << "Rare Event Result" << endl;
-                double mean = (double)MeanM2->Isucc / (double)MeanM2->I;
+                double mean = 1.0 / (double)MeanM2->I;
                 mean *= MeanM2->Mean[i];
                 s << "Estimated value:\t" << mean << endl;
                 double l = binomlow(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
                 double u = binomup(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
                 // Print Clopper Pearson Limits:
-                s << "Binomiale confidence interval:\t[" << l*MeanM2->Mean[i] << " , " << u*MeanM2->Mean[i] << "]"<< endl;
-                s << "Binomiale width:\t"<< (u-l)*MeanM2->Mean[i] << endl <<endl;
+                s << "Binomiale confidence interval:\t[" <<
+					l*MeanM2->Mean[i]/MeanM2->Isucc << " , " <<
+					u*MeanM2->Mean[i]/MeanM2->Isucc << "]"<< endl;
+                s << "Binomiale width:\t"<< (u-l)*MeanM2->Mean[i]/MeanM2->Isucc
+					<< endl <<endl;
             } else {
                 s << "Estimated value:\t" << HaslResult[i]->mean << endl;
                 s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
