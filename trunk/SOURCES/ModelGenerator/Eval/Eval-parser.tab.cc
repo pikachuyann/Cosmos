@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.5.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
@@ -35,7 +35,7 @@
 
 /* First part of user declarations.  */
 
-/* Line 278 of lalr1.cc  */
+/* Line 279 of lalr1.cc  */
 #line 40 "Eval-parser.tab.cc"
 
 
@@ -43,10 +43,10 @@
 
 /* User implementation prologue.  */
 
-/* Line 284 of lalr1.cc  */
+/* Line 285 of lalr1.cc  */
 #line 48 "Eval-parser.tab.cc"
 /* Unqualified %code blocks.  */
-/* Line 285 of lalr1.cc  */
+/* Line 286 of lalr1.cc  */
 #line 37 "Eval-parser.yy"
 
 #include "Eval.hpp"
@@ -55,7 +55,7 @@
 
 
 
-/* Line 285 of lalr1.cc  */
+/* Line 286 of lalr1.cc  */
 #line 60 "Eval-parser.tab.cc"
 
 
@@ -134,9 +134,9 @@ do {					\
 #else /* !YYDEBUG */
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
-# define YY_REDUCE_PRINT(Rule)
-# define YY_STACK_PRINT()
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location) YYUSE(Type)
+# define YY_REDUCE_PRINT(Rule)        static_cast<void>(0)
+# define YY_STACK_PRINT()             static_cast<void>(0)
 
 #endif /* !YYDEBUG */
 
@@ -150,7 +150,7 @@ do {					\
 
 
 namespace eval {
-/* Line 352 of lalr1.cc  */
+/* Line 353 of lalr1.cc  */
 #line 155 "Eval-parser.tab.cc"
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -223,33 +223,33 @@ namespace eval {
     switch (yytype)
       {
         case 3: /* str */
-/* Line 422 of lalr1.cc  */
+/* Line 423 of lalr1.cc  */
 #line 67 "Eval-parser.yy"
-	{ debug_stream () << *((*yyvaluep).name); };
-/* Line 422 of lalr1.cc  */
+        { debug_stream () << *((*yyvaluep).name); };
+/* Line 423 of lalr1.cc  */
 #line 231 "Eval-parser.tab.cc"
-	break;
+        break;
       case 4: /* rval */
-/* Line 422 of lalr1.cc  */
+/* Line 423 of lalr1.cc  */
 #line 71 "Eval-parser.yy"
-	{ debug_stream () << ((*yyvaluep).RealVal); };
-/* Line 422 of lalr1.cc  */
+        { debug_stream () << ((*yyvaluep).RealVal); };
+/* Line 423 of lalr1.cc  */
 #line 238 "Eval-parser.tab.cc"
-	break;
+        break;
       case 5: /* ival */
-/* Line 422 of lalr1.cc  */
+/* Line 423 of lalr1.cc  */
 #line 70 "Eval-parser.yy"
-	{ debug_stream () << ((*yyvaluep).IntVal); };
-/* Line 422 of lalr1.cc  */
+        { debug_stream () << ((*yyvaluep).IntVal); };
+/* Line 423 of lalr1.cc  */
 #line 245 "Eval-parser.tab.cc"
-	break;
+        break;
       case 21: /* exp */
-/* Line 422 of lalr1.cc  */
+/* Line 423 of lalr1.cc  */
 #line 71 "Eval-parser.yy"
-	{ debug_stream () << ((*yyvaluep).RealVal); };
-/* Line 422 of lalr1.cc  */
+        { debug_stream () << ((*yyvaluep).RealVal); };
+/* Line 423 of lalr1.cc  */
 #line 252 "Eval-parser.tab.cc"
-	break;
+        break;
        default:
 	  break;
       }
@@ -276,17 +276,18 @@ namespace eval {
     YYUSE (yymsg);
     YYUSE (yyvaluep);
 
-    YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
+    if (yymsg)
+      YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
     switch (yytype)
       {
         case 3: /* str */
-/* Line 453 of lalr1.cc  */
+/* Line 455 of lalr1.cc  */
 #line 68 "Eval-parser.yy"
-	{ delete ((*yyvaluep).name); };
-/* Line 453 of lalr1.cc  */
-#line 289 "Eval-parser.tab.cc"
-	break;
+        { delete ((*yyvaluep).name); };
+/* Line 455 of lalr1.cc  */
+#line 290 "Eval-parser.tab.cc"
+        break;
 
 	default:
 	  break;
@@ -371,6 +372,10 @@ namespace eval {
 
     int yyresult;
 
+    // FIXME: This shoud be completely indented.  It is not yet to
+    // avoid gratuitous conflicts when merging into the master branch.
+    try
+      {
     YYCDEBUG << "Starting parse" << std::endl;
 
 
@@ -406,8 +411,8 @@ namespace eval {
     /* Read a lookahead token.  */
     if (yychar == yyempty_)
       {
-	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc, Evaluate);
+        YYCDEBUG << "Reading a token: ";
+        yychar = yylex (&yylval, &yylloc, Evaluate);
       }
 
     /* Convert token to internal form.  */
@@ -480,75 +485,78 @@ namespace eval {
     else
       yyval = yysemantic_stack_[0];
 
+    // Compute the default @$.
     {
       slice<location_type, location_stack_type> slice (yylocation_stack_, yylen);
       YYLLOC_DEFAULT (yyloc, slice, yylen);
     }
+
+    // Perform the reduction.
     YY_REDUCE_PRINT (yyn);
     switch (yyn)
       {
-	  case 2:
-/* Line 661 of lalr1.cc  */
+          case 2:
+/* Line 670 of lalr1.cc  */
 #line 81 "Eval-parser.yy"
     {Evaluate.IntResult=(int) (yysemantic_stack_[(1) - (1)].RealVal);Evaluate.RealResult=(yysemantic_stack_[(1) - (1)].RealVal);}
     break;
 
   case 3:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 83 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(1) - (1)].IntVal);}
     break;
 
   case 4:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 84 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(1) - (1)].RealVal);}
     break;
 
   case 5:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 85 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (2)].RealVal);}
     break;
 
   case 6:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 86 "Eval-parser.yy"
     {YYABORT; }
     break;
 
   case 7:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 87 "Eval-parser.yy"
     {(yyval.RealVal)=-(yysemantic_stack_[(2) - (2)].RealVal);}
     break;
 
   case 8:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 88 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)+(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 9:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 89 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)*(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 10:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 90 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)-(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 11:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 91 "Eval-parser.yy"
     {(yyval.RealVal)=double((yysemantic_stack_[(2) - (2)].RealVal));}
     break;
 
   case 12:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 92 "Eval-parser.yy"
     {if((yysemantic_stack_[(3) - (3)].RealVal)==0)	  {cout<<"Division by zero !";YYABORT;} 
 					 else (yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)/double (yysemantic_stack_[(3) - (3)].RealVal);
@@ -556,35 +564,36 @@ namespace eval {
     break;
 
   case 13:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 95 "Eval-parser.yy"
     {(yyval.RealVal)=pow((yysemantic_stack_[(3) - (1)].RealVal),(yysemantic_stack_[(3) - (3)].RealVal));}
     break;
 
   case 14:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 96 "Eval-parser.yy"
     {if((yysemantic_stack_[(6) - (3)].RealVal)<=(yysemantic_stack_[(6) - (5)].RealVal)) (yyval.RealVal)=(yysemantic_stack_[(6) - (3)].RealVal); else (yyval.RealVal)=(yysemantic_stack_[(6) - (5)].RealVal);}
     break;
 
   case 15:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 97 "Eval-parser.yy"
     {if((yysemantic_stack_[(6) - (3)].RealVal)>=(yysemantic_stack_[(6) - (5)].RealVal)) (yyval.RealVal)=(yysemantic_stack_[(6) - (3)].RealVal);	 else (yyval.RealVal)=(yysemantic_stack_[(6) - (5)].RealVal);}
     break;
 
   case 16:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 98 "Eval-parser.yy"
     {(yyval.RealVal)=floor((yysemantic_stack_[(4) - (3)].RealVal));}
     break;
 
 
-/* Line 661 of lalr1.cc  */
-#line 585 "Eval-parser.tab.cc"
-	default:
-          break;
+/* Line 670 of lalr1.cc  */
+#line 593 "Eval-parser.tab.cc"
+      default:
+        break;
       }
+
     /* User semantic actions sometimes alter yychar, and that requires
        that yytoken be updated with the new translation.  We take the
        approach of translating immediately before every use of yytoken.
@@ -635,20 +644,19 @@ namespace eval {
     yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
-	/* If just tried and failed to reuse lookahead token after an
-	 error, discard it.  */
-
-	if (yychar <= yyeof_)
-	  {
-	  /* Return failure if at end of input.  */
-	  if (yychar == yyeof_)
-	    YYABORT;
-	  }
-	else
-	  {
-	    yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
-	    yychar = yyempty_;
-	  }
+        /* If just tried and failed to reuse lookahead token after an
+           error, discard it.  */
+        if (yychar <= yyeof_)
+          {
+            /* Return failure if at end of input.  */
+            if (yychar == yyeof_)
+              YYABORT;
+          }
+        else
+          {
+            yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
+            yychar = yyempty_;
+          }
       }
 
     /* Else will try to reuse lookahead token after shifting the error
@@ -697,7 +705,7 @@ namespace eval {
 
 	/* Pop the current state because it cannot handle the error token.  */
 	if (yystate_stack_.height () == 1)
-	YYABORT;
+	  YYABORT;
 
 	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
@@ -745,16 +753,42 @@ namespace eval {
     /* Do not reclaim the symbols of the rule which action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
-    while (yystate_stack_.height () != 1)
+    while (1 < yystate_stack_.height ())
       {
-	yydestruct_ ("Cleanup: popping",
-		   yystos_[yystate_stack_[0]],
-		   &yysemantic_stack_[0],
-		   &yylocation_stack_[0]);
-	yypop_ ();
+        yydestruct_ ("Cleanup: popping",
+                     yystos_[yystate_stack_[0]],
+                     &yysemantic_stack_[0],
+                     &yylocation_stack_[0]);
+        yypop_ ();
       }
 
     return yyresult;
+    }
+    catch (...)
+      {
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
+                 << std::endl;
+        // Do not try to display the values of the reclaimed symbols,
+        // as their printer might throw an exception.
+        if (yychar != yyempty_)
+          {
+            /* Make sure we have latest lookahead translation.  See
+               comments at user semantic actions for why this is
+               necessary.  */
+            yytoken = yytranslate_ (yychar);
+            yydestruct_ (YY_NULL, yytoken, &yylval, &yylloc);
+          }
+
+        while (1 < yystate_stack_.height ())
+          {
+            yydestruct_ (YY_NULL,
+                         yystos_[yystate_stack_[0]],
+                         &yysemantic_stack_[0],
+                         &yylocation_stack_[0]);
+            yypop_ ();
+          }
+        throw;
+      }
   }
 
   // Generate an error message.
@@ -1089,9 +1123,9 @@ namespace eval {
 
 
 } // eval
-/* Line 1106 of lalr1.cc  */
-#line 1094 "Eval-parser.tab.cc"
-/* Line 1107 of lalr1.cc  */
+/* Line 1141 of lalr1.cc  */
+#line 1128 "Eval-parser.tab.cc"
+/* Line 1142 of lalr1.cc  */
 #line 100 "Eval-parser.yy"
 
 

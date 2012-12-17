@@ -5,7 +5,7 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
     
     unsigned long Xlastmax = Plast[0].size()-1;
 	double discount = 0.9;
-    bool discounted = true;
+    bool discounted = false;
 	
     cout << "generate LHA" << endl;
     

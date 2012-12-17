@@ -61,7 +61,7 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-g"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-v 0"
@@ -76,20 +76,24 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/trunk/Examples/RareEventUnbounded/tandem.gml"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/trunk/Examples/RareEventUnbounded/tandemlha.gml"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pi.grml"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pi.gspn"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pilha.grml"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pi.lha"
             isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--count-transition"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/AllCosmos/trunk/POMDP/generated.gspn"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/AllCosmos/trunk/POMDP/generated.lha"
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

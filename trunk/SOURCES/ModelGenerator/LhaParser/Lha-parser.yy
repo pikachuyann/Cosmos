@@ -113,6 +113,7 @@ vector <string> comp;
 %token <name>     LhaMIN
 %token <name>     LhaMAX
 %token <name> 	  AVG
+%token <name>	  PROB
 %token <name>     LAST
 %token <name> 	  INTEGRAL
 
@@ -651,11 +652,21 @@ HaslExp: str EQ AVG LB AlgExpr RB SEMICOLON {
 		Reader.MyLha.HASLname.push_back(*$1);
 	Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel));
 	};
+
 	| AVG LB AlgExpr RB SEMICOLON {
 		Reader.MyLha.Algebraic.push_back($3);
 		Reader.MyLha.HASLname.push_back("");
 	Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel));
 	};
+	| str EQ PROB SEMICOLON {
+		Reader.MyLha.HASLname.push_back(*$1);
+		Reader.MyLha.HASLtop.push_back(Reader.MyLha.ConfidenceLevel);
+	};
+	| PROB SEMICOLON {
+			Reader.MyLha.HASLname.push_back("");
+			Reader.MyLha.HASLtop.push_back(Reader.MyLha.ConfidenceLevel);
+	};
+	
 
 AlgExpr:LhaFunc {string ss=$1;
 				 sprintf($$,"LhaFunc[%d]", Reader.MyLha.LhaFunction[ss]);

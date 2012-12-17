@@ -267,7 +267,7 @@ redifinitions (80)
     à gauche: 87, à droite: 25
 
 
-état 0
+État 0
 
     0 $accept: . GSPN "end of file"
 
@@ -284,7 +284,7 @@ redifinitions (80)
     NbTransitions  aller à l'état 10
 
 
-état 1
+État 1
 
    36 NbPlaces: NbPl . EQ ival SEMICOLON
    37         | NbPl . EQ str SEMICOLON
@@ -292,7 +292,7 @@ redifinitions (80)
     EQ  décalage et aller à l'état 11
 
 
-état 2
+État 2
 
    38 NbTransitions: NbTr . EQ ival SEMICOLON
    39              | NbTr . EQ str SEMICOLON
@@ -300,7 +300,7 @@ redifinitions (80)
     EQ  décalage et aller à l'état 12
 
 
-état 3
+État 3
 
    32 Constant: Const . INT str EQ IntStringFormula SEMICOLON
    33         | Const . DOUBLE str EQ RealStringFormula SEMICOLON
@@ -309,14 +309,14 @@ redifinitions (80)
     DOUBLE  décalage et aller à l'état 14
 
 
-état 4
+État 4
 
     0 $accept: GSPN . "end of file"
 
     "end of file"  décalage et aller à l'état 15
 
 
-état 5
+État 5
 
    24 GSPN: declarations . definitions
    25     | declarations . definitions redifinitions
@@ -327,7 +327,7 @@ redifinitions (80)
     PlacesDef    aller à l'état 18
 
 
-état 6
+État 6
 
    26 declarations: Constants . Sizes Lists
 
@@ -339,7 +339,7 @@ redifinitions (80)
     NbTransitions  aller à l'état 10
 
 
-état 7
+État 7
 
    27 declarations: Sizes . Lists
 
@@ -351,7 +351,7 @@ redifinitions (80)
     TransitionsList  aller à l'état 24
 
 
-état 8
+État 8
 
    28 Constants: Constant .
    29          | Constant . Constants
@@ -364,7 +364,7 @@ redifinitions (80)
     Constant   aller à l'état 8
 
 
-état 9
+État 9
 
    30 Sizes: NbPlaces . NbTransitions
 
@@ -373,7 +373,7 @@ redifinitions (80)
     NbTransitions  aller à l'état 26
 
 
-état 10
+État 10
 
    31 Sizes: NbTransitions . NbPlaces
 
@@ -382,7 +382,7 @@ redifinitions (80)
     NbPlaces  aller à l'état 27
 
 
-état 11
+État 11
 
    36 NbPlaces: NbPl EQ . ival SEMICOLON
    37         | NbPl EQ . str SEMICOLON
@@ -391,7 +391,7 @@ redifinitions (80)
     ival  décalage et aller à l'état 29
 
 
-état 12
+État 12
 
    38 NbTransitions: NbTr EQ . ival SEMICOLON
    39              | NbTr EQ . str SEMICOLON
@@ -400,35 +400,35 @@ redifinitions (80)
     ival  décalage et aller à l'état 31
 
 
-état 13
+État 13
 
    32 Constant: Const INT . str EQ IntStringFormula SEMICOLON
 
     str  décalage et aller à l'état 32
 
 
-état 14
+État 14
 
    33 Constant: Const DOUBLE . str EQ RealStringFormula SEMICOLON
 
     str  décalage et aller à l'état 33
 
 
-état 15
+État 15
 
     0 $accept: GSPN "end of file" .
 
     $défaut  accepter
 
 
-état 16
+État 16
 
    48 PlacesDef: marking . EQ '{' PLACES '}' SEMICOLON
 
     EQ  décalage et aller à l'état 34
 
 
-état 17
+État 17
 
    24 GSPN: declarations definitions .
    25     | declarations definitions . redifinitions
@@ -441,7 +441,7 @@ redifinitions (80)
     redifinitions   aller à l'état 37
 
 
-état 18
+État 18
 
    46 definitions: PlacesDef . TransitionsDef InArcs OutArcs
    47            | PlacesDef . TransitionsDef InArcs OutArcs Inhibitors
@@ -451,7 +451,7 @@ redifinitions (80)
     TransitionsDef  aller à l'état 38
 
 
-état 19
+État 19
 
    26 declarations: Constants Sizes . Lists
 
@@ -463,28 +463,28 @@ redifinitions (80)
     TransitionsList  aller à l'état 24
 
 
-état 20
+État 20
 
    40 PlacesList: PList . EQ '{' PLabels '}' SEMICOLON
 
     EQ  décalage et aller à l'état 40
 
 
-état 21
+État 21
 
    43 TransitionsList: TList . EQ '{' TLabels '}' SEMICOLON
 
     EQ  décalage et aller à l'état 41
 
 
-état 22
+État 22
 
    27 declarations: Sizes Lists .
 
     $défaut  réduction par utilisation de la règle 27 (declarations)
 
 
-état 23
+État 23
 
    34 Lists: PlacesList . TransitionsList
 
@@ -493,7 +493,7 @@ redifinitions (80)
     TransitionsList  aller à l'état 42
 
 
-état 24
+État 24
 
    35 Lists: TransitionsList . PlacesList
 
@@ -502,98 +502,98 @@ redifinitions (80)
     PlacesList  aller à l'état 43
 
 
-état 25
+État 25
 
    29 Constants: Constant Constants .
 
     $défaut  réduction par utilisation de la règle 29 (Constants)
 
 
-état 26
+État 26
 
    30 Sizes: NbPlaces NbTransitions .
 
     $défaut  réduction par utilisation de la règle 30 (Sizes)
 
 
-état 27
+État 27
 
    31 Sizes: NbTransitions NbPlaces .
 
     $défaut  réduction par utilisation de la règle 31 (Sizes)
 
 
-état 28
+État 28
 
    37 NbPlaces: NbPl EQ str . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 44
 
 
-état 29
+État 29
 
    36 NbPlaces: NbPl EQ ival . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 45
 
 
-état 30
+État 30
 
    39 NbTransitions: NbTr EQ str . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 46
 
 
-état 31
+État 31
 
    38 NbTransitions: NbTr EQ ival . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 47
 
 
-état 32
+État 32
 
    32 Constant: Const INT str . EQ IntStringFormula SEMICOLON
 
     EQ  décalage et aller à l'état 48
 
 
-état 33
+État 33
 
    33 Constant: Const DOUBLE str . EQ RealStringFormula SEMICOLON
 
     EQ  décalage et aller à l'état 49
 
 
-état 34
+État 34
 
    48 PlacesDef: marking EQ . '{' PLACES '}' SEMICOLON
 
     '{'  décalage et aller à l'état 50
 
 
-état 35
+État 35
 
    52 TransitionsDef: transitions . EQ '{' TRANSITIONS '}' SEMICOLON
 
     EQ  décalage et aller à l'état 51
 
 
-état 36
+État 36
 
    87 redifinitions: TransitionsDef .
 
     $défaut  réduction par utilisation de la règle 87 (redifinitions)
 
 
-état 37
+État 37
 
    25 GSPN: declarations definitions redifinitions .
 
     $défaut  réduction par utilisation de la règle 25 (GSPN)
 
 
-état 38
+État 38
 
    46 definitions: PlacesDef TransitionsDef . InArcs OutArcs
    47            | PlacesDef TransitionsDef . InArcs OutArcs Inhibitors
@@ -603,70 +603,70 @@ redifinitions (80)
     InArcs  aller à l'état 53
 
 
-état 39
+État 39
 
    26 declarations: Constants Sizes Lists .
 
     $défaut  réduction par utilisation de la règle 26 (declarations)
 
 
-état 40
+État 40
 
    40 PlacesList: PList EQ . '{' PLabels '}' SEMICOLON
 
     '{'  décalage et aller à l'état 54
 
 
-état 41
+État 41
 
    43 TransitionsList: TList EQ . '{' TLabels '}' SEMICOLON
 
     '{'  décalage et aller à l'état 55
 
 
-état 42
+État 42
 
    34 Lists: PlacesList TransitionsList .
 
     $défaut  réduction par utilisation de la règle 34 (Lists)
 
 
-état 43
+État 43
 
    35 Lists: TransitionsList PlacesList .
 
     $défaut  réduction par utilisation de la règle 35 (Lists)
 
 
-état 44
+État 44
 
    37 NbPlaces: NbPl EQ str SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 37 (NbPlaces)
 
 
-état 45
+État 45
 
    36 NbPlaces: NbPl EQ ival SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 36 (NbPlaces)
 
 
-état 46
+État 46
 
    39 NbTransitions: NbTr EQ str SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 39 (NbTransitions)
 
 
-état 47
+État 47
 
    38 NbTransitions: NbTr EQ ival SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 38 (NbTransitions)
 
 
-état 48
+État 48
 
    32 Constant: Const INT str EQ . IntStringFormula SEMICOLON
 
@@ -680,7 +680,7 @@ redifinitions (80)
     IntStringFormula  aller à l'état 62
 
 
-état 49
+État 49
 
    33 Constant: Const DOUBLE str EQ . RealStringFormula SEMICOLON
 
@@ -695,7 +695,7 @@ redifinitions (80)
     RealStringFormula  aller à l'état 70
 
 
-état 50
+État 50
 
    48 PlacesDef: marking EQ '{' . PLACES '}' SEMICOLON
 
@@ -705,21 +705,21 @@ redifinitions (80)
     PLACE   aller à l'état 73
 
 
-état 51
+État 51
 
    52 TransitionsDef: transitions EQ . '{' TRANSITIONS '}' SEMICOLON
 
     '{'  décalage et aller à l'état 74
 
 
-état 52
+État 52
 
    72 InArcs: in . EQ '{' incells '}' SEMICOLON
 
     EQ  décalage et aller à l'état 75
 
 
-état 53
+État 53
 
    46 definitions: PlacesDef TransitionsDef InArcs . OutArcs
    47            | PlacesDef TransitionsDef InArcs . OutArcs Inhibitors
@@ -729,7 +729,7 @@ redifinitions (80)
     OutArcs  aller à l'état 77
 
 
-état 54
+État 54
 
    40 PlacesList: PList EQ '{' . PLabels '}' SEMICOLON
 
@@ -738,7 +738,7 @@ redifinitions (80)
     PLabels  aller à l'état 79
 
 
-état 55
+État 55
 
    43 TransitionsList: TList EQ '{' . TLabels '}' SEMICOLON
 
@@ -747,21 +747,21 @@ redifinitions (80)
     TLabels  aller à l'état 81
 
 
-état 56
+État 56
 
     2 IntStringFormula: str .
 
     $défaut  réduction par utilisation de la règle 2 (IntStringFormula)
 
 
-état 57
+État 57
 
     1 IntStringFormula: ival .
 
     $défaut  réduction par utilisation de la règle 1 (IntStringFormula)
 
 
-état 58
+État 58
 
     3 IntStringFormula: LB . IntStringFormula RB
 
@@ -775,21 +775,21 @@ redifinitions (80)
     IntStringFormula  aller à l'état 82
 
 
-état 59
+État 59
 
    10 IntStringFormula: MIN . LB IntStringFormula COMMA IntStringFormula RB
 
     LB  décalage et aller à l'état 83
 
 
-état 60
+État 60
 
    11 IntStringFormula: MAX . LB IntStringFormula COMMA IntStringFormula RB
 
     LB  décalage et aller à l'état 84
 
 
-état 61
+État 61
 
     8 IntStringFormula: FLOOR . LB IntStringFormula RB
     9                 | FLOOR . LB IntStringFormula DIV IntStringFormula RB
@@ -797,7 +797,7 @@ redifinitions (80)
     LB  décalage et aller à l'état 85
 
 
-état 62
+État 62
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -812,28 +812,28 @@ redifinitions (80)
     POWER      décalage et aller à l'état 90
 
 
-état 63
+État 63
 
    14 RealStringFormula: str .
 
     $défaut  réduction par utilisation de la règle 14 (RealStringFormula)
 
 
-état 64
+État 64
 
    12 RealStringFormula: rval .
 
     $défaut  réduction par utilisation de la règle 12 (RealStringFormula)
 
 
-état 65
+État 65
 
    13 RealStringFormula: ival .
 
     $défaut  réduction par utilisation de la règle 13 (RealStringFormula)
 
 
-état 66
+État 66
 
    15 RealStringFormula: LB . RealStringFormula RB
 
@@ -848,28 +848,28 @@ redifinitions (80)
     RealStringFormula  aller à l'état 91
 
 
-état 67
+État 67
 
    22 RealStringFormula: MIN . LB RealStringFormula COMMA RealStringFormula RB
 
     LB  décalage et aller à l'état 92
 
 
-état 68
+État 68
 
    23 RealStringFormula: MAX . LB RealStringFormula COMMA RealStringFormula RB
 
     LB  décalage et aller à l'état 93
 
 
-état 69
+État 69
 
    21 RealStringFormula: FLOOR . LB RealStringFormula RB
 
     LB  décalage et aller à l'état 94
 
 
-état 70
+État 70
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -886,14 +886,14 @@ redifinitions (80)
     POWER      décalage et aller à l'état 100
 
 
-état 71
+État 71
 
    51 PLACE: LB . str COMMA IntStringFormula RB SEMICOLON
 
     str  décalage et aller à l'état 101
 
 
-état 72
+État 72
 
    48 PlacesDef: marking EQ '{' PLACES . '}' SEMICOLON
    50 PLACES: PLACES . PLACE
@@ -904,14 +904,14 @@ redifinitions (80)
     PLACE  aller à l'état 103
 
 
-état 73
+État 73
 
    49 PLACES: PLACE .
 
     $défaut  réduction par utilisation de la règle 49 (PLACES)
 
 
-état 74
+État 74
 
    52 TransitionsDef: transitions EQ '{' . TRANSITIONS '}' SEMICOLON
 
@@ -921,21 +921,21 @@ redifinitions (80)
     TRANSITION   aller à l'état 106
 
 
-état 75
+État 75
 
    72 InArcs: in EQ . '{' incells '}' SEMICOLON
 
     '{'  décalage et aller à l'état 107
 
 
-état 76
+État 76
 
    77 OutArcs: out . EQ '{' outcells '}' SEMICOLON
 
     EQ  décalage et aller à l'état 108
 
 
-état 77
+État 77
 
    46 definitions: PlacesDef TransitionsDef InArcs OutArcs .
    47            | PlacesDef TransitionsDef InArcs OutArcs . Inhibitors
@@ -947,14 +947,14 @@ redifinitions (80)
     Inhibitors  aller à l'état 110
 
 
-état 78
+État 78
 
    41 PLabels: str .
 
     $défaut  réduction par utilisation de la règle 41 (PLabels)
 
 
-état 79
+État 79
 
    40 PlacesList: PList EQ '{' PLabels . '}' SEMICOLON
    42 PLabels: PLabels . COMMA str
@@ -963,14 +963,14 @@ redifinitions (80)
     '}'    décalage et aller à l'état 112
 
 
-état 80
+État 80
 
    44 TLabels: str .
 
     $défaut  réduction par utilisation de la règle 44 (TLabels)
 
 
-état 81
+État 81
 
    43 TransitionsList: TList EQ '{' TLabels . '}' SEMICOLON
    45 TLabels: TLabels . COMMA str
@@ -979,7 +979,7 @@ redifinitions (80)
     '}'    décalage et aller à l'état 114
 
 
-état 82
+État 82
 
     3 IntStringFormula: LB IntStringFormula . RB
     4                 | IntStringFormula . PLUS IntStringFormula
@@ -994,7 +994,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 83
+État 83
 
    10 IntStringFormula: MIN LB . IntStringFormula COMMA IntStringFormula RB
 
@@ -1008,7 +1008,7 @@ redifinitions (80)
     IntStringFormula  aller à l'état 116
 
 
-état 84
+État 84
 
    11 IntStringFormula: MAX LB . IntStringFormula COMMA IntStringFormula RB
 
@@ -1022,7 +1022,7 @@ redifinitions (80)
     IntStringFormula  aller à l'état 117
 
 
-état 85
+État 85
 
     8 IntStringFormula: FLOOR LB . IntStringFormula RB
     9                 | FLOOR LB . IntStringFormula DIV IntStringFormula RB
@@ -1037,14 +1037,14 @@ redifinitions (80)
     IntStringFormula  aller à l'état 118
 
 
-état 86
+État 86
 
    32 Constant: Const INT str EQ IntStringFormula SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 32 (Constant)
 
 
-état 87
+État 87
 
     6 IntStringFormula: IntStringFormula MUL . IntStringFormula
 
@@ -1058,7 +1058,7 @@ redifinitions (80)
     IntStringFormula  aller à l'état 119
 
 
-état 88
+État 88
 
     4 IntStringFormula: IntStringFormula PLUS . IntStringFormula
 
@@ -1072,7 +1072,7 @@ redifinitions (80)
     IntStringFormula  aller à l'état 120
 
 
-état 89
+État 89
 
     5 IntStringFormula: IntStringFormula MINUS . IntStringFormula
 
@@ -1086,7 +1086,7 @@ redifinitions (80)
     IntStringFormula  aller à l'état 121
 
 
-état 90
+État 90
 
     7 IntStringFormula: IntStringFormula POWER . IntStringFormula
 
@@ -1100,7 +1100,7 @@ redifinitions (80)
     IntStringFormula  aller à l'état 122
 
 
-état 91
+État 91
 
    15 RealStringFormula: LB RealStringFormula . RB
    16                  | RealStringFormula . DIV RealStringFormula
@@ -1117,7 +1117,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 100
 
 
-état 92
+État 92
 
    22 RealStringFormula: MIN LB . RealStringFormula COMMA RealStringFormula RB
 
@@ -1132,7 +1132,7 @@ redifinitions (80)
     RealStringFormula  aller à l'état 124
 
 
-état 93
+État 93
 
    23 RealStringFormula: MAX LB . RealStringFormula COMMA RealStringFormula RB
 
@@ -1147,7 +1147,7 @@ redifinitions (80)
     RealStringFormula  aller à l'état 125
 
 
-état 94
+État 94
 
    21 RealStringFormula: FLOOR LB . RealStringFormula RB
 
@@ -1162,14 +1162,14 @@ redifinitions (80)
     RealStringFormula  aller à l'état 126
 
 
-état 95
+État 95
 
    33 Constant: Const DOUBLE str EQ RealStringFormula SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 33 (Constant)
 
 
-état 96
+État 96
 
    16 RealStringFormula: RealStringFormula DIV . RealStringFormula
 
@@ -1184,7 +1184,7 @@ redifinitions (80)
     RealStringFormula  aller à l'état 127
 
 
-état 97
+État 97
 
    19 RealStringFormula: RealStringFormula MUL . RealStringFormula
 
@@ -1199,7 +1199,7 @@ redifinitions (80)
     RealStringFormula  aller à l'état 128
 
 
-état 98
+État 98
 
    17 RealStringFormula: RealStringFormula PLUS . RealStringFormula
 
@@ -1214,7 +1214,7 @@ redifinitions (80)
     RealStringFormula  aller à l'état 129
 
 
-état 99
+État 99
 
    18 RealStringFormula: RealStringFormula MINUS . RealStringFormula
 
@@ -1229,7 +1229,7 @@ redifinitions (80)
     RealStringFormula  aller à l'état 130
 
 
-état 100
+État 100
 
    20 RealStringFormula: RealStringFormula POWER . RealStringFormula
 
@@ -1244,28 +1244,28 @@ redifinitions (80)
     RealStringFormula  aller à l'état 131
 
 
-état 101
+État 101
 
    51 PLACE: LB str . COMMA IntStringFormula RB SEMICOLON
 
     COMMA  décalage et aller à l'état 132
 
 
-état 102
+État 102
 
    48 PlacesDef: marking EQ '{' PLACES '}' . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 133
 
 
-état 103
+État 103
 
    50 PLACES: PLACES PLACE .
 
     $défaut  réduction par utilisation de la règle 50 (PLACES)
 
 
-état 104
+État 104
 
    55 TRANSITION: LB . str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
    56           | LB . str COMMA dist COMMA PRIORITY COMMA WEIGHT COMMA MEMORY RB SEMICOLON
@@ -1276,7 +1276,7 @@ redifinitions (80)
     str  décalage et aller à l'état 134
 
 
-état 105
+État 105
 
    52 TransitionsDef: transitions EQ '{' TRANSITIONS . '}' SEMICOLON
    54 TRANSITIONS: TRANSITIONS . TRANSITION
@@ -1287,14 +1287,14 @@ redifinitions (80)
     TRANSITION  aller à l'état 136
 
 
-état 106
+État 106
 
    53 TRANSITIONS: TRANSITION .
 
     $défaut  réduction par utilisation de la règle 53 (TRANSITIONS)
 
 
-état 107
+État 107
 
    72 InArcs: in EQ '{' . incells '}' SEMICOLON
 
@@ -1304,63 +1304,63 @@ redifinitions (80)
     incell   aller à l'état 139
 
 
-état 108
+État 108
 
    77 OutArcs: out EQ . '{' outcells '}' SEMICOLON
 
     '{'  décalage et aller à l'état 140
 
 
-état 109
+État 109
 
    82 Inhibitors: inhibitor . EQ '{' inhibcells '}' SEMICOLON
 
     EQ  décalage et aller à l'état 141
 
 
-état 110
+État 110
 
    47 definitions: PlacesDef TransitionsDef InArcs OutArcs Inhibitors .
 
     $défaut  réduction par utilisation de la règle 47 (definitions)
 
 
-état 111
+État 111
 
    42 PLabels: PLabels COMMA . str
 
     str  décalage et aller à l'état 142
 
 
-état 112
+État 112
 
    40 PlacesList: PList EQ '{' PLabels '}' . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 143
 
 
-état 113
+État 113
 
    45 TLabels: TLabels COMMA . str
 
     str  décalage et aller à l'état 144
 
 
-état 114
+État 114
 
    43 TransitionsList: TList EQ '{' TLabels '}' . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 145
 
 
-état 115
+État 115
 
     3 IntStringFormula: LB IntStringFormula RB .
 
     $défaut  réduction par utilisation de la règle 3 (IntStringFormula)
 
 
-état 116
+État 116
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -1375,7 +1375,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 117
+État 117
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -1390,7 +1390,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 118
+État 118
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -1407,7 +1407,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 119
+État 119
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -1420,7 +1420,7 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 6 (IntStringFormula)
 
 
-état 120
+État 120
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     4                 | IntStringFormula PLUS IntStringFormula .
@@ -1434,7 +1434,7 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 4 (IntStringFormula)
 
 
-état 121
+État 121
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -1448,7 +1448,7 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 5 (IntStringFormula)
 
 
-état 122
+État 122
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -1459,14 +1459,14 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 7 (IntStringFormula)
 
 
-état 123
+État 123
 
    15 RealStringFormula: LB RealStringFormula RB .
 
     $défaut  réduction par utilisation de la règle 15 (RealStringFormula)
 
 
-état 124
+État 124
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -1483,7 +1483,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 100
 
 
-état 125
+État 125
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -1500,7 +1500,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 100
 
 
-état 126
+État 126
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -1517,7 +1517,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 100
 
 
-état 127
+État 127
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    16                  | RealStringFormula DIV RealStringFormula .
@@ -1531,7 +1531,7 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 16 (RealStringFormula)
 
 
-état 128
+État 128
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -1545,7 +1545,7 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 19 (RealStringFormula)
 
 
-état 129
+État 129
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -1561,7 +1561,7 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 17 (RealStringFormula)
 
 
-état 130
+État 130
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -1577,7 +1577,7 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 18 (RealStringFormula)
 
 
-état 131
+État 131
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -1589,7 +1589,7 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 20 (RealStringFormula)
 
 
-état 132
+État 132
 
    51 PLACE: LB str COMMA . IntStringFormula RB SEMICOLON
 
@@ -1603,14 +1603,14 @@ redifinitions (80)
     IntStringFormula  aller à l'état 153
 
 
-état 133
+État 133
 
    48 PlacesDef: marking EQ '{' PLACES '}' SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 48 (PlacesDef)
 
 
-état 134
+État 134
 
    55 TRANSITION: LB str . COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
    56           | LB str . COMMA dist COMMA PRIORITY COMMA WEIGHT COMMA MEMORY RB SEMICOLON
@@ -1621,21 +1621,21 @@ redifinitions (80)
     COMMA  décalage et aller à l'état 154
 
 
-état 135
+État 135
 
    52 TransitionsDef: transitions EQ '{' TRANSITIONS '}' . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 155
 
 
-état 136
+État 136
 
    54 TRANSITIONS: TRANSITIONS TRANSITION .
 
     $défaut  réduction par utilisation de la règle 54 (TRANSITIONS)
 
 
-état 137
+État 137
 
    75 incell: LB . str COMMA str COMMA IntStringFormula RB SEMICOLON
    76       | LB . str COMMA str RB SEMICOLON
@@ -1643,7 +1643,7 @@ redifinitions (80)
     str  décalage et aller à l'état 156
 
 
-état 138
+État 138
 
    72 InArcs: in EQ '{' incells . '}' SEMICOLON
    74 incells: incells . incell
@@ -1654,14 +1654,14 @@ redifinitions (80)
     incell  aller à l'état 158
 
 
-état 139
+État 139
 
    73 incells: incell .
 
     $défaut  réduction par utilisation de la règle 73 (incells)
 
 
-état 140
+État 140
 
    77 OutArcs: out EQ '{' . outcells '}' SEMICOLON
 
@@ -1671,42 +1671,42 @@ redifinitions (80)
     outcell   aller à l'état 161
 
 
-état 141
+État 141
 
    82 Inhibitors: inhibitor EQ . '{' inhibcells '}' SEMICOLON
 
     '{'  décalage et aller à l'état 162
 
 
-état 142
+État 142
 
    42 PLabels: PLabels COMMA str .
 
     $défaut  réduction par utilisation de la règle 42 (PLabels)
 
 
-état 143
+État 143
 
    40 PlacesList: PList EQ '{' PLabels '}' SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 40 (PlacesList)
 
 
-état 144
+État 144
 
    45 TLabels: TLabels COMMA str .
 
     $défaut  réduction par utilisation de la règle 45 (TLabels)
 
 
-état 145
+État 145
 
    43 TransitionsList: TList EQ '{' TLabels '}' SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 43 (TransitionsList)
 
 
-état 146
+État 146
 
    10 IntStringFormula: MIN LB IntStringFormula COMMA . IntStringFormula RB
 
@@ -1720,7 +1720,7 @@ redifinitions (80)
     IntStringFormula  aller à l'état 163
 
 
-état 147
+État 147
 
    11 IntStringFormula: MAX LB IntStringFormula COMMA . IntStringFormula RB
 
@@ -1734,14 +1734,14 @@ redifinitions (80)
     IntStringFormula  aller à l'état 164
 
 
-état 148
+État 148
 
     8 IntStringFormula: FLOOR LB IntStringFormula RB .
 
     $défaut  réduction par utilisation de la règle 8 (IntStringFormula)
 
 
-état 149
+État 149
 
     9 IntStringFormula: FLOOR LB IntStringFormula DIV . IntStringFormula RB
 
@@ -1755,7 +1755,7 @@ redifinitions (80)
     IntStringFormula  aller à l'état 165
 
 
-état 150
+État 150
 
    22 RealStringFormula: MIN LB RealStringFormula COMMA . RealStringFormula RB
 
@@ -1770,7 +1770,7 @@ redifinitions (80)
     RealStringFormula  aller à l'état 166
 
 
-état 151
+État 151
 
    23 RealStringFormula: MAX LB RealStringFormula COMMA . RealStringFormula RB
 
@@ -1785,14 +1785,14 @@ redifinitions (80)
     RealStringFormula  aller à l'état 167
 
 
-état 152
+État 152
 
    21 RealStringFormula: FLOOR LB RealStringFormula RB .
 
     $défaut  réduction par utilisation de la règle 21 (RealStringFormula)
 
 
-état 153
+État 153
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -1807,7 +1807,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 154
+État 154
 
    55 TRANSITION: LB str COMMA . dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
    56           | LB str COMMA . dist COMMA PRIORITY COMMA WEIGHT COMMA MEMORY RB SEMICOLON
@@ -1822,14 +1822,14 @@ redifinitions (80)
     dist  aller à l'état 172
 
 
-état 155
+État 155
 
    52 TransitionsDef: transitions EQ '{' TRANSITIONS '}' SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 52 (TransitionsDef)
 
 
-état 156
+État 156
 
    75 incell: LB str . COMMA str COMMA IntStringFormula RB SEMICOLON
    76       | LB str . COMMA str RB SEMICOLON
@@ -1837,21 +1837,21 @@ redifinitions (80)
     COMMA  décalage et aller à l'état 173
 
 
-état 157
+État 157
 
    72 InArcs: in EQ '{' incells '}' . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 174
 
 
-état 158
+État 158
 
    74 incells: incells incell .
 
     $défaut  réduction par utilisation de la règle 74 (incells)
 
 
-état 159
+État 159
 
    80 outcell: LB . str COMMA str COMMA IntStringFormula RB SEMICOLON
    81        | LB . str COMMA str RB SEMICOLON
@@ -1859,7 +1859,7 @@ redifinitions (80)
     str  décalage et aller à l'état 175
 
 
-état 160
+État 160
 
    77 OutArcs: out EQ '{' outcells . '}' SEMICOLON
    79 outcells: outcells . outcell
@@ -1870,14 +1870,14 @@ redifinitions (80)
     outcell  aller à l'état 177
 
 
-état 161
+État 161
 
    78 outcells: outcell .
 
     $défaut  réduction par utilisation de la règle 78 (outcells)
 
 
-état 162
+État 162
 
    82 Inhibitors: inhibitor EQ '{' . inhibcells '}' SEMICOLON
 
@@ -1887,7 +1887,7 @@ redifinitions (80)
     inhibcell   aller à l'état 180
 
 
-état 163
+État 163
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -1902,7 +1902,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 164
+État 164
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -1917,7 +1917,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 165
+État 165
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -1932,7 +1932,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 166
+État 166
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -1949,7 +1949,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 100
 
 
-état 167
+État 167
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -1966,28 +1966,28 @@ redifinitions (80)
     POWER  décalage et aller à l'état 100
 
 
-état 168
+État 168
 
    51 PLACE: LB str COMMA IntStringFormula RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 186
 
 
-état 169
+État 169
 
    68 dist: str . LB params RB
 
     LB  décalage et aller à l'état 187
 
 
-état 170
+État 170
 
    59 TRANSITION: LB str COMMA IMDT . COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
 
     COMMA  décalage et aller à l'état 188
 
 
-état 171
+État 171
 
    57 TRANSITION: LB str COMMA EXPO . LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
    58           | LB str COMMA EXPO . LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE COMMA MEMORY RB SEMICOLON
@@ -1995,7 +1995,7 @@ redifinitions (80)
     LB  décalage et aller à l'état 189
 
 
-état 172
+État 172
 
    55 TRANSITION: LB str COMMA dist . COMMA PRIORITY COMMA WEIGHT RB SEMICOLON
    56           | LB str COMMA dist . COMMA PRIORITY COMMA WEIGHT COMMA MEMORY RB SEMICOLON
@@ -2003,7 +2003,7 @@ redifinitions (80)
     COMMA  décalage et aller à l'état 190
 
 
-état 173
+État 173
 
    75 incell: LB str COMMA . str COMMA IntStringFormula RB SEMICOLON
    76       | LB str COMMA . str RB SEMICOLON
@@ -2011,14 +2011,14 @@ redifinitions (80)
     str  décalage et aller à l'état 191
 
 
-état 174
+État 174
 
    72 InArcs: in EQ '{' incells '}' SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 72 (InArcs)
 
 
-état 175
+État 175
 
    80 outcell: LB str . COMMA str COMMA IntStringFormula RB SEMICOLON
    81        | LB str . COMMA str RB SEMICOLON
@@ -2026,21 +2026,21 @@ redifinitions (80)
     COMMA  décalage et aller à l'état 192
 
 
-état 176
+État 176
 
    77 OutArcs: out EQ '{' outcells '}' . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 193
 
 
-état 177
+État 177
 
    79 outcells: outcells outcell .
 
     $défaut  réduction par utilisation de la règle 79 (outcells)
 
 
-état 178
+État 178
 
    85 inhibcell: LB . str COMMA str COMMA IntStringFormula RB SEMICOLON
    86          | LB . str COMMA str RB SEMICOLON
@@ -2048,7 +2048,7 @@ redifinitions (80)
     str  décalage et aller à l'état 194
 
 
-état 179
+État 179
 
    82 Inhibitors: inhibitor EQ '{' inhibcells . '}' SEMICOLON
    84 inhibcells: inhibcells . inhibcell
@@ -2059,56 +2059,56 @@ redifinitions (80)
     inhibcell  aller à l'état 196
 
 
-état 180
+État 180
 
    83 inhibcells: inhibcell .
 
     $défaut  réduction par utilisation de la règle 83 (inhibcells)
 
 
-état 181
+État 181
 
    10 IntStringFormula: MIN LB IntStringFormula COMMA IntStringFormula RB .
 
     $défaut  réduction par utilisation de la règle 10 (IntStringFormula)
 
 
-état 182
+État 182
 
    11 IntStringFormula: MAX LB IntStringFormula COMMA IntStringFormula RB .
 
     $défaut  réduction par utilisation de la règle 11 (IntStringFormula)
 
 
-état 183
+État 183
 
     9 IntStringFormula: FLOOR LB IntStringFormula DIV IntStringFormula RB .
 
     $défaut  réduction par utilisation de la règle 9 (IntStringFormula)
 
 
-état 184
+État 184
 
    22 RealStringFormula: MIN LB RealStringFormula COMMA RealStringFormula RB .
 
     $défaut  réduction par utilisation de la règle 22 (RealStringFormula)
 
 
-état 185
+État 185
 
    23 RealStringFormula: MAX LB RealStringFormula COMMA RealStringFormula RB .
 
     $défaut  réduction par utilisation de la règle 23 (RealStringFormula)
 
 
-état 186
+État 186
 
    51 PLACE: LB str COMMA IntStringFormula RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 51 (PLACE)
 
 
-état 187
+État 187
 
    68 dist: str LB . params RB
 
@@ -2125,7 +2125,7 @@ redifinitions (80)
     param              aller à l'état 199
 
 
-état 188
+État 188
 
    59 TRANSITION: LB str COMMA IMDT COMMA . PRIORITY COMMA WEIGHT RB SEMICOLON
 
@@ -2141,7 +2141,7 @@ redifinitions (80)
     PRIORITY           aller à l'état 201
 
 
-état 189
+État 189
 
    57 TRANSITION: LB str COMMA EXPO LB . RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
    58           | LB str COMMA EXPO LB . RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE COMMA MEMORY RB SEMICOLON
@@ -2157,7 +2157,7 @@ redifinitions (80)
     RealStringFormula  aller à l'état 202
 
 
-état 190
+État 190
 
    55 TRANSITION: LB str COMMA dist COMMA . PRIORITY COMMA WEIGHT RB SEMICOLON
    56           | LB str COMMA dist COMMA . PRIORITY COMMA WEIGHT COMMA MEMORY RB SEMICOLON
@@ -2174,7 +2174,7 @@ redifinitions (80)
     PRIORITY           aller à l'état 203
 
 
-état 191
+État 191
 
    75 incell: LB str COMMA str . COMMA IntStringFormula RB SEMICOLON
    76       | LB str COMMA str . RB SEMICOLON
@@ -2183,7 +2183,7 @@ redifinitions (80)
     RB     décalage et aller à l'état 205
 
 
-état 192
+État 192
 
    80 outcell: LB str COMMA . str COMMA IntStringFormula RB SEMICOLON
    81        | LB str COMMA . str RB SEMICOLON
@@ -2191,14 +2191,14 @@ redifinitions (80)
     str  décalage et aller à l'état 206
 
 
-état 193
+État 193
 
    77 OutArcs: out EQ '{' outcells '}' SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 77 (OutArcs)
 
 
-état 194
+État 194
 
    85 inhibcell: LB str . COMMA str COMMA IntStringFormula RB SEMICOLON
    86          | LB str . COMMA str RB SEMICOLON
@@ -2206,21 +2206,21 @@ redifinitions (80)
     COMMA  décalage et aller à l'état 207
 
 
-état 195
+État 195
 
    82 Inhibitors: inhibitor EQ '{' inhibcells '}' . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 208
 
 
-état 196
+État 196
 
    84 inhibcells: inhibcells inhibcell .
 
     $défaut  réduction par utilisation de la règle 84 (inhibcells)
 
 
-état 197
+État 197
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -2238,7 +2238,7 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 71 (param)
 
 
-état 198
+État 198
 
    68 dist: str LB params . RB
    70 params: params . COMMA param
@@ -2247,14 +2247,14 @@ redifinitions (80)
     RB     décalage et aller à l'état 210
 
 
-état 199
+État 199
 
    69 params: param .
 
     $défaut  réduction par utilisation de la règle 69 (params)
 
 
-état 200
+État 200
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -2272,14 +2272,14 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 61 (PRIORITY)
 
 
-état 201
+État 201
 
    59 TRANSITION: LB str COMMA IMDT COMMA PRIORITY . COMMA WEIGHT RB SEMICOLON
 
     COMMA  décalage et aller à l'état 211
 
 
-état 202
+État 202
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -2297,7 +2297,7 @@ redifinitions (80)
     POWER  décalage et aller à l'état 100
 
 
-état 203
+État 203
 
    55 TRANSITION: LB str COMMA dist COMMA PRIORITY . COMMA WEIGHT RB SEMICOLON
    56           | LB str COMMA dist COMMA PRIORITY . COMMA WEIGHT COMMA MEMORY RB SEMICOLON
@@ -2305,7 +2305,7 @@ redifinitions (80)
     COMMA  décalage et aller à l'état 213
 
 
-état 204
+État 204
 
    75 incell: LB str COMMA str COMMA . IntStringFormula RB SEMICOLON
 
@@ -2319,14 +2319,14 @@ redifinitions (80)
     IntStringFormula  aller à l'état 214
 
 
-état 205
+État 205
 
    76 incell: LB str COMMA str RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 215
 
 
-état 206
+État 206
 
    80 outcell: LB str COMMA str . COMMA IntStringFormula RB SEMICOLON
    81        | LB str COMMA str . RB SEMICOLON
@@ -2335,7 +2335,7 @@ redifinitions (80)
     RB     décalage et aller à l'état 217
 
 
-état 207
+État 207
 
    85 inhibcell: LB str COMMA . str COMMA IntStringFormula RB SEMICOLON
    86          | LB str COMMA . str RB SEMICOLON
@@ -2343,14 +2343,14 @@ redifinitions (80)
     str  décalage et aller à l'état 218
 
 
-état 208
+État 208
 
    82 Inhibitors: inhibitor EQ '{' inhibcells '}' SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 82 (Inhibitors)
 
 
-état 209
+État 209
 
    70 params: params COMMA . param
 
@@ -2366,14 +2366,14 @@ redifinitions (80)
     param              aller à l'état 219
 
 
-état 210
+État 210
 
    68 dist: str LB params RB .
 
     $défaut  réduction par utilisation de la règle 68 (dist)
 
 
-état 211
+État 211
 
    59 TRANSITION: LB str COMMA IMDT COMMA PRIORITY COMMA . WEIGHT RB SEMICOLON
 
@@ -2389,7 +2389,7 @@ redifinitions (80)
     WEIGHT             aller à l'état 221
 
 
-état 212
+État 212
 
    57 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB . COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
    58           | LB str COMMA EXPO LB RealStringFormula RB . COMMA PRIORITY COMMA WEIGHT COMMA SERVICE COMMA MEMORY RB SEMICOLON
@@ -2397,7 +2397,7 @@ redifinitions (80)
     COMMA  décalage et aller à l'état 222
 
 
-état 213
+État 213
 
    55 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA . WEIGHT RB SEMICOLON
    56           | LB str COMMA dist COMMA PRIORITY COMMA . WEIGHT COMMA MEMORY RB SEMICOLON
@@ -2414,7 +2414,7 @@ redifinitions (80)
     WEIGHT             aller à l'état 223
 
 
-état 214
+État 214
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -2429,14 +2429,14 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 215
+État 215
 
    76 incell: LB str COMMA str RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 76 (incell)
 
 
-état 216
+État 216
 
    80 outcell: LB str COMMA str COMMA . IntStringFormula RB SEMICOLON
 
@@ -2450,14 +2450,14 @@ redifinitions (80)
     IntStringFormula  aller à l'état 225
 
 
-état 217
+État 217
 
    81 outcell: LB str COMMA str RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 226
 
 
-état 218
+État 218
 
    85 inhibcell: LB str COMMA str . COMMA IntStringFormula RB SEMICOLON
    86          | LB str COMMA str . RB SEMICOLON
@@ -2466,14 +2466,14 @@ redifinitions (80)
     RB     décalage et aller à l'état 228
 
 
-état 219
+État 219
 
    70 params: params COMMA param .
 
     $défaut  réduction par utilisation de la règle 70 (params)
 
 
-état 220
+État 220
 
    16 RealStringFormula: RealStringFormula . DIV RealStringFormula
    17                  | RealStringFormula . PLUS RealStringFormula
@@ -2491,14 +2491,14 @@ redifinitions (80)
     $défaut  réduction par utilisation de la règle 60 (WEIGHT)
 
 
-état 221
+État 221
 
    59 TRANSITION: LB str COMMA IMDT COMMA PRIORITY COMMA WEIGHT . RB SEMICOLON
 
     RB  décalage et aller à l'état 229
 
 
-état 222
+État 222
 
    57 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA . PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON
    58           | LB str COMMA EXPO LB RealStringFormula RB COMMA . PRIORITY COMMA WEIGHT COMMA SERVICE COMMA MEMORY RB SEMICOLON
@@ -2515,7 +2515,7 @@ redifinitions (80)
     PRIORITY           aller à l'état 230
 
 
-état 223
+État 223
 
    55 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT . RB SEMICOLON
    56           | LB str COMMA dist COMMA PRIORITY COMMA WEIGHT . COMMA MEMORY RB SEMICOLON
@@ -2524,14 +2524,14 @@ redifinitions (80)
     RB     décalage et aller à l'état 232
 
 
-état 224
+État 224
 
    75 incell: LB str COMMA str COMMA IntStringFormula RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 233
 
 
-état 225
+État 225
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -2546,14 +2546,14 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 226
+État 226
 
    81 outcell: LB str COMMA str RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 81 (outcell)
 
 
-état 227
+État 227
 
    85 inhibcell: LB str COMMA str COMMA . IntStringFormula RB SEMICOLON
 
@@ -2567,21 +2567,21 @@ redifinitions (80)
     IntStringFormula  aller à l'état 235
 
 
-état 228
+État 228
 
    86 inhibcell: LB str COMMA str RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 236
 
 
-état 229
+État 229
 
    59 TRANSITION: LB str COMMA IMDT COMMA PRIORITY COMMA WEIGHT RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 237
 
 
-état 230
+État 230
 
    57 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY . COMMA WEIGHT COMMA SERVICE RB SEMICOLON
    58           | LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY . COMMA WEIGHT COMMA SERVICE COMMA MEMORY RB SEMICOLON
@@ -2589,7 +2589,7 @@ redifinitions (80)
     COMMA  décalage et aller à l'état 238
 
 
-état 231
+État 231
 
    56 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT COMMA . MEMORY RB SEMICOLON
 
@@ -2599,28 +2599,28 @@ redifinitions (80)
     MEMORY  aller à l'état 241
 
 
-état 232
+État 232
 
    55 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 242
 
 
-état 233
+État 233
 
    75 incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 75 (incell)
 
 
-état 234
+État 234
 
    80 outcell: LB str COMMA str COMMA IntStringFormula RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 243
 
 
-état 235
+État 235
 
     4 IntStringFormula: IntStringFormula . PLUS IntStringFormula
     5                 | IntStringFormula . MINUS IntStringFormula
@@ -2635,21 +2635,21 @@ redifinitions (80)
     POWER  décalage et aller à l'état 90
 
 
-état 236
+État 236
 
    86 inhibcell: LB str COMMA str RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 86 (inhibcell)
 
 
-état 237
+État 237
 
    59 TRANSITION: LB str COMMA IMDT COMMA PRIORITY COMMA WEIGHT RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 59 (TRANSITION)
 
 
-état 238
+État 238
 
    57 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA . WEIGHT COMMA SERVICE RB SEMICOLON
    58           | LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA . WEIGHT COMMA SERVICE COMMA MEMORY RB SEMICOLON
@@ -2666,49 +2666,49 @@ redifinitions (80)
     WEIGHT             aller à l'état 245
 
 
-état 239
+État 239
 
    67 MEMORY: ENABLINGMEMORY .
 
     $défaut  réduction par utilisation de la règle 67 (MEMORY)
 
 
-état 240
+État 240
 
    66 MEMORY: AGEMEMORY .
 
     $défaut  réduction par utilisation de la règle 66 (MEMORY)
 
 
-état 241
+État 241
 
    56 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT COMMA MEMORY . RB SEMICOLON
 
     RB  décalage et aller à l'état 246
 
 
-état 242
+État 242
 
    55 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 55 (TRANSITION)
 
 
-état 243
+État 243
 
    80 outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 80 (outcell)
 
 
-état 244
+État 244
 
    85 inhibcell: LB str COMMA str COMMA IntStringFormula RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 247
 
 
-état 245
+État 245
 
    57 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT . COMMA SERVICE RB SEMICOLON
    58           | LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT . COMMA SERVICE COMMA MEMORY RB SEMICOLON
@@ -2716,21 +2716,21 @@ redifinitions (80)
     COMMA  décalage et aller à l'état 248
 
 
-état 246
+État 246
 
    56 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT COMMA MEMORY RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 249
 
 
-état 247
+État 247
 
    85 inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 85 (inhibcell)
 
 
-état 248
+État 248
 
    57 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA . SERVICE RB SEMICOLON
    58           | LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA . SERVICE COMMA MEMORY RB SEMICOLON
@@ -2742,28 +2742,28 @@ redifinitions (80)
     SERVICE  aller à l'état 253
 
 
-état 249
+État 249
 
    56 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT COMMA MEMORY RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 56 (TRANSITION)
 
 
-état 250
+État 250
 
    62 SERVICE: SINGLE .
 
     $défaut  réduction par utilisation de la règle 62 (SERVICE)
 
 
-état 251
+État 251
 
    63 SERVICE: INFINITE .
 
     $défaut  réduction par utilisation de la règle 63 (SERVICE)
 
 
-état 252
+État 252
 
    64 SERVICE: MULTIPLE . LB ival RB
    65        | MULTIPLE . LB str RB
@@ -2771,7 +2771,7 @@ redifinitions (80)
     LB  décalage et aller à l'état 254
 
 
-état 253
+État 253
 
    57 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE . RB SEMICOLON
    58           | LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE . COMMA MEMORY RB SEMICOLON
@@ -2780,7 +2780,7 @@ redifinitions (80)
     RB     décalage et aller à l'état 256
 
 
-état 254
+État 254
 
    64 SERVICE: MULTIPLE LB . ival RB
    65        | MULTIPLE LB . str RB
@@ -2789,7 +2789,7 @@ redifinitions (80)
     ival  décalage et aller à l'état 258
 
 
-état 255
+État 255
 
    58 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE COMMA . MEMORY RB SEMICOLON
 
@@ -2799,63 +2799,63 @@ redifinitions (80)
     MEMORY  aller à l'état 259
 
 
-état 256
+État 256
 
    57 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 260
 
 
-état 257
+État 257
 
    65 SERVICE: MULTIPLE LB str . RB
 
     RB  décalage et aller à l'état 261
 
 
-état 258
+État 258
 
    64 SERVICE: MULTIPLE LB ival . RB
 
     RB  décalage et aller à l'état 262
 
 
-état 259
+État 259
 
    58 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE COMMA MEMORY . RB SEMICOLON
 
     RB  décalage et aller à l'état 263
 
 
-état 260
+État 260
 
    57 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON .
 
     $défaut  réduction par utilisation de la règle 57 (TRANSITION)
 
 
-état 261
+État 261
 
    65 SERVICE: MULTIPLE LB str RB .
 
     $défaut  réduction par utilisation de la règle 65 (SERVICE)
 
 
-état 262
+État 262
 
    64 SERVICE: MULTIPLE LB ival RB .
 
     $défaut  réduction par utilisation de la règle 64 (SERVICE)
 
 
-état 263
+État 263
 
    58 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE COMMA MEMORY RB . SEMICOLON
 
     SEMICOLON  décalage et aller à l'état 264
 
 
-état 264
+État 264
 
    58 TRANSITION: LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE COMMA MEMORY RB SEMICOLON .
 

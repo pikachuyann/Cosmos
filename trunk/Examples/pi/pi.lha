@@ -6,10 +6,11 @@ LocationsList = {l0, l1, l2, lp ,lm};
 
 pi=AVG(Last(OK));
 r=AVG(Last(r));
+bern=PROB;
 
 InitialLocations = {l0};
 
-FinalLocations = {lp,lm};
+FinalLocations = {lm,lp};
 
 Locations={
 (l0, TRUE , (x:1 , y:0) );

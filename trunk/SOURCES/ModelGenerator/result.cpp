@@ -35,7 +35,7 @@ using namespace std;
 result::result(parameters &Q){
     P= Q;
    
-    MeanM2 = new BatchR(P.HaslFormulasname.size());
+    MeanM2 = new BatchR(P.nbAlgebraic);
 	for(int i =0; i<P.HaslFormulasname.size(); i++){
 		HaslResult.push_back(new ConfInt());
 	}

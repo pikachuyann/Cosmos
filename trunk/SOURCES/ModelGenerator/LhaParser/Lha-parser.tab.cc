@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.5.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
@@ -35,7 +35,7 @@
 
 /* First part of user declarations.  */
 
-/* Line 278 of lalr1.cc  */
+/* Line 279 of lalr1.cc  */
 #line 40 "Lha-parser.tab.cc"
 
 
@@ -43,10 +43,10 @@
 
 /* User implementation prologue.  */
 
-/* Line 284 of lalr1.cc  */
+/* Line 285 of lalr1.cc  */
 #line 48 "Lha-parser.tab.cc"
 /* Unqualified %code blocks.  */
-/* Line 285 of lalr1.cc  */
+/* Line 286 of lalr1.cc  */
 #line 39 "Lha-parser.yy"
 
 #include "../HaslFormula.hpp"
@@ -80,7 +80,7 @@ vector <string> comp;
 
 
 
-/* Line 285 of lalr1.cc  */
+/* Line 286 of lalr1.cc  */
 #line 85 "Lha-parser.tab.cc"
 
 
@@ -159,9 +159,9 @@ do {					\
 #else /* !YYDEBUG */
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
-# define YY_REDUCE_PRINT(Rule)
-# define YY_STACK_PRINT()
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location) YYUSE(Type)
+# define YY_REDUCE_PRINT(Rule)        static_cast<void>(0)
+# define YY_STACK_PRINT()             static_cast<void>(0)
 
 #endif /* !YYDEBUG */
 
@@ -175,7 +175,7 @@ do {					\
 
 
 namespace lha {
-/* Line 352 of lalr1.cc  */
+/* Line 353 of lalr1.cc  */
 #line 180 "Lha-parser.tab.cc"
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -248,26 +248,26 @@ namespace lha {
     switch (yytype)
       {
         case 3: /* str */
-/* Line 422 of lalr1.cc  */
-#line 150 "Lha-parser.yy"
-	{ debug_stream () << *((*yyvaluep).name); };
-/* Line 422 of lalr1.cc  */
+/* Line 423 of lalr1.cc  */
+#line 151 "Lha-parser.yy"
+        { debug_stream () << *((*yyvaluep).name); };
+/* Line 423 of lalr1.cc  */
 #line 256 "Lha-parser.tab.cc"
-	break;
+        break;
       case 4: /* rval */
-/* Line 422 of lalr1.cc  */
-#line 154 "Lha-parser.yy"
-	{ debug_stream () << ((*yyvaluep).RealVal); };
-/* Line 422 of lalr1.cc  */
+/* Line 423 of lalr1.cc  */
+#line 155 "Lha-parser.yy"
+        { debug_stream () << ((*yyvaluep).RealVal); };
+/* Line 423 of lalr1.cc  */
 #line 263 "Lha-parser.tab.cc"
-	break;
+        break;
       case 5: /* ival */
-/* Line 422 of lalr1.cc  */
-#line 153 "Lha-parser.yy"
-	{ debug_stream () << ((*yyvaluep).IntVal); };
-/* Line 422 of lalr1.cc  */
+/* Line 423 of lalr1.cc  */
+#line 154 "Lha-parser.yy"
+        { debug_stream () << ((*yyvaluep).IntVal); };
+/* Line 423 of lalr1.cc  */
 #line 270 "Lha-parser.tab.cc"
-	break;
+        break;
        default:
 	  break;
       }
@@ -294,17 +294,18 @@ namespace lha {
     YYUSE (yymsg);
     YYUSE (yyvaluep);
 
-    YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
+    if (yymsg)
+      YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
     switch (yytype)
       {
         case 3: /* str */
-/* Line 453 of lalr1.cc  */
-#line 151 "Lha-parser.yy"
-	{ delete ((*yyvaluep).name); };
-/* Line 453 of lalr1.cc  */
-#line 307 "Lha-parser.tab.cc"
-	break;
+/* Line 455 of lalr1.cc  */
+#line 152 "Lha-parser.yy"
+        { delete ((*yyvaluep).name); };
+/* Line 455 of lalr1.cc  */
+#line 308 "Lha-parser.tab.cc"
+        break;
 
 	default:
 	  break;
@@ -389,6 +390,10 @@ namespace lha {
 
     int yyresult;
 
+    // FIXME: This shoud be completely indented.  It is not yet to
+    // avoid gratuitous conflicts when merging into the master branch.
+    try
+      {
     YYCDEBUG << "Starting parse" << std::endl;
 
 
@@ -424,8 +429,8 @@ namespace lha {
     /* Read a lookahead token.  */
     if (yychar == yyempty_)
       {
-	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc, Reader);
+        YYCDEBUG << "Reading a token: ";
+        yychar = yylex (&yylval, &yylloc, Reader);
       }
 
     /* Convert token to internal form.  */
@@ -498,22 +503,25 @@ namespace lha {
     else
       yyval = yysemantic_stack_[0];
 
+    // Compute the default @$.
     {
       slice<location_type, location_stack_type> slice (yylocation_stack_, yylen);
       YYLLOC_DEFAULT (yyloc, slice, yylen);
     }
+
+    // Perform the reduction.
     YY_REDUCE_PRINT (yyn);
     switch (yyn)
       {
-	  case 5:
-/* Line 661 of lalr1.cc  */
-#line 179 "Lha-parser.yy"
+          case 5:
+/* Line 670 of lalr1.cc  */
+#line 180 "Lha-parser.yy"
     {sprintf((yyval.expression),"%d",(yysemantic_stack_[(1) - (1)].IntVal));}
     break;
 
   case 6:
-/* Line 661 of lalr1.cc  */
-#line 180 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 181 "Lha-parser.yy"
     {
 				   if(Reader.MyLha.PlaceIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.PlaceIndex.end()) 
 						{std::ostringstream s; s<<" Marking[ "<<Reader.MyLha.PlaceIndex[*(yysemantic_stack_[(1) - (1)].name)]<<" ] ";
@@ -527,80 +535,80 @@ namespace lha {
     break;
 
   case 7:
-/* Line 661 of lalr1.cc  */
-#line 190 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 191 "Lha-parser.yy"
     {sprintf((yyval.expression),"( %s )", (yysemantic_stack_[(3) - (2)].expression));       }
     break;
 
   case 8:
-/* Line 661 of lalr1.cc  */
-#line 191 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 192 "Lha-parser.yy"
     {sprintf((yyval.expression),"-%s",(yysemantic_stack_[(2) - (2)].expression));}
     break;
 
   case 9:
-/* Line 661 of lalr1.cc  */
-#line 192 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 193 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s + %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 10:
-/* Line 661 of lalr1.cc  */
-#line 193 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 194 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s - %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 11:
-/* Line 661 of lalr1.cc  */
-#line 194 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 195 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s * %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 12:
-/* Line 661 of lalr1.cc  */
-#line 195 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 196 "Lha-parser.yy"
     {sprintf((yyval.expression),"pow(%s , %s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 13:
-/* Line 661 of lalr1.cc  */
-#line 196 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 197 "Lha-parser.yy"
     {sprintf((yyval.expression),"floor( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
     break;
 
   case 14:
-/* Line 661 of lalr1.cc  */
-#line 197 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 198 "Lha-parser.yy"
     {sprintf((yyval.expression),"floor( %s /double(%s))", (yysemantic_stack_[(6) - (3)].expression),(yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 15:
-/* Line 661 of lalr1.cc  */
-#line 198 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 199 "Lha-parser.yy"
     {sprintf((yyval.expression),"min(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 16:
-/* Line 661 of lalr1.cc  */
-#line 199 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 200 "Lha-parser.yy"
     {sprintf((yyval.expression),"max(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 17:
-/* Line 661 of lalr1.cc  */
-#line 202 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 203 "Lha-parser.yy"
     {sprintf((yyval.expression), "%f",(yysemantic_stack_[(1) - (1)].RealVal));}
     break;
 
   case 18:
-/* Line 661 of lalr1.cc  */
-#line 203 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 204 "Lha-parser.yy"
     {sprintf((yyval.expression),"%d",(yysemantic_stack_[(1) - (1)].IntVal));}
     break;
 
   case 19:
-/* Line 661 of lalr1.cc  */
-#line 204 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 205 "Lha-parser.yy"
     {
 				   if(Reader.MyLha.PlaceIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.PlaceIndex.end()) 
 						{std::ostringstream s; s<<" Marking[ "<<Reader.MyLha.PlaceIndex[*(yysemantic_stack_[(1) - (1)].name)]<<" ] ";
@@ -615,80 +623,80 @@ namespace lha {
     break;
 
   case 20:
-/* Line 661 of lalr1.cc  */
-#line 215 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 216 "Lha-parser.yy"
     {sprintf((yyval.expression),"( %s )", (yysemantic_stack_[(3) - (2)].expression));       }
     break;
 
   case 21:
-/* Line 661 of lalr1.cc  */
-#line 216 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 217 "Lha-parser.yy"
     {sprintf((yyval.expression),"-%s",(yysemantic_stack_[(2) - (2)].expression));}
     break;
 
   case 22:
-/* Line 661 of lalr1.cc  */
-#line 217 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 218 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s /double(%s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 23:
-/* Line 661 of lalr1.cc  */
-#line 218 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 219 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s + %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 24:
-/* Line 661 of lalr1.cc  */
-#line 219 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 220 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s - %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 25:
-/* Line 661 of lalr1.cc  */
-#line 220 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 221 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s * %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 26:
-/* Line 661 of lalr1.cc  */
-#line 221 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 222 "Lha-parser.yy"
     {sprintf((yyval.expression),"pow(%s , %s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 27:
-/* Line 661 of lalr1.cc  */
-#line 222 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 223 "Lha-parser.yy"
     {sprintf((yyval.expression),"floor( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
     break;
 
   case 28:
-/* Line 661 of lalr1.cc  */
-#line 223 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 224 "Lha-parser.yy"
     {sprintf((yyval.expression),"min(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 29:
-/* Line 661 of lalr1.cc  */
-#line 224 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 225 "Lha-parser.yy"
     {sprintf((yyval.expression),"max(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 30:
-/* Line 661 of lalr1.cc  */
-#line 226 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 227 "Lha-parser.yy"
     {sprintf((yyval.expression), "%f",(yysemantic_stack_[(1) - (1)].RealVal));}
     break;
 
   case 31:
-/* Line 661 of lalr1.cc  */
-#line 227 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 228 "Lha-parser.yy"
     {sprintf((yyval.expression),"%d",(yysemantic_stack_[(1) - (1)].IntVal));}
     break;
 
   case 32:
-/* Line 661 of lalr1.cc  */
-#line 228 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 229 "Lha-parser.yy"
     {
 				   if(Reader.MyLha.PlaceIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.PlaceIndex.end()) 
 						{std::ostringstream s; s<<" Marking[ "<<Reader.MyLha.PlaceIndex[*(yysemantic_stack_[(1) - (1)].name)]<<" ] ";
@@ -710,68 +718,68 @@ namespace lha {
     break;
 
   case 33:
-/* Line 661 of lalr1.cc  */
-#line 246 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 247 "Lha-parser.yy"
     {sprintf((yyval.expression),"( %s )", (yysemantic_stack_[(3) - (2)].expression));       }
     break;
 
   case 34:
-/* Line 661 of lalr1.cc  */
-#line 247 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 248 "Lha-parser.yy"
     {sprintf((yyval.expression),"-%s",(yysemantic_stack_[(2) - (2)].expression));}
     break;
 
   case 35:
-/* Line 661 of lalr1.cc  */
-#line 248 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 249 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s /double(%s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 36:
-/* Line 661 of lalr1.cc  */
-#line 249 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 250 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s + %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 37:
-/* Line 661 of lalr1.cc  */
-#line 250 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 251 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s - %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 38:
-/* Line 661 of lalr1.cc  */
-#line 251 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 252 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s * %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 39:
-/* Line 661 of lalr1.cc  */
-#line 252 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 253 "Lha-parser.yy"
     {sprintf((yyval.expression),"pow(%s , %s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 40:
-/* Line 661 of lalr1.cc  */
-#line 253 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 254 "Lha-parser.yy"
     {sprintf((yyval.expression),"floor( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
     break;
 
   case 41:
-/* Line 661 of lalr1.cc  */
-#line 254 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 255 "Lha-parser.yy"
     {sprintf((yyval.expression),"min(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 42:
-/* Line 661 of lalr1.cc  */
-#line 255 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 256 "Lha-parser.yy"
     {sprintf((yyval.expression),"max(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 47:
-/* Line 661 of lalr1.cc  */
-#line 265 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 266 "Lha-parser.yy"
     {if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(6) - (3)].name))!=Reader.MyLha.LhaRealConstant.end()) 
 							{cout<<"Constant "<<*(yysemantic_stack_[(6) - (3)].name)<<" already defined."<<endl; YYABORT;}
 					    else {string st=(yysemantic_stack_[(6) - (5)].expression);
@@ -781,8 +789,8 @@ namespace lha {
     break;
 
   case 48:
-/* Line 661 of lalr1.cc  */
-#line 272 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 273 "Lha-parser.yy"
     {if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(6) - (3)].name))!=Reader.MyLha.LhaRealConstant.end()) 
 							{cout<<"Constant "<<*(yysemantic_stack_[(6) - (3)].name)<<" already defined."<<endl; YYABORT;}
 					    else {string st=(yysemantic_stack_[(6) - (5)].expression);
@@ -792,24 +800,24 @@ namespace lha {
     break;
 
   case 49:
-/* Line 661 of lalr1.cc  */
-#line 281 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 282 "Lha-parser.yy"
     {Reader.MyLha.NbVar=(yysemantic_stack_[(4) - (3)].IntVal);
                                     
 }
     break;
 
   case 50:
-/* Line 661 of lalr1.cc  */
-#line 285 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 286 "Lha-parser.yy"
     {Reader.MyLha.NbLoc=(yysemantic_stack_[(4) - (3)].IntVal);
                                         
 }
     break;
 
   case 53:
-/* Line 661 of lalr1.cc  */
-#line 292 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 293 "Lha-parser.yy"
     {
 						if(Reader.MyLha.VarIndex.size()!=Reader.MyLha.NbVar){
 						std::cout<<"Variable label missing or redeclared, please check your variables list"<<std::endl;
@@ -846,8 +854,8 @@ PetriTransitions=Pt;
     break;
 
   case 54:
-/* Line 661 of lalr1.cc  */
-#line 326 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 327 "Lha-parser.yy"
     {
               
                 Reader.MyLha.VarLabel.push_back(*(yysemantic_stack_[(1) - (1)].name));
@@ -857,16 +865,16 @@ PetriTransitions=Pt;
     break;
 
   case 55:
-/* Line 661 of lalr1.cc  */
-#line 332 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 333 "Lha-parser.yy"
     {Reader.MyLha.VarLabel.push_back(*(yysemantic_stack_[(3) - (3)].name));
                 Reader.MyLha.VarIndex[*(yysemantic_stack_[(3) - (3)].name)]=Reader.MyLha.VarLabel.size()-1;
 }
     break;
 
   case 56:
-/* Line 661 of lalr1.cc  */
-#line 336 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 337 "Lha-parser.yy"
     {if(Reader.MyLha.LocIndex.size()!=Reader.MyLha.NbLoc){
 						std::cout<<"Location label missing or redeclared, please check your locations list"<<std::endl;
 						YYABORT;
@@ -876,8 +884,8 @@ PetriTransitions=Pt;
     break;
 
   case 57:
-/* Line 661 of lalr1.cc  */
-#line 343 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 344 "Lha-parser.yy"
     {
                
                 Reader.MyLha.LocLabel.push_back(*(yysemantic_stack_[(1) - (1)].name));
@@ -887,16 +895,16 @@ PetriTransitions=Pt;
     break;
 
   case 58:
-/* Line 661 of lalr1.cc  */
-#line 349 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 350 "Lha-parser.yy"
     {Reader.MyLha.LocLabel.push_back(*(yysemantic_stack_[(3) - (3)].name));
                 Reader.MyLha.LocIndex[*(yysemantic_stack_[(3) - (3)].name)]=Reader.MyLha.LocLabel.size()-1;
 }
     break;
 
   case 62:
-/* Line 661 of lalr1.cc  */
-#line 359 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 360 "Lha-parser.yy"
     {
                
 		if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.LocIndex.end())
@@ -908,8 +916,8 @@ PetriTransitions=Pt;
     break;
 
   case 63:
-/* Line 661 of lalr1.cc  */
-#line 367 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 368 "Lha-parser.yy"
     {if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.LocIndex.end())
 			      Reader.MyLha.InitLoc.insert(Reader.MyLha.LocIndex[*(yysemantic_stack_[(3) - (3)].name)]);
 		else cout<<"Unknown location"<<endl;
@@ -917,8 +925,8 @@ PetriTransitions=Pt;
     break;
 
   case 65:
-/* Line 661 of lalr1.cc  */
-#line 374 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 375 "Lha-parser.yy"
     {
                 
 		if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.LocIndex.end())
@@ -930,8 +938,8 @@ PetriTransitions=Pt;
     break;
 
   case 66:
-/* Line 661 of lalr1.cc  */
-#line 382 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 383 "Lha-parser.yy"
     {if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.LocIndex.end())
 			      Reader.MyLha.FinalLoc.insert(Reader.MyLha.LocIndex[*(yysemantic_stack_[(3) - (3)].name)]);
 		else {cout<<"Unknown location"<<endl;YYABORT;}
@@ -939,8 +947,8 @@ PetriTransitions=Pt;
     break;
 
   case 69:
-/* Line 661 of lalr1.cc  */
-#line 396 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 397 "Lha-parser.yy"
     {
 for(int l=0; l<Reader.MyLha.FuncLocProperty.size();l++)
   if(Reader.MyLha.FuncLocProperty[l]=="")
@@ -950,8 +958,8 @@ for(int l=0; l<Reader.MyLha.FuncLocProperty.size();l++)
     break;
 
   case 72:
-/* Line 661 of lalr1.cc  */
-#line 407 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 408 "Lha-parser.yy"
     { int l;
 		      if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(10) - (2)].name))!=Reader.MyLha.LocIndex.end()){
 			      l=Reader.MyLha.LocIndex[*(yysemantic_stack_[(10) - (2)].name)];
@@ -973,8 +981,8 @@ for(int l=0; l<Reader.MyLha.FuncLocProperty.size();l++)
     break;
 
   case 73:
-/* Line 661 of lalr1.cc  */
-#line 428 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 429 "Lha-parser.yy"
     { int l;
 		      if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(6) - (2)].name))!=Reader.MyLha.LocIndex.end()){
 			      l=Reader.MyLha.LocIndex[*(yysemantic_stack_[(6) - (2)].name)];
@@ -996,8 +1004,8 @@ for(int l=0; l<Reader.MyLha.FuncLocProperty.size();l++)
     break;
 
   case 76:
-/* Line 661 of lalr1.cc  */
-#line 449 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 450 "Lha-parser.yy"
     {if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(3) - (1)].name))!=Reader.MyLha.VarIndex.end())
 										FuncFlowVector[Reader.MyLha.VarIndex[*(yysemantic_stack_[(3) - (1)].name)]]=(yysemantic_stack_[(3) - (3)].expression);
 								else{ cout<<"'"<<*(yysemantic_stack_[(3) - (1)].name)<<"' is not a Lha variable"<<endl; 
@@ -1006,88 +1014,88 @@ for(int l=0; l<Reader.MyLha.FuncLocProperty.size();l++)
     break;
 
   case 77:
-/* Line 661 of lalr1.cc  */
-#line 455 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 456 "Lha-parser.yy"
     {sprintf((yyval.expression),"true");}
     break;
 
   case 78:
-/* Line 661 of lalr1.cc  */
-#line 456 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 457 "Lha-parser.yy"
     {sprintf((yyval.expression),"false");}
     break;
 
   case 79:
-/* Line 661 of lalr1.cc  */
-#line 457 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 458 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s", (yysemantic_stack_[(1) - (1)].expression));}
     break;
 
   case 80:
-/* Line 661 of lalr1.cc  */
-#line 458 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 459 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s && %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 81:
-/* Line 661 of lalr1.cc  */
-#line 459 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 460 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s || %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 82:
-/* Line 661 of lalr1.cc  */
-#line 460 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 461 "Lha-parser.yy"
     {sprintf((yyval.expression),"( %s )", (yysemantic_stack_[(3) - (2)].expression));}
     break;
 
   case 83:
-/* Line 661 of lalr1.cc  */
-#line 461 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 462 "Lha-parser.yy"
     {sprintf((yyval.expression),"! %s", (yysemantic_stack_[(2) - (2)].expression));}
     break;
 
   case 84:
-/* Line 661 of lalr1.cc  */
-#line 463 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 464 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s == %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 85:
-/* Line 661 of lalr1.cc  */
-#line 464 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 465 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s <= %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 86:
-/* Line 661 of lalr1.cc  */
-#line 465 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 466 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s >= %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 87:
-/* Line 661 of lalr1.cc  */
-#line 466 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 467 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s < %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 88:
-/* Line 661 of lalr1.cc  */
-#line 467 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 468 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s > %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 89:
-/* Line 661 of lalr1.cc  */
-#line 472 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 473 "Lha-parser.yy"
     {
 					    
 }
     break;
 
   case 92:
-/* Line 661 of lalr1.cc  */
-#line 479 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 480 "Lha-parser.yy"
     {
 
 			   if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(14) - (3)].name))!=Reader.MyLha.LocIndex.end())
@@ -1113,14 +1121,14 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 94:
-/* Line 661 of lalr1.cc  */
-#line 503 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 504 "Lha-parser.yy"
     {SubSet=PetriTransitions;}
     break;
 
   case 95:
-/* Line 661 of lalr1.cc  */
-#line 504 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 505 "Lha-parser.yy"
     {set<string> temp=PetriTransitions; 
 				      for(set<string>::iterator it=SubSet.begin();it!=SubSet.end();it++)
 					    temp.erase((*it));
@@ -1128,8 +1136,8 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 98:
-/* Line 661 of lalr1.cc  */
-#line 512 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 513 "Lha-parser.yy"
     {if(Reader.MyLha.TransitionIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.TransitionIndex.end())
 	      SubSet.insert(*(yysemantic_stack_[(1) - (1)].name));
 	      else {cout<<*(yysemantic_stack_[(1) - (1)].name)<<" is not a Petri-net transition "<<endl;YYABORT;}
@@ -1137,28 +1145,28 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 99:
-/* Line 661 of lalr1.cc  */
-#line 516 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 517 "Lha-parser.yy"
     {if(Reader.MyLha.TransitionIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.TransitionIndex.end())
 	      SubSet.insert(*(yysemantic_stack_[(3) - (3)].name));
 	      else {cout<<*(yysemantic_stack_[(3) - (3)].name)<<" is not a Petri-net transition "<<endl;YYABORT;}}
     break;
 
   case 100:
-/* Line 661 of lalr1.cc  */
-#line 521 "Lha-parser.yy"
-    {}
-    break;
-
-  case 101:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 522 "Lha-parser.yy"
     {}
     break;
 
+  case 101:
+/* Line 670 of lalr1.cc  */
+#line 523 "Lha-parser.yy"
+    {}
+    break;
+
   case 103:
-/* Line 661 of lalr1.cc  */
-#line 526 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 527 "Lha-parser.yy"
     {CoeffsMatrix.push_back(CoeffsVector);
 						  comp.push_back("==");
 						  CST.push_back((yysemantic_stack_[(3) - (3)].expression));
@@ -1166,8 +1174,8 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 104:
-/* Line 661 of lalr1.cc  */
-#line 531 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 532 "Lha-parser.yy"
     {CoeffsMatrix.push_back(CoeffsVector);
 						  comp.push_back("<=");
 						  CST.push_back((yysemantic_stack_[(3) - (3)].expression));
@@ -1175,8 +1183,8 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 105:
-/* Line 661 of lalr1.cc  */
-#line 536 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 537 "Lha-parser.yy"
     {CoeffsMatrix.push_back(CoeffsVector);
 						  comp.push_back(">=");
 						  CST.push_back((yysemantic_stack_[(3) - (3)].expression));
@@ -1184,16 +1192,16 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 109:
-/* Line 661 of lalr1.cc  */
-#line 546 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 547 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.VarIndex.end())
 			  {CoeffsVector[Reader.MyLha.VarIndex[*(yysemantic_stack_[(1) - (1)].name)]]="1";}
 			else {cout<<*(yysemantic_stack_[(1) - (1)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
     break;
 
   case 110:
-/* Line 661 of lalr1.cc  */
-#line 550 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 551 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(5) - (5)].name))!=Reader.MyLha.VarIndex.end())
 			  {std::ostringstream s; s<<"("<<(yysemantic_stack_[(5) - (2)].expression)<<")";
 			   CoeffsVector[Reader.MyLha.VarIndex[*(yysemantic_stack_[(5) - (5)].name)]]=s.str();}
@@ -1201,8 +1209,8 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 111:
-/* Line 661 of lalr1.cc  */
-#line 555 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 556 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.VarIndex.end())
 			  {std::ostringstream s; s<<(yysemantic_stack_[(3) - (1)].IntVal);
 			   CoeffsVector[Reader.MyLha.VarIndex[*(yysemantic_stack_[(3) - (3)].name)]]=s.str();}
@@ -1210,8 +1218,8 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 112:
-/* Line 661 of lalr1.cc  */
-#line 560 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 561 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.VarIndex.end())
 			  {std::ostringstream s; s<<(yysemantic_stack_[(3) - (1)].RealVal);
 			   CoeffsVector[Reader.MyLha.VarIndex[*(yysemantic_stack_[(3) - (3)].name)]]=s.str();}
@@ -1219,8 +1227,8 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 113:
-/* Line 661 of lalr1.cc  */
-#line 565 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 566 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.VarIndex.end())
 			  {if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(3) - (1)].name))!=Reader.MyLha.LhaRealConstant.end())
 				  {std::ostringstream s; s<<Reader.MyLha.LhaRealConstant[*(yysemantic_stack_[(3) - (1)].name)];
@@ -1244,16 +1252,16 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 114:
-/* Line 661 of lalr1.cc  */
-#line 586 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 587 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(2) - (2)].name))!=Reader.MyLha.VarIndex.end())
 			  {CoeffsVector[Reader.MyLha.VarIndex[*(yysemantic_stack_[(2) - (2)].name)]]="-1";}
 			else {cout<<*(yysemantic_stack_[(2) - (2)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
     break;
 
   case 115:
-/* Line 661 of lalr1.cc  */
-#line 590 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 591 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(6) - (6)].name))!=Reader.MyLha.VarIndex.end())
 			  {std::ostringstream s; s<<"-("<<(yysemantic_stack_[(6) - (3)].expression)<<")";
 			   CoeffsVector[Reader.MyLha.VarIndex[*(yysemantic_stack_[(6) - (6)].name)]]=s.str();}
@@ -1261,8 +1269,8 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 116:
-/* Line 661 of lalr1.cc  */
-#line 595 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 596 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.VarIndex.end())
 			  {std::ostringstream s; s<<"-"<<(yysemantic_stack_[(4) - (2)].IntVal);
 			   CoeffsVector[Reader.MyLha.VarIndex[*(yysemantic_stack_[(4) - (4)].name)]]=s.str();}
@@ -1270,8 +1278,8 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 117:
-/* Line 661 of lalr1.cc  */
-#line 600 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 601 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.VarIndex.end())
 			  {std::ostringstream s; s<<"-"<<(yysemantic_stack_[(4) - (2)].RealVal);
 			   CoeffsVector[Reader.MyLha.VarIndex[*(yysemantic_stack_[(4) - (4)].name)]]=s.str();}
@@ -1279,8 +1287,8 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 118:
-/* Line 661 of lalr1.cc  */
-#line 605 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 606 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.VarIndex.end())
 			  {if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(4) - (2)].name))!=Reader.MyLha.LhaRealConstant.end())
 				  {std::ostringstream s; s<<"-"<<Reader.MyLha.LhaRealConstant[*(yysemantic_stack_[(4) - (2)].name)];
@@ -1304,20 +1312,20 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 119:
-/* Line 661 of lalr1.cc  */
-#line 627 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 628 "Lha-parser.yy"
     {Reader.MyLha.FuncEdgeUpdates.push_back(FuncUpdateVector);vector<string> v1(Reader.MyLha.NbVar,"");FuncUpdateVector=v1;}
     break;
 
   case 120:
-/* Line 661 of lalr1.cc  */
-#line 628 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 629 "Lha-parser.yy"
     {Reader.MyLha.FuncEdgeUpdates.push_back(FuncUpdateVector);}
     break;
 
   case 123:
-/* Line 661 of lalr1.cc  */
-#line 633 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 634 "Lha-parser.yy"
     {
   if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(3) - (1)].name))!=Reader.MyLha.VarIndex.end())
     {FuncUpdateVector[Reader.MyLha.VarIndex[*(yysemantic_stack_[(3) - (1)].name)]]= (yysemantic_stack_[(3) - (3)].expression);}
@@ -1326,8 +1334,8 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 124:
-/* Line 661 of lalr1.cc  */
-#line 638 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 639 "Lha-parser.yy"
     {
   if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(5) - (1)].name))!=Reader.MyLha.VarIndex.end())
     {std::ostringstream s; s<<Reader.MyLha.VarIndex[*(yysemantic_stack_[(5) - (5)].name)];
@@ -1338,96 +1346,114 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
   case 127:
-/* Line 661 of lalr1.cc  */
-#line 649 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 650 "Lha-parser.yy"
     {
 		Reader.MyLha.Algebraic.push_back((yysemantic_stack_[(7) - (5)].expression));
 		Reader.MyLha.HASLname.push_back(*(yysemantic_stack_[(7) - (1)].name));
-		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel));
+	Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel));
 	}
     break;
 
   case 128:
-/* Line 661 of lalr1.cc  */
-#line 654 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 656 "Lha-parser.yy"
     {
 		Reader.MyLha.Algebraic.push_back((yysemantic_stack_[(5) - (3)].expression));
 		Reader.MyLha.HASLname.push_back("");
-		Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel));
+	Reader.MyLha.HASLtop.push_back(HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel));
 	}
     break;
 
   case 129:
-/* Line 661 of lalr1.cc  */
-#line 660 "Lha-parser.yy"
+/* Line 670 of lalr1.cc  */
+#line 661 "Lha-parser.yy"
+    {
+		Reader.MyLha.HASLname.push_back(*(yysemantic_stack_[(4) - (1)].name));
+		Reader.MyLha.HASLtop.push_back(Reader.MyLha.ConfidenceLevel);
+	}
+    break;
+
+  case 130:
+/* Line 670 of lalr1.cc  */
+#line 665 "Lha-parser.yy"
+    {
+			Reader.MyLha.HASLname.push_back("");
+			Reader.MyLha.HASLtop.push_back(Reader.MyLha.ConfidenceLevel);
+	}
+    break;
+
+  case 131:
+/* Line 670 of lalr1.cc  */
+#line 671 "Lha-parser.yy"
     {string ss=(yysemantic_stack_[(1) - (1)].expression);
 				 sprintf((yyval.expression),"LhaFunc[%d]", Reader.MyLha.LhaFunction[ss]);
 				}
     break;
 
-  case 130:
-/* Line 661 of lalr1.cc  */
-#line 663 "Lha-parser.yy"
+  case 132:
+/* Line 670 of lalr1.cc  */
+#line 674 "Lha-parser.yy"
     {sprintf((yyval.expression),"min(%s,%s)", (yysemantic_stack_[(6) - (3)].expression),(yysemantic_stack_[(6) - (5)].expression));}
     break;
 
-  case 131:
-/* Line 661 of lalr1.cc  */
-#line 664 "Lha-parser.yy"
+  case 133:
+/* Line 670 of lalr1.cc  */
+#line 675 "Lha-parser.yy"
     {sprintf((yyval.expression),"max(%s,%s)", (yysemantic_stack_[(6) - (3)].expression),(yysemantic_stack_[(6) - (5)].expression));}
     break;
 
-  case 132:
-/* Line 661 of lalr1.cc  */
-#line 665 "Lha-parser.yy"
+  case 134:
+/* Line 670 of lalr1.cc  */
+#line 676 "Lha-parser.yy"
     {sprintf((yyval.expression),"-%s", (yysemantic_stack_[(2) - (2)].expression));}
     break;
 
-  case 133:
-/* Line 661 of lalr1.cc  */
-#line 666 "Lha-parser.yy"
+  case 135:
+/* Line 670 of lalr1.cc  */
+#line 677 "Lha-parser.yy"
     {sprintf((yyval.expression),"floor(%s)", (yysemantic_stack_[(4) - (3)].expression));}
     break;
 
-  case 134:
-/* Line 661 of lalr1.cc  */
-#line 667 "Lha-parser.yy"
+  case 136:
+/* Line 670 of lalr1.cc  */
+#line 678 "Lha-parser.yy"
     {sprintf((yyval.expression),"(%s)", (yysemantic_stack_[(3) - (2)].expression));}
     break;
 
-  case 135:
-/* Line 661 of lalr1.cc  */
-#line 668 "Lha-parser.yy"
+  case 137:
+/* Line 670 of lalr1.cc  */
+#line 679 "Lha-parser.yy"
     {sprintf((yyval.expression),"pow(%s , %s)", (yysemantic_stack_[(3) - (1)].expression),(yysemantic_stack_[(3) - (3)].expression));}
     break;
 
-  case 136:
-/* Line 661 of lalr1.cc  */
-#line 669 "Lha-parser.yy"
+  case 138:
+/* Line 670 of lalr1.cc  */
+#line 680 "Lha-parser.yy"
     {sprintf((yyval.expression),"(%s + %s)", (yysemantic_stack_[(3) - (1)].expression),(yysemantic_stack_[(3) - (3)].expression));}
     break;
 
-  case 137:
-/* Line 661 of lalr1.cc  */
-#line 670 "Lha-parser.yy"
+  case 139:
+/* Line 670 of lalr1.cc  */
+#line 681 "Lha-parser.yy"
     {sprintf((yyval.expression),"(%s - %s)", (yysemantic_stack_[(3) - (1)].expression),(yysemantic_stack_[(3) - (3)].expression));}
     break;
 
-  case 138:
-/* Line 661 of lalr1.cc  */
-#line 671 "Lha-parser.yy"
+  case 140:
+/* Line 670 of lalr1.cc  */
+#line 682 "Lha-parser.yy"
     {sprintf((yyval.expression),"(%s * %s)", (yysemantic_stack_[(3) - (1)].expression),(yysemantic_stack_[(3) - (3)].expression));}
     break;
 
-  case 139:
-/* Line 661 of lalr1.cc  */
-#line 672 "Lha-parser.yy"
+  case 141:
+/* Line 670 of lalr1.cc  */
+#line 683 "Lha-parser.yy"
     {sprintf((yyval.expression),"(%s / %s)", (yysemantic_stack_[(3) - (1)].expression),(yysemantic_stack_[(3) - (3)].expression));}
     break;
 
-  case 140:
-/* Line 661 of lalr1.cc  */
-#line 673 "Lha-parser.yy"
+  case 142:
+/* Line 670 of lalr1.cc  */
+#line 684 "Lha-parser.yy"
     {std::ostringstream s; s<<(yysemantic_stack_[(4) - (3)].expression);
 									if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end()) 
 										{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
@@ -1440,9 +1466,9 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
 									}
     break;
 
-  case 141:
-/* Line 661 of lalr1.cc  */
-#line 683 "Lha-parser.yy"
+  case 143:
+/* Line 670 of lalr1.cc  */
+#line 694 "Lha-parser.yy"
     {std::ostringstream s; s<<(yysemantic_stack_[(4) - (3)].expression);
 									if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end()) 
 										{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
@@ -1455,9 +1481,9 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
 									}
     break;
 
-  case 142:
-/* Line 661 of lalr1.cc  */
-#line 693 "Lha-parser.yy"
+  case 144:
+/* Line 670 of lalr1.cc  */
+#line 704 "Lha-parser.yy"
     {std::ostringstream s; s<<(yysemantic_stack_[(4) - (3)].expression);
 									if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end()) 
 										{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
@@ -1470,9 +1496,9 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
 									}
     break;
 
-  case 143:
-/* Line 661 of lalr1.cc  */
-#line 703 "Lha-parser.yy"
+  case 145:
+/* Line 670 of lalr1.cc  */
+#line 714 "Lha-parser.yy"
     {std::ostringstream s; s<<(yysemantic_stack_[(4) - (3)].expression);
 									if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end()) 
 										{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
@@ -1485,62 +1511,62 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
 									}
     break;
 
-  case 144:
-/* Line 661 of lalr1.cc  */
-#line 714 "Lha-parser.yy"
+  case 146:
+/* Line 670 of lalr1.cc  */
+#line 725 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s", (yysemantic_stack_[(1) - (1)].expression));  }
     break;
 
-  case 145:
-/* Line 661 of lalr1.cc  */
-#line 715 "Lha-parser.yy"
+  case 147:
+/* Line 670 of lalr1.cc  */
+#line 726 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s - %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
-  case 146:
-/* Line 661 of lalr1.cc  */
-#line 716 "Lha-parser.yy"
+  case 148:
+/* Line 670 of lalr1.cc  */
+#line 727 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s + %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
-  case 147:
-/* Line 661 of lalr1.cc  */
-#line 719 "Lha-parser.yy"
+  case 149:
+/* Line 670 of lalr1.cc  */
+#line 730 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.VarIndex.end())
 			  {sprintf((yyval.expression),"Var[%d]", Reader.MyLha.VarIndex[*(yysemantic_stack_[(1) - (1)].name)]);}
 			else {cout<<*(yysemantic_stack_[(1) - (1)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
     break;
 
-  case 148:
-/* Line 661 of lalr1.cc  */
-#line 723 "Lha-parser.yy"
+  case 150:
+/* Line 670 of lalr1.cc  */
+#line 734 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(5) - (5)].name))!=Reader.MyLha.VarIndex.end())
 			  {sprintf((yyval.expression),"(%s) * Var[%d]", (yysemantic_stack_[(5) - (2)].expression), Reader.MyLha.VarIndex[*(yysemantic_stack_[(5) - (5)].name)]);
 			   }
 			else {cout<<*(yysemantic_stack_[(5) - (5)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
     break;
 
-  case 149:
-/* Line 661 of lalr1.cc  */
-#line 728 "Lha-parser.yy"
+  case 151:
+/* Line 670 of lalr1.cc  */
+#line 739 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.VarIndex.end())
 			  {sprintf((yyval.expression),"%d * Var[%d]", (yysemantic_stack_[(3) - (1)].IntVal), Reader.MyLha.VarIndex[*(yysemantic_stack_[(3) - (3)].name)]);
 			   }
 			else {cout<<*(yysemantic_stack_[(3) - (3)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
     break;
 
-  case 150:
-/* Line 661 of lalr1.cc  */
-#line 733 "Lha-parser.yy"
+  case 152:
+/* Line 670 of lalr1.cc  */
+#line 744 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.VarIndex.end())
 			  {sprintf((yyval.expression),"%f * Var[%d]", (yysemantic_stack_[(3) - (1)].RealVal), Reader.MyLha.VarIndex[*(yysemantic_stack_[(3) - (3)].name)]);
 			   }
 			else {cout<<*(yysemantic_stack_[(3) - (3)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
     break;
 
-  case 151:
-/* Line 661 of lalr1.cc  */
-#line 738 "Lha-parser.yy"
+  case 153:
+/* Line 670 of lalr1.cc  */
+#line 749 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.VarIndex.end())
 			  {if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(3) - (1)].name))!=Reader.MyLha.LhaRealConstant.end())
 				  {sprintf((yyval.expression),"%f * Var[%d]", Reader.MyLha.LhaRealConstant[*(yysemantic_stack_[(3) - (1)].name)],Reader.MyLha.VarIndex[*(yysemantic_stack_[(3) - (3)].name)]);
@@ -1561,44 +1587,44 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
 		}
     break;
 
-  case 152:
-/* Line 661 of lalr1.cc  */
-#line 757 "Lha-parser.yy"
+  case 154:
+/* Line 670 of lalr1.cc  */
+#line 768 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(2) - (2)].name))!=Reader.MyLha.VarIndex.end())
 			  {sprintf((yyval.expression),"-Var[%d]", Reader.MyLha.VarIndex[*(yysemantic_stack_[(2) - (2)].name)]);}
 			else {cout<<*(yysemantic_stack_[(2) - (2)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
     break;
 
-  case 153:
-/* Line 661 of lalr1.cc  */
-#line 761 "Lha-parser.yy"
+  case 155:
+/* Line 670 of lalr1.cc  */
+#line 772 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(6) - (6)].name))!=Reader.MyLha.VarIndex.end())
 			  {sprintf((yyval.expression),"-(%s) * Var[%d]", (yysemantic_stack_[(6) - (3)].expression), Reader.MyLha.VarIndex[*(yysemantic_stack_[(6) - (6)].name)]);
 			   }
 			else {cout<<*(yysemantic_stack_[(6) - (5)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
     break;
 
-  case 154:
-/* Line 661 of lalr1.cc  */
-#line 766 "Lha-parser.yy"
+  case 156:
+/* Line 670 of lalr1.cc  */
+#line 777 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.VarIndex.end())
 			  {sprintf((yyval.expression),"-%d * Var[%d]", (yysemantic_stack_[(4) - (2)].IntVal), Reader.MyLha.VarIndex[*(yysemantic_stack_[(4) - (4)].name)]);
 			   }
 			else {cout<<*(yysemantic_stack_[(4) - (4)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
     break;
 
-  case 155:
-/* Line 661 of lalr1.cc  */
-#line 771 "Lha-parser.yy"
+  case 157:
+/* Line 670 of lalr1.cc  */
+#line 782 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.VarIndex.end())
 			  {sprintf((yyval.expression),"-%f * Var[%d]", (yysemantic_stack_[(4) - (2)].RealVal), Reader.MyLha.VarIndex[*(yysemantic_stack_[(4) - (4)].name)]);
 			   }
 			else {cout<<*(yysemantic_stack_[(4) - (4)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
     break;
 
-  case 156:
-/* Line 661 of lalr1.cc  */
-#line 776 "Lha-parser.yy"
+  case 158:
+/* Line 670 of lalr1.cc  */
+#line 787 "Lha-parser.yy"
     { if(Reader.MyLha.VarIndex.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.VarIndex.end())
 			  {if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(4) - (2)].name))!=Reader.MyLha.LhaRealConstant.end())
 				  {sprintf((yyval.expression),"-%f * Var[%d]", Reader.MyLha.LhaRealConstant[*(yysemantic_stack_[(4) - (2)].name)],Reader.MyLha.VarIndex[*(yysemantic_stack_[(4) - (4)].name)]);
@@ -1620,11 +1646,12 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     break;
 
 
-/* Line 661 of lalr1.cc  */
-#line 1625 "Lha-parser.tab.cc"
-	default:
-          break;
+/* Line 670 of lalr1.cc  */
+#line 1651 "Lha-parser.tab.cc"
+      default:
+        break;
       }
+
     /* User semantic actions sometimes alter yychar, and that requires
        that yytoken be updated with the new translation.  We take the
        approach of translating immediately before every use of yytoken.
@@ -1675,20 +1702,19 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
-	/* If just tried and failed to reuse lookahead token after an
-	 error, discard it.  */
-
-	if (yychar <= yyeof_)
-	  {
-	  /* Return failure if at end of input.  */
-	  if (yychar == yyeof_)
-	    YYABORT;
-	  }
-	else
-	  {
-	    yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
-	    yychar = yyempty_;
-	  }
+        /* If just tried and failed to reuse lookahead token after an
+           error, discard it.  */
+        if (yychar <= yyeof_)
+          {
+            /* Return failure if at end of input.  */
+            if (yychar == yyeof_)
+              YYABORT;
+          }
+        else
+          {
+            yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
+            yychar = yyempty_;
+          }
       }
 
     /* Else will try to reuse lookahead token after shifting the error
@@ -1737,7 +1763,7 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
 
 	/* Pop the current state because it cannot handle the error token.  */
 	if (yystate_stack_.height () == 1)
-	YYABORT;
+	  YYABORT;
 
 	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
@@ -1785,16 +1811,42 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
     /* Do not reclaim the symbols of the rule which action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
-    while (yystate_stack_.height () != 1)
+    while (1 < yystate_stack_.height ())
       {
-	yydestruct_ ("Cleanup: popping",
-		   yystos_[yystate_stack_[0]],
-		   &yysemantic_stack_[0],
-		   &yylocation_stack_[0]);
-	yypop_ ();
+        yydestruct_ ("Cleanup: popping",
+                     yystos_[yystate_stack_[0]],
+                     &yysemantic_stack_[0],
+                     &yylocation_stack_[0]);
+        yypop_ ();
       }
 
     return yyresult;
+    }
+    catch (...)
+      {
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
+                 << std::endl;
+        // Do not try to display the values of the reclaimed symbols,
+        // as their printer might throw an exception.
+        if (yychar != yyempty_)
+          {
+            /* Make sure we have latest lookahead translation.  See
+               comments at user semantic actions for why this is
+               necessary.  */
+            yytoken = yytranslate_ (yychar);
+            yydestruct_ (YY_NULL, yytoken, &yylval, &yylloc);
+          }
+
+        while (1 < yystate_stack_.height ())
+          {
+            yydestruct_ (YY_NULL,
+                         yystos_[yystate_stack_[0]],
+                         &yysemantic_stack_[0],
+                         &yylocation_stack_[0]);
+            yypop_ ();
+          }
+        throw;
+      }
   }
 
   // Generate an error message.
@@ -1895,53 +1947,53 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  const short int Lha_parser::yypact_ninf_ = -303;
+  const short int Lha_parser::yypact_ninf_ = -296;
   const short int
   Lha_parser::yypact_[] =
   {
-        68,   -11,    20,    26,   189,    31,    35,   -12,    67,   100,
-    -303,   117,   126,   103,    96,    69,   231,   145,   148,   216,
-      84,     9,   130,   142,  -303,  -303,   184,   214,   158,   186,
-     243,   260,  -303,   227,   259,  -303,  -303,   304,   310,   268,
-     269,     9,  -303,   307,   331,  -303,     9,  -303,  -303,  -303,
-    -303,   339,   358,   290,   311,  -303,  -303,   349,   368,   381,
-     400,  -303,   347,   149,  -303,  -303,    -3,  -303,    -2,   395,
-     396,   123,   168,  -303,    10,  -303,    15,   415,   149,   149,
-     416,   417,   436,   437,   438,   457,   458,   302,  -303,   465,
-     468,   472,   474,   478,    18,  -303,   486,   444,   396,  -303,
-    -303,  -303,   123,   123,   488,   489,   490,   213,  -303,  -303,
-     168,   168,   491,   492,   498,   119,   505,   503,   507,   506,
-     149,   317,    12,   149,   149,   149,   202,   202,   202,   202,
-     508,   149,   149,   149,   149,   149,  -303,  -303,  -303,  -303,
-     509,   510,  -303,   512,   513,  -303,   323,   197,   123,   123,
-     123,  -303,   123,   123,   123,   123,   123,   443,   195,   168,
-     168,   168,  -303,   168,   168,   168,   168,  -303,  -303,  -303,
-    -303,   329,  -303,   338,   218,   224,   484,   493,   494,   123,
-     163,    63,  -303,    78,   105,   147,  -303,   483,   483,    12,
-      12,  -303,    90,  -303,   514,  -303,  -303,   344,   241,   253,
-     495,   495,   197,   197,  -303,  -303,   350,   281,   287,   496,
-     195,   195,  -303,   517,  -303,   149,   149,   515,   521,   524,
-     359,   501,   502,   504,   123,  -303,   202,   202,  -303,  -303,
-    -303,    90,    90,  -303,  -303,   476,   110,  -303,   527,  -303,
-     123,   123,  -303,   168,   168,   168,  -303,   365,   371,  -303,
-    -303,  -303,   511,   529,   530,   531,   380,  -303,  -303,   308,
-     169,  -303,   123,   123,   123,   123,   123,   526,   533,    90,
-      90,   532,   386,   392,   449,   455,   459,  -303,  -303,   534,
-    -303,  -303,  -303,   516,  -303,   270,   270,   270,   270,   270,
-     537,  -303,  -303,   522,   528,  -303,  -303,  -303,  -303,  -303,
-    -303,   541,   538,   188,  -303,    29,  -303,   123,   537,   536,
-    -303,   535,   544,   542,  -303,   270,  -303,   543,   500,  -303,
-      16,   199,  -303,  -303,   549,  -303,   539,   540,   545,   123,
-    -303,   212,   546,   550,     0,  -303,  -303,   552,   553,   554,
-     401,   547,   548,   551,   123,    -7,   199,   123,   123,   123,
-     209,   209,  -303,  -303,  -303,   555,   556,   557,   558,   407,
-    -303,   559,   560,  -303,   270,   270,   270,  -303,  -303,   561,
-    -303,  -303,  -303,   562,   563,    17,  -303,   565,  -303,   570,
-       4,   559,  -303,  -303,  -303,  -303,  -303,  -303,   132,   132,
-     567,   571,   572,   564,   275,  -303,   413,   203,   132,   132,
-     132,   576,   132,   132,   132,   132,   132,  -303,   422,   258,
-     264,  -303,   523,   523,   203,   203,  -303,  -303,   132,   132,
-     428,   434,  -303,  -303
+       -39,     6,    74,    24,   130,    -7,   -30,    63,   121,   156,
+    -296,   116,   124,   133,   136,   144,   193,   195,   221,   238,
+     159,    68,   196,   200,  -296,  -296,   241,   268,   232,   254,
+     294,   323,  -296,   228,   295,  -296,  -296,   337,   347,   299,
+     311,    68,  -296,   350,   362,   368,  -296,    68,  -296,  -296,
+    -296,  -296,   374,   381,   333,   345,  -296,  -296,   384,   391,
+     403,   404,  -296,   259,   125,  -296,  -296,  -296,    -3,  -296,
+      -2,   401,   402,    87,   175,  -296,    -1,  -296,     0,   409,
+     413,   125,   125,   422,   423,   430,   431,   432,   435,   436,
+     284,  -296,   405,   446,   439,   447,   463,    16,  -296,   456,
+     414,   402,  -296,  -296,  -296,    87,    87,   464,   465,   468,
+     186,  -296,  -296,   175,   175,   469,   470,   471,   192,   472,
+     479,   484,   480,   125,  -296,   292,   246,   125,   125,   125,
+      73,    73,    73,    73,   482,   125,   125,   125,   125,   125,
+    -296,  -296,  -296,  -296,   499,   502,  -296,   516,   514,  -296,
+     297,   312,    87,    87,    87,  -296,    87,    87,    87,    87,
+      87,   441,   212,   175,   175,   175,  -296,   175,   175,   175,
+     175,  -296,  -296,  -296,  -296,   305,  -296,   318,   139,   197,
+     494,   495,   496,    87,   128,    65,  -296,    93,   107,   160,
+    -296,   497,   497,   246,   246,  -296,   120,  -296,   517,  -296,
+    -296,   326,   202,   225,   498,   498,   312,   312,  -296,  -296,
+     331,   229,   263,   500,   212,   212,  -296,   518,  -296,   125,
+     125,   523,   526,   528,   339,   505,   506,   507,    87,  -296,
+      73,    73,  -296,  -296,  -296,   120,   120,  -296,  -296,   483,
+     226,  -296,   532,  -296,    87,    87,  -296,   175,   175,   175,
+    -296,   352,   360,  -296,  -296,  -296,   509,   534,   535,   536,
+     365,  -296,  -296,   271,   230,  -296,    87,    87,    87,    87,
+      87,   531,   537,   120,   120,   538,   373,   386,   454,   462,
+     466,  -296,  -296,   539,  -296,  -296,  -296,   519,  -296,   476,
+     476,   476,   476,   476,   541,  -296,  -296,   522,   542,  -296,
+    -296,  -296,  -296,  -296,  -296,   544,   545,   140,  -296,    18,
+    -296,    87,   541,   543,  -296,   546,   548,   547,  -296,   476,
+    -296,   550,   493,  -296,     1,    10,  -296,  -296,   551,  -296,
+     530,   533,   540,    87,  -296,   300,   553,   549,    12,  -296,
+    -296,   555,   559,   560,   394,   552,   554,   556,    87,    20,
+      10,    87,    87,    87,   182,   182,  -296,  -296,  -296,   557,
+     561,   562,   563,   399,  -296,   566,   564,  -296,   476,   476,
+     476,  -296,  -296,   567,  -296,  -296,  -296,   558,   568,    15,
+    -296,   565,  -296,   569,    13,   566,  -296,  -296,  -296,  -296,
+    -296,  -296,   170,   170,   571,   577,   578,   570,   488,  -296,
+     407,   346,   170,   170,   170,   572,   170,   170,   170,   170,
+     170,  -296,   420,   235,   240,  -296,   573,   573,   346,   346,
+    -296,  -296,   170,   170,   428,   433,  -296,  -296
   };
 
   /* YYDEFACT[S] -- default reduction number in state S.  Performed when
@@ -1954,67 +2006,67 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
        1,     0,     0,     0,     0,     0,     0,     0,     0,     0,
       45,     0,     0,     0,    44,    43,     0,     0,     0,     0,
        0,     0,     2,     0,     0,    59,    60,     0,     0,     0,
-       0,     0,    46,     0,     0,     4,   125,    51,    52,    50,
-      49,     0,     0,     0,     0,    67,    68,     0,     0,     0,
-       0,     3,     0,     0,   126,    62,     0,    65,     0,     0,
-       0,     0,     0,    54,     0,    57,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   129,     0,
-       0,     0,     0,     0,     0,    70,     0,     0,    90,    19,
-      17,    18,     0,     0,     0,     0,     0,     0,     6,     5,
+       0,     0,    46,     0,     0,     0,     4,   125,    51,    52,
+      50,    49,     0,     0,     0,     0,    67,    68,     0,     0,
+       0,     0,     3,     0,     0,   130,   126,    62,     0,    65,
+       0,     0,     0,     0,     0,    54,     0,    57,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   132,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    63,    61,    66,    64,
-       0,     0,    71,     0,     0,    91,     0,    21,     0,     0,
-       0,    48,     0,     0,     0,     0,     0,     0,     8,     0,
-       0,     0,    47,     0,     0,     0,     0,    55,    53,    58,
-      56,     0,   134,     0,     0,     0,   147,     0,     0,     0,
-       0,     0,   144,     0,     0,     0,   128,   139,   138,   136,
-     137,   135,     0,    69,     0,    89,    20,     0,     0,     0,
-      22,    25,    23,    24,    26,     7,     0,     0,     0,    11,
-       9,    10,    12,     0,   133,     0,     0,     0,     0,     0,
-       0,   152,     0,     0,     0,   141,     0,     0,   142,   140,
-     143,     0,     0,    77,    78,     0,     0,    79,     0,    27,
-       0,     0,    13,     0,     0,     0,   127,     0,     0,   151,
-     150,   149,     0,     0,     0,     0,     0,   146,   145,     0,
-       0,    83,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   130,   131,     0,
-     156,   155,   154,     0,    82,    84,    86,    85,    87,    88,
-       0,    73,    80,    81,     0,    28,    29,    14,    15,    16,
-     148,     0,     0,     0,    74,     0,   153,     0,     0,     0,
-      93,    94,     0,     0,    96,    76,    75,     0,     0,    98,
-       0,     0,    72,    95,     0,    97,   109,     0,     0,     0,
-     102,     0,     0,   100,     0,   106,    99,     0,     0,     0,
-       0,   114,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   113,   112,   111,     0,     0,     0,     0,     0,
-     120,     0,     0,   101,   103,   105,   104,   108,   107,     0,
-     118,   117,   116,     0,     0,     0,   121,     0,   110,     0,
-       0,     0,   119,    92,   115,    32,    30,    31,     0,     0,
-       0,     0,     0,     0,   123,   122,     0,    34,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,    33,     0,     0,
-       0,   124,    35,    38,    36,    37,    39,    40,     0,     0,
-       0,     0,    41,    42
+       0,   131,     0,     0,     0,     0,     0,     0,    70,     0,
+       0,    90,    19,    17,    18,     0,     0,     0,     0,     0,
+       0,     6,     5,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,   129,     0,   134,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+      63,    61,    66,    64,     0,     0,    71,     0,     0,    91,
+       0,    21,     0,     0,     0,    48,     0,     0,     0,     0,
+       0,     0,     8,     0,     0,     0,    47,     0,     0,     0,
+       0,    55,    53,    58,    56,     0,   136,     0,     0,     0,
+     149,     0,     0,     0,     0,     0,   146,     0,     0,     0,
+     128,   141,   140,   138,   139,   137,     0,    69,     0,    89,
+      20,     0,     0,     0,    22,    25,    23,    24,    26,     7,
+       0,     0,     0,    11,     9,    10,    12,     0,   135,     0,
+       0,     0,     0,     0,     0,   154,     0,     0,     0,   143,
+       0,     0,   144,   142,   145,     0,     0,    77,    78,     0,
+       0,    79,     0,    27,     0,     0,    13,     0,     0,     0,
+     127,     0,     0,   153,   152,   151,     0,     0,     0,     0,
+       0,   148,   147,     0,     0,    83,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,   132,   133,     0,   158,   157,   156,     0,    82,    84,
+      86,    85,    87,    88,     0,    73,    80,    81,     0,    28,
+      29,    14,    15,    16,   150,     0,     0,     0,    74,     0,
+     155,     0,     0,     0,    93,    94,     0,     0,    96,    76,
+      75,     0,     0,    98,     0,     0,    72,    95,     0,    97,
+     109,     0,     0,     0,   102,     0,     0,   100,     0,   106,
+      99,     0,     0,     0,     0,   114,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,   113,   112,   111,     0,
+       0,     0,     0,     0,   120,     0,     0,   101,   103,   105,
+     104,   108,   107,     0,   118,   117,   116,     0,     0,     0,
+     121,     0,   110,     0,     0,     0,   119,    92,   115,    32,
+      30,    31,     0,     0,     0,     0,     0,     0,   123,   122,
+       0,    34,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,    33,     0,     0,     0,   124,    35,    38,    36,    37,
+      39,    40,     0,     0,     0,     0,    41,    42
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const short int
   Lha_parser::yypgoto_[] =
   {
-      -303,  -303,  -303,  -100,   -71,  -302,  -303,   566,  -303,   577,
-     579,   568,   569,  -303,   573,  -303,  -303,   575,  -303,   574,
-    -303,  -303,   578,  -303,   464,  -303,   255,  -180,  -303,   580,
-     467,  -303,  -303,   250,  -303,   237,  -303,  -303,   -88,  -303,
-    -303,   215,   -24,  -303,   -77,  -303,  -108,    38
+      -296,  -296,  -296,  -103,   -73,  -295,  -296,   529,  -296,   581,
+     583,   574,   575,  -296,   579,  -296,  -296,   576,  -296,   580,
+    -296,  -296,   582,  -296,   481,  -296,   261,  -200,  -296,   584,
+     475,  -296,  -296,   255,  -296,   242,  -296,  -296,   -38,  -296,
+    -296,   205,    48,  -296,   -80,  -296,   -32,    99
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
   const short int
   Lha_parser::yydefgoto_[] =
   {
-        -1,     3,     4,   115,   235,   394,     5,    19,    20,     6,
-       7,    21,    22,    74,    23,    76,    13,    14,    66,    15,
-      68,    32,    33,    94,    95,   303,   304,   236,   237,    34,
-      97,    98,   313,   314,   320,   332,   333,   334,   335,   362,
-     375,   376,    45,    46,    87,    88,   181,   182
+        -1,     3,     4,   118,   239,   398,     5,    19,    20,     6,
+       7,    21,    22,    76,    23,    78,    13,    14,    68,    15,
+      70,    32,    33,    97,    98,   307,   308,   240,   241,    34,
+     100,   101,   317,   318,   324,   336,   337,   338,   339,   366,
+     379,   380,    46,    47,    90,    91,   185,   186
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -2024,136 +2076,136 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
   const unsigned short int
   Lha_parser::yytable_[] =
   {
-       107,   121,   122,     8,   360,    89,    91,   385,   386,   387,
-     157,   158,    43,   388,   347,   348,   349,    61,   116,   183,
-     184,   185,    64,   118,   324,   381,    10,    93,   350,   351,
-       2,   146,   147,   389,     9,   390,   391,   392,   131,   132,
-     310,   311,   135,   171,   361,    44,   173,   174,   175,    90,
-      92,   260,   261,   393,   187,   188,   189,   190,   191,   206,
-     207,   208,   117,   209,   210,   211,   212,   119,   325,   382,
-     141,    16,    26,   225,    17,    18,     1,   197,   198,   199,
-     312,   200,   201,   202,   203,   204,   396,   397,   228,   292,
-     293,   226,   227,    99,   100,   101,   408,   409,   410,   231,
-     412,   413,   414,   415,   416,    27,   226,   227,   220,     1,
-       2,   232,   233,   234,    11,   229,   420,   421,   267,   103,
-     268,   104,   105,   106,    16,   162,    99,   100,   101,   269,
-     270,    28,   102,   226,   227,   385,   386,   387,   247,   248,
-      29,   388,    12,   274,   275,   276,   163,   164,   165,   166,
-      30,    31,   103,   256,   104,   105,   106,   230,    78,    39,
-     259,   389,    40,   390,   391,   392,   221,   222,   223,   272,
-     273,   108,   224,   109,    18,   226,   227,   110,    79,   284,
-      80,    81,    82,    83,    84,    17,    85,    86,   269,   270,
-      49,   285,   286,   287,   288,   289,   308,   111,   309,   112,
-     113,   114,   326,   327,   328,   176,   177,   178,   329,    51,
-     330,   179,   326,   327,   328,   341,   342,   343,   329,   151,
-      50,   344,   163,   152,   153,   166,   215,   156,   331,   402,
-     403,   180,   216,   406,    11,    12,   315,    52,   331,   152,
-     153,   154,   155,   156,   131,   132,   133,   134,   135,   240,
-     131,   132,   133,   134,   135,    37,    38,    53,   340,    17,
-      18,   241,   367,   368,   257,   258,   418,   152,   153,   154,
-     155,   156,   419,   359,    54,    31,   364,   365,   366,   152,
-     153,   154,   155,   156,   402,   403,   404,   405,   406,   244,
-     402,   403,   404,   405,   406,   245,   152,   153,   154,   155,
-     156,   402,   403,   404,   405,   406,    30,    57,   163,   164,
-     165,   166,   130,    58,   163,   164,   165,   166,   196,    59,
-      60,    62,   262,   263,   264,   265,   266,   172,   131,   132,
-     133,   134,   135,   196,   152,   153,   154,   155,   156,   213,
-      63,    69,    65,   131,   132,   133,   134,   135,   214,   152,
-     153,   154,   155,   156,   239,   131,   132,   133,   134,   135,
-     242,    67,    70,    71,   131,   132,   133,   134,   135,   252,
-     152,   153,   154,   155,   156,   277,   243,   163,   164,   165,
-     166,   278,    72,    77,    73,   152,   153,   154,   155,   156,
-     283,   131,   132,   133,   134,   135,   295,   131,   132,   133,
-     134,   135,   296,    75,    93,    96,   152,   153,   154,   155,
-     156,   355,   152,   153,   154,   155,   156,   373,   152,   153,
-     154,   155,   156,   407,   120,   123,   124,   152,   153,   154,
-     155,   156,   417,   152,   153,   154,   155,   156,   422,   402,
-     403,   404,   405,   406,   423,   125,   126,   127,   402,   403,
-     404,   405,   406,   205,   402,   403,   404,   405,   406,   297,
-     402,   403,   404,   405,   406,   298,   128,   129,   136,   299,
-     163,   164,   165,   166,   137,   138,   163,   164,   165,   166,
-     139,   140,   163,   164,   165,   166,   163,   164,   165,   166,
-     262,   263,   264,   265,   266,   143,   144,   148,   149,   150,
-     159,   160,   152,   153,   154,   155,   156,   161,   167,   168,
-     169,   217,   170,   135,   186,   194,   193,   192,   249,   195,
-     218,   219,   238,   246,   250,   156,   166,   251,   253,   254,
-     271,   255,   280,   281,   282,   290,   305,   300,   279,   291,
-     302,   269,   294,   301,   306,   307,   317,   319,   318,   322,
-     321,   312,   336,   406,   345,   352,   353,   354,   142,   370,
-     371,   372,   374,   316,   378,   145,   337,   338,   323,   346,
-     377,   383,   339,   384,   356,   357,   398,   380,   358,   411,
-     399,   400,   369,   363,    25,    24,    42,    41,    35,   379,
-      36,   401,    48,     0,     0,    47,   395,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    56,    55
+       110,   125,   126,     1,     2,    92,    94,   119,   121,   328,
+     161,   162,     1,   330,   331,   332,   389,   390,   391,   333,
+       8,   334,   392,   385,    10,    96,   351,   352,   353,   314,
+     315,   364,   150,   151,    16,   264,   265,    17,    18,   335,
+     354,   355,   393,   175,   394,   395,   396,   177,   178,   179,
+      93,    95,   120,   122,   329,   191,   192,   193,   194,   195,
+     210,   211,   212,   397,   213,   214,   215,   216,   386,   145,
+     316,    43,   365,   296,   297,   229,   180,   181,   182,   201,
+     202,   203,   183,   204,   205,   206,   207,   208,     9,    62,
+     102,   103,   104,   230,   231,    66,   105,   400,   401,   187,
+     188,   189,   184,   232,    44,    45,     2,   412,   413,   414,
+     224,   416,   417,   418,   419,   420,   106,   233,   107,   108,
+     109,   230,   231,   102,   103,   104,    26,   424,   425,   235,
+      28,   225,   226,   227,    81,   230,   231,   228,    29,   251,
+     252,   236,   237,   238,   278,   279,   280,   219,   312,   106,
+     313,   107,   108,   109,    82,   260,    83,    84,    85,    86,
+      87,    27,   263,    88,    89,   135,   136,   137,   138,   139,
+     234,   276,   277,   389,   390,   391,    11,    12,   111,   392,
+     112,    30,    31,    12,   113,   330,   331,   332,   230,   231,
+      11,   333,   155,   289,   290,   291,   292,   293,   166,   393,
+      16,   394,   395,   396,   114,   220,   115,   116,   117,    39,
+     244,   335,   156,   157,   158,   159,   160,    37,    38,   167,
+     168,   169,   170,   135,   136,   137,   138,   139,   156,   157,
+     158,   159,   160,   245,   271,    40,   272,   248,   319,   167,
+     288,    18,   170,   422,    17,   273,   274,    50,   423,   273,
+     274,   156,   157,   158,   159,   160,   167,   168,   169,   170,
+     344,   406,   407,   408,   409,   410,   406,   407,   408,   409,
+     410,   249,   135,   136,    51,   363,   139,    31,   368,   369,
+     370,   200,    17,    18,    52,   266,   267,   268,   269,   270,
+     167,   168,   169,   170,   134,    79,    80,   156,   157,   158,
+     159,   160,   176,   345,   346,   347,    53,   200,    54,   348,
+     135,   136,   137,   138,   139,   217,   371,   372,   135,   136,
+     137,   138,   139,   156,   157,   158,   159,   160,   218,   261,
+     262,   135,   136,   137,   138,   139,   243,    55,   156,   157,
+      58,   246,   160,    30,   135,   136,   137,   138,   139,   256,
+      59,    60,   156,   157,   158,   159,   160,   247,   167,   168,
+     169,   170,   281,    61,    63,   156,   157,   158,   159,   160,
+     282,    64,   406,   407,    65,   287,   410,    67,   135,   136,
+     137,   138,   139,   299,    69,    71,   135,   136,   137,   138,
+     139,   156,   157,   158,   159,   160,   300,    72,    73,   156,
+     157,   158,   159,   160,   359,    74,    75,    77,   140,   377,
+      96,    99,   156,   157,   158,   159,   160,   411,   123,   124,
+     156,   157,   158,   159,   160,   156,   157,   158,   159,   160,
+     421,   127,   128,   406,   407,   408,   409,   410,   426,   129,
+     130,   131,   142,   427,   132,   133,   406,   407,   408,   409,
+     410,   209,   141,   143,   406,   407,   408,   409,   410,   406,
+     407,   408,   409,   410,   301,   147,   144,   148,   167,   168,
+     169,   170,   302,   152,   153,   171,   303,   154,   163,   164,
+     165,   167,   168,   169,   170,   172,   174,   173,   190,   167,
+     168,   169,   170,   167,   168,   169,   170,   266,   267,   268,
+     269,   270,   156,   157,   158,   159,   160,   196,   197,   156,
+     157,   158,   159,   160,   406,   407,   408,   409,   410,   198,
+     199,   221,   222,   223,   250,   242,   253,   139,   160,   254,
+     170,   255,   257,   258,   259,   275,   283,   284,   285,   286,
+     294,   273,   304,   295,   306,   316,   305,   310,   298,    42,
+     309,   323,   311,   321,   340,   325,   326,   341,   356,   322,
+     342,   349,   357,   358,   374,   375,   376,   343,   350,   378,
+     382,   387,   388,   320,   381,   415,   149,   327,   146,   360,
+     402,   361,   384,   362,   373,   383,   403,   404,    25,    24,
+     399,    36,   367,    41,    35,     0,     0,   405,    49,     0,
+       0,    48,     0,   410,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,    57,    56
   };
 
   /* YYCHECK.  */
   const short int
   Lha_parser::yycheck_[] =
   {
-        71,    78,    79,    14,    11,     8,     8,     3,     4,     5,
-     110,   111,     3,     9,    14,    15,    16,    41,     8,   127,
-     128,   129,    46,     8,     8,     8,     0,     9,    28,    29,
-      42,   102,   103,    29,    14,    31,    32,    33,    26,    27,
-      11,    12,    30,   120,    51,    36,   123,   124,   125,    52,
-      52,   231,   232,    49,   131,   132,   133,   134,   135,   159,
-     160,   161,    52,   163,   164,   165,   166,    52,    52,    52,
-      52,    40,     5,    10,    43,    44,    41,   148,   149,   150,
-      51,   152,   153,   154,   155,   156,   388,   389,    10,   269,
-     270,    28,    29,     3,     4,     5,   398,   399,   400,     9,
-     402,   403,   404,   405,   406,     5,    28,    29,   179,    41,
-      42,    21,    22,    23,    45,    10,   418,   419,     8,    29,
-      10,    31,    32,    33,    40,     6,     3,     4,     5,    19,
-      20,    14,     9,    28,    29,     3,     4,     5,   215,   216,
-      14,     9,    46,   243,   244,   245,    27,    28,    29,    30,
-      47,    48,    29,   224,    31,    32,    33,    10,     9,    14,
-     231,    29,    14,    31,    32,    33,     3,     4,     5,   240,
-     241,     3,     9,     5,    44,    28,    29,     9,    29,    10,
-      31,    32,    33,    34,    35,    43,    37,    38,    19,    20,
-       6,   262,   263,   264,   265,   266,     8,    29,    10,    31,
-      32,    33,     3,     4,     5,     3,     4,     5,     9,    51,
-      11,     9,     3,     4,     5,     3,     4,     5,     9,     6,
-       6,     9,    27,    26,    27,    30,     8,    30,    29,    26,
-      27,    29,     8,    30,    45,    46,   307,    51,    29,    26,
-      27,    28,    29,    30,    26,    27,    28,    29,    30,     8,
-      26,    27,    28,    29,    30,    24,    25,    14,   329,    43,
-      44,     8,   350,   351,   226,   227,     8,    26,    27,    28,
-      29,    30,     8,   344,    14,    48,   347,   348,   349,    26,
-      27,    28,    29,    30,    26,    27,    28,    29,    30,     8,
-      26,    27,    28,    29,    30,     8,    26,    27,    28,    29,
-      30,    26,    27,    28,    29,    30,    47,     3,    27,    28,
-      29,    30,    10,     3,    27,    28,    29,    30,    10,    51,
-      51,    14,    14,    15,    16,    17,    18,    10,    26,    27,
-      28,    29,    30,    10,    26,    27,    28,    29,    30,    10,
-       9,    51,     3,    26,    27,    28,    29,    30,    10,    26,
-      27,    28,    29,    30,    10,    26,    27,    28,    29,    30,
-      10,     3,    51,    14,    26,    27,    28,    29,    30,    10,
-      26,    27,    28,    29,    30,    10,    26,    27,    28,    29,
-      30,    10,    14,    36,     3,    26,    27,    28,    29,    30,
-      10,    26,    27,    28,    29,    30,    10,    26,    27,    28,
-      29,    30,    10,     3,     9,     9,    26,    27,    28,    29,
-      30,    10,    26,    27,    28,    29,    30,    10,    26,    27,
-      28,    29,    30,    10,     9,     9,     9,    26,    27,    28,
-      29,    30,    10,    26,    27,    28,    29,    30,    10,    26,
-      27,    28,    29,    30,    10,     9,     9,     9,    26,    27,
-      28,    29,    30,    10,    26,    27,    28,    29,    30,    10,
-      26,    27,    28,    29,    30,    10,     9,     9,     3,    10,
-      27,    28,    29,    30,     6,     3,    27,    28,    29,    30,
-       6,     3,    27,    28,    29,    30,    27,    28,    29,    30,
-      14,    15,    16,    17,    18,     9,    52,     9,     9,     9,
-       9,     9,    26,    27,    28,    29,    30,     9,     3,     6,
-       3,    27,     6,    30,     6,     3,     6,     8,     3,     6,
-      27,    27,     8,     6,     3,    30,    30,     3,    27,    27,
-       3,    27,     3,     3,     3,     9,     8,     3,    27,     6,
-       3,    19,    10,    27,     3,     7,    10,     3,    13,     6,
-       8,    51,     3,    30,     8,     3,     3,     3,    94,     3,
-       3,     3,     3,   308,     3,    98,    27,    27,   318,    19,
-      10,     6,    27,     3,    27,    27,     9,    14,    27,     3,
-       9,     9,    27,   346,     7,     6,    20,    19,    14,    27,
-      15,    27,    23,    -1,    -1,    22,   381,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    34,    33
+        73,    81,    82,    42,    43,     8,     8,     8,     8,     8,
+     113,   114,    42,     3,     4,     5,     3,     4,     5,     9,
+      14,    11,     9,     8,     0,     9,    14,    15,    16,    11,
+      12,    11,   105,   106,    41,   235,   236,    44,    45,    29,
+      28,    29,    29,   123,    31,    32,    33,   127,   128,   129,
+      53,    53,    53,    53,    53,   135,   136,   137,   138,   139,
+     163,   164,   165,    50,   167,   168,   169,   170,    53,    53,
+      52,     3,    52,   273,   274,    10,     3,     4,     5,   152,
+     153,   154,     9,   156,   157,   158,   159,   160,    14,    41,
+       3,     4,     5,    28,    29,    47,     9,   392,   393,   131,
+     132,   133,    29,    10,    36,    37,    43,   402,   403,   404,
+     183,   406,   407,   408,   409,   410,    29,    10,    31,    32,
+      33,    28,    29,     3,     4,     5,     5,   422,   423,     9,
+      14,     3,     4,     5,     9,    28,    29,     9,    14,   219,
+     220,    21,    22,    23,   247,   248,   249,     8,     8,    29,
+      10,    31,    32,    33,    29,   228,    31,    32,    33,    34,
+      35,     5,   235,    38,    39,    26,    27,    28,    29,    30,
+      10,   244,   245,     3,     4,     5,    46,    47,     3,     9,
+       5,    48,    49,    47,     9,     3,     4,     5,    28,    29,
+      46,     9,     6,   266,   267,   268,   269,   270,     6,    29,
+      41,    31,    32,    33,    29,     8,    31,    32,    33,    14,
+       8,    29,    26,    27,    28,    29,    30,    24,    25,    27,
+      28,    29,    30,    26,    27,    28,    29,    30,    26,    27,
+      28,    29,    30,     8,     8,    14,    10,     8,   311,    27,
+      10,    45,    30,     8,    44,    19,    20,     6,     8,    19,
+      20,    26,    27,    28,    29,    30,    27,    28,    29,    30,
+     333,    26,    27,    28,    29,    30,    26,    27,    28,    29,
+      30,     8,    26,    27,     6,   348,    30,    49,   351,   352,
+     353,    10,    44,    45,    52,    14,    15,    16,    17,    18,
+      27,    28,    29,    30,    10,    36,    37,    26,    27,    28,
+      29,    30,    10,     3,     4,     5,    52,    10,    14,     9,
+      26,    27,    28,    29,    30,    10,   354,   355,    26,    27,
+      28,    29,    30,    26,    27,    28,    29,    30,    10,   230,
+     231,    26,    27,    28,    29,    30,    10,    14,    26,    27,
+       3,    10,    30,    48,    26,    27,    28,    29,    30,    10,
+       3,    52,    26,    27,    28,    29,    30,    26,    27,    28,
+      29,    30,    10,    52,    14,    26,    27,    28,    29,    30,
+      10,     9,    26,    27,     6,    10,    30,     3,    26,    27,
+      28,    29,    30,    10,     3,    52,    26,    27,    28,    29,
+      30,    26,    27,    28,    29,    30,    10,    52,    14,    26,
+      27,    28,    29,    30,    10,    14,     3,     3,     3,    10,
+       9,     9,    26,    27,    28,    29,    30,    10,     9,     6,
+      26,    27,    28,    29,    30,    26,    27,    28,    29,    30,
+      10,     9,     9,    26,    27,    28,    29,    30,    10,     9,
+       9,     9,     3,    10,     9,     9,    26,    27,    28,    29,
+      30,    10,     6,     6,    26,    27,    28,    29,    30,    26,
+      27,    28,    29,    30,    10,     9,     3,    53,    27,    28,
+      29,    30,    10,     9,     9,     3,    10,     9,     9,     9,
+       9,    27,    28,    29,    30,     6,     6,     3,     6,    27,
+      28,    29,    30,    27,    28,    29,    30,    14,    15,    16,
+      17,    18,    26,    27,    28,    29,    30,     8,     6,    26,
+      27,    28,    29,    30,    26,    27,    28,    29,    30,     3,
+       6,    27,    27,    27,     6,     8,     3,    30,    30,     3,
+      30,     3,    27,    27,    27,     3,    27,     3,     3,     3,
+       9,    19,     3,     6,     3,    52,    27,     3,    10,    20,
+       8,     3,     7,    10,     3,     8,     6,    27,     3,    13,
+      27,     8,     3,     3,     3,     3,     3,    27,    19,     3,
+       3,     6,     3,   312,    10,     3,   101,   322,    97,    27,
+       9,    27,    14,    27,    27,    27,     9,     9,     7,     6,
+     385,    15,   350,    19,    14,    -1,    -1,    27,    23,    -1,
+      -1,    22,    -1,    30,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    34,    33
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -2161,49 +2213,49 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
   const unsigned char
   Lha_parser::yystos_[] =
   {
-         0,    41,    42,    54,    55,    59,    62,    63,    14,    14,
-       0,    45,    46,    69,    70,    72,    40,    43,    44,    60,
-      61,    64,    65,    67,    63,    62,     5,     5,    14,    14,
-      47,    48,    74,    75,    82,    72,    70,    24,    25,    14,
-      14,    64,    60,     3,    36,    95,    96,    67,    65,     6,
-       6,    51,    51,    14,    14,    82,    75,     3,     3,    51,
-      51,    95,    14,     9,    95,     3,    71,     3,    73,    51,
-      51,    14,    14,     3,    66,     3,    68,    36,     9,    29,
-      31,    32,    33,    34,    35,    37,    38,    97,    98,     8,
-      52,     8,    52,     9,    76,    77,     9,    83,    84,     3,
-       4,     5,     9,    29,    31,    32,    33,    57,     3,     5,
-       9,    29,    31,    32,    33,    56,     8,    52,     8,    52,
-       9,    97,    97,     9,     9,     9,     9,     9,     9,     9,
-      10,    26,    27,    28,    29,    30,     3,     6,     3,     6,
-       3,    52,    77,     9,    52,    83,    57,    57,     9,     9,
-       9,     6,    26,    27,    28,    29,    30,    56,    56,     9,
-       9,     9,     6,    27,    28,    29,    30,     3,     6,     3,
-       6,    97,    10,    97,    97,    97,     3,     4,     5,     9,
-      29,    99,   100,    99,    99,    99,     6,    97,    97,    97,
-      97,    97,     8,     6,     3,     6,    10,    57,    57,    57,
-      57,    57,    57,    57,    57,    10,    56,    56,    56,    56,
-      56,    56,    56,    10,    10,     8,     8,    27,    27,    27,
-      57,     3,     4,     5,     9,    10,    28,    29,    10,    10,
-      10,     9,    21,    22,    23,    57,    80,    81,     8,    10,
-       8,     8,    10,    26,     8,     8,     6,    97,    97,     3,
-       3,     3,    10,    27,    27,    27,    57,   100,   100,    57,
-      80,    80,    14,    15,    16,    17,    18,     8,    10,    19,
-      20,     3,    57,    57,    56,    56,    56,    10,    10,    27,
-       3,     3,     3,    10,    10,    57,    57,    57,    57,    57,
-       9,     6,    80,    80,    10,    10,    10,    10,    10,    10,
-       3,    27,     3,    78,    79,     8,     3,     7,     8,    10,
-      11,    12,    51,    85,    86,    57,    79,    10,    13,     3,
-      87,     8,     6,    86,     8,    52,     3,     4,     5,     9,
-      11,    29,    88,    89,    90,    91,     3,    27,    27,    27,
-      57,     3,     4,     5,     9,     8,    19,    14,    15,    16,
-      28,    29,     3,     3,     3,    10,    27,    27,    27,    57,
-      11,    51,    92,    88,    57,    57,    57,    91,    91,    27,
-       3,     3,     3,    10,     3,    93,    94,    10,     3,    27,
-      14,     8,    52,     6,     3,     3,     4,     5,     9,    29,
-      31,    32,    33,    49,    58,    94,    58,    58,     9,     9,
-       9,    27,    26,    27,    28,    29,    30,    10,    58,    58,
-      58,     3,    58,    58,    58,    58,    58,    10,     8,     8,
-      58,    58,    10,    10
+         0,    42,    43,    55,    56,    60,    63,    64,    14,    14,
+       0,    46,    47,    70,    71,    73,    41,    44,    45,    61,
+      62,    65,    66,    68,    64,    63,     5,     5,    14,    14,
+      48,    49,    75,    76,    83,    73,    71,    24,    25,    14,
+      14,    65,    61,     3,    36,    37,    96,    97,    68,    66,
+       6,     6,    52,    52,    14,    14,    83,    76,     3,     3,
+      52,    52,    96,    14,     9,     6,    96,     3,    72,     3,
+      74,    52,    52,    14,    14,     3,    67,     3,    69,    36,
+      37,     9,    29,    31,    32,    33,    34,    35,    38,    39,
+      98,    99,     8,    53,     8,    53,     9,    77,    78,     9,
+      84,    85,     3,     4,     5,     9,    29,    31,    32,    33,
+      58,     3,     5,     9,    29,    31,    32,    33,    57,     8,
+      53,     8,    53,     9,     6,    98,    98,     9,     9,     9,
+       9,     9,     9,     9,    10,    26,    27,    28,    29,    30,
+       3,     6,     3,     6,     3,    53,    78,     9,    53,    84,
+      58,    58,     9,     9,     9,     6,    26,    27,    28,    29,
+      30,    57,    57,     9,     9,     9,     6,    27,    28,    29,
+      30,     3,     6,     3,     6,    98,    10,    98,    98,    98,
+       3,     4,     5,     9,    29,   100,   101,   100,   100,   100,
+       6,    98,    98,    98,    98,    98,     8,     6,     3,     6,
+      10,    58,    58,    58,    58,    58,    58,    58,    58,    10,
+      57,    57,    57,    57,    57,    57,    57,    10,    10,     8,
+       8,    27,    27,    27,    58,     3,     4,     5,     9,    10,
+      28,    29,    10,    10,    10,     9,    21,    22,    23,    58,
+      81,    82,     8,    10,     8,     8,    10,    26,     8,     8,
+       6,    98,    98,     3,     3,     3,    10,    27,    27,    27,
+      58,   101,   101,    58,    81,    81,    14,    15,    16,    17,
+      18,     8,    10,    19,    20,     3,    58,    58,    57,    57,
+      57,    10,    10,    27,     3,     3,     3,    10,    10,    58,
+      58,    58,    58,    58,     9,     6,    81,    81,    10,    10,
+      10,    10,    10,    10,     3,    27,     3,    79,    80,     8,
+       3,     7,     8,    10,    11,    12,    52,    86,    87,    58,
+      80,    10,    13,     3,    88,     8,     6,    87,     8,    53,
+       3,     4,     5,     9,    11,    29,    89,    90,    91,    92,
+       3,    27,    27,    27,    58,     3,     4,     5,     9,     8,
+      19,    14,    15,    16,    28,    29,     3,     3,     3,    10,
+      27,    27,    27,    58,    11,    52,    93,    89,    58,    58,
+      58,    92,    92,    27,     3,     3,     3,    10,     3,    94,
+      95,    10,     3,    27,    14,     8,    53,     6,     3,     3,
+       4,     5,     9,    29,    31,    32,    33,    50,    59,    95,
+      59,    59,     9,     9,     9,    27,    26,    27,    28,    29,
+      30,    10,    59,    59,    59,     3,    59,    59,    59,    59,
+      59,    10,     8,     8,    59,    59,    10,    10
   };
 
 #if YYDEBUG
@@ -2217,7 +2269,7 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
-     305,   123,   125
+     305,   306,   123,   125
   };
 #endif
 
@@ -2225,22 +2277,22 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
   const unsigned char
   Lha_parser::yyr1_[] =
   {
-         0,    53,    54,    55,    55,    56,    56,    56,    56,    56,
-      56,    56,    56,    56,    56,    56,    56,    57,    57,    57,
-      57,    57,    57,    57,    57,    57,    57,    57,    57,    57,
+         0,    54,    55,    56,    56,    57,    57,    57,    57,    57,
+      57,    57,    57,    57,    57,    57,    57,    58,    58,    58,
       58,    58,    58,    58,    58,    58,    58,    58,    58,    58,
-      58,    58,    58,    59,    59,    60,    60,    61,    61,    62,
-      63,    64,    64,    65,    66,    66,    67,    68,    68,    69,
-      69,    70,    71,    71,    72,    73,    73,    74,    74,    75,
-      76,    76,    77,    77,    78,    78,    79,    80,    80,    80,
-      80,    80,    80,    80,    81,    81,    81,    81,    81,    82,
-      83,    83,    84,    85,    85,    85,    85,    86,    87,    87,
-      88,    88,    88,    89,    89,    89,    90,    90,    90,    91,
-      91,    91,    91,    91,    91,    91,    91,    91,    91,    92,
-      92,    93,    93,    94,    94,    95,    95,    96,    96,    97,
-      97,    97,    97,    97,    97,    97,    97,    97,    97,    97,
-      98,    98,    98,    98,    99,    99,    99,   100,   100,   100,
-     100,   100,   100,   100,   100,   100,   100
+      59,    59,    59,    59,    59,    59,    59,    59,    59,    59,
+      59,    59,    59,    60,    60,    61,    61,    62,    62,    63,
+      64,    65,    65,    66,    67,    67,    68,    69,    69,    70,
+      70,    71,    72,    72,    73,    74,    74,    75,    75,    76,
+      77,    77,    78,    78,    79,    79,    80,    81,    81,    81,
+      81,    81,    81,    81,    82,    82,    82,    82,    82,    83,
+      84,    84,    85,    86,    86,    86,    86,    87,    88,    88,
+      89,    89,    89,    90,    90,    90,    91,    91,    91,    92,
+      92,    92,    92,    92,    92,    92,    92,    92,    92,    93,
+      93,    94,    94,    95,    95,    96,    96,    97,    97,    97,
+      97,    98,    98,    98,    98,    98,    98,    98,    98,    98,
+      98,    98,    99,    99,    99,    99,   100,   100,   100,   101,
+     101,   101,   101,   101,   101,   101,   101,   101,   101
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -2259,10 +2311,10 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
        1,     2,    14,     1,     1,     3,     1,     3,     1,     3,
        1,     3,     1,     3,     3,     3,     1,     3,     3,     1,
        5,     3,     3,     3,     2,     6,     4,     4,     4,     3,
-       1,     1,     3,     3,     5,     1,     2,     7,     5,     1,
-       6,     6,     2,     4,     3,     3,     3,     3,     3,     3,
-       4,     4,     4,     4,     1,     3,     3,     1,     5,     3,
-       3,     3,     2,     6,     4,     4,     4
+       1,     1,     3,     3,     5,     1,     2,     7,     5,     4,
+       2,     1,     6,     6,     2,     4,     3,     3,     3,     3,
+       3,     3,     4,     4,     4,     4,     1,     3,     3,     1,
+       5,     3,     3,     3,     2,     6,     4,     4,     4
   };
 
 
@@ -2275,18 +2327,18 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
   "SEMICOLON", "COLON", "COMMA", "LB", "RB", "SHARP", "ALL", "BackSlash",
   "EQ", "GEQ", "LEQ", "LL", "GG", "AND", "OR", "NOT", "TRUE", "FALSE",
   "DOUBLE", "INT", "DIV", "MUL", "PLUS", "MINUS", "POWER", "FLOOR", "MIN",
-  "MAX", "LhaMIN", "LhaMAX", "AVG", "LAST", "INTEGRAL", "LhaName", "Const",
-  "NbLoc", "NbVar", "VList", "LList", "Iloc", "Floc", "locations", "edges",
-  "LIKELIHOOD", "NEG", "'{'", "'}'", "$accept", "LHA", "declarations",
-  "IntMarkingFormula", "RealMarkingFormula", "RealVarMarkingFormula",
-  "Sizes", "Constants", "Constant", "NbVariables", "NbLocations", "Lists",
-  "VariablesList", "VLabels", "LocationsList", "LLabels", "InitFinal",
-  "init", "iLLabels", "final", "fLLabels", "definitions", "LocationsDef",
-  "LOCATIONS", "LOCATION", "FLOWS", "FLOW", "LogExpr", "CompExpr",
-  "EdgesDef", "EDGES", "EDGE", "ACTIONS", "SetOfActions", "Actions",
-  "CONSTRAINTS", "CONSTRAINT", "LinearExp", "term", "UPDATES", "Updates",
-  "Update", "HaslExps", "HaslExp", "AlgExpr", "LhaFunc", "LinForm",
-  "VarTerm", YY_NULL
+  "MAX", "LhaMIN", "LhaMAX", "AVG", "PROB", "LAST", "INTEGRAL", "LhaName",
+  "Const", "NbLoc", "NbVar", "VList", "LList", "Iloc", "Floc", "locations",
+  "edges", "LIKELIHOOD", "NEG", "'{'", "'}'", "$accept", "LHA",
+  "declarations", "IntMarkingFormula", "RealMarkingFormula",
+  "RealVarMarkingFormula", "Sizes", "Constants", "Constant", "NbVariables",
+  "NbLocations", "Lists", "VariablesList", "VLabels", "LocationsList",
+  "LLabels", "InitFinal", "init", "iLLabels", "final", "fLLabels",
+  "definitions", "LocationsDef", "LOCATIONS", "LOCATION", "FLOWS", "FLOW",
+  "LogExpr", "CompExpr", "EdgesDef", "EDGES", "EDGE", "ACTIONS",
+  "SetOfActions", "Actions", "CONSTRAINTS", "CONSTRAINT", "LinearExp",
+  "term", "UPDATES", "Updates", "Update", "HaslExps", "HaslExp", "AlgExpr",
+  "LhaFunc", "LinForm", "VarTerm", YY_NULL
   };
 
 #if YYDEBUG
@@ -2294,71 +2346,72 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
   const Lha_parser::rhs_number_type
   Lha_parser::yyrhs_[] =
   {
-        54,     0,    -1,    55,    69,    74,    -1,    59,    60,    64,
-      95,    -1,    59,    64,    95,    -1,     5,    -1,     3,    -1,
-       9,    56,    10,    -1,    29,    56,    -1,    56,    28,    56,
-      -1,    56,    29,    56,    -1,    56,    27,    56,    -1,    56,
-      30,    56,    -1,    31,     9,    56,    10,    -1,    31,     9,
-      56,    26,    56,    10,    -1,    32,     9,    56,     8,    56,
-      10,    -1,    33,     9,    56,     8,    56,    10,    -1,     4,
-      -1,     5,    -1,     3,    -1,     9,    57,    10,    -1,    29,
-      57,    -1,    57,    26,    57,    -1,    57,    28,    57,    -1,
-      57,    29,    57,    -1,    57,    27,    57,    -1,    57,    30,
-      57,    -1,    31,     9,    57,    10,    -1,    32,     9,    57,
-       8,    57,    10,    -1,    33,     9,    57,     8,    57,    10,
-      -1,     4,    -1,     5,    -1,     3,    -1,     9,    58,    10,
-      -1,    29,    58,    -1,    58,    26,    58,    -1,    58,    28,
-      58,    -1,    58,    29,    58,    -1,    58,    27,    58,    -1,
-      58,    30,    58,    -1,    31,     9,    58,    10,    -1,    32,
-       9,    58,     8,    58,    10,    -1,    33,     9,    58,     8,
-      58,    10,    -1,    63,    62,    -1,    62,    63,    -1,    61,
-      -1,    61,    60,    -1,    40,    25,     3,    14,    56,     6,
-      -1,    40,    24,     3,    14,    57,     6,    -1,    42,    14,
-       5,     6,    -1,    41,    14,     5,     6,    -1,    65,    67,
-      -1,    67,    65,    -1,    43,    14,    51,    66,    52,     6,
-      -1,     3,    -1,    66,     8,     3,    -1,    44,    14,    51,
-      68,    52,     6,    -1,     3,    -1,    68,     8,     3,    -1,
-      70,    72,    -1,    72,    70,    -1,    45,    14,    51,    71,
-      52,     6,    -1,     3,    -1,    71,     8,     3,    -1,    46,
-      14,    51,    73,    52,     6,    -1,     3,    -1,    73,     8,
-       3,    -1,    75,    82,    -1,    82,    75,    -1,    47,    14,
-      51,    76,    52,     6,    -1,    77,    -1,    76,    77,    -1,
-       9,     3,     8,    80,     8,     9,    78,    10,    10,     6,
-      -1,     9,     3,     8,    80,    10,     6,    -1,    79,    -1,
-      78,     8,    79,    -1,     3,     7,    57,    -1,    22,    -1,
-      23,    -1,    81,    -1,    80,    19,    80,    -1,    80,    20,
-      80,    -1,     9,    80,    10,    -1,    21,    80,    -1,    57,
-      14,    57,    -1,    57,    16,    57,    -1,    57,    15,    57,
-      -1,    57,    17,    57,    -1,    57,    18,    57,    -1,    48,
-      14,    51,    83,    52,     6,    -1,    84,    -1,    84,    83,
-      -1,     9,     9,     3,     8,     3,    10,     8,    85,     8,
-      88,     8,    92,    10,     6,    -1,    11,    -1,    12,    -1,
-      12,    13,    86,    -1,    86,    -1,    51,    87,    52,    -1,
-       3,    -1,    87,     8,     3,    -1,    89,    -1,    89,    19,
-      88,    -1,    11,    -1,    90,    14,    57,    -1,    90,    16,
-      57,    -1,    90,    15,    57,    -1,    91,    -1,    90,    29,
-      91,    -1,    90,    28,    91,    -1,     3,    -1,     9,    57,
+        55,     0,    -1,    56,    70,    75,    -1,    60,    61,    65,
+      96,    -1,    60,    65,    96,    -1,     5,    -1,     3,    -1,
+       9,    57,    10,    -1,    29,    57,    -1,    57,    28,    57,
+      -1,    57,    29,    57,    -1,    57,    27,    57,    -1,    57,
+      30,    57,    -1,    31,     9,    57,    10,    -1,    31,     9,
+      57,    26,    57,    10,    -1,    32,     9,    57,     8,    57,
+      10,    -1,    33,     9,    57,     8,    57,    10,    -1,     4,
+      -1,     5,    -1,     3,    -1,     9,    58,    10,    -1,    29,
+      58,    -1,    58,    26,    58,    -1,    58,    28,    58,    -1,
+      58,    29,    58,    -1,    58,    27,    58,    -1,    58,    30,
+      58,    -1,    31,     9,    58,    10,    -1,    32,     9,    58,
+       8,    58,    10,    -1,    33,     9,    58,     8,    58,    10,
+      -1,     4,    -1,     5,    -1,     3,    -1,     9,    59,    10,
+      -1,    29,    59,    -1,    59,    26,    59,    -1,    59,    28,
+      59,    -1,    59,    29,    59,    -1,    59,    27,    59,    -1,
+      59,    30,    59,    -1,    31,     9,    59,    10,    -1,    32,
+       9,    59,     8,    59,    10,    -1,    33,     9,    59,     8,
+      59,    10,    -1,    64,    63,    -1,    63,    64,    -1,    62,
+      -1,    62,    61,    -1,    41,    25,     3,    14,    57,     6,
+      -1,    41,    24,     3,    14,    58,     6,    -1,    43,    14,
+       5,     6,    -1,    42,    14,     5,     6,    -1,    66,    68,
+      -1,    68,    66,    -1,    44,    14,    52,    67,    53,     6,
+      -1,     3,    -1,    67,     8,     3,    -1,    45,    14,    52,
+      69,    53,     6,    -1,     3,    -1,    69,     8,     3,    -1,
+      71,    73,    -1,    73,    71,    -1,    46,    14,    52,    72,
+      53,     6,    -1,     3,    -1,    72,     8,     3,    -1,    47,
+      14,    52,    74,    53,     6,    -1,     3,    -1,    74,     8,
+       3,    -1,    76,    83,    -1,    83,    76,    -1,    48,    14,
+      52,    77,    53,     6,    -1,    78,    -1,    77,    78,    -1,
+       9,     3,     8,    81,     8,     9,    79,    10,    10,     6,
+      -1,     9,     3,     8,    81,    10,     6,    -1,    80,    -1,
+      79,     8,    80,    -1,     3,     7,    58,    -1,    22,    -1,
+      23,    -1,    82,    -1,    81,    19,    81,    -1,    81,    20,
+      81,    -1,     9,    81,    10,    -1,    21,    81,    -1,    58,
+      14,    58,    -1,    58,    16,    58,    -1,    58,    15,    58,
+      -1,    58,    17,    58,    -1,    58,    18,    58,    -1,    49,
+      14,    52,    84,    53,     6,    -1,    85,    -1,    85,    84,
+      -1,     9,     9,     3,     8,     3,    10,     8,    86,     8,
+      89,     8,    93,    10,     6,    -1,    11,    -1,    12,    -1,
+      12,    13,    87,    -1,    87,    -1,    52,    88,    53,    -1,
+       3,    -1,    88,     8,     3,    -1,    90,    -1,    90,    19,
+      89,    -1,    11,    -1,    91,    14,    58,    -1,    91,    16,
+      58,    -1,    91,    15,    58,    -1,    92,    -1,    91,    29,
+      92,    -1,    91,    28,    92,    -1,     3,    -1,     9,    58,
       10,    27,     3,    -1,     5,    27,     3,    -1,     4,    27,
        3,    -1,     3,    27,     3,    -1,    29,     3,    -1,    29,
-       9,    57,    10,    27,     3,    -1,    29,     5,    27,     3,
+       9,    58,    10,    27,     3,    -1,    29,     5,    27,     3,
       -1,    29,     4,    27,     3,    -1,    29,     3,    27,     3,
-      -1,    51,    93,    52,    -1,    11,    -1,    94,    -1,    93,
-       8,    94,    -1,     3,    14,    58,    -1,     3,    14,    49,
-      27,     3,    -1,    96,    -1,    96,    95,    -1,     3,    14,
-      36,     9,    97,    10,     6,    -1,    36,     9,    97,    10,
-       6,    -1,    98,    -1,    32,     9,    97,     8,    97,    10,
-      -1,    33,     9,    97,     8,    97,    10,    -1,    29,    97,
-      -1,    31,     9,    97,    10,    -1,     9,    97,    10,    -1,
-      97,    30,    97,    -1,    97,    28,    97,    -1,    97,    29,
-      97,    -1,    97,    27,    97,    -1,    97,    26,    97,    -1,
-      37,     9,    99,    10,    -1,    34,     9,    99,    10,    -1,
-      35,     9,    99,    10,    -1,    38,     9,    99,    10,    -1,
-     100,    -1,    99,    29,   100,    -1,    99,    28,   100,    -1,
-       3,    -1,     9,    57,    10,    27,     3,    -1,     5,    27,
-       3,    -1,     4,    27,     3,    -1,     3,    27,     3,    -1,
-      29,     3,    -1,    29,     9,    57,    10,    27,     3,    -1,
-      29,     5,    27,     3,    -1,    29,     4,    27,     3,    -1,
-      29,     3,    27,     3,    -1
+      -1,    52,    94,    53,    -1,    11,    -1,    95,    -1,    94,
+       8,    95,    -1,     3,    14,    59,    -1,     3,    14,    50,
+      27,     3,    -1,    97,    -1,    97,    96,    -1,     3,    14,
+      36,     9,    98,    10,     6,    -1,    36,     9,    98,    10,
+       6,    -1,     3,    14,    37,     6,    -1,    37,     6,    -1,
+      99,    -1,    32,     9,    98,     8,    98,    10,    -1,    33,
+       9,    98,     8,    98,    10,    -1,    29,    98,    -1,    31,
+       9,    98,    10,    -1,     9,    98,    10,    -1,    98,    30,
+      98,    -1,    98,    28,    98,    -1,    98,    29,    98,    -1,
+      98,    27,    98,    -1,    98,    26,    98,    -1,    38,     9,
+     100,    10,    -1,    34,     9,   100,    10,    -1,    35,     9,
+     100,    10,    -1,    39,     9,   100,    10,    -1,   101,    -1,
+     100,    29,   101,    -1,   100,    28,   101,    -1,     3,    -1,
+       9,    58,    10,    27,     3,    -1,     5,    27,     3,    -1,
+       4,    27,     3,    -1,     3,    27,     3,    -1,    29,     3,
+      -1,    29,     9,    58,    10,    27,     3,    -1,    29,     5,
+      27,     3,    -1,    29,     4,    27,     3,    -1,    29,     3,
+      27,     3,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -2379,31 +2432,31 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
      406,   408,   412,   414,   418,   422,   426,   428,   432,   436,
      438,   444,   448,   452,   456,   459,   466,   471,   476,   481,
      485,   487,   489,   493,   497,   503,   505,   508,   516,   522,
-     524,   531,   538,   541,   546,   550,   554,   558,   562,   566,
-     570,   575,   580,   585,   590,   592,   596,   600,   602,   608,
-     612,   616,   620,   623,   630,   635,   640
+     527,   530,   532,   539,   546,   549,   554,   558,   562,   566,
+     570,   574,   578,   583,   588,   593,   598,   600,   604,   608,
+     610,   616,   620,   624,   628,   631,   638,   643,   648
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned short int
   Lha_parser::yyrline_[] =
   {
-         0,   169,   169,   172,   173,   179,   180,   190,   191,   192,
-     193,   194,   195,   196,   197,   198,   199,   202,   203,   204,
-     215,   216,   217,   218,   219,   220,   221,   222,   223,   224,
-     226,   227,   228,   246,   247,   248,   249,   250,   251,   252,
-     253,   254,   255,   258,   259,   261,   262,   264,   271,   281,
-     285,   289,   290,   292,   326,   332,   336,   343,   349,   354,
-     355,   357,   359,   367,   372,   374,   382,   391,   392,   396,
-     403,   404,   406,   425,   447,   448,   449,   455,   456,   457,
-     458,   459,   460,   461,   463,   464,   465,   466,   467,   472,
-     476,   477,   479,   502,   503,   504,   508,   510,   512,   516,
-     521,   522,   523,   525,   530,   535,   541,   542,   543,   545,
-     549,   554,   559,   564,   585,   589,   594,   599,   604,   627,
-     628,   630,   631,   633,   638,   647,   647,   649,   654,   660,
-     663,   664,   665,   666,   667,   668,   669,   670,   671,   672,
-     673,   683,   693,   703,   714,   715,   716,   718,   722,   727,
-     732,   737,   756,   760,   765,   770,   775
+         0,   170,   170,   173,   174,   180,   181,   191,   192,   193,
+     194,   195,   196,   197,   198,   199,   200,   203,   204,   205,
+     216,   217,   218,   219,   220,   221,   222,   223,   224,   225,
+     227,   228,   229,   247,   248,   249,   250,   251,   252,   253,
+     254,   255,   256,   259,   260,   262,   263,   265,   272,   282,
+     286,   290,   291,   293,   327,   333,   337,   344,   350,   355,
+     356,   358,   360,   368,   373,   375,   383,   392,   393,   397,
+     404,   405,   407,   426,   448,   449,   450,   456,   457,   458,
+     459,   460,   461,   462,   464,   465,   466,   467,   468,   473,
+     477,   478,   480,   503,   504,   505,   509,   511,   513,   517,
+     522,   523,   524,   526,   531,   536,   542,   543,   544,   546,
+     550,   555,   560,   565,   586,   590,   595,   600,   605,   628,
+     629,   631,   632,   634,   639,   648,   648,   650,   656,   661,
+     665,   671,   674,   675,   676,   677,   678,   679,   680,   681,
+     682,   683,   684,   694,   704,   714,   725,   726,   727,   729,
+     733,   738,   743,   748,   767,   771,   776,   781,   786
   };
 
   // Print the state stack on the debug stream.
@@ -2455,7 +2508,7 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    51,     2,    52,     2,     2,     2,     2,
+       2,     2,     2,    52,     2,    53,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -2473,7 +2526,7 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49,    50
+      45,    46,    47,    48,    49,    50,    51
     };
     if ((unsigned int) t <= yyuser_token_number_max_)
       return translate_table[t];
@@ -2482,23 +2535,23 @@ Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsC
   }
 
   const int Lha_parser::yyeof_ = 0;
-  const int Lha_parser::yylast_ = 613;
+  const int Lha_parser::yylast_ = 617;
   const int Lha_parser::yynnts_ = 48;
   const int Lha_parser::yyempty_ = -2;
   const int Lha_parser::yyfinal_ = 10;
   const int Lha_parser::yyterror_ = 1;
   const int Lha_parser::yyerrcode_ = 256;
-  const int Lha_parser::yyntokens_ = 53;
+  const int Lha_parser::yyntokens_ = 54;
 
-  const unsigned int Lha_parser::yyuser_token_number_max_ = 305;
+  const unsigned int Lha_parser::yyuser_token_number_max_ = 306;
   const Lha_parser::token_number_type Lha_parser::yyundef_token_ = 2;
 
 
 } // lha
-/* Line 1106 of lalr1.cc  */
-#line 2500 "Lha-parser.tab.cc"
-/* Line 1107 of lalr1.cc  */
-#line 799 "Lha-parser.yy"
+/* Line 1141 of lalr1.cc  */
+#line 2553 "Lha-parser.tab.cc"
+/* Line 1142 of lalr1.cc  */
+#line 810 "Lha-parser.yy"
 
 
 void

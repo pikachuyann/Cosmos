@@ -53,7 +53,7 @@ exp (21)
     7 8 9 10 11 12 13 14 15
 
 
-état 0
+État 0
 
     0 $accept: . ArithmethicExp "end of file"
 
@@ -71,49 +71,49 @@ exp (21)
     exp             aller à l'état 11
 
 
-état 1
+État 1
 
     5 exp: str .
 
     $défaut  réduction par utilisation de la règle 5 (exp)
 
 
-état 2
+État 2
 
     3 exp: rval .
 
     $défaut  réduction par utilisation de la règle 3 (exp)
 
 
-état 3
+État 3
 
     2 exp: ival .
 
     $défaut  réduction par utilisation de la règle 2 (exp)
 
 
-état 4
+État 4
 
    13 exp: MIN . LB exp COMMA exp RB
 
     LB  décalage et aller à l'état 12
 
 
-état 5
+État 5
 
    14 exp: MAX . LB exp COMMA exp RB
 
     LB  décalage et aller à l'état 13
 
 
-état 6
+État 6
 
    15 exp: FLOOR . LB exp RB
 
     LB  décalage et aller à l'état 14
 
 
-état 7
+État 7
 
     6 exp: MINUS . exp
 
@@ -130,7 +130,7 @@ exp (21)
     exp  aller à l'état 15
 
 
-état 8
+État 8
 
     4 exp: LB . exp RB
 
@@ -147,7 +147,7 @@ exp (21)
     exp  aller à l'état 16
 
 
-état 9
+État 9
 
    10 exp: DOUBLE . exp
 
@@ -164,14 +164,14 @@ exp (21)
     exp  aller à l'état 17
 
 
-état 10
+État 10
 
     0 $accept: ArithmethicExp . "end of file"
 
     "end of file"  décalage et aller à l'état 18
 
 
-état 11
+État 11
 
     1 ArithmethicExp: exp .
     7 exp: exp . PLUS exp
@@ -189,7 +189,7 @@ exp (21)
     $défaut  réduction par utilisation de la règle 1 (ArithmethicExp)
 
 
-état 12
+État 12
 
    13 exp: MIN LB . exp COMMA exp RB
 
@@ -206,7 +206,7 @@ exp (21)
     exp  aller à l'état 24
 
 
-état 13
+État 13
 
    14 exp: MAX LB . exp COMMA exp RB
 
@@ -223,7 +223,7 @@ exp (21)
     exp  aller à l'état 25
 
 
-état 14
+État 14
 
    15 exp: FLOOR LB . exp RB
 
@@ -240,7 +240,7 @@ exp (21)
     exp  aller à l'état 26
 
 
-état 15
+État 15
 
     6 exp: MINUS exp .
     7    | exp . PLUS exp
@@ -256,7 +256,7 @@ exp (21)
     $défaut  réduction par utilisation de la règle 6 (exp)
 
 
-état 16
+État 16
 
     4 exp: LB exp . RB
     7    | exp . PLUS exp
@@ -273,7 +273,7 @@ exp (21)
     RB     décalage et aller à l'état 27
 
 
-état 17
+État 17
 
     7 exp: exp . PLUS exp
     8    | exp . MUL exp
@@ -285,14 +285,14 @@ exp (21)
     $défaut  réduction par utilisation de la règle 10 (exp)
 
 
-état 18
+État 18
 
     0 $accept: ArithmethicExp "end of file" .
 
     $défaut  accepter
 
 
-état 19
+État 19
 
     7 exp: exp PLUS . exp
 
@@ -309,7 +309,7 @@ exp (21)
     exp  aller à l'état 28
 
 
-état 20
+État 20
 
     9 exp: exp MINUS . exp
 
@@ -326,7 +326,7 @@ exp (21)
     exp  aller à l'état 29
 
 
-état 21
+État 21
 
     8 exp: exp MUL . exp
 
@@ -343,7 +343,7 @@ exp (21)
     exp  aller à l'état 30
 
 
-état 22
+État 22
 
    11 exp: exp DIV . exp
 
@@ -360,7 +360,7 @@ exp (21)
     exp  aller à l'état 31
 
 
-état 23
+État 23
 
    12 exp: exp POWER . exp
 
@@ -377,7 +377,7 @@ exp (21)
     exp  aller à l'état 32
 
 
-état 24
+État 24
 
     7 exp: exp . PLUS exp
     8    | exp . MUL exp
@@ -394,7 +394,7 @@ exp (21)
     COMMA  décalage et aller à l'état 33
 
 
-état 25
+État 25
 
     7 exp: exp . PLUS exp
     8    | exp . MUL exp
@@ -411,7 +411,7 @@ exp (21)
     COMMA  décalage et aller à l'état 34
 
 
-état 26
+État 26
 
     7 exp: exp . PLUS exp
     8    | exp . MUL exp
@@ -428,14 +428,14 @@ exp (21)
     RB     décalage et aller à l'état 35
 
 
-état 27
+État 27
 
     4 exp: LB exp RB .
 
     $défaut  réduction par utilisation de la règle 4 (exp)
 
 
-état 28
+État 28
 
     7 exp: exp . PLUS exp
     7    | exp PLUS exp .
@@ -451,7 +451,7 @@ exp (21)
     $défaut  réduction par utilisation de la règle 7 (exp)
 
 
-état 29
+État 29
 
     7 exp: exp . PLUS exp
     8    | exp . MUL exp
@@ -467,7 +467,7 @@ exp (21)
     $défaut  réduction par utilisation de la règle 9 (exp)
 
 
-état 30
+État 30
 
     7 exp: exp . PLUS exp
     8    | exp . MUL exp
@@ -481,7 +481,7 @@ exp (21)
     $défaut  réduction par utilisation de la règle 8 (exp)
 
 
-état 31
+État 31
 
     7 exp: exp . PLUS exp
     8    | exp . MUL exp
@@ -495,7 +495,7 @@ exp (21)
     $défaut  réduction par utilisation de la règle 11 (exp)
 
 
-état 32
+État 32
 
     7 exp: exp . PLUS exp
     8    | exp . MUL exp
@@ -507,7 +507,7 @@ exp (21)
     $défaut  réduction par utilisation de la règle 12 (exp)
 
 
-état 33
+État 33
 
    13 exp: MIN LB exp COMMA . exp RB
 
@@ -524,7 +524,7 @@ exp (21)
     exp  aller à l'état 36
 
 
-état 34
+État 34
 
    14 exp: MAX LB exp COMMA . exp RB
 
@@ -541,14 +541,14 @@ exp (21)
     exp  aller à l'état 37
 
 
-état 35
+État 35
 
    15 exp: FLOOR LB exp RB .
 
     $défaut  réduction par utilisation de la règle 15 (exp)
 
 
-état 36
+État 36
 
     7 exp: exp . PLUS exp
     8    | exp . MUL exp
@@ -565,7 +565,7 @@ exp (21)
     RB     décalage et aller à l'état 38
 
 
-état 37
+État 37
 
     7 exp: exp . PLUS exp
     8    | exp . MUL exp
@@ -582,14 +582,14 @@ exp (21)
     RB     décalage et aller à l'état 39
 
 
-état 38
+État 38
 
    13 exp: MIN LB exp COMMA exp RB .
 
     $défaut  réduction par utilisation de la règle 13 (exp)
 
 
-état 39
+État 39
 
    14 exp: MAX LB exp COMMA exp RB .
 

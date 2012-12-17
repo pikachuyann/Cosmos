@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.5.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
@@ -41,7 +41,7 @@
 # define YY_LHA_LHA_PARSER_TAB_HH_INCLUDED
 
 /* "%code requires" blocks.  */
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 6 "Lha-parser.yy"
 
 #include <math.h>
@@ -58,7 +58,7 @@ class Lha_Reader;
 
 
 
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 63 "Lha-parser.tab.hh"
 
 
@@ -74,7 +74,7 @@ class Lha_Reader;
 
 
 namespace lha {
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 79 "Lha-parser.tab.hh"
 
   /// A Bison parser.
@@ -85,7 +85,7 @@ namespace lha {
 #ifndef YYSTYPE
     union semantic_type
     {
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 32 "Lha-parser.yy"
 
   double       RealVal;
@@ -94,7 +94,7 @@ namespace lha {
   char expression[1000];
 
 
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 99 "Lha-parser.tab.hh"
     };
 #else
@@ -142,20 +142,21 @@ namespace lha {
      LhaMIN = 289,
      LhaMAX = 290,
      AVG = 291,
-     LAST = 292,
-     INTEGRAL = 293,
-     LhaName = 294,
-     Const = 295,
-     NbLoc = 296,
-     NbVar = 297,
-     VList = 298,
-     LList = 299,
-     Iloc = 300,
-     Floc = 301,
-     locations = 302,
-     edges = 303,
-     LIKELIHOOD = 304,
-     NEG = 305
+     PROB = 292,
+     LAST = 293,
+     INTEGRAL = 294,
+     LhaName = 295,
+     Const = 296,
+     NbLoc = 297,
+     NbVar = 298,
+     VList = 299,
+     LList = 300,
+     Iloc = 301,
+     Floc = 302,
+     locations = 303,
+     edges = 304,
+     LIKELIHOOD = 305,
+     NEG = 306
    };
 
     };
@@ -302,6 +303,7 @@ namespace lha {
 
     /// \brief Reclaim the memory associated to a symbol.
     /// \param yymsg        Why this token is reclaimed.
+    ///                     If null, do not display the symbol, just free it.
     /// \param yytype       The symbol type.
     /// \param yyvaluep     Its semantic value.
     /// \param yylocationp  Its location.
@@ -331,8 +333,8 @@ namespace lha {
   };
 
 } // lha
-/* Line 36 of lalr1.cc  */
-#line 336 "Lha-parser.tab.hh"
+/* Line 33 of lalr1.cc  */
+#line 338 "Lha-parser.tab.hh"
 
 
 

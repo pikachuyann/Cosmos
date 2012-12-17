@@ -32,14 +32,27 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "../SOURCES/ModelGenerator/LhaParser/Lha-Reader.cpp"
-         timestampString = "377017906.158967"
+         filePath = "../SOURCES/ModelGenerator/HaslFormula.cpp"
+         timestampString = "377433029.035748"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "90"
-         endingLineNumber = "90"
-         landmarkName = "Lha_Reader::parse_file(parameters&amp; P)"
+         startingLineNumber = "120"
+         endingLineNumber = "120"
+         landmarkName = "HaslFormulasTop::eval(BatchR &amp;batch)"
          landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/Cosmos/clientsim.cpp"
+         timestampString = "377434421.11636"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "124"
+         endingLineNumber = "124"
+         landmarkName = "main(int argc, char** argv)"
+         landmarkType = "7">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

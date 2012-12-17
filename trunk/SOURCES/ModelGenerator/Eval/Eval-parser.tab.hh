@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.5.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
@@ -41,7 +41,7 @@
 # define YY_EVAL_EVAL_PARSER_TAB_HH_INCLUDED
 
 /* "%code requires" blocks.  */
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 6 "Eval-parser.yy"
 
 #include <math.h>
@@ -56,7 +56,7 @@ class Eval;
 
 
 
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 61 "Eval-parser.tab.hh"
 
 
@@ -72,7 +72,7 @@ class Eval;
 
 
 namespace eval {
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 77 "Eval-parser.tab.hh"
 
   /// A Bison parser.
@@ -83,7 +83,7 @@ namespace eval {
 #ifndef YYSTYPE
     union semantic_type
     {
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 30 "Eval-parser.yy"
 
   double       RealVal;
@@ -92,7 +92,7 @@ namespace eval {
   
 
 
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 97 "Eval-parser.tab.hh"
     };
 #else
@@ -268,6 +268,7 @@ namespace eval {
 
     /// \brief Reclaim the memory associated to a symbol.
     /// \param yymsg        Why this token is reclaimed.
+    ///                     If null, do not display the symbol, just free it.
     /// \param yytype       The symbol type.
     /// \param yyvaluep     Its semantic value.
     /// \param yylocationp  Its location.
@@ -297,8 +298,8 @@ namespace eval {
   };
 
 } // eval
-/* Line 36 of lalr1.cc  */
-#line 302 "Eval-parser.tab.hh"
+/* Line 33 of lalr1.cc  */
+#line 303 "Eval-parser.tab.hh"
 
 
 

@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.5.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
@@ -35,7 +35,7 @@
 
 /* First part of user declarations.  */
 
-/* Line 278 of lalr1.cc  */
+/* Line 279 of lalr1.cc  */
 #line 40 "Gspn-parser.tab.cc"
 
 
@@ -43,10 +43,10 @@
 
 /* User implementation prologue.  */
 
-/* Line 284 of lalr1.cc  */
+/* Line 285 of lalr1.cc  */
 #line 48 "Gspn-parser.tab.cc"
 /* Unqualified %code blocks.  */
-/* Line 285 of lalr1.cc  */
+/* Line 286 of lalr1.cc  */
 #line 40 "Gspn-parser.yy"
 
 #include "Gspn-Reader.hpp"
@@ -65,7 +65,7 @@ bool AgeMemory;
 
 
 
-/* Line 285 of lalr1.cc  */
+/* Line 286 of lalr1.cc  */
 #line 70 "Gspn-parser.tab.cc"
 
 
@@ -144,9 +144,9 @@ do {					\
 #else /* !YYDEBUG */
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
-# define YY_REDUCE_PRINT(Rule)
-# define YY_STACK_PRINT()
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location) YYUSE(Type)
+# define YY_REDUCE_PRINT(Rule)        static_cast<void>(0)
+# define YY_STACK_PRINT()             static_cast<void>(0)
 
 #endif /* !YYDEBUG */
 
@@ -160,7 +160,7 @@ do {					\
 
 
 namespace gspn {
-/* Line 352 of lalr1.cc  */
+/* Line 353 of lalr1.cc  */
 #line 165 "Gspn-parser.tab.cc"
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -233,26 +233,26 @@ namespace gspn {
     switch (yytype)
       {
         case 3: /* str */
-/* Line 422 of lalr1.cc  */
+/* Line 423 of lalr1.cc  */
 #line 110 "Gspn-parser.yy"
-	{ debug_stream () << *((*yyvaluep).name); };
-/* Line 422 of lalr1.cc  */
+        { debug_stream () << *((*yyvaluep).name); };
+/* Line 423 of lalr1.cc  */
 #line 241 "Gspn-parser.tab.cc"
-	break;
+        break;
       case 5: /* rval */
-/* Line 422 of lalr1.cc  */
+/* Line 423 of lalr1.cc  */
 #line 114 "Gspn-parser.yy"
-	{ debug_stream () << ((*yyvaluep).RealVal); };
-/* Line 422 of lalr1.cc  */
+        { debug_stream () << ((*yyvaluep).RealVal); };
+/* Line 423 of lalr1.cc  */
 #line 248 "Gspn-parser.tab.cc"
-	break;
+        break;
       case 6: /* ival */
-/* Line 422 of lalr1.cc  */
+/* Line 423 of lalr1.cc  */
 #line 113 "Gspn-parser.yy"
-	{ debug_stream () << ((*yyvaluep).IntVal); };
-/* Line 422 of lalr1.cc  */
+        { debug_stream () << ((*yyvaluep).IntVal); };
+/* Line 423 of lalr1.cc  */
 #line 255 "Gspn-parser.tab.cc"
-	break;
+        break;
        default:
 	  break;
       }
@@ -279,17 +279,18 @@ namespace gspn {
     YYUSE (yymsg);
     YYUSE (yyvaluep);
 
-    YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
+    if (yymsg)
+      YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
     switch (yytype)
       {
         case 3: /* str */
-/* Line 453 of lalr1.cc  */
+/* Line 455 of lalr1.cc  */
 #line 111 "Gspn-parser.yy"
-	{ delete ((*yyvaluep).name); };
-/* Line 453 of lalr1.cc  */
-#line 292 "Gspn-parser.tab.cc"
-	break;
+        { delete ((*yyvaluep).name); };
+/* Line 455 of lalr1.cc  */
+#line 293 "Gspn-parser.tab.cc"
+        break;
 
 	default:
 	  break;
@@ -374,6 +375,10 @@ namespace gspn {
 
     int yyresult;
 
+    // FIXME: This shoud be completely indented.  It is not yet to
+    // avoid gratuitous conflicts when merging into the master branch.
+    try
+      {
     YYCDEBUG << "Starting parse" << std::endl;
 
 
@@ -409,8 +414,8 @@ namespace gspn {
     /* Read a lookahead token.  */
     if (yychar == yyempty_)
       {
-	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc, Reader);
+        YYCDEBUG << "Reading a token: ";
+        yychar = yylex (&yylval, &yylloc, Reader);
       }
 
     /* Convert token to internal form.  */
@@ -483,21 +488,24 @@ namespace gspn {
     else
       yyval = yysemantic_stack_[0];
 
+    // Compute the default @$.
     {
       slice<location_type, location_stack_type> slice (yylocation_stack_, yylen);
       YYLLOC_DEFAULT (yyloc, slice, yylen);
     }
+
+    // Perform the reduction.
     YY_REDUCE_PRINT (yyn);
     switch (yyn)
       {
-	  case 2:
-/* Line 661 of lalr1.cc  */
+          case 2:
+/* Line 670 of lalr1.cc  */
 #line 126 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%d",(yysemantic_stack_[(1) - (1)].IntVal));}
     break;
 
   case 3:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 127 "Gspn-parser.yy"
     {
 				   if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end()) 
@@ -513,73 +521,73 @@ namespace gspn {
     break;
 
   case 4:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 138 "Gspn-parser.yy"
     {sprintf((yyval.expression),"( %s )", (yysemantic_stack_[(3) - (2)].expression));       }
     break;
 
   case 5:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 139 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%s + %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 6:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 140 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%s - %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 7:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 141 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%s * %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 8:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 142 "Gspn-parser.yy"
     {sprintf((yyval.expression),"pow(%s , %s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 9:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 143 "Gspn-parser.yy"
     {sprintf((yyval.expression),"floor( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
     break;
 
   case 10:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 144 "Gspn-parser.yy"
     {sprintf((yyval.expression),"floor( %s /double(%s)", (yysemantic_stack_[(6) - (3)].expression),(yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 11:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 145 "Gspn-parser.yy"
     {sprintf((yyval.expression),"min(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 12:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 146 "Gspn-parser.yy"
     {sprintf((yyval.expression),"max(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 13:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 149 "Gspn-parser.yy"
     {sprintf((yyval.expression), "%f",(yysemantic_stack_[(1) - (1)].RealVal));}
     break;
 
   case 14:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 150 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%d",(yysemantic_stack_[(1) - (1)].IntVal));}
     break;
 
   case 15:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 151 "Gspn-parser.yy"
     {
 				   if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end()) 
@@ -594,61 +602,61 @@ namespace gspn {
     break;
 
   case 16:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 161 "Gspn-parser.yy"
     {sprintf((yyval.expression),"( %s )", (yysemantic_stack_[(3) - (2)].expression));       }
     break;
 
   case 17:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 162 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%s /double(%s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 18:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 163 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%s + %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 19:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 164 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%s - %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 20:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 165 "Gspn-parser.yy"
     {sprintf((yyval.expression),"%s * %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 21:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 166 "Gspn-parser.yy"
     {sprintf((yyval.expression),"pow(%s , %s)", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 22:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 167 "Gspn-parser.yy"
     {sprintf((yyval.expression),"floor( %s )", (yysemantic_stack_[(4) - (3)].expression));  }
     break;
 
   case 23:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 168 "Gspn-parser.yy"
     {sprintf((yyval.expression),"min(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 24:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 169 "Gspn-parser.yy"
     {sprintf((yyval.expression),"max(%s , %s)", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (5)].expression));  }
     break;
 
   case 33:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 188 "Gspn-parser.yy"
     {if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(6) - (3)].name))!=Reader.MyGspn.RealConstant.end()) 
 							{cout<<"Constant "<<*(yysemantic_stack_[(6) - (3)].name)<<" already defined."<<endl; YYABORT;}
@@ -659,7 +667,7 @@ namespace gspn {
     break;
 
   case 34:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 195 "Gspn-parser.yy"
     {if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(6) - (3)].name))!=Reader.MyGspn.RealConstant.end()) 
 							{cout<<"Constant "<<*(yysemantic_stack_[(6) - (3)].name)<<" already defined."<<endl; YYABORT;}
@@ -670,7 +678,7 @@ namespace gspn {
     break;
 
   case 37:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 205 "Gspn-parser.yy"
     {Reader.MyGspn.pl=(yysemantic_stack_[(4) - (3)].IntVal);
                                     
@@ -678,7 +686,7 @@ namespace gspn {
     break;
 
   case 38:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 208 "Gspn-parser.yy"
     {if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))==Reader.MyGspn.IntConstant.end())
 					    {
@@ -691,7 +699,7 @@ namespace gspn {
     break;
 
   case 39:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 217 "Gspn-parser.yy"
     {Reader.MyGspn.tr=(yysemantic_stack_[(4) - (3)].IntVal);
                                        
@@ -699,7 +707,7 @@ namespace gspn {
     break;
 
   case 40:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 220 "Gspn-parser.yy"
     {if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))==Reader.MyGspn.IntConstant.end())
 					    {
@@ -712,7 +720,7 @@ namespace gspn {
     break;
 
   case 41:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 229 "Gspn-parser.yy"
     {
 						if(Reader.MyGspn.PlacesId.size()!=Reader.MyGspn.pl){
@@ -779,7 +787,7 @@ namespace gspn {
     break;
 
   case 42:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 292 "Gspn-parser.yy"
     {
               
@@ -790,7 +798,7 @@ namespace gspn {
     break;
 
   case 43:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 298 "Gspn-parser.yy"
     {Reader.MyGspn.PlacesList.insert(*(yysemantic_stack_[(3) - (3)].name));
                             int sz=Reader.MyGspn.PlacesId.size();
@@ -800,7 +808,7 @@ namespace gspn {
     break;
 
   case 44:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 304 "Gspn-parser.yy"
     {
 						      if(Reader.MyGspn.TransId.size()!=Reader.MyGspn.tr){
@@ -812,7 +820,7 @@ namespace gspn {
     break;
 
   case 45:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 312 "Gspn-parser.yy"
     {Reader.MyGspn.TransList.insert(*(yysemantic_stack_[(1) - (1)].name));
                int sz=Reader.MyGspn.TransId.size();
@@ -822,7 +830,7 @@ namespace gspn {
     break;
 
   case 46:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 317 "Gspn-parser.yy"
     {Reader.MyGspn.TransList.insert(*(yysemantic_stack_[(3) - (3)].name));
                             int sz=Reader.MyGspn.TransId.size();
@@ -832,13 +840,13 @@ namespace gspn {
     break;
 
   case 49:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 327 "Gspn-parser.yy"
     {}
     break;
 
   case 52:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 333 "Gspn-parser.yy"
     { if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
 					    {cout<<"'"<<*(yysemantic_stack_[(6) - (2)].name)<<"' has not been declared"<<endl;
@@ -854,7 +862,7 @@ namespace gspn {
     break;
 
   case 53:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 346 "Gspn-parser.yy"
     {
 				  for(int i=0; i<Reader.MyGspn.Priority.size();i++){
@@ -868,19 +876,19 @@ namespace gspn {
     break;
 
   case 54:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 356 "Gspn-parser.yy"
     {}
     break;
 
   case 55:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 357 "Gspn-parser.yy"
     {}
     break;
 
   case 56:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 359 "Gspn-parser.yy"
     {
 					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(10) - (2)].name))==Reader.MyGspn.TransList.end())
@@ -903,7 +911,7 @@ namespace gspn {
     break;
 
   case 57:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 377 "Gspn-parser.yy"
     {
 					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(12) - (2)].name))==Reader.MyGspn.TransList.end())
@@ -927,7 +935,7 @@ namespace gspn {
     break;
 
   case 58:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 396 "Gspn-parser.yy"
     {
 					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(15) - (2)].name))==Reader.MyGspn.TransList.end())
@@ -965,7 +973,7 @@ namespace gspn {
     break;
 
   case 59:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 430 "Gspn-parser.yy"
     {
 					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(17) - (2)].name))==Reader.MyGspn.TransList.end())
@@ -1003,7 +1011,7 @@ namespace gspn {
     break;
 
   case 60:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 464 "Gspn-parser.yy"
     {
 					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(10) - (2)].name))==Reader.MyGspn.TransList.end())
@@ -1026,7 +1034,7 @@ namespace gspn {
     break;
 
   case 61:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 488 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
 				 if(Evaluate.parse(st)) 
@@ -1041,7 +1049,7 @@ namespace gspn {
     break;
 
   case 62:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 499 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
 				 if(Evaluate.parse(st)) 
@@ -1056,19 +1064,19 @@ namespace gspn {
     break;
 
   case 63:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 510 "Gspn-parser.yy"
     {SingleService=true; NbServers=1;}
     break;
 
   case 64:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 511 "Gspn-parser.yy"
     {SingleService=false;NbServers=INT_MAX;}
     break;
 
   case 65:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 512 "Gspn-parser.yy"
     {NbServers= (yysemantic_stack_[(4) - (3)].IntVal);
 					  if(NbServers<1) 
@@ -1083,7 +1091,7 @@ namespace gspn {
     break;
 
   case 66:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 522 "Gspn-parser.yy"
     {
 					   if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))!=Reader.MyGspn.IntConstant.end()){
@@ -1101,19 +1109,19 @@ namespace gspn {
     break;
 
   case 67:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 536 "Gspn-parser.yy"
     {AgeMemory=true;}
     break;
 
   case 68:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 537 "Gspn-parser.yy"
     {AgeMemory=false;}
     break;
 
   case 69:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 540 "Gspn-parser.yy"
     {
 		distrib=*(yysemantic_stack_[(4) - (1)].name);
@@ -1286,7 +1294,7 @@ namespace gspn {
     break;
 
   case 72:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 716 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
 				 if(Evaluate.parse(st)) 
@@ -1298,25 +1306,25 @@ namespace gspn {
     break;
 
   case 73:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 725 "Gspn-parser.yy"
     {}
     break;
 
   case 74:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 727 "Gspn-parser.yy"
     {}
     break;
 
   case 75:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 728 "Gspn-parser.yy"
     {}
     break;
 
   case 76:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 730 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
@@ -1341,7 +1349,7 @@ namespace gspn {
     break;
 
   case 77:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 750 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
@@ -1360,25 +1368,25 @@ namespace gspn {
     break;
 
   case 78:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 765 "Gspn-parser.yy"
     {}
     break;
 
   case 79:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 767 "Gspn-parser.yy"
     {}
     break;
 
   case 80:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 768 "Gspn-parser.yy"
     {}
     break;
 
   case 81:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 770 "Gspn-parser.yy"
     {
 						   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.TransList.end())
@@ -1403,7 +1411,7 @@ namespace gspn {
     break;
 
   case 82:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 790 "Gspn-parser.yy"
     {
 						   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.TransList.end())
@@ -1421,25 +1429,25 @@ namespace gspn {
     break;
 
   case 83:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 806 "Gspn-parser.yy"
     {}
     break;
 
   case 84:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 808 "Gspn-parser.yy"
     {}
     break;
 
   case 85:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 809 "Gspn-parser.yy"
     {}
     break;
 
   case 86:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 811 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
@@ -1464,7 +1472,7 @@ namespace gspn {
     break;
 
   case 87:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 832 "Gspn-parser.yy"
     {
 						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
@@ -1483,11 +1491,12 @@ namespace gspn {
     break;
 
 
-/* Line 661 of lalr1.cc  */
-#line 1488 "Gspn-parser.tab.cc"
-	default:
-          break;
+/* Line 670 of lalr1.cc  */
+#line 1496 "Gspn-parser.tab.cc"
+      default:
+        break;
       }
+
     /* User semantic actions sometimes alter yychar, and that requires
        that yytoken be updated with the new translation.  We take the
        approach of translating immediately before every use of yytoken.
@@ -1538,20 +1547,19 @@ namespace gspn {
     yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
-	/* If just tried and failed to reuse lookahead token after an
-	 error, discard it.  */
-
-	if (yychar <= yyeof_)
-	  {
-	  /* Return failure if at end of input.  */
-	  if (yychar == yyeof_)
-	    YYABORT;
-	  }
-	else
-	  {
-	    yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
-	    yychar = yyempty_;
-	  }
+        /* If just tried and failed to reuse lookahead token after an
+           error, discard it.  */
+        if (yychar <= yyeof_)
+          {
+            /* Return failure if at end of input.  */
+            if (yychar == yyeof_)
+              YYABORT;
+          }
+        else
+          {
+            yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
+            yychar = yyempty_;
+          }
       }
 
     /* Else will try to reuse lookahead token after shifting the error
@@ -1600,7 +1608,7 @@ namespace gspn {
 
 	/* Pop the current state because it cannot handle the error token.  */
 	if (yystate_stack_.height () == 1)
-	YYABORT;
+	  YYABORT;
 
 	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
@@ -1648,16 +1656,42 @@ namespace gspn {
     /* Do not reclaim the symbols of the rule which action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
-    while (yystate_stack_.height () != 1)
+    while (1 < yystate_stack_.height ())
       {
-	yydestruct_ ("Cleanup: popping",
-		   yystos_[yystate_stack_[0]],
-		   &yysemantic_stack_[0],
-		   &yylocation_stack_[0]);
-	yypop_ ();
+        yydestruct_ ("Cleanup: popping",
+                     yystos_[yystate_stack_[0]],
+                     &yysemantic_stack_[0],
+                     &yylocation_stack_[0]);
+        yypop_ ();
       }
 
     return yyresult;
+    }
+    catch (...)
+      {
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
+                 << std::endl;
+        // Do not try to display the values of the reclaimed symbols,
+        // as their printer might throw an exception.
+        if (yychar != yyempty_)
+          {
+            /* Make sure we have latest lookahead translation.  See
+               comments at user semantic actions for why this is
+               necessary.  */
+            yytoken = yytranslate_ (yychar);
+            yydestruct_ (YY_NULL, yytoken, &yylval, &yylloc);
+          }
+
+        while (1 < yystate_stack_.height ())
+          {
+            yydestruct_ (YY_NULL,
+                         yystos_[yystate_stack_[0]],
+                         &yysemantic_stack_[0],
+                         &yylocation_stack_[0]);
+            yypop_ ();
+          }
+        throw;
+      }
   }
 
   // Generate an error message.
@@ -2197,9 +2231,9 @@ namespace gspn {
 
 
 } // gspn
-/* Line 1106 of lalr1.cc  */
-#line 2202 "Gspn-parser.tab.cc"
-/* Line 1107 of lalr1.cc  */
+/* Line 1141 of lalr1.cc  */
+#line 2236 "Gspn-parser.tab.cc"
+/* Line 1142 of lalr1.cc  */
 #line 851 "Gspn-parser.yy"
 
 

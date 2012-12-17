@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.5.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
@@ -41,7 +41,7 @@
 # define YY_GSPN_GSPN_PARSER_TAB_HH_INCLUDED
 
 /* "%code requires" blocks.  */
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 6 "Gspn-parser.yy"
 
 #include <math.h>
@@ -57,7 +57,7 @@ class Gspn_Reader;
 
 
 
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 62 "Gspn-parser.tab.hh"
 
 
@@ -73,7 +73,7 @@ class Gspn_Reader;
 
 
 namespace gspn {
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 78 "Gspn-parser.tab.hh"
 
   /// A Bison parser.
@@ -84,7 +84,7 @@ namespace gspn {
 #ifndef YYSTYPE
     union semantic_type
     {
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 31 "Gspn-parser.yy"
 
   double       RealVal;
@@ -95,7 +95,7 @@ namespace gspn {
   char expression[1000];
 
 
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 100 "Gspn-parser.tab.hh"
     };
 #else
@@ -292,6 +292,7 @@ namespace gspn {
 
     /// \brief Reclaim the memory associated to a symbol.
     /// \param yymsg        Why this token is reclaimed.
+    ///                     If null, do not display the symbol, just free it.
     /// \param yytype       The symbol type.
     /// \param yyvaluep     Its semantic value.
     /// \param yylocationp  Its location.
@@ -321,8 +322,8 @@ namespace gspn {
   };
 
 } // gspn
-/* Line 36 of lalr1.cc  */
-#line 326 "Gspn-parser.tab.hh"
+/* Line 33 of lalr1.cc  */
+#line 327 "Gspn-parser.tab.hh"
 
 
 
