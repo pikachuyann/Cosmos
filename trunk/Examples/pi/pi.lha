@@ -10,7 +10,7 @@ bern=PROB;
 
 InitialLocations = {l0};
 
-FinalLocations = {lm,lp};
+FinalLocations = {lp};
 
 Locations={
 (l0, TRUE , (x:1 , y:0) );
@@ -24,7 +24,6 @@ Edges={
 ((l0,l1),ALL, # ,#);
 ((l1,l2),ALL, # , {r=x*x +y*y});
 ((l2,lp),ALL, r<=1 ,  {OK=4});
-((l2,lm),ALL, r>=1 ,  {OK=0});
 };
 
 

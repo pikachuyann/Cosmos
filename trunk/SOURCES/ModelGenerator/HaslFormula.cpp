@@ -120,7 +120,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 	switch (TypeOp) {
 		case PROBABILITY:
 		{
-			double mean = batch.Isucc / batch.I;
+			double mean = (double)batch.Isucc / (double)batch.I;
 			double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 			double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 			
