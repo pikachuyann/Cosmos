@@ -74,7 +74,7 @@ void result::addBatch(BatchR *batchResult){
 	RelErr = 0;
     for(int i =0; i<P.HaslFormulasname.size(); i++){
 		delete HaslResult[i];
-		HaslResult[i] = P.HaslFormulas[i].eval(*MeanM2);
+		HaslResult[i] = P.HaslFormulas[i]->eval(*MeanM2);
         if(P.BoundedContinuous){
             HaslResult[i]->low *=  (1 - P.epsilon);
         }

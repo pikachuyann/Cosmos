@@ -6,7 +6,7 @@ LocationsList = {l0, l1, l2, lp ,lm};
 
 pi=AVG(Last(OK));
 r=AVG(Last(r));
-bern=PROB;
+bern= 4 * PROB;
 
 InitialLocations = {l0};
 

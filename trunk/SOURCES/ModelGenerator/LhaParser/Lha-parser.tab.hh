@@ -44,22 +44,23 @@
 /* Line 33 of lalr1.cc  */
 #line 6 "Lha-parser.yy"
 
-#include <math.h>
-#include <limits.h>
-# include <string>
-
-#include <fstream>
-#include <sstream>
-#include <set>
-#include "../Eval/Eval.hpp"
-
-class Lha_Reader;
-
-
+	#include <math.h>
+	#include <limits.h>
+	# include <string>
+	
+	#include <fstream>
+	#include <sstream>
+	#include <set>
+	#include "../Eval/Eval.hpp"
+	#include "../HaslFormula.hpp"
+	
+	class Lha_Reader;
+	
+	
 
 
 /* Line 33 of lalr1.cc  */
-#line 63 "Lha-parser.tab.hh"
+#line 64 "Lha-parser.tab.hh"
 
 
 #include <string>
@@ -75,7 +76,7 @@ class Lha_Reader;
 
 namespace lha {
 /* Line 33 of lalr1.cc  */
-#line 79 "Lha-parser.tab.hh"
+#line 80 "Lha-parser.tab.hh"
 
   /// A Bison parser.
   class Lha_parser
@@ -86,16 +87,17 @@ namespace lha {
     union semantic_type
     {
 /* Line 33 of lalr1.cc  */
-#line 32 "Lha-parser.yy"
+#line 33 "Lha-parser.yy"
 
-  double       RealVal;
-  int 	       IntVal;
-  std::string *name;
-  char expression[1000];
+	double       RealVal;
+	int 	       IntVal;
+	std::string *name;
+	char expression[1000];
+	HaslFormulasTop *TOPHASL;
 
 
 /* Line 33 of lalr1.cc  */
-#line 99 "Lha-parser.tab.hh"
+#line 101 "Lha-parser.tab.hh"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -334,7 +336,7 @@ namespace lha {
 
 } // lha
 /* Line 33 of lalr1.cc  */
-#line 338 "Lha-parser.tab.hh"
+#line 340 "Lha-parser.tab.hh"
 
 
 

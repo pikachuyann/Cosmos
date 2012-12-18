@@ -92,8 +92,8 @@ HaslFormulasTop::HaslFormulasTop(int t, HaslFormulasTop* l,HaslFormulasTop* r){
 }
 
 HaslFormulasTop::~HaslFormulasTop(){
-	if(left != NULL) delete left;
-	if(right != NULL) delete right;
+	if(!left) delete left;
+	if(!right) delete right;
 }
 
 ////////////////////////////////////////////////////////////////////////////

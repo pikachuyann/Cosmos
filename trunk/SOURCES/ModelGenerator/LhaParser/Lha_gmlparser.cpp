@@ -412,7 +412,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 			//cout << "export hasl formula" << endl;
 			string* haslAlg = exportHASL(it.begin());
 			MyLHA->Algebraic.push_back( *haslAlg );
-			MyLHA->HASLtop.push_back(HaslFormulasTop((int)MyLHA->Algebraic.size()-1,MyLHA->ConfidenceLevel));
+			MyLHA->HASLtop.push_back(new HaslFormulasTop((int)MyLHA->Algebraic.size()-1,MyLHA->ConfidenceLevel));
 			MyLHA->HASLname.push_back("HASLFormula");
 		} else throw lhagmlioexc;
 	}

@@ -72,7 +72,7 @@ struct parameters {
     string dataoutput;
 	string dataraw;
     
-    vector<HaslFormulasTop> HaslFormulas;
+    vector<HaslFormulasTop*> HaslFormulas;
 	vector<string> HaslFormulasname;
 	int nbAlgebraic;
 };

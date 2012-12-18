@@ -102,7 +102,7 @@ struct LHA {
     vector<string> Algebraic;
 	double ConfidenceLevel;
 	vector<string> HASLname;
-	vector<HaslFormulasTop> HASLtop;
+	vector<HaslFormulasTop*> HASLtop;
 	
     map <std::string, int> LhaIntConstant; //contains constants defined like int
     map <std::string, double> LhaRealConstant; //contains constants defined like double and constants defined linke int

@@ -140,7 +140,7 @@ bool ParseBuild(parameters& P) {
         
         if (!parseresult) {
             P.HaslFormulasname = vector<string>(lReader.MyLha.HASLname);
-			P.HaslFormulas = vector<HaslFormulasTop>(lReader.MyLha.HASLtop);
+			P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
 			P.nbAlgebraic = lReader.MyLha.Algebraic.size();
 			if(P.CountTrans){
 				for (int tr=0; tr < lReader.MyLha.Edge.size(); tr++) {
@@ -150,7 +150,7 @@ bool ParseBuild(parameters& P) {
 					transname << "->";
 					transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Target];
 					P.HaslFormulasname.push_back(transname.str());
-					P.HaslFormulas.push_back(HaslFormulasTop((int)lReader.MyLha.Algebraic.size()+tr,
+					P.HaslFormulas.push_back(new HaslFormulasTop((int)lReader.MyLha.Algebraic.size()+tr,
 															lReader.MyLha.ConfidenceLevel));
 					
 				}

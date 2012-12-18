@@ -45,14 +45,27 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/clientsim.cpp"
-         timestampString = "377434421.11636"
+         filePath = "../SOURCES/ModelGenerator/Cosmos.cpp"
+         timestampString = "377454516.947271"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "124"
-         endingLineNumber = "124"
-         landmarkName = "main(int argc, char** argv)"
+         startingLineNumber = "145"
+         endingLineNumber = "145"
+         landmarkName = "ParseBuild(parameters&amp; P)"
          landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/ModelGenerator/LhaParser/Lha-parser.tab.cc"
+         timestampString = "377455664.741542"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "1370"
+         endingLineNumber = "1370"
+         landmarkName = "Lha_parser::parse ()"
+         landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>
