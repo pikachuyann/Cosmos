@@ -41,9 +41,13 @@ let parse_result f =
   result;;
 
 let invoke_cosmos opt gspn lha  =
-  let cmd = sprintf "../../bin/Cosmos -v 0 --alligator-mode %s %s %s" opt gspn lha in
+  let cmd = sprintf "../../bin/Cosmos -v 0 %s %s %s" opt gspn lha in
   print_endline cmd;
   Sys.command cmd
+
+let invoke_cosmos_silent opt gspn lha  =                                                                                                                                                                          
+  let cmd = sprintf "../../bin/Cosmos -v 0 %s %s %s" opt gspn lha in  
+  Sys.command cmd 
 
 let test_result n v =
   let result = parse_result "Result.res" in
@@ -70,12 +74,16 @@ let test_coverage name v o n =
   let _ = invoke_cosmos (" --tmp-status 2 --max-run 10 --batch 10 ") (name^".gspn") (name^".lha")  in
   let succ = ref 0 in
   for i = 1 to n do
-    let _ = invoke_cosmos (o^" --tmp-status 3") (name^".gspn") (name^".lha") in
+    let _ = invoke_cosmos_silent (o^" -v 0 --tmp-status 3") (name^".gspn") (name^".lha") in
     let result = parse_result "Result.res" in
-    if v > (fst result.confInt) & (snd result.confInt) > v then
+    if v > (fst result.confInt) & (snd result.confInt) > v then (
       incr succ;
+      print_string "+";
+    ) else print_string "-";
+    flush stdout;
   done;
   printf "Coverage:\t%f\n" ((float !succ)/.(float n))
+
 
 
 (*test_cosmos_gspn Sys.argv.(1) (float_of_string Sys.argv.(2)) Sys.argv.(3)*)
