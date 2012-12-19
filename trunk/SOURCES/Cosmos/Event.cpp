@@ -68,7 +68,7 @@ unsigned int Event::getTrans() {
     return (this->transition);
 }
 
-void Event::setTrans(int tr) {
+void Event::setTrans(unsigned int tr) {
     transition = tr;
 }
 

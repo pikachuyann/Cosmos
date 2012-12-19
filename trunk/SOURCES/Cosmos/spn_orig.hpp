@@ -73,7 +73,6 @@ public:
 
     SPN_ORIG();
 	//virtual void Load();
-    SPN_ORIG(const SPN_ORIG& orig);
 	~SPN_ORIG();
     string Path;
     int pl; // Number of places

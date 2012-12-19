@@ -51,7 +51,6 @@ using namespace std;
 class Simulator {
 public:
 	Simulator();
-	Simulator(const Simulator& orig);
 	~Simulator();
 	
     int verbose;    //Set the verbose level

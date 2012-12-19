@@ -177,11 +177,10 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
 		else if ((*it).compare("max")==0) {  return max(v1,v2); }
 		else if ((*it).compare("power")==0) {  return v1^v2; }
 		else cout << "faileval int Formula" <<endl;
-		
-	}else {
-        cout << "fail eval int formula" <<endl;
-        throw(gmlioexc);
-    }
+	}
+	
+	cout << "fail eval int formula" <<endl;
+	throw(gmlioexc);
 }
 
 treeSI findbranch(treeSI t, string branch){

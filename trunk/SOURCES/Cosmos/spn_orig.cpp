@@ -50,9 +50,6 @@ SPN_ORIG::SPN_ORIG() {
 SPN_ORIG::~SPN_ORIG() {
 }
 
-SPN_ORIG::SPN_ORIG(const SPN_ORIG & orig) {
-
-}
 
 set<int, less <int> > SPN_ORIG::enabledTrans() {
     set<int, less<int> > eTrans;
@@ -86,7 +83,7 @@ void SPN_ORIG::EnabledDisabledTr() {
         }
         for (int t2 = 0; t2 < tr; t2++)
             if (t1 != t2) {
-                int size = INt1.size();
+                unsigned int size = INt1.size();
                 set<int> INt1t2 = INt1;
                 bool B = true;
                 int p = 0;
@@ -131,7 +128,7 @@ void SPN_ORIG::EnabledDisabledTr() {
                 OUTt1.insert(p);
         for (int t2 = 0; t2 < tr; t2++)
             if (t1 != t2) {
-                int size = OUTt1.size();
+                unsigned int size = OUTt1.size();
                 set<int> OUTt1INt2 = OUTt1;
                 bool B = true;
                 int p = 0;
@@ -166,7 +163,7 @@ void SPN_ORIG::EnabledDisabledTr() {
     }
 
     set<int> MarkDepT;
-    for (int t = 0; t < tr; t++)
+    for (unsigned int t = 0; t < tr; t++)
         if (Transition[t].MarkingDependent)
             MarkDepT.insert(t);
 

@@ -21,7 +21,7 @@
 		036068F21677967C003372D0 /* HaslFormula.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 036068F01677967C003372D0 /* HaslFormula.cpp */; };
 		036803B71626C53800B1523A /* Eval-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 036803B11626C53800B1523A /* Eval-parser.tab.cc */; };
 		0379BDC41462C63D0077D4E9 /* Lha_gmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0379BDC31462C63D0077D4E9 /* Lha_gmlparser.cpp */; };
-		0399327C167F797100A47FCD /* Lha-parser.yy in Sources */ = {isa = PBXBuildFile; fileRef = 03F136A9143A050100944E04 /* Lha-parser.yy */; };
+		039932801680A6C900A47FCD /* Lha-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 03D3452E167B7ABB00C6BDFA /* Lha-parser.tab.cc */; };
 		03A194CD14E2C5FA00C17C38 /* parameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03A194CC14E2C5FA00C17C38 /* parameters.cpp */; };
 		03A9F02214D7ECB500A60D0F /* SimulatorContinuousBounded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03A9F02114D7ECB500A60D0F /* SimulatorContinuousBounded.cpp */; };
 		03A9F02314D7ECB500A60D0F /* SimulatorContinuousBounded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03A9F02114D7ECB500A60D0F /* SimulatorContinuousBounded.cpp */; };
@@ -44,7 +44,6 @@
 		03BCA578148E150C008E2402 /* SimulatorBoundedRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BCA577148E150C008E2402 /* SimulatorBoundedRE.cpp */; };
 		03BCA579148E150C008E2402 /* SimulatorBoundedRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BCA577148E150C008E2402 /* SimulatorBoundedRE.cpp */; };
 		03D3452B167B7A8800C6BDFA /* Gspn-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 03D34525167B7A8800C6BDFA /* Gspn-parser.tab.cc */; };
-		03D34534167B7ABB00C6BDFA /* Lha-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 03D3452E167B7ABB00C6BDFA /* Lha-parser.tab.cc */; };
 		03D3453D167B863700C6BDFA /* Eval.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F1368E143A050100944E04 /* Eval.cpp */; };
 		03DD8DE6143B00E60013AF06 /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F13671143A050100944E04 /* BatchR.cpp */; };
 		03DD8DE7143B00E60013AF06 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F13675143A050100944E04 /* Event.cpp */; };
@@ -60,19 +59,6 @@
 		03FE4884143AE5140039A381 /* Cosmos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F136B1143A050100944E04 /* Cosmos.cpp */; };
 		8DD76F6A0486A84900D96B5E /* Cosmos.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* Cosmos.1 */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildRule section */
-		0399327E167F858A00A47FCD /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = "com.apple.build-tasks.copy-strings-file";
-			filePatterns = "*.yy";
-			fileType = pattern.proxy;
-			isEditable = 1;
-			outputFiles = (
-			);
-			script = "# builtin-copyPlist\n";
-		};
-/* End PBXBuildRule section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		0341401A15AEF45E0009FEFC /* CopyFiles */ = {
@@ -521,7 +507,6 @@
 				8DD76F690486A84900D96B5E /* CopyFiles */,
 			);
 			buildRules = (
-				0399327E167F858A00A47FCD /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -634,9 +619,8 @@
 				036803B71626C53800B1523A /* Eval-parser.tab.cc in Sources */,
 				036068F21677967C003372D0 /* HaslFormula.cpp in Sources */,
 				03D3452B167B7A8800C6BDFA /* Gspn-parser.tab.cc in Sources */,
-				03D34534167B7ABB00C6BDFA /* Lha-parser.tab.cc in Sources */,
 				03D3453D167B863700C6BDFA /* Eval.cpp in Sources */,
-				0399327C167F797100A47FCD /* Lha-parser.yy in Sources */,
+				039932801680A6C900A47FCD /* Lha-parser.tab.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -687,11 +671,29 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				HEADER_SEARCH_PATHS = (
 					/usr/include,
 					/usr/local/include,
@@ -710,10 +712,28 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				HEADER_SEARCH_PATHS = (
 					/usr/include,
 					/usr/local/include,

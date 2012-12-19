@@ -314,7 +314,6 @@ VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
 		vector<string> v2(Reader.MyLha.NbLoc,"");
 		Reader.MyLha.StrLocProperty=v2;
 		Reader.MyLha.FuncLocProperty=v2;
-		int sz=Reader.MyLha.TransitionIndex.size();
 		set <string> Pt;
 		PetriTransitions=Pt;
 		for(map<string, int>::iterator it=Reader.MyLha.TransitionIndex.begin();it!=Reader.MyLha.TransitionIndex.end();it++)
@@ -666,6 +665,9 @@ AVG LB AlgExpr RB {
 }
 | PROB {
 	$$ = new HaslFormulasTop(Reader.MyLha.ConfidenceLevel);
+}
+| LB TopHaslExp RB {
+	$$ = $2;
 }
 | TopHaslExp PLUS TopHaslExp {
 	$$ = new HaslFormulasTop(HASL_PLUS, $1,$3);

@@ -119,6 +119,8 @@ int Lha_Reader::parse_gml_file(parameters& P) {
 string Lha_Reader::InvRelOp(string& str) {
     if (str == "<=") return ">=";
     if (str == ">=") return "<=";
+	cerr << "Fail to inverse RelOp"<< endl;
+	exit(EXIT_FAILURE);
 }
 
 void

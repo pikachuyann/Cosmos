@@ -38,9 +38,6 @@ LHA_ORIG::LHA_ORIG() {
 LHA_ORIG::~LHA_ORIG() {
 }
 
-LHA_ORIG::LHA_ORIG(const LHA_ORIG & orig) {
-}
-
 int LHA_ORIG::EnabledInitLocation(vector<int>& Marking) {
 
     for (set<int>::iterator l = InitLoc.begin(); l != InitLoc.end(); l++) {

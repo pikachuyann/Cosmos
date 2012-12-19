@@ -41,7 +41,7 @@ public:
     double getTime();
     unsigned int getPriority();
     double getWeight();
-    void setTrans(int);
+    void setTrans(unsigned int);
     void setTime(double);
     void setPriority(unsigned int);
     void setWeight(double);

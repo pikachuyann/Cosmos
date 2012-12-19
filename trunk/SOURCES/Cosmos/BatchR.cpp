@@ -33,7 +33,7 @@ using namespace std;
 
 
 //Initialize the batch with zeros
-BatchR::BatchR(int i) {
+BatchR::BatchR(const unsigned int i) {
     I =0;
     Isucc=0;
     TableLength=i;
@@ -52,7 +52,7 @@ void BatchR::addSim(SimOutput *Result){
     if (Result->first) {
         Isucc++;
         
-        for(int i =0; i< TableLength; i++){
+        for(unsigned int i =0; i< TableLength; i++){
             
             if (Result->second[i] * (1 - Result->second[i]) != 0){
                 IsBernoulli[i] = false;
@@ -70,7 +70,7 @@ void BatchR::unionR(BatchR *batch){
     I += batch->I;
     Isucc += batch->Isucc;
     
-    for(int i =0; i< TableLength; i++){
+    for(unsigned int i =0; i< TableLength; i++){
         IsBernoulli[i] = IsBernoulli[i] && batch->IsBernoulli[i];
         
         Mean[i] += batch->Mean[i];
@@ -85,7 +85,7 @@ void BatchR::outputR() {
     write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(int));
 	write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(int));
 
-    for(int i =0; i< TableLength; i++){
+    for(unsigned int i =0; i< TableLength; i++){
         bool tmpbool = IsBernoulli[i];
         write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
         write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(double));
@@ -107,7 +107,7 @@ void BatchR::inputR(FILE* f) {
     fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
     Isucc=readi;
 
-    for(int i =0; i< TableLength; i++){
+    for(unsigned int i =0; i< TableLength; i++){
         fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, f);
         IsBernoulli[i]=readb;
         fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
@@ -121,7 +121,7 @@ void BatchR::inputR(FILE* f) {
 //Print human readable version of batch on stdout.
 void BatchR::print(){
     cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl;
-    for(int i =0; i< TableLength; i++){
+    for(unsigned int i =0; i< TableLength; i++){
         cerr << "Mean:\t" << Mean[i]/Isucc << endl << "M2:\t" << M2[i]/Isucc << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
     }
 }

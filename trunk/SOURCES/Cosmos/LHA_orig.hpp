@@ -66,7 +66,6 @@ public:
 	LHA_ORIG();
 	//virtual void Load();
 	LHA_ORIG(unsigned int, unsigned int);
-	LHA_ORIG(const LHA_ORIG& orig);
 	~LHA_ORIG();
 	double Likelihood;
 	string label;
