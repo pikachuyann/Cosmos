@@ -39,6 +39,9 @@
 #define HASL_TIME 4
 #define HASL_DIV 5
 
+/*
+ * A class to manage Confidence interval.
+ */
 
 class ConfInt {
 public:
@@ -52,6 +55,16 @@ public:
 	double up;
 	double width(void);
 };
+
+/*
+ * A class to manage and evaluate an HASL formula.
+ * An HASL formula is either a probabilistic operator like PROB or EXPECTANCY
+ * or combination of HASL formula.
+ * The evaluation of an HASL formula require the first and second moment of
+ * of the result of a simulation contain in a BatchResult object.
+ * The resul of an evaluation is a confidence interval.
+ */
+
 
 class HaslFormulasTop {
 public:
@@ -72,8 +85,6 @@ protected:
 	HaslFormulasTop* left;
 	HaslFormulasTop* right;
 };
-
-
 
 
 
