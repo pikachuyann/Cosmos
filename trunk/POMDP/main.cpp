@@ -36,7 +36,7 @@ vector<double > generateGridReward(int n,int m);
 
 int main(int argc, char** argv) {
     int Memory = 2;
-    double H=100; //simulation horizon
+    double H=1000; //simulation horizon
 	bool discounted = false;
     double ron, rdet;
     string ExpFileName;
@@ -135,10 +135,10 @@ int main(int argc, char** argv) {
 	system(Cosmoscmd.c_str());*/
 	//
 	//loop
-	double Prec=1e-3; //precision
+	double Prec=1e-4; //precision
 	double Reward,OldReward,maxReward=0;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=5;
+	int MaxIteration=10;
 	int It=0;
 	time_t start,end,maxRewardtime;
 	

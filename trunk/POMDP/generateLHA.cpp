@@ -177,6 +177,8 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
     StrategieFile.close();
 }
 
+int NumberOfSetBits(int);
+
 int NumberOfSetBits(int i)
 {
     i = i - ((i >> 1) & 0x55555555);
