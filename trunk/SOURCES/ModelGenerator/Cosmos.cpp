@@ -144,6 +144,7 @@ bool ParseBuild(parameters& P) {
 			P.nbAlgebraic = lReader.MyLha.Algebraic.size();
 			if(P.CountTrans){
 				for (int tr=0; tr < lReader.MyLha.Edge.size(); tr++) {
+					P.nbAlgebraic++;
 					std::stringstream transname;
 					transname << "P_";
 					transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Source];
