@@ -12,8 +12,8 @@
 
 using namespace std;
 
-void generateLHAfun(double ron ,int N, vector< vector< vector<double> > >& Plast,vector<double>& reward, double H,vector< vector<double> >& M);
-void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& strat, vector<double>& reward, double H,vector< vector<double> >& M);
+void generateLHAfun(double ron ,int N, vector< vector< vector<double> > >& Plast,vector<double>& reward, double H,vector< vector<double> >& M,bool);
+void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& strat, vector<double>& reward, double H,vector< vector<double> >& M,bool);
 #include "generateLHA.cpp"
 
 void generateSPNfun(int N,vector< vector<double> >&);
@@ -37,6 +37,7 @@ vector<double > generateGridReward(int n,int m);
 int main(int argc, char** argv) {
     int Memory = 2;
     double H=100; //simulation horizon
+	bool discounted = false;
     double ron, rdet;
     string ExpFileName;
     string RewardTrace;
@@ -118,7 +119,7 @@ int main(int argc, char** argv) {
 		vector< pair<int, vector<int> > > ImportedStrat(0,make_pair(0,vector<int>(N,0)) );
 		readStrat(N, argv[3], ImportedStrat);
 		printStrat(ImportedStrat);
-		generateLHAfromStrat(ron, N, ImportedStrat, RewardArray, H, M);
+		generateLHAfromStrat(ron, N, ImportedStrat, RewardArray, H, M,discounted);
 		exit(EXIT_SUCCESS);
 	}
 	 
@@ -153,7 +154,7 @@ int main(int argc, char** argv) {
 	while(RelDiff>Prec && It<MaxIteration){
 		It++;    
 		//printPlast(Plast);
-		generateLHAfun(ron,N,Plast,RewardArray,H,M);
+		generateLHAfun(ron,N,Plast,RewardArray,H,M,discounted);
 		system(Cosmoscmd.c_str());
 		OldReward=Reward;
 		system("head -n 1 test > test2");

@@ -30,7 +30,7 @@ vector< vector<double> > generateLinearMatrix(int n, double p, double q){
 		M[0][0] = c3;
 		for(int j= 1;j<=k;j++){M[0][j]= c1/j; out0+=c1/j;}
 		for(int j= k+1;j<=n;j++){M[0][j]= c1/(2*k-j); out0+=c1/(2*k-j);}
-		//for(int j= 0;j<=n;j++)M[0][j]/= out0;
+		for(int j= 0;j<=n;j++)M[0][j]/= out0;
 	}
 	for(int i=1;i<=n;i++){
 		
@@ -49,7 +49,16 @@ vector< vector<double> > generateLinearMatrix(int n, double p, double q){
 						if((i<j && i>=k) || (i>j && i<=k)) M[i][j]= c2/d;
 			outi += M[i][j];
 		}
-		//for(int j= 0;j<=n;j++)M[i][j]/= outi;
+		for(int j= 0;j<=n;j++)M[i][j]/= outi;
+	}
+	
+	for(int i=0;i<=n;i++){
+		std::cout << "\t[] state = "<<i<<" -> ";
+		for(int j=0;j<=n;j++){
+			if(j>0)std::cout << " + ";
+			std::cout << M[i][j] << " : (state'="<<j<<") ";
+		}
+		std::cout << ";" << std::endl;
 	}
 	
 	for(int i=0;i<=n;i++){

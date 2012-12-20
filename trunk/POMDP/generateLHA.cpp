@@ -1,11 +1,10 @@
 #include <iomanip>
 
 
-void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,vector<double>& RewardArray, double H, vector< vector<double> >& M){
+void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,vector<double>& RewardArray, double H, vector< vector<double> >& M, bool discounted){
     
     unsigned long Xlastmax = Plast[0].size()-1;
 	double discount = 0.9;
-    bool discounted = false;
 	
     cout << "generate LHA" << endl;
     
@@ -160,7 +159,7 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
                     LhaFile << "((lp"<<v<<"_"<< Xlast <<",lp"<<x<<"_0),";
                     LhaFile << "ALL, time <=H, { ";
 					
-                    LhaFile << "time=time+1,Reward = Reward + (" << RewardArray[x] << "+"<< ron * nbSensorOn;
+                    LhaFile << "time=time+1,Reward = Reward + (" << RewardArray[x] << " + "<< ron * nbSensorOn;
                     //LhaFile <<", Plast"<<v<<"_"<<Xlast<<"_"<<x<<"=Plast"<<v<<"_"<< Xlast <<"_"<<x<<"+1";
                     //LhaFile << ", Out"<<v<<"=Out"<<v<<"+1";
                     if(discounted){LhaFile << ")*Discount , Discount = "<< discount <<"* Discount }";
@@ -185,9 +184,8 @@ int NumberOfSetBits(int i)
     return (((i + (i >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
 }
 
-void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& strat, vector<double>& reward, double H,vector< vector<double> >& M){
+void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& strat, vector<double>& reward, double H,vector< vector<double> >& M,bool discounted){
 	double discount = 0.9;
-    bool discounted = true;
     
     cout << "generate LHA" << endl;
     
@@ -239,7 +237,11 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
     LhaFile << "Edges={"<< endl;
     
 	//Edges to the initial state.
-	LhaFile << "((li,la"<< strat.size()-1 <<"),#,time<=0, {Discount = 1} );"<<endl;
+	if(discounted){
+		LhaFile << "((li,la"<< strat.size()-1 <<"),#,time<=0, {Discount = 1} );"<<endl;
+	}else{
+		LhaFile << "((li,la"<< strat.size()-1 <<"),#,time<=0, # );"<<endl;
+	}
 	
     //Edges to the final state.
     for (int v=0 ; v<strat.size(); v++)
@@ -278,7 +280,7 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
 					}
 					
 					LhaFile << "},time <=H,{ time=time+1,Reward = Reward+ ("
-						<< reward[x]<<"+"<< ron*NumberOfSetBits(strat[v].first)<<")";
+						<< reward[x]<<" + "<< ron*NumberOfSetBits(strat[v].first)<<")";
 					if(discounted)
 						LhaFile << "*Discount ,Discount = "<<discount<<"*Discount";
 				}
