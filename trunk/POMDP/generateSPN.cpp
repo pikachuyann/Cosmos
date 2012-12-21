@@ -1,4 +1,10 @@
-void generateSPNfun(vector< vector<double> > M){
+
+#include <fstream>
+#include <iostream>
+
+#include "generateSPN.hpp"
+
+void generateSPNfun(vector< vector<double> > &M){
     
     cout << "genere SPN" << endl;
     

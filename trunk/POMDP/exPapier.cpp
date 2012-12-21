@@ -1,3 +1,5 @@
+#include "exPapier.hpp"
+#include <iostream>
 
 vector< vector<double> > generateMatrix(int n){
     int N =5;

@@ -8,8 +8,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-
-using namespace std;
+#include "readPlast.hpp"
 
 
 double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&Plast,double H){

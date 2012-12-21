@@ -1,5 +1,7 @@
 #include <iomanip>
-
+#include <iostream>
+#include <fstream>
+#include "generateLHA.hpp"
 
 void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,vector<double>& RewardArray, double H, vector< vector<double> >& M, bool discounted){
     

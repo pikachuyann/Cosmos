@@ -1,4 +1,27 @@
-
+/*******************************************************************************
+ *									                                           *
+ * Cosmos:(C)oncept et (O)utils (S)tatistique pour les (Mo)deles               *
+ * (S)tochastiques                                                             *
+ *			                                    						       *
+ * Copyright (C) 2009-2012 LSV & LACL                                          *
+ * Authors: Paolo Ballarini Benoît Barbot & Hilal Djafri                       *
+ * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify        *
+ * it under the terms of the GNU General Public License as published by        *
+ * the Free Software Foundation; either version 3 of the License, or           *
+ * (at your option) any later version.                                         *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful,             *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               *
+ * GNU General Public License for more details.                                *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc.,     *
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
+ *******************************************************************************
+ */
 
 #include <vector>
 #include <fstream>
@@ -12,44 +35,57 @@
 
 using namespace std;
 
-void generateLHAfun(double ron ,int N, vector< vector< vector<double> > >& Plast,vector<double>& reward, double H,vector< vector<double> >& M,bool);
-void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& strat, vector<double>& reward, double H,vector< vector<double> >& M,bool);
-#include "generateLHA.cpp"
-
-void generateSPNfun(int N,vector< vector<double> >&);
-#include "generateSPN.cpp"
-
-double readPlastfun(int N,string , vector< vector< vector<double> > >&,double);
-void fillMemory( vector< vector< vector<double> > >&,int);
-void printPlast(vector< vector< vector<double> > >&);
-void readStrat(int N,string, vector< pair<int, vector<int> > >&);
-void printStrat(vector< pair<int, vector<int> > >&);
-#include "readPlast.cpp"
-
-vector< vector<double> > generateMatrix(int n);
-vector< vector<double> > generateLinearMatrix(int n, double p, double q);
-vector<double > generateLinearReward(int n,double Rmax);
-vector< vector<double> > generateGridMatrix(int n, int m, double u, double r, double d, double l);
-vector<double > generateGridReward(int n,int m);
-
-#include "exPapier.cpp"
+#include "generateLHA.hpp"
+#include "generateSPN.hpp"
+#include "readPlast.hpp"
+#include "exPapier.hpp"
 
 int main(int argc, char** argv) {
-    int Memory = 2;
-    double H=1000; //simulation horizon
-	bool discounted = false;
-    double ron, rdet;
+    int Memory = 2; // Number of memory step for the strategy
+    double H=1000; //Simulation horizon
+	bool discounted = false; // Compute steady-state or discounted reward.
+    
+	double Prec=1e-4; // Threshold to stop the iteration
+	int MaxIteration=10; //Max number of iteration
+
+	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 1 -d test --max-run 50000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang++ --gppflags -Wno-return-type --tmp-status 2";
+
+	
+	
+	double ron, rdet;
     string ExpFileName;
     string RewardTrace;
     string st;
     int n,m;
-	//    vector<int>  W(N,0);//sensor satatus
-    
-    
-    //vector< vector<double> > M = generateMatrix(0);
+	
     
     vector< vector<double> > M;
     vector< double > RewardArray;
+	
+	if(argc<3){
+		cout << "usage: "<<argv[0]<<" linear <n> [strategy.pg]"<<endl;
+		
+		cout <<"<n> Is the number of sensors in the line it must be odd"<<endl;
+		cout <<"If no strategy file are given this program compute iteratively";
+		cout <<" by simulation approximated strategy."<< endl;
+		cout <<"If a strategy file is given this programm compute an automaton";
+		cout <<"Implementing this strategy."<< endl;
+		cout <<"The output file are:"<<endl;
+		cout <<"\t-generated.gspn\t is Petri net simulating the drone"<<endl;
+		cout <<"\t-generated.lha\t is an automaton implementing the last";
+		cout <<"strategy computed by simulation"<<endl;
+		cout <<"\t-generatedFromStrat.lha\t is an automaton implementing";
+		cout <<" the strategy given in input"<<endl;
+		cout <<"\t-linear<n>.txt\tcontain the progression of reward during the iteration";
+		
+		cout <<endl<<"Cosmos must by in the PATH."<<endl;
+		cout <<"A typical invocation of cosmos on the output filed is:";
+		cout <<"\tCosmos generated.gspn generated.lha"<<endl;
+		
+		
+		
+		exit(EXIT_FAILURE);
+	}
 	
     st=argv[1];
 	if(st=="linear"){
@@ -107,13 +143,11 @@ int main(int argc, char** argv) {
     ofstream ExpFile(ExpFileName.c_str(), ios::out | ios::app);
 	
 	
-    string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 1 -d test --max-run 50000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang++ --gppflags -Wno-return-type --tmp-status 2";
-	
 	// initial iteration
-	
-	
 	int N = (int)M.size();
     vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
+	
+	generateSPNfun(M);
 	
 	if (argc==4) {
 		vector< pair<int, vector<int> > > ImportedStrat(0,make_pair(0,vector<int>(N,0)) );
@@ -130,26 +164,12 @@ int main(int argc, char** argv) {
 			Plast[i][0][j]=M[i][j]/out;
 	}
 	
-	/*generateLHAfun(ron,N,Plast,RewardArray,H,M);
-	generateSPNfun(M);
-	system(Cosmoscmd.c_str());*/
-	//
-	//loop
-	double Prec=1e-4; //precision
 	double Reward,OldReward,maxReward=0;
-	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
-	int MaxIteration=10;
 	int It=0;
 	time_t start,end,maxRewardtime;
+	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
 	
 	
-	/*system("head -n 1 test > test2");
-	system("tail -n 1 test >> test2");
-	Reward = readPlastfun(N, "test2", Plast);
-	fillMemory(Plast,1);
-	cout <<"Iteration:" <<It<< " reward: "<< Reward << endl;
-	RewardFile<<It<<" "<<Reward<<endl;*/
-	generateSPNfun(M);
 	time(&start);
 	while(RelDiff>Prec && It<MaxIteration){
 		It++;    

@@ -1,12 +1,20 @@
-all: generator
+CLASSES= exPapier.o generateLHA.o generateSPN.o readPlast.o main.o 
+
+
+all: swn
 
 linear: generator
 	./swn linear 5 5
 
-generator: exPapier.cpp generateLHA.cpp generateSPN.cpp readPlast.cpp main.cpp
-	g++ -o swn main.cpp
-	g++ -o linear linear.cpp
-	g++ -o grid grid.cpp
+swn: $(CLASSES)
+	g++ -o swn $(CLASSES)
+# 	g++ -o linear linear.cpp
+#	g++ -o grid grid.cpp
+
+clean:
+	rm *.o
+	rm swn
+
 
 exec: generator
 	./swn default 1
