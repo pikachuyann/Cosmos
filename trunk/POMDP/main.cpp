@@ -41,6 +41,10 @@ using namespace std;
 #include "exPapier.hpp"
 
 int main(int argc, char** argv) {
+	/* 
+	 * Most of the parameters are defined here.
+	 */
+	
     int Memory = 2; // Number of memory step for the strategy
     double H=1000; //Simulation horizon
 	bool discounted = false; // Compute steady-state or discounted reward.
@@ -48,7 +52,12 @@ int main(int argc, char** argv) {
 	double Prec=1e-4; // Threshold to stop the iteration
 	int MaxIteration=10; //Max number of iteration
 
-	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 1 -d test --max-run 50000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang++ --gppflags -Wno-return-type --tmp-status 2";
+	//This is the command line to invoke cosmos.
+	//This one use clang for the compilation of the model
+	//If clang is not install command in comment can be used.
+	string Cosmoscmd = "../bin/Cosmos generated.gspn generated.lha --njob 1 -d test --max-run 50000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang++ --gppflags -Wno-return-type --tmp-status 2";
+	
+	//string Cosmoscmd = "../bin/Cosmos generated.gspn generated.lha -d test --max-run 50000 --batch 100 --count-transition --width 0.01 -v 1";
 
 	
 	
