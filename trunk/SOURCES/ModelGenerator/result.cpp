@@ -49,13 +49,13 @@ result::result(parameters &Q){
         cout << "Output Data to: " << P.dataoutput << endl;
         outdatastream.open(P.dataoutput.c_str(),fstream::out);
         outdatastream.precision(15);
-        outdatastream << "#Number of trajectory, Number of successfull trajectory ";
+        outdatastream << "\"Number of trajectory\" \"Number of successfull trajectory\"";
         for(int i =0; i<P.HaslFormulasname.size(); i++){
 			string iname = P.HaslFormulasname[i];
 			if(!iname.compare("")){
-				outdatastream << ", Mean["<<i<<"], Second Moment["<<i<<"], Confidence interval lower bound [" << i <<"] ,Confidence interval upper bound ["<<i<<"]";
+				outdatastream << " \"Mean["<<i<<"]\" \"Confidence interval Width["<<i<<"]\" \"Confidence interval lower bound [" << i <<"]\" \"Confidence interval upper bound ["<<i<<"]\"";
 			}else{
-            outdatastream << ", Mean["<<iname<<"], Second Moment["<<iname<<"], Confidence interval lower bound ["<<iname<<"] ,Confidence interval upper bound ["<<iname<<"]";
+            outdatastream << " \"Mean["<<iname<<"]\" \"Confidence interval Width["<<iname<<"]\" \"Confidence interval lower bound ["<<iname<<"]\" \"Confidence interval upper bound ["<<iname<<"]\"";
 			}
         }
         outdatastream << endl;
