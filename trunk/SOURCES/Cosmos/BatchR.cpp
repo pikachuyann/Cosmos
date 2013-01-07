@@ -91,9 +91,6 @@ void BatchR::outputR() {
         write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(double));
         write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(double));
     }
-    
-    //print();
-    fflush(stdout);
 }
 
 //Read a batch from a file.
@@ -115,7 +112,6 @@ void BatchR::inputR(FILE* f) {
         fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
         M2[i]=read;
     }
-    fflush(stdout);
 }
 
 //Print human readable version of batch on stdout.
