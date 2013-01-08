@@ -1,5 +1,6 @@
 #include "exPapier.hpp"
 #include <iostream>
+#include <cmath>
 
 vector< vector<double> > generateMatrix(int n){
     int N =5;
@@ -100,6 +101,7 @@ vector<double> generateLinearReward(int n,double Rmax){
 		
 	return reward;
 }
+
 
 
 vector< vector<double> > generateGridMatrix(int n, int m, double u, double r, double d, double l){

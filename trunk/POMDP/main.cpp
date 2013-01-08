@@ -80,11 +80,11 @@ int main(int argc, char** argv) {
 		cout <<"If a strategy file is given this programm compute an automaton";
 		cout <<"Implementing this strategy."<< endl;
 		cout <<"The output file are:"<<endl;
-		cout <<"\t-generated.gspn\t is Petri net simulating the drone"<<endl;
+		cout <<"\t-generated.gspn\t is a Petri net simulating the drone"<<endl;
 		cout <<"\t-generated.lha\t is an automaton implementing the last";
 		cout <<"strategy computed by simulation"<<endl;
 		cout <<"\t-generatedFromStrat.lha\t is an automaton implementing";
-		cout <<" the strategy given in input"<<endl;
+		cout <<" the strategy given as input"<<endl;
 		cout <<"\t-linear<n>.txt\tcontain the progression of reward during the iteration";
 		
 		cout <<endl<<"Cosmos must by in the PATH."<<endl;
@@ -106,7 +106,8 @@ int main(int argc, char** argv) {
 		st >> n;
 		
 		M = generateLinearMatrix(n,p,q);
-		RewardArray = generateLinearReward(n,3);
+//		RewardArray = generateLinearReward(n,3);
+		RewardArray = vector<double>(n,9);
 		ron=-1;
 		rdet=10;
 		ExpFileName="linear.txt";
