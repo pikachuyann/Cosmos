@@ -547,7 +547,7 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 	vector<string> v1(MyLHA->NbVar,"");
 	if ((*(itflow.begin())).compare("update")==0) {
 		for(treeSI it2 = itflow.begin(); it2!=itflow.end();++it2){
-			string* var;
+			string* var=NULL;
 			string* varflow = new string("");
 			//cout << "var update:" << endl;
 			for(treeSI it3 = it2.begin(); it3!=it2.end();++it3){
@@ -555,7 +555,7 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 				if((*it3).compare("expr")==0)eval_expr(&markdep, varflow, it3.begin() );
 			}
 			int vindex = MyLHA->VarIndex[var->c_str()];
-			if(verbose>1)
+			if(verbose>1 && var != NULL)
 				cout << "\tvar: " << *var << " index: " << vindex << " update: " << *varflow << endl;
 			v1[vindex]= *varflow;
 		}
