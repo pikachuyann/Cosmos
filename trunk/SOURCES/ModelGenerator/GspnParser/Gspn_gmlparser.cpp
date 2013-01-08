@@ -322,12 +322,12 @@ void MyModelHandler::on_read_node(const XmlString& id,
                             if(verbose>1)cout << "\t\t" << *Trtype << endl;
                         } else if ((*it2).compare("param")==0) {
                             
-                            int number = 0;
+                            //int number = 0;
                             string* value = new string("");
                             for (treeSI it3 = it2.begin() ; it3 != it2.end() ; ++it3 ) {
-                                string* leaf = simplifyString(*(it3.begin()));
+                                //string* leaf = simplifyString(*(it3.begin()));
                                 if ((*it3).compare("number")==0) {
-                                    number = atoi((*leaf).c_str());
+                                    //number = atoi((*leaf).c_str());
                                 } else if ((*it3).compare("expr")==0) {
                                     eval_expr(&markingdependant, value, it3.begin() );
                                     dist.Param.push_back(*value);
