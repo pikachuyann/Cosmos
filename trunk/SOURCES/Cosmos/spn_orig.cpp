@@ -163,7 +163,7 @@ void SPN_ORIG::EnabledDisabledTr() {
     }
 
     set<int> MarkDepT;
-    for (unsigned int t = 0; t < tr; t++)
+    for (int t = 0; t < tr; t++)
         if (Transition[t].MarkingDependent)
             MarkDepT.insert(t);
 

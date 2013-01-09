@@ -344,7 +344,7 @@ PLACE: LB str COMMA IntStringFormula RB SEMICOLON
 	
 
 TransitionsDef: transitions EQ '{' TRANSITIONS '}' SEMICOLON {
-				  for(int i=0; i<Reader.MyGspn.Priority.size();i++){
+				  for(size_t i=0; i<Reader.MyGspn.Priority.size();i++){
 					  if(Reader.MyGspn.Priority[i]=="")
 							  {cout<<"Some transitions were not defined. All declared transitions must be defined"<<endl;
 								YYABORT;

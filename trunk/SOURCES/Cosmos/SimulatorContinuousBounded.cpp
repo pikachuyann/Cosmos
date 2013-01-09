@@ -58,7 +58,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	//cerr << "test(";
 	numSolv->reset();
 	//cerr << ")" << endl;
-    int left = max(numSolv->getMinT(),fg->left);
+    int left = (int)max(numSolv->getMinT(),fg->left);
     int Nmax = fg->right - left;
     //cerr << "minT:\t" << numSolv->getMinT() << endl;
     cerr << "Nmax:\t" << Nmax << endl;
@@ -241,7 +241,7 @@ void SimulatorContinuousBounded::updateSPN(int E1_transitionNum){
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
 	vector<int> Enabled_trans ((*EQ).getSize());
-	for(int i=0; i< (*EQ).getSize(); i++){ 
+	for(size_t i=0; i< (*EQ).getSize(); i++){
 		Enabled_trans[i] = (*EQ).InPosition(i).transition; 
 	};
 	
@@ -272,7 +272,7 @@ void SimulatorContinuousBounded::updateSPN(int E1_transitionNum){
 double SimulatorContinuousBounded::mu(){
 	
 	vector<int> vect (N.Msimpletab.size());
-	for(int i=0; i< N.Msimpletab.size();i++){
+	for(size_t i=0; i< N.Msimpletab.size();i++){
 		vect[i] = N.Marking[N.Msimpletab[i]];
 	};
 	
@@ -288,7 +288,7 @@ double SimulatorContinuousBounded::mu(){
             cerr << *it<< " , ";
         }
         cerr << endl << "marquage:";
-        for(int i=0; i< N.Msimpletab.size();i++){
+        for(size_t i=0; i< N.Msimpletab.size();i++){
             cerr << N.Marking[N.Msimpletab[i]] << " , ";
         };
 		cerr << endl << "state not found" << endl;

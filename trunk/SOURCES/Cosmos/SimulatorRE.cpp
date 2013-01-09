@@ -73,7 +73,7 @@ void SimulatorRE::returnResultTrue(vector<int>& marking, double D){
 	A.UpdateFormulaVal();
 	Result.first = true;
 	Result.second = vector<double>(A.FormulaVal);
-    for(int i = 0; i< A.FormulaVal.size() ; i++){
+    for(size_t i = 0; i< A.FormulaVal.size() ; i++){
         Result.second[i] *= A.Likelihood;
     }
 }
@@ -108,7 +108,7 @@ void SimulatorRE::updateSPN(int E1_transitionNum){
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
 	vector<int> Enabled_trans ((*EQ).getSize());
-	for(int i=0; i< (*EQ).getSize(); i++){ 
+	for(size_t i=0; i< (*EQ).getSize(); i++){
 		Enabled_trans[i] = (*EQ).InPosition(i).transition; 
 	};
 	
@@ -201,7 +201,7 @@ void SimulatorRE::getParams(int Id){
 double SimulatorRE::mu(){
 	
 	vector<int> vect (N.Msimpletab.size());
-	for(int i=0; i< N.Msimpletab.size();i++){
+	for(size_t i=0; i< N.Msimpletab.size();i++){
 		vect[i] = N.Marking[N.Msimpletab[i]];
 		//cout << i << " : " << N.Msimpletab[i] << " : " << N.Marking[N.Msimpletab[i]] << endl;
 	};
@@ -211,7 +211,7 @@ double SimulatorRE::mu(){
     int i = muprob.findHash(&vect);
     if(i<0){
         cerr << "state:(";
-        for (int j =0; j < vect.size(); j++) {
+        for (size_t j =0; j < vect.size(); j++) {
             cerr << vect[j] << ",";
         }
         cerr << ") ->" << i << endl;

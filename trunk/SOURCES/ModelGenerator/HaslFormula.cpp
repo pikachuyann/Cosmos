@@ -59,7 +59,7 @@ HaslFormulasTop::HaslFormulasTop(double l){
 	TypeOp = PROBABILITY;
 	Level =l;
 	Value =0;
-	Algebraic = -1;
+	Algebraic = 0;
 	left = NULL;
 	right = NULL;
 }
@@ -68,12 +68,12 @@ HaslFormulasTop::HaslFormulasTop(double l,double v){
 	TypeOp = CONSTANT;
 	Level = 1;
 	Value = v;
-	Algebraic = -1;
+	Algebraic = 0;
 	left = NULL;
 	right = NULL;
 }
 
-HaslFormulasTop::HaslFormulasTop(int al,double l){
+HaslFormulasTop::HaslFormulasTop(size_t al,double l){
 	TypeOp = EXPECTANCY;
 	Level = l;
 	Value = quantile(boost::math::normal() , 0.5 + l / 2.0);
@@ -84,7 +84,7 @@ HaslFormulasTop::HaslFormulasTop(int al,double l){
 
 HaslFormulasTop::HaslFormulasTop(int t, HaslFormulasTop* l,HaslFormulasTop* r){
 	TypeOp = t;
-	Algebraic = -1;
+	Algebraic = 0;
 	Level = 1;
 	Value = 0;
 	left = l;

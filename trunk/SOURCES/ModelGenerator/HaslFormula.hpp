@@ -70,7 +70,7 @@ class HaslFormulasTop {
 public:
 	HaslFormulasTop(double);
 	HaslFormulasTop(double,double);
-	HaslFormulasTop(int,double);
+	HaslFormulasTop(size_t,double);
 	HaslFormulasTop(int, HaslFormulasTop*, HaslFormulasTop*);
 	
 	~HaslFormulasTop();
@@ -81,7 +81,7 @@ protected:
 	int TypeOp;
 	double Level;
 	double Value;
-	int Algebraic;
+	size_t Algebraic;
 	HaslFormulasTop* left;
 	HaslFormulasTop* right;
 };

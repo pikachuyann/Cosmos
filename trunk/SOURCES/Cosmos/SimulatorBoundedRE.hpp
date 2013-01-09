@@ -39,7 +39,7 @@ class simulationState{
 private:
 	vector<int> marking;
 	int LHAstate;
-	int LHAcurrentTime;
+	double LHAcurrentTime;
 	AutEdge AE;
 	EventsQueue *EQ;
 	double timeS;

@@ -412,7 +412,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 			//cout << "export hasl formula" << endl;
 			string* haslAlg = exportHASL(it.begin());
 			MyLHA->Algebraic.push_back( *haslAlg );
-			MyLHA->HASLtop.push_back(new HaslFormulasTop((int)MyLHA->Algebraic.size()-1,MyLHA->ConfidenceLevel));
+			MyLHA->HASLtop.push_back(new HaslFormulasTop(MyLHA->Algebraic.size()-1,MyLHA->ConfidenceLevel));
 			MyLHA->HASLname.push_back("HASLFormula");
 		} else throw lhagmlioexc;
 	}
@@ -570,9 +570,9 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 	eval_guard(CoeffsMatrix,CST,comp,itguard.begin().begin());
 	if(verbose>1){
 		cout << "guard:";
-		for (int i=0; i< CoeffsMatrix.size(); i++) {
+		for (size_t i=0; i< CoeffsMatrix.size(); i++) {
 			cout << "&(";
-			for (int j =0 ; j<CoeffsMatrix[0].size(); j++) {
+			for (size_t j =0 ; j<CoeffsMatrix[0].size(); j++) {
 				if(CoeffsMatrix[i][j].compare("")>0)
 					cout << "+" << CoeffsMatrix[i][j]<< "* VAR[" <<j<<"] " ;
 			}

@@ -131,7 +131,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 double SimulatorBoundedRE::mu(){
 	
 	vector<int> vect (N.Msimpletab.size());
-	for(int i=0; i< N.Msimpletab.size();i++){
+	for(size_t i=0; i< N.Msimpletab.size();i++){
 		vect[i] = N.Marking[N.Msimpletab[i]];
 	};
 	
@@ -140,7 +140,7 @@ double SimulatorBoundedRE::mu(){
 	 
 	if(stateN<0){
 		cerr << numSolv->getVect()<< endl<< "statevect(";
-        for(int i =0 ; i<vect.size() ; i++)cerr << vect[i]<< ",";
+        for(size_t i =0 ; i<vect.size() ; i++)cerr << vect[i]<< ",";
 		cerr << ")" << endl<<"state not found" << endl;
 	}
 		

@@ -235,7 +235,7 @@ void EventsQueue::UpdateTransTab(int trans, int value) {
 void EventsQueue::ViewTransTab() {
     cout << "Position of transitions in the heap:" << endl;
 
-    for (int i = 0; i < TransTableSize; i++)
+    for (size_t i = 0; i < TransTableSize; i++)
         cout << "Trans[" << i + 1 << "]=" << (*TransTable)[i] << endl;
 
 }

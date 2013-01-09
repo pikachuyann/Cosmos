@@ -91,11 +91,11 @@ void LHA_ORIG::DoElapsedTimeUpdate(double DeltaT, vector<int>& Marking) {
 void LHA_ORIG::resetVarsTable() {
     for (int v = 0; v < NbVar; v++)
         Var[v] = 0;
-    for (int i = 0; i < LinForm.size(); i++) {
+    for (size_t i = 0; i < LinForm.size(); i++) {
         LinForm[i] = 0;
         OldLinForm[i] = 0;
     }
-    for (int i = 0; i < LhaFunc.size(); i++)
+    for (size_t i = 0; i < LhaFunc.size(); i++)
         LhaFunc[i] = 0;
 }
 

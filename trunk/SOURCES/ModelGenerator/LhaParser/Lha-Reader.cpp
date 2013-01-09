@@ -229,17 +229,17 @@ void Lha_Reader::WriteFile(parameters& P) {
 		
 		LhaCppFile << "    ConstraintsCoeffs= mvestr;\n" << endl;
 	
-		for (int i = 0; i < MyLha.LocLabel.size(); i++)
+		for (size_t i = 0; i < MyLha.LocLabel.size(); i++)
 			LhaCppFile << "    LocLabel[" << i << "]=\"" << MyLha.LocLabel[i] << "\";" << endl;
 
-		for (int i = 0; i < MyLha.StrLocProperty.size(); i++)
+		for (size_t i = 0; i < MyLha.StrLocProperty.size(); i++)
 			LhaCppFile << "    StrLocProperty[" << i << "]=\"" << MyLha.StrLocProperty[i] << "\";" << endl;
 	}
 		
     for (map <string, int>::iterator it = MyLha.EdgeIndex.begin(); it != MyLha.EdgeIndex.end(); it++)
         LhaCppFile << "    EdgeIndex[\"" << (*it).first << "\"]=" << (*it).second << ";" << endl;
 
-    for (int i = 0; i < MyLha.Edge.size(); i++) {
+    for (size_t i = 0; i < MyLha.Edge.size(); i++) {
         LhaCppFile << "    Edge[" << i << "].Index=" << MyLha.Edge[i].Index << ";" << endl;
         LhaCppFile << "    Edge[" << i << "].Source=" << MyLha.Edge[i].Source << ";" << endl;
         LhaCppFile << "    Edge[" << i << "].Target=" << MyLha.Edge[i].Target << ";" << endl;
@@ -250,7 +250,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     }
 
-    for (int i = 0; i < MyLha.Edge.size(); i++) {
+    for (size_t i = 0; i < MyLha.Edge.size(); i++) {
 		
         int NbC = MyLha.ConstraintsRelOp[i].size();
 		
@@ -296,7 +296,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	}
     
 	if(P.StringInSpnLHA){
-	for (int l = 0; l < MyLha.NbLoc; l++)
+	for (unsigned int l = 0; l < MyLha.NbLoc; l++)
         for (int v = 0; v < MyLha.NbVar; v++) {
             LhaCppFile << "    StrFlow[" << l << "][" << v << "]=\"" << MyLha.StrFlow[l][v] << "\";" << endl;
         }
@@ -305,7 +305,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "\n    vector< set < int > > vset(NbLoc);" << endl;
     LhaCppFile << "    Out_S_Edges =vset;" << endl;
     LhaCppFile << "    Out_A_Edges =vset;" << endl;
-    for (int e = 0; e < MyLha.Edge.size(); e++) {
+    for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         if (MyLha.EdgeActions[e].size() < 1)
             LhaCppFile << "    Out_A_Edges[" << MyLha.Edge[e].Source << "].insert(" << e << ");" << endl;
         else
@@ -321,7 +321,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "    vector < vector < set <int> > > vvSetInt(NbLoc,vSetInt);" << endl;
 
     LhaCppFile << "    ActionEdges=vvSetInt;" << endl;
-    for (int e = 0; e < MyLha.Edge.size(); e++) {
+    for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         for (set<string>::iterator it = MyLha.EdgeActions[e].begin(); it != MyLha.EdgeActions[e].end(); it++) {
             if(P.StringInSpnLHA)LhaCppFile << "    EdgeActions[" << e << "].insert(\"" << *it << "\");" << endl;
             LhaCppFile << "    ActionEdges[" << MyLha.Edge[e].Source << "][" << MyLha.TransitionIndex[*it] << "].insert(" << e << ");" << endl;
@@ -350,7 +350,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 
         LhaCppFile << "    case " << x << ":" << endl;
         LhaCppFile << "         switch(loc){" << endl;
-        for (int l = 0; l < MyLha.NbLoc; l++) {
+        for (unsigned int l = 0; l < MyLha.NbLoc; l++) {
             LhaCppFile << "         case " << l << ":" << endl;
             if (MyLha.FuncFlow[l][x] != "")
                 LhaCppFile << "             return " << MyLha.FuncFlow[l][x] << ";" << endl;
@@ -366,7 +366,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     LhaCppFile << "bool LHA::CheckLocation(int loc, vector<int>& Marking){" << endl;
     LhaCppFile << "    switch(loc){" << endl;
-    for (int l = 0; l < MyLha.NbLoc; l++) {
+    for (unsigned int l = 0; l < MyLha.NbLoc; l++) {
         LhaCppFile << "     case " << l << ":" << endl;
         LhaCppFile << "         return " << MyLha.FuncLocProperty[l] << ";" << endl;
         LhaCppFile << "         break;" << endl;
@@ -378,9 +378,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     LhaCppFile << "bool LHA::CheckEdgeContraints(int ed, double DeltaT, vector<int>& Marking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
-    for (int e = 0; e < MyLha.Edge.size(); e++) {
+    for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "    case " << e << ": {" << endl;
-        for (int c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
+        for (size_t c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
             LhaCppFile << "         if(!( ";
             for (int v = 0; v < MyLha.NbVar; v++) {
                 if (MyLha.ConstraintsCoeffs[e][c][v] != "")
@@ -403,7 +403,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed, vector<int>& Marking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
-    for (int e = 0; e < MyLha.Edge.size(); e++) {
+    for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "     case " << e << ":" << endl;
 
         //LhaCppFile << "         return GetEdgeEnablingTime_" << e << "( Marking);" << endl;
@@ -424,7 +424,7 @@ void Lha_Reader::WriteFile(parameters& P) {
         LhaCppFile << "\n" << endl;
 		
 		
-        for (int c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
+        for (size_t c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
 			
             LhaCppFile << "             SumAF=";
             for (int v = 0; v < MyLha.NbVar; v++)
@@ -498,7 +498,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     LhaCppFile << "void LHA::DoEdgeUpdates(int ed, vector<int>& Marking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
-    for (int e = 0; e < MyLha.Edge.size(); e++) {
+    for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "     case " << e << ":" << endl;
 		LhaCppFile << "         {"<< endl;
 
@@ -554,7 +554,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "    }\n" << endl;
 
     LhaCppFile << "void LHA::UpdateLhaFunc(double& t, double& Delta ){" << endl;
-    for (int i = 0; i < MyLha.LhaFuncArg.size(); i++) {
+    for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
         if (MyLha.LhaFuncType[i] == "Last")
             LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
         else {
@@ -575,13 +575,13 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     LhaCppFile << "\n    }\n" << endl;
     LhaCppFile << "void LHA::UpdateFormulaVal(){\n" << endl;
-    for(int i=0;i<MyLha.Algebraic.size();i++){
+    for(size_t i=0;i<MyLha.Algebraic.size();i++){
       LhaCppFile << "    OldFormulaVal=FormulaVal["<<i<<"];" << endl;
       LhaCppFile << "    FormulaVal["<<i<<"]=" << MyLha.Algebraic[i] << ";\n" << endl;
     }
 	if (P.CountTrans) {
-			for(int i=0;i<MyLha.Edge.size();i++){
-				int j = i+ MyLha.Algebraic.size();
+			for(size_t i=0;i<MyLha.Edge.size();i++){
+				size_t j = i+ MyLha.Algebraic.size();
 				LhaCppFile << "    FormulaVal["<<j<<"]= EdgeCounter[" << i << "];\n";
 			}
 	}

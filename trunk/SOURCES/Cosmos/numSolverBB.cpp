@@ -29,7 +29,7 @@
 void numSolverBB::initVect(int nT){
 	T=nT;
 	u=T;
-	l = sqrt(T);
+	l = (int)sqrt(T);
     time_t start, endt;
     time(&start);
     

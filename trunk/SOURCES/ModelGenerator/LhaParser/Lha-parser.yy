@@ -397,7 +397,7 @@ definitions: LocationsDef EdgesDef
 
 
 LocationsDef: locations EQ '{' LOCATIONS '}' SEMICOLON {
-	for(int l=0; l<Reader.MyLha.FuncLocProperty.size();l++)
+	for(size_t l=0; l<Reader.MyLha.FuncLocProperty.size();l++)
 	if(Reader.MyLha.FuncLocProperty[l]=="")
 	{cout<<"Some locations are not definded. Please define all the declared locations."<<endl;
 		YYABORT;}
@@ -661,7 +661,7 @@ HaslExp: str EQ TopHaslExp SEMICOLON {
 TopHaslExp:
 AVG LB AlgExpr RB {
 	Reader.MyLha.Algebraic.push_back($3);
-	$$ = new HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel);
+	$$ = new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel);
 }
 | PROB {
 	$$ = new HaslFormulasTop(Reader.MyLha.ConfidenceLevel);

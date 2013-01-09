@@ -39,7 +39,7 @@ void numSolverSH::initVect(int nT){
     
 	T=nT;
 	u=T;
-	l = log2(T);
+	l = (int)log2(T);
 	
 	//cerr << "T: " <<T << " l: " << l << endl;
 	

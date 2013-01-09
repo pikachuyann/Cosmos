@@ -40,8 +40,8 @@ struct parameters {
     double epsilon;
 	double Level;
 	double Width;
-	int Batch;
-	long int MaxRuns;
+	unsigned long Batch;
+	unsigned long MaxRuns;
 	string tmpPath;
 	unsigned int tmpStatus; // 0 create and destroy tmp, 
 		//1 do not build destroy,2 do not destroy, 3 do not build do not destoy

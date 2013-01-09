@@ -865,7 +865,7 @@ namespace gspn {
 /* Line 670 of lalr1.cc  */
 #line 346 "Gspn-parser.yy"
     {
-				  for(int i=0; i<Reader.MyGspn.Priority.size();i++){
+				  for(size_t i=0; i<Reader.MyGspn.Priority.size();i++){
 					  if(Reader.MyGspn.Priority[i]=="")
 							  {cout<<"Some transitions were not defined. All declared transitions must be defined"<<endl;
 								YYABORT;

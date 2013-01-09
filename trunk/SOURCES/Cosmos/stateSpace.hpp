@@ -65,7 +65,7 @@ using namespace __gnu_cxx;
 
 struct eqstate{
 	bool operator()(const vector<int>* t1,const vector<int>* t2) const {
-		for(int it=0; it < t1->size() ; it++)
+		for(size_t it=0; it < t1->size() ; it++)
 			if((*t1)[it] != (*t2)[it]) return false;
 		return true;
 	}
@@ -74,7 +74,7 @@ struct eqstate{
 struct hashstate{
 	int operator()(const vector<int>* t1) const {
 		int h = 0;
-		for(int it=0; it < t1->size() ; it++)
+		for(size_t it=0; it < t1->size() ; it++)
 			h = h * 524287 + (*t1)[it];
 		return h;
 	}
@@ -96,7 +96,7 @@ class stateSpace {
 public:
 	stateSpace();
 	hash_state S;
-	double findHash(const vector<int>* vect);	
+	int findHash(const vector<int>* vect);
     
 	size_t nbState;
 	size_t nbTrans;

@@ -949,7 +949,7 @@ namespace lha {
 /* Line 670 of lalr1.cc  */
 #line 399 "Lha-parser.yy"
     {
-	for(int l=0; l<Reader.MyLha.FuncLocProperty.size();l++)
+	for(size_t l=0; l<Reader.MyLha.FuncLocProperty.size();l++)
 	if(Reader.MyLha.FuncLocProperty[l]=="")
 	{cout<<"Some locations are not definded. Please define all the declared locations."<<endl;
 		YYABORT;}
@@ -1367,7 +1367,7 @@ namespace lha {
 #line 662 "Lha-parser.yy"
     {
 	Reader.MyLha.Algebraic.push_back((yysemantic_stack_[(4) - (3)].expression));
-	(yyval.TOPHASL) = new HaslFormulasTop((int)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel);
+	(yyval.TOPHASL) = new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel);
 }
     break;
 

@@ -36,7 +36,7 @@ result::result(parameters &Q){
     P= Q;
    
     MeanM2 = new BatchR(P.nbAlgebraic);
-	for(int i =0; i<P.HaslFormulasname.size(); i++){
+	for(size_t i =0; i<P.HaslFormulasname.size(); i++){
 		HaslResult.push_back(new ConfInt());
 	}
 	
@@ -50,7 +50,7 @@ result::result(parameters &Q){
         outdatastream.open(P.dataoutput.c_str(),fstream::out);
         outdatastream.precision(15);
         outdatastream << "\"Number of trajectory\" \"Number of successfull trajectory\"";
-        for(int i =0; i<P.HaslFormulasname.size(); i++){
+        for(size_t i =0; i<P.HaslFormulasname.size(); i++){
 			string iname = P.HaslFormulasname[i];
 			if(!iname.compare("")){
 				outdatastream << " \"Mean["<<i<<"]\" \"Confidence interval Width["<<i<<"]\" \"Confidence interval lower bound [" << i <<"]\" \"Confidence interval upper bound ["<<i<<"]\"";
@@ -72,7 +72,7 @@ result::~result(){
 void result::addBatch(BatchR *batchResult){
     MeanM2->unionR(batchResult);
 	RelErr = 0;
-    for(int i =0; i<P.HaslFormulasname.size(); i++){
+    for(size_t i =0; i<P.HaslFormulasname.size(); i++){
 		delete HaslResult[i];
 		HaslResult[i] = P.HaslFormulas[i]->eval(*MeanM2);
         if(P.BoundedContinuous){
@@ -117,7 +117,7 @@ void result::printProgress(){
 	cout << MeanM2->Isucc << endl;
     endline++;
 	if(P.verbose >1){
-		for(int i=0; i<P.HaslFormulasname.size(); i++){
+		for(size_t i=0; i<P.HaslFormulasname.size(); i++){
 			
 			cout<< P.HaslFormulasname[i] << ":\t Mean" << "="
 			<< HaslResult[i]->mean;
@@ -156,7 +156,7 @@ void result::print(ostream &s){
     
     if(!P.computeStateSpace){
         
-        for(int i =0; i<P.HaslFormulasname.size(); i++){
+        for(size_t i =0; i<P.HaslFormulasname.size(); i++){
             /*if (MeanM2->IsBernoulli[i]) {
                 low[i] = (0 > low[i]) ? 0.0 : low[i];
                 up[i] = (1 < up[i]) ? 1.0 : up[i];
@@ -195,7 +195,7 @@ void result::print(ostream &s){
 
 void result::outputData(){
     outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;
-    for(int i =0; i<P.HaslFormulasname.size(); i++){
+    for(size_t i =0; i<P.HaslFormulasname.size(); i++){
         outdatastream << " "<< HaslResult[i]->mean
 		<< " "<< HaslResult[i]->width()
 		<< " " << HaslResult[i]->low << " " << HaslResult[i]->up;

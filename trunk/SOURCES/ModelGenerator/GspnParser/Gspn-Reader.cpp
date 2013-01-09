@@ -289,7 +289,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 			
 			if(P.StringInSpnLHA){
 				SpnCppFile << "    Transition[" << i << "].DistType = \"" << MyGspn.Dist[i].name << "\";" << endl;
-				for (int j = 0; j < MyGspn.Dist[i].Param.size(); j++) {
+				for (size_t j = 0; j < MyGspn.Dist[i].Param.size(); j++) {
 					SpnCppFile << "    Transition[" << i << "].DistParams.push_back(\" " << MyGspn.Dist[i].Param[j] << "\" );" << endl;
 				}
 			}
@@ -438,7 +438,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 			SpnCppFile << "     case " << t << ": {" << endl;
 			//SpnCppFile << "       vector<double> P(" << MyGspn.Dist[t].Param.size() << ");" << endl;
 			if (MyGspn.SingleService[t])
-				for (int i = 0; i < MyGspn.Dist[t].Param.size(); i++) {
+				for (size_t i = 0; i < MyGspn.Dist[t].Param.size(); i++) {
 					
 					SpnCppFile << "       ParamDistr[" << i << "]= ( double ) " << MyGspn.Dist[t].Param[i] << ";" << endl;
 				} else {

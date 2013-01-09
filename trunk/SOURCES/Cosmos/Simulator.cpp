@@ -45,7 +45,7 @@ Simulator::Simulator() {
     verbose=0;
 	N.Load();//load the GSPN
 	A.Load(); //load the LHA
-	int n = N.tr; //n his the number of transition
+	size_t n = N.tr; //n his the number of transition
 	EQ = new EventsQueue(n); //initialization of the event queue
 	simTime = 0; //initialization of the time
 	Initialized = false;
@@ -80,7 +80,7 @@ void Simulator::logValue(const char* path){
     logResult=true;
 }
 
-void Simulator::SetBatchSize(int RI) {
+void Simulator::SetBatchSize(const size_t RI) {
 	BatchSize = RI;
 }
 
@@ -222,11 +222,11 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
         //Print marking and location of the automata
         //Usefull to track a simulation
         cerr << "Marking:\t";
-        for(int i =0; i < N.Marking.size();i++){
+        for(size_t i =0; i < N.Marking.size();i++){
             cerr << N.Place[i].label << ":" << N.Marking[i] << "\t,";
         }
         cerr << "Automate:" << A.LocLabel[A.CurrentLocation]<< "\t,";
-		for(int i =0 ; i< A.Var.size(); i++){
+		for(size_t i =0 ; i< A.Var.size(); i++){
 			cerr << A.VarLabel[i]<<":"<< A.Var[i]<< "\t,";
 		}
 		cerr << endl;
@@ -271,7 +271,7 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				cerr << "Automate:" << A.LocLabel[A.CurrentLocation]<< "\t,";
-				for(int i =0 ; i< A.Var.size(); i++){
+				for(size_t i =0 ; i< A.Var.size(); i++){
 					cerr << A.VarLabel[i]<<":"<< A.Var[i]<< "\t,";
 				}
 				cerr << endl;
@@ -461,7 +461,7 @@ BatchR* Simulator::RunBatch(){
         batchResult->addSim(&Result);
 		
 		if (Result.first && logResult){
-			for(int i=0; i<Result.second.size();i++){
+			for(size_t i=0; i<Result.second.size();i++){
 				if (i>0)logvalue << "\t";
 				logvalue << Result.second[i];
 			}

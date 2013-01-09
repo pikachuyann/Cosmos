@@ -46,7 +46,7 @@ stateSpace::stateSpace(){
 	A.Load(); //load the LHA
 }
 
-double stateSpace::findHash(const vector<int>* vect){
+int stateSpace::findHash(const vector<int>* vect){
     hash_state::iterator it = S.find (vect);
     if (it != S.end ())
 		return(it->second); // found
@@ -139,7 +139,7 @@ void stateSpace::buildTransitionMatrix()
 	
 	cerr << "Exploring graph" << endl;
     
-    for (int i=0; i<nbState; i++) {
+    for (size_t i=0; i<nbState; i++) {
         vector<int> place = (*findstate)[i];
 		vector<int> currentstate = place;
 		
@@ -253,13 +253,13 @@ double stateSpace::uniformizeMatrix(){
 
 void stateSpace::printP(){
 	cerr << "Probability transition matrix:" << endl;
-	for(int i=0; i< transitionsMatrix->size1() ; i++){
-		for(int j = 0;j< transitionsMatrix->size2() ; j++)
+	for(size_t i=0; i< transitionsMatrix->size1() ; i++){
+		for(size_t j = 0;j< transitionsMatrix->size2() ; j++)
 			cerr << (*transitionsMatrix)(i,j) << "\t";
 		cerr << endl;
 	}
 	cerr << endl << "Final Vector"<< endl;
-	for(int i=0; i< finalVector->size() ; i++){
+	for(size_t i=0; i< finalVector->size() ; i++){
 		cerr << (*finalVector)(i);
 		cerr << endl;
 	}
@@ -277,7 +277,7 @@ void stateSpace::outputMat(){
 	for(hash_state::iterator it= S.begin() ; it != S.end(); it++){
 		outputFile << "(";
 		vector<int> vect = *(*it).first;
-        for(int i=0; i< N.Msimpletab.size();i++){
+        for(size_t i=0; i< N.Msimpletab.size();i++){
             if(i>0)outputFile << ",";
             outputFile << vect[N.Msimpletab[i]];
         };
@@ -300,16 +300,16 @@ void stateSpace::outputPrism(){
 	outputFile.open("prismStates.sta",fstream::out);
 	
     outputFile << "(" ;
-    for(int i=0; i< N.Place.size();i++){
+    for(size_t i=0; i< N.Place.size();i++){
         outputFile << N.Place[i].label ;
         outputFile << ",";
     };
     outputFile << "automata)" << endl;
 	
-	for(int it=0 ; it < findstate->size(); it++){
+	for(size_t it=0 ; it < findstate->size(); it++){
 		outputFile << it << ":(";
 		vector<int> vect = (*findstate)[it];
-        for(int i=0; i< N.Place.size();i++){
+        for(size_t i=0; i< N.Place.size();i++){
             outputFile << vect[i];
             outputFile << ",";
         };
@@ -426,7 +426,7 @@ void stateSpace::outputVect(){
 	outputFile.precision(15);
     
     outputFile << "[" << muvect->size() << "](";
-    for (int i =0; i<muvect->size(); i++) {
+    for (size_t i =0; i<muvect->size(); i++) {
         if(i>0)outputFile << ",";
         outputFile << (*muvect)[i];
     }
@@ -435,7 +435,7 @@ void stateSpace::outputVect(){
 	for(hash_state::iterator it= S.begin() ; it != S.end(); it++){
 		outputFile << "(";
 		vector<int> vect = *(*it).first;
-        for(int i=0; i< N.Msimpletab.size();i++){
+        for(size_t i=0; i< N.Msimpletab.size();i++){
             if(i>0)outputFile << ",";
             outputFile << vect[N.Msimpletab[i]];
         };
@@ -464,7 +464,7 @@ void stateSpace::inputVect(){
 	inputFile >> v1;
     nbState = v1.size();
 	muvect = new vector<double>(nbState);
-    for(int i=0; i< nbState; i++){
+    for(size_t i=0; i< nbState; i++){
         (*muvect)[i] = v1 (i);
     }
 	
