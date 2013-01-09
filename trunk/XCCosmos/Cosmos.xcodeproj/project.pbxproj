@@ -45,6 +45,10 @@
 		03BCA579148E150C008E2402 /* SimulatorBoundedRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BCA577148E150C008E2402 /* SimulatorBoundedRE.cpp */; };
 		03D3452B167B7A8800C6BDFA /* Gspn-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 03D34525167B7A8800C6BDFA /* Gspn-parser.tab.cc */; };
 		03D3453D167B863700C6BDFA /* Eval.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F1368E143A050100944E04 /* Eval.cpp */; };
+		03D9C811168467E900AADB3D /* generateLHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE630D1636BCF6007FCB32 /* generateLHA.cpp */; };
+		03D9C813168467EF00AADB3D /* exPapier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63091636BCA3007FCB32 /* exPapier.cpp */; };
+		03D9C814168467F200AADB3D /* readPlast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63121636BCF6007FCB32 /* readPlast.cpp */; };
+		03D9C81616846A8200AADB3D /* generateSPN.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03D9C81516846A8200AADB3D /* generateSPN.cpp */; };
 		03DD8DE6143B00E60013AF06 /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F13671143A050100944E04 /* BatchR.cpp */; };
 		03DD8DE7143B00E60013AF06 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F13675143A050100944E04 /* Event.cpp */; };
 		03DD8DE8143B00E60013AF06 /* EventsQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F13677143A050100944E04 /* EventsQueue.cpp */; };
@@ -150,16 +154,20 @@
 		03D34530167B7ABB00C6BDFA /* location.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = location.hh; sourceTree = "<group>"; };
 		03D34531167B7ABB00C6BDFA /* position.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = position.hh; sourceTree = "<group>"; };
 		03D34532167B7ABB00C6BDFA /* stack.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stack.hh; sourceTree = "<group>"; };
+		03D9C80D16845FAD00AADB3D /* generateLHA.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = generateLHA.hpp; path = /Users/barbot/Documents/AllCosmos/trunk/POMDP/generateLHA.hpp; sourceTree = "<absolute>"; };
+		03D9C80E1684618C00AADB3D /* generateSPN.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = generateSPN.hpp; path = ../POMDP/generateSPN.hpp; sourceTree = "<group>"; };
+		03D9C80F1684621700AADB3D /* exPapier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = exPapier.hpp; path = ../POMDP/exPapier.hpp; sourceTree = "<group>"; };
+		03D9C810168466A200AADB3D /* readPlast.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = readPlast.hpp; path = ../POMDP/readPlast.hpp; sourceTree = "<group>"; };
+		03D9C81516846A8200AADB3D /* generateSPN.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = generateSPN.cpp; path = /Users/barbot/Documents/AllCosmos/trunk/POMDP/generateSPN.cpp; sourceTree = "<absolute>"; };
 		03DA8F3214F4FD25008C673C /* lumpingfun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfun.cpp; sourceTree = "<group>"; };
 		03DD8DE1143B00AE0013AF06 /* classes.o */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.objfile"; includeInIndex = 0; path = classes.o; sourceTree = BUILT_PRODUCTS_DIR; };
 		03DE63091636BCA3007FCB32 /* exPapier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = exPapier.cpp; path = /Users/barbot/Documents/AllCosmos/trunk/POMDP/exPapier.cpp; sourceTree = "<absolute>"; };
 		03DE630B1636BCE4007FCB32 /* experiments.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = experiments.cpp; path = ../POMDP/experiments.cpp; sourceTree = "<group>"; };
-		03DE630D1636BCF6007FCB32 /* generateLHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = generateLHA.cpp; path = ../POMDP/generateLHA.cpp; sourceTree = "<group>"; };
-		03DE630E1636BCF6007FCB32 /* generateSPN.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = generateSPN.cpp; path = ../POMDP/generateSPN.cpp; sourceTree = "<group>"; };
+		03DE630D1636BCF6007FCB32 /* generateLHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = generateLHA.cpp; path = /Users/barbot/Documents/AllCosmos/trunk/POMDP/generateLHA.cpp; sourceTree = "<absolute>"; };
 		03DE630F1636BCF6007FCB32 /* grid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = grid.cpp; path = ../POMDP/grid.cpp; sourceTree = "<group>"; };
 		03DE63101636BCF6007FCB32 /* linear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = linear.cpp; path = ../POMDP/linear.cpp; sourceTree = "<group>"; };
 		03DE63111636BCF6007FCB32 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = /Users/barbot/Documents/AllCosmos/trunk/XCCosmos/../POMDP/main.cpp; sourceTree = "<absolute>"; };
-		03DE63121636BCF6007FCB32 /* readPlast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = readPlast.cpp; path = ../POMDP/readPlast.cpp; sourceTree = "<group>"; };
+		03DE63121636BCF6007FCB32 /* readPlast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = readPlast.cpp; path = /Users/barbot/Documents/AllCosmos/trunk/POMDP/readPlast.cpp; sourceTree = "<absolute>"; };
 		03EF68BA143F439D008EEC97 /* Gspn_gmlparser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Gspn_gmlparser.hpp; sourceTree = "<group>"; };
 		03F13671143A050100944E04 /* BatchR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BatchR.cpp; sourceTree = "<group>"; };
 		03F13672143A050100944E04 /* BatchR.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BatchR.hpp; sourceTree = "<group>"; };
@@ -260,13 +268,17 @@
 			isa = PBXGroup;
 			children = (
 				03DE630D1636BCF6007FCB32 /* generateLHA.cpp */,
-				03DE630E1636BCF6007FCB32 /* generateSPN.cpp */,
+				03D9C80D16845FAD00AADB3D /* generateLHA.hpp */,
+				03D9C81516846A8200AADB3D /* generateSPN.cpp */,
+				03D9C80E1684618C00AADB3D /* generateSPN.hpp */,
+				03DE63091636BCA3007FCB32 /* exPapier.cpp */,
+				03D9C80F1684621700AADB3D /* exPapier.hpp */,
+				03DE63121636BCF6007FCB32 /* readPlast.cpp */,
+				03D9C810168466A200AADB3D /* readPlast.hpp */,
+				03DE63111636BCF6007FCB32 /* main.cpp */,
 				03DE630F1636BCF6007FCB32 /* grid.cpp */,
 				03DE63101636BCF6007FCB32 /* linear.cpp */,
-				03DE63111636BCF6007FCB32 /* main.cpp */,
-				03DE63121636BCF6007FCB32 /* readPlast.cpp */,
 				03DE630B1636BCE4007FCB32 /* experiments.cpp */,
-				03DE63091636BCA3007FCB32 /* exPapier.cpp */,
 			);
 			path = POMDP;
 			sourceTree = "<group>";
@@ -552,6 +564,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				03DE63171636BCF6007FCB32 /* main.cpp in Sources */,
+				03D9C811168467E900AADB3D /* generateLHA.cpp in Sources */,
+				03D9C813168467EF00AADB3D /* exPapier.cpp in Sources */,
+				03D9C814168467F200AADB3D /* readPlast.cpp in Sources */,
+				03D9C81616846A8200AADB3D /* generateSPN.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -826,10 +842,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				LIBRARY_SEARCH_PATHS = "/usr/local/lib/**";
@@ -843,9 +864,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;

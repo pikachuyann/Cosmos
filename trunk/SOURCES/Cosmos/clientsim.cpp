@@ -32,14 +32,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-// convert a string to an integer
-int StrToInt(string st) {
-    std::istringstream iss(st);
-    int x;
-    iss >> x;
-    return x;
-}
-
 // main function it read the options given as arguments and initialyse 
 // the simulator.
 // Then it start a while loop which compute a batch of trajectory
@@ -110,10 +102,8 @@ int main(int argc, char** argv) {
     
 	
 	if(argc>=2){
-		str = argv[1];
-		mySim->SetBatchSize(StrToInt(str)); //set the batch size
-		str = argv[2];
-		mySim->verbose = StrToInt(str);
+		mySim->SetBatchSize(atoi(argv[1])); //set the batch size
+		mySim->verbose = atoi(argv[2]);
 	}else{
 		//Default value.
 		mySim->SetBatchSize(1000);

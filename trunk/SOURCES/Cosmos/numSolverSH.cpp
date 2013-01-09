@@ -27,7 +27,7 @@
 #include <time.h>
 #include "numSolverSH.hpp"
 
-bool readbit(int a,int b){
+bool numSolverSH::readbit(int a,int b){
 	int c = a & (1 << b);
 	return (0 != c);
 }

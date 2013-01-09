@@ -93,7 +93,7 @@ void stateSpace::exploreStateSpace(){
 		
 		set<int, less <int> > ent;
 		ent = N.enabledTrans();
-		set<int>::iterator it;
+		//set<int>::iterator itset;
 		for (it = ent.begin(); it != ent.end(); it++) {
 			
 			N.fire(*it);
@@ -113,8 +113,8 @@ void stateSpace::exploreStateSpace(){
 				if (its == S.end ()){
 					
 					//cerr << "state:"<< nbState << " -> ";
-					for (vector<int>::iterator it=marking.begin(); it!= marking.end() ; it++) {
-						//cerr << *it << ":";
+					for (vector<int>::iterator it2=marking.begin(); it2!= marking.end() ; it2++) {
+						//cerr << *it2 << ":";
 					}
 					//cerr << endl;
 					

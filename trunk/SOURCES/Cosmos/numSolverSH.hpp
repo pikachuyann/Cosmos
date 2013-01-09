@@ -35,6 +35,7 @@ public:
 	double getMu(int);
 	boostmat::vector<double> getVect(); 
 protected:
+	bool readbit(int a,int b);
 	//vector<boostmat::vector<double> >* powTVect;
 	vector<boostmat::vector<double> >* lastOne;
     vector<double>* ktable; 
