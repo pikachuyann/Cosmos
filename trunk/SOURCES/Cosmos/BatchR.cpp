@@ -36,7 +36,7 @@ using namespace std;
 BatchR::BatchR(const size_t i) :
 	I(0) ,
 	Isucc(0),
-	TableLength(0),
+	TableLength(i),
 	IsBernoulli(vector<bool>(i,true)),
 	Mean(vector<double>(i,0.0)),
 	M2(vector<double>(i,0.0)) {}
@@ -96,7 +96,7 @@ void BatchR::outputR() {
 void BatchR::inputR(FILE* f) {
     double read;
     bool readb;
-    unsigned long readi;
+    size_t readi;
     
     fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
     I=readi;
