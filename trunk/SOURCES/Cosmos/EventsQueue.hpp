@@ -39,16 +39,16 @@ typedef vector <Event>::iterator EQit;
 class EventsQueue {
 public:
     EventsQueue(EQueue *);
-    EventsQueue(int);
+    EventsQueue(size_t);
 
     EventsQueue(const EventsQueue& orig);
     virtual ~EventsQueue();
 
     void insert(Event &);
-    void replace(Event &, int);
-    void remove(int);
-    void siftUp(int);
-    void siftDown(int);
+    void replace(Event &, size_t);
+    void remove(size_t);
+    void siftUp(size_t);
+    void siftDown(size_t);
 
     bool isEmpty();
     void copyEvents(Event&, Event&);
@@ -60,7 +60,7 @@ public:
     void ViewTransTab();
 
     void reset();
-    int getSize();
+    size_t getSize();
 
     EQueue* getEq();
 
@@ -71,22 +71,22 @@ public:
 private:
 
     EQit* it;
-    int Qsize;
+    size_t Qsize;
 
 
 
     Tab* TransTable;
-    int TransTableSize;
+    size_t TransTableSize;
 
-    int getLeftChildIndex(int nodeIndex) {
+    size_t getLeftChildIndex(size_t nodeIndex) {
         return 2 * nodeIndex + 1;
     }
 
-    int getRightChildIndex(int nodeIndex) {
+    size_t getRightChildIndex(size_t nodeIndex) {
         return 2 * nodeIndex + 2;
     }
 
-    int getParentIndex(int nodeIndex) {
+    size_t getParentIndex(size_t nodeIndex) {
         return (nodeIndex - 1) / 2;
     }
 

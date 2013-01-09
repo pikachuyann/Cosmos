@@ -29,14 +29,14 @@
 
 using namespace std;
 
-EventsQueue::EventsQueue(int i) {
+EventsQueue::EventsQueue(size_t i) {
     eq = new vector <Event > (i);
     Qsize = 0;
 
 
     TransTableSize = i;
     TransTable = new vector <int> (TransTableSize);
-    for (int k = 0; k < TransTableSize; k++)
+    for (size_t k = 0; k < TransTableSize; k++)
         (*TransTable)[k] = -1;
 
 
@@ -66,7 +66,7 @@ bool EventsQueue::isPriorer(Event& E1, Event& E2) {
 }
 
 void EventsQueue::reset() {
-    for (int i = 0; i < TransTableSize; i++)
+    for (size_t i = 0; i < TransTableSize; i++)
         (*TransTable)[i] = -1;
     Qsize = 0;
 
@@ -98,7 +98,7 @@ void EventsQueue::insert(Event &e) {
 
 }
 
-void EventsQueue::replace(Event &e, int k) {
+void EventsQueue::replace(Event &e, size_t k) {
 
     if (e.transition != (*eq)[k].transition)
         (*TransTable)[(*eq)[k].transition] = -1;
@@ -113,9 +113,8 @@ Event EventsQueue::InPosition(int i) {
     return (*eq)[i];
 }
 
-void EventsQueue::siftUp(int i) {
-    int parentIndex;
-
+void EventsQueue::siftUp(size_t i) {
+    size_t parentIndex;
 
     if (i != 0) {
         parentIndex = getParentIndex(i);
@@ -143,7 +142,7 @@ void EventsQueue::siftUp(int i) {
 
 }
 
-void EventsQueue::remove(int i) {
+void EventsQueue::remove(size_t i) {
 
     if (i == Qsize - 1) {
 
@@ -151,7 +150,6 @@ void EventsQueue::remove(int i) {
         Qsize--;
 
     } else {
-
 
         (*TransTable)[(*eq)[Qsize - 1].transition] = i;
         (*TransTable)[(*eq)[i].transition] = -1;
@@ -165,9 +163,9 @@ void EventsQueue::remove(int i) {
 
 }
 
-void EventsQueue::siftDown(int i) {
+void EventsQueue::siftDown(size_t i) {
     //int parentIndex;
-    int leftChildIndex, rightChildIndex, minIndex;
+    size_t leftChildIndex, rightChildIndex, minIndex;
 	//int tmp;
     leftChildIndex = getLeftChildIndex(i);
     rightChildIndex = getRightChildIndex(i);
@@ -242,7 +240,7 @@ void EventsQueue::ViewTransTab() {
 
 }
 
-int EventsQueue::getSize() {
+size_t EventsQueue::getSize() {
     return Qsize;
 }
 
