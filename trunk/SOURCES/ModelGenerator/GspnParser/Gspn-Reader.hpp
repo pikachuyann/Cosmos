@@ -57,8 +57,8 @@ typedef struct ProbabiliteDistribution Distribution;
 
 struct GSPN {
     string Path;
-    int tr;
-    int pl;
+    size_t tr;
+    size_t pl;
 
     set<string> PlacesList;
     set<string> TransList;

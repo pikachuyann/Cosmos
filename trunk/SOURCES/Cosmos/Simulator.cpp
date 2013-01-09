@@ -41,8 +41,7 @@
 
 using namespace std;
 
-Simulator::Simulator() {
-    verbose=0;
+Simulator::Simulator():verbose(0) {
 	N.Load();//load the GSPN
 	A.Load(); //load the LHA
 	size_t n = N.tr; //n his the number of transition

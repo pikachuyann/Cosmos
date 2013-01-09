@@ -30,35 +30,46 @@
 #include <cstdlib>
 #include <getopt.h>
 
-parameters::parameters() {
-    verbose =2;
-	Level = 0.99;
-    epsilon = 0.000001;
-	Width = 0.001;
-	Batch =   1000;
-	MaxRuns = 2000000;
-	Path = "";
-	RareEvent = false;
-	DoubleIS = false;
-	BoundedRE = 0;
-    horizon =100;
-    BoundedContinuous = false;
-	Njob = 1;
-	GMLinput = false;
-    computeStateSpace = false;
-	alligatorMode = false;
-	tmpPath = "tmp";
-    tmpStatus = 0;
-	prismPath = "prism/bin/prism";
-    dataoutput = "";
-	dataraw = "";
-	CountTrans = false;
-	StringInSpnLHA = false;
-	gcccmd = "g++";
-	gccflags = "-O3";
+parameters::parameters():
+    verbose(2),
+	Njob(1),
+
+    epsilon(0.000001),
+	Level(0.99),
+	Width(0.001),
+	Batch(1000),
+	MaxRuns(2000000),
+
+	tmpPath("tmp"),
+	tmpStatus(0),
+	Path(""),
+	PathGspn(""),
+	PathLha(""),
+
+	RareEvent(false),
+	DoubleIS(false),
+	BoundedRE(0),
+    horizon(100),
+    BoundedContinuous(false),
+
+	CountTrans(false),
+	StringInSpnLHA(false),
+
+	GMLinput(false),
+    computeStateSpace(false),
+	alligatorMode(false),
+
+	gcccmd("g++"),
+	gccflags("-O3"),
+
+	prismPath("prism/bin/prism"),
+    dataoutput(""),
+	dataraw("")
 	
+	
+
     //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
-}
+{}
 
 void parameters::View() {
 	cout << "Confidence interval width:      " << Width << endl;

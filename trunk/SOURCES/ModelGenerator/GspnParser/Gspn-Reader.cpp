@@ -215,8 +215,8 @@ void Gspn_Reader::WriteFile(parameters& P){
     SpnCppFile << "    outArcs = Null_PlxTr_Matrix;" << endl;
     SpnCppFile << "    inhibArcs = Null_PlxTr_Matrix;" << endl;
     SpnCppFile << "    Marking = Null_Pl_Vector;;" << endl;
-    for (int t = 0; t < MyGspn.tr; t++) {
-        for (int p = 0; p < MyGspn.pl; p++)
+    for (size_t t = 0; t < MyGspn.tr; t++) {
+        for (size_t p = 0; p < MyGspn.pl; p++)
 			
             if (MyGspn.inArcs[t][p] > 0)
                 SpnCppFile << "    inArcs[" << t << "][" << p << "]=" << MyGspn.inArcs[t][p] << ";" << endl;
@@ -224,16 +224,16 @@ void Gspn_Reader::WriteFile(parameters& P){
 		
     }
 	
-    for (int t = 0; t < MyGspn.tr; t++) {
-        for (int p = 0; p < MyGspn.pl; p++)
+    for (size_t t = 0; t < MyGspn.tr; t++) {
+        for (size_t p = 0; p < MyGspn.pl; p++)
             if (MyGspn.outArcs[t][p] > 0)
                 SpnCppFile << "    outArcs[" << t << "][" << p << "]=" << MyGspn.outArcs[t][p] << ";" << endl;
         SpnCppFile << endl;
 		
     }
 	
-    for (int t = 0; t < MyGspn.tr; t++) {
-        for (int p = 0; p < MyGspn.pl; p++)
+    for (size_t t = 0; t < MyGspn.tr; t++) {
+        for (size_t p = 0; p < MyGspn.pl; p++)
 			
             if (MyGspn.inhibArcs[t][p] > 0)
                 SpnCppFile << "    inhibArcs[" << t << "][" << p << "]=" << MyGspn.inhibArcs[t][p] << ";" << endl;
@@ -241,7 +241,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		
     }
 	
-    for (int p = 0; p < MyGspn.pl; p++) {
+    for (size_t p = 0; p < MyGspn.pl; p++) {
         if (MyGspn.Marking[p] > 0)
             SpnCppFile << "    Marking[" << p << "]=" << MyGspn.Marking[p] << ";" << endl;
     }
@@ -280,7 +280,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	
 	
-    for (int i = 0; i < MyGspn.tr; i++) {
+    for (size_t i = 0; i < MyGspn.tr; i++) {
 		
         if (MyGspn.tType[i] == Timed) {
             SpnCppFile << "    Transition[" << i << "].transType = Timed;" << endl;
@@ -309,8 +309,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
     SpnCppFile << "    vector < vector <int> > vec(" << MyGspn.tr << ");" << endl;
     SpnCppFile << "    PredT = vec;" << endl;
-    for (int t = 0; t < MyGspn.tr; t++) {
-        for (int p = 0; p < MyGspn.pl; p++)
+    for (size_t t = 0; t < MyGspn.tr; t++) {
+        for (size_t p = 0; p < MyGspn.pl; p++)
             if (MyGspn.inArcs[t][p] > 0) SpnCppFile << "    PredT[" << t << "].push_back(" << p << ");" << endl;
 		
         //SpnCppFile << endl;
@@ -338,9 +338,9 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
     SpnCppFile << "bool SPN::IsEnabled(int t){" << endl;
     SpnCppFile << "    switch(t){" << endl;
-    for (int t = 0; t < MyGspn.tr; t++) {
+    for (size_t t = 0; t < MyGspn.tr; t++) {
         SpnCppFile << "     case " << t << ":" << endl;
-		for (int p = 0; p < MyGspn.pl; p++) {
+		for (size_t p = 0; p < MyGspn.pl; p++) {
             if (MyGspn.inArcs[t][p] > 0) {
 				
                 if (MyGspn.inArcsStr[t][p] == " ")
@@ -375,10 +375,10 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
     SpnCppFile << "void SPN::fire(int t){" << endl;
     SpnCppFile << "   switch(t){" << endl;
-    for (int t = 0; t < MyGspn.tr; t++) {
+    for (size_t t = 0; t < MyGspn.tr; t++) {
         SpnCppFile << "     case " << t << ": {" << endl;
         //SpnCppFile << "       fire_t" << t << "();" << endl;
-		for (int p = 0; p < MyGspn.pl; p++) {
+		for (size_t p = 0; p < MyGspn.pl; p++) {
 			if (MyGspn.inArcs[t][p] > 0) {
 				if (MyGspn.inArcsStr[t][p] == " ")
 					SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.inArcs[t][p] << ";" << endl;
@@ -402,10 +402,10 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
     SpnCppFile << "void SPN::unfire(int t){" << endl;
     SpnCppFile << "   switch(t){" << endl;
-    for (int t = 0; t < MyGspn.tr; t++) {
+    for (size_t t = 0; t < MyGspn.tr; t++) {
         SpnCppFile << "     case " << t << ": {" << endl;
         //SpnCppFile << "       unfire_t" << t << "();" << endl;
-        for (int p = 0; p < MyGspn.pl; p++) {
+        for (size_t p = 0; p < MyGspn.pl; p++) {
 			if (MyGspn.inArcs[t][p] > 0) {
 				if (MyGspn.inArcsStr[t][p] == " ")
 					SpnCppFile << "    Marking[" << p << "] += " << MyGspn.inArcs[t][p] << ";" << endl;
@@ -433,7 +433,7 @@ void Gspn_Reader::WriteFile(parameters& P){
     SpnCppFile << "void SPN::GetDistParameters(int t){" << endl;
     //-------------- /Rare Event -------------------------
     SpnCppFile << "   switch(t){" << endl;
-    for (int t = 0; t < MyGspn.tr; t++) {
+    for (size_t t = 0; t < MyGspn.tr; t++) {
 		if (MyGspn.tType[t] == Timed) {
 			SpnCppFile << "     case " << t << ": {" << endl;
 			//SpnCppFile << "       vector<double> P(" << MyGspn.Dist[t].Param.size() << ");" << endl;
@@ -444,7 +444,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 				} else {
 					SpnCppFile << "       double EnablingDegree = INT_MAX; " << endl;
 					bool AtLeastOneMarkDepArc = false;
-					for (int p = 0; p < MyGspn.pl; p++)
+					for (size_t p = 0; p < MyGspn.pl; p++)
 						if (MyGspn.inArcs[t][p] > 0) {
 							if (MyGspn.inArcsStr[t][p] == " ")
 								SpnCppFile << "       EnablingDegree=min(floor(Marking[" << p << "]/(double)(" << MyGspn.inArcs[t][p] << ")),EnablingDegree);" << endl;
@@ -483,7 +483,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	SpnCppFile << "double SPN::GetPriority(int t){" << endl;
 	SpnCppFile << "   switch(t){" << endl;
-	for (int t = 0; t < MyGspn.tr; t++) {
+	for (size_t t = 0; t < MyGspn.tr; t++) {
 		
 		SpnCppFile << "     case " << t << ": {" << endl;
 		
@@ -499,7 +499,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	/////////////////////////////////////////
 	SpnCppFile << "double SPN::GetWeight(int t){" << endl;
 	SpnCppFile << "   switch(t){" << endl;
-	for (int t = 0; t < MyGspn.tr; t++) {
+	for (size_t t = 0; t < MyGspn.tr; t++) {
 		
         SpnCppFile << "     case " << t << ":" << endl;
 		

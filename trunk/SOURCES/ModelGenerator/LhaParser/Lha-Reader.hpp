@@ -53,7 +53,7 @@ typedef struct _LhaEdge LhaEdge;
 
 struct LHA {
     string label;
-    unsigned int NbLoc; // number of locations   
+    size_t NbLoc; // number of locations
 
     set <unsigned int, less<unsigned int> > InitLoc; // initial locations
     set <unsigned int, less<unsigned int> > FinalLoc; // final locations
@@ -85,7 +85,7 @@ struct LHA {
     vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l   
     vector < vector < set <int> > > ActionEdges; // return the set of edges starting from location cl such that action a is an action for these edges, ActionsLoc[cl][a]={e1, e2, ...}
 
-    int NbVar;
+    size_t NbVar;
     vector <double> Var; // Var[i] value of the variable indexed by i
     map<string, int> VarIndex; //for a given variable label return its index among {0, 1, ..., NbVar-1}
     vector <string> VarLabel;

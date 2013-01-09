@@ -26,28 +26,17 @@
 #include "Event.hpp"
 
 
-Event::Event() {
-}
+Event::Event() : transition(0), time(0), priority(0) , weight(0)
+{}
 
-Event::Event(unsigned int tr, double t) {
-    transition = tr;
-    time = t;
-}
+Event::Event(unsigned int tr, double t): transition(tr),time(t), priority(0),weight(0) {}
 
-Event::Event(unsigned int tr, double t, unsigned int pr, double w) {
-    transition = tr;
-    time = t;
-    priority = pr;
-    weight = w;
-}
+Event::Event(unsigned int tr, double t, unsigned int pr, double w) :
+ transition(tr),time(t), priority(pr),weight(w) {}
 
-Event::Event(const Event& orig) {
-    transition = orig.transition;
-    time = orig.time;
-    priority = orig.priority;
-    weight = orig.weight;
-
-}
+Event::Event(const Event& orig) :
+	transition(orig.transition),time(orig.time), priority(orig.priority),
+	weight(orig.weight) {}
 
 Event::~Event() {
 }

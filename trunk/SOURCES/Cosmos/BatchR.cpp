@@ -33,14 +33,13 @@ using namespace std;
 
 
 //Initialize the batch with zeros
-BatchR::BatchR(const size_t i) {
-    I =0;
-    Isucc=0;
-    TableLength=i;
-    IsBernoulli= vector<bool>(i,true);
-    Mean=vector<double>(i,0.0);
-    M2=vector<double>(i,0.0);
-}
+BatchR::BatchR(const size_t i) :
+	I(0) ,
+	Isucc(0),
+	TableLength(0),
+	IsBernoulli(vector<bool>(i,true)),
+	Mean(vector<double>(i,0.0)),
+	M2(vector<double>(i,0.0)) {}
 
 BatchR::~BatchR() {
 }
