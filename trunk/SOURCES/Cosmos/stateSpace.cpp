@@ -478,7 +478,7 @@ void stateSpace::inputVect(){
 		//cerr << line << endl;
 		poseq = line.find("=");
 		
-		if(poseq > 0){
+		if(poseq != string::npos){
 			pos = line.substr(1,poseq-2);
 			stateid = line.substr(poseq+1,line.size());
 			
