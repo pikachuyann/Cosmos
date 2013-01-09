@@ -363,7 +363,7 @@ void stateSpace::launchPrism(string prismPath){
 void stateSpace::importPrism(){
     cerr << "Importing Prism result" << endl;
     string line;
-	int poseq =1;
+	size_t poseq =1;
 	string pos;
 	string prob;
     ifstream myfile ("prismOutput");
@@ -384,17 +384,17 @@ void stateSpace::importPrism(){
 			
 			if(poseq > 0){
                 //cout << line << endl;
-                int si = 1+line.find("(",0);
+                size_t si = 1+line.find("(",0);
 				pos = line.substr(si,poseq-1-si);
                 //cerr << "pos:" << pos << endl;
 				prob = line.substr(poseq+1,line.size());
 				
 				vector<int> vect;
-				int it = 0;
+				size_t it = 0;
                 //cerr << "v:";
 				while(it < pos.length()){
-					int it2 = pos.find(",",it);
-					if(it2 == -1) it2 = pos.length();
+					size_t it2 = pos.find(",",it);
+					if(it2 == string::npos ) it2 = pos.length();
 					//cout << "test:" << it<< ":" << it2 << endl;
 					vect.push_back(atoi((pos.substr(it,it2-it)).c_str() ));
                     //cerr << atoi((pos.substr(it,it2-it)).c_str() ) << ",";
@@ -469,7 +469,7 @@ void stateSpace::inputVect(){
     }
 	
 	string line;
-	int poseq;
+	size_t poseq;
 	string pos;
 	string stateid;
 	while ( inputFile.good() )
@@ -483,10 +483,10 @@ void stateSpace::inputVect(){
 			stateid = line.substr(poseq+1,line.size());
 			
 			vector<int> vect;
-			int it = 0;
+			size_t it = 0;
 			while(it < pos.length()){
-				int it2 = pos.find(",",it);
-				if(it2 == -1) it2 = pos.length();
+				size_t it2 = pos.find(",",it);
+				if(it2 == string::npos) it2 = pos.length();
 				vect.push_back(atoi((pos.substr(it,it2-it)).c_str() ));
 				it = it2+1;
 			}
@@ -522,7 +522,7 @@ void stateSpace::inputMat(){
 	finalVector = new boostmat::vector<double>(v1);
 	
 	string line;
-	int poseq;
+	size_t poseq;
 	string pos;
 	string stateid;
 	while ( inputFile.good() )
@@ -536,10 +536,10 @@ void stateSpace::inputMat(){
 			stateid = line.substr(poseq+1,line.size());
 			
 			vector<int> vect;
-			int it = 0;
+			size_t it = 0;
 			while(it < pos.length()){
-				int it2 = pos.find(",",it);
-				if(it2 == -1) it2 = pos.length();
+				size_t it2 = pos.find(",",it);
+				if(it2 == string::npos) it2 = pos.length();
 				vect.push_back(atoi((pos.substr(it,it2-it)).c_str() ));
 				it = it2+1;
 			}

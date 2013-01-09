@@ -98,8 +98,8 @@ public:
 	hash_state S;
 	double findHash(const vector<int>* vect);	
     
-	int nbState;
-	int nbTrans;
+	size_t nbState;
+	size_t nbTrans;
 	boost::numeric::ublas::compressed_matrix<double>* transitionsMatrix;
 	boost::numeric::ublas::vector<double>* finalVector;
     vector<double>* muvect;

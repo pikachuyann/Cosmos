@@ -43,11 +43,11 @@ typedef std::pair<bool, std::vector<double> > SimOutput;
 class BatchR {
 public:
 //    BatchR();
-    BatchR(const unsigned int i);
+    BatchR(const size_t i);
     virtual ~BatchR();
-    int I;              //Number of simulation
-    int Isucc;          //Number of succesfull simulation
-    unsigned int TableLength;    //Number of mesured variable
+    unsigned long I;              //Number of simulation
+    unsigned long Isucc;          //Number of succesfull simulation
+    size_t TableLength;    //Number of mesured variable
     std::vector<bool> IsBernoulli;  //Is a variable a boolean.
     std::vector<double> Mean;
     std::vector<double> M2;
