@@ -1,4 +1,4 @@
-set terminal pngcairo font "arial,10" fontscale 1.0 size 800, 800 
+set terminal pngcairo font "arial,10" fontscale 1.0 size 500, 200 
 set output 'dataout.png'
 
 set grid lc rgb "black"
