@@ -1,5 +1,4 @@
 #!/bin/sh
-make
 mkdir package
 #cp Makefile package/
 cp cosmosTool package/

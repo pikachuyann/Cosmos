@@ -1,11 +1,9 @@
 export CC=g++
-export OPTIONS= -O3 -Wall
+export OPTIONS= -O3 -Wall -Wextra
 export BOOSTPATH=/data/usr64/include
-export BISON=/opt/local/bin/bison
-export FLEX=/opt/local/bin/flex
 
-export AR=libtool
-export ARFLAGS=-static -o
+export AR=ar
+export ARFLAGS=rcs
 
 files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 
