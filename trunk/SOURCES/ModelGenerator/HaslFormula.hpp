@@ -72,7 +72,7 @@ public:
 	HaslFormulasTop(double,double);
 	HaslFormulasTop(size_t,double);
 	HaslFormulasTop(int, HaslFormulasTop*, HaslFormulasTop*);
-	HaslFormulasTop(const HaslFormulasTop&);
+//	HaslFormulasTop(const HaslFormulasTop&);
 	
 	~HaslFormulasTop();
 	

@@ -96,7 +96,7 @@ HaslFormulasTop::~HaslFormulasTop(){
 	if(!right) delete right;
 }
 
-HaslFormulasTop::HaslFormulasTop(const HaslFormulasTop& ht){
+/*HaslFormulasTop::HaslFormulasTop(const HaslFormulasTop& ht){
 	TypeOp = ht.TypeOp;
 	Algebraic = ht.Algebraic;
 	Level = ht.Level;
@@ -105,7 +105,7 @@ HaslFormulasTop::HaslFormulasTop(const HaslFormulasTop& ht){
 	else left = NULL;
 	if(ht.right)right = new HaslFormulasTop(*ht.right);
 	else right = NULL;
-}
+}*/
 
 ////////////////////////////////////////////////////////////////////////////
 // Some remarks about the estimation of the confidence interval adopted here

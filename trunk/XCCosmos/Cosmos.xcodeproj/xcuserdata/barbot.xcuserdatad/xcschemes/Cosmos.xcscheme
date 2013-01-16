@@ -61,7 +61,7 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-g"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-v 0"
@@ -76,16 +76,16 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pi.gspn"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pi.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pi.lha"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pilha.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--count-transition"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/POMDP/generated.gspn"
