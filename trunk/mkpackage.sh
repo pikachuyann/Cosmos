@@ -11,6 +11,8 @@ find package/SOURCES -name "*.ll" -delete
 mkdir -p package/Obj/ModelGenerator/Eval
 mkdir -p package/Obj/ModelGenerator/GspnParser
 mkdir -p package/Obj/ModelGenerator/LhaParser
+mkdir package/bin
+cp bin/gnuplotScript.gnu package/bin
 cd package
 cd prism; make
 rm -rf classes
