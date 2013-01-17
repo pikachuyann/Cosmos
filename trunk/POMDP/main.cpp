@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
 	//This is the command line to invoke cosmos.
 	//This one use clang for the compilation of the model
 	//If clang is not install command in comment can be used.
-	string Cosmoscmd = "../bin/Cosmos generated.gspn generated.lha --njob 1 -d test --max-run 50000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang++ --gppflags -Wno-return-type --tmp-status 2";
+	string Cosmoscmd = "../bin/Cosmos generated.gspn generated.lha --njob 12 -d test --max-run 50000 --batch 100 --count-transition --width 0.01 -v 1 --gppcmd clang++ --gppflags -Wno-return-type --tmp-status 2";
 	
 	//string Cosmoscmd = "../bin/Cosmos generated.gspn generated.lha -d test --max-run 50000 --batch 100 --count-transition --width 0.01 -v 1";
 

@@ -15,6 +15,7 @@ all: dir lib generator
 
 dir:
 	mkdir -p bin
+	mkdir -p includes
 	mkdir -p Obj/Cosmos
 	mkdir -p Obj/ModelGenerator/Eval
 	mkdir -p Obj/ModelGenerator/GspnParser
@@ -22,6 +23,11 @@ dir:
 
 lib:
 	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/libClientSim.a)
+	cp SOURCES/Cosmos/spn.hpp includes/
+	cp SOURCES/Cosmos/spn_orig.hpp includes/
+	cp SOURCES/Cosmos/LHA.hpp includes/
+	cp SOURCES/Cosmos/LHA_orig.hpp includes/
+
 
 generator:
 	@(cd SOURCES/ModelGenerator && $(MAKE) ../../bin/Cosmos)
@@ -37,6 +43,11 @@ cleansim:
 
 sim:
 	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/ClientSim)
+	cp SOURCES/Cosmos/spn.hpp includes/
+	cp SOURCES/Cosmos/spn_orig.hpp includes/
+	cp SOURCES/Cosmos/LHA.hpp includes/
+	cp SOURCES/Cosmos/LHA_orig.hpp includes/ 
+
 
 parser:
 	@(cd SOURCES/ModelGenerator && $(MAKE) parser)

@@ -196,10 +196,10 @@ bool ParseBuild(parameters& P) {
 		if (system(cmd.c_str())) return false;
 	}
 	
-	cmd = bcmd + " -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
+	cmd = bcmd + " -c -I"+P.Path+"../includes -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
 	if (system(cmd.c_str())) return false;
 	
-	cmd = bcmd + " -c -I"+P.Path+"../SOURCES/Cosmos -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
+	cmd = bcmd + " -c -I"+P.Path+"../includes -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
 	if (system(cmd.c_str())) return false;
 	
 	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
