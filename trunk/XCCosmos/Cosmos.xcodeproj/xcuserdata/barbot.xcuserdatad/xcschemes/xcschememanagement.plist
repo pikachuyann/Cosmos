@@ -34,10 +34,20 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>libClientSim.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>0341401B15AEF45E0009FEFC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>034509A516A80AC8002088B3</key>
 		<dict>
 			<key>primary</key>
 			<true/>

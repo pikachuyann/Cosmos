@@ -203,7 +203,9 @@ void parameters::parseCommandLine(int argc, char** argv){
 				StringInSpnLHA = true;
 				break;
                 
-            case 'a':alligatorMode = true;  break;
+            case 'a':alligatorMode = true;
+				verbose =0;
+				break;
 				
             case  'l':Level = atof(optarg);     break;
             case  'w':Width = atof(optarg);     break;

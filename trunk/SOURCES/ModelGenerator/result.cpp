@@ -108,6 +108,11 @@ void printPercent(double i, double j){
 }
 
 void result::printProgress(){
+	stopclock();
+	if(P.alligatorMode){
+		printAlligator();
+		return;
+	}
     cout.precision(15);
     while(endline>=0){
         endline--;
@@ -216,15 +221,4 @@ void result::printResultFile(string f){
 
 void result::printAlligator(){
 	print(cout);
-	
-    /*cout << "alligatorResult" << endl;
-    for (int i=0; i<P.HaslFormulas.size(); i++){
-        cout << MeanM2->Mean[i] << endl;
-        cout << "[" << low[i] << "," << up[i] << "]" << endl;
-        cout << stdev[i] << endl;
-        cout << width[i] << endl;
-    }
-    cout << MeanM2->I << endl;
-    cout << MeanM2->Isucc << endl;*/
-    //cout << cpu_time_used << endl;
 }

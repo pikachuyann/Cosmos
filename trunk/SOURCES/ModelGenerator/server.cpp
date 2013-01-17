@@ -175,7 +175,7 @@ void launchServer(parameters& P){
                 batchResult.inputR(clientstream[it]);
                 //batchResult.print();
                 Result.addBatch(&batchResult);
-                if(P.verbose>0)Result.printProgress();
+                if(P.verbose>0 || P.alligatorMode)Result.printProgress();
             }
         }
     }while(Result.continueSim());
