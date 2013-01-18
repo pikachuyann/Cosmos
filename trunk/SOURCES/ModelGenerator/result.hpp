@@ -31,6 +31,7 @@
 #include <fstream>
 #include <ostream>
 #include <time.h>
+#include <sys/time.h>
 
 #ifndef Cosmos_result_h
 #define Cosmos_result_h
@@ -49,6 +50,7 @@ public:
 	vector<ConfInt*> HaslResult;
 
     time_t start, end;
+	timeval lastprint;
     double cpu_time_used;
     
     fstream outdatastream;
