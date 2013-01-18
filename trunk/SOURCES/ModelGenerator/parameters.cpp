@@ -32,6 +32,7 @@
 
 parameters::parameters():
     verbose(2),
+	updatetime(0.1),
 	Njob(1),
 
     epsilon(0.000001),
@@ -95,6 +96,7 @@ void parameters::usage(){
     
     cout << "General options:" << endl;
     cout << "\t-v,--verbose arg\tset the verbose level"<< endl;
+	cout << "\t--update-time\t set the time in second beetween two updates of the display"<< endl;
     cout << "\t-h,--help \tdisplay this message" << endl;
     cout << "\t--njob    \tset the number of parralel thread"<< endl;
 	cout << "\t--gppcmd  \tset the C++ compiler (default g++)"<< endl;
@@ -148,6 +150,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"gppcmd",required_argument,	 0,  6 },
 			{"gppflags",required_argument,	 0,  7 },
             {"verbose", required_argument,	 0, 'v'},
+			{"update-time",required_argument,0, 'u'},
             {"outputdata", required_argument,0, 'd'},
 			{"outputraw" , required_argument,0,  8 },
             {"help" , no_argument ,			 0, 'h'},
@@ -179,6 +182,8 @@ void parameters::parseCommandLine(int argc, char** argv){
             case 'v':verbose = atoi(optarg);
 				if(verbose>=4)StringInSpnLHA = true;	
 				break;
+				
+			case 'u':updatetime=atof(optarg);	break;
                 
             case 'g':GMLinput = true;          break;
                 

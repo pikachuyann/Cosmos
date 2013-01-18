@@ -36,6 +36,8 @@ using namespace std;
 
 struct parameters {
     int verbose;
+	double updatetime;
+	
 	int Njob;
     double epsilon;
 	double Level;
