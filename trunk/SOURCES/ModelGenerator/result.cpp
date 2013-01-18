@@ -46,7 +46,7 @@ result::result(parameters &Q){
     endline = 0;
     
     if(P.dataoutput.compare("")){
-        cout << "Output Data to: " << P.dataoutput << endl;
+        if(P.verbose>0)cout << "Output Data to: " << P.dataoutput << endl;
         outdatastream.open(P.dataoutput.c_str(),fstream::out);
         outdatastream.precision(15);
         outdatastream << "\"Number of trajectory\" \"Number of successfull trajectory\"";
