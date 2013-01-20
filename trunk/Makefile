@@ -9,48 +9,4 @@ export ARFLAGS=-static -o
 
 files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 
-.PHONY: lib generator clean sim dir
-
-all: dir lib generator 
-
-dir:
-	mkdir -p bin
-	mkdir -p includes
-	mkdir -p Obj/Cosmos
-	mkdir -p Obj/ModelGenerator/Eval
-	mkdir -p Obj/ModelGenerator/GspnParser
-	mkdir -p Obj/ModelGenerator/LhaParser
-
-lib:
-	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/libClientSim.a)
-	cp SOURCES/Cosmos/spn.hpp includes/
-	cp SOURCES/Cosmos/spn_orig.hpp includes/
-	cp SOURCES/Cosmos/LHA.hpp includes/
-	cp SOURCES/Cosmos/LHA_orig.hpp includes/
-
-
-generator:
-	@(cd SOURCES/ModelGenerator && $(MAKE) ../../bin/Cosmos)
-
-clean:
-	@(cd SOURCES/Cosmos && $(MAKE) $@)
-	@(cd SOURCES/ModelGenerator && $(MAKE) $@)
-	@(rm -rf package-alligator.zip)
-#	@(rm -rf package)
-
-cleansim:
-	@(cd SOURCES/Cosmos && $(MAKE) clean)
-
-sim:
-	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/ClientSim)
-	cp SOURCES/Cosmos/spn.hpp includes/
-	cp SOURCES/Cosmos/spn_orig.hpp includes/
-	cp SOURCES/Cosmos/LHA.hpp includes/
-	cp SOURCES/Cosmos/LHA_orig.hpp includes/ 
-
-
-parser:
-	@(cd SOURCES/ModelGenerator && $(MAKE) parser)
-
-cleanparser:
-	@(cd SOURCES/ModelGenerator && $(MAKE) cleanparser)
+include Makefile_common
