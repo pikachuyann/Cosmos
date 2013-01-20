@@ -110,7 +110,7 @@ void printPercent(double i, double j){
 void result::printProgress(){
 	timeval current;
 	gettimeofday(&current,NULL);
-	if((current.tv_sec - lastprint.tv_sec +
+	if((current.tv_sec-lastprint.tv_sec +
 		(current.tv_usec-lastprint.tv_usec)/1000000.0) < P.updatetime)
 			return;
 	lastprint = current;
