@@ -142,7 +142,7 @@ void launchExport(parameters& P){
     system(setuppr.str().c_str());
     
     ostringstream os;
-	os << P.tmpPath << "/ClientSim 1 " << P.verbose;
+	os << P.tmpPath << "/ClientSim 1 " << P.verbose << " 0 ";
     os << " " << "-STSP " << P.Path << "../" << P.prismPath;
     
     if(P.verbose >1)cout << os.str() << endl;
