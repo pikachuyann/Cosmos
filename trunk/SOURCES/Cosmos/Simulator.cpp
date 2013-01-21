@@ -30,7 +30,6 @@
 #include <unistd.h>
 #include <math.h>
 #include <float.h>
-#include <sys/time.h>
 #include <boost/random.hpp>
 //#include <boost/random/random_device.hpp>
 #include <boost/generator_iterator.hpp>
@@ -55,9 +54,9 @@ Simulator::Simulator():verbose(0) {
 	//Initialize random generator
 	
 	
-	timeval t;
+	/*timeval t;
 	gettimeofday(&t,(struct timezone*)0);
-	RandomNumber.seed(t.tv_usec + t.tv_sec + getpid());
+	RandomNumber.seed(t.tv_usec + t.tv_sec + getpid());*/
 	//srand(time(t.tv_usec));
 	
 	/*RandomNumber.seed(RandomNumber());
@@ -71,6 +70,10 @@ Simulator::Simulator():verbose(0) {
 }
 
 Simulator::~Simulator() {
+}
+
+void Simulator::initRandomGenerator(const unsigned int seed){
+	RandomNumber.seed(seed);
 }
 
 void Simulator::logValue(const char* path){

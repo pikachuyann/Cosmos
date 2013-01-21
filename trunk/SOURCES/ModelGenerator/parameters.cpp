@@ -106,6 +106,8 @@ void parameters::usage(){
     cout << "\t--width \tset the width of the confidence interval (default=0.001)"<< endl;
     cout << "\t--batch \tset the size of batch of simulation (default=1000)"<< endl;
     cout << "\t--max-run \tset the maximal number of run (default=2000000)" << endl;
+	cout << "\t--seed \tSpecify the seed for the random generator, 0 allow to take a random value";
+	
     cout << "Miscellaneous options:" << endl;
     cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
     cout << "\t--alligator-mode \toutput easy to parse result"<< endl;
@@ -132,6 +134,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"width" , required_argument, 0, 'w'},
             {"batch" , required_argument, 0,  2 },
             {"max-run",required_argument, 0, 'm'},
+			{"seed"  , required_argument, 0,  10},
             
             /* Options for the rare event engine */
             {"rareevent",   no_argument,        0, 'r'},
@@ -227,6 +230,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  5	 : tmpStatus = atoi(optarg); break;
 			case  6  : gcccmd = optarg; break;
 			case  7  : gccflags = optarg; break;
+			case  10 : seed = atol(optarg); break;
 
             case '?':
                 usage();

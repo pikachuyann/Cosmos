@@ -37,7 +37,7 @@ using namespace std;
 struct parameters {
     int verbose;
 	double updatetime;
-	
+	unsigned int seed;
 	int Njob;
     double epsilon;
 	double Level;

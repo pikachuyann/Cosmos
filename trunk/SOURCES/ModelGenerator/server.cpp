@@ -32,6 +32,7 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/resource.h>
+#include <sys/time.h>
 #include <fstream>
 #include <boost/math/distributions/normal.hpp>
 #include <unistd.h>
@@ -67,23 +68,31 @@ void interuptHandler( int signum){
 void launch_clients(parameters& P){
     signal(SIGCHLD , signalHandler); 
 	signal(SIGINT, interuptHandler);
-	ostringstream os;
 	pid_t readpid;
-	os << P.tmpPath<<"/ClientSim " << P.Batch << " " << P.verbose;
-    
-    if(P.DoubleIS){ 
-        os << " " << "-RE2"; 
-    } else if(P.RareEvent){
-        os << " " << "-RE";
-    } else if(P.BoundedContinuous){
-        os << " " << "-COBURE" << " " << P.BoundedRE << " " << P.horizon << " " << P.epsilon;
-    } else if(P.BoundedRE>0){
-        os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
-    }
-	
-	if (P.dataraw.compare("")!=0) os << " -log " << P.dataraw;
+	for(int i = 0;i<P.Njob;i++){
+		ostringstream os;
+		os << P.tmpPath<<"/ClientSim " << P.Batch << " " << P.verbose;
 
-    for(int i = 0;i<P.Njob;i++){
+		if(P.seed==0){
+			timeval t;
+			gettimeofday(&t,(struct timezone*)0);
+			os << " " <<(t.tv_usec + t.tv_sec + getpid()+i);
+		}else{
+			os << " " << (P.seed+i);
+		}
+		
+		if(P.DoubleIS){
+			os << " " << "-RE2";
+		} else if(P.RareEvent){
+			os << " " << "-RE";
+		} else if(P.BoundedContinuous){
+			os << " " << "-COBURE" << " " << P.BoundedRE << " " << P.horizon << " " << P.epsilon;
+		} else if(P.BoundedRE>0){
+			os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
+		}
+		
+		if (P.dataraw.compare("")!=0) os << " -log " << P.dataraw;
+		
         FILE* stream = popen((os.str()).c_str(), "r");
         clientstream.push_back(stream);
         int streamfd = fileno(stream);

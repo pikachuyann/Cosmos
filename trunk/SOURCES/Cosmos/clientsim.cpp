@@ -48,9 +48,9 @@ int main(int argc, char** argv) {
 	
 	string str;
 	
-	if(argc > 3){
+	if(argc > 4){
 
-		str = argv[3];
+		str = argv[4];
 		if(str== "-RE"){
 			mySim= (new SimulatorRE(false));
 			//mySim->RareEvent_mode=true;
@@ -59,15 +59,15 @@ int main(int argc, char** argv) {
 			//mySim->RareEvent_mode=true;
 			//mySim->doubleIS_mode=true;
 		}else if(str== "-BURE"){
-            int m = atoi(argv[4]);
-            int T = atoi(argv[5]);
+            int m = atoi(argv[5]);
+            int T = atoi(argv[6]);
             SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(m);
             myBoundedSim->initVect(T);
 			mySim= myBoundedSim;
 		}else if(str== "-COBURE"){
-            int m = atoi(argv[4]);
-            double t = atof(argv[5]);
-            double e = atof(argv[6]);
+            int m = atoi(argv[5]);
+            double t = atof(argv[6]);
+            double e = atof(argv[7]);
             SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(m,e);
             myBoundedSim->initVectCo(t);
 			mySim= myBoundedSim;
@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
 			states.exploreStateSpace();
 			states.buildTransitionMatrix();
             states.outputPrism();
-            states.launchPrism(argv[4]);
+            states.launchPrism(argv[5]);
             states.importPrism();
             states.outputVect();
             cout << "Finish Exporting" << endl;
@@ -94,20 +94,22 @@ int main(int argc, char** argv) {
     } else {
 		mySim= (new Simulator);
 	}
-    
+	
 	for(int i=1; i<argc ;i++){
 		if(strcmp(argv[i],"-log")==0 && argc>i)
 			mySim->logValue(argv[i+1]); //initialize the simulator
 	}
     
 	
-	if(argc>=2){
+	if(argc>=3){
 		mySim->SetBatchSize(atoi(argv[1])); //set the batch size
 		mySim->verbose = atoi(argv[2]);
+		mySim->initRandomGenerator(atol(argv[3]));
 	}else{
 		//Default value.
 		mySim->SetBatchSize(1000);
 		mySim->verbose =0;
+		mySim->initRandomGenerator(0);
 	}
 	   
     if(mySim->verbose==4)mySim->RunBatch();

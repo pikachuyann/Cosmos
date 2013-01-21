@@ -55,6 +55,8 @@ public:
 	
     int verbose;    //Set the verbose level
     
+	void initRandomGenerator(const unsigned int);
+		//Initialize the random generator with the given seed
     void SetBatchSize(const size_t); // set the batch size
 	void logValue(const char*);    //Make the simulator output each result in a file
     
