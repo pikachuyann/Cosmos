@@ -40,6 +40,7 @@ parameters::parameters():
 	Width(0.001),
 	Batch(1000),
 	MaxRuns(2000000),
+	seed(0),
 
 	tmpPath("tmp"),
 	tmpStatus(0),
