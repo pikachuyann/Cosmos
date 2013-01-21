@@ -33,6 +33,7 @@
 parameters::parameters():
     verbose(2),
 	updatetime(0.1),
+	seed(0),
 	Njob(1),
 
     epsilon(0.000001),
@@ -40,7 +41,6 @@ parameters::parameters():
 	Width(0.001),
 	Batch(1000),
 	MaxRuns(2000000),
-	seed(0),
 
 	tmpPath("tmp"),
 	tmpStatus(0),
