@@ -33,10 +33,13 @@ public:
 	void UpdateFormulaVal();
     void UpdateLinForm(vector<int>&);
     void UpdateLhaFunc(double&, double&);
+	void UpdateLhaFuncLast(double&, double&);
 	
     double GetFlow(int, int, vector<int>&);
     bool CheckLocation(int, vector<int>&);
     bool CheckEdgeContraints(int, double, vector<int>&);
-		
+							 
+	t_interval GetEdgeEnablingTime(int, vector<int>&);
+	//int GetEnabled_S_Edges(int, int, double, vector<int>&, vector<int>&);
 };
 #endif	/* _LHA_HPP */

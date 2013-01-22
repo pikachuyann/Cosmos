@@ -163,8 +163,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "#include \"LHA_orig.hpp\"" << endl;
 	LhaCppFile << "#include <math.h>" << endl;
 	LhaCppFile << "#include <float.h>" << endl;
+	LhaCppFile << "#include \"LHA.hpp\"" << endl;
 	
-	LhaCppFile << "class LHA: " << endl << "public LHA_ORIG {" << endl;
+	/*LhaCppFile << "class LHA: " << endl << "public LHA_ORIG {" << endl;
 	LhaCppFile << "public:"<< endl;
 	LhaCppFile << "    void Load();" <<endl;
 	LhaCppFile << "    double GetFlow(int, int, vector<int>&);" <<endl;
@@ -176,7 +177,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "    void UpdateLinForm(vector<int>&);" <<endl;
 	LhaCppFile << "    void UpdateLhaFunc(double&, double&);" <<endl;
 	LhaCppFile << "    void UpdateFormulaVal();" <<endl;
-	
+	*/
 	
 	//LhaCppFile << "private:" << endl;
 	
@@ -190,7 +191,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	*/
     
 	
-	LhaCppFile << "};"<< endl;
+	//LhaCppFile << "};"<< endl;
 	
 
 	for (map<string,double>::iterator it= MyLha.LhaRealConstant.begin(); it!= MyLha.LhaRealConstant.end() ; it++) {
@@ -555,9 +556,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     LhaCppFile << "void LHA::UpdateLhaFunc(double& t, double& Delta ){" << endl;
     for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
-        if (MyLha.LhaFuncType[i] == "Last")
+        /*if (MyLha.LhaFuncType[i] == "Last")
             LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
-        else {
+        else {*/
             if (MyLha.LhaFuncType[i] == "Min")
                 LhaCppFile << "    LhaFunc[" << i << "]=Min(LhaFunc[" << i << "],LinForm[" << MyLha.LhaFuncArg[i] << "],OldLinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
             else {
@@ -569,11 +570,20 @@ void Lha_Reader::WriteFile(parameters& P) {
 					
                 }
             }
-        }
+        //}
 		
     }
+	LhaCppFile << "\n    }\n" << endl;
+	
+	LhaCppFile << "void LHA::UpdateLhaFuncLast(double& t, double& Delta ){" << endl;
+    for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
+        if (MyLha.LhaFuncType[i] == "Last")
+            LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
+    }
+	LhaCppFile << "\n    }\n" << endl;
+	
 
-    LhaCppFile << "\n    }\n" << endl;
+    
     LhaCppFile << "void LHA::UpdateFormulaVal(){\n" << endl;
     for(size_t i=0;i<MyLha.Algebraic.size();i++){
       LhaCppFile << "    OldFormulaVal=FormulaVal["<<i<<"];" << endl;

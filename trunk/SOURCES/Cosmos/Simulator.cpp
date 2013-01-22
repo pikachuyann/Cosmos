@@ -124,6 +124,7 @@ void Simulator::returnResultTrue(vector<int>& marking, double D){
     
 	A.UpdateLinForm(marking);
 	A.UpdateLhaFunc(A.CurrentTime, D);
+	A.UpdateLhaFuncLast(A.CurrentTime, D);
 	A.UpdateFormulaVal();
 	Result.first = true;
 	Result.second = vector<double>(A.FormulaVal);
@@ -217,7 +218,7 @@ bool Simulator::transitionSink(int i){
 }
 
 //Simulate one step of simulation
-//the return value is true iff the simulation did not reach
+//the return value is true if the simulation did not reach
 //An accpting are refusing state.
 bool Simulator::SimulateOneStep(AutEdge& AE){
     if(verbose>3){

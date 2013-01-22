@@ -170,8 +170,11 @@ blank [ \t]
 "Integral" {lhalval->name = new std::string (lhatext); return token::INTEGRAL;
             Reader.error (*lhalloc, "Integral expected");}
 
-"Likelihood" {lhalval->name = new std::string (lhatext); return token::LIKELIHOOD;
-            Reader.error (*lhalloc, "LIKELIHOOD expected");}
+"PDF" {lhalval->name = new std::string (lhatext); return token::PDF;
+            Reader.error (*lhalloc, "PDF expected");}
+
+"CDF" {lhalval->name = new std::string (lhatext); return token::CDF;
+	Reader.error (*lhalloc, "CDF expected");}
 
 {INT}      {
   errno = 0; 

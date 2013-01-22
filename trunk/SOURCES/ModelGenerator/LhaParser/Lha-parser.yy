@@ -135,7 +135,8 @@
 %token <name>     locations
 %token <name>     edges
 
-%token <name>     LIKELIHOOD
+%token <name>     PDF
+%token <namd>	  CDF
 
 %type<expression> IntMarkingFormula
 %type<expression> RealMarkingFormula
@@ -638,13 +639,6 @@ Update: str EQ RealVarMarkingFormula {
     {FuncUpdateVector[Reader.MyLha.VarIndex[*$1]]= $3;}
 	else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
 }
-| str EQ LIKELIHOOD MUL str {
-	if(Reader.MyLha.VarIndex.find(*$1)!=Reader.MyLha.VarIndex.end())
-    {std::ostringstream s; s<<Reader.MyLha.VarIndex[*$5];
-		FuncUpdateVector[Reader.MyLha.VarIndex[*$1]]=
-		"Var [" + s.str() + "] * Likelihood"; }
-	else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
-};
 
 
 HaslExps: HaslExp | HaslExp HaslExps;
@@ -666,6 +660,40 @@ AVG LB AlgExpr RB {
 | PROB {
 	$$ = new HaslFormulasTop(Reader.MyLha.ConfidenceLevel);
 }
+| PDF LB AlgExpr COMMA rval COMMA rval COMMA rval RB {
+	
+	for(double bucket = $7 ; bucket < $9 ; bucket+= $5){
+		std::ostringstream algPDF;
+		algPDF << "(("<<$3<<" >= "<<bucket<<"&& "<<$3<<"<="<<bucket+$5<<") ? 1:0)";
+		
+		Reader.MyLha.Algebraic.push_back(algPDF.str());
+		Reader.MyLha.HASLtop.push_back(
+			new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
+								Reader.MyLha.ConfidenceLevel));
+		std::ostringstream s; s<<"Bucket Value:"<< bucket;
+		Reader.MyLha.HASLname.push_back(s.str());
+	}
+	$$ = new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
+								Reader.MyLha.ConfidenceLevel);
+}
+| CDF LB AlgExpr COMMA rval COMMA rval COMMA rval RB {
+	
+	for(double bucket = $7 ; bucket < $9 ; bucket+= $5){
+		std::ostringstream algCDF;
+		algCDF << "(("<<$3<<" <= "<<bucket<<") ? 1:0)";
+		
+		Reader.MyLha.Algebraic.push_back(algCDF.str());
+		Reader.MyLha.HASLtop.push_back(
+		new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
+		Reader.MyLha.ConfidenceLevel));
+		std::ostringstream s; s<<"Bucket Value:"<< bucket;
+		Reader.MyLha.HASLname.push_back(s.str());
+	}
+	$$ = new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
+	Reader.MyLha.ConfidenceLevel);
+}
+
+
 | LB TopHaslExp RB {
 	$$ = $2;
 }
@@ -698,6 +726,7 @@ AlgExpr:LhaFunc {string ss=$1;
 |AlgExpr MINUS AlgExpr {sprintf($$,"(%s - %s)", $1,$3);}
 |AlgExpr MUL AlgExpr {sprintf($$,"(%s * %s)", $1,$3);}
 |AlgExpr DIV AlgExpr {sprintf($$,"(%s / %s)", $1,$3);};
+
 LhaFunc:  LAST     LB LinForm RB {std::ostringstream s; s<<$3;
 	if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end())
 	{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}

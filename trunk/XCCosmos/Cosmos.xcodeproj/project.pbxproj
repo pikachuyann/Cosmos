@@ -151,6 +151,7 @@
 		03B6EE8D1487BB8F0099A6CC /* CosmosSim */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CosmosSim; sourceTree = BUILT_PRODUCTS_DIR; };
 		03B6EEBE1487BBF60099A6CC /* LHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA.cpp; sourceTree = "<group>"; };
 		03B6EEC01487BC120099A6CC /* spn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
+		03B9F20F16AED58C004A8145 /* Makefile_fast */ = {isa = PBXFileReference; lastKnownFileType = text; name = Makefile_fast; path = ../Makefile_fast; sourceTree = "<group>"; };
 		03BCA43A148CFAAA008E2402 /* numericalSolver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = numericalSolver.hpp; sourceTree = "<group>"; };
 		03BCA43B148CFAAA008E2402 /* numericalSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numericalSolver.cpp; sourceTree = "<group>"; };
 		03BCA54A148D271A008E2402 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -446,6 +447,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				03B9F20F16AED58C004A8145 /* Makefile_fast */,
 				03A15A38160B057A00BAFF6C /* Makefile */,
 				0341401215AEC3740009FEFC /* POMDP */,
 				0304DA40145ADB3F0085B4DC /* libgml */,
@@ -964,6 +966,7 @@
 				034509A816A80AC8002088B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		03B6EE911487BBAE0099A6CC /* Build configuration list for PBXNativeTarget "CosmosSim" */ = {
 			isa = XCConfigurationList;
