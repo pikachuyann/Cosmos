@@ -150,7 +150,7 @@
 %type<expression> VarTerm
 
 %type<TOPHASL> TopHaslExp
-
+%type<RealVal> rorival
 
 %printer    { debug_stream () << *$$; } str
 %destructor { delete $$; } str
@@ -652,6 +652,10 @@ HaslExp: str EQ TopHaslExp SEMICOLON {
 	Reader.MyLha.HASLtop.push_back($1);
 }
 
+rorival:
+rval {$$=$1;}
+| ival {$$=(double)$1;}
+
 TopHaslExp:
 AVG LB AlgExpr RB {
 	Reader.MyLha.Algebraic.push_back($3);
@@ -660,7 +664,7 @@ AVG LB AlgExpr RB {
 | PROB {
 	$$ = new HaslFormulasTop(Reader.MyLha.ConfidenceLevel);
 }
-| PDF LB AlgExpr COMMA rval COMMA rval COMMA rval RB {
+| PDF LB AlgExpr COMMA rorival COMMA rorival COMMA rorival RB {
 	
 	for(double bucket = $7 ; bucket < $9 ; bucket+= $5){
 		std::ostringstream algPDF;
@@ -670,13 +674,13 @@ AVG LB AlgExpr RB {
 		Reader.MyLha.HASLtop.push_back(
 			new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
 								Reader.MyLha.ConfidenceLevel));
-		std::ostringstream s; s<<"Bucket Value:"<< bucket;
+		std::ostringstream s; s<<"Value in ["<< bucket<< " , "<<bucket+$5<<"]";
 		Reader.MyLha.HASLname.push_back(s.str());
 	}
 	$$ = new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
 								Reader.MyLha.ConfidenceLevel);
 }
-| CDF LB AlgExpr COMMA rval COMMA rval COMMA rval RB {
+| CDF LB AlgExpr COMMA rorival COMMA rorival COMMA rorival RB {
 	
 	for(double bucket = $7 ; bucket < $9 ; bucket+= $5){
 		std::ostringstream algCDF;
@@ -686,13 +690,12 @@ AVG LB AlgExpr RB {
 		Reader.MyLha.HASLtop.push_back(
 		new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
 		Reader.MyLha.ConfidenceLevel));
-		std::ostringstream s; s<<"Bucket Value:"<< bucket;
+		std::ostringstream s; s<<"Value in [-infinity ,"<< bucket<<"]";
 		Reader.MyLha.HASLname.push_back(s.str());
 	}
 	$$ = new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
 	Reader.MyLha.ConfidenceLevel);
 }
-
 
 | LB TopHaslExp RB {
 	$$ = $2;
