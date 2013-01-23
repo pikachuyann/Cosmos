@@ -296,7 +296,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 			
         } else {
             SpnCppFile << "    Transition[" << i << "].transType = unTimed;" << endl;
-			
+			SpnCppFile << "    Transition[" << i << "].DistTypeIndex = 3;" << endl;
 			
         }
         SpnCppFile << "    Transition[" << i << "].MarkingDependent = " << MyGspn.MarkingDependent[i] << ";" << endl;
