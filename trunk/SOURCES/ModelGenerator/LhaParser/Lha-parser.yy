@@ -658,6 +658,11 @@ HaslExp: str EQ TopHaslExp SEMICOLON {
 	if($1 != NULL){
 		Reader.MyLha.HASLname.push_back("");
 		Reader.MyLha.HASLtop.push_back($1);
+	}else{
+		for(vector<string>::iterator it = Reader.MyLha.HASLname.begin(); it <Reader.MyLha.HASLname.end() ; it++){
+			if( it->find("$_$") == 0)
+				it->replace(0,3,"");
+		}
 	}
 }
 
