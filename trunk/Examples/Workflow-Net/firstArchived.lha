@@ -3,12 +3,13 @@ NbLocations = 4 ;
 
 
 const double t1 = 0;
-const double t2 = 30;
+const double t2 = 40;
 
 VariablesList = { t } ;
 LocationsList = {li, l0, l1, l2};
 
 p=PROB;
+pdf=PDF(Last(t),0.5,0,40);
 
 InitialLocations = {li};
 
