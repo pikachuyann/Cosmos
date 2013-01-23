@@ -139,6 +139,8 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 		}
 			
 		case EXPECTANCY:
+		case CDF_PART:
+		case PDF_PART:
 		{
 			double mean = batch.Mean[Algebraic]/batch.Isucc;
 			double m2 = batch.M2[Algebraic]/batch.Isucc;

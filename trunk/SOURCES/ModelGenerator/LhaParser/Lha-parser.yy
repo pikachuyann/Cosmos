@@ -683,6 +683,7 @@ AVG LB AlgExpr RB {
 		Reader.MyLha.HASLtop.push_back(
 			new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
 								Reader.MyLha.ConfidenceLevel));
+		Reader.MyLha.HASLtop.back()->TypeOp = PDF_PART;
 		std::ostringstream s; s<<"$_$: Value in ["<< bucket<< " , "<<bucket+$5<<"]";
 		Reader.MyLha.HASLname.push_back(s.str());
 	}
@@ -698,7 +699,8 @@ AVG LB AlgExpr RB {
 		Reader.MyLha.HASLtop.push_back(
 		new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
 		Reader.MyLha.ConfidenceLevel));
-		std::ostringstream s; s<<"$_$: Value in [-infinity ,"<< bucket<<"]";
+		Reader.MyLha.HASLtop.back()->TypeOp = CDF_PART;
+		std::ostringstream s; s<<"$_$: Value in [-infinity , "<< bucket<<"]";
 		Reader.MyLha.HASLname.push_back(s.str());
 	}
 	$$ = NULL;

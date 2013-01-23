@@ -34,6 +34,8 @@
 
 #define EXPECTANCY 0
 #define PROBABILITY 1
+#define PDF_PART 6
+#define CDF_PART 7
 #define CONSTANT 2
 #define HASL_PLUS 3
 #define HASL_TIME 4
@@ -77,9 +79,9 @@ public:
 	~HaslFormulasTop();
 	
 	ConfInt* eval(BatchR&);
+	int TypeOp;
 	
 protected:
-	int TypeOp;
 	double Level;
 	double Value;
 	size_t Algebraic;

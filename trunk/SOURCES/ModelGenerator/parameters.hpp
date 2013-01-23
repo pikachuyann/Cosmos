@@ -73,6 +73,7 @@ struct parameters {
     string prismPath;
     string dataoutput;
 	string dataraw;
+	string dataPDFCDF;
     
     vector<HaslFormulasTop*> HaslFormulas;
 	vector<string> HaslFormulasname;

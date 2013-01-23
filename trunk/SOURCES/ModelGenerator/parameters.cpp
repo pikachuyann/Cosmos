@@ -67,6 +67,7 @@ parameters::parameters():
 	prismPath("prism/bin/prism"),
     dataoutput(""),
 	dataraw(""),
+	dataPDFCDF(""),
 
 	HaslFormulas(vector<HaslFormulasTop*>(0)),
 	HaslFormulasname(vector<string>(0)),
@@ -118,7 +119,8 @@ void parameters::usage(){
 	cout << "\t--tmp-status arg \tDo not remove or do not rebuild tmp directory: 0 default->rebuild,destroy; 1->do not build;2->do not destroy;3-> do not build nor destroy"<<endl;
 	cout << "\t--debug-string \tAdd transition and place name to the compile file for debuging"<< endl;
 	cout << "\t-d,--outputdata \tOutput successive result in the blank separated file format"<< endl;
-	cout << "\t--outputraw \tOutput the result of each trajectory in a file"<< endl;
+	cout << "\t--output-raw \tOutput the result of each trajectory in a file for debug purpose"<< endl;
+	cout << "\t--output-PDFCDF \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
 	
 }
 
@@ -156,7 +158,8 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"verbose", required_argument,	 0, 'v'},
 			{"update-time",required_argument,0, 'u'},
             {"outputdata", required_argument,0, 'd'},
-			{"outputraw" , required_argument,0,  8 },
+			{"output-raw" , required_argument,0,  8 },
+			{"output-PDFCDF",required_argument,0,11},
             {"help" , no_argument ,			 0, 'h'},
 			{"count-transition", no_argument,0, 't'},
 			{"debug-string", no_argument,	 0,  3 },
@@ -224,6 +227,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'e': epsilon = atof(optarg);  break;
             case  'd': dataoutput = optarg; break;
 			case  8  : dataraw = optarg; break;
+			case  11 : dataPDFCDF = optarg; break;
 			case  't': CountTrans = true;	break;
 			case  3  : StringInSpnLHA = true; break;
 			case  4  : tmpPath = optarg; break;

@@ -64,6 +64,7 @@ public:
     void print(ostream &s);
     void printResultFile(string);
     void printAlligator();
+	void outputCDFPDF(string);
     void outputData();
 };
 

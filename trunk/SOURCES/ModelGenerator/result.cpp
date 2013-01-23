@@ -204,6 +204,21 @@ void result::print(ostream &s){
     }
 }
 
+void result::outputCDFPDF(string f){
+	ofstream outFile(f.c_str(), ios::out | ios::trunc);
+	for(size_t i =0; i<P.HaslFormulasname.size(); i++){
+		if(P.HaslFormulas[i]->TypeOp == CDF_PART
+		   | P.HaslFormulas[i]->TypeOp == PDF_PART){
+			size_t fb = P.HaslFormulasname[i].find("[");
+			size_t comma = P.HaslFormulasname[i].find(",",fb);
+			outFile << P.HaslFormulasname[i].substr(comma+2,
+						P.HaslFormulasname[i].length() -comma-3 ) << " ";
+			outFile << HaslResult[i]->mean << endl;
+		}
+	}
+	outFile.close();
+}
+
 void result::outputData(){
     outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;
     for(size_t i =0; i<P.HaslFormulasname.size(); i++){

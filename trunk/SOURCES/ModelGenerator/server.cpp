@@ -195,6 +195,9 @@ void launchServer(parameters& P){
     if(P.verbose>0)cout << endl;
     Result.stopclock();
     
+	if(P.dataPDFCDF.length()>0)
+		Result.outputCDFPDF(P.dataPDFCDF);
+	
 	if(P.alligatorMode){
 		Result.printAlligator();
 	} else{
