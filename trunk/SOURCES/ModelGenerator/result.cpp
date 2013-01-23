@@ -145,7 +145,7 @@ void result::printProgress(){
 	printPercent( pow(RelErr,-2.0), pow(P.Width,-2.0));
 	endline++;
     cout << "% of run:\t";
-    printPercent(MeanM2->Isucc, P.MaxRuns);
+    printPercent(MeanM2->I, P.MaxRuns);
     endline++;
 }
 
