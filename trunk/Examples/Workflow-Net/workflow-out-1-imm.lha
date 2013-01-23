@@ -3,7 +3,7 @@ NbLocations = 4 ;
 
 
 const double t1 = 0;
-const double t2 = 40;
+const double t2 = 30;
 
 VariablesList = { t } ;
 LocationsList = {li, l0, l1, l2};
