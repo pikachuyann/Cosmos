@@ -644,12 +644,21 @@ Update: str EQ RealVarMarkingFormula {
 HaslExps: HaslExp | HaslExp HaslExps;
 
 HaslExp: str EQ TopHaslExp SEMICOLON {
-	Reader.MyLha.HASLname.push_back(*$1);
-	Reader.MyLha.HASLtop.push_back($3);
+	if($3 != NULL){
+		Reader.MyLha.HASLname.push_back(*$1);
+		Reader.MyLha.HASLtop.push_back($3);
+	}else{
+		for(vector<string>::iterator it = Reader.MyLha.HASLname.begin(); it <Reader.MyLha.HASLname.end() ; it++){
+			if( it->find("$_$") == 0)
+				it->replace(0,3,*$1);
+		}
+	}
 }
 | TopHaslExp SEMICOLON {
-	Reader.MyLha.HASLname.push_back("");
-	Reader.MyLha.HASLtop.push_back($1);
+	if($1 != NULL){
+		Reader.MyLha.HASLname.push_back("");
+		Reader.MyLha.HASLtop.push_back($1);
+	}
 }
 
 rorival:
@@ -668,17 +677,16 @@ AVG LB AlgExpr RB {
 	
 	for(double bucket = $7 ; bucket < $9 ; bucket+= $5){
 		std::ostringstream algPDF;
-		algPDF << "(("<<$3<<" >= "<<bucket<<"&& "<<$3<<"<="<<bucket+$5<<") ? 1:0)";
+		algPDF << "(("<<$3<<" >= "<<bucket<<"&& "<<$3<<"<"<<bucket+$5<<") ? 1:0)";
 		
 		Reader.MyLha.Algebraic.push_back(algPDF.str());
 		Reader.MyLha.HASLtop.push_back(
 			new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
 								Reader.MyLha.ConfidenceLevel));
-		std::ostringstream s; s<<"Value in ["<< bucket<< " , "<<bucket+$5<<"]";
+		std::ostringstream s; s<<"$_$: Value in ["<< bucket<< " , "<<bucket+$5<<"]";
 		Reader.MyLha.HASLname.push_back(s.str());
 	}
-	$$ = new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
-								Reader.MyLha.ConfidenceLevel);
+	$$ = NULL;
 }
 | CDF LB AlgExpr COMMA rorival COMMA rorival COMMA rorival RB {
 	
@@ -690,11 +698,10 @@ AVG LB AlgExpr RB {
 		Reader.MyLha.HASLtop.push_back(
 		new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
 		Reader.MyLha.ConfidenceLevel));
-		std::ostringstream s; s<<"Value in [-infinity ,"<< bucket<<"]";
+		std::ostringstream s; s<<"$_$: Value in [-infinity ,"<< bucket<<"]";
 		Reader.MyLha.HASLname.push_back(s.str());
 	}
-	$$ = new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,
-	Reader.MyLha.ConfidenceLevel);
+	$$ = NULL;
 }
 
 | LB TopHaslExp RB {
