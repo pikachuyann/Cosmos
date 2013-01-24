@@ -38,6 +38,13 @@ LHA_ORIG::LHA_ORIG() {
 LHA_ORIG::~LHA_ORIG() {
 }
 
+void LHA_ORIG::printState(){
+	cerr << "Automate:" << LocLabel[CurrentLocation]<< "\t,";
+	for(size_t i =0 ; i< Var.size(); i++){
+		cerr << VarLabel[i]<<":"<< Var[i]<< "\t,";
+	}
+}
+
 int LHA_ORIG::EnabledInitLocation(vector<int>& Marking) {
 
     for (set<int>::iterator l = InitLoc.begin(); l != InitLoc.end(); l++) {

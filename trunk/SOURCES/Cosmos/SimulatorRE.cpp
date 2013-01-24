@@ -67,10 +67,8 @@ void SimulatorRE::InitialEventsQueue() {
 	}
 }
 
-void SimulatorRE::returnResultTrue(vector<int>& marking, double D){
-	A.UpdateLinForm(marking);
-	A.UpdateLhaFunc( D);
-	A.UpdateLhaFuncLast( D);
+void SimulatorRE::returnResultTrue(){
+	A.UpdateLhaFuncLast();
 	A.UpdateFormulaVal();
 	Result.first = true;
 	Result.second = vector<double>(A.FormulaVal);

@@ -47,11 +47,9 @@ Simulator::Simulator():verbose(0) {
 	EQ = new EventsQueue(n); //initialization of the event queue
 	simTime = 0; //initialization of the time
 	Initialized = false;
-    
     logResult=false;
 	
 	//Initialize random generator
-	
 	
 	/*timeval t;
 	gettimeofday(&t,(struct timezone*)0);
@@ -63,9 +61,7 @@ Simulator::Simulator():verbose(0) {
 //	boost::random::random_device rng;
 //	RandomNumber.seed(rng);
 
-	
 	BatchSize = 1000;
-	
 }
 
 Simulator::~Simulator() {
@@ -116,14 +112,12 @@ void Simulator::reset() {
 	
 }
 
-void Simulator::returnResultTrue(vector<int>& marking, double D){
+void Simulator::returnResultTrue(){
     //This function is called when an accepting state is reached in 
     //the automaton. It update the automaton variable before updating the
     //Hasl formula.
     
-	A.UpdateLinForm(marking);
-	A.UpdateLhaFunc( D);
-	A.UpdateLhaFuncLast(D);
+	A.UpdateLhaFuncLast();
 	A.UpdateFormulaVal();
 	Result.first = true;
 	Result.second = vector<double>(A.FormulaVal);
@@ -133,15 +127,15 @@ void Simulator::returnResultFalse(){
 }
 
 
-void Simulator::updateLHA(double DeltaT,vector<int> &marking){
+void Simulator::updateLHA(double DeltaT){
     //This function update the automaton after a transition of the Petri net
-	A.DoElapsedTimeUpdate(DeltaT, marking);
-	A.UpdateLinForm(marking);
+	A.DoElapsedTimeUpdate(DeltaT, N.Marking);
+	A.UpdateLinForm(N.Marking);
 	A.UpdateLhaFunc(DeltaT);
 }
 
-void Simulator::fireLHA(int EdgeIndex, double DeltaT,vector<int> &marking){
-	A.DoEdgeUpdates(EdgeIndex, marking);
+void Simulator::fireLHA(int EdgeIndex, double DeltaT){
+	A.DoEdgeUpdates(EdgeIndex, N.Marking);
 	A.CurrentTime += DeltaT;
 	simTime = A.CurrentTime;
 	A.CurrentLocation = A.Edge[EdgeIndex].Target;
@@ -226,14 +220,8 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
     if(verbose>3){
         //Print marking and location of the automata
         //Usefull to track a simulation
-        cerr << "Marking:\t";
-        for(size_t i =0; i < N.Marking.size();i++){
-            cerr << N.Place[i].label << ":" << N.Marking[i] << "\t,";
-        }
-        cerr << "Automate:" << A.LocLabel[A.CurrentLocation]<< "\t,";
-		for(size_t i =0 ; i< A.Var.size(); i++){
-			cerr << A.VarLabel[i]<<":"<< A.Var[i]<< "\t,";
-		}
+        N.printMarking();
+        A.printState();
 		cerr << endl;
     }
 	//AutEdge AE = *AEref;
@@ -244,10 +232,10 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 	if ((*EQ).isEmpty()) {
 		while (AE.Index>-1) {
             //cerr << "Clean automata transition";
-			updateLHA( AE.FiringTime - A.CurrentTime , N.Marking);
-			fireLHA(AE.Index,AE.FiringTime, N.Marking);
+			updateLHA( AE.FiringTime - A.CurrentTime );
+			fireLHA(AE.Index,AE.FiringTime );
 			if (A.isFinal(A.CurrentLocation)) {
-				returnResultTrue(N.Marking,0.0);
+				returnResultTrue();
 				return false;
 			} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 		}
@@ -273,8 +261,8 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 		while (E1.time >= AE.FiringTime) {
             //cerr << "looping on autonomous edge";
 			
-			updateLHA(AE.FiringTime - A.CurrentTime, N.Marking);
-			fireLHA(AE.Index, AE.FiringTime - A.CurrentTime , N.Marking);
+			updateLHA(AE.FiringTime - A.CurrentTime);
+			fireLHA(AE.Index, AE.FiringTime - A.CurrentTime);
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				cerr << "Automate:" << A.LocLabel[A.CurrentLocation]<< "\t,";
@@ -285,7 +273,7 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 			}
 			
 			if (A.isFinal(A.CurrentLocation)) {
-				returnResultTrue(N.Marking, 0.0);
+				returnResultTrue();
 				return false;
 			} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 		}
@@ -293,7 +281,7 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 
 		//Make time elapse in the LHA
 		double DeltaT = E1.time - A.CurrentTime;
-		updateLHA( DeltaT, N.Marking);
+		updateLHA( DeltaT );
 		
 		N.fire(E1_transitionNum);
         //Check if there exist a valid transition in the automata and fire it.
@@ -303,9 +291,9 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 			returnResultFalse();
 			return false;
 		} else {
-			fireLHA(SE, DeltaT, N.Marking);
+			fireLHA(SE, DeltaT );
 			if (A.isFinal(A.CurrentLocation)) {
-				returnResultTrue(N.Marking, 0.0);
+				returnResultTrue();
 				return false;
 			} else {
 				updateSPN(E1_transitionNum);

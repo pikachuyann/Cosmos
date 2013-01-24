@@ -67,6 +67,10 @@ public:
 	//virtual void Load();
 	LHA_ORIG(unsigned int, unsigned int);
 	~LHA_ORIG();
+	
+	void printState();
+	//print the state of the automaton.
+	
 	double Likelihood;
 	string label;
 	unsigned int NbLoc; // number of locations   

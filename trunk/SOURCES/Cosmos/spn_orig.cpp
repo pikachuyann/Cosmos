@@ -70,6 +70,13 @@ void SPN_ORIG::setMarking(vector<int>& M) {
     Marking = M;
 }
 
+void SPN_ORIG::printMarking(){
+	cerr << "Marking:\t";
+	for(size_t i =0; i < Marking.size();i++){
+		cerr << Place[i].label << ":" << Marking[i] << "\t,";
+	}
+}
+
 void SPN_ORIG::EnabledDisabledTr() {
 
     for (int t1 = 0; t1 < tr; t1++) {

@@ -575,7 +575,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     }
 	LhaCppFile << "\n    }\n" << endl;
 	
-	LhaCppFile << "void LHA::UpdateLhaFuncLast( double& Delta ){" << endl;
+	LhaCppFile << "void LHA::UpdateLhaFuncLast(){" << endl;
     for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
         if (MyLha.LhaFuncType[i] == "Last")
             LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;

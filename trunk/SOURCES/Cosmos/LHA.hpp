@@ -33,7 +33,7 @@ public:
 	void UpdateFormulaVal();
     void UpdateLinForm(vector<int>&);
     void UpdateLhaFunc( double&);
-	void UpdateLhaFuncLast( double&);
+	void UpdateLhaFuncLast();
 	
     double GetFlow(int, int, vector<int>&);
     bool CheckLocation(int, vector<int>&);

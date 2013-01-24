@@ -130,7 +130,7 @@ public:
     void reset(); // set the marking to the initial marking
     void setMarking(vector<int>&); // set the marking to a given marking
 
-
+	void printMarking(); //print the current Marking
 
     //virtual void fire(int); // fire a given transition
     //virtual void unfire(int); // unfire a given transition

@@ -104,13 +104,13 @@ protected:
 	virtual double GenerateTime(int, vector<double>& p); 
 	
 	
-	virtual void returnResultTrue(vector<int>&, double); 
+	virtual void returnResultTrue(); 
 	virtual void returnResultFalse();
 	
-	virtual void updateLHA( double, vector<int>&);
+	virtual void updateLHA( double );
 	// update value in the LHA by elapsing time
 	
-	virtual void fireLHA(int,double, vector<int>&);
+	virtual void fireLHA(int,double );
 		//fire the transition of an LHA
 	
 	virtual void updateSPN(int); // update value in the SPN after a transition
