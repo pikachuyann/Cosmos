@@ -68,6 +68,8 @@ void SimulatorRE::InitialEventsQueue() {
 }
 
 void SimulatorRE::returnResultTrue(){
+	
+	A.UpdateLinForm(N.Marking);
 	A.UpdateLhaFuncLast();
 	A.UpdateFormulaVal();
 	Result.first = true;
