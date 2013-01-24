@@ -80,8 +80,7 @@ protected:
     
     //A datastructure containing the enabled transitions with
     //the time at wich they will be fire if still enabled
-	EventsQueue* EQ;   
-	vector<int> oldMarking;
+	EventsQueue* EQ;  
 	
 	bool Initialized;
     
@@ -108,7 +107,12 @@ protected:
 	virtual void returnResultTrue(vector<int>&, double); 
 	virtual void returnResultFalse();
 	
-	virtual void updateLHA(int, double, vector<int>&); // update value in the LHA after a transition
+	virtual void updateLHA( double, vector<int>&);
+	// update value in the LHA by elapsing time
+	
+	virtual void fireLHA(int,double, vector<int>&);
+		//fire the transition of an LHA
+	
 	virtual void updateSPN(int); // update value in the SPN after a transition
 	
 	virtual void updateLikelihood(int); // update the likelyhood for the Rare event case 

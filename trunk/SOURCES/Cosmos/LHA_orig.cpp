@@ -47,10 +47,10 @@ int LHA_ORIG::EnabledInitLocation(vector<int>& Marking) {
     return (-1);
 }
 
-int LHA_ORIG::GetEnabled_S_Edges(int cl, int PetriNetTransition, double DeltaT, vector<int>& Marking, vector<int>& NextMarking) {
+int LHA_ORIG::GetEnabled_S_Edges(int cl, int PetriNetTransition, double DeltaT, vector<int>& NextMarking) {
     for (set<int>::iterator it = ActionEdges[cl][PetriNetTransition].begin(); it != ActionEdges[cl][PetriNetTransition].end(); it++) {
         if ((CheckLocation(Edge[(*it)].Target, NextMarking))) {
-            if (CheckEdgeContraints((*it), DeltaT, Marking)) return (*it);
+            if (CheckEdgeContraints((*it), DeltaT )) return (*it);
         }
     }
 
@@ -154,7 +154,7 @@ bool LHA_ORIG::CheckLocation(int, vector<int>&){
 	return true;
 }
 
-bool LHA_ORIG::CheckEdgeContraints(int, double, vector<int>&){
+bool LHA_ORIG::CheckEdgeContraints(int, double){
 	cerr << "Fail:CheckEdgeContraints" << endl;
 	return true;
 }

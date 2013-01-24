@@ -377,7 +377,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     LhaCppFile << "}\n" << endl;
 
-    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed, double DeltaT, vector<int>& Marking){" << endl;
+    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed, double DeltaT){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "    case " << e << ": {" << endl;
@@ -385,7 +385,7 @@ void Lha_Reader::WriteFile(parameters& P) {
             LhaCppFile << "         if(!( ";
             for (size_t v = 0; v < MyLha.NbVar; v++) {
                 if (MyLha.ConstraintsCoeffs[e][c][v] != "")
-                    LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*(Var[" << v << "]+DeltaT*GetFlow(" << v << "," << MyLha.Edge[e].Source << ", Marking))";
+                    LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Var[" << v << "]";
 
             }
             LhaCppFile << MyLha.ConstraintsRelOp[e][c] << MyLha.ConstraintsConstants[e][c] << ")) return false;" << endl;
@@ -554,7 +554,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     }
     LhaCppFile << "    }\n" << endl;
 
-    LhaCppFile << "void LHA::UpdateLhaFunc(double& t, double& Delta ){" << endl;
+    LhaCppFile << "void LHA::UpdateLhaFunc(double& Delta ){" << endl;
     for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
         /*if (MyLha.LhaFuncType[i] == "Last")
             LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
@@ -566,7 +566,7 @@ void Lha_Reader::WriteFile(parameters& P) {
                     LhaCppFile << "    LhaFunc[" << i << "]=Max(LhaFunc[" << i << "],LinForm[" << MyLha.LhaFuncArg[i] << "],OldLinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
                 else {
                     if (MyLha.LhaFuncType[i] == "Integral")
-                        LhaCppFile << "    LhaFunc[" << i << "]=Integral(LhaFunc[" << i << "], t, Delta, OldLinForm[" << MyLha.LhaFuncArg[i] << "],LinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
+                        LhaCppFile << "    LhaFunc[" << i << "]=Integral(LhaFunc[" << i << "], CurrentTime, Delta, OldLinForm[" << MyLha.LhaFuncArg[i] << "],LinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
 					
                 }
             }
@@ -575,7 +575,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     }
 	LhaCppFile << "\n    }\n" << endl;
 	
-	LhaCppFile << "void LHA::UpdateLhaFuncLast(double& t, double& Delta ){" << endl;
+	LhaCppFile << "void LHA::UpdateLhaFuncLast( double& Delta ){" << endl;
     for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
         if (MyLha.LhaFuncType[i] == "Last")
             LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
