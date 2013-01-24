@@ -109,7 +109,7 @@ protected:
 	virtual void updateLHA( double );
 	// update value in the LHA by elapsing time
 	
-	virtual void fireLHA(int,double );
+	virtual void fireLHA(int);
 		//fire the transition of an LHA
 	
 	virtual void updateSPN(int); // update value in the SPN after a transition

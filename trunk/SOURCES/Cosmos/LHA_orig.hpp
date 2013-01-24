@@ -135,7 +135,7 @@ public:
     virtual t_interval GetEdgeEnablingTime(int, vector<int>&);
 	
 	
-    int GetEnabled_S_Edges(int, int, vector<int>&);
+    int GetEnabled_S_Edges(int, vector<int>&);
     AutEdge GetEnabled_A_Edges(vector<int>&);
 	
 	

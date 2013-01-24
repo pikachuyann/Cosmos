@@ -135,7 +135,7 @@ void Simulator::updateLHA(double DeltaT){
 	A.CurrentTime += DeltaT;
 }
 
-void Simulator::fireLHA(int EdgeIndex, double DeltaT){
+void Simulator::fireLHA(int EdgeIndex){
 	A.DoEdgeUpdates(EdgeIndex, N.Marking);
 	A.CurrentLocation = A.Edge[EdgeIndex].Target;
 }
@@ -214,7 +214,7 @@ bool Simulator::transitionSink(int i){
 
 //Simulate one step of simulation
 //the return value is true if the simulation did not reach
-//An accpting are refusing state.
+//An accepting are refusing state.
 bool Simulator::SimulateOneStep(AutEdge& AE){
     if(verbose>3){
         //Print marking and location of the automata
@@ -232,7 +232,7 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 		while (AE.Index>-1) {
             //cerr << "Clean automata transition";
 			updateLHA( AE.FiringTime - A.CurrentTime );
-			fireLHA(AE.Index,AE.FiringTime );
+			fireLHA(AE.Index);
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
@@ -261,7 +261,7 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
             //cerr << "looping on autonomous edge";
 			
 			updateLHA(AE.FiringTime - A.CurrentTime);
-			fireLHA(AE.Index, AE.FiringTime - A.CurrentTime);
+			fireLHA(AE.Index);
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				A.printState();
@@ -273,21 +273,23 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
-		if(verbose>3)cerr << "transition:" << N.Transition[E1.transition].label << endl;
+		if(verbose>3)
+			cerr << "transition:" << N.Transition[E1.transition].label << endl;
 
 		//Make time elapse in the LHA
-		double DeltaT = E1.time - A.CurrentTime;
-		updateLHA( DeltaT );
+		updateLHA( E1.time - A.CurrentTime );
 		
+		//Fire the transition in the SPN
 		N.fire(E1_transitionNum);
-        //Check if there exist a valid transition in the automata and fire it.
-		int SE = A.GetEnabled_S_Edges(A.CurrentLocation, E1_transitionNum, N.Marking);
+		
+        //Check if there exist a valid transition in the automata.
+		int SE = A.GetEnabled_S_Edges(E1_transitionNum, N.Marking);
 		
 		if (SE < 0) {
 			returnResultFalse();
 			return false;
 		} else {
-			fireLHA(SE, DeltaT );
+			fireLHA(SE);
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
