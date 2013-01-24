@@ -117,6 +117,7 @@ void Simulator::returnResultTrue(){
     //the automaton. It update the automaton variable before updating the
     //Hasl formula.
     
+	A.UpdateLinForm(N.Marking);
 	A.UpdateLhaFuncLast();
 	A.UpdateFormulaVal();
 	Result.first = true;
