@@ -215,7 +215,7 @@ bool Simulator::transitionSink(int i){
 //Simulate one step of simulation
 //the return value is true if the simulation did not reach
 //An accepting are refusing state.
-bool Simulator::SimulateOneStep(AutEdge& AE){
+bool Simulator::SimulateOneStep(){
     if(verbose>3){
         //Print marking and location of the automata
         //Usefull to track a simulation
@@ -225,6 +225,8 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
     }
 	//AutEdge AE = *AEref;
     
+	AutEdge AE = A.GetEnabled_A_Edges( N.Marking);
+	
     //If there is no enabled transition in the Petri net
     //try to reach an accepting state by using autonomous edge of 
     //the automata refuse the simulation otherwise.
@@ -295,7 +297,6 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 				return false;
 			} else {
 				updateSPN(E1_transitionNum);
-				AE = A.GetEnabled_A_Edges( N.Marking);
 			}
 		}
 	}
@@ -305,19 +306,16 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 //Simlulate a whole trajectory in the system. Result is store in SimOutput
 void Simulator::SimulateSinglePath() {
 	
-	AutEdge AE;
+	Simulator::InitialEventsQueue();
 	A.CurrentLocation = A.EnabledInitLocation(N.Marking);
 	A.CurrentTime = 0;
-	
-	Simulator::InitialEventsQueue();
-	AE = A.GetEnabled_A_Edges( N.Marking);
 	
     //cerr << "start path"<< endl;
     
 	bool continueb = true;
-	while ((!(*EQ).isEmpty() || AE.Index > -1) && continueb ) {
+	while ((!(*EQ).isEmpty()) && continueb ) {
         //cerr << "continue path"<< endl;
-		continueb = SimulateOneStep(AE);
+		continueb = SimulateOneStep();
 	}
     //cerr << "finish path"<< endl;
 }
