@@ -91,7 +91,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		
 		//Simulator::InitialEventsQueue();
 		
-		AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
+		AE = A.GetEnabled_A_Edges( N.Marking);
 		
 		(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
 	}

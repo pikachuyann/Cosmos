@@ -233,10 +233,10 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
             //cerr << "Clean automata transition";
 			updateLHA( AE.FiringTime - A.CurrentTime );
 			fireLHA(AE.Index,AE.FiringTime );
-			if (A.isFinal(A.CurrentLocation)) {
+			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
-			} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
+			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
 		returnResultFalse();
 		return false;
@@ -268,10 +268,10 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 				cerr << endl;
 			}
 			
-			if (A.isFinal(A.CurrentLocation)) {
+			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
-			} else AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
+			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
 		if(verbose>3)cerr << "transition:" << N.Transition[E1.transition].label << endl;
 
@@ -288,12 +288,12 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 			return false;
 		} else {
 			fireLHA(SE, DeltaT );
-			if (A.isFinal(A.CurrentLocation)) {
+			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
 			} else {
 				updateSPN(E1_transitionNum);
-				AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
+				AE = A.GetEnabled_A_Edges( N.Marking);
 			}
 		}
 	}
@@ -308,7 +308,7 @@ void Simulator::SimulateSinglePath() {
 	A.CurrentTime = 0;
 	
 	Simulator::InitialEventsQueue();
-	AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
+	AE = A.GetEnabled_A_Edges( N.Marking);
 	
     //cerr << "start path"<< endl;
     

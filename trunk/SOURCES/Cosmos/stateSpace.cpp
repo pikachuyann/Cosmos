@@ -194,7 +194,8 @@ void stateSpace::buildTransitionMatrix()
     
 	boost::numeric::ublas::vector<double> vect(nbState);
 	for(hash_state::iterator it=S.begin();  it!=S.end() ; it++){
-		if(A.isFinal(it->first->back())){
+		A.CurrentLocation = it->first->back();
+		if(A.isFinal()){
 			vect(it->second)=1.0;
 			//cerr << "final:" << it->second << endl;
 		}else {

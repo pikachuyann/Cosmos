@@ -136,7 +136,7 @@ public:
 	
 	
     int GetEnabled_S_Edges(int, int, vector<int>&);
-    AutEdge GetEnabled_A_Edges(unsigned int, vector<int>&);
+    AutEdge GetEnabled_A_Edges(vector<int>&);
 	
 	
     void DoElapsedTimeUpdate(double, vector<int>&);
@@ -152,7 +152,7 @@ public:
 	
 	
 	
-    bool isFinal(unsigned int);
+    bool isFinal();
     void resetVarsTable();
     void resetPathVarsTable();
     void reset(vector<int>&);

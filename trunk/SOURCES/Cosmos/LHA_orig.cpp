@@ -65,11 +65,11 @@ int LHA_ORIG::GetEnabled_S_Edges(int cl, int PetriNetTransition, vector<int>& Ne
 
 }
 
-AutEdge LHA_ORIG::GetEnabled_A_Edges(unsigned int cl, vector<int>& Marking) {
+AutEdge LHA_ORIG::GetEnabled_A_Edges(vector<int>& Marking) {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
-    for (set<int>::iterator it = Out_A_Edges[cl].begin(); it != Out_A_Edges[cl].end(); it++) {
+    for (set<int>::iterator it = Out_A_Edges[CurrentLocation].begin(); it != Out_A_Edges[CurrentLocation].end(); it++) {
         if ((CheckLocation(Edge[(*it)].Target, Marking))) {
             t_interval I = GetEdgeEnablingTime((*it), Marking);
             if (I.first <= I.second) {
@@ -117,8 +117,8 @@ void LHA_ORIG::setCurrentLocation(unsigned int loc) {
     CurrentLocation = loc;
 }
 
-bool LHA_ORIG::isFinal(unsigned int l) {
-    return ( (FinalLoc.find(l) != FinalLoc.end()) ? true : false);
+bool LHA_ORIG::isFinal() {
+    return ( (FinalLoc.find(CurrentLocation) != FinalLoc.end()) ? true : false);
 }
 
 double LHA_ORIG::min(double& a, double& b) {
