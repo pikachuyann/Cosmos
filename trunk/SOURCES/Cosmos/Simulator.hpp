@@ -68,7 +68,6 @@ protected:
     
 	SimOutput Result; // store result beetween two trajectory simulation
 
-	double simTime;  //Time for the simulation
 	time_t SysTime;
 	
 	size_t BatchSize;

@@ -159,7 +159,7 @@ void SimulatorRE::GenerateDummyEvent(Event& E, int Id) {
 	
 void SimulatorRE::GenerateEvent(Event& E, int Id) {
 	
-    double t = simTime;
+    double t = A.CurrentTime;
     if (N.Transition[Id].transType == Timed) {
         getParams(Id);
         t += GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);

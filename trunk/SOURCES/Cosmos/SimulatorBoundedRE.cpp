@@ -80,7 +80,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 		
 		AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
         
-		(*it).saveState(&N,&A,&AE,&EQ, &simTime);
+		(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
 	}
 	
 	//cout << "new batch" << endl;
@@ -95,7 +95,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 			AutEdge AE;
 			
             
-			(*it).loadState(&N,&A,&AE,&EQ, &simTime);
+			(*it).loadState(&N,&A,&AE,&EQ, &A.CurrentTime);
             
 			//cerr << A.Likelihood << endl;		
 			//cerr << "mu:\t" << mu() << " ->\t";
@@ -103,7 +103,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 			//cerr << mu() << endl;
             
 			if((!EQ->isEmpty() || AE.Index > -1) && continueb) {
-				(*it).saveState(&N,&A,&AE,&EQ, &simTime);
+				(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
 			} else {
 				batchResult->addSim(&Result);
 				delete EQ;

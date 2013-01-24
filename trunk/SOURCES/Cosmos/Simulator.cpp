@@ -45,7 +45,6 @@ Simulator::Simulator():verbose(0) {
 	A.Load(); //load the LHA
 	size_t n = N.tr; //n his the number of transition
 	EQ = new EventsQueue(n); //initialization of the event queue
-	simTime = 0; //initialization of the time
 	Initialized = false;
     logResult=false;
 	
@@ -107,7 +106,7 @@ void Simulator::reset() {
     	
 	N.reset();
 	A.reset(N.initMarking);
-	simTime = 0;
+
 	(*EQ).reset();
 	
 }
@@ -133,12 +132,11 @@ void Simulator::updateLHA(double DeltaT){
 	A.DoElapsedTimeUpdate(DeltaT, N.Marking);
 	A.UpdateLinForm(N.Marking);
 	A.UpdateLhaFunc(DeltaT);
+	A.CurrentTime += DeltaT;
 }
 
 void Simulator::fireLHA(int EdgeIndex, double DeltaT){
 	A.DoEdgeUpdates(EdgeIndex, N.Marking);
-	A.CurrentTime += DeltaT;
-	simTime = A.CurrentTime;
 	A.CurrentLocation = A.Edge[EdgeIndex].Target;
 }
 
@@ -266,10 +264,7 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 			fireLHA(AE.Index, AE.FiringTime - A.CurrentTime);
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
-				cerr << "Automate:" << A.LocLabel[A.CurrentLocation]<< "\t,";
-				for(size_t i =0 ; i< A.Var.size(); i++){
-					cerr << A.VarLabel[i]<<":"<< A.Var[i]<< "\t,";
-				}
+				A.printState();
 				cerr << endl;
 			}
 			
@@ -286,7 +281,7 @@ bool Simulator::SimulateOneStep(AutEdge& AE){
 		
 		N.fire(E1_transitionNum);
         //Check if there exist a valid transition in the automata and fire it.
-		int SE = A.GetEnabled_S_Edges(A.CurrentLocation, E1_transitionNum, DeltaT, N.Marking);
+		int SE = A.GetEnabled_S_Edges(A.CurrentLocation, E1_transitionNum, N.Marking);
 		
 		if (SE < 0) {
 			returnResultFalse();
@@ -311,7 +306,6 @@ void Simulator::SimulateSinglePath() {
 	AutEdge AE;
 	A.CurrentLocation = A.EnabledInitLocation(N.Marking);
 	A.CurrentTime = 0;
-	simTime = 0;
 	
 	Simulator::InitialEventsQueue();
 	AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
@@ -330,7 +324,7 @@ void Simulator::SimulateSinglePath() {
 //Generate an event based on the type of his distribution
 void Simulator::GenerateEvent(Event& E, int Id) {
 	
-	double t = simTime;
+	double t = A.CurrentTime;
 	if (N.Transition[Id].transType == Timed) {
 		getParams(Id);
 		t += GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);

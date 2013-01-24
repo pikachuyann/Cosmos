@@ -377,7 +377,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     LhaCppFile << "}\n" << endl;
 
-    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed, double DeltaT){" << endl;
+    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "    case " << e << ": {" << endl;

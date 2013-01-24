@@ -93,7 +93,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		
 		AE = A.GetEnabled_A_Edges(A.CurrentLocation, N.Marking);
 		
-		(*it).saveState(&N,&A,&AE,&EQ, &simTime);
+		(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
 	}
 	
 	//cout << "new batch" << endl;
@@ -109,7 +109,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                 //cerr << "vect:\t" << it->maxStep;
                 AutEdge AE;
                 
-                it->loadState(&N,&A,&AE,&EQ, &simTime);
+                it->loadState(&N,&A,&AE,&EQ, &A.CurrentTime);
                 
                 
                 //cerr << A.Likelihood << endl;	
@@ -119,14 +119,14 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                 if (it->maxStep == fg->right -n) {
                     //We first need to initialise the trajectory
                     Simulator::InitialEventsQueue();
-                    it->saveState(&N,&A,&AE,&EQ, &simTime);
+                    it->saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
                 } else {
                     
                     bool continueb = SimulateOneStep(AE);
                     //cerr << "\t" << mu() << endl;
                     
                     if((!EQ->isEmpty() || AE.Index > -1) && continueb) {
-                        it->saveState(&N,&A,&AE,&EQ, &simTime);
+                        it->saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
                     } else {
                         if (Result.first) {
                             //cerr << "n:\t" << n <<" Result:" << Result.second << " maxStep:\t" << it->maxStep <<endl;

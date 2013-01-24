@@ -101,7 +101,7 @@ void stateSpace::exploreStateSpace(){
 			vector<int> marking = N.Marking;
 			N.unfire(*it);
 			
-			int SE = A.GetEnabled_S_Edges(A.CurrentLocation, *it , 0.0 , marking);
+			int SE = A.GetEnabled_S_Edges(A.CurrentLocation, *it , marking);
 			if (SE > -1) {
 				
 				nbTrans++;
@@ -157,7 +157,7 @@ void stateSpace::buildTransitionMatrix()
 			vector<int> marking = N.Marking;
 			N.unfire(*it);
 			
-			int SE = A.GetEnabled_S_Edges(A.CurrentLocation, *it , 0.0 , marking);
+			int SE = A.GetEnabled_S_Edges(A.CurrentLocation, *it  , marking);
 			if (SE > -1) {
 				
 				marking.push_back( A.Edge[SE].Target );
