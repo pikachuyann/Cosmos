@@ -213,7 +213,8 @@ void result::outputCDFPDF(string f){
 			size_t comma = P.HaslFormulasname[i].find(",",fb);
 			outFile << P.HaslFormulasname[i].substr(comma+2,
 						P.HaslFormulasname[i].length() -comma-3 ) << " ";
-			outFile << HaslResult[i]->mean << endl;
+			outFile << HaslResult[i]->low << " "<< HaslResult[i]->mean;
+			outFile << " " << HaslResult[i]->up << endl;
 		}
 	}
 	outFile.close();

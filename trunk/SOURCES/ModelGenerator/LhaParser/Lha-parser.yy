@@ -669,6 +669,14 @@ HaslExp: str EQ TopHaslExp SEMICOLON {
 rorival:
 rval {$$=$1;}
 | ival {$$=(double)$1;}
+| str { if(Reader.MyLha.LhaRealConstant.find(*$1)!=Reader.MyLha.LhaRealConstant.end())
+			$$ = Reader.MyLha.LhaRealConstant[*$1];
+		else { if(Reader.MyLha.LhaIntConstant.find(*$1)!=Reader.MyLha.LhaIntConstant.end())
+			$$ = (double)Reader.MyLha.LhaIntConstant[*$1];
+		else {
+			cout<<*$1<<" is not a definded constant "<<endl;
+			YYABORT;
+		}}}
 
 TopHaslExp:
 AVG LB AlgExpr RB {

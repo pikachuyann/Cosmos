@@ -1,4 +1,5 @@
 OBJPATH=../../Obj/ModelGenerator
+SRCPATH=../../SOURCES/ModelGenerator
 BINPATH=../../bin
 LIBGMLPATH=../libgml/
 
@@ -19,7 +20,20 @@ FILES= $(OBJPATH)/parameters.o \
 	$(OBJPATH)/expatmodelparser.o \
 	$(OBJPATH)/modelwriter.o
 
+SRCS= $(SRCPATH)/parameters.cpp \
+	$(SRCPATH)/server.cpp \
+	$(SRCPATH)/result.cpp \
+	$(SRCPATH)/HaslFormula.cpp \
+	$(SRCPATH)/Cosmos.cpp \
+	$(SRCPATH)/Eval/Eval-parser.tab.cc \
+	$(SRCPATH)/Eval/Eval.cpp
 
+
+depend: .depend
+
+.depend: $(SRCS)
+	rm -f ./.depend
+	$(CC) -I$(SRCPATH)/../libgml/ $(OPTIONS) -MM $^>>./.depend;
 
 $(OBJPATH)/%.o: %.cpp
 	$(CC) -I../libgml/ -I$(BOOSTPATH) $(OPTIONS) -c $*.cpp -o $@	
