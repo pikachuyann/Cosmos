@@ -99,10 +99,10 @@ BatchR* SimulatorBoundedRE::RunBatch(){
             
 			//cerr << A.Likelihood << endl;		
 			//cerr << "mu:\t" << mu() << " ->\t";
-			bool continueb = SimulateOneStep(AE);
+			bool continueb = SimulateOneStep();
 			//cerr << mu() << endl;
             
-			if((!EQ->isEmpty() || AE.Index > -1) && continueb) {
+			if((!EQ->isEmpty()) && continueb) {
 				(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
 			} else {
 				batchResult->addSim(&Result);

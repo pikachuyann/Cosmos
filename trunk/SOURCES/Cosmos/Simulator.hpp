@@ -90,7 +90,7 @@ protected:
   	
 	double max(double, double);
 	
-	virtual bool SimulateOneStep(AutEdge&); //Simulate a step of the system, this function do most of the simulation job
+	virtual bool SimulateOneStep(); //Simulate a step of the system, this function do most of the simulation job
 	virtual void SimulateSinglePath(); //Simulate a single path 
 	
 	virtual void InitialEventsQueue(); //initialize the event queue

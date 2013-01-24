@@ -122,10 +122,10 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     it->saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
                 } else {
                     
-                    bool continueb = SimulateOneStep(AE);
+                    bool continueb = SimulateOneStep();
                     //cerr << "\t" << mu() << endl;
                     
-                    if((!EQ->isEmpty() || AE.Index > -1) && continueb) {
+                    if((!EQ->isEmpty()) && continueb) {
                         it->saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
                     } else {
                         if (Result.first) {
