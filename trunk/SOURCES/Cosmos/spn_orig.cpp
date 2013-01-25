@@ -43,8 +43,7 @@
 
 using namespace std;
 
-SPN_ORIG::SPN_ORIG() {
-	ParamDistr = vector<double>(3);
+SPN_ORIG::SPN_ORIG() : ParamDistr(3) {
 }
 
 SPN_ORIG::~SPN_ORIG() {
@@ -228,8 +227,3 @@ void SPN_ORIG::Msimple(){
 //void SPN_ORIG::lumpingFun(vector<int>* ve) {
 //}
 //-------------------/Rare Event -----------------------------------------------
-
-bool SPN_ORIG::IsEnabled(int i) {
-	cerr << "Fail:IsEnabled" << endl;
-	return true;
-};

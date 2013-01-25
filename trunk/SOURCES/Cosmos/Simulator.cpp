@@ -232,7 +232,12 @@ bool Simulator::SimulateOneStep(){
     //the automata refuse the simulation otherwise.
 	if ((*EQ).isEmpty()) {
 		while (AE.Index>-1) {
-            //cerr << "Clean automata transition";
+            if(verbose>3){
+				cerr << "Autonomous transition with Empty Queue:";
+				cerr << AE.Index << endl;
+				A.printState();
+				cerr << endl;
+			}
 			updateLHA( AE.FiringTime - A.CurrentTime );
 			fireLHA(AE.Index);
 			if (A.isFinal()) {
@@ -287,10 +292,13 @@ bool Simulator::SimulateOneStep(){
         //Check if there exist a valid transition in the automata.
 		int SE = A.GetEnabled_S_Edges(E1_transitionNum, N.Marking);
 		
+		//If no synchronisation is possible the trajectory is rejected
 		if (SE < 0) {
 			returnResultFalse();
 			return false;
 		} else {
+			//If synchronisation is possible fire it and check if the
+			// reached state is final. Then update the SPN.
 			fireLHA(SE);
 			if (A.isFinal()) {
 				returnResultTrue();

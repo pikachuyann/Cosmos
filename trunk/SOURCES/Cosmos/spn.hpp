@@ -28,6 +28,11 @@
 #include "spn_orig.hpp"
 class SPN: public SPN_ORIG {
 public:
+	
+	/*SPN();
+	int pl;
+	*/
+	 
 	void Load();
 	bool IsEnabled(int); // Check if a given transition is enabled
 	

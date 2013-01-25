@@ -194,6 +194,12 @@ void Gspn_Reader::WriteFile(parameters& P){
     
 	SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
 	
+	/*SpnCppFile << "SPN::SPN():"<< endl;
+	SpnCppFile << "\tpl("<< MyGspn.pl << ")" << endl;
+	
+	SpnCppFile << "\t{}"<<endl;
+	*/
+	
     SpnCppFile << "void SPN::Load(){" << endl;
     SpnCppFile << "    Path =\"" << MyGspn.Path << "\";" << endl;
 	
@@ -307,7 +313,7 @@ void Gspn_Reader::WriteFile(parameters& P){
         SpnCppFile << endl;
     }
 	
-    SpnCppFile << "    vector < vector <int> > vec(" << MyGspn.tr << ");" << endl;
+    /*SpnCppFile << "    vector < vector <int> > vec(" << MyGspn.tr << ");" << endl;
     SpnCppFile << "    PredT = vec;" << endl;
     for (size_t t = 0; t < MyGspn.tr; t++) {
         for (size_t p = 0; p < MyGspn.pl; p++)
@@ -315,7 +321,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		
         //SpnCppFile << endl;
 		
-    }
+    }*/
     SpnCppFile << "    EnabledDisabledTr();" << endl;
 	
     //-------------- Rare Event -----------------

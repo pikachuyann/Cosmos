@@ -128,11 +128,11 @@ public:
 	
     int EnabledInitLocation(vector<int>&);
 	
-    virtual double GetFlow(int, int, vector<int>&);
-    virtual bool CheckLocation(int, vector<int>&);
-    virtual bool CheckEdgeContraints(int);
+  virtual double GetFlow(int, int, vector<int>&) = 0;
+  virtual bool CheckLocation(int, vector<int>&) = 0;
+  virtual bool CheckEdgeContraints(int) = 0;
 	
-    virtual t_interval GetEdgeEnablingTime(int, vector<int>&);
+    virtual t_interval GetEdgeEnablingTime(int, vector<int>&) = 0 ;
 	
 	
     int GetEnabled_S_Edges(int, vector<int>&);

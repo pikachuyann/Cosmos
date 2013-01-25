@@ -149,26 +149,4 @@ double LHA_ORIG::Integral(double& OldInt, double& t, double& Delta, double& x, d
     return (OldInt + (t0 - t) * x / 2 + (t + Delta - t0) * y / 2);
 }
 
-// All the folowing function will be replace at runtime by model dependant one.
-t_interval LHA_ORIG::GetEdgeEnablingTime(int i,vector<int>& Marking){
-    t_interval EnablingT;
-	cerr << "Fail:GetEdgeEnablingTime" << endl;
-	return EnablingT;
-}
-
-bool LHA_ORIG::CheckLocation(int, vector<int>&){
-	cerr << "Fail:CheckLocation" << endl;
-	return true;
-}
-
-bool LHA_ORIG::CheckEdgeContraints(int){
-	cerr << "Fail:CheckEdgeContraints" << endl;
-	return true;
-}
-
-double LHA_ORIG::GetFlow(int, int, vector<int>&){
-	cerr << "Fail:GetFlow" << endl;
-	return -1.;
-}
-
 

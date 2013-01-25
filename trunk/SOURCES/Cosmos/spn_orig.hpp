@@ -66,45 +66,47 @@ typedef vector <IntVector> IntMatrix;
 
 class SPN_ORIG {
 public:
-  //------------------------- Rare Event ---------------------------------------
-  vector <double> Rate_Table;
-  vector <double> Origine_Rate_Table;
-  double Rate_Sum;
-  double Origine_Rate_Sum;
-  vector <int> Msimpletab; //special places
-  //-------------------------/Rare Event ---------------------------------------
-
     SPN_ORIG();
 	//virtual void Load();
 	~SPN_ORIG();
-    string Path;
+    
     int pl; // Number of places
     int tr; // Number of transitions
-    set<int, less<int> > enTrans; // the set of current enabled transition
+	
+    vector <int> initMarking; //initial marking
+    IntMatrix inArcs; // input arcs
+    IntMatrix outArcs; //output arcs
+    IntMatrix inhibArcs; // inhibitor arcs
+	
+    vector <spn_trans> Transition; //contains all the transitions of the Petri net
+    vector <spn_place> Place; //contains all the places of the Petri net
+	
+    map <string, int> PlaceIndex; // for a given place label return its index among {0, 1, ..., pl-1}
+    map <string, int> TransitionIndex; // for a given transition label return its index among {0, 1, ..., tr-1}
+    
+	set<int, less<int> > enTrans; // the set of current enabled transition
     // IntMatrix* PossiblyEnabled; //a matrix, where a row t of PossiblyEnabled refers to transitions that may be enabled after firing t
     //  IntMatrix* PossiblyDisabled; //a matrix, where a row t of PossiblyDisabled refers to transitions that may be disabled after firing t
     //  IntMatrix* FreeMarkDepT; //a matrix, where a row t of FreeMarkDepT refers to transitions which are marking dependent
     //but are not in (PossiblyEnabled[t] or PossiblyDisabled[t])
 
+	string Path;
+	
     vector< set<int> > PossiblyEnabled;
     vector< set<int> > PossiblyDisabled;
     vector< set<int> > FreeMarkDepT;
 
     vector <int> Marking; // Current marking
 	vector<double> ParamDistr;
-    vector <int> initMarking; //initial marking
-    IntMatrix inArcs; // input arcs
-    IntMatrix outArcs; //output arcs
-    IntMatrix inhibArcs; // inhibitor arcs
 
-    vector <spn_trans> Transition; //contains all the transitions of the Petri net
-    vector <spn_place> Place; //contains all the places of the Petri net
-    vector < vector<int> > PredT; // to be deleted
-
-    map <string, int> PlaceIndex; // for a given place label return its index among {0, 1, ..., pl-1}
-    map <string, int> TransitionIndex; // for a given transition label return its index among {0, 1, ..., tr-1}
-
-
+	//------------------------- Rare Event -------------------------------------
+	vector <double> Rate_Table;
+	vector <double> Origine_Rate_Table;
+	double Rate_Sum;
+	double Origine_Rate_Sum;
+	vector <int> Msimpletab; //special places
+	//-------------------------/Rare Event -------------------------------------
+	
 
 
 
@@ -135,7 +137,7 @@ public:
     //virtual void fire(int); // fire a given transition
     //virtual void unfire(int); // unfire a given transition
 
-	virtual bool IsEnabled(int); // Check if a given transition is enabled
+	virtual bool IsEnabled(int) = 0 ; // Check if a given transition is enabled
     //virtual vector<double> GetDistParameters(int); // compute the the parameters value of a given distribution 
   //------------------------- Rare Event ---------------------------------------
   //virtual vector<double> GetDistParametersOrigin(int);
