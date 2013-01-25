@@ -66,14 +66,14 @@ typedef vector <IntVector> IntMatrix;
 
 class SPN_ORIG {
 public:
-    SPN_ORIG();
+    SPN_ORIG(const int,const int);
 	//virtual void Load();
 	~SPN_ORIG();
     
-    int pl; // Number of places
-    int tr; // Number of transitions
+    const int pl; // Number of places
+    const int tr; // Number of transitions
 	
-    vector <int> initMarking; //initial marking
+	vector <int> initMarking; //initial marking
     IntMatrix inArcs; // input arcs
     IntMatrix outArcs; //output arcs
     IntMatrix inhibArcs; // inhibitor arcs

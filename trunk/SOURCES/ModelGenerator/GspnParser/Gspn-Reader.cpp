@@ -200,16 +200,10 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "\t{}"<<endl;
 	*/
 	
-    SpnCppFile << "void SPN::Load(){" << endl;
+    SpnCppFile << "SPN::SPN():" << endl;
+	SpnCppFile << "\tSPN_ORIG(" << MyGspn.pl << ", ";
+	SpnCppFile << MyGspn.tr << ") {" << endl;
     SpnCppFile << "    Path =\"" << MyGspn.Path << "\";" << endl;
-	
-    //-------------- Rare Event -----------------
-    //SpnCppFile << "    gammaprob.load();" << endl;
-    //------------- /Rare Event -----------------
-	
-    SpnCppFile << "    pl =" << MyGspn.pl << ";" << endl;
-	
-    SpnCppFile << "    tr =" << MyGspn.tr << ";" << endl;
 	
     SpnCppFile << "    IntVector Null_Pl_Vector(pl, 0);" << endl;
 	

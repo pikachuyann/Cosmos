@@ -28,12 +28,9 @@
 #include "spn_orig.hpp"
 class SPN: public SPN_ORIG {
 public:
-	
-	/*SPN();
-	int pl;
-	*/
+	SPN();
 	 
-	void Load();
+	//void Load();
 	bool IsEnabled(int); // Check if a given transition is enabled
 	
 	void fire(int); // fire a given transition

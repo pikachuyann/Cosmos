@@ -28,18 +28,18 @@
 #include "LHA_orig.hpp"
 class LHA: public LHA_ORIG {
 public:
-	void Load();
-	void DoEdgeUpdates(int, vector<int>&);
+	LHA();
+	void DoEdgeUpdates(int, const vector<int>&);
 	void UpdateFormulaVal();
-    void UpdateLinForm(vector<int>&);
+    void UpdateLinForm(const vector<int>&);
     void UpdateLhaFunc( double&);
 	void UpdateLhaFuncLast();
 	
-    double GetFlow(int, int, vector<int>&);
-    bool CheckLocation(int, vector<int>&);
+    double GetFlow(int, int,const vector<int>&);
+    bool CheckLocation(int,const vector<int>&);
     bool CheckEdgeContraints(int);
 							 
-	t_interval GetEdgeEnablingTime(int, vector<int>&);
+	t_interval GetEdgeEnablingTime(int,const vector<int>&);
 	//int GetEnabled_S_Edges(int, int, double, vector<int>&, vector<int>&);
 };
 #endif	/* _LHA_HPP */

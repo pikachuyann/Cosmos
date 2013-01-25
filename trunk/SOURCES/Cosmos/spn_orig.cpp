@@ -43,7 +43,10 @@
 
 using namespace std;
 
-SPN_ORIG::SPN_ORIG() : ParamDistr(3) {
+SPN_ORIG::SPN_ORIG(const int pl, const int tr) :
+	pl(pl),
+	tr(tr),
+	ParamDistr(3) {
 }
 
 SPN_ORIG::~SPN_ORIG() {

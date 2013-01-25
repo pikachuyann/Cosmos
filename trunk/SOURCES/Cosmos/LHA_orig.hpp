@@ -126,26 +126,26 @@ public:
 	
 	
 	
-    int EnabledInitLocation(vector<int>&);
+    int EnabledInitLocation(const vector<int>&);
 	
-  virtual double GetFlow(int, int, vector<int>&) = 0;
-  virtual bool CheckLocation(int, vector<int>&) = 0;
-  virtual bool CheckEdgeContraints(int) = 0;
+	virtual double GetFlow(int, int,const vector<int>&) = 0;
+	virtual bool CheckLocation(int,const vector<int>&) = 0;
+	virtual bool CheckEdgeContraints(int) = 0;
 	
-    virtual t_interval GetEdgeEnablingTime(int, vector<int>&) = 0 ;
-	
-	
-    int GetEnabled_S_Edges(int, vector<int>&);
-    AutEdge GetEnabled_A_Edges(vector<int>&);
+    virtual t_interval GetEdgeEnablingTime(int,const vector<int>&) = 0 ;
 	
 	
-    void DoElapsedTimeUpdate(double, vector<int>&);
+    int GetEnabled_S_Edges(int, const vector<int>&);
+    AutEdge GetEnabled_A_Edges(const vector<int>&);
+	
+	
+    void DoElapsedTimeUpdate(double, const vector<int>&);
 	
     void setCurrentLocation(unsigned int);
 	
     //virtual void DoEdgeUpdates(int, vector<int>&);
     
-	void doPathVarsUpdate(double, double, vector<int>&);
+	void doPathVarsUpdate(double, double, const vector<int>&);
 	
 	
 	
@@ -155,7 +155,7 @@ public:
     bool isFinal();
     void resetVarsTable();
     void resetPathVarsTable();
-    void reset(vector<int>&);
+    void reset(const vector<int>&);
 	
     void ViewEdge(int);
     void ViewAllEdges();

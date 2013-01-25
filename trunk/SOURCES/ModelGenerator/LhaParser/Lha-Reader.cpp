@@ -198,7 +198,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 		LhaCppFile << "    const double " << it->first << "=" << it->second << ";" << endl;
 	}
 
-    LhaCppFile << "void LHA::Load(){" << endl;
+    LhaCppFile << "LHA::LHA(){" << endl;
 
 
     LhaCppFile << "    NbLoc =" << MyLha.NbLoc << ";" << endl;
@@ -345,7 +345,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "}\n" << endl;
 
 
-    LhaCppFile << "double LHA::GetFlow(int v, int loc, vector<int>& Marking){" << endl;
+    LhaCppFile << "double LHA::GetFlow(int v, int loc,const vector<int>& Marking){" << endl;
     LhaCppFile << "    switch(v){" << endl;
     for (size_t x = 0; x < MyLha.NbVar; x++) {
 
@@ -365,7 +365,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "	}\n" << endl;
     LhaCppFile << "}\n" << endl;
 
-    LhaCppFile << "bool LHA::CheckLocation(int loc, vector<int>& Marking){" << endl;
+    LhaCppFile << "bool LHA::CheckLocation(int loc,const vector<int>& Marking){" << endl;
     LhaCppFile << "    switch(loc){" << endl;
     for (size_t l = 0; l < MyLha.NbLoc; l++) {
         LhaCppFile << "     case " << l << ":" << endl;
@@ -402,7 +402,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "}\n" << endl;
 
 
-    LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed, vector<int>& Marking){" << endl;
+    LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed,const vector<int>& Marking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "     case " << e << ":" << endl;
@@ -497,7 +497,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 
 
 
-    LhaCppFile << "void LHA::DoEdgeUpdates(int ed, vector<int>& Marking){" << endl;
+    LhaCppFile << "void LHA::DoEdgeUpdates(int ed,const vector<int>& Marking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "     case " << e << ":" << endl;
@@ -547,7 +547,7 @@ void Lha_Reader::WriteFile(parameters& P) {
         LhaCppFile << "    }\n" << endl;
     }*/
 
-    LhaCppFile << "void LHA::UpdateLinForm(vector<int>& Marking){" << endl;
+    LhaCppFile << "void LHA::UpdateLinForm(const vector<int>& Marking){" << endl;
     for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++) {
         LhaCppFile << "    LinForm[" << (*it).second << "]=" << (*it).first << ";" << endl;
 

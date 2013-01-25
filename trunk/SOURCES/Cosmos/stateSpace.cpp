@@ -42,8 +42,6 @@ namespace boostmat = boost::numeric::ublas;
 stateSpace::stateSpace(){
 	nbState=0;
 	nbTrans=0;
-	N.Load();//load the GSPN
-	A.Load(); //load the LHA
 }
 
 int stateSpace::findHash(const vector<int>* vect){
