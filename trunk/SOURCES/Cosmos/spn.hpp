@@ -31,10 +31,11 @@ public:
 	SPN();
 	 
 	//void Load();
-	bool IsEnabled(int); // Check if a given transition is enabled
+	bool IsEnabled(const int); // Check if a given transition is enabled
 	
 	void fire(int); // fire a given transition
     void unfire(int); // unfire a given transition
+	void setConditionsVector();
 	
 	void GetDistParameters(int); // compute the the parameters value of a given distribution 
 	//------------------------- Rare Event ---------------------------------------

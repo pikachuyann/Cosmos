@@ -138,7 +138,6 @@ void Simulator::fireLHA(int EdgeIndex){
 	A.CurrentLocation = A.Edge[EdgeIndex].Target;
 }
 
-
 void Simulator::updateSPN(int E1_transitionNum){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
@@ -148,11 +147,10 @@ void Simulator::updateSPN(int E1_transitionNum){
 	if (N.IsEnabled(E1_transitionNum)) {		
 		GenerateEvent(F, E1_transitionNum);
 		(*EQ).replace(F, 0); //replace the transition with the new generated time
-		
 	} else (*EQ).remove(0);
 	
 	// Possibly adding Events corresponding to newly enabled-transitions
-	for (set<int>::iterator it = N.PossiblyEnabled[E1_transitionNum].begin(); it != N.PossiblyEnabled[E1_transitionNum].end(); it++) {
+	for (set<int>::iterator it = N.newlyEnabled.begin(); it != N.newlyEnabled.end(); it++) {
 		if (N.IsEnabled(*it)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
                 GenerateEvent(F, (*it));
@@ -162,14 +160,12 @@ void Simulator::updateSPN(int E1_transitionNum){
 					GenerateEvent(F, (*it));
 					(*EQ).replace(F, (*EQ).TransTabValue(*it));
                 }
-				
 			}
 		}
-		
 	}
 	
 	// Possibly removing Events corresponding to newly disabled-transitions
-	for (set<int>::iterator it = N.PossiblyDisabled[E1_transitionNum].begin(); it != N.PossiblyDisabled[E1_transitionNum].end(); it++) {
+	for (set<int>::iterator it = N.newlyDisabled.begin(); it != N.newlyDisabled.end(); it++) {
 		if ((*EQ).TransTabValue(*it)>-1) {
 			if (!N.IsEnabled(*it))
                 (*EQ).remove((*EQ).TransTabValue(*it));
@@ -177,7 +173,6 @@ void Simulator::updateSPN(int E1_transitionNum){
                 if (N.Transition[(*it)].MarkingDependent) {
 					GenerateEvent(F, (*it));
 					(*EQ).replace(F, (*EQ).TransTabValue(*it));
-					
                 }
 			}
 		}
@@ -185,7 +180,6 @@ void Simulator::updateSPN(int E1_transitionNum){
 
     // Update transition which have no precondition on the Marking
 	for (set<int>::iterator it = N.FreeMarkDepT[E1_transitionNum].begin(); it != N.FreeMarkDepT[E1_transitionNum].end(); it++) {
-		
 		if (N.IsEnabled(*it)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
                 GenerateEvent(F, (*it));
@@ -278,8 +272,10 @@ bool Simulator::SimulateOneStep(){
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
-		if(verbose>3)
+		if(verbose>3){
 			cerr << "transition:" << N.Transition[E1.transition].label << endl;
+			cerr << "With Condition:" << N.TransitionConditions[E1.transition]<< endl;
+		}
 
 		//Make time elapse in the LHA
 		updateLHA( E1.time - A.CurrentTime );

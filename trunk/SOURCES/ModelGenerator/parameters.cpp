@@ -48,6 +48,7 @@ parameters::parameters():
 	PathGspn(""),
 	PathLha(""),
 
+	localTesting(true),
 	RareEvent(false),
 	DoubleIS(false),
 	BoundedRE(0),
@@ -108,7 +109,8 @@ void parameters::usage(){
     cout << "\t--width \tset the width of the confidence interval (default=0.001)"<< endl;
     cout << "\t--batch \tset the size of batch of simulation (default=1000)"<< endl;
     cout << "\t--max-run \tset the maximal number of run (default=2000000)" << endl;
-	cout << "\t--seed \tSpecify the seed for the random generator, 0 allow to take a random value";
+	cout << "\t--seed \tSpecify the seed for the random generator, 0 allow to take a random value"<< endl;
+	cout << "\t--local-test \tUse local testing faster on big net" << endl;
 	
     cout << "Miscellaneous options:" << endl;
     cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
@@ -138,6 +140,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"batch" , required_argument, 0,  2 },
             {"max-run",required_argument, 0, 'm'},
 			{"seed"  , required_argument, 0,  10},
+			{"local-test",  no_argument , 0,  12},
             
             /* Options for the rare event engine */
             {"rareevent",   no_argument,        0, 'r'},
@@ -223,6 +226,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'w':Width = atof(optarg);     break;
             case  2  : Batch = atoi(optarg);      break;
             case  'm': MaxRuns = atoi(optarg);      break;
+			case  12 : localTesting = false;		break;
             case  'n': Njob = atoi(optarg);      break;
             case  'e': epsilon = atof(optarg);  break;
             case  'd': dataoutput = optarg; break;

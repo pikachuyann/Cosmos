@@ -46,7 +46,8 @@ using namespace std;
 SPN_ORIG::SPN_ORIG(const int pl, const int tr) :
 	pl(pl),
 	tr(tr),
-	ParamDistr(3) {
+	ParamDistr(3),
+	TransitionConditions(pl,0){
 }
 
 SPN_ORIG::~SPN_ORIG() {
@@ -66,6 +67,7 @@ set<int, less <int> > SPN_ORIG::enabledTrans() {
 
 void SPN_ORIG::reset() {
     Marking = initMarking;
+	TransitionConditions = initTransitionConditions;
 }
 
 void SPN_ORIG::setMarking(vector<int>& M) {
@@ -186,10 +188,17 @@ void SPN_ORIG::EnabledDisabledTr() {
         FreeMarkDepT.push_back(S);
 
     }
+}
 
 
+void SPN_ORIG::incrCondition(unsigned int t){
+	TransitionConditions[t]++;
+	if(TransitionConditions[t]==1)newlyDisabled.insert(t);
+}
 
-
+void SPN_ORIG::decrCondition(unsigned int t){
+	TransitionConditions[t]--;
+	if(TransitionConditions[t]==0)newlyEnabled.insert(t);
 }
 
 set<int> SPN_ORIG::PossiblyEn(int t) {

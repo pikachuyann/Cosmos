@@ -1,6 +1,7 @@
 
 const int C=5;
 
+
 NbPlaces = 6;
 NbTransitions = 5;
 

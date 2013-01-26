@@ -107,7 +107,16 @@ public:
 	vector <int> Msimpletab; //special places
 	//-------------------------/Rare Event -------------------------------------
 	
-
+	//------------------------- On the fly enabling disabling transition--------
+	vector<int> TransitionConditions;
+	vector<int> initTransitionConditions;
+	void incrCondition(unsigned int);
+	void decrCondition(unsigned int);
+	
+	set<int>newlyEnabled;
+	set<int>newlyDisabled;
+	
+	//-------------------------/On the fly enabling disabling transition--------
 
 
     double min(double, double); //return the minimum of two numbers
@@ -134,20 +143,7 @@ public:
 
 	void printMarking(); //print the current Marking
 
-    //virtual void fire(int); // fire a given transition
-    //virtual void unfire(int); // unfire a given transition
-
 	virtual bool IsEnabled(int) = 0 ; // Check if a given transition is enabled
-    //virtual vector<double> GetDistParameters(int); // compute the the parameters value of a given distribution 
-  //------------------------- Rare Event ---------------------------------------
-  //virtual vector<double> GetDistParametersOrigin(int);
-  //-------------------------/Rare Event ---------------------------------------
-
-
-    //virtual double GetWeight(int); // compute the the weight value of a given transition
-    //virtual double GetPriority(int); // compute the the priority value of a given transition
-
-	
-    //private:
-    };
+ 
+};
     #endif	/* _SPN_ORIG_HPP */

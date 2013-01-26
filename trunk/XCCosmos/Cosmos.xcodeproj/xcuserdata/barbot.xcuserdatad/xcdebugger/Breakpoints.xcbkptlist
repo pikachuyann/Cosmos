@@ -41,5 +41,16 @@
          landmarkName = "Lha_parser::parse ()"
          landmarkType = "5">
       </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/Cosmos/LHA.cpp"
+         timestampString = "380842844.945768"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "288"
+         endingLineNumber = "288">
+      </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>
