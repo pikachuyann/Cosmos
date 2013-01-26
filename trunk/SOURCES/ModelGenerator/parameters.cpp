@@ -48,7 +48,7 @@ parameters::parameters():
 	PathGspn(""),
 	PathLha(""),
 
-	localTesting(true),
+	localTesting(false),
 	RareEvent(false),
 	DoubleIS(false),
 	BoundedRE(0),
@@ -226,7 +226,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'w':Width = atof(optarg);     break;
             case  2  : Batch = atoi(optarg);      break;
             case  'm': MaxRuns = atoi(optarg);      break;
-			case  12 : localTesting = false;		break;
+			case  12 : localTesting = !localTesting;		break;
             case  'n': Njob = atoi(optarg);      break;
             case  'e': epsilon = atof(optarg);  break;
             case  'd': dataoutput = optarg; break;
