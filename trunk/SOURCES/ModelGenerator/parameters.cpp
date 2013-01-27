@@ -201,6 +201,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 				RareEvent = true;        
 				StringInSpnLHA =true; // Need to know the name of place to find 
 				// place begining with "RE_"
+				localTesting = false; //Need to unfire transition not implemented for local testing
 				break;
                 
             case 'b':BoundedRE = atoi(optarg);
@@ -216,6 +217,7 @@ void parameters::parseCommandLine(int argc, char** argv){
                 
             case 's':computeStateSpace= true; 
 				StringInSpnLHA = true;
+				localTesting =false; //Need to unfire transition not implemented for local testing
 				break;
                 
             case 'a':alligatorMode = true;
