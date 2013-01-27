@@ -374,36 +374,6 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "}\n" << endl;
 	
 	
-    
-    SpnCppFile << "void SPN::unfire(int t){" << endl;
-    SpnCppFile << "   switch(t){" << endl;
-    for (size_t t = 0; t < MyGspn.tr; t++) {
-        SpnCppFile << "     case " << t << ": {" << endl;
-        //SpnCppFile << "       unfire_t" << t << "();" << endl;
-        for (size_t p = 0; p < MyGspn.pl; p++) {
-			if (MyGspn.inArcs[t][p] > 0) {
-				if (MyGspn.inArcsStr[t][p] == " ")
-					SpnCppFile << "    Marking[" << p << "] += " << MyGspn.inArcs[t][p] << ";" << endl;
-				else
-					SpnCppFile << "    Marking[" << p << "] += " << MyGspn.inArcsStr[t][p] << ";" << endl;
-			}
-			
-			if (MyGspn.outArcs[t][p] > 0) {
-				if (MyGspn.outArcsStr[t][p] == " ")
-					SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.outArcs[t][p] << ";" << endl;
-				else
-					SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.outArcsStr[t][p] << ";" << endl;
-			}
-		}
-		//
-		SpnCppFile << "       break;" << endl;
-        SpnCppFile << "     } " << endl;
-    }
-	
-    SpnCppFile << "   }" << endl;
-    SpnCppFile << "}\n" << endl;
-	
-	
     SpnCppFile << "void SPN::fire(int t){" << endl;
 	if(P.localTesting){
 		SpnCppFile << "\tnewlyEnabled.clear();"<< endl;
@@ -572,6 +542,34 @@ void Gspn_Reader::WriteFile(parameters& P){
 		SpnCppFile << "\tnewlyDisabled = PossiblyDisabled[t];"<< endl;
 	}
 	SpnCppFile << "}" << endl;
+	
+	SpnCppFile << "void SPN::unfire(int t){" << endl;
+    SpnCppFile << "   switch(t){" << endl;
+    for (size_t t = 0; t < MyGspn.tr; t++) {
+        SpnCppFile << "     case " << t << ": {" << endl;
+        //SpnCppFile << "       unfire_t" << t << "();" << endl;
+        for (size_t p = 0; p < MyGspn.pl; p++) {
+			if (MyGspn.inArcs[t][p] > 0) {
+				if (MyGspn.inArcsStr[t][p] == " ")
+					SpnCppFile << "    Marking[" << p << "] += " << MyGspn.inArcs[t][p] << ";" << endl;
+				else
+					SpnCppFile << "    Marking[" << p << "] += " << MyGspn.inArcsStr[t][p] << ";" << endl;
+			}
+			
+			if (MyGspn.outArcs[t][p] > 0) {
+				if (MyGspn.outArcsStr[t][p] == " ")
+					SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.outArcs[t][p] << ";" << endl;
+				else
+					SpnCppFile << "    Marking[" << p << "] -= " << MyGspn.outArcsStr[t][p] << ";" << endl;
+			}
+		}
+		//
+		SpnCppFile << "       break;" << endl;
+        SpnCppFile << "     } " << endl;
+    }
+	
+    SpnCppFile << "   }" << endl;
+    SpnCppFile << "}\n" << endl;
 	
 	SpnCppFile << "void SPN::setConditionsVector(){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {

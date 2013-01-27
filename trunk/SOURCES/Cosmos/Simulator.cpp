@@ -451,6 +451,8 @@ BatchR* Simulator::RunBatch(){
 		
         batchResult->addSim(&Result);
 		
+		if(verbose>3)batchResult->print();
+		
 		if (Result.first && logResult){
 			for(size_t i=0; i<Result.second.size();i++){
 				if (i>0)logvalue << "\t";

@@ -47,7 +47,7 @@ SPN_ORIG::SPN_ORIG(const int pl, const int tr) :
 	pl(pl),
 	tr(tr),
 	ParamDistr(3),
-	TransitionConditions(pl,0){
+	TransitionConditions(tr,0){
 }
 
 SPN_ORIG::~SPN_ORIG() {
@@ -68,6 +68,10 @@ set<int, less <int> > SPN_ORIG::enabledTrans() {
 void SPN_ORIG::reset() {
     Marking = initMarking;
 	TransitionConditions = initTransitionConditions;
+	/*for(int t = 0; t< TransitionConditions.size(); t++ ){
+		cerr << "\ttr: " << TransitionConditions[t];
+	}
+	cerr << endl;*/
 }
 
 void SPN_ORIG::setMarking(vector<int>& M) {
