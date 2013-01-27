@@ -45,6 +45,14 @@ public:
 	
 	
     double GetWeight(int); // compute the the weight value of a given transition
-    double GetPriority(int); // compute the the priority value of a given transition	
+
+    double GetPriority(int); // compute the the priority value of a given transition
+	
+	const set<int>* PossiblyEn(); // return the set of transitions that may be enabled after firing the last transition
+    const set<int>* PossiblyDis(); // return the set of transitions that may be disabled after firing the last transition
+	const set<int>* FreeMarkingDependant(); //return the set of transition without constrain but marking dependant
+private:
+	size_t lastTransition;
+	
 };
 #endif	/* _SPN_HPP */

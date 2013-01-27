@@ -50,20 +50,33 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "288"
-         endingLineNumber = "288">
+         endingLineNumber = "288"
+         landmarkName = "LHA::GetEdgeEnablingTime(int ed,const vector&lt;int&gt;&amp; Marking)"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../SOURCES/Cosmos/Simulator.cpp"
-         timestampString = "380930003.230177"
+         timestampString = "381003380.18522"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "211"
-         endingLineNumber = "211"
+         startingLineNumber = "213"
+         endingLineNumber = "213"
          landmarkName = "Simulator::SimulateOneStep()"
          landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/Cosmos/Simulator.cpp"
+         timestampString = "381000949.354882"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "15"
+         endingLineNumber = "15">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

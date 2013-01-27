@@ -216,7 +216,7 @@ void Gspn_Reader::WriteFile(parameters& P){
     SpnCppFile << "    inhibArcs = Null_PlxTr_Matrix;" << endl;
     SpnCppFile << "    Marking = Null_Pl_Vector;;" << endl;
     
-	if(!P.localTesting){
+	{
 		for (size_t t = 0; t < MyGspn.tr; t++) {
 			for (size_t p = 0; p < MyGspn.pl; p++)
 				if (MyGspn.inArcs[t][p] > 0)
@@ -375,6 +375,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	
     SpnCppFile << "void SPN::fire(int t){" << endl;
+	SpnCppFile << "\tlastTransition = t;" << endl;
 	if(P.localTesting){
 		SpnCppFile << "\tnewlyEnabled.clear();"<< endl;
 		SpnCppFile << "\tnewlyDisabled.clear();"<< endl;
@@ -537,10 +538,6 @@ void Gspn_Reader::WriteFile(parameters& P){
         SpnCppFile << "     } " << endl;
 	}
 	SpnCppFile << "\t}" << endl;
-	if(!P.localTesting){
-		SpnCppFile << "\tnewlyEnabled = PossiblyEnabled[t];"<< endl;
-		SpnCppFile << "\tnewlyDisabled = PossiblyDisabled[t];"<< endl;
-	}
 	SpnCppFile << "}" << endl;
 	
 	SpnCppFile << "void SPN::unfire(int t){" << endl;
@@ -570,6 +567,21 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
     SpnCppFile << "   }" << endl;
     SpnCppFile << "}\n" << endl;
+	
+	SpnCppFile << "const set<int>* SPN::PossiblyEn() {" << endl;
+	if (P.localTesting)SpnCppFile << "\treturn &newlyEnabled;" << endl;
+	else SpnCppFile << "\treturn &(PossiblyEnabled[lastTransition]);" << endl;
+	SpnCppFile << "}" << endl;
+	
+	SpnCppFile << "const set<int>* SPN::PossiblyDis() {" << endl;
+	if (P.localTesting)SpnCppFile << "\treturn &newlyDisabled;" << endl;
+	else SpnCppFile << "\treturn &(PossiblyDisabled[lastTransition]);" << endl;
+	SpnCppFile << "}" << endl;
+	
+	SpnCppFile << "const set<int>* SPN::FreeMarkingDependant() {" << endl;
+	SpnCppFile << "\treturn &(FreeMarkDepT[lastTransition]);" << endl;
+	SpnCppFile << "}" << endl;
+	
 	
 	SpnCppFile << "void SPN::setConditionsVector(){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {

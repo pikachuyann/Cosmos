@@ -89,7 +89,8 @@ void SimulatorRE::updateSPN(int E1_transitionNum){
 	
 	if( ! N.IsEnabled(E1_transitionNum)) (*EQ).remove(0);
 	
-	for (set<int>::iterator it = N.PossiblyEnabled[E1_transitionNum].begin(); it != N.PossiblyEnabled[E1_transitionNum].end(); it++) {
+	const set<int> *net = N.PossiblyEn();
+	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
 		if (N.IsEnabled(*it)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
 				GenerateDummyEvent(F, (*it));
@@ -98,7 +99,8 @@ void SimulatorRE::updateSPN(int E1_transitionNum){
 		}
 	}
 	
-	for (set<int>::iterator it = N.PossiblyDisabled[E1_transitionNum].begin(); it != N.PossiblyDisabled[E1_transitionNum].end(); it++) {
+	const set<int> *ndt = N.PossiblyDis();
+	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
 		if ((*EQ).TransTabValue(*it)>-1) {
 			if (!N.IsEnabled(*it))
 				(*EQ).remove((*EQ).TransTabValue(*it));

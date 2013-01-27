@@ -67,10 +67,11 @@ void stateSpace::exploreStateSpace(){
 	// the state space. The list of state is store in the hash table S and 
 	// the transition list is stored in transitionList.
 
+	N.reset();
     cerr << "Exploring state space" << endl;
     
 	stack<vector<int> ,vector<vector<int> > > toBeExplore;
-	vector<int> init = N.initMarking;
+	vector<int> init = N.Marking;
 	
 	set <int, less<int> > ::iterator it;
 	

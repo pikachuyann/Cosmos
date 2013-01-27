@@ -88,8 +88,7 @@ void Simulator::InitialEventsQueue() {
     //time is simulated and added to the structure.
 	Initialized = true;
 	
-	set<int, less <int> > ent;
-	ent = N.enabledTrans();
+	const set<int, less <int> > ent = N.enabledTrans();
 	set<int>::iterator it;
 	Event E;
 	for (it = ent.begin(); it != ent.end(); it++) {
@@ -103,7 +102,7 @@ void Simulator::reset() {
     //random generator
     	
 	N.reset();
-	A.reset(N.initMarking);
+	A.reset(N.Marking);
 
 	(*EQ).reset();
 	
@@ -150,7 +149,8 @@ void Simulator::updateSPN(int E1_transitionNum){
 	} else (*EQ).remove(0);
 	
 	// Possibly adding Events corresponding to newly enabled-transitions
-	for (set<int>::iterator it = N.newlyEnabled.begin(); it != N.newlyEnabled.end(); it++) {
+	const set<int>* net = N.PossiblyEn();
+	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
 		if (N.IsEnabled(*it)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
                 GenerateEvent(F, (*it));
@@ -165,7 +165,8 @@ void Simulator::updateSPN(int E1_transitionNum){
 	}
 	
 	// Possibly removing Events corresponding to newly disabled-transitions
-	for (set<int>::iterator it = N.newlyDisabled.begin(); it != N.newlyDisabled.end(); it++) {
+	const set<int>* ndt = N.PossiblyDis();
+	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
 		if ((*EQ).TransTabValue(*it)>-1) {
 			if (!N.IsEnabled(*it))
                 (*EQ).remove((*EQ).TransTabValue(*it));
@@ -179,7 +180,8 @@ void Simulator::updateSPN(int E1_transitionNum){
 	}
 
     // Update transition which have no precondition on the Marking
-	for (set<int>::iterator it = N.FreeMarkDepT[E1_transitionNum].begin(); it != N.FreeMarkDepT[E1_transitionNum].end(); it++) {
+	const set<int>* fmd = N.FreeMarkingDependant();
+	for (set<int>::iterator it = fmd->begin(); it != fmd->end(); it++) {
 		if (N.IsEnabled(*it)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
                 GenerateEvent(F, (*it));
@@ -272,11 +274,8 @@ bool Simulator::SimulateOneStep(){
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
-		if(verbose>3){
+		if(verbose>3)
 			cerr << "transition:" << N.Transition[E1.transition].label << endl;
-			cerr << "With Condition:" << N.TransitionConditions[E1.transition]<< endl;
-		}
-
 		//Make time elapse in the LHA
 		updateLHA( E1.time - A.CurrentTime );
 		

@@ -68,10 +68,6 @@ set<int, less <int> > SPN_ORIG::enabledTrans() {
 void SPN_ORIG::reset() {
     Marking = initMarking;
 	TransitionConditions = initTransitionConditions;
-	/*for(int t = 0; t< TransitionConditions.size(); t++ ){
-		cerr << "\ttr: " << TransitionConditions[t];
-	}
-	cerr << endl;*/
 }
 
 void SPN_ORIG::setMarking(vector<int>& M) {
@@ -185,7 +181,8 @@ void SPN_ORIG::EnabledDisabledTr() {
     for (int t = 0; t < tr; t++) {
         set<int> S;
         for (set<int>::iterator it = MarkDepT.begin(); it != MarkDepT.end(); it++) {
-            if ((PossiblyEnabled[t].find((*it)) == PossiblyEnabled[t].end()) && (PossiblyDisabled[t].find((*it)) == PossiblyDisabled[t].end()))
+            if ((PossiblyEnabled[t].find((*it)) == PossiblyEnabled[t].end()) &&
+				(PossiblyDisabled[t].find((*it)) == PossiblyDisabled[t].end()))
                 S.insert((*it));
 
         }
@@ -203,14 +200,6 @@ void SPN_ORIG::incrCondition(unsigned int t){
 void SPN_ORIG::decrCondition(unsigned int t){
 	TransitionConditions[t]--;
 	if(TransitionConditions[t]==0)newlyEnabled.insert(t);
-}
-
-set<int> SPN_ORIG::PossiblyEn(int t) {
-    return (PossiblyEnabled)[t];
-}
-
-set<int> SPN_ORIG::PossiblyDis(int t) {
-    return (PossiblyDisabled)[t];
 }
 
 vector<int> SPN_ORIG::getMarking() {
