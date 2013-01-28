@@ -36,14 +36,14 @@ depend: .depend
 	$(CC) -I$(SRCPATH)/../libgml/ $(OPTIONS) -MM $^>>./.depend;
 
 $(OBJPATH)/%.o: %.cpp
-	$(CC) -I../libgml/ -I$(BOOSTPATH) $(OPTIONS) -c $*.cpp -o $@	
+	$(CXX) -I../libgml/ -I$(BOOSTPATH) $(OPTIONS) -c $*.cpp -o $@
 $(OBJPATH)/%.o: %.cc
-	$(CC) -I../libgml/ $(OPTIONS) -c $*.cc -o $@
+	$(CXX) -I../libgml/ $(OPTIONS) -c $*.cc -o $@
 $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
-	$(CC) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
+	$(CXX) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
 
 $(BINPATH)/Cosmos: $(FILES) 
-	$(CC) $(OPTIONS) -L/usr/lib/ -lexpat $^ -o $@
+	$(CXX) $(OPTIONS) -L/usr/lib/ -lexpat $^ -o $@
 
 parser:
 	@(cd LhaParser && $(MAKE))

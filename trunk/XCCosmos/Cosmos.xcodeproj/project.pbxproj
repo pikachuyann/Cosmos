@@ -144,7 +144,9 @@
 		03A194CC14E2C5FA00C17C38 /* parameters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parameters.cpp; sourceTree = "<group>"; };
 		03A194CE14E2C63500C17C38 /* parameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parameters.hpp; sourceTree = "<group>"; };
 		03A49A3716B6B46200521256 /* marking.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = marking.hpp; sourceTree = "<group>"; };
-		03A49A3D16B6EE1300521256 /* markingImpl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = markingImpl.hpp; path = ../../Examples/RareEventUnbounded/tmp/markingImpl.hpp; sourceTree = "<group>"; };
+		03A49A3E16B71FDC00521256 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
+		03A49A3F16B71FF600521256 /* Makefile_common */ = {isa = PBXFileReference; lastKnownFileType = text; name = Makefile_common; path = ../Makefile_common; sourceTree = "<group>"; };
+		03A49A4016B71FFB00521256 /* Makefile_linux */ = {isa = PBXFileReference; lastKnownFileType = text; name = Makefile_linux; path = ../Makefile_linux; sourceTree = "<group>"; };
 		03A9F02114D7ECB500A60D0F /* SimulatorContinuousBounded.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimulatorContinuousBounded.cpp; sourceTree = "<group>"; };
 		03A9F02414D7ECDC00A60D0F /* SimulatorContinuousBounded.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SimulatorContinuousBounded.hpp; sourceTree = "<group>"; };
 		03AD7C7F14BD86C8003F7EA0 /* sparse_io.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sparse_io.hpp; sourceTree = "<group>"; };
@@ -330,7 +332,7 @@
 				03B6EEBE1487BBF60099A6CC /* LHA.cpp */,
 				03DA8F3214F4FD25008C673C /* lumpingfun.cpp */,
 				03B6EEC01487BC120099A6CC /* spn.cpp */,
-				03A49A3D16B6EE1300521256 /* markingImpl.hpp */,
+				03A49A3E16B71FDC00521256 /* markingImpl.hpp */,
 				0302BB6814692C0E005129BB /* spn.hpp */,
 				0302BAAD1468113C005129BB /* spn_orig.cpp */,
 				0302BAAE1468113C005129BB /* spn_orig.hpp */,
@@ -454,6 +456,8 @@
 			children = (
 				03B9F20F16AED58C004A8145 /* Makefile_fast */,
 				03A15A38160B057A00BAFF6C /* Makefile */,
+				03A49A4016B71FFB00521256 /* Makefile_linux */,
+				03A49A3F16B71FF600521256 /* Makefile_common */,
 				0341401215AEC3740009FEFC /* POMDP */,
 				0304DA40145ADB3F0085B4DC /* libgml */,
 				03F1366D143A050100944E04 /* SOURCES */,

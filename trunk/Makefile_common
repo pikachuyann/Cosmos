@@ -24,18 +24,9 @@ clean:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
 	@(cd SOURCES/ModelGenerator && $(MAKE) $@)
 	@(rm -rf package-alligator.zip)
-#	@(rm -rf package)
 
 cleansim:
 	@(cd SOURCES/Cosmos && $(MAKE) clean)
-
-sim:
-	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/ClientSim)
-	cp SOURCES/Cosmos/spn.hpp includes/
-	cp SOURCES/Cosmos/spn_orig.hpp includes/
-	cp SOURCES/Cosmos/LHA.hpp includes/
-	cp SOURCES/Cosmos/LHA_orig.hpp includes/ 
-	cp SOURCES/Cosmos/marking.hpp includes/
 
 
 parser:
