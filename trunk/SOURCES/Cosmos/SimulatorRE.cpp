@@ -34,6 +34,7 @@
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
 #include <time.h>
+#include "marking.hpp"
 //#include "RareEvent.hpp"
 
 #include "SimulatorRE.hpp"
@@ -205,7 +206,7 @@ double SimulatorRE::mu(){
 	
 	vector<int> vect (N.Msimpletab.size());
 	for(size_t i=0; i< N.Msimpletab.size();i++){
-		vect[i] = N.Marking[N.Msimpletab[i]];
+		vect[i] = N.Marking.getNbOfTokens(N.Msimpletab[i]);
 		//cout << i << " : " << N.Msimpletab[i] << " : " << N.Marking[N.Msimpletab[i]] << endl;
 	};
 	

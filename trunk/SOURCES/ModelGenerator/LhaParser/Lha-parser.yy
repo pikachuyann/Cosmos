@@ -184,7 +184,7 @@ declarations:  Sizes Constants Lists HaslExps
 IntMarkingFormula: ival {sprintf($$,"%d",$1);}
 | str {
 	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
-	{std::ostringstream s; s<<" Marking[ "<<Reader.MyLha.PlaceIndex[*$1]<<" ] ";
+	{std::ostringstream s; s<<" Marking.P->_PL_"<< $1->c_str()<<" ";
 		sprintf($$, "%s",(s.str()).c_str());
 	}
 	else if(Reader.MyLha.LhaIntConstant.find(*$1)!=Reader.MyLha.LhaIntConstant.end())
@@ -208,7 +208,7 @@ RealMarkingFormula:  rval {sprintf($$, "%f",$1);}
 | ival {sprintf($$,"%d",$1);}
 | str {
 	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
-	{std::ostringstream s; s<<" Marking[ "<<Reader.MyLha.PlaceIndex[*$1]<<" ] ";
+	{std::ostringstream s; s<<" Marking.P->_PL_"<<$1->c_str()<<" ";
 		sprintf($$, "%s",(s.str()).c_str());
 	}
 	else if(Reader.MyLha.LhaRealConstant.find(*$1)!=Reader.MyLha.LhaRealConstant.end())
@@ -232,7 +232,7 @@ RealVarMarkingFormula:  rval {sprintf($$, "%f",$1);}
 | ival {sprintf($$,"%d",$1);}
 | str {
 	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
-	{std::ostringstream s; s<<" Marking[ "<<Reader.MyLha.PlaceIndex[*$1]<<" ] ";
+	{std::ostringstream s; s<<" Marking.P->_PL_"<<$1->c_str()<<" ";
 		sprintf($$, "%s",(s.str()).c_str());
 	}
 	else{ if(Reader.MyLha.LhaRealConstant.find(*$1)!=Reader.MyLha.LhaRealConstant.end())
@@ -574,7 +574,7 @@ term:   str
 		else
 		{
 			if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
-			{std::ostringstream s; s<<"Marking["<<Reader.MyLha.PlaceIndex[*$1]<<"]";
+			{std::ostringstream s; s<<"Marking.P->_PL_"<<$1->c_str()<<" ";
 				CoeffsVector[Reader.MyLha.VarIndex[*$3]]=s.str();
 			}
 			else
@@ -614,7 +614,7 @@ term:   str
 		else
 		{
 			if(Reader.MyLha.PlaceIndex.find(*$2)!=Reader.MyLha.PlaceIndex.end())
-			{std::ostringstream s; s<<"-Marking["<<Reader.MyLha.PlaceIndex[*$2]<<"]";
+			{std::ostringstream s; s<<"-Marking.P->_PL_"<<$2->c_str()<<" ";
 				CoeffsVector[Reader.MyLha.VarIndex[*$4]]=s.str();
 			}
 			else
@@ -824,7 +824,7 @@ VarTerm:   str
 		else
 		{
 			if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
-			{sprintf($$,"Marking[%d] * Var[%d]", Reader.MyLha.PlaceIndex[*$1],Reader.MyLha.VarIndex[*$3]);
+			{sprintf($$,"Marking.P->_PL_%s * Var[%d]", $1->c_str() ,Reader.MyLha.VarIndex[*$3]);
 			}
 			else
 			{
@@ -862,7 +862,7 @@ VarTerm:   str
 		else
 		{
 			if(Reader.MyLha.PlaceIndex.find(*$2)!=Reader.MyLha.PlaceIndex.end())
-			{sprintf($$,"-Marking[%d] * Var[%d]", Reader.MyLha.PlaceIndex[*$2],Reader.MyLha.VarIndex[*$4]);
+			{sprintf($$,"-Marking.P->_PL_%s * Var[%d]", $2->c_str() ,Reader.MyLha.VarIndex[*$4]);
 			}
 			else
 			{

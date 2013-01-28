@@ -66,23 +66,16 @@ set<int, less <int> > SPN_ORIG::enabledTrans() {
 }
 
 void SPN_ORIG::reset() {
-    Marking = initMarking;
+	Marking.resetToInitMarking();
 	TransitionConditions = initTransitionConditions;
 }
 
-void SPN_ORIG::setMarking(vector<int>& M) {
+/*void SPN_ORIG::setMarking(const abstractMarking& M) {
     Marking = M;
-}
+}*/
 
-void SPN_ORIG::printMarking(){
-	cerr << "Marking:\t";
-	for(size_t i =0; i < Marking.size();i++){
-		cerr << Place[i].label << ":" << Marking[i] << "\t,";
-	}
-}
 
 void SPN_ORIG::EnabledDisabledTr() {
-
     for (int t1 = 0; t1 < tr; t1++) {
         set<int> S;
         set<int> Sinhib;
@@ -184,10 +177,8 @@ void SPN_ORIG::EnabledDisabledTr() {
             if ((PossiblyEnabled[t].find((*it)) == PossiblyEnabled[t].end()) &&
 				(PossiblyDisabled[t].find((*it)) == PossiblyDisabled[t].end()))
                 S.insert((*it));
-
         }
         FreeMarkDepT.push_back(S);
-
     }
 }
 
@@ -202,9 +193,9 @@ void SPN_ORIG::decrCondition(unsigned int t){
 	if(TransitionConditions[t]==0)newlyEnabled.insert(t);
 }
 
-vector<int> SPN_ORIG::getMarking() {
+/*vector<int> SPN_ORIG::getMarking() {
     return Marking;
-}
+}*/
 
 double SPN_ORIG::min(double x1, double x2) {
     if (x1 < x2) return x1;

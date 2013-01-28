@@ -161,20 +161,22 @@ void Lha_Reader::WriteFile(parameters& P) {
 	*/
 	
 	LhaCppFile << "#include \"LHA_orig.hpp\"" << endl;
+	LhaCppFile << "#include \"markingImpl.hpp\"" << endl;
 	LhaCppFile << "#include <math.h>" << endl;
 	LhaCppFile << "#include <float.h>" << endl;
 	LhaCppFile << "#include \"LHA.hpp\"" << endl;
 	
+	
 	/*LhaCppFile << "class LHA: " << endl << "public LHA_ORIG {" << endl;
 	LhaCppFile << "public:"<< endl;
 	LhaCppFile << "    void Load();" <<endl;
-	LhaCppFile << "    double GetFlow(int, int, vector<int>&);" <<endl;
-	LhaCppFile << "    bool CheckLocation(int, vector<int>&);" <<endl;
-	LhaCppFile << "    bool CheckEdgeContraints(int, double, vector<int>&);" <<endl;
-	LhaCppFile << "    t_interval GetEdgeEnablingTime(int, vector<int>&);" <<endl;
-	LhaCppFile << "    int GetEnabled_S_Edges(int, int, double, vector<int>&, vector<int>&);" <<endl;
-	LhaCppFile << "    void DoEdgeUpdates(int, vector<int>&);" <<endl;
-	LhaCppFile << "    void UpdateLinForm(vector<int>&);" <<endl;
+	LhaCppFile << "    double GetFlow(int, int, abstractMarking&);" <<endl;
+	LhaCppFile << "    bool CheckLocation(int, abstractMarking&);" <<endl;
+	LhaCppFile << "    bool CheckEdgeContraints(int, double, abstractMarking&);" <<endl;
+	LhaCppFile << "    t_interval GetEdgeEnablingTime(int, abstractMarking&);" <<endl;
+	LhaCppFile << "    int GetEnabled_S_Edges(int, int, double, abstractMarking&, abstractMarking&);" <<endl;
+	LhaCppFile << "    void DoEdgeUpdates(int, abstractMarking&);" <<endl;
+	LhaCppFile << "    void UpdateLinForm(abstractMarking&);" <<endl;
 	LhaCppFile << "    void UpdateLhaFunc(double&, double&);" <<endl;
 	LhaCppFile << "    void UpdateFormulaVal();" <<endl;
 	*/
@@ -183,11 +185,11 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	/*
 	for (int e = 0; e < MyLha.Edge.size(); e++)
-        LhaCppFile << "t_interval GetEdgeEnablingTime_" << e << "(vector<int>& );" << endl;
+        LhaCppFile << "t_interval GetEdgeEnablingTime_" << e << "(abstractMarking& );" << endl;
 	 */
 	/*
     for (int e = 0; e < MyLha.Edge.size(); e++)
-        LhaCppFile << "void DoEdgeUpdates_" << e << "(vector<int>& );" << endl;
+        LhaCppFile << "void DoEdgeUpdates_" << e << "(abstractMarking& );" << endl;
 	*/
     
 	
@@ -345,7 +347,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "}\n" << endl;
 
 
-    LhaCppFile << "double LHA::GetFlow(int v, int loc,const vector<int>& Marking){" << endl;
+    LhaCppFile << "double LHA::GetFlow(int v, int loc,const abstractMarking& Marking){" << endl;
     LhaCppFile << "    switch(v){" << endl;
     for (size_t x = 0; x < MyLha.NbVar; x++) {
 
@@ -365,7 +367,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "	}\n" << endl;
     LhaCppFile << "}\n" << endl;
 
-    LhaCppFile << "bool LHA::CheckLocation(int loc,const vector<int>& Marking){" << endl;
+    LhaCppFile << "bool LHA::CheckLocation(int loc,const abstractMarking& Marking){" << endl;
     LhaCppFile << "    switch(loc){" << endl;
     for (size_t l = 0; l < MyLha.NbLoc; l++) {
         LhaCppFile << "     case " << l << ":" << endl;
@@ -402,7 +404,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "}\n" << endl;
 
 
-    LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed,const vector<int>& Marking){" << endl;
+    LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "     case " << e << ":" << endl;
@@ -497,7 +499,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 
 
 
-    LhaCppFile << "void LHA::DoEdgeUpdates(int ed,const vector<int>& Marking){" << endl;
+    LhaCppFile << "void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         LhaCppFile << "     case " << e << ":" << endl;
@@ -542,12 +544,12 @@ void Lha_Reader::WriteFile(parameters& P) {
 
 
     /*for (int e = 0; e < MyLha.Edge.size(); e++) {
-        LhaCppFile << "void LHA::DoEdgeUpdates_" << e << "(vector<int>& Marking){" << endl;
+        LhaCppFile << "void LHA::DoEdgeUpdates_" << e << "(abstractMarking& Marking){" << endl;
         
         LhaCppFile << "    }\n" << endl;
     }*/
 
-    LhaCppFile << "void LHA::UpdateLinForm(const vector<int>& Marking){" << endl;
+    LhaCppFile << "void LHA::UpdateLinForm(const abstractMarking& Marking){" << endl;
     for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++) {
         LhaCppFile << "    LinForm[" << (*it).second << "]=" << (*it).first << ";" << endl;
 

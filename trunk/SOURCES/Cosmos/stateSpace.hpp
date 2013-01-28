@@ -47,6 +47,7 @@
 #include <iostream>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include "marking.hpp"
 
 //using namespace arma;
 using namespace std;

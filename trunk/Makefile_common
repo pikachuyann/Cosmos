@@ -35,6 +35,7 @@ sim:
 	cp SOURCES/Cosmos/spn_orig.hpp includes/
 	cp SOURCES/Cosmos/LHA.hpp includes/
 	cp SOURCES/Cosmos/LHA_orig.hpp includes/ 
+	cp SOURCES/Cosmos/marking.hpp includes/
 
 
 parser:

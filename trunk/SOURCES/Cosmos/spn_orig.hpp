@@ -31,6 +31,7 @@
 #include <vector>
 #include <map>
 #include <cmath>
+#include "marking.hpp"
 
 using namespace std;
 
@@ -76,10 +77,8 @@ public:
     vector <spn_trans> Transition; //contains all the transitions of the Petri net
     vector <spn_place> Place; //contains all the places of the Petri net
     
-	vector<int> Marking; // Current marking
+	abstractMarking Marking; // Current marking
 	vector<int> getMarking(); //return  the current marking
-	void setMarking(vector<int>&); // set the marking to a given marking
-	void printMarking(); //print the current Marking
 	
 	void reset(); // set the marking to the initial marking
 
@@ -93,9 +92,6 @@ public:
 	virtual const set<int>* FreeMarkingDependant() = 0; //return the set of transition without constrain but marking dependant
 	
     set<int, less <int> > enabledTrans(); // return the set of enabled transitions
-	
-   
-	
 	virtual bool IsEnabled(int) = 0 ; // Check if a given transition is enabled
 
 	//------------------------- Rare Event -------------------------------------

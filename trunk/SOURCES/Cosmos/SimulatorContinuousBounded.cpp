@@ -275,7 +275,7 @@ double SimulatorContinuousBounded::mu(){
 	
 	vector<int> vect (N.Msimpletab.size());
 	for(size_t i=0; i< N.Msimpletab.size();i++){
-		vect[i] = N.Marking[N.Msimpletab[i]];
+		vect[i] = N.Marking.getNbOfTokens(N.Msimpletab[i]);
 	};
 	
     //cerr << "test(" << endl;
@@ -289,9 +289,9 @@ double SimulatorContinuousBounded::mu(){
         for (vector<int>::iterator it = vect.begin(); it != vect.end(); it++) {
             cerr << *it<< " , ";
         }
-        cerr << endl << "marquage:";
+        cerr << endl << "marking:";
         for(size_t i=0; i< N.Msimpletab.size();i++){
-            cerr << N.Marking[N.Msimpletab[i]] << " , ";
+            cerr << N.Marking.getNbOfTokens(N.Msimpletab[i]) << " , ";
         };
 		cerr << endl << "state not found" << endl;
 	}

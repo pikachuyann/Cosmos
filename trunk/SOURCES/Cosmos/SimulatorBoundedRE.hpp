@@ -30,6 +30,7 @@
 
 #include "SimulatorRE.hpp"
 #include "numericalSolver.hpp"
+#include "marking.hpp"
 
 #ifndef _SIMULATOR_BOUNDED_RE_HPP
 #define _SIMULATOR_BOUNDED_RE_HPP
@@ -37,7 +38,7 @@
 
 class simulationState{
 private:
-	vector<int> marking;
+	abstractMarking marking;
 	int LHAstate;
 	double LHAcurrentTime;
 	AutEdge AE;
@@ -64,9 +65,7 @@ public:
 		//EQ = new EventsQueue(n);
         maxStep=0;
 	};
-	~simulationState(){
-		//delete EQ;
-	};
+	~simulationState(){};
 	
 	void saveState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim, double* t){
 		marking = N->Marking;

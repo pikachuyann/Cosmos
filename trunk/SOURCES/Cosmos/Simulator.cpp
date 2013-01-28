@@ -36,6 +36,7 @@
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
 #include <time.h>
+#include "marking.hpp"
 
 
 using namespace std;
@@ -213,7 +214,7 @@ bool Simulator::SimulateOneStep(){
     if(verbose>3){
         //Print marking and location of the automata
         //Usefull to track a simulation
-        N.printMarking();
+		N.Marking.print();
         A.printState();
 		cerr << endl;
     }

@@ -45,7 +45,7 @@ void LHA_ORIG::printState(){
 	}
 }
 
-int LHA_ORIG::EnabledInitLocation(const vector<int>& Marking) {
+int LHA_ORIG::EnabledInitLocation(const abstractMarking& Marking) {
 
     for (set<int>::iterator l = InitLoc.begin(); l != InitLoc.end(); l++) {
         if (CheckLocation((*l), Marking))
@@ -54,7 +54,7 @@ int LHA_ORIG::EnabledInitLocation(const vector<int>& Marking) {
     return (-1);
 }
 
-int LHA_ORIG::GetEnabled_S_Edges(int PetriNetTransition, const vector<int>& NextMarking) {
+int LHA_ORIG::GetEnabled_S_Edges(int PetriNetTransition, const abstractMarking& NextMarking) {
     for (set<int>::iterator it = ActionEdges[CurrentLocation][PetriNetTransition].begin(); it != ActionEdges[CurrentLocation][PetriNetTransition].end(); it++) {
         if ((CheckLocation(Edge[(*it)].Target, NextMarking))) {
             if (CheckEdgeContraints((*it))) return (*it);
@@ -65,7 +65,7 @@ int LHA_ORIG::GetEnabled_S_Edges(int PetriNetTransition, const vector<int>& Next
 
 }
 
-AutEdge LHA_ORIG::GetEnabled_A_Edges(const vector<int>& Marking) {
+AutEdge LHA_ORIG::GetEnabled_A_Edges(const abstractMarking& Marking) {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
@@ -87,7 +87,7 @@ AutEdge LHA_ORIG::GetEnabled_A_Edges(const vector<int>& Marking) {
 
 }
 
-void LHA_ORIG::DoElapsedTimeUpdate(double DeltaT,const vector<int>& Marking) {
+void LHA_ORIG::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {
 
     for (int v = 0; v < NbVar; v++) {
         Var[v] += GetFlow(v, CurrentLocation, Marking) * DeltaT;
@@ -106,7 +106,7 @@ void LHA_ORIG::resetVarsTable() {
         LhaFunc[i] = 0;
 }
 
-void LHA_ORIG::reset(const vector<int>& Marking) {
+void LHA_ORIG::reset(const abstractMarking& Marking) {
   Likelihood = 1.0;
   LHA_ORIG::resetVarsTable();
   CurrentLocation = EnabledInitLocation(Marking);

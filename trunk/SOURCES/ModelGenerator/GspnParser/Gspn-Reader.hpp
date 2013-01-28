@@ -125,7 +125,8 @@ public:
     int parse_file(std::string&);
 	int parse_gml_file(std::string&,bool);
     void WriteFile(parameters&);
-
+	void writeMarkingClasse(ofstream &, ofstream &);
+	
     bool trace_parsing;
 
 
@@ -136,5 +137,9 @@ public:
     void addSinkTrans();
     
     void view();
+private:
+	void EnabledDisabledTr(vector< set<int> >,
+						   vector< set<int> >,
+						   vector< set<int> >);
 };
 #endif // ! GSPN_READER_HH

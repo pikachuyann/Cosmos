@@ -4,7 +4,7 @@
  * (S)tochastiques                                                             *
  *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
- * Authors: Paolo Ballarini & Hilal Djafri                                     *
+ * Authors: Paolo Ballarini Benoît Barbot & Hilal Djafri                       *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
  *                                                                             *
  * This program is free software; you can redistribute it and/or modify        *
@@ -20,26 +20,44 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
+ * file marking.cpp created by Benoit Barbot on 28/01/13.                      *
  *******************************************************************************
  */
 
-#ifndef _LHA_HPP
-#define	_LHA_HPP
-#include "LHA_orig.hpp"
-class LHA: public LHA_ORIG {
+#ifndef Cosmos_marking_h
+#define Cosmos_marking_h
+
+#include <vector>
+
+class abstractMarkingImpl;
+
+class abstractMarking {
 public:
-	LHA();
-	void DoEdgeUpdates(int, const abstractMarking&);
-	void UpdateFormulaVal();
-    void UpdateLinForm(const abstractMarking&);
-    void UpdateLhaFunc( double&);
-	void UpdateLhaFuncLast();
+	abstractMarkingImpl* P;
 	
-    double GetFlow(int, int,const abstractMarking&);
-    bool CheckLocation(int,const abstractMarking&);
-    bool CheckEdgeContraints(int);
-							 
-	t_interval GetEdgeEnablingTime(int,const abstractMarking&);
-	//int GetEnabled_S_Edges(int, int, double, vector<int>&, vector<int>&);
+	abstractMarking();
+	abstractMarking(const std::vector<int>& m);
+	abstractMarking(const abstractMarking& m);
+	abstractMarking& operator = (const abstractMarking& m);
+	~abstractMarking();
+	
+	void setLocation(int);
+	int retriveLocation()const;
+	void print()const;
+	void resetToInitMarking();
+	int getNbOfTokens(int)const;
+	std::vector<int> getVector()const;
+	void setVector(const std::vector<int>&);
+
 };
-#endif	/* _LHA_HPP */
+
+struct markingEqState{
+	bool operator()(const abstractMarking &t1,const abstractMarking &t2) const;
+};
+
+struct markingHashState{
+	int operator()(const abstractMarking &t1) const;
+};
+
+
+#endif

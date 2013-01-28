@@ -31,6 +31,7 @@
 #include <map>
 
 #include "spn_orig.hpp"
+#include "marking.hpp"
 
 #include <stdlib.h>
 
@@ -126,26 +127,26 @@ public:
 	
 	
 	
-    int EnabledInitLocation(const vector<int>&);
+    int EnabledInitLocation(const abstractMarking&);
 	
-	virtual double GetFlow(int, int,const vector<int>&) = 0;
-	virtual bool CheckLocation(int,const vector<int>&) = 0;
+	virtual double GetFlow(int, int,const abstractMarking&) = 0;
+	virtual bool CheckLocation(int,const abstractMarking&) = 0;
 	virtual bool CheckEdgeContraints(int) = 0;
 	
-    virtual t_interval GetEdgeEnablingTime(int,const vector<int>&) = 0 ;
+    virtual t_interval GetEdgeEnablingTime(int,const abstractMarking&) = 0 ;
 	
 	
-    int GetEnabled_S_Edges(int, const vector<int>&);
-    AutEdge GetEnabled_A_Edges(const vector<int>&);
+    int GetEnabled_S_Edges(int, const abstractMarking&);
+    AutEdge GetEnabled_A_Edges(const abstractMarking&);
 	
 	
-    void DoElapsedTimeUpdate(double, const vector<int>&);
+    void DoElapsedTimeUpdate(double, const abstractMarking&);
 	
     void setCurrentLocation(unsigned int);
 	
     //virtual void DoEdgeUpdates(int, vector<int>&);
     
-	void doPathVarsUpdate(double, double, const vector<int>&);
+	void doPathVarsUpdate(double, double, const abstractMarking&);
 	
 	
 	
@@ -155,7 +156,7 @@ public:
     bool isFinal();
     void resetVarsTable();
     void resetPathVarsTable();
-    void reset(const vector<int>&);
+    void reset(const abstractMarking&);
 	
     void ViewEdge(int);
     void ViewAllEdges();

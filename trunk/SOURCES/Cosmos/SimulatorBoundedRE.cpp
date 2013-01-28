@@ -132,7 +132,7 @@ double SimulatorBoundedRE::mu(){
 	
 	vector<int> vect (N.Msimpletab.size());
 	for(size_t i=0; i< N.Msimpletab.size();i++){
-		vect[i] = N.Marking[N.Msimpletab[i]];
+		vect[i] = N.Marking.getNbOfTokens(N.Msimpletab[i]);
 	};
 	
     N.lumpingFun(&vect);

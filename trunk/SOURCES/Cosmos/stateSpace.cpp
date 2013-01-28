@@ -71,7 +71,7 @@ void stateSpace::exploreStateSpace(){
     cerr << "Exploring state space" << endl;
     
 	stack<vector<int> ,vector<vector<int> > > toBeExplore;
-	vector<int> init = N.Marking;
+	vector<int> init = N.Marking.getVector();
 	
 	set <int, less<int> > ::iterator it;
 	
@@ -88,7 +88,7 @@ void stateSpace::exploreStateSpace(){
 		
 		A.setCurrentLocation(place.back());
 		place.pop_back();
-		N.setMarking(place);
+		N.Marking.setVector(place);
 		
 		set<int, less <int> > ent;
 		ent = N.enabledTrans();
@@ -97,10 +97,10 @@ void stateSpace::exploreStateSpace(){
 			
 			N.fire(*it);
 			//cerr << "transition:" << *it << endl;
-			vector<int> marking = N.Marking;
+			vector<int> marking = N.Marking.getVector();
 			N.unfire(*it);
 			
-			int SE = A.GetEnabled_S_Edges( *it , marking);
+			int SE = A.GetEnabled_S_Edges( *it , abstractMarking(marking));
 			if (SE > -1) {
 				
 				nbTrans++;
@@ -144,7 +144,7 @@ void stateSpace::buildTransitionMatrix()
 		
 		A.setCurrentLocation(place.back());
 		place.pop_back();
-		N.setMarking(place);
+		N.Marking.setVector(place);
 		
 		set<int, less <int> > ent;
 		ent = N.enabledTrans();
@@ -153,7 +153,7 @@ void stateSpace::buildTransitionMatrix()
 		for (it = ent.begin(); it != ent.end(); it++) {
 			
 			N.fire(*it);
-			vector<int> marking = N.Marking;
+			vector<int> marking = N.Marking.getVector();
 			N.unfire(*it);
 			
 			int SE = A.GetEnabled_S_Edges( *it  , marking);
