@@ -48,7 +48,7 @@ parameters::parameters():
 	PathGspn(""),
 	PathLha(""),
 
-	localTesting(true),
+	localTesting(false),
 	RareEvent(false),
 	DoubleIS(false),
 	BoundedRE(0),
