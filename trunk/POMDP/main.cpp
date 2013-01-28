@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
 	
     int Memory = 2; // Number of memory step for the strategy
     double H=1000; //Simulation horizon
-	bool discounted = true; // Compute steady-state or discounted reward.
+	bool discounted = false; // Compute steady-state or discounted reward.
     
 	double Prec=1e-4; // Threshold to stop the iteration
 	int MaxIteration=10; //Max number of iteration
@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
 		
 		M = generateLinearMatrix(n,p,q);
 //		RewardArray = generateLinearReward(n,3);
-		RewardArray = vector<double>(n+1,3*n);
+		RewardArray = vector<double>(n+1,9);
 		ron=-1;
 		rdet=10;
 		ExpFileName="linear.txt";
