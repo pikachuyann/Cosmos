@@ -158,16 +158,6 @@
       </attribute>
     </attribute>
   </node>
-  <node id="8" nodeType="place">
-    <attribute name="name">
-      Puit
-    </attribute>
-    <attribute name="marking">
-      <attribute name="expr"><attribute name="numValue">
-        0
-      </attribute></attribute>
-    </attribute>
-  </node>
   <node id="9" nodeType="transition">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">

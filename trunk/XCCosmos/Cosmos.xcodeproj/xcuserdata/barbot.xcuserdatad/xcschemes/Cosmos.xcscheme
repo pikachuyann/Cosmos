@@ -69,19 +69,19 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--bin-path"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/bin/"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pi.grml"
-            isEnabled = "YES">
+            argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRE.grml"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pilha.grml"
-            isEnabled = "YES">
+            argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRElha.grml"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--count-transition"
