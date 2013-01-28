@@ -51,7 +51,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "288"
          endingLineNumber = "288"
-         landmarkName = "LHA::GetEdgeEnablingTime(int ed,const vector&lt;int&gt;&amp; Marking)"
+         landmarkName = "LHA::UpdateFormulaVal()"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -59,11 +59,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../SOURCES/Cosmos/Simulator.cpp"
-         timestampString = "381003380.18522"
+         timestampString = "381087288.027033"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "213"
-         endingLineNumber = "213"
+         startingLineNumber = "214"
+         endingLineNumber = "214"
          landmarkName = "Simulator::SimulateOneStep()"
          landmarkType = "5">
       </FileBreakpoint>
@@ -77,6 +77,19 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "15"
          endingLineNumber = "15">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/Cosmos/spn.cpp"
+         timestampString = "381097871.465274"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "20"
+         endingLineNumber = "20"
+         landmarkName = "abstractMarking::abstractMarking()"
+         landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

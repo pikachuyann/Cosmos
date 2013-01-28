@@ -509,7 +509,7 @@ namespace gspn {
 #line 127 "Gspn-parser.yy"
     {
 				   if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end()) 
-						{std::ostringstream s; s<<" Marking[ "<<Reader.MyGspn.PlacesId[*(yysemantic_stack_[(1) - (1)].name)]<<" ] ";
+						{std::ostringstream s; s<<" Marking.P->_PL_"<< (yysemantic_stack_[(1) - (1)].name)->c_str() <<" ";
 						 sprintf((yyval.expression), "%s",(s.str()).c_str());						 
 						}
 					else if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.IntConstant.end())
@@ -591,7 +591,7 @@ namespace gspn {
 #line 151 "Gspn-parser.yy"
     {
 				   if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end()) 
-						{std::ostringstream s; s<<" Marking[ "<<Reader.MyGspn.PlacesId[*(yysemantic_stack_[(1) - (1)].name)]<<" ] ";
+						{std::ostringstream s; s<<" Marking.P->_PL_"<<(yysemantic_stack_[(1) - (1)].name)->c_str()<<" ";
 						 sprintf((yyval.expression), "%s",(s.str()).c_str());						
 						}
 					else if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.RealConstant.end())

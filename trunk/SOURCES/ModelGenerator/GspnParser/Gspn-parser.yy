@@ -126,7 +126,7 @@ bool AgeMemory;
 IntStringFormula: ival {sprintf($$,"%d",$1);}
 			| str {
 				   if(Reader.MyGspn.PlacesList.find(*$1)!=Reader.MyGspn.PlacesList.end()) 
-						{std::ostringstream s; s<<" Marking[ "<<Reader.MyGspn.PlacesId[*$1]<<" ] ";
+						{std::ostringstream s; s<<" Marking.P->_PL_"<< $1->c_str() <<" ";
 						 sprintf($$, "%s",(s.str()).c_str());						 
 						}
 					else if(Reader.MyGspn.IntConstant.find(*$1)!=Reader.MyGspn.IntConstant.end())
@@ -150,7 +150,7 @@ RealStringFormula:  rval {sprintf($$, "%f",$1);}
 			| ival {sprintf($$,"%d",$1);}
 			| str {
 				   if(Reader.MyGspn.PlacesList.find(*$1)!=Reader.MyGspn.PlacesList.end()) 
-						{std::ostringstream s; s<<" Marking[ "<<Reader.MyGspn.PlacesId[*$1]<<" ] ";
+						{std::ostringstream s; s<<" Marking.P->_PL_"<<$1->c_str()<<" ";
 						 sprintf($$, "%s",(s.str()).c_str());						
 						}
 					else if(Reader.MyGspn.RealConstant.find(*$1)!=Reader.MyGspn.RealConstant.end())

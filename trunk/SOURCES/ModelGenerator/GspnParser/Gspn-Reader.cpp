@@ -423,7 +423,6 @@ void Gspn_Reader::WriteFile(parameters& P){
     SpnCppFile << "    inArcs = Null_PlxTr_Matrix;" << endl;
     SpnCppFile << "    outArcs = Null_PlxTr_Matrix;" << endl;
     SpnCppFile << "    inhibArcs = Null_PlxTr_Matrix;" << endl;
-    SpnCppFile << "    Marking = Null_Pl_Vector;;" << endl;
     
 	{
 		for (size_t t = 0; t < MyGspn.tr; t++) {

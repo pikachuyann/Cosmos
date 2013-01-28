@@ -50,7 +50,6 @@
 		039932801680A6C900A47FCD /* Lha-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 03D3452E167B7ABB00C6BDFA /* Lha-parser.tab.cc */; };
 		03A194CD14E2C5FA00C17C38 /* parameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03A194CC14E2C5FA00C17C38 /* parameters.cpp */; };
 		03A49A3816B6B46200521256 /* marking.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03A49A3716B6B46200521256 /* marking.hpp */; };
-		03A49A3B16B6D08C00521256 /* marking.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03A49A3916B6D08A00521256 /* marking.cpp */; };
 		03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */; };
 		03B6EEBF1487BBF60099A6CC /* LHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03B6EEBE1487BBF60099A6CC /* LHA.cpp */; };
 		03B6EEC11487BC120099A6CC /* spn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03B6EEC01487BC120099A6CC /* spn.cpp */; };
@@ -145,7 +144,7 @@
 		03A194CC14E2C5FA00C17C38 /* parameters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parameters.cpp; sourceTree = "<group>"; };
 		03A194CE14E2C63500C17C38 /* parameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parameters.hpp; sourceTree = "<group>"; };
 		03A49A3716B6B46200521256 /* marking.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = marking.hpp; sourceTree = "<group>"; };
-		03A49A3916B6D08A00521256 /* marking.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = marking.cpp; sourceTree = "<group>"; };
+		03A49A3D16B6EE1300521256 /* markingImpl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = markingImpl.hpp; path = ../../Examples/RareEventUnbounded/tmp/markingImpl.hpp; sourceTree = "<group>"; };
 		03A9F02114D7ECB500A60D0F /* SimulatorContinuousBounded.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimulatorContinuousBounded.cpp; sourceTree = "<group>"; };
 		03A9F02414D7ECDC00A60D0F /* SimulatorContinuousBounded.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SimulatorContinuousBounded.hpp; sourceTree = "<group>"; };
 		03AD7C7F14BD86C8003F7EA0 /* sparse_io.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sparse_io.hpp; sourceTree = "<group>"; };
@@ -331,11 +330,11 @@
 				03B6EEBE1487BBF60099A6CC /* LHA.cpp */,
 				03DA8F3214F4FD25008C673C /* lumpingfun.cpp */,
 				03B6EEC01487BC120099A6CC /* spn.cpp */,
+				03A49A3D16B6EE1300521256 /* markingImpl.hpp */,
 				0302BB6814692C0E005129BB /* spn.hpp */,
 				0302BAAD1468113C005129BB /* spn_orig.cpp */,
 				0302BAAE1468113C005129BB /* spn_orig.hpp */,
 				03A49A3716B6B46200521256 /* marking.hpp */,
-				03A49A3916B6D08A00521256 /* marking.cpp */,
 				03F1367E143A050100944E04 /* Simulator.cpp */,
 				03F1367F143A050100944E04 /* Simulator.hpp */,
 				03F13680143A050100944E04 /* SimulatorRE.cpp */,
@@ -644,7 +643,6 @@
 				034509C616A80B19002088B3 /* SimulatorContinuousBounded.cpp in Sources */,
 				034509C816A80B19002088B3 /* foxglynn.c in Sources */,
 				034509CA16A80B19002088B3 /* clientsim.cpp in Sources */,
-				03A49A3B16B6D08C00521256 /* marking.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

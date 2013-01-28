@@ -102,9 +102,8 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
            MyGspn->RealConstant.count(*var)>0){st->append(*var);
         }else{
             *is_mark_dep =true;
-            st->append("Marking[_nb_Place_");
+            st->append("Marking.P->_PL_");
             st->append(*var);
-            st->append("]");
         }
 	}else if (	(*it).compare("+")==0  || (*it).compare("*")==0  
               || (*it).compare("min")==0   || (*it).compare("max")==0
