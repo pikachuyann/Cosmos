@@ -117,7 +117,7 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
             st->append(s.str());
 		}else{
             *is_mark_dep =true;
-            std::ostringstream s; s<<"Marking["<<MyLHA->PlaceIndex[var->c_str()]<<"]";
+            std::ostringstream s; s<<"Marking.P->_PL_"<<var->c_str()<<" ";
             st->append(s.str());
         }
     }else if (	(*it).compare("+")==0  || (*it).compare("*")==0 
