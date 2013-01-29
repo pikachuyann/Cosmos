@@ -92,6 +92,7 @@ public:
 	virtual const set<int>* FreeMarkingDependant() = 0; //return the set of transition without constrain but marking dependant
 	
     set<int, less <int> > enabledTrans(); // return the set of enabled transitions
+
 	virtual bool IsEnabled(int) = 0 ; // Check if a given transition is enabled
 
 	//------------------------- Rare Event -------------------------------------
@@ -106,36 +107,19 @@ protected:
 	vector< set<int> > PossiblyEnabled;
     vector< set<int> > PossiblyDisabled;
     vector< set<int> > FreeMarkDepT;
-	set<int>newlyEnabled;
-	set<int>newlyDisabled;
-	
-	vector <int> initMarking; //initial marking
-
-	map <string, int> PlaceIndex; // for a given place label return its index among {0, 1, ..., pl-1}
-    map <string, int> TransitionIndex; // for a given transition label return its index among {0, 1, ..., tr-1}
-	IntMatrix inArcs; // input arcs
-    IntMatrix outArcs; //output arcs
-    IntMatrix inhibArcs; // inhibitor arcs
 	
 	//------------------------- On the fly enabling disabling transition--------
 	vector<int> TransitionConditions;
 	vector<int> initTransitionConditions;
-	void incrCondition(unsigned int);
-	void decrCondition(unsigned int);
-	
+	//-------------------------/On the fly enabling disabling transition--------
 	
 	set<int, less<int> > enTrans; // the set of current enabled transition
 
 
-	//-------------------------/On the fly enabling disabling transition--------
-	
 	//------------------------- Rare Event ---------------------------------------
 	void Msimple();
 	//-------------------------/Rare Event ---------------------------------------
 
-
-	void EnabledDisabledTr(); // contruct for each transition t, the vector of transitions that may be enabled (PossiblyEnabled) and the vector of transitions that may be disabled (PossiblyDisabled) after firing t
-	
 	double min(double, double); //return the minimum of two numbers
     double max(double, double); //return the maximum of two numbers
 };

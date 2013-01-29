@@ -167,9 +167,9 @@ void Gspn_Reader::addSinkTrans(){
     (MyGspn.outArcs)[MyGspn.tr-1][MyGspn.pl-1]=1;
 }
 
-void Gspn_Reader::EnabledDisabledTr(vector< set<int> > PossiblyEnabled,
-									vector< set<int> > PossiblyDisabled,
-									vector< set<int> > FreeMarkDepT) {
+void Gspn_Reader::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
+									vector< set<int> > &PossiblyDisabled,
+									vector< set<int> > &FreeMarkDepT) {
 	
     for (size_t t1 = 0; t1 < MyGspn.tr; t1++) {
         set<int> S;
@@ -277,6 +277,38 @@ void Gspn_Reader::EnabledDisabledTr(vector< set<int> > PossiblyEnabled,
     }
 }
 
+void Gspn_Reader::writeEnabledDisabled(ofstream &SpnF){
+	vector< set<int> > PossiblyEnabled;
+    vector< set<int> > PossiblyDisabled;
+    vector< set<int> > FreeMarkDepT;
+	
+	EnabledDisabledTr(PossiblyEnabled,PossiblyDisabled,FreeMarkDepT);
+	
+	SpnF << "\tPossiblyEnabled = vector< set<int> >("<< MyGspn.tr << ");"<< endl;
+	for (size_t t = 0; t < MyGspn.tr; t++) {
+		for (set<int>::iterator it = PossiblyEnabled[t].begin(); it != PossiblyEnabled[t].end(); it++) {
+			SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
+		}
+	}
+	SpnF << endl;
+	
+	SpnF << "\tPossiblyDisabled = vector< set<int> >("<< MyGspn.tr << ");"<< endl;
+	for (size_t t = 0; t < MyGspn.tr; t++) {
+		for (set<int>::iterator it = PossiblyDisabled[t].begin(); it != PossiblyDisabled[t].end(); it++) {
+			SpnF << "\tPossiblyDisabled[" << t << "].insert( " << *it << " );"<< endl;
+		}
+	}
+	SpnF << endl;
+	
+	SpnF << "\tFreeMarkDepT = vector< set<int> >("<< MyGspn.tr << ");"<< endl;
+	for (size_t t = 0; t < MyGspn.tr; t++) {
+		for (set<int>::iterator it = FreeMarkDepT[t].begin(); it != FreeMarkDepT[t].end(); it++) {
+			SpnF << "\tFreeMarkDepT[" << t << "].insert( " << *it << " );"<< endl;
+		}
+	}
+	SpnF << endl;
+}
+
 void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	
 	SpnCppFile << "#include \"marking.hpp\"\n";
@@ -285,16 +317,16 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	header << "class abstractMarkingImpl {\n";
 	header << "public:\n";
 	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-        header << "	int _PL_"<< *it << ";\n";
+        header << "\tint _PL_"<< *it << ";\n";
 	}
-	header << "	int LHALocation;\n";
+	header << "\tint LHALocation;\n";
 	header << "};\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::resetToInitMarking(){\n";
-	SpnCppFile << "	P->LHALocation=0;\n";
+	SpnCppFile << "\tP->LHALocation=0;\n";
 	
 	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-        SpnCppFile << "P->_PL_"<< *it << " =" <<
+        SpnCppFile << "\tP->_PL_"<< *it << " =" <<
 			MyGspn.Marking[MyGspn.PlacesId[*it]] << ";\n";
 	}
 	
@@ -302,33 +334,30 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	SpnCppFile << "\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "abstractMarking::abstractMarking() {\n";
-	SpnCppFile << "	P= new abstractMarkingImpl;\n";
-	SpnCppFile << "	resetToInitMarking();\n";
+	SpnCppFile << "\tP= new abstractMarkingImpl;\n";
+	SpnCppFile << "\tresetToInitMarking();\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "abstractMarking::abstractMarking(const std::vector<int>& m) {\n";
-	SpnCppFile << "	P = new abstractMarkingImpl;\n";
-	SpnCppFile << "	setVector(m);\n";
+	SpnCppFile << "\tP = new abstractMarkingImpl;\n";
+	SpnCppFile << "\tsetVector(m);\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "abstractMarking::abstractMarking(const abstractMarking& m) {\n";
-	SpnCppFile << "	P= new abstractMarkingImpl;\n";
-	SpnCppFile << "	\n";
-	SpnCppFile << "	*this = m;\n";
-	SpnCppFile << "	\n";
+	SpnCppFile << "\tP= new abstractMarkingImpl;\n";
+	SpnCppFile << "\t*this = m;\n";
 	SpnCppFile << "};\n";
 	SpnCppFile << "\n";
-	SpnCppFile << "\n";
 	SpnCppFile << "abstractMarking& abstractMarking::operator = (const abstractMarking& m) {\n";
-	SpnCppFile << "	*P = *(m.P);\n";
-	SpnCppFile << "	return *this;\n";
+	SpnCppFile << "\t*P = *(m.P);\n";
+	SpnCppFile << "\treturn *this;\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "abstractMarking::~abstractMarking() {\n";
-	SpnCppFile << "	delete(P);\n";
+	SpnCppFile << "\tdelete(P);\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::setLocation(int l){\n";
-	SpnCppFile << "	P->LHALocation = l;\n";
+	SpnCppFile << "\tP->LHALocation = l;\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "\n";
@@ -337,33 +366,33 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::print()const{\n";
-	SpnCppFile << "	std::cerr << \"Marking:\"<< std::endl;\n";
+	SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
 	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-		SpnCppFile << "	std::cerr << \""<< *it <<": \" << P->_PL_"<< *it << " << std::endl;\n";
+		SpnCppFile << "\tstd::cerr << \""<< *it <<": \" << P->_PL_"<< *it << " << std::endl;\n";
 	}
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "int abstractMarking::getNbOfTokens(int p)const {\n";
-	SpnCppFile << "	switch (p) {\n";
+	SpnCppFile << "\tswitch (p) {\n";
 	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-		SpnCppFile << "	case "<< MyGspn.PlacesId[*it] << ": return P->_PL_"<< *it << ";\n";
+		SpnCppFile << "\t\tcase "<< MyGspn.PlacesId[*it] << ": return P->_PL_"<< *it << ";\n";
 	}
 	SpnCppFile << "	}\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "std::vector<int> abstractMarking::getVector()const {\n";
-	SpnCppFile << "	std::vector<int> v("<<MyGspn.pl << ");\n";
+	SpnCppFile << "\tstd::vector<int> v("<<MyGspn.pl << ");\n";
 	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-        SpnCppFile << "v[" << MyGspn.PlacesId[*it] <<"] = P->_PL_" << *it << ";\n";
+        SpnCppFile << "\tv[" << MyGspn.PlacesId[*it] <<"] = P->_PL_" << *it << ";\n";
 	}
 	SpnCppFile << "	return v;\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::setVector(const std::vector<int>&v) {\n";
 	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-        SpnCppFile << "P->_PL_" << *it << " = v[" << MyGspn.PlacesId[*it] << "];\n";
+        SpnCppFile << "\tP->_PL_" << *it << " = v[" << MyGspn.PlacesId[*it] << "];\n";
 	}
-	SpnCppFile << "};";
+	SpnCppFile << "};"<<endl<<endl;
 }
 
 
@@ -383,7 +412,8 @@ void Gspn_Reader::WriteFile(parameters& P){
     //loc = Pref + "../SOURCES/Cosmos/spn.cpp";
 	loc = Pref + "/spn.cpp";
     //loc= "/Users/barbot/Documents/Cosmos/SOURCES/Cosmos/spn.cpp";
-	ofstream SpnCppFile(loc.c_str(), ios::out | ios::trunc); // ouverture en écriture avec effacement du SpnCppFile ouvert
+	ofstream SpnCppFile(loc.c_str(), ios::out | ios::trunc);
+	// ouverture en écriture avec effacement du SpnCppFile ouvert
 	//cout << loc << endl;
 	string headerloc = Pref + "/markingImpl.hpp";
 	ofstream header(headerloc.c_str(), ios::out | ios::trunc);
@@ -393,19 +423,21 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "#include \"spn.hpp\"" << endl;
 	
 	
-	
-	for (map<string,double>::iterator it= MyGspn.RealConstant.begin(); it!= MyGspn.RealConstant.end() ; it++) {
-		SpnCppFile << "    const double " << it->first << "=" << it->second << ";" << endl;
+	//------------- Writing constant--------------------------------------------
+	for (map<string,double>::iterator it= MyGspn.RealConstant.begin();
+		 it!= MyGspn.RealConstant.end() ; it++) {
+		SpnCppFile << "\tconst double "<<it->first<<"="<<it->second << ";" << endl;
 	}
-	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
+	for (set<string>::iterator it = MyGspn.PlacesList.begin();
+		 it != MyGspn.PlacesList.end(); it++) {
         int k = MyGspn.PlacesId[*it];
-		SpnCppFile << "    const int _nb_Place_"<< *it << "=" << k << ";" << endl;
+		SpnCppFile << "\tconst int _nb_Place_"<< *it << "=" << k << ";" << endl;
     }
     
 	SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
 	SpnCppFile << "#include <iostream>" << endl;
 	
-	
+	//------------- Writing Marking type and header ----------------------------
 	writeMarkingClasse(SpnCppFile,header);
 	header.close();
 	
@@ -413,49 +445,18 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "\tSPN_ORIG(" << MyGspn.pl << ", ";
 	SpnCppFile << MyGspn.tr << ") {" << endl;
     SpnCppFile << "    Path =\"" << MyGspn.Path << "\";" << endl;
+		
+	writeEnabledDisabled(SpnCppFile);
 	
-    SpnCppFile << "    IntVector Null_Pl_Vector(pl, 0);" << endl;
-	
-	
-    SpnCppFile << "    IntMatrix Null_PlxTr_Matrix(tr, Null_Pl_Vector);" << endl;
-	
-	
-    SpnCppFile << "    inArcs = Null_PlxTr_Matrix;" << endl;
-    SpnCppFile << "    outArcs = Null_PlxTr_Matrix;" << endl;
-    SpnCppFile << "    inhibArcs = Null_PlxTr_Matrix;" << endl;
-    
-	{
-		for (size_t t = 0; t < MyGspn.tr; t++) {
-			for (size_t p = 0; p < MyGspn.pl; p++)
-				if (MyGspn.inArcs[t][p] > 0)
-					SpnCppFile << "    inArcs[" << t << "][" << p << "]=" << MyGspn.inArcs[t][p] << ";" << endl;
-			SpnCppFile << endl;
-			
-		}
-		for (size_t t = 0; t < MyGspn.tr; t++) {
-			for (size_t p = 0; p < MyGspn.pl; p++)
-				if (MyGspn.outArcs[t][p] > 0)
-					SpnCppFile << "    outArcs[" << t << "][" << p << "]=" << MyGspn.outArcs[t][p] << ";" << endl;
-			SpnCppFile << endl;
-			
-		}
-		for (size_t t = 0; t < MyGspn.tr; t++) {
-			for (size_t p = 0; p < MyGspn.pl; p++)
-				if (MyGspn.inhibArcs[t][p] > 0)
-					SpnCppFile << "    inhibArcs[" << t << "][" << p << "]=" << MyGspn.inhibArcs[t][p] << ";" << endl;
-			SpnCppFile << endl;
-		}
+	if(P.localTesting){
+		SpnCppFile << "\tsetConditionsVector();"<< endl;
+		SpnCppFile << "\tinitTransitionConditions = TransitionConditions;" << endl;
 	}
 	
-	SpnCppFile << "\tsetConditionsVector();"<< endl;
-	SpnCppFile << "\tinitTransitionConditions = TransitionConditions;" << endl;
-	
-	
     SpnCppFile << "    vector <spn_trans> t(" << MyGspn.tr << ");" << endl;
-	
     SpnCppFile << "    Transition = t;" << endl;
 	
-	
+
     SpnCppFile << "    vector <spn_place> p(" << MyGspn.pl << ");" << endl;
     SpnCppFile << "    Place = p;" << endl;
 	
@@ -465,7 +466,6 @@ void Gspn_Reader::WriteFile(parameters& P){
         SpnCppFile << "    Place[" << k << "].Id =" << k << ";" << endl;
 		if(P.StringInSpnLHA){
 			SpnCppFile << "    Place[" << k << "].label =\" " << *it << "\";" << endl;
-			SpnCppFile << "    PlaceIndex[\" " << *it << "\"] =" << k << ";" << endl;
 		}
     }
 	
@@ -474,15 +474,11 @@ void Gspn_Reader::WriteFile(parameters& P){
         SpnCppFile << "    Transition[" << k << "].Id =" << k << ";" << endl;
 		if(P.StringInSpnLHA){
 			SpnCppFile << "    Transition[" << k << "].label =\"" << *it << "\";" << endl;
-			SpnCppFile << "    TransitionIndex[\"" << *it << "\"]=" << k << ";" << endl;
 		}
     }
 	
 	
-	
-	
     for (size_t i = 0; i < MyGspn.tr; i++) {
-		
         if (MyGspn.tType[i] == Timed) {
             SpnCppFile << "    Transition[" << i << "].transType = Timed;" << endl;
 			
@@ -494,11 +490,9 @@ void Gspn_Reader::WriteFile(parameters& P){
 					SpnCppFile << "    Transition[" << i << "].DistParams.push_back(\" " << MyGspn.Dist[i].Param[j] << "\" );" << endl;
 				}
 			}
-			
         } else {
             SpnCppFile << "    Transition[" << i << "].transType = unTimed;" << endl;
 			SpnCppFile << "    Transition[" << i << "].DistTypeIndex = 3;" << endl;
-			
         }
         SpnCppFile << "    Transition[" << i << "].MarkingDependent = " << MyGspn.MarkingDependent[i] << ";" << endl;
 		if(P.StringInSpnLHA){
@@ -508,33 +502,16 @@ void Gspn_Reader::WriteFile(parameters& P){
         SpnCppFile << endl;
     }
 	
-    /*SpnCppFile << "    vector < vector <int> > vec(" << MyGspn.tr << ");" << endl;
-	 SpnCppFile << "    PredT = vec;" << endl;
-	 for (size_t t = 0; t < MyGspn.tr; t++) {
-	 for (size_t p = 0; p < MyGspn.pl; p++)
-	 if (MyGspn.inArcs[t][p] > 0) SpnCppFile << "    PredT[" << t << "].push_back(" << p << ");" << endl;
-	 
-	 //SpnCppFile << endl;
-	 
-	 }*/
-    SpnCppFile << "    EnabledDisabledTr();" << endl;
-	
     //-------------- Rare Event -----------------
-    SpnCppFile << "    Msimple();" << endl;
-    SpnCppFile << "vector <double> Rate_Table_init (tr);" << endl;
-    SpnCppFile << "Rate_Table = Rate_Table_init;" << endl;
-    SpnCppFile << "Origine_Rate_Table = Rate_Table_init;" << endl;
-    /*for(int i =0;i<MyGspn.tr;i++){
-	 SpnCppFile << "Origine_Rate_Table["<<i<<"]= ( double ) " <<  MyGspn.Dist[i].Param[0] << ";" << endl;
-	 };*/
-    
+	if(P.RareEvent){
+		SpnCppFile << "    Msimple();" << endl;
+		SpnCppFile << "vector <double> Rate_Table_init (tr);" << endl;
+		SpnCppFile << "Rate_Table = Rate_Table_init;" << endl;
+		SpnCppFile << "Origine_Rate_Table = Rate_Table_init;" << endl;
+    }
     //------------- /Rare Event -----------------
 	
     SpnCppFile << "}\n" << endl;
-    
-	
-	
-	
 	
 	
     SpnCppFile << "bool SPN::IsEnabled(const int t){" << endl;
@@ -578,10 +555,6 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
     SpnCppFile << "void SPN::fire(int t){" << endl;
 	SpnCppFile << "\tlastTransition = t;" << endl;
-	if(P.localTesting){
-		SpnCppFile << "\tnewlyEnabled.clear();"<< endl;
-		SpnCppFile << "\tnewlyDisabled.clear();"<< endl;
-	}
 	SpnCppFile << "\tswitch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
         SpnCppFile << "\t\tcase " << t << ": {" << endl;
@@ -597,14 +570,14 @@ void Gspn_Reader::WriteFile(parameters& P){
 								if(seuil-decrement >0){
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil+decrement;
 									SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
-									SpnCppFile << "incrCondition("<< t2 <<");" << endl;
+									SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 								} else
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil+decrement << ")incrCondition("<< t2 <<");" << endl;
+									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil+decrement << ")TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}else {
 								string seuil = MyGspn.inArcsStr[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" >= "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" < " << seuil <<"+"<< decrement <<")";
-								SpnCppFile << "incrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}
 						}
 						
@@ -614,14 +587,14 @@ void Gspn_Reader::WriteFile(parameters& P){
 								if(seuil-decrement >0){
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil+decrement;
 									SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
-									SpnCppFile << "decrCondition("<< t2 <<");" << endl;
+									SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 								} else
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil+decrement << ")decrCondition("<< t2 <<");" << endl;
+									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil+decrement << ")TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}else {
 								string seuil = MyGspn.inhibArcsStr[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil <<"+"<< decrement;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
-								SpnCppFile << "decrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}
 						}
 					}
@@ -634,12 +607,12 @@ void Gspn_Reader::WriteFile(parameters& P){
 								int seuil = MyGspn.inArcs[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil <<"+"<< decrement;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
-								SpnCppFile << "incrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}else {
 								string seuil = MyGspn.inArcsStr[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil <<"+" << decrement;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
-								SpnCppFile << "incrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}
 						}
 						
@@ -648,12 +621,12 @@ void Gspn_Reader::WriteFile(parameters& P){
 								int seuil = MyGspn.inhibArcs[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil <<"+"<<decrement;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
-								SpnCppFile << "decrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}else {
 								string seuil = MyGspn.inhibArcsStr[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil << "+" <<decrement;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
-								SpnCppFile << "decrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}
 						}
 					}
@@ -671,14 +644,14 @@ void Gspn_Reader::WriteFile(parameters& P){
 								if(seuil-increment >0){
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 									SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
-									SpnCppFile << "decrCondition("<< t2 <<");" << endl;
+									SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 								} else
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil << ")decrCondition("<< t2 <<");" << endl;
+									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil << ")TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}else {
 								string seuil = MyGspn.inArcsStr[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "decrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}
 						}
 						
@@ -688,14 +661,14 @@ void Gspn_Reader::WriteFile(parameters& P){
 								if(seuil-increment >0){
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 									SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
-									SpnCppFile << "incrCondition("<< t2 <<");" << endl;
+									SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 								} else
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil << ")incrCondition("<< t2 <<");" << endl;
+									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil << ")TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}else {
 								string seuil = MyGspn.inhibArcsStr[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "incrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}
 						}
 					}
@@ -708,12 +681,12 @@ void Gspn_Reader::WriteFile(parameters& P){
 								int seuil = MyGspn.inArcs[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "decrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}else {
 								string seuil = MyGspn.inArcsStr[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "decrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}
 						}
 						
@@ -722,12 +695,12 @@ void Gspn_Reader::WriteFile(parameters& P){
 								int seuil = MyGspn.inhibArcs[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "incrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}else {
 								string seuil = MyGspn.inhibArcsStr[t2][p];
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "incrCondition("<< t2 <<");" << endl;
+								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}
 						}
 					}
@@ -771,12 +744,12 @@ void Gspn_Reader::WriteFile(parameters& P){
     SpnCppFile << "}\n" << endl;
 	
 	SpnCppFile << "const set<int>* SPN::PossiblyEn() {" << endl;
-	if (P.localTesting)SpnCppFile << "\treturn &newlyEnabled;" << endl;
+	if (false && P.localTesting)SpnCppFile << "\treturn &newlyEnabled;" << endl;
 	else SpnCppFile << "\treturn &(PossiblyEnabled[lastTransition]);" << endl;
 	SpnCppFile << "}" << endl;
 	
 	SpnCppFile << "const set<int>* SPN::PossiblyDis() {" << endl;
-	if (P.localTesting)SpnCppFile << "\treturn &newlyDisabled;" << endl;
+	if (false &&P.localTesting)SpnCppFile << "\treturn &newlyDisabled;" << endl;
 	else SpnCppFile << "\treturn &(PossiblyDisabled[lastTransition]);" << endl;
 	SpnCppFile << "}" << endl;
 	
@@ -786,7 +759,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	
 	SpnCppFile << "void SPN::setConditionsVector(){" << endl;
-	for (size_t t = 0; t < MyGspn.tr; t++) {
+	if(P.localTesting)for (size_t t = 0; t < MyGspn.tr; t++) {
         SpnCppFile << "\tTransitionConditions["<< t <<"]=0;" << endl;
 		for (size_t p = 0; p < MyGspn.pl; p++) {
             if (MyGspn.inArcs[t][p] > 0) {
