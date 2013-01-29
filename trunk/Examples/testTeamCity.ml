@@ -71,7 +71,8 @@ let test_cosmos_grml n v o =
   else test_result n v;;
 
 let test_coverage name v o n =
-  let _ = invoke_cosmos (" --tmp-status 2 --max-run 10 --batch 10 ") (name^".gspn") (name^".lha")  in
+  let _ = invoke_cosmos_silent (" --tmp-status 2 --max-run 10 --batch 10 ") (name^".gspn") (name^".lha")  in
+  print_endline ("Cosmos "^o^" -v 0 --tmp-status 3 "^name^".gspn "^name^".lha");
   let succ = ref 0 in
   for i = 1 to n do
     let _ = invoke_cosmos_silent (o^" -v 0 --tmp-status 3") (name^".gspn") (name^".lha") in
