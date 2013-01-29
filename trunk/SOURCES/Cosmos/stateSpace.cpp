@@ -90,17 +90,15 @@ void stateSpace::exploreStateSpace(){
 		place.pop_back();
 		N.Marking.setVector(place);
 		
-		set<int, less <int> > ent;
-		ent = N.enabledTrans();
 		//set<int>::iterator itset;
-		for (it = ent.begin(); it != ent.end(); it++) {
+		for (size_t t = 0; t < N.tr; t++)if (N.IsEnabled(t)) {
 			
-			N.fire(*it);
+			N.fire(t);
 			//cerr << "transition:" << *it << endl;
 			vector<int> marking = N.Marking.getVector();
-			N.unfire(*it);
+			N.unfire(t);
 			
-			int SE = A.GetEnabled_S_Edges( *it , abstractMarking(marking));
+			int SE = A.GetEnabled_S_Edges(t,abstractMarking(marking));
 			if (SE > -1) {
 				
 				nbTrans++;
@@ -146,21 +144,18 @@ void stateSpace::buildTransitionMatrix()
 		place.pop_back();
 		N.Marking.setVector(place);
 		
-		set<int, less <int> > ent;
-		ent = N.enabledTrans();
-		set<int>::iterator it;
         mat (i,i) = 1.0;
-		for (it = ent.begin(); it != ent.end(); it++) {
+		for (size_t t = 0; t < N.tr; t++)if (N.IsEnabled(t)) {
 			
-			N.fire(*it);
+			N.fire(t);
 			vector<int> marking = N.Marking.getVector();
-			N.unfire(*it);
+			N.unfire(t);
 			
-			int SE = A.GetEnabled_S_Edges( *it  , marking);
+			int SE = A.GetEnabled_S_Edges( t  , marking);
 			if (SE > -1) {
 				
 				marking.push_back( A.Edge[SE].Target );
-				N.GetDistParameters(*it);
+				N.GetDistParameters(t);
 				
 				int j = findHash(&marking);
                 mat (i,j) = N.ParamDistr[0];

@@ -419,7 +419,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	ofstream header(headerloc.c_str(), ios::out | ios::trunc);
 	
 	
-	SpnCppFile << "#include \"spn_orig.hpp\"" << endl;
+	//SpnCppFile << "#include \"spn_orig.hpp\"" << endl;
 	SpnCppFile << "#include \"spn.hpp\"" << endl;
 	
 	
@@ -442,8 +442,9 @@ void Gspn_Reader::WriteFile(parameters& P){
 	header.close();
 	
     SpnCppFile << "SPN::SPN():" << endl;
-	SpnCppFile << "\tSPN_ORIG(" << MyGspn.pl << ", ";
-	SpnCppFile << MyGspn.tr << ") {" << endl;
+	SpnCppFile << "pl(" << MyGspn.pl << "), ";
+	SpnCppFile << "tr(" << MyGspn.tr << "), ";
+	SpnCppFile << "ParamDistr(3), TransitionConditions(" << MyGspn.tr <<",0){" << endl;
     SpnCppFile << "    Path =\"" << MyGspn.Path << "\";" << endl;
 		
 	writeEnabledDisabled(SpnCppFile);
@@ -869,6 +870,29 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
     SpnCppFile << "   }" << endl;
     SpnCppFile << "}\n" << endl;
+	
+	SpnCppFile << "void SPN::Msimple(){"<<endl;
+	SpnCppFile << "\tvector<int> tab;"<<endl;
+	for(map<string,int>::iterator it=MyGspn.PlacesId.begin(); it != MyGspn.PlacesId.end(); it++){
+		if(it->first.substr(0,4).compare(" RE_") == 0)
+			SpnCppFile << "\t\ttab.push_back("<< it->second << ");" << endl;
+	}
+	SpnCppFile << "\tMsimpletab = tab;\n}"<< endl;
+	
+	SpnCppFile << "void SPN::reset() {"<< endl;
+	SpnCppFile << "\tMarking.resetToInitMarking();"<< endl;
+	SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
+	SpnCppFile << "}"<< endl<< endl;
+	
+	SpnCppFile << "double SPN::min(double x1, double x2) {"<< endl;
+	SpnCppFile << "\tif (x1 < x2) return x1;"<< endl;
+	SpnCppFile << "\telse return x2;"<< endl;
+	SpnCppFile << "}"<< endl<< endl;
+	
+	SpnCppFile << "double SPN::max(double x1, double x2) {"<< endl;
+	SpnCppFile << "\tif (x1 > x2) return x1;"<< endl;
+	SpnCppFile << "\telse return x2;"<< endl;
+	SpnCppFile << "}"<< endl<< endl;
 	
 	
     SpnCppFile.close();

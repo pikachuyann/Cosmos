@@ -22,8 +22,6 @@
 		034509B316A80B19002088B3 /* LHA_orig.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0302BAE61468197C005129BB /* LHA_orig.hpp */; };
 		034509B416A80B19002088B3 /* LHA.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0302BB6714692C0E005129BB /* LHA.hpp */; };
 		034509B516A80B19002088B3 /* spn.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0302BB6814692C0E005129BB /* spn.hpp */; };
-		034509B616A80B19002088B3 /* spn_orig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0302BAAD1468113C005129BB /* spn_orig.cpp */; };
-		034509B716A80B19002088B3 /* spn_orig.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0302BAAE1468113C005129BB /* spn_orig.hpp */; };
 		034509B816A80B19002088B3 /* Simulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F1367E143A050100944E04 /* Simulator.cpp */; };
 		034509B916A80B19002088B3 /* Simulator.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03F1367F143A050100944E04 /* Simulator.hpp */; };
 		034509BA16A80B19002088B3 /* SimulatorRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F13680143A050100944E04 /* SimulatorRE.cpp */; };
@@ -102,8 +100,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0302BAAD1468113C005129BB /* spn_orig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spn_orig.cpp; sourceTree = "<group>"; };
-		0302BAAE1468113C005129BB /* spn_orig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spn_orig.hpp; sourceTree = "<group>"; };
 		0302BAE51468197C005129BB /* LHA_orig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA_orig.cpp; sourceTree = "<group>"; };
 		0302BAE61468197C005129BB /* LHA_orig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LHA_orig.hpp; sourceTree = "<group>"; };
 		0302BB6714692C0E005129BB /* LHA.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LHA.hpp; sourceTree = "<group>"; };
@@ -334,8 +330,6 @@
 				03B6EEC01487BC120099A6CC /* spn.cpp */,
 				03A49A3E16B71FDC00521256 /* markingImpl.hpp */,
 				0302BB6814692C0E005129BB /* spn.hpp */,
-				0302BAAD1468113C005129BB /* spn_orig.cpp */,
-				0302BAAE1468113C005129BB /* spn_orig.hpp */,
 				03A49A3716B6B46200521256 /* marking.hpp */,
 				03F1367E143A050100944E04 /* Simulator.cpp */,
 				03F1367F143A050100944E04 /* Simulator.hpp */,
@@ -499,7 +493,6 @@
 				034509B316A80B19002088B3 /* LHA_orig.hpp in Headers */,
 				034509B416A80B19002088B3 /* LHA.hpp in Headers */,
 				034509B516A80B19002088B3 /* spn.hpp in Headers */,
-				034509B716A80B19002088B3 /* spn_orig.hpp in Headers */,
 				034509B916A80B19002088B3 /* Simulator.hpp in Headers */,
 				034509BB16A80B19002088B3 /* SimulatorRE.hpp in Headers */,
 				034509BD16A80B19002088B3 /* SimulatorBoundedRE.hpp in Headers */,
@@ -636,7 +629,6 @@
 				034509AE16A80B19002088B3 /* Event.cpp in Sources */,
 				034509B016A80B19002088B3 /* EventsQueue.cpp in Sources */,
 				034509B216A80B19002088B3 /* LHA_orig.cpp in Sources */,
-				034509B616A80B19002088B3 /* spn_orig.cpp in Sources */,
 				034509B816A80B19002088B3 /* Simulator.cpp in Sources */,
 				034509BA16A80B19002088B3 /* SimulatorRE.cpp in Sources */,
 				034509BC16A80B19002088B3 /* SimulatorBoundedRE.cpp in Sources */,

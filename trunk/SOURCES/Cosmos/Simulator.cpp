@@ -89,12 +89,12 @@ void Simulator::InitialEventsQueue() {
     //time is simulated and added to the structure.
 	Initialized = true;
 	
-	const set<int, less <int> > ent = N.enabledTrans();
-	set<int>::iterator it;
 	Event E;
-	for (it = ent.begin(); it != ent.end(); it++) {
-		GenerateEvent(E, (*it));
+	for (size_t t = 0; t < N.tr; t++) {
+		if (N.IsEnabled(t)) {
+		GenerateEvent(E, (t));
 		(*EQ).insert(E);
+		}
 	}
 }
 

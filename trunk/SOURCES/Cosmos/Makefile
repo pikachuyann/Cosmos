@@ -3,7 +3,6 @@ BINPATH=../../bin
 OPTIONS2= -Wno-deprecated $(OPTIONS) 
 
 CLASSES= $(OBJPATH)/BatchR.o \
-	$(OBJPATH)/spn_orig.o \
 	$(OBJPATH)/LHA_orig.o \
 	$(OBJPATH)/Event.o \
 	$(OBJPATH)/EventsQueue.o \

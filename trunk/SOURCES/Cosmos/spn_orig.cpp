@@ -53,18 +53,6 @@ SPN_ORIG::SPN_ORIG(const int pl, const int tr) :
 SPN_ORIG::~SPN_ORIG() {
 }
 
-
-set<int, less <int> > SPN_ORIG::enabledTrans() {
-    set<int, less<int> > eTrans;
-    for (int i = 0; i < (this->tr); i++) {
-        if (IsEnabled(i)) {
-            eTrans.insert(i);
-        }
-    }
-    this->enTrans = eTrans;
-    return eTrans;
-}
-
 void SPN_ORIG::reset() {
 	Marking.resetToInitMarking();
 	TransitionConditions = initTransitionConditions;

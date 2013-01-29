@@ -55,16 +55,15 @@ void SimulatorRE::InitialEventsQueue() {
 	Initialized = true;
 	
 	
-	set<int, less <int> > ent;
-	ent = N.enabledTrans();
-	set<int>::iterator it;
 	Event E;
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
-	for (it = ent.begin(); it != ent.end(); it++) {
-		GenerateEvent(E, (*it));
-		(*EQ).insert(E);
-		
+	
+	for (size_t t = 0; t < N.tr; t++) {
+		if (N.IsEnabled(t)) {
+			GenerateEvent(E, (t));
+			(*EQ).insert(E);
+		}
 	}
 }
 

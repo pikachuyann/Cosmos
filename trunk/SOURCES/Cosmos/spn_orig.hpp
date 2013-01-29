@@ -91,8 +91,6 @@ public:
 	virtual const set<int>* PossiblyDis() = 0; // return the set of transitions that may be disabled after firing the last transition
 	virtual const set<int>* FreeMarkingDependant() = 0; //return the set of transition without constrain but marking dependant
 	
-    set<int, less <int> > enabledTrans(); // return the set of enabled transitions
-
 	virtual bool IsEnabled(int) = 0 ; // Check if a given transition is enabled
 
 	//------------------------- Rare Event -------------------------------------
@@ -112,8 +110,6 @@ protected:
 	vector<int> TransitionConditions;
 	vector<int> initTransitionConditions;
 	//-------------------------/On the fly enabling disabling transition--------
-	
-	set<int, less<int> > enTrans; // the set of current enabled transition
 
 
 	//------------------------- Rare Event ---------------------------------------

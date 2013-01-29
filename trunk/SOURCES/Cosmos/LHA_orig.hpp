@@ -30,7 +30,7 @@
 #include <vector>
 #include <map>
 
-#include "spn_orig.hpp"
+#include "spn.hpp"
 #include "marking.hpp"
 
 #include <stdlib.h>
