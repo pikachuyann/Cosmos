@@ -46,7 +46,6 @@ void LHA_ORIG::printState(){
 }
 
 int LHA_ORIG::EnabledInitLocation(const abstractMarking& Marking) {
-
     for (set<int>::iterator l = InitLoc.begin(); l != InitLoc.end(); l++) {
         if (CheckLocation((*l), Marking))
             return (*l);

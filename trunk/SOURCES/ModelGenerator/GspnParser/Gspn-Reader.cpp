@@ -862,7 +862,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "void SPN::Msimple(){"<<endl;
 	SpnCppFile << "\tvector<int> tab;"<<endl;
 	for(map<string,int>::iterator it=MyGspn.PlacesId.begin(); it != MyGspn.PlacesId.end(); it++){
-		if(it->first.substr(0,4).compare(" RE_") == 0)
+		if(it->first.substr(0,3).compare("RE_") == 0)
 			SpnCppFile << "\t\ttab.push_back("<< it->second << ");" << endl;
 	}
 	SpnCppFile << "\tMsimpletab = tab;\n}"<< endl;

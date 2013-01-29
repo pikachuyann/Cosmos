@@ -149,10 +149,6 @@ public:
 	void doPathVarsUpdate(double, double, const abstractMarking&);
 	
 	
-	
-	
-	
-	
     bool isFinal();
     void resetVarsTable();
     void resetPathVarsTable();
@@ -160,9 +156,6 @@ public:
 	
     void ViewEdge(int);
     void ViewAllEdges();
-	
-	
-	
 	
 	
     bool isVar(string, double &);

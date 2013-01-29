@@ -77,8 +77,8 @@ class SPN {
 public:
 	SPN();
 	
-	const int pl; // Number of places
-    const int tr; // Number of transitions
+	const size_t pl; // Number of places
+    const size_t tr; // Number of transitions
 	abstractMarking Marking; // Current marking
 	
     vector <spn_trans> Transition; //contains all the transitions of the Petri net

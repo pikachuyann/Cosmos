@@ -84,7 +84,6 @@ struct GSPN {
     vector < vector<string> > inhibArcsStr;
     vector <int> Marking;
 
-
     map <std::string, int> IntConstant;
     map <std::string, double> RealConstant;
 
