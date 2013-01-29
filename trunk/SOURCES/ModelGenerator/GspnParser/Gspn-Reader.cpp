@@ -310,7 +310,6 @@ void Gspn_Reader::writeEnabledDisabled(ofstream &SpnF){
 }
 
 void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
-	
 	SpnCppFile << "#include \"marking.hpp\"\n";
 	SpnCppFile << "#include \"markingImpl.hpp\"\n";
 	
@@ -319,17 +318,13 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
         header << "\tint _PL_"<< *it << ";\n";
 	}
-	header << "\tint LHALocation;\n";
 	header << "};\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::resetToInitMarking(){\n";
-	SpnCppFile << "\tP->LHALocation=0;\n";
-	
 	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
         SpnCppFile << "\tP->_PL_"<< *it << " =" <<
 			MyGspn.Marking[MyGspn.PlacesId[*it]] << ";\n";
 	}
-	
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "\n";
