@@ -180,22 +180,7 @@ public:
     vector<double> FormulaVal;
     double OldFormulaVal;
     
-    /*vector<double> FormulaVal;
-	 vector<double> OldFormulaVal;*/
-    
-    //virtual void UpdateFormulaVal();
-    //virtual void UpdateLinForm(vector<int>&);
-    //virtual void UpdateLhaFunc(double&, double&);
-	
-	
-	
-	
-	
-	
-	
-	
-    //private:
-	
+   	
 };
 
 #endif	/* _LHA_ORIG_HPP */

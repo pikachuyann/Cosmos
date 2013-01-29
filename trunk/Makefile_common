@@ -11,7 +11,7 @@ dir:
 	mkdir -p Obj/ModelGenerator/GspnParser
 	mkdir -p Obj/ModelGenerator/LhaParser
 
-lib: includes/spn.hpp includes/spn_orig.hpp includes/LHA.hpp includes/LHA_orig.hpp includes/marking.hpp
+lib: includes/spn.hpp includes/LHA.hpp includes/LHA_orig.hpp includes/marking.hpp
 	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/libClientSim.a)
 
 includes/%.hpp: SOURCES/Cosmos/%.hpp
