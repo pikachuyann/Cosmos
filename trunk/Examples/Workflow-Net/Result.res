@@ -1,9 +1,9 @@
 p:
-Estimated value:	0.61681
-Confidence interval:	[0.61283946512715 , 0.620769403217551]
-Width:	0.00792993809040121
+Estimated value:	0.61644
+Confidence interval:	[0.612468759870627 , 0.62040014373755]
+Width:	0.00793138386692283
 Confidence level:	0.99
-Relative error:	0.00792993809040121
+Relative error:	0.00793138386692283
 Total paths:	100000
-Accepted paths:	61681
+Accepted paths:	61644
 Time for simulation:	4s
