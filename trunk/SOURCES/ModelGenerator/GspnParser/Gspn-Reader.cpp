@@ -356,15 +356,6 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	SpnCppFile << "\tdelete(P);\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
-	SpnCppFile << "void abstractMarking::setLocation(int l){\n";
-	SpnCppFile << "\tP->LHALocation = l;\n";
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "int abstractMarking::retriveLocation()const{\n";
-	SpnCppFile << "	return P->LHALocation;\n";
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::print()const{\n";
 	SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
 	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {

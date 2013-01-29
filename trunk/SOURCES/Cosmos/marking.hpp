@@ -41,8 +41,6 @@ public:
 	abstractMarking& operator = (const abstractMarking& m);
 	~abstractMarking();
 	
-	void setLocation(int);
-	int retriveLocation()const;
 	void print()const;
 	void resetToInitMarking();
 	int getNbOfTokens(int)const;
