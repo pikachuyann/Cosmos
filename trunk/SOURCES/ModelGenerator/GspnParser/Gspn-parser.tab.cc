@@ -53,17 +53,17 @@
 #include <set>
 #include <vector>
 
-vector<string> Par;
-std::string distrib;
-Eval Evaluate;
+  vector<string> Par;
+  std::string distrib;
+  Eval Evaluate;
 
 
-int NbServers;
-bool SingleService;
-bool MarkingDependent;
-bool AgeMemory;
+  int NbServers;
+  bool SingleService;
+  bool MarkingDependent;
+  bool AgeMemory;
 
-
+ 
 
 /* Line 286 of lalr1.cc  */
 #line 70 "Gspn-parser.tab.cc"
@@ -508,16 +508,16 @@ namespace gspn {
 /* Line 670 of lalr1.cc  */
 #line 127 "Gspn-parser.yy"
     {
-				   if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end()) 
-						{std::ostringstream s; s<<" Marking.P->_PL_"<< (yysemantic_stack_[(1) - (1)].name)->c_str() <<" ";
-						 sprintf((yyval.expression), "%s",(s.str()).c_str());						 
-						}
-					else if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.IntConstant.end())
-						{std::ostringstream s; s<<Reader.MyGspn.IntConstant[*(yysemantic_stack_[(1) - (1)].name)];
-						 sprintf((yyval.expression), "%s",(s.str()).c_str());
-						
-						 }
-					else{cout<<"'"<<*(yysemantic_stack_[(1) - (1)].name)<<"' has not been declared"<<endl;YYABORT;}}
+  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end())
+    {std::ostringstream s; s<<" Marking.P->_PL_"<< (yysemantic_stack_[(1) - (1)].name)->c_str() <<" ";
+      sprintf((yyval.expression), "%s",(s.str()).c_str());
+    }
+  else if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.IntConstant.end())
+    {std::ostringstream s; s<<Reader.MyGspn.IntConstant[*(yysemantic_stack_[(1) - (1)].name)];
+      sprintf((yyval.expression), "%s",(s.str()).c_str());
+
+    }
+  else{cout<<"'"<<*(yysemantic_stack_[(1) - (1)].name)<<"' has not been declared"<<endl;YYABORT;}}
     break;
 
   case 4:
@@ -590,15 +590,15 @@ namespace gspn {
 /* Line 670 of lalr1.cc  */
 #line 151 "Gspn-parser.yy"
     {
-				   if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end()) 
-						{std::ostringstream s; s<<" Marking.P->_PL_"<<(yysemantic_stack_[(1) - (1)].name)->c_str()<<" ";
-						 sprintf((yyval.expression), "%s",(s.str()).c_str());						
-						}
-					else if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.RealConstant.end())
-						{std::ostringstream s; s<<Reader.MyGspn.RealConstant[*(yysemantic_stack_[(1) - (1)].name)];
-						 sprintf((yyval.expression), "%s",(s.str()).c_str()); 
-						 }
-					else{cout<<"'"<<*(yysemantic_stack_[(1) - (1)].name)<<"' has not been declared"<<endl;YYABORT;}}
+  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end())
+    {std::ostringstream s; s<<" Marking.P->_PL_"<<(yysemantic_stack_[(1) - (1)].name)->c_str()<<" ";
+      sprintf((yyval.expression), "%s",(s.str()).c_str());
+    }
+  else if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.RealConstant.end())
+    {std::ostringstream s; s<<Reader.MyGspn.RealConstant[*(yysemantic_stack_[(1) - (1)].name)];
+      sprintf((yyval.expression), "%s",(s.str()).c_str());
+    }
+  else{cout<<"'"<<*(yysemantic_stack_[(1) - (1)].name)<<"' has not been declared"<<endl;YYABORT;}}
     break;
 
   case 16:
@@ -658,185 +658,185 @@ namespace gspn {
   case 33:
 /* Line 670 of lalr1.cc  */
 #line 188 "Gspn-parser.yy"
-    {if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(6) - (3)].name))!=Reader.MyGspn.RealConstant.end()) 
-							{cout<<"Constant "<<*(yysemantic_stack_[(6) - (3)].name)<<" already defined."<<endl; YYABORT;}
-					    else {string st=(yysemantic_stack_[(6) - (5)].expression);
-							  Evaluate.parse(st);
-							  Reader.MyGspn.IntConstant[*(yysemantic_stack_[(6) - (3)].name)]=Evaluate.IntResult;Reader.MyGspn.RealConstant[*(yysemantic_stack_[(6) - (3)].name)]=Evaluate.RealResult;}
-						}
+    {if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(6) - (3)].name))!=Reader.MyGspn.RealConstant.end())
+    {cout<<"Constant "<<*(yysemantic_stack_[(6) - (3)].name)<<" already defined."<<endl; YYABORT;}
+  else {string st=(yysemantic_stack_[(6) - (5)].expression);
+    Evaluate.parse(st);
+    Reader.MyGspn.IntConstant[*(yysemantic_stack_[(6) - (3)].name)]=Evaluate.IntResult;Reader.MyGspn.RealConstant[*(yysemantic_stack_[(6) - (3)].name)]=Evaluate.RealResult;}
+}
     break;
 
   case 34:
 /* Line 670 of lalr1.cc  */
 #line 195 "Gspn-parser.yy"
-    {if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(6) - (3)].name))!=Reader.MyGspn.RealConstant.end()) 
-							{cout<<"Constant "<<*(yysemantic_stack_[(6) - (3)].name)<<" already defined."<<endl; YYABORT;}
-					    else {string st=(yysemantic_stack_[(6) - (5)].expression);
-							  Evaluate.parse(st);
-							  Reader.MyGspn.RealConstant[*(yysemantic_stack_[(6) - (3)].name)]=Evaluate.RealResult;}
-						}
+    {if(Reader.MyGspn.RealConstant.find(*(yysemantic_stack_[(6) - (3)].name))!=Reader.MyGspn.RealConstant.end())
+    {cout<<"Constant "<<*(yysemantic_stack_[(6) - (3)].name)<<" already defined."<<endl; YYABORT;}
+  else {string st=(yysemantic_stack_[(6) - (5)].expression);
+    Evaluate.parse(st);
+    Reader.MyGspn.RealConstant[*(yysemantic_stack_[(6) - (3)].name)]=Evaluate.RealResult;}
+}
     break;
 
   case 37:
 /* Line 670 of lalr1.cc  */
 #line 205 "Gspn-parser.yy"
     {Reader.MyGspn.pl=(yysemantic_stack_[(4) - (3)].IntVal);
-                                    
-}
+
+ }
     break;
 
   case 38:
 /* Line 670 of lalr1.cc  */
 #line 208 "Gspn-parser.yy"
     {if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))==Reader.MyGspn.IntConstant.end())
-					    {
-					    std::cout<<*(yysemantic_stack_[(4) - (3)].name)<<" was not declared"<<std::endl;
-					    YYABORT;
-					    }
-						Reader.MyGspn.pl=Reader.MyGspn.IntConstant[*(yysemantic_stack_[(4) - (3)].name)];
-                                    
-}
+     {
+       std::cout<<*(yysemantic_stack_[(4) - (3)].name)<<" was not declared"<<std::endl;
+       YYABORT;
+     }
+   Reader.MyGspn.pl=Reader.MyGspn.IntConstant[*(yysemantic_stack_[(4) - (3)].name)];
+
+ }
     break;
 
   case 39:
 /* Line 670 of lalr1.cc  */
 #line 217 "Gspn-parser.yy"
     {Reader.MyGspn.tr=(yysemantic_stack_[(4) - (3)].IntVal);
-                                       
-}
+
+ }
     break;
 
   case 40:
 /* Line 670 of lalr1.cc  */
 #line 220 "Gspn-parser.yy"
     {if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))==Reader.MyGspn.IntConstant.end())
-					    {
-					    std::cout<<*(yysemantic_stack_[(4) - (3)].name)<<" was not declared"<<std::endl;
-					    YYABORT;
-					    }
-					  Reader.MyGspn.tr=Reader.MyGspn.IntConstant[*(yysemantic_stack_[(4) - (3)].name)];
-                                      
-}
+     {
+       std::cout<<*(yysemantic_stack_[(4) - (3)].name)<<" was not declared"<<std::endl;
+       YYABORT;
+     }
+   Reader.MyGspn.tr=Reader.MyGspn.IntConstant[*(yysemantic_stack_[(4) - (3)].name)];
+
+ }
     break;
 
   case 41:
 /* Line 670 of lalr1.cc  */
 #line 229 "Gspn-parser.yy"
     {
-						if(Reader.MyGspn.PlacesId.size()!=Reader.MyGspn.pl){
-						std::cout<<"Place label missing or redeclared, please check your places list"<<std::endl;
-						YYABORT;
-						}
-                                                
-
-                                                if(true){
-                                                vector<int> v(Reader.MyGspn.pl,0);
-						vector<string> vStr(Reader.MyGspn.pl, " ");
-
-                                                Reader.MyGspn.Marking=v;
-                                                vector< vector<int> > m1(Reader.MyGspn.tr,v);  
-					        vector< vector<string> > m1Str(Reader.MyGspn.tr,vStr);
-                                               
-                                                Reader.MyGspn.outArcs=m1;
-						Reader.MyGspn.inArcs=m1;
-						Reader.MyGspn.inhibArcs=m1;
-
-						Reader.MyGspn.outArcsStr=m1Str;
-						Reader.MyGspn.inArcsStr=m1Str;
-						Reader.MyGspn.inhibArcsStr=m1Str;
-}
+  if(Reader.MyGspn.PlacesId.size()!=Reader.MyGspn.pl){
+    std::cout<<"Place label missing or redeclared, please check your places list"<<std::endl;
+    YYABORT;
+  }
 
 
-                                                if(true){vector<TransType> v(Reader.MyGspn.tr);
-                                                Reader.MyGspn.tType=v;
-                                                    }
-                                                if(true){
-                                                    vector<Distribution> d(Reader.MyGspn.tr);
-                                                    Reader.MyGspn.Dist=d;
-                                                    }
-                                                if(true){
-                                                    vector<string> d(Reader.MyGspn.tr,"");
-                                                    Reader.MyGspn.Priority=d;
-                                                    }
-												if(true){
-                                                    vector<string> d(Reader.MyGspn.tr);
-                                                    Reader.MyGspn.Weight=d;
-                                                    }
-											  if(true){
-												vector<bool> d(Reader.MyGspn.tr);
-                                                    Reader.MyGspn.MarkingDependent=d;
-													Reader.MyGspn.AgeMemory=d;
+  if(true){
+    vector<int> v(Reader.MyGspn.pl,0);
+    vector<string> vStr(Reader.MyGspn.pl, " ");
 
-														}
-											  if(true){
-												vector<bool> d(Reader.MyGspn.tr);
-                                                    Reader.MyGspn.SingleService=d;
-											  }
-												if(true){
-												vector<int> d(Reader.MyGspn.tr);
-                                                    Reader.MyGspn.NbServers=d;
-											  }
+    Reader.MyGspn.Marking=v;
+    vector< vector<int> > m1(Reader.MyGspn.tr,v);
+    vector< vector<string> > m1Str(Reader.MyGspn.tr,vStr);
 
-											MarkingDependent=false;
-											AgeMemory=false;
-                           
-                                                   
+    Reader.MyGspn.outArcs=m1;
+    Reader.MyGspn.inArcs=m1;
+    Reader.MyGspn.inhibArcs=m1;
+
+    Reader.MyGspn.outArcsStr=m1Str;
+    Reader.MyGspn.inArcsStr=m1Str;
+    Reader.MyGspn.inhibArcsStr=m1Str;
+  }
 
 
-}
+  /*if(true){vector<TransType> v(Reader.MyGspn.tr);
+    Reader.MyGspn.tType=v;
+  }
+  if(true){
+    vector<Distribution> d(Reader.MyGspn.tr);
+    Reader.MyGspn.Dist=d;
+  }
+  if(true){
+    vector<string> d(Reader.MyGspn.tr,"");
+    Reader.MyGspn.Priority=d;
+  }
+  if(true){
+    vector<string> d(Reader.MyGspn.tr);
+    Reader.MyGspn.Weight=d;
+  }
+  if(true){
+    vector<bool> d(Reader.MyGspn.tr);
+    Reader.MyGspn.MarkingDependent=d;
+    Reader.MyGspn.AgeMemory=d;
+
+  }
+  if(true){
+    vector<bool> d(Reader.MyGspn.tr);
+    Reader.MyGspn.SingleService=d;
+  }
+  if(true){
+    vector<int> d(Reader.MyGspn.tr);
+    Reader.MyGspn.NbServers=d;
+  }*/
+
+  MarkingDependent=false;
+  AgeMemory=false;
+
+
+
+
+ }
     break;
 
   case 42:
 /* Line 670 of lalr1.cc  */
 #line 292 "Gspn-parser.yy"
     {
-              
-                Reader.MyGspn.PlacesList.insert(*(yysemantic_stack_[(1) - (1)].name));
-                int sz=Reader.MyGspn.PlacesId.size();
-                Reader.MyGspn.PlacesId[*(yysemantic_stack_[(1) - (1)].name)]=sz;
-}
+
+  Reader.MyGspn.PlacesList.insert(*(yysemantic_stack_[(1) - (1)].name));
+  int sz=Reader.MyGspn.PlacesId.size();
+  Reader.MyGspn.PlacesId[*(yysemantic_stack_[(1) - (1)].name)]=sz;
+ }
     break;
 
   case 43:
 /* Line 670 of lalr1.cc  */
 #line 298 "Gspn-parser.yy"
     {Reader.MyGspn.PlacesList.insert(*(yysemantic_stack_[(3) - (3)].name));
-                            int sz=Reader.MyGspn.PlacesId.size();
-                            Reader.MyGspn.PlacesId[*(yysemantic_stack_[(3) - (3)].name)]=sz;
-                         
-}
+   int sz=Reader.MyGspn.PlacesId.size();
+   Reader.MyGspn.PlacesId[*(yysemantic_stack_[(3) - (3)].name)]=sz;
+
+ }
     break;
 
   case 44:
 /* Line 670 of lalr1.cc  */
 #line 304 "Gspn-parser.yy"
     {
-						      if(Reader.MyGspn.TransId.size()!=Reader.MyGspn.tr){
-						      std::cout<<"Transition label missing or redeclared, please check your transitions list"<<std::endl;
-						      YYABORT;
-						    }
-                                                 
-                                                    }
+  if(Reader.MyGspn.TransId.size()!=Reader.MyGspn.tr){
+    std::cout<<"Transition label missing or redeclared, please check your transitions list"<<std::endl;
+    YYABORT;
+  }
+
+ }
     break;
 
   case 45:
 /* Line 670 of lalr1.cc  */
 #line 312 "Gspn-parser.yy"
     {Reader.MyGspn.TransList.insert(*(yysemantic_stack_[(1) - (1)].name));
-               int sz=Reader.MyGspn.TransId.size();
-               Reader.MyGspn.TransId[*(yysemantic_stack_[(1) - (1)].name)]=sz;
-               
-                }
+   int sz=Reader.MyGspn.TransId.size();
+   Reader.MyGspn.TransId[*(yysemantic_stack_[(1) - (1)].name)]=sz;
+
+ }
     break;
 
   case 46:
 /* Line 670 of lalr1.cc  */
 #line 317 "Gspn-parser.yy"
     {Reader.MyGspn.TransList.insert(*(yysemantic_stack_[(3) - (3)].name));
-                            int sz=Reader.MyGspn.TransId.size();
-                            Reader.MyGspn.TransId[*(yysemantic_stack_[(3) - (3)].name)]=sz;
-                           
-                            }
+   int sz=Reader.MyGspn.TransId.size();
+   Reader.MyGspn.TransId[*(yysemantic_stack_[(3) - (3)].name)]=sz;
+
+ }
     break;
 
   case 49:
@@ -849,650 +849,653 @@ namespace gspn {
 /* Line 670 of lalr1.cc  */
 #line 333 "Gspn-parser.yy"
     { if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
-					    {cout<<"'"<<*(yysemantic_stack_[(6) - (2)].name)<<"' has not been declared"<<endl;
-					    YYABORT;
-					    }
-				  string st=(yysemantic_stack_[(6) - (4)].expression);
-				  if(Evaluate.parse(st)){
-					    std::cout<<"Initial Marking is not marking dependent"<<std::endl;
-					    YYABORT;
-					    }				
-				Reader.MyGspn.Marking[Reader.MyGspn.PlacesId[*(yysemantic_stack_[(6) - (2)].name)]]=Evaluate.IntResult;
-				}
-    break;
-
-  case 53:
-/* Line 670 of lalr1.cc  */
-#line 346 "Gspn-parser.yy"
-    {
-				  for(size_t i=0; i<Reader.MyGspn.Priority.size();i++){
-					  if(Reader.MyGspn.Priority[i]=="")
-							  {cout<<"Some transitions were not defined. All declared transitions must be defined"<<endl;
-								YYABORT;
-								  
-							}
-}
+    {cout<<"'"<<*(yysemantic_stack_[(6) - (2)].name)<<"' has not been declared"<<endl;
+      YYABORT;
+    }
+  string st=(yysemantic_stack_[(6) - (4)].expression);
+  if(Evaluate.parse(st)){
+    std::cout<<"Initial Marking is not marking dependent"<<std::endl;
+    YYABORT;
   }
+  Reader.MyGspn.Marking[Reader.MyGspn.PlacesId[*(yysemantic_stack_[(6) - (2)].name)]]=Evaluate.IntResult;
+}
     break;
 
   case 54:
 /* Line 670 of lalr1.cc  */
-#line 356 "Gspn-parser.yy"
+#line 348 "Gspn-parser.yy"
     {}
     break;
 
   case 55:
 /* Line 670 of lalr1.cc  */
-#line 357 "Gspn-parser.yy"
+#line 349 "Gspn-parser.yy"
     {}
     break;
 
   case 56:
 /* Line 670 of lalr1.cc  */
-#line 359 "Gspn-parser.yy"
+#line 351 "Gspn-parser.yy"
     {
-					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(10) - (2)].name))==Reader.MyGspn.TransList.end())
-						{
-						std::cout<<"Transition: "<<*(yysemantic_stack_[(10) - (2)].name)<<" was not declared"<<std::endl;
-						YYABORT;
-						}
-					    Reader.MyGspn.tType[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=Timed;
-                        Reader.MyGspn.Dist[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]].name=distrib;
-                        Reader.MyGspn.Dist[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]].Param=Par;
-                        vector<string> v;
-                        Par=v;					    
-					    Reader.MyGspn.Priority[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=(yysemantic_stack_[(10) - (6)].expression);
-					    Reader.MyGspn.Weight[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=(yysemantic_stack_[(10) - (8)].expression); 
-						Reader.MyGspn.SingleService[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=true;
-						Reader.MyGspn.MarkingDependent[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=false;
-						Reader.MyGspn.AgeMemory[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=false;
-						Reader.MyGspn.NbServers[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=1;
-                        }
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(10) - (2)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(10) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  transition *trans = new transition();
+  trans->label = (yysemantic_stack_[(10) - (2)].name)->c_str();
+  trans->type = Timed;
+  trans->dist.name = distrib;
+  trans->dist.Param = Par;
+  trans->priority = (yysemantic_stack_[(10) - (6)].expression);
+  trans->weight = (yysemantic_stack_[(10) - (8)].expression);
+  trans->singleService = true;
+  trans->markingDependant = false;
+  trans->ageMemory = false;
+  trans->nbServers = 1;
+  Reader.MyGspn.transitionStruct.push_back(*trans);
+
+  vector<string> v;
+  Par=v;
+ }
     break;
 
   case 57:
 /* Line 670 of lalr1.cc  */
-#line 377 "Gspn-parser.yy"
+#line 373 "Gspn-parser.yy"
     {
-					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(12) - (2)].name))==Reader.MyGspn.TransList.end())
-						{
-						std::cout<<"Transition: "<<*(yysemantic_stack_[(12) - (2)].name)<<" was not declared"<<std::endl;
-						YYABORT;
-						}
-					    Reader.MyGspn.tType[Reader.MyGspn.TransId[*(yysemantic_stack_[(12) - (2)].name)]]=Timed;
-                        Reader.MyGspn.Dist[Reader.MyGspn.TransId[*(yysemantic_stack_[(12) - (2)].name)]].name=distrib;
-                        Reader.MyGspn.Dist[Reader.MyGspn.TransId[*(yysemantic_stack_[(12) - (2)].name)]].Param=Par;
-                        vector<string> v;
-                        Par=v;					    
-					    Reader.MyGspn.Priority[Reader.MyGspn.TransId[*(yysemantic_stack_[(12) - (2)].name)]]=(yysemantic_stack_[(12) - (6)].expression);
-					    Reader.MyGspn.Weight[Reader.MyGspn.TransId[*(yysemantic_stack_[(12) - (2)].name)]]=(yysemantic_stack_[(12) - (8)].expression); 
-						Reader.MyGspn.SingleService[Reader.MyGspn.TransId[*(yysemantic_stack_[(12) - (2)].name)]]=true;
-						Reader.MyGspn.MarkingDependent[Reader.MyGspn.TransId[*(yysemantic_stack_[(12) - (2)].name)]]=false;
-						Reader.MyGspn.AgeMemory[Reader.MyGspn.TransId[*(yysemantic_stack_[(12) - (2)].name)]]=AgeMemory;
-						Reader.MyGspn.NbServers[Reader.MyGspn.TransId[*(yysemantic_stack_[(12) - (2)].name)]]=1;
-						AgeMemory=false;
-                        }
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(12) - (2)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(12) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  transition *trans = new transition();
+  trans->label = (yysemantic_stack_[(12) - (2)].name)->c_str();
+  trans->type = Timed;
+  trans->dist.name = distrib;
+  trans->dist.Param = Par;
+  trans->priority = (yysemantic_stack_[(12) - (6)].expression);
+  trans->weight = (yysemantic_stack_[(12) - (8)].expression);
+  trans->singleService = true;
+  trans->markingDependant = false;
+  trans->ageMemory = AgeMemory;
+  trans->nbServers = 1;
+  Reader.MyGspn.transitionStruct.push_back(*trans);
+  
+  vector<string> v;
+  Par=v;
+  AgeMemory=false;
+ }
     break;
 
   case 58:
 /* Line 670 of lalr1.cc  */
 #line 396 "Gspn-parser.yy"
     {
-					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(15) - (2)].name))==Reader.MyGspn.TransList.end())
-						{
-						std::cout<<"Transition: "<<*(yysemantic_stack_[(15) - (2)].name)<<" was not declared"<<std::endl;
-						YYABORT;
-						}
-						
-						if(!SingleService) MarkingDependent=true;
-						string st=(yysemantic_stack_[(15) - (6)].expression);
-						vector<string> v(1);
-						if(Evaluate.parse(st)) 
-							  {MarkingDependent=true;v[0]=st;
-							   }
-						else{ if (Evaluate.RealResult<= 0 ) {
-							  cout << "In exponential ditribution Lambda > 0" << endl;
-							  YYABORT;
-							  }
-						std::ostringstream s;s<<Evaluate.RealResult;
-						v[0]=s.str();
-						}
-						Reader.MyGspn.Dist[Reader.MyGspn.TransId[*(yysemantic_stack_[(15) - (2)].name)]].Param=v;
-					    Reader.MyGspn.tType[Reader.MyGspn.TransId[*(yysemantic_stack_[(15) - (2)].name)]]=Timed;
-                        Reader.MyGspn.Dist[Reader.MyGspn.TransId[*(yysemantic_stack_[(15) - (2)].name)]].name="EXPONENTIAL";                       
-						
-						Reader.MyGspn.Priority[Reader.MyGspn.TransId[*(yysemantic_stack_[(15) - (2)].name)]]=(yysemantic_stack_[(15) - (9)].expression);
-						Reader.MyGspn.Weight[Reader.MyGspn.TransId[*(yysemantic_stack_[(15) - (2)].name)]]=(yysemantic_stack_[(15) - (11)].expression);
-						Reader.MyGspn.SingleService[Reader.MyGspn.TransId[*(yysemantic_stack_[(15) - (2)].name)]]=SingleService;
-						Reader.MyGspn.MarkingDependent[Reader.MyGspn.TransId[*(yysemantic_stack_[(15) - (2)].name)]]=MarkingDependent;
-						Reader.MyGspn.AgeMemory[Reader.MyGspn.TransId[*(yysemantic_stack_[(15) - (2)].name)]]=false;
-						Reader.MyGspn.NbServers[Reader.MyGspn.TransId[*(yysemantic_stack_[(15) - (2)].name)]]=NbServers;
-						MarkingDependent=false;
-						
-						}
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(15) - (2)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(15) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  if(!SingleService) MarkingDependent=true;
+  string st=(yysemantic_stack_[(15) - (6)].expression);
+  vector<string> v(1);
+  if(Evaluate.parse(st))
+    {MarkingDependent=true;v[0]=st;
+    }
+  else{ if (Evaluate.RealResult<= 0 ) {
+      cout << "In exponential ditribution Lambda > 0" << endl;
+      YYABORT;
+    }
+    std::ostringstream s;s<<Evaluate.RealResult;
+    v[0]=s.str();
+  }
+  
+  transition *trans = new transition();
+  trans->label = (yysemantic_stack_[(15) - (2)].name)->c_str();
+  trans->type = Timed;
+  trans->dist.name = "EXPONENTIAL";
+  trans->dist.Param = v;
+  trans->priority = (yysemantic_stack_[(15) - (9)].expression);
+  trans->weight = (yysemantic_stack_[(15) - (11)].expression);
+  trans->singleService = SingleService;
+  trans->markingDependant = MarkingDependent;
+  trans->ageMemory = false;
+  trans->nbServers = NbServers;
+  Reader.MyGspn.transitionStruct.push_back(*trans);
+
+  MarkingDependent=false;
+
+ }
     break;
 
   case 59:
 /* Line 670 of lalr1.cc  */
-#line 430 "Gspn-parser.yy"
+#line 433 "Gspn-parser.yy"
     {
-					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(17) - (2)].name))==Reader.MyGspn.TransList.end())
-						{
-						std::cout<<"Transition: "<<*(yysemantic_stack_[(17) - (2)].name)<<" was not declared"<<std::endl;
-						YYABORT;
-						}
-						
-						if(!SingleService) MarkingDependent=true;
-						string st=(yysemantic_stack_[(17) - (6)].expression);
-						vector<string> v(1);
-						if(Evaluate.parse(st)) 
-							  {MarkingDependent=true;v[0]=st;
-							   }
-						else{ if (Evaluate.RealResult<= 0 ) {
-							  cout << "In exponential ditribution Lambda > 0" << endl;
-							  YYABORT;
-							  }
-						std::ostringstream s;s<<Evaluate.RealResult;
-						v[0]=s.str();
-						}
-						Reader.MyGspn.Dist[Reader.MyGspn.TransId[*(yysemantic_stack_[(17) - (2)].name)]].Param=v;
-					    Reader.MyGspn.tType[Reader.MyGspn.TransId[*(yysemantic_stack_[(17) - (2)].name)]]=Timed;
-                        Reader.MyGspn.Dist[Reader.MyGspn.TransId[*(yysemantic_stack_[(17) - (2)].name)]].name="EXPONENTIAL";                       
-						
-						Reader.MyGspn.Priority[Reader.MyGspn.TransId[*(yysemantic_stack_[(17) - (2)].name)]]=(yysemantic_stack_[(17) - (9)].expression);
-						Reader.MyGspn.Weight[Reader.MyGspn.TransId[*(yysemantic_stack_[(17) - (2)].name)]]=(yysemantic_stack_[(17) - (11)].expression);
-						Reader.MyGspn.SingleService[Reader.MyGspn.TransId[*(yysemantic_stack_[(17) - (2)].name)]]=SingleService;
-						Reader.MyGspn.MarkingDependent[Reader.MyGspn.TransId[*(yysemantic_stack_[(17) - (2)].name)]]=MarkingDependent;
-						Reader.MyGspn.AgeMemory[Reader.MyGspn.TransId[*(yysemantic_stack_[(17) - (2)].name)]]=AgeMemory;
-						Reader.MyGspn.NbServers[Reader.MyGspn.TransId[*(yysemantic_stack_[(17) - (2)].name)]]=NbServers;
-						MarkingDependent=false;
-						AgeMemory=false;
-						}
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(17) - (2)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(17) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+
+  if(!SingleService) MarkingDependent=true;
+  string st=(yysemantic_stack_[(17) - (6)].expression);
+  vector<string> v(1);
+  if(Evaluate.parse(st))
+    {MarkingDependent=true;v[0]=st;
+    }
+  else{ if (Evaluate.RealResult<= 0 ) {
+      cout << "In exponential ditribution Lambda > 0" << endl;
+      YYABORT;
+    }
+    std::ostringstream s;s<<Evaluate.RealResult;
+    v[0]=s.str();
+  }
+  
+  transition *trans = new transition();
+  trans->label = (yysemantic_stack_[(17) - (2)].name)->c_str();
+  trans->type = Timed;
+  trans->dist.name = "EXPONENTIAL";
+  trans->dist.Param = v;
+  trans->priority = (yysemantic_stack_[(17) - (9)].expression);
+  trans->weight = (yysemantic_stack_[(17) - (11)].expression);
+  trans->singleService = SingleService;
+  trans->markingDependant = MarkingDependent;
+  trans->ageMemory = AgeMemory;
+  trans->nbServers = NbServers;
+  Reader.MyGspn.transitionStruct.push_back(*trans);
+
+  MarkingDependent=false;
+  AgeMemory=false;
+ }
     break;
 
   case 60:
 /* Line 670 of lalr1.cc  */
-#line 464 "Gspn-parser.yy"
+#line 471 "Gspn-parser.yy"
     {
-					    if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(10) - (2)].name))==Reader.MyGspn.TransList.end())
-						{
-						std::cout<<"Transition: "<<*(yysemantic_stack_[(10) - (2)].name)<<" was not declared"<<std::endl;
-						YYABORT;
-						}
-					    
-					    Reader.MyGspn.tType[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=unTimed;
-						Reader.MyGspn.Dist[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]].name="IMMEDIATE";
-                        Reader.MyGspn.Priority[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=(yysemantic_stack_[(10) - (6)].expression);
-					    Reader.MyGspn.Weight[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=(yysemantic_stack_[(10) - (8)].expression);
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(10) - (2)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(10) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
 
-						Reader.MyGspn.SingleService[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=true;
-						Reader.MyGspn.MarkingDependent[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=false;
-						Reader.MyGspn.AgeMemory[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=false;
-						Reader.MyGspn.NbServers[Reader.MyGspn.TransId[*(yysemantic_stack_[(10) - (2)].name)]]=1;						
-						
-                        }
+  transition *trans = new transition();
+  trans->label = (yysemantic_stack_[(10) - (2)].name)->c_str();
+  trans->type = unTimed;
+  trans->dist.name = "IMMEDIATE";
+  trans->priority = (yysemantic_stack_[(10) - (6)].expression);
+  trans->weight = (yysemantic_stack_[(10) - (8)].expression);
+  trans->singleService = true;
+  trans->markingDependant = false;
+  trans->ageMemory = false;
+  trans->nbServers = 1;
+  Reader.MyGspn.transitionStruct.push_back(*trans);
+
+ }
     break;
 
   case 61:
 /* Line 670 of lalr1.cc  */
-#line 488 "Gspn-parser.yy"
+#line 497 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
-				 if(Evaluate.parse(st)) 
-					{cout<<"Weight is not marking dependent: '"<<st<<"'"<<endl;YYABORT; }
-				else{ if(Evaluate.RealResult<0)
-						{cout<<"Weight is a positive value: '"<<st<<"'"<<endl; YYABORT;}
-					   else{std::ostringstream s;s<<Evaluate.RealResult;
-							sprintf((yyval.expression), "%s",(s.str()).c_str());
-							} 
-					}			    
-			  }
+  if(Evaluate.parse(st))
+    {cout<<"Weight is not marking dependent: '"<<st<<"'"<<endl;YYABORT; }
+  else{ if(Evaluate.RealResult<0)
+      {cout<<"Weight is a positive value: '"<<st<<"'"<<endl; YYABORT;}
+    else{std::ostringstream s;s<<Evaluate.RealResult;
+      sprintf((yyval.expression), "%s",(s.str()).c_str());
+    }
+  }
+}
     break;
 
   case 62:
 /* Line 670 of lalr1.cc  */
-#line 499 "Gspn-parser.yy"
+#line 508 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
-				 if(Evaluate.parse(st)) 
-					{cout<<"Priority is not marking dependent: '"<<st<<"'"<<endl;YYABORT; }
-				else{ if(Evaluate.RealResult<0)
-						{cout<<"Priority is a positive value: '"<<st<<"'"<<endl; YYABORT;}
-					   else{std::ostringstream s;s<<Evaluate.RealResult;
-							sprintf((yyval.expression), "%s",(s.str()).c_str());
-							} 
-					}			    
-			  }
+  if(Evaluate.parse(st))
+    {cout<<"Priority is not marking dependent: '"<<st<<"'"<<endl;YYABORT; }
+  else{ if(Evaluate.RealResult<0)
+      {cout<<"Priority is a positive value: '"<<st<<"'"<<endl; YYABORT;}
+    else{std::ostringstream s;s<<Evaluate.RealResult;
+      sprintf((yyval.expression), "%s",(s.str()).c_str());
+    }
+  }
+}
     break;
 
   case 63:
 /* Line 670 of lalr1.cc  */
-#line 510 "Gspn-parser.yy"
+#line 519 "Gspn-parser.yy"
     {SingleService=true; NbServers=1;}
     break;
 
   case 64:
 /* Line 670 of lalr1.cc  */
-#line 511 "Gspn-parser.yy"
+#line 520 "Gspn-parser.yy"
     {SingleService=false;NbServers=INT_MAX;}
     break;
 
   case 65:
 /* Line 670 of lalr1.cc  */
-#line 512 "Gspn-parser.yy"
+#line 521 "Gspn-parser.yy"
     {NbServers= (yysemantic_stack_[(4) - (3)].IntVal);
-					  if(NbServers<1) 
-					  { cout<<"Number of servers should be at least one"<<endl;
-						YYABORT;
-					  }
-					  if(NbServers==1) SingleService=true;
-					  else {SingleService=false;}
-					  
+   if(NbServers<1)
+     { cout<<"Number of servers should be at least one"<<endl;
+       YYABORT;
+     }
+   if(NbServers==1) SingleService=true;
+   else {SingleService=false;}
 
-}
+
+ }
     break;
 
   case 66:
 /* Line 670 of lalr1.cc  */
-#line 522 "Gspn-parser.yy"
+#line 531 "Gspn-parser.yy"
     {
-					   if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))!=Reader.MyGspn.IntConstant.end()){
-					   NbServers=Reader.MyGspn.IntConstant[*(yysemantic_stack_[(4) - (3)].name)];
-					   if(NbServers<1) 
-					  { cout<<"Number of servers should be at least one"<<endl;
-						YYABORT;
-					  }
-					  if(NbServers==1) SingleService=true;
-					  else {SingleService=false;}
-						}
-				  else{cout<<*(yysemantic_stack_[(4) - (3)].name)<<" not defined or not defined like an integer constant "<<endl;}
-				  
-}
+  if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))!=Reader.MyGspn.IntConstant.end()){
+    NbServers=Reader.MyGspn.IntConstant[*(yysemantic_stack_[(4) - (3)].name)];
+    if(NbServers<1)
+      { cout<<"Number of servers should be at least one"<<endl;
+        YYABORT;
+      }
+    if(NbServers==1) SingleService=true;
+    else {SingleService=false;}
+  }
+  else{cout<<*(yysemantic_stack_[(4) - (3)].name)<<" not defined or not defined like an integer constant "<<endl;}
+
+ }
     break;
 
   case 67:
 /* Line 670 of lalr1.cc  */
-#line 536 "Gspn-parser.yy"
+#line 545 "Gspn-parser.yy"
     {AgeMemory=true;}
     break;
 
   case 68:
 /* Line 670 of lalr1.cc  */
-#line 537 "Gspn-parser.yy"
+#line 546 "Gspn-parser.yy"
     {AgeMemory=false;}
     break;
 
   case 69:
 /* Line 670 of lalr1.cc  */
-#line 540 "Gspn-parser.yy"
+#line 549 "Gspn-parser.yy"
     {
-		distrib=*(yysemantic_stack_[(4) - (1)].name);
-		int np=Par.size();
+  distrib=*(yysemantic_stack_[(4) - (1)].name);
+  int np=Par.size();
 
-		switch (Reader.IndexDist[distrib]) {
-        case 1:
-		{
-            if (np != 2){
-                cout << "Uniform ditribution has two parameters: min and max where 0<=min<max" << endl;
-                YYABORT;
-            }
-			double p1,p2;
-			string st=Par[0];
-			Evaluate.parse(st);p1=Evaluate.RealResult;
-			st=Par[1];
-			Evaluate.parse(st);p2=Evaluate.RealResult;
-            if ((p1>=p2) || (p1<0)) {
-               cout << "In uniform ditribution 0 <= min< max " << endl;
-               YYABORT;
-            }
-	   break;
-	  }
+  switch (Reader.IndexDist[distrib]) {
+    case 1:
+      {
+        if (np != 2){
+          cout << "Uniform ditribution has two parameters: min and max where 0<=min<max" << endl;
+          YYABORT;
+        }
+        double p1,p2;
+        string st=Par[0];
+        Evaluate.parse(st);p1=Evaluate.RealResult;
+        st=Par[1];
+        Evaluate.parse(st);p2=Evaluate.RealResult;
+        if ((p1>=p2) || (p1<0)) {
+          cout << "In uniform ditribution 0 <= min< max " << endl;
+          YYABORT;
+        }
+        break;
+      }
 
-        case 2:
-		{ 
-            if (np != 1) {
-                cout << "exponential ditribution has one parameter: Lambda > 0" << endl;
-                YYABORT;
-            } 
-                
-			double p1;
-			string st=Par[0];
-			Evaluate.parse(st);p1=Evaluate.RealResult;			
-            if (p1<= 0 ) {
-               cout << "In exponential ditribution Lambda > 0" << endl;
-               YYABORT;
-            }
-	    break;
-	  }
-                    
-        case 3:
-		{
-            if (np != 1) {
-                cout << "Deterministic ditribution has one parameter:  T >= 0" << endl;
-                YYABORT;
-            }
-            
-            double p1;
-			string st=Par[0];
-			Evaluate.parse(st);p1=Evaluate.RealResult;			
-            if (p1<0 ) {
-               cout << "In Deterministic ditribution Lambda > 0" << endl;
-               YYABORT;
-            } 
-	    break;
-	  }
-            
-        case 4:
-		{
-            if (np != 2) {
-                cout << "Lognormal ditribution has two parameters: mu and sigma^2, where mu > 0 sigma^2 > 0" << endl;
-                YYABORT;
-            }
-            
-            double p1,p2;
-			string st=Par[0];
-			Evaluate.parse(st);p1=Evaluate.RealResult;
-			st=Par[1];
-			Evaluate.parse(st);p2=Evaluate.RealResult;
-            if ((p1<=0) || (p2<=0)) {
-               cout << "In Lognormal ditribution mu > 0 sigma^2 > 0" << endl;
-               YYABORT;
-            } 
-            break;
-	  }
+    case 2:
+      {
+        if (np != 1) {
+          cout << "exponential ditribution has one parameter: Lambda > 0" << endl;
+          YYABORT;
+        }
 
-        case 5:
-		{
-            if (np != 3) {
-                cout << "Triangle ditribution has three parameters: 0 <= b <= c <= a" << endl;
-                YYABORT;
-            }
-            double p1,p2,p3;
-			string st=Par[0];
-			Evaluate.parse(st);p1=Evaluate.RealResult;
-			st=Par[1];
-			Evaluate.parse(st);p2=Evaluate.RealResult;
-			st=Par[2];
-			Evaluate.parse(st);p3=Evaluate.RealResult;
-            if ((p1<0) || (p2<p1) || (p3<p2)) {
-               cout << "In Triangle ditribution: 0 <= b <= c<= a" << endl;
-               YYABORT;
-            }
+        double p1;
+        string st=Par[0];
+        Evaluate.parse(st);p1=Evaluate.RealResult;
+        if (p1<= 0 ) {
+          cout << "In exponential ditribution Lambda > 0" << endl;
+          YYABORT;
+        }
+        break;
+      }
 
-          
-	    break;
-	  }
+    case 3:
+      {
+        if (np != 1) {
+          cout << "Deterministic ditribution has one parameter:  T >= 0" << endl;
+          YYABORT;
+        }
 
-	  case 6:
-		{
-            if (np != 2) {
-                cout << "Geometric ditribution has two parameters: 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
-                YYABORT;
-            }
-			double p1,p2;
-			string st=Par[0];
-			Evaluate.parse(st);p1=Evaluate.RealResult;
-			st=Par[1];
-			Evaluate.parse(st);p2=Evaluate.RealResult;
-            if ((p1<0) || (p1>1) || p2<=0) {
-               cout << "In Geometric ditribution 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
-               YYABORT;
-            }            
-	    break;
-	  }
-	  case 7:
-		{
-            if (np != 2) {
-                cout << "Erlang distribution has two parameters: Shape and Rate, where Shape is a positive integer and Rate > 0" << endl;
-                YYABORT;
-            }
-            
-            
-			string st=Par[0];
-			Evaluate.parse(st);
-			if(Evaluate.RealResult != Evaluate.IntResult || Evaluate.IntResult < 1){
-               cout << "In Erlang distribution Shape is a positive integer" << endl;
-               YYABORT;
-            } 
-			
-			st=Par[1];
-			Evaluate.parse(st);
-            if (Evaluate.RealResult<=0) {
-               cout << "In Erlang distribution Rate > 0" << endl;
-               YYABORT;
-            } 
-            break;
-	  }
-	  case 8:
-		{
-            if (np != 2) {
-                cout << "Gamma distribution has two parameters: Shape>0 and Scale>0" << endl;
-                YYABORT;
-            }
-            
-            
-			string st=Par[0];
-			Evaluate.parse(st);
-			if(Evaluate.RealResult<=0){
-               cout << "In Gamma distribution Shape > 0" << endl;
-               YYABORT;
-            } 
-			
-			st=Par[1];
-			Evaluate.parse(st);
-            if (Evaluate.RealResult<=0) {
-               cout << "In Gamma distribution Scale > 0" << endl;
-               YYABORT;
-            } 
-            break;
-	  }
+        double p1;
+        string st=Par[0];
+        Evaluate.parse(st);p1=Evaluate.RealResult;
+        if (p1<0 ) {
+          cout << "In Deterministic ditribution Lambda > 0" << endl;
+          YYABORT;
+        }
+        break;
+      }
+
+    case 4:
+      {
+        if (np != 2) {
+          cout << "Lognormal ditribution has two parameters: mu and sigma^2, where mu > 0 sigma^2 > 0" << endl;
+          YYABORT;
+        }
+
+        double p1,p2;
+        string st=Par[0];
+        Evaluate.parse(st);p1=Evaluate.RealResult;
+        st=Par[1];
+        Evaluate.parse(st);p2=Evaluate.RealResult;
+        if ((p1<=0) || (p2<=0)) {
+          cout << "In Lognormal ditribution mu > 0 sigma^2 > 0" << endl;
+          YYABORT;
+        }
+        break;
+      }
+
+    case 5:
+      {
+        if (np != 3) {
+          cout << "Triangle ditribution has three parameters: 0 <= b <= c <= a" << endl;
+          YYABORT;
+        }
+        double p1,p2,p3;
+        string st=Par[0];
+        Evaluate.parse(st);p1=Evaluate.RealResult;
+        st=Par[1];
+        Evaluate.parse(st);p2=Evaluate.RealResult;
+        st=Par[2];
+        Evaluate.parse(st);p3=Evaluate.RealResult;
+        if ((p1<0) || (p2<p1) || (p3<p2)) {
+          cout << "In Triangle ditribution: 0 <= b <= c<= a" << endl;
+          YYABORT;
+        }
 
 
-        default: cout << "\nUnknown distribution !" << endl;
-            YYABORT;
+        break;
+      }
 
-    }
-}
+    case 6:
+      {
+        if (np != 2) {
+          cout << "Geometric ditribution has two parameters: 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
+          YYABORT;
+        }
+        double p1,p2;
+        string st=Par[0];
+        Evaluate.parse(st);p1=Evaluate.RealResult;
+        st=Par[1];
+        Evaluate.parse(st);p2=Evaluate.RealResult;
+        if ((p1<0) || (p1>1) || p2<=0) {
+          cout << "In Geometric ditribution 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
+          YYABORT;
+        }
+        break;
+      }
+    case 7:
+      {
+        if (np != 2) {
+          cout << "Erlang distribution has two parameters: Shape and Rate, where Shape is a positive integer and Rate > 0" << endl;
+          YYABORT;
+        }
+
+
+        string st=Par[0];
+        Evaluate.parse(st);
+        if(Evaluate.RealResult != Evaluate.IntResult || Evaluate.IntResult < 1){
+          cout << "In Erlang distribution Shape is a positive integer" << endl;
+          YYABORT;
+        }
+
+        st=Par[1];
+        Evaluate.parse(st);
+        if (Evaluate.RealResult<=0) {
+          cout << "In Erlang distribution Rate > 0" << endl;
+          YYABORT;
+        }
+        break;
+      }
+    case 8:
+      {
+        if (np != 2) {
+          cout << "Gamma distribution has two parameters: Shape>0 and Scale>0" << endl;
+          YYABORT;
+        }
+
+
+        string st=Par[0];
+        Evaluate.parse(st);
+        if(Evaluate.RealResult<=0){
+          cout << "In Gamma distribution Shape > 0" << endl;
+          YYABORT;
+        }
+
+        st=Par[1];
+        Evaluate.parse(st);
+        if (Evaluate.RealResult<=0) {
+          cout << "In Gamma distribution Scale > 0" << endl;
+          YYABORT;
+        }
+        break;
+      }
+
+
+    default: cout << "\nUnknown distribution !" << endl;
+      YYABORT;
+
+  }
+ }
     break;
 
   case 72:
 /* Line 670 of lalr1.cc  */
-#line 716 "Gspn-parser.yy"
+#line 725 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
-				 if(Evaluate.parse(st)) 
-					{cout<<"The exponential ditribution is the only marking dependent distribution: '"<<st<<"'"<<endl;YYABORT; }
-				 else{std::ostringstream s;s<<Evaluate.RealResult;
-				 Par.push_back(s.str());
-					} 
-				}
+   if(Evaluate.parse(st))
+     {cout<<"The exponential ditribution is the only marking dependent distribution: '"<<st<<"'"<<endl;YYABORT; }
+   else{std::ostringstream s;s<<Evaluate.RealResult;
+     Par.push_back(s.str());
+   }
+ }
     break;
 
   case 73:
 /* Line 670 of lalr1.cc  */
-#line 725 "Gspn-parser.yy"
+#line 734 "Gspn-parser.yy"
     {}
     break;
 
   case 74:
 /* Line 670 of lalr1.cc  */
-#line 727 "Gspn-parser.yy"
+#line 736 "Gspn-parser.yy"
     {}
     break;
 
   case 75:
 /* Line 670 of lalr1.cc  */
-#line 728 "Gspn-parser.yy"
+#line 737 "Gspn-parser.yy"
     {}
     break;
 
   case 76:
 /* Line 670 of lalr1.cc  */
-#line 730 "Gspn-parser.yy"
+#line 739 "Gspn-parser.yy"
     {
-						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
-						      {
-							std::cout<<"Place: "<<*(yysemantic_stack_[(8) - (2)].name)<<" was not declared"<<std::endl;
-							YYABORT;
-							}
-						  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(8) - (4)].name))==Reader.MyGspn.TransList.end())
-						      {
-						      std::cout<<"Transition: "<<*(yysemantic_stack_[(8) - (4)].name)<<" was not declared"<<std::endl;
-						      YYABORT;
-						      }
-						  string st=(yysemantic_stack_[(8) - (6)].expression);
-						  
-						  if(Evaluate.parse(st)){
-							  Reader.MyGspn.inArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=1;
-						 	  Reader.MyGspn.inArcsStr[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=st;
-						  }
-						  else Reader.MyGspn.inArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=Evaluate.IntResult;
-						  		 
-						  }
+  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
+    {
+      std::cout<<"Place: "<<*(yysemantic_stack_[(8) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(8) - (4)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(8) - (4)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  string st=(yysemantic_stack_[(8) - (6)].expression);
+
+  if(Evaluate.parse(st)){
+    Reader.MyGspn.inArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=1;
+    Reader.MyGspn.inArcsStr[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=st;
+  }
+  else Reader.MyGspn.inArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=Evaluate.IntResult;
+
+ }
     break;
 
   case 77:
 /* Line 670 of lalr1.cc  */
-#line 750 "Gspn-parser.yy"
+#line 759 "Gspn-parser.yy"
     {
-						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
-						      {
-							std::cout<<"Place: "<<*(yysemantic_stack_[(6) - (2)].name)<<" was not declared"<<std::endl;
-							YYABORT;
-							}
-						  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(6) - (4)].name))==Reader.MyGspn.TransList.end())
-						      {
-						      std::cout<<"Transition: "<<*(yysemantic_stack_[(6) - (4)].name)<<" was not declared"<<std::endl;
-						      YYABORT;
-						      }
-						  Reader.MyGspn.inArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(6) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(6) - (2)].name)]]=1;						 
+  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
+    {
+      std::cout<<"Place: "<<*(yysemantic_stack_[(6) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(6) - (4)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(6) - (4)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  Reader.MyGspn.inArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(6) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(6) - (2)].name)]]=1;
 
-						  }
+ }
     break;
 
   case 78:
 /* Line 670 of lalr1.cc  */
-#line 765 "Gspn-parser.yy"
+#line 774 "Gspn-parser.yy"
     {}
     break;
 
   case 79:
 /* Line 670 of lalr1.cc  */
-#line 767 "Gspn-parser.yy"
+#line 776 "Gspn-parser.yy"
     {}
     break;
 
   case 80:
 /* Line 670 of lalr1.cc  */
-#line 768 "Gspn-parser.yy"
+#line 777 "Gspn-parser.yy"
     {}
     break;
 
   case 81:
 /* Line 670 of lalr1.cc  */
-#line 770 "Gspn-parser.yy"
+#line 779 "Gspn-parser.yy"
     {
-						   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.TransList.end())
-						      {
-						      std::cout<<"Transition: "<<*(yysemantic_stack_[(8) - (2)].name)<<" was not declared"<<std::endl;
-						      YYABORT;
-						      }
-						   if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (4)].name))==Reader.MyGspn.PlacesList.end())
-						      {
-							std::cout<<"Place: "<<*(yysemantic_stack_[(8) - (4)].name)<<" was not declared"<<std::endl;
-							YYABORT;
-						      }
-						  string st=(yysemantic_stack_[(8) - (6)].expression);
-						  
-						  if(Evaluate.parse(st)){
-							  Reader.MyGspn.outArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (2)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (4)].name)]]=1;
-						 	  Reader.MyGspn.outArcsStr[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (2)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (4)].name)]]=st;
-						  }
-						  else Reader.MyGspn.outArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (2)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (4)].name)]]=Evaluate.IntResult;
-						 
-						  }
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(8) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (4)].name))==Reader.MyGspn.PlacesList.end())
+    {
+      std::cout<<"Place: "<<*(yysemantic_stack_[(8) - (4)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  string st=(yysemantic_stack_[(8) - (6)].expression);
+
+  if(Evaluate.parse(st)){
+    Reader.MyGspn.outArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (2)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (4)].name)]]=1;
+    Reader.MyGspn.outArcsStr[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (2)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (4)].name)]]=st;
+  }
+  else Reader.MyGspn.outArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (2)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (4)].name)]]=Evaluate.IntResult;
+
+ }
     break;
 
   case 82:
 /* Line 670 of lalr1.cc  */
-#line 790 "Gspn-parser.yy"
+#line 799 "Gspn-parser.yy"
     {
-						   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.TransList.end())
-						      {
-						      std::cout<<"Transition: "<<*(yysemantic_stack_[(6) - (2)].name)<<" was not declared"<<std::endl;
-						      YYABORT;
-						      }
-						   if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (4)].name))==Reader.MyGspn.PlacesList.end())
-						      {
-							std::cout<<"Place: "<<*(yysemantic_stack_[(6) - (4)].name)<<" was not declared"<<std::endl;
-							YYABORT;
-						      }
-						  Reader.MyGspn.outArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(6) - (2)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(6) - (4)].name)]]=1;						 
-						    }
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(6) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (4)].name))==Reader.MyGspn.PlacesList.end())
+    {
+      std::cout<<"Place: "<<*(yysemantic_stack_[(6) - (4)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  Reader.MyGspn.outArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(6) - (2)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(6) - (4)].name)]]=1;
+ }
     break;
 
   case 83:
 /* Line 670 of lalr1.cc  */
-#line 806 "Gspn-parser.yy"
+#line 815 "Gspn-parser.yy"
     {}
     break;
 
   case 84:
 /* Line 670 of lalr1.cc  */
-#line 808 "Gspn-parser.yy"
+#line 817 "Gspn-parser.yy"
     {}
     break;
 
   case 85:
 /* Line 670 of lalr1.cc  */
-#line 809 "Gspn-parser.yy"
+#line 818 "Gspn-parser.yy"
     {}
     break;
 
   case 86:
 /* Line 670 of lalr1.cc  */
-#line 811 "Gspn-parser.yy"
+#line 820 "Gspn-parser.yy"
     {
-						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
-						      {
-							std::cout<<"Place: "<<*(yysemantic_stack_[(8) - (2)].name)<<" was not declared"<<std::endl;
-							YYABORT;
-							}
-						  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(8) - (4)].name))==Reader.MyGspn.TransList.end())
-						      {
-						      std::cout<<"Transition: "<<*(yysemantic_stack_[(8) - (4)].name)<<" was not declared"<<std::endl;
-						      YYABORT;
-						      }
-						 string st=(yysemantic_stack_[(8) - (6)].expression);
-						  
-						  if(Evaluate.parse(st)){
-							  Reader.MyGspn.inhibArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=1;
-						 	  Reader.MyGspn.inhibArcsStr[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=st;
-						  }
-						  else Reader.MyGspn.inhibArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=Evaluate.IntResult;
-							 
-						  }
+  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
+    {
+      std::cout<<"Place: "<<*(yysemantic_stack_[(8) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(8) - (4)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(8) - (4)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  string st=(yysemantic_stack_[(8) - (6)].expression);
+
+  if(Evaluate.parse(st)){
+    Reader.MyGspn.inhibArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=1;
+    Reader.MyGspn.inhibArcsStr[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=st;
+  }
+  else Reader.MyGspn.inhibArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(8) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(8) - (2)].name)]]=Evaluate.IntResult;
+
+ }
     break;
 
   case 87:
 /* Line 670 of lalr1.cc  */
-#line 832 "Gspn-parser.yy"
+#line 841 "Gspn-parser.yy"
     {
-						  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
-						      {
-							std::cout<<"Place: "<<*(yysemantic_stack_[(6) - (2)].name)<<" was not declared"<<std::endl;
-							YYABORT;
-							}
-						  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(6) - (4)].name))==Reader.MyGspn.TransList.end())
-						      {
-						      std::cout<<"Transition: "<<*(yysemantic_stack_[(6) - (4)].name)<<" was not declared"<<std::endl;
-						      YYABORT;
-						      }
-						  Reader.MyGspn.inhibArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(6) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(6) - (2)].name)]]=1;
-						 
-						  }
+  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
+    {
+      std::cout<<"Place: "<<*(yysemantic_stack_[(6) - (2)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(6) - (4)].name))==Reader.MyGspn.TransList.end())
+    {
+      std::cout<<"Transition: "<<*(yysemantic_stack_[(6) - (4)].name)<<" was not declared"<<std::endl;
+      YYABORT;
+    }
+  Reader.MyGspn.inhibArcs[Reader.MyGspn.TransId[*(yysemantic_stack_[(6) - (4)].name)]][Reader.MyGspn.PlacesId[*(yysemantic_stack_[(6) - (2)].name)]]=1;
+
+ }
     break;
 
 
 /* Line 670 of lalr1.cc  */
-#line 1496 "Gspn-parser.tab.cc"
+#line 1499 "Gspn-parser.tab.cc"
       default:
         break;
       }
@@ -2137,10 +2140,10 @@ namespace gspn {
      165,   166,   167,   168,   169,   173,   174,   176,   177,   181,
      182,   184,   185,   187,   194,   202,   203,   205,   208,   217,
      220,   229,   292,   298,   304,   312,   317,   324,   325,   327,
-     329,   330,   332,   346,   356,   357,   359,   377,   396,   430,
-     464,   487,   498,   510,   511,   512,   522,   536,   537,   540,
-     711,   712,   716,   725,   727,   728,   730,   750,   765,   767,
-     768,   770,   790,   806,   808,   809,   811,   832,   849
+     329,   330,   332,   346,   348,   349,   351,   373,   396,   433,
+     471,   496,   507,   519,   520,   521,   531,   545,   546,   549,
+     720,   721,   725,   734,   736,   737,   739,   759,   774,   776,
+     777,   779,   799,   815,   817,   818,   820,   841,   858
   };
 
   // Print the state stack on the debug stream.
@@ -2232,9 +2235,9 @@ namespace gspn {
 
 } // gspn
 /* Line 1141 of lalr1.cc  */
-#line 2236 "Gspn-parser.tab.cc"
+#line 2239 "Gspn-parser.tab.cc"
 /* Line 1142 of lalr1.cc  */
-#line 851 "Gspn-parser.yy"
+#line 860 "Gspn-parser.yy"
 
 
 void

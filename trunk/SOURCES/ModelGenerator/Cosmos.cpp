@@ -126,8 +126,6 @@ bool ParseBuild(parameters& P) {
 	lReader.MyLha.TransitionIndex = gReader.MyGspn.TransId;
 	lReader.MyLha.PlaceIndex = gReader.MyGspn.PlacesId;
 	
-	Gspn_Reader gr;
-	gReader = gr;
 	
 	if(P.verbose>0)cout << "Start Parsing " << P.PathLha << endl;
 	

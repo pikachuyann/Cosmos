@@ -295,29 +295,32 @@ void MyModelHandler::on_read_node(const XmlString& id,
             int id2 = atoi(id.c_str());
             IsPlace[id2]=false;
             Gml2Trans[id2]=countTr;
-            TransType timed = Timed;
-            bool singleservice = true;
-            bool markingdependant = false;
-            //bool agememory =false;
-            int nbserver =1;
-            string priority = "1";
-            string weight = "1";
-            
+			
+			transition *trans = new transition();
+			trans->label = "";
+			trans->type = Timed;
+			trans->priority = "1";
+			trans->weight = "1";
+			trans->singleService = true;
+			trans->markingDependant = false;
+			trans->ageMemory = false;
+			trans->nbServers = 1;
+			
             for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
                 if((*(it->second.begin())).compare("name")==0){
                     string* Trname = simplifyString(*(++(it->second.begin())));
                     if(verbose>1)cout << "\tname:" << *Trname << endl ;
                     MyGspn->TransList.insert(*Trname);
+					trans->label = *Trname;
                     MyGspn->TransId[*Trname]=countTr;
                 } else if ((*(it->second.begin())).compare("distribution")==0) {
                     if(verbose>1)cout << "\tdistribution:" << endl ;
-                    ProbabiliteDistribution& dist = *(new ProbabiliteDistribution);
                     for (treeSI it2 = (it->second.begin()).begin() ; it2 != (it->second.begin()).end() ; ++it2 ) {
                         if(verbose>1)cout << "\t" << (*it2) << ":" << endl;
                         if ((*it2).compare("type")==0) {
                             string* Trtype = simplifyString(*(it2.begin()));
-                            if((*Trtype).compare("IMDT")==0)timed=unTimed;
-                            dist.name = *Trtype;
+                            if((*Trtype).compare("IMDT")==0)trans->type=unTimed;
+                            trans->dist.name = *Trtype;
                             if(verbose>1)cout << "\t\t" << *Trtype << endl;
                         } else if ((*it2).compare("param")==0) {
                             
@@ -328,13 +331,12 @@ void MyModelHandler::on_read_node(const XmlString& id,
                                 if ((*it3).compare("number")==0) {
                                     //number = atoi((*leaf).c_str());
                                 } else if ((*it3).compare("expr")==0) {
-                                    eval_expr(&markingdependant, value, it3.begin() );
-                                    dist.Param.push_back(*value);
+                                    eval_expr(&trans->markingDependant, value, it3.begin() );
+                                    trans->dist.Param.push_back(*value);
                                 } else throw gmlioexc;
                             }
                         } else throw gmlioexc;
                     }
-                    MyGspn->Dist.push_back(dist);
                     
                 } else if ((*(it->second.begin())).compare("service")==0) {
                     bool markingdependant=false;
@@ -349,10 +351,10 @@ void MyModelHandler::on_read_node(const XmlString& id,
                                 int nserv=Evaluate_gml.IntResult;
                                 delete value;
                                 if(nserv == 1 ) {
-                                    nbserver =1;
+                                    trans->nbServers =1;
                                 }else {
-                                    singleservice=false;
-                                    nbserver=nbserver;
+                                    trans->singleService=false;
+                                    trans->nbServers=nserv;
                                 }
                                 
                             }
@@ -378,7 +380,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     if ((*(++(it->second.begin()))).compare("expr")==0) {
                         eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
                         if(markingdependant==false) {
-                            weight = *value;
+                            trans->weight = *value;
                         }else {
                             cout<<"Weight is not marking dependent "<<endl;
                         }
@@ -391,7 +393,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     if ((*(++(it->second.begin()))).compare("expr")==0) {
                         eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
                         if(markingdependant==false) {
-                            priority = *value;
+                            trans->priority = *value;
                         }else {
                             cout<<"Priority is not marking dependent "<<endl;
                         }
@@ -402,13 +404,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                 
             }
             
-            MyGspn->tType.push_back(timed);
-            MyGspn->Priority.push_back(*(new string(priority)));
-            MyGspn->Weight.push_back(*(new string(weight)));
-            MyGspn->SingleService.push_back(singleservice);
-            MyGspn->MarkingDependent.push_back(markingdependant);
-            MyGspn->NbServers.push_back(nbserver);
-            
+			MyGspn->transitionStruct.push_back(*trans);
             countTr++;
         }else cout << "fail to parse gml"<< endl;
     }
@@ -440,19 +436,21 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             MyGspn->pl++;
             
             //Add a transition
-            string Trname = "Puittrans";
-            MyGspn->TransList.insert(Trname);
-            MyGspn->TransId[Trname]=MyGspn->tr;
-            ProbabiliteDistribution& dist = *(new ProbabiliteDistribution);
-            dist.name = "EXPONENTIAL";
-            dist.Param.push_back("0");
-            MyGspn->Dist.push_back(dist);
-            MyGspn->tType.push_back(Timed);
-            MyGspn->Priority.push_back("1");
-            MyGspn->Weight.push_back("1");
-            MyGspn->SingleService.push_back(true);
-            MyGspn->MarkingDependent.push_back(true);
-            MyGspn->NbServers.push_back(1);
+			transition *trans = new transition();
+			trans->label = "Puittrans";
+			trans->type = Timed;
+			trans->dist.name =  "EXPONENTIAL";
+			trans->dist.Param.push_back("0");
+			trans->priority = "1";
+			trans->weight = "1";
+			trans->singleService = true;
+			trans->markingDependant = true;
+			trans->ageMemory = false;
+			trans->nbServers = 1;
+			MyGspn->transitionStruct.push_back(*trans);
+			
+			
+            MyGspn->TransList.insert(trans->label);
             MyGspn->tr++;
         }
         

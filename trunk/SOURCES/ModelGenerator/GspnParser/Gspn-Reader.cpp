@@ -263,7 +263,7 @@ void Gspn_Reader::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 	
     set<int> MarkDepT;
     for (size_t t = 0; t < MyGspn.tr; t++)
-        if (MyGspn.MarkingDependent[t])
+        if (MyGspn.transitionStruct[t].markingDependant)
             MarkDepT.insert(t);
 	
     for (size_t t = 0; t < MyGspn.tr; t++) {
@@ -381,6 +381,32 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	SpnCppFile << "};"<<endl<<endl;
 }
 
+void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
+	
+	for (size_t t=0; t < MyGspn.tr; t++ ) {
+		spnF << "\tTransition["<<t<<"].Id =" << t << ";" <<endl;
+		if (MyGspn.transitionStruct[t].type==Timed) {
+			spnF << "\tTransition["<<t<<"].transType = Timed;" <<endl;
+			spnF << "\tTransition["<<t<<"].DistTypeIndex = "<< IndexDist[MyGspn.transitionStruct[t].dist.name] << ";" <<endl;
+			if (bstr) {
+				spnF << "\tTransition["<<t<<"].DistType = \""<< MyGspn.transitionStruct[t].dist.name << "\";"<< endl;
+				for (size_t j = 0; j < MyGspn.transitionStruct[t].dist.Param.size(); j++) {
+					spnF << "\tTransition[" << t << "].DistParams.push_back(\" " << MyGspn.transitionStruct[t].dist.Param[j] << "\" );" << endl;
+				}
+			}
+		}else{
+			spnF << "\tTransition["<<t<<"].transType = unTimed;" <<endl;
+			spnF << "\tTransition["<<t<<"].DistTypeIndex = 3 ;" <<endl;
+		}
+		spnF << "\tTransition["<<t<<"].MarkingDependent = "<< MyGspn.transitionStruct[t].markingDependant << ";" <<endl;
+		
+		if (bstr) {
+			spnF << "\tTransition["<<t<<"].label = \""<< MyGspn.transitionStruct[t].label << "\";"<< endl;
+			spnF << "\tTransition["<<t<<"].priority = \""<< MyGspn.transitionStruct[t].priority << "\";"<< endl;
+			spnF << "\tTransition["<<t<<"].weight = \""<< MyGspn.transitionStruct[t].weight << "\";"<< endl;
+		}
+	}
+}
 
 void Gspn_Reader::WriteFile(parameters& P){
 	
@@ -456,39 +482,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 		}
     }
 	
-    for (set<string>::iterator it = MyGspn.TransList.begin(); it != MyGspn.TransList.end(); it++) {
-        int k = MyGspn.TransId[*it];
-        SpnCppFile << "    Transition[" << k << "].Id =" << k << ";" << endl;
-		if(P.StringInSpnLHA){
-			SpnCppFile << "    Transition[" << k << "].label =\"" << *it << "\";" << endl;
-		}
-    }
-	
-	
-    for (size_t i = 0; i < MyGspn.tr; i++) {
-        if (MyGspn.tType[i] == Timed) {
-            SpnCppFile << "    Transition[" << i << "].transType = Timed;" << endl;
-			
-			SpnCppFile << "    Transition[" << i << "].DistTypeIndex = " << IndexDist[MyGspn.Dist[i].name] << ";" << endl;
-			
-			if(P.StringInSpnLHA){
-				SpnCppFile << "    Transition[" << i << "].DistType = \"" << MyGspn.Dist[i].name << "\";" << endl;
-				for (size_t j = 0; j < MyGspn.Dist[i].Param.size(); j++) {
-					SpnCppFile << "    Transition[" << i << "].DistParams.push_back(\" " << MyGspn.Dist[i].Param[j] << "\" );" << endl;
-				}
-			}
-        } else {
-            SpnCppFile << "    Transition[" << i << "].transType = unTimed;" << endl;
-			SpnCppFile << "    Transition[" << i << "].DistTypeIndex = 3;" << endl;
-        }
-        SpnCppFile << "    Transition[" << i << "].MarkingDependent = " << MyGspn.MarkingDependent[i] << ";" << endl;
-		if(P.StringInSpnLHA){
-			SpnCppFile << "    Transition[" << i << "].priority = \"" << MyGspn.Priority[i] << "\";" << endl;
-			SpnCppFile << "    Transition[" << i << "].weight = \"" << MyGspn.Weight[i] << " \";" << endl;
-		}
-        SpnCppFile << endl;
-    }
-	
+	writeTransition(SpnCppFile,P.StringInSpnLHA);
+    	
     //-------------- Rare Event -----------------
 	if(P.RareEvent){
 		SpnCppFile << "    Msimple();" << endl;
@@ -781,13 +776,13 @@ void Gspn_Reader::WriteFile(parameters& P){
     //-------------- /Rare Event -------------------------
     SpnCppFile << "   switch(t){" << endl;
     for (size_t t = 0; t < MyGspn.tr; t++) {
-		if (MyGspn.tType[t] == Timed) {
+		if (MyGspn.transitionStruct[t].type == Timed) {
 			SpnCppFile << "     case " << t << ": {" << endl;
 			//SpnCppFile << "       vector<double> P(" << MyGspn.Dist[t].Param.size() << ");" << endl;
-			if (MyGspn.SingleService[t])
-				for (size_t i = 0; i < MyGspn.Dist[t].Param.size(); i++) {
+			if (MyGspn.transitionStruct[t].singleService)
+				for (size_t i = 0; i < MyGspn.transitionStruct[t].dist.Param.size(); i++) {
 					
-					SpnCppFile << "       ParamDistr[" << i << "]= ( double ) " << MyGspn.Dist[t].Param[i] << ";" << endl;
+					SpnCppFile << "       ParamDistr[" << i << "]= ( double ) " << MyGspn.transitionStruct[t].dist.Param[i] << ";" << endl;
 				} else {
 					SpnCppFile << "       double EnablingDegree = INT_MAX; " << endl;
 					bool AtLeastOneMarkDepArc = false;
@@ -803,18 +798,18 @@ void Gspn_Reader::WriteFile(parameters& P){
 							
 						}
 					if (AtLeastOneMarkDepArc) {
-						if (MyGspn.NbServers[t] >= INT_MAX) {
-							SpnCppFile << "       if(EnablingDegree < INT_MAX ) ParamDistr[0] = EnablingDegree * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
-							SpnCppFile << "       else ParamDistr[0] = " << MyGspn.Dist[t].Param[0] << " ;" << endl;
+						if (MyGspn.transitionStruct[t].nbServers >= INT_MAX) {
+							SpnCppFile << "       if(EnablingDegree < INT_MAX ) ParamDistr[0] = EnablingDegree * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+							SpnCppFile << "       else ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
 						} else {
-							SpnCppFile << "       if(EnablingDegree < INT_MAX ) P[0] = min(EnablingDegree , " << MyGspn.NbServers[t] << " ) * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
-							SpnCppFile << "       else ParamDistr[0] = " << MyGspn.Dist[t].Param[0] << " ;" << endl;
+							SpnCppFile << "       if(EnablingDegree < INT_MAX ) P[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+							SpnCppFile << "       else ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
 						}
 					} else {
-						if (MyGspn.NbServers[t] >= INT_MAX)
-							SpnCppFile << "        ParamDistr[0] = EnablingDegree  * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
+						if (MyGspn.transitionStruct[t].nbServers >= INT_MAX)
+							SpnCppFile << "        ParamDistr[0] = EnablingDegree  * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
 						else
-							SpnCppFile << "        ParamDistr[0] = min(EnablingDegree , " << MyGspn.NbServers[t] << " ) * ( " << MyGspn.Dist[t].Param[0] << " );" << endl;
+							SpnCppFile << "        ParamDistr[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
 					}
 				}
 			//SpnCppFile << "       return P;" << endl;
@@ -834,7 +829,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		
 		SpnCppFile << "     case " << t << ": {" << endl;
 		
-		SpnCppFile << "       return (double)" << MyGspn.Priority[t] << ";" << endl;
+		SpnCppFile << "       return (double)" << MyGspn.transitionStruct[t].priority << ";" << endl;
 		SpnCppFile << "       break;" << endl;
 		SpnCppFile << "     } " << endl;
 		
@@ -850,7 +845,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		
         SpnCppFile << "     case " << t << ":" << endl;
 		
-        SpnCppFile << "       return (double)" << MyGspn.Weight[t] << ";" << endl;
+        SpnCppFile << "       return (double)" << MyGspn.transitionStruct[t].weight << ";" << endl;
         SpnCppFile << "       break;" << endl;
 		
     }

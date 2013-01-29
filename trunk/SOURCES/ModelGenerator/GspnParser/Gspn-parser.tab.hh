@@ -52,10 +52,10 @@
 #include <sstream>
 #include <set>
 #include "../Eval/Eval.hpp"
-class Gspn_Reader;
+  class Gspn_Reader;
 
 
-
+ 
 
 /* Line 33 of lalr1.cc  */
 #line 62 "Gspn-parser.tab.hh"
@@ -87,12 +87,12 @@ namespace gspn {
 /* Line 33 of lalr1.cc  */
 #line 31 "Gspn-parser.yy"
 
-  double       RealVal;
-  int 	       IntVal;
-  
-  std::string *name;
-  char CharVal[100];
-  char expression[1000];
+   double       RealVal;
+   int         IntVal;
+
+   std::string *name;
+   char CharVal[100];
+   char expression[1000];
 
 
 /* Line 33 of lalr1.cc  */

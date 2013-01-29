@@ -53,19 +53,34 @@ struct ProbabiliteDistribution {
     vector<string> Param;
 };
 
+
 typedef struct ProbabiliteDistribution Distribution;
+
+struct transition {
+	string label;
+	TransType type;
+	Distribution dist;
+	string priority;
+	string weight;
+	bool singleService;
+	bool markingDependant;
+	int nbServers;
+	bool ageMemory;
+};
 
 struct GSPN {
     string Path;
     size_t tr;
     size_t pl;
 
-    set<string> PlacesList;
     set<string> TransList;
 
     map<string, int> PlacesId;
     map<string, int> TransId;
-
+	set<string> PlacesList;
+	
+	vector<transition> transitionStruct;
+	/*
     vector<Distribution> Dist;
     vector<string> Priority;
     vector<string> Weight;
@@ -73,9 +88,9 @@ struct GSPN {
     vector<bool> MarkingDependent;
     vector<int> NbServers;
     vector<bool> AgeMemory;
+    vector<TransType> tType;*/
 
-    vector<TransType> tType;
-
+	
     IntMatrix inArcs;
     IntMatrix outArcs;
     IntMatrix inhibArcs;
@@ -126,6 +141,7 @@ public:
     void WriteFile(parameters&);
 	void writeMarkingClasse(ofstream &, ofstream &);
 	void writeEnabledDisabled(ofstream &);
+	void writeTransition(ofstream &, bool);
 	
     bool trace_parsing;
 

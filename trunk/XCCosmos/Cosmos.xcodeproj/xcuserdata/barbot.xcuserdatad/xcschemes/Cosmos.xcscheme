@@ -61,7 +61,7 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-g"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-v 0"
@@ -88,12 +88,12 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/AllCosmos/trunk/POMDP/generated.gspn"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.gspn"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/AllCosmos/trunk/POMDP/generated.lha"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.lha"
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
