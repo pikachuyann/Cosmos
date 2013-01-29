@@ -471,32 +471,6 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         MyGspn->inArcsStr=m1Str;
         MyGspn->inhibArcsStr=m1Str;
         
-        /*vector<TransType> vtrtt(MyGspn->tr);
-         MyGspn->tType=vtrtt;
-         
-         //vector<Distribution> vdistr(MyGspn->tr);
-         //MyGspn->Dist=vdistr;
-         
-         vector<string> vtrstr(MyGspn->tr,"");
-         MyGspn->Priority=vtrstr;
-         
-         vector<string> dtrstr(MyGspn->tr);
-         MyGspn->Weight=vtrstr;
-         
-         
-         vector<bool> vtrbool(MyGspn->tr);
-         MyGspn->MarkingDependent=vtrbool;
-         //MyGspn->AgeMemory=vtrbool;
-         
-         //vector<bool> vtrbool(MyGspn->tr);
-         MyGspn->SingleService=vtrbool;
-         
-         vector<int> vtrint(MyGspn->tr);
-         MyGspn->NbServers=vtrint;*/
-        
-        //MarkingDependent=false;
-        //AgeMemory=false;
-        
     }
     
     if(verbose>1)cout << "read arc : " << id << ", " << arcType << ", " << source << " -> " << target << endl;

@@ -79,18 +79,14 @@ public:
 	
 	const int pl; // Number of places
     const int tr; // Number of transitions
+	abstractMarking Marking; // Current marking
 	
     vector <spn_trans> Transition; //contains all the transitions of the Petri net
     vector <spn_place> Place; //contains all the places of the Petri net
     
-	abstractMarking Marking; // Current marking
-	vector<int> getMarking(); //return  the current marking
-	
 	void reset(); // set the marking to the initial marking
 	
-	
 	string Path;
-	
 	vector<double> ParamDistr;
 	
 	//------------------------- Rare Event -------------------------------------
@@ -99,30 +95,25 @@ public:
 	double Rate_Sum;
 	double Origine_Rate_Sum;
 	vector <int> Msimpletab; //special places
+	
+	void Msimple();
+	void lumpingFun(vector<int>*);
 	//-------------------------/Rare Event -------------------------------------
 	
-	 
-	//void Load();
 	bool IsEnabled(const int); // Check if a given transition is enabled
 	
 	void fire(int); // fire a given transition
     void unfire(int); // unfire a given transition
 	void setConditionsVector();
 	
-	void GetDistParameters(int); // compute the the parameters value of a given distribution 
-	//------------------------- Rare Event ---------------------------------------
-	//vector<double> GetDistParametersOrigin(int);
-    void lumpingFun(vector<int>*); 
-	//-------------------------/Rare Event ---------------------------------------
-	
-	
+	void GetDistParameters(int); // compute the the parameters value of a given distribution
     double GetWeight(int); // compute the the weight value of a given transition
-
     double GetPriority(int); // compute the the priority value of a given transition
 	
 	const set<int>* PossiblyEn(); // return the set of transitions that may be enabled after firing the last transition
     const set<int>* PossiblyDis(); // return the set of transitions that may be disabled after firing the last transition
 	const set<int>* FreeMarkingDependant(); //return the set of transition without constrain but marking dependant
+
 private:
 	size_t lastTransition;
 	
@@ -135,11 +126,6 @@ private:
 	vector<int> TransitionConditions;
 	vector<int> initTransitionConditions;
 	//-------------------------/On the fly enabling disabling transition--------
-	
-	
-	//------------------------- Rare Event ---------------------------------------
-	void Msimple();
-	//-------------------------/Rare Event ---------------------------------------
 	
 	double min(double, double); //return the minimum of two numbers
     double max(double, double); //return the maximum of two numbers

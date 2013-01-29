@@ -717,31 +717,33 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "}" << endl;
 	
 	SpnCppFile << "void SPN::unfire(int t){" << endl;
-    SpnCppFile << "   switch(t){" << endl;
-    for (size_t t = 0; t < MyGspn.tr; t++) {
-        SpnCppFile << "     case " << t << ": {" << endl;
-        //SpnCppFile << "       unfire_t" << t << "();" << endl;
-        for (size_t p = 0; p < MyGspn.pl; p++) {
-			if (MyGspn.inArcs[t][p] > 0) {
-				if (MyGspn.inArcsStr[t][p] == " ")
-					SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" += " << MyGspn.inArcs[t][p] << ";" << endl;
-				else
-					SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" += " << MyGspn.inArcsStr[t][p] << ";" << endl;
+	if(P.RareEvent || P.computeStateSpace){
+		SpnCppFile << "   switch(t){" << endl;
+		for (size_t t = 0; t < MyGspn.tr; t++) {
+			SpnCppFile << "     case " << t << ": {" << endl;
+			//SpnCppFile << "       unfire_t" << t << "();" << endl;
+			for (size_t p = 0; p < MyGspn.pl; p++) {
+				if (MyGspn.inArcs[t][p] > 0) {
+					if (MyGspn.inArcsStr[t][p] == " ")
+						SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" += " << MyGspn.inArcs[t][p] << ";" << endl;
+					else
+						SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" += " << MyGspn.inArcsStr[t][p] << ";" << endl;
+				}
+				
+				if (MyGspn.outArcs[t][p] > 0) {
+					if (MyGspn.outArcsStr[t][p] == " ")
+						SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcs[t][p] << ";" << endl;
+					else
+						SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcsStr[t][p] << ";" << endl;
+				}
 			}
-			
-			if (MyGspn.outArcs[t][p] > 0) {
-				if (MyGspn.outArcsStr[t][p] == " ")
-					SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcs[t][p] << ";" << endl;
-				else
-					SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcsStr[t][p] << ";" << endl;
-			}
+			//
+			SpnCppFile << "       break;" << endl;
+			SpnCppFile << "     } " << endl;
 		}
-		//
-		SpnCppFile << "       break;" << endl;
-        SpnCppFile << "     } " << endl;
-    }
-	
-    SpnCppFile << "   }" << endl;
+		
+		SpnCppFile << "   }" << endl;
+	}
     SpnCppFile << "}\n" << endl;
 	
 	SpnCppFile << "const set<int>* SPN::PossiblyEn() {" << endl;
