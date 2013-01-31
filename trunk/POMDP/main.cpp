@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
 		
 		M = generateLinearMatrix(n,p,q);
 //		RewardArray = generateLinearReward(n,3);
-		RewardArray = vector<double>(n+1, 9);
+		RewardArray = vector<double>(n+1, 8);
 		ron=-1;
 		rdet=10;
 		ExpFileName="linear.txt";

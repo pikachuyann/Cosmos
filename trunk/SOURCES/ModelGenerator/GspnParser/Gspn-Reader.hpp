@@ -56,6 +56,51 @@ struct ProbabiliteDistribution {
 
 typedef struct ProbabiliteDistribution Distribution;
 
+struct color {
+	string name;
+	color(){};
+	color(const string s){ name =s;}
+	
+};
+struct colorClass {
+	string name;
+	bool isCircular;
+	vector<color> colors;
+	inline string cname()const {
+		return name+ "_Color_Classe";
+	}
+};
+
+
+#define UNCOLORED_DOMAIN (0)
+
+struct colorDomain {
+	string name;
+	vector<size_t> colorClassIndex;
+	inline bool isUncolored()const {
+		return name.size() ==0;
+	}
+	inline string cname()const {
+		if(isUncolored())return "int";
+		return name+ "_Domain";
+	}
+	inline string tokname()const {
+		if(isUncolored())return "int";
+		return name+ "_Token";
+	}
+};
+
+struct colorVariable {
+	string name;
+	size_t type;
+};
+
+struct coloredToken {
+	vector<size_t> field;
+	vector<bool> isVar;
+	vector<int> varIncrement;
+};
+
 struct transition {
 	string label;
 	TransType type;
@@ -68,28 +113,27 @@ struct transition {
 	bool ageMemory;
 };
 
+struct place {
+	string name;
+	size_t colorDom;
+	place(){ colorDom = UNCOLORED_DOMAIN; }
+};
+
 struct GSPN {
     string Path;
     size_t tr;
     size_t pl;
 
     set<string> TransList;
+	vector<colorClass> colClasses;
+	vector<colorDomain> colDoms;
+	vector<colorVariable> colVars;
 
     map<string, int> PlacesId;
     map<string, int> TransId;
-	set<string> PlacesList;
 	
 	vector<transition> transitionStruct;
-	/*
-    vector<Distribution> Dist;
-    vector<string> Priority;
-    vector<string> Weight;
-    vector<bool> SingleService;
-    vector<bool> MarkingDependent;
-    vector<int> NbServers;
-    vector<bool> AgeMemory;
-    vector<TransType> tType;*/
-
+	vector<place> placeStruct;
 	
     IntMatrix inArcs;
     IntMatrix outArcs;
@@ -97,10 +141,46 @@ struct GSPN {
     vector < vector<string> > inArcsStr;
     vector < vector<string> > outArcsStr;
     vector < vector<string> > inhibArcsStr;
-    vector <int> Marking;
+    vector <string> Marking;
 
     map <std::string, int> IntConstant;
     map <std::string, double> RealConstant;
+
+	inline bool isColored(){
+		return colClasses.size()>0;
+	}
+	
+	GSPN(){
+		colDoms.push_back(colorDomain());
+		/*colorClass cc1;
+		cc1.name = "CLIENT";
+		cc1.colors.push_back(color("C1"));
+		cc1.colors.push_back(color("C2"));
+		cc1.colors.push_back(color("C3"));
+		colClasses.push_back(cc1);
+		
+		colorClass cc2;
+		cc2.name = "SERVER";
+		cc2.colors.push_back(color("S1"));
+		cc2.colors.push_back(color("S2"));
+		colClasses.push_back(cc2);
+		
+		colorDomain cd1;
+		cd1.name = "CLIENT";
+		cd1.colorClassIndex.push_back(0);
+		colDoms.push_back(cd1);
+		
+		colorDomain cd2;
+		cd2.name = "SERVER";
+		cd2.colorClassIndex.push_back(1);
+		colDoms.push_back(cd2);
+		
+		colorDomain cd3;
+		cd3.name = "CS";
+		cd3.colorClassIndex.push_back(0);
+		cd3.colorClassIndex.push_back(1);
+		colDoms.push_back(cd3);*/
+	}
 
 };
 
@@ -126,7 +206,7 @@ public:
     GspnType MyGspn;
     map<string, int> IndexDist;
 
-
+	
 
     void scan_begin();
     void scan_end();
@@ -142,6 +222,7 @@ public:
 	void writeMarkingClasse(ofstream &, ofstream &);
 	void writeEnabledDisabled(ofstream &);
 	void writeTransition(ofstream &, bool);
+	void writeVariable(ofstream & spnF);
 	
     bool trace_parsing;
 
@@ -154,6 +235,8 @@ public:
     
     void view();
 private:
+	void printloot(ofstream& sf, size_t domain, size_t nesting );
+	
 	void EnabledDisabledTr(vector< set<int> >&,
 						   vector< set<int> >&,
 						   vector< set<int> >&);

@@ -508,7 +508,7 @@ namespace gspn {
 /* Line 670 of lalr1.cc  */
 #line 127 "Gspn-parser.yy"
     {
-  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesId.end())
     {std::ostringstream s; s<<" Marking.P->_PL_"<< (yysemantic_stack_[(1) - (1)].name)->c_str() <<" ";
       sprintf((yyval.expression), "%s",(s.str()).c_str());
     }
@@ -590,7 +590,7 @@ namespace gspn {
 /* Line 670 of lalr1.cc  */
 #line 151 "Gspn-parser.yy"
     {
-  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyGspn.PlacesId.end())
     {std::ostringstream s; s<<" Marking.P->_PL_"<<(yysemantic_stack_[(1) - (1)].name)->c_str()<<" ";
       sprintf((yyval.expression), "%s",(s.str()).c_str());
     }
@@ -733,7 +733,7 @@ namespace gspn {
     vector<int> v(Reader.MyGspn.pl,0);
     vector<string> vStr(Reader.MyGspn.pl, " ");
 
-    Reader.MyGspn.Marking=v;
+    Reader.MyGspn.Marking=vStr;
     vector< vector<int> > m1(Reader.MyGspn.tr,v);
     vector< vector<string> > m1Str(Reader.MyGspn.tr,vStr);
 
@@ -746,41 +746,8 @@ namespace gspn {
     Reader.MyGspn.inhibArcsStr=m1Str;
   }
 
-
-  /*if(true){vector<TransType> v(Reader.MyGspn.tr);
-    Reader.MyGspn.tType=v;
-  }
-  if(true){
-    vector<Distribution> d(Reader.MyGspn.tr);
-    Reader.MyGspn.Dist=d;
-  }
-  if(true){
-    vector<string> d(Reader.MyGspn.tr,"");
-    Reader.MyGspn.Priority=d;
-  }
-  if(true){
-    vector<string> d(Reader.MyGspn.tr);
-    Reader.MyGspn.Weight=d;
-  }
-  if(true){
-    vector<bool> d(Reader.MyGspn.tr);
-    Reader.MyGspn.MarkingDependent=d;
-    Reader.MyGspn.AgeMemory=d;
-
-  }
-  if(true){
-    vector<bool> d(Reader.MyGspn.tr);
-    Reader.MyGspn.SingleService=d;
-  }
-  if(true){
-    vector<int> d(Reader.MyGspn.tr);
-    Reader.MyGspn.NbServers=d;
-  }*/
-
   MarkingDependent=false;
   AgeMemory=false;
-
-
 
 
  }
@@ -788,28 +755,32 @@ namespace gspn {
 
   case 42:
 /* Line 670 of lalr1.cc  */
-#line 292 "Gspn-parser.yy"
+#line 259 "Gspn-parser.yy"
     {
-
-  Reader.MyGspn.PlacesList.insert(*(yysemantic_stack_[(1) - (1)].name));
-  int sz=Reader.MyGspn.PlacesId.size();
-  Reader.MyGspn.PlacesId[*(yysemantic_stack_[(1) - (1)].name)]=sz;
+	place p;
+	p.name = *(yysemantic_stack_[(1) - (1)].name);
+	Reader.MyGspn.placeStruct.push_back(p);
+    int sz=Reader.MyGspn.PlacesId.size();
+    Reader.MyGspn.PlacesId[*(yysemantic_stack_[(1) - (1)].name)]=sz;
  }
     break;
 
   case 43:
 /* Line 670 of lalr1.cc  */
-#line 298 "Gspn-parser.yy"
-    {Reader.MyGspn.PlacesList.insert(*(yysemantic_stack_[(3) - (3)].name));
-   int sz=Reader.MyGspn.PlacesId.size();
-   Reader.MyGspn.PlacesId[*(yysemantic_stack_[(3) - (3)].name)]=sz;
+#line 266 "Gspn-parser.yy"
+    {
+	place p;
+	p.name = *(yysemantic_stack_[(3) - (3)].name);
+	Reader.MyGspn.placeStruct.push_back(p);
+	int sz=Reader.MyGspn.PlacesId.size();
+    Reader.MyGspn.PlacesId[*(yysemantic_stack_[(3) - (3)].name)]=sz;
 
  }
     break;
 
   case 44:
 /* Line 670 of lalr1.cc  */
-#line 304 "Gspn-parser.yy"
+#line 275 "Gspn-parser.yy"
     {
   if(Reader.MyGspn.TransId.size()!=Reader.MyGspn.tr){
     std::cout<<"Transition label missing or redeclared, please check your transitions list"<<std::endl;
@@ -821,7 +792,7 @@ namespace gspn {
 
   case 45:
 /* Line 670 of lalr1.cc  */
-#line 312 "Gspn-parser.yy"
+#line 283 "Gspn-parser.yy"
     {Reader.MyGspn.TransList.insert(*(yysemantic_stack_[(1) - (1)].name));
    int sz=Reader.MyGspn.TransId.size();
    Reader.MyGspn.TransId[*(yysemantic_stack_[(1) - (1)].name)]=sz;
@@ -831,7 +802,7 @@ namespace gspn {
 
   case 46:
 /* Line 670 of lalr1.cc  */
-#line 317 "Gspn-parser.yy"
+#line 288 "Gspn-parser.yy"
     {Reader.MyGspn.TransList.insert(*(yysemantic_stack_[(3) - (3)].name));
    int sz=Reader.MyGspn.TransId.size();
    Reader.MyGspn.TransId[*(yysemantic_stack_[(3) - (3)].name)]=sz;
@@ -841,14 +812,14 @@ namespace gspn {
 
   case 49:
 /* Line 670 of lalr1.cc  */
-#line 327 "Gspn-parser.yy"
+#line 298 "Gspn-parser.yy"
     {}
     break;
 
   case 52:
 /* Line 670 of lalr1.cc  */
-#line 333 "Gspn-parser.yy"
-    { if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
+#line 304 "Gspn-parser.yy"
+    { if(Reader.MyGspn.PlacesId.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesId.end())
     {cout<<"'"<<*(yysemantic_stack_[(6) - (2)].name)<<"' has not been declared"<<endl;
       YYABORT;
     }
@@ -863,19 +834,19 @@ namespace gspn {
 
   case 54:
 /* Line 670 of lalr1.cc  */
-#line 348 "Gspn-parser.yy"
+#line 319 "Gspn-parser.yy"
     {}
     break;
 
   case 55:
 /* Line 670 of lalr1.cc  */
-#line 349 "Gspn-parser.yy"
+#line 320 "Gspn-parser.yy"
     {}
     break;
 
   case 56:
 /* Line 670 of lalr1.cc  */
-#line 351 "Gspn-parser.yy"
+#line 322 "Gspn-parser.yy"
     {
   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(10) - (2)].name))==Reader.MyGspn.TransList.end())
     {
@@ -902,7 +873,7 @@ namespace gspn {
 
   case 57:
 /* Line 670 of lalr1.cc  */
-#line 373 "Gspn-parser.yy"
+#line 344 "Gspn-parser.yy"
     {
   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(12) - (2)].name))==Reader.MyGspn.TransList.end())
     {
@@ -930,7 +901,7 @@ namespace gspn {
 
   case 58:
 /* Line 670 of lalr1.cc  */
-#line 396 "Gspn-parser.yy"
+#line 367 "Gspn-parser.yy"
     {
   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(15) - (2)].name))==Reader.MyGspn.TransList.end())
     {
@@ -971,7 +942,7 @@ namespace gspn {
 
   case 59:
 /* Line 670 of lalr1.cc  */
-#line 433 "Gspn-parser.yy"
+#line 404 "Gspn-parser.yy"
     {
   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(17) - (2)].name))==Reader.MyGspn.TransList.end())
     {
@@ -1013,7 +984,7 @@ namespace gspn {
 
   case 60:
 /* Line 670 of lalr1.cc  */
-#line 471 "Gspn-parser.yy"
+#line 442 "Gspn-parser.yy"
     {
   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(10) - (2)].name))==Reader.MyGspn.TransList.end())
     {
@@ -1038,7 +1009,7 @@ namespace gspn {
 
   case 61:
 /* Line 670 of lalr1.cc  */
-#line 497 "Gspn-parser.yy"
+#line 468 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
   if(Evaluate.parse(st))
     {cout<<"Weight is not marking dependent: '"<<st<<"'"<<endl;YYABORT; }
@@ -1053,7 +1024,7 @@ namespace gspn {
 
   case 62:
 /* Line 670 of lalr1.cc  */
-#line 508 "Gspn-parser.yy"
+#line 479 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
   if(Evaluate.parse(st))
     {cout<<"Priority is not marking dependent: '"<<st<<"'"<<endl;YYABORT; }
@@ -1068,19 +1039,19 @@ namespace gspn {
 
   case 63:
 /* Line 670 of lalr1.cc  */
-#line 519 "Gspn-parser.yy"
+#line 490 "Gspn-parser.yy"
     {SingleService=true; NbServers=1;}
     break;
 
   case 64:
 /* Line 670 of lalr1.cc  */
-#line 520 "Gspn-parser.yy"
+#line 491 "Gspn-parser.yy"
     {SingleService=false;NbServers=INT_MAX;}
     break;
 
   case 65:
 /* Line 670 of lalr1.cc  */
-#line 521 "Gspn-parser.yy"
+#line 492 "Gspn-parser.yy"
     {NbServers= (yysemantic_stack_[(4) - (3)].IntVal);
    if(NbServers<1)
      { cout<<"Number of servers should be at least one"<<endl;
@@ -1095,7 +1066,7 @@ namespace gspn {
 
   case 66:
 /* Line 670 of lalr1.cc  */
-#line 531 "Gspn-parser.yy"
+#line 502 "Gspn-parser.yy"
     {
   if(Reader.MyGspn.IntConstant.find(*(yysemantic_stack_[(4) - (3)].name))!=Reader.MyGspn.IntConstant.end()){
     NbServers=Reader.MyGspn.IntConstant[*(yysemantic_stack_[(4) - (3)].name)];
@@ -1113,19 +1084,19 @@ namespace gspn {
 
   case 67:
 /* Line 670 of lalr1.cc  */
-#line 545 "Gspn-parser.yy"
+#line 516 "Gspn-parser.yy"
     {AgeMemory=true;}
     break;
 
   case 68:
 /* Line 670 of lalr1.cc  */
-#line 546 "Gspn-parser.yy"
+#line 517 "Gspn-parser.yy"
     {AgeMemory=false;}
     break;
 
   case 69:
 /* Line 670 of lalr1.cc  */
-#line 549 "Gspn-parser.yy"
+#line 520 "Gspn-parser.yy"
     {
   distrib=*(yysemantic_stack_[(4) - (1)].name);
   int np=Par.size();
@@ -1298,7 +1269,7 @@ namespace gspn {
 
   case 72:
 /* Line 670 of lalr1.cc  */
-#line 725 "Gspn-parser.yy"
+#line 696 "Gspn-parser.yy"
     {string st=(yysemantic_stack_[(1) - (1)].expression);
    if(Evaluate.parse(st))
      {cout<<"The exponential ditribution is the only marking dependent distribution: '"<<st<<"'"<<endl;YYABORT; }
@@ -1310,27 +1281,27 @@ namespace gspn {
 
   case 73:
 /* Line 670 of lalr1.cc  */
-#line 734 "Gspn-parser.yy"
+#line 705 "Gspn-parser.yy"
     {}
     break;
 
   case 74:
 /* Line 670 of lalr1.cc  */
-#line 736 "Gspn-parser.yy"
+#line 707 "Gspn-parser.yy"
     {}
     break;
 
   case 75:
 /* Line 670 of lalr1.cc  */
-#line 737 "Gspn-parser.yy"
+#line 708 "Gspn-parser.yy"
     {}
     break;
 
   case 76:
 /* Line 670 of lalr1.cc  */
-#line 739 "Gspn-parser.yy"
+#line 710 "Gspn-parser.yy"
     {
-  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*(yysemantic_stack_[(8) - (2)].name)<<" was not declared"<<std::endl;
       YYABORT;
@@ -1353,9 +1324,9 @@ namespace gspn {
 
   case 77:
 /* Line 670 of lalr1.cc  */
-#line 759 "Gspn-parser.yy"
+#line 730 "Gspn-parser.yy"
     {
-  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*(yysemantic_stack_[(6) - (2)].name)<<" was not declared"<<std::endl;
       YYABORT;
@@ -1372,32 +1343,32 @@ namespace gspn {
 
   case 78:
 /* Line 670 of lalr1.cc  */
-#line 774 "Gspn-parser.yy"
+#line 745 "Gspn-parser.yy"
     {}
     break;
 
   case 79:
 /* Line 670 of lalr1.cc  */
-#line 776 "Gspn-parser.yy"
+#line 747 "Gspn-parser.yy"
     {}
     break;
 
   case 80:
 /* Line 670 of lalr1.cc  */
-#line 777 "Gspn-parser.yy"
+#line 748 "Gspn-parser.yy"
     {}
     break;
 
   case 81:
 /* Line 670 of lalr1.cc  */
-#line 779 "Gspn-parser.yy"
+#line 750 "Gspn-parser.yy"
     {
   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.TransList.end())
     {
       std::cout<<"Transition: "<<*(yysemantic_stack_[(8) - (2)].name)<<" was not declared"<<std::endl;
       YYABORT;
     }
-  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (4)].name))==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*(yysemantic_stack_[(8) - (4)].name))==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*(yysemantic_stack_[(8) - (4)].name)<<" was not declared"<<std::endl;
       YYABORT;
@@ -1415,14 +1386,14 @@ namespace gspn {
 
   case 82:
 /* Line 670 of lalr1.cc  */
-#line 799 "Gspn-parser.yy"
+#line 770 "Gspn-parser.yy"
     {
   if(Reader.MyGspn.TransList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.TransList.end())
     {
       std::cout<<"Transition: "<<*(yysemantic_stack_[(6) - (2)].name)<<" was not declared"<<std::endl;
       YYABORT;
     }
-  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (4)].name))==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*(yysemantic_stack_[(6) - (4)].name))==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*(yysemantic_stack_[(6) - (4)].name)<<" was not declared"<<std::endl;
       YYABORT;
@@ -1433,27 +1404,27 @@ namespace gspn {
 
   case 83:
 /* Line 670 of lalr1.cc  */
-#line 815 "Gspn-parser.yy"
+#line 786 "Gspn-parser.yy"
     {}
     break;
 
   case 84:
 /* Line 670 of lalr1.cc  */
-#line 817 "Gspn-parser.yy"
+#line 788 "Gspn-parser.yy"
     {}
     break;
 
   case 85:
 /* Line 670 of lalr1.cc  */
-#line 818 "Gspn-parser.yy"
+#line 789 "Gspn-parser.yy"
     {}
     break;
 
   case 86:
 /* Line 670 of lalr1.cc  */
-#line 820 "Gspn-parser.yy"
+#line 791 "Gspn-parser.yy"
     {
-  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*(yysemantic_stack_[(8) - (2)].name))==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*(yysemantic_stack_[(8) - (2)].name)<<" was not declared"<<std::endl;
       YYABORT;
@@ -1476,9 +1447,9 @@ namespace gspn {
 
   case 87:
 /* Line 670 of lalr1.cc  */
-#line 841 "Gspn-parser.yy"
+#line 812 "Gspn-parser.yy"
     {
-  if(Reader.MyGspn.PlacesList.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*(yysemantic_stack_[(6) - (2)].name))==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*(yysemantic_stack_[(6) - (2)].name)<<" was not declared"<<std::endl;
       YYABORT;
@@ -1495,7 +1466,7 @@ namespace gspn {
 
 
 /* Line 670 of lalr1.cc  */
-#line 1499 "Gspn-parser.tab.cc"
+#line 1470 "Gspn-parser.tab.cc"
       default:
         break;
       }
@@ -2139,11 +2110,11 @@ namespace gspn {
      144,   145,   146,   149,   150,   151,   161,   162,   163,   164,
      165,   166,   167,   168,   169,   173,   174,   176,   177,   181,
      182,   184,   185,   187,   194,   202,   203,   205,   208,   217,
-     220,   229,   292,   298,   304,   312,   317,   324,   325,   327,
-     329,   330,   332,   346,   348,   349,   351,   373,   396,   433,
-     471,   496,   507,   519,   520,   521,   531,   545,   546,   549,
-     720,   721,   725,   734,   736,   737,   739,   759,   774,   776,
-     777,   779,   799,   815,   817,   818,   820,   841,   858
+     220,   229,   259,   266,   275,   283,   288,   295,   296,   298,
+     300,   301,   303,   317,   319,   320,   322,   344,   367,   404,
+     442,   467,   478,   490,   491,   492,   502,   516,   517,   520,
+     691,   692,   696,   705,   707,   708,   710,   730,   745,   747,
+     748,   750,   770,   786,   788,   789,   791,   812,   829
   };
 
   // Print the state stack on the debug stream.
@@ -2235,9 +2206,9 @@ namespace gspn {
 
 } // gspn
 /* Line 1141 of lalr1.cc  */
-#line 2239 "Gspn-parser.tab.cc"
+#line 2210 "Gspn-parser.tab.cc"
 /* Line 1142 of lalr1.cc  */
-#line 860 "Gspn-parser.yy"
+#line 831 "Gspn-parser.yy"
 
 
 void

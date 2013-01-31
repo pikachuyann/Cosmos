@@ -50,6 +50,9 @@ private:
 	GSPN* MyGspn;
     void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it );
     int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it );
+	void eval_tokenProfileMark(string* ,tree<string>::pre_order_iterator);
+	void eval_tokenProfileArc(string&, coloredToken& ,bool &,tree<string>::pre_order_iterator);
+	
     bool rareEvent;
     
 public:

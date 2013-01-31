@@ -125,7 +125,7 @@
 
 IntStringFormula: ival {sprintf($$,"%d",$1);}
 | str {
-  if(Reader.MyGspn.PlacesList.find(*$1)!=Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*$1)!=Reader.MyGspn.PlacesId.end())
     {std::ostringstream s; s<<" Marking.P->_PL_"<< $1->c_str() <<" ";
       sprintf($$, "%s",(s.str()).c_str());
     }
@@ -149,7 +149,7 @@ IntStringFormula: ival {sprintf($$,"%d",$1);}
 RealStringFormula:  rval {sprintf($$, "%f",$1);}
 | ival {sprintf($$,"%d",$1);}
 | str {
-  if(Reader.MyGspn.PlacesList.find(*$1)!=Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*$1)!=Reader.MyGspn.PlacesId.end())
     {std::ostringstream s; s<<" Marking.P->_PL_"<<$1->c_str()<<" ";
       sprintf($$, "%s",(s.str()).c_str());
     }
@@ -237,7 +237,7 @@ PlacesList: PList EQ '{' PLabels '}' SEMICOLON {
     vector<int> v(Reader.MyGspn.pl,0);
     vector<string> vStr(Reader.MyGspn.pl, " ");
 
-    Reader.MyGspn.Marking=v;
+    Reader.MyGspn.Marking=vStr;
     vector< vector<int> > m1(Reader.MyGspn.tr,v);
     vector< vector<string> > m1Str(Reader.MyGspn.tr,vStr);
 
@@ -250,54 +250,25 @@ PlacesList: PList EQ '{' PLabels '}' SEMICOLON {
     Reader.MyGspn.inhibArcsStr=m1Str;
   }
 
-
-  /*if(true){vector<TransType> v(Reader.MyGspn.tr);
-    Reader.MyGspn.tType=v;
-  }
-  if(true){
-    vector<Distribution> d(Reader.MyGspn.tr);
-    Reader.MyGspn.Dist=d;
-  }
-  if(true){
-    vector<string> d(Reader.MyGspn.tr,"");
-    Reader.MyGspn.Priority=d;
-  }
-  if(true){
-    vector<string> d(Reader.MyGspn.tr);
-    Reader.MyGspn.Weight=d;
-  }
-  if(true){
-    vector<bool> d(Reader.MyGspn.tr);
-    Reader.MyGspn.MarkingDependent=d;
-    Reader.MyGspn.AgeMemory=d;
-
-  }
-  if(true){
-    vector<bool> d(Reader.MyGspn.tr);
-    Reader.MyGspn.SingleService=d;
-  }
-  if(true){
-    vector<int> d(Reader.MyGspn.tr);
-    Reader.MyGspn.NbServers=d;
-  }*/
-
   MarkingDependent=false;
   AgeMemory=false;
-
-
 
 
  };
 
 PLabels : str {
-
-  Reader.MyGspn.PlacesList.insert(*$1);
-  int sz=Reader.MyGspn.PlacesId.size();
-  Reader.MyGspn.PlacesId[*$1]=sz;
+	place p;
+	p.name = *$1;
+	Reader.MyGspn.placeStruct.push_back(p);
+    int sz=Reader.MyGspn.PlacesId.size();
+    Reader.MyGspn.PlacesId[*$1]=sz;
  }
-|PLabels COMMA str {Reader.MyGspn.PlacesList.insert(*$3);
-   int sz=Reader.MyGspn.PlacesId.size();
-   Reader.MyGspn.PlacesId[*$3]=sz;
+|PLabels COMMA str {
+	place p;
+	p.name = *$3;
+	Reader.MyGspn.placeStruct.push_back(p);
+	int sz=Reader.MyGspn.PlacesId.size();
+    Reader.MyGspn.PlacesId[*$3]=sz;
 
  };
 
@@ -330,7 +301,7 @@ PLACES: PLACE
 |PLACES  PLACE;
 
 PLACE: LB str COMMA IntStringFormula RB SEMICOLON
-{ if(Reader.MyGspn.PlacesList.find(*$2)==Reader.MyGspn.PlacesList.end())
+{ if(Reader.MyGspn.PlacesId.find(*$2)==Reader.MyGspn.PlacesId.end())
     {cout<<"'"<<*$2<<"' has not been declared"<<endl;
       YYABORT;
     }
@@ -737,7 +708,7 @@ incells: incell {}
 |incells incell {};
 
 incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
-  if(Reader.MyGspn.PlacesList.find(*$2)==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*$2)==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
@@ -757,7 +728,7 @@ incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
 
  }
 |LB str COMMA str   RB SEMICOLON {
-  if(Reader.MyGspn.PlacesList.find(*$2)==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*$2)==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
@@ -782,7 +753,7 @@ outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
       std::cout<<"Transition: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
     }
-  if(Reader.MyGspn.PlacesList.find(*$4)==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*$4)==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
@@ -802,7 +773,7 @@ outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
       std::cout<<"Transition: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
     }
-  if(Reader.MyGspn.PlacesList.find(*$4)==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*$4)==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
@@ -818,7 +789,7 @@ inhibcells: inhibcell {}
 |inhibcells inhibcell {};
 
 inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
-  if(Reader.MyGspn.PlacesList.find(*$2)==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*$2)==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
@@ -839,7 +810,7 @@ inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
  }
 
 |LB str COMMA str   RB SEMICOLON {
-  if(Reader.MyGspn.PlacesList.find(*$2)==Reader.MyGspn.PlacesList.end())
+  if(Reader.MyGspn.PlacesId.find(*$2)==Reader.MyGspn.PlacesId.end())
     {
       std::cout<<"Place: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;

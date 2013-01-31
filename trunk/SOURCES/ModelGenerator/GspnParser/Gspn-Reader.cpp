@@ -87,18 +87,7 @@ int Gspn_Reader::parse_file(string &filename) {
             str = str + "\n" + str2;
         }
         file.close();
-        /*filename.append(".mod");
-		 ifstream Modfile(filename.c_str(), ios::in);
-		 if (Modfile) {
-		 
-		 while (!Modfile.eof()) {
-		 
-		 string str2;
-		 getline(Modfile, str2);
-		 str = str + "\n" + str2;
-		 }
-		 
-		 }*/
+
         int x = parse(str);
 		
         if (x) cout << "Parsing GSPN Description file failed" << endl;
@@ -138,30 +127,6 @@ Gspn_Reader::error(const std::string& m) {
     std::cerr << m << std::endl;
 }
 
-/*void Gspn_Reader::addSink(){
- //Add a place
- MyGspn.Marking.push_back(0);
- string Plname = "Puit";
- MyGspn.PlacesList.insert(Plname);
- MyGspn.PlacesId[Plname]=MyGspn.pl;
- MyGspn.pl++;
- 
- //Add a transition
- string Trname = "Puittrans";
- MyGspn.TransList.insert(Trname);
- MyGspn.TransId[Trname]=MyGspn.tr;
- ProbabiliteDistribution& dist = *(new ProbabiliteDistribution);
- dist.name = "EXPONENTIAL";
- dist.Param.push_back("0");
- MyGspn.Dist.push_back(dist);
- MyGspn.tType.push_back(Timed);
- MyGspn.Priority.push_back("1");
- MyGspn.Weight.push_back("1");
- MyGspn.SingleService.push_back(true);
- MyGspn.MarkingDependent.push_back(true);
- MyGspn.NbServers.push_back(1);
- MyGspn.tr++;
- }*/
 
 void Gspn_Reader::addSinkTrans(){
     (MyGspn.outArcs)[MyGspn.tr-1][MyGspn.pl-1]=1;
@@ -309,21 +274,194 @@ void Gspn_Reader::writeEnabledDisabled(ofstream &SpnF){
 	SpnF << endl;
 }
 
+void Gspn_Reader::printloot(ofstream& fs, size_t domain, size_t nesting ){
+	const colorDomain& dom = MyGspn.colDoms[domain];
+	if(nesting == dom.colorClassIndex.size()){
+		stringstream mult;
+		mult << "x.mult";
+		for (size_t count = 0 ; count < dom.colorClassIndex.size(); count++ ) {
+			mult << "[c" << count << "]";
+		}
+		fs << "\t\tif(" << mult.str() << ")\n\t\t";
+		fs << "\t\t\tout << "<< mult.str();
+		fs << "<< \"<\"";
+		for (size_t count = 0 ; count < dom.colorClassIndex.size(); count++ ) {
+			if( count > 0)fs << " << \",\"";
+			fs << " << Color_"<< MyGspn.colClasses[dom.colorClassIndex[count]].name << "_names[c" << count << "]";
+		}
+		fs << "<< \"> \";\n";
+		return;
+	}
+	fs << "\tfor(size_t c" << nesting << " = 0 ; c"<<nesting<<"< Color_";
+	fs << MyGspn.colClasses[dom.colorClassIndex[nesting]].name << "_Total; c";
+	fs << nesting << "++ )\n";
+	printloot(fs, domain, nesting+1);
+}
+
 void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	SpnCppFile << "#include \"marking.hpp\"\n";
 	SpnCppFile << "#include \"markingImpl.hpp\"\n";
 	
+	for (vector<colorClass>::const_iterator it = MyGspn.colClasses.begin();
+		 it != MyGspn.colClasses.end(); ++it ) {
+ 			header << "enum " << it->cname() << " {\n";
+		for (vector<color>::const_iterator it2 = it->colors.begin();
+			 it2 != it->colors.end(); ++it2 ) {
+			header << "\tColor_" << it->name << "_" << it2->name << ",\n";
+		}
+		header << "\tColor_" << it->name << "_Total\n};\n";
+		header << "extern const char *Color_"<< it->name << "_names[];\n";
+	}
+	
+
+	
+	for (vector<colorDomain>::const_iterator it = MyGspn.colDoms.begin()+1;
+		 it != MyGspn.colDoms.end(); ++it ) {
+		
+		//token class def
+		header << "\nstruct " << it->tokname() << "{\n";
+		vector<size_t>::const_iterator itcol;
+		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
+			header << "\tsize_t c" << itcol - it->colorClassIndex.begin() << ";\n";
+		}
+		header << "\tsize_t mult;\n";
+		
+		header << "\t" << it->tokname() << "( ";
+		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
+			header << "size_t cv" << itcol - it->colorClassIndex.begin()<< ", " ;
+		}
+		header << "size_t v =0) {\n";
+		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
+			header << "\t\tc" << itcol - it->colorClassIndex.begin()<< "= cv";
+			header << itcol - it->colorClassIndex.begin() << ";\n";
+		}
+		header << "\t\tmult = v;\n\t}\n";
+		
+		header << "\t" << it->tokname() << " operator * (size_t v){\n";
+		header << "\t\tmult *= v;\n\t\treturn *this;\n\t}\n";
+		
+		if (it->colorClassIndex.size()==1 && MyGspn.colClasses[it->colorClassIndex[0]].isCircular) {
+			header << "\t" << it->tokname() << " next(int i) { c0 = (c0 +i) % ";
+			header << MyGspn.colClasses[it->colorClassIndex[0]].colors.size();
+			header << " ;}\n";
+		}
+		
+		header << "};\n";
+
+		
+		stringstream colorArgsName;
+		stringstream colorArrayAccess;
+		
+		header << "struct " << it->cname() << " {\n\tint mult";
+		for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
+			 it2 != it->colorClassIndex.end(); ++it2 ) {
+			header << "[ Color_" << MyGspn.colClasses[*it2].name << "_Total ]";
+			size_t countCol = it2 - it->colorClassIndex.begin();
+			if(countCol > 0)colorArgsName << ",";
+			colorArgsName << MyGspn.colClasses[ *it2 ].cname() << " c" << countCol;
+			colorArrayAccess << "[c" << countCol << "]";
+
+		}
+		header << ";\n";
+		header << "\t" << it->cname() << "(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}"<< endl;
+		header << "\t" << it->cname() << "(" << colorArgsName.str() << ") {\n";
+		header << "\t\t" << "memset(&mult,0 , sizeof(mult));\n";
+		header << "\t\t" << "mult" << colorArrayAccess.str() << " = 1 ;\n";
+		header << "\t}\n";
+		header << "\t" << it->cname() << "& operator = (const " << it->cname() << "& x){\n";
+		header << "\t\tcopy((int*)x.mult,(int*)x.mult + sizeof(mult)/sizeof(int),(int*)mult);\n\t\treturn *this;\n\t}\n";
+		
+		header << "\tbool operator == (const " << it->cname() << "& x){\n";
+		header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult);\n\t}\n";
+		
+		header << "\tbool operator < (const " << it->cname() << "& x){\n";
+		header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::less<int>());\n\t}\n";
+		
+		header << "\tbool operator > (const " << it->cname() << "& x){\n";
+		header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::greater<int>());\n\t}\n";
+		
+		header << "\t" << it->cname() << " operator * (int v){\n";
+		header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++) ((int*)mult)[count]*= v;\n\t\treturn *this;\n\t}\n";
+		
+		header << "\t" << it->cname() << "& operator += (const " << it->cname() << "& x){\n";
+		header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)";
+		header << "\n\t\t\t((int*)mult)[count]+= ((int*)x.mult)[count] ;\n";
+		header << "\t\treturn *this;\n\t}\n";
+		
+		header << "\t" << it->cname() << "& operator += (const " << it->tokname() << "& x){\n";
+		header << "\t\tmult";
+		for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
+			 it2 != it->colorClassIndex.end(); ++it2 ) {
+			header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
+		}
+		header << " += x.mult;\n\t}\n";
+		
+		header << "\t" << it->cname() << "& operator -= (const " << it->tokname() << "& x){\n";
+		header << "\t\tmult";
+		for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
+			 it2 != it->colorClassIndex.end(); ++it2 ) {
+			header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
+		}
+		header << " -= x.mult;\n\t}\n";
+		
+		header << "\t" << it->cname() << "& operator < (const " << it->tokname() << "& x){\n";
+		header << "\t\tmult";
+		for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
+			 it2 != it->colorClassIndex.end(); ++it2 ) {
+			header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
+		}
+		header << " < x.mult;\n\t}\n";
+		
+		header << "\t" << it->cname() << "& operator > (const " << it->tokname() << "& x){\n";
+		header << "\t\tmult";
+		for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
+			 it2 != it->colorClassIndex.end(); ++it2 ) {
+			header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
+		}
+		header << " > x.mult;\n\t}\n";
+		
+		header << "\t" << it->cname() << " operator + (const " << it->cname() << "& x)const{\n";
+		header << "\t\t"<< it->cname() << " returnval = *this; returnval+= x;\n";
+		header << "\t\treturn returnval;\n\t}\n";
+		
+		header << "\t" << it->cname() << "& operator -= (const " << it->cname() << "& x){\n";
+		header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)";
+		header << "\n\t\t\t((int*)mult)[count]-= ((int*)x.mult)[count] ;\n";
+		header << "\t\treturn *this;\n\t}\n";
+		
+		header << "\t" << it->cname() << " operator - (const " << it->cname() << "& x)const{\n";
+		header << "\t\t"<< it->cname() << " returnval = *this; returnval-= x;\n";
+		header << "\t\treturn returnval;\n\t}\n";
+		
+		
+		header << "};\n";
+		//end of domain class definition
+		
+				
+		header << "std::ostream& operator << (std::ostream& out, const " << it->cname();
+		header << "& x) {\n";
+		printloot(header, it - MyGspn.colDoms.begin(), 0);
+		header << "\treturn out;\n}\n";
+	}
+	
 	header << "class abstractMarkingImpl {\n";
 	header << "public:\n";
-	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-        header << "\tint _PL_"<< *it << ";\n";
+	
+	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+		 plit!= MyGspn.placeStruct.end(); ++plit) {
+		
+        header << "\t"<< MyGspn.colDoms[plit->colorDom].cname() << " _PL_"<< plit->name << ";\n";
+		
 	}
+	writeVariable(header);
 	header << "};\n";
+	
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::resetToInitMarking(){\n";
-	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-        SpnCppFile << "\tP->_PL_"<< *it << " =" <<
-			MyGspn.Marking[MyGspn.PlacesId[*it]] << ";\n";
+	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+		 plit!= MyGspn.placeStruct.end(); ++plit) {
+        SpnCppFile << "\tP->_PL_"<< plit->name << " =" <<
+			MyGspn.Marking[MyGspn.PlacesId[plit->name]] << ";\n";
 	}
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
@@ -353,30 +491,46 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::print()const{\n";
 	SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-		SpnCppFile << "\tstd::cerr << \""<< *it <<": \" << P->_PL_"<< *it << " << std::endl;\n";
+	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+		 plit!= MyGspn.placeStruct.end(); ++plit) {
+		SpnCppFile << "\tstd::cerr << \""<< plit->name <<": \" << P->_PL_"<< plit->name << " << std::endl;\n";
 	}
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "int abstractMarking::getNbOfTokens(int p)const {\n";
-	SpnCppFile << "\tswitch (p) {\n";
-	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-		SpnCppFile << "\t\tcase "<< MyGspn.PlacesId[*it] << ": return P->_PL_"<< *it << ";\n";
+	if(MyGspn.isColored()){
+		SpnCppFile << "\texit(EXIT_FAILURE);\n";
+	}else{
+		SpnCppFile << "\tswitch (p) {\n";
+		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+			 plit!= MyGspn.placeStruct.end(); ++plit) {
+			SpnCppFile << "\t\tcase "<< MyGspn.PlacesId[plit->name] << ": return P->_PL_"<< plit->name << ";\n";
+		}
+		SpnCppFile << "	}\n";
 	}
-	SpnCppFile << "	}\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "std::vector<int> abstractMarking::getVector()const {\n";
-	SpnCppFile << "\tstd::vector<int> v("<<MyGspn.pl << ");\n";
-	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-        SpnCppFile << "\tv[" << MyGspn.PlacesId[*it] <<"] = P->_PL_" << *it << ";\n";
+	if(MyGspn.isColored()){
+		SpnCppFile << "\texit(EXIT_FAILURE);\n";
+	}else{
+		SpnCppFile << "\tstd::vector<int> v("<<MyGspn.pl << ");\n";
+		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+			 plit!= MyGspn.placeStruct.end(); ++plit) {
+			SpnCppFile << "\tv[" << MyGspn.PlacesId[plit->name] <<"] = P->_PL_" << plit->name << ";\n";
+		}
+		SpnCppFile << "	return v;\n";
 	}
-	SpnCppFile << "	return v;\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::setVector(const std::vector<int>&v) {\n";
-	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-        SpnCppFile << "\tP->_PL_" << *it << " = v[" << MyGspn.PlacesId[*it] << "];\n";
+	if(MyGspn.isColored()){
+		SpnCppFile << "\texit(EXIT_FAILURE);\n";
+	}else{
+		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+			 plit!= MyGspn.placeStruct.end(); ++plit) {
+			SpnCppFile << "\tP->_PL_" << plit->name << " = v[" << MyGspn.PlacesId[plit->name] << "];\n";
+		}
 	}
 	SpnCppFile << "};"<<endl<<endl;
 }
@@ -408,12 +562,21 @@ void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
 	}
 }
 
+void Gspn_Reader::writeVariable(ofstream & spnF){
+	for (size_t v = 0 ; v < MyGspn.colVars.size(); v++) {
+		spnF << "\t" << MyGspn.colDoms[MyGspn.colVars[v].type].cname();
+		spnF << " " << MyGspn.colVars[v].name << ";\n";
+	}
+	
+}
+
 void Gspn_Reader::WriteFile(parameters& P){
 	
 	vector<string> placeNames(MyGspn.pl);
-	for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-        int k = MyGspn.PlacesId[*it];
-		placeNames[k] = *it;
+	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+		 plit!= MyGspn.placeStruct.end(); ++plit) {
+        int k = MyGspn.PlacesId[plit->name];
+		placeNames[k] = plit->name;
     }
 
 	
@@ -440,11 +603,13 @@ void Gspn_Reader::WriteFile(parameters& P){
 		 it!= MyGspn.RealConstant.end() ; it++) {
 		SpnCppFile << "\tconst double "<<it->first<<"="<<it->second << ";" << endl;
 	}
-	for (set<string>::iterator it = MyGspn.PlacesList.begin();
-		 it != MyGspn.PlacesList.end(); it++) {
-        int k = MyGspn.PlacesId[*it];
-		SpnCppFile << "\tconst int _nb_Place_"<< *it << "=" << k << ";" << endl;
+	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+		 plit!= MyGspn.placeStruct.end(); ++plit) {
+        int k = MyGspn.PlacesId[plit->name];
+		SpnCppFile << "\tconst int _nb_Place_"<< plit->name << "=" << k << ";" << endl;
     }
+	
+	
     
 	SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
 	SpnCppFile << "#include <iostream>" << endl;
@@ -453,6 +618,20 @@ void Gspn_Reader::WriteFile(parameters& P){
 	writeMarkingClasse(SpnCppFile,header);
 	header.close();
 	
+	//------------- Writing Color name -----------------------------------------
+	
+	for (vector<colorClass>::const_iterator it = MyGspn.colClasses.begin();
+		 it != MyGspn.colClasses.end(); ++it ) {
+		SpnCppFile << "const char *Color_"<< it->name << "_names[Color_" << it->name << "_Total] = {\n";
+		for (vector<color>::const_iterator it2 = it->colors.begin();
+			 it2 != it->colors.end(); ++it2 ) {
+			SpnCppFile << "\"" << it2->name << "\",";
+		}
+		SpnCppFile << "\n};\n";
+	}
+
+	
+	//--------------- Writing implementation of SPN ----------------------------
     SpnCppFile << "SPN::SPN():" << endl;
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
 	SpnCppFile << "tr(" << MyGspn.tr << "), ";
@@ -466,6 +645,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		SpnCppFile << "\tinitTransitionConditions = TransitionConditions;" << endl;
 	}
 	
+	
     SpnCppFile << "    vector <spn_trans> t(" << MyGspn.tr << ");" << endl;
     SpnCppFile << "    Transition = t;" << endl;
 	
@@ -474,15 +654,18 @@ void Gspn_Reader::WriteFile(parameters& P){
     SpnCppFile << "    Place = p;" << endl;
 	
 	
-    for (set<string>::iterator it = MyGspn.PlacesList.begin(); it != MyGspn.PlacesList.end(); it++) {
-        int k = MyGspn.PlacesId[*it];
+	
+    for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+		 plit!= MyGspn.placeStruct.end(); ++plit) {
+        int k = MyGspn.PlacesId[plit->name];
         SpnCppFile << "    Place[" << k << "].Id =" << k << ";" << endl;
 		if(P.StringInSpnLHA){
-			SpnCppFile << "    Place[" << k << "].label =\" " << *it << "\";" << endl;
+			SpnCppFile << "    Place[" << k << "].label =\" " << plit->name << "\";" << endl;
 		}
     }
 	
 	writeTransition(SpnCppFile,P.StringInSpnLHA);
+	
     	
     //-------------- Rare Event -----------------
 	if(P.RareEvent){
