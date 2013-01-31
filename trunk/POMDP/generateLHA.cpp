@@ -18,7 +18,7 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
     }else LhaFile << "NbVariables = " << 2 << ";" << endl;
 	
     if(discounted){LhaFile << "NbLocations = "<< N*(Xlastmax+1)+2 << ";" << endl;
-	}else LhaFile << "NbLocations = "<< N*(Xlastmax+1)+1 << ";" << endl;
+	}else LhaFile << "NbLocations = "<< N*(Xlastmax+1)+2 << ";" << endl;
 
     LhaFile << "const double H = "<< H << ";" << endl; 
     
@@ -32,6 +32,7 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
     
     LhaFile << "LocationsList = {lf";
 	if(discounted)LhaFile << ",li";
+	else LhaFile << ",ln";
     for(int i=0;i<N;i++){
         for(int Xlast=0;Xlast<=Xlastmax;Xlast++){
             LhaFile << ", lp"<<i<<"_"<<Xlast;
@@ -45,11 +46,13 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
 	if(discounted){LhaFile << "InitialLocations = {li};"<< endl;
     }else LhaFile << "InitialLocations = {lp0_0};"<< endl;
 
-    LhaFile << "FinalLocations = {lf};"<< endl; 
+	if(discounted)LhaFile << "FinalLocations = {lf};"<< endl;
+	else LhaFile << "FinalLocations = {ln};"<< endl;
 
     LhaFile << "Locations={"<< endl; 
     //LhaFile << "(li, TRUE, (time:1));"<< endl;
 	if(discounted)LhaFile << "(li, TRUE , (time:1));"<< endl;
+	else LhaFile << "(ln, TRUE , (time:1));" << endl;
     LhaFile << "(lf, TRUE, (time:0));"<< endl;
     //LhaFile << "(la, TRUE, (time:1));"<< endl; 
     for(int i=0;i<N;i++){
@@ -122,6 +125,8 @@ void generateLHAfun(double ron,int N,vector< vector< vector<double> > >& Plast ,
         for(int Xlast=0;Xlast<=Xlastmax;Xlast++)
             LhaFile << "((lp"<<v<<"_"<< Xlast <<",lf),ALL, time>=H,#);"<<endl;
     }
+	
+	if(!discounted)LhaFile << "((lf,ln),ALL,#, {Reward=Reward/H} );"<<endl;
     
     for (int v=0 ; v<N; v++) {
         
@@ -242,7 +247,7 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
 	
     LhaFile << "Edges={"<< endl;
     
-	LhaFile << "((lf,ln"<< strat.size()-1 <<"),ALL,#, {Reward=Reward/H} );"<<endl;
+	LhaFile << "((lf,ln),ALL,#, {Reward=Reward/H} );"<<endl;
 	
 	//Edges to the initial state.
 	if(discounted){
