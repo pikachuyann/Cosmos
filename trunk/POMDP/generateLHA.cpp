@@ -199,7 +199,7 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
 	if(discounted){LhaFile << "NbVariables = " << 3 << ";" << endl;
 	}else LhaFile << "NbVariables = " <<  2 << ";" << endl;
 	
-	LhaFile << "NbLocations = "<< strat.size()+2 << ";" << endl;
+	LhaFile << "NbLocations = "<< strat.size()+3 << ";" << endl;
 	
     LhaFile << "const double H = "<< H << ";" << endl;
     
@@ -212,7 +212,7 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
     }else LhaFile << "VariablesList = {time, Reward} ;"<< endl;
 	
     
-    LhaFile << "LocationsList = { li, lf";
+    LhaFile << "LocationsList = { li, lf, ln";
     for(int i=0;i<strat.size();i++){
 		LhaFile << ", la"<<i;
 	}
@@ -224,11 +224,13 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
     //LhaFile << "InitialLocations = {la"<<strat.size()-1<<"};"<< endl;
 	LhaFile << "InitialLocations = {li};"<< endl;
 	
-    LhaFile << "FinalLocations = {lf};"<< endl;
+    if(discounted)LhaFile << "FinalLocations = {lf};"<< endl;
+		else LhaFile << "FinalLocations = {ln};"<< endl;
 	
     LhaFile << "Locations={"<< endl;
     LhaFile << "(li, TRUE, (time:1));"<< endl;
     LhaFile << "(lf, TRUE, (time:0));"<< endl;
+	LhaFile << "(ln, TRUE, (time:0));"<< endl;
     //LhaFile << "(la, TRUE, (time:1));"<< endl;
     for(int i=0;i<strat.size();i++){
         LhaFile << "(la"<<i<<", TRUE , (time:0));"<< endl;
@@ -240,6 +242,8 @@ void generateLHAfromStrat(double ron,int N, vector< pair<int, vector<int> > >& s
 	
     LhaFile << "Edges={"<< endl;
     
+	LhaFile << "((lf,ln"<< strat.size()-1 <<"),ALL,#, {Reward=Reward/H} );"<<endl;
+	
 	//Edges to the initial state.
 	if(discounted){
 		LhaFile << "((li,la"<< strat.size()-1 <<"),#,time<=0, {Discount = 1} );"<<endl;

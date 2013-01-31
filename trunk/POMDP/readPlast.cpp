@@ -109,9 +109,9 @@ double readPlastfun(int N,string PlastPath, vector< vector< vector<double> > >&P
             }
             
         }
-		cout<< "Reward: ["<< conflow/H << " ; "<< confup/H << "], width:"<< (confup-conflow)/H<< endl;
+		cout<< "Reward: ["<< conflow << " ; "<< confup << "], width:"<< (confup-conflow)<< endl;
 		
-		return reward/H;
+		return reward;
         
     }else{
         cout << "Fail to open Plast file:"<< PlastPath << endl;
