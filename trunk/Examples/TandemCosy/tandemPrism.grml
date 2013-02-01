@@ -4,6 +4,16 @@
   <attribute name="declaration">
     <attribute name="constants">
       <attribute name="intConsts">
+        <attribute name="intConst">
+          <attribute name="name">
+            r
+          </attribute>
+          <attribute name="expr">
+            <attribute name="numValue">
+              200
+            </attribute>
+          </attribute>
+        </attribute>
       </attribute>
       <attribute name="realConsts">
         <attribute name="realConst">
@@ -12,7 +22,7 @@
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              0.45
+              0.34
             </attribute>
           </attribute>
         </attribute>
@@ -22,7 +32,7 @@
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              0.1
+              0.32
             </attribute>
           </attribute>
         </attribute>
@@ -31,7 +41,7 @@
   </attribute>
   <node id="3" nodeType="place">
     <attribute name="name">
-      Queue1
+      RE_Queue1
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
@@ -41,7 +51,7 @@
   </node>
   <node id="4" nodeType="place">
     <attribute name="name">
-      Queue2
+      RE_Queue2
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
