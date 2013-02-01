@@ -96,8 +96,10 @@ struct colorVariable {
 };
 
 struct coloredToken {
+	string mult;
 	vector<size_t> field;
-	vector<bool> isVar;
+	vector<char> isVar;
+//	bitvector isVar;
 	vector<int> varIncrement;
 };
 

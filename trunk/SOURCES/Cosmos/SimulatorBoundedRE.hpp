@@ -121,7 +121,7 @@ protected:
 	numericalSolver* numSolv;
 	
 	virtual double mu();
-	virtual double ComputeDistr(int i, double origin_rate);
+	virtual double ComputeDistr(const int i,const abstractBinding&, double origin_rate);
 };
 
 

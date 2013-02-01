@@ -29,14 +29,16 @@
 Event::Event() : transition(0), time(0), priority(0) , weight(0)
 {}
 
-Event::Event(unsigned int tr, double t): transition(tr),time(t), priority(0),weight(0) {}
+Event::Event(unsigned int tr, double t): transition(tr),time(t), priority(0),weight(0),binding() {}
 
-Event::Event(unsigned int tr, double t, unsigned int pr, double w) :
- transition(tr),time(t), priority(pr),weight(w) {}
+Event::Event(unsigned int tr, double t, unsigned int pr, double w, const abstractBinding& b) :
+ transition(tr),time(t), priority(pr),weight(w), binding(b) {}
+
+
 
 Event::Event(const Event& orig) :
 	transition(orig.transition),time(orig.time), priority(orig.priority),
-	weight(orig.weight) {}
+	weight(orig.weight), binding(orig.binding) {}
 
 Event::~Event() {
 }

@@ -156,7 +156,7 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 		st->append("(1))");
 	}else if(it->compare("type")==0){
 		string coldom = *simplifyString(*(it.begin()));
-		cerr << coldom << endl;
+		if(verbose>1)cerr << coldom << endl;
 		size_t colorc =0;
 		for(colorc =0; colorc < MyGspn->colDoms.size() &&
 			MyGspn->colDoms[colorc].name != coldom ; colorc++);
@@ -185,25 +185,35 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 	}
 }
 
-void MyModelHandler::eval_tokenProfileArc(string& st, coloredToken& tok, bool &markingdependant ,tree<string>::pre_order_iterator it){
+void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdependant ,tree<string>::pre_order_iterator it){
 	if(verbose>1)cout << (*it) << endl;
 	if(it->compare("function")==0){
-		eval_tokenProfileArc(st, tok, markingdependant, it.begin());
+		eval_tokenProfileArc(tok, markingdependant, it.begin());
+	}else if(it->compare("++")==0){
+		int incr;
+		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
+			if(it2->compare("name")==0){
+				eval_tokenProfileArc(tok, markingdependant, it2);
+			} else incr = atoi(simplifyString(*(it2).begin())->c_str());
+		}
+		tok.varIncrement.back() += incr;
 	}else if(it->compare("expr")==0){
-		eval_tokenProfileArc(st, tok,markingdependant, it.begin());
+		eval_tokenProfileArc(tok,markingdependant, it.begin());
 	}else if (it->compare("token")==0) {
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("occurs")==0){
-				eval_expr(&markingdependant, &st, it2.begin());
+				eval_expr(&markingdependant, &tok.mult, it2.begin());
 			}
 			if (it2->compare("tokenProfile")==0) {
 				if (verbose>1)cout << *it2 << endl;
 				for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
-					eval_tokenProfileArc(st, tok,markingdependant, it3);
+					eval_tokenProfileArc(tok,markingdependant, it3);
 				}
 			}
 		}
 	} else if(it->compare("type")==0){
+		cerr << "plain colore in arc label not yet implemented" << endl;
+		
 		/*string coldom = *simplifyString(*(it.begin()));
 		cerr << coldom << endl;
 		size_t colorc =0;
@@ -292,7 +302,7 @@ treeSI findbranch(treeSI t, string branch){
 
 MyModelHandler::MyModelHandler(GSPN* MyGspn2,bool re) {
 	//Initialisation
-    verbose =0;
+    verbose = 0;
     rareEvent = re;
     MyGspn= MyGspn2;
     countPl=0;
@@ -359,7 +369,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						if(verbose>1)cout << "\t" <<  *it2 << ": " ;
 						if((*it2).compare("name")==0){
 							cc.name = *simplifyString(*(it2.begin()));
-							cout << *(it2.begin());
+							if(verbose>1)cout << *(it2.begin());
 						}
 						if((*it2).compare("classType")==0){
 							treeSI tclasstypeenum = find(it2.begin(),it2.end(),"classEnum");
@@ -395,7 +405,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						if((*it2).compare("circular")==0){
 							if(simplifyString(*(it2.begin()))->compare("true")==0)
 								cc.isCircular = true;
-							cout << *(it2.begin());
+							if(verbose>1)cout << *(it2.begin());
 						}
 					}
 					colorDomain cd;
@@ -411,7 +421,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						if(verbose>1)cout << "\t" <<  *it2 << ": " ;
 						if((*it2).compare("name")==0){
 							cd.name = *simplifyString(*(it2.begin()));
-							cout << *(it2.begin());
+							if(verbose>1)cout << *(it2.begin());
 						}
 						if((*it2).compare("domainType")==0){
 							treeSI tclasstypeenum = find(it2.begin(),it2.end(),"cartesianProduct");
@@ -437,7 +447,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						if(verbose>1)cout << "\t" <<  *it2 << ": " ;
 						if((*it2).compare("name")==0){
 							cv.name = *simplifyString(*(it2.begin()));
-							cout << *(it2.begin());
+							if(verbose>1)cout << *(it2.begin());
 						}
 						if((*it2).compare("type")==0){
 							string colclass = *simplifyString(*(it2.begin()));
@@ -709,35 +719,41 @@ void MyModelHandler::on_read_arc(const XmlString& id,
     
     if(verbose>1)cout << "read arc : " << id << ", " << arcType << ", " << source << " -> " << target << endl;
     string valuation;
-	coloredToken tokenType;
+	vector<coloredToken> toklist;
     //cout << arcType << endl;
     int sourceGML = atoi(source.c_str());
     for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
 		treeSI it2 = it->second.begin();
         if(it2->compare("valuation")==0){
             bool markingdependant=false;
-			
-            if (it2.begin()->compare("expr")==0) {
-                eval_expr(&markingdependant, &valuation, it2.begin().begin() );
-            } else if (it2.begin()->compare("token")==0) {
-				string mark;
-				eval_tokenProfileArc(mark, tokenType, markingdependant, it2.begin());
-				size_t coldom;
-				if(IsPlace[sourceGML])
-					coldom = MyGspn->placeStruct[Gml2Place[sourceGML]].colorDom;
-				else coldom = MyGspn->placeStruct[Gml2Place[atoi(target.c_str())]].colorDom;
-				
-				valuation.append(MyGspn->colDoms[coldom].tokname());
-				valuation.append("(");
-				for (size_t pr = 0; pr < tokenType.field.size() ; pr++) {
-					if(pr>0)valuation.append(",");
-					valuation.append(MyGspn->colVars[pr].name);
-				}
-				valuation.append(") * ");
-				valuation.append(mark);
-				
-			} else cout << " Fail to parse GML: arc,valuation"<< endl;
-            
+			for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
+				if (it3->compare("expr")==0) {
+					eval_expr(&markingdependant, &valuation, it3.begin() );
+				} else if (it3->compare("token")==0) {
+					coloredToken tokenType;
+					eval_tokenProfileArc( tokenType, markingdependant, it3);
+					size_t coldom;
+					if(IsPlace[sourceGML])
+						coldom = MyGspn->placeStruct[Gml2Place[sourceGML]].colorDom;
+					else coldom = MyGspn->placeStruct[Gml2Place[atoi(target.c_str())]].colorDom;
+					
+					if (toklist.size()>0)valuation.append(" + ");
+					valuation.append(MyGspn->colDoms[coldom].tokname());
+					valuation.append("(");
+					for (size_t pr = 0; pr < tokenType.field.size() ; pr++) {
+						if(pr>0)valuation.append(", ");
+						valuation.append( "b.P->"+MyGspn->colVars[tokenType.field[pr]].name);
+						if(tokenType.varIncrement[pr] != 0){
+							valuation.append(".next(");
+							valuation.append(itostring(tokenType.varIncrement[pr]));
+							valuation.append(")");
+						}
+					}
+					valuation.append(") * ");
+					valuation.append(tokenType.mult);
+					toklist.push_back(tokenType);
+				} else cout << " Fail to parse GML: arc,valuation"<< endl;
+            }
         }else cout << "fail to parse gml"<< endl;
         
     }

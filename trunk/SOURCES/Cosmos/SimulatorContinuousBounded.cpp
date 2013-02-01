@@ -216,14 +216,14 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	return (batchResult);
 }
 
-void SimulatorContinuousBounded::updateSPN(int E1_transitionNum){
+void SimulatorContinuousBounded::updateSPN(const int E1_transitionNum,const abstractBinding& b){
 	Event F;
 	
-	if( ! N.IsEnabled(E1_transitionNum)) (*EQ).remove(0);
+	if( ! N.IsEnabled(E1_transitionNum, b)) (*EQ).remove(0);
 	
 	const set<int> *net = N.PossiblyEn();
 	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
-		if (N.IsEnabled(*it)) {
+		if (N.IsEnabled(*it,b)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
 				GenerateDummyEvent(F, (*it));
 				(*EQ).insert(F);
@@ -234,7 +234,7 @@ void SimulatorContinuousBounded::updateSPN(int E1_transitionNum){
 	const set<int> *ndt = N.PossiblyDis();
 	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
 		if ((*EQ).TransTabValue(*it)>-1) {
-			if (!N.IsEnabled(*it))
+			if (!N.IsEnabled(*it,b))
 				(*EQ).remove((*EQ).TransTabValue(*it));
 		}
 	}
@@ -250,8 +250,8 @@ void SimulatorContinuousBounded::updateSPN(int E1_transitionNum){
 	for (vector<int>::iterator it = Enabled_trans.begin(); it != Enabled_trans.end(); it++) {
         //cerr << "active transition:" << *it << endl;
 		if(*it != N.tr-1 && *it != N.tr-2){
-			if(N.IsEnabled(*it)){
-				GenerateEvent(F, (*it));
+			if(N.IsEnabled(*it,b)){
+				GenerateEvent(F, (*it),b);
 				(*EQ).replace(F, (*EQ).TransTabValue(*it));
 			}else {
 				(*EQ).remove((*EQ).TransTabValue(*it));
@@ -259,12 +259,12 @@ void SimulatorContinuousBounded::updateSPN(int E1_transitionNum){
 		}; 
 	};
 	
-    GenerateEvent(F, (N.tr-2));
+    GenerateEvent(F, (N.tr-2),b);
 	if(!doubleIS_mode){
 		(*EQ).replace(F, (*EQ).TransTabValue(N.tr-2));
 	}
     
-	GenerateEvent(F, (N.tr-1));
+	GenerateEvent(F, (N.tr-1),b);
 	if(!doubleIS_mode){
 		(*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
 	}
@@ -299,15 +299,15 @@ double SimulatorContinuousBounded::mu(){
 	return(numSolv->getMu(stateN));
 }
 
-void SimulatorContinuousBounded::getParams(int Id){
+void SimulatorContinuousBounded::getParams(const int Id,const abstractBinding& b){
 	
-	N.GetDistParameters(Id);
+	N.GetDistParameters(Id,b);
 	double origin_rate = N.ParamDistr[0];
     if(Id== N.tr-2){
         origin_rate = lambda - N.Origine_Rate_Sum;
         //cerr << "lambda:\t" << lambda << "\tselfloop:\t" << origin_rate << endl; 
     }    
-    N.ParamDistr[0]= ComputeDistr( Id, origin_rate);
+    N.ParamDistr[0]= ComputeDistr( Id, b,origin_rate);
 	N.ParamDistr[1]= origin_rate;
 }
 

@@ -91,8 +91,11 @@ void Simulator::InitialEventsQueue() {
 	
 	Event E;
 	for (size_t t = 0; t < N.tr; t++) {
-		if (N.IsEnabled(t)) {
-		GenerateEvent(E, (t));
+		// Loop over all binding here
+		abstractBinding b;
+		
+		if (N.IsEnabled(t,b)) {
+		GenerateEvent(E, t ,b);
 		(*EQ).insert(E);
 		}
 	}
@@ -138,27 +141,27 @@ void Simulator::fireLHA(int EdgeIndex){
 	A.CurrentLocation = A.Edge[EdgeIndex].Target;
 }
 
-void Simulator::updateSPN(int E1_transitionNum){
+void Simulator::updateSPN(const int E1_transitionNum, const abstractBinding& b){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
     
 	Event F;
     //check if the current transition is still enabled
-	if (N.IsEnabled(E1_transitionNum)) {		
-		GenerateEvent(F, E1_transitionNum);
+	if (N.IsEnabled(E1_transitionNum, b)) {
+		GenerateEvent(F, E1_transitionNum, b);
 		(*EQ).replace(F, 0); //replace the transition with the new generated time
 	} else (*EQ).remove(0);
 	
 	// Possibly adding Events corresponding to newly enabled-transitions
 	const set<int>* net = N.PossiblyEn();
 	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
-		if (N.IsEnabled(*it)) {
+		if (N.IsEnabled(*it,b)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
-                GenerateEvent(F, (*it));
+                GenerateEvent(F, (*it), b);
                 (*EQ).insert(F);
 			} else {
                 if (N.Transition[(*it)].MarkingDependent) {
-					GenerateEvent(F, (*it));
+					GenerateEvent(F, (*it),b);
 					(*EQ).replace(F, (*EQ).TransTabValue(*it));
                 }
 			}
@@ -169,11 +172,11 @@ void Simulator::updateSPN(int E1_transitionNum){
 	const set<int>* ndt = N.PossiblyDis();
 	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
 		if ((*EQ).TransTabValue(*it)>-1) {
-			if (!N.IsEnabled(*it))
+			if (!N.IsEnabled(*it,b))
                 (*EQ).remove((*EQ).TransTabValue(*it));
 			else {
                 if (N.Transition[(*it)].MarkingDependent) {
-					GenerateEvent(F, (*it));
+					GenerateEvent(F, (*it),b);
 					(*EQ).replace(F, (*EQ).TransTabValue(*it));
                 }
 			}
@@ -183,13 +186,13 @@ void Simulator::updateSPN(int E1_transitionNum){
     // Update transition which have no precondition on the Marking
 	const set<int>* fmd = N.FreeMarkingDependant();
 	for (set<int>::iterator it = fmd->begin(); it != fmd->end(); it++) {
-		if (N.IsEnabled(*it)) {
+		if (N.IsEnabled(*it,b)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
-                GenerateEvent(F, (*it));
+                GenerateEvent(F, (*it),b);
                 (*EQ).insert(F);
 				
 			} else {
-                GenerateEvent(F, (*it));
+                GenerateEvent(F, (*it),b);
                 (*EQ).replace(F, (*EQ).TransTabValue(*it));
 			}
 		}
@@ -281,7 +284,7 @@ bool Simulator::SimulateOneStep(){
 		updateLHA( E1.time - A.CurrentTime );
 		
 		//Fire the transition in the SPN
-		N.fire(E1_transitionNum);
+		N.fire(E1_transitionNum, E1.binding);
 		
         //Check if there exist a valid transition in the automata.
 		int SE = A.GetEnabled_S_Edges(E1_transitionNum, N.Marking);
@@ -298,7 +301,7 @@ bool Simulator::SimulateOneStep(){
 				returnResultTrue();
 				return false;
 			} else {
-				updateSPN(E1_transitionNum);
+				updateSPN(E1_transitionNum, E1.binding);
 			}
 		}
 	}
@@ -324,11 +327,11 @@ void Simulator::SimulateSinglePath() {
 
 
 //Generate an event based on the type of his distribution
-void Simulator::GenerateEvent(Event& E, int Id) {
+void Simulator::GenerateEvent(Event& E,const int Id,const abstractBinding& b ) {
 	
 	double t = A.CurrentTime;
 	if (N.Transition[Id].transType == Timed) {
-		getParams(Id);
+		getParams(Id,b);
 		t += GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);
 	}
     
@@ -347,12 +350,13 @@ void Simulator::GenerateEvent(Event& E, int Id) {
 	E.time = t;
 	E.priority = N.GetPriority(Id);
 	E.weight = w;
+	E.binding = b;
 	
 }
 
 //Return the parameter of a transition
-void Simulator::getParams(int Id){
-	N.GetDistParameters(Id);
+void Simulator::getParams(const int Id, const abstractBinding& b){
+	N.GetDistParameters(Id,b);
 }
 	
 //Call the random generator to generate fire time.

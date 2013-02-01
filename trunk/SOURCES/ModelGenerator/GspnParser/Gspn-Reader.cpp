@@ -322,18 +322,31 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		header << "\nstruct " << it->tokname() << "{\n";
 		vector<size_t>::const_iterator itcol;
 		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-			header << "\tsize_t c" << itcol - it->colorClassIndex.begin() << ";\n";
+			header << "\t" << MyGspn.colClasses[*itcol].cname() << " c" << itcol - it->colorClassIndex.begin() << ";\n";
 		}
-		header << "\tsize_t mult;\n";
+		header << "\tint mult;\n";
 		
 		header << "\t" << it->tokname() << "( ";
 		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-			header << "size_t cv" << itcol - it->colorClassIndex.begin()<< ", " ;
+			header << " "<<MyGspn.colClasses[*itcol].cname() << " cv" << itcol - it->colorClassIndex.begin()<< ", " ;
 		}
-		header << "size_t v =0) {\n";
+		header << "int v =1) {\n";
 		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-			header << "\t\tc" << itcol - it->colorClassIndex.begin()<< "= cv";
-			header << itcol - it->colorClassIndex.begin() << ";\n";
+			int pos = itcol - it->colorClassIndex.begin();
+			header << "\t\tc" << pos << "= cv"<<pos <<";\n";
+		}
+		header << "\t\tmult = v;\n\t}\n";
+		
+		
+		header << "\t" << it->tokname() << "( ";
+		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
+			header << "const "<<MyGspn.colClasses[*itcol].name << "_Token& cv" << itcol - it->colorClassIndex.begin()<< ", " ;
+		}
+		header << "int v =1) {\n";
+		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
+			int pos = itcol - it->colorClassIndex.begin();
+			header << "\t\tc" << pos << "= cv";
+			header << pos << ".c0" << ";\n";
 		}
 		header << "\t\tmult = v;\n\t}\n";
 		
@@ -341,10 +354,14 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		header << "\t\tmult *= v;\n\t\treturn *this;\n\t}\n";
 		
 		if (it->colorClassIndex.size()==1 && MyGspn.colClasses[it->colorClassIndex[0]].isCircular) {
-			header << "\t" << it->tokname() << " next(int i) { c0 = (c0 +i) % ";
-			header << MyGspn.colClasses[it->colorClassIndex[0]].colors.size();
-			header << " ;}\n";
+			header << "\t" << it->tokname() << " next(int i)const {\n";
+			header << "\t\t" << it->tokname() << " x(("<< MyGspn.colClasses[it->colorClassIndex[0]].cname() << ")((c0 +i) % Color_";
+			header << MyGspn.colClasses[it->colorClassIndex[0]].name << "_Total), ";
+			header << " mult);\n\t\treturn x;}\n";
 		}
+		
+		header << "\tbool operator > (const int x){\n";
+		header << "\t\treturn mult > x ;\n\t}\n";
 		
 		header << "};\n";
 
@@ -394,7 +411,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 			 it2 != it->colorClassIndex.end(); ++it2 ) {
 			header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
 		}
-		header << " += x.mult;\n\t}\n";
+		header << " += x.mult;\n\t\treturn *this;\n\t}\n";
 		
 		header << "\t" << it->cname() << "& operator -= (const " << it->tokname() << "& x){\n";
 		header << "\t\tmult";
@@ -402,18 +419,18 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 			 it2 != it->colorClassIndex.end(); ++it2 ) {
 			header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
 		}
-		header << " -= x.mult;\n\t}\n";
+		header << " -= x.mult;\n\t\treturn *this;\n\t}\n";
 		
-		header << "\t" << it->cname() << "& operator < (const " << it->tokname() << "& x){\n";
-		header << "\t\tmult";
+		header << "\tbool operator < (const " << it->tokname() << "& x){\n";
+		header << "\t\treturn mult";
 		for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
 			 it2 != it->colorClassIndex.end(); ++it2 ) {
 			header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
 		}
 		header << " < x.mult;\n\t}\n";
 		
-		header << "\t" << it->cname() << "& operator > (const " << it->tokname() << "& x){\n";
-		header << "\t\tmult";
+		header << "\tbool operator > (const " << it->tokname() << "& x){\n";
+		header << "\t\treturn mult";
 		for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
 			 it2 != it->colorClassIndex.end(); ++it2 ) {
 			header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
@@ -437,12 +454,25 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		header << "};\n";
 		//end of domain class definition
 		
+		
+		header << it->cname() << " operator + (const " << it->tokname() << "& t1 ,const " << it->tokname() << "& t2 )\n\n;";
+		
+		SpnCppFile << "" << it->cname() << " operator + (const " << it->tokname() << "& t1 ,const " << it->tokname() << "& t2 ){\n";
+		SpnCppFile << "\t"<< it->cname() << " d; d += t1; d+=t2 ;\n";
+		SpnCppFile << "\treturn d;\n}\n";
+		
 				
-		header << "std::ostream& operator << (std::ostream& out, const " << it->cname();
-		header << "& x) {\n";
-		printloot(header, it - MyGspn.colDoms.begin(), 0);
-		header << "\treturn out;\n}\n";
+		SpnCppFile << "std::ostream& operator << (std::ostream& out, const " << it->cname();
+		SpnCppFile << "& x) {\n";
+		printloot(SpnCppFile, it - MyGspn.colDoms.begin(), 0);
+		SpnCppFile << "\treturn out;\n}\n";
 	}
+	
+	header << "struct abstractBindingImpl {\n";
+	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
+		header << "\t" << MyGspn.colDoms[colvar->type].tokname() << " " << colvar->name << ";\n";
+	}
+	header << "};\n";
 	
 	header << "class abstractMarkingImpl {\n";
 	header << "public:\n";
@@ -592,7 +622,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 	//cout << loc << endl;
 	string headerloc = Pref + "/markingImpl.hpp";
 	ofstream header(headerloc.c_str(), ios::out | ios::trunc);
-	
+	header << "#ifndef _MarkingImpl_HPP" << endl;
+	header << "#define	_MarkingImpl_HPP" << endl;
 	
 	//SpnCppFile << "#include \"spn_orig.hpp\"" << endl;
 	SpnCppFile << "#include \"spn.hpp\"" << endl;
@@ -616,6 +647,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	//------------- Writing Marking type and header ----------------------------
 	writeMarkingClasse(SpnCppFile,header);
+	header << "#endif" << endl;
 	header.close();
 	
 	//------------- Writing Color name -----------------------------------------
@@ -679,7 +711,7 @@ void Gspn_Reader::WriteFile(parameters& P){
     SpnCppFile << "}\n" << endl;
 	
 	
-    SpnCppFile << "bool SPN::IsEnabled(const int t){" << endl;
+    SpnCppFile << "bool SPN::IsEnabled(const int t, const abstractBinding& b){" << endl;
 	if(P.localTesting){
 		SpnCppFile << "\treturn (TransitionConditions[t]==0);" << endl;
 	} else {
@@ -718,7 +750,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "}\n" << endl;
 	
 	
-    SpnCppFile << "void SPN::fire(int t){" << endl;
+    SpnCppFile << "void SPN::fire(const int t, const abstractBinding& b){" << endl;
 	SpnCppFile << "\tlastTransition = t;" << endl;
 	SpnCppFile << "\tswitch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
@@ -880,7 +912,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "\t}" << endl;
 	SpnCppFile << "}" << endl;
 	
-	SpnCppFile << "void SPN::unfire(int t){" << endl;
+	SpnCppFile << "void SPN::unfire(const int t ,const abstractBinding&){" << endl;
 	if(P.RareEvent || P.computeStateSpace){
 		SpnCppFile << "   switch(t){" << endl;
 		for (size_t t = 0; t < MyGspn.tr; t++) {
@@ -955,7 +987,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	SpnCppFile << "}" << endl;
     
-    SpnCppFile << "void SPN::GetDistParameters(int t){" << endl;
+    SpnCppFile << "void SPN::GetDistParameters(const int t, const abstractBinding&){" << endl;
     //-------------- /Rare Event -------------------------
     SpnCppFile << "   switch(t){" << endl;
     for (size_t t = 0; t < MyGspn.tr; t++) {

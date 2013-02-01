@@ -147,7 +147,7 @@ double SimulatorBoundedRE::mu(){
 	return(numSolv->getMu(stateN));
 }
 
-double SimulatorBoundedRE::ComputeDistr(int t , double origin_rate){
+double SimulatorBoundedRE::ComputeDistr(const int t ,const abstractBinding& b, double origin_rate ){
 	
 	//cerr << endl<< "mux" << endl;
 	double mux = mu();
@@ -162,12 +162,12 @@ double SimulatorBoundedRE::ComputeDistr(int t , double origin_rate){
 	}; 
 	
 	double distr;
-	N.fire(t);
+	N.fire(t,b);
 	numSolv->stepVect();
 	distr = origin_rate *( mu() / mux);
 	//cerr << " distr: "<< distr << " ";
 	
 	numSolv->previousVect();
-	N.unfire(t);
+	N.unfire(t,b);
 	return(distr);
 }

@@ -30,11 +30,13 @@
 #ifndef _EVENT_HPP
 #define	_EVENT_HPP
 
+#include "marking.hpp"
+
 class Event {
 public:
     Event();
     Event(unsigned int, double);
-    Event(unsigned int, double, unsigned int, double);
+    Event(unsigned int, double, unsigned int, double, const abstractBinding& );
     Event(const Event& orig);
     virtual ~Event();
     unsigned int getTrans();
@@ -51,9 +53,7 @@ public:
     double time;
     unsigned int priority;
     double weight;
-
-private:
-
+	abstractBinding binding;
 
 };
 

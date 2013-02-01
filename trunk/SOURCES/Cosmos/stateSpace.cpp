@@ -91,32 +91,37 @@ void stateSpace::exploreStateSpace(){
 		N.Marking.setVector(place);
 		
 		//set<int>::iterator itset;
-		for (size_t t = 0; t < N.tr; t++)if (N.IsEnabled(t)) {
+		for (size_t t = 0; t < N.tr; t++){
+			//Loop over binding here
+			abstractBinding b;
 			
-			N.fire(t);
-			//cerr << "transition:" << *it << endl;
-			vector<int> marking = N.Marking.getVector();
-			N.unfire(t);
-			
-			int SE = A.GetEnabled_S_Edges(t,abstractMarking(marking));
-			if (SE > -1) {
+			if (N.IsEnabled(t,b)) {
 				
-				nbTrans++;
-				marking.push_back( A.Edge[SE].Target );
-				//vector<double> Param = N.GetDistParameters(*it);
-				//transitionsList.push( make_pair(make_pair(currentstate, marking),Param[0] ));
+				N.fire(t,b);
+				//cerr << "transition:" << *it << endl;
+				vector<int> marking = N.Marking.getVector();
+				N.unfire(t,b);
 				
-				hash_state::iterator its = S.find (&marking);
-				if (its == S.end ()){
+				int SE = A.GetEnabled_S_Edges(t,abstractMarking(marking));
+				if (SE > -1) {
 					
-					//cerr << "state:"<< nbState << " -> ";
-					for (vector<int>::iterator it2=marking.begin(); it2!= marking.end() ; it2++) {
-						//cerr << *it2 << ":";
+					nbTrans++;
+					marking.push_back( A.Edge[SE].Target );
+					//vector<double> Param = N.GetDistParameters(*it);
+					//transitionsList.push( make_pair(make_pair(currentstate, marking),Param[0] ));
+					
+					hash_state::iterator its = S.find (&marking);
+					if (its == S.end ()){
+						
+						//cerr << "state:"<< nbState << " -> ";
+						for (vector<int>::iterator it2=marking.begin(); it2!= marking.end() ; it2++) {
+							//cerr << *it2 << ":";
+						}
+						//cerr << endl;
+						
+						toBeExplore.push(marking);
+						add_state(marking);
 					}
-					//cerr << endl;
-					
-					toBeExplore.push(marking);
-                    add_state(marking);
 				}
 			}
 			
@@ -145,24 +150,27 @@ void stateSpace::buildTransitionMatrix()
 		N.Marking.setVector(place);
 		
         mat (i,i) = 1.0;
-		for (size_t t = 0; t < N.tr; t++)if (N.IsEnabled(t)) {
-			
-			N.fire(t);
-			vector<int> marking = N.Marking.getVector();
-			N.unfire(t);
-			
-			int SE = A.GetEnabled_S_Edges( t  , marking);
-			if (SE > -1) {
+		for (size_t t = 0; t < N.tr; t++){
+			//Loop over binding here
+			abstractBinding b;
+			if (N.IsEnabled(t,b)) {
 				
-				marking.push_back( A.Edge[SE].Target );
-				N.GetDistParameters(t);
+				N.fire(t,b);
+				vector<int> marking = N.Marking.getVector();
+				N.unfire(t,b);
 				
-				int j = findHash(&marking);
-                mat (i,j) = N.ParamDistr[0];
+				int SE = A.GetEnabled_S_Edges( t  , marking);
+				if (SE > -1) {
+					
+					marking.push_back( A.Edge[SE].Target );
+					N.GetDistParameters(t,b);
+					
+					int j = findHash(&marking);
+					mat (i,j) = N.ParamDistr[0];
+				}
 			}
-			
 		}
-
+		
         
     }
 	    

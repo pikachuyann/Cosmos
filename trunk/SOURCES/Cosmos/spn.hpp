@@ -100,13 +100,13 @@ public:
 	void lumpingFun(vector<int>*);
 	//-------------------------/Rare Event -------------------------------------
 	
-	bool IsEnabled(const int); // Check if a given transition is enabled
+	bool IsEnabled(const int,const abstractBinding&); // Check if a given transition is enabled
 	
-	void fire(int); // fire a given transition
-    void unfire(int); // unfire a given transition
+	void fire(const int,const abstractBinding&); // fire a given transition
+    void unfire(const int,const abstractBinding&); // unfire a given transition
 	void setConditionsVector();
 	
-	void GetDistParameters(int); // compute the the parameters value of a given distribution
+	void GetDistParameters(const int, const abstractBinding& ); // compute the the parameters value of a given distribution
     double GetWeight(int); // compute the the weight value of a given transition
     double GetPriority(int); // compute the the priority value of a given transition
 	

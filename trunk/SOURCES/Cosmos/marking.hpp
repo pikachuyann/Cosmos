@@ -57,5 +57,11 @@ struct markingHashState{
 	int operator()(const abstractMarking &t1) const;
 };
 
+class abstractBindingImpl;
+
+class abstractBinding {
+public:
+	abstractBindingImpl* P;
+};
 
 #endif

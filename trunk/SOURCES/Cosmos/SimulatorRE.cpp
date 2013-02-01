@@ -60,8 +60,11 @@ void SimulatorRE::InitialEventsQueue() {
 	N.Origine_Rate_Sum = 0;
 	
 	for (size_t t = 0; t < N.tr; t++) {
-		if (N.IsEnabled(t)) {
-			GenerateEvent(E, (t));
+		// Loop over all binding here
+		abstractBinding b;
+
+		if (N.IsEnabled(t,b)) {
+			GenerateEvent(E, t, b);
 			(*EQ).insert(E);
 		}
 	}
@@ -84,14 +87,14 @@ void SimulatorRE::returnResultFalse(){
 	Result.second[0] =0.0;
 }
 
-void SimulatorRE::updateSPN(int E1_transitionNum){
+void SimulatorRE::updateSPN(const int E1_transitionNum,const abstractBinding& b ){
 	Event F;
 	
-	if( ! N.IsEnabled(E1_transitionNum)) (*EQ).remove(0);
+	if( ! N.IsEnabled(E1_transitionNum,b)) (*EQ).remove(0);
 	
 	const set<int> *net = N.PossiblyEn();
 	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
-		if (N.IsEnabled(*it)) {
+		if (N.IsEnabled(*it,b)) {
 			if ((*EQ).TransTabValue(*it) < 0) {
 				GenerateDummyEvent(F, (*it));
 				(*EQ).insert(F);
@@ -102,7 +105,7 @@ void SimulatorRE::updateSPN(int E1_transitionNum){
 	const set<int> *ndt = N.PossiblyDis();
 	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
 		if ((*EQ).TransTabValue(*it)>-1) {
-			if (!N.IsEnabled(*it))
+			if (!N.IsEnabled(*it,b))
 				(*EQ).remove((*EQ).TransTabValue(*it));
 		}
 	}
@@ -117,8 +120,10 @@ void SimulatorRE::updateSPN(int E1_transitionNum){
 	
 	for (vector<int>::iterator it = Enabled_trans.begin(); it != Enabled_trans.end(); it++) {
 		if(*it != N.tr-1){
-			if(N.IsEnabled(*it)){
-				GenerateEvent(F, (*it));
+			abstractBinding b2;
+			//loop over abstract binding here
+			if(N.IsEnabled(*it,b2)){
+				GenerateEvent(F, (*it) ,b2);
 				(*EQ).replace(F, (*EQ).TransTabValue(*it));
 			}else {
 				(*EQ).remove((*EQ).TransTabValue(*it));
@@ -126,7 +131,8 @@ void SimulatorRE::updateSPN(int E1_transitionNum){
 		}; 
 	};
 	
-	GenerateEvent(F, (N.tr-1));
+	abstractBinding bpuit;
+	GenerateEvent(F, (N.tr-1), bpuit);
 	if(!doubleIS_mode){
 		(*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
 	}
@@ -159,11 +165,11 @@ void SimulatorRE::GenerateDummyEvent(Event& E, int Id) {
     E.weight = 0.0;
 }
 	
-void SimulatorRE::GenerateEvent(Event& E, int Id) {
+void SimulatorRE::GenerateEvent(Event& E,const int Id,const abstractBinding& b) {
 	
     double t = A.CurrentTime;
     if (N.Transition[Id].transType == Timed) {
-        getParams(Id);
+        getParams(Id, b);
         t += GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);
 		
 		N.Rate_Table[Id] = N.ParamDistr[0];
@@ -184,6 +190,7 @@ void SimulatorRE::GenerateEvent(Event& E, int Id) {
     E.time = t;
     E.priority = N.GetPriority(Id);
     E.weight = w;
+	E.binding = b;
 	
 }
 
@@ -193,11 +200,11 @@ void SimulatorRE::reset(){
 	N.Rate_Sum=0;
 }
 
-void SimulatorRE::getParams(int Id){
+void SimulatorRE::getParams(const int Id,const abstractBinding& b){
 	
-	N.GetDistParameters(Id);
+	N.GetDistParameters(Id,b);
 	N.ParamDistr[1]=N.ParamDistr[0];
-	N.ParamDistr[0]= ComputeDistr( Id, N.ParamDistr[0]);
+	N.ParamDistr[0]= ComputeDistr( Id, b, N.ParamDistr[0]);
 }
 
 
@@ -224,7 +231,7 @@ double SimulatorRE::mu(){
 	return((*muprob.muvect)[i]);
 }
 
-double SimulatorRE::ComputeDistr(int t , double origin_rate){
+double SimulatorRE::ComputeDistr(const int t , const abstractBinding& b, double origin_rate){
 	
 	double mux = mu();
 	if( mux==0.0 || mux==1.0) return(origin_rate);
@@ -237,9 +244,9 @@ double SimulatorRE::ComputeDistr(int t , double origin_rate){
 	}; 
 	
 	double distr;
-	N.fire(t);
+	N.fire(t,b);
 	distr = origin_rate *( mu() / mux);
-	N.unfire(t);
+	N.unfire(t,b);
 	return(distr);
 }
 
