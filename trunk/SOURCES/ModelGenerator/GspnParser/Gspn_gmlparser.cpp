@@ -664,7 +664,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         
         if(rareEvent){
             //Add a place
-            MyGspn->Marking.push_back(0);
+            MyGspn->Marking.push_back("0");
 			place p;
             string Plname = "Puit";
 			p.name = Plname;
