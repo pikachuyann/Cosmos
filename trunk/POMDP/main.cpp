@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
     
 	double Prec=1e-4; // Threshold to stop the iteration
 	int MaxIteration=10; //Max number of iteration
+	double MaxReward = 7;
 
 	//This is the command line to invoke cosmos.
 	//This one use clang for the compilation of the model
@@ -72,7 +73,7 @@ int main(int argc, char** argv) {
     vector< double > RewardArray;
 	
 	if(argc<3){
-		cout << "usage: "<<argv[0]<<" linear <n> [strategy.pg]"<<endl;
+		cout << "usage: "<<argv[0]<<" linear <n> <Reward> [strategy.pg]"<<endl;
 		
 		cout <<"<n> Is the number of sensors in the line it must be odd"<<endl;
 		cout <<"If no strategy file are given this program compute iteratively";
@@ -105,9 +106,11 @@ int main(int argc, char** argv) {
 		std::istringstream st( argv[2]);
 		st >> n;
 		
+		MaxReward = atoi(argv[3]);
+		
 		M = generateLinearMatrix(n,p,q);
 //		RewardArray = generateLinearReward(n,3);
-		RewardArray = vector<double>(n+1, 8);
+		RewardArray = vector<double>(n+1, MaxReward);
 		ron=-1;
 		rdet=10;
 		ExpFileName="linear.txt";
@@ -159,9 +162,9 @@ int main(int argc, char** argv) {
 	
 	generateSPNfun(M);
 	
-	if (argc==4) {
+	if (argc==5) {
 		vector< pair<int, vector<int> > > ImportedStrat(0,make_pair(0,vector<int>(N,0)) );
-		readStrat(N, argv[3], ImportedStrat);
+		readStrat(N, argv[4], ImportedStrat);
 		printStrat(ImportedStrat);
 		generateLHAfromStrat(ron, N, ImportedStrat, RewardArray, H, M,discounted);
 		exit(EXIT_SUCCESS);
