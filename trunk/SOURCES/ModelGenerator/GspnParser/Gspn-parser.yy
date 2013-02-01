@@ -310,7 +310,9 @@ PLACE: LB str COMMA IntStringFormula RB SEMICOLON
     std::cout<<"Initial Marking is not marking dependent"<<std::endl;
     YYABORT;
   }
-  Reader.MyGspn.Marking[Reader.MyGspn.PlacesId[*$2]]=Evaluate.IntResult;
+  stringstream ss;
+  ss << Evaluate.IntResult;
+  Reader.MyGspn.Marking[Reader.MyGspn.PlacesId[*$2]]=ss.str();;
 };
 
 
