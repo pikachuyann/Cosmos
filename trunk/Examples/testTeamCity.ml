@@ -51,7 +51,7 @@ let invoke_cosmos_silent opt gspn lha  =
   Sys.command cmd
 
 let invoke_cosmos_prism opt gspn lha =
-  let cmd = sprintf "../../bin/Cosmos -v 0 -s %s %s %s 2> Result.res" opt gspn lha in
+  let cmd = sprintf "../../bin/Cosmos -v 0 -s %s %s %s > Result.res" opt gspn lha in
   print_endline cmd;
   Sys.command cmd
 
