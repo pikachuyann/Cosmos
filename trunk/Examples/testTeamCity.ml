@@ -24,7 +24,9 @@ let parse_result f =
       let str = input_line fs in
       let ls = split dots str in
       match ls with
-        | "Prism Result" :: v :: [] -> result.mean <- (float_of_string v)
+        | "Prism Result" :: v :: [] -> let x = float_of_string v in
+				       result.mean <- x;
+				       result.confInt <- (x-.0.0001 , x+. 0.0001)
         | "Estimated value" :: v :: [] -> result.mean <- (float_of_string v)
         | "Standard deviation" :: v :: [] -> result.stdDev <- (float_of_string v)
         | "Confidence interval" :: v :: [] ->
