@@ -56,6 +56,7 @@ struct _trans {
     string weight;
     bool MarkingDependent; // true if the transition is Marking Dependent
     bool AgeMemory; // true if the memory policy of the transition is age memory
+	vector<abstractBinding> bindingList;
 };
 typedef struct _trans spn_trans;
 

@@ -38,6 +38,7 @@ public:
     Event(unsigned int, double);
     Event(unsigned int, double, unsigned int, double, const abstractBinding& );
     Event(const Event& orig);
+	const Event& operator = (const Event&);
     virtual ~Event();
     unsigned int getTrans();
     double getTime();
@@ -54,6 +55,8 @@ public:
     unsigned int priority;
     double weight;
 	abstractBinding binding;
+	
+	bool isPriorer(const Event& e)const;
 
 };
 

@@ -328,7 +328,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		
 		header << "\t" << it->tokname() << "( ";
 		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-			header << " "<<MyGspn.colClasses[*itcol].cname() << " cv" << itcol - it->colorClassIndex.begin()<< ", " ;
+			header << " "<<MyGspn.colClasses[*itcol].cname() << " cv" << itcol - it->colorClassIndex.begin()<< " = ("<< MyGspn.colClasses[*itcol].cname() << ")0, " ;
 		}
 		header << "int v =1) {\n";
 		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
@@ -353,6 +353,27 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		header << "\t" << it->tokname() << " operator * (size_t v){\n";
 		header << "\t\tmult *= v;\n\t\treturn *this;\n\t}\n";
 		
+		
+		header << "\tvoid iter() {\n";
+		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
+			int pos = itcol - it->colorClassIndex.begin();
+			header << "\t\tif( c" << pos << "< ("<< MyGspn.colClasses[*itcol].cname() << ")(Color_";
+			header << MyGspn.colClasses[*itcol].name << "_Total - 1) )";
+			header << "{ c"<< pos << " = ("<< MyGspn.colClasses[*itcol].cname() << ")(c"<< pos <<"+ 1); return;};\n";
+			header << "c"<< pos << " = ("<< MyGspn.colClasses[*itcol].cname() << ")(0);\n";
+		}
+		header << "\t}\n";
+		
+		header << "\tvoid print(){\n\t\tstd::cerr << mult << \"<\" <<";
+		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
+			if(itcol != it->colorClassIndex.begin())header << "<< \" , \" << ";
+			header << " Color_"<< MyGspn.colClasses[*itcol].name << "_names[c" << itcol - it->colorClassIndex.begin() << "]";
+		}
+		header << " << \">\";\n";
+		header << "\t}\n";
+		
+		
+		
 		if (it->colorClassIndex.size()==1 && MyGspn.colClasses[it->colorClassIndex[0]].isCircular) {
 			header << "\t" << it->tokname() << " next(int i)const {\n";
 			header << "\t\t" << it->tokname() << " x(("<< MyGspn.colClasses[it->colorClassIndex[0]].cname() << ")((c0 +i) % Color_";
@@ -360,10 +381,20 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 			header << " mult);\n\t\treturn x;}\n";
 		}
 		
+		header << "\tbool islast()const {\n\t\treturn (";
+		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
+			int pos = itcol - it->colorClassIndex.begin();
+			if (pos > 0)header << " && ";
+			header << " c" << pos << "== ("<< MyGspn.colClasses[*itcol].cname() << ")(Color_";
+			header << MyGspn.colClasses[*itcol].name << "_Total -1) ";
+		}
+		header << " );\n\t}\n";
+		
 		header << "\tbool operator > (const int x){\n";
 		header << "\t\treturn mult > x ;\n\t}\n";
 		
 		header << "};\n";
+		
 
 		
 		stringstream colorArgsName;
@@ -523,7 +554,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
 	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 		 plit!= MyGspn.placeStruct.end(); ++plit) {
-		SpnCppFile << "\tstd::cerr << \""<< plit->name <<": \" << P->_PL_"<< plit->name << " << std::endl;\n";
+		SpnCppFile << "\tstd::cerr << \"\\t"<< plit->name <<": \" << P->_PL_"<< plit->name << " << std::endl;\n";
 	}
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
@@ -563,6 +594,54 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		}
 	}
 	SpnCppFile << "};"<<endl<<endl;
+	
+	SpnCppFile << "bool abstractBinding::next() {\n";
+	
+	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
+		SpnCppFile << "\tif (! P->"<< colvar->name << ".islast()){";
+		SpnCppFile << "P->"<< colvar->name << ".iter(); return true; };\n";
+		SpnCppFile << "\tP->"<< colvar->name << " = "<< MyGspn.colDoms[colvar->type].tokname() << "();\n";
+	}
+	SpnCppFile << "\tidcount++;\n";
+	SpnCppFile << "\treturn false;\n};\n";
+	
+	
+	SpnCppFile << "abstractBinding::abstractBinding() {\n";
+	if(MyGspn.isColored())SpnCppFile << "	P= new abstractBindingImpl;\n";
+	SpnCppFile << "	idcount=0;\n";
+	SpnCppFile << "}\n";
+	
+	SpnCppFile << "abstractBinding::abstractBinding(const abstractBinding& m) {\n";
+	if(MyGspn.isColored())SpnCppFile << "	P= new abstractBindingImpl;\n";
+	if(MyGspn.isColored())SpnCppFile << "	*P = *m.P;\n";
+	SpnCppFile << "\tidcount = m.idcount;\n";
+	SpnCppFile << "}\n";
+	
+	SpnCppFile << "abstractBinding::~abstractBinding() {\n";
+	if(MyGspn.isColored())SpnCppFile << "	delete P;\n";
+	SpnCppFile << "}\n";
+	
+	SpnCppFile << "abstractBinding& abstractBinding::operator = (const abstractBinding& m) {\n";
+	if(MyGspn.isColored())SpnCppFile << "	*P = *m.P;\n";
+	SpnCppFile << "\tidcount = m.idcount;\n";
+	SpnCppFile << "	return *this;\n";
+	SpnCppFile << "}\n";
+	
+	SpnCppFile << "void abstractBinding::print()const{\n";
+	SpnCppFile << "\tstd::cerr << \"Binding:\"<< std::endl;\n";
+	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
+		SpnCppFile << "\tstd::cerr << \"\\t"<< colvar->name <<": \";";
+		SpnCppFile << "P->"<< colvar->name << ".print();\n\tcerr << endl;\n";
+	}
+	SpnCppFile << "}\n";
+
+	SpnCppFile << "int abstractBinding::id()const{\n";
+	/*for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
+		SpnCppFile << "\tstd::cerr << \"\\t"<< colvar->name <<": \";";
+		SpnCppFile << "P->"<< colvar->name << ".print();\n\tcerr << endl;\n";
+	}*/
+	SpnCppFile << "\treturn idcount;\n}\n";
+	
 }
 
 void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
@@ -589,6 +668,12 @@ void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
 			spnF << "\tTransition["<<t<<"].priority = \""<< MyGspn.transitionStruct[t].priority << "\";"<< endl;
 			spnF << "\tTransition["<<t<<"].weight = \""<< MyGspn.transitionStruct[t].weight << "\";"<< endl;
 		}
+		
+		spnF << "\t{abstractBinding bl;\n";
+		spnF << "\tdo{\n";
+		spnF << "\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";
+		spnF << "\t}while(bl.next());}\n";
+		
 	}
 }
 

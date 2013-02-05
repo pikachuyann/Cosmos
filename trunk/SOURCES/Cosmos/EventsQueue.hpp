@@ -25,7 +25,7 @@
 
 #include <vector>
 #include "Event.hpp"
-
+#include "spn.hpp"
 
 #ifndef _EVENTSQUEUE_HPP
 #define	_EVENTSQUEUE_HPP
@@ -38,58 +38,58 @@ typedef vector <Event>::iterator EQit;
 
 class EventsQueue {
 public:
-    EventsQueue(EQueue *);
-    EventsQueue(size_t);
-
+    //EventsQueue(size_t);
+	EventsQueue(const SPN& N);
+	
     EventsQueue(const EventsQueue& orig);
     virtual ~EventsQueue();
 
-    void insert(Event &);
-    void replace(Event &, size_t);
-    void remove(size_t);
-    void siftUp(size_t);
-    void siftDown(size_t);
+    void insert(const Event &);
+    void replace(const Event &);
+    void remove(size_t,size_t);
+	bool isScheduled(size_t,size_t)const;
 
+	
     bool isEmpty();
-    void copyEvents(Event&, Event&);
     void view();
-    bool isPriorer(Event&, Event&);
-
-    int TransTabValue(int);
-    void UpdateTransTab(int, int);
-    void ViewTransTab();
 
     void reset();
-    size_t getSize();
-
-    EQueue* getEq();
+    size_t getSize()const ;
 
 
-
-    Event InPosition(int);
-    EQueue* eq;
+    const Event& InPosition(size_t)const ;
+    
+	
 private:
+//	EQueue eq;
+//    size_t Qsize;
+//    Tab TransTable;
+//    size_t TransTableSize;
 
-    EQit* it;
-    size_t Qsize;
-
-
-
-    Tab* TransTable;
-    size_t TransTableSize;
-
-    size_t getLeftChildIndex(size_t nodeIndex) {
+	vector<vector< int > > evtHeapIndex;
+	vector<vector< Event > > evtTbl;
+	vector<pair<size_t,size_t> > evtHeap;
+	
+    size_t getLeftChildIndex(size_t nodeIndex)const {
         return 2 * nodeIndex + 1;
     }
 
-    size_t getRightChildIndex(size_t nodeIndex) {
+    size_t getRightChildIndex(size_t nodeIndex)const {
         return 2 * nodeIndex + 2;
     }
 
-    size_t getParentIndex(size_t nodeIndex) {
+    size_t getParentIndex(size_t nodeIndex)const {
         return (nodeIndex - 1) / 2;
     }
 
+	void siftUp(size_t);
+    void siftDown(size_t);
+	void swapEvt(size_t,size_t);
+	
+	
+	/*int TransTabValue(int);
+    void UpdateTransTab(int, int);
+    void ViewTransTab();*/
 
 };
 

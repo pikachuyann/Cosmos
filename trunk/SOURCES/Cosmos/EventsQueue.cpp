@@ -26,224 +26,180 @@
 #include "EventsQueue.hpp"
 #include "Event.hpp"
 #include <iostream>
+#include <assert.h>
+#include <algorithm>
 
 using namespace std;
 
-EventsQueue::EventsQueue(size_t i) {
-    eq = new vector <Event > (i);
-    Qsize = 0;
 
-
-    TransTableSize = i;
-    TransTable = new vector <int> (TransTableSize);
-    for (size_t k = 0; k < TransTableSize; k++)
-        (*TransTable)[k] = -1;
-
-
+EventsQueue::EventsQueue(const SPN& N){
+	for(size_t it = 0; it< N.Transition.size(); ++it ){
+		evtTbl.push_back(vector<Event>());
+		evtHeapIndex.push_back(vector<int>(N.Transition[it].bindingList.size(),-1));
+		for (size_t it2 = 0 ; it2< N.Transition[it].bindingList.size(); ++it2) {
+			evtTbl[it].push_back(Event());
+		}
+	}
 }
 
-EventsQueue::EventsQueue(EQueue* EQ) {
-
-    eq = EQ;
-    Qsize = 0;
-
-
-
-}
-
-bool EventsQueue::isPriorer(Event& E1, Event& E2) {
-    //smallest time is priorer
-    if (E1.time > E2.time) return false;
-    if (E1.time < E2.time) return true;
-    // if not(< or >) so it is =
-    // highest priority is priorer
-    if (E1.priority < E2.priority) return false;
-    if (E1.priority > E2.priority) return true;
-    //bigest weight is priorer
-    if (E1.weight > E2.weight) return false;
-    else return true;
-
-}
 
 void EventsQueue::reset() {
-    for (size_t i = 0; i < TransTableSize; i++)
-        (*TransTable)[i] = -1;
-    Qsize = 0;
-
+	for(size_t it = 0; it< evtHeapIndex.size(); ++it )
+		for(size_t it2 = 0; it2< evtHeapIndex[it].size(); ++it2 )
+			evtHeapIndex[it][it2]= -1;
+	evtHeap.clear();
+	//Qsize = 0;
 }
 
 EventsQueue::EventsQueue(const EventsQueue& orig) {
-    eq = orig.eq;
-    Qsize = orig.Qsize;
-
+    
+    //Qsize = orig.Qsize;
+	
+	evtTbl = orig.evtTbl;
+	evtHeap = orig.evtHeap;
+	evtHeapIndex = orig.evtHeapIndex;
+	
+	/*eq = orig.eq;
     TransTableSize = orig.TransTableSize;
-    TransTable = orig.TransTable;
-
+    TransTable = orig.TransTable;*/
 }
 
 EventsQueue::~EventsQueue() {
-	delete eq;
-	delete TransTable;
 }
 
-void EventsQueue::insert(Event &e) {
-
-	(*eq)[Qsize] = e;
-
-    Qsize++;
-
-    (*TransTable)[(*eq)[Qsize - 1].transition] = Qsize - 1;
-    siftUp(Qsize - 1);
-
-
+void EventsQueue::insert(const Event &e) {
+	evtTbl[e.transition][e.binding.id()] = e;
+	evtHeapIndex[e.transition][e.binding.id()] = evtHeap.size();
+	evtHeap.push_back(make_pair(e.transition,e.binding.id()));
+	
+	siftUp(evtHeap.size()-1);
 }
 
-void EventsQueue::replace(Event &e, size_t k) {
-
-    if (e.transition != (*eq)[k].transition)
-        (*TransTable)[(*eq)[k].transition] = -1;
-
-    (*eq)[k] = e;
-    (*TransTable)[(*eq)[k].transition] = k;
-    siftUp(k);
-    siftDown(k);
+void EventsQueue::replace(const Event &e) {
+	int k = evtHeapIndex[e.transition][e.binding.id()];
+	evtTbl[e.transition][e.binding.id()] = e;
+	
+	siftUp(k);
+	siftDown(k);
 }
 
-Event EventsQueue::InPosition(int i) {
-    return (*eq)[i];
+void EventsQueue::remove(size_t tr, size_t b) {
+	int i = evtHeapIndex[tr][b];
+	
+	if(i>=0){
+		if (i == evtHeap.size()-1) {
+			evtHeapIndex[tr][b] = -1;
+			evtHeap.pop_back();
+		} else {
+			evtHeapIndex[evtHeap.back().first][evtHeap.back().second] = i;
+			evtHeapIndex[tr][b] = -1 ;
+			evtHeap[i] = evtHeap.back();
+			evtHeap.pop_back();
+			
+			siftDown(i);
+			siftUp(i);
+		}
+	}
+}
+
+const Event& EventsQueue::InPosition(size_t i)const {
+    return evtTbl[evtHeap[i].first][evtHeap[i].second];
+}
+
+bool EventsQueue::isScheduled(size_t tr,size_t b)const {
+	return (evtHeapIndex[tr][b] >= 0);
+}
+
+void EventsQueue::swapEvt(size_t i,size_t j){
+	assert(evtHeapIndex[evtHeap[j].first][evtHeap[j].second] ==j
+		   && evtHeapIndex[evtHeap[i].first][evtHeap[i].second] == i);
+	evtHeapIndex[evtHeap[j].first][evtHeap[j].second] = i;
+	evtHeapIndex[evtHeap[i].first][evtHeap[i].second] = j;
+	
+	pair<size_t,size_t> swappair = evtHeap[j];
+	evtHeap[j] = evtHeap[i];
+	evtHeap[i] = swappair;
 }
 
 void EventsQueue::siftUp(size_t i) {
     size_t parentIndex;
-
+	
     if (i != 0) {
         parentIndex = getParentIndex(i);
-
-        if (isPriorer((*eq)[i], (*eq)[parentIndex])) {
-            Event eswap((*eq)[parentIndex]); 
-
-
-            (*TransTable)[(*eq)[parentIndex].transition] = i;
-            (*TransTable)[(*eq)[i].transition] = parentIndex;
-
-            (*eq)[parentIndex] = (*eq)[i];
-            (*eq)[i] = eswap;
-
-
-            siftUp(parentIndex);
-
-        }
-
-
-    }
-
-
-
-
-}
-
-void EventsQueue::remove(size_t i) {
-
-    if (i == Qsize - 1) {
-
-        (*TransTable)[(*eq)[Qsize - 1].transition] = -1;
-        Qsize--;
-
-    } else {
-
-        (*TransTable)[(*eq)[Qsize - 1].transition] = i;
-        (*TransTable)[(*eq)[i].transition] = -1;
-        (*eq)[i] = (*eq)[Qsize - 1];
-
-        Qsize--;
-
-        siftDown(i);
-        siftUp(i);
-    }
-
+		
+		if (InPosition(i).isPriorer(InPosition(parentIndex))){
+			swapEvt(i, parentIndex);
+			siftUp(parentIndex);
+		}
+	}
 }
 
 void EventsQueue::siftDown(size_t i) {
-    //int parentIndex;
     size_t leftChildIndex, rightChildIndex, minIndex;
-	//int tmp;
     leftChildIndex = getLeftChildIndex(i);
     rightChildIndex = getRightChildIndex(i);
-    if (rightChildIndex >= Qsize) {
-        if (leftChildIndex >= Qsize)
+    if (rightChildIndex >= evtHeap.size()) {
+        if (leftChildIndex >= evtHeap.size())
             return;
         else
             minIndex = leftChildIndex;
     } else {
-
-        if (isPriorer((*eq)[leftChildIndex], (*eq)[rightChildIndex]))
+		
+        if (InPosition(leftChildIndex).isPriorer(InPosition(rightChildIndex)))
             minIndex = leftChildIndex;
         else
             minIndex = rightChildIndex;
     }
-
-    if (isPriorer((*eq)[minIndex], (*eq)[i])) {
-
-        (*TransTable)[(*eq)[minIndex].transition] = i;
-        (*TransTable)[(*eq)[i].transition] = minIndex;
-
-        Event eswap((*eq)[minIndex]);
-        (*eq)[minIndex] = (*eq)[i];
-        (*eq)[i] = eswap;
-
+	
+    if (InPosition(minIndex).isPriorer(InPosition(i))) {
+		swapEvt(minIndex,i);
         siftDown(minIndex);
     }
-
-
+	
+	
 }
 
 bool EventsQueue::isEmpty() {
-    return (Qsize == 0);
-}
-
-void EventsQueue::copyEvents(Event& e1, Event& e2) {
-
-    e1.transition = e2.transition;
-    e1.time = e2.time;
-    e1.priority = e2.priority;
-    e1.weight = e2.weight;
-
+    return (evtHeap.size()==0);
 }
 
 void EventsQueue::view() {
-    cout << "********** EVENTS-QUEUE VIEW **********" << endl;
-
-    cout << "Qsize:" << Qsize << endl;
-
-    if (Qsize == 0)
-        cout << "EVENTS-QUEUE is empty!" << endl;
+    cerr << "********** EVENTS-QUEUE VIEW **********" << endl;
+	
+    cerr << "Qsize:" << evtHeap.size() << endl;
+	
+    if (evtHeap.size() == 0)
+        cerr << "EVENTS-QUEUE is empty!" << endl;
     else
-        for (unsigned int i = 0; i < Qsize; i++)
-            cout << "Equeue[" << i << "]:" << "(tr" << (*eq)[i].transition << ",t=" << (*eq)[i].time << ", p=" << (*eq)[i].priority << ", w=" << (*eq)[i].weight << ")" << endl;
+        for (unsigned int i = 0; i < evtHeap.size(); i++){
+			Event e = InPosition(i);
+            cerr << "Equeue[" << i << "]:" << "(tr" << e.transition;
+			e.binding.print();
+			cerr << ",t=" << e.time << ", p=" << e.priority << ", w=" << e.weight << " ,";
+			cerr << ")" << endl;
+		}
 }
 
+/*
 int EventsQueue::TransTabValue(int i) {
-    return (*TransTable)[i];
+    return TransTable[i];
 }
 
 void EventsQueue::UpdateTransTab(int trans, int value) {
-
-    (*TransTable)[trans] = value;
-
+	
+    TransTable[trans] = value;
+	
 }
 
 void EventsQueue::ViewTransTab() {
     cout << "Position of transitions in the heap:" << endl;
-
+	
     for (size_t i = 0; i < TransTableSize; i++)
-        cout << "Trans[" << i + 1 << "]=" << (*TransTable)[i] << endl;
+        cout << "Trans[" << i + 1 << "]=" << TransTable[i] << endl;
+	
+}*/
 
+size_t EventsQueue::getSize()const {
+    return evtHeap.size();
 }
 
-size_t EventsQueue::getSize() {
-    return Qsize;
-}
-
-EQueue* EventsQueue::getEq() {
-    return eq;
-}

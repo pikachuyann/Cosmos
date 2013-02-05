@@ -78,7 +78,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	
     int c =0;
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
-		EQ = new EventsQueue(N.tr);
+		EQ = new EventsQueue(N);
 		reset();
         it->maxStep = fg->right - (c/BatchSize);
 		//cerr << "new path:\t" << it->maxStep << endl;
@@ -219,54 +219,77 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 void SimulatorContinuousBounded::updateSPN(const int E1_transitionNum,const abstractBinding& b){
 	Event F;
 	
-	if( ! N.IsEnabled(E1_transitionNum, b)) (*EQ).remove(0);
+	abstractBinding b2;
+	do{
+		if (N.IsEnabled(E1_transitionNum, b2)) {
+			GenerateEvent(F, E1_transitionNum, b2);
+			(*EQ).replace(F); //replace the transition with the new generated time
+		} else (*EQ).remove(E1_transitionNum,b2.id() );
+	}while (b2.next());
 	
-	const set<int> *net = N.PossiblyEn();
+	// Possibly adding Events corresponding to newly enabled-transitions
+	const set<int>* net = N.PossiblyEn();
 	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
-		if (N.IsEnabled(*it,b)) {
-			if ((*EQ).TransTabValue(*it) < 0) {
-				GenerateDummyEvent(F, (*it));
-				(*EQ).insert(F);
-			} 
-		}
+		abstractBinding b2;
+		do{
+			if (N.IsEnabled(*it,b2)) {
+				if (!EQ->isScheduled((*it),b2.id())) {
+					GenerateEvent(F, (*it), b2);
+					(*EQ).insert(F);
+				} else {
+					if (N.Transition[(*it)].MarkingDependent) {
+						GenerateEvent(F, (*it),b2);
+						(*EQ).replace(F);
+					}
+				}
+			}
+		}while (b2.next());
 	}
 	
-	const set<int> *ndt = N.PossiblyDis();
+	// Possibly removing Events corresponding to newly disabled-transitions
+	const set<int>* ndt = N.PossiblyDis();
 	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
-		if ((*EQ).TransTabValue(*it)>-1) {
-			if (!N.IsEnabled(*it,b))
-				(*EQ).remove((*EQ).TransTabValue(*it));
-		}
+		abstractBinding b2;
+		do{
+			if (EQ->isScheduled(*it, b2.id())) {
+				if (!N.IsEnabled(*it, b2))
+					EQ->remove(*it,b2.id());
+				else {
+					if (N.Transition[(*it)].MarkingDependent) {
+						GenerateEvent(F, (*it),b2);
+						EQ->replace(F);
+					}
+				}
+			}
+		}while (b2.next());
 	}
+
 	
 	
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
-	vector<int> Enabled_trans ((*EQ).getSize());
-	for(size_t i=0; i< (*EQ).getSize(); i++){
-		Enabled_trans[i] = (*EQ).InPosition(i).transition; 
-	};
 	
-	for (vector<int>::iterator it = Enabled_trans.begin(); it != Enabled_trans.end(); it++) {
-        //cerr << "active transition:" << *it << endl;
-		if(*it != N.tr-1 && *it != N.tr-2){
-			if(N.IsEnabled(*it,b)){
-				GenerateEvent(F, (*it),b);
-				(*EQ).replace(F, (*EQ).TransTabValue(*it));
+	for (size_t it = 0 ; it < EQ->getSize() ; it++) {
+		size_t tr = EQ->InPosition(it).transition;
+		if(tr != N.tr-1){
+			if(N.IsEnabled(tr,EQ->InPosition(it).binding)){
+				GenerateEvent(F, tr ,b2);
+				EQ->replace(F);
 			}else {
-				(*EQ).remove((*EQ).TransTabValue(*it));
+				EQ->remove(tr, EQ->InPosition(it).binding.id());
 			}
-		}; 
+		};
 	};
 	
-    GenerateEvent(F, (N.tr-2),b);
+	abstractBinding bpuit;
+    GenerateEvent(F, (N.tr-2),bpuit);
 	if(!doubleIS_mode){
-		(*EQ).replace(F, (*EQ).TransTabValue(N.tr-2));
+		EQ->replace(F);
 	}
     
-	GenerateEvent(F, (N.tr-1),b);
+	GenerateEvent(F, (N.tr-1),bpuit);
 	if(!doubleIS_mode){
-		(*EQ).replace(F, (*EQ).TransTabValue(N.tr-1));
+		EQ->replace(F);
 	}
 	
 };

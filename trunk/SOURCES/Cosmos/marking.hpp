@@ -62,6 +62,16 @@ class abstractBindingImpl;
 class abstractBinding {
 public:
 	abstractBindingImpl* P;
+	abstractBinding();
+	~abstractBinding();
+	abstractBinding(const abstractBinding& b);
+	abstractBinding& operator = (const abstractBinding& m);
+	bool next();
+	void print()const;
+	int transition()const;
+	int id()const;
+private:
+	int idcount;
 };
 
 #endif

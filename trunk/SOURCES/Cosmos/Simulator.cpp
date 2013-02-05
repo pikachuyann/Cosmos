@@ -43,7 +43,7 @@ using namespace std;
 
 Simulator::Simulator():verbose(0) {
 	size_t n = N.tr; //n his the number of transition
-	EQ = new EventsQueue(n); //initialization of the event queue
+	EQ = new EventsQueue(N); //initialization of the event queue
 	Initialized = false;
     logResult=false;
 	
@@ -91,13 +91,13 @@ void Simulator::InitialEventsQueue() {
 	
 	Event E;
 	for (size_t t = 0; t < N.tr; t++) {
-		// Loop over all binding here
 		abstractBinding b;
-		
-		if (N.IsEnabled(t,b)) {
-		GenerateEvent(E, t ,b);
-		(*EQ).insert(E);
-		}
+		do{
+			if (N.IsEnabled(t,b)) {
+				GenerateEvent(E, t , b);
+				(*EQ).insert(E);
+			}
+		}while (b.next());
 	}
 }
 
@@ -147,54 +147,65 @@ void Simulator::updateSPN(const int E1_transitionNum, const abstractBinding& b){
     
 	Event F;
     //check if the current transition is still enabled
-	if (N.IsEnabled(E1_transitionNum, b)) {
-		GenerateEvent(F, E1_transitionNum, b);
-		(*EQ).replace(F, 0); //replace the transition with the new generated time
-	} else (*EQ).remove(0);
-	
+	abstractBinding b2;
+	do{
+		if (N.IsEnabled(E1_transitionNum, b2)) {
+			GenerateEvent(F, E1_transitionNum, b2);
+			(*EQ).replace(F); //replace the transition with the new generated time
+		} else (*EQ).remove(E1_transitionNum,b2.id() );
+	}while (b2.next());
+
 	// Possibly adding Events corresponding to newly enabled-transitions
 	const set<int>* net = N.PossiblyEn();
 	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
-		if (N.IsEnabled(*it,b)) {
-			if ((*EQ).TransTabValue(*it) < 0) {
-                GenerateEvent(F, (*it), b);
-                (*EQ).insert(F);
-			} else {
-                if (N.Transition[(*it)].MarkingDependent) {
-					GenerateEvent(F, (*it),b);
-					(*EQ).replace(F, (*EQ).TransTabValue(*it));
-                }
+		abstractBinding b2;
+		do{
+			if (N.IsEnabled(*it,b2)) {
+				if (!EQ->isScheduled((*it),b2.id())) {
+					GenerateEvent(F, (*it), b2);
+					(*EQ).insert(F);
+				} else {
+					if (N.Transition[(*it)].MarkingDependent) {
+						GenerateEvent(F, (*it),b2);
+						(*EQ).replace(F);
+					}
+				}
 			}
-		}
+		}while (b2.next());
 	}
 	
 	// Possibly removing Events corresponding to newly disabled-transitions
 	const set<int>* ndt = N.PossiblyDis();
 	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
-		if ((*EQ).TransTabValue(*it)>-1) {
-			if (!N.IsEnabled(*it,b))
-                (*EQ).remove((*EQ).TransTabValue(*it));
-			else {
-                if (N.Transition[(*it)].MarkingDependent) {
-					GenerateEvent(F, (*it),b);
-					(*EQ).replace(F, (*EQ).TransTabValue(*it));
-                }
+		abstractBinding b2;
+		do{
+			if (EQ->isScheduled(*it, b2.id())) {
+				if (!N.IsEnabled(*it, b2))
+					EQ->remove(*it,b2.id());
+				else {
+					if (N.Transition[(*it)].MarkingDependent) {
+						GenerateEvent(F, (*it),b2);
+						EQ->replace(F);
+					}
+				}
 			}
-		}
+		}while (b2.next());
 	}
 
     // Update transition which have no precondition on the Marking
 	const set<int>* fmd = N.FreeMarkingDependant();
 	for (set<int>::iterator it = fmd->begin(); it != fmd->end(); it++) {
+		abstractBinding b2;
 		if (N.IsEnabled(*it,b)) {
-			if ((*EQ).TransTabValue(*it) < 0) {
-                GenerateEvent(F, (*it),b);
-                (*EQ).insert(F);
-				
-			} else {
-                GenerateEvent(F, (*it),b);
-                (*EQ).replace(F, (*EQ).TransTabValue(*it));
-			}
+			do{
+				if (!EQ->isScheduled(*it, b2.id())) {
+					GenerateEvent(F, (*it),b2);
+					(*EQ).insert(F);
+				} else {
+					GenerateEvent(F, (*it),b2);
+					(*EQ).replace(F);
+				}
+			}while (b2.next());
 		}
 		
 	}
@@ -220,6 +231,7 @@ bool Simulator::SimulateOneStep(){
 		N.Marking.print();
         A.printState();
 		cerr << endl;
+		if(verbose>4)EQ->view();
     }
 	//AutEdge AE = *AEref;
     
@@ -278,8 +290,13 @@ bool Simulator::SimulateOneStep(){
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
-		if(verbose>3)
+		if(verbose>3){
+			cerr << "|^^^^^^^^^^^^^^^^^^^^"<< endl;
 			cerr << "transition:" << N.Transition[E1.transition].label << endl;
+			E1.binding.print();
+			cerr << "|vvvvvvvvvvvvvvvvvvvv"<< endl;
+		}
+			
 		//Make time elapse in the LHA
 		updateLHA( E1.time - A.CurrentTime );
 		

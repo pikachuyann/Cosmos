@@ -68,7 +68,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	//delete EQ;
 	
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
-		EQ = new EventsQueue(N.tr);
+		EQ = new EventsQueue(N);
 		reset();
 		
 		AutEdge AE;

@@ -56,43 +56,6 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/Simulator.cpp"
-         timestampString = "381087288.027033"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "214"
-         endingLineNumber = "214"
-         landmarkName = "Simulator::SimulateOneStep()"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/Simulator.cpp"
-         timestampString = "381000949.354882"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "15"
-         endingLineNumber = "15">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/ModelGenerator/GspnParser/Gspn-Reader.cpp"
-         timestampString = "381429942.677178"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "471"
-         endingLineNumber = "471"
-         landmarkName = "Gspn_Reader::writeMarkingClasse(ofstream &amp;SpnCppFile,ofstream &amp;header)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "../SOURCES/ModelGenerator/GspnParser/Gspn_gmlparser.cpp"
          timestampString = "381429889.804993"
          startingColumnNumber = "9223372036854775807"
