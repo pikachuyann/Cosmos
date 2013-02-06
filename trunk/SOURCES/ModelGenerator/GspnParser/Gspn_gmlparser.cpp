@@ -185,20 +185,20 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 	}
 }
 
-void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdependant ,tree<string>::pre_order_iterator it){
+void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdependant ,set<size_t>& vardom, tree<string>::pre_order_iterator it){
 	if(verbose>1)cout << (*it) << endl;
 	if(it->compare("function")==0){
-		eval_tokenProfileArc(tok, markingdependant, it.begin());
+		eval_tokenProfileArc(tok, markingdependant, vardom, it.begin());
 	}else if(it->compare("++")==0){
 		int incr;
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("name")==0){
-				eval_tokenProfileArc(tok, markingdependant, it2);
+				eval_tokenProfileArc(tok, markingdependant, vardom, it2);
 			} else incr = atoi(simplifyString(*(it2).begin())->c_str());
 		}
 		tok.varIncrement.back() += incr;
 	}else if(it->compare("expr")==0){
-		eval_tokenProfileArc(tok,markingdependant, it.begin());
+		eval_tokenProfileArc(tok,markingdependant, vardom, it.begin());
 	}else if (it->compare("token")==0) {
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("occurs")==0){
@@ -207,7 +207,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 			if (it2->compare("tokenProfile")==0) {
 				if (verbose>1)cout << *it2 << endl;
 				for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
-					eval_tokenProfileArc(tok,markingdependant, it3);
+					eval_tokenProfileArc(tok,markingdependant, vardom, it3);
 				}
 			}
 		}
@@ -232,6 +232,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 			tok.field.push_back(vars - MyGspn->colVars.begin());
 			tok.isVar.push_back(true);
 			tok.varIncrement.push_back(0);
+			vardom.insert(vars-MyGspn->colVars.begin());
 		}else{
 			cerr << "Unknown variable '" << varname << "'"<< endl;
 		}
@@ -731,7 +732,12 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 					eval_expr(&markingdependant, &valuation, it3.begin() );
 				} else if (it3->compare("token")==0) {
 					coloredToken tokenType;
-					eval_tokenProfileArc( tokenType, markingdependant, it3);
+					if (IsPlace[sourceGML]) {
+						eval_tokenProfileArc( tokenType, markingdependant,MyGspn->transitionStruct[Gml2Trans[atoi(target.c_str())]].varDomain, it3);
+					} else {
+						eval_tokenProfileArc( tokenType, markingdependant,MyGspn->transitionStruct[Gml2Trans[atoi(source.c_str())]].varDomain, it3);
+					}
+					
 					size_t coldom;
 					if(IsPlace[sourceGML])
 						coldom = MyGspn->placeStruct[Gml2Place[sourceGML]].colorDom;

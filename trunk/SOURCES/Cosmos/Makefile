@@ -7,15 +7,16 @@ CLASSES= $(OBJPATH)/BatchR.o \
 	$(OBJPATH)/Event.o \
 	$(OBJPATH)/EventsQueue.o \
 	$(OBJPATH)/Simulator.o \
-	$(OBJPATH)/SimulatorRE.o \
-	$(OBJPATH)/SimulatorBoundedRE.o \
-    $(OBJPATH)/SimulatorContinuousBounded.o \
 	$(OBJPATH)/stateSpace.o \
 	$(OBJPATH)/numericalSolver.o \
 	$(OBJPATH)/numSolverBB.o \
     $(OBJPATH)/numSolverSH.o \
     $(OBJPATH)/foxglynn.o \
-	$(OBJPATH)/clientsim.o
+	$(OBJPATH)/clientsim.o \
+	$(OBJPATH)/SimulatorRE.o \
+	$(OBJPATH)/SimulatorBoundedRE.o \
+	$(OBJPATH)/SimulatorContinuousBounded.o
+
 
 
 $(OBJPATH)/%.o: %.cpp

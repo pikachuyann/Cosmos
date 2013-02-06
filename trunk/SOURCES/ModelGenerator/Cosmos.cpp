@@ -101,7 +101,7 @@ bool ParseBuild(parameters& P) {
 	int parseresult;
 	
     try{
-        if(P.GMLinput){
+        if(P.GMLinput || (P.PathGspn.compare(P.PathGspn.length()-4,4,"grml") ==0)){
             parseresult = gReader.parse_gml_file(P.PathGspn,P.RareEvent);
         }else {
             parseresult = gReader.parse_file(P.PathGspn);
@@ -130,7 +130,7 @@ bool ParseBuild(parameters& P) {
 	if(P.verbose>0)cout << "Start Parsing " << P.PathLha << endl;
 	
     try{
-        if(P.GMLinput&& false){
+        if(P.GMLinput || (P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0))  {
             parseresult = lReader.parse_gml_file(P);
         }else {
             parseresult = lReader.parse_file(P);

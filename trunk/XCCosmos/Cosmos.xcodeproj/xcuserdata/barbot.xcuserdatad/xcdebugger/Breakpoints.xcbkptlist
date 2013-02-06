@@ -56,13 +56,13 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "../SOURCES/ModelGenerator/GspnParser/Gspn_gmlparser.cpp"
-         timestampString = "381429889.804993"
+         filePath = "../SOURCES/Cosmos/SimulatorRE.cpp"
+         timestampString = "381862811.434034"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "445"
-         endingLineNumber = "445"
-         landmarkName = "MyModelHandler::on_read_model_attribute(const Attribute&amp; attribute)"
+         startingLineNumber = "46"
+         endingLineNumber = "46"
+         landmarkName = "SimulatorRE::SimulatorRE(bool b)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

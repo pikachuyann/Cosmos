@@ -10,6 +10,9 @@
 		0304D2D3156BB5A000D45E5F /* result.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0304D2D2156BB5A000D45E5F /* result.cpp */; };
 		0304DA49145ADB3F0085B4DC /* expatmodelparser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0304DA41145ADB3F0085B4DC /* expatmodelparser.cc */; };
 		0304DA4A145ADB3F0085B4DC /* modelwriter.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0304DA44145ADB3F0085B4DC /* modelwriter.cc */; };
+		0343CCB816C2BCBB008A75CC /* SimulatorRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F13680143A050100944E04 /* SimulatorRE.cpp */; };
+		0343CCB916C2BD84008A75CC /* SimulatorBoundedRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BCA577148E150C008E2402 /* SimulatorBoundedRE.cpp */; };
+		0343CCBA16C2BDD2008A75CC /* SimulatorContinuousBounded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03A9F02114D7ECB500A60D0F /* SimulatorContinuousBounded.cpp */; };
 		034509AA16A80B19002088B3 /* macro.h in Headers */ = {isa = PBXBuildFile; fileRef = 0346863B14D6ED3F0040753D /* macro.h */; };
 		034509AB16A80B19002088B3 /* sparse_io.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03AD7C7F14BD86C8003F7EA0 /* sparse_io.hpp */; };
 		034509AC16A80B19002088B3 /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F13671143A050100944E04 /* BatchR.cpp */; };
@@ -24,9 +27,7 @@
 		034509B516A80B19002088B3 /* spn.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0302BB6814692C0E005129BB /* spn.hpp */; };
 		034509B816A80B19002088B3 /* Simulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F1367E143A050100944E04 /* Simulator.cpp */; };
 		034509B916A80B19002088B3 /* Simulator.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03F1367F143A050100944E04 /* Simulator.hpp */; };
-		034509BA16A80B19002088B3 /* SimulatorRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03F13680143A050100944E04 /* SimulatorRE.cpp */; };
 		034509BB16A80B19002088B3 /* SimulatorRE.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0302BC8D146ADC42005129BB /* SimulatorRE.hpp */; };
-		034509BC16A80B19002088B3 /* SimulatorBoundedRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BCA577148E150C008E2402 /* SimulatorBoundedRE.cpp */; };
 		034509BD16A80B19002088B3 /* SimulatorBoundedRE.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03BCA576148E150C008E2402 /* SimulatorBoundedRE.hpp */; };
 		034509BE16A80B19002088B3 /* stateSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03B6EDCF14878EE60099A6CC /* stateSpace.cpp */; };
 		034509BF16A80B19002088B3 /* stateSpace.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03B6EDCE14878EE60099A6CC /* stateSpace.hpp */; };
@@ -36,7 +37,6 @@
 		034509C316A80B19002088B3 /* numSolverBB.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03248DAB14B734E80032B09E /* numSolverBB.hpp */; };
 		034509C416A80B19002088B3 /* numSolverSH.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03248EE014B74F2A0032B09E /* numSolverSH.cpp */; };
 		034509C516A80B19002088B3 /* numSolverSH.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03248EDF14B74F2A0032B09E /* numSolverSH.hpp */; };
-		034509C616A80B19002088B3 /* SimulatorContinuousBounded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03A9F02114D7ECB500A60D0F /* SimulatorContinuousBounded.cpp */; };
 		034509C716A80B19002088B3 /* SimulatorContinuousBounded.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03A9F02414D7ECDC00A60D0F /* SimulatorContinuousBounded.hpp */; };
 		034509C816A80B19002088B3 /* foxglynn.c in Sources */ = {isa = PBXBuildFile; fileRef = 0346863714D6ECFE0040753D /* foxglynn.c */; };
 		034509C916A80B19002088B3 /* foxglynn.h in Headers */ = {isa = PBXBuildFile; fileRef = 0346863A14D6ED300040753D /* foxglynn.h */; };
@@ -630,15 +630,15 @@
 				034509B016A80B19002088B3 /* EventsQueue.cpp in Sources */,
 				034509B216A80B19002088B3 /* LHA_orig.cpp in Sources */,
 				034509B816A80B19002088B3 /* Simulator.cpp in Sources */,
-				034509BA16A80B19002088B3 /* SimulatorRE.cpp in Sources */,
-				034509BC16A80B19002088B3 /* SimulatorBoundedRE.cpp in Sources */,
 				034509BE16A80B19002088B3 /* stateSpace.cpp in Sources */,
 				034509C016A80B19002088B3 /* numericalSolver.cpp in Sources */,
 				034509C216A80B19002088B3 /* numSolverBB.cpp in Sources */,
 				034509C416A80B19002088B3 /* numSolverSH.cpp in Sources */,
-				034509C616A80B19002088B3 /* SimulatorContinuousBounded.cpp in Sources */,
 				034509C816A80B19002088B3 /* foxglynn.c in Sources */,
 				034509CA16A80B19002088B3 /* clientsim.cpp in Sources */,
+				0343CCB816C2BCBB008A75CC /* SimulatorRE.cpp in Sources */,
+				0343CCB916C2BD84008A75CC /* SimulatorBoundedRE.cpp in Sources */,
+				0343CCBA16C2BDD2008A75CC /* SimulatorContinuousBounded.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

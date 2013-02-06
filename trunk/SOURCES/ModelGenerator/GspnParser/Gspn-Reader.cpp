@@ -598,9 +598,11 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
   SpnCppFile << "bool abstractBinding::next() {\n";
   SpnCppFile << "\tidcount++;\n";
   for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
-    SpnCppFile << "\tif (! P->"<< colvar->name << ".islast()){";
-    SpnCppFile << "P->"<< colvar->name << ".iter(); return true; };\n";
-    SpnCppFile << "\tP->"<< colvar->name << " = "<< MyGspn.colDoms[colvar->type].tokname() << "();\n";
+    SpnCppFile << "\tif(P->" << colvar->name << ".mult >= 0){\n";
+	SpnCppFile << "\t\tif (! P->"<< colvar->name << ".islast()){";
+    SpnCppFile << "\tP->"<< colvar->name << ".iter(); return true; };\n";
+    SpnCppFile << "\t\tP->"<< colvar->name << " = "<< MyGspn.colDoms[colvar->type].tokname() << "();\n";
+	  	  SpnCppFile << "\t}\n";
   }
   SpnCppFile << "\treturn false;\n};\n";
 
@@ -668,7 +670,13 @@ void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
       spnF << "\tTransition["<<t<<"].weight = \""<< MyGspn.transitionStruct[t].weight << "\";"<< endl;
     }
 
+	
     spnF << "\t{abstractBinding bl;\n";
+	for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
+		if( MyGspn.transitionStruct[t].varDomain.count(it)==0){
+				spnF<< "\tbl.P->" << MyGspn.colVars[it].name<<".mult = -1;\n";
+		}
+	}
     spnF << "\tdo{\n";
     spnF << "\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";
     spnF << "\t}while(bl.next());}\n";

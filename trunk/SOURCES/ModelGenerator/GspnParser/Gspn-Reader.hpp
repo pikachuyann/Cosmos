@@ -113,6 +113,7 @@ struct transition {
 	bool markingDependant;
 	int nbServers;
 	bool ageMemory;
+	set<size_t> varDomain;
 };
 
 struct place {

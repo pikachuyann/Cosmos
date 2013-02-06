@@ -17,12 +17,6 @@
 	  <attribute name="enumValue">
             c3
           </attribute>
-	  <attribute name="enumValue">
-            c4
-          </attribute>
-	  <attribute name="enumValue">
-            c5
-          </attribute>
         </attribute>
       </attribute>
       <attribute name="circular">
@@ -40,12 +34,6 @@
           </attribute>
 	  <attribute name="enumValue">
             s2
-          </attribute>
-	  <attribute name="enumValue">
-            s3
-          </attribute>
-	  <attribute name="enumValue">
-            s4
           </attribute>
         </attribute>
       </attribute>

@@ -463,6 +463,11 @@ void stateSpace::inputVect(){
     ifstream inputFile;
 	inputFile.open("muFile",fstream::in);
     
+	if(!inputFile.good()){
+		cerr << "Fail to open muFile"<<endl;
+		exit(EXIT_FAILURE);
+	}
+		
     boostmat::vector<double> v1;
 	inputFile >> v1;
     nbState = v1.size();
