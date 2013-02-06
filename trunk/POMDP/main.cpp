@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
 	
 	// initial iteration
 	int N = (int)M.size();
-    vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
+    vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,0.0)) );
 	
 	generateSPNfun(M);
 	
@@ -178,6 +178,7 @@ int main(int argc, char** argv) {
 	}
 	
 	double Reward,OldReward,maxReward=0;
+	vector< vector< vector<double> > > OldPlast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
 	int It=0;
 	time_t start,end,maxRewardtime;
 	double RelDiff=100; // actual relative difference = abs((Reward-OldReward)/OldReward);
@@ -187,7 +188,8 @@ int main(int argc, char** argv) {
 	while(RelDiff>Prec && It<MaxIteration){
 		It++;    
 		//printPlast(Plast);
-		generateLHAfun(ron,N,Plast,RewardArray,H,M,discounted);
+		generateLHAfun(ron,N,OldPlast,Plast,RewardArray,H,M,discounted);
+		OldPlast = Plast;
 		system(Cosmoscmd.c_str());
 		OldReward=Reward;
 		system("head -n 1 test > test2");
@@ -195,7 +197,7 @@ int main(int argc, char** argv) {
 		Reward = readPlastfun(N, "test2", Plast,H);
 		cout <<"Iteration:" <<It<< " reward: "<< Reward <<" RelDiff: "<<RelDiff<< endl;
 		printPlast(Plast);
-		fillMemory(Plast,It+1);
+		//fillMemory(Plast,It+1);
 		if(It==1){
 			
 		}else{

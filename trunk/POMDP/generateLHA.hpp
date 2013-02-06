@@ -5,6 +5,7 @@ using namespace std;
 void generateLHAfun(
 					double ron ,
 					int N,
+					vector< vector< vector<double> > >& OldPlast,
 					vector< vector< vector<double> > >& Plast,
 					vector<double>& reward,
 					double H,
