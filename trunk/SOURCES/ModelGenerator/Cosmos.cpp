@@ -130,7 +130,7 @@ bool ParseBuild(parameters& P) {
 	if(P.verbose>0)cout << "Start Parsing " << P.PathLha << endl;
 	
     try{
-        if(P.GMLinput){
+        if(P.GMLinput&& false){
             parseresult = lReader.parse_gml_file(P);
         }else {
             parseresult = lReader.parse_file(P);

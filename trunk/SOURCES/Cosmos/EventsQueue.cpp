@@ -68,6 +68,7 @@ EventsQueue::~EventsQueue() {
 }
 
 void EventsQueue::insert(const Event &e) {
+	assert(!isScheduled(e.transition, e.binding.id()));
 	evtTbl[e.transition][e.binding.id()] = e;
 	evtHeapIndex[e.transition][e.binding.id()] = evtHeap.size();
 	evtHeap.push_back(make_pair(e.transition,e.binding.id()));
@@ -76,6 +77,7 @@ void EventsQueue::insert(const Event &e) {
 }
 
 void EventsQueue::replace(const Event &e) {
+	assert(isScheduled(e.transition, e.binding.id()));
 	int k = evtHeapIndex[e.transition][e.binding.id()];
 	evtTbl[e.transition][e.binding.id()] = e;
 	
@@ -85,7 +87,7 @@ void EventsQueue::replace(const Event &e) {
 
 void EventsQueue::remove(size_t tr, size_t b) {
 	int i = evtHeapIndex[tr][b];
-	
+	assert(i>=0);
 	if(i>=0){
 		if (i == evtHeap.size()-1) {
 			evtHeapIndex[tr][b] = -1;
@@ -173,7 +175,7 @@ void EventsQueue::view() {
     else
         for (unsigned int i = 0; i < evtHeap.size(); i++){
 			Event e = InPosition(i);
-            cerr << "Equeue[" << i << "]:" << "(tr" << e.transition;
+            cerr << "Equeue[" << i << "]:" << "( tId" << e.transition << " ";
 			e.binding.print();
 			cerr << ",t=" << e.time << ", p=" << e.priority << ", w=" << e.weight << " ,";
 			cerr << ")" << endl;

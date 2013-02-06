@@ -149,10 +149,18 @@ void Simulator::updateSPN(const int E1_transitionNum, const abstractBinding& b){
     //check if the current transition is still enabled
 	abstractBinding b2;
 	do{
-		if (N.IsEnabled(E1_transitionNum, b2)) {
+		bool Nenabled = N.IsEnabled(E1_transitionNum, b2);
+		bool NScheduled = EQ->isScheduled(E1_transitionNum, b2.id());
+		
+		if (Nenabled && NScheduled) {
 			GenerateEvent(F, E1_transitionNum, b2);
-			(*EQ).replace(F); //replace the transition with the new generated time
-		} else (*EQ).remove(E1_transitionNum,b2.id() );
+			EQ->replace(F); //replace the transition with the new generated time
+		} else if (Nenabled && !NScheduled) {
+			GenerateEvent(F, E1_transitionNum, b2);
+			EQ->insert(F);
+		} else if (!Nenabled && NScheduled) {
+			EQ->remove(E1_transitionNum,b2.id() );
+		} 
 	}while (b2.next());
 
 	// Possibly adding Events corresponding to newly enabled-transitions
@@ -196,7 +204,7 @@ void Simulator::updateSPN(const int E1_transitionNum, const abstractBinding& b){
 	const set<int>* fmd = N.FreeMarkingDependant();
 	for (set<int>::iterator it = fmd->begin(); it != fmd->end(); it++) {
 		abstractBinding b2;
-		if (N.IsEnabled(*it,b)) {
+		if (N.IsEnabled(*it,b2)) {
 			do{
 				if (!EQ->isScheduled(*it, b2.id())) {
 					GenerateEvent(F, (*it),b2);
@@ -209,6 +217,16 @@ void Simulator::updateSPN(const int E1_transitionNum, const abstractBinding& b){
 		}
 		
 	}
+	
+	for( size_t tr = 0 ; tr < N.tr ; tr++){
+		abstractBinding b2;
+		do{
+			assert (N.IsEnabled(E1_transitionNum, b2) == 
+			EQ->isScheduled(E1_transitionNum, b2.id()));
+		}while (b2.next());
+		
+	}
+	
 }
 
 // Only used in the Rare Event context

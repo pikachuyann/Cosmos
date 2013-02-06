@@ -424,8 +424,8 @@
 				03F136A9143A050100944E04 /* Lha-parser.yy */,
 				03F136AC143A050100944E04 /* Lha-scanner.ll */,
 				03A15A36160B007000BAFF6C /* Makefile */,
-				03F136AA143A050100944E04 /* Lha-Reader.cpp */,
 				03F136AB143A050100944E04 /* Lha-Reader.hpp */,
+				03F136AA143A050100944E04 /* Lha-Reader.cpp */,
 				0379BDC31462C63D0077D4E9 /* Lha_gmlparser.cpp */,
 				0379BDC21462C63D0077D4E9 /* Lha_gmlparser.hpp */,
 			);

@@ -24,7 +24,7 @@
  */
 
 #ifndef _SPN_HPP
-#define	_SPN_HPP
+#define _SPN_HPP
 
 #include <iostream>
 #include <string>
@@ -42,27 +42,27 @@ using namespace std;
 
 
 enum TransType {
-    Timed, unTimed
+  Timed, unTimed
 };
 
 struct _trans {
-    unsigned int Id;
-    string label;
-    TransType transType; // Time or unTimed
-    string DistType;
-	int DistTypeIndex;
-    vector<string> DistParams;
-    string priority;
-    string weight;
-    bool MarkingDependent; // true if the transition is Marking Dependent
-    bool AgeMemory; // true if the memory policy of the transition is age memory
-	vector<abstractBinding> bindingList;
+  unsigned int Id;
+  string label;
+  TransType transType; // Time or unTimed
+  string DistType;
+  int DistTypeIndex;
+  vector<string> DistParams;
+  string priority;
+  string weight;
+  bool MarkingDependent; // true if the transition is Marking Dependent
+  bool AgeMemory; // true if the memory policy of the transition is age memory
+  vector<abstractBinding> bindingList;
 };
 typedef struct _trans spn_trans;
 
 struct _place {
-    unsigned int Id;
-    string label;
+  unsigned int Id;
+  string label;
 };
 typedef struct _place spn_place;
 
@@ -76,61 +76,61 @@ typedef vector <IntVector> IntMatrix;
 //#include "spn_orig.hpp"
 class SPN {
 public:
-	SPN();
-	
-	const size_t pl; // Number of places
-    const size_t tr; // Number of transitions
-	abstractMarking Marking; // Current marking
-	
-    vector <spn_trans> Transition; //contains all the transitions of the Petri net
-    vector <spn_place> Place; //contains all the places of the Petri net
-    
-	void reset(); // set the marking to the initial marking
-	
-	string Path;
-	vector<double> ParamDistr;
-	
-	//------------------------- Rare Event -------------------------------------
-	vector <double> Rate_Table;
-	vector <double> Origine_Rate_Table;
-	double Rate_Sum;
-	double Origine_Rate_Sum;
-	vector <int> Msimpletab; //special places
-	
-	void Msimple();
-	void lumpingFun(vector<int>*);
-	//-------------------------/Rare Event -------------------------------------
-	
-	bool IsEnabled(const int,const abstractBinding&); // Check if a given transition is enabled
-	
-	void fire(const int,const abstractBinding&); // fire a given transition
-    void unfire(const int,const abstractBinding&); // unfire a given transition
-	void setConditionsVector();
-	
-	void GetDistParameters(const int, const abstractBinding& ); // compute the the parameters value of a given distribution
-    double GetWeight(int); // compute the the weight value of a given transition
-    double GetPriority(int); // compute the the priority value of a given transition
-	
-	const set<int>* PossiblyEn(); // return the set of transitions that may be enabled after firing the last transition
-    const set<int>* PossiblyDis(); // return the set of transitions that may be disabled after firing the last transition
-	const set<int>* FreeMarkingDependant(); //return the set of transition without constrain but marking dependant
+  SPN();
+
+  const size_t pl; // Number of places
+  const size_t tr; // Number of transitions
+  abstractMarking Marking; // Current marking
+
+  vector <spn_trans> Transition; //contains all the transitions of the Petri net
+  vector <spn_place> Place; //contains all the places of the Petri net
+
+  void reset(); // set the marking to the initial marking
+
+  string Path;
+  mutable vector<double> ParamDistr;
+
+  //------------------------- Rare Event -------------------------------------
+  vector <double> Rate_Table;
+  vector <double> Origine_Rate_Table;
+  double Rate_Sum;
+  double Origine_Rate_Sum;
+  vector <int> Msimpletab; //special places
+
+  void Msimple();
+  void lumpingFun(vector<int>*);
+  //-------------------------/Rare Event -------------------------------------
+
+  bool IsEnabled(const int,const abstractBinding&)const; // Check if a given transition is enabled
+
+  void fire(const int,const abstractBinding&); // fire a given transition
+  void unfire(const int,const abstractBinding&); // unfire a given transition
+  void setConditionsVector();
+
+  void GetDistParameters(const int, const abstractBinding& )const; // compute the the parameters value of a given distribution
+  double GetWeight(int)const; // compute the the weight value of a given transition
+  double GetPriority(int)const; // compute the the priority value of a given transition
+
+  const set<int >* PossiblyEn()const; // return the set of transitions that may be enabled after firing the last transition
+  const set<int >* PossiblyDis()const; // return the set of transitions that may be disabled after firing the last transition
+  const set<int >* FreeMarkingDependant()const; //return the set of transition without constrain but marking dependant
 
 private:
-	size_t lastTransition;
-	
-	
-	vector< set<int> > PossiblyEnabled;
-    vector< set<int> > PossiblyDisabled;
-    vector< set<int> > FreeMarkDepT;
-	
-	//------------------------- On the fly enabling disabling transition--------
-	vector<int> TransitionConditions;
-	vector<int> initTransitionConditions;
-	//-------------------------/On the fly enabling disabling transition--------
-	
-	double min(double, double); //return the minimum of two numbers
-    double max(double, double); //return the maximum of two numbers
+  size_t lastTransition;
 
-	
+
+  vector< set<int > > PossiblyEnabled;
+  vector< set<int > > PossiblyDisabled;
+  vector< set<int > > FreeMarkDepT;
+
+  //------------------------- On the fly enabling disabling transition--------
+  vector<int> TransitionConditions;
+  vector<int> initTransitionConditions;
+  //-------------------------/On the fly enabling disabling transition--------
+
+  double min(double, double); //return the minimum of two numbers
+  double max(double, double); //return the maximum of two numbers
+
+
 };
-#endif	/* _SPN_HPP */
+#endif  /* _SPN_HPP */
