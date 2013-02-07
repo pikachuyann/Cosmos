@@ -194,10 +194,11 @@ let buildit n r =
   let stratFile = open_out "StratCaml" in
   let stratref =  ref (allOn (n+1) 2) in
   output_value stratFile !stratref;
-  for i = 0 to 5 do
+  for i = 0 to 20 do
     let _,l = iter_strat !stratref (Array.create (n+1) r) in
     let s2 = !stratref in
-    apply_fst l s2 4;
+    if List.length l = 0 then failwith "No more switch"
+    apply_fst l s2 ((List.length l)/3);
     output_value stratFile s2;
     print_strat s2;
     stratref := s2
