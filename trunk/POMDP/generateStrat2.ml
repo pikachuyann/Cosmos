@@ -37,7 +37,7 @@ let parse_result f =
 
 let invoke_cosmos lha  =
   let cmd = Printf.sprintf "../bin/Cosmos --width 0.02 -v 0 --njob 12 --batch 100 --gppcmd clang++ --gppflags '-Wno-return-type' generated.gspn %s" lha in
-  print_endline cmd;
+  (*print_endline cmd;*)
   ignore (Sys.command cmd);
   parse_result  "Result.res";;  
 
@@ -152,11 +152,33 @@ let iter_strat s =
     ) in snew;;
 
 
+let print_strat s =
+  for i = 0 to Array.length s-1 do
+    print_string "[| ";
+    for j=0 to Array.length s.(0).(0)-1 do
+      print_string "[| ";
+      for x =0 to Array.length s.(0)-1 do
+	if x>0 then print_string " ; ";
+	print_string (string_of_bool s.(i).(x).(j));
+      done;
+      print_string "|]";
+    done;
+    print_endline "|]";
+  done;;
+
 (*generateLHA (allOn 6 2)  "test" (-1) [|0;15;15;15;15;15|] 0 1000.;;*)
 
 (*invoke_cosmos "test";;*)
-
+(*
 let stratfile = open_out "StratCaml" in
 output_value stratfile (allOn 6 2);
 output_value stratfile (iter_strat (allOn 6 2));
 close_out stratfile
+*)
+let print_all_strat () = 
+  let fs = open_in "StratCaml" in
+  while true do 
+    let s = input_value fs in
+    print_strat s;
+    print_newline ();
+  done;
