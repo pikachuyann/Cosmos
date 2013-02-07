@@ -36,7 +36,7 @@ let parse_result f =
   result;;
 
 let invoke_cosmos lha  =
-  let cmd = Printf.sprintf "../bin/Cosmos --width 0.02 -v 0 --njob 12 --batch 100 --gppcmd clang++ --gppflags '-Wno-return-type' generated.gspn %s" lha in
+  let cmd = Printf.sprintf "../bin/Cosmos --width 0.01 -v 0 --njob 12 --batch 100 --gppcmd clang++ --gppflags '-Wno-return-type' generated.gspn %s" lha in
   (*print_endline cmd;*)
   ignore (Sys.command cmd);
   parse_result  "Result.res";;  
@@ -129,25 +129,27 @@ let allOn n m =
   );;
 
 
-let iter_strat s =
+let iter_strat s r =
+  generateLHA s "test" (-1) r 0 1000.;
+  let roldStrat = invoke_cosmos "test" in
   let snew =
     Array.init (Array.length s) (fun i ->
       Array.init (Array.length s.(0)) (fun x -> 
 	Array.init (Array.length s.(0).(0)) (fun j ->
 	  if j = 0 then false
-	  else let b = s.(i).(x).(j) in
-	       s.(i).(x).(j) <- true;
-	       generateLHA s "test" (-1) [|0;5;5;5;5;5|] 0 1000.;
-	       let rtrue = invoke_cosmos "test" in
-	       s.(i).(x).(j) <- false;
-	       generateLHA s "test" (-1) [|0;5;5;5;5;5|] 0 1000.;
-	       let rfalse = invoke_cosmos "test" in
-	       s.(i).(x).(j) <- b;
-	       Printf.printf "Test Sensor %i %i %i -> " i x j; 
-	       Printf.printf "resulttrue: %f resultfalse: %f" rtrue.mean rfalse.mean;
-	       print_newline ()
-	       rtrue.mean >= rfalse.mean
-		 
+	  else begin 
+	    s.(i).(x).(j) <- not s.(i).(x).(j);
+	    generateLHA s "test" (-1) r 0 1000.;
+	    let rneg = invoke_cosmos "test" in
+	    s.(i).(x).(j) <- not s.(i).(x).(j);
+	    Printf.printf "Test Sensor %i %i %i -> " i x j; 
+	    print_string (string_of_bool s.(i).(x).(j));
+	    Printf.printf "-> result old: %f result neg: %f ->" roldStrat.mean rneg.mean;
+	    let rb = (if roldStrat.mean >= rneg.mean then s.(i).(x).(j) else not s.(i).(x).(j)) in
+	    print_string (string_of_bool rb);
+	    print_newline ();
+	    rb
+	  end;
 	)
       )
     ) in snew;;
@@ -171,10 +173,16 @@ let print_strat s =
 
 (*invoke_cosmos "test";;*)
 
-let stratfile = open_out "StratCaml" in
-output_value stratfile (allOn 6 2);
-output_value stratfile (iter_strat (allOn 6 2));
-close_out stratfile
+let buildit () = 
+  let stratFile = open_out "StratCaml" in
+  let stratref =  ref (allOn 6 2) in
+  output_value stratFile !stratref;
+  for i = 0 to 5 do
+    stratref := iter_strat !stratref [|0 ;5;5;5;5;5|];
+    output_value stratFile !stratref;
+    print_strat !stratref;
+  done;
+  close_out stratFile;;
 
 let print_all_strat () = 
   let fs = open_in "StratCaml" in
@@ -184,4 +192,4 @@ let print_all_strat () =
     print_newline ();
   done;;
 
-print_all_strat ();;
+buildit ();;
