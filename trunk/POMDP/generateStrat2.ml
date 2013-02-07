@@ -42,6 +42,16 @@ let invoke_cosmos lha w =
   parse_result  "Result.res";;  
 
 
+let rec insere_l a b = function
+  | [] -> [(a,b)]
+  | (ta,tb)::q when ta<a -> (a,b)::(ta,tb)::q
+  | t::q -> t::(insere_l a b q);;
+
+let apply_fst l s n =
+  for k=0 to n-1 do
+    let _,(i,x,j) = List.nth l k in
+    s.(i).(x).(j) <- not s.(i).(x).(j)
+  done;;
 
 let generateLHA strat file ron reward discounted horizon =
   let fd = open_out file in
@@ -130,6 +140,7 @@ let allOn n m =
 
 
 let iter_strat s r =
+  let l = ref [] in
   generateLHA s "test" (-1) r 0 1000.;
   let roldStrat = invoke_cosmos "test" 0.002 in
   let snew =
@@ -142,6 +153,8 @@ let iter_strat s r =
 	    generateLHA s "test" (-1) r 0 1000.;
 	    let rneg = invoke_cosmos "test" 0.01 in
 	    s.(i).(x).(j) <- not s.(i).(x).(j);
+	    l := insere_l rneg.mean (i,x,j) !l;
+
 	    Printf.printf "Test Sensor %i %i %i -> " i x j; 
 	    print_string (string_of_bool s.(i).(x).(j));
 	    Printf.printf "-> result old: %f result neg: %f ->" roldStrat.mean rneg.mean;
@@ -153,7 +166,7 @@ let iter_strat s r =
 	  end;
 	)
       )
-    ) in snew;;
+    ) in (snew, !l);;
 
 let print_bool b =
   if b then print_string "true "
@@ -182,7 +195,9 @@ let buildit n r =
   let stratref =  ref (allOn (n+1) 2) in
   output_value stratFile !stratref;
   for i = 0 to 5 do
-    let s2 = iter_strat !stratref [|0 ;r;r;r;r;r|] in
+    let _,l = iter_strat !stratref [|0 ;r;r;r;r;r|] in
+    let s2 = !stratref in
+    apply_fst l s2 4;
     output_value stratFile s2;
     print_strat s2;
     stratref := s2
