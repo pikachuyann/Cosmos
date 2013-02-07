@@ -19,6 +19,9 @@ vector< vector<double> > generateMatrix(int n){
     return M;
 }
 
+double dist(double i, double j){
+	return 1.0 / ((i-j)*(i-j));
+}
 vector< vector<double> > generateLinearMatrix(int n, double p, double q){
    
     vector< vector<double> > M(n+1,vector<double>(n+1,0) );
@@ -31,25 +34,25 @@ vector< vector<double> > generateLinearMatrix(int n, double p, double q){
 	{
 		double out0 = c3;
 		M[0][0] = c3;
-		for(int j= 1;j<=k;j++){M[0][j]= c1/j; out0+=c1/j;}
-		for(int j= k+1;j<=n;j++){M[0][j]= c1/(2*k-j); out0+=c1/(2*k-j);}
+		for(int j= 1;j<=k;j++){M[0][j]= c1*dist(0,j) ; out0+=c1*dist(0,j);}
+		for(int j= k+1;j<=n;j++){M[0][j]= c1*dist(2*k,j); out0+=c1*dist(2*k,j);}
 		for(int j= 0;j<=n;j++)M[0][j]/= out0;
 	}
 	for(int i=1;i<=n;i++){
 		
-		if (i<=k) M[i][0] = c2/i;
-		else M[i][0] = c2/(2*k-i);
+		if (i<=k) M[i][0] = c2*dist(0,i);
+		else M[i][0] = c2*dist(2*k,i);
 		
 		double outi = M[i][0];
 		for(int j=1;j<=n;j++){
-			int d = abs(i-j);
+			int d = dist(i,j);
 			if (i==j)M[i][j] = c3;
 			else 
-				if(i ==k) M[i][j] = c2/d;
+				if(i ==k) M[i][j] = c2*d;
 				else 
-					if((i<j && i<=k) || (i>j && i>=k)) M[i][j]= c1/d;
+					if((i<j && i<=k) || (i>j && i>=k)) M[i][j]= c1*d;
 					else 
-						if((i<j && i>=k) || (i>j && i<=k)) M[i][j]= c2/d;
+						if((i<j && i>=k) || (i>j && i<=k)) M[i][j]= c2*d;
 			outi += M[i][j];
 		}
 		for(int j= 0;j<=n;j++)M[i][j]/= outi;
