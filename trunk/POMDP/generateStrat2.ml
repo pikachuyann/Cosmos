@@ -147,7 +147,7 @@ let iter_strat s r =
     Array.init (Array.length s) (fun i ->
       Array.init (Array.length s.(0)) (fun x -> 
 	Array.init (Array.length s.(0).(0)) (fun j ->
-	  if j = 0 then false
+	  if j = 0 | i=0 then false
 	  else begin 
 	    s.(i).(x).(j) <- not s.(i).(x).(j);
 	    generateLHA s "test" (-1) r 0 1000.;
