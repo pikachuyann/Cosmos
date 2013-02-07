@@ -195,7 +195,7 @@ let buildit n r =
   let stratref =  ref (allOn (n+1) 2) in
   output_value stratFile !stratref;
   for i = 0 to 5 do
-    let _,l = iter_strat !stratref [|0 ;r;r;r;r;r|] in
+    let _,l = iter_strat !stratref (Array.create (n+1) r) in
     let s2 = !stratref in
     apply_fst l s2 4;
     output_value stratFile s2;
