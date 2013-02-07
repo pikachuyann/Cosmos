@@ -60,7 +60,6 @@ struct color {
 	string name;
 	color(){};
 	color(const string s){ name =s;}
-	
 };
 struct colorClass {
 	string name;
@@ -95,12 +94,16 @@ struct colorVariable {
 	size_t type;
 };
 
+#define CT_SINGLE_COLOR 0
+#define CT_VARIABLE 1
+#define CT_ALL 2
+
 struct coloredToken {
 	string mult;
 	vector<size_t> field;
-	vector<char> isVar;
-//	bitvector isVar;
+	vector<char> Flags;
 	vector<int> varIncrement;
+	bool hasAll;
 };
 
 struct transition {

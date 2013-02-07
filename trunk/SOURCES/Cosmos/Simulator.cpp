@@ -303,6 +303,7 @@ bool Simulator::SimulateOneStep(){
         //If this transition is the sink transition refuse the simulation
         //Only usefull for Rare Event handling.
 		if(transitionSink(E1_transitionNum)){
+			if(verbose>3)cerr << "Transition Sink\n";
             returnResultFalse();
             return false;
         }

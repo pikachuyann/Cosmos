@@ -197,6 +197,24 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 			} else incr = atoi(simplifyString(*(it2).begin())->c_str());
 		}
 		tok.varIncrement.back() += incr;
+	}else if(it->compare("all")==0){
+		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
+			if(it2->compare("type")==0){
+				string colname= *simplifyString(*(it2.begin()));
+				vector<colorClass>::const_iterator cols;
+				for (cols = MyGspn->colClasses.begin() ;
+					 cols != MyGspn->colClasses.end() && cols->name != colname; ++cols);
+				if(cols != MyGspn->colClasses.end()){
+					tok.field.push_back(cols - MyGspn->colClasses.begin());
+					tok.Flags.push_back(CT_ALL);
+					tok.varIncrement.push_back(0);
+					tok.hasAll = true;
+				}else{
+					cerr << "Unknown colorClasse '" << colname << "'"<< endl;
+				}
+			}
+		}
+		
 	}else if(it->compare("expr")==0){
 		eval_tokenProfileArc(tok,markingdependant, vardom, it.begin());
 	}else if (it->compare("token")==0) {
@@ -212,17 +230,18 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 			}
 		}
 	} else if(it->compare("type")==0){
-		cerr << "plain colore in arc label not yet implemented" << endl;
+		string colname= *simplifyString(*(it.begin()));
+		vector<colorClass>::const_iterator cols;
+		for (cols = MyGspn->colClasses.begin() ;
+			 cols != MyGspn->colClasses.end() && cols->name != colname; ++cols);
+		if(cols != MyGspn->colClasses.end()){
+			tok.field.push_back(cols - MyGspn->colClasses.begin());
+			tok.Flags.push_back(CT_SINGLE_COLOR);
+			tok.varIncrement.push_back(0);
+		}else{
+			cerr << "Unknown color '" << colname << "'"<< endl;
+		}
 		
-		/*string coldom = *simplifyString(*(it.begin()));
-		cerr << coldom << endl;
-		size_t colorc =0;
-		cerr << "Simply colored tocken not yet implemented Color";
-		for(colorc =0; colorc < MyGspn->co Doms.size() &&
-			MyGspn->colDoms[colorc].name != coldom ; colorc++);
-		if(colorc == MyGspn->colDoms.size())
-			cerr << "Unknown classe '" << coldom << "'"<< endl;
-		else st->append(MyGspn->colDoms[colorc].cname());*/
 	}else if(it->compare("name")==0) {
 		string varname= *simplifyString(*(it.begin()));
 		vector<colorVariable>::const_iterator vars;
@@ -230,7 +249,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 			 vars != MyGspn->colVars.end() && vars->name != varname; ++vars);
 		if(vars != MyGspn->colVars.end()){
 			tok.field.push_back(vars - MyGspn->colVars.begin());
-			tok.isVar.push_back(true);
+			tok.Flags.push_back(CT_VARIABLE);
 			tok.varIncrement.push_back(0);
 			vardom.insert(vars-MyGspn->colVars.begin());
 		}else{
@@ -303,7 +322,7 @@ treeSI findbranch(treeSI t, string branch){
 
 MyModelHandler::MyModelHandler(GSPN* MyGspn2,bool re) {
 	//Initialisation
-    verbose = 0;
+    verbose = 4;
     rareEvent = re;
     MyGspn= MyGspn2;
     countPl=0;
@@ -732,6 +751,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 					eval_expr(&markingdependant, &valuation, it3.begin() );
 				} else if (it3->compare("token")==0) {
 					coloredToken tokenType;
+					tokenType.hasAll = false;
 					if (IsPlace[sourceGML]) {
 						eval_tokenProfileArc( tokenType, markingdependant,MyGspn->transitionStruct[Gml2Trans[atoi(target.c_str())]].varDomain, it3);
 					} else {
@@ -744,11 +764,29 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 					else coldom = MyGspn->placeStruct[Gml2Place[atoi(target.c_str())]].colorDom;
 					
 					if (toklist.size()>0)valuation.append(" + ");
-					valuation.append(MyGspn->colDoms[coldom].tokname());
+					
+					if(tokenType.hasAll)
+						valuation.append(MyGspn->colDoms[coldom].cname());
+					else
+						valuation.append(MyGspn->colDoms[coldom].tokname());
+					
 					valuation.append("(");
 					for (size_t pr = 0; pr < tokenType.field.size() ; pr++) {
 						if(pr>0)valuation.append(", ");
-						valuation.append( "b.P->"+MyGspn->colVars[tokenType.field[pr]].name);
+						if(tokenType.Flags[pr]==CT_VARIABLE){
+							valuation.append( "b.P->"+MyGspn->colVars[tokenType.field[pr]].name);}
+						else if(tokenType.Flags[pr]== CT_SINGLE_COLOR) {
+							valuation.append("Color_");
+							valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].name );
+							valuation.append("_");
+							valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].colors[tokenType.field[pr]].name );
+						} else if(tokenType.Flags[pr]== CT_ALL) {
+							valuation.append("Color_");
+							valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].name );
+							valuation.append("_All");
+						}
+
+						
 						if(tokenType.varIncrement[pr] != 0){
 							valuation.append(".next(");
 							valuation.append(itostring(tokenType.varIncrement[pr]));

@@ -80,11 +80,13 @@ void SimulatorRE::returnResultTrue(){
     for(size_t i = 0; i< A.FormulaVal.size() ; i++){
         Result.second[i] *= A.Likelihood;
     }
+	if(verbose>3)cerr << "---------------\n TRUE \n------\n";
 }
 
 void SimulatorRE::returnResultFalse(){
 	Result.first = false;
 	Result.second[0] =0.0;
+	if(verbose>3)cerr << "---------------\n FALSE \n------\n";
 }
 
 void SimulatorRE::updateSPN(const int E1_transitionNum,const abstractBinding& b ){
@@ -240,7 +242,7 @@ double SimulatorRE::mu(){
 	vector<int> vect (N.Msimpletab.size());
 	for(size_t i=0; i< N.Msimpletab.size();i++){
 		vect[i] = N.Marking.getNbOfTokens(N.Msimpletab[i]);
-		//cout << i << " : " << N.Msimpletab[i] << " : " << N.Marking[N.Msimpletab[i]] << endl;
+		if(verbose>3)cerr << i << " : " << N.Msimpletab[i] << " : " << N.Marking.getNbOfTokens(N.Msimpletab[i]) << endl;
 	};
 	
     N.lumpingFun(&vect);
@@ -254,6 +256,7 @@ double SimulatorRE::mu(){
         cerr << ") ->" << i << endl;
        // exit(EXIT_FAILURE);
     }
+	if(verbose>3) cerr << ((*muprob.muvect)[i]) << endl;
     //cerr << ")" << endl;
 	return((*muprob.muvect)[i]);
 }
