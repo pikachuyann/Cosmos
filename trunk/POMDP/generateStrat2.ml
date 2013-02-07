@@ -197,7 +197,7 @@ let buildit n r =
   for i = 0 to 20 do
     let _,l = iter_strat !stratref (Array.create (n+1) r) in
     let s2 = !stratref in
-    if List.length l = 0 then failwith "No more switch"
+    if List.length l = 0 then failwith "No more switch";
     apply_fst l s2 ((List.length l)/3);
     output_value stratFile s2;
     print_strat s2;
