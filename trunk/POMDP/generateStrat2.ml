@@ -1,24 +1,17 @@
-open Str
-#load "str.cma"
+open Str;;
+#load "str.cma";;
 
-let dots = regexp ":\t"
-let confintdel = regexp "\\[\\| , \\|\\]"
+let dots = regexp ":\t";;
+let confintdel = regexp "\\[\\| , \\|\\]";;
 
 type result = { mutable mean : float;
                 mutable stdDev : float;
                 mutable confInt: float*float;
-              }
-
-let dummyresult = {
-  mean= 0. ;
-  stdDev = 0. ;
-  confInt = 0. , 0.
-}
-
+              };;
 
 let parse_result f =
   let fs = open_in f in
-  let result = dummyresult in
+  let result = {  mean= 0. ;  stdDev = 0. ; confInt = 0. , 0. } in
   (try while true do
       let str = input_line fs in
       let ls = split dots str in
@@ -43,10 +36,10 @@ let parse_result f =
   result;;
 
 let invoke_cosmos lha  =
-  let cmd = Printf.sprintf "../bin/Cosmos -v 0 --max-run 2000 --gppcmd clang++ --gppflags '-Wno-return-type' generated.gspn %s" lha in
+  let cmd = Printf.sprintf "../bin/Cosmos --max-run 2000 --njob 12 --batch 100 --gppcmd clang++ --gppflags '-Wno-return-type' generated.gspn %s" lha in
   print_endline cmd;
   ignore (Sys.command cmd);
-  parse_result  "Result.res"  
+  parse_result  "Result.res";;  
 
 
 
@@ -162,5 +155,7 @@ let iter_strat s =
 
 (*invoke_cosmos "test";;*)
 
-
-iter_strat (allOn 6 2);;
+let stratfile = open_out "StratCaml"
+output_value stratfile (allOn 6 2);
+output_value stratfile (iter_strat (allOn 6 2));
+close_out stratfile
