@@ -155,7 +155,7 @@ let iter_strat s =
 
 (*invoke_cosmos "test";;*)
 
-let stratfile = open_out "StratCaml"
+let stratfile = open_out "StratCaml" in
 output_value stratfile (allOn 6 2);
 output_value stratfile (iter_strat (allOn 6 2));
 close_out stratfile
