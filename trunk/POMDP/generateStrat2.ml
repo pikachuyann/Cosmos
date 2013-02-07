@@ -181,7 +181,7 @@ let buildit () =
   let stratref =  ref (allOn 6 2) in
   output_value stratFile !stratref;
   for i = 0 to 5 do
-    let s2 = iter_strat !stratref [|0 ;5;5;5;5;5|] in
+    let s2 = iter_strat !stratref [|0 ;6;6;6;6;6|] in
     output_value stratFile s2;
     print_strat s2;
     stratref := s2
