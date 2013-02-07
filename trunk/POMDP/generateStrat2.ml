@@ -36,7 +36,7 @@ let parse_result f =
   result;;
 
 let invoke_cosmos lha  =
-  let cmd = Printf.sprintf "../bin/Cosmos --max-run 2000 --njob 12 --batch 100 --gppcmd clang++ --gppflags '-Wno-return-type' generated.gspn %s" lha in
+  let cmd = Printf.sprintf "../bin/Cosmos --width 0.02 -v 0 --njob 12 --batch 100 --gppcmd clang++ --gppflags '-Wno-return-type' generated.gspn %s" lha in
   print_endline cmd;
   ignore (Sys.command cmd);
   parse_result  "Result.res";;  
@@ -143,6 +143,7 @@ let iter_strat s =
 	       generateLHA s "test" (-1) [|0;15;15;15;15;15|] 0 1000.;
 	       let rfalse = invoke_cosmos "test" in
 	       s.(i).(x).(j) <- b;
+	       Printf.printf "Test Sensor %i %i %i -> " i x j; 
 	       Printf.printf "resulttrue: %f resultfalse: %f\n" rtrue.mean rfalse.mean;
 	       rtrue.mean >= rfalse.mean
 		 
