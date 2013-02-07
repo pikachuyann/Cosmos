@@ -20,7 +20,7 @@ vector< vector<double> > generateMatrix(int n){
 }
 
 double dist(double i, double j){
-	return 1.0 / ((i-j)*(i-j));
+	return (1.0 / ((i-j)*(i-j)));
 }
 vector< vector<double> > generateLinearMatrix(int n, double p, double q){
    
@@ -45,14 +45,15 @@ vector< vector<double> > generateLinearMatrix(int n, double p, double q){
 		
 		double outi = M[i][0];
 		for(int j=1;j<=n;j++){
-			int d = dist(i,j);
 			if (i==j)M[i][j] = c3;
-			else 
+			else {
+				double d = dist(i,j);
 				if(i ==k) M[i][j] = c2*d;
 				else 
 					if((i<j && i<=k) || (i>j && i>=k)) M[i][j]= c1*d;
 					else 
 						if((i<j && i>=k) || (i>j && i<=k)) M[i][j]= c2*d;
+			}
 			outi += M[i][j];
 		}
 		for(int j= 0;j<=n;j++)M[i][j]/= outi;
