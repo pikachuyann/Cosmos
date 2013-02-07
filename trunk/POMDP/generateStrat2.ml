@@ -154,6 +154,9 @@ let iter_strat s r =
       )
     ) in snew;;
 
+let print_bool b =
+  if b then print_string "true "
+  else print_string "false";;
 
 let print_strat s =
   for i = 0 to Array.length s-1 do
@@ -162,7 +165,7 @@ let print_strat s =
       print_string "[| ";
       for x =0 to Array.length s.(0)-1 do
 	if x>0 then print_string " ; ";
-	print_string (string_of_bool s.(i).(x).(j));
+	print_bool s.(i).(x).(j);
       done;
       print_string "|]";
     done;
@@ -178,9 +181,10 @@ let buildit () =
   let stratref =  ref (allOn 6 2) in
   output_value stratFile !stratref;
   for i = 0 to 5 do
-    stratref := iter_strat !stratref [|0 ;5;5;5;5;5|];
-    output_value stratFile !stratref;
-    print_strat !stratref;
+    let s2 = iter_strat !stratref [|0 ;5;5;5;5;5|] in
+    output_value stratFile s2;
+    print_strat s2;
+    stratref := s2
   done;
   close_out stratFile;;
 
