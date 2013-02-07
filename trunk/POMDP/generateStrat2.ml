@@ -35,8 +35,8 @@ let parse_result f =
        End_of_file -> close_in fs);
   result;;
 
-let invoke_cosmos lha  =
-  let cmd = Printf.sprintf "../bin/Cosmos --width 0.01 -v 0 --njob 12 --batch 100 --gppcmd clang++ --gppflags '-Wno-return-type' generated.gspn %s" lha in
+let invoke_cosmos lha w =
+  let cmd = Printf.sprintf "../bin/Cosmos --width %f -v 0 --njob 12 --batch 100 --gppcmd clang++ --gppflags '-Wno-return-type' generated.gspn %s" w lha in
   (*print_endline cmd;*)
   ignore (Sys.command cmd);
   parse_result  "Result.res";;  
@@ -131,7 +131,7 @@ let allOn n m =
 
 let iter_strat s r =
   generateLHA s "test" (-1) r 0 1000.;
-  let roldStrat = invoke_cosmos "test" in
+  let roldStrat = invoke_cosmos "test" 0.002 in
   let snew =
     Array.init (Array.length s) (fun i ->
       Array.init (Array.length s.(0)) (fun x -> 
@@ -140,13 +140,14 @@ let iter_strat s r =
 	  else begin 
 	    s.(i).(x).(j) <- not s.(i).(x).(j);
 	    generateLHA s "test" (-1) r 0 1000.;
-	    let rneg = invoke_cosmos "test" in
+	    let rneg = invoke_cosmos "test" 0.01 in
 	    s.(i).(x).(j) <- not s.(i).(x).(j);
 	    Printf.printf "Test Sensor %i %i %i -> " i x j; 
 	    print_string (string_of_bool s.(i).(x).(j));
 	    Printf.printf "-> result old: %f result neg: %f ->" roldStrat.mean rneg.mean;
 	    let rb = (if roldStrat.mean >= rneg.mean then s.(i).(x).(j) else not s.(i).(x).(j)) in
 	    print_string (string_of_bool rb);
+	    if rb <> s.(i).(x).(j) then print_string "  SWITCH ";
 	    print_newline ();
 	    rb
 	  end;
