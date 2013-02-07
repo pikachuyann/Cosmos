@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
 	
 	// initial iteration
 	int N = (int)M.size();
-    vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,0.0)) );
+    vector< vector< vector<double> > > Plast(N,vector< vector<double> >(Memory, vector<double>(N,1.0)) );
 	
 	generateSPNfun(M);
 	
