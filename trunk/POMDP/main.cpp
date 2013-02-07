@@ -109,8 +109,8 @@ int main(int argc, char** argv) {
 		MaxReward = atoi(argv[3]);
 		
 		M = generateLinearMatrix(n,p,q);
-//		RewardArray = generateLinearReward(n,3);
-		RewardArray = vector<double>(n+1, MaxReward);
+		RewardArray = generateLinearReward(n,MaxReward);
+//		RewardArray = vector<double>(n+1, MaxReward);
 		ron=-1;
 		rdet=10;
 		ExpFileName="linear.txt";
