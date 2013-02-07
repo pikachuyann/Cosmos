@@ -137,14 +137,15 @@ let iter_strat s =
 	  if j = 0 then false
 	  else let b = s.(i).(x).(j) in
 	       s.(i).(x).(j) <- true;
-	       generateLHA s "test" (-1) [|0;15;15;15;15;15|] 0 1000.;
+	       generateLHA s "test" (-1) [|0;5;5;5;5;5|] 0 1000.;
 	       let rtrue = invoke_cosmos "test" in
 	       s.(i).(x).(j) <- false;
-	       generateLHA s "test" (-1) [|0;15;15;15;15;15|] 0 1000.;
+	       generateLHA s "test" (-1) [|0;5;5;5;5;5|] 0 1000.;
 	       let rfalse = invoke_cosmos "test" in
 	       s.(i).(x).(j) <- b;
 	       Printf.printf "Test Sensor %i %i %i -> " i x j; 
-	       Printf.printf "resulttrue: %f resultfalse: %f\n" rtrue.mean rfalse.mean;
+	       Printf.printf "resulttrue: %f resultfalse: %f" rtrue.mean rfalse.mean;
+	       print_newline ()
 	       rtrue.mean >= rfalse.mean
 		 
 	)
@@ -169,16 +170,18 @@ let print_strat s =
 (*generateLHA (allOn 6 2)  "test" (-1) [|0;15;15;15;15;15|] 0 1000.;;*)
 
 (*invoke_cosmos "test";;*)
-(*
+
 let stratfile = open_out "StratCaml" in
 output_value stratfile (allOn 6 2);
 output_value stratfile (iter_strat (allOn 6 2));
 close_out stratfile
-*)
+
 let print_all_strat () = 
   let fs = open_in "StratCaml" in
   while true do 
     let s = input_value fs in
     print_strat s;
     print_newline ();
-  done;
+  done;;
+
+print_all_strat ();;
