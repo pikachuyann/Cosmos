@@ -177,12 +177,12 @@ let print_strat s =
 
 (*invoke_cosmos "test";;*)
 
-let buildit () = 
+let buildit n r = 
   let stratFile = open_out "StratCaml" in
-  let stratref =  ref (allOn 6 2) in
+  let stratref =  ref (allOn (n+1) 2) in
   output_value stratFile !stratref;
   for i = 0 to 5 do
-    let s2 = iter_strat !stratref [|0 ;6;6;6;6;6|] in
+    let s2 = iter_strat !stratref [|0 ;r;r;r;r;r|] in
     output_value stratFile s2;
     print_strat s2;
     stratref := s2
@@ -197,4 +197,4 @@ let print_all_strat () =
     print_newline ();
   done;;
 
-buildit ();;
+buildit (int_of_string Sys.argv.(1)) (int_of_string Sys.argv.(2));;

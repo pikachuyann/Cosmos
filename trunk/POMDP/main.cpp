@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
 	bool discounted = false; // Compute steady-state or discounted reward.
     
 	double Prec=1e-4; // Threshold to stop the iteration
-	int MaxIteration=10; //Max number of iteration
+	int MaxIteration=5; //Max number of iteration
 	double MaxReward = 7;
 
 	//This is the command line to invoke cosmos.
@@ -197,7 +197,7 @@ int main(int argc, char** argv) {
 		Reward = readPlastfun(N, "test2", Plast,H);
 		cout <<"Iteration:" <<It<< " reward: "<< Reward <<" RelDiff: "<<RelDiff<< endl;
 		printPlast(Plast);
-		//fillMemory(Plast,It+1);
+		fillMemory(Plast,It+1);
 		if(It==1){
 			
 		}else{
