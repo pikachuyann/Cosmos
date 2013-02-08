@@ -51,7 +51,7 @@ void combinePlast(vector<vector<vector<double > > > &OPlast,
 	double minreward = 0;
 	size_t mini, minj, minx;
 	for(size_t i =1; i<OPlast.size(); i++)
-		for(size_t x =0; x<OPlast[0].size(); x++)
+		for(size_t x =1; x<OPlast[0].size(); x++)
 			for(size_t j=1; j<OPlast[0][0].size(); j++)
 				if(ron + NPlast[i][x][j]*Reward[j] < minreward){
 					minreward = ron + NPlast[i][x][j]*Reward[j];
@@ -64,9 +64,9 @@ void combinePlast(vector<vector<vector<double > > > &OPlast,
 	
 	if(minreward == 0 )exit(EXIT_SUCCESS);
 	
-	for(size_t i =1; i<OPlast.size(); i++)
+	for(size_t i =0; i<OPlast.size(); i++)
 		for(size_t x =0; x<OPlast[0].size(); x++)
-			for(size_t j =1; j<OPlast[0][0].size(); j++)
+			for(size_t j =0; j<OPlast[0][0].size(); j++)
 				if(i != mini || j != minj || x!= minx)
 					NPlast[i][x][j] = OPlast[i][x][j];
 	
