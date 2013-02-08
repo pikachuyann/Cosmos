@@ -826,7 +826,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "}\n" << endl;
 	
 	
-	SpnCppFile << "bool SPN::IsEnabled(const int t, const abstractBinding& b)const {" << endl;
+	SpnCppFile << "bool SPN::IsEnabled(size_t t, const abstractBinding& b)const {" << endl;
 	if(P.localTesting){
 		SpnCppFile << "\treturn (TransitionConditions[t]==0);" << endl;
 	} else {
@@ -865,7 +865,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "}\n" << endl;
 	
 	
-	SpnCppFile << "void SPN::fire(const int t, const abstractBinding& b){" << endl;
+	SpnCppFile << "void SPN::fire(size_t t, const abstractBinding& b){" << endl;
 	SpnCppFile << "\tlastTransition = t;" << endl;
 	SpnCppFile << "\tswitch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
@@ -1027,7 +1027,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "\t}" << endl;
 	SpnCppFile << "}" << endl;
 	
-	SpnCppFile << "void SPN::unfire(const int t ,const abstractBinding&){" << endl;
+	SpnCppFile << "void SPN::unfire(size_t t ,const abstractBinding&){" << endl;
 	if(P.RareEvent || P.computeStateSpace){
 		SpnCppFile << "   switch(t){" << endl;
 		for (size_t t = 0; t < MyGspn.tr; t++) {
@@ -1102,7 +1102,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	SpnCppFile << "}" << endl;
 	
-	SpnCppFile << "void SPN::GetDistParameters(const int t, const abstractBinding&)const {" << endl;
+	SpnCppFile << "void SPN::GetDistParameters(size_t t, const abstractBinding&)const {" << endl;
 	//-------------- /Rare Event -------------------------
 	SpnCppFile << "   switch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
@@ -1153,7 +1153,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	/////////////////////////////////////////
 	
-	SpnCppFile << "double SPN::GetPriority(int t)const {" << endl;
+	SpnCppFile << "double SPN::GetPriority(size_t t)const {" << endl;
 	SpnCppFile << "   switch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
 		
@@ -1169,7 +1169,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	
 	/////////////////////////////////////////
-	SpnCppFile << "double SPN::GetWeight(int t)const{" << endl;
+	SpnCppFile << "double SPN::GetWeight(size_t t)const{" << endl;
 	SpnCppFile << "   switch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
 		

@@ -57,12 +57,25 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../SOURCES/Cosmos/Simulator.cpp"
-         timestampString = "381873052.04773"
+         timestampString = "382014010.247226"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "118"
-         endingLineNumber = "118"
+         startingLineNumber = "117"
+         endingLineNumber = "117"
          landmarkName = "Simulator::returnResultTrue()"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/Cosmos/SimulatorRE.cpp"
+         timestampString = "382014128.203742"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "45"
+         endingLineNumber = "45"
+         landmarkName = "SimulatorRE::SimulatorRE(bool b)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

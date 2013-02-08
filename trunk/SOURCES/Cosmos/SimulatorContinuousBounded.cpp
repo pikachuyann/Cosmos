@@ -216,7 +216,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	return (batchResult);
 }
 
-void SimulatorContinuousBounded::updateSPN(const int E1_transitionNum,const abstractBinding& b){
+void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstractBinding& b){
 	Event F;
     //check if the current transition is still enabled
 	for(vector<abstractBinding>::const_iterator bindex = N.Transition[E1_transitionNum].bindingList.begin() ;
@@ -329,7 +329,7 @@ double SimulatorContinuousBounded::mu(){
 	return(numSolv->getMu(stateN));
 }
 
-void SimulatorContinuousBounded::getParams(const int Id,const abstractBinding& b){
+void SimulatorContinuousBounded::getParams(size_t Id,const abstractBinding& b){
 	
 	N.GetDistParameters(Id,b);
 	double origin_rate = N.ParamDistr[0];

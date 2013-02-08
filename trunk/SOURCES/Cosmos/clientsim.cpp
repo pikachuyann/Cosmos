@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
 	if(argc>=3){
 		mySim->SetBatchSize(atoi(argv[1])); //set the batch size
 		mySim->verbose = atoi(argv[2]);
-		mySim->initRandomGenerator(atol(argv[3]));
+		mySim->initRandomGenerator(atoi(argv[3]));
 	}else{
 		//Default value.
 		mySim->SetBatchSize(1000);

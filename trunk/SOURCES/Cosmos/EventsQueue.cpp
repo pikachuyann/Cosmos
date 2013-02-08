@@ -35,7 +35,7 @@ using namespace std;
 EventsQueue::EventsQueue(const SPN& N){
 	for(size_t it = 0; it< N.Transition.size(); ++it ){
 		evtTbl.push_back(vector<Event>());
-		evtHeapIndex.push_back(vector<int>(N.Transition[it].bindingList.size(),-1));
+		evtHeapIndex.push_back(vector<long int>(N.Transition[it].bindingList.size(),-1));
 		for (size_t it2 = 0 ; it2< N.Transition[it].bindingList.size(); ++it2) {
 			evtTbl[it].push_back(Event());
 		}
@@ -78,7 +78,7 @@ void EventsQueue::insert(const Event &e) {
 
 void EventsQueue::replace(const Event &e) {
 	assert(isScheduled(e.transition, e.binding.id()));
-	int k = evtHeapIndex[e.transition][e.binding.id()];
+	long int k = evtHeapIndex[e.transition][e.binding.id()];
 	evtTbl[e.transition][e.binding.id()] = e;
 	
 	siftUp(k);
@@ -86,10 +86,10 @@ void EventsQueue::replace(const Event &e) {
 }
 
 void EventsQueue::remove(size_t tr, size_t b) {
-	int i = evtHeapIndex[tr][b];
+	long int i = evtHeapIndex[tr][b];
 	assert(i>=0);
 	if(i>=0){
-		if (i == evtHeap.size()-1) {
+		if ((size_t)i == evtHeap.size()-1) {
 			evtHeapIndex[tr][b] = -1;
 			evtHeap.pop_back();
 		} else {
@@ -113,8 +113,8 @@ bool EventsQueue::isScheduled(size_t tr,size_t b)const {
 }
 
 void EventsQueue::swapEvt(size_t i,size_t j){
-	assert(evtHeapIndex[evtHeap[j].first][evtHeap[j].second] ==j
-		   && evtHeapIndex[evtHeap[i].first][evtHeap[i].second] == i);
+	assert((size_t)evtHeapIndex[evtHeap[j].first][evtHeap[j].second] ==j
+		   && (size_t)evtHeapIndex[evtHeap[i].first][evtHeap[i].second] == i);
 	evtHeapIndex[evtHeap[j].first][evtHeap[j].second] = i;
 	evtHeapIndex[evtHeap[i].first][evtHeap[i].second] = j;
 	

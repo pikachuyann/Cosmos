@@ -56,7 +56,7 @@ double Event::getTime() {
     return (this->time);
 }
 
-unsigned int Event::getPriority() {
+size_t Event::getPriority() {
     return (this->priority);
 }
 
@@ -64,11 +64,11 @@ double Event::getWeight() {
     return (this->weight);
 }
 
-unsigned int Event::getTrans() {
+size_t Event::getTrans() {
     return (this->transition);
 }
 
-void Event::setTrans(unsigned int tr) {
+void Event::setTrans(size_t tr) {
     transition = tr;
 }
 
@@ -76,7 +76,7 @@ void Event::setTime(double t) {
     time = t;
 }
 
-void Event::setPriority(unsigned int pr) {
+void Event::setPriority(size_t pr) {
     priority = pr;
 
 }

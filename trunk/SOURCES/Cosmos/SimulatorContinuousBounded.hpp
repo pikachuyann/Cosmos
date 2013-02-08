@@ -42,8 +42,8 @@ public:
 protected:
     FoxGlynn* fg;
     double mu();
-    void getParams(const int Id,const abstractBinding&);
-    void updateSPN(const int E1_transitionNum, const abstractBinding&);
+    void getParams(size_t Id,const abstractBinding&);
+    void updateSPN(size_t E1_transitionNum, const abstractBinding&);
     //virtual void updateLikelihood(int);
     //virtual double ComputeDistr(int t , double origin_rate);
 

@@ -66,7 +66,7 @@ private:
 //    Tab TransTable;
 //    size_t TransTableSize;
 
-	vector<vector< int > > evtHeapIndex;
+	vector<vector< long int > > evtHeapIndex;
 	vector<vector< Event > > evtTbl;
 	vector<pair<size_t,size_t> > evtHeap;
 	

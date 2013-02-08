@@ -99,7 +99,7 @@ void numSolverSH::compPow(int kp,int up){
     }
     
 	int m = 1<<k;  // (m = 2^k 
-    for (int i = (*ktable)[kp]+1; i<=up; i++) {
+    for (int i = (int)(*ktable)[kp]+1; i<=up; i++) {
 		//cerr << "i: " << i << " k: " << k << " m: " << m << endl;
         itervect2.clear();
         sparseProd(&itervect2,&itervect, transitionsMatrix);
@@ -163,7 +163,7 @@ void numSolverSH::stepVect(){
             previous_vect = current_vect;
             current_vect = *finalVector;
         }else if(u>0){
-            int kp = log2((u^(u+1))+1);
+            int kp = (int)log2((u^(u+1))+1);
             //cerr << "u: " << u<< ": kp: " << kp << endl;
             compPow(kp, u);
         }

@@ -40,19 +40,19 @@ public:
     Event(const Event& orig);
 	const Event& operator = (const Event&);
     virtual ~Event();
-    unsigned int getTrans();
+    size_t getTrans();
     double getTime();
-    unsigned int getPriority();
+    size_t getPriority();
     double getWeight();
-    void setTrans(unsigned int);
+    void setTrans(size_t);
     void setTime(double);
-    void setPriority(unsigned int);
+    void setPriority(size_t);
     void setWeight(double);
 
 
-    unsigned int transition;
+    size_t transition;
     double time;
-    unsigned int priority;
+    size_t priority;
     double weight;
 	abstractBinding binding;
 	

@@ -322,7 +322,7 @@ treeSI findbranch(treeSI t, string branch){
 
 MyModelHandler::MyModelHandler(GSPN* MyGspn2,bool re) {
 	//Initialisation
-    verbose = 4;
+    verbose = 0;
     rareEvent = re;
     MyGspn= MyGspn2;
     countPl=0;

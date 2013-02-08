@@ -49,16 +49,16 @@ protected:
 		
 	virtual void returnResultTrue();
 	virtual void returnResultFalse();
-	virtual void updateSPN(const int,const abstractBinding&);
-	virtual void GenerateEvent(Event &,const int ,const abstractBinding& );
-	virtual void GenerateDummyEvent(Event &, int);
-	virtual void updateLikelihood(int);
-    virtual bool transitionSink(int);
-	virtual void getParams(const int,const abstractBinding&);
+	virtual void updateSPN(size_t,const abstractBinding&);
+	virtual void GenerateEvent(Event &,size_t,const abstractBinding& );
+	virtual void GenerateDummyEvent(Event &, size_t);
+	virtual void updateLikelihood(size_t);
+    virtual bool transitionSink(size_t);
+	virtual void getParams(size_t,const abstractBinding&);
 	virtual void reset();
 	
 	virtual double mu();
-	virtual double ComputeDistr(const int i,const abstractBinding& , double origin_rate);
+	virtual double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
 };
 
 

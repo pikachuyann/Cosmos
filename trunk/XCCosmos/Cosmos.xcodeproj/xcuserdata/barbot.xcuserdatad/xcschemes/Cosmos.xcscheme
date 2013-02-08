@@ -104,7 +104,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/ClientServer/clientserv.1.grml"
+            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/ClientServer/loop.3.grml"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

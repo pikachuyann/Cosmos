@@ -147,7 +147,7 @@ double SimulatorBoundedRE::mu(){
 	return(numSolv->getMu(stateN));
 }
 
-double SimulatorBoundedRE::ComputeDistr(const int t ,const abstractBinding& b, double origin_rate ){
+double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, double origin_rate ){
 	
 	//cerr << endl<< "mux" << endl;
 	double mux = mu();

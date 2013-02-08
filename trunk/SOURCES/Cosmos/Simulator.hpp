@@ -97,7 +97,7 @@ protected:
 	//virtual void resetSimVarsTable();
 	virtual void reset(); // reset the simulator
 	
-	virtual void GenerateEvent(Event &,const int,const abstractBinding&); // generate a new event use Generate Time
+	virtual void GenerateEvent(Event &,size_t,const abstractBinding&); // generate a new event use Generate Time
 	
 	// generate a time acording to the distribution d with parameters p
 	virtual double GenerateTime(int, vector<double>& p); 
@@ -112,12 +112,12 @@ protected:
 	virtual void fireLHA(int);
 		//fire the transition of an LHA
 	
-	virtual void updateSPN(const int,const abstractBinding& ); // update value in the SPN after a transition
+	virtual void updateSPN(size_t,const abstractBinding& ); // update value in the SPN after a transition
 	
-	virtual void updateLikelihood(int); // update the likelyhood for the Rare event case 
-    virtual bool transitionSink(int); // Stop the simulation if sink transition is taken
+	virtual void updateLikelihood(size_t); // update the likelyhood for the Rare event case
+    virtual bool transitionSink(size_t); // Stop the simulation if sink transition is taken
 	
-	virtual void getParams(const int, const abstractBinding&); // return the parameters of a transition distribution
+	virtual void getParams(size_t, const abstractBinding&); // return the parameters of a transition distribution
 	
 };
 

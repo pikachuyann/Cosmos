@@ -42,7 +42,6 @@
 using namespace std;
 
 Simulator::Simulator():verbose(0) {
-	size_t n = N.tr; //n his the number of transition
 	EQ = new EventsQueue(N); //initialization of the event queue
 	Initialized = false;
     logResult=false;
@@ -159,7 +158,7 @@ void Simulator::fireLHA(int EdgeIndex){
 }*/
 
 
-void Simulator::updateSPN(const int E1_transitionNum, const abstractBinding& b){
+void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& b){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
     
@@ -249,12 +248,12 @@ void Simulator::updateSPN(const int E1_transitionNum, const abstractBinding& b){
 }
 
 // Only used in the Rare Event context
-void Simulator::updateLikelihood(int i){
+void Simulator::updateLikelihood(size_t i){
 	return;
 }
 
 //Only used in the Rare Event context
-bool Simulator::transitionSink(int i){
+bool Simulator::transitionSink(size_t i){
     return false;
 }
 
@@ -297,18 +296,16 @@ bool Simulator::SimulateOneStep(){
 	} else {
         //Take the first event in the queue
 		Event E1 = (*EQ).InPosition(0);
-		        
-		int E1_transitionNum = E1.transition;
-        
+		      
         //If this transition is the sink transition refuse the simulation
         //Only usefull for Rare Event handling.
-		if(transitionSink(E1_transitionNum)){
+		if(transitionSink(E1.transition)){
 			if(verbose>3)cerr << "Transition Sink\n";
             returnResultFalse();
             return false;
         }
         
-        updateLikelihood(E1_transitionNum);
+        updateLikelihood(E1.transition);
 		
         //Take all autonomous edge in the automata before the fire time
         //of the transition of the Petri net.
@@ -339,10 +336,10 @@ bool Simulator::SimulateOneStep(){
 		updateLHA( E1.time - A.CurrentTime );
 		
 		//Fire the transition in the SPN
-		N.fire(E1_transitionNum, E1.binding);
+		N.fire(E1.transition, E1.binding);
 		
         //Check if there exist a valid transition in the automata.
-		int SE = A.GetEnabled_S_Edges(E1_transitionNum, N.Marking);
+		int SE = A.GetEnabled_S_Edges(E1.transition, N.Marking);
 		
 		//If no synchronisation is possible the trajectory is rejected
 		if (SE < 0) {
@@ -356,7 +353,7 @@ bool Simulator::SimulateOneStep(){
 				returnResultTrue();
 				return false;
 			} else {
-				updateSPN(E1_transitionNum, E1.binding);
+				updateSPN(E1.transition, E1.binding);
 			}
 		}
 	}
@@ -366,7 +363,7 @@ bool Simulator::SimulateOneStep(){
 //Simlulate a whole trajectory in the system. Result is store in SimOutput
 void Simulator::SimulateSinglePath() {
 	
-	Simulator::InitialEventsQueue();
+	InitialEventsQueue();
 	A.CurrentLocation = A.EnabledInitLocation(N.Marking);
 	A.CurrentTime = 0;
 	
@@ -382,7 +379,7 @@ void Simulator::SimulateSinglePath() {
 
 
 //Generate an event based on the type of his distribution
-void Simulator::GenerateEvent(Event& E,const int Id,const abstractBinding& b ) {
+void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	
 	double t = A.CurrentTime;
 	if (N.Transition[Id].transType == Timed) {
@@ -410,7 +407,7 @@ void Simulator::GenerateEvent(Event& E,const int Id,const abstractBinding& b ) {
 }
 
 //Return the parameter of a transition
-void Simulator::getParams(const int Id, const abstractBinding& b){
+void Simulator::getParams(size_t Id, const abstractBinding& b){
 	N.GetDistParameters(Id,b);
 }
 	

@@ -69,65 +69,7 @@ public:
 	LHA_ORIG(unsigned int, unsigned int);
 	~LHA_ORIG();
 	
-	void printState();
-	//print the state of the automaton.
-	
-	double Likelihood;
-	string label;
-	unsigned int NbLoc; // number of locations   
-	unsigned int StartingLoc; // Chosen from the set of lha initial locations according to their properties and Petri net initial marking
-	
-	set <int> InitLoc; // initial locations
-	set <int> FinalLoc; // final locations
-	
-	double CurrentTime;
-	int CurrentLocation;
-	
-	map <string, int> LocIndex; //for a given Location label returns its index among {0, 1, ..., NLoc-1}
-	vector <string> LocLabel;
-	
-	vector <string> StrLocProperty;
-	
-	
-	
-	map<string, int> EdgeIndex;
-	vector <LhaEdge> Edge;
-	vector < set <int> > Out_S_Edges; // for a given location l returns the set of synchronizing edges  starting from l
-	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l   
-	vector < vector < set <int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...} 
-	
-	vector<int> EdgeCounter;
-	vector <string> EdgeConstraints;
-	vector < set<string> > EdgeActions;
-	vector <string> StrEdgeUpdates;
-	
-	vector < vector <vector <string> > > ConstraintsCoeffs;
-	vector < vector <string> > ConstraintsRelOp;
-	vector < vector <string> > ConstraintsConstants;
-	
-	
-	
-	
-    int NbVar;
-    vector <double> Var; // Var[i] value of the variable indexed by i
-    vector <double> OldVar;
-    map<string, int> VarIndex; //for a given variable label return its index among {0, 1, ..., NbVar-1}
-    vector <string> VarLabel;
-	
-	
-    vector < vector <string> > StrFlow;
-	
-	
-	
-    map <string, int> PlaceIndex; // for a given place label return its index among {0, 1, ..., pl-1}
-    map <string, int> TransitionIndex; // for a given transition label return its index among {0, 1, ..., tr-1}
-	
-	
-	
-	
-	
-	
-    int EnabledInitLocation(const abstractMarking&);
+	int EnabledInitLocation(const abstractMarking&);
 	
 	virtual double GetFlow(int, int,const abstractMarking&) = 0;
 	virtual bool CheckLocation(int,const abstractMarking&) = 0;
@@ -136,7 +78,7 @@ public:
     virtual t_interval GetEdgeEnablingTime(int,const abstractMarking&) = 0 ;
 	
 	
-    int GetEnabled_S_Edges(int, const abstractMarking&);
+    int GetEnabled_S_Edges(size_t, const abstractMarking&);
     AutEdge GetEnabled_A_Edges(const abstractMarking&);
 	
 	
@@ -159,6 +101,75 @@ public:
 	
 	
     bool isVar(string, double &);
+
+	vector<double> FormulaVal;
+	void printState();
+	
+	set <int> InitLoc; // initial locations
+	set <int> FinalLoc; // final locations
+	
+	double CurrentTime;
+	int CurrentLocation;
+	
+	vector <LhaEdge> Edge;
+	
+	double Likelihood;
+	vector <double> Var; // Var[i] value of the variable indexed by i
+	
+	vector<double> LinForm;
+    vector<double> OldLinForm;
+    vector<double> LhaFunc;
+
+	
+protected:
+	
+	
+	//print the state of the automaton.
+	
+	string label;
+	unsigned int NbLoc; // number of locations   
+	unsigned int StartingLoc; // Chosen from the set of lha initial locations according to their properties and Petri net initial marking
+	
+	
+	map <string, int> LocIndex; //for a given Location label returns its index among {0, 1, ..., NLoc-1}
+	vector <string> LocLabel;
+	
+	vector <string> StrLocProperty;
+	
+	
+	
+	map<string, int> EdgeIndex;
+	
+	vector < set <int> > Out_S_Edges; // for a given location l returns the set of synchronizing edges  starting from l
+	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l   
+	vector < vector < set <int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...} 
+	
+	vector<int> EdgeCounter;
+	vector <string> EdgeConstraints;
+	vector < set<string> > EdgeActions;
+	vector <string> StrEdgeUpdates;
+	
+	vector < vector <vector <string> > > ConstraintsCoeffs;
+	vector < vector <string> > ConstraintsRelOp;
+	vector < vector <string> > ConstraintsConstants;
+	
+	
+	
+	
+    int NbVar;
+    
+    vector <double> OldVar;
+    map<string, int> VarIndex; //for a given variable label return its index among {0, 1, ..., NbVar-1}
+    vector <string> VarLabel;
+	
+	
+    vector < vector <string> > StrFlow;
+	
+	
+	
+    map <string, int> PlaceIndex; // for a given place label return its index among {0, 1, ..., pl-1}
+    map <string, int> TransitionIndex; // for a given transition label return its index among {0, 1, ..., tr-1}
+	
 	
     double min(double&, double&);
     double max(double&, double&);
@@ -167,11 +178,7 @@ public:
     double Max(double&, double&, double&);
     double Integral(double&, double&, double&, double&, double&);
 	
-    vector<double> LinForm;
-    vector<double> OldLinForm;
-    vector<double> LhaFunc;
-    vector<double> FormulaVal;
-    double OldFormulaVal;
+	double OldFormulaVal;
     
    	
 };

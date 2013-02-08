@@ -89,77 +89,32 @@ void SimulatorRE::returnResultFalse(){
 	if(verbose>3)cerr << "---------------\n FALSE \n------\n";
 }
 
-void SimulatorRE::updateSPN(const int E1_transitionNum,const abstractBinding& b ){
+void SimulatorRE::updateSPN(size_t E1_transitionNum,const abstractBinding& b ){
 	Event F;
     //check if the current transition is still enabled
-	for(vector<abstractBinding>::const_iterator bindex = N.Transition[E1_transitionNum].bindingList.begin() ;
-		bindex != N.Transition[E1_transitionNum].bindingList.end() ; ++bindex){
-		bool Nenabled = N.IsEnabled(E1_transitionNum, *bindex);
-		bool NScheduled = EQ->isScheduled(E1_transitionNum, bindex->id());
-		
-		if (Nenabled && NScheduled) {
-			GenerateEvent(F, E1_transitionNum, *bindex);
-			EQ->replace(F); //replace the transition with the new generated time
-		} else if (Nenabled && !NScheduled) {
-			GenerateEvent(F, E1_transitionNum, *bindex);
-			EQ->insert(F);
-		} else if (!Nenabled && NScheduled) {
-			EQ->remove(E1_transitionNum,bindex->id() );
-		}
-	}
-	
-	// Possibly adding Events corresponding to newly enabled-transitions
-	const set<int>* net = N.PossiblyEn();
-	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
-		for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-			bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-			if (N.IsEnabled(*it,*bindex)) {
-				if (!EQ->isScheduled((*it),bindex->id())) {
-					GenerateEvent(F, (*it), *bindex);
-					(*EQ).insert(F);
-				} else {
-					if (N.Transition[(*it)].MarkingDependent) {
-						GenerateEvent(F, (*it),*bindex);
-						(*EQ).replace(F);
-					}
-				}
-			}
-		}
-	}
-	
-	// Possibly removing Events corresponding to newly disabled-transitions
-	const set<int>* ndt = N.PossiblyDis();
-	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
-		for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-			bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-			if (EQ->isScheduled(*it, bindex->id())) {
-				if (!N.IsEnabled(*it, *bindex ))
-					EQ->remove(*it,bindex->id());
-				else {
-					if (N.Transition[(*it)].MarkingDependent) {
-						GenerateEvent(F, (*it),*bindex);
-						EQ->replace(F);
-					}
-				}
-			}
-		}
-	}
 	
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
 	
-	for (size_t it = 0 ; it < EQ->getSize() ; it++) {
-		size_t tr = EQ->InPosition(it).transition;
-		if(tr != N.tr-1){
-			if(N.IsEnabled(tr,EQ->InPosition(it).binding)){
-				GenerateEvent(F, tr ,EQ->InPosition(it).binding );
-				EQ->replace(F);
-			}else {
-				EQ->remove(tr, EQ->InPosition(it).binding.id());
+	// Possibly removing Events corresponding to newly disabled-transitions
+	for (size_t it = 0; it < N.tr-1; it++) {
+		for(vector<abstractBinding>::const_iterator bindex = N.Transition[it].bindingList.begin() ;
+			bindex != N.Transition[it].bindingList.end() ; ++bindex){
+			if(N.IsEnabled(it, *bindex)){
+				if (EQ->isScheduled(it, bindex->id())) {
+					GenerateEvent(F, it ,EQ->InPosition(it).binding );
+					EQ->replace(F);
+				} else {
+					GenerateEvent(F, it ,EQ->InPosition(it).binding );
+					EQ->insert(F);
+				}
+			}else{
+				if(EQ->isScheduled(it, bindex->id()))
+					EQ->remove(it,bindex->id());
 			}
-		}; 
-	};
-	
+		}
+	}
+		
 	abstractBinding bpuit;
 	GenerateEvent(F, (N.tr-1), bpuit);
 	if(!doubleIS_mode){
@@ -168,7 +123,7 @@ void SimulatorRE::updateSPN(const int E1_transitionNum,const abstractBinding& b 
 	
 };
 
-void SimulatorRE::updateLikelihood(int E1_transitionNum){
+void SimulatorRE::updateLikelihood(size_t E1_transitionNum){
     //cerr << "initialised?:\t" << E1_transitionNum << endl;
 	if(doubleIS_mode){	
 		A.Likelihood = A.Likelihood * 
@@ -183,18 +138,18 @@ void SimulatorRE::updateLikelihood(int E1_transitionNum){
 	}
 }
 
-bool SimulatorRE::transitionSink(int i){
+bool SimulatorRE::transitionSink(size_t i){
     return (i==N.tr-1);
 }
 
-void SimulatorRE::GenerateDummyEvent(Event& E, int Id) {
+void SimulatorRE::GenerateDummyEvent(Event& E, size_t Id) {
     E.transition = Id;
     E.time = 0.0;
     E.priority = N.GetPriority(Id);
     E.weight = 0.0;
 }
 	
-void SimulatorRE::GenerateEvent(Event& E,const int Id,const abstractBinding& b) {
+void SimulatorRE::GenerateEvent(Event& E,size_t Id,const abstractBinding& b) {
 	
     double t = A.CurrentTime;
     if (N.Transition[Id].transType == Timed) {
@@ -229,7 +184,7 @@ void SimulatorRE::reset(){
 	N.Rate_Sum=0;
 }
 
-void SimulatorRE::getParams(const int Id,const abstractBinding& b){
+void SimulatorRE::getParams(size_t Id,const abstractBinding& b){
 	
 	N.GetDistParameters(Id,b);
 	N.ParamDistr[1]=N.ParamDistr[0];
@@ -261,7 +216,7 @@ double SimulatorRE::mu(){
 	return((*muprob.muvect)[i]);
 }
 
-double SimulatorRE::ComputeDistr(const int t , const abstractBinding& b, double origin_rate){
+double SimulatorRE::ComputeDistr(size_t t , const abstractBinding& b, double origin_rate){
 	
 	double mux = mu();
 	if( mux==0.0 || mux==1.0) return(origin_rate);
