@@ -40,6 +40,33 @@ using namespace std;
 #include "readPlast.hpp"
 #include "exPapier.hpp"
 
+
+void combinePlast(vector<vector<vector<double > > > &OPlast,
+				  vector<vector<vector<double > > > &NPlast,
+				  vector<double> &Reward, double ron);
+
+void combinePlast(vector<vector<vector<double > > > &OPlast,
+				  vector<vector<vector<double > > > &NPlast,
+				  vector<double> &Reward, double ron){
+	double minreward = -10000;
+	size_t mini, minj, minx;
+	for(size_t i =0; i<OPlast.size(); i++)
+		for(size_t x =0; x<OPlast[0].size(); x++)
+			for(size_t j =0; j<OPlast[0][0].size(); j++)
+				if(ron + NPlast[i][x][j]*Reward[j] <= minreward){
+					minreward = ron + NPlast[i][x][j]*Reward[j];
+					mini = i;
+					minx = x;
+					minj = j;
+				}
+	for(size_t i =0; i<OPlast.size(); i++)
+		for(size_t x =0; x<OPlast[0].size(); x++)
+			for(size_t j =0; j<OPlast[0][0].size(); j++)
+				if(i != mini || j != minj || x!= minx)
+					NPlast[i][x][j] = OPlast[i][x][j];
+					
+}
+
 int main(int argc, char** argv) {
 	/* 
 	 * Most of the parameters are defined here.
@@ -197,6 +224,9 @@ int main(int argc, char** argv) {
 		Reward = readPlastfun(N, "test2", Plast,H);
 		cout <<"Iteration:" <<It<< " reward: "<< Reward <<" RelDiff: "<<RelDiff<< endl;
 		printPlast(Plast);
+		
+		combinePlast(OldPlast,Plast,RewardArray, ron);
+		
 		fillMemory(Plast,It+1);
 		if(It==1){
 			
