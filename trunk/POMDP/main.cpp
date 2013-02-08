@@ -50,9 +50,9 @@ void combinePlast(vector<vector<vector<double > > > &OPlast,
 				  vector<double> &Reward, double ron){
 	double minreward = 0;
 	size_t mini, minj, minx;
-	for(size_t i =0; i<OPlast.size(); i++)
+	for(size_t i =1; i<OPlast.size(); i++)
 		for(size_t x =0; x<OPlast[0].size(); x++)
-			for(size_t j =0; j<OPlast[0][0].size(); j++)
+			for(size_t j=1; j<OPlast[0][0].size(); j++)
 				if(ron + NPlast[i][x][j]*Reward[j] < minreward){
 					minreward = ron + NPlast[i][x][j]*Reward[j];
 					mini = i;
@@ -64,9 +64,9 @@ void combinePlast(vector<vector<vector<double > > > &OPlast,
 	
 	if(minreward == 0 )exit(EXIT_SUCCESS);
 	
-	for(size_t i =0; i<OPlast.size(); i++)
+	for(size_t i =1; i<OPlast.size(); i++)
 		for(size_t x =0; x<OPlast[0].size(); x++)
-			for(size_t j =0; j<OPlast[0][0].size(); j++)
+			for(size_t j =1; j<OPlast[0][0].size(); j++)
 				if(i != mini || j != minj || x!= minx)
 					NPlast[i][x][j] = OPlast[i][x][j];
 	
@@ -81,8 +81,8 @@ int main(int argc, char** argv) {
     double H=1000; //Simulation horizon
 	bool discounted = false; // Compute steady-state or discounted reward.
     
-	double Prec=1e-4; // Threshold to stop the iteration
-	int MaxIteration=5; //Max number of iteration
+	double Prec=1e-6; // Threshold to stop the iteration
+	int MaxIteration=10; //Max number of iteration
 	double MaxReward = 7;
 
 	//This is the command line to invoke cosmos.
