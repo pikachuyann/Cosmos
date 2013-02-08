@@ -47,18 +47,6 @@ Simulator::Simulator():verbose(0) {
     logResult=false;
 	Result.second = vector<double>(A.FormulaVal.size(),0.0);
 	
-	//Initialize random generator
-	
-	/*timeval t;
-	gettimeofday(&t,(struct timezone*)0);
-	RandomNumber.seed(t.tv_usec + t.tv_sec + getpid());*/
-	//srand(time(t.tv_usec));
-	
-	/*RandomNumber.seed(RandomNumber());
-	RandomNumber.seed(rand());*/
-//	boost::random::random_device rng;
-//	RandomNumber.seed(rng);
-
 	BatchSize = 1000;
 }
 
@@ -498,6 +486,7 @@ double Simulator::GenerateTime(int distribution, vector<double> &param) {
 
 //Run a batch of simulation, the result is return as a BatchR structure.
 BatchR* Simulator::RunBatch(){
+	reset();
 	BatchR* batchResult = new BatchR(A.FormulaVal.size());
 	
 	while (batchResult->I < BatchSize) {
