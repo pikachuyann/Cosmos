@@ -154,11 +154,11 @@ void result::stopclock(){
     cpu_time_used = difftime(end, start);
 }
 
-double binomlow(int i,int j , double l){
+double binomlow(size_t i,size_t j , double l){
     return boost::math::binomial_distribution<>::find_lower_bound_on_p(i,j,l);
 }
 
-double binomup(int i,int j , double l){
+double binomup(size_t i,size_t j , double l){
     return boost::math::binomial_distribution<>::find_upper_bound_on_p(i,j,l);
 }
 

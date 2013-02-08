@@ -255,7 +255,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     for (size_t i = 0; i < MyLha.Edge.size(); i++) {
 		
-        int NbC = MyLha.ConstraintsRelOp[i].size();
+        size_t NbC = MyLha.ConstraintsRelOp[i].size();
 		
 		if(P.StringInSpnLHA){
 			LhaCppFile << "\n    {" << endl;
@@ -267,7 +267,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 			LhaCppFile << "    ConstraintsCoeffs[" << i << "]=v2cvstr;" << endl;
 			LhaCppFile << "    }" << endl;
 			
-			for (int c = 0; c < NbC; c++) {
+			for (size_t c = 0; c < NbC; c++) {
 				LhaCppFile << "    ConstraintsRelOp[" << i << "][" << c << "]=\"" << MyLha.ConstraintsRelOp[i][c] << "\";" << endl;
 				LhaCppFile << "    ConstraintsConstants[" << i << "][" << c << "]=\"" << MyLha.ConstraintsConstants[i][c] << "\";" << endl;
 				for (size_t v = 0; v < MyLha.NbVar; v++)

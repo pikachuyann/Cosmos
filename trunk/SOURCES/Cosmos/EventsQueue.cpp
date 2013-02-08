@@ -105,6 +105,7 @@ void EventsQueue::remove(size_t tr, size_t b) {
 }
 
 const Event& EventsQueue::InPosition(size_t i)const {
+	assert(i < evtHeap.size());
     return evtTbl[evtHeap[i].first][evtHeap[i].second];
 }
 

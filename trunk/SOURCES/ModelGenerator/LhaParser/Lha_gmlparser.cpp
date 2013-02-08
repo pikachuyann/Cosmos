@@ -65,8 +65,9 @@ gmlinputexception lhagmlioexc;
 
 string* MyLhaModelHandler::simplifyString(string str) 
 {
-	int n1 = str.find_first_not_of(" \n");
-	int n2 = str.find_last_not_of(" \n");
+	size_t n1 = str.find_first_not_of(" \n");
+	size_t n2 = str.find_last_not_of(" \n");
+	if(n1 ==std::string::npos )return new string("");
 	return new string(str.substr(n1, n2-n1+1));
 }
 
@@ -79,9 +80,9 @@ bool MyLhaModelHandler::is_void(string str)
 
 void MyLhaModelHandler::appendSimplify(string *st, string str)
 {
-	int n1 = str.find_first_not_of(" \n");
-	int n2 = str.find_last_not_of(" \n");
-	st->append(str.substr(n1, n2-n1+1));
+	size_t n1 = str.find_first_not_of(" \n");
+	size_t n2 = str.find_last_not_of(" \n");
+	if(n1 !=std::string::npos )st->append(str.substr(n1, n2-n1+1));
 }
 
 /*void evalinfix(string *st, tree<string>::pre_order_iterator it , string str){

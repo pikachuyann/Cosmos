@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
 		mySim->verbose =0;
 		mySim->initRandomGenerator(0);
 	}
-	   
+	
     if(mySim->verbose>=4)mySim->RunBatch();
     else while( !cin.eof() ){
       BatchR* batchResult = mySim->RunBatch(); //simulate a batch of trajectory

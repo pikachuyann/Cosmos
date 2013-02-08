@@ -333,7 +333,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		}
 		header << "int v =1) {\n";
 		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-			int pos = itcol - it->colorClassIndex.begin();
+			size_t pos = itcol - it->colorClassIndex.begin();
 			header << "\t\tc" << pos << "= cv"<<pos <<";\n";
 		}
 		header << "\t\tmult = v;\n\t}\n";
@@ -345,7 +345,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		}
 		header << "int v =1) {\n";
 		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-			int pos = itcol - it->colorClassIndex.begin();
+			size_t pos = itcol - it->colorClassIndex.begin();
 			header << "\t\tc" << pos << "= cv";
 			header << pos << ".c0" << ";\n";
 		}
@@ -357,7 +357,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		
 		header << "\tvoid iter() {\n";
 		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-			int pos = itcol - it->colorClassIndex.begin();
+			size_t pos = itcol - it->colorClassIndex.begin();
 			header << "\t\tif( c" << pos << "< ("<< MyGspn.colClasses[*itcol].cname() << ")(Color_";
 			header << MyGspn.colClasses[*itcol].name << "_Total - 1) )";
 			header << "{ c"<< pos << " = ("<< MyGspn.colClasses[*itcol].cname() << ")(c"<< pos <<"+ 1); return;};\n";
@@ -384,7 +384,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		
 		header << "\tbool islast()const {\n\t\treturn (";
 		for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-			int pos = itcol - it->colorClassIndex.begin();
+			size_t pos = itcol - it->colorClassIndex.begin();
 			if (pos > 0)header << " && ";
 			header << " c" << pos << "== ("<< MyGspn.colClasses[*itcol].cname() << ")(Color_";
 			header << MyGspn.colClasses[*itcol].name << "_Total -1) ";

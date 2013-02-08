@@ -241,7 +241,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  5	 : tmpStatus = atoi(optarg); break;
 			case  6  : gcccmd = optarg; break;
 			case  7  : gccflags = optarg; break;
-			case  10 : seed = atol(optarg); break;
+			case  10 : seed = atoi(optarg); break;
 
             case '?':
                 usage();

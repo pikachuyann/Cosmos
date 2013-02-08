@@ -71,17 +71,17 @@ string itostring (int i){
 
 string* simplifyString(string str) 
 {
-	int n1 = str.find_first_not_of(" \n");
-	int n2 = str.find_last_not_of(" \n");
-	if(n1 == -1 )return new string("");
+	size_t n1 = str.find_first_not_of(" \n");
+	size_t n2 = str.find_last_not_of(" \n");
+	if(n1 ==std::string::npos )return new string("");
 	return new string(str.substr(n1, n2-n1+1));
 }
 
 void appendSimplify(string *st, string str)
 {
-	int n1 = str.find_first_not_of(" \n");
-	int n2 = str.find_last_not_of(" \n");
-	st->append(str.substr(n1, n2-n1+1));
+	size_t n1 = str.find_first_not_of(" \n");
+	size_t n2 = str.find_last_not_of(" \n");
+	if(n1 !=std::string::npos )st->append(str.substr(n1, n2-n1+1));
 }
 
 /*void evalinfix(string *st, tree<string>::pre_order_iterator it , string str){
@@ -159,7 +159,7 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 		if(verbose>1)cerr << coldom << endl;
 		size_t colorc =0;
 		for(colorc =0; colorc < MyGspn->colDoms.size() &&
-			MyGspn->colDoms[colorc].name != coldom ; colorc++);
+			MyGspn->colDoms[colorc].name != coldom ; colorc++) ;
 		if(colorc == MyGspn->colDoms.size())
 			cerr << "Unknown classe '" << coldom << "'"<< endl;
 		else st->append(MyGspn->colDoms[colorc].cname());
@@ -203,7 +203,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 				string colname= *simplifyString(*(it2.begin()));
 				vector<colorClass>::const_iterator cols;
 				for (cols = MyGspn->colClasses.begin() ;
-					 cols != MyGspn->colClasses.end() && cols->name != colname; ++cols);
+					 (cols != MyGspn->colClasses.end() && cols->name != colname); ++cols) ;
 				if(cols != MyGspn->colClasses.end()){
 					tok.field.push_back(cols - MyGspn->colClasses.begin());
 					tok.Flags.push_back(CT_ALL);
@@ -233,7 +233,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 		string colname= *simplifyString(*(it.begin()));
 		vector<colorClass>::const_iterator cols;
 		for (cols = MyGspn->colClasses.begin() ;
-			 cols != MyGspn->colClasses.end() && cols->name != colname; ++cols);
+			 cols != MyGspn->colClasses.end() && cols->name != colname; ++cols) ;
 		if(cols != MyGspn->colClasses.end()){
 			tok.field.push_back(cols - MyGspn->colClasses.begin());
 			tok.Flags.push_back(CT_SINGLE_COLOR);
@@ -246,7 +246,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 		string varname= *simplifyString(*(it.begin()));
 		vector<colorVariable>::const_iterator vars;
 		for (vars = MyGspn->colVars.begin() ;
-			 vars != MyGspn->colVars.end() && vars->name != varname; ++vars);
+			 vars != MyGspn->colVars.end() && vars->name != varname; ++vars) ;
 		if(vars != MyGspn->colVars.end()){
 			tok.field.push_back(vars - MyGspn->colVars.begin());
 			tok.Flags.push_back(CT_VARIABLE);
@@ -310,7 +310,7 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
 
 treeSI findbranch(treeSI t, string branch){
     if( branch.compare("")==0)return t;
-    int nextnode = branch.find_first_of("/");
+    size_t nextnode = branch.find_first_of("/");
     for (treeSI it = (t.begin()) ; it != (t.end()) ; ++it) {
         if((*it).compare(branch.substr(0,nextnode))==0){
             return findbranch(it, branch.substr(nextnode+1,branch.length()-nextnode-1));
@@ -452,7 +452,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 									if(verbose>1)cout << endl << "\t\t\t" << colclass ;
 									size_t colorc =0;
 									for(colorc =0; colorc < MyGspn->colClasses.size() &&
-										MyGspn->colClasses[colorc].name != colclass ; colorc++);
+										MyGspn->colClasses[colorc].name != colclass ; colorc++) ;
 									if(colorc == MyGspn->colClasses.size())
 										cerr << "Unknown classe '" << colclass << "'"<< endl;
 									else cd.colorClassIndex.push_back(colorc);
@@ -474,7 +474,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							if(verbose>1)cout << "\t\t" << colclass << endl; ;
 							size_t colorc =0;
 							for(colorc =0; colorc < MyGspn->colDoms.size() &&
-								MyGspn->colDoms[colorc].name != colclass ; colorc++);
+								MyGspn->colDoms[colorc].name != colclass ; colorc++) ;
 							if(colorc == MyGspn->colDoms.size())
 								cerr << "Unknown Domaine '" << colclass << "'"<< endl;
 							else cv.type=colorc;
@@ -540,7 +540,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                 if(verbose>1)cout << "\tdomain:" << *Pldomain << endl ;
 				size_t colord =0;
 				for(colord =0; colord < MyGspn->colDoms.size() &&
-					MyGspn->colDoms[colord].name != *Pldomain ; colord++);
+					MyGspn->colDoms[colord].name != *Pldomain ; colord++) ;
 				if(colord == MyGspn->colDoms.size())
 					cerr << "Unknown Domain '" << *Pldomain << "'"<< endl;
 				else p.colorDom=colord;
