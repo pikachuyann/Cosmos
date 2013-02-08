@@ -53,18 +53,23 @@ void combinePlast(vector<vector<vector<double > > > &OPlast,
 	for(size_t i =0; i<OPlast.size(); i++)
 		for(size_t x =0; x<OPlast[0].size(); x++)
 			for(size_t j =0; j<OPlast[0][0].size(); j++)
-				if(ron + NPlast[i][x][j]*Reward[j] <= minreward){
+				if(ron + NPlast[i][x][j]*Reward[j] < minreward){
 					minreward = ron + NPlast[i][x][j]*Reward[j];
 					mini = i;
 					minx = x;
 					minj = j;
 				}
+	
+	cout << "Selected min:"<< mini << ","<< minx << "," << minj << "with min reward of" << minreward << endl;
+	
+	if(minreward == 0 )exit(EXIT_SUCCESS);
+	
 	for(size_t i =0; i<OPlast.size(); i++)
 		for(size_t x =0; x<OPlast[0].size(); x++)
 			for(size_t j =0; j<OPlast[0][0].size(); j++)
 				if(i != mini || j != minj || x!= minx)
 					NPlast[i][x][j] = OPlast[i][x][j];
-	if(minreward == 0 )exit(EXIT_SUCCESS);
+	
 }
 
 int main(int argc, char** argv) {
