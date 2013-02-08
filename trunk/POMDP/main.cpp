@@ -48,7 +48,7 @@ void combinePlast(vector<vector<vector<double > > > &OPlast,
 void combinePlast(vector<vector<vector<double > > > &OPlast,
 				  vector<vector<vector<double > > > &NPlast,
 				  vector<double> &Reward, double ron){
-	double minreward = -10000;
+	double minreward = 0;
 	size_t mini, minj, minx;
 	for(size_t i =0; i<OPlast.size(); i++)
 		for(size_t x =0; x<OPlast[0].size(); x++)
@@ -64,7 +64,7 @@ void combinePlast(vector<vector<vector<double > > > &OPlast,
 			for(size_t j =0; j<OPlast[0][0].size(); j++)
 				if(i != mini || j != minj || x!= minx)
 					NPlast[i][x][j] = OPlast[i][x][j];
-					
+	if(minreward == 0 )exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char** argv) {
