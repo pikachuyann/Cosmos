@@ -117,6 +117,7 @@ struct transition {
 	int nbServers;
 	bool ageMemory;
 	set<size_t> varDomain;
+	string guard;
 };
 
 struct place {
