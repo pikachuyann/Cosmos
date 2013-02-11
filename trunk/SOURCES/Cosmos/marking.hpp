@@ -70,7 +70,6 @@ public:
 	void print()const;
 	int transition()const;
 	int id()const;
-private:
 	int idcount;
 };
 
