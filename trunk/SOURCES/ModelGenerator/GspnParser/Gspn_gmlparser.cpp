@@ -71,16 +71,16 @@ string itostring (int i){
 
 string* simplifyString(string str) 
 {
-	size_t n1 = str.find_first_not_of(" \n");
-	size_t n2 = str.find_last_not_of(" \n");
+	size_t n1 = str.find_first_not_of(" \n\t");
+	size_t n2 = str.find_last_not_of(" \n\t");
 	if(n1 ==std::string::npos )return new string("");
 	return new string(str.substr(n1, n2-n1+1));
 }
 
 void appendSimplify(string *st, string str)
 {
-	size_t n1 = str.find_first_not_of(" \n");
-	size_t n2 = str.find_last_not_of(" \n");
+	size_t n1 = str.find_first_not_of(" \n\t");
+	size_t n2 = str.find_last_not_of(" \n\t");
 	if(n1 !=std::string::npos )st->append(str.substr(n1, n2-n1+1));
 }
 
@@ -168,9 +168,9 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 		st->append("(");
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("occurs")==0){
-				bool markingdependant;
+				bool markingdependant = false;
 				eval_expr(&markingdependant, &mark, it2.begin());
-				if( markingdependant) cerr << "Initial Marking is not marking dependant";
+				if( markingdependant) cerr << "Initial Marking is not marking dependant\n";
 			}
 			if (it2->compare("tokenProfile")==0) {
 				if (verbose>1)cout << *it2 << endl;
@@ -319,10 +319,74 @@ treeSI findbranch(treeSI t, string branch){
     return t.end();
 }
 
+void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it){
+	if(verbose>1)cout<< (*it) << endl;
+	if(it->compare("boolExpr")==0){
+		eval_guard(st, it.begin() );
+	} else if(it->compare("boolValue")==0){
+		if(simplifyString(*(it.begin()))->compare("true")==0)st.append(" true ");
+		else st.append(" false ");
+	} else if(it->compare("equal")==0){
+		st.append("(");
+		eval_guard(st, it.begin());
+		st.append(" == ");
+		eval_guard(st, ++it.begin());
+		st.append(" ) ");
+	} else if(it->compare("notEqual")==0){
+		st.append("(");
+		eval_guard(st, it.begin());
+		st.append(" != ");
+		eval_guard(st, ++it.begin());
+		st.append(" ) ");
+	} else if(it->compare("and")==0){
+		st.append("(");
+		eval_guard(st, it.begin());
+		st.append(" && ");
+		eval_guard(st, ++it.begin());
+		st.append(" ) ");
+	} else if(it->compare("or")==0){
+		st.append("(");
+		eval_guard(st, it.begin());
+		st.append(" || ");
+		eval_guard(st, ++it.begin());
+		st.append(" ) ");
+	} else if(it->compare("not")==0){
+		st.append("( !(");
+		eval_guard(st, it.begin());
+		st.append(" )) ");
+	} else if(it->compare("expr")==0){
+		eval_guard(st, it.begin() );
+	} else if(it->compare("name")==0){
+		string varname = *simplifyString(*(it.begin()));
+		vector<colorVariable>::const_iterator vars;
+		for (vars = MyGspn->colVars.begin() ;
+			 vars != MyGspn->colVars.end() && vars->name != varname; ++vars) ;
+		if(vars != MyGspn->colVars.end()){
+			st.append("bl.P->");
+			st.append(varname);
+			st.append(".c0");
+		}else{
+			cerr << "Unknown variable '" << varname << "'"<< endl;
+		}
+	}else if(it->compare("enumConst")==0){
+		string typestr;
+		string colorstr;
+		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
+			if(it2->compare("type")==0){
+				typestr = *simplifyString(*(it2.begin()));
+			}
+			if (it2->compare("enumValue")==0) {
+				colorstr = *simplifyString(*(it2.begin()));
+			}
+		}
+		st.append("Color_"+typestr+"_"+colorstr);
+	}else cerr << "Unknown attribute "<< *it << "\n";
+}
+
 
 MyModelHandler::MyModelHandler(GSPN* MyGspn2,bool re) {
 	//Initialisation
-    verbose = 0;
+    verbose = 4;
     rareEvent = re;
     MyGspn= MyGspn2;
     countPl=0;
@@ -577,7 +641,8 @@ void MyModelHandler::on_read_node(const XmlString& id,
 					trans.label = *Trname;
                     MyGspn->TransId[*Trname]=countTr;
                 } else if((*(it->second.begin())).compare("guard")==0){
-					cerr << endl << "Colored guard on transition not yet implemented"<< endl;
+					eval_guard(trans.guard, it->second.begin().begin());
+					//if(trans.guard.compare("")==0)trans.guard = "true";
                 } else if ((*(it->second.begin())).compare("distribution")==0) {
                     if(verbose>1)cout << "\tdistribution:" << endl ;
                     for (treeSI it2 = (it->second.begin()).begin() ; it2 != (it->second.begin()).end() ; ++it2 ) {
@@ -774,8 +839,9 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 					for (size_t pr = 0; pr < tokenType.field.size() ; pr++) {
 						if(pr>0)valuation.append(", ");
 						if(tokenType.Flags[pr]==CT_VARIABLE){
-							valuation.append( "b.P->"+MyGspn->colVars[tokenType.field[pr]].name);}
-						else if(tokenType.Flags[pr]== CT_SINGLE_COLOR) {
+							valuation.append( "b.P->"+MyGspn->colVars[tokenType.field[pr]].name);
+							if(tokenType.hasAll)valuation.append(".c0");
+						} else if(tokenType.Flags[pr]== CT_SINGLE_COLOR) {
 							valuation.append("Color_");
 							valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].name );
 							valuation.append("_");

@@ -701,8 +701,10 @@ void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
 			}
 		}
 		spnF << "\tdo{\n";
-		spnF << "\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";
-		spnF << "\t}while(bl.next());}\n";
+		spnF << "\t\tif(" << MyGspn.transitionStruct[t].guard << "){\n";
+		spnF << "\t\t\tbl.idcount = Transition["<<t<<"].bindingList.size();\n";
+		spnF << "\t\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";
+		spnF << "\t\t}\n\t}while(bl.next());}\n";
 		
 	}
 }
