@@ -35,9 +35,10 @@ public:
     void UpdateLhaFunc( double&);
 	void UpdateLhaFuncLast();
 	
+	void resetVariables();
     double GetFlow(int, int,const abstractMarking&);
     bool CheckLocation(int,const abstractMarking&);
-    bool CheckEdgeContraints(int);
+    bool CheckEdgeContraints(int,const abstractBinding&);
 							 
 	t_interval GetEdgeEnablingTime(int,const abstractMarking&);
 	//int GetEnabled_S_Edges(int, int, double, vector<int>&, vector<int>&);

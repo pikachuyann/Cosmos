@@ -29,6 +29,7 @@
 #include <set>
 #include <vector>
 #include <map>
+#include <memory>
 
 #include "spn.hpp"
 #include "marking.hpp"
@@ -62,6 +63,8 @@ struct _AutEdge {
 };
 typedef struct _AutEdge AutEdge;
 
+struct Variables;
+
 class LHA_ORIG {
 public:
 	LHA_ORIG();
@@ -73,12 +76,12 @@ public:
 	
 	virtual double GetFlow(int, int,const abstractMarking&) = 0;
 	virtual bool CheckLocation(int,const abstractMarking&) = 0;
-	virtual bool CheckEdgeContraints(int) = 0;
+	virtual bool CheckEdgeContraints(int,const abstractBinding&) = 0;
 	
     virtual t_interval GetEdgeEnablingTime(int,const abstractMarking&) = 0 ;
 	
 	
-    int GetEnabled_S_Edges(size_t, const abstractMarking&);
+    int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
     AutEdge GetEnabled_A_Edges(const abstractMarking&);
 	
 	
@@ -92,7 +95,6 @@ public:
 	
 	
     bool isFinal();
-    void resetVarsTable();
     void resetPathVarsTable();
     void reset(const abstractMarking&);
 	
@@ -114,7 +116,8 @@ public:
 	vector <LhaEdge> Edge;
 	
 	double Likelihood;
-	vector <double> Var; // Var[i] value of the variable indexed by i
+	Variables *Vars; // Var[i] value of the variable indexed by i
+	Variables *tempVars;
 	
 	vector<double> LinForm;
     vector<double> OldLinForm;
@@ -123,6 +126,8 @@ public:
 	
 protected:
 	
+	void resetLinForms();
+	virtual void resetVariables() = 0;
 	
 	//print the state of the automaton.
 	

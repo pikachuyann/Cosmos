@@ -114,7 +114,7 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
         if(MyLHA->LhaIntConstant.count(*var)>0 || 
            MyLHA->LhaRealConstant.count(*var)>0){st->append(*var);
         }else if(MyLHA->VarIndex.count(*var)>0){
-			std::ostringstream s; s<<"Var["<<MyLHA->VarIndex[var->c_str()]<<"]";
+			std::ostringstream s; s<<"Vars->"<< *var;
             st->append(s.str());
 		}else{
             *is_mark_dep =true;
@@ -320,7 +320,7 @@ string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 	}else if((*it).compare("name")==0){
 		string* var = simplifyString(it.node->first_child->data);
 		stringstream ss;
-		ss << "Var[" << MyLHA->VarIndex[*var] << "]";
+		ss << "Vars->" << *var;
 		
 		
 		return new string(ss.str());

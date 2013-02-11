@@ -44,7 +44,7 @@ private:
 	AutEdge AE;
 	EventsQueue *EQ;
 	double timeS;
-	vector<double> VarLHA;
+	Variables *VarLHA;
 	vector<double> LinFormLHA;
 	vector<double> OldLinFormLHA;
 	vector<double> LhaFuncLHA;
@@ -75,7 +75,7 @@ public:
 		EQ = *EQsim; //new EventsQueue(*EQsim);
 		timeS = *t;
 		
-		VarLHA=A->Var;
+		VarLHA=A->Vars;
 		LinFormLHA=A->LinForm;
 		OldLinFormLHA=A->OldLinForm;
 		LhaFuncLHA=A->LhaFunc;
@@ -97,7 +97,7 @@ public:
 		*t = timeS;
 		
 		
-		A->Var = VarLHA;
+		A->Vars= VarLHA;
 		A->LinForm = LinFormLHA;
 		A->OldLinForm = OldLinFormLHA;
 		A->LhaFunc = LhaFuncLHA;

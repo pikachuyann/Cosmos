@@ -38,12 +38,12 @@ LHA_ORIG::LHA_ORIG() {
 LHA_ORIG::~LHA_ORIG() {
 }
 
-void LHA_ORIG::printState(){
+/*void LHA_ORIG::printState(){
 	cerr << "Automate:" << LocLabel[CurrentLocation]<< "\t,";
 	for(size_t i =0 ; i< Var.size(); i++){
 		cerr << VarLabel[i]<<":"<< Var[i]<< "\t,";
 	}
-}
+}*/
 
 int LHA_ORIG::EnabledInitLocation(const abstractMarking& Marking) {
     for (set<int>::iterator l = InitLoc.begin(); l != InitLoc.end(); l++) {
@@ -53,10 +53,10 @@ int LHA_ORIG::EnabledInitLocation(const abstractMarking& Marking) {
     return (-1);
 }
 
-int LHA_ORIG::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking) {
+int LHA_ORIG::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
     for (set<int>::iterator it = ActionEdges[CurrentLocation][PetriNetTransition].begin(); it != ActionEdges[CurrentLocation][PetriNetTransition].end(); it++) {
         if ((CheckLocation(Edge[(*it)].Target, NextMarking))) {
-            if (CheckEdgeContraints((*it))) return (*it);
+            if (CheckEdgeContraints(*it, binding)) return (*it);
         }
     }
 
@@ -86,17 +86,7 @@ AutEdge LHA_ORIG::GetEnabled_A_Edges(const abstractMarking& Marking) {
 
 }
 
-void LHA_ORIG::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {
-
-    for (int v = 0; v < NbVar; v++) {
-        Var[v] += GetFlow(v, CurrentLocation, Marking) * DeltaT;
-    }
-
-}
-
-void LHA_ORIG::resetVarsTable() {
-    for (int v = 0; v < NbVar; v++)
-        Var[v] = 0;
+void LHA_ORIG::resetLinForms() {
     for (size_t i = 0; i < LinForm.size(); i++) {
         LinForm[i] = 0;
         OldLinForm[i] = 0;
@@ -107,7 +97,8 @@ void LHA_ORIG::resetVarsTable() {
 
 void LHA_ORIG::reset(const abstractMarking& Marking) {
   Likelihood = 1.0;
-  LHA_ORIG::resetVarsTable();
+  resetLinForms();
+	resetVariables();
   CurrentLocation = EnabledInitLocation(Marking);
   CurrentTime = 0;
 }

@@ -327,7 +327,7 @@ bool Simulator::SimulateOneStep(){
 		N.fire(E1.transition, E1.binding);
 		
         //Check if there exist a valid transition in the automata.
-		int SE = A.GetEnabled_S_Edges(E1.transition, N.Marking);
+		int SE = A.GetEnabled_S_Edges(E1.transition, N.Marking, E1.binding);
 		
 		//If no synchronisation is possible the trajectory is rejected
 		if (SE < 0) {
