@@ -386,7 +386,7 @@ void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it)
 
 MyModelHandler::MyModelHandler(GSPN* MyGspn2,bool re) {
 	//Initialisation
-    verbose = 4;
+    verbose = 0;
     rareEvent = re;
     MyGspn= MyGspn2;
     countPl=0;
