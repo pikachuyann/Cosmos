@@ -137,7 +137,7 @@ bool ParseBuild(parameters& P) {
         }
         
         if (!parseresult) {
-            P.HaslFormulasname = vector<string>(lReader.MyLha.HASLname);
+            P.HaslFormulasname = lReader.MyLha.HASLname;
 			P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
 			P.nbAlgebraic = lReader.MyLha.Algebraic.size();
 			if(P.CountTrans){
