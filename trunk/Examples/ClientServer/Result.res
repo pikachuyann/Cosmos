@@ -1,9 +1,9 @@
 HASLFormula:
-Estimated value:	1.2757548136922
-Confidence interval:	[1.27224479945142 , 1.27926482793298]
-Width:	0.00702002848155292
+Estimated value:	0
+Confidence interval:	[-inf , inf]
+Width:	inf
 Confidence level:	0.99
-Relative error:	0.00702002848155292
-Total paths:	1000
-Accepted paths:	1000
-Time for simulation:	15s
+Relative error:	0
+Total paths:	0
+Accepted paths:	0
+Time for simulation:	3s

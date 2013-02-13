@@ -68,8 +68,12 @@
         <attribute name="name">
           nbP
         </attribute>
-        <attribute name="expr"><attribute name="name">
-          P1
+        <attribute name="expr"><attribute name="markingExpr">
+	    <attribute name="selectColor">
+	      <attribute name="markingExpr"><attribute name="name">Message</attribute></attribute>
+              <attribute name="name">s1</attribute>
+	      <attribute name="name">f1</attribute>
+	    </attribute>
         </attribute></attribute>
       </attribute>
     </attribute>

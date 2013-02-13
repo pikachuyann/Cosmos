@@ -50,19 +50,8 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "288"
-         endingLineNumber = "288">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/Simulator.cpp"
-         timestampString = "382014010.247226"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "117"
-         endingLineNumber = "117"
-         landmarkName = "Simulator::returnResultFalse()"
+         endingLineNumber = "288"
+         landmarkName = "LHA::CheckLocation(int loc,const abstractMarking&amp; Marking)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint

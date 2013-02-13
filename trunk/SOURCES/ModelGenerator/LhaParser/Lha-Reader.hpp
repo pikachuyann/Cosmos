@@ -32,7 +32,9 @@
 #include "../parameters.hpp"
 #include "Lha-parser.tab.hh"
 #include "../HaslFormula.hpp"
+#include "../GspnParser/Gspn-Reader.hpp"
 #include <vector>
+#include <algorithm>
 #include <map>
 #include <set>
 
@@ -51,7 +53,23 @@ struct _LhaEdge {
 };
 typedef struct _LhaEdge LhaEdge;
 
+
+#define CONTINIOUS_VARIABLE 0
+#define DISCRETE_VARIABLE 1
+#define COLOR_VARIABLE 2
+
+struct variables {
+	vector<int> type;
+	vector<string> label;
+	vector<double> initialValue;
+	size_t find(const string &st){
+		return (std::find(label.begin(), label.end(), st) - label.begin());
+	};
+};
+
 struct LHA {
+	GSPN *MyGspn;
+	LHA(GSPN& Mspn) : MyGspn(&Mspn) {}
     string label;
     size_t NbLoc; // number of locations
 
@@ -86,9 +104,10 @@ struct LHA {
     vector < vector < set <int> > > ActionEdges; // return the set of edges starting from location cl such that action a is an action for these edges, ActionsLoc[cl][a]={e1, e2, ...}
 
     size_t NbVar;
-    vector <double> Var; // Var[i] value of the variable indexed by i
+	variables Vars;
+    /*vector <double> Var; // Var[i] initial value of the variable indexed by i
     map<string, int> VarIndex; //for a given variable label return its index among {0, 1, ..., NbVar-1}
-    vector <string> VarLabel;
+    vector <string> VarLabel;*/
 
     vector < vector <string> > FuncFlow;
     vector < vector <string> > StrFlow;
@@ -127,7 +146,7 @@ LHA_DECL;
 
 class Lha_Reader {
 public:
-    Lha_Reader();
+    Lha_Reader(GSPN&);
     virtual ~Lha_Reader();
 
     LhaType MyLha;

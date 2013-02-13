@@ -62,6 +62,10 @@ blank [ \t]
             Reader.error (*lhalloc, "( expected");}
 ")" {lhalval->name = new std::string (lhatext); return token::RB;
             Reader.error (*lhalloc, ") expected");}
+"[" {lhalval->name = new std::string (lhatext); return token::LSB;
+            Reader.error (*lhalloc, "[ expected");}
+"]" {lhalval->name = new std::string (lhatext); return token::RSB;
+            Reader.error (*lhalloc, "] expected");}
 "&" {lhalval->name = new std::string (lhatext); return token::AND;
             Reader.error (*lhalloc, "& expected");}
 "|" {lhalval->name = new std::string (lhatext); return token::OR;

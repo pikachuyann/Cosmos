@@ -41,7 +41,7 @@
 
 using namespace std;
 
-Lha_Reader::Lha_Reader() {
+Lha_Reader::Lha_Reader(GSPN& mspn) : MyLha(mspn){
     trace_scanning = false;
     trace_parsing = false;
 	
@@ -172,21 +172,21 @@ void Lha_Reader::WriteFile(parameters& P) {
 	}
 	
 	LhaCppFile << "struct Variables {\n";
-	for(size_t v =0 ; v< MyLha.NbVar ; v++){
-		LhaCppFile << "\tdouble "<< MyLha.VarLabel[v] << ";\n";
+	for(size_t v =0 ; v< MyLha.Vars.type.size(); v++){
+		LhaCppFile << "\tdouble "<< MyLha.Vars.label[v] << ";\n";
 	}
 	LhaCppFile << "};\n";
 	
 	LhaCppFile << "void LHA::resetVariables(){\n";
-	for(size_t v= 0 ; v < MyLha.NbVar; v++){
-		LhaCppFile << "\tVars->"<< MyLha.VarLabel[v] << "= 0;\n";
+	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
+		LhaCppFile << "\tVars->"<< MyLha.Vars.label[v] << "= "<< MyLha.Vars.initialValue[v]<<";\n";
 	}
 	LhaCppFile << "};\n";
 	
 	LhaCppFile << "void LHA_ORIG::printState(){\n";
 	LhaCppFile << "\tcerr << \"Location:\"<< LocLabel[CurrentLocation] << endl;\n";
-	for(size_t v= 0 ; v < MyLha.NbVar; v++){
-		LhaCppFile << "\tcerr << \"" << MyLha.VarLabel[v] << " = \" << Vars->"<< MyLha.VarLabel[v] << " << endl;\n";
+	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
+		LhaCppFile << "\tcerr << \"" << MyLha.Vars.label[v] << " = \" << Vars->"<< MyLha.Vars.label[v] << " << endl;\n";
 	}
 	LhaCppFile << "};\n";
 
@@ -276,10 +276,10 @@ void Lha_Reader::WriteFile(parameters& P) {
 		LhaCppFile << "    VarLabel=VarStr;" << endl;
 	}
 	
-    for (size_t v = 0; v < MyLha.NbVar; v++) {
+    for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
 		if(P.StringInSpnLHA){
-			LhaCppFile << "    VarLabel[" << v << "]=\"" << MyLha.VarLabel[v] << "\";" << endl;
-			LhaCppFile << "    VarIndex[\"" << MyLha.VarLabel[v] << "\"]=" << v << ";" << endl;
+			LhaCppFile << "    VarLabel[" << v << "]=\"" << MyLha.Vars.label[v] << "\";" << endl;
+			LhaCppFile << "    VarIndex[\"" << MyLha.Vars.label[v] << "\"]=" << v << ";" << endl;
 		}
 	}
 	
@@ -339,8 +339,8 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	
 	LhaCppFile << "void LHA_ORIG::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {\n";
-    for (size_t v = 0; v < MyLha.NbVar ; v++) {
-        LhaCppFile <<  "\tVars->"<< MyLha.VarLabel[v] << " += GetFlow("<<v<<", CurrentLocation, Marking) * DeltaT;\n";
+    for (size_t v = 0; v < MyLha.Vars.label.size() ; v++) {
+        LhaCppFile <<  "\tVars->"<< MyLha.Vars.label[v] << " += GetFlow("<<v<<", CurrentLocation, Marking) * DeltaT;\n";
     }
 	LhaCppFile << "}\n";
 	
@@ -383,9 +383,9 @@ void Lha_Reader::WriteFile(parameters& P) {
         LhaCppFile << "    case " << e << ": {" << endl;
         for (size_t c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
             LhaCppFile << "         if(!( ";
-            for (size_t v = 0; v < MyLha.NbVar; v++) {
+            for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
                 if (MyLha.ConstraintsCoeffs[e][c][v] != "")
-                    LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Vars->" << MyLha.VarLabel[v];
+                    LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Vars->" << MyLha.Vars.label[v];
 				
             }
             LhaCppFile << MyLha.ConstraintsRelOp[e][c] << MyLha.ConstraintsConstants[e][c] << ")) return false;" << endl;
@@ -432,9 +432,9 @@ void Lha_Reader::WriteFile(parameters& P) {
                 if (MyLha.ConstraintsCoeffs[e][c][v] != "")
                     LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*GetFlow(" << v << "," << MyLha.Edge[e].Source << ", Marking)";
             LhaCppFile << ";\n             SumAX=";
-            for (size_t v = 0; v < MyLha.NbVar; v++)
+            for (size_t v = 0; v < MyLha.Vars.label.size(); v++)
                 if (MyLha.ConstraintsCoeffs[e][c][v] != "")
-                    LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Vars->" << MyLha.VarLabel[v];
+                    LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Vars->" << MyLha.Vars.label[v];
             LhaCppFile << ";\n" << endl;
 			
             string RelOp = MyLha.ConstraintsRelOp[e][c];
@@ -514,9 +514,9 @@ void Lha_Reader::WriteFile(parameters& P) {
         if (k > 0) {
             for (size_t v = 0; v < MyLha.NbVar; v++)
                 if (MyLha.FuncEdgeUpdates[e][v] != ""){
-                    LhaCppFile << "         tempVars->" << MyLha.VarLabel[v] << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
+                    LhaCppFile << "         tempVars->" << MyLha.Vars.label[v] << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
 				}else{
-					LhaCppFile << "         tempVars->" << MyLha.VarLabel[v] << "=Vars->" << MyLha.VarLabel[v] << ";" << endl;
+					LhaCppFile << "         tempVars->" << MyLha.Vars.label[v] << "=Vars->" << MyLha.Vars.label[v] << ";" << endl;
 				}
 			LhaCppFile << "\tstd::swap(Vars,tempVars);\n";
 			

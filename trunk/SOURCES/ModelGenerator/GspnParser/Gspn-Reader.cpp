@@ -393,6 +393,8 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		
 		header << "\tbool operator > (const int x){\n";
 		header << "\t\treturn mult > x ;\n\t}\n";
+		header << "\tbool operator < (const int x){\n";
+		header << "\t\treturn mult < x ;\n\t}\n";
 		
 		header << "};\n";
 		
@@ -475,7 +477,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		}
 		header << " -= x.mult;\n\t\treturn *this;\n\t}\n";
 		
-		header << "\tbool operator < (const " << it->tokname() << "& x){\n";
+		header << "\tbool operator < (const " << it->tokname() << "& x)const{\n";
 		header << "\t\treturn mult";
 		for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
 			 it2 != it->colorClassIndex.end(); ++it2 ) {
@@ -483,13 +485,13 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		}
 		header << " < x.mult;\n\t}\n";
 		
-		header << "\tbool operator > (const " << it->tokname() << "& x){\n";
+		header << "\tbool operator >= (const " << it->tokname() << "& x)const{\n";
 		header << "\t\treturn mult";
 		for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
 			 it2 != it->colorClassIndex.end(); ++it2 ) {
 			header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
 		}
-		header << " > x.mult;\n\t}\n";
+		header << " >= x.mult;\n\t}\n";
 		
 		header << "\t" << it->cname() << " operator + (const " << it->cname() << "& x)const{\n";
 		header << "\t\t"<< it->cname() << " returnval = *this; returnval+= x;\n";
@@ -520,6 +522,14 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		SpnCppFile << "& x) {\n";
 		printloot(SpnCppFile, it - MyGspn.colDoms.begin(), 0);
 		SpnCppFile << "\treturn out;\n}\n";
+		
+		SpnCppFile << "inline bool contains(const "<<it->cname() << "& d1, const " << it->cname() << "& d2){";
+		SpnCppFile << "\treturn (d1-d2) > -1;\n";
+		SpnCppFile << "}\n";
+		
+		SpnCppFile << "inline bool contains(const "<<it->cname() << "& d1, const " << it->tokname() << "& tok){";
+		SpnCppFile << "\treturn d1 >= tok;\n";
+		SpnCppFile << "}\n";
 	}
 	
 	header << "struct abstractBindingImpl {\n";
@@ -840,11 +850,11 @@ void Gspn_Reader::WriteFile(parameters& P){
 				if (MyGspn.inArcs[t][p] > 0) {
 					
 					if (MyGspn.inArcsStr[t][p] == " ")
-						SpnCppFile << "    if (Marking.P->_PL_" << placeNames[p] <<" < " << MyGspn.inArcs[t][p] << ") return false;" << endl;
+						SpnCppFile << "    if (!(contains(Marking.P->_PL_" << placeNames[p] <<" , " << MyGspn.inArcs[t][p] << "))) return false;" << endl;
 					
 					else {
-						SpnCppFile << "    if ( " << MyGspn.inArcsStr[t][p] << "> 0) " << endl;
-						SpnCppFile << "        if (Marking.P->_PL_" << placeNames[p] <<" < " << MyGspn.inArcsStr[t][p] << ") return false;" << endl;
+						SpnCppFile << "    if ( !(" << MyGspn.inArcsStr[t][p] << " < 1)) " << endl;
+						SpnCppFile << "        if (!(contains(Marking.P->_PL_" << placeNames[p] <<" , " << MyGspn.inArcsStr[t][p] << "))) return false;" << endl;
 					}
 				}
 				if (MyGspn.inhibArcs[t][p] > 0) {
@@ -853,8 +863,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 						SpnCppFile << "    if (Marking.P->_PL_" << placeNames[p] <<" >= " << MyGspn.inhibArcs[t][p] << ") return false;" << endl;
 					
 					else {
-						SpnCppFile << "    if ( " << MyGspn.inhibArcsStr[t][p] << " > 0 ) " << endl;
-						SpnCppFile << "        if (Marking.P->_PL_" << placeNames[p] <<" >= " << MyGspn.inhibArcsStr[t][p] << ") return false;" << endl;
+						SpnCppFile << "    if ( !(" << MyGspn.inhibArcsStr[t][p] << " < 1) ) " << endl;
+						SpnCppFile << "        if (contain(Marking.P->_PL_" << placeNames[p] <<" , " << MyGspn.inhibArcsStr[t][p] << ")) return false;" << endl;
 						
 					}
 				}

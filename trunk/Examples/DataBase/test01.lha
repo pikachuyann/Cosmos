@@ -14,8 +14,8 @@ InitialLocations = {l0};
 FinalLocations = {l1};
 
 Locations={
-	(l0, TRUE , (x:Mutex , t:1));
-	(l1, TRUE , (x:Mutex , t:1));
+	(l0, TRUE , (x:Mutex[Color_file_f1]+Mutex[Color_file_f2] , t:1));
+	(l1, TRUE , (x:Mutex[Color_file_f1]+Mutex[Color_file_f2] , t:1));
 };
 
 Edges={

@@ -73,4 +73,7 @@ public:
 	int idcount;
 };
 
+inline bool contains(int i, int j){ return i>=j;}
+
+
 #endif

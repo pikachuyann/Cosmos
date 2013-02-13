@@ -88,27 +88,23 @@ public:
     void DoElapsedTimeUpdate(double, const abstractMarking&);
 	
     void setCurrentLocation(unsigned int);
-	
-    //virtual void DoEdgeUpdates(int, vector<int>&);
+
     
 	void doPathVarsUpdate(double, double, const abstractMarking&);
 	
 	
     bool isFinal();
-    void resetPathVarsTable();
+    
     void reset(const abstractMarking&);
 	
     void ViewEdge(int);
     void ViewAllEdges();
 	
 	
-    bool isVar(string, double &);
+
 
 	vector<double> FormulaVal;
 	void printState();
-	
-	set <int> InitLoc; // initial locations
-	set <int> FinalLoc; // final locations
 	
 	double CurrentTime;
 	int CurrentLocation;
@@ -123,8 +119,17 @@ public:
     vector<double> OldLinForm;
     vector<double> LhaFunc;
 
+	set <int> InitLoc; // initial locations
+	set <int> FinalLoc; // final locations
+
 	
 protected:
+	
+	
+	
+	void resetPathVarsTable();
+	
+	bool isVar(string, double &);
 	
 	void resetLinForms();
 	virtual void resetVariables() = 0;

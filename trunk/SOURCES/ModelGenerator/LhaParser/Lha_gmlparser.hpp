@@ -41,6 +41,8 @@ private:
 	bool is_void(string str);
 	void appendSimplify(string *st, string str);
 	void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator);
+	size_t eval_marking_expr(string&, tree<string>::pre_order_iterator);
+	
 	void eval_term(   vector<string>& , tree<string>::pre_order_iterator );
 	void eval_linexpr(vector<string>& , tree<string>::pre_order_iterator );
 	void eval_guard(vector<vector<string> >&,vector<string>& , vector<string>& , tree<string>::pre_order_iterator );

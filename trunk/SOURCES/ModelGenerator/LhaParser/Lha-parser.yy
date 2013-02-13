@@ -81,6 +81,8 @@
 %token <name>     COMMA
 %token <name>     LB
 %token <name>     RB
+%token <name>	  LSB
+%token <name>     RSB
 
 %token <name>     SHARP
 %token <name>     ALL
@@ -141,6 +143,7 @@
 %type<expression> IntMarkingFormula
 %type<expression> RealMarkingFormula
 %type<expression> RealVarMarkingFormula
+%type<expression> ColorClassList
 %type<expression> LogExpr
 %type<expression> CompExpr
 
@@ -192,6 +195,13 @@ IntMarkingFormula: ival {sprintf($$,"%d",$1);}
 		sprintf($$, "%s",(s.str()).c_str());
 	}
 	else{cout<<"'"<<*$1<<"' is not a place label or a defined constant"<<endl;YYABORT;}}
+| str LSB ColorClassList RSB {
+	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
+	{std::ostringstream s;
+	 s<<" Marking.P->_PL_"<< $1->c_str()<< ".mult";
+	 s << $3;
+		sprintf($$, "%s",(s.str()).c_str());
+	}else{cout<<"'"<<*$1<<"' is not a place label "<<endl;YYABORT;}}
 | LB IntMarkingFormula RB{sprintf($$,"( %s )", $2);       }
 | MINUS IntMarkingFormula %prec NEG {sprintf($$,"-%s",$2);}
 | IntMarkingFormula PLUS  IntMarkingFormula   {sprintf($$,"%s + %s", $1, $3);  }
@@ -217,6 +227,13 @@ RealMarkingFormula:  rval {sprintf($$, "%f",$1);}
 	}
 	
 	else{cout<<"'"<<*$1<<"' is not a place label or a defined constant"<<endl;YYABORT;}}
+| str LSB ColorClassList RSB {
+	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
+	{std::ostringstream s;
+	 s<<" Marking.P->_PL_"<< $1->c_str()<< ".mult";
+	 s << $3;
+		sprintf($$, "%s",(s.str()).c_str());
+	}else{cout<<"'"<<*$1<<"' is not a place label "<<endl;YYABORT;}}
 | LB RealMarkingFormula RB              {sprintf($$,"( %s )", $2);       }
 | MINUS RealMarkingFormula %prec NEG {sprintf($$,"-%s",$2);}
 | RealMarkingFormula DIV  RealMarkingFormula   {sprintf($$,"%s /double(%s)", $1, $3);  }
@@ -239,7 +256,7 @@ RealVarMarkingFormula:  rval {sprintf($$, "%f",$1);}
 		{std::ostringstream s; s<<Reader.MyLha.LhaRealConstant[*$1];
 			sprintf($$, "%s",(s.str()).c_str());
 		}
-		else {if(Reader.MyLha.VarIndex.find(*$1)!=Reader.MyLha.VarIndex.end())
+		else {if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
 			{
 				std::ostringstream s; s<<"Vars->"<< $1->c_str();
 				sprintf($$, "%s",(s.str()).c_str());
@@ -248,6 +265,13 @@ RealVarMarkingFormula:  rval {sprintf($$, "%f",$1);}
 		}
 	}
 }
+| str LSB ColorClassList RSB {
+	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
+	{std::ostringstream s;
+	 s<<" Marking.P->_PL_"<< $1->c_str()<< ".mult";
+	 s << $3;
+		sprintf($$, "%s",(s.str()).c_str());
+	}else{cout<<"'"<<*$1<<"' is not a place label "<<endl;YYABORT;}}
 | LB RealVarMarkingFormula RB              {sprintf($$,"( %s )", $2);       }
 | MINUS RealVarMarkingFormula %prec NEG {sprintf($$,"-%s",$2);}
 | RealVarMarkingFormula DIV  RealVarMarkingFormula    {sprintf($$,"%s /double(%s)", $1, $3);  }
@@ -259,6 +283,8 @@ RealVarMarkingFormula:  rval {sprintf($$, "%f",$1);}
 | MIN LB RealVarMarkingFormula COMMA RealVarMarkingFormula RB {sprintf($$,"min(%s , %s)", $3, $5);  }
 | MAX LB RealVarMarkingFormula COMMA RealVarMarkingFormula RB {sprintf($$,"max(%s , %s)", $3, $5);  };
 
+ColorClassList: str {sprintf($$,"[%s]", $1->c_str()); }
+	| str COMMA ColorClassList {sprintf($$,"[%s]%s", $1->c_str(), $3); };
 
 Sizes: NbLocations NbVariables
 |NbVariables NbLocations;
@@ -295,7 +321,7 @@ Lists: VariablesList LocationsList
 |LocationsList VariablesList;
 
 VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
-	if(Reader.MyLha.VarIndex.size()!=Reader.MyLha.NbVar){
+	if(Reader.MyLha.Vars.label.size()!=Reader.MyLha.NbVar){
 		std::cout<<"Variable label missing or redeclared, please check your variables list"<<std::endl;
 		YYABORT;
 	}
@@ -329,12 +355,17 @@ VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
 
 VLabels : str {
 	
-	Reader.MyLha.VarLabel.push_back(*$1);
-	Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
+	Reader.MyLha.Vars.label.push_back(*$1);
+	Reader.MyLha.Vars.initialValue.push_back(0.0);
+	Reader.MyLha.Vars.type.push_back(CONTINIOUS_VARIABLE);
+	//Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
 	
 }
-|VLabels COMMA str {Reader.MyLha.VarLabel.push_back(*$3);
-	Reader.MyLha.VarIndex[*$3]=Reader.MyLha.VarLabel.size()-1;
+|VLabels COMMA str {
+	Reader.MyLha.Vars.label.push_back(*$3);
+	Reader.MyLha.Vars.initialValue.push_back(0.0);
+	Reader.MyLha.Vars.type.push_back(CONTINIOUS_VARIABLE);
+	//Reader.MyLha.VarIndex[*$3]=Reader.MyLha.VarLabel.size()-1;
 };
 
 LocationsList: LList EQ '{' LLabels '}' SEMICOLON {if(Reader.MyLha.LocIndex.size()!=Reader.MyLha.NbLoc){
@@ -450,9 +481,9 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 
 FLOWS: FLOW
 |FLOWS COMMA FLOW;
-FLOW: str COLON RealMarkingFormula {if(Reader.MyLha.VarIndex.find(*$1)!=Reader.MyLha.VarIndex.end())
-	FuncFlowVector[Reader.MyLha.VarIndex[*$1]]=$3;
-	else{ cout<<"'"<<*$1<<"' is not a Lha variable"<<endl;
+FLOW: str COLON RealMarkingFormula {if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
+	FuncFlowVector[Reader.MyLha.Vars.find(*$1)]=$3;
+	else{ cout<<"'"<<*$1<<"' is not an Lha variable"<<endl;
 		YYABORT;}
 };
 
@@ -547,35 +578,35 @@ LinearExp: term
 |LinearExp PLUS  term;
 
 term:   str
-{ if(Reader.MyLha.VarIndex.find(*$1)!=Reader.MyLha.VarIndex.end())
-	{CoeffsVector[Reader.MyLha.VarIndex[*$1]]="1";}
+{ if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
+	{CoeffsVector[Reader.MyLha.Vars.find(*$1)]="1";}
 	else {cout<<*$1<<" is not a Lha variable"<<endl;YYABORT;}}
 | LB RealMarkingFormula RB MUL str
-{ if(Reader.MyLha.VarIndex.find(*$5)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$5)!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<"("<<$2<<")";
-		CoeffsVector[Reader.MyLha.VarIndex[*$5]]=s.str();}
+		CoeffsVector[Reader.MyLha.Vars.find(*$5)]=s.str();}
 	else {cout<<*$5<<" is not a Lha variable"<<endl;YYABORT;}}
 | ival MUL str
-{ if(Reader.MyLha.VarIndex.find(*$3)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$3)!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<$1;
-		CoeffsVector[Reader.MyLha.VarIndex[*$3]]=s.str();}
+		CoeffsVector[Reader.MyLha.Vars.find(*$3)]=s.str();}
 	else {cout<<*$3<<" is not a Lha variable"<<endl;YYABORT;}}
 | rval MUL str
-{ if(Reader.MyLha.VarIndex.find(*$3)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$3)!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<$1;
-		CoeffsVector[Reader.MyLha.VarIndex[*$3]]=s.str();}
+		CoeffsVector[Reader.MyLha.Vars.find(*$3)]=s.str();}
 	else {cout<<*$3<<" is not a Lha variable"<<endl;YYABORT;}}
 | str  MUL str
-{ if(Reader.MyLha.VarIndex.find(*$3)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$3)!=Reader.MyLha.Vars.label.size())
 	{if(Reader.MyLha.LhaRealConstant.find(*$1)!=Reader.MyLha.LhaRealConstant.end())
 		{std::ostringstream s; s<<Reader.MyLha.LhaRealConstant[*$1];
-			CoeffsVector[Reader.MyLha.VarIndex[*$3]]=s.str();
+			CoeffsVector[Reader.MyLha.Vars.find(*$3)]=s.str();
 		}
 		else
 		{
 			if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
 			{std::ostringstream s; s<<"Marking.P->_PL_"<<$1->c_str()<<" ";
-				CoeffsVector[Reader.MyLha.VarIndex[*$3]]=s.str();
+				CoeffsVector[Reader.MyLha.Vars.find(*$3)]=s.str();
 			}
 			else
 			{
@@ -587,35 +618,35 @@ term:   str
 	else {cout<<*$3<<" is not a Lha variable"<<endl;YYABORT;}
 }
 | MINUS str %prec NEG
-{ if(Reader.MyLha.VarIndex.find(*$2)!=Reader.MyLha.VarIndex.end())
-	{CoeffsVector[Reader.MyLha.VarIndex[*$2]]="-1";}
+{ if(Reader.MyLha.Vars.find(*$2)!=Reader.MyLha.Vars.label.size())
+	{CoeffsVector[Reader.MyLha.Vars.find(*$2)]="-1";}
 	else {cout<<*$2<<" is not a Lha variable"<<endl;YYABORT;}}
 | MINUS LB RealMarkingFormula RB MUL str %prec NEG
-{ if(Reader.MyLha.VarIndex.find(*$6)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$6)!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<"-("<<$3<<")";
-		CoeffsVector[Reader.MyLha.VarIndex[*$6]]=s.str();}
+		CoeffsVector[Reader.MyLha.Vars.find(*$6)]=s.str();}
 	else {cout<<*$6<<" is not a Lha variable"<<endl;YYABORT;}}
 | MINUS ival MUL str %prec NEG
-{ if(Reader.MyLha.VarIndex.find(*$4)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$4)!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<"-"<<$2;
-		CoeffsVector[Reader.MyLha.VarIndex[*$4]]=s.str();}
+		CoeffsVector[Reader.MyLha.Vars.find(*$4)]=s.str();}
 	else {cout<<*$4<<" is not a Lha variable"<<endl;YYABORT;}}
 | MINUS rval MUL str %prec NEG
-{ if(Reader.MyLha.VarIndex.find(*$4)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$4)!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<"-"<<$2;
-		CoeffsVector[Reader.MyLha.VarIndex[*$4]]=s.str();}
+		CoeffsVector[Reader.MyLha.Vars.find(*$4)]=s.str();}
 	else {cout<<*$4<<" is not a Lha variable"<<endl;YYABORT;}}
 | MINUS str MUL str %prec NEG
-{ if(Reader.MyLha.VarIndex.find(*$4)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$4)!=Reader.MyLha.Vars.label.size())
 	{if(Reader.MyLha.LhaRealConstant.find(*$2)!=Reader.MyLha.LhaRealConstant.end())
 		{std::ostringstream s; s<<"-"<<Reader.MyLha.LhaRealConstant[*$2];
-			CoeffsVector[Reader.MyLha.VarIndex[*$4]]=s.str();
+			CoeffsVector[Reader.MyLha.Vars.find(*$4)]=s.str();
 		}
 		else
 		{
 			if(Reader.MyLha.PlaceIndex.find(*$2)!=Reader.MyLha.PlaceIndex.end())
 			{std::ostringstream s; s<<"-Marking.P->_PL_"<<$2->c_str()<<" ";
-				CoeffsVector[Reader.MyLha.VarIndex[*$4]]=s.str();
+				CoeffsVector[Reader.MyLha.Vars.find(*$4)]=s.str();
 			}
 			else
 			{
@@ -635,8 +666,8 @@ Updates: Update
 |Updates COMMA Update ;
 
 Update: str EQ RealVarMarkingFormula {
-	if(Reader.MyLha.VarIndex.find(*$1)!=Reader.MyLha.VarIndex.end())
-    {FuncUpdateVector[Reader.MyLha.VarIndex[*$1]]= $3;}
+	if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
+    {FuncUpdateVector[Reader.MyLha.Vars.find(*$1)]= $3;}
 	else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
 }
 
@@ -798,26 +829,26 @@ LinForm: VarTerm {sprintf($$,"%s", $1);  }
 |LinForm PLUS  VarTerm {sprintf($$,"%s + %s", $1, $3);  };
 
 VarTerm:   str
-{ if(Reader.MyLha.VarIndex.find(*$1)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"Vars->%s", $1->c_str());}
 	else {cout<<*$1<<" is not a Lha variable"<<endl;YYABORT;}}
 | LB RealMarkingFormula RB MUL str
-{ if(Reader.MyLha.VarIndex.find(*$5)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$5)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"(%s) * Vars->%s", $2, $5->c_str());
 	}
 	else {cout<<*$5<<" is not a Lha variable"<<endl;YYABORT;}}
 | ival MUL str
-{ if(Reader.MyLha.VarIndex.find(*$3)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$3)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"%d * Vars->%s", $1, $3->c_str());
 	}
 	else {cout<<*$3<<" is not a Lha variable"<<endl;YYABORT;}}
 | rval MUL str
-{ if(Reader.MyLha.VarIndex.find(*$3)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$3)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"%f * Vars->%s", $1, $3->c_str());
 	}
 	else {cout<<*$3<<" is not a Lha variable"<<endl;YYABORT;}}
 | str  MUL str
-{ if(Reader.MyLha.VarIndex.find(*$3)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$3)!=Reader.MyLha.Vars.label.size())
 	{if(Reader.MyLha.LhaRealConstant.find(*$1)!=Reader.MyLha.LhaRealConstant.end())
 		{sprintf($$,"%f * Vars->%s", Reader.MyLha.LhaRealConstant[*$1],$3->c_str());
 		}
@@ -836,26 +867,26 @@ VarTerm:   str
 	else {cout<<*$3<<" is not a Lha variable"<<endl;YYABORT;}
 }
 |MINUS str %prec NEG
-{ if(Reader.MyLha.VarIndex.find(*$2)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$2)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"-Vars->%s", $2->c_str());}
 	else {cout<<*$2<<" is not a Lha variable"<<endl;YYABORT;}}
 | MINUS LB RealMarkingFormula RB MUL str
-{ if(Reader.MyLha.VarIndex.find(*$6)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$6)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"-(%s) * Vars->%s", $3, $6->c_str());
 	}
 	else {cout<<*$5<<" is not a Lha variable"<<endl;YYABORT;}}
 | MINUS ival MUL str %prec NEG
-{ if(Reader.MyLha.VarIndex.find(*$4)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$4)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"-%d * Vars->%s", $2, $4->c_str());
 	}
 	else {cout<<*$4<<" is not a Lha variable"<<endl;YYABORT;}}
 | MINUS rval MUL str %prec NEG
-{ if(Reader.MyLha.VarIndex.find(*$4)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$4)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"-%f * Vars->%s", $2, $4->c_str());
 	}
 	else {cout<<*$4<<" is not a Lha variable"<<endl;YYABORT;}}
 | MINUS str  MUL str %prec NEG
-{ if(Reader.MyLha.VarIndex.find(*$4)!=Reader.MyLha.VarIndex.end())
+{ if(Reader.MyLha.Vars.find(*$4)!=Reader.MyLha.Vars.label.size())
 	{if(Reader.MyLha.LhaRealConstant.find(*$2)!=Reader.MyLha.LhaRealConstant.end())
 		{sprintf($$,"-%f * Vars->%s", Reader.MyLha.LhaRealConstant[*$2],$4->c_str());
 		}

@@ -13,8 +13,8 @@ InitialLocations = {l0};
 FinalLocations = {l1};
 
 Locations={
-(l0, TRUE , (x:P1 , t:1));
-(l1, TRUE , (x:P1 , t:1));
+(l0, TRUE , (x:Wait[c0] , t:1));
+(l1, TRUE , (x:Wait[c0] , t:1));
 };
 
 Edges={

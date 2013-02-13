@@ -121,7 +121,7 @@ bool ParseBuild(parameters& P) {
         return false;
     }
 	
-	Lha_Reader lReader;
+	Lha_Reader lReader(gReader.MyGspn);
 	
 	lReader.MyLha.TransitionIndex = gReader.MyGspn.TransId;
 	lReader.MyLha.PlaceIndex = gReader.MyGspn.PlacesId;
@@ -158,9 +158,7 @@ bool ParseBuild(parameters& P) {
             if(P.tmpStatus==0||P.tmpStatus==2)lReader.WriteFile(P);
             
         } else {
-            Lha_Reader lr;
-            lr = lReader;
-            
+            Lha_Reader lr(gReader.MyGspn);
             return false;
         }
     }catch (exception& e)
@@ -168,8 +166,7 @@ bool ParseBuild(parameters& P) {
         cerr << "The following exception append during import: "<< e.what() << endl;
         return false;
     }
-	Lha_Reader lr;
-	lr = lReader;
+	Lha_Reader lr(gReader.MyGspn);
 	if(P.tmpStatus==1||P.tmpStatus==3)return true;
 	if(P.verbose>0){
         cout << "Parsing OK.\n" << endl;

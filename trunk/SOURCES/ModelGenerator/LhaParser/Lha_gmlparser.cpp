@@ -102,6 +102,10 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
 		eval_expr(is_mark_dep, st, it.begin());
 	}else if((*it).compare("boolExpr")==0){
         eval_expr(is_mark_dep, st, it.begin());
+    }else if((*it).compare("markingExpr")==0){
+        if(eval_marking_expr(*st, it.begin()) != 0)
+			cerr << "Marking Expression is not of uncolor type" << endl;
+		*is_mark_dep = true;
     }else if((*it).compare("function")==0){
         eval_expr(is_mark_dep, st, it.begin());
     }else if((*it).compare("numValue")==0){
@@ -113,15 +117,19 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
         string *var = simplifyString(it.node->first_child->data);
         if(MyLHA->LhaIntConstant.count(*var)>0 || 
            MyLHA->LhaRealConstant.count(*var)>0){st->append(*var);
-        }else if(MyLHA->VarIndex.count(*var)>0){
+        }else {
+			vector<string>::const_iterator vn = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var);
+			if(vn != MyLHA->Vars.label.end()){
 			std::ostringstream s; s<<"Vars->"<< *var;
             st->append(s.str());
+			
 		}else{
             *is_mark_dep =true;
             std::ostringstream s; s<<"Marking.P->_PL_"<<var->c_str()<<" ";
             st->append(s.str());
         }
-    }else if (	(*it).compare("+")==0  || (*it).compare("*")==0 
+		}
+    }else if (	(*it).compare("+")==0  || (*it).compare("*")==0
 			  || (*it).compare("min")==0   || (*it).compare("max")==0
 			  || (*it).compare("floor")==0 || (*it).compare("-")==0
 			  || (*it).compare("/")==0   || (*it).compare("power")==0
@@ -162,6 +170,41 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
 	} else throw(lhagmlioexc);
 }
 
+size_t MyLhaModelHandler::eval_marking_expr(string &st, tree<string>::pre_order_iterator it){
+	if(verbose>2)cout << (*it) << endl;
+	if(it->compare("markingExpr")==0)
+		return eval_marking_expr(st, it.begin());
+	else if(it->compare("name")){
+		st.append("Marking.P->_PL_");
+		string stpl = *simplifyString(*(it.begin()));
+		st.append(stpl);
+		return MyLHA->MyGspn->placeStruct[MyLHA->MyGspn->PlacesId[stpl]].colorDom;
+	} else if(it->compare("selectColor")==0){
+		st.append(" ( ");
+		size_t colClassCounter =0;
+		size_t colDomIndex = (size_t)-1;
+		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
+			if(verbose>2)cout << (*it2) << endl;
+			if(it2->compare("markingExpr")==0) colDomIndex = eval_marking_expr(st, it2);
+			else if(it2->compare("name")==0){
+				string cname = *simplifyString(*(it2.begin()));
+				vector<color>::const_iterator itcc;
+				colorClass cc = MyLHA->MyGspn->colClasses[MyLHA->MyGspn->colDoms[colDomIndex].colorClassIndex[colClassCounter]];
+				for( itcc= cc.colors.begin(); itcc != cc.colors.end() && cname != itcc->name; ++itcc);
+				if (itcc == cc.colors.end()) {
+					cerr << "unknwon color:" << cname << "for color classe" << cc.name<< endl;
+				}else{
+					st.append("[ Color_" + cc.name + "_" + itcc->name +" ]");
+				}
+				colClassCounter++;
+			}
+		}
+		st.append(" ) ");
+		return colDomIndex;
+	}
+}
+
+
 void MyLhaModelHandler::eval_term(vector<string> &CoeffsVector, tree<string>::pre_order_iterator it){
 	if(verbose>2)cout << (*it) << endl;
 	if((*it).compare("expr")==0){
@@ -169,7 +212,9 @@ void MyLhaModelHandler::eval_term(vector<string> &CoeffsVector, tree<string>::pr
 	}else if((*it).compare("name")==0){
 		string* var = simplifyString(*(it.begin()));
 		if(verbose>2)cout << "\t" << *var << endl;
-		CoeffsVector[MyLHA->VarIndex[var->c_str()]]= "1";
+		vector<string>::const_iterator vi=find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var);
+		if(vi!= MyLHA->Vars.label.end())CoeffsVector[vi-MyLHA->Vars.label.begin()]= "1";
+		else cout << "Unkown Variable " << *vi <<endl;
 	}else cout << "fail eval tree : linexp" << endl;
 	
 }
@@ -331,13 +376,14 @@ string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 
 treeSI findbranchlha(treeSI t, string branch){
     if( branch.compare("")==0)return t;
-    int nextnode = branch.find_first_of("/");
+    size_t nextnode = branch.find_first_of("/");
     for (treeSI it = (t.begin()) ; it != (t.end()) ; ++it) {
         if((*it).compare(branch.substr(0,nextnode))==0){
             return findbranchlha(it, branch.substr(nextnode+1,branch.length()-nextnode-1));
         }
     }
-    throw lhagmlioexc;
+    cerr << "Fail to find branch:" << branch << "in the file\n";
+	return t.end();
 }
 
 void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
@@ -348,7 +394,8 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
             //cout<< "start int const" << endl;
             treeSI t1 = findbranchlha(it, "constants/intConsts/");
             //cout << "find branch" << endl;
-			for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
+			if (t1 != it.end())
+				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
                 if ((*it2).compare("intConst")==0) {
                     //cout << "start intConst" << endl;
                     string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
@@ -364,8 +411,9 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
                 }
 			}
             //cout << "finished intconst" << endl;
-            treeSI t2 = findbranchlha(it, "constants/realConsts/");
-			for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
+            t1 = findbranchlha(it, "constants/realConsts/");
+			if (t1 != it.end())
+			for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
                 //cout << "test:" << *it2 << ":"<< endl;
                 if ((*it2).compare("realConst")==0) {
                     string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
@@ -383,29 +431,42 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
                 }
             }
             //cout << "finished realconst" << endl;
-            treeSI t3 = findbranchlha(it, "variables/reals/");
-			for (treeSI it2 = (t3.begin()) ; it2 != (t3.end()) ; ++it2 ) {    
+            t1 = findbranchlha(it, "variables/reals/");
+			if (t1 != it.end())
+			for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
                 if ((*it2).compare("real")==0) {
                     string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-                    MyLHA->VarLabel.push_back(*constname);
-                    MyLHA->Var.push_back(0.0);
-                    MyLHA->VarIndex[*constname]=MyLHA->NbVar;
+                    MyLHA->Vars.label.push_back(*constname);
+                    MyLHA->Vars.initialValue.push_back(0.0);
+                    MyLHA->Vars.type.push_back(CONTINIOUS_VARIABLE);
                     MyLHA->NbVar++;
                     
-                    if(verbose>1)cout << "\tvar " << *constname << " index: " << MyLHA->NbVar-1 << endl;
-                }
+                    if(verbose>1)cout << "\tcontinious var " << *constname << " index: " << MyLHA->NbVar-1 << endl;
+				} else cout << "Unknown variable Type" << *it2 << endl;
             }
             //cout << "finished realvar" << endl;
-            treeSI t4 = findbranchlha(it, "variables/discretes/");
-			for (treeSI it2 = (t4.begin()) ; it2 != (t4.end()) ; ++it2 ) {    
+            t1 = findbranchlha(it, "variables/discretes/");
+			if (t1 != it.end())
+			for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
                 if ((*it2).compare("discrete")==0) {
                     string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-                    MyLHA->VarLabel.push_back(*constname);
-                    MyLHA->Var.push_back(0.0);
-                    MyLHA->VarIndex[*constname]=MyLHA->NbVar;
+                    MyLHA->Vars.label.push_back(*constname);
+                    MyLHA->Vars.initialValue.push_back(0.0);
+					MyLHA->Vars.type.push_back(DISCRETE_VARIABLE);
                     MyLHA->NbVar++;
-                    
-                    if(verbose>1)cout << "\tvar " << *constname << " index: " << MyLHA->NbVar-1 << endl;
+                    if(verbose>1)cout << "\tdiscrete var " << *constname << " index: " << MyLHA->NbVar-1 << endl;
+                }
+            }
+			t1 = findbranchlha(it, "variables/colors/");
+			if (t1 != it.end())
+				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
+                if ((*it2).compare("color")==0) {
+                    string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+                    MyLHA->Vars.label.push_back(*constname);
+                    MyLHA->Vars.initialValue.push_back(0.0);
+					MyLHA->Vars.type.push_back(COLOR_VARIABLE);
+                    MyLHA->NbVar++;
+                    if(verbose>1)cout << "\tcolor var " << *constname << " index: " << MyLHA->NbVar-1 << endl;
                 }
             }
 			//cout << "finished discrete var" << endl;
@@ -455,9 +516,11 @@ void MyLhaModelHandler::on_read_node(const XmlString& id,
 				
 				eval_expr( &markdep, varflow, find(it2.begin(),it2.end(),"expr").begin());
 
-				int vindex = MyLHA->VarIndex[var->c_str()];
-				if(verbose>1)cout << "\tvar: " << *var << " index: " << vindex << " flow: " << *varflow << endl;
-				v1[vindex]= *varflow;
+				size_t vi = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var) - MyLHA->Vars.label.begin();
+				if(verbose>1)cout << "\tvar: " << *var << " index: " << vi << " flow: " << *varflow << endl;
+				if(MyLHA->Vars.type[vi] == CONTINIOUS_VARIABLE){
+					v1[vi]= *varflow;
+				} else cout << "Variable "<< var << " is continious, it as no flow"<< endl;
 			}
 		}
 		MyLHA->StrFlow.push_back(v1);
@@ -555,10 +618,10 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 				if((*it3).compare("name")==0)var = simplifyString(*(it3.begin()));
 				if((*it3).compare("expr")==0)eval_expr(&markdep, varflow, it3.begin() );
 			}
-			int vindex = MyLHA->VarIndex[var->c_str()];
+			size_t vi = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var) - MyLHA->Vars.label.begin();
 			if(verbose>1 && var != NULL)
-				cout << "\tvar: " << *var << " index: " << vindex << " update: " << *varflow << endl;
-			v1[vindex]= *varflow;
+				cout << "\tvar: " << *var << " index: " << vi << " update: " << *varflow << endl;
+			v1[vi]= *varflow;
 		}
 	}
 	MyLHA->FuncEdgeUpdates.push_back(v1);
