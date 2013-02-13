@@ -33,6 +33,7 @@
 #include <sys/ioctl.h>
 #include <sys/resource.h>
 #include <sys/time.h>
+#include <sys/wait.h>
 #include <fstream>
 #include <boost/math/distributions/normal.hpp>
 #include <unistd.h>
