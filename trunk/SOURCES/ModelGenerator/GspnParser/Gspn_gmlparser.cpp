@@ -469,18 +469,16 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							if(tclasstypeenum!= it2.end()){
 								int low,high;
 								treeSI intBound = find(tclasstypeenum.begin(),tclasstypeenum.end(),"lowerBound");
+								low = eval_intFormula(MyGspn->IntConstant, intBound.begin());
+								intBound = find(tclasstypeenum.begin(),tclasstypeenum.end(),"higherBound");
+								high = eval_intFormula(MyGspn->IntConstant, intBound.begin());
 								
-								
-								/////////////////
-								//					Implement Interval Color Class here
-								/*treeSI tclasstypeinterval = find(it2.begin(),it2.end(),"classIntInterval");
-								 if(tclasstypeinterval != it2.end())
-								 string *simplifyString((find(it2.begin(),it2.end(),"higherBound")).node->first_child->data)
-								 */
-								cerr << "Color Interval not yet implemented";
-								
-								
-								
+								for(int i = low ; i< high ;i++){
+									stringstream ss;
+									ss << "intervalColor_" << i;
+									cc.colors.push_back(color(ss.str()));
+								}
+														
 							}
 								
 

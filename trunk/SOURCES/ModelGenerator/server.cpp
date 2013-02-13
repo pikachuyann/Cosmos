@@ -53,21 +53,33 @@ int max_client=0 ;
 // Handler for crash of the simulator
 void signalHandler( int signum )
 {
-    cout << "Simulator Crash!" << endl;
-    exit(EXIT_FAILURE);  
-}
-
-
-void signalHandlerOK(int signum){};
-
-void interuptHandler( int signum){
-	signal(SIGCHLD , signalHandlerOK);
+	switch (signum){
+		case SIGCHLD: {
+			int status;
+			pid_t child = wait(&status);
+			
+			if(status==0){cout << "Simulator terminate" << endl;}
+			else if(WIFSIGNALED(status)){
+				if(WTERMSIG(status) != 2){
+					cout << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
+					exit(EXIT_FAILURE);
+				}
+			} else {
+				cout << "Simulator "<< child << "Crash !" << endl;
+			}
+		}
+			break;
+		case SIGINT:
+			break;
+		default:
+			cerr << " Unexpected signal" << endl;
+	}
 }
 
 // Launch the P.Njob copy of the simulator with the parameters define in P
 void launch_clients(parameters& P){
     signal(SIGCHLD , signalHandler); 
-	signal(SIGINT, interuptHandler);
+	signal(SIGINT, signalHandler);
 	pid_t readpid;
 	for(int i = 0;i<P.Njob;i++){
 		ostringstream os;
@@ -111,9 +123,6 @@ void kill_client(){
      cout <<endl << "Total Time: "
      << ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
      << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl; */
-    
-    //Discard signal of child terminating
-    signal(SIGCHLD , signalHandlerOK);
     
     while (!clientPID.empty())
     {
@@ -175,7 +184,7 @@ void launchServer(parameters& P){
 			}
 			
             perror("Server-select() error!");
-            exit(1);
+            exit(EXIT_FAILURE);
         }
         for(int it = 0;it<P.Njob;it++){
             if(FD_ISSET(fileno(clientstream[it]), &cs_cp)){

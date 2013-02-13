@@ -103,8 +103,13 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
 	}else if((*it).compare("boolExpr")==0){
         eval_expr(is_mark_dep, st, it.begin());
     }else if((*it).compare("markingExpr")==0){
-        if(eval_marking_expr(*st, it.begin()) != 0)
-			cerr << "Marking Expression is not of uncolor type" << endl;
+		string stmark;
+		size_t colDomIndex = eval_marking_expr(*st, it.begin());
+		if (colDomIndex == UNCOLORED_DOMAIN){
+			st->append(stmark);
+		}else {
+			cerr << "Not uncolored type" << endl;
+		}
 		*is_mark_dep = true;
     }else if((*it).compare("function")==0){
         eval_expr(is_mark_dep, st, it.begin());
@@ -120,14 +125,14 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
         }else {
 			vector<string>::const_iterator vn = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var);
 			if(vn != MyLHA->Vars.label.end()){
-			std::ostringstream s; s<<"Vars->"<< *var;
-            st->append(s.str());
-			
-		}else{
-            *is_mark_dep =true;
-            std::ostringstream s; s<<"Marking.P->_PL_"<<var->c_str()<<" ";
-            st->append(s.str());
-        }
+				std::ostringstream s; s<<"Vars->"<< *var;
+				st->append(s.str());
+				
+			}else{
+				*is_mark_dep =true;
+				std::ostringstream s; s<<"Marking.P->_PL_"<<var->c_str()<<" ";
+				st->append(s.str());
+			}
 		}
     }else if (	(*it).compare("+")==0  || (*it).compare("*")==0
 			  || (*it).compare("min")==0   || (*it).compare("max")==0
@@ -347,7 +352,7 @@ string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 		string* linForm = exportHASL(it.begin());
 		const char* linformc = linForm->c_str();
 		if(MyLHA->LinearForm.find(linformc)==MyLHA->LinearForm.end()){
-			int i=MyLHA->LinearForm.size();
+			size_t i=MyLHA->LinearForm.size();
 			MyLHA->LinearForm[linformc]=i;
 		}
 		
@@ -355,7 +360,7 @@ string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 		MyLHA->LhaFuncType.push_back("Last");
 		string ss="Last("; ss.append(linformc); ss.append(")");
 		if(MyLHA->LhaFunction.find(ss)==MyLHA->LhaFunction.end()){
-			int i=MyLHA->LhaFunction.size();
+			size_t i=MyLHA->LhaFunction.size();
 			MyLHA->LhaFunction[ss]=i;
 		}
 		return new string(ss);
