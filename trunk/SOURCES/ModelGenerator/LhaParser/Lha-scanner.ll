@@ -174,6 +174,9 @@ blank [ \t]
 "Integral" {lhalval->name = new std::string (lhatext); return token::INTEGRAL;
             Reader.error (*lhalloc, "Integral expected");}
 
+"Mean" {lhalval->name = new std::string (lhatext); return token::MEAN;
+	Reader.error (*lhalloc, "Mean expected");}
+
 "PDF" {lhalval->name = new std::string (lhatext); return token::PDF;
             Reader.error (*lhalloc, "PDF expected");}
 

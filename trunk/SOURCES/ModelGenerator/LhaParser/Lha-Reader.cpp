@@ -558,16 +558,13 @@ void Lha_Reader::WriteFile(parameters& P) {
 		 else {*/
 		if (MyLha.LhaFuncType[i] == "Min")
 			LhaCppFile << "    LhaFunc[" << i << "]=Min(LhaFunc[" << i << "],LinForm[" << MyLha.LhaFuncArg[i] << "],OldLinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
-		else {
-			if (MyLha.LhaFuncType[i] == "Max")
+		else if (MyLha.LhaFuncType[i] == "Max")
 				LhaCppFile << "    LhaFunc[" << i << "]=Max(LhaFunc[" << i << "],LinForm[" << MyLha.LhaFuncArg[i] << "],OldLinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
-			else {
-				if (MyLha.LhaFuncType[i] == "Integral")
+		else if (MyLha.LhaFuncType[i] == "Integral")
 					LhaCppFile << "    LhaFunc[" << i << "]=Integral(LhaFunc[" << i << "], CurrentTime, Delta, OldLinForm[" << MyLha.LhaFuncArg[i] << "],LinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
-				
-			}
-		}
-		//}
+		else if (MyLha.LhaFuncType[i] == "Mean")
+			LhaCppFile << "    LhaFunc[" << i << "]=Integral(LhaFunc[" << i << "], CurrentTime, Delta, OldLinForm[" << MyLha.LhaFuncArg[i] << "],LinForm[" << MyLha.LhaFuncArg[i] << "]);" << endl;
+				//}
 		
 	}
 	LhaCppFile << "\n    }\n" << endl;
@@ -576,6 +573,8 @@ void Lha_Reader::WriteFile(parameters& P) {
 	for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
 		if (MyLha.LhaFuncType[i] == "Last")
 			LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
+		else if(MyLha.LhaFuncType[i] == "Mean")
+			LhaCppFile << "    LhaFunc[" << i << "]=LhaFunc[" << MyLha.LhaFuncArg[i] << "] / CurrentTime ;" << endl;
 	}
 	LhaCppFile << "\n    }\n" << endl;
 	

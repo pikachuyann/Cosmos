@@ -120,6 +120,7 @@
 %token <name>	  PROB
 %token <name>     LAST
 %token <name> 	  INTEGRAL
+%token <name>	  MEAN
 
 %token <name>     LhaName
 
@@ -822,6 +823,16 @@ LhaFunc:  LAST     LB LinForm RB {std::ostringstream s; s<<$3;
 	if(Reader.MyLha.LhaFunction.find(ss)==Reader.MyLha.LhaFunction.end())
 	{int i=Reader.MyLha.LhaFunction.size();Reader.MyLha.LhaFunction[ss]=i;}
 	sprintf($$,"%s", ss.c_str());
+}
+| MEAN LB LinForm RB{std::ostringstream s; s<<$3;
+		if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end())
+		{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
+		Reader.MyLha.LhaFuncArg.push_back(Reader.MyLha.LinearForm[s.str()]);
+		Reader.MyLha.LhaFuncType.push_back("Mean");
+		string ss="Mean("; ss.append(s.str()); ss.append(")");
+		if(Reader.MyLha.LhaFunction.find(ss)==Reader.MyLha.LhaFunction.end())
+		{int i=Reader.MyLha.LhaFunction.size();Reader.MyLha.LhaFunction[ss]=i;}
+		sprintf($$,"%s", ss.c_str());
 };
 
 LinForm: VarTerm {sprintf($$,"%s", $1);  }
@@ -831,7 +842,10 @@ LinForm: VarTerm {sprintf($$,"%s", $1);  }
 VarTerm:   str
 { if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"Vars->%s", $1->c_str());}
-	else {cout<<*$1<<" is not a Lha variable"<<endl;YYABORT;}}
+	else if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
+	{std::ostringstream s; s<<" Marking.P->_PL_"<< $1->c_str()<<" ";
+		sprintf($$, "%s",(s.str()).c_str());
+	} else {cout<<*$1<<" is not a Lha variable"<<endl;YYABORT;}}
 | LB RealMarkingFormula RB MUL str
 { if(Reader.MyLha.Vars.find(*$5)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"(%s) * Vars->%s", $2, $5->c_str());

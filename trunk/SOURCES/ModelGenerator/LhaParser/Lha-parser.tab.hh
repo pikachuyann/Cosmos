@@ -149,19 +149,20 @@ namespace lha {
      PROB = 294,
      LAST = 295,
      INTEGRAL = 296,
-     LhaName = 297,
-     Const = 298,
-     NbLoc = 299,
-     NbVar = 300,
-     VList = 301,
-     LList = 302,
-     Iloc = 303,
-     Floc = 304,
-     locations = 305,
-     edges = 306,
-     PDF = 307,
-     CDF = 308,
-     NEG = 309
+     MEAN = 297,
+     LhaName = 298,
+     Const = 299,
+     NbLoc = 300,
+     NbVar = 301,
+     VList = 302,
+     LList = 303,
+     Iloc = 304,
+     Floc = 305,
+     locations = 306,
+     edges = 307,
+     PDF = 308,
+     CDF = 309,
+     NEG = 310
    };
 
     };
@@ -339,7 +340,7 @@ namespace lha {
 
 } // lha
 /* Line 33 of lalr1.cc  */
-#line 343 "Lha-parser.tab.hh"
+#line 344 "Lha-parser.tab.hh"
 
 
 
