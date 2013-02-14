@@ -59,11 +59,10 @@ void signalHandler( int signum )
 			int status;
 			pid_t child = wait(&status);
 			
-			if(child == -1)perror("wait error");
-			else {
+			if(child != -1){
 				if(status==0){cout << "Simulator terminate" << endl;}
 				else if(WIFSIGNALED(status)){
-					if(WTERMSIG(status) != 2){
+					if((WTERMSIG(status) != 2) && (WTERMSIG(status) != 0)){
 						cout << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
 						exit(EXIT_FAILURE);
 					}
