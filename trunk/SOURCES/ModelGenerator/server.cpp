@@ -67,9 +67,9 @@ void signalHandler( int signum )
 						exit(EXIT_FAILURE);
 					}
 				} else if(WIFEXITED(status)){
-					cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
+					if(WEXITSTATUS(status != 130))cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
 				}else {
-					cout << "Simulator "<< child << " Crash ! with status "<< status  << endl;
+					cout << "Simulator "<< child << " Crash ! with unknown status "<< status  << endl;
 				}
 			}
 		}
