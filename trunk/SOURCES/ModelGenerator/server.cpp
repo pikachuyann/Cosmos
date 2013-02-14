@@ -62,12 +62,14 @@ void signalHandler( int signum )
 			if(child != -1){
 				if(status==0){cout << "Simulator terminate" << endl;}
 				else if(WIFSIGNALED(status)){
-					if((WTERMSIG(status) != 2) && (WTERMSIG(status) != 0)){
+					if(WTERMSIG(status) != 2){
 						cout << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
 						exit(EXIT_FAILURE);
 					}
-				} else {
-					cout << "Simulator "<< child << " Crash ! with status "<< status << " " <<WTERMSIG(status) << endl;
+				} else if(WIFEXITED(status)){
+					cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
+				}else {
+					cout << "Simulator "<< child << " Crash ! with status "<< status  << endl;
 				}
 			}
 		}
