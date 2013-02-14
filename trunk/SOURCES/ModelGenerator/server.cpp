@@ -68,7 +68,7 @@ void signalHandler( int signum )
 						exit(EXIT_FAILURE);
 					}
 				} else {
-					cout << "Simulator "<< child << "Crash !" << endl;
+					cout << "Simulator "<< child << " Crash ! with status "<< status << endl;
 				}
 			}
 		}
