@@ -109,7 +109,7 @@ protected:
 	virtual void updateLHA( double );
 	// update value in the LHA by elapsing time
 	
-	virtual void fireLHA(int);
+	virtual void fireLHA(int,const abstractBinding&);
 		//fire the transition of an LHA
 	
 	virtual void updateSPN(size_t,const abstractBinding& ); // update value in the SPN after a transition

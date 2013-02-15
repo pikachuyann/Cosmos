@@ -125,8 +125,8 @@ void Simulator::updateLHA(double DeltaT){
 	A.CurrentTime += DeltaT;
 }
 
-void Simulator::fireLHA(int EdgeIndex){
-	A.DoEdgeUpdates(EdgeIndex, N.Marking);
+void Simulator::fireLHA(int EdgeIndex,const abstractBinding &b){
+	A.DoEdgeUpdates(EdgeIndex, N.Marking, b);
 	A.CurrentLocation = A.Edge[EdgeIndex].Target;
 }
 
@@ -273,7 +273,7 @@ bool Simulator::SimulateOneStep(){
 				cerr << endl;
 			}
 			updateLHA( AE.FiringTime - A.CurrentTime );
-			fireLHA(AE.Index);
+			fireLHA(AE.Index, abstractBinding() );
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
@@ -301,7 +301,7 @@ bool Simulator::SimulateOneStep(){
             //cerr << "looping on autonomous edge";
 			
 			updateLHA(AE.FiringTime - A.CurrentTime);
-			fireLHA(AE.Index);
+			fireLHA(AE.Index, abstractBinding());
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				A.printState();
@@ -336,7 +336,7 @@ bool Simulator::SimulateOneStep(){
 		} else {
 			//If synchronisation is possible fire it and check if the
 			// reached state is final. Then update the SPN.
-			fireLHA(SE);
+			fireLHA(SE, E1.binding);
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;

@@ -29,7 +29,7 @@
 class LHA: public LHA_ORIG {
 public:
 	LHA();
-	void DoEdgeUpdates(int, const abstractMarking&);
+	void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
 	void UpdateFormulaVal();
     void UpdateLinForm(const abstractMarking&);
     void UpdateLhaFunc( double&);
@@ -38,7 +38,7 @@ public:
 	void resetVariables();
     double GetFlow(int, int,const abstractMarking&);
     bool CheckLocation(int,const abstractMarking&);
-    bool CheckEdgeContraints(int,const abstractBinding&);
+    bool CheckEdgeContraints(int,size_t, const abstractBinding&);
 							 
 	t_interval GetEdgeEnablingTime(int,const abstractMarking&);
 	//int GetEnabled_S_Edges(int, int, double, vector<int>&, vector<int>&);

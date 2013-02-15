@@ -56,7 +56,7 @@ int LHA_ORIG::EnabledInitLocation(const abstractMarking& Marking) {
 int LHA_ORIG::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
     for (set<int>::iterator it = ActionEdges[CurrentLocation][PetriNetTransition].begin(); it != ActionEdges[CurrentLocation][PetriNetTransition].end(); it++) {
         if ((CheckLocation(Edge[(*it)].Target, NextMarking))) {
-            if (CheckEdgeContraints(*it, binding)) return (*it);
+            if (CheckEdgeContraints(*it,PetriNetTransition, binding)) return (*it);
         }
     }
 

@@ -41,11 +41,11 @@
 
 
 /*
-	Retrive the real absolute path of the executable of Cosmos
-	This is usefull for finding the library containing all the
-	code for the simulator.
-	Thoses functions fill the variable P.Path
-	This code is system dependant.
+ Retrive the real absolute path of the executable of Cosmos
+ This is usefull for finding the library containing all the
+ code for the simulator.
+ Thoses functions fill the variable P.Path
+ This code is system dependant.
  */
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
@@ -130,43 +130,53 @@ bool ParseBuild(parameters& P) {
 	if(P.verbose>0)cout << "Start Parsing " << P.PathLha << endl;
 	
     try{
-        if(P.GMLinput || (P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0))  {
-            parseresult = lReader.parse_gml_file(P);
-        }else {
-            parseresult = lReader.parse_file(P);
-        }
-        
-        if (!parseresult) {
-            P.HaslFormulasname = lReader.MyLha.HASLname;
-			P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
-			P.nbAlgebraic = lReader.MyLha.Algebraic.size();
-			if(P.CountTrans){
-				for (size_t tr=0; tr < lReader.MyLha.Edge.size(); tr++) {
-					P.nbAlgebraic++;
-					std::stringstream transname;
-					transname << "P_";
-					transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Source];
-					transname << "->";
-					transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Target];
-					P.HaslFormulasname.push_back(transname.str());
-					P.HaslFormulas.push_back(new HaslFormulasTop(lReader.MyLha.Algebraic.size()+tr,
-															lReader.MyLha.ConfidenceLevel));
-					
-				}
+		if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")==0){
+			P.HaslFormulasname.push_back("preComputedLHA");
+			HaslFormulasTop *ht = new HaslFormulasTop( (size_t)0, P.Level);
+			P.HaslFormulas.push_back(ht);
+			P.nbAlgebraic = 1;
+			string cmd = "cp "+P.PathLha +" " + P.tmpPath +"/LHA.cpp";
+			system(cmd.c_str());
+		} else {
+			
+			if(P.GMLinput || (P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0))  {
+				parseresult = lReader.parse_gml_file(P);
+			}else {
+				parseresult = lReader.parse_file(P);
 			}
 			
-            if(P.tmpStatus==0||P.tmpStatus==2)lReader.WriteFile(P);
-            
-        } else {
-            Lha_Reader lr(gReader.MyGspn);
-            return false;
-        }
+			if (!parseresult) {
+				P.HaslFormulasname = lReader.MyLha.HASLname;
+				P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
+				P.nbAlgebraic = lReader.MyLha.Algebraic.size();
+				if(P.CountTrans){
+					for (size_t tr=0; tr < lReader.MyLha.Edge.size(); tr++) {
+						P.nbAlgebraic++;
+						std::stringstream transname;
+						transname << "P_";
+						transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Source];
+						transname << "->";
+						transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Target];
+						P.HaslFormulasname.push_back(transname.str());
+						P.HaslFormulas.push_back(new HaslFormulasTop(lReader.MyLha.Algebraic.size()+tr,
+																	 lReader.MyLha.ConfidenceLevel));
+						
+					}
+				}
+				
+				if(P.tmpStatus==0||P.tmpStatus==2)lReader.WriteFile(P);
+				
+			} else {
+				Lha_Reader lr(gReader.MyGspn);
+				return false;
+			}
+		}
     }catch (exception& e)
     {
         cerr << "The following exception append during import: "<< e.what() << endl;
         return false;
     }
-	Lha_Reader lr(gReader.MyGspn);
+	
 	if(P.tmpStatus==1||P.tmpStatus==3)return true;
 	if(P.verbose>0){
         cout << "Parsing OK.\n" << endl;
@@ -202,8 +212,8 @@ bool ParseBuild(parameters& P) {
 	
 	
 	/*cmd = "make -s -C " + P.Path + ".. sim";
-	if (system(cmd.c_str())) return false;
-	*/
+	 if (system(cmd.c_str())) return false;
+	 */
 	if(P.verbose>0)cout << "Building OK.\n" << endl;
 	
 	return true;

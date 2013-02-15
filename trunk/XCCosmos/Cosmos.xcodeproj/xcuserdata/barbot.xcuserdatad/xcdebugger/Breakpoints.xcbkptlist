@@ -46,12 +46,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../SOURCES/Cosmos/LHA.cpp"
-         timestampString = "380842844.945768"
+         timestampString = "382639690.353151"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "288"
-         endingLineNumber = "288"
-         landmarkName = "LHA::DoEdgeUpdates(int ed,const abstractMarking&amp; Marking)"
+         startingLineNumber = "293"
+         endingLineNumber = "293"
+         landmarkName = "LHA::LHA()"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -71,23 +71,14 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/LHA.cpp"
-         timestampString = "382467736.307899"
+         filePath = "../SOURCES/ModelGenerator/LhaParser/Lha_gmlparser.cpp"
+         timestampString = "382637705.604611"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "317"
-         endingLineNumber = "317">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/LHA.cpp"
-         timestampString = "382467737.216138"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "322"
-         endingLineNumber = "322">
+         startingLineNumber = "623"
+         endingLineNumber = "623"
+         landmarkName = "MyLhaModelHandler::on_read_arc(const XmlString&amp; id, const XmlString&amp; arcType, const XmlString&amp; source, const XmlString&amp; target, const AttributeMap&amp; attributes, const XmlStringList&amp; references)"
+         landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

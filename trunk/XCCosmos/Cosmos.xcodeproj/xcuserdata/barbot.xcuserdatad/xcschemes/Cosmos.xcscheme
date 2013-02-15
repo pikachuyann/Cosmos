@@ -101,10 +101,18 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/ClientServer/clients_serveurs_SN.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/ClientServer/loop.3.grml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/PADS2013/DataBase/Coloane/database.grml"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/PADS2013/DataBase/Coloane/DatabaseProp1LHA2.grml"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

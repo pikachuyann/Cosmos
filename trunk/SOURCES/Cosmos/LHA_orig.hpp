@@ -76,7 +76,7 @@ public:
 	
 	virtual double GetFlow(int, int,const abstractMarking&) = 0;
 	virtual bool CheckLocation(int,const abstractMarking&) = 0;
-	virtual bool CheckEdgeContraints(int,const abstractBinding&) = 0;
+	virtual bool CheckEdgeContraints(int,size_t, const abstractBinding&) = 0;
 	
     virtual t_interval GetEdgeEnablingTime(int,const abstractMarking&) = 0 ;
 	
