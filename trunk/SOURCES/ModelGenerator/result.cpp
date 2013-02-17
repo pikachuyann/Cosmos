@@ -61,7 +61,8 @@ result::result(parameters &Q){
         outdatastream << endl;
     }
     
-    time(&start);
+	gettimeofday(&start, NULL);
+	gettimeofday(&lastprint, NULL);
     if(P.verbose>0)cout << endl << endl << endl;
 }
 
@@ -110,11 +111,10 @@ void printPercent(double i, double j){
 void result::printProgress(){
 	timeval current;
 	gettimeofday(&current,NULL);
-	/*if((current.tv_sec-lastprint.tv_sec +
+	if((current.tv_sec-lastprint.tv_sec +
 		(current.tv_usec-lastprint.tv_usec)/1000000.0) < P.updatetime)
-			return;*/
+			return;
 	lastprint = current;
-	stopclock();
 	if(P.alligatorMode){
 		printAlligator();
 		return;
@@ -124,16 +124,21 @@ void result::printProgress(){
         cout << "\033[A\033[2K";
     }
 	cout.precision(15);
+    cout << "Total paths: ";
 	cout.width(15);
-    cout << "Total paths: " << left << MeanM2->I << "\t accepted paths: ";
+	cout << left << MeanM2->I << "\t accepted paths: ";
+	cout.width(15);
 	cout << left << MeanM2->Isucc << endl;
     endline++;
 	if(P.verbose >1){
 		for(size_t i=0; i<P.HaslFormulasname.size(); i++){
 			
-			cout<< P.HaslFormulasname[i] << ":\t Mean" << "="
-			<< left << HaslResult[i]->mean;
-			cout << "\t  width=" << left << HaslResult[i]->width() << endl;
+			cout<< P.HaslFormulasname[i] << ":\t Mean=";
+			cout.width(15);
+			cout << left << HaslResult[i]->mean;
+			cout << "\t  width=";
+			cout.width(15);
+			cout << left << HaslResult[i]->width() << endl;
 			endline++;
 			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2){
 				cout << "% of width:\t";
@@ -151,8 +156,8 @@ void result::printProgress(){
 }
 
 void result::stopclock(){
-    time(&end);
-    cpu_time_used = difftime(end, start);
+    gettimeofday(&end,NULL);
+    cpu_time_used = end.tv_sec-start.tv_sec +(end.tv_usec-start.tv_usec)/1000000.0;
 }
 
 double binomlow(size_t i,size_t j , double l){
@@ -201,6 +206,14 @@ void result::print(ostream &s){
         s << "Total paths:\t" << MeanM2->I << endl;
         s << "Accepted paths:\t" << MeanM2->Isucc << endl;
         s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
+		rusage cpu_child;
+		getrusage(RUSAGE_CHILDREN, &cpu_child);
+		double child_time = cpu_child.ru_utime.tv_sec + cpu_child.ru_utime.tv_usec / 1000000.0;
+		child_time += cpu_child.ru_stime.tv_sec + cpu_child.ru_stime.tv_usec / 1000000.0;
+		getrusage(RUSAGE_SELF, &cpu_child);
+		child_time += cpu_child.ru_utime.tv_sec + cpu_child.ru_utime.tv_usec / 1000000.0;
+		child_time += cpu_child.ru_stime.tv_sec + cpu_child.ru_stime.tv_usec / 1000000.0;
+		s << "Total CPU time:\t" << child_time << endl;
         
     }
 }

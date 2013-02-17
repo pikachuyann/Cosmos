@@ -132,6 +132,8 @@ void kill_client(){
     while (!clientPID.empty())
     {
         kill(clientPID.back(),2);
+		int termstat;
+		waitpid(clientPID.back(),&termstat , 0);
         clientstream.pop_back();
         clientPID.pop_back();
     }
