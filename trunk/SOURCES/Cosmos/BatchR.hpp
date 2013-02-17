@@ -60,7 +60,7 @@ public:
     
     
     void outputR();
-    void inputR(FILE* f);
+    bool inputR(FILE* f);
     void print();
     
 };

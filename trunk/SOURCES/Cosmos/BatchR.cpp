@@ -93,24 +93,27 @@ void BatchR::outputR() {
 }
 
 //Read a batch from a file.
-void BatchR::inputR(FILE* f) {
-    double read;
+bool BatchR::inputR(FILE* f) {
     bool readb;
-    size_t readi;
-    
-    fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
-    I=readi;
-    fread(reinterpret_cast<char*>( &readi ), sizeof readi ,1, f);
-    Isucc=readi;
+	size_t readbyte;
+    bool ok = true;
+	
+	readbyte = fread(reinterpret_cast<char*>( &I ), sizeof I ,1, f);
+	ok &= (readbyte == 1);
+	
+    readbyte = fread(reinterpret_cast<char*>( &Isucc), sizeof Isucc ,1, f);
+    ok &= (readbyte == 1);
 
     for(unsigned int i =0; i< TableLength; i++){
-        fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, f);
+        readbyte = fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, f);
         IsBernoulli[i]=readb;
-        fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-        Mean[i]=read;
-        fread(reinterpret_cast<char*>( &read ), sizeof read ,1, f);
-        M2[i]=read;
+		ok &= (readbyte == 1);
+        readbyte = fread(reinterpret_cast<char*>( &(Mean[i]) ), sizeof Mean[i] ,1, f);
+        ok &= (readbyte == 1);
+        readbyte = fread(reinterpret_cast<char*>( &(M2[i]) ), sizeof M2[i] ,1, f);
+        ok &= (readbyte == 1);
     }
+	return ok;
 }
 
 //Print human readable version of batch on stdout.

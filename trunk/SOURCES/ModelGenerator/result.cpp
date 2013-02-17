@@ -119,20 +119,21 @@ void result::printProgress(){
 		printAlligator();
 		return;
 	}
-    cout.precision(15);
     while(endline>=0){
         endline--;
         cout << "\033[A\033[2K";
     }
-    cout << "Total paths: " << MeanM2->I << "\t accepted paths: ";
-	cout << MeanM2->Isucc << endl;
+	cout.precision(15);
+	cout.width(15);
+    cout << "Total paths: " << left << MeanM2->I << "\t accepted paths: ";
+	cout << left << MeanM2->Isucc << endl;
     endline++;
 	if(P.verbose >1){
 		for(size_t i=0; i<P.HaslFormulasname.size(); i++){
 			
 			cout<< P.HaslFormulasname[i] << ":\t Mean" << "="
-			<< HaslResult[i]->mean;
-			cout << "\t  width=" << HaslResult[i]->width() << endl;
+			<< left << HaslResult[i]->mean;
+			cout << "\t  width=" << left << HaslResult[i]->width() << endl;
 			endline++;
 			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2){
 				cout << "% of width:\t";

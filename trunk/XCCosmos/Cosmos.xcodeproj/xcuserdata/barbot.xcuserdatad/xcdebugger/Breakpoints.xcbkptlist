@@ -80,5 +80,18 @@
          landmarkName = "MyLhaModelHandler::on_read_arc(const XmlString&amp; id, const XmlString&amp; arcType, const XmlString&amp; source, const XmlString&amp; target, const AttributeMap&amp; attributes, const XmlStringList&amp; references)"
          landmarkType = "5">
       </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/Cosmos/BatchR.cpp"
+         timestampString = "382804509.090118"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "100"
+         endingLineNumber = "100"
+         landmarkName = "BatchR::inputR(FILE* f)"
+         landmarkType = "5">
+      </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>
