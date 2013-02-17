@@ -30,6 +30,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <err.h>
 #include <errno.h>
 
@@ -246,10 +247,10 @@ void cleanTmp(parameters& P){
 
 int main(int argc, char** argv) {
 	parameters P;
-	time_t startbuild,endbuild;
+	timeval startbuild,endbuild;
 	
     P.parseCommandLine(argc,argv);
-    time(&startbuild);
+    gettimeofday(&startbuild, NULL);
 	
 	if(mkdir(P.tmpPath.c_str(), 0777) != 0){
 		if(errno != EEXIST){
@@ -270,8 +271,9 @@ int main(int argc, char** argv) {
 		cleanTmp(P);
 		return(EXIT_FAILURE);
 	}
-	time(&endbuild);
-	if(P.verbose>0)cout<<"Time for building the simulator:\t"<<difftime(endbuild,startbuild)<< "s"<< endl;
+	gettimeofday(&endbuild, NULL);
+	double buildTime = endbuild.tv_sec - startbuild.tv_sec + ((endbuild.tv_usec - startbuild.tv_usec) / 1000000.0);
+	if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildTime<< "s"<< endl;
 	
 	if(P.computeStateSpace){
 		launchExport(P);
