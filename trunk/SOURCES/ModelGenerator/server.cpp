@@ -140,9 +140,9 @@ void kill_client(){
 
 // Build a list of input files of all the simulators to collect results
 // This list is made to be used with the function <sys/select.h>/select
-void makeselectlist(int Njob){
+void makeselectlist(void){
     FD_ZERO(&client_list);
-    for(int it = 0;it<Njob;it++){
+    for(size_t it = 0;it < clientstream.size(); it++){
         int fl = fileno(clientstream[it]);
         FD_SET(fl,&client_list);
     }
@@ -178,12 +178,12 @@ void launchServer(parameters& P){
     //Launch a set of simulators
     launch_clients(P);
     //Make a list of file system for polling
-    makeselectlist(P.Njob);
     
     do{
-        fd_set cs_cp = client_list;
+        makeselectlist();
+		
         //wait for a simulator to return some result
-        if(select(max_client+1, &cs_cp, NULL, NULL, NULL) == -1){
+        if(select(max_client+1, &client_list, NULL, NULL, NULL) == -1){
 			if(errno == EINTR){
 				break;
 			}
@@ -191,17 +191,25 @@ void launchServer(parameters& P){
             perror("Server-select() error!");
             exit(EXIT_FAILURE);
         }
-        for(int it = 0;it<P.Njob;it++){
-            if(FD_ISSET(fileno(clientstream[it]), &cs_cp)){
+        for(size_t it = 0;it < clientstream.size() ;it++){
+            if(FD_ISSET(fileno(clientstream[it]),  &client_list)){
                 //aggregate the new result to the total result
                 BatchR batchResult(P.nbAlgebraic);
-                batchResult.inputR(clientstream[it]);
-                //batchResult.print();
-                Result.addBatch(&batchResult);
-                if(P.verbose>0 || P.alligatorMode)Result.printProgress();
-            }
+                if(batchResult.inputR(clientstream[it])){
+					//batchResult.print();
+					Result.addBatch(&batchResult);
+					if(P.verbose>0 || P.alligatorMode)Result.printProgress();
+				} else {
+					if(P.verbose>2) cerr << "Warning uncomplete Batch Result"<<endl;
+					if(feof( clientstream[it] )!=0){
+						if(P.verbose>2)cerr << "Deconnection Simulator:" << clientPID[it] << endl;
+						clientstream.erase(clientstream.begin() + it);
+						clientPID.erase(clientPID.begin() + it);
+					}
+				}
+			}
         }
-    }while(Result.continueSim());
+    }while(Result.continueSim() && clientstream.size()>0);
     
     //Kill all the simulator
     kill_client();
