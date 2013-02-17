@@ -47,6 +47,7 @@ parameters::parameters():
 	Path(""),
 	PathGspn(""),
 	PathLha(""),
+	externalHASL(""),
 
 	localTesting(false),
 	RareEvent(false),
@@ -123,6 +124,7 @@ void parameters::usage(){
 	cout << "\t-d,--outputdata \tOutput successive result in the blank separated file format"<< endl;
 	cout << "\t--output-raw \tOutput the result of each trajectory in a file for debug purpose"<< endl;
 	cout << "\t--output-PDFCDF \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
+	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
 	
 }
 
@@ -155,6 +157,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"alligator-mode", no_argument, 0, 'a' },
 			
             /* Miscellaneous options */
+			{"HASL-formula", required_argument,0,13},
             {"njob" , required_argument,	 0, 'n'},
 			{"gppcmd",required_argument,	 0,  6 },
 			{"gppflags",required_argument,	 0,  7 },
@@ -242,6 +245,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  6  : gcccmd = optarg; break;
 			case  7  : gccflags = optarg; break;
 			case  10 : seed = atoi(optarg); break;
+			case  13 : externalHASL = optarg; break;
 
             case '?':
                 usage();

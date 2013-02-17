@@ -175,8 +175,10 @@
 
 
 %start LHA;
-LHA: declarations InitFinal definitions;
 
+LHA: 
+	declarations InitFinal definitions
+	| HaslExps;
 
 declarations:  Sizes Constants Lists HaslExps
 | Sizes  Lists HaslExps ;
@@ -672,7 +674,6 @@ Update: str EQ RealVarMarkingFormula {
 	else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
 }
 
-
 HaslExps: HaslExp | HaslExp HaslExps;
 
 HaslExp: str EQ TopHaslExp SEMICOLON {
@@ -861,6 +862,13 @@ VarTerm:   str
 	{sprintf($$,"%f * Vars->%s", $1, $3->c_str());
 	}
 	else {cout<<*$3<<" is not a Lha variable"<<endl;YYABORT;}}
+	
+| ival
+{ sprintf($$,"%i ", $1);
+}
+| rval
+{ sprintf($$,"%f ", $1);}
+
 | str  MUL str
 { if(Reader.MyLha.Vars.find(*$3)!=Reader.MyLha.Vars.label.size())
 	{if(Reader.MyLha.LhaRealConstant.find(*$1)!=Reader.MyLha.LhaRealConstant.end())

@@ -219,7 +219,7 @@
     </attribute>
   </node>
   <node id="10" nodeType="transition" x="164" y="205">
-        <attribute name="weight">
+    <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
@@ -246,7 +246,8 @@
           1.0
         </attribute></attribute>
       </attribute>
-    </attribute><attribute name="guard">
+    </attribute>
+    <attribute name="guard">
       <attribute name="boolExpr">
         <attribute name="boolValue">
           true
@@ -258,7 +259,7 @@
     </attribute>
   </node>
   <node id="11" nodeType="transition" x="164" y="314">
-        <attribute name="weight">
+    <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
@@ -285,7 +286,7 @@
           1.0
         </attribute></attribute>
       </attribute>
-    </attribute><attribute name="guard">
+      </attribute><attribute name="guard">
       <attribute name="boolExpr">
         <attribute name="boolValue">
           true
@@ -297,7 +298,7 @@
     </attribute>
   </node>
   <node id="12" nodeType="transition" x="533" y="205">
-        <attribute name="weight">
+    <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
@@ -324,7 +325,7 @@
           1.0
         </attribute></attribute>
       </attribute>
-    </attribute><attribute name="guard">
+      </attribute><attribute name="guard">
       <attribute name="boolExpr">
         <attribute name="boolValue">
           true
@@ -336,7 +337,7 @@
     </attribute>
   </node>
   <node id="13" nodeType="transition" x="533" y="314">
-        <attribute name="weight">
+    <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
@@ -363,7 +364,7 @@
           1.0
         </attribute></attribute>
       </attribute>
-    </attribute><attribute name="guard">
+      </attribute><attribute name="guard">
       <attribute name="boolExpr">
         <attribute name="boolValue">
           true

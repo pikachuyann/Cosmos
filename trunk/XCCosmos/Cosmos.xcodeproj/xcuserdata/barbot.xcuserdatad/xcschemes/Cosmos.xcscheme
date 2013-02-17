@@ -61,6 +61,14 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-g"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--HASL-formula"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "&quot;AVG(Last(1.0));&quot;"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -112,7 +120,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/PADS2013/DataBase/Coloane/DatabaseProp1LHA2.grml"
+            argument = "/Users/barbot/Documents/PADS2013/DataBase/Coloane/dbProp14.cpp"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
