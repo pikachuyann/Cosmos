@@ -26,6 +26,7 @@
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sstream>
 #include <iostream>
 #include <vector>
 #include <sys/select.h>
@@ -35,10 +36,10 @@
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <fstream>
-#include <boost/math/distributions/normal.hpp>
 #include <unistd.h>
 #include <signal.h>
 #include <cstdlib>
+#include <errno.h>
 
 #include "../Cosmos/BatchR.hpp"
 #include "result.hpp"
@@ -60,6 +61,9 @@ void signalHandler( int signum )
 			pid_t child = wait(&status);
 			
 			if(child != -1){
+				vector<pid_t>::iterator itpid = find(clientPID.begin(), clientPID.end(), child );
+				clientPID.erase(itpid);
+				clientstream.erase(clientstream.begin() + (itpid - clientPID.begin()));
 				if(status==0){cout << "Simulator terminate" << endl;}
 				else if(WIFSIGNALED(status)){
 					if(WTERMSIG(status) != 2){
