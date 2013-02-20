@@ -61,9 +61,9 @@ void signalHandler( int signum )
 			pid_t child = wait(&status);
 			
 			if(child != -1){
-				vector<pid_t>::iterator itpid = find(clientPID.begin(), clientPID.end(), child );
-				clientPID.erase(itpid);
-				clientstream.erase(clientstream.begin() + (itpid - clientPID.begin()));
+				size_t itpid = find(clientPID.begin(), clientPID.end(), child ) - clientPID.begin();
+				clientPID.erase(clientPID.begin() + itpid);
+				clientstream.erase(clientstream.begin() + itpid);
 				if(status==0){cout << "Simulator terminate" << endl;}
 				else if(WIFSIGNALED(status)){
 					if(WTERMSIG(status) != 2){
