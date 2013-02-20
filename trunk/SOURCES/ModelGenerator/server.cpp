@@ -40,6 +40,7 @@
 #include <signal.h>
 #include <cstdlib>
 #include <errno.h>
+#include <algorithm>
 
 #include "../Cosmos/BatchR.hpp"
 #include "result.hpp"
