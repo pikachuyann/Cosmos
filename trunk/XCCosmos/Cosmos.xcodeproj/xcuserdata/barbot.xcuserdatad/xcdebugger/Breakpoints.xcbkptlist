@@ -106,5 +106,18 @@
          landmarkName = "result::print(ostream &amp;s)"
          landmarkType = "5">
       </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/ModelGenerator/LhaParser/Lha_gmlparser.cpp"
+         timestampString = "383042706.30411"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "518"
+         endingLineNumber = "518"
+         landmarkName = "MyLhaModelHandler::on_read_node(const XmlString&amp; id, const XmlString&amp; nodeType, const AttributeMap&amp; attributes, const XmlStringList&amp; references)"
+         landmarkType = "5">
+      </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

@@ -506,6 +506,11 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 		header << "\t\t"<< it->cname() << " returnval = *this; returnval-= x;\n";
 		header << "\t\treturn returnval;\n\t}\n";
 		
+		header << "\tint card (void){\n";
+		header << "\tint acc=0;\n";
+		header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)";
+		header << "\n\t\t\tacc += ((int*)mult)[count] ;\n";
+		header << "\t\treturn acc;\n\t}\n";
 		
 		header << "};\n";
 		//end of domain class definition

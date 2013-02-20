@@ -62,6 +62,7 @@ struct variables {
 	vector<int> type;
 	vector<string> label;
 	vector<double> initialValue;
+	vector<size_t> colorDomain;
 	size_t find(const string &st){
 		return (std::find(label.begin(), label.end(), st) - label.begin());
 	};

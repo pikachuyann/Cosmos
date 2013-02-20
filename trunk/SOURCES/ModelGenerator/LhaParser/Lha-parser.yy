@@ -844,9 +844,12 @@ VarTerm:   str
 { if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"Vars->%s", $1->c_str());}
 	else if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
-	{std::ostringstream s; s<<" Marking.P->_PL_"<< $1->c_str()<<" ";
-		sprintf($$, "%s",(s.str()).c_str());
-	} else {cout<<*$1<<" is not a Lha variable"<<endl;YYABORT;}}
+	{std::ostringstream s; s<<" Marking.P->_PL_"<< $1->c_str();
+			if(Reader.MyLha.MyGspn->placeStruct[Reader.MyLha.PlaceIndex[*$1]].colorDom !=0 )s <<".card()";
+		sprintf($$, "%s ",(s.str()).c_str());
+	} else {cout<<*$1<<" is not a Lha variable or a place name"<<endl;YYABORT;}
+}
+//| RealMarkingFormula { sprintf($$,"(%s)", $1); }
 | LB RealMarkingFormula RB MUL str
 { if(Reader.MyLha.Vars.find(*$5)!=Reader.MyLha.Vars.label.size())
 	{sprintf($$,"(%s) * Vars->%s", $2, $5->c_str());

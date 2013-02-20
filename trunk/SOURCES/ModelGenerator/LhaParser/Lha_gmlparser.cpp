@@ -443,6 +443,14 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						MyLHA->Vars.label.push_back(*constname);
 						MyLHA->Vars.initialValue.push_back(0.0);
+						treeSI dom = find(it2.begin(),it2.end(),"domain");
+						if (dom != it2.end()) {
+							string domname = *simplifyString(*(it2.begin()));
+							vector<colorDomain>::const_iterator domit;
+							for(domit = MyLHA->MyGspn->colDoms.begin(); domit != MyLHA->MyGspn->colDoms.end() && domit->name != domname; ++domit);
+							if(domit != MyLHA->MyGspn->colDoms.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colDoms.begin());
+							else cerr << "Unknown color Domain " << domname << endl;
+						}else MyLHA->Vars.colorDomain.push_back(0);
 						MyLHA->Vars.type.push_back(CONTINIOUS_VARIABLE);
 						MyLHA->NbVar++;
 						
@@ -457,6 +465,15 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						MyLHA->Vars.label.push_back(*constname);
 						MyLHA->Vars.initialValue.push_back(0.0);
+						treeSI dom = find(it2.begin(),it2.end(),"domain");
+						if (dom != it2.end()) {
+							string domname = *simplifyString(*(it2.begin()));
+							vector<colorDomain>::const_iterator domit;
+							for(domit = MyLHA->MyGspn->colDoms.begin(); domit != MyLHA->MyGspn->colDoms.end() && domit->name != domname; ++domit);
+							if(domit != MyLHA->MyGspn->colDoms.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colDoms.begin());
+							else cerr << "Unknown color Domain " << domname << endl;
+						}else MyLHA->Vars.colorDomain.push_back(0);
+
 						MyLHA->Vars.type.push_back(DISCRETE_VARIABLE);
 						MyLHA->NbVar++;
 						if(verbose>1)cout << "\tdiscrete var " << *constname << " index: " << MyLHA->NbVar-1 << endl;
@@ -469,6 +486,15 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						MyLHA->Vars.label.push_back(*constname);
 						MyLHA->Vars.initialValue.push_back(0.0);
+						treeSI dom = find(it2.begin(),it2.end(),"domain");
+						if (dom != it2.end()) {
+							string domname = *simplifyString(*(it2.begin()));
+							vector<colorClass>::const_iterator domit;
+							for(domit = MyLHA->MyGspn->colClasses.begin(); domit != MyLHA->MyGspn->colClasses.end() && domit->name != domname; ++domit);
+							if(domit != MyLHA->MyGspn->colClasses.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colClasses.begin());
+							else cerr << "Unknown color Domain " << domname << endl;
+						}else cerr << "No color class specify for color variable " << constname << endl;
+
 						MyLHA->Vars.type.push_back(COLOR_VARIABLE);
 						MyLHA->NbVar++;
 						if(verbose>1)cout << "\tcolor var " << *constname << " index: " << MyLHA->NbVar-1 << endl;

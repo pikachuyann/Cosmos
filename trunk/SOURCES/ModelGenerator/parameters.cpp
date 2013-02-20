@@ -47,6 +47,7 @@ parameters::parameters():
 	Path(""),
 	PathGspn(""),
 	PathLha(""),
+	loopLHA(0.0),
 	externalHASL(""),
 
 	localTesting(false),
@@ -125,6 +126,7 @@ void parameters::usage(){
 	cout << "\t--output-raw \tOutput the result of each trajectory in a file for debug purpose"<< endl;
 	cout << "\t--output-PDFCDF \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
 	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
+	cout << "\t--loop t \tGenerate an LHA that loop for t times unit"<< endl;
 	
 }
 
@@ -143,6 +145,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"max-run",required_argument, 0, 'm'},
 			{"seed"  , required_argument, 0,  10},
 			{"local-test",  no_argument , 0,  12},
+			{"loop",   required_argument, 0,  14},
             
             /* Options for the rare event engine */
             {"rareevent",   no_argument,        0, 'r'},
@@ -246,7 +249,8 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  7  : gccflags = optarg; break;
 			case  10 : seed = atoi(optarg); break;
 			case  13 : externalHASL = optarg; break;
-
+			case  14 : loopLHA = atof(optarg);PathLha = "LOOP"; break;
+				
             case '?':
                 usage();
                 exit(EXIT_FAILURE);
@@ -257,7 +261,10 @@ void parameters::parseCommandLine(int argc, char** argv){
         }
     }
 	
-    if (optind+2 == argc){
+	if(optind+1 == argc && loopLHA> 0.0){
+		PathGspn = argv[optind];
+	}
+    else if (optind+2 == argc){
         PathGspn = argv[optind];
         PathLha  = argv[optind+1];
     }else{

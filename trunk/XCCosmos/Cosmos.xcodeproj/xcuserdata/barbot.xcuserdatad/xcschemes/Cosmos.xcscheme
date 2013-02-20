@@ -65,11 +65,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--HASL-formula"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "&quot;AVG(Last(1.0));&quot;"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-r"
@@ -77,11 +77,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.gspn"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.lha"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-v 0"
@@ -109,11 +109,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/ClientServer/clients_serveurs_SN.grml"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/ClientServer/loop.3.grml"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/PADS2013/DataBase/Coloane/database.grml"

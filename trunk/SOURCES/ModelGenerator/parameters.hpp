@@ -50,6 +50,7 @@ struct parameters {
 	string Path;
 	string PathGspn;
 	string PathLha;
+	double loopLHA;
 	string externalHASL;
 	bool localTesting;
 	bool RareEvent;

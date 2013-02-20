@@ -173,7 +173,10 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	LhaCppFile << "struct Variables {\n";
 	for(size_t v =0 ; v< MyLha.Vars.type.size(); v++){
-		LhaCppFile << "\tdouble "<< MyLha.Vars.label[v] << ";\n";
+		if(MyLha.Vars.type[v] == COLOR_VARIABLE){
+			LhaCppFile << "\t" << MyLha.MyGspn->colClasses[MyLha.Vars.colorDomain[v]].name << " " << MyLha.Vars.label[v] << ";\n";
+		}else
+			LhaCppFile << "\tdouble "<< MyLha.Vars.label[v] << ";\n";
 	}
 	LhaCppFile << "};\n";
 	

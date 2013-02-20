@@ -132,28 +132,21 @@ bool ParseBuild(parameters& P) {
 	if(P.verbose>0)cout << "Start Parsing " << P.PathLha << endl;
 	
     try{
-		if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")==0){
-			lReader.MyLha.ConfidenceLevel = P.Level;
-			if(P.externalHASL.compare("")==0){
-				P.HaslFormulasname.push_back("preComputedLHA");
-				HaslFormulasTop *ht = new HaslFormulasTop( (size_t)0, P.Level);
-				P.HaslFormulas.push_back(ht);
-				P.nbAlgebraic = 1;
-			}else{
-				parseresult = lReader.parse(P.externalHASL);
-				if(!parseresult){
-					P.HaslFormulasname = lReader.MyLha.HASLname;
-					P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
-					P.nbAlgebraic = lReader.MyLha.Algebraic.size();
-				} else
-					cerr << "Fail to parse extra Hasl Formula"<< endl;
-			}
-			
-			string cmd = "cp "+P.PathLha +" " + P.tmpPath +"/LHA.cpp";
-			system(cmd.c_str());
-		} else {
-			
-			if(P.GMLinput || (P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0))  {
+		if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")!=0){
+			if(P.loopLHA>0.0){
+				lReader.MyLha.ConfidenceLevel = P.Level;
+				stringstream lhastr;
+				lhastr << "NbVariables = 1;\nNbLocations = 2;\n";
+				lhastr << "const double T="<< P.loopLHA << ";\n";
+				lhastr << "VariablesList = {time} ;\nLocationsList = {l0, l1};\n";
+				lhastr << P.externalHASL << endl;
+				lhastr << "InitialLocations={l0};\nFinalLocations={l1};\n";
+				lhastr << "Locations={(l0, TRUE, (time:1));(l1, TRUE);};\n";
+				lhastr << "Edges={((l0,l0),ALL,time<=T,#);((l0,l1),#,time=T ,#);};\n";
+				string s = lhastr.str();
+				parseresult = lReader.parse(s);
+				P.externalHASL = "";
+			} else if(P.GMLinput || (P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0))  {
 				parseresult = lReader.parse_gml_file(P);
 			}else {
 				parseresult = lReader.parse_file(P);
@@ -161,7 +154,7 @@ bool ParseBuild(parameters& P) {
 			
 			if(P.externalHASL.compare("")!=0)
 				lReader.parse(P.externalHASL);
-
+			
 			
 			if (!parseresult) {
 				P.HaslFormulasname = lReader.MyLha.HASLname;
@@ -181,18 +174,37 @@ bool ParseBuild(parameters& P) {
 						
 					}
 				}
-								
+				
 				if(P.tmpStatus==0||P.tmpStatus==2)lReader.WriteFile(P);
 				
 			} else {
 				Lha_Reader lr(gReader.MyGspn);
 				return false;
 			}
+		} else if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")==0){
+			lReader.MyLha.ConfidenceLevel = P.Level;
+			if(P.externalHASL.compare("")==0){
+				P.HaslFormulasname.push_back("preComputedLHA");
+				HaslFormulasTop *ht = new HaslFormulasTop( (size_t)0, P.Level);
+				P.HaslFormulas.push_back(ht);
+				P.nbAlgebraic = 1;
+			}else{
+				parseresult = lReader.parse(P.externalHASL);
+				if(!parseresult){
+					P.HaslFormulasname = lReader.MyLha.HASLname;
+					P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
+					P.nbAlgebraic = lReader.MyLha.Algebraic.size();
+				} else
+					cerr << "Fail to parse extra Hasl Formula"<< endl;
+			}
+			
+			string cmd = "cp "+P.PathLha +" " + P.tmpPath +"/LHA.cpp";
+			system(cmd.c_str());
 		}
-    }catch (exception& e)
-    {
-        cerr << "The following exception append during import: "<< e.what() << endl;
-        return false;
+	}catch (exception& e)
+	{
+		cerr << "The following exception append during import: "<< e.what() << endl;
+		return false;
     }
 	
 	if(P.tmpStatus==1||P.tmpStatus==3)return true;
@@ -249,8 +261,8 @@ int main(int argc, char** argv) {
 	parameters P;
 	timeval startbuild,endbuild;
 	
-    P.parseCommandLine(argc,argv);
-    gettimeofday(&startbuild, NULL);
+	P.parseCommandLine(argc,argv);
+	gettimeofday(&startbuild, NULL);
 	
 	if(mkdir(P.tmpPath.c_str(), 0777) != 0){
 		if(errno != EEXIST){
@@ -258,7 +270,7 @@ int main(int argc, char** argv) {
 		}
 	}
 	
-    if (P.verbose>0)cout << "Cosmos" << endl;
+	if (P.verbose>0)cout << "Cosmos" << endl;
 	
 	if(P.Path.compare("")==0){
 		string st = argv[0];
