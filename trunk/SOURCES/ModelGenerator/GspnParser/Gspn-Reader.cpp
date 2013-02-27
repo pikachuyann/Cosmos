@@ -301,6 +301,7 @@ void Gspn_Reader::printloot(ofstream& fs, size_t domain, size_t nesting ){
 void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	SpnCppFile << "#include \"marking.hpp\"\n";
 	SpnCppFile << "#include \"markingImpl.hpp\"\n";
+	header << "#include <string.h>\n";
 	
 	for (vector<colorClass>::const_iterator it = MyGspn.colClasses.begin();
 		 it != MyGspn.colClasses.end(); ++it ) {
