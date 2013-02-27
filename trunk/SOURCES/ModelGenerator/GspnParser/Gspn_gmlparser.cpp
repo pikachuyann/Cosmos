@@ -113,6 +113,7 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
             *is_mark_dep =true;
             st->append("Marking.P->_PL_");
             st->append(*var);
+			if(MyGspn->placeStruct[MyGspn->PlacesId[*var]].colorDom !=0 )st->append(".card()");
         }
 	}else if (	(*it).compare("+")==0  || (*it).compare("*")==0  
               || (*it).compare("min")==0   || (*it).compare("max")==0
@@ -150,6 +151,29 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 		eval_tokenProfileMark(st, it.begin());
 	}else if(it->compare("expr")==0){
 		eval_tokenProfileMark(st, it.begin());
+	}else if(it->compare("enumConst")==0){
+		size_t colorclass=0, enumvalue=0;
+		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
+			if(it2->compare("type")==0){
+				string coldom = *simplifyString(*(it2.begin()));
+				if(verbose>1)cerr << coldom << endl;
+				for(colorclass =0; colorclass < MyGspn->colDoms.size() &&
+					MyGspn->colDoms[colorclass].name != coldom ; colorclass++) ;
+				if(colorclass == MyGspn->colDoms.size())
+					cerr << "Unknown classe '" << coldom << "'"<< endl;
+			}
+			if (it2->compare("enumValue")==0) {
+				string coldom = *simplifyString(*(it2.begin()));
+				if(verbose>1)cerr << coldom << endl;
+				colorClass col = MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]];
+				for(enumvalue =0; enumvalue < col.colors.size() &&
+					col.colors[enumvalue].name != coldom ; enumvalue++) ;
+				if(enumvalue == col.colors.size())
+					cerr << "Unknown classe '" << coldom << "'"<< endl;
+			}
+		}
+		st->append(MyGspn->colDoms[colorclass].cname() +"(Color_"+ MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]].name+"_"+MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]].colors[enumvalue].name+")");
+		
 	}else if(it->compare("all")==0){
 		st->append("(");
 		eval_tokenProfileMark(st, it.begin());

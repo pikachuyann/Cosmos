@@ -221,8 +221,9 @@ RealMarkingFormula:  rval {sprintf($$, "%f",$1);}
 | ival {sprintf($$,"%d",$1);}
 | str {
 	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
-	{std::ostringstream s; s<<" Marking.P->_PL_"<<$1->c_str()<<" ";
-		sprintf($$, "%s",(s.str()).c_str());
+	{std::ostringstream s; s<<" Marking.P->_PL_"<<$1->c_str();
+		if(Reader.MyLha.MyGspn->placeStruct[Reader.MyLha.PlaceIndex[*$1]].colorDom !=0 )s <<".card()";
+		sprintf($$, "%s ",(s.str()).c_str());
 	}
 	else if(Reader.MyLha.LhaRealConstant.find(*$1)!=Reader.MyLha.LhaRealConstant.end())
 	{std::ostringstream s; s<<Reader.MyLha.LhaRealConstant[*$1];
@@ -252,8 +253,9 @@ RealVarMarkingFormula:  rval {sprintf($$, "%f",$1);}
 | ival {sprintf($$,"%d",$1);}
 | str {
 	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
-	{std::ostringstream s; s<<" Marking.P->_PL_"<<$1->c_str()<<" ";
-		sprintf($$, "%s",(s.str()).c_str());
+	{std::ostringstream s; s<<" Marking.P->_PL_"<<$1->c_str();
+		if(Reader.MyLha.MyGspn->placeStruct[Reader.MyLha.PlaceIndex[*$1]].colorDom !=0 )s <<".card()";
+		sprintf($$, "%s ",(s.str()).c_str());
 	}
 	else{ if(Reader.MyLha.LhaRealConstant.find(*$1)!=Reader.MyLha.LhaRealConstant.end())
 		{std::ostringstream s; s<<Reader.MyLha.LhaRealConstant[*$1];

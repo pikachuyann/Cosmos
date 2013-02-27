@@ -97,7 +97,7 @@ void Simulator::reset() {
 	N.reset();
 	A.reset(N.Marking);
 
-	(*EQ).reset();
+	EQ->reset();
 	
 }
 

@@ -135,14 +135,40 @@ bool ParseBuild(parameters& P) {
 		if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")!=0){
 			if(P.loopLHA>0.0){
 				lReader.MyLha.ConfidenceLevel = P.Level;
+				map<string,int>::const_iterator itt;
 				stringstream lhastr;
-				lhastr << "NbVariables = 1;\nNbLocations = 2;\n";
+				lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + gReader.MyGspn.pl <<";\nNbLocations = 3;\n";
 				lhastr << "const double T="<< P.loopLHA << ";\n";
-				lhastr << "VariablesList = {time} ;\nLocationsList = {l0, l1};\n";
+				lhastr << "const double invT=" << 1/P.loopLHA << ";\n";
+				lhastr << "const double Ttrans="<< P.loopTransientLHA << ";\n";
+				lhastr << "VariablesList = {time";
+				for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
+					lhastr<< ", "<< itt->first;
+				}
+				for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
+					lhastr<< ", PLVAR_"<< itt->first;
+				}
+				lhastr<<"} ;\nLocationsList = {l0, l1,l2};\n";
+				
+				for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
+					lhastr<< "Throughput_"<< itt->first<< "= AVG(Last(" << itt->first<<"));\n";
+				}
+				for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
+					lhastr<< "MeanToken_"<< itt->first<< "= AVG(Last( PLVAR_" << itt->first<<"));\n";
+				}
 				lhastr << P.externalHASL << endl;
-				lhastr << "InitialLocations={l0};\nFinalLocations={l1};\n";
-				lhastr << "Locations={(l0, TRUE, (time:1));(l1, TRUE);};\n";
-				lhastr << "Edges={((l0,l0),ALL,time<=T,#);((l0,l1),#,time=T ,#);};\n";
+				lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
+				lhastr << "Locations={(l0, TRUE, (time:1));(l1, TRUE, (time:1 ";
+				for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
+					lhastr<< ", PLVAR_"<< itt->first << ": "<< itt->first << "* invT " ;
+				}
+				
+				lhastr << "));(l2, TRUE);};\n";
+				lhastr << "Edges={((l0,l0),ALL,time<= Ttrans ,#);((l0,l1),#,time=Ttrans ,{time=0});";
+				for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
+					lhastr << "((l1,l1),{"<< itt->first <<"},time<=T,{"<<itt->first<<" = " <<itt->first<<" + "<< 1.0/P.loopLHA << " });\n";
+				}
+				lhastr << "((l1,l2),#,time=T ,#);};";
 				string s = lhastr.str();
 				parseresult = lReader.parse(s);
 				P.externalHASL = "";

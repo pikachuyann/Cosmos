@@ -46,11 +46,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../SOURCES/Cosmos/LHA.cpp"
-         timestampString = "382639690.353151"
+         timestampString = "383607636.819074"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "293"
-         endingLineNumber = "293"
+         startingLineNumber = "295"
+         endingLineNumber = "295"
          landmarkName = "LHA::LHA()"
          landmarkType = "5">
       </FileBreakpoint>
@@ -118,6 +118,19 @@
          endingLineNumber = "64"
          landmarkName = "signalHandler( int signum )"
          landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/Cosmos/LHA.cpp"
+         timestampString = "383607623.657854"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "573"
+         endingLineNumber = "573"
+         landmarkName = "LHA::UpdateFormulaVal()"
+         landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

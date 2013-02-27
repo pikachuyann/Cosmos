@@ -51,6 +51,7 @@ struct parameters {
 	string PathGspn;
 	string PathLha;
 	double loopLHA;
+	double loopTransientLHA;
 	string externalHASL;
 	bool localTesting;
 	bool RareEvent;

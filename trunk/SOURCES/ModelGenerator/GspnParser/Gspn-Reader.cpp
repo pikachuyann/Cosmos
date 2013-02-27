@@ -1045,7 +1045,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "\t}" << endl;
 	SpnCppFile << "}" << endl;
 	
-	SpnCppFile << "void SPN::unfire(size_t t ,const abstractBinding&){" << endl;
+	SpnCppFile << "void SPN::unfire(size_t t ,const abstractBinding& b){" << endl;
 	if(P.RareEvent || P.computeStateSpace){
 		SpnCppFile << "   switch(t){" << endl;
 		for (size_t t = 0; t < MyGspn.tr; t++) {

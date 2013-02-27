@@ -48,6 +48,7 @@ parameters::parameters():
 	PathGspn(""),
 	PathLha(""),
 	loopLHA(0.0),
+	loopTransientLHA(0.0),
 	externalHASL(""),
 
 	localTesting(false),
@@ -126,7 +127,7 @@ void parameters::usage(){
 	cout << "\t--output-raw \tOutput the result of each trajectory in a file for debug purpose"<< endl;
 	cout << "\t--output-PDFCDF \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
 	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
-	cout << "\t--loop t \tGenerate an LHA that loop for t times unit"<< endl;
+	cout << "\t--loop t1 t2 \tGenerate an LHA that loop for t1 times unit and then t2 time unit"<< endl;
 	
 }
 
@@ -249,7 +250,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  7  : gccflags = optarg; break;
 			case  10 : seed = atoi(optarg); break;
 			case  13 : externalHASL = optarg; break;
-			case  14 : loopLHA = atof(optarg);PathLha = "LOOP"; break;
+			case  14 : loopLHA = atof(optarg); loopTransientLHA = 100.0; PathLha = "LOOP"; break;
 				
             case '?':
                 usage();
