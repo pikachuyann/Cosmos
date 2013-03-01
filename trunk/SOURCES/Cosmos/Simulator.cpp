@@ -249,16 +249,7 @@ bool Simulator::transitionSink(size_t i){
 //the return value is true if the simulation did not reach
 //An accepting are refusing state.
 bool Simulator::SimulateOneStep(){
-    if(verbose>3){
-        //Print marking and location of the automata
-        //Usefull to track a simulation
-		N.Marking.print();
-        A.printState();
-		cerr << endl;
-		if(verbose>4)EQ->view();
-    }
-	//AutEdge AE = *AEref;
-    
+	
 	AutEdge AE = A.GetEnabled_A_Edges( N.Marking);
 	
     //If there is no enabled transition in the Petri net
@@ -360,6 +351,15 @@ void Simulator::SimulateSinglePath() {
 	bool continueb = true;
 	while ((!(*EQ).isEmpty()) && continueb ) {
         //cerr << "continue path"<< endl;
+		if(verbose>3){
+			//Print marking and location of the automata
+			//Usefull to track a simulation
+			N.Marking.print();
+			A.printState();
+			cerr << endl;
+			if(verbose>4)EQ->view();
+		}
+
 		continueb = SimulateOneStep();
 	}
     //cerr << "finish path"<< endl;
