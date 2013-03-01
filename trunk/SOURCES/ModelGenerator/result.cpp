@@ -125,20 +125,21 @@ void result::printProgress(){
     }
 	cout.precision(15);
     cout << "Total paths: ";
-	cout.width(15);
-	cout << left << MeanM2->I << "\t accepted paths: ";
-	cout.width(15);
-	cout << left << MeanM2->Isucc << endl;
+	cout << setw(15) << MeanM2->I << "\t accepted paths: ";
+	cout << setw(15) << MeanM2->Isucc << endl;
     endline++;
+	
+	size_t maxformulaname=0;
+	for(size_t i=0; i<P.HaslFormulasname.size(); i++)
+		maxformulaname = max(maxformulaname,P.HaslFormulasname[i].size());
+	
 	if(P.verbose >1){
 		for(size_t i=0; i<P.HaslFormulasname.size(); i++){
 			
-			cout<< P.HaslFormulasname[i] << ":\t Mean=";
-			cout.width(15);
-			cout << left << HaslResult[i]->mean;
+			cout << setw(maxformulaname+1)<<left << (P.HaslFormulasname[i]+":") << " Mean=";
+			cout << setw(15) << HaslResult[i]->mean;
 			cout << "\t  width=";
-			cout.width(15);
-			cout << left << HaslResult[i]->width() << endl;
+			cout << setw(15) << HaslResult[i]->width() << endl;
 			endline++;
 			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2){
 				cout << "% of width:\t";
