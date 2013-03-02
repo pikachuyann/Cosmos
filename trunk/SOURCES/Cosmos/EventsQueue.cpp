@@ -28,6 +28,7 @@
 #include <iostream>
 #include <assert.h>
 #include <algorithm>
+#include <iomanip>
 
 using namespace std;
 
@@ -169,7 +170,7 @@ bool EventsQueue::isEmpty() {
 void EventsQueue::view(const vector<_trans> &trlabl) {
     cerr << "********** EVENTS-QUEUE VIEW **********" << endl;
 	
-    cerr << "Qsize:" << evtHeap.size() << endl;
+    //cerr << "Qsize:" << evtHeap.size() << endl;
 	
     if (evtHeap.size() == 0)
         cerr << "EVENTS-QUEUE is empty!" << endl;
@@ -177,8 +178,8 @@ void EventsQueue::view(const vector<_trans> &trlabl) {
         for (unsigned int i = 0; i < evtHeap.size(); i++){
 			Event e = InPosition(i);
             //cerr << "Equeue[" << i << "]:" << "( ";
-			cerr << trlabl[e.transition].label << ":\t";
-			cerr << "tr ID:" << e.transition << " ";
+			cerr << setw(15) << left << trlabl[e.transition].label << ":";
+			cerr << "tr ID:" << setw(4)<< e.transition << " ";
 			e.binding.print();
 			cerr << ",\tt=" << e.time << ",\tp=" << e.priority << ",\tw=" << e.weight;
 			cerr << endl;

@@ -367,8 +367,12 @@ void Simulator::interactiveSimulation(){
 				}
 				
 				
-			}else if(input_line.substr(0,4).compare("step")==0)continueLoop=false;
-			else if (input_line.substr(0,1).compare("s")==0)continueLoop=false;
+			}else if(input_line.compare("step")==0)continueLoop=false;
+			else if(input_line.compare("help")==0 || input_line.compare("h")==0){
+				cerr << "Available command:\n\thelp:\tdisplay this message"<<endl;
+				cerr << "\ts, step:\tmake one step of simulation" << endl;
+				cerr << "\tfire tr:\tfire transition tr" << endl;
+			} else if (input_line.compare("s")==0 || input_line.compare("s")==0)continueLoop=false;
 			else if (input_line.compare("")==0);
 			else {
 				cerr << "Command not found:" << input_line << endl;

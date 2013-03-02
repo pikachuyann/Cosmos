@@ -189,7 +189,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "void LHA_ORIG::printState(){\n";
 	LhaCppFile << "\tcerr << \"Location:\"<< LocLabel[CurrentLocation] << endl;\n";
 	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
-		LhaCppFile << "\tcerr << \"" << MyLha.Vars.label[v] << " = \" << Vars->"<< MyLha.Vars.label[v] << " << endl;\n";
+		LhaCppFile << "\tcerr << \"\t" << MyLha.Vars.label[v] << " : \" << Vars->"<< MyLha.Vars.label[v] << " << endl;\n";
 	}
 	LhaCppFile << "};\n";
 
