@@ -51,7 +51,7 @@ public:
 
 	
     bool isEmpty();
-    void view();
+    void view(const vector<_trans> &);
 
     void reset();
     size_t getSize()const ;

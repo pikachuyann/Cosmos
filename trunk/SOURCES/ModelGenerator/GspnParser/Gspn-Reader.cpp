@@ -668,7 +668,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	SpnCppFile << "}\n";
 	
 	SpnCppFile << "void abstractBinding::print()const{\n";
-	SpnCppFile << "\tstd::cerr << \"Binding:\"<< std::endl;\n";
+	//SpnCppFile << "\tstd::cerr << \"Binding:\"<< std::endl;\n";
 	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
 		SpnCppFile << "\tstd::cerr << \"\\t"<< colvar->name <<": \";";
 		SpnCppFile << "P->"<< colvar->name << ".print();\n\tcerr << endl;\n";

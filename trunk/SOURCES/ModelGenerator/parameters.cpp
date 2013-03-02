@@ -32,6 +32,7 @@
 
 parameters::parameters():
     verbose(2),
+	interactive(false),
 	updatetime(0.1),
 	seed(0),
 	Njob(1),
@@ -102,6 +103,7 @@ void parameters::usage(){
     
     cout << "General options:" << endl;
     cout << "\t-v,--verbose arg\tset the verbose level"<< endl;
+	cout << "\t-i,--interactive \tAsk the user to choose next transition" << endl;
 	cout << "\t--update-time\t set the time in second beetween two updates of the display"<< endl;
     cout << "\t-h,--help \tdisplay this message" << endl;
     cout << "\t--njob    \tset the number of parralel thread"<< endl;
@@ -166,6 +168,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"gppcmd",required_argument,	 0,  6 },
 			{"gppflags",required_argument,	 0,  7 },
             {"verbose", required_argument,	 0, 'v'},
+			{"interactive", no_argument  ,   0, 'i'},
 			{"update-time",required_argument,0, 'u'},
             {"outputdata", required_argument,0, 'd'},
 			{"output-raw" , required_argument,0,  8 },
@@ -182,7 +185,7 @@ void parameters::parseCommandLine(int argc, char** argv){
         /* getopt_long stores the option index here. */
         int option_index = 0;
         
-        c = getopt_long (argc, argv, "ghscrb:v:d:",
+        c = getopt_long (argc, argv, "gihscrb:v:d:",
                          long_options, &option_index);
         
         /* Detect the end of the options. */
@@ -198,6 +201,12 @@ void parameters::parseCommandLine(int argc, char** argv){
                 
             case 'v':verbose = atoi(optarg);
 				if(verbose>=4)StringInSpnLHA = true;	
+				break;
+				
+			case 'i':
+				interactive =true;
+				verbose =6;
+				StringInSpnLHA =true;
 				break;
 				
 			case 'u':updatetime=atof(optarg);	break;

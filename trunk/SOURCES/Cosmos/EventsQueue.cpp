@@ -166,7 +166,7 @@ bool EventsQueue::isEmpty() {
     return (evtHeap.size()==0);
 }
 
-void EventsQueue::view() {
+void EventsQueue::view(const vector<_trans> &trlabl) {
     cerr << "********** EVENTS-QUEUE VIEW **********" << endl;
 	
     cerr << "Qsize:" << evtHeap.size() << endl;
@@ -176,10 +176,12 @@ void EventsQueue::view() {
     else
         for (unsigned int i = 0; i < evtHeap.size(); i++){
 			Event e = InPosition(i);
-            cerr << "Equeue[" << i << "]:" << "( tId" << e.transition << " ";
+            //cerr << "Equeue[" << i << "]:" << "( ";
+			cerr << trlabl[e.transition].label << ":\t";
+			cerr << "tr ID:" << e.transition << " ";
 			e.binding.print();
-			cerr << ",t=" << e.time << ", p=" << e.priority << ", w=" << e.weight << " ,";
-			cerr << ")" << endl;
+			cerr << ",\tt=" << e.time << ",\tp=" << e.priority << ",\tw=" << e.weight;
+			cerr << endl;
 		}
 }
 

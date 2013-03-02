@@ -4,7 +4,7 @@
  * (S)tochastiques                                                             *
  *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
- * Authors: Paolo Ballarini & Hilal Djafri                                     *
+ * Authors: Paolo Ballarini, Benoit Barbot & Hilal Djafri                      *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
  *                                                                             *
  * This program is free software; you can redistribute it and/or modify        *
@@ -37,6 +37,7 @@
 #include <boost/math/distributions/binomial.hpp>
 #include <time.h>
 #include "marking.hpp"
+//#include "interactive.hpp"
 
 
 using namespace std;
@@ -305,10 +306,11 @@ bool Simulator::SimulateOneStep(){
 			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
 		if(verbose>3){
-			cerr << "|^^^^^^^^^^^^^^^^^^^^"<< endl;
-			cerr << "transition:" << N.Transition[E1.transition].label << endl;
+			//cerr << "|^^^^^^^^^^^^^^^^^^^^"<< endl;
+			cerr << "\033[1;33mFirring:\033[0m" << N.Transition[E1.transition].label ;
 			E1.binding.print();
-			cerr << "|vvvvvvvvvvvvvvvvvvvv"<< endl;
+			cerr << endl;
+			//cerr << "|vvvvvvvvvvvvvvvvvvvv"<< endl;
 		}
 			
 		//Make time elapse in the LHA
@@ -339,6 +341,46 @@ bool Simulator::SimulateOneStep(){
 	return true;
 }
 
+void Simulator::interactiveSimulation(){
+	string input_line;
+	bool continueLoop = true;
+	while(continueLoop){
+		cerr << "\033[1;31mCosmosSimulator>\033[0m";
+		if (cin.good()) {
+			getline(cin, input_line);
+			if(input_line.substr(0,5).compare("fire ")==0){
+				string trans = input_line.substr(5,input_line.size()-5);
+				size_t traid;
+				for(traid=0; traid < N.Transition.size() && N.Transition[traid].label != trans; traid++);
+				if(traid == N.Transition.size())cerr << "Unknown transition: "<< trans << endl;
+				else{
+					if(EQ->isScheduled(traid, 0)){
+						Event F;
+						F.setTime(A.CurrentTime);
+						F.setPriority((size_t)-1);
+						F.setWeight(0.0);
+						F.transition = traid;
+						F.binding = N.Transition[traid].bindingList[0];
+						EQ->replace(F);
+						continueLoop = false;
+					}else cerr << "Transition: "<< trans << " is not enabled" << endl;
+				}
+				
+				
+			}else if(input_line.substr(0,4).compare("step")==0)continueLoop=false;
+			else if (input_line.substr(0,1).compare("s")==0)continueLoop=false;
+			else if (input_line.compare("")==0);
+			else {
+				cerr << "Command not found:" << input_line << endl;
+			}
+			
+		}else continueLoop=false;
+		
+	}
+	
+	
+}
+
 //Simlulate a whole trajectory in the system. Result is store in SimOutput
 void Simulator::SimulateSinglePath() {
 	
@@ -357,14 +399,14 @@ void Simulator::SimulateSinglePath() {
 			N.Marking.print();
 			A.printState();
 			cerr << endl;
-			if(verbose>4)EQ->view();
+			if(verbose>4)EQ->view(N.Transition);
+			if(verbose>5)interactiveSimulation();
 		}
 
 		continueb = SimulateOneStep();
 	}
     //cerr << "finish path"<< endl;
 }
-
 
 //Generate an event based on the type of his distribution
 void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {

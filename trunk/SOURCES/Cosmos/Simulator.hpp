@@ -4,7 +4,7 @@
  * (S)tochastiques                                                             *
  *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
- * Authors: Paolo Ballarini & Hilal Djafri                                     *
+ * Authors: Paolo Ballarini, Benoit Barbot & Hilal Djafri                      *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
  *                                                                             *
  * This program is free software; you can redistribute it and/or modify        *
@@ -92,6 +92,8 @@ protected:
 	
 	virtual bool SimulateOneStep(); //Simulate a step of the system, this function do most of the simulation job
 	virtual void SimulateSinglePath(); //Simulate a single path 
+		
+	void interactiveSimulation(); //Wait for the user to choose the next transition
 	
 	virtual void InitialEventsQueue(); //initialize the event queue
 	//virtual void resetSimVarsTable();

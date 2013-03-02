@@ -36,6 +36,7 @@ using namespace std;
 
 struct parameters {
     int verbose;
+	bool interactive;
 	double updatetime;
 	unsigned int seed;
 	int Njob;
