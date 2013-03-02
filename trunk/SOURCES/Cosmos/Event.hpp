@@ -30,6 +30,7 @@
 #ifndef _EVENT_HPP
 #define	_EVENT_HPP
 
+#include "string"
 #include "marking.hpp"
 
 class Event {
