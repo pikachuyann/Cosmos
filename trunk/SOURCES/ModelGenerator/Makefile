@@ -43,7 +43,7 @@ $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
 	$(CXX) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
 
 $(BINPATH)/Cosmos: $(FILES) 
-	$(CXX) $(OPTIONS) -L/usr/lib/ -lexpat $^ -o $@
+	$(CXX) $(OPTIONS) $^ -lexpat -o $@
 
 parser:
 	@(cd LhaParser && $(MAKE))
