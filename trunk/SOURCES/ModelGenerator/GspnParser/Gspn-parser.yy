@@ -273,7 +273,7 @@ PLabels : str {
  };
 
 TransitionsList: TList EQ '{' TLabels '}' SEMICOLON {
-  if(Reader.MyGspn.TransId.size()!=Reader.MyGspn.tr){
+  if(Reader.MyGspn.TransList.size()!=Reader.MyGspn.tr){
     std::cout<<"Transition label missing or redeclared, please check your transitions list"<<std::endl;
     YYABORT;
   }
@@ -281,13 +281,13 @@ TransitionsList: TList EQ '{' TLabels '}' SEMICOLON {
  };
 
 TLabels : str {Reader.MyGspn.TransList.insert(*$1);
-   int sz=Reader.MyGspn.TransId.size();
-   Reader.MyGspn.TransId[*$1]=sz;
+   /*int sz=Reader.MyGspn.TransId.size();
+   Reader.MyGspn.TransId[*$1]=sz;*/
 
  }
 |TLabels COMMA str {Reader.MyGspn.TransList.insert(*$3);
-   int sz=Reader.MyGspn.TransId.size();
-   Reader.MyGspn.TransId[*$3]=sz;
+   /*int sz=Reader.MyGspn.TransId.size();
+   Reader.MyGspn.TransId[*$3]=sz;*/
 
  };
 
@@ -338,6 +338,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->markingDependant = false;
   trans->ageMemory = false;
   trans->nbServers = 1;
+  int sz=Reader.MyGspn.TransId.size();
+  Reader.MyGspn.TransId[*$2]=sz;
   Reader.MyGspn.transitionStruct.push_back(*trans);
 
   vector<string> v;
@@ -360,6 +362,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->markingDependant = false;
   trans->ageMemory = AgeMemory;
   trans->nbServers = 1;
+	int sz=Reader.MyGspn.TransId.size();
+	Reader.MyGspn.TransId[*$2]=sz;
   Reader.MyGspn.transitionStruct.push_back(*trans);
   
   vector<string> v;
@@ -397,6 +401,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->markingDependant = MarkingDependent;
   trans->ageMemory = false;
   trans->nbServers = NbServers;
+	int sz=Reader.MyGspn.TransId.size();
+	Reader.MyGspn.TransId[*$2]=sz;
   Reader.MyGspn.transitionStruct.push_back(*trans);
 
   MarkingDependent=false;
@@ -436,7 +442,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->ageMemory = AgeMemory;
   trans->nbServers = NbServers;
   Reader.MyGspn.transitionStruct.push_back(*trans);
-
+	int sz=Reader.MyGspn.TransId.size();
+	Reader.MyGspn.TransId[*$2]=sz;
   MarkingDependent=false;
   AgeMemory=false;
  }
@@ -458,6 +465,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->markingDependant = false;
   trans->ageMemory = false;
   trans->nbServers = 1;
+	int sz=Reader.MyGspn.TransId.size();
+	Reader.MyGspn.TransId[*$2]=sz;
   Reader.MyGspn.transitionStruct.push_back(*trans);
 
  };
