@@ -77,10 +77,18 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.gspn"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.lha"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_9201210837105334033.grml"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_2300386996970105733.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

@@ -224,7 +224,7 @@ public:
 
     int parse(std::string&);
     int parse_file(std::string&);
-	int parse_gml_file(std::string&,bool);
+	int parse_gml_file(parameters&);
     void WriteFile(parameters&);
 	void writeMarkingClasse(ofstream &, ofstream &);
 	void writeEnabledDisabled(ofstream &);

@@ -70,7 +70,7 @@ struct variables {
 
 struct LHA {
 	GSPN *MyGspn;
-	LHA(GSPN& Mspn) : MyGspn(&Mspn) {}
+	LHA(GSPN& Mspn) : MyGspn(&Mspn),NbLoc(0) {}
     string label;
     size_t NbLoc; // number of locations
 
@@ -127,10 +127,7 @@ struct LHA {
     map <std::string, int> LhaIntConstant; //contains constants defined like int
     map <std::string, double> LhaRealConstant; //contains constants defined like double and constants defined linke int
     map <std::string, int> LhaFunction;
-
-
-
-
+	
 };
 
 typedef struct LHA LhaType;

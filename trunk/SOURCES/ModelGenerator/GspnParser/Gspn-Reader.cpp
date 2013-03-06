@@ -100,18 +100,18 @@ int Gspn_Reader::parse_file(string &filename) {
 }
 
 //#include "Gspn_gmlparser.cpp";
-int Gspn_Reader::parse_gml_file(string &filename,bool re) {
-	ifstream ifile(filename.c_str());
+int Gspn_Reader::parse_gml_file(parameters &P) {
+	ifstream ifile(P.PathGspn.c_str());
 	if(ifile){
 		//cout << "parse GML:" << filename << endl;
-		ModelHandlerPtr handlerPtr(new MyModelHandler(&MyGspn,re));
+		ModelHandlerPtr handlerPtr(new MyModelHandler(&MyGspn,P.RareEvent,P.verbose));
 		ExpatModelParser parser = ExpatModelParser(handlerPtr);
-		parser.parse_file(filename);
+		parser.parse_file(P.PathGspn);
 		//cout << "end parse GML:"<< MyGspn.pl << endl;
-		if (re)addSinkTrans();
+		if (P.RareEvent)addSinkTrans();
 		return 0;
 	}else{
-		cout << "File " << filename << " does not exist!" << endl;
+		cout << "File " << P.PathGspn << " does not exist!" << endl;
 		exit(EXIT_FAILURE);
 	}
 	

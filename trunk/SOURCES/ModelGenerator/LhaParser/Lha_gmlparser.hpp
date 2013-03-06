@@ -72,7 +72,7 @@ private:
 	map<int,bool> IsPlace;
 	LHA* MyLHA;
 public:
-    MyLhaModelHandler(LHA* ) ;
+    MyLhaModelHandler(LHA*,int v) ;
 	//~MyModelHandler() { }
 	
 	

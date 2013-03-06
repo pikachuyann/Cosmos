@@ -57,7 +57,7 @@ private:
     bool rareEvent;
     
 public:
-    MyModelHandler(GSPN* ,bool) ;
+    MyModelHandler(GSPN* ,bool, int) ;
 	//~MyModelHandler() { }
 	
 	

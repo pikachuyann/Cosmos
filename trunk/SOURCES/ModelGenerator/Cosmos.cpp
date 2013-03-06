@@ -103,12 +103,12 @@ bool ParseBuild(parameters& P) {
 	
     try{
         if(P.GMLinput || (P.PathGspn.compare(P.PathGspn.length()-4,4,"grml") ==0)){
-            parseresult = gReader.parse_gml_file(P.PathGspn,P.RareEvent);
+            parseresult = gReader.parse_gml_file(P);
         }else {
             parseresult = gReader.parse_file(P.PathGspn);
         }
         
-        if (!parseresult) {
+        if (!parseresult && gReader.MyGspn.pl >0 && gReader.MyGspn.tr >0) {
             gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
             if(P.tmpStatus==0||P.tmpStatus==2)gReader.WriteFile(P);
         } else {
@@ -182,7 +182,7 @@ bool ParseBuild(parameters& P) {
 				lReader.parse(P.externalHASL);
 			
 			
-			if (!parseresult) {
+			if (!parseresult && lReader.MyLha.NbLoc>0) {
 				P.HaslFormulasname = lReader.MyLha.HASLname;
 				P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
 				P.nbAlgebraic = lReader.MyLha.Algebraic.size();
