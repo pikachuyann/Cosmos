@@ -6,6 +6,9 @@
 #include <map>
 #include <stack>
 #include <string>
+#include <algorithm>
+#include <functional>
+#include <locale>
 
 #include <expat.h>
 
@@ -22,6 +25,12 @@ enum parser_state
     ATTRIBUTE
 };
 
+class IOError: public std::runtime_error
+{
+public:
+    IOError(std::string message) throw();
+};
+
 
 class ExpatError: public std::runtime_error
 {
@@ -36,7 +45,7 @@ public:
 
 /**
  * Parser of model using expat library.
- * This parser can read a GML file or a standard input stream.
+ * This parser can read a GrML file or a standard input stream.
  */
 class ExpatModelParser
 {
@@ -79,5 +88,12 @@ public:
      * @param in input stream
      */
     void parse_stream(std::istream& in) throw(ExpatError);
+
+    /**
+     * Trim a string
+     * @param s the string
+     */
+    static void trim(std::string& s);
+
 };
 

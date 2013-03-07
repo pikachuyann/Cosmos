@@ -1,8 +1,8 @@
 #pragma once
 
 /**
- * \mainpage LibGML
- * Library to help developper to read and/or write model using GML syntax.
+ * \mainpage LibGrML
+ * Library to help developper to read and/or write model using GrML syntax.
  * \author   Clément Démoulins
  */
 
@@ -29,8 +29,7 @@ class gmlinputexception: public std::exception {
 /** Type representing a string from an XML document. */
 typedef std::string XmlString;
 
-
-/** Type representing a GML attribute element.
+/** Type representing a GrML attribute element.
  * Ex:
  * <attribute name="declaration">
  *   <attribute name="classDeclaration">
@@ -65,7 +64,7 @@ typedef std::tr1::shared_ptr<ModelHandler> ModelHandlerPtr;
 
 /**
  * Model handler interface. Implementation of this interface receive event
- * when parsing a GML model.
+ * when parsing a GrML model.
  */
 class ModelHandler
 {

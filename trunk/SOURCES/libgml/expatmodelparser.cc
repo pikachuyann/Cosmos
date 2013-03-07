@@ -3,6 +3,10 @@
 #include "tree/tree_util.hh"
 
 
+
+
+IOError::IOError(std::string message) throw() : std::runtime_error(message) { }
+
 ExpatError::ExpatError(XML_Error error_code) throw() : std::runtime_error(""), error_code(error_code) { }
 const char* ExpatError::what() const throw()
 {
@@ -27,17 +31,20 @@ ExpatModelParser::~ExpatModelParser()
 void ExpatModelParser::parse_file(const std::string& filename) throw(ExpatError)
 {
     std::ifstream ifs(filename.c_str());
+    if (ifs.fail()) {
+        throw IOError("Cannot open the file");
+    }
     parse_stream(ifs);
 }
 
 void ExpatModelParser::parse_stream(std::istream& in) throw(ExpatError)
 {
-    char* buf = new char[BUFFER_SIZE];
     XML_Status status;
     while(in.good())
     {
-        in.read(buf, BUFFER_SIZE);
-        status = XML_Parse(parser, buf, in.gcount(), in.eof());
+        char* buffer = (char*) XML_GetBuffer(parser, BUFFER_SIZE);
+        in.read(buffer, BUFFER_SIZE);
+        status = XML_ParseBuffer(parser, in.gcount(), in.eof());
 
         if (status == XML_STATUS_ERROR)
         {
@@ -84,13 +91,13 @@ void ExpatModelParser::on_start_element(void *userData, const XML_Char *cname, c
     } else if (name == "attribute") { // <attribute name= >
         std::string attributeName = atts["name"];
 
-        // root GML attribute
+        // root GrML attribute
         if (self->state.top() != ATTRIBUTE) {
             self->attribute.clear();
             self->attributeIterator = self->attribute.insert(self->attribute.begin(), attributeName);
         }
 
-        // child GML attribute
+        // child GrML attribute
         else {
             self->attributeIterator = self->attribute.append_child(self->attributeIterator, attributeName);
         }
@@ -123,18 +130,19 @@ void ExpatModelParser::on_end_element(void *userData, const XML_Char *cname)
 
         // leaf node with data
         if (!self->xmlData.empty() &&  self->attribute.number_of_children(self->attributeIterator) == 0) {
+            self->trim(self->xmlData);
             self->attribute.append_child(self->attributeIterator, self->xmlData);
             self->xmlData.clear();
         }
 
-        // root GML attribute
+        // root GrML attribute
         if (self->state.top() == MODEL) {
             self->handler->on_read_model_attribute(self->attribute);
         } else if (self->state.top() == NODE || self->state.top() == ARC) {
             self->attributes[*self->attribute.begin()] = self->attribute;
         }
 
-        // child GML attribute
+        // child GrML attribute
         else {
             self->attributeIterator = self->attribute.parent(self->attributeIterator);
         }
@@ -146,4 +154,9 @@ void ExpatModelParser::on_characters(void *userData, const XML_Char *s, int len)
 {
     ExpatModelParser* self = (ExpatModelParser*) userData;
     self->xmlData += std::string(s, len);
+}
+
+void ExpatModelParser::trim(std::string& s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+    s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 }

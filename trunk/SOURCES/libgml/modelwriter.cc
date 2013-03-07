@@ -6,7 +6,7 @@
 void ModelWriter::init_model(const XmlString formalismUrl)
 {
     out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl << std::endl;
-    out << "<gml:model formalismUrl=\"" << formalismUrl << "\" xmlns:gml=\"http://gml.lip6.fr/model\">";
+    out << "<grml:model formalismUrl=\"" << formalismUrl << "\" xmlns:grml=\"http://cosyverif.org/ns/model\">";
     indent = indent_size = "  ";
 }
 
@@ -17,7 +17,7 @@ ModelWriter::ModelWriter(const XmlString formalismUrl, std::ostream& out) : out(
 
 ModelWriter::~ModelWriter()
 {
-    out << std::endl << "</gml:model>" << std::endl << std::flush;
+    out << std::endl << "</grml:model>" << std::endl << std::flush;
 }
 
 void ModelWriter::decrease_indent()
@@ -42,7 +42,7 @@ void ModelWriter::write_attribute(const Attribute& attribute, const Attribute::i
         out << (*node);
     } else {
         out << std::endl;
-        out << indent << "<gml:attribute name=\"" << (*node) << "\">";
+        out << indent << "<grml:attribute name=\"" << (*node) << "\">";
         increase_indent();
         for (int index = 0; index < number_of_children; ++index)
         {
@@ -53,14 +53,14 @@ void ModelWriter::write_attribute(const Attribute& attribute, const Attribute::i
         {
             out << std::endl << indent;
         }
-        out << "</gml:attribute>";
+        out << "</grml:attribute>";
     }
 }
 
 void ModelWriter::write_reference(const XmlString reference)
 {
     out << std::endl << indent;
-    out << "<gml:ref href=\"" << reference << "\" />";
+    out << "<grml:ref href=\"" << reference << "\" />";
 }
 
 void ModelWriter::write_model_attribute(const Attribute& attribute)
@@ -73,7 +73,7 @@ void ModelWriter::write_node(const XmlString id,
         const AttributeMap& attributes,
         const XmlStringList& references)
 {
-    out << std::endl << indent << "<gml:node id=\"" << id << "\" nodeType=\"" << nodeType << "\"";
+    out << std::endl << indent << "<grml:node id=\"" << id << "\" nodeType=\"" << nodeType << "\"";
     if (attributes.size() + references.size() == 0)
         out << " />";
     else
@@ -89,7 +89,7 @@ void ModelWriter::write_node(const XmlString id,
             write_reference(*it);
         }
         decrease_indent();
-        out << std::endl << indent << "</gml:node>";
+        out << std::endl << indent << "</grml:node>";
     }
 }
 
@@ -100,7 +100,7 @@ void ModelWriter::write_arc(const XmlString id,
         const AttributeMap& attributes,
         const XmlStringList& references)
 {
-    out << std::endl << indent << "<gml:arc id=\"" << id << "\" arcType=\"" << arcType << "\"";
+    out << std::endl << indent << "<grml:arc id=\"" << id << "\" arcType=\"" << arcType << "\"";
     out << " source=\"" << source << "\" target=\"" << target << "\"";
     if (attributes.size() + references.size() == 0)
         out << " />";
@@ -117,7 +117,7 @@ void ModelWriter::write_arc(const XmlString id,
             write_reference(*it);
         }
         decrease_indent();
-        out << std::endl << indent << "</gml:arc>";
+        out << std::endl << indent << "</grml:arc>";
     }
 }
 
