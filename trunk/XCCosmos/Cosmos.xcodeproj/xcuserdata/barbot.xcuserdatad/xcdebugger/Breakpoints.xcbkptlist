@@ -103,7 +103,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "518"
          endingLineNumber = "518"
-         landmarkName = "MyLhaModelHandler::on_read_node(const XmlString&amp; id, const XmlString&amp; nodeType, const AttributeMap&amp; attributes, const XmlStringList&amp; references)"
+         landmarkName = "MyLhaModelHandler::on_read_model_attribute(const Attribute&amp; attribute)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -169,6 +169,19 @@
          startingLineNumber = "82"
          endingLineNumber = "82"
          landmarkName = "Simulator::InitialEventsQueue()"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/ModelGenerator/GspnParser/Gspn_gmlparser.cpp"
+         timestampString = "384426597.196041"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "426"
+         endingLineNumber = "426"
+         landmarkName = "MyModelHandler::on_read_model(const XmlString&amp; formalismUrl)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

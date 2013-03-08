@@ -84,7 +84,6 @@ struct LHA {
     vector <string> FuncLocProperty;
 
 
-
     map<string, int> EdgeIndex;
     vector <LhaEdge> Edge;
     LhaEdge AnEdge;

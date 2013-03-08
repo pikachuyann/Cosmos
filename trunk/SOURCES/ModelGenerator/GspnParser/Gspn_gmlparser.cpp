@@ -755,6 +755,17 @@ void MyModelHandler::on_read_node(const XmlString& id,
                 } else cout << "fail to parse gml"<< endl;
                 
             }
+			
+			if(trans.dist.name == "" ){
+				trans.type=unTimed;
+				trans.dist.name = "EXPONENTIAL";
+				trans.dist.Param.push_back("0.0");
+				if(verbose>=0){
+					cout << "[Warning] Transition " << trans.label;
+					cout << " have no distribution.";
+					cout << " Assigne exponential with parameter 1"<< endl;
+				}
+			}
             
 			MyGspn->transitionStruct.push_back(trans);
             countTr++;

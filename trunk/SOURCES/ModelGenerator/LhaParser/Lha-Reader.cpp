@@ -174,7 +174,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "struct Variables {\n";
 	for(size_t v =0 ; v< MyLha.Vars.type.size(); v++){
 		if(MyLha.Vars.type[v] == COLOR_VARIABLE){
-			LhaCppFile << "\t" << MyLha.MyGspn->colClasses[MyLha.Vars.colorDomain[v]].name << " " << MyLha.Vars.label[v] << ";\n";
+			LhaCppFile << "\t" << MyLha.MyGspn->colClasses[MyLha.Vars.colorDomain[v]].cname() << " " << MyLha.Vars.label[v] << ";\n";
 		}else
 			LhaCppFile << "\tdouble "<< MyLha.Vars.label[v] << ";\n";
 	}
@@ -182,7 +182,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	LhaCppFile << "void LHA::resetVariables(){\n";
 	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
-		LhaCppFile << "\tVars->"<< MyLha.Vars.label[v] << "= "<< MyLha.Vars.initialValue[v]<<";\n";
+		if(MyLha.Vars.type[v] == COLOR_VARIABLE){
+			LhaCppFile << "\tVars->" << MyLha.Vars.label[v] << "= Color_" << MyLha.MyGspn->colClasses[MyLha.Vars.colorDomain[v]].name << "_Total ;\n";
+		}else LhaCppFile << "\tVars->"<< MyLha.Vars.label[v] << "= "<< MyLha.Vars.initialValue[v]<<";\n";
 	}
 	LhaCppFile << "};\n";
 	
@@ -343,6 +345,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	LhaCppFile << "void LHA_ORIG::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {\n";
     for (size_t v = 0; v < MyLha.Vars.label.size() ; v++) {
+		if(MyLha.Vars.type[v] == CONTINIOUS_VARIABLE )
         LhaCppFile <<  "\tVars->"<< MyLha.Vars.label[v] << " += GetFlow("<<v<<", CurrentLocation, Marking) * DeltaT;\n";
     }
 	LhaCppFile << "}\n";
@@ -351,19 +354,20 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "double LHA::GetFlow(int v, int loc,const abstractMarking& Marking){" << endl;
     LhaCppFile << "    switch(v){" << endl;
     for (size_t x = 0; x < MyLha.NbVar; x++) {
-		
-        LhaCppFile << "    case " << x << ":" << endl;
-        LhaCppFile << "         switch(loc){" << endl;
-        for (size_t l = 0; l < MyLha.NbLoc; l++) {
-            LhaCppFile << "         case " << l << ":" << endl;
-            if (MyLha.FuncFlow[l][x] != "")
-                LhaCppFile << "             return " << MyLha.FuncFlow[l][x] << ";" << endl;
-            else
-                LhaCppFile << "             return " << 0.0 << ";" << endl;
-            LhaCppFile << "             break;" << endl;
-        }
-        LhaCppFile << "       }" << endl;
-        LhaCppFile << "       break;" << endl;
+		if(MyLha.Vars.type[x] == CONTINIOUS_VARIABLE ){
+			LhaCppFile << "    case " << x << ":" << endl;
+			LhaCppFile << "         switch(loc){" << endl;
+			for (size_t l = 0; l < MyLha.NbLoc; l++) {
+				LhaCppFile << "         case " << l << ":" << endl;
+				if (MyLha.FuncFlow[l][x] != "")
+					LhaCppFile << "             return " << MyLha.FuncFlow[l][x] << ";" << endl;
+				else
+					LhaCppFile << "             return " << 0.0 << ";" << endl;
+				LhaCppFile << "             break;" << endl;
+			}
+			LhaCppFile << "       }" << endl;
+			LhaCppFile << "       break;" << endl;
+		}
     }
     LhaCppFile << "	}\n" << endl;
     LhaCppFile << "}\n" << endl;
@@ -382,7 +386,8 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
     LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
-    for (size_t e = 0; e < MyLha.Edge.size(); e++) {
+    for (size_t e = 0; e < MyLha.Edge.size(); e++)
+		if(MyLha.ConstraintsRelOp[e].size()>0){
         LhaCppFile << "    case " << e << ": {" << endl;
         for (size_t c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
             LhaCppFile << "         if(!( ";
@@ -399,6 +404,7 @@ void Lha_Reader::WriteFile(parameters& P) {
         LhaCppFile << "         break;" << endl;
         LhaCppFile << "     }" << endl;
     }
+	LhaCppFile << "    default: return true;" << endl;
     LhaCppFile << "    }" << endl;
 	
 	
@@ -407,7 +413,8 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
     LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
-    for (size_t e = 0; e < MyLha.Edge.size(); e++) {
+    for (size_t e = 0; e < MyLha.Edge.size(); e++)
+		if(MyLha.ConstraintsRelOp[e].size()>0){
         LhaCppFile << "     case " << e << ":" << endl;
 		
         //LhaCppFile << "         return GetEdgeEnablingTime_" << e << "( Marking);" << endl;
@@ -488,11 +495,21 @@ void Lha_Reader::WriteFile(parameters& P) {
         LhaCppFile << "             return EnablingT;" << endl;
 		LhaCppFile << "         }"<< endl;
 		
-		
+			
 		//LhaCppFile << "         }" << endl;
         //LhaCppFile << "         break;" << endl;
 		
 	}
+	
+	LhaCppFile << "     default:" << endl;
+	
+	LhaCppFile << "         {" << endl;
+	
+	LhaCppFile << "             t_interval EnablingT;\n" << endl;
+	LhaCppFile << "             EnablingT.first=CurrentTime;" << endl;
+	LhaCppFile << "             EnablingT.second=DBL_MAX;\n" << endl;
+	LhaCppFile << "             return EnablingT;" << endl;
+	LhaCppFile << "         }"<< endl;
     
 	LhaCppFile << "    }" << endl;
 	

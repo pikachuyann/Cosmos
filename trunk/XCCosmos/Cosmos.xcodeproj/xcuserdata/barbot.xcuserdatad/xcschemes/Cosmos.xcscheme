@@ -84,16 +84,16 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_9201210837105334033.grml"
+            argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_2963657132458752864.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_2300386996970105733.grml"
+            argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_2377512690836570869.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-v 0"
-            isEnabled = "NO">
+            argument = "-v 6"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--bin-path"

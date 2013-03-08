@@ -1,7 +1,7 @@
 
 #include "expatmodelparser.hh"
 #include "tree/tree_util.hh"
-
+#include <string>
 
 
 
@@ -60,6 +60,9 @@ void ExpatModelParser::on_start_element(void *userData, const XML_Char *cname, c
 
     // Convert c variables to c++ objects
     XmlString name = cname;
+	size_t pos = name.find_last_of(":");
+	if (pos != std::string::npos)
+		name = name.substr(pos+1, name.size());
     std::map<XmlString, XmlString> atts;
     for(int i = 0; catts[i] != NULL; i +=2)
     {
@@ -113,7 +116,9 @@ void ExpatModelParser::on_end_element(void *userData, const XML_Char *cname)
 {
     ExpatModelParser* self = (ExpatModelParser*) userData;
     XmlString name = cname;
-
+	size_t pos = name.find_last_of(":");
+	if (pos != std::string::npos)
+		name = name.substr(pos+1, name.size());
     if (name == "model") { // </model>
         self->state.pop();
 

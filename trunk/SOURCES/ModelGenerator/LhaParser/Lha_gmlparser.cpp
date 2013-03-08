@@ -104,11 +104,13 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
         eval_expr(is_mark_dep, st, it.begin());
     }else if((*it).compare("markingExpr")==0){
 		string stmark;
-		size_t colDomIndex = eval_marking_expr(*st, it.begin());
+		size_t colDomIndex = eval_marking_expr(stmark, it.begin());
 		if (colDomIndex == UNCOLORED_DOMAIN){
 			st->append(stmark);
 		}else {
-			cerr << "Not uncolored type" << endl;
+			st->append(stmark);
+			st->append(".card()");
+			//cerr << "Not uncolored type: " << stmark << endl;
 		}
 		*is_mark_dep = true;
     }else if((*it).compare("function")==0){
@@ -176,14 +178,19 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
 }
 
 size_t MyLhaModelHandler::eval_marking_expr(string &st, tree<string>::pre_order_iterator it){
-	if(verbose>2)cout << (*it) << endl;
+	if(verbose>2)cout << "eval_marking_expr:"<< (*it) << endl;
 	if(it->compare("markingExpr")==0)
 		return eval_marking_expr(st, it.begin());
-	else if(it->compare("name")){
-		st.append("Marking.P->_PL_");
+	else if(it->compare("name")==0){
 		string stpl = *simplifyString(*(it.begin()));
-		st.append(stpl);
-		return MyLHA->MyGspn->placeStruct[MyLHA->MyGspn->PlacesId[stpl]].colorDom;
+		if(MyLHA->MyGspn->PlacesId.count(stpl)>0){
+			st.append("Marking.P->_PL_");
+			st.append(stpl);
+			return MyLHA->MyGspn->placeStruct[MyLHA->MyGspn->PlacesId[stpl]].colorDom;
+		} else {
+			st.append(stpl);
+			return UNCOLORED_DOMAIN;
+		}
 	} else if(it->compare("selectColor")==0){
 		st.append(" ( ");
 		size_t colClassCounter =0;
@@ -488,16 +495,16 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						MyLHA->Vars.initialValue.push_back(0.0);
 						treeSI dom = find(it2.begin(),it2.end(),"domain");
 						if (dom != it2.end()) {
-							string domname = *simplifyString(*(it2.begin()));
+							string domname = *simplifyString(*(dom.begin()));
 							vector<colorClass>::const_iterator domit;
 							for(domit = MyLHA->MyGspn->colClasses.begin(); domit != MyLHA->MyGspn->colClasses.end() && domit->name != domname; ++domit);
 							if(domit != MyLHA->MyGspn->colClasses.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colClasses.begin());
 							else cerr << "Unknown color Domain " << domname << endl;
-						}else cerr << "No color class specify for color variable " << constname << endl;
+						}else cerr << "No color class specify for color variable " << *constname << endl;
 
 						MyLHA->Vars.type.push_back(COLOR_VARIABLE);
 						MyLHA->NbVar++;
-						if(verbose>1)cout << "\tcolor var " << *constname << " index: " << MyLHA->NbVar-1 << endl;
+						if(verbose>1)cout << "\tcolor var " << *constname << " index: " << MyLHA->NbVar-1<< " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] << endl;
 					}
 				}
 			//cout << "finished discrete var" << endl;
