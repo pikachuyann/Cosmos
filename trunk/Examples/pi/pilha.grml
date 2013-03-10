@@ -46,17 +46,6 @@
       </attribute>
     </attribute>
   </attribute>
-  <attribute name="HASLFormula">
-    <attribute name="AVG">
-      <attribute name="YHF">
-        <attribute name="last">
-          <attribute name="expr"><attribute name="name">
-            r
-          </attribute></attribute>
-        </attribute>
-      </attribute>
-    </attribute>
-  </attribute>
   <node id="3" nodeType="state">
     <attribute name="invariant">
       <attribute name="boolExpr"><attribute name="boolValue">
