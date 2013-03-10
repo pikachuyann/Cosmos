@@ -25,8 +25,29 @@
             x
           </attribute>
         </attribute>
+	<attribute name="real">
+          <attribute name="name">
+            t
+          </attribute>
+        </attribute>
       </attribute>
       <attribute name="discretes">
+      </attribute>
+      <attribute name="colors">
+      </attribute>
+    </attribute>
+  </attribute>
+  <attribute name="HASLFormula">
+    <attribute name="CDF">
+      <attribute name="min">0.0</attribute>
+      <attribute name="delta">0.1</attribute>
+      <attribute name="max">20.0</attribute>
+      <attribute name="YHF">
+        <attribute name="last">
+          <attribute name="expr"><attribute name="name">
+            t
+          </attribute></attribute>
+        </attribute>
       </attribute>
     </attribute>
   </attribute>
@@ -76,6 +97,15 @@
       s0
     </attribute>
     <attribute name="flows">
+	<attribute name="flow">
+        <attribute name="name">
+          t
+        </attribute>
+        <attribute name="expr"><attribute name="numValue">
+          1
+        </attribute></attribute>
+      </attribute>
+
     </attribute>
     <attribute name="type">
       Initial

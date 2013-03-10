@@ -36,6 +36,8 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <stdlib.h>
+#include <cstdlib>
 #include "expatmodelparser.hh"
 #include "modelhandler.hh"
 #include "../Eval/Eval.hpp"
@@ -342,7 +344,7 @@ void MyLhaModelHandler::on_read_model(const XmlString& formalismUrl) {
 	if(verbose>0)cout << "read model : formalism = " << formalismUrl << endl;
 }
 
-string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
+HaslFormulasTop* MyLhaModelHandler::exportHASLTop(tree<string>::pre_order_iterator it){
 	
 	if(verbose>2)cout << *it << ":" << endl;
 	if((*it).compare("AVG")==0){
@@ -350,11 +352,56 @@ string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
         if(verbose>1)cout << *lhafunc << endl;
 		stringstream ss;
 		ss << "LhaFunc[" << MyLHA->LhaFunction[*lhafunc] << "]";
-		return new string(ss.str());
+		MyLHA->Algebraic.push_back( ss.str() );
+		return (new HaslFormulasTop(MyLHA->Algebraic.size()-1,MyLHA->ConfidenceLevel));
+	} else if(it->compare("PDF")==0 || it->compare("CDF")==0){
+		string* lhafunc;
+		double deltab = 1;
+		double minb =0;
+		double maxb =0;
+		for(treeSI it2 = it.begin(); it2 != it.end(); it2++){
+			if (it2->compare("min")==0)minb = atof(exportHASL(it2)->c_str());
+			else if (it2->compare("max")==0)maxb = atof(exportHASL(it2)->c_str());
+			else if (it2->compare("delta")==0)deltab = atof(exportHASL(it2)->c_str());
+			else lhafunc = exportHASL(it2);
+		}
 		
-	}if((*it).compare("YHF")==0){
+        if(verbose>1)cout << *lhafunc << endl;
+		stringstream ss;
+		ss << "LhaFunc[" << MyLHA->LhaFunction[*lhafunc] << "]";
+		
+		
+		for(double bucket = minb ; bucket < maxb ; bucket+= deltab){
+			std::ostringstream algPDF;
+			if(it->compare("PDF")==0)
+				algPDF << "(("<< ss.str() <<" >= "<<bucket<<"&& "<<ss.str() <<"<"<<bucket+deltab<<") ? 1:0)";
+			else
+				algPDF << "(("<< ss.str() <<" <= "<<bucket<<") ? 1:0)";
+			
+			MyLHA->Algebraic.push_back(algPDF.str());
+			MyLHA->HASLtop.push_back(new HaslFormulasTop((size_t)MyLHA->Algebraic.size()-1,
+															   MyLHA->ConfidenceLevel));
+			MyLHA->HASLtop.back()->TypeOp = PDF_PART;
+			std::ostringstream s; s<<"$_$: Value in ["<< bucket<< " , "<<bucket+deltab<<"]";
+			MyLHA->HASLname.push_back(s.str());
+		}
+
+		return (NULL);
+	} else throw(lhagmlioexc);
+}
+
+		
+string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
+	if(verbose>2)cout << *it << ":" << endl;
+	if(it->compare("YHF")==0){
 		return exportHASL(it.begin());
-	}else if((*it).compare("last")==0){
+	}else if(it->compare("delta")==0){
+		return simplifyString(*(it.begin()));
+	}else if(it->compare("min")==0){
+		return simplifyString(*(it.begin()));
+	}else if(it->compare("max")==0){
+		return simplifyString(*(it.begin()));
+	}else if(it->compare("last")==0){
 		//cout << *(it.begin()) << endl;
 		string* linForm = exportHASL(it.begin());
 		const char* linformc = linForm->c_str();
@@ -510,10 +557,11 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 			//cout << "finished discrete var" << endl;
 		} else if((*it).compare("HASLFormula")==0){
 			//cout << "export hasl formula" << endl;
-			string* haslAlg = exportHASL(it.begin());
-			MyLHA->Algebraic.push_back( *haslAlg );
-			MyLHA->HASLtop.push_back(new HaslFormulasTop(MyLHA->Algebraic.size()-1,MyLHA->ConfidenceLevel));
-			MyLHA->HASLname.push_back("HASLFormula");
+			HaslFormulasTop* haslform =  exportHASLTop(it.begin());
+			if(haslform != NULL){
+				MyLHA->HASLtop.push_back(haslform);
+				MyLHA->HASLname.push_back("HASLFormula");
+			}
 		} else throw lhagmlioexc;
 	}
 	//print_tree(attribute, attribute.begin(), attribute.end());

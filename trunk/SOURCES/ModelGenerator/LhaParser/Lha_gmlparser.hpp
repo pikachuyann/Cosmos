@@ -50,6 +50,7 @@ private:
 	int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator);
 	Eval Evaluate_gml;
 	
+	HaslFormulasTop* exportHASLTop(tree<string>::pre_order_iterator);
 	string* exportHASL(tree<string>::pre_order_iterator);
 	
 	vector<string> FuncUpdateVector;
