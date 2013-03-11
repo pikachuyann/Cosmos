@@ -50,11 +50,13 @@ public:
 	vector<ConfInt*> HaslResult;
 
     timeval start, end;
-	timeval lastprint;
+	timeval lastprint,lastdraw;
     double cpu_time_used;
     
     fstream outdatastream;
-    
+	FILE* gnuplotstream;
+    void close_gnuplot();
+	
     int endline;
     
     void addBatch(BatchR*);

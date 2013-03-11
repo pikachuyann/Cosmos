@@ -79,6 +79,7 @@ struct parameters {
     string dataoutput;
 	string dataraw;
 	string dataPDFCDF;
+	bool gnuplotDriver;
     
     vector<HaslFormulasTop*> HaslFormulas;
 	vector<string> HaslFormulasname;

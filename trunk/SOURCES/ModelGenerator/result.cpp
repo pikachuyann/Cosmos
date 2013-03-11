@@ -25,6 +25,7 @@
  */
 
 #include <iostream>
+#include <cstdlib>
 #include "result.hpp"
 #include "HaslFormula.hpp"
 
@@ -34,6 +35,9 @@ using namespace std;
 
 result::result(parameters &Q){
     P= Q;
+	gnuplotstream= NULL;
+	gettimeofday(&lastprint,NULL);
+	gettimeofday(&lastdraw,NULL);
    
     MeanM2 = new BatchR(P.nbAlgebraic);
 	for(size_t i =0; i<P.HaslFormulasname.size(); i++){
@@ -59,6 +63,17 @@ result::result(parameters &Q){
 			}
         }
         outdatastream << endl;
+		
+		if(P.gnuplotDriver){
+			gnuplotstream = popen("gnuplot", "r+");
+			if(gnuplotstream<=0){
+				cerr << "Fail to lauch gnuplot";
+				exit(EXIT_FAILURE);
+			}
+			fputs("plot 'dataout.dat' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 1 lw 2\n", gnuplotstream);
+			fflush(gnuplotstream);
+			
+		}
     }
     
 	gettimeofday(&start, NULL);
@@ -68,6 +83,11 @@ result::result(parameters &Q){
 
 result::~result(){
     delete MeanM2;
+	close_gnuplot();
+}
+
+void result::close_gnuplot(){
+	if(gnuplotstream>0)pclose(gnuplotstream);
 }
 
 void result::addBatch(BatchR *batchResult){
@@ -243,6 +263,17 @@ void result::outputData(){
 		<< " " << HaslResult[i]->low << " " << HaslResult[i]->up;
     }
     outdatastream << endl;
+	if(P.gnuplotDriver && MeanM2->I > P.Batch){
+		timeval current;
+		gettimeofday(&current,NULL);
+		if((current.tv_sec-lastdraw.tv_sec +
+			(current.tv_usec-lastdraw.tv_usec)/1000000.0) < P.updatetime)
+			return;
+		lastdraw = current;
+		fputs("plot 'dataout.dat' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 1 lw 2\n", gnuplotstream);
+		fflush(gnuplotstream);
+		//system(("gnuplot "+P.Path +"gnuplotScript.gnu").c_str());
+	}
 }
 
 void result::printResultFile(string f){

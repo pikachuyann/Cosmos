@@ -134,6 +134,7 @@ void kill_client(){
      << ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
      << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl; */
     
+	
     while (!clientPID.empty())
     {
         kill(clientPID.back(),2);
@@ -221,6 +222,7 @@ void launchServer(parameters& P){
         }
     }while(Result.continueSim() && clientstream.size()>0);
     
+	Result.close_gnuplot();
     //Kill all the simulator
     kill_client();
     

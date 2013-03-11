@@ -73,6 +73,7 @@ parameters::parameters():
     dataoutput(""),
 	dataraw(""),
 	dataPDFCDF(""),
+	gnuplotDriver(false),
 
 	HaslFormulas(vector<HaslFormulasTop*>(0)),
 	HaslFormulasname(vector<string>(0)),
@@ -128,6 +129,7 @@ void parameters::usage(){
 	cout << "\t-d,--outputdata \tOutput successive result in the blank separated file format"<< endl;
 	cout << "\t--output-raw \tOutput the result of each trajectory in a file for debug purpose"<< endl;
 	cout << "\t--output-PDFCDF \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
+	cout << "\t--gnuplot-driver \tRun gnuplot on the output datafile to produce graph"<< endl;
 	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
 	cout << "\t--loop t1 t2 \tGenerate an LHA that loop for t1 times unit and then t2 time unit"<< endl;
 	
@@ -173,6 +175,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"outputdata", required_argument,0, 'd'},
 			{"output-raw" , required_argument,0,  8 },
 			{"output-PDFCDF",required_argument,0,11},
+			{"gnuplot-driver",no_argument   ,0, 15},
             {"help" , no_argument ,			 0, 'h'},
 			{"count-transition", no_argument,0, 't'},
 			{"debug-string", no_argument,	 0,  3 },
@@ -260,6 +263,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  10 : seed = atoi(optarg); break;
 			case  13 : externalHASL = optarg; break;
 			case  14 : loopLHA = atof(optarg); loopTransientLHA = 100.0; PathLha = "LOOP"; break;
+			case  15: gnuplotDriver = true; break;
 				
             case '?':
                 usage();
