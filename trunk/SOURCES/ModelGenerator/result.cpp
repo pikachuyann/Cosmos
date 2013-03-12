@@ -72,7 +72,7 @@ result::result(parameters &Q){
 			}
 			if(P.alligatorMode){
 				fputs("set terminal pngcairo font 'arial,10' fontscale 1.0 size 500, 200\n",gnuplotstream);
-				fputs("set output 'dataout.png'\n",gnuplotstream);
+				//fputs("set output 'dataout.png'\n",gnuplotstream);
 			}
 			fputs("set grid lc rgb 'black'\n",gnuplotstream);
 			fputs("set style fill solid 0.2 noborder\n",gnuplotstream);
@@ -92,6 +92,8 @@ result::~result(){
 }
 
 void result::close_gnuplot(){
+	fputs("exit\n", gnuplotstream);
+	fflush(gnuplotstream);
 	if(gnuplotstream>0)pclose(gnuplotstream);
 }
 
@@ -262,9 +264,12 @@ void result::outputCDFPDF(string f){
 
 void result::printGnuplot(){
 	if(gnuplotstream<=0)return;
+	if(P.verbose>2)cout << "invoke gnuplot" << endl;
+	if(P.alligatorMode)fputs("set output 'dataout.png'\n",gnuplotstream);
 	fputs("plot '", gnuplotstream);
 	fputs(P.dataoutput.c_str(), gnuplotstream);
 	fputs("' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 1 lw 2\n", gnuplotstream);
+	if(P.alligatorMode)fputs("set output\n", gnuplotstream);
 	fflush(gnuplotstream);
 }
 
@@ -276,6 +281,7 @@ void result::outputData(){
 		<< " " << HaslResult[i]->low << " " << HaslResult[i]->up;
     }
     outdatastream << endl;
+	outdatastream.flush();
 	if(P.gnuplotDriver && MeanM2->I > P.Batch){
 		timeval current;
 		gettimeofday(&current,NULL);

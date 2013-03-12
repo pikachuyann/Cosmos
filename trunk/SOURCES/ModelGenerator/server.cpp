@@ -222,10 +222,6 @@ void launchServer(parameters& P){
         }
     }while(Result.continueSim() && clientstream.size()>0);
     
-	Result.close_gnuplot();
-    //Kill all the simulator
-    kill_client();
-    
     if(P.verbose>0)cout << endl;
     Result.stopclock();
     
@@ -238,6 +234,11 @@ void launchServer(parameters& P){
 	} else{
         if(P.verbose>1)Result.print(cout);
 	}
+	
+	
+	Result.close_gnuplot();
+    //Kill all the simulator
+    kill_client();
     
     string fn = "Result";
     fn.append(".res");
