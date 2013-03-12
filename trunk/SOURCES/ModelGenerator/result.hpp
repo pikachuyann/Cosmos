@@ -41,23 +41,8 @@ public:
     result(parameters &Q);
     ~result();
     parameters P;
+   	
     
-    BatchR* MeanM2;
-    
-    double RelErr;
-	vector<double> RelErrArray;
-	
-	vector<ConfInt*> HaslResult;
-
-    timeval start, end;
-	timeval lastprint,lastdraw;
-    double cpu_time_used;
-    
-    fstream outdatastream;
-	FILE* gnuplotstream;
-    void close_gnuplot();
-	
-    int endline;
     
     void addBatch(BatchR*);
     bool continueSim();
@@ -66,8 +51,25 @@ public:
     void print(ostream &s);
     void printResultFile(string);
     void printAlligator();
+	void printGnuplot();
 	void outputCDFPDF(string);
     void outputData();
+	
+	void close_gnuplot();
+private:
+	timeval start, end;
+	timeval lastprint,lastdraw;
+    double cpu_time_used;
+    
+    fstream outdatastream;
+	FILE* gnuplotstream;
+	int endline;
+	
+    BatchR* MeanM2;
+    double RelErr;
+	vector<double> RelErrArray;
+	vector<ConfInt*> HaslResult;
+	
 };
 
 

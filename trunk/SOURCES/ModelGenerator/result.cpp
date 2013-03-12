@@ -70,7 +70,12 @@ result::result(parameters &Q){
 				cerr << "Fail to lauch gnuplot";
 				exit(EXIT_FAILURE);
 			}
-			fputs("plot 'dataout.dat' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 1 lw 2\n", gnuplotstream);
+			if(P.alligatorMode){
+				fputs("set terminal pngcairo font 'arial,10' fontscale 1.0 size 500, 200\n",gnuplotstream);
+				fputs("set output 'dataout.png'\n",gnuplotstream);
+			}
+			fputs("set grid lc rgb 'black'\n",gnuplotstream);
+			fputs("set style fill solid 0.2 noborder\n",gnuplotstream);
 			fflush(gnuplotstream);
 			
 		}
@@ -255,6 +260,14 @@ void result::outputCDFPDF(string f){
 	outFile.close();
 }
 
+void result::printGnuplot(){
+	if(gnuplotstream<=0)return;
+	fputs("plot '", gnuplotstream);
+	fputs(P.dataoutput.c_str(), gnuplotstream);
+	fputs("' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 1 lw 2\n", gnuplotstream);
+	fflush(gnuplotstream);
+}
+
 void result::outputData(){
     outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;
     for(size_t i =0; i<P.HaslFormulasname.size(); i++){
@@ -270,9 +283,7 @@ void result::outputData(){
 			(current.tv_usec-lastdraw.tv_usec)/1000000.0) < P.updatetime)
 			return;
 		lastdraw = current;
-		fputs("plot 'dataout.dat' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 1 lw 2\n", gnuplotstream);
-		fflush(gnuplotstream);
-		//system(("gnuplot "+P.Path +"gnuplotScript.gnu").c_str());
+		printGnuplot();
 	}
 }
 

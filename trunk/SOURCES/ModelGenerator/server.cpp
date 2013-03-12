@@ -234,6 +234,7 @@ void launchServer(parameters& P){
 	
 	if(P.alligatorMode){
 		Result.printAlligator();
+		Result.printGnuplot();
 	} else{
         if(P.verbose>1)Result.print(cout);
 	}
