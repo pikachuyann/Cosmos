@@ -92,9 +92,11 @@ result::~result(){
 }
 
 void result::close_gnuplot(){
-	fputs("exit\n", gnuplotstream);
-	fflush(gnuplotstream);
-	if(gnuplotstream>0)pclose(gnuplotstream);
+	if(gnuplotstream>0){
+		fputs("exit\n", gnuplotstream);
+		fflush(gnuplotstream);
+		pclose(gnuplotstream);
+	}
 }
 
 void result::addBatch(BatchR *batchResult){
