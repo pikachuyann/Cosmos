@@ -387,7 +387,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++)
-		if(MyLha.ConstraintsRelOp[e].size()>0 && MyLha.Edge[e].Type == Synch ){
+		if(MyLha.ConstraintsRelOp[e].size()>0 && MyLha.EdgeActions[e].size() > 0 ){
 			LhaCppFile << "    case " << e << ": {" << endl;
 			for (size_t c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
 				LhaCppFile << "         if(!( ";
@@ -414,7 +414,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++)
-		if(MyLha.ConstraintsRelOp[e].size()>0){
+		if(MyLha.ConstraintsRelOp[e].size()>0  && MyLha.EdgeActions[e].size() < 1 ){
 			LhaCppFile << "     case " << e << ":" << endl;
 			
 			//LhaCppFile << "         return GetEdgeEnablingTime_" << e << "( Marking);" << endl;

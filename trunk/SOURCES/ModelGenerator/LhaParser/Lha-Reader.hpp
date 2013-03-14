@@ -41,15 +41,10 @@
 
 using namespace std;
 
-enum EdgeType {
-    Auto, Synch
-};
-
 struct _LhaEdge {
     unsigned int Index;
     unsigned int Source;
     unsigned int Target;
-    EdgeType Type;
 };
 typedef struct _LhaEdge LhaEdge;
 
