@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * \mainpage LibGrML
+ * \main2page LibGrML
  * Library to help developper to read and/or write model using GrML syntax.
  * \author   Clément Démoulins
  */

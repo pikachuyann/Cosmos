@@ -30,6 +30,9 @@
 #include <cstdlib>
 #include <getopt.h>
 
+/**
+ * Constructor for parameters, set all the default value
+ */
 parameters::parameters():
     verbose(2),
 	interactive(false),
@@ -81,6 +84,9 @@ parameters::parameters():
     //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
 {}
 
+/**
+ * Display some of the parameter
+ */
 void parameters::View() {
 	cout << "Confidence interval width:      " << Width << endl;
 	cout << "Confidence interval level:      " << Level << endl;
@@ -95,6 +101,9 @@ void parameters::View() {
     }
 }
 
+/**
+ * Display the usage text
+ */
 void parameters::usage(){
     cout << "usage: Cosmos [-ghsr] [-vb arg] ";
     cout << "[--alligator-mode] ";
@@ -131,11 +140,14 @@ void parameters::usage(){
 	cout << "\t--output-PDFCDF \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
 	cout << "\t--gnuplot-driver \tRun gnuplot on the output datafile to produce graph"<< endl;
 	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
-	cout << "\t--loop t1 t2 \tGenerate an LHA that loop for t1 times unit and then t2 time unit"<< endl;
+	cout << "\t--loop t1 [--transtient t2] \tGenerate an LHA that loop for t1 times unit and then t2 time unit. The --transient option alone do not do anything"<< endl;
 	
 }
 
-
+/**
+ * Parse the command line and set the parameter structure
+ * with the option set by the user
+ */
 void parameters::parseCommandLine(int argc, char** argv){
     int c;
     
@@ -151,6 +163,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"seed"  , required_argument, 0,  10},
 			{"local-test",  no_argument , 0,  12},
 			{"loop",   required_argument, 0,  14},
+			{"transient",required_argument,0, 16},
             
             /* Options for the rare event engine */
             {"rareevent",   no_argument,        0, 'r'},
@@ -262,7 +275,11 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  7  : gccflags = optarg; break;
 			case  10 : seed = atoi(optarg); break;
 			case  13 : externalHASL = optarg; break;
-			case  14 : loopLHA = atof(optarg); loopTransientLHA = 100.0; PathLha = "LOOP"; break;
+			case  14 : loopLHA = atof(optarg);
+					PathLha = "LOOP";
+				break;
+			case  16: loopTransientLHA = atof(optarg); break;
+				
 			case  15: gnuplotDriver = true; break;
 				
             case '?':

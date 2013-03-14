@@ -23,6 +23,13 @@
  *******************************************************************************
  */
 
+/**
+ * \mainpage Cosmos
+ * 
+ * \author   Benoît Barbot
+ */
+
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -41,12 +48,13 @@
 #include "parameters.hpp"
 
 
-/*
- Retrive the real absolute path of the executable of Cosmos
- This is usefull for finding the library containing all the
- code for the simulator.
- Thoses functions fill the variable P.Path
- This code is system dependant.
+/**
+ * Retrive the real absolute path of the executable of Cosmos
+ * This is usefull for finding the library containing all the
+ * code for the simulator.
+ * Thoses functions fill the variable P.Path
+ * This code is system dependant.
+ * @param P is a structure of parameters
  */
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
@@ -87,13 +95,14 @@ void FindPathLinux(parameters& P) {
 
 using namespace std;
 
-/*
- Parse the input file
- Return true iff the parsing was successfull
- input file are read as Grml file or .gspn and .lha file
- according to the P.GMLinput parameters.
- 
- 
+/**
+ * Parse the input file and build the simulator
+ * Return true iff the parsing was successfull
+ * input file are read as Grml file or .gspn and .lha file or 
+ * directly .cpp for LHA
+ * according to the P.GMLinput parameters or extension.
+ * @param P is a structure of parameters
+ * @return a boolean equal to true if everything run correctly
  */
 bool ParseBuild(parameters& P) {
 	Gspn_Reader gReader;
@@ -132,8 +141,11 @@ bool ParseBuild(parameters& P) {
 	if(P.verbose>0)cout << "Start Parsing " << P.PathLha << endl;
 	
     try{
+		//check the type of the LHA file.
 		if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")!=0){
+			//here LHA is absent or in LHA file format or in GRML file format
 			if(P.loopLHA>0.0){
+				//The LHA is absent one with two loop is produced.
 				lReader.MyLha.ConfidenceLevel = P.Level;
 				map<string,int>::const_iterator itt;
 				stringstream lhastr;
@@ -173,19 +185,23 @@ bool ParseBuild(parameters& P) {
 				parseresult = lReader.parse(s);
 				P.externalHASL = "";
 			} else if(P.GMLinput || (P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0))  {
+				//The LHA is in the GRML file format
 				parseresult = lReader.parse_gml_file(P);
 			}else {
+				//The LHA is in the LHA file format
 				parseresult = lReader.parse_file(P);
 			}
 			
+			//Add external HASL formula to the lha.
 			if(P.externalHASL.compare("")!=0)
 				lReader.parse(P.externalHASL);
 			
-			
+			//If everythink work correctly, copy the HASL formula and generate the code
 			if (!parseresult && lReader.MyLha.NbLoc>0) {
 				P.HaslFormulasname = lReader.MyLha.HASLname;
 				P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
 				P.nbAlgebraic = lReader.MyLha.Algebraic.size();
+				//If the countTrans option is set then add HASL formula counting the occurance of each transition of the LHA.
 				if(P.CountTrans){
 					for (size_t tr=0; tr < lReader.MyLha.Edge.size(); tr++) {
 						P.nbAlgebraic++;
@@ -197,10 +213,10 @@ bool ParseBuild(parameters& P) {
 						P.HaslFormulasname.push_back(transname.str());
 						P.HaslFormulas.push_back(new HaslFormulasTop(lReader.MyLha.Algebraic.size()+tr,
 																	 lReader.MyLha.ConfidenceLevel));
-						
 					}
 				}
 				
+				//Generate the code for the LHA
 				if(P.tmpStatus==0||P.tmpStatus==2)lReader.WriteFile(P);
 				
 			} else {
@@ -208,7 +224,9 @@ bool ParseBuild(parameters& P) {
 				return false;
 			}
 		} else if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")==0){
+			//The code for the LHA is prvided by the user
 			lReader.MyLha.ConfidenceLevel = P.Level;
+			//Add external HASL formula
 			if(P.externalHASL.compare("")==0){
 				P.HaslFormulasname.push_back("preComputedLHA");
 				HaslFormulasTop *ht = new HaslFormulasTop( (size_t)0, P.Level);
@@ -224,6 +242,7 @@ bool ParseBuild(parameters& P) {
 					cerr << "Fail to parse extra Hasl Formula"<< endl;
 			}
 			
+			//Copy the code into the temporary directory
 			string cmd = "cp "+P.PathLha +" " + P.tmpPath +"/LHA.cpp";
 			system(cmd.c_str());
 		}
@@ -233,48 +252,52 @@ bool ParseBuild(parameters& P) {
 		return false;
     }
 	
+	//If the code should not be compiled return
 	if(P.tmpStatus==1||P.tmpStatus==3)return true;
+	
 	if(P.verbose>0){
         cout << "Parsing OK.\n" << endl;
         cout << "Start building ... " << endl;
     }
     
-    if(!P.RareEvent){
-        //string lumpfunpath = P.Path + "../SOURCES/Cosmos/lumpingfun.cpp";
+    string cmd;
+	string bcmd = P.gcccmd + " " + P.gccflags;
+	
+	if(!P.RareEvent){
+		//If rareenvent handling is not require copy an empty lumping function code to the temporary directory
         string lumpfunpath = P.tmpPath + "/lumpingfun.cpp";
 		ofstream lumpfun(lumpfunpath.c_str(), ios::out | ios::trunc);
         lumpfun << "void SPN::lumpingFun(vector<int>* vect){}" << endl;
         lumpfun.close();
-    }
-    
-	string cmd;
-	string bcmd = P.gcccmd + " " + P.gccflags;
-	
-	if(P.RareEvent){
+    }else {
+		//If rareevent handling is require copy the lumping function and table of value to the temporary directory
 		cmd = "cp muFile " + P.tmpPath +"/muFile";
 		if (system(cmd.c_str())) return false;
 		cmd = "cp lumpingfun.cpp " + P.tmpPath +"/lumpingfun.cpp";
 		if (system(cmd.c_str())) return false;
 	}
-	
+
+	//Compile the SPN
 	cmd = bcmd + " -c -I"+P.Path+"../includes -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
 	if (system(cmd.c_str())) return false;
 	
+	//Compile the LHA
 	cmd = bcmd + " -c -I"+P.Path+"../includes -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
 	if (system(cmd.c_str())) return false;
 	
+	//Link SPN and LHA with the library
 	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
 	if (system(cmd.c_str())) return false;
 	
-	
-	/*cmd = "make -s -C " + P.Path + ".. sim";
-	 if (system(cmd.c_str())) return false;
-	 */
 	if(P.verbose>0)cout << "Building OK.\n" << endl;
 	
 	return true;
 }
 
+/**
+ * Clean the temporary directory
+ * @param P is a structure of parameters
+ */
 void cleanTmp(parameters& P){
 	if(P.tmpStatus==0 || P.tmpStatus==1){
 		string cmd;
@@ -283,6 +306,10 @@ void cleanTmp(parameters& P){
 	}
 }
 
+/**
+ * Main function
+ * Build the simulator and lauch it.
+ */
 int main(int argc, char** argv) {
 	parameters P;
 	timeval startbuild,endbuild;
