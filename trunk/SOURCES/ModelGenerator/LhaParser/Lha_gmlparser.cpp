@@ -228,7 +228,7 @@ void MyLhaModelHandler::eval_term(vector<string> &CoeffsVector, tree<string>::pr
 		if(verbose>2)cout << "\t" << *var << endl;
 		vector<string>::const_iterator vi=find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var);
 		if(vi!= MyLHA->Vars.label.end())CoeffsVector[vi-MyLHA->Vars.label.begin()]= "1";
-		else cout << "Unkown Variable " << *vi <<endl;
+		else cout << "Unkown Variable " << *var <<endl;
 	}else cout << "fail eval tree : linexp" << endl;
 	
 }
