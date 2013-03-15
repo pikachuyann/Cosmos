@@ -692,7 +692,6 @@ void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
 			spnF << "\tTransition["<<t<<"].transType = Timed;" <<endl;
 			spnF << "\tTransition["<<t<<"].DistTypeIndex = "<< MyGspn.transitionStruct[t].dist.name << ";" <<endl;
 			if (bstr) {
-				spnF << "\tTransition["<<t<<"].DistType = \""<< MyGspn.transitionStruct[t].dist.name << "\";"<< endl;
 				for (size_t j = 0; j < MyGspn.transitionStruct[t].dist.Param.size(); j++) {
 					spnF << "\tTransition[" << t << "].DistParams.push_back(\" " << MyGspn.transitionStruct[t].dist.Param[j] << "\" );" << endl;
 				}
