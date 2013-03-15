@@ -23,6 +23,11 @@
  *******************************************************************************
  */
 
+
+/**
+ * This classe is the interface for SPN
+ */
+
 #ifndef _SPN_HPP
 #define _SPN_HPP
 
@@ -40,6 +45,9 @@
 
 using namespace std;
 
+/**
+ * Type of probability distribution
+ */
 enum DistributionType {
 	GAMMA,
 	UNIFORM,
@@ -56,23 +64,29 @@ enum TransType {
   Timed, unTimed
 };
 
+/**
+ * Datatype for transition of the SPN
+ */
 struct _trans {
-  unsigned int Id;
-  string label;
-  TransType transType; // Time or unTimed
+  unsigned int Id; //! number of the transition
+  string label; //! Name of the transition, can be empty
+  TransType transType;
   DistributionType DistTypeIndex;
-  vector<string> DistParams;
-  string priority;
-  string weight;
-  bool MarkingDependent; // true if the transition is Marking Dependent
-  bool AgeMemory; // true if the memory policy of the transition is age memory
-  vector<abstractBinding> bindingList;
+  vector<string> DistParams; //! Parameter in string format only for debug
+  string priority; //! priority in string format only for debug
+  string weight; //! weight in string format only for debug
+  bool MarkingDependent; //! true if the transition is Marking Dependent
+  bool AgeMemory; //! true if the memory policy of the transition is age memory
+  vector<abstractBinding> bindingList; //! List of alowed binding for this transition.
 };
 typedef struct _trans spn_trans;
 
+/**
+ * DataType for place of the SPN
+ */
 struct _place {
-  unsigned int Id;
-  string label;
+  unsigned int Id; //!number of the place
+  string label; //! name of the place, can be empty
 };
 typedef struct _place spn_place;
 
@@ -81,23 +95,33 @@ typedef vector <int> IntVector;
 typedef vector <Dim1> Dim2;
 typedef vector <IntVector> IntMatrix;
 
-
-
-//#include "spn_orig.hpp"
+/**
+ * \brief Class of the SPN. 
+ * 
+ * All the implementation of this class are generated at runtime.
+ */
 class SPN {
 public:
-  SPN();
+  SPN(); //! Initialize all the data
 
-  const size_t pl; // Number of places
-  const size_t tr; // Number of transitions
-  abstractMarking Marking; // Current marking
+  const size_t pl; //! Number of places
+  const size_t tr; //! Number of transitions
+  abstractMarking Marking; //! Current marking
 
-  vector <spn_trans> Transition; //contains all the transitions of the Petri net
-  vector <spn_place> Place; //contains all the places of the Petri net
+  vector <spn_trans> Transition; //!contains all the transitions of the Petri net
+  vector <spn_place> Place; //!contains all the places of the Petri net
 
-  void reset(); // set the marking to the initial marking
+  void reset(); //! set the marking to the initial marking
 
-  string Path;
+  string Path; //! The path of the file use to generate the implementation
+	
+	/**
+	 * \brief A vector use to store temporary parameters value.
+	 * This vector is used to to store parameter of distribution 
+	 * When the simulator ask for parameters the function GetDistParameter
+	 * store them inside this vector.
+	 * This is done to avoid allocating a new vector too frequently.
+	 */
   mutable vector<double> ParamDistr;
 
   //------------------------- Rare Event -------------------------------------
@@ -111,22 +135,35 @@ public:
   void lumpingFun(vector<int>*);
   //-------------------------/Rare Event -------------------------------------
 
-  bool IsEnabled(size_t,const abstractBinding&)const; // Check if a given transition is enabled
+   //! Check if a given transition is enabled
+  bool IsEnabled(size_t,const abstractBinding&)const;
 
-  void fire(size_t,const abstractBinding&); // fire a given transition
-  void unfire(size_t,const abstractBinding&); // unfire a given transition
+  void fire(size_t,const abstractBinding&); //! fire a given transition
+	
+  //! unfire a given transition use only for rare event
+  void unfire(size_t,const abstractBinding&);
   void setConditionsVector();
 
-  void GetDistParameters(size_t, const abstractBinding& )const; // compute the the parameters value of a given distribution
-  double GetWeight(size_t)const; // compute the the weight value of a given transition
-  double GetPriority(size_t)const; // compute the the priority value of a given transition
+  //! compute the the parameters value of a given distribution
+  void GetDistParameters(size_t, const abstractBinding& )const;
+	
+  //! compute the the weight value of a given transition
+  double GetWeight(size_t)const;
+	
+  //! compute the the priority value of a given transition
+  double GetPriority(size_t)const;
 
-  const set<int >* PossiblyEn()const; // return the set of transitions that may be enabled after firing the last transition
-  const set<int >* PossiblyDis()const; // return the set of transitions that may be disabled after firing the last transition
-  const set<int >* FreeMarkingDependant()const; //return the set of transition without constrain but marking dependant
+  //! return the set of transitions that may be enabled after firing the last transition
+  const set<int >* PossiblyEn()const;
 
+  //! return the set of transitions that may be disabled after firing the last transition
+  const set<int >* PossiblyDis()const;
+  
+  //!return the set of transition without constrain but marking dependant
+  const set<int >* FreeMarkingDependant()const;
+	
 private:
-  size_t lastTransition;
+  size_t lastTransition; //! store the last fired transition
 
 
   vector< set<int > > PossiblyEnabled;
