@@ -40,6 +40,17 @@
 
 using namespace std;
 
+enum DistributionType {
+	GAMMA,
+	UNIFORM,
+	EXPONENTIAL,
+	DETERMINISTIC,
+	LOGNORMAL,
+	TRIANGLE,
+	GEOMETRIC,
+	ERLANG
+};
+
 
 enum TransType {
   Timed, unTimed
@@ -49,8 +60,7 @@ struct _trans {
   unsigned int Id;
   string label;
   TransType transType; // Time or unTimed
-  string DistType;
-  int DistTypeIndex;
+  DistributionType DistTypeIndex;
   vector<string> DistParams;
   string priority;
   string weight;

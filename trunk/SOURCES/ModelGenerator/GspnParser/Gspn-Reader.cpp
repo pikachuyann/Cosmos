@@ -690,7 +690,7 @@ void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
 		spnF << "\tTransition["<<t<<"].Id =" << t << ";" <<endl;
 		if (MyGspn.transitionStruct[t].type==Timed) {
 			spnF << "\tTransition["<<t<<"].transType = Timed;" <<endl;
-			spnF << "\tTransition["<<t<<"].DistTypeIndex = "<< IndexDist[MyGspn.transitionStruct[t].dist.name] << ";" <<endl;
+			spnF << "\tTransition["<<t<<"].DistTypeIndex = "<< MyGspn.transitionStruct[t].dist.name << ";" <<endl;
 			if (bstr) {
 				spnF << "\tTransition["<<t<<"].DistType = \""<< MyGspn.transitionStruct[t].dist.name << "\";"<< endl;
 				for (size_t j = 0; j < MyGspn.transitionStruct[t].dist.Param.size(); j++) {
@@ -699,7 +699,7 @@ void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
 			}
 		}else{
 			spnF << "\tTransition["<<t<<"].transType = unTimed;" <<endl;
-			spnF << "\tTransition["<<t<<"].DistTypeIndex = 3 ;" <<endl;
+			spnF << "\tTransition["<<t<<"].DistTypeIndex = DETERMINISTIC ;" <<endl;
 		}
 		spnF << "\tTransition["<<t<<"].MarkingDependent = "<< MyGspn.transitionStruct[t].markingDependant << ";" <<endl;
 		

@@ -124,51 +124,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../SOURCES/Cosmos/Simulator.cpp"
-         timestampString = "384180856.930279"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "79"
-         endingLineNumber = "79"
-         landmarkName = "Simulator::InitialEventsQueue()"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/Simulator.cpp"
          timestampString = "384179579.234775"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "390"
          endingLineNumber = "390"
          landmarkName = "Simulator::SimulateSinglePath()"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/Simulator.cpp"
-         timestampString = "384180870.996961"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "82"
-         endingLineNumber = "82"
-         landmarkName = "Simulator::InitialEventsQueue()"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/ModelGenerator/GspnParser/Gspn_gmlparser.cpp"
-         timestampString = "384426597.196041"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "426"
-         endingLineNumber = "426"
-         landmarkName = "MyModelHandler::on_read_model(const XmlString&amp; formalismUrl)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

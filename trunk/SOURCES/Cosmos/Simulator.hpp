@@ -53,74 +53,109 @@ public:
 	Simulator();
 	~Simulator();
 	
-    int verbose;    //Set the verbose level
+	//! verbose level of the simulator
+    int verbose;
     
-	void initRandomGenerator(const unsigned int);
-		//Initialize the random generator with the given seed
+	/**
+	 * \brief Initialize the random number generator with the given seed
+	 * @param seed is an unsigned integer to be used as seed.
+	 */
+	void initRandomGenerator(unsigned int seed);
+
+	/**
+	 * \brief Set the batch size
+	 * @param RI the new batch size to use
+	 */
     void SetBatchSize(const size_t); // set the batch size
+	
+	/**
+	 * \brief Open an output stream to a file to log the result value of each trajectory.
+	 * @param path is a path to a file in which the value will be log in.
+	 */
 	void logValue(const char*);    //Make the simulator output each result in a file
     
-    //main entry point of the object simulate a batch of trajectory
+	/**
+	 * \brief Main entry point of the object simulate a batch of trajectory .
+	 *
+	 * Run a batch of simulation, the result is return as a BatchR structure.
+	 * @return a new BatchR structure containing the result
+	 * of the batch of simulation.
+	 */
     virtual BatchR* RunBatch(); 
     
 protected:
-	fstream logvalue; // file to log value
-    
-	SimOutput Result; // store result beetween two trajectory simulation
+	//! File stream to log value.
+	fstream logvalue;
+	
+	//! boolean set to true when result value should be log.
+    bool logResult;
+	
+	//! Store result beetween two trajectory simulation.
+	SimOutput Result;
 
-	time_t SysTime;
-	
+	//! Size of the batch.
 	size_t BatchSize;
-	bool logResult;
-    
-	SPN N; //The object representing the SPN
-	LHA A; //The object representing the LHA
 	
     
-    //A datastructure containing the enabled transitions with
-    //the time at wich they will be fire if still enabled
+	SPN N; //!The object representing the SPN
+	LHA A; //!The object representing the LHA
+	
+    
+    /**
+	 * \brief The event queue of the simulator.
+	 * The event queue is a datastructure containing the 
+	 * enabled transitions with
+     * the time at wich they will be fire if still enabled
+	 */
 	EventsQueue* EQ;  
 	
-	bool Initialized;
-    
-    //The random Generator Mersenne Twister from the boost library
+    //!The random Generator Mersenne Twister from the boost library
 	boost::mt19937 RandomNumber;
 	
+	/**
+	 * \brief Simulate a step of the system, 
+	 * this function do most of the simulation job.
+	 */
+	virtual bool SimulateOneStep();
 	
-  	
-	double max(double, double);
-	
-	virtual bool SimulateOneStep(); //Simulate a step of the system, this function do most of the simulation job
-	virtual void SimulateSinglePath(); //Simulate a single path 
+	/**
+	 * \brief Simulate single path
+	 * this function loop over SimulateOneStep until a the path terminate.
+	 */
+	virtual void SimulateSinglePath();
 		
-	void interactiveSimulation(); //Wait for the user to choose the next transition
+	void interactiveSimulation(); //!Wait for the user to choose the next transition
 	
-	virtual void InitialEventsQueue(); //initialize the event queue
-	//virtual void resetSimVarsTable();
-	virtual void reset(); // reset the simulator
+	virtual void InitialEventsQueue(); //!initialize the event queue
+
+	virtual void reset(); //! reset the simulator
 	
-	virtual void GenerateEvent(Event &,size_t,const abstractBinding&); // generate a new event use Generate Time
+	virtual void GenerateEvent(Event &,size_t,const abstractBinding&); //! generate a new event use Generate Time
 	
-	// generate a time acording to the distribution d with parameters p
-	virtual double GenerateTime(int, vector<double>& p); 
+	//! generate a time acording to the distribution d with parameters p
+	virtual double GenerateTime(DistributionType,const vector<double>& p);
 	
 	
 	virtual void returnResultTrue(); 
 	virtual void returnResultFalse();
 	
+	//! update value in the LHA by elapsing time
 	virtual void updateLHA( double );
-	// update value in the LHA by elapsing time
 	
+	//! fire the transition of an LHA
 	virtual void fireLHA(int,const abstractBinding&);
-		//fire the transition of an LHA
+		
+	//! update value in the SPN after a transition
+	virtual void updateSPN(size_t,const abstractBinding& );
 	
-	virtual void updateSPN(size_t,const abstractBinding& ); // update value in the SPN after a transition
+	//! update the likelyhood for the Rare event case
+	virtual void updateLikelihood(size_t);
+    
+	//! Stop the simulation if sink transition is taken
+	virtual bool transitionSink(size_t); 	
 	
-	virtual void updateLikelihood(size_t); // update the likelyhood for the Rare event case
-    virtual bool transitionSink(size_t); // Stop the simulation if sink transition is taken
-	
-	virtual void getParams(size_t, const abstractBinding&); // return the parameters of a transition distribution
-	
+	//! return the parameters of a transition distribution
+	virtual void getParams(size_t, const abstractBinding&); 	
 };
 
 

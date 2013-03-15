@@ -42,9 +42,12 @@
 
 using namespace std;
 
+/**
+ * Constructor for the Simulator initialize the event queue
+ * but don't fill it.
+ */
 Simulator::Simulator():verbose(0) {
 	EQ = new EventsQueue(N); //initialization of the event queue
-	Initialized = false;
     logResult=false;
 	Result.second = vector<double>(A.FormulaVal.size(),0.0);
 	
@@ -54,7 +57,7 @@ Simulator::Simulator():verbose(0) {
 Simulator::~Simulator() {
 }
 
-void Simulator::initRandomGenerator(const unsigned int seed){
+void Simulator::initRandomGenerator(unsigned int seed){
 	RandomNumber.seed(seed);
 }
 
@@ -68,15 +71,12 @@ void Simulator::SetBatchSize(const size_t RI) {
 	BatchSize = RI;
 }
 
-double Simulator::max(double a, double b) {
-	if (a >= b) return a;
-	else return b;
-}
-
+/**
+ * Fill the event queue with the initially enabled transition
+ */
 void Simulator::InitialEventsQueue() {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
-	Initialized = true;
 	
 	Event E;
 	for (vector<_trans>::const_iterator t = N.Transition.begin()
@@ -91,10 +91,10 @@ void Simulator::InitialEventsQueue() {
 	}
 }
 
+/**
+ * Reset the SPN, The LHA and the Event Queue to the initial state.
+ */
 void Simulator::reset() {
-	//Reset The Petri net, the automaton, the event Queue and the 
-    //random generator
-    	
 	N.reset();
 	A.reset(N.Marking);
 
@@ -102,51 +102,55 @@ void Simulator::reset() {
 	
 }
 
+/**
+ * This function is called when an accepting state is reached in
+ * the automaton. It update the automaton variable before updating the
+ * Hasl formula.
+ */
 void Simulator::returnResultTrue(){
-    //This function is called when an accepting state is reached in 
-    //the automaton. It update the automaton variable before updating the
-    //Hasl formula.
-    
 	A.UpdateLinForm(N.Marking);
 	A.UpdateLhaFuncLast();
 	A.UpdateFormulaVal();
 	Result.first = true;
 	Result.second = vector<double>(A.FormulaVal);
 }
+
+/**
+ * This function is called when a path is discarded.
+ * This function is usefull in the rare event setting.
+ */
 void Simulator::returnResultFalse(){
 	Result.first = false;
 }
 
-
+/**
+ * This function makes time elapse in the automaton.
+ * @param DeltaT the ammout of time the automaton should wait.
+ */
 void Simulator::updateLHA(double DeltaT){
-    //This function update the automaton after a transition of the Petri net
 	A.DoElapsedTimeUpdate(DeltaT, N.Marking);
 	A.UpdateLinForm(N.Marking);
 	A.UpdateLhaFunc(DeltaT);
 	A.CurrentTime += DeltaT;
 }
 
+/**
+ * This function makes the automaton takes an edge.
+ * The edge can be either a autonomous or a synchronize on.
+ * @param EdgeIndex the number of the edge of the LHA
+ * @param b a binding of the colored variable of the SPN for the transition.
+ */
 void Simulator::fireLHA(int EdgeIndex,const abstractBinding &b){
 	A.DoEdgeUpdates(EdgeIndex, N.Marking, b);
 	A.CurrentLocation = A.Edge[EdgeIndex].Target;
 }
 
-
-/*void Simulator::updateSPN(const int E1_transitionNum, const abstractBinding& b){
-	EQ->reset();
-	for( size_t tr = 0 ; tr < N.tr ; tr++){
-		abstractBinding b2;
-		do{
-			if(N.IsEnabled(tr, b2)){
-				Event F;
-				GenerateEvent(F, tr, b2);
-				EQ->insert(F);
-			}
-		}while (b2.next());
-	}
-}*/
-
-
+/**
+ * Update the enabling transition of the SPN, and update the event queue.
+ * @param E1_transitionNum the number of the transition which last 
+ * occured in the SPN.
+ * @param b is the binding of the last transition.
+ */
 void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& b){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
@@ -225,6 +229,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& b){
 	}
 	
 #ifndef NDEBUG
+	//In Debug mode check that transition are scheduled iff they are enabled
 	for (vector<_trans>::const_iterator t = N.Transition.begin()
 		 ; t != N.Transition.end() ; ++t) {
 		for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
@@ -236,19 +241,28 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& b){
 #endif
 }
 
-// Only used in the Rare Event context
+/**
+ * This function update the likelihood in the rare event context.
+ * Do nothing when not in rare event context.
+ * @param i Number of the transition of the SPN
+ */
 void Simulator::updateLikelihood(size_t i){
 	return;
 }
 
-//Only used in the Rare Event context
+/**
+ * This function return true if the transition is the sink transition.
+ * always return true when not in rare event context.
+ * @param i Number of the transition of the SPN
+ */
 bool Simulator::transitionSink(size_t i){
     return false;
 }
 
-//Simulate one step of simulation
-//the return value is true if the simulation did not reach
-//An accepting are refusing state.
+/**
+ * Simulate one step of simulation
+ * @return true if the simulation did not reach an accepting are refusing state.
+ */
 bool Simulator::SimulateOneStep(){
 	
 	AutEdge AE = A.GetEnabled_A_Edges( N.Marking);
@@ -341,6 +355,9 @@ bool Simulator::SimulateOneStep(){
 	return true;
 }
 
+/**
+ * Interactive mode stop the simulation until the user choose a transition.
+ */
 void Simulator::interactiveSimulation(){
 	string input_line;
 	bool continueLoop = true;
@@ -385,7 +402,9 @@ void Simulator::interactiveSimulation(){
 	
 }
 
-//Simlulate a whole trajectory in the system. Result is store in SimOutput
+/**
+ * Simlulate a whole trajectory in the system. Result is store in SimOutput
+ */
 void Simulator::SimulateSinglePath() {
 	
 	InitialEventsQueue();
@@ -412,7 +431,12 @@ void Simulator::SimulateSinglePath() {
     //cerr << "finish path"<< endl;
 }
 
-//Generate an event based on the type of his distribution
+/**
+ * Generate an event based on the type of his distribution
+ * @param E the event to update
+ * @param Id the number of the transition to of the SPN
+ * @param b is the binding of the variable of the SPN for the transition.
+ */
 void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	
 	double t = A.CurrentTime;
@@ -427,7 +451,7 @@ void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	double w=0.0;
 	if (N.Transition[Id].DistTypeIndex > 2) {
 		N.ParamDistr[0]= N.GetWeight(Id);
-		w = GenerateTime(2, N.ParamDistr);
+		w = GenerateTime(EXPONENTIAL, N.ParamDistr);
 		//vector<double> wParam(1, N.GetWeight(Id));
 		//w = GenerateTime(2, wParam);
     }
@@ -437,19 +461,26 @@ void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	E.priority = N.GetPriority(Id);
 	E.weight = w;
 	E.binding = b;
-	
 }
 
-//Return the parameter of a transition
+/**
+ * Return the parameter of a transition
+ * @param Id the number of the transition of the SPN
+ * @param b the binding of the transition of the SPN
+ */
 void Simulator::getParams(size_t Id, const abstractBinding& b){
 	N.GetDistParameters(Id,b);
 }
-	
-//Call the random generator to generate fire time.
-double Simulator::GenerateTime(int distribution, vector<double> &param) {
+
+/**
+ * Call the random generator to generate fire time.
+ * @param distribution is the type of distribution
+ * @param param is a vector of parameters of the distribution.
+ */
+double Simulator::GenerateTime(DistributionType distribution,const vector<double> &param) {
 	
 	switch (distribution) {
-		case 1:
+		case UNIFORM:
 		{//UNIF
 			boost::uniform_real<> UNIF(param[0], param[1]);
 			boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
@@ -457,7 +488,7 @@ double Simulator::GenerateTime(int distribution, vector<double> &param) {
 			break;
 		}
 			
-		case 2:
+		case EXPONENTIAL:
 		{//EXP
 			//Exponential distribution is the only marking dependent parameters. Check of validity is required
 			
@@ -478,33 +509,33 @@ double Simulator::GenerateTime(int distribution, vector<double> &param) {
 			
 		}
 			
-		case 3:
+		case DETERMINISTIC:
 		{//DETERMINISTIC
 			return param[0];
 		}
 			
-		case 4:
+		case LOGNORMAL:
 		{//LogNormal
 			boost::lognormal_distribution<> LOGNORMAL(param[0], param[1]);
 			boost::variate_generator<boost::mt19937&, boost::lognormal_distribution<> > gen(RandomNumber, LOGNORMAL);
 			return gen();
 		}
 			
-		case 5:
+		case TRIANGLE:
 		{//Triangle
 			boost::triangle_distribution<> TRIANGLE(param[0], param[1], param[2]);
 			boost::variate_generator<boost::mt19937&, boost::triangle_distribution<> > gen(RandomNumber, TRIANGLE);
 			return gen();
 		}
-		case 6:
-		{//GOEMETRIC
+		case GEOMETRIC:
+		{//GEOMETRIC
 			boost::uniform_real<> UNIF(0, 1);
 			boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
 			double p = gen();
 			if (p >= param[0]) return param[1];
 			else return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
 		}
-		case 7:
+		case ERLANG:
         {//ERLANG           
             boost::uniform_real<> UNIF(0, 1);
             boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
@@ -514,7 +545,7 @@ double Simulator::GenerateTime(int distribution, vector<double> &param) {
             return -log(prod) / param[1];
 			
         }
-        case 8:
+        case GAMMA:
         {//GAMMA      
             boost::gamma_distribution<> GAMMA(param[0]);
             boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gen(RandomNumber, GAMMA);
@@ -530,7 +561,6 @@ double Simulator::GenerateTime(int distribution, vector<double> &param) {
 	
 }
 
-//Run a batch of simulation, the result is return as a BatchR structure.
 BatchR* Simulator::RunBatch(){
 	reset();
 	BatchR* batchResult = new BatchR(A.FormulaVal.size());

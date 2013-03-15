@@ -52,9 +52,6 @@ SimulatorRE::SimulatorRE(){
 
 void SimulatorRE::InitialEventsQueue() {
 	
-	Initialized = true;
-	
-	
 	Event E;
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
@@ -165,7 +162,7 @@ void SimulatorRE::GenerateEvent(Event& E,size_t Id,const abstractBinding& b) {
 	double w=0.0;
 	if (N.Transition[Id].DistTypeIndex > 2) {
 		N.ParamDistr[0]= N.GetWeight(Id);
-		w = GenerateTime(2, N.ParamDistr);
+		w = GenerateTime(EXPONENTIAL, N.ParamDistr);
 		//vector<double> wParam(1, N.GetWeight(Id));
 		//w = GenerateTime(2, wParam);
     }
