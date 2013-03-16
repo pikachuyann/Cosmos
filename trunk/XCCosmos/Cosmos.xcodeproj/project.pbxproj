@@ -156,6 +156,7 @@
 		03BCA54A148D271A008E2402 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		03BCA576148E150C008E2402 /* SimulatorBoundedRE.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SimulatorBoundedRE.hpp; sourceTree = "<group>"; };
 		03BCA577148E150C008E2402 /* SimulatorBoundedRE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimulatorBoundedRE.cpp; sourceTree = "<group>"; };
+		03C7163716F4D9050027930F /* maindoc.md */ = {isa = PBXFileReference; explicitFileType = text; path = maindoc.md; sourceTree = "<group>"; };
 		03D25F37143C8D3F00317323 /* Gspn_gmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Gspn_gmlparser.cpp; sourceTree = "<group>"; };
 		03D34525167B7A8800C6BDFA /* Gspn-parser.tab.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-parser.tab.cc"; sourceTree = "<group>"; };
 		03D34526167B7A8800C6BDFA /* Gspn-parser.tab.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-parser.tab.hh"; sourceTree = "<group>"; };
@@ -301,6 +302,7 @@
 		03F1366D143A050100944E04 /* SOURCES */ = {
 			isa = PBXGroup;
 			children = (
+				03C7163716F4D9050027930F /* maindoc.md */,
 				03F1366E143A050100944E04 /* Cosmos */,
 				03F13686143A050100944E04 /* ModelGenerator */,
 			);

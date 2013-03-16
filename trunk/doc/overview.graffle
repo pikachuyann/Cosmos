@@ -434,8 +434,6 @@
 			<dict>
 				<key>stroke</key>
 				<dict>
-					<key>Cap</key>
-					<integer>2</integer>
 					<key>CornerRadius</key>
 					<real>1</real>
 					<key>GapRatio</key>
@@ -3381,7 +3379,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2013-03-16 20:21:39 +0000</string>
+	<string>2013-03-16 22:06:38 +0000</string>
 	<key>Modifier</key>
 	<string>Benoit Barbot</string>
 	<key>NotesVisible</key>
