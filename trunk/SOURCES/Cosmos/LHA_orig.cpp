@@ -18,12 +18,12 @@
  * GNU General Public License for more details.                                *
  *                                                                             *
  * You should have received a copy of the GNU General Public License along     *
- * with this program; if not, write to the Free Software Foundation, Inc.,     *
+ * with this program; if not, write to the Free Software Foundation, Inc.,     *·
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
  *******************************************************************************
  */
 
-#include "LHA_orig.hpp"
+#include "LHA.hpp"
 
 #include <map>
 #include <float.h>
@@ -32,20 +32,17 @@
 
 using namespace std;
 
-LHA_ORIG::LHA_ORIG() {
+LHA::~LHA() {
 }
 
-LHA_ORIG::~LHA_ORIG() {
-}
-
-/*void LHA_ORIG::printState(){
+/*void LHA::printState(){
 	cerr << "Automate:" << LocLabel[CurrentLocation]<< "\t,";
 	for(size_t i =0 ; i< Var.size(); i++){
 		cerr << VarLabel[i]<<":"<< Var[i]<< "\t,";
 	}
 }*/
 
-int LHA_ORIG::EnabledInitLocation(const abstractMarking& Marking) {
+int LHA::EnabledInitLocation(const abstractMarking& Marking) {
     for (set<int>::iterator l = InitLoc.begin(); l != InitLoc.end(); l++) {
         if (CheckLocation((*l), Marking))
             return (*l);
@@ -53,7 +50,7 @@ int LHA_ORIG::EnabledInitLocation(const abstractMarking& Marking) {
     return (-1);
 }
 
-int LHA_ORIG::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
+int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
     for (set<int>::iterator it = ActionEdges[CurrentLocation][PetriNetTransition].begin(); it != ActionEdges[CurrentLocation][PetriNetTransition].end(); it++) {
         if ((CheckLocation(Edge[(*it)].Target, NextMarking))) {
             if (CheckEdgeContraints(*it,PetriNetTransition, binding)) return (*it);
@@ -64,7 +61,7 @@ int LHA_ORIG::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarkin
 
 }
 
-AutEdge LHA_ORIG::GetEnabled_A_Edges(const abstractMarking& Marking) {
+AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking) {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
@@ -86,7 +83,7 @@ AutEdge LHA_ORIG::GetEnabled_A_Edges(const abstractMarking& Marking) {
 
 }
 
-void LHA_ORIG::resetLinForms() {
+void LHA::resetLinForms() {
     for (size_t i = 0; i < LinForm.size(); i++) {
         LinForm[i] = 0;
         OldLinForm[i] = 0;
@@ -95,7 +92,7 @@ void LHA_ORIG::resetLinForms() {
         LhaFunc[i] = 0;
 }
 
-void LHA_ORIG::reset(const abstractMarking& Marking) {
+void LHA::reset(const abstractMarking& Marking) {
   Likelihood = 1.0;
   resetLinForms();
 	resetVariables();
@@ -103,35 +100,35 @@ void LHA_ORIG::reset(const abstractMarking& Marking) {
   CurrentTime = 0;
 }
 
-void LHA_ORIG::setCurrentLocation(unsigned int loc) {
+void LHA::setCurrentLocation(unsigned int loc) {
     CurrentLocation = loc;
 }
 
-bool LHA_ORIG::isFinal() {
+bool LHA::isFinal() {
     return ( (FinalLoc.find(CurrentLocation) != FinalLoc.end()) ? true : false);
 }
 
-double LHA_ORIG::min(double& a, double& b) {
+double LHA::min(double& a, double& b) {
     if (a <= b)return a;
     else return b;
 }
 
-double LHA_ORIG::max(double& a, double& b) {
+double LHA::max(double& a, double& b) {
     if (a >= b)return a;
     else return b;
 }
 
-double LHA_ORIG::Min(double& a, double& b, double& c) {
+double LHA::Min(double& a, double& b, double& c) {
     double x = min(b, c);
     return min(a, x);
 }
 
-double LHA_ORIG::Max(double& a, double& b, double& c) {
+double LHA::Max(double& a, double& b, double& c) {
     double x = max(b, c);
     return max(a, x);
 }
 
-double LHA_ORIG::Integral(double& OldInt, double& t, double& Delta, double& x, double& y) {
+double LHA::Integral(double& OldInt, double& t, double& Delta, double& x, double& y) {
     if (x * y >= 0) return (OldInt + Delta * (x + y) / 2);
     double a = (y - x) / Delta;
     double b = x - a*t;

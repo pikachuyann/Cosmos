@@ -368,7 +368,7 @@ void Simulator::interactiveSimulation(){
 			if(input_line.substr(0,5).compare("fire ")==0){
 				string trans = input_line.substr(5,input_line.size()-5);
 				size_t traid;
-				for(traid=0; traid < N.Transition.size() && N.Transition[traid].label != trans; traid++);
+				for(traid=0; traid < N.Transition.size() && N.Transition[traid].label != trans ; traid++) ;
 				if(traid == N.Transition.size())cerr << "Unknown transition: "<< trans << endl;
 				else{
 					if(EQ->isScheduled(traid, 0)){

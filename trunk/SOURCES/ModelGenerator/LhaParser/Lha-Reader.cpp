@@ -148,19 +148,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	ofstream LhaCppFile(loc.c_str(), ios::out | ios::trunc);
 	
-    /*loc = Pref + "../SOURCES/ModelGenerator/LHA_orig.cpp";
-	 ifstream LhaCppFile_orig(loc.c_str(), ios::in);
-	 
-	 while (!LhaCppFile_orig.eof()) {
-	 
-	 string LineFile;
-	 getline(LhaCppFile_orig, LineFile);
-	 LhaCppFile << LineFile << endl;
-	 }
-	 LhaCppFile_orig.close();
-	 */
 	
-	LhaCppFile << "#include \"LHA_orig.hpp\"" << endl;
 	LhaCppFile << "#include \"markingImpl.hpp\"" << endl;
 	LhaCppFile << "#include <math.h>" << endl;
 	LhaCppFile << "#include <float.h>" << endl;
@@ -188,7 +176,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	}
 	LhaCppFile << "};\n";
 	
-	LhaCppFile << "void LHA_ORIG::printState(){\n";
+	LhaCppFile << "void LHA::printState(){\n";
 	LhaCppFile << "\tcerr << \"Location:\"<< LocLabel[CurrentLocation] << endl;\n";
 	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
 		LhaCppFile << "\tcerr << \"\t" << MyLha.Vars.label[v] << " : \" << Vars->"<< MyLha.Vars.label[v] << " << endl;\n";
@@ -343,7 +331,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "}\n" << endl;
 	
 	
-	LhaCppFile << "void LHA_ORIG::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {\n";
+	LhaCppFile << "void LHA::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {\n";
     for (size_t v = 0; v < MyLha.Vars.label.size() ; v++) {
 		if(MyLha.Vars.type[v] == CONTINIOUS_VARIABLE )
 			LhaCppFile <<  "\tVars->"<< MyLha.Vars.label[v] << " += GetFlow("<<v<<", CurrentLocation, Marking) * DeltaT;\n";
