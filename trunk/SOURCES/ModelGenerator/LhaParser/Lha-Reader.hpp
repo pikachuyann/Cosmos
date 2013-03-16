@@ -63,9 +63,9 @@ struct variables {
 	};
 };
 
-struct LHA {
+struct LHA_D {
 	GSPN *MyGspn;
-	LHA(GSPN& Mspn) : MyGspn(&Mspn),NbLoc(0) {}
+	LHA_D(GSPN& Mspn) : MyGspn(&Mspn),NbLoc(0) {}
     string label;
     size_t NbLoc; // number of locations
 
@@ -124,7 +124,7 @@ struct LHA {
 	
 };
 
-typedef struct LHA LhaType;
+typedef struct LHA_D LhaType;
 
 
 
