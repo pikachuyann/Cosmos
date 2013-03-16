@@ -1,0 +1,32 @@
+#compdef Cosmos
+
+local curcontext="$curcontext" state line
+typeset -A opt_args
+
+_arguments '(-V)-v:Verbose level:->verbose' \
+	   '(-I)-i[Ask the user to choose next transition]' \
+	   '--level:Confidence level:->level' \
+	   '--width:Required confidence interval width:->width' \
+	   '--batch:Number of trajectory by batch :->batch' \
+	   '--max-run:Max maximal number of trajectory:->max-run' \
+	   '--njob:Number of parallel simulation:->njob' \
+	   '--update-time:frequencie of the screen update:->update-time' \
+	   '(-h)--help[help message]' \
+	   '--gppcmd:C++ compiler to use:->gppcmd' \
+	   '--gppcmd:flags to the C++ compiler:->gppflags' \
+	   '--seed:Specify the random generator seed:->seed' \
+	   '--local-test[Use local testing]' \
+	   '--HASL-formula:External HASL formule:->HASL' \
+	   '--outputdata:File where to output data:->data' \
+	   '--output-raw:Output result of each trajectory in a file:->data' \
+	   '--output-PDFCDF:Output PDF or CDF to a file:->data' \
+	   '--tmp-status:Persistance of the tmp file:->status' \
+	   '*:file for the model:_files' \
+	   && return 0
+
+	   case $state in
+	   (data)
+		_files && return 0;;
+	   (status) 
+	   	compadd "$@" 0 1 2 3 && return 0;;
+	   esac  
