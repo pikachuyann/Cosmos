@@ -25,12 +25,6 @@
  */
 
 
-/*
- * This file implement a structure for the result of a batch of 
- * Simulation it also implement input/output on it.
- * It is used both by the simulator and the main program.
- */
-
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -40,28 +34,43 @@
 
 typedef std::pair<bool, std::vector<double> > SimOutput;
 
+/**
+ * This file implement a structure for the result of a batch of
+ * Simulation it also implement input/output on it.
+ * It is used both by the simulator and the main program.
+ */
 class BatchR {
 public:
-//    BatchR();
     BatchR(const size_t i);
-    virtual ~BatchR();
-    unsigned long I;              //Number of simulation
-    unsigned long Isucc;          //Number of succesfull simulation
-    size_t TableLength;    //Number of mesured variable
-    std::vector<bool> IsBernoulli;  //Is a variable a boolean.
+	
+	//!< Number of simulation.
+    unsigned long I;
+	
+	//!< Number of succesfull simulation.
+    unsigned long Isucc;
+	
+	//!< Number of mesured variable.
+    size_t TableLength;
+	
+	//!< Is a variable a boolean.
+    std::vector<bool> IsBernoulli;
+	
+	//!< The mean value of each formula.
     std::vector<double> Mean;
+	
+	//!< The second moment of each formula.
     std::vector<double> M2;
     
-    //Add the result of one simulation to the Batch
+    //!< Add the result of one simulation to the Batch.
     void addSim(SimOutput*);
     
-    //Merge the result of two batch of simulation
+    //!< Merge the result of two batch of simulation.
     void unionR(BatchR*);
     
     
     void outputR();
     bool inputR(FILE* f);
-    void print();
+    void print(); //! Print human readable version of batch on stdout.
     
 };
 

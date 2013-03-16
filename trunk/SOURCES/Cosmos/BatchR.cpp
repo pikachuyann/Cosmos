@@ -32,8 +32,11 @@
 using namespace std;
 
 
-//Initialize the batch with zeros
-BatchR::BatchR(const size_t i) :
+/**
+ *Initialize the batch with zeros
+ * @param i is the number of formula evaluated by the automaton.
+ */
+ BatchR::BatchR(const size_t i) :
 	I(0) ,
 	Isucc(0),
 	TableLength(i),
@@ -41,12 +44,12 @@ BatchR::BatchR(const size_t i) :
 	Mean(vector<double>(i,0.0)),
 	M2(vector<double>(i,0.0)) {}
 
-BatchR::~BatchR() {
-}
-
-//Add a simulation to the batch
-//If the simulation is a success then The Mean and second Moment are updated
-void BatchR::addSim(SimOutput *Result){
+/**
+ * Add a simulation to the batch
+ * If the simulation is a success then The Mean and second Moment are updated
+ * @param Result the result of one trajectory in the simulator.
+ */
+ void BatchR::addSim(SimOutput *Result){
     I++;
     if (Result->first) {
         Isucc++;
@@ -64,6 +67,10 @@ void BatchR::addSim(SimOutput *Result){
     }
 }
 
+/**
+ * Take the union of two batch of result.
+ * @param batch is a batch of result wich is added to the current batch.
+ */
 void BatchR::unionR(BatchR *batch){
     
     I += batch->I;
@@ -78,9 +85,11 @@ void BatchR::unionR(BatchR *batch){
     }
 }
 
-//This function write a batch on the standart output it is suposed to
-//be read by the function BatchR::inputR
-void BatchR::outputR() {
+/**
+ * This function write a batch on the standart output it is suposed to
+ * be read by the function BatchR::inputR
+ */
+ void BatchR::outputR() {
     write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(I));
 	write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
 
@@ -92,7 +101,11 @@ void BatchR::outputR() {
     }
 }
 
-//Read a batch from a file.
+/**
+ * Read a batch from a file.
+ * The batch should be print with BatchR::outputR
+ * @param f an opened for reading file.
+ */
 bool BatchR::inputR(FILE* f) {
     bool readb;
 	size_t readbyte;
@@ -116,7 +129,6 @@ bool BatchR::inputR(FILE* f) {
 	return ok;
 }
 
-//Print human readable version of batch on stdout.
 void BatchR::print(){
     cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl;
     for(size_t i =0; i< TableLength; i++){

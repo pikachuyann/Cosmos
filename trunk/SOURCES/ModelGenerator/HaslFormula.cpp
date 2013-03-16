@@ -37,12 +37,25 @@ ConfInt::ConfInt(){
 	up = std::numeric_limits<double>::infinity();
 }
 
+/**
+ * Symetric confidence interval
+ * @param meanArg is the middle of the confidence interval
+ * @param width is the width of the confidence interval
+ */
 ConfInt::ConfInt(double meanArg,double width){
 	mean = meanArg;
 	low = meanArg - width/2;
 	up = meanArg + width/2;
 }
 
+/**
+ * Asymetric confidence interval.
+ * @param meanArv is the mean of the confidence interval it is not necessary
+ * the middle of the confidence interval if the distribution is not symetric 
+ * and is not approximated by the normal distribution wich is symetric.
+ * @param lowArg the Lower bound of the confidence interval.
+ * @param upArg the Upper bound of the confidence interval.
+ */
 ConfInt::ConfInt(double meanArg,double lowArg,double upArg){
 	mean = meanArg;
 	low = lowArg;
@@ -82,7 +95,7 @@ HaslFormulasTop::HaslFormulasTop(size_t al,double l){
 	right = NULL;
 }
 
-HaslFormulasTop::HaslFormulasTop(int t, HaslFormulasTop* l,HaslFormulasTop* r){
+HaslFormulasTop::HaslFormulasTop(HaslType t, HaslFormulasTop* l,HaslFormulasTop* r){
 	TypeOp = t;
 	Algebraic = 0;
 	Level = 1;

@@ -32,33 +32,35 @@
 
 #include "../Cosmos/BatchR.hpp"
 
-#define EXPECTANCY 0
-#define PROBABILITY 1
-#define PDF_PART 6
-#define CDF_PART 7
-#define CONSTANT 2
-#define HASL_PLUS 3
-#define HASL_TIME 4
-#define HASL_DIV 5
-
-/*
+enum HaslType {
+	EXPECTANCY,
+	PROBABILITY,
+	PDF_PART,
+	CDF_PART,
+	CONSTANT,
+	HASL_PLUS,
+	HASL_TIME,
+	HASL_DIV
+};
+	
+/**
+ *
  * A class to manage Confidence interval.
  */
-
 class ConfInt {
 public:
-	ConfInt();
-	ConfInt(double,double);
-	ConfInt(double,double,double);
+	ConfInt(); //!< Interval representing \f$ \mathbb{R}  \f$.
+	ConfInt(double,double); //!< Symetric interval.
+	ConfInt(double,double,double); //!< Asymetric interval.
 	~ConfInt();
 	
-	double mean;
-	double low;
-	double up;
-	double width(void);
+	double mean; //!< Middle of the confidence interval.
+	double low; //!< Lower bound of the confidence interval.
+	double up; //!< Upper bound of the confidence interval.
+	double width(void); //!< Width of the confidence interval.
 };
 
-/*
+/**
  * A class to manage and evaluate an HASL formula.
  * An HASL formula is either a probabilistic operator like PROB or EXPECTANCY
  * or combination of HASL formula.
@@ -66,20 +68,18 @@ public:
  * of the result of a simulation contain in a BatchResult object.
  * The resul of an evaluation is a confidence interval.
  */
-
-
 class HaslFormulasTop {
 public:
-	HaslFormulasTop(double);
-	HaslFormulasTop(double,double);
-	HaslFormulasTop(size_t,double);
-	HaslFormulasTop(int, HaslFormulasTop*, HaslFormulasTop*);
+	HaslFormulasTop(double); //!< PROB operator use to compute \f$ \mathbb{P} \f$ .
+	HaslFormulasTop(double,double); //!< Constant
+	HaslFormulasTop(size_t,double); //!< Expectancy operator use to compute \f$ \mathbb{E} \f$ .
+	HaslFormulasTop(HaslType , HaslFormulasTop*, HaslFormulasTop*); //!< Build a tree of operator.
 //	HaslFormulasTop(const HaslFormulasTop&);
 	
 	~HaslFormulasTop();
 	
-	ConfInt* eval(BatchR&);
-	int TypeOp;
+	ConfInt* eval(BatchR&); //!< Evaluate the formula over the batch of simulation
+	HaslType TypeOp; //!< type of the HaslFormula.
 	
 protected:
 	double Level;
