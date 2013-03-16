@@ -31,4 +31,32 @@
 
 
 ## Overview
+This graph represent an overview of the structure of Cosmos.
+Cosmos is divided in two main parts.
+- The code generator,
+	In blue on the graph do several things:
+	+ Parse the command line and the input files
+	+ Generate C++ code from the input files.
+	+ Run one or several Simulators as independent processes and aggregate their
+		result.
+	+ Make some statistical analysis of the results and choose when to stop the
+		simulators.
+	The main function is in the file Cosmos.cpp .
+- The Simulators, in green and red on the graph, simulate the trajectory
+	of the system as fast as possible. results are send back to the Model
+	Generator. Part of files of the simulators are generated, in red on the graph.
+	the main function is in the file clientsim.cpp
+
 ![Overview of the structure](../overview.png)
+
+
+## Code generation and compilation
+As part of the simulators is generated at runtime, those part must be compile
+also at runtime. When the tool is compile the fils in the directory Cosmos are
+compiled and put in a library called libClientSim.a in the bin directory.
+
+During the execution the model generator produce the missing part of the
+simulator in the temporary directory.
+Then it compiled them and link them to the library to build an executable.
+
+
