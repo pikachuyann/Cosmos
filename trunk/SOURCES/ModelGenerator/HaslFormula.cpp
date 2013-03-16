@@ -50,7 +50,7 @@ ConfInt::ConfInt(double meanArg,double width){
 
 /**
  * Asymetric confidence interval.
- * @param meanArv is the mean of the confidence interval it is not necessary
+ * @param meanArg is the mean of the confidence interval it is not necessary
  * the middle of the confidence interval if the distribution is not symetric 
  * and is not approximated by the normal distribution wich is symetric.
  * @param lowArg the Lower bound of the confidence interval.

@@ -24,7 +24,7 @@
  */
 
 /**
- * \mainpage Cosmos
+ *
  * 
  * \author   Benoît Barbot
  */
