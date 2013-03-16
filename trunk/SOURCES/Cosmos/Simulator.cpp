@@ -124,28 +124,6 @@ void Simulator::returnResultFalse(){
 }
 
 /**
- * This function makes time elapse in the automaton.
- * @param DeltaT the ammout of time the automaton should wait.
- */
-void Simulator::updateLHA(double DeltaT){
-	A.DoElapsedTimeUpdate(DeltaT, N.Marking);
-	A.UpdateLinForm(N.Marking);
-	A.UpdateLhaFunc(DeltaT);
-	A.CurrentTime += DeltaT;
-}
-
-/**
- * This function makes the automaton takes an edge.
- * The edge can be either a autonomous or a synchronize on.
- * @param EdgeIndex the number of the edge of the LHA
- * @param b a binding of the colored variable of the SPN for the transition.
- */
-void Simulator::fireLHA(int EdgeIndex,const abstractBinding &b){
-	A.DoEdgeUpdates(EdgeIndex, N.Marking, b);
-	A.CurrentLocation = A.Edge[EdgeIndex].Target;
-}
-
-/**
  * Update the enabling transition of the SPN, and update the event queue.
  * @param E1_transitionNum the number of the transition which last 
  * occured in the SPN.
@@ -278,8 +256,8 @@ bool Simulator::SimulateOneStep(){
 				A.printState();
 				cerr << endl;
 			}
-			updateLHA( AE.FiringTime - A.CurrentTime );
-			fireLHA(AE.Index, abstractBinding() );
+			A.updateLHA( AE.FiringTime - A.CurrentTime, N.Marking );
+			A.fireLHA(AE.Index,N.Marking, abstractBinding() );
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
@@ -306,8 +284,8 @@ bool Simulator::SimulateOneStep(){
 		while (E1.time >= AE.FiringTime) {
             //cerr << "looping on autonomous edge";
 			
-			updateLHA(AE.FiringTime - A.CurrentTime);
-			fireLHA(AE.Index, abstractBinding());
+			A.updateLHA(AE.FiringTime - A.CurrentTime, N.Marking);
+			A.fireLHA(AE.Index,N.Marking, abstractBinding());
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				A.printState();
@@ -328,7 +306,7 @@ bool Simulator::SimulateOneStep(){
 		}
 			
 		//Make time elapse in the LHA
-		updateLHA( E1.time - A.CurrentTime );
+		A.updateLHA( E1.time - A.CurrentTime, N.Marking );
 		
 		//Fire the transition in the SPN
 		N.fire(E1.transition, E1.binding);
@@ -343,7 +321,7 @@ bool Simulator::SimulateOneStep(){
 		} else {
 			//If synchronisation is possible fire it and check if the
 			// reached state is final. Then update the SPN.
-			fireLHA(SE, E1.binding);
+			A.fireLHA(SE,N.Marking, E1.binding);
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
@@ -408,7 +386,7 @@ void Simulator::interactiveSimulation(){
 void Simulator::SimulateSinglePath() {
 	
 	InitialEventsQueue();
-	A.CurrentLocation = A.EnabledInitLocation(N.Marking);
+	A.setInitLocation(N.Marking);
 	A.CurrentTime = 0;
 	
     //cerr << "start path"<< endl;

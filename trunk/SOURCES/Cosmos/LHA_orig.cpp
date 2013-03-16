@@ -42,12 +42,16 @@ LHA::~LHA() {
 	}
 }*/
 
-int LHA::EnabledInitLocation(const abstractMarking& Marking) {
+void LHA::setInitLocation(const abstractMarking& Marking) {
     for (set<int>::iterator l = InitLoc.begin(); l != InitLoc.end(); l++) {
-        if (CheckLocation((*l), Marking))
-            return (*l);
+        if (CheckLocation((*l), Marking)){
+            CurrentLocation = (*l);
+			return;
+		}
     }
-    return (-1);
+	
+    cerr << "There is no initial location enabled with the initial marking" << endl;
+	exit(EXIT_FAILURE);
 }
 
 int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
@@ -79,8 +83,6 @@ AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking) {
     }
 
     return Ed;
-
-
 }
 
 void LHA::resetLinForms() {
@@ -96,13 +98,34 @@ void LHA::reset(const abstractMarking& Marking) {
   Likelihood = 1.0;
   resetLinForms();
 	resetVariables();
-  CurrentLocation = EnabledInitLocation(Marking);
+  setInitLocation(Marking);
   CurrentTime = 0;
 }
 
-void LHA::setCurrentLocation(unsigned int loc) {
-    CurrentLocation = loc;
+/**
+ * This function makes the automaton takes an edge.
+ * The edge can be either a autonomous or a synchronize on.
+ * @param EdgeIndex the number of the edge of the LHA
+ * @param M is the marking of the SPN
+ * @param b a binding of the colored variable of the SPN for the transition.
+ */
+void LHA::fireLHA(int EdgeIndex,const abstractMarking &M, const abstractBinding &b){
+	DoEdgeUpdates(EdgeIndex, M, b);
+	CurrentLocation = Edge[EdgeIndex].Target;
 }
+
+/**
+ * This function makes time elapse in the automaton.
+ * @param DeltaT the ammout of time the automaton should wait.
+ * @param Marking is the Marking of the SPN.
+ */
+void LHA::updateLHA(double DeltaT, const abstractMarking &Marking){
+	DoElapsedTimeUpdate(DeltaT, Marking);
+	UpdateLinForm(Marking);
+	UpdateLhaFunc(DeltaT);
+	CurrentTime += DeltaT;
+}
+
 
 bool LHA::isFinal() {
     return ( (FinalLoc.find(CurrentLocation) != FinalLoc.end()) ? true : false);

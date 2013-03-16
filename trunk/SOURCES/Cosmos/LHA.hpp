@@ -75,44 +75,26 @@ public:
 	LHA(unsigned int, unsigned int);
 	~LHA();
 	
-	int EnabledInitLocation(const abstractMarking&);
-	
-	void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
-	double GetFlow(int, int,const abstractMarking&);
-	bool CheckLocation(int,const abstractMarking&);
-	bool CheckEdgeContraints(int,size_t, const abstractBinding&);
-	
-    t_interval GetEdgeEnablingTime(int,const abstractMarking&);
-	
+
+	void setInitLocation(const abstractMarking&);
 	
     int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
     AutEdge GetEnabled_A_Edges(const abstractMarking&);
 	
+	//! update value in the LHA by elapsing time
+	void updateLHA(double DeltaT, const abstractMarking &);
 	
-    void DoElapsedTimeUpdate(double, const abstractMarking&);
-	
-    void setCurrentLocation(unsigned int);
-
     void UpdateFormulaVal();
 	void UpdateLinForm(const abstractMarking&);
-	void UpdateLhaFunc( double&);
 	void UpdateLhaFuncLast();
-	
-	void resetVariables();
 
 	
-	void doPathVarsUpdate(double, double, const abstractMarking&);
-	
-	
-    bool isFinal();
+	//! fire the transition of an LHA
+	virtual void fireLHA(int,const abstractMarking&, const abstractBinding&);
+
+	bool isFinal();
     
     void reset(const abstractMarking&);
-	
-    void ViewEdge(int);
-    void ViewAllEdges();
-	
-	
-
 
 	vector<double> FormulaVal;
 	void printState();
@@ -122,22 +104,53 @@ public:
 	
 	vector <LhaEdge> Edge;
 	
+	
+
+	
 	double Likelihood;
 	Variables *Vars; // Var[i] value of the variable indexed by i
-	Variables *tempVars;
 	
 	vector<double> LinForm;
     vector<double> OldLinForm;
     vector<double> LhaFunc;
 
-	set <int> InitLoc; // initial locations
 	set <int> FinalLoc; // final locations
+private:
+	
+	void DoElapsedTimeUpdate(double, const abstractMarking&);
+    
+	void UpdateLhaFunc( double&);
+	
+	
+	set <int> InitLoc; // initial locations
+	
+	
+	void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
+	double GetFlow(int, int,const abstractMarking&);
+	bool CheckLocation(int,const abstractMarking&);
+	bool CheckEdgeContraints(int,size_t, const abstractBinding&);
+	
+    t_interval GetEdgeEnablingTime(int,const abstractMarking&);
+	
+	void resetVariables();
+	
+		
+	void doPathVarsUpdate(double, double, const abstractMarking&);
+	
+	
+	
+    void ViewEdge(int);
+    void ViewAllEdges();
+	
+	
+
+
 
 	
-protected:
 	
+	Variables *tempVars;
 	
-	
+		
 	void resetPathVarsTable();
 	
 	bool isVar(string, double &);

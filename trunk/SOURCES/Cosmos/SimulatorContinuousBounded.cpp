@@ -85,7 +85,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         
         c++;
 		AutEdge AE;
-		A.CurrentLocation = A.EnabledInitLocation(N.Marking);
+		A.setInitLocation(N.Marking);
 		A.CurrentTime = 0;
 		
 		

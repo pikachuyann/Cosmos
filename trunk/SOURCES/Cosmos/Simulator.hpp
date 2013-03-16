@@ -138,12 +138,6 @@ protected:
 	
 	virtual void returnResultTrue(); 
 	virtual void returnResultFalse();
-	
-	//! update value in the LHA by elapsing time
-	virtual void updateLHA( double );
-	
-	//! fire the transition of an LHA
-	virtual void fireLHA(int,const abstractBinding&);
 		
 	//! update value in the SPN after a transition
 	virtual void updateSPN(size_t,const abstractBinding& );

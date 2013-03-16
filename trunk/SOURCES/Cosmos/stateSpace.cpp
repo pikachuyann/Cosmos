@@ -75,7 +75,8 @@ void stateSpace::exploreStateSpace(){
 	
 	set <int, less<int> > ::iterator it;
 	
-	init.push_back( *(A.InitLoc.begin()) );
+	A.setInitLocation(N.Marking);
+	init.push_back(A.CurrentLocation);
 	toBeExplore.push(init);
     findstate = new vector<vector<int> >(0);
     add_state(init);
@@ -86,7 +87,7 @@ void stateSpace::exploreStateSpace(){
 		
 		vector<int> currentstate = place;
 		
-		A.setCurrentLocation(place.back());
+		A.CurrentLocation= place.back();
 		place.pop_back();
 		N.Marking.setVector(place);
 		
@@ -145,7 +146,7 @@ void stateSpace::buildTransitionMatrix()
         vector<int> place = (*findstate)[i];
 		vector<int> currentstate = place;
 		
-		A.setCurrentLocation(place.back());
+		A.CurrentLocation = place.back();
 		place.pop_back();
 		N.Marking.setVector(place);
 		
