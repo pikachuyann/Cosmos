@@ -531,6 +531,7 @@ EDGE: LB LB str COMMA str RB COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB SE
 		SubSet.erase(SubSet.begin(),SubSet.end());
 		Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsConstants.push_back(CST);
 		Reader.MyLha.ConstraintsRelOp.push_back(comp);
+		Reader.MyLha.unTimeEdgeConstraints.push_back("true");
 		vector<string> vs;comp=vs;CST=vs;
 		vector <vector <string> > ms;CoeffsMatrix=ms;
 		
