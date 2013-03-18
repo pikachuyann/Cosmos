@@ -33,6 +33,10 @@ class abstractMarkingImpl;
 
 class abstractMarking {
 public:
+	/**
+	 * Pointer to to the actual marking inmplementation
+	 * which is generated.
+	 */
 	abstractMarkingImpl* P;
 	
 	abstractMarking();

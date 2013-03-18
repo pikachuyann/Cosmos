@@ -130,6 +130,7 @@
 		036803B41626C53800B1523A /* location.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = location.hh; sourceTree = "<group>"; };
 		036803B51626C53800B1523A /* position.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = position.hh; sourceTree = "<group>"; };
 		036803B61626C53800B1523A /* stack.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stack.hh; sourceTree = "<group>"; };
+		036EC8A916F5C5B50059B280 /* _Cosmos */ = {isa = PBXFileReference; explicitFileType = text.script; name = _Cosmos; path = ../bin/_Cosmos; sourceTree = "<group>"; };
 		0379BDC21462C63D0077D4E9 /* Lha_gmlparser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Lha_gmlparser.hpp; sourceTree = "<group>"; };
 		0379BDC31462C63D0077D4E9 /* Lha_gmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Lha_gmlparser.cpp; sourceTree = "<group>"; };
 		03A15A36160B007000BAFF6C /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
@@ -447,6 +448,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				036EC8A916F5C5B50059B280 /* _Cosmos */,
 				03B9F20F16AED58C004A8145 /* Makefile_fast */,
 				03A15A38160B057A00BAFF6C /* Makefile */,
 				03A49A4016B71FFB00521256 /* Makefile_linux */,

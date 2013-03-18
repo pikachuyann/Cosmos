@@ -44,8 +44,8 @@ Cosmos is divided in two main parts.
 	The main function is in the file Cosmos.cpp .
 - The Simulators, in green and red on the graph, simulate the trajectory
 	of the system as fast as possible. results are send back to the Model
-	Generator. Part of files of the simulators are generated, in red on the graph.
-	the main function is in the file clientsim.cpp
+	Generator. Part of files of the simulators are generated, in red on the 
+	graph. the main function is in the file clientsim.cpp
 
 ![Overview of the structure](../overview.png)
 

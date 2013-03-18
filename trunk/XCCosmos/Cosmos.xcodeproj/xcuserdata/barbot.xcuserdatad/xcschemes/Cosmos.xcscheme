@@ -128,7 +128,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/DatabaseProp5LHA.12.grml"
+            argument = "/Users/barbot/DatabaseProp5LHA.5.grml"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
