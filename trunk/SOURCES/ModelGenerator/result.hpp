@@ -90,7 +90,7 @@ private:
   timeval start, end;
 
   //!< timestanmps fot the last time the commandline where updated.
-  timeval lastprint
+  timeval lastprint;
 
   //!< timestanmps fot the last time the gnuplot screen where updated.
   timeval lastdraw;
