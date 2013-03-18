@@ -346,13 +346,16 @@ void Lha_Reader::WriteFile(parameters& P) {
 			LhaCppFile << "    case " << x << ":" << endl;
 			LhaCppFile << "         switch(loc){" << endl;
 			for (size_t l = 0; l < MyLha.NbLoc; l++) {
+				if (MyLha.FuncFlow[l][x] != ""){
 				LhaCppFile << "         case " << l << ":" << endl;
-				if (MyLha.FuncFlow[l][x] != "")
-					LhaCppFile << "             return " << MyLha.FuncFlow[l][x] << ";" << endl;
-				else
-					LhaCppFile << "             return " << 0.0 << ";" << endl;
+				LhaCppFile << "             return " << MyLha.FuncFlow[l][x] << ";" << endl;
 				LhaCppFile << "             break;" << endl;
+				}
 			}
+			LhaCppFile << "		  default:"<< endl;
+			LhaCppFile << "             return " << 0.0 << ";" << endl;
+			LhaCppFile << "       break;" << endl;
+			
 			LhaCppFile << "       }" << endl;
 			LhaCppFile << "       break;" << endl;
 		}
@@ -363,10 +366,16 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "bool LHA::CheckLocation(int loc,const abstractMarking& Marking){" << endl;
     LhaCppFile << "    switch(loc){" << endl;
     for (size_t l = 0; l < MyLha.NbLoc; l++) {
-        LhaCppFile << "     case " << l << ":" << endl;
-        LhaCppFile << "         return " << MyLha.FuncLocProperty[l] << ";" << endl;
-        LhaCppFile << "         break;" << endl;
+		if(MyLha.FuncLocProperty[l] != "true"){
+			LhaCppFile << "     case " << l << ":" << endl;
+			LhaCppFile << "         return " << MyLha.FuncLocProperty[l] << ";" << endl;
+			LhaCppFile << "         break;" << endl;
+		}
     }
+	LhaCppFile << "     default :" << endl;
+	LhaCppFile << "         return true;" << endl;
+	LhaCppFile << "         break;" << endl;
+	
     LhaCppFile << "    }" << endl;
 	
 	
@@ -508,39 +517,40 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBinding& b){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
-        LhaCppFile << "     case " << e << ":" << endl;
-		LhaCppFile << "         {"<< endl;
-		
-		int k = 0;
-		if(P.CountTrans)
-			LhaCppFile << "         EdgeCounter[" << e << "]++ ;"<< endl;
-        for (size_t v = 0; v < MyLha.NbVar; v++)
+        int k = 0;
+		for (size_t v = 0; v < MyLha.NbVar; v++)
             if (MyLha.FuncEdgeUpdates[e][v] != "") {
                 k++;
                 break;
             }
-        if (k > 0) {
-            for (size_t v = 0; v < MyLha.NbVar; v++)
-                if (MyLha.FuncEdgeUpdates[e][v] != ""){
-                    LhaCppFile << "         tempVars->" << MyLha.Vars.label[v] << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
-				}else{
-					LhaCppFile << "         tempVars->" << MyLha.Vars.label[v] << "=Vars->" << MyLha.Vars.label[v] << ";" << endl;
-				}
-			LhaCppFile << "\tstd::swap(Vars,tempVars);\n";
+		if(k>0 || P.CountTrans){
+			LhaCppFile << "     case " << e << ":" << endl;
+			LhaCppFile << "         {"<< endl;
+			if(P.CountTrans)
+				LhaCppFile << "         EdgeCounter[" << e << "]++ ;"<< endl;
 			
+			if (k > 0) {
+				for (size_t v = 0; v < MyLha.NbVar; v++)
+					if (MyLha.FuncEdgeUpdates[e][v] != ""){
+						LhaCppFile << "         tempVars->" << MyLha.Vars.label[v] << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
+					}else{
+						LhaCppFile << "         tempVars->" << MyLha.Vars.label[v] << "=Vars->" << MyLha.Vars.label[v] << ";" << endl;
+					}
+				LhaCppFile << "\t\tstd::swap(Vars,tempVars);\n";
+				
+			}
+			LhaCppFile << endl;
+			//LhaCppFile << "         DoEdgeUpdates_" << e << "( Marking);" << endl;
+			LhaCppFile << "         }"<< endl;
+			LhaCppFile << "         break;" << endl;
 		}
-		LhaCppFile << endl;
-		for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++) {
-			LhaCppFile << "         OldLinForm[" << (*it).second << "]=LinForm[" << (*it).second << "];" << endl;
-			
-		}
-		
-		//LhaCppFile << "         DoEdgeUpdates_" << e << "( Marking);" << endl;
-		LhaCppFile << "         }"<< endl;
-		LhaCppFile << "         break;" << endl;
 	}
-	LhaCppFile << "    }" << endl;
 	
+	LhaCppFile << "    }" << endl;
+	for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++) {
+		LhaCppFile << "    OldLinForm[" << (*it).second << "]=LinForm[" << (*it).second << "];" << endl;
+		
+	}
 	
 	LhaCppFile << "}\n" << endl;
 	
