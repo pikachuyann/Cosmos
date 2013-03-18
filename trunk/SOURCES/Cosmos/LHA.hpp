@@ -44,10 +44,14 @@ typedef pair <double, double> t_interval;
 
 using namespace std;
 
+//!< A simple type to know if an edge is synchronize with the SPN.
 enum EdgeType {
     Auto, Synch
 };
 
+/**
+ * Type for edge of the LHA.
+ */
 struct _LhaEdge {
     unsigned int Index;
     unsigned int Source;
@@ -56,6 +60,9 @@ struct _LhaEdge {
 };
 typedef struct _LhaEdge LhaEdge;
 
+/**
+ * Auto edge need a firing time
+ */
 struct _AutEdge {
     int Index;
     double FiringTime;
@@ -63,11 +70,19 @@ struct _AutEdge {
 };
 typedef struct _AutEdge AutEdge;
 
+/**
+ * Strucuture for the variable of the automaton.
+ * Implementation is provide only at runtime.
+ */
 struct Variables;
 
 
 t_interval GetEdgeEnablingTime(int,const abstractMarking&);
 
+/**
+ * Class implementing the Linear Hybrid Automaton.
+ * Part of the implementation is generated at runtime for efficiency.
+ */
 class LHA {
 public:
 	LHA();
@@ -75,11 +90,21 @@ public:
 	LHA(unsigned int, unsigned int);
 	~LHA();
 	
+  /**
+   * \brief Set the initial location of the LHA for a marking
+   * Loop over the set of initial location to find one enabled.
+   */
+  void setInitLocation(const abstractMarking&);
 
-	void setInitLocation(const abstractMarking&);
-	
-    int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
-    AutEdge GetEnabled_A_Edges(const abstractMarking&);
+  /**
+   * \brief Return a synchronized edge for a given transition of the SPN.
+   */
+  int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
+
+   /**
+   * \brief Return an autonomous edge for a given marking.
+   */
+  AutEdge GetEnabled_A_Edges(const abstractMarking&);
 	
 	//! update value in the LHA by elapsing time
 	void updateLHA(double DeltaT, const abstractMarking &);

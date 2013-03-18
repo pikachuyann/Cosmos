@@ -64,10 +64,18 @@ ConfInt::ConfInt(double meanArg,double lowArg,double upArg){
 
 ConfInt::~ConfInt(){}
 
+/**
+ * Return the width of a confidence interval
+ */
 double ConfInt::width(){
 	return (up-low);
 }
 
+/**
+ * Build an HASL formula with the PROB operator.
+ * Compute exact confidence interval.
+ * @param l the confidence level of the operator.
+ */
 HaslFormulasTop::HaslFormulasTop(double l){
 	TypeOp = PROBABILITY;
 	Level =l;
@@ -77,6 +85,11 @@ HaslFormulasTop::HaslFormulasTop(double l){
 	right = NULL;
 }
 
+/**
+ * Build a CONSTANT Hasl formula.
+ * @param l useless
+ * @param v the value of the constant
+ */
 HaslFormulasTop::HaslFormulasTop(double l,double v){
 	TypeOp = CONSTANT;
 	Level = 1;
@@ -86,6 +99,12 @@ HaslFormulasTop::HaslFormulasTop(double l,double v){
 	right = NULL;
 }
 
+/**
+ * Build an HASL formula computing the expected value of a subformula. 
+ * Use the approximation to the normal low to compute the confidence interval
+ * @param al the index of the sub formula return by the simulator. 
+ * @param l the confidence level of the confidence interval.
+ */
 HaslFormulasTop::HaslFormulasTop(size_t al,double l){
 	TypeOp = EXPECTANCY;
 	Level = l;
@@ -95,6 +114,12 @@ HaslFormulasTop::HaslFormulasTop(size_t al,double l){
 	right = NULL;
 }
 
+/*
+ * Build an Hasl formula of a given type as a tree with two descendant.
+ * @param t is the type of the node either HASL_PLUS, HASL_TIME or HASL_DIV.
+ * @param l The left Hasl Formula.
+ * @param r the right Hasl formula.
+ */
 HaslFormulasTop::HaslFormulasTop(HaslType t, HaslFormulasTop* l,HaslFormulasTop* r){
 	TypeOp = t;
 	Algebraic = 0;
@@ -104,6 +129,9 @@ HaslFormulasTop::HaslFormulasTop(HaslType t, HaslFormulasTop* l,HaslFormulasTop*
 	right = r;
 }
 
+/**
+ * Destructor call destructor recusively on descendant if neaded.
+ */
 HaslFormulasTop::~HaslFormulasTop(){
 	if(!left) delete left;
 	if(!right) delete right;
@@ -120,26 +148,28 @@ HaslFormulasTop::~HaslFormulasTop(){
 	else right = NULL;
 }*/
 
-////////////////////////////////////////////////////////////////////////////
-// Some remarks about the estimation of the confidence interval adopted here
-// Let l=ConfLevel, the confidence level
-// l=1-alpha
-// Let w=ConfWidth, the size of the confidence interval
-//
-// Let mu the value to estimate, and x the estimation of mu
-// then Prob(x-w/2 <= mu <= x+w/2) = 1-alpha
-//
-// The confidence interval is given by :
-// [x-z(1-alpha/2) * StandardDeviation~ / sqrt(NumberOfObservations) ,
-//         x+z(1-alpha/2) * StandardDeviation~ / sqrt(NumberOfObservations)]
-//
-// z(1-alpha/2)=z(1-(1-l)/2) = z(0.5+l/2)
-//
-// StandartDeviation~ = sqrt( Variance +1/n)
-// This correction come from the Chows and Robbin algorithm to ensure
-// The correctness of the stopping condition.
-//
-////////////////////////////////////////////////////////////////////////////
+/**
+ * The function eval compute confidence interval for the HASL formula
+ * from the simualation result return by the simulators.
+ *
+ * Some remarks about the estimation of the confidence interval adopted here
+ * Let \f$ l \f$ =ConfLevel, the confidence level
+ * \f$ l=1-alpha \f$
+ * Let \f$ w \f$ = ConfWidth, the size of the confidence interval
+ *
+ * Let \f$ \mu \f$ the value to estimate, and \f$ x \f$ the estimation of \f$ \mu \f$
+ * then \f$ \mathbb{P}( \mu \in [x-\frac{w}{2} , x+\frac{w}{2}]) = 1-alpha  \f$
+ *
+ * The confidence interval is given by :
+ * \f$  [x-z(1-\frac{alpha}{2}) * \frac{StandardDeviation~ }{ \sqrt{NumberOfObservations}} ,
+ *         x+z(1-\frac{alpha}{2}) * \frac{StandardDeviation~}{ \sqrt{NumberOfObservations}}] \f$
+ * with : \f$ z(1-\frac{alpha}{2})=z(1-\frac{1-l}{2}) = z(0.5+\frac{l}{2}) \f$
+ *
+ * \f$ StandartDeviation~ = \sqrt{ Variance +\frac{1}{n} } \f$
+ * This correction come from the Chows and Robbin algorithm to ensure
+ * The correctness of the stopping condition.
+ *
+ */
 ConfInt* HaslFormulasTop::eval(BatchR &batch){
 	switch (TypeOp) {
 		case PROBABILITY:

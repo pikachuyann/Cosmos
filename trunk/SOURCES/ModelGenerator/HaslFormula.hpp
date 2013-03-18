@@ -82,11 +82,11 @@ public:
 	HaslType TypeOp; //!< type of the HaslFormula.
 	
 protected:
-	double Level;
-	double Value;
-	size_t Algebraic;
-	HaslFormulasTop* left;
-	HaslFormulasTop* right;
+  double Level; //!< The confidence level which should be used for the computation of the confidence interval
+  double Value; //!< A double value, have different pupose depending of the type of the operator
+  size_t Algebraic; //!< The index of the data in the table of result return by the simulator.
+  HaslFormulasTop* left;
+  HaslFormulasTop* right;
 };
 
 
