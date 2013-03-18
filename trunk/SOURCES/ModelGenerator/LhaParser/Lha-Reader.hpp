@@ -88,6 +88,7 @@ struct LHA_D {
     vector < vector < string > > FuncEdgeUpdates;
     vector <string> StrEdgeUpdates;
 
+	vector <string> unTimeEdgeConstraints;
     vector < vector <vector <string> > > ConstraintsCoeffs;
     vector < vector <string> > ConstraintsRelOp;
     vector < vector <string> > ConstraintsConstants;
@@ -142,9 +143,24 @@ public:
     virtual ~Lha_Reader();
 
     LhaType MyLha;
+	
+	
+	void error(const lha::location& l, const std::string& m);
+
+	//!< Parse a string of an LHA.
+	int parse(std::string&);
+	
+	//!< Parse a file in the lha file format.
+    int parse_file(parameters&);
+	
+	//!< Parse a file in the GrML file format.
+	int parse_gml_file(parameters&);
+	
+	//!< generate code for the LHA.
+	void WriteFile(parameters&);
+	
+private:
     map<string, int> IndexDist;
-
-
 
     void scan_begin();
     void scan_end();
@@ -153,18 +169,12 @@ public:
     bool trace_scanning;
 
 
-    int parse(std::string&);
-    int parse_file(parameters&);
-	int parse_gml_file(parameters&);
-
+   
     string InvRelOp(string &);
-    void WriteFile(parameters&);
 
     bool trace_parsing;
 
-
-    void error(const lha::location& l, const std::string& m);
-    void error(const std::string& m);
+	void error(const std::string& m);
 
     void view();
 };

@@ -211,8 +211,20 @@ public:
     virtual ~Gspn_Reader();
 
     GspnType MyGspn;
-    map<string, int> IndexDist;
+	
+	int parse(std::string&);
+    int parse_file(std::string&);
+	int parse_gml_file(parameters&);
+    void WriteFile(parameters&);
 
+	void error(const gspn::location& l, const std::string& m);
+	
+	//<! Index of distribution type.
+	map<string, int> IndexDist;
+	
+private:
+	
+	
 	
 
     void scan_begin();
@@ -222,10 +234,6 @@ public:
     bool trace_scanning;
 
 
-    int parse(std::string&);
-    int parse_file(std::string&);
-	int parse_gml_file(parameters&);
-    void WriteFile(parameters&);
 	void writeMarkingClasse(ofstream &, ofstream &);
 	void writeEnabledDisabled(ofstream &);
 	void writeTransition(ofstream &, bool);
@@ -234,14 +242,14 @@ public:
     bool trace_parsing;
 
 
-    void error(const gspn::location& l, const std::string& m);
+    
     void error(const std::string& m);
     
     //void addSink();
     void addSinkTrans();
     
     void view();
-private:
+
 	void printloot(ofstream& sf, size_t domain, size_t nesting );
 	
 	void EnabledDisabledTr(vector< set<int> >&,

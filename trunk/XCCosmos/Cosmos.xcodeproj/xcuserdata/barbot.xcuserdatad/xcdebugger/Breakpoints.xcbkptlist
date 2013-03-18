@@ -104,5 +104,18 @@
          landmarkName = "MyLhaModelHandler::eval_guard(vector&lt;vector&lt;string&gt; &gt; &amp;CoeffsMatrix,vector&lt;string&gt; &amp;CST, vector&lt;string&gt; &amp;comp,tree&lt;string&gt;::pre_order_iterator it)"
          landmarkType = "5">
       </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/ModelGenerator/LhaParser/Lha_gmlparser.cpp"
+         timestampString = "385315063.069545"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "741"
+         endingLineNumber = "741"
+         landmarkName = "MyLhaModelHandler::on_read_arc(const XmlString&amp; id, const XmlString&amp; arcType, const XmlString&amp; source, const XmlString&amp; target, const AttributeMap&amp; attributes, const XmlStringList&amp; references)"
+         landmarkType = "5">
+      </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

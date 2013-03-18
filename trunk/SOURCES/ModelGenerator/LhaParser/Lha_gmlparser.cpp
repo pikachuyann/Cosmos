@@ -744,18 +744,26 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 	vector<vector<string> > CoeffsMatrix;
 	vector<string> CST;
 	vector<string> comp;
-	eval_guard(CoeffsMatrix,CST,comp,itguard.begin().begin());
-	if(verbose>1){
-		cout << "guard:";
-		for (size_t i=0; i< CoeffsMatrix.size(); i++) {
-			cout << "&(";
-			for (size_t j =0 ; j<CoeffsMatrix[0].size(); j++) {
-				if(CoeffsMatrix[i][j].compare("")>0)
-					cout << "+" << CoeffsMatrix[i][j]<< "* VAR[" <<j<<"] " ;
+	if(SubSet.size()==0){
+		eval_guard(CoeffsMatrix,CST,comp,itguard.begin().begin());
+		if(verbose>1){
+			cout << "guard:";
+			for (size_t i=0; i< CoeffsMatrix.size(); i++) {
+				cout << "&(";
+				for (size_t j =0 ; j<CoeffsMatrix[0].size(); j++) {
+					if(CoeffsMatrix[i][j].compare("")>0)
+						cout << "+" << CoeffsMatrix[i][j]<< "* VAR[" <<j<<"] " ;
+				}
+				cout << comp[i] << CST[i]<<")";
 			}
-			cout << comp[i] << CST[i]<<")";
+			cout << endl;
 		}
-		cout << endl;
+		MyLHA->unTimeEdgeConstraints.push_back("true");
+	}else{
+		string guard;
+		bool markdep;
+		eval_expr(&markdep, &guard, itguard.begin().begin());
+		MyLHA->unTimeEdgeConstraints.push_back(guard);
 	}
 	MyLHA->ConstraintsCoeffs.push_back(CoeffsMatrix);
 	MyLHA->ConstraintsConstants.push_back(CST);

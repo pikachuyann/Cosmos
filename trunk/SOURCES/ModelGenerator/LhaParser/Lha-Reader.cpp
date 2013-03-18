@@ -388,20 +388,22 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& NextMarking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++)
-		if(MyLha.ConstraintsRelOp[e].size()>0 && MyLha.EdgeActions[e].size() > 0 ){
+		if((MyLha.ConstraintsRelOp[e].size()>0 && MyLha.EdgeActions[e].size() > 0) || MyLha.unTimeEdgeConstraints[e].compare("true")!=0 ){
 			LhaCppFile << "    case " << e << ": { //" ;
 			LhaCppFile << MyLha.LocLabel[MyLha.Edge[e].Source] << " -> " << MyLha.LocLabel[MyLha.Edge[e].Target] << endl;
-			for (size_t c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
-				LhaCppFile << "         if(!( ";
-				for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
-					if (MyLha.ConstraintsCoeffs[e][c][v] != "")
-						LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Vars->" << MyLha.Vars.label[v];
-					
+			if(MyLha.ConstraintsRelOp[e].size()>0 && MyLha.EdgeActions[e].size() > 0){
+				for (size_t c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
+					LhaCppFile << "         if(!( ";
+					for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
+						if (MyLha.ConstraintsCoeffs[e][c][v] != "")
+							LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Vars->" << MyLha.Vars.label[v];
+						
+					}
+					LhaCppFile << MyLha.ConstraintsRelOp[e][c] << MyLha.ConstraintsConstants[e][c] << ")) return false;" << endl;
 				}
-				LhaCppFile << MyLha.ConstraintsRelOp[e][c] << MyLha.ConstraintsConstants[e][c] << ")) return false;" << endl;
-				
-				
 			}
+			if(MyLha.unTimeEdgeConstraints[e].compare("true")!=0)
+				LhaCppFile << "\t\tif(!(" << MyLha.unTimeEdgeConstraints[e] << "))return false;" << endl;
 			LhaCppFile << "         return true; " << endl;
 			LhaCppFile << "         break;" << endl;
 			LhaCppFile << "     }" << endl;
