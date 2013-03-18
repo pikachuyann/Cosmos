@@ -148,12 +148,16 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	ofstream LhaCppFile(loc.c_str(), ios::out | ios::trunc);
 	
+	LhaCppFile << "#include <iostream>" << endl;
+	LhaCppFile << "#include <algorithm>" << endl;
+	LhaCppFile << "#include <vector>" << endl;
+	
+	LhaCppFile << "using namespace std;" << endl;
 	
 	LhaCppFile << "#include \"markingImpl.hpp\"" << endl;
 	LhaCppFile << "#include <math.h>" << endl;
 	LhaCppFile << "#include <float.h>" << endl;
 	LhaCppFile << "#include \"LHA.hpp\"" << endl;
-	
 	
 	for (map<string,double>::iterator it= MyLha.LhaRealConstant.begin(); it!= MyLha.LhaRealConstant.end() ; it++) {
 		LhaCppFile << "    const double " << it->first << "=" << it->second << ";" << endl;
@@ -343,11 +347,11 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "    switch(v){" << endl;
     for (size_t x = 0; x < MyLha.NbVar; x++) {
 		if(MyLha.Vars.type[x] == CONTINIOUS_VARIABLE ){
-			LhaCppFile << "    case " << x << ":" << endl;
+			LhaCppFile << "    case " << x << ": //" << MyLha.Vars.label[x] << endl;
 			LhaCppFile << "         switch(loc){" << endl;
 			for (size_t l = 0; l < MyLha.NbLoc; l++) {
 				if (MyLha.FuncFlow[l][x] != ""){
-				LhaCppFile << "         case " << l << ":" << endl;
+				LhaCppFile << "         case " << l << ": //" << MyLha.LocLabel[l] << endl;
 				LhaCppFile << "             return " << MyLha.FuncFlow[l][x] << ";" << endl;
 				LhaCppFile << "             break;" << endl;
 				}
@@ -381,11 +385,12 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
     LhaCppFile << "}\n" << endl;
 	
-    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b){" << endl;
+    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& NextMarking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++)
 		if(MyLha.ConstraintsRelOp[e].size()>0 && MyLha.EdgeActions[e].size() > 0 ){
-			LhaCppFile << "    case " << e << ": {" << endl;
+			LhaCppFile << "    case " << e << ": { //" ;
+			LhaCppFile << MyLha.LocLabel[MyLha.Edge[e].Source] << " -> " << MyLha.LocLabel[MyLha.Edge[e].Target] << endl;
 			for (size_t c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
 				LhaCppFile << "         if(!( ";
 				for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
@@ -412,7 +417,8 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++)
 		if(MyLha.ConstraintsRelOp[e].size()>0  && MyLha.EdgeActions[e].size() < 1 ){
-			LhaCppFile << "     case " << e << ":" << endl;
+			LhaCppFile << "     case " << e << ": //";
+			LhaCppFile << MyLha.LocLabel[MyLha.Edge[e].Source] << " -> " << MyLha.LocLabel[MyLha.Edge[e].Target] << endl;
 			
 			//LhaCppFile << "         return GetEdgeEnablingTime_" << e << "( Marking);" << endl;
 			LhaCppFile << "         {" << endl;
@@ -524,7 +530,8 @@ void Lha_Reader::WriteFile(parameters& P) {
                 break;
             }
 		if(k>0 || P.CountTrans){
-			LhaCppFile << "     case " << e << ":" << endl;
+			LhaCppFile << "     case " << e << ": // ";
+			LhaCppFile << MyLha.LocLabel[MyLha.Edge[e].Source] << " -> " << MyLha.LocLabel[MyLha.Edge[e].Target] << endl;
 			LhaCppFile << "         {"<< endl;
 			if(P.CountTrans)
 				LhaCppFile << "         EdgeCounter[" << e << "]++ ;"<< endl;

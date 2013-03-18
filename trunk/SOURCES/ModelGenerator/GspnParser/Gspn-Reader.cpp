@@ -1173,7 +1173,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	SpnCppFile << "double SPN::GetPriority(size_t t)const {" << endl;
 	SpnCppFile << "   switch(t){" << endl;
-	for (size_t t = 0; t < MyGspn.tr; t++) {
+	for (size_t t = 0; t < MyGspn.tr; t++)
+		if(MyGspn.transitionStruct[t].priority != "1"){
 		
 		SpnCppFile << "     case " << t << ": {" << endl;
 		
@@ -1182,6 +1183,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 		SpnCppFile << "     } " << endl;
 		
 	}
+	SpnCppFile << "\tdefault:" << endl;
+	SpnCppFile << "\t\treturn (double)1;" << endl;
 	SpnCppFile << "   }" << endl;
 	SpnCppFile << "}\n" << endl;
 	
@@ -1189,7 +1192,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 	/////////////////////////////////////////
 	SpnCppFile << "double SPN::GetWeight(size_t t)const{" << endl;
 	SpnCppFile << "   switch(t){" << endl;
-	for (size_t t = 0; t < MyGspn.tr; t++) {
+	for (size_t t = 0; t < MyGspn.tr; t++)
+		if(MyGspn.transitionStruct[t].weight != "1"){
 		
 		SpnCppFile << "     case " << t << ":" << endl;
 		
@@ -1197,8 +1201,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 		SpnCppFile << "       break;" << endl;
 		
 	}
-	
-	
+	SpnCppFile << "\tdefault:" << endl;
+	SpnCppFile << "\t\treturn (double)1;" << endl;
 	SpnCppFile << "   }" << endl;
 	SpnCppFile << "}\n" << endl;
 	

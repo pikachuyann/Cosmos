@@ -128,7 +128,7 @@ private:
 	void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
 	double GetFlow(int, int,const abstractMarking&);
 	bool CheckLocation(int,const abstractMarking&);
-	bool CheckEdgeContraints(int,size_t, const abstractBinding&);
+	bool CheckEdgeContraints(int,size_t, const abstractBinding&, const abstractMarking&);
 	
     t_interval GetEdgeEnablingTime(int,const abstractMarking&);
 	
