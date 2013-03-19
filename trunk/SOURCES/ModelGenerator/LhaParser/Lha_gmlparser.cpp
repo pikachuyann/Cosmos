@@ -427,7 +427,7 @@ string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 		}
 		
 		MyLHA->LhaFuncArg.push_back(MyLHA->LinearForm[linformc]);
-		MyLHA->LhaFuncType.push_back("YHF");
+		MyLHA->LhaFuncType.push_back("Last");
 		string ss="Last("; ss.append(linformc); ss.append(")");
 		if(MyLHA->LhaFunction.find(ss)==MyLHA->LhaFunction.end()){
 			size_t i=MyLHA->LhaFunction.size();
