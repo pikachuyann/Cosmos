@@ -132,10 +132,22 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
 				std::ostringstream s; s<<"Vars->"<< *var;
 				st->append(s.str());
 				
-			}else{
+			} else if(MyLHA->MyGspn->PlacesId.count(*var)>0) {
 				*is_mark_dep =true;
-				std::ostringstream s; s<<"Marking.P->_PL_"<<var->c_str()<<" ";
+				std::ostringstream s; s<<"Marking.P->_PL_"<<var->c_str()<<".card() ";
 				st->append(s.str());
+			} else {
+				vector<colorVariable>::const_iterator varit=  MyLHA->MyGspn->colVars.begin();
+				for ( ; varit != MyLHA->MyGspn->colVars.end() && varit->name.compare(*var)!=0 ; ++varit) ;
+				if (varit != MyLHA->MyGspn->colVars.end()) {
+					st->append("b.P->");
+					st->append(varit->name);
+					st->append(".c0");
+				}else {
+					cerr << "Unknown name:" << *var << endl;
+					throw(lhagmlioexc);
+				}
+				
 			}
 		}
     }else if (	(*it).compare("+")==0  || (*it).compare("*")==0
@@ -204,7 +216,7 @@ size_t MyLhaModelHandler::eval_marking_expr(string &st, tree<string>::pre_order_
 				string cname = *simplifyString(*(it2.begin()));
 				vector<color>::const_iterator itcc;
 				colorClass cc = MyLHA->MyGspn->colClasses[MyLHA->MyGspn->colDoms[colDomIndex].colorClassIndex[colClassCounter]];
-				for( itcc= cc.colors.begin(); itcc != cc.colors.end() && cname != itcc->name; ++itcc);
+				for( itcc= cc.colors.begin(); itcc != cc.colors.end() && cname != itcc->name; ++itcc) ;
 				if (itcc == cc.colors.end()) {
 					cerr << "unknwon color:" << cname << "for color classe" << cc.name<< endl;
 				}else{
@@ -216,6 +228,7 @@ size_t MyLhaModelHandler::eval_marking_expr(string &st, tree<string>::pre_order_
 		st.append(" ) ");
 		return colDomIndex;
 	}
+	throw(lhagmlioexc);
 }
 
 
@@ -501,7 +514,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						if (dom != it2.end()) {
 							string domname = *simplifyString(*(it2.begin()));
 							vector<colorDomain>::const_iterator domit;
-							for(domit = MyLHA->MyGspn->colDoms.begin(); domit != MyLHA->MyGspn->colDoms.end() && domit->name != domname; ++domit);
+							for(domit = MyLHA->MyGspn->colDoms.begin(); domit != MyLHA->MyGspn->colDoms.end() && domit->name != domname; ++domit) ;
 							if(domit != MyLHA->MyGspn->colDoms.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colDoms.begin());
 							else cerr << "Unknown color Domain " << domname << endl;
 						}else MyLHA->Vars.colorDomain.push_back(0);
@@ -523,7 +536,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						if (dom != it2.end()) {
 							string domname = *simplifyString(*(it2.begin()));
 							vector<colorDomain>::const_iterator domit;
-							for(domit = MyLHA->MyGspn->colDoms.begin(); domit != MyLHA->MyGspn->colDoms.end() && domit->name != domname; ++domit);
+							for(domit = MyLHA->MyGspn->colDoms.begin(); domit != MyLHA->MyGspn->colDoms.end() && domit->name != domname; ++domit) ;
 							if(domit != MyLHA->MyGspn->colDoms.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colDoms.begin());
 							else cerr << "Unknown color Domain " << domname << endl;
 						}else MyLHA->Vars.colorDomain.push_back(0);
@@ -544,7 +557,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						if (dom != it2.end()) {
 							string domname = *simplifyString(*(dom.begin()));
 							vector<colorClass>::const_iterator domit;
-							for(domit = MyLHA->MyGspn->colClasses.begin(); domit != MyLHA->MyGspn->colClasses.end() && domit->name != domname; ++domit);
+							for(domit = MyLHA->MyGspn->colClasses.begin(); domit != MyLHA->MyGspn->colClasses.end() && domit->name != domname; ++domit) ;
 							if(domit != MyLHA->MyGspn->colClasses.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colClasses.begin());
 							else cerr << "Unknown color Domain " << domname << endl;
 						}else cerr << "No color class specify for color variable " << *constname << endl;

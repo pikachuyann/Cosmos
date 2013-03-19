@@ -385,7 +385,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
     LhaCppFile << "}\n" << endl;
 	
-    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& NextMarking){" << endl;
+    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking){" << endl;
     LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++)
 		if((MyLha.ConstraintsRelOp[e].size()>0 && MyLha.EdgeActions[e].size() > 0) || MyLha.unTimeEdgeConstraints[e].compare("true")!=0 ){
