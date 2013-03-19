@@ -134,8 +134,11 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
 				
 			} else if(MyLHA->MyGspn->PlacesId.count(*var)>0) {
 				*is_mark_dep =true;
-				std::ostringstream s; s<<"Marking.P->_PL_"<<var->c_str()<<".card() ";
-				st->append(s.str());
+				st->append("Marking.P->_PL_");
+				st->append(var->c_str());
+				if(MyLHA->MyGspn->placeStruct[MyLHA->MyGspn->PlacesId[*var]].colorDom != UNCOLORED_DOMAIN )
+					st->append(".card()");
+				st->append(" ");
 			} else {
 				vector<colorVariable>::const_iterator varit=  MyLHA->MyGspn->colVars.begin();
 				for ( ; varit != MyLHA->MyGspn->colVars.end() && varit->name.compare(*var)!=0 ; ++varit) ;
