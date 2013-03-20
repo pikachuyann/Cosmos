@@ -52,8 +52,8 @@ using namespace std;
 
 gmlinputexception lhagmlioexc;
 
-/*void print_tree(const tree<string>& tr, tree<string>::pre_order_iterator it, tree<string>::pre_order_iterator end)
- {
+void print_tree(const tree<string>& tr, tree<string>::pre_order_iterator it, tree<string>::pre_order_iterator end)
+{
  if(!tr.is_valid(it)) return;
  int rootdepth=tr.depth(it);
  while(it!=end) {
@@ -63,7 +63,7 @@ gmlinputexception lhagmlioexc;
  cout << (*it) << endl << flush;
  ++it;
  }
- }*/
+}
 
 string* MyLhaModelHandler::simplifyString(string str)
 {
@@ -370,6 +370,8 @@ HaslFormulasTop* MyLhaModelHandler::exportHASLTop(tree<string>::pre_order_iterat
 		ss << "LhaFunc[" << MyLHA->LhaFunction[*lhafunc] << "]";
 		MyLHA->Algebraic.push_back( ss.str() );
 		return (new HaslFormulasTop(MyLHA->Algebraic.size()-1,MyLHA->ConfidenceLevel));
+	} else if((*it).compare("PROB")==0){
+		return (new HaslFormulasTop(MyLHA->ConfidenceLevel));
 	} else if(it->compare("PDF")==0 || it->compare("CDF")==0){
 		string* lhafunc;
 		double deltab = 1;
@@ -700,6 +702,10 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 			for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
 				if ((*it2).compare("actionName")==0) {
 					string* actionstr2 = simplifyString(*(it2.begin()));
+					if(MyLHA->MyGspn->TransId.count(*actionstr2) ==0 ){
+						cerr << "Unknown action name: "<< *actionstr2 <<endl;
+						throw lhagmlioexc;
+					}
 					SubSet.insert(*actionstr2);
 				}
 			}
@@ -707,22 +713,30 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 	}
 	attrf = attributes.find("action");
 	if (attrf != attributes.end()) {
-		tree<string> itaction = attrf->second.begin().begin();
+		treeSI itaction = attrf->second.begin();
 		for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
 			if ((*it2).compare("actionName")==0) {
 				string* actionstr2 = simplifyString(*(it2.begin()));
+				if(MyLHA->MyGspn->TransId.count(*actionstr2) ==0 ){
+					cerr << "Unknown action name: "<< *actionstr2 <<endl;
+					throw lhagmlioexc;
+				}
 				SubSet.insert(*actionstr2);
 			}
 		}
 	}
 	attrf = attributes.find("allExcept");
 	if (attrf != attributes.end()) {
-		tree<string> itaction = attrf->second.begin().begin();
+		treeSI itaction = attrf->second.begin();
 		SubSet = MyLHA->MyGspn->TransList;
-		
 		for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
-			if ((*it2).compare("actionName")==0) {
+			if (it2->compare("actionName")==0) {
 				string* actionstr2 = simplifyString(*(it2.begin()));
+				if(verbose>0)cout << "All except: " << *actionstr2 << endl;
+				if(MyLHA->MyGspn->TransId.count(*actionstr2) ==0 ){
+					cerr << "Unknown action name: "<< *actionstr2 <<endl;
+					throw lhagmlioexc;
+				}
 				SubSet.erase(*actionstr2);
 			}
 		}
@@ -738,7 +752,7 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 	
 	treeSI itflow = attributes.find("updates")->second.begin();
 	vector<string> v1(MyLHA->NbVar,"");
-	if ((*(itflow.begin())).compare("update")==0) {
+	if ((itflow.begin())->compare("update")==0) {
 		for(treeSI it2 = itflow.begin(); it2!=itflow.end();++it2){
 			string* var=NULL;
 			string* varflow = new string("");

@@ -42,19 +42,6 @@
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/LHA.cpp"
-         timestampString = "383607636.819074"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "295"
-         endingLineNumber = "295"
-         landmarkName = "LHA::LHA()"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
@@ -89,9 +76,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "573"
-         endingLineNumber = "573"
-         landmarkName = "LHA::GetFlow(int v, int loc,const abstractMarking&amp; Marking)"
-         landmarkType = "5">
+         endingLineNumber = "573">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
@@ -103,7 +88,59 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "250"
          endingLineNumber = "250"
-         landmarkName = "MyLhaModelHandler::eval_guard(vector&lt;vector&lt;string&gt; &gt; &amp;CoeffsMatrix,vector&lt;string&gt; &amp;CST, vector&lt;string&gt; &amp;comp,tree&lt;string&gt;::pre_order_iterator it)"
+         landmarkName = "MyLhaModelHandler::eval_term(vector&lt;string&gt; &amp;CoeffsVector, tree&lt;string&gt;::pre_order_iterator it)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/Cosmos/LHA.cpp"
+         timestampString = "385459162.125965"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "15"
+         endingLineNumber = "15"
+         landmarkName = "LHA::resetVariables()"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/Cosmos/LHA.cpp"
+         timestampString = "385459238.458198"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "294"
+         endingLineNumber = "294"
+         landmarkName = "LHA::DoEdgeUpdates(int ed,const abstractMarking&amp; Marking, const abstractBinding&amp; b)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/Cosmos/LHA_orig.cpp"
+         timestampString = "385459338.503427"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "58"
+         endingLineNumber = "58"
+         landmarkName = "LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking&amp; NextMarking,const abstractBinding&amp; binding)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/ModelGenerator/LhaParser/Lha_gmlparser.cpp"
+         timestampString = "385483808.801651"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "733"
+         endingLineNumber = "733"
+         landmarkName = "MyLhaModelHandler::on_read_arc(const XmlString&amp; id, const XmlString&amp; arcType, const XmlString&amp; source, const XmlString&amp; target, const AttributeMap&amp; attributes, const XmlStringList&amp; references)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

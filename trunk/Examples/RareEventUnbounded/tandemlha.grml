@@ -38,20 +38,6 @@
     </attribute>
   </attribute>
   <attribute name="HASLFormula">
-    <attribute name="CDF">
-      <attribute name="min">0.0</attribute>
-      <attribute name="delta">0.1</attribute>
-      <attribute name="max">20.0</attribute>
-      <attribute name="YHF">
-        <attribute name="last">
-          <attribute name="expr"><attribute name="name">
-            t
-          </attribute></attribute>
-        </attribute>
-      </attribute>
-    </attribute>
-  </attribute>
-  <attribute name="HASLFormula">
     <attribute name="AVG">
       <attribute name="YHF">
         <attribute name="last">

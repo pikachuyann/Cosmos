@@ -77,11 +77,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pilha.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_2963657132458752864.grml"
@@ -125,11 +125,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/PADS2013/DataBase/Coloane/database.grml"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/DatabaseProp5LHA.5.grml"
-            isEnabled = "NO">
+            argument = "/Users/barbot/DatabaseProp6LHA.grml"
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
