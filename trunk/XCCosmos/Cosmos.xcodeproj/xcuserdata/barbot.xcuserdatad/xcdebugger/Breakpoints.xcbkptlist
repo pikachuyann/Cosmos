@@ -76,7 +76,9 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "573"
-         endingLineNumber = "573">
+         endingLineNumber = "573"
+         landmarkName = "LHA::GetEdgeEnablingTime(int ed,const abstractMarking&amp; Marking)"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
@@ -100,22 +102,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "15"
-         endingLineNumber = "15"
-         landmarkName = "LHA::resetVariables()"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/LHA.cpp"
-         timestampString = "385459238.458198"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "294"
-         endingLineNumber = "294"
-         landmarkName = "LHA::DoEdgeUpdates(int ed,const abstractMarking&amp; Marking, const abstractBinding&amp; b)"
-         landmarkType = "5">
+         endingLineNumber = "15">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
@@ -135,12 +122,25 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../SOURCES/ModelGenerator/LhaParser/Lha_gmlparser.cpp"
-         timestampString = "385483808.801651"
+         timestampString = "385489503.628756"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "733"
-         endingLineNumber = "733"
-         landmarkName = "MyLhaModelHandler::on_read_arc(const XmlString&amp; id, const XmlString&amp; arcType, const XmlString&amp; source, const XmlString&amp; target, const AttributeMap&amp; attributes, const XmlStringList&amp; references)"
+         startingLineNumber = "537"
+         endingLineNumber = "537"
+         landmarkName = "MyLhaModelHandler::on_read_model_attribute(const Attribute&amp; attribute)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../SOURCES/ModelGenerator/LhaParser/Lha-Reader.cpp"
+         timestampString = "385490027.819641"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "166"
+         endingLineNumber = "166"
+         landmarkName = "Lha_Reader::WriteFile(parameters&amp; P)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -22,6 +22,8 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--output-PDFCDF:Output PDF or CDF to a file:->data' \
 	   '--tmp-status:Persistance of the tmp file:->status' \
 	   '--count-transition[Count number of transition in the lha]' \
+	   '--loop:Time of the loop:->time' \
+	   '--transient:Time for transient part:->time' \
 	   ':SPN model file:_files -g "*.(gspn|grml)(-.)"' \
 	   ':LHA property file:_files -g "*.(lha|grml)(-.)"' \
 	   && return 0

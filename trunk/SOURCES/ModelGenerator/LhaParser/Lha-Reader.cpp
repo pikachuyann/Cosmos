@@ -167,8 +167,17 @@ void Lha_Reader::WriteFile(parameters& P) {
 	for(size_t v =0 ; v< MyLha.Vars.type.size(); v++){
 		if(MyLha.Vars.type[v] == COLOR_VARIABLE){
 			LhaCppFile << "\t" << MyLha.MyGspn->colClasses[MyLha.Vars.colorDomain[v]].cname() << " " << MyLha.Vars.label[v] << ";\n";
-		}else
-			LhaCppFile << "\tdouble "<< MyLha.Vars.label[v] << ";\n";
+		}else if(MyLha.Vars.colorDomain[v] != UNCOLORED_DOMAIN){
+			LhaCppFile << "\tdouble "<< MyLha.Vars.label[v];
+			colorDomain coldom = MyLha.MyGspn->colDoms[MyLha.Vars.colorDomain[v]];
+			
+			for (vector<size_t>::const_iterator itcol = coldom.colorClassIndex.begin();
+				 itcol != coldom.colorClassIndex.end(); ++itcol ) {
+				LhaCppFile << "[ Color_" << MyLha.MyGspn->colClasses[*itcol].name << "_Total ]";
+			}
+			LhaCppFile << ";\n";
+				
+		} else LhaCppFile << "\tdouble "<< MyLha.Vars.label[v] << ";\n";
 	}
 	LhaCppFile << "};\n";
 	
@@ -176,7 +185,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
 		if(MyLha.Vars.type[v] == COLOR_VARIABLE){
 			LhaCppFile << "\tVars->" << MyLha.Vars.label[v] << "= Color_" << MyLha.MyGspn->colClasses[MyLha.Vars.colorDomain[v]].name << "_Total ;\n";
-		}else LhaCppFile << "\tVars->"<< MyLha.Vars.label[v] << "= "<< MyLha.Vars.initialValue[v]<<";\n";
+		}else if(MyLha.Vars.colorDomain[v]==UNCOLORED_DOMAIN)
+			LhaCppFile << "\tVars->"<< MyLha.Vars.label[v] << "= "<< MyLha.Vars.initialValue[v]<<";\n";
+		else LhaCppFile << "\tmemset(Vars->"<< MyLha.Vars.label[v] << ",0 , sizeof(Vars->"<< MyLha.Vars.label[v] << "));\n";
 	}
 	LhaCppFile << "};\n";
 	
