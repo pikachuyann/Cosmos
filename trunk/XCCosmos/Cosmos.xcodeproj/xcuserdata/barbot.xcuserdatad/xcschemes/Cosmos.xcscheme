@@ -125,10 +125,18 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/PADS2013/DataBase/Coloane/database.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/DatabaseProp6LHA.grml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/Cosmos/Examples/TandemQN/tqn.gspn"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/Cosmos/Examples/TandemQN/tqn.lha"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

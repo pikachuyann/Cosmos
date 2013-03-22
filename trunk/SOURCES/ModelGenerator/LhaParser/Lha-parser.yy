@@ -363,6 +363,7 @@ VLabels : str {
 	Reader.MyLha.Vars.label.push_back(*$1);
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(CONTINIOUS_VARIABLE);
+	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
 	//Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
 	
 }
@@ -370,6 +371,7 @@ VLabels : str {
 	Reader.MyLha.Vars.label.push_back(*$3);
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(CONTINIOUS_VARIABLE);
+	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
 	//Reader.MyLha.VarIndex[*$3]=Reader.MyLha.VarLabel.size()-1;
 };
 

@@ -24,6 +24,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--count-transition[Count number of transition in the lha]' \
 	   '--loop:Time of the loop:->time' \
 	   '--transient:Time for transient part:->time' \
+	   '--debug-string[Add debug information in generated code]' \
 	   ':SPN model file:_files -g "*.(gspn|grml)(-.)"' \
 	   ':LHA property file:_files -g "*.(lha|grml)(-.)"' \
 	   && return 0

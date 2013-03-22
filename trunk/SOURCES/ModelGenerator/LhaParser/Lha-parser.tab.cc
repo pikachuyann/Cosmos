@@ -917,6 +917,7 @@ namespace lha {
 	Reader.MyLha.Vars.label.push_back(*(yysemantic_stack_[(1) - (1)].name));
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(CONTINIOUS_VARIABLE);
+	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
 	//Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
 	
 }
@@ -924,18 +925,19 @@ namespace lha {
 
   case 61:
 /* Line 670 of lalr1.cc  */
-#line 369 "Lha-parser.yy"
+#line 370 "Lha-parser.yy"
     {
 	Reader.MyLha.Vars.label.push_back(*(yysemantic_stack_[(3) - (3)].name));
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(CONTINIOUS_VARIABLE);
+	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
 	//Reader.MyLha.VarIndex[*$3]=Reader.MyLha.VarLabel.size()-1;
 }
     break;
 
   case 62:
 /* Line 670 of lalr1.cc  */
-#line 376 "Lha-parser.yy"
+#line 378 "Lha-parser.yy"
     {if(Reader.MyLha.LocIndex.size()!=Reader.MyLha.NbLoc){
 	std::cout<<"Location label missing or redeclared, please check your locations list"<<std::endl;
 	YYABORT;
@@ -946,7 +948,7 @@ namespace lha {
 
   case 63:
 /* Line 670 of lalr1.cc  */
-#line 383 "Lha-parser.yy"
+#line 385 "Lha-parser.yy"
     {
 	
 	Reader.MyLha.LocLabel.push_back(*(yysemantic_stack_[(1) - (1)].name));
@@ -957,7 +959,7 @@ namespace lha {
 
   case 64:
 /* Line 670 of lalr1.cc  */
-#line 389 "Lha-parser.yy"
+#line 391 "Lha-parser.yy"
     {Reader.MyLha.LocLabel.push_back(*(yysemantic_stack_[(3) - (3)].name));
 	Reader.MyLha.LocIndex[*(yysemantic_stack_[(3) - (3)].name)]=Reader.MyLha.LocLabel.size()-1;
 }
@@ -965,7 +967,7 @@ namespace lha {
 
   case 68:
 /* Line 670 of lalr1.cc  */
-#line 399 "Lha-parser.yy"
+#line 401 "Lha-parser.yy"
     {
 	
 	if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.LocIndex.end())
@@ -978,7 +980,7 @@ namespace lha {
 
   case 69:
 /* Line 670 of lalr1.cc  */
-#line 407 "Lha-parser.yy"
+#line 409 "Lha-parser.yy"
     {if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.InitLoc.insert(Reader.MyLha.LocIndex[*(yysemantic_stack_[(3) - (3)].name)]);
 	else cout<<"Unknown location"<<endl;
@@ -987,7 +989,7 @@ namespace lha {
 
   case 71:
 /* Line 670 of lalr1.cc  */
-#line 414 "Lha-parser.yy"
+#line 416 "Lha-parser.yy"
     {
 	
 	if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.LocIndex.end())
@@ -1000,7 +1002,7 @@ namespace lha {
 
   case 72:
 /* Line 670 of lalr1.cc  */
-#line 422 "Lha-parser.yy"
+#line 424 "Lha-parser.yy"
     {if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.FinalLoc.insert(Reader.MyLha.LocIndex[*(yysemantic_stack_[(3) - (3)].name)]);
 	else {cout<<"Unknown location"<<endl;YYABORT;}
@@ -1009,7 +1011,7 @@ namespace lha {
 
   case 75:
 /* Line 670 of lalr1.cc  */
-#line 436 "Lha-parser.yy"
+#line 438 "Lha-parser.yy"
     {
 	for(size_t l=0; l<Reader.MyLha.FuncLocProperty.size();l++)
 	if(Reader.MyLha.FuncLocProperty[l]=="")
@@ -1020,7 +1022,7 @@ namespace lha {
 
   case 78:
 /* Line 670 of lalr1.cc  */
-#line 447 "Lha-parser.yy"
+#line 449 "Lha-parser.yy"
     { int l;
 	if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(10) - (2)].name))!=Reader.MyLha.LocIndex.end()){
 		l=Reader.MyLha.LocIndex[*(yysemantic_stack_[(10) - (2)].name)];
@@ -1043,7 +1045,7 @@ namespace lha {
 
   case 79:
 /* Line 670 of lalr1.cc  */
-#line 468 "Lha-parser.yy"
+#line 470 "Lha-parser.yy"
     { int l;
 	if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(6) - (2)].name))!=Reader.MyLha.LocIndex.end()){
 		l=Reader.MyLha.LocIndex[*(yysemantic_stack_[(6) - (2)].name)];
@@ -1066,7 +1068,7 @@ namespace lha {
 
   case 82:
 /* Line 670 of lalr1.cc  */
-#line 489 "Lha-parser.yy"
+#line 491 "Lha-parser.yy"
     {if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (1)].name))!=Reader.MyLha.Vars.label.size())
 	FuncFlowVector[Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (1)].name))]=(yysemantic_stack_[(3) - (3)].expression);
 	else{ cout<<"'"<<*(yysemantic_stack_[(3) - (1)].name)<<"' is not an Lha variable"<<endl;
@@ -1076,79 +1078,79 @@ namespace lha {
 
   case 83:
 /* Line 670 of lalr1.cc  */
-#line 495 "Lha-parser.yy"
+#line 497 "Lha-parser.yy"
     {sprintf((yyval.expression),"true");}
     break;
 
   case 84:
 /* Line 670 of lalr1.cc  */
-#line 496 "Lha-parser.yy"
+#line 498 "Lha-parser.yy"
     {sprintf((yyval.expression),"false");}
     break;
 
   case 85:
 /* Line 670 of lalr1.cc  */
-#line 497 "Lha-parser.yy"
+#line 499 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s", (yysemantic_stack_[(1) - (1)].expression));}
     break;
 
   case 86:
 /* Line 670 of lalr1.cc  */
-#line 498 "Lha-parser.yy"
+#line 500 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s && %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 87:
 /* Line 670 of lalr1.cc  */
-#line 499 "Lha-parser.yy"
+#line 501 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s || %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 88:
 /* Line 670 of lalr1.cc  */
-#line 500 "Lha-parser.yy"
+#line 502 "Lha-parser.yy"
     {sprintf((yyval.expression),"( %s )", (yysemantic_stack_[(3) - (2)].expression));}
     break;
 
   case 89:
 /* Line 670 of lalr1.cc  */
-#line 501 "Lha-parser.yy"
+#line 503 "Lha-parser.yy"
     {sprintf((yyval.expression),"! %s", (yysemantic_stack_[(2) - (2)].expression));}
     break;
 
   case 90:
 /* Line 670 of lalr1.cc  */
-#line 503 "Lha-parser.yy"
+#line 505 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s == %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 91:
 /* Line 670 of lalr1.cc  */
-#line 504 "Lha-parser.yy"
+#line 506 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s <= %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 92:
 /* Line 670 of lalr1.cc  */
-#line 505 "Lha-parser.yy"
+#line 507 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s >= %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 93:
 /* Line 670 of lalr1.cc  */
-#line 506 "Lha-parser.yy"
+#line 508 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s < %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 94:
 /* Line 670 of lalr1.cc  */
-#line 507 "Lha-parser.yy"
+#line 509 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s > %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 95:
 /* Line 670 of lalr1.cc  */
-#line 512 "Lha-parser.yy"
+#line 514 "Lha-parser.yy"
     {
 	
 }
@@ -1156,7 +1158,7 @@ namespace lha {
 
   case 98:
 /* Line 670 of lalr1.cc  */
-#line 519 "Lha-parser.yy"
+#line 521 "Lha-parser.yy"
     {
 	
 	if(Reader.MyLha.LocIndex.find(*(yysemantic_stack_[(14) - (3)].name))!=Reader.MyLha.LocIndex.end())
@@ -1184,13 +1186,13 @@ namespace lha {
 
   case 100:
 /* Line 670 of lalr1.cc  */
-#line 544 "Lha-parser.yy"
+#line 546 "Lha-parser.yy"
     {SubSet=PetriTransitions;}
     break;
 
   case 101:
 /* Line 670 of lalr1.cc  */
-#line 545 "Lha-parser.yy"
+#line 547 "Lha-parser.yy"
     {set<string> temp=PetriTransitions;
 	for(set<string>::iterator it=SubSet.begin();it!=SubSet.end();it++)
 	temp.erase((*it));
@@ -1199,7 +1201,7 @@ namespace lha {
 
   case 104:
 /* Line 670 of lalr1.cc  */
-#line 553 "Lha-parser.yy"
+#line 555 "Lha-parser.yy"
     {if(Reader.MyLha.TransitionIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.TransitionIndex.end())
 	SubSet.insert(*(yysemantic_stack_[(1) - (1)].name));
 	else {cout<<*(yysemantic_stack_[(1) - (1)].name)<<" is not a Petri-net transition "<<endl;YYABORT;}
@@ -1208,7 +1210,7 @@ namespace lha {
 
   case 105:
 /* Line 670 of lalr1.cc  */
-#line 557 "Lha-parser.yy"
+#line 559 "Lha-parser.yy"
     {if(Reader.MyLha.TransitionIndex.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.TransitionIndex.end())
 	SubSet.insert(*(yysemantic_stack_[(3) - (3)].name));
 	else {cout<<*(yysemantic_stack_[(3) - (3)].name)<<" is not a Petri-net transition "<<endl;YYABORT;}}
@@ -1216,19 +1218,19 @@ namespace lha {
 
   case 106:
 /* Line 670 of lalr1.cc  */
-#line 562 "Lha-parser.yy"
+#line 564 "Lha-parser.yy"
     {}
     break;
 
   case 107:
 /* Line 670 of lalr1.cc  */
-#line 563 "Lha-parser.yy"
+#line 565 "Lha-parser.yy"
     {}
     break;
 
   case 109:
 /* Line 670 of lalr1.cc  */
-#line 567 "Lha-parser.yy"
+#line 569 "Lha-parser.yy"
     {CoeffsMatrix.push_back(CoeffsVector);
 	comp.push_back("==");
 	CST.push_back((yysemantic_stack_[(3) - (3)].expression));
@@ -1237,7 +1239,7 @@ namespace lha {
 
   case 110:
 /* Line 670 of lalr1.cc  */
-#line 572 "Lha-parser.yy"
+#line 574 "Lha-parser.yy"
     {CoeffsMatrix.push_back(CoeffsVector);
 	comp.push_back("<=");
 	CST.push_back((yysemantic_stack_[(3) - (3)].expression));
@@ -1246,7 +1248,7 @@ namespace lha {
 
   case 111:
 /* Line 670 of lalr1.cc  */
-#line 577 "Lha-parser.yy"
+#line 579 "Lha-parser.yy"
     {CoeffsMatrix.push_back(CoeffsVector);
 	comp.push_back(">=");
 	CST.push_back((yysemantic_stack_[(3) - (3)].expression));
@@ -1255,7 +1257,7 @@ namespace lha {
 
   case 115:
 /* Line 670 of lalr1.cc  */
-#line 587 "Lha-parser.yy"
+#line 589 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.Vars.label.size())
 	{CoeffsVector[Reader.MyLha.Vars.find(*(yysemantic_stack_[(1) - (1)].name))]="1";}
 	else {cout<<*(yysemantic_stack_[(1) - (1)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
@@ -1263,7 +1265,7 @@ namespace lha {
 
   case 116:
 /* Line 670 of lalr1.cc  */
-#line 591 "Lha-parser.yy"
+#line 593 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(5) - (5)].name))!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<"("<<(yysemantic_stack_[(5) - (2)].expression)<<")";
 		CoeffsVector[Reader.MyLha.Vars.find(*(yysemantic_stack_[(5) - (5)].name))]=s.str();}
@@ -1272,7 +1274,7 @@ namespace lha {
 
   case 117:
 /* Line 670 of lalr1.cc  */
-#line 596 "Lha-parser.yy"
+#line 598 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<(yysemantic_stack_[(3) - (1)].IntVal);
 		CoeffsVector[Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (3)].name))]=s.str();}
@@ -1281,7 +1283,7 @@ namespace lha {
 
   case 118:
 /* Line 670 of lalr1.cc  */
-#line 601 "Lha-parser.yy"
+#line 603 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<(yysemantic_stack_[(3) - (1)].RealVal);
 		CoeffsVector[Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (3)].name))]=s.str();}
@@ -1290,7 +1292,7 @@ namespace lha {
 
   case 119:
 /* Line 670 of lalr1.cc  */
-#line 606 "Lha-parser.yy"
+#line 608 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.Vars.label.size())
 	{if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(3) - (1)].name))!=Reader.MyLha.LhaRealConstant.end())
 		{std::ostringstream s; s<<Reader.MyLha.LhaRealConstant[*(yysemantic_stack_[(3) - (1)].name)];
@@ -1315,7 +1317,7 @@ namespace lha {
 
   case 120:
 /* Line 670 of lalr1.cc  */
-#line 627 "Lha-parser.yy"
+#line 629 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(2) - (2)].name))!=Reader.MyLha.Vars.label.size())
 	{CoeffsVector[Reader.MyLha.Vars.find(*(yysemantic_stack_[(2) - (2)].name))]="-1";}
 	else {cout<<*(yysemantic_stack_[(2) - (2)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
@@ -1323,7 +1325,7 @@ namespace lha {
 
   case 121:
 /* Line 670 of lalr1.cc  */
-#line 631 "Lha-parser.yy"
+#line 633 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(6) - (6)].name))!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<"-("<<(yysemantic_stack_[(6) - (3)].expression)<<")";
 		CoeffsVector[Reader.MyLha.Vars.find(*(yysemantic_stack_[(6) - (6)].name))]=s.str();}
@@ -1332,7 +1334,7 @@ namespace lha {
 
   case 122:
 /* Line 670 of lalr1.cc  */
-#line 636 "Lha-parser.yy"
+#line 638 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<"-"<<(yysemantic_stack_[(4) - (2)].IntVal);
 		CoeffsVector[Reader.MyLha.Vars.find(*(yysemantic_stack_[(4) - (4)].name))]=s.str();}
@@ -1341,7 +1343,7 @@ namespace lha {
 
   case 123:
 /* Line 670 of lalr1.cc  */
-#line 641 "Lha-parser.yy"
+#line 643 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.Vars.label.size())
 	{std::ostringstream s; s<<"-"<<(yysemantic_stack_[(4) - (2)].RealVal);
 		CoeffsVector[Reader.MyLha.Vars.find(*(yysemantic_stack_[(4) - (4)].name))]=s.str();}
@@ -1350,7 +1352,7 @@ namespace lha {
 
   case 124:
 /* Line 670 of lalr1.cc  */
-#line 646 "Lha-parser.yy"
+#line 648 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.Vars.label.size())
 	{if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(4) - (2)].name))!=Reader.MyLha.LhaRealConstant.end())
 		{std::ostringstream s; s<<"-"<<Reader.MyLha.LhaRealConstant[*(yysemantic_stack_[(4) - (2)].name)];
@@ -1375,19 +1377,19 @@ namespace lha {
 
   case 125:
 /* Line 670 of lalr1.cc  */
-#line 668 "Lha-parser.yy"
+#line 670 "Lha-parser.yy"
     {Reader.MyLha.FuncEdgeUpdates.push_back(FuncUpdateVector);vector<string> v1(Reader.MyLha.NbVar,"");FuncUpdateVector=v1;}
     break;
 
   case 126:
 /* Line 670 of lalr1.cc  */
-#line 669 "Lha-parser.yy"
+#line 671 "Lha-parser.yy"
     {Reader.MyLha.FuncEdgeUpdates.push_back(FuncUpdateVector);}
     break;
 
   case 129:
 /* Line 670 of lalr1.cc  */
-#line 674 "Lha-parser.yy"
+#line 676 "Lha-parser.yy"
     {
 	if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (1)].name))!=Reader.MyLha.Vars.label.size())
     {FuncUpdateVector[Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (1)].name))]= (yysemantic_stack_[(3) - (3)].expression);}
@@ -1397,7 +1399,7 @@ namespace lha {
 
   case 132:
 /* Line 670 of lalr1.cc  */
-#line 682 "Lha-parser.yy"
+#line 684 "Lha-parser.yy"
     {
 	if((yysemantic_stack_[(4) - (3)].TOPHASL) != NULL){
 		Reader.MyLha.HASLname.push_back(*(yysemantic_stack_[(4) - (1)].name));
@@ -1413,7 +1415,7 @@ namespace lha {
 
   case 133:
 /* Line 670 of lalr1.cc  */
-#line 693 "Lha-parser.yy"
+#line 695 "Lha-parser.yy"
     {
 	if((yysemantic_stack_[(2) - (1)].TOPHASL) != NULL){
 		Reader.MyLha.HASLname.push_back("");
@@ -1429,19 +1431,19 @@ namespace lha {
 
   case 134:
 /* Line 670 of lalr1.cc  */
-#line 706 "Lha-parser.yy"
+#line 708 "Lha-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(1) - (1)].RealVal);}
     break;
 
   case 135:
 /* Line 670 of lalr1.cc  */
-#line 707 "Lha-parser.yy"
+#line 709 "Lha-parser.yy"
     {(yyval.RealVal)=(double)(yysemantic_stack_[(1) - (1)].IntVal);}
     break;
 
   case 136:
 /* Line 670 of lalr1.cc  */
-#line 708 "Lha-parser.yy"
+#line 710 "Lha-parser.yy"
     { if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.LhaRealConstant.end())
 			(yyval.RealVal) = Reader.MyLha.LhaRealConstant[*(yysemantic_stack_[(1) - (1)].name)];
 		else { if(Reader.MyLha.LhaIntConstant.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.LhaIntConstant.end())
@@ -1454,7 +1456,7 @@ namespace lha {
 
   case 137:
 /* Line 670 of lalr1.cc  */
-#line 718 "Lha-parser.yy"
+#line 720 "Lha-parser.yy"
     {
 	Reader.MyLha.Algebraic.push_back((yysemantic_stack_[(4) - (3)].expression));
 	(yyval.TOPHASL) = new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1,Reader.MyLha.ConfidenceLevel);
@@ -1463,7 +1465,7 @@ namespace lha {
 
   case 138:
 /* Line 670 of lalr1.cc  */
-#line 722 "Lha-parser.yy"
+#line 724 "Lha-parser.yy"
     {
 	(yyval.TOPHASL) = new HaslFormulasTop(Reader.MyLha.ConfidenceLevel);
 }
@@ -1471,7 +1473,7 @@ namespace lha {
 
   case 139:
 /* Line 670 of lalr1.cc  */
-#line 725 "Lha-parser.yy"
+#line 727 "Lha-parser.yy"
     {
 	
 	for(double bucket = (yysemantic_stack_[(10) - (7)].RealVal) ; bucket < (yysemantic_stack_[(10) - (9)].RealVal) ; bucket+= (yysemantic_stack_[(10) - (5)].RealVal)){
@@ -1492,7 +1494,7 @@ namespace lha {
 
   case 140:
 /* Line 670 of lalr1.cc  */
-#line 741 "Lha-parser.yy"
+#line 743 "Lha-parser.yy"
     {
 	
 	for(double bucket = (yysemantic_stack_[(10) - (7)].RealVal) ; bucket < (yysemantic_stack_[(10) - (9)].RealVal) ; bucket+= (yysemantic_stack_[(10) - (5)].RealVal)){
@@ -1513,7 +1515,7 @@ namespace lha {
 
   case 141:
 /* Line 670 of lalr1.cc  */
-#line 758 "Lha-parser.yy"
+#line 760 "Lha-parser.yy"
     {
 	(yyval.TOPHASL) = (yysemantic_stack_[(3) - (2)].TOPHASL);
 }
@@ -1521,7 +1523,7 @@ namespace lha {
 
   case 142:
 /* Line 670 of lalr1.cc  */
-#line 761 "Lha-parser.yy"
+#line 763 "Lha-parser.yy"
     {
 	(yyval.TOPHASL) = new HaslFormulasTop(HASL_PLUS, (yysemantic_stack_[(3) - (1)].TOPHASL),(yysemantic_stack_[(3) - (3)].TOPHASL));
 }
@@ -1529,7 +1531,7 @@ namespace lha {
 
   case 143:
 /* Line 670 of lalr1.cc  */
-#line 764 "Lha-parser.yy"
+#line 766 "Lha-parser.yy"
     {
 	(yyval.TOPHASL) = new HaslFormulasTop(HASL_TIME, (yysemantic_stack_[(3) - (1)].TOPHASL), (yysemantic_stack_[(3) - (3)].TOPHASL));
 }
@@ -1537,7 +1539,7 @@ namespace lha {
 
   case 144:
 /* Line 670 of lalr1.cc  */
-#line 767 "Lha-parser.yy"
+#line 769 "Lha-parser.yy"
     {
 	(yyval.TOPHASL) = new HaslFormulasTop(HASL_DIV, (yysemantic_stack_[(3) - (1)].TOPHASL),(yysemantic_stack_[(3) - (3)].TOPHASL));
 }
@@ -1545,7 +1547,7 @@ namespace lha {
 
   case 145:
 /* Line 670 of lalr1.cc  */
-#line 770 "Lha-parser.yy"
+#line 772 "Lha-parser.yy"
     {
 	(yyval.TOPHASL) = new HaslFormulasTop(0.0,(double)(yysemantic_stack_[(1) - (1)].IntVal));
 }
@@ -1553,7 +1555,7 @@ namespace lha {
 
   case 146:
 /* Line 670 of lalr1.cc  */
-#line 773 "Lha-parser.yy"
+#line 775 "Lha-parser.yy"
     {
 	(yyval.TOPHASL) = new HaslFormulasTop(0.0,(double)(yysemantic_stack_[(1) - (1)].RealVal));
 }
@@ -1561,7 +1563,7 @@ namespace lha {
 
   case 147:
 /* Line 670 of lalr1.cc  */
-#line 777 "Lha-parser.yy"
+#line 779 "Lha-parser.yy"
     {string ss=(yysemantic_stack_[(1) - (1)].expression);
 	sprintf((yyval.expression),"LhaFunc[%d]", Reader.MyLha.LhaFunction[ss]);
 }
@@ -1569,67 +1571,67 @@ namespace lha {
 
   case 148:
 /* Line 670 of lalr1.cc  */
-#line 780 "Lha-parser.yy"
+#line 782 "Lha-parser.yy"
     {sprintf((yyval.expression),"min(%s,%s)", (yysemantic_stack_[(6) - (3)].expression),(yysemantic_stack_[(6) - (5)].expression));}
     break;
 
   case 149:
 /* Line 670 of lalr1.cc  */
-#line 781 "Lha-parser.yy"
+#line 783 "Lha-parser.yy"
     {sprintf((yyval.expression),"max(%s,%s)", (yysemantic_stack_[(6) - (3)].expression),(yysemantic_stack_[(6) - (5)].expression));}
     break;
 
   case 150:
 /* Line 670 of lalr1.cc  */
-#line 782 "Lha-parser.yy"
+#line 784 "Lha-parser.yy"
     {sprintf((yyval.expression),"-%s", (yysemantic_stack_[(2) - (2)].expression));}
     break;
 
   case 151:
 /* Line 670 of lalr1.cc  */
-#line 783 "Lha-parser.yy"
+#line 785 "Lha-parser.yy"
     {sprintf((yyval.expression),"floor(%s)", (yysemantic_stack_[(4) - (3)].expression));}
     break;
 
   case 152:
 /* Line 670 of lalr1.cc  */
-#line 784 "Lha-parser.yy"
+#line 786 "Lha-parser.yy"
     {sprintf((yyval.expression),"(%s)", (yysemantic_stack_[(3) - (2)].expression));}
     break;
 
   case 153:
 /* Line 670 of lalr1.cc  */
-#line 785 "Lha-parser.yy"
+#line 787 "Lha-parser.yy"
     {sprintf((yyval.expression),"pow(%s , %s)", (yysemantic_stack_[(3) - (1)].expression),(yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 154:
 /* Line 670 of lalr1.cc  */
-#line 786 "Lha-parser.yy"
+#line 788 "Lha-parser.yy"
     {sprintf((yyval.expression),"(%s + %s)", (yysemantic_stack_[(3) - (1)].expression),(yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 155:
 /* Line 670 of lalr1.cc  */
-#line 787 "Lha-parser.yy"
+#line 789 "Lha-parser.yy"
     {sprintf((yyval.expression),"(%s - %s)", (yysemantic_stack_[(3) - (1)].expression),(yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 156:
 /* Line 670 of lalr1.cc  */
-#line 788 "Lha-parser.yy"
+#line 790 "Lha-parser.yy"
     {sprintf((yyval.expression),"(%s * %s)", (yysemantic_stack_[(3) - (1)].expression),(yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 157:
 /* Line 670 of lalr1.cc  */
-#line 789 "Lha-parser.yy"
+#line 791 "Lha-parser.yy"
     {sprintf((yyval.expression),"(%s / %s)", (yysemantic_stack_[(3) - (1)].expression),(yysemantic_stack_[(3) - (3)].expression));}
     break;
 
   case 158:
 /* Line 670 of lalr1.cc  */
-#line 791 "Lha-parser.yy"
+#line 793 "Lha-parser.yy"
     {std::ostringstream s; s<<(yysemantic_stack_[(4) - (3)].expression);
 	if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end())
 	{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
@@ -1644,7 +1646,7 @@ namespace lha {
 
   case 159:
 /* Line 670 of lalr1.cc  */
-#line 801 "Lha-parser.yy"
+#line 803 "Lha-parser.yy"
     {std::ostringstream s; s<<(yysemantic_stack_[(4) - (3)].expression);
 	if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end())
 	{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
@@ -1659,7 +1661,7 @@ namespace lha {
 
   case 160:
 /* Line 670 of lalr1.cc  */
-#line 811 "Lha-parser.yy"
+#line 813 "Lha-parser.yy"
     {std::ostringstream s; s<<(yysemantic_stack_[(4) - (3)].expression);
 	if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end())
 	{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
@@ -1674,7 +1676,7 @@ namespace lha {
 
   case 161:
 /* Line 670 of lalr1.cc  */
-#line 821 "Lha-parser.yy"
+#line 823 "Lha-parser.yy"
     {std::ostringstream s; s<<(yysemantic_stack_[(4) - (3)].expression);
 	if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end())
 	{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
@@ -1689,7 +1691,7 @@ namespace lha {
 
   case 162:
 /* Line 670 of lalr1.cc  */
-#line 831 "Lha-parser.yy"
+#line 833 "Lha-parser.yy"
     {std::ostringstream s; s<<(yysemantic_stack_[(4) - (3)].expression);
 		if(Reader.MyLha.LinearForm.find(s.str())==Reader.MyLha.LinearForm.end())
 		{int i=Reader.MyLha.LinearForm.size();Reader.MyLha.LinearForm[s.str()]=i;}
@@ -1704,25 +1706,25 @@ namespace lha {
 
   case 163:
 /* Line 670 of lalr1.cc  */
-#line 842 "Lha-parser.yy"
+#line 844 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s", (yysemantic_stack_[(1) - (1)].expression));  }
     break;
 
   case 164:
 /* Line 670 of lalr1.cc  */
-#line 843 "Lha-parser.yy"
+#line 845 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s - %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 165:
 /* Line 670 of lalr1.cc  */
-#line 844 "Lha-parser.yy"
+#line 846 "Lha-parser.yy"
     {sprintf((yyval.expression),"%s + %s", (yysemantic_stack_[(3) - (1)].expression), (yysemantic_stack_[(3) - (3)].expression));  }
     break;
 
   case 166:
 /* Line 670 of lalr1.cc  */
-#line 847 "Lha-parser.yy"
+#line 849 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.Vars.label.size())
 	{sprintf((yyval.expression),"Vars->%s", (yysemantic_stack_[(1) - (1)].name)->c_str());}
 	else if(Reader.MyLha.PlaceIndex.find(*(yysemantic_stack_[(1) - (1)].name))!=Reader.MyLha.PlaceIndex.end())
@@ -1735,7 +1737,7 @@ namespace lha {
 
   case 167:
 /* Line 670 of lalr1.cc  */
-#line 857 "Lha-parser.yy"
+#line 859 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(5) - (5)].name))!=Reader.MyLha.Vars.label.size())
 	{sprintf((yyval.expression),"(%s) * Vars->%s", (yysemantic_stack_[(5) - (2)].expression), (yysemantic_stack_[(5) - (5)].name)->c_str());
 	}
@@ -1744,7 +1746,7 @@ namespace lha {
 
   case 168:
 /* Line 670 of lalr1.cc  */
-#line 862 "Lha-parser.yy"
+#line 864 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.Vars.label.size())
 	{sprintf((yyval.expression),"%d * Vars->%s", (yysemantic_stack_[(3) - (1)].IntVal), (yysemantic_stack_[(3) - (3)].name)->c_str());
 	}
@@ -1753,7 +1755,7 @@ namespace lha {
 
   case 169:
 /* Line 670 of lalr1.cc  */
-#line 867 "Lha-parser.yy"
+#line 869 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.Vars.label.size())
 	{sprintf((yyval.expression),"%f * Vars->%s", (yysemantic_stack_[(3) - (1)].RealVal), (yysemantic_stack_[(3) - (3)].name)->c_str());
 	}
@@ -1762,20 +1764,20 @@ namespace lha {
 
   case 170:
 /* Line 670 of lalr1.cc  */
-#line 873 "Lha-parser.yy"
+#line 875 "Lha-parser.yy"
     { sprintf((yyval.expression),"%i ", (yysemantic_stack_[(1) - (1)].IntVal));
 }
     break;
 
   case 171:
 /* Line 670 of lalr1.cc  */
-#line 876 "Lha-parser.yy"
+#line 878 "Lha-parser.yy"
     { sprintf((yyval.expression),"%f ", (yysemantic_stack_[(1) - (1)].RealVal));}
     break;
 
   case 172:
 /* Line 670 of lalr1.cc  */
-#line 879 "Lha-parser.yy"
+#line 881 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(3) - (3)].name))!=Reader.MyLha.Vars.label.size())
 	{if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(3) - (1)].name))!=Reader.MyLha.LhaRealConstant.end())
 		{sprintf((yyval.expression),"%f * Vars->%s", Reader.MyLha.LhaRealConstant[*(yysemantic_stack_[(3) - (1)].name)],(yysemantic_stack_[(3) - (3)].name)->c_str());
@@ -1798,7 +1800,7 @@ namespace lha {
 
   case 173:
 /* Line 670 of lalr1.cc  */
-#line 898 "Lha-parser.yy"
+#line 900 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(2) - (2)].name))!=Reader.MyLha.Vars.label.size())
 	{sprintf((yyval.expression),"-Vars->%s", (yysemantic_stack_[(2) - (2)].name)->c_str());}
 	else {cout<<*(yysemantic_stack_[(2) - (2)].name)<<" is not a Lha variable"<<endl;YYABORT;}}
@@ -1806,7 +1808,7 @@ namespace lha {
 
   case 174:
 /* Line 670 of lalr1.cc  */
-#line 902 "Lha-parser.yy"
+#line 904 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(6) - (6)].name))!=Reader.MyLha.Vars.label.size())
 	{sprintf((yyval.expression),"-(%s) * Vars->%s", (yysemantic_stack_[(6) - (3)].expression), (yysemantic_stack_[(6) - (6)].name)->c_str());
 	}
@@ -1815,7 +1817,7 @@ namespace lha {
 
   case 175:
 /* Line 670 of lalr1.cc  */
-#line 907 "Lha-parser.yy"
+#line 909 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.Vars.label.size())
 	{sprintf((yyval.expression),"-%d * Vars->%s", (yysemantic_stack_[(4) - (2)].IntVal), (yysemantic_stack_[(4) - (4)].name)->c_str());
 	}
@@ -1824,7 +1826,7 @@ namespace lha {
 
   case 176:
 /* Line 670 of lalr1.cc  */
-#line 912 "Lha-parser.yy"
+#line 914 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.Vars.label.size())
 	{sprintf((yyval.expression),"-%f * Vars->%s", (yysemantic_stack_[(4) - (2)].RealVal), (yysemantic_stack_[(4) - (4)].name)->c_str());
 	}
@@ -1833,7 +1835,7 @@ namespace lha {
 
   case 177:
 /* Line 670 of lalr1.cc  */
-#line 917 "Lha-parser.yy"
+#line 919 "Lha-parser.yy"
     { if(Reader.MyLha.Vars.find(*(yysemantic_stack_[(4) - (4)].name))!=Reader.MyLha.Vars.label.size())
 	{if(Reader.MyLha.LhaRealConstant.find(*(yysemantic_stack_[(4) - (2)].name))!=Reader.MyLha.LhaRealConstant.end())
 		{sprintf((yyval.expression),"-%f * Vars->%s", Reader.MyLha.LhaRealConstant[*(yysemantic_stack_[(4) - (2)].name)],(yysemantic_stack_[(4) - (4)].name)->c_str());
@@ -1856,7 +1858,7 @@ namespace lha {
 
 
 /* Line 670 of lalr1.cc  */
-#line 1860 "Lha-parser.tab.cc"
+#line 1862 "Lha-parser.tab.cc"
       default:
         break;
       }
@@ -2706,18 +2708,18 @@ namespace lha {
      248,   249,   250,   252,   253,   254,   273,   280,   281,   282,
      283,   284,   285,   286,   287,   288,   289,   291,   292,   294,
      295,   297,   298,   300,   307,   317,   321,   325,   326,   328,
-     361,   369,   376,   383,   389,   394,   395,   397,   399,   407,
-     412,   414,   422,   431,   432,   436,   443,   444,   446,   465,
-     487,   488,   489,   495,   496,   497,   498,   499,   500,   501,
-     503,   504,   505,   506,   507,   512,   516,   517,   519,   543,
-     544,   545,   549,   551,   553,   557,   562,   563,   564,   566,
-     571,   576,   582,   583,   584,   586,   590,   595,   600,   605,
-     626,   630,   635,   640,   645,   668,   669,   671,   672,   674,
-     680,   680,   682,   693,   706,   707,   708,   718,   722,   725,
-     741,   758,   761,   764,   767,   770,   773,   777,   780,   781,
-     782,   783,   784,   785,   786,   787,   788,   789,   791,   801,
-     811,   821,   831,   842,   843,   844,   846,   856,   861,   866,
-     872,   875,   878,   897,   901,   906,   911,   916
+     361,   370,   378,   385,   391,   396,   397,   399,   401,   409,
+     414,   416,   424,   433,   434,   438,   445,   446,   448,   467,
+     489,   490,   491,   497,   498,   499,   500,   501,   502,   503,
+     505,   506,   507,   508,   509,   514,   518,   519,   521,   545,
+     546,   547,   551,   553,   555,   559,   564,   565,   566,   568,
+     573,   578,   584,   585,   586,   588,   592,   597,   602,   607,
+     628,   632,   637,   642,   647,   670,   671,   673,   674,   676,
+     682,   682,   684,   695,   708,   709,   710,   720,   724,   727,
+     743,   760,   763,   766,   769,   772,   775,   779,   782,   783,
+     784,   785,   786,   787,   788,   789,   790,   791,   793,   803,
+     813,   823,   833,   844,   845,   846,   848,   858,   863,   868,
+     874,   877,   880,   899,   903,   908,   913,   918
   };
 
   // Print the state stack on the debug stream.
@@ -2811,9 +2813,9 @@ namespace lha {
 
 } // lha
 /* Line 1141 of lalr1.cc  */
-#line 2815 "Lha-parser.tab.cc"
+#line 2817 "Lha-parser.tab.cc"
 /* Line 1142 of lalr1.cc  */
-#line 940 "Lha-parser.yy"
+#line 942 "Lha-parser.yy"
 
 
 void
