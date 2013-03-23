@@ -40,7 +40,8 @@ enum HaslType {
 	CONSTANT,
 	HASL_PLUS,
 	HASL_TIME,
-	HASL_DIV
+	HASL_DIV,
+	RE_AVG
 };
 	
 /**

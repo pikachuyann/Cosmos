@@ -28,8 +28,8 @@
 #include <cstdlib>
 #include "result.hpp"
 #include "HaslFormula.hpp"
-
-#include <boost/math/distributions/binomial.hpp>
+#include <iomanip>
+#include <math.h>
 
 using namespace std;
 
@@ -110,7 +110,7 @@ void result::addBatch(BatchR *batchResult){
         }
 		
         if(P.RareEvent || P.BoundedRE>0){
-            RelErrArray[i] =  HaslResult[i]->width() /  abs(MeanM2->Mean[i]/MeanM2->Isucc);
+            RelErrArray[i] =  HaslResult[i]->width() /  fabs(MeanM2->Mean[i]/MeanM2->Isucc);
         }else RelErrArray[i] = HaslResult[i]->width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
 		
 		RelErr = max(RelErr,RelErrArray[i]);
@@ -190,13 +190,6 @@ void result::stopclock(){
     cpu_time_used = end.tv_sec-start.tv_sec +(end.tv_usec-start.tv_usec)/1000000.0;
 }
 
-double binomlow(size_t i,size_t j , double l){
-    return boost::math::binomial_distribution<>::find_lower_bound_on_p(i,j,l);
-}
-
-double binomup(size_t i,size_t j , double l){
-    return boost::math::binomial_distribution<>::find_upper_bound_on_p(i,j,l);
-}
 
 void result::print(ostream &s){
     s.precision(15);
@@ -212,24 +205,9 @@ void result::print(ostream &s){
             
             s << P.HaslFormulasname[i] << ":" << endl;
             
-            if(P.RareEvent){
-                s << "Rare Event Result" << endl;
-                double mean = 1.0 / (double)MeanM2->I;
-                mean *= MeanM2->Mean[i];
-                s << "Estimated value:\t" << mean << endl;
-                double l = binomlow(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
-                double u = binomup(MeanM2->I, MeanM2->Isucc, (1-P.Level)/2);
-                // Print Clopper Pearson Limits:
-                s << "Binomiale confidence interval:\t[" <<
-					l*MeanM2->Mean[i]/MeanM2->Isucc << " , " <<
-					u*MeanM2->Mean[i]/MeanM2->Isucc << "]"<< endl;
-                s << "Binomiale width:\t"<< (u-l)*MeanM2->Mean[i]/MeanM2->Isucc
-					<< endl <<endl;
-            } else {
-                s << "Estimated value:\t" << HaslResult[i]->mean << endl;
-                s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
-                s << "Width:\t" << HaslResult[i]->width() << endl;
-            }
+			s << "Estimated value:\t" << HaslResult[i]->mean << endl;
+			s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
+			s << "Width:\t" << HaslResult[i]->width() << endl;
         }
 		s << "Confidence level:\t" << P.Level << endl;
         s << "Relative error:\t" << RelErr << endl;

@@ -275,6 +275,10 @@ bool ParseBuild(parameters& P) {
 		if (system(cmd.c_str())) return false;
 		cmd = "cp lumpingfun.cpp " + P.tmpPath +"/lumpingfun.cpp";
 		if (system(cmd.c_str())) return false;
+		
+		for(vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
+			it != P.HaslFormulas.end(); ++it)
+			if ( (*it)->TypeOp == EXPECTANCY ) (*it)->TypeOp = RE_AVG;
 	}
 
 	//Compile the SPN

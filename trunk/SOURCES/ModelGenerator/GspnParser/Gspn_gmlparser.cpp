@@ -214,7 +214,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 	if(it->compare("function")==0){
 		eval_tokenProfileArc(tok, markingdependant, vardom, it.begin());
 	}else if(it->compare("++")==0){
-		int incr;
+		int incr = 0;
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("name")==0){
 				eval_tokenProfileArc(tok, markingdependant, vardom, it2);

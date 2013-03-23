@@ -197,6 +197,21 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 			return new ConfInt(mean,width);
 		}
 			
+		case RE_AVG:
+		{
+			double mean = (double)batch.Isucc / (double)batch.I;
+			double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
+			double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
+			double mean2 = batch.Mean[Algebraic]/batch.Isucc;
+			double m2 = batch.M2[Algebraic]/batch.Isucc;
+			double variance = m2 - mean2 * mean2;
+			double width = Value * sqrt(variance/batch.Isucc);
+			
+			return new ConfInt(mean*mean2,
+							   (mean2 - width)*l,
+							   (mean2 + width)*u );
+		}
+			
 		case CONSTANT:
 			return new ConfInt(Value,0);
 			
