@@ -577,7 +577,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 void MyModelHandler::on_read_node(const XmlString& id,
                                   const XmlString& nodeType,
                                   const AttributeMap& attributes,
-                                  const XmlStringList& references) {
+                                  const XmlStringList&) {
     // Read node of the graph. If the file is well formed it
     // contain only plate and transition.
     
@@ -786,7 +786,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
                                  const XmlString& source,
                                  const XmlString& target,
                                  const AttributeMap& attributes,
-                                 const XmlStringList& references) {
+                                 const XmlStringList&) {
     if(ParsePl){
         ParsePl=false;
         

@@ -105,6 +105,7 @@ void BatchR::unionR(BatchR *batch){
  * Read a batch from a file.
  * The batch should be print with BatchR::outputR
  * @param f an opened for reading file.
+ * @return true if the read was succesfull and false if it was not complete.
  */
 bool BatchR::inputR(FILE* f) {
     bool readb;

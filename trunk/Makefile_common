@@ -20,6 +20,12 @@ includes/%.hpp: SOURCES/Cosmos/%.hpp
 generator:
 	@(cd SOURCES/ModelGenerator && $(MAKE) ../../bin/Cosmos)
 
+cleanSim:
+	@(cd SOURCES/Cosmos && $(MAKE) clean)
+	
+cleanGen:
+	@(cd SOURCES/ModelGenerator && $(MAKE) clean)
+
 clean:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
 	@(cd SOURCES/ModelGenerator && $(MAKE) $@)

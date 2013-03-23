@@ -216,7 +216,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	return (batchResult);
 }
 
-void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstractBinding& b){
+void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstractBinding&){
 	Event F;
     //check if the current transition is still enabled
 	for(vector<abstractBinding>::const_iterator bindex = N.Transition[E1_transitionNum].bindingList.begin() ;

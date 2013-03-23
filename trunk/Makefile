@@ -12,5 +12,10 @@ files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 
 include Makefile_common
 
+.PHONY: doc
+
+doc:
+	doxygen Doxyfile
+
 install:
 	cp bin/_Cosmos /usr/share/zsh/4.3.11/functions/_Cosmos 

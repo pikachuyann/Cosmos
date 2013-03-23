@@ -43,32 +43,32 @@ class BatchR {
 public:
     BatchR(const size_t i);
 	
-	//!< Number of simulation.
+	//! Number of simulation.
     unsigned long I;
 	
-	//!< Number of succesfull simulation.
+	//! Number of succesfull simulation.
     unsigned long Isucc;
 	
-	//!< Number of mesured variable.
+	//! Number of mesured variable.
     size_t TableLength;
 	
-	//!< Is a variable a boolean.
+	//! Is a variable a boolean.
     std::vector<bool> IsBernoulli;
 	
-	//!< The mean value of each formula.
+	//! The mean value of each formula.
     std::vector<double> Mean;
 	
-	//!< The second moment of each formula.
+	//! The second moment of each formula.
     std::vector<double> M2;
     
-    //!< Add the result of one simulation to the Batch.
+    //! Add the result of one simulation to the Batch.
     void addSim(SimOutput*);
     
-    //!< Merge the result of two batch of simulation.
+    //! Merge the result of two batch of simulation.
     void unionR(BatchR*);
-    
-    
+	
     void outputR();
+	
     bool inputR(FILE* f);
     void print(); //! Print human readable version of batch on stdout.
     

@@ -86,7 +86,7 @@ void SimulatorRE::returnResultFalse(){
 	if(verbose>3)cerr << "---------------\n FALSE \n------\n";
 }
 
-void SimulatorRE::updateSPN(size_t E1_transitionNum,const abstractBinding& b ){
+void SimulatorRE::updateSPN(size_t,const abstractBinding&){
 	Event F;
     //check if the current transition is still enabled
 	

@@ -23,21 +23,33 @@
  *******************************************************************************
  */
 
-using namespace std;
+
+
 
 #ifndef _SERVER_HPP
 #define	_SERVER_HPP
 
 #include "parameters.hpp"
 
-double StrToDbl(string st);
-int StrToInt(string st);
-long int StrToLongInt(string st);
-
+/**
+ * The function lauchExport execute one instance of the simulator
+ * With the right parameters to exporte the state space to files.
+ * @param P the parameters to use for the export.
+ */
 void launchExport(parameters& P);
+
+/**
+ * One of the main function of the tool.
+ * lauchServer execute several instance of the simulator,
+ * then wait for some simulators to retun result.
+ * At this point the new result are aggreated to the previous one using
+ * the class result.
+ * The class result indicate if the simulation should continue, if not
+ * this function kill all the instance of the simulator, return all 
+ * the results to files or to stdout and return.
+ * @param is the parameters to use for the export.
+ */
 void launchServer(parameters& P);
-
-
 
 
 #endif	/* _SERVER_HPP */

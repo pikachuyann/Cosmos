@@ -90,7 +90,7 @@ HaslFormulasTop::HaslFormulasTop(double l){
  * @param l useless
  * @param v the value of the constant
  */
-HaslFormulasTop::HaslFormulasTop(double l,double v){
+HaslFormulasTop::HaslFormulasTop(double,double v){
 	TypeOp = CONSTANT;
 	Level = 1;
 	Value = v;

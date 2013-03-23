@@ -23,6 +23,13 @@
  *******************************************************************************
  */
 
+/**
+ * \file server.cpp
+ * This file contain the implementation of a server waiting for
+ * The simulators to give him result and aggregate them.
+ */
+
+
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>
@@ -48,12 +55,37 @@
 
 using namespace std;
 
+//! A list of file descriptor for the select system call.
 fd_set client_list;
+
+//! A vector of FILE containing the stdout of each simulator.
 vector<FILE*> clientstream;
+
+//! A vector of PID of the simulators
 vector<pid_t> clientPID;
+
+//! The maximal index of file descriptor in client_list.
 int max_client=0 ;
 
-// Handler for crash of the simulator
+//! Boolean indicating if the simulation should continue.
+bool continueSelect=false;
+
+/**
+ * Signal handler.
+ * The signals this function is expecting are SIGCHLD which append if
+ * child simulator terminate. In this case the return status of the child
+ * must be retrive to know what make the simulator terminate.
+ * If the termination is legit: The simulator terminate because it has finished 
+ * its computation which append in -v 4 mode and when exporting state space,
+ * or the server just killed the simulator with signal 2.
+ * Then do nothing. Otherwise report the error.
+ *
+ * If the signal SIGINT is caught then the variable continueSelect is set to 
+ * false, this is sufficient because the signal interrupt the select 
+ * system call.
+ *
+ * @param signum the number of a signal
+ */
 void signalHandler( int signum )
 {
 	switch (signum){
@@ -62,9 +94,6 @@ void signalHandler( int signum )
 			pid_t child = wait(&status);
 			
 			if(child != -1){
-				/*size_t itpid = find(clientPID.begin(), clientPID.end(), child ) - clientPID.begin();
-				clientPID.erase(clientPID.begin() + itpid);
-				clientstream.erase(clientstream.begin() + itpid);*/
 				if(status==0){cout << "Simulator terminate" << endl;}
 				else if(WIFSIGNALED(status)){
 					if(WTERMSIG(status) != 2){
@@ -80,13 +109,16 @@ void signalHandler( int signum )
 		}
 			break;
 		case SIGINT:
+			continueSelect = false;
 			break;
 		default:
 			cerr << " Unexpected signal" << endl;
 	}
 }
 
-// Launch the P.Njob copy of the simulator with the parameters define in P
+/** 
+ * Launch the P.Njob copy of the simulator with the parameters define in P
+ */
 void launch_clients(parameters& P){
     signal(SIGCHLD , signalHandler); 
 	signal(SIGINT, signalHandler);
@@ -126,14 +158,11 @@ void launch_clients(parameters& P){
     
 }
 
-//Kill all the copy of the simulators at the end of the computation
-void kill_client(){    
-    /*rusage ruse;
-     getrusage(RUSAGE_CHILDREN, &ruse);
-     cout <<endl << "Total Time: "
-     << ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
-     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl; */
-    
+/**	
+ * Kill all the copy of the simulators at the end of the computation.
+ * This also allow to recover usage information of the simulators.
+ */
+void kill_client(){
 	
     while (!clientPID.empty())
     {
@@ -149,8 +178,10 @@ void kill_client(){
     
 }
 
-// Build a list of input files of all the simulators to collect results
-// This list is made to be used with the function <sys/select.h>/select
+/**
+ * Build a list of input files of all the simulators to collect results
+ * This list is made to be used with the function <sys/select.h>/select
+ */
 void makeselectlist(void){
     FD_ZERO(&client_list);
     for(size_t it = 0;it < clientstream.size(); it++){
@@ -159,8 +190,7 @@ void makeselectlist(void){
     }
 }
 
-void launchExport(parameters& P){
-    
+void launchExport(parameters& P){    
     ostringstream setuppr;
     setuppr << "cd " << P.Path << "../prism ; ./install.sh"; 
     cout << "setup prism:" << setuppr.str() << endl;
@@ -190,18 +220,17 @@ void launchServer(parameters& P){
     launch_clients(P);
     //Make a list of file system for polling
     
+	continueSelect = true;
     do{
         makeselectlist();
-		
+		if(!continueSelect)break;
         //wait for a simulator to return some result
         if(select(max_client+1, &client_list, NULL, NULL, NULL) == -1){
-			if(errno == EINTR){
-				break;
-			}
-			
+			if(errno == EINTR)break;
             perror("Server-select() error!");
             exit(EXIT_FAILURE);
         }
+		//Iterate over the simultor to check wich one has some results.
         for(size_t it = 0;it < clientstream.size() ;it++){
             if(FD_ISSET(fileno(clientstream[it]),  &client_list)){
                 //aggregate the new result to the total result
@@ -209,8 +238,12 @@ void launchServer(parameters& P){
                 if(batchResult.inputR(clientstream[it])){
 					//batchResult.print();
 					Result.addBatch(&batchResult);
+					//If neaded output the progress of the computation.
 					if(P.verbose>0 || P.alligatorMode)Result.printProgress();
 				} else {
+					//The batch result was not complete.
+					//If the simulator was kill by the server it is OK otherwise
+					//It is a problem.
 					if(P.verbose>2) cerr << "Warning uncomplete Batch Result"<<endl;
 					if(feof( clientstream[it] )!=0){
 						if(P.verbose>2)cerr << "Deconnection Simulator:" << clientPID[it] << endl;
@@ -220,8 +253,10 @@ void launchServer(parameters& P){
 				}
 			}
         }
-    }while(Result.continueSim() && clientstream.size()>0);
+		//Check if the simulation should continue.
+    }while(Result.continueSim() && clientstream.size()>0 && continueSelect);
     
+	//Output all the results
     if(P.verbose>0)cout << endl;
     Result.stopclock();
     

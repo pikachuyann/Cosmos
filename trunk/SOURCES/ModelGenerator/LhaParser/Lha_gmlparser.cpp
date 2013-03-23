@@ -588,7 +588,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 void MyLhaModelHandler::on_read_node(const XmlString& id,
 									 const XmlString& nodeType,
 									 const AttributeMap& attributes,
-									 const XmlStringList& references) {
+									 const XmlStringList&) {
 	
 	if(verbose>1)cout << "read node : " << id << ", " << nodeType << endl;
 	if(nodeType.compare("state")==0){
@@ -656,7 +656,7 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 									const XmlString& source,
 									const XmlString& target,
 									const AttributeMap& attributes,
-									const XmlStringList& references) {
+									const XmlStringList&) {
 	if(ParseLoc){
 		ParseLoc=false;
 		MyLHA->NbLoc= countLoc;

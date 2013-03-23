@@ -129,7 +129,7 @@ void Simulator::returnResultFalse(){
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& b){
+void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding&){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
     
@@ -224,7 +224,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& b){
  * Do nothing when not in rare event context.
  * @param i Number of the transition of the SPN
  */
-void Simulator::updateLikelihood(size_t i){
+void Simulator::updateLikelihood(size_t){
 	return;
 }
 
@@ -233,7 +233,7 @@ void Simulator::updateLikelihood(size_t i){
  * always return true when not in rare event context.
  * @param i Number of the transition of the SPN
  */
-bool Simulator::transitionSink(size_t i){
+bool Simulator::transitionSink(size_t ){
     return false;
 }
 

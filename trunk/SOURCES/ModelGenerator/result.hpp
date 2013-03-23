@@ -48,75 +48,75 @@ public:
   result(parameters &Q);
   ~result();
   
-  //!< Add a new batch of result to the result.
+  //! Add a new batch of result to the result.
   void addBatch(BatchR*);
 
-  //!< return true if the simulation should continue.
+  //! return true if the simulation should continue.
   bool continueSim();
 
-  //!< Print the progress of the computation on stdout.
+  //! Print the progress of the computation on stdout.
   void printProgress();
 
-  //!< stop the computation clock.
+  //! stop the computation clock.
   void stopclock();
 
-  //!< print the result of the simulation to a stream.
+  //! print the result of the simulation to a stream.
   void print(ostream &s);
 
-  //!< print the result of the simulation to a file.
+  //! print the result of the simulation to a file.
   void printResultFile(string);
 
-  //!< print the result of the simulation to stdout in format well suited for alligator.
+  //! print the result of the simulation to stdout in format well suited for alligator.
   void printAlligator();
 
-  //!< Make gnuplot draw the result.
+  //! Make gnuplot draw the result.
   void printGnuplot();
 
-  //!< Output the data of CDF or PDF to a file in the gnuplot file format
+  //! Output the data of CDF or PDF to a file in the gnuplot file format
   void outputCDFPDF(string);
 
-  //!< Output data of the simulation in the gnuplot file format.
+  //! Output data of the simulation in the gnuplot file format.
   void outputData();
   
-  //!< Close the interactive gnuplot session.
+  //! Close the interactive gnuplot session.
   void close_gnuplot();
   
 private:
   
-  //!< A copy of the parameters.
+  //! A copy of the parameters.
   parameters P;
   
-  //!< timestamps for the strart and end of the simulation.
+  //! timestamps for the strart and end of the simulation.
   timeval start, end;
 
-  //!< timestanmps fot the last time the commandline where updated.
+  //! timestanmps fot the last time the commandline where updated.
   timeval lastprint;
 
-  //!< timestanmps fot the last time the gnuplot screen where updated.
+  //! timestanmps fot the last time the gnuplot screen where updated.
   timeval lastdraw;
 
-  //!< Total cpu time.
+  //! Total cpu time.
   double cpu_time_used;
   
-  //!< Stream where to print data.
+  //! Stream where to print data.
   fstream outdatastream;
 
-  //!< Stream to the interactive gnuplot session.
+  //! Stream to the interactive gnuplot session.
   FILE* gnuplotstream;
 
-  //!< Number of lines written by the function printProgress.
+  //! Number of lines written by the function printProgress.
   int endline;
   
-  //!< The raw result of the computation.
+  //! The raw result of the computation.
   BatchR* MeanM2;
   
-  //!< The maximal relative error of the result.
+  //! The maximal relative error of the result.
   double RelErr;
 
-  //!< The relative error for each formula.
+  //! The relative error for each formula.
   vector<double> RelErrArray;
 
-  //!< The result of the estimator of the confidence interval for each formula.
+  //! The result of the estimator of the confidence interval for each formula.
   vector<ConfInt*> HaslResult;
   
 };

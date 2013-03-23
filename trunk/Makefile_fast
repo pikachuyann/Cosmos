@@ -1,6 +1,6 @@
 export CC=gcc
 export CXX=g++
-export OPTIONS=-g -Wall -Wextra 
+export OPTIONS=-g -Wall -Wextra -fprofile-arcs -ftest-coverage
 #-D_GLIBCXX_DEBUG=1 -D_GLIBCXX_FULLY_DYNAMIC_STRING=1
 export BOOSTPATH=/data/usr64/include
 export BISON=/opt/local/bin/bison
