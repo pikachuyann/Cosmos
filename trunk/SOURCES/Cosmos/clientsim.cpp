@@ -31,6 +31,7 @@
 #include "SimulatorContinuousBounded.hpp"
 #include <sys/types.h>
 #include <unistd.h>
+#include <signal.h>
 
 
 // Handler for interuption of the server
