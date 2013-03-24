@@ -94,8 +94,8 @@ void signalHandler( int signum )
 			pid_t child = wait(&status);
 			
 			if(child != -1){
-				if(status==0){cout << "Simulator terminate" << endl;}
-				else if(WIFSIGNALED(status)){
+				if(status!=0){
+				if(WIFSIGNALED(status)){
 					if(WTERMSIG(status) != 2){
 						cout << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
 						exit(EXIT_FAILURE);
@@ -104,6 +104,7 @@ void signalHandler( int signum )
 					if(WEXITSTATUS(status) != 130)cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
 				}else {
 					cout << "Simulator "<< child << " Crash ! with unknown status "<< status  << endl;
+				}
 				}
 			}
 		}

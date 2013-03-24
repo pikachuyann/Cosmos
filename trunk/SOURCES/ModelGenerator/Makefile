@@ -1,4 +1,5 @@
 OBJPATH=../../Obj/ModelGenerator
+#OBJPATH= ./
 SRCPATH=../../SOURCES/ModelGenerator
 BINPATH=../../bin
 LIBGMLPATH=../libgml/
@@ -36,14 +37,14 @@ depend: .depend
 	$(CC) -I$(SRCPATH)/../libgml/ $(OPTIONS) -MM $^>>./.depend;
 
 $(OBJPATH)/%.o: %.cpp
-	$(CXX) -I../libgml/ -I$(BOOSTPATH) $(OPTIONS) -c $*.cpp -o $@
+	$(CXX) -I$(abspath ../libgml/) -I$(BOOSTPATH) $(OPTIONS) -c $(abspath $*.cpp) -o $(abspath $@)
 $(OBJPATH)/%.o: %.cc
-	$(CXX) -I../libgml/ $(OPTIONS) -c $*.cc -o $@
+	$(CXX) -I$(abspath ../libgml/) $(OPTIONS) -c $(abspath $*.cc) -o $(abspath $@)
 $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
-	$(CXX) $(OPTIONS) -c $(LIBGMLPATH)/$*.cc -o $@
+	$(CXX) $(OPTIONS) -c $(abspath $(LIBGMLPATH)/$*.cc ) -o $(abspath $@)
 
 $(BINPATH)/Cosmos: $(FILES) 
-	$(CXX) $(OPTIONS) $^ -lexpat -o $@
+	$(CXX) $(OPTIONS) $(abspath $^) -lexpat -o $(abspath $@)
 
 parser:
 	@(cd LhaParser && $(MAKE))
@@ -57,8 +58,5 @@ cleanparser:
 
 
 clean:
-	rm $(OBJPATH)/Eval/*.o
-	rm $(OBJPATH)/GspnParser/*.o
-	rm $(OBJPATH)/LhaParser/*.o
-	rm $(OBJPATH)/*.o
+	rm -rf $(OBJPATH)
 	rm $(BINPATH)/Cosmos

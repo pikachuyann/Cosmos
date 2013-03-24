@@ -32,18 +32,30 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-// main function it read the options given as arguments and initialyse 
-// the simulator.
-// Then it start a while loop which compute a batch of trajectory
-// and output the result.
-// The loop stop only when the programme receive end_of_file on
-// his standart input
+
+// Handler for interuption of the server
+void signalHandler( int )
+{
+    exit(EXIT_SUCCESS);
+}
+
+/**
+ * main function it read the options given as arguments and initialyse
+ * the simulator.
+ * Then it start a while loop which compute a batch of trajectory
+ * and output the result.
+ * The loop stop only when the programme receive end_of_file on
+ * his standart input
+ */
 int main(int argc, char** argv) {
 		//cerr << "start client"<< endl;	
 	pid_t pid =getpid();
 	write(STDOUT_FILENO,reinterpret_cast<char*>(&pid),sizeof(pid));
 	fflush(stdout);
 	//cerr << "pid : "<< pid << endl;
+	signal(SIGINT, signalHandler);
+	
+	
     Simulator* mySim; 
 	
 	string str;

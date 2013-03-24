@@ -283,14 +283,17 @@ bool ParseBuild(parameters& P) {
 
 	//Compile the SPN
 	cmd = bcmd + " -c -I"+P.Path+"../includes -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
+	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
 	
 	//Compile the LHA
 	cmd = bcmd + " -c -I"+P.Path+"../includes -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
+	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
 	
 	//Link SPN and LHA with the library
 	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
+	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
 	
 	if(P.verbose>0)cout << "Building OK.\n" << endl;

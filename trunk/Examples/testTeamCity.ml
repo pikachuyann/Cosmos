@@ -44,16 +44,16 @@ let parse_result f =
   result;;
 
 let invoke_cosmos opt gspn lha  =
-  let cmd = sprintf "../../bin/Cosmos --level 0.9999 -v 0 %s %s %s" opt gspn lha in
+  let cmd = sprintf "../../bin/Cosmos --level 0.9999 -v 0 %s %s %s --gppcmd clang++ --gppflags \"--coverage\"" opt gspn lha in
   print_endline cmd;
   Sys.command cmd
 
 let invoke_cosmos_silent opt gspn lha  =
-  let cmd = sprintf "../../bin/Cosmos --level 0.9999 -v 0 %s %s %s" opt gspn lha in
+  let cmd = sprintf "../../bin/Cosmos --level 0.9999 -v 0 %s %s %s --gppcmd clang++ --gppflags \"--coverage\"" opt gspn lha in
   Sys.command cmd
 
 let invoke_cosmos_prism opt gspn lha =
-  let cmd = sprintf "../../bin/Cosmos -v 0 -s %s %s %s > Result.res" opt gspn lha in
+  let cmd = sprintf "../../bin/Cosmos -v 0 -s %s %s %s --gppcmd clang++ --gppflags \"--coverage\" > Result.res" opt gspn lha in
   print_endline cmd;
   Sys.command cmd
 

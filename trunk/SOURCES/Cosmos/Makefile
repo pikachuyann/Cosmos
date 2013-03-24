@@ -20,10 +20,10 @@ CLASSES= $(OBJPATH)/BatchR.o \
 
 
 $(OBJPATH)/%.o: %.cpp
-	$(CXX) -I$(BOOSTPATH) $(OPTIONS2) -c $*.cpp -o $@
+	$(CXX) -I$(BOOSTPATH) $(OPTIONS2) -c $(abspath $*.cpp) -o $(abspath $@)
 
 $(OBJPATH)/%.o: %.c
-	$(CXX) $(OPTIONS) -c $*.c -o $@
+	$(CXX) $(OPTIONS) -c $(abspath $*.c) -o $(abspath $@)
 
 .PHONY: clean
 
@@ -34,6 +34,6 @@ $(BINPATH)/ClientSim: $(OBJPATH)/spn.o $(OBJPATH)/LHA.o $(CLASSES)
 	$(GXX) -I /usr/local/include $(OPTIONS) $^ -o $@
 
 clean:
-	rm $(OBJPATH)/*.o
+	rm -rf $(OBJPATH)
 	rm $(BINPATH)/libClientSim.a
 	

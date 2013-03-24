@@ -1,5 +1,5 @@
 export CC=gcc
-export CXX=g++
+export CXX=clang++
 export OPTIONS= -O3 -Wall -arch i386 -arch x86_64
 export BOOSTPATH=/data/usr64/include
 export BISON=/opt/local/bin/bison
@@ -12,7 +12,13 @@ files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 
 include Makefile_common
 
-.PHONY: doc
+.PHONY: doc cov
+
+cov:
+	lcov --directory Obj/ -b Sources/ --capture --output-file Cosmos.info
+	lcov --directory ./ --remove Cosmos.info '/usr/local/include/*' '/usr/include/*' \
+	--output-file Cosmosclean.info
+	genhtml Cosmosclean.info --output-directory cov.html --ignore-errors source
 
 doc:
 	doxygen Doxyfile

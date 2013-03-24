@@ -249,7 +249,7 @@ void parameters::parseCommandLine(int argc, char** argv){
                 
             case 's':computeStateSpace= true; 
 				StringInSpnLHA = true;
-				localTesting =false; //Need to unfire transition not implemented for local testing
+				localTesting =false; //Need to unfire transition, not implemented for local testing
 				break;
                 
             case 'a':alligatorMode = true;
