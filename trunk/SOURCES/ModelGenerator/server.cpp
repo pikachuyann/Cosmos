@@ -136,14 +136,14 @@ void launch_clients(parameters& P){
 			os << " " << (P.seed+i);
 		}
 		
-		if(P.DoubleIS){
-			os << " " << "-RE2";
-		} else if(P.RareEvent){
-			os << " " << "-RE";
-		} else if(P.BoundedContinuous){
+		if(P.BoundedContinuous){
 			os << " " << "-COBURE" << " " << P.BoundedRE << " " << P.horizon << " " << P.epsilon;
 		} else if(P.BoundedRE>0){
 			os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
+		} else if(P.DoubleIS){
+			os << " " << "-RE2";
+		} else if(P.RareEvent){
+			os << " " << "-RE";
 		}
 		
 		if (P.dataraw.compare("")!=0) os << " -log " << P.dataraw;
@@ -192,14 +192,17 @@ void makeselectlist(void){
 }
 
 void launchExport(parameters& P){    
-    ostringstream setuppr;
-    setuppr << "cd " << P.Path << "../prism ; ./install.sh"; 
-    cout << "setup prism:" << setuppr.str() << endl;
-    system(setuppr.str().c_str());
-    
+    if(P.computeStateSpace==2){
+		ostringstream setuppr;
+		setuppr << "cd " << P.Path << "../prism ; ./install.sh";
+		cout << "setup prism:" << setuppr.str() << endl;
+		system(setuppr.str().c_str());
+	}
+		
     ostringstream os;
 	os << P.tmpPath << "/ClientSim 1 " << P.verbose << " 0 ";
-    os << " " << "-STSP " << P.Path << "../" << P.prismPath;
+    if(P.computeStateSpace==1)os << " -STSP " << P.Path << "../" << P.prismPath;
+	else os << " -STSPBU " << P.Path << "../" << P.prismPath;
     
     if(P.verbose >1)cout << os.str() << endl;
     

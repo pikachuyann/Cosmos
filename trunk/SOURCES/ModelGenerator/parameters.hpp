@@ -64,7 +64,9 @@ struct parameters {
 	bool StringInSpnLHA;
     
 	bool GMLinput;
-    bool computeStateSpace;
+	
+    int computeStateSpace;
+	
 	bool alligatorMode;
 	
 	string gcccmd;

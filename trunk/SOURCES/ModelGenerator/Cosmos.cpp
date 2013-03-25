@@ -271,7 +271,8 @@ bool ParseBuild(parameters& P) {
         lumpfun.close();
     }else {
 		//If rareevent handling is require copy the lumping function and table of value to the temporary directory
-		cmd = "cp muFile " + P.tmpPath +"/muFile";
+		if(P.BoundedRE==0)cmd = "cp muFile " + P.tmpPath +"/muFile";
+		else cmd = "cp matrixFile " + P.tmpPath +"/matrixFile";
 		if (system(cmd.c_str())) return false;
 		cmd = "cp lumpingfun.cpp " + P.tmpPath +"/lumpingfun.cpp";
 		if (system(cmd.c_str())) return false;
@@ -347,7 +348,7 @@ int main(int argc, char** argv) {
 	double buildTime = endbuild.tv_sec - startbuild.tv_sec + ((endbuild.tv_usec - startbuild.tv_usec) / 1000000.0);
 	if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildTime<< "s"<< endl;
 	
-	if(P.computeStateSpace){
+	if(P.computeStateSpace>0){
 		launchExport(P);
 	} else launchServer(P);
 	

@@ -10,3 +10,4 @@ all:
 	(cd DataBase && ocaml test.ml)
 	(cd RareEventUnbounded && ocaml test2.ml)
 	(cd TandemCosy && ocaml testPrism.ml)
+	(cd RareEventU && ocaml test.ml)

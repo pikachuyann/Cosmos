@@ -35,17 +35,11 @@
 
 class Event {
 public:
-    Event();
-    Event(unsigned int, double);
-    Event(unsigned int, double, unsigned int, double, const abstractBinding& );
+    
+	Event();
     Event(const Event& orig);
 	const Event& operator = (const Event&);
     virtual ~Event();
-    size_t getTrans();
-    double getTime();
-    size_t getPriority();
-    double getWeight();
-    void setTrans(size_t);
     void setTime(double);
     void setPriority(size_t);
     void setWeight(double);
@@ -58,7 +52,9 @@ public:
 	abstractBinding binding;
 	
 	bool isPriorer(const Event& e)const;
-
+private:
+	Event(unsigned int, double);
+    Event(unsigned int, double, unsigned int, double, const abstractBinding& );
 };
 
 

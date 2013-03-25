@@ -52,26 +52,6 @@ const Event& Event::operator = (const Event& orig){
 	return *this;
 }
 
-double Event::getTime() {
-    return (this->time);
-}
-
-size_t Event::getPriority() {
-    return (this->priority);
-}
-
-double Event::getWeight() {
-    return (this->weight);
-}
-
-size_t Event::getTrans() {
-    return (this->transition);
-}
-
-void Event::setTrans(size_t tr) {
-    transition = tr;
-}
-
 void Event::setTime(double t) {
     time = t;
 }

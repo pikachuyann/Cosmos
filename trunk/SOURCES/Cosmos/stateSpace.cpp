@@ -386,7 +386,7 @@ void stateSpace::importPrism(){
             //cerr << line << endl;
 			poseq = line.find("=");
 			
-			if(poseq > 0){
+			if(poseq != string::npos){
                 //cout << line << endl;
                 size_t si = 1+line.find("(",0);
 				pos = line.substr(si,poseq-1-si);
@@ -540,7 +540,7 @@ void stateSpace::inputMat(){
 		//cerr << line << endl;
 		poseq = line.find("=");
 		
-		if(poseq > 0){
+	if(poseq != string::npos ){
 			pos = line.substr(1,poseq-2);
 			stateid = line.substr(poseq+1,line.size());
 			

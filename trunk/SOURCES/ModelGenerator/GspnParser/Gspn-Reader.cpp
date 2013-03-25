@@ -833,7 +833,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	
 	//-------------- Rare Event -----------------
-	if(P.RareEvent){
+	if(P.RareEvent || P.computeStateSpace>0){
 		SpnCppFile << "    Msimple();" << endl;
 		SpnCppFile << "vector <double> Rate_Table_init (tr);" << endl;
 		SpnCppFile << "Rate_Table = Rate_Table_init;" << endl;

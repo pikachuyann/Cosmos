@@ -66,7 +66,7 @@ parameters::parameters():
 	StringInSpnLHA(false),
 
 	GMLinput(false),
-    computeStateSpace(false),
+    computeStateSpace(0),
 	alligatorMode(false),
 
 	gcccmd("g++"),
@@ -141,6 +141,8 @@ void parameters::usage(){
 	cout << "\t--gnuplot-driver \tRun gnuplot on the output datafile to produce graph"<< endl;
 	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
 	cout << "\t--loop t1 [--transtient t2] \tGenerate an LHA that loop for t1 times unit and then t2 time unit. The --transient option alone do not do anything"<< endl;
+	cout << "\t--prism \tExport the state space and lauch prism."<< endl;
+	cout << "\t-s,--state-space \tExport the state space." << endl;
 	
 }
 
@@ -171,7 +173,8 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"boundedRE",   required_argument,  0, 'b'},
             {"epsilon" ,    required_argument,  0, 'e'},
             {"set-Horizon", required_argument , 0,  1 },
-            {"stateSpace" , no_argument ,       0, 's'},
+            {"state-space" , no_argument ,       0, 's'},
+			{"prism"       , no_argument ,       0, 'p'},
 			
             /* CosyVerif Options */
             {"gmlinput" ,      no_argument, 0, 'g' },
@@ -247,11 +250,16 @@ void parameters::parseCommandLine(int argc, char** argv){
 				
             case  1:horizon = atof(optarg);     break;
                 
-            case 's':computeStateSpace= true; 
+            case 's':computeStateSpace= 2;
 				StringInSpnLHA = true;
 				localTesting =false; //Need to unfire transition, not implemented for local testing
 				break;
-                
+			
+			case 'p':computeStateSpace= 1;
+			StringInSpnLHA = true;
+			localTesting =false; //Need to unfire transition, not implemented for local testing
+			break;
+            
             case 'a':alligatorMode = true;
 				verbose =0;
 				break;
