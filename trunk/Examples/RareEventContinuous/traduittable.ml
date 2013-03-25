@@ -1,4 +1,4 @@
-#!/usr/bin/ocaml
+#!/opt/local/bin/ocaml
 
 let pt = open_in Sys.argv.(1)
 and out = open_out "mu_table" in

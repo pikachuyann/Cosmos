@@ -247,9 +247,9 @@ Unix.chdir dir;;
 if not exist then genere ();;
 
 
-let com2 = Printf.sprintf "Cosmos tandem.gspn tandem.lha --batch 100 --max-run 1000 -c -b %i --set-Horizon %i --epsilon %e --level 0.99999 --njob 10 > logcosmosCalcParal  2>&1" methode horizon epsilon;; 
+let com2 = Printf.sprintf "Cosmos tandem.gspn tandem.lha --batch 100 --max-run 1000 -c -b %i --set-Horizon %i --epsilon %e --level 0.99999 --njob 10 --gppcmd clang++ --gppflags --coverage > logcosmosCalcParal  2>&1" methode horizon epsilon;; 
 
-let com3 = Printf.sprintf "Cosmos tandem.gspn tandem.lha --batch 1000 --width 0.1 > logcosmosCalc  2>&1";;
+let com3 = Printf.sprintf "Cosmos tandem.gspn tandem.lha --batch 1000 --width 0.1 --gppcmd clang++ --gppflags --coverage > logcosmosCalc  2>&1";;
 
 print_endline com3;;
 Sys.command com3;;

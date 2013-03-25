@@ -2,6 +2,9 @@ open Str
 open Printf
 #load "str.cma"
 
+let cosmos_options ="--level 0.9999 --gppflags --coverage --gppcmd clang++" 
+
+
 let dots = regexp ":\t"
 let confintdel = regexp "\\[\\| , \\|\\]"
 
@@ -44,16 +47,16 @@ let parse_result f =
   result;;
 
 let invoke_cosmos opt gspn lha  =
-  let cmd = sprintf "../../bin/Cosmos --level 0.9999 -v 0 %s %s %s --gppflags --coverage" opt gspn lha in
+  let cmd = sprintf "../../bin/Cosmos -v 0 %s %s %s %s" cosmos_options opt gspn lha in
   print_endline cmd;
   Sys.command cmd
 
 let invoke_cosmos_silent opt gspn lha  =
-  let cmd = sprintf "../../bin/Cosmos --level 0.9999 -v 0 %s %s %s --gppflags --coverage" opt gspn lha in
+  let cmd = sprintf "../../bin/Cosmos -v 0 %s %s %s %s" cosmos_options opt gspn lha in
   Sys.command cmd
 
 let invoke_cosmos_prism opt gspn lha =
-  let cmd = sprintf "../../bin/Cosmos -v 0 -s %s %s %s --gppflags --coverage > Result.res" opt gspn lha in
+  let cmd = sprintf "../../bin/Cosmos -v 0 --prism %s %s %s %s > Result.res" cosmos_options opt gspn lha in
   print_endline cmd;
   Sys.command cmd
 
