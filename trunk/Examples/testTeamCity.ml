@@ -2,7 +2,8 @@ open Str
 open Printf
 #load "str.cma"
 
-let cosmos_options ="--level 0.9999 --gppflags --coverage --gppcmd clang++" 
+let cosmos_options ="--level 0.9999";
+(*" --gppflags --coverage --gppcmd clang++" *)
 
 
 let dots = regexp ":\t"
