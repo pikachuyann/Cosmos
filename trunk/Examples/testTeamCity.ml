@@ -84,7 +84,7 @@ let test_cosmos_grml n v o =
   test_cosmos n (o^" -g "^n^".grml"^" "^n^"lha.grml") v
  
 let test_cosmos_prism n v o =
-  test_cosmos n (o^" -g --prism "^n^".grml"^" "^n^"lha.grml") v
+  test_cosmos n (o^" -g --prism "^n^".grml"^" "^n^"lha.grml > Result.res") v
 
 let test_coverage name v o n =
   let _ = invoke_cosmos_silent (" --tmp-status 2 --max-run 10 --batch 10 ") (name^".gspn") (name^".lha")  in
