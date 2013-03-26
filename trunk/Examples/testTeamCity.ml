@@ -2,7 +2,7 @@ open Str
 open Printf
 #load "str.cma"
 
-let cosmos_options ="--level 0.9999";
+let cosmos_options ="--level 0.9999";;
 (*" --gppflags --coverage --gppcmd clang++" *)
 
 
