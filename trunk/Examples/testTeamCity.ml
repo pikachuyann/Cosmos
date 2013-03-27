@@ -4,11 +4,14 @@ open Printf
 
 
 
-let cosmos_options = ("--level 0.9999"^ ( try
-					    let _ = Sys.getenv "COV" in " --gppflags --coverage --gppcmd clang++"
+let cosmos_options = ("--level 0.9999"^ ( 
+  try
+    Sys.getenv "COV" 
   with Not_found -> ""));;
 
-(*" --gppflags --coverage --gppcmd clang++" *)
+(*" --gppflags --coverage --gppcmd clang++" 
+ let _ = Sys.getenv "COV" in " --gppflags --coverage --gppcmd clang++"
+*)
 
 
 let dots = regexp ":\t"
