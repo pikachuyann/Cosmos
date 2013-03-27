@@ -2,7 +2,12 @@ open Str
 open Printf
 #load "str.cma"
 
-let cosmos_options ="--level 0.9999";;
+
+
+let cosmos_options = ("--level 0.9999"^ ( try
+					    let _ = Sys.getenv "COV" in " --gppflags --coverage --gppcmd clang++"
+  with Not_found -> ""));;
+
 (*" --gppflags --coverage --gppcmd clang++" *)
 
 
