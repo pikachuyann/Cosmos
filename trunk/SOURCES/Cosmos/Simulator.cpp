@@ -363,6 +363,7 @@ void Simulator::interactiveSimulation(){
 				
 				
 			}else if(input_line.compare("step")==0)continueLoop=false;
+			else if(input_line.compare("stop")==0)exit(EXIT_SUCCESS);
 			else if(input_line.compare("help")==0 || input_line.compare("h")==0){
 				cerr << "Available command:\n\thelp:\tdisplay this message"<<endl;
 				cerr << "\ts, step:\tmake one step of simulation" << endl;

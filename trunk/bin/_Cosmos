@@ -12,8 +12,10 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--njob:Number of parallel simulation:->njob' \
 	   '--update-time:frequencie of the screen update:->update-time' \
 	   '(-h)--help[help message]' \
+	   '-b:Bounded Rare Event:->bounded' \
 	   '--gppcmd:C++ compiler to use:->gppcmd' \
-	   '--gppcmd:flags to the C++ compiler:->gppflags' \
+	   '--gppflags:flags to the C++ compiler:->gppflags' \
+	   '--set-Horizon:Set the horizon for bounded rare event:->Horizon' \
 	   '--seed:Specify the random generator seed:->seed' \
 	   '--local-test[Use local testing]' \
 	   '--HASL-formula:External HASL formule:->HASL' \
@@ -34,4 +36,6 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 		_files && return 0;;
 	   (status) 
 	   	compadd "$@" 0 1 2 3 && return 0;;
-	   esac  
+	   (bounded)
+		compadd "$@" 1 2 3 && return 0;;
+	   esac
