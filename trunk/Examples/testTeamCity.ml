@@ -6,7 +6,8 @@ open Printf
 
 let cosmos_options = ("--level 0.9999"^ ( 
   try
-    Sys.getenv "COV" 
+    let _ = Sys.getenv "COV" in
+    " --gppflags \"--coverage -Wno-return-type\" --gppcmd clang++"
   with Not_found -> ""));;
 
 (*" --gppflags --coverage --gppcmd clang++" 
