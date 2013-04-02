@@ -37,6 +37,7 @@
 #include <set>
 #include <vector>
 #include <map>
+#include <math.h>
 
 #include "marking.hpp"
 
@@ -203,10 +204,7 @@ private:
 	vector<int> TransitionConditions;
 	vector<int> initTransitionConditions;
 	//-------------------------/On the fly enabling disabling transition--------
-	
-	double min(double, double); //return the minimum of two numbers
-	double max(double, double); //return the maximum of two numbers
-	
+		
 	
 };
 #endif  /* _SPN_HPP */

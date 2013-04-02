@@ -1219,6 +1219,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
 	SpnCppFile << "}"<< endl<< endl;
 	
+	/*
 	SpnCppFile << "double SPN::min(double x1, double x2) {"<< endl;
 	SpnCppFile << "\tif (x1 < x2) return x1;"<< endl;
 	SpnCppFile << "\telse return x2;"<< endl;
@@ -1228,7 +1229,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "\tif (x1 > x2) return x1;"<< endl;
 	SpnCppFile << "\telse return x2;"<< endl;
 	SpnCppFile << "}"<< endl<< endl;
-	
+	*/
 	
 	SpnCppFile.close();
 	
