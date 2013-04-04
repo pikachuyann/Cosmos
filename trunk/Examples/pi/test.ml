@@ -4,7 +4,7 @@ test_cosmos "pi" "pi.grml pilha.grml --max-run 5000 --HASL-formula \"(0+4*AVG(La
 
 let _ =
 	printf "##teamcity[testStarted name='Test Interactive' captureStandardOutput='<true>']\n";
-  let cmd =  "echo \"help\nfkdhfkds\nfire toto\nfire Sampy\nfire Sampx\nstep\n\nstep\nstop\n\" |  Cosmos pi.gspn pi.lha -i "^cosmos_options
+  let cmd =  "echo \"help\nfkdhfkds\nfire toto\nfire Sampy\nfire Sampx\nstep\n\nstep\nstop\n\" |  Cosmos pi.gspn pi.lha -i "^cosmos_options in
 (*^" 2>&1 | grep Isucc -q" in*)
   print_endline cmd;
 	let b = Sys.command cmd in
