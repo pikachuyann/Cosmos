@@ -229,8 +229,8 @@ private:
     map <string, int> TransitionIndex; // for a given transition label return its index among {0, 1, ..., tr-1}
 	
 	
-    double min(double&, double&);
-    double max(double&, double&);
+    //double min(double&, double&);
+    //double max(double&, double&);
 	
     double Min(double&, double&, double&);
     double Max(double&, double&, double&);

@@ -373,7 +373,7 @@ HaslFormulasTop* MyLhaModelHandler::exportHASLTop(tree<string>::pre_order_iterat
 	} else if((*it).compare("PROB")==0){
 		return (new HaslFormulasTop(MyLHA->ConfidenceLevel));
 	} else if(it->compare("PDF")==0 || it->compare("CDF")==0){
-		string* lhafunc;
+		string* lhafunc = NULL;
 		double deltab = 1;
 		double minb =0;
 		double maxb =0;
@@ -382,6 +382,10 @@ HaslFormulasTop* MyLhaModelHandler::exportHASLTop(tree<string>::pre_order_iterat
 			else if (it2->compare("max")==0)maxb = atof(exportHASL(it2)->c_str());
 			else if (it2->compare("delta")==0)deltab = atof(exportHASL(it2)->c_str());
 			else lhafunc = exportHASL(it2);
+		}
+		if(lhafunc == NULL){
+			cerr << "Ill formed HASL formula";
+			throw(lhagmlioexc);
 		}
 		
         if(verbose>1)cout << *lhafunc << endl;

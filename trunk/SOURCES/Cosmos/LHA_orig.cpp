@@ -131,6 +131,7 @@ bool LHA::isFinal() {
     return ( (FinalLoc.find(CurrentLocation) != FinalLoc.end()) ? true : false);
 }
 
+/*
 double LHA::min(double& a, double& b) {
     if (a <= b)return a;
     else return b;
@@ -139,7 +140,7 @@ double LHA::min(double& a, double& b) {
 double LHA::max(double& a, double& b) {
     if (a >= b)return a;
     else return b;
-}
+}*/
 
 double LHA::Min(double& a, double& b, double& c) {
     double x = min(b, c);

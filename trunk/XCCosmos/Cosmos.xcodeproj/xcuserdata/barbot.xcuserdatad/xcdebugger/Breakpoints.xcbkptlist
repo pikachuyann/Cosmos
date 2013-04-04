@@ -80,25 +80,12 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/LHA_orig.cpp"
-         timestampString = "385459338.503427"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "58"
-         endingLineNumber = "58"
-         landmarkName = "LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking&amp; NextMarking,const abstractBinding&amp; binding)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "../SOURCES/ModelGenerator/LhaParser/Lha_gmlparser.cpp"
-         timestampString = "385489503.628756"
+         timestampString = "386752176.090931"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "537"
-         endingLineNumber = "537"
+         startingLineNumber = "541"
+         endingLineNumber = "541"
          landmarkName = "MyLhaModelHandler::on_read_model_attribute(const Attribute&amp; attribute)"
          landmarkType = "5">
       </FileBreakpoint>

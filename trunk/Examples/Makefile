@@ -11,3 +11,4 @@ all:
 	(cd RareEventUnbounded && ocaml test2.ml)
 	(cd TandemCosy && ocaml testPrism.ml)
 	(cd RareEventU && ocaml test.ml)
+	(cd SharedMemory && ocaml test.ml)
