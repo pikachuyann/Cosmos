@@ -2,7 +2,7 @@ open Str
 open Printf
 #load "str.cma"
 
-
+let cosmos_path = "../../bin/Cosmos"
 
 let cosmos_options = ("--level 0.9999"^ ( 
   try
@@ -57,12 +57,12 @@ let parse_result f =
   result;;
 
 let call_cosmos opt =
-   let cmd = sprintf "../../bin/Cosmos -v 0 %s %s" cosmos_options opt in
+   let cmd = sprintf "%s -v 0 %s %s" cosmos_path cosmos_options opt in
   print_endline cmd;
   Sys.command cmd
 
 let call_cosmos_silent opt =
-   let cmd = sprintf "../../bin/Cosmos -v 0 %s %s" cosmos_options opt in
+   let cmd = sprintf "%s -v 0 %s %s" cosmos_path cosmos_options opt in
   print_endline cmd;
   Sys.command cmd
 
