@@ -139,12 +139,14 @@ bool SimulatorRE::transitionSink(size_t i){
     return (i==N.tr-1);
 }
 
+/*
+ Useless for the moment
 void SimulatorRE::GenerateDummyEvent(Event& E, size_t Id) {
     E.transition = Id;
     E.time = 0.0;
     E.priority = N.GetPriority(Id);
     E.weight = 0.0;
-}
+}*/
 	
 void SimulatorRE::GenerateEvent(Event& E,size_t Id,const abstractBinding& b) {
 	

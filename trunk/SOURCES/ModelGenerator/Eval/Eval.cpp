@@ -63,13 +63,11 @@ int Eval::parse(string& expr) {
     return res;
 }
 
-void
-Eval::error(const eval::location& l, const std::string& m) {
+void Eval::error(const eval::location& l, const std::string& m) {
     std::cerr << l << ": " << m << std::endl;
 }
 
-void
-Eval::error(const std::string& m) {
+void Eval::error(const std::string& m) {
     std::cerr << m << std::endl;
 }
 

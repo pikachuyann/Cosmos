@@ -17,7 +17,8 @@ include Makefile_common
 cov:
 	lcov --directory Obj/ -b SOURCES/ --capture --output-file Cosmos.info
 	lcov --directory ./ --remove Cosmos.info '/usr/local/include/*' '/usr/include/*' \
-	--output-file Cosmosclean.info
+	'*modelwriter.*' '*.yy' '*.ll' '*.tab.*' '*lex.*.c' '*stack.hh' \
+	'*position.hh' '*location.hh' --output-file Cosmosclean.info
 	genhtml Cosmosclean.info --output-directory cov.html --ignore-errors source
 
 doc:

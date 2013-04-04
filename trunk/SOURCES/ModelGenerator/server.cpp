@@ -128,14 +128,18 @@ void launch_clients(parameters& P){
 		ostringstream os;
 		os << P.tmpPath<<"/ClientSim " << P.Batch << " " << P.verbose;
 
+		// is seed is zero generate a pseudo random seed.
 		if(P.seed==0){
 			timeval t;
 			gettimeofday(&t,(struct timezone*)0);
 			os << " " <<(t.tv_usec + t.tv_sec + getpid()+i);
 		}else{
+			//is seed is not null add i to the seed to guarantee independance
+			// of simulation.
 			os << " " << (P.seed+i);
 		}
 		
+		//Argument to select the simulator to use.
 		if(P.BoundedContinuous){
 			os << " " << "-COBURE" << " " << P.BoundedRE << " " << P.horizon << " " << P.epsilon;
 		} else if(P.BoundedRE>0){
@@ -146,13 +150,18 @@ void launch_clients(parameters& P){
 			os << " " << "-RE";
 		}
 		
+		//If logging the row data is require pass it as an option.
 		if (P.dataraw.compare("")!=0) os << " -log " << P.dataraw;
 		
+		//Lauch a new client with the parameters
         FILE* stream = popen((os.str()).c_str(), "r");
+		//add the file descriptor to the list of file descriptor.
         clientstream.push_back(stream);
         int streamfd = fileno(stream);
         if(streamfd >max_client)max_client = streamfd;
         
+		//Read the first bythes of the stream it should contain the
+		//PID of the client.
         fread(reinterpret_cast<char*>( &readpid ), sizeof(readpid) ,1, stream);
         clientPID.push_back(readpid);
     }

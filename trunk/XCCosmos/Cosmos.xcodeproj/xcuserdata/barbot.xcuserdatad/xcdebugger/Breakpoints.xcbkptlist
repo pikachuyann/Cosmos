@@ -45,17 +45,6 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "../SOURCES/ModelGenerator/server.cpp"
-         timestampString = "383069965.117906"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "64"
-         endingLineNumber = "64">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "../SOURCES/Cosmos/LHA.cpp"
          timestampString = "383607623.657854"
          startingColumnNumber = "9223372036854775807"

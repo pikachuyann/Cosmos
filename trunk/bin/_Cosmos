@@ -9,6 +9,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--width:Required confidence interval width:->width' \
 	   '--batch:Number of trajectory by batch :->batch' \
 	   '--max-run:Max maximal number of trajectory:->max-run' \
+	   '--seed:Seed of the random number generator:->seed' \
 	   '--njob:Number of parallel simulation:->njob' \
 	   '--update-time:frequencie of the screen update:->update-time' \
 	   '(-h)--help[help message]' \
@@ -27,8 +28,8 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--loop:Time of the loop:->time' \
 	   '--transient:Time for transient part:->time' \
 	   '--debug-string[Add debug information in generated code]' \
-	   ':SPN model file:_files -g "*.(gspn|grml)(-.)"' \
-	   ':LHA property file:_files -g "*.(lha|grml)(-.)"' \
+	   ':SPN model file:_files -g "*.(gspn|grml|GSPN|GRML)(-.)"' \
+	   ':LHA property file:_files -g "*.(lha|grml|LHA|GRML)(-.)"' \
 	   && return 0
 
 	   case $state in

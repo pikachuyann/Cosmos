@@ -224,7 +224,7 @@ bool ParseBuild(parameters& P) {
 				return false;
 			}
 		} else if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")==0){
-			//The code for the LHA is prvided by the user
+			//The code for the LHA is provided by the user
 			lReader.MyLha.ConfidenceLevel = P.Level;
 			//Add external HASL formula
 			if(P.externalHASL.compare("")==0){
@@ -316,15 +316,18 @@ void cleanTmp(parameters& P){
 
 /**
  * Main function
- * Build the simulator and lauch it.
+ * Build the simulator and launch it.
  */
 int main(int argc, char** argv) {
 	parameters P;
 	timeval startbuild,endbuild;
 	
 	P.parseCommandLine(argc,argv);
+	
+	//Start the timer for build time.
 	gettimeofday(&startbuild, NULL);
 	
+	//If the tmp directory did not exist generate it.
 	if(mkdir(P.tmpPath.c_str(), 0777) != 0){
 		if(errno != EEXIST){
 			err(EXIT_FAILURE,"Fail to build temporary directory:%s",P.tmpPath.c_str());
@@ -333,21 +336,27 @@ int main(int argc, char** argv) {
 	
 	if (P.verbose>0)cout << "Cosmos" << endl;
 	
+	//Find the path to the directory containing the binary of cosmos.
 	if(P.Path.compare("")==0){
 		string st = argv[0];
 		if (st == "./Cosmos") P.Path = "";
 		else if (st == "Cosmos")FindPath(P);
 		else P.Path.assign(st.begin(), st.end() - 6);
 	}
+	
+	//Build the model and lha.
 	if ( ! ParseBuild(P)) {
 		cout << "Fail to build the model.";
 		cleanTmp(P);
 		return(EXIT_FAILURE);
 	}
+	
+	//stop the timer for building, display the time if required.
 	gettimeofday(&endbuild, NULL);
 	double buildTime = endbuild.tv_sec - startbuild.tv_sec + ((endbuild.tv_usec - startbuild.tv_usec) / 1000000.0);
 	if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildTime<< "s"<< endl;
 	
+	//Lauch the client for generating the state space or for building.
 	if(P.computeStateSpace>0){
 		launchExport(P);
 	} else launchServer(P);

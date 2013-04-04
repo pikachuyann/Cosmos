@@ -51,7 +51,7 @@ protected:
 	virtual void returnResultFalse();
 	virtual void updateSPN(size_t,const abstractBinding&);
 	virtual void GenerateEvent(Event &,size_t,const abstractBinding& );
-	virtual void GenerateDummyEvent(Event &, size_t);
+	//virtual void GenerateDummyEvent(Event &, size_t);
 	virtual void updateLikelihood(size_t);
     virtual bool transitionSink(size_t);
 	virtual void getParams(size_t,const abstractBinding&);

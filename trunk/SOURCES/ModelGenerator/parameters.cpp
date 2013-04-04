@@ -85,23 +85,6 @@ parameters::parameters():
 {}
 
 /**
- * Display some of the parameter
- */
-void parameters::View() {
-	cout << "Confidence interval width:      " << Width << endl;
-	cout << "Confidence interval level:      " << Level << endl;
-	cout << "Maximum number of trajectories: " << MaxRuns << endl;
-	cout << "Batch size:                     " << Batch << endl;
-	cout << "Rare Event:                     " << RareEvent << endl;
-	cout << "Double Important Sampling:      " << DoubleIS << endl;
-	cout << "Number of parallel execution:   " << Njob << endl;
-	cout << "Read GML file as input:         " << GMLinput << endl;
-    for (size_t i =0; i<HaslFormulas.size() ; i++) {
-        cout << "Hasl Formula " << i << ": " << HaslFormulasname[i] << endl;
-    }
-}
-
-/**
  * Display the usage text
  */
 void parameters::usage(){
