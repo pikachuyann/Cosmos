@@ -1,5 +1,5 @@
 export CC=gcc
-export CXX=clang++
+export CXX=g++
 export OPTIONS= -O3 -Wall -arch i386 -arch x86_64 -Wno-unneeded-internal-declaration
 export BOOSTPATH=/data/usr64/include
 export BISON=/opt/local/bin/bison
