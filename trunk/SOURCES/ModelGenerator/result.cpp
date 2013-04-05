@@ -67,7 +67,7 @@ result::result(parameters &Q){
 		if(P.gnuplotDriver){
 			gnuplotstream = popen("gnuplot", "r+");
 			if(gnuplotstream<=0){
-				cerr << "Fail to lauch gnuplot";
+				perror("Fail to lauch gnuplot");
 				exit(EXIT_FAILURE);
 			}
 			if(P.alligatorMode){

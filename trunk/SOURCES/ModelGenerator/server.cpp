@@ -113,7 +113,7 @@ void signalHandler( int signum )
 			continueSelect = false;
 			break;
 		default:
-			cerr << " Unexpected signal" << endl;
+			cerr << " Unexpected signal: " << signum << endl;
 	}
 }
 
@@ -218,7 +218,7 @@ void launchExport(parameters& P){
     if (system(os.str().c_str()) == 0){
         cout << "Export Finish" << endl;
     }else{
-        cout << "Export Fail" << endl;
+        cerr << "Export Fail" << endl;
     }    
 }
 
