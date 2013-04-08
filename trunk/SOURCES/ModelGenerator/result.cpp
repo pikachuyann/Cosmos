@@ -71,7 +71,7 @@ result::result(parameters &Q){
 				exit(EXIT_FAILURE);
 			}
 			if(P.alligatorMode){
-				fputs("set terminal pngcairo font 'arial,10' fontscale 1.0 size 500, 200\n",gnuplotstream);
+				fputs("set terminal pngcairo font 'arial,10' size 500, 200\n",gnuplotstream);
 				//fputs("set output 'dataout.png'\n",gnuplotstream);
 			}
 			fputs("set grid lc rgb 'black'\n",gnuplotstream);

@@ -158,6 +158,14 @@ inline void pushint(const char *argv[],size_t &argn,size_t v){
 	argn++;
 }
 
+inline void pushdouble(const char *argv[],size_t &argn,double v){
+	char* s = (char *)malloc(255*sizeof(char));
+	sprintf(s, "%f", v);
+	argv[argn] = s;
+	argn++;
+}
+
+
 inline void pushstr(const char *argv[],size_t &argn,const char* v){
 	char* s = (char *)malloc(255*sizeof(char));
 	sprintf(s, "%s", v);
@@ -207,8 +215,8 @@ void launch_clients(parameters& P){
 			//os << " " << "-COBURE" << " " << P.BoundedRE << " " << P.horizon << " " << P.epsilon;
 			pushstr(argv,argn,"-COBURE");
 			pushint(argv,argn,P.BoundedRE);
-			pushint(argv,argn,P.horizon);
-			pushint(argv,argn,P.epsilon);
+			pushdouble(argv,argn,P.horizon);
+			pushdouble(argv,argn,P.epsilon);
 		} else if(P.BoundedRE>0){
 			//os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
 			pushstr(argv,argn,"-BURE");
