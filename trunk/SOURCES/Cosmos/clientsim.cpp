@@ -50,9 +50,9 @@ void signalHandler( int )
  */
 int main(int argc, char** argv) {
 		//cerr << "start client"<< endl;	
-	pid_t pid =getpid();
-	write(STDOUT_FILENO,reinterpret_cast<char*>(&pid),sizeof(pid));
-	fflush(stdout);
+	//pid_t pid =getpid();
+	//write(STDOUT_FILENO,reinterpret_cast<char*>(&pid),sizeof(pid));
+	//fflush(stdout);
 	//cerr << "pid : "<< pid << endl;
 	signal(SIGINT, signalHandler);
 	

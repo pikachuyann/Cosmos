@@ -374,7 +374,11 @@ void Simulator::interactiveSimulation(){
 				cerr << "Command not found:" << input_line << endl;
 			}
 			
-		}else continueLoop=false;
+		}else {
+			if(cin.eof())exit(EXIT_SUCCESS);
+			cerr << "error on the inpute stream\n";
+			exit(EXIT_FAILURE);
+		}
 		
 	}
 	

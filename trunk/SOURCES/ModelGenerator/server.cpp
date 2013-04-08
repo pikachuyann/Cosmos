@@ -117,43 +117,119 @@ void signalHandler( int signum )
 	}
 }
 
-/** 
+void popenClient(const char* bin, const char *argv[]){
+	pid_t pid = 0;
+	int pipefd[2];
+	int pipeerr[2];
+	FILE* output;
+	
+	pipe(pipefd); //create a pipe
+	pipe(pipeerr);
+	pid = fork(); //fork the process
+	if (pid == 0){
+		//Child.
+		close(pipefd[0]);
+		close(pipeerr[0]);
+		if(dup2(pipefd[1], STDOUT_FILENO)<0)perror("Fail to redirect stdout");
+		//if(dup2(pipeerr[1], STDERR_FILENO)<0)perror("Fail to redirect stderr");
+		if(execvp(bin,(char *const *)argv)<0)perror("Fail to lauch the client");
+	}else if(pid>0){
+		
+		//Only parent gets here. Listen to what the tail says
+		close(pipefd[1]);
+		close(pipeerr[1]);
+		
+		//open the output of the client.
+		output= fdopen(pipefd[0], "r");
+		//if(dup2(STDERR_FILENO,pipeerr[0])<0)perror("Fail to redirect stderr");
+		
+		clientstream.push_back(output);
+		int streamfd = fileno(output);
+		if(streamfd >max_client)max_client = streamfd;
+		clientPID.push_back(pid);
+		
+	}else perror("Fail to fork");
+}
+
+inline void pushint(const char *argv[],size_t &argn,size_t v){
+	char* s = (char *)malloc(255*sizeof(char));
+	sprintf(s, "%li", v);
+	argv[argn] = s;
+	argn++;
+}
+
+inline void pushstr(const char *argv[],size_t &argn,const char* v){
+	char* s = (char *)malloc(255*sizeof(char));
+	sprintf(s, "%s", v);
+	argv[argn] = s;
+	argn++;
+}
+
+void freestr(const char *argv[],size_t t){
+	for(size_t i =0; i<t;i++)
+		free((void *)argv[i]);
+}
+
+
+/**
  * Launch the P.Njob copy of the simulator with the parameters define in P
  */
 void launch_clients(parameters& P){
     signal(SIGCHLD , signalHandler); 
 	signal(SIGINT, signalHandler);
-	pid_t readpid;
+	//pid_t readpid;
 	for(int i = 0;i<P.Njob;i++){
-		ostringstream os;
-		os << P.tmpPath<<"/ClientSim " << P.Batch << " " << P.verbose;
+		string cmd = P.tmpPath + "/ClientSim";;
+		const char *argv[10] = {0};
+		size_t argn = 0;
+		pushstr(argv, argn, cmd.c_str());
+		
+		pushint(argv,argn,P.Batch);
+		pushint(argv,argn,P.verbose);
+		
+		//<< P.Batch << " " << P.verbose;
 
 		// is seed is zero generate a pseudo random seed.
 		if(P.seed==0){
 			timeval t;
 			gettimeofday(&t,(struct timezone*)0);
-			os << " " <<(t.tv_usec + t.tv_sec + getpid()+i);
+			//os << " " <<(t.tv_usec + t.tv_sec + getpid()+i);
+			pushint(argv,argn,(t.tv_usec + t.tv_sec + getpid()+i));
 		}else{
 			//is seed is not null add i to the seed to guarantee independance
 			// of simulation.
-			os << " " << (P.seed+i);
+			//os << " " << (P.seed+i);
+			pushint(argv,argn,P.seed+i);
 		}
 		
 		//Argument to select the simulator to use.
 		if(P.BoundedContinuous){
-			os << " " << "-COBURE" << " " << P.BoundedRE << " " << P.horizon << " " << P.epsilon;
+			//os << " " << "-COBURE" << " " << P.BoundedRE << " " << P.horizon << " " << P.epsilon;
+			pushstr(argv,argn,"-COBURE");
+			pushint(argv,argn,P.BoundedRE);
+			pushint(argv,argn,P.horizon);
+			pushint(argv,argn,P.epsilon);
 		} else if(P.BoundedRE>0){
-			os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
+			//os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
+			pushstr(argv,argn,"-BURE");
+			pushint(argv,argn,P.BoundedRE);
+			pushint(argv,argn,P.horizon);
 		} else if(P.DoubleIS){
-			os << " " << "-RE2";
+			//os << " " << "-RE2";
+			pushstr(argv,argn,"-RE2");
 		} else if(P.RareEvent){
-			os << " " << "-RE";
+			//os << " " << "-RE";
+			pushstr(argv,argn,"-RE");
 		}
 		
 		//If logging the row data is require pass it as an option.
-		if (P.dataraw.compare("")!=0) os << " -log " << P.dataraw;
+		if (P.dataraw.compare("")!=0){
+			//os << " -log " << P.dataraw;
+			pushstr(argv,argn,"-log");
+			pushstr(argv,argn,P.dataraw.c_str());
+		}
 		
-		//Lauch a new client with the parameters
+		/*//Lauch a new client with the parameters
         FILE* stream = popen((os.str()).c_str(), "r");
 		//add the file descriptor to the list of file descriptor.
         clientstream.push_back(stream);
@@ -164,6 +240,9 @@ void launch_clients(parameters& P){
 		//PID of the client.
         fread(reinterpret_cast<char*>( &readpid ), sizeof(readpid) ,1, stream);
         clientPID.push_back(readpid);
+		 */
+		popenClient(cmd.c_str(),argv);
+		freestr(argv, argn);
     }
     
 }

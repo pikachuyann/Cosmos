@@ -65,7 +65,7 @@ result::result(parameters &Q){
         outdatastream << endl;
 		
 		if(P.gnuplotDriver){
-			gnuplotstream = popen("gnuplot", "r+");
+			gnuplotstream = popen("gnuplot > /dev/null", "w");
 			if(gnuplotstream<=0){
 				perror("Fail to lauch gnuplot");
 				exit(EXIT_FAILURE);
