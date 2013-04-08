@@ -66,6 +66,7 @@ result::result(parameters &Q){
 		
 		if(P.gnuplotDriver){
 			gnuplotstream = popen("gnuplot > /dev/null", "w");
+			if(P.verbose>2)cout << "Gnuplot opened" << endl;
 			if(gnuplotstream<=0){
 				perror("Fail to lauch gnuplot");
 				exit(EXIT_FAILURE);
@@ -96,6 +97,7 @@ void result::close_gnuplot(){
 		fputs("exit\n", gnuplotstream);
 		fflush(gnuplotstream);
 		pclose(gnuplotstream);
+		if(P.verbose>2)cout << "Gnuplot closed" << endl;
 	}
 }
 
