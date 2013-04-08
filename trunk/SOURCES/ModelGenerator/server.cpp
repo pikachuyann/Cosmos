@@ -95,16 +95,16 @@ void signalHandler( int signum )
 			
 			if(child != -1){
 				if(status!=0){
-				if(WIFSIGNALED(status)){
-					if(WTERMSIG(status) != 2){
-						cout << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
-						exit(EXIT_FAILURE);
+					if(WIFSIGNALED(status)){
+						if(WTERMSIG(status) != 2){
+							cout << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
+							exit(EXIT_FAILURE);
+						}
+					} else if(WIFEXITED(status)){
+						if(WEXITSTATUS(status) != 130)cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
+					}else {
+						cout << "Simulator "<< child << " Crash ! with unknown status "<< status  << endl;
 					}
-				} else if(WIFEXITED(status)){
-					if(WEXITSTATUS(status) != 130)cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
-				}else {
-					cout << "Simulator "<< child << " Crash ! with unknown status "<< status  << endl;
-				}
 				}
 			}
 		}
@@ -257,7 +257,6 @@ void launch_clients(parameters& P){
 
 /**	
  * Kill all the copy of the simulators at the end of the computation.
- * This also allow to recover usage information of the simulators.
  */
 void kill_client(){
 	
@@ -267,12 +266,19 @@ void kill_client(){
         clientstream.pop_back();
         clientPID.pop_back();
     }
+}
+
+/**
+ * Wait until all chidl terminate.
+ * This allow to recover usage information of the simulators.
+ */
+void wait_client(){
 	pid_t child= 1;
 	while (child != -1) {
 		int termstat;
 		child = wait(&termstat);
 	}
-    
+
 }
 
 /**
@@ -355,7 +361,9 @@ void launchServer(parameters& P){
         }
 		//Check if the simulation should continue.
     }while(Result.continueSim() && clientstream.size()>0 && continueSelect);
-    
+    //Kill all the simulator
+    kill_client();
+	
 	//Output all the results
     if(P.verbose>0)cout << endl;
     Result.stopclock();
@@ -372,8 +380,7 @@ void launchServer(parameters& P){
 	
 	
 	Result.close_gnuplot();
-    //Kill all the simulator
-    kill_client();
+	wait_client();
     
     string fn = "Result";
     fn.append(".res");

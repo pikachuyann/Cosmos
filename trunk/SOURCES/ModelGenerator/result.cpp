@@ -65,7 +65,7 @@ result::result(parameters &Q){
         outdatastream << endl;
 		
 		if(P.gnuplotDriver){
-			gnuplotstream = popen("gnuplot > /dev/null", "w");
+			gnuplotstream = popen("gnuplot", "w");
 			if(P.verbose>2)cout << "Gnuplot opened" << endl;
 			if(gnuplotstream<=0){
 				perror("Fail to lauch gnuplot");
@@ -89,15 +89,14 @@ result::result(parameters &Q){
 
 result::~result(){
     delete MeanM2;
-	close_gnuplot();
+	//close_gnuplot();
 }
 
 void result::close_gnuplot(){
 	if(gnuplotstream>0){
 		fputs("exit\n", gnuplotstream);
 		fflush(gnuplotstream);
-		pclose(gnuplotstream);
-		if(P.verbose>2)cout << "Gnuplot closed" << endl;
+		//pclose(gnuplotstream); //not neaded
 	}
 }
 
