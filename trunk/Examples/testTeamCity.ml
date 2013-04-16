@@ -63,7 +63,6 @@ let call_cosmos opt =
 
 let call_cosmos_silent opt =
    let cmd = sprintf "%s -v 0 %s %s" cosmos_path cosmos_options opt in
-  print_endline cmd;
   Sys.command cmd
 
 let invoke_cosmos opt gspn lha  =
