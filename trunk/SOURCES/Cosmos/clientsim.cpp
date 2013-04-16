@@ -111,6 +111,8 @@ int main(int argc, char** argv) {
 	for(int i=1; i<argc ;i++){
 		if(strcmp(argv[i],"-log")==0 && argc>i)
 			mySim->logValue(argv[i+1]); //initialize the simulator
+		if(strcmp(argv[i],"-trace")==0 && argc>i)
+			mySim->logTrace(argv[i+1]); //initialize the simulator
 	}
     
 	

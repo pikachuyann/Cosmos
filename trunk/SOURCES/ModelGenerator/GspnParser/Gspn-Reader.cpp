@@ -298,7 +298,7 @@ void Gspn_Reader::printloot(ofstream& fs, size_t domain, size_t nesting ){
 	printloot(fs, domain, nesting+1);
 }
 
-void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
+void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, parameters &P){
 	SpnCppFile << "#include \"marking.hpp\"\n";
 	SpnCppFile << "#include \"markingImpl.hpp\"\n";
 	header << "#include <string.h>\n";
@@ -589,11 +589,13 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header){
 	SpnCppFile << "\tdelete(P);\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
-	SpnCppFile << "void abstractMarking::print()const{\n";
-	SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-		 plit!= MyGspn.placeStruct.end(); ++plit) {
-		SpnCppFile << "\tstd::cerr << \"\\t"<< plit->name <<": \" << P->_PL_"<< plit->name << " << std::endl;\n";
+	SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
+	if(P.StringInSpnLHA){
+		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
+		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+			 plit!= MyGspn.placeStruct.end(); ++plit) {
+			SpnCppFile << "\ts << \""<< plit->name <<": \" << P->_PL_"<< plit->name << " << \"\\t\" ;\n";
+		}
 	}
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
@@ -779,7 +781,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "#include <iostream>" << endl;
 	
 	//------------- Writing Marking type and header ----------------------------
-	writeMarkingClasse(SpnCppFile,header);
+	writeMarkingClasse(SpnCppFile,header,P);
 	header << "#endif" << endl;
 	header.close();
 	

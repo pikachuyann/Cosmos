@@ -28,6 +28,7 @@
 #define Cosmos_marking_h
 
 #include <vector>
+#include <iostream>
 
 class abstractMarkingImpl;
 
@@ -45,7 +46,7 @@ public:
 	abstractMarking& operator = (const abstractMarking& m);
 	~abstractMarking();
 	
-	void print()const;
+	void print(std::ostream &)const;
 	void resetToInitMarking();
 	int getNbOfTokens(int)const;
 	std::vector<int> getVector()const;

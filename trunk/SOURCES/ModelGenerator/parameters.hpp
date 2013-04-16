@@ -45,6 +45,7 @@ struct parameters {
 	double Width;
 	unsigned long Batch;
 	unsigned long MaxRuns;
+	bool chernoff;
 	string tmpPath;
 	unsigned int tmpStatus; // 0 create and destroy tmp, 
 		//1 do not build destroy,2 do not destroy, 3 do not build do not destoy
@@ -80,6 +81,7 @@ struct parameters {
     string prismPath;
     string dataoutput;
 	string dataraw;
+	string datatrace;
 	string dataPDFCDF;
 	bool gnuplotDriver;
     

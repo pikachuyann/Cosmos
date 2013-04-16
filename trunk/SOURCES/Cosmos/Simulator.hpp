@@ -72,7 +72,9 @@ public:
 	 * \brief Open an output stream to a file to log the result value of each trajectory.
 	 * @param path is a path to a file in which the value will be log in.
 	 */
-	void logValue(const char*);    //Make the simulator output each result in a file
+	void logValue(const char*);    //Make the simulator output each result in a file.
+	
+	void logTrace(const char*);     //Make the simulator output each trace in a file.
     
 	/**
 	 * \brief Main entry point of the object simulate a batch of trajectory .
@@ -86,6 +88,8 @@ public:
 protected:
 	//! File stream to log value.
 	fstream logvalue;
+	//! File stream to trace.
+	fstream logtrace;
 	
 	//! boolean set to true when result value should be log.
     bool logResult;

@@ -67,6 +67,12 @@ void Simulator::logValue(const char* path){
     logResult=true;
 }
 
+void Simulator::logTrace(const char* path){
+    logtrace.open(path,fstream::out);
+    logtrace.precision(15);
+}
+
+
 void Simulator::SetBatchSize(const size_t RI) {
 	BatchSize = RI;
 }
@@ -253,7 +259,7 @@ bool Simulator::SimulateOneStep(){
             if(verbose>3){
 				cerr << "Autonomous transition with Empty Queue:";
 				cerr << AE.Index << endl;
-				A.printState();
+				A.printState(cerr);
 				cerr << endl;
 			}
 			A.updateLHA( AE.FiringTime - A.CurrentTime, N.Marking );
@@ -288,7 +294,7 @@ bool Simulator::SimulateOneStep(){
 			A.fireLHA(AE.Index,N.Marking, abstractBinding());
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
-				A.printState();
+				A.printState(cerr);
 				cerr << endl;
 			}
 			
@@ -299,7 +305,7 @@ bool Simulator::SimulateOneStep(){
 		}
 		if(verbose>3){
 			//cerr << "|^^^^^^^^^^^^^^^^^^^^"<< endl;
-			cerr << "\033[1;33mFirring:\033[0m" << N.Transition[E1.transition].label ;
+			cerr << "\033[1;33mFiring:\033[0m" << N.Transition[E1.transition].label ;
 			E1.binding.print();
 			cerr << endl;
 			//cerr << "|vvvvvvvvvvvvvvvvvvvv"<< endl;
@@ -402,8 +408,12 @@ void Simulator::SimulateSinglePath() {
 		if(verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation
-			N.Marking.print();
-			A.printState();
+			N.Marking.print(cerr);
+			A.printState(cerr);
+			if(logtrace.is_open()){
+				N.Marking.print(logtrace);
+				A.printState(logtrace);
+			}
 			cerr << endl;
 			if(verbose>4)EQ->view(N.Transition);
 			if(verbose>5)interactiveSimulation();

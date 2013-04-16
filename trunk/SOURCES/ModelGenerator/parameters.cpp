@@ -45,6 +45,7 @@ parameters::parameters():
 	Width(0.001),
 	Batch(1000),
 	MaxRuns(2000000),
+	chernoff(false),
 
 	tmpPath("tmp"),
 	tmpStatus(0),
@@ -75,6 +76,7 @@ parameters::parameters():
 	prismPath("prism/bin/prism"),
     dataoutput(""),
 	dataraw(""),
+	datatrace(""),
 	dataPDFCDF(""),
 	gnuplotDriver(false),
 
@@ -107,6 +109,7 @@ void parameters::usage(){
     cout << "\t--width \tset the width of the confidence interval (default=0.001)"<< endl;
     cout << "\t--batch \tset the size of batch of simulation (default=1000)"<< endl;
     cout << "\t--max-run \tset the maximal number of run (default=2000000)" << endl;
+	cout << "\t--chernoff \tuse chernoff-hoeffding bound to compute number of simulation" << endl;
 	cout << "\t--seed \tSpecify the seed for the random generator, 0 allow to take a random value"<< endl;
 	cout << "\t--local-test \tUse local testing faster on big net" << endl;
 	
@@ -120,6 +123,7 @@ void parameters::usage(){
 	cout << "\t--debug-string \tAdd transition and place name to the compile file for debuging"<< endl;
 	cout << "\t-d,--outputdata \tOutput successive result in the blank separated file format"<< endl;
 	cout << "\t--output-raw \tOutput the result of each trajectory in a file for debug purpose"<< endl;
+	cout << "\t--output-trace \tOutput the trace each trajectory in a file"<< endl;
 	cout << "\t--output-PDFCDF \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
 	cout << "\t--gnuplot-driver \tRun gnuplot on the output datafile to produce graph"<< endl;
 	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
@@ -149,7 +153,8 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"local-test",  no_argument , 0,  12},
 			{"loop",   required_argument, 0,  14},
 			{"transient",required_argument,0, 16},
-            
+			{"chernoff", required_argument,0, 17},
+        
             /* Options for the rare event engine */
             {"rareevent",   no_argument,        0, 'r'},
             {"boundedcountiniousRE",no_argument,0, 'c'},
@@ -173,6 +178,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"update-time",required_argument,0, 'u'},
             {"outputdata", required_argument,0, 'd'},
 			{"output-raw" , required_argument,0,  8 },
+			{"output-trace" , required_argument,0,  18 },
 			{"output-PDFCDF",required_argument,0,11},
 			{"gnuplot-driver",no_argument   ,0, 15},
             {"help" , no_argument ,			 0, 'h'},
@@ -251,11 +257,15 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'w':Width = atof(optarg);     break;
             case  2  : Batch = atoi(optarg);      break;
             case  'm': MaxRuns = atoi(optarg);      break;
+			case  17 : chernoff = true;
+				Width = 0.0;
+				break;
 			case  12 : localTesting = !localTesting;		break;
             case  'n': Njob = atoi(optarg);      break;
             case  'e': epsilon = atof(optarg);  break;
             case  'd': dataoutput = optarg; break;
 			case  8  : dataraw = optarg; break;
+			case  18 : datatrace = optarg; break;
 			case  11 : dataPDFCDF = optarg; break;
 			case  't': CountTrans = true;	break;
 			case  3  : StringInSpnLHA = true; break;

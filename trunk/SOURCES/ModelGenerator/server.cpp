@@ -237,6 +237,12 @@ void launch_clients(parameters& P){
 			pushstr(argv,argn,P.dataraw.c_str());
 		}
 		
+		if (P.datatrace.compare("")!=0){
+			//os << " -log " << P.dataraw;
+			pushstr(argv,argn,"-trace");
+			pushstr(argv,argn,P.datatrace.c_str());
+		}
+		
 		/*//Lauch a new client with the parameters
         FILE* stream = popen((os.str()).c_str(), "r");
 		//add the file descriptor to the list of file descriptor.

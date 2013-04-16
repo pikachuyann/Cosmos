@@ -122,7 +122,7 @@ public:
     void reset(const abstractMarking&);
 
 	vector<double> FormulaVal;
-	void printState();
+	void printState(ostream &);
 	
 	double CurrentTime;
 	int CurrentLocation;

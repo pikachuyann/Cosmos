@@ -234,7 +234,7 @@ private:
     bool trace_scanning;
 
 
-	void writeMarkingClasse(ofstream &, ofstream &);
+	void writeMarkingClasse(ofstream &, ofstream &, parameters &);
 	void writeEnabledDisabled(ofstream &);
 	void writeTransition(ofstream &, bool);
 	void writeVariable(ofstream & spnF);

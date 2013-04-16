@@ -157,12 +157,15 @@ HaslFormulasTop::~HaslFormulasTop(){
  * \f$ l=1-alpha \f$
  * Let \f$ w \f$ = ConfWidth, the size of the confidence interval
  *
- * Let \f$ \mu \f$ the value to estimate, and \f$ x \f$ the estimation of \f$ \mu \f$
+ * Let \f$ \mu \f$ the value to estimate, and \f$ x \f$ the 
+ * estimation of \f$ \mu \f$
  * then \f$ \mathbb{P}( \mu \in [x-\frac{w}{2} , x+\frac{w}{2}]) = 1-alpha  \f$
  *
  * The confidence interval is given by :
- * \f$  [x-z(1-\frac{alpha}{2}) * \frac{StandardDeviation~ }{ \sqrt{NumberOfObservations}} ,
- *         x+z(1-\frac{alpha}{2}) * \frac{StandardDeviation~}{ \sqrt{NumberOfObservations}}] \f$
+ * \f$  [x-z(1-\frac{alpha}{2}) * \frac{StandardDeviation~ }
+ * { \sqrt{NumberOfObservations}} ,
+ *         x+z(1-\frac{alpha}{2}) * \frac{StandardDeviation~}
+ * { \sqrt{NumberOfObservations}}] \f$
  * with : \f$ z(1-\frac{alpha}{2})=z(1-\frac{1-l}{2}) = z(0.5+\frac{l}{2}) \f$
  *
  * \f$ StandartDeviation~ = \sqrt{ Variance +\frac{1}{n} } \f$
@@ -174,6 +177,13 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 	switch (TypeOp) {
 		case PROBABILITY:
 		{
+			/*
+			 * Here we used the boost librairy for computing the binomial
+			 * confidence interval.
+			 * According to boost documentation the algorithme used is
+			 * the one from Clopper-person:
+			 * Clopper, C. J. and Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. Biometrika 26 404-413.
+			 */
 			double mean = (double)batch.Isucc / (double)batch.I;
 			double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 			double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
