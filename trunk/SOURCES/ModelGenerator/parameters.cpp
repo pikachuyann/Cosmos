@@ -265,7 +265,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'e': epsilon = atof(optarg);  break;
             case  'd': dataoutput = optarg; break;
 			case  8  : dataraw = optarg; break;
-			case  18 : datatrace = optarg; break;
+			case  18 : datatrace = optarg;StringInSpnLHA = true; break;
 			case  11 : dataPDFCDF = optarg; break;
 			case  't': CountTrans = true;	break;
 			case  3  : StringInSpnLHA = true; break;

@@ -399,21 +399,22 @@ void Simulator::SimulateSinglePath() {
 	InitialEventsQueue();
 	A.setInitLocation(N.Marking);
 	A.CurrentTime = 0;
-	
+	if(logtrace.is_open())logtrace << "New Path"<< endl;
     //cerr << "start path"<< endl;
     
 	bool continueb = true;
 	while ((!(*EQ).isEmpty()) && continueb ) {
         //cerr << "continue path"<< endl;
+		if(logtrace.is_open()){
+			N.Marking.print(logtrace);
+			A.printState(logtrace);
+			logtrace << endl;
+		}
 		if(verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation
 			N.Marking.print(cerr);
 			A.printState(cerr);
-			if(logtrace.is_open()){
-				N.Marking.print(logtrace);
-				A.printState(logtrace);
-			}
 			cerr << endl;
 			if(verbose>4)EQ->view(N.Transition);
 			if(verbose>5)interactiveSimulation();
