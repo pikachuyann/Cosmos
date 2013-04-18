@@ -236,6 +236,7 @@ private:
 
 	void writeMarkingClasse(ofstream &, ofstream &, parameters &);
 	void writeEnabledDisabled(ofstream &);
+	void writeUpdateVect(ofstream &,const string &name,const vector< set<int> > &vect);
 	void writeTransition(ofstream &, bool);
 	void writeVariable(ofstream & spnF);
 	

@@ -145,10 +145,12 @@ bool ParseBuild(parameters& P) {
 		if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")!=0){
 			//here LHA is absent or in LHA file format or in GRML file format
 			if(P.loopLHA>0.0){
-				//The LHA is absent one with two loop is produced.
+				//The LHA is absent one with two loops is produced.
+				string lhapath = P.tmpPath + "/looplha.lha";
+				ofstream lhastr(lhapath.c_str() , ios::out | ios::trunc);
 				lReader.MyLha.ConfidenceLevel = P.Level;
 				map<string,int>::const_iterator itt;
-				stringstream lhastr;
+				//stringstream lhastr;
 				lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + gReader.MyGspn.pl <<";\nNbLocations = 3;\n";
 				lhastr << "const double T="<< P.loopLHA << ";\n";
 				lhastr << "const double invT=" << 1/P.loopLHA << ";\n";
@@ -181,8 +183,9 @@ bool ParseBuild(parameters& P) {
 					lhastr << "((l1,l1),{"<< itt->first <<"},time<=T,{"<<itt->first<<" = " <<itt->first<<" + "<< 1.0/P.loopLHA << " });\n";
 				}
 				lhastr << "((l1,l2),#,time=T ,#);};";
-				string s = lhastr.str();
-				parseresult = lReader.parse(s);
+				lhastr.close();
+				P.PathLha = lhapath;
+				parseresult = lReader.parse_file(P);
 				P.externalHASL = "";
 			} else if(P.GMLinput || (P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0))  {
 				//The LHA is in the GRML file format

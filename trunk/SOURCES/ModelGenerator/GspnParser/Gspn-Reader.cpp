@@ -242,6 +242,24 @@ void Gspn_Reader::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 	}
 }
 
+void Gspn_Reader::writeUpdateVect(ofstream &SpnF,const string &name,const vector< set<int> > &vect){
+	SpnF << "\t"<< name << " = vector< set<int> >("<< vect.size() << ");"<< endl;
+	for (size_t t = 0; t < vect.size(); t++) {
+		if(vect[t].size()>2){
+			SpnF << "\t{\n\t\tint PE[]= {";
+			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++) {
+				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
+				if(it != vect[t].begin())SpnF << ", ";
+				SpnF << *it;
+			}
+			SpnF << "};" << endl << "\t\t"<< name <<"[" << t << "] = set<int>(PE,PE+"<< vect[t].size()<< ");\n\t}" << endl;
+		}else if(vect[t].size()>0)
+			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++)
+				SpnF << "\t"<< name << "[" << t << "].insert( " << *it << " );"<< endl;
+	}
+	SpnF << endl;
+}
+
 void Gspn_Reader::writeEnabledDisabled(ofstream &SpnF){
 	vector< set<int> > PossiblyEnabled;
 	vector< set<int> > PossiblyDisabled;
@@ -249,50 +267,10 @@ void Gspn_Reader::writeEnabledDisabled(ofstream &SpnF){
 	
 	EnabledDisabledTr(PossiblyEnabled,PossiblyDisabled,FreeMarkDepT);
 	
+	writeUpdateVect(SpnF, "PossiblyEnabled", PossiblyEnabled);
+	writeUpdateVect(SpnF, "PossiblyDisabled", PossiblyDisabled);
+	writeUpdateVect(SpnF, "FreeMarkDepT", FreeMarkDepT);
 	
-	SpnF << "\tPossiblyEnabled = vector< set<int> >("<< MyGspn.tr << ");"<< endl;
-	for (size_t t = 0; t < MyGspn.tr; t++) {
-		if(PossiblyEnabled[t].size()>0){
-			SpnF << "\t{\n\tint PE[]= {";
-			for (set<int>::iterator it = PossiblyEnabled[t].begin(); it != PossiblyEnabled[t].end(); it++) {
-				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
-				if(it != PossiblyEnabled[t].begin())SpnF << ", ";
-				SpnF << *it;
-			}
-			SpnF << "};" << endl << "\t\tPossiblyEnabled[" << t << "] = set<int>(PE,PE+"<< PossiblyEnabled[t].size()<< ");\n\t}" << endl;
-		}
-	}
-	SpnF << endl;
-	
-	
-	SpnF << "\tPossiblyDisabled = vector< set<int> >("<< MyGspn.tr << ");"<< endl;
-	for (size_t t = 0; t < MyGspn.tr; t++) {
-		if(PossiblyDisabled[t].size()>0){
-			SpnF << "\t{\n\tint PE[]= {";
-			for (set<int>::iterator it = PossiblyDisabled[t].begin(); it != PossiblyDisabled[t].end(); it++) {
-				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
-				if(it != PossiblyDisabled[t].begin())SpnF << ", ";
-				SpnF << *it;
-			}
-			SpnF << "};" << endl << "\t\tPossiblyDisabled[" << t << "] = set<int>(PE,PE+"<< PossiblyDisabled[t].size()<< ");\n\t}" << endl;
-		}
-	}
-	SpnF << endl;
-	
-	
-	SpnF << "\tFreeMarkDepT = vector< set<int> >("<< MyGspn.tr << ");"<< endl;
-	for (size_t t = 0; t < MyGspn.tr; t++) {
-		if(FreeMarkDepT[t].size()>0){
-			SpnF << "\t{\n\tint PE[]= {";
-			for (set<int>::iterator it = FreeMarkDepT[t].begin(); it != FreeMarkDepT[t].end(); it++) {
-				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
-				if(it != FreeMarkDepT[t].begin())SpnF << ", ";
-				SpnF << *it;
-			}
-			SpnF << "};" << endl << "\t\tFreeMarkDepT[" << t << "] = set<int>(PE,PE+"<< FreeMarkDepT[t].size()<< ");\n\t}" << endl;
-		}
-	}
-	SpnF << endl;
 }
 
 void Gspn_Reader::printloot(ofstream& fs, size_t domain, size_t nesting ){

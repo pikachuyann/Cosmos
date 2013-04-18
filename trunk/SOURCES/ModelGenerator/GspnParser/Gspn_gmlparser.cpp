@@ -619,6 +619,10 @@ void MyModelHandler::on_read_node(const XmlString& id,
 				string* Plname = simplifyString(*(it2.begin()));
 				if(verbose>1)cout << "\tname:" << *Plname << endl ;
 				p.name = *Plname;
+				if(MyGspn->PlacesId.count(*Plname)>0){
+					cerr << "error:Two places with the name:" << *Plname << endl;
+					throw gmlioexc;
+				}
 				MyGspn->PlacesId[*Plname]=countPl;
 			
             } else if((*(it->second.begin())).compare("domain")==0){
@@ -661,6 +665,10 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     if(verbose>1)cout << "\tname:" << *Trname << endl ;
                     MyGspn->TransList.insert(*Trname);
 					trans.label = *Trname;
+					if(MyGspn->TransId.count(*Trname)>0){
+						cerr << "error:Two transitions with the name:" << *Trname << endl;
+						throw gmlioexc;
+					}
                     MyGspn->TransId[*Trname]=countTr;
                 } else if((*(it->second.begin())).compare("guard")==0){
 					eval_guard(trans.guard, it->second.begin().begin());
