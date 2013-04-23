@@ -38,7 +38,14 @@
 #include <set>
 
 
-
+void searchreplace(const string &in,const string &motif,const string &rep,string &out){
+	out = in;
+	size_t pos = out.find(motif);
+	while (pos != string::npos) {
+		out.replace(pos, motif.size(), rep);
+		pos = out.find(motif,pos);
+	}
+}
 
 using namespace std;
 
@@ -902,7 +909,15 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "\tswitch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
 		SpnCppFile << "\t\tcase " << t << ": {" << endl;
-		//SpnCppFile << "       unfire_t" << t << "();" << endl;
+		//Write value of Marking dependant place to a temporary variable
+		for (size_t p = 0; p < MyGspn.pl; p++) {
+			if (MyGspn.inArcsStr[t][p] != " " || MyGspn.outArcsStr[t][p] != " ") {
+				SpnCppFile << "\t\t\tint tmpMark_" << placeNames[p];
+				SpnCppFile << " = Marking.P->_PL_" << placeNames[p] << ";" << endl;
+			}
+		}
+		
+		//update the marking
 		for (size_t p = 0; p < MyGspn.pl; p++) {
 			if (MyGspn.inArcs[t][p] > 0) {
 				if (MyGspn.inArcsStr[t][p] == " "){
@@ -944,7 +959,9 @@ void Gspn_Reader::WriteFile(parameters& P){
 					}
 					SpnCppFile << "\t\t\tMarking.P->_PL_" << placeNames[p] <<" -= " << decrement << ";"<< endl;
 				} else {
-					string decrement = MyGspn.inArcsStr[t][p];
+					string decrement;
+					searchreplace(MyGspn.inArcsStr[t][p], "Marking.P->_PL_", "tmpMark_" , decrement);
+					
 					if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
 						if (MyGspn.inArcs[t2][p] > 0) {
 							if (MyGspn.inArcsStr[t2][p] == " "){
@@ -953,7 +970,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}else {
-								string seuil = MyGspn.inArcsStr[t2][p];
+								string seuil;
+								searchreplace(MyGspn.inArcsStr[t2][p], "Marking.P->_PL_", "tmpMark_" , seuil);
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil <<"+" << decrement;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
@@ -967,7 +985,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}else {
-								string seuil = MyGspn.inhibArcsStr[t2][p];
+								string seuil;
+								searchreplace(MyGspn.inhibArcsStr[t2][p], "Marking.P->_PL_", "tmpMark_" , seuil);
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil << "+" <<decrement;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
@@ -1018,7 +1037,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 					}
 					SpnCppFile << "\t\t\tMarking.P->_PL_" << placeNames[p] <<" += " << increment << ";"<< endl;
 				} else {
-					string increment = MyGspn.outArcsStr[t][p];
+					string increment;
+					searchreplace(MyGspn.outArcsStr[t][p], "Marking.P->_PL_", "tmpMark_" , increment);
 					if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
 						if (MyGspn.inArcs[t2][p] > 0) {
 							if (MyGspn.inArcsStr[t2][p] == " "){
@@ -1028,6 +1048,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}else {
 								string seuil = MyGspn.inArcsStr[t2][p];
+								searchreplace(MyGspn.inArcsStr[t][p], "Marking.P->_PL_", "tmpMark_" , seuil);
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
@@ -1041,7 +1062,9 @@ void Gspn_Reader::WriteFile(parameters& P){
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}else {
-								string seuil = MyGspn.inhibArcsStr[t2][p];
+								string seuil;
+								searchreplace(MyGspn.inhibArcsStr[t2][p], "Marking.P->_PL_", "tmpMark_" , seuil);
+
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
