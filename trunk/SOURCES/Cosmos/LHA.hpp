@@ -123,6 +123,7 @@ public:
 
 	vector<double> FormulaVal;
 	void printState(ostream &);
+	void printHeader(ostream &);
 	
 	double CurrentTime;
 	int CurrentLocation;

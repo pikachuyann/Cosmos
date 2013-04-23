@@ -191,10 +191,18 @@ void Lha_Reader::WriteFile(parameters& P) {
 	}
 	LhaCppFile << "};\n";
 	
-	LhaCppFile << "void LHA::printState(ostream &s){\n";
-	LhaCppFile << "\ts << \"Location:\"<< LocLabel[CurrentLocation] << \"\\t\";\n";
+	LhaCppFile << "void LHA::printHeader(ostream &s){\n";
+	LhaCppFile << "\ts << \"Location\\t";
 	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
-		LhaCppFile << "\ts << \"" << MyLha.Vars.label[v] << ": \" << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
+		LhaCppFile << MyLha.Vars.label[v] << "\\t";
+	}
+	LhaCppFile << "\";\n";
+	LhaCppFile << "};\n";
+	
+	LhaCppFile << "void LHA::printState(ostream &s){\n";
+	LhaCppFile << "\ts <<  LocLabel[CurrentLocation] << \"\\t\";\n";
+	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
+		LhaCppFile << "\ts << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
 	}
 	LhaCppFile << "};\n";
 	

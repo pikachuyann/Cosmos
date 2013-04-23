@@ -46,6 +46,7 @@ public:
 	abstractMarking& operator = (const abstractMarking& m);
 	~abstractMarking();
 	
+	void printHeader(std::ostream &)const;
 	void print(std::ostream &)const;
 	void resetToInitMarking();
 	int getNbOfTokens(int)const;

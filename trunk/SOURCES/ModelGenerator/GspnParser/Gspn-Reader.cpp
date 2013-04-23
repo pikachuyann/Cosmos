@@ -588,12 +588,25 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "\tdelete(P);\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
+	SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
+	if(P.StringInSpnLHA){
+		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
+		SpnCppFile << "\ts << \"";
+		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+			 plit!= MyGspn.placeStruct.end(); ++plit) {
+			SpnCppFile << plit->name <<"\t";
+		}
+		SpnCppFile << "\";";
+	}
+	SpnCppFile << "}\n";
+	SpnCppFile << "\n";
+	
 	SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
 	if(P.StringInSpnLHA){
 		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
 		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 			 plit!= MyGspn.placeStruct.end(); ++plit) {
-			SpnCppFile << "\ts << \""<< plit->name <<": \" << P->_PL_"<< plit->name << " << \"\\t\" ;\n";
+			SpnCppFile << "\ts << P->_PL_"<< plit->name << " << \"\\t\" ;\n";
 		}
 	}
 	SpnCppFile << "}\n";

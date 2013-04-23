@@ -70,6 +70,9 @@ void Simulator::logValue(const char* path){
 void Simulator::logTrace(const char* path){
     logtrace.open(path,fstream::out);
     logtrace.precision(15);
+	N.Marking.printHeader(logtrace);
+	A.printHeader(logtrace);
+	logtrace << endl;
 }
 
 
@@ -413,6 +416,9 @@ void Simulator::SimulateSinglePath() {
 		if(verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation
+			N.Marking.printHeader(cerr);
+			A.printHeader(cerr);
+			cerr << endl;
 			N.Marking.print(cerr);
 			A.printState(cerr);
 			cerr << endl;
