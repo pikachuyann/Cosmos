@@ -912,7 +912,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		//Write value of Marking dependant place to a temporary variable
 		for (size_t p = 0; p < MyGspn.pl; p++) {
 			if (MyGspn.inArcsStr[t][p] != " " || MyGspn.outArcsStr[t][p] != " ") {
-				SpnCppFile << "\t\t\tint tmpMark_" << placeNames[p];
+				SpnCppFile << "\t\t\t"<< MyGspn.colDoms[MyGspn.placeStruct[p].colorDom].cname() <<" tmpMark_" << placeNames[p];
 				SpnCppFile << " = Marking.P->_PL_" << placeNames[p] << ";" << endl;
 			}
 		}
