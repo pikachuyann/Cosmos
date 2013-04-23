@@ -70,6 +70,7 @@ void Simulator::logValue(const char* path){
 void Simulator::logTrace(const char* path){
     logtrace.open(path,fstream::out);
     logtrace.precision(15);
+	logtrace << "Time\t";
 	N.Marking.printHeader(logtrace);
 	A.printHeader(logtrace);
 	logtrace << endl;
@@ -409,6 +410,7 @@ void Simulator::SimulateSinglePath() {
 	while ((!(*EQ).isEmpty()) && continueb ) {
         //cerr << "continue path"<< endl;
 		if(logtrace.is_open()){
+			logtrace << A.CurrentTime << "\t";
 			N.Marking.print(logtrace);
 			A.printState(logtrace);
 			logtrace << endl;

@@ -63,24 +63,23 @@ result::result(parameters &Q){
 			}
         }
         outdatastream << endl;
-		
-		if(P.gnuplotDriver){
-			gnuplotstream = popen("gnuplot", "w");
-			if(P.verbose>2)cout << "Gnuplot opened" << endl;
-			if(gnuplotstream<=0){
-				perror("Fail to lauch gnuplot");
-				exit(EXIT_FAILURE);
-			}
-			if(P.alligatorMode){
-				fputs("set terminal pngcairo font 'arial,10' size 500, 200\n",gnuplotstream);
-				//fputs("set output 'dataout.png'\n",gnuplotstream);
-			}
-			fputs("set grid lc rgb 'black'\n",gnuplotstream);
-			fputs("set style fill solid 0.2 noborder\n",gnuplotstream);
-			fflush(gnuplotstream);
-			
-		}
     }
+	if(P.gnuplotDriver){
+		gnuplotstream = popen("gnuplot", "w");
+		if(P.verbose>2)cout << "Gnuplot opened" << endl;
+		if(gnuplotstream<=0){
+			perror("Fail to lauch gnuplot");
+			exit(EXIT_FAILURE);
+		}
+		if(P.alligatorMode){
+			fputs("set terminal pngcairo font 'arial,10' size 500, 200\n",gnuplotstream);
+			//fputs("set output 'dataout.png'\n",gnuplotstream);
+		}
+		fputs("set grid lc rgb 'black'\n",gnuplotstream);
+		fputs("set style fill solid 0.2 noborder\n",gnuplotstream);
+		fflush(gnuplotstream);
+		
+	}
     
 	gettimeofday(&start, NULL);
 	gettimeofday(&lastprint, NULL);
@@ -245,13 +244,25 @@ void result::outputCDFPDF(string f){
 
 void result::printGnuplot(){
 	if(gnuplotstream<=0)return;
-	if(P.verbose>2)cout << "invoke gnuplot" << endl;
-	if(P.alligatorMode)fputs("set output 'dataout.png'\n",gnuplotstream);
-	fputs("plot '", gnuplotstream);
-	fputs(P.dataoutput.c_str(), gnuplotstream);
-	fputs("' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 1 lw 2\n", gnuplotstream);
-	if(P.alligatorMode)fputs("set output\n", gnuplotstream);
-	fflush(gnuplotstream);
+	if(P.dataoutput.compare("")!=0){
+		if(P.verbose>2)cout << "invoke gnuplot for data" << endl;
+		if(P.alligatorMode)fputs("set output 'dataout.png'\n",gnuplotstream);
+		fputs("plot '", gnuplotstream);
+		fputs(P.dataoutput.c_str(), gnuplotstream);
+		fputs("' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 1 lw 2\n", gnuplotstream);
+		if(P.alligatorMode)fputs("set output\n", gnuplotstream);
+		fflush(gnuplotstream);
+	}
+	
+	if(P.datatrace.compare("")!=0){
+		if(P.verbose>2)cout << "invoke gnuplot for trace" << endl;
+		if(P.alligatorMode)fputs("set output 'traceout.png'\n",gnuplotstream);
+		fputs("plot for [i=2:20] '", gnuplotstream);
+		fputs(P.datatrace.c_str(), gnuplotstream);
+		fputs("' using 1:i title  columnheader(i) with lines\n", gnuplotstream);
+		if(P.alligatorMode)fputs("set output\n", gnuplotstream);
+		fflush(gnuplotstream);
+	}
 }
 
 void result::outputData(){
@@ -283,6 +294,7 @@ void result::printResultFile(string f){
         if(P.verbose>0)cout << "Results are saved in '" << f << "'" << endl;
         ResultsFile.close();
     }
+	
 }
 
 void result::printAlligator(){
