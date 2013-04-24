@@ -21,6 +21,7 @@ let execCosmos (name,model,prop) =
   let cmd = sprintf "%s -v 0 %s %s --width 0.001 --level 0.99" cosmos_path model prop in
   print_endline cmd;
   Sys.command cmd;
-  Sys.command (sprintf "cp Result.res %s.res" name);;
+  Sys.command (sprintf "cp Result.res %s.res" name);
+  ();;
 
 List.iter execCosmos joblist
