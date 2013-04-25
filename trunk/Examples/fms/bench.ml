@@ -106,6 +106,22 @@ let joblist45 = [
   "S1ASym1_4_4_102400", "Policy1Asym1_4.grml" , "rho2_102400.grml"]
 
 
+let joblist5 = [
+  "S1_5_10", "Policy1Fail.grml" , "rho2_10.grml" ;
+  "S1_5_50", "Policy1Fail.grml" , "rho2_50.grml" ;
+  "S1_5_100", "Policy1Fail.grml" , "rho2_100.grml" ;
+  "S1_5_400", "Policy1Fail.grml" , "rho2_400.grml" ;
+  "S1_5_6400", "Policy1Fail.grml" , "rho2_6400.grml" ;
+  "S1_5_25600", "Policy1Fail.grml" , "rho2_25600.grml" ;
+  "S1_5_102400", "Policy1Fail.grml" , "rho2_102400.grml";
+  "S2_5_10", "Policy2Fail.grml" , "rho2_10.grml" ;
+  "S2_5_50", "Policy2Fail.grml" , "rho2_50.grml" ;
+  "S2_5_100", "Policy2Fail.grml" , "rho2_100.grml" ;
+  "S2_5_400", "Policy2Fail.grml" , "rho2_400.grml" ;
+  "S2_5_6400", "Policy2Fail.grml" , "rho2_6400.grml" ;
+  "S2_5_25600", "Policy2Fail.grml" , "rho2_25600.grml" ;
+  "S2_5_102400", "Policy2Fail.grml" , "rho2_102400.grml"]
+
 let execCosmos (name,model,prop) =
   let cmd = sprintf "%s -v 0 %s %s --width 0.001 --level 0.99" cosmos_path model prop in
   print_endline cmd;
@@ -113,5 +129,5 @@ let execCosmos (name,model,prop) =
   Sys.command (sprintf "cp Result.res %s.res" name);
   ();;
 
-List.iter execCosmos joblist45
+List.iter execCosmos joblist5
 
