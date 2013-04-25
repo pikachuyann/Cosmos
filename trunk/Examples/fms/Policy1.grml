@@ -549,7 +549,7 @@
       </attribute>
       <attribute name="param">
         <attribute name="expr"><attribute name="name">
-          mu
+          mu1
         </attribute></attribute>
       </attribute>
       <attribute name="param">
@@ -934,7 +934,7 @@
       </attribute>
       <attribute name="param">
         <attribute name="expr"><attribute name="name">
-          mu
+          mu2
         </attribute></attribute>
       </attribute>
       <attribute name="param">
@@ -1182,8 +1182,8 @@
   </arc>
   <arc id="77" arcType="inhibitorarc" source="5" target="10">
     <attribute name="valuation">
-      <attribute name="expr"><attribute name="name">
-        l1
+      <attribute name="expr"><attribute name="numValue">
+        3
       </attribute></attribute>
     </attribute>
   </arc>
@@ -1364,8 +1364,8 @@
   </arc>
   <arc id="101" arcType="inhibitorarc" source="28" target="26">
     <attribute name="valuation">
-      <attribute name="expr"><attribute name="name">
-        l2
+      <attribute name="expr"><attribute name="numValue">
+        3
       </attribute></attribute>
     </attribute>
   </arc>
