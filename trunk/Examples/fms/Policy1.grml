@@ -38,11 +38,21 @@
         </attribute>
         <attribute name="realConst">
           <attribute name="name">
+            sigma
+          </attribute>
+          <attribute name="expr">
+            <attribute name="numValue">
+              0.714285714285714302
+            </attribute>
+          </attribute>
+        </attribute>
+        <attribute name="realConst">
+          <attribute name="name">
             mu1
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              -0.683046
+              0.714285714285714302
             </attribute>
           </attribute>
         </attribute>
@@ -62,18 +72,8 @@
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              -0.683046
+              0.714285714285714302
             </attribute>
-          </attribute>
-        </attribute>
-        <attribute name="realConst">
-          <attribute name="name">
-            sigma
-          </attribute>
-          <attribute name="expr">
-            <attribute name="numValue">
-              0.832554502720392442
-           </attribute>
           </attribute>
         </attribute>
         <attribute name="realConst">

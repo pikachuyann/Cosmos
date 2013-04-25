@@ -1,6 +1,6 @@
 #use "../testTeamCity.ml";;
 
-let joblist = [
+let joblist1 = [
   "S1_1_20", "Policy1.grml" , "rho1_20.grml" ;
   "S1_1_50", "Policy1.grml" , "rho1_50.grml" ;
   "S1_1_100", "Policy1.grml" , "rho1_100.grml" ;
@@ -57,4 +57,5 @@ let execCosmos (name,model,prop) =
   Sys.command (sprintf "cp Result.res %s.res" name);
   ();;
 
-List.iter execCosmos joblist3
+List.iter execCosmos joblist1
+
