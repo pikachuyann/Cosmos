@@ -68,12 +68,12 @@
         </attribute>
         <attribute name="realConst">
           <attribute name="name">
-            sigma2
+            sigma
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              0.693147
-            </attribute>
+              0.832554502720392442
+           </attribute>
           </attribute>
         </attribute>
         <attribute name="realConst">
@@ -554,7 +554,7 @@
       </attribute>
       <attribute name="param">
         <attribute name="expr"><attribute name="name">
-          sigma2
+          sigma
         </attribute></attribute>
       </attribute>
     </attribute>
@@ -939,7 +939,7 @@
       </attribute>
       <attribute name="param">
         <attribute name="expr"><attribute name="name">
-          sigma2
+          sigma
         </attribute></attribute>
       </attribute>
     </attribute>
