@@ -72,6 +72,39 @@ let joblist4 = [
   "S2ASym_4_25600", "Policy2Asym.grml" , "rho2_25600.grml" ;
   "S2ASym_4_102400", "Policy2Asym.grml" , "rho2_102400.grml"]
 
+let joblist45 = [
+  "S1ASym3_3_4_10", "Policy1Asym3_3.grml" , "rho2_10.grml" ;
+  "S1ASym3_3_4_50", "Policy1Asym3_3.grml" , "rho2_50.grml" ;
+  "S1ASym3_3_4_100", "Policy1Asym3_3.grml" , "rho2_100.grml" ;
+  "S1ASym3_3_4_400", "Policy1Asym3_3.grml" , "rho2_400.grml" ;
+  "S1ASym3_3_4_6400", "Policy1Asym3_3.grml" , "rho2_6400.grml" ;
+  "S1ASym3_3_4_25600", "Policy1Asym3_3.grml" , "rho2_25600.grml" ;
+  "S1ASym3_3_4_102400", "Policy1Asym3_3.grml" , "rho2_102400.grml";
+
+  "S1ASym1_3_4_10", "Policy1Asym1_3.grml" , "rho2_10.grml" ;
+  "S1ASym1_3_4_50", "Policy1Asym1_3.grml" , "rho2_50.grml" ;
+  "S1ASym1_3_4_100", "Policy1Asym1_3.grml" , "rho2_100.grml" ;
+  "S1ASym1_3_4_400", "Policy1Asym1_3.grml" , "rho2_400.grml" ;
+  "S1ASym1_3_4_6400", "Policy1Asym1_3.grml" , "rho2_6400.grml" ;
+  "S1ASym1_3_4_25600", "Policy1Asym1_3.grml" , "rho2_25600.grml" ;
+  "S1ASym1_3_4_102400", "Policy1Asym1_3.grml" , "rho2_102400.grml";
+  
+  "S1ASym2_3_4_10", "Policy1Asym2_3.grml" , "rho2_10.grml" ;
+  "S1ASym2_3_4_50", "Policy1Asym2_3.grml" , "rho2_50.grml" ;
+  "S1ASym2_3_4_100", "Policy1Asym2_3.grml" , "rho2_100.grml" ;
+  "S1ASym2_3_4_400", "Policy1Asym2_3.grml" , "rho2_400.grml" ;
+  "S1ASym2_3_4_6400", "Policy1Asym2_3.grml" , "rho2_6400.grml" ;
+  "S1ASym2_3_4_25600", "Policy1Asym2_3.grml" , "rho2_25600.grml" ;
+  "S1ASym2_3_4_102400", "Policy1Asym2_3.grml" , "rho2_102400.grml";
+
+  "S1ASym1_4_4_10", "Policy1Asym1_4.grml" , "rho2_10.grml" ;
+  "S1ASym1_4_4_50", "Policy1Asym1_4.grml" , "rho2_50.grml" ;
+  "S1ASym1_4_4_100", "Policy1Asym1_4.grml" , "rho2_100.grml" ;
+  "S1ASym1_4_4_400", "Policy1Asym1_4.grml" , "rho2_400.grml" ;
+  "S1ASym1_4_4_6400", "Policy1Asym1_4.grml" , "rho2_6400.grml" ;
+  "S1ASym1_4_4_25600", "Policy1Asym1_4.grml" , "rho2_25600.grml" ;
+  "S1ASym1_4_4_102400", "Policy1Asym1_4.grml" , "rho2_102400.grml"]
+
 
 let execCosmos (name,model,prop) =
   let cmd = sprintf "%s -v 0 %s %s --width 0.001 --level 0.99" cosmos_path model prop in
@@ -80,5 +113,5 @@ let execCosmos (name,model,prop) =
   Sys.command (sprintf "cp Result.res %s.res" name);
   ();;
 
-List.iter execCosmos joblist4
+List.iter execCosmos joblist45
 
