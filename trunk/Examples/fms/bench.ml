@@ -33,7 +33,7 @@ let joblist2 = [
   "S2_2_102400", "Policy2.grml" , "rho2_102400.grml"]
 
 let joblist3 = [
-  "S1_3_20", "Policy1Geo.grml" , "rho2_10.grml" ;
+  "S1_3_10", "Policy1Geo.grml" , "rho2_10.grml" ;
   "S1_3_50", "Policy1Geo.grml" , "rho2_50.grml" ;
   "S1_3_100", "Policy1Geo.grml" , "rho2_100.grml" ;
   "S1_3_400", "Policy1Geo.grml" , "rho2_400.grml" ;
@@ -57,5 +57,5 @@ let execCosmos (name,model,prop) =
   Sys.command (sprintf "cp Result.res %s.res" name);
   ();;
 
-List.iter execCosmos joblist1
+List.iter execCosmos joblist3
 
