@@ -4,6 +4,26 @@
   <attribute name="declaration">
     <attribute name="constants">
       <attribute name="intConsts">
+        <attribute name="intConst">
+          <attribute name="name">
+            l2
+          </attribute>
+          <attribute name="expr">
+            <attribute name="numValue">
+              3
+            </attribute>
+          </attribute>
+        </attribute>
+        <attribute name="intConst">
+          <attribute name="name">
+            l1
+          </attribute>
+          <attribute name="expr">
+            <attribute name="numValue">
+              3
+            </attribute>
+          </attribute>
+        </attribute>
       </attribute>
       <attribute name="realConsts">
         <attribute name="realConst">
@@ -18,11 +38,31 @@
         </attribute>
         <attribute name="realConst">
           <attribute name="name">
+            mu1
+          </attribute>
+          <attribute name="expr">
+            <attribute name="numValue">
+              -0.683046
+            </attribute>
+          </attribute>
+        </attribute>
+        <attribute name="realConst">
+          <attribute name="name">
             alpha1
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
               0.45
+            </attribute>
+          </attribute>
+        </attribute>
+        <attribute name="realConst">
+          <attribute name="name">
+            mu2
+          </attribute>
+          <attribute name="expr">
+            <attribute name="numValue">
+              -0.683046
             </attribute>
           </attribute>
         </attribute>
@@ -43,16 +83,6 @@
           <attribute name="expr">
             <attribute name="numValue">
               0.5
-            </attribute>
-          </attribute>
-        </attribute>
-        <attribute name="realConst">
-          <attribute name="name">
-            mu
-          </attribute>
-          <attribute name="expr">
-            <attribute name="numValue">
-              0.683046
             </attribute>
           </attribute>
         </attribute>
@@ -954,21 +984,21 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <arc id="46" arcType="inhibitorarc" source="40" target="34">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        2
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="47" arcType="arc" source="3" target="39">
+  <arc id="46" arcType="arc" source="3" target="26">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="45" arcType="arc" source="3" target="26">
+  <arc id="47" arcType="inhibitorarc" source="40" target="34">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        2
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="45" arcType="arc" source="3" target="39">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -1152,8 +1182,8 @@
   </arc>
   <arc id="77" arcType="inhibitorarc" source="5" target="10">
     <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        3
+      <attribute name="expr"><attribute name="name">
+        l1
       </attribute></attribute>
     </attribute>
   </arc>
@@ -1334,8 +1364,8 @@
   </arc>
   <arc id="101" arcType="inhibitorarc" source="28" target="26">
     <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        3
+      <attribute name="expr"><attribute name="name">
+        l2
       </attribute></attribute>
     </attribute>
   </arc>
