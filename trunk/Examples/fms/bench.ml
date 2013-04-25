@@ -49,6 +49,29 @@ let joblist3 = [
   "S2_3_102400", "Policy2Geo.grml" , "rho2_102400.grml"]
 
 
+let joblist4 = [
+  "S1Sym_4_10", "Policy1sym.grml" , "rho2_10.grml" ;
+  "S1Sym_4_50", "Policy1sym.grml" , "rho2_50.grml" ;
+  "S1Sym_4_100", "Policy1sym.grml" , "rho2_100.grml" ;
+  "S1Sym_4_400", "Policy1sym.grml" , "rho2_400.grml" ;
+  "S1Sym_4_6400", "Policy1sym.grml" , "rho2_6400.grml" ;
+  "S1Sym_4_25600", "Policy1sym.grml" , "rho2_25600.grml" ;
+  "S1Sym_4_102400", "Policy1sym.grml" , "rho2_102400.grml";
+  "S2Sym_4_10", "Policy2sym.grml" , "rho2_10.grml" ;
+  "S2Sym_4_50", "Policy2sym.grml" , "rho2_50.grml" ;
+  "S2Sym_4_100", "Policy2sym.grml" , "rho2_100.grml" ;
+  "S2Sym_4_400", "Policy2sym.grml" , "rho2_400.grml" ;
+  "S2Sym_4_6400", "Policy2sym.grml" , "rho2_6400.grml" ;
+  "S2Sym_4_25600", "Policy2sym.grml" , "rho2_25600.grml" ;
+  "S2Sym_4_102400", "Policy2sym.grml" , "rho2_102400.grml";
+  "S2ASym_4_10", "Policy2Asym.grml" , "rho2_10.grml" ;
+  "S2ASym_4_50", "Policy2Asym.grml" , "rho2_50.grml" ;
+  "S2ASym_4_100", "Policy2Asym.grml" , "rho2_100.grml" ;
+  "S2ASym_4_400", "Policy2Asym.grml" , "rho2_400.grml" ;
+  "S2ASym_4_6400", "Policy2Asym.grml" , "rho2_6400.grml" ;
+  "S2ASym_4_25600", "Policy2Asym.grml" , "rho2_25600.grml" ;
+  "S2ASym_4_102400", "Policy2Asym.grml" , "rho2_102400.grml"]
+
 
 let execCosmos (name,model,prop) =
   let cmd = sprintf "%s -v 0 %s %s --width 0.001 --level 0.99" cosmos_path model prop in
@@ -57,5 +80,5 @@ let execCosmos (name,model,prop) =
   Sys.command (sprintf "cp Result.res %s.res" name);
   ();;
 
-List.iter execCosmos joblist3
+List.iter execCosmos joblist4
 
