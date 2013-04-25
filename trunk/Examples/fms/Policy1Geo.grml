@@ -38,11 +38,21 @@
         </attribute>
         <attribute name="realConst">
           <attribute name="name">
+            sigma
+          </attribute>
+          <attribute name="expr">
+            <attribute name="numValue">
+              0.714285714285714302
+            </attribute>
+          </attribute>
+        </attribute>
+        <attribute name="realConst">
+          <attribute name="name">
             mu1
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              -0.683046
+              0.714285714285714302
             </attribute>
           </attribute>
         </attribute>
@@ -62,17 +72,7 @@
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              -0.683046
-            </attribute>
-          </attribute>
-        </attribute>
-        <attribute name="realConst">
-          <attribute name="name">
-            sigma2
-          </attribute>
-          <attribute name="expr">
-            <attribute name="numValue">
-              0.693147
+              0.714285714285714302
             </attribute>
           </attribute>
         </attribute>
@@ -548,12 +548,12 @@
         GEOMETRIC
       </attribute>
       <attribute name="param">
-        <attribute name="expr"><attribute name="name">
+        <attribute name="expr"><attribute name="numValue">
           0.98
         </attribute></attribute>
       </attribute>
       <attribute name="param">
-        <attribute name="expr"><attribute name="name">
+        <attribute name="expr"><attribute name="numValue">
           0.7
         </attribute></attribute>
       </attribute>
@@ -933,12 +933,12 @@
         GEOMETRIC
       </attribute>
       <attribute name="param">
-        <attribute name="expr"><attribute name="name">
+        <attribute name="expr"><attribute name="numValue">
           0.98
         </attribute></attribute>
       </attribute>
       <attribute name="param">
-        <attribute name="expr"><attribute name="name">
+        <attribute name="expr"><attribute name="numValue">
           0.7
         </attribute></attribute>
       </attribute>
@@ -1182,8 +1182,8 @@
   </arc>
   <arc id="77" arcType="inhibitorarc" source="5" target="10">
     <attribute name="valuation">
-      <attribute name="expr"><attribute name="name">
-        l1
+      <attribute name="expr"><attribute name="numValue">
+        3
       </attribute></attribute>
     </attribute>
   </arc>
@@ -1364,8 +1364,8 @@
   </arc>
   <arc id="101" arcType="inhibitorarc" source="28" target="26">
     <attribute name="valuation">
-      <attribute name="expr"><attribute name="name">
-        l2
+      <attribute name="expr"><attribute name="numValue">
+        3
       </attribute></attribute>
     </attribute>
   </arc>
