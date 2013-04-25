@@ -16,6 +16,22 @@ let joblist = [
   "S2_25600", "Policy2.grml" , "rho1_25600.grml" ;
   "S2_102400", "Policy2.grml" , "rho1_102400.grml"]
 
+let joblist2 = [
+  "S1_2_20", "Policy1.grml" , "rho2_10.grml" ;
+  "S1_2_50", "Policy1.grml" , "rho2_50.grml" ;
+  "S1_2_100", "Policy1.grml" , "rho2_100.grml" ;
+  "S1_2_400", "Policy1.grml" , "rho2_400.grml" ;
+  "S1_2_6400", "Policy1.grml" , "rho2_6400.grml" ;
+  "S1_2_25600", "Policy1.grml" , "rho2_25600.grml" ;
+  "S1_2_102400", "Policy1.grml" , "rho2_102400.grml";
+  "S2_2_20", "Policy2.grml" , "rho2_10.grml" ;
+  "S2_2_50", "Policy2.grml" , "rho2_50.grml" ;
+  "S2_2_100", "Policy2.grml" , "rho2_100.grml" ;
+  "S2_2_400", "Policy2.grml" , "rho2_400.grml" ;
+  "S2_2_6400", "Policy2.grml" , "rho2_6400.grml" ;
+  "S2_2_25600", "Policy2.grml" , "rho2_25600.grml" ;
+  "S2_2_102400", "Policy2.grml" , "rho2_102400.grml"]
+
 
 let execCosmos (name,model,prop) =
   let cmd = sprintf "%s -v 0 %s %s --width 0.001 --level 0.99" cosmos_path model prop in
@@ -24,4 +40,4 @@ let execCosmos (name,model,prop) =
   Sys.command (sprintf "cp Result.res %s.res" name);
   ();;
 
-List.iter execCosmos joblist
+List.iter execCosmos joblist2
