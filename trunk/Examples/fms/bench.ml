@@ -123,11 +123,18 @@ let joblist5 = [
   "S2_5_102400", "Policy2Fail.grml" , "rho2_102400.grml"]
 
 let execCosmos (name,model,prop) =
-  let cmd = sprintf "%s -v 0 %s %s --width 0.001 --level 0.99" cosmos_path model prop in
+  let cmd = sprintf "%s -v 0 %s %s --width 0.005 --level 0.99" cosmos_path model prop in
   print_endline cmd;
-  Sys.command cmd;
-  Sys.command (sprintf "cp Result.res %s.res" name);
+  ignore (Sys.command cmd);
+  ignore (Sys.command (sprintf "cp Result.res %s.res" name));
   ();;
 
-List.iter execCosmos joblist5
+match int_of_string (Sys.argv.(1)) with
+    1 -> List.iter execCosmos joblist1
+  | 2 -> List.iter execCosmos joblist2
+  | 3 -> List.iter execCosmos joblist3
+  | 4 -> List.iter execCosmos joblist4
+  | 45-> List.iter execCosmos joblist45
+  | 5 -> List.iter execCosmos joblist5
+  | _ -> failwith "Wrong integer"
 
