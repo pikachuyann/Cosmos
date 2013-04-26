@@ -42,7 +42,9 @@ using namespace std;
 	TableLength(i),
 	IsBernoulli(vector<bool>(i,true)),
 	Mean(vector<double>(i,0.0)),
-	M2(vector<double>(i,0.0)) {}
+	M2(vector<double>(i,0.0)),
+	M3(vector<double>(i,0.0)),
+	M4(vector<double>(i,0.0)){}
 
 /**
  * Add a simulation to the batch
@@ -61,8 +63,9 @@ using namespace std;
             }
             
             Mean[i] += Result->second[i];
-			
             M2[i] += pow(Result->second[i], 2);
+			M3[i] += pow(Result->second[i], 3);
+			M3[i] += pow(Result->second[i], 4);
         }
     }
 }
@@ -80,8 +83,9 @@ void BatchR::unionR(BatchR *batch){
         IsBernoulli[i] = IsBernoulli[i] && batch->IsBernoulli[i];
         
         Mean[i] += batch->Mean[i];
-        
         M2[i] += batch->M2[i];
+		M3[i] += batch->M3[i];
+		M4[i] += batch->M4[i];
     }
 }
 
@@ -98,6 +102,8 @@ void BatchR::unionR(BatchR *batch){
         write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
         write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(Mean[0]));
         write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(Mean[0]));
+		write(STDOUT_FILENO,reinterpret_cast<char*>(&M3[i]),sizeof(Mean[0]));
+		write(STDOUT_FILENO,reinterpret_cast<char*>(&M4[i]),sizeof(Mean[0]));
     }
 }
 
@@ -126,6 +132,10 @@ bool BatchR::inputR(FILE* f) {
         ok &= (readbyte == 1);
         readbyte = fread(reinterpret_cast<char*>( &(M2[i]) ), sizeof M2[i] ,1, f);
         ok &= (readbyte == 1);
+		readbyte = fread(reinterpret_cast<char*>( &(M3[i]) ), sizeof M2[i] ,1, f);
+        ok &= (readbyte == 1);
+		readbyte = fread(reinterpret_cast<char*>( &(M4[i]) ), sizeof M2[i] ,1, f);
+        ok &= (readbyte == 1);
     }
 	return ok;
 }
@@ -133,6 +143,6 @@ bool BatchR::inputR(FILE* f) {
 void BatchR::print(){
     cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl;
     for(size_t i =0; i< TableLength; i++){
-        cerr << "Mean:\t" << Mean[i]/Isucc << endl << "M2:\t" << M2[i]/Isucc << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
+        cerr << "Mean:\t" << Mean[i]/Isucc << endl << "M2:\t" << M2[i]/Isucc << endl << "M3:\t" << M3[i]/Isucc << endl <<"M4:\t" << M4[i]/Isucc << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
     }
 }

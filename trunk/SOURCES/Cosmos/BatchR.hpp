@@ -60,6 +60,12 @@ public:
 	
 	//! The second moment of each formula.
     std::vector<double> M2;
+	
+	//! The third moment of each formula.
+    std::vector<double> M3;
+	
+	//! The fourth moment of each formula.
+    std::vector<double> M4;
     
     //! Add the result of one simulation to the Batch.
     void addSim(SimOutput*);

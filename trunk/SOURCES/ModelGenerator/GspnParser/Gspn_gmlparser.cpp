@@ -113,6 +113,11 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
             *is_mark_dep =true;
             st->append("Marking.P->_PL_");
             st->append(*var);
+			if(verbose>1)cout << "\t" << *var << endl;
+			if(MyGspn->PlacesId.count(*var)==0){
+				cerr << "Place " << *var << "being referenced before being define" << endl;
+				throw gmlioexc;
+			}
 			if(MyGspn->placeStruct[MyGspn->PlacesId[*var]].colorDom !=0 )st->append(".card()");
         }
 	}else if (	(*it).compare("+")==0  || (*it).compare("*")==0  
