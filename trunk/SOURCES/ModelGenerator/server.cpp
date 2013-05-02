@@ -374,20 +374,20 @@ void launchServer(parameters& P){
     if(P.verbose>0)cout << endl;
     Result.stopclock();
     
-	if(P.dataPDFCDF.length()>0)
-		Result.outputCDFPDF(P.dataPDFCDF);
-	
-	if(P.alligatorMode){
-		Result.printAlligator();
-		Result.printGnuplot();
-	} else{
-        if(P.verbose>1)Result.print(cout);
-	}
-	
+	//use gnuplot
+	if(P.dataPDFCDF.length()>0)Result.outputCDFPDF(P.dataPDFCDF);
+	if(P.alligatorMode)Result.printGnuplot();
 	
 	Result.close_gnuplot();
 	wait_client();
     
+	if(P.alligatorMode){
+		Result.printAlligator();
+	} else{
+        if(P.verbose>1)Result.print(cout);
+	}
+
+	
     string fn = "Result";
     fn.append(".res");
     Result.printResultFile(fn);
