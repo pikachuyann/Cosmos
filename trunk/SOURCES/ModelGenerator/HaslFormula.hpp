@@ -80,7 +80,8 @@ public:
 	
 	~HaslFormulasTop();
 	
-	ConfInt* eval(BatchR&); //!< Evaluate the formula over the batch of simulation
+	ConfInt* eval(BatchR&)const; //!< Evaluate the formula over the batch of simulation
+	double bound()const; //!< Return a bound on the formula result
 	HaslType TypeOp; //!< type of the HaslFormula.
 	
 protected:

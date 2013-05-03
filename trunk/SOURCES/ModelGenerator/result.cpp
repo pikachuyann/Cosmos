@@ -120,7 +120,7 @@ void result::addBatch(BatchR *batchResult){
 }
 
 bool result::continueSim(){
-    return (RelErr > P.Width) && (MeanM2->I < P.MaxRuns);
+    return (RelErr > P.Width || !P.sequential) && (MeanM2->I < P.MaxRuns);
 }
 
 void printPercent(double i, double j){
@@ -170,16 +170,18 @@ void result::printProgress(){
 			cout << "\t  width=";
 			cout << setw(15) << HaslResult[i]->width() << endl;
 			endline++;
-			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2){
+			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2 && P.sequential){
 				cout << "% of width:\t";
 				printPercent( pow(RelErrArray[i],-2.0), pow(P.Width,-2.0));
 				endline++;
 			}
 		}
 	}
-	cout << "% of rel Err:\t";
-	printPercent( pow(RelErr,-2.0), pow(P.Width,-2.0));
-	endline++;
+	if(P.sequential){
+		cout << "% of rel Err:\t";
+		printPercent( pow(RelErr,-2.0), pow(P.Width,-2.0));
+		endline++;
+	}
     cout << "% of run:\t";
     printPercent(MeanM2->I, P.MaxRuns);
     endline++;
@@ -195,8 +197,7 @@ void result::print(ostream &s){
     s.precision(15);
     
     if(!P.computeStateSpace){
-        
-        for(size_t i =0; i<P.HaslFormulasname.size(); i++){
+		for(size_t i =0; i<P.HaslFormulasname.size(); i++){
             /*if (MeanM2->IsBernoulli[i]) {
                 low[i] = (0 > low[i]) ? 0.0 : low[i];
                 up[i] = (1 < up[i]) ? 1.0 : up[i];
@@ -206,11 +207,23 @@ void result::print(ostream &s){
             s << P.HaslFormulasname[i] << ":" << endl;
             
 			s << "Estimated value:\t" << HaslResult[i]->mean << endl;
-			s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
-			s << "Width:\t" << HaslResult[i]->width() << endl;
+			if(P.sequential){
+				s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
+				s << "Width:\t" << HaslResult[i]->width() << endl;
+			}else{
+				s << "Confidence interval:\t[" << HaslResult[i]->mean-P.Width/2.0 << " , " << HaslResult[i]->mean+P.Width/2.0 << "]" << endl;
+				s << "Width:\t" << P.Width << endl;
+			}
         }
+		if(!P.sequential)
+			s << "Confidence interval computed using Chernoff-Hoeffding bound."<<endl;
+		else if(P.MaxRuns > MeanM2->I )
+			s << "Confidence interval computed sequentially using Chows-Robbin algorithm."<<endl;
+		else
+			s << "Confidence interval computed using approximation to normal low."<< endl;
+		
 		s << "Confidence level:\t" << P.Level << endl;
-        s << "Relative error:\t" << RelErr << endl;
+        //s << "Relative error:\t" << RelErr << endl;
         s << "Total paths:\t" << MeanM2->I << endl;
         s << "Accepted paths:\t" << MeanM2->Isucc << endl;
         s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;

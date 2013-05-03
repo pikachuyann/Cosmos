@@ -173,7 +173,7 @@ HaslFormulasTop::~HaslFormulasTop(){
  * The correctness of the stopping condition.
  *
  */
-ConfInt* HaslFormulasTop::eval(BatchR &batch){
+ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 	switch (TypeOp) {
 		case PROBABILITY:
 		{
@@ -278,6 +278,45 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch){
 			delete rci;
 			
 			return new ConfInt(mean,low,up);
+		}
+			
+		default:
+			std::cerr << "Fail to parse Hasl Formula"<< std::endl;
+			exit(EXIT_FAILURE);
+	}
+}
+
+double HaslFormulasTop::bound()const{
+	switch (TypeOp) {
+		case PROBABILITY:
+			return 0.5;
+			
+		case EXPECTANCY:
+		case CDF_PART:
+		case PDF_PART:
+		case RE_AVG:
+			return std::numeric_limits<double>::infinity();
+			
+		case CONSTANT:
+			return fabs(Value);
+			
+		case HASL_PLUS:
+		{
+		double v1 = left->bound();
+		double v2 = right->bound();
+		return (fmax(v1,v2));
+		}
+			
+		case HASL_TIME:
+		{
+		double v1 = left->bound();
+		double v2 = right->bound();
+		return (v1*v2);
+		}
+			
+		case HASL_DIV:
+		{
+		return (std::numeric_limits<double>::infinity());
 		}
 			
 		default:

@@ -45,7 +45,7 @@ parameters::parameters():
 	Width(0.001),
 	Batch(1000),
 	MaxRuns(2000000),
-	chernoff(false),
+	sequential(true),
 
 	tmpPath("tmp"),
 	tmpStatus(0),
@@ -109,7 +109,7 @@ void parameters::usage(){
     cout << "\t--width \tset the width of the confidence interval (default=0.001)"<< endl;
     cout << "\t--batch \tset the size of batch of simulation (default=1000)"<< endl;
     cout << "\t--max-run \tset the maximal number of run (default=2000000)" << endl;
-	cout << "\t--chernoff \tuse chernoff-hoeffding bound to compute number of simulation" << endl;
+	cout << "\t--chernoff (level | width | nbrun)\tuse chernoff-hoeffding bound to compute number of simulation" << endl;
 	cout << "\t--seed \tSpecify the seed for the random generator, 0 allow to take a random value"<< endl;
 	cout << "\t--local-test \tUse local testing faster on big net" << endl;
 	
@@ -257,8 +257,18 @@ void parameters::parseCommandLine(int argc, char** argv){
             case  'w':Width = atof(optarg);     break;
             case  2  : Batch = atoi(optarg);      break;
             case  'm': MaxRuns = atoi(optarg);      break;
-			case  17 : chernoff = true;
-				Width = 0.0;
+			case  17 : sequential = false;
+				if( strcmp(optarg, "level")==0)Level=0;
+				else if(strcmp(optarg, "width")==0)Width=0;
+				else if(strcmp(optarg, "nbrun")==0)MaxRuns=0;
+				else {
+					cerr << "Required one of (level | width | nbrun) to specify which ";
+					cerr << "parameter should be computed" << endl;
+					usage();
+					exit(EXIT_FAILURE);
+				}
+				
+			
 				break;
 			case  12 : localTesting = !localTesting;		break;
             case  'n': Njob = atoi(optarg);      break;

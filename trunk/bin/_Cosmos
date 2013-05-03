@@ -28,6 +28,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--loop:Time of the loop:->time' \
 	   '--transient:Time for transient part:->time' \
 	   '--debug-string[Add debug information in generated code]' \
+	   '--chernoff:Use chernoff bound to compute parameters:->parameter' \
 	   ':SPN model file:_files -g "*.(gspn|grml|GSPN|GRML)(-.)"' \
 	   ':LHA property file:_files -g "*.(lha|grml|LHA|GRML)(-.)"' \
 	   && return 0
@@ -39,4 +40,6 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   	compadd "$@" 0 1 2 3 && return 0;;
 	   (bounded)
 		compadd "$@" 1 2 3 && return 0;;
+	   (parameter)
+		compadd "$@" "level" "width" "nbrun" && return 0;;
 	   esac
