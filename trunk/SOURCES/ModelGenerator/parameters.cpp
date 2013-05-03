@@ -29,6 +29,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <getopt.h>
+#include <string.h>
 
 /**
  * Constructor for parameters, set all the default value
