@@ -140,7 +140,7 @@ void Simulator::returnResultFalse(){
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding&){
+void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
     
@@ -151,7 +151,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding&){
 		bool Nenabled = N.IsEnabled(E1_transitionNum, *bindex);
 		bool NScheduled = EQ->isScheduled(E1_transitionNum, bindex->id());
 		
-		if (Nenabled && NScheduled) {
+		if (Nenabled && NScheduled && lb.id() == bindex->id() ) {
 			GenerateEvent(F, E1_transitionNum, *bindex);
 			EQ->replace(F); //replace the transition with the new generated time
 		} else if (Nenabled && !NScheduled) {
