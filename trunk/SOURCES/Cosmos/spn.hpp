@@ -40,7 +40,7 @@
 #include <math.h>
 
 #include "marking.hpp"
-
+#include <limits.h>
 #include <stdlib.h>
 
 
