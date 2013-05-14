@@ -88,6 +88,7 @@ struct parameters {
     vector<HaslFormulasTop*> HaslFormulas;
 	vector<string> HaslFormulasname;
 	size_t nbAlgebraic;
+	size_t nbPlace;
 };
 
 #endif

@@ -24,6 +24,7 @@
  *******************************************************************************
  */
 
+
 #include <iostream>
 #include <cstdlib>
 #include "result.hpp"
@@ -270,7 +271,11 @@ void result::printGnuplot(){
 	if(P.datatrace.compare("")!=0){
 		if(P.verbose>2)cout << "invoke gnuplot for trace" << endl;
 		if(P.alligatorMode)fputs("set output 'traceout.png'\n",gnuplotstream);
-		fputs("plot for [i=2:20] '", gnuplotstream);
+		fputs("plot for [i=2:", gnuplotstream);
+		char buff[10];
+		sprintf(buff, "%u", (unsigned int)(P.nbPlace+1));
+		fputs(buff, gnuplotstream);
+		fputs("] '", gnuplotstream);
 		fputs(P.datatrace.c_str(), gnuplotstream);
 		fputs("' using 1:i title  columnheader(i) with lines\n", gnuplotstream);
 		if(P.alligatorMode)fputs("set output\n", gnuplotstream);

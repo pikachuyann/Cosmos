@@ -117,6 +117,7 @@ bool ParseBuild(parameters& P) {
             parseresult = gReader.parse_file(P.PathGspn);
         }
         
+		P.nbPlace = gReader.MyGspn.pl;
         if (!parseresult && gReader.MyGspn.pl >0 && gReader.MyGspn.tr >0) {
             gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
             if(P.tmpStatus==0||P.tmpStatus==2)gReader.WriteFile(P);
