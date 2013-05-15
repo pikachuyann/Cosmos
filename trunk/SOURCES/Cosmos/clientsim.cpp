@@ -60,6 +60,7 @@ int main(int argc, char** argv) {
     Simulator* mySim; 
 	
 	string str;
+	bool singleBatch = false;
 	
 	if(argc > 4){
 
@@ -111,8 +112,10 @@ int main(int argc, char** argv) {
 	for(int i=1; i<argc ;i++){
 		if(strcmp(argv[i],"-log")==0 && argc>i)
 			mySim->logValue(argv[i+1]); //initialize the simulator
-		if(strcmp(argv[i],"-trace")==0 && argc>i)
+		if(strcmp(argv[i],"-trace")==0 && argc>i){
 			mySim->logTrace(argv[i+1]); //initialize the simulator
+			singleBatch = true;
+		}
 	}
     
 	
@@ -127,7 +130,7 @@ int main(int argc, char** argv) {
 		mySim->initRandomGenerator(0);
 	}
 	
-    if(mySim->verbose>=4)mySim->RunBatch();
+    if((mySim->verbose>=4) | singleBatch )mySim->RunBatch();
     else while( !cin.eof() ){
       BatchR* batchResult = mySim->RunBatch(); //simulate a batch of trajectory
 
