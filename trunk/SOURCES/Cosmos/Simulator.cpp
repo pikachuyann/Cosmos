@@ -319,6 +319,14 @@ bool Simulator::SimulateOneStep(){
 		//Make time elapse in the LHA
 		A.updateLHA( E1.time - A.CurrentTime, N.Marking );
 		
+		//Print the state of the system after the time elapse
+		if(logtrace.is_open()){
+			logtrace << A.CurrentTime << "\t";
+			N.Marking.print(logtrace);
+			A.printState(logtrace);
+			logtrace << endl;
+		}
+		
 		//Fire the transition in the SPN
 		N.fire(E1.transition, E1.binding);
 		
