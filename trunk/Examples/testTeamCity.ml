@@ -21,12 +21,20 @@ let confintdel = regexp "\\[\\| , \\|\\]"
 type result = { mutable mean : float;
                 mutable stdDev : float;
                 mutable confInt: float*float;
+		mutable simtime: float;
+		mutable systime: float;
+		mutable nbRun: int;
+		mutable nbSuccRun: int;
               }
 
 let dummyresult = {
   mean= 0. ;
   stdDev = 0. ;
-  confInt = 0. , 0.
+  confInt = 0. , 0.;
+  simtime = 0.;
+  systime = 0. ;
+  nbRun = 0;
+  nbSuccRun = 0;
 }
 
 
@@ -50,6 +58,13 @@ let parse_result f =
           (match split confintdel v with
             | a::b::_ -> result.confInt <- (float_of_string a , float_of_string b)
             | _ -> printf "Fail to parse confidence interval %s\n" v)
+
+	| "Time for simulation" :: v :: [] ->
+	  let v2 = String.sub v 0 (String.length v -1) in
+	  result.simtime <- (float_of_string v2)
+	| "Total CPU time" :: v :: [] -> result.systime <- (float_of_string v)
+	| "Total paths" :: v:: [] -> result.nbRun <- (int_of_string v)
+	| "Accepted paths" :: v :: [] -> result.nbSuccRun <- (int_of_string v)
         | _ -> ()
     done
    with
