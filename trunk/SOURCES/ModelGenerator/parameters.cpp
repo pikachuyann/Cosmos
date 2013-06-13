@@ -257,8 +257,8 @@ void parameters::parseCommandLine(int argc, char** argv){
 				
             case  'l':Level = atof(optarg);     break;
             case  'w':Width = atof(optarg);     break;
-            case  2  : Batch = atoi(optarg);      break;
-            case  'm': MaxRuns = atoi(optarg);      break;
+            case  2  : Batch = atol(optarg);      break;
+            case  'm': MaxRuns = atol(optarg);      break;
 			case  17 : sequential = false;
 				if( strcmp(optarg, "level")==0)Level=0;
 				else if(strcmp(optarg, "width")==0)Width=0;
