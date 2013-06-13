@@ -114,6 +114,11 @@ void result::addBatch(BatchR *batchResult){
             RelErrArray[i] =  HaslResult[i]->width() /  fabs(MeanM2->Mean[i]/MeanM2->Isucc);
         }else RelErrArray[i] = HaslResult[i]->width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
 		
+		if(P.HaslFormulas[i]->TypeOp==HYPOTHESIS){
+			if (RelErrArray[i] <1)RelErrArray[i]=0;
+				// If the Hypothesis confidence interval is less than 1 then test have finished.
+		}
+		
 		RelErr = max(RelErr,RelErrArray[i]);
         
     }
@@ -121,7 +126,14 @@ void result::addBatch(BatchR *batchResult){
 }
 
 bool result::continueSim(){
-    return (RelErr > P.Width || !P.sequential) && (MeanM2->I < P.MaxRuns);
+	if(MeanM2->I >= P.MaxRuns)return false;
+	if(!P.sequential)return true;
+	
+	for(vector<double>::const_iterator it = RelErrArray.begin(); it != RelErrArray.end(); ++it)
+		if(*it > P.Width)return true;
+	
+	return false;
+    //return (RelErr > P.Width || !P.sequential) && (MeanM2->I < P.MaxRuns);
 }
 
 void printPercent(double i, double j){

@@ -170,6 +170,9 @@ blank [ \t]
 
 "PROB" {lhalval->name = new std::string (lhatext); return token::PROB;
 	Reader.error (*lhalloc, "PROB expected");}
+	
+"SPRT" {lhalval->name = new std::string (lhatext); return token::SPRT;
+	Reader.error (*lhalloc, "SPRT expected");}
 
 "Integral" {lhalval->name = new std::string (lhatext); return token::INTEGRAL;
             Reader.error (*lhalloc, "Integral expected");}

@@ -111,7 +111,7 @@ void parameters::usage(){
     cout << "\t--width \tset the width of the confidence interval (default=0.001)"<< endl;
     cout << "\t--batch \tset the size of batch of simulation (default=1000)"<< endl;
     cout << "\t--max-run \tset the maximal number of run (default=2000000)" << endl;
-	cout << "\t--chernoff (level | width | nbrun)\tuse chernoff-hoeffding bound to compute number of simulation" << endl;
+	cout << "\t--chernoff (level | width | nbrun)\tuse chernoff-hoeffding bound to compute the number of simulation" << endl;
 	cout << "\t--seed \tSpecify the seed for the random generator, 0 allow to take a random value"<< endl;
 	cout << "\t--local-test \tUse local testing faster on big net" << endl;
 	

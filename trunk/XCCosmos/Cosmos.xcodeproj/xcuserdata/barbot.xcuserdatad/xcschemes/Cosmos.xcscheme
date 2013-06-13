@@ -65,15 +65,19 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Downloads/repressilatorMS.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Downloads/tester_RepressilatorSWN.lha"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--HASL-formula"
-            isEnabled = "NO">
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "&quot;SPRT(0.7,0.05);&quot;"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "&quot;AVG(Last(1.0));&quot;"
@@ -84,12 +88,12 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.grml"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.gspn"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pilha.grml"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.lha"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_2963657132458752864.grml"
@@ -101,7 +105,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-v 6"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--bin-path"
@@ -149,15 +153,15 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--gnuplot-driver"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--outputdata"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "dataout.dat"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

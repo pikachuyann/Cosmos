@@ -80,6 +80,7 @@ HaslFormulasTop::HaslFormulasTop(double l){
 	TypeOp = PROBABILITY;
 	Level =l;
 	Value =0;
+	Value2=0;
 	Algebraic = 0;
 	left = NULL;
 	right = NULL;
@@ -94,6 +95,7 @@ HaslFormulasTop::HaslFormulasTop(double,double v){
 	TypeOp = CONSTANT;
 	Level = 1;
 	Value = v;
+	Value2= 0;
 	Algebraic = 0;
 	left = NULL;
 	right = NULL;
@@ -109,10 +111,29 @@ HaslFormulasTop::HaslFormulasTop(size_t al,double l){
 	TypeOp = EXPECTANCY;
 	Level = l;
 	Value = quantile(boost::math::normal() , 0.5 + l / 2.0);
+	Value2 = 0;
 	Algebraic = al;
 	left = NULL;
 	right = NULL;
 }
+
+/**
+ * Build an HASL formula testing if the probability of accepting a run is above some threshold.
+ * @param l the confidence level. In this setting it is the probability of type
+ * I and type II errors.
+ * @param p is the threshold.
+ * @param delta is the half width of the indiference region.
+ */
+HaslFormulasTop::HaslFormulasTop(double l,double p, double delta){
+	TypeOp = HYPOTHESIS	;
+	Level = l;
+	Value = p -delta;
+	Value2= p + delta;
+	Algebraic = 0;
+	left = NULL;
+	right = NULL;
+}
+
 
 /*
  * Build an Hasl formula of a given type as a tree with two descendant.
@@ -125,6 +146,7 @@ HaslFormulasTop::HaslFormulasTop(HaslType t, HaslFormulasTop* l,HaslFormulasTop*
 	Algebraic = 0;
 	Level = 1;
 	Value = 0;
+	Value2= 0;
 	left = l;
 	right = r;
 }
@@ -220,6 +242,24 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			return new ConfInt(mean*mean2,
 							   (mean2 - width)*l,
 							   (mean2 + width)*u );
+		}
+			
+		case HYPOTHESIS:
+		{
+		//Implementation of the SPRT.
+		
+			double uppart = pow((Value2/Value),(double)batch.Isucc);
+			double lowpart = pow(((1-Value2)/(1-Value)), (double)batch.I - (double)batch.Isucc);
+			double likelyhoodRatio = uppart * lowpart;
+			double a = 1-Level; //Probability of type I error
+			double b = 1-Level; //Probability of type II errror
+			if(likelyhoodRatio <= b /(1-a)){
+				return new ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2);
+			}
+			if (likelyhoodRatio >= (1-b) / a ) {
+				return new ConfInt((double)batch.Isucc/(double)batch.I, Value ,1);
+			}
+			return new ConfInt((double)batch.Isucc/(double)batch.I, 0 ,1);
 		}
 			
 		case CONSTANT:

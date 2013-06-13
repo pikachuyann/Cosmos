@@ -118,6 +118,7 @@
 %token <name>     LhaMAX
 %token <name> 	  AVG
 %token <name>	  PROB
+%token <name>	  SPRT
 %token <name>     LAST
 %token <name> 	  INTEGRAL
 %token <name>	  MEAN
@@ -723,6 +724,9 @@ AVG LB AlgExpr RB {
 }
 | PROB {
 	$$ = new HaslFormulasTop(Reader.MyLha.ConfidenceLevel);
+}
+| SPRT LB rval COMMA rval RB {
+	$$ = new HaslFormulasTop(Reader.MyLha.ConfidenceLevel,$3,$5);
 }
 | PDF LB AlgExpr COMMA rorival COMMA rorival COMMA rorival RB {
 	
