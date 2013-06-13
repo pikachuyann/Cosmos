@@ -43,8 +43,8 @@ struct parameters {
     double epsilon;
 	double Level;
 	double Width;
-	unsigned long Batch;
-	unsigned long MaxRuns;
+	unsigned long int Batch;
+	unsigned long int MaxRuns;
 	bool sequential;
 	string tmpPath;
 	unsigned int tmpStatus; // 0 create and destroy tmp, 

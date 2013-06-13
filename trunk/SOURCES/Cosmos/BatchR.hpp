@@ -44,10 +44,10 @@ public:
     BatchR(const size_t i);
 	
 	//! Number of simulation.
-    unsigned long I;
+    unsigned long int I;
 	
 	//! Number of succesfull simulation.
-    unsigned long Isucc;
+    unsigned long int Isucc;
 	
 	//! Number of mesured variable.
     size_t TableLength;
