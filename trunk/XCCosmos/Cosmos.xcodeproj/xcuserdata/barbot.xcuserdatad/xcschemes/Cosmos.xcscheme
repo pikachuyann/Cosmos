@@ -64,6 +64,14 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "--max-run"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "10000000000"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "/Users/barbot/Downloads/repressilatorMS.grml"
             isEnabled = "NO">
          </CommandLineArgument>
