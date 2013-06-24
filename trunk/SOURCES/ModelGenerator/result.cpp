@@ -66,20 +66,25 @@ result::result(parameters &Q){
         outdatastream << endl;
     }
 	if(P.gnuplotDriver){
-		gnuplotstream = popen("gnuplot", "w");
-		if(P.verbose>2)cout << "Gnuplot opened" << endl;
-		if(gnuplotstream<=0){
-			perror("Fail to lauch gnuplot");
-			exit(EXIT_FAILURE);
+		if(system("which gnuplot > /dev/null")!=0){
+			cerr << "gnuplot not found" << endl;
+			P.gnuplotDriver=false;
+		}else{
+			
+			gnuplotstream = popen("gnuplot", "w");
+			if(P.verbose>2)cout << "Gnuplot opened" << endl;
+			if(gnuplotstream<=0){
+				perror("Fail to lauch gnuplot");
+				exit(EXIT_FAILURE);
+			}
+			if(P.alligatorMode){
+				fputs("set terminal pngcairo font 'arial,10' size 500, 200\n",gnuplotstream);
+				//fputs("set output 'dataout.png'\n",gnuplotstream);
+			}
+			fputs("set grid lc rgb 'black'\n",gnuplotstream);
+			fputs("set style fill solid 0.2 noborder\n",gnuplotstream);
+			flushgnuplot();
 		}
-		if(P.alligatorMode){
-			fputs("set terminal pngcairo font 'arial,10' size 500, 200\n",gnuplotstream);
-			//fputs("set output 'dataout.png'\n",gnuplotstream);
-		}
-		fputs("set grid lc rgb 'black'\n",gnuplotstream);
-		fputs("set style fill solid 0.2 noborder\n",gnuplotstream);
-		fflush(gnuplotstream);
-		
 	}
     
 	gettimeofday(&start, NULL);
@@ -95,7 +100,7 @@ result::~result(){
 void result::close_gnuplot(){
 	if(gnuplotstream>0){
 		fputs("exit\n", gnuplotstream);
-		fflush(gnuplotstream);
+		flushgnuplot();
 		//pclose(gnuplotstream); //not neaded
 	}
 }
@@ -277,7 +282,7 @@ void result::printGnuplot(){
 		fputs(P.dataoutput.c_str(), gnuplotstream);
 		fputs("' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 1 lw 2\n", gnuplotstream);
 		if(P.alligatorMode)fputs("set output\n", gnuplotstream);
-		fflush(gnuplotstream);
+		flushgnuplot();
 	}
 	
 	if(P.datatrace.compare("")!=0){
@@ -291,9 +296,21 @@ void result::printGnuplot(){
 		fputs(P.datatrace.c_str(), gnuplotstream);
 		fputs("' using 1:i title  columnheader(i) with lines\n", gnuplotstream);
 		if(P.alligatorMode)fputs("set output\n", gnuplotstream);
-		fflush(gnuplotstream);
+		flushgnuplot();
 	}
 }
+
+void result::flushgnuplot(){
+	fflush(gnuplotstream);
+}
+
+/*	if(0!=ferror(gnuplotstream)){
+		int statgnu = fflush(gnuplotstream);
+		return;
+	}
+	cerr << "Gnuplot crashes " << endl;
+	gnuplotstream = NULL;
+}*/
 
 void result::outputData(){
     outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;

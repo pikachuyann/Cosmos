@@ -101,6 +101,9 @@ private:
   //! Stream where to print data.
   fstream outdatastream;
 
+  //! Flush the gnuplot stream and check for error.
+  void flushgnuplot();
+
   //! Stream to the interactive gnuplot session.
   FILE* gnuplotstream;
 
