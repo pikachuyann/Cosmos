@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sstream>
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <sys/select.h>
@@ -95,15 +96,19 @@ void signalHandler( int signum )
 			
 			if(child != -1){
 				if(status!=0){
-					if(WIFSIGNALED(status)){
-						if(WTERMSIG(status) != 2){
-							cout << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
-							exit(EXIT_FAILURE);
+					if(count(clientPID.begin(),clientPID.end(),child)==0)
+						cout << "The child "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
+					else{
+						if(WIFSIGNALED(status)){
+							if(WTERMSIG(status) != 2){
+								cout << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
+								exit(EXIT_FAILURE);
+							}
+						} else if(WIFEXITED(status)){
+							if(WEXITSTATUS(status) != 130)cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
+						}else {
+							cout << "Simulator "<< child << " Crash ! with unknown status "<< status  << endl;
 						}
-					} else if(WIFEXITED(status)){
-						if(WEXITSTATUS(status) != 130)cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
-					}else {
-						cout << "Simulator "<< child << " Crash ! with unknown status "<< status  << endl;
 					}
 				}
 			}
