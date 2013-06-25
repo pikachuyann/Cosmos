@@ -277,7 +277,99 @@ void Gspn_Reader::writeEnabledDisabled(ofstream &SpnF){
 	writeUpdateVect(SpnF, "PossiblyEnabled", PossiblyEnabled);
 	writeUpdateVect(SpnF, "PossiblyDisabled", PossiblyDisabled);
 	writeUpdateVect(SpnF, "FreeMarkDepT", FreeMarkDepT);
+}
+
+void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 	
+	SpnF << "abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){" << endl;
+	SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
+	for(size_t trit = 0; trit != MyGspn.tr;++trit){
+		for (size_t trit2= 0; trit2 != MyGspn.tr; ++trit2) {
+			size_t nbp = 0;
+			size_t pivotplace;
+			for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
+				if(MyGspn.outArcsTok[trit][itp].size()>0
+				   && MyGspn.inArcsTok[trit2][itp].size()>0
+				   ){
+					nbp++;
+					pivotplace = itp;
+				}
+			}
+			if (nbp==1) {
+				SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
+				":\t//" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.placeStruct[pivotplace].name <<
+				"->" << MyGspn.transitionStruct[trit2].label << endl;
+				SpnF << "\t{"<< endl;
+				//SpnF << "cerr << \"" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.placeStruct[pivotplace].name <<
+				//"->" << MyGspn.transitionStruct[trit2].label << "\"<< endl;" << endl;
+				SpnF << "\t\tassert(lastTransition=="<< trit << " && targettr == "<<trit2<<");"<<endl;
+				/*SpnF << "\t\tconst abstractBinding* result = &(Transition[targettr].bindingList[*bindingNum]);"<< endl;
+				SpnF << "\t\tif(*bindingNum==Transition[targettr].bindingList.size()-1){*bindingNum= string::npos;}"<<endl;
+				SpnF << "\t\telse{*bindingNum = *bindingNum +1;};"<< endl;
+				SpnF << "\t\treturn result;"<< endl;*/
+				SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl;
+				SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
+				SpnF << "\t\tassert(b.id() == Transition[lastTransition].bindingLinkTable[btotal]);" << endl;
+				SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
+				SpnF << "\t\tif(bloc==string::npos)return NULL;" << endl;
+				
+				SpnF << "\t\t*bindingNum=1;" << endl;
+				SpnF << "\t\treturn &(Transition[targettr].bindingList[bloc]);" << endl;
+				SpnF << "\t}"<< endl;
+			}
+		}
+	}
+	SpnF << "\tdefault:"<< endl;
+	SpnF << "\t\tif(*bindingNum==Transition[targettr].bindingList.size())return NULL;"<<endl;
+	SpnF << "\t\t*bindingNum = *bindingNum +1;"<< endl;
+	SpnF << "\t\treturn &(Transition[targettr].bindingList[*bindingNum-1]);"<< endl;
+	SpnF << "}}"<< endl;
+	
+	SpnF << "abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){" << endl;
+	SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
+	for(size_t trit = 0; trit != MyGspn.tr;++trit){
+		for (size_t trit2= 0; trit2 != MyGspn.tr; ++trit2) {
+			size_t nbp = 0;
+			size_t pivotplace;
+			for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
+				if(MyGspn.inArcsTok[trit][itp].size()>0
+				   && MyGspn.outArcsTok[trit2][itp].size()>0
+				   ){
+					nbp++;
+					pivotplace = itp;
+				}
+			}
+			if (nbp==1) {
+				SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
+				":\t//" << MyGspn.transitionStruct[trit].label << "<-" << MyGspn.placeStruct[pivotplace].name <<
+				"<-" << MyGspn.transitionStruct[trit2].label << endl;
+				SpnF << "\t{"<< endl;
+				SpnF << "\t\tassert(lastTransition=="<< trit << " && targettr == "<<trit2<<");"<<endl;
+				SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl;
+				SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
+				SpnF << "\t\tassert(b.id() == Transition[lastTransition].bindingLinkTable[btotal]);" << endl;
+				SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
+				SpnF << "\t\tif(bloc==string::npos)return NULL;" << endl;
+				
+				SpnF << "\t\t*bindingNum=1;" << endl;
+				SpnF << "\t\treturn &(Transition[targettr].bindingList[bloc]);" << endl;
+				SpnF << "\t}"<< endl;
+			}
+		}
+	}
+	SpnF << "\tdefault:"<< endl;
+	SpnF << "\t\tif(*bindingNum==Transition[targettr].bindingList.size())return NULL;"<<endl;
+	SpnF << "\t\t*bindingNum = *bindingNum +1;"<< endl;
+	SpnF << "\t\treturn &(Transition[targettr].bindingList[*bindingNum-1]);"<< endl;
+	SpnF << "}}"<< endl;
+	
+	
+	/*SpnF << "\tconst abstractBinding* result = &(Transition[targettr].bindingList[*bindingNum]);"<< endl;
+	SpnF << "\tif(*bindingNum==Transition[targettr].bindingList.size()-1){*bindingNum= string::npos;}"<<endl;
+	SpnF << "\telse{*bindingNum = *bindingNum +1;};"<< endl;
+	SpnF << "\treturn result;"<< endl;
+	SpnF << "}"<< endl;*/
+
 }
 
 void Gspn_Reader::printloot(ofstream& fs, size_t domain, size_t nesting ){
@@ -703,32 +795,59 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	 }*/
 	SpnCppFile << "\treturn idcount;\n}\n";
 	
+	SpnCppFile << "int abstractBinding::idTotal()const{\n";
+	SpnCppFile << "\t return ";
+	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
+		SpnCppFile << "P->"<< colvar->name << ".c0 + Color_"<< MyGspn.colDoms[colvar->type].name << "_Total *(";
+	}
+	SpnCppFile << "0";
+	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) SpnCppFile << ")";
+
+	SpnCppFile << ";\n}\n";
+
+	
 }
 
 void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
 	
+	size_t nbbinding = 1;
+	for (size_t v = 0 ; v < MyGspn.colVars.size(); v++)
+		nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
+	
 	for (size_t t=0; t < MyGspn.tr; t++ ) {
-		spnF << "\tTransition["<<t<<"].Id =" << t << ";" <<endl;
+		
+		spnF << "\tTransition["<<t<<"] = _trans(" << t << ",";
+		
 		if (MyGspn.transitionStruct[t].type==Timed) {
-			spnF << "\tTransition["<<t<<"].transType = Timed;" <<endl;
-			spnF << "\tTransition["<<t<<"].DistTypeIndex = "<< MyGspn.transitionStruct[t].dist.name << ";" <<endl;
+			spnF << "Timed," << MyGspn.transitionStruct[t].dist.name << ",";
+		}else{
+			spnF << "unTimed,DETERMINISTIC,";
+		}
+		
+		spnF << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding <<");" << endl;
+		
+		
+		//spnF << "\tTransition["<<t<<"].Id =" << t << ";" <<endl;
+		if (MyGspn.transitionStruct[t].type==Timed) {
+			//spnF << "\tTransition["<<t<<"].transType = Timed;" <<endl;
+			//spnF << "\tTransition["<<t<<"].DistTypeIndex = "<< MyGspn.transitionStruct[t].dist.name << ";" <<endl;
 			if (bstr) {
 				for (size_t j = 0; j < MyGspn.transitionStruct[t].dist.Param.size(); j++) {
 					spnF << "\tTransition[" << t << "].DistParams.push_back(\" " << MyGspn.transitionStruct[t].dist.Param[j] << "\" );" << endl;
 				}
 			}
 		}else{
-			spnF << "\tTransition["<<t<<"].transType = unTimed;" <<endl;
-			spnF << "\tTransition["<<t<<"].DistTypeIndex = DETERMINISTIC ;" <<endl;
+			//spnF << "\tTransition["<<t<<"].transType = unTimed;" <<endl;
+			//spnF << "\tTransition["<<t<<"].DistTypeIndex = DETERMINISTIC ;" <<endl;
 		}
-		spnF << "\tTransition["<<t<<"].MarkingDependent = "<< MyGspn.transitionStruct[t].markingDependant << ";" <<endl;
+		//spnF << "\tTransition["<<t<<"].MarkingDependent = "<< MyGspn.transitionStruct[t].markingDependant << ";" <<endl;
 		
 		if (bstr) {
 			spnF << "\tTransition["<<t<<"].label = \""<< MyGspn.transitionStruct[t].label << "\";"<< endl;
 			spnF << "\tTransition["<<t<<"].priority = \""<< MyGspn.transitionStruct[t].priority << "\";"<< endl;
 			spnF << "\tTransition["<<t<<"].weight = \""<< MyGspn.transitionStruct[t].weight << "\";"<< endl;
 		}
-		
+		//spnF << "\tTransition["<<t<<"].bindingLinkTable.resize("<< nbbinding <<",string::npos); "<< endl;
 		
 		spnF << "\t{abstractBinding bl;\n";
 		for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
@@ -741,6 +860,7 @@ void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
 		else spnF << "\t\tif(" << MyGspn.transitionStruct[t].guard << "){\n";
 		spnF << "\t\t\tbl.idcount = Transition["<<t<<"].bindingList.size();\n";
 		spnF << "\t\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";
+		spnF << "\t\t\tTransition["<<t<<"].bindingLinkTable[bl.idTotal()]= Transition["<<t<<"].bindingList.size()-1; "<< endl;
 		spnF << "\t\t}\n\t}while(bl.next());}\n";
 		
 	}
@@ -821,6 +941,9 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "SPN::SPN():" << endl;
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
 	SpnCppFile << "tr(" << MyGspn.tr << "), ";
+	SpnCppFile << "Place("<< MyGspn.pl << "),";
+	SpnCppFile << "Transition(" << MyGspn.tr << "),";
+	
 	SpnCppFile << "ParamDistr(3), TransitionConditions(" << MyGspn.tr <<",0){" << endl;
 	SpnCppFile << "    Path =\"" << MyGspn.Path << "\";" << endl;
 	
@@ -830,16 +953,6 @@ void Gspn_Reader::WriteFile(parameters& P){
 		SpnCppFile << "\tsetConditionsVector();"<< endl;
 		SpnCppFile << "\tinitTransitionConditions = TransitionConditions;" << endl;
 	}
-	
-	
-	SpnCppFile << "    vector <spn_trans> t(" << MyGspn.tr << ");" << endl;
-	SpnCppFile << "    Transition = t;" << endl;
-	
-	
-	SpnCppFile << "    vector <spn_place> p(" << MyGspn.pl << ");" << endl;
-	SpnCppFile << "    Place = p;" << endl;
-	
-	
 	
 	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 		 plit!= MyGspn.placeStruct.end(); ++plit) {
@@ -1125,6 +1238,8 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "const set<int>* SPN::FreeMarkingDependant()const {" << endl;
 	SpnCppFile << "\treturn &(FreeMarkDepT[lastTransition]);" << endl;
 	SpnCppFile << "}" << endl;
+	
+	writeEnabledDisabledBinding(SpnCppFile);
 	
 	
 	SpnCppFile << "void SPN::setConditionsVector(){" << endl;

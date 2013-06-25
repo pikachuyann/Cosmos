@@ -248,6 +248,11 @@ PlacesList: PList EQ '{' PLabels '}' SEMICOLON {
     Reader.MyGspn.outArcsStr=m1Str;
     Reader.MyGspn.inArcsStr=m1Str;
     Reader.MyGspn.inhibArcsStr=m1Str;
+	
+	
+	Reader.MyGspn.outArcsTok = vector<vector<vector<coloredToken> > >(Reader.MyGspn.tr,vector<vector<coloredToken> >(Reader.MyGspn.pl));
+	Reader.MyGspn.inArcsTok = vector<vector<vector<coloredToken> > >(Reader.MyGspn.tr,vector<vector<coloredToken> >(Reader.MyGspn.pl));
+	Reader.MyGspn.inhibArcsTok = vector<vector<vector<coloredToken> > >(Reader.MyGspn.tr,vector<vector<coloredToken> >(Reader.MyGspn.pl));
   }
 
   MarkingDependent=false;

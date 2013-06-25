@@ -38,6 +38,7 @@
 #include <vector>
 #include <map>
 #include <math.h>
+#include <assert.h>
 
 #include "marking.hpp"
 #include <limits.h>
@@ -69,6 +70,11 @@ enum TransType {
  * Datatype for transition of the SPN
  */
 struct _trans {
+	_trans(){};
+	
+	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb):
+	Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(false),bindingLinkTable(nbb,string::npos){};
+	
 	unsigned int Id; //! number of the transition
 	string label; //! Name of the transition, can be empty
 	TransType transType;
@@ -79,6 +85,7 @@ struct _trans {
 	bool MarkingDependent; //! true if the transition is Marking Dependent
 	bool AgeMemory; //! true if the memory policy of the transition is age memory
 	vector<abstractBinding> bindingList; //! List of alowed binding for this transition.
+	vector<size_t> bindingLinkTable; //! Table to access bindings of the transition.
 };
 typedef struct _trans spn_trans;
 
@@ -191,6 +198,9 @@ public:
 	
 	//!return the set of transition without constrain but marking dependant
 	const set<int >* FreeMarkingDependant()const;
+	
+	abstractBinding* nextPossiblyEnabledBinding(size_t tr,const abstractBinding& b,size_t*);
+	abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*);
 	
 private:
 	size_t lastTransition; //! store the last fired transition

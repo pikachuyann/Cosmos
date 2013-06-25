@@ -165,8 +165,12 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	// Possibly adding Events corresponding to newly enabled-transitions
 	const set<int>* net = N.PossiblyEn();
 	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
-		for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-			bindex != N.Transition[*it].bindingList.end() ; ++bindex){
+		size_t bindnum = 0;
+		abstractBinding *bindex = N.nextPossiblyEnabledBinding(*it, lb, &bindnum);
+		while (bindex != NULL){
+			
+		//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
+		//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
 			if (N.IsEnabled(*it,*bindex)) {
 				if (!EQ->isScheduled((*it),bindex->id())) {
 					GenerateEvent(F, (*it), *bindex);
@@ -178,14 +182,19 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 					}
 				}
 			}
+			bindex = N.nextPossiblyEnabledBinding(*it, lb, &bindnum);
 		}
 	}
 	
 	// Possibly removing Events corresponding to newly disabled-transitions
 	const set<int>* ndt = N.PossiblyDis();
 	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
-		for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-			bindex != N.Transition[*it].bindingList.end() ; ++bindex){
+		size_t bindnum = 0;
+		abstractBinding *bindex = N.nextPossiblyEnabledBinding(*it, lb, &bindnum);
+		while (bindex != NULL){
+
+		//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
+		//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
 			if (EQ->isScheduled(*it, bindex->id())) {
 				if (!N.IsEnabled(*it, *bindex ))
 					EQ->remove(*it,bindex->id());
@@ -196,6 +205,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 					}
 				}
 			}
+			bindex = N.nextPossiblyDisabledBinding(*it, lb, &bindnum);
 		}
 	}
 
@@ -223,8 +233,14 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 		 ; t != N.Transition.end() ; ++t) {
 		for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
 			bindex != t->bindingList.end() ; ++bindex){
-			assert (N.IsEnabled(t->Id, *bindex) ==
-			EQ->isScheduled(t->Id, bindex->id()));
+			if (N.IsEnabled(t->Id, *bindex) !=
+				EQ->isScheduled(t->Id, bindex->id())){
+				cerr << "N.IsEnabled(" << t->label << ",";
+				bindex->print();
+				cerr <<")" << endl;
+				assert(N.IsEnabled(t->Id, *bindex) ==
+					   EQ->isScheduled(t->Id, bindex->id()));
+			}
 		}
 	}
 #endif

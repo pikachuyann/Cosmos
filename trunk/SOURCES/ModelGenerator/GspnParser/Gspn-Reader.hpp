@@ -148,6 +148,10 @@ struct GSPN {
     vector < vector<string> > inArcsStr;
     vector < vector<string> > outArcsStr;
     vector < vector<string> > inhibArcsStr;
+	vector < vector< vector< coloredToken> > > inArcsTok;
+	vector < vector< vector< coloredToken> > > outArcsTok;
+	vector < vector< vector< coloredToken> > > inhibArcsTok;
+	
     vector <string> Marking;
 
     map <std::string, int> IntConstant;
@@ -159,34 +163,6 @@ struct GSPN {
 	
 	GSPN(){
 		colDoms.push_back(colorDomain());
-		/*colorClass cc1;
-		cc1.name = "CLIENT";
-		cc1.colors.push_back(color("C1"));
-		cc1.colors.push_back(color("C2"));
-		cc1.colors.push_back(color("C3"));
-		colClasses.push_back(cc1);
-		
-		colorClass cc2;
-		cc2.name = "SERVER";
-		cc2.colors.push_back(color("S1"));
-		cc2.colors.push_back(color("S2"));
-		colClasses.push_back(cc2);
-		
-		colorDomain cd1;
-		cd1.name = "CLIENT";
-		cd1.colorClassIndex.push_back(0);
-		colDoms.push_back(cd1);
-		
-		colorDomain cd2;
-		cd2.name = "SERVER";
-		cd2.colorClassIndex.push_back(1);
-		colDoms.push_back(cd2);
-		
-		colorDomain cd3;
-		cd3.name = "CS";
-		cd3.colorClassIndex.push_back(0);
-		cd3.colorClassIndex.push_back(1);
-		colDoms.push_back(cd3);*/
 	}
 
 };
@@ -236,6 +212,7 @@ private:
 
 	void writeMarkingClasse(ofstream &, ofstream &, parameters &);
 	void writeEnabledDisabled(ofstream &);
+	void writeEnabledDisabledBinding(ofstream &);
 	void writeUpdateVect(ofstream &,const string &name,const vector< set<int> > &vect);
 	void writeTransition(ofstream &, bool);
 	void writeVariable(ofstream & spnF);

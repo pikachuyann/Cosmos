@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0450"
+   LastUpgradeVersion = "0460"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -65,27 +65,27 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--max-run"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "10000000000"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Downloads/repressilatorMS.grml"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Downloads/tester_RepressilatorSWN.lha"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--HASL-formula"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "&quot;SPRT(0.7,0.05);&quot;"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "&quot;AVG(Last(1.0));&quot;"
@@ -97,11 +97,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.gspn"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.lha"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_2963657132458752864.grml"

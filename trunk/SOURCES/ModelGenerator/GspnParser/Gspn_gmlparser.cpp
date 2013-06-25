@@ -845,6 +845,10 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         MyGspn->outArcsStr=m1Str;
         MyGspn->inArcsStr=m1Str;
         MyGspn->inhibArcsStr=m1Str;
+		
+		MyGspn->outArcsTok = vector<vector<vector<coloredToken> > >(MyGspn->tr,vector<vector<coloredToken> >(MyGspn->pl));
+		MyGspn->inArcsTok = vector<vector<vector<coloredToken> > >(MyGspn->tr,vector<vector<coloredToken> >(MyGspn->pl));
+		MyGspn->inhibArcsTok = vector<vector<vector<coloredToken> > >(MyGspn->tr,vector<vector<coloredToken> >(MyGspn->pl));
         
     }
     
@@ -918,8 +922,8 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             if(Evaluate_gml.parse(valuation)){
                 MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=1;
                 MyGspn->inhibArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= valuation;
-            }
-            else {	
+				MyGspn->inhibArcsTok[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= toklist;
+			}else {	
                 MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=Evaluate_gml.IntResult;
             }
             //MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
@@ -927,6 +931,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             if(Evaluate_gml.parse(valuation)){
                 MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=1;
                 MyGspn->inArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
+				MyGspn->inArcsTok[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= toklist;
             }
             else {
                 MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=Evaluate_gml.IntResult;
@@ -937,6 +942,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         if(Evaluate_gml.parse(valuation)){
             MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=1;
             MyGspn->outArcsStr[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=valuation;
+			MyGspn->outArcsTok[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]= toklist;
         }
         else {
             MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=Evaluate_gml.IntResult;

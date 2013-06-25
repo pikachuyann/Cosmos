@@ -75,6 +75,7 @@ public:
 	bool next();
 	void print()const;
 	int transition()const;
+	int idTotal()const;
 	int id()const;
 	int idcount;
 };
