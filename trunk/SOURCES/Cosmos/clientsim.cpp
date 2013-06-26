@@ -49,6 +49,7 @@ void signalHandler( int )
  * his standart input
  */
 int main(int argc, char** argv) {
+	assert(cerr<< "Cosmos compile in DEBUG mode!"<< endl);
 		//cerr << "start client"<< endl;	
 	//pid_t pid =getpid();
 	//write(STDOUT_FILENO,reinterpret_cast<char*>(&pid),sizeof(pid));

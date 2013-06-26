@@ -326,6 +326,8 @@ int main(int argc, char** argv) {
 	parameters P;
 	timeval startbuild,endbuild;
 	
+	assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
+	
 	P.parseCommandLine(argc,argv);
 	
 	//Start the timer for build time.
