@@ -326,7 +326,6 @@ int main(int argc, char** argv) {
 	parameters P;
 	timeval startbuild,endbuild;
 	
-	assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
 	
 	P.parseCommandLine(argc,argv);
 	
@@ -341,6 +340,7 @@ int main(int argc, char** argv) {
 	}
 	
 	if (P.verbose>0)cout << "Cosmos" << endl;
+	//assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
 	
 	//Find the path to the directory containing the binary of cosmos.
 	if(P.Path.compare("")==0){

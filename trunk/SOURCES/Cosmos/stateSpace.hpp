@@ -45,6 +45,8 @@
 #include "spn.hpp"
 
 #include <iostream>
+#include <boost/numeric/ublas/fwd.hpp>
+#include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include "marking.hpp"

@@ -302,14 +302,14 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 				SpnF << "\t{"<< endl;
 				//SpnF << "cerr << \"" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.placeStruct[pivotplace].name <<
 				//"->" << MyGspn.transitionStruct[trit2].label << "\"<< endl;" << endl;
-				SpnF << "\t\tassert(lastTransition=="<< trit << " && targettr == "<<trit2<<");"<<endl;
+				//SpnF << "\t\tassert(lastTransition=="<< trit << " && targettr == "<<trit2<<");"<<endl;
 				/*SpnF << "\t\tconst abstractBinding* result = &(Transition[targettr].bindingList[*bindingNum]);"<< endl;
 				SpnF << "\t\tif(*bindingNum==Transition[targettr].bindingList.size()-1){*bindingNum= string::npos;}"<<endl;
 				SpnF << "\t\telse{*bindingNum = *bindingNum +1;};"<< endl;
 				SpnF << "\t\treturn result;"<< endl;*/
 				SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl;
 				SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
-				SpnF << "\t\tassert(b.id() == Transition[lastTransition].bindingLinkTable[btotal]);" << endl;
+				//SpnF << "\t\tassert(b.id() == Transition[lastTransition].bindingLinkTable[btotal]);" << endl;
 				SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
 				SpnF << "\t\tif(bloc==string::npos)return NULL;" << endl;
 				
@@ -344,10 +344,10 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 				":\t//" << MyGspn.transitionStruct[trit].label << "<-" << MyGspn.placeStruct[pivotplace].name <<
 				"<-" << MyGspn.transitionStruct[trit2].label << endl;
 				SpnF << "\t{"<< endl;
-				SpnF << "\t\tassert(lastTransition=="<< trit << " && targettr == "<<trit2<<");"<<endl;
+				//SpnF << "\t\tassert(lastTransition=="<< trit << " && targettr == "<<trit2<<");"<<endl;
 				SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl;
 				SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
-				SpnF << "\t\tassert(b.id() == Transition[lastTransition].bindingLinkTable[btotal]);" << endl;
+				//SpnF << "\t\tassert(b.id() == Transition[lastTransition].bindingLinkTable[btotal]);" << endl;
 				SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
 				SpnF << "\t\tif(bloc==string::npos)return NULL;" << endl;
 				

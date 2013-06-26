@@ -106,18 +106,5 @@
          landmarkName = "launchServer(parameters&amp; P)"
          landmarkType = "7">
       </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/Simulator.cpp"
-         timestampString = "393861668.570944"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "167"
-         endingLineNumber = "167"
-         landmarkName = "Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding&amp; lb)"
-         landmarkType = "5">
-      </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>
