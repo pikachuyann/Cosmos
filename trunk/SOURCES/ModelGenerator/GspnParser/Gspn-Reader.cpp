@@ -279,6 +279,43 @@ void Gspn_Reader::writeEnabledDisabled(ofstream &SpnF){
 	writeUpdateVect(SpnF, "FreeMarkDepT", FreeMarkDepT);
 }
 
+int Gspn_Reader::varMultiplier(size_t var){
+	int acc = 1;
+	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end()&& (colvar - MyGspn.colVars.begin()) != var; ++colvar) {
+		acc *= MyGspn.colClasses[colvar->type].colors.size();
+	}
+	return acc;
+}
+
+template <typename T1>
+bool setinclusion(set<T1> s1,set<T1> s2){
+	for (typename set<T1>::const_iterator it = s1.begin(); it!= s1.end(); ++it){
+		if (s2.find(*it)==s2.end())return false;
+	}
+	
+	return true;
+}
+
+/*template <typename T1>
+vector<T1> setofvect(vect<T1> s1){
+	for (typename set<T1>::const_iterator it = s1.begin(); it!= s1.end(); ++it){
+		if (s2.find(*it)==s2.end())return false;
+	}
+	
+	return true;
+}*/
+
+template <typename T1>
+void printset(set<T1> s1){
+	cerr<< "{";
+	for (typename set<T1>::const_iterator it = s1.begin(); it!= s1.end(); ++it){
+		if(it!=s1.begin())cerr << ";";
+		cerr << *it;
+	}
+	cerr << "}";
+}
+
+
 void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 	
 	SpnF << "abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){" << endl;
@@ -287,35 +324,72 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 		for (size_t trit2= 0; trit2 != MyGspn.tr; ++trit2) {
 			size_t nbp = 0;
 			size_t pivotplace;
+			bool fallback = false;
 			for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
+				//Check that that there is at least one variable on the two arcs
 				if(MyGspn.outArcsTok[trit][itp].size()>0
 				   && MyGspn.inArcsTok[trit2][itp].size()>0
 				   ){
-					nbp++;
-					pivotplace = itp;
+					//Check that there is only one token on each arcs
+					if(MyGspn.outArcsTok[trit][itp].size()==1
+					   && MyGspn.inArcsTok[trit2][itp].size()==1){
+						//Check that the token is not the ALL token.
+						if(!MyGspn.outArcsTok[trit][itp][0].hasAll &&
+						   !MyGspn.outArcsTok[trit][itp][0].hasAll){
+							nbp++;
+							pivotplace = itp;
+						}else fallback = true;//Handling of ALL token not yet implemented
+					}else
+						fallback= true; // Handling of several token not yet implemented
 				}
 			}
-			if (nbp==1) {
+			if(nbp==1 && !fallback){
+				for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
+					if(trit!= trit2 && itp!= pivotplace && MyGspn.inArcsTok[trit2][itp].size()>0 && MyGspn.outArcs[trit][itp]==0){
+						// If there is a synchronisation over two places fall back to enumeration.
+						cerr << "synch: " << MyGspn.placeStruct[pivotplace].name << " | " << MyGspn.placeStruct[itp].name <<
+						"->" << MyGspn.transitionStruct[trit2].label << endl;
+						fallback=true;
+					}
+				}
+			}
+			/*if(nbp==1 && !fallback){
+				//if the target transition is a not contain in the initial transition fallback
+				cerr << "check inclusion:";
+				cerr << "Dom " << MyGspn.transitionStruct[trit].label << " ";
+				printset(MyGspn.transitionStruct[trit].varDomain);
+				cerr << "Dom " << MyGspn.transitionStruct[trit2].label << " ";
+				printset(MyGspn.transitionStruct[trit2].varDomain);
+				cerr << endl;
+				if(!setinclusion(MyGspn.transitionStruct[trit2].varDomain,MyGspn.transitionStruct[trit].varDomain)){
+					cerr << "sub domain: " << MyGspn.transitionStruct[trit2].label << " > " <<
+						MyGspn.transitionStruct[trit].label << endl;
+				   fallback=true;
+				}
+			}*/
+			
+			if (nbp==1 && !fallback) {
+				// Here we implement only the case with one place one token on the arc
+				// For all other casess fall back to enumeration.
 				SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
 				":\t//" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.placeStruct[pivotplace].name <<
 				"->" << MyGspn.transitionStruct[trit2].label << endl;
 				SpnF << "\t{"<< endl;
-				//SpnF << "cerr << \"" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.placeStruct[pivotplace].name <<
-				//"->" << MyGspn.transitionStruct[trit2].label << "\"<< endl;" << endl;
-				//SpnF << "\t\tassert(lastTransition=="<< trit << " && targettr == "<<trit2<<");"<<endl;
-				/*SpnF << "\t\tconst abstractBinding* result = &(Transition[targettr].bindingList[*bindingNum]);"<< endl;
-				SpnF << "\t\tif(*bindingNum==Transition[targettr].bindingList.size()-1){*bindingNum= string::npos;}"<<endl;
-				SpnF << "\t\telse{*bindingNum = *bindingNum +1;};"<< endl;
-				SpnF << "\t\treturn result;"<< endl;*/
-				SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl;
+				SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 				SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
-				//SpnF << "\t\tassert(b.id() == Transition[lastTransition].bindingLinkTable[btotal]);" << endl;
+				SpnF << "\t\tbtotal += " << ((MyGspn.outArcsTok[trit][pivotplace][0].varIncrement[0]
+												+ MyGspn.colClasses[MyGspn.outArcsTok[trit][pivotplace][0].field[0]].colors.size()) % MyGspn.colClasses[MyGspn.outArcsTok[trit][pivotplace][0].field[0]].colors.size() ) *
+				varMultiplier(MyGspn.outArcsTok[trit][pivotplace][0].field[0]) <<  ";"<< endl;
+				//Compute the number of the new binding in the glabal numerotation.
+				
 				SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
 				SpnF << "\t\tif(bloc==string::npos)return NULL;" << endl;
 				
 				SpnF << "\t\t*bindingNum=1;" << endl;
 				SpnF << "\t\treturn &(Transition[targettr].bindingList[bloc]);" << endl;
 				SpnF << "\t}"<< endl;
+			}else if(fallback){
+				SpnF << "\t\t//Fallback:" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.transitionStruct[trit2].label << endl;
 			}
 		}
 	}
@@ -339,7 +413,7 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 					pivotplace = itp;
 				}
 			}
-			if (nbp==1) {
+			if (false && nbp==1) {
 				SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
 				":\t//" << MyGspn.transitionStruct[trit].label << "<-" << MyGspn.placeStruct[pivotplace].name <<
 				"<-" << MyGspn.transitionStruct[trit2].label << endl;

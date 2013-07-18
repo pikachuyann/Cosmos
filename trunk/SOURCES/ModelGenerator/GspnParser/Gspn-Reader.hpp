@@ -209,7 +209,7 @@ private:
 
     bool trace_scanning;
 
-
+	int varMultiplier(size_t var);
 	void writeMarkingClasse(ofstream &, ofstream &, parameters &);
 	void writeEnabledDisabled(ofstream &);
 	void writeEnabledDisabledBinding(ofstream &);

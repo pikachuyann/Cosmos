@@ -168,6 +168,11 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 		size_t bindnum = 0;
 		abstractBinding *bindex = N.nextPossiblyEnabledBinding(*it, lb, &bindnum);
 		while (bindex != NULL){
+			if(verbose > 4){
+			cerr << "consider for enabling: " << N.Transition[*it].label << ",";
+			bindex->print();
+			cerr << endl;
+			}
 			
 		//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
 		//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
@@ -175,6 +180,13 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 				if (!EQ->isScheduled((*it),bindex->id())) {
 					GenerateEvent(F, (*it), *bindex);
 					(*EQ).insert(F);
+					if(verbose > 4){
+					cerr << "->New transition enabled: " << N.Transition[*it].label << ",";
+					bindex->print();
+					cerr << endl;
+					}
+					
+
 				} else {
 					if (N.Transition[(*it)].MarkingDependent) {
 						GenerateEvent(F, (*it),*bindex);
@@ -192,13 +204,22 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 		size_t bindnum = 0;
 		abstractBinding *bindex = N.nextPossiblyEnabledBinding(*it, lb, &bindnum);
 		while (bindex != NULL){
-
+			if(verbose > 4){
+			cerr << "consider for disabling: " << N.Transition[*it].label << ",";
+			bindex->print();
+			cerr << endl;
+			}
 		//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
 		//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
 			if (EQ->isScheduled(*it, bindex->id())) {
-				if (!N.IsEnabled(*it, *bindex ))
+				if (!N.IsEnabled(*it, *bindex )){
+					if(verbose > 4){
+					cerr << "<-New transition disabled: " << N.Transition[*it].label << ",";
+				bindex->print();
+				cerr << endl;
+					}
 					EQ->remove(*it,bindex->id());
-				else {
+				}else {
 					if (N.Transition[(*it)].MarkingDependent) {
 						GenerateEvent(F, (*it),*bindex);
 						EQ->replace(F);
@@ -226,7 +247,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 		}
 		
 	}
-	/*assert(cerr<< "assert!"<< endl);
+	//assert(cerr<< "assert!"<< endl);
 	
 	#ifndef NDEBUG
 	//In Debug mode check that transition are scheduled iff they are enabled
@@ -239,12 +260,17 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 				cerr << "N.IsEnabled(" << t->label << ",";
 				bindex->print();
 				cerr <<")" << endl;
+				if(EQ->isScheduled(t->Id, bindex->id())){
+					cerr << "Scheduled and not enabled!"<< endl;
+				}else{
+					cerr << "Enabled and not scheduled!" << endl;
+				}
 				assert(N.IsEnabled(t->Id, *bindex) ==
 					   EQ->isScheduled(t->Id, bindex->id()));
 			}
 		}
 	}
-	#endif*/
+	#endif
 }
 
 /**
