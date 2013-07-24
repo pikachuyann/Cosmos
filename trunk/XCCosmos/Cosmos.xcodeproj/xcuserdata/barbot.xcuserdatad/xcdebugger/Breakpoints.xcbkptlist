@@ -119,18 +119,5 @@
          landmarkName = "Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding&amp; lb)"
          landmarkType = "5">
       </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/ModelGenerator/GspnParser/Gspn-Reader.cpp"
-         timestampString = "396349401.022094"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "410"
-         endingLineNumber = "410"
-         landmarkName = "Gspn_Reader::writeEnabledDisabledBinding(ofstream &amp;SpnF)"
-         landmarkType = "5">
-      </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>
