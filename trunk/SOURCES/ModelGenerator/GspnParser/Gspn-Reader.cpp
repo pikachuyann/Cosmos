@@ -322,6 +322,11 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 	SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
 	for(size_t trit = 0; trit != MyGspn.tr;++trit){
 		for (size_t trit2= 0; trit2 != MyGspn.tr; ++trit2) {
+			set<size_t> varList = MyGspn.transitionStruct[trit2].varDomain;
+			
+			//cerr << "\n//" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.transitionStruct[trit2].label << endl;
+			//printset(varList);
+			
 			size_t nbp = 0;
 			size_t pivotplace;
 			bool fallback = false;
@@ -335,15 +340,21 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 					   && MyGspn.inArcsTok[trit2][itp].size()==1){
 						//Check that the token is not the ALL token.
 						if(!MyGspn.outArcsTok[trit][itp][0].hasAll &&
-						   !MyGspn.outArcsTok[trit][itp][0].hasAll){
+						   !MyGspn.inArcsTok[trit2][itp][0].hasAll){
 							nbp++;
 							pivotplace = itp;
+							for(size_t varpt = 0;varpt < MyGspn.inArcsTok[trit2][itp][0].field.size(); ++varpt){
+								if(MyGspn.inArcsTok[trit2][itp][0].Flags[varpt] == CT_VARIABLE){
+									varList.erase(MyGspn.inArcsTok[trit2][itp][0].field[varpt]);
+								}
+							}
 						}else fallback = true;//Handling of ALL token not yet implemented
 					}else
 						fallback= true; // Handling of several token not yet implemented
 				}
 			}
-			if(nbp==1 && !fallback){
+			//printset(varList);
+			/*if(nbp==1 && !fallback){
 				for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
 					if(trit!= trit2 && itp!= pivotplace && MyGspn.inArcsTok[trit2][itp].size()>0 && MyGspn.outArcs[trit][itp]==0){
 						// If there is a synchronisation over two places fall back to enumeration.
@@ -352,7 +363,7 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 						fallback=true;
 					}
 				}
-			}
+			}*/
 			/*if(nbp==1 && !fallback){
 				//if the target transition is a not contain in the initial transition fallback
 				cerr << "check inclusion:";
@@ -368,19 +379,19 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 				}
 			}*/
 			
-			if (nbp==1 && !fallback) {
+			if ( varList.empty() /* nbp==1*/ && !fallback*/) {
 				// Here we implement only the case with one place one token on the arc
 				// For all other casess fall back to enumeration.
 				SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
-				":\t//" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.placeStruct[pivotplace].name <<
-				"->" << MyGspn.transitionStruct[trit2].label << endl;
+				":\t//" << MyGspn.transitionStruct[trit].label << "->" /*<< MyGspn.placeStruct[pivotplace].name <<
+				"->"*/ << MyGspn.transitionStruct[trit2].label << endl;
 				SpnF << "\t{"<< endl;
 				SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 				SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
 				SpnF << "\t\tbtotal += " << ((MyGspn.outArcsTok[trit][pivotplace][0].varIncrement[0]
 												+ MyGspn.colClasses[MyGspn.outArcsTok[trit][pivotplace][0].field[0]].colors.size()) % MyGspn.colClasses[MyGspn.outArcsTok[trit][pivotplace][0].field[0]].colors.size() ) *
 				varMultiplier(MyGspn.outArcsTok[trit][pivotplace][0].field[0]) <<  ";"<< endl;
-				//Compute the number of the new binding in the glabal numerotation.
+				//Compute the number of the new binding in the global numerotation.
 				
 				SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
 				SpnF << "\t\tif(bloc==string::npos)return NULL;" << endl;
