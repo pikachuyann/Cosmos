@@ -350,14 +350,19 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 								}else fallback = true;//Handling of ALL token not yet implemented
 							}else
 								fallback= true; // Handling of several token not yet implemented
+						} else {
+							//Sychronization over an uncolored place
+							nbp++;
+							pivotplace= itp;
 						}
 					}
 					if ( nbp==1 && varList.empty() && !fallback) {
 						// Here we implement only the case with one place one token on the arc
 						// For all other casess fall back to enumeration.
 						SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
-						":\t//" << MyGspn.transitionStruct[trit].label << "->" /*<< MyGspn.placeStruct[pivotplace].name <<
-																				"->"*/ << MyGspn.transitionStruct[trit2].label << endl;
+						":\t//" << MyGspn.transitionStruct[trit].label << "->"
+							<< MyGspn.placeStruct[pivotplace].name <<
+							"->" << MyGspn.transitionStruct[trit2].label << endl;
 						SpnF << "\t{"<< endl;
 						SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 						SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
@@ -392,36 +397,78 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 	
 	SpnF << "abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){" << endl;
 	SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
+	
 	for(size_t trit = 0; trit != MyGspn.tr;++trit){
-		for (size_t trit2= 0; trit2 != MyGspn.tr; ++trit2) {
-			size_t nbp = 0;
-			size_t pivotplace;
-			for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
-				if(MyGspn.inArcsTok[trit][itp].size()>0
-				   && MyGspn.outArcsTok[trit2][itp].size()>0
-				   ){
-					nbp++;
-					pivotplace = itp;
+		if(!MyGspn.transitionStruct[trit].varDomain.empty())
+			for (size_t trit2= 0; trit2 != MyGspn.tr; ++trit2) {
+				set<size_t> varList = MyGspn.transitionStruct[trit2].varDomain;
+				if(!varList.empty()){
+					
+					size_t nbp = 0;
+					size_t pivotplace;
+					bool fallback = false;
+					for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
+						//Check that that there is at least one variable on the two arcs
+						if(MyGspn.inArcsTok[trit][itp].size()>0
+						   && MyGspn.inArcsTok[trit2][itp].size()>0
+						   ){
+							//Check that there is only one token on each arcs
+							if(MyGspn.inArcsTok[trit][itp].size()==1
+							   && MyGspn.inArcsTok[trit2][itp].size()==1){
+								//Check that the token is not the ALL token.
+								if(!MyGspn.inArcsTok[trit][itp][0].hasAll &&
+								   !MyGspn.inArcsTok[trit2][itp][0].hasAll){
+									nbp++;
+									pivotplace = itp;
+									for(size_t varpt = 0;varpt < MyGspn.inArcsTok[trit2][itp][0].field.size(); ++varpt){
+										if(MyGspn.inArcsTok[trit2][itp][0].Flags[varpt] == CT_VARIABLE){
+											varList.erase(MyGspn.inArcsTok[trit2][itp][0].field[varpt]);
+										}
+									}
+								}else fallback = true;//Handling of ALL token not yet implemented
+							}else
+								fallback= true; // Handling of several token not yet implemented
+						}else {
+							//Sychronization over an uncolored place
+							nbp++;
+							pivotplace= itp;
+						}
+					}
+					if ( nbp==1 && varList.empty() && !fallback) {
+						// Here we implement only the case with one place one token on the arc
+						// For all other casess fall back to enumeration.
+						SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
+						":\t//" << MyGspn.transitionStruct[trit].label << "->"
+							<< MyGspn.placeStruct[pivotplace].name <<
+							"->" << MyGspn.transitionStruct[trit2].label << endl;
+						SpnF << "\t{"<< endl;
+						SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
+						SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
+						SpnF << "\t\tbtotal += " << ((MyGspn.inArcsTok[trit][pivotplace][0].varIncrement[0]
+													  + MyGspn.colClasses[MyGspn.inArcsTok[trit][pivotplace][0].field[0]].colors.size()) % MyGspn.colClasses[MyGspn.inArcsTok[trit][pivotplace][0].field[0]].colors.size() ) *
+						varMultiplier(MyGspn.inArcsTok[trit][pivotplace][0].field[0]) <<  ";"<< endl;
+						//Compute the number of the new binding in the global numerotation.
+						
+						SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
+						SpnF << "\t\tif(bloc==string::npos)return NULL;" << endl;
+						
+						SpnF << "\t\t*bindingNum=1;" << endl;
+						SpnF << "\t\treturn &(Transition[targettr].bindingList[bloc]);" << endl;
+						SpnF << "\t}"<< endl;
+					}else if(fallback){
+						SpnF << "\t\t//Fallback:" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.transitionStruct[trit2].label << endl;
+					} else if(varList.size() < MyGspn.transitionStruct[trit2].varDomain.size()){
+						SpnF << "\t\t//Partial synch over variable: " << MyGspn.transitionStruct[trit].label << "->" << MyGspn.transitionStruct[trit2].label << " var ";
+						for (set<size_t>::const_iterator itset = varList.begin(); itset != varList.end(); ++itset) {
+							SpnF << MyGspn.colVars[*itset].name << ", ";
+						}
+						SpnF << "Not set" <<endl;
+					}
 				}
 			}
-			if (false && nbp==1) {
-				SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
-				":\t//" << MyGspn.transitionStruct[trit].label << "<-" << MyGspn.placeStruct[pivotplace].name <<
-				"<-" << MyGspn.transitionStruct[trit2].label << endl;
-				SpnF << "\t{"<< endl;
-				//SpnF << "\t\tassert(lastTransition=="<< trit << " && targettr == "<<trit2<<");"<<endl;
-				SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl;
-				SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
-				//SpnF << "\t\tassert(b.id() == Transition[lastTransition].bindingLinkTable[btotal]);" << endl;
-				SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
-				SpnF << "\t\tif(bloc==string::npos)return NULL;" << endl;
-				
-				SpnF << "\t\t*bindingNum=1;" << endl;
-				SpnF << "\t\treturn &(Transition[targettr].bindingList[bloc]);" << endl;
-				SpnF << "\t}"<< endl;
-			}
-		}
 	}
+
+	
 	SpnF << "\tdefault:"<< endl;
 	SpnF << "\t\tif(*bindingNum==Transition[targettr].bindingList.size())return NULL;"<<endl;
 	SpnF << "\t\t*bindingNum = *bindingNum +1;"<< endl;

@@ -202,7 +202,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	const set<int>* ndt = N.PossiblyDis();
 	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
 		size_t bindnum = 0;
-		abstractBinding *bindex = N.nextPossiblyEnabledBinding(*it, lb, &bindnum);
+		abstractBinding *bindex = N.nextPossiblyDisabledBinding(*it, lb, &bindnum);
 		while (bindex != NULL){
 			if(verbose > 4){
 			cerr << "consider for disabling: " << N.Transition[*it].label << ",";
@@ -248,6 +248,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 		
 	}
 	//assert(cerr<< "assert!"<< endl);
+	
 	
 	#ifndef NDEBUG
 	//In Debug mode check that transition are scheduled iff they are enabled
