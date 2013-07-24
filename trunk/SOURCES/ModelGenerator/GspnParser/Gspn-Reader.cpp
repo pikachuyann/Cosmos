@@ -379,7 +379,7 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 				}
 			}*/
 			
-			if ( varList.empty() /* nbp==1*/ && !fallback*/) {
+			if ( varList.empty() && !fallback) {
 				// Here we implement only the case with one place one token on the arc
 				// For all other casess fall back to enumeration.
 				SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
@@ -401,6 +401,12 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 				SpnF << "\t}"<< endl;
 			}else if(fallback){
 				SpnF << "\t\t//Fallback:" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.transitionStruct[trit2].label << endl;
+			} else {
+				SpnF << "\t\t//Synch over variable: " << MyGspn.transitionStruct[trit].label << "->" << MyGspn.transitionStruct[trit2].label << " var ";
+				for (set<size_t>::const_iterator itset = varList.begin(); itset != varList.end(); ++itset) {
+					SpnF << MyGspn.colVars[*itset].name << ", ";
+				}
+				SpnF << "Not set" <<endl;
 			}
 		}
 	}
