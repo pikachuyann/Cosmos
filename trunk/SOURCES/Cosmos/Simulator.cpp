@@ -249,7 +249,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	}
 	//assert(cerr<< "assert!"<< endl);
 	
-	
+	/*
 	#ifndef NDEBUG
 	//In Debug mode check that transition are scheduled iff they are enabled
 	for (vector<_trans>::const_iterator t = N.Transition.begin()
@@ -271,7 +271,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 			}
 		}
 	}
-	#endif
+	#endif*/
 }
 
 /**

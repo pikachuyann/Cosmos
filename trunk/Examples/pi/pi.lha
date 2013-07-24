@@ -5,10 +5,10 @@ VariablesList = {x, y,r,OK} ;
 LocationsList = {l0, l1, l2, lp ,lm};
 
 %r=AVG(Last(r));
-pi= PROB;
+%pi= 4*PROB;
 %av=AVG(Mean(P2));
 %pdf = PDF(Last(r),0.05,0,1);
-%cdf = CDF(Last(r),0.05,0,1);
+cdf = CDF(Last(r),0.05,0,1);
 
 InitialLocations = {l0};
 
@@ -24,7 +24,7 @@ Locations={
 
 Edges={
 ((l0,l1),ALL, # ,#);
-((l1,l2),ALL, # , {r=x*x +y*y});
+((l1,l2),ALL, # , {r=x*x + y*y});
 ((l2,lp),ALL, r<=1 ,  {OK=4});
 };
 

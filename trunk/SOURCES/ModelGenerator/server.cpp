@@ -381,7 +381,8 @@ void launchServer(parameters& P){
     
 	//use gnuplot
 	if(P.dataPDFCDF.length()>0)Result.outputCDFPDF(P.dataPDFCDF);
-	if(P.alligatorMode)Result.printGnuplot();
+	//if(P.alligatorMode)
+	Result.printGnuplot();
 	
 	Result.close_gnuplot();
 	wait_client();

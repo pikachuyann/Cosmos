@@ -80,6 +80,8 @@ result::result(parameters &Q){
 			if(P.alligatorMode){
 				fputs("set terminal pngcairo font 'arial,10' size 500, 200\n",gnuplotstream);
 				//fputs("set output 'dataout.png'\n",gnuplotstream);
+			} else {
+				//fputs("set terminal pngcairo font 'arial,10' size 1024, 768\n",gnuplotstream);
 			}
 			fputs("set grid lc rgb 'black'\n",gnuplotstream);
 			fputs("set style fill solid 0.2 noborder\n",gnuplotstream);
@@ -216,6 +218,7 @@ void result::print(ostream &s){
     
     if(!P.computeStateSpace){
 		for(size_t i =0; i<P.HaslFormulasname.size(); i++){
+			if(!P.alligatorMode || ( P.HaslFormulas[i]->TypeOp != PDF_PART &&  P.HaslFormulas[i]->TypeOp != CDF_PART)){
             /*if (MeanM2->IsBernoulli[i]) {
                 low[i] = (0 > low[i]) ? 0.0 : low[i];
                 up[i] = (1 < up[i]) ? 1.0 : up[i];
@@ -231,6 +234,7 @@ void result::print(ostream &s){
 			}else{
 				s << "Confidence interval:\t[" << HaslResult[i]->mean-P.Width/2.0 << " , " << HaslResult[i]->mean+P.Width/2.0 << "]" << endl;
 				s << "Width:\t" << P.Width << endl;
+			}
 			}
         }
 		if(!P.sequential)
@@ -275,6 +279,17 @@ void result::outputCDFPDF(string f){
 
 void result::printGnuplot(){
 	if(gnuplotstream<=0)return;
+	
+	if(P.dataPDFCDF.compare("")!=0){
+		if(P.verbose>2)cout << "invoke gnuplot for PDFCDF" << endl;
+		if(P.alligatorMode)fputs("set output 'pdfcdfout.png'\n",gnuplotstream);
+		fputs("plot '", gnuplotstream);
+		fputs(P.dataPDFCDF.c_str(), gnuplotstream);
+		fputs("' using 1:2:4 w filledcu ls 1 notitle, '' using 1:3 notitle with lines lw 1 lc rgb 'black'\n", gnuplotstream);
+		if(P.alligatorMode)fputs("set output\n", gnuplotstream);
+		flushgnuplot();
+	}
+	
 	if(P.dataoutput.compare("")!=0){
 		if(P.verbose>2)cout << "invoke gnuplot for data" << endl;
 		if(P.alligatorMode)fputs("set output 'dataout.png'\n",gnuplotstream);
