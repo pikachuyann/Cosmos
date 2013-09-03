@@ -1096,7 +1096,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	} else {
 		SpnCppFile << "    switch(t){" << endl;
 		for (size_t t = 0; t < MyGspn.tr; t++) {
-			SpnCppFile << "     case " << t << ":" << endl;
+			SpnCppFile << "     case " << t << ":  //" << MyGspn.transitionStruct[t].label <<endl;
 			for (size_t p = 0; p < MyGspn.pl; p++) {
 				if (MyGspn.inArcs[t][p] > 0) {
 					
@@ -1133,7 +1133,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "\tlastTransition = t;" << endl;
 	SpnCppFile << "\tswitch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
-		SpnCppFile << "\t\tcase " << t << ": {" << endl;
+		SpnCppFile << "\t\tcase " << t << ": {  //" << MyGspn.transitionStruct[t].label << endl;
 		//Write value of Marking dependant place to a temporary variable
 		for (size_t p = 0; p < MyGspn.pl; p++) {
 			if (MyGspn.inArcsStr[t][p] != " " || MyGspn.outArcsStr[t][p] != " ") {
@@ -1311,7 +1311,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	if(P.RareEvent || P.computeStateSpace){
 		SpnCppFile << "   switch(t){" << endl;
 		for (size_t t = 0; t < MyGspn.tr; t++) {
-			SpnCppFile << "     case " << t << ": {" << endl;
+			SpnCppFile << "     case " << t << ": {  //" << MyGspn.transitionStruct[t].label << endl;
 			//SpnCppFile << "       unfire_t" << t << "();" << endl;
 			for (size_t p = 0; p < MyGspn.pl; p++) {
 				if (MyGspn.inArcs[t][p] > 0) {

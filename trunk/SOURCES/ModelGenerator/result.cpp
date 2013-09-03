@@ -248,6 +248,7 @@ void result::print(ostream &s){
         //s << "Relative error:\t" << RelErr << endl;
         s << "Total paths:\t" << MeanM2->I << endl;
         s << "Accepted paths:\t" << MeanM2->Isucc << endl;
+		stopclock();
         s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
 		rusage cpu_child;
 		getrusage(RUSAGE_CHILDREN, &cpu_child);
