@@ -78,7 +78,7 @@ result::result(parameters &Q){
 				exit(EXIT_FAILURE);
 			}
 			if(P.alligatorMode){
-				fputs("set terminal pngcairo font 'arial,10' size 700, 400\n",gnuplotstream);
+				fputs("set terminal pngcairo font 'arial,12' size 1000, 400\n",gnuplotstream);
 				//fputs("set output 'dataout.png'\n",gnuplotstream);
 			} else {
 				//fputs("set terminal pngcairo font 'arial,10' size 1024, 768\n",gnuplotstream);
