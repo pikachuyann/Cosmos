@@ -414,17 +414,28 @@ void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it)
 
 
 MyModelHandler::MyModelHandler(GSPN* MyGspn2,bool re, int v) {
-	//Initialisation
     verbose = max(0,v-4);
-    rareEvent = re;
-    MyGspn= MyGspn2;
-    countPl=0;
-    MyGspn->pl=0;
-    countTr=0;
-    MyGspn->tr=0;
-    ParsePl=true;
+	rareEvent = re;
+	MyGspn= MyGspn2;
+	MyGspn->tr=0;
+	ParsePl=true;
+	if(MyGspn2->nbpass==0){
+	//Initialisation
+		MyGspn->pl=0;
+	}
 }
 //~MyModelHandler() { }
+MyModelHandler::MyModelHandler(GSPN* MyGspn2,bool re, int v,map<int,bool> &mip,map<int,int> &mgp,map<int,int> &mgt):IsPlace(mip),Gml2Place(mgp),Gml2Trans(mgt),MyGspn(MyGspn2) {
+    verbose = max(0,v-4);
+	rareEvent = re;
+	MyGspn->tr=0;
+	ParsePl=true;
+	if(MyGspn2->nbpass==0){
+		//Initialisation
+		MyGspn->pl=0;
+	}
+}
+
 
 
 void MyModelHandler::on_read_model(const XmlString& formalismUrl) {
@@ -434,6 +445,8 @@ void MyModelHandler::on_read_model(const XmlString& formalismUrl) {
 }
 
 void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
+	if(MyGspn->nbpass==1)return;
+	
     // read model attribute 
     // If the file is well formed the only attributes are constant declaration.
     
@@ -584,16 +597,18 @@ void MyModelHandler::on_read_node(const XmlString& id,
                                   const AttributeMap& attributes,
                                   const XmlStringList&) {
     // Read node of the graph. If the file is well formed it
-    // contain only plate and transition.
+    // contain only place and transition.
     
     if(verbose>1)cout << "read node : " << id << ", " << nodeType << endl;
     if(nodeType.compare("place")==0){
+		if(MyGspn->nbpass==1)return;
+		
         // Read a Place:
         
         MyGspn->pl++;
         int id2 = atoi(id.c_str());
         IsPlace[id2]=true;
-        Gml2Place[id2]=countPl;
+        Gml2Place[id2]=MyGspn->pl-1;
 		place p;
 		
         for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
@@ -628,7 +643,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 					cerr << "error:Two places with the name:" << *Plname << endl;
 					throw gmlioexc;
 				}
-				MyGspn->PlacesId[*Plname]=countPl;
+				MyGspn->PlacesId[*Plname]=MyGspn->pl-1;
 			
             } else if((*(it->second.begin())).compare("domain")==0){
                 string* Pldomain = simplifyString(*(it2.begin().begin()));
@@ -644,15 +659,15 @@ void MyModelHandler::on_read_node(const XmlString& id,
             
         }
 		MyGspn->placeStruct.push_back(p);
-        countPl++ ;
 		
     }else {
         if (nodeType.compare("transition")==0){
+			if(MyGspn->nbpass==0)return;
             //Read a transition:
             MyGspn->tr++;
             int id2 = atoi(id.c_str());
             IsPlace[id2]=false;
-            Gml2Trans[id2]=countTr;
+            Gml2Trans[id2]=MyGspn->tr-1;
 			
 			transition trans;
 			trans.label = "";
@@ -674,7 +689,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 						cerr << "error:Two transitions with the name:" << *Trname << endl;
 						throw gmlioexc;
 					}
-                    MyGspn->TransId[*Trname]=countTr;
+                    MyGspn->TransId[*Trname]=MyGspn->tr-1;
                 } else if((*(it->second.begin())).compare("guard")==0){
 					eval_guard(trans.guard, it->second.begin().begin());
 					//if(trans.guard.compare("")==0)trans.guard = "true";
@@ -781,7 +796,6 @@ void MyModelHandler::on_read_node(const XmlString& id,
 			}
             
 			MyGspn->transitionStruct.push_back(trans);
-            countTr++;
         }else cout << "fail to parse gml"<< endl;
     }
     
@@ -800,6 +814,8 @@ void MyModelHandler::on_read_arc(const XmlString& id,
                                  const XmlString& target,
                                  const AttributeMap& attributes,
                                  const XmlStringList&) {
+	if(MyGspn->nbpass==0)return;
+	
     if(ParsePl){
         ParsePl=false;
         

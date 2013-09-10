@@ -131,6 +131,7 @@ struct GSPN {
     string Path;
     size_t tr;
     size_t pl;
+	size_t nbpass;
 
     set<string> TransList;
 	vector<colorClass> colClasses;
@@ -163,6 +164,7 @@ struct GSPN {
 	}
 	
 	GSPN(){
+		nbpass=0;
 		colDoms.push_back(colorDomain());
 	}
 

@@ -111,9 +111,20 @@ int Gspn_Reader::parse_gml_file(parameters &P) {
 	ifstream ifile(P.PathGspn.c_str());
 	if(ifile){
 		//cout << "parse GML:" << filename << endl;
-		ModelHandlerPtr handlerPtr(new MyModelHandler(&MyGspn,P.RareEvent,P.verbose));
-		ExpatModelParser parser = ExpatModelParser(handlerPtr);
-		parser.parse_file(P.PathGspn);
+		MyGspn.nbpass=0;
+		//first pass declaration and place.
+		MyModelHandler* handler = new MyModelHandler(&MyGspn,P.RareEvent,P.verbose);
+			ModelHandlerPtr handlerPtr(handler);
+			ExpatModelParser parser = ExpatModelParser(handlerPtr);
+			parser.parse_file(P.PathGspn);
+		
+		MyGspn.nbpass=1;
+		//second pass declaration and place.
+			ModelHandlerPtr handlerPtr2(new MyModelHandler(&MyGspn,P.RareEvent,P.verbose,handler->IsPlace,handler->Gml2Place,handler->Gml2Trans));
+			ExpatModelParser parser2 = ExpatModelParser(handlerPtr2);
+			parser2.parse_file(P.PathGspn);
+		
+		
 		//cout << "end parse GML:"<< MyGspn.pl << endl;
 		if (P.RareEvent)addSinkTrans();
 		return 0;

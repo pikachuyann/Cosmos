@@ -40,24 +40,25 @@
 class MyModelHandler: public ModelHandler
 {
 private:
-    int verbose;
-	int countPl;
-	int countTr;
-	bool ParsePl;
-	map<int,bool> IsPlace;
-	map<int,int> Gml2Place;
-	map<int,int> Gml2Trans;
-	GSPN* MyGspn;
-    void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it );
+	void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it );
     int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it );
 	void eval_tokenProfileMark(string* ,tree<string>::pre_order_iterator);
 	void eval_tokenProfileArc(coloredToken& ,bool &, set<size_t>&, tree<string>::pre_order_iterator);
 	void eval_guard(string&, tree<string>::pre_order_iterator);
 	
-    bool rareEvent;
+    
     
 public:
+	int verbose;
+	bool ParsePl;
+	map<int,bool> IsPlace;
+	map<int,int> Gml2Place;
+	map<int,int> Gml2Trans;
+	GSPN* MyGspn;
+	bool rareEvent;
+	
     MyModelHandler(GSPN* ,bool, int) ;
+	MyModelHandler(GSPN* ,bool, int,map<int,bool>&,map<int,int>&,map<int,int>&);
 	//~MyModelHandler() { }
 	
 	

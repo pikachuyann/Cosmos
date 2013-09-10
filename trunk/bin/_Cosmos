@@ -20,11 +20,12 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--seed:Specify the random generator seed:->seed' \
 	   '--local-test[Use local testing]' \
 	   '--HASL-formula:External HASL formule:->HASL' \
-	   '--outputdata:File where to output data:->data' \
+	   '--output-data:File where to output data:->data' \
 	   '--output-raw:Output result of each trajectory in a file:->data' \
 	   '--output-PDFCDF:Output PDF or CDF to a file:->data' \
 	   '--tmp-status:Persistance of the tmp file:->status' \
 	   '--count-transition[Count number of transition in the lha]' \
+	   '--trace-place:trace only a subset of places:->Comma separated list of place to trace' \
 	   '--loop:Time of the loop:->time' \
 	   '--transient:Time for transient part:->time' \
 	   '--debug-string[Add debug information in generated code]' \
