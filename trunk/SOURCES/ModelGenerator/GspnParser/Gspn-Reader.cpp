@@ -805,7 +805,8 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		SpnCppFile << "\ts << \"";
 		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 			 plit!= MyGspn.placeStruct.end(); ++plit) {
-			SpnCppFile << plit->name <<"\t";
+			if (plit->isTraced)SpnCppFile << plit->name <<"\t";
+			
 		}
 		SpnCppFile << "\";";
 	}
@@ -817,7 +818,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
 		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 			 plit!= MyGspn.placeStruct.end(); ++plit) {
-			SpnCppFile << "\ts << P->_PL_"<< plit->name << " << \"\\t\" ;\n";
+			if (plit->isTraced)SpnCppFile << "\ts << P->_PL_"<< plit->name << " << \"\\t\" ;\n";
 		}
 	}
 	SpnCppFile << "}\n";
@@ -1072,6 +1073,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		SpnCppFile << "    Place[" << k << "].Id =" << k << ";" << endl;
 		if(P.StringInSpnLHA){
 			SpnCppFile << "    Place[" << k << "].label =\" " << plit->name << "\";" << endl;
+			SpnCppFile << "    Place[" << k << "].isTraced = " << plit->isTraced << ";" << endl;
 		}
 	}
 	

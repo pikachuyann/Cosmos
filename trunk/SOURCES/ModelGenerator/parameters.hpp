@@ -84,6 +84,7 @@ struct parameters {
 	string datatrace;
 	string dataPDFCDF;
 	bool gnuplotDriver;
+	string tracedPlace;
     
     vector<HaslFormulasTop*> HaslFormulas;
 	vector<string> HaslFormulasname;

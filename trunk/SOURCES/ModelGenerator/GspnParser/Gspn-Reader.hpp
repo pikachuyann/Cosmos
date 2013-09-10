@@ -123,7 +123,8 @@ struct transition {
 struct place {
 	string name;
 	size_t colorDom;
-	place(){ colorDom = UNCOLORED_DOMAIN; }
+	bool isTraced;
+	place(){ colorDom = UNCOLORED_DOMAIN; isTraced = true; }
 };
 
 struct GSPN {

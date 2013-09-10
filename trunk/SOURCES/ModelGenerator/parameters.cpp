@@ -80,6 +80,7 @@ parameters::parameters():
 	datatrace(""),
 	dataPDFCDF(""),
 	gnuplotDriver(false),
+    tracedPlace("ALL"),
 
 	HaslFormulas(vector<HaslFormulasTop*>(0)),
 	HaslFormulasname(vector<string>(0)),
@@ -128,6 +129,7 @@ void parameters::usage(){
 	cout << "\t--output-trace \tOutput the trace each trajectory in a file"<< endl;
 	cout << "\t--output-PDFCDF \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
 	cout << "\t--gnuplot-driver \tRun gnuplot on the output datafile to produce graph"<< endl;
+	cout << "\t--trace-place arg\tSpecify which place to trace in all the output file, arg is a comma separated list of places name" << endl;
 	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
 	cout << "\t--loop t1 [--transtient t2] \tGenerate an LHA that loop for t1 times unit and then t2 time unit. The --transient option alone do not do anything"<< endl;
 	cout << "\t--prism \tExport the state space and lauch prism."<< endl;
@@ -178,11 +180,13 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"verbose", required_argument,	 0, 'v'},
 			{"interactive", no_argument  ,   0, 'i'},
 			{"update-time",required_argument,0, 'u'},
-            {"outputdata", required_argument,0, 'd'},
+			{"outputdata", required_argument,0, 'd'},
+            {"output-data", required_argument,0, 'd'},
 			{"output-raw" , required_argument,0,  8 },
 			{"output-trace" , required_argument,0,  18 },
 			{"output-PDFCDF",required_argument,0,11},
 			{"gnuplot-driver",no_argument   ,0, 15},
+		    {"trace-place",required_argument,0,  19},
             {"help" , no_argument ,			 0, 'h'},
 			{"count-transition", no_argument,0, 't'},
 			{"debug-string", no_argument,	 0,  3 },
@@ -294,6 +298,8 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  16: loopTransientLHA = atof(optarg); break;
 				
 			case  15: gnuplotDriver = true; break;
+			
+			case 19: tracedPlace = optarg; break;
 				
             case '?':
                 usage();

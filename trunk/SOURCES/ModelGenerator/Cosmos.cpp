@@ -116,8 +116,24 @@ bool ParseBuild(parameters& P) {
         }else {
             parseresult = gReader.parse_file(P.PathGspn);
         }
-        
 		P.nbPlace = gReader.MyGspn.pl;
+        
+		//Set the isTraced flag for place
+		if(P.tracedPlace.compare("ALL")!=0){
+			P.nbPlace = 0;
+			for(size_t i =0;i<gReader.MyGspn.pl;i++){
+				size_t j = P.tracedPlace.find(gReader.MyGspn.placeStruct[i].name,0);
+				if(j!=string::npos && (j+gReader.MyGspn.placeStruct[i].name.length()==P.tracedPlace.length()
+									   || P.tracedPlace[j+gReader.MyGspn.placeStruct[i].name.length()]==',' ) ){
+					gReader.MyGspn.placeStruct[i].isTraced=true;
+					P.nbPlace++;
+				}else {
+					gReader.MyGspn.placeStruct[i].isTraced=false;
+				}
+			}
+		}
+		
+		
         if (!parseresult && gReader.MyGspn.pl >0 && gReader.MyGspn.tr >0) {
             gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
             if(P.tmpStatus==0||P.tmpStatus==2)gReader.WriteFile(P);
@@ -152,7 +168,7 @@ bool ParseBuild(parameters& P) {
 				lReader.MyLha.ConfidenceLevel = P.Level;
 				map<string,int>::const_iterator itt;
 				//stringstream lhastr;
-				lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + gReader.MyGspn.pl <<";\nNbLocations = 3;\n";
+				lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + P.nbPlace <<";\nNbLocations = 3;\n";
 				lhastr << "const double T="<< P.loopLHA << ";\n";
 				lhastr << "const double invT=" << 1/P.loopLHA << ";\n";
 				lhastr << "const double Ttrans="<< P.loopTransientLHA << ";\n";
@@ -161,7 +177,7 @@ bool ParseBuild(parameters& P) {
 					lhastr<< ", "<< itt->first;
 				}
 				for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
-					lhastr<< ", PLVAR_"<< itt->first;
+					if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< ", PLVAR_"<< itt->first;
 				}
 				lhastr<<"} ;\nLocationsList = {l0, l1,l2};\n";
 				
@@ -169,13 +185,13 @@ bool ParseBuild(parameters& P) {
 					lhastr<< "Throughput_"<< itt->first<< "= AVG(Last(" << itt->first<<"));\n";
 				}
 				for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
-					lhastr<< "MeanToken_"<< itt->first<< "= AVG(Last( PLVAR_" << itt->first<<"));\n";
+					if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< "MeanToken_"<< itt->first<< "= AVG(Last( PLVAR_" << itt->first<<"));\n";
 				}
 				lhastr << P.externalHASL << endl;
 				lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
 				lhastr << "Locations={(l0, TRUE, (time:1));(l1, TRUE, (time:1 ";
 				for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
-					lhastr<< ", PLVAR_"<< itt->first << ": "<< itt->first << "* invT " ;
+					if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< ", PLVAR_"<< itt->first << ": "<< itt->first << "* invT " ;
 				}
 				
 				lhastr << "));(l2, TRUE);};\n";

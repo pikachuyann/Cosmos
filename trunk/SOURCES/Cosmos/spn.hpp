@@ -93,8 +93,11 @@ typedef struct _trans spn_trans;
  * DataType for place of the SPN
  */
 struct _place {
+	_place():isTraced(true){};
+	
 	unsigned int Id; //!number of the place
 	string label; //! name of the place, can be empty
+	bool isTraced;
 };
 typedef struct _place spn_place;
 
