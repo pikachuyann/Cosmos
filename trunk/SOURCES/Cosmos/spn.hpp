@@ -58,7 +58,8 @@ enum DistributionType {
 	LOGNORMAL,
 	TRIANGLE,
 	GEOMETRIC,
-	ERLANG
+	ERLANG,
+	DISCRETEUNIF
 };
 
 

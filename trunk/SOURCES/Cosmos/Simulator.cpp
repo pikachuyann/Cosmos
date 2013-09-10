@@ -606,7 +606,13 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
             boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gen(RandomNumber, GAMMA);
             return param[1] * gen();
         }
-
+		case DISCRETEUNIF:
+		{//DISCRETEUNIF
+			boost::uniform_int<> UNIF(param[0], param[1]);
+			boost::variate_generator<boost::mt19937&, boost::uniform_int<> > gen(RandomNumber, UNIF);
+			return gen();
+			break;
+		}
 			
 			
 		default: cerr << "Unknown distribution: "<< distribution << endl;
