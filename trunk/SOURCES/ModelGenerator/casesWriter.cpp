@@ -49,6 +49,7 @@ void casesHandler::addCase(int c,const string st){
 
 void casesHandler::writeCases(ostream &s){
   s << "switch (" << scase << "){" << endl;
+  map<const char*,int>::iterator itmax = cases.begin();
   for(map<const char*,int>::iterator it = cases.begin(); it != cases.end(); ++it){
   if(it->second != maxc){
     for(map<int,std::string>::iterator it2 = mapping.begin(); it2 != mapping.end(); ++it2){
@@ -57,13 +58,12 @@ void casesHandler::writeCases(ostream &s){
       }
 	  s << "\t\t"<< it->first << endl;
 	s << "\t\tbreak;" << endl;
-	}
+  }else{
+    itmax = it;
+    maxc++;
   }
-  for(map<const char*,int>::iterator it = cases.begin(); it != cases.end(); ++it){
-  if(it->second == maxc){
+  }
     s<< "\tdefault:"<< endl;
-  s << "\t\t"<< it->first << endl;
-  }
-  }
+  s << "\t\t"<< itmax->first << endl;
 s << "}" << endl;
 }
