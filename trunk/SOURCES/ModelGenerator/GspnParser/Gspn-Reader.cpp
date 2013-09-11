@@ -973,20 +973,21 @@ void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
 		}
 		//spnF << "\tTransition["<<t<<"].bindingLinkTable.resize("<< nbbinding <<",string::npos); "<< endl;
 		
-		spnF << "\t{abstractBinding bl;\n";
+		if(MyGspn.colVars.size()>0){
+		spnF << "\t{abstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
 		for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
 			if( MyGspn.transitionStruct[t].varDomain.count(it)==0){
 				spnF<< "\tbl.P->" << MyGspn.colVars[it].name<<".mult = -1;\n";
 			}
 		}
-		spnF << "\tdo{\n";
+		spnF << "\twhile(bl.next()){\n";
 		if(MyGspn.transitionStruct[t].guard.compare("")==0)spnF << "\t\t{\n";
 		else spnF << "\t\tif(" << MyGspn.transitionStruct[t].guard << "){\n";
 		spnF << "\t\t\tbl.idcount = Transition["<<t<<"].bindingList.size();\n";
 		spnF << "\t\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";
 		spnF << "\t\t\tTransition["<<t<<"].bindingLinkTable[bl.idTotal()]= Transition["<<t<<"].bindingList.size()-1; "<< endl;
-		spnF << "\t\t}\n\t}while(bl.next());}\n";
-		
+		spnF << "\t\t}\n\t}}\n";
+		}
 	}
 }
 
@@ -1081,7 +1082,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 		 plit!= MyGspn.placeStruct.end(); ++plit) {
 		int k = MyGspn.PlacesId[plit->name];
-		SpnCppFile << "    Place[" << k << "].Id =" << k << ";" << endl;
+		//SpnCppFile << "    Place[" << k << "].Id =" << k << ";" << endl;
 		if(P.StringInSpnLHA){
 			SpnCppFile << "    Place[" << k << "].label =\" " << plit->name << "\";" << endl;
 			SpnCppFile << "    Place[" << k << "].isTraced = " << plit->isTraced << ";" << endl;

@@ -74,7 +74,12 @@ struct _trans {
 	_trans(){};
 	
 	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb):
-	Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(false),bindingLinkTable(nbb,string::npos){};
+	Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(false),bindingLinkTable(nbb,string::npos){
+		abstractBinding bl;
+		bl.idcount = bindingList.size();
+		bindingList.push_back( bl );
+		bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
+	};
 	
 	unsigned int Id; //! number of the transition
 	string label; //! Name of the transition, can be empty
@@ -96,7 +101,7 @@ typedef struct _trans spn_trans;
 struct _place {
 	_place():isTraced(true){};
 	
-	unsigned int Id; //!number of the place
+	//unsigned int Id; //!number of the place
 	string label; //! name of the place, can be empty
 	bool isTraced;
 };

@@ -610,6 +610,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
         IsPlace[id2]=true;
         Gml2Place[id2]=MyGspn->pl-1;
 		place p;
+		p.name = id;
 		
         for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
 			treeSI it2 = it->second.begin();
@@ -670,6 +671,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
             Gml2Trans[id2]=MyGspn->tr-1;
 			
 			transition trans;
+			trans.label = id;
 			trans.label = "";
 			trans.type = Timed;
 			trans.priority = "1";

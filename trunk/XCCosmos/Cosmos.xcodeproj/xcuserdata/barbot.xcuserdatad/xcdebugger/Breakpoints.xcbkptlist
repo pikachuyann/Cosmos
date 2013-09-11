@@ -46,19 +46,6 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../SOURCES/ModelGenerator/LhaParser/Lha_gmlparser.cpp"
-         timestampString = "385055923.164416"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "250"
-         endingLineNumber = "250"
-         landmarkName = "MyLhaModelHandler::eval_term(vector&lt;string&gt; &amp;CoeffsVector, tree&lt;string&gt;::pre_order_iterator it)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../SOURCES/ModelGenerator/LhaParser/Lha_gmlparser.cpp"
          timestampString = "386752176.090931"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
