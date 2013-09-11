@@ -32,19 +32,21 @@
 
 using namespace std;
 
-casesHandler::casesHandler(string svar):scase(svar){};
+casesHandler::casesHandler(string svar):maxc(0),scase(svar){};
 
 void casesHandler::addCase(int c,const string st){
   const char* cst = st.c_str();
   map<const char*,int>::iterator it = cases.find(cst);
   if(it == cases.end()){
-    cases[cst]=c;
+    cases[cst]=1;
     mapping[c]=st;
     cout << "notfound" << endl;
   }else{
+    it->second++;
     mapping[c]=st;
     cout << "already there" << endl;
   }
+  maxc = max(maxc,cases[cst]);
 }
 
 void casesHandler::writeCases(ostream &s){

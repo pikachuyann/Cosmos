@@ -48,6 +48,7 @@ public:
   void addCase(int c,const std::string st);
   void writeCases(std::ostream &s);
 private:
+  int maxc;
   const std::string scase;
   std::map<const char*,int,cmp_str> cases;
   std::map<int,std::string> mapping;
