@@ -63,7 +63,9 @@ void casesHandler::writeCases(ostream &s){
     maxc++;
   }
   }
+  if(strcmp(itmax->first,"")!=0){
     s<< "\tdefault:"<< endl;
-  s << "\t\t"<< itmax->first << endl;
+    s << "\t\t"<< itmax->first << endl;
+  }
 s << "}" << endl;
 }
