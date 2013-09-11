@@ -40,31 +40,36 @@ void casesHandler::addCase(int c,const string st){
   if(it == cases.end()){
     cases[cst]=1;
     mapping[c]=st;
-    cout << "notfound" << endl;
   }else{
     it->second++;
     mapping[c]=st;
-    cout << "already there" << endl;
   }
   maxc = max(maxc,cases[cst]);
 }
 
 void casesHandler::writeCases(ostream &s){
   s << "switch (" << scase << "){" << endl;
-  for(map<const char*,int>::iterator it = cases.begin();it != cases.end(); ++it){
+  for(map<const char*,int>::iterator it = cases.begin(); it != cases.end(); ++it){
+  if(it->second != maxc){
     for(map<int,std::string>::iterator it2 = mapping.begin(); it2 != mapping.end(); ++it2){
 	if(it2->second.compare(it->first)==0)
 	  s << "\tcase " << it2->first << ":"<< endl;
-    }
-    s << "\t\t"<< it->first << endl;
-    s << "\t\tbreak;" << endl;
+      }
+	  s << "\t\t"<< it->first << endl;
+	s << "\t\tbreak;" << endl;
+	}
   }
-
+  for(map<const char*,int>::iterator it = cases.begin(); it != cases.end(); ++it){
+  if(it->second == maxc){
+    s<< "\tdefault:"<< endl;
+  s << "\t\t"<< it->first << endl;
+  }
+  }
+s << "}" << endl;
 }
 
 
 int main(){
-  cout << "test";
   casesHandler chandler("testcases");
   chandler.addCase(1,"test1");
   chandler.addCase(10,"test1");
