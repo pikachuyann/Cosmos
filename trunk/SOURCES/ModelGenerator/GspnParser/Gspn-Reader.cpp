@@ -28,7 +28,7 @@
 #include "Gspn-parser.tab.hh"
 #include "Gspn-Reader.hpp"
 #include "Gspn_gmlparser.hpp"
-
+#include "../casesWriter.hpp"
 
 #include "string.h"
 
@@ -1400,50 +1400,56 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	SpnCppFile << "void SPN::GetDistParameters(size_t t, const abstractBinding&)const {" << endl;
 	//-------------- /Rare Event -------------------------
-	SpnCppFile << "   switch(t){" << endl;
+	casesHandler parametercases("t");
+	//SpnCppFile << "   switch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
+	  stringstream newcase;
 		if (MyGspn.transitionStruct[t].type == Timed) {
-			SpnCppFile << "     case " << t << ": {" << endl;
+		  //SpnCppFile << "     case " << t << ": {" << endl;
+		  newcase << "{" << endl;
 			//SpnCppFile << "       vector<double> P(" << MyGspn.Dist[t].Param.size() << ");" << endl;
 			if (MyGspn.transitionStruct[t].singleService)
 				for (size_t i = 0; i < MyGspn.transitionStruct[t].dist.Param.size(); i++) {
 					
-					SpnCppFile << "       ParamDistr[" << i << "]= ( double ) " << MyGspn.transitionStruct[t].dist.Param[i] << ";" << endl;
+					newcase << "       ParamDistr[" << i << "]= ( double ) " << MyGspn.transitionStruct[t].dist.Param[i] << ";" << endl;
 				} else {
-					SpnCppFile << "       double EnablingDegree = INT_MAX; " << endl;
+					newcase << "       double EnablingDegree = INT_MAX; " << endl;
 					bool AtLeastOneMarkDepArc = false;
 					for (size_t p = 0; p < MyGspn.pl; p++)
 						if (MyGspn.inArcs[t][p] > 0) {
 							if (MyGspn.inArcsStr[t][p] == " ")
-								SpnCppFile << "       EnablingDegree=min(floor(Marking.P->_PL_" << placeNames[p] <<"/(double)(" << MyGspn.inArcs[t][p] << ")),EnablingDegree);" << endl;
+								newcase << "       EnablingDegree=min(floor(Marking.P->_PL_" << placeNames[p] <<"/(double)(" << MyGspn.inArcs[t][p] << ")),EnablingDegree);" << endl;
 							else {
 								AtLeastOneMarkDepArc = true;
-								SpnCppFile << "       if(" << MyGspn.inArcsStr[t][p] << ">0)" << endl;
-								SpnCppFile << "              EnablingDegree=min(floor(Marking.P->_PL_" << placeNames[p] <<"/(double)(" << MyGspn.inArcsStr[t][p] << ")),EnablingDegree);" << endl;
+								newcase << "       if(" << MyGspn.inArcsStr[t][p] << ">0)" << endl;
+								newcase << "              EnablingDegree=min(floor(Marking.P->_PL_" << placeNames[p] <<"/(double)(" << MyGspn.inArcsStr[t][p] << ")),EnablingDegree);" << endl;
 							}
 							
 						}
 					if (AtLeastOneMarkDepArc) {
 						if (MyGspn.transitionStruct[t].nbServers >= INT_MAX) {
-							SpnCppFile << "       if(EnablingDegree < INT_MAX ) ParamDistr[0] = EnablingDegree * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
-							SpnCppFile << "       else ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
+							newcase << "       if(EnablingDegree < INT_MAX ) ParamDistr[0] = EnablingDegree * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+							newcase << "       else ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
 						} else {
-							SpnCppFile << "       if(EnablingDegree < INT_MAX ) P[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
-							SpnCppFile << "       else ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
+							newcase << "       if(EnablingDegree < INT_MAX ) P[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+							newcase << "       else ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
 						}
 					} else {
 						if (MyGspn.transitionStruct[t].nbServers >= INT_MAX)
-							SpnCppFile << "        ParamDistr[0] = EnablingDegree  * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+							newcase << "        ParamDistr[0] = EnablingDegree  * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
 						else
-							SpnCppFile << "        ParamDistr[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+							newcase << "        ParamDistr[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
 					}
 				}
 			//SpnCppFile << "       return P;" << endl;
-			SpnCppFile << "       break;" << endl;
-			SpnCppFile << "     }" << endl;
+			//newcase << "       break;" << endl;
+			newcase << "     }" << endl;
 		}
+		parametercases.addCase((int)t,newcase.str());
 	}
-	SpnCppFile << "   }" << endl;
+	parametercases.writeCases(SpnCppFile);
+
+	//SpnCppFile << "   }" << endl;
 	SpnCppFile << "}\n" << endl;
 	
 	

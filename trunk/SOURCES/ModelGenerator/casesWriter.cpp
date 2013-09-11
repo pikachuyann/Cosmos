@@ -67,13 +67,3 @@ void casesHandler::writeCases(ostream &s){
   }
 s << "}" << endl;
 }
-
-
-int main(){
-  casesHandler chandler("testcases");
-  chandler.addCase(1,"test1");
-  chandler.addCase(10,"test1");
-  chandler.addCase(2,"test2");
-  chandler.writeCases(cout);
-
-}

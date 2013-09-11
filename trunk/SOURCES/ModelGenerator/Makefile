@@ -19,13 +19,15 @@ FILES= $(OBJPATH)/parameters.o \
 	$(OBJPATH)/LhaParser/Lha_gmlparser.o  \
 	$(OBJPATH)/../Cosmos/BatchR.o \
 	$(OBJPATH)/expatmodelparser.o \
-	$(OBJPATH)/modelwriter.o
+	$(OBJPATH)/modelwriter.o \
+	$(OBJPATH)/casesWriter.o
 
 SRCS= $(SRCPATH)/parameters.cpp \
 	$(SRCPATH)/server.cpp \
 	$(SRCPATH)/result.cpp \
 	$(SRCPATH)/HaslFormula.cpp \
 	$(SRCPATH)/Cosmos.cpp \
+	$(SRCPATH)/casesWriter.cpp \
 	$(SRCPATH)/Eval/Eval-parser.tab.cc \
 	$(SRCPATH)/Eval/Eval.cpp
 
