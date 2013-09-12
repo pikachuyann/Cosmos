@@ -28,6 +28,7 @@
 #include "Lha-parser.tab.hh"
 #include "Lha-Reader.hpp"
 #include "Lha_gmlparser.hpp"
+#include "../casesWriter.hpp"
 
 #include "string.h"
 
@@ -363,180 +364,176 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	
     LhaCppFile << "double LHA::GetFlow(int v, int loc,const abstractMarking& Marking){" << endl;
-    LhaCppFile << "    switch(v){" << endl;
+	casesHandler flowcases("v");
+    //LhaCppFile << "    switch(v){" << endl;
     for (size_t x = 0; x < MyLha.NbVar; x++) {
+		stringstream newcase;
 		if(MyLha.Vars.type[x] == CONTINIOUS_VARIABLE ){
-			LhaCppFile << "    case " << x << ": //" << MyLha.Vars.label[x] << endl;
-			LhaCppFile << "         switch(loc){" << endl;
+			//LhaCppFile << "    case " << x << ": //" << MyLha.Vars.label[x] << endl;
+			casesHandler flowcases2("loc");
+			//newcase << "         switch(loc){" << endl;
 			for (size_t l = 0; l < MyLha.NbLoc; l++) {
+				stringstream newcase2;
 				if (MyLha.FuncFlow[l][x] != ""){
-				LhaCppFile << "         case " << l << ": //" << MyLha.LocLabel[l] << endl;
-				LhaCppFile << "             return " << MyLha.FuncFlow[l][x] << ";" << endl;
-				LhaCppFile << "             break;" << endl;
-				}
+				//newcase << "         case " << l << ": //" << MyLha.LocLabel[l] << endl;
+				newcase2 << "\t\t\treturn " << MyLha.FuncFlow[l][x] << ";" << endl;
+				//newcase << "             break;" << endl;
+				}else newcase2 << "\t\treturn 0.0;" << endl;
+				flowcases2.addCase(l, newcase2.str());
 			}
-			LhaCppFile << "		  default:"<< endl;
-			LhaCppFile << "             return " << 0.0 << ";" << endl;
-			LhaCppFile << "       break;" << endl;
-			
-			LhaCppFile << "       }" << endl;
-			LhaCppFile << "       break;" << endl;
+			flowcases2.writeCases(newcase);
+						//LhaCppFile << "       break;" << endl;
 		}
+		flowcases.addCase(x, newcase.str());
     }
-    LhaCppFile << "	}\n" << endl;
+    //LhaCppFile << "	}\n" << endl;
+	flowcases.writeCases(LhaCppFile);
     LhaCppFile << "}\n" << endl;
 	
     LhaCppFile << "bool LHA::CheckLocation(int loc,const abstractMarking& Marking){" << endl;
-    LhaCppFile << "    switch(loc){" << endl;
+	casesHandler checklock("loc");
+    //LhaCppFile << "    switch(loc){" << endl;
     for (size_t l = 0; l < MyLha.NbLoc; l++) {
-		if(MyLha.FuncLocProperty[l] != "true"){
-			LhaCppFile << "     case " << l << ":" << endl;
-			LhaCppFile << "         return " << MyLha.FuncLocProperty[l] << ";" << endl;
-			LhaCppFile << "         break;" << endl;
-		}
+		stringstream newcase;
+		newcase << "         return " << MyLha.FuncLocProperty[l] << ";" << endl;
+		checklock.addCase(l, newcase.str());
     }
-	LhaCppFile << "     default :" << endl;
-	LhaCppFile << "         return true;" << endl;
-	LhaCppFile << "         break;" << endl;
-	
-    LhaCppFile << "    }" << endl;
-	
+	checklock.writeCases(LhaCppFile);
 	
     LhaCppFile << "}\n" << endl;
 	
     LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking){" << endl;
-    LhaCppFile << "    switch(ed){" << endl;
-    for (size_t e = 0; e < MyLha.Edge.size(); e++)
+	casesHandler checkConstrain("ed");
+    for (size_t e = 0; e < MyLha.Edge.size(); e++){
+		stringstream newcase;
 		if((MyLha.ConstraintsRelOp[e].size()>0 && MyLha.EdgeActions[e].size() > 0) || MyLha.unTimeEdgeConstraints[e].compare("true")!=0 ){
-			LhaCppFile << "    case " << e << ": { //" ;
-			LhaCppFile << MyLha.LocLabel[MyLha.Edge[e].Source] << " -> " << MyLha.LocLabel[MyLha.Edge[e].Target] << endl;
+			newcase << "{" << endl;
 			if(MyLha.ConstraintsRelOp[e].size()>0 && MyLha.EdgeActions[e].size() > 0){
 				for (size_t c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
-					LhaCppFile << "         if(!( ";
+					newcase << "         if(!( ";
 					for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
 						if (MyLha.ConstraintsCoeffs[e][c][v] != "")
-							LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Vars->" << MyLha.Vars.label[v];
+							newcase << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Vars->" << MyLha.Vars.label[v];
 						
 					}
-					LhaCppFile << MyLha.ConstraintsRelOp[e][c] << MyLha.ConstraintsConstants[e][c] << ")) return false;" << endl;
+					newcase << MyLha.ConstraintsRelOp[e][c] << MyLha.ConstraintsConstants[e][c] << ")) return false;" << endl;
 				}
 			}
 			if(MyLha.unTimeEdgeConstraints[e].compare("true")!=0)
-				LhaCppFile << "\t\tif(!(" << MyLha.unTimeEdgeConstraints[e] << "))return false;" << endl;
-			LhaCppFile << "         return true; " << endl;
-			LhaCppFile << "         break;" << endl;
-			LhaCppFile << "     }" << endl;
+				newcase << "\t\tif(!(" << MyLha.unTimeEdgeConstraints[e] << "))return false;" << endl;
+			newcase << "         return true; " << endl;
+			newcase << "     }" << endl;
+		}else{
+			newcase << "\treturn true;" << endl;
 		}
-	LhaCppFile << "    default: return true;" << endl;
-    LhaCppFile << "    }" << endl;
-	
+		checkConstrain.addCase(e, newcase.str());
+	}
+	checkConstrain.writeCases(LhaCppFile);
 	
     LhaCppFile << "}\n" << endl;
 	
 	
     LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking){" << endl;
-    LhaCppFile << "    switch(ed){" << endl;
-    for (size_t e = 0; e < MyLha.Edge.size(); e++)
+	casesHandler enablingtime("ed");
+//    LhaCppFile << "    switch(ed){" << endl;
+    for (size_t e = 0; e < MyLha.Edge.size(); e++){
+		stringstream newcase;
 		if(MyLha.ConstraintsRelOp[e].size()>0  && MyLha.EdgeActions[e].size() < 1 ){
-			LhaCppFile << "     case " << e << ": //";
-			LhaCppFile << MyLha.LocLabel[MyLha.Edge[e].Source] << " -> " << MyLha.LocLabel[MyLha.Edge[e].Target] << endl;
+			//LhaCppFile << "     case " << e << ": //";
+			//LhaCppFile << MyLha.LocLabel[MyLha.Edge[e].Source] << " -> " << MyLha.LocLabel[MyLha.Edge[e].Target] << endl;
 			
 			//LhaCppFile << "         return GetEdgeEnablingTime_" << e << "( Marking);" << endl;
-			LhaCppFile << "         {" << endl;
+			newcase << "         {" << endl;
 			
-			LhaCppFile << "             t_interval EnablingT;\n" << endl;
-			LhaCppFile << "             EnablingT.first=CurrentTime;" << endl;
-			LhaCppFile << "             EnablingT.second=DBL_MAX;\n" << endl;
-			LhaCppFile << "             t_interval EmptyInterval;\n" << endl;
-			LhaCppFile << "             EmptyInterval.first=0;" << endl;
-			LhaCppFile << "             EmptyInterval.second=-1;\n" << endl;
+			newcase << "             t_interval EnablingT;\n" << endl;
+			newcase << "             EnablingT.first=CurrentTime;" << endl;
+			newcase << "             EnablingT.second=DBL_MAX;\n" << endl;
+			newcase << "             t_interval EmptyInterval;\n" << endl;
+			newcase << "             EmptyInterval.first=0;" << endl;
+			newcase << "             EmptyInterval.second=-1;\n" << endl;
 			
-			LhaCppFile << "             double SumAF;" << endl;
-			LhaCppFile << "             double SumAX;" << endl;
+			newcase << "             double SumAF;" << endl;
+			newcase << "             double SumAX;" << endl;
 			
-			
-			
-			LhaCppFile << "\n" << endl;
-			
+			newcase << "\n" << endl;
 			
 			for (size_t c = 0; c < MyLha.ConstraintsRelOp[e].size(); c++) {
 				
-				LhaCppFile << "             SumAF=";
+				newcase << "             SumAF=";
 				for (size_t v = 0; v < MyLha.NbVar; v++)
 					if (MyLha.ConstraintsCoeffs[e][c][v] != "")
-						LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*GetFlow(" << v << "," << MyLha.Edge[e].Source << ", Marking)";
-				LhaCppFile << ";\n             SumAX=";
+						newcase << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*GetFlow(" << v << "," << MyLha.Edge[e].Source << ", Marking)";
+				newcase << ";\n             SumAX=";
 				for (size_t v = 0; v < MyLha.Vars.label.size(); v++)
 					if (MyLha.ConstraintsCoeffs[e][c][v] != "")
-						LhaCppFile << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Vars->" << MyLha.Vars.label[v];
-				LhaCppFile << ";\n" << endl;
+						newcase << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*Vars->" << MyLha.Vars.label[v];
+				newcase << ";\n" << endl;
 				
 				string RelOp = MyLha.ConstraintsRelOp[e][c];
 				
-				LhaCppFile << "             if(SumAF==0){" << endl;
-				LhaCppFile << "                  if(!(SumAX" << MyLha.ConstraintsRelOp[e][c] << MyLha.ConstraintsConstants[e][c] << "))" << endl;
-				LhaCppFile << "                      return EmptyInterval;" << endl;
-				LhaCppFile << "             }" << endl;
-				LhaCppFile << "             else{" << endl;
-				LhaCppFile << "                  double t=CurrentTime+(" << MyLha.ConstraintsConstants[e][c] << "-SumAX)/(double)SumAF;" << endl;
+				newcase << "             if(SumAF==0){" << endl;
+				newcase << "                  if(!(SumAX" << MyLha.ConstraintsRelOp[e][c] << MyLha.ConstraintsConstants[e][c] << "))" << endl;
+				newcase << "                      return EmptyInterval;" << endl;
+				newcase << "             }" << endl;
+				newcase << "             else{" << endl;
+				newcase << "                  double t=CurrentTime+(" << MyLha.ConstraintsConstants[e][c] << "-SumAX)/(double)SumAF;" << endl;
 				if (RelOp == "==") {
 					
-					LhaCppFile << "                  if(t>=EnablingT.first && t<=EnablingT.second){" << endl;
-					LhaCppFile << "                      EnablingT.first=t; EnablingT.second=t;" << endl;
-					LhaCppFile << "                  }" << endl;
-					LhaCppFile << "                  else return EmptyInterval;" << endl;
+					newcase << "                  if(t>=EnablingT.first && t<=EnablingT.second){" << endl;
+					newcase << "                      EnablingT.first=t; EnablingT.second=t;" << endl;
+					newcase << "                  }" << endl;
+					newcase << "                  else return EmptyInterval;" << endl;
 					
 				} else {
-					LhaCppFile << "                  if(SumAF>0){" << endl;
+					newcase << "                  if(SumAF>0){" << endl;
 					if (RelOp == "<=") {
-						LhaCppFile << "                     if(EnablingT.second>t) EnablingT.second=t;" << endl;
-						LhaCppFile << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
+						newcase << "                     if(EnablingT.second>t) EnablingT.second=t;" << endl;
+						newcase << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
 						
 					} else {
-						LhaCppFile << "                     if(EnablingT.first<t) EnablingT.first=t;" << endl;
-						LhaCppFile << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
+						newcase << "                     if(EnablingT.first<t) EnablingT.first=t;" << endl;
+						newcase << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
 					}
 					
-					LhaCppFile << "                      }" << endl;
+					newcase << "                      }" << endl;
 					
-					LhaCppFile << "                  else{" << endl;
+					newcase << "                  else{" << endl;
 					RelOp = InvRelOp(RelOp);
 					if (RelOp == "<=") {
-						LhaCppFile << "                     if(EnablingT.second>t) EnablingT.second=t;" << endl;
-						LhaCppFile << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
+						newcase << "                     if(EnablingT.second>t) EnablingT.second=t;" << endl;
+						newcase << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
 						
 					} else {
-						LhaCppFile << "                     if(EnablingT.first<t) EnablingT.first=t;" << endl;
-						LhaCppFile << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
+						newcase << "                     if(EnablingT.first<t) EnablingT.first=t;" << endl;
+						newcase << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
 					}
 					
-					LhaCppFile << "                      }" << endl;
+					newcase << "                      }" << endl;
 				}
-				LhaCppFile << "             }" << endl;
+				newcase << "             }" << endl;
 				
 			}
 			
-			LhaCppFile << "             return EnablingT;" << endl;
-			LhaCppFile << "         }"<< endl;
+			newcase << "             return EnablingT;" << endl;
+			newcase << "         }"<< endl;
 			
 			
 			//LhaCppFile << "         }" << endl;
 			//LhaCppFile << "         break;" << endl;
 			
+		}else{
+			newcase << "         {" << endl;
+			
+			newcase << "             t_interval EnablingT;\n" << endl;
+			newcase << "             EnablingT.first=CurrentTime;" << endl;
+			newcase << "             EnablingT.second=DBL_MAX;\n" << endl;
+			newcase << "             return EnablingT;" << endl;
+			newcase << "         }"<< endl;
+
 		}
-	
-	LhaCppFile << "     default:" << endl;
-	
-	LhaCppFile << "         {" << endl;
-	
-	LhaCppFile << "             t_interval EnablingT;\n" << endl;
-	LhaCppFile << "             EnablingT.first=CurrentTime;" << endl;
-	LhaCppFile << "             EnablingT.second=DBL_MAX;\n" << endl;
-	LhaCppFile << "             return EnablingT;" << endl;
-	LhaCppFile << "         }"<< endl;
-    
-	LhaCppFile << "    }" << endl;
-	
+		enablingtime.addCase(e, newcase.str());
+	}
+	enablingtime.writeCases(LhaCppFile);
     LhaCppFile << "}\n" << endl;
 	
 	

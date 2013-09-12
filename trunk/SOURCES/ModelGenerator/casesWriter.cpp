@@ -35,37 +35,41 @@ using namespace std;
 casesHandler::casesHandler(string svar):maxc(0),scase(svar){};
 
 void casesHandler::addCase(int c,const string st){
-  const char* cst = st.c_str();
-  map<const char*,int>::iterator it = cases.find(cst);
-  if(it == cases.end()){
-    cases[cst]=1;
-    mapping[c]=st;
-  }else{
-    it->second++;
-    mapping[c]=st;
-  }
-  maxc = max(maxc,cases[cst]);
+	const char* cst = st.c_str();
+	map<const char*,int>::iterator it = cases.find(cst);
+	if(it == cases.end()){
+		cases[cst]=1;
+		mapping[c]=st;
+	}else{
+		it->second++;
+		mapping[c]=st;
+	}
+	maxc = max(maxc,cases[cst]);
 }
 
 void casesHandler::writeCases(ostream &s){
-  s << "switch (" << scase << "){" << endl;
-  map<const char*,int>::iterator itmax = cases.begin();
-  for(map<const char*,int>::iterator it = cases.begin(); it != cases.end(); ++it){
-  if(it->second != maxc){
-    for(map<int,std::string>::iterator it2 = mapping.begin(); it2 != mapping.end(); ++it2){
-	if(it2->second.compare(it->first)==0)
-	  s << "\tcase " << it2->first << ":"<< endl;
-      }
-	  s << "\t\t"<< it->first << endl;
-	s << "\t\tbreak;" << endl;
-  }else{
-    itmax = it;
-    maxc++;
-  }
-  }
-  if(strcmp(itmax->first,"")!=0){
-    s<< "\tdefault:"<< endl;
-    s << "\t\t"<< itmax->first << endl;
-  }
-s << "}" << endl;
+	if (cases.size()==1) {
+		s << cases.begin()->first << endl;
+	}else{
+		s << "switch (" << scase << "){" << endl;
+		map<const char*,int>::iterator itmax = cases.begin();
+		for(map<const char*,int>::iterator it = cases.begin(); it != cases.end(); ++it){
+			if(it->second != maxc){
+				for(map<int,std::string>::iterator it2 = mapping.begin(); it2 != mapping.end(); ++it2){
+					if(it2->second.compare(it->first)==0)
+						s << "\tcase " << it2->first << ":"<< endl;
+				}
+				s << it->first << endl;
+				s << "\t\tbreak;" << endl;
+			}else{
+				itmax = it;
+				maxc++;
+			}
+		}
+		if(strcmp(itmax->first,"")!=0){
+			s<< "\tdefault:"<< endl;
+			s << itmax->first << endl;
+		}
+		s << "}" << endl;
+	}
 }

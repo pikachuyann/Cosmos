@@ -1401,95 +1401,80 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "void SPN::GetDistParameters(size_t t, const abstractBinding&)const {" << endl;
 	//-------------- /Rare Event -------------------------
 	casesHandler parametercases("t");
-	//SpnCppFile << "   switch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
 	  stringstream newcase;
 		if (MyGspn.transitionStruct[t].type == Timed) {
-		  //SpnCppFile << "     case " << t << ": {" << endl;
-		  newcase << "{" << endl;
-			//SpnCppFile << "       vector<double> P(" << MyGspn.Dist[t].Param.size() << ");" << endl;
+		  newcase << "\t{" << endl;
 			if (MyGspn.transitionStruct[t].singleService)
 				for (size_t i = 0; i < MyGspn.transitionStruct[t].dist.Param.size(); i++) {
 					
-					newcase << "       ParamDistr[" << i << "]= ( double ) " << MyGspn.transitionStruct[t].dist.Param[i] << ";" << endl;
+					newcase << "\t\tParamDistr[" << i << "]= ( double ) " << MyGspn.transitionStruct[t].dist.Param[i] << ";" << endl;
 				} else {
-					newcase << "       double EnablingDegree = INT_MAX; " << endl;
+					newcase << "\t\tdouble EnablingDegree = INT_MAX; " << endl;
 					bool AtLeastOneMarkDepArc = false;
 					for (size_t p = 0; p < MyGspn.pl; p++)
 						if (MyGspn.inArcs[t][p] > 0) {
 							if (MyGspn.inArcsStr[t][p] == " ")
-								newcase << "       EnablingDegree=min(floor(Marking.P->_PL_" << placeNames[p] <<"/(double)(" << MyGspn.inArcs[t][p] << ")),EnablingDegree);" << endl;
+								newcase << "\t\tEnablingDegree=min(floor(Marking.P->_PL_" << placeNames[p] <<"/(double)(" << MyGspn.inArcs[t][p] << ")),EnablingDegree);" << endl;
 							else {
 								AtLeastOneMarkDepArc = true;
-								newcase << "       if(" << MyGspn.inArcsStr[t][p] << ">0)" << endl;
-								newcase << "              EnablingDegree=min(floor(Marking.P->_PL_" << placeNames[p] <<"/(double)(" << MyGspn.inArcsStr[t][p] << ")),EnablingDegree);" << endl;
+								newcase << "\t\tif(" << MyGspn.inArcsStr[t][p] << ">0)" << endl;
+								newcase << "\t\t\tEnablingDegree=min(floor(Marking.P->_PL_" << placeNames[p] <<"/(double)(" << MyGspn.inArcsStr[t][p] << ")),EnablingDegree);" << endl;
 							}
 							
 						}
 					if (AtLeastOneMarkDepArc) {
 						if (MyGspn.transitionStruct[t].nbServers >= INT_MAX) {
-							newcase << "       if(EnablingDegree < INT_MAX ) ParamDistr[0] = EnablingDegree * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
-							newcase << "       else ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
+							newcase << "\t\t\tif(EnablingDegree < INT_MAX ) ParamDistr[0] = EnablingDegree * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+							newcase << "\t\t\telse ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
 						} else {
-							newcase << "       if(EnablingDegree < INT_MAX ) P[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
-							newcase << "       else ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
+							newcase << "\t\t\tif(EnablingDegree < INT_MAX ) P[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+							newcase << "\t\t\telse ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
 						}
 					} else {
 						if (MyGspn.transitionStruct[t].nbServers >= INT_MAX)
-							newcase << "        ParamDistr[0] = EnablingDegree  * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+							newcase << "\t\t\tParamDistr[0] = EnablingDegree  * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
 						else
-							newcase << "        ParamDistr[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+							newcase << "\t\t\tParamDistr[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
 					}
 				}
-			//SpnCppFile << "       return P;" << endl;
-			//newcase << "       break;" << endl;
-			newcase << "     }" << endl;
+			newcase << "\t}" << endl;
 		}
 		parametercases.addCase((int)t,newcase.str());
 	}
 	parametercases.writeCases(SpnCppFile);
 
-	//SpnCppFile << "   }" << endl;
 	SpnCppFile << "}\n" << endl;
 	
 	
 	/////////////////////////////////////////
 	
 	SpnCppFile << "double SPN::GetPriority(size_t t)const {" << endl;
-	SpnCppFile << "   switch(t){" << endl;
-	for (size_t t = 0; t < MyGspn.tr; t++)
-		if(MyGspn.transitionStruct[t].priority != "1"){
+	casesHandler prioritycases("t");
+	for (size_t t = 0; t < MyGspn.tr; t++){
+		stringstream newcase;
 		
-		SpnCppFile << "     case " << t << ": {" << endl;
-		
-		SpnCppFile << "       return (double)" << MyGspn.transitionStruct[t].priority << ";" << endl;
-		SpnCppFile << "       break;" << endl;
-		SpnCppFile << "     } " << endl;
-		
+		newcase << "\t\treturn (double)" << MyGspn.transitionStruct[t].priority << ";" << endl;
+		//newcase << "\t\tbreak;" << endl;
+		prioritycases.addCase(t, newcase.str());
 	}
-	SpnCppFile << "\tdefault:" << endl;
-	SpnCppFile << "\t\treturn (double)1;" << endl;
-	SpnCppFile << "   }" << endl;
+	prioritycases.writeCases(SpnCppFile);
 	SpnCppFile << "}\n" << endl;
 	
 	
 	/////////////////////////////////////////
 	SpnCppFile << "double SPN::GetWeight(size_t t)const{" << endl;
-	SpnCppFile << "   switch(t){" << endl;
-	for (size_t t = 0; t < MyGspn.tr; t++)
-		if(MyGspn.transitionStruct[t].weight != "1"){
+	casesHandler weightcases("t");
+	for (size_t t = 0; t < MyGspn.tr; t++){
+		stringstream newcase;
 		
-		SpnCppFile << "     case " << t << ":" << endl;
-		
-		SpnCppFile << "       return (double)" << MyGspn.transitionStruct[t].weight << ";" << endl;
-		SpnCppFile << "       break;" << endl;
-		
+		newcase << "\t\treturn (double)" << MyGspn.transitionStruct[t].weight << ";" << endl;
+		//newcase << "\t\tbreak;" << endl;
+		weightcases.addCase(t, newcase.str());
 	}
-	SpnCppFile << "\tdefault:" << endl;
-	SpnCppFile << "\t\treturn (double)1;" << endl;
-	SpnCppFile << "   }" << endl;
+	weightcases.writeCases(SpnCppFile);
 	SpnCppFile << "}\n" << endl;
-	
+		
 	SpnCppFile << "void SPN::Msimple(){"<<endl;
 	SpnCppFile << "\tvector<int> tab;"<<endl;
 	for(map<string,int>::iterator it=MyGspn.PlacesId.begin(); it != MyGspn.PlacesId.end(); it++){
