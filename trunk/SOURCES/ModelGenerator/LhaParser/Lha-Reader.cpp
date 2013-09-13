@@ -573,7 +573,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 			edgeUpdateHandler.addCase(e, newcase.str());
 		}
 	}
-	casesHandler.WriteFile(LhaCppFile);
+	edgeUpdateHandler.writeCases(LhaCppFile);
 	//LhaCppFile << "    }" << endl;
 	for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++) {
 		LhaCppFile << "    OldLinForm[" << (*it).second << "]=LinForm[" << (*it).second << "];" << endl;
