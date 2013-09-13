@@ -566,12 +566,11 @@ void Lha_Reader::WriteFile(parameters& P) {
 				newcase << "\t\tstd::swap(Vars,tempVars);\n";
 				
 			}
-			newcase << endl;
 			//LhaCppFile << "         DoEdgeUpdates_" << e << "( Marking);" << endl;
 			newcase << "         }"<< endl;
 			//LhaCppFile << "         break;" << endl;
-			edgeUpdateHandler.addCase(e, newcase.str());
 		}
+		edgeUpdateHandler.addCase(e, newcase.str());
 	}
 	edgeUpdateHandler.writeCases(LhaCppFile);
 	//LhaCppFile << "    }" << endl;
