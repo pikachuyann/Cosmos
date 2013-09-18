@@ -119,7 +119,7 @@ int Gspn_Reader::parse_gml_file(parameters &P) {
 			parser.parse_file(P.PathGspn);
 		
 		MyGspn.nbpass=1;
-		//second pass declaration and place.
+		//second pass transitions and arcs.
 			ModelHandlerPtr handlerPtr2(new MyModelHandler(&MyGspn,P.RareEvent,P.verbose,handler->IsPlace,handler->Gml2Place,handler->Gml2Trans));
 			ExpatModelParser parser2 = ExpatModelParser(handlerPtr2);
 			parser2.parse_file(P.PathGspn);

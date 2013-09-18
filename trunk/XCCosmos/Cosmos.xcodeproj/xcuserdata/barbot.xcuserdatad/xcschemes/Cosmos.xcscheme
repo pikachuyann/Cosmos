@@ -148,7 +148,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/Hospital/Hospital.grml"
+            argument = "/Users/barbot/Downloads/MAPK.3.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

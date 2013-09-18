@@ -543,6 +543,7 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
 			break;
 		}
 			
+		case MASSACTION:
 		case EXPONENTIAL:
 		{//EXP
 			//Exponential distribution is the only marking dependent parameters. Check of validity is required

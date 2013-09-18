@@ -298,7 +298,7 @@ int eval_str (string s){
 int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it )
 {
     if(verbose>1)cout<< (*it) << endl;
-	if((*it).compare("expr")==0){
+	if((*it).compare("expr")==0 || (*it).compare("function")==0){
 		//cout << *(it.begin()) << endl;
 		return eval_intFormula(intconst,it.begin());
 	}else if((*it).compare("intValue")==0){

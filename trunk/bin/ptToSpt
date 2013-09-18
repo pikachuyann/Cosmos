@@ -1,0 +1,3 @@
+#!/usr/bin/sed -f
+
+s/formalism='Place\/Transition Net'/formalism='Cosmos'/1

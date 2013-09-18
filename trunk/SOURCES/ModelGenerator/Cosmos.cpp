@@ -133,6 +133,26 @@ bool ParseBuild(parameters& P) {
 			}
 		}
 		
+		//Apply Law of mass action for MASSACTION distribution:
+		for(size_t t =0;t<gReader.MyGspn.tr;t++){
+			ProbabiliteDistribution *trDistr = &gReader.MyGspn.transitionStruct[t].dist;
+			if(trDistr->name.compare("MASSACTION")==0){
+				gReader.MyGspn.transitionStruct[t].markingDependant = true;
+				for (size_t p=0; p<gReader.MyGspn.pl; p++) {
+					if(gReader.MyGspn.inArcs[t][p]>0){
+						stringstream diststream;
+						diststream << trDistr->Param[0] << " * (";
+						if(gReader.MyGspn.inArcsStr[t][p].compare(" ")!=0 || gReader.MyGspn.inArcs[t][p]>1)
+							diststream << "pow(";
+						diststream << "Marking.P->_PL_" << gReader.MyGspn.placeStruct[p].name;
+						if(gReader.MyGspn.inArcs[t][p]>1)diststream << ","<<gReader.MyGspn.inArcs[t][p] <<")";
+						if(gReader.MyGspn.inArcsStr[t][p].compare(" ")!=0)diststream << ","<<gReader.MyGspn.inArcsStr[t][p] << ")";
+						diststream << ")";
+						trDistr->Param[0]= diststream.str();
+					}
+				}
+			}
+		}
 		
         if (!parseresult && gReader.MyGspn.pl >0 && gReader.MyGspn.tr >0) {
             gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
