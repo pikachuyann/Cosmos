@@ -1108,37 +1108,41 @@ void Gspn_Reader::WriteFile(parameters& P){
 	if(P.localTesting){
 		SpnCppFile << "\treturn (TransitionConditions[t]==0);" << endl;
 	} else {
-		SpnCppFile << "    switch(t){" << endl;
+	  casesHandler isenabledHandler("t");
+	  //SpnCppFile << "    switch(t){" << endl;
 		for (size_t t = 0; t < MyGspn.tr; t++) {
-			SpnCppFile << "     case " << t << ":  //" << MyGspn.transitionStruct[t].label <<endl;
+		  stringstream newcase;
+		    //SpnCppFile << "     case " << t << ":  //" << MyGspn.transitionStruct[t].label <<endl;
 			for (size_t p = 0; p < MyGspn.pl; p++) {
 				if (MyGspn.inArcs[t][p] > 0) {
 					
 					if (MyGspn.inArcsStr[t][p] == " ")
-						SpnCppFile << "    if (!(contains(Marking.P->_PL_" << placeNames[p] <<" , " << MyGspn.inArcs[t][p] << "))) return false;" << endl;
+						newcase << "    if (!(contains(Marking.P->_PL_" << placeNames[p] <<" , " << MyGspn.inArcs[t][p] << "))) return false;" << endl;
 					
 					else {
-						SpnCppFile << "    if ( !(" << MyGspn.inArcsStr[t][p] << " < 1)) " << endl;
-						SpnCppFile << "        if (!(contains(Marking.P->_PL_" << placeNames[p] <<" , " << MyGspn.inArcsStr[t][p] << "))) return false;" << endl;
+						newcase << "    if ( !(" << MyGspn.inArcsStr[t][p] << " < 1)) " << endl;
+						newcase << "        if (!(contains(Marking.P->_PL_" << placeNames[p] <<" , " << MyGspn.inArcsStr[t][p] << "))) return false;" << endl;
 					}
 				}
 				if (MyGspn.inhibArcs[t][p] > 0) {
 					
 					if (MyGspn.inhibArcsStr[t][p] == " ")
-						SpnCppFile << "    if (Marking.P->_PL_" << placeNames[p] <<" >= " << MyGspn.inhibArcs[t][p] << ") return false;" << endl;
+					  newcase << "    if (Marking.P->_PL_" << placeNames[p] <<" >= " << MyGspn.inhibArcs[t][p] << ") return false;" << endl;
 					
 					else {
-						SpnCppFile << "    if ( !(" << MyGspn.inhibArcsStr[t][p] << " < 1) ) " << endl;
-						SpnCppFile << "        if (contain(Marking.P->_PL_" << placeNames[p] <<" , " << MyGspn.inhibArcsStr[t][p] << ")) return false;" << endl;
+						newcase << "    if ( !(" << MyGspn.inhibArcsStr[t][p] << " < 1) ) " << endl;
+						newcase << "        if (contain(Marking.P->_PL_" << placeNames[p] <<" , " << MyGspn.inhibArcsStr[t][p] << ")) return false;" << endl;
 						
 					}
 				}
 			}
-			SpnCppFile << "    return true;" << endl;
+			newcase << "    return true;" << endl;
 			//SpnCppFile << "       return IsEnabled_t" << i << "();" << endl;
-			SpnCppFile << "       break;" << endl;
+			//SpnCppFile << "       break;" << endl;
+			isenabledHandler.addCase(t,newcase.str(), MyGspn.transitionStruct[t].label );
 		}
-		SpnCppFile << "   }" << endl;
+		//SpnCppFile << "   }" << endl;
+		isenabledHandler.writeCases(SpnCppFile);
 	}
 	SpnCppFile << "}\n" << endl;
 	
@@ -1323,31 +1327,27 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	SpnCppFile << "void SPN::unfire(size_t t ,const abstractBinding& b){" << endl;
 	if(P.RareEvent || P.computeStateSpace){
-		SpnCppFile << "   switch(t){" << endl;
+	  casesHandler unfirecases("t");
 		for (size_t t = 0; t < MyGspn.tr; t++) {
-			SpnCppFile << "     case " << t << ": {  //" << MyGspn.transitionStruct[t].label << endl;
-			//SpnCppFile << "       unfire_t" << t << "();" << endl;
+		  stringstream newcase;
 			for (size_t p = 0; p < MyGspn.pl; p++) {
 				if (MyGspn.inArcs[t][p] > 0) {
 					if (MyGspn.inArcsStr[t][p] == " ")
-						SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" += " << MyGspn.inArcs[t][p] << ";" << endl;
+						newcase << "    Marking.P->_PL_" << placeNames[p] <<" += " << MyGspn.inArcs[t][p] << ";" << endl;
 					else
-						SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" += " << MyGspn.inArcsStr[t][p] << ";" << endl;
+						newcase << "    Marking.P->_PL_" << placeNames[p] <<" += " << MyGspn.inArcsStr[t][p] << ";" << endl;
 				}
 				
 				if (MyGspn.outArcs[t][p] > 0) {
 					if (MyGspn.outArcsStr[t][p] == " ")
-						SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcs[t][p] << ";" << endl;
+						newcase << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcs[t][p] << ";" << endl;
 					else
-						SpnCppFile << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcsStr[t][p] << ";" << endl;
+					  newcase << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcsStr[t][p] << ";" << endl;
 				}
 			}
-			//
-			SpnCppFile << "       break;" << endl;
-			SpnCppFile << "     } " << endl;
+			unfirecases.addCase(t,newcase.str(),MyGspn.transitionStruct[t].label);
 		}
-		
-		SpnCppFile << "   }" << endl;
+		unfirecases.writeCases(SpnCppFile);
 	}
 	SpnCppFile << "}\n" << endl;
 	
@@ -1399,7 +1399,6 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "}" << endl;
 	
 	SpnCppFile << "void SPN::GetDistParameters(size_t t, const abstractBinding&)const {" << endl;
-	//-------------- /Rare Event -------------------------
 	casesHandler parametercases("t");
 	for (size_t t = 0; t < MyGspn.tr; t++) {
 	  stringstream newcase;
@@ -1440,14 +1439,13 @@ void Gspn_Reader::WriteFile(parameters& P){
 				}
 			newcase << "\t}" << endl;
 		}
-		parametercases.addCase((int)t,newcase.str());
+		parametercases.addCase((int)t,newcase.str(),MyGspn.transitionStruct[t].label );
 	}
 	parametercases.writeCases(SpnCppFile);
 
 	SpnCppFile << "}\n" << endl;
 	
 	
-	/////////////////////////////////////////
 	
 	SpnCppFile << "double SPN::GetPriority(size_t t)const {" << endl;
 	casesHandler prioritycases("t");
@@ -1456,7 +1454,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		
 		newcase << "\t\treturn (double)" << MyGspn.transitionStruct[t].priority << ";" << endl;
 		//newcase << "\t\tbreak;" << endl;
-		prioritycases.addCase(t, newcase.str());
+		prioritycases.addCase(t, newcase.str(),MyGspn.transitionStruct[t].label);
 	}
 	prioritycases.writeCases(SpnCppFile);
 	SpnCppFile << "}\n" << endl;
@@ -1470,7 +1468,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		
 		newcase << "\t\treturn (double)" << MyGspn.transitionStruct[t].weight << ";" << endl;
 		//newcase << "\t\tbreak;" << endl;
-		weightcases.addCase(t, newcase.str());
+		weightcases.addCase(t, newcase.str(),MyGspn.transitionStruct[t].label);
 	}
 	weightcases.writeCases(SpnCppFile);
 	SpnCppFile << "}\n" << endl;
@@ -1487,18 +1485,6 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "\tMarking.resetToInitMarking();"<< endl;
 	SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
 	SpnCppFile << "}"<< endl<< endl;
-	
-	/*
-	SpnCppFile << "double SPN::min(double x1, double x2) {"<< endl;
-	SpnCppFile << "\tif (x1 < x2) return x1;"<< endl;
-	SpnCppFile << "\telse return x2;"<< endl;
-	SpnCppFile << "}"<< endl<< endl;
-	
-	SpnCppFile << "double SPN::max(double x1, double x2) {"<< endl;
-	SpnCppFile << "\tif (x1 > x2) return x1;"<< endl;
-	SpnCppFile << "\telse return x2;"<< endl;
-	SpnCppFile << "}"<< endl<< endl;
-	*/
 	
 	SpnCppFile.close();
 	

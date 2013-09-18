@@ -45,13 +45,15 @@ struct cmp_str
 class casesHandler {
 public:
   casesHandler(std::string svar);
-  void addCase(int c,const std::string st);
+  void addCase(int c,const std::string st,const std::string comment="");
+  //  void addCase(int c,const std::string comment, const std::string st);
   void writeCases(std::ostream &s);
 private:
   int maxc;
   const std::string scase;
   std::map<const char*,int,cmp_str> cases;
   std::map<int,std::string> mapping;
+  std::map<int,std::string> mapcomment;
 };
 
 

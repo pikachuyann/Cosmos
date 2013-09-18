@@ -1,5 +1,5 @@
 export CC=gcc
-export CXX=g++
+export CXX=clang++
 export OPTIONS= -O3 -Wall -Wextra $(COV)
 export BOOSTPATH=/data/usr64/include
 
