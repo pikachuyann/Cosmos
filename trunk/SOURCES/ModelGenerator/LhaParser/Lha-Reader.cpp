@@ -52,17 +52,6 @@ Lha_Reader::~Lha_Reader() {
 }
 
 int Lha_Reader::parse(string& expr) {
-	
-	
-	
-	
-    IndexDist["UNIFORM"] = 1;
-    IndexDist["EXPONENTIAL"] = 2;
-    IndexDist["DETERMINISTIC"] = 3;
-    IndexDist["LOGNORMAL"] = 4;
-    IndexDist["TRIANGLE"] = 5;
-    IndexDist["GEOMETRIC"] = 6;
-	
     scan_expression(expr);
 	
     lha::Lha_parser parser(*this);
@@ -364,46 +353,38 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	
     LhaCppFile << "double LHA::GetFlow(int v, int loc,const abstractMarking& Marking){" << endl;
-	casesHandler flowcases("v");
-    //LhaCppFile << "    switch(v){" << endl;
+    casesHandler flowcases("v");
     for (size_t x = 0; x < MyLha.NbVar; x++) {
 		stringstream newcase;
 		if(MyLha.Vars.type[x] == CONTINIOUS_VARIABLE ){
-			//LhaCppFile << "    case " << x << ": //" << MyLha.Vars.label[x] << endl;
 			casesHandler flowcases2("loc");
-			//newcase << "         switch(loc){" << endl;
 			for (size_t l = 0; l < MyLha.NbLoc; l++) {
 				stringstream newcase2;
 				if (MyLha.FuncFlow[l][x] != ""){
-				//newcase << "         case " << l << ": //" << MyLha.LocLabel[l] << endl;
 				newcase2 << "\t\t\treturn " << MyLha.FuncFlow[l][x] << ";" << endl;
-				//newcase << "             break;" << endl;
 				}else newcase2 << "\t\treturn 0.0;" << endl;
-				flowcases2.addCase(l, newcase2.str());
+				flowcases2.addCase(l, newcase2.str(),MyLha.LocLabel[l]);
 			}
 			flowcases2.writeCases(newcase);
-						//LhaCppFile << "       break;" << endl;
 		}
-		flowcases.addCase(x, newcase.str());
+		flowcases.addCase(x, newcase.str(),MyLha.Vars.label[x]);
     }
-    //LhaCppFile << "	}\n" << endl;
-	flowcases.writeCases(LhaCppFile);
+    flowcases.writeCases(LhaCppFile);
     LhaCppFile << "}\n" << endl;
 	
     LhaCppFile << "bool LHA::CheckLocation(int loc,const abstractMarking& Marking){" << endl;
 	casesHandler checklock("loc");
-    //LhaCppFile << "    switch(loc){" << endl;
     for (size_t l = 0; l < MyLha.NbLoc; l++) {
 		stringstream newcase;
 		newcase << "         return " << MyLha.FuncLocProperty[l] << ";" << endl;
-		checklock.addCase(l, newcase.str());
+		checklock.addCase(l, newcase.str(),MyLha.LocLabel[l]);
     }
 	checklock.writeCases(LhaCppFile);
 	
     LhaCppFile << "}\n" << endl;
 	
     LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking){" << endl;
-	casesHandler checkConstrain("ed");
+    casesHandler checkConstrain("ed");
     for (size_t e = 0; e < MyLha.Edge.size(); e++){
 		stringstream newcase;
 		if((MyLha.ConstraintsRelOp[e].size()>0 && MyLha.EdgeActions[e].size() > 0) || MyLha.unTimeEdgeConstraints[e].compare("true")!=0 ){

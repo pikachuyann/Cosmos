@@ -536,7 +536,6 @@ MEMORY: AGEMEMORY{AgeMemory=true;}
 dist:str LB params RB {
   distrib=*$1;
   int np=Par.size();
-
   switch (Reader.IndexDist[distrib]) {
     case 1:
       {

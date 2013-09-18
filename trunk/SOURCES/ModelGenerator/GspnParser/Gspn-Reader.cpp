@@ -52,17 +52,6 @@ using namespace std;
 Gspn_Reader::Gspn_Reader() {
 	trace_scanning = false;
 	trace_parsing = false;
-	
-	IndexDist["UNIFORM"] = 1;
-	IndexDist["EXPONENTIAL"] = 2;
-	IndexDist["DETERMINISTIC"] = 3;
-	IndexDist["LOGNORMAL"] = 4;
-	IndexDist["TRIANGLE"] = 5;
-	IndexDist["GEOMETRIC"] = 6;
-	IndexDist["ERLANG"] = 7;
-	IndexDist["GAMMA"] =8;
-	
-	
 }
 
 Gspn_Reader::~Gspn_Reader() {
@@ -71,7 +60,16 @@ Gspn_Reader::~Gspn_Reader() {
 int Gspn_Reader::parse(string& expr) {
 	
 	scan_expression(expr);
-	
+
+  IndexDist["UNIFORM"] = 1;
+  IndexDist["EXPONENTIAL"] = 2;
+  IndexDist["DETERMINISTIC"] = 3;
+  IndexDist["LOGNORMAL"] = 4;
+  IndexDist["TRIANGLE"] = 5;
+  IndexDist["GEOMETRIC"] = 6;
+  IndexDist["ERLANG"] = 7;
+  IndexDist["GAMMA"] =8;
+
 	gspn::Gspn_parser parser(*this);
 	
 	parser.set_debug_level(trace_parsing);

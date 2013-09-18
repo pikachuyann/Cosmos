@@ -160,8 +160,6 @@ public:
 	void WriteFile(parameters&);
 	
 private:
-    map<string, int> IndexDist;
-
     void scan_begin();
     void scan_end();
     void scan_expression(const string&);
