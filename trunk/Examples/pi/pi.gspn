@@ -29,5 +29,6 @@ InArcs={
 OutArcs={
 (Sampx,P2,1);
 (Sampy,P3,1);
+(fin,P3,1);
 };
 
