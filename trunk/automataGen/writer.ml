@@ -2,6 +2,23 @@ open Type
 open Automata
 open Printf
 
+let rec write_linConstr = function
+  | [] -> ()
+  | (i,c,fexpr)::q ->
+    printf "v%i" i;
+    print_cmp c;
+    print_float_expr fexpr;
+    if List.length q >0 then printf "&";
+    write_linConstr q
+
+let rec write_flow = function
+  | [] -> ()
+  | (i,fexpr)::q ->
+    printf "v%i'=" i;
+    print_float_expr fexpr;
+    if List.length q >0 then printf ",";
+    write_flow q
+
 
 let writeAutomata a =
   printf "NbVariables = %i;\n" a.nbVar;
@@ -36,8 +53,10 @@ let writeAutomata a =
       try print_sf (List.assoc i a.invariant)
       with Not_found -> printf "TRUE"; 
     end;
-    if a.flows <>[] then
-      failwith "Flow not yet implemented";
+    try let lflows = List.assoc i a.flows in 
+	if lflows <> [] then
+	  write_flow lflows;
+    with Not_found -> ();
     printf ");\n"
   done;
   printf "}\n";
@@ -48,8 +67,8 @@ let writeAutomata a =
     (match tt with
       Synch(_,sf) -> printf "ALL,";
 	print_sf sf;
-    | Autonomous(varForm) -> printf "#,";
-      print_float_expr varForm;
+    | Autonomous(lconstr) -> printf "#,";
+       write_linConstr lconstr;
     );
     printf ");\n"
   ) a.trans;

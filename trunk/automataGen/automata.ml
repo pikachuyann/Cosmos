@@ -4,13 +4,13 @@ type varFormula = Test
 
 type transType = 
   Synch of string list * stateFormula
-| Autonomous of string
+| Autonomous of ((int*cmp*floatExpr) list)
 
 type automata = {
   nbLoc: int;
   nbVar: int;
   invariant : (int*stateFormula) list;
-  flows : (int*((int*intExpr) list)) list;
+  flows : (int*((int*floatExpr) list)) list;
   init : int;
   final : int list;
   trans : (int *transType *int) list;
@@ -33,12 +33,12 @@ let automata_of_formula = function
       nbLoc = 3;
       nbVar = 1;
       invariant = [(0,s1);(1,s2)];
-      flows = [(0,[(0,Int(1))])];
+      flows = [(0,[(0,Float(1.0))])];
       init =0;
       final=[1];
       trans=[(0,Synch(["ALL"],True),0);
 	     (0,Synch(["ALL"],True),1);
-	     (0,Autonomous("v0 = ")
+	     (0,Autonomous([(0,EQ,fexpr)]),2)
 	    ];
     }
 
