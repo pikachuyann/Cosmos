@@ -21,7 +21,7 @@ let automata_of_formula = function
     {
       nbLoc = 2;
       nbVar = 0;
-      invariant = [(0,s1);(1,s2)];
+      invariant = [(0,And(s1,Not(s2)));(1,s2)];
       flows = [];
       init =0;
       final=[1];
@@ -32,7 +32,7 @@ let automata_of_formula = function
     {
       nbLoc = 3;
       nbVar = 1;
-      invariant = [(0,s1);(1,s2)];
+      invariant = [(0,And(s1,Not(s2)));(1,s2)];
       flows = [(0,[(0,Float(1.0))])];
       init =0;
       final=[1];
