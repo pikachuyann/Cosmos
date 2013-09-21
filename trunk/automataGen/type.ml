@@ -1,8 +1,9 @@
 type formula =
   Until of stateFormula*stateFormula
 | BoundedUntil of stateFormula*cmp*floatExpr*stateFormula
-and stateFormula =
-  True | False | Not of stateFormula | IntAtom of intExpr*cmp*intExpr | RealAtom of floatExpr*cmp*floatExpr 
+and stateFormula = True | False | Not of stateFormula 
+		   | And of stateFormula*stateFormula | Or of stateFormula*stateFormula
+		   | IntAtom of intExpr*cmp*intExpr | RealAtom of floatExpr*cmp*floatExpr 
 and cmp = EQ | SG | SL | GE |LE
 and intExpr = IntName of string | Int of int
 and floatExpr = FloatName of string | Float of float;;
@@ -28,6 +29,18 @@ and print_sf = function
   | Not(sf) -> print_string "!(";
     print_sf sf;
     print_string ")"
+  | And(sf1,sf2) ->
+    print_string "(";
+    print_sf sf1;
+    print_string " & ";
+    print_sf sf2;
+    print_string ")"
+  | Or(sf1,sf2) ->
+    print_string "(";
+    print_sf sf1;
+    print_string " | ";
+    print_sf sf2;
+    print_string ")"
   | IntAtom(iexpr1,cmp,iexpr2) -> 
     print_int_expr iexpr1;
     print_cmp cmp;
@@ -36,9 +49,6 @@ and print_sf = function
     print_float_expr fexpr1;
     print_cmp cmp;
     print_float_expr fexpr2
-
-and print_varForm _ =
-  failwith "Not yet implemented"
 
 and print_cmp = function
   | EQ -> print_string "="
