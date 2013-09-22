@@ -178,6 +178,15 @@ bool ParseBuild(parameters& P) {
 	if(P.verbose>0)cout << "Start Parsing " << P.PathLha << endl;
 	
     try{
+		if(!P.CSLformula.empty()){
+			P.PathLha = P.tmpPath + "/generatedlha.lha";
+			stringstream cmd;
+			cmd << "echo \"" << P.CSLformula << "\" | "<< P.Path <<
+			"automataGen >" << P.PathLha;
+			if(P.verbose>0)cout << cmd.str()<< endl;
+			system(cmd.str().c_str());
+		}
+		
 		//check the type of the LHA file.
 		if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")!=0){
 			//here LHA is absent or in LHA file format or in GRML file format

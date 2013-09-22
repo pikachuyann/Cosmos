@@ -55,6 +55,7 @@ parameters::parameters():
 	PathLha(""),
 	loopLHA(0.0),
 	loopTransientLHA(0.0),
+	CSLformula(""),
 	externalHASL(""),
 
 	localTesting(false),
@@ -132,6 +133,7 @@ void parameters::usage(){
 	cout << "\t--trace-place arg\tSpecify which place to trace in all the output file, arg is a comma separated list of places name" << endl;
 	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
 	cout << "\t--loop t1 [--transtient t2] \tGenerate an LHA that loop for t1 times unit and then t2 time unit. The --transient option alone do not do anything"<< endl;
+	cout << "\t--formula f\t specify a CSL formula to use instead of an automata" << endl;
 	cout << "\t--prism \tExport the state space and lauch prism."<< endl;
 	cout << "\t-s,--state-space \tExport the state space." << endl;
 	
@@ -157,6 +159,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"local-test",  no_argument , 0,  12},
 			{"loop",   required_argument, 0,  14},
 			{"transient",required_argument,0, 16},
+			{"formula",required_argument, 0, 'f'},
 			{"chernoff", required_argument,0, 17},
         
             /* Options for the rare event engine */
@@ -296,7 +299,8 @@ void parameters::parseCommandLine(int argc, char** argv){
 					PathLha = "LOOP";
 				break;
 			case  16: loopTransientLHA = atof(optarg); break;
-				
+			case  'f': CSLformula = optarg; break;
+			
 			case  15: gnuplotDriver = true; break;
 			
 			case 19: tracedPlace = optarg; break;
@@ -311,7 +315,7 @@ void parameters::parseCommandLine(int argc, char** argv){
         }
     }
 	
-	if(optind+1 == argc && loopLHA> 0.0){
+	if(optind+1 == argc && (loopLHA> 0.0 || !CSLformula.empty())){
 		PathGspn = argv[optind];
 	}
     else if (optind+2 == argc){

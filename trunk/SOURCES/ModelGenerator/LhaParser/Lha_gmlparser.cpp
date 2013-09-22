@@ -766,9 +766,10 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 				if((*it3).compare("expr")==0)eval_expr(&markdep, varflow, it3.begin() );
 			}
 			size_t vi = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var) - MyLHA->Vars.label.begin();
+			v1[vi]= *varflow;
 			if(verbose>1 && var != NULL)
 				cout << "\tvar: " << *var << " index: " << vi << " update: " << *varflow << endl;
-			v1[vi]= *varflow;
+			
 		}
 	}
 	MyLHA->FuncEdgeUpdates.push_back(v1);

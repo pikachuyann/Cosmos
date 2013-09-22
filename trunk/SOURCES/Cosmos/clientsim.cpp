@@ -137,8 +137,8 @@ int main(int argc, char** argv) {
 
       batchResult->outputR();// output the result on the standart output
       
-      /*cout << batchR->I <<":"<< batchR->Isucc <<":"<< batchR->Mean 
-	<< ":" << batchR->M2 << endl;*/
+      //cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
+	//<< ":" << batchResult->M2[0] << endl;
 
       delete batchResult;
       
