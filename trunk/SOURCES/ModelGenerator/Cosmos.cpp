@@ -184,7 +184,10 @@ bool ParseBuild(parameters& P) {
 			cmd << "echo \"" << P.CSLformula << "\" | "<< P.Path <<
 			"automataGen >" << P.PathLha;
 			if(P.verbose>0)cout << cmd.str()<< endl;
-			system(cmd.str().c_str());
+			if(system(cmd.str().c_str()) != 0){
+				cerr << "Fail to Generate the Automaton!" << endl;
+				return false;
+			}
 		}
 		
 		//check the type of the LHA file.

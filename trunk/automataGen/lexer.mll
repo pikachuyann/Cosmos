@@ -11,11 +11,19 @@ rule token = parse
     | "FALSE" | "False" | "false"  {FALSE} 
     | '(' {LPAR}
     | ')' {RPAR}
+    | '+' {PLUS}
+    | '-' {MINUS}
+    | '*' {MULT}
+    | '/' {DIV}
     | '[' {LSQBRAK}
     | ']' {RSQBRAK}
+    | ';' {SEMICOLON}
     | 'U' {UNTIL}
     | 'E' {EVENTUALLY}
+    | 'F' {FUTURE}
     | '!' {NOT}
+    | '&' {AND}
+    | '|' {OR}
     | '=' {EQ}
     | '<' {SL}
     | '>' {SG}
