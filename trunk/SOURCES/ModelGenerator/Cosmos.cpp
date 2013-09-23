@@ -397,6 +397,7 @@ int main(int argc, char** argv) {
 		else if (st == "Cosmos")FindPath(P);
 		else P.Path.assign(st.begin(), st.end() - 6);
 	}
+	if(P.prismPath.empty())P.prismPath=P.Path+"../prism/bin/prism";
 	
 	//Build the model and lha.
 	if ( ! ParseBuild(P)) {

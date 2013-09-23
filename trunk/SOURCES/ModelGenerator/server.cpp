@@ -314,8 +314,8 @@ void launchExport(parameters& P){
 		
     ostringstream os;
 	os << P.tmpPath << "/ClientSim 1 " << P.verbose << " 0 ";
-    if(P.computeStateSpace==1)os << " -STSP " << P.Path << "../" << P.prismPath;
-	else os << " -STSPBU " << P.Path << "../" << P.prismPath;
+    if(P.computeStateSpace==1)os << " -STSP " << P.prismPath;
+	else os << " -STSPBU " << P.prismPath;
     
     if(P.verbose >1)cout << os.str() << endl;
     

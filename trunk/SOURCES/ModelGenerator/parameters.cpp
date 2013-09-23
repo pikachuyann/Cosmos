@@ -75,7 +75,7 @@ parameters::parameters():
 	gcccmd("g++"),
 	gccflags("-O3"),
 
-	prismPath("prism/bin/prism"),
+	prismPath(""),
     dataoutput(""),
 	dataraw(""),
 	datatrace(""),
@@ -196,7 +196,8 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"tmp-path" , required_argument, 0,	 4 },
 			{"tmp-status", required_argument,0,	 5 },
 			{"bin-path", required_argument  ,0,	 9 },
-            
+			{"prism-path", required_argument,0,  20},
+        
             {0, 0, 0, 0}
         };
         /* getopt_long stores the option index here. */
@@ -304,7 +305,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case  15: gnuplotDriver = true; break;
 			
 			case 19: tracedPlace = optarg; break;
-				
+			case 20: prismPath = optarg; break;
             case '?':
                 usage();
                 exit(EXIT_FAILURE);
