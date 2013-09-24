@@ -286,8 +286,10 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			ConfInt* rci = right->eval(batch);
 			
 			double mean = lci->mean*rci->mean;
-			double low = lci->low*rci->low;
-			double up = lci->up *rci->up;
+			double low = fmin(fmin(lci->low*rci->low,lci->up*rci->up),
+								fmin(lci->low*rci->up,lci->up*rci->low));
+			double up = fmax(fmax(lci->low*rci->low,lci->up*rci->up),
+						 fmax(lci->low*rci->up,lci->up*rci->low));
 			
 			delete lci;
 			delete rci;
