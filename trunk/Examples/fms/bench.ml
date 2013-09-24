@@ -122,19 +122,28 @@ let joblist5 = [
   "S2_5_25600", "Policy2Fail.grml" , "rho2_25600.grml" ;
   "S2_5_102400", "Policy2Fail.grml" , "rho2_102400.grml"]
 
-let execCosmos (name,model,prop) =
-  let cmd = sprintf "%s -v 0 %s %s --width 0.005 --level 0.99" cosmos_path model prop in
-  print_endline cmd;
-  ignore (Sys.command cmd);
-  ignore (Sys.command (sprintf "cp Result.res %s.res" name));
-  ();;
+let execCosmos resultFile csvfile (name,model,prop)  =
+  try
+    let r = exec_cosmos model prop 100 8 "--width 0.1" true in
+    ignore (Sys.command (sprintf "mv Result.res %s.res" name));
+    output_value resultFile r;
+    print_result csvfile "," r;
+    flush resultFile;
+    flush csvfile;
+  with _->();;
 
-match int_of_string (Sys.argv.(1)) with
-    1 -> List.iter execCosmos joblist1
-  | 2 -> List.iter execCosmos joblist2
-  | 3 -> List.iter execCosmos joblist3
-  | 4 -> List.iter execCosmos joblist4
-  | 45-> List.iter execCosmos joblist45
-  | 5 -> List.iter execCosmos joblist5
+
+
+let rf = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "CamlResultFile" in
+let csv = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "csvResultFile" in
+(match int_of_string (Sys.argv.(1)) with
+    1 -> List.iter (execCosmos rf csv) joblist1
+  | 2 -> List.iter (execCosmos rf csv) joblist2
+  | 3 -> List.iter (execCosmos rf csv) joblist3
+  | 4 -> List.iter (execCosmos rf csv) joblist4
+  | 45-> List.iter (execCosmos rf csv) joblist45
+  | 5 -> List.iter (execCosmos rf csv) joblist5
   | _ -> failwith "Wrong integer"
-
+);
+close_out rf;
+close_out csv;;

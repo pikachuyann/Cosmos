@@ -19,22 +19,49 @@ let dots = regexp ":\t"
 let confintdel = regexp "\\[\\| , \\|\\]"
 
 type result = { mutable mean : float;
+		mutable conflevel : float;
                 mutable stdDev : float;
                 mutable confInt: float*float;
 		mutable simtime: float;
 		mutable systime: float;
 		mutable nbRun: int;
 		mutable nbSuccRun: int;
+		mutable modelName: string;
+		mutable propName: string;
+		mutable batch: int;
+		mutable nbJob:int;
               }
+
+let print_result f sep rf =
+  let ps ()= output_string f sep in
+  let pf fl = output_string f (string_of_float fl) in
+  let pi i = output_string f (string_of_int i) in
+  Printf.fprintf f "%s%s%s%s" rf.modelName sep rf.propName sep;
+  pi rf.nbRun; ps ();
+  pi rf.nbSuccRun; ps ();
+  pi rf.nbJob; ps ();
+  pi rf.batch; ps ();
+  pf rf.mean; ps ();
+  pf rf.stdDev; ps ();
+  pf (fst rf.confInt); ps ();
+  pf (snd rf.confInt); ps ();
+  pf rf.simtime; ps ();
+  pf rf.systime;
+  output_string f "\n";;
 
 let dummyresult = {
   mean= 0. ;
+  conflevel= 0.;
   stdDev = 0. ;
   confInt = 0. , 0.;
   simtime = 0.;
   systime = 0. ;
   nbRun = 0;
   nbSuccRun = 0;
+  modelName = "dummyModel.grml";
+  propName ="dummyProp.grml";
+  batch = 0;
+  nbJob = 0;
 }
 
 
@@ -50,6 +77,7 @@ let parse_result f =
 				       result.confInt <- (x-.0.0001 , x+. 0.0001)
         | "Estimated value" :: v :: [] -> result.mean <- (float_of_string v)
         | "Standard deviation" :: v :: [] -> result.stdDev <- (float_of_string v)
+	| "Confidence level" :: v :: [] -> result.conflevel <- (float_of_string v)
         | "Confidence interval" :: v :: [] ->
           (match split confintdel v with
             | a::b::_ -> result.confInt <- (float_of_string a , float_of_string b)
@@ -69,6 +97,17 @@ let parse_result f =
     done
    with
        End_of_file -> close_in fs);
+  result;;
+
+let exec_cosmos model prop batch nbjob opt printcmd =
+  let cmd = sprintf "%s %s %s --njob %i --batch %i -v 0 %s" cosmos_path model prop nbjob batch opt in
+  if printcmd then print_endline cmd;
+  ignore (Sys.command cmd);
+  let result = parse_result "Result.res" in
+  result.modelName <- model;
+  result.propName <- prop;
+  result.batch <- batch;
+  result.nbJob <- nbjob;
   result;;
 
 let call_cosmos opt =
