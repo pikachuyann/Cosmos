@@ -124,7 +124,7 @@ let joblist5 = [
 
 let execCosmos resultFile csvfile (name,model,prop)  =
   try
-    let r = exec_cosmos model prop 100 8 "--width 0.1" true in
+    let r = exec_cosmos model prop 100 8 "--width 0.005" true in
     ignore (Sys.command (sprintf "mv Result.res %s.res" name));
     output_value resultFile r;
     print_result csvfile "," r;
