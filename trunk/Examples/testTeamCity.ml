@@ -1,5 +1,6 @@
 open Str
 open Printf
+#load "unix.cma"
 #load "str.cma"
 
 let cosmos_path = "../../bin/Cosmos"
@@ -30,6 +31,7 @@ type result = { mutable mean : float;
 		mutable propName: string;
 		mutable batch: int;
 		mutable nbJob:int;
+		mutable date: string;
               }
 
 let print_result f sep rf =
@@ -46,7 +48,8 @@ let print_result f sep rf =
   pf (fst rf.confInt); ps ();
   pf (snd rf.confInt); ps ();
   pf rf.simtime; ps ();
-  pf rf.systime;
+  pf rf.systime; ps ();
+  output_string f rf.date;
   output_string f "\n";;
 
 let dummyresult = {
@@ -62,6 +65,7 @@ let dummyresult = {
   propName ="dummyProp.grml";
   batch = 0;
   nbJob = 0;
+  date = "dummyDate";
 }
 
 
@@ -99,6 +103,11 @@ let parse_result f =
        End_of_file -> close_in fs);
   result;;
 
+let string_date () =
+  let tm = Unix.localtime (Unix.gettimeofday ()) in
+  Printf.sprintf "%i/%i/%i %i:%i:%i" tm.Unix.tm_mday tm.Unix.tm_mon 
+    tm.Unix.tm_year tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
+
 let exec_cosmos model prop batch nbjob opt printcmd =
   let cmd = sprintf "%s %s %s --njob %i --batch %i -v 0 %s" cosmos_path model prop nbjob batch opt in
   if printcmd then print_endline cmd;
@@ -108,7 +117,8 @@ let exec_cosmos model prop batch nbjob opt printcmd =
   result.propName <- prop;
   result.batch <- batch;
   result.nbJob <- nbjob;
-  result;;
+  result.date <- string_date ();
+  result
 
 let call_cosmos opt =
    let cmd = sprintf "%s -v 0 %s %s" cosmos_path cosmos_options opt in
