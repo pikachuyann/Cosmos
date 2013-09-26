@@ -1,4 +1,17 @@
 
+#include "markingImpl.hpp"
+
+const int reducePL_RE_Queue1 = 0;
+const int reducePL_RE_Queue2 = 1;
+
+void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){
+	
+	vect[reducePL_RE_Queue1] = Marking.P->_PL_RE_Queue1+ fmax(0,Marking.P->_PL_RE_Queue2-r); //To Complete
+	
+	vect[reducePL_RE_Queue2] = fmin(r,Marking.P->_PL_RE_Queue2); //To Complete
+}
+
+/*
 
 void SPN::lumpingFun(vector<int>* vect){
     int reste =0;
@@ -17,3 +30,4 @@ void SPN::lumpingFun(vector<int>* vect){
     (*vect)[0] += reste;
     
 }
+*/

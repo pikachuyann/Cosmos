@@ -135,7 +135,7 @@ double SimulatorBoundedRE::mu(){
 		vect[i] = N.Marking.getNbOfTokens(N.Msimpletab[i]);
 	};
 	
-    N.lumpingFun(&vect);
+    N.lumpingFun(N.Marking,vect);
 	int stateN = numSolv->findHash(&vect);
 	 
 	if(stateN<0){

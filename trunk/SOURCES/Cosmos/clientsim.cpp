@@ -91,6 +91,7 @@ int main(int argc, char** argv) {
 			states.exploreStateSpace();
 			states.buildTransitionMatrix();
 			states.outputMat();
+			states.outputTmpLumpingFun();
             cout << "Finish Exporting" << endl;
 			exit(EXIT_SUCCESS);
 		}else if(str== "-STSP"){
@@ -101,6 +102,7 @@ int main(int argc, char** argv) {
             states.launchPrism(argv[5]);
             states.importPrism();
             states.outputVect();
+			states.outputTmpLumpingFun();
             cout << "Finish Exporting" << endl;
             cout << "Prism Result:\t"<< states.returnPrismResult() << endl;
 			exit(EXIT_SUCCESS);

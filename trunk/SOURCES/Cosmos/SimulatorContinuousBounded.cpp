@@ -303,13 +303,13 @@ void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstrac
 
 double SimulatorContinuousBounded::mu(){
 	
-	vector<int> vect (N.Msimpletab.size());
-	for(size_t i=0; i< N.Msimpletab.size();i++){
+	vector<int> vect (N.Msimpletab.size(),0);
+	/*for(size_t i=0; i< N.Msimpletab.size();i++){
 		vect[i] = N.Marking.getNbOfTokens(N.Msimpletab[i]);
-	};
+	};*/
 	
     //cerr << "test(" << endl;
-    N.lumpingFun(&vect);
+    N.lumpingFun(N.Marking, vect);
     //cerr << "test)" << endl;
 	int stateN = numSolv->findHash(&vect);
     //cerr <<"StateN : " << stateN << endl;

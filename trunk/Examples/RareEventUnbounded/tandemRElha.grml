@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<model formalismUrl="http://alligator.lip6.fr/HASL-formula.fml" xmlns="http://gml.lip6.fr/model">
+<model id="1" formalismUrl="http://formalisms.cosyverif.org/HASL-formula.fml" xmlns="http://cosyverif.org/ns/model">
   <attribute name="declaration">
     <attribute name="constants">
       <attribute name="intConsts">
@@ -28,6 +28,8 @@
       </attribute>
       <attribute name="discretes">
       </attribute>
+      <attribute name="colors">
+      </attribute>
     </attribute>
   </attribute>
   <attribute name="HASLFormula">
@@ -41,7 +43,7 @@
       </attribute>
     </attribute>
   </attribute>
-  <node id="3" nodeType="state">
+  <node id="3" nodeType="state" x="251" y="138">
     <attribute name="invariant">
       <attribute name="boolExpr"><attribute name="and">
         <attribute name="boolExpr"><attribute name="less">
@@ -57,27 +59,17 @@
             N
           </attribute></attribute>
         </attribute></attribute>
-        <attribute name="boolExpr"><attribute name="and">
-          <attribute name="boolExpr"><attribute name="greater">
-            <attribute name="expr"><attribute name="function"><attribute name="+">
-              <attribute name="expr"><attribute name="name">
-                RE_Queue1
-              </attribute></attribute>
-              <attribute name="expr"><attribute name="name">
-                RE_Queue2
-              </attribute></attribute>
-            </attribute></attribute></attribute>
-            <attribute name="expr"><attribute name="numValue">
-              0
-            </attribute></attribute>
-          </attribute></attribute>
-          <attribute name="boolExpr"><attribute name="equal">
+        <attribute name="boolExpr"><attribute name="greater">
+          <attribute name="expr"><attribute name="function"><attribute name="+">
             <attribute name="expr"><attribute name="name">
-              Puit
+              RE_Queue1
             </attribute></attribute>
-            <attribute name="expr"><attribute name="numValue">
-              0
+            <attribute name="expr"><attribute name="name">
+              RE_Queue2
             </attribute></attribute>
+          </attribute></attribute></attribute>
+          <attribute name="expr"><attribute name="numValue">
+            0
           </attribute></attribute>
         </attribute></attribute>
       </attribute></attribute>
@@ -91,29 +83,19 @@
       Initial
     </attribute>
   </node>
-  <node id="4" nodeType="state">
+  <node id="4" nodeType="state" x="407" y="77">
     <attribute name="invariant">
-      <attribute name="boolExpr"><attribute name="and">
-        <attribute name="boolExpr"><attribute name="equal">
-          <attribute name="expr"><attribute name="function"><attribute name="+">
-            <attribute name="expr"><attribute name="name">
-              RE_Queue1
-            </attribute></attribute>
-            <attribute name="expr"><attribute name="name">
-              RE_Queue2
-            </attribute></attribute>
-          </attribute></attribute></attribute>
+      <attribute name="boolExpr"><attribute name="equal">
+        <attribute name="expr"><attribute name="function"><attribute name="+">
           <attribute name="expr"><attribute name="name">
-            N
+            RE_Queue1
           </attribute></attribute>
-        </attribute></attribute>
-        <attribute name="boolExpr"><attribute name="equal">
           <attribute name="expr"><attribute name="name">
-            Puit
+            RE_Queue2
           </attribute></attribute>
-          <attribute name="expr"><attribute name="numValue">
-            0
-          </attribute></attribute>
+        </attribute></attribute></attribute>
+        <attribute name="expr"><attribute name="name">
+          N
         </attribute></attribute>
       </attribute></attribute>
     </attribute>
@@ -126,29 +108,19 @@
       Final
     </attribute>
   </node>
-  <node id="5" nodeType="state">
+  <node id="5" nodeType="state" x="407" y="196">
     <attribute name="invariant">
-      <attribute name="boolExpr"><attribute name="or">
-        <attribute name="boolExpr"><attribute name="equal">
-          <attribute name="expr"><attribute name="function"><attribute name="+">
-            <attribute name="expr"><attribute name="name">
-              RE_Queue1
-            </attribute></attribute>
-            <attribute name="expr"><attribute name="name">
-              RE_Queue2
-            </attribute></attribute>
-          </attribute></attribute></attribute>
-          <attribute name="expr"><attribute name="numValue">
-            0
-          </attribute></attribute>
-        </attribute></attribute>
-        <attribute name="boolExpr"><attribute name="greater">
+      <attribute name="boolExpr"><attribute name="equal">
+        <attribute name="expr"><attribute name="function"><attribute name="+">
           <attribute name="expr"><attribute name="name">
-            Puit
+            RE_Queue1
           </attribute></attribute>
-          <attribute name="expr"><attribute name="numValue">
-            0
+          <attribute name="expr"><attribute name="name">
+            RE_Queue2
           </attribute></attribute>
+        </attribute></attribute></attribute>
+        <attribute name="expr"><attribute name="numValue">
+          0
         </attribute></attribute>
       </attribute></attribute>
     </attribute>
@@ -158,7 +130,7 @@
     <attribute name="flows">
     </attribute>
     <attribute name="type">
-      Final
+      Normal
     </attribute>
   </node>
   <arc id="6" arcType="transition" source="3" target="4">
@@ -177,8 +149,7 @@
         true
       </attribute></attribute>
     </attribute>
-    <attribute name="label">
-      ALL
+    <attribute name="allExcept">
     </attribute>
   </arc>
   <arc id="7" arcType="transition" source="3" target="5">
@@ -197,8 +168,7 @@
         true
       </attribute></attribute>
     </attribute>
-    <attribute name="label">
-      ALL
+    <attribute name="allExcept">
     </attribute>
   </arc>
   <arc id="8" arcType="transition" source="3" target="3">
@@ -209,8 +179,7 @@
         true
       </attribute></attribute>
     </attribute>
-    <attribute name="label">
-      ALL
+    <attribute name="allExcept">
     </attribute>
   </arc>
 </model>

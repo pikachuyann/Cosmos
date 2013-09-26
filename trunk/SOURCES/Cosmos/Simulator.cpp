@@ -178,13 +178,13 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 		//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
 			if (N.IsEnabled(*it,*bindex)) {
 				if (!EQ->isScheduled((*it),bindex->id())) {
+					if(verbose > 4){
+						cerr << "->New transition enabled: " << N.Transition[*it].label << ",";
+						bindex->print();
+						cerr << endl;
+					}
 					GenerateEvent(F, (*it), *bindex);
 					(*EQ).insert(F);
-					if(verbose > 4){
-					cerr << "->New transition enabled: " << N.Transition[*it].label << ",";
-					bindex->print();
-					cerr << endl;
-					}
 					
 
 				} else {
@@ -249,8 +249,8 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	}
 	//assert(cerr<< "assert!"<< endl);
 	
-	/*
-	#ifndef NDEBUG
+	
+	
 	//In Debug mode check that transition are scheduled iff they are enabled
 	for (vector<_trans>::const_iterator t = N.Transition.begin()
 		 ; t != N.Transition.end() ; ++t) {
@@ -271,7 +271,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 			}
 		}
 	}
-	#endif*/
+	
 }
 
 /**
@@ -478,7 +478,7 @@ void Simulator::SimulateSinglePath() {
 			A.printState(cerr);
 			cerr << endl;
 			if(verbose>4)EQ->view(N.Transition);
-			if(verbose>5)interactiveSimulation();
+			if(verbose==6)interactiveSimulation();
 		}
 
 		continueb = SimulateOneStep();

@@ -150,7 +150,7 @@ public:
 	vector <int> Msimpletab; //special places
 	
 	void Msimple();
-	void lumpingFun(vector<int>*);
+	void lumpingFun(const abstractMarking& ,vector<int>&);
 	//-------------------------/Rare Event -------------------------------------
 	
 	/**

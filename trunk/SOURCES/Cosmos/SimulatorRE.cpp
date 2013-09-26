@@ -82,7 +82,7 @@ void SimulatorRE::returnResultTrue(){
 
 void SimulatorRE::returnResultFalse(){
 	Result.first = false;
-	Result.second[0] =0.0;
+	Result.second =vector<double>(A.FormulaVal.size(),0.0);
 	if(verbose>3)cerr << "---------------\n FALSE \n------\n";
 }
 
@@ -193,22 +193,22 @@ void SimulatorRE::getParams(size_t Id,const abstractBinding& b){
 
 double SimulatorRE::mu(){
 	
-	vector<int> vect (N.Msimpletab.size());
-	for(size_t i=0; i< N.Msimpletab.size();i++){
-		vect[i] = N.Marking.getNbOfTokens(N.Msimpletab[i]);
-		if(verbose>3)cerr << i << " : " << N.Msimpletab[i] << " : " << N.Marking.getNbOfTokens(N.Msimpletab[i]) << endl;
+	vector<int> vect (N.Msimpletab.size(),0);
+	
+	if(verbose>3) for(size_t i=0; i< N.Msimpletab.size();i++){
+		cerr << i << " : " << N.Msimpletab[i] << " -> " << N.Place[N.Msimpletab[i]].label << ":" << N.Marking.getNbOfTokens(N.Msimpletab[i]) << endl;
 	};
 	
-    N.lumpingFun(&vect);
+    N.lumpingFun(N.Marking,vect);
     //cerr << "test(";
     int i = muprob.findHash(&vect);
-    if(i<0){
+    if(i<0 || verbose>4){
         cerr << "state:(";
         for (size_t j =0; j < vect.size(); j++) {
             cerr << vect[j] << ",";
         }
         cerr << ") ->" << i << endl;
-       // exit(EXIT_FAILURE);
+        if(i<0)exit(EXIT_FAILURE);
     }
 	if(verbose>3) cerr << ((*muprob.muvect)[i]) << endl;
     //cerr << ")" << endl;
@@ -216,7 +216,7 @@ double SimulatorRE::mu(){
 }
 
 double SimulatorRE::ComputeDistr(size_t t , const abstractBinding& b, double origin_rate){
-	
+	if(verbose>4)cerr << "trans: " << t << " mu origine:";
 	double mux = mu();
 	if( mux==0.0 || mux==1.0) return(origin_rate);
     
@@ -226,11 +226,12 @@ double SimulatorRE::ComputeDistr(size_t t , const abstractBinding& b, double ori
 		}else{ 
 			return 0.0 ;};
 	}; 
-	
+	if(verbose>4)cerr << "mu target : ";
 	double distr;
 	N.fire(t,b);
 	distr = origin_rate *( mu() / mux);
 	N.unfire(t,b);
+	if(verbose>4)cerr <<endl;
 	return(distr);
 }
 

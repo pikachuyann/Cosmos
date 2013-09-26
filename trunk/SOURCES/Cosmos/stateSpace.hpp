@@ -123,6 +123,7 @@ public:
     
     void inputVect();
     void outputVect();
+	void outputTmpLumpingFun();
     double returnPrismResult();
     
     void outputPrism();
