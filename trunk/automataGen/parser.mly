@@ -52,7 +52,7 @@ timeinterval:
  | EQ floatexpr {($2,$2)}
  | SG floatexpr {($2,Infty)}
  | GE floatexpr {($2,Infty)}
- | LSQBRAK floatexpr SEMICOLON floatexpr RSQBRAK stateCondition {($2,$4)}
+ | LSQBRAK floatexpr SEMICOLON floatexpr RSQBRAK {($2,$4)}
 
 stateCondition:
   TRUE    {True}
