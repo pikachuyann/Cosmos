@@ -98,14 +98,21 @@ int main(int argc, char** argv) {
 			stateSpace states;
 			states.exploreStateSpace();
 			states.buildTransitionMatrix();
-            states.outputPrism();
-            states.launchPrism(argv[5]);
-            states.importPrism();
-            states.outputVect();
+			states.outputPrism();
+			states.launchPrism(argv[5]);
+			states.importPrism();
+			states.outputVect();
 			states.outputTmpLumpingFun();
-            cout << "Finish Exporting" << endl;
-            cout << "Prism Result:\t"<< states.returnPrismResult() << endl;
-			exit(EXIT_SUCCESS);
+			cout << "Finish Exporting" << endl;
+			double prResult = states.returnPrismResult();
+			cout << "Prism Result:\t"<< prResult << endl;
+			ofstream ResultsFile("Result.res", ios::out | ios::trunc);
+			ResultsFile << "Result Computed by Prism" << endl;
+			ResultsFile << "Estimated value:\t" << prResult << endl;
+			ResultsFile << "Confidence interval:\t[" <<prResult*0.9999;
+			ResultsFile << " , " << prResult*1.00001 << "]" << endl;
+			ResultsFile.close();
+		        exit(EXIT_SUCCESS);
 		} else mySim= (new Simulator);
 		
     } else {

@@ -112,8 +112,8 @@ endif
 # Compilers etc. #
 ##################
 
-C = gcc
-CPP = g++
+C = clang
+CPP = clang++
 LD = $(CPP)
 JAVAC = javac
 JAVACC = javacc
