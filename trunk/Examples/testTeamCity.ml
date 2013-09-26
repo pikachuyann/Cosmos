@@ -3,6 +3,8 @@ open Printf
 #load "unix.cma"
 #load "str.cma"
 
+exception CmdFail of int
+
 let cosmos_path = "../../bin/Cosmos"
 
 let cosmos_options = ("--level 0.9999"^ ( 
@@ -111,7 +113,8 @@ let string_date () =
 let exec_cosmos model prop batch nbjob opt printcmd =
   let cmd = sprintf "%s %s %s --njob %i --batch %i -v 0 %s" cosmos_path model prop nbjob batch opt in
   if printcmd then print_endline cmd;
-  ignore (Sys.command cmd);
+  let retcode =  Sys.command cmd in
+  if retcode <> 0 then raise (CmdFail(retcode));
   let result = parse_result "Result.res" in
   result.modelName <- model;
   result.propName <- prop;
@@ -120,51 +123,30 @@ let exec_cosmos model prop batch nbjob opt printcmd =
   result.date <- string_date ();
   result
 
-let call_cosmos opt =
-   let cmd = sprintf "%s -v 0 %s %s" cosmos_path cosmos_options opt in
-  print_endline cmd;
-  Sys.command cmd
-
-let call_cosmos_silent opt =
-   let cmd = sprintf "%s -v 0 %s %s" cosmos_path cosmos_options opt in
-  Sys.command cmd
-
-let invoke_cosmos opt gspn lha  =
-  call_cosmos (opt^" "^gspn^" "^lha)
-
-let invoke_cosmos_silent opt gspn lha  =
-  call_cosmos_silent (opt^" "^gspn^" "^lha)
-
-let test_result n v =
-  let result = parse_result "Result.res" in
-  printf "result: %e\nconfint: [%e,%e]\n" result.mean (fst result.confInt) (snd result.confInt);
-  if v > (fst result.confInt) & (snd result.confInt) > v
-  then printf "##teamcity[testFinished name='%s' message='expected result %e is in confidence interval |[%e,%e|]']\n" n v (fst result.confInt) (snd result.confInt)
-  else printf "##teamcity[testFailed name='%s' message='Test %s fail: expected result %e is outside confidence interval |[%e,%e|]']\n" n n v (fst result.confInt) (snd result.confInt)
-
-let test_cosmos testname opt v = 
+let test_cosmos testname model prop opt v = 
    printf "##teamcity[testStarted name='%s' captureStandardOutput='<true>']\n" testname;
   flush stdout;
-  let ret = call_cosmos opt in
-  if ret <> 0 then printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" testname testname ret
-  else test_result testname v;;
+  try let result = exec_cosmos model prop 1000 1 opt true in
+      printf "result: %e\nconfint: [%e,%e]\n" result.mean (fst result.confInt) (snd result.confInt);
+      if v > (fst result.confInt) & (snd result.confInt) > v
+      then printf "##teamcity[testFinished name='%s' message='expected result %e is in confidence interval |[%e,%e|]']\n" testname v (fst result.confInt) (snd result.confInt)
+      else printf "##teamcity[testFailed name='%s' message='Test %s fail: expected result %e is outside confidence interval |[%e,%e|]']\n" testname testname v (fst result.confInt) (snd result.confInt)
+
+  with CmdFail(ret) ->
+    printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" testname testname ret
 
 let test_cosmos_gspn n v o =
-  test_cosmos n (o^" "^n^".gspn"^" "^n^".lha") v
+  test_cosmos n (n^".gspn") (n^".lha") o v
 
 let test_cosmos_grml n v o =
-  test_cosmos n (o^" -g "^n^".grml"^" "^n^"lha.grml") v
+  test_cosmos n (n^".grml") (n^"lha.grml") o v
  
-let test_cosmos_prism n v o =
-  test_cosmos n (o^" -g --prism "^n^".grml"^" "^n^"lha.grml > Result.res") v
-
 let test_coverage name v o n =
-  let _ = invoke_cosmos_silent (" --tmp-status 2 --max-run 10 --batch 10 ") (name^".gspn") (name^".lha")  in
+  let _ = exec_cosmos (name^".gspn") (name^".lha") 10 1 (" --tmp-status 2 --max-run 10") false  in
   print_endline ("Cosmos "^o^" -v 0 --tmp-status 3 "^name^".gspn "^name^".lha");
   let succ = ref 0 in
   for i = 1 to n do
-    let _ = invoke_cosmos_silent (o^" -v 0 --tmp-status 3") (name^".gspn") (name^".lha") in
-    let result = parse_result "Result.res" in
+    let result = exec_cosmos (name^".gspn") (name^".lha") 1000 1 (o^" -v 0 --tmp-status 3") false in
     if v > (fst result.confInt) & (snd result.confInt) > v then (
       incr succ;
       print_string "+";
