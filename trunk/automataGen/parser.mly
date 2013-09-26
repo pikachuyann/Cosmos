@@ -14,6 +14,7 @@
 %token SEMICOLON
 %token UNTIL
 %token EVENTUALLY
+%token NEXT
 %token AND OR
 %token NOT
 %token EQ SG SL GE LE
@@ -40,6 +41,8 @@ expr:
  | stateCondition UNTIL timeinterval stateCondition {BoundedUntil($1,$3,$4)}
  | EVENTUALLY stateCondition {Until(True,$2) }
  | EVENTUALLY timeinterval stateCondition {BoundedUntil(True,$2,$3) }
+ | NEXT stateCondition {Next($2)}
+ | NEXT timeinterval stateCondition {BoundedNext($2,$3)}
 ;
 
 

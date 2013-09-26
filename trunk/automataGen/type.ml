@@ -1,9 +1,13 @@
 type formula =
   Until of stateFormula*stateFormula
 | BoundedUntil of stateFormula*(floatExpr*floatExpr)*stateFormula
+| Next of stateFormula
+| BoundedNext of (floatExpr*floatExpr)*stateFormula
+
 and stateFormula = True | False | Not of stateFormula 
 		   | And of stateFormula*stateFormula | Or of stateFormula*stateFormula
 		   | IntAtom of intExpr*cmp*intExpr | RealAtom of floatExpr*cmp*floatExpr 
+
 and cmp = EQ | SG | SL | GE | LE
 and intExpr = IntName of string | Int of int 
 	      | Plus of intExpr*intExpr | Minus of intExpr*intExpr
@@ -11,20 +15,30 @@ and intExpr = IntName of string | Int of int
 and floatExpr = FloatName of string | Float of float | Infty;;
 
 
+let rec print_timeInt (fexpr1,fexpr2) =
+  print_string "[";
+  print_float_expr fexpr1;
+  print_string ";";
+  print_float_expr fexpr2;
+  print_string "]"
 
-let rec print_formula = function
+and print_formula = function
   |Until(sf1,sf2) -> 
     print_sf sf1;
     print_string " U ";
     print_sf sf2
-  |BoundedUntil(sf1,(fexpr1,fexpr2),sf2) ->
+  |BoundedUntil(sf1,timeInt,sf2) ->
     print_sf sf1;
-    print_string " U[";
-    print_float_expr fexpr1;
-    print_string ";";
-    print_float_expr fexpr2;
-    print_string "]";
+    print_string " U";
+    print_timeInt timeInt;
     print_sf sf2
+  |Next(sf) ->
+    print_string " X";
+    print_sf sf
+  |BoundedNext(timeInt,sf) ->
+    print_string " X";
+    print_timeInt timeInt;
+    print_sf sf
 
 and print_sf = function
   | True -> print_string "TRUE"

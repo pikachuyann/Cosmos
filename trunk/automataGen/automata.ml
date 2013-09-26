@@ -56,5 +56,6 @@ let automata_of_formula = function
 	     (0,Autonomous([(0,EQ,fexpr)]),2);
 	    ];
     }
+  | _ -> failwith "Not yet implemented"
 
 
