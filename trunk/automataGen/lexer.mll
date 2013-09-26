@@ -19,8 +19,7 @@ rule token = parse
     | ']' {RSQBRAK}
     | ';' {SEMICOLON}
     | 'U' {UNTIL}
-    | 'E' {EVENTUALLY}
-    | 'F' {FUTURE}
+    | 'F' {EVENTUALLY}
     | '!' {NOT}
     | '&' {AND}
     | '|' {OR}

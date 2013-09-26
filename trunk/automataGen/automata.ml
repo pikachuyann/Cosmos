@@ -28,7 +28,7 @@ let automata_of_formula = function
       trans=[(0,Synch(["ALL"],True),0);
 	     (0,Synch(["ALL"],True),1)];
     }
-  | BoundedUntil(s1,fexpr1,fexpr2,s2) ->
+  | BoundedUntil(s1,(fexpr1,fexpr2),s2) when fexpr1 <> fexpr2 ->
     {
       nbLoc = 4;
       nbVar = 1;
@@ -43,11 +43,11 @@ let automata_of_formula = function
 	     (1,Autonomous([(0,EQ,fexpr2)]),3);
 	    ];
     }
-  | Future(fexpr,sf) ->
+  | BoundedUntil(s1,(fexpr,_),s2) ->
     {
       nbLoc = 3;
       nbVar = 1;
-      invariant = [(1,sf);(1,Not(sf))];
+      invariant = [(0,s1);(1,s2);(2,Not(s2))];
       flows = [(0,[(0,Float(1.0))])];
       init =0;
       final=[1];

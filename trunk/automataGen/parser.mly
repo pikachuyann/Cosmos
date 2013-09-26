@@ -14,7 +14,6 @@
 %token SEMICOLON
 %token UNTIL
 %token EVENTUALLY
-%token FUTURE
 %token AND OR
 %token NOT
 %token EQ SG SL GE LE
@@ -38,23 +37,19 @@ main:
 
 expr:
   stateCondition UNTIL stateCondition {Until($1,$3) }
- | stateCondition UNTIL LE floatexpr stateCondition {BoundedUntil($1,Float(0.0),$4,$5)}
- | stateCondition UNTIL SL floatexpr stateCondition {BoundedUntil($1,Float(0.0),$4,$5)}
- | stateCondition UNTIL EQ floatexpr stateCondition {BoundedUntil($1,$4,$4,$5)}
- | stateCondition UNTIL SG floatexpr stateCondition {BoundedUntil($1,$4,Infty,$5)}
- | stateCondition UNTIL GE floatexpr stateCondition {BoundedUntil($1,$4,Infty,$5)}
- | stateCondition UNTIL LSQBRAK floatexpr SEMICOLON floatexpr RSQBRAK stateCondition
-     {BoundedUntil($1,$4,$6,$8)}
+ | stateCondition UNTIL timeinterval stateCondition {BoundedUntil($1,$3,$4)}
  | EVENTUALLY stateCondition {Until(True,$2) }
- | EVENTUALLY LE floatexpr stateCondition {BoundedUntil(True,Float(0.0),$3,$4) }
- | EVENTUALLY SL floatexpr stateCondition {BoundedUntil(True,Float(0.0),$3,$4)}
- | EVENTUALLY EQ floatexpr stateCondition {BoundedUntil(True,$3,$3,$4)}
- | EVENTUALLY SG floatexpr stateCondition {BoundedUntil(True,$3,Infty,$4)}
- | EVENTUALLY GE floatexpr stateCondition {BoundedUntil(True,$3,Infty,$4)}
- | EVENTUALLY LSQBRAK floatexpr SEMICOLON floatexpr RSQBRAK stateCondition
-     {BoundedUntil(True,$3,$5,$7)}
- | FUTURE floatexpr stateCondition {Future($2,$3)}
+ | EVENTUALLY timeinterval stateCondition {BoundedUntil(True,$2,$3) }
 ;
+
+
+timeinterval:
+   LE floatexpr {(Float(0.0),$2)}
+ | SL floatexpr {(Float(0.0),$2)}
+ | EQ floatexpr {($2,$2)}
+ | SG floatexpr {($2,Infty)}
+ | GE floatexpr {($2,Infty)}
+ | LSQBRAK floatexpr SEMICOLON floatexpr RSQBRAK stateCondition {($2,$4)}
 
 stateCondition:
   TRUE    {True}

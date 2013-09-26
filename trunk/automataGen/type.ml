@@ -1,7 +1,6 @@
 type formula =
   Until of stateFormula*stateFormula
-| BoundedUntil of stateFormula*floatExpr*floatExpr*stateFormula
-| Future of floatExpr*stateFormula
+| BoundedUntil of stateFormula*(floatExpr*floatExpr)*stateFormula
 and stateFormula = True | False | Not of stateFormula 
 		   | And of stateFormula*stateFormula | Or of stateFormula*stateFormula
 		   | IntAtom of intExpr*cmp*intExpr | RealAtom of floatExpr*cmp*floatExpr 
@@ -18,7 +17,7 @@ let rec print_formula = function
     print_sf sf1;
     print_string " U ";
     print_sf sf2
-  |BoundedUntil(sf1,fexpr1,fexpr2,sf2) ->
+  |BoundedUntil(sf1,(fexpr1,fexpr2),sf2) ->
     print_sf sf1;
     print_string " U[";
     print_float_expr fexpr1;
@@ -26,11 +25,6 @@ let rec print_formula = function
     print_float_expr fexpr2;
     print_string "]";
     print_sf sf2
-  | Future(fexpr,sf) ->
-    print_string "F ";
-    print_float_expr fexpr;
-    print_string " ";
-    print_sf sf
 
 and print_sf = function
   | True -> print_string "TRUE"
