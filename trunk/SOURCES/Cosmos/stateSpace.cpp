@@ -433,7 +433,7 @@ void stateSpace::outputTmpLumpingFun(){
 		int j = N.Msimpletab[i];
 		outputlumptmp << "const int reducePL_" << N.Place[j].label.substr(1,N.Place[j].label.length()-1 ) << " = " << i << ";" << endl;
 	};
-	outputlumptmp << endl << "void SPN::lumpingFun(abstractMarking &Marking,vector<int> &vect){" << endl;
+	outputlumptmp << endl << "void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){" << endl;
 	for(size_t i=0; i< N.Msimpletab.size();i++){
 		int j = N.Msimpletab[i];
 		outputlumptmp << "\tvect[reducePL_" << N.Place[j].label.substr(1,N.Place[j].label.length()-1 ) << "] = Marking.P->_PL_" << N.Place[j].label.substr(1,N.Place[j].label.length()-1 ) << "; //To Complete" << endl;

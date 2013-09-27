@@ -260,8 +260,14 @@ void launch_clients(parameters& P){
         fread(reinterpret_cast<char*>( &readpid ), sizeof(readpid) ,1, stream);
         clientPID.push_back(readpid);
 		 */
+		if(P.verbose >1)
+			for(size_t i=0; i<=argn; i++ )cout << " " << argv[i];
+		
+		cout << endl;
+		
 		popenClient(cmd.c_str(),argv);
 		freestr(argv, argn);
+		
     }
     
 }

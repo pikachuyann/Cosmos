@@ -118,6 +118,27 @@ void SimulatorRE::updateSPN(size_t,const abstractBinding&){
 		EQ->replace(F);
 	}
 	
+	//In Debug mode check that transition are scheduled iff they are enabled
+	for (vector<_trans>::const_iterator t = N.Transition.begin()
+		 ; t != N.Transition.end() ; ++t) {
+		for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
+			bindex != t->bindingList.end() ; ++bindex){
+			if (N.IsEnabled(t->Id, *bindex) !=
+				EQ->isScheduled(t->Id, bindex->id())){
+				cerr << "N.IsEnabled(" << t->label << ",";
+				bindex->print();
+				cerr <<")" << endl;
+				if(EQ->isScheduled(t->Id, bindex->id())){
+					cerr << "Scheduled and not enabled!"<< endl;
+				}else{
+					cerr << "Enabled and not scheduled!" << endl;
+				}
+				assert(N.IsEnabled(t->Id, *bindex) ==
+					   EQ->isScheduled(t->Id, bindex->id()));
+			}
+		}
+	}
+	
 };
 
 void SimulatorRE::updateLikelihood(size_t E1_transitionNum){
@@ -193,11 +214,7 @@ void SimulatorRE::getParams(size_t Id,const abstractBinding& b){
 
 double SimulatorRE::mu(){
 	
-	vector<int> vect (N.Msimpletab.size(),0);
-	
-	if(verbose>3) for(size_t i=0; i< N.Msimpletab.size();i++){
-		cerr << i << " : " << N.Msimpletab[i] << " -> " << N.Place[N.Msimpletab[i]].label << ":" << N.Marking.getNbOfTokens(N.Msimpletab[i]) << endl;
-	};
+	vector<int> vect (muprob.S.begin()->first->size(),0);
 	
     N.lumpingFun(N.Marking,vect);
     //cerr << "test(";
