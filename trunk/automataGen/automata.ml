@@ -56,6 +56,17 @@ let automata_of_formula = function
 	     (0,Autonomous([(0,EQ,fexpr)]),2);
 	    ];
     }
+  | Next(sf) ->
+     {
+      nbLoc = 2;
+      nbVar = 1;
+      invariant = [(1,sf];
+      flows = [];
+      init =0;
+      final=[1];
+      trans=[(0,Synch(["ALL"],True),1) ];
+    }
+
   | _ -> failwith "Not yet implemented"
 
 
