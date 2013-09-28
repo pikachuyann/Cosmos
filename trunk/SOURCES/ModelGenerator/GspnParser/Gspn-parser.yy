@@ -188,6 +188,8 @@ Constant: Const INT str EQ IntStringFormula SEMICOLON
 {if(Reader.MyGspn.RealConstant.find(*$3)!=Reader.MyGspn.RealConstant.end())
     {cout<<"Constant "<<*$3<<" already defined."<<endl; YYABORT;}
   else {string st=$5;
+	if (Reader.P.constants.count(*$3)>0)st = Reader.P.constants[*$3];
+	  
     Evaluate.parse(st);
     Reader.MyGspn.IntConstant[*$3]=Evaluate.IntResult;Reader.MyGspn.RealConstant[*$3]=Evaluate.RealResult;}
 }
@@ -195,6 +197,7 @@ Constant: Const INT str EQ IntStringFormula SEMICOLON
 {if(Reader.MyGspn.RealConstant.find(*$3)!=Reader.MyGspn.RealConstant.end())
     {cout<<"Constant "<<*$3<<" already defined."<<endl; YYABORT;}
   else {string st=$5;
+	  if (Reader.P.constants.count(*$3)>0)st = Reader.P.constants[*$3];
     Evaluate.parse(st);
     Reader.MyGspn.RealConstant[*$3]=Evaluate.RealResult;}
 };

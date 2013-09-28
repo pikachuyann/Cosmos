@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.7.  */
+/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2012 Free Software Foundation, Inc.
+      Copyright (C) 2002-2013 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -193,6 +193,10 @@ namespace lha {
 #endif
 
   private:
+    /// This class is not copyable.
+    Lha_parser (const Lha_parser&);
+    Lha_parser& operator= (const Lha_parser&);
+
     /// Report a syntax error.
     /// \param loc    where the syntax error is found.
     /// \param msg    a description of the syntax error.
@@ -341,7 +345,7 @@ namespace lha {
 
 } // lha
 /* Line 33 of lalr1.cc  */
-#line 345 "Lha-parser.tab.hh"
+#line 349 "Lha-parser.tab.hh"
 
 
 

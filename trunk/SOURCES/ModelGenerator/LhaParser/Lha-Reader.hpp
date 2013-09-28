@@ -139,7 +139,7 @@ LHA_DECL;
 
 class Lha_Reader {
 public:
-    Lha_Reader(GSPN&);
+    Lha_Reader(GSPN&,parameters&);
     virtual ~Lha_Reader();
 
     LhaType MyLha;
@@ -159,6 +159,7 @@ public:
 	//!< generate code for the LHA.
 	void WriteFile(parameters&);
 	
+	parameters P;
 private:
     void scan_begin();
     void scan_end();

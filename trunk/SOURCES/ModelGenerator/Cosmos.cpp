@@ -105,7 +105,7 @@ using namespace std;
  * @return a boolean equal to true if everything run correctly
  */
 bool ParseBuild(parameters& P) {
-	Gspn_Reader gReader;
+	Gspn_Reader gReader(P);
 	
 	if(P.verbose>0)cout << "Start Parsing " << P.PathGspn << endl;
 	int parseresult;
@@ -158,7 +158,7 @@ bool ParseBuild(parameters& P) {
             gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
             if(P.tmpStatus==0||P.tmpStatus==2)gReader.WriteFile(P);
         } else {
-            Gspn_Reader gr;
+            Gspn_Reader gr(P);
             gReader = gr;
             return false;
         }
@@ -168,7 +168,7 @@ bool ParseBuild(parameters& P) {
         return false;
     }
 	
-	Lha_Reader lReader(gReader.MyGspn);
+	Lha_Reader lReader(gReader.MyGspn,P);
 	
 	lReader.MyLha.TransitionIndex = gReader.MyGspn.TransId;
 	lReader.MyLha.PlaceIndex = gReader.MyGspn.PlacesId;
@@ -272,7 +272,7 @@ bool ParseBuild(parameters& P) {
 				if(P.tmpStatus==0||P.tmpStatus==2)lReader.WriteFile(P);
 				
 			} else {
-				Lha_Reader lr(gReader.MyGspn);
+				Lha_Reader lr(gReader.MyGspn,P);
 				return false;
 			}
 		} else if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")==0){

@@ -30,6 +30,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "HaslFormula.hpp"
 
 using namespace std;
@@ -52,6 +53,8 @@ struct parameters {
 	string Path;
 	string PathGspn;
 	string PathLha;
+	map<string,string> constants;
+	
 	double loopLHA;
 	double loopTransientLHA;
 	string CSLformula;

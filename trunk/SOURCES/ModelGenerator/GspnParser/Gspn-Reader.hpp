@@ -185,7 +185,7 @@ using namespace std;
 
 class Gspn_Reader {
 public:
-    Gspn_Reader();
+    Gspn_Reader(parameters &P);
 
     virtual ~Gspn_Reader();
 
@@ -200,6 +200,7 @@ public:
 	
 	//<! Index of distribution type.
 	map<string, int> IndexDist;
+	parameters P;
 	
 private:
 	

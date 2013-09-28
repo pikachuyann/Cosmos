@@ -49,16 +49,15 @@ private:
     
     
 public:
-	int verbose;
 	bool ParsePl;
 	map<int,bool> IsPlace;
 	map<int,int> Gml2Place;
 	map<int,int> Gml2Trans;
-	GSPN* MyGspn;
-	bool rareEvent;
+	GSPN MyGspn;
+	parameters P;
 	
-    MyModelHandler(GSPN* ,bool, int) ;
-	MyModelHandler(GSPN* ,bool, int,map<int,bool>&,map<int,int>&,map<int,int>&);
+	MyModelHandler(GSPN& ,parameters &P) ;
+	MyModelHandler(GSPN& ,parameters &P,map<int,bool>&,map<int,int>&,map<int,int>&);
 	//~MyModelHandler() { }
 	
 	

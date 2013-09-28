@@ -886,6 +886,7 @@
 				HEADER_SEARCH_PATHS = (
 					/Users/barbot/Documents/Cosmos/trunk/SOURCES/libgml/,
 					/usr/local/include,
+					/Users/barbot/Documents/CosmosGit/Cosmos/trunk/SOURCES/libgml/,
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (

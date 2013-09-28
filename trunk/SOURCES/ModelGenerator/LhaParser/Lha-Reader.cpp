@@ -42,7 +42,7 @@
 
 using namespace std;
 
-Lha_Reader::Lha_Reader(GSPN& mspn) : MyLha(mspn){
+Lha_Reader::Lha_Reader(GSPN& mspn,parameters &Q) : MyLha(mspn),P(Q){
     trace_scanning = false;
     trace_parsing = false;
 	
@@ -93,7 +93,7 @@ int Lha_Reader::parse_gml_file(parameters& P) {
     ifstream ifile(P.PathLha.c_str());
     if(ifile){
         //cout << "parse GML:" << filename << endl;
-        ModelHandlerPtr handlerPtr(new MyLhaModelHandler(&MyLha,P.verbose));
+        ModelHandlerPtr handlerPtr(new MyLhaModelHandler(&MyLha,P));
         ExpatModelParser parser = ExpatModelParser(handlerPtr);
         parser.parse_file(P.PathLha);
         //cout << "end parse GML"<< endl;

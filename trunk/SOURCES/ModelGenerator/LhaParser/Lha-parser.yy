@@ -302,6 +302,8 @@ Constant: Const INT str EQ IntMarkingFormula SEMICOLON
 {if(Reader.MyLha.LhaRealConstant.find(*$3)!=Reader.MyLha.LhaRealConstant.end())
 	{cout<<"Constant "<<*$3<<" already defined."<<endl; YYABORT;}
 	else {string st=$5;
+		if (Reader.P.constants.count(*$3)>0)st = Reader.P.constants[*$3];
+		
 		LhaEvaluate.parse(st);
 		Reader.MyLha.LhaIntConstant[*$3]=LhaEvaluate.IntResult;Reader.MyLha.LhaRealConstant[*$3]=LhaEvaluate.RealResult;}
 }
@@ -309,6 +311,7 @@ Constant: Const INT str EQ IntMarkingFormula SEMICOLON
 {if(Reader.MyLha.LhaRealConstant.find(*$3)!=Reader.MyLha.LhaRealConstant.end())
 	{cout<<"Constant "<<*$3<<" already defined."<<endl; YYABORT;}
 	else {string st=$5;
+		if (Reader.P.constants.count(*$3)>0)st = Reader.P.constants[*$3];
 		LhaEvaluate.parse(st);
 		Reader.MyLha.LhaRealConstant[*$3]=LhaEvaluate.RealResult;}
 };

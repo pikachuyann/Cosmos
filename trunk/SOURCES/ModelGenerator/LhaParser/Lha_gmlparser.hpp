@@ -65,15 +65,15 @@ private:
 	vector <string> CST;
 	vector <string> comp;
 	
-	int verbose;
 	int countLoc;
 	bool ParseLoc;
 	//bool ParseDecl;
 	map<int,int> Gml2Loc;
 	map<int,bool> IsPlace;
 	LHA_D* MyLHA;
+	parameters P;
 public:
-    MyLhaModelHandler(LHA_D*,int v) ;
+    MyLhaModelHandler(LHA_D*,parameters &P) ;
 	//~MyModelHandler() { }
 	
 	

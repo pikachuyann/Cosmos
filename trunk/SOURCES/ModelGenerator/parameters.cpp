@@ -53,6 +53,7 @@ parameters::parameters():
 	Path(""),
 	PathGspn(""),
 	PathLha(""),
+	constants(),
 	loopLHA(0.0),
 	loopTransientLHA(0.0),
 	CSLformula(""),
@@ -116,6 +117,7 @@ void parameters::usage(){
 	cout << "\t--chernoff (level | width | nbrun)\tuse chernoff-hoeffding bound to compute the number of simulation" << endl;
 	cout << "\t--seed \tSpecify the seed for the random generator, 0 allow to take a random value"<< endl;
 	cout << "\t--local-test \tUse local testing faster on big net" << endl;
+	cout << "\t--const \toverride constant value of the model" << endl;
 	
     cout << "Miscellaneous options:" << endl;
     cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
@@ -161,6 +163,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"transient",required_argument,0, 16},
 			{"formula",required_argument, 0, 'f'},
 			{"chernoff", required_argument,0, 17},
+	    	{"const", required_argument,0,21},
         
             /* Options for the rare event engine */
             {"rareevent",   no_argument,        0, 'r'},
@@ -306,6 +309,27 @@ void parameters::parseCommandLine(int argc, char** argv){
 			
 			case 19: tracedPlace = optarg; break;
 			case 20: prismPath = optarg; break;
+			
+			case 21:
+			{
+				string conststr = optarg;
+				size_t index,index2;
+				index2 = conststr.find('=',0)+1;
+				for(index = 0; index !=string::npos ; index2 = conststr.find('=',index)+1){
+					string varname = conststr.substr(index,index2-index-1);
+					index = conststr.find(',',index2);
+					string varvalue;
+					if(index == string::npos){
+						varvalue = conststr.substr(index2,conststr.length()-index2);
+					}else{
+						varvalue = conststr.substr(index2,index-index2);
+						index++;
+					}
+					constants[varname]=varvalue;
+				}
+			
+			break;
+			}
             case '?':
                 usage();
                 exit(EXIT_FAILURE);
