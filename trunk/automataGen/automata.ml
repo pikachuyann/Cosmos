@@ -60,7 +60,7 @@ let automata_of_formula = function
      {
       nbLoc = 2;
       nbVar = 1;
-      invariant = [(1,sf];
+      invariant = [(1,sf)];
       flows = [];
       init =0;
       final=[1];
