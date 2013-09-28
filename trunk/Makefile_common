@@ -1,7 +1,7 @@
 
 .PHONY: lib generator clean sim dir automataGen
 
-all: dir lib generator automataGen
+all: dir lib generator
 
 dir:
 	mkdir -p bin
@@ -29,6 +29,7 @@ cleanGen:
 clean:
 	@(cd SOURCES/Cosmos && $(MAKE) $@)
 	@(cd SOURCES/ModelGenerator && $(MAKE) $@)
+	@(cd automataGen && ocamlbuild -clean)
 	@(rm -rf package-alligator.zip)
 
 cleansim:
@@ -41,7 +42,7 @@ parser:
 cleanparser:
 	@(cd SOURCES/ModelGenerator && $(MAKE) cleanparser)
 
-autaumataGen:
+automataGen:
 	@(cd automataGen && ocamlbuild generator.native)
 	cp automataGen/generator.native bin/automataGen
 
