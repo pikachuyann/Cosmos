@@ -47,19 +47,6 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "../SOURCES/ModelGenerator/LhaParser/Lha_gmlparser.cpp"
-         timestampString = "386752176.090931"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "541"
-         endingLineNumber = "541"
-         landmarkName = "MyLhaModelHandler::on_read_model_attribute(const Attribute&amp; attribute)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "../SOURCES/Cosmos/BatchR.cpp"
          timestampString = "401285458.655226"
          startingColumnNumber = "9223372036854775807"

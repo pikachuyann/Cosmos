@@ -70,10 +70,10 @@ private:
 	//bool ParseDecl;
 	map<int,int> Gml2Loc;
 	map<int,bool> IsPlace;
-	LHA_D MyLHA;
+	LHA_D* MyLHA;
 	parameters P;
 public:
-    MyLhaModelHandler(LHA_D& ,parameters &P) ;
+    MyLhaModelHandler(LHA_D* ,parameters &P) ;
 	//~MyModelHandler() { }
 	
 	

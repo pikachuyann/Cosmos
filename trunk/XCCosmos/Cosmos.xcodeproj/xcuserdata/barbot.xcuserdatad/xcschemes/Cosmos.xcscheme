@@ -20,6 +20,20 @@
                ReferencedContainer = "container:Cosmos.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "034509A516A80AC8002088B3"
+               BuildableName = "libClientSim.a"
+               BlueprintName = "ClientSim"
+               ReferencedContainer = "container:Cosmos.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -65,7 +79,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--njob 4"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--max-run"
@@ -117,7 +131,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-v 6"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--bin-path"
@@ -128,12 +142,12 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRE.grml"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/CosmosGit/Cosmos/trunk/Examples/RareEventUnbounded/tandem.grml"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRElha.grml"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/CosmosGit/Cosmos/trunk/Examples/RareEventUnbounded/tandemlha.grml"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--count-transition"
@@ -157,11 +171,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--loop 60"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/philosophe/philo2.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/DatabaseProp6LHA.grml"

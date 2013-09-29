@@ -111,16 +111,16 @@ int Gspn_Reader::parse_gml_file(parameters &P) {
 		//cout << "parse GML:" << filename << endl;
 		MyGspn.nbpass=0;
 		//first pass declaration and place.
-		MyModelHandler* handler = new MyModelHandler(MyGspn,P);
-			ModelHandlerPtr handlerPtr(handler);
-			ExpatModelParser parser = ExpatModelParser(handlerPtr);
-			parser.parse_file(P.PathGspn);
+		MyModelHandler* handler = new MyModelHandler(&MyGspn,P);
+		ModelHandlerPtr handlerPtr(handler);
+		ExpatModelParser parser = ExpatModelParser(handlerPtr);
+		parser.parse_file(P.PathGspn);
 		
 		MyGspn.nbpass=1;
 		//second pass transitions and arcs.
-			ModelHandlerPtr handlerPtr2(new MyModelHandler(MyGspn,P,handler->IsPlace,handler->Gml2Place,handler->Gml2Trans));
-			ExpatModelParser parser2 = ExpatModelParser(handlerPtr2);
-			parser2.parse_file(P.PathGspn);
+		ModelHandlerPtr handlerPtr2(new MyModelHandler(&MyGspn,P,handler->IsPlace,handler->Gml2Place,handler->Gml2Trans));
+		ExpatModelParser parser2 = ExpatModelParser(handlerPtr2);
+		parser2.parse_file(P.PathGspn);
 		
 		
 		//cout << "end parse GML:"<< MyGspn.pl << endl;

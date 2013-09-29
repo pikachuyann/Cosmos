@@ -53,11 +53,11 @@ public:
 	map<int,bool> IsPlace;
 	map<int,int> Gml2Place;
 	map<int,int> Gml2Trans;
-	GSPN MyGspn;
+	GSPN* MyGspn;
 	parameters P;
 	
-	MyModelHandler(GSPN& ,parameters &P) ;
-	MyModelHandler(GSPN& ,parameters &P,map<int,bool>&,map<int,int>&,map<int,int>&);
+	MyModelHandler(GSPN* ,parameters &P) ;
+	MyModelHandler(GSPN* ,parameters &P,map<int,bool>&,map<int,int>&,map<int,int>&);
 	//~MyModelHandler() { }
 	
 	

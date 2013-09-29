@@ -93,7 +93,7 @@ int Lha_Reader::parse_gml_file(parameters& P) {
     ifstream ifile(P.PathLha.c_str());
     if(ifile){
         //cout << "parse GML:" << filename << endl;
-        ModelHandlerPtr handlerPtr(new MyLhaModelHandler(MyLha,P));
+        ModelHandlerPtr handlerPtr(new MyLhaModelHandler(&MyLha,P));
         ExpatModelParser parser = ExpatModelParser(handlerPtr);
         parser.parse_file(P.PathLha);
         //cout << "end parse GML"<< endl;
