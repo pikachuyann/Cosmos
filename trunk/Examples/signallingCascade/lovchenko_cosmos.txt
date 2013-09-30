@@ -1,0 +1,62 @@
+Cosmos
+
+() csl model checking, transient analysis
+
+const double t1;
+const double t2;
+const integer n;
+
+P=? [F [0,t2] ERKPP=n ]
+N=1 t2=100
+
+n=0:
+Estimated value:	0.906490230905861
+Confidence interval:	[0.905490743126023 , 0.9074897186857]
+Width:	0.00199897555967654
+n=1:
+Estimated value:	0.0922539964476021
+Confidence interval:	[0.0912605550464278 , 0.0932474378487764]
+Width:	0.00198688280234863
+n=2:
+Estimated value:	0.00125399644760213
+Confidence interval:	[0.00113242088037154 , 0.00137557201483273]
+Width:	0.000243151134461192
+n=3:
+Estimated value:	1.77619893428064e-06
+Confidence interval:	[-4.69408724309818e-06 , 8.24648511165946e-06]
+Width:	1.29405723547576e-05
+Confidence interval computed sequentially using Chows-Robbin algorithm.
+Confidence level:	0.99
+Total paths:	563000
+Accepted paths:	563000
+Time for simulation:	304.015247s
+Total CPU time:	500.635606
+
+
+
+N=10 t2=100
+n=0:
+Estimated value:	0.87758
+Confidence interval:	[0.873803912542803 , 0.881356087457197]
+Width:	0.00755217491439386
+n=1:
+Estimated value:	0.12176
+Confidence interval:	[0.117992687789849 , 0.125527312210151]
+Width:	0.00753462442030219
+n=2:
+Estimated value:	0.00066
+Confidence interval:	[0.000359705493632167 , 0.000960294506367833]
+Width:	0.000600589012735666
+n=3:
+Estimated value:	0
+Confidence interval:	[-5.1516586070978e-05 , 5.1516586070978e-05]
+Width:	0.000103033172141956
+Confidence interval computed sequentially using Chows-Robbin algorithm.
+Confidence level:	0.99
+Total paths:	50000
+Accepted paths:	50000
+Time for simulation:	513.859571s
+Total CPU time:	874.196539
+
+
+

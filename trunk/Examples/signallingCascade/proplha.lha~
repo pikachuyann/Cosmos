@@ -1,0 +1,21 @@
+NbVariables = 1;
+NbLocations = 3;
+const int c=3;
+VariablesList = {x} ;
+
+LocationsList = {l1, lp, lm };
+AVG(Last(x));
+InitialLocations={l1};
+
+FinalLocations={ lp,lm };
+
+Locations={
+(l1, (RE_ERKPP < c)) ;
+(lp, (RE_ERKPP = c));
+(lm, (RE_ERKPP < c));
+}; 
+
+Edges={
+((l1,l1)  ,ALL,  # , #);
+((l1,lp)  ,ALL,  # , {x=1});
+};
