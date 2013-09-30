@@ -90,7 +90,6 @@ int main(int argc, char** argv) {
 			stateSpace states;
 			states.exploreStateSpace();
 			states.buildTransitionMatrix();
-			//states.uniformizeMatrix();
 			states.outputMat();
 			states.outputTmpLumpingFun();
             cout << "Finish Exporting" << endl;

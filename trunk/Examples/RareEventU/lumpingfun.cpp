@@ -4,8 +4,6 @@
 const int reducePL_RE_Queue1 = 0;
 const int reducePL_RE_Queue2 = 1;
 
-void SPN::print_state(const vector<int> &){}
-
 void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){
 	
 	vect[reducePL_RE_Queue1] = Marking.P->_PL_RE_Queue1+ fmax(0,Marking.P->_PL_RE_Queue2-r); //To Complete

@@ -130,7 +130,10 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 
 double SimulatorBoundedRE::mu(){
 	
-	vector<int> vect (numSolv->S.begin()->first->size(),0);
+	vector<int> vect (N.Msimpletab.size());
+	for(size_t i=0; i< N.Msimpletab.size();i++){
+		vect[i] = N.Marking.getNbOfTokens(N.Msimpletab[i]);
+	};
 	
     N.lumpingFun(N.Marking,vect);
 	int stateN = numSolv->findHash(&vect);
@@ -139,8 +142,6 @@ double SimulatorBoundedRE::mu(){
 		cerr << numSolv->getVect()<< endl<< "statevect(";
         for(size_t i =0 ; i<vect.size() ; i++)cerr << vect[i]<< ",";
 		cerr << ")" << endl<<"state not found" << endl;
-		N.print_state(vect);
-		exit(EXIT_FAILURE);
 	}
 		
 	return(numSolv->getMu(stateN));

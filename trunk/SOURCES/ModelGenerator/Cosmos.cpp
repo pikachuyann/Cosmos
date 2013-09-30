@@ -319,7 +319,6 @@ bool ParseBuild(parameters& P) {
 		//If rareenvent handling is not require copy an empty lumping function code to the temporary directory
         string lumpfunpath = P.tmpPath + "/lumpingfun.cpp";
 		ofstream lumpfun(lumpfunpath.c_str(), ios::out | ios::trunc);
-		lumpfun << "void SPN::print_state(const vector<int> &vect){}" << endl;
         lumpfun << "void SPN::lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
         lumpfun.close();
     }else {
