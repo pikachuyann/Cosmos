@@ -1,1 +1,0 @@
-P=? [ (true) U ((automata = 1)|(automata = 2))]
