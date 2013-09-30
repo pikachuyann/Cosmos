@@ -86,7 +86,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		numSolv->stepVect();
-        if(verbose==1){
+        if(verbose>=1){
             cerr << "new round" << endl;
             cerr << numSolv->getVect() << endl;
         }
