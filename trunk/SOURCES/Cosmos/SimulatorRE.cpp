@@ -226,6 +226,11 @@ double SimulatorRE::mu(){
             cerr << vect[j] << ",";
         }
         cerr << ") ->" << i << endl;
+		N.Marking.printHeader(cerr);
+		cerr << endl;
+		N.Marking.print(cerr);
+		cerr << endl;
+		N.print_state(vect);
         if(i<0)exit(EXIT_FAILURE);
     }
 	if(verbose>3) cerr << ((*muprob.muvect)[i]) << endl;
@@ -240,6 +245,9 @@ double SimulatorRE::ComputeDistr(size_t t , const abstractBinding& b, double ori
     
 	if(t== N.tr-1){
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
+			cerr << "Reduce model does not guarantee variance" << endl;
+			exit(EXIT_FAILURE);
+			
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
 		}else{ 
 			return 0.0 ;};

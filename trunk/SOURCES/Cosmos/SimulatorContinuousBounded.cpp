@@ -216,78 +216,10 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	return (batchResult);
 }
 
-void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstractBinding&){
+void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstractBinding& b){
+	SimulatorRE::updateSPN(E1_transitionNum, b);
+	
 	Event F;
-    //check if the current transition is still enabled
-	for(vector<abstractBinding>::const_iterator bindex = N.Transition[E1_transitionNum].bindingList.begin() ;
-		bindex != N.Transition[E1_transitionNum].bindingList.end() ; ++bindex){
-		bool Nenabled = N.IsEnabled(E1_transitionNum, *bindex);
-		bool NScheduled = EQ->isScheduled(E1_transitionNum, bindex->id());
-		
-		if (Nenabled && NScheduled) {
-			GenerateEvent(F, E1_transitionNum, *bindex);
-			EQ->replace(F); //replace the transition with the new generated time
-		} else if (Nenabled && !NScheduled) {
-			GenerateEvent(F, E1_transitionNum, *bindex);
-			EQ->insert(F);
-		} else if (!Nenabled && NScheduled) {
-			EQ->remove(E1_transitionNum,bindex->id() );
-		}
-	}
-	
-	// Possibly adding Events corresponding to newly enabled-transitions
-	const set<int>* net = N.PossiblyEn();
-	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
-		for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-			bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-			if (N.IsEnabled(*it,*bindex)) {
-				if (!EQ->isScheduled((*it),bindex->id())) {
-					GenerateEvent(F, (*it), *bindex);
-					(*EQ).insert(F);
-				} else {
-					if (N.Transition[(*it)].MarkingDependent) {
-						GenerateEvent(F, (*it),*bindex);
-						(*EQ).replace(F);
-					}
-				}
-			}
-		}
-	}
-	
-	// Possibly removing Events corresponding to newly disabled-transitions
-	const set<int>* ndt = N.PossiblyDis();
-	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
-		for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-			bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-			if (EQ->isScheduled(*it, bindex->id())) {
-				if (!N.IsEnabled(*it, *bindex ))
-					EQ->remove(*it,bindex->id());
-				else {
-					if (N.Transition[(*it)].MarkingDependent) {
-						GenerateEvent(F, (*it),*bindex);
-						EQ->replace(F);
-					}
-				}
-			}
-		}
-	}
-
-	
-	N.Rate_Sum = 0;
-	N.Origine_Rate_Sum = 0;
-	
-	for (size_t it = 0 ; it < EQ->getSize() ; it++) {
-		size_t tr = EQ->InPosition(it).transition;
-		if(tr != N.tr-1){
-			if(N.IsEnabled(tr,EQ->InPosition(it).binding)){
-				GenerateEvent(F, tr ,EQ->InPosition(it).binding);
-				EQ->replace(F);
-			}else {
-				EQ->remove(tr, EQ->InPosition(it).binding.id());
-			}
-		};
-	};
-	
 	abstractBinding bpuit;
     GenerateEvent(F, (N.tr-2),bpuit);
 	if(!doubleIS_mode){
@@ -301,18 +233,12 @@ void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstrac
 	
 };
 
-double SimulatorContinuousBounded::mu(){
+/*double SimulatorContinuousBounded::mu(){
 	
-	vector<int> vect (N.Msimpletab.size(),0);
-	/*for(size_t i=0; i< N.Msimpletab.size();i++){
-		vect[i] = N.Marking.getNbOfTokens(N.Msimpletab[i]);
-	};*/
+	vector<int> vect (muprob.S.begin()->first->size(),0);
 	
-    //cerr << "test(" << endl;
     N.lumpingFun(N.Marking, vect);
-    //cerr << "test)" << endl;
 	int stateN = numSolv->findHash(&vect);
-    //cerr <<"StateN : " << stateN << endl;
     
 	if(stateN<0){
 		cerr << numSolv->getVect()<< endl << "vect:";
@@ -327,7 +253,7 @@ double SimulatorContinuousBounded::mu(){
 	}
     
 	return(numSolv->getMu(stateN));
-}
+}*/
 
 void SimulatorContinuousBounded::getParams(size_t Id,const abstractBinding& b){
 	

@@ -16,7 +16,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '-b:Bounded Rare Event:->bounded' \
 	   '--state-space[Generate the state space in the prism format]' \
 	   '--prism[Use prism to performe the computation]' \
-	   '--prism-path:Path to the prism executable:->path to prism' \
+	   '--prism-path:Path to the prism executable:->data' \
 	   '--gppcmd:C++ compiler to use:->gppcmd' \
 	   '--gppflags:flags to the C++ compiler:->gppflags' \
 	   '--set-Horizon:Set the horizon for bounded rare event:->Horizon' \
@@ -27,6 +27,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--output-raw:Output result of each trajectory in a file:->data' \
 	   '--output-PDFCDF:Output PDF or CDF to a file:->data' \
 	   '--tmp-status:Persistance of the tmp file:->status' \
+	   '--const:Overwrite constants value:->Constants'
 	   '--count-transition[Count number of transition in the lha]' \
 	   '--trace-place:trace only a subset of places:->Comma separated list of place to trace' \
 	   '--loop:Time of the loop:->time' \

@@ -55,7 +55,8 @@ void LHA::setInitLocation(const abstractMarking& Marking) {
 }
 
 int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
-    for (set<int>::iterator it = ActionEdges[CurrentLocation][PetriNetTransition].begin(); it != ActionEdges[CurrentLocation][PetriNetTransition].end(); it++) {
+	const set<int> acE = ActionEdges[CurrentLocation][PetriNetTransition];
+    for (set<int>::const_iterator it = acE.begin(); it != acE.end(); it++) {
         if ((CheckLocation(Edge[(*it)].Target, NextMarking))) {
             if (CheckEdgeContraints(*it,PetriNetTransition, binding, NextMarking)) return (*it);
         }
