@@ -56,17 +56,18 @@ void SimulatorRE::InitialEventsQueue() {
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
 	
-	for (size_t t = 0; t < N.tr; t++) {
-		// Loop over all binding here
-		abstractBinding b;
-
-		if (N.IsEnabled(t,b)) {
-			GenerateEvent(E, t, b);
-			(*EQ).insert(E);
+	for (vector<_trans>::const_iterator t = N.Transition.begin()
+		 ; t != N.Transition.end() ; ++t) {
+		for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
+			bindex != t->bindingList.end() ; ++bindex){
+			if (N.IsEnabled(t->Id,*bindex)) {
+				GenerateEvent(E, t->Id ,*bindex);
+				(*EQ).insert(E);
+			}
 		}
 	}
 }
-
+	
 void SimulatorRE::returnResultTrue(){
 	
 	A.UpdateLinForm(N.Marking);
@@ -99,10 +100,10 @@ void SimulatorRE::updateSPN(size_t,const abstractBinding&){
 			bindex != N.Transition[it].bindingList.end() ; ++bindex){
 			if(N.IsEnabled(it, *bindex)){
 				if (EQ->isScheduled(it, bindex->id())) {
-					GenerateEvent(F, it ,EQ->InPosition(it).binding );
+					GenerateEvent(F, it ,*bindex );
 					EQ->replace(F);
 				} else {
-					GenerateEvent(F, it ,EQ->InPosition(it).binding );
+					GenerateEvent(F, it ,*bindex );
 					EQ->insert(F);
 				}
 			}else{

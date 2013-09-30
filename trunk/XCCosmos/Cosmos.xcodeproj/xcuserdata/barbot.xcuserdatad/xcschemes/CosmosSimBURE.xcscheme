@@ -44,7 +44,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/barbot/Documents/AllCosmos/trunk/Examples/RareEventContinuous/tandem50_5_0.23_100_1_2"
+      customWorkingDirectory = "/Users/barbot/Documents/AllCosmos/trunk/Examples/signallingCascade"
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
@@ -72,7 +72,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-COBURE"
+            argument = "-BURE"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
