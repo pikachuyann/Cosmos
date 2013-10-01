@@ -233,13 +233,12 @@ double SimulatorRE::mu(){
 		N.print_state(vect);
         if(i<0)exit(EXIT_FAILURE);
     }
-	if(verbose>3) cerr << ((*muprob.muvect)[i]) << endl;
-    //cerr << ")" << endl;
+	if(verbose>3)cerr << "muValue: " << ((*muprob.muvect)[i]) << endl;
 	return((*muprob.muvect)[i]);
 }
 
 double SimulatorRE::ComputeDistr(size_t t , const abstractBinding& b, double origin_rate){
-	if(verbose>4)cerr << "trans: " << t << " mu origine:";
+	if(verbose>4)cerr << "trans: " << N.Transition[t].label << " mu origine:";
 	double mux = mu();
 	if( mux==0.0 || mux==1.0) return(origin_rate);
     
@@ -247,9 +246,12 @@ double SimulatorRE::ComputeDistr(size_t t , const abstractBinding& b, double ori
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
 		}else{
+			if(verbose>3){
 			cerr << "Reduce model does not guarantee variance" << endl;
-			exit(EXIT_FAILURE);
-
+			cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
+			//exit(EXIT_FAILURE);
+			}
+				
 			return 0.0 ;};
 	}; 
 	if(verbose>4)cerr << "mu target : ";

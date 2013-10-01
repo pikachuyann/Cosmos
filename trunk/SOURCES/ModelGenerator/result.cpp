@@ -136,6 +136,8 @@ bool result::continueSim(){
 	if(MeanM2->I >= P.MaxRuns)return false;
 	if(!P.sequential)return true;
 	
+	if(P.Width==0)return true;
+	
 	for(vector<double>::const_iterator it = RelErrArray.begin(); it != RelErrArray.end(); ++it)
 		if(*it > P.Width)return true;
 	

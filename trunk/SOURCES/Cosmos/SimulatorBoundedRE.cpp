@@ -53,6 +53,8 @@ SimulatorBoundedRE::SimulatorBoundedRE(int m){
 }
 
 void SimulatorBoundedRE::initVect(int T){
+	double lambda = numSolv->uniformizeMatrix();
+    cerr << "lambda:" << lambda<< endl;
     numSolv->initVect(T);
 }
 
@@ -156,7 +158,9 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
 			//cerr << "strange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
-		}else{ 
+		}else{
+			//cerr << "Reduce model does not guarantee variance" << endl;
+			//exit(EXIT_FAILURE);
 			return 0.0 ;};
 	}; 
 	
