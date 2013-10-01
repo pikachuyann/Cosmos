@@ -826,7 +826,26 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         ParsePl=false;
         
         if(P.RareEvent){
-            //Add a place
+			if(P.BoundedContinuous){
+				//add a transition for self-loop due to uniformization
+				transition trans;
+				trans.label = "selfloop";
+				trans.type = Timed;
+				trans.dist.name =  "EXPONENTIAL";
+				trans.dist.Param.push_back("0");
+				trans.priority = "1";
+				trans.weight = "1";
+				trans.singleService = true;
+				trans.markingDependant = true;
+				trans.ageMemory = false;
+				trans.nbServers = 1;
+				MyGspn->transitionStruct.push_back(trans);
+				
+				MyGspn->TransList.insert(trans.label);
+				MyGspn->tr++;
+			}
+			
+			//Add a place
             MyGspn->Marking.push_back("0");
 			place p;
             string Plname = "Puit";
@@ -834,7 +853,8 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             MyGspn->placeStruct.push_back(p);
             MyGspn->PlacesId[Plname]=MyGspn->pl;
             MyGspn->pl++;
-            
+			
+			
             //Add a transition
 			transition trans;
 			trans.label = "Puittrans";

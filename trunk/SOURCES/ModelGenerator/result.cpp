@@ -118,12 +118,12 @@ void result::addBatch(BatchR *batchResult){
         }
 		
         if(P.RareEvent || P.BoundedRE>0){
-            RelErrArray[i] =  HaslResult[i]->width() /  fabs(MeanM2->Mean[i]/MeanM2->Isucc);
+            RelErrArray[i] =  fabs((HaslResult[i]->width() /  MeanM2->Mean[i])*MeanM2->Isucc);
         }else RelErrArray[i] = HaslResult[i]->width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
 		
 		if(P.HaslFormulas[i]->TypeOp==HYPOTHESIS){
 			if (RelErrArray[i] <1)RelErrArray[i]=0;
-				// If the Hypothesis confidence interval is less than 1 then test have finished.
+				// If the Hypothesis confidence interval is less than 1 then test has finished.
 		}
 		
 		RelErr = max(RelErr,RelErrArray[i]);

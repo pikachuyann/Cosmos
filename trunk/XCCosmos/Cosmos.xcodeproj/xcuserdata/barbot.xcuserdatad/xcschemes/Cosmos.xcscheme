@@ -57,8 +57,8 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
-      useCustomWorkingDirectory = "NO"
-      customWorkingDirectory = "/Users/barbot/Documents/AllCosmos/trunk/bin"
+      useCustomWorkingDirectory = "YES"
+      customWorkingDirectory = "/Users/barbot/Documents/GitSvnCosmos/trunk/Examples/signallingCascade"
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
@@ -111,7 +111,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-r"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.gspn"
@@ -131,7 +131,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-v 6"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--bin-path"
@@ -142,11 +142,11 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/CosmosGit/Cosmos/trunk/Examples/RareEventUnbounded/tandem.grml"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/signallingCascade/MAPK_RE.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/CosmosGit/Cosmos/trunk/Examples/RareEventUnbounded/tandemlha.grml"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/signallingCascade/RareEventUntil.lha"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

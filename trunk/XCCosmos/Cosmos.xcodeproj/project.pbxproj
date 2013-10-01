@@ -884,7 +884,7 @@
 				GCC_VERSION = "";
 				GCC_WARN_SIGN_COMPARE = YES;
 				HEADER_SEARCH_PATHS = (
-					/Users/barbot/Documents/Cosmos/trunk/SOURCES/libgml/,
+					/Users/barbot/Documents/Cosmos/SOURCES/libgml/,
 					/usr/local/include,
 					/Users/barbot/Documents/CosmosGit/Cosmos/trunk/SOURCES/libgml/,
 				);

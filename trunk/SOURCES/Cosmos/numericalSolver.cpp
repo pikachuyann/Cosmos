@@ -123,6 +123,9 @@ void numericalSolver::reset(){
 }
 
 boostmat::vector<double> numericalSolver::getVect(){
+	if (matOffset<0) {
+		return boostmat::vector<double>(1,0.0);
+	}
 	return (*circularvect)[matOffset];
 }
 

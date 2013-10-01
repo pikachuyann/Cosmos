@@ -174,12 +174,34 @@ void stateSpace::buildTransitionMatrix()
 		
         
     }
-	    
-    cerr << "Adding self loop" << endl;
-	// Add self loop to ensure that mat is a probability matrix.
-    // If the model is a CTMC the value on diagonal are wrong. 
+	   
+	
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator1 it1_t;
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator2 it2_t;
+	
+	/* Quick fix to redo */
+
+	/*
+	cerr << "uniformize to 1" << endl;
+	for (it1_t it1 = mat.begin1(); it1 != mat.end1(); it1++)
+		{
+		double sum = 0.0;
+		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
+			//cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
+			if(it2.index1()!= it2.index2())sum += *it2;
+		}
+		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
+			//cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
+			*it2 /= sum;
+		}
+		mat(it1.index1(),it1.index1())= 1.0;
+	}
+	*/
+	
+	
+    cerr << "Adding self loop" << endl;
+	// Add self loop to ensure that mat is a probability matrix.
+    // If the model is a CTMC the value on diagonal are wrong.
 	
 	for (it1_t it1 = mat.begin1(); it1 != mat.end1(); it1++)
 	{
@@ -433,6 +455,14 @@ void stateSpace::outputTmpLumpingFun(){
 		int j = N.Msimpletab[i];
 		outputlumptmp << "const int reducePL_" << N.Place[j].label.substr(1,N.Place[j].label.length()-1 ) << " = " << i << ";" << endl;
 	};
+	
+	outputlumptmp << "void SPN::print_state(const vector<int> &vect){" << endl;
+	for(size_t i=0; i< N.Msimpletab.size();i++){
+		int j = N.Msimpletab[i];
+		outputlumptmp << "\tcerr << \"" << N.Place[j].label.substr(1,N.Place[j].label.length()-1 ) << " = \" << vect[reducePL_" << N.Place[j].label.substr(1,N.Place[j].label.length()-1 ) << "] << endl;" << endl;
+	};
+	outputlumptmp << "}" << endl;
+	
 	outputlumptmp << endl << "void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){" << endl;
 	for(size_t i=0; i< N.Msimpletab.size();i++){
 		int j = N.Msimpletab[i];
