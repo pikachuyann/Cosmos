@@ -228,19 +228,19 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			
 			return new ConfInt(mean,width);
 		}
-			
-		case RE_AVG://temporary
+		
+		case RE_Likelyhood:
 		{
-		double mean = batch.Mean[Algebraic]/batch.Isucc;
-		double m2 = batch.M2[Algebraic]/batch.Isucc;
-		double variance = m2 - mean * mean;
+			double mean = batch.Mean[Algebraic]/batch.Isucc;
+			double m2 = batch.M2[Algebraic]/batch.Isucc;
+			double variance = m2 - mean * mean;
 		
-		double width = 2 * Value * sqrt(variance/batch.Isucc);
+			double width = 2 * Value * sqrt(variance/batch.Isucc);
 		
-		return new ConfInt(mean,width);
+			return new ConfInt(mean,width);
 		}
 			
-		/*
+		case RE_AVG://temporary
 		{
 			double mean = (double)batch.Isucc / (double)batch.I;
 			double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
@@ -253,7 +253,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			return new ConfInt(mean*mean2,
 							   (mean2 - width)*l,
 							   (mean2 + width)*u );
-		}*/
+		}
 			
 		case HYPOTHESIS:
 		{

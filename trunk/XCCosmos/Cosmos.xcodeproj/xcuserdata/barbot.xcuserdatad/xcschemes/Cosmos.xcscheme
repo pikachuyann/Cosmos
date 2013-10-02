@@ -143,10 +143,18 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/signallingCascade/MAPK_RE.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/signallingCascade/RareEventUntil.lha"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRE.grml"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRElha.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
