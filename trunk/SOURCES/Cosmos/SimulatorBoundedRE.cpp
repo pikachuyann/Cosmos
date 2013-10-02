@@ -103,7 +103,11 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 			//cerr << "mu:\t" << mu() << " ->\t";
 			bool continueb = SimulateOneStep();
 			//cerr << mu() << endl;
-            
+			if(numSolv->getVect().size() <= 1){
+				continueb=false;
+				Result.first=false;
+			}
+			
 			if((!EQ->isEmpty()) && continueb) {
 				(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
 			} else {
