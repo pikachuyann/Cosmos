@@ -49,9 +49,10 @@ void SimulatorContinuousBounded::initVectCo(double t){
             cerr << fg->left+i << " " << fg->weights[i]/ fg->total_weight << endl;
         }*/
     }
-    //fg->right = 10; 
+    //fg->right = 10;
+	double lambda2= lambda;
     initVect(fg->right+1);
-    
+    lambda = lambda2;
 }
 
 BatchR* SimulatorContinuousBounded::RunBatch(){
@@ -99,9 +100,9 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		numSolv->stepVect();
-		if(verbose>=2)cerr << numSolv->getVect() << endl;
+		if(verbose>=3)cerr << numSolv->getVect() << endl;
 		n++;
-        if(verbose>=1)cerr << "new round:"<< n << "remaining trajectories: "<< statevect.size() << endl;
+        if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
         
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
             if(it->maxStep >= fg->right -n){
@@ -135,7 +136,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                             //cerr << "finish(" << endl;
                             
                             if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult->IsBernoulli[0] = false;
-                            
+							
                             //for (int i= max(0,n-fg->left); i<fg->right - fg->left; i++) 
                             {
                                 int i = it->maxStep - left;
@@ -183,10 +184,10 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         
         if(verbose>=2)cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;
         
-        batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i] ;
-        stdev += fg->weights[i+leftdec] * stdevN;
-        batchResult->Isucc = IsuccN[0];
-        batchResult->I = IsuccN[0];
+        batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i]  * IsuccN[i];
+        stdev += fg->weights[i+leftdec] * stdevN * IsuccN[i];
+        batchResult->Isucc += IsuccN[i];
+        //batchResult->I = IsuccN[0];
         
         //batchResult->M2 += pow(fg->weights[i+leftdec]/fg->total_weight,2) * M2N[i];
         
@@ -205,17 +206,21 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     
     //batchResult->Isucc = IsuccN[0];
     cerr << endl;
-    
+	
     rusage ruse;
     getrusage(RUSAGE_SELF, &ruse);
     cerr << "\033[A\033[2K" << "\033[A\033[2K" << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
-    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl; 
+    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl<< endl << endl; 
     
+	
+	cerr << "DIR Result Mean:\t" << batchResult->Mean[0]/ batchResult->I << endl;
+	cerr << "DIR Result std:\t" << batchResult->M2[0] << endl << endl << endl<< endl << endl;
+
     //batchResult->print();
     //exit(0);
 	return (batchResult);
 }
-
+/*
 void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstractBinding& b){
 	SimulatorRE::updateSPN(E1_transitionNum, b);
 	
@@ -232,7 +237,7 @@ void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstrac
 	}
 	
 };
-
+*/
 /*double SimulatorContinuousBounded::mu(){
 	
 	vector<int> vect (muprob.S.begin()->first->size(),0);
@@ -254,7 +259,7 @@ void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstrac
     
 	return(numSolv->getMu(stateN));
 }*/
-
+/*
 void SimulatorContinuousBounded::getParams(size_t Id,const abstractBinding& b){
 	
 	N.GetDistParameters(Id,b);
@@ -266,4 +271,4 @@ void SimulatorContinuousBounded::getParams(size_t Id,const abstractBinding& b){
     N.ParamDistr[0]= ComputeDistr( Id, b,origin_rate);
 	N.ParamDistr[1]= origin_rate;
 }
-
+*/

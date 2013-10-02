@@ -117,9 +117,12 @@ public:
     SimulatorBoundedRE(int m);
 	BatchR* RunBatch();
     void initVect(int T);
+	void updateSPN(size_t, const abstractBinding&);
+	void getParams(size_t, const abstractBinding&);
 protected:
 	numericalSolver* numSolv;
 	
+	double lambda;
 	virtual double mu();
 	virtual double ComputeDistr(size_t i,const abstractBinding&, double origin_rate);
 };

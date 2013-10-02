@@ -94,7 +94,7 @@ void SimulatorRE::updateSPN(size_t,const abstractBinding&){
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
 	
-	// Possibly removing Events corresponding to newly disabled-transitions
+	//Run over all transition
 	for (size_t it = 0; it < N.tr-1; it++) {
 		for(vector<abstractBinding>::const_iterator bindex = N.Transition[it].bindingList.begin() ;
 			bindex != N.Transition[it].bindingList.end() ; ++bindex){
@@ -118,7 +118,7 @@ void SimulatorRE::updateSPN(size_t,const abstractBinding&){
 	if(!doubleIS_mode){
 		EQ->replace(F);
 	}
-	
+	/*
 	//In Debug mode check that transition are scheduled iff they are enabled
 	for (vector<_trans>::const_iterator t = N.Transition.begin()
 		 ; t != N.Transition.end() ; ++t) {
@@ -139,7 +139,7 @@ void SimulatorRE::updateSPN(size_t,const abstractBinding&){
 			}
 		}
 	}
-	
+	*/
 };
 
 void SimulatorRE::updateLikelihood(size_t E1_transitionNum){
@@ -246,7 +246,7 @@ double SimulatorRE::ComputeDistr(size_t t , const abstractBinding& b, double ori
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
 		}else{
-			if(verbose>3){
+			if(verbose>3 && (N.Origine_Rate_Sum < 1.01*N.Rate_Sum)){
 			cerr << "Reduce model does not guarantee variance" << endl;
 			cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
 			//exit(EXIT_FAILURE);

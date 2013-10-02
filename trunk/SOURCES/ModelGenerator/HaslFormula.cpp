@@ -217,6 +217,9 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		case CDF_PART:
 		case PDF_PART:
 		{
+			//No accepting trajectory the condidence interval is R.
+			if(batch.Isucc==0)return new ConfInt();
+		
 			double mean = batch.Mean[Algebraic]/batch.Isucc;
 			double m2 = batch.M2[Algebraic]/batch.Isucc;
 			double variance = m2 - mean * mean;
@@ -231,6 +234,8 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		
 		case RE_Likelyhood:
 		{
+			//No accepting trajectory the condidence interval is R.
+			if(batch.Isucc==0)return new ConfInt();
 			double mean = batch.Mean[Algebraic]/batch.Isucc;
 			double m2 = batch.M2[Algebraic]/batch.Isucc;
 			double variance = m2 - mean * mean;
@@ -242,6 +247,9 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			
 		case RE_AVG://temporary
 		{
+			//No accepting trajectory the condidence interval is R.
+			if(batch.Isucc==0)return new ConfInt();
+		
 			double mean = (double)batch.Isucc / (double)batch.I;
 			double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 			double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);

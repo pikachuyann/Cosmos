@@ -53,7 +53,7 @@ SimulatorBoundedRE::SimulatorBoundedRE(int m){
 }
 
 void SimulatorBoundedRE::initVect(int T){
-	double lambda = numSolv->uniformizeMatrix();
+	lambda = numSolv->uniformizeMatrix();
     cerr << "lambda:" << lambda<< endl;
     numSolv->initVect(T);
 }
@@ -89,8 +89,8 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	while (!statevect.empty()) {
 		numSolv->stepVect();
         if(verbose>=1){
-            cerr << "new round, remaining trajectories: "<< statevect.size() <<  endl;
-            cerr << numSolv->getVect() << endl;
+            cerr << "new round, remaining trajectories: "<< statevect.size() << "Init Prob:";
+            cerr << numSolv->getVect()[0] << endl;
         }
 		
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
@@ -148,6 +148,36 @@ double SimulatorBoundedRE::mu(){
 	return(numSolv->getMu(stateN));
 }
 
+void SimulatorBoundedRE::updateSPN(size_t E1_transitionNum,const abstractBinding& b){
+	SimulatorRE::updateSPN(E1_transitionNum, b);
+	
+	Event F;
+	abstractBinding bpuit;
+    GenerateEvent(F, (N.tr-2),bpuit);
+	if(!doubleIS_mode){
+		EQ->replace(F);
+	}
+    
+	GenerateEvent(F, (N.tr-1),bpuit);
+	if(!doubleIS_mode){
+		EQ->replace(F);
+	}
+	
+};
+
+void SimulatorBoundedRE::getParams(size_t Id,const abstractBinding& b){
+	
+	N.GetDistParameters(Id,b);
+	double origin_rate = N.ParamDistr[0];
+    if(Id== N.tr-2){
+        origin_rate = lambda - N.Origine_Rate_Sum;
+        //cerr << "lambda:\t" << lambda << "\tselfloop:\t" << origin_rate << endl;
+    }
+    N.ParamDistr[0]= ComputeDistr( Id, b,origin_rate);
+	N.ParamDistr[1]= origin_rate;
+}
+
+
 double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, double origin_rate ){
 	
 	//cerr << endl<< "mux" << endl;
@@ -159,8 +189,12 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 			//cerr << "strange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
 		}else{
-			//cerr << "Reduce model does not guarantee variance" << endl;
+			if(verbose>3 && (N.Origine_Rate_Sum < 1.01*N.Rate_Sum)){
+				cerr << "Reduce model does not guarantee variance" << endl;
+				cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
+
 			//exit(EXIT_FAILURE);
+			}
 			return 0.0 ;};
 	}; 
 	

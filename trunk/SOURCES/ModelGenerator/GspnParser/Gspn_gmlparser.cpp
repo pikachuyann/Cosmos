@@ -826,7 +826,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         ParsePl=false;
         
         if(P.RareEvent){
-			if(P.BoundedContinuous){
+			if(P.BoundedContinuous || P.BoundedRE>0){
 				//add a transition for self-loop due to uniformization
 				transition trans;
 				trans.label = "selfloop";

@@ -36,14 +36,13 @@ public:
     void initVectCo(double t);
     double epsilon;
     //double Normal_quantile;
-    double lambda;
     BatchR* RunBatch();
     
 protected:
     FoxGlynn* fg;
     //double mu();
-    void getParams(size_t Id,const abstractBinding&);
-    void updateSPN(size_t E1_transitionNum, const abstractBinding&);
+    //void getParams(size_t Id,const abstractBinding&);
+    //void updateSPN(size_t E1_transitionNum, const abstractBinding&);
     //virtual void updateLikelihood(int);
     //virtual double ComputeDistr(int t , double origin_rate);
 
