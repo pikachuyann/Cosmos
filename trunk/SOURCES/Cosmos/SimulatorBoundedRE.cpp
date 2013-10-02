@@ -188,6 +188,8 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 	double mux = mu();
     
 	if(t== N.tr-1){
+		if (mux==0.0)return 1E200;
+		
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
 			//cerr << "strange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
