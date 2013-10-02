@@ -186,7 +186,6 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 	
 	//cerr << endl<< "mux" << endl;
 	double mux = mu();
-	if( mux==0.0 || mux==1.0) return(origin_rate);
     
 	if(t== N.tr-1){
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
@@ -201,6 +200,7 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 			}
 			return 0.0 ;};
 	}; 
+	if( mux==0.0 || mux==1.0) return(origin_rate);
 	
 	double distr;
 	N.fire(t,b);
