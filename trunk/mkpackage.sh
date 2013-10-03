@@ -5,6 +5,7 @@ cp cosmosTool package/
 cp Readme.txt package/
 cp COPYING package/
 cp -r includes package/includes
+cp Doxyfile package/
 #cp -r prism package/prism
 #find package/SOURCES -name "*.yy" -delete
 #find package/SOURCES -name "*.ll" -delete
