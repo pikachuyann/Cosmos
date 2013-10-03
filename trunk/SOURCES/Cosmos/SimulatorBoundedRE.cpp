@@ -146,7 +146,8 @@ double SimulatorBoundedRE::mu(){
         for(size_t i =0 ; i<vect.size() ; i++)cerr << vect[i]<< ",";
 		cerr << ")" << endl<<"state not found" << endl;
 		N.print_state(vect);
-		exit(EXIT_FAILURE);
+		return 0.0;
+		//exit(EXIT_FAILURE);
 	}
 		
 	return(numSolv->getMu(stateN));
