@@ -1,0 +1,17 @@
+open Str
+
+let initfile = open_in Sys.argv.(0)
+let intermediatefile = open_out (Sys.argv.(0)^"intermediate")
+
+let newpath = regexp "New Path"
+let blank = regexp " \\|\t"
+
+let rec append_nb i =
+  let line = readline initfile in
+  if string_match newpath line 0 then
+    append_nb (i+1)
+  else (
+    output_string intermediatefile (line ^(string_of_int i)^"\n");
+    append_nb i
+  )
+
