@@ -60,9 +60,64 @@ endif
 
 files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 
-include Makefile_common
 
-.PHONY: doc cov
+.PHONY: lib generator clean sim dir automataGen doc cov utils
+
+all: dir lib generator utils
+
+dir:
+	mkdir -p bin
+	mkdir -p includes
+	mkdir -p Obj/Cosmos
+	mkdir -p Obj/ModelGenerator/Eval
+	mkdir -p Obj/ModelGenerator/GspnParser
+	mkdir -p Obj/ModelGenerator/LhaParser
+
+lib: includes/spn.hpp includes/LHA.hpp includes/marking.hpp
+	@(cd SOURCES/Cosmos && $(MAKE) ../../bin/libClientSim.a)
+
+includes/%.hpp: SOURCES/Cosmos/%.hpp
+	cp SOURCES/Cosmos/$*.hpp $@
+
+generator:
+	@(cd SOURCES/ModelGenerator && $(MAKE) ../../bin/Cosmos)
+
+cleanSim:
+	@(cd SOURCES/Cosmos && $(MAKE) clean)
+
+cleanGen:
+	@(cd SOURCES/ModelGenerator && $(MAKE) clean)
+
+clean:
+	@(cd SOURCES/Cosmos && $(MAKE) $@)
+	@(cd SOURCES/ModelGenerator && $(MAKE) $@)
+	@(cd automataGen && ocamlbuild -clean)
+	@(rm -rf package-alligator.zip)
+
+cleansim:
+	@(cd SOURCES/Cosmos && $(MAKE) clean)
+
+
+parser:
+	@(cd SOURCES/ModelGenerator && $(MAKE) parser)
+
+cleanparser:
+	@(cd SOURCES/ModelGenerator && $(MAKE) cleanparser)
+
+utils:
+	@(cd automataGen && ocamlbuild generator.native)
+	cp automataGen/generator.native bin/automataGen
+	@(cd utils && ocamlbuild -lib Str linecombinator.native)
+	cp utils/linecombinator.native bin/linecombinator
+
+automataGen: utils
+
+package: all
+	mkdir package
+	cp Readme.txt package/
+	cp COPYING package/
+	cp -r includes package/includes
+	cp -r bin package/bin
 
 cov:
 	lcov --directory Obj/ -b SOURCES/ --capture --output-file Cosmos.info
