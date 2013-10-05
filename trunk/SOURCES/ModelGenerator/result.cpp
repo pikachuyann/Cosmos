@@ -31,6 +31,7 @@
 #include "HaslFormula.hpp"
 #include <iomanip>
 #include <math.h>
+#include <sstream>
 
 using namespace std;
 
@@ -66,7 +67,7 @@ result::result(parameters &Q){
         outdatastream << endl;
     }
 	if(P.gnuplotDriver){
-		if(system("which gnuplot > /dev/null")!=0){
+		if(false && system("which gnuplot > /dev/null")!=0){
 			cerr << "gnuplot not found" << endl;
 			P.gnuplotDriver=false;
 		}else{
@@ -305,6 +306,15 @@ void result::printGnuplot(){
 	
 	if(P.datatrace.compare("")!=0){
 		if(P.verbose>2)cout << "invoke gnuplot for trace" << endl;
+		string combicmd;
+		//combicmd = "cp " + P.datatrace + " " + P.tmpPath + "/tmpdatafilecombcp.dat";
+		//if(P.verbose>2)cout << combicmd << endl;
+		//system(combicmd.c_str());
+		
+		combicmd = P.Path + "linecombinator " + P.datatrace + " " + P.tmpPath + "/tmpdatafilecomb.dat";
+		//if(P.verbose>2)cout << combicmd << endl;
+		//system(combicmd.c_str());
+		cout << "system returned" << endl;
 		if(P.alligatorMode)fputs("set output 'traceout.png'\n",gnuplotstream);
 		fputs("plot for [i=2:", gnuplotstream);
 		char buff[10];
@@ -312,6 +322,7 @@ void result::printGnuplot(){
 		fputs(buff, gnuplotstream);
 		fputs("] '", gnuplotstream);
 		fputs(P.datatrace.c_str(), gnuplotstream);
+		//fputs("/tmpdatafilecomb.dat", gnuplotstream);
 		fputs("' using 1:i title  columnheader(i) with lines\n", gnuplotstream);
 		if(P.alligatorMode)fputs("set output\n", gnuplotstream);
 		flushgnuplot();

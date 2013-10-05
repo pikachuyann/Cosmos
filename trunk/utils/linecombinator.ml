@@ -31,6 +31,7 @@ let rec readEvent f s i =
       )
   ) with
       End_of_file -> s,i
+    | Sys_blocked_io -> s,i
 
 let write_event f (te,i,q) =
   output_string f (string_of_float te);
@@ -59,19 +60,27 @@ let update_data td d i =
 let rec uniformize tl ((time,path,data):EventSet.elt) set1 =
   EventSet.add (time, path ,(update_data tl data path)) set1
 
-
-let initfile = open_in Sys.argv.(1)
-let intermediatefile = open_out (Sys.argv.(1)^"intermediate")
+(* _gen [Open_rdonly; Open_nonblock] 0x446*)
 
 let main () =
+  let initfile = open_in_gen [Open_rdonly; Open_nonblock] 0x446 Sys.argv.(1) in
+  print_endline "open in";
+  let intermediatefile = open_out Sys.argv.(2) in
+  print_endline "open out";
   let fl = input_line initfile in 
+  print_endline "read first line";
   output_string intermediatefile (fl^"\n");
   let es = EventSet.empty in
+   print_endline "start reading";
   let esfull,maxi = readEvent initfile es 0 in
+   print_endline "end reading";
   let (_,_,datatemplate) = (EventSet.min_elt esfull) in
   let tabledata = Array.create maxi (emptydata datatemplate) in
   let esunif = EventSet.fold (uniformize tabledata) esfull EventSet.empty in
-  EventSet.iter (write_event intermediatefile) esunif;;
+  EventSet.iter (write_event intermediatefile) esunif;
+  close_in initfile;
+  close_out intermediatefile;
+  print_endline "finished";;
       
 
 main ();;

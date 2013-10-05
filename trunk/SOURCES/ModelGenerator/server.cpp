@@ -97,7 +97,7 @@ void signalHandler( int signum )
 			if(child != -1){
 				if(status!=0){
 					if(count(clientPID.begin(),clientPID.end(),child)==0)
-						cerr << "The child "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
+						cerr << "The unknown child "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
 					else{
 						if(WIFSIGNALED(status)){
 							if(WTERMSIG(status) != 2){
@@ -122,6 +122,10 @@ void signalHandler( int signum )
 	}
 }
 
+/*
+ * Open a child processes retring both PID and an a pipe
+ * to the standart input of the child.
+ */
 void popenClient(const char* bin, const char *argv[]){
 	pid_t pid = 0;
 	int pipefd[2];
@@ -286,7 +290,7 @@ void kill_client(){
 }
 
 /**
- * Wait until all chidl terminate.
+ * Wait until all child terminate.
  * This allow to recover usage information of the simulators.
  */
 void wait_client(){

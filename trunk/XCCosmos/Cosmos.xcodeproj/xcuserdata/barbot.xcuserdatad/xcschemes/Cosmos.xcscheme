@@ -83,11 +83,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--max-run"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "10000000000"
-            isEnabled = "NO">
+            argument = "10"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Downloads/repressilatorMS.grml"
@@ -111,7 +111,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-r"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.gspn"
@@ -130,8 +130,8 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-v 6"
-            isEnabled = "NO">
+            argument = "-v 3"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--bin-path"
@@ -150,12 +150,12 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRE.grml"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandem.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRElha.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--count-transition"
@@ -179,7 +179,15 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--loop 60"
-            isEnabled = "NO">
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--output-trace"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "testtrace.dat"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/philosophe/philo2.grml"
@@ -199,7 +207,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--gnuplot-driver"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--outputdata"
