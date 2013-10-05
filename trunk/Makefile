@@ -63,7 +63,7 @@ files=find SOURCES -type f | grep "\(.cpp\|.hpp\|.c\|.h\|Makefile\)$$"
 
 .PHONY: lib generator clean sim dir automataGen doc cov utils
 
-all: dir lib generator utils
+all: dir lib generator automataGen
 
 dir:
 	mkdir -p bin
@@ -105,12 +105,12 @@ cleanparser:
 	@(cd SOURCES/ModelGenerator && $(MAKE) cleanparser)
 
 utils:
-	@(cd automataGen && ocamlbuild generator.native)
-	cp automataGen/generator.native bin/automataGen
 	@(cd utils && ocamlbuild -lib Str linecombinator.native)
 	cp utils/linecombinator.native bin/linecombinator
 
-automataGen: utils
+automataGen:
+	@(cd automataGen && ocamlbuild generator.native)
+	cp automataGen/generator.native bin/automataGen
 
 package: all
 	mkdir package
