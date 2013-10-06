@@ -37,7 +37,9 @@ end
 
 module TimeEvent = struct
   type t = float*int*(Data.t)
-  let compare ((t1,_,_):t) ((t2,_,_):t) = compare t1 t2
+  let compare ((t1,_,_):t) ((t2,_,_):t) = 
+    if t1 = t2 then 1
+    else compare t1 t2
 
   let output f ((te,i,q):t) =
     output_string f (string_of_float te);
@@ -124,19 +126,6 @@ let update_data td d i =
 let rec uniformize tl ((time,path,data):EventSet.elt) set1 =
   EventSet.add (time, path ,(update_data tl data path)) set1
 
-let main s1 s2 =
-  let initfile = open_in s1 in
-  let intermediatefile = open_out s2 in
-  let fl = input_line initfile in 
-  output_string intermediatefile (fl^"\n");
-  let es = EventSet.empty in
-  let esfull,maxi = readEvent initfile es 0 in
-  let (_,_,datatemplate) = (EventSet.min_elt esfull) in
-  let tabledata = Array.create maxi (Data.empty datatemplate) in
-  let esunif = EventSet.fold (uniformize tabledata) esfull EventSet.empty in
-  EventSet.iter (TimeEvent.output intermediatefile) esunif;;
-
-
 let main2 s1 s2  =
   let initfile = open_in s1 in
   let intermediatefile = open_out s2 in
@@ -147,12 +136,19 @@ let main2 s1 s2  =
   seek_in initfile 0;
   let fl = input_line initfile in 
   output_string intermediatefile (fl^"\n");
-  let evect = Array.create (int_of_float (1.+.maxtime/.step)) (0.0,0,template) in
-  readAndSample evect step initfile template;
-  Array.iteri (fun i (t,n,d) -> evect.(i) <- (t,1,Data.mult (1.0 /. (float n)) d)) evect;
+  if ne > 10000 then
+    let evect = Array.create (int_of_float (1.+.maxtime/.step)) (0.0,0,template) in
+    readAndSample evect step initfile template;
+    Array.iteri (fun i (t,n,d) -> evect.(i) <- (t,1,Data.mult (1.0 /. (float n)) d)) evect;
+    Array.iter (TimeEvent.output intermediatefile) evect
+  else 
+    let es = EventSet.empty in
+    let esfull,maxi = readEvent initfile es 0 in
+    let tabledata = Array.create maxi (Data.empty template) in
+    EventSet.iter (function (t,p,d) when t=0.0 -> tabledata.(p-1)<- d | _ ->()) esfull;
+    let esunif = EventSet.fold (uniformize tabledata) esfull EventSet.empty in
+    EventSet.iter (TimeEvent.output intermediatefile) esunif;;
 
-  Array.iter (TimeEvent.output intermediatefile) evect;;
-      
 main2 Sys.argv.(1) Sys.argv.(2);;
 
 
