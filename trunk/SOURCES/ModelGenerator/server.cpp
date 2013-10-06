@@ -122,6 +122,13 @@ void signalHandler( int signum )
 	}
 }
 
+
+void systemsigsafe(const char*cmd){
+  signal(SIGCHLD , SIG_IGN );
+  system(cmd);
+  signal(SIGCHLD , signalHandler); 
+}
+
 /*
  * Open a child processes retring both PID and an a pipe
  * to the standart input of the child.

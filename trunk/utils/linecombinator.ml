@@ -63,40 +63,57 @@ let rec readEvent f s i =
   ) with
       End_of_file -> s,i
 
+let fillvect evect step d i j =
+  for k =i to j do
+    let (_,nbcount,d1) = evect.(k) in
+    evect.(k) <- ((float k)*.step, nbcount+1 ,Data.merge d1 d);
+  done
 
-let rec readAndSample evect step f =
-   try (
+
+let readAndSample evect step f dl=
+  let index = ref 0
+  and dlast = ref dl in 
+   try while true do 
     let line = input_line f in match split blank line with
       | [] -> failwith "strange line"
       | [s1;s2] when s1="New" & s2 = "Path" ->
-	  readAndSample evect step f
+	fillvect evect step !dlast !index (Array.length evect -1);
+	dlast := Data.empty !dlast;
+	index := 0;
       | te::q -> (
 	try let ts = float_of_string te in
 	    let bucket = int_of_float (ts /. step) in
 	    let d2 = Data.data_of_stringList q in
-	    let (_,nbcount,d1) = evect.(bucket) in
-	    evect.(bucket) <- ((float bucket)*.step, nbcount+1 ,Data.merge d1 d2)
+	    fillvect evect step !dlast !index (bucket-1);
+	    index := bucket;
+	    dlast := d2;
 	with
 	  Failure "float_of_string" -> failwith "strange line"
-	| Invalid_argument _-> ());
-	readAndSample evect step f
-  ) with
-      End_of_file -> ()
+	| Invalid_argument _-> ())
+     done with
+       End_of_file -> ()
 
-let rec find_max_time f t np ne dt= 
-  try (
-    let line = input_line f in match split blank line with
-      | [] -> find_max_time f t np ne dt
-      | [s1;s2] when s1="New" & s2 = "Path" -> find_max_time f t (np+1) ne dt
-      | te::q -> (
-	try let ts = float_of_string te in
-	    match dt with
-	    | None -> find_max_time f ts np (ne+1) (Some(Data.empty (Data.data_of_stringList q)))
-	    | _ -> find_max_time f ts np (ne+1) dt
-	with
-	  Failure "float_of_string" -> find_max_time f t np ne dt)
-  ) with
-    End_of_file -> (t,np,ne,dt)
+let find_max_time f =
+  let maxt = ref 0.0
+  and np = ref 0
+  and ne = ref 0
+  and template = ref None in
+  try while true do 
+      let line = input_line f in match split blank line with
+	| [] -> ()
+	| [s1;s2] when s1="New" & s2 = "Path" -> incr np
+	| te::q -> (
+	  try let ts = float_of_string te in
+	      incr ne;
+	      maxt := max !maxt ts;
+	      match !template with
+	      | None -> template := Some(Data.empty (Data.data_of_stringList q));
+	      | _ -> ()
+	  with
+	    Failure "float_of_string" -> ())
+    done; (!maxt,!np,!ne,!template)
+  with
+      End_of_file -> (!maxt,!np,!ne,!template)
 
 let update_data td d i =
   td.(i-1)<-d;
@@ -120,21 +137,22 @@ let main s1 s2 =
   EventSet.iter (TimeEvent.output intermediatefile) esunif;;
 
 
-let main2 s1 step s2  =
+let main2 s1 s2  =
   let initfile = open_in s1 in
   let intermediatefile = open_out s2 in
-  let (maxtime,np,ne,templateo) = find_max_time initfile 0.0 0 0 None in
+  let (maxtime,np,ne,templateo) = find_max_time initfile in
+  let step = maxtime/. 1000. in
   let template = (match templateo with None -> failwith "Empty file" | Some(x) ->x) in
   Printf.printf "Max time: %f\t number of paths: %i\t number of events: %i\n" maxtime np ne;
   seek_in initfile 0;
   let fl = input_line initfile in 
   output_string intermediatefile (fl^"\n");
   let evect = Array.create (int_of_float (1.+.maxtime/.step)) (0.0,0,template) in
-  readAndSample evect step initfile;
+  readAndSample evect step initfile template;
   Array.iteri (fun i (t,n,d) -> evect.(i) <- (t,1,Data.mult (1.0 /. (float n)) d)) evect;
 
   Array.iter (TimeEvent.output intermediatefile) evect;;
       
-main2 Sys.argv.(1) (0.01)  Sys.argv.(2);;
+main2 Sys.argv.(1) Sys.argv.(2);;
 
 
