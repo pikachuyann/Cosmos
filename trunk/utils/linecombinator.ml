@@ -101,5 +101,3 @@ let main s1 s2 =
   EventSet.iter (TimeEvent.output intermediatefile) esunif;;
       
 main Sys.argv.(1) Sys.argv.(2);;
-
-
