@@ -32,6 +32,7 @@
 #include <iomanip>
 #include <math.h>
 #include <sstream>
+#include "server.hpp"
 
 using namespace std;
 
@@ -312,8 +313,8 @@ void result::printGnuplot(){
 		//system(combicmd.c_str());
 		
 		combicmd = P.Path + "linecombinator " + P.datatrace + " " + P.tmpPath + "/tmpdatafilecomb.dat";
-		//if(P.verbose>2)cout << combicmd << endl;
-		//system(combicmd.c_str());
+		if(P.verbose>2)cout << combicmd << endl;
+		systemsigsafe(combicmd.c_str());
 		cout << "system returned" << endl;
 		if(P.alligatorMode)fputs("set output 'traceout.png'\n",gnuplotstream);
 		fputs("plot for [i=2:", gnuplotstream);
@@ -321,8 +322,8 @@ void result::printGnuplot(){
 		sprintf(buff, "%u", (unsigned int)(P.nbPlace+1));
 		fputs(buff, gnuplotstream);
 		fputs("] '", gnuplotstream);
-		fputs(P.datatrace.c_str(), gnuplotstream);
-		//fputs("/tmpdatafilecomb.dat", gnuplotstream);
+		fputs(P.tmpPath.c_str(), gnuplotstream);
+		fputs("/tmpdatafilecomb.dat", gnuplotstream);
 		fputs("' using 1:i title  columnheader(i) with lines\n", gnuplotstream);
 		if(P.alligatorMode)fputs("set output\n", gnuplotstream);
 		flushgnuplot();
