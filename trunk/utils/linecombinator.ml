@@ -63,22 +63,58 @@ let rec readEvent f s i =
   ) with
       End_of_file -> s,i
 
-(*
-let rec readAndSample evect step f i =
-   try (
+let fillvect evect step d i j =
+  for k =i to j do
+    let (_,nbcount,d1) = evect.(k) in
+    evect.(k) <- ((float k)*.step, nbcount+1 ,Data.merge d1 d);
+  done
+
+
+let readAndSample evect step f dl=
+  let index = ref 0
+  and dlast = ref dl in 
+   try while true do 
     let line = input_line f in match split blank line with
       | [] -> failwith "strange line"
       | [s1;s2] when s1="New" & s2 = "Path" ->
-	  readAndSample evect step f (i+1)
+	fillvect evect step !dlast !index (Array.length evect -1);
+	dlast := Data.empty !dlast;
+	index := 0;
       | te::q -> (
 	try let ts = float_of_string te in
-	    readEvent f (EventSet.add (ts,i,List.map dataElem_of_string q) s) i
+	    let bucket = int_of_float (ts /. step) in
+	    let d2 = Data.data_of_stringList q in
+	    fillvect evect step !dlast !index (bucket-1);
+	    index := bucket;
+	    dlast := d2;
 	with
-	    Failure "float_of_string" -> failwith "strange line"
-      )
-  ) with
-      End_of_file -> s,i
-*)
+	  Failure "float_of_string" -> failwith "strange line"
+	| Invalid_argument _-> ())
+     done with
+       End_of_file -> ()
+
+let find_max_time f =
+  let maxt = ref 0.0
+  and np = ref 0
+  and ne = ref 0
+  and template = ref None in
+  try while true do 
+      let line = input_line f in match split blank line with
+	| [] -> ()
+	| [s1;s2] when s1="New" & s2 = "Path" -> incr np
+	| te::q -> (
+	  try let ts = float_of_string te in
+	      incr ne;
+	      maxt := max !maxt ts;
+	      match !template with
+	      | None -> template := Some(Data.empty (Data.data_of_stringList q));
+	      | _ -> ()
+	  with
+	    Failure "float_of_string" -> ())
+    done; (!maxt,!np,!ne,!template)
+  with
+      End_of_file -> (!maxt,!np,!ne,!template)
+
 let update_data td d i =
   td.(i-1)<-d;
   let nd = Array.fold_left Data.merge (Data.empty td.(0)) td in
@@ -99,5 +135,24 @@ let main s1 s2 =
   let tabledata = Array.create maxi (Data.empty datatemplate) in
   let esunif = EventSet.fold (uniformize tabledata) esfull EventSet.empty in
   EventSet.iter (TimeEvent.output intermediatefile) esunif;;
+
+
+let main2 s1 s2  =
+  let initfile = open_in s1 in
+  let intermediatefile = open_out s2 in
+  let (maxtime,np,ne,templateo) = find_max_time initfile in
+  let step = maxtime/. 1000. in
+  let template = (match templateo with None -> failwith "Empty file" | Some(x) ->x) in
+  Printf.printf "Max time: %f\t number of paths: %i\t number of events: %i\n" maxtime np ne;
+  seek_in initfile 0;
+  let fl = input_line initfile in 
+  output_string intermediatefile (fl^"\n");
+  let evect = Array.create (int_of_float (1.+.maxtime/.step)) (0.0,0,template) in
+  readAndSample evect step initfile template;
+  Array.iteri (fun i (t,n,d) -> evect.(i) <- (t,1,Data.mult (1.0 /. (float n)) d)) evect;
+
+  Array.iter (TimeEvent.output intermediatefile) evect;;
       
-main Sys.argv.(1) Sys.argv.(2);;
+main2 Sys.argv.(1) Sys.argv.(2);;
+
+

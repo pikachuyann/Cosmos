@@ -23,6 +23,12 @@
  *******************************************************************************
  */
 
+/*
+ * This file implement low level interaction between the main program
+ * and all its children. In particular it lauches the require copies of
+ * simulator and wait for the result.
+ */
+
 
 
 
@@ -51,5 +57,12 @@ void launchExport(parameters& P);
  */
 void launchServer(parameters& P);
 
+/**
+ * This function desactivate the signal handler on sigchld for the
+ * time of the execution of a shell script. This function is necessary
+ * to avoid a deadlock where the signal wait for a child wich status
+ * have been retrieved by system.
+ */
+void systemsigsafe(const char*cmd);
 
 #endif	/* _SERVER_HPP */
