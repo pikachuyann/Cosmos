@@ -124,9 +124,9 @@ void signalHandler( int signum )
 
 
 void systemsigsafe(const char*cmd){
-  signal(SIGCHLD , SIG_IGN );
-  system(cmd);
-  signal(SIGCHLD , signalHandler); 
+	signal(SIGCHLD , SIG_DFL );
+	system(cmd);
+	signal(SIGCHLD , signalHandler);
 }
 
 /*
