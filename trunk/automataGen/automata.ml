@@ -70,3 +70,22 @@ let automata_of_formula = function
   | _ -> failwith "Not yet implemented"
 
 
+let rec flowlist invt i c trlist pllist = match trlist,pllist with
+    [],[] when i=0 -> []
+  | [],[] -> flowlist invt (i-1) c trlist pllist
+  | t::q,_ -> (c,MultF(FloatName(t),Float(invt))) :: (flowlist invt i (c+1) q trlist)
+  | [],t::q -> flowlist invt i (c+1) [] q
+  
+
+let automata_of_pltrlist pllist trlist trans loop stepn =
+  {
+    let invT = loop /. (float stepn) in
+    nbLoc = 2+stepn;
+    nbVar = 1+ stepn*((List.length pllist)+(List.length trlist));
+    invariant = [];
+    flows = [(0,[(0,Float(1.0))])] :: (List.map);
+    init =0;
+    final=[1];
+    trans=[(0,Synch(["ALL"],True),0);
+	   (0,Synch(["ALL"],True),1)];
+  }
