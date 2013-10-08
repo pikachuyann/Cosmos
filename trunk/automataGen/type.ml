@@ -12,7 +12,11 @@ and cmp = EQ | SG | SL | GE | LE
 and intExpr = IntName of string | Int of int 
 	      | Plus of intExpr*intExpr | Minus of intExpr*intExpr
 	      | Mult of intExpr*intExpr
-and floatExpr = FloatName of string | Float of float | Infty;;
+and floatExpr = FloatName of string | Float of float | Infty
+		| MultF of floatExpr*floatExpr
+		| PlusF of floatExpr*floatExpr 
+		| MinusF of floatExpr*floatExpr
+		| DivF of floatExpr*floatExpr;;
 
 
 let rec print_timeInt (fexpr1,fexpr2) =
@@ -95,5 +99,25 @@ and print_int_expr = function
 
 and print_float_expr = function
   | Float(x) -> print_float x;
+  | PlusF(e1,e2) -> print_string "(";
+    print_float_expr e1;
+    print_string "+";
+    print_float_expr e2;
+    print_string ")"
+  | MinusF(e1,e2) -> print_string "(";
+    print_float_expr e1;
+    print_string "-";
+    print_float_expr e2;
+    print_string ")"
+  | MultF(e1,e2) -> print_string "(";
+    print_float_expr e1;
+    print_string "*";
+    print_float_expr e2;
+    print_string ")"
+  | DivF(e1,e2) -> print_string "(";
+    print_float_expr e1;
+    print_string "/";
+    print_float_expr e2;
+    print_string ")"
   | _ ->  print_string "notyet implemented"
   
