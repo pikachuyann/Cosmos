@@ -3,7 +3,7 @@ open Automata
 
 let _ =
   if Array.length Sys.argv >1 then
-    
+    ()
   else try
     let lexbuf = Lexing.from_channel stdin in
     while true do
