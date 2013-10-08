@@ -381,7 +381,7 @@ void stateSpace::outputPrism(){
 
 void stateSpace::launchPrism(string prismPath){
     cout<< "Starting Prism"<< endl;
-    string cmd = prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput -maxiters 10000000";
+    string cmd = prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
     system(cmd.c_str());
     cout << "Prism finish" << endl;
 }

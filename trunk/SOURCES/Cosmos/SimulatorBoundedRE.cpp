@@ -142,7 +142,8 @@ double SimulatorBoundedRE::mu(){
 	int stateN = numSolv->findHash(&vect);
 	 
 	if(stateN<0){
-		cerr << numSolv->getVect()<< endl<< "statevect(";
+		//cerr << numSolv->getVect()<< endl
+		cerr << "statevect(";
         for(size_t i =0 ; i<vect.size() ; i++)cerr << vect[i]<< ",";
 		cerr << ")" << endl<<"state not found" << endl;
 		N.print_state(vect);
@@ -154,15 +155,37 @@ double SimulatorBoundedRE::mu(){
 }
 
 void SimulatorBoundedRE::updateSPN(size_t E1_transitionNum,const abstractBinding& b){
-	SimulatorRE::updateSPN(E1_transitionNum, b);
-	
 	Event F;
+    //check if the current transition is still enabled
+	
+	N.Rate_Sum = 0;
+	N.Origine_Rate_Sum = 0;
+	
+	//Run over all transition
+	for (size_t it = 0; it < N.tr-2; it++) {
+		for(vector<abstractBinding>::const_iterator bindex = N.Transition[it].bindingList.begin() ;
+			bindex != N.Transition[it].bindingList.end() ; ++bindex){
+			if(N.IsEnabled(it, *bindex)){
+				if (EQ->isScheduled(it, bindex->id())) {
+					GenerateEvent(F, it ,*bindex );
+					EQ->replace(F);
+				} else {
+					GenerateEvent(F, it ,*bindex );
+					EQ->insert(F);
+				}
+			}else{
+				if(EQ->isScheduled(it, bindex->id()))
+					EQ->remove(it,bindex->id());
+			}
+		}
+	}
+	
 	abstractBinding bpuit;
     GenerateEvent(F, (N.tr-2),bpuit);
 	if(!doubleIS_mode){
 		EQ->replace(F);
 	}
-    
+
 	GenerateEvent(F, (N.tr-1),bpuit);
 	if(!doubleIS_mode){
 		EQ->replace(F);
@@ -192,6 +215,7 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 		if (mux==0.0)return 1E200;
 		
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
+			//cerr << "trans:sink distr: "<< N.Origine_Rate_Sum - N.Rate_Sum << " " << endl;
 			//cerr << "strange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
 		}else{
@@ -201,6 +225,7 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 
 			//exit(EXIT_FAILURE);
 			}
+			//cerr << "trans:sink distr: 0 " << endl;
 			return 0.0 ;};
 	}; 
 	if( mux==0.0 || mux==1.0) return(origin_rate);
@@ -209,7 +234,7 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 	N.fire(t,b);
 	numSolv->stepVect();
 	distr = origin_rate *( mu() / mux);
-	//cerr << " distr: "<< distr << " ";
+	//cerr << "trans:" << N.Transition[t].label << " distr: "<< distr << " " << endl;
 	
 	numSolv->previousVect();
 	N.unfire(t,b);
