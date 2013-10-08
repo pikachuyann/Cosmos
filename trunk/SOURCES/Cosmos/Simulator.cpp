@@ -327,7 +327,7 @@ bool Simulator::SimulateOneStep(){
         //If this transition is the sink transition refuse the simulation
         //Only usefull for Rare Event handling.
 		if(transitionSink(E1.transition)){
-			if(verbose>3)cerr << "Transition Sink\n";
+			if(verbose>3)cerr << "\033[1;33mFiring:\033[0m" << "Transition Sink\n";
             returnResultFalse();
             return false;
         }
@@ -379,6 +379,7 @@ bool Simulator::SimulateOneStep(){
 		
 		//If no synchronisation is possible the trajectory is rejected
 		if (SE < 0) {
+			//cerr << "no synchronization" << endl;
 			returnResultFalse();
 			return false;
 		} else {

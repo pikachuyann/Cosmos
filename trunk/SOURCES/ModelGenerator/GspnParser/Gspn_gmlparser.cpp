@@ -841,6 +841,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 				trans.nbServers = 1;
 				MyGspn->transitionStruct.push_back(trans);
 				
+				MyGspn->TransId["selfloop"]=MyGspn->tr;
 				MyGspn->TransList.insert(trans.label);
 				MyGspn->tr++;
 			}
