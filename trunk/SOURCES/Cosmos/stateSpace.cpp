@@ -59,7 +59,8 @@ void stateSpace::add_state(vector<int> v){
     //cerr << endl;
     findstate->push_back(*v2);
 	nbState++;
-    
+	if((nbState % 100000) ==0)cerr << "Number of states :" <<nbState<< endl;
+
 }
 
 void stateSpace::exploreStateSpace(){
