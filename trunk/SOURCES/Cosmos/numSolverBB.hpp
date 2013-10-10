@@ -33,6 +33,7 @@ public:
 	void previousVect();
 	void stepVect();
 	void reset();
+	void printState();
 protected:
 	vector<boostmat::vector<double> >* checkPoint;
 	int l;

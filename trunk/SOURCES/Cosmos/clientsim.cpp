@@ -67,7 +67,9 @@ int main(int argc, char** argv) {
 
 		str = argv[4];
 		if(str== "-RE"){
-			mySim= (new SimulatorRE(false));
+			SimulatorRE* myRESim= new SimulatorRE(false);
+			myRESim->initVect();
+			mySim=myRESim;
 			//mySim->RareEvent_mode=true;
 		}else if(str== "-RE2"){
 			mySim= (new SimulatorRE(true));

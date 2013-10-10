@@ -32,6 +32,7 @@ public:
 	void previousVect();
 	void stepVect();
 	void reset();
+	void printState();
 	double getMu(int);
 	boostmat::vector<double> getVect(); 
 protected:

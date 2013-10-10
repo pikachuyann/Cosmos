@@ -38,6 +38,8 @@ public:
 	SimulatorRE(bool);
 	SimulatorRE();
 	
+	virtual void initVect();
+	
 protected:
 	
 	//TAB muprob;  // mu(s) table
@@ -46,7 +48,7 @@ protected:
 	bool doubleIS_mode;
 	
 	virtual void InitialEventsQueue();
-		
+	
 	virtual void returnResultTrue();
 	virtual void returnResultFalse();
 	virtual void updateSPN(size_t,const abstractBinding&);
