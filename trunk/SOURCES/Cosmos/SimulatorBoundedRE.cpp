@@ -217,7 +217,7 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 		if (mux==0.0)return 1E200;
 		
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
-			if(verbose>3 )cerr << "trans:sink distr: "<< N.Origine_Rate_Sum - N.Rate_Sum << " " << endl;
+			if(verbose>3 )cerr << "trans:sink distr: "<< N.Origine_Rate_Sum - N.Rate_Sum << " origine_rate:" << N.Origine_Rate_Sum <<" Rate: " << N.Rate_Sum << endl;
 			//cerr << "strange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
 		}else{
