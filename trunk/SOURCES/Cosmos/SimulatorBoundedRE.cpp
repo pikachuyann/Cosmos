@@ -236,7 +236,7 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 	N.fire(t,b);
 	numSolv->stepVect();
 	distr = origin_rate *( mu() / mux);
-	//cerr << "trans:" << N.Transition[t].label << " distr: "<< distr << " " << endl;
+	if(verbose>3 )cerr << "trans: " << N.Transition[t].label << "\tdistr: "<< distr << "\torigin Rate: "<< origin_rate << "\tmu: " << mu()<< "\tmu prec: " << mux << endl;
 	
 	numSolv->previousVect();
 	N.unfire(t,b);
