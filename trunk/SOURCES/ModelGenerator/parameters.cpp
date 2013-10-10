@@ -310,7 +310,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			case 19: tracedPlace = optarg; break;
 			case 20: prismPath = optarg; break;
 			
-			case 21:
+			case 21: // const
 			{
 				string conststr = optarg;
 				size_t index,index2;

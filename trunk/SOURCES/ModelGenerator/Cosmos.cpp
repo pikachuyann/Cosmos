@@ -381,6 +381,24 @@ void cleanTmp(parameters& P){
 }
 
 /**
+ * A handy function to manipulate call to system
+ * The result of the call to cmd is read from its standart
+ * ouput and put in a string.
+ */
+std::string systemStringResult(char* cmd) {
+    FILE* pipe = popen(cmd, "r");
+    if (!pipe) return "ERROR";
+    char buffer[128];
+    string result = "";
+    while(!feof(pipe)) {
+    	if(fgets(buffer, 128, pipe) != NULL)
+    		result += buffer;
+    }
+    pclose(pipe);
+    return result;
+}
+
+/**
  * Main function
  * Build the simulator and launch it.
  */
@@ -394,15 +412,21 @@ int main(int argc, char** argv) {
 	//Start the timer for build time.
 	gettimeofday(&startbuild, NULL);
 	
+	if (P.verbose>0)cout << "Cosmos" << endl;
+	//assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
+	
+	//If tmpStatus is zero generate random tmp directory
+	if (P.tmpStatus == 0) {
+		string newtmp = systemStringResult("mktemp -d tmpCosmos-XXXXXX");
+		if(!newtmp.empty())P.tmpPath=newtmp.substr(0,newtmp.length()-1);
+	}
 	//If the tmp directory did not exist generate it.
 	if(mkdir(P.tmpPath.c_str(), 0777) != 0){
 		if(errno != EEXIST){
 			err(EXIT_FAILURE,"Fail to build temporary directory:%s",P.tmpPath.c_str());
 		}
 	}
-	
-	if (P.verbose>0)cout << "Cosmos" << endl;
-	//assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
+	if(P.verbose>2)cout << "Temporary directory set to:" << P.tmpPath << endl;
 	
 	//Find the path to the directory containing the binary of cosmos.
 	if(P.Path.compare("")==0){
