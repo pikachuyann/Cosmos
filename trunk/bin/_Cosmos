@@ -39,8 +39,8 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--formula:Use a LTL formula instead of an automaton:->LTL Formula' \
 	   '--debug-string[Add debug information in generated code]' \
 	   '--chernoff:Use chernoff bound to compute parameters:->parameter' \
-	   ':SPN model file:_files -g "*.(gspn|grml|GSPN|GRML)(-.)"' \
-	   ':LHA property file:_files -g "*.(lha|grml|LHA|GRML)(-.)"' \
+	   ':SPN model file:_files -g ".*.(gspn|grml|GSPN|GRML)(-.)"' \
+	   ':LHA property file:_files -g ".*.(lha|grml|LHA|GRML)(-.)"' \
 	   && return 0
 
 	   case $state in

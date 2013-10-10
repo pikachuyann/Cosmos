@@ -194,3 +194,7 @@ double numSolverSH::getMu(int i){
 		return previous_vect[i];
 	}else return current_vect[i];
 }
+
+void numSolverSH::printState(){
+	cerr << u;
+}

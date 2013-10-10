@@ -43,11 +43,14 @@ using namespace std;
 
 SimulatorRE::SimulatorRE(bool b) {
 	doubleIS_mode=b;
-	muprob.inputVect();
 }
 
 SimulatorRE::SimulatorRE(){
 	SimulatorRE(false);
+}
+
+void SimulatorRE::initVect(){
+	muprob.inputVect();
 }
 
 void SimulatorRE::InitialEventsQueue() {

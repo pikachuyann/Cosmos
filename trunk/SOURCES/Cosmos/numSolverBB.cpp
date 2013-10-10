@@ -116,3 +116,9 @@ void numSolverBB::previousVect(){
 	u++;
 	matOffset++;
 }
+
+
+void numSolverBB::printState(){
+	cerr << u;
+}
+

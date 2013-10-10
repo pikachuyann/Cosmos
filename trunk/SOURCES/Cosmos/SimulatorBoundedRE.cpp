@@ -89,7 +89,9 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	while (!statevect.empty()) {
 		numSolv->stepVect();
         if(verbose>=1){
-            cerr << "new round, remaining trajectories: "<< statevect.size() << "Init Prob:";
+            cerr << "new round:";
+			numSolv->printState();
+			cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
             cerr << numSolv->getVect()[0] << endl;
         }
 		

@@ -56,6 +56,7 @@ public:
 	virtual double getMu(int);
 	virtual void previousVect();
 	virtual void stepVect();
+	virtual void printState();
 	
 };
 

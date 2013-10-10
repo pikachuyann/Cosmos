@@ -144,7 +144,9 @@ void numericalSolver::previousVect(){
 	matOffset++;
 }
 
-
+void numericalSolver::printState(){
+	cerr << matOffset;
+}
 
 
 
