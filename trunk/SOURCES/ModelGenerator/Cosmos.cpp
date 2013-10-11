@@ -385,9 +385,9 @@ void cleanTmp(parameters& P){
  * The result of the call to cmd is read from its standart
  * ouput and put in a string.
  */
-std::string systemStringResult(char* cmd) {
+std::string systemStringResult(const char* cmd) {
     FILE* pipe = popen(cmd, "r");
-    if (!pipe) return "ERROR";
+    if (!pipe) return "";
     char buffer[128];
     string result = "";
     while(!feof(pipe)) {
