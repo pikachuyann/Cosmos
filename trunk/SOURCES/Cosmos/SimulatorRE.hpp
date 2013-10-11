@@ -50,7 +50,6 @@ protected:
 	virtual void InitialEventsQueue();
 	
 	virtual void returnResultTrue();
-	virtual void returnResultFalse();
 	virtual void updateSPN(size_t,const abstractBinding&);
 	virtual void GenerateEvent(Event &,size_t,const abstractBinding& );
 	//virtual void GenerateDummyEvent(Event &, size_t);

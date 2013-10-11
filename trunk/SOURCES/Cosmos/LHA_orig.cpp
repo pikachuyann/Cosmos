@@ -157,6 +157,13 @@ void LHA::updateLHA(double DeltaT, const abstractMarking &Marking){
 	CurrentTime += DeltaT;
 }
 
+void LHA::getFinalValues(const abstractMarking& m,vector<double>& v){
+	UpdateLinForm(m);
+	UpdateLhaFuncLast();
+	UpdateFormulaVal();
+	v=FormulaVal;
+}
+
 /**
  * @return true if the automaton is in a final state
  */

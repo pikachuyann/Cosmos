@@ -50,7 +50,6 @@ using namespace std;
 Simulator::Simulator():verbose(0) {
 	EQ = new EventsQueue(N); //initialization of the event queue
     logResult=false;
-	Result.second = vector<double>(A.FormulaVal.size(),0.0);
 	
 	BatchSize = 1000;
 }
@@ -119,19 +118,8 @@ void Simulator::reset() {
  * Hasl formula.
  */
 void Simulator::returnResultTrue(){
-	A.UpdateLinForm(N.Marking);
-	A.UpdateLhaFuncLast();
-	A.UpdateFormulaVal();
+	A.getFinalValues(N.Marking,Result.second);
 	Result.first = true;
-	Result.second = vector<double>(A.FormulaVal);
-}
-
-/**
- * This function is called when a path is discarded.
- * This function is usefull in the rare event setting.
- */
-void Simulator::returnResultFalse(){
-	Result.first = false;
 }
 
 /**
@@ -318,7 +306,7 @@ bool Simulator::SimulateOneStep(){
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
-		returnResultFalse();
+		Result.first=false;
 		return false;
 	} else {
         //Take the first event in the queue
@@ -328,7 +316,7 @@ bool Simulator::SimulateOneStep(){
         //Only usefull for Rare Event handling.
 		if(transitionSink(E1.transition)){
 			if(verbose>3)cerr << "\033[1;33mFiring:\033[0m" << "Transition Sink\n";
-            returnResultFalse();
+            Result.first=false;
             return false;
         }
         
@@ -380,7 +368,7 @@ bool Simulator::SimulateOneStep(){
 		//If no synchronisation is possible the trajectory is rejected
 		if (SE < 0) {
 			//cerr << "no synchronization" << endl;
-			returnResultFalse();
+			Result.first=false;
 			return false;
 		} else {
 			//If synchronisation is possible fire it and check if the

@@ -139,10 +139,8 @@ protected:
 	//! generate a time acording to the distribution d with parameters p
 	virtual double GenerateTime(DistributionType,const vector<double>& p);
 	
-	
-	virtual void returnResultTrue(); 
-	virtual void returnResultFalse();
-		
+	virtual void returnResultTrue();
+			
 	//! update value in the SPN after a transition
 	virtual void updateSPN(size_t,const abstractBinding& );
 	

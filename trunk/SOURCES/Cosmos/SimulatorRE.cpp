@@ -72,22 +72,10 @@ void SimulatorRE::InitialEventsQueue() {
 }
 	
 void SimulatorRE::returnResultTrue(){
-	
-	A.UpdateLinForm(N.Marking);
-	A.UpdateLhaFuncLast();
-	A.UpdateFormulaVal();
+	A.getFinalValues(N.Marking,Result.second);
 	Result.first = true;
-	Result.second = vector<double>(A.FormulaVal);
-    for(size_t i = 0; i< A.FormulaVal.size() ; i++){
-        Result.second[i] *= A.Likelihood;
-    }
+    for(size_t i = 0; i< A.FormulaVal.size() ; i++)Result.second[i] *= A.Likelihood;
 	if(verbose>3)cerr << "---------------\n TRUE \n------\n";
-}
-
-void SimulatorRE::returnResultFalse(){
-	Result.first = false;
-	Result.second =vector<double>(A.FormulaVal.size(),0.0);
-	if(verbose>3)cerr << "---------------\n FALSE \n------\n";
 }
 
 void SimulatorRE::updateSPN(size_t,const abstractBinding&){
