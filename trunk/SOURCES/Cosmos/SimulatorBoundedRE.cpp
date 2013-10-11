@@ -156,7 +156,7 @@ double SimulatorBoundedRE::mu(){
 	return(numSolv->getMu(stateN));
 }
 
-void SimulatorBoundedRE::updateSPN(size_t E1_transitionNum,const abstractBinding& b){
+void SimulatorBoundedRE::updateSPN(size_t,const abstractBinding&){
 	Event F;
     //check if the current transition is still enabled
 	
@@ -224,7 +224,10 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 			if(verbose>3 && (N.Origine_Rate_Sum < 0.99*N.Rate_Sum)){
 				cerr << "Reduce model does not guarantee variance" << endl;
 				cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
-
+				N.Marking.print(cerr);
+				vector<int> vect (numSolv->S.begin()->first->size(),0);
+				N.lumpingFun(N.Marking,vect);
+				N.print_state(vect);
 			//exit(EXIT_FAILURE);
 			}
 			//cerr << "trans:sink distr: 0 " << endl;
