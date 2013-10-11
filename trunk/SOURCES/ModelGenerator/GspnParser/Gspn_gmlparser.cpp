@@ -862,7 +862,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 			trans.type = Timed;
 			trans.dist.name =  "EXPONENTIAL";
 			trans.dist.Param.push_back("0");
-			trans.priority = "1";
+			trans.priority = "0";
 			trans.weight = "1";
 			trans.singleService = true;
 			trans.markingDependant = true;
