@@ -70,6 +70,8 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	//delete EQ;
 	
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
+		N.Origine_Rate_Table = vector<double>(N.tr,0.0);
+		N.Rate_Table = vector<double>(N.tr,0.0);
 		EQ = new EventsQueue(N);
 		reset();
 		
@@ -78,7 +80,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 		
 		AE = A.GetEnabled_A_Edges( N.Marking);
         
-		(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
+		it->saveState(&N,&A,&AE,&EQ);
 	}
 	
 	//cout << "new batch" << endl;
@@ -95,7 +97,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 			AutEdge AE;
 			
             
-			(*it).loadState(&N,&A,&AE,&EQ, &A.CurrentTime);
+			it->loadState(&N,&A,&AE,&EQ);
             
 			//cerr << A.Likelihood << endl;		
 			//cerr << "mu:\t" << mu() << " ->\t";
@@ -107,7 +109,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 			}
 			
 			if((!EQ->isEmpty()) && continueb) {
-				(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
+				it->saveState(&N,&A,&AE,&EQ);
 			} else {
 				batchResult->addSim(&Result);
 				delete EQ;

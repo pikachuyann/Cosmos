@@ -79,6 +79,9 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	
     int c =0;
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
+		N.Origine_Rate_Table = vector<double>(N.tr,0.0);
+		N.Rate_Table = vector<double>(N.tr,0.0);
+
 		EQ = new EventsQueue(N);
 		reset();
         it->maxStep = fg->right - (c/BatchSize);
@@ -91,7 +94,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		
 		AE = A.GetEnabled_A_Edges( N.Marking);
 		
-		(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
+		it->saveState(&N,&A,&AE,&EQ);
 	}
 	
 	//cout << "new batch" << endl;
@@ -107,7 +110,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                 //cerr << "vect:\t" << it->maxStep;
                 AutEdge AE;
                 
-                it->loadState(&N,&A,&AE,&EQ, &A.CurrentTime);
+                it->loadState(&N,&A,&AE,&EQ);
                 
                 
                 //cerr << A.Likelihood << endl;	
@@ -117,14 +120,14 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                 if (it->maxStep == fg->right -n) {
                     //We first need to initialise the trajectory
                     Simulator::InitialEventsQueue();
-                    it->saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
+                    it->saveState(&N,&A,&AE,&EQ);
                 } else {
                     
                     bool continueb = SimulateOneStep();
                     //cerr << "\t" << mu() << endl;
                     
                     if((!EQ->isEmpty()) && continueb) {
-                        it->saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
+                        it->saveState(&N,&A,&AE,&EQ);
                     } else {
                         if (Result.first) {
                             //cerr << "n:\t" << n <<" Result:" << Result.second << " maxStep:\t" << it->maxStep <<endl;
@@ -217,55 +220,4 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     //exit(0);
 	return (batchResult);
 }
-/*
-void SimulatorContinuousBounded::updateSPN(size_t E1_transitionNum,const abstractBinding& b){
-	SimulatorRE::updateSPN(E1_transitionNum, b);
-	
-	Event F;
-	abstractBinding bpuit;
-    GenerateEvent(F, (N.tr-2),bpuit);
-	if(!doubleIS_mode){
-		EQ->replace(F);
-	}
-    
-	GenerateEvent(F, (N.tr-1),bpuit);
-	if(!doubleIS_mode){
-		EQ->replace(F);
-	}
-	
-};
-*/
-/*double SimulatorContinuousBounded::mu(){
-	
-	vector<int> vect (muprob.S.begin()->first->size(),0);
-	
-    N.lumpingFun(N.Marking, vect);
-	int stateN = numSolv->findHash(&vect);
-    
-	if(stateN<0){
-		cerr << numSolv->getVect()<< endl << "vect:";
-        for (vector<int>::iterator it = vect.begin(); it != vect.end(); it++) {
-            cerr << *it<< " , ";
-        }
-        cerr << endl << "marking:";
-        for(size_t i=0; i< N.Msimpletab.size();i++){
-            cerr << N.Marking.getNbOfTokens(N.Msimpletab[i]) << " , ";
-        };
-		cerr << endl << "state not found" << endl;
-	}
-    
-	return(numSolv->getMu(stateN));
-}*/
-/*
-void SimulatorContinuousBounded::getParams(size_t Id,const abstractBinding& b){
-	
-	N.GetDistParameters(Id,b);
-	double origin_rate = N.ParamDistr[0];
-    if(Id== N.tr-2){
-        origin_rate = lambda - N.Origine_Rate_Sum;
-        //cerr << "lambda:\t" << lambda << "\tselfloop:\t" << origin_rate << endl; 
-    }    
-    N.ParamDistr[0]= ComputeDistr( Id, b,origin_rate);
-	N.ParamDistr[1]= origin_rate;
-}
-*/
+
