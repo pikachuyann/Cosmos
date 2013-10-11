@@ -216,6 +216,13 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 	if(t== N.tr-1){
 		if (mux==0.0)return 1E200;
 		
+		if(verbose>3){
+			N.Marking.print(cerr);
+			vector<int> vect (numSolv->S.begin()->first->size(),0);
+			N.lumpingFun(N.Marking,vect);
+			N.print_state(vect);
+		}
+		
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
 			if(verbose>3 )cerr << "trans:sink distr: "<< N.Origine_Rate_Sum - N.Rate_Sum << " origine_rate:" << N.Origine_Rate_Sum <<" Rate: " << N.Rate_Sum << endl;
 			//cerr << "strange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
@@ -224,10 +231,6 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 			if(verbose>3 && (N.Origine_Rate_Sum < 0.99*N.Rate_Sum)){
 				cerr << "Reduce model does not guarantee variance" << endl;
 				cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
-				N.Marking.print(cerr);
-				vector<int> vect (numSolv->S.begin()->first->size(),0);
-				N.lumpingFun(N.Marking,vect);
-				N.print_state(vect);
 			//exit(EXIT_FAILURE);
 			}
 			//cerr << "trans:sink distr: 0 " << endl;
