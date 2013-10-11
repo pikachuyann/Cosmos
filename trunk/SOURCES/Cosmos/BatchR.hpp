@@ -68,15 +68,15 @@ public:
     std::vector<double> M4;
     
     //! Add the result of one simulation to the Batch.
-    void addSim(SimOutput*);
+    void addSim(const SimOutput*);
     
     //! Merge the result of two batch of simulation.
-    void unionR(BatchR*);
+    void unionR(const BatchR*);
 	
     void outputR();
 	
     bool inputR(FILE* f);
-    void print(); //! Print human readable version of batch on stdout.
+    void print()const; //! Print human readable version of batch on stdout.
     
 };
 

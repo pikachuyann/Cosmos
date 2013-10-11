@@ -51,7 +51,7 @@ using namespace std;
  * If the simulation is a success then The Mean and second Moment are updated
  * @param Result the result of one trajectory in the simulator.
  */
- void BatchR::addSim(SimOutput *Result){
+ void BatchR::addSim(const SimOutput *Result){
     I++;
     if (Result->first) {
         Isucc++;
@@ -74,7 +74,7 @@ using namespace std;
  * Take the union of two batch of result.
  * @param batch is a batch of result wich is added to the current batch.
  */
-void BatchR::unionR(BatchR *batch){
+void BatchR::unionR(const BatchR *batch){
     
     I += batch->I;
     Isucc += batch->Isucc;
@@ -140,7 +140,7 @@ bool BatchR::inputR(FILE* f) {
 	return ok;
 }
 
-void BatchR::print(){
+void BatchR::print()const{
     cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl;
     for(size_t i =0; i< TableLength; i++){
         cerr << "Mean:\t" << Mean[i]/Isucc << endl << "M2:\t" << M2[i]/Isucc << endl << "M3:\t" << M3[i]/Isucc << endl <<"M4:\t" << M4[i]/Isucc << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;

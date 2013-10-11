@@ -32,7 +32,9 @@
 
 using namespace std;
 
-
+/**
+ *	Build an Event queue for the Petri net given as parameter.
+ */
 EventsQueue::EventsQueue(const SPN& N){
 	for(size_t it = 0; it< N.Transition.size(); ++it ){
 		evtTbl.push_back(vector<Event>());
@@ -43,7 +45,9 @@ EventsQueue::EventsQueue(const SPN& N){
 	}
 }
 
-
+/**
+ * Clear the events queue. The resulting events queues does not contain any event.
+ */
 void EventsQueue::reset() {
 	for(size_t it = 0; it< evtHeapIndex.size(); ++it )
 		for(size_t it2 = 0; it2< evtHeapIndex[it].size(); ++it2 )
@@ -52,6 +56,9 @@ void EventsQueue::reset() {
 	//Qsize = 0;
 }
 
+/**
+ * Copy of events queue
+ */
 EventsQueue::EventsQueue(const EventsQueue& orig) {
     
     //Qsize = orig.Qsize;
@@ -68,6 +75,10 @@ EventsQueue::EventsQueue(const EventsQueue& orig) {
 EventsQueue::~EventsQueue() {
 }
 
+/*
+ *	Insert a new event in the events queue and update the tree.
+ *  @param e an event of the Petri net.
+ */
 void EventsQueue::insert(const Event &e) {
 	//assert(!isScheduled(e.transition, e.binding.id()));
 	evtTbl[e.transition][e.binding.id()] = e;
@@ -77,6 +88,10 @@ void EventsQueue::insert(const Event &e) {
 	siftUp(evtHeap.size()-1);
 }
 
+/*
+ *	Replace the time, priority,service of an event and update the tree.
+ *  @param e an event of the Petri net.
+ */
 void EventsQueue::replace(const Event &e) {
 	//assert(isScheduled(e.transition, e.binding.id()));
 	long int k = evtHeapIndex[e.transition][e.binding.id()];
