@@ -91,20 +91,14 @@ public:
 	~LHA();
 	
   /**
-   * \brief Set the initial location of the LHA for a marking
-   * Loop over the set of initial location to find one enabled.
-   */
-  void setInitLocation(const abstractMarking&);
-
-  /**
    * \brief Return a synchronized edge for a given transition of the SPN.
    */
-  int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
+  int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&)const;
 
    /**
    * \brief Return an autonomous edge for a given marking.
    */
-  AutEdge GetEnabled_A_Edges(const abstractMarking&);
+  AutEdge GetEnabled_A_Edges(const abstractMarking&)const;
 	
 	//! update value in the LHA by elapsing time
 	void updateLHA(double DeltaT, const abstractMarking &);
@@ -117,13 +111,13 @@ public:
 	//! fire the transition of an LHA
 	virtual void fireLHA(int,const abstractMarking&, const abstractBinding&);
 
-	bool isFinal();
+	bool isFinal()const;
     
     void reset(const abstractMarking&);
 
 	vector<double> FormulaVal;
-	void printState(ostream &);
-	void printHeader(ostream &);
+	void printState(ostream &)const;
+	void printHeader(ostream &)const;
 	
 	double CurrentTime;
 	int CurrentLocation;
@@ -142,6 +136,13 @@ public:
 
 	set <int> FinalLoc; // final locations
 private:
+
+	/**
+	 * \brief Set the initial location of the LHA for a marking
+	 * Loop over the set of initial location to find one enabled.
+	 */
+	void setInitLocation(const abstractMarking&);
+
 	
 	void DoElapsedTimeUpdate(double, const abstractMarking&);
     
@@ -152,11 +153,11 @@ private:
 	
 	
 	void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
-	double GetFlow(int, int,const abstractMarking&);
-	bool CheckLocation(int,const abstractMarking&);
-	bool CheckEdgeContraints(int,size_t, const abstractBinding&, const abstractMarking&);
+	double GetFlow(int, int,const abstractMarking&)const;
+	bool CheckLocation(int,const abstractMarking&)const;
+	bool CheckEdgeContraints(int,size_t, const abstractBinding&, const abstractMarking&)const;
 	
-    t_interval GetEdgeEnablingTime(int,const abstractMarking&);
+    t_interval GetEdgeEnablingTime(int,const abstractMarking&)const;
 	
 	void resetVariables();
 	

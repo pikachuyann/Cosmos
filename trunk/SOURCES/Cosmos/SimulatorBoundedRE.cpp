@@ -74,10 +74,6 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 		reset();
 		
 		AutEdge AE;
-		A.setInitLocation(N.Marking);
-		A.CurrentTime = 0;
-		
-		
 		Simulator::InitialEventsQueue();
 		
 		AE = A.GetEnabled_A_Edges( N.Marking);

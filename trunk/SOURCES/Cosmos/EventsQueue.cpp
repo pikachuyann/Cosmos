@@ -101,6 +101,10 @@ void EventsQueue::replace(const Event &e) {
 	siftDown(k);
 }
 
+/*
+ *	Remove an event and update the tree.
+ *  @param e an event of the Petri net.
+ */
 void EventsQueue::remove(size_t tr, size_t b) {
 	long int i = evtHeapIndex[tr][b];
 	//assert(i>=0);
@@ -178,11 +182,14 @@ void EventsQueue::siftDown(size_t i) {
 	
 }
 
-bool EventsQueue::isEmpty() {
+bool EventsQueue::isEmpty()const {
     return (evtHeap.size()==0);
 }
 
-void EventsQueue::view(const vector<_trans> &trlabl) {
+/**
+ *	Print the content of the queues in a human readable format.
+ */
+void EventsQueue::view(const vector<_trans> &trlabl)const {
     cerr << "********** EVENTS-QUEUE VIEW **********" << endl;
 	
     //cerr << "Qsize:" << evtHeap.size() << endl;
@@ -200,25 +207,6 @@ void EventsQueue::view(const vector<_trans> &trlabl) {
 			cerr << endl;
 		}
 }
-
-/*
-int EventsQueue::TransTabValue(int i) {
-    return TransTable[i];
-}
-
-void EventsQueue::UpdateTransTab(int trans, int value) {
-	
-    TransTable[trans] = value;
-	
-}
-
-void EventsQueue::ViewTransTab() {
-    cout << "Position of transitions in the heap:" << endl;
-	
-    for (size_t i = 0; i < TransTableSize; i++)
-        cout << "Trans[" << i + 1 << "]=" << TransTable[i] << endl;
-	
-}*/
 
 size_t EventsQueue::getSize()const {
     return evtHeap.size();

@@ -322,7 +322,7 @@ bool Simulator::SimulateOneStep(){
 		return false;
 	} else {
         //Take the first event in the queue
-		Event E1 = (*EQ).InPosition(0);
+		Event E1 = EQ->InPosition(0);
 		      
         //If this transition is the sink transition refuse the simulation
         //Only usefull for Rare Event handling.
@@ -455,8 +455,7 @@ void Simulator::interactiveSimulation(){
 void Simulator::SimulateSinglePath() {
 	
 	InitialEventsQueue();
-	A.setInitLocation(N.Marking);
-	A.CurrentTime = 0;
+	
 	if(logtrace.is_open())logtrace << "New Path"<< endl;
     //cerr << "start path"<< endl;
     
@@ -625,11 +624,11 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
 }
 
 BatchR* Simulator::RunBatch(){
-	reset();
+	
 	BatchR* batchResult = new BatchR(A.FormulaVal.size());
 	
 	while (batchResult->I < BatchSize) {
-		
+		reset();
 		
 		SimulateSinglePath();
 		
@@ -645,7 +644,6 @@ BatchR* Simulator::RunBatch(){
 			logvalue << endl;
 		}
 		
-		reset();
     }
 	
 	return (batchResult);

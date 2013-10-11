@@ -181,7 +181,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	}
 	LhaCppFile << "};\n";
 	
-	LhaCppFile << "void LHA::printHeader(ostream &s){\n";
+	LhaCppFile << "void LHA::printHeader(ostream &s)const{\n";
 	LhaCppFile << "\ts << \"Location\\t";
 	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
 		LhaCppFile << MyLha.Vars.label[v] << "\\t";
@@ -189,7 +189,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "\";\n";
 	LhaCppFile << "};\n";
 	
-	LhaCppFile << "void LHA::printState(ostream &s){\n";
+	LhaCppFile << "void LHA::printState(ostream &s)const{\n";
 	LhaCppFile << "\ts <<  LocLabel[CurrentLocation] << \"\\t\";\n";
 	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
 		LhaCppFile << "\ts << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
@@ -352,7 +352,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "}\n";
 	
 	
-    LhaCppFile << "double LHA::GetFlow(int v, int loc,const abstractMarking& Marking){" << endl;
+    LhaCppFile << "double LHA::GetFlow(int v, int loc,const abstractMarking& Marking)const{" << endl;
     casesHandler flowcases("v");
     for (size_t x = 0; x < MyLha.NbVar; x++) {
 		stringstream newcase;
@@ -372,7 +372,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     flowcases.writeCases(LhaCppFile);
     LhaCppFile << "}\n" << endl;
 	
-    LhaCppFile << "bool LHA::CheckLocation(int loc,const abstractMarking& Marking){" << endl;
+    LhaCppFile << "bool LHA::CheckLocation(int loc,const abstractMarking& Marking)const{" << endl;
 	casesHandler checklock("loc");
     for (size_t l = 0; l < MyLha.NbLoc; l++) {
 		stringstream newcase;
@@ -383,7 +383,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
     LhaCppFile << "}\n" << endl;
 	
-    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking){" << endl;
+    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{" << endl;
     casesHandler checkConstrain("ed");
     for (size_t e = 0; e < MyLha.Edge.size(); e++){
 		stringstream newcase;
@@ -414,7 +414,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "}\n" << endl;
 	
 	
-    LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking){" << endl;
+    LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{" << endl;
 	casesHandler enablingtime("ed");
 //    LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++){

@@ -76,7 +76,7 @@ void stateSpace::exploreStateSpace(){
 	
 	set <int, less<int> > ::iterator it;
 	
-	A.setInitLocation(N.Marking);
+	A.reset(N.Marking);
 	init.push_back(A.CurrentLocation);
 	toBeExplore.push(init);
     findstate = new vector<vector<int> >(0);

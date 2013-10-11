@@ -50,8 +50,8 @@ public:
 	bool isScheduled(size_t,size_t)const;
 
 	
-    bool isEmpty();
-    void view(const vector<_trans> &);
+    bool isEmpty()const;
+    void view(const vector<_trans> &)const;
 
     void reset();
     size_t getSize()const ;
@@ -61,13 +61,28 @@ public:
     
 	
 private:
-//	EQueue eq;
-//    size_t Qsize;
-//    Tab TransTable;
-//    size_t TransTableSize;
 
+	/**
+	 * The Events Heap Index vector allow to retrive the index
+	 * of an event in the Events Heap (evtHeap) given its transition
+	 * and binding index in constant time.
+	 * If the return value is -1 the corresponding event is not in the event. heap
+	 */
 	vector<vector< long int > > evtHeapIndex;
+	
+	/**
+	 * This is the vector of events, all the events of every transition
+	 * and every binding must occurs in this vector.
+	 * the first index is allong transition and the second along binding index.
+	 */
 	vector<vector< Event > > evtTbl;
+	
+	/**
+	 * The event heap is a vector of pairs. each pairs are the transition index
+	 * and binding index of an event in the event table.
+	 * This vector is a heap for the relation Event::isPriorer.
+	 * The first element of the heap is the most urgent event.
+	 */
 	vector<pair<size_t,size_t> > evtHeap;
 	
     size_t getLeftChildIndex(size_t nodeIndex)const {
@@ -86,11 +101,6 @@ private:
     void siftDown(size_t);
 	void swapEvt(size_t,size_t);
 	
-	
-	/*int TransTabValue(int);
-    void UpdateTransTab(int, int);
-    void ViewTransTab();*/
-
 };
 
 
