@@ -72,7 +72,7 @@ void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){
 	
 	
 	
-	tock = 2 - vect[reducePL_RE_ERK_MEKPF] - vect[reducePL_RE_ERKP_MEKPP];
+	tock = fmax(0,2 - vect[reducePL_RE_ERK_MEKPF] - vect[reducePL_RE_ERKP_MEKPP]);
 	vect[reducePL_RE_MEKPP] = remaining(Marking.P->_PL_MEKPP); //To Complete
 	vect[reducePL_RE_MEKPP_Phase2] = remaining(Marking.P->_PL_MEKPP_Phase2); //To Complete
 	vect[reducePL_RE_MEKP_RafP] = remaining(Marking.P->_PL_MEKP_RafP); //To Complete
@@ -90,18 +90,18 @@ void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){
 	vect[reducePL_RE_MEK] = Marking.P->_PL_MEK; //remaining(Marking.P->_PL_MEK); //To Complete
 	*/
 	
-	/*
+	
 	tock = 4 - vect[reducePL_RE_MEK_RafP] - vect[reducePL_RE_MEKP_RafP] ;
 	vect[reducePL_RE_RafP] = remaining(Marking.P->_PL_RafP); //To Complete
 	vect[reducePL_RE_RafP_Phase1] = remaining(Marking.P->_PL_RafP_Phase1); //To Complete
 	vect[reducePL_RE_Raf_RasGTP] = remaining(Marking.P->_PL_Raf_RasGTP); //To Complete
 	vect[reducePL_RE_Raf] = tock; // remaining(Marking.P->_PL_Raf); //To Complete
-	*/
+	/*
 	vect[reducePL_RE_RafP] = Marking.P->_PL_RafP; //To Complete
 	vect[reducePL_RE_RafP_Phase1] = Marking.P->_PL_RafP_Phase1; //To Complete
 	vect[reducePL_RE_Raf_RasGTP] = Marking.P->_PL_Raf_RasGTP; //To Complete
 	vect[reducePL_RE_Raf] = Marking.P->_PL_Raf; // remaining(Marking.P->_PL_Raf); //To Complete
-	 
+	 */
 	//print_state(vect);
 	
 }
