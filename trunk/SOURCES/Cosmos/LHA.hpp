@@ -134,9 +134,12 @@ public:
     vector<double> OldLinForm;
     vector<double> LhaFunc;
 
+
 	set <int> FinalLoc; // final locations
 private:
-
+	
+	
+	
 	/**
 	 * \brief Set the initial location of the LHA for a marking
 	 * Loop over the set of initial location to find one enabled.

@@ -113,7 +113,7 @@ void LHA::resetLinForms() {
 
 /**
  *	Reset the whole automaton to its initial state for
- * the givent Marking.
+ * the given Marking.
  */
 void LHA::reset(const abstractMarking& Marking) {
   Likelihood = 1.0;
@@ -147,7 +147,9 @@ void LHA::updateLHA(double DeltaT, const abstractMarking &Marking){
 	CurrentTime += DeltaT;
 }
 
-
+/**
+ * @return true if the automaton is in a final state
+ */
 bool LHA::isFinal()const {
     return ( (FinalLoc.find(CurrentLocation) != FinalLoc.end()) ? true : false);
 }
