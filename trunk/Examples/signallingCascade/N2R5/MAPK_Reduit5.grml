@@ -6,7 +6,7 @@
       <attribute name="intConsts">
         <attribute name="intConst">
           <attribute name="name">
-            N1
+            N
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
@@ -21,16 +21,6 @@
           <attribute name="expr">
             <attribute name="numValue">
               2
-            </attribute>
-          </attribute>
-        </attribute>
-        <attribute name="intConst">
-          <attribute name="name">
-            N2
-          </attribute>
-          <attribute name="expr">
-            <attribute name="numValue">
-              1
             </attribute>
           </attribute>
         </attribute>
@@ -238,21 +228,21 @@
         </attribute>
         <attribute name="realConst">
           <attribute name="name">
-            k23
-          </attribute>
-          <attribute name="expr">
-            <attribute name="numValue">
-              0.6
-            </attribute>
-          </attribute>
-        </attribute>
-        <attribute name="realConst">
-          <attribute name="name">
             k8
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
               0.42
+            </attribute>
+          </attribute>
+        </attribute>
+        <attribute name="realConst">
+          <attribute name="name">
+            k23
+          </attribute>
+          <attribute name="expr">
+            <attribute name="numValue">
+              0.6
             </attribute>
           </attribute>
         </attribute>
@@ -400,7 +390,7 @@
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="name">
-        N1
+        N
       </attribute></attribute>
     </attribute>
   </node>
@@ -424,7 +414,7 @@
           4
         </attribute></attribute>
         <attribute name="expr"><attribute name="name">
-          N1
+          N
         </attribute></attribute>
       </attribute></attribute></attribute>
     </attribute>
@@ -558,7 +548,7 @@
             k22
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            N
+            N3
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -574,7 +564,7 @@
           3
         </attribute></attribute>
         <attribute name="expr"><attribute name="name">
-          N1
+          N
         </attribute></attribute>
       </attribute></attribute></attribute>
     </attribute>
@@ -728,7 +718,7 @@
             k25
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            N
+            N3
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -763,7 +753,7 @@
             k28
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            N
+            N3
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -953,7 +943,7 @@
             k19
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            N
+            N3
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -1079,7 +1069,7 @@
           2
         </attribute></attribute>
         <attribute name="expr"><attribute name="name">
-          N2
+          N
         </attribute></attribute>
       </attribute></attribute></attribute>
     </attribute>
@@ -1279,7 +1269,7 @@
           2
         </attribute></attribute>
         <attribute name="expr"><attribute name="name">
-          N2
+          N
         </attribute></attribute>
       </attribute></attribute></attribute>
     </attribute>
