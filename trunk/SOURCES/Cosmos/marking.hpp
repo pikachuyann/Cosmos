@@ -46,6 +46,7 @@ public:
 	abstractMarking& operator = (const abstractMarking& m);
 	~abstractMarking();
 	
+	//! Swap marking in constant time
 	void swap(abstractMarking& m);
 	void printHeader(std::ostream &)const;
 	void print(std::ostream &)const;
@@ -73,10 +74,16 @@ public:
 	~abstractBinding();
 	abstractBinding(const abstractBinding& b);
 	abstractBinding& operator = (const abstractBinding& m);
+	
+	//! Nexte binding in the bindin list of the transition.
 	bool next();
+	//! Print in human readable format.
 	void print()const;
+	//! Transition to which the binding belong.
 	int transition()const;
+	//! Total number of binding in binding list.
 	int idTotal()const;
+	//! Identifier for this binding
 	int id()const;
 	int idcount;
 };

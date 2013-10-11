@@ -74,6 +74,7 @@ enum TransType {
 struct _trans {
 	_trans(){};
 	
+	//! transition constructor
 	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb):
 	Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(false),bindingLinkTable(nbb,string::npos){
 		abstractBinding bl;
@@ -82,17 +83,28 @@ struct _trans {
 		bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
 	};
 	
-	unsigned int Id; //! number of the transition
-	string label; //! Name of the transition, can be empty
+	//! number of the transition
+	unsigned int Id;
+	
+	//! Name of the transition, can be empty
+	string label;
 	TransType transType;
 	DistributionType DistTypeIndex;
-	vector<string> DistParams; //! Parameter in string format only for debug
-	string priority; //! priority in string format only for debug
-	string weight; //! weight in string format only for debug
-	bool MarkingDependent; //! true if the transition is Marking Dependent
-	bool AgeMemory; //! true if the memory policy of the transition is age memory
-	vector<abstractBinding> bindingList; //! List of alowed binding for this transition.
-	vector<size_t> bindingLinkTable; //! Table to access bindings of the transition.
+	
+	//! Parameter in string format only for debug
+	vector<string> DistParams;
+	//! priority in string format only for debug
+	string priority;
+	//! weight in string format only for debug
+	string weight;
+	 //! true if the transition is Marking Dependent
+	bool MarkingDependent;
+	//! true if the memory policy of the transition is age memory
+	bool AgeMemory;
+	//! List of alowed binding for this transition.
+	vector<abstractBinding> bindingList;
+	//! Table to access bindings of the transition.
+	vector<size_t> bindingLinkTable;
 };
 typedef struct _trans spn_trans;
 
@@ -102,16 +114,14 @@ typedef struct _trans spn_trans;
 struct _place {
 	_place():isTraced(true){};
 	
-	//unsigned int Id; //!number of the place
-	string label; //! name of the place, can be empty
+	//! name of the place, can be empty
+	string label;
+	
+	//! set to true if the place should appear in outputted trace
 	bool isTraced;
 };
 typedef struct _place spn_place;
 
-typedef vector <int> Dim1;
-typedef vector <int> IntVector;
-typedef vector <Dim1> Dim2;
-typedef vector <IntVector> IntMatrix;
 
 /**
  * \brief Class of the SPN.
@@ -120,18 +130,27 @@ typedef vector <IntVector> IntMatrix;
  */
 class SPN {
 public:
-	SPN(); //! Initialize all the data
+	//! Initialize all the data
+	SPN();
 	
-	const size_t pl; //! Number of places
-	const size_t tr; //! Number of transitions
-	abstractMarking Marking; //! Current marking
+	//! Number of places
+	const size_t pl;
+	//! Number of transitions
+	const size_t tr;
+	//! Current marking
+	abstractMarking Marking;
 	
-	vector <spn_trans> Transition; //!contains all the transitions of the Petri net
-	vector <spn_place> Place; //!contains all the places of the Petri net
+	//!contains all the transitions of the Petri net
+	vector <spn_trans> Transition;
+	//!contains all the places of the Petri net
+	vector <spn_place> Place;
 	
-	void reset(); //! set the marking to the initial marking
+	//! set the marking to the initial marking
+	void
+	reset();
 	
-	string Path; //! The path of the file use to generate the implementation
+	//! The path of the file use to generate the implementation
+	string Path;
 	
 	/**
 	 * \brief A vector use to store temporary parameters value.
@@ -161,7 +180,8 @@ public:
 	 * @param tr a transition of the SPN
 	 * @param b a binding of the transition of the SPN
 	 */
-	bool IsEnabled(size_t tr,const abstractBinding& b)const;
+	bool
+	IsEnabled(size_t tr,const abstractBinding& b)const;
 	
 	/**
 	 * \brief fire a given transition.
@@ -170,7 +190,8 @@ public:
 	 * @param tr a transition of the SPN
 	 * @param b a binding of the transition of the SPN
 	 */
-	void fire(size_t tr,const abstractBinding& b);
+	void
+	fire(size_t tr,const abstractBinding& b);
 	
 	/**
 	 * \brief unfire a given transition.
