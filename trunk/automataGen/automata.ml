@@ -27,12 +27,13 @@ type transType =
 type automata = {
   haslForm: (string*haslformulaTop) list;
   nbLoc: int;
-  nbVar: int;
+  nbContVar: int;
+  nbDiscVar:int;
   invariant : (int*stateFormula) list;
   flows : (int*((int*floatExpr) list)) list;
   init : int;
   final : int list;
-  trans : (int *transType*(((int*floatExpr) list) )*int) list;
+  trans : (int *transType*(((int*floatExpr) list))*(((int*floatExpr) list) )*int) list;
 }
 
 let automata_of_formula = function
@@ -40,54 +41,58 @@ let automata_of_formula = function
     {
       haslForm = ["Probability",Prob];
       nbLoc = 2;
-      nbVar = 1;
+      nbContVar = 1;
+      nbDiscVar = 0;
       invariant = [(0,And(s1,Not(s2)));(1,s2)];
       flows = [];
       init =0;
       final=[1];
-      trans=[(0,Synch(["ALL"],True),[],0);
-	     (0,Synch(["ALL"],True),[],1)];
+      trans=[(0,Synch(["ALL"],True),[],[],0);
+	     (0,Synch(["ALL"],True),[],[],1)];
     }
   | BoundedUntil(s1,(fexpr1,fexpr2),s2) when fexpr1 <> fexpr2 ->
     {
       haslForm = ["Probability",Prob];
       nbLoc = 4;
-      nbVar = 1;
+      nbContVar = 1;
+      nbDiscVar = 0;
       invariant = [(0,And(s1,Not(s2)));(1,And(s1,Not(s2)));(2,s2)];
       flows = [(0,[(0,Float(1.0))]) ; (1,[(0,Float(1.0))])];
       init =0;
       final=[2];
-      trans=[(0,Synch(["ALL"],True),[],0);
-	     (0,Autonomous([(0,EQ,fexpr1)]),[],1);
-	     (1,Synch(["ALL"],True),[],1);
-	     (1,Synch(["ALL"],True),[],2);
-	     (1,Autonomous([(0,EQ,fexpr2)]),[],3);
+      trans=[(0,Synch(["ALL"],True),[],[],0);
+	     (0,Autonomous([(0,EQ,fexpr1)]),[],[],1);
+	     (1,Synch(["ALL"],True),[],[],1);
+	     (1,Synch(["ALL"],True),[],[],2);
+	     (1,Autonomous([(0,EQ,fexpr2)]),[],[],3);
 	    ];
     }
   | BoundedUntil(s1,(fexpr,_),s2) ->
     {
       haslForm = ["Probability",Prob];
       nbLoc = 3;
-      nbVar = 1;
+      nbContVar = 1;
+      nbDiscVar = 0;
       invariant = [(0,s1);(1,s2);(2,Not(s2))];
       flows = [(0,[(0,Float(1.0))])];
       init =0;
       final=[1];
-      trans=[(0,Synch(["ALL"],True),[],0);
-	     (0,Autonomous([(0,EQ,fexpr)]),[],1);
-	     (0,Autonomous([(0,EQ,fexpr)]),[],2);
+      trans=[(0,Synch(["ALL"],True),[],[],0);
+	     (0,Autonomous([(0,EQ,fexpr)]),[],[],1);
+	     (0,Autonomous([(0,EQ,fexpr)]),[],[],2);
 	    ];
     }
   | Next(sf) ->
      {
        haslForm = ["Probability",Prob];
       nbLoc = 2;
-      nbVar = 1;
+      nbContVar = 1;
+      nbDiscVar = 0;
       invariant = [(1,sf)];
       flows = [];
       init =0;
       final=[1];
-      trans=[(0,Synch(["ALL"],True),[],1) ];
+      trans=[(0,Synch(["ALL"],True),[],[],1) ];
     }
 
   | _ -> failwith "Not yet implemented"
@@ -97,17 +102,17 @@ let rec flowlist = function
   | i -> (i,[(0,Float(1.0))]) :: flowlist (i-1)
 
 let rec savelist i = function
-  | [] -> [(0,PlusF(FloatName("v0"),Float(1.0)))]
-  | t::q -> (i+1,CastInt(IntName(t))) :: (savelist (i+1) q)
+  | [] -> []
+  | t::q -> (i,CastInt(IntName(t))) :: (savelist (i+1) q)
 
 let rec translist pllist timeint j = function
   | -1 -> []
-  | i -> (0, Autonomous([0,EQ,Float((float i) *. (1.0+.timeint))]),(savelist (i*List.length pllist) pllist),j)
+  | i -> (0, Autonomous([0,EQ,Float((float i) *. (1.0+.timeint))]),[(0,PlusF(ContinuousVar(0),Float(1.0)))],(savelist (i*List.length pllist) pllist),j)
     :: (translist pllist timeint 0 (i-1))
 
 let rec hasllist l time i = function
   | [] -> l
-  | t::q -> ((t^"_"^(string_of_int (i+1))),Avg(Last(FloatName("v"^(string_of_int (i+1)))))) ::
+  | t::q -> ((t^"_"^(string_of_int (i+1))),Avg(Last(DiscreteVar(i)))) ::
     (hasllist l time (i+1) q)
 
 let rec hasllistTop l stept pllist = function
@@ -123,10 +128,11 @@ let automata_of_pltrlist pllist trlist trans loop stepn =
     {
       haslForm = hasllistTop [] invT pllist stepn;
       nbLoc = 2;
-      nbVar = 1+ (1+stepn)*((List.length pllist)+(List.length trlist));
+      nbContVar = 1;
+      nbDiscVar = (1+stepn)*((List.length pllist)+(List.length trlist));
       invariant = [];
       flows = flowlist stepn;
       init =0;
       final=[1];
-      trans=  (0,Synch(["ALL"],True),[],0) ::(translist pllist invT 1 stepn);
+      trans=  (0,Synch(["ALL"],True),[],[],0) ::(translist pllist invT 1 stepn);
     }

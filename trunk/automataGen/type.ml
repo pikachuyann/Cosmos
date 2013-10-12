@@ -13,6 +13,8 @@ and intExpr = IntName of string | Int of int
 	      | Plus of intExpr*intExpr | Minus of intExpr*intExpr
 	      | Mult of intExpr*intExpr
 and floatExpr = FloatName of string | Float of float | Infty
+		| ContinuousVar of int
+		| DiscreteVar of int
 		| CastInt of intExpr
 		| MultF of floatExpr*floatExpr
 		| PlusF of floatExpr*floatExpr 
@@ -100,7 +102,10 @@ and print_int_expr = function
 
 and print_float_expr = function
   | FloatName(x) -> print_string x;
+  | ContinuousVar(x) -> print_string " vc"; print_int x;
+  | DiscreteVar(x) -> print_string " vd"; print_int x;
   | Float(x) -> print_float x;
+  | Infty -> print_string " 1E200 ";
   | CastInt(x) -> print_int_expr x;
   | PlusF(e1,e2) -> print_string "(";
     print_float_expr e1;
@@ -122,5 +127,4 @@ and print_float_expr = function
     print_string "/";
     print_float_expr e2;
     print_string ")"
-  | _ ->  print_string "notyet implemented"
   
