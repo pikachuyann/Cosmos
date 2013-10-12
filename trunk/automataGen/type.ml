@@ -13,6 +13,7 @@ and intExpr = IntName of string | Int of int
 	      | Plus of intExpr*intExpr | Minus of intExpr*intExpr
 	      | Mult of intExpr*intExpr
 and floatExpr = FloatName of string | Float of float | Infty
+		| CastInt of intExpr
 		| MultF of floatExpr*floatExpr
 		| PlusF of floatExpr*floatExpr 
 		| MinusF of floatExpr*floatExpr
@@ -98,7 +99,9 @@ and print_int_expr = function
     print_string ")"
 
 and print_float_expr = function
+  | FloatName(x) -> print_string x;
   | Float(x) -> print_float x;
+  | CastInt(x) -> print_int_expr x;
   | PlusF(e1,e2) -> print_string "(";
     print_float_expr e1;
     print_string "+";

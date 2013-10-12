@@ -43,7 +43,7 @@ let writeAutomata a =
   done;
   printf "};\n";
   
-  printf "PROB;\n";
+  List.iter print_HASL a.haslForm;
 
   printf "InitialLocations = { l%i };\n" a.init;
 
@@ -72,7 +72,7 @@ let writeAutomata a =
   printf "};\n";
 
   printf "Edges = {\n";
-  List.iter (fun (l1,tt,l2) -> 
+  List.iter (fun (l1,tt,tu,l2) -> 
     printf "((l%i,l%i)," l1 l2;
     (match tt with
       Synch(_,sf) -> printf "ALL,";
@@ -81,6 +81,13 @@ let writeAutomata a =
     | Autonomous(lconstr) -> printf "#,";
        write_linConstr lconstr;
     );
-    printf ",#);\n"
+    printf ",";
+    if tu = [] then printf "#"
+    else (
+      printf "{";
+      print_list (fun (v,u) -> printf "v%i = " v; print_float_expr u;) "," tu;
+      printf "}";
+    );
+    printf ");\n"
   ) a.trans;
   printf "};\n";
