@@ -362,7 +362,7 @@ VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
 	
 	
 };
-
+_
 VLabels : str {
 	Reader.MyLha.Vars.label.push_back(*$1);
 	Reader.MyLha.Vars.initialValue.push_back(0.0);

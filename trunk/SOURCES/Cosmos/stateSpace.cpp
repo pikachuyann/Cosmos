@@ -59,7 +59,8 @@ void stateSpace::add_state(vector<int> v){
     //cerr << endl;
     findstate->push_back(*v2);
 	nbState++;
-    
+	if((nbState % 100000) ==0)cerr << "Number of states :" <<nbState<< endl;
+
 }
 
 void stateSpace::exploreStateSpace(){
@@ -75,7 +76,7 @@ void stateSpace::exploreStateSpace(){
 	
 	set <int, less<int> > ::iterator it;
 	
-	A.setInitLocation(N.Marking);
+	A.reset(N.Marking);
 	init.push_back(A.CurrentLocation);
 	toBeExplore.push(init);
     findstate = new vector<vector<int> >(0);
@@ -382,7 +383,10 @@ void stateSpace::outputPrism(){
 void stateSpace::launchPrism(string prismPath){
     cout<< "Starting Prism"<< endl;
     string cmd = prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
-    system(cmd.c_str());
+    if(0 != system(cmd.c_str())){
+      cerr << "Fail to launch prism" << endl;
+      exit(EXIT_FAILURE);
+    }
     cout << "Prism finish" << endl;
 }
 

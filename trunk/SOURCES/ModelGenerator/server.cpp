@@ -1,8 +1,8 @@
 /*******************************************************************************
- *									                                           *
+ *                                                                             *
  * Cosmos:(C)oncept et (O)utils (S)tatistique pour les (Mo)deles               *
  * (S)tochastiques                                                             *
- *			                                    						       *
+ *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
  * Authors: Paolo Ballarini Benoît Barbot & Hilal Djafri                       *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
@@ -49,6 +49,7 @@
 #include <cstdlib>
 #include <errno.h>
 #include <algorithm>
+#include <err.h>
 
 #include "../Cosmos/BatchR.hpp"
 #include "result.hpp"
@@ -123,10 +124,12 @@ void signalHandler( int signum )
 }
 
 
-void systemsigsafe(const char*cmd){
-	signal(SIGCHLD , SIG_DFL );
-	system(cmd);
-	signal(SIGCHLD , signalHandler);
+int systemsigsafe(const char*cmd){
+  int retValue;
+  signal(SIGCHLD , SIG_DFL );
+  retValue = system(cmd) ;
+  signal(SIGCHLD , signalHandler);
+  return retValue;
 }
 
 /*
@@ -139,8 +142,9 @@ void popenClient(const char* bin, const char *argv[]){
 	int pipeerr[2];
 	FILE* output;
 	
-	pipe(pipefd); //create a pipe
-	pipe(pipeerr);
+	//create a pipe
+	if(pipe(pipefd) !=0  )err(1,"Fail to launch simulator");
+	if(pipe(pipeerr) != 0)err(1,"Fail to launch simulator");
 	pid = fork(); //fork the process
 	if (pid == 0){
 		//Child.
@@ -326,7 +330,7 @@ void launchExport(parameters& P){
 		ostringstream setuppr;
 		setuppr << "cd " << P.Path << "../prism ; ./install.sh";
 		cout << "setup prism:" << setuppr.str() << endl;
-		system(setuppr.str().c_str());
+		if(0 != system(setuppr.str().c_str()))errx(1,"Fail to set up Prism");
 	}
 		
     ostringstream os;

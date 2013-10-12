@@ -72,22 +72,10 @@ void SimulatorRE::InitialEventsQueue() {
 }
 	
 void SimulatorRE::returnResultTrue(){
-	
-	A.UpdateLinForm(N.Marking);
-	A.UpdateLhaFuncLast();
-	A.UpdateFormulaVal();
+	A.getFinalValues(N.Marking,Result.second);
 	Result.first = true;
-	Result.second = vector<double>(A.FormulaVal);
-    for(size_t i = 0; i< A.FormulaVal.size() ; i++){
-        Result.second[i] *= A.Likelihood;
-    }
+    for(size_t i = 0; i< A.FormulaVal.size() ; i++)Result.second[i] *= A.Likelihood;
 	if(verbose>3)cerr << "---------------\n TRUE \n------\n";
-}
-
-void SimulatorRE::returnResultFalse(){
-	Result.first = false;
-	Result.second =vector<double>(A.FormulaVal.size(),0.0);
-	if(verbose>3)cerr << "---------------\n FALSE \n------\n";
 }
 
 void SimulatorRE::updateSPN(size_t,const abstractBinding&){
@@ -249,7 +237,7 @@ double SimulatorRE::ComputeDistr(size_t t , const abstractBinding& b, double ori
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
 		}else{
-			if(verbose>3 && (N.Origine_Rate_Sum < 1.01*N.Rate_Sum)){
+			if(verbose>3 && (N.Origine_Rate_Sum < 0.99*N.Rate_Sum)){
 			cerr << "Reduce model does not guarantee variance" << endl;
 			cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
 			//exit(EXIT_FAILURE);

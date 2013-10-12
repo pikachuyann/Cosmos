@@ -70,19 +70,17 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	//delete EQ;
 	
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
+		N.Origine_Rate_Table = vector<double>(N.tr,0.0);
+		N.Rate_Table = vector<double>(N.tr,0.0);
 		EQ = new EventsQueue(N);
 		reset();
 		
 		AutEdge AE;
-		A.setInitLocation(N.Marking);
-		A.CurrentTime = 0;
-		
-		
 		Simulator::InitialEventsQueue();
 		
 		AE = A.GetEnabled_A_Edges( N.Marking);
         
-		(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
+		it->saveState(&N,&A,&AE,&EQ);
 	}
 	
 	//cout << "new batch" << endl;
@@ -99,7 +97,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 			AutEdge AE;
 			
             
-			(*it).loadState(&N,&A,&AE,&EQ, &A.CurrentTime);
+			it->loadState(&N,&A,&AE,&EQ);
             
 			//cerr << A.Likelihood << endl;		
 			//cerr << "mu:\t" << mu() << " ->\t";
@@ -111,7 +109,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 			}
 			
 			if((!EQ->isEmpty()) && continueb) {
-				(*it).saveState(&N,&A,&AE,&EQ, &A.CurrentTime);
+				it->saveState(&N,&A,&AE,&EQ);
 			} else {
 				batchResult->addSim(&Result);
 				delete EQ;
@@ -156,7 +154,7 @@ double SimulatorBoundedRE::mu(){
 	return(numSolv->getMu(stateN));
 }
 
-void SimulatorBoundedRE::updateSPN(size_t E1_transitionNum,const abstractBinding& b){
+void SimulatorBoundedRE::updateSPN(size_t,const abstractBinding&){
 	Event F;
     //check if the current transition is still enabled
 	
@@ -216,15 +214,22 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 	if(t== N.tr-1){
 		if (mux==0.0)return 1E200;
 		
+		if(verbose>3){
+			N.Marking.printHeader(cerr);cerr << endl;
+			N.Marking.print(cerr);cerr << endl;
+			vector<int> vect (numSolv->S.begin()->first->size(),0);
+			N.lumpingFun(N.Marking,vect);
+			N.print_state(vect);
+		}
+		
 		if(N.Origine_Rate_Sum >= N.Rate_Sum){
-			//cerr << "trans:sink distr: "<< N.Origine_Rate_Sum - N.Rate_Sum << " " << endl;
+			if(verbose>3 )cerr << "trans:sink distr: "<< N.Origine_Rate_Sum - N.Rate_Sum << " origine_rate:" << N.Origine_Rate_Sum <<" Rate: " << N.Rate_Sum << endl;
 			//cerr << "strange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
 		}else{
-			if(verbose>3 && (N.Origine_Rate_Sum < 1.01*N.Rate_Sum)){
+			if(verbose>3 && (N.Origine_Rate_Sum < 0.99*N.Rate_Sum)){
 				cerr << "Reduce model does not guarantee variance" << endl;
 				cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
-
 			//exit(EXIT_FAILURE);
 			}
 			//cerr << "trans:sink distr: 0 " << endl;
@@ -236,7 +241,7 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 	N.fire(t,b);
 	numSolv->stepVect();
 	distr = origin_rate *( mu() / mux);
-	//cerr << "trans:" << N.Transition[t].label << " distr: "<< distr << " " << endl;
+	if(verbose>3 )cerr << "trans: " << N.Transition[t].label << "\tdistr: "<< distr << "\torigin Rate: "<< origin_rate << "\tmu: " << mu()<< "\tmu prec: " << mux << endl;
 	
 	numSolv->previousVect();
 	N.unfire(t,b);

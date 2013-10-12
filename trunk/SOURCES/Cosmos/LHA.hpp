@@ -90,58 +90,66 @@ public:
 	LHA(unsigned int, unsigned int);
 	~LHA();
 	
-  /**
-   * \brief Set the initial location of the LHA for a marking
-   * Loop over the set of initial location to find one enabled.
-   */
-  void setInitLocation(const abstractMarking&);
-
-  /**
-   * \brief Return a synchronized edge for a given transition of the SPN.
-   */
-  int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
-
-   /**
-   * \brief Return an autonomous edge for a given marking.
-   */
-  AutEdge GetEnabled_A_Edges(const abstractMarking&);
+	//* Copy the state of an other LHA it only copy pointer thus is in constant time.
+	void copyState(LHA*);
+	
+	
+	/**
+	 * \brief Return a synchronized edge for a given transition of the SPN.
+	 */
+	int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&)const;
+	
+	/**
+	 * \brief Return an autonomous edge for a given marking.
+	 */
+	AutEdge GetEnabled_A_Edges(const abstractMarking&)const;
 	
 	//! update value in the LHA by elapsing time
 	void updateLHA(double DeltaT, const abstractMarking &);
 	
-    void UpdateFormulaVal();
-	void UpdateLinForm(const abstractMarking&);
-	void UpdateLhaFuncLast();
-
-	
 	//! fire the transition of an LHA
 	virtual void fireLHA(int,const abstractMarking&, const abstractBinding&);
-
-	bool isFinal();
+	
+	bool isFinal()const;
     
     void reset(const abstractMarking&);
-
-	vector<double> FormulaVal;
-	void printState(ostream &);
-	void printHeader(ostream &);
 	
+	void getFinalValues(const abstractMarking&,vector<double>&);
+	
+	void printState(ostream &)const;
+	void printHeader(ostream &)const;
+	
+	vector<double> FormulaVal;
 	double CurrentTime;
+	
 	int CurrentLocation;
 	
 	vector <LhaEdge> Edge;
+	double Likelihood;
 	
-	
+	set <int> FinalLoc; // final locations
 
 	
-	double Likelihood;
+private:
+	void UpdateFormulaVal();
+	void UpdateLinForm(const abstractMarking&);
+	void UpdateLhaFuncLast();
+	
+	
 	Variables *Vars; // Var[i] value of the variable indexed by i
 	
 	vector<double> LinForm;
     vector<double> OldLinForm;
     vector<double> LhaFunc;
-
-	set <int> FinalLoc; // final locations
-private:
+	
+	
+	
+	/**
+	 * \brief Set the initial location of the LHA for a marking
+	 * Loop over the set of initial location to find one enabled.
+	 */
+	void setInitLocation(const abstractMarking&);
+	
 	
 	void DoElapsedTimeUpdate(double, const abstractMarking&);
     
@@ -152,15 +160,15 @@ private:
 	
 	
 	void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
-	double GetFlow(int, int,const abstractMarking&);
-	bool CheckLocation(int,const abstractMarking&);
-	bool CheckEdgeContraints(int,size_t, const abstractBinding&, const abstractMarking&);
+	double GetFlow(int, int,const abstractMarking&)const;
+	bool CheckLocation(int,const abstractMarking&)const;
+	bool CheckEdgeContraints(int,size_t, const abstractBinding&, const abstractMarking&)const;
 	
-    t_interval GetEdgeEnablingTime(int,const abstractMarking&);
+    t_interval GetEdgeEnablingTime(int,const abstractMarking&)const;
 	
 	void resetVariables();
 	
-		
+	
 	void doPathVarsUpdate(double, double, const abstractMarking&);
 	
 	
@@ -169,14 +177,14 @@ private:
     void ViewAllEdges();
 	
 	
-
-
-
+	
+	
+	
 	
 	
 	Variables *tempVars;
 	
-		
+	
 	void resetPathVarsTable();
 	
 	bool isVar(string, double &);
@@ -186,7 +194,7 @@ private:
 	//print the state of the automaton.
 	
 	string label;
-	unsigned int NbLoc; // number of locations   
+	unsigned int NbLoc; // number of locations
 	unsigned int StartingLoc; // Chosen from the set of lha initial locations according to their properties and Petri net initial marking
 	
 	
@@ -200,8 +208,8 @@ private:
 	map<string, int> EdgeIndex;
 	
 	vector < set <int> > Out_S_Edges; // for a given location l returns the set of synchronizing edges  starting from l
-	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l   
-	vector < vector < set <int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...} 
+	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l
+	vector < vector < set <int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...}
 	
 	vector<int> EdgeCounter;
 	vector <string> EdgeConstraints;

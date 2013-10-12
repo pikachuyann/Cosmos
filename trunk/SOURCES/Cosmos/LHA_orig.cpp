@@ -35,13 +35,22 @@ using namespace std;
 LHA::~LHA() {
 }
 
-/*void LHA::printState(){
-	cerr << "Automate:" << LocLabel[CurrentLocation]<< "\t,";
-	for(size_t i =0 ; i< Var.size(); i++){
-		cerr << VarLabel[i]<<":"<< Var[i]<< "\t,";
-	}
-}*/
+void LHA::copyState(LHA *A){
+	Vars = A->Vars;
+	LinForm.swap(A->LinForm);
+	OldLinForm.swap(A->OldLinForm);
+	LhaFunc.swap(A->LhaFunc);
+	Likelihood = A->Likelihood;
+	CurrentTime =A->CurrentTime;
+	CurrentLocation=A->CurrentLocation;
+}
 
+/**
+ *	Set the automaton to its initial location.
+ * If the automaton contain several initial state only one should satisfie
+ * its invarient with the given Marking due to determinicity.
+ * @param Marking, A marking of the Petri net in principle the initial marking.
+ */
 void LHA::setInitLocation(const abstractMarking& Marking) {
     for (set<int>::iterator l = InitLoc.begin(); l != InitLoc.end(); l++) {
         if (CheckLocation((*l), Marking)){
@@ -54,7 +63,16 @@ void LHA::setInitLocation(const abstractMarking& Marking) {
 	exit(EXIT_FAILURE);
 }
 
-int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
+/**
+ *	Return a sychronized edge index with a transition.
+ * The edge is such that the location invariant will holds in the marking of the
+ * Petri net after the transition.
+ * @param PetriNetTransition, a Petri net transition index.
+ * @param bindin, the color binding of the transition.
+ * @param NextMarking, The marking in with the Petri net will be after the transition.
+ * @return an index of synchronized edge or -1 if there is no suitable synchronized edge.
+ */
+int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding)const {
 	const set<int> acE = ActionEdges[CurrentLocation][PetriNetTransition];
     for (set<int>::const_iterator it = acE.begin(); it != acE.end(); it++) {
         if ((CheckLocation(Edge[(*it)].Target, NextMarking))) {
@@ -66,7 +84,12 @@ int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& Ne
 
 }
 
-AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking) {
+/**
+ *	Return the next autonomous edge.
+ *	@param Marking is the current marking of the Petri net.
+ *	@return the most urgent autonomous edge
+ */
+AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking)const {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
@@ -86,6 +109,9 @@ AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking) {
     return Ed;
 }
 
+/**
+ * Reset all linear form.
+ */
 void LHA::resetLinForms() {
     for (size_t i = 0; i < LinForm.size(); i++) {
         LinForm[i] = 0;
@@ -95,10 +121,14 @@ void LHA::resetLinForms() {
         LhaFunc[i] = 0;
 }
 
+/**
+ *	Reset the whole automaton to its initial state for
+ * the given Marking.
+ */
 void LHA::reset(const abstractMarking& Marking) {
   Likelihood = 1.0;
   resetLinForms();
-	resetVariables();
+  resetVariables();
   setInitLocation(Marking);
   CurrentTime = 0;
 }
@@ -127,21 +157,23 @@ void LHA::updateLHA(double DeltaT, const abstractMarking &Marking){
 	CurrentTime += DeltaT;
 }
 
+/**
+ *	This function is called when the automaton reach a final state.
+ *	The result of path formula is stored in vector v
+ */
+void LHA::getFinalValues(const abstractMarking& m,vector<double>& v){
+	UpdateLinForm(m);
+	UpdateLhaFuncLast();
+	UpdateFormulaVal();
+	v=FormulaVal;
+}
 
-bool LHA::isFinal() {
+/**
+ * @return true if the automaton is in a final state
+ */
+bool LHA::isFinal()const {
     return ( (FinalLoc.find(CurrentLocation) != FinalLoc.end()) ? true : false);
 }
-
-/*
-double LHA::min(double& a, double& b) {
-    if (a <= b)return a;
-    else return b;
-}
-
-double LHA::max(double& a, double& b) {
-    if (a >= b)return a;
-    else return b;
-}*/
 
 double LHA::Min(double& a, double& b, double& c) {
     double x = min(b, c);

@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <float.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ using namespace std;
  * If the simulation is a success then The Mean and second Moment are updated
  * @param Result the result of one trajectory in the simulator.
  */
- void BatchR::addSim(SimOutput *Result){
+ void BatchR::addSim(const SimOutput *Result){
     I++;
     if (Result->first) {
         Isucc++;
@@ -74,7 +75,7 @@ using namespace std;
  * Take the union of two batch of result.
  * @param batch is a batch of result wich is added to the current batch.
  */
-void BatchR::unionR(BatchR *batch){
+void BatchR::unionR(const BatchR *batch){
     
     I += batch->I;
     Isucc += batch->Isucc;
@@ -94,17 +95,22 @@ void BatchR::unionR(BatchR *batch){
  * be read by the function BatchR::inputR
  */
  void BatchR::outputR() {
-    write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(I));
-	write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
+    size_t writesize = 0;
+    writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(I));
+    writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
 
     for(unsigned int i =0; i< TableLength; i++){
         bool tmpbool = IsBernoulli[i];
-        write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
-        write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(Mean[0]));
-        write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(Mean[0]));
-		write(STDOUT_FILENO,reinterpret_cast<char*>(&M3[i]),sizeof(Mean[0]));
-		write(STDOUT_FILENO,reinterpret_cast<char*>(&M4[i]),sizeof(Mean[0]));
+        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
+        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(Mean[0]));
+        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(Mean[0]));
+       	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M3[i]),sizeof(Mean[0]));
+       	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M4[i]),sizeof(Mean[0]));
     }
+    if(writesize != (sizeof(I) + sizeof(Isucc) + TableLength * (sizeof(bool) + 4*sizeof(double)))){
+      cerr << "Fail to write to stdout";
+      exit(EXIT_FAILURE);
+    } 
 }
 
 /**
@@ -140,7 +146,7 @@ bool BatchR::inputR(FILE* f) {
 	return ok;
 }
 
-void BatchR::print(){
+void BatchR::print()const{
     cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl;
     for(size_t i =0; i< TableLength; i++){
         cerr << "Mean:\t" << Mean[i]/Isucc << endl << "M2:\t" << M2[i]/Isucc << endl << "M3:\t" << M3[i]/Isucc << endl <<"M4:\t" << M4[i]/Isucc << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;

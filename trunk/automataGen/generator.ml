@@ -3,7 +3,9 @@ open Automata
 
 let _ =
   if Array.length Sys.argv >1 then
-    ()
+    let a =  Automata.automata_of_pltrlist ["Queue1";"Queue2"] [] 0.0 10.0 (int_of_string (Sys.argv.(2))) in
+    Writer.writeAutomata a;
+	print_newline ();
   else try
     let lexbuf = Lexing.from_channel stdin in
     while true do

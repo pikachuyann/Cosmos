@@ -11,10 +11,9 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--max-run:Max maximal number of trajectory:->max-run' \
 	   '--seed:Seed of the random number generator:->seed' \
 	   '--njob:Number of parallel simulation:->njob' \
-
 	   '--update-time:frequencie of the screen update:->update-time' \
 	   '(-h)--help[help message]' \
-
+	   '--version[Display version number]' \
 	   '-b:Bounded Rare Event:->bounded' \
 	   '--state-space[Generate the state space in the prism format]' \
 	   '--prism[Use prism to performe the computation]' \
@@ -26,7 +25,6 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--local-test[Use local testing]' \
 	   '--HASL-formula:External HASL formule:->HASL' \
 	   '--gnuplot-driver[Lauch gnuplot on the output data]' \
-
 	   '--output-data:File where to output data:->data' \
 	   '--output-raw:Output result of each trajectory in a file:->data' \
 	   '--output-PDFCDF:Output PDF or CDF to a file:->data' \
@@ -51,5 +49,5 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   (bounded)
 		compadd "$@" 1 2 3 && return 0;;
 	   (parameter)
-		compadd "$@" "level" "width" "nbrun" && return 0;;
+		compadd "$@" "level" "width" "nbrun" "update-time" && return 0;;
 	   esac
