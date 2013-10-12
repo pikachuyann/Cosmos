@@ -63,6 +63,6 @@ void launchServer(parameters& P);
  * to avoid a deadlock where the signal wait for a child wich status
  * have been retrieved by system.
  */
-void systemsigsafe(const char*cmd);
+int systemsigsafe(const char*cmd);
 
 #endif	/* _SERVER_HPP */

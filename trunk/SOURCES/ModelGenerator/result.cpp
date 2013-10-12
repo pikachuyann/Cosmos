@@ -75,7 +75,7 @@ result::result(parameters &Q){
 			
 			gnuplotstream = popen("gnuplot", "w");
 			if(P.verbose>2)cout << "Gnuplot opened" << endl;
-			if(gnuplotstream<=0){
+			if(gnuplotstream == NULL){
 				perror("Fail to lauch gnuplot");
 				exit(EXIT_FAILURE);
 			}
@@ -102,7 +102,7 @@ result::~result(){
 }
 
 void result::close_gnuplot(){
-	if(gnuplotstream>0){
+	if(gnuplotstream != NULL){
 		fputs("exit\n", gnuplotstream);
 		flushgnuplot();
 		//pclose(gnuplotstream); //not neaded
@@ -283,7 +283,7 @@ void result::outputCDFPDF(string f){
 }
 
 void result::printGnuplot(){
-	if(gnuplotstream<=0)return;
+	if(gnuplotstream == NULL)return;
 	
 	if(P.dataPDFCDF.compare("")!=0){
 		if(P.verbose>2)cout << "invoke gnuplot for PDFCDF" << endl;

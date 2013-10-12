@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <float.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -94,17 +95,22 @@ void BatchR::unionR(const BatchR *batch){
  * be read by the function BatchR::inputR
  */
  void BatchR::outputR() {
-    write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(I));
-	write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
+    size_t writesize = 0;
+    writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(I));
+    writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
 
     for(unsigned int i =0; i< TableLength; i++){
         bool tmpbool = IsBernoulli[i];
-        write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
-        write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(Mean[0]));
-        write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(Mean[0]));
-		write(STDOUT_FILENO,reinterpret_cast<char*>(&M3[i]),sizeof(Mean[0]));
-		write(STDOUT_FILENO,reinterpret_cast<char*>(&M4[i]),sizeof(Mean[0]));
+        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
+        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(Mean[0]));
+        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(Mean[0]));
+       	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M3[i]),sizeof(Mean[0]));
+       	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M4[i]),sizeof(Mean[0]));
     }
+    if(writesize != (sizeof(I) + sizeof(Isucc) + TableLength * (sizeof(bool) + 4*sizeof(double)))){
+      cerr << "Fail to write to stdout";
+      exit(EXIT_FAILURE);
+    } 
 }
 
 /**
