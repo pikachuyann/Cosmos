@@ -185,6 +185,9 @@ blank [ \t]
 
 "CDF" {lhalval->name = new std::string (lhatext); return token::CDF;
 	Reader.error (*lhalloc, "CDF expected");}
+	
+"DISC" {lhalval->name = new std::string (lhatext); return token::DISC;
+	Reader.error (*lhalloc, "DISC expected");}
 
 {INT}      {
   errno = 0; 

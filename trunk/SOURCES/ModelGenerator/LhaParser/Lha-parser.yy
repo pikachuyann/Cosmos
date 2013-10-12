@@ -122,6 +122,7 @@
 %token <name>     LAST
 %token <name> 	  INTEGRAL
 %token <name>	  MEAN
+%token <name>	  DISC
 
 %token <name>     LhaName
 
@@ -363,10 +364,17 @@ VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
 };
 
 VLabels : str {
-	
 	Reader.MyLha.Vars.label.push_back(*$1);
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(CONTINIOUS_VARIABLE);
+	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
+	//Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
+}
+| DISC str {
+	
+	Reader.MyLha.Vars.label.push_back(*$2);
+	Reader.MyLha.Vars.initialValue.push_back(0.0);
+	Reader.MyLha.Vars.type.push_back(DISCRETE_VARIABLE);
 	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
 	//Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
 	
@@ -375,6 +383,13 @@ VLabels : str {
 	Reader.MyLha.Vars.label.push_back(*$3);
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(CONTINIOUS_VARIABLE);
+	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
+	//Reader.MyLha.VarIndex[*$3]=Reader.MyLha.VarLabel.size()-1;
+};
+|VLabels COMMA DISC str {
+	Reader.MyLha.Vars.label.push_back(*$4);
+	Reader.MyLha.Vars.initialValue.push_back(0.0);
+	Reader.MyLha.Vars.type.push_back(DISCRETE_VARIABLE);
 	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
 	//Reader.MyLha.VarIndex[*$3]=Reader.MyLha.VarLabel.size()-1;
 };
