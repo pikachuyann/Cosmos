@@ -90,7 +90,7 @@ public:
 	LHA(unsigned int, unsigned int);
 	~LHA();
 	
-	//* Copy the state of an other LHA
+	//* Copy the state of an other LHA it only copy pointer thus is in constant time.
 	void copyState(LHA*);
 	
 	
@@ -107,11 +107,6 @@ public:
 	//! update value in the LHA by elapsing time
 	void updateLHA(double DeltaT, const abstractMarking &);
 	
-    void UpdateFormulaVal();
-	void UpdateLinForm(const abstractMarking&);
-	void UpdateLhaFuncLast();
-	
-	
 	//! fire the transition of an LHA
 	virtual void fireLHA(int,const abstractMarking&, const abstractBinding&);
 	
@@ -119,22 +114,26 @@ public:
     
     void reset(const abstractMarking&);
 	
+	void getFinalValues(const abstractMarking&,vector<double>&);
+	
 	void printState(ostream &)const;
 	void printHeader(ostream &)const;
-
-
 	
 	vector<double> FormulaVal;
-	
 	double CurrentTime;
+	
 	int CurrentLocation;
 	
 	vector <LhaEdge> Edge;
 	double Likelihood;
 	
 	set <int> FinalLoc; // final locations
-private:
+
 	
+private:
+	void UpdateFormulaVal();
+	void UpdateLinForm(const abstractMarking&);
+	void UpdateLhaFuncLast();
 	
 	
 	Variables *Vars; // Var[i] value of the variable indexed by i
