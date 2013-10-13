@@ -815,21 +815,23 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "\tP = tmp;\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
+	
+	int maxNameSize =0;
+	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+		 plit!= MyGspn.placeStruct.end(); ++plit)
+		maxNameSize = fmax(maxNameSize, plit->name.length());
+	maxNameSize += 5;
 	if(P.StringInSpnLHA){
 		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-		int maxNameSize =0;
-		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-			 plit!= MyGspn.placeStruct.end(); ++plit)
-				maxNameSize = fmax(maxNameSize, plit->name.length());
-		SpnCppFile << "\ts.width(" << maxNameSize+5 <<");" << endl;
-		SpnCppFile << "\ts << \"";
+		//SpnCppFile << "\ts.width(" << maxNameSize+5 <<");" << endl;
+		SpnCppFile << "\ts ";
 		
 		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 			 plit!= MyGspn.placeStruct.end(); ++plit) {
-			if (plit->isTraced)SpnCppFile << plit->name <<"\t";
+			if (plit->isTraced)SpnCppFile << " << setw(" << maxNameSize << ") << \""  << plit->name  << "\"" ;
 			
 		}
-		SpnCppFile << "\";";
+		SpnCppFile << ";";
 	}
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
@@ -839,7 +841,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
 		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 			 plit!= MyGspn.placeStruct.end(); ++plit) {
-			if (plit->isTraced)SpnCppFile << "\ts << P->_PL_"<< plit->name << " << \"\\t\" ;\n";
+			if (plit->isTraced)SpnCppFile << "\ts << setw(" << maxNameSize << ") << P->_PL_"<< plit->name << ";\n";
 		}
 	}
 	SpnCppFile << "}\n";
@@ -1036,7 +1038,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	//SpnCppFile << "#include \"spn_orig.hpp\"" << endl;
 	SpnCppFile << "#include \"spn.hpp\"" << endl;
-	
+	SpnCppFile << "#include <iomanip>" << endl;
 	
 	//------------- Writing constant--------------------------------------------
 	for (map<string,double>::iterator it= MyGspn.RealConstant.begin();
