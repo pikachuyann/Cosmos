@@ -379,7 +379,7 @@ void cleanTmp(parameters& P){
 	if(P.tmpStatus==0 || P.tmpStatus==1){
 		string cmd;
 		cmd = "rm -rf " + P.tmpPath;
-		if(system(cmd.c_str()) ==0)warnx("Fail to clean temporaray file");
+		if(system(cmd.c_str()) !=0)warnx("Fail to clean temporary file");
 	}
 }
 
