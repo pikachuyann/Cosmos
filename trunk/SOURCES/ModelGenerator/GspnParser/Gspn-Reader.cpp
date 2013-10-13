@@ -808,6 +808,12 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "\tdelete(P);\n";
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
+	SpnCppFile << "\n";
+	SpnCppFile << "void abstractMarking::swap(abstractMarking& m) {\n";
+	SpnCppFile << "\tabstractMarkingImpl* tmp = m.P;\n";
+	SpnCppFile << "\tm.P = P;\n";
+	SpnCppFile << "\tP = tmp;\n";
+	SpnCppFile << "}\n";
 	SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
 	if(P.StringInSpnLHA){
 		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";

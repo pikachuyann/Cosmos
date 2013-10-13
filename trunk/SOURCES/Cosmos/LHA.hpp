@@ -90,15 +90,19 @@ public:
 	LHA(unsigned int, unsigned int);
 	~LHA();
 	
-  /**
-   * \brief Return a synchronized edge for a given transition of the SPN.
-   */
-  int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&)const;
-
-   /**
-   * \brief Return an autonomous edge for a given marking.
-   */
-  AutEdge GetEnabled_A_Edges(const abstractMarking&)const;
+	//* Copy the state of an other LHA
+	void copyState(LHA*);
+	
+	
+	/**
+	 * \brief Return a synchronized edge for a given transition of the SPN.
+	 */
+	int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&)const;
+	
+	/**
+	 * \brief Return an autonomous edge for a given marking.
+	 */
+	AutEdge GetEnabled_A_Edges(const abstractMarking&)const;
 	
 	//! update value in the LHA by elapsing time
 	void updateLHA(double DeltaT, const abstractMarking &);
@@ -106,37 +110,38 @@ public:
     void UpdateFormulaVal();
 	void UpdateLinForm(const abstractMarking&);
 	void UpdateLhaFuncLast();
-
+	
 	
 	//! fire the transition of an LHA
 	virtual void fireLHA(int,const abstractMarking&, const abstractBinding&);
-
+	
 	bool isFinal()const;
     
     void reset(const abstractMarking&);
-
-	vector<double> FormulaVal;
+	
 	void printState(ostream &)const;
 	void printHeader(ostream &)const;
+
+
+	
+	vector<double> FormulaVal;
 	
 	double CurrentTime;
 	int CurrentLocation;
 	
 	vector <LhaEdge> Edge;
-	
-	
-
-	
 	double Likelihood;
+	
+	set <int> FinalLoc; // final locations
+private:
+	
+	
+	
 	Variables *Vars; // Var[i] value of the variable indexed by i
 	
 	vector<double> LinForm;
     vector<double> OldLinForm;
     vector<double> LhaFunc;
-
-
-	set <int> FinalLoc; // final locations
-private:
 	
 	
 	
@@ -145,7 +150,7 @@ private:
 	 * Loop over the set of initial location to find one enabled.
 	 */
 	void setInitLocation(const abstractMarking&);
-
+	
 	
 	void DoElapsedTimeUpdate(double, const abstractMarking&);
     
@@ -164,7 +169,7 @@ private:
 	
 	void resetVariables();
 	
-		
+	
 	void doPathVarsUpdate(double, double, const abstractMarking&);
 	
 	
@@ -173,14 +178,14 @@ private:
     void ViewAllEdges();
 	
 	
-
-
-
+	
+	
+	
 	
 	
 	Variables *tempVars;
 	
-		
+	
 	void resetPathVarsTable();
 	
 	bool isVar(string, double &);
@@ -190,7 +195,7 @@ private:
 	//print the state of the automaton.
 	
 	string label;
-	unsigned int NbLoc; // number of locations   
+	unsigned int NbLoc; // number of locations
 	unsigned int StartingLoc; // Chosen from the set of lha initial locations according to their properties and Petri net initial marking
 	
 	
@@ -204,8 +209,8 @@ private:
 	map<string, int> EdgeIndex;
 	
 	vector < set <int> > Out_S_Edges; // for a given location l returns the set of synchronizing edges  starting from l
-	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l   
-	vector < vector < set <int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...} 
+	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l
+	vector < vector < set <int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...}
 	
 	vector<int> EdgeCounter;
 	vector <string> EdgeConstraints;

@@ -31,6 +31,7 @@
 #include "SimulatorRE.hpp"
 #include "numericalSolver.hpp"
 #include "marking.hpp"
+#include <vector>
 
 #ifndef _SIMULATOR_BOUNDED_RE_HPP
 #define _SIMULATOR_BOUNDED_RE_HPP
@@ -39,20 +40,11 @@
 class simulationState{
 private:
 	abstractMarking marking;
-	int LHAstate;
-	double LHAcurrentTime;
 	AutEdge AE;
 	EventsQueue *EQ;
-	double timeS;
-	Variables *VarLHA;
-	vector<double> LinFormLHA;
-	vector<double> OldLinFormLHA;
-	vector<double> LhaFuncLHA;
-	
+	LHA lhaState;
     
 	//rare event variable
-	double likelihood;
-
 	vector <double> Rate_Table;
 	vector <double> Origine_Rate_Table;
 	double Rate_Sum;
@@ -67,44 +59,29 @@ public:
 	};
 	~simulationState(){};
 	
-	void saveState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim, double* t){
-		marking = N->Marking;
-		LHAstate= A->CurrentLocation;
-		LHAcurrentTime= A->CurrentTime;
+	void saveState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim){
+		marking.swap(N->Marking);
 		AE = *AEsim;
 		EQ = *EQsim; //new EventsQueue(*EQsim);
-		timeS = *t;
 		
-		VarLHA=A->Vars;
-		LinFormLHA=A->LinForm;
-		OldLinFormLHA=A->OldLinForm;
-		LhaFuncLHA=A->LhaFunc;
+		lhaState.copyState(A);
 		
-		likelihood = A->Likelihood;
-		Rate_Table = N->Rate_Table;
-		Origine_Rate_Table = N->Origine_Rate_Table;
+		Rate_Table.swap(N->Rate_Table);
+		Origine_Rate_Table.swap(N->Origine_Rate_Table);
 		Rate_Sum = N->Rate_Sum;
-		Origine_Rate_Sum= N-> Origine_Rate_Sum;
+		Origine_Rate_Sum = N-> Origine_Rate_Sum;
 		
 	};
-	void loadState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim,double* t){
+	void loadState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim){
 		
-		N->Marking = marking;
-		A->CurrentLocation = LHAstate;
-		A->CurrentTime = LHAcurrentTime;
+		N->Marking.swap(marking);
 		*AEsim = AE; 
 		*EQsim = EQ;
-		*t = timeS;
 		
+		A->copyState(&lhaState);
 		
-		A->Vars= VarLHA;
-		A->LinForm = LinFormLHA;
-		A->OldLinForm = OldLinFormLHA;
-		A->LhaFunc = LhaFuncLHA;
-		
-		A->Likelihood = likelihood; 
-		N->Rate_Table = Rate_Table;
-		N->Origine_Rate_Table = Origine_Rate_Table;
+		N->Rate_Table.swap(Rate_Table);
+		N->Origine_Rate_Table.swap(Origine_Rate_Table);
 		N->Rate_Sum = Rate_Sum;
 		N->Origine_Rate_Sum = Origine_Rate_Sum ;
 	};

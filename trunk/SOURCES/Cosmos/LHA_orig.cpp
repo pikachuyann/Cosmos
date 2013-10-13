@@ -35,6 +35,16 @@ using namespace std;
 LHA::~LHA() {
 }
 
+void LHA::copyState(LHA *A){
+	Vars = A->Vars;
+	LinForm.swap(A->LinForm);
+	OldLinForm.swap(A->OldLinForm);
+	LhaFunc.swap(A->LhaFunc);
+	Likelihood = A->Likelihood;
+	CurrentTime =A->CurrentTime;
+	CurrentLocation=A->CurrentLocation;
+}
+
 /**
  *	Set the automaton to its initial location.
  * If the automaton contain several initial state only one should satisfie
