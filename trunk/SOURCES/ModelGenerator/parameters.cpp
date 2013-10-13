@@ -31,6 +31,10 @@
 #include <getopt.h>
 #include <string.h>
 
+
+#define BUILD_VERSION "Cosmos 1.4"
+
+
 /**
  * Constructor for parameters, set all the default value
  */
@@ -102,6 +106,7 @@ void parameters::usage(){
     cout << "gspn_file lha_file" << endl;
     
     cout << "General options:" << endl;
+	cout << "\t--version\tdisplay version number" << endl;
     cout << "\t-v,--verbose arg\tset the verbose level"<< endl;
 	cout << "\t-i,--interactive \tAsk the user to choose next transition" << endl;
 	cout << "\t--update-time\t set the time in second beetween two updates of the display"<< endl;
@@ -200,6 +205,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"tmp-status", required_argument,0,	 5 },
 			{"bin-path", required_argument  ,0,	 9 },
 			{"prism-path", required_argument,0,  20},
+			{"version",no_argument,			 0,  22},
         
             {0, 0, 0, 0}
         };
@@ -330,6 +336,10 @@ void parameters::parseCommandLine(int argc, char** argv){
 			
 			break;
 			}
+			case 22:
+			cout << BUILD_VERSION << " Build Date:" << __DATE__ << endl;
+			exit(0);
+			
             case '?':
                 usage();
                 exit(EXIT_FAILURE);
