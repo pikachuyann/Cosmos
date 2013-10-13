@@ -5,7 +5,7 @@ open Printf
 let rec write_linConstr = function
   | [] -> ()
   | (i,c,fexpr)::q ->
-    printf "v%i" i;
+    printf "vc%i" i;
     print_cmp c;
     print_float_expr fexpr;
     if List.length q >0 then printf "&";
@@ -14,7 +14,7 @@ let rec write_linConstr = function
 let rec write_flow = function
   | [] -> ()
   | (i,fexpr)::q ->
-    printf "v%i:" i;
+    printf "vc%i:" i;
     print_float_expr fexpr;
     if List.length q >0 then printf ",";
     write_flow q
@@ -26,13 +26,18 @@ let rec print_list f c = function
 
 
 let writeAutomata a =
-  printf "NbVariables = %i;\n" a.nbVar;
+  printf "NbVariables = %i;\n" (a.nbContVar + a.nbDiscVar);
   printf "NbLocations = %i;\n" a.nbLoc;
   
   printf "VariablesList = {";
-  for i = 0 to a.nbVar-1 do
+  for i = 0 to a.nbContVar-1 do
     if i>0 then printf ",";
-    printf "v%i" i;
+    print_float_expr (ContinuousVar(i));
+  done;
+  for i = 0 to a.nbDiscVar-1 do
+    if i>0 or a.nbContVar>0  then printf ",";
+    print_string " DISC ";
+    print_float_expr (DiscreteVar(i));
   done;
   printf "};\n";
   
@@ -72,7 +77,7 @@ let writeAutomata a =
   printf "};\n";
 
   printf "Edges = {\n";
-  List.iter (fun (l1,tt,tu,l2) -> 
+  List.iter (fun (l1,tt,tuc,tud,l2) -> 
     printf "((l%i,l%i)," l1 l2;
     (match tt with
       Synch(_,sf) -> printf "ALL,";
@@ -82,10 +87,12 @@ let writeAutomata a =
        write_linConstr lconstr;
     );
     printf ",";
-    if tu = [] then printf "#"
+    if tuc = [] & tud =[] then printf "#"
     else (
       printf "{";
-      print_list (fun (v,u) -> printf "v%i = " v; print_float_expr u;) "," tu;
+      print_list (fun (v,u) -> printf "vc%i = " v; print_float_expr u;) "," tuc;
+      if tuc  <> [] & tud  <> [] then print_string ",";
+      print_list (fun (v,u) -> printf "vd%i = " v; print_float_expr u;) "," tud;
       printf "}";
     );
     printf ");\n"
