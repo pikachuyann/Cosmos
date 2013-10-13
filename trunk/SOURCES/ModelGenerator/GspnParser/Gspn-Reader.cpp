@@ -817,7 +817,13 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
 	if(P.StringInSpnLHA){
 		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
+		int maxNameSize =0;
+		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+			 plit!= MyGspn.placeStruct.end(); ++plit)
+				maxNameSize = fmax(maxNameSize, plit->name.length());
+		SpnCppFile << "\ts.width(" << maxNameSize+5 <<");" << endl;
 		SpnCppFile << "\ts << \"";
+		
 		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 			 plit!= MyGspn.placeStruct.end(); ++plit) {
 			if (plit->isTraced)SpnCppFile << plit->name <<"\t";
