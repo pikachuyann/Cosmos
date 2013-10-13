@@ -337,7 +337,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			break;
 			}
 			case 22:
-			cout << BUILD_VERSION << " Build Date:" << __DATE__ << endl;
+			cout << BUILD_VERSION << " Build Date:" << __DATE__ " at " << __TIME__ << endl;
 			exit(0);
 			
             case '?':
