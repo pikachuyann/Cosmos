@@ -41,7 +41,7 @@ depend: .depend
 $(OBJPATH)/%.o: %.cpp
 	$(CXX) -I$(abspath ../libgml/) -I$(BOOSTPATH) $(OPTIONS) -c $(abspath $*.cpp) -o $(abspath $@)
 $(OBJPATH)/%.o: %.cc
-	$(CXX) -I$(abspath ../libgml/) $(OPTIONS) -c $(abspath $*.cc) -o $(abspath $@)
+	$(CC) -I$(abspath ../libgml/) $(OPTIONS) -c $(abspath $*.cc) -o $(abspath $@)
 $(OBJPATH)/%.o: $(LIBGMLPATH)/%.cc
 	$(CXX) $(OPTIONS) -c $(abspath $(LIBGMLPATH)/$*.cc ) -o $(abspath $@)
 

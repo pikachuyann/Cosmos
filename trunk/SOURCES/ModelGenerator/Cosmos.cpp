@@ -296,7 +296,10 @@ bool ParseBuild(parameters& P) {
 			
 			//Copy the code into the temporary directory
 			string cmd = "cp "+P.PathLha +" " + P.tmpPath +"/LHA.cpp";
-			system(cmd.c_str());
+			if(system(cmd.c_str()) ==0){
+			  cerr << "Fail to copy LHA to temporary" << endl;
+			  return false;
+			}
 		}
 	}catch (exception& e)
 	{
@@ -376,7 +379,7 @@ void cleanTmp(parameters& P){
 	if(P.tmpStatus==0 || P.tmpStatus==1){
 		string cmd;
 		cmd = "rm -rf " + P.tmpPath;
-		system(cmd.c_str());
+		if(system(cmd.c_str()) ==0)warnx("Fail to clean temporaray file");
 	}
 }
 

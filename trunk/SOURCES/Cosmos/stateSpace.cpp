@@ -383,7 +383,10 @@ void stateSpace::outputPrism(){
 void stateSpace::launchPrism(string prismPath){
     cout<< "Starting Prism"<< endl;
     string cmd = prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
-    system(cmd.c_str());
+    if(0 != system(cmd.c_str())){
+      cerr << "Fail to launch prism" << endl;
+      exit(EXIT_FAILURE);
+    }
     cout << "Prism finish" << endl;
 }
 
