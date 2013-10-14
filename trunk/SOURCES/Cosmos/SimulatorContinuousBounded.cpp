@@ -184,8 +184,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         
         if(verbose>=2)cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;
         
-        batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i]  * IsuccN[i];
-        stdev += fg->weights[i+leftdec] * stdevN * IsuccN[i];
+        batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i];
+        stdev += fg->weights[i+leftdec] * stdevN;
         batchResult->Isucc += IsuccN[i];
         //batchResult->I = IsuccN[0];
         
@@ -197,8 +197,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         //Dif = M2N[i] - batchResult->M2; 
         //batchResult->M2 +=  (IsuccN[i] * fg->weights[i] * Dif / Isucc)/ fg->total_weight; 
     }
-    batchResult->Mean[0] /= fg->total_weight;
-    stdev /= fg->total_weight;
+    batchResult->Mean[0] *= (batchResult->Isucc / fg->total_weight);
+    stdev *= (batchResult->Isucc / fg->total_weight);
     
     
     batchResult->M2[0] = pow(stdev, 2) + pow(batchResult->Mean[0],2);
@@ -213,8 +213,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl<< endl << endl; 
     
 	
-	cerr << "DIR Result Mean:\t" << batchResult->Mean[0]/ batchResult->I << endl;
-	cerr << "DIR Result std:\t" << batchResult->M2[0] << endl << endl << endl<< endl << endl;
+	cerr << "DIR Result Mean:\t" << batchResult->Mean[0]/ batchResult->Isucc << endl;
+	cerr << "DIR Result std:\t" << batchResult->M2[0] << endl << endl << endl<< endl << endl<< endl;
 
     //batchResult->print();
     //exit(0);
