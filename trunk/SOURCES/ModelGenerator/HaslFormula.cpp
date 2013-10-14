@@ -238,7 +238,9 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			if(batch.Isucc==0)return new ConfInt();
 			double mean = batch.Mean[Algebraic]/batch.Isucc;
 			double m2 = batch.M2[Algebraic]/batch.Isucc;
-			double variance = m2 - mean * mean;
+			
+			//If the variance is equal to 0 numerical instability can make it a negative number.
+			double variance = fmax(0,m2 - mean * mean);
 		
 			double width = 2 * Value * sqrt(variance/batch.Isucc);
 		
@@ -255,7 +257,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 			double mean2 = batch.Mean[Algebraic]/batch.Isucc;
 			double m2 = batch.M2[Algebraic]/batch.Isucc;
-			double variance = m2 - mean2 * mean2;
+			double variance = fmax(0,m2 - mean2 * mean2);
 			double width = Value * sqrt(variance/batch.Isucc);
 			
 			return new ConfInt(mean*mean2,
