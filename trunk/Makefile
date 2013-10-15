@@ -48,7 +48,7 @@ ifeq ($(OSTYPE),linux)
 
 export CC=gcc
 export CXX=g++
-export OPTIONS= -O3 -Wall -Wextra $(COV) -g
+export OPTIONS= -O3 -Wall -Wextra $(COV)
 export BOOSTPATH=/data/usr64/include
 
 export AR=ar

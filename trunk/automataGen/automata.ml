@@ -96,6 +96,41 @@ let automata_of_formula = function
     }
 
   | _ -> failwith "Not yet implemented"
+
+
+
+let insertLH h l s =
+  if (Hashtbl.mem h s) then l
+  else (
+    Hashtbl.add h s ();
+    s::l
+  )
+  
+
+let rec explore_and_synch h a1 a2 qt = function
+  | [] -> qt
+  | (s1,s2)::q -> 
+    let l1 = List.filter (fun (i,_,_,_,_) -> i=s1) a1.trans
+    and l2 = List.filter (fun (i,_,_,_,_) -> i=s2) a2.trans in
+    let (lp,qt2) = List.fold_left (fun q2 t1 -> List.fold_left (fun q3 t2 -> sychtrans h a1 a2 q3 t1 t2) q2 l2) (q,qt) l1 in explore_and_synch h a1 a2 qt2 lp
+
+and sychtrans h a1 a2 (lp,lt) (s1,tt1,_,_,sp1) (s2,tt2,_,_,sp2) =
+  match tt1,tt2 with
+    Synch(_),Autonomous(_)-> (lp,lt) 
+  | Autonomous(_),Synch(_)-> (lp,lt) 
+  | Synch(label1,guard1),Synch(label2,guard2) ->
+    
+    (insertLH h lp (sp1,sp2),lt)
+
+  | Autonomous(guard1),Autonomous(guard2) ->
+    (insertLH h lp (sp1,sp2),lt)
+
+let and_automaton a1 a2 =
+  let hash_state = Hashtbl.create a1.nbLoc in ()
+  
+
+
+
   
 let rec flowlist = function
   | -1 -> []
