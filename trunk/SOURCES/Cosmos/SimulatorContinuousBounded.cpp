@@ -144,11 +144,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                                 //cerr << "i:\t" << i << endl;
                                 IsuccN[i]++;
                                 
-                                Dif = Result.second[0] - MeanN[i];
-                                MeanN[i] += Dif / IsuccN[i];
-                                
-                                Dif = pow(Result.second[0] , 2) - M2N[i];
-                                M2N[i] += Dif / IsuccN[i];
+                                MeanN[i] += Result.second[0];
+                                M2N[i] += pow(Result.second[0] , 2);
                             }
                             //cerr << ")finish" << endl;
                             
@@ -179,25 +176,18 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         
     for(int i=0; i<= fg->right- left; i++){
        
-        double var = M2N[i]- pow(MeanN[i],2);
+        double var = (M2N[i]/IsuccN[i]) - pow((MeanN[i]/ IsuccN[i]),2);
         double stdevN = 0.0;
         if(var>0)stdevN = sqrt(var); 
         
         if(verbose>=2)cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;
         
-        batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i] * IsuccN[i];
-        stdev += fg->weights[i+leftdec] * stdevN  * IsuccN[i] ;
+        batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i];
+        stdev += fg->weights[i+leftdec] * stdevN ;
         batchResult->Isucc += IsuccN[i];
-        //batchResult->I = IsuccN[0];
         
-        //batchResult->M2 += pow(fg->weights[i+leftdec]/fg->total_weight,2) * M2N[i];
-        
-        //Isucc += IsuccN[i];
-        //Dif = (fg->weights[i] * MeanN[i])/fg->total_weight - batchResult->Mean;
-        //batchResult->Mean += (IsuccN[i] * Dif / Isucc);       
-        //Dif = M2N[i] - batchResult->M2; 
-        //batchResult->M2 +=  (IsuccN[i] * fg->weights[i] * Dif / Isucc)/ fg->total_weight; 
-    }
+    
+	}
     batchResult->Mean[0] /= fg->total_weight;
     stdev /= fg->total_weight;
     

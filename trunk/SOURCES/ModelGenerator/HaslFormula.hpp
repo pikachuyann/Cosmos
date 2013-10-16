@@ -74,15 +74,16 @@ public:
  */
 class HaslFormulasTop {
 public:
-	HaslFormulasTop(double); //!< PROB operator use to compute \f$ \mathbb{P} \f$ .
-	HaslFormulasTop(double,double); //!< Constant
-	HaslFormulasTop(size_t,double); //!< Expectancy operator use to compute \f$ \mathbb{E} \f$ .
-	HaslFormulasTop(double,double,double); //!< Hypothesis operator: is the given probability above some thershold.
+	HaslFormulasTop(); //!< PROB operator use to compute \f$ \mathbb{P} \f$ .
+	HaslFormulasTop(double); //!< Constant
+	HaslFormulasTop(size_t); //!< Expectancy operator use to compute \f$ \mathbb{E} \f$ .
+	HaslFormulasTop(double,double); //!< Hypothesis operator: is the given probability above some thershold.
 	HaslFormulasTop(HaslType , HaslFormulasTop*, HaslFormulasTop*); //!< Build a tree of operator.
 //	HaslFormulasTop(const HaslFormulasTop&);
 	
 	~HaslFormulasTop();
 	
+	void setLevel(double); //!< set correct confidence level for complex HASL Formula.
 	ConfInt* eval(BatchR&)const; //!< Evaluate the formula over the batch of simulation
 	double bound()const; //!< Return a bound on the formula result
 	HaslType TypeOp; //!< type of the HaslFormula.

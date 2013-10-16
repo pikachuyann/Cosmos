@@ -367,9 +367,9 @@ HaslFormulasTop* MyLhaModelHandler::exportHASLTop(tree<string>::pre_order_iterat
 		stringstream ss;
 		ss << "LhaFunc[" << MyLHA->LhaFunction[*lhafunc] << "]";
 		MyLHA->Algebraic.push_back( ss.str() );
-		return (new HaslFormulasTop(MyLHA->Algebraic.size()-1,MyLHA->ConfidenceLevel));
+		return (new HaslFormulasTop(MyLHA->Algebraic.size()-1));
 	} else if((*it).compare("PROB")==0){
-		return (new HaslFormulasTop(MyLHA->ConfidenceLevel));
+		return (new HaslFormulasTop());
 	} else if(it->compare("PDF")==0 || it->compare("CDF")==0){
 		string* lhafunc = NULL;
 		double deltab = 1;
@@ -399,8 +399,7 @@ HaslFormulasTop* MyLhaModelHandler::exportHASLTop(tree<string>::pre_order_iterat
 				algPDF << "(("<< ss.str() <<" <= "<<bucket<<") ? 1:0)";
 			
 			MyLHA->Algebraic.push_back(algPDF.str());
-			MyLHA->HASLtop.push_back(new HaslFormulasTop((size_t)MyLHA->Algebraic.size()-1,
-															   MyLHA->ConfidenceLevel));
+			MyLHA->HASLtop.push_back(new HaslFormulasTop((size_t)MyLHA->Algebraic.size()-1));
 			MyLHA->HASLtop.back()->TypeOp = PDF_PART;
 			std::ostringstream s; s<<"$_$: Value in ["<< bucket<< " , "<<bucket+deltab<<"]";
 			MyLHA->HASLname.push_back(s.str());
