@@ -1,14 +1,15 @@
 
-
-
 all:
-	(cd TandemQN && ocaml test.ml)
-	(cd pi && ocaml test.ml)
-	(cd Workflow-Net && ocaml test.ml)
-	(cd QueueMM1 && ocaml test.ml)
-	(cd RareEventUnbounded && ocaml test.ml)
-	(cd DataBase && ocaml test.ml)
-	(cd RareEventUnbounded && ocaml test2.ml)
-	(cd TandemCosy && ocaml testPrism.ml)
-	(cd RareEventU && ocaml test.ml)
-	(cd SharedMemory && ocaml test.ml)
+	(cd TandemQN && ocaml test.ml $(INTC))
+	(cd pi && ocaml test.ml $(INTC))
+	(cd Workflow-Net && ocaml test.ml $(INTC))
+	(cd QueueMM1 && ocaml test.ml $(INTC))
+	(cd RareEventUnbounded && ocaml test.ml $(INTC))
+	(cd DataBase && ocaml test.ml $(INTC))
+	(cd RareEventUnbounded && ocaml test2.ml $(INTC))
+	(cd TandemCosy && ocaml testPrism.ml $(INTC))
+	(cd RareEventU && ocaml test.ml $(INTC))
+	(cd SharedMemory && ocaml test.ml $(INTC))
+
+bash:
+	export INTC=bash && $(MAKE) all
