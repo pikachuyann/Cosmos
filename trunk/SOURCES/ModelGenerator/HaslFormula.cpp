@@ -157,17 +157,30 @@ HaslFormulasTop::~HaslFormulasTop(){
 	if(!right) delete right;
 }
 
-/*HaslFormulasTop::HaslFormulasTop(const HaslFormulasTop& ht){
-	TypeOp = ht.TypeOp;
-	Algebraic = ht.Algebraic;
-	Level = ht.Level;
-	Value = ht.Value;
-	if(ht.left)left = new HaslFormulasTop(*ht.left);
-	else left = NULL;
-	if(ht.right)right = new HaslFormulasTop(*ht.right);
-	else right = NULL;
-}*/
+/**
+ * This method return true if a haslformula is constant.
+ * This is usfull to know if a subformula have a confidence level
+ * different than 1.
+ */
+bool HaslFormulasTop::isConstant(){
+	switch (TypeOp) {
+		case CONSTANT:
+			return true;
+	
+		case HASL_PLUS:
+		case HASL_TIME:
+		case HASL_DIV:
+			return (left->isConstant() && right->isConstant());
+		default:
+			return false;
+	}
+}
 
+/**
+ * This function set the confidence level of an HASL formula.
+ * When the fomula contain 
+ * @param l The confidence level
+ */
 void HaslFormulasTop::setLevel(double l){
 	switch (TypeOp) {
 		case PROBABILITY:
@@ -199,9 +212,13 @@ void HaslFormulasTop::setLevel(double l){
 		case HASL_TIME:
 		case HASL_DIV:
 			Level=l;
-			//We need to increase the condidence level on each subformula
-			left->setLevel((1+l)/2);
-			right->setLevel((1+l)/2);
+			if (left->isConstant()){right->setLevel(l);}
+			else if (right->isConstant()){left->setLevel(l);}
+				else{
+					//We need to increase the condidence level on each subformula
+					left->setLevel((1+l)/2);
+					right->setLevel((1+l)/2);
+				}
 			break;
 			
 		default:
