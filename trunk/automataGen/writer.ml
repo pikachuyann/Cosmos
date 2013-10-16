@@ -19,11 +19,6 @@ let rec write_flow = function
     if List.length q >0 then printf ",";
     write_flow q
 
-let rec print_list f c = function
-  | [] -> ()
-  | [t] -> f t;
-  | t::q -> f t; print_string c; print_list f c q
-
 
 let writeAutomata a =
   printf "NbVariables = %i;\n" (a.nbContVar + a.nbDiscVar);
@@ -53,7 +48,7 @@ let writeAutomata a =
   printf "InitialLocations = { l%i };\n" a.init;
 
   printf "FinalLocations = {";
-  print_list (fun x ->printf "l%i" x) "," a.final;
+  print_list (fun x ->printf "l%i" x) (fun () -> print_string ",") a.final;
   printf "};\n";
 
   printf "Locations = {\n";
@@ -80,7 +75,8 @@ let writeAutomata a =
   List.iter (fun (l1,tt,tuc,tud,l2) -> 
     printf "((l%i,l%i)," l1 l2;
     (match tt with
-      Synch(_,sf) -> printf "ALL,";
+      Synch(lab,sf) -> print_labels lab;
+	printf ",";
 	if sf = True then print_string "#"
 	else print_sf sf;
     | Autonomous(lconstr) -> printf "#,";
@@ -90,9 +86,9 @@ let writeAutomata a =
     if tuc = [] & tud =[] then printf "#"
     else (
       printf "{";
-      print_list (fun (v,u) -> printf "vc%i = " v; print_float_expr u;) "," tuc;
+      print_list (fun (v,u) -> printf "vc%i = " v; print_float_expr u;) (fun () -> print_string ",") tuc;
       if tuc  <> [] & tud  <> [] then print_string ",";
-      print_list (fun (v,u) -> printf "vd%i = " v; print_float_expr u;) "," tud;
+      print_list (fun (v,u) -> printf "vd%i = " v; print_float_expr u;) (fun () -> print_string ",") tud;
       printf "}";
     );
     printf ");\n"
