@@ -75,7 +75,7 @@ public:
 class HaslFormulasTop {
 public:
 	HaslFormulasTop(); //!< PROB operator use to compute \f$ \mathbb{P} \f$ .
-	HaslFormulasTop(double); //!< Constant
+	HaslFormulasTop(double,double,double); //!< Constant confidence interval.
 	HaslFormulasTop(size_t); //!< Expectancy operator use to compute \f$ \mathbb{E} \f$ .
 	HaslFormulasTop(double,double); //!< Hypothesis operator: is the given probability above some thershold.
 	HaslFormulasTop(HaslType , HaslFormulasTop*, HaslFormulasTop*); //!< Build a tree of operator.

@@ -263,8 +263,7 @@ bool ParseBuild(parameters& P) {
 						transname << "->";
 						transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Target];
 						P.HaslFormulasname.push_back(transname.str());
-						P.HaslFormulas.push_back(new HaslFormulasTop(lReader.MyLha.Algebraic.size()+tr,
-																	 lReader.MyLha.ConfidenceLevel));
+						P.HaslFormulas.push_back(new HaslFormulasTop(lReader.MyLha.Algebraic.size()+tr));
 					}
 				}
 				
@@ -281,7 +280,7 @@ bool ParseBuild(parameters& P) {
 			//Add external HASL formula
 			if(P.externalHASL.compare("")==0){
 				P.HaslFormulasname.push_back("preComputedLHA");
-				HaslFormulasTop *ht = new HaslFormulasTop( (size_t)0, P.Level);
+				HaslFormulasTop *ht = new HaslFormulasTop( (size_t)0);
 				P.HaslFormulas.push_back(ht);
 				P.nbAlgebraic = 1;
 			}else{

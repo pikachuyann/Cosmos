@@ -89,11 +89,11 @@ HaslFormulasTop::HaslFormulasTop(){
  * Build a CONSTANT Hasl formula.
  * @param v the value of the constant
  */
-HaslFormulasTop::HaslFormulasTop(double v){
+HaslFormulasTop::HaslFormulasTop(double v1,double v2,double l){
 	TypeOp = CONSTANT;
-	Level = 1;
-	Value = v;
-	Value2= 0;
+	Level = l;
+	Value = v1;
+	Value2= v2;
 	Algebraic = 0;
 	left = NULL;
 	right = NULL;
@@ -341,7 +341,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		}
 			
 		case CONSTANT:
-			return new ConfInt(Value,0);
+			return new ConfInt(Value,Value2);
 			
 		case HASL_PLUS:
 		{
