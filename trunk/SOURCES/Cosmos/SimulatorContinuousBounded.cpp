@@ -32,6 +32,11 @@
 #include <sys/resource.h>
 //#include <boost/math/distributions/normal.hpp>
 
+#include <boost/math/distributions/normal.hpp>
+#include <boost/math/distributions/binomial.hpp>
+#include <limits>
+
+
 SimulatorContinuousBounded::SimulatorContinuousBounded(int m,double e):SimulatorBoundedRE(m){
     epsilon = e;
     //boost::math::normal norm;
@@ -171,28 +176,49 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	//exit(0);
     //int Isucc =0;
     
-    double stdev = 0.0;
     int leftdec = left- fg->left;
+	
+	double Level = 1- ((1-0.99)/fg->right- left);
+	double Value = quantile(boost::math::normal() , (3+Level)/4);
+	
+	double lowtotal=0.0;
+	double uptotal=0.0;
         
     for(int i=0; i<= fg->right- left; i++){
        
         double var = (M2N[i]/IsuccN[i]) - pow((MeanN[i]/ IsuccN[i]),2);
-        double stdevN = 0.0;
-        if(var>0)stdevN = sqrt(var); 
+        double widthN = 0.0;
+        if(var>0)widthN = 2* Value * sqrt(var/IsuccN[i]);
         
-        if(verbose>=2)cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;
+		double lowberN = boost::math::binomial_distribution<>::find_lower_bound_on_p(BatchSize,IsuccN[i], (1-Level)/4);
+		double upberN = boost::math::binomial_distribution<>::find_upper_bound_on_p(BatchSize,IsuccN[i], (1-Level)/4);
+		
+		double lowN = lowberN * (MeanN[i] - widthN/2.0);
+		double upN = upberN * (MeanN[i] + widthN/2.0);
+	
+        if(verbose>=2)cerr << "i:\t" << i+ left<< "\tMean Likelyhood:\t"  << MeanN[i] << "\twidth:\t" << widthN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << "confint: ["<< lowN <<";"<<upN << "]";
         
-        batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i];
-        stdev += fg->weights[i+leftdec] * stdevN ;
+		lowN *= fg->weights[i+leftdec]*(1.0-epsilon) / fg->total_weight;
+		upN	*= fg->weights[i+leftdec] / fg->total_weight;
+		if(verbose>=2)cerr << "Final confint: ["<< lowN <<";"<<upN << "]";
+		
+		lowtotal += lowN;
+		uptotal += upN;
+		
+        /*batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i];
+        width += fg->weights[i+leftdec] * widthN ;*/
         batchResult->Isucc += IsuccN[i];
         
     
 	}
+	/*
     batchResult->Mean[0] /= fg->total_weight;
-    stdev /= fg->total_weight;
+    width /= fg->total_weight;
+    */
+	batchResult->Mean[0] = (lowtotal +uptotal)/2.0 * batchResult->Isucc;
+	
     
-    
-    batchResult->M2[0] = pow(stdev, 2) + pow(batchResult->Mean[0],2);
+    //batchResult->M2[0] = pow(stdev, 2) + pow(batchResult->Mean[0],2);
     //batchResult->M2 /= pow(fg->total_weight,2);
     
     //batchResult->Isucc = IsuccN[0];
@@ -204,8 +230,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl<< endl << endl; 
     
 	
-	cerr << "DIR Result Mean:\t" << batchResult->Mean[0]/batchResult->I << endl;
-	cerr << "DIR Result std:\t" << batchResult->M2[0] << endl << endl << endl<< endl << endl<< endl;
+	cerr << "DIR Result Mean:\t" << (lowtotal +uptotal)/2.0 << endl;
+	cerr << "DIR Confidence interval:\t ["<< lowtotal <<";"<< uptotal << "]" << endl << endl << endl<< endl << endl<< endl;
 
     //batchResult->print();
     //exit(0);
