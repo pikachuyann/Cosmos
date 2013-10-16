@@ -206,6 +206,7 @@ void HaslFormulasTop::setLevel(double l){
 			break;
 			
 		case CONSTANT:
+		case RE_Continuous:
 			break;
 			
 		case HASL_PLUS:
@@ -322,6 +323,10 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 							   (mean2 + width)*u );
 		}
 			
+		case RE_Continuous:
+			//Hack to retrive confidence interval computed by the simulator
+			return new ConfInt(batch.Mean[0],batch.M2[0]);
+			
 		case HYPOTHESIS:
 		{
 		//Implementation of the SPRT.
@@ -415,6 +420,7 @@ double HaslFormulasTop::bound()const{
 		case CDF_PART:
 		case PDF_PART:
 		case RE_AVG:
+		case RE_Continuous:
 			return std::numeric_limits<double>::infinity();
 			
 		case CONSTANT:

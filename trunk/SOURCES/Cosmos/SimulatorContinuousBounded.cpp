@@ -75,8 +75,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	vector<int> IsuccN (Nmax+1,0);
     int n =-1;
     
-	double Dif=0.0;
-	//double Y = 0;
+
 	BatchR* batchResult = new BatchR(A.FormulaVal.size());
 	
 	list<simulationState> statevect((Nmax+1)*BatchSize);
@@ -178,7 +177,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     
     int leftdec = left- fg->left;
 	
-	double Level = 1- ((1-0.99)/fg->right- left);
+	double Level = 1- ((1-0.99)/(fg->right- left));
 	double Value = quantile(boost::math::normal() , (3+Level)/4);
 	
 	double lowtotal=0.0;
@@ -196,11 +195,11 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		double lowN = lowberN * (MeanN[i] - widthN/2.0);
 		double upN = upberN * (MeanN[i] + widthN/2.0);
 	
-        if(verbose>=2)cerr << "i:\t" << i+ left<< "\tMean Likelyhood:\t"  << MeanN[i] << "\twidth:\t" << widthN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << "confint: ["<< lowN <<";"<<upN << "]";
+        if(verbose>=2)cerr << "i:" << i+ left<< "\tMean Likelyhood: "  << MeanN[i] << "\twidth: " << widthN << "\tcoeff: " << fg->weights[i+leftdec]/fg->total_weight << "\tconfint: ["<< lowN <<";"<<upN << "]";
         
 		lowN *= fg->weights[i+leftdec]*(1.0-epsilon) / fg->total_weight;
 		upN	*= fg->weights[i+leftdec] / fg->total_weight;
-		if(verbose>=2)cerr << "Final confint: ["<< lowN <<";"<<upN << "]";
+		if(verbose>=2)cerr << "\tFinal confint: ["<< lowN <<";"<<upN << "]" << endl;
 		
 		lowtotal += lowN;
 		uptotal += upN;
@@ -215,8 +214,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     batchResult->Mean[0] /= fg->total_weight;
     width /= fg->total_weight;
     */
-	batchResult->Mean[0] = (lowtotal +uptotal)/2.0 * batchResult->Isucc;
-	
+	batchResult->Mean[0] = (lowtotal +uptotal)/2.0;
+	batchResult->M2[0] = (uptotal - lowtotal );
     
     //batchResult->M2[0] = pow(stdev, 2) + pow(batchResult->Mean[0],2);
     //batchResult->M2 /= pow(fg->total_weight,2);
