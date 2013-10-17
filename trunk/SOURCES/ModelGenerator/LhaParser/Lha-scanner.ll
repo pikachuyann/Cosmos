@@ -168,6 +168,9 @@ blank [ \t]
 "AVG" {lhalval->name = new std::string (lhatext); return token::AVG;
             Reader.error (*lhalloc, "AVG expected");}
 
+"VAR" {lhalval->name = new std::string (lhatext); return token::VAR;
+	Reader.error (*lhalloc, "VAR expected");}
+
 "PROB" {lhalval->name = new std::string (lhatext); return token::PROB;
 	Reader.error (*lhalloc, "PROB expected");}
 	

@@ -151,7 +151,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandem.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRElha.grml"
@@ -179,15 +179,15 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--loop 60"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--output-trace"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "testtrace.dat"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/philosophe/philo2.grml"
@@ -198,16 +198,16 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/TandemQN/tqn.gspn"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/Cosmos/Examples/testDistribution/testgeometric.grml"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/TandemQN/tqn.lha"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/Cosmos/Examples/testDistribution/testdistrib.grml"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--gnuplot-driver"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--outputdata"
