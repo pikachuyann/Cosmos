@@ -154,14 +154,14 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                                 MeanN[i] += Result.second[0];
                                 M2N[i] += pow(Result.second[0] , 2);
 
-				batchResult->Mean[3*i+1]++;
+				batchResult->Mean[3*i+1]+=1;
 				batchResult->Mean[3*i+2] += Result.second[0];
 				batchResult->M2[3*i+2] += pow(Result.second[0] , 2);
                             }
                             //cerr << ")finish" << endl;
                             
                         }
-                        batchResult->M2[3*i+1]++;
+                        batchResult->M2[3*i+1]+=1;
                         batchResult->I++;
                         
                         
@@ -202,7 +202,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		double lowN = lowberN * (MeanN[i] - widthN/2.0);
 		double upN = upberN * (MeanN[i] + widthN/2.0);
 	
-        if(false && verbose>=2)cerr << "i:" << i+ left<< "\tMean Likelyhood: "  << MeanN[i] << "\twidth: " << widthN << "\tcoeff: " << fg->weights[i+leftdec]/fg->total_weight << "\tconfint: ["<< lowN <<";"<<upN << "]";
+		if(true && verbose>=2)cerr << "i:" << i+ left<< "\tMean Likelyhood: "  << MeanN[i] << "\twidth: " << widthN << "\tcoeff: " << fg->weights[i+leftdec]/fg->total_weight << "\tconfint: ["<< lowN <<";"<<upN << "]" << endl;
         
 		lowN *= fg->weights[i+leftdec]*(1.0-epsilon) / fg->total_weight;
 		upN	*= fg->weights[i+leftdec] / fg->total_weight;

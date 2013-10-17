@@ -333,6 +333,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			
 	  case RE_Continuous:
 	    {
+	      batch.print();
 	      size_t N = batch.TableLength/3;
 	      std::cout << "tablelength = "<< batch.TableLength << std::endl;
 	      double LevelN = 1- ((1-Level)/N);
