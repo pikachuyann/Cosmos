@@ -576,8 +576,12 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
 			boost::uniform_real<> UNIF(0, 1);
 			boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
 			double p = gen();
-			if (p >= param[0]) return param[1];
-			else return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
+			return (param[1] * (ceil(log(p) / log(1 - param[0]))));
+			/*if (p >= param[0]){
+				return param[1];
+			} else {
+				return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
+			}*/
 		}
 		case ERLANG:
         {//ERLANG           
