@@ -210,6 +210,7 @@ void HaslFormulasTop::setLevel(double l){
 			break;
 			
 		case HASL_PLUS:
+		case HASL_MINUS:
 		case HASL_TIME:
 		case HASL_DIV:
 			Level=l;
@@ -360,6 +361,20 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			delete lci;
 			delete rci;
 			
+			return new ConfInt(mean,low,up);
+		}
+		case HASL_MINUS:
+		{
+			ConfInt* lci = left->eval(batch);
+			ConfInt* rci = right->eval(batch);
+		
+			double mean = lci->mean-rci->mean;
+			double low = lci->low-rci->low;
+			double up = lci->up -rci->up;
+		
+			delete lci;
+			delete rci;
+		
 			return new ConfInt(mean,low,up);
 		}
 			

@@ -41,6 +41,7 @@ enum HaslType {
 	CDF_PART,
 	CONSTANT,
 	HASL_PLUS,
+	HASL_MINUS,
 	HASL_TIME,
 	HASL_DIV,
 	RE_AVG,

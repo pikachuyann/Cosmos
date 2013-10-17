@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.7.  */
+/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2012 Free Software Foundation, Inc.
+      Copyright (C) 2002-2013 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 /* First part of user declarations.  */
 
-/* Line 279 of lalr1.cc  */
+/* Line 283 of lalr1.cc  */
 #line 40 "Eval-parser.tab.cc"
 
 
@@ -43,10 +43,10 @@
 
 /* User implementation prologue.  */
 
-/* Line 285 of lalr1.cc  */
+/* Line 289 of lalr1.cc  */
 #line 48 "Eval-parser.tab.cc"
 /* Unqualified %code blocks.  */
-/* Line 286 of lalr1.cc  */
+/* Line 290 of lalr1.cc  */
 #line 37 "Eval-parser.yy"
 
 #include "Eval.hpp"
@@ -55,7 +55,7 @@
 
 
 
-/* Line 286 of lalr1.cc  */
+/* Line 290 of lalr1.cc  */
 #line 60 "Eval-parser.tab.cc"
 
 
@@ -150,7 +150,7 @@ do {					\
 
 
 namespace eval {
-/* Line 353 of lalr1.cc  */
+/* Line 357 of lalr1.cc  */
 #line 155 "Eval-parser.tab.cc"
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -221,38 +221,39 @@ namespace eval {
     std::ostream& yyoutput = yyo;
     YYUSE (yyoutput);
     switch (yytype)
-      {
-        case 3: /* str */
-/* Line 423 of lalr1.cc  */
+    {
+      case 3: /* str */
+/* Line 425 of lalr1.cc  */
 #line 67 "Eval-parser.yy"
         { debug_stream () << *((*yyvaluep).name); };
-/* Line 423 of lalr1.cc  */
+/* Line 425 of lalr1.cc  */
 #line 231 "Eval-parser.tab.cc"
         break;
       case 4: /* rval */
-/* Line 423 of lalr1.cc  */
+/* Line 425 of lalr1.cc  */
 #line 71 "Eval-parser.yy"
         { debug_stream () << ((*yyvaluep).RealVal); };
-/* Line 423 of lalr1.cc  */
+/* Line 425 of lalr1.cc  */
 #line 238 "Eval-parser.tab.cc"
         break;
       case 5: /* ival */
-/* Line 423 of lalr1.cc  */
+/* Line 425 of lalr1.cc  */
 #line 70 "Eval-parser.yy"
         { debug_stream () << ((*yyvaluep).IntVal); };
-/* Line 423 of lalr1.cc  */
+/* Line 425 of lalr1.cc  */
 #line 245 "Eval-parser.tab.cc"
         break;
       case 21: /* exp */
-/* Line 423 of lalr1.cc  */
+/* Line 425 of lalr1.cc  */
 #line 71 "Eval-parser.yy"
         { debug_stream () << ((*yyvaluep).RealVal); };
-/* Line 423 of lalr1.cc  */
+/* Line 425 of lalr1.cc  */
 #line 252 "Eval-parser.tab.cc"
         break;
-       default:
-	  break;
-      }
+
+      default:
+        break;
+    }
   }
 
 
@@ -280,18 +281,18 @@ namespace eval {
       YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
     switch (yytype)
-      {
-        case 3: /* str */
-/* Line 455 of lalr1.cc  */
+    {
+      case 3: /* str */
+/* Line 452 of lalr1.cc  */
 #line 68 "Eval-parser.yy"
         { delete ((*yyvaluep).name); };
-/* Line 455 of lalr1.cc  */
-#line 290 "Eval-parser.tab.cc"
+/* Line 452 of lalr1.cc  */
+#line 291 "Eval-parser.tab.cc"
         break;
 
-	default:
-	  break;
-      }
+      default:
+        break;
+    }
   }
 
   void
@@ -383,9 +384,9 @@ namespace eval {
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
        stacks with a primary value.  */
-    yystate_stack_ = state_stack_type (0);
-    yysemantic_stack_ = semantic_stack_type (0);
-    yylocation_stack_ = location_stack_type (0);
+    yystate_stack_.clear ();
+    yysemantic_stack_.clear ();
+    yylocation_stack_.clear ();
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yylloc);
 
@@ -496,67 +497,67 @@ namespace eval {
     switch (yyn)
       {
           case 2:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 81 "Eval-parser.yy"
     {Evaluate.IntResult=(int) (yysemantic_stack_[(1) - (1)].RealVal);Evaluate.RealResult=(yysemantic_stack_[(1) - (1)].RealVal);}
     break;
 
   case 3:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 83 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(1) - (1)].IntVal);}
     break;
 
   case 4:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 84 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(1) - (1)].RealVal);}
     break;
 
   case 5:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 85 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (2)].RealVal);}
     break;
 
   case 6:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 86 "Eval-parser.yy"
     {YYABORT; }
     break;
 
   case 7:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 87 "Eval-parser.yy"
     {(yyval.RealVal)=-(yysemantic_stack_[(2) - (2)].RealVal);}
     break;
 
   case 8:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 88 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)+(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 9:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 89 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)*(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 10:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 90 "Eval-parser.yy"
     {(yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)-(yysemantic_stack_[(3) - (3)].RealVal);}
     break;
 
   case 11:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 91 "Eval-parser.yy"
     {(yyval.RealVal)=double((yysemantic_stack_[(2) - (2)].RealVal));}
     break;
 
   case 12:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 92 "Eval-parser.yy"
     {if((yysemantic_stack_[(3) - (3)].RealVal)==0)	  {cout<<"Division by zero !";YYABORT;} 
 					 else (yyval.RealVal)=(yysemantic_stack_[(3) - (1)].RealVal)/double (yysemantic_stack_[(3) - (3)].RealVal);
@@ -564,32 +565,32 @@ namespace eval {
     break;
 
   case 13:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 95 "Eval-parser.yy"
     {(yyval.RealVal)=pow((yysemantic_stack_[(3) - (1)].RealVal),(yysemantic_stack_[(3) - (3)].RealVal));}
     break;
 
   case 14:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 96 "Eval-parser.yy"
     {if((yysemantic_stack_[(6) - (3)].RealVal)<=(yysemantic_stack_[(6) - (5)].RealVal)) (yyval.RealVal)=(yysemantic_stack_[(6) - (3)].RealVal); else (yyval.RealVal)=(yysemantic_stack_[(6) - (5)].RealVal);}
     break;
 
   case 15:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 97 "Eval-parser.yy"
     {if((yysemantic_stack_[(6) - (3)].RealVal)>=(yysemantic_stack_[(6) - (5)].RealVal)) (yyval.RealVal)=(yysemantic_stack_[(6) - (3)].RealVal);	 else (yyval.RealVal)=(yysemantic_stack_[(6) - (5)].RealVal);}
     break;
 
   case 16:
-/* Line 670 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 98 "Eval-parser.yy"
     {(yyval.RealVal)=floor((yysemantic_stack_[(4) - (3)].RealVal));}
     break;
 
 
-/* Line 670 of lalr1.cc  */
-#line 593 "Eval-parser.tab.cc"
+/* Line 664 of lalr1.cc  */
+#line 594 "Eval-parser.tab.cc"
       default:
         break;
       }
@@ -1123,9 +1124,9 @@ namespace eval {
 
 
 } // eval
-/* Line 1141 of lalr1.cc  */
-#line 1128 "Eval-parser.tab.cc"
-/* Line 1142 of lalr1.cc  */
+/* Line 1135 of lalr1.cc  */
+#line 1129 "Eval-parser.tab.cc"
+/* Line 1136 of lalr1.cc  */
 #line 100 "Eval-parser.yy"
 
 

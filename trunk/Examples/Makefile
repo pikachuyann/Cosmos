@@ -2,6 +2,7 @@
 all:
 	(cd TandemQN && ocaml test.ml $(INTC))
 	(cd pi && ocaml test.ml $(INTC))
+	(cd testDistribution && ocaml test.ml $(INTC))
 	(cd Workflow-Net && ocaml test.ml $(INTC))
 	(cd QueueMM1 && ocaml test.ml $(INTC))
 	(cd RareEventUnbounded && ocaml test.ml $(INTC))
