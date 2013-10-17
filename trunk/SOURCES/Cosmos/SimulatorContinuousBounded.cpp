@@ -204,23 +204,18 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		lowtotal += lowN;
 		uptotal += upN;
 		
-        /*batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i];
-        width += fg->weights[i+leftdec] * widthN ;*/
-        batchResult->Isucc += IsuccN[i];
+		batchResult->Isucc += IsuccN[i];
         
     
 	}
-	/*
-    batchResult->Mean[0] /= fg->total_weight;
-    width /= fg->total_weight;
-    */
+	
+	//Add the error made on the left of the truncation point.
+	uptotal += (epsilon/2.0)*(MeanN[0]/ IsuccN[0]);
+	
+	
 	batchResult->Mean[0] = (lowtotal +uptotal)/2.0;
 	batchResult->M2[0] = (uptotal - lowtotal );
-    
-    //batchResult->M2[0] = pow(stdev, 2) + pow(batchResult->Mean[0],2);
-    //batchResult->M2 /= pow(fg->total_weight,2);
-    
-    //batchResult->Isucc = IsuccN[0];
+   
     cerr << endl;
 	
     rusage ruse;
