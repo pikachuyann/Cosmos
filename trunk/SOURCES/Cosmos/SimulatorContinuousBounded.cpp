@@ -76,8 +76,10 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     int n =-1;
     
 
-	BatchR* batchResult = new BatchR(A.FormulaVal.size());
-	
+    BatchR* batchResult = new BatchR(3*(Nmax+1));
+    for(int i=0; i<= fg->right- left; i++)
+      batchResult->Mean[3*i] = fg->weights[i+ left- fg->left] /fg->total_weight;
+
 	list<simulationState> statevect((Nmax+1)*BatchSize);
 	//delete EQ;
 	
@@ -134,6 +136,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     if((!EQ->isEmpty()) && continueb) {
                         it->saveState(&N,&A,&AE,&EQ);
                     } else {
+		      int i = it->maxStep - left;
                         if (Result.first) {
                             //cerr << "n:\t" << n <<" Result:" << Result.second << " maxStep:\t" << it->maxStep <<endl;
                             //batchResult->Isucc++;
@@ -144,17 +147,21 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 							
                             //for (int i= max(0,n-fg->left); i<fg->right - fg->left; i++) 
                             {
-                                int i = it->maxStep - left;
+                                
                                 //cerr << "i:\t" << i << endl;
                                 IsuccN[i]++;
                                 
                                 MeanN[i] += Result.second[0];
                                 M2N[i] += pow(Result.second[0] , 2);
+
+				batchResult->Mean[3*i+1]++;
+				batchResult->Mean[3*i+2] += Result.second[0];
+				batchResult->M2[3*i+2] += pow(Result.second[0] , 2);
                             }
                             //cerr << ")finish" << endl;
                             
                         }
-                        
+                        batchResult->M2[3*i+1]++;
                         batchResult->I++;
                         
                         
@@ -195,11 +202,11 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		double lowN = lowberN * (MeanN[i] - widthN/2.0);
 		double upN = upberN * (MeanN[i] + widthN/2.0);
 	
-        if(verbose>=2)cerr << "i:" << i+ left<< "\tMean Likelyhood: "  << MeanN[i] << "\twidth: " << widthN << "\tcoeff: " << fg->weights[i+leftdec]/fg->total_weight << "\tconfint: ["<< lowN <<";"<<upN << "]";
+        if(false && verbose>=2)cerr << "i:" << i+ left<< "\tMean Likelyhood: "  << MeanN[i] << "\twidth: " << widthN << "\tcoeff: " << fg->weights[i+leftdec]/fg->total_weight << "\tconfint: ["<< lowN <<";"<<upN << "]";
         
 		lowN *= fg->weights[i+leftdec]*(1.0-epsilon) / fg->total_weight;
 		upN	*= fg->weights[i+leftdec] / fg->total_weight;
-		if(verbose>=2)cerr << "\tFinal confint: ["<< lowN <<";"<<upN << "]" << endl;
+		if(false && verbose>=2)cerr << "\tFinal confint: ["<< lowN <<";"<<upN << "]" << endl;
 		
 		lowtotal += lowN;
 		uptotal += upN;
@@ -211,11 +218,11 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	
 	//Add the error made on the left of the truncation point.
 	uptotal += (epsilon/2.0)*(MeanN[0]/ IsuccN[0]);
-	
+	/*
 	
 	batchResult->Mean[0] = (lowtotal +uptotal)/2.0;
 	batchResult->M2[0] = (uptotal - lowtotal );
-   
+    */
     cerr << endl;
 	
     rusage ruse;

@@ -337,6 +337,7 @@ bool ParseBuild(parameters& P) {
 				it != P.HaslFormulas.end(); ++it)
 				if ( (*it)->TypeOp == EXPECTANCY ){
 					(*it)->TypeOp = RE_Continuous;
+					
 				}
 		}else{
 			vector<HaslFormulasTop*> tmpRE;
@@ -477,7 +478,7 @@ int main(int argc, char** argv) {
 		}
 	}
 	
-	//Lauch the client for generating the state space or for building.
+	//Lauch the client for generating the state space or for launching simulators.
 	if(P.computeStateSpace>0){
 		launchExport(P);
 	} else launchServer(P);

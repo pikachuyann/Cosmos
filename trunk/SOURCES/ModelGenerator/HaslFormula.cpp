@@ -31,6 +31,9 @@
 #include <boost/math/distributions/binomial.hpp>
 #include <limits>
 
+/**
+ * Trivial confidence interval containing all R.
+ */
 ConfInt::ConfInt(){
 	mean = 0;
 	low = - std::numeric_limits<double>::infinity();
@@ -200,13 +203,17 @@ void HaslFormulasTop::setLevel(double l){
 			//Here we divide the error by two because half the error come from the bernoulli evaluation.
 			Value = quantile(boost::math::normal() , 0.75 + l / 4.0);
 			break;
-			
+
+		case RE_Continuous:
+		  Level = l;
+		  Value = quantile(boost::math::normal() , 0.75 + l / 4.0);
+		  break;
+	
 		case HYPOTHESIS:
 			Level = l;
 			break;
 			
 		case CONSTANT:
-		case RE_Continuous:
 			break;
 			
 		case HASL_PLUS:
@@ -324,11 +331,49 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 							   (mean2 + width)*u );
 		}
 			
-		case RE_Continuous:
-			//Hack to retrive confidence interval computed by the simulator
-			return new ConfInt(batch.Mean[0],batch.M2[0]);
-			
-		case HYPOTHESIS:
+	  case RE_Continuous:
+	    {
+	      size_t N = batch.TableLength/3;
+	      std::cout << "tablelength = "<< batch.TableLength << std::endl;
+	      double LevelN = 1- ((1-Level)/N);
+	      double ValueN = quantile(boost::math::normal() , (3+LevelN)/4);
+	      
+	      ConfInt* totalInt = new ConfInt(0.0,0.0);
+	      
+	      for(int i=0; i< N; i++){
+		
+		double var = (batch.M2[3*i+2]/batch.Mean[3*i+1]) - pow((batch.Mean[3*i+2]/batch.Mean[3*i+1]),2);
+		double widthN = 0.0;
+		if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[3*i+1]);
+		
+		double lowberN = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.M2[3*i+1],batch.Mean[3*i+1], (1-Level)/4);
+		double upberN = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.M2[3*i+1],batch.Mean[3*i+1], (1-Level)/4);
+		
+		double lowN = lowberN * (batch.Mean[3*i+2] - widthN/2.0);
+		double upN = upberN * (batch.Mean[3*i+2] + widthN/2.0);
+		
+		if(true)std::cerr << "i:" << i<< "\tMean Likelyhood: "  << batch.Mean[3*i+2] << "\twidth: " << widthN << "\tcoeff: " << batch.Mean[3*i] << "\tconfint: ["<< lowN <<";"<<upN << "]";
+		
+		lowN *= batch.Mean[3*i]; // *(1.0-epsilon); To Fix
+		upN  *= batch.Mean[3*i];
+		if(true)std::cerr << "\tFinal confint: ["<< lowN <<";"<<upN << "]" << std::endl;
+		
+		totalInt->low += lowN;
+	        totalInt->up += upN;
+		
+	      }
+	      
+	      //Add the error made on the left of the truncation point.
+	      //uptotal += (epsilon/2.0)*(MeanN[0]/ IsuccN[0]);
+	      
+	    
+	      
+	      
+	      //Hack to retrive confidence interval computed by the simulator
+	      return totalInt;
+	    }		
+	    
+	  case HYPOTHESIS:
 		{
 		//Implementation of the SPRT.
 		
