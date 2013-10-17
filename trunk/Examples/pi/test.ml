@@ -1,6 +1,6 @@
 #use "../testTeamCity.ml";;
 
-test_cosmos_grml "pi" 3.1415 "--max-run 5000 --HASL-formula \"(0+4*AVG(Last(OK))/4);\" --outputdata test --output-raw testraw"
+test_cosmos_grml "pi" ["",3.1415] "--max-run 5000 --HASL-formula \"(0+4*AVG(Last(OK))/4);\" --outputdata test --output-raw testraw"
 
 let _ =
 	printf "##teamcity[testStarted name='Test Interactive' captureStandardOutput='<true>']\n";
