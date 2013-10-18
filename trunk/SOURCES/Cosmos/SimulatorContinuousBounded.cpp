@@ -184,8 +184,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         
         if(verbose>=2)cerr << "i:\t" << i+ left<< "\tMean:\t"  << MeanN[i] << "\tstdev:\t" << stdevN << "\tcoeff:\t" << fg->weights[i+leftdec]/fg->total_weight << endl;
         
-        batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i];
-        stdev += fg->weights[i+leftdec] * stdevN;
+        batchResult->Mean[0] += fg->weights[i+leftdec] * MeanN[i] * IsuccN[i] / BatchSize;
+        stdev += fg->weights[i+leftdec] * stdevN  * IsuccN[i] / BatchSize;
         batchResult->Isucc += IsuccN[i];
         //batchResult->I = IsuccN[0];
         
