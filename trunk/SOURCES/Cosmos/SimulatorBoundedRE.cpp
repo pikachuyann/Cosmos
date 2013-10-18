@@ -115,6 +115,15 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 				delete EQ;
 				it = statevect.erase(it);
 				it--;
+				
+				//log the result
+				if (Result.first && logResult){
+					for(size_t i=0; i<Result.second.size();i++){
+						if (i>0)logvalue << "\t";
+						logvalue << Result.second[i];
+					}
+					logvalue << endl;
+				}
 			}
 			
 			
