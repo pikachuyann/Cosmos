@@ -5,6 +5,11 @@ open Printf
 
 exception CmdFail of int
 
+
+let teamCity = ref true
+
+let _ = if (Array.length Sys.argv) >1 then teamCity := false
+
 let cosmos_path = "../../bin/Cosmos"
 
 let cosmos_options = ("--level 0.9999"^ ( 
@@ -17,6 +22,12 @@ let cosmos_options = ("--level 0.9999"^ (
  let _ = Sys.getenv "COV" in " --gppflags --coverage --gppcmd clang++"
 *)
 
+let pe () = print_char (char_of_int 0x1b)
+let print_color s c =
+  pe ();
+  printf "[1;%im%s" c s;
+  pe ();
+  print_string "[0m"
 
 let dots = regexp ":\t"
 let confintdel = regexp "\\[\\| , \\|\\]"
@@ -123,7 +134,7 @@ let exec_cosmos model prop batch nbjob opt printcmd =
   result.date <- string_date ();
   result
 
-let test_cosmos testname model prop opt v = 
+let test_cosmosTeamCity testname model prop opt v = 
    printf "##teamcity[testStarted name='%s' captureStandardOutput='<true>']\n" testname;
   flush stdout;
   try let result = exec_cosmos model prop 1000 1 opt true in
@@ -134,6 +145,22 @@ let test_cosmos testname model prop opt v =
 
   with CmdFail(ret) ->
     printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" testname testname ret
+
+let test_cosmosBash testname model prop opt v =
+  print_color (sprintf "testStarted: %s \n" testname) 33;
+  flush stdout;
+  try let result = exec_cosmos model prop 1000 1 opt true in
+      printf "result: %e\nconfint: [%e,%e]\n" result.mean (fst result.confInt) (snd result.confInt);
+      if v > (fst result.confInt) & (snd result.confInt) > v
+      then print_color (sprintf "testFinished: %s expected result %e is in confidence interval |[%e,%e|]\n" testname v (fst result.confInt) (snd result.confInt)) 32
+      else print_color (sprintf "testFailed: %s Test %s fail: expected result %e is outside confidence interval |[%e,%e|]\n" testname testname v (fst result.confInt) (snd result.confInt)) 31
+
+  with CmdFail(ret) ->
+    print_color (sprintf "testFailed: %s Test %s fail: Cosmos return value:%i\n" testname testname ret) 31
+
+let test_cosmos t m p o v =
+  if !teamCity then test_cosmosTeamCity t m p o v
+  else  test_cosmosBash t m p o v
 
 let test_cosmos_gspn n v o =
   test_cosmos n (n^".gspn") (n^".lha") o v

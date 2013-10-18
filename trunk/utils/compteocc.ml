@@ -3,7 +3,7 @@
 
 let s = Sys.argv.(1);;
 
-let n = 4.0;;
+let n = 40.0;;
 
 let fin = open_in s in
 
