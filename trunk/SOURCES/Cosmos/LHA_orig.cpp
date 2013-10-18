@@ -169,17 +169,6 @@ void LHA::getFinalValues(const abstractMarking& m,vector<double>& v){
 }
 
 /**
- *	This function is called when the automaton reach a final state.
- *	The result of path formula is stored in vector v
- */
-void LHA::getFinalValues(const abstractMarking& m,vector<double>& v){
-	UpdateLinForm(m);
-	UpdateLhaFuncLast();
-	UpdateFormulaVal();
-	v=FormulaVal;
-}
-
-/**
  * @return true if the automaton is in a final state
  */
 bool LHA::isFinal()const {
