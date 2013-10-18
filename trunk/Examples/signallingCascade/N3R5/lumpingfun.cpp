@@ -61,19 +61,14 @@ void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){
 	vect[reducePL_RE_ERK_MEKPF] = remaining(Marking.P->_PL_ERK_MEKPF); //To Complete
 	vect[reducePL_RE_ERK] = tock; //remaining(Marking.P->_PL_ERK); //To Complete
 	 */
+	vect[reducePL_RE_ERKPP] = Marking.P->_PL_ERKPP; //To Complete
 	vect[reducePL_RE_ERKPP_Phase3] = Marking.P->_PL_ERKPP_Phase3; //To Complete
-	
-	vect[reducePL_RE_ERKP_MEKPP] = fmin(2,Marking.P->_PL_ERKP_MEKPP); //To Complete
-	vect[reducePL_RE_ERKPP] = Marking.P->_PL_ERKPP +fmax(0,Marking.P->_PL_ERKP_MEKPP-2); //To Complete
-	
-	
+	vect[reducePL_RE_ERKP_MEKPP] = Marking.P->_PL_ERKP_MEKPP; //To Complete
+	vect[reducePL_RE_ERKP] = Marking.P->_PL_ERKP; //To Complete
 	vect[reducePL_RE_ERKP_Phase3] = Marking.P->_PL_ERKP_Phase3; //To Complete
-	
-	vect[reducePL_RE_ERK_MEKPF] = fmin(2-vect[reducePL_RE_ERKP_MEKPP] ,Marking.P->_PL_ERK_MEKPF); //To Complete
-	vect[reducePL_RE_ERKP] = Marking.P->_PL_ERKP + fmax(0,Marking.P->_PL_ERK_MEKPF-2+vect[reducePL_RE_ERKP_MEKPP]); //To Complete
-	
+	vect[reducePL_RE_ERK_MEKPF] = Marking.P->_PL_ERK_MEKPF; //To Complete
 	vect[reducePL_RE_ERK] = Marking.P->_PL_ERK; //To Complete*/
-	
+
 	
 	
 	
