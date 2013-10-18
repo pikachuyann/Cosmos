@@ -1583,7 +1583,7 @@ namespace lha {
 /* Line 664 of lalr1.cc  */
 #line 792 "Lha-parser.yy"
     {
-	(yyval.TOPHASL) = new HaslFormulasTop(0.0,(double)(yysemantic_stack_[(1) - (1)].IntVal));
+	(yyval.TOPHASL) = new HaslFormulasTop((double)(yysemantic_stack_[(1) - (1)].IntVal),(double)(yysemantic_stack_[(1) - (1)].IntVal),1.0);
 }
     break;
 
@@ -1591,7 +1591,7 @@ namespace lha {
 /* Line 664 of lalr1.cc  */
 #line 795 "Lha-parser.yy"
     {
-	(yyval.TOPHASL) = new HaslFormulasTop(0.0,(double)(yysemantic_stack_[(1) - (1)].RealVal));
+	(yyval.TOPHASL) = new HaslFormulasTop((double)(yysemantic_stack_[(1) - (1)].RealVal),(double)(yysemantic_stack_[(1) - (1)].RealVal),1.0);
 }
     break;
 
