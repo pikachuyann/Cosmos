@@ -108,7 +108,7 @@ void BatchR::unionR(const BatchR *batch){
        	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M3[i]),sizeof(Mean[0]));
        	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M4[i]),sizeof(Mean[0]));
     }
-    if(writesize != (sizeof(I) + sizeof(Isucc) + TableLength * (sizeof(bool) + 4*sizeof(double)))){
+    if(writesize != (sizeof(I) + sizeof(Isucc)+ sizeof(Isucc) + TableLength * (sizeof(bool) + 4*sizeof(double)))){
       cerr << "Fail to write to stdout";
       exit(EXIT_FAILURE);
     } 
