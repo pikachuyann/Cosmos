@@ -72,7 +72,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     
     vector<double> MeanN (Nmax+1,0.0);
     vector<double> M2N (Nmax+1,0.0);
-	vector<int> IsuccN (Nmax+1,0);
+    vector<int> IsuccN (Nmax+1,0);
     int n =-1;
     
 
@@ -154,6 +154,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                                 MeanN[i] += Result.second[0];
                                 M2N[i] += pow(Result.second[0] , 2);
 
+				batchResult->Isucc+=1;
 				batchResult->Mean[3*i+1]+=1;
 				batchResult->Mean[3*i+2] += Result.second[0];
 				batchResult->M2[3*i+2] += pow(Result.second[0] , 2);
@@ -215,9 +216,10 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         
     
 	}
-	
+    
 	//Add the error made on the left of the truncation point.
 	uptotal += (epsilon/2.0)*(MeanN[0]/ IsuccN[0]);
+    
 	/*
 	
 	batchResult->Mean[0] = (lowtotal +uptotal)/2.0;
@@ -227,12 +229,13 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	
     rusage ruse;
     getrusage(RUSAGE_SELF, &ruse);
-    cerr << "\033[A\033[2K" << "\033[A\033[2K" << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
+    //cerr << "\033[A\033[2K" << "\033[A\033[2K"
+    cerr << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl<< endl << endl; 
     
 	
-	cerr << "DIR Result Mean:\t" << (lowtotal +uptotal)/2.0 << endl;
-	cerr << "DIR Confidence interval:\t ["<< lowtotal <<";"<< uptotal << "]" << endl << endl << endl<< endl << endl<< endl;
+    	cerr << "DIR Result Mean:\t" << (lowtotal +uptotal)/2.0 << endl;
+    cerr << "DIR Confidence interval:\t ["<< lowtotal <<";"<< uptotal << "]" << endl << endl << endl<< endl << endl<< endl;
 
     //batchResult->print();
     //exit(0);

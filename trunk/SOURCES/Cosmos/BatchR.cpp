@@ -167,8 +167,8 @@ bool BatchR::inputR(FILE* f) {
 }
 
 void BatchR::print()const{
-  cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl << "TableLength:\t" << TableLength;
+  cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl << "TableLength:\t" << TableLength << endl;
     for(size_t i =0; i< TableLength; i++){
-        cerr << "Mean:\t" << Mean[i]/Isucc << endl << "M2:\t" << M2[i]/Isucc << endl << "M3:\t" << M3[i]/Isucc << endl <<"M4:\t" << M4[i]/Isucc << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
+        cerr << "Mean:\t" << Mean[i] << endl << "M2:\t" << M2[i] << endl << "M3:\t" << M3[i] << endl <<"M4:\t" << M4[i] << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
     }
 }
