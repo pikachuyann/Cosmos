@@ -332,21 +332,29 @@ bool ParseBuild(parameters& P) {
 		cmd = "cp lumpingfun.cpp " + P.tmpPath +"/lumpingfun.cpp";
 		if (system(cmd.c_str())) return false;
 		
-		vector<HaslFormulasTop*> tmpRE;
-		vector<string> tmpREName;
-		for(vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
-			it != P.HaslFormulas.end(); ++it)
-			if ( (*it)->TypeOp == EXPECTANCY ){
-				(*it)->TypeOp = RE_AVG;
-				HaslFormulasTop *HaslCopy = new HaslFormulasTop(**it);
-				HaslCopy->TypeOp = RE_Likelyhood;
-				tmpRE.push_back(HaslCopy);
-				tmpREName.push_back("Likelyhood_"+ P.HaslFormulasname[it -P.HaslFormulas.begin() ] );
+		if(P.BoundedContinuous){
+			for(vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
+				it != P.HaslFormulas.end(); ++it)
+				if ( (*it)->TypeOp == EXPECTANCY ){
+					(*it)->TypeOp = RE_Continuous;
+				}
+		}else{
+			vector<HaslFormulasTop*> tmpRE;
+			vector<string> tmpREName;
+			for(vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
+				it != P.HaslFormulas.end(); ++it)
+				if ( (*it)->TypeOp == EXPECTANCY ){
+					(*it)->TypeOp = RE_AVG;
+					HaslFormulasTop *HaslCopy = new HaslFormulasTop(**it);
+					HaslCopy->TypeOp = RE_Likelyhood;
+					tmpRE.push_back(HaslCopy);
+					tmpREName.push_back("Likelyhood_"+ P.HaslFormulasname[it -P.HaslFormulas.begin() ] );
+				}
+			for(vector<HaslFormulasTop*>::iterator it = tmpRE.begin();
+				it != tmpRE.end(); ++it){
+				P.HaslFormulas.push_back(*it);
+				P.HaslFormulasname.push_back(tmpREName[it-tmpRE.begin()]);
 			}
-		for(vector<HaslFormulasTop*>::iterator it = tmpRE.begin();
-			it != tmpRE.end(); ++it){
-			P.HaslFormulas.push_back(*it);
-			P.HaslFormulasname.push_back(tmpREName[it-tmpRE.begin()]);
 		}
 	}
 	

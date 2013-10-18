@@ -44,7 +44,8 @@ enum HaslType {
 	HASL_TIME,
 	HASL_DIV,
 	RE_AVG,
-	RE_Likelyhood
+	RE_Likelyhood,
+	RE_Continuous
 };
 	
 /**
