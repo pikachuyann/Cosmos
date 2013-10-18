@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
+		<key>CosmosMakefile.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
 		<key>CosmosSim - statespace.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -39,9 +44,24 @@
 			<key>orderHint</key>
 			<integer>6</integer>
 		</dict>
+		<key>makefile.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>0312873E180B0A220018560F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>03128742180B0A4F0018560F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>0341401B15AEF45E0009FEFC</key>
 		<dict>
 			<key>primary</key>
