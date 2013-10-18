@@ -1,0 +1,5 @@
+
+bin_PROGRAMS = Cosmos
+Cosmos_SOURCES = Cosmos.cpp Eval/Eval.cpp GspnParser/Gspn-Reader.cpp GspnParser/Gspn_gmlparser.cpp HaslFormula.cpp LhaParser/Lha-Reader.cpp LhaParser/Lha_gmlparser.cpp casesWriter.cpp parameters.cpp result.cpp server.cpp Eval/Eval.hpp GspnParser/Gspn-Reader.hpp GspnParser/Gspn_gmlparser.hpp HaslFormula.hpp LhaParser/Lha-Reader.hpp LhaParser/Lha_gmlparser.hpp casesWriter.hpp parameters.hpp result.hpp server.hpp Eval/Eval-parser.tab.cc GspnParser/Gspn-parser.tab.cc LhaParser/Lha-parser.tab.cc Eval/Eval-parser.tab.hh Eval/location.hh Eval/position.hh Eval/stack.hh GspnParser/Gspn-parser.tab.hh GspnParser/location.hh GspnParser/position.hh GspnParser/stack.hh LhaParser/Lha-parser.tab.hh LhaParser/location.hh LhaParser/position.hh LhaParser/stack.hh ../libgml/expatmodelparser.cc ../libgml/modelwriter.cc ../libgml/expatmodelparser.hh ../libgml/modelhandler.hh ../libgml/modelwriter.hh ../libgml/tree/tree.hh ../libgml/tree/tree_util.hh ../Cosmos/BatchR.cpp ../Cosmos/BatchR.hpp
+
+AM_CPPFLAGS = -I../libgml
