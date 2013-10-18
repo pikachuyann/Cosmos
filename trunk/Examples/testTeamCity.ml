@@ -199,6 +199,22 @@ let test_cosmos t m p o v =
   if !teamCity then test_cosmosTeamCity t m p o v
   else  test_cosmosBash t m p o v
 
+let test_cosmosBash testname model prop opt v =
+  print_color (sprintf "testStarted: %s \n" testname) 33;
+  flush stdout;
+  try let result = exec_cosmos model prop 1000 1 opt true in
+      printf "result: %e\nconfint: [%e,%e]\n" result.mean (fst result.confInt) (snd result.confInt);
+      if v > (fst result.confInt) & (snd result.confInt) > v
+      then print_color (sprintf "testFinished: %s expected result %e is in confidence interval |[%e,%e|]\n" testname v (fst result.confInt) (snd result.confInt)) 32
+      else print_color (sprintf "testFailed: %s Test %s fail: expected result %e is outside confidence interval |[%e,%e|]\n" testname testname v (fst result.confInt) (snd result.confInt)) 31
+
+  with CmdFail(ret) ->
+    print_color (sprintf "testFailed: %s Test %s fail: Cosmos return value:%i\n" testname testname ret) 31
+
+let test_cosmos t m p o v =
+  if !teamCity then test_cosmosTeamCity t m p o v
+  else  test_cosmosBash t m p o v
+
 let test_cosmos_gspn n v o =
   test_cosmos n (n^".gspn") (n^".lha") o v
 
