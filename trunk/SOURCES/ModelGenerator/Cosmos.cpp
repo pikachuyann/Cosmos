@@ -350,7 +350,11 @@ bool ParseBuild(parameters& P) {
 			P.HaslFormulasname.push_back(tmpREName[it-tmpRE.begin()]);
 		}
 	}
-
+	
+	//Set the confidence level
+	for(vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
+		it != P.HaslFormulas.end(); ++it)(*it)->setLevel(P.Level);
+	
 	//Compile the SPN
 	cmd = bcmd + " -c -I"+P.Path+"../includes -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
 	if(P.verbose>2)cout << cmd << endl;

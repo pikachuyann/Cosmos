@@ -74,11 +74,10 @@ double ConfInt::width(){
 /**
  * Build an HASL formula with the PROB operator.
  * Compute exact confidence interval.
- * @param l the confidence level of the operator.
  */
-HaslFormulasTop::HaslFormulasTop(double l){
+HaslFormulasTop::HaslFormulasTop(){
 	TypeOp = PROBABILITY;
-	Level =l;
+	Level =0;
 	Value =0;
 	Value2=0;
 	Algebraic = 0;
@@ -88,10 +87,9 @@ HaslFormulasTop::HaslFormulasTop(double l){
 
 /**
  * Build a CONSTANT Hasl formula.
- * @param l useless
  * @param v the value of the constant
  */
-HaslFormulasTop::HaslFormulasTop(double,double v){
+HaslFormulasTop::HaslFormulasTop(double v){
 	TypeOp = CONSTANT;
 	Level = 1;
 	Value = v;
@@ -107,10 +105,10 @@ HaslFormulasTop::HaslFormulasTop(double,double v){
  * @param al the index of the sub formula return by the simulator. 
  * @param l the confidence level of the confidence interval.
  */
-HaslFormulasTop::HaslFormulasTop(size_t al,double l){
+HaslFormulasTop::HaslFormulasTop(size_t al){
 	TypeOp = EXPECTANCY;
-	Level = l;
-	Value = quantile(boost::math::normal() , 0.5 + l / 2.0);
+	Level = 0;
+	Value = 0;
 	Value2 = 0;
 	Algebraic = al;
 	left = NULL;
@@ -119,14 +117,14 @@ HaslFormulasTop::HaslFormulasTop(size_t al,double l){
 
 /**
  * Build an HASL formula testing if the probability of accepting a run is above some threshold.
- * @param l the confidence level. In this setting it is the probability of type
+ * In this setting the confidence level is the probability of type
  * I and type II errors.
  * @param p is the threshold.
  * @param delta is the half width of the indiference region.
  */
-HaslFormulasTop::HaslFormulasTop(double l,double p, double delta){
+HaslFormulasTop::HaslFormulasTop(double p, double delta){
 	TypeOp = HYPOTHESIS	;
-	Level = l;
+	Level = 0;
 	Value = p -delta;
 	Value2= p + delta;
 	Algebraic = 0;
@@ -144,7 +142,7 @@ HaslFormulasTop::HaslFormulasTop(double l,double p, double delta){
 HaslFormulasTop::HaslFormulasTop(HaslType t, HaslFormulasTop* l,HaslFormulasTop* r){
 	TypeOp = t;
 	Algebraic = 0;
-	Level = 1;
+	Level = 0;
 	Value = 0;
 	Value2= 0;
 	left = l;
@@ -169,6 +167,48 @@ HaslFormulasTop::~HaslFormulasTop(){
 	if(ht.right)right = new HaslFormulasTop(*ht.right);
 	else right = NULL;
 }*/
+
+void HaslFormulasTop::setLevel(double l){
+	switch (TypeOp) {
+		case PROBABILITY:
+			Level = l;
+			break;
+			
+		case EXPECTANCY:
+		case CDF_PART:
+		case PDF_PART:
+		case RE_Likelyhood:
+			Level = l;
+			Value = quantile(boost::math::normal() , 0.5 + l / 2.0);
+			break;
+			
+		case RE_AVG://temporary
+			Level = l;
+			//Here we divide the error by two because half the error come from the bernoulli evaluation.
+			Value = quantile(boost::math::normal() , 0.75 + l / 4.0);
+			break;
+			
+		case HYPOTHESIS:
+			Level = l;
+			break;
+			
+		case CONSTANT:
+			break;
+			
+		case HASL_PLUS:
+		case HASL_TIME:
+		case HASL_DIV:
+			Level=l;
+			//We need to increase the condidence level on each subformula
+			left->setLevel((1+l)/2);
+			right->setLevel((1+l)/2);
+			break;
+			
+		default:
+			std::cerr << "Fail to parse Hasl Formula"<< std::endl;
+			exit(EXIT_FAILURE);
+	}
+}
 
 /**
  * The function eval compute confidence interval for the HASL formula
