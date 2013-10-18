@@ -117,6 +117,7 @@
 %token <name>     LhaMIN
 %token <name>     LhaMAX
 %token <name> 	  AVG
+%token <name>	  VAR
 %token <name>	  PROB
 %token <name>	  SPRT
 %token <name>     LAST
@@ -776,12 +777,25 @@ AVG LB AlgExpr RB {
 	}
 	$$ = NULL;
 }
-
+| VAR LB AlgExpr RB {
+	Reader.MyLha.Algebraic.push_back($3);
+	char tmp[2048];
+	sprintf(tmp,"(%s * %s)", $3,$3);
+	Reader.MyLha.Algebraic.push_back(tmp);
+	$$ = new HaslFormulasTop(HASL_MINUS,
+		new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1),
+		new HaslFormulasTop(HASL_TIME,
+			new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-2),
+			new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-2)));
+}
 | LB TopHaslExp RB {
 	$$ = $2;
 }
 | TopHaslExp PLUS TopHaslExp {
 	$$ = new HaslFormulasTop(HASL_PLUS, $1,$3);
+}
+| TopHaslExp MINUS TopHaslExp {
+	$$ = new HaslFormulasTop(HASL_MINUS, $1,$3);
 }
 | TopHaslExp MUL TopHaslExp {
 	$$ = new HaslFormulasTop(HASL_TIME, $1, $3);
