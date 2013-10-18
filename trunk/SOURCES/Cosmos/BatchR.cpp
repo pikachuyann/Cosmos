@@ -98,6 +98,7 @@ void BatchR::unionR(const BatchR *batch){
     size_t writesize = 0;
     writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(I));
     writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
+	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&TableLength),sizeof(TableLength));
 
     for(unsigned int i =0; i< TableLength; i++){
         bool tmpbool = IsBernoulli[i];
@@ -129,7 +130,18 @@ bool BatchR::inputR(FILE* f) {
 	
     readbyte = fread(reinterpret_cast<char*>( &Isucc), sizeof Isucc ,1, f);
     ok &= (readbyte == 1);
+	
+	readbyte = fread(reinterpret_cast<char*>( &TableLength), sizeof TableLength ,1, f);
+    ok &= (readbyte == 1);
 
+	if(Mean.size() != TableLength){
+		IsBernoulli.resize(TableLength);
+		Mean.resize(TableLength);
+		M2.resize(TableLength);
+		M3.resize(TableLength);
+		M4.resize(TableLength);
+	}
+	
     for(unsigned int i =0; i< TableLength; i++){
         readbyte = fread(reinterpret_cast<char*>( &readb ), sizeof readb ,1, f);
         IsBernoulli[i]=readb;

@@ -47,17 +47,6 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "../SOURCES/Cosmos/BatchR.cpp"
-         timestampString = "401285458.655226"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "78"
-         endingLineNumber = "78">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "../SOURCES/ModelGenerator/Cosmos.cpp"
          timestampString = "402397067.779765"
          startingColumnNumber = "9223372036854775807"

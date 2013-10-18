@@ -69,6 +69,12 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 	list<simulationState> statevect(BatchSize);
 	//delete EQ;
 	
+	if(verbose>=1){
+		cerr << "Initial round:";
+		numSolv->printState();
+		cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
+		cerr << numSolv->getVect()[0] << endl;
+	}
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
 		N.Origine_Rate_Table = vector<double>(N.tr,0.0);
 		N.Rate_Table = vector<double>(N.tr,0.0);
