@@ -39,6 +39,7 @@
 
 using namespace std;
 
+//! A type to discriminate timed and untimmed transition.
 enum TransType {
     Timed, unTimed
 };
@@ -48,6 +49,7 @@ typedef vector <int> IntVector;
 typedef vector <Dim1> Dim2;
 typedef vector <IntVector> IntMatrix;
 
+//! a structure for probability distribution
 struct ProbabiliteDistribution {
     std::string name;
     vector<string> Param;
