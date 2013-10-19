@@ -46,7 +46,7 @@ void numSolverBB::initVect(int nT){
     boostmat::vector<double> itervect2 = boostmat::zero_vector<double> (finalVector->size());
 	//We suppose here that the initial state is the first of the vector
     if(itervect(0) != 0)minT=0;
-
+	
     
     for(int i=1; i<=lastCP ; i++){
         itervect2.clear();
@@ -71,12 +71,12 @@ void numSolverBB::initVect(int nT){
 void numSolverBB::reset(){
     time_t start, endt;
     time(&start);
-
+	
 	(*circularvect)[0]=(*checkPoint)[lastCP/l];
 	
 	/*for(int i=1; i<=T-lastCP ; i++){
-		(*circularvect)[i] = boostmat::prod ((*transitionsMatrix), (*circularvect)[i-1]);
-	}*/
+	 (*circularvect)[i] = boostmat::prod ((*transitionsMatrix), (*circularvect)[i-1]);
+	 }*/
     for(int i=1; i<=T-lastCP ; i++){
         ((*circularvect)[i]).clear();
         sparseProd(&((*circularvect)[i]), &((*circularvect)[i-1]), transitionsMatrix);
@@ -90,12 +90,12 @@ void numSolverBB::reset(){
     
 	
 	u=T;
-	matOffset = T-lastCP;	
+	matOffset = T-lastCP;
 }
 
 
 void numSolverBB::stepVect(){
-	//cerr << "step:" << u << endl; 
+	//cerr << "step:" << u << endl;
 	if(matOffset > 0 || u==0){
 		matOffset--;
 		u--;

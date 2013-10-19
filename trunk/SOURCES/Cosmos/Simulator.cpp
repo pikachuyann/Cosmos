@@ -107,7 +107,7 @@ void Simulator::InitialEventsQueue() {
 void Simulator::reset() {
 	N.reset();
 	A.reset(N.Marking);
-
+	
 	EQ->reset();
 	
 }
@@ -124,7 +124,7 @@ void Simulator::returnResultTrue(){
 
 /**
  * Update the enabling transition of the SPN, and update the event queue.
- * @param E1_transitionNum the number of the transition which last 
+ * @param E1_transitionNum the number of the transition which last
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
@@ -147,9 +147,9 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 			EQ->insert(F);
 		} else if (!Nenabled && NScheduled) {
 			EQ->remove(E1_transitionNum,bindex->id() );
-		} 
+		}
 	}
-
+	
 	// Possibly adding Events corresponding to newly enabled-transitions
 	const set<int>* net = N.PossiblyEn();
 	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
@@ -157,13 +157,13 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 		abstractBinding *bindex = N.nextPossiblyEnabledBinding(*it, lb, &bindnum);
 		while (bindex != NULL){
 			if(verbose > 4){
-			cerr << "consider for enabling: " << N.Transition[*it].label << ",";
-			bindex->print();
-			cerr << endl;
+				cerr << "consider for enabling: " << N.Transition[*it].label << ",";
+				bindex->print();
+				cerr << endl;
 			}
 			
-		//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-		//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
+			//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
+			//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
 			if (N.IsEnabled(*it,*bindex)) {
 				if (!EQ->isScheduled((*it),bindex->id())) {
 					if(verbose > 4){
@@ -174,7 +174,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 					GenerateEvent(F, (*it), *bindex);
 					(*EQ).insert(F);
 					
-
+					
 				} else {
 					if (N.Transition[(*it)].MarkingDependent) {
 						GenerateEvent(F, (*it),*bindex);
@@ -193,18 +193,18 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 		abstractBinding *bindex = N.nextPossiblyDisabledBinding(*it, lb, &bindnum);
 		while (bindex != NULL){
 			if(verbose > 4){
-			cerr << "consider for disabling: " << N.Transition[*it].label << ",";
-			bindex->print();
-			cerr << endl;
+				cerr << "consider for disabling: " << N.Transition[*it].label << ",";
+				bindex->print();
+				cerr << endl;
 			}
-		//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-		//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
+			//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
+			//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
 			if (EQ->isScheduled(*it, bindex->id())) {
 				if (!N.IsEnabled(*it, *bindex )){
 					if(verbose > 4){
-					cerr << "<-New transition disabled: " << N.Transition[*it].label << ",";
-				bindex->print();
-				cerr << endl;
+						cerr << "<-New transition disabled: " << N.Transition[*it].label << ",";
+						bindex->print();
+						cerr << endl;
 					}
 					EQ->remove(*it,bindex->id());
 				}else {
@@ -217,7 +217,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 			bindex = N.nextPossiblyDisabledBinding(*it, lb, &bindnum);
 		}
 	}
-
+	
     // Update transition which have no precondition on the Marking
 	const set<int>* fmd = N.FreeMarkingDependant();
 	for (set<int>::iterator it = fmd->begin(); it != fmd->end(); it++) {
@@ -239,27 +239,27 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	
 	
 	/*
-	//In Debug mode check that transition are scheduled iff they are enabled
-	for (vector<_trans>::const_iterator t = N.Transition.begin()
-		 ; t != N.Transition.end() ; ++t) {
-		for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
-			bindex != t->bindingList.end() ; ++bindex){
-			if (N.IsEnabled(t->Id, *bindex) !=
-				EQ->isScheduled(t->Id, bindex->id())){
-				cerr << "N.IsEnabled(" << t->label << ",";
-				bindex->print();
-				cerr <<")" << endl;
-				if(EQ->isScheduled(t->Id, bindex->id())){
-					cerr << "Scheduled and not enabled!"<< endl;
-				}else{
-					cerr << "Enabled and not scheduled!" << endl;
-				}
-				assert(N.IsEnabled(t->Id, *bindex) ==
-					   EQ->isScheduled(t->Id, bindex->id()));
-			}
-		}
-	}
-	*/
+	 //In Debug mode check that transition are scheduled iff they are enabled
+	 for (vector<_trans>::const_iterator t = N.Transition.begin()
+	 ; t != N.Transition.end() ; ++t) {
+	 for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
+	 bindex != t->bindingList.end() ; ++bindex){
+	 if (N.IsEnabled(t->Id, *bindex) !=
+	 EQ->isScheduled(t->Id, bindex->id())){
+	 cerr << "N.IsEnabled(" << t->label << ",";
+	 bindex->print();
+	 cerr <<")" << endl;
+	 if(EQ->isScheduled(t->Id, bindex->id())){
+	 cerr << "Scheduled and not enabled!"<< endl;
+	 }else{
+	 cerr << "Enabled and not scheduled!" << endl;
+	 }
+	 assert(N.IsEnabled(t->Id, *bindex) ==
+	 EQ->isScheduled(t->Id, bindex->id()));
+	 }
+	 }
+	 }
+	 */
 }
 
 /**
@@ -289,7 +289,7 @@ bool Simulator::SimulateOneStep(){
 	AutEdge AE = A.GetEnabled_A_Edges( N.Marking);
 	
     //If there is no enabled transition in the Petri net
-    //try to reach an accepting state by using autonomous edge of 
+    //try to reach an accepting state by using autonomous edge of
     //the automata refuse the simulation otherwise.
 	if ((*EQ).isEmpty()) {
 		while (AE.Index>-1) {
@@ -311,7 +311,7 @@ bool Simulator::SimulateOneStep(){
 	} else {
         //Take the first event in the queue
 		Event E1 = EQ->InPosition(0);
-		      
+		
         //If this transition is the sink transition refuse the simulation
         //Only usefull for Rare Event handling.
 		if(transitionSink(E1.transition)){
@@ -347,7 +347,7 @@ bool Simulator::SimulateOneStep(){
 			cerr << endl;
 			//cerr << "|vvvvvvvvvvvvvvvvvvvv"<< endl;
 		}
-			
+		
 		//Make time elapse in the LHA
 		A.updateLHA( E1.time - A.CurrentTime, N.Marking );
 		
@@ -468,7 +468,7 @@ void Simulator::SimulateSinglePath() {
 			if(verbose>4)EQ->view(N.Transition);
 			if(verbose==6)interactiveSimulation();
 		}
-
+		
 		continueb = SimulateOneStep();
 	}
     //cerr << "finish path"<< endl;
@@ -489,7 +489,7 @@ void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	}
     
     //The weight of a transition is always distributed exponentially
-    //It is used to solved conflict of two transitions with same time 
+    //It is used to solved conflict of two transitions with same time
     //and same priority.
 	double w=0.0;
 	if (N.Transition[Id].DistTypeIndex > 2) {
@@ -578,13 +578,13 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
 			double p = gen();
 			return (param[1] * (ceil(log(p) / log(1 - param[0]))));
 			/*if (p >= param[0]){
-				return param[1];
-			} else {
-				return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
-			}*/
+			 return param[1];
+			 } else {
+			 return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
+			 }*/
 		}
 		case ERLANG:
-        {//ERLANG           
+        {//ERLANG
             boost::uniform_real<> UNIF(0, 1);
             boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
             double prod = 1;
@@ -594,7 +594,7 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
 			
         }
         case GAMMA:
-        {//GAMMA      
+        {//GAMMA
             boost::gamma_distribution<> GAMMA(param[0]);
             boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gen(RandomNumber, GAMMA);
             return param[1] * gen();

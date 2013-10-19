@@ -68,8 +68,8 @@ EventsQueue::EventsQueue(const EventsQueue& orig) {
 	evtHeapIndex = orig.evtHeapIndex;
 	
 	/*eq = orig.eq;
-    TransTableSize = orig.TransTableSize;
-    TransTable = orig.TransTable;*/
+	 TransTableSize = orig.TransTableSize;
+	 TransTable = orig.TransTable;*/
 }
 
 EventsQueue::~EventsQueue() {

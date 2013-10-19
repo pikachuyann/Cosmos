@@ -54,7 +54,7 @@ public:
 	int getNbOfTokens(int)const;
 	std::vector<int> getVector()const;
 	void setVector(const std::vector<int>&);
-
+	
 };
 
 struct markingEqState{

@@ -68,49 +68,49 @@ struct LHA_D {
 	LHA_D(GSPN& Mspn) : MyGspn(&Mspn),NbLoc(0) {}
     string label;
     size_t NbLoc; // number of locations
-
+	
     set <unsigned int, less<unsigned int> > InitLoc; // initial locations
     set <unsigned int, less<unsigned int> > FinalLoc; // final locations
-
+	
     map <string, int> LocIndex; //for a given Location label returns its index among {0, 1, ..., NLoc-1}
     vector <string> LocLabel;
-
+	
     vector <string> StrLocProperty;
     vector <string> FuncLocProperty;
-
-
+	
+	
     map<string, int> EdgeIndex;
     vector <LhaEdge> Edge;
     LhaEdge AnEdge;
-
+	
     vector <string> EdgeConstraints;
     vector < set<string> > EdgeActions; //return the set of actions associated for a given edge e, EdgeActions[e]{a1,a2, ...}
     vector < vector < string > > FuncEdgeUpdates;
     vector <string> StrEdgeUpdates;
-
+	
 	vector <string> unTimeEdgeConstraints;
     vector < vector <vector <string> > > ConstraintsCoeffs;
     vector < vector <string> > ConstraintsRelOp;
     vector < vector <string> > ConstraintsConstants;
-
-
-
+	
+	
+	
     vector < set <int> > Out_S_Edges; // for a given location l returns the set of synchronizing edges  starting from l
-    vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l   
+    vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l
     vector < vector < set <int> > > ActionEdges; // return the set of edges starting from location cl such that action a is an action for these edges, ActionsLoc[cl][a]={e1, e2, ...}
-
+	
     size_t NbVar;
 	variables Vars;
     /*vector <double> Var; // Var[i] initial value of the variable indexed by i
-    map<string, int> VarIndex; //for a given variable label return its index among {0, 1, ..., NbVar-1}
-    vector <string> VarLabel;*/
-
+	 map<string, int> VarIndex; //for a given variable label return its index among {0, 1, ..., NbVar-1}
+	 vector <string> VarLabel;*/
+	
     vector < vector <string> > FuncFlow;
     vector < vector <string> > StrFlow;
-
+	
     map <string, int> PlaceIndex; // for a given place label return its index among {0, 1, ..., pl-1}
     map <string, int> TransitionIndex; // for a given transition label return its index among {0, 1, ..., tr-1}
-
+	
     map<string, int> LinearForm;
     vector<int> LhaFuncArg;
     vector<string> LhaFuncType;
@@ -130,10 +130,10 @@ typedef struct LHA_D LhaType;
 
 
 #define LHA_DECL                                            \
-  lha::Lha_parser::token_type                         \
-  lhalex (lha::Lha_parser::semantic_type* lhalval,      \
-         lha::Lha_parser::location_type* lhalloc,      \
-         Lha_Reader& Reader)
+lha::Lha_parser::token_type                         \
+lhalex (lha::Lha_parser::semantic_type* lhalval,      \
+lha::Lha_parser::location_type* lhalloc,      \
+Lha_Reader& Reader)
 
 LHA_DECL;
 
@@ -141,12 +141,12 @@ class Lha_Reader {
 public:
     Lha_Reader(GSPN&,parameters&);
     virtual ~Lha_Reader();
-
+	
     LhaType MyLha;
 	
 	
 	void error(const lha::location& l, const std::string& m);
-
+	
 	//!< Parse a string of an LHA.
 	int parse(std::string&);
 	
@@ -164,17 +164,17 @@ private:
     void scan_begin();
     void scan_end();
     void scan_expression(const string&);
-
+	
     bool trace_scanning;
-
-
-   
+	
+	
+	
     string InvRelOp(string &);
-
+	
     bool trace_parsing;
-
+	
 	void error(const std::string& m);
-
+	
     void view();
 };
-#endif 
+#endif

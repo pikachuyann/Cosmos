@@ -51,8 +51,8 @@ void SimulatorContinuousBounded::initVectCo(double t){
     if (fox_glynn(lambda * t, DBL_EPSILON , 1/DBL_EPSILON ,epsilon, &fg)){
         cerr << "fox_glyn:" << fg->left << "," << fg->right << " Total weigts:"<< fg->total_weight<< endl;
         /*for(int i = 0; i<= fg->right - fg->left; i++){
-            cerr << fg->left+i << " " << fg->weights[i]/ fg->total_weight << endl;
-        }*/
+		 cerr << fg->left+i << " " << fg->weights[i]/ fg->total_weight << endl;
+		 }*/
     }
     //fg->right = 10;
 	double lambda2= lambda;
@@ -75,7 +75,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	vector<int> IsuccN (Nmax+1,0);
     int n =-1;
     
-
+	
 	BatchR* batchResult = new BatchR(A.FormulaVal.size());
 	
 	list<simulationState> statevect((Nmax+1)*BatchSize);
@@ -86,7 +86,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
 		N.Origine_Rate_Table = vector<double>(N.tr,0.0);
 		N.Rate_Table = vector<double>(N.tr,0.0);
-
+		
 		EQ = new EventsQueue(N);
 		reset();
         it->maxStep = fg->right - (c/BatchSize);
@@ -94,7 +94,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         
         c++;
 		AutEdge AE;
-				
+		
 		//Simulator::InitialEventsQueue();
 		
 		AE = A.GetEnabled_A_Edges( N.Marking);
@@ -111,14 +111,14 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
             if(it->maxStep >= fg->right -n){
-                   
+				
                 //cerr << "vect:\t" << it->maxStep;
                 AutEdge AE;
                 
                 it->loadState(&N,&A,&AE,&EQ);
                 
                 
-                //cerr << A.Likelihood << endl;	
+                //cerr << A.Likelihood << endl;
                 
                 //cerr << "mu:\t" << mu() << " -> ";
                 
@@ -142,14 +142,14 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                             
                             if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult->IsBernoulli[0] = false;
 							
-                            //for (int i= max(0,n-fg->left); i<fg->right - fg->left; i++) 
+                            //for (int i= max(0,n-fg->left); i<fg->right - fg->left; i++)
                             {
-                                int i = it->maxStep - left;
-                                //cerr << "i:\t" << i << endl;
-                                IsuccN[i]++;
-                                
-                                MeanN[i] += Result.second[0];
-                                M2N[i] += pow(Result.second[0] , 2);
+							int i = it->maxStep - left;
+							//cerr << "i:\t" << i << endl;
+							IsuccN[i]++;
+							
+							MeanN[i] += Result.second[0];
+							M2N[i] += pow(Result.second[0] , 2);
                             }
                             //cerr << ")finish" << endl;
                             
@@ -182,9 +182,9 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	
 	double lowtotal=0.0;
 	double uptotal=0.0;
-        
+	
     for(int i=0; i<= fg->right- left; i++){
-       
+		
         double var = (M2N[i]/IsuccN[i]) - pow((MeanN[i]/ IsuccN[i]),2);
         double widthN = 0.0;
         if(var>0)widthN = 2* Value * sqrt(var/IsuccN[i]);
@@ -194,7 +194,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		
 		double lowN = lowberN * (MeanN[i] - widthN/2.0);
 		double upN = upberN * (MeanN[i] + widthN/2.0);
-	
+		
         if(verbose>=2)cerr << "i:" << i+ left<< "\tMean Likelyhood: "  << MeanN[i] << "\twidth: " << widthN << "\tcoeff: " << fg->weights[i+leftdec]/fg->total_weight << "\tconfint: ["<< lowN <<";"<<upN << "]";
         
 		lowN *= fg->weights[i+leftdec]*(1.0-epsilon) / fg->total_weight;
@@ -206,7 +206,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		
 		batchResult->Isucc += IsuccN[i];
         
-    
+		
 	}
 	
 	//Add the error made on the left of the truncation point.
@@ -215,18 +215,18 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 	
 	batchResult->Mean[0] = (lowtotal +uptotal)/2.0;
 	batchResult->M2[0] = (uptotal - lowtotal );
-   
+	
     cerr << endl;
 	
     rusage ruse;
     getrusage(RUSAGE_SELF, &ruse);
     cerr << "\033[A\033[2K" << "\033[A\033[2K" << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
-    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl<< endl << endl; 
+    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl<< endl << endl;
     
 	
 	cerr << "DIR Result Mean:\t" << (lowtotal +uptotal)/2.0 << endl;
 	cerr << "DIR Confidence interval:\t ["<< lowtotal <<";"<< uptotal << "]" << endl << endl << endl<< endl << endl<< endl;
-
+	
     //batchResult->print();
     //exit(0);
 	return (batchResult);

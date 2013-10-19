@@ -134,12 +134,12 @@ struct GSPN {
     size_t tr;
     size_t pl;
     size_t nbpass;
-
+	
     set<string> TransList;
 	vector<colorClass> colClasses;
 	vector<colorDomain> colDoms;
 	vector<colorVariable> colVars;
-
+	
     map<string, int> PlacesId;
     map<string, int> TransId;
 	
@@ -157,10 +157,10 @@ struct GSPN {
 	vector < vector< vector< coloredToken> > > inhibArcsTok;
 	
     vector <string> Marking;
-
+	
     map <std::string, int> IntConstant;
     map <std::string, double> RealConstant;
-
+	
 	inline bool isColored(){
 		return colClasses.size()>0;
 	}
@@ -169,7 +169,7 @@ struct GSPN {
 		nbpass=0;
 		colDoms.push_back(colorDomain());
 	}
-
+	
 };
 
 typedef struct GSPN GspnType;
@@ -177,10 +177,10 @@ typedef struct GSPN GspnType;
 
 
 #define GSPN_DECL                                            \
-  gspn::Gspn_parser::token_type                         \
-  gspnlex (gspn::Gspn_parser::semantic_type* gspnlval,      \
-         gspn::Gspn_parser::location_type* gspnlloc,      \
-         Gspn_Reader& Reader)
+gspn::Gspn_parser::token_type                         \
+gspnlex (gspn::Gspn_parser::semantic_type* gspnlval,      \
+gspn::Gspn_parser::location_type* gspnlloc,      \
+Gspn_Reader& Reader)
 
 GSPN_DECL;
 using namespace std;
@@ -188,16 +188,16 @@ using namespace std;
 class Gspn_Reader {
 public:
     Gspn_Reader(parameters &P);
-
+	
     virtual ~Gspn_Reader();
-
+	
     GspnType MyGspn;
 	
 	int parse(std::string&);
     int parse_file(std::string&);
 	int parse_gml_file(parameters&);
     void WriteFile(parameters&);
-
+	
 	void error(const gspn::location& l, const std::string& m);
 	
 	//<! Index of distribution type.
@@ -208,13 +208,13 @@ private:
 	
 	
 	
-
+	
     void scan_begin();
     void scan_end();
     void scan_expression(const string&);
-
+	
     bool trace_scanning;
-
+	
 	int varMultiplier(size_t var);
 	void writeMarkingClasse(ofstream &, ofstream &, parameters &);
 	void writeEnabledDisabled(ofstream &);
@@ -224,8 +224,8 @@ private:
 	void writeVariable(ofstream & spnF);
 	
     bool trace_parsing;
-
-
+	
+	
     
     void error(const std::string& m);
     
@@ -233,7 +233,7 @@ private:
     void addSinkTrans();
     
     void view();
-
+	
 	void printloot(ofstream& sf, size_t domain, size_t nesting );
 	
 	void EnabledDisabledTr(vector< set<int> >&,

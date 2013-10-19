@@ -54,15 +54,15 @@ gmlinputexception lhagmlioexc;
 
 void print_tree(const tree<string>& tr, tree<string>::pre_order_iterator it, tree<string>::pre_order_iterator end)
 {
- if(!tr.is_valid(it)) return;
- int rootdepth=tr.depth(it);
- while(it!=end) {
- cout << "    ";
- for(int i=0; i<tr.depth(it)-rootdepth; ++i)
- cout << "  ";
- cout << (*it) << endl << flush;
- ++it;
- }
+	if(!tr.is_valid(it)) return;
+	int rootdepth=tr.depth(it);
+	while(it!=end) {
+		cout << "    ";
+		for(int i=0; i<tr.depth(it)-rootdepth; ++i)
+			cout << "  ";
+		cout << (*it) << endl << flush;
+		++it;
+	}
 }
 
 string* MyLhaModelHandler::simplifyString(string str)
@@ -404,12 +404,12 @@ HaslFormulasTop* MyLhaModelHandler::exportHASLTop(tree<string>::pre_order_iterat
 			std::ostringstream s; s<<"$_$: Value in ["<< bucket<< " , "<<bucket+deltab<<"]";
 			MyLHA->HASLname.push_back(s.str());
 		}
-
+		
 		return (NULL);
 	} else throw(lhagmlioexc);
 }
 
-		
+
 string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 	if((P.verbose-3)>2)cout << *it << ":" << endl;
 	if(it->compare("YHF")==0){
@@ -557,7 +557,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							if(domit != MyLHA->MyGspn->colDoms.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colDoms.begin());
 							else cerr << "Unknown color Domain " << domname << endl;
 						}else MyLHA->Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
-
+						
 						MyLHA->Vars.type.push_back(DISCRETE_VARIABLE);
 						MyLHA->NbVar++;
 						if((P.verbose-3)>1)cout << "\tdiscrete var " << *constname << " index: " << MyLHA->NbVar-1 << " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] <<endl;
@@ -578,7 +578,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							if(domit != MyLHA->MyGspn->colClasses.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colClasses.begin());
 							else cerr << "Unknown color Domain " << domname << endl;
 						}else cerr << "No color class specify for color variable " << *constname << endl;
-
+						
 						MyLHA->Vars.type.push_back(COLOR_VARIABLE);
 						MyLHA->NbVar++;
 						if((P.verbose-3)>1)cout << "\tcolor var " << *constname << " index: " << MyLHA->NbVar-1<< " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] << endl;

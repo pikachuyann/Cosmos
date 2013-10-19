@@ -43,21 +43,21 @@ using namespace std;
 Eval::Eval() {
     trace_scanning = false;
     trace_parsing = false;
-
+	
 }
 
 Eval::~Eval() {
 }
 
 int Eval::parse(string& expr) {
-
-
+	
+	
     scan_expression(expr);
-
+	
     eval::Eval_parser parser(*this);
-
+	
     parser.set_debug_level(trace_parsing);
-
+	
     int res = parser.parse();
     scan_end();
     return res;

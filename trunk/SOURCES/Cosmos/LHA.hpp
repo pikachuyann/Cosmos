@@ -90,11 +90,11 @@ public:
 	LHA(unsigned int, unsigned int);
 	~LHA();
 	
-  /** 
-   *  Copy the state of an other LHA.
-   *  It only copy pointer thus is in constant time.
-   */
-  void copyState(LHA*);
+	/**
+	 *  Copy the state of an other LHA.
+	 *  It only copy pointer thus is in constant time.
+	 */
+	void copyState(LHA*);
 	
 	
 	/**
@@ -113,13 +113,13 @@ public:
 	//! fire the transition of an LHA
 	virtual void fireLHA(int,const abstractMarking&, const abstractBinding&);
 	
-        //! test if the automaton is in a final state
+	//! test if the automaton is in a final state
 	bool isFinal()const;
     
-  /**
-   * reset the automata to its initial state according to the 
-   * marking of the SPN.
-   */
+	/**
+	 * reset the automata to its initial state according to the
+	 * marking of the SPN.
+	 */
     void reset(const abstractMarking&);
 	
 	void getFinalValues(const abstractMarking&,vector<double>&);
@@ -136,7 +136,7 @@ public:
 	double Likelihood;
 	
 	set <int> FinalLoc; // final locations
-
+	
 	
 private:
 	void UpdateFormulaVal();

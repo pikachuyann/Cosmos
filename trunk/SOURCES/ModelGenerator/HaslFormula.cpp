@@ -51,7 +51,7 @@ ConfInt::ConfInt(double meanArg,double width){
 /**
  * Asymetric confidence interval.
  * @param meanArg is the mean of the confidence interval it is not necessary
- * the middle of the confidence interval if the distribution is not symetric 
+ * the middle of the confidence interval if the distribution is not symetric
  * and is not approximated by the normal distribution wich is symetric.
  * @param lowArg the Lower bound of the confidence interval.
  * @param upArg the Upper bound of the confidence interval.
@@ -100,9 +100,9 @@ HaslFormulasTop::HaslFormulasTop(double v1,double v2,double l){
 }
 
 /**
- * Build an HASL formula computing the expected value of a subformula. 
+ * Build an HASL formula computing the expected value of a subformula.
  * Use the approximation to the normal low to compute the confidence interval
- * @param al the index of the sub formula return by the simulator. 
+ * @param al the index of the sub formula return by the simulator.
  * @param l the confidence level of the confidence interval.
  */
 HaslFormulasTop::HaslFormulasTop(size_t al){
@@ -166,7 +166,7 @@ bool HaslFormulasTop::isConstant(){
 	switch (TypeOp) {
 		case CONSTANT:
 			return true;
-	
+			
 		case HASL_PLUS:
 		case HASL_TIME:
 		case HASL_DIV:
@@ -178,7 +178,7 @@ bool HaslFormulasTop::isConstant(){
 
 /**
  * This function set the confidence level of an HASL formula.
- * When the fomula contain 
+ * When the fomula contain
  * @param l The confidence level
  */
 void HaslFormulasTop::setLevel(double l){
@@ -216,11 +216,11 @@ void HaslFormulasTop::setLevel(double l){
 			Level=l;
 			if (left->isConstant()){right->setLevel(l);}
 			else if (right->isConstant()){left->setLevel(l);}
-				else{
-					//We need to increase the condidence level on each subformula
-					left->setLevel((1+l)/2);
-					right->setLevel((1+l)/2);
-				}
+			else{
+				//We need to increase the condidence level on each subformula
+				left->setLevel((1+l)/2);
+				right->setLevel((1+l)/2);
+			}
 			break;
 			
 		default:
@@ -238,7 +238,7 @@ void HaslFormulasTop::setLevel(double l){
  * \f$ l=1-alpha \f$
  * Let \f$ w \f$ = ConfWidth, the size of the confidence interval
  *
- * Let \f$ \mu \f$ the value to estimate, and \f$ x \f$ the 
+ * Let \f$ \mu \f$ the value to estimate, and \f$ x \f$ the
  * estimation of \f$ \mu \f$
  * then \f$ \mathbb{P}( \mu \in [x-\frac{w}{2} , x+\frac{w}{2}]) = 1-alpha  \f$
  *
@@ -258,70 +258,70 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 	switch (TypeOp) {
 		case PROBABILITY:
 		{
-			/*
-			 * Here we used the boost librairy for computing the binomial
-			 * confidence interval.
-			 * According to boost documentation the algorithme used is
-			 * the one from Clopper-person:
-			 * Clopper, C. J. and Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. Biometrika 26 404-413.
-			 */
-			double mean = (double)batch.Isucc / (double)batch.I;
-			double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
-			double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
-			
-			return new ConfInt(mean,l,u);
+		/*
+		 * Here we used the boost librairy for computing the binomial
+		 * confidence interval.
+		 * According to boost documentation the algorithme used is
+		 * the one from Clopper-person:
+		 * Clopper, C. J. and Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. Biometrika 26 404-413.
+		 */
+		double mean = (double)batch.Isucc / (double)batch.I;
+		double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
+		double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
+		
+		return new ConfInt(mean,l,u);
 		}
 			
 		case EXPECTANCY:
 		case CDF_PART:
 		case PDF_PART:
 		{
-			//No accepting trajectory the condidence interval is R.
-			if(batch.Isucc==0)return new ConfInt();
+		//No accepting trajectory the condidence interval is R.
+		if(batch.Isucc==0)return new ConfInt();
 		
-			double mean = batch.Mean[Algebraic]/batch.Isucc;
-			double m2 = batch.M2[Algebraic]/batch.Isucc;
-			double variance = m2 - mean * mean;
-			
-			variance += 1.0/batch.Isucc;
-			//Here the +1 come from the Chows and Robbin algorithm
-			
-			double width = 2 * Value * sqrt(variance/batch.Isucc);
-			
-			return new ConfInt(mean,width);
+		double mean = batch.Mean[Algebraic]/batch.Isucc;
+		double m2 = batch.M2[Algebraic]/batch.Isucc;
+		double variance = m2 - mean * mean;
+		
+		variance += 1.0/batch.Isucc;
+		//Here the +1 come from the Chows and Robbin algorithm
+		
+		double width = 2 * Value * sqrt(variance/batch.Isucc);
+		
+		return new ConfInt(mean,width);
 		}
-		
+			
 		case RE_Likelyhood:
 		{
-			//No accepting trajectory the condidence interval is R.
-			if(batch.Isucc==0)return new ConfInt();
-			double mean = batch.Mean[Algebraic]/batch.Isucc;
-			double m2 = batch.M2[Algebraic]/batch.Isucc;
-			
-			//If the variance is equal to 0 numerical instability can make it a negative number.
-			double variance = fmax(0,m2 - mean * mean);
+		//No accepting trajectory the condidence interval is R.
+		if(batch.Isucc==0)return new ConfInt();
+		double mean = batch.Mean[Algebraic]/batch.Isucc;
+		double m2 = batch.M2[Algebraic]/batch.Isucc;
 		
-			double width = 2 * Value * sqrt(variance/batch.Isucc);
+		//If the variance is equal to 0 numerical instability can make it a negative number.
+		double variance = fmax(0,m2 - mean * mean);
 		
-			return new ConfInt(mean,width);
+		double width = 2 * Value * sqrt(variance/batch.Isucc);
+		
+		return new ConfInt(mean,width);
 		}
 			
 		case RE_AVG://temporary
 		{
-			//No accepting trajectory the condidence interval is R.
-			if(batch.Isucc==0)return new ConfInt();
+		//No accepting trajectory the condidence interval is R.
+		if(batch.Isucc==0)return new ConfInt();
 		
-			double mean = (double)batch.Isucc / (double)batch.I;
-			double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
-			double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
-			double mean2 = batch.Mean[Algebraic]/batch.Isucc;
-			double m2 = batch.M2[Algebraic]/batch.Isucc;
-			double variance = fmax(0,m2 - mean2 * mean2);
-			double width = Value * sqrt(variance/batch.Isucc);
-			
-			return new ConfInt(mean*mean2,
-							   (mean2 - width)*l,
-							   (mean2 + width)*u );
+		double mean = (double)batch.Isucc / (double)batch.I;
+		double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
+		double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
+		double mean2 = batch.Mean[Algebraic]/batch.Isucc;
+		double m2 = batch.M2[Algebraic]/batch.Isucc;
+		double variance = fmax(0,m2 - mean2 * mean2);
+		double width = Value * sqrt(variance/batch.Isucc);
+		
+		return new ConfInt(mean*mean2,
+						   (mean2 - width)*l,
+						   (mean2 + width)*u );
 		}
 			
 		case RE_Continuous:
@@ -332,18 +332,18 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		{
 		//Implementation of the SPRT.
 		
-			double uppart = pow((Value2/Value),(double)batch.Isucc);
-			double lowpart = pow(((1-Value2)/(1-Value)), (double)batch.I - (double)batch.Isucc);
-			double likelyhoodRatio = uppart * lowpart;
-			double a = 1-Level; //Probability of type I error
-			double b = 1-Level; //Probability of type II errror
-			if(likelyhoodRatio <= b /(1-a)){
-				return new ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2);
-			}
-			if (likelyhoodRatio >= (1-b) / a ) {
-				return new ConfInt((double)batch.Isucc/(double)batch.I, Value ,1);
-			}
-			return new ConfInt((double)batch.Isucc/(double)batch.I, 0 ,1);
+		double uppart = pow((Value2/Value),(double)batch.Isucc);
+		double lowpart = pow(((1-Value2)/(1-Value)), (double)batch.I - (double)batch.Isucc);
+		double likelyhoodRatio = uppart * lowpart;
+		double a = 1-Level; //Probability of type I error
+		double b = 1-Level; //Probability of type II errror
+		if(likelyhoodRatio <= b /(1-a)){
+			return new ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2);
+		}
+		if (likelyhoodRatio >= (1-b) / a ) {
+			return new ConfInt((double)batch.Isucc/(double)batch.I, Value ,1);
+		}
+		return new ConfInt((double)batch.Isucc/(double)batch.I, 0 ,1);
 		}
 			
 		case CONSTANT:
@@ -351,73 +351,73 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			
 		case HASL_PLUS:
 		{
-			ConfInt* lci = left->eval(batch);
-			ConfInt* rci = right->eval(batch);
-			
-			double mean = lci->mean+rci->mean;
-			double low = lci->low+rci->low;
-			double up = lci->up +rci->up;
-			
-			delete lci;
-			delete rci;
-			
-			return new ConfInt(mean,low,up);
+		ConfInt* lci = left->eval(batch);
+		ConfInt* rci = right->eval(batch);
+		
+		double mean = lci->mean+rci->mean;
+		double low = lci->low+rci->low;
+		double up = lci->up +rci->up;
+		
+		delete lci;
+		delete rci;
+		
+		return new ConfInt(mean,low,up);
 		}
 		case HASL_MINUS:
 		{
-			ConfInt* lci = left->eval(batch);
-			ConfInt* rci = right->eval(batch);
+		ConfInt* lci = left->eval(batch);
+		ConfInt* rci = right->eval(batch);
 		
-			double mean = lci->mean-rci->mean;
-			double low = lci->low-rci->low;
-			double up = lci->up -rci->up;
+		double mean = lci->mean-rci->mean;
+		double low = lci->low-rci->low;
+		double up = lci->up -rci->up;
 		
-			delete lci;
-			delete rci;
+		delete lci;
+		delete rci;
 		
-			return new ConfInt(mean,low,up);
+		return new ConfInt(mean,low,up);
 		}
 			
 		case HASL_TIME:
 		{
-			ConfInt* lci = left->eval(batch);
-			ConfInt* rci = right->eval(batch);
-			
-			double mean = lci->mean*rci->mean;
-			double low = fmin(fmin(lci->low*rci->low,lci->up*rci->up),
-								fmin(lci->low*rci->up,lci->up*rci->low));
-			double up = fmax(fmax(lci->low*rci->low,lci->up*rci->up),
+		ConfInt* lci = left->eval(batch);
+		ConfInt* rci = right->eval(batch);
+		
+		double mean = lci->mean*rci->mean;
+		double low = fmin(fmin(lci->low*rci->low,lci->up*rci->up),
+						  fmin(lci->low*rci->up,lci->up*rci->low));
+		double up = fmax(fmax(lci->low*rci->low,lci->up*rci->up),
 						 fmax(lci->low*rci->up,lci->up*rci->low));
-			
-			delete lci;
-			delete rci;
-			
-			return new ConfInt(mean,low,up);
+		
+		delete lci;
+		delete rci;
+		
+		return new ConfInt(mean,low,up);
 		}
 			
 		case HASL_DIV:
 		{
-			ConfInt* lci = left->eval(batch);
-			ConfInt* rci = right->eval(batch);
-			
-			if(rci->low * rci->up<=0)
-				return new ConfInt();
-			
-			double mean = lci->mean / rci->mean;
-			double low,up;
-			
-			if(rci->low > 0){
-				low = lci->low / rci->up;
-				up  = lci->up  / rci->low;
-			}else{
-				low = lci->low / rci->low;
-				up  = lci->up  / rci->up;
-			}
-			
-			delete lci;
-			delete rci;
-			
-			return new ConfInt(mean,low,up);
+		ConfInt* lci = left->eval(batch);
+		ConfInt* rci = right->eval(batch);
+		
+		if(rci->low * rci->up<=0)
+			return new ConfInt();
+		
+		double mean = lci->mean / rci->mean;
+		double low,up;
+		
+		if(rci->low > 0){
+			low = lci->low / rci->up;
+			up  = lci->up  / rci->low;
+		}else{
+			low = lci->low / rci->low;
+			up  = lci->up  / rci->up;
+		}
+		
+		delete lci;
+		delete rci;
+		
+		return new ConfInt(mean,low,up);
 		}
 			
 		default:

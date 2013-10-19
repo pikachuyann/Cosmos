@@ -41,7 +41,7 @@ result::result(parameters &Q){
 	gnuplotstream= NULL;
 	gettimeofday(&lastprint,NULL);
 	gettimeofday(&lastdraw,NULL);
-   
+	
     MeanM2 = new BatchR(P.nbAlgebraic);
 	for(size_t i =0; i<P.HaslFormulasname.size(); i++){
 		HaslResult.push_back(new ConfInt());
@@ -62,7 +62,7 @@ result::result(parameters &Q){
 			if(!iname.compare("")){
 				outdatastream << " \"Mean["<<i<<"]\" \"Confidence interval Width["<<i<<"]\" \"Confidence interval lower bound [" << i <<"]\" \"Confidence interval upper bound ["<<i<<"]\"";
 			}else{
-            outdatastream << " \"Mean["<<iname<<"]\" \"Confidence interval Width["<<iname<<"]\" \"Confidence interval lower bound ["<<iname<<"]\" \"Confidence interval upper bound ["<<iname<<"]\"";
+				outdatastream << " \"Mean["<<iname<<"]\" \"Confidence interval Width["<<iname<<"]\" \"Confidence interval lower bound ["<<iname<<"]\" \"Confidence interval upper bound ["<<iname<<"]\"";
 			}
         }
         outdatastream << endl;
@@ -125,7 +125,7 @@ void result::addBatch(BatchR *batchResult){
 		
 		if(P.HaslFormulas[i]->TypeOp==HYPOTHESIS){
 			if (RelErrArray[i] <1)RelErrArray[i]=0;
-				// If the Hypothesis confidence interval is less than 1 then test has finished.
+			// If the Hypothesis confidence interval is less than 1 then test has finished.
 		}
 		
 		RelErr = max(RelErr,RelErrArray[i]);
@@ -151,7 +151,7 @@ void printPercent(double i, double j){
     double t = 100;
     double u;
     if(j != 0){
-       u = (t * i)/j;      
+		u = (t * i)/j;
     }else u=0;
     cout << "[";
     for(int k = 1; k<t;k++){
@@ -166,7 +166,7 @@ void result::printProgress(){
 	gettimeofday(&current,NULL);
 	if((current.tv_sec-lastprint.tv_sec +
 		(current.tv_usec-lastprint.tv_usec)/1000000.0) < P.updatetime)
-			return;
+		return;
 	lastprint = current;
 	if(P.alligatorMode){
 		printAlligator();
@@ -223,22 +223,22 @@ void result::print(ostream &s){
     if(!P.computeStateSpace){
 		for(size_t i =0; i<P.HaslFormulasname.size(); i++){
 			if(!P.alligatorMode || ( P.HaslFormulas[i]->TypeOp != PDF_PART &&  P.HaslFormulas[i]->TypeOp != CDF_PART)){
-            /*if (MeanM2->IsBernoulli[i]) {
-                low[i] = (0 > low[i]) ? 0.0 : low[i];
-                up[i] = (1 < up[i]) ? 1.0 : up[i];
-                width[i] = up[i] - low[i];
-            }*/
-            
-            s << P.HaslFormulasname[i] << ":" << endl;
-            
-			s << "Estimated value:\t" << HaslResult[i]->mean << endl;
-			if(P.sequential){
-				s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
-				s << "Width:\t" << HaslResult[i]->width() << endl;
-			}else{
-				s << "Confidence interval:\t[" << HaslResult[i]->mean-P.Width/2.0 << " , " << HaslResult[i]->mean+P.Width/2.0 << "]" << endl;
-				s << "Width:\t" << P.Width << endl;
-			}
+				/*if (MeanM2->IsBernoulli[i]) {
+				 low[i] = (0 > low[i]) ? 0.0 : low[i];
+				 up[i] = (1 < up[i]) ? 1.0 : up[i];
+				 width[i] = up[i] - low[i];
+				 }*/
+				
+				s << P.HaslFormulasname[i] << ":" << endl;
+				
+				s << "Estimated value:\t" << HaslResult[i]->mean << endl;
+				if(P.sequential){
+					s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
+					s << "Width:\t" << HaslResult[i]->width() << endl;
+				}else{
+					s << "Confidence interval:\t[" << HaslResult[i]->mean-P.Width/2.0 << " , " << HaslResult[i]->mean+P.Width/2.0 << "]" << endl;
+					s << "Width:\t" << P.Width << endl;
+				}
 			}
         }
 		if(!P.sequential)
@@ -274,7 +274,7 @@ void result::outputCDFPDF(string f){
 			size_t fb = P.HaslFormulasname[i].find("[");
 			size_t comma = P.HaslFormulasname[i].find(",",fb);
 			outFile << P.HaslFormulasname[i].substr(comma+2,
-						P.HaslFormulasname[i].length() -comma-3 ) << " ";
+													P.HaslFormulasname[i].length() -comma-3 ) << " ";
 			outFile << HaslResult[i]->low << " "<< HaslResult[i]->mean;
 			outFile << " " << HaslResult[i]->up << endl;
 		}
@@ -335,12 +335,12 @@ void result::flushgnuplot(){
 }
 
 /*	if(0!=ferror(gnuplotstream)){
-		int statgnu = fflush(gnuplotstream);
-		return;
-	}
-	cerr << "Gnuplot crashes " << endl;
-	gnuplotstream = NULL;
-}*/
+ int statgnu = fflush(gnuplotstream);
+ return;
+ }
+ cerr << "Gnuplot crashes " << endl;
+ gnuplotstream = NULL;
+ }*/
 
 void result::outputData(){
     outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;

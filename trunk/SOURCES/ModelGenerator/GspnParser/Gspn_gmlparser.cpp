@@ -56,7 +56,7 @@ gmlinputexception gmlioexc;
  int rootdepth=tr.depth(it);
  while(it!=end) {
  cout << "    ";
- for(int i=0; i<tr.depth(it)-rootdepth; ++i) 
+ for(int i=0; i<tr.depth(it)-rootdepth; ++i)
  cout << "  ";
  cout << (*it) << endl << flush;
  ++it;
@@ -69,7 +69,7 @@ string itostring (int i){
 	return ss.str();
 }
 
-string* simplifyString(string str) 
+string* simplifyString(string str)
 {
 	size_t n1 = str.find_first_not_of(" \n\t");
 	size_t n2 = str.find_last_not_of(" \n\t");
@@ -120,7 +120,7 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
 			}
 			if(MyGspn->placeStruct[MyGspn->PlacesId[*var]].colorDom !=0 )st->append(".card()");
         }
-	}else if (	(*it).compare("+")==0  || (*it).compare("*")==0  
+	}else if (	(*it).compare("+")==0  || (*it).compare("*")==0
               || (*it).compare("min")==0   || (*it).compare("max")==0
               || (*it).compare("floor")==0 || (*it).compare("minus")==0
               || (*it).compare("/")==0   || (*it).compare("power")==0)  {
@@ -310,7 +310,7 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
 		int intval = intconst[(*val).c_str()];
 		delete val;
 		return intval;
-	}else if ((*it).compare("+")==0 || (*it).compare("*")==0  
+	}else if ((*it).compare("+")==0 || (*it).compare("*")==0
 			  || (*it).compare("min")==0  || (*it).compare("max")==0
 			  || (*it).compare("power")==0|| (*it).compare("-")==0)  {
 		
@@ -417,7 +417,7 @@ MyModelHandler::MyModelHandler(GSPN *MyGspn2,parameters &Q):MyGspn(MyGspn2), P(Q
 	MyGspn->tr=0;
 	ParsePl=true;
 	if(MyGspn->nbpass==0){
-	//Initialisation
+		//Initialisation
 		MyGspn->pl=0;
 	}
 }
@@ -442,7 +442,7 @@ void MyModelHandler::on_read_model(const XmlString& formalismUrl) {
 void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 	if(MyGspn->nbpass==1)return;
 	
-    // read model attribute 
+    // read model attribute
     // If the file is well formed the only attributes are constant declaration.
     
     for(treeSI it = attribute.begin(); it != attribute.end(); ++it) {
@@ -450,46 +450,46 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
         if((*it).compare("declaration")==0){
             treeSI t1 = findbranch(it, "constants/intConsts/");
 			if(t1 != it.end())
-            for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
-                if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
-                if ((*it2).compare("intConst")==0) { // const is int or double
-                    string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-                    int constvalue = eval_intFormula(MyGspn->IntConstant, find(it2.begin(),it2.end(),"expr"));
-                    if((P.verbose-3)>1)cout << "const int " << *constname << "=" << constvalue << endl;
-                    if (P.constants.count(*constname)>0) {
-						istringstream(P.constants[*constname]) >> constvalue;
-						if((P.verbose-3)>0)cout << "const int " << *constname << " overwrite to " << constvalue << endl;;
+				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
+					if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
+					if ((*it2).compare("intConst")==0) { // const is int or double
+						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+						int constvalue = eval_intFormula(MyGspn->IntConstant, find(it2.begin(),it2.end(),"expr"));
+						if((P.verbose-3)>1)cout << "const int " << *constname << "=" << constvalue << endl;
+						if (P.constants.count(*constname)>0) {
+							istringstream(P.constants[*constname]) >> constvalue;
+							if((P.verbose-3)>0)cout << "const int " << *constname << " overwrite to " << constvalue << endl;;
+						}
+						
+						//Evaluate_gml.parse(constvalue);
+						MyGspn->IntConstant[*constname]=constvalue; //Evaluate_gml.IntResult;
+						MyGspn->RealConstant[*constname]= constvalue; //Evaluate_gml.RealResult;
+						//cout << "\tconst int " << *constname << "=" << constvalue << endl;
+						
 					}
-					
-                    //Evaluate_gml.parse(constvalue);
-                    MyGspn->IntConstant[*constname]=constvalue; //Evaluate_gml.IntResult;
-                    MyGspn->RealConstant[*constname]= constvalue; //Evaluate_gml.RealResult;
-                    //cout << "\tconst int " << *constname << "=" << constvalue << endl;
-                    
-                } 
-            }
+				}
             
             treeSI t2 = findbranch(it, "constants/realConsts/");
 			if(t2 != it.end())
-            for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
-                if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
-                if ((*it2).compare("realConst")==0) {
-                    if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
-                    string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-                    bool ismarkdep=false;
-                    string constvalue;
-                    eval_expr( &ismarkdep, &constvalue, find(it2.begin(),it2.end(),"expr").begin());
-                    if(ismarkdep)cout<< "constante are not makring dependant!" << endl;
-					if (P.constants.count(*constname)>0) {
-						constvalue = P.constants[*constname];
-						if((P.verbose-3)>0)cout << "const double " << *constname << " overwrite to " << constvalue << endl;;
+				for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
+					if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
+					if ((*it2).compare("realConst")==0) {
+						if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
+						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+						bool ismarkdep=false;
+						string constvalue;
+						eval_expr( &ismarkdep, &constvalue, find(it2.begin(),it2.end(),"expr").begin());
+						if(ismarkdep)cout<< "constante are not makring dependant!" << endl;
+						if (P.constants.count(*constname)>0) {
+							constvalue = P.constants[*constname];
+							if((P.verbose-3)>0)cout << "const double " << *constname << " overwrite to " << constvalue << endl;;
+						}
+						Evaluate_gml.parse(constvalue);
+						MyGspn->RealConstant[*constname]=Evaluate_gml.RealResult;
+						if((P.verbose-3)>1)cout << "\tconst double " << *constname << "=" << MyGspn->RealConstant[*constname] << endl;
+						
 					}
-					Evaluate_gml.parse(constvalue);
-					MyGspn->RealConstant[*constname]=Evaluate_gml.RealResult;
-					if((P.verbose-3)>1)cout << "\tconst double " << *constname << "=" << MyGspn->RealConstant[*constname] << endl;
-                   
-                } 
-            }
+				}
 			
 			for(t2 =it.begin(); t2 != it.end() ; ++t2){
 				if((P.verbose-3)>1)cout << endl <<  *t2 << ": " << endl;
@@ -524,10 +524,10 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 									ss << "intervalColor_" << i;
 									cc.colors.push_back(color(ss.str()));
 								}
-														
-							}
 								
-
+							}
+							
+							
 							
 						}
 						if((*it2).compare("circular")==0){
@@ -649,7 +649,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 					throw gmlioexc;
 				}
 				MyGspn->PlacesId[*Plname]=MyGspn->pl-1;
-			
+				
             } else if((*(it->second.begin())).compare("domain")==0){
                 string* Pldomain = simplifyString(*(it2.begin().begin()));
                 if((P.verbose-3)>1)cout << "\tdomain:" << *Pldomain << endl ;
@@ -878,7 +878,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         vector<string> vStr(MyGspn->pl, " ");
         
         //Reader.MyGspn->Marking=v;
-        vector< vector<int> > m1(MyGspn->tr,vplint);  
+        vector< vector<int> > m1(MyGspn->tr,vplint);
         vector< vector<string> > m1Str(MyGspn->tr,vStr);
         
         MyGspn->outArcs=m1;
@@ -944,7 +944,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 							valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].name );
 							valuation.append("_All");
 						}
-
+						
 						
 						if(tokenType.varIncrement[pr] != 0){
 							valuation.append(".next(");
@@ -966,7 +966,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
                 MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=1;
                 MyGspn->inhibArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= valuation;
 				MyGspn->inhibArcsTok[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= toklist;
-			}else {	
+			}else {
                 MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=Evaluate_gml.IntResult;
             }
             //MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
