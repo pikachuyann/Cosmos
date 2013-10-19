@@ -355,6 +355,7 @@ bool ParseBuild(parameters& P) {
 				it != P.HaslFormulas.end(); ++it)
 				if ( (*it)->TypeOp == EXPECTANCY ){
 					(*it)->TypeOp = RE_Continuous;
+					(*it)->Value2 = P.epsilon;
 					
 				}
 		}else{  // Second case Unbounded rare event.

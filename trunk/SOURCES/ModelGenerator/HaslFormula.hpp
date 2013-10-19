@@ -63,7 +63,13 @@ public:
 	double mean; //!< Middle of the confidence interval.
 	double low; //!< Lower bound of the confidence interval.
 	double up; //!< Upper bound of the confidence interval.
+
 	double width(void); //!< Width of the confidence interval.
+
+        ConfInt &operator+=(const ConfInt& rhs);
+        ConfInt &operator-=(const ConfInt& rhs);
+        ConfInt &operator*=(const ConfInt& rhs);
+        ConfInt &operator/=(const ConfInt& rhs);
 };
 
 /**
@@ -90,11 +96,14 @@ public:
 	ConfInt* eval(BatchR&)const; //!< Evaluate the formula over the batch of simulation
 	double bound()const; //!< Return a bound on the formula result
 	HaslType TypeOp; //!< type of the HaslFormula.
+
+        double Value; //!< A double value, have different purpose depending of the type of the operator
+	double Value2; //!< A double value, have different purpose depending of the type of the operator
+
 	
 protected:
 	double Level; //!< The confidence level which should be used for the computation of the confidence interval
-	double Value; //!< A double value, have different purpose depending of the type of the operator
-	double Value2; //!< A double value, have different purpose depending of the type of the operator
+	
 	size_t Algebraic; //!< The index of the data in the table of result return by the simulator.
 	HaslFormulasTop* left;
 	HaslFormulasTop* right;
