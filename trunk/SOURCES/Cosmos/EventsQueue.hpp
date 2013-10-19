@@ -43,25 +43,25 @@ public:
 	
     EventsQueue(const EventsQueue& orig);
     virtual ~EventsQueue();
-
+	
     void insert(const Event &);
     void replace(const Event &);
     void remove(size_t,size_t);
 	bool isScheduled(size_t,size_t)const;
-
+	
 	
     bool isEmpty()const;
     void view(const vector<_trans> &)const;
-
+	
     void reset();
     size_t getSize()const ;
-
-
+	
+	
     const Event& InPosition(size_t)const ;
     
 	
 private:
-
+	
 	/**
 	 * The Events Heap Index vector allow to retrive the index
 	 * of an event in the Events Heap (evtHeap) given its transition
@@ -88,15 +88,15 @@ private:
     size_t getLeftChildIndex(size_t nodeIndex)const {
         return 2 * nodeIndex + 1;
     }
-
+	
     size_t getRightChildIndex(size_t nodeIndex)const {
         return 2 * nodeIndex + 2;
     }
-
+	
     size_t getParentIndex(size_t nodeIndex)const {
         return (nodeIndex - 1) / 2;
     }
-
+	
 	void siftUp(size_t);
     void siftDown(size_t);
 	void swapEvt(size_t,size_t);

@@ -77,13 +77,13 @@ bool continueSelect=false;
  * The signals this function is expecting are SIGCHLD which append if
  * child simulator terminate. In this case the return status of the child
  * must be retrive to know what make the simulator terminate.
- * If the termination is legit: The simulator terminate because it has finished 
+ * If the termination is legit: The simulator terminate because it has finished
  * its computation which append in -v 4 mode and when exporting state space,
  * or the server just killed the simulator with signal 2.
  * Then do nothing. Otherwise report the error.
  *
- * If the signal SIGINT is caught then the variable continueSelect is set to 
- * false, this is sufficient because the signal interrupt the select 
+ * If the signal SIGINT is caught then the variable continueSelect is set to
+ * false, this is sufficient because the signal interrupt the select
  * system call.
  *
  * @param signum the number of a signal
@@ -124,17 +124,26 @@ void signalHandler( int signum )
 }
 
 
+/**
+ * A wrapper for the call to system that turn off the signal handling this is require
+ * otherwise the handler get stuck after receiving a signal for the death of an unknown child.
+ * @param cmd the command to execute
+ */
 int systemsigsafe(const char*cmd){
-  int retValue;
-  signal(SIGCHLD , SIG_DFL );
-  retValue = system(cmd) ;
-  signal(SIGCHLD , signalHandler);
-  return retValue;
+	int retValue;
+	signal(SIGCHLD , SIG_DFL );
+	retValue = system(cmd) ;
+	signal(SIGCHLD , signalHandler);
+	return retValue;
 }
 
 /*
  * Open a child processes retring both PID and an a pipe
  * to the standart input of the child.
+ * This function fork and execute the given binary
+ * on the child.
+ * @param bin the path to the binary to execute.
+ * @param argv the list of argument.
  */
 void popenClient(const char* bin, const char *argv[]){
 	pid_t pid = 0;
@@ -201,9 +210,10 @@ void freestr(const char *argv[],size_t t){
 
 /**
  * Launch the P.Njob copy of the simulator with the parameters define in P
+ * @param P the structure of Parameters
  */
 void launch_clients(parameters& P){
-    signal(SIGCHLD , signalHandler); 
+    signal(SIGCHLD , signalHandler);
 	signal(SIGINT, signalHandler);
 	//pid_t readpid;
 	for(int i = 0;i<P.Njob;i++){
@@ -216,7 +226,7 @@ void launch_clients(parameters& P){
 		pushint(argv,argn,P.verbose);
 		
 		//<< P.Batch << " " << P.verbose;
-
+		
 		// is seed is zero generate a pseudo random seed.
 		if(P.seed==0){
 			timeval t;
@@ -263,18 +273,6 @@ void launch_clients(parameters& P){
 			pushstr(argv,argn,P.datatrace.c_str());
 		}
 		
-		/*//Lauch a new client with the parameters
-        FILE* stream = popen((os.str()).c_str(), "r");
-		//add the file descriptor to the list of file descriptor.
-        clientstream.push_back(stream);
-        int streamfd = fileno(stream);
-        if(streamfd >max_client)max_client = streamfd;
-        
-		//Read the first bythes of the stream it should contain the
-		//PID of the client.
-        fread(reinterpret_cast<char*>( &readpid ), sizeof(readpid) ,1, stream);
-        clientPID.push_back(readpid);
-		 */
 		if(P.verbose >2){
 			for(size_t i=0; i<argn; i++ )cout << " " << argv[i];
 			cout << endl;
@@ -287,17 +285,17 @@ void launch_clients(parameters& P){
     
 }
 
-/**	
- * Kill all the copy of the simulators at the end of the computation.
+/**
+ * Kill all the copy of the simulator at the end of the computation.
  */
 void kill_client(){
 	
     while (!clientPID.empty())
-    {
+		{
         kill(clientPID.back(),2);
         clientstream.pop_back();
         clientPID.pop_back();
-    }
+		}
 }
 
 /**
@@ -310,7 +308,7 @@ void wait_client(){
 		int termstat;
 		child = wait(&termstat);
 	}
-
+	
 }
 
 /**
@@ -325,14 +323,17 @@ void makeselectlist(void){
     }
 }
 
-void launchExport(parameters& P){    
+/**
+ * Lauch one simulator with an option to make it generating the state space
+ */
+void launchExport(parameters& P){
     if(P.computeStateSpace==2){
 		ostringstream setuppr;
 		setuppr << "cd " << P.Path << "../prism ; ./install.sh";
 		cout << "setup prism:" << setuppr.str() << endl;
 		if(0 != system(setuppr.str().c_str()))errx(1,"Fail to set up Prism");
 	}
-		
+	
     ostringstream os;
 	os << P.tmpPath << "/ClientSim 1 " << P.verbose << " 0 ";
     if(P.computeStateSpace==1)os << " -STSP " << P.prismPath;
@@ -344,11 +345,13 @@ void launchExport(parameters& P){
         cout << "Export Finish" << endl;
     }else{
         cerr << "Export Fail" << endl;
-    }    
+    }
 }
 
-// This function launch a set of simulators and stop them once
-// The precision criterion is reach.
+/**
+ * This function launch a set of simulators and stop them once
+ * The precision criterion is reach.
+ */
 void launchServer(parameters& P){
     if(P.verbose>0)cout << "START SIMULATION ..." << endl;
     
@@ -413,7 +416,7 @@ void launchServer(parameters& P){
 	} else{
         if(P.verbose>1)Result.print(cout);
 	}
-
+	
 	
     string fn = "Result";
     fn.append(".res");

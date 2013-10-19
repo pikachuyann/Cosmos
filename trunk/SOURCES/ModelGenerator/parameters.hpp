@@ -48,8 +48,8 @@ struct parameters {
 	unsigned long int MaxRuns;
 	bool sequential;
 	string tmpPath;
-	unsigned int tmpStatus; // 0 create and destroy tmp, 
-		//1 do not build destroy,2 do not destroy, 3 do not build do not destoy
+	unsigned int tmpStatus; // 0 create and destroy tmp,
+	//1 do not build destroy,2 do not destroy, 3 do not build do not destoy
 	string Path;
 	string PathGspn;
 	string PathLha;

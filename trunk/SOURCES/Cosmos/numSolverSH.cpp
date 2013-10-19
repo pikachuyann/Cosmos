@@ -53,7 +53,7 @@ void numSolverSH::initVect(int nT){
 	
 	boostmat::vector<double> itervect = *finalVector;
     boostmat::vector<double> itervect2=
-        boostmat::zero_vector<double> (finalVector->size());
+	boostmat::zero_vector<double> (finalVector->size());
     
     time(&endt);
     cerr << "time for allocation:" << difftime(endt, start) << endl;
@@ -87,8 +87,8 @@ void numSolverSH::compPow(int kp,int up){
     
     int k = kp-1;
     boostmat::vector<double> itervect = (*lastOne)[kp];
-	boostmat::vector<double> itervect2 = 
-        boostmat::zero_vector<double> (finalVector->size());   
+	boostmat::vector<double> itervect2 =
+	boostmat::zero_vector<double> (finalVector->size());
     
     while (k>0 && readbit(up, k)==0){
         //cerr << itervect<< endl;
@@ -98,7 +98,7 @@ void numSolverSH::compPow(int kp,int up){
         k--;
     }
     
-	int m = 1<<k;  // (m = 2^k 
+	int m = 1<<k;  // (m = 2^k
     for (int i = (int)(*ktable)[kp]+1; i<=up; i++) {
 		//cerr << "i: " << i << " k: " << k << " m: " << m << endl;
         itervect2.clear();
@@ -131,9 +131,9 @@ void numSolverSH::compPow(int kp,int up){
     current_vect=itervect;
     is_previous=false;
     /*current_vect= boostmat::zero_vector<double> (itervect.size());
-    sparseProd(&current_vect, &itervect, transitionsMatrix);*/
+	 sparseProd(&current_vect, &itervect, transitionsMatrix);*/
 	//current_vect = boostmat::prod ((*transitionsMatrix), itervect);
-	//cerr << "finish reset" << endl; 
+	//cerr << "finish reset" << endl;
     
     
 }
@@ -148,7 +148,7 @@ void numSolverSH::reset(){
     time(&endt);
     cerr << "time for reset:" << difftime(endt, start) << endl << endl;
     
-	//cerr << "finish reset" << endl; 
+	//cerr << "finish reset" << endl;
     
     
 }
@@ -168,7 +168,7 @@ void numSolverSH::stepVect(){
             compPow(kp, u);
         }
     }
-
+	
 	//cerr << ")" << endl;
 }
 

@@ -70,7 +70,7 @@ void SimulatorRE::InitialEventsQueue() {
 		}
 	}
 }
-	
+
 void SimulatorRE::returnResultTrue(){
 	A.getFinalValues(N.Marking,Result.second);
 	Result.first = true;
@@ -103,44 +103,44 @@ void SimulatorRE::updateSPN(size_t,const abstractBinding&){
 			}
 		}
 	}
-		
+	
 	abstractBinding bpuit;
 	GenerateEvent(F, (N.tr-1), bpuit);
 	if(!doubleIS_mode){
 		EQ->replace(F);
 	}
 	/*
-	//In Debug mode check that transition are scheduled iff they are enabled
-	for (vector<_trans>::const_iterator t = N.Transition.begin()
-		 ; t != N.Transition.end() ; ++t) {
-		for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
-			bindex != t->bindingList.end() ; ++bindex){
-			if (N.IsEnabled(t->Id, *bindex) !=
-				EQ->isScheduled(t->Id, bindex->id())){
-				cerr << "N.IsEnabled(" << t->label << ",";
-				bindex->print();
-				cerr <<")" << endl;
-				if(EQ->isScheduled(t->Id, bindex->id())){
-					cerr << "Scheduled and not enabled!"<< endl;
-				}else{
-					cerr << "Enabled and not scheduled!" << endl;
-				}
-				assert(N.IsEnabled(t->Id, *bindex) ==
-					   EQ->isScheduled(t->Id, bindex->id()));
-			}
-		}
-	}
-	*/
+	 //In Debug mode check that transition are scheduled iff they are enabled
+	 for (vector<_trans>::const_iterator t = N.Transition.begin()
+	 ; t != N.Transition.end() ; ++t) {
+	 for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
+	 bindex != t->bindingList.end() ; ++bindex){
+	 if (N.IsEnabled(t->Id, *bindex) !=
+	 EQ->isScheduled(t->Id, bindex->id())){
+	 cerr << "N.IsEnabled(" << t->label << ",";
+	 bindex->print();
+	 cerr <<")" << endl;
+	 if(EQ->isScheduled(t->Id, bindex->id())){
+	 cerr << "Scheduled and not enabled!"<< endl;
+	 }else{
+	 cerr << "Enabled and not scheduled!" << endl;
+	 }
+	 assert(N.IsEnabled(t->Id, *bindex) ==
+	 EQ->isScheduled(t->Id, bindex->id()));
+	 }
+	 }
+	 }
+	 */
 };
 
 void SimulatorRE::updateLikelihood(size_t E1_transitionNum){
     //cerr << "initialised?:\t" << E1_transitionNum << endl;
-	if(doubleIS_mode){	
-		A.Likelihood = A.Likelihood * 
-		(N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) * 
+	if(doubleIS_mode){
+		A.Likelihood = A.Likelihood *
+		(N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) *
 		((N.Rate_Sum-N.Rate_Table[N.tr-1]) / N.Rate_Table[E1_transitionNum]);
 	}else{
-		A.Likelihood = A.Likelihood * 
+		A.Likelihood = A.Likelihood *
 		//
 		//(N.Origine_Rate_Table[E1_transitionNum] / 1.0) *
 		(N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) *
@@ -154,13 +154,13 @@ bool SimulatorRE::transitionSink(size_t i){
 
 /*
  Useless for the moment
-void SimulatorRE::GenerateDummyEvent(Event& E, size_t Id) {
-    E.transition = Id;
-    E.time = 0.0;
-    E.priority = N.GetPriority(Id);
-    E.weight = 0.0;
-}*/
-	
+ void SimulatorRE::GenerateDummyEvent(Event& E, size_t Id) {
+ E.transition = Id;
+ E.time = 0.0;
+ E.priority = N.GetPriority(Id);
+ E.weight = 0.0;
+ }*/
+
 void SimulatorRE::GenerateEvent(Event& E,size_t Id,const abstractBinding& b) {
 	
     double t = A.CurrentTime;
@@ -238,13 +238,13 @@ double SimulatorRE::ComputeDistr(size_t t , const abstractBinding& b, double ori
 			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
 		}else{
 			if(verbose>3 && (N.Origine_Rate_Sum < 0.99*N.Rate_Sum)){
-			cerr << "Reduce model does not guarantee variance" << endl;
-			cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
-			//exit(EXIT_FAILURE);
+				cerr << "Reduce model does not guarantee variance" << endl;
+				cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
+				//exit(EXIT_FAILURE);
 			}
-				
+			
 			return 0.0 ;};
-	}; 
+	};
 	if(verbose>4)cerr << "mu target : ";
 	double distr;
 	N.fire(t,b);

@@ -45,7 +45,7 @@ protected:
     //void updateSPN(size_t E1_transitionNum, const abstractBinding&);
     //virtual void updateLikelihood(int);
     //virtual double ComputeDistr(int t , double origin_rate);
-
+	
 	//double ComputeDistr(int t , double origin_rate);
 };
 

@@ -57,7 +57,7 @@ void numericalSolver::sparseProd(boostmat::vector<double> *result,boostmat::vect
     //*result = boostmat::zero_vector<double> (vect->size());
     
     //boostmat::axpy_prod((const boostmat::compressed_matrix<double,boostmat::row_major>) *mat,(const boostmat::vector<double>) *vect,*result,true);
-
+	
     
     //boostmat::axpy_prod(*mat, *vect, *result, boostmat::row_major );
     
@@ -71,7 +71,7 @@ void numericalSolver::sparseProd(boostmat::vector<double> *result,boostmat::vect
         for(boostmat::compressed_matrix<double>::iterator2 it2 = it.begin(); it2!= it.end(); it2++){
             //cerr << "iteration: " << it.index1() << ":" << it2.index2() << endl;
             (*result) (it.index1()) += ((*vect) (it2.index2()) * (*it2));
-        };        
+        };
     };
 }
 
@@ -101,7 +101,7 @@ void numericalSolver::initVect(int nT){
         
         if(((*circularvect)[i] (0) != 0) && (minT== -1))minT=i;
         //cerr << "i:" << i<< "\t"<<(*circularvect)[i] (0) << endl;
-
+		
         
         //boostmat::sparse_prod(transitionsMatrix, (*circularvect)[i] , (*circularvect)[i-1] );
         
@@ -119,7 +119,7 @@ void numericalSolver::initVect(int nT){
 void numericalSolver::reset(){
 	matOffset=T;
 	//cerr << (*circularvect)[matOffset] << endl;
-
+	
 }
 
 boostmat::vector<double> numericalSolver::getVect(){

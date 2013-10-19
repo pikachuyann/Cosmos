@@ -60,16 +60,16 @@ Gspn_Reader::~Gspn_Reader() {
 int Gspn_Reader::parse(string& expr) {
 	
 	scan_expression(expr);
-
-  IndexDist["UNIFORM"] = 1;
-  IndexDist["EXPONENTIAL"] = 2;
-  IndexDist["DETERMINISTIC"] = 3;
-  IndexDist["LOGNORMAL"] = 4;
-  IndexDist["TRIANGLE"] = 5;
-  IndexDist["GEOMETRIC"] = 6;
-  IndexDist["ERLANG"] = 7;
-  IndexDist["GAMMA"] =8;
-
+	
+	IndexDist["UNIFORM"] = 1;
+	IndexDist["EXPONENTIAL"] = 2;
+	IndexDist["DETERMINISTIC"] = 3;
+	IndexDist["LOGNORMAL"] = 4;
+	IndexDist["TRIANGLE"] = 5;
+	IndexDist["GEOMETRIC"] = 6;
+	IndexDist["ERLANG"] = 7;
+	IndexDist["GAMMA"] =8;
+	
 	gspn::Gspn_parser parser(*this);
 	
 	parser.set_debug_level(trace_parsing);
@@ -306,13 +306,13 @@ bool setinclusion(set<T1> s1,set<T1> s2){
 }
 
 /*template <typename T1>
-vector<T1> setofvect(vect<T1> s1){
-	for (typename set<T1>::const_iterator it = s1.begin(); it!= s1.end(); ++it){
-		if (s2.find(*it)==s2.end())return false;
-	}
-	
-	return true;
-}*/
+ vector<T1> setofvect(vect<T1> s1){
+ for (typename set<T1>::const_iterator it = s1.begin(); it!= s1.end(); ++it){
+ if (s2.find(*it)==s2.end())return false;
+ }
+ 
+ return true;
+ }*/
 
 template <typename T1>
 void printset(set<T1> s1){
@@ -370,8 +370,8 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 						// For all other casess fall back to enumeration.
 						SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
 						":\t//" << MyGspn.transitionStruct[trit].label << "->"
-							<< MyGspn.placeStruct[pivotplace].name <<
-							"->" << MyGspn.transitionStruct[trit2].label << endl;
+						<< MyGspn.placeStruct[pivotplace].name <<
+						"->" << MyGspn.transitionStruct[trit2].label << endl;
 						SpnF << "\t{"<< endl;
 						SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 						SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
@@ -448,8 +448,8 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 						// For all other casess fall back to enumeration.
 						SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
 						":\t//" << MyGspn.transitionStruct[trit].label << "->"
-							<< MyGspn.placeStruct[pivotplace].name <<
-							"->" << MyGspn.transitionStruct[trit2].label << endl;
+						<< MyGspn.placeStruct[pivotplace].name <<
+						"->" << MyGspn.transitionStruct[trit2].label << endl;
 						SpnF << "\t{"<< endl;
 						SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 						SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
@@ -476,7 +476,7 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 				}
 			}
 	}
-
+	
 	
 	SpnF << "\tdefault:"<< endl;
 	SpnF << "\t\tif(*bindingNum==Transition[targettr].bindingList.size())return NULL;"<<endl;
@@ -486,11 +486,11 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 	
 	
 	/*SpnF << "\tconst abstractBinding* result = &(Transition[targettr].bindingList[*bindingNum]);"<< endl;
-	SpnF << "\tif(*bindingNum==Transition[targettr].bindingList.size()-1){*bindingNum= string::npos;}"<<endl;
-	SpnF << "\telse{*bindingNum = *bindingNum +1;};"<< endl;
-	SpnF << "\treturn result;"<< endl;
-	SpnF << "}"<< endl;*/
-
+	 SpnF << "\tif(*bindingNum==Transition[targettr].bindingList.size()-1){*bindingNum= string::npos;}"<<endl;
+	 SpnF << "\telse{*bindingNum = *bindingNum +1;};"<< endl;
+	 SpnF << "\treturn result;"<< endl;
+	 SpnF << "}"<< endl;*/
+	
 }
 
 void Gspn_Reader::printloot(ofstream& fs, size_t domain, size_t nesting ){
@@ -938,9 +938,9 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	}
 	SpnCppFile << "0";
 	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) SpnCppFile << ")";
-
+	
 	SpnCppFile << ";\n}\n";
-
+	
 	
 }
 
@@ -986,19 +986,19 @@ void Gspn_Reader::writeTransition(ofstream & spnF, bool bstr){
 		//spnF << "\tTransition["<<t<<"].bindingLinkTable.resize("<< nbbinding <<",string::npos); "<< endl;
 		
 		if(MyGspn.colVars.size()>0){
-		spnF << "\t{abstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
-		for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
-			if( MyGspn.transitionStruct[t].varDomain.count(it)==0){
-				spnF<< "\tbl.P->" << MyGspn.colVars[it].name<<".mult = -1;\n";
+			spnF << "\t{abstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
+			for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
+				if( MyGspn.transitionStruct[t].varDomain.count(it)==0){
+					spnF<< "\tbl.P->" << MyGspn.colVars[it].name<<".mult = -1;\n";
+				}
 			}
-		}
-		spnF << "\twhile(bl.next()){\n";
-		if(MyGspn.transitionStruct[t].guard.compare("")==0)spnF << "\t\t{\n";
-		else spnF << "\t\tif(" << MyGspn.transitionStruct[t].guard << "){\n";
-		spnF << "\t\t\tbl.idcount = Transition["<<t<<"].bindingList.size();\n";
-		spnF << "\t\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";
-		spnF << "\t\t\tTransition["<<t<<"].bindingLinkTable[bl.idTotal()]= Transition["<<t<<"].bindingList.size()-1; "<< endl;
-		spnF << "\t\t}\n\t}}\n";
+			spnF << "\twhile(bl.next()){\n";
+			if(MyGspn.transitionStruct[t].guard.compare("")==0)spnF << "\t\t{\n";
+			else spnF << "\t\tif(" << MyGspn.transitionStruct[t].guard << "){\n";
+			spnF << "\t\t\tbl.idcount = Transition["<<t<<"].bindingList.size();\n";
+			spnF << "\t\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";
+			spnF << "\t\t\tTransition["<<t<<"].bindingLinkTable[bl.idTotal()]= Transition["<<t<<"].bindingList.size()-1; "<< endl;
+			spnF << "\t\t}\n\t}}\n";
 		}
 	}
 }
@@ -1120,10 +1120,10 @@ void Gspn_Reader::WriteFile(parameters& P){
 	if(P.localTesting){
 		SpnCppFile << "\treturn (TransitionConditions[t]==0);" << endl;
 	} else {
-	  casesHandler isenabledHandler("t");
-	  //SpnCppFile << "    switch(t){" << endl;
+		casesHandler isenabledHandler("t");
+		//SpnCppFile << "    switch(t){" << endl;
 		for (size_t t = 0; t < MyGspn.tr; t++) {
-		  stringstream newcase;
+			stringstream newcase;
 		    //SpnCppFile << "     case " << t << ":  //" << MyGspn.transitionStruct[t].label <<endl;
 			for (size_t p = 0; p < MyGspn.pl; p++) {
 				if (MyGspn.inArcs[t][p] > 0) {
@@ -1139,7 +1139,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 				if (MyGspn.inhibArcs[t][p] > 0) {
 					
 					if (MyGspn.inhibArcsStr[t][p] == " ")
-					  newcase << "    if (Marking.P->_PL_" << placeNames[p] <<" >= " << MyGspn.inhibArcs[t][p] << ") return false;" << endl;
+						newcase << "    if (Marking.P->_PL_" << placeNames[p] <<" >= " << MyGspn.inhibArcs[t][p] << ") return false;" << endl;
 					
 					else {
 						newcase << "    if ( !(" << MyGspn.inhibArcsStr[t][p] << " < 1) ) " << endl;
@@ -1319,7 +1319,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 							}else {
 								string seuil;
 								searchreplace(MyGspn.inhibArcsStr[t2][p], "Marking.P->_PL_", "tmpMark_" , seuil);
-
+								
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << placeNames[p] <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << placeNames[p] <<"+"<<increment<<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
@@ -1339,9 +1339,9 @@ void Gspn_Reader::WriteFile(parameters& P){
 	
 	SpnCppFile << "void SPN::unfire(size_t t ,const abstractBinding& b){" << endl;
 	if(P.RareEvent || P.computeStateSpace){
-	  casesHandler unfirecases("t");
+		casesHandler unfirecases("t");
 		for (size_t t = 0; t < MyGspn.tr; t++) {
-		  stringstream newcase;
+			stringstream newcase;
 			for (size_t p = 0; p < MyGspn.pl; p++) {
 				if (MyGspn.inArcs[t][p] > 0) {
 					if (MyGspn.inArcsStr[t][p] == " ")
@@ -1354,7 +1354,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 					if (MyGspn.outArcsStr[t][p] == " ")
 						newcase << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcs[t][p] << ";" << endl;
 					else
-					  newcase << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcsStr[t][p] << ";" << endl;
+						newcase << "    Marking.P->_PL_" << placeNames[p] <<" -= " << MyGspn.outArcsStr[t][p] << ";" << endl;
 				}
 			}
 			unfirecases.addCase(t,newcase.str(),MyGspn.transitionStruct[t].label);
@@ -1413,9 +1413,9 @@ void Gspn_Reader::WriteFile(parameters& P){
 	SpnCppFile << "void SPN::GetDistParameters(size_t t, const abstractBinding&)const {" << endl;
 	casesHandler parametercases("t");
 	for (size_t t = 0; t < MyGspn.tr; t++) {
-	  stringstream newcase;
+		stringstream newcase;
 		if (MyGspn.transitionStruct[t].type == Timed) {
-		  newcase << "\t{" << endl;
+			newcase << "\t{" << endl;
 			if (MyGspn.transitionStruct[t].singleService)
 				for (size_t i = 0; i < MyGspn.transitionStruct[t].dist.Param.size(); i++) {
 					
@@ -1454,7 +1454,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 		parametercases.addCase((int)t,newcase.str(),MyGspn.transitionStruct[t].label );
 	}
 	parametercases.writeCases(SpnCppFile);
-
+	
 	SpnCppFile << "}\n" << endl;
 	
 	
@@ -1484,7 +1484,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	}
 	weightcases.writeCases(SpnCppFile);
 	SpnCppFile << "}\n" << endl;
-		
+	
 	SpnCppFile << "void SPN::Msimple(){"<<endl;
 	SpnCppFile << "\tvector<int> tab;"<<endl;
 	for(map<string,int>::iterator it=MyGspn.PlacesId.begin(); it != MyGspn.PlacesId.end(); it++){

@@ -83,7 +83,7 @@ struct hashstate{
 	}
 };
 
-/* 
+/*
  * The hash_map structure implement a mapping between a state as a vector
  * of integer and its index.
  */
@@ -109,7 +109,7 @@ public:
     
 	void exploreStateSpace();
 	void buildTransitionMatrix();
-		
+	
 	SPN N; //The object representing the SPN
 	LHA A; //The object representing the LHA
 	

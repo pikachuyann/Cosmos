@@ -79,9 +79,9 @@ int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& Ne
             if (CheckEdgeContraints(*it,PetriNetTransition, binding, NextMarking)) return (*it);
         }
     }
-
+	
     return (-1);
-
+	
 }
 
 /**
@@ -101,11 +101,11 @@ AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking)const {
                     Ed.Index = (*it);
                     Ed.FiringTime = I.first;
                 }
-
+				
             }
         }
     }
-
+	
     return Ed;
 }
 
@@ -126,11 +126,11 @@ void LHA::resetLinForms() {
  * the given Marking.
  */
 void LHA::reset(const abstractMarking& Marking) {
-  Likelihood = 1.0;
-  resetLinForms();
-  resetVariables();
-  setInitLocation(Marking);
-  CurrentTime = 0;
+	Likelihood = 1.0;
+	resetLinForms();
+	resetVariables();
+	setInitLocation(Marking);
+	CurrentTime = 0;
 }
 
 /**

@@ -48,7 +48,7 @@ enum HaslType {
 	RE_Likelyhood,
 	RE_Continuous
 };
-	
+
 /**
  *
  * A class to manage Confidence interval.
@@ -81,7 +81,7 @@ public:
 	HaslFormulasTop(size_t); //!< Expectancy operator use to compute \f$ \mathbb{E} \f$ .
 	HaslFormulasTop(double,double); //!< Hypothesis operator: is the given probability above some thershold.
 	HaslFormulasTop(HaslType , HaslFormulasTop*, HaslFormulasTop*); //!< Build a tree of operator.
-//	HaslFormulasTop(const HaslFormulasTop&);
+	//	HaslFormulasTop(const HaslFormulasTop&);
 	
 	~HaslFormulasTop();
 	
@@ -92,12 +92,12 @@ public:
 	HaslType TypeOp; //!< type of the HaslFormula.
 	
 protected:
-  double Level; //!< The confidence level which should be used for the computation of the confidence interval
-  double Value; //!< A double value, have different purpose depending of the type of the operator
-  double Value2; //!< A double value, have different purpose depending of the type of the operator
-  size_t Algebraic; //!< The index of the data in the table of result return by the simulator.
-  HaslFormulasTop* left;
-  HaslFormulasTop* right;
+	double Level; //!< The confidence level which should be used for the computation of the confidence interval
+	double Value; //!< A double value, have different purpose depending of the type of the operator
+	double Value2; //!< A double value, have different purpose depending of the type of the operator
+	size_t Algebraic; //!< The index of the data in the table of result return by the simulator.
+	HaslFormulasTop* left;
+	HaslFormulasTop* right;
 };
 
 

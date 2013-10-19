@@ -34,19 +34,19 @@ public:
 	void reset();
 	void printState();
 	double getMu(int);
-	boostmat::vector<double> getVect(); 
+	boostmat::vector<double> getVect();
 protected:
 	bool readbit(int a,int b);
 	//vector<boostmat::vector<double> >* powTVect;
 	vector<boostmat::vector<double> >* lastOne;
-    vector<double>* ktable; 
+    vector<double>* ktable;
 	int l;
 	int u;
 	int lastPowT;
     void compPow(int,int);
 	
 	bool is_previous;
-
+	
 	boostmat::vector<double> current_vect;
 	boostmat::vector<double> previous_vect;
 };

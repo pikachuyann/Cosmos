@@ -61,7 +61,7 @@ public:
 	 * @param seed is an unsigned integer to be used as seed.
 	 */
 	void initRandomGenerator(unsigned int seed);
-
+	
 	/**
 	 * \brief Set the batch size
 	 * @param RI the new batch size to use
@@ -83,7 +83,7 @@ public:
 	 * @return a new BatchR structure containing the result
 	 * of the batch of simulation.
 	 */
-    virtual BatchR* RunBatch(); 
+    virtual BatchR* RunBatch();
     
 protected:
 	//! File stream to log value.
@@ -96,7 +96,7 @@ protected:
 	
 	//! Store result beetween two trajectory simulation.
 	SimOutput Result;
-
+	
 	//! Size of the batch.
 	size_t BatchSize;
 	
@@ -107,17 +107,17 @@ protected:
     
     /**
 	 * \brief The event queue of the simulator.
-	 * The event queue is a datastructure containing the 
+	 * The event queue is a datastructure containing the
 	 * enabled transitions with
      * the time at wich they will be fire if still enabled
 	 */
-	EventsQueue* EQ;  
+	EventsQueue* EQ;
 	
     //!The random Generator Mersenne Twister from the boost library
 	boost::mt19937 RandomNumber;
 	
 	/**
-	 * \brief Simulate a step of the system, 
+	 * \brief Simulate a step of the system,
 	 * this function do most of the simulation job.
 	 */
 	virtual bool SimulateOneStep();
@@ -127,11 +127,11 @@ protected:
 	 * this function loop over SimulateOneStep until a the path terminate.
 	 */
 	virtual void SimulateSinglePath();
-		
+	
 	void interactiveSimulation(); //!Wait for the user to choose the next transition
 	
 	virtual void InitialEventsQueue(); //!initialize the event queue
-
+	
 	virtual void reset(); //! reset the simulator
 	
 	virtual void GenerateEvent(Event &,size_t,const abstractBinding&); //! generate a new event use Generate Time
@@ -140,7 +140,7 @@ protected:
 	virtual double GenerateTime(DistributionType,const vector<double>& p);
 	
 	virtual void returnResultTrue();
-			
+	
 	//! update value in the SPN after a transition
 	virtual void updateSPN(size_t,const abstractBinding& );
 	
@@ -148,10 +148,10 @@ protected:
 	virtual void updateLikelihood(size_t);
     
 	//! Stop the simulation if sink transition is taken
-	virtual bool transitionSink(size_t); 	
+	virtual bool transitionSink(size_t);
 	
 	//! return the parameters of a transition distribution
-	virtual void getParams(size_t, const abstractBinding&); 	
+	virtual void getParams(size_t, const abstractBinding&);
 };
 
 

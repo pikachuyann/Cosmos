@@ -51,7 +51,7 @@ void launchExport(parameters& P);
  * At this point the new result are aggreated to the previous one using
  * the class result.
  * The class result indicate if the simulation should continue, if not
- * this function kill all the instance of the simulator, return all 
+ * this function kill all the instance of the simulator, return all
  * the results to files or to stdout and return.
  * @param is the parameters to use for the export.
  */
