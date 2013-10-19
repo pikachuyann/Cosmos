@@ -82,54 +82,58 @@ let rec decalvar n1 n2 = function
   | DivF(f1,f2) -> DivF(decalvar n1 n2 f1,decalvar n1 n2 f2)
   | x -> x
 
+let dvup n1 n2 n = List.map (fun (x,y)-> (x+n,decalvar n1 n2 y))
+let dvguard n1 n2 n = List.map (fun (x,y,z)-> (x+n,y,decalvar n1 n2 z))
+
 let rec explore_and_synch h a1 a2 qt = function
   | [] -> qt
   | (s1,s2)::q -> 
     let l1 = List.filter (fun (i,_,_,_,_) -> i=s1) a1.trans
     and l2 = List.filter (fun (i,_,_,_,_) -> i=s2) a2.trans in
-    let (lp,qt2) = List.fold_left (fun q2 t1 -> List.fold_left (fun q3 t2 -> sychtrans h a1 a2 q3 t1 t2) q2 l2) (q,qt) l1 in explore_and_synch h a1 a2 qt2 lp
+    let (lp,qt2) = List.fold_left (fun q2 t1 -> List.fold_left (fun q3 t2 -> sychtrans h a1 a2 q3 t1 t2) q2 l2) (q,qt) l1 in 
+    let (lp2,qt3) = List.fold_left (fun q2 t -> autotrans1 h a1 a2 q2 t s2) (lp,qt2)  l1 in
+    let (lp3,qt4) = List.fold_left (fun q2 t -> autotrans2 h a1 a2 q2 s1 t) (lp2,qt3) l2 in
+explore_and_synch h a1 a2 qt4 lp3
+
+and autotrans1 h a1 a2 (lp,lt) (s1,tt1,cu1,du1,sp1) s2 =
+  match tt1 with 
+      Autonomous(_)->
+	let lp2 =  insertLH h lp (sp1,s2) in
+	let t =  ((hashfind h (s1,s2)),
+		  tt1 ,
+		  cu1 ,
+		  du1 ,
+		  (hashfind h (sp1,s2))) in  
+	(lp2,t::lt)
+    | _ -> (lp,lt)
+
+and autotrans2 h a1 a2 (lp,lt) s1 (s2,tt2,cu2,du2,sp2) =
+  match tt2 with 
+      Autonomous(guard2)->
+	let lp2 =  insertLH h lp (s1,sp2) in
+	let t =  ((hashfind h (s1,s2)),
+		  Autonomous(dvguard a1.nbContVar a1.nbDiscVar a1.nbContVar guard2),
+		  (dvup a1.nbContVar a1.nbDiscVar a1.nbContVar cu2),
+		  (dvup a1.nbContVar a1.nbDiscVar a1.nbDiscVar du2),
+		  (hashfind h (s1,sp2))) in  
+	(lp2,t::lt)
+    | _ -> (lp,lt)
+
 
 and sychtrans h a1 a2 (lp,lt) (s1,tt1,cu1,du1,sp1) (s2,tt2,cu2,du2,sp2) =
-  let dv = decalvar a1.nbContVar a1.nbDiscVar in
-  let dvup n = List.map (fun (x,y)-> (x+n,dv y)) in
-  let dvguard n = List.map (fun (x,y,z)-> (x+n,y,dv z)) in
-  let negguard = List.map (function (x,y,z) -> (x,negcmp y,z)) in
   match tt1,tt2 with
-    Synch(_),Autonomous(_)-> (lp,lt) 
-  | Autonomous(_),Synch(_)-> (lp,lt) 
   | Synch(label1,guard1),Synch(label2,guard2) ->
     let labels = conjonct_labels label1 label2 in
     if labels <> Labels([]) then 
       let lp2 = insertLH h lp (sp1,sp2) in
       let t =  ((hashfind h (s1,s2)),
 		Synch(labels,And(guard1,guard2)),
-		cu1 @  (dvup a1.nbContVar cu2),
-		du1 @  (dvup a1.nbDiscVar du2),
+		cu1 @  (dvup a1.nbContVar a1.nbDiscVar a1.nbContVar cu2),
+		du1 @  (dvup a1.nbContVar a1.nbDiscVar a1.nbDiscVar du2),
 		(hashfind h (sp1,sp2))) in
       (lp2,t::lt)
     else (lp,lt)
-  | Autonomous(guard1),Autonomous(guard2) ->
-    let lp2 = insertLH h lp (sp1,sp2) in
-    let t =  ((hashfind h (s1,s2)),
-	      Autonomous(guard1 @ (dvguard a1.nbContVar guard2)),
-	      cu1 @  (dvup a1.nbContVar cu2),
-	      du1 @  (dvup a1.nbDiscVar du2),
-	      (hashfind h (sp1,sp2))) in
-    let lp3 =  insertLH h lp2 (s1,sp2) in
-    let t2 =  ((hashfind h (s1,s2)),
-	      Autonomous((negguard guard1) @ (dvguard a1.nbContVar guard2)),
-	      (dvup a1.nbContVar cu2),
-	      (dvup a1.nbDiscVar du2),
-	      (hashfind h (s1,sp2))) in
-    let lp4 =  insertLH h lp3 (sp1,s2) in
-    let t3 =  ((hashfind h (s1,s2)),
-	      Autonomous(guard1 @ (dvguard a1.nbContVar (negguard guard2))),
-	      cu1 ,
-	      du1 ,
-	      (hashfind h (sp1,s2))) in
-
-    (lp4,t3::t2::t::lt)
-
+  | _ -> (lp,lt) 
 
 let and_automaton a1 a2 =
   let hash_state = (Hashtbl.create a1.nbLoc,ref 0) in 
