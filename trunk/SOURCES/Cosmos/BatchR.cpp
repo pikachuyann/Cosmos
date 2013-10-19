@@ -37,22 +37,22 @@ using namespace std;
  *Initialize the batch with zeros
  * @param i is the number of formula evaluated by the automaton.
  */
- BatchR::BatchR(const size_t i) :
-	I(0) ,
-	Isucc(0),
-	TableLength(i),
-	IsBernoulli(vector<bool>(i,true)),
-	Mean(vector<double>(i,0.0)),
-	M2(vector<double>(i,0.0)),
-	M3(vector<double>(i,0.0)),
-	M4(vector<double>(i,0.0)){}
+BatchR::BatchR(const size_t i) :
+I(0) ,
+Isucc(0),
+TableLength(i),
+IsBernoulli(vector<bool>(i,true)),
+Mean(vector<double>(i,0.0)),
+M2(vector<double>(i,0.0)),
+M3(vector<double>(i,0.0)),
+M4(vector<double>(i,0.0)){}
 
 /**
  * Add a simulation to the batch
  * If the simulation is a success then The Mean and second Moment are updated
  * @param Result the result of one trajectory in the simulator.
  */
- void BatchR::addSim(const SimOutput *Result){
+void BatchR::addSim(const SimOutput *Result){
     I++;
     if (Result->first) {
         Isucc++;
@@ -94,12 +94,12 @@ void BatchR::unionR(const BatchR *batch){
  * This function write a batch on the standart output it is suposed to
  * be read by the function BatchR::inputR
  */
- void BatchR::outputR() {
+void BatchR::outputR() {
     size_t writesize = 0;
     writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(I));
     writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
 	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&TableLength),sizeof(TableLength));
-
+	
     for(unsigned int i =0; i< TableLength; i++){
         bool tmpbool = IsBernoulli[i];
         writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
@@ -109,9 +109,9 @@ void BatchR::unionR(const BatchR *batch){
        	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M4[i]),sizeof(Mean[0]));
     }
     if(writesize != (sizeof(I) + sizeof(Isucc)+ sizeof(Isucc) + TableLength * (sizeof(bool) + 4*sizeof(double)))){
-      cerr << "Fail to write to stdout";
-      exit(EXIT_FAILURE);
-    } 
+		cerr << "Fail to write to stdout";
+		exit(EXIT_FAILURE);
+    }
 }
 
 /**
@@ -133,7 +133,7 @@ bool BatchR::inputR(FILE* f) {
 	
 	readbyte = fread(reinterpret_cast<char*>( &TableLength), sizeof TableLength ,1, f);
     ok &= (readbyte == 1);
-
+	
 	if(Mean.size() != TableLength){
 		IsBernoulli.resize(TableLength);
 		Mean.resize(TableLength);

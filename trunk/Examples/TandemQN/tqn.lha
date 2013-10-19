@@ -7,7 +7,7 @@ const int N = 5;
 VariablesList = {x1, OK} ;
 LocationsList = {l0, l1, l2};
 
-AVG(Last(OK));
+Overflow=AVG(Last(OK));
 
 InitialLocations = {l0};
 

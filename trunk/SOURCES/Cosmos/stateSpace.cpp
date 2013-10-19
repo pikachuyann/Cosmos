@@ -60,14 +60,14 @@ void stateSpace::add_state(vector<int> v){
     findstate->push_back(*v2);
 	nbState++;
 	if((nbState % 100000) ==0)cerr << "Number of states :" <<nbState<< endl;
-
+	
 }
 
 void stateSpace::exploreStateSpace(){
 	// apply a Dijkstra algorithm on the product of the SPN an the LHA to produce
-	// the state space. The list of state is store in the hash table S and 
+	// the state space. The list of state is store in the hash table S and
 	// the transition list is stored in transitionList.
-
+	
 	N.reset();
     cerr << "Exploring state space" << endl;
     
@@ -130,15 +130,15 @@ void stateSpace::exploreStateSpace(){
 		}
 		
 	}
-    cerr << nbState << " states found" << endl 
-        << nbTrans << " transitions found" << endl;
+    cerr << nbState << " states found" << endl
+	<< nbTrans << " transitions found" << endl;
 }
 
 void stateSpace::buildTransitionMatrix()
 {
     cerr << "Building transition matrix" << endl;
     
-	// transform the transition list into a sparse transition probability matrix 
+	// transform the transition list into a sparse transition probability matrix
 	boost::numeric::ublas::compressed_matrix<double> mat(nbState, nbState, nbTrans);
 	
 	cerr << "Exploring graph" << endl;
@@ -175,29 +175,29 @@ void stateSpace::buildTransitionMatrix()
 		
         
     }
-	   
+	
 	
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator1 it1_t;
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator2 it2_t;
 	
 	/* Quick fix to redo */
-
+	
 	/*
-	cerr << "uniformize to 1" << endl;
-	for (it1_t it1 = mat.begin1(); it1 != mat.end1(); it1++)
-		{
-		double sum = 0.0;
-		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
-			//cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
-			if(it2.index1()!= it2.index2())sum += *it2;
-		}
-		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
-			//cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
-			*it2 /= sum;
-		}
-		mat(it1.index1(),it1.index1())= 1.0;
-	}
-	*/
+	 cerr << "uniformize to 1" << endl;
+	 for (it1_t it1 = mat.begin1(); it1 != mat.end1(); it1++)
+	 {
+	 double sum = 0.0;
+	 for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
+	 //cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
+	 if(it2.index1()!= it2.index2())sum += *it2;
+	 }
+	 for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
+	 //cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
+	 *it2 /= sum;
+	 }
+	 mat(it1.index1(),it1.index1())= 1.0;
+	 }
+	 */
 	
 	
     cerr << "Adding self loop" << endl;
@@ -205,14 +205,14 @@ void stateSpace::buildTransitionMatrix()
     // If the model is a CTMC the value on diagonal are wrong.
 	
 	for (it1_t it1 = mat.begin1(); it1 != mat.end1(); it1++)
-	{
+		{
 		double sum = 1.0;
 		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
 			//cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
 			if(it2.index1()!= it2.index2())sum -= *it2;
 		}
 		mat(it1.index1(),it1.index1())= sum;
-	}
+		}
 	
     cerr << " copying" << endl;
     
@@ -227,23 +227,23 @@ void stateSpace::buildTransitionMatrix()
 		}else {
 			vect(it->second)=0.0;
 		}
-
+		
 	}
 	
 	finalVector = new boost::numeric::ublas::vector<double> (vect);
 }
 
 /*double stateSpace::maxRate(){
-    double t = 0.0;
-    for(boost::numeric::ublas::compressed_matrix<double>::iterator1 it 
-        = transitionsMatrix->begin1(); it!= transitionsMatrix->end1(); it++){
-        for(boost::numeric::ublas::compressed_matrix<double>::iterator2 it2 
-            = it.begin(); it2!= it.end(); it2++){
-                if(it.index1() != it2.index2())t = max(t,*it2);
-        };        
-    };
-    return(t);
-}*/
+ double t = 0.0;
+ for(boost::numeric::ublas::compressed_matrix<double>::iterator1 it
+ = transitionsMatrix->begin1(); it!= transitionsMatrix->end1(); it++){
+ for(boost::numeric::ublas::compressed_matrix<double>::iterator2 it2
+ = it.begin(); it2!= it.end(); it2++){
+ if(it.index1() != it2.index2())t = max(t,*it2);
+ };
+ };
+ return(t);
+ }*/
 
 double stateSpace::uniformizeMatrix(){
     //First Compute infinitesimal generator
@@ -253,7 +253,7 @@ double stateSpace::uniformizeMatrix(){
 	
     double lambda = 0.0;
 	for (it1_t it1 = transitionsMatrix->begin1(); it1 != transitionsMatrix->end1(); it1++)
-	{
+		{
 		double sum = 0.0;
 		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
 			//cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
@@ -261,18 +261,18 @@ double stateSpace::uniformizeMatrix(){
 		}
         lambda = max(lambda ,sum);
 		(*transitionsMatrix)(it1.index1(),it1.index1())= -sum;
-	}
+		}
     // Divide each coefficient of the matrix by lambda
     // and add 1 on the diagonal
     
     for (it1_t it1 = transitionsMatrix->begin1(); it1 != transitionsMatrix->end1(); it1++)
-	{
+		{
 		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
 			//cerr << "non null:" << it2.index1() << ":" << it2.index2() << endl;
             *it2 /= lambda;
 			if(it2.index1()== it2.index2())*it2 +=1.0;
 		}
-	}
+		}
     
     
     return lambda;
@@ -310,13 +310,13 @@ void stateSpace::outputMat(){
         };
         
 		/*for(int i =0; i< vect.size()-1; i++){
-			if(i>0)outputFile << ",";
-			outputFile << vect[i];
-		}*/
+		 if(i>0)outputFile << ",";
+		 outputFile << vect[i];
+		 }*/
 		outputFile << ")=";
 		outputFile << (*it).second << endl;
 	}
-		
+	
 	outputFile.close();
 }
 
@@ -354,13 +354,13 @@ void stateSpace::outputPrism(){
 	typedef boost::numeric::ublas::compressed_matrix<double>::iterator2 it2_t;
 	
 	for (it1_t it1 = transitionsMatrix->begin1(); it1 != transitionsMatrix->end1(); it1++)
-	{
+		{
 		for (it2_t it2 = it1.begin(); it2 != it1.end(); it2++){
             if( *it2 >= (10^-16)){
-			outputMatrixFile << it2.index1() << " " << it2.index2() << " " << *it2 << endl;
+				outputMatrixFile << it2.index1() << " " << it2.index2() << " " << *it2 << endl;
             }
 		}
-	}
+		}
     outputMatrixFile.close();
     
     fstream outputProperty;
@@ -377,15 +377,15 @@ void stateSpace::outputPrism(){
     outputLabel.open("prismLabel.lbl",fstream::out);
     outputLabel << "0='init' 1='deadlock'\n0: 0";
     outputLabel.close();
-
+	
 }
 
 void stateSpace::launchPrism(string prismPath){
     cout<< "Starting Prism"<< endl;
     string cmd = prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
     if(0 != system(cmd.c_str())){
-      cerr << "Fail to launch prism" << endl;
-      exit(EXIT_FAILURE);
+		cerr << "Fail to launch prism" << endl;
+		exit(EXIT_FAILURE);
     }
     cout << "Prism finish" << endl;
 }
@@ -398,16 +398,16 @@ void stateSpace::importPrism(){
 	string prob;
     ifstream myfile ("prismOutput");
 	if (myfile.is_open())
-	{
+		{
         do{
             getline (myfile,line);
-        }while(myfile.good() && 
+        }while(myfile.good() &&
                line != "Probabilities (non-zero only) for all states:");
         
         muvect = new vector<double> (nbState,0.0);
         //int n=0;
 		while ( myfile.good() && poseq>0)
-		{
+			{
 			getline (myfile,line);
             //cerr << line << endl;
 			poseq = line.find("=");
@@ -442,16 +442,16 @@ void stateSpace::importPrism(){
 				
 				
 			}
-		}
+			}
 		myfile.close();
 		//nbState = n;
-    }
+		}
 }
 
 void stateSpace::outputTmpLumpingFun(){
 	cerr << "Exporting the temporary lumping function" << endl;
 	fstream outputlumptmp;
-
+	
 	outputlumptmp.open("lumpingfunTmp.cpp",fstream::out);
 	outputlumptmp << "#include \"markingImpl.hpp\"" << endl << endl;
 	
@@ -474,7 +474,7 @@ void stateSpace::outputTmpLumpingFun(){
 	};
 	outputlumptmp << "}" << endl;
 	outputlumptmp.close();
-
+	
 }
 
 void stateSpace::outputVect(){
@@ -523,7 +523,7 @@ void stateSpace::inputVect(){
 		cerr << "Fail to open muFile"<<endl;
 		exit(EXIT_FAILURE);
 	}
-		
+	
     boostmat::vector<double> v1;
 	inputFile >> v1;
     nbState = v1.size();
@@ -537,7 +537,7 @@ void stateSpace::inputVect(){
 	string pos;
 	string stateid;
 	while ( inputFile.good() )
-    {
+		{
 		getline (inputFile,line);
 		//cerr << line << endl;
 		poseq = line.find("=");
@@ -558,7 +558,7 @@ void stateSpace::inputVect(){
 			S[new vector<int>(vect)] = (int)atoi(stateid.c_str());
 			
 		}
-	}
+		}
 	
 	inputFile.close();
 	cerr<< "Finished reading muFile" << endl;
@@ -569,14 +569,14 @@ void stateSpace::inputMat(){
 	inputFile.open("matrixFile",fstream::in);
 	
 	/*boostmat::matrix<double> m1;
-	inputFile >> m1;
-	nbState = m1.size1();*/
+	 inputFile >> m1;
+	 nbState = m1.size1();*/
 	boostmat::compressed_matrix<double , boostmat::row_major> m;
     inputFile >> boostmat::io::sparse(m);
     
 	/*for (unsigned i = 0; i < nbState; ++ i)
-        for (unsigned j = 0; j < nbState; ++ j)
-            if(m1 (i,j) != 0.)  m (i, j) = m1 (i,j);*/
+	 for (unsigned j = 0; j < nbState; ++ j)
+	 if(m1 (i,j) != 0.)  m (i, j) = m1 (i,j);*/
 	transitionsMatrix = new boostmat::compressed_matrix<double>(m);
 	
 	//cerr << *transitionsMatrix << endl;
@@ -590,12 +590,12 @@ void stateSpace::inputMat(){
 	string pos;
 	string stateid;
 	while ( inputFile.good() )
-    {
+		{
 		getline (inputFile,line);
 		//cerr << line << endl;
 		poseq = line.find("=");
 		
-	if(poseq != string::npos ){
+		if(poseq != string::npos ){
 			pos = line.substr(1,poseq-2);
 			stateid = line.substr(poseq+1,line.size());
 			
@@ -611,7 +611,7 @@ void stateSpace::inputMat(){
 			S[new vector<int>(vect)] = (int)atoi(stateid.c_str());
 			
 		}
-	}
+		}
 	
 	inputFile.close();
 	

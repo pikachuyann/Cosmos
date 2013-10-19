@@ -43,6 +43,9 @@ expr:
  | EVENTUALLY timeinterval stateCondition {BoundedUntil(True,$2,$3) }
  | NEXT stateCondition {Next($2)}
  | NEXT timeinterval stateCondition {BoundedNext($2,$3)}
+ | LPAR expr RPAR {$2}
+ | expr AND expr {AndF($1,$3)}
+ | expr OR expr {OrF($1,$3)}
 ;
 
 

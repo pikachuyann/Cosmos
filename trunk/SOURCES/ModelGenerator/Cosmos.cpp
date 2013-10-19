@@ -25,7 +25,7 @@
 
 /**
  *
- * 
+ *
  * \author   Benoît Barbot
  */
 
@@ -98,27 +98,34 @@ using namespace std;
 /**
  * Parse the input file and build the simulator
  * Return true iff the parsing was successfull
- * input file are read as Grml file or .gspn and .lha file or 
+ * input file are read as Grml file or .gspn and .lha file or
  * directly .cpp for LHA
- * according to the P.GMLinput parameters or extension.
+ * according to the P.GMLinput parameters or extension
+ * If require by some option modify the SPN or the LHA on the fly.
  * @param P is a structure of parameters
  * @return a boolean equal to true if everything run correctly
  */
 bool ParseBuild(parameters& P) {
+	
+	// initialize an empty structure for the model.
 	Gspn_Reader gReader(P);
 	
 	if(P.verbose>0)cout << "Start Parsing " << P.PathGspn << endl;
 	int parseresult;
 	
     try{
+        // Check the extension of the model file to call the correct parser
         if(P.GMLinput || (P.PathGspn.compare(P.PathGspn.length()-4,4,"grml") ==0)){
-            parseresult = gReader.parse_gml_file(P);
+			parseresult = gReader.parse_gml_file(P);
         }else {
             parseresult = gReader.parse_file(P.PathGspn);
         }
 		P.nbPlace = gReader.MyGspn.pl;
-        
-		//Set the isTraced flag for place
+		
+		//The following code modify the internal representation of the
+		//SPN according to options.
+		
+		//Set the isTraced flag for places
 		if(P.tracedPlace.compare("ALL")!=0){
 			P.nbPlace = 0;
 			for(size_t i =0;i<gReader.MyGspn.pl;i++){
@@ -154,7 +161,8 @@ bool ParseBuild(parameters& P) {
 			}
 		}
 		
-        if (!parseresult && gReader.MyGspn.pl >0 && gReader.MyGspn.tr >0) {
+		//Check that the model is not empty and generate the code
+		if (!parseresult && gReader.MyGspn.pl >0 && gReader.MyGspn.tr >0) {
             gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
             if(P.tmpStatus==0||P.tmpStatus==2)gReader.WriteFile(P);
         } else {
@@ -164,20 +172,22 @@ bool ParseBuild(parameters& P) {
         }
 	}catch (exception& e)
     {
-        cerr << "The following exception append during import: "<< e.what() << endl;
-        return false;
+	cerr << "The following exception append during import: "<< e.what() << endl;
+	return false;
     }
-	
+	// Intialize an empty structure for the automaton
 	Lha_Reader lReader(gReader.MyGspn,P);
 	
+	//Copy name of transition and place required for synchronization.
 	lReader.MyLha.TransitionIndex = gReader.MyGspn.TransId;
 	lReader.MyLha.PlaceIndex = gReader.MyGspn.PlacesId;
-	
 	
 	
 	if(P.verbose>0)cout << "Start Parsing " << P.PathLha << endl;
 	
     try{
+		// If the automaton need to be generated from a formula
+		// call the generating tool.
 		if(!P.CSLformula.empty()){
 			P.PathLha = P.tmpPath + "/generatedlha.lha";
 			stringstream cmd;
@@ -190,53 +200,56 @@ bool ParseBuild(parameters& P) {
 			}
 		}
 		
-		//check the type of the LHA file.
+		//If the automaton need to be generateed to mesure simple perfomance indices generate it
+		//An automaton is produce with two loop the first make time elapse until transient time
+		//elapse and then compute the mean number of token in each place and the throughput
+		//of each transition
+		if(P.loopLHA>0.0){
+			P.PathLha = P.tmpPath + "/looplha.lha";
+			ofstream lhastr(P.PathLha.c_str() , ios::out | ios::trunc);
+			lReader.MyLha.ConfidenceLevel = P.Level;
+			map<string,int>::const_iterator itt;
+			
+			lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + P.nbPlace <<";\nNbLocations = 3;\n";
+			lhastr << "const double T="<< P.loopLHA << ";\n";
+			lhastr << "const double invT=" << 1/P.loopLHA << ";\n";
+			lhastr << "const double Ttrans="<< P.loopTransientLHA << ";\n";
+			lhastr << "VariablesList = {time";
+			for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
+				lhastr<< ", "<< itt->first;
+			}
+			for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
+				if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< ", PLVAR_"<< itt->first;
+			}
+			lhastr<<"} ;\nLocationsList = {l0, l1,l2};\n";
+			
+			for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
+				lhastr<< "Throughput_"<< itt->first<< "= AVG(Last(" << itt->first<<"));\n";
+			}
+			for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
+				if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< "MeanToken_"<< itt->first<< "= AVG(Last( PLVAR_" << itt->first<<"));\n";
+			}
+			lhastr << P.externalHASL << endl;
+			lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
+			lhastr << "Locations={(l0, TRUE, (time:1));(l1, TRUE, (time:1 ";
+			for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
+				if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< ", PLVAR_"<< itt->first << ": "<< itt->first << "* invT " ;
+			}
+			
+			lhastr << "));(l2, TRUE);};\n";
+			lhastr << "Edges={((l0,l0),ALL,time<= Ttrans ,#);((l0,l1),#,time=Ttrans ,{time=0});";
+			for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
+				lhastr << "((l1,l1),{"<< itt->first <<"},time<=T,{"<<itt->first<<" = " <<itt->first<<" + "<< 1.0/P.loopLHA << " });\n";
+			}
+			lhastr << "((l1,l2),#,time=T ,#);};";
+			lhastr.close();
+		}
+		
+		//check the type of the LHA file
+		//First check if it is not C++ code
 		if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")!=0){
-			//here LHA is absent or in LHA file format or in GRML file format
-			if(P.loopLHA>0.0){
-				//The LHA is absent one with two loops is produced.
-				string lhapath = P.tmpPath + "/looplha.lha";
-				ofstream lhastr(lhapath.c_str() , ios::out | ios::trunc);
-				lReader.MyLha.ConfidenceLevel = P.Level;
-				map<string,int>::const_iterator itt;
-				//stringstream lhastr;
-				lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + P.nbPlace <<";\nNbLocations = 3;\n";
-				lhastr << "const double T="<< P.loopLHA << ";\n";
-				lhastr << "const double invT=" << 1/P.loopLHA << ";\n";
-				lhastr << "const double Ttrans="<< P.loopTransientLHA << ";\n";
-				lhastr << "VariablesList = {time";
-				for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
-					lhastr<< ", "<< itt->first;
-				}
-				for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
-					if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< ", PLVAR_"<< itt->first;
-				}
-				lhastr<<"} ;\nLocationsList = {l0, l1,l2};\n";
-				
-				for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
-					lhastr<< "Throughput_"<< itt->first<< "= AVG(Last(" << itt->first<<"));\n";
-				}
-				for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
-					if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< "MeanToken_"<< itt->first<< "= AVG(Last( PLVAR_" << itt->first<<"));\n";
-				}
-				lhastr << P.externalHASL << endl;
-				lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
-				lhastr << "Locations={(l0, TRUE, (time:1));(l1, TRUE, (time:1 ";
-				for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
-					if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< ", PLVAR_"<< itt->first << ": "<< itt->first << "* invT " ;
-				}
-				
-				lhastr << "));(l2, TRUE);};\n";
-				lhastr << "Edges={((l0,l0),ALL,time<= Ttrans ,#);((l0,l1),#,time=Ttrans ,{time=0});";
-				for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
-					lhastr << "((l1,l1),{"<< itt->first <<"},time<=T,{"<<itt->first<<" = " <<itt->first<<" + "<< 1.0/P.loopLHA << " });\n";
-				}
-				lhastr << "((l1,l2),#,time=T ,#);};";
-				lhastr.close();
-				P.PathLha = lhapath;
-				parseresult = lReader.parse_file(P);
-				P.externalHASL = "";
-			} else if(P.GMLinput || (P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0))  {
+			
+			if(P.GMLinput || (P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0))  {
 				//The LHA is in the GRML file format
 				parseresult = lReader.parse_gml_file(P);
 			}else {
@@ -274,6 +287,9 @@ bool ParseBuild(parameters& P) {
 				Lha_Reader lr(gReader.MyGspn,P);
 				return false;
 			}
+			
+			//If the LHA is already C++ code just copy it to temporary
+			//and add external HASL formula
 		} else if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")==0){
 			//The code for the LHA is provided by the user
 			lReader.MyLha.ConfidenceLevel = P.Level;
@@ -296,14 +312,14 @@ bool ParseBuild(parameters& P) {
 			//Copy the code into the temporary directory
 			string cmd = "cp "+P.PathLha +" " + P.tmpPath +"/LHA.cpp";
 			if(system(cmd.c_str()) ==0){
-			  cerr << "Fail to copy LHA to temporary" << endl;
-			  return false;
+				cerr << "Fail to copy LHA to temporary" << endl;
+				return false;
 			}
 		}
 	}catch (exception& e)
 	{
-		cerr << "The following exception append during import: "<< e.what() << endl;
-		return false;
+	cerr << "The following exception append during import: "<< e.what() << endl;
+	return false;
     }
 	
 	//If the code should not be compiled return
@@ -332,13 +348,15 @@ bool ParseBuild(parameters& P) {
 		cmd = "cp lumpingfun.cpp " + P.tmpPath +"/lumpingfun.cpp";
 		if (system(cmd.c_str())) return false;
 		
+		//Rewrite part of probabilistic operator to apply Rare event handling
+		//First case for Continuous bounded rare event.
 		if(P.BoundedContinuous){
 			for(vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
 				it != P.HaslFormulas.end(); ++it)
 				if ( (*it)->TypeOp == EXPECTANCY ){
 					(*it)->TypeOp = RE_Continuous;
 				}
-		}else{
+		}else{  // Second case Unbounded rare event.
 			vector<HaslFormulasTop*> tmpRE;
 			vector<string> tmpREName;
 			for(vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
@@ -358,7 +376,7 @@ bool ParseBuild(parameters& P) {
 		}
 	}
 	
-	//Set the confidence level
+	//Set the confidence level to all Hasl formula
 	for(vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
 		it != P.HaslFormulas.end(); ++it)(*it)->setLevel(P.Level);
 	
@@ -395,7 +413,7 @@ void cleanTmp(parameters& P){
 }
 
 /**
- * A handy function to manipulate call to system
+ * A function to manipulate call to system
  * The result of the call to cmd is read from its standart
  * ouput and put in a string.
  */
@@ -420,7 +438,7 @@ int main(int argc, char** argv) {
 	parameters P;
 	timeval startbuild,endbuild;
 	
-	
+	// Fill the P structure from the command line
 	P.parseCommandLine(argc,argv);
 	
 	//Start the timer for build time.

@@ -105,7 +105,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
             
 			it->loadState(&N,&A,&AE,&EQ);
             
-			//cerr << A.Likelihood << endl;		
+			//cerr << A.Likelihood << endl;
 			//cerr << "mu:\t" << mu() << " ->\t";
 			bool continueb = SimulateOneStep();
 			//cerr << mu() << endl;
@@ -143,7 +143,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
     rusage ruse;
     getrusage(RUSAGE_SELF, &ruse);
     cerr <<endl << endl << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
-    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl; 
+    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl;
     
 	return (batchResult);
 }
@@ -155,7 +155,7 @@ double SimulatorBoundedRE::mu(){
 	
     N.lumpingFun(N.Marking,vect);
 	int stateN = numSolv->findHash(&vect);
-	 
+	
 	if(stateN<0){
 		//cerr << numSolv->getVect()<< endl
 		cerr << "statevect(";
@@ -165,7 +165,7 @@ double SimulatorBoundedRE::mu(){
 		return 0.0;
 		//exit(EXIT_FAILURE);
 	}
-		
+	
 	return(numSolv->getMu(stateN));
 }
 
@@ -200,7 +200,7 @@ void SimulatorBoundedRE::updateSPN(size_t,const abstractBinding&){
 	if(!doubleIS_mode){
 		EQ->replace(F);
 	}
-
+	
 	GenerateEvent(F, (N.tr-1),bpuit);
 	if(!doubleIS_mode){
 		EQ->replace(F);
@@ -245,11 +245,11 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 			if(verbose>3 && (N.Origine_Rate_Sum < 0.99*N.Rate_Sum)){
 				cerr << "Reduce model does not guarantee variance" << endl;
 				cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
-			//exit(EXIT_FAILURE);
+				//exit(EXIT_FAILURE);
 			}
 			//cerr << "trans:sink distr: 0 " << endl;
 			return 0.0 ;};
-	}; 
+	};
 	if( mux==0.0 || mux==1.0) return(origin_rate);
 	
 	double distr;

@@ -27,7 +27,7 @@
 /*
  *  This class implement some function of a numerical solver.
  *  It is used to compute Bounded Until importance sampling.
- * 
+ *
  */
 
 #ifndef _NUMERICAL_SOLVER_HPP
@@ -52,7 +52,7 @@ public:
 	virtual void initVect(int T); //initialise for an horizon point T
 	int T;
 	virtual void reset(); //this function is call before each batch
-	virtual boostmat::vector<double> getVect(); 
+	virtual boostmat::vector<double> getVect();
 	virtual double getMu(int);
 	virtual void previousVect();
 	virtual void stepVect();

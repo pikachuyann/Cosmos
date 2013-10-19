@@ -20,7 +20,7 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file casesWriter.cpp                                                         *
+ * file casesWriter.cpp                                                        *
  * Created by Benoit Barbot on 11/09/13.                                       *
  *******************************************************************************
  */
@@ -58,7 +58,7 @@ void casesHandler::writeCases(ostream &s){
 			if(it->second != maxc){
 				for(map<int,std::string>::iterator it2 = mapping.begin(); it2 != mapping.end(); ++it2){
 					if(it2->second.compare(it->first)==0)
-					  s << "\tcase " << it2->first << ":\t//" << mapcomment[it2->first] << endl;
+						s << "\tcase " << it2->first << ":\t//" << mapcomment[it2->first] << endl;
 				}
 				s << it->first << endl;
 				s << "\t\tbreak;" << endl;
@@ -68,13 +68,13 @@ void casesHandler::writeCases(ostream &s){
 			}
 		}
 		if(strcmp(itmax->first,"")!=0){
-		  s<< "\tdefault:\t//";
-		  for(map<int,std::string>::iterator it2 = mapping.begin(); 
-		      it2 != mapping.end(); ++it2)
-		    if(it2->second.compare(itmax->first)==0)
-		      s << mapcomment[it2->first] << ",";
-		  
-		  s << endl << itmax->first << endl;
+			s<< "\tdefault:\t//";
+			for(map<int,std::string>::iterator it2 = mapping.begin();
+				it2 != mapping.end(); ++it2)
+				if(it2->second.compare(itmax->first)==0)
+					s << mapcomment[it2->first] << ",";
+			
+			s << endl << itmax->first << endl;
 		}
 		s << "}" << endl;
 	}

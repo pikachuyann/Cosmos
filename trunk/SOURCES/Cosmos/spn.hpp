@@ -97,7 +97,7 @@ struct _trans {
 	string priority;
 	//! weight in string format only for debug
 	string weight;
-	 //! true if the transition is Marking Dependent
+	//! true if the transition is Marking Dependent
 	bool MarkingDependent;
 	//! true if the memory policy of the transition is age memory
 	bool AgeMemory;
@@ -207,7 +207,7 @@ public:
 	void setConditionsVector();
 	
 	/**
-	 * \brief compute the the parameters value of a given 
+	 * \brief compute the the parameters value of a given
 	 * transition.
 	 * The implementation of this function is generated
 	 * at runtime.
@@ -246,7 +246,7 @@ private:
 	vector<int> TransitionConditions;
 	vector<int> initTransitionConditions;
 	//-------------------------/On the fly enabling disabling transition--------
-		
+	
 	
 };
 #endif  /* _SPN_HPP */

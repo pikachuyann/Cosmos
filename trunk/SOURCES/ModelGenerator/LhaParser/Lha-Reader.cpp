@@ -166,7 +166,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 				LhaCppFile << "[ Color_" << MyLha.MyGspn->colClasses[*itcol].name << "_Total ]";
 			}
 			LhaCppFile << ";\n";
-				
+			
 		} else LhaCppFile << "\tdouble "<< MyLha.Vars.label[v] << ";\n";
 	}
 	LhaCppFile << "};\n";
@@ -361,7 +361,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 			for (size_t l = 0; l < MyLha.NbLoc; l++) {
 				stringstream newcase2;
 				if (MyLha.FuncFlow[l][x] != ""){
-				newcase2 << "\t\t\treturn " << MyLha.FuncFlow[l][x] << ";" << endl;
+					newcase2 << "\t\t\treturn " << MyLha.FuncFlow[l][x] << ";" << endl;
 				}else newcase2 << "\t\treturn 0.0;" << endl;
 				flowcases2.addCase(l, newcase2.str(),MyLha.LocLabel[l]);
 			}
@@ -416,7 +416,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
     LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{" << endl;
 	casesHandler enablingtime("ed");
-//    LhaCppFile << "    switch(ed){" << endl;
+	//    LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++){
 		stringstream newcase;
 		if(MyLha.ConstraintsRelOp[e].size()>0  && MyLha.EdgeActions[e].size() < 1 ){
@@ -510,7 +510,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 			newcase << "             EnablingT.second=DBL_MAX;\n" << endl;
 			newcase << "             return EnablingT;" << endl;
 			newcase << "         }"<< endl;
-
+			
 		}
 		enablingtime.addCase(e, newcase.str());
 	}

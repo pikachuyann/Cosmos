@@ -39,60 +39,60 @@
  * Constructor for parameters, set all the default value
  */
 parameters::parameters():
-    verbose(2),
-	interactive(false),
-	updatetime(0.1),
-	seed(0),
-	Njob(1),
+verbose(2),
+interactive(false),
+updatetime(0.1),
+seed(0),
+Njob(1),
 
-    epsilon(0.000001),
-	Level(0.99),
-	Width(0.001),
-	Batch(1000),
-	MaxRuns(2000000),
-	sequential(true),
+epsilon(0.000001),
+Level(0.99),
+Width(0.001),
+Batch(1000),
+MaxRuns(2000000),
+sequential(true),
 
-	tmpPath("tmp"),
-	tmpStatus(0),
-	Path(""),
-	PathGspn(""),
-	PathLha(""),
-	constants(),
-	loopLHA(0.0),
-	loopTransientLHA(0.0),
-	CSLformula(""),
-	externalHASL(""),
+tmpPath("tmp"),
+tmpStatus(0),
+Path(""),
+PathGspn(""),
+PathLha(""),
+constants(),
+loopLHA(0.0),
+loopTransientLHA(0.0),
+CSLformula(""),
+externalHASL(""),
 
-	localTesting(false),
-	RareEvent(false),
-	DoubleIS(false),
-	BoundedRE(0),
-    horizon(100),
-    BoundedContinuous(false),
+localTesting(false),
+RareEvent(false),
+DoubleIS(false),
+BoundedRE(0),
+horizon(100),
+BoundedContinuous(false),
 
-	CountTrans(false),
-	StringInSpnLHA(false),
+CountTrans(false),
+StringInSpnLHA(false),
 
-	GMLinput(false),
-    computeStateSpace(0),
-	alligatorMode(false),
+GMLinput(false),
+computeStateSpace(0),
+alligatorMode(false),
 
-	gcccmd("g++"),
-	gccflags("-O3"),
+gcccmd("g++"),
+gccflags("-O3"),
 
-	prismPath(""),
-    dataoutput(""),
-	dataraw(""),
-	datatrace(""),
-	dataPDFCDF(""),
-	gnuplotDriver(false),
-    tracedPlace("ALL"),
+prismPath(""),
+dataoutput(""),
+dataraw(""),
+datatrace(""),
+dataPDFCDF(""),
+gnuplotDriver(false),
+tracedPlace("ALL"),
 
-	HaslFormulas(vector<HaslFormulasTop*>(0)),
-	HaslFormulasname(vector<string>(0)),
-	nbAlgebraic(0),
-	nbPlace(0)
-    //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
+HaslFormulas(vector<HaslFormulasTop*>(0)),
+HaslFormulasname(vector<string>(0)),
+nbAlgebraic(0),
+nbPlace(0)
+//prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
 {}
 
 /**
@@ -154,9 +154,9 @@ void parameters::parseCommandLine(int argc, char** argv){
     int c;
     
     while (1)
-    {
+		{
         static struct option long_options[] =
-        {
+			{
             /* Options for the simulator*/
             {"level" , required_argument, 0, 'l'},
             {"width" , required_argument, 0, 'w'},
@@ -169,7 +169,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"formula",required_argument, 0, 'f'},
 			{"chernoff", required_argument,0, 17},
 	    	{"const", required_argument,0,21},
-        
+			
             /* Options for the rare event engine */
             {"rareevent",   no_argument,        0, 'r'},
             {"boundedcountiniousRE",no_argument,0, 'c'},
@@ -206,9 +206,9 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"bin-path", required_argument  ,0,	 9 },
 			{"prism-path", required_argument,0,  20},
 			{"version",no_argument,			 0,  22},
-        
+			
             {0, 0, 0, 0}
-        };
+			};
         /* getopt_long stores the option index here. */
         int option_index = 0;
         
@@ -220,63 +220,63 @@ void parameters::parseCommandLine(int argc, char** argv){
             break;
         
         switch (c)
-        {
-            case 'h':
+			{
+				case 'h':
                 usage();
                 exit(EXIT_SUCCESS);
                 break;
                 
-            case 'v':verbose = atoi(optarg);
-				if(verbose>=4)StringInSpnLHA = true;	
+				case 'v':verbose = atoi(optarg);
+				if(verbose>=4)StringInSpnLHA = true;
 				break;
 				
-			case 'i':
+				case 'i':
 				interactive =true;
 				verbose =6;
 				StringInSpnLHA =true;
 				break;
 				
-			case 'u':updatetime=atof(optarg);	break;
+				case 'u':updatetime=atof(optarg);	break;
                 
-            case 'g':GMLinput = true;          break;
+				case 'g':GMLinput = true;          break;
                 
-            case 'r':
-				RareEvent = true;        
-				StringInSpnLHA =true; // Need to know the name of place to find 
+				case 'r':
+				RareEvent = true;
+				StringInSpnLHA =true; // Need to know the name of place to find
 				// place begining with "RE_"
 				localTesting = false; //Need to unfire transition not implemented for local testing
 				break;
                 
-            case 'b':BoundedRE = atoi(optarg);
+				case 'b':BoundedRE = atoi(optarg);
 				StringInSpnLHA =true;
                 RareEvent=true;
                 break;
                 
-            case 'c':BoundedContinuous = true;
+				case 'c':BoundedContinuous = true;
                 RareEvent=true;
                 break;
 				
-            case  1:horizon = atof(optarg);     break;
+				case  1:horizon = atof(optarg);     break;
                 
-            case 's':computeStateSpace= 2;
+				case 's':computeStateSpace= 2;
 				StringInSpnLHA = true;
 				localTesting =false; //Need to unfire transition, not implemented for local testing
 				break;
-			
-			case 'p':computeStateSpace= 1;
-			StringInSpnLHA = true;
-			localTesting =false; //Need to unfire transition, not implemented for local testing
-			break;
-            
-            case 'a':alligatorMode = true;
+				
+				case 'p':computeStateSpace= 1;
+				StringInSpnLHA = true;
+				localTesting =false; //Need to unfire transition, not implemented for local testing
+				break;
+				
+				case 'a':alligatorMode = true;
 				verbose =0;
 				break;
 				
-            case  'l':Level = atof(optarg);     break;
-            case  'w':Width = atof(optarg);     break;
-            case  2  : Batch = atol(optarg);      break;
-            case  'm': MaxRuns = atol(optarg);      break;
-			case  17 : sequential = false;
+				case  'l':Level = atof(optarg);     break;
+				case  'w':Width = atof(optarg);     break;
+				case  2  : Batch = atol(optarg);      break;
+				case  'm': MaxRuns = atol(optarg);      break;
+				case  17 : sequential = false;
 				if( strcmp(optarg, "level")==0)Level=0;
 				else if(strcmp(optarg, "width")==0)Width=0;
 				else if(strcmp(optarg, "nbrun")==0)MaxRuns=0;
@@ -287,37 +287,37 @@ void parameters::parseCommandLine(int argc, char** argv){
 					exit(EXIT_FAILURE);
 				}
 				
-			
+				
 				break;
-			case  12 : localTesting = !localTesting;		break;
-            case  'n': Njob = atoi(optarg);      break;
-            case  'e': epsilon = atof(optarg);  break;
-            case  'd': dataoutput = optarg; break;
-			case  8  : dataraw = optarg; break;
-			case  18 : datatrace = optarg;StringInSpnLHA = true; break;
-			case  11 : dataPDFCDF = optarg; break;
-			case  't': CountTrans = true;	break;
-			case  3  : StringInSpnLHA = true; break;
-			case  4  : tmpPath = optarg; break;
-			case  9  : Path = optarg; break;
-			case  5	 : tmpStatus = atoi(optarg); break;
-			case  6  : gcccmd = optarg; break;
-			case  7  : gccflags = optarg; break;
-			case  10 : seed = atoi(optarg); break;
-			case  13 : externalHASL = optarg; break;
-			case  14 : loopLHA = atof(optarg);
-					PathLha = "LOOP";
+				case  12 : localTesting = !localTesting;		break;
+				case  'n': Njob = atoi(optarg);      break;
+				case  'e': epsilon = atof(optarg);  break;
+				case  'd': dataoutput = optarg; break;
+				case  8  : dataraw = optarg; break;
+				case  18 : datatrace = optarg;StringInSpnLHA = true; break;
+				case  11 : dataPDFCDF = optarg; break;
+				case  't': CountTrans = true;	break;
+				case  3  : StringInSpnLHA = true; break;
+				case  4  : tmpPath = optarg; break;
+				case  9  : Path = optarg; break;
+				case  5	 : tmpStatus = atoi(optarg); break;
+				case  6  : gcccmd = optarg; break;
+				case  7  : gccflags = optarg; break;
+				case  10 : seed = atoi(optarg); break;
+				case  13 : externalHASL = optarg; break;
+				case  14 : loopLHA = atof(optarg);
+				PathLha = "LOOP";
 				break;
-			case  16: loopTransientLHA = atof(optarg); break;
-			case  'f': CSLformula = optarg; break;
-			
-			case  15: gnuplotDriver = true; break;
-			
-			case 19: tracedPlace = optarg; break;
-			case 20: prismPath = optarg; break;
-			
-			case 21: // const
-			{
+				case  16: loopTransientLHA = atof(optarg); break;
+				case  'f': CSLformula = optarg; break;
+				
+				case  15: gnuplotDriver = true; break;
+				
+				case 19: tracedPlace = optarg; break;
+				case 20: prismPath = optarg; break;
+				
+				case 21: // const
+				{
 				string conststr = optarg;
 				size_t index,index2;
 				index2 = conststr.find('=',0)+1;
@@ -333,22 +333,22 @@ void parameters::parseCommandLine(int argc, char** argv){
 					}
 					constants[varname]=varvalue;
 				}
-			
-			break;
-			}
-			case 22:
-			cout << BUILD_VERSION << " Build Date:" << __DATE__ " at " << __TIME__ << endl;
-			exit(0);
-			
-            case '?':
+				
+				break;
+				}
+				case 22:
+				cout << BUILD_VERSION << " Build Date:" << __DATE__ " at " << __TIME__ << endl;
+				exit(0);
+				
+				case '?':
                 usage();
                 exit(EXIT_FAILURE);
                 
-            default:
+				default:
                 usage();
                 exit(EXIT_FAILURE);
-        }
-    }
+			}
+		}
 	
 	if(optind+1 == argc && (loopLHA> 0.0 || !CSLformula.empty())){
 		PathGspn = argv[optind];

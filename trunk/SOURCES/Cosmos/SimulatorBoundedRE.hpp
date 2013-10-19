@@ -24,7 +24,7 @@
  *******************************************************************************
  */
 
-/* This class inherit the class of Simulator and modify 
+/* This class inherit the class of Simulator and modify
  * several intern function to implement rare event acceleration.
  */
 
@@ -75,7 +75,7 @@ public:
 	void loadState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim){
 		
 		N->Marking.swap(marking);
-		*AEsim = AE; 
+		*AEsim = AE;
 		*EQsim = EQ;
 		
 		A->copyState(&lhaState);

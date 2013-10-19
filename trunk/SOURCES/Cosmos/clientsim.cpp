@@ -50,7 +50,7 @@ void signalHandler( int )
  */
 int main(int argc, char** argv) {
 	//assert(cerr<< "Cosmos compile in DEBUG mode!"<< endl);
-		//cerr << "start client"<< endl;	
+	//cerr << "start client"<< endl;
 	//pid_t pid =getpid();
 	//write(STDOUT_FILENO,reinterpret_cast<char*>(&pid),sizeof(pid));
 	//fflush(stdout);
@@ -58,13 +58,13 @@ int main(int argc, char** argv) {
 	signal(SIGINT, signalHandler);
 	
 	
-    Simulator* mySim; 
+    Simulator* mySim;
 	
 	string str;
 	bool singleBatch = false;
 	
 	if(argc > 4){
-
+		
 		str = argv[4];
 		if(str== "-RE"){
 			SimulatorRE* myRESim= new SimulatorRE(false);
@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
 			ResultsFile << "Confidence interval:\t[" <<prResult*0.9999;
 			ResultsFile << " , " << prResult*1.00001 << "]" << endl;
 			ResultsFile.close();
-		        exit(EXIT_SUCCESS);
+			exit(EXIT_SUCCESS);
 		} else mySim= (new Simulator);
 		
     } else {
@@ -145,18 +145,18 @@ int main(int argc, char** argv) {
 	
     if((mySim->verbose>=4) | singleBatch )mySim->RunBatch();
     else while( !cin.eof() ){
-      BatchR* batchResult = mySim->RunBatch(); //simulate a batch of trajectory
-
-      batchResult->outputR();// output the result on the standart output
-      
-      //cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
-	//<< ":" << batchResult->M2[0] << endl;
-
-      delete batchResult;
-      
+		BatchR* batchResult = mySim->RunBatch(); //simulate a batch of trajectory
+		
+		batchResult->outputR();// output the result on the standart output
+		
+		//cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
+		//<< ":" << batchResult->M2[0] << endl;
+		
+		delete batchResult;
+		
     }
-
+	
     return (EXIT_SUCCESS);
-
-
+	
+	
 }

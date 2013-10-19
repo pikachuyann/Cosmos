@@ -43,8 +43,8 @@ public:
     void setTime(double);
     void setPriority(size_t);
     void setWeight(double);
-
-
+	
+	
     size_t transition;
     double time;
     size_t priority;
