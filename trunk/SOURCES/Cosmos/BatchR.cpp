@@ -65,8 +65,8 @@ void BatchR::addSim(const SimOutput *Result){
             
             Mean[i] += Result->second[i];
             M2[i] += pow(Result->second[i], 2);
-			M3[i] += pow(Result->second[i], 3);
-			M3[i] += pow(Result->second[i], 4);
+	    M3[i] += pow(Result->second[i], 3);
+	    M3[i] += pow(Result->second[i], 4);
         }
     }
 }
@@ -80,13 +80,21 @@ void BatchR::unionR(const BatchR *batch){
     I += batch->I;
     Isucc += batch->Isucc;
     
+    if (batch->TableLength > TableLength){
+      TableLength = batch->TableLength;
+      IsBernoulli.resize(TableLength,true);
+      Mean.resize(TableLength,0.0);
+      M2.resize(TableLength,0.0);
+      M3.resize(TableLength,0.0);
+      M4.resize(TableLength,0.0);
+    }
     for(unsigned int i =0; i< TableLength; i++){
         IsBernoulli[i] = IsBernoulli[i] && batch->IsBernoulli[i];
         
         Mean[i] += batch->Mean[i];
         M2[i] += batch->M2[i];
-		M3[i] += batch->M3[i];
-		M4[i] += batch->M4[i];
+	M3[i] += batch->M3[i];
+	M4[i] += batch->M4[i];
     }
 }
 
@@ -155,12 +163,12 @@ bool BatchR::inputR(FILE* f) {
 		readbyte = fread(reinterpret_cast<char*>( &(M4[i]) ), sizeof M2[i] ,1, f);
         ok &= (readbyte == 1);
     }
-	return ok;
+    return ok;
 }
 
 void BatchR::print()const{
-    cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl;
+  cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl << "TableLength:\t" << TableLength << endl;
     for(size_t i =0; i< TableLength; i++){
-        cerr << "Mean:\t" << Mean[i]/Isucc << endl << "M2:\t" << M2[i]/Isucc << endl << "M3:\t" << M3[i]/Isucc << endl <<"M4:\t" << M4[i]/Isucc << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
+        cerr << "Mean:\t" << Mean[i] << endl << "M2:\t" << M2[i] << endl << "M3:\t" << M3[i] << endl <<"M4:\t" << M4[i] << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
     }
 }

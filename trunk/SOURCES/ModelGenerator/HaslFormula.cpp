@@ -31,6 +31,9 @@
 #include <boost/math/distributions/binomial.hpp>
 #include <limits>
 
+/**
+ * Trivial confidence interval containing all R.
+ */
 ConfInt::ConfInt(){
 	mean = 0;
 	low = - std::numeric_limits<double>::infinity();
@@ -69,6 +72,47 @@ ConfInt::~ConfInt(){}
  */
 double ConfInt::width(){
 	return (up-low);
+}
+
+ConfInt & ConfInt::operator+=(const ConfInt& rhs){
+  low += rhs.low;
+  mean += rhs.mean;
+  up += rhs.up;
+  return *this;
+}
+
+ConfInt & ConfInt::operator-=(const ConfInt& rhs){
+  low -= rhs.low;
+  mean -= rhs.mean;
+  up -= rhs.up;
+  return *this;
+}
+
+ConfInt & ConfInt::operator*=(const ConfInt& rhs){
+  mean = mean*rhs.mean;
+  low = fmin(fmin(low*rhs.low,up*rhs.up),
+	     fmin(low*rhs.up,up*rhs.low));
+  up = fmax(fmax(low*rhs.low,up*rhs.up),
+	    fmax(low*rhs.up,up*rhs.low));
+  return *this;
+}
+
+ConfInt & ConfInt::operator/=(const ConfInt& rhs){
+  mean /= rhs.mean;
+
+  if(rhs.low * rhs.up<=0){
+    low = - std::numeric_limits<double>::infinity();
+    up = std::numeric_limits<double>::infinity();
+  } else {
+    if(rhs.low > 0){
+      low /= rhs.up;
+      up /= rhs.low;
+    }else{
+      low /= rhs.low;
+      up  /= rhs.up;
+    }
+  }
+  return *this;
 }
 
 /**
@@ -200,13 +244,17 @@ void HaslFormulasTop::setLevel(double l){
 			//Here we divide the error by two because half the error come from the bernoulli evaluation.
 			Value = quantile(boost::math::normal() , 0.75 + l / 4.0);
 			break;
-			
+
+		case RE_Continuous:
+		  Level = l;
+		  Value = quantile(boost::math::normal() , 0.75 + l / 4.0);
+		  break;
+	
 		case HYPOTHESIS:
 			Level = l;
 			break;
 			
 		case CONSTANT:
-		case RE_Continuous:
 			break;
 			
 		case HASL_PLUS:
@@ -324,11 +372,70 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 						   (mean2 + width)*u );
 		}
 			
-		case RE_Continuous:
-			//Hack to retrive confidence interval computed by the simulator
-			return new ConfInt(batch.Mean[0],batch.M2[0]);
-			
-		case HYPOTHESIS:
+	  case RE_Continuous:
+	    {
+	      //batch.print();
+	      size_t N = batch.TableLength/3;
+	      std::cout << "tablelength = "<< batch.TableLength << std::endl;
+	      double LevelN = 1- ((1-Level)/N);
+	      double ValueN = quantile(boost::math::normal() , (3+LevelN)/4);
+	      
+	      ConfInt* totalInt = new ConfInt(0.0,0.0);
+	      ConfInt* likelyhood = new ConfInt(0.0,0.0);
+	      ConfInt* reacheabilityprob = new ConfInt(0.0,0.0);
+	      ConfInt* poisson = new ConfInt(0.0,0.0);
+
+	      for(int i=0; i< N; i++){
+		//evaluate the likelyhood:
+		likelyhood->mean = batch.Mean[3*i+2]/batch.Mean[3*i+1];
+		double var = (batch.M2[3*i+2]/batch.Mean[3*i+1]) - pow((batch.Mean[3*i+2]/batch.Mean[3*i+1]),2);
+		double widthN = 0.0;
+		if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[3*i+1]);
+		likelyhood->low = likelyhood->mean - widthN/2.0;
+		likelyhood->up = likelyhood->mean + widthN/2.0;
+		
+		//evaluate probability to reach final state:
+		reacheabilityprob->mean = batch.Mean[3*i+1]/batch.M2[3*i+1];
+      		reacheabilityprob->low = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.M2[3*i+1],batch.Mean[3*i+1], (1-Level)/4);
+		reacheabilityprob->up = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.M2[3*i+1],batch.Mean[3*i+1], (1-Level)/4);
+		//evaluate poisson:
+		poisson->mean = batch.Mean[3*i];
+		poisson->low = (1-Value2)*batch.Mean[3*i];
+		poisson->up = batch.Mean[3*i];
+		
+		//Multiply the three confidence interval:
+		*poisson *= *likelyhood;
+	        *poisson *= *reacheabilityprob;
+
+		//if(false)std::cerr << "i:" << i<< "\tMean Likelyhood: "  << likelyhood->mean << "\twidth: " << widthN << "\tcoeff: " << batch.Mean[3*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
+		
+		//Add the confidence interval to the total one.
+		*totalInt += *poisson;
+		
+	      }
+	      
+	      delete likelyhood;
+	      delete reacheabilityprob;
+	      delete poisson;
+	      
+	      //Add the error made on the left of the truncation point.
+	      ConfInt* leftTruncationError = 
+		new ConfInt(0.0,0.0,batch.Mean[2]/batch.Mean[1]* Value2/2);
+	      
+	      //Add the error made on the rigth trucation point TODO!
+	      ConfInt* rightTruncationError = 
+		new ConfInt(0.0,0.0);
+
+	      *totalInt += *leftTruncationError;
+	      *totalInt += *rightTruncationError;
+	      
+	      delete leftTruncationError;
+	      delete rightTruncationError;
+
+	      return totalInt;
+	    }		
+	    
+	  case HYPOTHESIS:
 		{
 		//Implementation of the SPRT.
 		
@@ -346,83 +453,51 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		return new ConfInt((double)batch.Isucc/(double)batch.I, 0 ,1);
 		}
 			
-		case CONSTANT:
-			return new ConfInt(Value,Value2);
+	  case CONSTANT:
+	    return new ConfInt(Value,Value2);
 			
-		case HASL_PLUS:
-		{
-		ConfInt* lci = left->eval(batch);
-		ConfInt* rci = right->eval(batch);
+	  case HASL_PLUS:
+	    {
+	      ConfInt* lci = left->eval(batch);
+	      ConfInt* rci = right->eval(batch);
+	      *lci += *rci;
+	      delete rci;
 		
-		double mean = lci->mean+rci->mean;
-		double low = lci->low+rci->low;
-		double up = lci->up +rci->up;
+	      return lci;
+	    }
+	  case HASL_MINUS:
+	    {
+	      ConfInt* lci = left->eval(batch);
+	      ConfInt* rci = right->eval(batch);
+	      *lci -= *rci;
+	      delete rci;
 		
-		delete lci;
-		delete rci;
-		
-		return new ConfInt(mean,low,up);
-		}
-		case HASL_MINUS:
-		{
-		ConfInt* lci = left->eval(batch);
-		ConfInt* rci = right->eval(batch);
-		
-		double mean = lci->mean-rci->mean;
-		double low = lci->low-rci->low;
-		double up = lci->up -rci->up;
-		
-		delete lci;
-		delete rci;
-		
-		return new ConfInt(mean,low,up);
-		}
+	      return lci;
+	    }
 			
-		case HASL_TIME:
-		{
-		ConfInt* lci = left->eval(batch);
-		ConfInt* rci = right->eval(batch);
+	  case HASL_TIME:
+	    {
+	      ConfInt* lci = left->eval(batch);
+	      ConfInt* rci = right->eval(batch);
+	      *lci *= *rci;
+	      delete rci;
 		
-		double mean = lci->mean*rci->mean;
-		double low = fmin(fmin(lci->low*rci->low,lci->up*rci->up),
-						  fmin(lci->low*rci->up,lci->up*rci->low));
-		double up = fmax(fmax(lci->low*rci->low,lci->up*rci->up),
-						 fmax(lci->low*rci->up,lci->up*rci->low));
-		
-		delete lci;
-		delete rci;
-		
-		return new ConfInt(mean,low,up);
-		}
+	      return lci;
+	    }
 			
-		case HASL_DIV:
-		{
-		ConfInt* lci = left->eval(batch);
-		ConfInt* rci = right->eval(batch);
-		
-		if(rci->low * rci->up<=0)
-			return new ConfInt();
-		
-		double mean = lci->mean / rci->mean;
-		double low,up;
-		
-		if(rci->low > 0){
-			low = lci->low / rci->up;
-			up  = lci->up  / rci->low;
-		}else{
-			low = lci->low / rci->low;
-			up  = lci->up  / rci->up;
-		}
-		
-		delete lci;
-		delete rci;
-		
-		return new ConfInt(mean,low,up);
-		}
-			
-		default:
-			std::cerr << "Fail to parse Hasl Formula"<< std::endl;
-			exit(EXIT_FAILURE);
+	  case HASL_DIV:
+	    {
+	      ConfInt* lci = left->eval(batch);
+	      ConfInt* rci = right->eval(batch);
+	       *lci /= *rci;
+	      delete rci;
+	      
+	      return lci;
+	    }
+	    
+	  default:
+	    std::cerr << "Fail to parse Hasl Formula"<< std::endl;
+	    exit(EXIT_FAILURE);
 	}
 }
 

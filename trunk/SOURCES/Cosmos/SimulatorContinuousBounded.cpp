@@ -70,14 +70,13 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     cerr << "Nmax:\t" << Nmax << endl;
     //cerr << "left:\t" << left << endl;
     
-    vector<double> MeanN (Nmax+1,0.0);
-    vector<double> M2N (Nmax+1,0.0);
-	vector<int> IsuccN (Nmax+1,0);
     int n =-1;
     
-	
-	BatchR* batchResult = new BatchR(A.FormulaVal.size());
-	
+
+    BatchR* batchResult = new BatchR(3*(Nmax+1));
+    for(int i=0; i<= fg->right- left; i++)
+      batchResult->Mean[3*i] = fg->weights[i+ left- fg->left] /fg->total_weight;
+
 	list<simulationState> statevect((Nmax+1)*BatchSize);
 	//delete EQ;
 	
@@ -134,27 +133,23 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     if((!EQ->isEmpty()) && continueb) {
                         it->saveState(&N,&A,&AE,&EQ);
                     } else {
+		      int i = it->maxStep - left;
                         if (Result.first) {
-                            //cerr << "n:\t" << n <<" Result:" << Result.second << " maxStep:\t" << it->maxStep <<endl;
-                            //batchResult->Isucc++;
-                            
-                            //cerr << "finish(" << endl;
                             
                             if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult->IsBernoulli[0] = false;
 							
-                            //for (int i= max(0,n-fg->left); i<fg->right - fg->left; i++)
                             {
-							int i = it->maxStep - left;
-							//cerr << "i:\t" << i << endl;
-							IsuccN[i]++;
-							
-							MeanN[i] += Result.second[0];
-							M2N[i] += pow(Result.second[0] , 2);
+                                
+                                
+                               
+				batchResult->Isucc+=1;
+				batchResult->Mean[3*i+1]+=1;
+				batchResult->Mean[3*i+2] += Result.second[0];
+				batchResult->M2[3*i+2] += pow(Result.second[0] , 2);
                             }
-                            //cerr << ")finish" << endl;
                             
                         }
-                        
+                        batchResult->M2[3*i+1]+=1;
                         batchResult->I++;
                         
                         
@@ -171,62 +166,16 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
         
 	}
 	
-	//cerr << "test" << endl;
-	//exit(0);
-    //int Isucc =0;
-    
-    int leftdec = left- fg->left;
-	
-	double Level = 1- ((1-0.99)/(fg->right- left));
-	double Value = quantile(boost::math::normal() , (3+Level)/4);
-	
-	double lowtotal=0.0;
-	double uptotal=0.0;
-	
-    for(int i=0; i<= fg->right- left; i++){
-		
-        double var = (M2N[i]/IsuccN[i]) - pow((MeanN[i]/ IsuccN[i]),2);
-        double widthN = 0.0;
-        if(var>0)widthN = 2* Value * sqrt(var/IsuccN[i]);
-        
-		double lowberN = boost::math::binomial_distribution<>::find_lower_bound_on_p(BatchSize,IsuccN[i], (1-Level)/4);
-		double upberN = boost::math::binomial_distribution<>::find_upper_bound_on_p(BatchSize,IsuccN[i], (1-Level)/4);
-		
-		double lowN = lowberN * (MeanN[i] - widthN/2.0);
-		double upN = upberN * (MeanN[i] + widthN/2.0);
-		
-        if(verbose>=2)cerr << "i:" << i+ left<< "\tMean Likelyhood: "  << MeanN[i] << "\twidth: " << widthN << "\tcoeff: " << fg->weights[i+leftdec]/fg->total_weight << "\tconfint: ["<< lowN <<";"<<upN << "]";
-        
-		lowN *= fg->weights[i+leftdec]*(1.0-epsilon) / fg->total_weight;
-		upN	*= fg->weights[i+leftdec] / fg->total_weight;
-		if(verbose>=2)cerr << "\tFinal confint: ["<< lowN <<";"<<upN << "]" << endl;
-		
-		lowtotal += lowN;
-		uptotal += upN;
-		
-		batchResult->Isucc += IsuccN[i];
-        
-		
-	}
-	
-	//Add the error made on the left of the truncation point.
-	uptotal += (epsilon/2.0)*(MeanN[0]/ IsuccN[0]);
-	
-	
-	batchResult->Mean[0] = (lowtotal +uptotal)/2.0;
-	batchResult->M2[0] = (uptotal - lowtotal );
-	
-    cerr << endl;
-	
-    rusage ruse;
-    getrusage(RUSAGE_SELF, &ruse);
-    cerr << "\033[A\033[2K" << "\033[A\033[2K" << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
-    << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl<< endl << endl;
+	//rusage ruse;
+	//getrusage(RUSAGE_SELF, &ruse);
+    //cerr << "\033[A\033[2K" << "\033[A\033[2K"
+    //cerr << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
+    //<< "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl<< endl << endl; 
     
 	
-	cerr << "DIR Result Mean:\t" << (lowtotal +uptotal)/2.0 << endl;
-	cerr << "DIR Confidence interval:\t ["<< lowtotal <<";"<< uptotal << "]" << endl << endl << endl<< endl << endl<< endl;
-	
+    //	cerr << "DIR Result Mean:\t" << (lowtotal +uptotal)/2.0 << endl;
+    //cerr << "DIR Confidence interval:\t ["<< lowtotal <<";"<< uptotal << "]" << endl << endl << endl<< endl << endl<< endl;
+
     //batchResult->print();
     //exit(0);
 	return (batchResult);

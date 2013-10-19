@@ -258,10 +258,13 @@ void result::print(ostream &s){
 		getrusage(RUSAGE_CHILDREN, &cpu_child);
 		double child_time = cpu_child.ru_utime.tv_sec + cpu_child.ru_utime.tv_usec / 1000000.0;
 		child_time += cpu_child.ru_stime.tv_sec + cpu_child.ru_stime.tv_usec / 1000000.0;
+		double child_memory = cpu_child.ru_maxrss;
 		getrusage(RUSAGE_SELF, &cpu_child);
 		child_time += cpu_child.ru_utime.tv_sec + cpu_child.ru_utime.tv_usec / 1000000.0;
 		child_time += cpu_child.ru_stime.tv_sec + cpu_child.ru_stime.tv_usec / 1000000.0;
+		child_memory += cpu_child.ru_maxrss;
 		s << "Total CPU time:\t" << child_time << endl;
+		s << "Total Memory used:\t" << child_memory << "kB" << endl;
         
     }
 }
