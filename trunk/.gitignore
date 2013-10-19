@@ -13,6 +13,7 @@ doc/man/*
 bin/*
 *.dat
 *.res
+*.log
 doc/overview.pdf
 *prismLabel.lbl
 *prismMatrix.tra
