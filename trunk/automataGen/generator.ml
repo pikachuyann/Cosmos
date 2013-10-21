@@ -2,12 +2,11 @@ open Automata
 
 
 let _ =
+  let input = ref stdin in
   if Array.length Sys.argv >1 then
-    let a =  Automata.automata_of_pltrlist ["Queue1";"Queue2"] [] 0.0 10.0 (int_of_string (Sys.argv.(2))) in
-    Writer.writeAutomata a;
-	print_newline ();
-  else try
-    let lexbuf = Lexing.from_channel stdin in
+    input := open_in Sys.argv.(1);
+  try
+    let lexbuf = Lexing.from_channel !input  in
     while true do
       try
 	let result = Parser.main Lexer.token lexbuf in
@@ -21,3 +20,10 @@ let _ =
     done
   with Lexer.Eof ->
     exit 0
+
+
+(*
+ let a =  Automata.automata_of_pltrlist ["Queue1";"Queue2"] [] 0.0 10.0 (int_of_string (Sys.argv.(2))) in
+    Writer.writeAutomata a;
+	print_newline ();
+*)
