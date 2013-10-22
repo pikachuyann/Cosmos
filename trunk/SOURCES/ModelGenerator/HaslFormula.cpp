@@ -372,68 +372,68 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 						   (mean2 + width)*u );
 		}
 			
-	  case RE_Continuous:
+		case RE_Continuous:
 	    {
-	      //batch.print();
-	      size_t N = batch.TableLength/3;
-	      std::cout << "tablelength = "<< batch.TableLength << std::endl;
-	      double LevelN = 1- ((1-Level)/N);
-	      double ValueN = quantile(boost::math::normal() , (3+LevelN)/4);
-	      
-	      ConfInt* totalInt = new ConfInt(0.0,0.0);
-	      ConfInt* likelyhood = new ConfInt(0.0,0.0);
-	      ConfInt* reacheabilityprob = new ConfInt(0.0,0.0);
-	      ConfInt* poisson = new ConfInt(0.0,0.0);
-
-	      for(int i=0; i< N; i++){
-		//evaluate the likelyhood:
-		likelyhood->mean = batch.Mean[3*i+2]/batch.Mean[3*i+1];
-		double var = (batch.M2[3*i+2]/batch.Mean[3*i+1]) - pow((batch.Mean[3*i+2]/batch.Mean[3*i+1]),2);
-		double widthN = 0.0;
-		if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[3*i+1]);
-		likelyhood->low = likelyhood->mean - widthN/2.0;
-		likelyhood->up = likelyhood->mean + widthN/2.0;
+		//batch.print();
+		size_t N = batch.TableLength/3;
+		std::cout << "tablelength = "<< batch.TableLength << std::endl;
+		double LevelN = 1- ((1-Level)/N);
+		double ValueN = quantile(boost::math::normal() , (3+LevelN)/4);
 		
-		//evaluate probability to reach final state:
-		reacheabilityprob->mean = batch.Mean[3*i+1]/batch.M2[3*i+1];
+		ConfInt* totalInt = new ConfInt(0.0,0.0);
+		ConfInt* likelyhood = new ConfInt(0.0,0.0);
+		ConfInt* reacheabilityprob = new ConfInt(0.0,0.0);
+		ConfInt* poisson = new ConfInt(0.0,0.0);
+		
+		for(size_t i=0; i< N; i++){
+			//evaluate the likelyhood:
+			likelyhood->mean = batch.Mean[3*i+2]/batch.Mean[3*i+1];
+			double var = (batch.M2[3*i+2]/batch.Mean[3*i+1]) - pow((batch.Mean[3*i+2]/batch.Mean[3*i+1]),2);
+			double widthN = 0.0;
+			if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[3*i+1]);
+			likelyhood->low = likelyhood->mean - widthN/2.0;
+			likelyhood->up = likelyhood->mean + widthN/2.0;
+			
+			//evaluate probability to reach final state:
+			reacheabilityprob->mean = batch.Mean[3*i+1]/batch.M2[3*i+1];
       		reacheabilityprob->low = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.M2[3*i+1],batch.Mean[3*i+1], (1-Level)/4);
-		reacheabilityprob->up = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.M2[3*i+1],batch.Mean[3*i+1], (1-Level)/4);
-		//evaluate poisson:
-		poisson->mean = batch.Mean[3*i];
-		poisson->low = (1-Value2)*batch.Mean[3*i];
-		poisson->up = batch.Mean[3*i];
-		
-		//Multiply the three confidence interval:
-		*poisson *= *likelyhood;
+			reacheabilityprob->up = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.M2[3*i+1],batch.Mean[3*i+1], (1-Level)/4);
+			//evaluate poisson:
+			poisson->mean = batch.Mean[3*i];
+			poisson->low = (1-Value2)*batch.Mean[3*i];
+			poisson->up = batch.Mean[3*i];
+			
+			//Multiply the three confidence interval:
+			*poisson *= *likelyhood;
 	        *poisson *= *reacheabilityprob;
-
-		//if(false)std::cerr << "i:" << i<< "\tMean Likelyhood: "  << likelyhood->mean << "\twidth: " << widthN << "\tcoeff: " << batch.Mean[3*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
+			
+			if(true)std::cerr << "i:" << i<< "\tMean Likelyhood: "  << likelyhood->mean << "\twidth: " << widthN << "\tcoeff: " << batch.Mean[3*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
+			
+			//Add the confidence interval to the total one.
+			*totalInt += *poisson;
+			
+		}
 		
-		//Add the confidence interval to the total one.
-		*totalInt += *poisson;
+		delete likelyhood;
+		delete reacheabilityprob;
+		delete poisson;
 		
-	      }
-	      
-	      delete likelyhood;
-	      delete reacheabilityprob;
-	      delete poisson;
-	      
-	      //Add the error made on the left of the truncation point.
-	      ConfInt* leftTruncationError = 
+		//Add the error made on the left of the truncation point.
+		ConfInt* leftTruncationError =
 		new ConfInt(0.0,0.0,batch.Mean[2]/batch.Mean[1]* Value2/2);
-	      
-	      //Add the error made on the rigth trucation point TODO!
-	      ConfInt* rightTruncationError = 
+		
+		//Add the error made on the rigth trucation point TODO!
+		ConfInt* rightTruncationError =
 		new ConfInt(0.0,0.0);
-
-	      *totalInt += *leftTruncationError;
-	      *totalInt += *rightTruncationError;
-	      
-	      delete leftTruncationError;
-	      delete rightTruncationError;
-
-	      return totalInt;
-	    }		
+		
+		*totalInt += *leftTruncationError;
+		*totalInt += *rightTruncationError;
+		
+		delete leftTruncationError;
+		delete rightTruncationError;
+		
+		return totalInt;
+	    }
 	    
 	  case HYPOTHESIS:
 		{
