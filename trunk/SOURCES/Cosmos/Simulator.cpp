@@ -601,7 +601,7 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
         }
 		case DISCRETEUNIF:
 		{//DISCRETEUNIF
-			boost::uniform_int<> UNIF(param[0], param[1]);
+			boost::uniform_int<> UNIF((int)param[0], (int)param[1]);
 			boost::variate_generator<boost::mt19937&, boost::uniform_int<> > gen(RandomNumber, UNIF);
 			return gen();
 			break;

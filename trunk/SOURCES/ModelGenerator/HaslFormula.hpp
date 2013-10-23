@@ -30,6 +30,7 @@
 #ifndef __Cosmos__HaslFormula__
 #define __Cosmos__HaslFormula__
 
+#include <utility>
 #include "../Cosmos/BatchR.hpp"
 
 enum HaslType {

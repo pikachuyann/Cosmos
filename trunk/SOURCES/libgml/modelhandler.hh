@@ -9,7 +9,11 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include <tr1/memory>
+//#ifdef __APPLE__
+#include <memory>
+//#else
+//#include <tr1/memory>
+//#endif
 
 #include "tree/tree.hh"
 #include <exception>
@@ -59,7 +63,7 @@ typedef std::vector<XmlString> XmlStringList;
 
 class ModelHandler;
 /** Pointer to a model handler using std::shared_ptr */
-typedef std::tr1::shared_ptr<ModelHandler> ModelHandlerPtr;
+typedef std::shared_ptr<ModelHandler> ModelHandlerPtr;
 
 
 /**

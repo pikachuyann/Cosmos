@@ -37,8 +37,8 @@
 
 struct cmp_str
 {
-	bool operator()(char const *a, char const *b){
-		return strcmp(a, b) < 0;
+	bool operator()(const std::string a,const std::string b)const{
+		return a.compare(b) < 0;
 	}
 };
 
@@ -57,7 +57,7 @@ public:
 private:
 	int maxc;
 	const std::string scase;
-	std::map<const char*,int,cmp_str> cases;
+	std::map<const std::string,int,cmp_str> cases;
 	std::map<int,std::string> mapping;
 	std::map<int,std::string> mapcomment;
 };

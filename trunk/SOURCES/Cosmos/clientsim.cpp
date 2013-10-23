@@ -57,8 +57,7 @@ int main(int argc, char** argv) {
 	//cerr << "pid : "<< pid << endl;
 	signal(SIGINT, signalHandler);
 	
-	
-    Simulator* mySim;
+	Simulator* mySim;
 	
 	string str;
 	bool singleBatch = false;
