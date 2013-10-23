@@ -36,16 +36,16 @@ casesHandler::casesHandler(string svar):maxc(0),scase(svar){};
 
 void casesHandler::addCase(int c,const string st,const string comment){
 	const char* cst = st.c_str();
-	map<const char*,int>::iterator it = cases.find(cst);
+	map<const string,int>::iterator it = cases.find(cst);
 	if(it == cases.end()){
-		cases[cst]=1;
+		cases[st]=1;
 		mapping[c]=st;
 	}else{
 		it->second++;
 		mapping[c]=st;
 	}
 	mapcomment[c]=comment;
-	maxc = max(maxc,cases[cst]);
+	maxc = max(maxc,cases[st]);
 }
 
 void casesHandler::writeCases(ostream &s){
@@ -53,8 +53,8 @@ void casesHandler::writeCases(ostream &s){
 		s << cases.begin()->first << endl;
 	}else{
 		s << "switch (" << scase << "){" << endl;
-		map<const char*,int>::iterator itmax = cases.begin();
-		for(map<const char*,int>::iterator it = cases.begin(); it != cases.end(); ++it){
+		map<const string,int>::iterator itmax = cases.begin();
+		for(map<const string,int>::iterator it = cases.begin(); it != cases.end(); ++it){
 			if(it->second != maxc){
 				for(map<int,std::string>::iterator it2 = mapping.begin(); it2 != mapping.end(); ++it2){
 					if(it2->second.compare(it->first)==0)
@@ -67,7 +67,7 @@ void casesHandler::writeCases(ostream &s){
 				maxc++;
 			}
 		}
-		if(strcmp(itmax->first,"")!=0){
+		if(itmax->first.compare("")!=0){
 			s<< "\tdefault:\t//";
 			for(map<int,std::string>::iterator it2 = mapping.begin();
 				it2 != mapping.end(); ++it2)

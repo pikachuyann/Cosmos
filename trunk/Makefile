@@ -35,8 +35,9 @@ ifeq ($(OSTYPE),darwin)
 
 export CC=gcc
 export CXX=g++
-export OPTIONS= -O3 -Wall -arch x86_64
-export BOOSTPATH=/data/usr64/include
+export OPTIONS= -O3 -Wall -arch x86_64 -std=gnu++11 -stdlib=libc++ 
+//export BOOSTPATH=/data/usr64/include
+export BOOSTPATH=/usr/local/include
 export BISON=/opt/local/bin/bison
 export FLEX=/opt/local/bin/flex
 
@@ -130,4 +131,4 @@ doc:
 	doxygen Doxyfile
 
 install:
-	cp bin/_Cosmos /usr/share/zsh/4.3.11/functions/_Cosmos 
+	cp bin/_Cosmos /usr/share/zsh/site-functions/_Cosmos 
