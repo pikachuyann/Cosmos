@@ -9,7 +9,11 @@
 #include <iostream>
 #include <map>
 #include <string>
+#ifdef __APPLE__
 #include <memory>
+#else
+#include <tr1/memory>
+#endif
 
 #include "tree/tree.hh"
 #include <exception>
