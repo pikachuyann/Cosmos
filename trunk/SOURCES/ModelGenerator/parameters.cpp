@@ -78,7 +78,7 @@ computeStateSpace(0),
 alligatorMode(false),
 
 gcccmd("g++"),
-gccflags("-O3"),
+gccflags("-O3 -Wno-return-type"),
 
 prismPath(""),
 dataoutput(""),

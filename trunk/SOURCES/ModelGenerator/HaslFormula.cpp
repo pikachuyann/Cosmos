@@ -407,7 +407,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			*poisson *= *likelyhood;
 	        *poisson *= *reacheabilityprob;
 			
-			if(true)std::cerr << "i:" << i<< "\tMean Likelyhood: "  << likelyhood->mean << "\twidth: " << widthN << "\tcoeff: " << batch.Mean[3*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
+			if(true)std::cerr << "i: " << i<< "\tsucc: "<< batch.Mean[3*i+1]<< "\tLikelyhood: "  << likelyhood->mean << "\t[" << likelyhood->low<<";"<<likelyhood->up << "]\tpoisson: " << batch.Mean[3*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
 			
 			//Add the confidence interval to the total one.
 			*totalInt += *poisson;
