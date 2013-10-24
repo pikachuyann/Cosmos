@@ -99,7 +99,7 @@ static BOOL finder(const int m, const double lambda, const double tau, const dou
 	if( epsilon < tau)
 	{
 	  fprintf(stderr,"ERROR: Fox-Glynn: epsilon < tau, invalid error level, terminating the algorithm\n");
-	  fprintf(stderr,"epsilon %f, tau %f\n",epsilon,tau);
+	  fprintf(stderr,"epsilon %e, tau %e\n",epsilon,tau);
 	  return FALSE;
 	}
 	/* zero is used as left truncation point for lambda <= 25 */
