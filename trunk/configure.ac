@@ -8,17 +8,18 @@ AC_CONFIG_SRCDIR([SOURCES/Cosmos/BatchR.cpp])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
+# CXXFLAGS=-Wall -Wextra -O3
+: ${CXXFLAGS=-O3}
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_YACC
 AC_PROG_LEX
-#AC_PROG_RANLIB
 AM_PROG_AR
 AC_PROG_LIBTOOL
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lexpat':
 AC_CHECK_LIB([expat], [ XML_ParseBuffer])
 
 # Checks for header files.

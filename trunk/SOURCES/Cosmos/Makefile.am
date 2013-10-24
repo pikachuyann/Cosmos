@@ -6,3 +6,5 @@ libClientSim_la_SOURCES = BatchR.cpp EventsQueue.hpp macro.h numSolverBB.cpp Sim
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp
 includesdir = $(includedir)
+
+AM_CPPFLAGS = $(BOOST_CPPFLAGS)

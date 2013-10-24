@@ -123,7 +123,6 @@
 		0304DA45145ADB3F0085B4DC /* modelwriter.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = modelwriter.hh; sourceTree = "<group>"; };
 		0304DA47145ADB3F0085B4DC /* tree.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree.hh; sourceTree = "<group>"; };
 		0304DA48145ADB3F0085B4DC /* tree_util.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_util.hh; sourceTree = "<group>"; };
-		030F2BBE160A1AF700ABB113 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		03248DAB14B734E80032B09E /* numSolverBB.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = numSolverBB.hpp; sourceTree = "<group>"; };
 		03248DAC14B734E80032B09E /* numSolverBB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numSolverBB.cpp; sourceTree = "<group>"; };
 		03248EDF14B74F2A0032B09E /* numSolverSH.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = numSolverSH.hpp; sourceTree = "<group>"; };
@@ -146,15 +145,10 @@
 		036EC8A916F5C5B50059B280 /* _Cosmos */ = {isa = PBXFileReference; explicitFileType = text.script; name = _Cosmos; path = ../bin/_Cosmos; sourceTree = "<group>"; };
 		0379BDC21462C63D0077D4E9 /* Lha_gmlparser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Lha_gmlparser.hpp; sourceTree = "<group>"; };
 		0379BDC31462C63D0077D4E9 /* Lha_gmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Lha_gmlparser.cpp; sourceTree = "<group>"; };
-		03A15A36160B007000BAFF6C /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		03A15A37160B043700BAFF6C /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		03A15A38160B057A00BAFF6C /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; name = Makefile; path = ../Makefile; sourceTree = "<group>"; };
 		03A194CC14E2C5FA00C17C38 /* parameters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parameters.cpp; sourceTree = "<group>"; };
 		03A194CE14E2C63500C17C38 /* parameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parameters.hpp; sourceTree = "<group>"; };
 		03A49A3716B6B46200521256 /* marking.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = marking.hpp; sourceTree = "<group>"; };
 		03A49A3E16B71FDC00521256 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		03A49A3F16B71FF600521256 /* Makefile_common */ = {isa = PBXFileReference; lastKnownFileType = text; name = Makefile_common; path = ../Makefile_common; sourceTree = "<group>"; };
-		03A49A4016B71FFB00521256 /* Makefile_linux */ = {isa = PBXFileReference; lastKnownFileType = text; name = Makefile_linux; path = ../Makefile_linux; sourceTree = "<group>"; };
 		03A9F02114D7ECB500A60D0F /* SimulatorContinuousBounded.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimulatorContinuousBounded.cpp; sourceTree = "<group>"; };
 		03A9F02414D7ECDC00A60D0F /* SimulatorContinuousBounded.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SimulatorContinuousBounded.hpp; sourceTree = "<group>"; };
 		03AD7C7F14BD86C8003F7EA0 /* sparse_io.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sparse_io.hpp; sourceTree = "<group>"; };
@@ -164,7 +158,10 @@
 		03B6EE8D1487BB8F0099A6CC /* CosmosSim */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CosmosSim; sourceTree = BUILT_PRODUCTS_DIR; };
 		03B6EEBE1487BBF60099A6CC /* LHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA.cpp; sourceTree = "<group>"; };
 		03B6EEC01487BC120099A6CC /* spn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
-		03B9F20F16AED58C004A8145 /* Makefile_fast */ = {isa = PBXFileReference; lastKnownFileType = text; name = Makefile_fast; path = ../Makefile_fast; sourceTree = "<group>"; };
+		03B7D355181901AC007AA90D /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.am; path = ../Makefile.am; sourceTree = "<group>"; };
+		03B7D356181901BB007AA90D /* configure.ac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = configure.ac; path = ../configure.ac; sourceTree = "<group>"; };
+		03B7D357181902B8007AA90D /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		03B7D358181902EE007AA90D /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03BCA43A148CFAAA008E2402 /* numericalSolver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = numericalSolver.hpp; sourceTree = "<group>"; };
 		03BCA43B148CFAAA008E2402 /* numericalSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numericalSolver.cpp; sourceTree = "<group>"; };
 		03BCA54A148D271A008E2402 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -205,7 +202,6 @@
 		03F13676143A050100944E04 /* Event.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Event.hpp; sourceTree = "<group>"; };
 		03F13677143A050100944E04 /* EventsQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventsQueue.cpp; sourceTree = "<group>"; };
 		03F13678143A050100944E04 /* EventsQueue.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueue.hpp; sourceTree = "<group>"; };
-		03F1367A143A050100944E04 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		03F1367E143A050100944E04 /* Simulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Simulator.cpp; sourceTree = "<group>"; };
 		03F1367F143A050100944E04 /* Simulator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Simulator.hpp; sourceTree = "<group>"; };
 		03F13680143A050100944E04 /* SimulatorRE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimulatorRE.cpp; sourceTree = "<group>"; };
@@ -222,7 +218,6 @@
 		03F136AB143A050100944E04 /* Lha-Reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Lha-Reader.hpp"; sourceTree = "<group>"; };
 		03F136AC143A050100944E04 /* Lha-scanner.ll */ = {isa = PBXFileReference; explicitFileType = sourcecode.lex; fileEncoding = 4; path = "Lha-scanner.ll"; sourceTree = "<group>"; };
 		03F136B1143A050100944E04 /* Cosmos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cosmos.cpp; sourceTree = "<group>"; };
-		03F136B3143A050100944E04 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		03F136B4143A050100944E04 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
 		03F136B5143A050100944E04 /* server.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = server.hpp; sourceTree = "<group>"; };
 		03FB40F318180F9D001F9988 /* Cosmos Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cosmos Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -349,7 +344,6 @@
 				03F13676143A050100944E04 /* Event.hpp */,
 				03F13677143A050100944E04 /* EventsQueue.cpp */,
 				03F13678143A050100944E04 /* EventsQueue.hpp */,
-				03F1367A143A050100944E04 /* Makefile */,
 				0302BAE51468197C005129BB /* LHA_orig.cpp */,
 				0302BAE61468197C005129BB /* LHA.hpp */,
 				03B6EEBE1487BBF60099A6CC /* LHA.cpp */,
@@ -361,6 +355,7 @@
 				03F1367E143A050100944E04 /* Simulator.cpp */,
 				03F1367F143A050100944E04 /* Simulator.hpp */,
 				03F13680143A050100944E04 /* SimulatorRE.cpp */,
+				03B7D357181902B8007AA90D /* Makefile.am */,
 				0302BC8D146ADC42005129BB /* SimulatorRE.hpp */,
 				03BCA577148E150C008E2402 /* SimulatorBoundedRE.cpp */,
 				03BCA576148E150C008E2402 /* SimulatorBoundedRE.hpp */,
@@ -390,7 +385,7 @@
 				03F136B1143A050100944E04 /* Cosmos.cpp */,
 				034B942A17E1A5A100B915E7 /* casesWriter.cpp */,
 				034B942B17E1A5A100B915E7 /* casesWriter.hpp */,
-				03F136B3143A050100944E04 /* Makefile */,
+				03B7D358181902EE007AA90D /* Makefile.am */,
 				0304D2D2156BB5A000D45E5F /* result.cpp */,
 				0304D2D4156BB5EF00D45E5F /* result.hpp */,
 				03F136B4143A050100944E04 /* server.cpp */,
@@ -408,7 +403,6 @@
 			children = (
 				03F1368C143A050100944E04 /* Eval-parser.yy */,
 				03F1368D143A050100944E04 /* Eval-scanner.ll */,
-				03A15A37160B043700BAFF6C /* Makefile */,
 				03F1368E143A050100944E04 /* Eval.cpp */,
 				03F1368F143A050100944E04 /* Eval.hpp */,
 				036803B11626C53800B1523A /* Eval-parser.tab.cc */,
@@ -432,7 +426,6 @@
 				03D3452A167B7A8800C6BDFA /* stack.hh */,
 				03F13699143A050100944E04 /* Gspn-parser.yy */,
 				03F1369C143A050100944E04 /* Gspn-scanner.ll */,
-				030F2BBE160A1AF700ABB113 /* Makefile */,
 				03F1369A143A050100944E04 /* Gspn-Reader.cpp */,
 				03F1369B143A050100944E04 /* Gspn-Reader.hpp */,
 				03D25F37143C8D3F00317323 /* Gspn_gmlparser.cpp */,
@@ -452,7 +445,6 @@
 				03D34532167B7ABB00C6BDFA /* stack.hh */,
 				03F136A9143A050100944E04 /* Lha-parser.yy */,
 				03F136AC143A050100944E04 /* Lha-scanner.ll */,
-				03A15A36160B007000BAFF6C /* Makefile */,
 				03F136AB143A050100944E04 /* Lha-Reader.hpp */,
 				03F136AA143A050100944E04 /* Lha-Reader.cpp */,
 				0379BDC21462C63D0077D4E9 /* Lha_gmlparser.hpp */,
@@ -507,10 +499,8 @@
 			isa = PBXGroup;
 			children = (
 				036EC8A916F5C5B50059B280 /* _Cosmos */,
-				03B9F20F16AED58C004A8145 /* Makefile_fast */,
-				03A15A38160B057A00BAFF6C /* Makefile */,
-				03A49A4016B71FFB00521256 /* Makefile_linux */,
-				03A49A3F16B71FF600521256 /* Makefile_common */,
+				03B7D355181901AC007AA90D /* Makefile.am */,
+				03B7D356181901BB007AA90D /* configure.ac */,
 				0341401215AEC3740009FEFC /* POMDP */,
 				0304DA40145ADB3F0085B4DC /* libgml */,
 				03F1366D143A050100944E04 /* SOURCES */,
@@ -1299,6 +1289,7 @@
 				03FB410418180F9E001F9988 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "Cosmos" */ = {
 			isa = XCConfigurationList;

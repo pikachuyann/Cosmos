@@ -54,17 +54,19 @@
 //using namespace arma;
 using namespace std;
 
+/*
 #ifdef __GNUC__
 #include <ext/hash_map>
 #else
 #include <hash_map>
 #endif
-
+*/
+#include <unordered_map>
 
 #ifndef _STATESPACE_HPP
 #define	_STATESPACE_HPP
 
-using namespace __gnu_cxx;
+//using namespace __gnu_cxx;
 
 struct eqstate{
 	bool operator()(const vector<int>* t1,const vector<int>* t2) const {
@@ -87,7 +89,7 @@ struct hashstate{
  * The hash_map structure implement a mapping between a state as a vector
  * of integer and its index.
  */
-typedef hash_map<const vector<int>*, int , hashstate , eqstate > hash_state;
+typedef unordered_map<const vector<int>*, int , hashstate , eqstate > hash_state;
 
 /*
  * This class manage the state space of the model. The state space is

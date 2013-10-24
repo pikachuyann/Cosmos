@@ -212,7 +212,7 @@ CPPFLAGS =
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXFLAGS = -O3
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
@@ -238,7 +238,7 @@ LEX = flex
 LEXLIB = -ll
 LEX_OUTPUT_ROOT = lex.yy
 LIBOBJS =  ${LIBOBJDIR}error$U.o
-LIBS = $(BOOST_THREAD_LIBS)
+LIBS = -lexpat 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = lipo
 LN_S = ln -s
@@ -310,7 +310,7 @@ mandir = ${datarootdir}/man
 mkdir_p = $(MKDIR_P)
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr/local
+prefix = /Users/barbot/Documents/Cosmos/build
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
@@ -323,7 +323,6 @@ top_builddir = .
 top_srcdir = .
 SUBDIRS = SOURCES/ModelGenerator SOURCES/Cosmos
 ACLOCAL_AMFLAGS = -I m4
-AM_CPPFLAGS = $(BOOST_CPPFLAGS)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -804,6 +803,9 @@ uninstall-am:
 	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
 	uninstall-am
 
+
+# AM_CPPFLAGS = $(BOOST_CPPFLAGS)
+# LIBS = $(BOOST_THREAD_LIBS)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

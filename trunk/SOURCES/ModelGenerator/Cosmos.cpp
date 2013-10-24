@@ -383,17 +383,17 @@ bool ParseBuild(parameters& P) {
 		it != P.HaslFormulas.end(); ++it)(*it)->setLevel(P.Level);
 	
 	//Compile the SPN
-	cmd = bcmd + " -c -I"+P.Path+"../includes -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
+	cmd = bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
 	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
 	
 	//Compile the LHA
-	cmd = bcmd + " -c -I"+P.Path+"../includes -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
+	cmd = bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
 	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
 	
 	//Link SPN and LHA with the library
-	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"libClientSim.a ";
+	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"../lib/libClientSim.a ";
 	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
 	
