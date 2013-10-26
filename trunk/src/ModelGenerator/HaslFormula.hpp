@@ -31,7 +31,7 @@
 #define __Cosmos__HaslFormula__
 
 #include <utility>
-#include "../Cosmos/BatchR.hpp"
+#include "../Simulator/BatchR.hpp"
 
 enum HaslType {
 	EXPECTANCY,

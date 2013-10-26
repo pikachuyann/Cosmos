@@ -51,7 +51,7 @@
 #include <algorithm>
 #include <err.h>
 
-#include "../Cosmos/BatchR.hpp"
+#include "../Simulator/BatchR.hpp"
 #include "result.hpp"
 #include "server.hpp"
 

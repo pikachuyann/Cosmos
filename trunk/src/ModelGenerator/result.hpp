@@ -26,7 +26,7 @@
 
 
 #include "parameters.hpp"
-#include "../Cosmos/BatchR.hpp"
+#include "../Simulator/BatchR.hpp"
 #include <istream>
 #include <fstream>
 #include <ostream>

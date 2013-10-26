@@ -1,4 +1,4 @@
-SUBDIRS = SOURCES/libgml SOURCES/ModelGenerator SOURCES/Cosmos test
+SUBDIRS = src/libgrml src/ModelGenerator src/Simulator test
 
 ACLOCAL_AMFLAGS = -I m4
 

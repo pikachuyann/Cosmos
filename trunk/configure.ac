@@ -4,7 +4,7 @@
 AC_PREREQ(2.61)
 AC_INIT([Cosmos], [1.3] , [barbot@lsv.ens-cachan.fr], [Cosmos], [http://www.lsv.ens-cachan.fr/Software/cosmos/])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
-AC_CONFIG_SRCDIR([SOURCES/Cosmos/BatchR.cpp])
+AC_CONFIG_SRCDIR([src/Simulator/BatchR.cpp])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -57,5 +57,5 @@ AC_FUNC_SELECT_ARGTYPES
 AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([dup2 floor gettimeofday memset mkdir pow select sqrt])
 
-AC_CONFIG_FILES([Makefile SOURCES/libgml/Makefile SOURCES/ModelGenerator/Makefile SOURCES/Cosmos/Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile src/libgrml/Makefile src/ModelGenerator/Makefile src/Simulator/Makefile test/Makefile])
 AC_OUTPUT
