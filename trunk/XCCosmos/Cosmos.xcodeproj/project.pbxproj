@@ -127,6 +127,7 @@
 		03248DAC14B734E80032B09E /* numSolverBB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numSolverBB.cpp; sourceTree = "<group>"; };
 		03248EDF14B74F2A0032B09E /* numSolverSH.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = numSolverSH.hpp; sourceTree = "<group>"; };
 		03248EE014B74F2A0032B09E /* numSolverSH.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numSolverSH.cpp; sourceTree = "<group>"; };
+		032A6FF8181BB5EA006D7332 /* test */ = {isa = PBXFileReference; lastKnownFileType = folder; name = test; path = ../test; sourceTree = "<group>"; };
 		0341401C15AEF45E0009FEFC /* POMDP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = POMDP; sourceTree = BUILT_PRODUCTS_DIR; };
 		034509A616A80AC8002088B3 /* libClientSim.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClientSim.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0346863714D6ECFE0040753D /* foxglynn.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = foxglynn.c; sourceTree = "<group>"; };
@@ -187,6 +188,7 @@
 		03D9C810168466A200AADB3D /* readPlast.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = readPlast.hpp; path = ../POMDP/readPlast.hpp; sourceTree = "<group>"; };
 		03D9C81516846A8200AADB3D /* generateSPN.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = generateSPN.cpp; path = /Users/barbot/Documents/AllCosmos/trunk/POMDP/generateSPN.cpp; sourceTree = "<absolute>"; };
 		03DA8F3214F4FD25008C673C /* lumpingfun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfun.cpp; sourceTree = "<group>"; };
+		03DD290E181AD99800E01444 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03DE63091636BCA3007FCB32 /* exPapier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = exPapier.cpp; path = /Users/barbot/Documents/AllCosmos/trunk/POMDP/exPapier.cpp; sourceTree = "<absolute>"; };
 		03DE630B1636BCE4007FCB32 /* experiments.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = experiments.cpp; path = ../POMDP/experiments.cpp; sourceTree = "<group>"; };
 		03DE630D1636BCF6007FCB32 /* generateLHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = generateLHA.cpp; path = /Users/barbot/Documents/AllCosmos/trunk/POMDP/generateLHA.cpp; sourceTree = "<absolute>"; };
@@ -275,6 +277,7 @@
 		0304DA40145ADB3F0085B4DC /* libgml */ = {
 			isa = PBXGroup;
 			children = (
+				03DD290E181AD99800E01444 /* Makefile.am */,
 				0304DA41145ADB3F0085B4DC /* expatmodelparser.cc */,
 				0304DA42145ADB3F0085B4DC /* expatmodelparser.hh */,
 				0304DA43145ADB3F0085B4DC /* modelhandler.hh */,
@@ -326,6 +329,7 @@
 			isa = PBXGroup;
 			children = (
 				03C7163716F4D9050027930F /* maindoc.md */,
+				0304DA40145ADB3F0085B4DC /* libgml */,
 				03F1366E143A050100944E04 /* Cosmos */,
 				03F13686143A050100944E04 /* ModelGenerator */,
 			);
@@ -501,8 +505,8 @@
 				036EC8A916F5C5B50059B280 /* _Cosmos */,
 				03B7D355181901AC007AA90D /* Makefile.am */,
 				03B7D356181901BB007AA90D /* configure.ac */,
+				032A6FF8181BB5EA006D7332 /* test */,
 				0341401215AEC3740009FEFC /* POMDP */,
-				0304DA40145ADB3F0085B4DC /* libgml */,
 				03F1366D143A050100944E04 /* SOURCES */,
 			);
 			name = Source;

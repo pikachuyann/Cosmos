@@ -57,5 +57,5 @@ AC_FUNC_SELECT_ARGTYPES
 AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([dup2 floor gettimeofday memset mkdir pow select sqrt])
 
-AC_CONFIG_FILES([Makefile SOURCES/ModelGenerator/Makefile SOURCES/Cosmos/Makefile])
+AC_CONFIG_FILES([Makefile SOURCES/libgml/Makefile SOURCES/ModelGenerator/Makefile SOURCES/Cosmos/Makefile test/Makefile])
 AC_OUTPUT

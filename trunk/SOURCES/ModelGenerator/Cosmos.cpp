@@ -393,7 +393,7 @@ bool ParseBuild(parameters& P) {
 	if (system(cmd.c_str())) return false;
 	
 	//Link SPN and LHA with the library
-	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"../lib/libClientSim.a ";
+	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"../lib/libClientSim.dylib ";
 	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
 	
