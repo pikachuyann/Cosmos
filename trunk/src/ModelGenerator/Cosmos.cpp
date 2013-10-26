@@ -71,7 +71,7 @@ void FindPathMac(parameters& P) {
 	P.Path = P.Path.substr(0, t);
 	P.Path.append("/");
 }
-
+#define SHAREDEXTENSION "dylib"
 #define FindPath FindPathMac
 #elif __linux__
 void FindPathLinux(parameters& P) {
@@ -88,6 +88,7 @@ void FindPathLinux(parameters& P) {
 	}
 }
 
+#define SHAREDEXTENSION "so"
 #define FindPath FindPathLinux
 #else
 #error "Operating system not supported"
@@ -393,7 +394,7 @@ bool ParseBuild(parameters& P) {
 	if (system(cmd.c_str())) return false;
 	
 	//Link SPN and LHA with the library
-	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"../lib/libClientSim.dylib ";
+	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"../lib/libClientSim."+SHAREDEXTENSION+" ";
 	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
 	
@@ -484,12 +485,12 @@ int main(int argc, char** argv) {
 	if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildTime<< "s"<< endl;
 	
 	if(!P.sequential){
-		double b = 0;
+		double b = 0.0;
 		for(vector<HaslFormulasTop*>::const_iterator it = P.HaslFormulas.begin(); it != P.HaslFormulas.end();
 			++it) b = fmax(b,(*it)->bound());
 		
 		if(P.MaxRuns==0){
-			P.MaxRuns = 2*2*2*b*b/(P.Width*P.Width) * log(2/(1-P.Level));
+			P.MaxRuns = (int)(2.0*2.0*2.0*b*b/(P.Width*P.Width) * log(2/(1-P.Level)));
 		}else if(P.Width == 0){
 			P.Width = 2.0*b * sqrt( (2.0/P.MaxRuns) * log(2.0/(1.0-P.Level)));
 		}else if(P.Level ==0){
