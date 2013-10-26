@@ -19,6 +19,10 @@ AC_PROG_LEX
 AM_PROG_AR
 AC_PROG_LIBTOOL
 
+
+AX_CXX_COMPILE_STDCXX_11
+
+
 # Checks for libraries.
 AC_CHECK_LIB([expat], [ XML_ParseBuffer])
 
@@ -28,10 +32,6 @@ AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([float.h inttypes.h libintl.h limits.h stdlib.h string.h sys/ioctl.h sys/time.h unistd.h])
 
 BOOST_REQUIRE([1.48.1])
-#AC_LANG_PUSH([C++])
-#AC_CHECK_HEADERS([boost/foreach.hpp], [],
-#    [AC_MSG_ERROR(You need the Boost libraries.)])
-#AC_LANG_POP([C++])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
