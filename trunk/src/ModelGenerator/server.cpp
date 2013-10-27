@@ -189,7 +189,7 @@ inline void pushint(const char *argv[],size_t &argn,size_t v){
 
 inline void pushdouble(const char *argv[],size_t &argn,double v){
 	char* s = (char *)malloc(255*sizeof(char));
-	sprintf(s, "%f", v);
+	sprintf(s, "%e", v);
 	argv[argn] = s;
 	argn++;
 }
