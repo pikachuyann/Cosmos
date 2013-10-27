@@ -50,7 +50,7 @@
 *								(1988 ).
 */
 
-# include "foxglynn.h"
+#include "foxglynn.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>

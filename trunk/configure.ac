@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([Cosmos], [1.3] , [barbot@lsv.ens-cachan.fr], [Cosmos], [http://www.lsv.ens-cachan.fr/Software/cosmos/])
-AM_INIT_AUTOMAKE([foreign -Wall -Werror])
+AC_INIT([Cosmos], [1.3] , [barbot@lsv.ens-cachan.fr])
+AM_INIT_AUTOMAKE([-Wall -Werror])
 AC_CONFIG_SRCDIR([src/Simulator/BatchR.cpp])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])

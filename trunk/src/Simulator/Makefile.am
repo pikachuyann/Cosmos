@@ -1,8 +1,23 @@
 
 lib_LTLIBRARIES = libClientSim.la
 
-libClientSim_la_SOURCES = BatchR.cpp EventsQueue.hpp macro.h numSolverBB.cpp SimulatorContinuousBounded.cpp sparse_io.hpp BatchR.hpp foxglynn.c numSolverBB.hpp SimulatorContinuousBounded.hpp spn.hpp clientsim.cpp foxglynn.h numSolverSH.cpp Simulator.cpp stateSpace.cpp Event.cpp LHA.hpp marking.hpp numSolverSH.hpp Simulator.hpp stateSpace.hpp Event.hpp LHA_orig.cpp numericalSolver.cpp SimulatorBoundedRE.cpp SimulatorRE.cpp EventsQueue.cpp numericalSolver.hpp SimulatorBoundedRE.hpp SimulatorRE.hpp
-
+libClientSim_la_SOURCES = \
+	BatchR.cpp BatchR.hpp \
+	Event.cpp  Event.hpp \
+	EventsQueue.cpp EventsQueue.hpp \
+	marking.hpp spn.hpp \
+	LHA_orig.cpp LHA.hpp \
+	Simulator.cpp Simulator.hpp \
+	SimulatorRE.cpp SimulatorRE.hpp \
+	sparse_io.hpp \
+	stateSpace.cpp stateSpace.hpp \
+	numericalSolver.cpp numericalSolver.hpp \
+	numSolverBB.cpp numSolverBB.hpp \
+	numSolverSH.cpp  numSolverSH.hpp \
+	SimulatorBoundedRE.cpp SimulatorBoundedRE.hpp \
+	macro.h foxglynn.cpp foxglynn.hpp \
+	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
+	clientsim.cpp
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp
 includesdir = $(includedir)

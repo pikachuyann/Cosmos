@@ -48,14 +48,14 @@ void SimulatorContinuousBounded::initVectCo(double t){
     lambda = numSolv->uniformizeMatrix();
     cerr << "lambda:" << lambda<< endl;
     fg=NULL;
-    if (fox_glynn(lambda * t, DBL_EPSILON , 1/DBL_EPSILON ,epsilon, &fg)){
+    if (fox_glynn((lambda * t), DBL_EPSILON , 1/DBL_EPSILON ,epsilon, &fg)){
         cerr << "fox_glyn:" << fg->left << "," << fg->right << " Total weigts:"<< fg->total_weight<< endl;
         /*for(int i = 0; i<= fg->right - fg->left; i++){
 		 cerr << fg->left+i << " " << fg->weights[i]/ fg->total_weight << endl;
 		 }*/
     }
     //fg->right = 10;
-	double lambda2= lambda;
+    double lambda2= lambda;
     initVect(fg->right+1);
     lambda = lambda2;
 }

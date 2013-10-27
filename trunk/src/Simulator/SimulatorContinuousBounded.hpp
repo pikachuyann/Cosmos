@@ -28,11 +28,11 @@
 #define Cosmos_SimulatorContinuousBounded_h
 
 #include "SimulatorBoundedRE.hpp"
-#include "foxglynn.h"
+#include "foxglynn.hpp"
 
 class SimulatorContinuousBounded: public SimulatorBoundedRE{
 public:
-	SimulatorContinuousBounded(int m,double e);
+    SimulatorContinuousBounded(int m,double e);
     void initVectCo(double t);
     double epsilon;
     //double Normal_quantile;
