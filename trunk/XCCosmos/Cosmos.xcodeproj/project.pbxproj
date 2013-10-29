@@ -10,7 +10,6 @@
 		032A7067181BC0D6006D7332 /* casesWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7008181BC0D6006D7332 /* casesWriter.cpp */; };
 		032A7068181BC0D6006D7332 /* Cosmos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A700A181BC0D6006D7332 /* Cosmos.cpp */; };
 		032A7069181BC0D6006D7332 /* Eval-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A700D181BC0D6006D7332 /* Eval-parser.tab.cc */; };
-		032A706A181BC0D6006D7332 /* Eval-parser.ypp in Sources */ = {isa = PBXBuildFile; fileRef = 032A700F181BC0D6006D7332 /* Eval-parser.ypp */; };
 		032A706B181BC0D6006D7332 /* Eval-scanner.ll in Sources */ = {isa = PBXBuildFile; fileRef = 032A7011181BC0D6006D7332 /* Eval-scanner.ll */; };
 		032A706C181BC0D6006D7332 /* Eval.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7012181BC0D6006D7332 /* Eval.cpp */; };
 		032A706D181BC0D6006D7332 /* lex.eval.c in Sources */ = {isa = PBXBuildFile; fileRef = 032A7014181BC0D6006D7332 /* lex.eval.c */; };
@@ -29,31 +28,33 @@
 		032A707A181BC0D6006D7332 /* result.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703A181BC0D6006D7332 /* result.cpp */; };
 		032A707B181BC0D6006D7332 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703C181BC0D6006D7332 /* server.cpp */; };
 		032A707C181BC0D6006D7332 /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703F181BC0D6006D7332 /* BatchR.cpp */; };
-		032A707D181BC0D6006D7332 /* clientsim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7041181BC0D6006D7332 /* clientsim.cpp */; };
-		032A707E181BC0D6006D7332 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7042181BC0D6006D7332 /* Event.cpp */; };
-		032A707F181BC0D6006D7332 /* EventsQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7044181BC0D6006D7332 /* EventsQueue.cpp */; };
-		032A7080181BC0D6006D7332 /* foxglynn.c in Sources */ = {isa = PBXBuildFile; fileRef = 032A7046181BC0D6006D7332 /* foxglynn.c */; };
 		032A7081181BC0D6006D7332 /* LHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7048181BC0D6006D7332 /* LHA.cpp */; };
-		032A7082181BC0D6006D7332 /* LHA_orig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704A181BC0D6006D7332 /* LHA_orig.cpp */; };
 		032A7083181BC0D6006D7332 /* lumpingfun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704B181BC0D6006D7332 /* lumpingfun.cpp */; };
 		032A7084181BC0D6006D7332 /* lumpingfuntriv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704C181BC0D6006D7332 /* lumpingfuntriv.cpp */; };
-		032A7085181BC0D6006D7332 /* numericalSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7052181BC0D6006D7332 /* numericalSolver.cpp */; };
-		032A7086181BC0D6006D7332 /* numSolverBB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7054181BC0D6006D7332 /* numSolverBB.cpp */; };
-		032A7087181BC0D6006D7332 /* numSolverSH.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7056181BC0D6006D7332 /* numSolverSH.cpp */; };
-		032A7088181BC0D6006D7332 /* Simulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7058181BC0D6006D7332 /* Simulator.cpp */; };
-		032A7089181BC0D6006D7332 /* SimulatorBoundedRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705A181BC0D6006D7332 /* SimulatorBoundedRE.cpp */; };
-		032A708A181BC0D6006D7332 /* SimulatorContinuousBounded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705C181BC0D6006D7332 /* SimulatorContinuousBounded.cpp */; };
-		032A708B181BC0D6006D7332 /* SimulatorRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705E181BC0D6006D7332 /* SimulatorRE.cpp */; };
-		032A708C181BC0D6006D7332 /* spn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7061181BC0D6006D7332 /* spn.cpp */; };
-		032A708D181BC0D6006D7332 /* stateSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7063181BC0D6006D7332 /* stateSpace.cpp */; };
 		032A70A7181BC307006D7332 /* expatmodelparser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A709D181BC307006D7332 /* expatmodelparser.cc */; };
 		032A70A8181BC307006D7332 /* modelwriter.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A70A2181BC307006D7332 /* modelwriter.cc */; };
+		032A70AC181D58C1006D7332 /* foxglynn.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 032A70AA181D58C1006D7332 /* foxglynn.hpp */; };
 		034509CD16A83753002088B3 /* libClientSim.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 034509A616A80AC8002088B3 /* libClientSim.a */; };
 		03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */; };
 		03D9C811168467E900AADB3D /* generateLHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE630D1636BCF6007FCB32 /* generateLHA.cpp */; };
 		03D9C813168467EF00AADB3D /* exPapier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63091636BCA3007FCB32 /* exPapier.cpp */; };
 		03D9C814168467F200AADB3D /* readPlast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63121636BCF6007FCB32 /* readPlast.cpp */; };
 		03D9C81616846A8200AADB3D /* generateSPN.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03D9C81516846A8200AADB3D /* generateSPN.cpp */; };
+		03DC57B2181E59430031F6EE /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703F181BC0D6006D7332 /* BatchR.cpp */; };
+		03DC57C1181E59650031F6EE /* foxglynn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A70A9181D58C1006D7332 /* foxglynn.cpp */; };
+		03DC57C2181E59650031F6EE /* clientsim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7041181BC0D6006D7332 /* clientsim.cpp */; };
+		03DC57C3181E59650031F6EE /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7042181BC0D6006D7332 /* Event.cpp */; };
+		03DC57C4181E59650031F6EE /* EventsQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7044181BC0D6006D7332 /* EventsQueue.cpp */; };
+		03DC57C5181E59650031F6EE /* LHA_orig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704A181BC0D6006D7332 /* LHA_orig.cpp */; };
+		03DC57C6181E59650031F6EE /* numericalSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7052181BC0D6006D7332 /* numericalSolver.cpp */; };
+		03DC57C7181E59650031F6EE /* numSolverBB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7054181BC0D6006D7332 /* numSolverBB.cpp */; };
+		03DC57C8181E59650031F6EE /* numSolverSH.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7056181BC0D6006D7332 /* numSolverSH.cpp */; };
+		03DC57C9181E59650031F6EE /* Simulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7058181BC0D6006D7332 /* Simulator.cpp */; };
+		03DC57CA181E59650031F6EE /* SimulatorBoundedRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705A181BC0D6006D7332 /* SimulatorBoundedRE.cpp */; };
+		03DC57CB181E59650031F6EE /* SimulatorContinuousBounded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705C181BC0D6006D7332 /* SimulatorContinuousBounded.cpp */; };
+		03DC57CC181E59650031F6EE /* SimulatorRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705E181BC0D6006D7332 /* SimulatorRE.cpp */; };
+		03DC57CD181E59650031F6EE /* spn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7061181BC0D6006D7332 /* spn.cpp */; };
+		03DC57CE181E59650031F6EE /* stateSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7063181BC0D6006D7332 /* stateSpace.cpp */; };
 		03DE63171636BCF6007FCB32 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63111636BCF6007FCB32 /* main.cpp */; };
 		03FB40F618180F9E001F9988 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03FB40F518180F9D001F9988 /* XCTest.framework */; };
 		03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03FB40FA18180F9E001F9988 /* InfoPlist.strings */; };
@@ -108,8 +109,7 @@
 		032A700C181BC0D6006D7332 /* Eval-parser.output */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Eval-parser.output"; sourceTree = "<group>"; };
 		032A700D181BC0D6006D7332 /* Eval-parser.tab.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Eval-parser.tab.cc"; sourceTree = "<group>"; };
 		032A700E181BC0D6006D7332 /* Eval-parser.tab.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Eval-parser.tab.hh"; sourceTree = "<group>"; };
-		032A700F181BC0D6006D7332 /* Eval-parser.ypp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; path = "Eval-parser.ypp"; sourceTree = "<group>"; };
-		032A7010181BC0D6006D7332 /* Eval-parser.yy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Eval-parser.yy"; sourceTree = "<group>"; };
+		032A7010181BC0D6006D7332 /* Eval-parser.yy */ = {isa = PBXFileReference; explicitFileType = sourcecode.yacc; fileEncoding = 4; path = "Eval-parser.yy"; sourceTree = "<group>"; };
 		032A7011181BC0D6006D7332 /* Eval-scanner.ll */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.llvm; path = "Eval-scanner.ll"; sourceTree = "<group>"; };
 		032A7012181BC0D6006D7332 /* Eval.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Eval.cpp; sourceTree = "<group>"; };
 		032A7013181BC0D6006D7332 /* Eval.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Eval.hpp; sourceTree = "<group>"; };
@@ -159,8 +159,6 @@
 		032A7043181BC0D6006D7332 /* Event.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Event.hpp; sourceTree = "<group>"; };
 		032A7044181BC0D6006D7332 /* EventsQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventsQueue.cpp; sourceTree = "<group>"; };
 		032A7045181BC0D6006D7332 /* EventsQueue.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueue.hpp; sourceTree = "<group>"; };
-		032A7046181BC0D6006D7332 /* foxglynn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = foxglynn.c; sourceTree = "<group>"; };
-		032A7047181BC0D6006D7332 /* foxglynn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = foxglynn.h; sourceTree = "<group>"; };
 		032A7048181BC0D6006D7332 /* LHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA.cpp; sourceTree = "<group>"; };
 		032A7049181BC0D6006D7332 /* LHA.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LHA.hpp; sourceTree = "<group>"; };
 		032A704A181BC0D6006D7332 /* LHA_orig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA_orig.cpp; sourceTree = "<group>"; };
@@ -202,6 +200,8 @@
 		032A70A3181BC307006D7332 /* modelwriter.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = modelwriter.hh; sourceTree = "<group>"; };
 		032A70A5181BC307006D7332 /* tree.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree.hh; sourceTree = "<group>"; };
 		032A70A6181BC307006D7332 /* tree_util.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_util.hh; sourceTree = "<group>"; };
+		032A70A9181D58C1006D7332 /* foxglynn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = foxglynn.cpp; sourceTree = "<group>"; };
+		032A70AA181D58C1006D7332 /* foxglynn.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = foxglynn.hpp; sourceTree = "<group>"; };
 		0341401C15AEF45E0009FEFC /* POMDP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = POMDP; sourceTree = BUILT_PRODUCTS_DIR; };
 		034509A616A80AC8002088B3 /* libClientSim.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClientSim.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		036EC8A916F5C5B50059B280 /* _Cosmos */ = {isa = PBXFileReference; explicitFileType = text.script; name = _Cosmos; path = ../bin/_Cosmos; sourceTree = "<group>"; };
@@ -294,9 +294,9 @@
 				032A700A181BC0D6006D7332 /* Cosmos.cpp */,
 				032A700B181BC0D6006D7332 /* Eval */,
 				032A7018181BC0D6006D7332 /* GspnParser */,
+				032A7028181BC0D6006D7332 /* LhaParser */,
 				032A7026181BC0D6006D7332 /* HaslFormula.cpp */,
 				032A7027181BC0D6006D7332 /* HaslFormula.hpp */,
-				032A7028181BC0D6006D7332 /* LhaParser */,
 				032A7036181BC0D6006D7332 /* Makefile.am */,
 				032A7038181BC0D6006D7332 /* parameters.cpp */,
 				032A7039181BC0D6006D7332 /* parameters.hpp */,
@@ -314,7 +314,6 @@
 				032A700C181BC0D6006D7332 /* Eval-parser.output */,
 				032A700D181BC0D6006D7332 /* Eval-parser.tab.cc */,
 				032A700E181BC0D6006D7332 /* Eval-parser.tab.hh */,
-				032A700F181BC0D6006D7332 /* Eval-parser.ypp */,
 				032A7010181BC0D6006D7332 /* Eval-parser.yy */,
 				032A7011181BC0D6006D7332 /* Eval-scanner.ll */,
 				032A7012181BC0D6006D7332 /* Eval.cpp */,
@@ -370,6 +369,8 @@
 		032A703E181BC0D6006D7332 /* Simulator */ = {
 			isa = PBXGroup;
 			children = (
+				032A70A9181D58C1006D7332 /* foxglynn.cpp */,
+				032A70AA181D58C1006D7332 /* foxglynn.hpp */,
 				032A703F181BC0D6006D7332 /* BatchR.cpp */,
 				032A7040181BC0D6006D7332 /* BatchR.hpp */,
 				032A7041181BC0D6006D7332 /* clientsim.cpp */,
@@ -377,8 +378,6 @@
 				032A7043181BC0D6006D7332 /* Event.hpp */,
 				032A7044181BC0D6006D7332 /* EventsQueue.cpp */,
 				032A7045181BC0D6006D7332 /* EventsQueue.hpp */,
-				032A7046181BC0D6006D7332 /* foxglynn.c */,
-				032A7047181BC0D6006D7332 /* foxglynn.h */,
 				032A7048181BC0D6006D7332 /* LHA.cpp */,
 				032A7049181BC0D6006D7332 /* LHA.hpp */,
 				032A704A181BC0D6006D7332 /* LHA_orig.cpp */,
@@ -556,6 +555,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				032A70AC181D58C1006D7332 /* foxglynn.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,12 +564,12 @@
 /* Begin PBXLegacyTarget section */
 		03128742180B0A4F0018560F /* CosmosMakefile */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "dir lib generator";
+			buildArgumentsString = all;
 			buildConfigurationList = 03128743180B0A500018560F /* Build configuration list for PBXLegacyTarget "CosmosMakefile" */;
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/barbot/Documents/GitSvnCosmos/trunk;
+			buildWorkingDirectory = /Users/barbot/Documents/GitSvnCosmos/trunk/build/;
 			dependencies = (
 			);
 			name = CosmosMakefile;
@@ -732,6 +732,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03DC57C5181E59650031F6EE /* LHA_orig.cpp in Sources */,
+				03DC57C8181E59650031F6EE /* numSolverSH.cpp in Sources */,
+				03DC57C3181E59650031F6EE /* Event.cpp in Sources */,
+				03DC57C6181E59650031F6EE /* numericalSolver.cpp in Sources */,
+				03DC57C2181E59650031F6EE /* clientsim.cpp in Sources */,
+				03DC57C1181E59650031F6EE /* foxglynn.cpp in Sources */,
+				03DC57C4181E59650031F6EE /* EventsQueue.cpp in Sources */,
+				03DC57B2181E59430031F6EE /* BatchR.cpp in Sources */,
+				03DC57CA181E59650031F6EE /* SimulatorBoundedRE.cpp in Sources */,
+				03DC57CE181E59650031F6EE /* stateSpace.cpp in Sources */,
+				03DC57C9181E59650031F6EE /* Simulator.cpp in Sources */,
+				03DC57CC181E59650031F6EE /* SimulatorRE.cpp in Sources */,
+				03DC57CD181E59650031F6EE /* spn.cpp in Sources */,
+				03DC57C7181E59650031F6EE /* numSolverBB.cpp in Sources */,
+				03DC57CB181E59650031F6EE /* SimulatorContinuousBounded.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -755,27 +770,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				032A706F181BC0D6006D7332 /* Gspn-Reader.cpp in Sources */,
-				032A707F181BC0D6006D7332 /* EventsQueue.cpp in Sources */,
-				032A708A181BC0D6006D7332 /* SimulatorContinuousBounded.cpp in Sources */,
-				032A7087181BC0D6006D7332 /* numSolverSH.cpp in Sources */,
-				032A708D181BC0D6006D7332 /* stateSpace.cpp in Sources */,
 				032A70A8181BC307006D7332 /* modelwriter.cc in Sources */,
-				032A7089181BC0D6006D7332 /* SimulatorBoundedRE.cpp in Sources */,
 				032A7078181BC0D6006D7332 /* Lha_gmlparser.cpp in Sources */,
 				032A7072181BC0D6006D7332 /* lex.gspn.c in Sources */,
 				032A7067181BC0D6006D7332 /* casesWriter.cpp in Sources */,
 				032A7075181BC0D6006D7332 /* Lha-parser.tab.cc in Sources */,
-				032A7086181BC0D6006D7332 /* numSolverBB.cpp in Sources */,
 				032A7077181BC0D6006D7332 /* Lha-scanner.ll in Sources */,
-				032A708B181BC0D6006D7332 /* SimulatorRE.cpp in Sources */,
 				032A707A181BC0D6006D7332 /* result.cpp in Sources */,
-				032A7080181BC0D6006D7332 /* foxglynn.c in Sources */,
-				032A7088181BC0D6006D7332 /* Simulator.cpp in Sources */,
-				032A707D181BC0D6006D7332 /* clientsim.cpp in Sources */,
-				032A7082181BC0D6006D7332 /* LHA_orig.cpp in Sources */,
 				032A7083181BC0D6006D7332 /* lumpingfun.cpp in Sources */,
 				032A7070181BC0D6006D7332 /* Gspn-scanner.ll in Sources */,
-				032A7085181BC0D6006D7332 /* numericalSolver.cpp in Sources */,
 				032A7081181BC0D6006D7332 /* LHA.cpp in Sources */,
 				032A707B181BC0D6006D7332 /* server.cpp in Sources */,
 				032A706B181BC0D6006D7332 /* Eval-scanner.ll in Sources */,
@@ -783,14 +786,11 @@
 				032A7074181BC0D6006D7332 /* lex.lha.c in Sources */,
 				032A7076181BC0D6006D7332 /* Lha-Reader.cpp in Sources */,
 				032A706D181BC0D6006D7332 /* lex.eval.c in Sources */,
-				032A706A181BC0D6006D7332 /* Eval-parser.ypp in Sources */,
 				032A707C181BC0D6006D7332 /* BatchR.cpp in Sources */,
-				032A708C181BC0D6006D7332 /* spn.cpp in Sources */,
 				032A70A7181BC307006D7332 /* expatmodelparser.cc in Sources */,
 				032A7069181BC0D6006D7332 /* Eval-parser.tab.cc in Sources */,
 				032A7068181BC0D6006D7332 /* Cosmos.cpp in Sources */,
 				032A706C181BC0D6006D7332 /* Eval.cpp in Sources */,
-				032A707E181BC0D6006D7332 /* Event.cpp in Sources */,
 				032A7071181BC0D6006D7332 /* Gspn_gmlparser.cpp in Sources */,
 				032A7073181BC0D6006D7332 /* HaslFormula.cpp in Sources */,
 				032A706E181BC0D6006D7332 /* Gspn-parser.tab.cc in Sources */,
@@ -934,7 +934,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -967,7 +967,7 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1148,14 +1148,11 @@
 					/usr/local/include,
 				);
 				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = (
-					/usr/local/lib,
-					/opt/local/lib,
-				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				PRODUCT_NAME = Cosmos;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				USER_HEADER_SEARCH_PATHS = "/Users/barbot/Documents/GitSvnCosmos/trunk/SOURCES/libgml/ /usr/local/include";
+				USER_HEADER_SEARCH_PATHS = /Users/barbot/Documents/GitSvnCosmos/trunk/src/libgrml/;
 			};
 			name = Debug;
 		};
@@ -1169,14 +1166,11 @@
 				GCC_VERSION = "";
 				GCC_WARN_SIGN_COMPARE = YES;
 				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/local/lib,
-				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				PRODUCT_NAME = Cosmos;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				USER_HEADER_SEARCH_PATHS = "/Users/barbot/Documents/GitSvnCosmos/trunk/SOURCES/libgml/ /usr/local/include";
+				USER_HEADER_SEARCH_PATHS = /Users/barbot/Documents/GitSvnCosmos/trunk/src/libgrml/;
 			};
 			name = Release;
 		};
@@ -1210,7 +1204,7 @@
 					/usr/include,
 					/usr/local/include,
 				);
-				LIBRARY_SEARCH_PATHS = "/usr/local/lib/**";
+				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -1248,6 +1242,7 @@
 					/usr/include,
 					/usr/local/include,
 				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;

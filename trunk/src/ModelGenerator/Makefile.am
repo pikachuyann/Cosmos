@@ -3,7 +3,7 @@ bin_PROGRAMS = Cosmos
 Cosmos_SOURCES = \
 	../Simulator/BatchR.cpp ../Simulator/BatchR.hpp \
 	Eval/Eval.cpp Eval/Eval.hpp \
-	Eval/Eval-parser.yy \
+	Eval/Eval-scanner.ll Eval/Eval-parser.yy \
 	GspnParser/Gspn-Reader.cpp GspnParser/Gspn-Reader.hpp \
 	GspnParser/Gspn_gmlparser.cpp GspnParser/Gspn_gmlparser.hpp \
 	GspnParser/Gspn-parser.tab.cc GspnParser/Gspn-parser.tab.hh \
@@ -26,7 +26,8 @@ Cosmos_LDADD = ../libgrml/libgrml.la
 
 BUILT_SOURCES = Eval/Eval-parser.hh
 
-AM_YFLAGS = -d
+AM_YFLAGS = -d -p Eval
 AM_CPPFLAGS = -I$(srcdir)/../libgrml $(BOOST_CPPFLAGS)
+AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c
 
 AUTOMAKE_OPTIONS = subdir-objects
