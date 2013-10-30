@@ -591,12 +591,12 @@ static yyconst flex_int16_t yy_rule_linenum[19] =
 char *evaltext;
 #line 1 "Eval-scanner.ll"
 #line 2 "Eval-scanner.ll"
-# include <cstdlib>
-# include <errno.h>
-# include <limits.h>
-# include <string>
-# include "Eval.hpp"
-# include "Eval-parser.tab.hh"
+#include <cstdlib>
+#include <errno.h>
+#include <limits.h>
+#include <string>
+#include "Eval.hpp"
+#include "Eval-parser.tab.hh"
 
 
 # undef evalwrap
