@@ -66,6 +66,12 @@ public:
 	
 	//! The fourth moment of each formula.
     std::vector<double> M4;
+	
+	//! The Min value of each formula.
+    std::vector<double> Min;
+	
+	//! The Max moment of each formula.
+    std::vector<double> Max;
     
     //! Add the result of one simulation to the Batch.
     void addSim(const SimOutput*);
