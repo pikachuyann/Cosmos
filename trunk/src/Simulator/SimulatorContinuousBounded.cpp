@@ -133,19 +133,24 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     if((!EQ->isEmpty()) && continueb) {
                         it->saveState(&N,&A,&AE,&EQ);
                     } else {
-		      int i = it->maxStep - left;
-                        if (Result.first) {
+						int i = it->maxStep - left;
+                        if (Result.first ) {
                             
                             if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult->IsBernoulli[0] = false;
 							
                             {
-                                
-                                
-                               
-				batchResult->Isucc+=1;
-				batchResult->Mean[3*i+1]+=1;
-				batchResult->Mean[3*i+2] += Result.second[0];
-				batchResult->M2[3*i+2] += pow(Result.second[0] , 2);
+							
+							
+							
+							batchResult->Isucc+=1;
+							batchResult->Mean[3*i+1]+=1;
+							batchResult->Mean[3*i+2] += Result.second[0];
+							batchResult->M2[3*i+2] += pow(Result.second[0] , 2);
+							batchResult->M3[3*i+2] += pow(Result.second[0] , 3);
+							batchResult->M4[3*i+2] += pow(Result.second[0] , 4);
+							batchResult->Min[3*i+2] = fmin(batchResult->Min[3*i+2],Result.second[0]);
+							batchResult->Max[3*i+2] = fmax(batchResult->Max[3*i+2],Result.second[0]);
+							
                             }
                             
                         }

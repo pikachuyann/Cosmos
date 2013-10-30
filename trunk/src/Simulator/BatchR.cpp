@@ -47,7 +47,7 @@ M2(vector<double>(i,0.0)),
 M3(vector<double>(i,0.0)),
 M4(vector<double>(i,0.0)),
 Min(vector<double>(i,DBL_MAX)),
-Max(vector<double>(i,DBL_MIN))
+Max(vector<double>(i,-DBL_MAX))
 {}
 
 /**
@@ -92,8 +92,8 @@ void BatchR::unionR(const BatchR *batch){
 		M2.resize(TableLength,0.0);
 		M3.resize(TableLength,0.0);
 		M4.resize(TableLength,0.0);
-		Min.resize(TableLength,0.0);
-		Max.resize(TableLength,0.0);
+		Min.resize(TableLength,DBL_MAX);
+		Max.resize(TableLength,-DBL_MAX);
     }
     for(unsigned int i =0; i< TableLength; i++){
         IsBernoulli[i] = IsBernoulli[i] && batch->IsBernoulli[i];

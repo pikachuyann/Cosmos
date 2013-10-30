@@ -52,7 +52,7 @@ let rec check_result l = function
   | [] -> true
   | (lab,v)::q -> try 
 		    let h = List.assoc lab l in
-		    if v > (fst h.confInterval) & (snd h.confInterval) > v then check_result l q
+		    if v > (fst h.confInterval) && (snd h.confInterval) > v then check_result l q
 		    else false
     with x -> false
 
@@ -60,7 +60,7 @@ let rec print_readable l =  function
   | [] -> ""
   | (lab,v)::q -> try 
 		    let h = List.assoc lab l in
-		    if v > (fst h.confInterval) & (snd h.confInterval) > v then (
+		    if v > (fst h.confInterval) && (snd h.confInterval) > v then (
 		      Printf.sprintf  "%s: Value %e is inside confidence interval [%e,%e]\n%s" lab v (fst h.confInterval) (snd h.confInterval) (print_readable l q)
 		    ) else (
 		      Printf.sprintf "%s: Value %e is outside confidence interval [%e,%e]\n%s" lab v (fst h.confInterval) (snd h.confInterval) (print_readable l q)
@@ -138,8 +138,7 @@ let parse_result f =
 	| "Total CPU time" :: v :: [] -> result.systime <- (float_of_string v)
 	| "Total paths" :: v :: [] -> result.nbRun <- (int_of_string v)
 	| "Accepted paths" :: v :: [] -> result.nbSuccRun <- (int_of_string v)
-        | s1 :: [""] -> print_endline s1;
-	  result.haslResult <- (s1,{dummy_haslr with mean=0.0}):: result.haslResult 
+        | s1 :: [""] -> result.haslResult <- (s1,{dummy_haslr with mean=0.0}):: result.haslResult 
 	| _ -> ()
     done
    with

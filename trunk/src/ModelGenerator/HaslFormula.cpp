@@ -386,6 +386,8 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		ConfInt* reacheabilityprob = new ConfInt(0.0,0.0);
 		ConfInt* poisson = new ConfInt(0.0,0.0);
 		
+		if(true)std::cerr << "i,\tsucc,\tbatch,\tMean,\tM2,\tMin,\tMax,\tPoisson" << std::endl;
+		
 		for(size_t i=0; i< N; i++){
 			//evaluate the likelyhood:
 			likelyhood->mean = batch.Mean[3*i+2]/batch.Mean[3*i+1];
@@ -408,7 +410,11 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			*poisson *= *likelyhood;
 	        *poisson *= *reacheabilityprob;
 			
-			if(true)std::cerr << "i: " << i<< "\tsucc: "<< batch.Mean[3*i+1]<< "\tLikelyhood: "  << likelyhood->mean << "\t[" << likelyhood->low<<";"<<likelyhood->up << "]\twidth: "<< widthN <<"\tpoisson: " << batch.Mean[3*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
+			if(true){
+				std::cout << "i: " << i<< "\tsucc: "<< batch.Mean[3*i+1]<< "\tLikelyhood: "  << likelyhood->mean << "\t[" << likelyhood->low<<";"<<likelyhood->up << "]\twidth: "<< widthN <<"\tpoisson: " << batch.Mean[3*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
+				std::cerr << i << ",\t" << batch.Mean[3*i+1] << ",\t" << batch.M2[3*i+1] << ",\t" << batch.Mean[3*i+2]/batch.Mean[3*i+1] << ",\t" << batch.M2[3*i+2]/batch.Mean[3*i+1] << ",\t" << batch.Min[3*i+2] << ",\t" << batch.Max[3*i+2] << ",\t" << batch.Mean[3*i] << std::endl;
+			}
+			
 			
 			//Add the confidence interval to the total one.
 			*totalInt += *poisson;
