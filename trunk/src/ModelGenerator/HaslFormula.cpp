@@ -377,8 +377,9 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		//batch.print();
 		size_t N = batch.TableLength/3;
 		std::cout << "tablelength = "<< batch.TableLength << std::endl;
-		double LevelN = 1- ((1-Level)/N);
-		double ValueN = quantile(boost::math::normal() , (3+LevelN)/4);
+		double error = 1- Level;
+		double LevelN = 1- error/(N+2);
+		double ValueN = quantile(boost::math::normal() , (1+LevelN)/2);
 		
 		ConfInt* totalInt = new ConfInt(0.0,0.0);
 		ConfInt* likelyhood = new ConfInt(0.0,0.0);
@@ -390,7 +391,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			likelyhood->mean = batch.Mean[3*i+2]/batch.Mean[3*i+1];
 			double var = (batch.M2[3*i+2]/batch.Mean[3*i+1]) - pow((batch.Mean[3*i+2]/batch.Mean[3*i+1]),2);
 			double widthN = 0.0;
-			//if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[3*i+1]);
+			if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[3*i+1]);
 			likelyhood->low = likelyhood->mean - widthN/2.0;
 			likelyhood->up = likelyhood->mean + widthN/2.0;
 			
