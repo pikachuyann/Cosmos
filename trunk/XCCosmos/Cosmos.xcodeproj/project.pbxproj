@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		031E3FC2181FAA8400ADD40E /* foxglynn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 031E3FC0181FAA8400ADD40E /* foxglynn.cpp */; };
+		031E3FC3181FAA8400ADD40E /* foxglynn.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 031E3FC1181FAA8400ADD40E /* foxglynn.hpp */; };
 		032A7067181BC0D6006D7332 /* casesWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7008181BC0D6006D7332 /* casesWriter.cpp */; };
 		032A7068181BC0D6006D7332 /* Cosmos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A700A181BC0D6006D7332 /* Cosmos.cpp */; };
 		032A7069181BC0D6006D7332 /* Eval-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A700D181BC0D6006D7332 /* Eval-parser.tab.cc */; };
@@ -28,6 +30,9 @@
 		032A707A181BC0D6006D7332 /* result.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703A181BC0D6006D7332 /* result.cpp */; };
 		032A707B181BC0D6006D7332 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703C181BC0D6006D7332 /* server.cpp */; };
 		032A707C181BC0D6006D7332 /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703F181BC0D6006D7332 /* BatchR.cpp */; };
+		032A707D181BC0D6006D7332 /* clientsim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7041181BC0D6006D7332 /* clientsim.cpp */; };
+		032A707E181BC0D6006D7332 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7042181BC0D6006D7332 /* Event.cpp */; };
+		032A707F181BC0D6006D7332 /* EventsQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7044181BC0D6006D7332 /* EventsQueue.cpp */; };
 		032A7081181BC0D6006D7332 /* LHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7048181BC0D6006D7332 /* LHA.cpp */; };
 		032A7083181BC0D6006D7332 /* lumpingfun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704B181BC0D6006D7332 /* lumpingfun.cpp */; };
 		032A7084181BC0D6006D7332 /* lumpingfuntriv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704C181BC0D6006D7332 /* lumpingfuntriv.cpp */; };
@@ -102,6 +107,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		031E3FC0181FAA8400ADD40E /* foxglynn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = foxglynn.cpp; sourceTree = "<group>"; };
+		031E3FC1181FAA8400ADD40E /* foxglynn.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = foxglynn.hpp; sourceTree = "<group>"; };
 		032A7006181BC0D6006D7332 /* maindoc.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = maindoc.md; sourceTree = "<group>"; };
 		032A7008181BC0D6006D7332 /* casesWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = casesWriter.cpp; sourceTree = "<group>"; };
 		032A7009181BC0D6006D7332 /* casesWriter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = casesWriter.hpp; sourceTree = "<group>"; };
@@ -289,21 +296,22 @@
 		032A7007181BC0D6006D7332 /* ModelGenerator */ = {
 			isa = PBXGroup;
 			children = (
-				032A7008181BC0D6006D7332 /* casesWriter.cpp */,
-				032A7009181BC0D6006D7332 /* casesWriter.hpp */,
-				032A700A181BC0D6006D7332 /* Cosmos.cpp */,
+				032A7036181BC0D6006D7332 /* Makefile.am */,
 				032A700B181BC0D6006D7332 /* Eval */,
 				032A7018181BC0D6006D7332 /* GspnParser */,
 				032A7028181BC0D6006D7332 /* LhaParser */,
+
+				032A7008181BC0D6006D7332 /* casesWriter.cpp */,
+				032A7009181BC0D6006D7332 /* casesWriter.hpp */,
 				032A7026181BC0D6006D7332 /* HaslFormula.cpp */,
 				032A7027181BC0D6006D7332 /* HaslFormula.hpp */,
-				032A7036181BC0D6006D7332 /* Makefile.am */,
 				032A7038181BC0D6006D7332 /* parameters.cpp */,
 				032A7039181BC0D6006D7332 /* parameters.hpp */,
 				032A703A181BC0D6006D7332 /* result.cpp */,
 				032A703B181BC0D6006D7332 /* result.hpp */,
 				032A703C181BC0D6006D7332 /* server.cpp */,
 				032A703D181BC0D6006D7332 /* server.hpp */,
+				032A700A181BC0D6006D7332 /* Cosmos.cpp */,
 			);
 			path = ModelGenerator;
 			sourceTree = "<group>";
@@ -369,8 +377,10 @@
 		032A703E181BC0D6006D7332 /* Simulator */ = {
 			isa = PBXGroup;
 			children = (
-				032A70A9181D58C1006D7332 /* foxglynn.cpp */,
-				032A70AA181D58C1006D7332 /* foxglynn.hpp */,
+
+				032A704E181BC0D6006D7332 /* Makefile.am */,
+				031E3FC0181FAA8400ADD40E /* foxglynn.cpp */,
+				031E3FC1181FAA8400ADD40E /* foxglynn.hpp */,
 				032A703F181BC0D6006D7332 /* BatchR.cpp */,
 				032A7040181BC0D6006D7332 /* BatchR.hpp */,
 				032A7041181BC0D6006D7332 /* clientsim.cpp */,
@@ -384,7 +394,6 @@
 				032A704B181BC0D6006D7332 /* lumpingfun.cpp */,
 				032A704C181BC0D6006D7332 /* lumpingfuntriv.cpp */,
 				032A704D181BC0D6006D7332 /* macro.h */,
-				032A704E181BC0D6006D7332 /* Makefile.am */,
 				032A7050181BC0D6006D7332 /* marking.hpp */,
 				032A7051181BC0D6006D7332 /* markingImpl.hpp */,
 				032A7052181BC0D6006D7332 /* numericalSolver.cpp */,
@@ -555,7 +564,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				032A70AC181D58C1006D7332 /* foxglynn.hpp in Headers */,
+				031E3FC3181FAA8400ADD40E /* foxglynn.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -732,21 +741,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03DC57C5181E59650031F6EE /* LHA_orig.cpp in Sources */,
-				03DC57C8181E59650031F6EE /* numSolverSH.cpp in Sources */,
-				03DC57C3181E59650031F6EE /* Event.cpp in Sources */,
-				03DC57C6181E59650031F6EE /* numericalSolver.cpp in Sources */,
-				03DC57C2181E59650031F6EE /* clientsim.cpp in Sources */,
-				03DC57C1181E59650031F6EE /* foxglynn.cpp in Sources */,
-				03DC57C4181E59650031F6EE /* EventsQueue.cpp in Sources */,
-				03DC57B2181E59430031F6EE /* BatchR.cpp in Sources */,
-				03DC57CA181E59650031F6EE /* SimulatorBoundedRE.cpp in Sources */,
-				03DC57CE181E59650031F6EE /* stateSpace.cpp in Sources */,
-				03DC57C9181E59650031F6EE /* Simulator.cpp in Sources */,
-				03DC57CC181E59650031F6EE /* SimulatorRE.cpp in Sources */,
-				03DC57CD181E59650031F6EE /* spn.cpp in Sources */,
-				03DC57C7181E59650031F6EE /* numSolverBB.cpp in Sources */,
-				03DC57CB181E59650031F6EE /* SimulatorContinuousBounded.cpp in Sources */,
+				031E3FC2181FAA8400ADD40E /* foxglynn.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -777,6 +772,9 @@
 				032A7075181BC0D6006D7332 /* Lha-parser.tab.cc in Sources */,
 				032A7077181BC0D6006D7332 /* Lha-scanner.ll in Sources */,
 				032A707A181BC0D6006D7332 /* result.cpp in Sources */,
+				032A7088181BC0D6006D7332 /* Simulator.cpp in Sources */,
+				032A707D181BC0D6006D7332 /* clientsim.cpp in Sources */,
+				032A7082181BC0D6006D7332 /* LHA_orig.cpp in Sources */,
 				032A7083181BC0D6006D7332 /* lumpingfun.cpp in Sources */,
 				032A7070181BC0D6006D7332 /* Gspn-scanner.ll in Sources */,
 				032A7081181BC0D6006D7332 /* LHA.cpp in Sources */,
