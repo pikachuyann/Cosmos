@@ -31,7 +31,7 @@
 
 
 #include "../parameters.hpp"
-#include "Gspn-parser.tab.hh"
+#include "Gspn-parser.hh"
 #include "../Eval/Eval.hpp"
 #include <vector>
 #include "expatmodelparser.hh"

@@ -23,9 +23,7 @@
  *******************************************************************************
  */
 
-#include "lex.gspn.c"
 
-#include "Gspn-parser.tab.hh"
 #include "Gspn-Reader.hpp"
 #include "Gspn_gmlparser.hpp"
 #include "../casesWriter.hpp"

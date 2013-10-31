@@ -4,7 +4,7 @@
 # include <limits.h>
 # include <string>
 # include "Gspn-Reader.hpp"
-# include "Gspn-parser.tab.hh"
+//# include "Gspn-parser.tab.hh"
 
 
 # undef yywrap
