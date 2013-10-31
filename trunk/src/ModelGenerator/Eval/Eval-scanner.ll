@@ -4,8 +4,6 @@
 # include <limits.h>
 # include <string>
 # include "Eval.hpp"
-# include "Eval-parser.tab.hh"
-
 
 # undef yywrap
 # define yywrap() 1

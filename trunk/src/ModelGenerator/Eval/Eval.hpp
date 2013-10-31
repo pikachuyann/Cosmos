@@ -26,7 +26,7 @@
 #ifndef EVAL_HH
 #define EVAL_HH
 
-#include "Eval-parser.tab.hh"
+#include "Eval-parser.hh"
 
 
 #define EVAL_DECL                                            \
