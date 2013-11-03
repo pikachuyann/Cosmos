@@ -394,7 +394,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			double var = (batch.M2[3*i+2]/batch.Mean[3*i+1]) - pow((batch.Mean[3*i+2]/batch.Mean[3*i+1]),2);
 			double widthN = 0.0;
 			if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[3*i+1]);
-			likelyhood->low = likelyhood->mean - widthN/2.0;
+			likelyhood->low = batch.Min[3*i+2];
 			likelyhood->up = likelyhood->mean + widthN/2.0;
 			
 			//evaluate probability to reach final state:
@@ -417,7 +417,8 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			
 			
 			//Add the confidence interval to the total one.
-			*totalInt += *poisson;
+			if(poisson->width() < 1.0)
+				*totalInt += *poisson;
 			
 		}
 		
