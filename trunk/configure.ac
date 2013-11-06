@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([Cosmos], [1.3] , [barbot@lsv.ens-cachan.fr])
+AC_INIT([Cosmos],[1.4],[barbot@lsv.ens-cachan.fr])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CONFIG_SRCDIR([src/Simulator/BatchR.cpp])
 AC_CONFIG_HEADER([config.h])
@@ -14,17 +14,16 @@ AC_CONFIG_MACRO_DIR([m4])
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
-AC_PROG_YACC
 AC_PROG_LEX
 AM_PROG_AR
 AC_PROG_LIBTOOL
-
+AC_PROG_YACC
 
 AX_CXX_COMPILE_STDCXX_11
 
 
 # Checks for libraries.
-AC_CHECK_LIB([expat], [ XML_ParseBuffer])
+AC_CHECK_LIB([expat],[XML_ParseBuffer])
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -57,5 +56,5 @@ AC_FUNC_SELECT_ARGTYPES
 AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([dup2 floor gettimeofday memset mkdir pow select sqrt])
 
-AC_CONFIG_FILES([Makefile src/libgrml/Makefile src/ModelGenerator/Makefile src/Simulator/Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile src/libgrml/Makefile src/ModelGenerator/Eval/Makefile src/ModelGenerator/GspnParser/Makefile src/ModelGenerator/LhaParser/Makefile src/ModelGenerator/Makefile src/Simulator/Makefile test/Makefile])
 AC_OUTPUT

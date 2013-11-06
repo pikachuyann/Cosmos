@@ -4,8 +4,6 @@
 # include <limits.h>
 # include <string>
 # include "Lha-Reader.hpp"
-# include "Lha-parser.tab.hh"
-
 
 # undef yywrap
 # define yywrap() 1

@@ -23,9 +23,6 @@
  *******************************************************************************
  */
 
-#include "lex.lha.c"
-
-#include "Lha-parser.tab.hh"
 #include "Lha-Reader.hpp"
 #include "Lha_gmlparser.hpp"
 #include "../casesWriter.hpp"

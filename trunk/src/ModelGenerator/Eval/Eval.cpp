@@ -23,9 +23,7 @@
  *******************************************************************************
  */
 
-#include "lex.eval.c"
-
-#include "Eval-parser.tab.hh"
+#include "Eval-parser.hh"
 #include "Eval.hpp"
 
 #include "string.h"

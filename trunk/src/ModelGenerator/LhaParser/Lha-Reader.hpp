@@ -30,7 +30,7 @@
 #include <set>
 
 #include "../parameters.hpp"
-#include "Lha-parser.tab.hh"
+#include "Lha-parser.hh"
 #include "../HaslFormula.hpp"
 #include "../GspnParser/Gspn-Reader.hpp"
 #include <vector>
