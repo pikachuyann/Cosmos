@@ -15,7 +15,7 @@ libClientSim_la_SOURCES = \
 	numSolverBB.cpp numSolverBB.hpp \
 	numSolverSH.cpp  numSolverSH.hpp \
 	SimulatorBoundedRE.cpp SimulatorBoundedRE.hpp \
-	macro.h foxglynn.cpp foxglynn.hpp \
+	foxglynn.cpp foxglynn.hpp \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
 	clientsim.cpp
 

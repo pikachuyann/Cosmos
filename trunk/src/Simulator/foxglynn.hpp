@@ -51,7 +51,7 @@
 #ifndef FOXGLYNN_H
 #define FOXGLYNN_H
 
-#include "macro.h"
+//#include "macro.h"
 
 /*****************************************************************************
 			STRUCTURE
@@ -82,7 +82,7 @@ Role		: get poisson probabilities.
 remark		:
 ******************************************************************************/
 extern
-BOOL fox_glynn(const double lambda, const double tau, const double omega, const double epsilon, FoxGlynn **ppFG);
+bool fox_glynn(const double lambda, const double tau, const double omega, const double epsilon, FoxGlynn **ppFG);
 
 /**
 * Frees the memory allocated for the FoxGlynn structure

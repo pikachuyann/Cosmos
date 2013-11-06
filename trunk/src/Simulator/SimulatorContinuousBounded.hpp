@@ -35,6 +35,7 @@ public:
     SimulatorContinuousBounded(int m,double e);
     void initVectCo(double t);
     double epsilon;
+	int jumpsize;
     //double Normal_quantile;
     BatchR* RunBatch();
     

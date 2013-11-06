@@ -80,7 +80,7 @@ remark      : This implementation is based on the original Fox-Glynn paper with
 	      It can be shown that the introduced error converges to a value below the requested error level
 	      (for epsilon > 0). Hence the algorithm will always terminate.
 ******************************************************************************/
-static BOOL finder(const int m, const double lambda, const double tau, const double omega,
+static bool finder(const int m, const double lambda, const double tau, const double omega,
                    const double epsilon, double * pw_m, FoxGlynn *pFG)
 {
 	const double sqrt_2_pi = sqrt( 2.0 * pi );
@@ -92,7 +92,7 @@ static BOOL finder(const int m, const double lambda, const double tau, const dou
 	if( lambda == 0.0 )
 	{
 	  fprintf(stderr,"ERROR: Fox-Glynn: lambda = 0, terminating the algorithm\n");
-	  return FALSE;
+	return false;
 	}
 	/* The requested error level must not be smaller than the minimum machine precision
 	   (needed to guarantee the convergence of the error conditions) */
@@ -100,7 +100,7 @@ static BOOL finder(const int m, const double lambda, const double tau, const dou
 	{
 	  fprintf(stderr,"ERROR: Fox-Glynn: epsilon < tau, invalid error level, terminating the algorithm\n");
 	  fprintf(stderr,"epsilon %e, tau %e\n",epsilon,tau);
-	  return FALSE;
+	  return false;
 	}
 	/* zero is used as left truncation point for lambda <= 25 */
 	pFG->left = 0;
@@ -215,7 +215,7 @@ static BOOL finder(const int m, const double lambda, const double tau, const dou
 	/*Time to set the initial value for weights*/
 	*pw_m = omega / ( 1.0e+10 * ( pFG->right - pFG->left ) );
 
-	return TRUE;
+	return true;
 }
 
 /*****************************************************************************
@@ -230,7 +230,7 @@ Role		: The WEIGHTER function from the Fox-Glynn algorithm
               This is the F parameter of Fox-Glynn finder function.
 remark	    :
 ******************************************************************************/
-static BOOL weighter(const double lambda, const double tau, const double omega, const double epsilon, FoxGlynn *pFG)
+static bool weighter(const double lambda, const double tau, const double omega, const double epsilon, FoxGlynn *pFG)
 {
 	/*The magic m point*/
 	const int m = (int)floor(lambda);
@@ -238,7 +238,7 @@ static BOOL weighter(const double lambda, const double tau, const double omega, 
 	int j, s, t;
 
 	if( ! finder( m, lambda, tau, omega, epsilon, &w_m, pFG ) )
-		return FALSE;
+		return false;
 
 	/*Allocate space for weights*/
         pFG->weights = (double *) calloc((size_t) (pFG->right - pFG->left + 1),
@@ -257,7 +257,7 @@ static BOOL weighter(const double lambda, const double tau, const double omega, 
 		if( pFG->right > 600 )
 		{
 			fprintf(stderr,"ERROR: Fox-Glynn: pFG->right > 600, underflow is possible\n");
-			return FALSE;
+			return false;
 		}
 		/*Compute weights*/
 		for( j = m; j < pFG->right; j++ )
@@ -297,7 +297,7 @@ static BOOL weighter(const double lambda, const double tau, const double omega, 
 
 	/* printf("Fox-Glynn: ltp = %d, rtp = %d, w = %10.15le \n", pFG->left, pFG->right, pFG->total_weight); */
 
-	return TRUE;
+	return true;
 }
 
 /*****************************************************************************
@@ -311,7 +311,7 @@ Role		: get poisson probabilities.
 @return	: TRUE if it worked fine, otherwise false
 remark		:
 ******************************************************************************/
-BOOL fox_glynn(const double lambda, const double tau, const double omega, const double epsilon, FoxGlynn **ppFG)
+bool fox_glynn(const double lambda, const double tau, const double omega, const double epsilon, FoxGlynn **ppFG)
 {
 	/* printf("Fox-Glynn: lambda = %3.3le, epsilon = %1.8le\n",lambda, epsilon); */
 

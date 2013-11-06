@@ -16,6 +16,7 @@ let joblist1 = [
   "S2_1_25600", "Policy2.grml" , "rho1_25600.grml" ;
   "S2_1_102400", "Policy2.grml" , "rho1_102400.grml"]
 
+
 let joblist2 = [
   "S1_2_10", "Policy1.grml" , "rho2_10.grml" ;
   "S1_2_50", "Policy1.grml" , "rho2_50.grml" ;
@@ -32,6 +33,7 @@ let joblist2 = [
   "S2_2_25600", "Policy2.grml" , "rho2_25600.grml" ;
   "S2_2_102400", "Policy2.grml" , "rho2_102400.grml"]
 
+(*
 let joblist3 = [
   "S1_3_10", "Policy1Geo.grml" , "rho2_10.grml" ;
   "S1_3_50", "Policy1Geo.grml" , "rho2_50.grml" ;
@@ -47,7 +49,7 @@ let joblist3 = [
   "S2_3_6400", "Policy2Geo.grml" , "rho2_6400.grml" ;
   "S2_3_25600", "Policy2Geo.grml" , "rho2_25600.grml" ;
   "S2_3_102400", "Policy2Geo.grml" , "rho2_102400.grml"]
-
+*)
 
 let joblist4 = [
   "S1Sym_4_10", "Policy1sym.grml" , "rho2_10.grml" ;
@@ -122,6 +124,43 @@ let joblist5 = [
   "S2_5_25600", "Policy2Fail.grml" , "rho2_25600.grml" ;
   "S2_5_102400", "Policy2Fail.grml" , "rho2_102400.grml"]
 
+let joblist6 = [
+  "S1_6_100", "Policy1.grml" , "rho3_100.grml" ;
+  "S1_6_200", "Policy1.grml" , "rho3_200.grml" ;
+  "S1_6_400", "Policy1.grml" , "rho3_400.grml" ;
+  "S1_6_800", "Policy1.grml" , "rho3_800.grml" ;
+  "S1_6_1600", "Policy1.grml" , "rho3_1600.grml" ;
+  "S1_6_6400", "Policy1.grml" , "rho3_6400.grml" ;
+  "S1_6_25600", "Policy1.grml" , "rho3_25600.grml" ;
+  "S1_6_102400", "Policy1.grml" , "rho3_102400.grml";
+  "S2_6_100", "Policy2.grml" , "rho3_100.grml" ;
+  "S2_6_200", "Policy2.grml" , "rho3_200.grml" ;
+  "S2_6_400", "Policy2.grml" , "rho3_400.grml" ;
+  "S2_6_800", "Policy2.grml" , "rho3_800.grml" ;
+  "S2_6_1600", "Policy2.grml" , "rho3_1600.grml" ;
+  "S2_6_6400", "Policy2.grml" , "rho3_6400.grml" ;
+  "S2_6_25600", "Policy2.grml" , "rho3_25600.grml" ;
+  "S2_6_102400", "Policy2.grml" , "rho3_102400.grml";
+  "S1_6_100", "Policy1Fail.grml" , "rho3_100.grml" ;
+  "S1_6_200", "Policy1Fail.grml" , "rho3_200.grml" ;
+  "S1_6_400", "Policy1Fail.grml" , "rho3_400.grml" ;
+  "S1_6_800", "Policy1Fail.grml" , "rho3_800.grml" ;
+  "S1_6_1600", "Policy1Fail.grml" , "rho3_1600.grml" ;
+  "S1_6_6400", "Policy1Fail.grml" , "rho3_6400.grml" ;
+  "S1_6_25600", "Policy1Fail.grml" , "rho3_25600.grml" ;
+  "S1_6_102400", "Policy1Fail.grml" , "rho3_102400.grml";
+  "S2_6_100", "Policy2Fail.grml" , "rho3_100.grml" ;
+  "S2_6_200", "Policy2Fail.grml" , "rho3_200.grml" ;
+  "S2_6_400", "Policy2Fail.grml" , "rho3_400.grml" ;
+  "S2_6_800", "Policy2Fail.grml" , "rho3_800.grml" ;
+  "S2_6_1600", "Policy2Fail.grml" , "rho3_1600.grml" ;
+  "S2_6_6400", "Policy2Fail.grml" , "rho3_6400.grml" ;
+  "S2_6_25600", "Policy2Fail.grml" , "rho3_25600.grml" ;
+  "S2_6_102400", "Policy2Fail.grml" , "rho3_102400.grml"]
+
+
+
+
 let execCosmos resultFile csvfile (name,model,prop)  =
   try
     let r = exec_cosmos model prop 100 16 "--width 0.01" true in
@@ -139,10 +178,11 @@ let csv = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "csvResultFi
 (match int_of_string (Sys.argv.(1)) with
     1 -> List.iter (execCosmos rf csv) joblist1
   | 2 -> List.iter (execCosmos rf csv) joblist2
-  | 3 -> List.iter (execCosmos rf csv) joblist3
+(*  | 3 -> List.iter (execCosmos rf csv) joblist3*)
   | 4 -> List.iter (execCosmos rf csv) joblist4
   | 45-> List.iter (execCosmos rf csv) joblist45
   | 5 -> List.iter (execCosmos rf csv) joblist5
+  | 6 -> List.iter (execCosmos rf csv) joblist6
   | _ -> failwith "Wrong integer"
 );
 close_out rf;

@@ -39,6 +39,8 @@ type haslr =
   mutable confInterval: float*float;
 }
 
+let print_hasl_header f sep =
+  Printf.fprintf f "%s%s%s%s%s%s%s%s%s%s" "HASLname" sep "MeanValue" sep "StandarDev" sep "ConfidenceIntervalLow" sep "ConfidenceIntervalUp" sep
 let print_haslr f sep (s,h) =
   Printf.fprintf f "%s%s%f%s%f%s%f%s%f%s" s sep h.mean sep h.stdDev sep (fst h.confInterval) sep (snd h.confInterval) sep
 
@@ -81,6 +83,10 @@ type result = {
   mutable date: string;
 }
 
+let print_header f sep =
+  Printf.fprintf f "%s%s%s%s%s%s%s%s%s%s%s%s" "ModelName" sep "PropName" sep "NumberOfRun" sep "NumberOfSuccessfullRun" sep "NumberOfThread" sep "BatchSize" sep;
+  print_hasl_header f sep;
+  Printf.fprintf f "%s%s%s%s%s\n" "simulationTime" sep "SystemTime" sep "Date"
 let print_result f sep rf =
   let ps ()= output_string f sep in
   let pf fl = output_string f (string_of_float fl) in
@@ -112,7 +118,7 @@ let dummyresult = {
 
 let parse_result f =
   let fs = open_in f in
-  let result = dummyresult in
+  let result = {dummyresult with systime = dummyresult.systime} in
   (try while true do
       let str = input_line fs in
       let ls = split_delim dots str in
@@ -148,7 +154,7 @@ let parse_result f =
 let string_date () =
   let tm = Unix.localtime (Unix.gettimeofday ()) in
   Printf.sprintf "%i/%i/%i %i:%i:%i" tm.Unix.tm_mday tm.Unix.tm_mon 
-    tm.Unix.tm_year tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
+    (tm.Unix.tm_year+1900) tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
 
 let exec_cosmos model prop batch nbjob opt printcmd =
   let cmd = sprintf "%s %s %s --njob %i --batch %i -v 0 %s" cosmos_path model prop nbjob batch opt in

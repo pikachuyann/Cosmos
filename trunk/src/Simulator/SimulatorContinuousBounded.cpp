@@ -30,6 +30,7 @@
 #include "float.h"
 #include "math.h"
 #include <sys/resource.h>
+#include <algorithm>
 //#include <boost/math/distributions/normal.hpp>
 
 #include <boost/math/distributions/normal.hpp>
@@ -39,6 +40,7 @@
 
 SimulatorContinuousBounded::SimulatorContinuousBounded(int m,double e):SimulatorBoundedRE(m){
     epsilon = e;
+	jumpsize = 5;
     //boost::math::normal norm;
     //Normal_quantile = quantile(norm, 0.5 + 0.99 / 2.0);
 }
@@ -63,18 +65,19 @@ void SimulatorContinuousBounded::initVectCo(double t){
 BatchR* SimulatorContinuousBounded::RunBatch(){
 	//cerr << "test(";
 	numSolv->reset();
+	
 	//cerr << ")" << endl;
     int left = (int)max(numSolv->getMinT(),fg->left);
-    int Nmax = fg->right - left;
+    int Nmax = (int)ceil(((double)fg->right - left)/jumpsize) ;
     //cerr << "minT:\t" << numSolv->getMinT() << endl;
-    cerr << "Nmax:\t" << Nmax << endl;
+    cerr << "Number of batch:\t" << Nmax << endl;
     //cerr << "left:\t" << left << endl;
     
     int n =-1;
     
 
     BatchR* batchResult = new BatchR(3*(Nmax+1));
-    for(int i=0; i<= fg->right- left; i++)
+    for(int i=0; i<= Nmax; i++)
       batchResult->Mean[3*i] = fg->weights[i+ left- fg->left] /fg->total_weight;
 
 	list<simulationState> statevect((Nmax+1)*BatchSize);
@@ -88,8 +91,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		
 		EQ = new EventsQueue(N);
 		reset();
-        it->maxStep = fg->right - (c/BatchSize);
-		//cerr << "new path:\t" << it->maxStep << endl;
+        it->maxStep = (int)fmin(fg->right , left + (Nmax - (c/BatchSize))*jumpsize);
+		cerr << "new path:\t" << it->maxStep << endl;
         
         c++;
 		AutEdge AE;
@@ -133,7 +136,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     if((!EQ->isEmpty()) && continueb) {
                         it->saveState(&N,&A,&AE,&EQ);
                     } else {
-						int i = it->maxStep - left;
+						int i = (int)ceil((double)it->maxStep/jumpsize) - left;
                         if (Result.first ) {
                             
                             if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult->IsBernoulli[0] = false;

@@ -9,7 +9,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 # CXXFLAGS=-Wall -Wextra -O3
-: ${CXXFLAGS=-O3}
+: ${CXXFLAGS=-O3 -g}
 
 # Checks for programs.
 AC_PROG_CXX
