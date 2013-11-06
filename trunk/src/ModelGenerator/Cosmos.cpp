@@ -42,8 +42,8 @@
 #include <errno.h>
 
 //#include "directsim.hpp"
-#include "./LhaParser/Lha-Reader.hpp"
-#include "./GspnParser/Gspn-Reader.hpp"
+#include "LhaParser/Lha-Reader.hpp"
+#include "GspnParser/Gspn-Reader.hpp"
 #include "server.hpp"
 #include "parameters.hpp"
 
