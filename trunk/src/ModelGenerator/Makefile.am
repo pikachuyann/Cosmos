@@ -12,3 +12,5 @@ Cosmos_SOURCES = \
 Cosmos_LDADD = ../libgrml/libgrml.la Eval/libeval.la GspnParser/libgspn.la LhaParser/liblha.la
 
 AM_CPPFLAGS = -I$(srcdir)/../libgrml -I$(srcdir)/Eval -I../libgrml -IEval -IGspnParser -ILhaParser $(BOOST_CPPFLAGS)
+
+AUTOMAKE_OPTIONS = subdir-objects
