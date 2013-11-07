@@ -6,5 +6,7 @@ libeval_la_SOURCES = \
 
 BUILT_SOURCES = Eval-parser.cc
 
+EXTRA_DIST = Eval-parser.hh location.hh position.hh stack.hh
+
 AM_YFLAGS = -y -p eval
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --prefix=eval

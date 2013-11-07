@@ -10,6 +10,8 @@ libgspn_la_LIBADD = ../../libgrml/libgrml.la ../Eval/libeval.la
 
 BUILT_SOURCES = Gspn-parser.cc
 
+EXTRA_DIST = Gspn-parser.hh location.hh position.hh stack.hh
+
 AM_YFLAGS = -y -p gspn
 AM_CPPFLAGS = -I$(srcdir)/../../libgrml -I../Eval -I$(srcdir)/../Eval
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --prefix=gspn

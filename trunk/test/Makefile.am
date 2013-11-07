@@ -11,3 +11,5 @@ ClientSim2_LDADD = ../src/Simulator/libClientSim.la
 
 AM_CPPFLAGS = -I$(srcdir)/../src/Simulator $(BOOST_CPPFLAGS)
 
+
+EXTRA_DIST = lumpingfun.cpp

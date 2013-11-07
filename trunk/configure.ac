@@ -30,7 +30,7 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([float.h inttypes.h libintl.h limits.h stdlib.h string.h sys/ioctl.h sys/time.h unistd.h])
 
-BOOST_REQUIRE([1.48.1])
+BOOST_REQUIRE([1.48])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
