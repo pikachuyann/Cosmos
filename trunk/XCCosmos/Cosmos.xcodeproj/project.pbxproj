@@ -9,19 +9,12 @@
 /* Begin PBXBuildFile section */
 		032A7067181BC0D6006D7332 /* casesWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7008181BC0D6006D7332 /* casesWriter.cpp */; };
 		032A7068181BC0D6006D7332 /* Cosmos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A700A181BC0D6006D7332 /* Cosmos.cpp */; };
-		032A7069181BC0D6006D7332 /* Eval-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A700D181BC0D6006D7332 /* Eval-parser.tab.cc */; };
-		032A706A181BC0D6006D7332 /* Eval-parser.ypp in Sources */ = {isa = PBXBuildFile; fileRef = 032A700F181BC0D6006D7332 /* Eval-parser.ypp */; };
 		032A706B181BC0D6006D7332 /* Eval-scanner.ll in Sources */ = {isa = PBXBuildFile; fileRef = 032A7011181BC0D6006D7332 /* Eval-scanner.ll */; };
 		032A706C181BC0D6006D7332 /* Eval.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7012181BC0D6006D7332 /* Eval.cpp */; };
-		032A706D181BC0D6006D7332 /* lex.eval.c in Sources */ = {isa = PBXBuildFile; fileRef = 032A7014181BC0D6006D7332 /* lex.eval.c */; };
-		032A706E181BC0D6006D7332 /* Gspn-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A701A181BC0D6006D7332 /* Gspn-parser.tab.cc */; };
 		032A706F181BC0D6006D7332 /* Gspn-Reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A701D181BC0D6006D7332 /* Gspn-Reader.cpp */; };
 		032A7070181BC0D6006D7332 /* Gspn-scanner.ll in Sources */ = {isa = PBXBuildFile; fileRef = 032A701F181BC0D6006D7332 /* Gspn-scanner.ll */; };
 		032A7071181BC0D6006D7332 /* Gspn_gmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7020181BC0D6006D7332 /* Gspn_gmlparser.cpp */; };
-		032A7072181BC0D6006D7332 /* lex.gspn.c in Sources */ = {isa = PBXBuildFile; fileRef = 032A7022181BC0D6006D7332 /* lex.gspn.c */; };
 		032A7073181BC0D6006D7332 /* HaslFormula.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7026181BC0D6006D7332 /* HaslFormula.cpp */; };
-		032A7074181BC0D6006D7332 /* lex.lha.c in Sources */ = {isa = PBXBuildFile; fileRef = 032A7029181BC0D6006D7332 /* lex.lha.c */; };
-		032A7075181BC0D6006D7332 /* Lha-parser.tab.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A702B181BC0D6006D7332 /* Lha-parser.tab.cc */; };
 		032A7076181BC0D6006D7332 /* Lha-Reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A702E181BC0D6006D7332 /* Lha-Reader.cpp */; };
 		032A7077181BC0D6006D7332 /* Lha-scanner.ll in Sources */ = {isa = PBXBuildFile; fileRef = 032A7030181BC0D6006D7332 /* Lha-scanner.ll */; };
 		032A7078181BC0D6006D7332 /* Lha_gmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7031181BC0D6006D7332 /* Lha_gmlparser.cpp */; };
@@ -106,46 +99,24 @@
 		032A7008181BC0D6006D7332 /* casesWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = casesWriter.cpp; sourceTree = "<group>"; };
 		032A7009181BC0D6006D7332 /* casesWriter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = casesWriter.hpp; sourceTree = "<group>"; };
 		032A700A181BC0D6006D7332 /* Cosmos.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cosmos.cpp; sourceTree = "<group>"; };
-		032A700C181BC0D6006D7332 /* Eval-parser.output */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Eval-parser.output"; sourceTree = "<group>"; };
-		032A700D181BC0D6006D7332 /* Eval-parser.tab.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Eval-parser.tab.cc"; sourceTree = "<group>"; };
-		032A700E181BC0D6006D7332 /* Eval-parser.tab.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Eval-parser.tab.hh"; sourceTree = "<group>"; };
-		032A700F181BC0D6006D7332 /* Eval-parser.ypp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; path = "Eval-parser.ypp"; sourceTree = "<group>"; };
 		032A7010181BC0D6006D7332 /* Eval-parser.yy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Eval-parser.yy"; sourceTree = "<group>"; };
 		032A7011181BC0D6006D7332 /* Eval-scanner.ll */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.llvm; path = "Eval-scanner.ll"; sourceTree = "<group>"; };
 		032A7012181BC0D6006D7332 /* Eval.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Eval.cpp; sourceTree = "<group>"; };
 		032A7013181BC0D6006D7332 /* Eval.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Eval.hpp; sourceTree = "<group>"; };
-		032A7014181BC0D6006D7332 /* lex.eval.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lex.eval.c; sourceTree = "<group>"; };
-		032A7015181BC0D6006D7332 /* location.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = location.hh; sourceTree = "<group>"; };
-		032A7016181BC0D6006D7332 /* position.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = position.hh; sourceTree = "<group>"; };
-		032A7017181BC0D6006D7332 /* stack.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stack.hh; sourceTree = "<group>"; };
-		032A7019181BC0D6006D7332 /* Gspn-parser.output */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Gspn-parser.output"; sourceTree = "<group>"; };
-		032A701A181BC0D6006D7332 /* Gspn-parser.tab.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-parser.tab.cc"; sourceTree = "<group>"; };
-		032A701B181BC0D6006D7332 /* Gspn-parser.tab.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-parser.tab.hh"; sourceTree = "<group>"; };
 		032A701C181BC0D6006D7332 /* Gspn-parser.yy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Gspn-parser.yy"; sourceTree = "<group>"; };
 		032A701D181BC0D6006D7332 /* Gspn-Reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Reader.cpp"; sourceTree = "<group>"; };
 		032A701E181BC0D6006D7332 /* Gspn-Reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Reader.hpp"; sourceTree = "<group>"; };
 		032A701F181BC0D6006D7332 /* Gspn-scanner.ll */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.llvm; path = "Gspn-scanner.ll"; sourceTree = "<group>"; };
 		032A7020181BC0D6006D7332 /* Gspn_gmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Gspn_gmlparser.cpp; sourceTree = "<group>"; };
 		032A7021181BC0D6006D7332 /* Gspn_gmlparser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Gspn_gmlparser.hpp; sourceTree = "<group>"; };
-		032A7022181BC0D6006D7332 /* lex.gspn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lex.gspn.c; sourceTree = "<group>"; };
-		032A7023181BC0D6006D7332 /* location.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = location.hh; sourceTree = "<group>"; };
-		032A7024181BC0D6006D7332 /* position.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = position.hh; sourceTree = "<group>"; };
-		032A7025181BC0D6006D7332 /* stack.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stack.hh; sourceTree = "<group>"; };
 		032A7026181BC0D6006D7332 /* HaslFormula.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HaslFormula.cpp; sourceTree = "<group>"; };
 		032A7027181BC0D6006D7332 /* HaslFormula.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = HaslFormula.hpp; sourceTree = "<group>"; };
-		032A7029181BC0D6006D7332 /* lex.lha.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lex.lha.c; sourceTree = "<group>"; };
-		032A702A181BC0D6006D7332 /* Lha-parser.output */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Lha-parser.output"; sourceTree = "<group>"; };
-		032A702B181BC0D6006D7332 /* Lha-parser.tab.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Lha-parser.tab.cc"; sourceTree = "<group>"; };
-		032A702C181BC0D6006D7332 /* Lha-parser.tab.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Lha-parser.tab.hh"; sourceTree = "<group>"; };
 		032A702D181BC0D6006D7332 /* Lha-parser.yy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Lha-parser.yy"; sourceTree = "<group>"; };
 		032A702E181BC0D6006D7332 /* Lha-Reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Lha-Reader.cpp"; sourceTree = "<group>"; };
 		032A702F181BC0D6006D7332 /* Lha-Reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Lha-Reader.hpp"; sourceTree = "<group>"; };
 		032A7030181BC0D6006D7332 /* Lha-scanner.ll */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.llvm; path = "Lha-scanner.ll"; sourceTree = "<group>"; };
 		032A7031181BC0D6006D7332 /* Lha_gmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Lha_gmlparser.cpp; sourceTree = "<group>"; };
 		032A7032181BC0D6006D7332 /* Lha_gmlparser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Lha_gmlparser.hpp; sourceTree = "<group>"; };
-		032A7033181BC0D6006D7332 /* location.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = location.hh; sourceTree = "<group>"; };
-		032A7034181BC0D6006D7332 /* position.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = position.hh; sourceTree = "<group>"; };
-		032A7035181BC0D6006D7332 /* stack.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stack.hh; sourceTree = "<group>"; };
 		032A7036181BC0D6006D7332 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		032A7038181BC0D6006D7332 /* parameters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parameters.cpp; sourceTree = "<group>"; };
 		032A7039181BC0D6006D7332 /* parameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parameters.hpp; sourceTree = "<group>"; };
@@ -205,6 +176,9 @@
 		0365553818292D10001B5947 /* foxglynn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = foxglynn.cpp; sourceTree = "<group>"; };
 		0365553918292D10001B5947 /* foxglynn.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = foxglynn.hpp; sourceTree = "<group>"; };
 		036EC8A916F5C5B50059B280 /* _Cosmos */ = {isa = PBXFileReference; explicitFileType = text.script; name = _Cosmos; path = ../bin/_Cosmos; sourceTree = "<group>"; };
+		03A7F877182BCEA7006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		03A7F878182BCEB1006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		03A7F879182BCEBB006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libexpat.dylib; path = usr/lib/libexpat.dylib; sourceTree = SDKROOT; };
 		03B6EE8D1487BB8F0099A6CC /* CosmosSim */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CosmosSim; sourceTree = BUILT_PRODUCTS_DIR; };
 		03B7D355181901AC007AA90D /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.am; path = ../Makefile.am; sourceTree = "<group>"; };
@@ -289,21 +263,21 @@
 		032A7007181BC0D6006D7332 /* ModelGenerator */ = {
 			isa = PBXGroup;
 			children = (
-				032A7008181BC0D6006D7332 /* casesWriter.cpp */,
-				032A7009181BC0D6006D7332 /* casesWriter.hpp */,
-				032A700A181BC0D6006D7332 /* Cosmos.cpp */,
+				032A7036181BC0D6006D7332 /* Makefile.am */,
 				032A700B181BC0D6006D7332 /* Eval */,
 				032A7018181BC0D6006D7332 /* GspnParser */,
+				032A7028181BC0D6006D7332 /* LhaParser */,
+				032A7008181BC0D6006D7332 /* casesWriter.cpp */,
+				032A7009181BC0D6006D7332 /* casesWriter.hpp */,
 				032A7026181BC0D6006D7332 /* HaslFormula.cpp */,
 				032A7027181BC0D6006D7332 /* HaslFormula.hpp */,
-				032A7028181BC0D6006D7332 /* LhaParser */,
-				032A7036181BC0D6006D7332 /* Makefile.am */,
 				032A7038181BC0D6006D7332 /* parameters.cpp */,
 				032A7039181BC0D6006D7332 /* parameters.hpp */,
 				032A703A181BC0D6006D7332 /* result.cpp */,
 				032A703B181BC0D6006D7332 /* result.hpp */,
 				032A703C181BC0D6006D7332 /* server.cpp */,
 				032A703D181BC0D6006D7332 /* server.hpp */,
+				032A700A181BC0D6006D7332 /* Cosmos.cpp */,
 			);
 			path = ModelGenerator;
 			sourceTree = "<group>";
@@ -311,18 +285,11 @@
 		032A700B181BC0D6006D7332 /* Eval */ = {
 			isa = PBXGroup;
 			children = (
-				032A700C181BC0D6006D7332 /* Eval-parser.output */,
-				032A700D181BC0D6006D7332 /* Eval-parser.tab.cc */,
-				032A700E181BC0D6006D7332 /* Eval-parser.tab.hh */,
-				032A700F181BC0D6006D7332 /* Eval-parser.ypp */,
+				03A7F877182BCEA7006F0BC8 /* Makefile.am */,
 				032A7010181BC0D6006D7332 /* Eval-parser.yy */,
 				032A7011181BC0D6006D7332 /* Eval-scanner.ll */,
 				032A7012181BC0D6006D7332 /* Eval.cpp */,
 				032A7013181BC0D6006D7332 /* Eval.hpp */,
-				032A7014181BC0D6006D7332 /* lex.eval.c */,
-				032A7015181BC0D6006D7332 /* location.hh */,
-				032A7016181BC0D6006D7332 /* position.hh */,
-				032A7017181BC0D6006D7332 /* stack.hh */,
 			);
 			path = Eval;
 			sourceTree = "<group>";
@@ -330,19 +297,13 @@
 		032A7018181BC0D6006D7332 /* GspnParser */ = {
 			isa = PBXGroup;
 			children = (
-				032A7019181BC0D6006D7332 /* Gspn-parser.output */,
-				032A701A181BC0D6006D7332 /* Gspn-parser.tab.cc */,
-				032A701B181BC0D6006D7332 /* Gspn-parser.tab.hh */,
+				03A7F878182BCEB1006F0BC8 /* Makefile.am */,
 				032A701C181BC0D6006D7332 /* Gspn-parser.yy */,
 				032A701D181BC0D6006D7332 /* Gspn-Reader.cpp */,
 				032A701E181BC0D6006D7332 /* Gspn-Reader.hpp */,
 				032A701F181BC0D6006D7332 /* Gspn-scanner.ll */,
 				032A7020181BC0D6006D7332 /* Gspn_gmlparser.cpp */,
 				032A7021181BC0D6006D7332 /* Gspn_gmlparser.hpp */,
-				032A7022181BC0D6006D7332 /* lex.gspn.c */,
-				032A7023181BC0D6006D7332 /* location.hh */,
-				032A7024181BC0D6006D7332 /* position.hh */,
-				032A7025181BC0D6006D7332 /* stack.hh */,
 			);
 			path = GspnParser;
 			sourceTree = "<group>";
@@ -350,19 +311,13 @@
 		032A7028181BC0D6006D7332 /* LhaParser */ = {
 			isa = PBXGroup;
 			children = (
-				032A7029181BC0D6006D7332 /* lex.lha.c */,
-				032A702A181BC0D6006D7332 /* Lha-parser.output */,
-				032A702B181BC0D6006D7332 /* Lha-parser.tab.cc */,
-				032A702C181BC0D6006D7332 /* Lha-parser.tab.hh */,
+				03A7F879182BCEBB006F0BC8 /* Makefile.am */,
 				032A702D181BC0D6006D7332 /* Lha-parser.yy */,
 				032A702E181BC0D6006D7332 /* Lha-Reader.cpp */,
 				032A702F181BC0D6006D7332 /* Lha-Reader.hpp */,
 				032A7030181BC0D6006D7332 /* Lha-scanner.ll */,
 				032A7031181BC0D6006D7332 /* Lha_gmlparser.cpp */,
 				032A7032181BC0D6006D7332 /* Lha_gmlparser.hpp */,
-				032A7033181BC0D6006D7332 /* location.hh */,
-				032A7034181BC0D6006D7332 /* position.hh */,
-				032A7035181BC0D6006D7332 /* stack.hh */,
 			);
 			path = LhaParser;
 			sourceTree = "<group>";
@@ -374,7 +329,6 @@
 				0365553918292D10001B5947 /* foxglynn.hpp */,
 				032A703F181BC0D6006D7332 /* BatchR.cpp */,
 				032A7040181BC0D6006D7332 /* BatchR.hpp */,
-				032A7041181BC0D6006D7332 /* clientsim.cpp */,
 				032A7042181BC0D6006D7332 /* Event.cpp */,
 				032A7043181BC0D6006D7332 /* Event.hpp */,
 				032A7044181BC0D6006D7332 /* EventsQueue.cpp */,
@@ -406,6 +360,7 @@
 				032A7062181BC0D6006D7332 /* spn.hpp */,
 				032A7063181BC0D6006D7332 /* stateSpace.cpp */,
 				032A7064181BC0D6006D7332 /* stateSpace.hpp */,
+				032A7041181BC0D6006D7332 /* clientsim.cpp */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
@@ -763,9 +718,7 @@
 				032A70A8181BC307006D7332 /* modelwriter.cc in Sources */,
 				032A7089181BC0D6006D7332 /* SimulatorBoundedRE.cpp in Sources */,
 				032A7078181BC0D6006D7332 /* Lha_gmlparser.cpp in Sources */,
-				032A7072181BC0D6006D7332 /* lex.gspn.c in Sources */,
 				032A7067181BC0D6006D7332 /* casesWriter.cpp in Sources */,
-				032A7075181BC0D6006D7332 /* Lha-parser.tab.cc in Sources */,
 				032A7086181BC0D6006D7332 /* numSolverBB.cpp in Sources */,
 				032A7077181BC0D6006D7332 /* Lha-scanner.ll in Sources */,
 				032A708B181BC0D6006D7332 /* SimulatorRE.cpp in Sources */,
@@ -780,20 +733,15 @@
 				032A707B181BC0D6006D7332 /* server.cpp in Sources */,
 				032A706B181BC0D6006D7332 /* Eval-scanner.ll in Sources */,
 				032A7079181BC0D6006D7332 /* parameters.cpp in Sources */,
-				032A7074181BC0D6006D7332 /* lex.lha.c in Sources */,
 				032A7076181BC0D6006D7332 /* Lha-Reader.cpp in Sources */,
-				032A706D181BC0D6006D7332 /* lex.eval.c in Sources */,
-				032A706A181BC0D6006D7332 /* Eval-parser.ypp in Sources */,
 				032A707C181BC0D6006D7332 /* BatchR.cpp in Sources */,
 				032A708C181BC0D6006D7332 /* spn.cpp in Sources */,
 				032A70A7181BC307006D7332 /* expatmodelparser.cc in Sources */,
-				032A7069181BC0D6006D7332 /* Eval-parser.tab.cc in Sources */,
 				032A7068181BC0D6006D7332 /* Cosmos.cpp in Sources */,
 				032A706C181BC0D6006D7332 /* Eval.cpp in Sources */,
 				032A707E181BC0D6006D7332 /* Event.cpp in Sources */,
 				032A7071181BC0D6006D7332 /* Gspn_gmlparser.cpp in Sources */,
 				032A7073181BC0D6006D7332 /* HaslFormula.cpp in Sources */,
-				032A706E181BC0D6006D7332 /* Gspn-parser.tab.cc in Sources */,
 				032A7084181BC0D6006D7332 /* lumpingfuntriv.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

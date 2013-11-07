@@ -38,9 +38,9 @@
 #include <limits>
 
 
-SimulatorContinuousBounded::SimulatorContinuousBounded(int m,double e):SimulatorBoundedRE(m){
+SimulatorContinuousBounded::SimulatorContinuousBounded(int m,double e,int js):SimulatorBoundedRE(m){
     epsilon = e;
-	jumpsize = 5;
+	jumpsize = js;
     //boost::math::normal norm;
     //Normal_quantile = quantile(norm, 0.5 + 0.99 / 2.0);
 }
@@ -70,7 +70,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     int left = (int)max(numSolv->getMinT(),fg->left);
     int Nmax = (int)ceil(((double)fg->right - left)/jumpsize) ;
     //cerr << "minT:\t" << numSolv->getMinT() << endl;
-    cerr << "Number of batch:\t" << Nmax << endl;
+    cerr << "Number of batch:\t" << Nmax+1 << "\tleft: " << left << "\tright: " << fg->right << "\tjumpsize:" << jumpsize <<  endl;
     //cerr << "left:\t" << left << endl;
     
     int n =-1;
@@ -92,7 +92,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		EQ = new EventsQueue(N);
 		reset();
         it->maxStep = (int)fmin(fg->right , left + (Nmax - (c/BatchSize))*jumpsize);
-		cerr << "new path:\t" << it->maxStep << endl;
+		//cerr << "new path:\t" << it->maxStep << endl;
         
         c++;
 		AutEdge AE;
@@ -136,7 +136,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     if((!EQ->isEmpty()) && continueb) {
                         it->saveState(&N,&A,&AE,&EQ);
                     } else {
-						int i = (int)ceil((double)it->maxStep/jumpsize) - left;
+						int i = (int)ceil((double)(it->maxStep- left)/jumpsize) ;
+						//cerr << "Successfull trajectory: "<< it->maxStep << " -> " << i << endl;
                         if (Result.first ) {
                             
                             if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult->IsBernoulli[0] = false;

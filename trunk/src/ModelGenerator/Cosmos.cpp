@@ -71,7 +71,7 @@ void FindPathMac(parameters& P) {
 	P.Path = P.Path.substr(0, t);
 	P.Path.append("/");
 }
-#define SHAREDEXTENSION "dylib"
+#define SHAREDEXTENSION "a"
 #define FindPath FindPathMac
 #elif __linux__
 void FindPathLinux(parameters& P) {
@@ -250,7 +250,7 @@ bool ParseBuild(parameters& P) {
 		//First check if it is not C++ code
 		if(P.PathLha.compare(P.PathLha.length()-3,3,"cpp")!=0){
 			
-			if(P.GMLinput || (P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0))  {
+			if(P.PathLha.compare(P.PathLha.length()-4,4,"grml")==0)  {
 				//The LHA is in the GRML file format
 				parseresult = lReader.parse_gml_file(P);
 			}else {

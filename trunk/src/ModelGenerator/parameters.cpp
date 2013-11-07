@@ -45,6 +45,7 @@ updatetime(0.1),
 seed(0),
 Njob(1),
 
+continuousStep(1),
 epsilon(0.000001),
 Level(0.99),
 Width(0.001),
@@ -124,6 +125,15 @@ void parameters::usage(){
 	cout << "\t--local-test \tUse local testing faster on big net" << endl;
 	cout << "\t--const \toverride constant value of the model" << endl;
 	
+	cout << "Rare event options:" << endl;
+	cout << "\t-r \tUnbounded rare event mode" << endl;
+	cout << "\t-b arg \tDiscrete bounded rare event mode, arg is the method to use to stop vector" << endl;
+	cout << "\t--set-Horizon arg \tSet the horizon for bounded rare event mode arg must be an integer in discrete bounded case" << endl;
+	cout << "\t-c \tContinuous bounded rare event mode." << endl;
+	cout << "\t--epsilon arg \tError level of the fox glynn algorithme" << endl;
+	cout << "\t--step-continuous arg \tSize of step of the continuous method" << endl;
+	
+	
     cout << "Miscellaneous options:" << endl;
     cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
     cout << "\t--alligator-mode \toutput easy to parse result"<< endl;
@@ -174,6 +184,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"rareevent",   no_argument,        0, 'r'},
             {"boundedcountiniousRE",no_argument,0, 'c'},
             {"boundedRE",   required_argument,  0, 'b'},
+			{"step-continuous",required_argument,0,23 },
             {"epsilon" ,    required_argument,  0, 'e'},
             {"set-Horizon", required_argument , 0,  1 },
             {"state-space" , no_argument ,       0, 's'},
@@ -292,6 +303,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 				case  12 : localTesting = !localTesting;		break;
 				case  'n': Njob = atoi(optarg);      break;
 				case  'e': epsilon = atof(optarg);  break;
+				case  23 : continuousStep = atoi(optarg); break;
 				case  'd': dataoutput = optarg; break;
 				case  8  : dataraw = optarg; break;
 				case  18 : datatrace = optarg;StringInSpnLHA = true; break;

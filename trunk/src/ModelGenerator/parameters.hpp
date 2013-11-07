@@ -41,7 +41,9 @@ struct parameters {
 	double updatetime;
 	unsigned int seed;
 	int Njob;
+	
     double epsilon;
+	int continuousStep;
 	double Level;
 	double Width;
 	unsigned long int Batch;

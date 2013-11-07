@@ -247,11 +247,12 @@ void launch_clients(parameters& P){
 			pushint(argv,argn,P.BoundedRE);
 			pushdouble(argv,argn,P.horizon);
 			pushdouble(argv,argn,P.epsilon);
+			pushint(argv, argn, P.continuousStep);
 		} else if(P.BoundedRE>0){
 			//os << " " << "-BURE" << " " << P.BoundedRE << " " << P.horizon;
 			pushstr(argv,argn,"-BURE");
 			pushint(argv,argn,P.BoundedRE);
-			pushint(argv,argn,P.horizon);
+			pushint(argv,argn,(int)P.horizon);
 		} else if(P.DoubleIS){
 			//os << " " << "-RE2";
 			pushstr(argv,argn,"-RE2");

@@ -84,7 +84,8 @@ int main(int argc, char** argv) {
             int m = atoi(argv[5]);
             double t = atof(argv[6]);
             double e = atof(argv[7]);
-            SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(m,e);
+			int stepc = atoi(argv[8]);
+            SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(m,e,stepc);
             myBoundedSim->initVectCo(t);
 			mySim= myBoundedSim;
 		}else if(str== "-STSPBU"){
