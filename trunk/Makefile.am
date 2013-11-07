@@ -1,4 +1,4 @@
-SUBDIRS = src/libgrml src/ModelGenerator/Eval src/ModelGenerator/GspnParser src/ModelGenerator/LhaParser src/ModelGenerator src/Simulator test
+SUBDIRS = src/libgrml src/ModelGenerator/Eval src/ModelGenerator/GspnParser src/ModelGenerator/LhaParser src/ModelGenerator src/Simulator test automataGen
 
 ACLOCAL_AMFLAGS = -I m4
 

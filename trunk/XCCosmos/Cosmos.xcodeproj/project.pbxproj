@@ -25,9 +25,7 @@
 		032A707D181BC0D6006D7332 /* clientsim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7041181BC0D6006D7332 /* clientsim.cpp */; };
 		032A707E181BC0D6006D7332 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7042181BC0D6006D7332 /* Event.cpp */; };
 		032A707F181BC0D6006D7332 /* EventsQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7044181BC0D6006D7332 /* EventsQueue.cpp */; };
-		032A7081181BC0D6006D7332 /* LHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7048181BC0D6006D7332 /* LHA.cpp */; };
 		032A7082181BC0D6006D7332 /* LHA_orig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704A181BC0D6006D7332 /* LHA_orig.cpp */; };
-		032A7083181BC0D6006D7332 /* lumpingfun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704B181BC0D6006D7332 /* lumpingfun.cpp */; };
 		032A7084181BC0D6006D7332 /* lumpingfuntriv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704C181BC0D6006D7332 /* lumpingfuntriv.cpp */; };
 		032A7085181BC0D6006D7332 /* numericalSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7052181BC0D6006D7332 /* numericalSolver.cpp */; };
 		032A7086181BC0D6006D7332 /* numSolverBB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7054181BC0D6006D7332 /* numSolverBB.cpp */; };
@@ -36,7 +34,6 @@
 		032A7089181BC0D6006D7332 /* SimulatorBoundedRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705A181BC0D6006D7332 /* SimulatorBoundedRE.cpp */; };
 		032A708A181BC0D6006D7332 /* SimulatorContinuousBounded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705C181BC0D6006D7332 /* SimulatorContinuousBounded.cpp */; };
 		032A708B181BC0D6006D7332 /* SimulatorRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705E181BC0D6006D7332 /* SimulatorRE.cpp */; };
-		032A708C181BC0D6006D7332 /* spn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7061181BC0D6006D7332 /* spn.cpp */; };
 		032A708D181BC0D6006D7332 /* stateSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7063181BC0D6006D7332 /* stateSpace.cpp */; };
 		032A70A7181BC307006D7332 /* expatmodelparser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A709D181BC307006D7332 /* expatmodelparser.cc */; };
 		032A70A8181BC307006D7332 /* modelwriter.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A70A2181BC307006D7332 /* modelwriter.cc */; };
@@ -131,14 +128,11 @@
 		032A7043181BC0D6006D7332 /* Event.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Event.hpp; sourceTree = "<group>"; };
 		032A7044181BC0D6006D7332 /* EventsQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventsQueue.cpp; sourceTree = "<group>"; };
 		032A7045181BC0D6006D7332 /* EventsQueue.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueue.hpp; sourceTree = "<group>"; };
-		032A7048181BC0D6006D7332 /* LHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA.cpp; sourceTree = "<group>"; };
 		032A7049181BC0D6006D7332 /* LHA.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LHA.hpp; sourceTree = "<group>"; };
 		032A704A181BC0D6006D7332 /* LHA_orig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA_orig.cpp; sourceTree = "<group>"; };
-		032A704B181BC0D6006D7332 /* lumpingfun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfun.cpp; sourceTree = "<group>"; };
 		032A704C181BC0D6006D7332 /* lumpingfuntriv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfuntriv.cpp; sourceTree = "<group>"; };
 		032A704E181BC0D6006D7332 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		032A7050181BC0D6006D7332 /* marking.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = marking.hpp; sourceTree = "<group>"; };
-		032A7051181BC0D6006D7332 /* markingImpl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
 		032A7052181BC0D6006D7332 /* numericalSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numericalSolver.cpp; sourceTree = "<group>"; };
 		032A7053181BC0D6006D7332 /* numericalSolver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = numericalSolver.hpp; sourceTree = "<group>"; };
 		032A7054181BC0D6006D7332 /* numSolverBB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numSolverBB.cpp; sourceTree = "<group>"; };
@@ -154,7 +148,6 @@
 		032A705E181BC0D6006D7332 /* SimulatorRE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimulatorRE.cpp; sourceTree = "<group>"; };
 		032A705F181BC0D6006D7332 /* SimulatorRE.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SimulatorRE.hpp; sourceTree = "<group>"; };
 		032A7060181BC0D6006D7332 /* sparse_io.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sparse_io.hpp; sourceTree = "<group>"; };
-		032A7061181BC0D6006D7332 /* spn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
 		032A7062181BC0D6006D7332 /* spn.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spn.hpp; sourceTree = "<group>"; };
 		032A7063181BC0D6006D7332 /* stateSpace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stateSpace.cpp; sourceTree = "<group>"; };
 		032A7064181BC0D6006D7332 /* stateSpace.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stateSpace.hpp; sourceTree = "<group>"; };
@@ -333,14 +326,11 @@
 				032A7043181BC0D6006D7332 /* Event.hpp */,
 				032A7044181BC0D6006D7332 /* EventsQueue.cpp */,
 				032A7045181BC0D6006D7332 /* EventsQueue.hpp */,
-				032A7048181BC0D6006D7332 /* LHA.cpp */,
 				032A7049181BC0D6006D7332 /* LHA.hpp */,
 				032A704A181BC0D6006D7332 /* LHA_orig.cpp */,
-				032A704B181BC0D6006D7332 /* lumpingfun.cpp */,
 				032A704C181BC0D6006D7332 /* lumpingfuntriv.cpp */,
 				032A704E181BC0D6006D7332 /* Makefile.am */,
 				032A7050181BC0D6006D7332 /* marking.hpp */,
-				032A7051181BC0D6006D7332 /* markingImpl.hpp */,
 				032A7052181BC0D6006D7332 /* numericalSolver.cpp */,
 				032A7053181BC0D6006D7332 /* numericalSolver.hpp */,
 				032A7054181BC0D6006D7332 /* numSolverBB.cpp */,
@@ -356,7 +346,6 @@
 				032A705E181BC0D6006D7332 /* SimulatorRE.cpp */,
 				032A705F181BC0D6006D7332 /* SimulatorRE.hpp */,
 				032A7060181BC0D6006D7332 /* sparse_io.hpp */,
-				032A7061181BC0D6006D7332 /* spn.cpp */,
 				032A7062181BC0D6006D7332 /* spn.hpp */,
 				032A7063181BC0D6006D7332 /* stateSpace.cpp */,
 				032A7064181BC0D6006D7332 /* stateSpace.hpp */,
@@ -726,16 +715,13 @@
 				032A7088181BC0D6006D7332 /* Simulator.cpp in Sources */,
 				032A707D181BC0D6006D7332 /* clientsim.cpp in Sources */,
 				032A7082181BC0D6006D7332 /* LHA_orig.cpp in Sources */,
-				032A7083181BC0D6006D7332 /* lumpingfun.cpp in Sources */,
 				032A7070181BC0D6006D7332 /* Gspn-scanner.ll in Sources */,
 				032A7085181BC0D6006D7332 /* numericalSolver.cpp in Sources */,
-				032A7081181BC0D6006D7332 /* LHA.cpp in Sources */,
 				032A707B181BC0D6006D7332 /* server.cpp in Sources */,
 				032A706B181BC0D6006D7332 /* Eval-scanner.ll in Sources */,
 				032A7079181BC0D6006D7332 /* parameters.cpp in Sources */,
 				032A7076181BC0D6006D7332 /* Lha-Reader.cpp in Sources */,
 				032A707C181BC0D6006D7332 /* BatchR.cpp in Sources */,
-				032A708C181BC0D6006D7332 /* spn.cpp in Sources */,
 				032A70A7181BC307006D7332 /* expatmodelparser.cc in Sources */,
 				032A7068181BC0D6006D7332 /* Cosmos.cpp in Sources */,
 				032A706C181BC0D6006D7332 /* Eval.cpp in Sources */,
