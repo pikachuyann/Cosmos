@@ -30,6 +30,7 @@
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
 #include <limits>
+#include <parameters.hpp>
 
 /**
  * Trivial confidence interval containing all R.
@@ -386,9 +387,11 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		ConfInt* reacheabilityprob = new ConfInt(0.0,0.0);
 		ConfInt* poisson = new ConfInt(0.0,0.0);
 		
-		if(true)std::cerr << "i,\tsucc,\tbatch,\tMean,\tM2,\tMin,\tMax,\tPoisson" << std::endl;
-		
+		if(P.verbose>2)std::cerr << "i,\tsucc,\tbatch,\tMean,\tM2,\tMin,\tMax,\tPoisson" << std::endl;
+		if(P.verbose>2)std::cerr << "continuous step:\t" << P.continuousStep <<  std::endl;
 		for(size_t i=0; i< N; i++){
+			int i2 = (i>0 && P.continuousStep>1.0 )? i-1 : i;
+			
 			//evaluate the likelyhood:
 			likelyhood->mean = batch.Mean[3*i+2]/batch.Mean[3*i+1];
 			double var = (batch.M2[3*i+2]/batch.Mean[3*i+1]) - pow((batch.Mean[3*i+2]/batch.Mean[3*i+1]),2);
@@ -410,7 +413,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			*poisson *= *likelyhood;
 	        *poisson *= *reacheabilityprob;
 			
-			if(true){
+			if(P.verbose>2){
 				std::cout << "i: " << i<< "\tsucc: "<< batch.Mean[3*i+1]<< "\tLikelyhood: "  << likelyhood->mean << "\t[" << likelyhood->low<<";"<<likelyhood->up << "]\twidth: "<< widthN <<"\tpoisson: " << batch.Mean[3*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
 				std::cerr << i << ",\t" << batch.Mean[3*i+1] << ",\t" << batch.M2[3*i+1] << ",\t" << batch.Mean[3*i+2]/batch.Mean[3*i+1] << ",\t" << batch.M2[3*i+2]/batch.Mean[3*i+1] << ",\t" << batch.Min[3*i+2] << ",\t" << batch.Max[3*i+2] << ",\t" << batch.Mean[3*i] << std::endl;
 			}

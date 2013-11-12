@@ -45,7 +45,7 @@
  */
 class result {
 public:
-	result(parameters &Q);
+	result();
 	~result();
 	
 	//! Add a new batch of result to the result.
@@ -84,7 +84,7 @@ public:
 private:
 	
 	//! A copy of the parameters.
-	parameters P;
+	//parameters P;
 	
 	//! timestamps for the strart and end of the simulation.
 	timeval start, end;

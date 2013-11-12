@@ -98,4 +98,6 @@ struct parameters {
 	size_t nbPlace;
 };
 
+extern parameters P;
+
 #endif

@@ -357,7 +357,7 @@ void launchServer(parameters& P){
     if(P.verbose>0)cout << "START SIMULATION ..." << endl;
     
     //Init result
-    result Result(P);
+    result Result;
     //Launch a set of simulators
     launch_clients(P);
     //Make a list of file system for polling

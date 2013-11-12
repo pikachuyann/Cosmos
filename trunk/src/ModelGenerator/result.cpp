@@ -36,8 +36,8 @@
 
 using namespace std;
 
-result::result(parameters &Q){
-    P= Q;
+result::result(){
+    //P= Q;
 	gnuplotstream= NULL;
 	gettimeofday(&lastprint,NULL);
 	gettimeofday(&lastdraw,NULL);

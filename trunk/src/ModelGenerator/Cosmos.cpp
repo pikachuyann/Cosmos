@@ -356,6 +356,7 @@ bool ParseBuild(parameters& P) {
 				it != P.HaslFormulas.end(); ++it)
 				if ( (*it)->TypeOp == EXPECTANCY ){
 					(*it)->TypeOp = RE_Continuous;
+					(*it)->Value = P.continuousStep;
 					(*it)->Value2 = P.epsilon;
 					
 				}
@@ -434,11 +435,17 @@ std::string systemStringResult(const char* cmd) {
 }
 
 /**
+ * The global parameter structure
+ */
+parameters P;
+
+/**
  * Main function
  * Build the simulator and launch it.
  */
 int main(int argc, char** argv) {
-	parameters P;
+	//parameters P;
+	
 	timeval startbuild,endbuild;
 	
 	// Fill the P structure from the command line
