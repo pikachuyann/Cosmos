@@ -172,6 +172,12 @@
 		03A7F877182BCEA7006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03A7F878182BCEB1006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03A7F879182BCEBB006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		03A7F87B182C12DB006F0BC8 /* gnuplotScript.gnu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gnuplotScript.gnu; path = ../utils/gnuplotScript.gnu; sourceTree = "<group>"; };
+		03A7F87C182C12DB006F0BC8 /* gnuplotScriptbenchmanycore.gnu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gnuplotScriptbenchmanycore.gnu; path = ../utils/gnuplotScriptbenchmanycore.gnu; sourceTree = "<group>"; };
+		03A7F87D182C12DB006F0BC8 /* gnuplotScriptCMD.gnu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gnuplotScriptCMD.gnu; path = ../utils/gnuplotScriptCMD.gnu; sourceTree = "<group>"; };
+		03A7F87E182C12DB006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.am; path = ../utils/Makefile.am; sourceTree = "<group>"; };
+		03A7F87F182C12DB006F0BC8 /* ptToSpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ptToSpt; path = ../utils/ptToSpt; sourceTree = "<group>"; };
+		03A7F880182C12DB006F0BC8 /* sptToPt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sptToPt; path = ../utils/sptToPt; sourceTree = "<group>"; };
 		03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libexpat.dylib; path = usr/lib/libexpat.dylib; sourceTree = SDKROOT; };
 		03B6EE8D1487BB8F0099A6CC /* CosmosSim */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CosmosSim; sourceTree = BUILT_PRODUCTS_DIR; };
 		03B7D355181901AC007AA90D /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.am; path = ../Makefile.am; sourceTree = "<group>"; };
@@ -417,6 +423,20 @@
 			path = POMDP;
 			sourceTree = "<group>";
 		};
+		03A7F87A182C129C006F0BC8 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				03A7F87E182C12DB006F0BC8 /* Makefile.am */,
+				03A7F87B182C12DB006F0BC8 /* gnuplotScript.gnu */,
+				03A7F87C182C12DB006F0BC8 /* gnuplotScriptbenchmanycore.gnu */,
+				03A7F87D182C12DB006F0BC8 /* gnuplotScriptCMD.gnu */,
+				03A7F87F182C12DB006F0BC8 /* ptToSpt */,
+				03A7F880182C12DB006F0BC8 /* sptToPt */,
+				036EC8A916F5C5B50059B280 /* _Cosmos */,
+			);
+			name = utils;
+			sourceTree = "<group>";
+		};
 		03FB40F418180F9D001F9988 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -462,7 +482,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				036EC8A916F5C5B50059B280 /* _Cosmos */,
+				03A7F87A182C129C006F0BC8 /* utils */,
 				03B7D355181901AC007AA90D /* Makefile.am */,
 				03B7D356181901BB007AA90D /* configure.ac */,
 				032A708E181BC14A006D7332 /* test */,

@@ -54,7 +54,7 @@ let rec readEvent f s i =
   try (
     let line = input_line f in match split blank line with
       | [] -> failwith "strange line"
-      | [s1;s2] when s1="New" & s2 = "Path" ->
+      | [s1;s2] when s1="New" && s2 = "Path" ->
 	  readEvent f s (i+1)
       | te::q -> (
 	try let ts = float_of_string te in
@@ -78,7 +78,7 @@ let readAndSample evect step f dl=
    try while true do 
     let line = input_line f in match split blank line with
       | [] -> failwith "strange line"
-      | [s1;s2] when s1="New" & s2 = "Path" ->
+      | [s1;s2] when s1="New" && s2 = "Path" ->
 	fillvect evect step !dlast !index (Array.length evect -1);
 	dlast := Data.empty !dlast;
 	index := 0;
@@ -103,7 +103,7 @@ let find_max_time f =
   try while true do 
       let line = input_line f in match split blank line with
 	| [] -> ()
-	| [s1;s2] when s1="New" & s2 = "Path" -> incr np
+	| [s1;s2] when s1="New" && s2 = "Path" -> incr np
 	| te::q -> (
 	  try let ts = float_of_string te in
 	      incr ne;
