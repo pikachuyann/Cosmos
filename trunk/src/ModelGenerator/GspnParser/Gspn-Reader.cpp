@@ -814,7 +814,7 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "}\n";
 	SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
 	
-	int maxNameSize =0;
+	int maxNameSize =5;
 	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 		 plit!= MyGspn.placeStruct.end(); ++plit)
 		maxNameSize = fmax(maxNameSize, plit->name.length());

@@ -2,7 +2,7 @@ open Str
 (*#load "str.cma"*)
 
 let newpath = regexp "New Path"
-let blank = regexp " \\|\t"
+let blank = regexp "\\( \\|\t\\)+"
 let floatnum = regexp "[0-9]*\\([.][0-9]*\\)?";;
 
 module Data = struct
@@ -53,14 +53,14 @@ module EventSet = Set.Make(TimeEvent)
 let rec readEvent f s i =
   try (
     let line = input_line f in match split blank line with
-      | [] -> failwith "strange line"
+      | [] -> failwith "empty line"
       | [s1;s2] when s1="New" && s2 = "Path" ->
 	  readEvent f s (i+1)
       | te::q -> (
 	try let ts = float_of_string te in
 	    readEvent f (EventSet.add (ts,i,Data.data_of_stringList q) s) i
 	with
-	    Failure "float_of_string" -> failwith "strange line"
+	    Failure "float_of_string" -> failwith ("line do not start with a timestamp: \""^line^"\"")
       )
   ) with
       End_of_file -> s,i
