@@ -77,9 +77,15 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     
 
     BatchR* batchResult = new BatchR(3*(Nmax+1));
-    for(int i=0; i<= Nmax; i++)
-      batchResult->Mean[3*i] = fg->weights[i+ left- fg->left] /fg->total_weight;
 
+	//Copy and sum Poisson Weight
+    for(int i=left; i<= fg->right; i++){
+		int j = (int)ceil((double)( i - left)/jumpsize);
+		batchResult->Mean[3*j] += fg->weights[i - fg->left];
+	}
+	for(int i =0; i<= Nmax; i++)
+		batchResult->Mean[3*i] /= fg->total_weight;
+		
 	list<simulationState> statevect((Nmax+1)*BatchSize);
 	//delete EQ;
 	

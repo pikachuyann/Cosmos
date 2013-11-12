@@ -397,12 +397,12 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			double var = (batch.M2[3*i+2]/batch.Mean[3*i+1]) - pow((batch.Mean[3*i+2]/batch.Mean[3*i+1]),2);
 			double widthN = 0.0;
 			if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[3*i+1]);
-			likelyhood->low = batch.Min[3*i+2];
+			likelyhood->low = batch.Min[3*i2+2];
 			likelyhood->up = likelyhood->mean + widthN/2.0;
 			
 			//evaluate probability to reach final state:
 			reacheabilityprob->mean = batch.Mean[3*i+1]/batch.M2[3*i+1];
-      		reacheabilityprob->low = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.M2[3*i+1],batch.Mean[3*i+1], (1-LevelN)/2);
+      		reacheabilityprob->low = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.M2[3*i2+1],batch.Mean[3*i2+1], (1-LevelN)/2);
 			reacheabilityprob->up = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.M2[3*i+1],batch.Mean[3*i+1], (1-LevelN)/2);
 			//evaluate poisson:
 			poisson->mean = batch.Mean[3*i];
