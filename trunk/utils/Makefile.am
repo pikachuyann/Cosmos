@@ -7,7 +7,7 @@ linecombinator: linecombinator.ml
 	cd $(srcdir); ocamlbuild -lib str linecombinator.native
 	cp $(srcdir)/linecombinator.native linecombinator
 
-EXTRA_DIST = linecombinator.ml
+EXTRA_DIST = linecombinator.ml sptToPt ptToSpt
 
 CLEANFILES = _build/* $(bin_SCRIPTS) *~
 
