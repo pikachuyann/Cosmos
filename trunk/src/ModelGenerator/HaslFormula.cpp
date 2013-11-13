@@ -387,8 +387,8 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		ConfInt* reacheabilityprob = new ConfInt(0.0,0.0);
 		ConfInt* poisson = new ConfInt(0.0,0.0);
 		
-		if(P.verbose>2)std::cerr << "i,\tsucc,\tbatch,\tMean,\tM2,\tMin,\tMax,\tPoisson" << std::endl;
-		if(P.verbose>2)std::cerr << "continuous step:\t" << P.continuousStep <<  std::endl;
+		if(P.verbose>1)std::cerr << "i,\tsucc,\tbatch,\tMean,\tM2,\tMin,\tMax,\tPoisson" << std::endl;
+		if(P.verbose>1)std::cerr << "continuous step:\t" << P.continuousStep <<  std::endl;
 		for(size_t i=0; i< N; i++){
 			int i2 = (i>0 && P.continuousStep>1.0 )? i-1 : i;
 			
@@ -413,7 +413,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			*poisson *= *likelyhood;
 	        *poisson *= *reacheabilityprob;
 			
-			if(P.verbose>2){
+			if(P.verbose>1){
 				std::cout << "i: " << i<< "\tsucc: "<< batch.Mean[3*i+1]<< "\tLikelyhood: "  << likelyhood->mean << "\t[" << likelyhood->low<<";"<<likelyhood->up << "]\twidth: "<< widthN <<"\tpoisson: " << batch.Mean[3*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
 				std::cerr << i << ",\t" << batch.Mean[3*i+1] << ",\t" << batch.M2[3*i+1] << ",\t" << batch.Mean[3*i+2]/batch.Mean[3*i+1] << ",\t" << batch.M2[3*i+2]/batch.Mean[3*i+1] << ",\t" << batch.Min[3*i+2] << ",\t" << batch.Max[3*i+2] << ",\t" << batch.Mean[3*i] << std::endl;
 			}
