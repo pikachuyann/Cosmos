@@ -97,7 +97,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		
 		EQ = new EventsQueue(N);
 		reset();
-        it->maxStep = (int)fmin(fg->right , left + (Nmax)*jumpsize);
+        it->maxStep = fg->right;
 		//cerr << "new path:\t" << it->maxStep << endl;
         
         c++;
@@ -143,7 +143,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                         it->saveState(&N,&A,&AE,&EQ);
                     } else {
 						//int i = (int)ceil((double)(it->maxStep- left)/jumpsize) ;
-						int i2 =(int)ceil((double)(n - left)/jumpsize);
+						int i2 =(int)fmax(0.0,ceil((double)(n - left)/jumpsize));
 						//cerr << "Successfull trajectory: "<< it->maxStep << " -> " << i << endl;
                         if (Result.first ) {
                             
