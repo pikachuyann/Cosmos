@@ -37,8 +37,36 @@
 #include "stateSpace.hpp"
 namespace boostmat = boost::numeric::ublas;
 
+/**
+ * \brief a class handling numerical computation.
+ * This class maintain a vector of probability to reach a final
+ * state of the computation used for the importance sampling algorithm.
+ */
 class numericalSolver: public stateSpace
 {
+	
+public:
+	numericalSolver();
+	
+	//! Return the minimal number of step required to have a probability different than 0.
+    virtual int getMinT(){return minT;};
+	
+	//!initialise for an horizon point T.
+	virtual void initVect(int T);
+	//! Horizon.
+	int T;
+	//! Reset to the initial state.
+	virtual void reset();
+	
+	//! Return a vector of the current distribution
+	virtual boostmat::vector<double> getVect();
+	virtual double getMu(int);
+	virtual void previousVect();
+	virtual void stepVect();
+	virtual int currentRound();
+	virtual void printState();
+
+	
 protected:
 	vector<boostmat::vector<double> >* circularvect;
 	int matOffset;
@@ -46,18 +74,6 @@ protected:
     void sparseProd(boostmat::vector<double> *result,boostmat::vector<double> *vect, boostmat::compressed_matrix<double> *mat);
 	int minT;
     
-public:
-	numericalSolver();
-    virtual int getMinT(){return minT;};
-	virtual void initVect(int T); //initialise for an horizon point T
-	int T;
-	virtual void reset(); //this function is call before each batch
-	virtual boostmat::vector<double> getVect();
-	virtual double getMu(int);
-	virtual void previousVect();
-	virtual void stepVect();
-	virtual void printState();
-	
 };
 
 

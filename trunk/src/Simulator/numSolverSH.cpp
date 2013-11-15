@@ -195,6 +195,11 @@ double numSolverSH::getMu(int i){
 	}else return current_vect[i];
 }
 
+int numSolverSH::currentRound(){
+	return T-u;
+}
+
+
 void numSolverSH::printState(){
 	cerr << u;
 }

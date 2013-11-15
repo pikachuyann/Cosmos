@@ -122,3 +122,8 @@ void numSolverBB::printState(){
 	cerr << u;
 }
 
+int numSolverBB::currentRound(){
+	return T-u;
+}
+
+

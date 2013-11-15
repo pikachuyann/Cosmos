@@ -116,6 +116,10 @@ void numericalSolver::initVect(int nT){
 	cerr << "Starting the simulation" << endl;
 }
 
+int numericalSolver::currentRound(){
+	return T-matOffset;
+}
+
 void numericalSolver::reset(){
 	matOffset=T;
 	//cerr << (*circularvect)[matOffset] << endl;

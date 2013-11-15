@@ -97,7 +97,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		
 		EQ = new EventsQueue(N);
 		reset();
-        it->maxStep = (int)fmin(fg->right , left + (Nmax - (c/BatchSize))*jumpsize);
+        it->maxStep = (int)fmin(fg->right , left + (Nmax)*jumpsize);
 		//cerr << "new path:\t" << it->maxStep << endl;
         
         c++;
@@ -142,29 +142,27 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     if((!EQ->isEmpty()) && continueb) {
                         it->saveState(&N,&A,&AE,&EQ);
                     } else {
-						int i = (int)ceil((double)(it->maxStep- left)/jumpsize) ;
+						//int i = (int)ceil((double)(it->maxStep- left)/jumpsize) ;
+						int i2 =(int)ceil((double)(n - left)/jumpsize);
 						//cerr << "Successfull trajectory: "<< it->maxStep << " -> " << i << endl;
                         if (Result.first ) {
                             
                             if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult->IsBernoulli[0] = false;
 							
-                            {
-							
-							
-							
 							batchResult->Isucc+=1;
-							batchResult->Mean[3*i+1]+=1;
-							batchResult->Mean[3*i+2] += Result.second[0];
-							batchResult->M2[3*i+2] += pow(Result.second[0] , 2);
-							batchResult->M3[3*i+2] += pow(Result.second[0] , 3);
-							batchResult->M4[3*i+2] += pow(Result.second[0] , 4);
-							batchResult->Min[3*i+2] = fmin(batchResult->Min[3*i+2],Result.second[0]);
-							batchResult->Max[3*i+2] = fmax(batchResult->Max[3*i+2],Result.second[0]);
+                            for(int j = i2; j<= Nmax; j++){
+							batchResult->Mean[3*j+1]+=1;
+							batchResult->Mean[3*j+2] += Result.second[0];
+							batchResult->M2[3*j+2] += pow(Result.second[0] , 2);
+							batchResult->M3[3*j+2] += pow(Result.second[0] , 3);
+							batchResult->M4[3*j+2] += pow(Result.second[0] , 4);
+							batchResult->Min[3*j+2] = fmin(batchResult->Min[3*j+2],Result.second[0]);
+							batchResult->Max[3*j+2] = fmax(batchResult->Max[3*j+2],Result.second[0]);
 							
                             }
                             
                         }
-                        batchResult->M2[3*i+1]+=1;
+						for(int j = i2; j<= Nmax; j++)batchResult->M2[3*j+1]+=1;
                         batchResult->I++;
                         
                         

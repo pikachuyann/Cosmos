@@ -34,6 +34,7 @@ public:
 	void stepVect();
 	void reset();
 	void printState();
+	int currentRound();
 protected:
 	vector<boostmat::vector<double> >* checkPoint;
 	int l;

@@ -35,6 +35,7 @@ public:
 	void printState();
 	double getMu(int);
 	boostmat::vector<double> getVect();
+	int currentRound();
 protected:
 	bool readbit(int a,int b);
 	//vector<boostmat::vector<double> >* powTVect;
