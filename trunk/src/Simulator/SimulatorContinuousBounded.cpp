@@ -87,9 +87,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		batchResult->Mean[3*i] /= fg->total_weight;
 		
 	list<simulationState> statevect((Nmax+1)*BatchSize);
-	//delete EQ;
 	
-    int c =0;
 	if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
 		N.Origine_Rate_Table = vector<double>(N.tr,0.0);
@@ -99,15 +97,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		reset();
         it->maxStep = fg->right;
 		//cerr << "new path:\t" << it->maxStep << endl;
-        
-        c++;
-		AutEdge AE;
 		
-		//Simulator::InitialEventsQueue();
-		
-		AE = A.GetEnabled_A_Edges( N.Marking);
-		
-		it->saveState(&N,&A,&AE,&EQ);
+		it->saveState(&N,&A,&EQ);
 	}
 	
 	//cout << "new batch" << endl;
@@ -121,9 +112,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
             if(it->maxStep >= fg->right -n){
 				
                 //cerr << "vect:\t" << it->maxStep;
-                AutEdge AE;
-                
-                it->loadState(&N,&A,&AE,&EQ);
+                it->loadState(&N,&A,&EQ);
                 
                 
                 //cerr << A.Likelihood << endl;
@@ -133,14 +122,14 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                 if (it->maxStep == fg->right -n) {
                     //We first need to initialise the trajectory
                     Simulator::InitialEventsQueue();
-                    it->saveState(&N,&A,&AE,&EQ);
+                    it->saveState(&N,&A,&EQ);
                 } else {
                     
                     bool continueb = SimulateOneStep();
                     //cerr << "\t" << mu() << endl;
                     
                     if((!EQ->isEmpty()) && continueb) {
-                        it->saveState(&N,&A,&AE,&EQ);
+                        it->saveState(&N,&A,&EQ);
                     } else {
 						//int i = (int)ceil((double)(it->maxStep- left)/jumpsize) ;
 						int i2 =(int)fmax(0.0,ceil((double)(n - left)/jumpsize));

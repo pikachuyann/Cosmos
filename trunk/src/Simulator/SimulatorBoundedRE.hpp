@@ -40,7 +40,6 @@
 class simulationState{
 private:
 	abstractMarking marking;
-	AutEdge AE;
 	EventsQueue *EQ;
 	LHA lhaState;
     
@@ -59,9 +58,9 @@ public:
 	};
 	~simulationState(){};
 	
-	void saveState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim){
+	void saveState(SPN* N,LHA* A,EventsQueue** EQsim){
 		marking.swap(N->Marking);
-		AE = *AEsim;
+		//AE = *AEsim;
 		EQ = *EQsim; //new EventsQueue(*EQsim);
 		
 		lhaState.copyState(A);
@@ -72,10 +71,10 @@ public:
 		Origine_Rate_Sum = N-> Origine_Rate_Sum;
 		
 	};
-	void loadState(SPN* N,LHA* A,AutEdge* AEsim,EventsQueue** EQsim){
+	void loadState(SPN* N,LHA* A,EventsQueue** EQsim){
 		
 		N->Marking.swap(marking);
-		*AEsim = AE;
+		//*AEsim = AE;
 		*EQsim = EQ;
 		
 		A->copyState(&lhaState);
