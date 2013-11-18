@@ -162,7 +162,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                             }
                             
                         }
-						for(int j = i2; j<= Nmax; j++)batchResult->M2[3*j+1]+=1;
+						for(int j = 0; j<= Nmax; j++)batchResult->M2[3*j+1]+=1;
                         batchResult->I++;
                         
                         
