@@ -44,7 +44,7 @@ int tock;
 
 int remaining(int t){
 	//cerr << "remaining tock:" << tock << " t: " << t << " remain: ";
-	int t2 = fmin(ceil(t/2.0),tock);
+	int t2 = fmin(ceil(t/3.0),tock);
 	tock -= t2;
 	//cerr << t2 << endl;
 	return t2;
