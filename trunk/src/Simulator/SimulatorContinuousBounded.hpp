@@ -36,6 +36,7 @@ public:
     void initVectCo(double t);
     double epsilon;
 	int jumpsize;
+	bool singleIS;
     //double Normal_quantile;
     BatchR* RunBatch();
     

@@ -40,7 +40,13 @@
 
 SimulatorContinuousBounded::SimulatorContinuousBounded(int m,double e,int js):SimulatorBoundedRE(m){
     epsilon = e;
-	jumpsize = js;
+	if(js>0){
+		jumpsize = js;
+		singleIS =false;
+	}else{
+		jumpsize = -js;
+		singleIS = true;
+	}
     //boost::math::normal norm;
     //Normal_quantile = quantile(norm, 0.5 + 0.99 / 2.0);
 }
@@ -88,6 +94,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		
 	list<simulationState> statevect((Nmax+1)*BatchSize);
 	
+    int c =0;
 	if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
 		N.Origine_Rate_Table = vector<double>(N.tr,0.0);
@@ -95,8 +102,15 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		
 		EQ = new EventsQueue(N);
 		reset();
-        it->maxStep = fg->right;
+		if (singleIS) {
+			it->maxStep = fg->right;
+		}else{
+			it->maxStep = (int)fmin(fg->right , left + (Nmax - (c/BatchSize))*jumpsize);
+		}
+        
 		//cerr << "new path:\t" << it->maxStep << endl;
+		
+		c++;
 		
 		it->saveState(&N,&A,&EQ);
 	}
@@ -133,7 +147,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     if((!EQ->isEmpty()) && continueb) {
                         it->saveState(&N,&A,&EQ);
                     } else {
-						//int i = (int)ceil((double)(it->maxStep- left)/jumpsize) ;
+						int i = (int)ceil((double)(it->maxStep- left)/jumpsize) ;
 						int i2 =(int)fmax(0.0,ceil((double)(n - left)/jumpsize));
 						//cerr << "Successfull trajectory: "<< it->maxStep << " -> " << i << endl;
                         if (Result.first ) {
@@ -141,19 +155,28 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                             if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult->IsBernoulli[0] = false;
 							
 							batchResult->Isucc+=1;
-                            for(int j = i2; j<= Nmax; j++){
-							batchResult->Mean[3*j+1]+=1;
-							batchResult->Mean[3*j+2] += Result.second[0];
-							batchResult->M2[3*j+2] += pow(Result.second[0] , 2);
-							batchResult->M3[3*j+2] += pow(Result.second[0] , 3);
-							batchResult->M4[3*j+2] += pow(Result.second[0] , 4);
-							batchResult->Min[3*j+2] = fmin(batchResult->Min[3*j+2],Result.second[0]);
-							batchResult->Max[3*j+2] = fmax(batchResult->Max[3*j+2],Result.second[0]);
-							
-                            }
+							if(singleIS)for(int j = i2; j<= Nmax; j++){
+								batchResult->Mean[3*j+1]+=1;
+								batchResult->Mean[3*j+2] += Result.second[0];
+								batchResult->M2[3*j+2] += pow(Result.second[0] , 2);
+								batchResult->M3[3*j+2] += pow(Result.second[0] , 3);
+								batchResult->M4[3*j+2] += pow(Result.second[0] , 4);
+								batchResult->Min[3*j+2] = fmin(batchResult->Min[3*j+2],Result.second[0]);
+								batchResult->Max[3*j+2] = fmax(batchResult->Max[3*j+2],Result.second[0]);
+                            } else {
+								batchResult->Isucc+=1;
+								batchResult->Mean[3*i+1]+=1;
+								batchResult->Mean[3*i+2] += Result.second[0];
+								batchResult->M2[3*i+2] += pow(Result.second[0] , 2);
+								batchResult->M3[3*i+2] += pow(Result.second[0] , 3);
+								batchResult->M4[3*i+2] += pow(Result.second[0] , 4);
+								batchResult->Min[3*i+2] = fmin(batchResult->Min[3*i+2],Result.second[0]);
+								batchResult->Max[3*i+2] = fmax(batchResult->Max[3*i+2],Result.second[0]);
+							}
                             
                         }
-						for(int j = 0; j<= Nmax; j++)batchResult->M2[3*j+1]+=1;
+						if(singleIS){for(int j = 0; j<= Nmax; j++)batchResult->M2[3*j+1]+=1;}
+						else batchResult->M2[3*i+1]+=1;
                         batchResult->I++;
                         
                         
