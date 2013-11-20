@@ -122,6 +122,8 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                 if (it->maxStep == fg->right -n) {
                     //We first need to initialise the trajectory
                     Simulator::InitialEventsQueue();
+					if(verbose>=2)
+						cerr << "new Path: " << it->maxStep << "\tmuinit: " << mu() << endl;
                     it->saveState(&N,&A,&EQ);
                 } else {
                     
