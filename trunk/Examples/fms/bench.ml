@@ -22,14 +22,16 @@ let joblist2 = [
   "S1_2_50", "Policy1.grml" , "rho2_50.grml" ;
   "S1_2_100", "Policy1.grml" , "rho2_100.grml" ;
   "S1_2_400", "Policy1.grml" , "rho2_400.grml" ;
-  "S1_2_6400", "Policy1.grml" , "rho2_6400.grml" ;
+  "S1_2_1600", "Policy1.grml" , "rho2_1600.grml" ;
+  "S1_2_6400", "Policy1.grml" , "rho2_6400.grml" ;     
   "S1_2_25600", "Policy1.grml" , "rho2_25600.grml" ;
   "S1_2_102400", "Policy1.grml" , "rho2_102400.grml";
   "S2_2_10", "Policy2.grml" , "rho2_10.grml" ;
   "S2_2_50", "Policy2.grml" , "rho2_50.grml" ;
   "S2_2_100", "Policy2.grml" , "rho2_100.grml" ;
   "S2_2_400", "Policy2.grml" , "rho2_400.grml" ;
-  "S2_2_6400", "Policy2.grml" , "rho2_6400.grml" ;
+ "S2_2_1600", "Policy2.grml" , "rho2_1600.grml" ;          
+ "S2_2_6400", "Policy2.grml" , "rho2_6400.grml" ;
   "S2_2_25600", "Policy2.grml" , "rho2_25600.grml" ;
   "S2_2_102400", "Policy2.grml" , "rho2_102400.grml"]
 
@@ -113,6 +115,7 @@ let joblist5 = [
   "S1_5_50", "Policy1Fail.grml" , "rho2_50.grml" ;
   "S1_5_100", "Policy1Fail.grml" , "rho2_100.grml" ;
   "S1_5_400", "Policy1Fail.grml" , "rho2_400.grml" ;
+  "S1_5_1600", "Policy1Fail.grml" , "rho2_1600.grml" ;   
   "S1_5_6400", "Policy1Fail.grml" , "rho2_6400.grml" ;
   "S1_5_25600", "Policy1Fail.grml" , "rho2_25600.grml" ;
   "S1_5_102400", "Policy1Fail.grml" , "rho2_102400.grml";
@@ -120,6 +123,7 @@ let joblist5 = [
   "S2_5_50", "Policy2Fail.grml" , "rho2_50.grml" ;
   "S2_5_100", "Policy2Fail.grml" , "rho2_100.grml" ;
   "S2_5_400", "Policy2Fail.grml" , "rho2_400.grml" ;
+  "S2_5_400", "Policy2Fail.grml" , "rho2_1600.grml" ;   
   "S2_5_6400", "Policy2Fail.grml" , "rho2_6400.grml" ;
   "S2_5_25600", "Policy2Fail.grml" , "rho2_25600.grml" ;
   "S2_5_102400", "Policy2Fail.grml" , "rho2_102400.grml"]
@@ -163,7 +167,7 @@ let joblist6 = [
 
 let execCosmos resultFile csvfile (name,model,prop)  =
   try
-    let r = exec_cosmos model prop 100 16 "--width 0.01" true in
+    let r = exec_cosmos model prop 100 16 "--width 0.01 --max-run 1000000000" true in
     ignore (Sys.command (sprintf "mv Result.res %s.res" name));
     output_value resultFile r;
     print_result csvfile "," r;
