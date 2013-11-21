@@ -921,7 +921,8 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 						coldom = MyGspn->placeStruct[Gml2Place[sourceGML]].colorDom;
 					else coldom = MyGspn->placeStruct[Gml2Place[atoi(target.c_str())]].colorDom;
 					
-					if (toklist.size()>0)valuation.append(" + ");
+					if (toklist.size()>0)valuation.append(" += ");
+					valuation.append("(");
 					
 					if(tokenType.hasAll)
 						valuation.append(MyGspn->colDoms[coldom].cname());
@@ -952,8 +953,9 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 							valuation.append(")");
 						}
 					}
-					valuation.append(") * ");
+					valuation.append(") * (");
 					valuation.append(tokenType.mult);
+					valuation.append("))");
 					toklist.push_back(tokenType);
 				} else cout << " Fail to parse GML: arc,valuation"<< endl;
             }
@@ -964,7 +966,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         if(arcType.compare("inhibitorarc")==0){
             if(Evaluate_gml.parse(valuation)){
                 MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=1;
-                MyGspn->inhibArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= valuation;
+                MyGspn->inhibArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= "("+valuation+")";
 				MyGspn->inhibArcsTok[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= toklist;
 			}else {
                 MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=Evaluate_gml.IntResult;
@@ -973,7 +975,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         }else {
             if(Evaluate_gml.parse(valuation)){
                 MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=1;
-                MyGspn->inArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
+                MyGspn->inArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= "("+valuation+")";
 				MyGspn->inArcsTok[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= toklist;
             }
             else {
@@ -984,7 +986,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
     }else {
         if(Evaluate_gml.parse(valuation)){
             MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=1;
-            MyGspn->outArcsStr[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=valuation;
+            MyGspn->outArcsStr[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]="("+valuation+")";
 			MyGspn->outArcsTok[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]= toklist;
         }
         else {

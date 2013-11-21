@@ -37,7 +37,6 @@
 		032A708D181BC0D6006D7332 /* stateSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7063181BC0D6006D7332 /* stateSpace.cpp */; };
 		032A70A7181BC307006D7332 /* expatmodelparser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A709D181BC307006D7332 /* expatmodelparser.cc */; };
 		032A70A8181BC307006D7332 /* modelwriter.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A70A2181BC307006D7332 /* modelwriter.cc */; };
-		034509CD16A83753002088B3 /* libClientSim.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 034509A616A80AC8002088B3 /* libClientSim.a */; };
 		0365553A18292D10001B5947 /* foxglynn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0365553818292D10001B5947 /* foxglynn.cpp */; };
 		0365553B18292D10001B5947 /* foxglynn.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0365553918292D10001B5947 /* foxglynn.hpp */; };
 		03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */; };
@@ -46,6 +45,22 @@
 		03D9C814168467F200AADB3D /* readPlast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63121636BCF6007FCB32 /* readPlast.cpp */; };
 		03D9C81616846A8200AADB3D /* generateSPN.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03D9C81516846A8200AADB3D /* generateSPN.cpp */; };
 		03DE63171636BCF6007FCB32 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63111636BCF6007FCB32 /* main.cpp */; };
+		03E39B0C183E48410070911A /* LHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7094181BC14A006D7332 /* LHA.cpp */; };
+		03E39B0E183E484D0070911A /* spn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A709A181BC14A006D7332 /* spn.cpp */; };
+		03E39B0F183E49D30070911A /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703F181BC0D6006D7332 /* BatchR.cpp */; };
+		03E39B10183E49D60070911A /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7042181BC0D6006D7332 /* Event.cpp */; };
+		03E39B11183E49D80070911A /* EventsQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7044181BC0D6006D7332 /* EventsQueue.cpp */; };
+		03E39B12183E49DB0070911A /* LHA_orig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704A181BC0D6006D7332 /* LHA_orig.cpp */; };
+		03E39B13183E49E00070911A /* numericalSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7052181BC0D6006D7332 /* numericalSolver.cpp */; };
+		03E39B14183E49E20070911A /* numSolverBB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7054181BC0D6006D7332 /* numSolverBB.cpp */; };
+		03E39B15183E49E50070911A /* numSolverSH.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7056181BC0D6006D7332 /* numSolverSH.cpp */; };
+		03E39B16183E49E70070911A /* Simulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7058181BC0D6006D7332 /* Simulator.cpp */; };
+		03E39B17183E49E90070911A /* SimulatorRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705E181BC0D6006D7332 /* SimulatorRE.cpp */; };
+		03E39B18183E4A0A0070911A /* SimulatorBoundedRE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705A181BC0D6006D7332 /* SimulatorBoundedRE.cpp */; };
+		03E39B19183E4A0C0070911A /* SimulatorContinuousBounded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A705C181BC0D6006D7332 /* SimulatorContinuousBounded.cpp */; };
+		03E39B1A183E4A0E0070911A /* stateSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7063181BC0D6006D7332 /* stateSpace.cpp */; };
+		03E39B1B183E4A110070911A /* clientsim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7041181BC0D6006D7332 /* clientsim.cpp */; };
+		03E39B1E183E4AC90070911A /* libClientSim.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 034509A616A80AC8002088B3 /* libClientSim.a */; };
 		03FB40F618180F9E001F9988 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03FB40F518180F9D001F9988 /* XCTest.framework */; };
 		03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03FB40FA18180F9E001F9988 /* InfoPlist.strings */; };
 		03FB40FE18180F9E001F9988 /* Cosmos_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FB40FD18180F9E001F9988 /* Cosmos_Tests.m */; };
@@ -53,7 +68,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		034509CE16A851AD002088B3 /* PBXContainerItemProxy */ = {
+		03E39B1C183E4ABD0070911A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
@@ -224,7 +239,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				034509CD16A83753002088B3 /* libClientSim.a in Frameworks */,
+				03E39B1E183E4AC90070911A /* libClientSim.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,7 +602,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				034509CF16A851AD002088B3 /* PBXTargetDependency */,
+				03E39B1D183E4ABD0070911A /* PBXTargetDependency */,
 			);
 			name = CosmosSim;
 			productName = CosmosSim;
@@ -697,6 +712,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				0365553A18292D10001B5947 /* foxglynn.cpp in Sources */,
+				03E39B0F183E49D30070911A /* BatchR.cpp in Sources */,
+				03E39B11183E49D80070911A /* EventsQueue.cpp in Sources */,
+				03E39B12183E49DB0070911A /* LHA_orig.cpp in Sources */,
+				03E39B13183E49E00070911A /* numericalSolver.cpp in Sources */,
+				03E39B15183E49E50070911A /* numSolverSH.cpp in Sources */,
+				03E39B17183E49E90070911A /* SimulatorRE.cpp in Sources */,
+				03E39B16183E49E70070911A /* Simulator.cpp in Sources */,
+				03E39B14183E49E20070911A /* numSolverBB.cpp in Sources */,
+				03E39B1A183E4A0E0070911A /* stateSpace.cpp in Sources */,
+				03E39B1B183E4A110070911A /* clientsim.cpp in Sources */,
+				03E39B19183E4A0C0070911A /* SimulatorContinuousBounded.cpp in Sources */,
+				03E39B18183E4A0A0070911A /* SimulatorBoundedRE.cpp in Sources */,
+				03E39B10183E49D60070911A /* Event.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -704,6 +732,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03E39B0C183E48410070911A /* LHA.cpp in Sources */,
+				03E39B0E183E484D0070911A /* spn.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -755,10 +785,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		034509CF16A851AD002088B3 /* PBXTargetDependency */ = {
+		03E39B1D183E4ABD0070911A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 034509A516A80AC8002088B3 /* ClientSim */;
-			targetProxy = 034509CE16A851AD002088B3 /* PBXContainerItemProxy */;
+			targetProxy = 03E39B1C183E4ABD0070911A /* PBXContainerItemProxy */;
 		};
 		03FB410118180F9E001F9988 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

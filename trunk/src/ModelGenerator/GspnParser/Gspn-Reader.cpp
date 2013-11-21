@@ -500,7 +500,7 @@ void Gspn_Reader::printloot(ofstream& fs, size_t domain, size_t nesting ){
 			mult << "[c" << count << "]";
 		}
 		fs << "\t\tif(" << mult.str() << ")\n\t\t";
-		fs << "\t\t\tout << "<< mult.str();
+		fs << "\t\t\toutprintloot << "<< mult.str();
 		fs << "<< \"<\"";
 		for (size_t count = 0 ; count < dom.colorClassIndex.size(); count++ ) {
 			if( count > 0)fs << " << \",\"";
@@ -683,10 +683,12 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		}
 		header << " += x.mult;\n\t\treturn *this;\n\t}\n";
 		
+		/* Not neaded error prone
 		header << "\t" << it->cname() << "& operator + (const " << it->tokname() << "& x){\n";
 		header << "\t\t"<< it->cname()<< " d(*this);\n\t\td+=x;\n ";
-		header << "\t\treturn *this;\n}\n";
-		
+		header << "\t\treturn d;\n}\n";
+		*/
+		 
 		header << "\t" << it->cname() << "& operator -= (const " << it->tokname() << "& x){\n";
 		header << "\t\tmult";
 		for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
@@ -743,7 +745,9 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		
 		SpnCppFile << "std::ostream& operator << (std::ostream& out, const " << it->cname();
 		SpnCppFile << "& x) {\n";
+		SpnCppFile << "\tstringstream outprintloot;" << endl;
 		printloot(SpnCppFile, it - MyGspn.colDoms.begin(), 0);
+		SpnCppFile << "\tout << outprintloot.str();" << endl;
 		SpnCppFile << "\treturn out;\n}\n";
 		
 		SpnCppFile << "inline bool contains(const "<<it->cname() << "& d1, const " << it->cname() << "& d2){";
