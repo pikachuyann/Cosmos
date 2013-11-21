@@ -26,7 +26,6 @@
 		032A707E181BC0D6006D7332 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7042181BC0D6006D7332 /* Event.cpp */; };
 		032A707F181BC0D6006D7332 /* EventsQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7044181BC0D6006D7332 /* EventsQueue.cpp */; };
 		032A7082181BC0D6006D7332 /* LHA_orig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704A181BC0D6006D7332 /* LHA_orig.cpp */; };
-		032A7084181BC0D6006D7332 /* lumpingfuntriv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A704C181BC0D6006D7332 /* lumpingfuntriv.cpp */; };
 		032A7085181BC0D6006D7332 /* numericalSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7052181BC0D6006D7332 /* numericalSolver.cpp */; };
 		032A7086181BC0D6006D7332 /* numSolverBB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7054181BC0D6006D7332 /* numSolverBB.cpp */; };
 		032A7087181BC0D6006D7332 /* numSolverSH.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7056181BC0D6006D7332 /* numSolverSH.cpp */; };
@@ -145,7 +144,6 @@
 		032A7045181BC0D6006D7332 /* EventsQueue.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueue.hpp; sourceTree = "<group>"; };
 		032A7049181BC0D6006D7332 /* LHA.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LHA.hpp; sourceTree = "<group>"; };
 		032A704A181BC0D6006D7332 /* LHA_orig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA_orig.cpp; sourceTree = "<group>"; };
-		032A704C181BC0D6006D7332 /* lumpingfuntriv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfuntriv.cpp; sourceTree = "<group>"; };
 		032A704E181BC0D6006D7332 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		032A7050181BC0D6006D7332 /* marking.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = marking.hpp; sourceTree = "<group>"; };
 		032A7052181BC0D6006D7332 /* numericalSolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numericalSolver.cpp; sourceTree = "<group>"; };
@@ -349,7 +347,6 @@
 				032A7045181BC0D6006D7332 /* EventsQueue.hpp */,
 				032A7049181BC0D6006D7332 /* LHA.hpp */,
 				032A704A181BC0D6006D7332 /* LHA_orig.cpp */,
-				032A704C181BC0D6006D7332 /* lumpingfuntriv.cpp */,
 				032A704E181BC0D6006D7332 /* Makefile.am */,
 				032A7050181BC0D6006D7332 /* marking.hpp */,
 				032A7052181BC0D6006D7332 /* numericalSolver.cpp */,
@@ -778,7 +775,6 @@
 				032A707E181BC0D6006D7332 /* Event.cpp in Sources */,
 				032A7071181BC0D6006D7332 /* Gspn_gmlparser.cpp in Sources */,
 				032A7073181BC0D6006D7332 /* HaslFormula.cpp in Sources */,
-				032A7084181BC0D6006D7332 /* lumpingfuntriv.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

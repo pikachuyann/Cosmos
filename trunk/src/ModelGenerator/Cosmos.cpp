@@ -334,14 +334,7 @@ bool ParseBuild(parameters& P) {
     string cmd;
 	string bcmd = P.gcccmd + " " + P.gccflags;
 	
-	if(!P.RareEvent){
-		//If rareenvent handling is not require copy an empty lumping function code to the temporary directory
-        string lumpfunpath = P.tmpPath + "/lumpingfun.cpp";
-		ofstream lumpfun(lumpfunpath.c_str(), ios::out | ios::trunc);
-		lumpfun << "void SPN::print_state(const vector<int> &vect){}" << endl;
-        lumpfun << "void SPN::lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
-        lumpfun.close();
-    }else {
+	if(P.RareEvent){
 		//If rareevent handling is require copy the lumping function and table of value to the temporary directory
 		if(P.BoundedRE==0)cmd = "cp muFile " + P.tmpPath +"/muFile";
 		else cmd = "cp matrixFile " + P.tmpPath +"/matrixFile";

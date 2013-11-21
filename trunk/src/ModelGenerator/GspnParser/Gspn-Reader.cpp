@@ -1054,8 +1054,14 @@ void Gspn_Reader::WriteFile(parameters& P){
 	}
 	
 	
-	
-	SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
+	if(P.RareEvent){
+		SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
+	}else{
+		SpnCppFile << "void SPN::print_state(const vector<int> &vect){}" << endl;
+		SpnCppFile << "void SPN::lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
+		SpnCppFile << "bool SPN::precondition(const abstractMarking &M){}" << endl;
+	}
+		
 	SpnCppFile << "#include <iostream>" << endl;
 	
 	//------------- Writing Marking type and header ----------------------------

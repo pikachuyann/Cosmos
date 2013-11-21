@@ -171,6 +171,7 @@ public:
 	void Msimple();
 	void print_state(const vector<int>&);
 	void lumpingFun(const abstractMarking& ,vector<int>&);
+	bool precondition(const abstractMarking&);
 	//-------------------------/Rare Event -------------------------------------
 	
 	/**
