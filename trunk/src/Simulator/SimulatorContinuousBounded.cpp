@@ -123,7 +123,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		numSolv->stepVect();
 		if(verbose>=3)cerr << numSolv->getVect() << endl;
 		n++;
-        if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
+        //if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
         
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
             if(it->maxStep >= fg->right -n){
@@ -140,7 +140,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
                     //We first need to initialise the trajectory
                     Simulator::InitialEventsQueue();
 					if(verbose>=2)
-						cerr << "new Path: " << it->maxStep << "\tmuinit: " << mu() << endl;
+						//cerr << "new Path: " << it->maxStep << "\tmuinit: " << mu() << endl;
                     it->saveState(&N,&A,&EQ);
                 } else {
                     
