@@ -53,6 +53,7 @@ Batch(1000),
 MaxRuns(2000000),
 sequential(true),
 
+comp_uuid("tmpuuid"),
 tmpPath("tmp"),
 tmpStatus(0),
 Path(""),

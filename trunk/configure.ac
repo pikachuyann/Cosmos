@@ -35,6 +35,8 @@ AC_CHECK_HEADERS([float.h inttypes.h libintl.h limits.h stdlib.h string.h sys/io
 
 BOOST_REQUIRE([1.46])
 
+AX_PTHREAD
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST

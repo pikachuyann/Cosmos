@@ -25,6 +25,7 @@
  */
 
 #include "BatchR.hpp"
+#include "sharedMemory.hpp"
 #include "Simulator.hpp"
 #include "SimulatorRE.hpp"
 #include "SimulatorBoundedRE.hpp"
@@ -55,6 +56,9 @@ int main(int argc, char** argv) {
 	//write(STDOUT_FILENO,reinterpret_cast<char*>(&pid),sizeof(pid));
 	//fflush(stdout);
 	//cerr << "pid : "<< pid << endl;
+
+  retrive_segment();
+
 	signal(SIGINT, signalHandler);
 	
 	Simulator* mySim;

@@ -49,6 +49,8 @@ struct parameters {
 	unsigned long int Batch;
 	unsigned long int MaxRuns;
 	bool sequential;
+
+        string comp_uuid;
 	string tmpPath;
 	unsigned int tmpStatus; // 0 create and destroy tmp,
 	//1 do not build destroy,2 do not destroy, 3 do not build do not destoy

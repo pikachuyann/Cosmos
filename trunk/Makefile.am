@@ -65,6 +65,9 @@ EXTRA_DIST = Examples/Makefile Examples/testTeamCity.ml\
 	prism
 
 
+AM_LDFLAGS = -lrt $(PTHREAD_LIBS)
+AM_CPPFLAGS = $(BOOST_CPPFLAGS)
+
 
 # AM_CPPFLAGS = $(BOOST_CPPFLAGS)
 # LIBS = $(BOOST_THREAD_LIBS)

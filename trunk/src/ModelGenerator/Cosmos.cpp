@@ -46,7 +46,7 @@
 #include "GspnParser/Gspn-Reader.hpp"
 #include "server.hpp"
 #include "parameters.hpp"
-
+#include "../Simulator/sharedMemory.hpp"
 
 /**
  * Retrive the real absolute path of the executable of Cosmos
@@ -434,6 +434,7 @@ std::string systemStringResult(const char* cmd) {
     return result;
 }
 
+
 /**
  * The global parameter structure
  */
@@ -505,12 +506,13 @@ int main(int argc, char** argv) {
 		}
 	}
 	
+	build_segment();
 	//Lauch the client for generating the state space or for launching simulators.
 	if(P.computeStateSpace>0){
-		launchExport(P);
+	  launchExport(P);
 	} else launchServer(P);
 	
 	cleanTmp(P);
-	
+
 	return (EXIT_SUCCESS);
 }

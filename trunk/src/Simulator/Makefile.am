@@ -17,9 +17,10 @@ libClientSim_la_SOURCES = \
 	SimulatorBoundedRE.cpp SimulatorBoundedRE.hpp \
 	foxglynn.cpp foxglynn.hpp \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
+	sharedMemory.cpp sharedMemory.hpp \
 	clientsim.cpp
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp
 includesdir = $(includedir)
 
-AM_CPPFLAGS = $(BOOST_CPPFLAGS)
+AM_LDFLAGS = -lrt $(PTHREAD_LIBS)

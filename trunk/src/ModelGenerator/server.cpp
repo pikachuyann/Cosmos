@@ -207,14 +207,13 @@ void freestr(const char *argv[],size_t t){
 		free((void *)argv[i]);
 }
 
-
 /**
  * Launch the P.Njob copy of the simulator with the parameters define in P
  * @param P the structure of Parameters
  */
 void launch_clients(parameters& P){
     signal(SIGCHLD , signalHandler);
-	signal(SIGINT, signalHandler);
+    signal(SIGINT, signalHandler);
 	//pid_t readpid;
 	for(int i = 0;i<P.Njob;i++){
 		string cmd = P.tmpPath + "/ClientSim";;
