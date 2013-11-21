@@ -376,7 +376,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		case RE_Continuous:
 	    {
 		//batch.print();
-		size_t N = batch.TableLength/3;
+		size_t N = batch.TableLength/2;
 		std::cout << "tablelength = "<< batch.TableLength << std::endl;
 		double error = 1- Level;
 		double LevelN = 1- error/(N+2);
@@ -393,34 +393,38 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			int i2 = (i>0 && P.continuousStep>1.0 )? i-1 : i;
 			
 			//evaluate the likelyhood:
-			likelyhood->mean = batch.Mean[3*i+2]/batch.Mean[3*i+1];
-			double var = (batch.M2[3*i+2]/batch.Mean[3*i+1]) - pow((batch.Mean[3*i+2]/batch.Mean[3*i+1]),2);
+			likelyhood->mean = batch.Mean[2*i+1]/batch.Mean[2*i];
+			double var = (batch.M2[2*i+1]/batch.Mean[2*i]) - pow((batch.Mean[2*i+1]/batch.Mean[2*i]),2);
 			double widthN = 0.0;
-			if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[3*i+1]);
-			likelyhood->low = batch.Min[3*i2+2];
-			likelyhood->up = likelyhood->mean + widthN/2.0;
+			if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[2*i]);
+			likelyhood->low = batch.Min[2*i2+1];
+			likelyhood->up = batch.Max[2*i+1];  //likelyhood->mean + widthN/2.0;
 			
 			//evaluate probability to reach final state:
-			reacheabilityprob->mean = batch.Mean[3*i+1]/batch.M2[3*i+1];
-      		reacheabilityprob->low = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.M2[3*i2+1],batch.Mean[3*i2+1], (1-LevelN)/2);
-			reacheabilityprob->up = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.M2[3*i+1],batch.Mean[3*i+1], (1-LevelN)/2);
+			reacheabilityprob->mean = batch.Mean[2*i]/batch.M2[2*i];
+      		reacheabilityprob->low = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.M2[2*i2],batch.Mean[2*i2], (1-LevelN)/2);
+			reacheabilityprob->up = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.M2[2*i],batch.Mean[2*i], (1-LevelN)/2);
 			//evaluate poisson:
-			poisson->mean = batch.Mean[3*i];
-			poisson->low = (1-Value2)*batch.Mean[3*i];
-			poisson->up = batch.Mean[3*i];
+			poisson->mean = batch.Min[2*i];
+			poisson->low = (1-Value2)*batch.Min[2*i];
+			poisson->up = batch.Min[2*i];
+			
+			if(P.verbose>1){
+				std::cout << "i: " << i<< "\tsucc: "<< batch.Mean[2*i]<< "\tLikelyhood: "  << likelyhood->mean << "\t[" << likelyhood->low<<";"<<likelyhood->up << "]\twidth: "<< widthN <<"\tpoisson: " << batch.Min[2*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]";
+				std::cerr << i << ",\t" << batch.Mean[2*i] << ",\t" << batch.M2[2*i] << ",\t" << batch.Mean[2*i+1]/batch.Mean[2*i] << ",\t" << batch.M2[2*i+1]/batch.Mean[2*i] << ",\t" << batch.Min[2*i+1] << ",\t" << batch.Max[2*i+1] << ",\t" << batch.Mean[2*i] << std::endl;
+			}
 			
 			//Multiply the three confidence interval:
 			*poisson *= *likelyhood;
 	        *poisson *= *reacheabilityprob;
-			
+
 			if(P.verbose>1){
-				std::cout << "i: " << i<< "\tsucc: "<< batch.Mean[3*i+1]<< "\tLikelyhood: "  << likelyhood->mean << "\t[" << likelyhood->low<<";"<<likelyhood->up << "]\twidth: "<< widthN <<"\tpoisson: " << batch.Mean[3*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
-				std::cerr << i << ",\t" << batch.Mean[3*i+1] << ",\t" << batch.M2[3*i+1] << ",\t" << batch.Mean[3*i+2]/batch.Mean[3*i+1] << ",\t" << batch.M2[3*i+2]/batch.Mean[3*i+1] << ",\t" << batch.Min[3*i+2] << ",\t" << batch.Max[3*i+2] << ",\t" << batch.Mean[3*i] << std::endl;
+				std::cout << "\tresult: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
 			}
-			
+
 			
 			//Add the confidence interval to the total one.
-			if(poisson->width() < 1.0)
+			//if(poisson->width() < 1.0)
 				*totalInt += *poisson;
 			
 		}
@@ -431,7 +435,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		
 		//Add the error made on the left of the truncation point.
 		ConfInt* leftTruncationError =
-		new ConfInt(0.0,0.0,batch.Mean[2]/batch.Mean[1]* Value2/2);
+		new ConfInt(0.0,0.0,batch.Mean[1]/batch.M2[0]* Value2/2);
 		
 		//Add the error made on the rigth trucation point TODO!
 		ConfInt* rightTruncationError =

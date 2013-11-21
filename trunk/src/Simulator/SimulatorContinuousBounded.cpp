@@ -82,15 +82,18 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     int n =-1;
     
 
-    BatchR* batchResult = new BatchR(3*(Nmax+1));
+    BatchR* batchResult = new BatchR(2*(Nmax+1));
 
+	
 	//Copy and sum Poisson Weight
-    for(int i=left; i<= fg->right; i++){
+    for(int i =0; i<= Nmax; i++)
+		batchResult->Min[2*i] = 0.0;
+	for(int i=left; i<= fg->right; i++){
 		int j = (int)ceil((double)( i - left)/jumpsize);
-		batchResult->Mean[3*j] += fg->weights[i - fg->left];
+		batchResult->Min[2*j] += fg->weights[i - fg->left];
 	}
 	for(int i =0; i<= Nmax; i++)
-		batchResult->Mean[3*i] /= fg->total_weight;
+		batchResult->Min[2*i] /= fg->total_weight;
 		
 	list<simulationState> statevect((Nmax+1)*BatchSize);
 	
@@ -156,27 +159,26 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 							
 							batchResult->Isucc+=1;
 							if(singleIS)for(int j = i2; j<= Nmax; j++){
-								batchResult->Mean[3*j+1]+=1;
-								batchResult->Mean[3*j+2] += Result.second[0];
-								batchResult->M2[3*j+2] += pow(Result.second[0] , 2);
-								batchResult->M3[3*j+2] += pow(Result.second[0] , 3);
-								batchResult->M4[3*j+2] += pow(Result.second[0] , 4);
-								batchResult->Min[3*j+2] = fmin(batchResult->Min[3*j+2],Result.second[0]);
-								batchResult->Max[3*j+2] = fmax(batchResult->Max[3*j+2],Result.second[0]);
+								batchResult->Mean[2*j]+=1;
+								batchResult->Mean[2*j+1] += Result.second[0];
+								batchResult->M2[2*j+1] += pow(Result.second[0] , 2);
+								batchResult->M3[2*j+1] += pow(Result.second[0] , 3);
+								batchResult->M4[2*j+1] += pow(Result.second[0] , 4);
+								batchResult->Min[2*j+1] = fmin(batchResult->Min[2*j+1],Result.second[0]);
+								batchResult->Max[2*j+1] = fmax(batchResult->Max[2*j+1],Result.second[0]);
                             } else {
-								batchResult->Isucc+=1;
-								batchResult->Mean[3*i+1]+=1;
-								batchResult->Mean[3*i+2] += Result.second[0];
-								batchResult->M2[3*i+2] += pow(Result.second[0] , 2);
-								batchResult->M3[3*i+2] += pow(Result.second[0] , 3);
-								batchResult->M4[3*i+2] += pow(Result.second[0] , 4);
-								batchResult->Min[3*i+2] = fmin(batchResult->Min[3*i+2],Result.second[0]);
-								batchResult->Max[3*i+2] = fmax(batchResult->Max[3*i+2],Result.second[0]);
+								batchResult->Mean[2*i]+=1;
+								batchResult->Mean[2*i+1] += Result.second[0];
+								batchResult->M2[2*i+1] += pow(Result.second[0] , 2);
+								batchResult->M3[2*i+1] += pow(Result.second[0] , 3);
+								batchResult->M4[2*i+1] += pow(Result.second[0] , 4);
+								batchResult->Min[2*i+1] = fmin(batchResult->Min[2*i+1],Result.second[0]);
+								batchResult->Max[2*i+1] = fmax(batchResult->Max[2*i+1],Result.second[0]);
 							}
                             
                         }
-						if(singleIS){for(int j = 0; j<= Nmax; j++)batchResult->M2[3*j+1]+=1;}
-						else batchResult->M2[3*i+1]+=1;
+						if(singleIS){for(int j = 0; j<= Nmax; j++)batchResult->M2[2*j]+=1;}
+						else batchResult->M2[2*i]+=1;
                         batchResult->I++;
                         
                         
