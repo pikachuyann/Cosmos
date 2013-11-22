@@ -114,7 +114,7 @@
 		032A7011181BC0D6006D7332 /* Eval-scanner.ll */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.llvm; path = "Eval-scanner.ll"; sourceTree = "<group>"; };
 		032A7012181BC0D6006D7332 /* Eval.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Eval.cpp; sourceTree = "<group>"; };
 		032A7013181BC0D6006D7332 /* Eval.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Eval.hpp; sourceTree = "<group>"; };
-		032A701C181BC0D6006D7332 /* Gspn-parser.yy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Gspn-parser.yy"; sourceTree = "<group>"; };
+		032A701C181BC0D6006D7332 /* Gspn-parser.yy */ = {isa = PBXFileReference; explicitFileType = sourcecode.yacc; fileEncoding = 4; path = "Gspn-parser.yy"; sourceTree = "<group>"; };
 		032A701D181BC0D6006D7332 /* Gspn-Reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Reader.cpp"; sourceTree = "<group>"; };
 		032A701E181BC0D6006D7332 /* Gspn-Reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Reader.hpp"; sourceTree = "<group>"; };
 		032A701F181BC0D6006D7332 /* Gspn-scanner.ll */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.llvm; path = "Gspn-scanner.ll"; sourceTree = "<group>"; };
@@ -122,7 +122,7 @@
 		032A7021181BC0D6006D7332 /* Gspn_gmlparser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Gspn_gmlparser.hpp; sourceTree = "<group>"; };
 		032A7026181BC0D6006D7332 /* HaslFormula.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HaslFormula.cpp; sourceTree = "<group>"; };
 		032A7027181BC0D6006D7332 /* HaslFormula.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = HaslFormula.hpp; sourceTree = "<group>"; };
-		032A702D181BC0D6006D7332 /* Lha-parser.yy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Lha-parser.yy"; sourceTree = "<group>"; };
+		032A702D181BC0D6006D7332 /* Lha-parser.yy */ = {isa = PBXFileReference; explicitFileType = sourcecode.yacc; fileEncoding = 4; path = "Lha-parser.yy"; sourceTree = "<group>"; };
 		032A702E181BC0D6006D7332 /* Lha-Reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Lha-Reader.cpp"; sourceTree = "<group>"; };
 		032A702F181BC0D6006D7332 /* Lha-Reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Lha-Reader.hpp"; sourceTree = "<group>"; };
 		032A7030181BC0D6006D7332 /* Lha-scanner.ll */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm.llvm; path = "Lha-scanner.ll"; sourceTree = "<group>"; };

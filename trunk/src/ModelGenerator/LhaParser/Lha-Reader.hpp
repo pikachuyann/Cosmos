@@ -63,10 +63,11 @@ struct variables {
 	};
 };
 
-struct LHA_D {
+struct LhaType {
 	GSPN *MyGspn;
-	LHA_D(GSPN& Mspn) : MyGspn(&Mspn),NbLoc(0) {}
-    string label;
+	LhaType(GSPN& Mspn);
+    
+	string label;
     size_t NbLoc; // number of locations
 	
     set <unsigned int, less<unsigned int> > InitLoc; // initial locations
@@ -124,9 +125,6 @@ struct LHA_D {
     map <std::string, int> LhaFunction;
 	
 };
-
-typedef struct LHA_D LhaType;
-
 
 
 #define LHA_DECL                                            \
