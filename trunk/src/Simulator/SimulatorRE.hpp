@@ -46,9 +46,9 @@ protected:
     stateSpace muprob;
     
 	bool doubleIS_mode;
-	
+	bool rareEventEnabled;
 	virtual void InitialEventsQueue();
-	
+	virtual void SimulateSinglePath();
 	virtual void returnResultTrue();
 	virtual void updateSPN(size_t,const abstractBinding&);
 	virtual void GenerateEvent(Event &,size_t,const abstractBinding& );

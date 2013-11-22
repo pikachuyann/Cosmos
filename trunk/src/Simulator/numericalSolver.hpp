@@ -58,6 +58,9 @@ public:
 	//! Reset to the initial state.
 	virtual void reset();
 	
+	//! Switch off rare event acceleration: return vector of 1
+	virtual void switchOff();
+	
 	//! Return a vector of the current distribution
 	virtual boostmat::vector<double> getVect();
 	virtual double getMu(int);

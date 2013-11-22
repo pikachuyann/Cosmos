@@ -337,6 +337,7 @@
 		032A703E181BC0D6006D7332 /* Simulator */ = {
 			isa = PBXGroup;
 			children = (
+				032A704E181BC0D6006D7332 /* Makefile.am */,
 				0365553818292D10001B5947 /* foxglynn.cpp */,
 				0365553918292D10001B5947 /* foxglynn.hpp */,
 				032A703F181BC0D6006D7332 /* BatchR.cpp */,
@@ -347,7 +348,7 @@
 				032A7045181BC0D6006D7332 /* EventsQueue.hpp */,
 				032A7049181BC0D6006D7332 /* LHA.hpp */,
 				032A704A181BC0D6006D7332 /* LHA_orig.cpp */,
-				032A704E181BC0D6006D7332 /* Makefile.am */,
+				032A7062181BC0D6006D7332 /* spn.hpp */,
 				032A7050181BC0D6006D7332 /* marking.hpp */,
 				032A7052181BC0D6006D7332 /* numericalSolver.cpp */,
 				032A7053181BC0D6006D7332 /* numericalSolver.hpp */,
@@ -364,7 +365,6 @@
 				032A705C181BC0D6006D7332 /* SimulatorContinuousBounded.cpp */,
 				032A705D181BC0D6006D7332 /* SimulatorContinuousBounded.hpp */,
 				032A7060181BC0D6006D7332 /* sparse_io.hpp */,
-				032A7062181BC0D6006D7332 /* spn.hpp */,
 				032A7063181BC0D6006D7332 /* stateSpace.cpp */,
 				032A7064181BC0D6006D7332 /* stateSpace.hpp */,
 				032A7041181BC0D6006D7332 /* clientsim.cpp */,

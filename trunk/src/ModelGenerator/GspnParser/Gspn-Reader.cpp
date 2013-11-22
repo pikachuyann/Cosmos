@@ -1059,7 +1059,7 @@ void Gspn_Reader::WriteFile(parameters& P){
 	}else{
 		SpnCppFile << "void SPN::print_state(const vector<int> &vect){}" << endl;
 		SpnCppFile << "void SPN::lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
-		SpnCppFile << "bool SPN::precondition(const abstractMarking &M){}" << endl;
+		SpnCppFile << "bool SPN::precondition(const abstractMarking &M){return true;}" << endl;
 	}
 		
 	SpnCppFile << "#include <iostream>" << endl;
