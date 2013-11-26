@@ -11,7 +11,9 @@
 	const int _nb_Place_all_passive=8;
 	const int _nb_Place_updating=9;
 	const int _nb_Place_WaitMutex=10;
-#include "lumpingfun.cpp"
+void SPN::print_state(const vector<int> &vect){}
+void SPN::lumpingFun(const abstractMarking &M,vector<int> &vect){}
+bool SPN::precondition(const abstractMarking &M){return true;}
 #include <iostream>
 #include "marking.hpp"
 #include "markingImpl.hpp"
@@ -110,20 +112,9 @@ void abstractMarking::swap(abstractMarking& m) {
 	P = tmp;
 }
 void abstractMarking::printHeader(ostream &s)const{
-	s  << setw(17) << "RecBuff" << setw(17) << "all_active" << setw(17) << "Active" << setw(17) << "Mutex" << setw(17) << "Message" << setw(17) << "Modify" << setw(17) << "MesBuffReply" << setw(17) << "Acknowledge" << setw(17) << "all_passive" << setw(17) << "updating" << setw(17) << "WaitMutex";}
+}
 
 void abstractMarking::print(ostream &s)const{
-	s << setw(17) << P->_PL_RecBuff;
-	s << setw(17) << P->_PL_all_active;
-	s << setw(17) << P->_PL_Active;
-	s << setw(17) << P->_PL_Mutex;
-	s << setw(17) << P->_PL_Message;
-	s << setw(17) << P->_PL_Modify;
-	s << setw(17) << P->_PL_MesBuffReply;
-	s << setw(17) << P->_PL_Acknowledge;
-	s << setw(17) << P->_PL_all_passive;
-	s << setw(17) << P->_PL_updating;
-	s << setw(17) << P->_PL_WaitMutex;
 }
 
 int abstractMarking::getNbOfTokens(int p)const {
@@ -183,55 +174,29 @@ const char *Color_site_names[Color_site_Total] = {
 "s1","s2","s3","s4",
 };
 const char *Color_file_names[Color_file_Total] = {
-"f1","f2","f3","f4",
+"f1","f2",
 };
 SPN::SPN():
 pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
-    Path ="databasec4f4";
+    Path ="database";
 	PossiblyEnabled = vector< set<int> >(8);
-	PossiblyEnabled[0].insert( 5 );
-	PossiblyEnabled[1].insert( 4 );
+	PossiblyEnabled[0].insert( 6 );
+	PossiblyEnabled[1].insert( 3 );
 	PossiblyEnabled[2].insert( 0 );
-	PossiblyEnabled[2].insert( 4 );
-	PossiblyEnabled[3].insert( 2 );
-	PossiblyEnabled[4].insert( 3 );
-	PossiblyEnabled[4].insert( 7 );
+	PossiblyEnabled[2].insert( 3 );
+	PossiblyEnabled[3].insert( 4 );
+	PossiblyEnabled[3].insert( 7 );
+	PossiblyEnabled[4].insert( 2 );
+	PossiblyEnabled[5].insert( 1 );
 	PossiblyEnabled[5].insert( 6 );
-	PossiblyEnabled[6].insert( 1 );
 	PossiblyEnabled[6].insert( 5 );
-	PossiblyEnabled[7].insert( 3 );
+	PossiblyEnabled[7].insert( 4 );
 
 	PossiblyDisabled = vector< set<int> >(8);
 
 	FreeMarkDepT = vector< set<int> >(8);
 
-    Place[0].label =" RecBuff";
-    Place[0].isTraced = 1;
-    Place[1].label =" all_active";
-    Place[1].isTraced = 1;
-    Place[2].label =" Active";
-    Place[2].isTraced = 1;
-    Place[3].label =" Mutex";
-    Place[3].isTraced = 1;
-    Place[4].label =" Message";
-    Place[4].isTraced = 1;
-    Place[5].label =" Modify";
-    Place[5].isTraced = 1;
-    Place[6].label =" MesBuffReply";
-    Place[6].isTraced = 1;
-    Place[7].label =" Acknowledge";
-    Place[7].isTraced = 1;
-    Place[8].label =" all_passive";
-    Place[8].isTraced = 1;
-    Place[9].label =" updating";
-    Place[9].isTraced = 1;
-    Place[10].label =" WaitMutex";
-    Place[10].isTraced = 1;
-	Transition[0] = _trans(0,Timed,EXPONENTIAL,0,16);
-	Transition[0].DistParams.push_back(" 5" );
-	Transition[0].label = "SendMsg";
-	Transition[0].priority = "1";
-	Transition[0].weight = "1";
+	Transition[0] = _trans(0,Timed,EXPONENTIAL,0,8);
 	{abstractBinding bl = Transition[0].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -240,11 +205,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[0].bindingLinkTable[bl.idTotal()]= Transition[0].bindingList.size()-1; 
 		}
 	}}
-	Transition[1] = _trans(1,Timed,EXPONENTIAL,0,16);
-	Transition[1].DistParams.push_back(" 5" );
-	Transition[1].label = "SendReply";
-	Transition[1].priority = "1";
-	Transition[1].weight = "1";
+	Transition[1] = _trans(1,Timed,EXPONENTIAL,0,8);
 	{abstractBinding bl = Transition[1].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -253,11 +214,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[1].bindingLinkTable[bl.idTotal()]= Transition[1].bindingList.size()-1; 
 		}
 	}}
-	Transition[2] = _trans(2,Timed,EXPONENTIAL,0,16);
-	Transition[2].DistParams.push_back(" 0.2" );
-	Transition[2].label = "Change";
-	Transition[2].priority = "1";
-	Transition[2].weight = "1";
+	Transition[2] = _trans(2,Timed,EXPONENTIAL,0,8);
 	{abstractBinding bl = Transition[2].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -266,11 +223,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[2].bindingLinkTable[bl.idTotal()]= Transition[2].bindingList.size()-1; 
 		}
 	}}
-	Transition[3] = _trans(3,Timed,DETERMINISTIC,0,16);
-	Transition[3].DistParams.push_back(" 0" );
-	Transition[3].label = "Acquire";
-	Transition[3].priority = "1";
-	Transition[3].weight = "1";
+	Transition[3] = _trans(3,Timed,DETERMINISTIC,0,8);
 	{abstractBinding bl = Transition[3].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -279,11 +232,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[3].bindingLinkTable[bl.idTotal()]= Transition[3].bindingList.size()-1; 
 		}
 	}}
-	Transition[4] = _trans(4,Timed,DETERMINISTIC,0,16);
-	Transition[4].DistParams.push_back(" 0" );
-	Transition[4].label = "Release";
-	Transition[4].priority = "1";
-	Transition[4].weight = "1";
+	Transition[4] = _trans(4,Timed,DETERMINISTIC,0,8);
 	{abstractBinding bl = Transition[4].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -292,11 +241,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[4].bindingLinkTable[bl.idTotal()]= Transition[4].bindingList.size()-1; 
 		}
 	}}
-	Transition[5] = _trans(5,Timed,DETERMINISTIC,0,16);
-	Transition[5].DistParams.push_back(" 0" );
-	Transition[5].label = "Update";
-	Transition[5].priority = "1";
-	Transition[5].weight = "1";
+	Transition[5] = _trans(5,Timed,EXPONENTIAL,0,8);
 	{abstractBinding bl = Transition[5].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -305,11 +250,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[5].bindingLinkTable[bl.idTotal()]= Transition[5].bindingList.size()-1; 
 		}
 	}}
-	Transition[6] = _trans(6,Timed,EXPONENTIAL,0,16);
-	Transition[6].DistParams.push_back(" 0.2" );
-	Transition[6].label = "end_update";
-	Transition[6].priority = "1";
-	Transition[6].weight = "1";
+	Transition[6] = _trans(6,Timed,DETERMINISTIC,0,8);
 	{abstractBinding bl = Transition[6].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -318,11 +259,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[6].bindingLinkTable[bl.idTotal()]= Transition[6].bindingList.size()-1; 
 		}
 	}}
-	Transition[7] = _trans(7,Timed,EXPONENTIAL,0,16);
-	Transition[7].DistParams.push_back(" 5.0" );
-	Transition[7].label = "Start";
-	Transition[7].priority = "1";
-	Transition[7].weight = "1";
+	Transition[7] = _trans(7,Timed,EXPONENTIAL,0,8);
 	{abstractBinding bl = Transition[7].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -353,7 +290,7 @@ switch (t){
     return true;
 
 		break;
-	case 5:	//Update
+	case 6:	//Update
     if ( !(((SF_Token(b.P->s, b.P->f) * (1))) < 1)) 
         if (!(contains(Marking.P->_PL_RecBuff , ((SF_Token(b.P->s, b.P->f) * (1)))))) return false;
     if ( !(((site_Token(b.P->s) * (1))) < 1)) 
@@ -361,13 +298,13 @@ switch (t){
     return true;
 
 		break;
-	case 6:	//end_update
+	case 5:	//end_update
     if ( !(((SF_Token(b.P->s, b.P->f) * (1))) < 1)) 
         if (!(contains(Marking.P->_PL_updating , ((SF_Token(b.P->s, b.P->f) * (1)))))) return false;
     return true;
 
 		break;
-	case 3:	//Acquire
+	case 4:	//Acquire
     if ( !(((file_Token(b.P->f) * (1))) < 1)) 
         if (!(contains(Marking.P->_PL_Mutex , ((file_Token(b.P->f) * (1)))))) return false;
     if ( !(((SF_Token(b.P->s, b.P->f) * (1))) < 1)) 
@@ -384,8 +321,8 @@ switch (t){
 	default:	//Release,
     if ( !(((SF_Token(b.P->s, b.P->f) * (1))) < 1)) 
         if (!(contains(Marking.P->_PL_Active , ((SF_Token(b.P->s, b.P->f) * (1)))))) return false;
-    if ( !(((SF_Domain(Color_site_All, b.P->f.c0) * (1)) += (SF_Token(b.P->s, b.P->f) * (-1))) < 1)) 
-        if (!(contains(Marking.P->_PL_Acknowledge , ((SF_Domain(Color_site_All, b.P->f.c0) * (1)) += (SF_Token(b.P->s, b.P->f) * (-1)))))) return false;
+    if ( !(((SF_Domain(Color_site_All, b.P->f.c0) * (1))) < 1)) 
+        if (!(contains(Marking.P->_PL_Acknowledge , ((SF_Domain(Color_site_All, b.P->f.c0) * (1)))))) return false;
     return true;
 
 }
@@ -413,11 +350,22 @@ void SPN::fire(size_t t, const abstractBinding& b){
 			SF_Domain tmpMark_Message = Marking.P->_PL_Message;
 			SF_Domain tmpMark_Modify = Marking.P->_PL_Modify;
 			Marking.P->_PL_Active += ((SF_Token(b.P->s, b.P->f) * (1)));
-			Marking.P->_PL_Message += ((SF_Domain(Color_site_All, b.P->f.c0) * (1)) += (SF_Token(b.P->s, b.P->f) * (-1)));
+			Marking.P->_PL_Message += ((SF_Domain(Color_site_All, b.P->f.c0) * (1)));
 			Marking.P->_PL_Modify -= ((SF_Token(b.P->s, b.P->f) * (1)));
        break;
      } 
-		case 3: {  //Acquire
+		case 3: {  //Release
+			site_Domain tmpMark_all_active = Marking.P->_PL_all_active;
+			SF_Domain tmpMark_Active = Marking.P->_PL_Active;
+			file_Domain tmpMark_Mutex = Marking.P->_PL_Mutex;
+			SF_Domain tmpMark_Acknowledge = Marking.P->_PL_Acknowledge;
+			Marking.P->_PL_all_active += ((site_Token(b.P->s) * (1)));
+			Marking.P->_PL_Active -= ((SF_Token(b.P->s, b.P->f) * (1)));
+			Marking.P->_PL_Mutex += ((file_Token(b.P->f) * (1)));
+			Marking.P->_PL_Acknowledge -= ((SF_Domain(Color_site_All, b.P->f.c0) * (1)));
+       break;
+     } 
+		case 4: {  //Acquire
 			file_Domain tmpMark_Mutex = Marking.P->_PL_Mutex;
 			SF_Domain tmpMark_Modify = Marking.P->_PL_Modify;
 			SF_Domain tmpMark_WaitMutex = Marking.P->_PL_WaitMutex;
@@ -426,33 +374,22 @@ void SPN::fire(size_t t, const abstractBinding& b){
 			Marking.P->_PL_WaitMutex -= ((SF_Token(b.P->s, b.P->f) * (1)));
        break;
      } 
-		case 4: {  //Release
-			site_Domain tmpMark_all_active = Marking.P->_PL_all_active;
-			SF_Domain tmpMark_Active = Marking.P->_PL_Active;
-			file_Domain tmpMark_Mutex = Marking.P->_PL_Mutex;
-			SF_Domain tmpMark_Acknowledge = Marking.P->_PL_Acknowledge;
-			Marking.P->_PL_all_active += ((site_Token(b.P->s) * (1)));
-			Marking.P->_PL_Active -= ((SF_Token(b.P->s, b.P->f) * (1)));
-			Marking.P->_PL_Mutex += ((file_Token(b.P->f) * (1)));
-			Marking.P->_PL_Acknowledge -= ((SF_Domain(Color_site_All, b.P->f.c0) * (1)) += (SF_Token(b.P->s, b.P->f) * (-1)));
-       break;
-     } 
-		case 5: {  //Update
-			SF_Domain tmpMark_RecBuff = Marking.P->_PL_RecBuff;
-			site_Domain tmpMark_all_passive = Marking.P->_PL_all_passive;
-			SF_Domain tmpMark_updating = Marking.P->_PL_updating;
-			Marking.P->_PL_RecBuff -= ((SF_Token(b.P->s, b.P->f) * (1)));
-			Marking.P->_PL_all_passive -= ((site_Token(b.P->s) * (1)));
-			Marking.P->_PL_updating += ((SF_Token(b.P->s, b.P->f) * (1)));
-       break;
-     } 
-		case 6: {  //end_update
+		case 5: {  //end_update
 			SF_Domain tmpMark_MesBuffReply = Marking.P->_PL_MesBuffReply;
 			site_Domain tmpMark_all_passive = Marking.P->_PL_all_passive;
 			SF_Domain tmpMark_updating = Marking.P->_PL_updating;
 			Marking.P->_PL_MesBuffReply += ((SF_Token(b.P->s, b.P->f) * (1)));
 			Marking.P->_PL_all_passive += ((site_Token(b.P->s) * (1)));
 			Marking.P->_PL_updating -= ((SF_Token(b.P->s, b.P->f) * (1)));
+       break;
+     } 
+		case 6: {  //Update
+			SF_Domain tmpMark_RecBuff = Marking.P->_PL_RecBuff;
+			site_Domain tmpMark_all_passive = Marking.P->_PL_all_passive;
+			SF_Domain tmpMark_updating = Marking.P->_PL_updating;
+			Marking.P->_PL_RecBuff -= ((SF_Token(b.P->s, b.P->f) * (1)));
+			Marking.P->_PL_all_passive -= ((site_Token(b.P->s) * (1)));
+			Marking.P->_PL_updating += ((SF_Token(b.P->s, b.P->f) * (1)));
        break;
      } 
 		case 7: {  //Start
@@ -482,12 +419,12 @@ abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractB
 		//Fallback:SendReply->Release
 		//Fallback:Change->SendMsg
 		//Partial synch over variable: Change->Release var Not set
-		//Partial synch over variable: Acquire->Change var Not set
 		//Partial synch over variable: Release->Acquire var s, Not set
 		//Partial synch over variable: Release->Start var f, Not set
-		//Partial synch over variable: Update->end_update var Not set
+		//Partial synch over variable: Acquire->Change var Not set
 		//Partial synch over variable: end_update->SendReply var Not set
 		//Partial synch over variable: end_update->Update var f, Not set
+		//Partial synch over variable: Update->end_update var Not set
 		//Partial synch over variable: Start->Acquire var Not set
 	default:
 		if(*bindingNum==Transition[targettr].bindingList.size())return NULL;
@@ -499,10 +436,10 @@ abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstract
 		//Partial synch over variable: SendMsg->SendMsg var Not set
 		//Partial synch over variable: SendReply->SendReply var Not set
 		//Partial synch over variable: Change->Change var Not set
-		//Partial synch over variable: Acquire->Acquire var Not set
 		//Fallback:Release->Release
-		//Partial synch over variable: Update->Update var Not set
+		//Partial synch over variable: Acquire->Acquire var Not set
 		//Partial synch over variable: end_update->end_update var Not set
+		//Partial synch over variable: Update->Update var Not set
 		//Partial synch over variable: Start->Start var f, Not set
 	default:
 		if(*bindingNum==Transition[targettr].bindingList.size())return NULL;
@@ -514,28 +451,23 @@ void SPN::setConditionsVector(){
 void SPN::GetDistParameters(size_t t, const abstractBinding&)const {
 switch (t){
 	case 2:	//Change
-	case 6:	//end_update
+	case 5:	//end_update
 	{
 		ParamDistr[0]= ( double ) 0.2;
 	}
 
 		break;
+	case 0:	//SendMsg
+	case 1:	//SendReply
 	case 7:	//Start
 	{
 		ParamDistr[0]= ( double ) 5.0;
 	}
 
 		break;
-	case 0:	//SendMsg
-	case 1:	//SendReply
+	default:	//Release,Acquire,Update,
 	{
-		ParamDistr[0]= ( double ) 5;
-	}
-
-		break;
-	default:	//Acquire,Release,Update,
-	{
-		ParamDistr[0]= ( double ) 0;
+		ParamDistr[0]= ( double ) 0.0;
 	}
 
 }

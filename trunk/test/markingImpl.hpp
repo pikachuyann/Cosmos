@@ -13,8 +13,6 @@ extern const char *Color_site_names[];
 enum file_Color_Classe {
 	Color_file_f1,
 	Color_file_f2,
-	Color_file_f3,
-	Color_file_f4,
 	Color_file_Total,
 	Color_file_All
 };
