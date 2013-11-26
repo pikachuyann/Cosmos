@@ -51,7 +51,6 @@ LhaType::LhaType(GSPN& Mspn) : MyGspn(&Mspn),NbLoc(0) {
 
 
 Lha_Reader::Lha_Reader(GSPN& mspn,parameters &Q) : MyLha(mspn),P(Q){
-	cout << "testcontstreader" << endl;
     trace_scanning = false;
     trace_parsing = false;
 	
