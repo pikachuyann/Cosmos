@@ -63,9 +63,9 @@ let rec print_readable l =  function
   | (lab,v)::q -> try 
 		    let h = List.assoc lab l in
 		    if v > (fst h.confInterval) && (snd h.confInterval) > v then (
-		      Printf.sprintf  "%s: Value %e is inside confidence interval [%e,%e], %s" lab v (fst h.confInterval) (snd h.confInterval) (print_readable l q)
+		      Printf.sprintf  "%s: Value %e is inside confidence interval [%e,%e]\n%s" lab v (fst h.confInterval) (snd h.confInterval) (print_readable l q)
 		    ) else (
-		      Printf.sprintf "%s: Value %e is outside confidence interval [%e,%e], %s" lab v (fst h.confInterval) (snd h.confInterval) (print_readable l q)
+		      Printf.sprintf "%s: Value %e is outside confidence interval [%e,%e]\n%s" lab v (fst h.confInterval) (snd h.confInterval) (print_readable l q)
 		  )
     with _ -> print_readable l q
 
@@ -173,11 +173,12 @@ let test_cosmosTeamCity testname model prop opt v =
    printf "##teamcity[testStarted name='%s' captureStandardOutput='<true>']\n" testname;
   flush stdout;
   try let result = exec_cosmos model prop 1000 1 opt true in
+      print_endline (print_redable result.haslResult v);
       if check_result result.haslResult v
       then 
-	printf "##teamcity[testFinished name='%s' message='%s']\n" testname (print_readable result.haslResult v)
+	printf "##teamcity[testFinished name='%s' message='inside confidence interval']\n"
       else 
-	printf "##teamcity[testFailed name='%s' message='%s']\n" testname (print_readable result.haslResult v)
+	printf "##teamcity[testFailed name='%s' message='outside confidence interval']\n"
 
   with CmdFail(ret) ->
     printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" testname testname ret
