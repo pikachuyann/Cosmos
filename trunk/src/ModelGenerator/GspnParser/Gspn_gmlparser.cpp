@@ -69,12 +69,12 @@ string itostring (int i){
 	return ss.str();
 }
 
-string* simplifyString(string str)
+string simplifyString(string str)
 {
 	size_t n1 = str.find_first_not_of(" \n\t");
 	size_t n2 = str.find_last_not_of(" \n\t");
-	if(n1 ==std::string::npos )return new string("");
-	return new string(str.substr(n1, n2-n1+1));
+	if(n1 ==std::string::npos )return "";
+	return str.substr(n1, n2-n1+1);
 }
 
 void appendSimplify(string *st, string str)
@@ -106,19 +106,19 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
 	}else if((*it).compare("numValue")==0){
 		appendSimplify(st,it.node->first_child->data);
 	}else if ((*it).compare("name")==0) {
-        string *var = simplifyString(it.node->first_child->data);
-        if(MyGspn->IntConstant.count(*var)>0 ||
-           MyGspn->RealConstant.count(*var)>0){st->append(*var);
+        string var = simplifyString(it.node->first_child->data);
+        if(MyGspn->IntConstant.count(var)>0 ||
+           MyGspn->RealConstant.count(var)>0){st->append(var);
         }else{
             *is_mark_dep =true;
             st->append("Marking.P->_PL_");
-            st->append(*var);
-			if((P.verbose-3)>1)cout << "\t" << *var << endl;
-			if(MyGspn->PlacesId.count(*var)==0){
-				cerr << "Place " << *var << "being referenced before being define" << endl;
+            st->append(var);
+			if((P.verbose-3)>1)cout << "\t" << var << endl;
+			if(MyGspn->PlacesId.count(var)==0){
+				cerr << "Place " << var << "being referenced before being define" << endl;
 				throw gmlioexc;
 			}
-			if(MyGspn->placeStruct[MyGspn->PlacesId[*var]].colorDom !=0 )st->append(".card()");
+			if(MyGspn->placeStruct[MyGspn->PlacesId[var]].colorDom !=0 )st->append(".card()");
         }
 	}else if (	(*it).compare("+")==0  || (*it).compare("*")==0
               || (*it).compare("min")==0   || (*it).compare("max")==0
@@ -160,7 +160,7 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 		size_t colorclass=0, enumvalue=0;
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("type")==0){
-				string coldom = *simplifyString(*(it2.begin()));
+				string coldom = simplifyString(*(it2.begin()));
 				if((P.verbose-3)>1)cerr << coldom << endl;
 				for(colorclass =0; colorclass < MyGspn->colDoms.size() &&
 					MyGspn->colDoms[colorclass].name != coldom ; colorclass++) ;
@@ -168,7 +168,7 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 					cerr << "Unknown classe '" << coldom << "'"<< endl;
 			}
 			if (it2->compare("enumValue")==0) {
-				string coldom = *simplifyString(*(it2.begin()));
+				string coldom = simplifyString(*(it2.begin()));
 				if((P.verbose-3)>1)cerr << coldom << endl;
 				colorClass col = MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]];
 				for(enumvalue =0; enumvalue < col.colors.size() &&
@@ -184,7 +184,7 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 		eval_tokenProfileMark(st, it.begin());
 		st->append("(1))");
 	}else if(it->compare("type")==0){
-		string coldom = *simplifyString(*(it.begin()));
+		string coldom = simplifyString(*(it.begin()));
 		if((P.verbose-3)>1)cerr << coldom << endl;
 		size_t colorc =0;
 		for(colorc =0; colorc < MyGspn->colDoms.size() &&
@@ -210,7 +210,7 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 		}
 		st->append(" * " + mark +")");
 	} else if(it->compare("name")==0) {
-		st->append("Marking.P->"+ *simplifyString(*(it.begin())));
+		st->append("Marking.P->"+ simplifyString(*(it.begin())));
 	}
 }
 
@@ -223,13 +223,13 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("name")==0){
 				eval_tokenProfileArc(tok, markingdependant, vardom, it2);
-			} else incr = atoi(simplifyString(*(it2).begin())->c_str());
+			} else incr = atoi(simplifyString(*(it2).begin()).c_str());
 		}
 		tok.varIncrement.back() += incr;
 	}else if(it->compare("all")==0){
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("type")==0){
-				string colname= *simplifyString(*(it2.begin()));
+				string colname= simplifyString(*(it2.begin()));
 				vector<colorClass>::const_iterator cols;
 				for (cols = MyGspn->colClasses.begin() ;
 					 (cols != MyGspn->colClasses.end() && cols->name != colname); ++cols) ;
@@ -259,7 +259,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 			}
 		}
 	} else if(it->compare("type")==0){
-		string colname= *simplifyString(*(it.begin()));
+		string colname= simplifyString(*(it.begin()));
 		vector<colorClass>::const_iterator cols;
 		for (cols = MyGspn->colClasses.begin() ;
 			 cols != MyGspn->colClasses.end() && cols->name != colname; ++cols) ;
@@ -272,7 +272,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 		}
 		
 	}else if(it->compare("name")==0) {
-		string varname= *simplifyString(*(it.begin()));
+		string varname= simplifyString(*(it.begin()));
 		vector<colorVariable>::const_iterator vars;
 		for (vars = MyGspn->colVars.begin() ;
 			 vars != MyGspn->colVars.end() && vars->name != varname; ++vars) ;
@@ -289,9 +289,8 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 
 
 int eval_str (string s){
-	string* val = simplifyString(s);
-	int intval = atoi( (*val).c_str() );
-	delete val;
+	string val = simplifyString(s);
+	int intval = atoi( val.c_str() );
 	return intval;
 }
 
@@ -306,9 +305,8 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
 	}else if((*it).compare("numValue")==0){
 		return eval_str(it.node->first_child->data);
 	}else if ((*it).compare("name")==0) {
-		string* val = simplifyString(it.node->first_child->data);
-		int intval = intconst[(*val).c_str()];
-		delete val;
+		string val = simplifyString(it.node->first_child->data);
+		int intval = intconst[val.c_str()];
 		return intval;
 	}else if ((*it).compare("+")==0 || (*it).compare("*")==0
 			  || (*it).compare("min")==0  || (*it).compare("max")==0
@@ -331,7 +329,7 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
 		else if ((*it).compare("max")==0) {  return max(v1,v2); }
 		else if ((*it).compare("power")==0) {  return v1^v2; }
 		else cout << "faileval int Formula" <<endl;
-	} else if(simplifyString(*it)->compare("")==0)return 0;
+	} else if(simplifyString(*it).compare("")==0)return 0;
 	
 	cout << "fail eval int formula" <<endl;
 	throw(gmlioexc);
@@ -353,7 +351,7 @@ void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it)
 	if(it->compare("boolExpr")==0){
 		eval_guard(st, it.begin() );
 	} else if(it->compare("boolValue")==0){
-		if(simplifyString(*(it.begin()))->compare("true")==0)st.append(" true ");
+		if(simplifyString(*(it.begin())).compare("true")==0)st.append(" true ");
 		else st.append(" false ");
 	} else if(it->compare("equal")==0){
 		st.append("(");
@@ -386,7 +384,7 @@ void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it)
 	} else if(it->compare("expr")==0){
 		eval_guard(st, it.begin() );
 	} else if(it->compare("name")==0){
-		string varname = *simplifyString(*(it.begin()));
+		string varname = simplifyString(*(it.begin()));
 		vector<colorVariable>::const_iterator vars;
 		for (vars = MyGspn->colVars.begin() ;
 			 vars != MyGspn->colVars.end() && vars->name != varname; ++vars) ;
@@ -402,10 +400,10 @@ void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it)
 		string colorstr;
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("type")==0){
-				typestr = *simplifyString(*(it2.begin()));
+				typestr = simplifyString(*(it2.begin()));
 			}
 			if (it2->compare("enumValue")==0) {
-				colorstr = *simplifyString(*(it2.begin()));
+				colorstr = simplifyString(*(it2.begin()));
 			}
 		}
 		st.append("Color_"+typestr+"_"+colorstr);
@@ -453,17 +451,17 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
 					if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
 					if ((*it2).compare("intConst")==0) { // const is int or double
-						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						int constvalue = eval_intFormula(MyGspn->IntConstant, find(it2.begin(),it2.end(),"expr"));
-						if((P.verbose-3)>1)cout << "const int " << *constname << "=" << constvalue << endl;
-						if (P.constants.count(*constname)>0) {
-							istringstream(P.constants[*constname]) >> constvalue;
-							if((P.verbose-3)>0)cout << "const int " << *constname << " overwrite to " << constvalue << endl;;
+						if((P.verbose-3)>1)cout << "const int " << constname << "=" << constvalue << endl;
+						if (P.constants.count(constname)>0) {
+							istringstream(P.constants[constname]) >> constvalue;
+							if((P.verbose-3)>0)cout << "const int " << constname << " overwrite to " << constvalue << endl;;
 						}
 						
 						//Evaluate_gml.parse(constvalue);
-						MyGspn->IntConstant[*constname]=constvalue; //Evaluate_gml.IntResult;
-						MyGspn->RealConstant[*constname]= constvalue; //Evaluate_gml.RealResult;
+						MyGspn->IntConstant[constname]=constvalue; //Evaluate_gml.IntResult;
+						MyGspn->RealConstant[constname]= constvalue; //Evaluate_gml.RealResult;
 						//cout << "\tconst int " << *constname << "=" << constvalue << endl;
 						
 					}
@@ -475,18 +473,18 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 					if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
 					if ((*it2).compare("realConst")==0) {
 						if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
-						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						bool ismarkdep=false;
 						string constvalue;
 						eval_expr( &ismarkdep, &constvalue, find(it2.begin(),it2.end(),"expr").begin());
 						if(ismarkdep)cout<< "constante are not makring dependant!" << endl;
-						if (P.constants.count(*constname)>0) {
-							constvalue = P.constants[*constname];
-							if((P.verbose-3)>0)cout << "const double " << *constname << " overwrite to " << constvalue << endl;;
+						if (P.constants.count(constname)>0) {
+							constvalue = P.constants[constname];
+							if((P.verbose-3)>0)cout << "const double " << constname << " overwrite to " << constvalue << endl;;
 						}
 						Evaluate_gml.parse(constvalue);
-						MyGspn->RealConstant[*constname]=Evaluate_gml.RealResult;
-						if((P.verbose-3)>1)cout << "\tconst double " << *constname << "=" << MyGspn->RealConstant[*constname] << endl;
+						MyGspn->RealConstant[constname]=Evaluate_gml.RealResult;
+						if((P.verbose-3)>1)cout << "\tconst double " << constname << "=" << MyGspn->RealConstant[constname] << endl;
 						
 					}
 				}
@@ -498,7 +496,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 					for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
 						if((P.verbose-3)>1)cout << "\t" <<  *it2 << ": " ;
 						if((*it2).compare("name")==0){
-							cc.name = *simplifyString(*(it2.begin()));
+							cc.name = simplifyString(*(it2.begin()));
 							if((P.verbose-3)>1)cout << *(it2.begin());
 						}
 						if((*it2).compare("classType")==0){
@@ -506,7 +504,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							if(tclasstypeenum!= it2.end())
 								for (treeSI it3 = (tclasstypeenum.begin()) ;
 									 it3 != (tclasstypeenum.end()) ; ++it3 ) {
-									string col = *simplifyString(*(it3.begin()));
+									string col = simplifyString(*(it3.begin()));
 									if((P.verbose-3)>1)cout << "\t\t\t" << col << endl;
 									cc.colors.push_back(color(col));
 								}
@@ -531,7 +529,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							
 						}
 						if((*it2).compare("circular")==0){
-							if(simplifyString(*(it2.begin()))->compare("true")==0)
+							if(simplifyString(*(it2.begin())).compare("true")==0)
 								cc.isCircular = true;
 							if((P.verbose-3)>1)cout << *(it2.begin());
 						}
@@ -548,7 +546,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 					for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
 						if((P.verbose-3)>1)cout << "\t" <<  *it2 << ": " ;
 						if((*it2).compare("name")==0){
-							cd.name = *simplifyString(*(it2.begin()));
+							cd.name = simplifyString(*(it2.begin()));
 							if((P.verbose-3)>1)cout << *(it2.begin());
 						}
 						if((*it2).compare("domainType")==0){
@@ -556,7 +554,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							if(tclasstypeenum!= it2.end())
 								for (treeSI it3 = (tclasstypeenum.begin()) ;
 									 it3 != (tclasstypeenum.end()) ; ++it3 ) {
-									string colclass = *simplifyString(*(it3.begin()));
+									string colclass = simplifyString(*(it3.begin()));
 									if((P.verbose-3)>1)cout << endl << "\t\t\t" << colclass ;
 									size_t colorc =0;
 									for(colorc =0; colorc < MyGspn->colClasses.size() &&
@@ -574,11 +572,11 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 					for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
 						if((P.verbose-3)>1)cout << "\t" <<  *it2 << ": " ;
 						if((*it2).compare("name")==0){
-							cv.name = *simplifyString(*(it2.begin()));
+							cv.name = simplifyString(*(it2.begin()));
 							if((P.verbose-3)>1)cout << *(it2.begin());
 						}
 						if((*it2).compare("type")==0){
-							string colclass = *simplifyString(*(it2.begin()));
+							string colclass = simplifyString(*(it2.begin()));
 							if((P.verbose-3)>1)cout << "\t\t" << colclass << endl; ;
 							size_t colorc =0;
 							for(colorc =0; colorc < MyGspn->colDoms.size() &&
@@ -641,23 +639,23 @@ void MyModelHandler::on_read_node(const XmlString& id,
 				MyGspn->Marking.push_back(st);
 				
 			} else if(it2->compare("name")==0){
-				string* Plname = simplifyString(*(it2.begin()));
-				if((P.verbose-3)>1)cout << "\tname:" << *Plname << endl ;
-				p.name = *Plname;
-				if(MyGspn->PlacesId.count(*Plname)>0){
-					cerr << "error:Two places with the name:" << *Plname << endl;
+				string Plname = simplifyString(*(it2.begin()));
+				if((P.verbose-3)>1)cout << "\tname:" << Plname << endl ;
+				p.name = Plname;
+				if(MyGspn->PlacesId.count(Plname)>0){
+					cerr << "error:Two places with the name:" << Plname << endl;
 					throw gmlioexc;
 				}
-				MyGspn->PlacesId[*Plname]=MyGspn->pl-1;
+				MyGspn->PlacesId[Plname]=MyGspn->pl-1;
 				
             } else if((*(it->second.begin())).compare("domain")==0){
-                string* Pldomain = simplifyString(*(it2.begin().begin()));
-                if((P.verbose-3)>1)cout << "\tdomain:" << *Pldomain << endl ;
+                string Pldomain = simplifyString(*(it2.begin().begin()));
+                if((P.verbose-3)>1)cout << "\tdomain:" << Pldomain << endl ;
 				size_t colord =0;
 				for(colord =0; colord < MyGspn->colDoms.size() &&
-					MyGspn->colDoms[colord].name != *Pldomain ; colord++) ;
+					MyGspn->colDoms[colord].name != Pldomain ; colord++) ;
 				if(colord == MyGspn->colDoms.size())
-					cerr << "Unknown Domain '" << *Pldomain << "'"<< endl;
+					cerr << "Unknown Domain '" << Pldomain << "'"<< endl;
 				else p.colorDom=colord;
                 
             } else throw(gmlioexc);
@@ -687,15 +685,15 @@ void MyModelHandler::on_read_node(const XmlString& id,
 			
             for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
                 if((*(it->second.begin())).compare("name")==0){
-                    string* Trname = simplifyString(*(++(it->second.begin())));
-                    if((P.verbose-3)>1)cout << "\tname:" << *Trname << endl ;
-                    MyGspn->TransList.insert(*Trname);
-					trans.label = *Trname;
-					if(MyGspn->TransId.count(*Trname)>0){
-						cerr << "error:Two transitions with the name:" << *Trname << endl;
+                    string Trname = simplifyString(*(++(it->second.begin())));
+                    if((P.verbose-3)>1)cout << "\tname:" << Trname << endl ;
+                    MyGspn->TransList.insert(Trname);
+					trans.label = Trname;
+					if(MyGspn->TransId.count(Trname)>0){
+						cerr << "error:Two transitions with the name:" << Trname << endl;
 						throw gmlioexc;
 					}
-                    MyGspn->TransId[*Trname]=MyGspn->tr-1;
+                    MyGspn->TransId[Trname]=MyGspn->tr-1;
                 } else if((*(it->second.begin())).compare("guard")==0){
 					eval_guard(trans.guard, it->second.begin().begin());
 					//if(trans.guard.compare("")==0)trans.guard = "true";
@@ -704,10 +702,10 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     for (treeSI it2 = (it->second.begin()).begin() ; it2 != (it->second.begin()).end() ; ++it2 ) {
                         if((P.verbose-3)>1)cout << "\t" << (*it2) << ":" << endl;
                         if ((*it2).compare("type")==0) {
-                            string* Trtype = simplifyString(*(it2.begin()));
-                            if((*Trtype).compare("IMDT")==0)trans.type=unTimed;
-                            trans.dist.name = *Trtype;
-                            if((P.verbose-3)>1)cout << "\t\t" << *Trtype << endl;
+                            string Trtype = simplifyString(*(it2.begin()));
+                            if((Trtype).compare("IMDT")==0)trans.type=unTimed;
+                            trans.dist.name = Trtype;
+                            if((P.verbose-3)>1)cout << "\t\t" << Trtype << endl;
                         } else if ((*it2).compare("param")==0) {
                             
                             //int number = 0;

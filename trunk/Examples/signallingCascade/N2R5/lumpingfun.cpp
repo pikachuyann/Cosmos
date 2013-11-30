@@ -39,6 +39,7 @@ void SPN::print_state(const vector<int> &vect){
 	cerr << "RE_Raf_RasGTP = " << vect[reducePL_RE_Raf_RasGTP] << endl;
 }
 
+bool SPN::precondition(const abstractMarking &M){return true;}
 
 int tock;
 
