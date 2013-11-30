@@ -37,7 +37,7 @@
 class MyLhaModelHandler: public ModelHandler
 {
 private:
-	string* simplifyString(string str);
+	string simplifyString(string str);
 	bool is_void(string str);
 	void appendSimplify(string *st, string str);
 	void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator);
@@ -51,7 +51,7 @@ private:
 	Eval Evaluate_gml;
 	
 	HaslFormulasTop* exportHASLTop(tree<string>::pre_order_iterator);
-	string* exportHASL(tree<string>::pre_order_iterator);
+	string exportHASL(tree<string>::pre_order_iterator);
 	
 	vector<string> FuncUpdateVector;
 	

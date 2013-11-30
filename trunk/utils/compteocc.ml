@@ -3,7 +3,7 @@
 
 let s = Sys.argv.(1);;
 
-let n = 40.0;;
+let n = 10.0;;
 
 let fin = open_in s in
 
@@ -52,7 +52,8 @@ let fout = open_out "loghisto2.dat" in
 Hashtbl.iter (fun x y ->
   let s= string_of_float (exp ((float x)/. n)) in
   let s2 = string_of_float ((exp ((float x)/. n )*. (float y))) in
-  Printf.fprintf fout "%s %s\n" s s2 ) tabl; 
+  let s3 = string_of_float (float y) in
+  Printf.fprintf fout "%s %s %s\n" s s2 s3 ) tabl; 
 close_out fout;;
       
 Sys.command "gnuplot histogramme.plt";;

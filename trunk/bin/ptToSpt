@@ -1,3 +1,0 @@
-#!/usr/bin/sed -f
-s/formalism='Place\/Transition Net'/formalism='Cosmos'/g
-s/formalism='Colored Petri Net'/formalism='SWN'/g
