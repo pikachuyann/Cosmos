@@ -467,6 +467,8 @@ void stateSpace::outputTmpLumpingFun(){
 	};
 	outputlumptmp << "}" << endl;
 	
+	outputlumptmp << "bool SPN::precondition(const abstractMarking &Marking){return true;}" << endl;
+	
 	outputlumptmp << endl << "void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){" << endl;
 	for(size_t i=0; i< N.Msimpletab.size();i++){
 		int j = N.Msimpletab[i];

@@ -458,7 +458,6 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							istringstream(P.constants[constname]) >> constvalue;
 							if((P.verbose-3)>0)cout << "const int " << constname << " overwrite to " << constvalue << endl;;
 						}
-						
 						//Evaluate_gml.parse(constvalue);
 						MyGspn->IntConstant[constname]=constvalue; //Evaluate_gml.IntResult;
 						MyGspn->RealConstant[constname]= constvalue; //Evaluate_gml.RealResult;

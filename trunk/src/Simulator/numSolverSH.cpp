@@ -153,6 +153,9 @@ void numSolverSH::reset(){
     
 }
 
+void numSolverSH::switchOff(){
+	u= -1;
+}
 
 void numSolverSH::stepVect(){
     //cerr << "step vect u:" << u << "->" << u-1 << "(";
@@ -188,7 +191,7 @@ boostmat::vector<double> numSolverSH::getVect(){
 }
 
 double numSolverSH::getMu(int i){
-	if(u<0)return 0.0;
+	if(u<0)return 1.0;
 	
 	if(is_previous){
 		return previous_vect[i];
