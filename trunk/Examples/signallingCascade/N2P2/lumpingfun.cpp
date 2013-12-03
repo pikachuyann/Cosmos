@@ -121,9 +121,9 @@ void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){
 	
 	
 	tock = fmax(0,4*N1 - vect[reducePL_RE_MEK_RafP] - vect[reducePL_RE_MEKP_RafP]) ;
-	vect[reducePL_RE_RafP] = remaining3(Marking.P->_PL_RafP); //To Complete
-	vect[reducePL_RE_RafP_Phase1] = remaining3(Marking.P->_PL_RafP_Phase1); //To Complete
-	vect[reducePL_RE_Raf_RasGTP] = remaining3(Marking.P->_PL_Raf_RasGTP); //To Complete
+	vect[reducePL_RE_RafP] = remaining1(Marking.P->_PL_RafP); //To Complete
+	vect[reducePL_RE_RafP_Phase1] = remaining1(Marking.P->_PL_RafP_Phase1); //To Complete
+	vect[reducePL_RE_Raf_RasGTP] = remaining1(Marking.P->_PL_Raf_RasGTP); //To Complete
 	vect[reducePL_RE_Raf] = tock; // remaining(Marking.P->_PL_Raf); //To Complete
 	
 	/*
