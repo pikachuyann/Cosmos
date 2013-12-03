@@ -81,6 +81,8 @@ void SimulatorRE::returnResultTrue(){
 
 void SimulatorRE::updateSPN(size_t t, const abstractBinding& b){
 	//If rareevent not require yet call the parent function
+	rareEventEnabled = rareEventEnabled || N.precondition(N.Marking);
+	
 	if(!rareEventEnabled){
 		Simulator::updateSPN(t, b);
 		return;
