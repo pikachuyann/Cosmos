@@ -38,17 +38,10 @@ public:
 	int jumpsize;
 	bool singleIS;
     //double Normal_quantile;
-    BatchR* RunBatch();
+    BatchR* RunBatch() override;
     
 protected:
     FoxGlynn* fg;
-    //double mu();
-    //void getParams(size_t Id,const abstractBinding&);
-    //void updateSPN(size_t E1_transitionNum, const abstractBinding&);
-    //virtual void updateLikelihood(int);
-    //virtual double ComputeDistr(int t , double origin_rate);
-	
-	//double ComputeDistr(int t , double origin_rate);
 };
 
 

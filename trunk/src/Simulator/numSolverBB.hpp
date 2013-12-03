@@ -29,12 +29,12 @@
 
 class numSolverBB: public numericalSolver{
 public:
-	void initVect(int);
-	void previousVect();
-	void stepVect();
-	void reset();
-	void printState();
-	int currentRound();
+	void initVect(int) override;
+	void previousVect() override;
+	void stepVect() override;
+	void reset() override;
+	void printState() override;
+	int currentRound() override;
 protected:
 	vector<boostmat::vector<double> >* checkPoint;
 	int l;
