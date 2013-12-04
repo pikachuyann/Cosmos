@@ -93,8 +93,7 @@ void SimulatorRE::updateSPN(size_t t, const abstractBinding& b){
 	}
 	
 	Event F;
-    //check if the current transition is still enabled
-	
+    
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
 	
