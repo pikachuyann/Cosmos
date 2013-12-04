@@ -10,7 +10,7 @@ let teamCity = ref true
 
 let _ = if (Array.length Sys.argv) >1 then teamCity := false
 
-let cosmos_path = "../../bin/Cosmos"
+let cosmos_path = (Sys.getcwd ())^"/../../bin/Cosmos"
 
 let cosmos_options = ("--level 0.9999"^ ( 
   try
@@ -226,4 +226,27 @@ let test_coverage name v o n =
 
 
 
-(*test_cosmos_gspn Sys.argv.(1) (float_of_string Sys.argv.(2)) Sys.argv.(3)*)
+let execSavedCosmos_free prefix resultFile csvfile (name,model,prop,option)  =
+  try
+    let r = 
+      (if prefix then (
+	let cwd = (Sys.getcwd ())^"/" in
+	ignore (Sys.command ("mkdir -p "^name));
+	Sys.chdir name;
+	let r2 = exec_cosmos (cwd^model) (cwd^prop) 100 16 option true in
+	Sys.chdir cwd; r2
+      ) else (
+	let r2 = exec_cosmos model prop 100 16 option true in
+	ignore (Sys.command (sprintf "mv Result.res %s.res" name)); r2
+       )) in
+    output_value resultFile r;
+    print_result csvfile "," r;
+    flush resultFile;
+    flush csvfile;
+  with _->();;
+
+let rf = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "CamlResultFile";;
+let csv = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "csvResultFile";;
+
+
+let execSavedCosmos ?(prefix=false) x = execSavedCosmos_free prefix rf csv x

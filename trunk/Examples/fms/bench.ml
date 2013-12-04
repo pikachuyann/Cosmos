@@ -160,34 +160,18 @@ let joblist6 = [
   "S2_6_1600", "Policy2Fail.grml" , "rho3_1600.grml" ;
   "S2_6_6400", "Policy2Fail.grml" , "rho3_6400.grml" ;
   "S2_6_25600", "Policy2Fail.grml" , "rho3_25600.grml" ;
-  "S2_6_102400", "Policy2Fail.grml" , "rho3_102400.grml"]
+  "S2_6_102400", "Policy2Fail.grml" , "rho3_102400.grml"];;
+
+let add_option (x,y,z) =
+  execSavedCosmos ~prefix:false (x,y,z,"--width 0.01 --njob 16")
 
 
-
-
-let execCosmos resultFile csvfile (name,model,prop)  =
-  try
-    let r = exec_cosmos model prop 100 16 "--width 0.01 --max-run 1000000000" true in
-    ignore (Sys.command (sprintf "mv Result.res %s.res" name));
-    output_value resultFile r;
-    print_result csvfile "," r;
-    flush resultFile;
-    flush csvfile;
-  with _->();;
-
-
-
-let rf = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "CamlResultFile" in
-let csv = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "csvResultFile" in
-(match int_of_string (Sys.argv.(1)) with
-    1 -> List.iter (execCosmos rf csv) joblist1
-  | 2 -> List.iter (execCosmos rf csv) joblist2
+let _ = match int_of_string (Sys.argv.(1)) with
+    1 -> List.iter add_option joblist1
+  | 2 -> List.iter add_option joblist2
   (*  | 3 -> List.iter (execCosmos rf csv) joblist3*)
-  | 4 -> List.iter (execCosmos rf csv) joblist4
-  | 45-> List.iter (execCosmos rf csv) joblist45
-  | 5 -> List.iter (execCosmos rf csv) joblist5
-  | 6 -> List.iter (execCosmos rf csv) joblist6
+  | 4 -> List.iter add_option joblist4
+  | 45-> List.iter add_option joblist45
+  | 5 -> List.iter add_option joblist5
+  | 6 -> List.iter add_option joblist6
   | _ -> failwith "Wrong integer"
-);
-close_out rf;
-close_out csv;;
