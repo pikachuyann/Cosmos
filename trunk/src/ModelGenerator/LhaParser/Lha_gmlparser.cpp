@@ -65,12 +65,12 @@ void print_tree(const tree<string>& tr, tree<string>::pre_order_iterator it, tre
 	}
 }
 
-string* MyLhaModelHandler::simplifyString(string str)
+string MyLhaModelHandler::simplifyString(string str)
 {
 	size_t n1 = str.find_first_not_of(" \n");
 	size_t n2 = str.find_last_not_of(" \n");
-	if(n1 ==std::string::npos )return new string("");
-	return new string(str.substr(n1, n2-n1+1));
+	if(n1 ==std::string::npos )return "";
+	return str.substr(n1, n2-n1+1);
 }
 
 bool MyLhaModelHandler::is_void(string str)
@@ -123,31 +123,31 @@ void MyLhaModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::p
 	}else if ((*it).compare("boolValue")==0) {
 		appendSimplify(st,it.node->first_child->data);
 	}else if ((*it).compare("name")==0) {
-        string *var = simplifyString(it.node->first_child->data);
-        if(MyLHA->LhaIntConstant.count(*var)>0 ||
-           MyLHA->LhaRealConstant.count(*var)>0){st->append(*var);
+        string var = simplifyString(it.node->first_child->data);
+        if(MyLHA->LhaIntConstant.count(var)>0 ||
+           MyLHA->LhaRealConstant.count(var)>0){st->append(var);
         }else {
-			vector<string>::const_iterator vn = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var);
+			vector<string>::const_iterator vn = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), var);
 			if(vn != MyLHA->Vars.label.end()){
-				std::ostringstream s; s<<"Vars->"<< *var;
+				std::ostringstream s; s<<"Vars->"<< var;
 				st->append(s.str());
 				
-			} else if(MyLHA->MyGspn->PlacesId.count(*var)>0) {
+			} else if(MyLHA->MyGspn->PlacesId.count(var)>0) {
 				*is_mark_dep =true;
 				st->append("Marking.P->_PL_");
-				st->append(var->c_str());
-				if(MyLHA->MyGspn->placeStruct[MyLHA->MyGspn->PlacesId[*var]].colorDom != UNCOLORED_DOMAIN )
+				st->append(var.c_str());
+				if(MyLHA->MyGspn->placeStruct[MyLHA->MyGspn->PlacesId[var]].colorDom != UNCOLORED_DOMAIN )
 					st->append(".card()");
 				st->append(" ");
 			} else {
 				vector<colorVariable>::const_iterator varit=  MyLHA->MyGspn->colVars.begin();
-				for ( ; varit != MyLHA->MyGspn->colVars.end() && varit->name.compare(*var)!=0 ; ++varit) ;
+				for ( ; varit != MyLHA->MyGspn->colVars.end() && varit->name.compare(var)!=0 ; ++varit) ;
 				if (varit != MyLHA->MyGspn->colVars.end()) {
 					st->append("b.P->");
 					st->append(varit->name);
 					st->append(".c0");
 				}else {
-					cerr << "Unknown name:" << *var << endl;
+					cerr << "Unknown name:" << var << endl;
 					throw(lhagmlioexc);
 				}
 				
@@ -199,7 +199,7 @@ size_t MyLhaModelHandler::eval_marking_expr(string &st, tree<string>::pre_order_
 	if(it->compare("markingExpr")==0)
 		return eval_marking_expr(st, it.begin());
 	else if(it->compare("name")==0){
-		string stpl = *simplifyString(*(it.begin()));
+		string stpl = simplifyString(*(it.begin()));
 		if(MyLHA->MyGspn->PlacesId.count(stpl)>0){
 			st.append("Marking.P->_PL_");
 			st.append(stpl);
@@ -216,7 +216,7 @@ size_t MyLhaModelHandler::eval_marking_expr(string &st, tree<string>::pre_order_
 			if((P.verbose-3)>2)cout << (*it2) << endl;
 			if(it2->compare("markingExpr")==0) colDomIndex = eval_marking_expr(st, it2);
 			else if(it2->compare("name")==0){
-				string cname = *simplifyString(*(it2.begin()));
+				string cname = simplifyString(*(it2.begin()));
 				vector<color>::const_iterator itcc;
 				colorClass cc = MyLHA->MyGspn->colClasses[MyLHA->MyGspn->colDoms[colDomIndex].colorClassIndex[colClassCounter]];
 				for( itcc= cc.colors.begin(); itcc != cc.colors.end() && cname != itcc->name; ++itcc) ;
@@ -240,11 +240,11 @@ void MyLhaModelHandler::eval_term(vector<string> &CoeffsVector, tree<string>::pr
 	if((*it).compare("expr")==0){
 		eval_term(CoeffsVector, it.begin());
 	}else if((*it).compare("name")==0){
-		string* var = simplifyString(*(it.begin()));
-		if((P.verbose-3)>2)cout << "\t" << *var << endl;
-		vector<string>::const_iterator vi=find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var);
+		string var = simplifyString(*(it.begin()));
+		if((P.verbose-3)>2)cout << "\t" << var << endl;
+		vector<string>::const_iterator vi=find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), var);
 		if(vi!= MyLHA->Vars.label.end())CoeffsVector[vi-MyLHA->Vars.label.begin()]= "1";
-		else cout << "Unkown Variable " << *var <<endl;
+		else cout << "Unkown Variable " << var <<endl;
 	}else cout << "fail eval tree : linexp" << endl;
 	
 }
@@ -296,9 +296,8 @@ void MyLhaModelHandler::eval_guard(vector<vector<string> > &CoeffsMatrix,vector<
 
 
 int MyLhaModelHandler::eval_str (string s){
-	string* val = simplifyString(s);
-	int intval = atoi( (*val).c_str() );
-	delete val;
+	string val = simplifyString(s);
+	int intval = atoi( val.c_str() );
 	return intval;
 }
 
@@ -310,9 +309,8 @@ int MyLhaModelHandler::eval_intFormula( map<std::string,int> intconst, tree<stri
 	}else if((*it).compare("numValue")==0){
 		return eval_str(it.node->first_child->data);
 	}else if ((*it).compare("name")==0) {
-		string* val = simplifyString(it.node->first_child->data);
-		int intval = intconst[(*val).c_str()];
-		delete val;
+		string val = simplifyString(it.node->first_child->data);
+		int intval = intconst[(val).c_str()];
 		return intval;
 	}else if ((*it).compare("+")==0 || (*it).compare("*")==0
 			  || (*it).compare("min")==0  || (*it).compare("max")==0
@@ -341,7 +339,7 @@ int MyLhaModelHandler::eval_intFormula( map<std::string,int> intconst, tree<stri
 
 
 
-MyLhaModelHandler::MyLhaModelHandler(LHA_D *MyLHA2,parameters &Q):MyLHA(MyLHA2), P(Q) {
+MyLhaModelHandler::MyLhaModelHandler(LhaType *MyLHA2,parameters &Q):MyLHA(MyLHA2), P(Q) {
 	//Initialisation
 	MyLHA->NbVar = 0;
 	countLoc=0;
@@ -362,33 +360,33 @@ HaslFormulasTop* MyLhaModelHandler::exportHASLTop(tree<string>::pre_order_iterat
 	
 	if((P.verbose-3)>2)cout << *it << ":" << endl;
 	if((*it).compare("AVG")==0){
-		string* lhafunc = exportHASL(it.begin());
-        if((P.verbose-3)>1)cout << *lhafunc << endl;
+		string lhafunc = exportHASL(it.begin());
+        if((P.verbose-3)>1)cout << lhafunc << endl;
 		stringstream ss;
-		ss << "LhaFunc[" << MyLHA->LhaFunction[*lhafunc] << "]";
+		ss << "LhaFunc[" << MyLHA->LhaFunction[lhafunc] << "]";
 		MyLHA->Algebraic.push_back( ss.str() );
 		return (new HaslFormulasTop(MyLHA->Algebraic.size()-1));
 	} else if((*it).compare("PROB")==0){
 		return (new HaslFormulasTop());
 	} else if(it->compare("PDF")==0 || it->compare("CDF")==0){
-		string* lhafunc = NULL;
+		string lhafunc;
 		double deltab = 1;
 		double minb =0;
 		double maxb =0;
 		for(treeSI it2 = it.begin(); it2 != it.end(); it2++){
-			if (it2->compare("min")==0)minb = atof(exportHASL(it2)->c_str());
-			else if (it2->compare("max")==0)maxb = atof(exportHASL(it2)->c_str());
-			else if (it2->compare("delta")==0)deltab = atof(exportHASL(it2)->c_str());
+			if (it2->compare("min")==0)minb = atof(exportHASL(it2).c_str());
+			else if (it2->compare("max")==0)maxb = atof(exportHASL(it2).c_str());
+			else if (it2->compare("delta")==0)deltab = atof(exportHASL(it2).c_str());
 			else lhafunc = exportHASL(it2);
 		}
-		if(lhafunc == NULL){
+		if(lhafunc.empty()){
 			cerr << "Ill formed HASL formula";
 			throw(lhagmlioexc);
 		}
 		
-        if((P.verbose-3)>1)cout << *lhafunc << endl;
+        if((P.verbose-3)>1)cout << lhafunc << endl;
 		stringstream ss;
-		ss << "LhaFunc[" << MyLHA->LhaFunction[*lhafunc] << "]";
+		ss << "LhaFunc[" << MyLHA->LhaFunction[lhafunc] << "]";
 		
 		
 		for(double bucket = minb ; bucket < maxb ; bucket+= deltab){
@@ -410,7 +408,7 @@ HaslFormulasTop* MyLhaModelHandler::exportHASLTop(tree<string>::pre_order_iterat
 }
 
 
-string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
+string MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 	if((P.verbose-3)>2)cout << *it << ":" << endl;
 	if(it->compare("YHF")==0){
 		return exportHASL(it.begin());
@@ -422,8 +420,8 @@ string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 		return simplifyString(*(it.begin()));
 	}else if(it->compare("last")==0){
 		//cout << *(it.begin()) << endl;
-		string* linForm = exportHASL(it.begin());
-		const char* linformc = linForm->c_str();
+		string linForm = exportHASL(it.begin());
+		const char* linformc = linForm.c_str();
 		if(MyLHA->LinearForm.find(linformc)==MyLHA->LinearForm.end()){
 			size_t i=MyLHA->LinearForm.size();
 			MyLHA->LinearForm[linformc]=i;
@@ -436,17 +434,16 @@ string* MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 			size_t i=MyLHA->LhaFunction.size();
 			MyLHA->LhaFunction[ss]=i;
 		}
-		return new string(ss);
+		return ss;
 		
 	}else if((*it).compare("expr")==0){
 		return exportHASL(it.begin());
 	}else if((*it).compare("name")==0){
-		string* var = simplifyString(it.node->first_child->data);
+		string var = simplifyString(it.node->first_child->data);
 		stringstream ss;
-		ss << "Vars->" << *var;
+		ss << "Vars->" << var;
 		
-		
-		return new string(ss.str());
+		return ss.str();
 		
 	} else throw(lhagmlioexc);
 	
@@ -476,20 +473,20 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
 					if ((*it2).compare("intConst")==0) {
 						//cout << "start intConst" << endl;
-						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						//cout << "finish name:"<< *constname << endl;
 						//treeSI test = find(it2.begin(),it2.end(),"expr");
 						//cout << "find expr" << endl;
 						int constvalue = eval_intFormula(MyLHA->LhaIntConstant,find(it2.begin(),it2.end(),"expr"));
 						//cout << "finish expr" << endl;
 						//Evaluate_gml.parse(constvalue);
-						if((P.verbose-3)>1)cout << "\tconst int " << *constname << "=" << constvalue << endl;
-						if (P.constants.count(*constname)>0) {
-							istringstream(P.constants[*constname]) >> constvalue;
-							if((P.verbose-3)>0)cout << "const int " << *constname << " overwrite to " << constvalue << endl;;
+						if((P.verbose-3)>1)cout << "\tconst int " << constname << "=" << constvalue << endl;
+						if (P.constants.count(constname)>0) {
+							istringstream(P.constants[constname]) >> constvalue;
+							if((P.verbose-3)>0)cout << "const int " << constname << " overwrite to " << constvalue << endl;;
 						}
-						MyLHA->LhaIntConstant[*constname]=constvalue; //Evaluate_gml.IntResult;
-						MyLHA->LhaRealConstant[*constname]= constvalue; //Evaluate_gml.RealResult;
+						MyLHA->LhaIntConstant[constname]=constvalue; //Evaluate_gml.IntResult;
+						MyLHA->LhaRealConstant[constname]= constvalue; //Evaluate_gml.RealResult;
 						
 					}
 				}
@@ -499,7 +496,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
 					//cout << "test:" << *it2 << ":"<< endl;
 					if ((*it2).compare("realConst")==0) {
-						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						
 						bool ismarkdep=false;
 						string constvalue;
@@ -508,14 +505,14 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							cout<< "constante are not marking dependant!" << endl;
 							throw lhagmlioexc;
 						}
-						if (P.constants.count(*constname)>0) {
-							constvalue = P.constants[*constname];
-							if((P.verbose-3)>0)cout << "const double " << *constname << " overwrite to " << constvalue << endl;;
+						if (P.constants.count(constname)>0) {
+							constvalue = P.constants[constname];
+							if((P.verbose-3)>0)cout << "const double " << constname << " overwrite to " << constvalue << endl;;
 						}
 						Evaluate_gml.parse(constvalue);
-						if((P.verbose-3)>1)cout << "\tconst double " << *constname << "=" << Evaluate_gml.RealResult << endl;
+						if((P.verbose-3)>1)cout << "\tconst double " << constname << "=" << Evaluate_gml.RealResult << endl;
 						
-						MyLHA->LhaRealConstant[*constname]=Evaluate_gml.RealResult;
+						MyLHA->LhaRealConstant[constname]=Evaluate_gml.RealResult;
 						
 					}
 				}
@@ -524,12 +521,12 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 			if (t1 != it.end())
 				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
 					if ((*it2).compare("real")==0) {
-						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-						MyLHA->Vars.label.push_back(*constname);
+						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+						MyLHA->Vars.label.push_back(constname);
 						MyLHA->Vars.initialValue.push_back(0.0);
 						treeSI dom = find(it2.begin(),it2.end(),"domain");
 						if (dom != it2.end()) {
-							string domname = *simplifyString(*(dom.begin()));
+							string domname = simplifyString(*(dom.begin()));
 							vector<colorDomain>::const_iterator domit;
 							for(domit = MyLHA->MyGspn->colDoms.begin(); domit != MyLHA->MyGspn->colDoms.end() && domit->name != domname; ++domit) ;
 							if(domit != MyLHA->MyGspn->colDoms.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colDoms.begin());
@@ -538,7 +535,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						MyLHA->Vars.type.push_back(CONTINIOUS_VARIABLE);
 						MyLHA->NbVar++;
 						
-						if((P.verbose-3)>1)cout << "\tcontinuous var " << *constname << " index: " << MyLHA->NbVar-1 << " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] <<endl;
+						if((P.verbose-3)>1)cout << "\tcontinuous var " << constname << " index: " << MyLHA->NbVar-1 << " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] <<endl;
 					} else cout << "Unknown variable Type" << *it2 << endl;
 				}
             //cout << "finished realvar" << endl;
@@ -546,12 +543,12 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 			if (t1 != it.end())
 				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
 					if ((*it2).compare("discrete")==0) {
-						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-						MyLHA->Vars.label.push_back(*constname);
+						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+						MyLHA->Vars.label.push_back(constname);
 						MyLHA->Vars.initialValue.push_back(0.0);
 						treeSI dom = find(it2.begin(),it2.end(),"domain");
 						if (dom != it2.end()) {
-							string domname = *simplifyString(*(dom.begin()));
+							string domname = simplifyString(*(dom.begin()));
 							vector<colorDomain>::const_iterator domit;
 							for(domit = MyLHA->MyGspn->colDoms.begin(); domit != MyLHA->MyGspn->colDoms.end() && domit->name != domname; ++domit) ;
 							if(domit != MyLHA->MyGspn->colDoms.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colDoms.begin());
@@ -560,28 +557,28 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						
 						MyLHA->Vars.type.push_back(DISCRETE_VARIABLE);
 						MyLHA->NbVar++;
-						if((P.verbose-3)>1)cout << "\tdiscrete var " << *constname << " index: " << MyLHA->NbVar-1 << " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] <<endl;
+						if((P.verbose-3)>1)cout << "\tdiscrete var " << constname << " index: " << MyLHA->NbVar-1 << " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] <<endl;
 					}
 				}
 			t1 = findbranchlha(it, "variables/colors/");
 			if (t1 != it.end())
 				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
 					if ((*it2).compare("color")==0) {
-						string* constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-						MyLHA->Vars.label.push_back(*constname);
+						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+						MyLHA->Vars.label.push_back(constname);
 						MyLHA->Vars.initialValue.push_back(0.0);
 						treeSI dom = find(it2.begin(),it2.end(),"domain");
 						if (dom != it2.end()) {
-							string domname = *simplifyString(*(dom.begin()));
+							string domname = simplifyString(*(dom.begin()));
 							vector<colorClass>::const_iterator domit;
 							for(domit = MyLHA->MyGspn->colClasses.begin(); domit != MyLHA->MyGspn->colClasses.end() && domit->name != domname; ++domit) ;
 							if(domit != MyLHA->MyGspn->colClasses.end())MyLHA->Vars.colorDomain.push_back(domit - MyLHA->MyGspn->colClasses.begin());
 							else cerr << "Unknown color Domain " << domname << endl;
-						}else cerr << "No color class specify for color variable " << *constname << endl;
+						}else cerr << "No color class specify for color variable " << constname << endl;
 						
 						MyLHA->Vars.type.push_back(COLOR_VARIABLE);
 						MyLHA->NbVar++;
-						if((P.verbose-3)>1)cout << "\tcolor var " << *constname << " index: " << MyLHA->NbVar-1<< " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] << endl;
+						if((P.verbose-3)>1)cout << "\tcolor var " << constname << " index: " << MyLHA->NbVar-1<< " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] << endl;
 					}
 				}
 			//cout << "finished discrete var" << endl;
@@ -611,10 +608,10 @@ void MyLhaModelHandler::on_read_node(const XmlString& id,
 		
 		bool markdep=false;
 		
-        string* Plname = simplifyString(*(attributes.find("name")->second.begin().begin()));
-        if((P.verbose-3)>1)cout << "name: " << *Plname << endl;
-		MyLHA->LocLabel.push_back(*Plname);
-		MyLHA->LocIndex[*Plname]=countLoc;
+        string Plname = simplifyString(*(attributes.find("name")->second.begin().begin()));
+        if((P.verbose-3)>1)cout << "name: " << Plname << endl;
+		MyLHA->LocLabel.push_back(Plname);
+		MyLHA->LocIndex[Plname]=countLoc;
 		
 		string* inv = new string("");
 		eval_expr(&markdep, inv, attributes.find("invariant")->second.begin().begin());
@@ -627,26 +624,26 @@ void MyLhaModelHandler::on_read_node(const XmlString& id,
 		for(treeSI it2 = itflow.begin(); it2!=itflow.end();++it2){
 			if((*it2).compare("flow")==0){
 				
-				string* var = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-				string* varflow = new string("");
+				string var = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
+				string varflow;
 				
-				eval_expr( &markdep, varflow, find(it2.begin(),it2.end(),"expr").begin());
+				eval_expr( &markdep, &varflow, find(it2.begin(),it2.end(),"expr").begin());
 				
-				size_t vi = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var) - MyLHA->Vars.label.begin();
-				if((P.verbose-3)>1)cout << "\tvar: " << *var << " index: " << vi << " flow: " << *varflow << endl;
+				size_t vi = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), var) - MyLHA->Vars.label.begin();
+				if((P.verbose-3)>1)cout << "\tvar: " << var << " index: " << vi << " flow: " << varflow << endl;
 				if(MyLHA->Vars.type[vi] == CONTINIOUS_VARIABLE){
-					v1[vi]= *varflow;
+					v1[vi]= varflow;
 				} else cout << "Variable "<< var << " is continious, it as no flow"<< endl;
 			}
 		}
 		MyLHA->StrFlow.push_back(v1);
 		MyLHA->FuncFlow.push_back(v1);
 		
-		string* type = simplifyString(*(attributes.find("type")->second.begin().begin()));
-		if((P.verbose-3)>1)cout << "\ttype:" << *type << endl;
-		if ((*type).compare("Initial")==0) {
+		string type = simplifyString(*(attributes.find("type")->second.begin().begin()));
+		if((P.verbose-3)>1)cout << "\ttype:" << type << endl;
+		if ((type).compare("Initial")==0) {
 			MyLHA->InitLoc.insert(countLoc);
-		} else if ((*type).compare("Final")==0) {
+		} else if ((type).compare("Final")==0) {
 			MyLHA->FinalLoc.insert(countLoc);
 		}
 		
@@ -707,18 +704,18 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 	AttributeMap::const_iterator attrf = attributes.find("label");
 	if (attrf != attributes.end()) {
 		tree<string> itaction = attrf->second.begin().begin();
-		string* actionstr = simplifyString(*(itaction.begin()));
-		if((*actionstr).compare("ALL")==0){
+		string actionstr = simplifyString(*(itaction.begin()));
+		if((actionstr).compare("ALL")==0){
 			SubSet= PetriTransitions;
 		}else{
 			for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
 				if ((*it2).compare("actionName")==0) {
-					string* actionstr2 = simplifyString(*(it2.begin()));
-					if(MyLHA->MyGspn->TransId.count(*actionstr2) ==0 ){
-						cerr << "Unknown action name: "<< *actionstr2 <<endl;
+					string actionstr2 = simplifyString(*(it2.begin()));
+					if(MyLHA->MyGspn->TransId.count(actionstr2) ==0 ){
+						cerr << "Unknown action name: "<< actionstr2 <<endl;
 						throw lhagmlioexc;
 					}
-					SubSet.insert(*actionstr2);
+					SubSet.insert(actionstr2);
 				}
 			}
 		}
@@ -728,12 +725,12 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 		treeSI itaction = attrf->second.begin();
 		for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
 			if ((*it2).compare("actionName")==0) {
-				string* actionstr2 = simplifyString(*(it2.begin()));
-				if(MyLHA->MyGspn->TransId.count(*actionstr2) ==0 ){
-					cerr << "Unknown action name: "<< *actionstr2 <<endl;
+				string actionstr2 = simplifyString(*(it2.begin()));
+				if(MyLHA->MyGspn->TransId.count(actionstr2) ==0 ){
+					cerr << "Unknown action name: "<< actionstr2 <<endl;
 					throw lhagmlioexc;
 				}
-				SubSet.insert(*actionstr2);
+				SubSet.insert(actionstr2);
 			}
 		}
 	}
@@ -743,13 +740,13 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 		SubSet = MyLHA->MyGspn->TransList;
 		for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
 			if (it2->compare("actionName")==0) {
-				string* actionstr2 = simplifyString(*(it2.begin()));
-				if((P.verbose-3)>0)cout << "All except: " << *actionstr2 << endl;
-				if(MyLHA->MyGspn->TransId.count(*actionstr2) ==0 ){
-					cerr << "Unknown action name: "<< *actionstr2 <<endl;
+				string actionstr2 = simplifyString(*(it2.begin()));
+				if((P.verbose-3)>0)cout << "All except: " << actionstr2 << endl;
+				if(MyLHA->MyGspn->TransId.count(actionstr2) ==0 ){
+					cerr << "Unknown action name: "<< actionstr2 <<endl;
 					throw lhagmlioexc;
 				}
-				SubSet.erase(*actionstr2);
+				SubSet.erase(actionstr2);
 			}
 		}
 	}
@@ -766,17 +763,17 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 	vector<string> v1(MyLHA->NbVar,"");
 	if ((itflow.begin())->compare("update")==0) {
 		for(treeSI it2 = itflow.begin(); it2!=itflow.end();++it2){
-			string* var=NULL;
-			string* varflow = new string("");
+			string var;
+			string varflow;
 			//cout << "var update:" << endl;
 			for(treeSI it3 = it2.begin(); it3!=it2.end();++it3){
 				if((*it3).compare("name")==0)var = simplifyString(*(it3.begin()));
-				if((*it3).compare("expr")==0)eval_expr(&markdep, varflow, it3.begin() );
+				if((*it3).compare("expr")==0)eval_expr(&markdep, &varflow, it3.begin() );
 			}
-			size_t vi = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), *var) - MyLHA->Vars.label.begin();
-			v1[vi]= *varflow;
-			if((P.verbose-3)>1 && var != NULL)
-				cout << "\tvar: " << *var << " index: " << vi << " update: " << *varflow << endl;
+			size_t vi = find(MyLHA->Vars.label.begin(), MyLHA->Vars.label.end(), var) - MyLHA->Vars.label.begin();
+			v1[vi]= varflow;
+			if((P.verbose-3)>1 && !var.empty())
+				cout << "\tvar: " << var << " index: " << vi << " update: " << varflow << endl;
 			
 		}
 	}

@@ -103,8 +103,19 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 		N.Origine_Rate_Table = vector<double>(N.tr,0.0);
 		N.Rate_Table = vector<double>(N.tr,0.0);
 		
-		EQ = new EventsQueue(N);
-		reset();
+		bool continueb = false;
+		//we try to find a trajectory reaching the precondition.
+		while(!continueb){
+			//we build a new trajectory from the initial state.
+			continueb =true;
+			EQ = new EventsQueue(N);
+			reset();
+			//We simulate until either the condition is satisfied or the trajectory reach a deadend.
+			while(!N.precondition(N.Marking) && continueb){
+				continueb = SimulateOneStep();
+			}
+		}
+		
 		if (singleIS) {
 			it->maxStep = fg->right;
 		}else{

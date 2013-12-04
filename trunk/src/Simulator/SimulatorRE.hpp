@@ -46,17 +46,17 @@ protected:
     stateSpace muprob;
     
 	bool doubleIS_mode;
-	
-	virtual void InitialEventsQueue();
-	
-	virtual void returnResultTrue();
-	virtual void updateSPN(size_t,const abstractBinding&);
-	virtual void GenerateEvent(Event &,size_t,const abstractBinding& );
+	bool rareEventEnabled;
+	virtual void InitialEventsQueue() override;
+	virtual void SimulateSinglePath() override;
+	virtual void returnResultTrue() override;
+	virtual void updateSPN(size_t,const abstractBinding&) override;
+	virtual void GenerateEvent(Event &,size_t,const abstractBinding& ) override;
 	//virtual void GenerateDummyEvent(Event &, size_t);
-	virtual void updateLikelihood(size_t);
-    virtual bool transitionSink(size_t);
-	virtual void getParams(size_t,const abstractBinding&);
-	virtual void reset();
+	virtual void updateLikelihood(size_t) override;
+    virtual bool transitionSink(size_t) override;
+	virtual void getParams(size_t,const abstractBinding&) override;
+	virtual void reset() override;
 	
 	virtual double mu();
 	virtual double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);

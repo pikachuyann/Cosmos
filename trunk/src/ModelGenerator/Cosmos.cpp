@@ -176,6 +176,7 @@ bool ParseBuild(parameters& P) {
 	cerr << "The following exception append during import: "<< e.what() << endl;
 	return false;
     }
+	
 	// Intialize an empty structure for the automaton
 	Lha_Reader lReader(gReader.MyGspn,P);
 	
@@ -285,7 +286,6 @@ bool ParseBuild(parameters& P) {
 				if(P.tmpStatus==0||P.tmpStatus==2)lReader.WriteFile(P);
 				
 			} else {
-				Lha_Reader lr(gReader.MyGspn,P);
 				return false;
 			}
 			
@@ -334,14 +334,7 @@ bool ParseBuild(parameters& P) {
     string cmd;
 	string bcmd = P.gcccmd + " " + P.gccflags;
 	
-	if(!P.RareEvent){
-		//If rareenvent handling is not require copy an empty lumping function code to the temporary directory
-        string lumpfunpath = P.tmpPath + "/lumpingfun.cpp";
-		ofstream lumpfun(lumpfunpath.c_str(), ios::out | ios::trunc);
-		lumpfun << "void SPN::print_state(const vector<int> &vect){}" << endl;
-        lumpfun << "void SPN::lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
-        lumpfun.close();
-    }else {
+	if(P.RareEvent){
 		//If rareevent handling is require copy the lumping function and table of value to the temporary directory
 		if(P.BoundedRE==0)cmd = "cp muFile " + P.tmpPath +"/muFile";
 		else cmd = "cp matrixFile " + P.tmpPath +"/matrixFile";
@@ -405,18 +398,6 @@ bool ParseBuild(parameters& P) {
 }
 
 /**
- * Clean the temporary directory
- * @param P is a structure of parameters
- */
-void cleanTmp(parameters& P){
-	if(P.tmpStatus==0 || P.tmpStatus==1){
-		string cmd;
-		cmd = "rm -rf " + P.tmpPath;
-		if(system(cmd.c_str()) !=0)warnx("Fail to clean temporary file");
-	}
-}
-
-/**
  * A function to manipulate call to system
  * The result of the call to cmd is read from its standart
  * ouput and put in a string.
@@ -439,6 +420,19 @@ std::string systemStringResult(const char* cmd) {
  * The global parameter structure
  */
 parameters P;
+
+/**
+ * Clean the temporary directory
+ */
+void cleanTmp(void){
+	if(P.tmpStatus==0 || P.tmpStatus==1){
+		string cmd;
+		cmd = "rm -rf " + P.tmpPath;
+		if(system(cmd.c_str()) !=0)warnx("Fail to clean temporary file");
+	}
+}
+
+
 
 /**
  * Main function
@@ -470,6 +464,7 @@ int main(int argc, char** argv) {
 		}
 	}
 	if(P.verbose>2)cout << "Temporary directory set to:" << P.tmpPath << endl;
+	atexit(cleanTmp);
 	
 	//Find the path to the directory containing the binary of cosmos.
 	if(P.Path.compare("")==0){
@@ -483,7 +478,6 @@ int main(int argc, char** argv) {
 	//Build the model and lha.
 	if ( ! ParseBuild(P)) {
 		cout << "Fail to build the model.";
-		cleanTmp(P);
 		return(EXIT_FAILURE);
 	}
 	
@@ -512,7 +506,10 @@ int main(int argc, char** argv) {
 	  launchExport(P);
 	} else launchServer(P);
 	
+<<<<<<< HEAD
 	cleanTmp(P);
 
+=======
+>>>>>>> e9d5b39fbdec52457b3c8dad82ac8015d01a1aec
 	return (EXIT_SUCCESS);
 }

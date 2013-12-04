@@ -438,7 +438,7 @@ void Simulator::interactiveSimulation(){
 }
 
 /**
- * Simlulate a whole trajectory in the system. Result is store in SimOutput
+ * Simulate a whole trajectory in the system. Result is store in SimOutput
  */
 void Simulator::SimulateSinglePath() {
 	

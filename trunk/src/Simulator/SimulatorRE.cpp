@@ -42,6 +42,7 @@
 using namespace std;
 
 SimulatorRE::SimulatorRE(bool b) {
+	rareEventEnabled = false;
 	doubleIS_mode=b;
 }
 
@@ -78,10 +79,21 @@ void SimulatorRE::returnResultTrue(){
 	if(verbose>3)cerr << "---------------\n TRUE \n------\n";
 }
 
-void SimulatorRE::updateSPN(size_t,const abstractBinding&){
-	Event F;
-    //check if the current transition is still enabled
+void SimulatorRE::updateSPN(size_t t, const abstractBinding& b){
+	//If rareevent not require yet call the parent function
 	
+	if(!rareEventEnabled){
+		if(N.precondition(N.Marking)){
+			rareEventEnabled = true;
+			A.Likelihood = 1.0;
+		}else{
+		Simulator::updateSPN(t, b);
+		return;
+		}
+	}
+	
+	Event F;
+    
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
 	
@@ -196,8 +208,50 @@ void SimulatorRE::reset(){
 	N.Rate_Sum=0;
 }
 
-void SimulatorRE::getParams(size_t Id,const abstractBinding& b){
+/**
+ * Simulate a whole trajectory in the system. Result is store in SimOutput
+ */
+void SimulatorRE::SimulateSinglePath() {
+	rareEventEnabled = N.precondition(N.Marking);
+	InitialEventsQueue();
 	
+	if(logtrace.is_open())logtrace << "New Path"<< endl;
+    
+	bool continueb = true;
+	while ((!(*EQ).isEmpty()) && continueb ) {
+        //cerr << "continue path"<< endl;
+		if(logtrace.is_open()){
+			logtrace << A.CurrentTime << "\t";
+			N.Marking.print(logtrace);
+			A.printState(logtrace);
+			logtrace << endl;
+		}
+		if(verbose>3){
+			//Print marking and location of the automata
+			//Usefull to track a simulation
+			N.Marking.printHeader(cerr);
+			A.printHeader(cerr);
+			cerr << endl;
+			N.Marking.print(cerr);
+			A.printState(cerr);
+			cerr << endl;
+			if(verbose>4)EQ->view(N.Transition);
+			if(verbose==6)interactiveSimulation();
+		}
+		
+		continueb = SimulateOneStep();
+		if(!rareEventEnabled)rareEventEnabled = N.precondition(N.Marking);
+	}
+    //cerr << "finish path"<< endl;
+}
+
+
+void SimulatorRE::getParams(size_t Id,const abstractBinding& b){
+	//If rareevent not require yet call the parent function
+	if(!rareEventEnabled){
+		Simulator::getParams(Id, b);
+		return;
+	}
 	N.GetDistParameters(Id,b);
 	N.ParamDistr[1]=N.ParamDistr[0];
 	N.ParamDistr[0]= ComputeDistr( Id, b, N.ParamDistr[0]);

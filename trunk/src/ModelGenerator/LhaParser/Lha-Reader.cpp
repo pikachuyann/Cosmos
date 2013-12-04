@@ -39,6 +39,17 @@
 
 using namespace std;
 
+LhaType::LhaType(GSPN& Mspn) : MyGspn(&Mspn),NbLoc(0) {
+	for (auto it= MyGspn->IntConstant.begin(); it!= MyGspn->IntConstant.end() ; ++it){
+		LhaRealConstant[it->first]=it->second;
+		LhaIntConstant[it->first]=it->second;
+	}
+	for (auto it= MyGspn->RealConstant.begin(); it!= MyGspn->RealConstant.end() ; ++it){
+		LhaRealConstant[it->first]=it->second;
+	}
+}
+
+
 Lha_Reader::Lha_Reader(GSPN& mspn,parameters &Q) : MyLha(mspn),P(Q){
     trace_scanning = false;
     trace_parsing = false;

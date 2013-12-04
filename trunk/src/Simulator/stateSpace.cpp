@@ -382,7 +382,7 @@ void stateSpace::outputPrism(){
 
 void stateSpace::launchPrism(string prismPath){
     cout<< "Starting Prism"<< endl;
-    string cmd = prismPath + " -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
+    string cmd = prismPath + " -gs -maxiters 1000000000 -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v > prismOutput";
     if(0 != system(cmd.c_str())){
 		cerr << "Fail to launch prism" << endl;
 		exit(EXIT_FAILURE);
@@ -466,6 +466,8 @@ void stateSpace::outputTmpLumpingFun(){
 		outputlumptmp << "\tcerr << \"" << N.Place[j].label.substr(1,N.Place[j].label.length()-1 ) << " = \" << vect[reducePL_" << N.Place[j].label.substr(1,N.Place[j].label.length()-1 ) << "] << endl;" << endl;
 	};
 	outputlumptmp << "}" << endl;
+	
+	outputlumptmp << "bool SPN::precondition(const abstractMarking &Marking){return true;}" << endl;
 	
 	outputlumptmp << endl << "void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){" << endl;
 	for(size_t i=0; i< N.Msimpletab.size();i++){

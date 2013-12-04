@@ -91,16 +91,16 @@ class SimulatorBoundedRE: public SimulatorRE{
 public:
 	//SimulatorBoundedRE();
     SimulatorBoundedRE(int m);
-	BatchR* RunBatch();
+	BatchR* RunBatch() override;
     void initVect(int T);
-	void updateSPN(size_t, const abstractBinding&);
-	void getParams(size_t, const abstractBinding&);
+	void updateSPN(size_t, const abstractBinding&) override;
+	void getParams(size_t, const abstractBinding&) override;
 protected:
 	numericalSolver* numSolv;
 	
 	double lambda;
-	virtual double mu();
-	virtual double ComputeDistr(size_t i,const abstractBinding&, double origin_rate);
+	virtual double mu() override;
+	virtual double ComputeDistr(size_t i,const abstractBinding&, double origin_rate) override;
 };
 
 

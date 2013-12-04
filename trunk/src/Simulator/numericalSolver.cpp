@@ -120,6 +120,10 @@ int numericalSolver::currentRound(){
 	return T-matOffset;
 }
 
+void numericalSolver::switchOff(){
+	matOffset=-1;
+}
+
 void numericalSolver::reset(){
 	matOffset=T;
 	//cerr << (*circularvect)[matOffset] << endl;
@@ -136,7 +140,7 @@ boostmat::vector<double> numericalSolver::getVect(){
 double numericalSolver::getMu(int i){
 	//cerr << "indice" << matOffset << endl;
 	if (matOffset>=0) return (*circularvect)[matOffset][i];
-	else return 0.0;
+	else return 1.0;
 }
 
 void numericalSolver::stepVect(){

@@ -170,19 +170,24 @@ let exec_cosmos model prop batch nbjob opt printcmd =
   result
 
 let test_cosmosTeamCity testname model prop opt v = 
-   printf "##teamcity[testStarted name='%s' captureStandardOutput='<true>']\n" testname;
-  flush stdout;
-  try let result = exec_cosmos model prop 1000 1 opt true in
-      if check_result result.haslResult v
-      then 
-	printf "##teamcity[testFinished name='%s' message='\n%s'" testname (print_readable result.haslResult v)
-      else 
-	printf "##teamcity[testFailed name='%s' message='\n%s'" testname (print_readable result.haslResult v)
-
+  try
+    printf "##teamcity[testStarted name='%s' captureStandardOutput='<true>']\n" testname;
+    flush stdout;
+    let result = exec_cosmos model prop 1000 1 opt true in
+    print_endline (print_readable result.haslResult v);
+    if check_result result.haslResult v
+    then 
+      printf "##teamcity[testFinished name='%s' message='inside confidence interval']\n" testname
+    else (
+      printf "##teamcity[testFailed name='%s' message='outside confidence interval']\n" testname;
+      printf "##teamcity[testFinished name='%s']\n" testname
+    )
   with CmdFail(ret) ->
-    printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" testname testname ret
+    printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" testname testname ret;
+    printf "##teamcity[testFinished name='%s']\n" testname
   | _ ->
-    printf "##teamcity[testFailed name='%s' message='Test %s fail for unknown reason']\n" testname testname
+    printf "##teamcity[testFailed name='%s' message='Test %s fail for unknown reason']\n" testname testname;
+    printf "##teamcity[testFinished name='%s']\n" testname
 
 let test_cosmosBash testname model prop opt v =
   print_color (sprintf "testStarted: %s \n" testname) 33;
@@ -203,6 +208,7 @@ let test_cosmosBash testname model prop opt v =
 let test_cosmos t m p o v =
   if !teamCity then test_cosmosTeamCity t m p o v
   else  test_cosmosBash t m p o v
+
 
 let test_cosmos_gspn n v o =
   test_cosmos n (n^".gspn") (n^".lha") o v

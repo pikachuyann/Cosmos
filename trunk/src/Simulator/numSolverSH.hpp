@@ -28,14 +28,15 @@
 
 class numSolverSH: public numericalSolver{
 public:
-	void initVect(int);
-	void previousVect();
-	void stepVect();
-	void reset();
-	void printState();
-	double getMu(int);
-	boostmat::vector<double> getVect();
-	int currentRound();
+	void initVect(int) override;
+	void previousVect() override;
+	void stepVect() override;
+	void reset() override;
+	void switchOff();
+	void printState() override;
+	double getMu(int)  override;
+	boostmat::vector<double> getVect()  override;
+	int currentRound()  override;
 protected:
 	bool readbit(int a,int b);
 	//vector<boostmat::vector<double> >* powTVect;
