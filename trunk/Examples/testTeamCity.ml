@@ -238,8 +238,9 @@ let execSavedCosmos_free prefix resultFile csvfile (name,model,prop,option)  =
       (if prefix then (
 	let cwd = (Sys.getcwd ())^"/" in
 	ignore (Sys.command ("mkdir -p "^name));
-	Sys.chdir name;
-	let r2 = exec_cosmos (cwd^model) (cwd^prop) 100 16 option true in
+	Sys.chdir name; 
+	let r2 = try exec_cosmos (cwd^model) (cwd^prop) 100 16 option true
+	  with x -> Sys.chdir cwd; raise x in
 	Sys.chdir cwd; r2
       ) else (
 	let r2 = exec_cosmos model prop 100 16 option true in
