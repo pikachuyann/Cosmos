@@ -89,12 +89,10 @@ void Simulator::InitialEventsQueue() {
     //time is simulated and added to the structure.
 	
 	Event E;
-	for (vector<_trans>::const_iterator t = N.Transition.begin()
-		 ; t != N.Transition.end() ; ++t) {
-		for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
-			bindex != t->bindingList.end() ; ++bindex){
-			if (N.IsEnabled(t->Id,*bindex)) {
-				GenerateEvent(E, t->Id ,*bindex);
+	for(const auto &t : N.Transition) {
+		for(auto &bindex : t.bindingList){
+			if (N.IsEnabled(t.Id,bindex)) {
+				GenerateEvent(E, t.Id ,bindex);
 				(*EQ).insert(E);
 			}
 		}
@@ -134,101 +132,100 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
     
 	Event F;
     //check if the current transition is still enabled
-	for(vector<abstractBinding>::const_iterator bindex = N.Transition[E1_transitionNum].bindingList.begin() ;
-		bindex != N.Transition[E1_transitionNum].bindingList.end() ; ++bindex){
-		bool Nenabled = N.IsEnabled(E1_transitionNum, *bindex);
-		bool NScheduled = EQ->isScheduled(E1_transitionNum, bindex->id());
+	for(const auto &bindex : N.Transition[E1_transitionNum].bindingList){
+		bool Nenabled = N.IsEnabled(E1_transitionNum, bindex);
+		bool NScheduled = EQ->isScheduled(E1_transitionNum, bindex.id());
 		
-		if (Nenabled && NScheduled && lb.id() == bindex->id() ) {
-			GenerateEvent(F, E1_transitionNum, *bindex);
+		if (Nenabled && NScheduled && lb.id() == bindex.id() ) {
+			GenerateEvent(F, E1_transitionNum, bindex);
 			EQ->replace(F); //replace the transition with the new generated time
 		} else if (Nenabled && !NScheduled) {
-			GenerateEvent(F, E1_transitionNum, *bindex);
+			GenerateEvent(F, E1_transitionNum, bindex);
 			EQ->insert(F);
 		} else if (!Nenabled && NScheduled) {
-			EQ->remove(E1_transitionNum,bindex->id() );
+			EQ->remove(E1_transitionNum,bindex.id() );
 		}
 	}
 	
 	// Possibly adding Events corresponding to newly enabled-transitions
-	const set<int>* net = N.PossiblyEn();
-	for (set<int>::iterator it = net->begin(); it != net->end(); it++) {
+	const set<int> &net = N.PossiblyEn();
+	for (const auto &it : net) {
 		size_t bindnum = 0;
-		abstractBinding *bindex = N.nextPossiblyEnabledBinding(*it, lb, &bindnum);
+		abstractBinding *bindex = N.nextPossiblyEnabledBinding(it, lb, &bindnum);
 		while (bindex != NULL){
 			if(verbose > 4){
-				cerr << "consider for enabling: " << N.Transition[*it].label << ",";
+				cerr << "consider for enabling: " << N.Transition[it].label << ",";
 				bindex->print();
 				cerr << endl;
 			}
 			
 			//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
 			//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-			if (N.IsEnabled(*it,*bindex)) {
-				if (!EQ->isScheduled((*it),bindex->id())) {
+			if (N.IsEnabled(it,*bindex)) {
+				if (!EQ->isScheduled(it,bindex->id())) {
 					if(verbose > 4){
-						cerr << "->New transition enabled: " << N.Transition[*it].label << ",";
+						cerr << "->New transition enabled: " << N.Transition[it].label << ",";
 						bindex->print();
 						cerr << endl;
 					}
-					GenerateEvent(F, (*it), *bindex);
+					GenerateEvent(F, (it), *bindex);
 					(*EQ).insert(F);
 					
 					
 				} else {
-					if (N.Transition[(*it)].MarkingDependent) {
-						GenerateEvent(F, (*it),*bindex);
+					if (N.Transition[it].MarkingDependent) {
+						GenerateEvent(F, it,*bindex);
 						(*EQ).replace(F);
 					}
 				}
 			}
-			bindex = N.nextPossiblyEnabledBinding(*it, lb, &bindnum);
+			bindex = N.nextPossiblyEnabledBinding(it, lb, &bindnum);
 		}
 	}
 	
 	// Possibly removing Events corresponding to newly disabled-transitions
-	const set<int>* ndt = N.PossiblyDis();
-	for (set<int>::iterator it = ndt->begin(); it != ndt->end(); it++) {
+	const set<int> &ndt = N.PossiblyDis();
+	for (const auto &it : ndt) {
 		size_t bindnum = 0;
-		abstractBinding *bindex = N.nextPossiblyDisabledBinding(*it, lb, &bindnum);
+		abstractBinding *bindex = N.nextPossiblyDisabledBinding(it, lb, &bindnum);
 		while (bindex != NULL){
 			if(verbose > 4){
-				cerr << "consider for disabling: " << N.Transition[*it].label << ",";
+				cerr << "consider for disabling: " << N.Transition[it].label << ",";
 				bindex->print();
 				cerr << endl;
 			}
 			//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
 			//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-			if (EQ->isScheduled(*it, bindex->id())) {
-				if (!N.IsEnabled(*it, *bindex )){
+			if (EQ->isScheduled(it, bindex->id())) {
+				if (!N.IsEnabled(it, *bindex )){
 					if(verbose > 4){
-						cerr << "<-New transition disabled: " << N.Transition[*it].label << ",";
+						cerr << "<-New transition disabled: " << N.Transition[it].label << ",";
 						bindex->print();
 						cerr << endl;
 					}
-					EQ->remove(*it,bindex->id());
+					EQ->remove(it,bindex->id());
 				}else {
-					if (N.Transition[(*it)].MarkingDependent) {
-						GenerateEvent(F, (*it),*bindex);
+					if (N.Transition[it].MarkingDependent) {
+						GenerateEvent(F, it,*bindex);
 						EQ->replace(F);
 					}
 				}
 			}
-			bindex = N.nextPossiblyDisabledBinding(*it, lb, &bindnum);
+			bindex = N.nextPossiblyDisabledBinding(it, lb, &bindnum);
 		}
 	}
 	
     // Update transition which have no precondition on the Marking
-	const set<int>* fmd = N.FreeMarkingDependant();
-	for (set<int>::iterator it = fmd->begin(); it != fmd->end(); it++) {
-		for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-			bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-			if (N.IsEnabled(*it,*bindex)) {
-				if (!EQ->isScheduled(*it, bindex->id())) {
-					GenerateEvent(F, (*it),*bindex);
+	const set<int> &fmd = N.FreeMarkingDependant();
+	for (const auto &it : fmd) {
+		for(vector<abstractBinding>::const_iterator bindex = N.Transition[it].bindingList.begin() ;
+			bindex != N.Transition[it].bindingList.end() ; ++bindex){
+			if (N.IsEnabled(it,*bindex)) {
+				if (!EQ->isScheduled(it, bindex->id())) {
+					GenerateEvent(F, it,*bindex);
 					(*EQ).insert(F);
 				} else {
-					GenerateEvent(F, (*it),*bindex);
+					GenerateEvent(F, it,*bindex);
 					(*EQ).replace(F);
 				}
 			}
@@ -448,7 +445,7 @@ void Simulator::SimulateSinglePath() {
     //cerr << "start path"<< endl;
     
 	bool continueb = true;
-	while ((!(*EQ).isEmpty()) && continueb ) {
+	while ((!EQ->isEmpty()) && continueb ) {
         //cerr << "continue path"<< endl;
 		if(logtrace.is_open()){
 			logtrace << A.CurrentTime << "\t";
@@ -624,7 +621,7 @@ BatchR* Simulator::RunBatch(){
 		
 		SimulateSinglePath();
 		
-        batchResult->addSim(&Result);
+        batchResult->addSim(Result);
 		
 		if(verbose>3)batchResult->print();
 		

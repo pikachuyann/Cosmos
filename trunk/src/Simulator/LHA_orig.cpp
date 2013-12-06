@@ -52,9 +52,9 @@ void LHA::copyState(LHA *A){
  * @param Marking, A marking of the Petri net in principle the initial marking.
  */
 void LHA::setInitLocation(const abstractMarking& Marking) {
-    for (set<int>::iterator l = InitLoc.begin(); l != InitLoc.end(); l++) {
-        if (CheckLocation((*l), Marking)){
-            CurrentLocation = (*l);
+    for (auto &l : InitLoc) {
+        if (CheckLocation(l, Marking)){
+            CurrentLocation = l;
 			return;
 		}
     }
@@ -74,9 +74,9 @@ void LHA::setInitLocation(const abstractMarking& Marking) {
  */
 int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding)const {
 	const set<int> acE = ActionEdges[CurrentLocation][PetriNetTransition];
-    for (set<int>::const_iterator it = acE.begin(); it != acE.end(); it++) {
-        if ((CheckLocation(Edge[(*it)].Target, NextMarking))) {
-            if (CheckEdgeContraints(*it,PetriNetTransition, binding, NextMarking)) return (*it);
+    for (auto &it : acE) {
+        if ((CheckLocation(Edge[it].Target, NextMarking))) {
+            if (CheckEdgeContraints(it,PetriNetTransition, binding, NextMarking)) return it;
         }
     }
 	
@@ -93,12 +93,12 @@ AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking)const {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
-    for (set<int>::iterator it = Out_A_Edges[CurrentLocation].begin(); it != Out_A_Edges[CurrentLocation].end(); it++) {
-        if ((CheckLocation(Edge[(*it)].Target, Marking))) {
-            t_interval I = GetEdgeEnablingTime((*it), Marking);
+    for (auto it : Out_A_Edges[CurrentLocation]) {
+        if ((CheckLocation(Edge[it].Target, Marking))) {
+            t_interval I = GetEdgeEnablingTime(it, Marking);
             if (I.first <= I.second) {
                 if (I.first < Ed.FiringTime) {
-                    Ed.Index = (*it);
+                    Ed.Index = it;
                     Ed.FiringTime = I.first;
                 }
 				

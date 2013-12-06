@@ -188,7 +188,6 @@
 		032A7063181BC0D6006D7332 /* stateSpace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stateSpace.cpp; sourceTree = "<group>"; };
 		032A7064181BC0D6006D7332 /* stateSpace.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stateSpace.hpp; sourceTree = "<group>"; };
 		032A7094181BC14A006D7332 /* LHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA.cpp; sourceTree = "<group>"; };
-		032A7095181BC14A006D7332 /* lumpingfun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfun.cpp; sourceTree = "<group>"; };
 		032A7097181BC14A006D7332 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		032A7099181BC14A006D7332 /* markingImpl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
 		032A709A181BC14A006D7332 /* spn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
@@ -399,7 +398,6 @@
 			isa = PBXGroup;
 			children = (
 				032A7094181BC14A006D7332 /* LHA.cpp */,
-				032A7095181BC14A006D7332 /* lumpingfun.cpp */,
 				032A7097181BC14A006D7332 /* Makefile.am */,
 				032A7099181BC14A006D7332 /* markingImpl.hpp */,
 				032A709A181BC14A006D7332 /* spn.cpp */,

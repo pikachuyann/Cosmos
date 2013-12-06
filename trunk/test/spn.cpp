@@ -404,14 +404,14 @@ void SPN::fire(size_t t, const abstractBinding& b){
 void SPN::unfire(size_t t ,const abstractBinding& b){
 }
 
-const set<int>* SPN::PossiblyEn()const {
-	return &(PossiblyEnabled[lastTransition]);
+const set<int>& SPN::PossiblyEn()const {
+	return PossiblyEnabled[lastTransition];
 }
-const set<int>* SPN::PossiblyDis()const {
-	return &(PossiblyDisabled[lastTransition]);
+const set<int>& SPN::PossiblyDis()const {
+	return PossiblyDisabled[lastTransition];
 }
-const set<int>* SPN::FreeMarkingDependant()const {
-	return &(FreeMarkDepT[lastTransition]);
+const set<int>& SPN::FreeMarkingDependant()const {
+	return FreeMarkDepT[lastTransition];
 }
 abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){
 	switch(lastTransition*(tr+1) + targettr){

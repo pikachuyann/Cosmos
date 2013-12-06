@@ -1371,18 +1371,18 @@ void Gspn_Reader::WriteFile(parameters& P){
 	}
 	SpnCppFile << "}\n" << endl;
 	
-	SpnCppFile << "const set<int>* SPN::PossiblyEn()const {" << endl;
-	if (false && P.localTesting)SpnCppFile << "\treturn &newlyEnabled;" << endl;
-	else SpnCppFile << "\treturn &(PossiblyEnabled[lastTransition]);" << endl;
+	SpnCppFile << "const set<int>& SPN::PossiblyEn()const {" << endl;
+	if (false && P.localTesting)SpnCppFile << "\treturn newlyEnabled;" << endl;
+	else SpnCppFile << "\treturn PossiblyEnabled[lastTransition];" << endl;
 	SpnCppFile << "}" << endl;
 	
-	SpnCppFile << "const set<int>* SPN::PossiblyDis()const {" << endl;
-	if (false &&P.localTesting)SpnCppFile << "\treturn &newlyDisabled;" << endl;
-	else SpnCppFile << "\treturn &(PossiblyDisabled[lastTransition]);" << endl;
+	SpnCppFile << "const set<int>& SPN::PossiblyDis()const {" << endl;
+	if (false &&P.localTesting)SpnCppFile << "\treturn newlyDisabled;" << endl;
+	else SpnCppFile << "\treturn PossiblyDisabled[lastTransition];" << endl;
 	SpnCppFile << "}" << endl;
 	
-	SpnCppFile << "const set<int>* SPN::FreeMarkingDependant()const {" << endl;
-	SpnCppFile << "\treturn &(FreeMarkDepT[lastTransition]);" << endl;
+	SpnCppFile << "const set<int>& SPN::FreeMarkingDependant()const {" << endl;
+	SpnCppFile << "\treturn FreeMarkDepT[lastTransition];" << endl;
 	SpnCppFile << "}" << endl;
 	
 	writeEnabledDisabledBinding(SpnCppFile);

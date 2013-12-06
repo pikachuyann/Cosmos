@@ -114,7 +114,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 			if((!EQ->isEmpty()) && continueb) {
 				it->saveState(&N,&A,&EQ);
 			} else {
-				batchResult->addSim(&Result);
+				batchResult->addSim(Result);
 				delete EQ;
 				it = statevect.erase(it);
 				it--;

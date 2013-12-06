@@ -500,16 +500,11 @@ int main(int argc, char** argv) {
 		}
 	}
 	
-	build_segment();
+	//build_segment();
 	//Lauch the client for generating the state space or for launching simulators.
 	if(P.computeStateSpace>0){
 	  launchExport(P);
 	} else launchServer(P);
 	
-<<<<<<< HEAD
-	cleanTmp(P);
-
-=======
->>>>>>> e9d5b39fbdec52457b3c8dad82ac8015d01a1aec
 	return (EXIT_SUCCESS);
 }

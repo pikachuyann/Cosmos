@@ -74,7 +74,7 @@ public:
     std::vector<double> Max;
     
     //! Add the result of one simulation to the Batch.
-    void addSim(const SimOutput*);
+    void addSim(const SimOutput&);
     
     //! Merge the result of two batch of simulation.
     void unionR(const BatchR*);

@@ -231,26 +231,29 @@ let test_coverage name v o n =
   printf "Coverage:\t%f\n" ((float !succ)/.(float n))
 
 
-
-let execSavedCosmos_free prefix resultFile csvfile (name,model,prop,option)  =
-  try
+let execCosmosLog_free resultFile csvFile (name,model,prop,batch,njob,option,prefix) =
+   try
     let r = 
       (if prefix then (
 	let cwd = (Sys.getcwd ())^"/" in
 	ignore (Sys.command ("mkdir -p "^name));
+        ignore (Sys.command ("lumpingfun.cpp "^name^"/lumpingfun.cpp"));
 	Sys.chdir name; 
-	let r2 = try exec_cosmos (cwd^model) (cwd^prop) 100 16 option true
+	let r2 = try exec_cosmos (cwd^model) (cwd^prop) batch njob option true
 	  with x -> Sys.chdir cwd; raise x in
 	Sys.chdir cwd; r2
       ) else (
-	let r2 = exec_cosmos model prop 100 16 option true in
+	let r2 = exec_cosmos model prop batch njob option true in
 	ignore (Sys.command (sprintf "mv Result.res %s.res" name)); r2
        )) in
     output_value resultFile r;
-    print_result csvfile "," r;
+    print_result csvFile "," r;
     flush resultFile;
-    flush csvfile;
+    flush csvFile;
   with _->();;
+
+let execSavedCosmos_free prefix resultFile csvfile ?(batch=1000) ?(njob=1) (name,model,prop,option)  =
+  execCosmosLog_free resultFile csvfile (name,model,prop,batch,njob,option,prefix)
 
 let rf = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "CamlResultFile";;
 let csv = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "csvResultFile";;

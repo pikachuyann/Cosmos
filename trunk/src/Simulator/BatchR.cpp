@@ -55,23 +55,23 @@ Max(vector<double>(i,-DBL_MAX))
  * If the simulation is a success then The Mean and second Moment are updated
  * @param Result the result of one trajectory in the simulator.
  */
-void BatchR::addSim(const SimOutput *Result){
+void BatchR::addSim(const SimOutput &Result){
     I++;
-    if (Result->first) {
+    if (Result.first) {
         Isucc++;
         
         for(size_t i =0; i< TableLength; i++){
             
-            if (Result->second[i] * (1 - Result->second[i]) != 0){
+            if (Result.second[i] * (1 - Result.second[i]) != 0){
                 IsBernoulli[i] = false;
             }
             
-            Mean[i] += Result->second[i];
-            M2[i] += pow(Result->second[i], 2);
-			M3[i] += pow(Result->second[i], 3);
-			M4[i] += pow(Result->second[i], 4);
-			Min[i] = fmin(Min[i],Result->second[i]);
-			Max[i] = fmax(Max[i],Result->second[i]);
+            Mean[i] += Result.second[i];
+            M2[i] += pow(Result.second[i], 2);
+			M3[i] += pow(Result.second[i], 3);
+			M4[i] += pow(Result.second[i], 4);
+			Min[i] = fmin(Min[i],Result.second[i]);
+			Max[i] = fmax(Max[i],Result.second[i]);
         }
     }
 }

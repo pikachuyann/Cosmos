@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 	//fflush(stdout);
 	//cerr << "pid : "<< pid << endl;
 
-  retrive_segment();
+  //retrive_segment();
 
 	signal(SIGINT, signalHandler);
 	

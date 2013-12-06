@@ -55,21 +55,10 @@ void SimulatorRE::initVect(){
 }
 
 void SimulatorRE::InitialEventsQueue() {
-	
-	Event E;
 	N.Rate_Sum = 0;
 	N.Origine_Rate_Sum = 0;
+	Simulator::InitialEventsQueue();
 	
-	for (vector<_trans>::const_iterator t = N.Transition.begin()
-		 ; t != N.Transition.end() ; ++t) {
-		for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
-			bindex != t->bindingList.end() ; ++bindex){
-			if (N.IsEnabled(t->Id,*bindex)) {
-				GenerateEvent(E, t->Id ,*bindex);
-				(*EQ).insert(E);
-			}
-		}
-	}
 }
 
 void SimulatorRE::returnResultTrue(){
@@ -87,7 +76,7 @@ void SimulatorRE::updateSPN(size_t t, const abstractBinding& b){
 			rareEventEnabled = true;
 			A.Likelihood = 1.0;
 		}else{
-		Simulator::updateSPN(t, b);
+			Simulator::updateSPN(t, b);
 		return;
 		}
 	}
@@ -98,20 +87,19 @@ void SimulatorRE::updateSPN(size_t t, const abstractBinding& b){
 	N.Origine_Rate_Sum = 0;
 	
 	//Run over all transition
-	for (size_t it = 0; it < N.tr-1; it++) {
-		for(vector<abstractBinding>::const_iterator bindex = N.Transition[it].bindingList.begin() ;
-			bindex != N.Transition[it].bindingList.end() ; ++bindex){
-			if(N.IsEnabled(it, *bindex)){
-				if (EQ->isScheduled(it, bindex->id())) {
-					GenerateEvent(F, it ,*bindex );
+	for (const auto &tr : N.Transition) {
+		for(const auto &bindex : tr.bindingList ){
+			if(N.IsEnabled(tr.Id, bindex)){
+				if (EQ->isScheduled(tr.Id, bindex.id())) {
+					GenerateEvent(F, tr.Id ,bindex );
 					EQ->replace(F);
 				} else {
-					GenerateEvent(F, it ,*bindex );
+					GenerateEvent(F, tr.Id ,bindex );
 					EQ->insert(F);
 				}
 			}else{
-				if(EQ->isScheduled(it, bindex->id()))
-					EQ->remove(it,bindex->id());
+				if(EQ->isScheduled(tr.Id, bindex.id()))
+					EQ->remove(tr.Id,bindex.id());
 			}
 		}
 	}
@@ -121,28 +109,28 @@ void SimulatorRE::updateSPN(size_t t, const abstractBinding& b){
 	if(!doubleIS_mode){
 		EQ->replace(F);
 	}
+	
 	/*
 	 //In Debug mode check that transition are scheduled iff they are enabled
-	 for (vector<_trans>::const_iterator t = N.Transition.begin()
-	 ; t != N.Transition.end() ; ++t) {
-	 for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
-	 bindex != t->bindingList.end() ; ++bindex){
-	 if (N.IsEnabled(t->Id, *bindex) !=
-	 EQ->isScheduled(t->Id, bindex->id())){
-	 cerr << "N.IsEnabled(" << t->label << ",";
-	 bindex->print();
-	 cerr <<")" << endl;
-	 if(EQ->isScheduled(t->Id, bindex->id())){
-	 cerr << "Scheduled and not enabled!"<< endl;
-	 }else{
-	 cerr << "Enabled and not scheduled!" << endl;
-	 }
-	 assert(N.IsEnabled(t->Id, *bindex) ==
-	 EQ->isScheduled(t->Id, bindex->id()));
-	 }
-	 }
-	 }
+	for (const auto &tr : N.Transition) {
+		for(const auto &bindex : tr.bindingList){
+			if (N.IsEnabled(tr.Id, bindex) !=
+				EQ->isScheduled(tr.Id, bindex.id())){
+				cerr << "N.IsEnabled(" << tr.label << ",";
+				bindex.print();
+				cerr <<")" << endl;
+				if(EQ->isScheduled(tr.Id, bindex.id())){
+					cerr << "Scheduled and not enabled!"<< endl;
+				}else{
+					cerr << "Enabled and not scheduled!" << endl;
+				}
+				assert(N.IsEnabled(tr.Id, bindex) ==
+					   EQ->isScheduled(tr.Id, bindex.id()));
+			}
+		}
+	}
 	 */
+	 
 };
 
 void SimulatorRE::updateLikelihood(size_t E1_transitionNum){
