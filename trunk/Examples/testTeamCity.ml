@@ -42,7 +42,7 @@ type haslr =
 let print_hasl_header f sep =
   Printf.fprintf f "%s%s%s%s%s%s%s%s%s%s" "HASLname" sep "MeanValue" sep "StandarDev" sep "ConfidenceIntervalLow" sep "ConfidenceIntervalUp" sep
 let print_haslr f sep (s,h) =
-  Printf.fprintf f "%s%s%f%s%f%s%f%s%f%s" s sep h.mean sep h.stdDev sep (fst h.confInterval) sep (snd h.confInterval) sep
+  Printf.fprintf f "%s%s%g%s%g%s%g%s%g%s" s sep h.mean sep h.stdDev sep (fst h.confInterval) sep (snd h.confInterval) sep
 
 let dummy_haslr = {
   mean =0.;
