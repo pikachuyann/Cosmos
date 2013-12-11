@@ -57,13 +57,15 @@ enum HaslType {
 class ConfInt {
 public:
 	ConfInt(); //!< Interval representing \f$ \mathbb{R}  \f$.
-	ConfInt(double,double); //!< Symetric interval.
-	ConfInt(double,double,double); //!< Asymetric interval.
+	ConfInt(double,double,double,double); //!< Symetric interval.
+	ConfInt(double,double,double,double,double); //!< Asymetric interval.
 	~ConfInt();
 	
 	double mean; //!< Middle of the confidence interval.
 	double low; //!< Lower bound of the confidence interval.
 	double up; //!< Upper bound of the confidence interval.
+	double min;
+	double max;
 
 	double width(void); //!< Width of the confidence interval.
 

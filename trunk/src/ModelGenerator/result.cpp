@@ -189,8 +189,12 @@ void result::printProgress(){
 	if(P.verbose >1){
 		for(size_t i=0; i<P.HaslFormulasname.size(); i++){
 			
-			cout << setw(maxformulaname+1)<<left << (P.HaslFormulasname[i]+":") << " Mean=";
-			cout << setw(15) << HaslResult[i]->mean;
+			cout << setw(maxformulaname+1)<<left << (P.HaslFormulasname[i]+":") << " |< ";
+			cout << setw(15) << HaslResult[i]->min << " --[ ";
+			cout << setw(15) << HaslResult[i]->low << " < ";
+			cout << setw(15) << HaslResult[i]->mean << " > ";
+			cout << setw(15) << HaslResult[i]->up << " ]-- ";
+			cout << setw(15) << HaslResult[i]->max << " >| ";
 			cout << "\t  width=";
 			cout << setw(15) << HaslResult[i]->width() << endl;
 			endline++;
@@ -234,9 +238,11 @@ void result::print(ostream &s){
 				s << "Estimated value:\t" << HaslResult[i]->mean << endl;
 				if(P.sequential){
 					s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
+					s << "Minimal and maximal value:\t[" << HaslResult[i]->min << " , " << HaslResult[i]->max << "]" << endl;
 					s << "Width:\t" << HaslResult[i]->width() << endl;
 				}else{
 					s << "Confidence interval:\t[" << HaslResult[i]->mean-P.Width/2.0 << " , " << HaslResult[i]->mean+P.Width/2.0 << "]" << endl;
+					s << "Minimal and maximal value:\t[" << HaslResult[i]->min << " , " << HaslResult[i]->max << "]" << endl;
 					s << "Width:\t" << P.Width << endl;
 				}
 			}
