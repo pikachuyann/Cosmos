@@ -183,8 +183,8 @@ void result::printProgress(){
 	double wallclock = (current.tv_sec-start.tv_sec + (current.tv_usec-start.tv_usec)/1000000.0);
 	
 	double estimated = fmax(0.0, wallclock * (1.0 / fmax(pow(RelErr,-2.0)/pow(P.Width,-2.0), (double)MeanM2->I / (double)P.MaxRuns ) - 1.0 ));
-	cout << setprecision(1)<< fixed << wallclock << "s\t estimated time to complete: " ;
-	cout << estimated << "s" << defaultfloat<< endl;
+	cout << ceil(wallclock) << "s\t estimated time to complete: " ;
+	cout << ceil(estimated) << "s" << endl;
 	
     endline++;
 	
