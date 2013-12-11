@@ -260,3 +260,16 @@ let csv = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "csvResultFi
 
 
 let execSavedCosmos ?(prefix=false) x = execSavedCosmos_free prefix rf csv x
+
+
+let producelog resultFile =
+  let rf = open_in resultFile in (
+    try while true do 
+	let v = input_value rf in
+	print_result stdout ",\t" v;
+      done with
+	  End_of_file -> ()
+  );
+  close_in rf
+	  
+      

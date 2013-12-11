@@ -120,7 +120,7 @@ private:
 	vector<double> RelErrArray;
 	
 	//! The result of the estimator of the confidence interval for each formula.
-	vector<ConfInt*> HaslResult;
+	vector<ConfInt> HaslResult;
 	
 };
 

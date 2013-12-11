@@ -48,6 +48,8 @@ ConfInt::ConfInt(){
  * Symetric confidence interval
  * @param meanArg is the middle of the confidence interval
  * @param width is the width of the confidence interval
+ * @param min the smallest value observed
+ * @param max the maximal value observed
  */
 ConfInt::ConfInt(double meanArg,double width,double minval,double maxval){
 	mean = meanArg;
@@ -64,6 +66,8 @@ ConfInt::ConfInt(double meanArg,double width,double minval,double maxval){
  * and is not approximated by the normal distribution wich is symetric.
  * @param lowArg the Lower bound of the confidence interval.
  * @param upArg the Upper bound of the confidence interval.
+ * @param min the smallest value observed
+ * @param max the maximal value observed
  */
 ConfInt::ConfInt(double meanArg,double lowArg,double upArg,double minval,double maxval){
 	mean = meanArg;
@@ -332,7 +336,7 @@ void HaslFormulasTop::setLevel(double l){
  * The correctness of the stopping condition.
  *
  */
-ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
+ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 	switch (TypeOp) {
 		case PROBABILITY:
 		{
@@ -347,7 +351,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 		double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 		
-		return new ConfInt(mean,l,u,0.0,1.0);
+		return ConfInt(mean,l,u,0.0,1.0);
 		}
 			
 		case EXPECTANCY:
@@ -355,7 +359,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		case PDF_PART:
 		{
 		//No accepting trajectory the condidence interval is R.
-		if(batch.Isucc==0)return new ConfInt();
+		if(batch.Isucc==0)return ConfInt();
 		
 		double mean = batch.Mean[Algebraic]/batch.Isucc;
 		double m2 = batch.M2[Algebraic]/batch.Isucc;
@@ -366,13 +370,13 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		
 		double width = 2 * Value * sqrt(variance/batch.Isucc);
 		
-		return new ConfInt(mean,width,batch.Min[Algebraic],batch.Max[Algebraic]);
+		return ConfInt(mean,width,batch.Min[Algebraic],batch.Max[Algebraic]);
 		}
 			
 		case RE_Likelyhood:
 		{
 		//No accepting trajectory the condidence interval is R.
-		if(batch.Isucc==0)return new ConfInt();
+		if(batch.Isucc==0)return ConfInt();
 		double mean = batch.Mean[Algebraic]/batch.Isucc;
 		double m2 = batch.M2[Algebraic]/batch.Isucc;
 		
@@ -381,13 +385,13 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		
 		double width = 2 * Value * sqrt(variance/batch.Isucc);
 		
-		return new ConfInt(mean,width,batch.Min[Algebraic],batch.Max[Algebraic]);
+		return ConfInt(mean,width,batch.Min[Algebraic],batch.Max[Algebraic]);
 		}
 			
 		case RE_AVG://temporary
 		{
 		//No accepting trajectory the condidence interval is R.
-		if(batch.Isucc==0)return new ConfInt();
+		if(batch.Isucc==0)return ConfInt();
 		
 		double mean = (double)batch.Isucc / (double)batch.I;
 		double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
@@ -397,7 +401,7 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		double variance = fmax(0,m2 - mean2 * mean2);
 		double width = Value * sqrt(variance/batch.Isucc);
 		
-		return new ConfInt(mean*mean2,
+		return ConfInt(mean*mean2,
 						   (mean2 - width)*l,
 						   (mean2 + width)*u,0.0,1.0 * batch.Max[Algebraic] );
 		}
@@ -411,10 +415,10 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		double LevelN = 1- error/(N+2);
 		double ValueN = quantile(boost::math::normal() , (1+LevelN)/2);
 		
-		ConfInt* totalInt = new ConfInt(0.0,0.0,0.0,0.0);
-		ConfInt* likelyhood = new ConfInt(0.0,0.0,0.0,0.0);
-		ConfInt* reacheabilityprob = new ConfInt(0.0,0.0,0.0,0.0);
-		ConfInt* poisson = new ConfInt(0.0,0.0,0.0,0.0);
+		ConfInt totalInt = ConfInt(0.0,0.0,0.0,0.0);
+		ConfInt likelyhood = ConfInt(0.0,0.0,0.0,0.0);
+		ConfInt reacheabilityprob =  ConfInt(0.0,0.0,0.0,0.0);
+		ConfInt poisson = ConfInt(0.0,0.0,0.0,0.0);
 		
 		if(P.verbose>1)std::cerr << "i,\tsucc,\tbatch,\tMean,\tM2,\tMin,\tMax,\tPoisson" << std::endl;
 		if(P.verbose>1)std::cerr << "continuous step:\t" << P.continuousStep <<  std::endl;
@@ -422,65 +426,57 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 			int i2 = (i>0 && P.continuousStep>1.0 )? i-1 : i;
 			
 			//evaluate the likelyhood:
-			likelyhood->mean = batch.Mean[2*i+1]/batch.Mean[2*i];
+			likelyhood.mean = batch.Mean[2*i+1]/batch.Mean[2*i];
 			double var = (batch.M2[2*i+1]/batch.Mean[2*i]) - pow((batch.Mean[2*i+1]/batch.Mean[2*i]),2);
 			double widthN = 0.0;
 			if(var>0)widthN = 2* ValueN * sqrt(var/batch.Mean[2*i]);
-			likelyhood->low = batch.Min[2*i2+1];
-			likelyhood->up = batch.Max[2*i+1];  //likelyhood->mean + widthN/2.0;
-			likelyhood->min = batch.Min[2*i2+1];
-			likelyhood->max = batch.Max[2*i+1];
+			likelyhood.low = batch.Min[2*i2+1];
+			likelyhood.up = batch.Max[2*i+1];  //likelyhood->mean + widthN/2.0;
+			likelyhood.min = batch.Min[2*i2+1];
+			likelyhood.max = batch.Max[2*i+1];
 			
 			//evaluate probability to reach final state:
-			reacheabilityprob->mean = batch.Mean[2*i]/batch.M2[2*i];
-      		reacheabilityprob->low = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.M2[2*i2],batch.Mean[2*i2], (1-LevelN)/2);
-			reacheabilityprob->up = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.M2[2*i],batch.Mean[2*i], (1-LevelN)/2);
-			reacheabilityprob->min = 0.0;
-			reacheabilityprob->max = 1.0;
+			reacheabilityprob.mean = batch.Mean[2*i]/batch.M2[2*i];
+      		reacheabilityprob.low = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.M2[2*i2],batch.Mean[2*i2], (1-LevelN)/2);
+			reacheabilityprob.up = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.M2[2*i],batch.Mean[2*i], (1-LevelN)/2);
+			reacheabilityprob.min = 0.0;
+			reacheabilityprob.max = 1.0;
 			//evaluate poisson:
-			poisson->mean = batch.Min[2*i];
-			poisson->low = (1-Value2)*batch.Min[2*i];
-			poisson->up = batch.Min[2*i];
-			poisson->min=poisson->low;
-			poisson->max=poisson->max;
+			poisson.mean = batch.Min[2*i];
+			poisson.low = (1-Value2)*batch.Min[2*i];
+			poisson.up = batch.Min[2*i];
+			poisson.min=poisson.low;
+			poisson.max=poisson.max;
 			
 			if(P.verbose>1){
-				std::cout << "i: " << i<< "\tsucc: "<< batch.Mean[2*i]<< "\tLikelyhood: "  << likelyhood->mean << "\t[" << likelyhood->low<<";"<<likelyhood->up << "]\twidth: "<< widthN <<"\tpoisson: " << batch.Min[2*i] << "\tconfint: ["<< poisson->low <<";"<< poisson->up << "]";
+				std::cout << "i: " << i<< "\tsucc: "<< batch.Mean[2*i]<< "\tLikelyhood: "  << likelyhood.mean << "\t[" << likelyhood.low<<";"<<likelyhood.up << "]\twidth: "<< widthN <<"\tpoisson: " << batch.Min[2*i] << "\tconfint: ["<< poisson.low <<";"<< poisson.up << "]";
 				std::cerr << i << ",\t" << batch.Mean[2*i] << ",\t" << batch.M2[2*i] << ",\t" << batch.Mean[2*i+1]/batch.Mean[2*i] << ",\t" << batch.M2[2*i+1]/batch.Mean[2*i] << ",\t" << batch.Min[2*i+1] << ",\t" << batch.Max[2*i+1] << ",\t" << batch.Mean[2*i] << std::endl;
 			}
 			
 			//Multiply the three confidence interval:
-			*poisson *= *likelyhood;
-	        *poisson *= *reacheabilityprob;
+			poisson *= likelyhood;
+	        poisson *= reacheabilityprob;
 			
 			if(P.verbose>1){
-				std::cout << "\tresult: ["<< poisson->low <<";"<< poisson->up << "]" << std::endl;
+				std::cout << "\tresult: ["<< poisson.low <<";"<< poisson.up << "]" << std::endl;
 			}
 			
 			
 			//Add the confidence interval to the total one.
 			//if(poisson->width() < 1.0)
-			*totalInt += *poisson;
+			totalInt += poisson;
 			
 		}
 		
-		delete likelyhood;
-		delete reacheabilityprob;
-		delete poisson;
-		
 		//Add the error made on the left of the truncation point.
-		ConfInt* leftTruncationError =
-		new ConfInt(0.0,0.0,batch.Mean[1]/batch.M2[0]* Value2/2,0,batch.Mean[1]/batch.M2[0]* Value2/2);
+		ConfInt leftTruncationError =
+		ConfInt(0.0,0.0,batch.Mean[1]/batch.M2[0]* Value2/2,0,batch.Mean[1]/batch.M2[0]* Value2/2);
 		
 		//Add the error made on the rigth trucation point TODO!
-		ConfInt* rightTruncationError =
-		new ConfInt(0.0,0.0,0.0,0.0);
+		ConfInt rightTruncationError = ConfInt(0.0,0.0,0.0,0.0);
 		
-		*totalInt += *leftTruncationError;
-		*totalInt += *rightTruncationError;
-		
-		delete leftTruncationError;
-		delete rightTruncationError;
+		totalInt += leftTruncationError;
+		totalInt += rightTruncationError;
 		
 		return totalInt;
 	    }
@@ -495,56 +491,29 @@ ConfInt* HaslFormulasTop::eval(BatchR &batch)const{
 		double a = 1-Level; //Probability of type I error
 		double b = 1-Level; //Probability of type II errror
 		if(likelyhoodRatio <= b /(1-a)){
-			return new ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2,0.0,1.0);
+			return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2,0.0,1.0);
 		}
 		if (likelyhoodRatio >= (1-b) / a ) {
-			return new ConfInt((double)batch.Isucc/(double)batch.I, Value ,1,0.0,1.0);
+			return ConfInt((double)batch.Isucc/(double)batch.I, Value ,1,0.0,1.0);
 		}
-		return new ConfInt((double)batch.Isucc/(double)batch.I, 0 ,1,0.0,1.0);
+		return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,1,0.0,1.0);
 		}
 			
 		case CONSTANT:
-			return new ConfInt(Value,Value2,Value-Value2/2.0,Value+Value2/2.0);
+			return ConfInt(Value,Value2,Value-Value2/2.0,Value+Value2/2.0);
 			
 		case HASL_PLUS:
-	    {
-		ConfInt* lci = left->eval(batch);
-		ConfInt* rci = right->eval(batch);
-		*lci += *rci;
-		delete rci;
-		
-		return lci;
-	    }
+			return (left->eval(batch) += right->eval(batch));
+	    
 		case HASL_MINUS:
-	    {
-		ConfInt* lci = left->eval(batch);
-		ConfInt* rci = right->eval(batch);
-		*lci -= *rci;
-		delete rci;
-		
-		return lci;
-	    }
-			
+			return (left->eval(batch) -= right->eval(batch));
+				
 		case HASL_TIME:
-	    {
-		ConfInt* lci = left->eval(batch);
-		ConfInt* rci = right->eval(batch);
-		*lci *= *rci;
-		delete rci;
-		
-		return lci;
-	    }
-			
+			return (left->eval(batch) *= right->eval(batch));
+				
 		case HASL_DIV:
-	    {
-		ConfInt* lci = left->eval(batch);
-		ConfInt* rci = right->eval(batch);
-		*lci /= *rci;
-		delete rci;
-		
-		return lci;
-	    }
-			
+			return (left->eval(batch) /= right->eval(batch));
+	  			
 		default:
 			std::cerr << "Fail to parse Hasl Formula"<< std::endl;
 			exit(EXIT_FAILURE);

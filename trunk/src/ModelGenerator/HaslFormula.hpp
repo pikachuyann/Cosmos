@@ -96,7 +96,7 @@ public:
 	
 	bool isConstant(); //!Return true if a formula is constant
 	void setLevel(double); //!< set correct confidence level for complex HASL Formula.
-	ConfInt* eval(BatchR&)const; //!< Evaluate the formula over the batch of simulation
+	ConfInt eval(const BatchR&)const; //!< Evaluate the formula over the batch of simulation
 	double bound()const; //!< Return a bound on the formula result
 	HaslType TypeOp; //!< type of the HaslFormula.
 

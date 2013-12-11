@@ -374,8 +374,7 @@ bool ParseBuild(parameters& P) {
 	}
 	
 	//Set the confidence level to all Hasl formula
-	for(vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
-		it != P.HaslFormulas.end(); ++it)(*it)->setLevel(P.Level);
+	for(auto &it : P.HaslFormulas)it->setLevel(P.Level);
 	
 	//Compile the SPN
 	cmd = bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
@@ -406,7 +405,7 @@ std::string systemStringResult(const char* cmd) {
     FILE* pipe = popen(cmd, "r");
     if (!pipe) return "";
     char buffer[128];
-    string result = "";
+    string result;
     while(!feof(pipe)) {
     	if(fgets(buffer, 128, pipe) != NULL)
     		result += buffer;
@@ -488,8 +487,7 @@ int main(int argc, char** argv) {
 	
 	if(!P.sequential){
 		double b = 0.0;
-		for(vector<HaslFormulasTop*>::const_iterator it = P.HaslFormulas.begin(); it != P.HaslFormulas.end();
-			++it) b = fmax(b,(*it)->bound());
+		for(const auto it : P.HaslFormulas) b = fmax(b,it->bound());
 		
 		if(P.MaxRuns==0){
 			P.MaxRuns = (int)(2.0*2.0*2.0*b*b/(P.Width*P.Width) * log(2/(1-P.Level)));

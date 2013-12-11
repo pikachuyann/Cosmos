@@ -36,16 +36,13 @@
 
 using namespace std;
 
-result::result(){
+result::result():HaslResult(P.HaslFormulasname.size()) {
     //P= Q;
 	gnuplotstream= NULL;
 	gettimeofday(&lastprint,NULL);
 	gettimeofday(&lastdraw,NULL);
 	
     MeanM2 = new BatchR(P.nbAlgebraic);
-	for(size_t i =0; i<P.HaslFormulasname.size(); i++){
-		HaslResult.push_back(new ConfInt());
-	}
 	
     RelErr = 0;
 	RelErrArray = vector<double>(P.HaslFormulasname.size()); //relative error
@@ -113,15 +110,14 @@ void result::addBatch(BatchR *batchResult){
     MeanM2->unionR(batchResult);
 	RelErr = 0;
     for(size_t i =0; i<P.HaslFormulasname.size(); i++){
-		delete HaslResult[i];
 		HaslResult[i] = P.HaslFormulas[i]->eval(*MeanM2);
         if(P.BoundedContinuous){
-            HaslResult[i]->low *=  (1 - P.epsilon);
+            HaslResult[i].low *=  (1 - P.epsilon);
         }
 		
         if(P.RareEvent || P.BoundedRE>0){
-            RelErrArray[i] =  fabs((HaslResult[i]->width() /  MeanM2->Mean[i])*MeanM2->Isucc);
-        }else RelErrArray[i] = HaslResult[i]->width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
+            RelErrArray[i] =  fabs((HaslResult[i].width() /  MeanM2->Mean[i])*MeanM2->Isucc);
+        }else RelErrArray[i] = HaslResult[i].width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
 		
 		if(P.HaslFormulas[i]->TypeOp==HYPOTHESIS){
 			if (RelErrArray[i] <1)RelErrArray[i]=0;
@@ -176,7 +172,7 @@ void result::printProgress(){
         endline--;
         cout << "\033[A\033[2K";
     }
-	cout.precision(15);
+	cout.precision(13);
     cout << "Total paths: ";
 	cout << setw(10) << MeanM2->I << "\t accepted paths: ";
 	cout << setw(10) << MeanM2->Isucc << "\t wall-clock time: ";
@@ -196,13 +192,13 @@ void result::printProgress(){
 		for(size_t i=0; i<P.HaslFormulasname.size(); i++){
 			
 			cout << setw(maxformulaname+1)<<left << (P.HaslFormulasname[i]+":") << " |< ";
-			cout << setw(17) << HaslResult[i]->min << " --[ ";
-			cout << setw(17) << HaslResult[i]->low << " < ";
-			cout << setw(17) << HaslResult[i]->mean << " > ";
-			cout << setw(17) << HaslResult[i]->up << " ]-- ";
-			cout << setw(17) << HaslResult[i]->max << " >| ";
+			cout << setw(17) << HaslResult[i].min << " --[ ";
+			cout << setw(17) << HaslResult[i].low << " < ";
+			cout << setw(17) << HaslResult[i].mean << " > ";
+			cout << setw(17) << HaslResult[i].up << " ]-- ";
+			cout << setw(17) << HaslResult[i].max << " >| ";
 			cout << "\t  width=";
-			cout << setw(15) << HaslResult[i]->width() << endl;
+			cout << setw(15) << HaslResult[i].width() << endl;
 			endline++;
 			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2 && P.sequential){
 				cout << "% of width:\t";
@@ -241,14 +237,14 @@ void result::print(ostream &s){
 				
 				s << P.HaslFormulasname[i] << ":" << endl;
 				
-				s << "Estimated value:\t" << HaslResult[i]->mean << endl;
+				s << "Estimated value:\t" << HaslResult[i].mean << endl;
 				if(P.sequential){
-					s << "Confidence interval:\t[" << HaslResult[i]->low << " , " << HaslResult[i]->up << "]" << endl;
-					s << "Minimal and maximal value:\t[" << HaslResult[i]->min << " , " << HaslResult[i]->max << "]" << endl;
-					s << "Width:\t" << HaslResult[i]->width() << endl;
+					s << "Confidence interval:\t[" << HaslResult[i].low << " , " << HaslResult[i].up << "]" << endl;
+					s << "Minimal and maximal value:\t[" << HaslResult[i].min << " , " << HaslResult[i].max << "]" << endl;
+					s << "Width:\t" << HaslResult[i].width() << endl;
 				}else{
-					s << "Confidence interval:\t[" << HaslResult[i]->mean-P.Width/2.0 << " , " << HaslResult[i]->mean+P.Width/2.0 << "]" << endl;
-					s << "Minimal and maximal value:\t[" << HaslResult[i]->min << " , " << HaslResult[i]->max << "]" << endl;
+					s << "Confidence interval:\t[" << HaslResult[i].mean-P.Width/2.0 << " , " << HaslResult[i].mean+P.Width/2.0 << "]" << endl;
+					s << "Minimal and maximal value:\t[" << HaslResult[i].min << " , " << HaslResult[i].max << "]" << endl;
 					s << "Width:\t" << P.Width << endl;
 				}
 			}
@@ -290,8 +286,8 @@ void result::outputCDFPDF(string f){
 			size_t comma = P.HaslFormulasname[i].find(",",fb);
 			outFile << P.HaslFormulasname[i].substr(comma+2,
 													P.HaslFormulasname[i].length() -comma-3 ) << " ";
-			outFile << HaslResult[i]->low << " "<< HaslResult[i]->mean;
-			outFile << " " << HaslResult[i]->up << endl;
+			outFile << HaslResult[i].low << " "<< HaslResult[i].mean;
+			outFile << " " << HaslResult[i].up << endl;
 		}
 	}
 	outFile.close();
@@ -360,9 +356,9 @@ void result::flushgnuplot(){
 void result::outputData(){
     outdatastream << MeanM2->I << " "<< MeanM2-> Isucc;
     for(size_t i =0; i<P.HaslFormulasname.size(); i++){
-        outdatastream << " "<< HaslResult[i]->mean
-		<< " "<< HaslResult[i]->width()
-		<< " " << HaslResult[i]->low << " " << HaslResult[i]->up;
+        outdatastream << " "<< HaslResult[i].mean
+		<< " "<< HaslResult[i].width()
+		<< " " << HaslResult[i].low << " " << HaslResult[i].up;
     }
     outdatastream << endl;
 	outdatastream.flush();
