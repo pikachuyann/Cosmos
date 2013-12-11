@@ -178,8 +178,14 @@ void result::printProgress(){
     }
 	cout.precision(15);
     cout << "Total paths: ";
-	cout << setw(15) << MeanM2->I << "\t accepted paths: ";
-	cout << setw(15) << MeanM2->Isucc << endl;
+	cout << setw(10) << MeanM2->I << "\t accepted paths: ";
+	cout << setw(10) << MeanM2->Isucc << "\t wall-clock time: ";
+	double wallclock = (current.tv_sec-start.tv_sec + (current.tv_usec-start.tv_usec)/1000000.0);
+	
+	double estimated = fmax(0.0, wallclock * (1.0 / fmax(pow(RelErr,-2.0)/pow(P.Width,-2.0), (double)MeanM2->I / (double)P.MaxRuns ) - 1.0 ));
+	cout << setprecision(1)<< fixed << wallclock << "s\t estimated time to complete: " ;
+	cout << estimated << "s" << defaultfloat<< endl;
+	
     endline++;
 	
 	size_t maxformulaname=0;
@@ -190,11 +196,11 @@ void result::printProgress(){
 		for(size_t i=0; i<P.HaslFormulasname.size(); i++){
 			
 			cout << setw(maxformulaname+1)<<left << (P.HaslFormulasname[i]+":") << " |< ";
-			cout << setw(15) << HaslResult[i]->min << " --[ ";
-			cout << setw(15) << HaslResult[i]->low << " < ";
-			cout << setw(15) << HaslResult[i]->mean << " > ";
-			cout << setw(15) << HaslResult[i]->up << " ]-- ";
-			cout << setw(15) << HaslResult[i]->max << " >| ";
+			cout << setw(17) << HaslResult[i]->min << " --[ ";
+			cout << setw(17) << HaslResult[i]->low << " < ";
+			cout << setw(17) << HaslResult[i]->mean << " > ";
+			cout << setw(17) << HaslResult[i]->up << " ]-- ";
+			cout << setw(17) << HaslResult[i]->max << " >| ";
 			cout << "\t  width=";
 			cout << setw(15) << HaslResult[i]->width() << endl;
 			endline++;
