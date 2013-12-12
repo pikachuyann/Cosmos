@@ -154,7 +154,7 @@ void printPercent(double i, double j){
         if(k<u){cout<<"|";}
         else cout<<" ";
     };
-    cout << "]\t"<< endl;
+    cout << "] "<< (int)(100.0 * i/j) <<"%\t"<< endl;
 }
 
 void result::printProgress(){
@@ -172,15 +172,17 @@ void result::printProgress(){
         endline--;
         cout << "\033[A\033[2K";
     }
-	cout.precision(13);
     cout << "Total paths: ";
-	cout << setw(10) << MeanM2->I << "\t accepted paths: ";
-	cout << setw(10) << MeanM2->Isucc << "\t wall-clock time: ";
+	cout << setw(10) << MeanM2->I << "\t Accepted paths: ";
+	cout << setw(10) << MeanM2->Isucc << "\t Wall-clock time: ";
 	double wallclock = (current.tv_sec-start.tv_sec + (current.tv_usec-start.tv_usec)/1000000.0);
 	
 	double estimated = fmax(0.0, wallclock * (1.0 / fmax(pow(RelErr,-2.0)/pow(P.Width,-2.0), (double)MeanM2->I / (double)P.MaxRuns ) - 1.0 ));
-	cout << ceil(wallclock) << "s\t estimated time to complete: " ;
-	cout << ceil(estimated) << "s" << endl;
+	cout << ceil(wallclock) << "s\t Remaining(approximative): " ;
+	cout << ceil(estimated) << "s\t Trajectory per second: " ;
+	cout.precision(2);
+	cout << (double)MeanM2->I/wallclock << endl;
+	cout.precision(12);
 	
     endline++;
 	

@@ -804,10 +804,10 @@ AVG LB AlgExpr RB {
 	$$ = new HaslFormulasTop(HASL_DIV, $1,$3);
 }
 | ival {
-	$$ = new HaslFormulasTop((double)$1,(double)$1,1.0);
+	$$ = new HaslFormulasTop((double)$1,0.0,1.0);
 }
 | rval {
-	$$ = new HaslFormulasTop((double)$1,(double)$1,1.0);
+	$$ = new HaslFormulasTop((double)$1,0.0,1.0);
 }
 
 AlgExpr:LhaFunc {string ss=$1;

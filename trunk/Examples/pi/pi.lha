@@ -4,8 +4,9 @@ NbLocations = 4 ;
 VariablesList = {x, y,r,OK} ;
 LocationsList = {l0, l1, l2, lp};
 
-%r=AVG(Last(r));
+r=AVG(Last(r));
 pi= 4*PROB;
+pi2=PROB;
 %av=AVG(Mean(P2));
 %pdf = PDF(Last(r),0.05,0,1);
 %cdf = CDF(Last(r),0.05,0,1);
