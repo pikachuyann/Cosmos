@@ -48,13 +48,14 @@ using namespace std;
  * but don't fill it.
  */
 Simulator::Simulator():verbose(0) {
-	EQ = new EventsQueue(N); //initialization of the event queue
-    logResult=false;
-	
-	BatchSize = 1000;
+  EQ = new EventsQueue(N); //initialization of the event queue
+  logResult=false;
+  
+  BatchSize = 1000;
 }
 
 Simulator::~Simulator() {
+  delete EQ;
 }
 
 void Simulator::initRandomGenerator(unsigned int seed){

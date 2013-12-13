@@ -683,11 +683,9 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		}
 		header << " += x.mult;\n\t\treturn *this;\n\t}\n";
 		
-		/* Not neaded error prone
-		header << "\t" << it->cname() << "& operator + (const " << it->tokname() << "& x){\n";
+		header << "\t" << it->cname() << " operator + (const " << it->tokname() << "& x){\n";
 		header << "\t\t"<< it->cname()<< " d(*this);\n\t\td+=x;\n ";
 		header << "\t\treturn d;\n}\n";
-		*/
 		 
 		header << "\t" << it->cname() << "& operator -= (const " << it->tokname() << "& x){\n";
 		header << "\t\tmult";

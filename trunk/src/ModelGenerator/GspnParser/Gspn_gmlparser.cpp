@@ -918,7 +918,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 						coldom = MyGspn->placeStruct[Gml2Place[sourceGML]].colorDom;
 					else coldom = MyGspn->placeStruct[Gml2Place[atoi(target.c_str())]].colorDom;
 					
-					if (toklist.size()>0)valuation.append(" += ");
+					if (toklist.size()>0)valuation.append(" + ");
 					valuation.append("(");
 					
 					if(tokenType.hasAll)
