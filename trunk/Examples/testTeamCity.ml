@@ -216,12 +216,12 @@ let test_cosmos_gspn n v o =
 let test_cosmos_grml n v o =
   test_cosmos n (n^".grml") (n^"lha.grml") o v
  
-let test_coverage name v o n =
+let test_coverage job name v o n =
   let _ = exec_cosmos (name^".gspn") (name^".lha") 10 1 (" --tmp-status 2 --max-run 10") false  in
   print_endline ("Cosmos "^o^" -v 0 --tmp-status 3 "^name^".gspn "^name^".lha");
   let succ = ref 0 in
   for i = 1 to n do
-    let result = exec_cosmos (name^".gspn") (name^".lha") 1000 1 (o^" -v 0 --tmp-status 3") false in
+    let result = exec_cosmos (name^".gspn") (name^".lha") 1000 job (o^" --tmp-status 3") false in
     if check_result result.haslResult v then (
       incr succ;
       print_string "+";

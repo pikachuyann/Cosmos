@@ -323,15 +323,7 @@ bool ParseBuild(parameters& P) {
 	return false;
     }
 	
-	//If the code should not be compiled return
-	if(P.tmpStatus==1||P.tmpStatus==3)return true;
-	
-	if(P.verbose>0){
-        cout << "Parsing OK.\n" << endl;
-        cout << "Start building ... " << endl;
-    }
-    
-    string cmd;
+	string cmd;
 	string bcmd = P.gcccmd + " " + P.gccflags;
 	
 	if(P.RareEvent){
@@ -376,6 +368,14 @@ bool ParseBuild(parameters& P) {
 	//Set the confidence level to all Hasl formula
 	for(auto &it : P.HaslFormulas)it->setLevel(P.Level);
 	
+	//If the code should not be compiled return
+	if(P.tmpStatus==1||P.tmpStatus==3)return true;
+	
+	if(P.verbose>0){
+        cout << "Parsing OK.\n" << endl;
+        cout << "Start building ... " << endl;
+    }
+    
 	//Compile the SPN
 	cmd = bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
 	if(P.verbose>2)cout << cmd << endl;
