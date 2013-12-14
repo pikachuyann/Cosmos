@@ -295,7 +295,10 @@ ColorClassList: str {sprintf($$,"[%s]", $1->c_str()); }
 	| str COMMA ColorClassList {sprintf($$,"[%s]%s", $1->c_str(), $3); };
 
 Sizes: NbLocations NbVariables
-|NbVariables NbLocations;
+|NbVariables NbLocations
+|NbLocations {Reader.MyLha.NbVar=0;}
+|NbVariables {Reader.MyLha.NbLoc=0;}
+| {Reader.MyLha.NbVar=0;Reader.MyLha.NbLoc=0;}
 
 Constants: Constant
 |Constant Constants;
@@ -320,48 +323,30 @@ Constant: Const INT str EQ IntMarkingFormula SEMICOLON
 
 
 
-NbVariables: NbVar EQ ival SEMICOLON {Reader.MyLha.NbVar=$3;
-	
-};
+NbVariables: NbVar EQ ival SEMICOLON {Reader.MyLha.NbVar=$3;};
 
-NbLocations: NbLoc EQ ival SEMICOLON {Reader.MyLha.NbLoc=$3;
-	
-};
+NbLocations: NbLoc EQ ival SEMICOLON {Reader.MyLha.NbLoc=$3;};
 
 Lists: VariablesList LocationsList
-|LocationsList VariablesList;
+| LocationsList VariablesList;
 
 VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
+	if(Reader.MyLha.NbVar==0)Reader.MyLha.NbVar = Reader.MyLha.Vars.label.size();
 	if(Reader.MyLha.Vars.label.size()!=Reader.MyLha.NbVar){
 		std::cout<<"Variable label missing or redeclared, please check your variables list"<<std::endl;
 		YYABORT;
 	}
 	
+	StrFlowVector.resize(Reader.MyLha.NbVar);
+	FuncFlowVector.resize(Reader.MyLha.NbVar);
+	FuncUpdateVector.resize(Reader.MyLha.NbVar);
+	CoeffsVector.resize(Reader.MyLha.NbVar);
 	
-	if(true){
-		vector<string> v1(Reader.MyLha.NbVar,"");
-		
-		vector< vector<string> > vv(Reader.MyLha.NbLoc,v1);
-		
-		StrFlowVector=v1;
-		FuncFlowVector=v1;
-		FuncUpdateVector=v1;
-		CoeffsVector=v1;
-		Reader.MyLha.FuncFlow=vv;
-		Reader.MyLha.StrFlow=vv;
-		vector<string> v2(Reader.MyLha.NbLoc,"");
-		Reader.MyLha.StrLocProperty=v2;
-		Reader.MyLha.FuncLocProperty=v2;
-		set <string> Pt;
-		PetriTransitions=Pt;
-		for(map<string, int>::iterator it=Reader.MyLha.TransitionIndex.begin();it!=Reader.MyLha.TransitionIndex.end();it++)
-		PetriTransitions.insert((*it).first);
-		vector < set<int> > vi(Reader.MyLha.NbLoc);
-		Reader.MyLha.Out_S_Edges=vi;
-		Reader.MyLha.Out_A_Edges=vi;
-	}
+	for(const auto &it : Reader.MyLha.TransitionIndex)
+		PetriTransitions.insert(it.first);
 	
 	
+
 };
 
 VLabels : str {
@@ -395,11 +380,13 @@ VLabels : str {
 	//Reader.MyLha.VarIndex[*$3]=Reader.MyLha.VarLabel.size()-1;
 };
 
-LocationsList: LList EQ '{' LLabels '}' SEMICOLON {if(Reader.MyLha.LocIndex.size()!=Reader.MyLha.NbLoc){
+LocationsList: LList EQ '{' LLabels '}' SEMICOLON {
+	if(Reader.MyLha.NbLoc ==0)Reader.MyLha.NbLoc = Reader.MyLha.LocIndex.size();
+	if(Reader.MyLha.LocIndex.size()!=Reader.MyLha.NbLoc){
 	std::cout<<"Location label missing or redeclared, please check your locations list"<<std::endl;
 	YYABORT;
-}
-	
+	}
+
 };
 
 LLabels : str {
@@ -460,6 +447,9 @@ LocationsDef: locations EQ '{' LOCATIONS '}' SEMICOLON {
 	if(Reader.MyLha.FuncLocProperty[l]=="")
 	{cout<<"Some locations are not definded. Please define all the declared locations."<<endl;
 		YYABORT;}
+	
+	Reader.MyLha.Out_S_Edges.resize(Reader.MyLha.NbLoc);
+	Reader.MyLha.Out_A_Edges.resize(Reader.MyLha.NbLoc);
 };
 
 LOCATIONS: LOCATION
@@ -470,15 +460,16 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 	if(Reader.MyLha.LocIndex.find(*$2)!=Reader.MyLha.LocIndex.end()){
 		l=Reader.MyLha.LocIndex[*$2];
 		
-		Reader.MyLha.StrLocProperty[l]=$4;
-		Reader.MyLha.FuncLocProperty[l]=$4;
-		Reader.MyLha.FuncFlow[l]=FuncFlowVector;
-		Reader.MyLha.StrFlow[l]=StrFlowVector;
+		Reader.MyLha.StrLocProperty.push_back($4);
+		Reader.MyLha.FuncLocProperty.push_back($4);
+		Reader.MyLha.FuncFlow.push_back(FuncFlowVector);
+		Reader.MyLha.StrFlow.push_back(StrFlowVector);
 		
 		if(true){
 			vector<string> v(Reader.MyLha.NbVar,"");
 			StrFlowVector=v;
-			FuncFlowVector=v;}
+			FuncFlowVector=v;
+		}
 	}
 	else {cout<<"Unknown location"<<endl;YYABORT;}
 	
@@ -491,15 +482,10 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 	if(Reader.MyLha.LocIndex.find(*$2)!=Reader.MyLha.LocIndex.end()){
 		l=Reader.MyLha.LocIndex[*$2];
 		
-		Reader.MyLha.StrLocProperty[l]=$4;
-		Reader.MyLha.FuncLocProperty[l]=$4;
-		if(true){
-			vector<string> v(Reader.MyLha.NbVar,"");
-			StrFlowVector=v;
-			FuncFlowVector=v;}
-		Reader.MyLha.FuncFlow[l]=FuncFlowVector;
-		Reader.MyLha.StrFlow[l]=StrFlowVector;
-		
+		Reader.MyLha.StrLocProperty.push_back($4);
+		Reader.MyLha.FuncLocProperty.push_back($4);
+		Reader.MyLha.FuncFlow.push_back(FuncFlowVector);
+		Reader.MyLha.StrFlow.push_back(StrFlowVector);
 	}
 	else {cout<<"Unknown location"<<endl;YYABORT;}
 	
