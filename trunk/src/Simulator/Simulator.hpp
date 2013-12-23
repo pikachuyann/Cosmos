@@ -86,6 +86,11 @@ public:
     virtual BatchR* RunBatch();
     
 protected:
+	
+	//! a Temporary event
+	Event F;
+	
+	
 	//! File stream to log value.
 	fstream logvalue;
 	//! File stream to trace.

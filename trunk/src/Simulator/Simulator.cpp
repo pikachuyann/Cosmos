@@ -131,20 +131,19 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
     
-	Event F;
     //check if the current transition is still enabled
 	for(const auto &bindex : N.Transition[E1_transitionNum].bindingList){
 		bool Nenabled = N.IsEnabled(E1_transitionNum, bindex);
-		bool NScheduled = EQ->isScheduled(E1_transitionNum, bindex.id());
+		bool NScheduled = EQ->isScheduled(E1_transitionNum, bindex.idcount);
 		
-		if (Nenabled && NScheduled && lb.id() == bindex.id() ) {
+		if (Nenabled && NScheduled && lb.idcount == bindex.idcount ) {
 			GenerateEvent(F, E1_transitionNum, bindex);
 			EQ->replace(F); //replace the transition with the new generated time
 		} else if (Nenabled && !NScheduled) {
 			GenerateEvent(F, E1_transitionNum, bindex);
 			EQ->insert(F);
 		} else if (!Nenabled && NScheduled) {
-			EQ->remove(E1_transitionNum,bindex.id() );
+			EQ->remove(E1_transitionNum,bindex.idcount );
 		}
 	}
 	
@@ -163,7 +162,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 			//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
 			//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
 			if (N.IsEnabled(it,*bindex)) {
-				if (!EQ->isScheduled(it,bindex->id())) {
+				if (!EQ->isScheduled(it,bindex->idcount)) {
 					if(verbose > 4){
 						cerr << "->New transition enabled: " << N.Transition[it].label << ",";
 						bindex->print();
@@ -197,14 +196,14 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 			}
 			//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
 			//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-			if (EQ->isScheduled(it, bindex->id())) {
+			if (EQ->isScheduled(it, bindex->idcount)) {
 				if (!N.IsEnabled(it, *bindex )){
 					if(verbose > 4){
 						cerr << "<-New transition disabled: " << N.Transition[it].label << ",";
 						bindex->print();
 						cerr << endl;
 					}
-					EQ->remove(it,bindex->id());
+					EQ->remove(it,bindex->idcount);
 				}else {
 					if (N.Transition[it].MarkingDependent) {
 						GenerateEvent(F, it,*bindex);
@@ -219,14 +218,13 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
     // Update transition which have no precondition on the Marking
 	const set<int> &fmd = N.FreeMarkingDependant();
 	for (const auto &it : fmd) {
-		for(vector<abstractBinding>::const_iterator bindex = N.Transition[it].bindingList.begin() ;
-			bindex != N.Transition[it].bindingList.end() ; ++bindex){
-			if (N.IsEnabled(it,*bindex)) {
-				if (!EQ->isScheduled(it, bindex->id())) {
-					GenerateEvent(F, it,*bindex);
+		for(const auto bindex : N.Transition[it].bindingList){
+			if (N.IsEnabled(it,bindex)) {
+				if (!EQ->isScheduled(it, bindex.idcount)) {
+					GenerateEvent(F, it,bindex);
 					(*EQ).insert(F);
 				} else {
-					GenerateEvent(F, it,*bindex);
+					GenerateEvent(F, it,bindex);
 					(*EQ).replace(F);
 				}
 			}
@@ -237,27 +235,25 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	
 	
 	/*
-	 //In Debug mode check that transition are scheduled iff they are enabled
-	 for (vector<_trans>::const_iterator t = N.Transition.begin()
-	 ; t != N.Transition.end() ; ++t) {
-	 for(vector<abstractBinding>::const_iterator bindex = t->bindingList.begin() ;
-	 bindex != t->bindingList.end() ; ++bindex){
-	 if (N.IsEnabled(t->Id, *bindex) !=
-	 EQ->isScheduled(t->Id, bindex->id())){
-	 cerr << "N.IsEnabled(" << t->label << ",";
-	 bindex->print();
-	 cerr <<")" << endl;
-	 if(EQ->isScheduled(t->Id, bindex->id())){
-	 cerr << "Scheduled and not enabled!"<< endl;
-	 }else{
-	 cerr << "Enabled and not scheduled!" << endl;
-	 }
-	 assert(N.IsEnabled(t->Id, *bindex) ==
-	 EQ->isScheduled(t->Id, bindex->id()));
-	 }
-	 }
-	 }
-	 */
+	//In Debug mode check that transition are scheduled iff they are enabled
+	for (const auto &t : N.Transition){
+		for(const auto &bindex : t.bindingList){
+			if (N.IsEnabled(t.Id, bindex) !=
+				EQ->isScheduled(t.Id, bindex.idcount)){
+				cerr << "N.IsEnabled(" << t.label << ",";
+				bindex.print();
+				cerr <<")" << endl;
+				if(EQ->isScheduled(t.Id, bindex.idcount)){
+					cerr << "Scheduled and not enabled!"<< endl;
+				}else{
+					cerr << "Enabled and not scheduled!" << endl;
+				}
+				assert(N.IsEnabled(t.Id, bindex) ==
+					   EQ->isScheduled(t.Id, bindex.idcount));
+			}
+		}
+	}*/
+	 
 }
 
 /**
@@ -283,6 +279,7 @@ bool Simulator::transitionSink(size_t ){
  * @return true if the simulation did not reach an accepting are refusing state.
  */
 bool Simulator::SimulateOneStep(){
+	static const abstractBinding dummyBinding;
 	
 	AutEdge AE = A.GetEnabled_A_Edges( N.Marking);
 	
@@ -298,7 +295,7 @@ bool Simulator::SimulateOneStep(){
 				cerr << endl;
 			}
 			A.updateLHA( AE.FiringTime - A.CurrentTime, N.Marking );
-			A.fireLHA(AE.Index,N.Marking, abstractBinding() );
+			A.fireLHA(AE.Index,N.Marking, dummyBinding );
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
@@ -308,7 +305,7 @@ bool Simulator::SimulateOneStep(){
 		return false;
 	} else {
         //Take the first event in the queue
-		Event E1 = EQ->InPosition(0);
+		const Event &E1 = EQ->InPosition(0);
 		
         //If this transition is the sink transition refuse the simulation
         //Only usefull for Rare Event handling.
@@ -326,7 +323,7 @@ bool Simulator::SimulateOneStep(){
             //cerr << "looping on autonomous edge";
 			
 			A.updateLHA(AE.FiringTime - A.CurrentTime, N.Marking);
-			A.fireLHA(AE.Index,N.Marking, abstractBinding());
+			A.fireLHA(AE.Index,N.Marking, dummyBinding);
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				A.printState(cerr);
@@ -426,7 +423,7 @@ void Simulator::interactiveSimulation(){
 			
 		}else {
 			if(cin.eof())exit(EXIT_SUCCESS);
-			cerr << "error on the inpute stream\n";
+			cerr << "error on the input stream\n";
 			exit(EXIT_FAILURE);
 		}
 		

@@ -73,8 +73,7 @@ void LHA::setInitLocation(const abstractMarking& Marking) {
  * @return an index of synchronized edge or -1 if there is no suitable synchronized edge.
  */
 int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding)const {
-	const set<int> acE = ActionEdges[CurrentLocation][PetriNetTransition];
-    for (auto &it : acE) {
+	for (auto &it : ActionEdges[CurrentLocation][PetriNetTransition]) {
         if ((CheckLocation(Edge[it].Target, NextMarking))) {
             if (CheckEdgeContraints(it,PetriNetTransition, binding, NextMarking)) return it;
         }
