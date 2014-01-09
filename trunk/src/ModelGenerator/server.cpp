@@ -417,9 +417,12 @@ void launchServer(parameters& P){
         if(P.verbose>1)Result.print(cout);
 	}
 	
-	
-    string fn = "Result";
+	size_t lastslash = P.PathLha.find_last_of("/");
+	if(lastslash==string::npos)lastslash=0;
+	size_t lastdot = P.PathLha.find_last_of(".");
+    string fn = "Result_" + P.PathLha.substr(lastslash,lastdot - lastslash );
     fn.append(".res");
     Result.printResultFile(fn);
+	Result.printResultFile("Result.res");
     
 }
