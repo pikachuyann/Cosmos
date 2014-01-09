@@ -86,7 +86,7 @@ struct colorDomain {
 		return name+ "_Domain";
 	}
 	inline string tokname()const {
-		if(isUncolored())return "int";
+		if(isUncolored())return " ";
 		return name+ "_Token";
 	}
 };

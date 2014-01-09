@@ -194,6 +194,7 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 		else st->append(MyGspn->colDoms[colorc].cname());
 	}else if (it->compare("token")==0) {
 		string mark;
+		bool tokprof = false;
 		st->append("(");
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("occurs")==0){
@@ -202,13 +203,16 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 				if( markingdependant) cerr << "Initial Marking is not marking dependant\n";
 			}
 			if (it2->compare("tokenProfile")==0) {
+				tokprof = true;
 				if ((P.verbose-3)>1)cout << *it2 << endl;
 				for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
 					eval_tokenProfileMark(st, it3);
 				}
 			}
 		}
-		st->append(" * " + mark +")");
+		if(tokprof){
+			st->append(" * " + mark +")");
+		}else st->append(" " + mark +")");
 	} else if(it->compare("name")==0) {
 		st->append("Marking.P->"+ simplifyString(*(it.begin())));
 	}
@@ -921,38 +925,43 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 					if (toklist.size()>0)valuation.append(" + ");
 					valuation.append("(");
 					
-					if(tokenType.hasAll)
-						valuation.append(MyGspn->colDoms[coldom].cname());
-					else
-						valuation.append(MyGspn->colDoms[coldom].tokname());
-					
-					valuation.append("(");
-					for (size_t pr = 0; pr < tokenType.field.size() ; pr++) {
-						if(pr>0)valuation.append(", ");
-						if(tokenType.Flags[pr]==CT_VARIABLE){
-							valuation.append( "b.P->"+MyGspn->colVars[tokenType.field[pr]].name);
-							if(tokenType.hasAll)valuation.append(".c0");
-						} else if(tokenType.Flags[pr]== CT_SINGLE_COLOR) {
-							valuation.append("Color_");
-							valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].name );
-							valuation.append("_");
-							valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].colors[tokenType.field[pr]].name );
-						} else if(tokenType.Flags[pr]== CT_ALL) {
-							valuation.append("Color_");
-							valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].name );
-							valuation.append("_All");
-						}
+					if(coldom != UNCOLORED_DOMAIN){
+						if(tokenType.hasAll)
+							valuation.append(MyGspn->colDoms[coldom].cname());
+						else
+							valuation.append(MyGspn->colDoms[coldom].tokname());
 						
-						
-						if(tokenType.varIncrement[pr] != 0){
-							valuation.append(".next(");
-							valuation.append(itostring(tokenType.varIncrement[pr]));
-							valuation.append(")");
+						valuation.append("(");
+						for (size_t pr = 0; pr < tokenType.field.size() ; pr++) {
+							if(pr>0)valuation.append(", ");
+							if(tokenType.Flags[pr]==CT_VARIABLE){
+								valuation.append( "b.P->"+MyGspn->colVars[tokenType.field[pr]].name);
+								if(tokenType.hasAll)valuation.append(".c0");
+							} else if(tokenType.Flags[pr]== CT_SINGLE_COLOR) {
+								valuation.append("Color_");
+								valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].name );
+								valuation.append("_");
+								valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].colors[tokenType.field[pr]].name );
+							} else if(tokenType.Flags[pr]== CT_ALL) {
+								valuation.append("Color_");
+								valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].name );
+								valuation.append("_All");
+							}
+							
+							
+							if(tokenType.varIncrement[pr] != 0){
+								valuation.append(".next(");
+								valuation.append(itostring(tokenType.varIncrement[pr]));
+								valuation.append(")");
+							}
 						}
+						valuation.append(") * (");
+						valuation.append(tokenType.mult);
+						valuation.append("))");
+					}else{
+						valuation.append(tokenType.mult);
+						valuation.append(")");
 					}
-					valuation.append(") * (");
-					valuation.append(tokenType.mult);
-					valuation.append("))");
 					toklist.push_back(tokenType);
 				} else cout << " Fail to parse GML: arc,valuation"<< endl;
             }

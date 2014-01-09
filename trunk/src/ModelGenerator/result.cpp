@@ -116,7 +116,7 @@ void result::addBatch(BatchR *batchResult){
         }
 		
         if(P.RareEvent || P.BoundedRE>0){
-            RelErrArray[i] =  fabs((HaslResult[i].width() /  MeanM2->Mean[i])*MeanM2->Isucc);
+            RelErrArray[i] =  fabs((HaslResult[i].width() /  HaslResult[i].mean)*MeanM2->Isucc);
         }else RelErrArray[i] = HaslResult[i].width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
 		
 		if(P.HaslFormulas[i]->TypeOp==HYPOTHESIS){

@@ -339,7 +339,6 @@ bool Simulator::SimulateOneStep(){
 			//cerr << "|^^^^^^^^^^^^^^^^^^^^"<< endl;
 			cerr << "\033[1;33mFiring:\033[0m" << N.Transition[E1.transition].label ;
 			E1.binding.print();
-			cerr << endl;
 			//cerr << "|vvvvvvvvvvvvvvvvvvvv"<< endl;
 		}
 		
@@ -366,6 +365,7 @@ bool Simulator::SimulateOneStep(){
 			Result.first=false;
 			return false;
 		} else {
+			if(verbose>3)cerr << " Synch with " << SE << endl;
 			//If synchronisation is possible fire it and check if the
 			// reached state is final. Then update the SPN.
 			A.fireLHA(SE,N.Marking, E1.binding);

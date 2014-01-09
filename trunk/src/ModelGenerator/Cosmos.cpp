@@ -312,7 +312,8 @@ bool ParseBuild(parameters& P) {
 			
 			//Copy the code into the temporary directory
 			string cmd = "cp "+P.PathLha +" " + P.tmpPath +"/LHA.cpp";
-			if(system(cmd.c_str()) ==0){
+			if(P.verbose >2)cout << cmd << endl;
+			if(system(cmd.c_str()) !=0){
 				cerr << "Fail to copy LHA to temporary" << endl;
 				return false;
 			}
