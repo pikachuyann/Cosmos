@@ -291,7 +291,7 @@ RealVarMarkingFormula:  rval {sprintf($$, "%f",$1);}
 | MIN LB RealVarMarkingFormula COMMA RealVarMarkingFormula RB {sprintf($$,"min(%s , %s)", $3, $5);  }
 | MAX LB RealVarMarkingFormula COMMA RealVarMarkingFormula RB {sprintf($$,"max(%s , %s)", $3, $5);  };
 
-ColorClassList: str {sprintf($$,"[%s]", $1->c_str()); }
+ColorClassList: str COMMA {sprintf($$,"[%s]", $1->c_str()); }
 	| str COMMA ColorClassList {sprintf($$,"[%s]%s", $1->c_str(), $3); };
 
 Sizes: NbLocations NbVariables

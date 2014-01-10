@@ -206,42 +206,64 @@ bool ParseBuild(parameters& P) {
 		//An automaton is produce with two loop the first make time elapse until transient time
 		//elapse and then compute the mean number of token in each place and the throughput
 		//of each transition
+		bool allcolor = true;
+		
 		if(P.loopLHA>0.0){
 			P.PathLha = P.tmpPath + "/looplha.lha";
 			ofstream lhastr(P.PathLha.c_str() , ios::out | ios::trunc);
 			lReader.MyLha.ConfidenceLevel = P.Level;
 			map<string,int>::const_iterator itt;
 			
-			lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + P.nbPlace <<";\nNbLocations = 3;\n";
+			//lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + P.nbPlace <<";\nNbLocations = 3;\n";
 			lhastr << "const double T="<< P.loopLHA << ";\n";
 			lhastr << "const double invT=" << 1/P.loopLHA << ";\n";
 			lhastr << "const double Ttrans="<< P.loopTransientLHA << ";\n";
 			lhastr << "VariablesList = {time";
-			for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
-				lhastr<< ", "<< itt->first;
-			}
-			for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
-				if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< ", PLVAR_"<< itt->first;
+			for (const auto &itt : gReader.MyGspn.TransId)
+				lhastr<< ", "<< itt.first;
+			
+			for (const auto &itt : gReader.MyGspn.placeStruct) {
+				if(itt.isTraced){
+					lhastr<< ", PLVAR_"<< itt.name;
+					if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
+						gReader.iterateDom("", "_", "","","","" ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
+							lhastr << ", PLVAR_" + itt.name + str;
+						});
+					}
+				}
 			}
 			lhastr<<"} ;\nLocationsList = {l0, l1,l2};\n";
 			
-			for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
-				lhastr<< "Throughput_"<< itt->first<< "= AVG(Last(" << itt->first<<"));\n";
+			for (const auto &itt : gReader.MyGspn.TransId) {
+				lhastr<< "Throughput_"<< itt.first<< "= AVG(Last(" << itt.first<<"));\n";
 			}
-			for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
-				if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< "MeanToken_"<< itt->first<< "= AVG(Last( PLVAR_" << itt->first<<"));\n";
+			for (const auto &itt : gReader.MyGspn.placeStruct) {
+				if(itt.isTraced){
+					lhastr<< "MeanToken_"<< itt.name<< "= AVG(Last( PLVAR_" << itt.name<<"));\n";
+					if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
+						gReader.iterateDom("", "_", "","","","" ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
+							lhastr << "MeanToken_" << itt.name << str << "= AVG(Last( PLVAR_" << itt.name<< str <<"));\n";
+						});
+					}
+				}
 			}
 			lhastr << P.externalHASL << endl;
 			lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
 			lhastr << "Locations={(l0, TRUE, (time:1));(l1, TRUE, (time:1 ";
-			for (itt = gReader.MyGspn.PlacesId.begin(); itt != gReader.MyGspn.PlacesId.end(); ++itt) {
-				if(gReader.MyGspn.placeStruct[itt->second].isTraced)lhastr<< ", PLVAR_"<< itt->first << ": "<< itt->first << "* invT " ;
+			for (const auto &itt : gReader.MyGspn.placeStruct)
+				if(itt.isTraced){
+					lhastr<< ", PLVAR_"<< itt.name << ": "<< itt.name << "* invT " ;
+					if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
+						gReader.iterateDom("", "_", "","","","," ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string &str2){
+							lhastr << ", PLVAR_" << itt.name << str << ": " << itt.name << "[" << str2 <<"]* invT ";
+						});
+					}
 			}
 			
 			lhastr << "));(l2, TRUE);};\n";
 			lhastr << "Edges={((l0,l0),ALL,time<= Ttrans ,#);((l0,l1),#,time=Ttrans ,{time=0});";
-			for (itt = gReader.MyGspn.TransId.begin(); itt != gReader.MyGspn.TransId.end(); ++itt) {
-				lhastr << "((l1,l1),{"<< itt->first <<"},time<=T,{"<<itt->first<<" = " <<itt->first<<" + "<< 1.0/P.loopLHA << " });\n";
+			for (const auto &itt : gReader.MyGspn.TransId) {
+				lhastr << "((l1,l1),{"<< itt.first <<"},time<=T,{"<<itt.first<<" = " <<itt.first<<" + "<< 1.0/P.loopLHA << " });\n";
 			}
 			lhastr << "((l1,l2),#,time=T ,#);};";
 			lhastr.close();

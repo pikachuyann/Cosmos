@@ -36,6 +36,7 @@
 #include <vector>
 #include "expatmodelparser.hh"
 #include "modelhandler.hh"
+#include <functional>
 
 using namespace std;
 
@@ -204,6 +205,9 @@ public:
 	map<string, int> IndexDist;
 	parameters P;
 	
+	void iterateDom(const string &s,const string &sop, const string &sclos ,const string &s2,const string &sop2, const string &sclos2 ,const colorDomain & cd, size_t prof,std::function<void (const string&,const string&)> func);
+	
+	
 private:
 	
 	
@@ -233,6 +237,7 @@ private:
     void addSinkTrans();
     
     void view();
+	
 	
 	void printloot(ofstream& sf, size_t domain, size_t nesting );
 	

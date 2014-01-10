@@ -491,6 +491,16 @@ void Gspn_Reader::writeEnabledDisabledBinding(ofstream &SpnF){
 	
 }
 
+void Gspn_Reader::iterateDom(const string &s,const string &sop, const string &sclos ,const string &s2,const string &sop2, const string &sclos2 ,const colorDomain & cd, size_t prof,std::function<void (const string&,const string&)> func){
+	if(prof == cd.colorClassIndex.size() ){func(s,s2);}
+	else{
+		for(const auto cc : MyGspn.colClasses[cd.colorClassIndex[prof]].colors )
+			iterateDom(s+ sop + cc.name + sclos, sop, sclos,
+					   s2+sop2+ "Color_"+MyGspn.colClasses[cd.colorClassIndex[prof]].name+"_"+cc.name+sclos2,sop2, sclos2, cd, prof+1, func);
+	}
+	
+}
+
 void Gspn_Reader::printloot(ofstream& fs, size_t domain, size_t nesting ){
 	const colorDomain& dom = MyGspn.colDoms[domain];
 	if(nesting == dom.colorClassIndex.size()){

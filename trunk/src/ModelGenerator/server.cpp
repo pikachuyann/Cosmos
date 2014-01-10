@@ -418,9 +418,9 @@ void launchServer(parameters& P){
 	}
 	
 	size_t lastslash = P.PathLha.find_last_of("/");
-	if(lastslash==string::npos)lastslash=0;
+	if(lastslash==string::npos)lastslash= -1;
 	size_t lastdot = P.PathLha.find_last_of(".");
-    string fn = "Result_" + P.PathLha.substr(lastslash,lastdot - lastslash );
+    string fn = "Result_" + P.PathLha.substr(lastslash+1,lastdot - lastslash-1 );
     fn.append(".res");
     Result.printResultFile(fn);
 	Result.printResultFile("Result.res");
