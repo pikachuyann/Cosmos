@@ -616,6 +616,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
         Gml2Place[id2]=MyGspn->pl-1;
 		place p;
 		p.name = id;
+		p.id = MyGspn->placeStruct.size();
 		
         for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
 			treeSI it2 = it->second.begin();
@@ -676,6 +677,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
             Gml2Trans[id2]=MyGspn->tr-1;
 			
 			transition trans;
+			trans.id = MyGspn->transitionStruct.size();
 			trans.label = id;
 			trans.label = "";
 			trans.type = Timed;
@@ -840,6 +842,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 				trans.markingDependant = true;
 				trans.ageMemory = false;
 				trans.nbServers = 1;
+				trans.id = MyGspn->transitionStruct.size();
 				MyGspn->transitionStruct.push_back(trans);
 				
 				MyGspn->TransId["selfloop"]=MyGspn->tr;
@@ -852,6 +855,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 			place p;
             string Plname = "Puit";
 			p.name = Plname;
+			p.id = pl;
             MyGspn->placeStruct.push_back(p);
             MyGspn->PlacesId[Plname]=MyGspn->pl;
             MyGspn->pl++;
@@ -869,6 +873,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 			trans.markingDependant = true;
 			trans.ageMemory = false;
 			trans.nbServers = 1;
+			trans.id = MyGspn->transitionStruct.size();
 			MyGspn->transitionStruct.push_back(trans);
 			
             MyGspn->TransList.insert(trans.label);

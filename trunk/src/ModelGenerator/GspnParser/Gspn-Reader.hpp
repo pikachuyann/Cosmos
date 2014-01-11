@@ -110,6 +110,7 @@ struct coloredToken {
 };
 
 struct transition {
+	size_t id;
 	string label;
 	TransType type;
 	Distribution dist;
@@ -124,6 +125,7 @@ struct transition {
 };
 
 struct place {
+	size_t id;
 	string name;
 	size_t colorDom;
 	bool isTraced;
@@ -131,7 +133,6 @@ struct place {
 };
 
 struct GSPN {
-    string Path;
     size_t tr;
     size_t pl;
     size_t nbpass;
@@ -207,6 +208,7 @@ public:
 	
 	void iterateDom(const string &s,const string &sop, const string &sclos ,const string &s2,const string &sop2, const string &sclos2 ,const colorDomain & cd, size_t prof,std::function<void (const string&,const string&)> func);
 	
+	void iterateVars(const string &s,const string &sop, const string &sclos ,const set<size_t> &varDom, size_t prof,std::function<void (const string&)> func);
 	
 private:
 	

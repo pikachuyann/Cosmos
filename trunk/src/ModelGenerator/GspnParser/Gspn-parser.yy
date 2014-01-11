@@ -267,6 +267,7 @@ PlacesList: PList EQ '{' PLabels '}' SEMICOLON {
 PLabels : str {
 	place p;
 	p.name = *$1;
+	p.id = Reader.MyGspn.placeStruct.size();
 	Reader.MyGspn.placeStruct.push_back(p);
     int sz=Reader.MyGspn.PlacesId.size();
     Reader.MyGspn.PlacesId[*$1]=sz;
@@ -274,10 +275,10 @@ PLabels : str {
 |PLabels COMMA str {
 	place p;
 	p.name = *$3;
+	p.id = Reader.MyGspn.placeStruct.size();
 	Reader.MyGspn.placeStruct.push_back(p);
 	int sz=Reader.MyGspn.PlacesId.size();
     Reader.MyGspn.PlacesId[*$3]=sz;
-
  };
 
 TransitionsList: TList EQ '{' TLabels '}' SEMICOLON {
@@ -346,6 +347,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->markingDependant = false;
   trans->ageMemory = false;
   trans->nbServers = 1;
+  trans->id = Reader.MyGspn.transitionStruct.size();
   int sz=Reader.MyGspn.TransId.size();
   Reader.MyGspn.TransId[*$2]=sz;
   Reader.MyGspn.transitionStruct.push_back(*trans);
@@ -370,6 +372,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->markingDependant = false;
   trans->ageMemory = AgeMemory;
   trans->nbServers = 1;
+  trans->id = Reader.MyGspn.transitionStruct.size();
 	int sz=Reader.MyGspn.TransId.size();
 	Reader.MyGspn.TransId[*$2]=sz;
   Reader.MyGspn.transitionStruct.push_back(*trans);
@@ -409,6 +412,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->markingDependant = MarkingDependent;
   trans->ageMemory = false;
   trans->nbServers = NbServers;
+  trans->id = Reader.MyGspn.transitionStruct.size();
 	int sz=Reader.MyGspn.TransId.size();
 	Reader.MyGspn.TransId[*$2]=sz;
   Reader.MyGspn.transitionStruct.push_back(*trans);
@@ -449,6 +453,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->markingDependant = MarkingDependent;
   trans->ageMemory = AgeMemory;
   trans->nbServers = NbServers;
+  trans->id = Reader.MyGspn.transitionStruct.size();
   Reader.MyGspn.transitionStruct.push_back(*trans);
 	int sz=Reader.MyGspn.TransId.size();
 	Reader.MyGspn.TransId[*$2]=sz;
@@ -473,6 +478,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->markingDependant = false;
   trans->ageMemory = false;
   trans->nbServers = 1;
+  trans->id = Reader.MyGspn.transitionStruct.size();
 	int sz=Reader.MyGspn.TransId.size();
 	Reader.MyGspn.TransId[*$2]=sz;
   Reader.MyGspn.transitionStruct.push_back(*trans);

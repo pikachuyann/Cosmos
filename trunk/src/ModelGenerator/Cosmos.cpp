@@ -47,6 +47,7 @@
 #include "server.hpp"
 #include "parameters.hpp"
 #include "../Simulator/sharedMemory.hpp"
+#include "GspnParser/unfolder.hpp"
 
 /**
  * Retrive the real absolute path of the executable of Cosmos
@@ -164,7 +165,6 @@ bool ParseBuild(parameters& P) {
 		
 		//Check that the model is not empty and generate the code
 		if (!parseresult && gReader.MyGspn.pl >0 && gReader.MyGspn.tr >0) {
-            gReader.MyGspn.Path = P.PathGspn.substr(0, P.PathGspn.find_last_of("."));
             if(P.tmpStatus==0||P.tmpStatus==2)gReader.WriteFile(P);
         } else {
             Gspn_Reader gr(P);
