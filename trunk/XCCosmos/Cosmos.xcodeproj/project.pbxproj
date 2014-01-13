@@ -29,6 +29,11 @@
 		0367E29A18842F2400F35619 /* Eval-parser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0367E29818842F2400F35619 /* Eval-parser.cc */; };
 		0367E29B18842F2400F35619 /* Eval-scanner.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0367E29918842F2400F35619 /* Eval-scanner.cc */; };
 		0367E29C18842FB700F35619 /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703F181BC0D6006D7332 /* BatchR.cpp */; };
+		0367E2A318843EAB00F35619 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03FB40F518180F9D001F9988 /* XCTest.framework */; };
+		0367E2A918843EAB00F35619 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0367E2A718843EAB00F35619 /* InfoPlist.strings */; };
+		0367E2AB18843EAB00F35619 /* ClientSim_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0367E2AA18843EAB00F35619 /* ClientSim_Tests.m */; };
+		0367E2B318843ED000F35619 /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = 0367E2B218843ED000F35619 /* test.m */; };
+		0367E2B418843ED000F35619 /* test.m in Sources */ = {isa = PBXBuildFile; fileRef = 0367E2B218843ED000F35619 /* test.m */; };
 		03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */; };
 		03D9C811168467E900AADB3D /* generateLHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE630D1636BCF6007FCB32 /* generateLHA.cpp */; };
 		03D9C813168467EF00AADB3D /* exPapier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63091636BCA3007FCB32 /* exPapier.cpp */; };
@@ -80,6 +85,13 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
+		0367E2AD18843EAB00F35619 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 034509A516A80AC8002088B3;
+			remoteInfo = ClientSim;
+		};
 		03E39B1C183E4ABD0070911A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -199,7 +211,13 @@
 		0367E29518842F0F00F35619 /* Lha-scanner.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Lha-scanner.cc"; sourceTree = "<group>"; };
 		0367E29818842F2400F35619 /* Eval-parser.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Eval-parser.cc"; sourceTree = "<group>"; };
 		0367E29918842F2400F35619 /* Eval-scanner.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Eval-scanner.cc"; sourceTree = "<group>"; };
-		036EC8A916F5C5B50059B280 /* _Cosmos */ = {isa = PBXFileReference; explicitFileType = text.script; name = _Cosmos; path = ../bin/_Cosmos; sourceTree = "<group>"; };
+		0367E29D18843BC500F35619 /* _Cosmos */ = {isa = PBXFileReference; lastKnownFileType = text; name = _Cosmos; path = ../utils/_Cosmos; sourceTree = "<group>"; };
+		0367E2A218843EAB00F35619 /* ClientSim Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ClientSim Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0367E2A618843EAB00F35619 /* ClientSim Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ClientSim Tests-Info.plist"; sourceTree = "<group>"; };
+		0367E2A818843EAB00F35619 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0367E2AA18843EAB00F35619 /* ClientSim_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClientSim_Tests.m; sourceTree = "<group>"; };
+		0367E2AC18843EAB00F35619 /* ClientSim Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ClientSim Tests-Prefix.pch"; sourceTree = "<group>"; };
+		0367E2B218843ED000F35619 /* test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = test.m; sourceTree = "<group>"; };
 		03A7F877182BCEA7006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03A7F878182BCEB1006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03A7F879182BCEBB006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
@@ -250,6 +268,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0367E29F18843EAB00F35619 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0367E2A318843EAB00F35619 /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +488,25 @@
 			path = POMDP;
 			sourceTree = "<group>";
 		};
+		0367E2A418843EAB00F35619 /* ClientSim Tests */ = {
+			isa = PBXGroup;
+			children = (
+				0367E2AA18843EAB00F35619 /* ClientSim_Tests.m */,
+				0367E2A518843EAB00F35619 /* Supporting Files */,
+			);
+			path = "ClientSim Tests";
+			sourceTree = "<group>";
+		};
+		0367E2A518843EAB00F35619 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				0367E2A618843EAB00F35619 /* ClientSim Tests-Info.plist */,
+				0367E2A718843EAB00F35619 /* InfoPlist.strings */,
+				0367E2AC18843EAB00F35619 /* ClientSim Tests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		03A7F87A182C129C006F0BC8 /* utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -471,7 +516,7 @@
 				03A7F87D182C12DB006F0BC8 /* gnuplotScriptCMD.gnu */,
 				03A7F87F182C12DB006F0BC8 /* ptToSpt */,
 				03A7F880182C12DB006F0BC8 /* sptToPt */,
-				036EC8A916F5C5B50059B280 /* _Cosmos */,
+				0367E29D18843BC500F35619 /* _Cosmos */,
 			);
 			name = utils;
 			sourceTree = "<group>";
@@ -506,11 +551,13 @@
 		08FB7794FE84155DC02AAC07 /* Cosmos */ = {
 			isa = PBXGroup;
 			children = (
+				0367E2B218843ED000F35619 /* test.m */,
 				03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859E8C029090F304C91782 /* Documentation */,
 				0341401E15AEF45E0009FEFC /* POMDP */,
 				03FB40F718180F9E001F9988 /* Cosmos Tests */,
+				0367E2A418843EAB00F35619 /* ClientSim Tests */,
 				03FB40F418180F9D001F9988 /* Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				03BCA54A148D271A008E2402 /* Accelerate.framework */,
@@ -539,6 +586,7 @@
 				0341401C15AEF45E0009FEFC /* POMDP */,
 				034509A616A80AC8002088B3 /* libClientSim.a */,
 				03FB40F318180F9D001F9988 /* Cosmos Tests.xctest */,
+				0367E2A218843EAB00F35619 /* ClientSim Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -616,6 +664,24 @@
 			productReference = 034509A616A80AC8002088B3 /* libClientSim.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		0367E2A118843EAB00F35619 /* ClientSim Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0367E2AF18843EAB00F35619 /* Build configuration list for PBXNativeTarget "ClientSim Tests" */;
+			buildPhases = (
+				0367E29E18843EAB00F35619 /* Sources */,
+				0367E29F18843EAB00F35619 /* Frameworks */,
+				0367E2A018843EAB00F35619 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0367E2AE18843EAB00F35619 /* PBXTargetDependency */,
+			);
+			name = "ClientSim Tests";
+			productName = "ClientSim Tests";
+			productReference = 0367E2A218843EAB00F35619 /* ClientSim Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		03B6EE8C1487BB8F0099A6CC /* CosmosSim */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 03B6EE911487BBAE0099A6CC /* Build configuration list for PBXNativeTarget "CosmosSim" */;
@@ -679,6 +745,9 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				TargetAttributes = {
+					0367E2A118843EAB00F35619 = {
+						TestTargetID = 034509A516A80AC8002088B3;
+					};
 					03FB40F218180F9D001F9988 = {
 						TestTargetID = 8DD76F620486A84900D96B5E;
 					};
@@ -705,11 +774,20 @@
 				0341401B15AEF45E0009FEFC /* POMDP */,
 				03128742180B0A4F0018560F /* CosmosMakefile */,
 				03FB40F218180F9D001F9988 /* Cosmos Tests */,
+				0367E2A118843EAB00F35619 /* ClientSim Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0367E2A018843EAB00F35619 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0367E2A918843EAB00F35619 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		03FB40F118180F9D001F9988 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -742,6 +820,7 @@
 				03E39B11183E49D80070911A /* EventsQueue.cpp in Sources */,
 				03E39B12183E49DB0070911A /* LHA_orig.cpp in Sources */,
 				03E39B13183E49E00070911A /* numericalSolver.cpp in Sources */,
+				0367E2B318843ED000F35619 /* test.m in Sources */,
 				03E39B15183E49E50070911A /* numSolverSH.cpp in Sources */,
 				03E39B17183E49E90070911A /* SimulatorRE.cpp in Sources */,
 				03E39B16183E49E70070911A /* Simulator.cpp in Sources */,
@@ -751,6 +830,14 @@
 				03E39B19183E4A0C0070911A /* SimulatorContinuousBounded.cpp in Sources */,
 				03E39B18183E4A0A0070911A /* SimulatorBoundedRE.cpp in Sources */,
 				03E39B10183E49D60070911A /* Event.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0367E29E18843EAB00F35619 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0367E2AB18843EAB00F35619 /* ClientSim_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -768,6 +855,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03FB40FE18180F9E001F9988 /* Cosmos_Tests.m in Sources */,
+				0367E2B418843ED000F35619 /* test.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -802,6 +890,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0367E2AE18843EAB00F35619 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 034509A516A80AC8002088B3 /* ClientSim */;
+			targetProxy = 0367E2AD18843EAB00F35619 /* PBXContainerItemProxy */;
+		};
 		03E39B1D183E4ABD0070911A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 034509A516A80AC8002088B3 /* ClientSim */;
@@ -815,6 +908,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		0367E2A718843EAB00F35619 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0367E2A818843EAB00F35619 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		03FB40FA18180F9E001F9988 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -978,6 +1079,78 @@
 					"\"$(SRCROOT)/../../../../Library/Developer/Xcode/DerivedData/Cosmos-gxiunegmbdilixfcwhkbfozwasxe/Build/Products/Debug\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		0367E2B018843EAB00F35619 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ClientSim Tests/ClientSim Tests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				INFOPLIST_FILE = "ClientSim Tests/ClientSim Tests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		0367E2B118843EAB00F35619 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ClientSim Tests/ClientSim Tests-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				INFOPLIST_FILE = "ClientSim Tests/ClientSim Tests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
 		};
@@ -1287,6 +1460,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		0367E2AF18843EAB00F35619 /* Build configuration list for PBXNativeTarget "ClientSim Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0367E2B018843EAB00F35619 /* Debug */,
+				0367E2B118843EAB00F35619 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		03B6EE911487BBAE0099A6CC /* Build configuration list for PBXNativeTarget "CosmosSim" */ = {
 			isa = XCConfigurationList;

@@ -42,6 +42,16 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "0367E2A118843EAB00F35619"
+               BuildableName = "ClientSim Tests.xctest"
+               BlueprintName = "ClientSim Tests"
+               ReferencedContainer = "container:Cosmos.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
