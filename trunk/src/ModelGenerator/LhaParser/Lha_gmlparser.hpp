@@ -36,6 +36,28 @@
 
 class MyLhaModelHandler: public ModelHandler
 {
+public:
+	
+    MyLhaModelHandler(LhaType* ,parameters &P) ;
+	//~MyModelHandler() { }
+	
+	
+    void on_read_model(const XmlString& formalismUrl) ;
+	
+    void on_read_model_attribute(const Attribute& attribute)	;
+	
+    void on_read_node(const XmlString& id,
+					  const XmlString& nodeType,
+					  const AttributeMap& attributes,
+					  const XmlStringList& references) ;
+	
+    void on_read_arc(const XmlString& id,
+					 const XmlString& arcType,
+					 const XmlString& source,
+					 const XmlString& target,
+					 const AttributeMap& attributes,
+					 const XmlStringList& references);
+	
 private:
 	string simplifyString(string str);
 	bool is_void(string str);
@@ -48,6 +70,7 @@ private:
 	void eval_guard(vector<vector<string> >&,vector<string>& , vector<string>& , tree<string>::pre_order_iterator );
 	int eval_str (string);
 	int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator);
+	treeSI findbranchlha(treeSI t, string branch);
 	Eval Evaluate_gml;
 	
 	HaslFormulasTop* exportHASLTop(tree<string>::pre_order_iterator);
@@ -73,27 +96,7 @@ private:
 	,bool> IsPlace;
 	LhaType* MyLHA;
 	parameters P;
-public:
-	
-    MyLhaModelHandler(LhaType* ,parameters &P) ;
-	//~MyModelHandler() { }
-	
-	
-    void on_read_model(const XmlString& formalismUrl) ;
-	
-    void on_read_model_attribute(const Attribute& attribute)	;
-	
-    void on_read_node(const XmlString& id,
-					  const XmlString& nodeType,
-					  const AttributeMap& attributes,
-					  const XmlStringList& references) ;
-	
-    void on_read_arc(const XmlString& id,
-					 const XmlString& arcType,
-					 const XmlString& source,
-					 const XmlString& target,
-					 const AttributeMap& attributes,
-					 const XmlStringList& references);
+
 };
 
 

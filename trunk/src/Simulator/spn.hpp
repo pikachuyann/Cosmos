@@ -78,7 +78,7 @@ struct _trans {
 	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb):
 	Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(false),bindingLinkTable(nbb,string::npos){
 		abstractBinding bl;
-		bl.idcount = bindingList.size();
+		bl.idcount = static_cast<int>(bindingList.size());
 		bindingList.push_back( bl );
 		bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
 	};

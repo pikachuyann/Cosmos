@@ -63,13 +63,13 @@ gmlinputexception gmlioexc;
  }
  }*/
 
-string itostring (int i){
+string MyModelHandler::itostring (int i){
 	stringstream ss;
 	ss << i;
 	return ss.str();
 }
 
-string simplifyString(string str)
+string MyModelHandler::simplifyString(string str)
 {
 	size_t n1 = str.find_first_not_of(" \n\t");
 	size_t n2 = str.find_last_not_of(" \n\t");
@@ -77,7 +77,7 @@ string simplifyString(string str)
 	return str.substr(n1, n2-n1+1);
 }
 
-void appendSimplify(string *st, string str)
+void MyModelHandler::appendSimplify(string *st, string str)
 {
 	size_t n1 = str.find_first_not_of(" \n\t");
 	size_t n2 = str.find_last_not_of(" \n\t");
@@ -292,7 +292,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 }
 
 
-int eval_str (string s){
+int MyModelHandler::eval_str (string s){
 	string val = simplifyString(s);
 	int intval = atoi( val.c_str() );
 	return intval;
@@ -339,7 +339,7 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
 	throw(gmlioexc);
 }
 
-treeSI findbranch(treeSI t, string branch){
+treeSI MyModelHandler::findbranch(treeSI t, string branch){
     if( branch.compare("")==0)return t;
     size_t nextnode = branch.find_first_of("/");
     for (treeSI it = (t.begin()) ; it != (t.end()) ; ++it) {
@@ -855,7 +855,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 			place p;
             string Plname = "Puit";
 			p.name = Plname;
-			p.id = pl;
+			p.id = MyGspn->pl;
             MyGspn->placeStruct.push_back(p);
             MyGspn->PlacesId[Plname]=MyGspn->pl;
             MyGspn->pl++;

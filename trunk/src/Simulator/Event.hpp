@@ -47,7 +47,7 @@ public:
 	
     size_t transition;
     double time;
-    size_t priority;
+    double priority;
     double weight;
 	abstractBinding binding;
 	

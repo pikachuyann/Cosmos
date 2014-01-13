@@ -52,6 +52,8 @@ using namespace std;
 
 gmlinputexception lhagmlioexc;
 
+/*
+ Function sometime usefull for debuging
 void print_tree(const tree<string>& tr, tree<string>::pre_order_iterator it, tree<string>::pre_order_iterator end)
 {
 	if(!tr.is_valid(it)) return;
@@ -64,6 +66,7 @@ void print_tree(const tree<string>& tr, tree<string>::pre_order_iterator it, tre
 		++it;
 	}
 }
+ */
 
 string MyLhaModelHandler::simplifyString(string str)
 {
@@ -449,7 +452,7 @@ string MyLhaModelHandler::exportHASL(tree<string>::pre_order_iterator it){
 	
 }
 
-treeSI findbranchlha(treeSI t, string branch){
+treeSI MyLhaModelHandler::findbranchlha(treeSI t, string branch){
     if( branch.compare("")==0)return t;
     size_t nextnode = branch.find_first_of("/");
     for (treeSI it = (t.begin()) ; it != (t.end()) ; ++it) {

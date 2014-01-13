@@ -72,22 +72,6 @@ int max_client=0 ;
 //! Boolean indicating if the simulation should continue.
 bool continueSelect=false;
 
-/**
- * Signal handler.
- * The signals this function is expecting are SIGCHLD which append if
- * child simulator terminate. In this case the return status of the child
- * must be retrive to know what make the simulator terminate.
- * If the termination is legit: The simulator terminate because it has finished
- * its computation which append in -v 4 mode and when exporting state space,
- * or the server just killed the simulator with signal 2.
- * Then do nothing. Otherwise report the error.
- *
- * If the signal SIGINT is caught then the variable continueSelect is set to
- * false, this is sufficient because the signal interrupt the select
- * system call.
- *
- * @param signum the number of a signal
- */
 void signalHandler( int signum )
 {
 	switch (signum){
@@ -207,10 +191,6 @@ void freestr(const char *argv[],size_t t){
 		free((void *)argv[i]);
 }
 
-/**
- * Launch the P.Njob copy of the simulator with the parameters define in P
- * @param P the structure of Parameters
- */
 void launch_clients(parameters& P){
     signal(SIGCHLD , signalHandler);
     signal(SIGINT, signalHandler);
@@ -285,9 +265,6 @@ void launch_clients(parameters& P){
     
 }
 
-/**
- * Kill all the copy of the simulator at the end of the computation.
- */
 void kill_client(){
 	
     while (!clientPID.empty())
@@ -298,10 +275,6 @@ void kill_client(){
 		}
 }
 
-/**
- * Wait until all child terminate.
- * This allow to recover usage information of the simulators.
- */
 void wait_client(){
 	pid_t child= 1;
 	while (child != -1) {
@@ -311,10 +284,6 @@ void wait_client(){
 	
 }
 
-/**
- * Build a list of input files of all the simulators to collect results
- * This list is made to be used with the function <sys/select.h>/select
- */
 void makeselectlist(void){
     FD_ZERO(&client_list);
     for(size_t it = 0;it < clientstream.size(); it++){

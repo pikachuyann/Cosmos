@@ -122,6 +122,9 @@ private:
 	//! The result of the estimator of the confidence interval for each formula.
 	vector<ConfInt> HaslResult;
 	
+	//! Print a progress bar.
+	void printPercent(double i, double j);
+	
 };
 
 

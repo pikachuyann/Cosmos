@@ -54,7 +54,7 @@ int stateSpace::findHash(const vector<int>* vect){
 
 void stateSpace::add_state(vector<int> v){
     vector<int>* v2 = new vector<int>(v);
-    S[v2] = nbState;
+    S[v2] = static_cast<int>(nbState);
     //for(int i = 0  ; i< v2->size(); i++)cerr << (*v2)[i]<< ",";
     //cerr << endl;
     findstate->push_back(*v2);

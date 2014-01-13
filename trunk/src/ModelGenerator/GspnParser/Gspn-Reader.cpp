@@ -34,6 +34,9 @@
 #include <sstream>
 #include <fstream>
 #include <set>
+#include <algorithm>
+
+using namespace std;
 
 
 void searchreplace(const string &in,const string &motif,const string &rep,string &out){
@@ -45,7 +48,6 @@ void searchreplace(const string &in,const string &motif,const string &rep,string
 	}
 }
 
-using namespace std;
 
 Gspn_Reader::Gspn_Reader(parameters &Q):P(Q) {
 	trace_scanning = false;
@@ -288,7 +290,7 @@ void Gspn_Reader::writeEnabledDisabled(ofstream &SpnF){
 
 int Gspn_Reader::varMultiplier(size_t var){
 	int acc = 1;
-	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end()&& (colvar - MyGspn.colVars.begin()) != var; ++colvar) {
+	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end()&& colvar != (MyGspn.colVars.begin() + var); ++colvar) {
 		acc *= MyGspn.colClasses[colvar->type].colors.size();
 	}
 	return acc;
@@ -837,10 +839,10 @@ void Gspn_Reader::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "}\n";
 	SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
 	
-	int maxNameSize =5;
+	size_t maxNameSize =5;
 	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 		 plit!= MyGspn.placeStruct.end(); ++plit)
-		maxNameSize = fmax(maxNameSize, plit->name.length());
+		maxNameSize = max(maxNameSize, plit->name.length());
 	maxNameSize += 5;
 	if(P.StringInSpnLHA){
 		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";

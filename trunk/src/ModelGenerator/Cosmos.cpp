@@ -57,9 +57,35 @@
  * This code is system dependant.
  * @param P is a structure of parameters
  */
+void FindPath(parameters& P);
+
+/**
+ * A function to manipulate call to system
+ * The result of the call to cmd is read from its standart
+ * ouput and put in a string.
+ */
+string systemStringResult(const char* cmd);
+
+/**
+ * Parse the input file and build the simulator
+ * Return true iff the parsing was successfull
+ * input file are read as Grml file or .gspn and .lha file or
+ * directly .cpp for LHA
+ * according to the P.GMLinput parameters or extension
+ * If require by some option modify the SPN or the LHA on the fly.
+ * @param P is a structure of parameters
+ * @return a boolean equal to true if everything run correctly
+ */
+bool ParseBuild(parameters& P);
+
+/**
+ * Clean the temporary directory
+ */
+void cleanTmp(void);
+
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
-void FindPathMac(parameters& P) {
+void FindPath(parameters& P) {
 	char path[1024];
 	uint32_t size = sizeof(path);
 	if (_NSGetExecutablePath(path, &size) != 0){
@@ -73,9 +99,8 @@ void FindPathMac(parameters& P) {
 	P.Path.append("/");
 }
 #define SHAREDEXTENSION "a"
-#define FindPath FindPathMac
 #elif __linux__
-void FindPathLinux(parameters& P) {
+void FindPath(parameters& P) {
 	char path[1024];
 	char link[512];
 	sprintf(link, "/proc/%d/exe", getpid());
@@ -97,16 +122,6 @@ void FindPathLinux(parameters& P) {
 
 using namespace std;
 
-/**
- * Parse the input file and build the simulator
- * Return true iff the parsing was successfull
- * input file are read as Grml file or .gspn and .lha file or
- * directly .cpp for LHA
- * according to the P.GMLinput parameters or extension
- * If require by some option modify the SPN or the LHA on the fly.
- * @param P is a structure of parameters
- * @return a boolean equal to true if everything run correctly
- */
 bool ParseBuild(parameters& P) {
 	
 	// initialize an empty structure for the model.
@@ -419,12 +434,7 @@ bool ParseBuild(parameters& P) {
 	return true;
 }
 
-/**
- * A function to manipulate call to system
- * The result of the call to cmd is read from its standart
- * ouput and put in a string.
- */
-std::string systemStringResult(const char* cmd) {
+string systemStringResult(const char* cmd) {
     FILE* pipe = popen(cmd, "r");
     if (!pipe) return "";
     char buffer[128];
@@ -443,9 +453,6 @@ std::string systemStringResult(const char* cmd) {
  */
 parameters P;
 
-/**
- * Clean the temporary directory
- */
 void cleanTmp(void){
 	if(P.tmpStatus==0 || P.tmpStatus==1){
 		string cmd;

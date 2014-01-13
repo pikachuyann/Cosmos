@@ -177,6 +177,8 @@ struct GSPN {
 typedef struct GSPN GspnType;
 
 
+void searchreplace(const string &in,const string &motif,const string &rep,string &out);
+
 
 #define GSPN_DECL                                            \
 gspn::Gspn_parser::token_type                         \

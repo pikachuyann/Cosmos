@@ -143,7 +143,7 @@ bool result::continueSim(){
     //return (RelErr > P.Width || !P.sequential) && (MeanM2->I < P.MaxRuns);
 }
 
-void printPercent(double i, double j){
+void result::printPercent(double i, double j){
     double t = 100;
     double u;
     if(j != 0){

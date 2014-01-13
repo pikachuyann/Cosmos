@@ -39,15 +39,6 @@
 
 class MyModelHandler: public ModelHandler
 {
-private:
-	void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it );
-    int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it );
-	void eval_tokenProfileMark(string* ,tree<string>::pre_order_iterator);
-	void eval_tokenProfileArc(coloredToken& ,bool &, set<size_t>&, tree<string>::pre_order_iterator);
-	void eval_guard(string&, tree<string>::pre_order_iterator);
-	
-    
-    
 public:
 	bool ParsePl;
 	map<int,bool> IsPlace;
@@ -76,6 +67,19 @@ public:
 					 const XmlString& target,
 					 const AttributeMap& attributes,
 					 const XmlStringList& references);
+	
+private:
+	void eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it );
+    int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it );
+	void eval_tokenProfileMark(string* ,tree<string>::pre_order_iterator);
+	void eval_tokenProfileArc(coloredToken& ,bool &, set<size_t>&, tree<string>::pre_order_iterator);
+	void eval_guard(string&, tree<string>::pre_order_iterator);
+	
+    string itostring (int i);
+	string simplifyString(string str);
+	void appendSimplify(string *st, string str);
+	int eval_str (string s);
+	treeSI findbranch(treeSI t, string branch);
 };
 
 

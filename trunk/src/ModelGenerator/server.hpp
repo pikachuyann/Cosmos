@@ -65,4 +65,58 @@ void launchServer(parameters& P);
  */
 int systemsigsafe(const char*cmd);
 
+
+/**
+ * Signal handler.
+ * The signals this function is expecting are SIGCHLD which append if
+ * child simulator terminate. In this case the return status of the child
+ * must be retrive to know what make the simulator terminate.
+ * If the termination is legit: The simulator terminate because it has finished
+ * its computation which append in -v 4 mode and when exporting state space,
+ * or the server just killed the simulator with signal 2.
+ * Then do nothing. Otherwise report the error.
+ *
+ * If the signal SIGINT is caught then the variable continueSelect is set to
+ * false, this is sufficient because the signal interrupt the select
+ * system call.
+ *
+ * @param signum the number of a signal
+ */
+void signalHandler( int signum );
+
+/*
+ * Open a child processes retring both PID and an a pipe
+ * to the standart input of the child.
+ * This function fork and execute the given binary
+ * on the child.
+ * @param bin the path to the binary to execute.
+ * @param argv the list of argument.
+ */
+void popenClient(const char* bin, const char *argv[]);
+
+/**
+ * Launch the P.Njob copy of the simulator with the parameters define in P
+ * @param P the structure of Parameters
+ */
+void launch_clients(parameters& P);
+
+/**
+ * Kill all the copy of the simulator at the end of the computation.
+ */
+void kill_client();
+
+/**
+ * Wait until all child terminate.
+ * This allow to recover usage information of the simulators.
+ */
+void wait_client();
+
+/**
+ * Build a list of input files of all the simulators to collect results
+ * This list is made to be used with the function <sys/select.h>/select
+ */
+void makeselectlist(void);
+
+void freestr(const char *argv[],size_t t);
+
 #endif	/* _SERVER_HPP */

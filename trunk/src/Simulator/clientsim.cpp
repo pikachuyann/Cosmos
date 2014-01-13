@@ -36,6 +36,8 @@
 
 
 // Handler for interuption of the server
+void signalHandler(int);
+
 void signalHandler( int )
 {
     exit(EXIT_SUCCESS);
