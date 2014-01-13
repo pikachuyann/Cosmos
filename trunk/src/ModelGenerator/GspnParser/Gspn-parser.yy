@@ -234,29 +234,14 @@ PlacesList: PList EQ '{' PLabels '}' SEMICOLON {
     std::cout<<"Place label missing or redeclared, please check your places list"<<std::endl;
     YYABORT;
   }
+  vector<int> v(Reader.MyGspn.pl,0);
+  vector<string> vStr(Reader.MyGspn.pl, " ");
+  
+  Reader.MyGspn.Marking=vStr;
 
-
-  if(true){
-    vector<int> v(Reader.MyGspn.pl,0);
-    vector<string> vStr(Reader.MyGspn.pl, " ");
-
-    Reader.MyGspn.Marking=vStr;
-    vector< vector<int> > m1(Reader.MyGspn.tr,v);
-    vector< vector<string> > m1Str(Reader.MyGspn.tr,vStr);
-
-    Reader.MyGspn.outArcs=m1;
-    Reader.MyGspn.inArcs=m1;
-    Reader.MyGspn.inhibArcs=m1;
-
-    Reader.MyGspn.outArcsStr=m1Str;
-    Reader.MyGspn.inArcsStr=m1Str;
-    Reader.MyGspn.inhibArcsStr=m1Str;
-	
-	
-	Reader.MyGspn.outArcsTok = vector<vector<vector<coloredToken> > >(Reader.MyGspn.tr,vector<vector<coloredToken> >(Reader.MyGspn.pl));
-	Reader.MyGspn.inArcsTok = vector<vector<vector<coloredToken> > >(Reader.MyGspn.tr,vector<vector<coloredToken> >(Reader.MyGspn.pl));
-	Reader.MyGspn.inhibArcsTok = vector<vector<vector<coloredToken> > >(Reader.MyGspn.tr,vector<vector<coloredToken> >(Reader.MyGspn.pl));
-  }
+  Reader.MyGspn.inArcsStruct = vector< vector<arc> >(Reader.MyGspn.tr,vector<arc>(Reader.MyGspn.pl));
+  Reader.MyGspn.outArcsStruct = vector< vector<arc> >(Reader.MyGspn.tr,vector<arc>(Reader.MyGspn.pl));
+  Reader.MyGspn.inhibArcsStruct = vector< vector<arc> >(Reader.MyGspn.tr,vector<arc>(Reader.MyGspn.pl));
 
   MarkingDependent=false;
   AgeMemory=false;
@@ -745,10 +730,8 @@ incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
   string st=$6;
 
   if(Evaluate.parse(st)){
-    Reader.MyGspn.inArcs[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=1;
-    Reader.MyGspn.inArcsStr[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=st;
-  }
-  else Reader.MyGspn.inArcs[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=Evaluate.IntResult;
+    Reader.MyGspn.inArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]= arc(st);
+  }else Reader.MyGspn.inArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=arc(Evaluate.IntResult);
 
  }
 |LB str COMMA str   RB SEMICOLON {
@@ -762,7 +745,7 @@ incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
       std::cout<<"Transition: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
     }
-  Reader.MyGspn.inArcs[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=1;
+  Reader.MyGspn.inArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=arc(1);
 
  };
 
@@ -785,10 +768,9 @@ outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
   string st=$6;
 
   if(Evaluate.parse(st)){
-    Reader.MyGspn.outArcs[Reader.MyGspn.TransId[*$2]][Reader.MyGspn.PlacesId[*$4]]=1;
-    Reader.MyGspn.outArcsStr[Reader.MyGspn.TransId[*$2]][Reader.MyGspn.PlacesId[*$4]]=st;
+	  Reader.MyGspn.outArcsStruct[Reader.MyGspn.TransId[*$2]][Reader.MyGspn.PlacesId[*$4]]=arc(st);
   }
-  else Reader.MyGspn.outArcs[Reader.MyGspn.TransId[*$2]][Reader.MyGspn.PlacesId[*$4]]=Evaluate.IntResult;
+  else Reader.MyGspn.outArcsStruct[Reader.MyGspn.TransId[*$2]][Reader.MyGspn.PlacesId[*$4]]=arc(Evaluate.IntResult);
 
  }
 |LB str COMMA str   RB SEMICOLON {
@@ -802,7 +784,7 @@ outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
       std::cout<<"Place: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
     }
-  Reader.MyGspn.outArcs[Reader.MyGspn.TransId[*$2]][Reader.MyGspn.PlacesId[*$4]]=1;
+  Reader.MyGspn.outArcsStruct[Reader.MyGspn.TransId[*$2]][Reader.MyGspn.PlacesId[*$4]]=arc(1);
  };
 
 
@@ -826,10 +808,9 @@ inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
   string st=$6;
 
   if(Evaluate.parse(st)){
-    Reader.MyGspn.inhibArcs[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=1;
-    Reader.MyGspn.inhibArcsStr[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=st;
+    Reader.MyGspn.inhibArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=arc(st);
   }
-  else Reader.MyGspn.inhibArcs[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=Evaluate.IntResult;
+  else Reader.MyGspn.inhibArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=arc(Evaluate.IntResult);
 
  }
 
@@ -844,7 +825,7 @@ inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
       std::cout<<"Transition: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
     }
-  Reader.MyGspn.inhibArcs[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=1;
+  Reader.MyGspn.inhibArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=arc(1);
 
  };
 

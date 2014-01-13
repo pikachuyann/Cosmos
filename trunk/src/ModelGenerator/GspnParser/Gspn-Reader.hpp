@@ -45,11 +45,6 @@ enum TransType {
     Timed, unTimed
 };
 
-typedef vector <int> Dim1;
-typedef vector <int> IntVector;
-typedef vector <Dim1> Dim2;
-typedef vector <IntVector> IntMatrix;
-
 //! a structure for probability distribution
 struct ProbabiliteDistribution {
     std::string name;
@@ -132,6 +127,21 @@ struct place {
 	place(){ colorDom = UNCOLORED_DOMAIN; isTraced = true; }
 };
 
+struct arc {
+	arc(size_t v):isEmpty(false),isMarkDep(false),isColored(false),intVal(v){};
+	arc(const string &s):isEmpty(false),isMarkDep(true),isColored(false),intVal(1),stringVal(s){};
+	arc():isEmpty(true),isMarkDep(false),isColored(false),intVal(0){};
+	arc(const string &s,const vector<coloredToken> &vct):isEmpty(false),isMarkDep(true),intVal(1),stringVal(s),coloredVal(vct){
+			isColored = vct.size()>0;
+	}
+	bool isEmpty;
+	bool isMarkDep;
+	bool isColored;
+	size_t intVal;
+	string stringVal;
+	vector<coloredToken> coloredVal;
+};
+
 struct GSPN {
     size_t tr;
     size_t pl;
@@ -148,15 +158,9 @@ struct GSPN {
 	vector<transition> transitionStruct;
 	vector<place> placeStruct;
 	
-    IntMatrix inArcs;
-    IntMatrix outArcs;
-    IntMatrix inhibArcs;
-    vector < vector<string> > inArcsStr;
-    vector < vector<string> > outArcsStr;
-    vector < vector<string> > inhibArcsStr;
-	vector < vector< vector< coloredToken> > > inArcsTok;
-	vector < vector< vector< coloredToken> > > outArcsTok;
-	vector < vector< vector< coloredToken> > > inhibArcsTok;
+	vector< vector<arc> > inArcsStruct;
+	vector< vector<arc> > outArcsStruct;
+	vector< vector<arc> > inhibArcsStruct;
 	
     vector <string> Marking;
 	

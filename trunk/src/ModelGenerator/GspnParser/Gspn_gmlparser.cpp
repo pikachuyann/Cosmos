@@ -880,24 +880,10 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             MyGspn->tr++;
         }
         
-        vector<int> vplint(MyGspn->pl,0);
-        vector<string> vStr(MyGspn->pl, " ");
-        
-        //Reader.MyGspn->Marking=v;
-        vector< vector<int> > m1(MyGspn->tr,vplint);
-        vector< vector<string> > m1Str(MyGspn->tr,vStr);
-        
-        MyGspn->outArcs=m1;
-        MyGspn->inArcs=m1;
-        MyGspn->inhibArcs=m1;
-        
-        MyGspn->outArcsStr=m1Str;
-        MyGspn->inArcsStr=m1Str;
-        MyGspn->inhibArcsStr=m1Str;
+		MyGspn->inArcsStruct = vector< vector<arc> >(MyGspn->tr,vector<arc>(MyGspn->pl));
+		MyGspn->outArcsStruct = vector< vector<arc> >(MyGspn->tr,vector<arc>(MyGspn->pl));
+		MyGspn->inhibArcsStruct = vector< vector<arc> >(MyGspn->tr,vector<arc>(MyGspn->pl));
 		
-		MyGspn->outArcsTok = vector<vector<vector<coloredToken> > >(MyGspn->tr,vector<vector<coloredToken> >(MyGspn->pl));
-		MyGspn->inArcsTok = vector<vector<vector<coloredToken> > >(MyGspn->tr,vector<vector<coloredToken> >(MyGspn->pl));
-		MyGspn->inhibArcsTok = vector<vector<vector<coloredToken> > >(MyGspn->tr,vector<vector<coloredToken> >(MyGspn->pl));
         
     }
     
@@ -976,32 +962,26 @@ void MyModelHandler::on_read_arc(const XmlString& id,
     if(IsPlace[sourceGML]){
         if(arcType.compare("inhibitorarc")==0){
             if(Evaluate_gml.parse(valuation)){
-                MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=1;
-                MyGspn->inhibArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= "("+valuation+")";
-				MyGspn->inhibArcsTok[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= toklist;
+                MyGspn->inhibArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(static_cast<string>("("+valuation+")"),toklist);
 			}else {
-                MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=Evaluate_gml.IntResult;
+                MyGspn->inhibArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(Evaluate_gml.IntResult);
             }
             //MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
         }else {
             if(Evaluate_gml.parse(valuation)){
-                MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=1;
-                MyGspn->inArcsStr[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= "("+valuation+")";
-				MyGspn->inArcsTok[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]= toklist;
+                MyGspn->inArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(("("+valuation+")"),toklist);
             }
             else {
-                MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=Evaluate_gml.IntResult;
+                MyGspn->inArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(Evaluate_gml.IntResult);
             }
             //MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
         }
     }else {
         if(Evaluate_gml.parse(valuation)){
-            MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=1;
-            MyGspn->outArcsStr[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]="("+valuation+")";
-			MyGspn->outArcsTok[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]= toklist;
+            MyGspn->outArcsStruct[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=arc(("("+valuation+")"),toklist);;
         }
         else {
-            MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=Evaluate_gml.IntResult;
+            MyGspn->outArcsStruct[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=arc(Evaluate_gml.IntResult);
         }
         //MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=valuation;
     }
