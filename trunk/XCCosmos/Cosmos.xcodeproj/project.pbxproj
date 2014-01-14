@@ -32,6 +32,7 @@
 		0367E2A318843EAB00F35619 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03FB40F518180F9D001F9988 /* XCTest.framework */; };
 		0367E2A918843EAB00F35619 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0367E2A718843EAB00F35619 /* InfoPlist.strings */; };
 		0367E2AB18843EAB00F35619 /* ClientSim_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0367E2AA18843EAB00F35619 /* ClientSim_Tests.m */; };
+		0367E2B71885288900F35619 /* Gspn-Writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0367E2B51885288900F35619 /* Gspn-Writer.cpp */; };
 		03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */; };
 		03D9C811168467E900AADB3D /* generateLHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE630D1636BCF6007FCB32 /* generateLHA.cpp */; };
 		03D9C813168467EF00AADB3D /* exPapier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63091636BCA3007FCB32 /* exPapier.cpp */; };
@@ -216,6 +217,8 @@
 		0367E2AA18843EAB00F35619 /* ClientSim_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClientSim_Tests.m; sourceTree = "<group>"; };
 		0367E2AC18843EAB00F35619 /* ClientSim Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ClientSim Tests-Prefix.pch"; sourceTree = "<group>"; };
 		0367E2B218843ED000F35619 /* test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = test.m; sourceTree = "<group>"; };
+		0367E2B51885288900F35619 /* Gspn-Writer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Writer.cpp"; sourceTree = "<group>"; };
+		0367E2B61885288900F35619 /* Gspn-Writer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Writer.hpp"; sourceTree = "<group>"; };
 		03A7F877182BCEA7006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03A7F878182BCEB1006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03A7F879182BCEBB006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
@@ -361,6 +364,8 @@
 				032A701C181BC0D6006D7332 /* Gspn-parser.yy */,
 				032A701D181BC0D6006D7332 /* Gspn-Reader.cpp */,
 				032A701E181BC0D6006D7332 /* Gspn-Reader.hpp */,
+				0367E2B51885288900F35619 /* Gspn-Writer.cpp */,
+				0367E2B61885288900F35619 /* Gspn-Writer.hpp */,
 				032A701F181BC0D6006D7332 /* Gspn-scanner.ll */,
 				032A7020181BC0D6006D7332 /* Gspn_gmlparser.cpp */,
 				032A7021181BC0D6006D7332 /* Gspn_gmlparser.hpp */,
@@ -867,6 +872,7 @@
 				032A707A181BC0D6006D7332 /* result.cpp in Sources */,
 				0367E29C18842FB700F35619 /* BatchR.cpp in Sources */,
 				032A707B181BC0D6006D7332 /* server.cpp in Sources */,
+				0367E2B71885288900F35619 /* Gspn-Writer.cpp in Sources */,
 				032A7079181BC0D6006D7332 /* parameters.cpp in Sources */,
 				0367E29118842E8C00F35619 /* Gspn-parser.cc in Sources */,
 				032A7076181BC0D6006D7332 /* Lha-Reader.cpp in Sources */,

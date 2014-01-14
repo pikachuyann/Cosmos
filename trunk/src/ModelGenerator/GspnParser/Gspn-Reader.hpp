@@ -204,36 +204,25 @@ public:
 	int parse(std::string&);
     int parse_file(std::string&);
 	int parse_gml_file(parameters&);
-    void WriteFile(parameters&);
 	
 	void error(const gspn::location& l, const std::string& m);
 	
-	//<! Index of distribution type.
-	map<string, int> IndexDist;
-	parameters P;
 	
 	void iterateDom(const string &s,const string &sop, const string &sclos ,const string &s2,const string &sop2, const string &sclos2 ,const colorDomain & cd, size_t prof,std::function<void (const string&,const string&)> func);
 	
 	void iterateVars(const string &s,const string &sop, const string &sclos ,const set<size_t> &varDom, size_t prof,std::function<void (const string&)> func);
 	
+	//<! Index of distribution type.
+	map<string, int> IndexDist;
+	parameters P;
+	
 private:
-	
-	
-	
 	
     void scan_begin();
     void scan_end();
     void scan_expression(const string&);
 	
     bool trace_scanning;
-	
-	int varMultiplier(size_t var);
-	void writeMarkingClasse(ofstream &, ofstream &, parameters &);
-	void writeEnabledDisabled(ofstream &);
-	void writeEnabledDisabledBinding(ofstream &);
-	void writeUpdateVect(ofstream &,const string &name,const vector< set<int> > &vect);
-	void writeTransition(ofstream &, bool);
-	void writeVariable(ofstream & spnF);
 	
     bool trace_parsing;
 	
@@ -246,11 +235,5 @@ private:
     
     void view();
 	
-	
-	void printloot(ofstream& sf, size_t domain, size_t nesting );
-	
-	void EnabledDisabledTr(vector< set<int> >&,
-						   vector< set<int> >&,
-						   vector< set<int> >&);
 };
 #endif // ! GSPN_READER_HH

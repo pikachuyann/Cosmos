@@ -44,6 +44,7 @@
 //#include "directsim.hpp"
 #include "LhaParser/Lha-Reader.hpp"
 #include "GspnParser/Gspn-Reader.hpp"
+#include "GspnParser/Gspn-Writer.hpp"
 #include "server.hpp"
 #include "parameters.hpp"
 #include "../Simulator/sharedMemory.hpp"
@@ -183,7 +184,10 @@ bool ParseBuild(parameters& P) {
 		
 		//Check that the model is not empty and generate the code
 		if (!parseresult && gReader.MyGspn.pl >0 && gReader.MyGspn.tr >0) {
-            if(P.tmpStatus==0||P.tmpStatus==2)gReader.WriteFile(P);
+            if(P.tmpStatus==0||P.tmpStatus==2){
+				Gspn_Writer writer(gReader.MyGspn,P);
+				writer.WriteFile();
+			}
         } else {
             Gspn_Reader gr(P);
             gReader = gr;
