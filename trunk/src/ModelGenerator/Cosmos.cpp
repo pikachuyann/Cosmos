@@ -116,7 +116,6 @@ void FindPath(parameters& P) {
 }
 
 #define SHAREDEXTENSION "a"
-#define FindPath FindPathLinux
 #else
 #error "Operating system not supported"
 #endif
