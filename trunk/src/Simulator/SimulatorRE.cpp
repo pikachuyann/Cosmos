@@ -88,18 +88,20 @@ void SimulatorRE::updateSPN(size_t t, const abstractBinding& b){
 	
 	//Run over all transition
 	for (const auto &tr : N.Transition) {
-		for(const auto &bindex : tr.bindingList ){
-			if(N.IsEnabled(tr.Id, bindex)){
-				if (EQ->isScheduled(tr.Id, bindex.id())) {
-					GenerateEvent(F, tr.Id ,bindex );
-					EQ->replace(F);
-				} else {
-					GenerateEvent(F, tr.Id ,bindex );
-					EQ->insert(F);
+		if(tr.Id != N.tr-1){
+			for(const auto &bindex : tr.bindingList ){
+				if(N.IsEnabled(tr.Id, bindex)){
+					if (EQ->isScheduled(tr.Id, bindex.id())) {
+						GenerateEvent(F, tr.Id ,bindex );
+						EQ->replace(F);
+					} else {
+						GenerateEvent(F, tr.Id ,bindex );
+						EQ->insert(F);
+					}
+				}else{
+					if(EQ->isScheduled(tr.Id, bindex.id()))
+						EQ->remove(tr.Id,bindex.id());
 				}
-			}else{
-				if(EQ->isScheduled(tr.Id, bindex.id()))
-					EQ->remove(tr.Id,bindex.id());
 			}
 		}
 	}
