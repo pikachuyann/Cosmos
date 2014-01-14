@@ -166,7 +166,7 @@ bool ParseBuild(parameters& P) {
 					if(!gReader.MyGspn.inArcsStruct[t][p].isEmpty){
 						stringstream diststream;
 						diststream << trDistr->Param[0] << " * (";
-						if(!gReader.MyGspn.inArcsStruct[t][p].isMarkDep || gReader.MyGspn.inArcsStruct[t][p].intVal>1)
+						if(gReader.MyGspn.inArcsStruct[t][p].isMarkDep || gReader.MyGspn.inArcsStruct[t][p].intVal>1)
 							diststream << "pow(";
 						diststream << "Marking.P->_PL_" << gReader.MyGspn.placeStruct[p].name;
 						if(gReader.MyGspn.inArcsStruct[t][p].isMarkDep){
