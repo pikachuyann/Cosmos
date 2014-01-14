@@ -142,7 +142,7 @@ struct arc {
 	vector<coloredToken> coloredVal;
 };
 
-struct GSPN {
+struct GspnType {
     size_t tr;
     size_t pl;
     size_t nbpass;
@@ -171,15 +171,12 @@ struct GSPN {
 		return colClasses.size()>0;
 	}
 	
-	GSPN(){
+	GspnType(){
 		nbpass=0;
 		colDoms.push_back(colorDomain());
 	}
 	
 };
-
-typedef struct GSPN GspnType;
-
 
 void searchreplace(const string &in,const string &motif,const string &rep,string &out);
 
@@ -191,7 +188,6 @@ gspn::Gspn_parser::location_type* gspnlloc,      \
 Gspn_Reader& Reader)
 
 GSPN_DECL;
-using namespace std;
 
 class Gspn_Reader {
 public:

@@ -415,7 +415,7 @@ void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it)
 }
 
 
-MyModelHandler::MyModelHandler(GSPN *MyGspn2,parameters &Q):MyGspn(MyGspn2), P(Q) {
+MyModelHandler::MyModelHandler(GspnType &MyGspn2,parameters &Q):MyGspn(&MyGspn2), P(Q) {
 	MyGspn->tr=0;
 	ParsePl=true;
 	if(MyGspn->nbpass==0){
@@ -424,7 +424,7 @@ MyModelHandler::MyModelHandler(GSPN *MyGspn2,parameters &Q):MyGspn(MyGspn2), P(Q
 	}
 }
 //~MyModelHandler() { }
-MyModelHandler::MyModelHandler(GSPN *MyGspn2,parameters &Q ,map<int,bool> &mip,map<int,int> &mgp,map<int,int> &mgt):IsPlace(mip),Gml2Place(mgp),Gml2Trans(mgt),MyGspn(MyGspn2), P(Q) {
+MyModelHandler::MyModelHandler(GspnType &MyGspn2,parameters &Q ,map<int,bool> &mip,map<int,int> &mgp,map<int,int> &mgt):IsPlace(mip),Gml2Place(mgp),Gml2Trans(mgt),MyGspn(&MyGspn2), P(Q) {
 	MyGspn->tr=0;
 	ParsePl=true;
 	if(MyGspn->nbpass==0){
@@ -962,7 +962,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
     if(IsPlace[sourceGML]){
         if(arcType.compare("inhibitorarc")==0){
             if(Evaluate_gml.parse(valuation)){
-                MyGspn->inhibArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(static_cast<string>("("+valuation+")"),toklist);
+                MyGspn->inhibArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(("("+valuation+")"),toklist);
 			}else {
                 MyGspn->inhibArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(Evaluate_gml.IntResult);
             }

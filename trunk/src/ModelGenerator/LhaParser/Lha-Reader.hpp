@@ -64,8 +64,8 @@ struct variables {
 };
 
 struct LhaType {
-	GSPN *MyGspn;
-	LhaType(GSPN& Mspn);
+	GspnType *MyGspn;
+	LhaType(GspnType &Mspn);
     
 	string label;
     size_t NbLoc; // number of locations
@@ -137,7 +137,7 @@ LHA_DECL;
 
 class Lha_Reader {
 public:
-    Lha_Reader(GSPN&,parameters&);
+    Lha_Reader(GspnType &,parameters&);
     virtual ~Lha_Reader();
 	
     LhaType MyLha;
