@@ -52,3 +52,15 @@ libtool
 *.gcda
 app.info
 coverage_report
+XCCosmos/Cosmos.xcodeproj/project.xcworkspace/xcshareddata/
+ar-lib
+compile
+config.guess
+config.sub
+depcomp
+include/*
+install-sh
+lib/*
+ltmain.sh
+missing
+ylwrap

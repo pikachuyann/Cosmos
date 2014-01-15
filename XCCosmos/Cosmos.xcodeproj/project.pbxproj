@@ -1324,7 +1324,7 @@
 				PRODUCT_NAME = Cosmos;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				USER_HEADER_SEARCH_PATHS = "/Users/barbot/Documents/GitSvnCosmos/trunk/src/libgrml/ /usr/local/include";
+				USER_HEADER_SEARCH_PATHS = "/Users/barbot/Documents/Cosmos/src/libgrml/ /usr/local/include";
 			};
 			name = Debug;
 		};
@@ -1344,7 +1344,7 @@
 				PRODUCT_NAME = Cosmos;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				USER_HEADER_SEARCH_PATHS = "/Users/barbot/Documents/GitSvnCosmos/trunk/src/libgrml/ /usr/local/include";
+				USER_HEADER_SEARCH_PATHS = "/Users/barbot/Documents/Cosmos/src/libgrml/ /usr/local/include";
 			};
 			name = Release;
 		};
