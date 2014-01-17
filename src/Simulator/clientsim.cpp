@@ -151,14 +151,12 @@ int main(int argc, char** argv) {
 	
     if((mySim->verbose>=4) | singleBatch )mySim->RunBatch();
     else while( !cin.eof() ){
-		BatchR* batchResult = mySim->RunBatch(); //simulate a batch of trajectory
+		BatchR batchResult = mySim->RunBatch(); //simulate a batch of trajectory
 		
-		batchResult->outputR();// output the result on the standart output
+		batchResult.outputR();// output the result on the standart output
 		
 		//cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
 		//<< ":" << batchResult->M2[0] << endl;
-		
-		delete batchResult;
 		
     }
 	

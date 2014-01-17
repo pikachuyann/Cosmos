@@ -91,7 +91,7 @@ class SimulatorBoundedRE: public SimulatorRE{
 public:
 	//SimulatorBoundedRE();
     SimulatorBoundedRE(int m);
-	BatchR* RunBatch() override;
+	BatchR RunBatch() override;
     void initVect(int T);
 	void updateSPN(size_t, const abstractBinding&) override;
 	void getParams(size_t, const abstractBinding&) override;

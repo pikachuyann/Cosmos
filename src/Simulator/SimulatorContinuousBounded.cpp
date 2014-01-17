@@ -68,7 +68,7 @@ void SimulatorContinuousBounded::initVectCo(double t){
     lambda = lambda2;
 }
 
-BatchR* SimulatorContinuousBounded::RunBatch(){
+BatchR SimulatorContinuousBounded::RunBatch(){
 	//cerr << "test(";
 	numSolv->reset();
 	
@@ -82,18 +82,18 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     int n =-1;
     
 
-    BatchR* batchResult = new BatchR(2*(Nmax+1));
+    BatchR batchResult(2*(Nmax+1));
 
 	
 	//Copy and sum Poisson Weight
     for(int i =0; i<= Nmax; i++)
-		batchResult->Min[2*i] = 0.0;
+		batchResult.Min[2*i] = 0.0;
 	for(int i=left; i<= fg->right; i++){
 		int j = (int)ceil((double)( i - left)/jumpsize);
-		batchResult->Min[2*j] += fg->weights[i - fg->left];
+		batchResult.Min[2*j] += fg->weights[i - fg->left];
 	}
 	for(int i =0; i<= Nmax; i++)
-		batchResult->Min[2*i] /= fg->total_weight;
+		batchResult.Min[2*i] /= fg->total_weight;
 		
 	list<simulationState> statevect((Nmax+1)*BatchSize);
 	
@@ -166,31 +166,31 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
 						//cerr << "Successfull trajectory: "<< it->maxStep << " -> " << i << endl;
                         if (Result.first ) {
                             
-                            if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult->IsBernoulli[0] = false;
+                            if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult.IsBernoulli[0] = false;
 							
-							batchResult->Isucc+=1;
+							batchResult.Isucc+=1;
 							if(singleIS)for(int j = i2; j<= Nmax; j++){
-								batchResult->Mean[2*j]+=1;
-								batchResult->Mean[2*j+1] += Result.second[0];
-								batchResult->M2[2*j+1] += pow(Result.second[0] , 2);
-								batchResult->M3[2*j+1] += pow(Result.second[0] , 3);
-								batchResult->M4[2*j+1] += pow(Result.second[0] , 4);
-								batchResult->Min[2*j+1] = fmin(batchResult->Min[2*j+1],Result.second[0]);
-								batchResult->Max[2*j+1] = fmax(batchResult->Max[2*j+1],Result.second[0]);
+								batchResult.Mean[2*j]+=1;
+								batchResult.Mean[2*j+1] += Result.second[0];
+								batchResult.M2[2*j+1] += pow(Result.second[0] , 2);
+								batchResult.M3[2*j+1] += pow(Result.second[0] , 3);
+								batchResult.M4[2*j+1] += pow(Result.second[0] , 4);
+								batchResult.Min[2*j+1] = fmin(batchResult.Min[2*j+1],Result.second[0]);
+								batchResult.Max[2*j+1] = fmax(batchResult.Max[2*j+1],Result.second[0]);
                             } else {
-								batchResult->Mean[2*i]+=1;
-								batchResult->Mean[2*i+1] += Result.second[0];
-								batchResult->M2[2*i+1] += pow(Result.second[0] , 2);
-								batchResult->M3[2*i+1] += pow(Result.second[0] , 3);
-								batchResult->M4[2*i+1] += pow(Result.second[0] , 4);
-								batchResult->Min[2*i+1] = fmin(batchResult->Min[2*i+1],Result.second[0]);
-								batchResult->Max[2*i+1] = fmax(batchResult->Max[2*i+1],Result.second[0]);
+								batchResult.Mean[2*i]+=1;
+								batchResult.Mean[2*i+1] += Result.second[0];
+								batchResult.M2[2*i+1] += pow(Result.second[0] , 2);
+								batchResult.M3[2*i+1] += pow(Result.second[0] , 3);
+								batchResult.M4[2*i+1] += pow(Result.second[0] , 4);
+								batchResult.Min[2*i+1] = fmin(batchResult.Min[2*i+1],Result.second[0]);
+								batchResult.Max[2*i+1] = fmax(batchResult.Max[2*i+1],Result.second[0]);
 							}
                             
                         }
-						if(singleIS){for(int j = 0; j<= Nmax; j++)batchResult->M2[2*j]+=1;}
-						else batchResult->M2[2*i]+=1;
-                        batchResult->I++;
+						if(singleIS){for(int j = 0; j<= Nmax; j++)batchResult.M2[2*j]+=1;}
+						else batchResult.M2[2*i]+=1;
+                        batchResult.I++;
                         
                         
                         delete EQ;
@@ -216,7 +216,7 @@ BatchR* SimulatorContinuousBounded::RunBatch(){
     //	cerr << "DIR Result Mean:\t" << (lowtotal +uptotal)/2.0 << endl;
     //cerr << "DIR Confidence interval:\t ["<< lowtotal <<";"<< uptotal << "]" << endl << endl << endl<< endl << endl<< endl;
 
-    //batchResult->print();
+    //batchResult.print();
     //exit(0);
 	return (batchResult);
 }

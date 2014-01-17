@@ -38,7 +38,7 @@ public:
 	int jumpsize;
 	bool singleIS;
     //double Normal_quantile;
-    BatchR* RunBatch() override;
+    BatchR RunBatch() override;
     
 protected:
     FoxGlynn* fg;

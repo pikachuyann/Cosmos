@@ -59,12 +59,12 @@ void SimulatorBoundedRE::initVect(int T){
 }
 
 
-BatchR* SimulatorBoundedRE::RunBatch(){
+BatchR SimulatorBoundedRE::RunBatch(){
 	//cerr << "test(";
 	numSolv->reset();
 	//cerr << ")" << endl;
 	
-	BatchR* batchResult = new BatchR(1);
+	BatchR batchResult(1);
 	
 	list<simulationState> statevect(BatchSize);
 	//delete EQ;
@@ -114,7 +114,7 @@ BatchR* SimulatorBoundedRE::RunBatch(){
 			if((!EQ->isEmpty()) && continueb) {
 				it->saveState(&N,&A,&EQ);
 			} else {
-				batchResult->addSim(Result);
+				batchResult.addSim(Result);
 				delete EQ;
 				it = statevect.erase(it);
 				it--;

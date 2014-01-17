@@ -602,18 +602,13 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
 	
 }
 
-BatchR* Simulator::RunBatch(){
-	
-	BatchR* batchResult = new BatchR(A.FormulaVal.size());
-	
-	while (batchResult->I < BatchSize) {
+BatchR Simulator::RunBatch(){
+	BatchR batchResult(A.FormulaVal.size());
+	while (batchResult.I < BatchSize) {
 		reset();
-		
 		SimulateSinglePath();
-		
-        batchResult->addSim(Result);
-		
-		if(verbose>3)batchResult->print();
+        batchResult.addSim(Result);
+		if(verbose>3)batchResult.print();
 		
 		if (Result.first && logResult){
 			for(size_t i=0; i<Result.second.size();i++){
@@ -622,9 +617,6 @@ BatchR* Simulator::RunBatch(){
 			}
 			logvalue << endl;
 		}
-		
     }
-	
-	return (batchResult);
-	
+	return batchResult;
 }

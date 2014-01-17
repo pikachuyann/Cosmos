@@ -82,7 +82,7 @@ public:
 	 * @return a new BatchR structure containing the result
 	 * of the batch of simulation.
 	 */
-    virtual BatchR* RunBatch();
+    virtual BatchR RunBatch();
     
 protected:
 	
