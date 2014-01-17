@@ -36,8 +36,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "boost/random.hpp"
-#include "boost/generator_iterator.hpp"
+#include <random>
 
 
 
@@ -119,7 +118,7 @@ protected:
 	EventsQueue* EQ;
 	
     //!The random Generator Mersenne Twister from the boost library
-	boost::mt19937 RandomNumber;
+	mt19937_64 RandomNumber;
 	
 	/**
 	 * \brief Simulate a step of the system,

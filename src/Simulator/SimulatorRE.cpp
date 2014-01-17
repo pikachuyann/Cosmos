@@ -29,10 +29,6 @@
 #include <set>
 #include <math.h>
 #include <float.h>
-#include <boost/random.hpp>
-#include <boost/generator_iterator.hpp>
-#include <boost/math/distributions/normal.hpp>
-#include <boost/math/distributions/binomial.hpp>
 #include <time.h>
 #include "marking.hpp"
 //#include "RareEvent.hpp"

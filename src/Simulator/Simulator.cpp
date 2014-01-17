@@ -30,12 +30,6 @@
 #include <unistd.h>
 #include <math.h>
 #include <float.h>
-#include <boost/random.hpp>
-//#include <boost/random/random_device.hpp>
-#include <boost/generator_iterator.hpp>
-#include <boost/math/distributions/normal.hpp>
-#include <boost/math/distributions/lognormal.hpp>
-#include <boost/math/distributions/binomial.hpp>
 #include <time.h>
 #include "marking.hpp"
 //#include "interactive.hpp"
@@ -520,9 +514,8 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
 	switch (distribution) {
 		case UNIFORM:
 		{//UNIF
-			boost::uniform_real<> UNIF(param[0], param[1]);
-			boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
-			return gen();
+			uniform_real_distribution<double> UNIF(param[0], param[1]);
+			return UNIF(RandomNumber);
 			break;
 		}
 			
@@ -530,7 +523,6 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
 		case EXPONENTIAL:
 		{//EXP
 			//Exponential distribution is the only marking dependent parameters. Check of validity is required
-			
 			//-------------- Rare Event -----------------
 			//cout << "rate:" << param[0] << endl;
 			if(param[0] <= 0) { return 1e200; };
@@ -541,11 +533,9 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
                 << param[0] << "\n End of Simulation" << endl;
 				exit(1);
 			}
-			
-			boost::exponential_distribution<> EXP(param[0]);
-			boost::variate_generator<boost::mt19937&, boost::exponential_distribution<> > gen(RandomNumber, EXP);
-			return gen();
-			
+						
+			exponential_distribution<double> EXP(param[0]);
+			return EXP(RandomNumber);
 		}
 			
 		case DETERMINISTIC:
@@ -555,29 +545,33 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
 			
 		case LOGNORMAL:
 		{//LogNormal
-			boost::lognormal_distribution<> LOGNORMAL(param[0], param[1]);
-			boost::variate_generator<boost::mt19937&, boost::lognormal_distribution<> > gen(RandomNumber, LOGNORMAL);
-			return gen();
+			lognormal_distribution<double> LOGNORMAL(param[0],param[1]);
+			return LOGNORMAL(RandomNumber);
 		}
-			
+		/*
 		case TRIANGLE:
 		{//Triangle
-			boost::triangle_distribution<> TRIANGLE(param[0], param[1], param[2]);
+			triangle_distribution<> TRIANGLE(param[0], param[1], param[2]);
 			boost::variate_generator<boost::mt19937&, boost::triangle_distribution<> > gen(RandomNumber, TRIANGLE);
 			return gen();
-		}
+		}*/
 		case GEOMETRIC:
 		{//GEOMETRIC
+			geometric_distribution<size_t> GEOMETRIC(param[0]);
+			return param[1] * GEOMETRIC(RandomNumber);
+			
+			/*
 			boost::uniform_real<> UNIF(0, 1);
 			boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
 			double p = gen();
-			return (param[1] * (ceil(log(p) / log(1 - param[0]))));
+			return (param[1] * (ceil(log(p) / log(1 - param[0]))));*/
 			/*if (p >= param[0]){
 			 return param[1];
 			 } else {
 			 return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
 			 }*/
 		}
+		/*
 		case ERLANG:
         {//ERLANG
             boost::uniform_real<> UNIF(0, 1);
@@ -587,18 +581,16 @@ double Simulator::GenerateTime(DistributionType distribution,const vector<double
                 prod = prod * gen();
             return -log(prod) / param[1];
 			
-        }
+        }*/
         case GAMMA:
         {//GAMMA
-            boost::gamma_distribution<> GAMMA(param[0]);
-            boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gen(RandomNumber, GAMMA);
-            return param[1] * gen();
+            gamma_distribution<> GAMMA(param[0]);
+            return param[1] * GAMMA(RandomNumber);
         }
 		case DISCRETEUNIF:
 		{//DISCRETEUNIF
-			boost::uniform_int<> UNIF((int)param[0], (int)param[1]);
-			boost::variate_generator<boost::mt19937&, boost::uniform_int<> > gen(RandomNumber, UNIF);
-			return gen();
+			uniform_int_distribution<double> UNIF((int)param[0], (int)param[1]);
+			return UNIF(RandomNumber);
 			break;
 		}
 			
