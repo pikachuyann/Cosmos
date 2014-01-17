@@ -65,13 +65,17 @@ void BatchR::addSim(const SimOutput &Result){
             if (Result.second[i] * (1 - Result.second[i]) != 0){
                 IsBernoulli[i] = false;
             }
-            
-            Mean[i] += Result.second[i];
-            M2[i] += pow(Result.second[i], 2);
-			M3[i] += pow(Result.second[i], 3);
-			M4[i] += pow(Result.second[i], 4);
-			Min[i] = fmin(Min[i],Result.second[i]);
-			Max[i] = fmax(Max[i],Result.second[i]);
+			
+			double temp = Result.second[i];
+            Mean[i] += temp;
+			temp *= Result.second[i];
+            M2[i] += temp;
+			temp *= Result.second[i];
+			M3[i] += temp;
+			temp *= Result.second[i];
+			M4[i] += temp;
+			Min[i] = min(Min[i],Result.second[i]);
+			Max[i] = max(Max[i],Result.second[i]);
         }
     }
 }

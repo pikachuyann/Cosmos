@@ -24,7 +24,6 @@
  */
 
 #include "Simulator.hpp"
-//#include "SimulatorRE.h"
 #include <iostream>
 #include <set>
 #include <unistd.h>
@@ -32,7 +31,6 @@
 #include <float.h>
 #include <time.h>
 #include "marking.hpp"
-//#include "interactive.hpp"
 
 
 using namespace std;
@@ -41,10 +39,10 @@ using namespace std;
  * Constructor for the Simulator initialize the event queue
  * but don't fill it.
  */
-Simulator::Simulator():verbose(0) {
+Simulator::Simulator():verbose(0){
   EQ = new EventsQueue(N); //initialization of the event queue
   logResult=false;
-  
+	Result.second.resize(A.FormulaVal.size());
   BatchSize = 1000;
 }
 
