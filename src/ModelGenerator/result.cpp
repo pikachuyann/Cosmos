@@ -144,17 +144,17 @@ bool result::continueSim(){
 }
 
 void result::printPercent(double i, double j){
-    double t = 100;
+    const double t = 100;
     double u;
     if(j != 0){
-		u = (t * i)/j;
+		u = fmax(0.0,fmin(t,(t * i)/j));
     }else u=0;
     cout << "[";
     for(int k = 1; k<t;k++){
         if(k<u){cout<<"|";}
         else cout<<" ";
     };
-    cout << "] "<< (int)(100.0 * i/j) <<"%\t"<< endl;
+    cout << "] "<< (int)u <<"%\t"<< endl;
 }
 
 void result::printProgress(){
