@@ -276,7 +276,7 @@ bool ParseBuild() {
 	//If the code should not be compiled return
 	if(P.tmpStatus==1||P.tmpStatus==3)return true;
 	
-	generateMain();
+	//generateMain();
 	
 	return build();
 
@@ -374,11 +374,12 @@ bool build(){
 	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
 	
+	/*
 	//Compile the Main
 	cmd = bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/main.o "+P.tmpPath+"/main.cpp";
 	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
-
+*/
 	
 	//Link SPN and LHA with the library
 	cmd = bcmd + " -o "+P.tmpPath+"/ClientSim "+P.tmpPath+"/spn.o "+P.tmpPath+"/LHA.o "+P.Path+"../lib/libClientSim.a ";
