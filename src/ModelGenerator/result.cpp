@@ -199,7 +199,7 @@ void result::printProgress(){
 			cout << setw(17) << HaslResult[i].mean << " > ";
 			cout << setw(17) << HaslResult[i].up << " ]-- ";
 			cout << setw(17) << HaslResult[i].max << " >| ";
-			cout << "\t  width=";
+			cout << "width=";
 			cout << setw(15) << HaslResult[i].width() << endl;
 			endline++;
 			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2 && P.sequential){

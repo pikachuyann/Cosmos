@@ -75,11 +75,10 @@ int main(int argc, char** argv) {
 			SimulatorRE* myRESim= new SimulatorRE(false);
 			myRESim->initVect();
 			mySim=myRESim;
-			//mySim->RareEvent_mode=true;
 		}else if(str== "-RE2"){
-			mySim= (new SimulatorRE(true));
-			//mySim->RareEvent_mode=true;
-			//mySim->doubleIS_mode=true;
+			SimulatorRE* myRESim= (new SimulatorRE(true));
+			myRESim->initVect();
+			mySim = myRESim;
 		}else if(str== "-BURE"){
             int m = atoi(argv[5]);
             int T = atoi(argv[6]);

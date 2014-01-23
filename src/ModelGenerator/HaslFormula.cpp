@@ -351,6 +351,9 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 		double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 		double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 		
+		if(batch.Isucc ==0)return ConfInt(mean,l,u,0.0,0.0);
+		if(batch.Isucc == batch.I)return ConfInt(mean,l,u,1.0,1.0);
+		
 		return ConfInt(mean,l,u,0.0,1.0);
 		}
 			
