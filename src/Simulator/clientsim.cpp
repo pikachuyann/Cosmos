@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
 			double prResult = states.returnPrismResult();
 			cout << "Prism Result:\t"<< prResult << endl;
 			ofstream ResultsFile("Result.res", ios::out | ios::trunc);
-			ResultsFile << "Result Computed by Prism" << endl;
+			ResultsFile << "Result Computed by Prism:" << endl;
 			ResultsFile << "Estimated value:\t" << prResult << endl;
 			ResultsFile << "Confidence interval:\t[" <<prResult*0.9999;
 			ResultsFile << " , " << prResult*1.00001 << "]" << endl;
