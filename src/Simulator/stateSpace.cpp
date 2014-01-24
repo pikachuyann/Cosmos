@@ -382,7 +382,7 @@ void stateSpace::outputPrism(){
 
 void stateSpace::launchPrism(string prismPath){
     cout<< "Starting Prism"<< endl;
-    string cmd = prismPath + " -gs -maxiters 1000000000 -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl prismProperty.ctl -v -cuddmaxmem 10000000> prismOutput";
+    string cmd = prismPath + " -gs -maxiters 1000000000 -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl -v -cuddmaxmem 10000000 prismProperty.ctl > prismOutput";
     if(0 != system(cmd.c_str())){
 		cerr << "Fail to launch prism" << endl;
 		exit(EXIT_FAILURE);

@@ -456,9 +456,9 @@ LOCATIONS: LOCATION
 |LOCATIONS  LOCATION;
 
 LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
-{ int l;
+{
 	if(Reader.MyLha.LocIndex.find(*$2)!=Reader.MyLha.LocIndex.end()){
-		l=Reader.MyLha.LocIndex[*$2];
+		//int l=Reader.MyLha.LocIndex[*$2];
 		
 		Reader.MyLha.StrLocProperty.push_back($4);
 		Reader.MyLha.FuncLocProperty.push_back($4);
@@ -478,9 +478,9 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 |LB str COMMA LogExpr RB SEMICOLON
 
 
-{ int l;
+{ 
 	if(Reader.MyLha.LocIndex.find(*$2)!=Reader.MyLha.LocIndex.end()){
-		l=Reader.MyLha.LocIndex[*$2];
+		//l=Reader.MyLha.LocIndex[*$2];
 		
 		Reader.MyLha.StrLocProperty.push_back($4);
 		Reader.MyLha.FuncLocProperty.push_back($4);

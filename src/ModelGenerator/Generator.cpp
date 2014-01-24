@@ -35,7 +35,6 @@
 #include "parameters.hpp"
 #include "LhaParser/Lha-Reader.hpp"
 #include "GspnParser/Gspn-Writer.hpp"
-#include "../Simulator/sharedMemory.hpp"
 #include "GspnParser/unfolder.hpp"
 
 
@@ -356,7 +355,7 @@ void generateMain(){
 }
 
 bool build(){
-	string cmd;
+	
 	string bcmd = P.gcccmd + " " + P.gccflags;
 	
 	if(P.verbose>0){
@@ -364,13 +363,14 @@ bool build(){
         cout << "Start building ... " << endl;
     }
     
+	string cmd = "(";
 	//Compile the SPN
-	cmd = bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
-	if(P.verbose>2)cout << cmd << endl;
-	if (system(cmd.c_str())) return false;
-	
+	cmd += bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
+	cmd += " && ";
 	//Compile the LHA
-	cmd = bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
+	cmd += bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
+	cmd += ")";
+	
 	if(P.verbose>2)cout << cmd << endl;
 	if (system(cmd.c_str())) return false;
 	

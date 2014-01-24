@@ -166,7 +166,7 @@ void popenClient(const char* bin, const char *argv[]){
 
 inline void pushint(const char *argv[],size_t &argn,size_t v){
 	char* s = (char *)malloc(255*sizeof(char));
-	sprintf(s, "%li", v);
+	sprintf(s, "%zu", v);
 	argv[argn] = s;
 	argn++;
 }

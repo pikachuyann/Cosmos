@@ -25,7 +25,6 @@
  */
 
 #include "BatchR.hpp"
-#include "sharedMemory.hpp"
 #include "Simulator.hpp"
 #include "SimulatorRE.hpp"
 #include "SimulatorBoundedRE.hpp"

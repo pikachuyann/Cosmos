@@ -30,7 +30,7 @@ let writeAutomata a =
     print_float_expr (ContinuousVar(i));
   done;
   for i = 0 to a.nbDiscVar-1 do
-    if i>0 or a.nbContVar>0  then printf ",";
+    if i>0 || a.nbContVar>0  then printf ",";
     print_string " DISC ";
     print_float_expr (DiscreteVar(i));
   done;
@@ -83,11 +83,11 @@ let writeAutomata a =
        write_linConstr lconstr;
     );
     printf ",";
-    if tuc = [] & tud =[] then printf "#"
+    if tuc = [] && tud =[] then printf "#"
     else (
       printf "{";
       print_list (fun (v,u) -> printf "vc%i = " v; print_float_expr u;) (fun () -> print_string ",") tuc;
-      if tuc  <> [] & tud  <> [] then print_string ",";
+      if tuc  <> [] && tud  <> [] then print_string ",";
       print_list (fun (v,u) -> printf "vd%i = " v; print_float_expr u;) (fun () -> print_string ",") tud;
       printf "}";
     );
