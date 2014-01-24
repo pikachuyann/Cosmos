@@ -60,7 +60,8 @@ let rec readEvent f s i =
 	try let ts = float_of_string te in
 	    readEvent f (EventSet.add (ts,i,Data.data_of_stringList q) s) i
 	with
-	    Failure "float_of_string" -> failwith ("line do not start with a timestamp: \""^line^"\"")
+	    Failure "float_of_string" -> readEvent f s i
+(* failwith ("line do not start with a timestamp: \""^line^"\"")*)
       )
   ) with
       End_of_file -> s,i
@@ -90,7 +91,7 @@ let readAndSample evect step f dl=
 	    index := bucket;
 	    dlast := d2;
 	with
-	  Failure "float_of_string" -> failwith "strange line"
+	  Failure "float_of_string" -> print_endline ("strange line"^line)
 	| Invalid_argument _-> ())
      done with
        End_of_file -> ()

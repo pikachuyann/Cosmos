@@ -86,6 +86,7 @@ prismPath(""),
 dataoutput(""),
 dataraw(""),
 datatrace(""),
+sampleResol(0.0),
 dataPDFCDF(""),
 gnuplotDriver(false),
 tracedPlace("ALL"),
@@ -145,7 +146,7 @@ void parameters::usage(){
 	cout << "\t--debug-string \tAdd transition and place name to the compile file for debuging"<< endl;
 	cout << "\t-d,--outputdata \tOutput successive result in the blank separated file format"<< endl;
 	cout << "\t--output-raw \tOutput the result of each trajectory in a file for debug purpose"<< endl;
-	cout << "\t--output-trace \tOutput the trace each trajectory in a file"<< endl;
+	cout << "\t--output-trace arg resol \tOutput the trace each trajectory in the file arg with a resolution of resol"<< endl;
 	cout << "\t--output-PDFCDF \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
 	cout << "\t--gnuplot-driver \tRun gnuplot on the output datafile to produce graph"<< endl;
 	cout << "\t--trace-place arg\tSpecify which place to trace in all the output file, arg is a comma separated list of places name" << endl;
@@ -307,7 +308,17 @@ void parameters::parseCommandLine(int argc, char** argv){
 				case  23 : continuousStep = atoi(optarg); break;
 				case  'd': dataoutput = optarg; break;
 				case  8  : dataraw = optarg; break;
-				case  18 : datatrace = optarg;StringInSpnLHA = true; break;
+				case  18 :
+				datatrace = optarg;
+				StringInSpnLHA = true;
+				if (optind==argc) {
+					usage();
+					exit(EXIT_FAILURE);
+				}
+				sampleResol = atof(argv[optind]);
+				optind++;
+				break;
+				
 				case  11 : dataPDFCDF = optarg; break;
 				case  't': CountTrans = true;	break;
 				case  3  : StringInSpnLHA = true; break;

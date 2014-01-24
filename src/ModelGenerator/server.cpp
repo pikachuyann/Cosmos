@@ -251,6 +251,7 @@ void launch_clients(parameters& P){
 			//os << " -log " << P.dataraw;
 			pushstr(argv,argn,"-trace");
 			pushstr(argv,argn,P.datatrace.c_str());
+			pushdouble(argv,argn,P.sampleResol);
 		}
 		
 		if(P.verbose >2){

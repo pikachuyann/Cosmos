@@ -45,10 +45,11 @@ using namespace std;
  * but don't fill it.
  */
 Simulator::Simulator():verbose(0){
-  EQ = new EventsQueue(N); //initialization of the event queue
-  logResult=false;
+	EQ = new EventsQueue(N); //initialization of the event queue
+	logResult=false;
+	sampleTrace = 0.0;
 	Result.second.resize(A.FormulaVal.size());
-  BatchSize = 1000;
+	BatchSize = 1000;
 }
 
 Simulator::~Simulator() {
@@ -65,8 +66,10 @@ void Simulator::logValue(const char* path){
     logResult=true;
 }
 
-void Simulator::logTrace(const char* path){
+void Simulator::logTrace(const char* path,double sample){
+	sampleTrace = sample;
     logtrace.open(path,fstream::out);
+	//logtrace << "# sampling at:" << sample << endl;
     logtrace.precision(15);
 	logtrace << "Time\t";
 	N.Marking.printHeader(logtrace);
@@ -343,12 +346,14 @@ bool Simulator::SimulateOneStep(){
 		A.updateLHA( E1.time - A.CurrentTime, N.Marking );
 		
 		//Print the state of the system after the time elapse
-		if(logtrace.is_open()){
-			logtrace << A.CurrentTime << "\t";
-			N.Marking.print(logtrace);
-			A.printState(logtrace);
-			logtrace << endl;
-		}
+		if(logtrace.is_open())
+			if((A.CurrentTime - lastSampled) >= sampleTrace){
+				lastSampled = A.CurrentTime;
+				logtrace << A.CurrentTime << "\t";
+				N.Marking.print(logtrace);
+				A.printState(logtrace);
+				logtrace << endl;
+			}
 		
 		//Fire the transition in the SPN
 		N.fire(E1.transition, E1.binding);
@@ -440,14 +445,17 @@ void Simulator::SimulateSinglePath() {
     //cerr << "start path"<< endl;
     
 	bool continueb = true;
+	lastSampled = -sampleTrace;
 	while ((!EQ->isEmpty()) && continueb ) {
         //cerr << "continue path"<< endl;
-		if(logtrace.is_open()){
-			logtrace << A.CurrentTime << "\t";
-			N.Marking.print(logtrace);
-			A.printState(logtrace);
-			logtrace << endl;
-		}
+		if(logtrace.is_open())
+			if((A.CurrentTime - lastSampled) >= sampleTrace){
+				lastSampled = A.CurrentTime;
+				logtrace << A.CurrentTime << "\t";
+				N.Marking.print(logtrace);
+				A.printState(logtrace);
+				logtrace << endl;
+			}
 		if(verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation

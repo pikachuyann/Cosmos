@@ -130,7 +130,7 @@ int main(int argc, char** argv) {
 		if(strcmp(argv[i],"-log")==0 && argc>i)
 			mySim->logValue(argv[i+1]); //initialize the simulator
 		if(strcmp(argv[i],"-trace")==0 && argc>i){
-			mySim->logTrace(argv[i+1]); //initialize the simulator
+			mySim->logTrace(argv[i+1],stod(argv[i+2])); //initialize the simulator
 			singleBatch = true;
 		}
 	}

@@ -363,10 +363,10 @@ bool build(){
         cout << "Start building ... " << endl;
     }
     
-	string cmd = "(";
+	string cmd = "(  ";
 	//Compile the SPN
 	cmd += bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/spn.o "+P.tmpPath+"/spn.cpp";
-	cmd += " && ";
+	cmd += "\\\n&& ";
 	//Compile the LHA
 	cmd += bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/LHA.o "+P.tmpPath+"/LHA.cpp";
 	cmd += ")";

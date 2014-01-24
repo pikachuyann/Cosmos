@@ -74,7 +74,7 @@ public:
 	 */
 	void logValue(const char*);    //Make the simulator output each result in a file.
 	
-	void logTrace(const char*);     //Make the simulator output each trace in a file.
+	void logTrace(const char*,double);     //Make the simulator output each trace in a file.
     
 	/**
 	 * \brief Main entry point of the object simulate a batch of trajectory .
@@ -98,6 +98,10 @@ protected:
 	
 	//! boolean set to true when result value should be log.
     bool logResult;
+	
+	//! interval time on which trace is log
+	double sampleTrace;
+	double lastSampled;
 	
 	//! Store result beetween two trajectory simulation.
 	SimOutput Result;

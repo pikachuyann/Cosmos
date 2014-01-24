@@ -50,7 +50,7 @@ struct parameters {
 	unsigned long int MaxRuns;
 	bool sequential;
 
-        string comp_uuid;
+	string comp_uuid;
 	string tmpPath;
 	unsigned int tmpStatus; // 0 create and destroy tmp,
 	//1 do not build destroy,2 do not destroy, 3 do not build do not destoy
@@ -90,6 +90,7 @@ struct parameters {
     string dataoutput;
 	string dataraw;
 	string datatrace;
+	double sampleResol;
 	string dataPDFCDF;
 	bool gnuplotDriver;
 	string tracedPlace;
