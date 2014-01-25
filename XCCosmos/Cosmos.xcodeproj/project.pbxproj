@@ -35,6 +35,7 @@
 		0367E2B71885288900F35619 /* Gspn-Writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0367E2B51885288900F35619 /* Gspn-Writer.cpp */; };
 		039B4F8B188E7B2400C63ED7 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 039B4F89188E7B2400C63ED7 /* Generator.cpp */; };
 		03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */; };
+		03CB8F501893CCA900A9938A /* timeGen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03CB8F4D1893CB1A00A9938A /* timeGen.cpp */; };
 		03D9C811168467E900AADB3D /* generateLHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE630D1636BCF6007FCB32 /* generateLHA.cpp */; };
 		03D9C813168467EF00AADB3D /* exPapier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63091636BCA3007FCB32 /* exPapier.cpp */; };
 		03D9C814168467F200AADB3D /* readPlast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03DE63121636BCF6007FCB32 /* readPlast.cpp */; };
@@ -236,6 +237,8 @@
 		03B7D355181901AC007AA90D /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.am; path = ../Makefile.am; sourceTree = "<group>"; };
 		03B7D356181901BB007AA90D /* configure.ac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = configure.ac; path = ../configure.ac; sourceTree = "<group>"; };
 		03BCA54A148D271A008E2402 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		03CB8F4D1893CB1A00A9938A /* timeGen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeGen.cpp; sourceTree = "<group>"; };
+		03CB8F4E1893CB1A00A9938A /* timeGen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGen.hpp; sourceTree = "<group>"; };
 		03D9C80D16845FAD00AADB3D /* generateLHA.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = generateLHA.hpp; path = /Users/barbot/Documents/AllCosmos/trunk/POMDP/generateLHA.hpp; sourceTree = "<absolute>"; };
 		03D9C80E1684618C00AADB3D /* generateSPN.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = generateSPN.hpp; path = ../POMDP/generateSPN.hpp; sourceTree = "<group>"; };
 		03D9C80F1684621700AADB3D /* exPapier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = exPapier.hpp; path = ../POMDP/exPapier.hpp; sourceTree = "<group>"; };
@@ -418,8 +421,10 @@
 				032A7055181BC0D6006D7332 /* numSolverBB.hpp */,
 				032A7056181BC0D6006D7332 /* numSolverSH.cpp */,
 				032A7057181BC0D6006D7332 /* numSolverSH.hpp */,
-				032A7058181BC0D6006D7332 /* Simulator.cpp */,
+				03CB8F4D1893CB1A00A9938A /* timeGen.cpp */,
+				03CB8F4E1893CB1A00A9938A /* timeGen.hpp */,
 				032A7059181BC0D6006D7332 /* Simulator.hpp */,
+				032A7058181BC0D6006D7332 /* Simulator.cpp */,
 				032A705E181BC0D6006D7332 /* SimulatorRE.cpp */,
 				032A705F181BC0D6006D7332 /* SimulatorRE.hpp */,
 				032A705A181BC0D6006D7332 /* SimulatorBoundedRE.cpp */,
@@ -831,6 +836,7 @@
 				03E39B15183E49E50070911A /* numSolverSH.cpp in Sources */,
 				03E39B17183E49E90070911A /* SimulatorRE.cpp in Sources */,
 				03E39B16183E49E70070911A /* Simulator.cpp in Sources */,
+				03CB8F501893CCA900A9938A /* timeGen.cpp in Sources */,
 				03E39B14183E49E20070911A /* numSolverBB.cpp in Sources */,
 				03E39B1A183E4A0E0070911A /* stateSpace.cpp in Sources */,
 				03E39B1B183E4A110070911A /* clientsim.cpp in Sources */,

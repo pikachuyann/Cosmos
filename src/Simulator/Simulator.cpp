@@ -23,20 +23,15 @@
  *******************************************************************************
  */
 
-#include "Simulator.hpp"
 #include <iostream>
 #include <set>
 #include <unistd.h>
 #include <math.h>
 #include <float.h>
-#include <boost/random.hpp>
-#include <boost/generator_iterator.hpp>
-#include <boost/math/distributions/normal.hpp>
-#include <boost/math/distributions/lognormal.hpp>
-#include <boost/math/distributions/binomial.hpp>
 #include <time.h>
-#include "marking.hpp"
 
+#include "Simulator.hpp"
+#include "marking.hpp"
 
 using namespace std;
 
@@ -54,10 +49,6 @@ Simulator::Simulator():verbose(0){
 
 Simulator::~Simulator() {
   delete EQ;
-}
-
-void Simulator::initRandomGenerator(unsigned int seed){
-	RandomNumber.seed(seed);
 }
 
 void Simulator::logValue(const char* path){
@@ -513,106 +504,6 @@ void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
  */
 void Simulator::getParams(size_t Id, const abstractBinding& b){
 	N.GetDistParameters(Id,b);
-}
-
-/**
- * Call the random generator to generate fire time.
- * @param distribution is the type of distribution
- * @param param is a vector of parameters of the distribution.
- */
-double Simulator::GenerateTime(DistributionType distribution,const vector<double> &param) {
-	
-	switch (distribution) {
-		case UNIFORM:
-		{//UNIF
-			boost::uniform_real<> UNIF(param[0], param[1]);
-			boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
-			return gen();
-			break;
-		}
-			
-		case MASSACTION:
-		case EXPONENTIAL:
-		{//EXP
-			//Exponential distribution is the only marking dependent parameters. Check of validity is required
-			
-			//-------------- Rare Event -----------------
-			//cout << "rate:" << param[0] << endl;
-			if(param[0] <= 0) { return 1e200; };
-			//------------- /Rare Event -----------------
-			
-			if (param[0] <= 0) {
-				cout << "Exponential ditribution should be with rate > 0 not "
-                << param[0] << "\n End of Simulation" << endl;
-				exit(1);
-			}
-			
-			boost::exponential_distribution<> EXP(param[0]);
-			boost::variate_generator<boost::mt19937&, boost::exponential_distribution<> > gen(RandomNumber, EXP);
-			return gen();
-			
-		}
-			
-		case DETERMINISTIC:
-		{//DETERMINISTIC
-			return param[0];
-		}
-			
-		case LOGNORMAL:
-		{//LogNormal
-			boost::lognormal_distribution<> LOGNORMAL(param[0], param[1]);
-			boost::variate_generator<boost::mt19937&, boost::lognormal_distribution<> > gen(RandomNumber, LOGNORMAL);
-			return gen();
-		}
-			
-		case TRIANGLE:
-		{//Triangle
-			boost::triangle_distribution<> TRIANGLE(param[0], param[1], param[2]);
-			boost::variate_generator<boost::mt19937&, boost::triangle_distribution<> > gen(RandomNumber, TRIANGLE);
-			return gen();
-		}
-		case GEOMETRIC:
-		{//GEOMETRIC
-			boost::uniform_real<> UNIF(0, 1);
-			boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
-			double p = gen();
-			return (param[1] * (ceil(log(p) / log(1 - param[0]))));
-			/*if (p >= param[0]){
-			 return param[1];
-			 } else {
-			 return param[1] * ceil(log(p / param[0]) / log(1 - param[0]) + 1);
-			 }*/
-		}
-		case ERLANG:
-        {//ERLANG
-            boost::uniform_real<> UNIF(0, 1);
-            boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
-            double prod = 1;
-            for (int i = 0; i < param[0]; i++)
-                prod = prod * gen();
-            return -log(prod) / param[1];
-			
-        }
-        case GAMMA:
-        {//GAMMA
-            boost::gamma_distribution<> GAMMA(param[0]);
-            boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gen(RandomNumber, GAMMA);
-            return param[1] * gen();
-        }
-		case DISCRETEUNIF:
-		{//DISCRETEUNIF
-			boost::uniform_int<> UNIF((int)param[0], (int)param[1]);
-			boost::variate_generator<boost::mt19937&, boost::uniform_int<> > gen(RandomNumber, UNIF);
-			return gen();
-			break;
-		}
-			
-			
-		default: cerr << "Unknown distribution: "<< distribution << endl;
-			break;
-	}
-	return DBL_MIN;
-	
 }
 
 BatchR Simulator::RunBatch(){

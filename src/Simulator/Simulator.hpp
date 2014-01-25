@@ -33,11 +33,10 @@
 #include "spn.hpp"
 #include "EventsQueue.hpp"
 #include "BatchR.hpp"
+#include "timeGen.hpp"
 
 #include <iostream>
 #include <fstream>
-#include "boost/random.hpp"
-#include "boost/generator_iterator.hpp"
 
 
 
@@ -48,7 +47,7 @@ using namespace std;
 
 
 
-class Simulator {
+class Simulator:public timeGen {
 public:
 	Simulator();
 	~Simulator();
@@ -56,12 +55,6 @@ public:
 	//! verbose level of the simulator
     int verbose;
     
-	/**
-	 * \brief Initialize the random number generator with the given seed
-	 * @param seed is an unsigned integer to be used as seed.
-	 */
-	void initRandomGenerator(unsigned int seed);
-	
 	/**
 	 * \brief Set the batch size
 	 * @param RI the new batch size to use
@@ -122,9 +115,6 @@ protected:
 	 */
 	EventsQueue* EQ;
 	
-    //!The random Generator Mersenne Twister from the boost library
-	boost::mt19937 RandomNumber;
-	
 	/**
 	 * \brief Simulate a step of the system,
 	 * this function do most of the simulation job.
@@ -144,9 +134,6 @@ protected:
 	virtual void reset(); //! reset the simulator
 	
 	virtual void GenerateEvent(Event &,size_t,const abstractBinding&); //! generate a new event use Generate Time
-	
-	//! generate a time acording to the distribution d with parameters p
-	virtual double GenerateTime(DistributionType,const vector<double>& p);
 	
 	virtual void returnResultTrue();
 	
