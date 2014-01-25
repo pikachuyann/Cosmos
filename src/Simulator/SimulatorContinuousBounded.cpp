@@ -55,8 +55,8 @@ void SimulatorContinuousBounded::initVectCo(double t){
     
     lambda = numSolv->uniformizeMatrix();
     cerr << "lambda:" << lambda<< endl;
-    fg=NULL;
-    if (fox_glynn((lambda * t), DBL_EPSILON , 1/DBL_EPSILON ,epsilon, &fg)){
+    fg = unique_ptr<FoxGlynn>(new FoxGlynn((lambda * t), DBL_EPSILON , 1/DBL_EPSILON ,epsilon));
+	if (fg->isValid){
         cerr << "fox_glyn:" << fg->left << "," << fg->right << " Total weigts:"<< fg->total_weight<< endl;
         /*for(int i = 0; i<= fg->right - fg->left; i++){
 		 cerr << fg->left+i << " " << fg->weights[i]/ fg->total_weight << endl;

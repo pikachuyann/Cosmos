@@ -5,6 +5,8 @@
 *       $LastChangedDate: 2010-12-18 17:21:05 +0100 (Sa, 18. Dez 2010) $
 *       $LastChangedBy: davidjansen $
 *
+*   Modified by Benoît Barbot on 25/01/2014 to integrate it into Cosmos
+*
 *	MRMC is a model checker for discrete-time and continuous-time Markov
 *	reward models. It supports reward extensions of PCTL and CSL (PRCTL
 *	and CSRL), and allows for the automated verification of properties
@@ -80,8 +82,8 @@ remark      : This implementation is based on the original Fox-Glynn paper with
 	      It can be shown that the introduced error converges to a value below the requested error level
 	      (for epsilon > 0). Hence the algorithm will always terminate.
 ******************************************************************************/
-static bool finder(const int m, const double lambda, const double tau, const double omega,
-                   const double epsilon, double * pw_m, FoxGlynn *pFG)
+bool FoxGlynn::finder(const int m, const double lambda, const double tau, const double omega,
+                   const double epsilon, double * pw_m)
 {
 	const double sqrt_2_pi = sqrt( 2.0 * pi );
 	const double sqrt_2 = sqrt(2.0);
@@ -103,7 +105,7 @@ static bool finder(const int m, const double lambda, const double tau, const dou
 	  return false;
 	}
 	/* zero is used as left truncation point for lambda <= 25 */
-	pFG->left = 0;
+	left = 0;
 	lambda_max = lambda;
 
 	/* for lambda below 25 the exponential can be smaller than tau */
@@ -140,7 +142,7 @@ static bool finder(const int m, const double lambda, const double tau, const dou
 		dkl = 1.0 / (1.0 - dkl);
 	}
 	k_rtp = k;
-	pFG->right = (int)ceil(m + k_rtp * sqrt_2 * sqrt(lambda_max) + 1.5 );
+	right = (int)ceil(m + k_rtp * sqrt_2 * sqrt(lambda_max) + 1.5 );
 
 
 	/****Compute pFG->left truncation point****/
@@ -160,10 +162,9 @@ static bool finder(const int m, const double lambda, const double tau, const dou
 		while((epsilon/2.0) < ((bl * exp(-(k*k)/2.0))/(k * sqrt_2_pi)))
 			k++;
 		/*Finally the left truncation point is found*/
-		pFG->left = (int)floor(m - k*sqrt(lambda)- 1.5 );
+		left = (int)floor(m - k*sqrt(lambda)- 1.5 );
 		/* for small lambda the above calculation can yield negative truncation points, crop them here */
-		if(pFG->left < 0)
-			pFG->left = 0;
+		if(left < 0)left = 0;
 		/* perform underflow check */
 		k_prime = k + 3.0 / (2.0 * sqrt_lambda);
 		/*We take the c_m_inf = 0.02935 / sqrt( m ), as for lambda >= 25
@@ -191,7 +192,7 @@ static bool finder(const int m, const double lambda, const double tau, const dou
 				fprintf(stderr,"ERROR: Fox-Glynn: lambda >= 25, underflow. The results are UNRELIABLE.\n");
 			}
 		}
-		if ( result * omega / ( 1.0e+10 * ( pFG->right - pFG->left ) ) <= tau )
+		if ( result * omega / ( 1.0e+10 * ( right - left ) ) <= tau )
 		{
 			fprintf(stderr,"ERROR: Fox-Glynn: lambda >= 25, underflow. The results are UNRELIABLE.\n");
 		}
@@ -207,13 +208,13 @@ static bool finder(const int m, const double lambda, const double tau, const dou
 		 c_m = 1 / ( sqrt( 2.0 * pi * m ) ) * exp( m - lambda - 1 / ( 12.0 * m ) ) => c_m_inf*/
                 c_m_inf = 0.02935 / sqrt((double) m);
 		result = c_m_inf * exp( - pow( k_prime + 1.0 , 2.0 ) / 2.0 );
-		if( result * omega / ( 1.0e+10 * ( pFG->right - pFG->left ) ) <= tau)
+		if( result * omega / ( 1.0e+10 * ( right - left ) ) <= tau)
 		{
 			fprintf(stderr,"ERROR: Fox-Glynn: lambda >= 400, underflow. The results are UNRELIABLE.\n");
 		}
 	}
 	/*Time to set the initial value for weights*/
-	*pw_m = omega / ( 1.0e+10 * ( pFG->right - pFG->left ) );
+	*pw_m = omega / ( 1.0e+10 * ( right - left ) );
 
 	return true;
 }
@@ -230,70 +231,70 @@ Role		: The WEIGHTER function from the Fox-Glynn algorithm
               This is the F parameter of Fox-Glynn finder function.
 remark	    :
 ******************************************************************************/
-static bool weighter(const double lambda, const double tau, const double omega, const double epsilon, FoxGlynn *pFG)
+bool FoxGlynn::weighter(const double lambda, const double tau, const double omega, const double epsilon)
 {
 	/*The magic m point*/
 	const int m = (int)floor(lambda);
 	double w_m = 0;
 	int j, s, t;
 
-	if( ! finder( m, lambda, tau, omega, epsilon, &w_m, pFG ) )
+	if( ! finder( m, lambda, tau, omega, epsilon, &w_m ) )
 		return false;
 
 	/*Allocate space for weights*/
-        pFG->weights = (double *) calloc((size_t) (pFG->right - pFG->left + 1),
+        weights = (double *) calloc((size_t) (right - left + 1),
                         sizeof(double));
         /*Set an initial weight*/
-	pFG->weights[ m - pFG->left ] = w_m;
+	weights[ m - left ] = w_m;
 
 	/*Fill the left side of the array*/
-	for( j = m; j > pFG->left; j-- )
-		pFG->weights[ ( j - pFG->left ) - 1  ] = ( j / lambda ) * pFG->weights[ j - pFG->left ];
+	for( j = m; j > left; j-- )
+		weights[ ( j - left ) - 1  ] = ( j / lambda ) * weights[ j - left ];
 
 	/*Fill the right side of the array, have two cases lambda < 400 & lambda >= 400*/
 	if( lambda < lambda_400 )
 	{
 		/*Perform the underflow check, according to Fox-Glynn*/
-		if( pFG->right > 600 )
+		if( right > 600 )
 		{
 			fprintf(stderr,"ERROR: Fox-Glynn: pFG->right > 600, underflow is possible\n");
 			return false;
 		}
 		/*Compute weights*/
-		for( j = m; j < pFG->right; j++ )
+		for( j = m; j < right; j++ )
 		{
 			double q = lambda / ( j + 1 );
-			if( pFG->weights[ j - pFG->left ] > tau / q )
+			if( weights[ j - left ] > tau / q )
 			{
-				pFG->weights[ ( j - pFG->left ) + 1  ] = q * pFG->weights[ j - pFG->left ];
+				weights[ ( j - left ) + 1  ] = q * weights[ j - left ];
 			}else{
-				pFG->right = j;
+				right = j;
 				break; /*It's time to compute W*/
 			}
 		}
 	}else{
 		/*Compute weights*/
-		for( j = m; j < pFG->right; j++ )
-			pFG->weights[ ( j - pFG->left ) + 1  ] = ( lambda / ( j + 1 ) ) * pFG->weights[ j - pFG->left ];
+		for( j = m; j < right; j++ )
+			weights[ ( j - left ) + 1  ] = ( lambda / ( j + 1 ) ) * weights[ j - left ];
 	}
 
 	/*It is time to compute the normalization weight W*/
-	pFG->total_weight = 0.0;
-	s = pFG->left;
-	t = pFG->right;
+	total_weight = 0.0;
+	s = left;
+	t = right;
 
 	while( s < t )
 	{
-		if( pFG->weights[ s - pFG->left ] <= pFG->weights[ t - pFG->left ] )
+		if( weights[ s - left ] <= weights[ t - left ] )
 		{
-			pFG->total_weight += pFG->weights[ s - pFG->left ];
+			total_weight += weights[ s - left ];
 			s++;
 		}else{
-			pFG->total_weight += pFG->weights[ t - pFG->left ];
+			total_weight += weights[ t - left ];
 			t--;
 		}
 	}
-	pFG->total_weight += pFG->weights[ s - pFG->left ];
+	total_weight += weights[ s - left ];
 
 	/* printf("Fox-Glynn: ltp = %d, rtp = %d, w = %10.15le \n", pFG->left, pFG->right, pFG->total_weight); */
 
@@ -311,14 +312,11 @@ Role		: get poisson probabilities.
 @return	: TRUE if it worked fine, otherwise false
 remark		:
 ******************************************************************************/
-bool fox_glynn(const double lambda, const double tau, const double omega, const double epsilon, FoxGlynn **ppFG)
+FoxGlynn::FoxGlynn(const double lambda, const double tau, const double omega, const double epsilon):
+isValid(false),left(0),right(0),total_weight(0.0),weights(NULL)
 {
 	/* printf("Fox-Glynn: lambda = %3.3le, epsilon = %1.8le\n",lambda, epsilon); */
-
-        *ppFG = (FoxGlynn *) calloc((size_t) 1, sizeof(FoxGlynn));
-	(*ppFG)->weights = NULL;
-
-	return weighter(lambda, tau, omega, epsilon, *ppFG);
+	isValid = weighter(lambda, tau, omega, epsilon);
 }
 
 
@@ -326,11 +324,7 @@ bool fox_glynn(const double lambda, const double tau, const double omega, const 
 * Fries the memory allocated for the FoxGlynn structure
 * @param fg the structure to free
 */
-void freeFG(FoxGlynn * fg)
+FoxGlynn::~FoxGlynn()
 {
-	if( fg ){
-		if( fg->weights )
-			free(fg->weights);
-		free(fg);
-	}
+	if( weights )free(weights);
 }

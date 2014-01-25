@@ -41,7 +41,7 @@ public:
     BatchR RunBatch() override;
     
 protected:
-    FoxGlynn* fg;
+    unique_ptr<FoxGlynn> fg;
 };
 
 

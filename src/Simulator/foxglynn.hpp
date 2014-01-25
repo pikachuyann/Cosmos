@@ -5,6 +5,8 @@
 *       $LastChangedDate: 2010-12-18 17:21:05 +0100 (Sa, 18. Dez 2010) $
 *       $LastChangedBy: davidjansen $
 *
+*   Modified by Benoît Barbot on 25/01/2014 to integrate it into Cosmos
+*
 *	MRMC is a model checker for discrete-time and continuous-time Markov
 *	reward models. It supports reward extensions of PCTL and CSL (PRCTL
 *	and CSRL), and allows for the automated verification of properties
@@ -62,14 +64,9 @@ name: FoxGlynn
 @member weights: array of double: weights - poisson probabilities*total_weight
 remark: number of elements in weights = right - left.
 ******************************************************************************/
-typedef struct FoxGlynn
+class FoxGlynn
 {
-	int left;
-	int right;
-	double total_weight;
-	double *weights;
-} FoxGlynn;
-
+public:
 /*****************************************************************************
 Name		: fox_glynn
 Role		: get poisson probabilities.
@@ -81,14 +78,19 @@ Role		: get poisson probabilities.
 @return	: TRUE if it worked fine, otherwise false
 remark		:
 ******************************************************************************/
-extern
-bool fox_glynn(const double lambda, const double tau, const double omega, const double epsilon, FoxGlynn **ppFG);
+	FoxGlynn(const double lambda, const double tau, const double omega, const double epsilon);
+	~FoxGlynn();
+	
+	bool isValid;
+	int left;
+	int right;
+	double total_weight;
+	double *weights;
+private:
+	bool finder(const int m, const double lambda, const double tau, const double omega,
+		   const double epsilon, double * pw_m);
+	bool weighter(const double lambda, const double tau, const double omega, const double epsilon);
 
-/**
-* Frees the memory allocated for the FoxGlynn structure
-* @param fg the structure to free
-*/
-extern
-void freeFG(FoxGlynn * fg);
-
+	
+};
 #endif
