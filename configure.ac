@@ -25,6 +25,14 @@ AX_CXX_COMPILE_STDCXX_11
 AC_PROG_OCAML
 AC_PROG_FINDLIB
 
+AC_CHECK_PROG(have_prog_gnuplot, [gnuplot], [yes],[no])
+AC_MSG_CHECKING([gnuplot])
+if test "$have_prog_gnuplot" = "yes" ; then
+	AC_MSG_RESULT([yes])
+	else
+	AC_MSG_RESULT([no])
+	AC_MSG_WARN([Gnuplot not found some function are disabled])
+fi
 
 # Checks for libraries.
 AC_CHECK_LIB([expat],[XML_ParseBuffer])

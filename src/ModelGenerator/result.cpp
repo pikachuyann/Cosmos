@@ -27,9 +27,11 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <iomanip>
+#include <sys/stat.h>
+
 #include "result.hpp"
 #include "HaslFormula.hpp"
-#include <iomanip>
 #include <math.h>
 #include <sstream>
 #include "server.hpp"
@@ -77,7 +79,7 @@ result::result():HaslResult(P.HaslFormulasname.size()) {
 				exit(EXIT_FAILURE);
 			}
 			if(P.alligatorMode){
-				fputs("set terminal pngcairo font 'arial,12' size 1000, 400\n",gnuplotstream);
+				fputs("set terminal png font 'arial,12' size 1000, 400\n",gnuplotstream);
 				//fputs("set output 'dataout.png'\n",gnuplotstream);
 			} else {
 				//fputs("set terminal pngcairo font 'arial,10' size 1024, 768\n",gnuplotstream);
@@ -299,13 +301,17 @@ void result::printGnuplot(){
 	if(gnuplotstream == NULL)return;
 	
 	if(P.dataPDFCDF.compare("")!=0){
-		if(P.verbose>2)cout << "invoke gnuplot for PDFCDF" << endl;
-		if(P.alligatorMode)fputs("set output 'pdfcdfout.png'\n",gnuplotstream);
-		fputs("plot '", gnuplotstream);
-		fputs(P.dataPDFCDF.c_str(), gnuplotstream);
-		fputs("' using 1:2:4 w filledcu ls 1 notitle, '' using 1:3 notitle with lines lw 1 lc rgb 'black'\n", gnuplotstream);
-		if(P.alligatorMode)fputs("set output\n", gnuplotstream);
-		flushgnuplot();
+		struct stat filestatus;
+		stat(P.dataPDFCDF.c_str() , &filestatus );
+		if(filestatus.st_size > 0){
+			if(P.verbose>2)cout << "invoke gnuplot for PDFCDF" << endl;
+			if(P.alligatorMode)fputs("set output 'pdfcdfout.png'\n",gnuplotstream);
+			fputs("plot '", gnuplotstream);
+			fputs(P.dataPDFCDF.c_str(), gnuplotstream);
+			fputs("' using 1:2:4 w filledcu ls 1 notitle, '' using 1:3 notitle with lines lw 1 lc rgb 'black'\n", gnuplotstream);
+			if(P.alligatorMode)fputs("set output\n", gnuplotstream);
+			flushgnuplot();
+		}
 	}
 	
 	if(P.dataoutput.compare("")!=0){
@@ -313,7 +319,7 @@ void result::printGnuplot(){
 		if(P.alligatorMode)fputs("set output 'dataout.png'\n",gnuplotstream);
 		fputs("plot '", gnuplotstream);
 		fputs(P.dataoutput.c_str(), gnuplotstream);
-		fputs("' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 1 lw 2\n", gnuplotstream);
+		fputs("' using 1:5:6 w filledcu ls 1 title columnheader(4), '' using 1:5 notitle with lines lw 1 lc rgb 'black', '' using 1:6 notitle with lines lw 1 lc rgb 'black', '' using 1:3 title columnheader(3) w lines ls 2 lw 2\n", gnuplotstream);
 		if(P.alligatorMode)fputs("set output\n", gnuplotstream);
 		flushgnuplot();
 	}
