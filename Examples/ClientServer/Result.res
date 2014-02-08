@@ -1,10 +1,172 @@
-HASLFormula:
-Estimated value:	10.403354637071
-Confidence interval:	[10.4013052523531 , 10.405404021789]
-Width:	0.00409876943596643
+Throughput_t1:
+Estimated value:	0.725325384615385
+Confidence interval:	[0.724804578058489 , 0.725846191172281]
+Minimal and maximal value:	[0.48 , 0.950000000000001]
+Width:	0.00104161311379203
+Throughput_t2:
+Estimated value:	0.725243692307693
+Confidence interval:	[0.724723814354613 , 0.725763570260774]
+Minimal and maximal value:	[0.48 , 0.950000000000001]
+Width:	0.00103975590616123
+Throughput_t3:
+Estimated value:	0.725293692307693
+Confidence interval:	[0.724773630044438 , 0.725813754570948]
+Minimal and maximal value:	[0.49 , 0.950000000000001]
+Width:	0.00104012452651037
+Throughput_t4:
+Estimated value:	0.725311692307693
+Confidence interval:	[0.724791150309846 , 0.72583223430554]
+Minimal and maximal value:	[0.49 , 0.960000000000001]
+Width:	0.00104108399569358
+MeanToken_Resp:
+Estimated value:	0.725398865906826
+Confidence interval:	[0.724551331640407 , 0.726246400173244]
+Minimal and maximal value:	[0.376438871378641 , 1.10558785578033]
+Width:	0.00169506853283696
+MeanToken_Resp_c1:
+Estimated value:	0.241909168995688
+Confidence interval:	[0.24145335997028 , 0.242364978021095]
+Minimal and maximal value:	[0.0915216849867431 , 0.453029282063326]
+Width:	0.000911618050815854
+MeanToken_Resp_c2:
+Estimated value:	0.241858656092659
+Confidence interval:	[0.24140265575384 , 0.242314656431478]
+Minimal and maximal value:	[0.0966680108320202 , 0.467485635556827]
+Width:	0.000912000677638081
+MeanToken_Resp_c3:
+Estimated value:	0.24163104081848
+Confidence interval:	[0.241174841349357 , 0.242087240287603]
+Minimal and maximal value:	[0.0822412504716317 , 0.447516981933843]
+Width:	0.000912398938246295
+MeanToken_Req:
+Estimated value:	1.18752074088891
+Confidence interval:	[1.18661883984598 , 1.18842264193184]
+Minimal and maximal value:	[0.800219296632956 , 1.56817045056962]
+Width:	0.00180380208585706
+MeanToken_Req_c1_s1:
+Estimated value:	0.19774457942061
+Confidence interval:	[0.197068232305191 , 0.19842092653603]
+Minimal and maximal value:	[0.0132042562635525 , 0.507992730160321]
+Width:	0.00135269423083956
+MeanToken_Req_c1_s2:
+Estimated value:	0.197955327631051
+Confidence interval:	[0.197281270594793 , 0.19862938466731]
+Minimal and maximal value:	[0.00412024061924967 , 0.525528309188726]
+Width:	0.00134811407251634
+MeanToken_Req_c2_s1:
+Estimated value:	0.197780263937373
+Confidence interval:	[0.197108238630206 , 0.19845228924454]
+Minimal and maximal value:	[0.00612773411388957 , 0.500421189847746]
+Width:	0.00134405061433379
+MeanToken_Req_c2_s2:
+Estimated value:	0.19782057096504
+Confidence interval:	[0.197146699651577 , 0.198494442278503]
+Minimal and maximal value:	[0.00241465874353935 , 0.540688865570248]
+Width:	0.00134774262692561
+MeanToken_Req_c3_s1:
+Estimated value:	0.198143579530558
+Confidence interval:	[0.197469849344717 , 0.198817309716399]
+Minimal and maximal value:	[0.00577269379974496 , 0.526775961507302]
+Width:	0.00134746037168254
+MeanToken_Req_c3_s2:
+Estimated value:	0.198076419404276
+Confidence interval:	[0.197405909541309 , 0.198746929267244]
+Minimal and maximal value:	[0.0113094409602104 , 0.568063232110367]
+Width:	0.00134101972593492
+MeanToken_Client:
+Estimated value:	0.362558774860513
+Confidence interval:	[0.362091425599985 , 0.363026124121042]
+Minimal and maximal value:	[0.178328802990243 , 0.595924904923713]
+Width:	0.000934698521057098
+MeanToken_Client_c1:
+Estimated value:	0.120805107565169
+Confidence interval:	[0.120543243947411 , 0.121066971182927]
+Minimal and maximal value:	[0.0419399126531414 , 0.25833506807724]
+Width:	0.000523727235515553
+MeanToken_Client_c2:
+Estimated value:	0.121019911320847
+Confidence interval:	[0.120758530386932 , 0.121281292254762]
+Minimal and maximal value:	[0.0357576376745237 , 0.270068638948999]
+Width:	0.000522761867829902
+MeanToken_Client_c3:
+Estimated value:	0.120733755974497
+Confidence interval:	[0.120472849021057 , 0.120994662927937]
+Minimal and maximal value:	[0.0327114782775504 , 0.273882535301084]
+Width:	0.000521813906879859
+MeanToken_Treat:
+Estimated value:	0.724521618343753
+Confidence interval:	[0.723918166434407 , 0.725125070253098]
+Minimal and maximal value:	[0.474195345200678 , 0.962871671027836]
+Width:	0.00120690381869037
+MeanToken_Treat_c1_s1:
+Estimated value:	0.120734454615319
+Confidence interval:	[0.120316174068164 , 0.121152735162473]
+Minimal and maximal value:	[0.00528585820565468 , 0.316324047303374]
+Width:	0.000836561094309546
+MeanToken_Treat_c1_s2:
+Estimated value:	0.120851361772163
+Confidence interval:	[0.120432554331288 , 0.121270169213037]
+Minimal and maximal value:	[0.00705256617319492 , 0.357876699836842]
+Width:	0.000837614881749021
+MeanToken_Treat_c2_s1:
+Estimated value:	0.120577356811362
+Confidence interval:	[0.120159962467387 , 0.120994751155337]
+Minimal and maximal value:	[0.00418971503721309 , 0.320868024824391]
+Width:	0.000834788687950061
+MeanToken_Treat_c2_s2:
+Estimated value:	0.120943240872719
+Confidence interval:	[0.120526365579735 , 0.121360116165703]
+Minimal and maximal value:	[0.00558849044610838 , 0.328643548027748]
+Width:	0.000833750585968185
+MeanToken_Treat_c3_s1:
+Estimated value:	0.120618529253261
+Confidence interval:	[0.120201983369785 , 0.121035075136737]
+Minimal and maximal value:	[0.00717407288250797 , 0.332804708883822]
+Width:	0.000833091766952038
+MeanToken_Treat_c3_s2:
+Estimated value:	0.120796675018929
+Confidence interval:	[0.120379770310988 , 0.12121357972687]
+Minimal and maximal value:	[0.00856466402089495 , 0.347443096995403]
+Width:	0.000833809415882791
+MeanToken_Server:
+Estimated value:	1.27547838165625
+Confidence interval:	[1.2748749297469 , 1.27608183356559]
+Minimal and maximal value:	[1.03712832897216 , 1.52580465479932]
+Width:	0.00120690381869037
+MeanToken_Server_s1:
+Estimated value:	0.638069659320058
+Confidence interval:	[0.637396433406769 , 0.638742885233348]
+Minimal and maximal value:	[0.35861647872344 , 0.881747005332953]
+Width:	0.00134645182657822
+MeanToken_Server_s2:
+Estimated value:	0.637408722336189
+Confidence interval:	[0.636735820449554 , 0.638081624222823]
+Minimal and maximal value:	[0.362432376752597 , 0.891033233756431]
+Width:	0.00134580377326987
+MeanToken_Wait:
+Estimated value:	765.802105282559
+Confidence interval:	[765.636433019185 , 765.967777545932]
+Minimal and maximal value:	[695.932910174916 , 835.057014559129]
+Width:	0.331344526746307
+MeanToken_Wait_c1:
+Estimated value:	255.26084572121
+Confidence interval:	[255.171160952046 , 255.350530490374]
+Minimal and maximal value:	[217.772103406782 , 294.136558308183]
+Width:	0.179369538328331
+MeanToken_Wait_c2:
+Estimated value:	255.262308316099
+Confidence interval:	[255.172532452498 , 255.3520841797]
+Minimal and maximal value:	[217.324637588933 , 292.96023046694]
+Width:	0.179551727202352
+MeanToken_Wait_c3:
+Estimated value:	255.278951245249
+Confidence interval:	[255.189376976735 , 255.368525513763]
+Minimal and maximal value:	[209.945391969017 , 294.296866902872]
+Width:	0.179148537028254
 Confidence interval computed sequentially using Chows-Robbin algorithm.
 Confidence level:	0.99
-Total paths:	380000
-Accepted paths:	380000
-Time for simulation:	14.927202s
-Total CPU time:	17.006162
+Total paths:	65000
+Accepted paths:	65000
+Time for simulation:	141.854095s
+Total CPU time:	142.232056
+Total Memory used:	51687424kB

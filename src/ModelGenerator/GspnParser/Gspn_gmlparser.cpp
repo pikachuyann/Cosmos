@@ -788,8 +788,9 @@ void MyModelHandler::on_read_node(const XmlString& id,
                         }
                     } else cout << " Fail to parse GML: transition,priority"<< endl;
                     
-                    
-                } else cout << "fail to parse gml"<< endl;
+				} else if ((*(it->second.begin())).compare("ageMemory")==0) {
+					trans.ageMemory = true;
+                } else cout << "fail to parse gml transition attribute"<< endl;
                 
             }
 			

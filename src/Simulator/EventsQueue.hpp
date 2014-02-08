@@ -46,6 +46,8 @@ public:
 	
     void insert(const Event &);
     void replace(const Event &);
+	void pause(double,size_t,size_t);
+	bool restart(double,size_t,size_t);
     void remove(size_t,size_t);
 	bool isScheduled(size_t,size_t)const;
 	

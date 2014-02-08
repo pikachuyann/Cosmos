@@ -157,9 +157,10 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 						bindex->print();
 						cerr << endl;
 					}
-					GenerateEvent(F, (it), *bindex);
-					(*EQ).insert(F);
-					
+					if(!EQ->restart(A.CurrentTime,it,bindex->idcount)){
+						GenerateEvent(F, (it), *bindex);
+						(*EQ).insert(F);
+					}
 					
 				} else {
 					if (N.Transition[it].MarkingDependent) {
@@ -192,7 +193,9 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 						bindex->print();
 						cerr << endl;
 					}
-					EQ->remove(it,bindex->idcount);
+					if(N.Transition[it].AgeMemory){
+						EQ->pause(A.CurrentTime, it, bindex->idcount);
+					}else EQ->remove(it,bindex->idcount);
 				}else {
 					if (N.Transition[it].MarkingDependent) {
 						GenerateEvent(F, it,*bindex);

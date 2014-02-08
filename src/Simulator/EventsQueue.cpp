@@ -50,8 +50,10 @@ EventsQueue::EventsQueue(const SPN& N){
  */
 void EventsQueue::reset() {
 	for(size_t it = 0; it< evtHeapIndex.size(); ++it )
-		for(size_t it2 = 0; it2< evtHeapIndex[it].size(); ++it2 )
+		for(size_t it2 = 0; it2< evtHeapIndex[it].size(); ++it2 ){
 			evtHeapIndex[it][it2]= -1;
+			evtTbl[it][it2].time = -1.0;
+		}
 	evtHeap.clear();
 	//Qsize = 0;
 }
@@ -103,9 +105,37 @@ void EventsQueue::replace(const Event &e) {
 
 /*
  *	Remove an event and update the tree.
- *  @param e an event of the Petri net.
+ *  @param tr a transition of the Petri net.
+ *  @param b a binding of the Petri net.
  */
 void EventsQueue::remove(size_t tr, size_t b) {
+	long int i = evtHeapIndex[tr][b];
+	evtTbl[tr][b].time = -1.0;
+	//assert(i>=0);
+	if(i>=0){
+		if ((size_t)i == evtHeap.size()-1) {
+			evtHeapIndex[tr][b] = -1;
+			evtHeap.pop_back();
+		} else {
+			evtHeapIndex[evtHeap.back().first][evtHeap.back().second] = i;
+			evtHeapIndex[tr][b] = -1 ;
+			evtHeap[i] = evtHeap.back();
+			evtHeap.pop_back();
+			
+			siftDown(i);
+			siftUp(i);
+		}
+	}
+}
+
+/**
+ *  Pause an event, remove it from the tree
+ *  @param t is the current time
+ *  @param tr a transition of the Petri net.
+ *  @param b a binding of the Petri net.
+ */
+void EventsQueue::pause(double t, size_t tr,size_t b){
+	evtTbl[tr][b].time -= t;
 	long int i = evtHeapIndex[tr][b];
 	//assert(i>=0);
 	if(i>=0){
@@ -122,6 +152,23 @@ void EventsQueue::remove(size_t tr, size_t b) {
 			siftUp(i);
 		}
 	}
+}
+
+/**
+ * Check if an event can be restarted. If it is possible 
+ * restart it otherwise return false.
+ *  @param t is the current time
+ *  @param tr a transition of the Petri net.
+ *  @param b a binding of the Petri net.
+ */
+bool EventsQueue::restart(double t, size_t tr,size_t b){
+	if(evtTbl[tr][b].time < 0.0)return false;
+	evtTbl[tr][b].time += t;
+	evtHeapIndex[tr][b] = evtHeap.size();
+	evtHeap.push_back(make_pair(tr,b));
+	
+	siftUp(evtHeap.size()-1);
+	return true;
 }
 
 const Event& EventsQueue::InPosition(size_t i)const {

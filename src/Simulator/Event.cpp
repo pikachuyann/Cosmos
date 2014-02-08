@@ -26,7 +26,7 @@
 #include "Event.hpp"
 
 
-Event::Event() : transition(0), time(0), priority(0) , weight(0)
+Event::Event() : transition(0), time(-1.0), priority(0) , weight(0)
 {}
 
 Event::Event(unsigned int tr, double t): transition(tr),time(t), priority(0),weight(0),binding() {}

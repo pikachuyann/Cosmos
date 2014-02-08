@@ -843,6 +843,8 @@ void Gspn_Writer::writeTransition(ofstream & spnF, bool bstr){
 		
 		spnF << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding <<");" << endl;
 		
+		if(MyGspn.transitionStruct[t].ageMemory)
+			spnF << "\tTransition[" << t << "].AgeMemory = true;" << endl;
 		
 		//spnF << "\tTransition["<<t<<"].Id =" << t << ";" <<endl;
 		if (MyGspn.transitionStruct[t].type==Timed) {
