@@ -85,7 +85,7 @@ void Simulator::InitialEventsQueue() {
 		for(auto &bindex : t.bindingList){
 			if (N.IsEnabled(t.Id,bindex)) {
 				GenerateEvent(E, t.Id ,bindex);
-				(*EQ).insert(E);
+				EQ->insert(E);
 			}
 		}
 	}
@@ -97,9 +97,7 @@ void Simulator::InitialEventsQueue() {
 void Simulator::reset() {
 	N.reset();
 	A.reset(N.Marking);
-	
 	EQ->reset();
-	
 }
 
 /**
@@ -210,15 +208,12 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	const set<int> &fmd = N.FreeMarkingDependant();
 	for (const auto &it : fmd) {
 		for(const auto bindex : N.Transition[it].bindingList){
-			if (N.IsEnabled(it,bindex)) {
-				if (!EQ->isScheduled(it, bindex.idcount)) {
-					GenerateEvent(F, it,bindex);
-					(*EQ).insert(F);
-				} else {
+			//if (N.IsEnabled(it,bindex)) {
+				if (EQ->isScheduled(it, bindex.idcount)) {
 					GenerateEvent(F, it,bindex);
 					(*EQ).replace(F);
 				}
-			}
+			//}
 		}
 		
 	}
