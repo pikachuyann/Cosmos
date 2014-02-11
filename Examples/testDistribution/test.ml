@@ -29,4 +29,4 @@ test_cosmos "discrete uniform" "testdiscreteuniform.grml" "testdistrib.lha" ""
   ["MeanVal",(8.0)];;
 
 test_cosmos "age memory" "testagememory.grml" "testagememory.lha" ""
-  ["MeanVal",(20.0)];;
+  ["MeanVal",(12.0)];;

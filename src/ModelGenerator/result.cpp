@@ -231,6 +231,13 @@ void result::print(ostream &s){
     s.precision(15);
     
     if(!P.computeStateSpace){
+		s << "Model path:\t" << P.PathGspn << endl;
+		if(P.loopLHA>0.0){
+			s << "LHA loop:\t" << P.loopLHA << " transient:\t" << P.loopTransientLHA << endl;
+		} else if(!P.CSLformula.empty()){
+			s << "Formula:\t" << P.CSLformula << endl;
+		} else s << "LHA path:\t" << P.PathLha << endl;
+		
 		for(size_t i =0; i<P.HaslFormulasname.size(); i++){
 			if(!P.alligatorMode || ( P.HaslFormulas[i]->TypeOp != PDF_PART &&  P.HaslFormulas[i]->TypeOp != CDF_PART)){
 				/*if (MeanM2->IsBernoulli[i]) {
@@ -265,6 +272,7 @@ void result::print(ostream &s){
         s << "Total paths:\t" << MeanM2->I << endl;
         s << "Accepted paths:\t" << MeanM2->Isucc << endl;
 		stopclock();
+		s << "Batch size:\t" << P.Batch << endl;
         s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
 		rusage cpu_child;
 		getrusage(RUSAGE_CHILDREN, &cpu_child);
@@ -276,8 +284,12 @@ void result::print(ostream &s){
 		child_time += cpu_child.ru_stime.tv_sec + cpu_child.ru_stime.tv_usec / 1000000.0;
 		child_memory += cpu_child.ru_maxrss;
 		s << "Total CPU time:\t" << child_time << endl;
-		s << "Total Memory used:\t" << child_memory << "kB" << endl;
-        
+		child_memory /= 1024;
+#ifdef __APPLE__
+		child_memory /= 1024;
+#endif
+		s << "Total Memory used:\t" << setprecision(4) << child_memory << " MB" << endl;
+        s << "Number of jobs:\t" << P.Njob << endl;
     }
 }
 

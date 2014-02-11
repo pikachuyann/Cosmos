@@ -342,9 +342,9 @@
 				032A703B181BC0D6006D7332 /* result.hpp */,
 				032A703C181BC0D6006D7332 /* server.cpp */,
 				032A703D181BC0D6006D7332 /* server.hpp */,
-				032A700A181BC0D6006D7332 /* Cosmos.cpp */,
 				039B4F89188E7B2400C63ED7 /* Generator.cpp */,
 				039B4F8A188E7B2400C63ED7 /* Generator.hpp */,
+				032A700A181BC0D6006D7332 /* Cosmos.cpp */,
 			);
 			path = ModelGenerator;
 			sourceTree = "<group>";

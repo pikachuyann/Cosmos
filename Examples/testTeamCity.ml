@@ -37,17 +37,19 @@ type haslr =
   mutable mean: float;
   mutable stdDev: float;
   mutable confInterval: float*float;
+  mutable minmax: float*float;
 }
 
 let print_hasl_header f sep =
-  Printf.fprintf f "%s%s%s%s%s%s%s%s%s%s" "HASLname" sep "MeanValue" sep "StandarDev" sep "ConfidenceIntervalLow" sep "ConfidenceIntervalUp" sep
+  Printf.fprintf f "%s%s%s%s%s%s%s%s%s%s%s%s%s%s" "HASLname" sep "MeanValue" sep "StandarDev" sep "MinimalValue" sep "ConfidenceIntervalLow" sep "ConfidenceIntervalUp" sep "MaximalValue" sep
 let print_haslr f sep (s,h) =
-  Printf.fprintf f "%s%s%g%s%g%s%g%s%g%s" s sep h.mean sep h.stdDev sep (fst h.confInterval) sep (snd h.confInterval) sep
+  Printf.fprintf f "%s%s%g%s%g%s%g%s%g%s%g%s%g%s" s sep h.mean sep h.stdDev sep (fst h.minmax) sep (fst h.confInterval) sep (snd h.confInterval) sep (snd h.minmax) sep
 
 let dummy_haslr = {
   mean =0.;
   stdDev =0.;
-  confInterval = 0.,0.
+  confInterval = 0.,0. ;
+  minmax = 0.0 , 0.0 
 }
 
 let rec check_result l = function
@@ -74,6 +76,7 @@ type result = {
   mutable conflevel : float;
   mutable simtime: float;
   mutable systime: float;
+  mutable memory: float;
   mutable nbRun: int;
   mutable nbSuccRun: int;
   mutable modelName: string;
@@ -86,7 +89,7 @@ type result = {
 let print_header f sep =
   Printf.fprintf f "%s%s%s%s%s%s%s%s%s%s%s%s" "ModelName" sep "PropName" sep "NumberOfRun" sep "NumberOfSuccessfullRun" sep "NumberOfThread" sep "BatchSize" sep;
   print_hasl_header f sep;
-  Printf.fprintf f "%s%s%s%s%s\n" "simulationTime" sep "SystemTime" sep "Date"
+  Printf.fprintf f "%s%s%s%s%s%s%s\n" "simulationTime" sep "SystemTime" sep "Memory" sep "Date"
 let print_result f sep rf =
   let ps ()= output_string f sep in
   let pf fl = output_string f (string_of_float fl) in
@@ -99,6 +102,7 @@ let print_result f sep rf =
   List.iter (print_haslr f sep) rf.haslResult;
   pf rf.simtime; ps ();
   pf rf.systime; ps ();
+  pf rf.memory; ps();
   output_string f rf.date;
   output_string f "\n";;
 
@@ -107,6 +111,7 @@ let dummyresult = {
   conflevel= 0.;
   simtime = 0.;
   systime = 0. ;
+  memory =0. ;
   nbRun = 0;
   nbSuccRun = 0;
   modelName = "dummyModel.grml";
@@ -133,6 +138,10 @@ let parse_result f =
           (match split confintdel v with
             | a::b::_ -> (snd (List.hd result.haslResult)).confInterval <- (float_of_string a , float_of_string b)
             | _ -> printf "Fail to parse confidence interval %s\n" v)
+	| "Minimal and maximal value" :: v :: [] ->
+          (match split confintdel v with
+            | a::b::_ -> (snd (List.hd result.haslResult)).minmax <- (float_of_string a , float_of_string b)
+            | _ -> printf "Fail to parse minmax %s\n" v)
         | "Binomiale confidence interval" :: v :: [] ->
           (match split confintdel v with
             | a::b::_ -> (snd (List.hd result.haslResult)).confInterval <- (float_of_string a , float_of_string b)
@@ -142,13 +151,24 @@ let parse_result f =
 	  let v2 = String.sub v 0 (String.length v -1) in
 	  result.simtime <- (float_of_string v2)
 	| "Total CPU time" :: v :: [] -> result.systime <- (float_of_string v)
+	| "Total Memory used" :: v :: [] ->
+	  result.memory <- (float_of_string (String.sub v 0 ((String.length v) -3)))
 	| "Total paths" :: v :: [] -> result.nbRun <- (int_of_string v)
 	| "Accepted paths" :: v :: [] -> result.nbSuccRun <- (int_of_string v)
+	| "Number of jobs" :: v :: [] -> result.nbJob <- (int_of_string v)
+	| "Batch size" :: v :: [] -> result.batch <- (int_of_string v)
+	| "Width" :: v :: [] -> ()
+	| "Model path" :: v :: [] -> result.modelName <- v;
+	| "LHA path" :: v :: [] -> result.propName <- v;
+	| "Formula" :: v :: [] -> result.propName <- v;
+	| "LHA loop" :: v :: "transient" :: w :: [] -> result.propName <- ("loop"^v^"transient"^w);
         | s1 :: [""] -> result.haslResult <- (s1,{dummy_haslr with mean=0.0}):: result.haslResult 
 	| _ -> print_endline ("Fail to parse'"^str^"'")
     done
    with
-       End_of_file -> close_in fs);
+     | End_of_file -> close_in fs
+     |  x -> print_endline "fail to parse"; raise x
+  ); 
   result;;
 
 let string_date () =
@@ -162,10 +182,6 @@ let exec_cosmos model prop batch nbjob opt printcmd =
   let retcode =  Sys.command cmd in
   if retcode <> 0 then raise (CmdFail(retcode));
   let result = parse_result "Result.res" in
-  result.modelName <- model;
-  result.propName <- prop;
-  result.batch <- batch;
-  result.nbJob <- nbjob;
   result.date <- string_date ();
   result
 
@@ -185,7 +201,7 @@ let test_cosmosTeamCity testname model prop opt v =
   with CmdFail(ret) ->
     printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" testname testname ret;
     printf "##teamcity[testFinished name='%s']\n" testname
-  | _ ->
+  | x ->
     printf "##teamcity[testFailed name='%s' message='Test %s fail for unknown reason']\n" testname testname;
     printf "##teamcity[testFinished name='%s']\n" testname
 
