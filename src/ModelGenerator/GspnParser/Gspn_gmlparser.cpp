@@ -509,7 +509,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 									 it3 != (tclasstypeenum.end()) ; ++it3 ) {
 									string col = simplifyString(*(it3.begin()));
 									if((P.verbose-3)>1)cout << "\t\t\t" << col << endl;
-									cc.colors.push_back(color(col));
+									cc.colors.push_back(color(col,cc.colors.size(),MyGspn->colClasses.size()));
 								}
 							
 							tclasstypeenum = find(it2.begin(),it2.end(),"classIntInterval");
@@ -523,7 +523,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 								for(int i = low ; i< high ;i++){
 									stringstream ss;
 									ss << "intervalColor_" << i;
-									cc.colors.push_back(color(ss.str()));
+									cc.colors.push_back(color(ss.str(),cc.colors.size(),MyGspn->colClasses.size()));
 								}
 								
 							}

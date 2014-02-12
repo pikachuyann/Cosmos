@@ -56,8 +56,10 @@ typedef struct ProbabiliteDistribution Distribution;
 
 struct color {
 	string name;
+	size_t id;
+	size_t cc;
 	color(){};
-	color(const string s){ name =s;}
+	color(const string s,size_t i,size_t c){ name =s;id = i; cc=c;}
 };
 struct colorClass {
 	string name;

@@ -116,13 +116,13 @@ bool ParseBuild() {
 	return false;
     }
 	
-	/*
+	
 	 {
 	 unfolder unfold(gReader);
 	 ofstream unfoldfile("testunfold" , ios::out | ios::trunc);
 	 unfold.export_grml(unfoldfile);
 	 }
-	 */
+	 
 	
 	// Intialize an empty structure for the automaton
 	Lha_Reader lReader(gReader.MyGspn,P);

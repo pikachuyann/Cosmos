@@ -61,7 +61,11 @@ void unfolder::export_place_grml(ofstream &fout,const place &p){
 		fout << "\t<node id=\"" << get_uid("place"+str) << "\" nodeType=\"place\">"<< endl;
 		fout << "\t\t<attribute name=\"name\">" << str << "</attribute>" << endl;
 		fout << "\t\t<attribute name=\"marking\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
-        fout << "\t\t\t1" << endl;
+		if(MyGspn.Marking[p.id].compare("0")==0){
+			fout << "\t\t\t0" << endl;
+		} else {
+			fout << "\t\t\t1" << endl;
+		}
 		fout << "\t\t</attribute></attribute></attribute>" << endl;
 
 		
@@ -80,17 +84,21 @@ void unfolder::export_transition_grml(ofstream &fout, const transition &t){
 }
 
 void unfolder::export_coltoken(ofstream &fout,const vector<color> &vec,
-							   const coloredToken &coltoken,const transition &t,const place &p){
+							   const coloredToken &coltoken,const transition &t,const place &p,bool dir){
 	size_t truid = get_uid("transition"+t.label+"_"+str_of_vect(vec, "_"));
 	vector<color> vec2;
 	for ( size_t i =0 ; i != coltoken.field.size(); ++i) {
-		vec2.push_back(vec[coltoken.field[i]]);
+		colorClass cc = MyGspn.colClasses[vec[coltoken.field[i]].cc];
+		size_t col = (vec[coltoken.field[i]].id + coltoken.varIncrement[i] + cc.colors.size()) % cc.colors.size();
+		vec2.push_back(cc.colors[col]);
 	}
 	size_t pluid = get_uid("place"+p.name+"_"+str_of_vect(vec2, "_"));
 	
 	fout << "\t<arc id=\"" << get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
-	fout << "\" arcType=\"arc\" source=\"" << pluid;
-	fout << "\" target=\"" << truid << "\">";
+	fout << "\" arcType=\"arc\" source=\"";
+	if(dir){
+		fout << pluid << "\" target=\"" << truid << "\">";
+	}else fout << truid << "\" target=\"" << pluid << "\">";
 	fout << "<attribute name=\"valuation\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
 	fout << "\t\t" << coltoken.mult << endl;
 	fout << "\t</attribute></attribute></attribute></arc>" << endl;
@@ -99,9 +107,12 @@ void unfolder::export_coltoken(ofstream &fout,const vector<color> &vec,
 void unfolder::export_arc_grml(ofstream &fout, const transition &t){
 	vector<color> iteratevec;
 	iterateVars(iteratevec , t.varDomain , 0, [&](const vector<color> &vec){
-		for(const auto &p: MyGspn.placeStruct)
+		for(const auto &p: MyGspn.placeStruct){
 			for(auto &coltoken : MyGspn.inArcsStruct[t.id][p.id].coloredVal )
-				export_coltoken(fout,vec,coltoken,t,p);
+				export_coltoken(fout,vec,coltoken,t,p,true);
+			for(auto &coltoken : MyGspn.outArcsStruct[t.id][p.id].coloredVal )
+				export_coltoken(fout,vec,coltoken,t,p,false);
+		}
 	});
 }
 

@@ -48,8 +48,7 @@ private:
 	void export_place_grml(ofstream &fout,const place &p);
 	void export_transition_grml(ofstream &fout,const transition&t);
 	void export_arc_grml(ofstream &fout,const transition &t);
-	void export_coltoken(ofstream &fout,const vector<color> &vec,
-						 const coloredToken &coltoken,const transition &t,const place &p );
+	void export_coltoken(ofstream &fout,const vector<color> &vec,const coloredToken &coltoken,const transition &t,const place &p, bool );
 	//size_t next_uid;
 	size_t get_uid(const std::string&);
 	
