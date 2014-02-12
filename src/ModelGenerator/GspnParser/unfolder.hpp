@@ -44,12 +44,16 @@ public:
 private:
 	//void export_init_grml(ofstream &fout);
 	
-	map<string,size_t> uid;
+	map<std::string,size_t> uid;
 	void export_place_grml(ofstream &fout,const place &p);
 	void export_transition_grml(ofstream &fout,const transition&t);
-	void export_arc_grml(ofstream &fout,size_t tr,size_t pl);
+	void export_arc_grml(ofstream &fout,const transition &t);
+	void export_coltoken(ofstream &fout,const vector<color> &vec,
+						 const coloredToken &coltoken,const transition &t,const place &p );
 	//size_t next_uid;
-	size_t get_uid(const string&);
+	size_t get_uid(const std::string&);
+	
+	std::string str_of_vect(const vector<color> &v,const std::string &smid) const;
 	
 	
 };

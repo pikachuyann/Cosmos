@@ -169,3 +169,19 @@ void Gspn_Reader::iterateVars(const string &s,const string &sop, const string &s
 	}
 }
 
+void Gspn_Reader::iterateVars(vector<color> &v,const set<size_t> &vd, size_t prof,function<void (const vector<color>&)> func){
+	if(prof == MyGspn.colVars.size() ){func(v);}
+	else{
+		if (vd.count(prof)>0) {
+			for(const auto cc : MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[prof].type].colorClassIndex[0]].colors ){
+				v.push_back(cc);
+				iterateVars(v, vd, prof+1, func);
+				v.pop_back();
+			}
+		}else{
+			iterateVars(v,vd, prof+1, func);
+		}
+	}
+}
+
+

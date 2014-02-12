@@ -286,6 +286,8 @@ void result::print(ostream &s){
 		s << "Total CPU time:\t" << child_time << endl;
 		child_memory /= 1024;
 #ifdef __APPLE__
+		//getrusage return the memory used in byte on darwin whereas it
+		//is return in kbyte on linux.
 		child_memory /= 1024;
 #endif
 		s << "Total Memory used:\t" << setprecision(4) << child_memory << " MB" << endl;

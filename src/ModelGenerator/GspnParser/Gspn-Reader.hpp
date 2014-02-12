@@ -207,6 +207,7 @@ public:
 	void iterateDom(const string &s,const string &sop, const string &sclos ,const string &s2,const string &sop2, const string &sclos2 ,const colorDomain & cd, size_t prof,std::function<void (const string&,const string&)> func);
 	
 	void iterateVars(const string &s,const string &sop, const string &sclos ,const set<size_t> &varDom, size_t prof,std::function<void (const string&)> func);
+	void iterateVars(vector<color> &v, const set<size_t> &varDom, size_t prof,std::function<void (const vector<color>&)> func);
 	
 	//<! Index of distribution type.
 	map<string, int> IndexDist;
