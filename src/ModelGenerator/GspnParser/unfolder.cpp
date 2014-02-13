@@ -49,7 +49,7 @@ void unfolder::export_grml(ofstream& fout){
 }
 
 size_t unfolder::get_uid(const string &str){
-	cout << "debug:\t" << str << endl;
+	//cout << "debug:\t" << str << endl;
 	if(uid.count(str)>0)return uid[str];
 	size_t it = uid.size();
 	uid[str] = it;
@@ -63,9 +63,9 @@ void unfolder::export_place_grml(ofstream &fout,const place &p){
 		fout << "\t\t<attribute name=\"marking\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
 		if(MyGspn.Marking[p.id].compare("0")==0){
 			fout << "\t\t\t0" << endl;
-		} else {
+		} else if(p.colorDom != UNCOLORED_DOMAIN) {
 			fout << "\t\t\t1" << endl;
-		}
+		} else fout << "\t\t\t" << MyGspn.Marking[p.id];
 		fout << "\t\t</attribute></attribute></attribute>" << endl;
 
 		
@@ -78,7 +78,21 @@ void unfolder::export_transition_grml(ofstream &fout, const transition &t){
 		iterateVars(t.label , "_", "", t.varDomain , 0, [&](const string& str){
 			fout << "\t<node id=\"" << get_uid("transition"+str) << "\" nodeType=\"transition\">"<< endl;
 			fout << "\t\t<attribute name=\"name\">" << str << "</attribute>" << endl;
-			
+			fout << "\t\t<attribute name=\"distribution\">" << endl;
+            fout << "\t\t\t<attribute name=\"type\">" << t.dist.name ;
+            fout << "</attribute>" << endl;
+            for(auto &sparam : t.dist.Param){
+                fout << "\t\t\t<attribute name=\"param\"><attribute name=\"expr\">";
+                if(Evaluate_unfold.parse(sparam)){
+                    fout << "<attribute name=\"numValue\">"<< endl;
+                    fout << "\t\t\t\t" << MyGspn.RealConstant.find(sparam)->second << endl;
+                } else {
+                    fout << "<attribute name=\"numValue\">" << endl;
+                    fout << "\t\t\t\t" << Evaluate_unfold.RealResult << endl;
+                }
+                fout << "\t\t\t</attribute></attribute></attribute>"<< endl;
+            }
+            fout << "\t\t</attribute>" << endl;
 			fout << "\t</node>" << endl;
 		});
 }

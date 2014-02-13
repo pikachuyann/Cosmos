@@ -117,10 +117,11 @@ bool ParseBuild() {
     }
 	
 	
-	 {
-	 unfolder unfold(gReader);
-	 ofstream unfoldfile("testunfold" , ios::out | ios::trunc);
-	 unfold.export_grml(unfoldfile);
+	 if(!P.unfold.empty()){
+         unfolder unfold(gReader);
+         ofstream unfoldfile(P.unfold , ios::out | ios::trunc);
+         unfold.export_grml(unfoldfile);
+         return true;
 	 }
 	 
 	
@@ -397,7 +398,7 @@ void generateLoopLHA(Gspn_Reader &gReader){
 	//An automaton is produce with two loop the first make time elapse until transient time
 	//elapse and then compute the mean number of token in each place and the throughput
 	//of each transition
-	bool allcolor = true;
+	bool allcolor = false;
 
 	P.PathLha = P.tmpPath + "/looplha.lha";
 	ofstream lhastr(P.PathLha.c_str() , ios::out | ios::trunc);

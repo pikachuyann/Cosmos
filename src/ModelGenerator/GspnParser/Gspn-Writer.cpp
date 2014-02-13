@@ -391,7 +391,7 @@ void Gspn_Writer::printloot(ofstream& fs, size_t domain, size_t nesting ){
 			if( count > 0)fs << " << \",\"";
 			fs << " << Color_"<< MyGspn.colClasses[dom.colorClassIndex[count]].name << "_names[c" << count << "]";
 		}
-		fs << "<< \"> \";\n";
+		fs << "<< \">,\";\n";
 		return;
 	}
 	fs << "\tfor(size_t c" << nesting << " = 0 ; c"<<nesting<<"< Color_";
@@ -630,7 +630,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		SpnCppFile << "& x) {\n";
 		SpnCppFile << "\tstringstream outprintloot;" << endl;
 		printloot(SpnCppFile, it - MyGspn.colDoms.begin(), 0);
-		SpnCppFile << "\tout << outprintloot.str();" << endl;
+		SpnCppFile << "\tout << \"(\" << outprintloot.str() << \")\";" << endl;
 		SpnCppFile << "\treturn out;\n}\n";
 		
 		SpnCppFile << "inline bool contains(const "<<it->cname() << "& d1, const " << it->cname() << "& d2){";

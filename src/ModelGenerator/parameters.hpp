@@ -53,7 +53,7 @@ struct parameters {
 	string comp_uuid;
 	string tmpPath;
 	unsigned int tmpStatus; // 0 create and destroy tmp,
-	//1 do not build destroy,2 do not destroy, 3 do not build do not destoy
+	//1 do not build but destroy,2 do not destroy, 3 do not build nor destoy
 	string Path;
 	string PathGspn;
 	string PathLha;
@@ -73,9 +73,9 @@ struct parameters {
 	bool StringInSpnLHA;
     
 	bool GMLinput;
-	
     int computeStateSpace;
-	
+    string unfold;
+
 	bool alligatorMode;
 	
 	string gcccmd;

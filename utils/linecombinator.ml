@@ -4,6 +4,7 @@ open Str
 let newpath = regexp "New Path"
 let blank = regexp "\\( \\|\t\\)+"
 let floatnum = regexp "[0-9]*\\([.][0-9]*\\)?";;
+let notint = regexp "<[^<>]*>\\|[,()]";;
 
 module Data = struct
   type elt = Floatv of float | Strv of string
@@ -28,7 +29,11 @@ module Data = struct
     
   let dataElem_of_string d =
     try Floatv (float_of_string d) 
-    with Failure "float_of_string" -> Strv (d)
+    with Failure "float_of_string" -> (try 
+					 let spl = List.filter (fun x -> x<>"") (split notint d) in
+					 Floatv (float_of_int (List.fold_left (fun x y -> x + (int_of_string y)) 0 spl)) 
+      with Failure "int_of_string" -> Strv (d)
+    )
 
   let data_of_stringList =
     List.map dataElem_of_string

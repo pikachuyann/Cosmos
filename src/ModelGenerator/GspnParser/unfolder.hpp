@@ -34,7 +34,7 @@
 
 
 #include "Gspn-Reader.hpp"
-
+#include "../Eval/Eval.hpp"
 
 class unfolder: public Gspn_Reader {
 public:
@@ -43,9 +43,11 @@ public:
 	void export_grml(ofstream &fout);
 private:
 	//void export_init_grml(ofstream &fout);
-	
+
 	map<std::string,size_t> uid;
-	void export_place_grml(ofstream &fout,const place &p);
+    Eval Evaluate_unfold;
+
+    void export_place_grml(ofstream &fout,const place &p);
 	void export_transition_grml(ofstream &fout,const transition&t);
 	void export_arc_grml(ofstream &fout,const transition &t);
 	void export_coltoken(ofstream &fout,const vector<color> &vec,const coloredToken &coltoken,const transition &t,const place &p, bool );

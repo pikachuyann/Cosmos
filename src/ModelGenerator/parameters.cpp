@@ -36,7 +36,7 @@
 
 
 /**
- * Constructor for parameters, set all the default value
+ * Constructor for parameters, set all default values
  */
 parameters::parameters():
 verbose(2),
@@ -78,6 +78,7 @@ StringInSpnLHA(false),
 GMLinput(false),
 computeStateSpace(0),
 alligatorMode(false),
+unfold(""),
 
 gcccmd("g++"),
 gccflags("-O3 -Wno-return-type"),
@@ -139,6 +140,7 @@ void parameters::usage(){
     cout << "Miscellaneous options:" << endl;
     cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
     cout << "\t--alligator-mode \toutput easy to parse result"<< endl;
+    cout << "\t--unfold arg \tUnfold the GSPN given as input" << endl;
 	cout << "\t--count-transition \tAdd a Hasl formula for wich count the number of time each transition occurs"<< endl;
 	cout << "\t--tmp-path arg \tPath to the temporary directory by default ./tmp/"<< endl;
 	cout << "\t--bin-path arg \tPath to the binary of cosmos (guess automatically)"<< endl;
@@ -197,6 +199,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"alligator-mode", no_argument, 0, 'a' },
 			
             /* Miscellaneous options */
+            {"unfold", required_argument,    0,  24},
 			{"HASL-formula", required_argument,0,13},
             {"njob" , required_argument,	 0, 'n'},
 			{"gppcmd",required_argument,	 0,  6 },
@@ -284,6 +287,8 @@ void parameters::parseCommandLine(int argc, char** argv){
 				case 'a':alligatorMode = true;
 				verbose =0;
 				break;
+
+                case 24:unfold = optarg; break;
 				
 				case  'l':Level = atof(optarg);     break;
 				case  'w':Width = atof(optarg);     break;
@@ -373,8 +378,9 @@ void parameters::parseCommandLine(int argc, char** argv){
                 exit(EXIT_FAILURE);
 			}
 		}
-	
-	if(optind+1 == argc && (loopLHA> 0.0 || !CSLformula.empty())){
+
+    //If no LHA is required only set the path for the GSPN.
+	if(optind+1 == argc && (loopLHA> 0.0 || !CSLformula.empty() || !unfold.empty())){
 		PathGspn = argv[optind];
 	}
     else if (optind+2 == argc){

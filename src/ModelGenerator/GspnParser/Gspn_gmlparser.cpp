@@ -136,7 +136,7 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
 				if ((*it).compare("+")==0) { st->append("+"); }
 				else if ((*it).compare("*")==0) { st->append("*"); }
 				else if ((*it).compare("-")==0) { st->append("-"); }
-				else if ((*it).compare("/")==0) { st->append("/"); }
+				else if ((*it).compare("/")==0) { st->append("/ (double) "); }
 				else if ((*it).compare("power")==0) { st->append("^"); }
 				else st->append(",");
 			}

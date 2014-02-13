@@ -47,12 +47,12 @@ public:
     double RealResult;
     void scan_begin();
     void scan_end();
-    void scan_expression(const string&);
+    void scan_expression(const std::string&);
 	
     bool trace_scanning;
 	
 	
-    int parse(std::string&);
+    int parse(const std::string&);
 	
 	
     bool trace_parsing;

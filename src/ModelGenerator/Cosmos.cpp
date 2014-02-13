@@ -185,7 +185,9 @@ int main(int argc, char** argv) {
 	gettimeofday(&endbuild, NULL);
 	double buildTime = endbuild.tv_sec - startbuild.tv_sec + ((endbuild.tv_usec - startbuild.tv_usec) / 1000000.0);
 	if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildTime<< "s"<< endl;
-	
+
+    if(!P.unfold.empty())return EXIT_SUCCESS;
+
 	if(!P.sequential){
 		double b = 0.0;
 		for(const auto it : P.HaslFormulas) b = fmax(b,it->bound());

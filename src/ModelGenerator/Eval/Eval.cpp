@@ -47,7 +47,7 @@ Eval::Eval() {
 Eval::~Eval() {
 }
 
-int Eval::parse(string& expr) {
+int Eval::parse(const string& expr) {
 	
 	
     scan_expression(expr);
