@@ -109,6 +109,7 @@ struct coloredToken {
 struct transition {
 	size_t id;
 	string label;
+    bool isTraced;
 	TransType type;
 	Distribution dist;
 	string priority;
@@ -119,13 +120,14 @@ struct transition {
 	bool ageMemory;
 	set<size_t> varDomain;
 	string guard;
+    transition(){ isTraced = true; }
 };
 
 struct place {
 	size_t id;
 	string name;
+    bool isTraced;
 	size_t colorDom;
-	bool isTraced;
 	place(){ colorDom = UNCOLORED_DOMAIN; isTraced = true; }
 };
 

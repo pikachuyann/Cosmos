@@ -73,6 +73,15 @@ bool ParseBuild() {
 					gReader.MyGspn.placeStruct[i].isTraced=false;
 				}
 			}
+			for(size_t i =0;i<gReader.MyGspn.tr;i++){
+				size_t j = P.tracedPlace.find(gReader.MyGspn.transitionStruct[i].label,0);
+				if(j!=string::npos && (j+gReader.MyGspn.transitionStruct[i].label.length()==P.tracedPlace.length()
+									   || P.tracedPlace[j+gReader.MyGspn.transitionStruct[i].label.length()]==',' ) ){
+					gReader.MyGspn.transitionStruct[i].isTraced=true;
+				}else {
+					gReader.MyGspn.transitionStruct[i].isTraced=false;
+				}
+			}
 		}
 		
 		//Apply Law of mass action for MASSACTION distribution:
@@ -410,8 +419,8 @@ void generateLoopLHA(Gspn_Reader &gReader){
 	lhastr << "const double invT=" << 1/P.loopLHA << ";\n";
 	lhastr << "const double Ttrans="<< P.loopTransientLHA << ";\n";
 	lhastr << "VariablesList = {time";
-	for (const auto &itt : gReader.MyGspn.TransId)
-		lhastr<< ", "<< itt.first;
+	for (const auto &itt : gReader.MyGspn.transitionStruct)
+        if(itt.isTraced)lhastr<< ", "<< itt.label;
 	
 	for (const auto &itt : gReader.MyGspn.placeStruct) {
 		if(itt.isTraced){
@@ -425,8 +434,8 @@ void generateLoopLHA(Gspn_Reader &gReader){
 	}
 	lhastr<<"} ;\nLocationsList = {l0, l1,l2};\n";
 	
-	for (const auto &itt : gReader.MyGspn.TransId) {
-		lhastr<< "Throughput_"<< itt.first<< "= AVG(Last(" << itt.first<<"));\n";
+	for (const auto &itt : gReader.MyGspn.transitionStruct) {
+		if(itt.isTraced)lhastr<< "Throughput_"<< itt.label << "= AVG(Last(" << itt.label<<"));\n";
 	}
 	for (const auto &itt : gReader.MyGspn.placeStruct) {
 		if(itt.isTraced){
@@ -453,9 +462,23 @@ void generateLoopLHA(Gspn_Reader &gReader){
 	
 	lhastr << "));(l2, TRUE);};\n";
 	lhastr << "Edges={((l0,l0),ALL,time<= Ttrans ,#);((l0,l1),#,time=Ttrans ,{time=0});";
-	for (const auto &itt : gReader.MyGspn.TransId) {
-		lhastr << "((l1,l1),{"<< itt.first <<"},time<=T,{"<<itt.first<<" = " <<itt.first<<" + "<< 1.0/P.loopLHA << " });\n";
+    size_t nbplntr = 0;
+	for (const auto &itt : gReader.MyGspn.transitionStruct) {
+		if(itt.isTraced){
+            lhastr << "((l1,l1),{"<< itt.label <<"},time<=T,{"<<itt.label <<" = " <<itt.label<<" + "<< 1.0/P.loopLHA << " });\n";
+        } else nbplntr++;
 	}
+    if (nbplntr>0) {
+        lhastr << "((l1,l1),{" ;
+        nbplntr=0;
+        for (const auto &itt : gReader.MyGspn.transitionStruct)
+            if(!itt.isTraced){
+                if(nbplntr>0)lhastr << ",";
+                lhastr << itt.label;
+                nbplntr++;
+            }
+        lhastr << "},time<=T,#);\n";
+    }
 	lhastr << "((l1,l2),#,time=T ,#);};";
 	lhastr.close();
 }
