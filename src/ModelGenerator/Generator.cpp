@@ -61,7 +61,7 @@ bool ParseBuild() {
 		//SPN according to options.
 		
 		//Set the isTraced flag for places
-		if(P.tracedPlace.compare("ALL")!=0){
+		if(P.tracedPlace != "ALL" || P.tracedPlace != "ALLCOLOR"){
 			P.nbPlace = 0;
 			for(size_t i =0;i<gReader.MyGspn.pl;i++){
 				size_t j = P.tracedPlace.find(gReader.MyGspn.placeStruct[i].name,0);
@@ -399,6 +399,7 @@ void generateLoopLHA(Gspn_Reader &gReader){
 	//elapse and then compute the mean number of token in each place and the throughput
 	//of each transition
 	bool allcolor = false;
+    if (P.tracedPlace.compare("ALLCOLOR")==0)allcolor= true;
 
 	P.PathLha = P.tmpPath + "/looplha.lha";
 	ofstream lhastr(P.PathLha.c_str() , ios::out | ios::trunc);

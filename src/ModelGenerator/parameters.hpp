@@ -74,9 +74,11 @@ struct parameters {
     
 	bool GMLinput;
     int computeStateSpace;
+
+    bool alligatorMode;
     string unfold;
 
-	bool alligatorMode;
+
 	
 	string gcccmd;
 	string gccflags;
