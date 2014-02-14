@@ -52,13 +52,15 @@ enum EdgeType {
 /**
  * Type for edge of the LHA.
  */
-struct _LhaEdge {
+struct LhaEdge {
     unsigned int Index;
     unsigned int Source;
     unsigned int Target;
     EdgeType Type;
+    LhaEdge():Index(0),Source(0),Target(0),Type(Auto){};
+    LhaEdge(unsigned int i,unsigned int s,unsigned int t,const EdgeType &ty):Index(i),Source(s),Target(t),Type(ty){};
 };
-typedef struct _LhaEdge LhaEdge;
+
 
 /**
  * Auto edge need a firing time
@@ -253,7 +255,7 @@ private:
     double Max(double&, double&, double&);
     double Integral(double&, double&, double&, double&, double&);
 	
-	double OldFormulaVal;
+	//double OldFormulaVal;
     
 };
 

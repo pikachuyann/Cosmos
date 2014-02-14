@@ -91,6 +91,11 @@ struct site_Domain {
 		mult[ x.c0 ] += x.mult;
 		return *this;
 	}
+	site_Domain operator + (const site_Token& x){
+		site_Domain d(*this);
+		d+=x;
+ 		return d;
+}
 	site_Domain& operator -= (const site_Token& x){
 		mult[ x.c0 ] -= x.mult;
 		return *this;
@@ -197,6 +202,11 @@ struct file_Domain {
 		mult[ x.c0 ] += x.mult;
 		return *this;
 	}
+	file_Domain operator + (const file_Token& x){
+		file_Domain d(*this);
+		d+=x;
+ 		return d;
+}
 	file_Domain& operator -= (const file_Token& x){
 		mult[ x.c0 ] -= x.mult;
 		return *this;
@@ -306,6 +316,11 @@ struct SF_Domain {
 		mult[ x.c0 ][ x.c1 ] += x.mult;
 		return *this;
 	}
+	SF_Domain operator + (const SF_Token& x){
+		SF_Domain d(*this);
+		d+=x;
+ 		return d;
+}
 	SF_Domain& operator -= (const SF_Token& x){
 		mult[ x.c0 ][ x.c1 ] -= x.mult;
 		return *this;

@@ -25,8 +25,8 @@ std::ostream& operator << (std::ostream& out, const site_Domain& x) {
 	stringstream outprintloot;
 	for(size_t c0 = 0 ; c0< Color_site_Total; c0++ )
 		if(x.mult[c0])
-					outprintloot << x.mult[c0]<< "<" << Color_site_names[c0]<< "> ";
-	out << outprintloot.str();
+					outprintloot << x.mult[c0]<< "<" << Color_site_names[c0]<< ">,";
+	out << "(" << outprintloot.str() << ")";
 	return out;
 }
 inline bool contains(const site_Domain& d1, const site_Domain& d2){	return (d1-d2) > -1;
@@ -41,8 +41,8 @@ std::ostream& operator << (std::ostream& out, const file_Domain& x) {
 	stringstream outprintloot;
 	for(size_t c0 = 0 ; c0< Color_file_Total; c0++ )
 		if(x.mult[c0])
-					outprintloot << x.mult[c0]<< "<" << Color_file_names[c0]<< "> ";
-	out << outprintloot.str();
+					outprintloot << x.mult[c0]<< "<" << Color_file_names[c0]<< ">,";
+	out << "(" << outprintloot.str() << ")";
 	return out;
 }
 inline bool contains(const file_Domain& d1, const file_Domain& d2){	return (d1-d2) > -1;
@@ -58,8 +58,8 @@ std::ostream& operator << (std::ostream& out, const SF_Domain& x) {
 	for(size_t c0 = 0 ; c0< Color_site_Total; c0++ )
 	for(size_t c1 = 0 ; c1< Color_file_Total; c1++ )
 		if(x.mult[c0][c1])
-					outprintloot << x.mult[c0][c1]<< "<" << Color_site_names[c0] << "," << Color_file_names[c1]<< "> ";
-	out << outprintloot.str();
+					outprintloot << x.mult[c0][c1]<< "<" << Color_site_names[c0] << "," << Color_file_names[c1]<< ">,";
+	out << "(" << outprintloot.str() << ")";
 	return out;
 }
 inline bool contains(const SF_Domain& d1, const SF_Domain& d2){	return (d1-d2) > -1;
@@ -178,7 +178,7 @@ const char *Color_file_names[Color_file_Total] = {
 };
 SPN::SPN():
 pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
-    Path ="database";
+    Path ="database.grml";
 	PossiblyEnabled = vector< set<int> >(8);
 	PossiblyEnabled[0].insert( 6 );
 	PossiblyEnabled[1].insert( 3 );
