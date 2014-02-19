@@ -18,7 +18,8 @@
 
 %option noyywrap nounput batch debug
 
-STR [a-zA-Z][a-zA-Z_0-9]*
+STR [a-zA-Z][a-zA-Z_$.0-9]*
+GENERALSTR [a-zA-Z][a-zA-Z_$\[,\]0-9]*
 INT [0-9]+|[0-9]*
 REAL ([0-9]+|[0-9]*\.[0-9]+)([eE][-+]?[0-9]+)? 
 blank [ \t]

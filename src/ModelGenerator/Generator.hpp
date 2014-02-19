@@ -45,6 +45,7 @@
 bool ParseBuild();
 
 void generateLoopLHA(Gspn_Reader &);
+void generateSamplingLHA(Gspn_Reader &);
 void generateMain();
 
 bool build();

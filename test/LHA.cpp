@@ -140,10 +140,10 @@ LHA::LHA(){
     ActionEdges[5][6].insert(15);
     ActionEdges[5][5].insert(15);
     ActionEdges[5][3].insert(16);
-    			LinForm= vector<double>(1,0.0);
-    			OldLinForm=vector<double>(1,0.0);
-    			LhaFunc=vector<double>(1,0.0);
-    		FormulaVal = vector<double>(1,0.0);
+    LinForm= vector<double>(1,0.0);
+    OldLinForm=vector<double>(1,0.0);
+    LhaFunc=vector<double>(1,0.0);
+    FormulaVal = vector<double>(1,0.0);
 }
 
 void LHA::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {

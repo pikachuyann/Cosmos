@@ -114,6 +114,17 @@ int Lha_Reader::parse_gml_file(parameters& P) {
 	
 }
 
+bool is_simple(const string &s){
+    return (s.find(" ") == string::npos
+            && s.find("+") == string::npos
+            && s.find("*") == string::npos
+            && s.find("/") == string::npos
+            && s.find("-") == string::npos
+            && s.find(",") == string::npos
+            && s.find("(") == string::npos
+            && s.find(")") == string::npos);
+}
+
 string Lha_Reader::InvRelOp(string& str) {
     if (str == "<=") return ">=";
     if (str == ">=") return "<=";
@@ -140,7 +151,15 @@ void Lha_Reader::WriteFile(parameters& P) {
 	string Pref = P.tmpPath;
 	
     string loc;
-	
+
+
+    //some cleaning:
+    MyLha.SimplyUsedLinearForm = vector<bool>(MyLha.LinearForm.size(),true);
+    for( size_t i = 0; i< MyLha.LhaFuncArg.size();++i)
+        if(MyLha.LhaFuncType[i]!="Last")
+            MyLha.SimplyUsedLinearForm[MyLha.LhaFuncArg[i]] = false;
+
+
     //loc = Pref + "../SOURCES/Cosmos/LHA.cpp";
     loc = Pref + "/LHA.cpp";
 	
@@ -321,13 +340,13 @@ void Lha_Reader::WriteFile(parameters& P) {
         }
     }
 
-    LhaCppFile << "    			LinForm= vector<double>("<< MyLha.LinearForm.size() <<",0.0);" << endl;
-    LhaCppFile << "    			OldLinForm=vector<double>("<< MyLha.LinearForm.size() <<",0.0);" << endl;
-    LhaCppFile << "    			LhaFunc=vector<double>("<< MyLha.LhaFuncArg.size() <<",0.0);" << endl;
+    LhaCppFile << "    LinForm= vector<double>("<< MyLha.LinearForm.size() <<",0.0);" << endl;
+    LhaCppFile << "    OldLinForm=vector<double>("<< MyLha.LinearForm.size() <<",0.0);" << endl;
+    LhaCppFile << "    LhaFunc=vector<double>("<< MyLha.LhaFuncArg.size() <<",0.0);" << endl;
 	if(P.CountTrans){
-		LhaCppFile << "    		FormulaVal = vector<double>(" << MyLha.Algebraic.size() + MyLha.Edge.size() << ",0.0);" << endl;
+		LhaCppFile << "    FormulaVal = vector<double>(" << MyLha.Algebraic.size() + MyLha.Edge.size() << ",0.0);" << endl;
 	} else {
-		LhaCppFile << "    		FormulaVal = vector<double>(" << MyLha.Algebraic.size() << ",0.0);" << endl;
+		LhaCppFile << "    FormulaVal = vector<double>(" << MyLha.Algebraic.size() << ",0.0);" << endl;
     }
 
     LhaCppFile << "}\n" << endl;
@@ -432,7 +451,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 				newcase << "             SumAF=";
 				for (size_t v = 0; v < MyLha.NbVar; v++)
 					if (MyLha.ConstraintsCoeffs[e][c][v] != "")
-						newcase << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*GetFlow(" << v << "," << MyLha.Edge[e].Source << ", Marking)";
+						newcase << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*GetFlow(" << v << ",CurrentLocation, Marking)";
 				newcase << ";\n             SumAX=";
 				for (size_t v = 0; v < MyLha.Vars.label.size(); v++)
 					if (MyLha.ConstraintsCoeffs[e][c][v] != "")
@@ -526,7 +545,12 @@ void Lha_Reader::WriteFile(parameters& P) {
 			if(P.CountTrans)
 				newcase << "         EdgeCounter[" << e << "]++ ;"<< endl;
 			
-			if (k > 0) {
+            if (k==1) {
+                for (size_t v = 0; v < MyLha.NbVar; v++)
+					if (MyLha.FuncEdgeUpdates[e][v] != ""){
+						newcase << "         Vars->" << MyLha.Vars.label[v] << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
+					}
+            } else if (k > 1) {
 				for (size_t v = 0; v < MyLha.NbVar; v++)
 					if (MyLha.FuncEdgeUpdates[e][v] != ""){
 						newcase << "         tempVars->" << MyLha.Vars.label[v] << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
@@ -544,8 +568,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 	}
 	edgeUpdateHandler.writeCases(LhaCppFile);
 	//LhaCppFile << "    }" << endl;
-	for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++) {
-		LhaCppFile << "    OldLinForm[" << (*it).second << "]=LinForm[" << (*it).second << "];" << endl;
+	for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++)
+        if(!MyLha.SimplyUsedLinearForm[it->second]){
+		LhaCppFile << "    OldLinForm[" << it->second << "]=LinForm[" << it->second << "];" << endl;
 		
 	}
 	
@@ -560,7 +585,8 @@ void Lha_Reader::WriteFile(parameters& P) {
 	 }*/
 	
 	LhaCppFile << "void LHA::UpdateLinForm(const abstractMarking& Marking){" << endl;
-	for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++) {
+	for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++)
+        if(!MyLha.SimplyUsedLinearForm[it->second]){
 		LhaCppFile << "    LinForm[" << (*it).second << "]=" << (*it).first << ";" << endl;
 		
 	}
@@ -586,9 +612,13 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	LhaCppFile << "void LHA::UpdateLhaFuncLast(){" << endl;
 	for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
-		if (MyLha.LhaFuncType[i] == "Last")
-			LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
-		else if(MyLha.LhaFuncType[i] == "Mean")
+		if (MyLha.LhaFuncType[i] == "Last" && MyLha.SimplyUsedLinearForm[MyLha.LhaFuncArg[i]]){
+            string str;
+            for( auto it : MyLha.LinearForm) if(it.second== MyLha.LhaFuncArg[i])str=it.first;
+			LhaCppFile << "    LhaFunc[" << i << "]= " << str << ";" << endl;
+        }else if (MyLha.LhaFuncType[i] == "Last"){
+            LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
+		} else if(MyLha.LhaFuncType[i] == "Mean")
 			LhaCppFile << "    LhaFunc[" << i << "]=LhaFunc[" << MyLha.LhaFuncArg[i] << "] / CurrentTime ;" << endl;
 	}
 	LhaCppFile << "\n    }\n" << endl;

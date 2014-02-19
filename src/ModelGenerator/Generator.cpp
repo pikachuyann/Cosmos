@@ -160,6 +160,7 @@ bool ParseBuild() {
 		}
 		
 		if(P.loopLHA>0.0)generateLoopLHA(gReader);
+        //if(P.loopLHA>0.0)generateSamplingLHA(gReader);
 		
 		//check the type of the LHA file
 		//First check if it is not C++ code
@@ -401,6 +402,75 @@ bool build(){
 	return true;
 }
 
+void generateSamplingLHA(Gspn_Reader &gReader){
+    bool allcolor = false;
+    if (P.tracedPlace == "ALLCOLOR")allcolor= true;
+    P.sampleResol = P.loopTransientLHA ;
+    size_t nbsample = ceil((P.loopLHA/P.sampleResol));
+
+	P.PathLha = P.tmpPath + "/samplelha.lha";
+	ofstream lhastr(P.PathLha.c_str() , ios::out | ios::trunc);
+
+	//lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + P.nbPlace <<";\nNbLocations = 3;\n";
+	lhastr << "const double T="<< P.loopLHA << ";\n";
+	lhastr << "const double invT=" << P.sampleResol << ";\n";
+    lhastr << "const double invT2=" << 1/P.sampleResol << ";\n";
+
+	lhastr << "VariablesList = {time";
+	for (const auto &itt : gReader.MyGspn.placeStruct) {
+		if(itt.isTraced){
+            for (size_t i = 0; i < nbsample ; ++i ) {
+                lhastr<< ", PLVAR_" << i << "_" << itt.name;
+            }
+			//if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
+			//	gReader.iterateDom("", "_", "","","","" ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
+			//		lhastr << ", PLVAR_" + itt.name + str;
+			//	});
+			//}
+		}
+	}
+	lhastr<<"} ;\nLocationsList = {l" << nbsample;
+    for (size_t i = 0; i < nbsample ; ++i ) lhastr << ", l" << i;
+    lhastr << "};\n";
+
+	for (const auto &itt : gReader.MyGspn.placeStruct) {
+		if(itt.isTraced){
+            for (size_t i = 0; i < nbsample ; ++i ) {
+                lhastr<< "MeanToken_" << itt.name<< "_$GRAPH$" << (double)i*P.sampleResol << "$" << (double)(i+1)*P.sampleResol << "$= AVG(Last( PLVAR_" << i << "_" << itt.name<<"));\n";
+                /*if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
+                    gReader.iterateDom("", "_", "","","","" ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
+                        lhastr << "MeanToken_" << itt.name << str << "= AVG(Last( PLVAR_" << itt.name<< str <<"));\n";
+                    });
+                }*/
+            }
+		}
+	}
+	lhastr << P.externalHASL << endl;
+	lhastr << "InitialLocations={l0};\nFinalLocations={l"<< nbsample <<"};\n";
+	lhastr << "Locations={" << endl;
+    for (size_t i = 0; i < nbsample ; ++i ) {
+        lhastr << "(l" << i <<", TRUE, (time:1";
+        for (const auto &itt : gReader.MyGspn.placeStruct)
+            if(itt.isTraced){
+                lhastr<< ", PLVAR_"<< i << "_" << itt.name << ": "<< itt.name << "* invT2 " ;
+                /*if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
+                 gReader.iterateDom("", "_", "","","","," ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string &str2){
+                 lhastr << ", PLVAR_" << itt.name << str << ": " << itt.name << "[" << str2 <<"]* invT ";
+                 });
+                 }*/
+            }
+        lhastr << "));" << endl;
+    }
+	lhastr << "(l"<< nbsample <<", TRUE , (time:1));};\n";
+	lhastr << "Edges={";
+    for (size_t i = 0; i < nbsample ; ++i ) {
+        lhastr << "((l" << i << ",l"<< i <<"),ALL,time<= invT ,#);((l"<< i <<",l"<< i+1<<"),#,time=invT ,{time=0});"<< endl;
+    }
+
+	lhastr << "};";
+	lhastr.close();
+
+}
 
 void generateLoopLHA(Gspn_Reader &gReader){
 	//If the automaton need to be generateed to mesure simple perfomance indices generate it
@@ -412,9 +482,7 @@ void generateLoopLHA(Gspn_Reader &gReader){
 
 	P.PathLha = P.tmpPath + "/looplha.lha";
 	ofstream lhastr(P.PathLha.c_str() , ios::out | ios::trunc);
-	map<string,int>::const_iterator itt;
-	
-	//lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + P.nbPlace <<";\nNbLocations = 3;\n";
+
 	lhastr << "const double T="<< P.loopLHA << ";\n";
 	lhastr << "const double invT=" << 1/P.loopLHA << ";\n";
 	lhastr << "const double Ttrans="<< P.loopTransientLHA << ";\n";

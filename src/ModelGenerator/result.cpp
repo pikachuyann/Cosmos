@@ -306,7 +306,16 @@ void result::outputCDFPDF(string f){
 													P.HaslFormulasname[i].length() -comma-3 ) << " ";
 			outFile << HaslResult[i].low << " "<< HaslResult[i].mean;
 			outFile << " " << HaslResult[i].up << endl;
-		}
+		} else if(P.HaslFormulasname[i].find("$GRAPH$") != string::npos){
+            size_t fb = P.HaslFormulasname[i].find("$GRAPH$");
+			size_t comma = P.HaslFormulasname[i].find("$",fb+7);
+            size_t enddol = P.HaslFormulasname[i].find("$",comma+1);
+			outFile << P.HaslFormulasname[i].substr(comma+1,
+													enddol -comma-1 ) << " ";
+			outFile << HaslResult[i].low << " "<< HaslResult[i].mean;
+			outFile << " " << HaslResult[i].up << endl;
+
+        }
 	}
 	outFile.close();
 }
@@ -321,6 +330,7 @@ void result::printGnuplot(){
 			if(P.verbose>2)cout << "invoke gnuplot for PDFCDF" << endl;
 			if(P.alligatorMode)fputs("set output 'pdfcdfout.png'\n",gnuplotstream);
 			fputs("plot '", gnuplotstream);
+            
 			fputs(P.dataPDFCDF.c_str(), gnuplotstream);
 			fputs("' using 1:2:4 w filledcu ls 1 notitle, '' using 1:3 notitle with lines lw 1 lc rgb 'black'\n", gnuplotstream);
 			if(P.alligatorMode)fputs("set output\n", gnuplotstream);

@@ -174,22 +174,31 @@ bool LHA::isFinal()const {
     return ( (FinalLoc.find(CurrentLocation) != FinalLoc.end()) ? true : false);
 }
 
-double LHA::Min(double& a, double& b, double& c) {
+double LHA::Min(double a, double b, double c) {
     double x = min(b, c);
     return min(a, x);
 }
 
-double LHA::Max(double& a, double& b, double& c) {
+double LHA::Max(double a, double b, double c) {
     double x = max(b, c);
     return max(a, x);
 }
 
-double LHA::Integral(double& OldInt, double& t, double& Delta, double& x, double& y) {
-    if (x * y >= 0) return (OldInt + Delta * (x + y) / 2);
-    double a = (y - x) / Delta;
-    double b = x - a*t;
-    double t0 = -b / a;
-    return (OldInt + (t0 - t) * x / 2 + (t + Delta - t0) * y / 2);
+double LHA::Integral(double OldInt, double, double Delta, double x, double y) {
+    return (OldInt + Delta * (x + y) / 2);
 }
+
+double LHA::BoxedIntegral(double OldInt, double t, double Delta, double x, double y, double t1,double t2) {
+    if(t>=t2 || t+Delta <= t1) return OldInt;
+    double slope = (y-x)/Delta;
+    if(t1>t){
+        x += (t1-t)*slope;
+    }else t1 = t;
+    if(t2< t+Delta){
+        y-= (t + Delta -t2)*slope;
+    }else t2 = t+Delta;
+    return (OldInt + (t2-t1) * (x + y) / 2);
+}
+
 
 

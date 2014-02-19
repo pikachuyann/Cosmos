@@ -128,6 +128,7 @@ struct place {
 	string name;
     bool isTraced;
 	size_t colorDom;
+    //vector<coloredToken> initMarking;
 	place(){ colorDom = UNCOLORED_DOMAIN; isTraced = true; }
 };
 

@@ -685,6 +685,7 @@ Update: str EQ RealVarMarkingFormula {
 	else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
 }
 
+
 HaslExps: HaslExp | HaslExp HaslExps;
 
 HaslExp: str EQ TopHaslExp SEMICOLON {

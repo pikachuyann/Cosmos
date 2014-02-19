@@ -63,6 +63,8 @@ struct variables {
 	};
 };
 
+bool is_simple(const string&);
+
 struct LhaType {
 	GspnType *MyGspn;
 	LhaType(GspnType &Mspn);
@@ -113,6 +115,7 @@ struct LhaType {
     map <string, int> TransitionIndex; // for a given transition label return its index among {0, 1, ..., tr-1}
 	
     map<string, int> LinearForm;
+    vector<bool> SimplyUsedLinearForm;
     vector<int> LhaFuncArg;
     vector<string> LhaFuncType;
     vector<string> Algebraic;
