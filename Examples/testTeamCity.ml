@@ -10,7 +10,8 @@ let teamCity = ref true
 
 let _ = if (Array.length Sys.argv) >1 then teamCity := false
 
-let cosmos_path = (Sys.getcwd ())^"/../../bin/Cosmos"
+(*let cosmos_path = (Sys.getcwd ())^"/../../bin/Cosmos"*)
+let cosmos_path = "Cosmos"
 
 let cosmos_options = ("--level 0.9999"^ ( 
   try
@@ -87,14 +88,14 @@ type result = {
 }
 
 let print_header f sep =
-  Printf.fprintf f "%s%s%s%s%s%s%s%s%s%s%s%s" "ModelName" sep "PropName" sep "NumberOfRun" sep "NumberOfSuccessfullRun" sep "NumberOfThread" sep "BatchSize" sep;
+  Printf.fprintf f "%s%s%s%s%s%s%s%s%s%s%s%s%s%s" "ExpName" sep "ModelName" sep "PropName" sep "NumberOfRun" sep "NumberOfSuccessfullRun" sep "NumberOfThread" sep "BatchSize" sep;
   print_hasl_header f sep;
   Printf.fprintf f "%s%s%s%s%s%s%s\n" "simulationTime" sep "SystemTime" sep "Memory" sep "Date"
-let print_result f sep rf =
+let print_result f sep name rf =
   let ps ()= output_string f sep in
   let pf fl = output_string f (string_of_float fl) in
   let pi i = output_string f (string_of_int i) in
-  Printf.fprintf f "%s%s%s%s" rf.modelName sep rf.propName sep;
+  Printf.fprintf f "%s%s%s%s%s%s" name sep rf.modelName sep rf.propName sep;
   pi rf.nbRun; ps ();
   pi rf.nbSuccRun; ps ();
   pi rf.nbJob; ps ();
@@ -176,8 +177,8 @@ let string_date () =
   Printf.sprintf "%i/%i/%i %i:%i:%i" tm.Unix.tm_mday tm.Unix.tm_mon 
     (tm.Unix.tm_year+1900) tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
 
-let exec_cosmos model prop batch nbjob opt printcmd =
-  let cmd = sprintf "%s %s %s --njob %i --batch %i -v 0 %s" cosmos_path model prop nbjob batch opt in
+let exec_cosmos model prop opt printcmd =
+  let cmd = sprintf "%s %s %s -v 0 %s" cosmos_path model prop opt in
   if printcmd then print_endline cmd;
   let retcode =  Sys.command cmd in
   if retcode <> 0 then raise (CmdFail(retcode));
@@ -189,7 +190,7 @@ let test_cosmosTeamCity testname model prop opt v =
   try
     printf "##teamcity[testStarted name='%s' captureStandardOutput='<true>']\n" testname;
     flush stdout;
-    let result = exec_cosmos model prop 1000 1 opt true in
+    let result = exec_cosmos model prop opt true in
     print_endline (print_readable result.haslResult v);
     if check_result result.haslResult v
     then 
@@ -208,7 +209,7 @@ let test_cosmosTeamCity testname model prop opt v =
 let test_cosmosBash testname model prop opt v =
   print_color (sprintf "testStarted: %s \n" testname) 33;
   flush stdout;
-  try let result = exec_cosmos model prop 1000 1 opt true in
+  try let result = exec_cosmos model prop opt true in
        if check_result result.haslResult v
        then 
 	 print_color (sprintf "testFinished: %s\n%s" testname (print_readable result.haslResult v)) 32
@@ -233,11 +234,11 @@ let test_cosmos_grml n v o =
   test_cosmos n (n^".grml") (n^"lha.grml") o v
  
 let test_coverage job name v o n =
-  let _ = exec_cosmos (name^".gspn") (name^".lha") 10 1 (" --tmp-status 2 --max-run 10") false  in
+  let _ = exec_cosmos (name^".gspn") (name^".lha") ("--batch 10 --tmp-status 2 --max-run 10") false  in
   print_endline ("Cosmos "^o^" -v 0 --tmp-status 3 "^name^".gspn "^name^".lha");
   let succ = ref 0 in
   for i = 1 to n do
-    let result = exec_cosmos (name^".gspn") (name^".lha") 1000 job (o^" --tmp-status 3") false in
+    let result = exec_cosmos (name^".gspn") (name^".lha") (o^" --tmp-status 3") false in
     if check_result result.haslResult v then (
       incr succ;
       print_string "+";
@@ -247,7 +248,7 @@ let test_coverage job name v o n =
   printf "Coverage:\t%f\n" ((float !succ)/.(float n))
 
 
-let execCosmosLog_free resultFile csvFile (name,model,prop,batch,njob,option,prefix) =
+let execCosmosLog_free resultFile csvFile (name,model,prop,option,prefix) =
    try
     let r = 
       (if prefix then (
@@ -255,21 +256,21 @@ let execCosmosLog_free resultFile csvFile (name,model,prop,batch,njob,option,pre
 	ignore (Sys.command ("mkdir -p "^name));
         ignore (Sys.command ("lumpingfun.cpp "^name^"/lumpingfun.cpp"));
 	Sys.chdir name; 
-	let r2 = try exec_cosmos (cwd^model) (cwd^prop) batch njob option true
+	let r2 = try exec_cosmos (cwd^model) (cwd^prop) option true
 	  with x -> Sys.chdir cwd; raise x in
 	Sys.chdir cwd; r2
       ) else (
-	let r2 = exec_cosmos model prop batch njob option true in
+	let r2 = exec_cosmos model prop option true in
 	ignore (Sys.command (sprintf "mv Result.res %s.res" name)); r2
        )) in
-    output_value resultFile r;
-    print_result csvFile "," r;
+    output_value resultFile (name,r);
+    print_result csvFile "," name r;
     flush resultFile;
     flush csvFile;
   with _->();;
 
-let execSavedCosmos_free prefix resultFile csvfile ?(batch=1000) ?(njob=1) (name,model,prop,option)  =
-  execCosmosLog_free resultFile csvfile (name,model,prop,batch,njob,option,prefix)
+let execSavedCosmos_free prefix resultFile csvfile (name,model,prop,option)  =
+  execCosmosLog_free resultFile csvfile (name,model,prop,option,prefix)
 
 let rf = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "CamlResultFile";;
 let csv = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "csvResultFile";;
@@ -281,8 +282,8 @@ let execSavedCosmos ?(prefix=false) x = execSavedCosmos_free prefix rf csv x
 let producelog resultFile =
   let rf = open_in resultFile in (
     try while true do 
-	let v = input_value rf in
-	print_result stdout ",\t" v;
+	let (n,v) = input_value rf in
+	print_result stdout ",\t" n v;
       done with
 	  End_of_file -> ()
   );

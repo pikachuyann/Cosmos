@@ -321,12 +321,14 @@ void Lha_Reader::WriteFile(parameters& P) {
     //LhaCppFile << "\n    vector< set < int > > vset(NbLoc);" << endl;
     LhaCppFile << "    Out_S_Edges =vector< set < int > >(NbLoc);" << endl;
     LhaCppFile << "    Out_A_Edges =vector< set < int > >(NbLoc);" << endl;
+    LhaCppFile << "{" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         if (MyLha.EdgeActions[e].size() < 1)
             LhaCppFile << "    Out_A_Edges[" << MyLha.Edge[e].Source << "].insert(" << e << ");" << endl;
         else
             LhaCppFile << "    Out_S_Edges[" << MyLha.Edge[e].Source << "].insert(" << e << ");" << endl;
     }
+    LhaCppFile << "}" << endl;
 	
 	if(P.StringInSpnLHA){
         LhaCppFile << "    EdgeActions=vector< set <string> >("<< MyLha.Edge.size() <<");" << endl;
@@ -334,10 +336,12 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     LhaCppFile << "    ActionEdges=vector < vector < set <int> > >(NbLoc,vector< set<int> >("<< MyLha.TransitionIndex.size()<< "));" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
+        LhaCppFile << "{" << endl;
         for (set<string>::iterator it = MyLha.EdgeActions[e].begin(); it != MyLha.EdgeActions[e].end(); it++) {
             if(P.StringInSpnLHA)LhaCppFile << "    EdgeActions[" << e << "].insert(\"" << *it << "\");" << endl;
             LhaCppFile << "    ActionEdges[" << MyLha.Edge[e].Source << "][" << MyLha.TransitionIndex[*it] << "].insert(" << e << ");" << endl;
         }
+        LhaCppFile << "}" << endl;
     }
 
     LhaCppFile << "    LinForm= vector<double>("<< MyLha.LinearForm.size() <<",0.0);" << endl;

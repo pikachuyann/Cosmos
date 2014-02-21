@@ -71,8 +71,8 @@ result::result():HaslResult(P.HaslFormulasname.size()) {
 			cerr << "gnuplot not found" << endl;
 			P.gnuplotDriver=false;
 		}else{
-			
-			gnuplotstream = popen("gnuplot", "w");
+			string gnuplotcmd = "(tee "+P.tmpPath + "/gnuplotscript.gp) | gnuplot";
+			gnuplotstream = popen(gnuplotcmd.c_str(), "w");
 			if(P.verbose>2)cout << "Gnuplot opened" << endl;
 			if(gnuplotstream == NULL){
 				perror("Fail to lauch gnuplot");
@@ -104,7 +104,7 @@ void result::close_gnuplot(){
 	if(gnuplotstream != NULL){
 		fputs("exit\n", gnuplotstream);
 		flushgnuplot();
-		//pclose(gnuplotstream); //not neaded
+		pclose(gnuplotstream);
 	}
 }
 

@@ -403,8 +403,8 @@ bool build(){
 }
 
 void generateSamplingLHA(Gspn_Reader &gReader){
-    bool allcolor = false;
-    if (P.tracedPlace == "ALLCOLOR")allcolor= true;
+    //bool allcolor = false;
+    //if (P.tracedPlace == "ALLCOLOR")allcolor= true;
     P.sampleResol = P.loopTransientLHA ;
     size_t nbsample = ceil((P.loopLHA/P.sampleResol));
 
@@ -478,7 +478,8 @@ void generateLoopLHA(Gspn_Reader &gReader){
 	//elapse and then compute the mean number of token in each place and the throughput
 	//of each transition
 	bool allcolor = false;
-    if (P.tracedPlace == "ALLCOLOR")allcolor= true;
+    if (P.tracedPlace.find("COLOR") != string::npos)allcolor= true;
+    
 
 	P.PathLha = P.tmpPath + "/looplha.lha";
 	ofstream lhastr(P.PathLha.c_str() , ios::out | ios::trunc);
