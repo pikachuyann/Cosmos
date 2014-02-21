@@ -26,6 +26,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--HASL-formula:External HASL formule:->HASL' \
 	   '--gnuplot-driver[Lauch gnuplot on the output data]' \
 	   '--output-data:File where to output data:->data' \
+	   '--output-trace:File where to output trace:->data' \
 	   '--output-raw:Output result of each trajectory in a file:->data' \
 	   '--output-PDFCDF:Output PDF or CDF to a file:->data' \
 	   '--tmp-status:Persistance of the tmp file:->status' \
@@ -33,6 +34,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--count-transition[Count number of transition in the lha]' \
 	   '--trace-place:trace only a subset of places:->Comma separated list of place to trace' \
 	   '--loop:Time of the loop:->time' \
+	   '--sampling:Time of the loop:->time' \
 	   '--transient:Time for transient part:->time' \
 	   '--formula:Use a LTL formula instead of an automaton:->LTL Formula' \
 	   '--debug-string[Add debug information in generated code]' \

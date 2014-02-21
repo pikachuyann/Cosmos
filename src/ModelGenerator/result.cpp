@@ -306,7 +306,7 @@ void result::outputCDFPDF(string f){
 													P.HaslFormulasname[i].length() -comma-3 ) << " ";
 			outFile << HaslResult[i].low << " "<< HaslResult[i].mean;
 			outFile << " " << HaslResult[i].up << endl;
-		} else if(P.HaslFormulasname[i].find("$GRAPH$") != string::npos){
+		} else if(P.HaslFormulasname[i].find("$mGRAPH$") != string::npos){
             size_t fb = P.HaslFormulasname[i].find("$GRAPH$");
 			size_t comma = P.HaslFormulasname[i].find("$",fb+7);
             size_t enddol = P.HaslFormulasname[i].find("$",comma+1);

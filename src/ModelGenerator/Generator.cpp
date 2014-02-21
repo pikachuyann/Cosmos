@@ -159,8 +159,8 @@ bool ParseBuild() {
 			}
 		}
 		
-		if(P.loopLHA>0.0)generateLoopLHA(gReader);
-        //if(P.loopLHA>0.0)generateSamplingLHA(gReader);
+		if(P.generateLHA == 1)generateLoopLHA(gReader);
+        	if(P.generateLHA == 2)generateSamplingLHA(gReader);
 		
 		//check the type of the LHA file
 		//First check if it is not C++ code

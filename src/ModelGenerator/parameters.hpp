@@ -59,6 +59,7 @@ struct parameters {
 	string PathLha;
 	map<string,string> constants;
 	
+	int generateLHA;
 	double loopLHA;
 	double loopTransientLHA;
 	string CSLformula;

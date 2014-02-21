@@ -60,6 +60,7 @@ Path(""),
 PathGspn(""),
 PathLha(""),
 constants(),
+generateLHA(0),
 loopLHA(0.0),
 loopTransientLHA(0.0),
 CSLformula(""),
@@ -154,6 +155,7 @@ void parameters::usage(){
 	cout << "\t--trace-place arg\tSpecify which place to trace in all the output file, arg is a comma separated list of places name" << endl;
 	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
 	cout << "\t--loop t1 [--transtient t2] \tGenerate an LHA that loop for t1 times unit and then t2 time unit. The --transient option alone do not do anything"<< endl;
+	cout << "\t--sampling t1 t2 \tGenerate an LHA that loop for t1 times unit and sample the average number of token each t2 time units" << endl;
 	cout << "\t--formula f\t specify a CSL formula to use instead of an automata" << endl;
 	cout << "\t--prism \tExport the state space and lauch prism."<< endl;
 	cout << "\t-s,--state-space \tExport the state space." << endl;
@@ -178,6 +180,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"max-run",required_argument, 0, 'm'},
 			{"seed"  , required_argument, 0,  10},
 			{"local-test",  no_argument , 0,  12},
+			{"sampling", required_argument, 0, 25},
 			{"loop",   required_argument, 0,  14},
 			{"transient",required_argument,0, 16},
 			{"formula",required_argument, 0, 'f'},
@@ -188,7 +191,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"rareevent",   no_argument,        0, 'r'},
             {"boundedcountiniousRE",no_argument,0, 'c'},
             {"boundedRE",   required_argument,  0, 'b'},
-			{"step-continuous",required_argument,0,23 },
+            {"step-continuous",required_argument,0,23 },
             {"epsilon" ,    required_argument,  0, 'e'},
             {"set-Horizon", required_argument , 0,  1 },
             {"state-space" , no_argument ,       0, 's'},
@@ -334,8 +337,21 @@ void parameters::parseCommandLine(int argc, char** argv){
 				case  7  : gccflags = optarg; break;
 				case  10 : seed = atoi(optarg); break;
 				case  13 : externalHASL = optarg; break;
-				case  14 : loopLHA = atof(optarg);
-				PathLha = "LOOP";
+				case  14 : 
+                                	loopLHA = atof(optarg);
+					generateLHA = 1;
+					PathLha = "LOOP";
+				break;
+				case  25 : 
+					loopLHA = atof(optarg);
+					generateLHA = 2;
+					PathLha = "SAMPLING";
+					if (optind==argc) {
+						usage();
+						exit(EXIT_FAILURE);
+					}
+					loopTransientLHA = atof(argv[optind]);
+					optind++;
 				break;
 				case  16: loopTransientLHA = atof(optarg); break;
 				case  'f': CSLformula = optarg; break;
