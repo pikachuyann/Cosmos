@@ -24,15 +24,10 @@ void LHA::resetVariables(){
 	Vars->mods= Color_site_Total ;
 };
 void LHA::printHeader(ostream &s)const{
-	s << "	Location\ttransient\ttupdate\ttsend\tmodf\tmods\t";
+	s << "	Location\t";
 };
 void LHA::printState(ostream &s)const{
 	s << "\t" << LocLabel[CurrentLocation] << "\t";
-	s << Vars->transient << "\t";
-	s << Vars->tupdate << "\t";
-	s << Vars->tsend << "\t";
-	s << Vars->modf << "\t";
-	s << Vars->mods << "\t";
 };
 LHA::LHA(){
     NbLoc =7;
@@ -62,6 +57,7 @@ LHA::LHA(){
 	resetVariables();
     Out_S_Edges =vector< set < int > >(NbLoc);
     Out_A_Edges =vector< set < int > >(NbLoc);
+{
     Out_S_Edges[0].insert(0);
     Out_A_Edges[0].insert(1);
     Out_S_Edges[1].insert(2);
@@ -79,7 +75,9 @@ LHA::LHA(){
     Out_S_Edges[5].insert(14);
     Out_S_Edges[5].insert(15);
     Out_S_Edges[5].insert(16);
+}
     ActionEdges=vector < vector < set <int> > >(NbLoc,vector< set<int> >(8));
+{
     ActionEdges[0][4].insert(0);
     ActionEdges[0][2].insert(0);
     ActionEdges[0][3].insert(0);
@@ -88,6 +86,10 @@ LHA::LHA(){
     ActionEdges[0][7].insert(0);
     ActionEdges[0][6].insert(0);
     ActionEdges[0][5].insert(0);
+}
+{
+}
+{
     ActionEdges[1][4].insert(2);
     ActionEdges[1][2].insert(2);
     ActionEdges[1][3].insert(2);
@@ -95,7 +97,11 @@ LHA::LHA(){
     ActionEdges[1][1].insert(2);
     ActionEdges[1][6].insert(2);
     ActionEdges[1][5].insert(2);
+}
+{
     ActionEdges[1][7].insert(3);
+}
+{
     ActionEdges[2][2].insert(4);
     ActionEdges[2][3].insert(4);
     ActionEdges[2][0].insert(4);
@@ -103,7 +109,11 @@ LHA::LHA(){
     ActionEdges[2][7].insert(4);
     ActionEdges[2][6].insert(4);
     ActionEdges[2][5].insert(4);
+}
+{
     ActionEdges[2][4].insert(5);
+}
+{
     ActionEdges[3][4].insert(6);
     ActionEdges[3][3].insert(6);
     ActionEdges[3][0].insert(6);
@@ -111,10 +121,20 @@ LHA::LHA(){
     ActionEdges[3][7].insert(6);
     ActionEdges[3][6].insert(6);
     ActionEdges[3][5].insert(6);
+}
+{
     ActionEdges[2][4].insert(7);
+}
+{
     ActionEdges[3][2].insert(8);
+}
+{
     ActionEdges[3][2].insert(9);
+}
+{
     ActionEdges[4][0].insert(10);
+}
+{
     ActionEdges[4][4].insert(11);
     ActionEdges[4][2].insert(11);
     ActionEdges[4][3].insert(11);
@@ -122,6 +142,8 @@ LHA::LHA(){
     ActionEdges[4][7].insert(11);
     ActionEdges[4][6].insert(11);
     ActionEdges[4][5].insert(11);
+}
+{
     ActionEdges[4][4].insert(12);
     ActionEdges[4][2].insert(12);
     ActionEdges[4][3].insert(12);
@@ -130,8 +152,14 @@ LHA::LHA(){
     ActionEdges[4][7].insert(12);
     ActionEdges[4][6].insert(12);
     ActionEdges[4][5].insert(12);
+}
+{
     ActionEdges[4][0].insert(13);
+}
+{
     ActionEdges[5][3].insert(14);
+}
+{
     ActionEdges[5][4].insert(15);
     ActionEdges[5][2].insert(15);
     ActionEdges[5][0].insert(15);
@@ -139,7 +167,10 @@ LHA::LHA(){
     ActionEdges[5][7].insert(15);
     ActionEdges[5][6].insert(15);
     ActionEdges[5][5].insert(15);
+}
+{
     ActionEdges[5][3].insert(16);
+}
     LinForm= vector<double>(1,0.0);
     OldLinForm=vector<double>(1,0.0);
     LhaFunc=vector<double>(1,0.0);
@@ -147,14 +178,14 @@ LHA::LHA(){
 }
 
 void LHA::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {
-	Vars->transient += GetFlow(0, CurrentLocation, Marking) * DeltaT;
-	Vars->tupdate += GetFlow(1, CurrentLocation, Marking) * DeltaT;
-	Vars->tsend += GetFlow(2, CurrentLocation, Marking) * DeltaT;
+	Vars->transient += GetFlow(0, Marking) * DeltaT;
+	Vars->tupdate += GetFlow(1, Marking) * DeltaT;
+	Vars->tsend += GetFlow(2, Marking) * DeltaT;
 }
-double LHA::GetFlow(int v, int loc,const abstractMarking& Marking)const{
+double LHA::GetFlow(int v, const abstractMarking& Marking)const{
 switch (v){
 	case 0:	//transient
-switch (loc){
+switch (CurrentLocation){
 	case 0:	//InitialTransientPeriod
 			return 1;
 
@@ -166,7 +197,7 @@ switch (loc){
 
 		break;
 	case 1:	//tupdate
-switch (loc){
+switch (CurrentLocation){
 	case 0:	//InitialTransientPeriod
 	case 1:	//WaitModify
 	case 6:	//Final
@@ -180,7 +211,7 @@ switch (loc){
 
 		break;
 	case 2:	//tsend
-switch (loc){
+switch (CurrentLocation){
 	case 4:	//WaitSend
 			return 1;
 
@@ -283,7 +314,7 @@ switch (ed){
              double SumAX;
 
 
-             SumAF=+(1)*GetFlow(0,0, Marking);
+             SumAF=+(1)*GetFlow(0, Marking);
              SumAX=+(1)*Vars->transient;
 
              if(SumAF==0){
@@ -316,34 +347,24 @@ switch (ed){
 
 void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBinding& b){
 switch (ed){
-	case 3:	//
+	case 8:	//
          {
-         tempVars->transient=Vars->transient;
-         tempVars->tupdate=0;
-         tempVars->tsend=Vars->tsend;
-         tempVars->modf=b.P->f.c0;
-         tempVars->mods=b.P->s.c0;
-		std::swap(Vars,tempVars);
+         Vars->tsend=0;
          }
 
 		break;
-	case 8:	//
+	case 3:	//
          {
-         tempVars->transient=Vars->transient;
-         tempVars->tupdate=Vars->tupdate;
-         tempVars->tsend=0;
-         tempVars->modf=Vars->modf;
-         tempVars->mods=Vars->mods;
-		std::swap(Vars,tempVars);
+         Vars->tupdate=0;
+         Vars->modf=b.P->f.c0;
+         Vars->mods=b.P->s.c0;
          }
 
 		break;
 }
-    OldLinForm[0]=LinForm[0];
 }
 
 void LHA::UpdateLinForm(const abstractMarking& Marking){
-    LinForm[0]=Vars->tupdate;
     }
 
 void LHA::UpdateLhaFunc(double& Delta ){
@@ -351,7 +372,7 @@ void LHA::UpdateLhaFunc(double& Delta ){
     }
 
 void LHA::UpdateLhaFuncLast(){
-    LhaFunc[0]=LinForm[0];
+    LhaFunc[0]= Vars->tupdate;
 
     }
 

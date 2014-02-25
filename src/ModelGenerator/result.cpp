@@ -24,16 +24,17 @@
  *******************************************************************************
  */
 
+#include <sys/stat.h>
+#include <math.h>
 
+#include <sstream>
 #include <iostream>
 #include <cstdlib>
 #include <iomanip>
-#include <sys/stat.h>
+#include <tuple>
 
 #include "result.hpp"
 #include "HaslFormula.hpp"
-#include <math.h>
-#include <sstream>
 #include "server.hpp"
 
 using namespace std;
@@ -193,8 +194,8 @@ void result::printProgress(){
 		maxformulaname = max(maxformulaname,P.HaslFormulasname[i].size());
 	
 	if(P.verbose >1){
-		for(size_t i=0; i<P.HaslFormulasname.size(); i++){
-			
+		for(size_t i=0; i<P.HaslFormulasname.size(); i++)
+			if(P.HaslFormulasname[i].find("$GRAPH$") == string::npos){
 			cout << setw(maxformulaname+1)<<left << (P.HaslFormulasname[i]+":") << " |< ";
 			cout << setw(17) << HaslResult[i].min << " --[ ";
 			cout << setw(17) << HaslResult[i].low << " < ";
@@ -295,28 +296,63 @@ void result::print(ostream &s){
     }
 }
 
+tuple<string,double> result::split_name(string s){
+    size_t fb = s.find("[");
+    size_t comma = s.find(",",fb);
+    if (comma != string::npos) {
+        return make_tuple(s.substr(0,fb),
+                          stod(s.substr(comma+2,s.length()-comma-3)));
+    } else {
+        size_t fb = s.find("$GRAPH$");
+        size_t comma = s.find("$",fb+7);
+        size_t enddol = s.find("$",comma+1);
+        if (enddol != string::npos) {
+            return make_tuple(s.substr(0,fb),(
+                              stod(s.substr(fb+7,comma-1))+
+                              stod(s.substr(comma+1,enddol-comma-1))/2.0));
+        } else return make_tuple("EMPTY",0.0);
+    }
+}
+
 void result::outputCDFPDF(string f){
 	ofstream outFile(f.c_str(), ios::out | ios::trunc);
-	for(size_t i =0; i<P.HaslFormulasname.size(); i++){
-		if(P.HaslFormulas[i]->TypeOp == CDF_PART
-		   || P.HaslFormulas[i]->TypeOp == PDF_PART){
-			size_t fb = P.HaslFormulasname[i].find("[");
-			size_t comma = P.HaslFormulasname[i].find(",",fb);
-			outFile << P.HaslFormulasname[i].substr(comma+2,
-													P.HaslFormulasname[i].length() -comma-3 ) << " ";
-			outFile << HaslResult[i].low << " "<< HaslResult[i].mean;
-			outFile << " " << HaslResult[i].up << endl;
-		} else if(P.HaslFormulasname[i].find("$mGRAPH$") != string::npos){
-            size_t fb = P.HaslFormulasname[i].find("$GRAPH$");
-			size_t comma = P.HaslFormulasname[i].find("$",fb+7);
-            size_t enddol = P.HaslFormulasname[i].find("$",comma+1);
-			outFile << P.HaslFormulasname[i].substr(comma+1,
-													enddol -comma-1 ) << " ";
-			outFile << HaslResult[i].low << " "<< HaslResult[i].mean;
-			outFile << " " << HaslResult[i].up << endl;
-
+    map<string,int> namelist;
+    map<double,int> valuelist;
+    for(size_t i =0; i<P.HaslFormulasname.size(); i++){
+        auto nv = split_name(P.HaslFormulasname[i]);
+        if (get<0>(nv)!= "EMPTY") {
+            if(namelist.find(get<0>(nv)) == namelist.end())
+                namelist.insert(make_pair(get<0>(nv),namelist.size()));
+            if(valuelist.find(get<1>(nv)) == valuelist.end())
+                valuelist.insert(make_pair(get<1>(nv),valuelist.size()));
         }
-	}
+    }
+    
+    outFile << "abscissa" << " ";
+    for(auto itname : namelist){
+        outFile << itname.first<< "_low ";
+        outFile << itname.first<< "_mean ";
+        outFile << itname.first<< "_up ";
+    }
+    nbColumnGraph = namelist.size();
+    outFile << endl;
+
+    for(auto itval: valuelist){
+        outFile << itval.first;
+        for(size_t i =0; i<P.HaslFormulasname.size(); i++){
+            auto nv = split_name(P.HaslFormulasname[i]);
+            if (itval.first == get<1>(nv)) {
+                if(P.HaslFormulas[i]->TypeOp == CDF_PART
+                   || P.HaslFormulas[i]->TypeOp == PDF_PART
+                   || P.HaslFormulasname[i].find("$GRAPH$") != string::npos){
+                    outFile << " " << HaslResult[i].low;
+                    outFile << " "<< HaslResult[i].mean;
+                    outFile << " " << HaslResult[i].up;
+                }
+            }
+        }
+        outFile << endl;
+    }
 	outFile.close();
 }
 
@@ -329,10 +365,14 @@ void result::printGnuplot(){
 		if(filestatus.st_size > 0){
 			if(P.verbose>2)cout << "invoke gnuplot for PDFCDF" << endl;
 			if(P.alligatorMode)fputs("set output 'pdfcdfout.png'\n",gnuplotstream);
-			fputs("plot '", gnuplotstream);
-            
+            fputs("plot for [i=1:", gnuplotstream);
+            fputs(to_string(nbColumnGraph).c_str(), gnuplotstream);
+            fputs("] '", gnuplotstream);
 			fputs(P.dataPDFCDF.c_str(), gnuplotstream);
-			fputs("' using 1:2:4 w filledcu ls 1 notitle, '' using 1:3 notitle with lines lw 1 lc rgb 'black'\n", gnuplotstream);
+            fputs("' using 1:3*i-1:3*i+1 w filledcu ls 1 notitle, ",gnuplotstream);
+            fputs("for [i=1:", gnuplotstream);
+            fputs(to_string(nbColumnGraph).c_str(), gnuplotstream);
+            fputs("] '' using 1:3*i title columnheader with lines lw 1\n", gnuplotstream);
 			if(P.alligatorMode)fputs("set output\n", gnuplotstream);
 			flushgnuplot();
 		}

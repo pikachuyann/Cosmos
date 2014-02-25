@@ -124,7 +124,10 @@ private:
 	
 	//! Print a progress bar.
 	void printPercent(double i, double j);
-	
+
+    int nbColumnGraph;
+    std::tuple<std::string,double> split_name(std::string);
+
 };
 
 

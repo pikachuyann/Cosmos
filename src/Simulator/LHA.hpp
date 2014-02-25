@@ -170,7 +170,7 @@ private:
 	
 	
 	void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
-	double GetFlow(int, int,const abstractMarking&)const;
+	double GetFlow(int, const abstractMarking&)const;
 	bool CheckLocation(int,const abstractMarking&)const;
 	bool CheckEdgeContraints(int,size_t, const abstractBinding&, const abstractMarking&)const;
 	
@@ -238,10 +238,6 @@ private:
     vector <double> OldVar;
     map<string, int> VarIndex; //for a given variable label return its index among {0, 1, ..., NbVar-1}
     vector <string> VarLabel;
-	
-	
-    vector < vector <string> > StrFlow;
-	
 	
 	
     map <string, int> PlaceIndex; // for a given place label return its index among {0, 1, ..., pl-1}

@@ -47,8 +47,7 @@
 	Eval LhaEvaluate;
 	
 	
-	
-	vector<string> StrFlowVector;
+
 	vector<string> FuncFlowVector;
 	
 	vector<string> FuncUpdateVector;
@@ -336,8 +335,7 @@ VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
 		std::cout<<"Variable label missing or redeclared, please check your variables list"<<std::endl;
 		YYABORT;
 	}
-	
-	StrFlowVector.resize(Reader.MyLha.NbVar);
+
 	FuncFlowVector.resize(Reader.MyLha.NbVar);
 	FuncUpdateVector.resize(Reader.MyLha.NbVar);
 	CoeffsVector.resize(Reader.MyLha.NbVar);
@@ -386,14 +384,14 @@ LocationsList: LList EQ '{' LLabels '}' SEMICOLON {
 	std::cout<<"Location label missing or redeclared, please check your locations list"<<std::endl;
 	YYABORT;
 	}
-
+    Reader.MyLha.FuncLocProperty=vector<string>(Reader.MyLha.NbLoc,"");
+    Reader.MyLha.StrLocProperty=vector<string>(Reader.MyLha.NbLoc,"");
+    Reader.MyLha.FuncFlow=vector<vector<string> >(Reader.MyLha.NbLoc,vector<string>(Reader.MyLha.NbVar,""));
 };
 
 LLabels : str {
-	
 	Reader.MyLha.LocLabel.push_back(*$1);
 	Reader.MyLha.LocIndex[*$1]=Reader.MyLha.LocLabel.size()-1;
-	
 }
 |LLabels COMMA str {Reader.MyLha.LocLabel.push_back(*$3);
 	Reader.MyLha.LocIndex[*$3]=Reader.MyLha.LocLabel.size()-1;
@@ -457,35 +455,27 @@ LOCATIONS: LOCATION
 
 LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 {
-	if(Reader.MyLha.LocIndex.find(*$2)!=Reader.MyLha.LocIndex.end()){
+    auto loc = Reader.MyLha.LocIndex.find(*$2);
+	if(loc !=Reader.MyLha.LocIndex.end()){
 		//int l=Reader.MyLha.LocIndex[*$2];
-		
-		Reader.MyLha.StrLocProperty.push_back($4);
-		Reader.MyLha.FuncLocProperty.push_back($4);
-		Reader.MyLha.FuncFlow.push_back(FuncFlowVector);
-		Reader.MyLha.StrFlow.push_back(StrFlowVector);
-		
-		if(true){
-			vector<string> v(Reader.MyLha.NbVar,"");
-			StrFlowVector=v;
-			FuncFlowVector=v;
-		}
+		Reader.MyLha.StrLocProperty[loc->second]= $4;
+		Reader.MyLha.FuncLocProperty[loc->second]= $4;
+		Reader.MyLha.FuncFlow[loc->second] = FuncFlowVector;
+        FuncFlowVector=vector<string>(Reader.MyLha.NbVar,"");
 	}
 	else {cout<<"Unknown location"<<endl;YYABORT;}
-	
 	
 }
 |LB str COMMA LogExpr RB SEMICOLON
 
 
-{ 
-	if(Reader.MyLha.LocIndex.find(*$2)!=Reader.MyLha.LocIndex.end()){
+{
+    auto loc = Reader.MyLha.LocIndex.find(*$2);
+	if(loc != Reader.MyLha.LocIndex.end()){
 		//l=Reader.MyLha.LocIndex[*$2];
-		
-		Reader.MyLha.StrLocProperty.push_back($4);
-		Reader.MyLha.FuncLocProperty.push_back($4);
-		Reader.MyLha.FuncFlow.push_back(FuncFlowVector);
-		Reader.MyLha.StrFlow.push_back(StrFlowVector);
+		Reader.MyLha.StrLocProperty[loc->second]= $4;
+		Reader.MyLha.FuncLocProperty[loc->second]= $4;
+		Reader.MyLha.FuncFlow[loc->second] = FuncFlowVector;
 	}
 	else {cout<<"Unknown location"<<endl;YYABORT;}
 	
@@ -494,7 +484,8 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 
 FLOWS: FLOW
 |FLOWS COMMA FLOW;
-FLOW: str COLON RealMarkingFormula {if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
+FLOW: str COLON RealMarkingFormula {
+    if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
 	FuncFlowVector[Reader.MyLha.Vars.find(*$1)]=$3;
 	else{ cout<<"'"<<*$1<<"' is not an Lha variable"<<endl;
 		YYABORT;}

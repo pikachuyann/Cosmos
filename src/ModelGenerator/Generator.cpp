@@ -160,7 +160,7 @@ bool ParseBuild() {
 		}
 		
 		if(P.generateLHA == 1)generateLoopLHA(gReader);
-        	if(P.generateLHA == 2)generateSamplingLHA(gReader);
+        if(P.generateLHA == 2)generateSamplingLHA(gReader);
 		
 		//check the type of the LHA file
 		//First check if it is not C++ code
@@ -429,14 +429,14 @@ void generateSamplingLHA(Gspn_Reader &gReader){
 			//}
 		}
 	}
-	lhastr<<"} ;\nLocationsList = {l" << nbsample;
-    for (size_t i = 0; i < nbsample ; ++i ) lhastr << ", l" << i;
-    lhastr << "};\n";
+	lhastr<<"} ;\nLocationsList = {";
+    for (size_t i = 0; i < nbsample ; ++i ) lhastr << "l" << i << ", ";
+    lhastr << "l"<< nbsample << "};\n";
 
 	for (const auto &itt : gReader.MyGspn.placeStruct) {
 		if(itt.isTraced){
             for (size_t i = 0; i < nbsample ; ++i ) {
-                lhastr<< "MeanToken_" << itt.name<< "_$GRAPH$" << (double)i*P.sampleResol << "$" << (double)(i+1)*P.sampleResol << "$= AVG(Last( PLVAR_" << i << "_" << itt.name<<"));\n";
+                lhastr<< "MeanToken_" << itt.name<< "$GRAPH$" << (double)i*P.sampleResol << "$" << (double)(i+1)*P.sampleResol << "$= AVG(Last( PLVAR_" << i << "_" << itt.name<<"));\n";
                 /*if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
                     gReader.iterateDom("", "_", "","","","" ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
                         lhastr << "MeanToken_" << itt.name << str << "= AVG(Last( PLVAR_" << itt.name<< str <<"));\n";

@@ -210,7 +210,8 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	LhaCppFile << "void LHA::printHeader(ostream &s)const{\n";
 	LhaCppFile << "\ts << \"\tLocation\\t";
-	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
+    if(P.StringInSpnLHA){
+	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++)
 		LhaCppFile << MyLha.Vars.label[v] << "\\t";
 	}
 	LhaCppFile << "\";\n";
@@ -218,9 +219,11 @@ void Lha_Reader::WriteFile(parameters& P) {
 	
 	LhaCppFile << "void LHA::printState(ostream &s)const{\n";
 	LhaCppFile << "\ts << \"\\t\" << LocLabel[CurrentLocation] << \"\\t\";\n";
-	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
-		LhaCppFile << "\ts << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
-	}
+    if(P.StringInSpnLHA){
+    for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++)
+            LhaCppFile << "\ts << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
+
+    }
 	LhaCppFile << "};\n";
 	
 	
@@ -275,12 +278,15 @@ void Lha_Reader::WriteFile(parameters& P) {
             LhaCppFile << ",Synch);" << endl;
 		
     }
-	
-    for (size_t i = 0; i < MyLha.Edge.size(); i++) {
-		
-        size_t NbC = MyLha.ConstraintsRelOp[i].size();
-		
-		if(P.StringInSpnLHA){
+
+    LhaCppFile << "\tVars = new Variables;" << endl;
+	LhaCppFile << "\ttempVars = new Variables;" << endl;
+	LhaCppFile << "\tresetVariables();" << endl;
+
+    if(P.StringInSpnLHA){
+        for (size_t i = 0; i < MyLha.Edge.size(); i++) {
+            size_t NbC = MyLha.ConstraintsRelOp[i].size();
+
 			LhaCppFile << "\n    {" << endl;
 			LhaCppFile << "    vector <string> vcstr(" << NbC << ");" << endl;
 			LhaCppFile << "    ConstraintsRelOp[" << i << "]=vcstr;" << endl;
@@ -289,34 +295,21 @@ void Lha_Reader::WriteFile(parameters& P) {
 			LhaCppFile << "    vector < vector <string> > v2cvstr(" << NbC << ",vcvstr);" << endl;
 			LhaCppFile << "    ConstraintsCoeffs[" << i << "]=v2cvstr;" << endl;
 			LhaCppFile << "    }" << endl;
-			
+
 			for (size_t c = 0; c < NbC; c++) {
 				LhaCppFile << "    ConstraintsRelOp[" << i << "][" << c << "]=\"" << MyLha.ConstraintsRelOp[i][c] << "\";" << endl;
 				LhaCppFile << "    ConstraintsConstants[" << i << "][" << c << "]=\"" << MyLha.ConstraintsConstants[i][c] << "\";" << endl;
 				for (size_t v = 0; v < MyLha.NbVar; v++)
 					LhaCppFile << "    ConstraintsCoeffs[" << i << "][" << c << "][" << v << "]=\"" << MyLha.ConstraintsCoeffs[i][c][v] << "\";" << endl;
 			}
-		}
-    }
-	
-    LhaCppFile << "\tVars = new Variables;" << endl;
-	LhaCppFile << "\ttempVars = new Variables;" << endl;
-	LhaCppFile << "\tresetVariables();" << endl;
-	
-	if(P.StringInSpnLHA){
+        }
 		LhaCppFile << "    VarLabel= vector<string>(NbVar);" << endl;
         for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
 			LhaCppFile << "    VarLabel[" << v << "]=\"" << MyLha.Vars.label[v] << "\";" << endl;
 			LhaCppFile << "    VarIndex[\"" << MyLha.Vars.label[v] << "\"]=" << v << ";" << endl;
         }
-
-        LhaCppFile << "    StrFlow=vector< vector<string> >(NbLoc,vector<string>(NbVar));" << endl;
-
-		for (size_t l = 0; l < MyLha.NbLoc; l++)
-			for (size_t v = 0; v < MyLha.NbVar; v++) {
-				LhaCppFile << "    StrFlow[" << l << "][" << v << "]=\"" << MyLha.StrFlow[l][v] << "\";" << endl;
-			}
-	}
+        
+    }
 	
     //LhaCppFile << "\n    vector< set < int > > vset(NbLoc);" << endl;
     LhaCppFile << "    Out_S_Edges =vector< set < int > >(NbLoc);" << endl;
@@ -359,20 +352,20 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "void LHA::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {\n";
     for (size_t v = 0; v < MyLha.Vars.label.size() ; v++) {
 		if(MyLha.Vars.type[v] == CONTINIOUS_VARIABLE )
-			LhaCppFile <<  "\tVars->"<< MyLha.Vars.label[v] << " += GetFlow("<<v<<", CurrentLocation, Marking) * DeltaT;\n";
+			LhaCppFile <<  "\tVars->"<< MyLha.Vars.label[v] << " += GetFlow("<<v<<", Marking) * DeltaT;\n";
     }
 	LhaCppFile << "}\n";
 	
 	
-    LhaCppFile << "double LHA::GetFlow(int v, int loc,const abstractMarking& Marking)const{" << endl;
+    LhaCppFile << "double LHA::GetFlow(int v, const abstractMarking& Marking)const{" << endl;
     casesHandler flowcases("v");
     for (size_t x = 0; x < MyLha.NbVar; x++) {
 		stringstream newcase;
 		if(MyLha.Vars.type[x] == CONTINIOUS_VARIABLE ){
-			casesHandler flowcases2("loc");
+			casesHandler flowcases2("CurrentLocation");
 			for (size_t l = 0; l < MyLha.NbLoc; l++) {
 				stringstream newcase2;
-				if (MyLha.FuncFlow[l][x] != ""){
+                if (MyLha.FuncFlow[l][x] != ""){
 					newcase2 << "\t\t\treturn " << MyLha.FuncFlow[l][x] << ";" << endl;
 				}else newcase2 << "\t\treturn 0.0;" << endl;
 				flowcases2.addCase(l, newcase2.str(),MyLha.LocLabel[l]);
@@ -455,7 +448,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 				newcase << "             SumAF=";
 				for (size_t v = 0; v < MyLha.NbVar; v++)
 					if (MyLha.ConstraintsCoeffs[e][c][v] != "")
-						newcase << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*GetFlow(" << v << ",CurrentLocation, Marking)";
+						newcase << "+(" << MyLha.ConstraintsCoeffs[e][c][v] << ")*GetFlow(" << v << ", Marking)";
 				newcase << ";\n             SumAX=";
 				for (size_t v = 0; v < MyLha.Vars.label.size(); v++)
 					if (MyLha.ConstraintsCoeffs[e][c][v] != "")

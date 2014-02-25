@@ -1,6 +1,6 @@
 #use "../testTeamCity.ml";;
 
-try ignore (exec_cosmos  "tandem_agr.gspn" "tandem_agr.lha" 1000 1 "-s" true)
+try ignore (exec_cosmos  "tandem_agr.gspn" "tandem_agr.lha" "-s" true)
 with Sys_error(_) -> ();;
 
 test_cosmos_gspn "tandem" ["",9.95012414790993e-16] "-b 1 --set-Horizon 100 --max-run 5000 --batch 5000";;
