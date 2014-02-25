@@ -309,7 +309,7 @@ tuple<string,double> result::split_name(string s){
         if (enddol != string::npos) {
             return make_tuple(s.substr(0,fb),(
                               stod(s.substr(fb+7,comma-1))+
-                              stod(s.substr(comma+1,enddol-comma-1))/2.0));
+                              stod(s.substr(comma+1,enddol-comma-1)))/2.0);
         } else return make_tuple("EMPTY",0.0);
     }
 }

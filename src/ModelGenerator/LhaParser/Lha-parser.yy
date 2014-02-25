@@ -51,6 +51,7 @@
 	vector<string> FuncFlowVector;
 	
 	vector<string> FuncUpdateVector;
+    vector<string> FuncUpdateVectorIndex;
 	
 	set <string> PetriTransitions;
 	set <string> SubSet;
@@ -198,8 +199,13 @@ IntMarkingFormula: ival {sprintf($$,"%d",$1);}
 	else if(Reader.MyLha.LhaIntConstant.find(*$1)!=Reader.MyLha.LhaIntConstant.end())
 	{std::ostringstream s; s<<Reader.MyLha.LhaIntConstant[*$1];
 		sprintf($$, "%s",(s.str()).c_str());
-	}
-	else{cout<<"'"<<*$1<<"' is not a place label or a defined constant"<<endl;YYABORT;}}
+	} else {
+        size_t vararray = Reader.MyLha.Vars.find(*$1);
+        if(vararray!= Reader.MyLha.NbVar && Reader.MyLha.Vars.type[vararray]==DISCRETE_VARIABLE){
+            sprintf($$, " Vars->%s", Reader.MyLha.Vars.label[vararray].c_str() );
+        } else {cout<<"'"<<*$1<<"' is not a place label or a defined constant"<<endl;YYABORT;}
+    }
+}
 | str LSB ColorClassList RSB {
 	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
 	{std::ostringstream s;
@@ -207,6 +213,13 @@ IntMarkingFormula: ival {sprintf($$,"%d",$1);}
 	 s << $3;
 		sprintf($$, "%s",(s.str()).c_str());
 	}else{cout<<"'"<<*$1<<"' is not a place label "<<endl;YYABORT;}}
+| str LSB IntMarkingFormula RSB {
+    size_t vararray = Reader.MyLha.Vars.find(*$1);
+	if(vararray!= Reader.MyLha.NbVar && Reader.MyLha.Vars.type[vararray]==INT_INDEXED_DISC_ARRAY)
+	{std::ostringstream s;
+        s<<" Vars.P->" << Reader.MyLha.Vars.label[vararray] << "["<< *$3 << "]";
+		sprintf($$, "%s",(s.str()).c_str());
+	}else{cout<<"'"<<*$1<<"' is not a discrete array name "<<endl;YYABORT;}}
 | LB IntMarkingFormula RB{sprintf($$,"( %s )", $2);       }
 | MINUS IntMarkingFormula %prec NEG {sprintf($$,"-%s",$2);}
 | IntMarkingFormula PLUS  IntMarkingFormula   {sprintf($$,"%s + %s", $1, $3);  }
@@ -338,6 +351,7 @@ VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
 
 	FuncFlowVector.resize(Reader.MyLha.NbVar);
 	FuncUpdateVector.resize(Reader.MyLha.NbVar);
+    FuncUpdateVectorIndex.resize(Reader.MyLha.NbVar);
 	CoeffsVector.resize(Reader.MyLha.NbVar);
 	
 	for(const auto &it : Reader.MyLha.TransitionIndex)
@@ -363,6 +377,16 @@ VLabels : str {
 	//Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
 	
 }
+| DISC str LSB ival RSB {
+
+	Reader.MyLha.Vars.label.push_back(*$2);
+	Reader.MyLha.Vars.initialValue.push_back(0.0);
+	Reader.MyLha.Vars.type.push_back(INT_INDEXED_DISC_ARRAY);
+	Reader.MyLha.Vars.colorDomain.push_back($4);
+	//Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
+
+}
+
 |VLabels COMMA str {
 	Reader.MyLha.Vars.label.push_back(*$3);
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
@@ -376,6 +400,13 @@ VLabels : str {
 	Reader.MyLha.Vars.type.push_back(DISCRETE_VARIABLE);
 	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
 	//Reader.MyLha.VarIndex[*$3]=Reader.MyLha.VarLabel.size()-1;
+}
+|VLabels COMMA DISC str LSB ival RSB {
+    Reader.MyLha.Vars.label.push_back(*$4);
+	Reader.MyLha.Vars.initialValue.push_back(0.0);
+	Reader.MyLha.Vars.type.push_back(INT_INDEXED_DISC_ARRAY);
+	Reader.MyLha.Vars.colorDomain.push_back($6);
+
 };
 
 LocationsList: LList EQ '{' LLabels '}' SEMICOLON {
@@ -385,7 +416,6 @@ LocationsList: LList EQ '{' LLabels '}' SEMICOLON {
 	YYABORT;
 	}
     Reader.MyLha.FuncLocProperty=vector<string>(Reader.MyLha.NbLoc,"");
-    Reader.MyLha.StrLocProperty=vector<string>(Reader.MyLha.NbLoc,"");
     Reader.MyLha.FuncFlow=vector<vector<string> >(Reader.MyLha.NbLoc,vector<string>(Reader.MyLha.NbVar,""));
 };
 
@@ -457,8 +487,6 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 {
     auto loc = Reader.MyLha.LocIndex.find(*$2);
 	if(loc !=Reader.MyLha.LocIndex.end()){
-		//int l=Reader.MyLha.LocIndex[*$2];
-		Reader.MyLha.StrLocProperty[loc->second]= $4;
 		Reader.MyLha.FuncLocProperty[loc->second]= $4;
 		Reader.MyLha.FuncFlow[loc->second] = FuncFlowVector;
         FuncFlowVector=vector<string>(Reader.MyLha.NbVar,"");
@@ -472,8 +500,6 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 {
     auto loc = Reader.MyLha.LocIndex.find(*$2);
 	if(loc != Reader.MyLha.LocIndex.end()){
-		//l=Reader.MyLha.LocIndex[*$2];
-		Reader.MyLha.StrLocProperty[loc->second]= $4;
 		Reader.MyLha.FuncLocProperty[loc->second]= $4;
 		Reader.MyLha.FuncFlow[loc->second] = FuncFlowVector;
 	}
@@ -655,7 +681,7 @@ term:   str
 			}
 			else
 			{
-				cout<<*$2<<" is not Petri-net Place or a definded constant "<<endl;
+				cout<<*$2<<" is not Petri-net Place or a defined constant "<<endl;
 				YYABORT;
 			}
 		}
@@ -664,8 +690,16 @@ term:   str
 }	;
 
 
-UPDATES: '{' Updates '}' {Reader.MyLha.FuncEdgeUpdates.push_back(FuncUpdateVector);vector<string> v1(Reader.MyLha.NbVar,"");FuncUpdateVector=v1;}
-| SHARP {Reader.MyLha.FuncEdgeUpdates.push_back(FuncUpdateVector);};
+UPDATES: '{' Updates '}' {
+    Reader.MyLha.FuncEdgeUpdates.push_back(FuncUpdateVector);
+    Reader.MyLha.FuncEdgeUpdatesIndex.push_back(FuncUpdateVectorIndex);
+    FuncUpdateVector=vector<string>(Reader.MyLha.NbVar,"");
+    FuncUpdateVectorIndex=vector<string>(Reader.MyLha.NbVar,"");
+}
+| SHARP {
+    Reader.MyLha.FuncEdgeUpdates.push_back(FuncUpdateVector);
+    Reader.MyLha.FuncEdgeUpdatesIndex.push_back(FuncUpdateVectorIndex);
+};
 
 Updates: Update
 |Updates COMMA Update ;
@@ -675,6 +709,15 @@ Update: str EQ RealVarMarkingFormula {
     {FuncUpdateVector[Reader.MyLha.Vars.find(*$1)]= $3;}
 	else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
 }
+| str LSB IntMarkingFormula RSB EQ RealVarMarkingFormula {
+	if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
+    {
+        FuncUpdateVector[Reader.MyLha.Vars.find(*$1)]= $6;
+        FuncUpdateVectorIndex[Reader.MyLha.Vars.find(*$1)]= *$3;
+    }else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
+}
+
+
 
 
 HaslExps: HaslExp | HaslExp HaslExps;
@@ -866,6 +909,12 @@ VarTerm:   str
 		sprintf($$, "%s ",(s.str()).c_str());
 	} else {cout<<*$1<<" is not a Lha variable or a place name"<<endl;YYABORT;}
 }
+| str LSB IntMarkingFormula RSB {
+    if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size()){
+        sprintf($$,"Vars->%s[%s]", $1->c_str(), $3);
+	} else {cout<<*$1<<" is not a Lha array variable "<<endl;YYABORT;}
+}
+
 //| RealMarkingFormula { sprintf($$,"(%s)", $1); }
 | LB RealMarkingFormula RB MUL str
 { if(Reader.MyLha.Vars.find(*$5)!=Reader.MyLha.Vars.label.size())

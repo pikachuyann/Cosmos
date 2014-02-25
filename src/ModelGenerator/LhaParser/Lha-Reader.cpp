@@ -184,6 +184,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 	for(size_t v =0 ; v< MyLha.Vars.type.size(); v++){
 		if(MyLha.Vars.type[v] == COLOR_VARIABLE){
 			LhaCppFile << "\t" << MyLha.MyGspn->colClasses[MyLha.Vars.colorDomain[v]].cname() << " " << MyLha.Vars.label[v] << ";\n";
+        }else if(MyLha.Vars.type[v] == INT_INDEXED_DISC_ARRAY){
+            LhaCppFile << "\tdouble "<< MyLha.Vars.label[v];
+            LhaCppFile << "[ " << MyLha.Vars.colorDomain[v] << " ];" << endl;
 		}else if(MyLha.Vars.colorDomain[v] != UNCOLORED_DOMAIN){
 			LhaCppFile << "\tdouble "<< MyLha.Vars.label[v];
 			colorDomain coldom = MyLha.MyGspn->colDoms[MyLha.Vars.colorDomain[v]];
@@ -261,8 +264,8 @@ void Lha_Reader::WriteFile(parameters& P) {
 		for (size_t i = 0; i < MyLha.LocLabel.size(); i++)
 			LhaCppFile << "    LocLabel[" << i << "]=\"" << MyLha.LocLabel[i] << "\";" << endl;
 		
-		for (size_t i = 0; i < MyLha.StrLocProperty.size(); i++)
-			LhaCppFile << "    StrLocProperty[" << i << "]=\"" << MyLha.StrLocProperty[i] << "\";" << endl;
+		for (size_t i = 0; i < MyLha.FuncLocProperty.size(); i++)
+			LhaCppFile << "    StrLocProperty[" << i << "]=\"" << MyLha.FuncLocProperty[i] << "\";" << endl;
 	}
 	
     for (map <string, int>::iterator it = MyLha.EdgeIndex.begin(); it != MyLha.EdgeIndex.end(); it++)
@@ -530,11 +533,7 @@ void Lha_Reader::WriteFile(parameters& P) {
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
 		stringstream newcase;
         int k = 0;
-		for (size_t v = 0; v < MyLha.NbVar; v++)
-            if (MyLha.FuncEdgeUpdates[e][v] != "") {
-                k++;
-                break;
-            }
+		for (size_t v = 0; v < MyLha.NbVar; v++)if (MyLha.FuncEdgeUpdates[e][v] != "")k++;
 		if(k>0 || P.CountTrans){
 			//LhaCppFile << "     case " << e << ": // ";
 			//LhaCppFile << MyLha.LocLabel[MyLha.Edge[e].Source] << " -> " << MyLha.LocLabel[MyLha.Edge[e].Target] << endl;
@@ -545,15 +544,22 @@ void Lha_Reader::WriteFile(parameters& P) {
             if (k==1) {
                 for (size_t v = 0; v < MyLha.NbVar; v++)
 					if (MyLha.FuncEdgeUpdates[e][v] != ""){
-						newcase << "         Vars->" << MyLha.Vars.label[v] << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
+						newcase << "         Vars->" << MyLha.Vars.label[v];
+                        if(MyLha.Vars.type[v] ==INT_INDEXED_DISC_ARRAY)
+                            newcase << "[" << MyLha.FuncEdgeUpdatesIndex[e][v] << "]";
+                        newcase << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
 					}
             } else if (k > 1) {
+                newcase << "         *tempVars = *Vars;" << endl;
 				for (size_t v = 0; v < MyLha.NbVar; v++)
 					if (MyLha.FuncEdgeUpdates[e][v] != ""){
-						newcase << "         tempVars->" << MyLha.Vars.label[v] << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
-					}else{
+						newcase << "         tempVars->" << MyLha.Vars.label[v];
+                        if(MyLha.Vars.type[v] ==INT_INDEXED_DISC_ARRAY)
+                            newcase << "[" << MyLha.FuncEdgeUpdatesIndex[e][v] << "]";
+                        newcase << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
+					}/*else{
 						newcase << "         tempVars->" << MyLha.Vars.label[v] << "=Vars->" << MyLha.Vars.label[v] << ";" << endl;
-					}
+					}*/
 				newcase << "\t\tstd::swap(Vars,tempVars);\n";
 				
 			}

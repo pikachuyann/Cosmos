@@ -619,7 +619,6 @@ void MyLhaModelHandler::on_read_node(const XmlString& id,
 		string* inv = new string("");
 		eval_expr(&markdep, inv, attributes.find("invariant")->second.begin().begin());
         if((P.verbose-3)>1)cout << "invariant: " << *inv << endl;
-		MyLHA->StrLocProperty.push_back(*inv);
 		MyLHA->FuncLocProperty.push_back(*inv);
 		
 		treeSI itflow = attributes.find("flows")->second.begin();

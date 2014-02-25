@@ -52,6 +52,8 @@ typedef struct _LhaEdge LhaEdge;
 #define CONTINIOUS_VARIABLE 0
 #define DISCRETE_VARIABLE 1
 #define COLOR_VARIABLE 2
+#define INT_INDEXED_DISC_ARRAY 3
+#define COLOR_INDEXED_ARRAY 4
 
 struct variables {
 	vector<int> type;
@@ -77,8 +79,6 @@ struct LhaType {
 	
     map <string, int> LocIndex; //for a given Location label returns its index among {0, 1, ..., NLoc-1}
     vector <string> LocLabel;
-	
-    vector <string> StrLocProperty;
     vector <string> FuncLocProperty;
 	
 	
@@ -89,6 +89,7 @@ struct LhaType {
     vector <string> EdgeConstraints;
     vector < set<string> > EdgeActions; //return the set of actions associated for a given edge e, EdgeActions[e]{a1,a2, ...}
     vector < vector < string > > FuncEdgeUpdates;
+    vector < vector < string > > FuncEdgeUpdatesIndex;
     vector <string> StrEdgeUpdates;
 	
 	vector <string> unTimeEdgeConstraints;

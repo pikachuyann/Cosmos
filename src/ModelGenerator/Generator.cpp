@@ -419,8 +419,9 @@ void generateSamplingLHA(Gspn_Reader &gReader){
 	lhastr << "VariablesList = {time";
 	for (const auto &itt : gReader.MyGspn.placeStruct) {
 		if(itt.isTraced){
+            lhastr << ", PLVARACC_" << itt.name;
             for (size_t i = 0; i < nbsample ; ++i ) {
-                lhastr<< ", PLVAR_" << i << "_" << itt.name;
+                lhastr << ",DISC PLVAR_" << i << "_" << itt.name;
             }
 			//if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
 			//	gReader.iterateDom("", "_", "","","","" ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
@@ -452,7 +453,7 @@ void generateSamplingLHA(Gspn_Reader &gReader){
         lhastr << "(l" << i <<", TRUE, (time:1";
         for (const auto &itt : gReader.MyGspn.placeStruct)
             if(itt.isTraced){
-                lhastr<< ", PLVAR_"<< i << "_" << itt.name << ": "<< itt.name << "* invT2 " ;
+                lhastr<< ", PLVARACC_" << itt.name << ": "<< itt.name << "* invT2 " ;
                 /*if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
                  gReader.iterateDom("", "_", "","","","," ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string &str2){
                  lhastr << ", PLVAR_" << itt.name << str << ": " << itt.name << "[" << str2 <<"]* invT ";
@@ -464,7 +465,12 @@ void generateSamplingLHA(Gspn_Reader &gReader){
 	lhastr << "(l"<< nbsample <<", TRUE , (time:1));};\n";
 	lhastr << "Edges={";
     for (size_t i = 0; i < nbsample ; ++i ) {
-        lhastr << "((l" << i << ",l"<< i <<"),ALL,time<= invT ,#);((l"<< i <<",l"<< i+1<<"),#,time=invT ,{time=0});"<< endl;
+        lhastr << "((l" << i << ",l"<< i <<"),ALL,time<= invT ,#);((l"<< i <<",l"<< i+1<<"),#,time=invT ,{time=0";
+        for (const auto &itt : gReader.MyGspn.placeStruct)if(itt.isTraced){
+            lhastr << ", PLVARACC_" << itt.name << " = 0.0 ";
+            lhastr << ", PLVAR_" << i << "_" << itt.name << "=PLVARACC_" << itt.name;
+        }
+        lhastr << "});"<< endl;
     }
 
 	lhastr << "};";
