@@ -395,7 +395,7 @@ void result::printGnuplot(){
 		//if(P.verbose>2)cout << combicmd << endl;
 		//system(combicmd.c_str());
 		
-		combicmd = P.Path + "linecombinator " + P.datatrace + " " + P.tmpPath + "/tmpdatafilecomb.dat";
+		combicmd = P.Path + "linecombinator " + P.datatrace + " " + P.tmpPath + "/tmpdatafilecomb.dat " + to_string(MeanM2->I);
 		if(P.verbose>2)cout << combicmd << endl;
 		systemsigsafe(combicmd.c_str());
 		cout << "system returned" << endl;
