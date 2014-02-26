@@ -145,7 +145,7 @@ int main(int argc, char** argv) {
 	
 	// Fill the P structure from the command line
 	P.parseCommandLine(argc,argv);
-	
+
 	//Start the timer for build time.
 	gettimeofday(&startbuild, NULL);
 	
@@ -165,7 +165,11 @@ int main(int argc, char** argv) {
 	}
 	if(P.verbose>2)cout << "Temporary directory set to:" << P.tmpPath << endl;
 	atexit(cleanTmp);
-	
+
+    if(P.generateLHA==2 && P.dataPDFCDF.empty())
+        P.dataPDFCDF = P.tmpPath+"/defaultOutput.dat";
+
+
 	//Find the path to the directory containing the binary of cosmos.
 	if(P.Path.compare("")==0){
 		string st = argv[0];

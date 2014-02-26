@@ -338,7 +338,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 				case  10 : seed = atoi(optarg); break;
 				case  13 : externalHASL = optarg; break;
 				case  14 : 
-                                	loopLHA = atof(optarg);
+                    loopLHA = atof(optarg);
 					generateLHA = 1;
 					PathLha = "LOOP";
 				break;

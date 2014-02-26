@@ -85,7 +85,7 @@ result::result():HaslResult(P.HaslFormulasname.size()) {
 			} else {
 				//fputs("set terminal pngcairo font 'arial,10' size 1024, 768\n",gnuplotstream);
 			}
-			fputs("set grid lc rgb 'black'\n",gnuplotstream);
+			fputs("set grid lt 4 lc rgb '#909090'\n",gnuplotstream);
 			fputs("set style fill solid 0.2 noborder\n",gnuplotstream);
 			flushgnuplot();
 		}

@@ -555,24 +555,37 @@ void Lha_Reader::WriteFile(parameters& P) {
             if (k==1) {
                 for (size_t v = 0; v < MyLha.NbVar; v++)
 					if (MyLha.FuncEdgeUpdates[e][v] != ""){
-						newcase << "         Vars->" << MyLha.Vars.label[v];
+						newcase << "\t\tVars->" << MyLha.Vars.label[v];
                         if(MyLha.Vars.type[v] ==INT_INDEXED_DISC_ARRAY)
-                            newcase << "[" << MyLha.FuncEdgeUpdatesIndex[e][v] << "]";
+                            newcase << "[ (int) " << MyLha.FuncEdgeUpdatesIndex[e][v] << "]";
                         newcase << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
 					}
             } else if (k > 1) {
-                newcase << "         *tempVars = *Vars;" << endl;
+                //newcase << "         *tempVars = *Vars;" << endl;
 				for (size_t v = 0; v < MyLha.NbVar; v++)
 					if (MyLha.FuncEdgeUpdates[e][v] != ""){
-						newcase << "         tempVars->" << MyLha.Vars.label[v];
+                        if(MyLha.Vars.type[v] ==INT_INDEXED_DISC_ARRAY){
+                            newcase << "\t\tconst int tmp_INDEX_" << MyLha.Vars.label[v];
+                            newcase << "= " << MyLha.FuncEdgeUpdatesIndex[e][v] << ";"<< endl;
+                        }
+						newcase << "\t\ttempVars->" << MyLha.Vars.label[v];
                         if(MyLha.Vars.type[v] ==INT_INDEXED_DISC_ARRAY)
-                            newcase << "[ (int)" << MyLha.FuncEdgeUpdatesIndex[e][v] << "]";
+                            newcase << "[ tmp_INDEX_" << MyLha.Vars.label[v] << "]";
                         newcase << "=" << MyLha.FuncEdgeUpdates[e][v] << ";" << endl;
 					}/*else{
 						newcase << "         tempVars->" << MyLha.Vars.label[v] << "=Vars->" << MyLha.Vars.label[v] << ";" << endl;
 					}*/
-				newcase << "\t\tstd::swap(Vars,tempVars);\n";
-				
+				//newcase << "\t\tstd::swap(Vars,tempVars);\n";
+				for (size_t v = 0; v < MyLha.NbVar; v++)
+					if (MyLha.FuncEdgeUpdates[e][v] != ""){
+                        newcase << "\t\tVars->" << MyLha.Vars.label[v];
+                        if(MyLha.Vars.type[v] ==INT_INDEXED_DISC_ARRAY)
+                            newcase << "[ tmp_INDEX_" << MyLha.Vars.label[v] << "]";
+                        newcase << " = tempVars->"<< MyLha.Vars.label[v];
+                        if(MyLha.Vars.type[v] ==INT_INDEXED_DISC_ARRAY)
+                            newcase << "[ tmp_INDEX_" << MyLha.Vars.label[v] << "]";
+                        newcase << ";"<<endl;
+                    }
 			}
 			//LhaCppFile << "         DoEdgeUpdates_" << e << "( Marking);" << endl;
 			newcase << "         }"<< endl;
