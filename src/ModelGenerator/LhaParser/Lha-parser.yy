@@ -190,7 +190,8 @@ declarations:  Sizes Constants Lists HaslExps
 
 
 
-IntMarkingFormula: ival {sprintf($$,"%d",$1);}
+IntMarkingFormula:
+ival {sprintf($$,"%i",$1);}
 | str {
 	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
 	{std::ostringstream s; s<<" Marking.P->_PL_"<< $1->c_str()<<" ";
@@ -710,10 +711,11 @@ Update: str EQ RealVarMarkingFormula {
 	else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
 }
 | str LSB IntMarkingFormula RSB EQ RealVarMarkingFormula {
-	if(Reader.MyLha.Vars.find(*$1)!=Reader.MyLha.Vars.label.size())
-    {
-        FuncUpdateVector[Reader.MyLha.Vars.find(*$1)]= $6;
-        FuncUpdateVectorIndex[Reader.MyLha.Vars.find(*$1)]= *$3;
+    size_t varin = Reader.MyLha.Vars.find(*$1);
+	if(varin != Reader.MyLha.Vars.label.size()){
+        FuncUpdateVector[varin]= $6;
+        FuncUpdateVectorIndex[varin]= $3;
+        //cout << "var:" << *$1 << "\tindex:" << $3 << "\tupdate:" << $6<< endl;
     }else{cout<<*$1<<" is not  variable label"<<endl;YYABORT;}
 }
 
