@@ -270,7 +270,7 @@ bool Simulator::transitionSink(size_t ){
 bool Simulator::SimulateOneStep(){
 	static const abstractBinding dummyBinding;
 	
-	AutEdge AE = A.GetEnabled_A_Edges( N.Marking);
+	AutEdge AE = A.GetEnabled_A_Edges( N.Marking,dummyBinding);
 	
     //If there is no enabled transition in the Petri net
     //try to reach an accepting state by using autonomous edge of
@@ -288,7 +288,7 @@ bool Simulator::SimulateOneStep(){
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
-			} else AE = A.GetEnabled_A_Edges( N.Marking);
+			} else AE = A.GetEnabled_A_Edges( N.Marking,dummyBinding);
 		}
 		Result.first=false;
 		return false;
@@ -322,7 +322,7 @@ bool Simulator::SimulateOneStep(){
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
-			} else AE = A.GetEnabled_A_Edges( N.Marking);
+			} else AE = A.GetEnabled_A_Edges( N.Marking,dummyBinding);
 		}
 		if(verbose>3){
 			//cerr << "|^^^^^^^^^^^^^^^^^^^^"<< endl;

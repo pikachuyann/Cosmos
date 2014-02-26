@@ -416,7 +416,7 @@ void generateSamplingLHA(Gspn_Reader &gReader){
 	lhastr << "const double invT=" << P.sampleResol << ";\n";
     lhastr << "const double invT2=" << 1/P.sampleResol << ";\n";
 
-	lhastr << "VariablesList = {time";
+	lhastr << "VariablesList = {time,time2, DISC counter";
 	for (const auto &itt : gReader.MyGspn.placeStruct)if(itt.isTraced){
         lhastr << ", PLVARACC_" << itt.name;
         lhastr << ", DISC PLVAR_" << itt.name << "["<< nbsample<< "]";
@@ -424,11 +424,12 @@ void generateSamplingLHA(Gspn_Reader &gReader){
         //	gReader.iterateDom("", "_", "","","","" ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
 			//		lhastr << ", PLVAR_" + itt.name + str;
 			//	});
-			//}
+
+		//}
 	}
-	lhastr<<"} ;\nLocationsList = {";
-    for (size_t i = 0; i < nbsample ; ++i ) lhastr << "l" << i << ", ";
-    lhastr << "l"<< nbsample << "};\n";
+	lhastr<<"} ;\nLocationsList = {l0,";
+    //for (size_t i = 0; i < nbsample ; ++i ) lhastr << "l" << i << ", ";
+    lhastr << "l2 };\n";
 
 	for (const auto &itt : gReader.MyGspn.placeStruct) {
 		if(itt.isTraced)for (size_t i = 0; i < nbsample ; ++i ) {
@@ -441,10 +442,10 @@ void generateSamplingLHA(Gspn_Reader &gReader){
         }
 	}
 	lhastr << P.externalHASL << endl;
-	lhastr << "InitialLocations={l0};\nFinalLocations={l"<< nbsample <<"};\n";
+	lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
 	lhastr << "Locations={" << endl;
-    for (size_t i = 0; i < nbsample ; ++i ) {
-        lhastr << "(l" << i <<", TRUE, (time:1";
+    //for (size_t i = 0; i < nbsample ; ++i ) {
+        lhastr << "(l" << 0 <<", TRUE , (time:1,time2:1";
         for (const auto &itt : gReader.MyGspn.placeStruct)
             if(itt.isTraced){
                 lhastr<< ", PLVARACC_" << itt.name << ": "<< itt.name << "* invT2 " ;
@@ -455,17 +456,20 @@ void generateSamplingLHA(Gspn_Reader &gReader){
                  }*/
             }
         lhastr << "));" << endl;
-    }
-	lhastr << "(l"<< nbsample <<", TRUE , (time:1));};\n";
+    //}
+	lhastr << "(l2, TRUE , (time:1,time2:1));};\n";
 	lhastr << "Edges={";
-    for (size_t i = 0; i < nbsample ; ++i ) {
-        lhastr << "((l" << i << ",l"<< i <<"),ALL,time<= invT ,#);((l"<< i <<",l"<< i+1<<"),#,time=invT ,{time=0";
+    //for (size_t i = 0; i < nbsample ; ++i ) {
+        lhastr << "((l0,l0),ALL,time<= invT ,#);";
+        lhastr << "((l0,l0),#,time=invT ,{time=0,counter=counter+1";
         for (const auto &itt : gReader.MyGspn.placeStruct)if(itt.isTraced){
             lhastr << ", PLVARACC_" << itt.name << " = 0.0 ";
-            lhastr << ", PLVAR_" << itt.name << "[" << i<< "]=PLVARACC_" << itt.name;
+            lhastr << ", PLVAR_" << itt.name << "[" << "counter" << "]=PLVARACC_" << itt.name;
         }
-        lhastr << "});"<< endl;
-    }
+    lhastr << "});"<< endl;
+    lhastr << "((l0,l2),# , time2 >= "<< P.loopLHA+P.sampleResol*0.001 << ",#);";
+
+    //}
 
 	lhastr << "};";
 	lhastr.close();

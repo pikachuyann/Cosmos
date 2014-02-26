@@ -88,12 +88,12 @@ int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& Ne
  *	@param Marking is the current marking of the Petri net.
  *	@return the most urgent autonomous edge
  */
-AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking)const {
+AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db)const {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
     for (auto it : Out_A_Edges[CurrentLocation]) {
-        if ((CheckLocation(Edge[it].Target, Marking))) {
+        if (CheckLocation(Edge[it].Target, Marking) && CheckEdgeContraints(it, 0, db, Marking)) {
             t_interval I = GetEdgeEnablingTime(it, Marking);
             if (I.first <= I.second) {
                 if (I.first < Ed.FiringTime) {

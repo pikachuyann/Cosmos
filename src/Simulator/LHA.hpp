@@ -107,7 +107,7 @@ public:
 	/**
 	 * \brief Return an autonomous edge for a given marking.
 	 */
-	AutEdge GetEnabled_A_Edges(const abstractMarking&)const;
+	AutEdge GetEnabled_A_Edges(const abstractMarking&,const abstractBinding&)const;
 	
 	//! update value in the LHA by elapsing time
 	void updateLHA(double DeltaT, const abstractMarking &);

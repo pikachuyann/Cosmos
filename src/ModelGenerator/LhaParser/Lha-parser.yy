@@ -203,7 +203,7 @@ ival {sprintf($$,"%i",$1);}
 	} else {
         size_t vararray = Reader.MyLha.Vars.find(*$1);
         if(vararray!= Reader.MyLha.NbVar && Reader.MyLha.Vars.type[vararray]==DISCRETE_VARIABLE){
-            sprintf($$, " Vars->%s", Reader.MyLha.Vars.label[vararray].c_str() );
+            sprintf($$, " floor(Vars->%s)", Reader.MyLha.Vars.label[vararray].c_str() );
         } else {cout<<"'"<<*$1<<"' is not a place label or a defined constant"<<endl;YYABORT;}
     }
 }
@@ -555,7 +555,8 @@ EDGE: LB LB str COMMA str RB COMMA ACTIONS COMMA CONSTRAINTS COMMA UPDATES RB SE
 		if(SubSet.size()>0) Reader.MyLha.Out_S_Edges[Reader.MyLha.AnEdge.Source].insert(ne);
 		else Reader.MyLha.Out_A_Edges[Reader.MyLha.AnEdge.Source].insert(ne);
 		SubSet.erase(SubSet.begin(),SubSet.end());
-		Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);Reader.MyLha.ConstraintsConstants.push_back(CST);
+		Reader.MyLha.ConstraintsCoeffs.push_back(CoeffsMatrix);
+        Reader.MyLha.ConstraintsConstants.push_back(CST);
 		Reader.MyLha.ConstraintsRelOp.push_back(comp);
 		Reader.MyLha.unTimeEdgeConstraints.push_back("true");
 		vector<string> vs;comp=vs;CST=vs;
