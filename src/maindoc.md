@@ -62,6 +62,6 @@ Then it compiled them and link them to the library to build an executable.
 
 ##Speed history
 
-date        machine  thread trajpers
-6/03/2014   plouf    1      530
-6/03/2014   plouf    2      970
+commit   date        machine  thread trajpers
+a8832fb  6/03/2014   plouf    1      530
+a8832fb  6/03/2014   plouf    2      970
