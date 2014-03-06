@@ -523,7 +523,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
             t1 = findbranchlha(it, "variables/reals/");
 			if (t1 != it.end())
 				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
-					if ((*it2).compare("real")==0) {
+					if(*it2 == "real") {
 						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						MyLHA->Vars.label.push_back(constname);
 						MyLHA->Vars.initialValue.push_back(0.0);
@@ -539,7 +539,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						MyLHA->NbVar++;
 						
 						if((P.verbose-3)>1)cout << "\tcontinuous var " << constname << " index: " << MyLHA->NbVar-1 << " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] <<endl;
-					} else cout << "Unknown variable Type" << *it2 << endl;
+					} else if(*it2 != "")cout << "Unknown variable Type" << *it2 << endl;
 				}
             //cout << "finished realvar" << endl;
             t1 = findbranchlha(it, "variables/discretes/");
@@ -683,10 +683,9 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 		PetriTransitions=Pt;
 		for(map<string, int>::iterator it=MyLHA->TransitionIndex.begin();it!=MyLHA->TransitionIndex.end();it++)
 			PetriTransitions.insert((*it).first);
-		
-		vector < set<int> > vi(MyLHA->NbLoc);
-		MyLHA->Out_S_Edges=vi;
-		MyLHA->Out_A_Edges=vi;
+
+		MyLHA->Out_S_Edges=vector < set<int> >(MyLHA->NbLoc);
+		MyLHA->Out_A_Edges=vector < set<int> >(MyLHA->NbLoc);
 		
 		
 	}
@@ -788,19 +787,25 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 	vector<string> comp;
 	if(SubSet.size()==0){
 		eval_guard(CoeffsMatrix,CST,comp,itguard.begin().begin());
-		if((P.verbose-3)>1){
-			cout << "guard:";
-			for (size_t i=0; i< CoeffsMatrix.size(); i++) {
-				cout << "&(";
-				for (size_t j =0 ; j<CoeffsMatrix[0].size(); j++) {
-					if(CoeffsMatrix[i][j].compare("")>0)
-						cout << "+" << CoeffsMatrix[i][j]<< "* VAR[" <<j<<"] " ;
-				}
-				cout << comp[i] << CST[i]<<")";
-			}
-			cout << endl;
+        stringstream untime;
+        untime << "true";
+        for (size_t i=0; i< CoeffsMatrix.size(); i++) {
+            size_t k=0;
+            for (size_t j =0 ; j<CoeffsMatrix[0].size(); j++)
+                if(CoeffsMatrix[i][j] !="" && MyLHA->Vars.type[j] != CONTINIOUS_VARIABLE)k++;
+            if(k>0){
+                untime << "&& (";
+                for (size_t j =0 ; j<CoeffsMatrix[0].size(); j++) {
+                    if(CoeffsMatrix[i][j]!= "" && MyLHA->Vars.type[j] != CONTINIOUS_VARIABLE)
+                        untime << "+" << CoeffsMatrix[i][j]<< "* Vars->"<<MyLHA->Vars.label[j] <<" " ;
+                }
+                untime << comp[i] << CST[i]<<")";
+            }
+        }
+        if((P.verbose-3)>1){
+			cout << "guard:" << untime.str() << endl;
 		}
-		MyLHA->unTimeEdgeConstraints.push_back("true");
+		MyLHA->unTimeEdgeConstraints.push_back(untime.str());
 	}else{
 		string guard;
 		bool markdep;

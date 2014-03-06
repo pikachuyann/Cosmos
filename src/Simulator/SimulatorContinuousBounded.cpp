@@ -205,19 +205,7 @@ BatchR SimulatorContinuousBounded::RunBatch(){
 		}
         
 	}
-	
-	//rusage ruse;
-	//getrusage(RUSAGE_SELF, &ruse);
-    //cerr << "\033[A\033[2K" << "\033[A\033[2K"
-    //cerr << "Total Time: "<<  ruse.ru_utime.tv_sec + ruse.ru_utime.tv_usec / 1000000.
-    //<< "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl<< endl << endl; 
-    
-	
-    //	cerr << "DIR Result Mean:\t" << (lowtotal +uptotal)/2.0 << endl;
-    //cerr << "DIR Confidence interval:\t ["<< lowtotal <<";"<< uptotal << "]" << endl << endl << endl<< endl << endl<< endl;
 
-    //batchResult.print();
-    //exit(0);
 	return (batchResult);
 }
 

@@ -406,7 +406,7 @@ void generateSamplingLHA(Gspn_Reader &gReader){
     //bool allcolor = false;
     //if (P.tracedPlace == "ALLCOLOR")allcolor= true;
     P.sampleResol = P.loopTransientLHA ;
-    size_t nbsample = ceil((P.loopLHA/P.sampleResol));
+    size_t nbsample = static_cast<size_t>(ceil((P.loopLHA/P.sampleResol)));
 
 	P.PathLha = P.tmpPath + "/samplelha.lha";
 	ofstream lhastr(P.PathLha.c_str() , ios::out | ios::trunc);

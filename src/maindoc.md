@@ -60,3 +60,8 @@ simulator in the temporary directory.
 Then it compiled them and link them to the library to build an executable.
 
 
+##Speed history
+
+date        machine  thread trajpers
+6/03/2014   plouf    1      530
+6/03/2014   plouf    2      970

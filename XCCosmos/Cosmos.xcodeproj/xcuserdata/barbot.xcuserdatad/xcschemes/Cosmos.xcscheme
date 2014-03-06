@@ -83,11 +83,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--max-run"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "10"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Downloads/repressilatorMS.grml"
@@ -147,7 +147,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/GitSvnCosmos/trunk/Examples/TandemQN/tqn.gspn"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/signallingCascade/RareEventUntil.lha"
@@ -183,7 +183,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--loop 60"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--output-trace"
@@ -192,6 +192,14 @@
          <CommandLineArgument
             argument = "testtrace.dat"
             isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/Cosmos/Examples/BlackJack/Deck.grml"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/Cosmos/Examples/BlackJack/model_0.3.grml"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/philosophe/philo2.grml"

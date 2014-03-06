@@ -414,9 +414,7 @@ void Lha_Reader::WriteFile(parameters& P) {
                     }
 				}
 			}
-			if(MyLha.unTimeEdgeConstraints[e].compare("true")!=0)
-				newcase << "\t\tif(!(" << MyLha.unTimeEdgeConstraints[e] << "))return false;" << endl;
-			newcase << "         return true; " << endl;
+            newcase << "\t\treturn (" << MyLha.unTimeEdgeConstraints[e] << ");" << endl;
 			newcase << "     }" << endl;
 		}else{
 			newcase << "\treturn true;" << endl;
