@@ -24,14 +24,15 @@
  *******************************************************************************
  */
 
+#include <sys/time.h>
+#include <sys/resource.h>
 
-#include "parameters.hpp"
-#include "../Simulator/BatchR.hpp"
 #include <istream>
 #include <fstream>
 #include <ostream>
-#include <sys/time.h>
-#include <sys/resource.h>
+
+#include "parameters.hpp"
+#include "../Simulator/BatchR.hpp"
 
 #ifndef Cosmos_result_h
 #define Cosmos_result_h
@@ -87,13 +88,13 @@ private:
 	//parameters P;
 	
 	//! timestamps for the strart and end of the simulation.
-	timeval start, end;
+	std::chrono::system_clock::time_point start, end;
 	
 	//! timestanmps fot the last time the commandline where updated.
-	timeval lastprint;
+	std::chrono::system_clock::time_point lastprint;
 	
 	//! timestanmps fot the last time the gnuplot screen where updated.
-	timeval lastdraw;
+	std::chrono::system_clock::time_point lastdraw;
 	
 	//! Total cpu time.
 	double cpu_time_used;

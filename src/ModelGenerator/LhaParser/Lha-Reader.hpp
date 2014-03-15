@@ -28,15 +28,13 @@
 #include <string>
 #include <map>
 #include <set>
+#include <vector>
+#include <algorithm>
 
 #include "../parameters.hpp"
 #include "Lha-parser.hh"
 #include "../HaslFormula.hpp"
 #include "../GspnParser/Gspn-Reader.hpp"
-#include <vector>
-#include <algorithm>
-#include <map>
-#include <set>
 
 
 using namespace std;

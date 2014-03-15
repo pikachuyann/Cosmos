@@ -330,14 +330,26 @@ void Lha_Reader::WriteFile(parameters& P) {
         LhaCppFile << "    EdgeActions=vector< set <string> >("<< MyLha.Edge.size() <<");" << endl;
 	}
 
-    LhaCppFile << "    ActionEdges=vector < vector < set <int> > >(NbLoc,vector< set<int> >("<< MyLha.TransitionIndex.size()<< "));" << endl;
-    for (size_t e = 0; e < MyLha.Edge.size(); e++) {
-        LhaCppFile << "{" << endl;
-        for (set<string>::iterator it = MyLha.EdgeActions[e].begin(); it != MyLha.EdgeActions[e].end(); it++) {
-            if(P.StringInSpnLHA)LhaCppFile << "    EdgeActions[" << e << "].insert(\"" << *it << "\");" << endl;
-            LhaCppFile << "    ActionEdges[" << MyLha.Edge[e].Source << "][" << MyLha.TransitionIndex[*it] << "].insert(" << e << ");" << endl;
-        }
-        LhaCppFile << "}" << endl;
+    LhaCppFile << "    ActionEdges=vector < vector < vector<int> > >(NbLoc,vector< vector<int> >("<< MyLha.TransitionIndex.size()<< "));" << endl;
+    for (size_t es =0 ; es < MyLha.NbLoc; es++){
+        //stringstream accset2;
+        for (auto it : MyLha.TransitionIndex){
+            //size_t count = 0;
+            //stringstream accset;
+            for (size_t e = 0; e < MyLha.Edge.size(); e++)
+                if(MyLha.Edge[e].Source == es
+                   && MyLha.EdgeActions[e].count(it.first)>0){
+                    //if(count>0) accset << ", ";
+                    //count++;
+                    //accset << e;
+                    if(P.StringInSpnLHA)LhaCppFile << "    EdgeActions[" << e << "].insert(\"" << it.first << "\");" << endl;
+                    LhaCppFile << "    ActionEdges[" << es << "][" << it.second << "].push_back(" << e << ");" << endl;
+                }
+            //LhaCppFile << "   {int tabacc[] = { "<< count << accset.str() <<"};" << endl;
+            //accset2 << "{" << accset.str() << "} ,";
+            //LhaCppFile << "   ActionEdges[" << es << "][" << it.second << "] = { "<< accset.str() <<"};" << endl;
+            }
+        //LhaCppFile << "   ActionEdges[" << es << "] = { " << accset2.str() << "};"<<endl;
     }
 
     LhaCppFile << "    LinForm= vector<double>("<< MyLha.LinearForm.size() <<",0.0);" << endl;

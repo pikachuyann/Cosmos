@@ -62,6 +62,9 @@ Then it compiled them and link them to the library to build an executable.
 
 ##Speed history
 
-commit   date        machine  thread trajpers
-a8832fb  6/03/2014   plouf    1      530
-a8832fb  6/03/2014   plouf    2      970
+commit   | date       | machine  |thread | trajectories per second
+---------|------------|----------|-------|-------------------------
+a8832fb  | 6/03/2014  | plouf    | 1     | 530
+a8832fb  | 6/03/2014  | plouf    | 2     | 970
+a8832fb  | 6/03/2014  | sume     | 1     | 510
+a8832fb  | 6/03/2014  | sume     | 6     | 3000

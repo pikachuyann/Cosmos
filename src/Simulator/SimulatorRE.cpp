@@ -241,6 +241,7 @@ void SimulatorRE::getParams(size_t Id,const abstractBinding& b){
 	N.GetDistParameters(Id,b);
 	N.ParamDistr[1]= N.ParamDistr[0];
 	N.ParamDistr[0]= ComputeDistr( Id, b, N.ParamDistr[0]);
+    //N.ParamDistr[0]= N.ParamDistr[1]; /////////////////////////////////////////////////to remove
 }
 
 

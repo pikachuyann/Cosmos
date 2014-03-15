@@ -76,101 +76,67 @@ LHA::LHA(){
     Out_S_Edges[5].insert(15);
     Out_S_Edges[5].insert(16);
 }
-    ActionEdges=vector < vector < set <int> > >(NbLoc,vector< set<int> >(8));
-{
-    ActionEdges[0][4].insert(0);
-    ActionEdges[0][2].insert(0);
-    ActionEdges[0][3].insert(0);
-    ActionEdges[0][0].insert(0);
-    ActionEdges[0][1].insert(0);
-    ActionEdges[0][7].insert(0);
-    ActionEdges[0][6].insert(0);
-    ActionEdges[0][5].insert(0);
-}
-{
-}
-{
-    ActionEdges[1][4].insert(2);
-    ActionEdges[1][2].insert(2);
-    ActionEdges[1][3].insert(2);
-    ActionEdges[1][0].insert(2);
-    ActionEdges[1][1].insert(2);
-    ActionEdges[1][6].insert(2);
-    ActionEdges[1][5].insert(2);
-}
-{
-    ActionEdges[1][7].insert(3);
-}
-{
-    ActionEdges[2][2].insert(4);
-    ActionEdges[2][3].insert(4);
-    ActionEdges[2][0].insert(4);
-    ActionEdges[2][1].insert(4);
-    ActionEdges[2][7].insert(4);
-    ActionEdges[2][6].insert(4);
-    ActionEdges[2][5].insert(4);
-}
-{
-    ActionEdges[2][4].insert(5);
-}
-{
-    ActionEdges[3][4].insert(6);
-    ActionEdges[3][3].insert(6);
-    ActionEdges[3][0].insert(6);
-    ActionEdges[3][1].insert(6);
-    ActionEdges[3][7].insert(6);
-    ActionEdges[3][6].insert(6);
-    ActionEdges[3][5].insert(6);
-}
-{
-    ActionEdges[2][4].insert(7);
-}
-{
-    ActionEdges[3][2].insert(8);
-}
-{
-    ActionEdges[3][2].insert(9);
-}
-{
-    ActionEdges[4][0].insert(10);
-}
-{
-    ActionEdges[4][4].insert(11);
-    ActionEdges[4][2].insert(11);
-    ActionEdges[4][3].insert(11);
-    ActionEdges[4][1].insert(11);
-    ActionEdges[4][7].insert(11);
-    ActionEdges[4][6].insert(11);
-    ActionEdges[4][5].insert(11);
-}
-{
-    ActionEdges[4][4].insert(12);
-    ActionEdges[4][2].insert(12);
-    ActionEdges[4][3].insert(12);
-    ActionEdges[4][0].insert(12);
-    ActionEdges[4][1].insert(12);
-    ActionEdges[4][7].insert(12);
-    ActionEdges[4][6].insert(12);
-    ActionEdges[4][5].insert(12);
-}
-{
-    ActionEdges[4][0].insert(13);
-}
-{
-    ActionEdges[5][3].insert(14);
-}
-{
-    ActionEdges[5][4].insert(15);
-    ActionEdges[5][2].insert(15);
-    ActionEdges[5][0].insert(15);
-    ActionEdges[5][1].insert(15);
-    ActionEdges[5][7].insert(15);
-    ActionEdges[5][6].insert(15);
-    ActionEdges[5][5].insert(15);
-}
-{
-    ActionEdges[5][3].insert(16);
-}
+    ActionEdges=vector < vector < vector<int> > >(NbLoc,vector< vector<int> >(8));
+    ActionEdges[0][4].push_back(0);
+    ActionEdges[0][2].push_back(0);
+    ActionEdges[0][3].push_back(0);
+    ActionEdges[0][0].push_back(0);
+    ActionEdges[0][1].push_back(0);
+    ActionEdges[0][7].push_back(0);
+    ActionEdges[0][6].push_back(0);
+    ActionEdges[0][5].push_back(0);
+    ActionEdges[1][4].push_back(2);
+    ActionEdges[1][2].push_back(2);
+    ActionEdges[1][3].push_back(2);
+    ActionEdges[1][0].push_back(2);
+    ActionEdges[1][1].push_back(2);
+    ActionEdges[1][7].push_back(3);
+    ActionEdges[1][6].push_back(2);
+    ActionEdges[1][5].push_back(2);
+    ActionEdges[2][4].push_back(5);
+    ActionEdges[2][4].push_back(7);
+    ActionEdges[2][2].push_back(4);
+    ActionEdges[2][3].push_back(4);
+    ActionEdges[2][0].push_back(4);
+    ActionEdges[2][1].push_back(4);
+    ActionEdges[2][7].push_back(4);
+    ActionEdges[2][6].push_back(4);
+    ActionEdges[2][5].push_back(4);
+    ActionEdges[3][4].push_back(6);
+    ActionEdges[3][2].push_back(8);
+    ActionEdges[3][2].push_back(9);
+    ActionEdges[3][3].push_back(6);
+    ActionEdges[3][0].push_back(6);
+    ActionEdges[3][1].push_back(6);
+    ActionEdges[3][7].push_back(6);
+    ActionEdges[3][6].push_back(6);
+    ActionEdges[3][5].push_back(6);
+    ActionEdges[4][4].push_back(11);
+    ActionEdges[4][4].push_back(12);
+    ActionEdges[4][2].push_back(11);
+    ActionEdges[4][2].push_back(12);
+    ActionEdges[4][3].push_back(11);
+    ActionEdges[4][3].push_back(12);
+    ActionEdges[4][0].push_back(10);
+    ActionEdges[4][0].push_back(12);
+    ActionEdges[4][0].push_back(13);
+    ActionEdges[4][1].push_back(11);
+    ActionEdges[4][1].push_back(12);
+    ActionEdges[4][7].push_back(11);
+    ActionEdges[4][7].push_back(12);
+    ActionEdges[4][6].push_back(11);
+    ActionEdges[4][6].push_back(12);
+    ActionEdges[4][5].push_back(11);
+    ActionEdges[4][5].push_back(12);
+    ActionEdges[5][4].push_back(15);
+    ActionEdges[5][2].push_back(15);
+    ActionEdges[5][3].push_back(14);
+    ActionEdges[5][3].push_back(16);
+    ActionEdges[5][0].push_back(15);
+    ActionEdges[5][1].push_back(15);
+    ActionEdges[5][7].push_back(15);
+    ActionEdges[5][6].push_back(15);
+    ActionEdges[5][5].push_back(15);
     LinForm= vector<double>(1,0.0);
     OldLinForm=vector<double>(1,0.0);
     LhaFunc=vector<double>(1,0.0);
@@ -234,59 +200,51 @@ bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const a
 switch (ed){
 	case 10:	//
 {
-		if(!(((Vars->modf !=b.P->f.c0) && (Vars->tsend<=maxsndtime))))return false;
-         return true; 
+		return (((Vars->modf !=b.P->f.c0) && (Vars->tsend<=maxsndtime)));
      }
 
 		break;
 	case 9:	//
 	case 14:	//
 {
-		if(!(((Vars->modf !=b.P->f.c0) || (Vars->mods !=b.P->s.c0))))return false;
-         return true; 
+		return (((Vars->modf !=b.P->f.c0) || (Vars->mods !=b.P->s.c0)));
      }
 
 		break;
 	case 12:	//
 {
-		if(!(((Vars->modf==b.P->f.c0) && ((Vars->tsend<=maxsndtime) && (Marking.P->_PL_Message.card() ==0)))))return false;
-         return true; 
+		return (((Vars->modf==b.P->f.c0) && ((Vars->tsend<=maxsndtime) && (Marking.P->_PL_Message.card() ==0))));
      }
 
 		break;
 	case 13:	//
 {
-		if(!(((Vars->modf==b.P->f.c0) && ((Vars->tsend<=maxsndtime) && (Marking.P->_PL_Message.card() >0)))))return false;
-         return true; 
+		return (((Vars->modf==b.P->f.c0) && ((Vars->tsend<=maxsndtime) && (Marking.P->_PL_Message.card() >0))));
      }
 
 		break;
 	case 8:	//
 	case 16:	//
 {
-		if(!(((Vars->modf==b.P->f.c0) && (Vars->mods==b.P->s.c0))))return false;
-         return true; 
+		return (((Vars->modf==b.P->f.c0) && (Vars->mods==b.P->s.c0)));
      }
 
 		break;
 	case 5:	//
 {
-		if(!(((Vars->mods !=b.P->s.c0) || (Vars->modf !=b.P->f.c0))))return false;
-         return true; 
+		return (((Vars->mods !=b.P->s.c0) || (Vars->modf !=b.P->f.c0)));
      }
 
 		break;
 	case 7:	//
 {
-		if(!(((Vars->mods==b.P->s.c0) && ((Vars->modf==b.P->f.c0) && (Vars->tupdate<=threshold)))))return false;
-         return true; 
+		return (((Vars->mods==b.P->s.c0) && ((Vars->modf==b.P->f.c0) && (Vars->tupdate<=threshold))));
      }
 
 		break;
 	case 11:	//
 {
-		if(!((Vars->tsend<=maxsndtime)))return false;
-         return true; 
+		return ((Vars->tsend<=maxsndtime));
      }
 
 		break;
@@ -349,15 +307,18 @@ void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBin
 switch (ed){
 	case 8:	//
          {
-         Vars->tsend=0;
+		Vars->tsend=0;
          }
 
 		break;
 	case 3:	//
          {
-         Vars->tupdate=0;
-         Vars->modf=b.P->f.c0;
-         Vars->mods=b.P->s.c0;
+		tempVars->tupdate=0;
+		tempVars->modf=b.P->f.c0;
+		tempVars->mods=b.P->s.c0;
+		Vars->tupdate = tempVars->tupdate;
+		Vars->modf = tempVars->modf;
+		Vars->mods = tempVars->mods;
          }
 
 		break;
@@ -379,6 +340,5 @@ void LHA::UpdateLhaFuncLast(){
 void LHA::UpdateFormulaVal(){
 
     FormulaVal[0]=LhaFunc[0];
-
 }
 

@@ -41,7 +41,7 @@
 parameters::parameters():
 verbose(2),
 interactive(false),
-updatetime(0.1),
+updatetime(100),
 seed(0),
 Njob(1),
 
@@ -255,7 +255,8 @@ void parameters::parseCommandLine(int argc, char** argv){
 				StringInSpnLHA =true;
 				break;
 				
-				case 'u':updatetime=atof(optarg);	break;
+				case 'u':updatetime= chrono::duration_cast<chrono::milliseconds>(chrono::duration<double> (atof(optarg)));
+                break;
                 
 				case 'g':GMLinput = true;          break;
                 

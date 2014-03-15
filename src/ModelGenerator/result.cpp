@@ -32,6 +32,9 @@
 #include <cstdlib>
 #include <iomanip>
 #include <tuple>
+#include <ctime>
+#include <ratio>
+#include <chrono>
 
 #include "result.hpp"
 #include "HaslFormula.hpp"
@@ -42,9 +45,9 @@ using namespace std;
 result::result():HaslResult(P.HaslFormulasname.size()) {
     //P= Q;
 	gnuplotstream= NULL;
-	gettimeofday(&lastprint,NULL);
-	gettimeofday(&lastdraw,NULL);
-	
+    lastprint = chrono::system_clock::now();
+    lastdraw = chrono::system_clock::now();
+
     MeanM2 = new BatchR(P.nbAlgebraic);
 	
     RelErr = 0;
@@ -90,9 +93,9 @@ result::result():HaslResult(P.HaslFormulasname.size()) {
 			flushgnuplot();
 		}
 	}
-    
-	gettimeofday(&start, NULL);
-	gettimeofday(&lastprint, NULL);
+
+    start = chrono::system_clock::now();;
+    lastprint = chrono::system_clock::now();
     if(P.verbose>0)cout << endl << endl << endl;
 }
 
@@ -161,10 +164,8 @@ void result::printPercent(double i, double j){
 }
 
 void result::printProgress(){
-	timeval current;
-	gettimeofday(&current,NULL);
-	if((current.tv_sec-lastprint.tv_sec +
-		(current.tv_usec-lastprint.tv_usec)/1000000.0) < P.updatetime)
+	auto current = chrono::system_clock::now();
+	if( chrono::duration_cast<chrono::milliseconds>(current - lastprint) < P.updatetime)
 		return;
 	lastprint = current;
 	if(P.alligatorMode){
@@ -178,13 +179,13 @@ void result::printProgress(){
     cout << "Total paths: ";
 	cout << setw(10) << MeanM2->I << "\t Accepted paths: ";
 	cout << setw(10) << MeanM2->Isucc << "\t Wall-clock time: ";
-	double wallclock = (current.tv_sec-start.tv_sec + (current.tv_usec-start.tv_usec)/1000000.0);
+	auto wallclock = current-start;
 	
-	double estimated = fmax(0.0, wallclock * (1.0 / fmax(pow(RelErr,-2.0)/pow(P.Width,-2.0), (double)MeanM2->I / (double)P.MaxRuns ) - 1.0 ));
-	cout << ceil(wallclock) << "s\t Remaining(approximative): " ;
-	cout << ceil(estimated) << "s\t Trajectory per second: " ;
+	auto estimated = wallclock * (1.0 / fmax(pow(RelErr,-2.0)/pow(P.Width,-2.0), (double)MeanM2->I / (double)P.MaxRuns ) - 1.0 );
+	cout << chrono::duration_cast<chrono::seconds>(wallclock).count() << "s\t Remaining(approximative): " ;
+	cout << chrono::duration_cast<chrono::seconds>(estimated).count()  << "s\t Trajectory per second: " ;
 	cout.precision(2);
-	cout << (double)MeanM2->I/wallclock << endl;
+	cout << (double)MeanM2->I/(chrono::duration_cast<chrono::seconds>(estimated).count()) << endl;
 	cout.precision(12);
 	
     endline++;
@@ -223,8 +224,8 @@ void result::printProgress(){
 }
 
 void result::stopclock(){
-    gettimeofday(&end,NULL);
-    cpu_time_used = end.tv_sec-start.tv_sec +(end.tv_usec-start.tv_usec)/1000000.0;
+    end = chrono::system_clock::now();
+    cpu_time_used = chrono::duration_cast<chrono::duration<double> >(end-start).count();
 }
 
 
@@ -435,10 +436,9 @@ void result::outputData(){
     outdatastream << endl;
 	outdatastream.flush();
 	if(P.gnuplotDriver && MeanM2->I > P.Batch){
-		timeval current;
-		gettimeofday(&current,NULL);
-		if((current.tv_sec-lastdraw.tv_sec +
-			(current.tv_usec-lastdraw.tv_usec)/1000000.0) < P.updatetime)
+        auto current = chrono::system_clock::now();
+
+		if( chrono::duration_cast<chrono::seconds>(current-lastdraw) < P.updatetime)
 			return;
 		lastdraw = current;
 		printGnuplot();

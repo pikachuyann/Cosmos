@@ -38,7 +38,7 @@ using namespace std;
 struct parameters {
     int verbose;
 	bool interactive;
-	double updatetime;
+    std::chrono::milliseconds updatetime;
 	unsigned int seed;
 	int Njob;
 	

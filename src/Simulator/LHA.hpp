@@ -219,7 +219,7 @@ private:
 	
 	vector < set <int> > Out_S_Edges; // for a given location l returns the set of synchronizing edges  starting from l
 	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l
-	vector < vector < set <int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...}
+	vector < vector < vector<int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...}
 	
 	vector<int> EdgeCounter;
 	vector <string> EdgeConstraints;
