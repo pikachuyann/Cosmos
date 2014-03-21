@@ -31,6 +31,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <chrono>
+
 #include "HaslFormula.hpp"
 
 using namespace std;
