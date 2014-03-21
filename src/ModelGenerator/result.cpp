@@ -185,7 +185,7 @@ void result::printProgress(){
 	cout << chrono::duration_cast<chrono::seconds>(wallclock).count() << "s\t Remaining(approximative): " ;
 	cout << chrono::duration_cast<chrono::seconds>(estimated).count()  << "s\t Trajectory per second: " ;
 	cout.precision(2);
-	cout << (double)MeanM2->I/(chrono::duration_cast<chrono::seconds>(estimated).count()) << endl;
+	cout << ((double)MeanM2->I)/chrono::duration_cast<chrono::seconds>(wallclock).count() << endl;
 	cout.precision(12);
 	
     endline++;

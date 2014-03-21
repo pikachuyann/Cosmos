@@ -88,7 +88,7 @@ void stateSpace::exploreStateSpace(){
 		
 		vector<int> currentstate = place;
 		
-		A.CurrentLocation= place.back();
+		int lhaloc = place.back();
 		place.pop_back();
 		N.Marking.setVector(place);
 		
@@ -96,19 +96,19 @@ void stateSpace::exploreStateSpace(){
 		for (size_t t = 0; t < N.tr; t++){
 			//Loop over binding here
 			abstractBinding b;
-			
+            A.CurrentLocation = lhaloc;
+
 			if (N.IsEnabled(t,b)) {
 				
 				N.fire(t,b);
 				//cerr << "transition:" << *it << endl;
 				vector<int> marking = N.Marking.getVector();
-				N.unfire(t,b);
 				
-				int SE = A.GetEnabled_S_Edges(t,abstractMarking(marking),b);
+				int SE = A.GetEnabled_S_Edges(t,N.Marking,b);
 				if (SE > -1) {
-					
+					A.fireLHA(SE, N.Marking, b);
 					nbTrans++;
-					marking.push_back( A.Edge[SE].Target );
+					marking.push_back( A.CurrentLocation );
 					//vector<double> Param = N.GetDistParameters(*it);
 					//transitionsList.push( make_pair(make_pair(currentstate, marking),Param[0] ));
 					
@@ -125,6 +125,7 @@ void stateSpace::exploreStateSpace(){
 						add_state(marking);
 					}
 				}
+                N.unfire(t,b);
 			}
 			
 		}
@@ -155,21 +156,21 @@ void stateSpace::buildTransitionMatrix()
 		for (size_t t = 0; t < N.tr; t++){
 			//Loop over binding here
 			abstractBinding b;
+            int lhaloc = A.CurrentLocation;
 			if (N.IsEnabled(t,b)) {
-				
+				A.CurrentLocation = lhaloc;
 				N.fire(t,b);
 				vector<int> marking = N.Marking.getVector();
-				N.unfire(t,b);
-				
-				int SE = A.GetEnabled_S_Edges( t  , marking,b);
+				int SE = A.GetEnabled_S_Edges( t  , N.Marking,b);
 				if (SE > -1) {
-					
-					marking.push_back( A.Edge[SE].Target );
+					A.fireLHA(SE, N.Marking, b);
+					marking.push_back( A.CurrentLocation );
 					N.GetDistParameters(t,b);
 					
 					int j = findHash(&marking);
 					mat (i,j) = N.ParamDistr[0];
 				}
+                N.unfire(t,b);
 			}
 		}
 		
@@ -366,10 +367,16 @@ void stateSpace::outputPrism(){
     fstream outputProperty;
     outputProperty.open("prismProperty.ctl",fstream::out);
     outputProperty << "P=? [ (true) U (";
-    for(set<int>::iterator it = A.FinalLoc.begin() ;it != A.FinalLoc.end(); it++){
-        if (it!=A.FinalLoc.begin()) outputProperty << "|";
-        outputProperty << "(automata = " << *it << ")";
+    bool first =true;
+    int lhaloc = A.CurrentLocation;
+    for(int it = 0 ;it < (int)A.NbLoc; ++it){
+        A.CurrentLocation = it;
+        if(A.isFinal()){
+            if (first){outputProperty << "|";first=false;}
+            outputProperty << "(automata = " << it << ")";
+        }
     }
+    A.CurrentLocation = lhaloc;
     outputProperty << ")]";
     outputProperty.close();
     

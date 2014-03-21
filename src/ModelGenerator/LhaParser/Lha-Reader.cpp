@@ -286,31 +286,17 @@ void Lha_Reader::WriteFile(parameters& P) {
     LhaCppFile << "    Edge= vector<LhaEdge>(" << MyLha.Edge.size() << ");" << endl;
 	
 	if(P.StringInSpnLHA){
-		for (map <string, int>::iterator it = MyLha.LocIndex.begin(); it != MyLha.LocIndex.end(); it++)
-			LhaCppFile << "    LocIndex[\"" << (*it).first << "\"]=" << (*it).second << ";" << endl;
-		
 		LhaCppFile << "\n    vector<string> vlstr(NbLoc);" << endl;
 		LhaCppFile << "    LocLabel= vlstr;" << endl;
-		LhaCppFile << "    StrLocProperty= vlstr;\n" << endl;
-		
-		LhaCppFile << "    vector < vector <string> >  vestr(" << MyLha.Edge.size() << ");" << endl;
-		LhaCppFile << "    ConstraintsRelOp= vestr;" << endl;
-		LhaCppFile << "    ConstraintsConstants= vestr;" << endl;
-		
-		
-		LhaCppFile << "    vector < vector< vector <string> > > mvestr(" << MyLha.Edge.size() << ");" << endl;
-		
-		LhaCppFile << "    ConstraintsCoeffs= mvestr;\n" << endl;
-		
+
 		for (size_t i = 0; i < MyLha.LocLabel.size(); i++)
 			LhaCppFile << "    LocLabel[" << i << "]=\"" << MyLha.LocLabel[i] << "\";" << endl;
-		
-		for (size_t i = 0; i < MyLha.FuncLocProperty.size(); i++)
-			LhaCppFile << "    StrLocProperty[" << i << "]=\"" << MyLha.FuncLocProperty[i] << "\";" << endl;
+
+        LhaCppFile << "    VarLabel= vector<string>(NbVar);" << endl;
+        for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
+			LhaCppFile << "    VarLabel[" << v << "]=\"" << MyLha.Vars.label[v] << "\";" << endl;
+        }
 	}
-	
-    for (map <string, int>::iterator it = MyLha.EdgeIndex.begin(); it != MyLha.EdgeIndex.end(); it++)
-        LhaCppFile << "    EdgeIndex[\"" << (*it).first << "\"]=" << (*it).second << ";" << endl;
 	
     for (size_t i = 0; i < MyLha.Edge.size(); i++) {
         LhaCppFile << "    Edge[" << i << "] = LhaEdge(" << MyLha.Edge[i].Index;
@@ -327,49 +313,11 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "\ttempVars = new Variables;" << endl;
 	LhaCppFile << "\tresetVariables();" << endl;
 
-    if(P.StringInSpnLHA){
-        for (size_t i = 0; i < MyLha.Edge.size(); i++) {
-            size_t NbC = MyLha.ConstraintsRelOp[i].size();
-
-			LhaCppFile << "\n    {" << endl;
-			LhaCppFile << "    vector <string> vcstr(" << NbC << ");" << endl;
-			LhaCppFile << "    ConstraintsRelOp[" << i << "]=vcstr;" << endl;
-			LhaCppFile << "    ConstraintsConstants[" << i << "]=vcstr;" << endl;
-			LhaCppFile << "    vector <string>  vcvstr(NbVar, \"\");" << endl;
-			LhaCppFile << "    vector < vector <string> > v2cvstr(" << NbC << ",vcvstr);" << endl;
-			LhaCppFile << "    ConstraintsCoeffs[" << i << "]=v2cvstr;" << endl;
-			LhaCppFile << "    }" << endl;
-
-			for (size_t c = 0; c < NbC; c++) {
-				LhaCppFile << "    ConstraintsRelOp[" << i << "][" << c << "]=\"" << MyLha.ConstraintsRelOp[i][c] << "\";" << endl;
-				LhaCppFile << "    ConstraintsConstants[" << i << "][" << c << "]=\"" << MyLha.ConstraintsConstants[i][c] << "\";" << endl;
-				for (size_t v = 0; v < MyLha.NbVar; v++)
-					LhaCppFile << "    ConstraintsCoeffs[" << i << "][" << c << "][" << v << "]=\"" << MyLha.ConstraintsCoeffs[i][c][v] << "\";" << endl;
-			}
-        }
-		LhaCppFile << "    VarLabel= vector<string>(NbVar);" << endl;
-        for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
-			LhaCppFile << "    VarLabel[" << v << "]=\"" << MyLha.Vars.label[v] << "\";" << endl;
-			LhaCppFile << "    VarIndex[\"" << MyLha.Vars.label[v] << "\"]=" << v << ";" << endl;
-        }
-        
-    }
-	
-    //LhaCppFile << "\n    vector< set < int > > vset(NbLoc);" << endl;
-    LhaCppFile << "    Out_S_Edges =vector< set < int > >(NbLoc);" << endl;
     LhaCppFile << "    Out_A_Edges =vector< set < int > >(NbLoc);" << endl;
-    LhaCppFile << "{" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
         if (MyLha.EdgeActions[e].size() < 1)
             LhaCppFile << "    Out_A_Edges[" << MyLha.Edge[e].Source << "].insert(" << e << ");" << endl;
-        else
-            LhaCppFile << "    Out_S_Edges[" << MyLha.Edge[e].Source << "].insert(" << e << ");" << endl;
     }
-    LhaCppFile << "}" << endl;
-	
-	if(P.StringInSpnLHA){
-        LhaCppFile << "    EdgeActions=vector< set <string> >("<< MyLha.Edge.size() <<");" << endl;
-	}
 
     LhaCppFile << "    LinForm= vector<double>("<< MyLha.LinearForm.size() <<",0.0);" << endl;
     LhaCppFile << "    OldLinForm=vector<double>("<< MyLha.LinearForm.size() <<",0.0);" << endl;

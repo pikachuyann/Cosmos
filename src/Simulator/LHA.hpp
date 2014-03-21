@@ -81,8 +81,6 @@ struct Variables;
 
 t_interval GetEdgeEnablingTime(int,const abstractMarking&);
 
-//extern const int*** LHAActionEdges;
-
 /**
  * Class implementing the Linear Hybrid Automaton.
  * Part of the implementation is generated at runtime for efficiency.
@@ -90,16 +88,33 @@ t_interval GetEdgeEnablingTime(int,const abstractMarking&);
 class LHA {
 public:
 	LHA();
-	//virtual void Load();
-	LHA(unsigned int, unsigned int);
 	~LHA();
-	
+
+    const unsigned int NbLoc; // number of locations
+    
+    vector<double> FormulaVal;
+
+    /**
+     * Current time of the LHA
+     */
+	double CurrentTime;
+
+    /**
+     * Current location of the LHA
+     */
+	int CurrentLocation;
+
+    /*
+     * Curent likelihood.
+     * Use only for importance sampling
+     */
+    double Likelihood;
+
 	/**
 	 *  Copy the state of an other LHA.
 	 *  It only copy pointer thus is in constant time.
 	 */
 	void copyState(LHA*);
-	
 	
 	/**
 	 * \brief Return a synchronized edge for a given transition of the SPN.
@@ -131,30 +146,34 @@ public:
 	void printState(ostream &)const;
 	void printHeader(ostream &)const;
 	
-	vector<double> FormulaVal;
-	double CurrentTime;
-	
-	int CurrentLocation;
-	
-	vector <LhaEdge> Edge;
-	double Likelihood;
-	
-	set <int> FinalLoc; // final locations
-	
-	
 private:
-	void UpdateFormulaVal();
-	void UpdateLinForm(const abstractMarking&);
-	void UpdateLhaFuncLast();
-	
-	
+	vector <LhaEdge> Edge;
+
+    set <int> InitLoc; // initial locations
+    set <int> FinalLoc; // final locations
+
 	Variables *Vars; // Var[i] value of the variable indexed by i
-	
+    Variables *tempVars;
+
 	vector<double> LinForm;
     vector<double> OldLinForm;
     vector<double> LhaFunc;
-	
-	
+
+	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l
+    static const int ActionEdgesAr[];
+
+	vector<int> EdgeCounter;
+
+	const int NbTrans;
+    const int NbVar;
+
+    vector <string> VarLabel;
+    string label;
+	vector <string> LocLabel;
+
+	void UpdateFormulaVal();
+	void UpdateLinForm(const abstractMarking&);
+	void UpdateLhaFuncLast();
 	
 	/**
 	 * \brief Set the initial location of the LHA for a marking
@@ -166,10 +185,7 @@ private:
 	void DoElapsedTimeUpdate(double, const abstractMarking&);
     
 	void UpdateLhaFunc( double&);
-	
-	
-	set <int> InitLoc; // initial locations
-	
+
 	
 	void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
 	double GetFlow(int, const abstractMarking&)const;
@@ -189,69 +205,17 @@ private:
     void ViewAllEdges();
 
 	
-	Variables *tempVars;
-	
-	
 	void resetPathVarsTable();
 	
 	bool isVar(string, double &);
 	
 	void resetLinForms();
-	
-	//print the state of the automaton.
-	
-	string label;
-	const unsigned int NbLoc; // number of locations
-	unsigned int StartingLoc; // Chosen from the set of lha initial locations according to their properties and Petri net initial marking
-	
-	
-	map <string, int> LocIndex; //for a given Location label returns its index among {0, 1, ..., NLoc-1}
-	vector <string> LocLabel;
-	
-	vector <string> StrLocProperty;
-	
-	
-	
-	map<string, int> EdgeIndex;
-	
-	vector < set <int> > Out_S_Edges; // for a given location l returns the set of synchronizing edges  starting from l
-	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l
-	vector < vector < vector<int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...}
-    static const int ActionEdgesAr[];
 
-	vector<int> EdgeCounter;
-	vector <string> EdgeConstraints;
-	vector < set<string> > EdgeActions;
-	vector <string> StrEdgeUpdates;
-	
-	vector < vector <vector <string> > > ConstraintsCoeffs;
-	vector < vector <string> > ConstraintsRelOp;
-	vector < vector <string> > ConstraintsConstants;
-	
-	
-	
-	const int NbTrans;
-    const int NbVar;
-    
-    vector <double> OldVar;
-    map<string, int> VarIndex; //for a given variable label return its index among {0, 1, ..., NbVar-1}
-    vector <string> VarLabel;
-	
-	
-    map <string, int> PlaceIndex; // for a given place label return its index among {0, 1, ..., pl-1}
-    map <string, int> TransitionIndex; // for a given transition label return its index among {0, 1, ..., tr-1}
-	
-	
-    //double min(double&, double&);
-    //double max(double&, double&);
-	
     double Min(double, double, double);
     double Max(double, double, double);
     double Integral(double, double, double, double, double);
     double BoxedIntegral(double OldInt, double t, double Delta, double x, double y, double t1,double t2);
-	
-	//double OldFormulaVal;
-    
+
 };
 
 #endif	/* _LHA_HPP */

@@ -135,7 +135,7 @@ namespace boost { namespace numeric { namespace ublas {
 
             typedef typename ME::size_type  size_type;
             typedef typename ME::value_type value_type;
-            typedef ME ex_type;
+            //typedef ME ex_type;
             E ch;
             size_type size1, size2;
             if (is >> ch && ch != '[') {

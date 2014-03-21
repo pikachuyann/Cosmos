@@ -58,27 +58,8 @@ LHA::LHA():NbLoc(7),NbVar(5),NbTrans(8){
 	Vars = new Variables;
 	tempVars = new Variables;
 	resetVariables();
-    Out_S_Edges =vector< set < int > >(NbLoc);
     Out_A_Edges =vector< set < int > >(NbLoc);
-{
-    Out_S_Edges[0].insert(0);
     Out_A_Edges[0].insert(1);
-    Out_S_Edges[1].insert(2);
-    Out_S_Edges[1].insert(3);
-    Out_S_Edges[2].insert(4);
-    Out_S_Edges[2].insert(5);
-    Out_S_Edges[3].insert(6);
-    Out_S_Edges[2].insert(7);
-    Out_S_Edges[3].insert(8);
-    Out_S_Edges[3].insert(9);
-    Out_S_Edges[4].insert(10);
-    Out_S_Edges[4].insert(11);
-    Out_S_Edges[4].insert(12);
-    Out_S_Edges[4].insert(13);
-    Out_S_Edges[5].insert(14);
-    Out_S_Edges[5].insert(15);
-    Out_S_Edges[5].insert(16);
-}
     LinForm= vector<double>(1,0.0);
     OldLinForm=vector<double>(1,0.0);
     LhaFunc=vector<double>(1,0.0);
