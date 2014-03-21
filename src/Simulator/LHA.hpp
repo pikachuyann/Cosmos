@@ -81,6 +81,8 @@ struct Variables;
 
 t_interval GetEdgeEnablingTime(int,const abstractMarking&);
 
+//extern const int*** LHAActionEdges;
+
 /**
  * Class implementing the Linear Hybrid Automaton.
  * Part of the implementation is generated at runtime for efficiency.
@@ -185,12 +187,7 @@ private:
 	
     void ViewEdge(int);
     void ViewAllEdges();
-	
-	
-	
-	
-	
-	
+
 	
 	Variables *tempVars;
 	
@@ -204,7 +201,7 @@ private:
 	//print the state of the automaton.
 	
 	string label;
-	unsigned int NbLoc; // number of locations
+	const unsigned int NbLoc; // number of locations
 	unsigned int StartingLoc; // Chosen from the set of lha initial locations according to their properties and Petri net initial marking
 	
 	
@@ -220,7 +217,8 @@ private:
 	vector < set <int> > Out_S_Edges; // for a given location l returns the set of synchronizing edges  starting from l
 	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l
 	vector < vector < vector<int> > > ActionEdges; // ActionEdges[a][e]={t1, t2, ...}
-	
+    static const int ActionEdgesAr[];
+
 	vector<int> EdgeCounter;
 	vector <string> EdgeConstraints;
 	vector < set<string> > EdgeActions;
@@ -232,8 +230,8 @@ private:
 	
 	
 	
-	
-    int NbVar;
+	const int NbTrans;
+    const int NbVar;
     
     vector <double> OldVar;
     map<string, int> VarIndex; //for a given variable label return its index among {0, 1, ..., NbVar-1}

@@ -40,9 +40,6 @@ c0 = (site_Color_Classe)(0);
 	void print(){
 		std::cerr << mult << "<" << Color_site_names[c0] << ">";
 	}
-	site_Token next(int i)const {
-		site_Token x((site_Color_Classe)((c0 +i) % Color_site_Total),  mult);
-		return x;}
 	bool islast()const {
 		return ( c0== (site_Color_Classe)(Color_site_Total -1)  );
 	}
@@ -151,9 +148,6 @@ c0 = (file_Color_Classe)(0);
 	void print(){
 		std::cerr << mult << "<" << Color_file_names[c0] << ">";
 	}
-	file_Token next(int i)const {
-		file_Token x((file_Color_Classe)((c0 +i) % Color_file_Total),  mult);
-		return x;}
 	bool islast()const {
 		return ( c0== (file_Color_Classe)(Color_file_Total -1)  );
 	}

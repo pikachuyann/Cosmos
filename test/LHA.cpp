@@ -29,9 +29,12 @@ void LHA::printHeader(ostream &s)const{
 void LHA::printState(ostream &s)const{
 	s << "\t" << LocLabel[CurrentLocation] << "\t";
 };
-LHA::LHA(){
-    NbLoc =7;
-    NbVar =5;
+const int LHA::ActionEdgesAr[] = {
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,2 ,1 ,1 ,1 ,1 ,1 ,2 ,1 ,1 ,1 ,1 ,1 ,3 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,1 ,1 ,1 ,2 ,1 ,1 ,1 ,1 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,3 ,4 ,4 ,4 ,4 ,5 ,4 ,4 ,4 ,6 ,6 ,8 ,6 ,6 ,6 ,6 ,6 ,10 ,11 ,11 ,11 ,11 ,11 ,11 ,11 ,15 ,15 ,15 ,14 ,15 ,15 ,15 ,15 ,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,7 ,-1,-1,-1,-1,-1,9 ,-1,-1,-1,-1,-1,12 ,12 ,12 ,12 ,12 ,12 ,12 ,12 ,-1,-1,-1,16 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,13 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,};
+LHA::LHA():NbLoc(7),NbVar(5),NbTrans(8){
     InitLoc.insert(0);
     FinalLoc.insert(6);
     Edge= vector<LhaEdge>(17);
@@ -76,67 +79,6 @@ LHA::LHA(){
     Out_S_Edges[5].insert(15);
     Out_S_Edges[5].insert(16);
 }
-    ActionEdges=vector < vector < vector<int> > >(NbLoc,vector< vector<int> >(8));
-    ActionEdges[0][4].push_back(0);
-    ActionEdges[0][2].push_back(0);
-    ActionEdges[0][3].push_back(0);
-    ActionEdges[0][0].push_back(0);
-    ActionEdges[0][1].push_back(0);
-    ActionEdges[0][7].push_back(0);
-    ActionEdges[0][6].push_back(0);
-    ActionEdges[0][5].push_back(0);
-    ActionEdges[1][4].push_back(2);
-    ActionEdges[1][2].push_back(2);
-    ActionEdges[1][3].push_back(2);
-    ActionEdges[1][0].push_back(2);
-    ActionEdges[1][1].push_back(2);
-    ActionEdges[1][7].push_back(3);
-    ActionEdges[1][6].push_back(2);
-    ActionEdges[1][5].push_back(2);
-    ActionEdges[2][4].push_back(5);
-    ActionEdges[2][4].push_back(7);
-    ActionEdges[2][2].push_back(4);
-    ActionEdges[2][3].push_back(4);
-    ActionEdges[2][0].push_back(4);
-    ActionEdges[2][1].push_back(4);
-    ActionEdges[2][7].push_back(4);
-    ActionEdges[2][6].push_back(4);
-    ActionEdges[2][5].push_back(4);
-    ActionEdges[3][4].push_back(6);
-    ActionEdges[3][2].push_back(8);
-    ActionEdges[3][2].push_back(9);
-    ActionEdges[3][3].push_back(6);
-    ActionEdges[3][0].push_back(6);
-    ActionEdges[3][1].push_back(6);
-    ActionEdges[3][7].push_back(6);
-    ActionEdges[3][6].push_back(6);
-    ActionEdges[3][5].push_back(6);
-    ActionEdges[4][4].push_back(11);
-    ActionEdges[4][4].push_back(12);
-    ActionEdges[4][2].push_back(11);
-    ActionEdges[4][2].push_back(12);
-    ActionEdges[4][3].push_back(11);
-    ActionEdges[4][3].push_back(12);
-    ActionEdges[4][0].push_back(10);
-    ActionEdges[4][0].push_back(12);
-    ActionEdges[4][0].push_back(13);
-    ActionEdges[4][1].push_back(11);
-    ActionEdges[4][1].push_back(12);
-    ActionEdges[4][7].push_back(11);
-    ActionEdges[4][7].push_back(12);
-    ActionEdges[4][6].push_back(11);
-    ActionEdges[4][6].push_back(12);
-    ActionEdges[4][5].push_back(11);
-    ActionEdges[4][5].push_back(12);
-    ActionEdges[5][4].push_back(15);
-    ActionEdges[5][2].push_back(15);
-    ActionEdges[5][3].push_back(14);
-    ActionEdges[5][3].push_back(16);
-    ActionEdges[5][0].push_back(15);
-    ActionEdges[5][1].push_back(15);
-    ActionEdges[5][7].push_back(15);
-    ActionEdges[5][6].push_back(15);
-    ActionEdges[5][5].push_back(15);
     LinForm= vector<double>(1,0.0);
     OldLinForm=vector<double>(1,0.0);
     LhaFunc=vector<double>(1,0.0);

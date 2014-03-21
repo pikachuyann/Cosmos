@@ -438,7 +438,7 @@ void result::outputData(){
 	if(P.gnuplotDriver && MeanM2->I > P.Batch){
         auto current = chrono::system_clock::now();
 
-		if( chrono::duration_cast<chrono::seconds>(current-lastdraw) < P.updatetime)
+		if( chrono::duration_cast<chrono::duration<double>>(current-lastdraw) < P.updatetime)
 			return;
 		lastdraw = current;
 		printGnuplot();

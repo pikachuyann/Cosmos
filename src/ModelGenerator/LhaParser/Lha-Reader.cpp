@@ -33,6 +33,8 @@
 #include <sstream>
 #include <fstream>
 #include <set>
+#include <algorithm>
+#include <list>
 
 
 
@@ -228,13 +230,52 @@ void Lha_Reader::WriteFile(parameters& P) {
 
     }
 	LhaCppFile << "};\n";
+
+
+    vector<vector<list<int > > > accedge(MyLha.NbLoc,vector<list<int> >(MyLha.TransitionIndex.size()));
+    for (size_t es =0 ; es < MyLha.NbLoc; es++)
+        for (auto it : MyLha.TransitionIndex)
+            for (size_t e = 0; e < MyLha.Edge.size(); e++)
+                if(MyLha.Edge[e].Source == es
+                   && MyLha.EdgeActions[e].count(it.first)>0)
+                    accedge[es][it.second].push_back(e);
+
+    stringstream accstr;
+    size_t maxset =0;
+    accstr << "{"<< endl<< "\t";
+    for (auto &it1 : accedge){
+        for(auto &it2 : it1){
+            accstr << it2.size() << " ,";
+            maxset = max(maxset,it2.size());
+        }
+    }
+    while (maxset>0){
+        accstr << endl << "\t";
+        maxset=0;
+        for (auto &it1 : accedge){
+            for(auto &it2 : it1){
+                if(it2.size()>0){
+                    accstr << it2.front() << " ,";
+                    it2.pop_front();
+                }else accstr << "-1,";
+                maxset = max(maxset,it2.size());
+            }
+        }
+    }
+    accstr << "}";
+
+
+
+    //LhaCppFile << "/*" << accstr.str() << "*/" << endl;
+
+
+    LhaCppFile << "const int LHA::ActionEdgesAr[] = " << accstr.str() << ";"<< endl;
+    /*LhaCppFile << "const int* LHAActionEdgesAr2["<< MyLha.NbLoc
+    <<"]["<< MyLha.TransitionIndex.size() <<"] = " << accset3.str() << ";"<< endl;
+    LhaCppFile << "const int* LHAActionEdges = (const int***)LHAActionEdgesAr;"<< endl;
+     */
+    LhaCppFile << "LHA::LHA():NbLoc(" << MyLha.NbLoc << "),NbVar(" << MyLha.NbVar << "),NbTrans(" << MyLha.TransitionIndex.size() << "){" << endl;
 	
-	
-    LhaCppFile << "LHA::LHA(){" << endl;
-	
-	
-    LhaCppFile << "    NbLoc =" << MyLha.NbLoc << ";" << endl;
-    LhaCppFile << "    NbVar =" << MyLha.NbVar << ";" << endl;
     for (set<unsigned int>::iterator it = MyLha.InitLoc.begin(); it != MyLha.InitLoc.end(); it++)
         LhaCppFile << "    InitLoc.insert(" << (*it) << ");" << endl;
     for (set<unsigned int>::iterator it = MyLha.FinalLoc.begin(); it != MyLha.FinalLoc.end(); it++)
@@ -329,28 +370,6 @@ void Lha_Reader::WriteFile(parameters& P) {
 	if(P.StringInSpnLHA){
         LhaCppFile << "    EdgeActions=vector< set <string> >("<< MyLha.Edge.size() <<");" << endl;
 	}
-
-    LhaCppFile << "    ActionEdges=vector < vector < vector<int> > >(NbLoc,vector< vector<int> >("<< MyLha.TransitionIndex.size()<< "));" << endl;
-    for (size_t es =0 ; es < MyLha.NbLoc; es++){
-        //stringstream accset2;
-        for (auto it : MyLha.TransitionIndex){
-            //size_t count = 0;
-            //stringstream accset;
-            for (size_t e = 0; e < MyLha.Edge.size(); e++)
-                if(MyLha.Edge[e].Source == es
-                   && MyLha.EdgeActions[e].count(it.first)>0){
-                    //if(count>0) accset << ", ";
-                    //count++;
-                    //accset << e;
-                    if(P.StringInSpnLHA)LhaCppFile << "    EdgeActions[" << e << "].insert(\"" << it.first << "\");" << endl;
-                    LhaCppFile << "    ActionEdges[" << es << "][" << it.second << "].push_back(" << e << ");" << endl;
-                }
-            //LhaCppFile << "   {int tabacc[] = { "<< count << accset.str() <<"};" << endl;
-            //accset2 << "{" << accset.str() << "} ,";
-            //LhaCppFile << "   ActionEdges[" << es << "][" << it.second << "] = { "<< accset.str() <<"};" << endl;
-            }
-        //LhaCppFile << "   ActionEdges[" << es << "] = { " << accset2.str() << "};"<<endl;
-    }
 
     LhaCppFile << "    LinForm= vector<double>("<< MyLha.LinearForm.size() <<",0.0);" << endl;
     LhaCppFile << "    OldLinForm=vector<double>("<< MyLha.LinearForm.size() <<",0.0);" << endl;
