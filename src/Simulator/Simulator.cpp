@@ -325,10 +325,8 @@ bool Simulator::SimulateOneStep(){
 			} else AE = A.GetEnabled_A_Edges( N.Marking,dummyBinding);
 		}
 		if(verbose>3){
-			//cerr << "|^^^^^^^^^^^^^^^^^^^^"<< endl;
 			cerr << "\033[1;33mFiring:\033[0m" << N.Transition[E1.transition].label ;
 			E1.binding.print();
-			//cerr << "|vvvvvvvvvvvvvvvvvvvv"<< endl;
 		}
 		
 		//Make time elapse in the LHA
