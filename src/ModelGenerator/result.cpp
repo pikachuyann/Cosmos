@@ -121,7 +121,7 @@ void result::addBatch(BatchR *batchResult){
             HaslResult[i].low *=  (1 - P.epsilon);
         }
 		
-        if(P.RareEvent || P.BoundedRE>0){
+        if(P.relative){
             RelErrArray[i] =  fabs((HaslResult[i].width() /  HaslResult[i].mean)*MeanM2->Isucc);
         }else RelErrArray[i] = HaslResult[i].width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
 		
@@ -139,14 +139,11 @@ void result::addBatch(BatchR *batchResult){
 bool result::continueSim(){
 	if(MeanM2->I >= P.MaxRuns)return false;
 	if(!P.sequential)return true;
-	
 	if(P.Width==0)return true;
 	
-	for(vector<double>::const_iterator it = RelErrArray.begin(); it != RelErrArray.end(); ++it)
-		if(*it > P.Width)return true;
+	for(auto &it : RelErrArray)if(it > P.Width)return true;
 	
 	return false;
-    //return (RelErr > P.Width || !P.sequential) && (MeanM2->I < P.MaxRuns);
 }
 
 void result::printPercent(double i, double j){

@@ -52,6 +52,7 @@ Width(0.001),
 Batch(1000),
 MaxRuns(2000000),
 sequential(true),
+relative(false),
 
 comp_uuid("tmpuuid"),
 tmpPath("tmp"),
@@ -119,11 +120,13 @@ void parameters::usage(){
     cout << "\t--njob    \tset the number of parralel thread"<< endl;
 	cout << "\t--gppcmd  \tset the C++ compiler (default g++)"<< endl;
 	cout << "\t--gppflags\tset the C++ compiler flags (default -O3)"<< endl;
+
     cout << "Option of simulation:" << endl;
     cout << "\t--level \tset the confidence level for the simulation (default=0.99)"<< endl;
     cout << "\t--width \tset the width of the confidence interval (default=0.001)"<< endl;
     cout << "\t--batch \tset the size of batch of simulation (default=1000)"<< endl;
     cout << "\t--max-run \tset the maximal number of run (default=2000000)" << endl;
+    cout << "\t--relative \tUse relative confidence interval instead of absolute one" << endl;
 	cout << "\t--chernoff (level | width | nbrun)\tuse chernoff-hoeffding bound to compute the number of simulation" << endl;
 	cout << "\t--seed \tSpecify the seed for the random generator, 0 allow to take a random value"<< endl;
 	cout << "\t--local-test \tUse local testing faster on big net" << endl;
@@ -185,6 +188,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"transient",required_argument,0, 16},
 			{"formula",required_argument, 0, 'f'},
 			{"chernoff", required_argument,0, 17},
+            {"relative", no_argument,     0,  26},
 	    	{"const", required_argument,0,21},
 			
             /* Options for the rare event engine */
@@ -265,11 +269,16 @@ void parameters::parseCommandLine(int argc, char** argv){
 				StringInSpnLHA =true; // Need to know the name of place to find
 				// place begining with "RE_"
 				localTesting = false; //Need to unfire transition not implemented for local testing
+                relative=true;
 				break;
+
+                case 26:
+                relative=true;break;
                 
 				case 'b':BoundedRE = atoi(optarg);
 				StringInSpnLHA =true;
                 RareEvent=true;
+                relative=true;
                 break;
                 
 				case 'c':BoundedContinuous = true;

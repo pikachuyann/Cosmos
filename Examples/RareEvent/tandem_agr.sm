@@ -1,7 +1,7 @@
 dtmc
-const int n = 10000;
-const int r = 10000;
-q
+const int n = 100;
+const int r = 100;
+
 const double lambda = 0.40000;
 const double rho1 = 0.3000;
 const double rho2 = 0.30000;

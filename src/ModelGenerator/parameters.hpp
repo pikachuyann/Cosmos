@@ -51,6 +51,7 @@ struct parameters {
 	unsigned long int Batch;
 	unsigned long int MaxRuns;
 	bool sequential;
+    bool relative;
 
 	string comp_uuid;
 	string tmpPath;
