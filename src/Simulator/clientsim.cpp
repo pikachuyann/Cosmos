@@ -98,6 +98,8 @@ int main(int argc, char** argv) {
 			//states.uniformizeMatrix();
 			states.outputMat();
 			states.outputTmpLumpingFun();
+            BatchR dummR(0);
+            dummR.outputR();
             cout << "Finish Exporting" << endl;
 			exit(EXIT_SUCCESS);
 		}else if(str== "-STSP"){
@@ -109,15 +111,18 @@ int main(int argc, char** argv) {
 			states.importPrism();
 			states.outputVect();
 			states.outputTmpLumpingFun();
-			cout << "Finish Exporting" << endl;
+			//cout << "Finish Exporting" << endl;
 			double prResult = states.returnPrismResult();
-			cout << "Prism Result:\t"<< prResult << endl;
+            BatchR dummR(1);
+            dummR.addSim(make_pair<bool,vector<double> >(true,vector<double>(1,prResult)));
+            dummR.outputR();
+			/*cout << "Prism Result:\t"<< prResult << endl;
 			ofstream ResultsFile("Result.res", ios::out | ios::trunc);
 			ResultsFile << "Result Computed by Prism:" << endl;
 			ResultsFile << "Estimated value:\t" << prResult << endl;
 			ResultsFile << "Confidence interval:\t[" <<prResult*0.9999;
 			ResultsFile << " , " << prResult*1.00001 << "]" << endl;
-			ResultsFile.close();
+			ResultsFile.close();*/
 			exit(EXIT_SUCCESS);
 		} else mySim= (new Simulator);
 		

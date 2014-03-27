@@ -204,12 +204,7 @@ int main(int argc, char** argv) {
 			P.Level = (1.0 - (2.0* fmin(0.5 ,exp( (double)P.MaxRuns * P.Width*P.Width / (-2.0*2.0*2.0*b*b)))));
 		}
 	}
-	
-	//build_segment();
-	//Lauch the client for generating the state space or for launching simulators.
-	if(P.computeStateSpace>0){
-	  launchExport(P);
-	} else launchServer(P);
+    launchServer(P);
 	
 	return (EXIT_SUCCESS);
 }

@@ -49,12 +49,12 @@ result::result():HaslResult(P.HaslFormulasname.size()) {
     lastdraw = chrono::system_clock::now();
 
     MeanM2 = new BatchR(P.nbAlgebraic);
-	
+
     RelErr = 0;
 	RelErrArray = vector<double>(P.HaslFormulasname.size()); //relative error
-	
+
     endline = 0;
-    
+
     if(P.dataoutput.compare("")){
         if(P.verbose>0)cout << "Output Data to: " << P.dataoutput << endl;
         outdatastream.open(P.dataoutput.c_str(),fstream::out);
@@ -120,18 +120,18 @@ void result::addBatch(BatchR *batchResult){
         if(P.BoundedContinuous){
             HaslResult[i].low *=  (1 - P.epsilon);
         }
-		
+
         if(P.relative){
             RelErrArray[i] =  fabs((HaslResult[i].width() /  HaslResult[i].mean));
         }else RelErrArray[i] = HaslResult[i].width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
-		
+
 		if(P.HaslFormulas[i]->TypeOp==HYPOTHESIS){
 			if (RelErrArray[i] <1)RelErrArray[i]=0;
 			// If the Hypothesis confidence interval is less than 1 then test has finished.
 		}
-		
+
 		RelErr = max(RelErr,RelErrArray[i]);
-        
+
     }
     if(outdatastream.is_open())outputData();
 }
@@ -140,9 +140,9 @@ bool result::continueSim(){
 	if(MeanM2->I >= P.MaxRuns)return false;
 	if(!P.sequential)return true;
 	if(P.Width==0)return true;
-	
+
 	for(auto &it : RelErrArray)if(it > P.Width)return true;
-	
+
 	return false;
 }
 
@@ -177,38 +177,38 @@ void result::printProgress(){
 	cout << setw(10) << MeanM2->I << "\t Accepted paths: ";
 	cout << setw(10) << MeanM2->Isucc << "\t Wall-clock time: ";
 	auto wallclock = current-start;
-	
+
 	auto estimated = wallclock * (1.0 / fmax(pow(RelErr,-2.0)/pow(P.Width,-2.0), (double)MeanM2->I / (double)P.MaxRuns ) - 1.0 );
 	cout << chrono::duration_cast<chrono::seconds>(wallclock).count() << "s\t Remaining(approximative): " ;
 	cout << chrono::duration_cast<chrono::seconds>(estimated).count()  << "s\t Trajectory per second: " ;
 	cout.precision(2);
 	cout << ((double)MeanM2->I)/chrono::duration_cast<chrono::seconds>(wallclock).count() << endl;
 	cout.precision(12);
-	
+
     endline++;
-	
+
 	size_t maxformulaname=0;
 	for(size_t i=0; i<P.HaslFormulasname.size(); i++)
 		maxformulaname = max(maxformulaname,P.HaslFormulasname[i].size());
-	
+
 	if(P.verbose >1){
 		for(size_t i=0; i<P.HaslFormulasname.size(); i++)
 			if(P.HaslFormulasname[i].find("$GRAPH$") == string::npos){
-			cout << setw(maxformulaname+1)<<left << (P.HaslFormulasname[i]+":") << " |< ";
-			cout << setw(17) << HaslResult[i].min << " --[ ";
-			cout << setw(17) << HaslResult[i].low << " < ";
-			cout << setw(17) << HaslResult[i].mean << " > ";
-			cout << setw(17) << HaslResult[i].up << " ]-- ";
-			cout << setw(17) << HaslResult[i].max << " >| ";
-			cout << "width=";
-			cout << setw(15) << HaslResult[i].width() << endl;
-			endline++;
-			if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2 && P.sequential){
-				cout << "% of width:\t";
-				printPercent( pow(RelErrArray[i],-2.0), pow(P.Width,-2.0));
-				endline++;
-			}
-		}
+                cout << setw(maxformulaname+1)<<left << (P.HaslFormulasname[i]+":") << " |< ";
+                cout << setw(17) << HaslResult[i].min << " --[ ";
+                cout << setw(17) << HaslResult[i].low << " < ";
+                cout << setw(17) << HaslResult[i].mean << " > ";
+                cout << setw(17) << HaslResult[i].up << " ]-- ";
+                cout << setw(17) << HaslResult[i].max << " >| ";
+                cout << "width=";
+                cout << setw(15) << HaslResult[i].width() << endl;
+                endline++;
+                if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2 && P.sequential){
+                    cout << "% of width:\t";
+                    printPercent( pow(RelErrArray[i],-2.0), pow(P.Width,-2.0));
+                    endline++;
+                }
+            }
 	}
 	if(P.sequential){
 		cout << "% of rel Err:\t";
@@ -228,69 +228,73 @@ void result::stopclock(){
 
 void result::print(ostream &s){
     s.precision(15);
-    
-    if(!P.computeStateSpace){
-		s << "Model path:\t" << P.PathGspn << endl;
-		if(P.loopLHA>0.0){
-			s << "LHA loop:\t" << P.loopLHA << " transient:\t" << P.loopTransientLHA << endl;
-		} else if(!P.CSLformula.empty()){
-			s << "Formula:\t" << P.CSLformula << endl;
-		} else s << "LHA path:\t" << P.PathLha << endl;
-		
-		for(size_t i =0; i<P.HaslFormulasname.size(); i++){
-			if(!P.alligatorMode || ( P.HaslFormulas[i]->TypeOp != PDF_PART &&  P.HaslFormulas[i]->TypeOp != CDF_PART)){
-				/*if (MeanM2->IsBernoulli[i]) {
-				 low[i] = (0 > low[i]) ? 0.0 : low[i];
-				 up[i] = (1 < up[i]) ? 1.0 : up[i];
-				 width[i] = up[i] - low[i];
-				 }*/
-				
-				s << P.HaslFormulasname[i] << ":" << endl;
-				
-				s << "Estimated value:\t" << HaslResult[i].mean << endl;
-				if(P.sequential){
-					s << "Confidence interval:\t[" << HaslResult[i].low << " , " << HaslResult[i].up << "]" << endl;
-					s << "Minimal and maximal value:\t[" << HaslResult[i].min << " , " << HaslResult[i].max << "]" << endl;
-					s << "Width:\t" << HaslResult[i].width() << endl;
-				}else{
-					s << "Confidence interval:\t[" << HaslResult[i].mean-P.Width/2.0 << " , " << HaslResult[i].mean+P.Width/2.0 << "]" << endl;
-					s << "Minimal and maximal value:\t[" << HaslResult[i].min << " , " << HaslResult[i].max << "]" << endl;
-					s << "Width:\t" << P.Width << endl;
-				}
-			}
+
+    //if(!P.computeStateSpace)
+    {
+    s << "Model path:\t" << P.PathGspn << endl;
+    if(P.loopLHA>0.0){
+        s << "LHA loop:\t" << P.loopLHA << " transient:\t" << P.loopTransientLHA << endl;
+    } else if(!P.CSLformula.empty()){
+        s << "Formula:\t" << P.CSLformula << endl;
+    } else s << "LHA path:\t" << P.PathLha << endl;
+
+    for(size_t i =0; i<P.HaslFormulasname.size(); i++){
+        if(!P.alligatorMode || ( P.HaslFormulas[i]->TypeOp != PDF_PART &&  P.HaslFormulas[i]->TypeOp != CDF_PART)){
+            /*if (MeanM2->IsBernoulli[i]) {
+             low[i] = (0 > low[i]) ? 0.0 : low[i];
+             up[i] = (1 < up[i]) ? 1.0 : up[i];
+             width[i] = up[i] - low[i];
+             }*/
+
+            s << P.HaslFormulasname[i] << ":" << endl;
+
+            s << "Estimated value:\t" << HaslResult[i].mean << endl;
+            if(P.sequential){
+                s << "Confidence interval:\t[" << HaslResult[i].low << " , " << HaslResult[i].up << "]" << endl;
+                s << "Minimal and maximal value:\t[" << HaslResult[i].min << " , " << HaslResult[i].max << "]" << endl;
+                s << "Width:\t" << HaslResult[i].width() << endl;
+            }else{
+                s << "Confidence interval:\t[" << HaslResult[i].mean-P.Width/2.0 << " , " << HaslResult[i].mean+P.Width/2.0 << "]" << endl;
+                s << "Minimal and maximal value:\t[" << HaslResult[i].min << " , " << HaslResult[i].max << "]" << endl;
+                s << "Width:\t" << P.Width << endl;
+            }
         }
-		if(!P.sequential)
-			s << "Confidence interval computed using Chernoff-Hoeffding bound."<<endl;
-		else if(P.MaxRuns > MeanM2->I )
-			s << "Confidence interval computed sequentially using Chows-Robbin algorithm."<<endl;
-		else
-			s << "Confidence interval computed using approximation to normal low."<< endl;
-		
-		s << "Confidence level:\t" << P.Level << endl;
-        //s << "Relative error:\t" << RelErr << endl;
-        s << "Total paths:\t" << MeanM2->I << endl;
-        s << "Accepted paths:\t" << MeanM2->Isucc << endl;
-		stopclock();
-		s << "Batch size:\t" << P.Batch << endl;
-        s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
-		rusage cpu_child;
-		getrusage(RUSAGE_CHILDREN, &cpu_child);
-		double child_time = cpu_child.ru_utime.tv_sec + cpu_child.ru_utime.tv_usec / 1000000.0;
-		child_time += cpu_child.ru_stime.tv_sec + cpu_child.ru_stime.tv_usec / 1000000.0;
-		double child_memory = cpu_child.ru_maxrss;
-		getrusage(RUSAGE_SELF, &cpu_child);
-		child_time += cpu_child.ru_utime.tv_sec + cpu_child.ru_utime.tv_usec / 1000000.0;
-		child_time += cpu_child.ru_stime.tv_sec + cpu_child.ru_stime.tv_usec / 1000000.0;
-		child_memory += cpu_child.ru_maxrss;
-		s << "Total CPU time:\t" << child_time << endl;
-		child_memory /= 1024;
+    }
+    s << "Method:\t";
+    if(P.computeStateSpace > 0){
+        s << "Result computed numerically" << endl;
+    }else if(!P.sequential){
+        s << "Confidence interval computed using Chernoff-Hoeffding bound."<<endl;
+    }else if(P.MaxRuns > MeanM2->I ){
+        s << "Confidence interval computed sequentially using Chows-Robbin algorithm."<<endl;
+    }else
+        s << "Confidence interval computed using approximation to normal low." << endl;
+
+    s << "Confidence level:\t" << P.Level << endl;
+    //s << "Relative error:\t" << RelErr << endl;
+    s << "Total paths:\t" << MeanM2->I << endl;
+    s << "Accepted paths:\t" << MeanM2->Isucc << endl;
+    stopclock();
+    s << "Batch size:\t" << P.Batch << endl;
+    s << "Time for simulation:\t"<< cpu_time_used << "s" << endl;
+    rusage cpu_child;
+    getrusage(RUSAGE_CHILDREN, &cpu_child);
+    double child_time = cpu_child.ru_utime.tv_sec + cpu_child.ru_utime.tv_usec / 1000000.0;
+    child_time += cpu_child.ru_stime.tv_sec + cpu_child.ru_stime.tv_usec / 1000000.0;
+    double child_memory = cpu_child.ru_maxrss;
+    getrusage(RUSAGE_SELF, &cpu_child);
+    child_time += cpu_child.ru_utime.tv_sec + cpu_child.ru_utime.tv_usec / 1000000.0;
+    child_time += cpu_child.ru_stime.tv_sec + cpu_child.ru_stime.tv_usec / 1000000.0;
+    child_memory += cpu_child.ru_maxrss;
+    s << "Total CPU time:\t" << child_time << endl;
+    child_memory /= 1024;
 #ifdef __APPLE__
-		//getrusage return the memory used in byte on darwin whereas it
-		//is return in kbyte on linux.
-		child_memory /= 1024;
+    //getrusage return the memory used in byte on darwin whereas it
+    //is return in kbyte on linux.
+    child_memory /= 1024;
 #endif
-		s << "Total Memory used:\t" << setprecision(4) << child_memory << " MB" << endl;
-        s << "Number of jobs:\t" << P.Njob << endl;
+    s << "Total Memory used:\t" << setprecision(4) << child_memory << " MB" << endl;
+    s << "Number of jobs:\t" << P.Njob << endl;
     }
 }
 
@@ -306,8 +310,8 @@ tuple<string,double> result::split_name(string s){
         size_t enddol = s.find("$",comma+1);
         if (enddol != string::npos) {
             return make_tuple(s.substr(0,fb),(
-                              stod(s.substr(fb+7,comma-1))+
-                              stod(s.substr(comma+1,enddol-comma-1)))/2.0);
+                                              stod(s.substr(fb+7,comma-1))+
+                                              stod(s.substr(comma+1,enddol-comma-1)))/2.0);
         } else return make_tuple("EMPTY",0.0);
     }
 }
@@ -325,7 +329,7 @@ void result::outputCDFPDF(string f){
                 valuelist.insert(make_pair(get<1>(nv),valuelist.size()));
         }
     }
-    
+
     outFile << "abscissa" << " ";
     for(auto itname : namelist){
         outFile << itname.first<< "_low ";
@@ -356,7 +360,7 @@ void result::outputCDFPDF(string f){
 
 void result::printGnuplot(){
 	if(gnuplotstream == NULL)return;
-	
+
 	if(P.dataPDFCDF.compare("")!=0){
 		struct stat filestatus;
 		stat(P.dataPDFCDF.c_str() , &filestatus );
@@ -375,7 +379,7 @@ void result::printGnuplot(){
 			flushgnuplot();
 		}
 	}
-	
+
 	if(P.dataoutput.compare("")!=0){
 		if(P.verbose>2)cout << "invoke gnuplot for data" << endl;
 		if(P.alligatorMode)fputs("set output 'dataout.png'\n",gnuplotstream);
@@ -385,14 +389,14 @@ void result::printGnuplot(){
 		if(P.alligatorMode)fputs("set output\n", gnuplotstream);
 		flushgnuplot();
 	}
-	
+
 	if(P.datatrace.compare("")!=0){
 		if(P.verbose>2)cout << "invoke gnuplot for trace" << endl;
 		string combicmd;
 		//combicmd = "cp " + P.datatrace + " " + P.tmpPath + "/tmpdatafilecombcp.dat";
 		//if(P.verbose>2)cout << combicmd << endl;
 		//system(combicmd.c_str());
-		
+
 		combicmd = P.Path + "linecombinator " + P.datatrace + " " + P.tmpPath + "/tmpdatafilecomb.dat " + to_string(MeanM2->I);
 		if(P.verbose>2)cout << combicmd << endl;
 		systemsigsafe(combicmd.c_str());

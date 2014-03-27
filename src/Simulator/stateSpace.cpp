@@ -391,13 +391,13 @@ void stateSpace::outputPrism(){
 }
 
 void stateSpace::launchPrism(string prismPath){
-    cout<< "Starting Prism"<< endl;
+    cerr << "Starting Prism"<< endl;
     string cmd = prismPath + " -gs -maxiters 1000000000 -ctmc -importtrans prismMatrix.tra -importstates prismStates.sta -importlabels prismLabel.lbl -v -cuddmaxmem 10000000 prismProperty.ctl > prismOutput";
     if(0 != system(cmd.c_str())){
 		cerr << "Fail to launch prism" << endl;
 		exit(EXIT_FAILURE);
     }
-    cout << "Prism finish" << endl;
+    cerr << "Prism finish" << endl;
 }
 
 void stateSpace::importPrism(){
@@ -423,7 +423,7 @@ void stateSpace::importPrism(){
 			poseq = line.find("=");
 			
 			if(poseq != string::npos){
-                //cout << line << endl;
+                //cerr << line << endl;
                 size_t si = 1+line.find("(",0);
 				pos = line.substr(si,poseq-1-si);
                 //cerr << "pos:" << pos << endl;
@@ -435,7 +435,7 @@ void stateSpace::importPrism(){
 				while(it < pos.length()){
 					size_t it2 = pos.find(",",it);
 					if(it2 == string::npos ) it2 = pos.length();
-					//cout << "test:" << it<< ":" << it2 << endl;
+					//cerr << "test:" << it<< ":" << it2 << endl;
 					vect.push_back(atoi((pos.substr(it,it2-it)).c_str() ));
                     //cerr << atoi((pos.substr(it,it2-it)).c_str() ) << ",";
 					it = it2+1;

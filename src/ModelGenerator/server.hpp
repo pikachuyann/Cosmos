@@ -38,13 +38,6 @@
 #include "parameters.hpp"
 
 /**
- * The function lauchExport execute one instance of the simulator
- * With the right parameters to exporte the state space to files.
- * @param P the parameters to use for the export.
- */
-void launchExport(parameters& P);
-
-/**
  * One of the main function of the tool.
  * lauchServer execute several instance of the simulator,
  * then wait for some simulators to retun result.

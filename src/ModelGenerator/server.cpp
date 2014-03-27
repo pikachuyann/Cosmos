@@ -238,7 +238,13 @@ void launch_clients(parameters& P){
 		} else if(P.RareEvent){
 			//os << " " << "-RE";
 			pushstr(argv,argn,"-RE");
-		}
+		} else if(P.computeStateSpace==1){
+            pushstr(argv,argn,"-STSP");
+            pushstr(argv,argn,P.prismPath.c_str());
+        } else {
+            pushstr(argv,argn,"-STSPBU");
+            pushstr(argv,argn,P.prismPath.c_str());
+        }
 		
 		//If logging the row data is require pass it as an option.
 		if (P.dataraw.compare("")!=0){
@@ -294,31 +300,6 @@ void makeselectlist(void){
 }
 
 /**
- * Lauch one simulator with an option to make it generating the state space
- */
-void launchExport(parameters& P){
-    if(P.computeStateSpace==2){
-		ostringstream setuppr;
-		setuppr << "cd " << P.Path << "../prism ; ./install.sh";
-		cout << "setup prism:" << setuppr.str() << endl;
-		if(0 != system(setuppr.str().c_str()))errx(1,"Fail to set up Prism");
-	}
-	
-    ostringstream os;
-	os << P.tmpPath << "/ClientSim 1 " << P.verbose << " 0 ";
-    if(P.computeStateSpace==1)os << " -STSP " << P.prismPath;
-	else os << " -STSPBU " << P.prismPath;
-    
-    if(P.verbose >1)cout << os.str() << endl;
-    
-    if (system(os.str().c_str()) == 0){
-        cout << "Export Finish" << endl;
-    }else{
-        cerr << "Export Fail" << endl;
-    }
-}
-
-/**
  * This function launch a set of simulators and stop them once
  * The precision criterion is reach.
  */
@@ -350,7 +331,8 @@ void launchServer(parameters& P){
 					//batchResult.print();
 					Result.addBatch(&batchResult);
 					//If neaded output the progress of the computation.
-					if(P.verbose>0 || P.alligatorMode)Result.printProgress();
+					if((P.verbose>0 || P.alligatorMode) && P.computeStateSpace==0 )
+                        Result.printProgress();
 				} else {
 					//The batch result was not complete.
 					//If the simulator was kill by the server it is OK otherwise
