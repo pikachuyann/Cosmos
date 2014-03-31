@@ -97,15 +97,15 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
 {
     if((P.verbose-3)>1)cout << (*it) << endl;
     
-	if((*it).compare("function")==0){
+	if(it->compare("function")==0){
 		eval_expr(is_mark_dep, st, it.begin());
-	}else if((*it).compare("expr")==0){
+	}else if(it->compare("expr")==0){
 		eval_expr(is_mark_dep, st, it.begin());
-	}else if((*it).compare("intValue")==0){
+	}else if(it->compare("intValue")==0){
 		appendSimplify(st,it.node->first_child->data);
-	}else if((*it).compare("numValue")==0){
+	}else if(it->compare("numValue")==0){
 		appendSimplify(st,it.node->first_child->data);
-	}else if ((*it).compare("name")==0) {
+	}else if (it->compare("name")==0) {
         string var = simplifyString(it.node->first_child->data);
         if(MyGspn->IntConstant.count(var)>0 ||
            MyGspn->RealConstant.count(var)>0){st->append(var);
@@ -120,24 +120,24 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
 			}
 			if(MyGspn->placeStruct[MyGspn->PlacesId[var]].colorDom !=0 )st->append(".card()");
         }
-	}else if (	(*it).compare("+")==0  || (*it).compare("*")==0
-              || (*it).compare("min")==0   || (*it).compare("max")==0
-              || (*it).compare("floor")==0 || (*it).compare("minus")==0
-              || (*it).compare("/")==0   || (*it).compare("power")==0)  {
+	}else if (	it->compare("+")==0  || it->compare("*")==0
+              || it->compare("min")==0   || it->compare("max")==0
+              || it->compare("floor")==0 || it->compare("minus")==0
+              || it->compare("/")==0   || it->compare("power")==0)  {
 		
 		
-		if ((*it).compare("min")==0) st->append("min");
-		if ((*it).compare("max")==0) st->append("max");
-		if ((*it).compare("floor")==0 ) st->append("floor");
+		if (it->compare("min")==0) st->append("min");
+		if (it->compare("max")==0) st->append("max");
+		if (it->compare("floor")==0 ) st->append("floor");
 		
 		st->append("(");
 		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 			if(it2!= it.begin()) {
-				if ((*it).compare("+")==0) { st->append("+"); }
-				else if ((*it).compare("*")==0) { st->append("*"); }
-				else if ((*it).compare("-")==0) { st->append("-"); }
-				else if ((*it).compare("/")==0) { st->append("/ (double) "); }
-				else if ((*it).compare("power")==0) { st->append("^"); }
+				if (it->compare("+")==0) { st->append("+"); }
+				else if (it->compare("*")==0) { st->append("*"); }
+				else if (it->compare("-")==0) { st->append("-"); }
+				else if (it->compare("/")==0) { st->append("/ (double) "); }
+				else if (it->compare("power")==0) { st->append("^"); }
 				else st->append(",");
 			}
 			eval_expr(is_mark_dep, st, it2);
@@ -301,20 +301,20 @@ int MyModelHandler::eval_str (string s){
 int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it )
 {
     if((P.verbose-3)>1)cout<< (*it) << endl;
-	if((*it).compare("expr")==0 || (*it).compare("function")==0){
+	if(it->compare("expr")==0 || it->compare("function")==0){
 		//cout << *(it.begin()) << endl;
 		return eval_intFormula(intconst,it.begin());
-	}else if((*it).compare("intValue")==0){
+	}else if(it->compare("intValue")==0){
 		return eval_str(it.node->first_child->data);
-	}else if((*it).compare("numValue")==0){
+	}else if(it->compare("numValue")==0){
 		return eval_str(it.node->first_child->data);
-	}else if ((*it).compare("name")==0) {
+	}else if (it->compare("name")==0) {
 		string val = simplifyString(it.node->first_child->data);
 		int intval = intconst[val.c_str()];
 		return intval;
-	}else if ((*it).compare("+")==0 || (*it).compare("*")==0
-			  || (*it).compare("min")==0  || (*it).compare("max")==0
-			  || (*it).compare("power")==0|| (*it).compare("-")==0)  {
+	}else if (it->compare("+")==0 || it->compare("*")==0
+			  || it->compare("min")==0  || it->compare("max")==0
+			  || it->compare("power")==0|| it->compare("-")==0)  {
 		
 		int v1=0;
 		int v2=0;
@@ -326,12 +326,12 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
             
 		}
 		
-		if ((*it).compare("+")==0) { return v1+v2; }
-		else if ((*it).compare("*")==0) { return v1*v2; }
-		else if ((*it).compare("-")==0) { return v1-v2; }
-		else if ((*it).compare("min")==0) { return min(v1,v2); }
-		else if ((*it).compare("max")==0) {  return max(v1,v2); }
-		else if ((*it).compare("power")==0) {  return v1^v2; }
+		if (it->compare("+")==0) { return v1+v2; }
+		else if (it->compare("*")==0) { return v1*v2; }
+		else if (it->compare("-")==0) { return v1-v2; }
+		else if (it->compare("min")==0) { return min(v1,v2); }
+		else if (it->compare("max")==0) {  return max(v1,v2); }
+		else if (it->compare("power")==0) {  return v1^v2; }
 		else cout << "faileval int Formula" <<endl;
 	} else if(simplifyString(*it).compare("")==0)return 0;
 	
@@ -343,7 +343,7 @@ treeSI MyModelHandler::findbranch(treeSI t, string branch){
     if( branch.compare("")==0)return t;
     size_t nextnode = branch.find_first_of("/");
     for (treeSI it = (t.begin()) ; it != (t.end()) ; ++it) {
-        if((*it).compare(branch.substr(0,nextnode))==0){
+        if(it->compare(branch.substr(0,nextnode))==0){
             return findbranch(it, branch.substr(nextnode+1,branch.length()-nextnode-1));
         }
     }
@@ -449,7 +449,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
     
     for(treeSI it = attribute.begin(); it != attribute.end(); ++it) {
         if((P.verbose-3)>1)cout << *it << ":" << endl;
-        if((*it).compare("declaration")==0){
+        if(it->compare("declaration")==0){
             treeSI t1 = findbranch(it, "constants/intConsts/");
 			if(t1 != it.end())
 				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {

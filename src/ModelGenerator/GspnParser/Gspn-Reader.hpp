@@ -94,14 +94,16 @@ struct colorVariable {
 	size_t type;
 };
 
-#define CT_SINGLE_COLOR 0
-#define CT_VARIABLE 1
-#define CT_ALL 2
+enum varType {
+    CT_SINGLE_COLOR,
+    CT_VARIABLE,
+    CT_ALL
+};
 
 struct coloredToken {
 	string mult;
 	vector<size_t> field;
-	vector<char> Flags;
+	vector<varType> Flags;
 	vector<int> varIncrement;
 	bool hasAll;
 };
@@ -210,6 +212,8 @@ public:
 	
 	
 	void iterateDom(const string &s,const string &sop, const string &sclos ,const string &s2,const string &sop2, const string &sclos2 ,const colorDomain & cd, size_t prof,std::function<void (const string&,const string&)> func);
+    void iterateDomVec(vector<color> &v, const colorDomain & cd, size_t prof,std::function<void (const vector<color>&)> func);
+
 	
 	void iterateVars(const string &s,const string &sop, const string &sclos ,const set<size_t> &varDom, size_t prof,std::function<void (const string&)> func);
 	void iterateVars(vector<color> &v, const set<size_t> &varDom, size_t prof,std::function<void (const vector<color>&)> func);

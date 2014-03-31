@@ -157,6 +157,18 @@ void Gspn_Reader::iterateDom(const string &s,const string &sop, const string &sc
 	
 }
 
+void Gspn_Reader::iterateDomVec(vector<color> &v, const colorDomain & cd, size_t prof,function<void (const vector<color>&)> func){
+	if(prof == cd.colorClassIndex.size() ){func(v);}
+	else{
+		for(const auto cc : MyGspn.colClasses[cd.colorClassIndex[prof]].colors ){
+            v.push_back(cc);
+            iterateDomVec(v, cd, prof+1, func);
+            v.pop_back();
+        }
+	}
+
+}
+
 void Gspn_Reader::iterateVars(const string &s,const string &sop, const string &sclos ,const set<size_t> &vd, size_t prof,function<void (const string&)> func){
 	if(prof == MyGspn.colVars.size() ){func(s);}
 	else{

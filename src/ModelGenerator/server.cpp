@@ -241,7 +241,7 @@ void launch_clients(parameters& P){
 		} else if(P.computeStateSpace==1){
             pushstr(argv,argn,"-STSP");
             pushstr(argv,argn,P.prismPath.c_str());
-        } else {
+        } else if(P.computeStateSpace>1){
             pushstr(argv,argn,"-STSPBU");
             pushstr(argv,argn,P.prismPath.c_str());
         }
