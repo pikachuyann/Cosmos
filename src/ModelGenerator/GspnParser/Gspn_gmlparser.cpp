@@ -334,9 +334,13 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
 		else if (it->compare("power")==0) {  return v1^v2; }
 		else cout << "faileval int Formula" <<endl;
 	} else if(simplifyString(*it).compare("")==0)return 0;
-	
-	cout << "fail eval int formula" <<endl;
-	throw(gmlioexc);
+    try {
+        return stoi(simplifyString(*it));
+    }
+    catch (const invalid_argument& ia){
+        cout << "fail eval int formula" <<endl;
+        throw(gmlioexc);
+    }
 }
 
 treeSI MyModelHandler::findbranch(treeSI t, string branch){
@@ -520,9 +524,9 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 								intBound = find(tclasstypeenum.begin(),tclasstypeenum.end(),"higherBound");
 								high = eval_intFormula(MyGspn->IntConstant, intBound.begin());
 								
-								for(int i = low ; i< high ;i++){
+								for(int i = low ; i<= high ;i++){
 									stringstream ss;
-									ss << "intervalColor_" << i;
+									ss << cc.name << "_IC_" << i;
 									cc.colors.push_back(color(ss.str(),cc.colors.size(),MyGspn->colClasses.size()));
 								}
 								

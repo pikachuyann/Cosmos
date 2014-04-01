@@ -321,8 +321,8 @@ switch (t){
 	default:	//Release,
     if ( !(((SF_Token(b.P->s, b.P->f) * (1))) < 1)) 
         if (!(contains(Marking.P->_PL_Active , ((SF_Token(b.P->s, b.P->f) * (1)))))) return false;
-    if ( !(((SF_Domain(Color_site_All, b.P->f.c0) * (1))) < 1)) 
-        if (!(contains(Marking.P->_PL_Acknowledge , ((SF_Domain(Color_site_All, b.P->f.c0) * (1)))))) return false;
+    if ( !(((SF_Domain(Color_site_All, b.P->f.c0) * (1)) + (SF_Token(b.P->s, b.P->f) * (-1))) < 1)) 
+        if (!(contains(Marking.P->_PL_Acknowledge , ((SF_Domain(Color_site_All, b.P->f.c0) * (1)) + (SF_Token(b.P->s, b.P->f) * (-1)))))) return false;
     return true;
 
 }
@@ -350,7 +350,7 @@ void SPN::fire(size_t t, const abstractBinding& b){
 			SF_Domain tmpMark_Message = Marking.P->_PL_Message;
 			SF_Domain tmpMark_Modify = Marking.P->_PL_Modify;
 			Marking.P->_PL_Active += ((SF_Token(b.P->s, b.P->f) * (1)));
-			Marking.P->_PL_Message += ((SF_Domain(Color_site_All, b.P->f.c0) * (1)));
+			Marking.P->_PL_Message += ((SF_Domain(Color_site_All, b.P->f.c0) * (1)) + (SF_Token(b.P->s, b.P->f) * (-1)));
 			Marking.P->_PL_Modify -= ((SF_Token(b.P->s, b.P->f) * (1)));
        break;
      } 
@@ -362,7 +362,7 @@ void SPN::fire(size_t t, const abstractBinding& b){
 			Marking.P->_PL_all_active += ((site_Token(b.P->s) * (1)));
 			Marking.P->_PL_Active -= ((SF_Token(b.P->s, b.P->f) * (1)));
 			Marking.P->_PL_Mutex += ((file_Token(b.P->f) * (1)));
-			Marking.P->_PL_Acknowledge -= ((SF_Domain(Color_site_All, b.P->f.c0) * (1)));
+			Marking.P->_PL_Acknowledge -= ((SF_Domain(Color_site_All, b.P->f.c0) * (1)) + (SF_Token(b.P->s, b.P->f) * (-1)));
        break;
      } 
 		case 4: {  //Acquire

@@ -24,6 +24,8 @@
  *******************************************************************************
  */
 
+#include <stdlib.h>
+
 #include "unfolder.hpp"
 
 string unfolder::str_of_vect(const vector<color> &v,const string &smid)const {
@@ -124,10 +126,10 @@ void unfolder::export_coltoken(ofstream &fout,const vector<color> &vec,
 void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const transition &t,const place &p, bool dir, const vector< coloredToken > toklist){
     if(toklist.size() == 1 && !toklist[0].hasAll){
         export_coltoken(fout,vec,toklist[0],t,p,dir);
-    } else {
+    } else if(toklist.size()>0){
         vector<color> iteratevec;
         iterateDomVec(iteratevec, MyGspn.colDoms[p.colorDom], 0, [&](const vector<color> &v){
-            string mult =0;
+            int mult=0;
             for (auto coltoken: toklist) {
                 bool match = true;
                 for ( size_t i =0 ; i != coltoken.field.size(); ++i) {
@@ -137,22 +139,23 @@ void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const t
                         if(coltoken.Flags[i] == CT_SINGLE_COLOR){
                             col = coltoken.field[i];
                         }else col = (vec[coltoken.field[i]].id + coltoken.varIncrement[i] + cc.colors.size()) % cc.colors.size();
-                        if(cc.colors[col].id == v[i].id)match=false;
+                        if(col != v[i].id)match=false;
                     }
                 }
-                if(match)mult += (" + " + coltoken.mult);
+                if(match)mult += stoi(coltoken.mult);
             }
-            size_t truid = get_uid("transition"+t.label+"_"+str_of_vect(vec, "_"));
-            size_t pluid = get_uid("place"+p.name+"_"+str_of_vect(v, "_"));
-            fout << "\t<arc id=\"" << get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
-            fout << "\" arcType=\"arc\" source=\"";
-            if(dir){
-                fout << pluid << "\" target=\"" << truid << "\">";
-            }else fout << truid << "\" target=\"" << pluid << "\">";
-            fout << "<attribute name=\"valuation\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
-            fout << "\t\t" << mult << endl;
-            fout << "\t</attribute></attribute></attribute></arc>" << endl;
-
+            if(mult != 0){
+                size_t truid = get_uid("transition"+t.label+"_"+str_of_vect(vec, "_"));
+                size_t pluid = get_uid("place"+p.name+"_"+str_of_vect(v, "_"));
+                fout << "\t<arc id=\"" << get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
+                fout << "\" arcType=\"arc\" source=\"";
+                if(dir){
+                    fout << pluid << "\" target=\"" << truid << "\">";
+                }else fout << truid << "\" target=\"" << pluid << "\">";
+                fout << "<attribute name=\"valuation\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
+                fout << "\t\t" << mult << endl;
+                fout << "\t</attribute></attribute></attribute></arc>" << endl;
+            }
         });
     }
 }
