@@ -165,15 +165,15 @@ let joblist6 = [
 let add_option (x,y,z) =
   execSavedCosmos ~prefix:false (x,y,z,"--width 0.01 --njob 16")
 
-let lt = [ 100; 200; 400; 800; 1600; 6400; 12800; 25600; 102400] 
+let lt = [ 100 ; 200; 400; 800; 1600; 6400; 12800; 25600; 102400]
 let lp = [ "Policy1.grml"; "Policy2.grml" ]
 
-List.iter (fun p ->
+let _ = List.iter (fun p ->
   List.iter (fun i ->
     execSavedCosmos ~prefix:false (
     (Printf.sprintf "Table1_%s_%i" p i),
     p,"rho3_100.grml",
-    (Printf.sprintf "--width 0.01 --njob 1 --const 'T=%i,l1=3,l2=3'" ))
+    (Printf.sprintf "--width 0.01 --njob 1 --const 'T=%i,l1=3,l2=3' -v 1" i ))
   ) lt) lp
 
 (*

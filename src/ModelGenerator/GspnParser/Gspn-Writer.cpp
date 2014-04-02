@@ -1018,7 +1018,7 @@ void Gspn_Writer::WriteFile(){
 					
 					else {
 						newcase << "    if ( !(" << MyGspn.inhibArcsStruct[t][p.id].stringVal << " < 1) ) " << endl;
-						newcase << "        if (contain(Marking.P->_PL_" << p.name <<" , " << MyGspn.inhibArcsStruct[t][p.id].stringVal << ")) return false;" << endl;
+						newcase << "        if (contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.inhibArcsStruct[t][p.id].stringVal << ")) return false;" << endl;
 						
 					}
 				}
