@@ -68,11 +68,21 @@
         </attribute>
         <attribute name="realConst">
           <attribute name="name">
+            failrate
+          </attribute>
+          <attribute name="expr">
+            <attribute name="numValue">
+              0.0
+            </attribute>
+          </attribute>
+        </attribute>
+        <attribute name="realConst">
+          <attribute name="name">
             mu2
           </attribute>
           <attribute name="expr">
             <attribute name="numValue">
-              0.357142857142857151
+              0.714285714285714302
             </attribute>
           </attribute>
         </attribute>
@@ -174,7 +184,42 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="9" nodeType="place" x="200" y="306">
+  <node id="9" nodeType="transition" x="656" y="643">
+    <attribute name="weight">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="priority">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="name">
+      Fail2
+    </attribute>
+    <attribute name="service">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        ERLANG
+      </attribute>
+      <attribute name="param">
+        <attribute name="expr"><attribute name="numValue">
+          4
+        </attribute></attribute>
+      </attribute>
+      <attribute name="param">
+        <attribute name="expr"><attribute name="name">
+          failrate
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="10" nodeType="place" x="200" y="306">
     <attribute name="name">
       Waiting1
     </attribute>
@@ -184,7 +229,52 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="10" nodeType="transition" x="195" y="184">
+  <node id="11" nodeType="transition" x="656" y="732">
+    <attribute name="weight">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="priority">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="name">
+      Repair2
+    </attribute>
+    <attribute name="service">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        UNIFORM
+      </attribute>
+      <attribute name="param">
+        <attribute name="expr"><attribute name="numValue">
+          30
+        </attribute></attribute>
+      </attribute>
+      <attribute name="param">
+        <attribute name="expr"><attribute name="numValue">
+          50
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="12" nodeType="place" x="632" y="684">
+    <attribute name="name">
+      Down2
+    </attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="13" nodeType="transition" x="195" y="184">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -214,7 +304,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="11" nodeType="transition" x="268" y="184">
+  <node id="14" nodeType="transition" x="268" y="184">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -244,37 +334,17 @@
       </attribute>
     </attribute>
   </node>
-  <node id="12" nodeType="transition" x="338" y="184">
-    <attribute name="weight">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-    <attribute name="priority">
-      <attribute name="expr"><attribute name="numValue">
-        10
-      </attribute></attribute>
-    </attribute>
+  <node id="15" nodeType="place" x="682" y="684">
     <attribute name="name">
-      In1_1
+      Up2
     </attribute>
-    <attribute name="service">
+    <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
-    </attribute>
-    <attribute name="distribution">
-      <attribute name="type">
-        DETERMINISTIC
-      </attribute>
-      <attribute name="param">
-        <attribute name="expr"><attribute name="numValue">
-          0
-        </attribute></attribute>
-      </attribute>
     </attribute>
   </node>
-  <node id="13" nodeType="transition" x="126" y="271">
+  <node id="17" nodeType="transition" x="126" y="271">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -304,7 +374,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="14" nodeType="transition" x="195" y="271">
+  <node id="16" nodeType="transition" x="338" y="184">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -312,11 +382,11 @@
     </attribute>
     <attribute name="priority">
       <attribute name="expr"><attribute name="numValue">
-        5
+        10
       </attribute></attribute>
     </attribute>
     <attribute name="name">
-      Finish_1
+      In1_1
     </attribute>
     <attribute name="service">
       <attribute name="expr"><attribute name="numValue">
@@ -334,7 +404,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="15" nodeType="transition" x="268" y="271">
+  <node id="19" nodeType="transition" x="268" y="271">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -364,7 +434,37 @@
       </attribute>
     </attribute>
   </node>
-  <node id="17" nodeType="transition" x="268" y="479">
+  <node id="18" nodeType="transition" x="195" y="271">
+    <attribute name="weight">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="priority">
+      <attribute name="expr"><attribute name="numValue">
+        5
+      </attribute></attribute>
+    </attribute>
+    <attribute name="name">
+      Finish_1
+    </attribute>
+    <attribute name="service">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        DETERMINISTIC
+      </attribute>
+      <attribute name="param">
+        <attribute name="expr"><attribute name="numValue">
+          0
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="21" nodeType="transition" x="268" y="479">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -394,7 +494,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="16" nodeType="transition" x="268" y="548">
+  <node id="20" nodeType="transition" x="268" y="548">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -424,7 +524,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="19" nodeType="transition" x="268" y="343">
+  <node id="23" nodeType="transition" x="268" y="343">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -454,7 +554,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="18" nodeType="transition" x="268" y="410">
+  <node id="22" nodeType="transition" x="268" y="410">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -484,7 +584,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="21" nodeType="place" x="273" y="504">
+  <node id="25" nodeType="place" x="273" y="504">
     <attribute name="name">
       Pos1_4
     </attribute>
@@ -494,7 +594,7 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="20" nodeType="place" x="273" y="607">
+  <node id="24" nodeType="place" x="273" y="607">
     <attribute name="name">
       Q1
     </attribute>
@@ -504,7 +604,7 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="23" nodeType="place" x="273" y="370">
+  <node id="27" nodeType="place" x="273" y="370">
     <attribute name="name">
       Pos1_2
     </attribute>
@@ -514,7 +614,7 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="22" nodeType="place" x="273" y="439">
+  <node id="26" nodeType="place" x="273" y="439">
     <attribute name="name">
       Pos1_3
     </attribute>
@@ -524,7 +624,7 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="25" nodeType="place" x="664" y="227">
+  <node id="29" nodeType="place" x="664" y="227">
     <attribute name="name">
       Ready2
     </attribute>
@@ -534,7 +634,7 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="24" nodeType="transition" x="268" y="730">
+  <node id="28" nodeType="transition" x="268" y="730">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -569,7 +669,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="27" nodeType="transition" x="659" y="184">
+  <node id="31" nodeType="transition" x="659" y="184">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -599,7 +699,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="26" nodeType="place" x="664" y="306">
+  <node id="30" nodeType="place" x="664" y="306">
     <attribute name="name">
       Waiting2
     </attribute>
@@ -609,9 +709,9 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="29" nodeType="place" x="737" y="136">
+  <node id="34" nodeType="place" x="737" y="227">
     <attribute name="name">
-      InConv2
+      Buffer2
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
@@ -619,7 +719,17 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="28" nodeType="transition" x="732" y="184">
+  <node id="35" nodeType="place" x="737" y="306">
+    <attribute name="name">
+      Pos2_1
+    </attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="32" nodeType="transition" x="732" y="184">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -649,9 +759,9 @@
       </attribute>
     </attribute>
   </node>
-  <node id="31" nodeType="place" x="737" y="306">
+  <node id="33" nodeType="place" x="737" y="136">
     <attribute name="name">
-      Pos2_1
+      InConv2
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
@@ -659,17 +769,7 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="30" nodeType="place" x="737" y="227">
-    <attribute name="name">
-      Buffer2
-    </attribute>
-    <attribute name="marking">
-      <attribute name="expr"><attribute name="numValue">
-        0
-      </attribute></attribute>
-    </attribute>
-  </node>
-  <node id="34" nodeType="transition" x="732" y="343">
+  <node id="38" nodeType="transition" x="732" y="343">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -699,7 +799,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="35" nodeType="transition" x="732" y="410">
+  <node id="39" nodeType="transition" x="732" y="410">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -729,7 +829,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="32" nodeType="transition" x="732" y="479">
+  <node id="36" nodeType="transition" x="732" y="479">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -759,7 +859,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="33" nodeType="transition" x="732" y="548">
+  <node id="37" nodeType="transition" x="732" y="548">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -789,7 +889,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="38" nodeType="transition" x="732" y="271">
+  <node id="42" nodeType="transition" x="732" y="271">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -819,7 +919,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="39" nodeType="transition" x="659" y="271">
+  <node id="43" nodeType="transition" x="659" y="271">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -849,7 +949,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="36" nodeType="transition" x="590" y="271">
+  <node id="40" nodeType="transition" x="590" y="271">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -879,7 +979,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="37" nodeType="transition" x="802" y="184">
+  <node id="41" nodeType="transition" x="802" y="184">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -909,7 +1009,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="42" nodeType="place" x="737" y="607">
+  <node id="46" nodeType="place" x="737" y="607">
     <attribute name="name">
       Q2
     </attribute>
@@ -919,7 +1019,7 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="43" nodeType="place" x="737" y="370">
+  <node id="47" nodeType="place" x="737" y="370">
     <attribute name="name">
       Pos2_2
     </attribute>
@@ -929,7 +1029,7 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="40" nodeType="transition" x="732" y="730">
+  <node id="44" nodeType="transition" x="732" y="730">
     <attribute name="weight">
       <attribute name="expr"><attribute name="numValue">
         1
@@ -964,7 +1064,7 @@
       </attribute>
     </attribute>
   </node>
-  <node id="41" nodeType="place" x="737" y="504">
+  <node id="45" nodeType="place" x="737" y="504">
     <attribute name="name">
       Pos2_4
     </attribute>
@@ -974,7 +1074,87 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <node id="44" nodeType="place" x="737" y="439">
+  <node id="51" nodeType="place" x="203" y="684">
+    <attribute name="name">
+      Up1
+    </attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="50" nodeType="transition" x="177" y="643">
+    <attribute name="weight">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="priority">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="name">
+      Fail1
+    </attribute>
+    <attribute name="service">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        ERLANG
+      </attribute>
+      <attribute name="param">
+        <attribute name="expr"><attribute name="numValue">
+          4
+        </attribute></attribute>
+      </attribute>
+      <attribute name="param">
+        <attribute name="expr"><attribute name="name">
+          failrate
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="49" nodeType="transition" x="177" y="732">
+    <attribute name="weight">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="priority">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="name">
+      Repair1
+    </attribute>
+    <attribute name="service">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        UNIFORM
+      </attribute>
+      <attribute name="param">
+        <attribute name="expr"><attribute name="numValue">
+          30
+        </attribute></attribute>
+      </attribute>
+      <attribute name="param">
+        <attribute name="expr"><attribute name="numValue">
+          50
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="48" nodeType="place" x="737" y="439">
     <attribute name="name">
       Pos2_3
     </attribute>
@@ -984,511 +1164,605 @@
       </attribute></attribute>
     </attribute>
   </node>
-  <arc id="46" arcType="inhibitorarc" source="42" target="32">
+  <node id="52" nodeType="place" x="153" y="684">
+    <attribute name="name">
+      Down1
+    </attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <arc id="137" arcType="arc" source="50" target="52">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="136" arcType="arc" source="52" target="49">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="129" arcType="arc" source="31" target="33">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="128" arcType="inhibitorarc" source="46" target="41">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="47" arcType="arc" source="3" target="37">
+  <arc id="131" arcType="arc" source="37" target="46">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="45" arcType="arc" source="3" target="27">
+  <arc id="130" arcType="arc" source="42" target="30">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="51" arcType="arc" source="37" target="20">
+  <arc id="133" arcType="arc" source="28" target="51">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="132" arcType="arc" source="51" target="28">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="135" arcType="arc" source="51" target="50">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="134" arcType="arc" source="49" target="51">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="55" arcType="arc" source="12" target="11">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="54" arcType="arc" source="15" target="44">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="53" arcType="arc" source="44" target="15">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="59" arcType="arc" source="3" target="31">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="58" arcType="arc" source="11" target="15">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="57" arcType="arc" source="9" target="12">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="56" arcType="arc" source="15" target="9">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="63" arcType="arc" source="24" target="41">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="50" arcType="arc" source="42" target="12">
+  <arc id="62" arcType="arc" source="3" target="32">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="61" arcType="arc" source="3" target="41">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="60" arcType="inhibitorarc" source="46" target="36">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="49" arcType="arc" source="20" target="37">
+  <arc id="68" arcType="inhibitorarc" source="46" target="40">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="48" arcType="arc" source="3" target="28">
+  <arc id="69" arcType="arc" source="47" target="39">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="55" arcType="arc" source="43" target="35">
+  <arc id="70" arcType="arc" source="30" target="40">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="54" arcType="inhibitorarc" source="42" target="36">
+  <arc id="71" arcType="inhibitorarc" source="46" target="37">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="53" arcType="arc" source="39" target="26">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="52" arcType="arc" source="12" target="42">
+  <arc id="64" arcType="arc" source="46" target="16">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="59" arcType="arc" source="4" target="3">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="58" arcType="arc" source="37" target="30">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="57" arcType="inhibitorarc" source="42" target="33">
+  <arc id="65" arcType="arc" source="41" target="24">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="56" arcType="arc" source="26" target="36">
+  <arc id="66" arcType="arc" source="16" target="46">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        2
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="67" arcType="arc" source="43" target="30">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="63" arcType="arc" source="3" target="10">
+  <arc id="76" arcType="arc" source="13" target="5">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="62" arcType="arc" source="10" target="5">
+  <arc id="77" arcType="arc" source="3" target="13">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="61" arcType="arc" source="3" target="12">
+  <arc id="78" arcType="arc" source="3" target="14">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="60" arcType="arc" source="20" target="24">
+  <arc id="79" arcType="arc" source="16" target="6">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="68" arcType="arc" source="11" target="5">
+  <arc id="72" arcType="arc" source="41" target="34">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="69" arcType="arc" source="8" target="15">
+  <arc id="73" arcType="arc" source="4" target="3">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="70" arcType="arc" source="15" target="9">
+  <arc id="74" arcType="arc" source="24" target="28">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="71" arcType="arc" source="6" target="15">
+  <arc id="75" arcType="arc" source="3" target="16">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="64" arcType="arc" source="3" target="11">
+  <arc id="85" arcType="arc" source="6" target="19">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="65" arcType="arc" source="12" target="6">
+  <arc id="84" arcType="arc" source="19" target="10">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="66" arcType="arc" source="12" target="5">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="67" arcType="arc" source="11" target="6">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="76" arcType="arc" source="8" target="14">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="77" arcType="arc" source="18" target="22">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="78" arcType="arc" source="23" target="18">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="79" arcType="arc" source="13" target="8">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="72" arcType="arc" source="15" target="7">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="73" arcType="inhibitorarc" source="5" target="10">
+  <arc id="87" arcType="inhibitorarc" source="5" target="13">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="name">
         l1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="74" arcType="arc" source="10" target="6">
+  <arc id="86" arcType="arc" source="19" target="7">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="75" arcType="arc" source="14" target="9">
+  <arc id="81" arcType="arc" source="14" target="6">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="85" arcType="inhibitorarc" source="20" target="17">
+  <arc id="80" arcType="arc" source="16" target="5">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="83" arcType="arc" source="8" target="19">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="82" arcType="arc" source="14" target="5">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="93" arcType="arc" source="17" target="8">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="92" arcType="arc" source="27" target="22">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="95" arcType="arc" source="25" target="20">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="94" arcType="arc" source="10" target="17">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="89" arcType="arc" source="18" target="10">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="88" arcType="arc" source="13" target="6">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="91" arcType="arc" source="22" target="26">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="90" arcType="arc" source="8" target="18">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="102" arcType="inhibitorarc" source="24" target="16">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="84" arcType="arc" source="7" target="19">
+  <arc id="103" arcType="arc" source="21" target="25">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="87" arcType="arc" source="5" target="16">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="86" arcType="inhibitorarc" source="20" target="16">
+  <arc id="100" arcType="inhibitorarc" source="24" target="20">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="81" arcType="arc" source="21" target="16">
+  <arc id="101" arcType="arc" source="5" target="20">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="80" arcType="arc" source="9" target="13">
+  <arc id="98" arcType="arc" source="7" target="23">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="83" arcType="arc" source="19" target="23">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="82" arcType="arc" source="16" target="20">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="93" arcType="inhibitorarc" source="20" target="13">
+  <arc id="99" arcType="inhibitorarc" source="24" target="21">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="92" arcType="inhibitorarc" source="20" target="18">
+  <arc id="96" arcType="arc" source="20" target="24">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="97" arcType="arc" source="23" target="27">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="110" arcType="arc" source="32" target="34">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="111" arcType="arc" source="29" target="43">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="108" arcType="arc" source="41" target="33">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="109" arcType="inhibitorarc" source="46" target="38">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="95" arcType="inhibitorarc" source="42" target="34">
+  <arc id="106" arcType="inhibitorarc" source="24" target="22">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="94" arcType="arc" source="37" target="29">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="89" arcType="arc" source="17" target="21">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="88" arcType="inhibitorarc" source="20" target="12">
+  <arc id="107" arcType="inhibitorarc" source="24" target="17">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="91" arcType="inhibitorarc" source="20" target="19">
+  <arc id="104" arcType="arc" source="26" target="21">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="105" arcType="inhibitorarc" source="24" target="23">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="90" arcType="arc" source="22" target="17">
+  <arc id="119" arcType="arc" source="32" target="33">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="102" arcType="arc" source="42" target="40">
+  <arc id="118" arcType="arc" source="36" target="45">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="103" arcType="arc" source="41" target="33">
+  <arc id="117" arcType="arc" source="45" target="37">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="100" arcType="arc" source="25" target="38">
+  <arc id="116" arcType="arc" source="46" target="44">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="101" arcType="arc" source="35" target="44">
+  <arc id="115" arcType="arc" source="39" target="48">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="98" arcType="arc" source="44" target="32">
+  <arc id="114" arcType="arc" source="29" target="42">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="99" arcType="inhibitorarc" source="29" target="27">
+  <arc id="113" arcType="inhibitorarc" source="33" target="31">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="name">
         l2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="96" arcType="arc" source="28" target="30">
+  <arc id="112" arcType="arc" source="48" target="36">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="97" arcType="arc" source="25" target="39">
+  <arc id="127" arcType="arc" source="40" target="29">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="110" arcType="arc" source="30" target="38">
+  <arc id="126" arcType="arc" source="38" target="47">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="111" arcType="inhibitorarc" source="42" target="35">
+  <arc id="125" arcType="inhibitorarc" source="46" target="39">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         2
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="108" arcType="arc" source="27" target="30">
+  <arc id="124" arcType="arc" source="34" target="42">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="109" arcType="arc" source="29" target="33">
+  <arc id="123" arcType="arc" source="33" target="37">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="106" arcType="arc" source="38" target="31">
+  <arc id="122" arcType="arc" source="31" target="34">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="107" arcType="arc" source="31" target="34">
+  <arc id="121" arcType="arc" source="35" target="38">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
       </attribute></attribute>
     </attribute>
   </arc>
-  <arc id="104" arcType="arc" source="32" target="41">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="105" arcType="arc" source="28" target="29">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="117" arcType="arc" source="33" target="42">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="116" arcType="arc" source="38" target="26">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="115" arcType="arc" source="27" target="29">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="114" arcType="inhibitorarc" source="42" target="37">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        2
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="113" arcType="arc" source="36" target="25">
-    <attribute name="valuation">
-      <attribute name="expr"><attribute name="numValue">
-        1
-      </attribute></attribute>
-    </attribute>
-  </arc>
-  <arc id="112" arcType="arc" source="34" target="43">
+  <arc id="120" arcType="arc" source="42" target="35">
     <attribute name="valuation">
       <attribute name="expr"><attribute name="numValue">
         1
