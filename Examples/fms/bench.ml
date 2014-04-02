@@ -165,7 +165,18 @@ let joblist6 = [
 let add_option (x,y,z) =
   execSavedCosmos ~prefix:false (x,y,z,"--width 0.01 --njob 16")
 
+let lt = [ 100; 200; 400; 800; 1600; 6400; 12800; 25600; 102400] 
+let lp = [ "Policy1.grml"; "Policy2.grml" ]
 
+List.iter (fun p ->
+  List.iter (fun i ->
+    execSavedCosmos ~prefix:false (
+    (Printf.sprintf "Table1_%s_%i" p i),
+    p,"rho3_100.grml",
+    (Printf.sprintf "--width 0.01 --njob 1 --const 'T=%i,l1=3,l2=3'" ))
+  ) lt) lp
+
+(*
 let _ = match int_of_string (Sys.argv.(1)) with
     1 -> List.iter add_option joblist1
   | 2 -> List.iter add_option joblist2
@@ -175,4 +186,4 @@ let _ = match int_of_string (Sys.argv.(1)) with
   | 5 -> List.iter add_option joblist5
   | 6 -> List.iter add_option joblist6
   | _ -> failwith "Wrong integer"
-
+*)

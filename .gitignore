@@ -13,6 +13,8 @@ bin/*
 *.log
 *.in
 doc/overview.pdf
+*csvResultFile
+*camlResultFile
 *prismLabel.lbl
 *prismMatrix.tra
 *prismOutput
