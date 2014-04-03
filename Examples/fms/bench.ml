@@ -168,13 +168,13 @@ let add_option (x,y,z) =
 let lt = [ 10 ; 25 ; (*50;*) 100 ; (*200;*) 400; (*800;*) 1600; (*6400;*) 12800; (*25600;*) 102400 ]
 let lp = [ "Policy1.grml"; "Policy2.grml" ]
 let prop = "rho1.grml"
-let commonopt = "--width 0.01 --njob 1 --batch 100 -v 2 --njob 8 "
+let commonopt = "--width 0.01 --batch 100 -v 2 --njob 8 "
 
 let iterexp name p prop opt =
   List.iter (fun i ->
     execSavedCosmos ~prefix:false (
       (Printf.sprintf "%s_%s_%i" name p i),p,prop,
-      (Printf.sprintf "%s --const 'T=%i'" commonopt i ))
+      (Printf.sprintf "%s --const 'T=%i'" opt i ))
   ) lt
 
 
