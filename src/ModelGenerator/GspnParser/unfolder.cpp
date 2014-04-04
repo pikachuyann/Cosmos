@@ -48,6 +48,7 @@ void unfolder::export_grml(ofstream& fout){
 	for(const auto &t: MyGspn.transitionStruct)export_arc_grml(fout, t);
 	
 	fout << "</model>" << endl;
+    cout << "Number of Places:" << nbPlace << "\tNumber of Transitions:" << nbTrans << "\tNumber of Arcs:" << nbArc << endl;
 }
 
 size_t unfolder::get_uid(const string &str){
@@ -60,6 +61,7 @@ size_t unfolder::get_uid(const string &str){
 
 void unfolder::export_place_grml(ofstream &fout,const place &p){
 	iterateDom(p.name, "_", "", "", "_", "", MyGspn.colDoms[p.colorDom], 0, [&](const string& str,const string&){
+        nbPlace++;
 		fout << "\t<node id=\"" << get_uid("place"+str) << "\" nodeType=\"place\">"<< endl;
 		fout << "\t\t<attribute name=\"name\">" << str << "</attribute>" << endl;
 		fout << "\t\t<attribute name=\"marking\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
@@ -78,6 +80,7 @@ void unfolder::export_place_grml(ofstream &fout,const place &p){
 
 void unfolder::export_transition_grml(ofstream &fout, const transition &t){
 		iterateVars(t.label , "_", "", t.varDomain , 0, [&](const string& str){
+            nbTrans++;
 			fout << "\t<node id=\"" << get_uid("transition"+str) << "\" nodeType=\"transition\">"<< endl;
 			fout << "\t\t<attribute name=\"name\">" << str << "</attribute>" << endl;
 			fout << "\t\t<attribute name=\"distribution\">" << endl;
@@ -112,7 +115,7 @@ void unfolder::export_coltoken(ofstream &fout,const vector<color> &vec,
 		vec2.push_back(cc.colors[col]);
 	}
 	size_t pluid = get_uid("place"+p.name+"_"+str_of_vect(vec2, "_"));
-	
+	nbArc++;
 	fout << "\t<arc id=\"" << get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
 	fout << "\" arcType=\"arc\" source=\"";
 	if(dir){
@@ -145,6 +148,7 @@ void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const t
                 if(match)mult += stoi(coltoken.mult);
             }
             if(mult != 0){
+                nbArc++;
                 size_t truid = get_uid("transition"+t.label+"_"+str_of_vect(vec, "_"));
                 size_t pluid = get_uid("place"+p.name+"_"+str_of_vect(v, "_"));
                 fout << "\t<arc id=\"" << get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
@@ -165,8 +169,8 @@ void unfolder::export_arc_grml(ofstream &fout, const transition &t){
 	vector<color> iteratevec;
 	iterateVars(iteratevec , t.varDomain , 0, [&](const vector<color> &vec){
 		for(const auto &p: MyGspn.placeStruct){
-				export_multcoltok(fout,vec,t,p,true,MyGspn.inArcsStruct[t.id][p.id].coloredVal);
-				export_multcoltok(fout,vec,t,p,false,MyGspn.outArcsStruct[t.id][p.id].coloredVal);
+				export_multcoltok(fout,vec,t,p,true,MyGspn.access(MyGspn.inArcsStruct,t.id,p.id).coloredVal);
+				export_multcoltok(fout,vec,t,p,false,MyGspn.access(MyGspn.outArcsStruct,t.id,p.id).coloredVal);
 		}
 	});
 }

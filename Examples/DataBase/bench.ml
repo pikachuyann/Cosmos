@@ -20,17 +20,17 @@ let add_option (x,y,t) =
 
 
 let _ =
-  for i = 1 to 1 do
-    add_option (
+  for i = 1 to 30 do
+    (*add_option (
       (Printf.sprintf "dataN%iP%i" i i),
       ("databasecNfP.grml"),
-      (Printf.sprintf "--const 'N=%i,P=%i' --trace-place 'Modify,COLOR'" i i));
+      (Printf.sprintf "--const 'N=%i,P=%i' --trace-place 'Modify,COLOR'" i i));*)
     add_option (
       (Printf.sprintf "unfoldingN%iP%i" i i),
       ("databasecNfP.grml"),
       (Printf.sprintf "--const 'N=%i,P=%i' --unfold databaseunfoldN%iP%i.grml" i i i i));
-    add_option (
+    (*add_option (
       (Printf.sprintf "dataunfoldN%iP%i" i i),
       (Printf.sprintf "databaseunfoldN%iP%i.grml" i i),
-      (Printf.sprintf "--trace-place 'Modify_site_IC_1_file_IC_1'"));
+      (Printf.sprintf "--trace-place 'Modify_site_IC_1_file_IC_1'"));*)
   done

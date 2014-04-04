@@ -38,7 +38,7 @@
 
 class unfolder: public Gspn_Reader {
 public:
-	unfolder(Gspn_Reader& g):Gspn_Reader(g){};
+	unfolder(Gspn_Reader& g):Gspn_Reader(g),nbPlace(0),nbTrans(0),nbArc(0){};
 	
 	void export_grml(ofstream &fout);
 private:
@@ -57,6 +57,6 @@ private:
 	
 	std::string str_of_vect(const vector<color> &v,const std::string &smid) const;
 	
-	
+	size_t nbPlace,nbTrans,nbArc;
 };
 #endif /* defined(__Cosmos__unfolder__) */

@@ -40,7 +40,7 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		set<int> Sinhib;
 		set<int> INt1;
 		for (size_t p = 0; p < MyGspn.pl; p++) {
-			if (!MyGspn.inArcsStruct[t1][p].isEmpty) {
+			if (!MyGspn.access(MyGspn.inArcsStruct,t1,p).isEmpty) {
 				INt1.insert(p);
 			}
 		}
@@ -51,7 +51,7 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 				bool B = true;
 				size_t p = 0;
 				while (B && p < MyGspn.pl) {
-					if (!MyGspn.inArcsStruct[t2][p].isEmpty) {
+					if (!MyGspn.access(MyGspn.inArcsStruct,t2,p).isEmpty) {
 						INt1t2.insert(p);
 						if (size == INt1t2.size()) {
 							B = false;
@@ -66,7 +66,7 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 				B = true;
 				p = 0;
 				while (B && p < MyGspn.pl) {
-					if (!MyGspn.inhibArcsStruct[t2][p].isEmpty) {
+					if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p).isEmpty) {
 						INt1t2Inhib.insert(p);
 						if (size == INt1t2Inhib.size()) {
 							B = false;
@@ -87,7 +87,7 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		set<int> Sinhib = PossiblyDisabled[t1];
 		set<int> OUTt1;
 		for (size_t p = 0; p < MyGspn.pl; p++)
-			if (!MyGspn.outArcsStruct[t1][p].isEmpty)
+			if (!MyGspn.access(MyGspn.outArcsStruct,t1,p).isEmpty)
 				OUTt1.insert(p);
 		for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
 			if (t1 != t2) {
@@ -96,7 +96,7 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 				bool B = true;
 				size_t p = 0;
 				while (B && p < MyGspn.pl) {
-					if (!MyGspn.inArcsStruct[t2][p].isEmpty) {
+					if (!MyGspn.access(MyGspn.inArcsStruct,t2,p).isEmpty) {
 						OUTt1INt2.insert(p);
 						if (size == OUTt1INt2.size()) {
 							B = false;
@@ -110,7 +110,7 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 				B = true;
 				p = 0;
 				while (B && p < MyGspn.pl) {
-					if (!MyGspn.inhibArcsStruct[t2][p].isEmpty) {
+					if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p).isEmpty) {
 						OUTt1t2Inhib.insert(p);
 						if (size == OUTt1t2Inhib.size()) {
 							B = false;
@@ -223,20 +223,20 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 					bool fallback = false;
 					for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
 						//Check that that there is at least one variable on the two arcs
-						if(MyGspn.outArcsStruct[trit][itp].isColored
-						   && MyGspn.inArcsStruct[trit2][itp].isColored
+						if(MyGspn.access(MyGspn.outArcsStruct,trit,itp).isColored
+						   && MyGspn.access(MyGspn.inArcsStruct,trit2,itp).isColored
 						   ){
 							//Check that there is only one token on each arcs
-							if(MyGspn.outArcsStruct[trit][itp].coloredVal.size()==1
-							   && MyGspn.inArcsStruct[trit2][itp].coloredVal.size()==1){
+							if(MyGspn.access(MyGspn.outArcsStruct,trit,itp).coloredVal.size()==1
+							   && MyGspn.access(MyGspn.inArcsStruct,trit2,itp).coloredVal.size()==1){
 								//Check that the token is not the ALL token.
-								if(!MyGspn.outArcsStruct[trit][itp].coloredVal[0].hasAll &&
-								   !MyGspn.inArcsStruct[trit2][itp].coloredVal[0].hasAll){
+								if(!MyGspn.access(MyGspn.outArcsStruct,trit,itp).coloredVal[0].hasAll &&
+								   !MyGspn.access(MyGspn.inArcsStruct,trit2,itp).coloredVal[0].hasAll){
 									nbp++;
 									pivotplace = itp;
-									for(size_t varpt = 0;varpt < MyGspn.inArcsStruct[trit2][itp].coloredVal[0].field.size(); ++varpt){
-										if(MyGspn.inArcsStruct[trit2][itp].coloredVal[0].Flags[varpt] == CT_VARIABLE){
-											varList.erase(MyGspn.inArcsStruct[trit2][itp].coloredVal[0].field[varpt]);
+									for(size_t varpt = 0;varpt < MyGspn.access(MyGspn.inArcsStruct,trit2,itp).coloredVal[0].field.size(); ++varpt){
+										if(MyGspn.access(MyGspn.inArcsStruct,trit2,itp).coloredVal[0].Flags[varpt] == CT_VARIABLE){
+											varList.erase(MyGspn.access(MyGspn.inArcsStruct,trit2,itp).coloredVal[0].field[varpt]);
 										}
 									}
 								}else fallback = true;//Handling of ALL token not yet implemented
@@ -258,9 +258,9 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 						SpnF << "\t{"<< endl;
 						SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 						SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
-						SpnF << "\t\tbtotal += " << ((MyGspn.outArcsStruct[trit][pivotplace].coloredVal[0].varIncrement[0]
-													  + MyGspn.colClasses[MyGspn.outArcsStruct[trit][pivotplace].coloredVal[0].field[0]].colors.size()) % MyGspn.colClasses[MyGspn.outArcsStruct[trit][pivotplace].coloredVal[0].field[0]].colors.size() ) *
-						varMultiplier(MyGspn.outArcsStruct[trit][pivotplace].coloredVal[0].field[0]) <<  ";"<< endl;
+						SpnF << "\t\tbtotal += " << ((MyGspn.access(MyGspn.outArcsStruct,trit,pivotplace).coloredVal[0].varIncrement[0]
+													  + MyGspn.colClasses[MyGspn.access(MyGspn.outArcsStruct,trit,pivotplace).coloredVal[0].field[0]].colors.size()) % MyGspn.colClasses[MyGspn.access(MyGspn.outArcsStruct,trit,pivotplace).coloredVal[0].field[0]].colors.size() ) *
+						varMultiplier(MyGspn.access(MyGspn.outArcsStruct,trit,pivotplace).coloredVal[0].field[0]) <<  ";"<< endl;
 						//Compute the number of the new binding in the global numerotation.
 						
 						SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
@@ -301,19 +301,19 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 					bool fallback = false;
 					for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
 						//Check that that there is at least one variable on the two arcs
-						if(MyGspn.inArcsStruct[trit][itp].isColored
-						   && MyGspn.inArcsStruct[trit2][itp].isColored						   ){
+						if(MyGspn.access(MyGspn.inArcsStruct,trit,itp).isColored
+						   && MyGspn.access(MyGspn.inArcsStruct,trit2,itp).isColored){
 							//Check that there is only one token on each arcs
-							if(MyGspn.inArcsStruct[trit][itp].coloredVal.size()==1
-							   && MyGspn.inArcsStruct[trit2][itp].coloredVal.size()==1){
+							if(MyGspn.access(MyGspn.inArcsStruct,trit,itp).coloredVal.size()==1
+							   && MyGspn.access(MyGspn.inArcsStruct,trit2,itp).coloredVal.size()==1){
 								//Check that the token is not the ALL token.
-								if(!MyGspn.inArcsStruct[trit][itp].coloredVal[0].hasAll &&
-								   !MyGspn.inArcsStruct[trit2][itp].coloredVal[0].hasAll){
+								if(!MyGspn.access(MyGspn.inArcsStruct,trit,itp).coloredVal[0].hasAll &&
+								   !MyGspn.access(MyGspn.inArcsStruct,trit2,itp).coloredVal[0].hasAll){
 									nbp++;
 									pivotplace = itp;
-									for(size_t varpt = 0;varpt < MyGspn.inArcsStruct[trit2][itp].coloredVal[0].field.size(); ++varpt){
-										if(MyGspn.inArcsStruct[trit2][itp].coloredVal[0].Flags[varpt] == CT_VARIABLE){
-											varList.erase(MyGspn.inArcsStruct[trit2][itp].coloredVal[0].field[varpt]);
+									for(size_t varpt = 0;varpt < MyGspn.access(MyGspn.inArcsStruct,trit2,itp).coloredVal[0].field.size(); ++varpt){
+										if(MyGspn.access(MyGspn.inArcsStruct,trit2,itp).coloredVal[0].Flags[varpt] == CT_VARIABLE){
+											varList.erase(MyGspn.access(MyGspn.inArcsStruct,trit2,itp).coloredVal[0].field[varpt]);
 										}
 									}
 								}else fallback = true;//Handling of ALL token not yet implemented
@@ -335,9 +335,9 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 						SpnF << "\t{"<< endl;
 						SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 						SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
-						SpnF << "\t\tbtotal += " << ((MyGspn.inArcsStruct[trit][pivotplace].coloredVal[0].varIncrement[0]
-													  + MyGspn.colClasses[MyGspn.inArcsStruct[trit][pivotplace].coloredVal[0].field[0]].colors.size()) % MyGspn.colClasses[MyGspn.inArcsStruct[trit][pivotplace].coloredVal[0].field[0]].colors.size() ) *
-						varMultiplier(MyGspn.inArcsStruct[trit][pivotplace].coloredVal[0].field[0]) <<  ";"<< endl;
+						SpnF << "\t\tbtotal += " << ((MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace).coloredVal[0].varIncrement[0]
+													  + MyGspn.colClasses[MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace).coloredVal[0].field[0]].colors.size()) % MyGspn.colClasses[MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace).coloredVal[0].field[0]].colors.size() ) *
+						varMultiplier(MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace).coloredVal[0].field[0]) <<  ";"<< endl;
 						//Compute the number of the new binding in the global numerotation.
 						
 						SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
@@ -1001,24 +1001,24 @@ void Gspn_Writer::WriteFile(){
 			stringstream newcase;
 		    //SpnCppFile << "     case " << t << ":  //" << MyGspn.transitionStruct[t].label <<endl;
 			for (const auto &p : MyGspn.placeStruct) {
-				if (!MyGspn.inArcsStruct[t][p.id].isEmpty) {
+				if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
 					
-					if (!MyGspn.inArcsStruct[t][p.id].isMarkDep)
-						newcase << "    if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.inArcsStruct[t][p.id].intVal << "))) return false;" << endl;
+					if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
+						newcase << "    if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << "))) return false;" << endl;
 					
 					else {
-						newcase << "    if ( !(" << MyGspn.inArcsStruct[t][p.id].stringVal << " < 1)) " << endl;
-						newcase << "        if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.inArcsStruct[t][p.id].stringVal << "))) return false;" << endl;
+						newcase << "    if ( !(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << " < 1)) " << endl;
+						newcase << "        if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << "))) return false;" << endl;
 					}
 				}
-				if (!MyGspn.inhibArcsStruct[t][p.id].isEmpty) {
+				if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty) {
 					
-					if (!MyGspn.inhibArcsStruct[t][p.id].isMarkDep)
-						newcase << "    if (Marking.P->_PL_" << p.name <<" >= " << MyGspn.inhibArcsStruct[t][p.id].intVal << ") return false;" << endl;
+					if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isMarkDep)
+						newcase << "    if (Marking.P->_PL_" << p.name <<" >= " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).intVal << ") return false;" << endl;
 					
 					else {
-						newcase << "    if ( !(" << MyGspn.inhibArcsStruct[t][p.id].stringVal << " < 1) ) " << endl;
-						newcase << "        if (contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.inhibArcsStruct[t][p.id].stringVal << ")) return false;" << endl;
+						newcase << "    if ( !(" << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << " < 1) ) " << endl;
+						newcase << "        if (contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << ")) return false;" << endl;
 						
 					}
 				}
@@ -1041,7 +1041,7 @@ void Gspn_Writer::WriteFile(){
 		SpnCppFile << "\t\tcase " << t << ": {  //" << MyGspn.transitionStruct[t].label << endl;
 		//Write value of Marking dependant place to a temporary variable
 		for (const auto &p : MyGspn.placeStruct) {
-			if (MyGspn.inArcsStruct[t][p.id].isMarkDep || MyGspn.outArcsStruct[t][p.id].isMarkDep) {
+			if (MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep || MyGspn.access(MyGspn.outArcsStruct,t,p.id).isMarkDep) {
 				SpnCppFile << "\t\t\t"<< MyGspn.colDoms[p.colorDom].cname() <<" tmpMark_" << p.name;
 				SpnCppFile << " = Marking.P->_PL_" << p.name << ";" << endl;
 			}
@@ -1049,13 +1049,13 @@ void Gspn_Writer::WriteFile(){
 		
 		//update the marking
 		for (const auto &p : MyGspn.placeStruct) {
-			if (!MyGspn.inArcsStruct[t][p.id].isEmpty) {
-				if (!MyGspn.inArcsStruct[t][p.id].isMarkDep){
-					int decrement = MyGspn.inArcsStruct[t][p.id].intVal;
+			if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
+				if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep){
+					int decrement = MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal;
 					if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
-						if (!MyGspn.inArcsStruct[t2][p.id].isEmpty) {
-							if (!MyGspn.inArcsStruct[t2][p.id].isMarkDep){
-								int seuil = MyGspn.inArcsStruct[t2][p.id].intVal;
+						if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty) {
+							if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isMarkDep){
+								int seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).intVal;
 								if(seuil-decrement >0){
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+decrement;
 									SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
@@ -1063,16 +1063,16 @@ void Gspn_Writer::WriteFile(){
 								} else
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+decrement << ")TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}else {
-								string seuil = MyGspn.inArcsStruct[t2][p.id].stringVal;
+								string seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).stringVal;
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" >= "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<" < " << seuil <<"+"<< decrement <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}
 						}
 						
-						if (!MyGspn.inhibArcsStruct[t2][p.id].isEmpty) {
-							if (!MyGspn.inhibArcsStruct[t2][p.id].isMarkDep){
-								int seuil = MyGspn.inhibArcsStruct[t2][p.id].intVal;
+						if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isEmpty) {
+							if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isMarkDep){
+								int seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).intVal;
 								if(seuil-decrement >0){
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+decrement;
 									SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
@@ -1080,7 +1080,7 @@ void Gspn_Writer::WriteFile(){
 								} else
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+decrement << ")TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}else {
-								string seuil = MyGspn.inhibArcsStruct[t2][p.id].stringVal;
+								string seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).stringVal;
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil <<"+"<< decrement;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
@@ -1090,33 +1090,33 @@ void Gspn_Writer::WriteFile(){
 					SpnCppFile << "\t\t\tMarking.P->_PL_" << p.name <<" -= " << decrement << ";"<< endl;
 				} else {
 					string decrement;
-					searchreplace(MyGspn.inArcsStruct[t][p.id].stringVal, "Marking.P->_PL_", "tmpMark_" , decrement);
+					searchreplace(MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , decrement);
 					
 					if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
-						if (!MyGspn.inArcsStruct[t2][p.id].isEmpty) {
-							if (!MyGspn.inArcsStruct[t2][p.id].isMarkDep){
-								int seuil = MyGspn.inArcsStruct[t2][p.id].intVal;
+						if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty) {
+							if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isMarkDep){
+								int seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).intVal;
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil <<"+"<< decrement;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}else {
 								string seuil;
-								searchreplace(MyGspn.inArcsStruct[t2][p.id].stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
+								searchreplace(MyGspn.access(MyGspn.inArcsStruct,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil <<"+" << decrement;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}
 						}
 						
-						if (!MyGspn.inhibArcsStruct[t2][p.id].isEmpty) {
-							if (!MyGspn.inhibArcsStruct[t2][p.id].isMarkDep){
-								int seuil = MyGspn.inhibArcsStruct[t2][p.id].intVal;
+						if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isEmpty) {
+							if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isMarkDep){
+								int seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).intVal;
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil <<"+"<<decrement;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}else {
 								string seuil;
-								searchreplace(MyGspn.inhibArcsStruct[t2][p.id].stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
+								searchreplace(MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil << "+" <<decrement;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
@@ -1127,13 +1127,13 @@ void Gspn_Writer::WriteFile(){
 				}
 			}
 			
-			if (!MyGspn.outArcsStruct[t][p.id].isEmpty) {
-				if (!MyGspn.outArcsStruct[t][p.id].isMarkDep){
-					int increment = MyGspn.outArcsStruct[t][p.id].intVal;
+			if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isEmpty) {
+				if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isMarkDep){
+					int increment = MyGspn.access(MyGspn.outArcsStruct,t,p.id).intVal;
 					if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
-						if (!MyGspn.inArcsStruct[t2][p.id].isEmpty) {
-							if (!MyGspn.inArcsStruct[t2][p.id].isMarkDep){
-								int seuil = MyGspn.inArcsStruct[t2][p.id].intVal;
+						if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty) {
+							if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isMarkDep){
+								int seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).intVal;
 								if(seuil-increment >0){
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
 									SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
@@ -1141,16 +1141,16 @@ void Gspn_Writer::WriteFile(){
 								} else
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil << ")TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}else {
-								string seuil = MyGspn.inArcsStruct[t2][p.id].stringVal;
+								string seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).stringVal;
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}
 						}
 						
-						if (!MyGspn.inhibArcsStruct[t2][p.id].isEmpty) {
-							if (!MyGspn.inhibArcsStruct[t2][p.id].isMarkDep){
-								int seuil = MyGspn.inhibArcsStruct[t2][p.id].intVal;
+						if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isEmpty) {
+							if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isMarkDep){
+								int seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).intVal;
 								if(seuil-increment >0){
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
 									SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
@@ -1158,7 +1158,7 @@ void Gspn_Writer::WriteFile(){
 								} else
 									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil << ")TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}else {
-								string seuil = MyGspn.inhibArcsStruct[t2][p.id].stringVal;
+								string seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).stringVal;
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
@@ -1168,32 +1168,32 @@ void Gspn_Writer::WriteFile(){
 					SpnCppFile << "\t\t\tMarking.P->_PL_" << p.name <<" += " << increment << ";"<< endl;
 				} else {
 					string increment;
-					searchreplace(MyGspn.outArcsStruct[t][p.id].stringVal, "Marking.P->_PL_", "tmpMark_" , increment);
+					searchreplace(MyGspn.access(MyGspn.outArcsStruct,t,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , increment);
 					if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
-						if (!MyGspn.inArcsStruct[t2][p.id].isEmpty) {
-							if (!MyGspn.inArcsStruct[t2][p.id].isMarkDep){
-								int seuil = MyGspn.inArcsStruct[t2][p.id].intVal;
+						if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty) {
+							if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isMarkDep){
+								int seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).intVal;
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}else {
 								string seuil;
-								searchreplace(MyGspn.inArcsStruct[t2][p.id].stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
+								searchreplace(MyGspn.access(MyGspn.inArcsStruct,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
 							}
 						}
 						
-						if (!MyGspn.inhibArcsStruct[t2][p.id].isEmpty) {
-							if (!MyGspn.inhibArcsStruct[t2][p.id].isMarkDep){
-								int seuil = MyGspn.inhibArcsStruct[t2][p.id].intVal;
+						if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isEmpty) {
+							if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isMarkDep){
+								int seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).intVal;
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
 								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
 							}else {
 								string seuil;
-								searchreplace(MyGspn.inhibArcsStruct[t2][p.id].stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
+								searchreplace(MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
 								
 								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
 								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
@@ -1218,18 +1218,18 @@ void Gspn_Writer::WriteFile(){
 		for (size_t t = 0; t < MyGspn.tr; t++) {
 			stringstream newcase;
 			for (const auto &p : MyGspn.placeStruct)  {
-				if (!MyGspn.inArcsStruct[t][p.id].isEmpty) {
-					if (!MyGspn.inArcsStruct[t][p.id].isMarkDep)
-						newcase << "    Marking.P->_PL_" << p.name <<" += " << MyGspn.inArcsStruct[t][p.id].intVal << ";" << endl;
+				if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
+					if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
+						newcase << "    Marking.P->_PL_" << p.name <<" += " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ";" << endl;
 					else
-						newcase << "    Marking.P->_PL_" << p.name <<" += " << MyGspn.inArcsStruct[t][p.id].stringVal << ";" << endl;
+						newcase << "    Marking.P->_PL_" << p.name <<" += " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << ";" << endl;
 				}
 				
-				if (!MyGspn.outArcsStruct[t][p.id].isEmpty) {
-					if (!MyGspn.outArcsStruct[t][p.id].isMarkDep)
-						newcase << "    Marking.P->_PL_" << p.name <<" -= " << MyGspn.outArcsStruct[t][p.id].intVal << ";" << endl;
+				if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isEmpty) {
+					if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isMarkDep)
+						newcase << "    Marking.P->_PL_" << p.name <<" -= " << MyGspn.access(MyGspn.outArcsStruct,t,p.id).intVal << ";" << endl;
 					else
-						newcase << "    Marking.P->_PL_" << p.name <<" -= " << MyGspn.outArcsStruct[t][p.id].stringVal << ";" << endl;
+						newcase << "    Marking.P->_PL_" << p.name <<" -= " << MyGspn.access(MyGspn.outArcsStruct,t,p.id).stringVal << ";" << endl;
 				}
 			}
 			unfirecases.addCase(t,newcase.str(),MyGspn.transitionStruct[t].label);
@@ -1259,24 +1259,24 @@ void Gspn_Writer::WriteFile(){
 	if(P.localTesting)for (size_t t = 0; t < MyGspn.tr; t++) {
 		SpnCppFile << "\tTransitionConditions["<< t <<"]=0;" << endl;
 		for (const auto &p : MyGspn.placeStruct)  {
-			if (!MyGspn.inArcsStruct[t][p.id].isEmpty) {
+			if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
 				
-				if (!MyGspn.inArcsStruct[t][p.id].isMarkDep)
-					SpnCppFile << "\tif (Marking.P->_PL_" << p.name <<" < " << MyGspn.inArcsStruct[t][p.id].intVal << ")TransitionConditions["<< t <<"]++;" << endl;
+				if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
+					SpnCppFile << "\tif (Marking.P->_PL_" << p.name <<" < " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ")TransitionConditions["<< t <<"]++;" << endl;
 				
 				else {
-					SpnCppFile << "\tif ( " << MyGspn.inArcsStruct[t][p.id].stringVal << "> 0) " << endl;
-					SpnCppFile << "\t\tif (Marking.P->_PL_" << p.name <<" < " << MyGspn.inArcsStruct[t][p.id].stringVal << ")TransitionConditions["<< t <<"]++;" << endl;
+					SpnCppFile << "\tif ( " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << "> 0) " << endl;
+					SpnCppFile << "\t\tif (Marking.P->_PL_" << p.name <<" < " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << ")TransitionConditions["<< t <<"]++;" << endl;
 				}
 			}
-			if (!MyGspn.inhibArcsStruct[t][p.id].isEmpty) {
+			if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty) {
 				
-				if (!MyGspn.inhibArcsStruct[t][p.id].isMarkDep)
-					SpnCppFile << "\tif (Marking.P->_PL_" << p.name <<" >= " << MyGspn.inhibArcsStruct[t][p.id].intVal << ")TransitionConditions["<< t <<"]++;" << endl;
+				if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isMarkDep)
+					SpnCppFile << "\tif (Marking.P->_PL_" << p.name <<" >= " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).intVal << ")TransitionConditions["<< t <<"]++;" << endl;
 				
 				else {
-					SpnCppFile << "\tif ( " << MyGspn.inhibArcsStruct[t][p.id].stringVal << " > 0 ) " << endl;
-					SpnCppFile << "\t\tif (Marking.P->_PL_" << p.name <<" >= " << MyGspn.inhibArcsStruct[t][p.id].stringVal << ")TransitionConditions["<< t <<"]++;" << endl;
+					SpnCppFile << "\tif ( " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << " > 0 ) " << endl;
+					SpnCppFile << "\t\tif (Marking.P->_PL_" << p.name <<" >= " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << ")TransitionConditions["<< t <<"]++;" << endl;
 					
 				}
 			}
@@ -1299,13 +1299,13 @@ void Gspn_Writer::WriteFile(){
 					newcase << "\t\tdouble EnablingDegree = INT_MAX; " << endl;
 					bool AtLeastOneMarkDepArc = false;
 					for (const auto &p : MyGspn.placeStruct)
-						if (!MyGspn.inArcsStruct[t][p.id].isEmpty) {
-							if (!MyGspn.inArcsStruct[t][p.id].isMarkDep)
-								newcase << "\t\tEnablingDegree=min(floor(Marking.P->_PL_" << p.name <<"/(double)(" << MyGspn.inArcsStruct[t][p.id].intVal << ")),EnablingDegree);" << endl;
+						if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
+							if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
+								newcase << "\t\tEnablingDegree=min(floor(Marking.P->_PL_" << p.name <<"/(double)(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ")),EnablingDegree);" << endl;
 							else {
 								AtLeastOneMarkDepArc = true;
-								newcase << "\t\tif(" << MyGspn.inArcsStruct[t][p.id].stringVal << ">0)" << endl;
-								newcase << "\t\t\tEnablingDegree=min(floor(Marking.P->_PL_" << p.name <<"/(double)(" << MyGspn.inArcsStruct[t][p.id].stringVal << ")),EnablingDegree);" << endl;
+								newcase << "\t\tif(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << ">0)" << endl;
+								newcase << "\t\t\tEnablingDegree=min(floor(Marking.P->_PL_" << p.name <<"/(double)(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << ")),EnablingDegree);" << endl;
 							}
 							
 						}

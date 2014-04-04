@@ -144,7 +144,7 @@ Gspn_Reader::error(const std::string& m) {
 
 
 void Gspn_Reader::addSinkTrans(){
-	MyGspn.outArcsStruct[MyGspn.tr-1][MyGspn.pl-1] = arc(1);
+    MyGspn.outArcsStruct.insert(make_pair(MyGspn.arckey(MyGspn.tr-1, MyGspn.pl-1), arc(1)));
 }
 
 void Gspn_Reader::iterateDom(const string &s,const string &sop, const string &sclos ,const string &s2,const string &sop2, const string &sclos2 ,const colorDomain & cd, size_t prof,function<void (const string&,const string&)> func){

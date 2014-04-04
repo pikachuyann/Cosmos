@@ -28,15 +28,16 @@
 #include <string>
 #include <map>
 #include <set>
-
+#include <functional>
+#include <unordered_map>
+#include <vector>
 
 #include "../parameters.hpp"
 #include "Gspn-parser.hh"
 #include "../Eval/Eval.hpp"
-#include <vector>
 #include "expatmodelparser.hh"
 #include "modelhandler.hh"
-#include <functional>
+
 
 using namespace std;
 
@@ -164,10 +165,18 @@ struct GspnType {
 	
 	vector<transition> transitionStruct;
 	vector<place> placeStruct;
-	
-	vector< vector<arc> > inArcsStruct;
+
+    inline size_t arckey(size_t t,size_t p)const { return (t + (tr+1)*p); };
+    inline const arc access(unordered_map<size_t, arc> &h,size_t t, size_t p)const{
+        auto a = h.find(arckey(t,p));
+        if(a == h.end()){return arc();}else return a->second;
+    };
+    unordered_map<size_t, arc> inArcsStruct;
+    unordered_map<size_t, arc> outArcsStruct;
+    unordered_map<size_t, arc> inhibArcsStruct;
+    /*vector< vector<arc> > inArcsStruct;
 	vector< vector<arc> > outArcsStruct;
-	vector< vector<arc> > inhibArcsStruct;
+	vector< vector<arc> > inhibArcsStruct;*/
 	
     vector <string> Marking;
 	

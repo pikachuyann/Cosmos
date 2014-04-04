@@ -147,7 +147,7 @@ bool result::continueSim(){
 }
 
 void result::printPercent(double i, double j){
-    const double t = 100;
+    const double t = 106;
     double u;
     if(j != 0){
 		u = fmax(0.0,fmin(t,(t * i)/j));
@@ -157,7 +157,7 @@ void result::printPercent(double i, double j){
         if(k<u){cout<<"|";}
         else cout<<" ";
     };
-    cout << "] "<< (int)u <<"%\t"<< endl;
+    cout << "] "<< (int)(100*(u/t)) <<"%\t"<< endl;
 }
 
 void result::printProgress(){
@@ -187,7 +187,7 @@ void result::printProgress(){
 
     endline++;
 
-	size_t maxformulaname=0;
+	size_t maxformulaname=11;
 	for(size_t i=0; i<P.HaslFormulasname.size(); i++)
 		maxformulaname = max(maxformulaname,P.HaslFormulasname[i].size());
 
@@ -204,18 +204,18 @@ void result::printProgress(){
                 cout << setw(15) << HaslResult[i].width() << endl;
                 endline++;
                 if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2 && P.sequential){
-                    cout << "% of width:\t";
+                    cout << setw(maxformulaname+2)<<left << "% of width:";
                     printPercent( pow(RelErrArray[i],-2.0), pow(P.Width,-2.0));
                     endline++;
                 }
             }
 	}
 	if(P.sequential){
-		cout << "% of rel Err:\t";
+		cout << setw(maxformulaname+2)<<left << "% of Err: ";
 		printPercent( pow(RelErr,-2.0), pow(P.Width,-2.0));
 		endline++;
 	}
-    cout << "% of run:\t";
+    cout << setw(maxformulaname+2)<<left << "% of run: ";
     printPercent(MeanM2->I, P.MaxRuns);
     endline++;
 }

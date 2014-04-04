@@ -77,11 +77,11 @@ string MyModelHandler::simplifyString(string str)
 	return str.substr(n1, n2-n1+1);
 }
 
-void MyModelHandler::appendSimplify(string *st, string str)
+void MyModelHandler::appendSimplify(string &st, string str)
 {
 	size_t n1 = str.find_first_not_of(" \n\t");
 	size_t n2 = str.find_last_not_of(" \n\t");
-	if(n1 !=std::string::npos )st->append(str.substr(n1, n2-n1+1));
+	if(n1 !=std::string::npos )st.append(str.substr(n1, n2-n1+1));
 }
 
 /*void evalinfix(string *st, tree<string>::pre_order_iterator it , string str){
@@ -93,7 +93,7 @@ void MyModelHandler::appendSimplify(string *st, string str)
  st->append(")");
  }*/
 
-void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_order_iterator it )
+void MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_order_iterator it )
 {
     if((P.verbose-3)>1)cout << (*it) << endl;
     
@@ -108,17 +108,17 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
 	}else if (it->compare("name")==0) {
         string var = simplifyString(it.node->first_child->data);
         if(MyGspn->IntConstant.count(var)>0 ||
-           MyGspn->RealConstant.count(var)>0){st->append(var);
+           MyGspn->RealConstant.count(var)>0){st.append(var);
         }else{
             *is_mark_dep =true;
-            st->append("Marking.P->_PL_");
-            st->append(var);
+            st.append("Marking.P->_PL_");
+            st.append(var);
 			if((P.verbose-3)>1)cout << "\t" << var << endl;
 			if(MyGspn->PlacesId.count(var)==0){
 				cerr << "Place " << var << "being referenced before being define" << endl;
 				throw gmlioexc;
 			}
-			if(MyGspn->placeStruct[MyGspn->PlacesId[var]].colorDom !=0 )st->append(".card()");
+			if(MyGspn->placeStruct[MyGspn->PlacesId[var]].colorDom !=0 )st.append(".card()");
         }
 	}else if (	it->compare("+")==0  || it->compare("*")==0
               || it->compare("min")==0   || it->compare("max")==0
@@ -126,23 +126,23 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
               || it->compare("/")==0   || it->compare("power")==0)  {
 		
 		
-		if (it->compare("min")==0) st->append("min");
-		if (it->compare("max")==0) st->append("max");
-		if (it->compare("floor")==0 ) st->append("floor");
+		if (it->compare("min")==0) st.append("min");
+		if (it->compare("max")==0) st.append("max");
+		if (it->compare("floor")==0 ) st.append("floor");
 		
-		st->append("(");
+		st.append("(");
 		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 			if(it2!= it.begin()) {
-				if (it->compare("+")==0) { st->append("+"); }
-				else if (it->compare("*")==0) { st->append("*"); }
-				else if (it->compare("-")==0) { st->append("-"); }
-				else if (it->compare("/")==0) { st->append("/ (double) "); }
-				else if (it->compare("power")==0) { st->append("^"); }
-				else st->append(",");
+				if (it->compare("+")==0) { st.append("+"); }
+				else if (it->compare("*")==0) { st.append("*"); }
+				else if (it->compare("-")==0) { st.append("-"); }
+				else if (it->compare("/")==0) { st.append("/ (double) "); }
+				else if (it->compare("power")==0) { st.append("^"); }
+				else st.append(",");
 			}
 			eval_expr(is_mark_dep, st, it2);
 		}
-		st->append(")");
+		st.append(")");
 		;
 	} else {
         cout << "failevaltree" <<endl;
@@ -150,7 +150,7 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string *st, tree<string>::pre_
     }
 }
 
-void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_iterator it){
+void MyModelHandler::eval_tokenProfileMark(string& st,tree<string>::pre_order_iterator it){
 	if((P.verbose-3)>1)cout << (*it) << endl;
 	if(it->compare("function")==0){
 		eval_tokenProfileMark(st, it.begin());
@@ -177,12 +177,12 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 					cerr << "Unknown classe '" << coldom << "'"<< endl;
 			}
 		}
-		st->append(MyGspn->colDoms[colorclass].cname() +"(Color_"+ MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]].name+"_"+MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]].colors[enumvalue].name+")");
+		st.append(MyGspn->colDoms[colorclass].cname() +"(Color_"+ MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]].name+"_"+MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]].colors[enumvalue].name+")");
 		
 	}else if(it->compare("all")==0){
-		st->append("(");
+		st.append("(");
 		eval_tokenProfileMark(st, it.begin());
-		st->append("(1))");
+		st.append("(1))");
 	}else if(it->compare("type")==0){
 		string coldom = simplifyString(*(it.begin()));
 		if((P.verbose-3)>1)cerr << coldom << endl;
@@ -191,15 +191,15 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 			MyGspn->colDoms[colorc].name != coldom ; colorc++) ;
 		if(colorc == MyGspn->colDoms.size())
 			cerr << "Unknown classe '" << coldom << "'"<< endl;
-		else st->append(MyGspn->colDoms[colorc].cname());
+		else st.append(MyGspn->colDoms[colorc].cname());
 	}else if (it->compare("token")==0) {
 		string mark;
 		bool tokprof = false;
-		st->append("(");
+		st.append("(");
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("occurs")==0){
 				bool markingdependant = false;
-				eval_expr(&markingdependant, &mark, it2.begin());
+				eval_expr(&markingdependant, mark, it2.begin());
 				if( markingdependant) cerr << "Initial Marking is not marking dependant\n";
 			}
 			if (it2->compare("tokenProfile")==0) {
@@ -211,10 +211,10 @@ void MyModelHandler::eval_tokenProfileMark(string* st,tree<string>::pre_order_it
 			}
 		}
 		if(tokprof){
-			st->append(" * " + mark +")");
-		}else st->append(" " + mark +")");
+			st.append(" * " + mark +")");
+		}else st.append(" " + mark +")");
 	} else if(it->compare("name")==0) {
-		st->append("Marking.P->"+ simplifyString(*(it.begin())));
+		st.append("Marking.P->"+ simplifyString(*(it.begin())));
 	}
 }
 
@@ -253,7 +253,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 	}else if (it->compare("token")==0) {
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(it2->compare("occurs")==0){
-				eval_expr(&markingdependant, &tok.mult, it2.begin());
+				eval_expr(&markingdependant, tok.mult, it2.begin());
 			}
 			if (it2->compare("tokenProfile")==0) {
 				if ((P.verbose-3)>1)cout << *it2 << endl;
@@ -483,7 +483,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						bool ismarkdep=false;
 						string constvalue;
-						eval_expr( &ismarkdep, &constvalue, find(it2.begin(),it2.end(),"expr").begin());
+						eval_expr( &ismarkdep, constvalue, find(it2.begin(),it2.end(),"expr").begin());
 						if(ismarkdep)cout<< "constante are not makring dependant!" << endl;
 						if (P.constants.count(constname)>0) {
 							constvalue = P.constants[constname];
@@ -630,7 +630,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 				for(treeSI ittok = it2.begin(); ittok != it2.end(); ++ittok){
 					if (ittok->compare("token")==0) {
 						if(st.compare("")!=0)st.append((" + "));
-						eval_tokenProfileMark(&st, ittok);
+						eval_tokenProfileMark(st, ittok);
 						
 					}
 				}
@@ -683,7 +683,6 @@ void MyModelHandler::on_read_node(const XmlString& id,
 			transition trans;
 			trans.id = MyGspn->transitionStruct.size();
 			trans.label = id;
-			trans.label = "";
 			trans.type = Timed;
 			trans.priority = "1";
 			trans.weight = "1";
@@ -718,14 +717,14 @@ void MyModelHandler::on_read_node(const XmlString& id,
                         } else if ((*it2).compare("param")==0) {
                             
                             //int number = 0;
-                            string* value = new string("");
+                            string value;
                             for (treeSI it3 = it2.begin() ; it3 != it2.end() ; ++it3 ) {
                                 //string* leaf = simplifyString(*(it3.begin()));
                                 if ((*it3).compare("number")==0) {
                                     //number = atoi((*leaf).c_str());
                                 } else if ((*it3).compare("expr")==0) {
                                     eval_expr(&trans.markingDependant, value, it3.begin() );
-                                    trans.dist.Param.push_back(*value);
+                                    trans.dist.Param.push_back(value);
                                 } else throw gmlioexc;
                             }
                         } else throw gmlioexc;
@@ -733,16 +732,15 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     
                 } else if ((*(it->second.begin())).compare("service")==0) {
                     bool markingdependant=false;
-                    string* value = new string("");
+                    string value;
                     if ((*(++(it->second.begin()))).compare("expr")==0) {
                         eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
                         if(markingdependant==false) {
-                            if(Evaluate_gml.parse(*value)){
+                            if(Evaluate_gml.parse(value)){
                                 cout << " Fail to parse GML: transition,service"<< endl;
                             }
                             else {
                                 int nserv=Evaluate_gml.IntResult;
-                                delete value;
                                 if(nserv == 1 ) {
                                     trans.nbServers =1;
                                 }else {
@@ -769,11 +767,11 @@ void MyModelHandler::on_read_node(const XmlString& id,
                      }*/
                 } else if ((*(it->second.begin())).compare("weight")==0) {
                     bool markingdependant=false;
-                    string* value = new string("");
+                    string value;
                     if ((*(++(it->second.begin()))).compare("expr")==0) {
                         eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
                         if(markingdependant==false) {
-                            trans.weight = *value;
+                            trans.weight = value;
                         }else {
                             cout<<"Weight is not marking dependent "<<endl;
                         }
@@ -782,11 +780,11 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     
                 } else if ((*(it->second.begin())).compare("priority")==0) {
                     bool markingdependant=false;
-                    string* value = new string("");
+                    string value;
                     if ((*(++(it->second.begin()))).compare("expr")==0) {
                         eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
                         if(markingdependant==false) {
-                            trans.priority = *value;
+                            trans.priority = value;
                         }else {
                             cout<<"Priority is not marking dependent "<<endl;
                         }
@@ -885,10 +883,10 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             MyGspn->tr++;
         }
         
-		MyGspn->inArcsStruct = vector< vector<arc> >(MyGspn->tr,vector<arc>(MyGspn->pl));
+		/*MyGspn->inArcsStruct = vector< vector<arc> >(MyGspn->tr,vector<arc>(MyGspn->pl));
 		MyGspn->outArcsStruct = vector< vector<arc> >(MyGspn->tr,vector<arc>(MyGspn->pl));
 		MyGspn->inhibArcsStruct = vector< vector<arc> >(MyGspn->tr,vector<arc>(MyGspn->pl));
-		
+		*/
         
     }
     
@@ -903,7 +901,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             bool markingdependant=false;
 			for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
 				if (it3->compare("expr")==0) {
-					eval_expr(&markingdependant, &valuation, it3.begin() );
+					eval_expr(&markingdependant, valuation, it3.begin() );
 				} else if (it3->compare("token")==0) {
 					coloredToken tokenType;
 					tokenType.hasAll = false;
@@ -967,26 +965,26 @@ void MyModelHandler::on_read_arc(const XmlString& id,
     if(IsPlace[sourceGML]){
         if(arcType.compare("inhibitorarc")==0){
             if(Evaluate_gml.parse(valuation)){
-                MyGspn->inhibArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(("("+valuation+")"),toklist);
+                MyGspn->inhibArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(("("+valuation+")"),toklist)));
 			}else {
-                MyGspn->inhibArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(Evaluate_gml.IntResult);
+                MyGspn->inhibArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(Evaluate_gml.IntResult)));
             }
             //MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
         }else {
             if(Evaluate_gml.parse(valuation)){
-                MyGspn->inArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(("("+valuation+")"),toklist);
+                MyGspn->inArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(("("+valuation+")"),toklist)));
             }
             else {
-                MyGspn->inArcsStruct[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=arc(Evaluate_gml.IntResult);
+                MyGspn->inArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(Evaluate_gml.IntResult)));
             }
             //MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
         }
     }else {
         if(Evaluate_gml.parse(valuation)){
-            MyGspn->outArcsStruct[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=arc(("("+valuation+")"),toklist);;
+            MyGspn->outArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[sourceGML],Gml2Place[atoi(target.c_str())]),arc(("("+valuation+")"),toklist)));
         }
         else {
-            MyGspn->outArcsStruct[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=arc(Evaluate_gml.IntResult);
+            MyGspn->outArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[sourceGML],Gml2Place[atoi(target.c_str())]),arc(Evaluate_gml.IntResult)));
         }
         //MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=valuation;
     }

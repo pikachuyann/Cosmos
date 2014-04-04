@@ -239,10 +239,10 @@ PlacesList: PList EQ '{' PLabels '}' SEMICOLON {
   
   Reader.MyGspn.Marking=vStr;
 
-  Reader.MyGspn.inArcsStruct = vector< vector<arc> >(Reader.MyGspn.tr,vector<arc>(Reader.MyGspn.pl));
+  /*Reader.MyGspn.inArcsStruct = vector< vector<arc> >(Reader.MyGspn.tr,vector<arc>(Reader.MyGspn.pl));
   Reader.MyGspn.outArcsStruct = vector< vector<arc> >(Reader.MyGspn.tr,vector<arc>(Reader.MyGspn.pl));
   Reader.MyGspn.inhibArcsStruct = vector< vector<arc> >(Reader.MyGspn.tr,vector<arc>(Reader.MyGspn.pl));
-
+*/
   MarkingDependent=false;
   AgeMemory=false;
 
@@ -730,8 +730,8 @@ incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
   string st=$6;
 
   if(Evaluate.parse(st)){
-    Reader.MyGspn.inArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]= arc(st);
-  }else Reader.MyGspn.inArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=arc(Evaluate.IntResult);
+    Reader.MyGspn.inArcsStruct.insert(make_pair<size_t,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]), arc(st)));
+  }else Reader.MyGspn.inArcsStruct.insert(make_pair<size_t,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]),arc(Evaluate.IntResult)));
 
  }
 |LB str COMMA str   RB SEMICOLON {
@@ -745,7 +745,7 @@ incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
       std::cout<<"Transition: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
     }
-  Reader.MyGspn.inArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=arc(1);
+  Reader.MyGspn.inArcsStruct.insert(make_pair<size_t,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]),arc(1)));
 
  };
 
@@ -768,9 +768,9 @@ outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
   string st=$6;
 
   if(Evaluate.parse(st)){
-	  Reader.MyGspn.outArcsStruct[Reader.MyGspn.TransId[*$2]][Reader.MyGspn.PlacesId[*$4]]=arc(st);
+	  Reader.MyGspn.outArcsStruct.insert(make_pair<size_t,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$2],Reader.MyGspn.PlacesId[*$4]),arc(st)));
   }
-  else Reader.MyGspn.outArcsStruct[Reader.MyGspn.TransId[*$2]][Reader.MyGspn.PlacesId[*$4]]=arc(Evaluate.IntResult);
+  else Reader.MyGspn.outArcsStruct.insert(make_pair<size_t,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$2],Reader.MyGspn.PlacesId[*$4]),arc(Evaluate.IntResult)));
 
  }
 |LB str COMMA str   RB SEMICOLON {
@@ -784,7 +784,7 @@ outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
       std::cout<<"Place: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
     }
-  Reader.MyGspn.outArcsStruct[Reader.MyGspn.TransId[*$2]][Reader.MyGspn.PlacesId[*$4]]=arc(1);
+  Reader.MyGspn.outArcsStruct.insert(make_pair<size_t,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$2],Reader.MyGspn.PlacesId[*$4]),arc(1)));
  };
 
 
@@ -808,9 +808,9 @@ inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
   string st=$6;
 
   if(Evaluate.parse(st)){
-    Reader.MyGspn.inhibArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=arc(st);
+    Reader.MyGspn.inhibArcsStruct.insert(make_pair<size_t,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]),arc(st)));
   }
-  else Reader.MyGspn.inhibArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=arc(Evaluate.IntResult);
+  else Reader.MyGspn.inhibArcsStruct.insert(make_pair<size_t,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]),arc(Evaluate.IntResult)));
 
  }
 
@@ -825,7 +825,7 @@ inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
       std::cout<<"Transition: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
     }
-  Reader.MyGspn.inhibArcsStruct[Reader.MyGspn.TransId[*$4]][Reader.MyGspn.PlacesId[*$2]]=arc(1);
+  Reader.MyGspn.inhibArcsStruct.insert(make_pair<size_t,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]),arc(1)));
 
  };
 

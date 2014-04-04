@@ -90,16 +90,16 @@ bool ParseBuild() {
 			if(trDistr->name.compare("MASSACTION")==0){
 				gReader.MyGspn.transitionStruct[t].markingDependant = true;
 				for (size_t p=0; p<gReader.MyGspn.pl; p++) {
-					if(!gReader.MyGspn.inArcsStruct[t][p].isEmpty){
+					if(!gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).isEmpty){
 						stringstream diststream;
 						diststream << trDistr->Param[0] << " * (";
-						if(gReader.MyGspn.inArcsStruct[t][p].isMarkDep || gReader.MyGspn.inArcsStruct[t][p].intVal>1)
+						if(gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).isMarkDep || gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).intVal>1)
 							diststream << "pow(";
 						diststream << "Marking.P->_PL_" << gReader.MyGspn.placeStruct[p].name;
-						if(gReader.MyGspn.inArcsStruct[t][p].isMarkDep){
-							diststream << ","<<gReader.MyGspn.inArcsStruct[t][p].stringVal << ")";
+						if(gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).isMarkDep){
+							diststream << ","<<gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).stringVal << ")";
 						}else{
-							if(gReader.MyGspn.inArcsStruct[t][p].intVal>1)diststream << ","<<gReader.MyGspn.inArcsStruct[t][p].intVal <<")";
+							if(gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).intVal>1)diststream << ","<<gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).intVal <<")";
 						}
 						diststream << ")";
 						trDistr->Param[0]= diststream.str();

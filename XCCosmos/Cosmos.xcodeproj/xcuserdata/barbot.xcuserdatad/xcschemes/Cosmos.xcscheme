@@ -178,7 +178,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/ClientServer/loop.3.grml"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/TandemQN/tqn.gspn"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
@@ -187,11 +187,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Downloads/testallminus.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--loop 60"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--output-trace"
@@ -210,8 +210,8 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/DataBase/databasecNfP.grml"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/Cosmos/Examples/DataBase/databaseunfoldN20P20.grml"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/philosophe/philo2.grml"
