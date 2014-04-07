@@ -50,7 +50,7 @@ public:
 	~result();
 	
 	//! Add a new batch of result to the result.
-	void addBatch(BatchR*);
+	void addBatch(BatchR&);
 	
 	//! return true if the simulation should continue.
 	bool continueSim();

@@ -91,13 +91,6 @@ struct _trans {
 	TransType transType;
 	DistributionType DistTypeIndex;
 	
-	//! Parameter in string format only for debug
-	vector<string> DistParams;
-	//! priority in string format only for debug
-	string priority;
-	//! weight in string format only for debug
-	string weight;
-	//! true if the transition is Marking Dependent
 	bool MarkingDependent;
 	//! true if the memory policy of the transition is age memory
 	bool AgeMemory;

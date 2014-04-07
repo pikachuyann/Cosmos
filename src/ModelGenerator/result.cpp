@@ -112,7 +112,7 @@ void result::close_gnuplot(){
 	}
 }
 
-void result::addBatch(BatchR *batchResult){
+void result::addBatch(BatchR &batchResult){
     MeanM2->unionR(batchResult);
 	RelErr = 0;
     for(size_t i =0; i<P.HaslFormulasname.size(); i++){

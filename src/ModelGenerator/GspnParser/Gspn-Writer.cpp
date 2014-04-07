@@ -846,25 +846,8 @@ void Gspn_Writer::writeTransition(ofstream & spnF, bool bstr){
 		if(MyGspn.transitionStruct[t].ageMemory)
 			spnF << "\tTransition[" << t << "].AgeMemory = true;" << endl;
 		
-		//spnF << "\tTransition["<<t<<"].Id =" << t << ";" <<endl;
-		if (MyGspn.transitionStruct[t].type==Timed) {
-			//spnF << "\tTransition["<<t<<"].transType = Timed;" <<endl;
-			//spnF << "\tTransition["<<t<<"].DistTypeIndex = "<< MyGspn.transitionStruct[t].dist.name << ";" <<endl;
-			if (bstr) {
-				for (size_t j = 0; j < MyGspn.transitionStruct[t].dist.Param.size(); j++) {
-					spnF << "\tTransition[" << t << "].DistParams.push_back(\" " << MyGspn.transitionStruct[t].dist.Param[j] << "\" );" << endl;
-				}
-			}
-		}else{
-			//spnF << "\tTransition["<<t<<"].transType = unTimed;" <<endl;
-			//spnF << "\tTransition["<<t<<"].DistTypeIndex = DETERMINISTIC ;" <<endl;
-		}
-		//spnF << "\tTransition["<<t<<"].MarkingDependent = "<< MyGspn.transitionStruct[t].markingDependant << ";" <<endl;
-		
 		if (bstr) {
 			spnF << "\tTransition["<<t<<"].label = \""<< MyGspn.transitionStruct[t].label << "\";"<< endl;
-			spnF << "\tTransition["<<t<<"].priority = \""<< MyGspn.transitionStruct[t].priority << "\";"<< endl;
-			spnF << "\tTransition["<<t<<"].weight = \""<< MyGspn.transitionStruct[t].weight << "\";"<< endl;
 		}
 		//spnF << "\tTransition["<<t<<"].bindingLinkTable.resize("<< nbbinding <<",string::npos); "<< endl;
 		

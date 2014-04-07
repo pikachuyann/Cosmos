@@ -37,10 +37,9 @@ using namespace std;
  *Initialize the batch with zeros
  * @param i is the number of formula evaluated by the automaton.
  */
-BatchR::BatchR(const size_t i) :
+BatchR::BatchR(size_t i) :
 I(0) ,
 Isucc(0),
-TableLength(i),
 IsBernoulli(vector<bool>(i,true)),
 Mean(vector<double>(i,0.0)),
 M2(vector<double>(i,0.0)),
@@ -60,7 +59,7 @@ void BatchR::addSim(const SimOutput &Result){
     if (Result.first) {
         Isucc++;
         
-        for(size_t i =0; i< TableLength; i++){
+        for(size_t i =0; i< Mean.size(); i++){
             
             if (Result.second[i] * (1 - Result.second[i]) != 0){
                 IsBernoulli[i] = false;
@@ -84,13 +83,13 @@ void BatchR::addSim(const SimOutput &Result){
  * Take the union of two batch of result.
  * @param batch is a batch of result wich is added to the current batch.
  */
-void BatchR::unionR(const BatchR *batch){
+void BatchR::unionR(const BatchR &batch){
     
-    I += batch->I;
-    Isucc += batch->Isucc;
+    I += batch.I;
+    Isucc += batch.Isucc;
     
-    if (batch->TableLength > TableLength){
-		TableLength = batch->TableLength;
+    if (batch.Mean.size() > Mean.size()){
+		size_t TableLength = batch.Mean.size();
 		IsBernoulli.resize(TableLength,true);
 		Mean.resize(TableLength,0.0);
 		M2.resize(TableLength,0.0);
@@ -99,16 +98,22 @@ void BatchR::unionR(const BatchR *batch){
 		Min.resize(TableLength,DBL_MAX);
 		Max.resize(TableLength,-DBL_MAX);
     }
-    for(unsigned int i =0; i< TableLength; i++){
-        IsBernoulli[i] = IsBernoulli[i] && batch->IsBernoulli[i];
+    for(size_t i =0; i< Mean.size(); i++){
+        IsBernoulli[i] = IsBernoulli[i] && batch.IsBernoulli[i];
         
-        Mean[i] += batch->Mean[i];
-        M2[i] += batch->M2[i];
-		M3[i] += batch->M3[i];
-		M4[i] += batch->M4[i];
-		Min[i] = fmin(Min[i],batch->Min[i]);
-		Max[i] = fmax(Max[i],batch->Max[i]);
+        Mean[i] += batch.Mean[i];
+        M2[i] += batch.M2[i];
+		M3[i] += batch.M3[i];
+		M4[i] += batch.M4[i];
+		Min[i] = fmin(Min[i],batch.Min[i]);
+		Max[i] = fmax(Max[i],batch.Max[i]);
     }
+    if(batch.bernVar.size() > bernVar.size())
+        bernVar.resize(batch.bernVar.size(),0);
+
+    for(size_t i = 0; i< bernVar.size();i++)
+        bernVar[i] += batch.bernVar[i];
+
 }
 
 /**
@@ -119,9 +124,12 @@ void BatchR::outputR() {
     size_t writesize = 0;
     writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(I));
     writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
-	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&TableLength),sizeof(TableLength));
+    size_t v = Mean.size();
+	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&v),sizeof(size_t));
+    v = bernVar.size();
+    writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&v),sizeof(size_t));
 	
-    for(unsigned int i =0; i< TableLength; i++){
+    for(unsigned int i =0; i< Mean.size(); i++){
         bool tmpbool = IsBernoulli[i];
         writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
         writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(Mean[0]));
@@ -131,7 +139,12 @@ void BatchR::outputR() {
 		writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Min[i]),sizeof(Mean[0]));
        	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Max[i]),sizeof(Mean[0]));
     }
-    if(writesize != (sizeof(I) + sizeof(Isucc)+ sizeof(Isucc) + TableLength * (sizeof(bool) + 6*sizeof(double)))){
+    for(unsigned int i =0; i< bernVar.size(); i++)
+        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&bernVar[i]),sizeof(bernVar[0]));
+
+    if(writesize != (sizeof(I) + sizeof(Isucc)+ sizeof(size_t) + sizeof(size_t)
+                     + Mean.size() * (sizeof(bool) + 6*sizeof(double))
+                     + bernVar.size() * sizeof(bernVar[0]))){
 		cerr << "Fail to write to stdout";
 		exit(EXIT_FAILURE);
     }
@@ -153,8 +166,13 @@ bool BatchR::inputR(FILE* f) {
 	
     readbyte = fread(reinterpret_cast<char*>( &Isucc), sizeof Isucc ,1, f);
     ok &= (readbyte == 1);
-	
+
+    size_t TableLength;
 	readbyte = fread(reinterpret_cast<char*>( &TableLength), sizeof TableLength ,1, f);
+    ok &= (readbyte == 1);
+
+    size_t nbBernouilli;
+    readbyte = fread(reinterpret_cast<char*>( &nbBernouilli), sizeof nbBernouilli ,1, f);
     ok &= (readbyte == 1);
 	
 	if(Mean.size() != TableLength){
@@ -184,12 +202,22 @@ bool BatchR::inputR(FILE* f) {
 		readbyte = fread(reinterpret_cast<char*>( &(Max[i]) ), sizeof Max[i] ,1, f);
         ok &= (readbyte == 1);
     }
+
+    if(bernVar.size() != nbBernouilli)bernVar.resize(nbBernouilli);
+    for( size_t i =0; i< nbBernouilli; i++){
+        readbyte = fread(reinterpret_cast<char*>( &bernVar[i]), sizeof bernVar[0] ,1, f);
+        ok &= (readbyte == 1);
+    }
+
     return ok;
 }
 
 void BatchR::print()const{
-  cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl << "TableLength:\t" << TableLength << endl;
-    for(size_t i =0; i< TableLength; i++){
+  cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl << "TableLength:\t" << Mean.size() << endl;
+    for(size_t i =0; i< Mean.size(); i++){
         cerr << "Mean:\t" << Mean[i] << endl << "M2:\t" << M2[i] << endl << "M3:\t" << M3[i] << endl <<"M4:\t" << M4[i] << "Min:\t" << Min[i] << endl <<"Max:\t" << Max[i] << endl << "IsBernoulli:\t" << IsBernoulli[i] << endl;
+    }
+    for(size_t i =0; i< bernVar.size(); i++){
+        cerr << "Bernouilli:\t" << bernVar[i] << endl;
     }
 }

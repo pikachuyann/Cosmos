@@ -329,7 +329,7 @@ void launchServer(parameters& P){
                 BatchR batchResult(P.nbAlgebraic);
                 if(batchResult.inputR(clientstream[it])){
 					//batchResult.print();
-					Result.addBatch(&batchResult);
+					Result.addBatch(batchResult);
 					//If neaded output the progress of the computation.
 					if((P.verbose>0 || P.alligatorMode) && P.computeStateSpace==0 )
                         Result.printProgress();

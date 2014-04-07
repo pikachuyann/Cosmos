@@ -41,17 +41,14 @@ typedef std::pair<bool, std::vector<double> > SimOutput;
  */
 class BatchR {
 public:
-    BatchR(const size_t i);
+    BatchR(size_t i);
 	
 	//! Number of simulation.
     unsigned long int I;
 	
 	//! Number of succesfull simulation.
     unsigned long int Isucc;
-	
-	//! Number of mesured variable.
-    size_t TableLength;
-	
+
 	//! Is a variable a boolean.
     std::vector<bool> IsBernoulli;
 	
@@ -72,19 +69,22 @@ public:
 	
 	//! The Max moment of each formula.
     std::vector<double> Max;
-    
+
+    //! Bernouilly variable vector
+    std::vector< unsigned long int > bernVar;
+
     //! Add the result of one simulation to the Batch.
     void addSim(const SimOutput&);
     
     //! Merge the result of two batch of simulation.
-    void unionR(const BatchR*);
+    void unionR(const BatchR&);
 	
     void outputR();
 	
     bool inputR(FILE* f);
     void print()const; //! Print human readable version of batch on stdout.
-    
 };
+
 
 
 #endif /* _BATCHR_HPP */

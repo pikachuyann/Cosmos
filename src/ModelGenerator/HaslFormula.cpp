@@ -412,8 +412,8 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 		case RE_Continuous:
 	    {
 		//batch.print();
-		size_t N = batch.TableLength/2;
-		std::cout << "tablelength = "<< batch.TableLength << std::endl;
+		size_t N = batch.Mean.size()/2;
+		std::cout << "tablelength = "<< batch.Mean.size() << std::endl;
 		double error = 1- Level;
 		double LevelN = 1- error/(N+2);
 		double ValueN = quantile(boost::math::normal() , (1+LevelN)/2);
