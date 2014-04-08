@@ -23,7 +23,7 @@ let iterexpfun l name p prop opt =
 
 let iterexp = iterexpfun lt
 let iterexp2= iterexpfun lt2
-
+(*
 let _ = List.iter (fun p ->
   iterexp "Table1" p "rho1.grml" (commonopt^" --const 'l1=3,l2=3,failrate=0'") )
   lp
@@ -67,12 +67,12 @@ let _ =
 (* phi2(Asym) S1 *)
 let _ =
   iterexp "Table3phi2ASym1_5" "Policy1.grml" "rho2.grml" (commonopt^(Printf.sprintf " --const 'l1=3,l2=3,failrate=0,mu1=%f,sigma1=%f,mu2=%f,sigma2=%f'" mu10 sigma10 mu20 sigma20))
-
+*)
 
 let _ = List.iter (fun p ->
-  iterexp "Table4(fault)" p "rho2.grml" (commonopt^" --const 'l1=3,l2=3,failrate=0.016' --width 0.05") )
+  iterexp "Table4_fault_" p "rho2.grml" (commonopt^" --const 'l1=3,l2=3,failrate=0.016' --width 0.05") )
   lp
 
 let _ = List.iter (fun p ->
-  iterexp2 "Table5(fault)" p "rho3.grml" (commonopt^" --const 'l1=3,l2=3,failrate=0.016' --width 0.05") )
+  iterexp2 "Table5_fault_" p "rho3.grml" (commonopt^" --const 'l1=3,l2=3,failrate=0.016' --width 0.05") )
   lp
