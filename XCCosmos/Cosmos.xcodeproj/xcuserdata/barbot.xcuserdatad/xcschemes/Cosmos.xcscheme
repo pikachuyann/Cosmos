@@ -191,7 +191,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--loop 60"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--output-trace"
@@ -210,7 +210,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/Cosmos/Examples/DataBase/databaseunfoldN20P20.grml"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/ClientServerPads/ClientServerStoch3PS.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

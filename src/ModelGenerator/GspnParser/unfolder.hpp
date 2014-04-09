@@ -51,10 +51,12 @@ private:
 	void export_transition_grml(ofstream &fout,const transition&t);
 	void export_arc_grml(ofstream &fout,const transition &t);
 	void export_coltoken(ofstream &fout,const vector<color> &vec,const coloredToken &coltoken,const transition &t,const place &p, bool );
-    void export_multcoltok(ofstream &fout,const vector<color> &vec,const transition &t,const place &p, bool ,const vector< coloredToken >);
+    void export_multcoltok(ofstream &fout,const vector<color> &vec,const transition &t,const place &p, bool ,const arc);
 	//size_t next_uid;
 	size_t get_uid(const std::string&);
-	
+    void print_arc(ofstream&,size_t,size_t,size_t, bool, const string);
+
+    std::string cleanstr(const std::string &) const;
 	std::string str_of_vect(const vector<color> &v,const std::string &smid) const;
 	
 	size_t nbPlace,nbTrans,nbArc;

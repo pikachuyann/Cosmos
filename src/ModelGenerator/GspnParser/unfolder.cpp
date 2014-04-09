@@ -31,10 +31,15 @@
 string unfolder::str_of_vect(const vector<color> &v,const string &smid)const {
 	string acc;
 	for( auto s=v.begin(); s != v.end(); ++s){
-		if(s != v.begin())acc += smid;
+		acc += smid;
 		acc += s->name;
 	}
 	return acc;
+}
+
+string unfolder::cleanstr(const string &str)const {
+    if(str[0] == '(' && str[str.length()-1]==')') return str.substr(1,str.length()-2);
+    return str;
 }
 
 void unfolder::export_grml(ofstream& fout){
@@ -52,10 +57,14 @@ void unfolder::export_grml(ofstream& fout){
 }
 
 size_t unfolder::get_uid(const string &str){
-	//cout << "debug:\t" << str << endl;
-	if(uid.count(str)>0)return uid[str];
+	//cout << "debug:\t" << str;
+	if(uid.count(str)>0){
+        //cout << " -> " << uid[str] << endl;
+        return uid[str];
+    }
 	size_t it = uid.size();
 	uid[str] = it;
+    //cout << " -> " << uid[str] << endl;
 	return it;
 }
 
@@ -69,8 +78,11 @@ void unfolder::export_place_grml(ofstream &fout,const place &p){
 			fout << "\t\t\t0" << endl;
 		} else if(p.colorDom != UNCOLORED_DOMAIN) {
 			fout << "\t\t\t1" << endl;
-		} else fout << "\t\t\t" << MyGspn.Marking[p.id];
-		fout << "\t\t</attribute></attribute></attribute>" << endl;
+		} else {
+            auto str = cleanstr(MyGspn.Marking[p.id]);
+            fout << "\t\t\t" << str;
+        }
+            fout << "\t\t</attribute></attribute></attribute>" << endl;
 
 		
 		fout << "\t</node>" << endl;
@@ -102,9 +114,21 @@ void unfolder::export_transition_grml(ofstream &fout, const transition &t){
 		});
 }
 
+void unfolder::print_arc(ofstream &fout,size_t arcuid,size_t truid, size_t pluid, bool dir, const string val){
+    fout << "\t<arc id=\"" << arcuid;
+	fout << "\" arcType=\"arc\" source=\"";
+	if(dir){
+		fout << pluid << "\" target=\"" << truid << "\">";
+	}else fout << truid << "\" target=\"" << pluid << "\">";
+	fout << "<attribute name=\"valuation\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
+	fout << "\t\t" << val << endl;
+	fout << "\t</attribute></attribute></attribute></arc>" << endl;
+}
+
+
 void unfolder::export_coltoken(ofstream &fout,const vector<color> &vec,
 							   const coloredToken &coltoken,const transition &t,const place &p,bool dir){
-	size_t truid = get_uid("transition"+t.label+"_"+str_of_vect(vec, "_"));
+	size_t truid = get_uid("transition"+t.label+str_of_vect(vec, "_"));
 	vector<color> vec2;
 	for ( size_t i =0 ; i != coltoken.field.size(); ++i) {
 		colorClass cc = MyGspn.colClasses[vec[coltoken.field[i]].cc];
@@ -114,19 +138,22 @@ void unfolder::export_coltoken(ofstream &fout,const vector<color> &vec,
         }else col = (vec[coltoken.field[i]].id + coltoken.varIncrement[i] + cc.colors.size()) % cc.colors.size();
 		vec2.push_back(cc.colors[col]);
 	}
-	size_t pluid = get_uid("place"+p.name+"_"+str_of_vect(vec2, "_"));
+	size_t pluid = get_uid("place"+p.name+str_of_vect(vec2, "_"));
 	nbArc++;
-	fout << "\t<arc id=\"" << get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
-	fout << "\" arcType=\"arc\" source=\"";
-	if(dir){
-		fout << pluid << "\" target=\"" << truid << "\">";
-	}else fout << truid << "\" target=\"" << pluid << "\">";
-	fout << "<attribute name=\"valuation\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
-	fout << "\t\t" << coltoken.mult << endl;
-	fout << "\t</attribute></attribute></attribute></arc>" << endl;
+    size_t arcuid = get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
+
+	print_arc(fout, arcuid, truid, pluid, dir, coltoken.mult);
 }
 
-void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const transition &t,const place &p, bool dir, const vector< coloredToken > toklist){
+void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const transition &t,const place &p, bool dir, const arc inoutarc){
+    if (!inoutarc.isColored && !inoutarc.isEmpty) {
+        size_t truid = get_uid("transition"+t.label+str_of_vect(vec, "_"));
+        size_t pluid = get_uid("place"+p.name);
+        size_t arcuid = get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
+        print_arc(fout,arcuid,truid,pluid,dir,to_string(inoutarc.intVal));
+        return;
+    }
+    auto toklist = inoutarc.coloredVal;
     if(toklist.size() == 1 && !toklist[0].hasAll){
         export_coltoken(fout,vec,toklist[0],t,p,dir);
     } else if(toklist.size()>0){
@@ -149,16 +176,10 @@ void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const t
             }
             if(mult != 0){
                 nbArc++;
-                size_t truid = get_uid("transition"+t.label+"_"+str_of_vect(vec, "_"));
-                size_t pluid = get_uid("place"+p.name+"_"+str_of_vect(v, "_"));
-                fout << "\t<arc id=\"" << get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
-                fout << "\" arcType=\"arc\" source=\"";
-                if(dir){
-                    fout << pluid << "\" target=\"" << truid << "\">";
-                }else fout << truid << "\" target=\"" << pluid << "\">";
-                fout << "<attribute name=\"valuation\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
-                fout << "\t\t" << mult << endl;
-                fout << "\t</attribute></attribute></attribute></arc>" << endl;
+                size_t truid = get_uid("transition"+t.label+str_of_vect(vec, "_"));
+                size_t pluid = get_uid("place"+p.name+str_of_vect(v, "_"));
+                size_t arcuid = get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
+                print_arc(fout,arcuid,truid,pluid,dir,to_string(mult));
             }
         });
     }
@@ -169,8 +190,10 @@ void unfolder::export_arc_grml(ofstream &fout, const transition &t){
 	vector<color> iteratevec;
 	iterateVars(iteratevec , t.varDomain , 0, [&](const vector<color> &vec){
 		for(const auto &p: MyGspn.placeStruct){
-				export_multcoltok(fout,vec,t,p,true,MyGspn.access(MyGspn.inArcsStruct,t.id,p.id).coloredVal);
-				export_multcoltok(fout,vec,t,p,false,MyGspn.access(MyGspn.outArcsStruct,t.id,p.id).coloredVal);
+            auto a = MyGspn.access(MyGspn.inArcsStruct,t.id,p.id);
+            if (!a.isEmpty)export_multcoltok(fout,vec,t,p,true,a);
+            auto b = MyGspn.access(MyGspn.outArcsStruct,t.id,p.id);
+            if (!b.isEmpty)export_multcoltok(fout,vec,t,p,false,b);
 		}
 	});
 }
