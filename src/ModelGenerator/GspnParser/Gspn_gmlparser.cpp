@@ -965,26 +965,26 @@ void MyModelHandler::on_read_arc(const XmlString& id,
     if(IsPlace[sourceGML]){
         if(arcType.compare("inhibitorarc")==0){
             if(Evaluate_gml.parse(valuation)){
-                MyGspn->inhibArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(("("+valuation+")"),toklist)));
+                MyGspn->inhibArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(("("+valuation+")"),toklist)));
 			}else {
-                MyGspn->inhibArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(Evaluate_gml.IntResult)));
+                MyGspn->inhibArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(Evaluate_gml.IntResult)));
             }
             //MyGspn->inhibArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
         }else {
             if(Evaluate_gml.parse(valuation)){
-                MyGspn->inArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(("("+valuation+")"),toklist)));
+                MyGspn->inArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(("("+valuation+")"),toklist)));
             }
             else {
-                MyGspn->inArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(Evaluate_gml.IntResult)));
+                MyGspn->inArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(Evaluate_gml.IntResult)));
             }
             //MyGspn->inArcs[Gml2Trans[atoi(target.c_str())]][Gml2Place[sourceGML]]=valuation;
         }
     }else {
         if(Evaluate_gml.parse(valuation)){
-            MyGspn->outArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[sourceGML],Gml2Place[atoi(target.c_str())]),arc(("("+valuation+")"),toklist)));
+            MyGspn->outArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(MyGspn->arckey(Gml2Trans[sourceGML],Gml2Place[atoi(target.c_str())]),arc(("("+valuation+")"),toklist)));
         }
         else {
-            MyGspn->outArcsStruct.insert(make_pair<size_t,arc>(MyGspn->arckey(Gml2Trans[sourceGML],Gml2Place[atoi(target.c_str())]),arc(Evaluate_gml.IntResult)));
+            MyGspn->outArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(MyGspn->arckey(Gml2Trans[sourceGML],Gml2Place[atoi(target.c_str())]),arc(Evaluate_gml.IntResult)));
         }
         //MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=valuation;
     }

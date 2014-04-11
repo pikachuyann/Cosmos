@@ -79,11 +79,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--unfold"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "databaseunfold.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--njob 4"
@@ -122,11 +122,11 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.gspn"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pi.grml"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Documents/AllCosmos/trunk/Examples/pi/pi.lha"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pilha.grml"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
@@ -191,7 +191,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--loop 60"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--output-trace"
@@ -211,6 +211,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/ClientServerPads/ClientServerStoch3PS.grml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/barbot/Documents/Cosmos/Examples/ClientServerPads/clientserverunfoldCli100Pos4.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

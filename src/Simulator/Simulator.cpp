@@ -503,8 +503,11 @@ void Simulator::getParams(size_t Id, const abstractBinding& b){
 }
 
 BatchR Simulator::RunBatch(){
+    auto starttime = chrono::steady_clock::now();
+    auto currenttime = chrono::steady_clock::now();
+    chrono::duration<double> timesize(0.03);
 	BatchR batchResult(A.FormulaVal.size());
-	while (batchResult.I < BatchSize) {
+	while ((batchResult.I < BatchSize && BatchSize!=0) || (currenttime-starttime < timesize && BatchSize==0) ) {
 		reset();
 		SimulateSinglePath();
         batchResult.addSim(Result);
@@ -517,6 +520,7 @@ BatchR Simulator::RunBatch(){
 			}
 			logvalue << endl;
 		}
+        currenttime=chrono::steady_clock::now();
     }
 	return batchResult;
 }

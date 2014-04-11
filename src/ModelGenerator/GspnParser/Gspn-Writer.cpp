@@ -27,6 +27,8 @@
 #include "Gspn-Writer.hpp"
 #include "../casesWriter.hpp"
 
+#include <algorithm>
+
 Gspn_Writer::Gspn_Writer(GspnType& mgspn,parameters& Q):MyGspn(mgspn),P(Q){
 	
 }
@@ -39,45 +41,37 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		set<int> S;
 		set<int> Sinhib;
 		set<int> INt1;
-		for (size_t p = 0; p < MyGspn.pl; p++) {
-			if (!MyGspn.access(MyGspn.inArcsStruct,t1,p).isEmpty) {
-				INt1.insert(p);
-			}
-		}
-		for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
+        for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t1, 0));
+            inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t1; ++inarc )
+            if(!inarc->second.isEmpty)INt1.insert(inarc->first.second);
+
+        for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
 			if (t1 != t2) {
 				size_t size = INt1.size();
 				set<int> INt1t2 = INt1;
-				bool B = true;
-				size_t p = 0;
-				while (B && p < MyGspn.pl) {
-					if (!MyGspn.access(MyGspn.inArcsStruct,t2,p).isEmpty) {
-						INt1t2.insert(p);
-						if (size == INt1t2.size()) {
-							B = false;
+
+                for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
+                    inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t2; ++inarc)
+                    if( !inarc->second.isEmpty){
+                        INt1t2.insert(inarc->first.second);
+                        if (size == INt1t2.size()) {
 							S.insert(t2);
+                            break;
 						} else size = INt1t2.size();
-					}
-					p++;
-				}
+                    }
 				
 				size = INt1.size();
 				set<int> INt1t2Inhib = INt1;
-				B = true;
-				p = 0;
-				while (B && p < MyGspn.pl) {
-					if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p).isEmpty) {
-						INt1t2Inhib.insert(p);
-						if (size == INt1t2Inhib.size()) {
-							B = false;
+                for(auto inhibarc= MyGspn.inhibArcsStruct.lower_bound(make_pair(t2, 0));
+                    inhibarc != MyGspn.inhibArcsStruct.end() && inhibarc->first.first==t2; ++inhibarc)
+                    if(!inhibarc->second.isEmpty){
+                        INt1t2Inhib.insert(inhibarc->first.second );
+                        if (size == INt1t2Inhib.size()) {
 							Sinhib.insert(t2);
+                            break;
 						} else size = INt1t2Inhib.size();
-					}
-					p++;
-				}
-				
+                    }
 			}
-		
 		
 		PossiblyDisabled.push_back(S);
 		PossiblyEnabled.push_back(Sinhib);
@@ -86,40 +80,35 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		set<int> S = PossiblyEnabled[t1];
 		set<int> Sinhib = PossiblyDisabled[t1];
 		set<int> OUTt1;
-		for (size_t p = 0; p < MyGspn.pl; p++)
-			if (!MyGspn.access(MyGspn.outArcsStruct,t1,p).isEmpty)
-				OUTt1.insert(p);
-		for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
+        for(auto outarc= MyGspn.outArcsStruct.lower_bound(make_pair(t1, 0));
+            outarc != MyGspn.outArcsStruct.end() && outarc->first.first==t1; ++outarc )
+            if(!outarc->second.isEmpty)OUTt1.insert(outarc->first.second);
+
+        for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
 			if (t1 != t2) {
 				size_t size = OUTt1.size();
 				set<int> OUTt1INt2 = OUTt1;
-				bool B = true;
-				size_t p = 0;
-				while (B && p < MyGspn.pl) {
-					if (!MyGspn.access(MyGspn.inArcsStruct,t2,p).isEmpty) {
-						OUTt1INt2.insert(p);
-						if (size == OUTt1INt2.size()) {
-							B = false;
+
+                for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
+                    inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t2; ++inarc)
+                    if( !inarc->second.isEmpty){
+                        OUTt1INt2.insert(inarc->first.second);
+                        if (size == OUTt1INt2.size()) {
 							S.insert(t2);
+                            break;
 						} else size = OUTt1INt2.size();
-					}
-					p++;
-				}
+                    }
 				size = OUTt1.size();
 				set<int> OUTt1t2Inhib = OUTt1;
-				B = true;
-				p = 0;
-				while (B && p < MyGspn.pl) {
-					if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p).isEmpty) {
-						OUTt1t2Inhib.insert(p);
-						if (size == OUTt1t2Inhib.size()) {
-							B = false;
+                for(auto inhibarc= MyGspn.inhibArcsStruct.lower_bound(make_pair(t2, 0));
+                    inhibarc != MyGspn.inhibArcsStruct.end() && inhibarc->first.first==t2; ++inhibarc)
+                    if(!inhibarc->second.isEmpty){
+                        OUTt1t2Inhib.insert(inhibarc->first.second );
+                        if (size == OUTt1t2Inhib.size()) {
 							Sinhib.insert(t2);
+                            break;
 						} else size = OUTt1t2Inhib.size();
-					}
-					p++;
-				}
-				
+                    }
 			}
 		PossiblyEnabled[t1] = S;
 		PossiblyDisabled[t1] = Sinhib;

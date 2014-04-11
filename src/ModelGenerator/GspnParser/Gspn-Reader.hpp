@@ -150,6 +150,20 @@ struct arc {
 	vector<coloredToken> coloredVal;
 };
 
+
+struct classcomp {
+    bool operator() (const pair<size_t,size_t> &lhs,const pair<size_t,size_t> &rhs) const
+    {
+    if(lhs.first == rhs.first){
+        return lhs.second< rhs.second;
+    }
+    else return lhs.first<rhs.first;
+    }
+};
+
+
+typedef map< pair<size_t,size_t>, arc, classcomp>  arcStore;
+
 struct GspnType {
     size_t tr;
     size_t pl;
@@ -166,14 +180,17 @@ struct GspnType {
 	vector<transition> transitionStruct;
 	vector<place> placeStruct;
 
-    inline size_t arckey(size_t t,size_t p)const { return (t + (tr+1)*p); };
-    inline const arc access(unordered_map<size_t, arc> &h,size_t t, size_t p)const{
+    inline pair<size_t, size_t> arckey(size_t t,size_t p)const { return make_pair(t,p); };
+    inline size_t get_t(pair<size_t, size_t> key)const {return key.first;};
+    inline size_t get_p(pair<size_t, size_t> key)const {return key.second;};
+    inline const arc access(const arcStore &h,size_t t, size_t p)const{
+        static const arc emptyarc;
         auto a = h.find(arckey(t,p));
-        if(a == h.end()){return arc();}else return a->second;
+        if(a == h.end()){return emptyarc;}else return a->second;
     };
-    unordered_map<size_t, arc> inArcsStruct;
-    unordered_map<size_t, arc> outArcsStruct;
-    unordered_map<size_t, arc> inhibArcsStruct;
+    arcStore inArcsStruct;
+    arcStore outArcsStruct;
+    arcStore inhibArcsStruct;
     /*vector< vector<arc> > inArcsStruct;
 	vector< vector<arc> > outArcsStruct;
 	vector< vector<arc> > inhibArcsStruct;*/
