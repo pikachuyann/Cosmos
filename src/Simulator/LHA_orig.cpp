@@ -176,7 +176,7 @@ void LHA::getFinalValues(const abstractMarking& m,vector<double>& v){
  * @return true if the automaton is in a final state
  */
 bool LHA::isFinal()const {
-    return ( (FinalLoc.find(CurrentLocation) != FinalLoc.end()) ? true : false);
+    return (FinalLoc[CurrentLocation]);
 }
 
 double LHA::Min(double a, double b, double c) {

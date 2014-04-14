@@ -150,7 +150,7 @@ private:
 	vector <LhaEdge> Edge;
 
     set <int> InitLoc; // initial locations
-    set <int> FinalLoc; // final locations
+    vector<bool> FinalLoc; // final locations
 
 	Variables *Vars; // Var[i] value of the variable indexed by i
     Variables *tempVars;

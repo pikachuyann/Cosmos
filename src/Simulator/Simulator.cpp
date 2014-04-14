@@ -433,7 +433,7 @@ void Simulator::SimulateSinglePath() {
     
 	bool continueb = true;
 	lastSampled = -sampleTrace;
-	while ((!EQ->isEmpty()) && continueb ) {
+	while (continueb) {
         //cerr << "continue path"<< endl;
 		if(logtrace.is_open())
 			if((A.CurrentTime - lastSampled) >= sampleTrace){
@@ -458,6 +458,17 @@ void Simulator::SimulateSinglePath() {
 		
 		continueb = SimulateOneStep();
 	}
+    if(verbose>3){
+        //Print marking and location of the automata
+        //Usefull to track a simulation
+        N.Marking.printHeader(cerr);
+        A.printHeader(cerr);
+        cerr << endl;
+        N.Marking.print(cerr);
+        A.printState(cerr);
+        cerr << endl;
+        if(verbose>4)EQ->view(N.Transition);
+    }
     //cerr << "finish path"<< endl;
 }
 
