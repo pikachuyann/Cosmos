@@ -29,6 +29,8 @@
 #include <math.h>
 #include <float.h>
 #include <time.h>
+#include <ratio>
+#include <chrono>
 
 #include "Simulator.hpp"
 #include "marking.hpp"

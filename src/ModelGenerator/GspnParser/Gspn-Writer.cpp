@@ -631,7 +631,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		SpnCppFile << "}\n";
 	}
 	
-	header << "struct abstractBindingImpl {\n";
+	header << "class abstractBindingImpl {\npublic:\n";
 	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
 		header << "\t" << MyGspn.colDoms[colvar->type].tokname() << " " << colvar->name << ";\n";
 	}
@@ -928,9 +928,9 @@ void Gspn_Writer::WriteFile(){
 	SpnCppFile << "SPN::SPN():" << endl;
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
 	SpnCppFile << "tr(" << MyGspn.tr << "), ";
-	SpnCppFile << "Place("<< MyGspn.pl << "),";
 	SpnCppFile << "Transition(" << MyGspn.tr << "),";
-	
+    SpnCppFile << "Place("<< MyGspn.pl << "),";
+
 	SpnCppFile << "ParamDistr(3), TransitionConditions(" << MyGspn.tr <<",0){" << endl;
 	SpnCppFile << "    Path =\"" << P.PathGspn << "\";" << endl;
 	
