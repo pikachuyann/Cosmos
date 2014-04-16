@@ -93,19 +93,19 @@ void MyModelHandler::appendSimplify(string &st, string str)
  st->append(")");
  }*/
 
-void MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_order_iterator it )
+void MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_order_iterator it)
 {
-    if((P.verbose-3)>1)cout << (*it) << endl;
+    if((P.verbose-3)>1)cout << *it << endl;
     
-	if(it->compare("function")==0){
+	if( *it == "function"){
 		eval_expr(is_mark_dep, st, it.begin());
-	}else if(it->compare("expr")==0){
+	}else if(*it == "expr"){
 		eval_expr(is_mark_dep, st, it.begin());
-	}else if(it->compare("intValue")==0){
+	}else if(*it == "intValue"){
 		appendSimplify(st,it.node->first_child->data);
-	}else if(it->compare("numValue")==0){
+	}else if(*it == "numValue"){
 		appendSimplify(st,it.node->first_child->data);
-	}else if (it->compare("name")==0) {
+	}else if (*it == "name") {
         string var = simplifyString(it.node->first_child->data);
         if(MyGspn->IntConstant.count(var)>0 ||
            MyGspn->RealConstant.count(var)>0){st.append(var);
@@ -120,24 +120,24 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_
 			}
 			if(MyGspn->placeStruct[MyGspn->PlacesId[var]].colorDom !=0 )st.append(".card()");
         }
-	}else if (	it->compare("+")==0  || it->compare("*")==0
-              || it->compare("min")==0   || it->compare("max")==0
-              || it->compare("floor")==0 || it->compare("minus")==0
-              || it->compare("/")==0   || it->compare("power")==0)  {
+	}else if (	*it == "+"  || *it == "*"
+              || *it == "min"   || *it == "max"
+              || *it == "floor" || *it == "minus"
+              || *it == "/"   || *it == "power")  {
 		
 		
-		if (it->compare("min")==0) st.append("min");
-		if (it->compare("max")==0) st.append("max");
-		if (it->compare("floor")==0 ) st.append("floor");
+		if (*it == "min") st.append("min");
+		if (*it == "max") st.append("max");
+		if (*it == "floor" ) st.append("floor");
 		
 		st.append("(");
 		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 			if(it2!= it.begin()) {
-				if (it->compare("+")==0) { st.append("+"); }
-				else if (it->compare("*")==0) { st.append("*"); }
-				else if (it->compare("-")==0) { st.append("-"); }
-				else if (it->compare("/")==0) { st.append("/ (double) "); }
-				else if (it->compare("power")==0) { st.append("^"); }
+				if (*it == "+") { st.append("+"); }
+				else if (*it == "*") { st.append("*"); }
+				else if (*it == "-") { st.append("-"); }
+				else if (*it == "/") { st.append("/ (double) "); }
+				else if (*it == "power") { st.append("^"); }
 				else st.append(",");
 			}
 			eval_expr(is_mark_dep, st, it2);
@@ -150,16 +150,16 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_
     }
 }
 
-void MyModelHandler::eval_tokenProfileMark(string& st,tree<string>::pre_order_iterator it){
-	if((P.verbose-3)>1)cout << (*it) << endl;
-	if(it->compare("function")==0){
-		eval_tokenProfileMark(st, it.begin());
-	}else if(it->compare("expr")==0){
-		eval_tokenProfileMark(st, it.begin());
-	}else if(it->compare("enumConst")==0){
+void MyModelHandler::eval_tokenProfileMark(coloredToken& tok,string& st,tree<string>::pre_order_iterator it){
+	if((P.verbose-3)>1)cout << *it << endl;
+	if(*it == "function"){
+		eval_tokenProfileMark(tok, st, it.begin());
+	}else if(*it == "expr"){
+		eval_tokenProfileMark(tok,st, it.begin());
+	}else if(*it == "enumConst"){
 		size_t colorclass=0, enumvalue=0;
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
-			if(it2->compare("type")==0){
+			if(*it2 == "type"){
 				string coldom = simplifyString(*(it2.begin()));
 				if((P.verbose-3)>1)cerr << coldom << endl;
 				for(colorclass =0; colorclass < MyGspn->colDoms.size() &&
@@ -167,7 +167,7 @@ void MyModelHandler::eval_tokenProfileMark(string& st,tree<string>::pre_order_it
 				if(colorclass == MyGspn->colDoms.size())
 					cerr << "Unknown classe '" << coldom << "'"<< endl;
 			}
-			if (it2->compare("enumValue")==0) {
+			if (*it2 == "enumValue") {
 				string coldom = simplifyString(*(it2.begin()));
 				if((P.verbose-3)>1)cerr << coldom << endl;
 				colorClass col = MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]];
@@ -177,13 +177,20 @@ void MyModelHandler::eval_tokenProfileMark(string& st,tree<string>::pre_order_it
 					cerr << "Unknown classe '" << coldom << "'"<< endl;
 			}
 		}
+        tok.field.push_back(enumvalue);
+        tok.Flags.push_back(CT_SINGLE_COLOR);
+        tok.varIncrement.push_back(0);
 		st.append(MyGspn->colDoms[colorclass].cname() +"(Color_"+ MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]].name+"_"+MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]].colors[enumvalue].name+")");
 		
-	}else if(it->compare("all")==0){
+	}else if(*it == "all"){
+        tok.hasAll=true;
+        tok.field.push_back(0);
+        tok.Flags.push_back(CT_ALL);
+        tok.varIncrement.push_back(0);
 		st.append("(");
-		eval_tokenProfileMark(st, it.begin());
+		eval_tokenProfileMark(tok,st, it.begin());
 		st.append("(1))");
-	}else if(it->compare("type")==0){
+	}else if(*it == "type"){
 		string coldom = simplifyString(*(it.begin()));
 		if((P.verbose-3)>1)cerr << coldom << endl;
 		size_t colorc =0;
@@ -192,47 +199,48 @@ void MyModelHandler::eval_tokenProfileMark(string& st,tree<string>::pre_order_it
 		if(colorc == MyGspn->colDoms.size())
 			cerr << "Unknown classe '" << coldom << "'"<< endl;
 		else st.append(MyGspn->colDoms[colorc].cname());
-	}else if (it->compare("token")==0) {
+	}else if (*it == "token") {
 		string mark;
 		bool tokprof = false;
 		st.append("(");
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
-			if(it2->compare("occurs")==0){
+			if(*it2 == "occurs"){
 				bool markingdependant = false;
 				eval_expr(&markingdependant, mark, it2.begin());
 				if( markingdependant) cerr << "Initial Marking is not marking dependant\n";
 			}
-			if (it2->compare("tokenProfile")==0) {
+			if (*it2 == "tokenProfile") {
 				tokprof = true;
 				if ((P.verbose-3)>1)cout << *it2 << endl;
 				for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
-					eval_tokenProfileMark(st, it3);
+					eval_tokenProfileMark(tok,st, it3);
 				}
 			}
 		}
+        tok.mult = mark;
 		if(tokprof){
 			st.append(" * " + mark +")");
 		}else st.append(" " + mark +")");
-	} else if(it->compare("name")==0) {
+	} else if(*it == "name") {
 		st.append("Marking.P->"+ simplifyString(*(it.begin())));
 	}
 }
 
 void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdependant ,set<size_t>& vardom, tree<string>::pre_order_iterator it){
 	if((P.verbose-3)>1)cout << (*it) << endl;
-	if(it->compare("function")==0){
+	if(*it == "function"){
 		eval_tokenProfileArc(tok, markingdependant, vardom, it.begin());
-	}else if(it->compare("++")==0){
+	}else if(*it == "++"){
 		int incr = 0;
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
-			if(it2->compare("name")==0){
+			if(*it2 == "name"){
 				eval_tokenProfileArc(tok, markingdependant, vardom, it2);
 			} else incr = atoi(simplifyString(*(it2).begin()).c_str());
 		}
 		tok.varIncrement.back() += incr;
-	}else if(it->compare("all")==0){
+	}else if(*it == "all"){
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
-			if(it2->compare("type")==0){
+			if(*it2 == "type"){
 				string colname= simplifyString(*(it2.begin()));
 				vector<colorClass>::const_iterator cols;
 				for (cols = MyGspn->colClasses.begin() ;
@@ -248,21 +256,21 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 			}
 		}
 		
-	}else if(it->compare("expr")==0){
+	}else if(*it == "expr"){
 		eval_tokenProfileArc(tok,markingdependant, vardom, it.begin());
-	}else if (it->compare("token")==0) {
+	}else if (*it == "token") {
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
-			if(it2->compare("occurs")==0){
+			if(*it2 == "occurs"){
 				eval_expr(&markingdependant, tok.mult, it2.begin());
 			}
-			if (it2->compare("tokenProfile")==0) {
+			if (*it2 == "tokenProfile") {
 				if ((P.verbose-3)>1)cout << *it2 << endl;
 				for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
 					eval_tokenProfileArc(tok,markingdependant, vardom, it3);
 				}
 			}
 		}
-	} else if(it->compare("type")==0){
+	} else if(*it == "type"){
 		string colname= simplifyString(*(it.begin()));
 		vector<colorClass>::const_iterator cols;
 		for (cols = MyGspn->colClasses.begin() ;
@@ -275,7 +283,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 			cerr << "Unknown color '" << colname << "'"<< endl;
 		}
 		
-	}else if(it->compare("name")==0) {
+	}else if(*it == "name") {
 		string varname= simplifyString(*(it.begin()));
 		vector<colorVariable>::const_iterator vars;
 		for (vars = MyGspn->colVars.begin() ;
@@ -301,20 +309,20 @@ int MyModelHandler::eval_str (string s){
 int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it )
 {
     if((P.verbose-3)>1)cout<< (*it) << endl;
-	if(it->compare("expr")==0 || it->compare("function")==0){
+	if(*it == "expr" || *it == "function"){
 		//cout << *(it.begin()) << endl;
 		return eval_intFormula(intconst,it.begin());
-	}else if(it->compare("intValue")==0){
+	}else if(*it == "intValue"){
 		return eval_str(it.node->first_child->data);
-	}else if(it->compare("numValue")==0){
+	}else if(*it == "numValue"){
 		return eval_str(it.node->first_child->data);
-	}else if (it->compare("name")==0) {
+	}else if (*it == "name") {
 		string val = simplifyString(it.node->first_child->data);
 		int intval = intconst[val.c_str()];
 		return intval;
-	}else if (it->compare("+")==0 || it->compare("*")==0
-			  || it->compare("min")==0  || it->compare("max")==0
-			  || it->compare("power")==0|| it->compare("-")==0)  {
+	}else if (*it == "+" || *it == "*"
+			  || *it == "min"  || *it == "max"
+			  || *it == "power"|| *it == "-")  {
 		
 		int v1=0;
 		int v2=0;
@@ -326,14 +334,14 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
             
 		}
 		
-		if (it->compare("+")==0) { return v1+v2; }
-		else if (it->compare("*")==0) { return v1*v2; }
-		else if (it->compare("-")==0) { return v1-v2; }
-		else if (it->compare("min")==0) { return min(v1,v2); }
-		else if (it->compare("max")==0) {  return max(v1,v2); }
-		else if (it->compare("power")==0) {  return v1^v2; }
+		if (*it == "+") { return v1+v2; }
+		else if (*it == "*") { return v1*v2; }
+		else if (*it == "-") { return v1-v2; }
+		else if (*it == "min") { return min(v1,v2); }
+		else if (*it == "max") {  return max(v1,v2); }
+		else if (*it == "power") {  return v1^v2; }
 		else cout << "faileval int Formula" <<endl;
-	} else if(simplifyString(*it).compare("")==0)return 0;
+	} else if(simplifyString(*it).empty())return 0;
     try {
         return stoi(simplifyString(*it));
     }
@@ -344,7 +352,7 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
 }
 
 treeSI MyModelHandler::findbranch(treeSI t, string branch){
-    if( branch.compare("")==0)return t;
+    if( branch == "")return t;
     size_t nextnode = branch.find_first_of("/");
     for (treeSI it = (t.begin()) ; it != (t.end()) ; ++it) {
         if(it->compare(branch.substr(0,nextnode))==0){
@@ -356,42 +364,42 @@ treeSI MyModelHandler::findbranch(treeSI t, string branch){
 
 void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it){
 	if((P.verbose-3)>1)cout<< (*it) << endl;
-	if(it->compare("boolExpr")==0){
+	if(*it == "boolExpr"){
 		eval_guard(st, it.begin() );
-	} else if(it->compare("boolValue")==0){
-		if(simplifyString(*(it.begin())).compare("true")==0)st.append(" true ");
+	} else if(*it == "boolValue"){
+		if(simplifyString(*(it.begin())) == "true")st.append(" true ");
 		else st.append(" false ");
-	} else if(it->compare("equal")==0){
+	} else if(*it == "equal"){
 		st.append("(");
 		eval_guard(st, it.begin());
 		st.append(" == ");
 		eval_guard(st, ++it.begin());
 		st.append(" ) ");
-	} else if(it->compare("notEqual")==0){
+	} else if(*it == "notEqual"){
 		st.append("(");
 		eval_guard(st, it.begin());
 		st.append(" != ");
 		eval_guard(st, ++it.begin());
 		st.append(" ) ");
-	} else if(it->compare("and")==0){
+	} else if(*it == "and"){
 		st.append("(");
 		eval_guard(st, it.begin());
 		st.append(" && ");
 		eval_guard(st, ++it.begin());
 		st.append(" ) ");
-	} else if(it->compare("or")==0){
+	} else if(*it == "or"){
 		st.append("(");
 		eval_guard(st, it.begin());
 		st.append(" || ");
 		eval_guard(st, ++it.begin());
 		st.append(" ) ");
-	} else if(it->compare("not")==0){
+	} else if(*it == "not"){
 		st.append("( !(");
 		eval_guard(st, it.begin());
 		st.append(" )) ");
-	} else if(it->compare("expr")==0){
+	} else if(*it == "expr"){
 		eval_guard(st, it.begin() );
-	} else if(it->compare("name")==0){
+	} else if(*it == "name"){
 		string varname = simplifyString(*(it.begin()));
 		vector<colorVariable>::const_iterator vars;
 		for (vars = MyGspn->colVars.begin() ;
@@ -403,14 +411,14 @@ void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it)
 		}else{
 			cerr << "Unknown variable '" << varname << "'"<< endl;
 		}
-	}else if(it->compare("enumConst")==0){
+	}else if(*it == "enumConst"){
 		string typestr;
 		string colorstr;
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
-			if(it2->compare("type")==0){
+			if(*it2 == "type"){
 				typestr = simplifyString(*(it2.begin()));
 			}
-			if (it2->compare("enumValue")==0) {
+			if (*it2 == "enumValue") {
 				colorstr = simplifyString(*(it2.begin()));
 			}
 		}
@@ -453,12 +461,12 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
     
     for(treeSI it = attribute.begin(); it != attribute.end(); ++it) {
         if((P.verbose-3)>1)cout << *it << ":" << endl;
-        if(it->compare("declaration")==0){
+        if(*it == "declaration"){
             treeSI t1 = findbranch(it, "constants/intConsts/");
 			if(t1 != it.end())
 				for (treeSI it2 = (t1.begin()) ; it2 != (t1.end()) ; ++it2 ) {
 					if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
-					if ((*it2).compare("intConst")==0) { // const is int or double
+					if (*it2 == "intConst") { // const is int or double
 						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						int constvalue = eval_intFormula(MyGspn->IntConstant, find(it2.begin(),it2.end(),"expr"));
 						if((P.verbose-3)>1)cout << "const int " << constname << "=" << constvalue << endl;
@@ -478,7 +486,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 			if(t2 != it.end())
 				for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
 					if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
-					if ((*it2).compare("realConst")==0) {
+					if (*it2 == "realConst") {
 						if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
 						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
 						bool ismarkdep=false;
@@ -498,15 +506,15 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 			
 			for(t2 =it.begin(); t2 != it.end() ; ++t2){
 				if((P.verbose-3)>1)cout << endl <<  *t2 << ": " << endl;
-				if((*t2).compare("classDeclaration")==0){
+				if(*t2 == "classDeclaration"){
 					colorClass cc;
 					for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
 						if((P.verbose-3)>1)cout << "\t" <<  *it2 << ": " ;
-						if((*it2).compare("name")==0){
+						if(*it2 == "name"){
 							cc.name = simplifyString(*(it2.begin()));
 							if((P.verbose-3)>1)cout << *(it2.begin());
 						}
-						if((*it2).compare("classType")==0){
+						if(*it2 == "classType"){
 							treeSI tclasstypeenum = find(it2.begin(),it2.end(),"classEnum");
 							if(tclasstypeenum!= it2.end())
 								for (treeSI it3 = (tclasstypeenum.begin()) ;
@@ -535,8 +543,8 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							
 							
 						}
-						if((*it2).compare("circular")==0){
-							if(simplifyString(*(it2.begin())).compare("true")==0)
+						if(*it2 == "circular"){
+							if(simplifyString(*(it2.begin())) == "true")
 								cc.isCircular = true;
 							if((P.verbose-3)>1)cout << *(it2.begin());
 						}
@@ -548,15 +556,15 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 					MyGspn->colDoms.push_back(cd);
 				}
 				
-				if((*t2).compare("domainDeclaration")==0){
+				if(*t2 == "domainDeclaration"){
 					colorDomain cd;
 					for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
 						if((P.verbose-3)>1)cout << "\t" <<  *it2 << ": " ;
-						if((*it2).compare("name")==0){
+						if(*it2 == "name"){
 							cd.name = simplifyString(*(it2.begin()));
 							if((P.verbose-3)>1)cout << *(it2.begin());
 						}
-						if((*it2).compare("domainType")==0){
+						if(*it2 == "domainType"){
 							treeSI tclasstypeenum = find(it2.begin(),it2.end(),"cartesianProduct");
 							if(tclasstypeenum!= it2.end())
 								for (treeSI it3 = (tclasstypeenum.begin()) ;
@@ -574,15 +582,15 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 					}
 					MyGspn->colDoms.push_back(cd);
 				}
-				if((*t2).compare("variableDeclaration")==0){
+				if(*t2 == "variableDeclaration"){
 					colorVariable cv;
 					for (treeSI it2 = (t2.begin()) ; it2 != (t2.end()) ; ++it2 ) {
 						if((P.verbose-3)>1)cout << "\t" <<  *it2 << ": " ;
-						if((*it2).compare("name")==0){
+						if(*it2 == "name"){
 							cv.name = simplifyString(*(it2.begin()));
 							if((P.verbose-3)>1)cout << *(it2.begin());
 						}
-						if((*it2).compare("type")==0){
+						if(*it2 == "type"){
 							string colclass = simplifyString(*(it2.begin()));
 							if((P.verbose-3)>1)cout << "\t\t" << colclass << endl; ;
 							size_t colorc =0;
@@ -609,7 +617,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
     // contain only place and transition.
     
     if((P.verbose-3)>1)cout << "read node : " << id << ", " << nodeType << endl;
-    if(nodeType.compare("place")==0){
+    if(nodeType == "place"){
 		if(MyGspn->nbpass==1)return;
 		
         // Read a Place:
@@ -624,29 +632,33 @@ void MyModelHandler::on_read_node(const XmlString& id,
 		
         for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
 			treeSI it2 = it->second.begin();
-            if(it2->compare("marking")==0){
+            if(*it2 == "marking"){
+                vector<coloredToken> inMark;
 				bool markdep=false;
 				string st;
 				for(treeSI ittok = it2.begin(); ittok != it2.end(); ++ittok){
-					if (ittok->compare("token")==0) {
-						if(st.compare("")!=0)st.append((" + "));
-						eval_tokenProfileMark(st, ittok);
-						
+					if (*ittok == "token") {
+						if(!st.empty())st.append((" + "));
+                        coloredToken tok;
+						eval_tokenProfileMark(tok,st, ittok);
+						inMark.push_back(tok);
 					}
 				}
 				if(markdep){cerr <<"Marking can not be marking dependant";
 					throw gmlioexc;
 				}
-				if (st.compare("")==0) {
+				if (st == "") {
 					int mark = 0;
 					mark = eval_intFormula(MyGspn->IntConstant, it2.begin());
+                    inMark.push_back(coloredToken(mark));
 					st.append(itostring(mark));
 				}
 				
 				if((P.verbose-3)>1)cout << "\tmarking:" << st << endl ;
 				MyGspn->Marking.push_back(st);
+                MyGspn->InitialMarking.push_back(inMark);
 				
-			} else if(it2->compare("name")==0){
+			} else if(*it2 == "name"){
 				string Plname = simplifyString(*(it2.begin()));
 				if((P.verbose-3)>1)cout << "\tname:" << Plname << endl ;
 				p.name = Plname;
@@ -656,7 +668,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 				}
 				MyGspn->PlacesId[Plname]=MyGspn->pl-1;
 				
-            } else if((*(it->second.begin())).compare("domain")==0){
+            } else if((*(it->second.begin())) == "domain"){
                 string Pldomain = simplifyString(*(it2.begin().begin()));
                 if((P.verbose-3)>1)cout << "\tdomain:" << Pldomain << endl ;
 				size_t colord =0;
@@ -672,7 +684,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 		MyGspn->placeStruct.push_back(p);
 		
     }else {
-        if (nodeType.compare("transition")==0){
+        if (nodeType == "transition"){
 			if(MyGspn->nbpass==0)return;
             //Read a transition:
             MyGspn->tr++;
@@ -692,7 +704,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 			trans.nbServers = 1;
 			
             for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
-                if((*(it->second.begin())).compare("name")==0){
+                if((*(it->second.begin())) == "name"){
                     string Trname = simplifyString(*(++(it->second.begin())));
                     if((P.verbose-3)>1)cout << "\tname:" << Trname << endl ;
                     MyGspn->TransList.insert(Trname);
@@ -702,27 +714,27 @@ void MyModelHandler::on_read_node(const XmlString& id,
 						throw gmlioexc;
 					}
                     MyGspn->TransId[Trname]=MyGspn->tr-1;
-                } else if((*(it->second.begin())).compare("guard")==0){
+                } else if((*(it->second.begin())) == "guard"){
 					eval_guard(trans.guard, it->second.begin().begin());
-					//if(trans.guard.compare("")==0)trans.guard = "true";
-                } else if ((*(it->second.begin())).compare("distribution")==0) {
+					//if(trans.guard == "")trans.guard = "true";
+                } else if ((*(it->second.begin())) == "distribution") {
                     if((P.verbose-3)>1)cout << "\tdistribution:" << endl ;
                     for (treeSI it2 = (it->second.begin()).begin() ; it2 != (it->second.begin()).end() ; ++it2 ) {
                         if((P.verbose-3)>1)cout << "\t" << (*it2) << ":" << endl;
-                        if ((*it2).compare("type")==0) {
+                        if (*it2 == "type") {
                             string Trtype = simplifyString(*(it2.begin()));
-                            if((Trtype).compare("IMDT")==0)trans.type=unTimed;
+                            if(Trtype == "IMDT")trans.type=unTimed;
                             trans.dist.name = Trtype;
                             if((P.verbose-3)>1)cout << "\t\t" << Trtype << endl;
-                        } else if ((*it2).compare("param")==0) {
+                        } else if (*it2 == "param") {
                             
                             //int number = 0;
                             string value;
                             for (treeSI it3 = it2.begin() ; it3 != it2.end() ; ++it3 ) {
                                 //string* leaf = simplifyString(*(it3.begin()));
-                                if ((*it3).compare("number")==0) {
+                                if (*it3 == "number") {
                                     //number = atoi((*leaf).c_str());
-                                } else if ((*it3).compare("expr")==0) {
+                                } else if (*it3 == "expr") {
                                     eval_expr(&trans.markingDependant, value, it3.begin() );
                                     trans.dist.Param.push_back(value);
                                 } else throw gmlioexc;
@@ -730,10 +742,10 @@ void MyModelHandler::on_read_node(const XmlString& id,
                         } else throw gmlioexc;
                     }
                     
-                } else if ((*(it->second.begin())).compare("service")==0) {
+                } else if ((*(it->second.begin())) == "service") {
                     bool markingdependant=false;
                     string value;
-                    if ((*(++(it->second.begin()))).compare("expr")==0) {
+                    if ((*(++(it->second.begin()))) == "expr") {
                         eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
                         if(markingdependant==false) {
                             if(Evaluate_gml.parse(value)){
@@ -755,7 +767,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                         }
                     } else cout << " Fail to parse GML: transition,service"<< endl;
                     
-                    /*if ((*(++(it->second.begin()))).compare("Infinite")==0) {
+                    /*if ((*(++(it->second.begin()))) == "Infinite") {
                      singleservice=false;
                      nbserver=INT_MAX;
                      } else {
@@ -765,10 +777,10 @@ void MyModelHandler::on_read_node(const XmlString& id,
                      nbserver=nbserver;
                      }
                      }*/
-                } else if ((*(it->second.begin())).compare("weight")==0) {
+                } else if ((*(it->second.begin())) == "weight") {
                     bool markingdependant=false;
                     string value;
-                    if ((*(++(it->second.begin()))).compare("expr")==0) {
+                    if ((*(++(it->second.begin()))) == "expr") {
                         eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
                         if(markingdependant==false) {
                             trans.weight = value;
@@ -778,10 +790,10 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     } else cout << " Fail to parse GML: transition,weight"<< endl;
                     
                     
-                } else if ((*(it->second.begin())).compare("priority")==0) {
+                } else if ((*(it->second.begin())) == "priority") {
                     bool markingdependant=false;
                     string value;
-                    if ((*(++(it->second.begin()))).compare("expr")==0) {
+                    if ((*(++(it->second.begin()))) == "expr") {
                         eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
                         if(markingdependant==false) {
                             trans.priority = value;
@@ -790,7 +802,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                         }
                     } else cout << " Fail to parse GML: transition,priority"<< endl;
                     
-				} else if ((*(it->second.begin())).compare("ageMemory")==0) {
+				} else if ((*(it->second.begin())) == "ageMemory") {
 					trans.ageMemory = true;
                 } else cout << "fail to parse gml transition attribute"<< endl;
                 
@@ -834,18 +846,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         if(P.RareEvent){
 			if(P.BoundedContinuous || P.BoundedRE>0){
 				//add a transition for self-loop due to uniformization
-				transition trans;
-				trans.label = "selfloop";
-				trans.type = Timed;
-				trans.dist.name =  "EXPONENTIAL";
-				trans.dist.Param.push_back("0");
-				trans.priority = "1";
-				trans.weight = "1";
-				trans.singleService = true;
-				trans.markingDependant = true;
-				trans.ageMemory = false;
-				trans.nbServers = 1;
-				trans.id = MyGspn->transitionStruct.size();
+				transition trans(MyGspn->transitionStruct.size(),"selfloop","0",true);
 				MyGspn->transitionStruct.push_back(trans);
 				
 				MyGspn->TransId["selfloop"]=MyGspn->tr;
@@ -865,28 +866,12 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 			
 			
             //Add a transition
-			transition trans;
-			trans.label = "Puittrans";
-			trans.type = Timed;
-			trans.dist.name =  "EXPONENTIAL";
-			trans.dist.Param.push_back("0");
-			trans.priority = "2";
-			trans.weight = "1";
-			trans.singleService = true;
-			trans.markingDependant = true;
-			trans.ageMemory = false;
-			trans.nbServers = 1;
-			trans.id = MyGspn->transitionStruct.size();
+            transition trans(MyGspn->transitionStruct.size(),"Puittrans","0",true);
 			MyGspn->transitionStruct.push_back(trans);
 			
             MyGspn->TransList.insert(trans.label);
             MyGspn->tr++;
         }
-        
-		/*MyGspn->inArcsStruct = vector< vector<arc> >(MyGspn->tr,vector<arc>(MyGspn->pl));
-		MyGspn->outArcsStruct = vector< vector<arc> >(MyGspn->tr,vector<arc>(MyGspn->pl));
-		MyGspn->inhibArcsStruct = vector< vector<arc> >(MyGspn->tr,vector<arc>(MyGspn->pl));
-		*/
         
     }
     
@@ -897,73 +882,33 @@ void MyModelHandler::on_read_arc(const XmlString& id,
     int sourceGML = atoi(source.c_str());
     for(AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
 		treeSI it2 = it->second.begin();
-        if(it2->compare("valuation")==0){
+        if(*it2 == "valuation"){
             bool markingdependant=false;
 			for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
-				if (it3->compare("expr")==0) {
+                if (*it3 == "expr") {
 					eval_expr(&markingdependant, valuation, it3.begin() );
-				} else if (it3->compare("token")==0) {
-					coloredToken tokenType;
+				} else if (*it3 == "token") {
+                    coloredToken tokenType;
 					tokenType.hasAll = false;
 					if (IsPlace[sourceGML]) {
 						eval_tokenProfileArc( tokenType, markingdependant,MyGspn->transitionStruct[Gml2Trans[atoi(target.c_str())]].varDomain, it3);
 					} else {
 						eval_tokenProfileArc( tokenType, markingdependant,MyGspn->transitionStruct[Gml2Trans[atoi(source.c_str())]].varDomain, it3);
 					}
-					
-					size_t coldom;
-					if(IsPlace[sourceGML])
-						coldom = MyGspn->placeStruct[Gml2Place[sourceGML]].colorDom;
-					else coldom = MyGspn->placeStruct[Gml2Place[atoi(target.c_str())]].colorDom;
-					
-					if (toklist.size()>0)valuation.append(" + ");
-					valuation.append("(");
-					
-					if(coldom != UNCOLORED_DOMAIN){
-						if(tokenType.hasAll)
-							valuation.append(MyGspn->colDoms[coldom].cname());
-						else
-							valuation.append(MyGspn->colDoms[coldom].tokname());
-						
-						valuation.append("(");
-						for (size_t pr = 0; pr < tokenType.field.size() ; pr++) {
-							if(pr>0)valuation.append(", ");
-							if(tokenType.Flags[pr]==CT_VARIABLE){
-								valuation.append( "b.P->"+MyGspn->colVars[tokenType.field[pr]].name);
-								if(tokenType.hasAll)valuation.append(".c0");
-							} else if(tokenType.Flags[pr]== CT_SINGLE_COLOR) {
-								valuation.append("Color_");
-								valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].name );
-								valuation.append("_");
-								valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].colors[tokenType.field[pr]].name );
-							} else if(tokenType.Flags[pr]== CT_ALL) {
-								valuation.append("Color_");
-								valuation.append( MyGspn->colClasses[MyGspn->colDoms[coldom].colorClassIndex[pr]].name );
-								valuation.append("_All");
-							}
-							
-							
-							if(tokenType.varIncrement[pr] != 0){
-								valuation.append(".next(");
-								valuation.append(itostring(tokenType.varIncrement[pr]));
-								valuation.append(")");
-							}
-						}
-						valuation.append(") * (");
-						valuation.append(tokenType.mult);
-						valuation.append("))");
-					}else{
-						valuation.append(tokenType.mult);
-						valuation.append(")");
-					}
+
 					toklist.push_back(tokenType);
 				} else cout << " Fail to parse GML: arc,valuation"<< endl;
             }
+            if (toklist.empty()){
+                toklist.push_back(coloredToken(valuation));
+            } else {
+                valuation = "COLORED";
+            }
         }else cout << "fail to parse gml"<< endl;
-        
     }
+
     if(IsPlace[sourceGML]){
-        if(arcType.compare("inhibitorarc")==0){
+        if(arcType == "inhibitorarc"){
             if(Evaluate_gml.parse(valuation)){
                 MyGspn->inhibArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(MyGspn->arckey(Gml2Trans[atoi(target.c_str())],Gml2Place[sourceGML]),arc(("("+valuation+")"),toklist)));
 			}else {
@@ -989,8 +934,4 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         //MyGspn->outArcs[Gml2Trans[sourceGML]][Gml2Place[atoi(target.c_str())]]=valuation;
     }
     
-    
-    /*for(XmlStringList::const_iterator it = references.begin(); it != references.end(); ++it) {
-     cout << "    ref => " << *it << endl;
-     }*/
 }

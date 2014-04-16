@@ -234,15 +234,10 @@ PlacesList: PList EQ '{' PLabels '}' SEMICOLON {
     std::cout<<"Place label missing or redeclared, please check your places list"<<std::endl;
     YYABORT;
   }
-  vector<int> v(Reader.MyGspn.pl,0);
-  vector<string> vStr(Reader.MyGspn.pl, " ");
   
-  Reader.MyGspn.Marking=vStr;
+  Reader.MyGspn.Marking= vector<string>(Reader.MyGspn.pl, " ");
+  Reader.MyGspn.InitialMarking = vector<vector<coloredToken>>(Reader.MyGspn.pl);
 
-  /*Reader.MyGspn.inArcsStruct = vector< vector<arc> >(Reader.MyGspn.tr,vector<arc>(Reader.MyGspn.pl));
-  Reader.MyGspn.outArcsStruct = vector< vector<arc> >(Reader.MyGspn.tr,vector<arc>(Reader.MyGspn.pl));
-  Reader.MyGspn.inhibArcsStruct = vector< vector<arc> >(Reader.MyGspn.tr,vector<arc>(Reader.MyGspn.pl));
-*/
   MarkingDependent=false;
   AgeMemory=false;
 
@@ -306,7 +301,8 @@ PLACE: LB str COMMA IntStringFormula RB SEMICOLON
   }
   stringstream ss;
   ss << Evaluate.IntResult;
-  Reader.MyGspn.Marking[Reader.MyGspn.PlacesId[*$2]]=ss.str();;
+  Reader.MyGspn.Marking[Reader.MyGspn.PlacesId[*$2]]=ss.str();
+  Reader.MyGspn.InitialMarking[Reader.MyGspn.PlacesId[*$2]].push_back(coloredToken(ss.str()));
 };
 
 

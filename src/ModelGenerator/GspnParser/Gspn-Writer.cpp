@@ -196,6 +196,54 @@ void printset(set<T1> s1){
 	cerr << "}";
 }
 
+void Gspn_Writer::writeTok(ostream &SpnF,vector<coloredToken> &ct,const colorDomain &cd){
+    if(ct.size()==1 && ct[0].field.size()==0){
+        SpnF << ct[0].mult;
+        return;
+    }
+    int count = 0;
+    for(auto &sct : ct){
+        if (count>0)SpnF << " + ";
+        count++;
+        SpnF << "(" ;
+        if(!cd.isUncolored()){
+            if(sct.hasAll)
+                SpnF << cd.cname();
+            else
+                SpnF << cd.tokname();
+            SpnF << "(" ;
+            for (size_t pr = 0; pr < sct.field.size() ; pr++) {
+                const auto cc = MyGspn.colClasses[cd.colorClassIndex[pr]];
+                if(pr>0)SpnF << ", ";
+                if(sct.Flags[pr]==CT_VARIABLE){
+                    SpnF << "b.P->"+MyGspn.colVars[sct.field[pr]].name;
+                    if(sct.hasAll)SpnF << ".c0";
+                } else if(sct.Flags[pr]== CT_SINGLE_COLOR) {
+                    SpnF<<"Color_"<<cc.name<<"_"<<cc.colors[sct.field[pr]].name;
+                } else if(sct.Flags[pr]== CT_ALL)
+                    SpnF << "Color_" << cc.name <<"_All";
+
+                if(sct.varIncrement[pr] != 0)
+                    SpnF << ".next(" << sct.varIncrement[pr] << ")";
+            }
+            SpnF << ") * (" << sct.mult<< "))";
+        }else SpnF << sct.mult<< ")";
+    }
+}
+
+void Gspn_Writer::generateStringVal(arcStore& as){
+    for(auto &inarcit: as){
+        auto &inarc = inarcit.second;
+        stringstream stringval;
+        if (!inarc.isMarkDep) {
+            stringval << inarc.intVal;
+        } else{
+            const auto cd = MyGspn.colDoms[MyGspn.placeStruct[inarcit.first.second].colorDom];
+            writeTok(stringval, inarc.coloredVal, cd);
+        }
+        inarc.stringVal= stringval.str();
+    }
+}
 
 void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 	
@@ -870,7 +918,16 @@ void Gspn_Writer::WriteFile(){
 	
 	string Pref = P.tmpPath;
 	string loc;
-	
+
+    generateStringVal(MyGspn.inArcsStruct);
+    generateStringVal(MyGspn.outArcsStruct);
+    generateStringVal(MyGspn.inhibArcsStruct);
+    for(auto &p: MyGspn.placeStruct){
+        stringstream ss;
+        writeTok(ss, MyGspn.InitialMarking[p.id],MyGspn.colDoms[p.colorDom]);
+        MyGspn.Marking[p.id] = ss.str();
+    }
+
 	//loc = Pref + "../SOURCES/Cosmos/spn.cpp";
 	loc = Pref + "/spn.cpp";
 	//loc= "/Users/barbot/Documents/Cosmos/SOURCES/Cosmos/spn.cpp";

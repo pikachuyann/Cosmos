@@ -50,10 +50,11 @@ enum TransType {
 struct ProbabiliteDistribution {
     std::string name;
     vector<string> Param;
+    ProbabiliteDistribution(){};
+    ProbabiliteDistribution(string s):name("EXPONENTIAL"),Param(1,s){};
 };
-
-
 typedef struct ProbabiliteDistribution Distribution;
+
 
 struct color {
 	string name;
@@ -107,6 +108,9 @@ struct coloredToken {
 	vector<varType> Flags;
 	vector<int> varIncrement;
 	bool hasAll;
+    coloredToken():hasAll(false){};
+    coloredToken(string st):mult(st),hasAll(false){};
+    coloredToken(int i):mult(to_string(i)),hasAll(false){};
 };
 
 struct transition {
@@ -124,6 +128,9 @@ struct transition {
 	set<size_t> varDomain;
 	string guard;
     transition(){ isTraced = true; }
+    transition(size_t i,string n,string p,bool md):id(i),label(n),isTraced(true),
+    type(Timed),dist(p),priority("1"),weight("1"),singleService(true),
+    markingDependant(md),nbServers(1),ageMemory(false){};
 };
 
 struct place {
@@ -195,7 +202,8 @@ struct GspnType {
 	vector< vector<arc> > outArcsStruct;
 	vector< vector<arc> > inhibArcsStruct;*/
 	
-    vector <string> Marking;
+    vector<string> Marking;
+    vector<vector<coloredToken> > InitialMarking;
 	
     map <std::string, int> IntConstant;
     map <std::string, double> RealConstant;
