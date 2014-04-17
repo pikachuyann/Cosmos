@@ -32,6 +32,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../expressionStruct.hpp"
 #include "../parameters.hpp"
 #include "Gspn-parser.hh"
 #include "../Eval/Eval.hpp"
@@ -49,9 +50,9 @@ enum TransType {
 //! a structure for probability distribution
 struct ProbabiliteDistribution {
     std::string name;
-    vector<string> Param;
+    vector<expr> Param;
     ProbabiliteDistribution(){};
-    ProbabiliteDistribution(string s):name("EXPONENTIAL"),Param(1,s){};
+    ProbabiliteDistribution(const expr &s):name("EXPONENTIAL"),Param(1,s){};
 };
 typedef struct ProbabiliteDistribution Distribution;
 
@@ -128,7 +129,7 @@ struct transition {
 	set<size_t> varDomain;
 	string guard;
     transition(){ isTraced = true; }
-    transition(size_t i,string n,string p,bool md):id(i),label(n),isTraced(true),
+    transition(size_t i,const string &n,const expr &p,bool md):id(i),label(n),isTraced(true),
     type(Timed),dist(p),priority("1"),weight("1"),singleService(true),
     markingDependant(md),nbServers(1),ageMemory(false){};
 };

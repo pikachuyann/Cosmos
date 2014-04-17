@@ -8,6 +8,7 @@ Cosmos_SOURCES = \
 	server.cpp server.hpp \
 	HaslFormula.cpp HaslFormula.hpp \
 	Generator.cpp Generator.hpp \
+    expressionStruct.cpp expressionStruct.hpp \
 	Cosmos.cpp
 
 Cosmos_LDADD = ../libgrml/libgrml.la Eval/libeval.la GspnParser/libgspn.la LhaParser/liblha.la

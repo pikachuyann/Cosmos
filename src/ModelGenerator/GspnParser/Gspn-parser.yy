@@ -9,6 +9,7 @@
 # include <string>
 
 #include <fstream>
+#include "../expressionStruct.hpp"
 #include <sstream>
 #include <set>
 #include "../Eval/Eval.hpp"
@@ -321,7 +322,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->label = $2->c_str();
   trans->type = Timed;
   trans->dist.name = distrib;
-  trans->dist.Param = Par;
+  for(auto &s:Par)trans->dist.Param.push_back(expr(s));
   trans->priority = $6;
   trans->weight = $8;
   trans->singleService = true;
@@ -333,8 +334,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   Reader.MyGspn.TransId[*$2]=sz;
   Reader.MyGspn.transitionStruct.push_back(*trans);
 
-  vector<string> v;
-  Par=v;
+  Par.clear();
  }
 | LB str COMMA dist COMMA PRIORITY COMMA WEIGHT COMMA MEMORY RB SEMICOLON {
   if(Reader.MyGspn.TransList.find(*$2)==Reader.MyGspn.TransList.end())
@@ -346,7 +346,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->label = $2->c_str();
   trans->type = Timed;
   trans->dist.name = distrib;
-  trans->dist.Param = Par;
+  for(auto &s:Par)trans->dist.Param.push_back(expr(s));
   trans->priority = $6;
   trans->weight = $8;
   trans->singleService = true;
@@ -357,9 +357,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
 	int sz=Reader.MyGspn.TransId.size();
 	Reader.MyGspn.TransId[*$2]=sz;
   Reader.MyGspn.transitionStruct.push_back(*trans);
-  
-  vector<string> v;
-  Par=v;
+
+  Par.clear();
   AgeMemory=false;
  }
 | LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON {
@@ -386,7 +385,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->label = $2->c_str();
   trans->type = Timed;
   trans->dist.name = "EXPONENTIAL";
-  trans->dist.Param = v;
+  for(auto &s:v)trans->dist.Param.push_back(expr(s));
   trans->priority = $9;
   trans->weight = $11;
   trans->singleService = SingleService;
@@ -427,7 +426,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->label = $2->c_str();
   trans->type = Timed;
   trans->dist.name = "EXPONENTIAL";
-  trans->dist.Param = v;
+  for(auto &s:v)trans->dist.Param.push_back(expr(s));
   trans->priority = $9;
   trans->weight = $11;
   trans->singleService = SingleService;

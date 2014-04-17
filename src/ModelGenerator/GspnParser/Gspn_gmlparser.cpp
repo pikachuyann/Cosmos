@@ -93,22 +93,24 @@ void MyModelHandler::appendSimplify(string &st, string str)
  st->append(")");
  }*/
 
-void MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_order_iterator it)
+expr MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_order_iterator it)
 {
     if((P.verbose-3)>1)cout << *it << endl;
-    
 	if( *it == "function"){
-		eval_expr(is_mark_dep, st, it.begin());
+		return eval_expr(is_mark_dep, st, it.begin());
 	}else if(*it == "expr"){
-		eval_expr(is_mark_dep, st, it.begin());
-	}else if(*it == "intValue"){
-		appendSimplify(st,it.node->first_child->data);
-	}else if(*it == "numValue"){
-		appendSimplify(st,it.node->first_child->data);
+		return eval_expr(is_mark_dep, st, it.begin());
+	}else if(*it == "intValue" || *it == "numValue"){
+        const auto str = simplifyString(it.node->first_child->data);
+        st.append(str);
+        if(*it=="intValue")return expr(stoi(str));
+        else return expr(stod(str));
 	}else if (*it == "name") {
         string var = simplifyString(it.node->first_child->data);
         if(MyGspn->IntConstant.count(var)>0 ||
-           MyGspn->RealConstant.count(var)>0){st.append(var);
+           MyGspn->RealConstant.count(var)>0){
+            st.append(var);
+            return expr(Constant,var);
         }else{
             *is_mark_dep =true;
             st.append("Marking.P->_PL_");
@@ -118,7 +120,10 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_
 				cerr << "Place " << var << "being referenced before being define" << endl;
 				throw gmlioexc;
 			}
-			if(MyGspn->placeStruct[MyGspn->PlacesId[var]].colorDom !=0 )st.append(".card()");
+			if(MyGspn->placeStruct[MyGspn->PlacesId[var]].colorDom !=0 ){
+                st.append(".card()");
+                return expr(PlaceName,var+".card()");
+            }else return expr(PlaceName,var);
         }
 	}else if (	*it == "+"  || *it == "*"
               || *it == "min"   || *it == "max"
@@ -129,7 +134,10 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_
 		if (*it == "min") st.append("min");
 		if (*it == "max") st.append("max");
 		if (*it == "floor" ) st.append("floor");
-		
+
+        expr rhs;
+        expr lhs;
+
 		st.append("(");
 		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 			if(it2!= it.begin()) {
@@ -139,11 +147,22 @@ void MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_
 				else if (*it == "/") { st.append("/ (double) "); }
 				else if (*it == "power") { st.append("^"); }
 				else st.append(",");
-			}
-			eval_expr(is_mark_dep, st, it2);
+                rhs = eval_expr(is_mark_dep, st, it2);
+			}else{
+                lhs = eval_expr(is_mark_dep, st, it2);
+            };
+
 		}
 		st.append(")");
-		;
+
+        if (*it == "+") { return expr(Plus,lhs,rhs); }
+        else if (*it == "*") { return expr(Times,lhs,rhs); }
+        else if (*it == "-") { return expr(Minus,lhs,rhs); }
+        else if (*it == "/") { return expr(Floor,lhs,rhs); }
+        else if (*it == "power") { return expr(Pow,lhs,rhs); }
+        else if (*it == "ceil") { return expr(Ceil,lhs,rhs); }
+        else { return expr(Floor,lhs,rhs); }
+
 	} else {
         cout << "failevaltree" <<endl;
         throw(gmlioexc);
@@ -735,8 +754,8 @@ void MyModelHandler::on_read_node(const XmlString& id,
                                 if (*it3 == "number") {
                                     //number = atoi((*leaf).c_str());
                                 } else if (*it3 == "expr") {
-                                    eval_expr(&trans.markingDependant, value, it3.begin() );
-                                    trans.dist.Param.push_back(value);
+                                    expr pe = eval_expr(&trans.markingDependant, value, it3.begin() );
+                                    trans.dist.Param.push_back(pe);
                                 } else throw gmlioexc;
                             }
                         } else throw gmlioexc;
@@ -811,7 +830,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 			if(trans.dist.name == "" ){
 				trans.type=unTimed;
 				trans.dist.name = "EXPONENTIAL";
-				trans.dist.Param.push_back("0.0");
+				trans.dist.Param.push_back(expr(0.0));
 				if((P.verbose-3)>=0){
 					cout << "[Warning] Transition " << trans.label;
 					cout << " have no distribution.";
@@ -846,7 +865,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
         if(P.RareEvent){
 			if(P.BoundedContinuous || P.BoundedRE>0){
 				//add a transition for self-loop due to uniformization
-				transition trans(MyGspn->transitionStruct.size(),"selfloop","0",true);
+				transition trans(MyGspn->transitionStruct.size(),"selfloop",expr(0.0),true);
 				MyGspn->transitionStruct.push_back(trans);
 				
 				MyGspn->TransId["selfloop"]=MyGspn->tr;
@@ -866,7 +885,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 			
 			
             //Add a transition
-            transition trans(MyGspn->transitionStruct.size(),"Puittrans","0",true);
+            transition trans(MyGspn->transitionStruct.size(),"Puittrans",expr(0.0),true);
 			MyGspn->transitionStruct.push_back(trans);
 			
             MyGspn->TransList.insert(trans.label);
