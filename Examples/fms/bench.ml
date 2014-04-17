@@ -5,7 +5,7 @@ let lt = [ 10 ; 50 ; (*50;*) 100 ; (*200;*) 400; (*800;*) 1600; 6400; (*12800;*)
 let lt2 = [ (*10 ;*) 50 ; (*50;*) 100 ; (*200;*) 400; (*800;*) 1600; 6400; (*12800;*) 25600; 102400 ]
 let lp = [ "Policy1.grml"; "Policy2.grml" ]
 let prop = "rho1.grml"
-let commonopt = "--width 0.05 --batch 10 -v 2 --njob 8 "
+let commonopt = "--width 0.01 --batch 10 -v 2 --njob 10 "
 
 let mu10 = -0.68305
 let sigma10 = 0.83255
@@ -24,6 +24,7 @@ let iterexpfun l name p prop opt =
 let iterexp = iterexpfun lt
 let iterexp2= iterexpfun lt2
 
+(*
 let _ = List.iter (fun p ->
   iterexp "Table1" p "rho1.grml" (commonopt^" --const 'l1=3,l2=3,failrate=0'") )
   lp
@@ -67,12 +68,18 @@ let _ =
 (* phi2(Asym) S1 *)
 let _ =
   iterexp "Table3phi2ASym1_5" "Policy1.grml" "rho2.grml" (commonopt^(Printf.sprintf " --const 'l1=1,l2=5,failrate=0,mu1=%f,sigma1=%f,mu2=%f,sigma2=%f'" mu10 sigma10 mu20 sigma20))
-
+*)
 
 let _ = List.iter (fun p ->
   iterexp "Table4_fault_" p "rho2.grml" (commonopt^" --const 'l1=3,l2=3,failrate=0.016' --width 0.1") )
   lp
 
+
 let _ = List.iter (fun p ->
-  iterexp2 "Table5_fault_" p "rho3.grml" (commonopt^" --const 'l1=3,l2=3,failrate=0.016' --width 0.1") )
+  iterexp2 "Table5_nofault_" p "rho3.grml" (commonopt^" --const 'l1=3,l2=3,failrate=0.0' ") )
   lp
+
+let _ = List.iter (fun p ->
+  iterexp2 "Table5_fault_" p "rho3.grml" (commonopt^" --const 'l1=3,l2=3,failrate=0.016' ") )
+  lp
+
