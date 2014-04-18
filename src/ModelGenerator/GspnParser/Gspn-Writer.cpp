@@ -374,6 +374,7 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 						SpnF << "\t{"<< endl;
 						SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 						SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
+                        assert(0<= pivotplace && pivotplace < MyGspn.pl);
                         const auto tok = MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace);
                         assert(tok.coloredVal.size()>0 && tok.coloredVal[0].field.size());
 						SpnF << "\t\tbtotal += " << ((tok.coloredVal[0].varIncrement[0]
