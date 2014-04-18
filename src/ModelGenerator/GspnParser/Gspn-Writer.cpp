@@ -203,6 +203,7 @@ void Gspn_Writer::writeTok(ostream &SpnF,vector<coloredToken> &ct,const colorDom
         return;
     }
     int count = 0;
+    SpnF << "(";
     for(auto &sct : ct){
         if (count>0)SpnF << " + ";
         count++;
@@ -231,6 +232,7 @@ void Gspn_Writer::writeTok(ostream &SpnF,vector<coloredToken> &ct,const colorDom
             SpnF << ") * (" << sct.mult<< "))";
         }else SpnF << sct.mult<< ")";
     }
+    SpnF << ")";
 }
 
 void Gspn_Writer::generateStringVal(arcStore& as){
@@ -336,7 +338,7 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 				if(!varList.empty()){
 					
 					size_t nbp = 0;
-					size_t pivotplace;
+					size_t pivotplace= MyGspn.pl;
 					bool fallback = false;
 					for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
 						//Check that that there is at least one variable on the two arcs
@@ -374,7 +376,7 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 						SpnF << "\t{"<< endl;
 						SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 						SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
-                        assert(0<= pivotplace && pivotplace < MyGspn.pl);
+                        assert(pivotplace < MyGspn.pl);
                         const auto tok = MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace);
                         assert(tok.coloredVal.size()>0 && tok.coloredVal[0].field.size());
 						SpnF << "\t\tbtotal += " << ((tok.coloredVal[0].varIncrement[0]

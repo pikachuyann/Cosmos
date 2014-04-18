@@ -23,7 +23,7 @@
         </attribute>
       </attribute>
       <attribute name="circular">
-        false
+        true
       </attribute>
     </attribute>
     <attribute name="classDeclaration">
@@ -41,7 +41,7 @@
         </attribute>
       </attribute>
       <attribute name="circular">
-        false
+        true
       </attribute>
     </attribute>
     <attribute name="domainDeclaration">
