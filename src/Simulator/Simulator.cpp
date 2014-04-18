@@ -29,6 +29,8 @@
 #include <math.h>
 #include <float.h>
 #include <time.h>
+#include <ratio>
+#include <chrono>
 
 #include "Simulator.hpp"
 #include "marking.hpp"
@@ -433,7 +435,7 @@ void Simulator::SimulateSinglePath() {
     
 	bool continueb = true;
 	lastSampled = -sampleTrace;
-	while ((!EQ->isEmpty()) && continueb ) {
+	while (continueb) {
         //cerr << "continue path"<< endl;
 		if(logtrace.is_open())
 			if((A.CurrentTime - lastSampled) >= sampleTrace){
@@ -458,6 +460,17 @@ void Simulator::SimulateSinglePath() {
 		
 		continueb = SimulateOneStep();
 	}
+    if(verbose>3){
+        //Print marking and location of the automata
+        //Usefull to track a simulation
+        N.Marking.printHeader(cerr);
+        A.printHeader(cerr);
+        cerr << endl;
+        N.Marking.print(cerr);
+        A.printState(cerr);
+        cerr << endl;
+        if(verbose>4)EQ->view(N.Transition);
+    }
     //cerr << "finish path"<< endl;
 }
 
@@ -503,8 +516,11 @@ void Simulator::getParams(size_t Id, const abstractBinding& b){
 }
 
 BatchR Simulator::RunBatch(){
+    auto starttime = chrono::steady_clock::now();
+    auto currenttime = chrono::steady_clock::now();
+    chrono::duration<double> timesize(0.03);
 	BatchR batchResult(A.FormulaVal.size());
-	while (batchResult.I < BatchSize) {
+	while ((batchResult.I < BatchSize && BatchSize!=0) || (currenttime-starttime < timesize && BatchSize==0) ) {
 		reset();
 		SimulateSinglePath();
         batchResult.addSim(Result);
@@ -517,6 +533,7 @@ BatchR Simulator::RunBatch(){
 			}
 			logvalue << endl;
 		}
+        currenttime=chrono::steady_clock::now();
     }
 	return batchResult;
 }

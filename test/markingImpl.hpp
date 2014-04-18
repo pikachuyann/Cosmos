@@ -2,17 +2,16 @@
 #define    _MarkingImpl_HPP
 #include <string.h>
 enum site_Color_Classe {
-	Color_site_s1,
-	Color_site_s2,
-	Color_site_s3,
-	Color_site_s4,
+	Color_site_site_IC_1,
+	Color_site_site_IC_2,
 	Color_site_Total,
 	Color_site_All
 };
 extern const char *Color_site_names[];
 enum file_Color_Classe {
-	Color_file_f1,
-	Color_file_f2,
+	Color_file_file_IC_1,
+	Color_file_file_IC_2,
+	Color_file_file_IC_3,
 	Color_file_Total,
 	Color_file_All
 };
@@ -347,7 +346,8 @@ struct SF_Domain {
 };
 SF_Domain operator + (const SF_Token& t1 ,const SF_Token& t2 )
 
-;struct abstractBindingImpl {
+;class abstractBindingImpl {
+public:
 	site_Token s;
 	file_Token f;
 };

@@ -100,12 +100,12 @@ void unfolder::export_transition_grml(ofstream &fout, const transition &t){
             fout << "</attribute>" << endl;
             for(auto &sparam : t.dist.Param){
                 fout << "\t\t\t<attribute name=\"param\"><attribute name=\"expr\">";
-                if(Evaluate_unfold.parse(sparam)){
+                if(!sparam.is_concrete()){
                     fout << "<attribute name=\"numValue\">"<< endl;
-                    fout << "\t\t\t\t" << MyGspn.RealConstant.find(sparam)->second << endl;
+                    fout << "\t\t\t\t" << sparam/*MyGspn.RealConstant.find(sparam)->second*/ << endl;
                 } else {
                     fout << "<attribute name=\"numValue\">" << endl;
-                    fout << "\t\t\t\t" << Evaluate_unfold.RealResult << endl;
+                    fout << "\t\t\t\t" << sparam << endl;
                 }
                 fout << "\t\t\t</attribute></attribute></attribute>"<< endl;
             }

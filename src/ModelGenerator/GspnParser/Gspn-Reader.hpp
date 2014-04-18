@@ -32,6 +32,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../expressionStruct.hpp"
 #include "../parameters.hpp"
 #include "Gspn-parser.hh"
 #include "../Eval/Eval.hpp"
@@ -49,11 +50,12 @@ enum TransType {
 //! a structure for probability distribution
 struct ProbabiliteDistribution {
     std::string name;
-    vector<string> Param;
+    vector<expr> Param;
+    ProbabiliteDistribution(){};
+    ProbabiliteDistribution(const expr &s):name("EXPONENTIAL"),Param(1,s){};
 };
-
-
 typedef struct ProbabiliteDistribution Distribution;
+
 
 struct color {
 	string name;
@@ -107,6 +109,9 @@ struct coloredToken {
 	vector<varType> Flags;
 	vector<int> varIncrement;
 	bool hasAll;
+    coloredToken():hasAll(false){};
+    coloredToken(string st):mult(st),hasAll(false){};
+    coloredToken(int i):mult(to_string(i)),hasAll(false){};
 };
 
 struct transition {
@@ -115,8 +120,8 @@ struct transition {
     bool isTraced;
 	TransType type;
 	Distribution dist;
-	string priority;
-	string weight;
+	expr priority;
+	expr weight;
 	bool singleService;
 	bool markingDependant;
 	int nbServers;
@@ -124,6 +129,9 @@ struct transition {
 	set<size_t> varDomain;
 	string guard;
     transition(){ isTraced = true; }
+    transition(size_t i,const string &n,const expr &p,bool md):id(i),label(n),isTraced(true),
+    type(Timed),dist(p),priority(expr(1)),weight(expr(1.0)),singleService(true),
+    markingDependant(md),nbServers(1),ageMemory(false){};
 };
 
 struct place {
@@ -150,6 +158,20 @@ struct arc {
 	vector<coloredToken> coloredVal;
 };
 
+
+struct classcomp {
+    bool operator() (const pair<size_t,size_t> &lhs,const pair<size_t,size_t> &rhs) const
+    {
+    if(lhs.first == rhs.first){
+        return lhs.second< rhs.second;
+    }
+    else return lhs.first<rhs.first;
+    }
+};
+
+
+typedef map< pair<size_t,size_t>, arc, classcomp>  arcStore;
+
 struct GspnType {
     size_t tr;
     size_t pl;
@@ -166,19 +188,23 @@ struct GspnType {
 	vector<transition> transitionStruct;
 	vector<place> placeStruct;
 
-    inline size_t arckey(size_t t,size_t p)const { return (t + (tr+1)*p); };
-    inline const arc access(unordered_map<size_t, arc> &h,size_t t, size_t p)const{
+    inline pair<size_t, size_t> arckey(size_t t,size_t p)const { return make_pair(t,p); };
+    inline size_t get_t(pair<size_t, size_t> key)const {return key.first;};
+    inline size_t get_p(pair<size_t, size_t> key)const {return key.second;};
+    inline const arc access(const arcStore &h,size_t t, size_t p)const{
+        static const arc emptyarc;
         auto a = h.find(arckey(t,p));
-        if(a == h.end()){return arc();}else return a->second;
+        if(a == h.end()){return emptyarc;}else return a->second;
     };
-    unordered_map<size_t, arc> inArcsStruct;
-    unordered_map<size_t, arc> outArcsStruct;
-    unordered_map<size_t, arc> inhibArcsStruct;
+    arcStore inArcsStruct;
+    arcStore outArcsStruct;
+    arcStore inhibArcsStruct;
     /*vector< vector<arc> > inArcsStruct;
 	vector< vector<arc> > outArcsStruct;
 	vector< vector<arc> > inhibArcsStruct;*/
 	
-    vector <string> Marking;
+    vector<string> Marking;
+    vector<vector<coloredToken> > InitialMarking;
 	
     map <std::string, int> IntConstant;
     map <std::string, double> RealConstant;

@@ -15,7 +15,7 @@ let uni f =
 exception CmdFail of int
 
 (*let cosmos_path = (Sys.getcwd ())^"/../../bin/Cosmos"*)
-let cosmos_path = "Cosmos"
+let cosmos_path = "../../bin/Cosmos"
 
 let cosmos_options = ("--level 0.9999"^ ( 
   try
@@ -204,8 +204,8 @@ let test_cosmosBash testname model prop opt v =
 
   with CmdFail(ret) ->
     print_color (sprintf "testFailed: %s Test %s fail: Cosmos return value:%i\n" testname testname ret) 31
-  | _ ->
-    print_color (sprintf "testFailed: %s Test %s fail for unknown reason\n" testname testname) 31
+    | x ->
+      print_color (sprintf "testFailed: %s Test %s fail due to uncaught exception: %s\n" testname testname (Printexc.to_string x)) 31
 
 
 let test_coverage job name v o n =
@@ -242,7 +242,7 @@ let execCosmosLog_free resultFile csvFile (name,model,prop,option,prefix) =
     print_result csvFile "," name r;
     flush resultFile;
     flush csvFile;
-  with _->();;
+  with x ->print_endline (Printexc.to_string x);;
 
 let execSavedCosmos_free prefix resultFile csvfile (name,model,prop,option)  =
   execCosmosLog_free resultFile csvfile (name,model,prop,option,prefix)

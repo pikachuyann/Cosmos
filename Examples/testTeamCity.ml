@@ -24,7 +24,7 @@ let test_cosmosTeamCity testname model prop opt v =
     printf "##teamcity[testFailed name='%s' message='Test %s fail: Cosmos return value:%i']\n" testname testname ret;
     printf "##teamcity[testFinished name='%s']\n" testname
   | x ->
-    printf "##teamcity[testFailed name='%s' message='Test %s fail for unknown reason']\n" testname testname;
+    printf "##teamcity[testFailed name='%s' message='Test %s fail due to exception:%s']\n" testname testname (Printexc.to_string x);
     printf "##teamcity[testFinished name='%s']\n" testname
 
 let test_cosmosBash testname model prop opt v =
@@ -39,9 +39,9 @@ let test_cosmosBash testname model prop opt v =
 
   with CmdFail(ret) ->
     print_color (sprintf "testFailed: %s Test %s fail: Cosmos return value:%i\n" testname testname ret) 31
-  | _ ->
-    print_color (sprintf "testFailed: %s Test %s fail for unknown reason\n" testname testname) 31
-   
+    | x ->
+      print_color (sprintf "testFailed: %s Test %s fail due to exception:%s\n" testname testname (Printexc.to_string x)) 31
+ 
 
 let test_cosmos t m p o v =
   if !teamCity then test_cosmosTeamCity t m p o v

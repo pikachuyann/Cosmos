@@ -43,6 +43,8 @@ public:
 private:
 	
 	int varMultiplier(size_t var);
+    void writeTok(ostream &SpnF, vector<coloredToken>&,const colorDomain&);
+    void generateStringVal(arcStore&);
 	void writeMarkingClasse(ofstream &, ofstream &, parameters &);
 	void writeEnabledDisabled(ofstream &);
 	void writeEnabledDisabledBinding(ofstream &);

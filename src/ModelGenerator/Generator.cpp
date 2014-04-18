@@ -91,18 +91,17 @@ bool ParseBuild() {
 				gReader.MyGspn.transitionStruct[t].markingDependant = true;
 				for (size_t p=0; p<gReader.MyGspn.pl; p++) {
 					if(!gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).isEmpty){
-						stringstream diststream;
-						diststream << trDistr->Param[0] << " * (";
-						if(gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).isMarkDep || gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).intVal>1)
-							diststream << "pow(";
-						diststream << "Marking.P->_PL_" << gReader.MyGspn.placeStruct[p].name;
-						if(gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).isMarkDep){
-							diststream << ","<<gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).stringVal << ")";
+                        expr exponent;
+                        if(gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).isMarkDep){
+							exponent = expr(gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).stringVal);
 						}else{
-							if(gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).intVal>1)diststream << ","<<gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).intVal <<")";
+							exponent = expr((int)gReader.MyGspn.access(gReader.MyGspn.inArcsStruct,t,p).intVal);
 						}
-						diststream << ")";
-						trDistr->Param[0]= diststream.str();
+                        expr pl = expr(PlaceName,gReader.MyGspn.placeStruct[p].name);
+                        expr mult = expr(Pow,pl,exponent);
+                        expr dist = expr(Times,trDistr->Param[0],mult);
+
+						trDistr->Param[0]= dist;
 					}
 				}
 			}

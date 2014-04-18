@@ -16,8 +16,8 @@ let _ =
       (Printf.sprintf "unfoldingCli%iPos%i" i 4),
       ("ClientServerStoch3PS.grml"),
       (Printf.sprintf "--const 'NbClient=%i,NbPosition=%i' --unfold clientserverunfoldCli%iPos%i.grml" i 4 i 4));
-    add_option (
+   (* add_option (
       (Printf.sprintf "dataunfoldCli%iPos%i" i 4),
       (Printf.sprintf "clientserverunfoldCli%iPos%i.grml" i 4),
-      (Printf.sprintf "--trace-place 'ReadyOutput_client_IC_1'"));
+      (Printf.sprintf "--trace-place 'ReadyOutput_client_IC_1'"));*)
   done

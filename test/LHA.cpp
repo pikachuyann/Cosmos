@@ -6,6 +6,8 @@ using namespace std;
 #include <math.h>
 #include <float.h>
 #include "LHA.hpp"
+    const double N=2;
+    const double P=3;
     const double Tinit=100;
     const double maxsndtime=100;
     const double threshold=100;
@@ -34,9 +36,9 @@ const int LHA::ActionEdgesAr[] = {
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,3 ,4 ,4 ,4 ,4 ,5 ,4 ,4 ,4 ,6 ,6 ,8 ,6 ,6 ,6 ,6 ,6 ,10 ,11 ,11 ,11 ,11 ,11 ,11 ,11 ,15 ,15 ,15 ,14 ,15 ,15 ,15 ,15 ,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,7 ,-1,-1,-1,-1,-1,9 ,-1,-1,-1,-1,-1,12 ,12 ,12 ,12 ,12 ,12 ,12 ,12 ,-1,-1,-1,16 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,13 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,};
-LHA::LHA():NbLoc(7),NbVar(5),NbTrans(8){
+LHA::LHA():NbLoc(7),FinalLoc(7,false),NbTrans(8),NbVar(5){
     InitLoc.insert(0);
-    FinalLoc.insert(6);
+    FinalLoc[6]=true;
     Edge= vector<LhaEdge>(17);
     Edge[0] = LhaEdge(0, 0, 0,Synch);
     Edge[1] = LhaEdge(1, 0, 1,Auto);

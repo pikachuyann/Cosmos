@@ -27,6 +27,8 @@
 #include "Gspn-Writer.hpp"
 #include "../casesWriter.hpp"
 
+#include <algorithm>
+
 Gspn_Writer::Gspn_Writer(GspnType& mgspn,parameters& Q):MyGspn(mgspn),P(Q){
 	
 }
@@ -39,45 +41,37 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		set<int> S;
 		set<int> Sinhib;
 		set<int> INt1;
-		for (size_t p = 0; p < MyGspn.pl; p++) {
-			if (!MyGspn.access(MyGspn.inArcsStruct,t1,p).isEmpty) {
-				INt1.insert(p);
-			}
-		}
-		for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
+        for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t1, 0));
+            inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t1; ++inarc )
+            if(!inarc->second.isEmpty)INt1.insert(inarc->first.second);
+
+        for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
 			if (t1 != t2) {
 				size_t size = INt1.size();
 				set<int> INt1t2 = INt1;
-				bool B = true;
-				size_t p = 0;
-				while (B && p < MyGspn.pl) {
-					if (!MyGspn.access(MyGspn.inArcsStruct,t2,p).isEmpty) {
-						INt1t2.insert(p);
-						if (size == INt1t2.size()) {
-							B = false;
+
+                for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
+                    inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t2; ++inarc)
+                    if( !inarc->second.isEmpty){
+                        INt1t2.insert(inarc->first.second);
+                        if (size == INt1t2.size()) {
 							S.insert(t2);
+                            break;
 						} else size = INt1t2.size();
-					}
-					p++;
-				}
+                    }
 				
 				size = INt1.size();
 				set<int> INt1t2Inhib = INt1;
-				B = true;
-				p = 0;
-				while (B && p < MyGspn.pl) {
-					if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p).isEmpty) {
-						INt1t2Inhib.insert(p);
-						if (size == INt1t2Inhib.size()) {
-							B = false;
+                for(auto inhibarc= MyGspn.inhibArcsStruct.lower_bound(make_pair(t2, 0));
+                    inhibarc != MyGspn.inhibArcsStruct.end() && inhibarc->first.first==t2; ++inhibarc)
+                    if(!inhibarc->second.isEmpty){
+                        INt1t2Inhib.insert(inhibarc->first.second );
+                        if (size == INt1t2Inhib.size()) {
 							Sinhib.insert(t2);
+                            break;
 						} else size = INt1t2Inhib.size();
-					}
-					p++;
-				}
-				
+                    }
 			}
-		
 		
 		PossiblyDisabled.push_back(S);
 		PossiblyEnabled.push_back(Sinhib);
@@ -86,40 +80,35 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		set<int> S = PossiblyEnabled[t1];
 		set<int> Sinhib = PossiblyDisabled[t1];
 		set<int> OUTt1;
-		for (size_t p = 0; p < MyGspn.pl; p++)
-			if (!MyGspn.access(MyGspn.outArcsStruct,t1,p).isEmpty)
-				OUTt1.insert(p);
-		for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
+        for(auto outarc= MyGspn.outArcsStruct.lower_bound(make_pair(t1, 0));
+            outarc != MyGspn.outArcsStruct.end() && outarc->first.first==t1; ++outarc )
+            if(!outarc->second.isEmpty)OUTt1.insert(outarc->first.second);
+
+        for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
 			if (t1 != t2) {
 				size_t size = OUTt1.size();
 				set<int> OUTt1INt2 = OUTt1;
-				bool B = true;
-				size_t p = 0;
-				while (B && p < MyGspn.pl) {
-					if (!MyGspn.access(MyGspn.inArcsStruct,t2,p).isEmpty) {
-						OUTt1INt2.insert(p);
-						if (size == OUTt1INt2.size()) {
-							B = false;
+
+                for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
+                    inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t2; ++inarc)
+                    if( !inarc->second.isEmpty){
+                        OUTt1INt2.insert(inarc->first.second);
+                        if (size == OUTt1INt2.size()) {
 							S.insert(t2);
+                            break;
 						} else size = OUTt1INt2.size();
-					}
-					p++;
-				}
+                    }
 				size = OUTt1.size();
 				set<int> OUTt1t2Inhib = OUTt1;
-				B = true;
-				p = 0;
-				while (B && p < MyGspn.pl) {
-					if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p).isEmpty) {
-						OUTt1t2Inhib.insert(p);
-						if (size == OUTt1t2Inhib.size()) {
-							B = false;
+                for(auto inhibarc= MyGspn.inhibArcsStruct.lower_bound(make_pair(t2, 0));
+                    inhibarc != MyGspn.inhibArcsStruct.end() && inhibarc->first.first==t2; ++inhibarc)
+                    if(!inhibarc->second.isEmpty){
+                        OUTt1t2Inhib.insert(inhibarc->first.second );
+                        if (size == OUTt1t2Inhib.size()) {
 							Sinhib.insert(t2);
+                            break;
 						} else size = OUTt1t2Inhib.size();
-					}
-					p++;
-				}
-				
+                    }
 			}
 		PossiblyEnabled[t1] = S;
 		PossiblyDisabled[t1] = Sinhib;
@@ -207,6 +196,55 @@ void printset(set<T1> s1){
 	cerr << "}";
 }
 
+void Gspn_Writer::writeTok(ostream &SpnF,vector<coloredToken> &ct,const colorDomain &cd){
+    if(ct.size()==1 && ct[0].field.size()==0){
+        SpnF << ct[0].mult;
+        return;
+    }
+    int count = 0;
+    for(auto &sct : ct){
+        if (count>0)SpnF << " + ";
+        count++;
+        SpnF << "(" ;
+        if(!cd.isUncolored()){
+            if(sct.hasAll)
+                SpnF << cd.cname();
+            else
+                SpnF << cd.tokname();
+            SpnF << "(" ;
+            for (size_t pr = 0; pr < sct.field.size() ; pr++) {
+                const auto cc = MyGspn.colClasses[cd.colorClassIndex[pr]];
+                if(pr>0)SpnF << ", ";
+                if(sct.Flags[pr]==CT_VARIABLE){
+                    SpnF << "b.P->"+MyGspn.colVars[sct.field[pr]].name;
+                    if(sct.hasAll)SpnF << ".c0";
+                } else if(sct.Flags[pr]== CT_SINGLE_COLOR) {
+                    SpnF<<"Color_"<<cc.name<<"_"<<cc.colors[sct.field[pr]].name;
+                } else if(sct.Flags[pr]== CT_ALL)
+                    //SpnF << 1;
+                    SpnF << "Color_" << cc.name <<"_All";
+
+                if(sct.varIncrement[pr] != 0)
+                    SpnF << ".next(" << sct.varIncrement[pr] << ")";
+            }
+            SpnF << ") * (" << sct.mult<< "))";
+        }else SpnF << sct.mult<< ")";
+    }
+}
+
+void Gspn_Writer::generateStringVal(arcStore& as){
+    for(auto &inarcit: as){
+        auto &inarc = inarcit.second;
+        stringstream stringval;
+        if (!inarc.isMarkDep) {
+            stringval << inarc.intVal;
+        } else{
+            const auto cd = MyGspn.colDoms[MyGspn.placeStruct[inarcit.first.second].colorDom];
+            writeTok(stringval, inarc.coloredVal, cd);
+        }
+        inarc.stringVal= stringval.str();
+    }
+}
 
 void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 	
@@ -642,7 +680,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		SpnCppFile << "}\n";
 	}
 	
-	header << "struct abstractBindingImpl {\n";
+	header << "class abstractBindingImpl {\npublic:\n";
 	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
 		header << "\t" << MyGspn.colDoms[colvar->type].tokname() << " " << colvar->name << ";\n";
 	}
@@ -881,7 +919,16 @@ void Gspn_Writer::WriteFile(){
 	
 	string Pref = P.tmpPath;
 	string loc;
-	
+
+    generateStringVal(MyGspn.inArcsStruct);
+    generateStringVal(MyGspn.outArcsStruct);
+    generateStringVal(MyGspn.inhibArcsStruct);
+    for(auto &p: MyGspn.placeStruct){
+        stringstream ss;
+        writeTok(ss, MyGspn.InitialMarking[p.id],MyGspn.colDoms[p.colorDom]);
+        MyGspn.Marking[p.id] = ss.str();
+    }
+
 	//loc = Pref + "../SOURCES/Cosmos/spn.cpp";
 	loc = Pref + "/spn.cpp";
 	//loc= "/Users/barbot/Documents/Cosmos/SOURCES/Cosmos/spn.cpp";
@@ -939,9 +986,9 @@ void Gspn_Writer::WriteFile(){
 	SpnCppFile << "SPN::SPN():" << endl;
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
 	SpnCppFile << "tr(" << MyGspn.tr << "), ";
-	SpnCppFile << "Place("<< MyGspn.pl << "),";
 	SpnCppFile << "Transition(" << MyGspn.tr << "),";
-	
+    SpnCppFile << "Place("<< MyGspn.pl << "),";
+
 	SpnCppFile << "ParamDistr(3), TransitionConditions(" << MyGspn.tr <<",0){" << endl;
 	SpnCppFile << "    Path =\"" << P.PathGspn << "\";" << endl;
 	

@@ -1,5 +1,7 @@
 #include "spn.hpp"
 #include <iomanip>
+	const double N=2;
+	const double P=3;
 	const int _nb_Place_RecBuff=0;
 	const int _nb_Place_all_active=1;
 	const int _nb_Place_Active=2;
@@ -171,14 +173,14 @@ int abstractBinding::idTotal()const{
 	 return P->s.c0 + Color_site_Total *(P->f.c0 + Color_file_Total *(0));
 }
 const char *Color_site_names[Color_site_Total] = {
-"s1","s2","s3","s4",
+"site_IC_1","site_IC_2",
 };
 const char *Color_file_names[Color_file_Total] = {
-"f1","f2",
+"file_IC_1","file_IC_2","file_IC_3",
 };
 SPN::SPN():
-pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
-    Path ="database.grml";
+pl(11), tr(8), Transition(8),Place(11),ParamDistr(3), TransitionConditions(8,0){
+    Path ="databasecNfP.grml";
 	PossiblyEnabled = vector< set<int> >(8);
 	PossiblyEnabled[0].insert( 6 );
 	PossiblyEnabled[1].insert( 3 );
@@ -196,7 +198,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 
 	FreeMarkDepT = vector< set<int> >(8);
 
-	Transition[0] = _trans(0,Timed,EXPONENTIAL,0,8);
+	Transition[0] = _trans(0,Timed,EXPONENTIAL,0,6);
 	{abstractBinding bl = Transition[0].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -205,7 +207,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[0].bindingLinkTable[bl.idTotal()]= Transition[0].bindingList.size()-1; 
 		}
 	}}
-	Transition[1] = _trans(1,Timed,EXPONENTIAL,0,8);
+	Transition[1] = _trans(1,Timed,EXPONENTIAL,0,6);
 	{abstractBinding bl = Transition[1].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -214,7 +216,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[1].bindingLinkTable[bl.idTotal()]= Transition[1].bindingList.size()-1; 
 		}
 	}}
-	Transition[2] = _trans(2,Timed,EXPONENTIAL,0,8);
+	Transition[2] = _trans(2,Timed,EXPONENTIAL,0,6);
 	{abstractBinding bl = Transition[2].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -223,7 +225,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[2].bindingLinkTable[bl.idTotal()]= Transition[2].bindingList.size()-1; 
 		}
 	}}
-	Transition[3] = _trans(3,Timed,DETERMINISTIC,0,8);
+	Transition[3] = _trans(3,Timed,DETERMINISTIC,0,6);
 	{abstractBinding bl = Transition[3].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -232,7 +234,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[3].bindingLinkTable[bl.idTotal()]= Transition[3].bindingList.size()-1; 
 		}
 	}}
-	Transition[4] = _trans(4,Timed,DETERMINISTIC,0,8);
+	Transition[4] = _trans(4,Timed,DETERMINISTIC,0,6);
 	{abstractBinding bl = Transition[4].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -241,7 +243,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[4].bindingLinkTable[bl.idTotal()]= Transition[4].bindingList.size()-1; 
 		}
 	}}
-	Transition[5] = _trans(5,Timed,EXPONENTIAL,0,8);
+	Transition[5] = _trans(5,Timed,EXPONENTIAL,0,6);
 	{abstractBinding bl = Transition[5].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -250,7 +252,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[5].bindingLinkTable[bl.idTotal()]= Transition[5].bindingList.size()-1; 
 		}
 	}}
-	Transition[6] = _trans(6,Timed,DETERMINISTIC,0,8);
+	Transition[6] = _trans(6,Timed,DETERMINISTIC,0,6);
 	{abstractBinding bl = Transition[6].bindingList[0];
 	while(bl.next()){
 		if( true ){
@@ -259,7 +261,7 @@ pl(11), tr(8), Place(11),Transition(8),ParamDistr(3), TransitionConditions(8,0){
 			Transition[6].bindingLinkTable[bl.idTotal()]= Transition[6].bindingList.size()-1; 
 		}
 	}}
-	Transition[7] = _trans(7,Timed,EXPONENTIAL,0,8);
+	Transition[7] = _trans(7,Timed,EXPONENTIAL,0,6);
 	{abstractBinding bl = Transition[7].bindingList[0];
 	while(bl.next()){
 		if( true ){

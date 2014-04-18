@@ -17,6 +17,8 @@ EXTRA_DIST = Examples/Makefile Examples/testTeamCity.ml\
 	Examples/testDistribution/testlognormal.grml \
 	Examples/testDistribution/testtriangle.grml \
 	Examples/testDistribution/testuniform.grml \
+    Examples/testDistribution/testagememory.grml \
+    Examples/testDistribution/testagememory.lha \
 	Examples/Workflow-Net/test.ml \
 	Examples/Workflow-Net/workflow-out-1-imm.gspn \
 	Examples/Workflow-Net/workflow-out-1-imm.lha \
@@ -61,8 +63,7 @@ EXTRA_DIST = Examples/Makefile Examples/testTeamCity.ml\
 	Examples/RareEventU/tandem.lha \
 	Examples/RareEventU/tandem_agr.gspn \
 	Examples/RareEventU/tandem_agr.lha \
-	Examples/RareEventU/test.ml \
-	prism
+	Examples/RareEventU/test.ml
 
 
 AM_LDFLAGS = -lrt $(PTHREAD_LIBS)
