@@ -120,8 +120,8 @@ struct transition {
     bool isTraced;
 	TransType type;
 	Distribution dist;
-	string priority;
-	string weight;
+	expr priority;
+	expr weight;
 	bool singleService;
 	bool markingDependant;
 	int nbServers;
@@ -130,7 +130,7 @@ struct transition {
 	string guard;
     transition(){ isTraced = true; }
     transition(size_t i,const string &n,const expr &p,bool md):id(i),label(n),isTraced(true),
-    type(Timed),dist(p),priority("1"),weight("1"),singleService(true),
+    type(Timed),dist(p),priority(expr(1)),weight(expr(1.0)),singleService(true),
     markingDependant(md),nbServers(1),ageMemory(false){};
 };
 

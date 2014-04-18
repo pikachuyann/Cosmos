@@ -715,8 +715,8 @@ void MyModelHandler::on_read_node(const XmlString& id,
 			trans.id = MyGspn->transitionStruct.size();
 			trans.label = id;
 			trans.type = Timed;
-			trans.priority = "1";
-			trans.weight = "1";
+			trans.priority = expr(1);
+			trans.weight = expr(1.0);
 			trans.singleService = true;
 			trans.markingDependant = false;
 			trans.ageMemory = false;
@@ -800,9 +800,9 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     bool markingdependant=false;
                     string value;
                     if ((*(++(it->second.begin()))) == "expr") {
-                        eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
+                        expr e =eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
                         if(markingdependant==false) {
-                            trans.weight = value;
+                            trans.weight = e;
                         }else {
                             cout<<"Weight is not marking dependent "<<endl;
                         }
@@ -813,9 +813,9 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     bool markingdependant=false;
                     string value;
                     if ((*(++(it->second.begin()))) == "expr") {
-                        eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
+                        expr e =eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
                         if(markingdependant==false) {
-                            trans.priority = value;
+                            trans.priority = e;
                         }else {
                             cout<<"Priority is not marking dependent "<<endl;
                         }

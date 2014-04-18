@@ -221,6 +221,7 @@ void Gspn_Writer::writeTok(ostream &SpnF,vector<coloredToken> &ct,const colorDom
                 } else if(sct.Flags[pr]== CT_SINGLE_COLOR) {
                     SpnF<<"Color_"<<cc.name<<"_"<<cc.colors[sct.field[pr]].name;
                 } else if(sct.Flags[pr]== CT_ALL)
+                    //SpnF << 1;
                     SpnF << "Color_" << cc.name <<"_All";
 
                 if(sct.varIncrement[pr] != 0)
