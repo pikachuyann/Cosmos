@@ -260,7 +260,7 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 				if(!varList.empty()){
 					
 					size_t nbp = 0;
-					size_t pivotplace;
+					size_t pivotplace = MyGspn.pl;
 					bool fallback = false;
 					for(size_t itp = 0; itp!=MyGspn.pl; ++itp){
 						//Check that that there is at least one variable on the two arcs
@@ -299,9 +299,13 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 						SpnF << "\t{"<< endl;
 						SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 						SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
-						SpnF << "\t\tbtotal += " << ((MyGspn.access(MyGspn.outArcsStruct,trit,pivotplace).coloredVal[0].varIncrement[0]
-													  + MyGspn.colClasses[MyGspn.access(MyGspn.outArcsStruct,trit,pivotplace).coloredVal[0].field[0]].colors.size()) % MyGspn.colClasses[MyGspn.access(MyGspn.outArcsStruct,trit,pivotplace).coloredVal[0].field[0]].colors.size() ) *
-						varMultiplier(MyGspn.access(MyGspn.outArcsStruct,trit,pivotplace).coloredVal[0].field[0]) <<  ";"<< endl;
+                        assert(pivotplace < MyGspn.pl);
+                        const auto tok = MyGspn.access(MyGspn.outArcsStruct,trit,pivotplace);
+                        assert(tok.coloredVal.size()>0 && tok.coloredVal[0].field.size());
+                        const auto cc1 = tok.coloredVal[0];
+						SpnF << "\t\tbtotal += " << ((cc1.varIncrement[0]
+													  + MyGspn.colClasses[cc1.field[0]].colors.size()) % MyGspn.colClasses[cc1.field[0]].colors.size() ) *
+						varMultiplier(cc1.field[0]) <<  ";"<< endl;
 						//Compute the number of the new binding in the global numerotation.
 						
 						SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
@@ -379,9 +383,10 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
                         assert(pivotplace < MyGspn.pl);
                         const auto tok = MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace);
                         assert(tok.coloredVal.size()>0 && tok.coloredVal[0].field.size());
-						SpnF << "\t\tbtotal += " << ((tok.coloredVal[0].varIncrement[0]
-													  + MyGspn.colClasses[tok.coloredVal[0].field[0]].colors.size()) % MyGspn.colClasses[tok.coloredVal[0].field[0]].colors.size() ) *
-						varMultiplier(tok.coloredVal[0].field[0]) <<  ";"<< endl;
+                        const auto cc1 = tok.coloredVal[0];
+						SpnF << "\t\tbtotal += " << ((cc1.varIncrement[0]
+													  + MyGspn.colClasses[cc1.field[0]].colors.size()) % MyGspn.colClasses[cc1.field[0]].colors.size() ) *
+						varMultiplier(cc1.field[0]) <<  ";"<< endl;
 						//Compute the number of the new binding in the global numerotation.
 						
 						SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
@@ -576,7 +581,8 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		header << ";\n";
 		header << "\t" << it->cname() << "(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}"<< endl;
 		header << "\t" << it->cname() << "(" << colorArgsName.str() << ") {\n";
-		header << "\t\t" << "memset(&mult,0 , sizeof(mult));\n";
+		//header << "\t\t" << "memset(&mult,0 , sizeof(mult));\n";
+        header << "\t\t" << "fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), 0 );"<< endl;
 		header << "\t\t" << "if(" << allCondition.str() << ")\n";
 		header << "\t\t\t" << "mult" << colorArrayAccess.str() << " = 1 ;\n";
 		header << "\t\telse{\n";
