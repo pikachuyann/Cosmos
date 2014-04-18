@@ -27,6 +27,7 @@
 #include "Gspn-Writer.hpp"
 #include "../casesWriter.hpp"
 
+
 #include <algorithm>
 
 Gspn_Writer::Gspn_Writer(GspnType& mgspn,parameters& Q):MyGspn(mgspn),P(Q){
@@ -373,9 +374,11 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 						SpnF << "\t{"<< endl;
 						SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
 						SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
-						SpnF << "\t\tbtotal += " << ((MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace).coloredVal[0].varIncrement[0]
-													  + MyGspn.colClasses[MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace).coloredVal[0].field[0]].colors.size()) % MyGspn.colClasses[MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace).coloredVal[0].field[0]].colors.size() ) *
-						varMultiplier(MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace).coloredVal[0].field[0]) <<  ";"<< endl;
+                        const auto tok = MyGspn.access(MyGspn.inArcsStruct,trit,pivotplace);
+                        assert(tok.coloredVal.size()>0 && tok.coloredVal[0].field.size());
+						SpnF << "\t\tbtotal += " << ((tok.coloredVal[0].varIncrement[0]
+													  + MyGspn.colClasses[tok.coloredVal[0].field[0]].colors.size()) % MyGspn.colClasses[tok.coloredVal[0].field[0]].colors.size() ) *
+						varMultiplier(tok.coloredVal[0].field[0]) <<  ";"<< endl;
 						//Compute the number of the new binding in the global numerotation.
 						
 						SpnF << "\t\tsize_t bloc = Transition[targettr].bindingLinkTable[btotal];" << endl;
