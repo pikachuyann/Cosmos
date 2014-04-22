@@ -15,6 +15,8 @@ using namespace std;
 std::ostream& operator<<(std::ostream& os, const class expr& e)
 {
     switch (e.t) {
+        case Empty: os << " /*Empty*/ ";
+            break;
         case UnParsed: os << " /*UnParsed*/" << e.stringVal << " ";
             break;
         case Bool: os << " /*Bool*/" << e.boolVal << " ";
@@ -89,6 +91,10 @@ bool expr::is_concrete()const{
     return (t== Int || t == Real || t==boolVal);
 }
 
+bool expr::empty()const{
+    return (t==Empty || (t==UnParsed && stringVal.empty()));
+}
+
 void expr::eval(const map<string,int> &intconst,const map<string,double> &realconst){
     switch (t) {
         case Constant:
@@ -106,6 +112,7 @@ void expr::eval(const map<string,int> &intconst,const map<string,double> &realco
         }
         }
             break;
+        case Empty:
         case UnParsed:
         case PlaceName:
         case Bool:

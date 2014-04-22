@@ -909,7 +909,7 @@ void Gspn_Writer::writeTransition(ofstream & spnF, bool bstr){
 				}
 			}
 			spnF << "\twhile(bl.next()){\n";
-			if(MyGspn.transitionStruct[t].guard.compare("")==0)spnF << "\t\t{\n";
+			if(!MyGspn.transitionStruct[t].guard.empty())spnF << "\t\t{\n";
 			else spnF << "\t\tif(" << MyGspn.transitionStruct[t].guard << "){\n";
 			spnF << "\t\t\tbl.idcount = Transition["<<t<<"].bindingList.size();\n";
 			spnF << "\t\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";

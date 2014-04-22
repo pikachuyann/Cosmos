@@ -15,6 +15,7 @@
 #include <set>
 
 enum expType {
+    Empty,
     UnParsed,
 
     Bool,
@@ -60,6 +61,7 @@ public:
     expr(expType et,const std::string &p):t(et),intVal(0),realVal(0.0),stringVal(p){};
     expr(expType et,expr &l,expr &r):t(et),intVal(0),realVal(0.0),lhs(&l),rhs(&r){};
 
+    bool empty()const;
     bool is_concrete()const;
     void get_places(std::set<std::string>&)const;
     void eval(const std::map<std::string,int>&,const std::map<std::string,double>&);

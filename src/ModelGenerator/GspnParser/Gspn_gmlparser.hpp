@@ -71,10 +71,8 @@ public:
 private:
 	expr eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_order_iterator it );
     int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it );
-	//void eval_tokenProfileMark(string& ,tree<string>::pre_order_iterator);
-    void eval_tokenProfileMark(coloredToken&, tree<string>::pre_order_iterator);
-	void eval_tokenProfileArc(coloredToken& ,bool &, set<size_t>&, tree<string>::pre_order_iterator);
-	void eval_guard(string&, tree<string>::pre_order_iterator);
+	void eval_tokenProfileArc(coloredToken& ,bool &, tree<string>::pre_order_iterator);
+	expr eval_guard(tree<string>::pre_order_iterator);
 	
     string itostring (int i);
 	string simplifyString(string str);

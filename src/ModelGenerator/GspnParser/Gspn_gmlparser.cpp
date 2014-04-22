@@ -37,7 +37,6 @@
 #include "expatmodelparser.hh"
 #include "modelhandler.hh"
 #include "Gspn_gmlparser.hpp"
-#include "../Eval/Eval.hpp"
 
 #include "Gspn-Reader.hpp"
 
@@ -164,79 +163,15 @@ expr MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_
     }
 }
 
-void MyModelHandler::eval_tokenProfileMark(coloredToken& tok,tree<string>::pre_order_iterator it){
-	if((P.verbose-3)>1)cout << *it << endl;
-	if(*it == "function"){
-		eval_tokenProfileMark(tok, it.begin());
-	}else if(*it == "expr"){
-		eval_tokenProfileMark(tok, it.begin());
-	}else if(*it == "enumConst"){
-		size_t colorclass=0, enumvalue=0;
-		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
-			if(*it2 == "type"){
-				string coldom = simplifyString(*(it2.begin()));
-				if((P.verbose-3)>1)cerr << coldom << endl;
-				for(colorclass =0; colorclass < MyGspn->colDoms.size() &&
-					MyGspn->colDoms[colorclass].name != coldom ; colorclass++) ;
-				if(colorclass == MyGspn->colDoms.size())
-					cerr << "Unknown classe '" << coldom << "'"<< endl;
-			}
-			if (*it2 == "enumValue") {
-				string coldom = simplifyString(*(it2.begin()));
-				if((P.verbose-3)>1)cerr << coldom << endl;
-				colorClass col = MyGspn->colClasses[MyGspn->colDoms[colorclass].colorClassIndex[0]];
-				for(enumvalue =0; enumvalue < col.colors.size() &&
-					col.colors[enumvalue].name != coldom ; enumvalue++) ;
-				if(enumvalue == col.colors.size())
-					cerr << "Unknown classe '" << coldom << "'"<< endl;
-			}
-		}
-        tok.field.push_back(enumvalue);
-        tok.Flags.push_back(CT_SINGLE_COLOR);
-        tok.varIncrement.push_back(0);
-		
-	}else if(*it == "all"){
-        tok.hasAll=true;
-        tok.field.push_back(0);
-        tok.Flags.push_back(CT_ALL);
-        tok.varIncrement.push_back(0);
-		eval_tokenProfileMark(tok, it.begin());
-	}else if(*it == "type"){
-		string coldom = simplifyString(*(it.begin()));
-		if((P.verbose-3)>1)cerr << coldom << endl;
-		size_t colorc =0;
-		for(colorc =0; colorc < MyGspn->colDoms.size() &&
-			MyGspn->colDoms[colorc].name != coldom ; colorc++) ;
-		if(colorc == MyGspn->colDoms.size())
-			cerr << "Unknown classe '" << coldom << "'"<< endl;
-	}else if (*it == "token") {
-		string mark;
-		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
-			if(*it2 == "occurs"){
-				bool markingdependant = false;
-				eval_expr(&markingdependant, mark, it2.begin());
-				if( markingdependant) cerr << "Initial Marking is not marking dependant\n";
-			}
-			if (*it2 == "tokenProfile") {
-				if ((P.verbose-3)>1)cout << *it2 << endl;
-				for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
-					eval_tokenProfileMark(tok, it3);
-				}
-			}
-		}
-        tok.mult = mark;
-	}
-}
-
-void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdependant ,set<size_t>& vardom, tree<string>::pre_order_iterator it){
+void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdependant, tree<string>::pre_order_iterator it){
 	if((P.verbose-3)>1)cout << (*it) << endl;
 	if(*it == "function"){
-		eval_tokenProfileArc(tok, markingdependant, vardom, it.begin());
+		eval_tokenProfileArc(tok, markingdependant, it.begin());
 	}else if(*it == "++"){
 		int incr = 0;
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(*it2 == "name"){
-				eval_tokenProfileArc(tok, markingdependant, vardom, it2);
+				eval_tokenProfileArc(tok, markingdependant, it2);
 			} else incr = atoi(simplifyString(*(it2).begin()).c_str());
 		}
 		tok.varIncrement.back() += incr;
@@ -259,7 +194,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 		}
 		
 	}else if(*it == "expr"){
-		eval_tokenProfileArc(tok,markingdependant, vardom, it.begin());
+		eval_tokenProfileArc(tok,markingdependant, it.begin());
 	}else if (*it == "token") {
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(*it2 == "occurs"){
@@ -268,7 +203,7 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 			if (*it2 == "tokenProfile") {
 				if ((P.verbose-3)>1)cout << *it2 << endl;
 				for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
-					eval_tokenProfileArc(tok,markingdependant, vardom, it3);
+					eval_tokenProfileArc(tok,markingdependant, it3);
 				}
 			}
 		}
@@ -294,7 +229,6 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 			tok.field.push_back(vars - MyGspn->colVars.begin());
 			tok.Flags.push_back(CT_VARIABLE);
 			tok.varIncrement.push_back(0);
-			vardom.insert(vars-MyGspn->colVars.begin());
 		}else{
 			cerr << "Unknown variable '" << varname << "'"<< endl;
 		}
@@ -336,52 +270,42 @@ treeSI MyModelHandler::findbranch(treeSI t, string branch){
     return t.end();
 }
 
-void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it){
+expr MyModelHandler::eval_guard(tree<string>::pre_order_iterator it){
 	if((P.verbose-3)>1)cout<< (*it) << endl;
 	if(*it == "boolExpr"){
-		eval_guard(st, it.begin() );
+		eval_guard(it.begin() );
 	} else if(*it == "boolValue"){
-		if(simplifyString(*(it.begin())) == "true")st.append(" true ");
-		else st.append(" false ");
+		if(simplifyString(*(it.begin())) == "true")return expr(true);
+		else return expr(false);
 	} else if(*it == "equal"){
-		st.append("(");
-		eval_guard(st, it.begin());
-		st.append(" == ");
-		eval_guard(st, ++it.begin());
-		st.append(" ) ");
+        expr lhs = eval_guard(it.begin());
+		expr rhs = eval_guard(++it.begin());
+		return expr(Eq,lhs,rhs);
 	} else if(*it == "notEqual"){
-		st.append("(");
-		eval_guard(st, it.begin());
-		st.append(" != ");
-		eval_guard(st, ++it.begin());
-		st.append(" ) ");
+		expr lhs = eval_guard(it.begin());
+		expr rhs = eval_guard(++it.begin());
+		return expr(Neq,lhs,rhs);
 	} else if(*it == "and"){
-		st.append("(");
-		eval_guard(st, it.begin());
-		st.append(" && ");
-		eval_guard(st, ++it.begin());
-		st.append(" ) ");
+		expr lhs = eval_guard(it.begin());
+		expr rhs = eval_guard(++it.begin());
+		return expr(And,lhs,rhs);
 	} else if(*it == "or"){
-		st.append("(");
-		eval_guard(st, it.begin());
-		st.append(" || ");
-		eval_guard(st, ++it.begin());
-		st.append(" ) ");
+		expr lhs = eval_guard(it.begin());
+		expr rhs = eval_guard(++it.begin());
+		return expr(Or,lhs,rhs);
 	} else if(*it == "not"){
-		st.append("( !(");
-		eval_guard(st, it.begin());
-		st.append(" )) ");
+		expr lhs = eval_guard(it.begin());
+        expr rhs;
+		return expr(Neg,lhs,rhs);
 	} else if(*it == "expr"){
-		eval_guard(st, it.begin() );
+		eval_guard(it.begin() );
 	} else if(*it == "name"){
 		string varname = simplifyString(*(it.begin()));
 		vector<colorVariable>::const_iterator vars;
 		for (vars = MyGspn->colVars.begin() ;
 			 vars != MyGspn->colVars.end() && vars->name != varname; ++vars) ;
 		if(vars != MyGspn->colVars.end()){
-			st.append("bl.P->");
-			st.append(varname);
-			st.append(".c0");
+            return expr("bl.P->" + varname + ".c0");
 		}else{
 			cerr << "Unknown variable '" << varname << "'"<< endl;
 		}
@@ -396,8 +320,10 @@ void MyModelHandler::eval_guard(string& st, tree<string>::pre_order_iterator it)
 				colorstr = simplifyString(*(it2.begin()));
 			}
 		}
-		st.append("Color_"+typestr+"_"+colorstr);
-	}else cerr << "Unknown attribute "<< *it << "\n";
+        return expr("Color_"+typestr+"_"+colorstr);
+	}
+    cerr << "Unknown attribute "<< *it << "\n";
+    return expr();
 }
 
 
@@ -418,7 +344,6 @@ MyModelHandler::MyModelHandler(GspnType &MyGspn2,parameters &Q ,map<int,bool> &m
 		MyGspn->pl=0;
 	}
 }
-
 
 
 void MyModelHandler::on_read_model(const XmlString& formalismUrl) {
@@ -611,9 +536,9 @@ void MyModelHandler::on_read_node(const XmlString& id,
 				for(treeSI ittok = it2.begin(); ittok != it2.end(); ++ittok){
 					if (*ittok == "token") {
                         coloredToken tok;
-						eval_tokenProfileMark(tok, ittok);
-                        /*bool markingdependant;
-                        eval_tokenProfileArc( tok, &markingdependant, , ittok);*/
+						//eval_tokenProfileMark(tok, ittok);
+                        bool markingdependant= false;
+                        eval_tokenProfileArc( tok, markingdependant, ittok);
 						inMark.push_back(tok);
 					}
 				}
@@ -689,7 +614,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 					}
                     MyGspn->TransId[Trname]=MyGspn->tr-1;
                 } else if((*(it->second.begin())) == "guard"){
-					eval_guard(trans.guard, it->second.begin().begin());
+					trans.guard = eval_guard(it->second.begin().begin());
 					//if(trans.guard == "")trans.guard = "true";
                 } else if ((*(it->second.begin())) == "distribution") {
                     if((P.verbose-3)>1)cout << "\tdistribution:" << endl ;
@@ -830,6 +755,8 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 			
 			//Add a place
             MyGspn->Marking.push_back("0");
+            coloredToken ctok(0);
+            MyGspn->InitialMarking.push_back(vector<coloredToken>(1,ctok));
 			place p;
             string Plname = "Puit";
 			p.name = Plname;
@@ -865,9 +792,9 @@ void MyModelHandler::on_read_arc(const XmlString& id,
                     coloredToken tokenType;
 					tokenType.hasAll = false;
 					if (IsPlace[sourceGML]) {
-						eval_tokenProfileArc( tokenType, markingdependant,MyGspn->transitionStruct[Gml2Trans[atoi(target.c_str())]].varDomain, it3);
+						eval_tokenProfileArc( tokenType, markingdependant, it3);
 					} else {
-						eval_tokenProfileArc( tokenType, markingdependant,MyGspn->transitionStruct[Gml2Trans[atoi(source.c_str())]].varDomain, it3);
+						eval_tokenProfileArc( tokenType, markingdependant, it3);
 					}
 
 					toklist.push_back(tokenType);
