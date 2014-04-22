@@ -119,7 +119,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-r"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/pi/pi.grml"
@@ -130,16 +130,16 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_2963657132458752864.grml"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRE.grml"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/var/folders/36/cw0lz_d108b7_dzsjw3phgc80000gp/T/model_2377512690836570869.grml"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/Cosmos/Examples/RareEventUnbounded/tandemRElha.grml"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-v 6"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--bin-path"
@@ -183,7 +183,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/DataBase/databasecNfP.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Downloads/testallminus.grml"
@@ -191,7 +191,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--loop 60"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--output-trace"

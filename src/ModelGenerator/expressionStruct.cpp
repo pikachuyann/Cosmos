@@ -15,17 +15,19 @@ using namespace std;
 std::ostream& operator<<(std::ostream& os, const class expr& e)
 {
     switch (e.t) {
-        case UnParsed: os << " " << e.stringVal << " ";
+        case Empty: os << " /*Empty*/ ";
             break;
-        case Bool: os << " " << e.boolVal << " ";
+        case UnParsed: os << " /*UnParsed*/" << e.stringVal << " ";
             break;
-        case Int: os << " " << e.intVal << " ";
+        case Bool: os << " /*Bool*/" << e.boolVal << " ";
             break;
-        case Real: os << " " << e.realVal << " ";
+        case Int: os << " /*Int*/" << e.intVal << " ";
+            break;
+        case Real: os << " /*Real*/" << e.realVal << " ";
             break;
         case PlaceName: os << " Marking.P->_PL_" << e.stringVal << " ";
             break;
-        case Constant: os << " " << e.stringVal << " ";
+        case Constant: os << " /*Constant*/" << e.stringVal << " ";
             break;
         case Ceil: os << " ceil(" << e.lhs << ") ";
             break;
@@ -89,6 +91,10 @@ bool expr::is_concrete()const{
     return (t== Int || t == Real || t==boolVal);
 }
 
+bool expr::empty()const{
+    return (t==Empty || (t==UnParsed && stringVal.empty()));
+}
+
 void expr::eval(const map<string,int> &intconst,const map<string,double> &realconst){
     switch (t) {
         case Constant:
@@ -106,6 +112,7 @@ void expr::eval(const map<string,int> &intconst,const map<string,double> &realco
         }
         }
             break;
+        case Empty:
         case UnParsed:
         case PlaceName:
         case Bool:

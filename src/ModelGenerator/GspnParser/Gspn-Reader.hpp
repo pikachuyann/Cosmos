@@ -127,7 +127,7 @@ struct transition {
 	int nbServers;
 	bool ageMemory;
 	set<size_t> varDomain;
-	string guard;
+	expr guard;
     transition(){ isTraced = true; }
     transition(size_t i,const string &n,const expr &p,bool md):id(i),label(n),isTraced(true),
     type(Timed),dist(p),priority(expr(1)),weight(expr(1.0)),singleService(true),

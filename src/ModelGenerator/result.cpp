@@ -250,7 +250,11 @@ void result::print(ostream &s){
 
             s << "Estimated value:\t" << HaslResult[i].mean << endl;
             if(P.sequential){
+                if(P.computeStateSpace>0){
+                    s << "Confidence interval:\t[" << HaslResult[i].mean*0.999 << " , " << HaslResult[i].mean*1.0001 << "]" << endl;
+                }else{
                 s << "Confidence interval:\t[" << HaslResult[i].low << " , " << HaslResult[i].up << "]" << endl;
+                }
                 s << "Minimal and maximal value:\t[" << HaslResult[i].min << " , " << HaslResult[i].max << "]" << endl;
                 s << "Width:\t" << HaslResult[i].width() << endl;
             }else{
