@@ -15,17 +15,17 @@ using namespace std;
 std::ostream& operator<<(std::ostream& os, const class expr& e)
 {
     switch (e.t) {
-        case UnParsed: os << " " << e.stringVal << " ";
+        case UnParsed: os << " /*UnParsed*/" << e.stringVal << " ";
             break;
-        case Bool: os << " " << e.boolVal << " ";
+        case Bool: os << " /*Bool*/" << e.boolVal << " ";
             break;
-        case Int: os << " " << e.intVal << " ";
+        case Int: os << " /*Int*/" << e.intVal << " ";
             break;
-        case Real: os << " " << e.realVal << " ";
+        case Real: os << " /*Real*/" << e.realVal << " ";
             break;
         case PlaceName: os << " Marking.P->_PL_" << e.stringVal << " ";
             break;
-        case Constant: os << " " << e.stringVal << " ";
+        case Constant: os << " /*Constant*/" << e.stringVal << " ";
             break;
         case Ceil: os << " ceil(" << e.lhs << ") ";
             break;

@@ -2,6 +2,8 @@
 #directory "../../utils";;
 #use "mlcall.ml"
 
+let addo = " --level 0.9999"
+
 let teamCity = ref true
 
 let _ = if (Array.length Sys.argv) >1 then teamCity := false
@@ -44,8 +46,8 @@ let test_cosmosBash testname model prop opt v =
  
 
 let test_cosmos t m p o v =
-  if !teamCity then test_cosmosTeamCity t m p o v
-  else  test_cosmosBash t m p o v
+  if !teamCity then test_cosmosTeamCity t m p (o^addo) v
+  else  test_cosmosBash t m p (o^addo) v
 
 
 let test_cosmos_gspn n v o =
