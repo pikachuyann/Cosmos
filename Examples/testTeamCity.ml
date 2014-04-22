@@ -2,7 +2,7 @@
 #directory "../../utils";;
 #use "mlcall.ml"
 
-let addo = " --level 0.9999"
+let addo = " --level 0.9999 --gppflags '-O0 -Wno-return-type'"
 
 let teamCity = ref true
 
