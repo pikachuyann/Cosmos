@@ -59,7 +59,8 @@ public:
     expr(double d):t(Real),intVal(0),realVal(d){};
 
     expr(expType et,const std::string &p):t(et),intVal(0),realVal(0.0),stringVal(p){};
-    expr(expType et,expr &l,expr &r):t(et),intVal(0),realVal(0.0),lhs(&l),rhs(&r){};
+    expr(expType et,expr &l,expr &r):t(et),intVal(0),realVal(0.0),
+    lhs(std::make_shared<expr>(l)),rhs(std::make_shared<expr>(r)){};
 
     bool empty()const;
     bool is_concrete()const;

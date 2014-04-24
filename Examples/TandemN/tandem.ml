@@ -58,16 +58,19 @@ let generate_spn fpath n lambda rho r=
           <attribute name=\"expr\"><attribute name=\"numValue\">
               %f
           </attribute></attribute>
-        </attribute>
-        <attribute name=\"realConst\">
-          <attribute name=\"name\">rho</attribute>
+        </attribute>" r lambda;
+  for i = 1 to n do Printf.fprintf f
+"        <attribute name=\"realConst\">
+          <attribute name=\"name\">rho%i</attribute>
           <attribute name=\"expr\"><attribute name=\"numValue\">
               %f
           </attribute></attribute>
-        </attribute>
-      </attribute>
+        </attribute>" i (rho i);
+  done;
+  Printf.fprintf f
+"     </attribute>
     </attribute>
-  </attribute>\n" r lambda rho;
+  </attribute>\n";
 
 
   for i =1 to n do
@@ -77,7 +80,7 @@ let generate_spn fpath n lambda rho r=
   print_tr f "Arrive" countid "lambda";
 
   for i =1 to n do
-    print_tr f ("Serve"^(string_of_int i)) countid "rho";
+    print_tr f ("Serve"^(string_of_int i)) countid ("rho"^(string_of_int i));
   done;
 
   for i =0 to n-1 do
@@ -108,16 +111,19 @@ let generate_reduce_spn fpath n lambda rho r =
           <attribute name=\"expr\"><attribute name=\"numValue\">
               %f
           </attribute></attribute>
-        </attribute>
-        <attribute name=\"realConst\">
-          <attribute name=\"name\">rho</attribute>
+        </attribute>" r lambda;
+  for i = 1 to n do Printf.fprintf f
+"        <attribute name=\"realConst\">
+          <attribute name=\"name\">rho%i</attribute>
           <attribute name=\"expr\"><attribute name=\"numValue\">
               %f
           </attribute></attribute>
-        </attribute>
-      </attribute>
+        </attribute>" i (rho i);
+  done;
+  Printf.fprintf f
+"      </attribute>
     </attribute>
-  </attribute>\n" r lambda rho;
+  </attribute>\n";
 
 
   for i =1 to n do
@@ -127,7 +133,7 @@ let generate_reduce_spn fpath n lambda rho r =
   print_tr f "Arrive" countid "lambda";
 
   for i =1 to n do
-    print_tr f ("Serve"^(string_of_int i)) countid "rho";
+    print_tr f ("Serve"^(string_of_int i)) countid ("rho"^(string_of_int i));
   done;
 
   for i =2 to n do
@@ -156,7 +162,7 @@ let generate_marcie marciepath n lambda rho r n2 =
   int N = %i;
   int N2 =%i;
   double lambda = %f;
-  double rho = %f;\n" n n n2 lambda rho;
+  double rho = %f;\n" n n n2 lambda (rho 1);
   Printf.fprintf f "places:\n  RE_Queue1 = 1;
   AQueues = %i;\n" (n2-1);
   for i = 2 to n do
@@ -164,9 +170,9 @@ let generate_marcie marciepath n lambda rho r n2 =
   done;
   Printf.fprintf f "transitions:\n  Arrive : : [AQueues -1] & [RE_Queue1 +1] : lambda;\n";
   for i = 1 to (n-1) do
-    Printf.fprintf f "  Serve%i : : [RE_Queue%i -1] & [RE_Queue%i +1] : rho;\n" i i (i+1);
+    Printf.fprintf f "  Serve%i : : [RE_Queue%i -1] & [RE_Queue%i +1] : %f;\n" i i (i+1) (rho i);
   done;
-  Printf.fprintf f "  Serve%i : : [RE_Queue%i -1] & [AQueues+1] : rho;\n}\n" n n;
+  Printf.fprintf f "  Serve%i : : [RE_Queue%i -1] & [AQueues+1] : %f;\n}\n" n n (rho n);
   close_out f;;
   
 let generate_csl cslpath n n2 =
@@ -229,22 +235,25 @@ void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){\n";
 
 #use "../testTeamCity.ml";;
 
-let generate n n2 r = 
-  Printf.printf "Generate n=%i n2=%i r=%i" n n2 r;
+let generate n n2 r mu rho = 
+  Printf.printf "Generate n=%i n2=%i r=%i mu=%f" n n2 r mu;
+  for i =1 to n do Printf.printf " rho%i=%f" i (rho i) done;
   print_newline ();
-  generate_spn "tandem.grml" n 0.1 0.45 r;
-  generate_marcie "tandem.andl" n 0.1 0.45 r n2;
+  generate_spn "tandem.grml" n mu rho r;
+  generate_marcie "tandem.andl" n mu rho r n2;
   generate_csl "tandem.csl" n n2;
-  generate_reduce_spn "tandemRE.grml" n 0.1 0.45 r;
+  generate_reduce_spn "tandemRE.grml" n mu rho r;
   generate_lha "tandem.lha" n n2;
   generate_lumping_fun "lumpingfun.cpp" n;;
 
-let simule n n2 r =
-  generate n n2 r;
+let level = ref 0.99;;
+
+let simule n n2 r mu rho batch =
+  generate n n2 r mu rho;
   Printf.printf "Simulate n=%i n2=%i r=%i" n n2 r;
   print_newline ();
   execSavedCosmos ~prefix:false ("ReduceModel","tandemRE.grml","tandem.lha"," --prism --prism-path /Applications/prism-4.0.2-osx64/bin/prism");
-  execSavedCosmos ~prefix:false ("ImportantSampling","tandem.grml","tandem.lha"," -r --max-run 100000");;
+  execSavedCosmos ~prefix:false ("ImportantSampling","tandem.grml","tandem.lha",Printf.sprintf " -r --width 0 --max-run %i --level %f" batch !level );;
 
 
 
@@ -260,11 +269,15 @@ simule 8 50 5;;
 simule 9 50 5;;
 simule 10 50 5;;
 *)
-
+(*
 assert (Array.length Sys.argv>3);;
 let n = int_of_string Sys.argv.(1);;
 let n2 = int_of_string Sys.argv.(2);;
 let r = int_of_string Sys.argv.(3);;
 assert(n>=1);;
+*)
+(*
+generate n n2 r 0.05 (fun _-> 0.45);;
 
-generate n n2 r;;
+simule n n2 r 0.01 (fun _-> 0.11);;
+*)
