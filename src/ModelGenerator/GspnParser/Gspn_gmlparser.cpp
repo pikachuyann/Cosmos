@@ -273,7 +273,7 @@ treeSI MyModelHandler::findbranch(treeSI t, string branch){
 expr MyModelHandler::eval_guard(tree<string>::pre_order_iterator it){
 	if((P.verbose-3)>1)cout<< (*it) << endl;
 	if(*it == "boolExpr"){
-		eval_guard(it.begin() );
+		return eval_guard(it.begin() );
 	} else if(*it == "boolValue"){
 		if(simplifyString(*(it.begin())) == "true")return expr(true);
 		else return expr(false);
@@ -298,7 +298,7 @@ expr MyModelHandler::eval_guard(tree<string>::pre_order_iterator it){
         expr rhs;
 		return expr(Neg,lhs,rhs);
 	} else if(*it == "expr"){
-		eval_guard(it.begin() );
+		return eval_guard(it.begin() );
 	} else if(*it == "name"){
 		string varname = simplifyString(*(it.begin()));
 		vector<colorVariable>::const_iterator vars;

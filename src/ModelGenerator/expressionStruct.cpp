@@ -207,8 +207,6 @@ void expr::eval(const map<string,int> &intconst,const map<string,double> &realco
                         break;
                     case Eq: boolVal = lhs->get_real() == rhs->get_real();
                         break;
-                    case Neq: boolVal = lhs->get_real() != rhs->get_real();
-                        break;
                     case Leq: boolVal = lhs->get_real() <= rhs->get_real();
                         break;
                     case Sl: boolVal = lhs->get_real() < rhs->get_real();
