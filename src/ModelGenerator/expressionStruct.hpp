@@ -64,6 +64,7 @@ public:
 
     bool empty()const;
     bool is_concrete()const;
+    bool is_markDep()const;
     void get_places(std::set<std::string>&)const;
     void eval(const std::map<std::string,int>&,const std::map<std::string,double>&);
     friend std::ostream& operator<<(std::ostream& os, const expr& e);

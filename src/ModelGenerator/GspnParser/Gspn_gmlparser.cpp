@@ -62,12 +62,6 @@ gmlinputexception gmlioexc;
  }
  }*/
 
-string MyModelHandler::itostring (int i){
-	stringstream ss;
-	ss << i;
-	return ss.str();
-}
-
 string MyModelHandler::simplifyString(string str)
 {
 	size_t n1 = str.find_first_not_of(" \n\t");
@@ -76,42 +70,29 @@ string MyModelHandler::simplifyString(string str)
 	return str.substr(n1, n2-n1+1);
 }
 
-void MyModelHandler::appendSimplify(string &st, string str)
-{
-	size_t n1 = str.find_first_not_of(" \n\t");
-	size_t n2 = str.find_last_not_of(" \n\t");
-	if(n1 !=std::string::npos )st.append(str.substr(n1, n2-n1+1));
-}
-
-expr MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_order_iterator it)
+expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it)
 {
     if((P.verbose-3)>1)cout << *it << endl;
 	if( *it == "function"){
-		return eval_expr(is_mark_dep, st, it.begin());
+		return eval_expr( it.begin());
 	}else if(*it == "expr"){
-		return eval_expr(is_mark_dep, st, it.begin());
+		return eval_expr( it.begin());
 	}else if(*it == "intValue" || *it == "numValue"){
         const auto str = simplifyString(it.node->first_child->data);
-        st.append(str);
         if(*it=="intValue")return expr(stoi(str));
         else return expr(stod(str));
 	}else if (*it == "name") {
         string var = simplifyString(it.node->first_child->data);
         if(MyGspn->IntConstant.count(var)>0 ||
            MyGspn->RealConstant.count(var)>0){
-            st.append(var);
             return expr(Constant,var);
         }else{
-            *is_mark_dep =true;
-            st.append("Marking.P->_PL_");
-            st.append(var);
 			if((P.verbose-3)>1)cout << "\t" << var << endl;
 			if(MyGspn->PlacesId.count(var)==0){
 				cerr << "Place " << var << "being referenced before being define" << endl;
 				throw gmlioexc;
 			}
 			if(MyGspn->placeStruct[MyGspn->PlacesId[var]].colorDom !=0 ){
-                st.append(".card()");
                 return expr(PlaceName,var+".card()");
             }else return expr(PlaceName,var);
         }
@@ -119,31 +100,18 @@ expr MyModelHandler::eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_
               || *it == "min"   || *it == "max"
               || *it == "floor" || *it == "minus"
               || *it == "/"   || *it == "power")  {
-		
-		
-		if (*it == "min") st.append("min");
-		if (*it == "max") st.append("max");
-		if (*it == "floor" ) st.append("floor");
 
         expr rhs;
         expr lhs;
 
-		st.append("(");
 		for (treeSI it2 = (it.begin()) ; it2 != (it.end()) ; ++it2 ) {
 			if(it2!= it.begin()) {
-				if (*it == "+") { st.append("+"); }
-				else if (*it == "*") { st.append("*"); }
-				else if (*it == "-") { st.append("-"); }
-				else if (*it == "/") { st.append("/ (double) "); }
-				else if (*it == "power") { st.append("^"); }
-				else st.append(",");
-                rhs = eval_expr(is_mark_dep, st, it2);
+                rhs = eval_expr( it2);
 			}else{
-                lhs = eval_expr(is_mark_dep, st, it2);
+                lhs = eval_expr( it2);
             };
 
 		}
-		st.append(")");
 
         if (*it == "+") { return expr(Plus,lhs,rhs); }
         else if (*it == "*") { return expr(Times,lhs,rhs); }
@@ -198,7 +166,10 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 	}else if (*it == "token") {
 		for (treeSI it2 = it.begin() ; it2 != it.end() ; ++it2 ) {
 			if(*it2 == "occurs"){
-				eval_expr(&markingdependant, tok.mult, it2.begin());
+				const auto e = eval_expr( it2.begin());
+                markingdependant |= e.is_markDep();
+                stringstream ss; ss << e;
+                tok.mult = ss.str();
 			}
 			if (*it2 == "tokenProfile") {
 				if ((P.verbose-3)>1)cout << *it2 << endl;
@@ -235,13 +206,10 @@ void MyModelHandler::eval_tokenProfileArc( coloredToken& tok, bool &markingdepen
 	}
 }
 
-int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it )
+int MyModelHandler::eval_intFormula(tree<string>::pre_order_iterator it )
 {
-    bool markdep=false;
-    string st;
-    expr ex = eval_expr(&markdep, st, it);
-    map<string,double> dummyrealconst;
-    ex.eval(intconst, dummyrealconst);
+    expr ex = eval_expr(it);
+    ex.eval(MyGspn->IntConstant, MyGspn->RealConstant);
     if(ex.t == Int){
         return ex.intVal;
     } else {
@@ -254,6 +222,22 @@ int MyModelHandler::eval_intFormula( map<std::string,int> intconst, tree<string>
             }
         }else{
             cerr <<"Marking can not be marking dependant:" << endl << ex << endl; ;
+            throw gmlioexc;
+        }
+    }
+}
+
+double MyModelHandler::eval_realFormula(tree<string>::pre_order_iterator it )
+{
+    expr ex = eval_expr(it);
+    ex.eval(MyGspn->IntConstant, MyGspn->RealConstant);
+    if(ex.t == Int){
+        return (double)ex.intVal;
+    } else {
+        if (ex.t == Real){
+            return ex.realVal;
+        }else{
+            cerr <<"Should not be marking dependant:" << endl << ex << endl; ;
             throw gmlioexc;
         }
     }
@@ -367,17 +351,14 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 					if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
 					if (*it2 == "intConst") { // const is int or double
 						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-						int constvalue = eval_intFormula(MyGspn->IntConstant, find(it2.begin(),it2.end(),"expr"));
+						int constvalue = eval_intFormula(find(it2.begin(),it2.end(),"expr"));
 						if((P.verbose-3)>1)cout << "const int " << constname << "=" << constvalue << endl;
 						if (P.constants.count(constname)>0) {
-							istringstream(P.constants[constname]) >> constvalue;
+							constvalue = stoi(P.constants[constname]);
 							if((P.verbose-3)>0)cout << "const int " << constname << " overwrite to " << constvalue << endl;;
 						}
-						//Evaluate_gml.parse(constvalue);
-						MyGspn->IntConstant[constname]=constvalue; //Evaluate_gml.IntResult;
-						MyGspn->RealConstant[constname]= constvalue; //Evaluate_gml.RealResult;
-						//cout << "\tconst int " << *constname << "=" << constvalue << endl;
-						
+						MyGspn->IntConstant[constname]=constvalue;
+						MyGspn->RealConstant[constname]= constvalue;
 					}
 				}
             
@@ -388,16 +369,12 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 					if (*it2 == "realConst") {
 						if((P.verbose-3)>1)cout << "\t" <<  *it2 << ":" << endl;
 						string constname = simplifyString((find(it2.begin(),it2.end(),"name")).node->first_child->data);
-						bool ismarkdep=false;
-						string constvalue;
-						eval_expr( &ismarkdep, constvalue, find(it2.begin(),it2.end(),"expr").begin());
-						if(ismarkdep)cout<< "constante are not makring dependant!" << endl;
-						if (P.constants.count(constname)>0) {
-							constvalue = P.constants[constname];
+						double constvalue = eval_realFormula(find(it2.begin(),it2.end(),"expr").begin());
+ 						if (P.constants.count(constname)>0) {
+							constvalue = stod(P.constants[constname]);
 							if((P.verbose-3)>0)cout << "const double " << constname << " overwrite to " << constvalue << endl;;
 						}
-						Evaluate_gml.parse(constvalue);
-						MyGspn->RealConstant[constname]=Evaluate_gml.RealResult;
+						MyGspn->RealConstant[constname]=constvalue;
 						if((P.verbose-3)>1)cout << "\tconst double " << constname << "=" << MyGspn->RealConstant[constname] << endl;
 						
 					}
@@ -427,9 +404,9 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							if(tclasstypeenum!= it2.end()){
 								int low,high;
 								treeSI intBound = find(tclasstypeenum.begin(),tclasstypeenum.end(),"lowerBound");
-								low = eval_intFormula(MyGspn->IntConstant, intBound.begin());
+								low = eval_intFormula(intBound.begin());
 								intBound = find(tclasstypeenum.begin(),tclasstypeenum.end(),"higherBound");
-								high = eval_intFormula(MyGspn->IntConstant, intBound.begin());
+								high = eval_intFormula(intBound.begin());
 								
 								for(int i = low ; i<= high ;i++){
 									stringstream ss;
@@ -536,7 +513,6 @@ void MyModelHandler::on_read_node(const XmlString& id,
 				for(treeSI ittok = it2.begin(); ittok != it2.end(); ++ittok){
 					if (*ittok == "token") {
                         coloredToken tok;
-						//eval_tokenProfileMark(tok, ittok);
                         bool markingdependant= false;
                         eval_tokenProfileArc( tok, markingdependant, ittok);
 						inMark.push_back(tok);
@@ -548,9 +524,9 @@ void MyModelHandler::on_read_node(const XmlString& id,
                 string st;
 				if (inMark.empty()) {
 					int mark = 0;
-					mark = eval_intFormula(MyGspn->IntConstant, it2.begin());
+					mark = eval_intFormula(it2.begin());
                     inMark.push_back(coloredToken(mark));
-					st.append(itostring(mark));
+					st.append(to_string(mark));
 				}
 				
 				if((P.verbose-3)>1)cout << "\tmarking:" << st << endl ;
@@ -628,13 +604,13 @@ void MyModelHandler::on_read_node(const XmlString& id,
                         } else if (*it2 == "param") {
                             
                             //int number = 0;
-                            string value;
                             for (treeSI it3 = it2.begin() ; it3 != it2.end() ; ++it3 ) {
                                 //string* leaf = simplifyString(*(it3.begin()));
                                 if (*it3 == "number") {
                                     //number = atoi((*leaf).c_str());
                                 } else if (*it3 == "expr") {
-                                    expr pe = eval_expr(&trans.markingDependant, value, it3.begin() );
+                                    expr pe = eval_expr( it3.begin() );
+                                    trans.markingDependant |= pe.is_markDep();
                                     trans.dist.Param.push_back(pe);
                                 } else throw gmlioexc;
                             }
@@ -642,27 +618,13 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     }
                     
                 } else if ((*(it->second.begin())) == "service") {
-                    bool markingdependant=false;
-                    string value;
                     if ((*(++(it->second.begin()))) == "expr") {
-                        eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
-                        if(markingdependant==false) {
-                            if(Evaluate_gml.parse(value)){
-                                cout << " Fail to parse GML: transition,service"<< endl;
-                            }
-                            else {
-                                int nserv=Evaluate_gml.IntResult;
-                                if(nserv == 1 ) {
-                                    trans.nbServers =1;
-                                }else {
-                                    trans.singleService=false;
-                                    trans.nbServers=nserv;
-                                }
-                                
-                            }
-                            
+                        const auto nserv = eval_intFormula( (++(it->second.begin())).begin() );
+                        if(nserv == 1 ) {
+                            trans.nbServers =1;
                         }else {
-                            cout<<"service is not marking dependent "<<endl;
+                            trans.singleService=false;
+                            trans.nbServers=nserv;
                         }
                     } else cout << " Fail to parse GML: transition,service"<< endl;
                     
@@ -677,11 +639,9 @@ void MyModelHandler::on_read_node(const XmlString& id,
                      }
                      }*/
                 } else if ((*(it->second.begin())) == "weight") {
-                    bool markingdependant=false;
-                    string value;
                     if ((*(++(it->second.begin()))) == "expr") {
-                        expr e =eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
-                        if(markingdependant==false) {
+                        expr e =eval_expr((++(it->second.begin())).begin() );
+                        if(!e.is_markDep()) {
                             trans.weight = e;
                         }else {
                             cout<<"Weight is not marking dependent "<<endl;
@@ -690,11 +650,9 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     
                     
                 } else if ((*(it->second.begin())) == "priority") {
-                    bool markingdependant=false;
-                    string value;
                     if ((*(++(it->second.begin()))) == "expr") {
-                        expr e =eval_expr(&markingdependant, value, (++(it->second.begin())).begin() );
-                        if(markingdependant==false) {
+                        expr e =eval_expr( (++(it->second.begin())).begin() );
+                        if(!e.is_markDep()) {
                             trans.priority = e;
                         }else {
                             cout<<"Priority is not marking dependent "<<endl;
@@ -787,7 +745,10 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             bool markingdependant=false;
 			for (treeSI it3 = it2.begin(); it3 != it2.end(); ++it3) {
                 if (*it3 == "expr") {
-					eval_expr(&markingdependant, valuation, it3.begin() );
+					const auto e = eval_expr( it3.begin() );
+                    stringstream ss; ss << e;
+                    valuation = ss.str();
+                    markingdependant |= e.is_markDep();
 				} else if (*it3 == "token") {
                     coloredToken tokenType;
 					tokenType.hasAll = false;

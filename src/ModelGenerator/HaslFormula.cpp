@@ -367,10 +367,12 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 		double mean = batch.Mean[Algebraic]/batch.Isucc;
 		double m2 = batch.M2[Algebraic]/batch.Isucc;
 		double variance = m2 - mean * mean;
-		
-		variance += 1.0/batch.Isucc;
-		//Here the +1 come from the Chows and Robbin algorithm
-		
+
+        if(P.Width!=0){
+            variance += 1.0/batch.Isucc;
+            //Here the +1 come from the Chows and Robbin algorithm
+        }
+
 		double width = 2 * Value * sqrt(variance/batch.Isucc);
 		
 		return ConfInt(mean,width,batch.Min[Algebraic],batch.Max[Algebraic]);

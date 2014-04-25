@@ -15,19 +15,19 @@ using namespace std;
 std::ostream& operator<<(std::ostream& os, const class expr& e)
 {
     switch (e.t) {
-        case Empty: os << " /*Empty*/ ";
+        case Empty:
             break;
-        case UnParsed: os << " /*UnParsed*/" << e.stringVal << " ";
+        case UnParsed: os << e.stringVal << " ";
             break;
-        case Bool: os << " /*Bool*/" << e.boolVal << " ";
+        case Bool: os  << e.boolVal << " ";
             break;
-        case Int: os << " /*Int*/" << e.intVal << " ";
+        case Int: os << e.intVal << " ";
             break;
-        case Real: os << " /*Real*/" << e.realVal << " ";
+        case Real: os << e.realVal << " ";
             break;
         case PlaceName: os << " Marking.P->_PL_" << e.stringVal << " ";
             break;
-        case Constant: os << " /*Constant*/" << e.stringVal << " ";
+        case Constant: os  << e.stringVal << " ";
             break;
         case Ceil: os << " ceil(" << e.lhs << ") ";
             break;
@@ -230,4 +230,10 @@ void expr::get_places(set<string> & acset)const{
     if(t==PlaceName)acset.insert(stringVal);
     if(lhs.use_count()>0)lhs->get_places(acset);
     if(rhs.use_count()>0)lhs->get_places(acset);
+}
+
+bool expr::is_markDep()const{
+    set<string> accset;
+    get_places(accset);
+    return !accset.empty();
 }

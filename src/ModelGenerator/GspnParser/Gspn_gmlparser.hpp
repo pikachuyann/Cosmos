@@ -69,14 +69,13 @@ public:
 					 const XmlStringList& references);
 	
 private:
-	expr eval_expr(bool *is_mark_dep, string &st, tree<string>::pre_order_iterator it );
-    int eval_intFormula( map<std::string,int> intconst, tree<string>::pre_order_iterator it );
+	expr eval_expr(tree<string>::pre_order_iterator it );
+    int eval_intFormula( tree<string>::pre_order_iterator it );
+    double eval_realFormula(tree<string>::pre_order_iterator it );
 	void eval_tokenProfileArc(coloredToken& ,bool &, tree<string>::pre_order_iterator);
 	expr eval_guard(tree<string>::pre_order_iterator);
-	
-    string itostring (int i);
+
 	string simplifyString(string str);
-	void appendSimplify(string &st, string str);
 	treeSI findbranch(treeSI t, string branch);
 };
 
