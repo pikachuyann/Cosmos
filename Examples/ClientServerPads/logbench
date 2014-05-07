@@ -1,0 +1,500 @@
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=5,NbPosition=4' --unfold clientserverunfoldCli5Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:67	Number of Transitions:53	Number of Arcs:120
+Time for building the simulator:	0.056416s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=10,NbPosition=4' --unfold clientserverunfoldCli10Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:127	Number of Transitions:103	Number of Arcs:240
+Time for building the simulator:	0.03553s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=15,NbPosition=4' --unfold clientserverunfoldCli15Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:187	Number of Transitions:153	Number of Arcs:360
+Time for building the simulator:	0.044247s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=20,NbPosition=4' --unfold clientserverunfoldCli20Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:247	Number of Transitions:203	Number of Arcs:480
+Time for building the simulator:	0.05696s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=25,NbPosition=4' --unfold clientserverunfoldCli25Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:307	Number of Transitions:253	Number of Arcs:600
+Time for building the simulator:	0.064881s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=30,NbPosition=4' --unfold clientserverunfoldCli30Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:367	Number of Transitions:303	Number of Arcs:720
+Time for building the simulator:	0.076126s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=35,NbPosition=4' --unfold clientserverunfoldCli35Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:427	Number of Transitions:353	Number of Arcs:840
+Time for building the simulator:	0.083123s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=40,NbPosition=4' --unfold clientserverunfoldCli40Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:487	Number of Transitions:403	Number of Arcs:960
+Time for building the simulator:	0.093734s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=45,NbPosition=4' --unfold clientserverunfoldCli45Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:547	Number of Transitions:453	Number of Arcs:1080
+Time for building the simulator:	0.111642s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=50,NbPosition=4' --unfold clientserverunfoldCli50Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:607	Number of Transitions:503	Number of Arcs:1200
+Time for building the simulator:	0.116842s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=55,NbPosition=4' --unfold clientserverunfoldCli55Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:667	Number of Transitions:553	Number of Arcs:1320
+Time for building the simulator:	0.126023s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=60,NbPosition=4' --unfold clientserverunfoldCli60Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:727	Number of Transitions:603	Number of Arcs:1440
+Time for building the simulator:	0.130518s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=65,NbPosition=4' --unfold clientserverunfoldCli65Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:787	Number of Transitions:653	Number of Arcs:1560
+Time for building the simulator:	0.144222s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=70,NbPosition=4' --unfold clientserverunfoldCli70Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:847	Number of Transitions:703	Number of Arcs:1680
+Time for building the simulator:	0.15682s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=75,NbPosition=4' --unfold clientserverunfoldCli75Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:907	Number of Transitions:753	Number of Arcs:1800
+Time for building the simulator:	0.165272s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=80,NbPosition=4' --unfold clientserverunfoldCli80Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:967	Number of Transitions:803	Number of Arcs:1920
+Time for building the simulator:	0.175136s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=85,NbPosition=4' --unfold clientserverunfoldCli85Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1027	Number of Transitions:853	Number of Arcs:2040
+Time for building the simulator:	0.219959s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=90,NbPosition=4' --unfold clientserverunfoldCli90Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1087	Number of Transitions:903	Number of Arcs:2160
+Time for building the simulator:	0.192964s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=95,NbPosition=4' --unfold clientserverunfoldCli95Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1147	Number of Transitions:953	Number of Arcs:2280
+Time for building the simulator:	0.205326s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=100,NbPosition=4' --unfold clientserverunfoldCli100Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1207	Number of Transitions:1003	Number of Arcs:2400
+Time for building the simulator:	0.211441s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=105,NbPosition=4' --unfold clientserverunfoldCli105Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1267	Number of Transitions:1053	Number of Arcs:2520
+Time for building the simulator:	0.224492s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=110,NbPosition=4' --unfold clientserverunfoldCli110Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1327	Number of Transitions:1103	Number of Arcs:2640
+Time for building the simulator:	0.231556s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=115,NbPosition=4' --unfold clientserverunfoldCli115Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1387	Number of Transitions:1153	Number of Arcs:2760
+Time for building the simulator:	0.24662s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=120,NbPosition=4' --unfold clientserverunfoldCli120Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1447	Number of Transitions:1203	Number of Arcs:2880
+Time for building the simulator:	0.255178s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=125,NbPosition=4' --unfold clientserverunfoldCli125Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1507	Number of Transitions:1253	Number of Arcs:3000
+Time for building the simulator:	0.27703s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=130,NbPosition=4' --unfold clientserverunfoldCli130Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1567	Number of Transitions:1303	Number of Arcs:3120
+Time for building the simulator:	0.269729s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=135,NbPosition=4' --unfold clientserverunfoldCli135Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1627	Number of Transitions:1353	Number of Arcs:3240
+Time for building the simulator:	0.289112s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=140,NbPosition=4' --unfold clientserverunfoldCli140Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1687	Number of Transitions:1403	Number of Arcs:3360
+Time for building the simulator:	0.29483s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=145,NbPosition=4' --unfold clientserverunfoldCli145Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1747	Number of Transitions:1453	Number of Arcs:3480
+Time for building the simulator:	0.299728s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=150,NbPosition=4' --unfold clientserverunfoldCli150Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1807	Number of Transitions:1503	Number of Arcs:3600
+Time for building the simulator:	0.317637s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=155,NbPosition=4' --unfold clientserverunfoldCli155Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1867	Number of Transitions:1553	Number of Arcs:3720
+Time for building the simulator:	0.313447s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=160,NbPosition=4' --unfold clientserverunfoldCli160Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1927	Number of Transitions:1603	Number of Arcs:3840
+Time for building the simulator:	0.327089s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=165,NbPosition=4' --unfold clientserverunfoldCli165Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:1987	Number of Transitions:1653	Number of Arcs:3960
+Time for building the simulator:	0.345622s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=170,NbPosition=4' --unfold clientserverunfoldCli170Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2047	Number of Transitions:1703	Number of Arcs:4080
+Time for building the simulator:	0.358627s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=175,NbPosition=4' --unfold clientserverunfoldCli175Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2107	Number of Transitions:1753	Number of Arcs:4200
+Time for building the simulator:	0.358523s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=180,NbPosition=4' --unfold clientserverunfoldCli180Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2167	Number of Transitions:1803	Number of Arcs:4320
+Time for building the simulator:	0.380036s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=185,NbPosition=4' --unfold clientserverunfoldCli185Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2227	Number of Transitions:1853	Number of Arcs:4440
+Time for building the simulator:	0.38256s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=190,NbPosition=4' --unfold clientserverunfoldCli190Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2287	Number of Transitions:1903	Number of Arcs:4560
+Time for building the simulator:	0.403668s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=195,NbPosition=4' --unfold clientserverunfoldCli195Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2347	Number of Transitions:1953	Number of Arcs:4680
+Time for building the simulator:	0.410056s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=200,NbPosition=4' --unfold clientserverunfoldCli200Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2407	Number of Transitions:2003	Number of Arcs:4800
+Time for building the simulator:	0.413283s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=205,NbPosition=4' --unfold clientserverunfoldCli205Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2467	Number of Transitions:2053	Number of Arcs:4920
+Time for building the simulator:	0.43128s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=210,NbPosition=4' --unfold clientserverunfoldCli210Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2527	Number of Transitions:2103	Number of Arcs:5040
+Time for building the simulator:	0.446056s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=215,NbPosition=4' --unfold clientserverunfoldCli215Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2587	Number of Transitions:2153	Number of Arcs:5160
+Time for building the simulator:	0.448585s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=220,NbPosition=4' --unfold clientserverunfoldCli220Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2647	Number of Transitions:2203	Number of Arcs:5280
+Time for building the simulator:	0.457925s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=225,NbPosition=4' --unfold clientserverunfoldCli225Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2707	Number of Transitions:2253	Number of Arcs:5400
+Time for building the simulator:	0.476077s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=230,NbPosition=4' --unfold clientserverunfoldCli230Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2767	Number of Transitions:2303	Number of Arcs:5520
+Time for building the simulator:	0.482862s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=235,NbPosition=4' --unfold clientserverunfoldCli235Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2827	Number of Transitions:2353	Number of Arcs:5640
+Time for building the simulator:	0.485949s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=240,NbPosition=4' --unfold clientserverunfoldCli240Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2887	Number of Transitions:2403	Number of Arcs:5760
+Time for building the simulator:	0.490808s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=245,NbPosition=4' --unfold clientserverunfoldCli245Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:2947	Number of Transitions:2453	Number of Arcs:5880
+Time for building the simulator:	0.517448s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=250,NbPosition=4' --unfold clientserverunfoldCli250Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3007	Number of Transitions:2503	Number of Arcs:6000
+Time for building the simulator:	0.531095s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=255,NbPosition=4' --unfold clientserverunfoldCli255Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3067	Number of Transitions:2553	Number of Arcs:6120
+Time for building the simulator:	0.540868s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=260,NbPosition=4' --unfold clientserverunfoldCli260Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3127	Number of Transitions:2603	Number of Arcs:6240
+Time for building the simulator:	0.552797s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=265,NbPosition=4' --unfold clientserverunfoldCli265Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3187	Number of Transitions:2653	Number of Arcs:6360
+Time for building the simulator:	0.699314s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=270,NbPosition=4' --unfold clientserverunfoldCli270Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3247	Number of Transitions:2703	Number of Arcs:6480
+Time for building the simulator:	0.598427s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=275,NbPosition=4' --unfold clientserverunfoldCli275Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3307	Number of Transitions:2753	Number of Arcs:6600
+Time for building the simulator:	0.579052s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=280,NbPosition=4' --unfold clientserverunfoldCli280Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3367	Number of Transitions:2803	Number of Arcs:6720
+Time for building the simulator:	0.597735s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=285,NbPosition=4' --unfold clientserverunfoldCli285Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3427	Number of Transitions:2853	Number of Arcs:6840
+Time for building the simulator:	0.603827s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=290,NbPosition=4' --unfold clientserverunfoldCli290Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3487	Number of Transitions:2903	Number of Arcs:6960
+Time for building the simulator:	0.610571s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=295,NbPosition=4' --unfold clientserverunfoldCli295Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3547	Number of Transitions:2953	Number of Arcs:7080
+Time for building the simulator:	0.630297s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=300,NbPosition=4' --unfold clientserverunfoldCli300Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3607	Number of Transitions:3003	Number of Arcs:7200
+Time for building the simulator:	0.644435s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=305,NbPosition=4' --unfold clientserverunfoldCli305Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3667	Number of Transitions:3053	Number of Arcs:7320
+Time for building the simulator:	0.644697s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=310,NbPosition=4' --unfold clientserverunfoldCli310Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3727	Number of Transitions:3103	Number of Arcs:7440
+Time for building the simulator:	0.654128s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=315,NbPosition=4' --unfold clientserverunfoldCli315Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3787	Number of Transitions:3153	Number of Arcs:7560
+Time for building the simulator:	0.67772s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=320,NbPosition=4' --unfold clientserverunfoldCli320Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3847	Number of Transitions:3203	Number of Arcs:7680
+Time for building the simulator:	0.697272s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=325,NbPosition=4' --unfold clientserverunfoldCli325Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3907	Number of Transitions:3253	Number of Arcs:7800
+Time for building the simulator:	0.690286s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=330,NbPosition=4' --unfold clientserverunfoldCli330Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:3967	Number of Transitions:3303	Number of Arcs:7920
+Time for building the simulator:	0.699252s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=335,NbPosition=4' --unfold clientserverunfoldCli335Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4027	Number of Transitions:3353	Number of Arcs:8040
+Time for building the simulator:	0.70284s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=340,NbPosition=4' --unfold clientserverunfoldCli340Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4087	Number of Transitions:3403	Number of Arcs:8160
+Time for building the simulator:	0.728468s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=345,NbPosition=4' --unfold clientserverunfoldCli345Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4147	Number of Transitions:3453	Number of Arcs:8280
+Time for building the simulator:	0.734783s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=350,NbPosition=4' --unfold clientserverunfoldCli350Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4207	Number of Transitions:3503	Number of Arcs:8400
+Time for building the simulator:	0.753046s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=355,NbPosition=4' --unfold clientserverunfoldCli355Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4267	Number of Transitions:3553	Number of Arcs:8520
+Time for building the simulator:	0.768594s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=360,NbPosition=4' --unfold clientserverunfoldCli360Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4327	Number of Transitions:3603	Number of Arcs:8640
+Time for building the simulator:	0.771729s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=365,NbPosition=4' --unfold clientserverunfoldCli365Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4387	Number of Transitions:3653	Number of Arcs:8760
+Time for building the simulator:	0.776688s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=370,NbPosition=4' --unfold clientserverunfoldCli370Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4447	Number of Transitions:3703	Number of Arcs:8880
+Time for building the simulator:	0.79167s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=375,NbPosition=4' --unfold clientserverunfoldCli375Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4507	Number of Transitions:3753	Number of Arcs:9000
+Time for building the simulator:	0.797817s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=380,NbPosition=4' --unfold clientserverunfoldCli380Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4567	Number of Transitions:3803	Number of Arcs:9120
+Time for building the simulator:	0.837404s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=385,NbPosition=4' --unfold clientserverunfoldCli385Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4627	Number of Transitions:3853	Number of Arcs:9240
+Time for building the simulator:	0.849785s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=390,NbPosition=4' --unfold clientserverunfoldCli390Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4687	Number of Transitions:3903	Number of Arcs:9360
+Time for building the simulator:	0.867181s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=395,NbPosition=4' --unfold clientserverunfoldCli395Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4747	Number of Transitions:3953	Number of Arcs:9480
+Time for building the simulator:	0.876375s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=400,NbPosition=4' --unfold clientserverunfoldCli400Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4807	Number of Transitions:4003	Number of Arcs:9600
+Time for building the simulator:	0.890857s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=405,NbPosition=4' --unfold clientserverunfoldCli405Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4867	Number of Transitions:4053	Number of Arcs:9720
+Time for building the simulator:	0.898051s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=410,NbPosition=4' --unfold clientserverunfoldCli410Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4927	Number of Transitions:4103	Number of Arcs:9840
+Time for building the simulator:	0.915126s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=415,NbPosition=4' --unfold clientserverunfoldCli415Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:4987	Number of Transitions:4153	Number of Arcs:9960
+Time for building the simulator:	0.934357s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=420,NbPosition=4' --unfold clientserverunfoldCli420Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5047	Number of Transitions:4203	Number of Arcs:10080
+Time for building the simulator:	0.948536s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=425,NbPosition=4' --unfold clientserverunfoldCli425Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5107	Number of Transitions:4253	Number of Arcs:10200
+Time for building the simulator:	0.939815s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=430,NbPosition=4' --unfold clientserverunfoldCli430Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5167	Number of Transitions:4303	Number of Arcs:10320
+Time for building the simulator:	0.958112s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=435,NbPosition=4' --unfold clientserverunfoldCli435Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5227	Number of Transitions:4353	Number of Arcs:10440
+Time for building the simulator:	0.95615s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=440,NbPosition=4' --unfold clientserverunfoldCli440Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5287	Number of Transitions:4403	Number of Arcs:10560
+Time for building the simulator:	0.97544s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=445,NbPosition=4' --unfold clientserverunfoldCli445Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5347	Number of Transitions:4453	Number of Arcs:10680
+Time for building the simulator:	0.9977s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=450,NbPosition=4' --unfold clientserverunfoldCli450Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5407	Number of Transitions:4503	Number of Arcs:10800
+Time for building the simulator:	0.986062s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=455,NbPosition=4' --unfold clientserverunfoldCli455Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5467	Number of Transitions:4553	Number of Arcs:10920
+Time for building the simulator:	1.02075s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=460,NbPosition=4' --unfold clientserverunfoldCli460Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5527	Number of Transitions:4603	Number of Arcs:11040
+Time for building the simulator:	1.0309s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=465,NbPosition=4' --unfold clientserverunfoldCli465Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5587	Number of Transitions:4653	Number of Arcs:11160
+Time for building the simulator:	1.05102s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=470,NbPosition=4' --unfold clientserverunfoldCli470Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5647	Number of Transitions:4703	Number of Arcs:11280
+Time for building the simulator:	1.03261s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=475,NbPosition=4' --unfold clientserverunfoldCli475Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5707	Number of Transitions:4753	Number of Arcs:11400
+Time for building the simulator:	1.05864s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=480,NbPosition=4' --unfold clientserverunfoldCli480Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5767	Number of Transitions:4803	Number of Arcs:11520
+Time for building the simulator:	1.06188s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=485,NbPosition=4' --unfold clientserverunfoldCli485Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5827	Number of Transitions:4853	Number of Arcs:11640
+Time for building the simulator:	1.08168s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=490,NbPosition=4' --unfold clientserverunfoldCli490Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5887	Number of Transitions:4903	Number of Arcs:11760
+Time for building the simulator:	1.14535s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=495,NbPosition=4' --unfold clientserverunfoldCli495Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:5947	Number of Transitions:4953	Number of Arcs:11880
+Time for building the simulator:	1.11242s
+Cosmos ClientServerStoch3PS.grml  -v 0 --const 'NbClient=500,NbPosition=4' --unfold clientserverunfoldCli500Pos4.grml --loop 100 --max-run 1000 --width 0 --njob 1 -v 1
+Cosmos
+Start Parsing ClientServerStoch3PS.grml
+Number of Places:6007	Number of Transitions:5003	Number of Arcs:12000
+Time for building the simulator:	1.12234s
