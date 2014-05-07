@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model formalismUrl="http://formalisms.cosyverif.org/sptgd-net.fml" xmlns="http://cosyverif.org/ns/model">
+	<node id="0" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_1</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="1" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_2</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="2" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_3</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="3" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_4</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="4" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_5</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="5" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_6</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="6" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_7</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="7" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_8</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="8" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_9</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="9" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_10</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="10" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_11</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="11" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_12</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="12" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_13</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="13" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_14</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="14" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_15</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="15" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_16</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="16" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_17</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="17" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_18</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="18" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_19</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="19" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_20</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="20" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_21</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="21" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_22</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="22" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_23</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="23" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_24</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="24" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_25</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="25" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_26</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="26" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_27</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="27" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_28</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="28" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_29</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="29" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_30</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="30" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_31</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="31" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_32</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="32" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_33</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="33" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_34</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="34" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_35</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="35" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_36</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="36" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_37</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="37" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_38</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="38" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_39</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="39" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_40</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="40" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_41</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="41" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_42</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="42" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_43</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="43" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_44</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="44" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_45</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="45" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_46</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="46" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_47</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="47" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_48</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="48" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_49</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="49" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_50</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="50" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_51</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="51" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_52</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="52" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_53</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="53" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_54</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="54" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_55</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="55" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_56</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
+		</attribute></attribute></attribute>
+	</node>
+	<node id="56" nodeType="place">
+		<attribute name="name">ReadyOutput_client_IC_57</attribute>
+		<attribute name="marking"><attribute name="expr"><attribute name="numValue">
+			0
