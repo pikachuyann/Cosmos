@@ -5,12 +5,14 @@ all:
 	(cd testDistribution && ocaml test.ml $(INTC))
 	(cd Workflow-Net && ocaml test.ml $(INTC))
 	(cd QueueMM1 && ocaml test.ml $(INTC))
-	(cd RareEventUnbounded && ocaml test.ml $(INTC))
+	(cd signallingCascade && ocaml test.ml $(INTC))
 	(cd DataBase && ocaml test.ml $(INTC))
+	(cd RareEventUnbounded && ocaml test.ml $(INTC))
 #	(cd RareEventUnbounded && ocaml test2.ml $(INTC))
 #	(cd TandemCosy && ocaml testPrism.ml $(INTC))
 	(cd SharedMemory && ocaml test.ml $(INTC))
 	(cd RareEventU && ocaml test.ml $(INTC))
+
 
 bash:
 	export INTC=bash && $(MAKE) all
