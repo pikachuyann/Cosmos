@@ -58,7 +58,7 @@ std::ostream& operator<<(std::ostream& os, const class expr& e)
             break;
         case Minus: os << " (" << *(e.lhs) << " - " << *(e.rhs) << ") ";
             break;
-        case Div: os << " (" << *(e.lhs) << " / " << *(e.rhs) << ") ";
+        case Div: os << " (" << *(e.lhs) << " / (double) " << *(e.rhs) << ") ";
             break;
         case Min: os << " min(" << *(e.lhs) << ", " << *(e.rhs) << ") ";
             break;
