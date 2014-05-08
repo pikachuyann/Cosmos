@@ -116,7 +116,7 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it)
         if (*it == "+") { return expr(Plus,lhs,rhs); }
         else if (*it == "*") { return expr(Times,lhs,rhs); }
         else if (*it == "-") { return expr(Minus,lhs,rhs); }
-        else if (*it == "/") { return expr(Floor,lhs,rhs); }
+        else if (*it == "/") { return expr(Div,lhs,rhs); }
         else if (*it == "power") { return expr(Pow,lhs,rhs); }
         else if (*it == "ceil") { return expr(Ceil,lhs,rhs); }
         else { return expr(Floor,lhs,rhs); }
