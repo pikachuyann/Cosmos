@@ -1,10 +1,29 @@
-//
-//  expressionStruct.cpp
-//  Cosmos
-//
-//  Created by Benoit Barbot on 17/04/2014.
-//
-//
+/*******************************************************************************
+ *                                                                             *
+ * Cosmos:(C)oncept et (O)utils (S)tatistique pour les (Mo)deles               *
+ * (S)tochastiques                                                             *
+ *                                                                             *
+ * Copyright (C) 2009-2012 LSV & LACL                                          *
+ * Authors: Paolo Ballarini Benoît Barbot & Hilal Djafri                       *
+ * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify        *
+ * it under the terms of the GNU General Public License as published by        *
+ * the Free Software Foundation; either version 3 of the License, or           *
+ * (at your option) any later version.                                         *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful,             *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of              *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               *
+ * GNU General Public License for more details.                                *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc.,     *
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
+ * file expressionStruct.cpp                                                   *
+ * Created by Benoit Barbot on 17/04/14.                                       *
+ *******************************************************************************
+ */
 
 #include "expressionStruct.hpp"
 
@@ -15,19 +34,19 @@ using namespace std;
 std::ostream& operator<<(std::ostream& os, const class expr& e)
 {
     switch (e.t) {
-        case Empty: os << " /*Empty*/ ";
+        case Empty:
             break;
-        case UnParsed: os << " /*UnParsed*/" << e.stringVal << " ";
+        case UnParsed: os << e.stringVal << " ";
             break;
-        case Bool: os << " /*Bool*/" << e.boolVal << " ";
+        case Bool: os  << e.boolVal << " ";
             break;
-        case Int: os << " /*Int*/" << e.intVal << " ";
+        case Int: os << e.intVal << " ";
             break;
-        case Real: os << " /*Real*/" << e.realVal << " ";
+        case Real: os << e.realVal << " ";
             break;
         case PlaceName: os << " Marking.P->_PL_" << e.stringVal << " ";
             break;
-        case Constant: os << " /*Constant*/" << e.stringVal << " ";
+        case Constant: os  << e.stringVal << " ";
             break;
         case Ceil: os << " ceil(" << e.lhs << ") ";
             break;
@@ -39,7 +58,7 @@ std::ostream& operator<<(std::ostream& os, const class expr& e)
             break;
         case Minus: os << " (" << *(e.lhs) << " - " << *(e.rhs) << ") ";
             break;
-        case Div: os << " (" << *(e.lhs) << " / " << *(e.rhs) << ") ";
+        case Div: os << " (" << *(e.lhs) << " / (double) " << *(e.rhs) << ") ";
             break;
         case Min: os << " min(" << *(e.lhs) << ", " << *(e.rhs) << ") ";
             break;
@@ -230,4 +249,10 @@ void expr::get_places(set<string> & acset)const{
     if(t==PlaceName)acset.insert(stringVal);
     if(lhs.use_count()>0)lhs->get_places(acset);
     if(rhs.use_count()>0)lhs->get_places(acset);
+}
+
+bool expr::is_markDep()const{
+    set<string> accset;
+    get_places(accset);
+    return !accset.empty();
 }
