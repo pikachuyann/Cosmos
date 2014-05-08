@@ -28,50 +28,53 @@ let print_pl f name id tok =
   </node>\n" !id name tok;
   incr id;;
 
-let print_arc f id source target valuation =
-  Printf.fprintf f "<arc id=\"%i\" arcType=\"arc\" source=\"%i\" target=\"%i\">
+let print_arc f id source target valuation inhib =
+  let arctype = if inhib then "inhibitorarc" else "arc" in
+  Printf.fprintf f "  <arc id=\"%i\" arcType=\"%s\" source=\"%i\" target=\"%i\">
     <attribute name=\"valuation\">
       <attribute name=\"expr\"><attribute name=\"numValue\">
         %i
       </attribute></attribute>
     </attribute>
-  </arc>\n" !id source target valuation; 
+  </arc>\n" !id arctype source target valuation; 
   incr id;;
 
-let generate_spn fpath n lambda rho r=
-  let f = open_out fpath in
-  let countid = ref 0 in
+let gen_const f li lr =
   Printf.fprintf f "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">
   <attribute name=\"declaration\"><attribute name=\"constants\">
-      <attribute name=\"intConsts\">
-        <attribute name=\"intConst\">
-          <attribute name=\"name\">r</attribute>
-          <attribute name=\"expr\"><attribute name=\"numValue\">
-              %i
-          </attribute></attribute>
-        </attribute>
-      </attribute>
-      <attribute name=\"realConsts\">
-        <attribute name=\"realConst\">
-          <attribute name=\"name\">lambda</attribute>
-          <attribute name=\"expr\"><attribute name=\"numValue\">
-              %f
-          </attribute></attribute>
-        </attribute>" r lambda;
-  for i = 1 to n do Printf.fprintf f
-"        <attribute name=\"realConst\">
-          <attribute name=\"name\">rho%i</attribute>
-          <attribute name=\"expr\"><attribute name=\"numValue\">
-              %f
-          </attribute></attribute>
-        </attribute>" i (rho i);
-  done;
-  Printf.fprintf f
-"     </attribute>
+    <attribute name=\"intConsts\">\n";
+  List.iter (fun (n,v) -> 
+     Printf.fprintf f "      <attribute name=\"intConst\">
+        <attribute name=\"name\">%s</attribute>
+        <attribute name=\"expr\"><attribute name=\"numValue\">
+            %i
+        </attribute></attribute>
+      </attribute>\n" n v) li;
+  
+  Printf.fprintf f "    </attribute>
+    <attribute name=\"realConsts\">\n";
+  List.iter (fun (n,v) -> 
+    Printf.fprintf f "      <attribute name=\"realConst\">
+        <attribute name=\"name\">%s</attribute>
+        <attribute name=\"expr\"><attribute name=\"numValue\">
+            %f
+        </attribute></attribute>
+      </attribute>\n" n v) lr;
+    Printf.fprintf f
+      "     </attribute>
     </attribute>
-  </attribute>\n";
+  </attribute>\n"
 
+let generate_spn fpath n n2 lambda rho r genDTMC=
+  let f = open_out fpath in
+  let countid = ref 0 in
+  let li = [("r",r); ("Nmax",n2)]
+  and lr = ref ["lambda",lambda] in
+  for i = 1 to n do
+    lr := (("rho"^string_of_int i),rho i):: !lr;
+  done;
+  gen_const f li !lr;
 
   for i =1 to n do
     print_pl f ("RE_Queue"^(string_of_int i)) countid (if i=1 then 1 else 0);
@@ -82,49 +85,31 @@ let generate_spn fpath n lambda rho r=
   for i =1 to n do
     print_tr f ("Serve"^(string_of_int i)) countid ("rho"^(string_of_int i));
   done;
+  
+  if genDTMC then for i =1 to n do
+      print_tr f ("AServe"^(string_of_int i)) countid ("rho"^(string_of_int i));
+    done;
 
   for i =0 to n-1 do
-    print_arc f countid (n+i) i 1;
-    print_arc f countid i (n+i+1) 1;
+    print_arc f countid (n+i) i 1 false;
+    print_arc f countid i (n+i+1) 1 false;
   done;
+  
+  if genDTMC then for i =0 to n-1 do
+      print_arc f countid i (2*n+i+1) 1 true;
+    done;
   Printf.fprintf f "</model>";
   close_out f;;
-
 
 let generate_reduce_spn fpath n lambda rho r =
   let f = open_out fpath in
   let countid = ref 0 in
-  Printf.fprintf f "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">
-  <attribute name=\"declaration\"><attribute name=\"constants\">
-      <attribute name=\"intConsts\">
-        <attribute name=\"intConst\">
-          <attribute name=\"name\">r</attribute>
-          <attribute name=\"expr\"><attribute name=\"numValue\">
-              %i
-          </attribute></attribute>
-        </attribute>
-      </attribute>
-      <attribute name=\"realConsts\">
-        <attribute name=\"realConst\">
-          <attribute name=\"name\">lambda</attribute>
-          <attribute name=\"expr\"><attribute name=\"numValue\">
-              %f
-          </attribute></attribute>
-        </attribute>" r lambda;
-  for i = 1 to n do Printf.fprintf f
-"        <attribute name=\"realConst\">
-          <attribute name=\"name\">rho%i</attribute>
-          <attribute name=\"expr\"><attribute name=\"numValue\">
-              %f
-          </attribute></attribute>
-        </attribute>" i (rho i);
+  let li = [("r",r)]
+  and lr = ref [("lambda"),lambda] in
+  for i = 1 to n do
+    lr := (("rho"^string_of_int i),rho i):: !lr;
   done;
-  Printf.fprintf f
-"      </attribute>
-    </attribute>
-  </attribute>\n";
-
+  gen_const f li !lr;
 
   for i =1 to n do
     print_pl f ("RE_Queue"^(string_of_int i)) countid (if i=1 then 1 else 0);
@@ -141,11 +126,11 @@ let generate_reduce_spn fpath n lambda rho r =
   done;
 
   for i =0 to n-1 do
-    print_arc f countid (n+i) i 1;(*post*)
-    print_arc f countid i (n+i+1) 1;(*pre*)
+    print_arc f countid (n+i) i 1 false ;(*post*)
+    print_arc f countid i (n+i+1) 1 false ;(*pre*)
     if i>=1 then (
-    print_arc f countid (2*n+i) (n+i) 1; (*pre*)
-    print_arc f countid (n+i+1) (2*n+i) 1; (*post*)
+    print_arc f countid (2*n+i) (n+i) 1 false ; (*pre*)
+    print_arc f countid (n+i+1) (2*n+i) 1 false; (*post*)
     )
   done;
   Printf.fprintf f "</model>";
@@ -239,7 +224,8 @@ let generate n n2 r mu rho =
   Printf.printf "Generate n=%i n2=%i r=%i mu=%f" n n2 r mu;
   for i =1 to n do Printf.printf " rho%i=%f" i (rho i) done;
   print_newline ();
-  generate_spn "tandem.grml" n mu rho r;
+  generate_spn "tandem.grml" n n2 mu rho r false;
+  generate_spn "tandemDTMC.grml" n n2 mu rho r true;
   generate_marcie "tandem.andl" n mu rho r n2;
   generate_csl "tandem.csl" n n2;
   generate_reduce_spn "tandemRE.grml" n mu rho r;

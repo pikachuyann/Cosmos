@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model formalismUrl="http://formalisms.cosyverif.org/sptgd-net.fml" xmlns="http://cosyverif.org/ns/model">
+  <attribute name="declaration"><attribute name="constants">
+    <attribute name="intConsts">
+      <attribute name="intConst">
+        <attribute name="name">r</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            3
+        </attribute></attribute>
+      </attribute>
+      <attribute name="intConst">
+        <attribute name="name">Nmax</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            30
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+    <attribute name="realConsts">
+      <attribute name="realConst">
+        <attribute name="name">rho9</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            0.110000
+        </attribute></attribute>
+      </attribute>
+      <attribute name="realConst">
+        <attribute name="name">rho8</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            0.110000
+        </attribute></attribute>
+      </attribute>
+      <attribute name="realConst">
+        <attribute name="name">rho7</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            0.110000
+        </attribute></attribute>
+      </attribute>
+      <attribute name="realConst">
+        <attribute name="name">rho6</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            0.110000
+        </attribute></attribute>
+      </attribute>
+      <attribute name="realConst">
+        <attribute name="name">rho5</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            0.110000
+        </attribute></attribute>
+      </attribute>
+      <attribute name="realConst">
+        <attribute name="name">rho4</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            0.110000
+        </attribute></attribute>
+      </attribute>
+      <attribute name="realConst">
+        <attribute name="name">rho3</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            0.110000
+        </attribute></attribute>
+      </attribute>
+      <attribute name="realConst">
+        <attribute name="name">rho2</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            0.110000
+        </attribute></attribute>
+      </attribute>
+      <attribute name="realConst">
+        <attribute name="name">rho1</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            0.010000
+        </attribute></attribute>
+      </attribute>
+      <attribute name="realConst">
+        <attribute name="name">lambda</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            0.110000
+        </attribute></attribute>
+      </attribute>
+     </attribute>
+    </attribute>
+  </attribute>
+  <node id="0" nodeType="place">
+    <attribute name="name">RE_Queue1</attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="1" nodeType="place">
+    <attribute name="name">RE_Queue2</attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="2" nodeType="place">
+    <attribute name="name">RE_Queue3</attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="3" nodeType="place">
+    <attribute name="name">RE_Queue4</attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="4" nodeType="place">
+    <attribute name="name">RE_Queue5</attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="5" nodeType="place">
+    <attribute name="name">RE_Queue6</attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="6" nodeType="place">
+    <attribute name="name">RE_Queue7</attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="7" nodeType="place">
+    <attribute name="name">RE_Queue8</attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="8" nodeType="place">
+    <attribute name="name">RE_Queue9</attribute>
+    <attribute name="marking">
+      <attribute name="expr"><attribute name="numValue">
+        0
+      </attribute></attribute>
+    </attribute>
+  </node>
+  <node id="9" nodeType="transition">
+    <attribute name="name">Arrive</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          lambda
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="10" nodeType="transition">
+    <attribute name="name">Serve1</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho1
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="11" nodeType="transition">
+    <attribute name="name">Serve2</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho2
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="12" nodeType="transition">
+    <attribute name="name">Serve3</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho3
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="13" nodeType="transition">
+    <attribute name="name">Serve4</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho4
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="14" nodeType="transition">
+    <attribute name="name">Serve5</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho5
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="15" nodeType="transition">
+    <attribute name="name">Serve6</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho6
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="16" nodeType="transition">
+    <attribute name="name">Serve7</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho7
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="17" nodeType="transition">
+    <attribute name="name">Serve8</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho8
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="18" nodeType="transition">
+    <attribute name="name">Serve9</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho9
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="19" nodeType="transition">
+    <attribute name="name">AServe1</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho1
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="20" nodeType="transition">
+    <attribute name="name">AServe2</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho2
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="21" nodeType="transition">
+    <attribute name="name">AServe3</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho3
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="22" nodeType="transition">
+    <attribute name="name">AServe4</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho4
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="23" nodeType="transition">
+    <attribute name="name">AServe5</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho5
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="24" nodeType="transition">
+    <attribute name="name">AServe6</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho6
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="25" nodeType="transition">
+    <attribute name="name">AServe7</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho7
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="26" nodeType="transition">
+    <attribute name="name">AServe8</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho8
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <node id="27" nodeType="transition">
+    <attribute name="name">AServe9</attribute>
+    <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr"><attribute name="name">
+          rho9
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>
+  <arc id="28" arcType="arc" source="9" target="0">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="29" arcType="arc" source="0" target="10">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="30" arcType="arc" source="10" target="1">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="31" arcType="arc" source="1" target="11">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="32" arcType="arc" source="11" target="2">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="33" arcType="arc" source="2" target="12">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="34" arcType="arc" source="12" target="3">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="35" arcType="arc" source="3" target="13">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="36" arcType="arc" source="13" target="4">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="37" arcType="arc" source="4" target="14">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="38" arcType="arc" source="14" target="5">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="39" arcType="arc" source="5" target="15">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="40" arcType="arc" source="15" target="6">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="41" arcType="arc" source="6" target="16">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="42" arcType="arc" source="16" target="7">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="43" arcType="arc" source="7" target="17">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="44" arcType="arc" source="17" target="8">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="45" arcType="arc" source="8" target="18">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="46" arcType="inhibitorarc" source="0" target="19">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="47" arcType="inhibitorarc" source="1" target="20">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="48" arcType="inhibitorarc" source="2" target="21">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="49" arcType="inhibitorarc" source="3" target="22">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="50" arcType="inhibitorarc" source="4" target="23">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="51" arcType="inhibitorarc" source="5" target="24">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="52" arcType="inhibitorarc" source="6" target="25">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="53" arcType="inhibitorarc" source="7" target="26">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+  <arc id="54" arcType="inhibitorarc" source="8" target="27">
+    <attribute name="valuation">
+      <attribute name="expr"><attribute name="numValue">
+        1
+      </attribute></attribute>
+    </attribute>
+  </arc>
+</model>

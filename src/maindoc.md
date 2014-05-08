@@ -52,8 +52,8 @@ Cosmos is divided in two main parts.
 
 ## Code generation and compilation
 As part of the simulators is generated at runtime, those part must be compile
-also at runtime. When the tool is compile the fils in the directory Cosmos are
-compiled and put in a library called libClientSim.a in the bin directory.
+also at runtime. When the tool is compile the files in the directory Cosmos are
+compiled and put in a library called libClientSim.a in the lib directory.
 
 During the execution the model generator produce the missing part of the
 simulator in the temporary directory.
