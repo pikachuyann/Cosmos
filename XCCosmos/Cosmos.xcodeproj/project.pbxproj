@@ -812,9 +812,6 @@
 		039A3A5D191A9EEB00B42447 /* csvResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = csvResultFile; sourceTree = "<group>"; };
 		039A3A5E191A9EEB00B42447 /* gen.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = gen.ml; sourceTree = "<group>"; };
 		039A3A5F191A9EEB00B42447 /* lumpingfun.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfun.cpp; sourceTree = "<group>"; };
-		039A3A60191A9EEB00B42447 /* Result_tandem.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result_tandem.res; sourceTree = "<group>"; };
-		039A3A61191A9EEB00B42447 /* Result_tandemIS.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result_tandemIS.res; sourceTree = "<group>"; };
-		039A3A62191A9EEB00B42447 /* StateIndepIS.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = StateIndepIS.res; sourceTree = "<group>"; };
 		039A3A63191A9EEB00B42447 /* Table1.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = Table1.ml; sourceTree = "<group>"; };
 		039A3A64191A9EEB00B42447 /* tandem.andl */ = {isa = PBXFileReference; lastKnownFileType = text; path = tandem.andl; sourceTree = "<group>"; };
 		039A3A65191A9EEB00B42447 /* tandem.csl */ = {isa = PBXFileReference; lastKnownFileType = text; path = tandem.csl; sourceTree = "<group>"; };
@@ -824,17 +821,10 @@
 		039A3A69191A9EEB00B42447 /* tandemDTMC.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = tandemDTMC.grml; sourceTree = "<group>"; };
 		039A3A6A191A9EEB00B42447 /* tandemIS.lha */ = {isa = PBXFileReference; lastKnownFileType = text; path = tandemIS.lha; sourceTree = "<group>"; };
 		039A3A6B191A9EEB00B42447 /* tandemRE.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = tandemRE.grml; sourceTree = "<group>"; };
-		039A3A6D191A9EEB00B42447 /* 0.0 */ = {isa = PBXFileReference; lastKnownFileType = text; path = 0.0; sourceTree = "<group>"; };
-		039A3A6E191A9EEB00B42447 /* CamlResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = CamlResultFile; sourceTree = "<group>"; };
-		039A3A6F191A9EEB00B42447 /* csvResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = csvResultFile; sourceTree = "<group>"; };
 		039A3A70191A9EEB00B42447 /* logvalue.dat */ = {isa = PBXFileReference; lastKnownFileType = text; path = logvalue.dat; sourceTree = "<group>"; };
 		039A3A71191A9EEB00B42447 /* Result.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result.res; sourceTree = "<group>"; };
-		039A3A72191A9EEB00B42447 /* Result_generatedlha.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result_generatedlha.res; sourceTree = "<group>"; };
-		039A3A73191A9EEB00B42447 /* Result_looplha.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result_looplha.res; sourceTree = "<group>"; };
-		039A3A74191A9EEB00B42447 /* Result_samplelha.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result_samplelha.res; sourceTree = "<group>"; };
 		039A3A75191A9EEB00B42447 /* Result_tqn.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result_tqn.res; sourceTree = "<group>"; };
 		039A3A76191A9EEB00B42447 /* samplelha.lha */ = {isa = PBXFileReference; lastKnownFileType = text; path = samplelha.lha; sourceTree = "<group>"; };
-		039A3A77191A9EEB00B42447 /* test */ = {isa = PBXFileReference; lastKnownFileType = text; path = test; sourceTree = "<group>"; };
 		039A3A78191A9EEB00B42447 /* test.dat */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.dat; sourceTree = "<group>"; };
 		039A3A79191A9EEB00B42447 /* test.log */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.log; sourceTree = "<group>"; };
 		039A3A7A191A9EEB00B42447 /* test.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.ml; sourceTree = "<group>"; };
@@ -848,11 +838,6 @@
 		039A3A83191A9EEC00B42447 /* spn.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = spn.o; sourceTree = "<group>"; };
 		039A3A88191A9EEC00B42447 /* tqn.gspn */ = {isa = PBXFileReference; lastKnownFileType = text; path = tqn.gspn; sourceTree = "<group>"; };
 		039A3A89191A9EEC00B42447 /* tqn.lha */ = {isa = PBXFileReference; lastKnownFileType = text; path = tqn.lha; sourceTree = "<group>"; };
-		039A3A8B191A9EEC00B42447 /* CamlResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = CamlResultFile; sourceTree = "<group>"; };
-		039A3A8C191A9EEC00B42447 /* csvResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = csvResultFile; sourceTree = "<group>"; };
-		039A3A8D191A9EEC00B42447 /* Result.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result.res; sourceTree = "<group>"; };
-		039A3A8E191A9EEC00B42447 /* Result_testagememory.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result_testagememory.res; sourceTree = "<group>"; };
-		039A3A8F191A9EEC00B42447 /* Result_testdistrib.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result_testdistrib.res; sourceTree = "<group>"; };
 		039A3A90191A9EEC00B42447 /* test.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.ml; sourceTree = "<group>"; };
 		039A3A91191A9EEC00B42447 /* testagememory.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = testagememory.grml; sourceTree = "<group>"; };
 		039A3A92191A9EEC00B42447 /* testagememory.lha */ = {isa = PBXFileReference; lastKnownFileType = text; path = testagememory.lha; sourceTree = "<group>"; };
@@ -868,24 +853,6 @@
 		039A3A9C191A9EEC00B42447 /* testlognormal2.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = testlognormal2.grml; sourceTree = "<group>"; };
 		039A3A9D191A9EEC00B42447 /* testtriangle.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = testtriangle.grml; sourceTree = "<group>"; };
 		039A3A9E191A9EEC00B42447 /* testuniform.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = testuniform.grml; sourceTree = "<group>"; };
-		039A3AA0191A9EEC00B42447 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		039A3AA1191A9EEC00B42447 /* spn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
-		039A3AA4191A9EEC00B42447 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		039A3AA5191A9EEC00B42447 /* spn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
-		039A3AAB191A9EEC00B42447 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		039A3AAC191A9EEC00B42447 /* spn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
-		039A3AB0191A9EEC00B42447 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		039A3AB1191A9EEC00B42447 /* spn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
-		039A3AB4191A9EEC00B42447 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		039A3AB5191A9EEC00B42447 /* spn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
-		039A3AB7191A9EEC00B42447 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		039A3AB8191A9EEC00B42447 /* spn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
-		039A3ABA191A9EEC00B42447 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		039A3ABB191A9EEC00B42447 /* spn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
-		039A3ABD191A9EEC00B42447 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		039A3ABE191A9EEC00B42447 /* spn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
-		039A3AC2191A9EEC00B42447 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		039A3AC3191A9EEC00B42447 /* spn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
 		039A3AC5191A9EEC00B42447 /* testTeamCity.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = testTeamCity.ml; sourceTree = "<group>"; };
 		039A3AC8191A9EEC00B42447 /* BidirectionnalSection.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BidirectionnalSection.grml; sourceTree = "<group>"; };
 		039A3AC9191A9EEC00B42447 /* BidirectionnalSection.model */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = BidirectionnalSection.model; sourceTree = "<group>"; };
@@ -895,11 +862,7 @@
 		039A3ACD191A9EEC00B42447 /* Deadlockprob.model */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Deadlockprob.model; sourceTree = "<group>"; };
 		039A3ACE191A9EEC00B42447 /* UnidirectionnalSection.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = UnidirectionnalSection.grml; sourceTree = "<group>"; };
 		039A3ACF191A9EEC00B42447 /* UnidirectionnalSection.model */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = UnidirectionnalSection.model; sourceTree = "<group>"; };
-		039A3AD1191A9EEC00B42447 /* CamlResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = CamlResultFile; sourceTree = "<group>"; };
-		039A3AD2191A9EEC00B42447 /* csvResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = csvResultFile; sourceTree = "<group>"; };
 		039A3AD3191A9EEC00B42447 /* firstArchived.lha */ = {isa = PBXFileReference; lastKnownFileType = text; path = firstArchived.lha; sourceTree = "<group>"; };
-		039A3AD4191A9EEC00B42447 /* Result.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = Result.res; sourceTree = "<group>"; };
-		039A3AD5191A9EEC00B42447 /* Result_workflow-out-1-imm.res */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Result_workflow-out-1-imm.res"; sourceTree = "<group>"; };
 		039A3AD6191A9EEC00B42447 /* test.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.ml; sourceTree = "<group>"; };
 		039A3AD9191A9EEC00B42447 /* workflow-out-1-imm.gspn */ = {isa = PBXFileReference; lastKnownFileType = text; path = "workflow-out-1-imm.gspn"; sourceTree = "<group>"; };
 		039A3ADA191A9EEC00B42447 /* workflow-out-1-imm.lha */ = {isa = PBXFileReference; lastKnownFileType = text; path = "workflow-out-1-imm.lha"; sourceTree = "<group>"; };
@@ -927,7 +890,6 @@
 		03B6EE8D1487BB8F0099A6CC /* CosmosSim */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CosmosSim; sourceTree = BUILT_PRODUCTS_DIR; };
 		03B7D355181901AC007AA90D /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.am; path = ../Makefile.am; sourceTree = "<group>"; };
 		03B7D356181901BB007AA90D /* configure.ac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = configure.ac; path = ../configure.ac; sourceTree = "<group>"; };
-		03BCA54A148D271A008E2402 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		03CB8F4D1893CB1A00A9938A /* timeGen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeGen.cpp; sourceTree = "<group>"; };
 		03CB8F4E1893CB1A00A9938A /* timeGen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGen.hpp; sourceTree = "<group>"; };
 		03D9C80D16845FAD00AADB3D /* generateLHA.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = generateLHA.hpp; path = /Users/barbot/Documents/AllCosmos/trunk/POMDP/generateLHA.hpp; sourceTree = "<absolute>"; };
@@ -1242,7 +1204,6 @@
 				039A3A6C191A9EEB00B42447 /* TandemQN */,
 				039A3A8A191A9EEC00B42447 /* testDistribution */,
 				039A3AC5191A9EEC00B42447 /* testTeamCity.ml */,
-				039A3AC6191A9EEC00B42447 /* tmp */,
 				039A3AC7191A9EEC00B42447 /* train */,
 				039A3AD0191A9EEC00B42447 /* Workflow-Net */,
 			);
@@ -2651,9 +2612,6 @@
 				039A3A5D191A9EEB00B42447 /* csvResultFile */,
 				039A3A5E191A9EEB00B42447 /* gen.ml */,
 				039A3A5F191A9EEB00B42447 /* lumpingfun.cpp */,
-				039A3A60191A9EEB00B42447 /* Result_tandem.res */,
-				039A3A61191A9EEB00B42447 /* Result_tandemIS.res */,
-				039A3A62191A9EEB00B42447 /* StateIndepIS.res */,
 				039A3A63191A9EEB00B42447 /* Table1.ml */,
 				039A3A64191A9EEB00B42447 /* tandem.andl */,
 				039A3A65191A9EEB00B42447 /* tandem.csl */,
@@ -2670,17 +2628,10 @@
 		039A3A6C191A9EEB00B42447 /* TandemQN */ = {
 			isa = PBXGroup;
 			children = (
-				039A3A6D191A9EEB00B42447 /* 0.0 */,
-				039A3A6E191A9EEB00B42447 /* CamlResultFile */,
-				039A3A6F191A9EEB00B42447 /* csvResultFile */,
 				039A3A70191A9EEB00B42447 /* logvalue.dat */,
 				039A3A71191A9EEB00B42447 /* Result.res */,
-				039A3A72191A9EEB00B42447 /* Result_generatedlha.res */,
-				039A3A73191A9EEB00B42447 /* Result_looplha.res */,
-				039A3A74191A9EEB00B42447 /* Result_samplelha.res */,
 				039A3A75191A9EEB00B42447 /* Result_tqn.res */,
 				039A3A76191A9EEB00B42447 /* samplelha.lha */,
-				039A3A77191A9EEB00B42447 /* test */,
 				039A3A78191A9EEB00B42447 /* test.dat */,
 				039A3A79191A9EEB00B42447 /* test.log */,
 				039A3A7A191A9EEB00B42447 /* test.ml */,
@@ -2741,11 +2692,6 @@
 		039A3A8A191A9EEC00B42447 /* testDistribution */ = {
 			isa = PBXGroup;
 			children = (
-				039A3A8B191A9EEC00B42447 /* CamlResultFile */,
-				039A3A8C191A9EEC00B42447 /* csvResultFile */,
-				039A3A8D191A9EEC00B42447 /* Result.res */,
-				039A3A8E191A9EEC00B42447 /* Result_testagememory.res */,
-				039A3A8F191A9EEC00B42447 /* Result_testdistrib.res */,
 				039A3A90191A9EEC00B42447 /* test.ml */,
 				039A3A91191A9EEC00B42447 /* testagememory.grml */,
 				039A3A92191A9EEC00B42447 /* testagememory.lha */,
@@ -2761,193 +2707,8 @@
 				039A3A9C191A9EEC00B42447 /* testlognormal2.grml */,
 				039A3A9D191A9EEC00B42447 /* testtriangle.grml */,
 				039A3A9E191A9EEC00B42447 /* testuniform.grml */,
-				039A3A9F191A9EEC00B42447 /* tmpCosmos-0LD7hb */,
-				039A3AA2191A9EEC00B42447 /* tmpCosmos-0VtjKc */,
-				039A3AA3191A9EEC00B42447 /* tmpCosmos-78M51f */,
-				039A3AA6191A9EEC00B42447 /* tmpCosmos-83Tswz */,
-				039A3AA7191A9EEC00B42447 /* tmpCosmos-A6qov4 */,
-				039A3AA8191A9EEC00B42447 /* tmpCosmos-AA00ZO */,
-				039A3AA9191A9EEC00B42447 /* tmpCosmos-aZemEq */,
-				039A3AAA191A9EEC00B42447 /* tmpCosmos-Azf5Vq */,
-				039A3AAD191A9EEC00B42447 /* tmpCosmos-daCRZA */,
-				039A3AAE191A9EEC00B42447 /* tmpCosmos-foI8Do */,
-				039A3AAF191A9EEC00B42447 /* tmpCosmos-GUbq8n */,
-				039A3AB2191A9EEC00B42447 /* tmpCosmos-hF7n4O */,
-				039A3AB3191A9EEC00B42447 /* tmpCosmos-p2wdMy */,
-				039A3AB6191A9EEC00B42447 /* tmpCosmos-sS8IRQ */,
-				039A3AB9191A9EEC00B42447 /* tmpCosmos-V8HlQz */,
-				039A3ABC191A9EEC00B42447 /* tmpCosmos-w6ijOi */,
-				039A3ABF191A9EEC00B42447 /* tmpCosmos-wIzaZg */,
-				039A3AC0191A9EEC00B42447 /* tmpCosmos-YFJeQF */,
-				039A3AC1191A9EEC00B42447 /* tmpCosmos-yrxNlj */,
-				039A3AC4191A9EEC00B42447 /* tmpCosmos-Z0d12C */,
 			);
 			path = testDistribution;
-			sourceTree = "<group>";
-		};
-		039A3A9F191A9EEC00B42447 /* tmpCosmos-0LD7hb */ = {
-			isa = PBXGroup;
-			children = (
-				039A3AA0191A9EEC00B42447 /* markingImpl.hpp */,
-				039A3AA1191A9EEC00B42447 /* spn.cpp */,
-			);
-			path = "tmpCosmos-0LD7hb";
-			sourceTree = "<group>";
-		};
-		039A3AA2191A9EEC00B42447 /* tmpCosmos-0VtjKc */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-0VtjKc";
-			sourceTree = "<group>";
-		};
-		039A3AA3191A9EEC00B42447 /* tmpCosmos-78M51f */ = {
-			isa = PBXGroup;
-			children = (
-				039A3AA4191A9EEC00B42447 /* markingImpl.hpp */,
-				039A3AA5191A9EEC00B42447 /* spn.cpp */,
-			);
-			path = "tmpCosmos-78M51f";
-			sourceTree = "<group>";
-		};
-		039A3AA6191A9EEC00B42447 /* tmpCosmos-83Tswz */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-83Tswz";
-			sourceTree = "<group>";
-		};
-		039A3AA7191A9EEC00B42447 /* tmpCosmos-A6qov4 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-A6qov4";
-			sourceTree = "<group>";
-		};
-		039A3AA8191A9EEC00B42447 /* tmpCosmos-AA00ZO */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-AA00ZO";
-			sourceTree = "<group>";
-		};
-		039A3AA9191A9EEC00B42447 /* tmpCosmos-aZemEq */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-aZemEq";
-			sourceTree = "<group>";
-		};
-		039A3AAA191A9EEC00B42447 /* tmpCosmos-Azf5Vq */ = {
-			isa = PBXGroup;
-			children = (
-				039A3AAB191A9EEC00B42447 /* markingImpl.hpp */,
-				039A3AAC191A9EEC00B42447 /* spn.cpp */,
-			);
-			path = "tmpCosmos-Azf5Vq";
-			sourceTree = "<group>";
-		};
-		039A3AAD191A9EEC00B42447 /* tmpCosmos-daCRZA */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-daCRZA";
-			sourceTree = "<group>";
-		};
-		039A3AAE191A9EEC00B42447 /* tmpCosmos-foI8Do */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-foI8Do";
-			sourceTree = "<group>";
-		};
-		039A3AAF191A9EEC00B42447 /* tmpCosmos-GUbq8n */ = {
-			isa = PBXGroup;
-			children = (
-				039A3AB0191A9EEC00B42447 /* markingImpl.hpp */,
-				039A3AB1191A9EEC00B42447 /* spn.cpp */,
-			);
-			path = "tmpCosmos-GUbq8n";
-			sourceTree = "<group>";
-		};
-		039A3AB2191A9EEC00B42447 /* tmpCosmos-hF7n4O */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-hF7n4O";
-			sourceTree = "<group>";
-		};
-		039A3AB3191A9EEC00B42447 /* tmpCosmos-p2wdMy */ = {
-			isa = PBXGroup;
-			children = (
-				039A3AB4191A9EEC00B42447 /* markingImpl.hpp */,
-				039A3AB5191A9EEC00B42447 /* spn.cpp */,
-			);
-			path = "tmpCosmos-p2wdMy";
-			sourceTree = "<group>";
-		};
-		039A3AB6191A9EEC00B42447 /* tmpCosmos-sS8IRQ */ = {
-			isa = PBXGroup;
-			children = (
-				039A3AB7191A9EEC00B42447 /* markingImpl.hpp */,
-				039A3AB8191A9EEC00B42447 /* spn.cpp */,
-			);
-			path = "tmpCosmos-sS8IRQ";
-			sourceTree = "<group>";
-		};
-		039A3AB9191A9EEC00B42447 /* tmpCosmos-V8HlQz */ = {
-			isa = PBXGroup;
-			children = (
-				039A3ABA191A9EEC00B42447 /* markingImpl.hpp */,
-				039A3ABB191A9EEC00B42447 /* spn.cpp */,
-			);
-			path = "tmpCosmos-V8HlQz";
-			sourceTree = "<group>";
-		};
-		039A3ABC191A9EEC00B42447 /* tmpCosmos-w6ijOi */ = {
-			isa = PBXGroup;
-			children = (
-				039A3ABD191A9EEC00B42447 /* markingImpl.hpp */,
-				039A3ABE191A9EEC00B42447 /* spn.cpp */,
-			);
-			path = "tmpCosmos-w6ijOi";
-			sourceTree = "<group>";
-		};
-		039A3ABF191A9EEC00B42447 /* tmpCosmos-wIzaZg */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-wIzaZg";
-			sourceTree = "<group>";
-		};
-		039A3AC0191A9EEC00B42447 /* tmpCosmos-YFJeQF */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-YFJeQF";
-			sourceTree = "<group>";
-		};
-		039A3AC1191A9EEC00B42447 /* tmpCosmos-yrxNlj */ = {
-			isa = PBXGroup;
-			children = (
-				039A3AC2191A9EEC00B42447 /* markingImpl.hpp */,
-				039A3AC3191A9EEC00B42447 /* spn.cpp */,
-			);
-			path = "tmpCosmos-yrxNlj";
-			sourceTree = "<group>";
-		};
-		039A3AC4191A9EEC00B42447 /* tmpCosmos-Z0d12C */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-Z0d12C";
-			sourceTree = "<group>";
-		};
-		039A3AC6191A9EEC00B42447 /* tmp */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = tmp;
 			sourceTree = "<group>";
 		};
 		039A3AC7191A9EEC00B42447 /* train */ = {
@@ -2968,14 +2729,8 @@
 		039A3AD0191A9EEC00B42447 /* Workflow-Net */ = {
 			isa = PBXGroup;
 			children = (
-				039A3AD1191A9EEC00B42447 /* CamlResultFile */,
-				039A3AD2191A9EEC00B42447 /* csvResultFile */,
 				039A3AD3191A9EEC00B42447 /* firstArchived.lha */,
-				039A3AD4191A9EEC00B42447 /* Result.res */,
-				039A3AD5191A9EEC00B42447 /* Result_workflow-out-1-imm.res */,
 				039A3AD6191A9EEC00B42447 /* test.ml */,
-				039A3AD7191A9EEC00B42447 /* tmpCosmos-I1ts3b */,
-				039A3AD8191A9EEC00B42447 /* tmpCosmos-RiAasS */,
 				039A3AD9191A9EEC00B42447 /* workflow-out-1-imm.gspn */,
 				039A3ADA191A9EEC00B42447 /* workflow-out-1-imm.lha */,
 				039A3ADB191A9EEC00B42447 /* workflow-out-1.gspn */,
@@ -2989,20 +2744,6 @@
 				039A3AE3191A9EEC00B42447 /* workflow-out-5.gspn */,
 			);
 			path = "Workflow-Net";
-			sourceTree = "<group>";
-		};
-		039A3AD7191A9EEC00B42447 /* tmpCosmos-I1ts3b */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-I1ts3b";
-			sourceTree = "<group>";
-		};
-		039A3AD8191A9EEC00B42447 /* tmpCosmos-RiAasS */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "tmpCosmos-RiAasS";
 			sourceTree = "<group>";
 		};
 		03A7F87A182C129C006F0BC8 /* utils */ = {
@@ -3059,7 +2800,6 @@
 				0367E2A418843EAB00F35619 /* ClientSim Tests */,
 				03FB40F418180F9D001F9988 /* Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
-				03BCA54A148D271A008E2402 /* Accelerate.framework */,
 			);
 			name = Cosmos;
 			sourceTree = "<group>";

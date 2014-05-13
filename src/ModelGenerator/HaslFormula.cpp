@@ -488,19 +488,32 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 			
 		case HYPOTHESIS:
 		{
-		//Implementation of the SPRT.
-		
-		double uppart = pow((Value2/Value),(double)batch.Isucc);
-		double lowpart = pow(((1-Value2)/(1-Value)), (double)batch.I - (double)batch.Isucc);
-		double likelyhoodRatio = uppart * lowpart;
+		/*
+         * Implementation of the SPRT.
+         *  Value < Value2
+         *  Value <= p <= Value2 => Indiferrence region
+         * H0 = { 1 >= p > Value2 } => p0=Value2
+         * H1 = { 0 <= p < Value  } => p1=Value
+         */
+
+        double alog = log((1-Value)/(1-Value2));
+        double blog = log(Value/Value2) - alog;
+
 		double a = 1-Level; //Probability of type I error
 		double b = 1-Level; //Probability of type II errror
-		if(likelyhoodRatio <= b /(1-a)){
-			return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2,0.0,1.0);
-		}
-		if (likelyhoodRatio >= (1-b) / a ) {
+
+        double logA = log((1-b) / a);
+        double logB = log(b /(1-a));
+
+        double loglikelyhoodRatio = alog * (double)batch.I + blog * (double)batch.Isucc;
+
+		if(loglikelyhoodRatio <= logB){ //Accept H0
 			return ConfInt((double)batch.Isucc/(double)batch.I, Value ,1,0.0,1.0);
 		}
+		if (loglikelyhoodRatio >= logA ) { //Accept H1
+			return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2,0.0,1.0);
+		}
+        // Continue testing
 		return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,1,0.0,1.0);
 		}
 			

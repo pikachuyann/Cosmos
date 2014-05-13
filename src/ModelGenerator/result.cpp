@@ -270,7 +270,7 @@ void result::print(ostream &s){
     }else if(!P.sequential){
         s << "Confidence interval computed using Chernoff-Hoeffding bound."<<endl;
     }else if(P.MaxRuns > MeanM2->I ){
-        s << "Confidence interval computed sequentially using Chows-Robbin algorithm."<<endl;
+        s << "Confidence interval computed sequentially using Chows-Robbin algorithm or SPRT."<<endl;
     }else
         s << "Confidence interval computed using approximation to normal low." << endl;
 
