@@ -155,7 +155,7 @@ void parameters::usage(){
 	cout << "\t--output-trace arg resol \tOutput the trace each trajectory in the file arg with a resolution of resol"<< endl;
 	cout << "\t--output-graph \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
 	cout << "\t--gnuplot-driver \tRun gnuplot on the output datafile to produce graph"<< endl;
-	cout << "\t--trace-place arg\tSpecify which place to trace in all the output file, arg is a comma separated list of places name" << endl;
+	cout << "\t--trace-pt arg\tSpecify which place to trace in all the output file, arg is a comma separated list of places and transitions name" << endl;
 	cout << "\t--HASL-expression \tAllow to define an HASL formula from the command line" << endl;
 	cout << "\t--loop t1 [--transtient t2] \tGenerate an LHA that loop for t1 times unit and then t2 time unit. The --transient option alone do not do anything"<< endl;
 	cout << "\t--sampling t1 t2 \tGenerate an LHA that loop for t1 times unit and sample the average number of token each t2 time units" << endl;
@@ -224,6 +224,7 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"output-graph",required_argument,0,11},
 			{"gnuplot-driver",no_argument   ,0, 15},
 		    {"trace-place",required_argument,0,  19},
+            {"trace-pt",required_argument,0,  19},
             {"help" , no_argument ,			 0, 'h'},
 			{"count-transition", no_argument,0, 't'},
 			{"debug-string", no_argument,	 0,  3 },
