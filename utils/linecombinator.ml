@@ -150,7 +150,7 @@ let main2 s1 s2 npath =
   if ne > 10000 then
     let evect = Array.create (int_of_float (1.+.maxtime/.step)) (0.0,0,template) in
     readAndSample evect step initfile template npath;
-    Array.iteri (fun i (t,n,d) -> evect.(i) <- (t,1,Data.mult (1.0 /. (float n)) d)) evect;
+    Array.iteri (fun i (t,n,d) -> evect.(i) <- (t,1,Data.mult (1.0 /. (float (n-1))) d)) evect;
     Array.iter (TimeEvent.output intermediatefile) evect
   else 
     let es = EventSet.empty in
