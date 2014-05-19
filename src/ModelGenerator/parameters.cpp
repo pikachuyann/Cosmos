@@ -142,7 +142,7 @@ void parameters::usage(){
 	
 	
     cout << "Miscellaneous options:" << endl;
-    cout << "\t-g,--gmlinput \tuse gml file format for input file"<< endl;
+    cout << "\t-g,--grmlinput \tuse gml file format for input file"<< endl;
     cout << "\t--alligator-mode \toutput easy to parse result"<< endl;
     cout << "\t--unfold arg \tUnfold the GSPN given as input" << endl;
 	cout << "\t--count-transition \tAdd a Hasl formula for wich count the number of time each transition occurs"<< endl;
@@ -153,10 +153,10 @@ void parameters::usage(){
 	cout << "\t-d,--outputdata \tOutput successive result in the blank separated file format"<< endl;
 	cout << "\t--output-raw \tOutput the result of each trajectory in a file for debug purpose"<< endl;
 	cout << "\t--output-trace arg resol \tOutput the trace each trajectory in the file arg with a resolution of resol"<< endl;
-	cout << "\t--output-PDFCDF \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
+	cout << "\t--output-graph \tOutput the result of CDF or PDF formula in gnuplot file format"<< endl;
 	cout << "\t--gnuplot-driver \tRun gnuplot on the output datafile to produce graph"<< endl;
 	cout << "\t--trace-place arg\tSpecify which place to trace in all the output file, arg is a comma separated list of places name" << endl;
-	cout << "\t--HASL-formula \tAllow to define an HASL formula from the command line" << endl;
+	cout << "\t--HASL-expression \tAllow to define an HASL formula from the command line" << endl;
 	cout << "\t--loop t1 [--transtient t2] \tGenerate an LHA that loop for t1 times unit and then t2 time unit. The --transient option alone do not do anything"<< endl;
 	cout << "\t--sampling t1 t2 \tGenerate an LHA that loop for t1 times unit and sample the average number of token each t2 time units" << endl;
 	cout << "\t--formula f\t specify a CSL formula to use instead of an automata" << endl;
@@ -203,11 +203,13 @@ void parameters::parseCommandLine(int argc, char** argv){
 			
             /* CosyVerif Options */
             {"gmlinput" ,      no_argument, 0, 'g' },
+            {"grml-input" ,      no_argument, 0, 'g' },
             {"alligator-mode", no_argument, 0, 'a' },
 			
             /* Miscellaneous options */
             {"unfold", required_argument,    0,  24},
 			{"HASL-formula", required_argument,0,13},
+            {"HASL-expression", required_argument,0,13},
             {"njob" , required_argument,	 0, 'n'},
 			{"gppcmd",required_argument,	 0,  6 },
 			{"gppflags",required_argument,	 0,  7 },
@@ -219,6 +221,7 @@ void parameters::parseCommandLine(int argc, char** argv){
 			{"output-raw" , required_argument,0,  8 },
 			{"output-trace" , required_argument,0,  18 },
 			{"output-PDFCDF",required_argument,0,11},
+            {"output-graph",required_argument,0,11},
 			{"gnuplot-driver",no_argument   ,0, 15},
 		    {"trace-place",required_argument,0,  19},
             {"help" , no_argument ,			 0, 'h'},
