@@ -19,6 +19,8 @@
 \usepackage{subfigure}
 \usepackage{multirow}
 \usepackage{url}
+\usepackage{syntax}
+
 
 \newcommand{\cosmos}{\mbox{\textup{C}\scalebox{0.75}{{\textsc{OSMOS}}}}}
 \newcommand{\cosyverif}{\mbox{\textup{C}\scalebox{0.75}{{\textsc{OSY}}}\textup{V}\scalebox{0.75}{{\textsc{ERIF}}}}}
@@ -57,7 +59,7 @@ recognize by \cosmos{}:
   distribution of rate $1$ are assume.
 \item Stochastic Symmetric Net. 
 \end{itemize}
-The specification of file format are reported in Section{sec:fileformat}.
+The specification of file format are reported in Section~\ref{sec:fileformat}.
 
 \subsubsection{Property}
 Property are specified in the Hybrid Linear Automaton Logic(HASL)
@@ -263,11 +265,154 @@ abcsissa of the point computed by the expression.
 \end{figure}
 
 \subsubsection{\texttt{-d, --output-data arg} option}
-This option generate a file 
+This option generate a file containing showing the evolution of 
+confidence intervals along the time, this allow to observe the
+speed of convergence. Figure~\ref{fig:convergence} shows a graph
+plotted from these data. 
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1.01\textwidth]{figures/convergence.png}
+  \caption{Convergence of the estimation for the shared memory example}
+  \label{fig:convergence}
+\end{figure}
+
+\subsubsection{\texttt{--output-raw arg} option}
+This option allows to output the end value of HASL expression at
+the end of each trajectories. This option was introduced for debug 
+purposes and should not be used in normal use. This option is not compatible
+with \texttt{--njob n} when $n>1$
+
+\subsubsection{\texttt{--output-trace arg arg2} option}
+This option store traces of trajectories of simulation in file
+\texttt{arg}.  Each line contains the global state of the simulator
+(Petri net + LHA) after a transition.  Each trajectories are separated
+by a line containing \texttt{New Path}.  Figure~\ref{fig:trace}
+contains a trace of one trajectory of the shared memory example.  The
+second argument \texttt{arg2} specify a minimum sampling time. If
+\texttt{arg2} $>0$, no two lines in the output file are separated by
+less than \texttt{arg2} time unit. This is useful when the trace
+became to big to reduce the size of the generated file.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1.01\textwidth]{figures/trace.png}
+  \caption{Trace of one simulation for the shared memory example}
+  \label{fig:trace}
+\end{figure}
+
+\subsubsection{\texttt{--trace-pt arg} option}
+Specify which place and transition should be traced in the various
+output file.  \texttt{arg} is a list of place and transition
+name. There are two keyword \texttt{ALL} which is the default and
+\texttt{COLOR}, the first allow to trace all places and transitions,
+the second allow to trace all color token and all binding of
+transition for stochastic symmetric net.
+
+\subsubsection{\texttt{--gnuplot-driver} option}
+This option makes \cosmos{} call \texttt{gnuplot} interactively and
+display the graph of all output specify by a \texttt{--output-*}
+option.  All the graph of this manual have been created using this
+option.
+
+\subsubsection{\texttt{--alligator-mode} option}
+This option remove the output of the progress of the simulation 
+and output progress as line containing key-value. This mode
+is useful for interfacing cosmos with other tool in particular 
+with \texttt{alligator} the server part of \cosyverif. This 
+mode also makes the \texttt{--gnuplot-driver} option to write
+the graph is files instead than on the screen.
+
+\subsubsection{\texttt{--update-time arg} option}
+This option set the time between two update of the progress of the simulation
+to be no less than \texttt{arg}.
+
+\subsection{Miscellaneous Options}
+\subsubsection{\texttt{--version} option}
+Display the current version of \cosmos{}.
+
+\subsubsection{\texttt{-h, --help} option}
+Display a help message containing the list of option and quit.
+
+\subsubsection{\texttt{--seed arg} option}
+Set the seed of the simulator to \texttt{arg}. 
+
+\subsubsection{\texttt{--local-test} option}
+This option change the way enabled transitions are computed.  This can
+improve performance for net containing transitions with a lot of input
+arcs.
+
+
+\subsubsection{\texttt{--unfold arg} option}
+This option output the model as a place transition net in the GrML
+file format this allows to unfold Symmetric net but also to convert
+\texttt{.gspn} file to GrML. This option is a work in progress some
+expression on arcs may not be well exported.
+
+
+\subsubsection{\texttt{-s, --state-space} option}
+Do not run the simulator instead generate the state space and 
+the transition probability matrix. The output format is the one
+used by \texttt{Prism} to import models. 
+
+\subsubsection{\texttt{--prism} option}
+Export the state space then run \texttt{Prism} on it.
+At the end of the computation the vector of probability to reach
+accepting state is read and exported.
+
+\subsubsection{\texttt{--gppcmd arg} option}
+Set the C++ compiler to be \texttt{arg}.
+
+\subsubsection{\texttt{--gppflags arg} option}
+Appends \texttt{arg} to the command line calling the C++ compiler.
+
+\subsection{Debugging Options}
+The following options are implemented only for debugging purposes and
+should not be used in general.
+
+\subsubsection{\texttt{--tmp-status arg} option}
+Change the way \cosmos{} handle temporary files. The argument \texttt{arg}
+can takes four values: 
+\begin{itemize}
+\item $0$ is the default. A temporary directory is asked to the system
+  all temporary files are generated in it. The directory is destroyed
+  at the end of the computation.
+\item $2$. The directory name \texttt{tmp} in the current
+  \texttt{PATH} is used, it is not destroyed at the end. This option
+  is useful to examine generated code.
+\item $1$. \cosmos{} assume that the directory \texttt{tmp} exists
+  and contains a fully build version of the model and property. The
+  simulator is launched without being rebuild. At the end of computation
+  the directory is destroyed.
+\item $3$. Same as $1$ but do not destroyed the \texttt{tmp} directory
+  at the end.
+\end{itemize}
+These option allows to build only once a model and reuse it for
+several simulations. Only statistical parameters can be change between simulation
+as the model is not rebuild. Use with caution!
+
+\subsubsection{\texttt{--tmp-path arg} option}
+Specify where to put the temporary directory. This option is useless
+if the \texttt{--tmp-status arg} with \texttt{arg}$>0$ is not specify.
+
+\subsubsection{\texttt{--bin-path arg} option}
+Override the path to the installation of \cosmos{}. This path is used
+by cosmos to find headers and libraries requires to build the model.
+
+\subsubsection{\texttt{--debug-string} option}
+Add debuging information to the generated code. This option is activated
+and required by a verbose mode greater than $4$.
+
+ 
 
 \section{File Format}
 \label{sec:fileformat}
+
+\subsection{GrML file format}
+GrML for Graph Markup Language is the graph base language to define
+models in the \cosyverif platform. This language is based on XML.
+
+
 \subsection{Generalized Stochastic Petri Net (.gspn)}
 This file format is used to describe GSPN.
 First we describe an example:\\
@@ -279,6 +424,8 @@ First we describe an example:\\
   % \vspace*{-.3cm}
 \end{figure}
 This GSPN is described by the following text:
+
+\begin{scriptsize}
 \begin{verbatim}
 const double lambda1 = 1;
 const double lambda2 = 2;
@@ -331,6 +478,7 @@ OutArcs={
    (End_2,Free,1);
 };
 \end{verbatim}
+\end{scriptsize}
 
 {\bf Description:}
 The first bloc is a list of constants definition, constants can be
@@ -355,126 +503,256 @@ Finally come the description of arcs of the net with the
 
 \subsubsection{Grammar}
 the complete grammar is:
-\begin{verbatim}
-$accept: GSPN "end of file"
 
-GSPN: declarations definitions
-    | declarations definitions redifinitions
+\begin{scriptsize}
+\begin{grammar}
+<accept> ::= <GSPN> 'end of file'
 
-declarations: Constants Sizes Lists
-            | Sizes Lists
+<GSPN> ::= <declarations> <definitions>
+ 
+<declarations> ::= <Constants> <Sizes> <Lists>
+            | <Sizes> <Lists>
 
-Constants: Constant
-         | Constant Constants
+<Constants> ::= <Constant>
+         | <Constant> <Constants>
 
-Constant: 'const' 'int' str '=' IntStringFormula ';'
-        | 'const' 'double' str '=' RealStringFormula ';'
+<Constant> ::= 'const' 'int' <str> '=' IntStringFormula ';'
+        | 'const' 'double' <str> '=' RealStringFormula ';'
 
-IntStringFormula: ival
-                | str
-                | '(' IntStringFormula ')'
-                | IntStringFormula '+' IntStringFormula
-                | IntStringFormula '-' IntStringFormula
-                | IntStringFormula '*' IntStringFormula
-                | IntStringFormula '^' IntStringFormula
-                | FLOOR '(' IntStringFormula ')'
-                | FLOOR '(' IntStringFormula '/' IntStringFormula ')'
-                | MIN '(' IntStringFormula ',' IntStringFormula ')'
-                | MAX '(' IntStringFormula ',' IntStringFormula ')'
+<IntStringFormula> ::= <ival> | <str>
+                \alt '(' <IntStringFormula> ')'
+                \alt <IntStringFormula> '+' <IntStringFormula>
+                \alt <IntStringFormula> '-' <IntStringFormula>
+                \alt <IntStringFormula> '*' <IntStringFormula>
+                \alt <IntStringFormula> '\^' <IntStringFormula>
+                \alt FLOOR '(' <IntStringFormula> ')'
+                \alt FLOOR '(' <IntStringFormula> '/' <IntStringFormula> ')'
+                \alt MIN '(' <IntStringFormula> ',' <IntStringFormula> ')'
+                \alt MAX '(' <IntStringFormula> ',' <IntStringFormula> ')'
 
-RealStringFormula: rval
-                 | ival
-                 | str
-                 | '(' RealStringFormula ')'
-                 | RealStringFormula '/' RealStringFormula
-                 | RealStringFormula '+' RealStringFormula
-                 | RealStringFormula '-' RealStringFormula
-                 | RealStringFormula '*' RealStringFormula
-                 | RealStringFormula '^' RealStringFormula
-                 | FLOOR '(' RealStringFormula ')'
-                 | MIN '(' RealStringFormula ',' RealStringFormula ')'
-                 | MAX '(' RealStringFormula ',' RealStringFormula ')'
+<RealStringFormula> ::= <rval> | <ival> | <str>
+                 \alt '(' <RealStringFormula> ')'
+                 \alt <RealStringFormula> '/' <RealStringFormula>
+                 \alt <RealStringFormula> '+' <RealStringFormula>
+                 \alt <RealStringFormula> '-' <RealStringFormula>
+                 \alt <RealStringFormula> '*' <RealStringFormula>
+                 \alt <RealStringFormula> '\^' <RealStringFormula>
+                 \alt FLOOR '(' <RealStringFormula> ')'
+                 \alt MIN '(' <RealStringFormula> ',' <RealStringFormula> ')'
+                 \alt MAX '(' <RealStringFormula> ',' <RealStringFormula> ')'
 
-Sizes: NbPlaces NbTransitions
-     | NbTransitions NbPlaces
+<Sizes> ::= <NbPlaces> <NbTransitions>
+     | <NbTransitions> <NbPlaces>
 
-NbPlaces: 'NbPlaces' '=' ival ';'
-        | 'NbPlaces' '=' str ';'
+<NbPlaces> ::= 'NbPlaces' '=' <ival> ';'
+        | 'NbPlaces' '=' <str> ';'
 
-NbTransitions: 'NbTransitions' '=' ival ';'
-             | 'NbTransitions' '=' str ';'
+<NbTransitions> ::= 'NbTransitions' '=' <ival> ';'
+             | 'NbTransitions' '=' <str> ';'
 
-Lists: PlacesList TransitionsList
-     | TransitionsList PlacesList
+<Lists> ::= <PlacesList> <TransitionsList>
+     | <TransitionsList> <PlacesList>
 
-PlacesList: 'PlacesList' '=' '{' PLabels '}' ';'
+<PlacesList> ::= 'PlacesList' '=' '{' <PLabels> '}' ';'
 
-PLabels: str
-       | PLabels ',' str
+<PLabels> ::= <str>
+       | <PLabels> ',' <str>
 
-TransitionsList: 'TransitionList' '=' '{' TLabels '}' ';'
+<TransitionsList> ::= 'TransitionList' '=' '{' <TLabels> '}' ';'
 
-TLabels: str
-       | TLabels ',' str
+<TLabels> ::= <str>
+       | <TLabels> ',' <str>
 
-definitions: PlacesDef TransitionsDef InArcs OutArcs
-           | PlacesDef TransitionsDef InArcs OutArcs Inhibitors
+<definitions> ::= <PlacesDef> <TransitionsDef> <InArcs> <OutArcs>
+           \alt <PlacesDef> <TransitionsDef> <InArcs> <OutArcs> <Inhibitors>
 
-PlacesDef: 'Marking' '=' '{' PLACES '}' ';'
+<PlacesDef> ::= 'Marking' '=' '{' <PLACES> '}' ';'
 
-PLACES: PLACE
-      | PLACES PLACE
+<PLACES> ::= <PLACE>
+      | <PLACES> <PLACE>
 
-PLACE: '(' str ',' IntStringFormula ')' ';'
+<PLACE> ::= '(' <str> ',' <IntStringFormula> ')' ';'
 
-TransitionsDef: 'Transition' '=' '{' TRANSITIONS '}' ';'
+<TransitionsDef> ::= 'Transition' '=' '{' <TRANSITIONS> '}' ';'
 
-TRANSITIONS: TRANSITION
-           | TRANSITIONS TRANSITION
+<Transitions> ::= <Transition>
+           | <Transitions> <Transition>
 
-TRANSITION: '(' str ',' dist ',' PRIORITY ',' WEIGHT ')' ';'
-          | '(' str ',' 'EXPONENTIAL' '(' RealStringFormula ')' ',' PRIORITY ',' 
-            WEIGHT ',' SERVICE ')' ';'
-          | '(' str ',' IMDT ',' PRIORITY ',' WEIGHT ')' ';'
+<Transition> ::= '(' <str> ',' <dist> ',' <Priority> ',' <Weight> ')' ';'
+          \alt '(' <str> ',' 'EXPONENTIAL' '(' <RealStringFormula> ')' ',' <Priority> ',' 
+            <Weight> ',' <Service> ')' ';'
+          \alt '(' <str> ',' 'IMDT' ',' <Priority> ',' <Weight> ')' ';'
 
-dist: str '(' params ')'
+<dist> ::= <str> '(' <params> ')'
 
-params: RealStringFormula
-      | params ',' RealStringFormula
+<params> ::= <RealStringFormula>
+      | <params> ',' <RealStringFormula>
 
-WEIGHT: RealStringFormula
+<Weight> ::= <RealStringFormula>
 
-PRIORITY: RealStringFormula
+<Priority> ::= <RealStringFormula>
 
-SERVICE: 'SINGLE'
+<Service> ::= 'SINGLE'
        | 'INFINITE'
-       | 'MULTIPLE' '(' ival ')'
-       | 'MULTIPLE' '(' str ')'
+       | 'MULTIPLE' '(' <ival> ')'
+       | 'MULTIPLE' '(' <str> ')'
 
-InArcs: 'InArcs' '=' '{' incells '}' ';'
+<InArcs> ::= 'InArcs' '=' '{' <incells> '}' ';'
 
-incells: incell
-       | incells incell
+<incells> ::= <incell>
+       | <incells> <incell>
 
-incell: '(' str ',' str ',' IntStringFormula ')' ';'
-      | '(' str ',' str ')' ';'
+<incell> ::= '(' <str> ',' <str> ',' <IntStringFormula> ')' ';'
+      | '(' <str> ',' <str> ')' ';'
 
-OutArcs: 'OutArcs' '=' '{' outcells '}' ';'
+<OutArcs> ::= 'OutArcs' '=' '{' <outcells> '}' ';'
 
-outcells: outcell
-        | outcells outcell
+<outcells> ::= <outcell>
+        | <outcells> <outcell>
 
-outcell: '(' str ',' str ',' IntStringFormula ')' ';'
-       | '(' str ',' str ')' ';'
+<outcell> ::= '(' <str> ',' <str> ',' <IntStringFormula> ')' ';'
+       | '(' <str> ',' <str> ')' ';'
 
-Inhibitors: 'inhibitor' '=' '{' inhibcells '}' ';'
+<Inhibitors> ::= 'inhibitor' '=' '{' <inhibcells> '}' ';'
 
-inhibcells: inhibcell
-          | inhibcells inhibcell
+<inhibcells> ::= <inhibcell>
+          | <inhibcells> <inhibcell>
 
-inhibcell: '(' str ',' str ',' IntStringFormula ')' ';'
-         | '(' str ',' str ')' ';'
-\end{verbatim}
+<inhibcell> ::= '(' <str> ',' <str> ',' <IntStringFormula> ')' ';'
+         | '(' <str> ',' <str> ')' ';'
+\end{grammar}
+\end{scriptsize}
+
+\subsection{Linar Hybrid Automaton(.lha)}
+
+
+\subsubsection{General Expression}
+
+\begin{scriptsize}
+\begin{grammar}
+  <MarkingDepExpr> ::= <ConstIdentifier> | <DiscreteVarIdentifier> | <PlaceIdentifier>
+  \alt  <MarkingDepExpr> `+'  <MarkingDepExpr> | <MarkingDepExpr> `-'  <MarkingDepExpr>
+  \alt  <MarkingDepExpr> `*'  <MarkingDepExpr>
+  \alt `Card' <MarkingDepExpr>
+  \alt <MarkingDepExpr> `[' <ColorList> `]'
+  \alt <DomainMarking>
+
+ <Expr> ::= <ConstIdentifier> | <DiscreteVarIdentifier>  | <VarIdentifier> | <PlaceIdentifier>
+  \alt  <Expr> `+'  <Expr> | <Expr> `-'  <Expr>
+  \alt  <Expr> `*'  <Expr>
+  \alt `Card' <Expr>
+  \alt <Expr> `[' <ColorList> `]'
+  \alt <DomainMarking>
+
+  <ColorList> ::= <ColorExpr> `,' <ColorList>
+  \alt <ColorExpr>
+
+  <ColorExpr> ::= <ColorIdentifier> | <ColorVarIdentifier>
+  \alt <ColorExpr> `++' | <ColorExpr> `--'
+
+  <LinearExpr> ::= <LinearExpr> `+'  <LinearExpr> | <LinearExpr> `-'  <LinearExpr>
+  \alt <MarkingDepExpr> `*' <VarExpr>
+
+  <VarExpr> ::= <VarIdentifier> | <VarIdentifier> `[' <ColorList> `]'
+
+  <DiscreteVarExpr> ::= <DiscreteVarExpr> \alt <DiscreteVarExpr> `[' <ColorList> `]'
+
+<MarkingDepProp> ::= `true' | `false' | `not' <MarkingDepProp>
+  \alt <MarkingDepProp> `\&\&' <MarkingDepProp> |  <MarkingDepProp> `||' <MarkingDepProp>
+  \alt <MarkingDepExpr> `|\!\!>\!<\!\!|' <MarkingDepExpr>  
+  \alt <ColorExpr> `=' <ColorExpr> | <ColorExpr> `!=' <ColorExpr>
+
+\end{grammar}
+\end{scriptsize}
+
+All the expression are typed with a domain. An expression of a domain
+$D$ is a function that map to each color of the domain $D$ an integer
+or real expression. 
+
+Value of the domain ``Uncolored'' act as scalar.  The construction
+``Card'' take an expression over a domain and return an expression of
+the uncolored domain by taking the sum of the expression over all
+color. The construction ``Expr[c1,c2]'' return a value in the
+uncolored domain equal to the valuation of ``Expr'' for the color
+``c1,c2''.
+
+
+There is two type of expression, The one describe
+by ``Expr'' can depend of any quantities define in the Net or in the
+automaton whereas ``MarkingDepExpr'' can not depend of quantities
+which are continuous variable. The difference is that
+``MarkingDepExpr'' are constant between two transition of the
+automaton whereas ``Expr'' evolve linearly between two
+transition. Both of them can be discontinuous when a transition of the
+automaton occurs.
+
+
+\subsubsection{Declarative Part and General Expression}
+
+\begin{scriptsize}
+\begin{grammar}
+  <Declaration> ::= <VarDeclaration> `;' | <ConstDeclaration> `;'
+
+  <ConstDeclaration> ::= 
+  `const' `int' <IDENTIFIER> `=' <INTEGER>
+  \alt `const' `double' <IDENTIFIER> `=' <FLOAT>
+
+  <VarDeclaration> ::= 
+   `var' <IDENTIFIER> (`in' <DomainIdentifier>) ?
+   \alt `discvar' <IDENTIFIER> (`in' <DomainIdentifier>) ?
+   \alt `colorvar' <IDENTIFIER> `in' <DomainIdentifier>
+\end{grammar}
+\end{scriptsize}
+
+This section define the identifier for the different type of variable
+as well as their domain.
+
+\subsubsection{Location Invariant Proposition}
+
+\begin{scriptsize}
+\begin{grammar}
+  <LocInvProp> ::= <MarkingDepProp>
+\end{grammar}
+\end{scriptsize}
+
+Location invariant do not depend of continuous variable value.
+It ensure that location invariant are constant between two transitions
+of the automaton.
+
+\subsubsection{Flow Expression}
+
+\begin{scriptsize}
+\begin{grammar}
+  <FlowDef> ::= <VarExpr> `\'' `=' <MarkingDepExpr> 
+\end{grammar}
+\end{scriptsize}
+As location invariant, flow rate are constant between two transitions
+of the automaton to ensure that continuous variables are piecewise
+linear.
+
+
+\subsubsection{Guard Proposition}
+\begin{scriptsize}
+\begin{grammar}
+  <GuardProp> ::= `true' | <GuardProp> `\&\&' <GuardProp>
+  \alt <LinearExp> `=' <MarkingDepExpr> \alt <LinExp> `<=' <MarkingDepExpr>
+  \alt <LinearExp> `>=' <MarkingDepExpr>
+  \alt <MarkingDepProp>
+
+  <ColorExpr> ::= \dots\! | <BindingVarIdentifier>
+\end{grammar}
+\end{scriptsize}
+
+\subsubsection{Update Expression}
+
+\begin{scriptsize}
+\begin{grammar}
+  <UpdateExpr> ::= <VarExpr> `:=' <Expr> | <DiscreteVarExpr> `:=' <Expr>
+  \alt <ColorVarIdentifier> `:=' <ColorExpr>
+
+   <ColorExpr> ::= \dots\! | <BindingVarIdentifier>
+\end{grammar}
+\end{scriptsize}
 
 
 
