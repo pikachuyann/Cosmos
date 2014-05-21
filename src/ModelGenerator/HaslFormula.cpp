@@ -497,17 +497,19 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
          */
 
         double alog = log((1-Value)/(1-Value2));
-        double blog = log(Value/Value2) - alog;
+        double blog = log(Value/Value2);
 
-		double a = 1-Level; //Probability of type I error
-		double b = 1-Level; //Probability of type II errror
+		double a = Level; //Probability of type I error
+		double b = Level; //Probability of type II errror
 
         double logA = log((1-b) / a);
         double logB = log(b /(1-a));
 
-        double loglikelyhoodRatio = alog * (double)batch.I + blog * (double)batch.Isucc;
+        double loglikelyhoodRatio = alog * (double)(batch.I - batch.Isucc) + blog * (double)batch.Isucc;
 
-		if(loglikelyhoodRatio <= logB){ //Accept H0
+        //cerr << "[" << logB << "  --  " << loglikelyhoodRatio << "  --  " << logA << "]" << endl;
+
+ 		if(loglikelyhoodRatio <= logB){ //Accept H0
 			return ConfInt((double)batch.Isucc/(double)batch.I, Value ,1,0.0,1.0);
 		}
 		if (loglikelyhoodRatio >= logA ) { //Accept H1
