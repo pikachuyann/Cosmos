@@ -63,7 +63,9 @@ EXTRA_DIST = Examples/Makefile Examples/testTeamCity.ml\
 	Examples/RareEventU/tandem.lha \
 	Examples/RareEventU/tandem_agr.gspn \
 	Examples/RareEventU/tandem_agr.lha \
-	Examples/RareEventU/test.ml
+	Examples/RareEventU/test.ml \
+	Examples/signallingCascade/MAPK.grml Examples/signallingCascade/Prop3/prop3.lha \
+	Examples/signallingCascade/test.ml
 
 
 AM_LDFLAGS = -lrt $(PTHREAD_LIBS)
