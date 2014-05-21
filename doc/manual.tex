@@ -42,8 +42,10 @@ The primary usage of the tool \cosmos{} is as follow:
 Cosmos model property
 \end{verbatim}
 where the model is specified in the GRML file format or in the
-\verb|.grml| file format and the property is expressed either in GRML
+\verb|.gspn| file format and the property is expressed either in GRML
 or in the \verb|.lha| file format.
+
+Cosmos is shipped with several example in the \verb|Examples| directory.
 
 \subsubsection{Model}
 Models taken by \cosmos{} as input are variant of Petri net.  The main
@@ -60,12 +62,16 @@ recognize by \cosmos{}:
 \item Stochastic Symmetric Net. 
 \end{itemize}
 The specification of file format are reported in Section~\ref{sec:fileformat}.
+The \verb|.gspn| file format is the legacy file format of cosmos. As \verb|.grml|
+is more standard and easier to extend it advised to use \verb|.grml| for new
+model.
 
 \subsubsection{Property}
 Property are specified in the Hybrid Linear Automaton Logic(HASL)
 which as the name suggest relies on Linear Hybrid Automaton(LHA) to
 select path and on several HASL expression to specify various
 performance values.
+
 
 \subsection{Statistical Options}
 Several options can be used to control the behaviors of the statistical engine.
@@ -76,7 +82,7 @@ The default behaviors is to simulate trajectories until either
 \end{itemize}
 
 \subsubsection{\texttt{--width arg}  option}
-This option specified \texttt{arg} as the objective width for
+This option specified \texttt{arg} as the goal width for
 confidence intervals. If it is set to $0$ trajectories are
 simulated until the maximum number of trajectories is reached.
 The default value is $0.001$.
