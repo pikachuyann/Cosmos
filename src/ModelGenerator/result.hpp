@@ -115,10 +115,10 @@ private:
 	BatchR* MeanM2;
 	
 	//! The maximal relative error of the result.
-	double RelErr;
+	double Progress;
 	
 	//! The relative error for each formula.
-	vector<double> RelErrArray;
+	vector<double> ProgressArray;
 	
 	//! The result of the estimator of the confidence interval for each formula.
 	vector<ConfInt> HaslResult;
