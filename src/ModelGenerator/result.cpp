@@ -50,8 +50,8 @@ result::result():HaslResult(P.HaslFormulasname.size()) {
 
     MeanM2 = new BatchR(P.nbAlgebraic);
 
-    RelErr = 0;
-	RelErrArray = vector<double>(P.HaslFormulasname.size()); //relative error
+    Progress = 0;
+	ProgressArray = vector<double>(P.HaslFormulasname.size()); //relative error
 
     endline = 0;
 
@@ -114,25 +114,27 @@ void result::close_gnuplot(){
 
 void result::addBatch(BatchR &batchResult){
     MeanM2->unionR(batchResult);
-	RelErr = 0;
+	Progress = 1.0;
     for(size_t i =0; i<P.HaslFormulasname.size(); i++){
 		HaslResult[i] = P.HaslFormulas[i]->eval(*MeanM2);
         if(P.BoundedContinuous){
             HaslResult[i].low *=  (1 - P.epsilon);
         }
 
-        if(P.relative){
-            RelErrArray[i] =  fabs((HaslResult[i].width() /  HaslResult[i].mean));
-        }else RelErrArray[i] = HaslResult[i].width();//	/ max(1.0, abs(MeanM2->Mean[i]/MeanM2->Isucc));
+        double rewidth = 0.0;
+        if(P.HaslFormulas[i]->TypeOp != HYPOTHESIS){
+            if(P.relative){
+                rewidth =  fabs((HaslResult[i].width() /  HaslResult[i].mean));
+            }else rewidth = HaslResult[i].width();
+            ProgressArray[i] = pow(rewidth/P.Width,-2.0); //make it linear
+        } else {
+            ProgressArray[i] = (log(HaslResult[i].conf/(1-HaslResult[i].conf))) / (log(P.Level/(1-P.Level))); //make it linear
+        }
 
-		if(P.HaslFormulas[i]->TypeOp==HYPOTHESIS){
-			if (RelErrArray[i] <1)RelErrArray[i]=0;
-			// If the Hypothesis confidence interval is less than 1 then test has finished.
-		}
-
-		RelErr = max(RelErr,RelErrArray[i]);
+		Progress = min(Progress,ProgressArray[i]);
 
     }
+    //Progress = min(Progress,(double)MeanM2->I / (double)P.MaxRuns);
     if(outdatastream.is_open())outputData();
 }
 
@@ -141,7 +143,8 @@ bool result::continueSim(){
 	if(!P.sequential)return true;
 	if(P.Width==0)return true;
 
-	for(auto &it : RelErrArray)if(it > P.Width)return true;
+    return (Progress<1.0);
+	//for(auto &it : ProgressArray)if(it < 1.0)return true;
 
 	return false;
 }
@@ -176,13 +179,13 @@ void result::printProgress(){
     cout << "Total paths: ";
 	cout << setw(10) << MeanM2->I << "\t Accepted paths: ";
 	cout << setw(10) << MeanM2->Isucc << "\t Wall-clock time: ";
-	auto wallclock = current-start;
+	auto wallclock = chrono::duration_cast<chrono::milliseconds>(current - start);
 
-	auto estimated = wallclock * (1.0 / fmax(pow(RelErr,-2.0)/pow(P.Width,-2.0), (double)MeanM2->I / (double)P.MaxRuns ) - 1.0 );
+	auto estimated = wallclock * (1.0 / Progress - 1.0 );
 	cout << chrono::duration_cast<chrono::seconds>(wallclock).count() << "s\t Remaining(approximative): " ;
 	cout << chrono::duration_cast<chrono::seconds>(estimated).count()  << "s\t Trajectory per second: " ;
 	cout.precision(2);
-	cout << ((double)MeanM2->I)/chrono::duration_cast<chrono::seconds>(wallclock).count() << endl;
+	cout << (1000.0* (double)MeanM2->I)/chrono::duration_cast<chrono::milliseconds>(wallclock).count() << endl;
 	cout.precision(12);
 
     endline++;
@@ -201,18 +204,22 @@ void result::printProgress(){
                 cout << setw(17) << HaslResult[i].up << " ]-- ";
                 cout << setw(17) << HaslResult[i].max << " >| ";
                 cout << "width=";
-                cout << setw(15) << HaslResult[i].width() << endl;
+                cout.precision(7);
+                cout << setw(8) << HaslResult[i].width();
+                cout << " level=";
+                cout << setw(8) << HaslResult[i].conf << endl;
+                cout.precision(12);
                 endline++;
-                if(!P.RareEvent && RelErrArray[i] != 0 && P.verbose >2 && P.sequential){
+                if(!P.RareEvent && ProgressArray[i] != 0 && P.verbose >2 && P.sequential){
                     cout << setw(maxformulaname+2)<<left << "% of width:";
-                    printPercent( pow(RelErrArray[i],-2.0), pow(P.Width,-2.0));
+                    printPercent( ProgressArray[i],1.0);
                     endline++;
                 }
             }
 	}
 	if(P.sequential){
 		cout << setw(maxformulaname+2)<<left << "% of Err: ";
-		printPercent( pow(RelErr,-2.0), pow(P.Width,-2.0));
+		printPercent( Progress, 1.0);
 		endline++;
 	}
     cout << setw(maxformulaname+2)<<left << "% of run: ";
@@ -257,6 +264,7 @@ void result::print(ostream &s){
                 }
                 s << "Minimal and maximal value:\t[" << HaslResult[i].min << " , " << HaslResult[i].max << "]" << endl;
                 s << "Width:\t" << HaslResult[i].width() << endl;
+                s << "Level:\t" << HaslResult[i].conf << endl;
             }else{
                 s << "Confidence interval:\t[" << HaslResult[i].mean-P.Width/2.0 << " , " << HaslResult[i].mean+P.Width/2.0 << "]" << endl;
                 s << "Minimal and maximal value:\t[" << HaslResult[i].min << " , " << HaslResult[i].max << "]" << endl;

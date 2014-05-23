@@ -349,6 +349,7 @@ void launchServer(parameters& P){
 		//Check if the simulation should continue.
     }while(Result.continueSim() && clientstream.size()>0 && continueSelect);
     //Kill all the simulator
+
     kill_client();
 	
 	//Output all the results
