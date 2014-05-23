@@ -41,7 +41,7 @@ ConfInt::ConfInt(){
 	up = std::numeric_limits<double>::infinity();
 	min = - std::numeric_limits<double>::infinity();
 	max = std::numeric_limits<double>::infinity();
-	
+	conf = 1;
 }
 
 /**
@@ -51,12 +51,13 @@ ConfInt::ConfInt(){
  * @param min the smallest value observed
  * @param max the maximal value observed
  */
-ConfInt::ConfInt(double meanArg,double width,double minval,double maxval){
+ConfInt::ConfInt(double meanArg,double width,double minval,double maxval,double c){
 	mean = meanArg;
 	low = meanArg - width/2;
 	up = meanArg + width/2;
 	min= minval;
 	max= maxval;
+    conf=c;
 }
 
 /**
@@ -69,12 +70,13 @@ ConfInt::ConfInt(double meanArg,double width,double minval,double maxval){
  * @param min the smallest value observed
  * @param max the maximal value observed
  */
-ConfInt::ConfInt(double meanArg,double lowArg,double upArg,double minval,double maxval){
+ConfInt::ConfInt(double meanArg,double lowArg,double upArg,double minval,double maxval,double c){
 	mean = meanArg;
 	low = lowArg;
 	up = upArg;
 	min= minval;
 	max= maxval;
+    conf =c;
 }
 
 ConfInt::~ConfInt(){}
@@ -92,6 +94,7 @@ ConfInt & ConfInt::operator+=(const ConfInt& rhs){
 	up += rhs.up;
 	min += rhs.min;
 	max += rhs.max;
+    conf = conf +rhs.conf -1;
 	return *this;
 }
 
@@ -101,6 +104,7 @@ ConfInt & ConfInt::operator-=(const ConfInt& rhs){
 	up -= rhs.low;
 	min -= rhs.max;
 	max -= rhs.min;
+    conf = conf +rhs.conf -1;
 	return *this;
 }
 
@@ -114,7 +118,7 @@ ConfInt & ConfInt::operator*=(const ConfInt& rhs){
 			   fmin(min*rhs.max,max*rhs.min));
 	max = fmax(fmax(min*rhs.min,max*rhs.max),
 			   fmax(min*rhs.max,max*rhs.min));
-	
+	conf = conf +rhs.conf -1;
 	return *this;
 }
 
@@ -145,7 +149,7 @@ ConfInt & ConfInt::operator/=(const ConfInt& rhs){
 			max  /= rhs.max;
 		}
 	}
-	
+	conf = conf +rhs.conf -1;
 	return *this;
 }
 
@@ -205,7 +209,7 @@ HaslFormulasTop::HaslFormulasTop(double p, double delta){
 	Level = 0;
 	Value = p -delta;
 	Value2= p + delta;
-	Algebraic = 0;
+    Algebraic = 0;
 	left = NULL;
 	right = NULL;
 }
@@ -344,17 +348,17 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 		 * Here we used the boost librairy for computing the binomial
 		 * confidence interval.
 		 * According to boost documentation the algorithme used is
-		 * the one from Clopper-person:
+		 * Clopper-person:
 		 * Clopper, C. J. and Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. Biometrika 26 404-413.
 		 */
 		double mean = (double)batch.Isucc / (double)batch.I;
 		double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 		double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
 		
-		if(batch.Isucc ==0)return ConfInt(mean,l,u,0.0,0.0);
-		if(batch.Isucc == batch.I)return ConfInt(mean,l,u,1.0,1.0);
+		if(batch.Isucc ==0)return ConfInt(mean,l,u,0.0,0.0,Level);
+		if(batch.Isucc == batch.I)return ConfInt(mean,l,u,1.0,1.0,Level);
 		
-		return ConfInt(mean,l,u,0.0,1.0);
+		return ConfInt(mean,l,u,0.0,1.0,Level);
 		}
 			
 		case EXPECTANCY:
@@ -375,7 +379,7 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 
 		double width = 2 * Value * sqrt(variance/batch.Isucc);
 		
-		return ConfInt(mean,width,batch.Min[Algebraic],batch.Max[Algebraic]);
+		return ConfInt(mean,width,batch.Min[Algebraic],batch.Max[Algebraic],Level);
 		}
 			
 		case RE_Likelyhood:
@@ -390,7 +394,7 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 		
 		double width = 2 * Value * sqrt(variance/batch.Isucc);
 		
-		return ConfInt(mean,width,batch.Min[Algebraic],batch.Max[Algebraic]);
+		return ConfInt(mean,width,batch.Min[Algebraic],batch.Max[Algebraic],Level);
 		}
 			
 		case RE_AVG://temporary
@@ -408,7 +412,7 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 		
 		return ConfInt(mean*mean2,
 						   (mean2 - width)*l,
-						   (mean2 + width)*u,0.0,1.0 * batch.Max[Algebraic] );
+						   (mean2 + width)*u,0.0,1.0 * batch.Max[Algebraic],Level );
 		}
 			
 		case RE_Continuous:
@@ -420,10 +424,10 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 		double LevelN = 1- error/(N+2);
 		double ValueN = quantile(boost::math::normal() , (1+LevelN)/2);
 		
-		ConfInt totalInt = ConfInt(0.0,0.0,0.0,0.0);
-		ConfInt likelyhood = ConfInt(0.0,0.0,0.0,0.0);
-		ConfInt reacheabilityprob =  ConfInt(0.0,0.0,0.0,0.0);
-		ConfInt poisson = ConfInt(0.0,0.0,0.0,0.0);
+		ConfInt totalInt = ConfInt(0.0,0.0,0.0,0.0,Level);
+		ConfInt likelyhood = ConfInt(0.0,0.0,0.0,0.0,Level);
+		ConfInt reacheabilityprob =  ConfInt(0.0,0.0,0.0,0.0,Level);
+		ConfInt poisson = ConfInt(0.0,0.0,0.0,0.0,Level);
 		
 		if(P.verbose>1)std::cerr << "i,\tsucc,\tbatch,\tMean,\tM2,\tMin,\tMax,\tPoisson" << std::endl;
 		if(P.verbose>1)std::cerr << "continuous step:\t" << P.continuousStep <<  std::endl;
@@ -475,10 +479,10 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 		
 		//Add the error made on the left of the truncation point.
 		ConfInt leftTruncationError =
-		ConfInt(0.0,0.0,batch.Mean[1]/batch.M2[0]* Value2/2,0,batch.Mean[1]/batch.M2[0]* Value2/2);
+		ConfInt(0.0,0.0,batch.Mean[1]/batch.M2[0]* Value2/2,0,batch.Mean[1]/batch.M2[0]* Value2/2,Level);
 		
 		//Add the error made on the rigth trucation point TODO!
-		ConfInt rightTruncationError = ConfInt(0.0,0.0,0.0,0.0);
+		ConfInt rightTruncationError = ConfInt(0.0,0.0,0.0,0.0,Level);
 		
 		totalInt += leftTruncationError;
 		totalInt += rightTruncationError;
@@ -496,31 +500,37 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
          * H1 = { 0 <= p < Value  } => p1=Value
          */
 
-        double alog = log((1-Value)/(1-Value2));
-        double blog = log(Value/Value2);
+        const double alog = log((1-Value)/(1-Value2));
+        const double blog = log(Value/Value2);
 
-		double a = Level; //Probability of type I error
-		double b = Level; //Probability of type II errror
-
-        double logA = log((1-b) / a);
-        double logB = log(b /(1-a));
+/*
+		const double logA = log((1-Level) / Level);
+        const double logB = -logA;  // log(Level /(1-Level));
+*/
 
         double loglikelyhoodRatio = alog * (double)(batch.I - batch.Isucc) + blog * (double)batch.Isucc;
 
         //cerr << "[" << logB << "  --  " << loglikelyhoodRatio << "  --  " << logA << "]" << endl;
+        double l = 1- 1/(1+ exp(fabs(loglikelyhoodRatio)));
 
- 		if(loglikelyhoodRatio <= logB){ //Accept H0
-			return ConfInt((double)batch.Isucc/(double)batch.I, Value ,1,0.0,1.0);
+        if(loglikelyhoodRatio <= 0){ //Accept H0
+			return ConfInt((double)batch.Isucc/(double)batch.I, Value ,1,0.0,1.0,l);
+		}else{
+            return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2,0.0,1.0,l);
+        }
+        }
+ 		/*if(loglikelyhoodRatio <= logB){ //Accept H0
+			return ConfInt((double)batch.Isucc/(double)batch.I, Value ,1,0.0,1.0,Level);
 		}
 		if (loglikelyhoodRatio >= logA ) { //Accept H1
-			return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2,0.0,1.0);
+			return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2,0.0,1.0,Level);
 		}
         // Continue testing
-		return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,1,0.0,1.0);
-		}
+		return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,1,0.0,1.0,Level);
+		}*/
 			
 		case CONSTANT:
-			return ConfInt(Value,Value2,Value-Value2/2.0,Value+Value2/2.0);
+			return ConfInt(Value,Value2,Value-Value2/2.0,Value+Value2/2.0,1.0);
 			
 		case HASL_PLUS:
 			return (left->eval(batch) += right->eval(batch));

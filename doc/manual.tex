@@ -157,16 +157,21 @@ During the simulation a synthetic overview is displayed:
 \begin{scriptsize}
 \begin{verbatim}
 Total paths: 28570000  Accepted paths: 22442000  Wall-clock time: 21s  Remaining(approx): 32s  Trajectory per second: 1.4e+06
-r:        |< 2.639128431e-08 --[ 0.4999066088    < 0.5000635601    > 0.5002205154    ]-- 0.9999999687    >| width=0.000313902
-pi:       |< 0               --[ 3.141245613     < 3.142037101     > 3.142828210     ]-- 4               >| width=0.001582596
-pi2:      |< 0               --[ 0.7853114033    < 0.7855092754    > 0.7857070525    ]-- 1               >| width=0.000395649
+r:      |< 2.639128431e-08 --[ 0.4999066088    < 0.5000635601    > 0.5002205154    ]-- 0.9999999687 >| width=0.0003139 level=0.99
+pi:     |< 0               --[ 3.141245613     < 3.142037101     > 3.142828210     ]-- 4            >| width=0.0015825 level=0.99
+pi2:    |< 0               --[ 0.7853114033    < 0.7855092754    > 0.7857070525    ]-- 1            >| width=0.0003956 level=0.99
 % of Err: [||||||||||||||||||||||||||||||||||||||||                                                       ] 39%	
 % of run: [||||||||||||||||||||||||||||                                                                   ] 28%	
 \end{verbatim}
 \end{scriptsize}
 The first line provide information on the speed of simulation. The
-remaining time is computed assuming that the size of confidence
+remaining time is computed differently depending of the statistical
+procedure used. For fixed sample size algorithm the estimate computation
+is straightforward. For Chow-Robbins methods
+we assume that the size of confidence
 interval decrease in $1/\sqrt{N}$ with $N$ the number of trajectories.
+which is quite reliable. For the SPRT a heuristic is used and the 
+estimation is a lot less reliable.
 The second to fourth line present three HASL expressions. The first
 number is minimal value observed for this expression, then the lower
 bound of the confidence interval is displayed, then the estimated
