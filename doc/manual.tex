@@ -45,114 +45,115 @@ where the model is specified in the GRML file format or in the
 \verb|.gspn| file format and the property is expressed either in GRML
 or in the \verb|.lha| file format.
 
-Cosmos is shipped with several example in the \verb|Examples| directory.
+Cosmos is shipped with several examples in the \verb|Examples| directory.
 
 \subsubsection{Model}
-Models taken by \cosmos{} as input are variant of Petri net.  The main
-model supported by \cosmos are Stochastic Petri net with inhibitor
-arcs and general distribution. The file format of \cosyverif{} (GRML) 
-allows to specified different variant of Petri Net which are also 
-recognize by \cosmos{}:
+Models taken by \cosmos{} as input are variants of Petri nets.  The main
+models supported by \cosmos{} are stochastic Petri nets with inhibitor
+arcs and general distributions. The file format of \cosyverif{} (GRML) 
+allows to specified different variants of Petri nets which are also 
+recognized by \cosmos{}:
 \begin{itemize}
-\item Plain Petri net can be read in this case exponential distribution of 
-  rate $1$ is assign to each transition.
-\item Stochastic Petri net with inhibitor arc and general distribution.
-\item Symmetric Net, like for plain Petri net in this case exponential
-  distribution of rate $1$ are assume.
-\item Stochastic Symmetric Net. 
+\item Plain Petri nets can be read: in this case, an exponential
+  distribution of rate $1$ is assigned to each transition.
+\item Stochastic Petri nets with inhibitor arcs and general distributions.
+\item Symmetric nets: like for plain Petri nets, exponential
+  distributions of rate $1$ are assumed.
+\item Stochastic Symmetric Nets. 
 \end{itemize}
-The specification of file format are reported in Section~\ref{sec:fileformat}.
-The \verb|.gspn| file format is the legacy file format of cosmos. As \verb|.grml|
-is more standard and easier to extend it advised to use \verb|.grml| for new
-model.
+The specification of file formats are reported in Section~\ref{sec:fileformat}.
+The \verb|.gspn| file format is the legacy file format of \cosmos{}. As \verb|.grml|
+is more standard and easier to extend, it is advised to use \verb|.grml| for new
+models.
 
 \subsubsection{Property}
-Property are specified in the Hybrid Linear Automaton Logic(HASL)
-which as the name suggest relies on Linear Hybrid Automaton(LHA) to
-select path and on several HASL expression to specify various
+Properties are specified in the Hybrid Linear Automaton Logic~(HASL)
+which, as its name suggests, relies on Linear Hybrid Automaton~(LHA) to
+select pathes and on several HASL expressions to specify various
 performance values.
 
 
 \subsection{Statistical Options}
-Several options can be used to control the behaviors of the statistical engine.
-The default behaviors is to simulate trajectories until either
+Several options can be used to control the behavior of the statistical engine.
+The default behavior is to simulate trajectories until either
 \begin{itemize}
-\item The maximum number of trajectories is reach.
-\item The specified width for confidence intervals is reach.
+\item The maximum number of trajectories is reached.
+\item The specified width for the confidence interval is reached.
 \end{itemize}
 
 \subsubsection{\texttt{--width arg}  option}
-This option specified \texttt{arg} as the goal width for
-confidence intervals. If it is set to $0$ trajectories are
-simulated until the maximum number of trajectories is reached.
-The default value is $0.001$.
+This option specifies \texttt{arg} as the goal width for the
+confidence interval. If it is set to $0$, trajectories are simulated
+until the maximum number of trajectories is reached.  The default
+value is $0.001$.
 
 \subsubsection{\texttt{--max-run arg}  option}
-This option specified \texttt{arg} as the maximal number of run.
+This option specifies \texttt{arg} as the maximal number of run.
 The default value is $2,000,000$.
 
 \subsubsection{\texttt{--level arg}  option}
-This option set the confidence level to \texttt{arg}.
+This option sets the confidence level to \texttt{arg}.
 The default value is $0.99$.
 
 \subsubsection{\texttt{--batch arg}  option}
-This option set the number of simulation to perform between each
+This option sets the number of simulation to perform between each
 statistical test.  The default value is $1000$. When this value is 
-set to $0$ the tool will perform a test at constant time period.
+set to $0$, the tool will perform a test at constant time period.
 
 \subsubsection{\texttt{--njob arg}  option}
-This option set the number of parallel computation to \texttt{arg}.
+This option sets the number of parallel computation to \texttt{arg}.
 The default value is $1$.
 
 \subsubsection{\texttt{--relative}  option}
-This option set allow cosmos to used relative confidence interval
-instead of absolute one.
+This option allows \cosmos{} to use a relative confidence interval
+instead of an absolute one.
 
 \subsubsection{\texttt{--chernoff arg}  option}
-This option use chernoff-hoeffding bound to compute statistical parameter.
-\texttt{arg} contain one of \texttt{width,level,nbrun}. The parameter 
-specified by \texttt{arg} is computed using Chernoff-Hoeffding bound.
+This option uses Chernoff-Hoeffding bound to compute statistical
+parameters.  \texttt{arg} contains one of \texttt{width,level,nbrun}
+which is computed using Chernoff-Hoeffding bound.
 
 \subsection{Input Options}
 
 \subsubsection{\texttt{--const X1=c1,X2=c2,\dots,Xn=cn}  option}
-This option overrides values of constants of models. The constants is
-define if it was done define in the model before.
+This option overrides the values of the constants of the model or the
+property. If the constant was already defined, the value is
+overwritten, if not, the constant is defined.
 
 \subsubsection{\texttt{-g, --grml-input}  option}
-This option force the tool to use the GRML parser for the model and
+This option forces the tool to use the GRML parser for the model and
 the LHA. This is mostly deprecated as the correct parser is inferred
 from the extension.
 
 \subsubsection{\texttt{--HASL-expression arg}  option}
-This allow to specify additional HASL{} expressions to the automaton.
-The syntax of \texttt{arg} is the one of HASL{} expression in the
-\texttt{.lha} file format and should ends with ``\texttt{;}''.
+This allows one to specify additional HASL{} expressions to the automaton.
+The syntax of \texttt{arg} is the one of HASL{} expressions in the
+\texttt{.lha} file format and should end with ``\texttt{;}''.
 
 \subsubsection{\texttt{--loop arg [--transient arg2]}  option}
-This produce a set of HASL formulas evaluating the mean number of 
+This produces a set of HASL formulas evaluating the mean number of 
 token in each place and the mean throughput of each transition until time
-\texttt{arg}. The optional additional argument allows to specify a transient
+\texttt{arg}. The optional additional argument allows one to specify a transient
 time where the mean number of token and throughput are not recorded.
 See option \texttt{--trace-place} to specify which places and transitions 
 to monitor.
 
 \subsubsection{\texttt{--sampling t1 t2} option}
-This produce an automaton that sample each \texttt{t2} time unit the
+This produces an automaton which samples, each \texttt{t2} time unit, the
 mean number of token in each place for this period, until time
 \texttt{t1} is reached.  See option \texttt{--output-graph} to format
 the output in a more manageable way.
 
 \subsubsection{\texttt{--count-transition} option}
-This Produce a set of HASL formulas counting the number of firing of each
+This produces a set of HASL formulas counting the number of firing of each
 transition.
 
 \subsubsection{\texttt{--formula arg} option}
-Send the expression \texttt{arg} to the \emph{AutomataGen} tool to produce
+Sends the expression \texttt{arg} to the \emph{AutomataGen} tool to produce
 the LHA used for the simulation. The tool AutomataGen is a work in progress.
 
 \subsection{Output formatting Options}
-The default behavior of \cosmos{} for displaying result is as follows:
+The default behavior of \cosmos{} for displaying results is as follows:
 During the simulation a synthetic overview is displayed:
 \begin{scriptsize}
 \begin{verbatim}
@@ -164,28 +165,27 @@ pi2:    |< 0               --[ 0.7853114033    < 0.7855092754    > 0.7857070525 
 % of run: [||||||||||||||||||||||||||||                                                                   ] 28%	
 \end{verbatim}
 \end{scriptsize}
-The first line provide information on the speed of simulation. The
+The first line provides information on the speed of simulation. The
 remaining time is computed differently depending of the statistical
-procedure used. For fixed sample size algorithm the estimate computation
-is straightforward. For Chow-Robbins methods
-we assume that the size of confidence
-interval decrease in $1/\sqrt{N}$ with $N$ the number of trajectories.
-which is quite reliable. For the SPRT a heuristic is used and the 
-estimation is a lot less reliable.
-The second to fourth line present three HASL expressions. The first
-number is minimal value observed for this expression, then the lower
-bound of the confidence interval is displayed, then the estimated
-value, then the upper bound and then the maximal observed value. The
-width of the confidence interval is displayed at the end.  The last
-two lines show progress bar indicating the progress of the
-simulation. The first one indicate the progress to reach specified
-confidence interval width limit. This progress is corrected assuming
-that the width progress in $1/\sqrt{N}$ thus this bar progress at
-constant speed. The last bar is the number of simulated trajectory 
-compare to the maximal number of trajectories.
+procedure used. For fixed-sample-size algorithms, the estimation of
+the computation time is straightforward. For the Chow-Robbins method,
+the size of the confidence interval is assumed to decrease in
+$1/\sqrt{N}$ with $N$ the number of trajectories, which is quite
+reliable. For the SPRT, a heuristic is used and the estimation is a lot
+less reliable.  The second to fourth lines present three HASL
+expressions. The first number is the minimal value observed for this
+expression, then the lower bound of the confidence interval is
+displayed, then the estimated value, then the upper bound and then the
+maximal observed value. The width of the confidence interval is
+displayed at the end.  The last two lines show progress bars indicating
+the progress of the simulation. The first one indicates the progress to
+reach the specified confidence interval width limit. This progress is
+corrected assuming that the width progress in $1/\sqrt{N}$ thus this
+bar progress at constant speed. The last bar is the number of
+simulated trajectories compared to the maximal number of trajectories.
 
-When the simulation finished results are return in key-value format
-easier to parse for tools:
+When the simulation finishes, results are returned in a key-value
+format which is easier to parse for tools:
 \begin{scriptsize}
 \begin{verbatim}
 Model path:	pi.gspn
@@ -218,42 +218,43 @@ Results are saved in 'Result_pi.res'
 Results are saved in 'Result.res'
 \end{verbatim}
 \end{scriptsize}
-All the simulations parameters are recalled. The additional
-information are the \texttt{Time for simulation} which is the wall
-clock time uses by the simulation.  It decrease when the number of
-parallel processes increases on multi-processor machine.  The
-\texttt{Total CPU time} is the cpu time consume by the whole
-computation it slightly increases when the number of parallel process
-increases. The \texttt{Total Memory used} line report the memory used
-by the whole computation. In most cases the maximum memory consumption
-is reached during the compilation of the simulator and highly depends of
-the compiler used. This output is also stored in a file called \texttt{Result.res}.
+All the simulation parameters are recalled. The additional information
+are the \texttt{Time for simulation} which is the wall clock time used
+by the simulation.  It decreases when the number of parallel processes
+increases on multi-processor machine.  The \texttt{Total CPU time} is
+the cpu time consumed by the whole computation, it slightly increases
+when the number of parallel processes increases. The \texttt{Total
+  Memory used} line reports the memory used by the whole
+computation. In most cases, the maximum memory consumption is reached
+during the compilation of the simulator and highly depends of the
+compiler used. This output is also stored in a file called
+\texttt{Result.res}.
 
-Several option allow to output other data from the simulation:
+Several options allow to output additional data from the simulation:
 
 \subsubsection{\texttt{-v, --verbose arg} option}
-Set the verbose level of the tool. The default is $2$, with $0$ the tool
+Sets the verbose level of the tool. The default is $2$, with $0$ the tool
 does not write anything on the standard output. The maximum is $6$ which 
-generate debug information at each step of the simulation.
+generates debug information at each step of the simulation.
 
 \subsubsection{\texttt{-i,--interactive} option}
-This option allows to debug a model by stopping the simulation after
-each step.  This is option should not be used together with
+This option allows one to debug a model by stopping the simulation after
+each step.  This option should not be used together with
 \texttt{--njob n} with $n>1$.  When the simulation is stopped the user
 is asked either to type \texttt{step} to fire the following transition
 or \texttt{fire tr} where \texttt{tr} is the name of an enabled
 transition. This mode is not fully compatible with stochastic
-symmetric net as the command \texttt{fire} does not allows to specify
+symmetric nets as the command \texttt{fire} does not allow to specify
 a binding.
 
 \subsubsection{\texttt{--output-graph arg} option}
-Allows to output results of HASL formula in a blank separated file
-format. The argument \texttt{arg} specify the name of the file.  This
+Allows one to output results of HASL formula in a blank separated file
+format. The argument \texttt{arg} specifies the name of the file.  This
 is well suited for HASL expressions specifying a graph like
 \texttt{PDF, CDF} or the expression generated by the
-\texttt{--sampling} option.  Figure~\ref{fig:sampling} show a graph
+\texttt{--sampling} option.  Figure~\ref{fig:sampling} shows a graph
 generated by the \texttt{--sampling 2 0.001} option on the shared
-memory example. The \texttt{--output-graph} option generate a file
+memory example. The \texttt{--output-graph} option generates a file
 starting as file:
 \begin{scriptsize}
 \begin{verbatim}
@@ -264,9 +265,9 @@ abscissa MeanToken_Access1_low MeanToken_Access1_mean MeanToken_Access1_up      
 \end{verbatim}
 \end{scriptsize}
 which can easily be plotted as the figure using \texttt{gnuplot}.
-This can be used for user defined HASL formula by using name ending by
+{\color{red}This can also be used for user defined HASL formulas by using name ending by
 \verb|$GRAPH$x1$x2$| for HASL expressions where $(x1+x2)/2$ is the
-abcsissa of the point computed by the expression.
+abcsissa of the point computed by the expression.}
 
 \begin{figure}[h]
   \centering
@@ -276,10 +277,10 @@ abcsissa of the point computed by the expression.
 \end{figure}
 
 \subsubsection{\texttt{-d, --output-data arg} option}
-This option generate a file containing showing the evolution of 
-confidence intervals along the time, this allow to observe the
-speed of convergence. Figure~\ref{fig:convergence} shows a graph
-plotted from these data. 
+This option generates a file showing the evolution of the confidence
+interval along the time. This allows one to observe the speed of
+convergence. Figure~\ref{fig:convergence} shows a graph plotted from
+these data.
 
 \begin{figure}[h]
   \centering
@@ -289,21 +290,21 @@ plotted from these data.
 \end{figure}
 
 \subsubsection{\texttt{--output-raw arg} option}
-This option allows to output the end value of HASL expression at
-the end of each trajectories. This option was introduced for debug 
-purposes and should not be used in normal use. This option is not compatible
-with \texttt{--njob n} when $n>1$
+This option allows one to output the final value of the HASL
+expressions at the end of each trajectory. This option was introduced
+for debug purposes and should not be used in normal use. This option
+is not compatible with \texttt{--njob n} when $n>1$
 
 \subsubsection{\texttt{--output-trace arg arg2} option}
-This option store traces of trajectories of simulation in file
+This option stores the traces of the trajectories in file
 \texttt{arg}.  Each line contains the global state of the simulator
-(Petri net + LHA) after a transition.  Each trajectories are separated
-by a line containing \texttt{New Path}.  Figure~\ref{fig:trace}
-contains a trace of one trajectory of the shared memory example.  The
-second argument \texttt{arg2} specify a minimum sampling time. If
-\texttt{arg2} $>0$, no two lines in the output file are separated by
-less than \texttt{arg2} time unit. This is useful when the trace
-became to big to reduce the size of the generated file.
+(Petri net + LHA) after a transition.  Each trajectory is separated by
+a line containing \texttt{New Path}.  Figure~\ref{fig:trace} contains
+a trace of one trajectory of the shared memory example.  The second
+argument \texttt{arg2} specifies a minimum sampling time. If
+\texttt{arg2} $>0$, no consecutive lines in the output file are
+separated by less than \texttt{arg2} time unit. This is useful when
+the trace becomes too big to reduce the size of the generated file.
 
 \begin{figure}[h]
   \centering
@@ -313,66 +314,66 @@ became to big to reduce the size of the generated file.
 \end{figure}
 
 \subsubsection{\texttt{--trace-pt arg} option}
-Specify which place and transition should be traced in the various
-output file.  \texttt{arg} is a list of place and transition
-name. There are two keyword \texttt{ALL} which is the default and
-\texttt{COLOR}, the first allow to trace all places and transitions,
-the second allow to trace all color token and all binding of
-transition for stochastic symmetric net.
+Specifies which place and transition should be traced in the various
+output files.  \texttt{arg} is a list of places and transition
+names. There are two keywords, \texttt{ALL} which is the default, and
+\texttt{COLOR}. The first one allows one to trace all places and transitions,
+the second, allows one to trace all color tokens and all bindings of
+transition for stochastic symmetric nets.
 
 \subsubsection{\texttt{--gnuplot-driver} option}
 This option makes \cosmos{} call \texttt{gnuplot} interactively and
-display the graph of all output specify by a \texttt{--output-*}
-option.  All the graph of this manual have been created using this
+display the graph of all outputs specified by an \texttt{--output-*}
+option.  All the graphs of this manual have been created using this
 option.
 
 \subsubsection{\texttt{--alligator-mode} option}
-This option remove the output of the progress of the simulation 
-and output progress as line containing key-value. This mode
-is useful for interfacing cosmos with other tool in particular 
-with \texttt{alligator} the server part of \cosyverif. This 
+This option removes the output of the progress of the simulation 
+and outputs the progress as a line containing key-value. This mode
+is useful for interfacing \cosmos{} with other tools in particular 
+with \texttt{alligator}, the server part of \cosyverif. This 
 mode also makes the \texttt{--gnuplot-driver} option to write
-the graph is files instead than on the screen.
+the graph in files instead than on the screen.
 
 \subsubsection{\texttt{--update-time arg} option}
-This option set the time between two update of the progress of the simulation
+This option sets the time between two updates of the progress of the simulation
 to be no less than \texttt{arg}.
 
 \subsection{Miscellaneous Options}
 \subsubsection{\texttt{--version} option}
-Display the current version of \cosmos{}.
+Displays the current version of \cosmos{}.
 
 \subsubsection{\texttt{-h, --help} option}
-Display a help message containing the list of option and quit.
+Displays a help message containing the list of options and quits.
 
 \subsubsection{\texttt{--seed arg} option}
-Set the seed of the simulator to \texttt{arg}. 
+Sets the seed of the simulator to \texttt{arg}. 
 
 \subsubsection{\texttt{--local-test} option}
-This option change the way enabled transitions are computed.  This can
-improve performance for net containing transitions with a lot of input
+This option changes the way enabled transitions are computed.  This can
+improve performance for nets containing transitions with a lot of input
 arcs.
 
 
 \subsubsection{\texttt{--unfold arg} option}
-This option output the model as a place transition net in the GrML
-file format this allows to unfold Symmetric net but also to convert
-\texttt{.gspn} file to GrML. This option is a work in progress some
-expression on arcs may not be well exported.
+This option outputs the model as a place transition net in the GrML
+file format. This allows ont to unfold symmetric nets but also to convert
+\texttt{.gspn} file to GrML. This option is a work in progress, some
+expressions on arcs may not be well exported.
 
 
 \subsubsection{\texttt{-s, --state-space} option}
-Do not run the simulator instead generate the state space and 
+Does not run the simulator, instead generates the state space and 
 the transition probability matrix. The output format is the one
 used by \texttt{Prism} to import models. 
 
 \subsubsection{\texttt{--prism} option}
-Export the state space then run \texttt{Prism} on it.
-At the end of the computation the vector of probability to reach
+Exports the state space then run \texttt{Prism} on it.
+At the end of the computation, the vector of probability to reach the
 accepting state is read and exported.
 
 \subsubsection{\texttt{--gppcmd arg} option}
-Set the C++ compiler to be \texttt{arg}.
+Sets the C++ compiler to be \texttt{arg}.
 
 \subsubsection{\texttt{--gppflags arg} option}
 Appends \texttt{arg} to the command line calling the C++ compiler.
@@ -382,36 +383,36 @@ The following options are implemented only for debugging purposes and
 should not be used in general.
 
 \subsubsection{\texttt{--tmp-status arg} option}
-Change the way \cosmos{} handle temporary files. The argument \texttt{arg}
-can takes four values: 
+Changes the way \cosmos{} handle temporary files. The argument \texttt{arg}
+can take four values: 
 \begin{itemize}
-\item $0$ is the default. A temporary directory is asked to the system
+\item $0$ is the default. A temporary directory is asked to the system and
   all temporary files are generated in it. The directory is destroyed
   at the end of the computation.
 \item $2$. The directory name \texttt{tmp} in the current
   \texttt{PATH} is used, it is not destroyed at the end. This option
   is useful to examine generated code.
-\item $1$. \cosmos{} assume that the directory \texttt{tmp} exists
+\item $1$. \cosmos{} assumes that the directory \texttt{tmp} exists
   and contains a fully build version of the model and property. The
-  simulator is launched without being rebuild. At the end of computation
+  simulator is launched without being rebuild. At the end of computation,
   the directory is destroyed.
-\item $3$. Same as $1$ but do not destroyed the \texttt{tmp} directory
+\item $3$. Same as $1$ but does not destroy the \texttt{tmp} directory
   at the end.
 \end{itemize}
-These option allows to build only once a model and reuse it for
-several simulations. Only statistical parameters can be change between simulation
+These option allow one to build only once a model and reuse it for
+several simulations. Only statistical parameters can be changed between simulations
 as the model is not rebuild. Use with caution!
 
 \subsubsection{\texttt{--tmp-path arg} option}
-Specify where to put the temporary directory. This option is useless
+Specifies where to put the temporary directory. This option is useless
 if the \texttt{--tmp-status arg} with \texttt{arg}$>0$ is not specify.
 
 \subsubsection{\texttt{--bin-path arg} option}
-Override the path to the installation of \cosmos{}. This path is used
-by cosmos to find headers and libraries requires to build the model.
+Overrides the path to the installation of \cosmos{}. This path is used
+by \cosmos{} to find headers and libraries required to build the model.
 
 \subsubsection{\texttt{--debug-string} option}
-Add debuging information to the generated code. This option is activated
+Adds debuging information to the generated code. This option is activated
 and required by a verbose mode greater than $4$.
 
  
@@ -492,28 +493,28 @@ OutArcs={
 \end{scriptsize}
 
 {\bf Description:}
-The first bloc is a list of constants definition, constants can be
+The first block is a list of constant definitions, constants can be
 either \verb|double| or \verb|int|.\\
-Then we specify the number of place and transitions with:
+Then the number of places and transitions is specified with:
 \verb|NbPlaces = 5; NbTransitions = 6;|\\
-The list of place name and transition name is given in the
+The list of place names and transition names is given in the
 \verb|PlacesList| and \verb|TransitionsList| statement.\\
 The initial marking of the net is given as a set of pairs
 in the \verb|Marking| statement.\\
 The transition distribution is given as a set of tuples like
 this one:\\ \verb|(Arrive_1,EXPONENTIAL(lambda1),1,1, SINGLE)|
-each tuple contain first the name of the transition then
+each tuple contains first the name of the transition then
 the probability distribution with some parameters, then two positive
-reals define the priority and weight of the event generated.
-For exponential distribution we can specify the policy of service
-which can be \verb|SINGLE,INFINITE,MULTIPLE(n)|.\\
-Finally come the description of arcs of the net with the 
+reals defining the priority and weight of the event generated.
+For an exponential distribution,  the policy of service can be specified
+by \verb|SINGLE,INFINITE,MULTIPLE(n)|.\\
+Finally comes the description of the arcs of the net with the 
 \verb|InArcs|,\verb|OutArcs| and \verb|InhibitorsArcs| statements.
 
 
 
 \subsubsection{Grammar}
-the complete grammar is:
+The complete grammar is:
 
 \begin{scriptsize}
 \begin{grammar}
@@ -676,25 +677,25 @@ the complete grammar is:
 \end{grammar}
 \end{scriptsize}
 
-All the expression are typed with a domain. An expression of a domain
+All the expressions are typed with a domain. An expression of a domain
 $D$ is a function that map to each color of the domain $D$ an integer
 or real expression. 
 
-Value of the domain ``Uncolored'' act as scalar.  The construction
-``Card'' take an expression over a domain and return an expression of
+Values of the domain ``Uncolored'' act as scalar.  The construction
+``Card'' takes an expression over a domain and return an expression of
 the uncolored domain by taking the sum of the expression over all
-color. The construction ``Expr[c1,c2]'' return a value in the
+colors. The construction ``Expr[c1,c2]'' returns a value in the
 uncolored domain equal to the valuation of ``Expr'' for the color
 ``c1,c2''.
 
 
-There is two type of expression, The one describe
-by ``Expr'' can depend of any quantities define in the Net or in the
-automaton whereas ``MarkingDepExpr'' can not depend of quantities
-which are continuous variable. The difference is that
-``MarkingDepExpr'' are constant between two transition of the
-automaton whereas ``Expr'' evolve linearly between two
-transition. Both of them can be discontinuous when a transition of the
+There are two types of expression. The one described
+by ``Expr'' can depend of any quantities defined in the Net or in the
+automaton whereas ``MarkingDepExpr'' cannot depend of quantities
+which are continuous variables. The difference is that
+``MarkingDepExpr'' is constant between two transitions of the
+automaton whereas ``Expr'' evolves linearly between two
+transitions. Both of them can be discontinuous when a transition of the
 automaton occurs.
 
 
@@ -715,7 +716,7 @@ automaton occurs.
 \end{grammar}
 \end{scriptsize}
 
-This section define the identifier for the different type of variable
+This section defines the identifiers for the different types of variables
 as well as their domain.
 
 \subsubsection{Location Invariant Proposition}
@@ -726,8 +727,8 @@ as well as their domain.
 \end{grammar}
 \end{scriptsize}
 
-Location invariant do not depend of continuous variable value.
-It ensure that location invariant are constant between two transitions
+Location invariants do not depend of continuous variable value.
+It ensures that location invariants are constant between two transitions
 of the automaton.
 
 \subsubsection{Flow Expression}
@@ -737,7 +738,7 @@ of the automaton.
   <FlowDef> ::= <VarExpr> `\'' `=' <MarkingDepExpr> 
 \end{grammar}
 \end{scriptsize}
-As location invariant, flow rate are constant between two transitions
+As location invariants, flow rates are constant between two transitions
 of the automaton to ensure that continuous variables are piecewise
 linear.
 
