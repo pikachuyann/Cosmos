@@ -218,6 +218,34 @@ void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){\n";
 }";
   close_out f;;
 
+let generate_prism prismpath n lambda rho r n2 = 
+  let f = open_out prismpath in
+  Printf.fprintf f "ctmc
+const int n = %i;
+const int n2= %i;
+const int r = %i;
+
+const double lambda = %f;
+const double rho = %f;\n" n n2 r lambda (rho 1);
+
+  Printf.fprintf f "module Tandem
+\tRE_Queue1 : [0..n2] init 1;\n";
+  for i =2 to n do 
+    Printf.fprintf f "\tRE_Queue%i : [0..r] init 0;\n" i;
+  done;
+  Printf.fprintf f "\t[] RE_Queue1<n2 -> lambda : (RE_Queue1'=RE_Queue1+1);\n";
+  for i =2 to n do 
+    Printf.fprintf f "\t[] RE_Queue%i>0 & RE_Queue%i<r -> %f : (RE_Queue%i'=RE_Queue%i-1) & (RE_Queue%i'=RE_Queue%i+1);\n" (i-1) i (rho i) (i-1) (i-1) i i;
+  done;
+  Printf.fprintf f "\t[] RE_Queue%i>0 -> %f : (RE_Queue%i'=RE_Queue%i-1);\n" n (rho n) n n;
+  Printf.fprintf f "endmodule
+
+formula win = %s = n2;
+formula loose = %s = 0;" (gen_queue n) (gen_queue n) ;
+close_out f;;
+
+
+
 #use "../testTeamCity.ml";;
 
 let generate n n2 r mu rho = 
@@ -230,7 +258,8 @@ let generate n n2 r mu rho =
   generate_csl "tandem.csl" n n2;
   generate_reduce_spn "tandemRE.grml" n mu rho r;
   generate_lha "tandem.lha" n n2;
-  generate_lumping_fun "lumpingfun.cpp" n;;
+  generate_lumping_fun "lumpingfun.cpp" n;
+  generate_prism "tandem.sm" n mu rho r n2;;
 
 let level = ref 0.99;;
 
