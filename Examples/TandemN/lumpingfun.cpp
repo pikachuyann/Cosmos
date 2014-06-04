@@ -13,6 +13,7 @@ void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){
 	vect[6] = Marking.P->_PL_RE_Queue7;
 	vect[7] = Marking.P->_PL_RE_Queue8;
 	vect[8] = Marking.P->_PL_RE_Queue9;
+	vect[9] = Marking.P->_PL_RE_Queue10;
 	int reste =0;
     for (int i=vect.size()-1; i>0; i--) {
         if(vect[i]>r){
