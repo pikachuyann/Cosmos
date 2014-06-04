@@ -4,6 +4,7 @@
 ctmc
 
 const int c; // queue capacity
+const int T;
 
 const double lambda = 4*c;
 const double mu1a = 0.1*2;
