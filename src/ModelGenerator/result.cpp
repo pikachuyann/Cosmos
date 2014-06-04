@@ -179,9 +179,11 @@ void result::printProgress(){
     cout << "Total paths: ";
 	cout << setw(10) << MeanM2->I << "\t Accepted paths: ";
 	cout << setw(10) << MeanM2->Isucc << "\t Wall-clock time: ";
+
+    double ProgressTot = max(Progress,(double)MeanM2->I/(double)P.MaxRuns);
 	auto wallclock = chrono::duration_cast<chrono::milliseconds>(current - start);
 
-	auto estimated = wallclock * (1.0 / Progress - 1.0 );
+	auto estimated = wallclock * (1.0 / ProgressTot - 1.0 );
 	cout << chrono::duration_cast<chrono::seconds>(wallclock).count() << "s\t Remaining(approximative): " ;
 	cout << chrono::duration_cast<chrono::seconds>(estimated).count()  << "s\t Trajectory per second: " ;
 	cout.precision(2);
