@@ -267,7 +267,9 @@ let simule n n2 r mu rho batch =
   generate n n2 r mu rho;
   Printf.printf "Simulate n=%i n2=%i r=%i" n n2 r;
   print_newline ();
-  execSavedCosmos ~prefix:false ("ReduceModel","tandemRE.grml","tandem.lha"," --prism --prism-path /Applications/prism-4.0.2-osx64/bin/prism");
+  (*execSavedCosmos ~prefix:false ("ReduceModel","tandemRE.grml","tandem.lha"," --prism --prism-path /Applications/prism-4.0.2-osx64/bin/prism");*)
+  Sys.command "/usr/bin/time /Applications/prism-4.0.2-osx64/bin/prism -v tandem.sm prismtandem.csl > prismout";
+  Sys.command ("ocaml traduittable.ml prismout muFile "^(string_of_int n));
   execSavedCosmos ~prefix:false ("ImportantSampling","tandem.grml","tandem.lha",Printf.sprintf " -r --width 0 --max-run %i --level %f" batch !level );;
 
 
