@@ -1,6 +1,7 @@
 #!/opt/local/bin/ocaml
 
-let pt = open_in Sys.argv.(1)
+let nd = int_of_string Sys.argv.(3)
+and pt = open_in Sys.argv.(1)
 and out = open_out Sys.argv.(2);;
 
 
@@ -10,7 +11,13 @@ while !b do
   try if "Probabilities (non-zero only) for all states:" = (String.sub p 0 45) then b := false; with _ -> ();
 done;;
 
+let rec fs = function 
+    | 1 -> "0"
+    | x -> fs (x-1)^",0";;
+
 let mapping = Hashtbl.create ~random:false 10000;;
+let st = Printf.sprintf "(%s)" (fs nd) in
+Hashtbl.add mapping st 0.0;;
 
 (try while true do
     let p = input_line pt in
@@ -23,6 +30,7 @@ let mapping = Hashtbl.create ~random:false 10000;;
   done;
 with
     Not_found -> (););;
+
 
 let n = Hashtbl.length mapping in
 Printf.fprintf out "[%i](" n;
