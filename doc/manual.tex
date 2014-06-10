@@ -415,7 +415,39 @@ by \cosmos{} to find headers and libraries required to build the model.
 Adds debuging information to the generated code. This option is activated
 and required by a verbose mode greater than $4$.
 
- 
+\subsection{Rare Events Options}
+\subsubsection{\texttt{-r} option}
+Use importance sampling during the simulation. This option estimate
+time-unbounded reachability probability. This require a file name
+\texttt{lumpingfun.cpp} to be in the current directory containing a
+function mapping marking of the net to marking of the reduce model. A
+file name \texttt{muFile} containing the vector of probability in a
+reduce model is also required. This file can be produce withe the
+\texttt{--prism} option.
+
+\subsubsection{\texttt{-b arg1 --set-horizon arg2} option}
+Use time-bounded importance sampling assuming a discrete semantic of
+the model. \texttt{arg1} specify wich algorithm to use between $1$,$2$
+and $3$. $1$ is the fastest while $3$ consume the least memory. $2$ is
+a trade-off. \texttt{arg2} specify the integer time horizon. This
+option require the file \texttt{lumpingfun.cpp} and
+\texttt{matrixFile} to be in the same directory. This last file can 
+be produce with the option \texttt{--state-space} on the reduce model.
+
+\subsubsection{\texttt{-c -b arg1 --set-horizon arg2} option}
+This option use time-bounded importance sampling assuming a continuous
+semantics for the model. In this context \texttt{arg2} is a positive real
+number.
+
+\subsubsection{\texttt{--epsilon} option}
+When using continuous importance sampling this option specify the
+precision of numerical computation.
+
+\subsubsection{\texttt{--step-continuous} option}
+When using continuous importance sampling this option specify the width
+of steps.
+
+
 
 \section{File Format}
 \label{sec:fileformat}

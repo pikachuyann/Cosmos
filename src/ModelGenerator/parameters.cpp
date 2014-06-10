@@ -198,9 +198,10 @@ void parameters::parseCommandLine(int argc, char** argv){
             {"step-continuous",required_argument,0,23 },
             {"epsilon" ,    required_argument,  0, 'e'},
             {"set-Horizon", required_argument , 0,  1 },
-            {"state-space" , no_argument ,       0, 's'},
-			{"prism"       , no_argument ,       0, 'p'},
-			
+            {"state-space" , no_argument ,      0, 's'},
+			{"prism"       , no_argument ,      0, 'p'},
+            {"normalize-IS", no_argument ,      0, 27},
+
             /* CosyVerif Options */
             {"gmlinput" ,      no_argument, 0, 'g' },
             {"grml-input" ,      no_argument, 0, 'g' },
@@ -278,6 +279,9 @@ void parameters::parseCommandLine(int argc, char** argv){
 
                 case 26:
                 relative=true;break;
+
+                case 27:
+                DoubleIS =true; break;
                 
 				case 'b':BoundedRE = atoi(optarg);
 				StringInSpnLHA =true;

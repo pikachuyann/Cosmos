@@ -343,24 +343,24 @@ void HaslFormulasTop::setLevel(double l){
 ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 	switch (TypeOp) {
 		case PROBABILITY:
-		{
-		/*
-		 * Here we used the boost librairy for computing the binomial
-		 * confidence interval.
-		 * According to boost documentation the algorithme used is
-		 * Clopper-person:
-		 * Clopper, C. J. and Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. Biometrika 26 404-413.
-		 */
-		double mean = (double)batch.Isucc / (double)batch.I;
-		double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
-		double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
-		
-		if(batch.Isucc ==0)return ConfInt(mean,l,u,0.0,0.0,Level);
-		if(batch.Isucc == batch.I)return ConfInt(mean,l,u,1.0,1.0,Level);
-		
-		return ConfInt(mean,l,u,0.0,1.0,Level);
-		}
-			
+        {
+        /*
+         * Here we used the boost librairy for computing the binomial
+         * confidence interval.
+         * According to boost documentation the algorithme used is
+         * Clopper-person:
+         * Clopper, C. J. and Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. Biometrika 26 404-413.
+         */
+        double mean = (double)batch.Isucc / (double)batch.I;
+        double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
+        double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.I,batch.Isucc, (1-Level)/2);
+
+        if(batch.Isucc ==0)return ConfInt(mean,l,u,0.0,0.0,Level);
+        if(batch.Isucc == batch.I)return ConfInt(mean,l,u,1.0,1.0,Level);
+
+        return ConfInt(mean,l,u,0.0,1.0,Level);
+        }
+
 		case EXPECTANCY:
 		case CDF_PART:
 		case PDF_PART:
@@ -503,11 +503,6 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
         const double alog = log((1-Value)/(1-Value2));
         const double blog = log(Value/Value2);
 
-/*
-		const double logA = log((1-Level) / Level);
-        const double logB = -logA;  // log(Level /(1-Level));
-*/
-
         double loglikelyhoodRatio = alog * (double)(batch.I - batch.Isucc) + blog * (double)batch.Isucc;
 
         //cerr << "[" << logB << "  --  " << loglikelyhoodRatio << "  --  " << logA << "]" << endl;
@@ -519,31 +514,22 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
             return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2,0.0,1.0,l);
         }
         }
- 		/*if(loglikelyhoodRatio <= logB){ //Accept H0
-			return ConfInt((double)batch.Isucc/(double)batch.I, Value ,1,0.0,1.0,Level);
-		}
-		if (loglikelyhoodRatio >= logA ) { //Accept H1
-			return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,Value2,0.0,1.0,Level);
-		}
-        // Continue testing
-		return ConfInt((double)batch.Isucc/(double)batch.I, 0 ,1,0.0,1.0,Level);
-		}*/
-			
+
 		case CONSTANT:
 			return ConfInt(Value,Value2,Value-Value2/2.0,Value+Value2/2.0,1.0);
-			
+
 		case HASL_PLUS:
 			return (left->eval(batch) += right->eval(batch));
-	    
+
 		case HASL_MINUS:
 			return (left->eval(batch) -= right->eval(batch));
-				
+
 		case HASL_TIME:
 			return (left->eval(batch) *= right->eval(batch));
-				
+
 		case HASL_DIV:
 			return (left->eval(batch) /= right->eval(batch));
-	  			
+
 		default:
 			std::cerr << "Fail to parse Hasl Formula"<< std::endl;
 			exit(EXIT_FAILURE);
