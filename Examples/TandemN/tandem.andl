@@ -1,7 +1,7 @@
-spn [Tandem3]
+spn [Tandem11]
 {
 constants:
-  int N = 3;
+  int N = 11;
   int N2 =50;
   double lambda = 0.010000;
   double rho = 0.110000;
@@ -10,9 +10,25 @@ places:
   AQueues = 49;
   RE_Queue2 = 0;
   RE_Queue3 = 0;
+  RE_Queue4 = 0;
+  RE_Queue5 = 0;
+  RE_Queue6 = 0;
+  RE_Queue7 = 0;
+  RE_Queue8 = 0;
+  RE_Queue9 = 0;
+  RE_Queue10 = 0;
+  RE_Queue11 = 0;
 transitions:
   Arrive : : [AQueues -1] & [RE_Queue1 +1] : lambda;
   Serve1 : : [RE_Queue1 -1] & [RE_Queue2 +1] : 0.110000;
   Serve2 : : [RE_Queue2 -1] & [RE_Queue3 +1] : 0.110000;
-  Serve3 : : [RE_Queue3 -1] & [AQueues+1] : 0.110000;
+  Serve3 : : [RE_Queue3 -1] & [RE_Queue4 +1] : 0.110000;
+  Serve4 : : [RE_Queue4 -1] & [RE_Queue5 +1] : 0.110000;
+  Serve5 : : [RE_Queue5 -1] & [RE_Queue6 +1] : 0.110000;
+  Serve6 : : [RE_Queue6 -1] & [RE_Queue7 +1] : 0.110000;
+  Serve7 : : [RE_Queue7 -1] & [RE_Queue8 +1] : 0.110000;
+  Serve8 : : [RE_Queue8 -1] & [RE_Queue9 +1] : 0.110000;
+  Serve9 : : [RE_Queue9 -1] & [RE_Queue10 +1] : 0.110000;
+  Serve10 : : [RE_Queue10 -1] & [RE_Queue11 +1] : 0.110000;
+  Serve11 : : [RE_Queue11 -1] & [AQueues+1] : 0.110000;
 }

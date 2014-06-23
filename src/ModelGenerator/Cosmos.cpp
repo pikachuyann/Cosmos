@@ -192,7 +192,7 @@ int main(int argc, char** argv) {
 
     if(!P.unfold.empty())return EXIT_SUCCESS;
 
-	if(!P.sequential){
+	if(!P.sequential){ //Compute Chernoff-Hoeffding bounds
 		double b = 0.0;
 		for(const auto it : P.HaslFormulas) b = fmax(b,it->bound());
 		
