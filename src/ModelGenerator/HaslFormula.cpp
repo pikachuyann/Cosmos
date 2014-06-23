@@ -318,34 +318,24 @@ void HaslFormulasTop::setLevel(double l){
 /**
  * The function eval compute confidence interval for the HASL formula
  * from the simualation result return by the simulators.
+ * It always return a confdience interval containing a confidence level
+ * Depending of the context it should be interpreted differently.
+ * In sequential setting, one should check that the intervals satisfy the 
+ * stopping criteria.
+ * In static setting, one should check independantly the number of sample to
+ * decide whether the simulation should be stopped.
  *
  * Some remarks about the estimation of the confidence interval adopted here
  * Let \f$ l \f$ =ConfLevel, the confidence level
  * \f$ l=1-alpha \f$
  * Let \f$ w \f$ = ConfWidth, the size of the confidence interval
- *
- * Let \f$ \mu \f$ the value to estimate, and \f$ x \f$ the
- * estimation of \f$ \mu \f$
- * then \f$ \mathbb{P}( \mu \in [x-\frac{w}{2} , x+\frac{w}{2}]) = 1-alpha  \f$
- *
- * The confidence interval is given by :
- * \f$  [x-z(1-\frac{alpha}{2}) * \frac{StandardDeviation~ }
- * { \sqrt{NumberOfObservations}} ,
- *         x+z(1-\frac{alpha}{2}) * \frac{StandardDeviation~}
- * { \sqrt{NumberOfObservations}}] \f$
- * with : \f$ z(1-\frac{alpha}{2})=z(1-\frac{1-l}{2}) = z(0.5+\frac{l}{2}) \f$
- *
- * \f$ StandartDeviation~ = \sqrt{ Variance +\frac{1}{n} } \f$
- * This correction come from the Chows and Robbin algorithm to ensure
- * The correctness of the stopping condition.
- *
  */
 ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 	switch (TypeOp) {
 		case PROBABILITY:
         {
         /*
-         * Here we used the boost librairy for computing the binomial
+         * Here we used the boost library for computing the binomial
          * confidence interval.
          * According to boost documentation the algorithme used is
          * Clopper-person:
@@ -360,7 +350,27 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 
         return ConfInt(mean,l,u,0.0,1.0,Level);
         }
-
+        /*
+         * Here Gaussian confidence interval are computed.
+         * Let \f$ \mu \f$ the value to estimate, and \f$ x \f$ the
+         * estimation of \f$ \mu \f$
+         * then \f$ \mathbb{P}( \mu \in [x-\frac{w}{2} , x+\frac{w}{2}]) = 1-alpha  \f$
+         *
+         * The gaussian confidence interval is given by :
+         * \f$  [x-z(1-\frac{alpha}{2}) * \frac{StandardDeviation~ }
+         * { \sqrt{NumberOfObservations}} ,
+         *         x+z(1-\frac{alpha}{2}) * \frac{StandardDeviation~}
+         * { \sqrt{NumberOfObservations}}] \f$
+         * with : \f$ z(1-\frac{alpha}{2})=z(1-\frac{1-l}{2}) = z(0.5+\frac{l}{2}) \f$
+         *
+         * \f$ StandartDeviation~ = \sqrt{ Variance +\frac{1}{n} } \f$
+         * This correction come from the Chows and Robbin algorithm to ensure
+         * The correctness of the stopping condition.
+         *
+         * We use the boost library: quantile(boost::math::normal() , level) 
+         * to compute quantile of the normal low. Its value have been stored
+         * in Value by the function setLevel.
+         */
 		case EXPECTANCY:
 		case CDF_PART:
 		case PDF_PART:
@@ -374,7 +384,7 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 
         if(P.Width!=0){
             variance += 1.0/batch.Isucc;
-            //Here the +1 come from the Chows and Robbin algorithm
+            //Here the +1 come from the Chows and Robbin algorithm in Sequential setting
         }
 
 		double width = 2 * Value * sqrt(variance/batch.Isucc);
@@ -496,8 +506,20 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
          * Implementation of the SPRT.
          *  Value < Value2
          *  Value <= p <= Value2 => Indiferrence region
-         * H0 = { 1 >= p > Value2 } => p0=Value2
-         * H1 = { 0 <= p < Value  } => p1=Value
+         * H0 = { Value2 < p  <= 1    } => p0=Value2
+         * H1 = { 0      <= p < Value } => p1=Value
+         *
+         * To comply with the architecture of cosmos requiring confidence 
+         * interval this function also return confidence interval.
+         * Let l be the minimal confidence level for wich either H0 or H1 is
+         * accepted
+         * return [0,Value2] with confidence level l when H0 is accepted
+         * return [Value, 1] with confidence level l when H1 is accepted
+         *
+         * The stopping criterion is reached when l is greater than the expected
+         * level. This stopping criterion is exaclty the one of
+         * A. Wald. Sequential tests of statistical hypotheses. 
+         * The Annals of Mathematical Statistics, 16(2):117–186, 06 1945.
          */
 
         const double alog = log((1-Value)/(1-Value2));
