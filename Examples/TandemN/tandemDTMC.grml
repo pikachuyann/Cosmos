@@ -5,13 +5,13 @@
       <attribute name="intConst">
         <attribute name="name">r</attribute>
         <attribute name="expr"><attribute name="numValue">
-            3
+            5
         </attribute></attribute>
       </attribute>
       <attribute name="intConst">
         <attribute name="name">Nmax</attribute>
         <attribute name="expr"><attribute name="numValue">
-            50
+            5
         </attribute></attribute>
       </attribute>
     </attribute>
@@ -19,73 +19,73 @@
       <attribute name="realConst">
         <attribute name="name">rho11</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">rho10</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">rho9</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">rho8</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">rho7</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">rho6</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">rho5</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">rho4</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">rho3</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">rho2</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">rho1</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.110000
+            0.350000
         </attribute></attribute>
       </attribute>
       <attribute name="realConst">
         <attribute name="name">lambda</attribute>
         <attribute name="expr"><attribute name="numValue">
-            0.010000
+            0.400000
         </attribute></attribute>
       </attribute>
      </attribute>
