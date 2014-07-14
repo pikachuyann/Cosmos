@@ -1,1 +1,1 @@
-P=?[[ RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11 >0 ] U [ RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11 = 50 ]]
+P=?[[ RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11 >0 ] U [ RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11 = 5 ]]
