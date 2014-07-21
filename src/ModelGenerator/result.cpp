@@ -32,6 +32,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <tuple>
+#include <list>
 #include <ctime>
 #include <ratio>
 #include <chrono>
@@ -333,22 +334,25 @@ tuple<string,double> result::split_name(string s){
 void result::outputCDFPDF(string f){
 	ofstream outFile(f.c_str(), ios::out | ios::trunc);
     map<string,int> namelist;
+    list<string> namelist2;
     map<double,int> valuelist;
     for(size_t i =0; i<P.HaslFormulasname.size(); i++){
         auto nv = split_name(P.HaslFormulasname[i]);
         if (get<0>(nv)!= "EMPTY") {
-            if(namelist.find(get<0>(nv)) == namelist.end())
+            if(namelist.find(get<0>(nv)) == namelist.end()){
                 namelist.insert(make_pair(get<0>(nv),namelist.size()));
+                namelist2.push_back(get<0>(nv));
+            }
             if(valuelist.find(get<1>(nv)) == valuelist.end())
                 valuelist.insert(make_pair(get<1>(nv),valuelist.size()));
         }
     }
 
     outFile << "abscissa" << " ";
-    for(auto itname : namelist){
-        outFile << itname.first<< "_low ";
-        outFile << itname.first<< "_mean ";
-        outFile << itname.first<< "_up ";
+    for(auto &itname : namelist2){
+        outFile << itname << "_low ";
+        outFile << itname << "_mean ";
+        outFile << itname << "_up ";
     }
     nbColumnGraph = namelist.size();
     outFile << endl;
@@ -385,10 +389,10 @@ void result::printGnuplot(){
             fputs(to_string(nbColumnGraph).c_str(), gnuplotstream);
             fputs("] '", gnuplotstream);
 			fputs(P.dataPDFCDF.c_str(), gnuplotstream);
-            fputs("' using 1:3*i-1:3*i+1 w filledcu ls 1 notitle, ",gnuplotstream);
+            fputs("' using 1:3*i-1:3*i+1 w filledcu ls 1 lc i notitle, ",gnuplotstream);
             fputs("for [i=1:", gnuplotstream);
             fputs(to_string(nbColumnGraph).c_str(), gnuplotstream);
-            fputs("] '' using 1:3*i title columnheader with lines lw 1\n", gnuplotstream);
+            fputs("] '' using 1:3*i title columnheader with lines lc i lw 1\n", gnuplotstream);
 			if(P.alligatorMode)fputs("set output\n", gnuplotstream);
 			flushgnuplot();
 		}
