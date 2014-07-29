@@ -35,7 +35,7 @@
 
    std::string *name;
    char CharVal[100];
-   char expression[1000];
+   char expression[5000];
 };
 
 %code {
