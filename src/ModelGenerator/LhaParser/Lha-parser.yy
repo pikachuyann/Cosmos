@@ -34,7 +34,7 @@
 	double       RealVal;
 	int 	       IntVal;
 	std::string *name;
-	char expression[1000];
+	char expression[5000];
 	HaslFormulasTop *TOPHASL;
 };
 
