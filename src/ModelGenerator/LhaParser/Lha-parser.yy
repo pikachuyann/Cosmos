@@ -803,7 +803,7 @@ AVG LB AlgExpr RB {
 }
 | VAR LB AlgExpr RB {
 	Reader.MyLha.Algebraic.push_back($3);
-	char tmp[2048];
+	char tmp[5000];
 	sprintf(tmp,"(%s * %s)", $3,$3);
 	Reader.MyLha.Algebraic.push_back(tmp);
 	$$ = new HaslFormulasTop(HASL_MINUS,
