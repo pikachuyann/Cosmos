@@ -195,7 +195,10 @@ int main(int argc, char** argv) {
 	if(!P.sequential){ //Compute Chernoff-Hoeffding bounds
 		double b = 0.0;
 		for(const auto it : P.HaslFormulas) b = fmax(b,it->bound());
-		
+        if(b== INFINITY){
+            cerr << "Cannot use Chernoff-Hoeffding bounds: no bounds on the computed value" << endl;
+            return EXIT_FAILURE;
+        }
 		if(P.MaxRuns==0){
 			P.MaxRuns = (int)(2.0*2.0*2.0*b*b/(P.Width*P.Width) * log(2/(1-P.Level)));
 		}else if(P.Width == 0){
