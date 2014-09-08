@@ -1,13 +1,13 @@
-spn [Tandem11]
+spn [Tandem19]
 {
 constants:
-  int N = 11;
-  int N2 =5;
-  double lambda = 0.400000;
-  double rho = 0.350000;
+  int N = 19;
+  int N2 =13;
+  double lambda = 0.335000;
+  double rho = 0.750000;
 places:
   RE_Queue1 = 1;
-  AQueues = 4;
+  AQueues = 12;
   RE_Queue2 = 0;
   RE_Queue3 = 0;
   RE_Queue4 = 0;
@@ -18,17 +18,33 @@ places:
   RE_Queue9 = 0;
   RE_Queue10 = 0;
   RE_Queue11 = 0;
+  RE_Queue12 = 0;
+  RE_Queue13 = 0;
+  RE_Queue14 = 0;
+  RE_Queue15 = 0;
+  RE_Queue16 = 0;
+  RE_Queue17 = 0;
+  RE_Queue18 = 0;
+  RE_Queue19 = 0;
 transitions:
   Arrive : : [AQueues -1] & [RE_Queue1 +1] : lambda;
-  Serve1 : : [RE_Queue1 -1] & [RE_Queue2 +1] : 0.350000;
-  Serve2 : : [RE_Queue2 -1] & [RE_Queue3 +1] : 0.350000;
-  Serve3 : : [RE_Queue3 -1] & [RE_Queue4 +1] : 0.350000;
-  Serve4 : : [RE_Queue4 -1] & [RE_Queue5 +1] : 0.350000;
-  Serve5 : : [RE_Queue5 -1] & [RE_Queue6 +1] : 0.350000;
-  Serve6 : : [RE_Queue6 -1] & [RE_Queue7 +1] : 0.350000;
-  Serve7 : : [RE_Queue7 -1] & [RE_Queue8 +1] : 0.350000;
-  Serve8 : : [RE_Queue8 -1] & [RE_Queue9 +1] : 0.350000;
-  Serve9 : : [RE_Queue9 -1] & [RE_Queue10 +1] : 0.350000;
-  Serve10 : : [RE_Queue10 -1] & [RE_Queue11 +1] : 0.350000;
-  Serve11 : : [RE_Queue11 -1] & [AQueues+1] : 0.350000;
+  Serve1 : : [RE_Queue1 -1] & [RE_Queue2 +1] : 0.750000;
+  Serve2 : : [RE_Queue2 -1] & [RE_Queue3 +1] : 0.750000;
+  Serve3 : : [RE_Queue3 -1] & [RE_Queue4 +1] : 0.750000;
+  Serve4 : : [RE_Queue4 -1] & [RE_Queue5 +1] : 0.750000;
+  Serve5 : : [RE_Queue5 -1] & [RE_Queue6 +1] : 0.750000;
+  Serve6 : : [RE_Queue6 -1] & [RE_Queue7 +1] : 0.750000;
+  Serve7 : : [RE_Queue7 -1] & [RE_Queue8 +1] : 0.750000;
+  Serve8 : : [RE_Queue8 -1] & [RE_Queue9 +1] : 0.750000;
+  Serve9 : : [RE_Queue9 -1] & [RE_Queue10 +1] : 0.750000;
+  Serve10 : : [RE_Queue10 -1] & [RE_Queue11 +1] : 0.750000;
+  Serve11 : : [RE_Queue11 -1] & [RE_Queue12 +1] : 0.750000;
+  Serve12 : : [RE_Queue12 -1] & [RE_Queue13 +1] : 0.750000;
+  Serve13 : : [RE_Queue13 -1] & [RE_Queue14 +1] : 0.750000;
+  Serve14 : : [RE_Queue14 -1] & [RE_Queue15 +1] : 0.750000;
+  Serve15 : : [RE_Queue15 -1] & [RE_Queue16 +1] : 0.750000;
+  Serve16 : : [RE_Queue16 -1] & [RE_Queue17 +1] : 0.750000;
+  Serve17 : : [RE_Queue17 -1] & [RE_Queue18 +1] : 0.750000;
+  Serve18 : : [RE_Queue18 -1] & [RE_Queue19 +1] : 0.750000;
+  Serve19 : : [RE_Queue19 -1] & [AQueues+1] : 0.750000;
 }
