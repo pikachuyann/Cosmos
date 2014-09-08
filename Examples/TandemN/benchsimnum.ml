@@ -9,3 +9,7 @@ for i = 0 to 10 do
   done
 done;;
   
+(*grep -o "States:[ ]*[0-9]*\|Result:[ ]*[0-9.E-]*\|Time for model checking:[ ]*[0-9.]*" prismout*)
+
+(*grep -o "States:[ ]*[0-9]*\|Result:[ ]*[0-9.E-]*\|Time for model checking:[ ]*[0-9.]*" prismout  |  tr '\n' ' ' | sed -e 's/States//g' -e 's/Time for model checking://g' -e 's/Result://g' | tr ':' '\n'*)
+

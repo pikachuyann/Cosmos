@@ -27,6 +27,7 @@
  * \file server.cpp
  * This file contain the implementation of a server waiting for
  * The simulators to give him result and aggregate them.
+ * Most of this file is C code.
  */
 
 
@@ -50,6 +51,7 @@
 #include <errno.h>
 #include <algorithm>
 #include <err.h>
+//#include <ext/stdio_filebuf.h>
 
 #include "../Simulator/BatchR.hpp"
 #include "result.hpp"
@@ -120,6 +122,13 @@ int systemsigsafe(const char*cmd){
 	signal(SIGCHLD , signalHandler);
 	return retValue;
 }
+
+/*istream streamOfFile(int fd){
+    __gnu_cxx::stdio_filebuf<char> filebuf(fd, std::ios::in);
+    istream is(&filebuf);
+    return is;
+}*/
+
 
 /*
  * Open a child processes retring both PID and an a pipe
@@ -206,7 +215,7 @@ void launch_clients(parameters& P){
 		
 		//<< P.Batch << " " << P.verbose;
 		
-		// is seed is zero generate a pseudo random seed.
+		// if seed is zero generate a pseudo random seed.
 		if(P.seed==0){
 			timeval t;
 			gettimeofday(&t,(struct timezone*)0);
