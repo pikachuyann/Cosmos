@@ -5,9 +5,9 @@ LikelyhoodProb = AVG(Last(vc0));
 InitialLocations = { l0 };
 FinalLocations = {l1};
 Locations = {
-(l0,((RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11)>0 & (RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11)<5));
-(l1,(RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11)=5);
-(l2,(RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11)=0);
+(l0,((RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11+RE_Queue12+RE_Queue13+RE_Queue14+RE_Queue15+RE_Queue16+RE_Queue17+RE_Queue18+RE_Queue19)>0 & (RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11+RE_Queue12+RE_Queue13+RE_Queue14+RE_Queue15+RE_Queue16+RE_Queue17+RE_Queue18+RE_Queue19)<13));
+(l1,(RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11+RE_Queue12+RE_Queue13+RE_Queue14+RE_Queue15+RE_Queue16+RE_Queue17+RE_Queue18+RE_Queue19)=13);
+(l2,(RE_Queue1+RE_Queue2+RE_Queue3+RE_Queue4+RE_Queue5+RE_Queue6+RE_Queue7+RE_Queue8+RE_Queue9+RE_Queue10+RE_Queue11+RE_Queue12+RE_Queue13+RE_Queue14+RE_Queue15+RE_Queue16+RE_Queue17+RE_Queue18+RE_Queue19)=0);
 };
 Edges = {
 ((l0,l0),ALL,#,#);
