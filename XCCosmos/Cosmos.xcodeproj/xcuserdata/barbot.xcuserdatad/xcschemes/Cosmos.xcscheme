@@ -74,11 +74,11 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-g"
-            isEnabled = "NO">
+            argument = "/Users/barbot/Documents/Cosmos/Examples/DatabaseBound/DatabaseInitRE.grml"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/barbot/Downloads/DatabaseInit.4.grml"
+            argument = "/Users/barbot/Documents/Cosmos/Examples/DatabaseBound/DatabaseUntilRound.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -199,6 +199,14 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--loop 60"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--state-space"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--const K=1,T=4,N=50,N2=25,Nm=49"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

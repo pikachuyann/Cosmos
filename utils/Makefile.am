@@ -1,4 +1,4 @@
-bin_SCRIPTS = linecombinator sptToPt ptToSpt
+bin_SCRIPTS = linecombinator sptToPt ptToSpt sptToSwn
 
 PACKAGES = 
 LIBS     = 
