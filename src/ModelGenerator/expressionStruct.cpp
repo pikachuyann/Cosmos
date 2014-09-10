@@ -248,7 +248,7 @@ void expr::eval(const map<string,int> &intconst,const map<string,double> &realco
 void expr::get_places(set<string> & acset)const{
     if(t==PlaceName)acset.insert(stringVal);
     if(lhs.use_count()>0)lhs->get_places(acset);
-    if(rhs.use_count()>0)lhs->get_places(acset);
+    if(rhs.use_count()>0)rhs->get_places(acset);
 }
 
 bool expr::is_markDep()const{

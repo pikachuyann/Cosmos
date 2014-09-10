@@ -36,7 +36,7 @@ let parse_result f =
   result;;
 
 let invoke_cosmos lha w =
-  let cmd = Printf.sprintf "../bin/Cosmos --width %f -v 0 --njob 12 --batch 100 --gppcmd clang++ --gppflags '-Wno-return-type' generated.gspn %s" w lha in
+  let cmd = Printf.sprintf "../bin/Cosmos --width %f -v 0 --njob 12 --batch 100 generated.gspn %s" w lha in
   (*print_endline cmd;*)
   ignore (Sys.command cmd);
   parse_result  "Result.res";;  
@@ -147,7 +147,7 @@ let iter_strat s r =
     Array.init (Array.length s) (fun i ->
       Array.init (Array.length s.(0)) (fun x -> 
 	Array.init (Array.length s.(0).(0)) (fun j ->
-	  if j = 0 or i=0 then false
+	  if j = 0 || i=0 then false
 	  else begin 
 	    s.(i).(x).(j) <- not s.(i).(x).(j);
 	    generateLHA s "test" (-1) r 0 1000.;
