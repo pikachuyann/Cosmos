@@ -108,7 +108,7 @@
             bc
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            p2
+            RE_p2
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -116,7 +116,7 @@
   </node>
   <node id="5" nodeType="place" x="108" y="148">
     <attribute name="name">
-      p1
+      RE_p1
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="name">
@@ -126,7 +126,7 @@
   </node>
   <node id="6" nodeType="place" x="296" y="185">
     <attribute name="name">
-      p4bis
+      RE_p4bis
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
@@ -136,7 +136,7 @@
   </node>
   <node id="7" nodeType="place" x="166" y="148">
     <attribute name="name">
-      p2
+      RE_p2
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
@@ -173,7 +173,7 @@
             ac
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            p4bis
+            RE_p4bis
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -181,7 +181,7 @@
   </node>
   <node id="9" nodeType="place" x="220" y="148">
     <attribute name="name">
-      p3
+      RE_p3
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
@@ -191,7 +191,7 @@
   </node>
   <node id="10" nodeType="place" x="296" y="148">
     <attribute name="name">
-      p4
+      RE_p4
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
@@ -201,7 +201,7 @@
   </node>
   <node id="11" nodeType="place" x="377" y="148">
     <attribute name="name">
-      p5
+      RE_p5
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
@@ -211,7 +211,7 @@
   </node>
   <node id="12" nodeType="place" x="458" y="148">
     <attribute name="name">
-      p6
+      RE_p6
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
@@ -258,7 +258,7 @@
             ac
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            p1
+            RE_p1
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -293,7 +293,7 @@
             ac
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            p2
+            RE_p2
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -328,7 +328,7 @@
             bc
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            p3
+            RE_p3
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -363,7 +363,7 @@
             ac
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            p4
+            RE_p4
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -398,7 +398,7 @@
             cc
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            p2
+            RE_p2
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -428,9 +428,14 @@
         EXPONENTIAL
       </attribute>
       <attribute name="param">
-        <attribute name="expr"><attribute name="name">
-          ac
-        </attribute></attribute>
+        <attribute name="expr"><attribute name="function"><attribute name="*">
+          <attribute name="expr"><attribute name="name">
+            ac
+          </attribute></attribute>
+          <attribute name="expr"><attribute name="name">
+            RE_p5
+          </attribute></attribute>
+        </attribute></attribute></attribute>
       </attribute>
     </attribute>
   </node>
@@ -463,7 +468,7 @@
             ac
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            p5
+            RE_p5
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -481,7 +486,7 @@
       </attribute></attribute>
     </attribute>
     <attribute name="name">
-      b12
+      RE_b12
     </attribute>
     <attribute name="service">
       <attribute name="expr"><attribute name="numValue">
@@ -498,7 +503,7 @@
             bc
           </attribute></attribute>
           <attribute name="expr"><attribute name="name">
-            p1
+            RE_p1
           </attribute></attribute>
         </attribute></attribute></attribute>
       </attribute>
@@ -506,7 +511,7 @@
   </node>
   <node id="22" nodeType="place" x="461" y="211">
     <attribute name="name">
-      p6bis
+      RE_p6bis
     </attribute>
     <attribute name="marking">
       <attribute name="expr"><attribute name="numValue">
