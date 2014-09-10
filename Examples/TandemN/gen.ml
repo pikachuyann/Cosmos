@@ -9,5 +9,5 @@ let lambda = float_of_string Sys.argv.(4);;
 let rho = (1. -. lambda) /. (float n);;
 let batch = int_of_string Sys.argv.(5);;
 
-generate n n2 r rho (function 1->lambda | _ -> rho);;
+generate n n2 r lambda (function | _ -> rho);;
 execSavedCosmos ~prefix:false ("StateIndepIS","tandemDTMC.grml","tandemIS.lha",Printf.sprintf " --width 0 --max-run %i --level %f" batch 0.95 );;

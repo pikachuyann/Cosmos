@@ -77,6 +77,8 @@ int systemsigsafe(const char*cmd);
  */
 void signalHandler( int signum );
 
+//istream streamOfFile(int fd);
+
 /*
  * Open a child processes retring both PID and an a pipe
  * to the standart input of the child.
