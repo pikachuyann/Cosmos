@@ -40,7 +40,7 @@
     <attribute name="invariant">
       <attribute name="boolExpr"><attribute name="less">
         <attribute name="expr"><attribute name="name">
-          RE_p6bis
+          RE_p6
         </attribute></attribute>
         <attribute name="expr"><attribute name="function"><attribute name="*">
           <attribute name="expr"><attribute name="name">
@@ -73,7 +73,7 @@
     <attribute name="invariant">
       <attribute name="boolExpr"><attribute name="greaterEqual">
         <attribute name="expr"><attribute name="name">
-          RE_p6bis
+          RE_p6
         </attribute></attribute>
         <attribute name="expr"><attribute name="function"><attribute name="*">
           <attribute name="expr"><attribute name="name">
