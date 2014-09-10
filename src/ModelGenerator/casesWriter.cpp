@@ -49,7 +49,8 @@ void casesHandler::addCase(int c,const string st,const string comment){
 }
 
 void casesHandler::writeCases(ostream &s){
-	if (cases.size()==1) {
+    if(cases.size()==0)return;
+	if(cases.size()==1) {
 		s << cases.begin()->first << endl;
 	}else{
 		s << "switch (" << scase << "){" << endl;
