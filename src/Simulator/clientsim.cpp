@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
 			states.outputTmpLumpingFun();
             BatchR dummR(0);
             dummR.outputR();
-            cout << "Finish Exporting" << endl;
+            cerr << "Finish Exporting" << endl;
 			exit(EXIT_SUCCESS);
 		}else if(str== "-STSP"){
 			stateSpace states;
