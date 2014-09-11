@@ -134,7 +134,7 @@ BatchR SimulatorContinuousBounded::RunBatch(){
 		numSolv->stepVect();
 		if(verbose>=3)cerr << numSolv->getVect() << endl;
 		n++;
-        //if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
+        if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
         
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
             if(it->maxStep >= fg->right -n){

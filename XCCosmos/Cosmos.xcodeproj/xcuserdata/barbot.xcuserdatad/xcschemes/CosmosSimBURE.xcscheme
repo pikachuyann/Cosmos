@@ -44,7 +44,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/barbot/Documents/Cosmos/Examples/signallingCascade"
+      customWorkingDirectory = "/Users/barbot/Documents/Cosmos/Examples/DatabaseBound"
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
@@ -64,7 +64,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "2"
+            argument = "3"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -72,19 +72,23 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-BURE"
+            argument = "-COBURE"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "3"
+            argument = "2"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "100"
+            argument = "0.5"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "0.00001"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "1"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
