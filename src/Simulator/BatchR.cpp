@@ -174,7 +174,8 @@ bool BatchR::inputR(FILE* f) {
     size_t nbBernouilli;
     readbyte = fread(reinterpret_cast<char*>( &nbBernouilli), sizeof nbBernouilli ,1, f);
     ok &= (readbyte == 1);
-	
+    if(!ok)return false;
+
 	if(Mean.size() < TableLength){
 		IsBernoulli.resize(TableLength);
 		Mean.resize(TableLength);
