@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
 	
     int Memory = 2; // Number of memory step for the strategy
     double H=1000; //Simulation horizon
-	bool discounted = false; // Compute steady-state or discounted reward.
+	bool discounted = true; // Compute steady-state or discounted reward.
     
 	double Prec=1e-6; // Threshold to stop the iteration
 	int MaxIteration=10; //Max number of iteration

@@ -409,7 +409,7 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 			
 		case RE_AVG://temporary
 		{
-		//No accepting trajectory the condidence interval is R.
+		//No accepting trajectory => the condidence interval is R.
 		if(batch.Isucc==0)return ConfInt();
 		
 		double mean = (double)batch.Isucc / (double)batch.I;
@@ -427,6 +427,13 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 			
 		case RE_Continuous:
 	    {
+        /* 
+         * Only used by the rare event engine in for countinious bounded
+         * Until property. This case apply the uniformization method.
+         * The simulator returns the estimate of each \mu_u as well
+         * as the Poisson probabilities computed using Fox-glynn algorithm.
+         *
+         */
 		//batch.print();
 		size_t N = batch.Mean.size()/2;
 		std::cout << "tablelength = "<< batch.Mean.size() << std::endl;

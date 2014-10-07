@@ -26,7 +26,7 @@ vector< vector<double> > generateLinearMatrix(int n, double p, double q){
    
     vector< vector<double> > M(n+1,vector<double>(n+1,0) );
     double c1 = 1.2;
-	double c2 = 0.75;
+    double c2 = 0.75;
 	double c3 = 0.75;
 	
 	int k = n/2+1;
