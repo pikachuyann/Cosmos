@@ -1,70 +1,5 @@
-let automataGenPath = "automataGen"
-
-let print_tr f name id rate =
-  Printf.fprintf f "  <node id=\"%i\" nodeType=\"transition\">
-    <attribute name=\"name\">%s</attribute>
-    <attribute name=\"distribution\">
-      <attribute name=\"type\">
-        EXPONENTIAL
-      </attribute>
-      <attribute name=\"param\">
-        <attribute name=\"number\">0</attribute>
-        <attribute name=\"expr\"><attribute name=\"numValue\">
-          %f
-        </attribute></attribute>
-      </attribute>
-    </attribute>
-  </node>\n" !id name rate;
-  incr id;;
-
-let print_pl f name id tok =
-  Printf.fprintf f "  <node id=\"%i\" nodeType=\"place\">
-    <attribute name=\"name\">%s</attribute>
-    <attribute name=\"marking\">
-      <attribute name=\"expr\"><attribute name=\"numValue\">
-        %i
-      </attribute></attribute>
-    </attribute>
-  </node>\n" !id name tok;
-  incr id;;
-
-let print_arc f id source target valuation inhib =
-  let arctype = if inhib then "inhibitorarc" else "arc" in
-  Printf.fprintf f "  <arc id=\"%i\" arcType=\"%s\" source=\"%i\" target=\"%i\">
-    <attribute name=\"valuation\">
-      <attribute name=\"expr\"><attribute name=\"numValue\">
-        %i
-      </attribute></attribute>
-    </attribute>
-  </arc>\n" !id arctype source target valuation; 
-  incr id;;
-
-let gen_const f li lr =
-  Printf.fprintf f "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">
-  <attribute name=\"declaration\"><attribute name=\"constants\">
-    <attribute name=\"intConsts\">\n";
-  List.iter (fun (n,v) -> 
-     Printf.fprintf f "      <attribute name=\"intConst\">
-        <attribute name=\"name\">%s</attribute>
-        <attribute name=\"expr\"><attribute name=\"numValue\">
-            %i
-        </attribute></attribute>
-      </attribute>\n" n v) li;
-  
-  Printf.fprintf f "    </attribute>
-    <attribute name=\"realConsts\">\n";
-  List.iter (fun (n,v) -> 
-    Printf.fprintf f "      <attribute name=\"realConst\">
-        <attribute name=\"name\">%s</attribute>
-        <attribute name=\"expr\"><attribute name=\"numValue\">
-            %f
-        </attribute></attribute>
-      </attribute>\n" n v) lr;
-    Printf.fprintf f
-      "     </attribute>
-    </attribute>
-  </attribute>\n"
+#directory "../../utils"
+#use "StochasticPetriNet.ml"
 
 type anchorT = Init | Final | Norm
 
@@ -72,14 +7,12 @@ let dist (x1,y1) (x2,y2) =
   sqrt ((x1 -.x2)*.(x1 -.x2) +. (y1 -.y2)*.(y1 -.y2))
 
 let generate_spn fpath li ks ksi =
-  let f = open_out fpath in
-  let nm = 1+List.length li  in
-  let lr = [("ks",ks); ("ksi",ksi)] in
-  gen_const f [] lr;
+  let net = Net.create () in
 
-  List.iter (fun (n,t,_,_) ->print_pl f ("a"^(string_of_int n)) (ref n) 
-    (if t=Init then 1 else 0)) li;
-  List.iter (fun (n,t,i,_) ->print_pl f ("s"^(string_of_int n)) (ref (n+nm)) i) li;
+  List.iter (fun (n,t,_,_) ->
+    Data.add (("a"^(string_of_int n)),(if t=Init then 1 else 0)) net.Net.place) li;
+  List.iter (fun (n,t,i,_) ->
+    Data.add (("s"^(string_of_int n)),i) net.Net.place) li;
 
   List.iter (fun (n1,t1,i1,p1) ->
     List.iter (fun (n2,t2,i2,p2) -> 
@@ -95,25 +28,15 @@ let generate_spn fpath li ks ksi =
       let r3 = (match t2 with 
 	  Final -> r2 /. 10.
 	| _ -> r2) in
-      if r3 <> 0.0 then print_tr f (Printf.sprintf "t%i_%i" n1 n2) (ref (2*nm+ n1*nm+n2)) r3) li) li;
-      
-    List.iter (fun (n1,t1,i1,p1) ->
-      List.iter (fun (n2,t2,i2,p2) -> 
-	let b = (match dist p1 p2 with
-	  | x when x< 0.1 -> false
-	  | x when x< 3.87 -> true
-	  | _->false ) in
-	if b then begin
-	  print_arc f (ref (2*nm+ 2*nm*nm+ 3*(n1*nm+n2))) 
-	    n1 (2*nm+ n1*nm+n2) 1 false;
-	  print_arc f (ref (2*nm+ 2*nm*nm+ 3*(n1*nm+n2)+1)) 
-	    (nm+n2) (2*nm+ n1*nm+n2) 1 false;
-	  print_arc f (ref (2*nm+ 2*nm*nm+ 3*(n1*nm+n2)+2)) 
-	    (2*nm+ n1*nm+n2)  (n2) 1 false;
-	end ) li ) li;
+      if r3 <> 0.0 then
+	let tl = Printf.sprintf "t%i_%i" n1 n2 in
+	Data.add (tl,r3) net.Net.transition;
+	Net.add_arc net ("a"^(string_of_int n1)) tl 1;
+	Net.add_arc net ("s"^(string_of_int n2)) tl 1;
+	Net.add_arc net tl ("a"^(string_of_int n2)) 1
+      ) li ) li;
 
-  Printf.fprintf f "</model>";
-  close_out f;;
+    print_spt fpath net;;
 
 let sq2 = (sqrt 2.0)/.2.0;;
 let sq3 = (sqrt 3.0)/.2.0;;
