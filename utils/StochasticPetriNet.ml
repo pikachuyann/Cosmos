@@ -1,11 +1,12 @@
 #use "PetriNet.ml"
 
-let print_tr f name id rate =
-  Printf.fprintf f "  <node id=\"%i\" nodeType=\"transition\">
-    <attribute name=\"name\">%s</attribute>
-    <attribute name=\"distribution\">
-      <attribute name=\"type\">
-        EXPONENTIAL
+type distr = Exp of float | Imm of float;;
+
+let print_distr f d = 
+  output_string f "    <attribute name=\"distribution\">
+      <attribute name=\"type\">\n";
+  begin match d with
+      Exp r -> Printf.fprintf f "        EXPONENTIAL
       </attribute>
       <attribute name=\"param\">
         <attribute name=\"number\">0</attribute>
@@ -13,8 +14,28 @@ let print_tr f name id rate =
           %f
         </attribute></attribute>
       </attribute>
+    </attribute>" r;
+    | Imm p -> Printf.fprintf f "        DETERMINISTIC
+      </attribute>
+      <attribute name=\"param\">
+        <attribute name=\"number\">0</attribute>
+        <attribute name=\"expr\"><attribute name=\"numValue\">
+          0
+        </attribute></attribute>
+      </attribute>
     </attribute>
-  </node>\n" id name rate
+    <attribute name=\"weight\">
+      <attribute name=\"expr\"><attribute name=\"numValue\">
+        %f
+      </attribute></attribute>
+    </attribute>" p;
+  end
+
+let print_tr f name id rate =
+  Printf.fprintf f "  <node id=\"%i\" nodeType=\"transition\">
+    <attribute name=\"name\">%s</attribute>" id name;
+  print_distr f rate;
+  output_string f "</node>\n"
   
 
 let print_pl f name id tok =
@@ -65,7 +86,7 @@ let gen_const f li lr =
     </attribute>
   </attribute>\n"
 
-type spt = (int,float) Net.t;;
+type spt = (int,distr) Net.t;;
 
 let print_spt fpath net =
   let f = open_out fpath in
