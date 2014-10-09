@@ -1,4 +1,4 @@
-set terminal png font 'arial,12' size 1000, 400
+set terminal png font 'arial,12' size 2000, 800
 set grid lt 4 lc rgb '#909090'
 set style fill solid 0.2 noborder
 set output 'pdfcdfout.png'
