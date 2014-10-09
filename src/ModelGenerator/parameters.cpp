@@ -164,269 +164,294 @@ void parameters::usage(){
 	cout << "\t-s,--state-space \tExport the state space." << endl;
 	
 }
-
 /**
  * Parse the command line and set the parameter structure
  * with the option set by the user
  */
-void parameters::parseCommandLine(int argc, char** argv){
+void parameters::parseCommandLine(int argc, char** argv) {
     int c;
-    
-    while (1)
-		{
-        static struct option long_options[] =
-			{
+
+    while (1) {
+        static struct option long_options[] ={
             /* Options for the simulator*/
-            {"level" , required_argument, 0, 'l'},
-            {"width" , required_argument, 0, 'w'},
-            {"batch" , required_argument, 0,  2 },
-            {"max-run",required_argument, 0, 'm'},
-			{"seed"  , required_argument, 0,  10},
-			{"local-test",  no_argument , 0,  12},
-			{"sampling", required_argument, 0, 25},
-			{"loop",   required_argument, 0,  14},
-			{"transient",required_argument,0, 16},
-			{"formula",required_argument, 0, 'f'},
-			{"chernoff", required_argument,0, 17},
-            {"relative", no_argument,     0,  26},
-	    	{"const", required_argument,0,21},
-			
+            {"level", required_argument, 0, 'l'},
+            {"width", required_argument, 0, 'w'},
+            {"batch", required_argument, 0, 2},
+            {"max-run", required_argument, 0, 'm'},
+            {"seed", required_argument, 0, 10},
+            {"local-test", no_argument, 0, 12},
+            {"sampling", required_argument, 0, 25},
+            {"loop", required_argument, 0, 14},
+            {"transient", required_argument, 0, 16},
+            {"formula", required_argument, 0, 'f'},
+            {"chernoff", required_argument, 0, 17},
+            {"relative", no_argument, 0, 26},
+            {"const", required_argument, 0, 21},
+
             /* Options for the rare event engine */
-            {"rareevent",   no_argument,        0, 'r'},
-            {"boundedcountiniousRE",no_argument,0, 'c'},
-            {"boundedRE",   required_argument,  0, 'b'},
-            {"step-continuous",required_argument,0,23 },
-            {"epsilon" ,    required_argument,  0, 'e'},
-            {"set-Horizon", required_argument , 0,  1 },
-            {"state-space" , no_argument ,      0, 's'},
-			{"prism"       , no_argument ,      0, 'p'},
-            {"normalize-IS", no_argument ,      0, 27},
+            {"rareevent", no_argument, 0, 'r'},
+            {"boundedcountiniousRE", no_argument, 0, 'c'},
+            {"boundedRE", required_argument, 0, 'b'},
+            {"step-continuous", required_argument, 0, 23},
+            {"epsilon", required_argument, 0, 'e'},
+            {"set-Horizon", required_argument, 0, 1},
+            {"state-space", no_argument, 0, 's'},
+            {"prism", no_argument, 0, 'p'},
+            {"normalize-IS", no_argument, 0, 27},
 
             /* CosyVerif Options */
-            {"gmlinput" ,      no_argument, 0, 'g' },
-            {"grml-input" ,      no_argument, 0, 'g' },
-            {"alligator-mode", no_argument, 0, 'a' },
-			
+            {"gmlinput", no_argument, 0, 'g'},
+            {"grml-input", no_argument, 0, 'g'},
+            {"alligator-mode", no_argument, 0, 'a'},
+
             /* Miscellaneous options */
-            {"unfold", required_argument,    0,  24},
-			{"HASL-formula", required_argument,0,13},
-            {"HASL-expression", required_argument,0,13},
-            {"njob" , required_argument,	 0, 'n'},
-			{"gppcmd",required_argument,	 0,  6 },
-			{"gppflags",required_argument,	 0,  7 },
-            {"verbose", required_argument,	 0, 'v'},
-			{"interactive", no_argument  ,   0, 'i'},
-			{"update-time",required_argument,0, 'u'},
-			{"outputdata", required_argument,0, 'd'},
-            {"output-data", required_argument,0, 'd'},
-			{"output-raw" , required_argument,0,  8 },
-			{"output-trace" , required_argument,0,  18 },
-			{"output-PDFCDF",required_argument,0,11},
-            {"output-graph",required_argument,0,11},
-			{"gnuplot-driver",no_argument   ,0, 15},
-		    {"trace-place",required_argument,0,  19},
-            {"trace-pt",required_argument,0,  19},
-            {"help" , no_argument ,			 0, 'h'},
-			{"count-transition", no_argument,0, 't'},
-			{"debug-string", no_argument,	 0,  3 },
-			{"tmp-path" , required_argument, 0,	 4 },
-			{"tmp-status", required_argument,0,	 5 },
-			{"bin-path", required_argument  ,0,	 9 },
-			{"prism-path", required_argument,0,  20},
-			{"version",no_argument,			 0,  22},
-			
+            {"unfold", required_argument, 0, 24},
+            {"HASL-formula", required_argument, 0, 13},
+            {"HASL-expression", required_argument, 0, 13},
+            {"njob", required_argument, 0, 'n'},
+            {"gppcmd", required_argument, 0, 6},
+            {"gppflags", required_argument, 0, 7},
+            {"verbose", required_argument, 0, 'v'},
+            {"interactive", no_argument, 0, 'i'},
+            {"update-time", required_argument, 0, 'u'},
+            {"outputdata", required_argument, 0, 'd'},
+            {"output-data", required_argument, 0, 'd'},
+            {"output-raw", required_argument, 0, 8},
+            {"output-trace", required_argument, 0, 18},
+            {"output-PDFCDF", required_argument, 0, 11},
+            {"output-graph", required_argument, 0, 11},
+            {"gnuplot-driver", no_argument, 0, 15},
+            {"trace-place", required_argument, 0, 19},
+            {"trace-pt", required_argument, 0, 19},
+            {"help", no_argument, 0, 'h'},
+            {"count-transition", no_argument, 0, 't'},
+            {"debug-string", no_argument, 0, 3},
+            {"tmp-path", required_argument, 0, 4},
+            {"tmp-status", required_argument, 0, 5},
+            {"bin-path", required_argument, 0, 9},
+            {"prism-path", required_argument, 0, 20},
+            {"version", no_argument, 0, 22},
+
             {0, 0, 0, 0}
-			};
+        };
         /* getopt_long stores the option index here. */
         int option_index = 0;
-        
-        c = getopt_long (argc, argv, "gihscrb:v:d:",
-                         long_options, &option_index);
-        
+
+        c = getopt_long(argc, argv, "gihscrb:v:d:",
+                long_options, &option_index);
+
         /* Detect the end of the options. */
         if (c == -1)
             break;
-        
-        switch (c)
-			{
-				case 'h':
+
+        switch (c) {
+            case 'h':
                 usage();
                 exit(EXIT_SUCCESS);
                 break;
-                
-				case 'v':verbose = atoi(optarg);
-				if(verbose>=4)StringInSpnLHA = true;
-				break;
-				
-				case 'i':
-				interactive =true;
-				verbose =6;
-				StringInSpnLHA =true;
-				break;
-				
-				case 'u':updatetime= chrono::duration_cast<chrono::milliseconds>(chrono::duration<double> (atof(optarg)));
-                break;
-                
-				case 'g':GMLinput = true;          break;
-                
-				case 'r':
-				RareEvent = true;
-				StringInSpnLHA =true; // Need to know the name of place to find
-				// place begining with "RE_"
-				localTesting = false; //Need to unfire transition not implemented for local testing
-                relative=true;
-				break;
 
-                case 26:
-                relative=true;break;
-
-                case 27:
-                DoubleIS =true; break;
-                
-				case 'b':BoundedRE = atoi(optarg);
-				StringInSpnLHA =true;
-                RareEvent=true;
-                relative=true;
+            case 'v':verbose = atoi(optarg);
+                if (verbose >= 4)StringInSpnLHA = true;
                 break;
-                
-				case 'c':BoundedContinuous = true;
-                RareEvent=true;
-                break;
-				
-				case  1:horizon = atof(optarg);     break;
-                
-				case 's':computeStateSpace= 2;
-				StringInSpnLHA = true;
-				localTesting =false; //Need to unfire transition, not implemented for local testing
-				break;
-				
-				case 'p':computeStateSpace= 1;
-				StringInSpnLHA = true;
-				localTesting =false; //Need to unfire transition, not implemented for local testing
-				break;
-				
-				case 'a':alligatorMode = true;
-				verbose =0;
-				break;
 
-                case 24:unfold = optarg; break;
-				
-				case  'l':Level = atof(optarg);     break;
-				case  'w':Width = atof(optarg);     break;
-				case  2  : Batch = atol(optarg);      break;
-				case  'm': MaxRuns = atol(optarg);      break;
-				case  17 : sequential = false;
-				if( strcmp(optarg, "level")==0)Level=0;
-				else if(strcmp(optarg, "width")==0)Width=0;
-				else if(strcmp(optarg, "nbrun")==0)MaxRuns=0;
-				else {
-					cerr << "Required one of (level | width | nbrun) to specify which ";
-					cerr << "parameter should be computed" << endl;
-					usage();
-					exit(EXIT_FAILURE);
-				}
-				
-				
-				break;
-				case  12 : localTesting = !localTesting;		break;
-				case  'n': Njob = atoi(optarg);      break;
-				case  'e': epsilon = atof(optarg);  break;
-				case  23 : continuousStep = atoi(optarg); break;
-				case  'd': dataoutput = optarg; break;
-				case  8  : dataraw = optarg; break;
-				case  18 :
-				datatrace = optarg;
-				StringInSpnLHA = true;
-				if (optind==argc) {
-					usage();
-					exit(EXIT_FAILURE);
-				}
-				sampleResol = atof(argv[optind]);
-				optind++;
-				break;
-				
-				case  11 : dataPDFCDF = optarg; break;
-				case  't': CountTrans = true;	break;
-				case  3  : StringInSpnLHA = true; break;
-				case  4  : tmpPath = optarg; break;
-				case  9  : Path = optarg; break;
-				case  5	 : tmpStatus = atoi(optarg); break;
-				case  6  : gcccmd = optarg; break;
-				case  7  : gccflags = optarg; break;
-				case  10 : seed = atoi(optarg); break;
-				case  13 : externalHASL = optarg; break;
-				case  14 : 
-                    loopLHA = atof(optarg);
-					generateLHA = 1;
-					PathLha = "LOOP";
-				break;
-				case  25 : 
-					loopLHA = atof(optarg);
-					generateLHA = 2;
-					PathLha = "SAMPLING";
-					if (optind==argc) {
-						usage();
-						exit(EXIT_FAILURE);
-					}
-					loopTransientLHA = atof(argv[optind]);
-					optind++;
-				break;
-				case  16: loopTransientLHA = atof(optarg); break;
-				case  'f': CSLformula = optarg; break;
-				
-				case  15: gnuplotDriver = true; break;
-				
-				case 19: tracedPlace = optarg; break;
-				case 20: prismPath = optarg; break;
-				
-				case 21: // const
-				{
-				string conststr = optarg;
-				size_t index,index2;
-				index2 = conststr.find('=',0)+1;
-				for(index = 0; index !=string::npos ; index2 = conststr.find('=',index)+1){
-					string varname = conststr.substr(index,index2-index-1);
-					index = conststr.find(',',index2);
-					string varvalue;
-					if(index == string::npos){
-						varvalue = conststr.substr(index2,conststr.length()-index2);
-					}else{
-						varvalue = conststr.substr(index2,index-index2);
-						index++;
-					}
-					constants[varname]=varvalue;
-				}
-				
-				break;
-				}
-				case 22:
-				cout << BUILD_VERSION << " Build Date:" << __DATE__ " at " << __TIME__ << endl;
-				exit(0);
-				
-				case '?':
+            case 'i':
+                interactive = true;
+                verbose = 6;
+                StringInSpnLHA = true;
+                break;
+
+            case 'u':updatetime = chrono::duration_cast<chrono::milliseconds>(chrono::duration<double> (atof(optarg)));
+                break;
+
+            case 'g':GMLinput = true;
+                break;
+
+            case 'r':
+                RareEvent = true;
+                StringInSpnLHA = true; // Need to know the name of place to find
+                // place begining with "RE_"
+                localTesting = false; //Need to unfire transition not implemented for local testing
+                relative = true;
+                break;
+
+            case 26:
+                relative = true;
+                break;
+
+            case 27:
+                DoubleIS = true;
+                break;
+
+            case 'b':BoundedRE = atoi(optarg);
+                StringInSpnLHA = true;
+                RareEvent = true;
+                relative = true;
+                break;
+
+            case 'c':BoundedContinuous = true;
+                RareEvent = true;
+                break;
+
+            case 1:horizon = atof(optarg);
+                break;
+
+            case 's':computeStateSpace = 2;
+                StringInSpnLHA = true;
+                localTesting = false; //Need to unfire transition, not implemented for local testing
+                break;
+
+            case 'p':computeStateSpace = 1;
+                StringInSpnLHA = true;
+                localTesting = false; //Need to unfire transition, not implemented for local testing
+                break;
+
+            case 'a':alligatorMode = true;
+                verbose = 0;
+                break;
+
+            case 24:unfold = optarg;
+                break;
+
+            case 'l':Level = atof(optarg);
+                break;
+            case 'w':Width = atof(optarg);
+                break;
+            case 2: Batch = atol(optarg);
+                break;
+            case 'm': MaxRuns = atol(optarg);
+                break;
+            case 17: sequential = false;
+                if (strcmp(optarg, "level") == 0)Level = 0;
+                else if (strcmp(optarg, "width") == 0)Width = 0;
+                else if (strcmp(optarg, "nbrun") == 0)MaxRuns = 0;
+                else {
+                    cerr << "Required one of (level | width | nbrun) to specify which ";
+                    cerr << "parameter should be computed" << endl;
+                    usage();
+                    exit(EXIT_FAILURE);
+                }
+
+
+                break;
+            case 12: localTesting = !localTesting;
+                break;
+            case 'n': Njob = atoi(optarg);
+                break;
+            case 'e': epsilon = atof(optarg);
+                break;
+            case 23: continuousStep = atoi(optarg);
+                break;
+            case 'd': dataoutput = optarg;
+                break;
+            case 8: dataraw = optarg;
+                break;
+            case 18:
+                datatrace = optarg;
+                StringInSpnLHA = true;
+                if (optind == argc) {
+                    usage();
+                    exit(EXIT_FAILURE);
+                }
+                sampleResol = atof(argv[optind]);
+                optind++;
+                break;
+
+            case 11: dataPDFCDF = optarg;
+                break;
+            case 't': CountTrans = true;
+                break;
+            case 3: StringInSpnLHA = true;
+                break;
+            case 4: tmpPath = optarg;
+                break;
+            case 9: Path = optarg;
+                break;
+            case 5: tmpStatus = atoi(optarg);
+                break;
+            case 6: gcccmd = optarg;
+                break;
+            case 7: gccflags = optarg;
+                break;
+            case 10: seed = atoi(optarg);
+                break;
+            case 13: externalHASL = optarg;
+                break;
+            case 14:
+                loopLHA = atof(optarg);
+                generateLHA = 1;
+                PathLha = "LOOP";
+                break;
+            case 25:
+                loopLHA = atof(optarg);
+                generateLHA = 2;
+                PathLha = "SAMPLING";
+                if (optind == argc) {
+                    usage();
+                    exit(EXIT_FAILURE);
+                }
+                loopTransientLHA = atof(argv[optind]);
+                optind++;
+                break;
+            case 16: loopTransientLHA = atof(optarg);
+                break;
+            case 'f': CSLformula = optarg;
+                break;
+
+            case 15: gnuplotDriver = true;
+                break;
+
+            case 19: tracedPlace = optarg;
+                break;
+            case 20: prismPath = optarg;
+                break;
+
+            case 21: // const
+            {
+                string conststr = optarg;
+                size_t index, index2;
+                index2 = conststr.find('=', 0) + 1;
+                for (index = 0; index != string::npos; index2 = conststr.find('=', index) + 1) {
+                    string varname = conststr.substr(index, index2 - index - 1);
+                    index = conststr.find(',', index2);
+                    string varvalue;
+                    if (index == string::npos) {
+                        varvalue = conststr.substr(index2, conststr.length() - index2);
+                    } else {
+                        varvalue = conststr.substr(index2, index - index2);
+                        index++;
+                    }
+                    constants[varname] = varvalue;
+                }
+
+                break;
+            }
+            case 22:
+                cout << BUILD_VERSION << " Build Date:" << __DATE__ " at " << __TIME__ << endl;
+                exit(0);
+
+            case '?':
                 usage();
                 exit(EXIT_FAILURE);
-                
-				default:
+
+            default:
                 usage();
                 exit(EXIT_FAILURE);
-			}
-		}
+        }
+    }
 
     //If no LHA is required only set the path for the GSPN.
-	if(optind+1 == argc && (loopLHA> 0.0 || !CSLformula.empty() || !unfold.empty())){
-		PathGspn = argv[optind];
-	}
-    else if (optind+2 == argc){
+    if (optind + 1 == argc && (loopLHA > 0.0 || !CSLformula.empty() || !unfold.empty())) {
         PathGspn = argv[optind];
-        PathLha  = argv[optind+1];
-    }else{
-		if (optind+2 > argc) {
-			cout << "Two files are require." << endl;
-		}else{
-			cout << "Unrecognize option:"<<argv[optind+2]<<endl;
-		}
-        
+    } else if (optind + 2 == argc) {
+        PathGspn = argv[optind];
+        PathLha = argv[optind + 1];
+    } else {
+        if (optind + 2 > argc) {
+            cout << "Two files are require." << endl;
+        } else {
+            cout << "Unrecognize option:" << argv[optind + 2] << endl;
+        }
+
         usage();
         exit(EXIT_FAILURE);
     }
