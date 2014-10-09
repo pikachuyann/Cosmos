@@ -75,7 +75,10 @@ generate_spn "track12Block2.grml" [ (1,Init,0,(0.0,0.0));
 			 (11,Norm,1,(3.0*.sq3,-.4.5));
 			 (12,Final,1,(4.0*.sq3,-.5.0));] 0.009 0.003 0.3;; 
 
-let l1 =1 and r1=0 and l2=1 and r2 = 0 in
+let l1 =1
+and r1=0
+and l2=1
+and r2 = 0 in
 generate_spn "track28.grml" [ 
   (1,Init,0,(0.0,0.0)); 
   (2,Norm,1,(0.0,-1.0)); 
