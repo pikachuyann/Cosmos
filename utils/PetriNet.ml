@@ -9,6 +9,7 @@ sig
   val acc : ('a, 'b) t -> 'a -> 'b
   val add : 'a * 'b -> ('a, 'b) t -> unit
   val fold : ('a -> 'b * 'c -> 'a) -> 'a -> ('b, 'c) t -> 'a
+  val iter : ('b * 'c -> unit) -> ('b, 'c) t -> unit
   val size : ('a, 'b) t -> int
   val sample : ('a, 'b) t -> 'a * 'b
 end
@@ -55,6 +56,7 @@ struct
   let sample d = match d.table with
       Some(t) -> t.(0)
     | None -> raise Empty
+  let iter f t = fold (fun _ a -> f a) () t
 end
 
 module Net =

@@ -123,3 +123,83 @@ let print_spt fpath net =
   Printf.fprintf f "</model>";
   close_out f;;
 
+let rec inline_ls d = function
+  | [] -> ""
+  | [s] -> s
+  | t::q -> t^d^(inline_ls d q);;
+
+let print_arc_marcie net t =
+  let l1 = Data.fold (fun l (_,(v,t2,p)) ->
+    if t<>t2 then l else 
+      (Printf.sprintf "[%s + %i]" (fst (Data.acca net.Net.place p)) v) ::l)
+    [] net.Net.outArc in
+  let l2 = Data.fold (fun l (_,(v,p,t2)) ->
+    if t<>t2 then l else 
+      (Printf.sprintf "[%s - %i]" (fst (Data.acca net.Net.place p)) v) ::l)
+    l1 net.Net.inArc in
+  
+  inline_ls " & " l2;;
+  
+
+let print_spt_marcie fpath net =
+  let f = open_out fpath in
+  output_string f "gspn [generated_cosmos] {\n";
+  
+  output_string f "places:\n";
+  Data.iter (fun (s,m) ->Printf.fprintf f "\t%s = %i;\n" s m) net.Net.place;
+
+  output_string f "\ntransitions:\n";
+  output_string f "\tstochastic:\n";
+  Data.iter (fun (s,distr) -> match distr with
+      Exp r -> Printf.fprintf f "\t%s : : %s : %f ;\n" s 
+    (print_arc_marcie net (Data.index net.Net.transition s)) r
+    | _ -> ()   
+  ) net.Net.transition;
+  output_string f "\timmediate:\n";
+  Data.iter (fun (s,distr) -> match distr with
+      Imm r -> Printf.fprintf f "\t%s : : %s : %f ;\n" s 
+    (print_arc_marcie net (Data.index net.Net.transition s)) r
+    | _ -> ()   
+  ) net.Net.transition;
+
+
+ 
+  output_string f "}\n";
+  close_out f;;
+
+let print_arc_dot f s1 s2 v =
+  if v<>1 then
+    Printf.fprintf f "\t%s -> %s [label=\"%i\"];\n" s1 s2 v
+  else Printf.fprintf f "\t%s -> %s;\n" s1 s2;;
+
+let print_spt_dot fpath net cl =
+  let f = open_out fpath in
+  output_string f "digraph G {\n";
+  
+(*  output_string f "\tsubgraph place {\n";
+  output_string f "\t\tgraph [shape=circle];\n";
+  output_string f "\t\tnode [shape=circle,fixedsize=true];\n";*)
+  Data.iter (fun (s,m) ->if m=0 then
+      Printf.fprintf f "\t%s [shape=circle,xlabel=\"%s\",label=\"\"];\n" s s
+    else if m=1 then Printf.fprintf f "\t%s [shape=circle,xlabel=\"%s\",label=\"•\"];\n" s s
+    else Printf.fprintf f "\t%s [shape=circle,xlabel=\"%s\",label=%i];\n" s s m) net.Net.place;
+  (*output_string f "\t}\n\tsubgraph transition {\n";
+  output_string f "\t\tnode [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=black];\n";*)
+  Data.iter (fun (s,m) ->Printf.fprintf f "\t%s [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=black,xlabel=\"%s\",label=\"\"];\n" s s) net.Net.transition;
+  (*output_string f "\t}\n";*)
+  Data.iter (fun (_,(v,p,t)) ->
+    print_arc_dot f (fst (Data.acca net.Net.place p)) 
+      (fst (Data.acca net.Net.transition t)) v) net.Net.inArc;
+  Data.iter (fun (_,(v,t,p)) ->
+    print_arc_dot f (fst (Data.acca net.Net.transition t))
+      (fst (Data.acca net.Net.place p)) v) net.Net.outArc;
+
+  List.iter (fun (s,l) ->
+    Printf.fprintf f "\tsubgraph \"test%i\" {\n\trank=%i; " s s;
+    List.iter (fun s2 -> Printf.fprintf f " %s;" s2) l; 
+    output_string f "}\n";) cl;
+
+  output_string f "}\n"; 
+  close_out f;;
+
+
