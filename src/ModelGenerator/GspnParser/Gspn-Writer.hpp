@@ -38,7 +38,8 @@ public:
 	GspnType MyGspn;
 	parameters P;
 	
-	void WriteFile();
+	void writeFile();
+    void writeDotFile(const string &file);
 	
 private:
 	

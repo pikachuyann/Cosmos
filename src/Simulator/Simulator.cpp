@@ -377,6 +377,12 @@ bool Simulator::SimulateOneStep(){
 void Simulator::interactiveSimulation(){
 	string input_line;
 	bool continueLoop = true;
+    stringstream ss;
+    ss << "sed ";
+    N.Marking.printSedCmd(ss);
+    EQ->printSedCmd(N.Transition, ss);
+    ss << tmpPath << "/templatePetriNet.dot | dot -Tpdf -o " << dotFile << endl;
+    system(ss.str().c_str());
 	while(continueLoop){
 		cerr << "\033[1;31mCosmosSimulator>\033[0m";
 		if (cin.good()) {

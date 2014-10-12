@@ -233,6 +233,16 @@ bool EventsQueue::isEmpty()const {
     return (evtHeap.size()==0);
 }
 
+void EventsQueue::printSedCmd(const vector<_trans> &trlabl,ostream& df)const {
+    if(evtHeap.size()>0){
+        df << "-e 's/\\$CF_" << trlabl[InPosition(0).transition].label << "\\$/Red/g' ";
+        for (unsigned int i = 1; i < evtHeap.size(); i++){
+            df << "-e 's/\\$CF_" << trlabl[InPosition(i).transition].label << "\\$/Blue/g' ";
+        }
+    }
+    df << "-e 's/\\$CF_[^\\$]*\\$/Black/g' ";
+}
+
 /**
  *	Print the content of the queues in a human readable format.
  */

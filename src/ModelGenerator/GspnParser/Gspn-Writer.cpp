@@ -34,6 +34,7 @@ Gspn_Writer::Gspn_Writer(GspnType& mgspn,parameters& Q):MyGspn(mgspn),P(Q){
 	
 }
 
+
 void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
                                     vector< set<int> > &PossiblyDisabled,
                                     vector< set<int> > &FreeMarkDepT) {
@@ -524,8 +525,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		}
 		header << " << \">\";\n";
 		header << "\t}\n";
-		
-		
+
 		
 		if (it->colorClassIndex.size()==1 && MyGspn.colClasses[it->colorClassIndex[0]].isCircular) {
 			header << "\t" << it->tokname() << " next(int i)const {\n";
@@ -769,7 +769,19 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	}
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
-	
+
+    SpnCppFile << "void abstractMarking::printSedCmd(ostream &s)const{\n";
+    if(P.StringInSpnLHA){
+        //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
+        for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+             plit!= MyGspn.placeStruct.end(); ++plit) {
+            SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit->name <<"\\\\$/\";"<< endl;
+            SpnCppFile << "\tif(P->_PL_"<< plit->name << "> 0){s<< P->_PL_"<< plit->name << ";};"<<endl;
+            SpnCppFile << "s <<\"/g' \";"<<endl;
+        }
+    }
+    SpnCppFile << "}\n";
+
 	SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
 	if(P.StringInSpnLHA){
 		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
@@ -927,7 +939,45 @@ void Gspn_Writer::writeVariable(ofstream & spnF){
 	
 }
 
-void Gspn_Writer::WriteFile(){
+void Gspn_Writer::writeDotFile(const string &file){
+    ofstream df(file.c_str(), ios::out | ios::trunc);
+    df << "digraph G {" << endl;
+
+    for (auto &p : MyGspn.placeStruct ) {
+        df << "\t" << p.name;
+        df << " [shape=circle,xlabel=\""<< p.name;
+        df <<"\",label=\"$"<< p.name << "$\"];" << endl;
+    }
+
+    for (auto &t : MyGspn.transitionStruct ) {
+        df << "\t" << t.label;
+        df << " [shape=rect,height=0.2,style=filled,fillcolor=$CF_";
+        df << t.label << "$ ,xlabel=\"" << t.label << "\",label=\"\"];"<< endl;
+    }
+
+    for (auto &p : MyGspn.placeStruct )
+        for(auto &t : MyGspn.transitionStruct){
+            const auto ia = MyGspn.access(MyGspn.inArcsStruct, t.id, p.id);
+            if(! ia.isEmpty) {
+                df << "\t" << p.name << "->" << t.label;
+                df << " [label=\""<< ia.stringVal << " \"];" << endl;
+            }
+            const auto oa = MyGspn.access(MyGspn.outArcsStruct, t.id, p.id);
+            if(! oa.isEmpty) {
+                df << "\t" <<  t.label <<"->" << p.name ;
+                df << " [label=\""<< oa.stringVal << " \"];" << endl;
+            }
+            const auto iha = MyGspn.access(MyGspn.inhibArcsStruct, t.id, p.id);
+            if(! iha.isEmpty) {
+                df << "\t" << p.name << "->" << t.label;
+                df << " [arrowhead=odot,label=\""<< iha.stringVal << " \"];" << endl;
+            }
+        }
+    df << "}" << endl;
+    
+}
+
+void Gspn_Writer::writeFile(){
 	
 	string Pref = P.tmpPath;
 	string loc;
