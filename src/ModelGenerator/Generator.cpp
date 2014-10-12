@@ -111,7 +111,8 @@ bool ParseBuild() {
 		if (!parseresult && gReader.MyGspn.pl >0 && gReader.MyGspn.tr >0) {
             if(P.tmpStatus==0||P.tmpStatus==2){
 				Gspn_Writer writer(gReader.MyGspn,P);
-				writer.WriteFile();
+				writer.writeFile();
+                writer.writeDotFile(P.tmpPath+"/templatePetriNet.dot");
 			}
         } else {
             Gspn_Reader gr(P);
@@ -124,13 +125,13 @@ bool ParseBuild() {
 	return false;
     }
 	
-	
-	 if(!P.unfold.empty()){
-         unfolder unfold(gReader);
-         ofstream unfoldfile(P.unfold , ios::out | ios::trunc);
-         unfold.export_grml(unfoldfile);
-         return true;
-	 }
+
+    if(!P.unfold.empty()){
+        unfolder unfold(gReader);
+        ofstream unfoldfile(P.unfold , ios::out | ios::trunc);
+        unfold.export_grml(unfoldfile);
+        return true;
+    }
 	 
 	
 	// Intialize an empty structure for the automaton

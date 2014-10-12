@@ -204,6 +204,7 @@ void launch_clients(parameters& P){
     signal(SIGCHLD , signalHandler);
     signal(SIGINT, signalHandler);
 	//pid_t readpid;
+
 	for(int i = 0;i<P.Njob;i++){
 		string cmd = P.tmpPath + "/ClientSim";;
 		const char *argv[10] = {0};
@@ -212,7 +213,8 @@ void launch_clients(parameters& P){
 		
 		pushint(argv,argn,P.Batch);
 		pushint(argv,argn,P.verbose);
-		
+        pushstr(argv,argn,P.tmpPath.c_str());
+
 		//<< P.Batch << " " << P.verbose;
 		
 		// if seed is zero generate a pseudo random seed.
@@ -256,13 +258,19 @@ void launch_clients(parameters& P){
         }
 		
 		//If logging the row data is require pass it as an option.
-		if (P.dataraw.compare("")!=0){
+		if (P.dataraw!=""){
 			//os << " -log " << P.dataraw;
 			pushstr(argv,argn,"-log");
 			pushstr(argv,argn,P.dataraw.c_str());
 		}
-		
-		if (P.datatrace.compare("")!=0){
+
+        if (P.dotfile!=""){
+            //os << " -log " << P.dataraw;
+            pushstr(argv,argn,"-dotFile");
+            pushstr(argv,argn,P.dotfile.c_str());
+        }
+
+		if (P.datatrace!=""){
 			//os << " -log " << P.dataraw;
 			pushstr(argv,argn,"-trace");
 			pushstr(argv,argn,P.datatrace.c_str());

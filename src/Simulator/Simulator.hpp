@@ -54,7 +54,11 @@ public:
 	
 	//! verbose level of the simulator
     int verbose;
-    
+
+    //! Path to the temporary directory
+    string tmpPath;
+    string dotFile;
+
 	/**
 	 * \brief Set the batch size
 	 * @param RI the new batch size to use
@@ -68,7 +72,7 @@ public:
 	void logValue(const char*);    //Make the simulator output each result in a file.
 	
 	void logTrace(const char*,double);     //Make the simulator output each trace in a file.
-    
+
 	/**
 	 * \brief Main entry point of the object simulate a batch of trajectory .
 	 *
@@ -77,13 +81,12 @@ public:
 	 * of the batch of simulation.
 	 */
     virtual BatchR RunBatch();
-    
+
 protected:
 	
 	//! a Temporary event
 	Event F;
-	
-	
+
 	//! File stream to log value.
 	fstream logvalue;
 	//! File stream to trace.
@@ -128,6 +131,7 @@ protected:
 	virtual void SimulateSinglePath();
 	
 	void interactiveSimulation(); //!Wait for the user to choose the next transition
+    void printSedCmd();
 	
 	virtual void InitialEventsQueue(); //!initialize the event queue
 	

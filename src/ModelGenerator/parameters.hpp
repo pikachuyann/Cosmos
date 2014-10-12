@@ -100,6 +100,7 @@ struct parameters {
 	string dataPDFCDF;
 	bool gnuplotDriver;
 	string tracedPlace;
+    string dotfile;
     
     vector<HaslFormulasTop*> HaslFormulas;
 	vector<string> HaslFormulasname;
