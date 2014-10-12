@@ -776,8 +776,8 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
         for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
              plit!= MyGspn.placeStruct.end(); ++plit) {
             SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit->name <<"\\\\$/\";"<< endl;
-            SpnCppFile << "\tif(P->_PL_"<< plit->name << "> 0){s<< P->_PL_"<< plit->name << ";};"<<endl;
-            SpnCppFile << "s <<\"/g' \";"<<endl;
+            SpnCppFile << "\ts << P->_PL_"<< plit->name << ";"<<endl;
+            SpnCppFile << "\ts <<\"/g' \";"<<endl;
         }
     }
     SpnCppFile << "}\n";
