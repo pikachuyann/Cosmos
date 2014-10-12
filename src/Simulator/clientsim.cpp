@@ -65,10 +65,11 @@ int main(int argc, char** argv) {
 	Simulator* mySim;
 	
 	string str;
+    const int optioni=5;
 	
-	if(argc > 4){
+	if(argc > optioni){
 		
-		str = argv[4];
+		str = argv[optioni];
 		if(str== "-RE"){
 			SimulatorRE* myRESim= new SimulatorRE(false);
 			myRESim->initVect();
@@ -78,16 +79,16 @@ int main(int argc, char** argv) {
 			myRESim->initVect();
 			mySim = myRESim;
 		}else if(str== "-BURE"){
-            int m = atoi(argv[5]);
-            int T = atoi(argv[6]);
+            int m = atoi(argv[optioni+1]);
+            int T = atoi(argv[optioni+2]);
             SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(m);
             myBoundedSim->initVect(T);
 			mySim= myBoundedSim;
 		}else if(str== "-COBURE"){
-            int m = atoi(argv[5]);
-            double t = atof(argv[6]);
-            double e = atof(argv[7]);
-			int stepc = atoi(argv[8]);
+            int m = atoi(argv[optioni+1]);
+            double t = atof(argv[optioni+2]);
+            double e = atof(argv[optioni+3]);
+			int stepc = atoi(argv[optioni+4]);
             SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(m,e,stepc);
             myBoundedSim->initVectCo(t);
 			mySim= myBoundedSim;
@@ -107,7 +108,7 @@ int main(int argc, char** argv) {
 			states.exploreStateSpace();
 			states.buildTransitionMatrix();
 			states.outputPrism();
-			states.launchPrism(argv[5]);
+			states.launchPrism(argv[optioni+1]);
 			states.importPrism();
 			states.outputVect();
 			states.outputTmpLumpingFun();
@@ -132,17 +133,21 @@ int main(int argc, char** argv) {
 	
 	for(int i=1; i<argc ;i++){
 		if(strcmp(argv[i],"-log")==0 && argc>i)
-			mySim->logValue(argv[i+1]); //initialize the simulator
+			mySim->logValue(argv[i+1]);
 		if(strcmp(argv[i],"-trace")==0 && argc>i){
-			mySim->logTrace(argv[i+1],stod(argv[i+2])); //initialize the simulator
+			mySim->logTrace(argv[i+1],stod(argv[i+2]));
 		}
+        if(strcmp(argv[i],"-dotFile")==0 && argc>i){
+            mySim->dotFile = argv[i+1];
+        }
 	}
     
 	
-	if(argc>=3){
+	if(argc>=optioni-1){
 		mySim->SetBatchSize(atoi(argv[1])); //set the batch size
 		mySim->verbose = atoi(argv[2]);
-		mySim->initRandomGenerator(atoi(argv[3]));
+		mySim->initRandomGenerator(atoi(argv[4]));
+        mySim->tmpPath=argv[3];
 	}else{
 		cerr << "Not enough argument";
 		return (EXIT_FAILURE);
