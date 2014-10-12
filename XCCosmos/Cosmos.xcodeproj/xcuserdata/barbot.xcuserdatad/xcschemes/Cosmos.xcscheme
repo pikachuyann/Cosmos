@@ -75,11 +75,11 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/DatabaseBound/DatabaseInitRE.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/DatabaseBound/DatabaseUntilRound.grml"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--unfold"
@@ -191,7 +191,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/DataBase/databasecNfP.grml"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Downloads/testallminus.grml"
@@ -199,7 +199,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--loop 60"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--state-space"

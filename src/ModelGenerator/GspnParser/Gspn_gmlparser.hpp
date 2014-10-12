@@ -72,7 +72,7 @@ private:
 	expr eval_expr(tree<string>::pre_order_iterator it );
     int eval_intFormula( tree<string>::pre_order_iterator it );
     double eval_realFormula(tree<string>::pre_order_iterator it );
-	void eval_tokenProfileArc(coloredToken& ,bool &, tree<string>::pre_order_iterator);
+	void eval_tokenProfileArc(coloredToken& ,bool &, set<size_t>& , tree<string>::pre_order_iterator);
 	expr eval_guard(tree<string>::pre_order_iterator);
 
 	string simplifyString(string str);

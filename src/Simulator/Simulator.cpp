@@ -225,7 +225,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	//assert(cerr<< "assert!"<< endl);
 	
 	
-	/*
+
 	//In Debug mode check that transition are scheduled iff they are enabled
 	for (const auto &t : N.Transition){
 		for(const auto &bindex : t.bindingList){
@@ -243,7 +243,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 					   EQ->isScheduled(t.Id, bindex.idcount));
 			}
 		}
-	}*/
+	}
 	 
 }
 
@@ -377,12 +377,15 @@ bool Simulator::SimulateOneStep(){
 void Simulator::interactiveSimulation(){
 	string input_line;
 	bool continueLoop = true;
-    stringstream ss;
-    ss << "sed ";
-    N.Marking.printSedCmd(ss);
-    EQ->printSedCmd(N.Transition, ss);
-    ss << tmpPath << "/templatePetriNet.dot | dot -Tpdf -o " << dotFile << endl;
-    system(ss.str().c_str());
+    if(dotFile!=""){
+        stringstream ss;
+        ss << "sed ";
+        N.Marking.printSedCmd(ss);
+        EQ->printSedCmd(N.Transition, ss);
+        ss << tmpPath << "/templatePetriNet.dot > " << tmpPath << "/PetriNet.dot; ";
+        ss << "dot "<< tmpPath <<"/PetriNet.dot -Tpdf -o " << dotFile << endl;
+        system(ss.str().c_str());
+    }
 	while(continueLoop){
 		cerr << "\033[1;31mCosmosSimulator>\033[0m";
 		if (cin.good()) {

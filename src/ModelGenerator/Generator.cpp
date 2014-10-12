@@ -56,6 +56,7 @@ bool ParseBuild() {
             parseresult = gReader.parse_file(P.PathGspn);
         }
 		P.nbPlace = gReader.MyGspn.pl;
+
 		
 		//The following code modify the internal representation of the
 		//SPN according to options.
