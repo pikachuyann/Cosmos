@@ -61,7 +61,7 @@ let rec check_result l = function
   | [] -> true
   | (lab,v)::q -> try 
 		    let h = List.assoc lab l in
-		    if v >= (fst h.confInterval) -. 0.00001 && (snd h.confInterval) +. 0.00001 >= v then check_result l q
+		    if v >= (fst h.confInterval) -. 0.00001 && (snd h.confInterval) +. 0.00001 >= v && ((snd h.confInterval) -. (fst h.confInterval) < 1000.0) then check_result l q
 		    else false
     with x -> false
 
