@@ -28,7 +28,8 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--output-data:File where to output data:->data' \
 	   '--output-trace:File where to output trace:->data' \
 	   '--output-raw:Output result of each trajectory in a file:->data' \
-	   '--output-PDFCDF:Output PDF or CDF to a file:->data' \
+	   '--output-graph:Output PDF or CDF to a file:->data' \
+           '--output-dot:Output a graphical representation of the Petri net:->data'\
 	   '--tmp-status:Persistance of the tmp file:->status' \
 	   '--const:Overwrite constants value:->Constants' \
 	   '--count-transition[Count number of transition in the lha]' \
