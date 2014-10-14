@@ -2,35 +2,16 @@
 
 <model id="1" formalismUrl="http://formalisms.cosyverif.org/swn.fml" xmlns="http://cosyverif.org/ns/model">
   <attribute name="declaration">
-    <attribute name="classDeclaration">
-      <attribute name="name">
-        philo
-      </attribute>
-      <attribute name="classType">
-        <attribute name="classEnum">
-          <attribute name="enumValue">
-            p1
-          </attribute>
-          <attribute name="enumValue">
-            p2
-          </attribute>
-          <attribute name="enumValue">
-            p3
-          </attribute>
-          <attribute name="enumValue">
-            p4
-          </attribute>
-          <attribute name="enumValue">
-            p5
-          </attribute>
-        </attribute>
-      </attribute>
-      <attribute name="circular">
-        true
-      </attribute>
-    </attribute>
     <attribute name="constants">
       <attribute name="intConsts">
+	<attribute name="intConst">
+	  <attribute name="name">
+            N
+          </attribute>
+          <attribute name="expr"><attribute name="numValue">
+            5
+          </attribute></attribute>
+	</attribute>
       </attribute>
       <attribute name="realConsts">
         <attribute name="realConst">
@@ -63,6 +44,28 @@
             </attribute>
           </attribute>
         </attribute>
+      </attribute>
+    </attribute>
+    <attribute name="classDeclaration">
+      <attribute name="name">
+        philo
+      </attribute>
+      <attribute name="classType">
+        <attribute name="classIntInterval">
+          <attribute name="lowerBound">
+            <attribute name="expr"><attribute name="numValue">
+              1
+	    </attribute></attribute>
+          </attribute>
+          <attribute name="higherBound">
+            <attribute name="expr"><attribute name="name">
+              N
+            </attribute></attribute>
+          </attribute>
+        </attribute>
+      </attribute>
+      <attribute name="circular">
+        true
       </attribute>
     </attribute>
     <attribute name="variableDeclaration">
