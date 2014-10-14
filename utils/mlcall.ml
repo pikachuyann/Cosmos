@@ -57,6 +57,35 @@ let dummy_haslr = {
   minmax = 0.0 , 0.0 
 }
 
+let init_log s =
+  let fl = s in
+  Unix.putenv "COSMOS_TEST_LOG" fl;
+  let fs2 = open_out fl in
+  output_value fs2 ([],[]);
+  close_out fs2;;
+
+let update_log b (s:string) =
+  if Array.length Sys.argv >2 then
+  try 
+    let fl = Sys.argv.(2) in(* Unix.getenv "COSMOS_TEST_LOG" in*)
+    let fs = open_in fl in
+    let (success,failure) = input_value fs in
+    close_in fs;
+    let sf2 = if b then (s::success,failure)
+      else (success,s::failure) in
+    let fs2 = open_out fl in
+    output_value fs2 sf2;
+    close_out fs2
+  with
+      Not_found -> print_endline "No log Found"
+
+let read_log s =
+  let fs = open_in s (*((Unix.getcwd ()) ^"/cosmos_test_log")*) in
+  let ((succ:string list),(fail:string list)) = input_value fs in
+  close_in fs;
+  (succ,fail);;
+
+
 let rec check_result l = function
   | [] -> true
   | (lab,v)::q -> try 
@@ -200,14 +229,18 @@ let test_cosmosBash testname model prop opt v =
   flush stdout;
   try let result = exec_cosmos model prop opt true in
        if check_result result.haslResult v
-       then 
+       then (
+	 update_log true testname;
 	 print_color (sprintf "testFinished: %s\n%s" testname (print_readable result.haslResult v)) 32
-       else 
+       ) else ( 
+	 update_log false testname;
 	 print_color (sprintf "testFailed: %s\n%s" testname (print_readable result.haslResult v)) 31
-
+       )
   with CmdFail(ret) ->
+    update_log false testname;
     print_color (sprintf "testFailed: %s Test %s fail: Cosmos return value:%i\n" testname testname ret) 31
     | x ->
+      update_log false testname;
       print_color (sprintf "testFailed: %s Test %s fail due to uncaught exception: %s\n" testname testname (Printexc.to_string x)) 31
 
 
