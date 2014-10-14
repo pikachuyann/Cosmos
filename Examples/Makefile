@@ -17,4 +17,4 @@ all:
 
 
 bash:
-	export INTC=bash && $(MAKE) all
+	ocaml bench.ml
