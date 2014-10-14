@@ -170,6 +170,9 @@ let parse_result f =
 	| "Formula" :: v :: [] -> result.propName <- v;
 	| "LHA loop" :: v :: "transient" :: w :: [] -> result.propName <- ("loop"^v^"transient"^w);
         | s1 :: [""] -> result.haslResult <- (s1,{dummy_haslr with mean=0.0}):: result.haslResult 
+	| "Level" :: v :: [] -> ()
+	| "Method" :: _ ->()
+	| "LHA loop" :: _ -> ()
 	| _ -> print_endline ("Fail to parse'"^str^"'")
     done
    with

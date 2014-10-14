@@ -12,6 +12,8 @@ all:
 #	(cd TandemCosy && ocaml testPrism.ml $(INTC))
 	(cd SharedMemory && ocaml test.ml $(INTC))
 	(cd RareEventU && ocaml test.ml $(INTC))
+	(cd DNAWalker && ocaml test.ml $(INTC))
+	(cd Philosophers && ocaml test.ml $(INTC))
 
 
 bash:
