@@ -28,5 +28,5 @@ test_cosmos "gamma" "testgamma.grml" "testdistrib.lha" ""
 test_cosmos "discrete uniform" "testdiscreteuniform.grml" "testdistrib.lha" "" 
   ["MeanVal",(8.0)];;
 
-test_cosmos "age memory" "testagememory.grml" "testagememory.lha" ""
+test_cosmos "age memory" "testagememory.grml" "testagememory.lha" "--max-run 10000"
   ["MeanVal",(12.0)];;
