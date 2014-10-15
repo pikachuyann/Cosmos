@@ -1,5 +1,5 @@
 %{
-
+  open Type
 %}
 
 %token <int> INT
@@ -13,11 +13,13 @@
 %token SEMICOLON COLON PRIME
 %token AND OR
 %token NOT
+%token CONST
 %token EQ SG SL GE LE
 %token RANGE
 %token CTMC MODULE ENDMODULE INIT
 %token ARROW
 %token EOF
+%token INTKW DOUBLEKW
 
 %left OR
 %left AND
@@ -28,15 +30,26 @@
 %left LPAR RPAR
 
 %start main
-%type <string * (string * (int*int) * int) list * ((string*string*int) list * float * (string*int) list) list > main
+%type <Type.prism_module> main
 
 %%
 
 main:
-  CTMC moduleexp EOF {$2};
+  CTMC definition moduleexp EOF {$3};
+
+definition:
+  CONST INTKW NAME EQ INT SEMICOLON definition { ($3,float $5)::$7 }
+  | CONST DOUBLEKW NAME EQ FLOAT SEMICOLON definition { ($3,$5)::$7 }
+  | {[]}
+;
 
 moduleexp:
-  MODULE NAME varlist actionlist ENDMODULE {($2,$3,$4)};
+  MODULE NAME varlist actionlist ENDMODULE {
+    { name=$2;
+      varlist=$3;
+      actionlist=$4;
+    }
+  };
 
 varlist:
   NAME COLON LSQBRAK INT RANGE INT RSQBRAK INIT INT SEMICOLON 
