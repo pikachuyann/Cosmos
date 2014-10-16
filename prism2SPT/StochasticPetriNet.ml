@@ -1,6 +1,52 @@
+open Type
 open PetriNet
 
-type distr = Exp of float | Imm of float;;
+type distr = Exp of floatExpr | Imm of floatExpr;;
+
+
+let rec print_int_expr f = function 
+  | IntName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>\n" n
+  | Int(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%i</attribute>\n" fl    
+  | Mult(fe1,fe2) -> output_string f 
+    "<attribute name=\"function\"><attribute name=\"*\">\n";
+    print_int_expr f fe1; output_string f "\n";
+    print_int_expr f fe2; 
+    output_string f "</attribute></attribute>"
+  | Plus(fe1,fe2) -> output_string f 
+    "<attribute name=\"function\"><attribute name=\"+\">\n";
+    print_int_expr f fe1; output_string f "\n";
+    print_int_expr f fe2; 
+    output_string f "</attribute></attribute>"
+  | Minus(fe1,fe2) -> output_string f 
+    "<attribute name=\"function\"><attribute name=\"minus\">\n";
+    print_int_expr f fe1; output_string f "\n";
+    print_int_expr f fe2; 
+    output_string f "</attribute></attribute>"
+ 
+let rec print_float_expr f = function 
+  | FloatName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>\n" n
+  | Float(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%f</attribute>\n" fl    
+  | MultF(fe1,fe2) -> output_string f 
+    "<attribute name=\"function\"><attribute name=\"*\">\n";
+    print_float_expr f fe1; output_string f "\n";
+    print_float_expr f fe2; 
+    output_string f "</attribute></attribute>"
+  | PlusF(fe1,fe2) -> output_string f 
+    "<attribute name=\"function\"><attribute name=\"+\">\n";
+    print_float_expr f fe1; output_string f "\n";
+    print_float_expr f fe2; 
+    output_string f "</attribute></attribute>"
+  | MinusF(fe1,fe2) -> output_string f 
+    "<attribute name=\"function\"><attribute name=\"minus\">\n";
+    print_float_expr f fe1; output_string f "\n";
+    print_float_expr f fe2; 
+    output_string f "</attribute></attribute>"
+  | DivF(fe1,fe2) -> output_string f 
+    "<attribute name=\"function\"><attribute name=\"/\">\n";
+    print_float_expr f fe1; output_string f "\n";
+    print_float_expr f fe2; 
+    output_string f "</attribute></attribute>"
+  | CastInt(ie) -> print_int_expr f ie
 
 let print_distr f d = 
   output_string f "    <attribute name=\"distribution\">
@@ -10,11 +56,11 @@ let print_distr f d =
       </attribute>
       <attribute name=\"param\">
         <attribute name=\"number\">0</attribute>
-        <attribute name=\"expr\"><attribute name=\"numValue\">
-          %f
-        </attribute></attribute>
+        <attribute name=\"expr\">";
+	print_float_expr f r;
+	Printf.fprintf f "       </attribute>
       </attribute>
-    </attribute>" r;
+    </attribute>";
     | Imm p -> Printf.fprintf f "        DETERMINISTIC
       </attribute>
       <attribute name=\"param\">
@@ -25,10 +71,11 @@ let print_distr f d =
       </attribute>
     </attribute>
     <attribute name=\"weight\">
-      <attribute name=\"expr\"><attribute name=\"numValue\">
-        %f
-      </attribute></attribute>
-    </attribute>" p;
+      <attribute name=\"expr\">";
+	print_float_expr f p;
+	Printf.fprintf f "       </attribute>        
+      </attribute>
+    </attribute>";
   end
 
 let print_tr f name id rate =
@@ -53,11 +100,11 @@ let print_arc f id source target valuation inhib =
   let arctype = if inhib then "inhibitorarc" else "arc" in
   Printf.fprintf f "  <arc id=\"%i\" arcType=\"%s\" source=\"%i\" target=\"%i\">
     <attribute name=\"valuation\">
-      <attribute name=\"expr\"><attribute name=\"numValue\">
-        %i
-      </attribute></attribute>
+      <attribute name=\"expr\">\n" id arctype source target;
+  print_int_expr f valuation;
+  Printf.fprintf f "      </attribute>
     </attribute>
-  </arc>\n" id arctype source target valuation 
+  </arc>\n" 
 
 let gen_const f li lr =
   Printf.fprintf f "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -86,12 +133,12 @@ let gen_const f li lr =
     </attribute>
   </attribute>\n"
 
-type 'a spt = (int* 'a,distr) Net.t;;
+type 'a spt = (int* 'a,distr ,intExpr ) Net.t;;
 
-let print_spt fpath net =
+let print_spt fpath net lc =
   let f = open_out fpath in
   
-  gen_const f [] [];
+  gen_const f [] lc;
   let np = Data.fold (fun i (s,m) ->print_pl f s i m; i+1) 0 net.Net.place in
   let nt = Data.fold (fun i (s,r) ->print_tr f s i r; i+1) np net.Net.transition in
   let nia = Data.fold (fun i (_,(v,p,t)) ->print_arc f i p (t+np) v false; i+1) nt net.Net.inArc in
@@ -141,6 +188,9 @@ let print_arc_marcie net t =
   
   inline_ls " & " l2;;
   
+let float_of_floatexp = function
+  | Float f -> f
+  | _ -> failwith "Fail to export to marcie"
 
 let print_spt_marcie fpath net =
   let f = open_out fpath in
@@ -153,13 +203,13 @@ let print_spt_marcie fpath net =
   output_string f "\tstochastic:\n";
   Data.iter (fun (s,distr) -> match distr with
       Exp r -> Printf.fprintf f "\t%s : : %s : %f ;\n" s 
-    (print_arc_marcie net (Data.index net.Net.transition s)) r
+    (print_arc_marcie net (Data.index net.Net.transition s)) (float_of_floatexp r)
     | _ -> ()   
   ) net.Net.transition;
   output_string f "\timmediate:\n";
   Data.iter (fun (s,distr) -> match distr with
       Imm r -> Printf.fprintf f "\t%s : : %s : %f ;\n" s 
-    (print_arc_marcie net (Data.index net.Net.transition s)) r
+    (print_arc_marcie net (Data.index net.Net.transition s)) (float_of_floatexp r)
     | _ -> ()   
   ) net.Net.transition;
 
