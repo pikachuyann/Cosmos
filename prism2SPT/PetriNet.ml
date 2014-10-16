@@ -61,12 +61,12 @@ end
 
 module Net =
 struct
-  type ('a,'b) t = { 
+  type ('a,'b,'c) t = { 
     place: (string,'a) Data.t;
     transition: (string,'b) Data.t;
-    inArc: (unit,('a*int*int)) Data.t;
-    inhibArc: (unit,('a*int*int)) Data.t;
-    outArc: (unit,('a*int*int)) Data.t;
+    inArc: (unit,('c*int*int)) Data.t;
+    inhibArc: (unit,('c*int*int)) Data.t;
+    outArc: (unit,('c*int*int)) Data.t;
   }
   let create () = {
     place = Data.create ();
