@@ -109,7 +109,7 @@ let gen_spn2 fpath li ks failure=
 	Net.add_arc net tl ("a"^(string_of_int n2)) 2;
 	(*cluster.(n1-1) <- tl :: cluster.(n1-1);*) 
       ) li ) li;
-
+  
 
   List.iter (fun (n1,t1,i1,p1) ->
     if t1=Final then 
@@ -148,7 +148,7 @@ let gen_spn fpath li ks failure=
     end
   ) li;
 
-  List.iter (fun (n1,t1,i1,p1) ->
+ (* List.iter (fun (n1,t1,i1,p1) ->
     List.iter (fun (n2,t2,i2,p2) -> 
       let r = (match t1 with 
 	  Init -> ksi
@@ -170,7 +170,7 @@ let gen_spn fpath li ks failure=
 	Net.add_arc net ("s"^(string_of_int n2)) tl 1;
 	Net.add_arc net tl ("a"^(string_of_int n2)) 1;
 	(*cluster.(n1-1) <- tl :: cluster.(n1-1);*) 
-      ) li ) li;
+      ) li ) li;*)
 
   List.iter (fun (n1,t1,i1,p1) ->
     if t1=Final then 
@@ -188,13 +188,20 @@ let generate_spn fpath li ks failure obj =
   generate_lha (fpath^".lha") li obj;
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
-  (*print_spt_dot (fpath^".dot") net [] 
+  print_spt_dot (fpath^".dot") net [] 
     (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
-  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));*)
-  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;
+  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath))
+  (*execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;*)
 
 let sq2 = (sqrt 2.0)/.2.0;;
 let sq3 = (sqrt 3.0)/.2.0;;
+
+
+generate_spn "ex" [
+  (1,Init,0,(0.0,0.0)); 
+  (2,Final,1,(2.0,0.0));] 
+0.009 0.3 "a2=2";; 
+
 
 
 (*generate_lha "control.lha" "a8<2" "a8=2" "FALSE";*)
@@ -255,7 +262,6 @@ generate_spn "track12Block1" [ (1,Init,0,(0.0,0.0));
 			 (10,Norm,1,(2.0*.sq3,-.4.0));
 			 (11,Norm,1,(3.0*.sq3,-.4.5));
 			 (12,Final,1,(4.0*.sq3,-.5.0))] 0.009 0.3 "a12=2";;
-
 
 (*generate_lha "track12Block2.lha" "a8=0 & a12=0" "a12>0" "a8>0";
 generate_lha "track12Block2.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
