@@ -32,46 +32,32 @@ type prism_module = {
 
 type prism_file = prism_module list
 
-let rec printH_int_expr = function
-  | IntName(s) -> print_string s;
-  | Int(i) -> print_int i;
-  | Plus(e1,e2) -> print_string "(";
-    printH_int_expr e1;
-    print_string "+";
-    printH_int_expr e2;
-    print_string ")"
-  | Minus(e1,e2) -> print_string "(";
-    printH_int_expr e1;
-    print_string "-";
-    printH_int_expr e2;
-    print_string ")"
-  | Mult(e1,e2) -> print_string "(";
-    printH_int_expr e1;
-    print_string "*";
-    printH_int_expr e2;
-    print_string ")"
+let rec printH_int_expr f = function
+  | IntName(s) -> output_string f s;
+  | Int(i) -> Printf.fprintf f "%i" i;
+  | Plus(e1,e2) -> Printf.fprintf f "(%a+%a)" 
+    printH_int_expr e1 
+    printH_int_expr e2
+  | Minus(e1,e2) -> Printf.fprintf f "(%a-%a)" 
+    printH_int_expr e1 
+    printH_int_expr e2
+  | Mult(e1,e2) -> Printf.fprintf f "(%a*%a)" 
+    printH_int_expr e1 
+    printH_int_expr e2
 
-and printH_float_expr = function
-  | FloatName(x) -> print_string x;
-  | Float(x) -> print_float x;
-  | CastInt(x) -> printH_int_expr x;
-  | PlusF(e1,e2) -> print_string "(";
-    printH_float_expr e1;
-    print_string "+";
-    printH_float_expr e2;
-    print_string ")"
-  | MinusF(e1,e2) -> print_string "(";
-    printH_float_expr e1;
-    print_string "-";
-    printH_float_expr e2;
-    print_string ")"
-  | MultF(e1,e2) -> print_string "(";
-    printH_float_expr e1;
-    print_string "*";
-    printH_float_expr e2;
-    print_string ")"
-  | DivF(e1,e2) -> print_string "(";
-    printH_float_expr e1;
-    print_string "/";
-    printH_float_expr e2;
-    print_string ")"
+and printH_float_expr f = function
+  | FloatName(x) -> output_string f x;
+  | Float(x) -> Printf.fprintf f "%f" x;
+  | CastInt(x) -> printH_int_expr f x;
+  | PlusF(e1,e2) -> Printf.fprintf f "(%a+%a)" 
+    printH_float_expr e1 
+    printH_float_expr e2
+  | MinusF(e1,e2) -> Printf.fprintf f "(%a-%a)" 
+    printH_float_expr e1 
+    printH_float_expr e2
+  | MultF(e1,e2) -> Printf.fprintf f "(%a*%a)" 
+    printH_float_expr e1 
+    printH_float_expr e2
+  | DivF(e1,e2) -> Printf.fprintf f "(%a/%a)" 
+    printH_float_expr e1 
+    printH_float_expr e2
