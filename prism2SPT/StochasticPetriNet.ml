@@ -5,48 +5,49 @@ type distr = Exp of floatExpr | Imm of floatExpr;;
 
 
 let rec print_int_expr f = function 
-  | IntName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>\n" n
-  | Int(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%i</attribute>\n" fl    
-  | Mult(fe1,fe2) -> output_string f 
-    "<attribute name=\"function\"><attribute name=\"*\">\n";
-    print_int_expr f fe1; output_string f "\n";
-    print_int_expr f fe2; 
-    output_string f "</attribute></attribute>"
-  | Plus(fe1,fe2) -> output_string f 
-    "<attribute name=\"function\"><attribute name=\"+\">\n";
-    print_int_expr f fe1; output_string f "\n";
-    print_int_expr f fe2; 
-    output_string f "</attribute></attribute>"
-  | Minus(fe1,fe2) -> output_string f 
-    "<attribute name=\"function\"><attribute name=\"minus\">\n";
-    print_int_expr f fe1; output_string f "\n";
-    print_int_expr f fe2; 
-    output_string f "</attribute></attribute>"
+  | IntName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
+  | Int(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%i</attribute>" fl    
+  | Mult(fe1,fe2) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"*\">
+  %a
+  %a
+</attribute></attribute>" print_int_expr fe1 print_int_expr fe2
+  | Plus(fe1,fe2) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"+\">
+  %a
+  %a
+</attribute></attribute>" print_int_expr fe1 print_int_expr fe2
+  | Minus(fe1,fe2) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"minus\">
+  %a
+  %a
+</attribute></attribute>" print_int_expr fe1 print_int_expr fe2
  
 let rec print_float_expr f = function 
-  | FloatName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>\n" n
-  | Float(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%f</attribute>\n" fl    
-  | MultF(fe1,fe2) -> output_string f 
-    "<attribute name=\"function\"><attribute name=\"*\">\n";
-    print_float_expr f fe1; output_string f "\n";
-    print_float_expr f fe2; 
-    output_string f "</attribute></attribute>"
-  | PlusF(fe1,fe2) -> output_string f 
-    "<attribute name=\"function\"><attribute name=\"+\">\n";
-    print_float_expr f fe1; output_string f "\n";
-    print_float_expr f fe2; 
-    output_string f "</attribute></attribute>"
-  | MinusF(fe1,fe2) -> output_string f 
-    "<attribute name=\"function\"><attribute name=\"minus\">\n";
-    print_float_expr f fe1; output_string f "\n";
-    print_float_expr f fe2; 
-    output_string f "</attribute></attribute>"
-  | DivF(fe1,fe2) -> output_string f 
-    "<attribute name=\"function\"><attribute name=\"/\">\n";
-    print_float_expr f fe1; output_string f "\n";
-    print_float_expr f fe2; 
-    output_string f "</attribute></attribute>"
+  | FloatName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
+  | Float(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%f</attribute>" fl    
   | CastInt(ie) -> print_int_expr f ie
+  | MultF(fe1,fe2) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"*\">
+  %a
+  %a
+</attribute></attribute>" print_float_expr fe1 print_float_expr fe2
+  | PlusF(fe1,fe2) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"+\">
+  %a
+  %a
+</attribute></attribute>" print_float_expr fe1 print_float_expr fe2
+  | MinusF(fe1,fe2) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"minus\">
+  %a
+  %a
+</attribute></attribute>" print_float_expr fe1 print_float_expr fe2
+  | DivF(fe1,fe2) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"/\">
+  %a
+  %a
+</attribute></attribute>" print_float_expr fe1 print_float_expr fe2
+
 
 let print_distr f d = 
   output_string f "    <attribute name=\"distribution\">
@@ -56,11 +57,9 @@ let print_distr f d =
       </attribute>
       <attribute name=\"param\">
         <attribute name=\"number\">0</attribute>
-        <attribute name=\"expr\">";
-	print_float_expr f r;
-	Printf.fprintf f "       </attribute>
+        <attribute name=\"expr\">%a</attribute>
       </attribute>
-    </attribute>";
+    </attribute>" print_float_expr r
     | Imm p -> Printf.fprintf f "        DETERMINISTIC
       </attribute>
       <attribute name=\"param\">
@@ -70,21 +69,18 @@ let print_distr f d =
         </attribute></attribute>
       </attribute>
     </attribute>
-    <attribute name=\"weight\">
-      <attribute name=\"expr\">";
-	print_float_expr f p;
-	Printf.fprintf f "       </attribute>        
-      </attribute>
-    </attribute>";
+    <attribute name=\"weight\"><attribute name=\"expr\">
+      %a
+    </attribute></attribute>
+  </attribute>" print_float_expr p
   end
 
 let print_tr f name id rate =
   Printf.fprintf f "  <node id=\"%i\" nodeType=\"transition\">
-    <attribute name=\"name\">%s</attribute>" id name;
-  print_distr f rate;
-  output_string f "</node>\n"
+    <attribute name=\"name\">%s</attribute>
+      %a
+  </node>" id name print_distr rate
   
-
 let print_pl f name id tok =
   Printf.fprintf f "  <node id=\"%i\" nodeType=\"place\">
     <attribute name=\"name\">%s</attribute>
@@ -95,17 +91,14 @@ let print_pl f name id tok =
     </attribute>
   </node>\n" id name tok
 
-
 let print_arc f id source target valuation inhib =
   let arctype = if inhib then "inhibitorarc" else "arc" in
   Printf.fprintf f "  <arc id=\"%i\" arcType=\"%s\" source=\"%i\" target=\"%i\">
-    <attribute name=\"valuation\">
-      <attribute name=\"expr\">\n" id arctype source target;
-  print_int_expr f valuation;
-  Printf.fprintf f "      </attribute>
-    </attribute>
-  </arc>\n" 
-
+    <attribute name=\"valuation\"><attribute name=\"expr\">
+        %a
+    </attribute></attribute>
+  </arc>\n" id arctype source target print_int_expr valuation
+ 
 let gen_const f li lr =
   Printf.fprintf f "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">
@@ -214,18 +207,17 @@ let print_spt_marcie fpath net =
   ) net.Net.transition;
 
 
- 
   output_string f "}\n";
   close_out f;;
 
 let print_arc_dot f s1 s2 v =
-  if v<>1 then
-    Printf.fprintf f "\t%s -> %s [label=\"%i\"];\n" s1 s2 v
+  if v<>Int 1 then
+    Printf.fprintf f "\t%s -> %s [label=\"%a\"];\n" s1 s2 printH_int_expr v
   else Printf.fprintf f "\t%s -> %s;\n" s1 s2;;
 
 let print_inhib_arc_dot f s1 s2 v =
-  if v<>1 then
-    Printf.fprintf f "\t%s -> %s [arrowhead=odot,label=\"%i\"];\n" s1 s2 v
+  if v<>Int 1 then
+    Printf.fprintf f "\t%s -> %s [arrowhead=odot,label=\"%a\"];\n" s1 s2 printH_int_expr v
   else Printf.fprintf f "\t%s -> %s [arrowhead=odot];\n" s1 s2;;
 
 

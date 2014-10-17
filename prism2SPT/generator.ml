@@ -19,7 +19,8 @@ let get_in g =
 let get_out u =
   List.fold_left (fun s (v,_) -> StringSet.add v s) StringSet.empty u
 
-let gen_acc trname modu net (_,g,f,u) =
+let gen_acc i modu net (st,g,f,u) =
+  let trname = Printf.sprintf "a%i%s" i (match st with None -> "" | Some s-> s) in 
   Data.add (trname,Exp f) net.Net.transition;  
   List.iter (fun (v,_,j) -> 
     if j>0 then Net.add_inArc net v trname (Int j);
@@ -38,8 +39,7 @@ let net_of_prism modu =
   List.iter (fun (n,(a,b),i) -> Data.add (n,i) net.Net.place) modu.varlist;
   ignore (List.fold_left 
 	    (fun i ac ->
-	      let trname = "a"^(string_of_int i) in 
-	      gen_acc trname modu net ac;
+	      gen_acc i modu net ac;
 	      i+1)
 	    1 modu.actionlist);
   net
@@ -52,11 +52,18 @@ let compose_module m1 m2 =
       let filt = function 
 	| None -> true 
 	| Some s-> not (mem s common) in
+      let synchtrans = List.fold_left (fun ls1 (s1,g1,r1,u1) ->
+	if filt s1 then (s1,g1,r1,u1)::ls1
+	else List.fold_left (fun ls2 (s2,g2,r2,u2) -> 
+	  if s1<>s2 then ls2
+	  else (s1,g1@g2,MultF(r1,r2),u1@u2) :: ls2) ls1 m2.actionlist)
+	(List.filter (fun (s,_,_,_) -> filt s) m2.actionlist)
+	m1.actionlist in 
+      
       {
 	name = Printf.sprintf "(%s||%s)" m1.name m2.name;
 	varlist=varlist;
-	actionlist= (List.filter (fun (s,_,_,_) -> filt s) m1.actionlist) @ 
-	  (List.filter (fun (s,_,_,_) -> filt s) m2.actionlist);
+	actionlist= synchtrans;
 	actionset= union m1.actionset m2.actionset
       }
 
@@ -79,7 +86,7 @@ let _ =
       (List.hd prismml) (List.tl prismml) in
     let net = net_of_prism prismmodule in
     print_endline "Finish parsing";
-    (*print_spt_dot ((!output)^".dot") net [] [];*)
+    print_spt_dot ((!output)^".dot") net [] [];
     print_spt ((!output)^".grml") net (List.map (fun (s,ao) ->
       match ao with None -> s,1.0 | Some f -> s,f) cdef);
     print_endline "Finish exporting"
