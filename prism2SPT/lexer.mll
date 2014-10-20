@@ -36,6 +36,7 @@ rule token = parse
   | ']' {RSQBRAK}
   | ';' {SEMICOLON}
   | '!' {NOT}
+  | "true" {TRUE}
   | '&' {AND}
   | '|' {OR}
   | '=' {EQ}

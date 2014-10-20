@@ -20,6 +20,7 @@
 %token SEMICOLON COLON PRIME
 %token AND OR
 %token NOT
+%token TRUE
 %token CONST
 %token EQ SG SL GE LE
 %token RANGE
@@ -38,7 +39,7 @@
 %left LPAR RPAR
 
 %start main
-%type <((string*(float option)) list)*Type.prism_file> main
+%type <((string*(int option)) list *(string*(float option)) list )*Type.prism_file> main
 
 %%
 
@@ -46,11 +47,15 @@ main:
   CTMC definition modulelist rewards labels EOF {($2,$3)};
 
 definition:
-  CONST INTKW NAME EQ INT SEMICOLON definition { ($3,Some (float $5))::$7 }
-  | CONST DOUBLEKW NAME EQ FLOAT SEMICOLON definition { ($3,Some $5)::$7 }
-  | CONST INTKW NAME SEMICOLON definition { ($3,None)::$5 }
-  | CONST DOUBLEKW NAME SEMICOLON definition { ($3,None)::$5 }
-  | {[]}
+  CONST INTKW NAME EQ INT SEMICOLON definition { let intl,doubll = $7 in
+						 ($3,Some $5)::intl , doubll }
+  | CONST DOUBLEKW NAME EQ FLOAT SEMICOLON definition { let intl,doubll = $7 in
+							intl, ($3,Some $5)::doubll }
+  | CONST INTKW NAME SEMICOLON definition {let intl,doubll = $5 in
+					   ($3,None)::intl , doubll  }
+  | CONST DOUBLEKW NAME SEMICOLON definition { let intl,doubll = $5 in
+					       intl, ($3,None)::doubll }
+  | {[],[]}
 ;
 
 modulelist:
@@ -71,13 +76,13 @@ modulelist:
 ;
 
 varlist:
-  NAME COLON LSQBRAK INT RANGE INT RSQBRAK INIT INT SEMICOLON 
+  NAME COLON LSQBRAK INT RANGE intexpr RSQBRAK INIT INT SEMICOLON 
   {[ $1,($4,$6),$9]}
-| NAME COLON LSQBRAK INT RANGE INT RSQBRAK INIT INT SEMICOLON varlist 
+| NAME COLON LSQBRAK INT RANGE intexpr RSQBRAK INIT INT SEMICOLON varlist 
       { ($1,($4,$6),$9)::$11 }
-| NAME COLON LSQBRAK INT RANGE INT RSQBRAK SEMICOLON 
+| NAME COLON LSQBRAK INT RANGE intexpr RSQBRAK SEMICOLON 
   {[ $1,($4,$6),$4]}
-| NAME COLON LSQBRAK INT RANGE INT RSQBRAK SEMICOLON varlist 
+| NAME COLON LSQBRAK INT RANGE intexpr RSQBRAK SEMICOLON varlist 
       { ($1,($4,$6),$4)::$9 }
 ;
 
@@ -121,11 +126,13 @@ cmp:
  | SL {SL}
  | GE {GE}
  | LE {LE}
+ | NOT EQ {NEQ}
 ;
 
 
 update:
-  LPAR upatom RPAR { [$2] }
+  TRUE { [] } 
+| LPAR upatom RPAR { [$2] }
 | LPAR upatom RPAR AND update {$2::$5}
 ;
 
@@ -138,20 +145,21 @@ rewards:
 | {()}
 
 actionrewardlist:
-LSQBRAK NAME RSQBRAK NAME COLON FLOAT SEMICOLON 
+LSQBRAK NAME RSQBRAK stateCondition COLON FLOAT SEMICOLON 
   {()}
-|  NAME COLON FLOAT SEMICOLON 
+|  stateCondition COLON FLOAT SEMICOLON 
   {()}
-| LSQBRAK NAME RSQBRAK NAME COLON INT SEMICOLON 
+| LSQBRAK NAME RSQBRAK stateCondition COLON INT SEMICOLON 
   {()}
-|  NAME COLON INT SEMICOLON 
+|  stateCondition COLON INT SEMICOLON 
   {()}
 | stateCondition COLON INT SEMICOLON 
   {()}
 | {()}
 
 stateCondition:
-  stateCondition AND stateCondition {And($1,$3)}
+TRUE {True}
+| stateCondition AND stateCondition {And($1,$3)}
 | stateCondition OR stateCondition {Or($1,$3)}
 | NOT stateCondition {Not($2)}
 | LPAR stateCondition RPAR {$2}

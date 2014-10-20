@@ -22,10 +22,11 @@ and floatExpr = FloatName of string | Float of float
 
 module StringOrdered = struct type t=string let compare=compare end
 module StringSet = Set.Make(StringOrdered)
+module StringMap = Map.Make(StringOrdered)
 
 type prism_module = {
   name:string;
-  varlist:(string * (int*int) * int) list;
+  varlist:(string * (int*intExpr) * int) list;
   actionlist: (string option * ((string*cmp*int) list) * floatExpr * ((string*intExpr) list)) list;
   actionset: StringSet.t
 }
