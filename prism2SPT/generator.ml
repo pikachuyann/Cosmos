@@ -14,25 +14,74 @@ let rec acc_var k = function
   | (t,a,_)::_ when t=k -> a  
   | _::q -> acc_var k q
 
-let get_in g =
-  List.fold_left (fun s (v,_,_) -> StringSet.add v s) StringSet.empty g
-let get_out u =
-  List.fold_left (fun s (v,_) -> StringSet.add v s) StringSet.empty u
+let rec convert_guard modu net trname ((r1,r2) as rset) = function
+  | [] -> rset
+  | (v,GE,j)::q when j>0 -> Net.add_inArc net v trname (Int j);
+    convert_guard modu net trname ((StringMap.add v j r1),r2) q
+  | (_,GE,_)::q -> convert_guard modu net trname rset q
+  | (v,SL,j)::q -> 
+    let _,bo = acc_var v modu.varlist in (match bo with
+	Int b ->if b-j>=0 then Net.add_inhibArc net v trname (Int j)
+      | _ -> Net.add_inhibArc net v trname (Int j););
+    convert_guard modu net trname rset q
+  | (v,EQ,j)::q -> convert_guard modu net trname 
+    (r1, (StringMap.add v 0 r2))
+    ((v,GE,j)::(v,SL,j+1)::q)
+  | (v,LE,j)::q -> convert_guard modu net trname rset 
+    ((v,SL,j+1)::q)
+  | (v,SG,j)::q -> convert_guard modu net trname rset 
+    ((v,GE,j+1)::q)
+  | (_,NEQ,_)::q -> failwith " != not yet implemented for guard"
+
+let convert_update net trname eqmap varmap = function
+  | v,(Plus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
+    let j2 = StringMap.find v varmap in
+    Net.add_outArc net trname v (Plus((Int j2),j));
+    StringMap.remove v varmap
+  | v,(Plus((IntName v2),j)) when v=v2 -> Net.add_outArc net trname v j; varmap
+  | v,(Minus((IntName v2),(Int j)) ) when v=v2 && (StringMap.mem v varmap) -> 
+    let j2 = StringMap.find v varmap in
+    if j2>j then Net.add_outArc net trname v (Int (j2-j))
+    else if j2<j then failwith "ungarded transition";
+    StringMap.remove v varmap
+  
+  | v,(Int j) when StringMap.mem v eqmap -> 
+    let j2 = StringMap.find v eqmap in
+    if j-j2> 0 then Net.add_outArc net trname v (Int (j-j2));
+    (try StringMap.remove v varmap with Not_found -> varmap);
+
+  | v,j when (StringMap.mem v eqmap) -> 
+    let j2 = StringMap.find v eqmap in
+    if j2= 0 then Net.add_outArc net trname v j
+    else Net.add_outArc net trname v (Minus(j,Int j2));
+    StringMap.remove v varmap
+
+  | v,j when StringMap.mem v varmap ->
+    printH_int_expr stderr j;
+    failwith (Printf.sprintf "Cannot export %s-> %s" trname v);
+   
+  | v,j ->
+    Net.add_inArc net v trname (IntName (v));
+    Net.add_outArc net trname v j; 
+    varmap
+    
 
 let gen_acc i modu net (st,g,f,u) =
   let trname = Printf.sprintf "a%i%s" i (match st with None -> "" | Some s-> s) in 
   Data.add (trname,Exp f) net.Net.transition;  
-  List.iter (fun (v,_,j) -> 
-    if j>0 then Net.add_inArc net v trname (Int j);
-    let _,b = acc_var v modu.varlist in 
-    if b-j>0 then Net.add_inhibArc net v trname (Int (j+1)) ) g;
-  let invar = get_in g
-  and outvar = get_out u in
-  let diff = StringSet.diff outvar invar in
-  StringSet.iter (fun v -> 
+
+  let (invar1,invar2) = 
+    convert_guard modu net trname (StringMap.empty,StringMap.empty) g in
+  let remaining = List.fold_left (convert_update net trname invar2) invar1 u in
+  StringMap.iter (fun v value -> Net.add_outArc net trname v (Int value)) remaining 
+
+  (*let diff = StringMap.diff (get_out u) invar in
+  StringMap.iter (fun v _ -> 
      Net.add_inArc net v trname (IntName (v)) ) diff;
 
-  List.iter (fun (v,jexp) -> Net.add_outArc net trname v jexp) u
+  List.iter (fun (v,jexp) -> Net.add_outArc net trname v jexp) u*)
+
+
     
 let net_of_prism modu =
   let net = Net.create () in
@@ -87,9 +136,10 @@ let _ =
     let net = net_of_prism prismmodule in
     print_endline "Finish parsing";
     print_spt_dot ((!output)^".dot") net [] [];
-    print_spt ((!output)^".grml") net (List.map (fun (s,ao) ->
-      match ao with None -> s,1.0 | Some f -> s,f) cdef);
-    print_endline "Finish exporting"
+    print_spt ((!output)^".grml") net cdef;
+    print_endline "Finish exporting";
+    if Array.length Sys.argv =2 then
+      ignore (Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output))
   with 
     | SyntaxError msg ->
       Printf.fprintf stderr "%a: %s\n" print_position lexbuf msg      
