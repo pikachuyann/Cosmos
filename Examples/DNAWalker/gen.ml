@@ -24,7 +24,7 @@ let generate_lha fpath li obj =
   ) li;
   let f = open_out fpath in
   Printf.fprintf f "
-VariablesList = { vc0, vc1, DISC vd0 , DISC vd1, DISC vd2, DISC vd3};
+VariablesList = { vc0, vc1, DISC vd0 , DISC vd1, DISC vd2, DISC vd3, DISC timefinishcorrect, DISC timefinish};
 LocationsList = {lii, li, li2, lfc,lf,lnf1,ldl,lnf2};
 FinishCorrect=AVG(Last(vd0));
 Finish=AVG(Last(vd1));
@@ -51,14 +51,14 @@ Edges = {
 ((li2,li2),ALL,#,{vd3=vd3+1});
 ((li,li2),ALL,#,{vd3=vd3+1});
 ((li2,li),ALL,#,{vd3=vd3+1});
-((li,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1});
-((li2,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1});
-((li,lf),ALL,#,{vd1=1,vd3=vd3+1});
-((li2,lf),ALL,#,{vd1=1,vd3=vd3+1});
+((li,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0 });
+((li2,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0});
+((li,lf),ALL,#,{vd1=1,vd3=vd3+1, timefinish=vc0});
+((li2,lf),ALL,#,{vd1=1,vd3=vd3+1, timefinish=vc0});
 ((li,lnf1),#,vc0=12000,#);
 ((li2,lnf1),#,vc0=12000,#);
-((lii,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1});
-((lii,lf),ALL,#,{vd1=1,vd3=vd3+1});
+((lii,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0});
+((lii,lf),ALL,#,{vd1=1,vd3=vd3+1, timefinish=vc0});
 ((lii,lnf1),#,vc0=12000,#);
 ((lnf1,lnf2),ALL,#,#);
 ((lnf1,ldl),#,vc0=1000000000,{vd2=1});
@@ -189,9 +189,9 @@ let generate_spn fpath li ks failure obj =
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
   print_spt_dot (fpath^".dot") net [] 
-    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
-  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath))
-  (*execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;*)
+    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li)
+  (*ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath))
+  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;*)
 
 let sq2 = (sqrt 2.0)/.2.0;;
 let sq3 = (sqrt 3.0)/.2.0;;

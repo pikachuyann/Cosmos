@@ -128,10 +128,14 @@ let gen_const f li lr =
 
 type 'a spt = (int* 'a,distr ,intExpr ) Net.t;;
 
-let print_spt fpath net lc =
+let print_spt fpath net (lci,lcd) =
   let f = open_out fpath in
   
-  gen_const f [] lc;
+  gen_const f 
+    (List.map (fun (s,ao) ->
+      match ao with None -> s,1 | Some f -> s,f) lci) 
+    (List.map (fun (s,ao) ->
+      match ao with None -> s,1.0 | Some f -> s,f) lcd);
   let np = Data.fold (fun i (s,m) ->print_pl f s i m; i+1) 0 net.Net.place in
   let nt = Data.fold (fun i (s,r) ->print_tr f s i r; i+1) np net.Net.transition in
   let nia = Data.fold (fun i (_,(v,p,t)) ->print_arc f i p (t+np) v false; i+1) nt net.Net.inArc in
