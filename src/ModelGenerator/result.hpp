@@ -107,6 +107,7 @@ private:
 	
 	//! Stream to the interactive gnuplot session.
 	FILE* gnuplotstream;
+        string gnuplotextenstion;
 	
 	//! Number of lines written by the function printProgress.
 	int endline;

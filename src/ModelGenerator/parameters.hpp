@@ -39,54 +39,54 @@ using namespace std;
 
 struct parameters {
     int verbose;
-	bool interactive;
+    bool interactive;
     std::chrono::milliseconds updatetime;
-	unsigned int seed;
-	int Njob;
-	
+    unsigned int seed;
+    int Njob;
+
     double epsilon;
-	int continuousStep;
-	double Level;
-	double Width;
-	unsigned long int Batch;
-	unsigned long int MaxRuns;
-	bool sequential;
+    int continuousStep;
+    double Level;
+    double Width;
+    unsigned long int Batch;
+    unsigned long int MaxRuns;
+    bool sequential;
     bool relative;
 
-	string comp_uuid;
-	string tmpPath;
-	unsigned int tmpStatus; // 0 create and destroy tmp,
-	//1 do not build but destroy,2 do not destroy, 3 do not build nor destoy
-	string Path;
-	string PathGspn;
-	string PathLha;
-	map<string,string> constants;
-	
-	int generateLHA;
-	double loopLHA;
-	double loopTransientLHA;
-	string CSLformula;
-	string externalHASL;
-	bool localTesting;
-	bool RareEvent;
-	bool DoubleIS;
-	int BoundedRE;
+    string comp_uuid;
+    string tmpPath;
+    unsigned int tmpStatus; // 0 create and destroy tmp,
+    //1 do not build but destroy,2 do not destroy, 3 do not build nor destoy
+    string Path;
+    string PathGspn;
+    string PathLha;
+    map<string, string> constants;
+
+    int generateLHA;
+    double loopLHA;
+    double loopTransientLHA;
+    string CSLformula;
+    string externalHASL;
+    bool localTesting;
+    bool RareEvent;
+    bool DoubleIS;
+    int BoundedRE;
     double horizon;
     bool BoundedContinuous;
-	bool CountTrans;
-	bool StringInSpnLHA;
-    
-	bool GMLinput;
+    bool CountTrans;
+    bool StringInSpnLHA;
+
+    bool GMLinput;
     int computeStateSpace;
 
     bool alligatorMode;
     string unfold;
 
 
-	
-	string gcccmd;
-	string gccflags;
-    
+
+    string gcccmd;
+    string gccflags;
+
     parameters();
     void View();
     void usage();
@@ -94,18 +94,18 @@ struct parameters {
     //void parseCommandLine2(int argc, char** argv);
     string prismPath;
     string dataoutput;
-	string dataraw;
-	string datatrace;
-	double sampleResol;
-	string dataPDFCDF;
-	bool gnuplotDriver;
-	string tracedPlace;
+    string dataraw;
+    string datatrace;
+    double sampleResol;
+    string dataPDFCDF;
+    string gnuplotDriver;
+    string tracedPlace;
     string dotfile;
-    
+
     vector<HaslFormulasTop*> HaslFormulas;
-	vector<string> HaslFormulasname;
-	size_t nbAlgebraic;
-	size_t nbPlace;
+    vector<string> HaslFormulasname;
+    size_t nbAlgebraic;
+    size_t nbPlace;
 };
 
 extern parameters P;
