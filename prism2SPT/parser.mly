@@ -6,7 +6,6 @@
     match so with None -> set
       | Some a -> StringSet.add a set) StringSet.empty sl
 
-
 %}
 
 %token <int> INT
@@ -35,55 +34,52 @@
 %left NOT
 %left EQ SG SL GE LE
 %left PLUS MINUS
-%left MULT
+%left MULT DIV
 %left LPAR RPAR
 
 %start main
-%type <((string*(int option)) list *(string*(float option)) list )*Type.prism_file> main
+%type <Type.constdef*Type.prism_file> main
+%type <intExpr> intexpr
+%type <floatExpr> floatexpr
 
 %%
 
 main:
-  CTMC definition modulelist rewards labels EOF {($2,$3)};
+  CTMC defmod rewards labels EOF {($2)};
+
+defmod:
+  definition defmod { let (defl,modl) = $2 in (($1 defl),modl) }
+  | modulelist defmod { let (defl,modl) = $2 in (defl,$1::modl) }
+  | { (([],[]),[]) }
+;
 
 definition:
-  CONST INTKW NAME EQ INT SEMICOLON definition { let intl,doubll = $7 in
+  CONST INTKW NAME EQ intexpr SEMICOLON { function (intl,doubll) -> 
 						 ($3,Some $5)::intl , doubll }
-  | CONST DOUBLEKW NAME EQ FLOAT SEMICOLON definition { let intl,doubll = $7 in
+  | CONST DOUBLEKW NAME EQ floatexpr SEMICOLON { function  (intl,doubll) ->
 							intl, ($3,Some $5)::doubll }
-  | CONST INTKW NAME SEMICOLON definition {let intl,doubll = $5 in
+  | CONST INTKW NAME SEMICOLON  { function  (intl,doubll) ->
 					   ($3,None)::intl , doubll  }
-  | CONST DOUBLEKW NAME SEMICOLON definition { let intl,doubll = $5 in
+  | CONST DOUBLEKW NAME SEMICOLON { function  (intl,doubll) ->
 					       intl, ($3,None)::doubll }
-  | {[],[]}
 ;
 
 modulelist:
-  MODULE NAME varlist actionlist ENDMODULE modulelist {
+  MODULE NAME varlist actionlist ENDMODULE {
     { name=$2;
       varlist=$3;
       actionlist=$4;
       actionset = find_action $4
-    } :: $6
-  }
-  | MODULE NAME varlist actionlist ENDMODULE {
-    [{ name=$2;
-      varlist=$3;
-      actionlist=$4;
-      actionset = find_action $4
-    }]
+    }
   }
 ;
 
 varlist:
-  NAME COLON LSQBRAK INT RANGE intexpr RSQBRAK INIT INT SEMICOLON 
-  {[ $1,($4,$6),$9]}
-| NAME COLON LSQBRAK INT RANGE intexpr RSQBRAK INIT INT SEMICOLON varlist 
+ NAME COLON LSQBRAK intexpr RANGE intexpr RSQBRAK INIT intexpr SEMICOLON varlist 
       { ($1,($4,$6),$9)::$11 }
-| NAME COLON LSQBRAK INT RANGE intexpr RSQBRAK SEMICOLON 
-  {[ $1,($4,$6),$4]}
-| NAME COLON LSQBRAK INT RANGE intexpr RSQBRAK SEMICOLON varlist 
+| NAME COLON LSQBRAK intexpr RANGE intexpr RSQBRAK SEMICOLON varlist 
       { ($1,($4,$6),$4)::$9 }
+| {[]}
 ;
 
 actionlist:
@@ -104,21 +100,24 @@ tailaction:
 ; 
 
 floatexpr:
- INT {Float (float $1)}
+  INT {Float (float $1)}
 | FLOAT {Float($1)}
 | LPAR floatexpr RPAR {$2 }
 | floatexpr MULT floatexpr {MultF($1,$3)}
 | floatexpr PLUS floatexpr {PlusF($1,$3)}
 | floatexpr MINUS floatexpr {MinusF($1,$3)}
+| floatexpr DIV floatexpr {DivF($1,$3)}
 | NAME {FloatName($1)}
 
+
 guard:
-  atom { [$1] }
+TRUE   {[]}
+| atom { [$1] }
 | atom AND guard {$1::$3}
 ;
 
 atom:
-  NAME cmp INT {$1,$2,$3}
+ NAME cmp intexpr {$1,$2,$3}
 
 cmp:
   EQ {EQ}
@@ -145,15 +144,9 @@ rewards:
 | {()}
 
 actionrewardlist:
-LSQBRAK NAME RSQBRAK stateCondition COLON FLOAT SEMICOLON 
+LSQBRAK NAME RSQBRAK stateCondition COLON floatexpr SEMICOLON 
   {()}
-|  stateCondition COLON FLOAT SEMICOLON 
-  {()}
-| LSQBRAK NAME RSQBRAK stateCondition COLON INT SEMICOLON 
-  {()}
-|  stateCondition COLON INT SEMICOLON 
-  {()}
-| stateCondition COLON INT SEMICOLON 
+|  stateCondition COLON floatexpr SEMICOLON 
   {()}
 | {()}
 
