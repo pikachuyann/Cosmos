@@ -84,12 +84,10 @@ let print_tr f name id rate =
 let print_pl f name id tok =
   Printf.fprintf f "  <node id=\"%i\" nodeType=\"place\">
     <attribute name=\"name\">%s</attribute>
-    <attribute name=\"marking\">
-      <attribute name=\"expr\"><attribute name=\"numValue\">
-        %i
-      </attribute></attribute>
-    </attribute>
-  </node>\n" id name tok
+    <attribute name=\"marking\"><attribute name=\"expr\">
+      %a
+    </attribute></attribute>
+  </node>\n" id name print_int_expr tok
 
 let print_arc f id source target valuation inhib =
   let arctype = if inhib then "inhibitorarc" else "arc" in
@@ -108,9 +106,9 @@ let gen_const f li lr =
      Printf.fprintf f "      <attribute name=\"intConst\">
         <attribute name=\"name\">%s</attribute>
         <attribute name=\"expr\"><attribute name=\"numValue\">
-            %i
+            %a
         </attribute></attribute>
-      </attribute>\n" n v) li;
+      </attribute>\n" n printH_int_expr v) li;
   
   Printf.fprintf f "    </attribute>
     <attribute name=\"realConsts\">\n";
@@ -118,9 +116,9 @@ let gen_const f li lr =
     Printf.fprintf f "      <attribute name=\"realConst\">
         <attribute name=\"name\">%s</attribute>
         <attribute name=\"expr\"><attribute name=\"numValue\">
-            %f
+            %a
         </attribute></attribute>
-      </attribute>\n" n v) lr;
+      </attribute>\n" n printH_float_expr v) lr;
     Printf.fprintf f
       "     </attribute>
     </attribute>
@@ -133,9 +131,9 @@ let print_spt fpath net (lci,lcd) =
   
   gen_const f 
     (List.map (fun (s,ao) ->
-      match ao with None -> s,1 | Some f -> s,f) lci) 
+      match ao with None -> s,Int 1 | Some f -> s,f) lci) 
     (List.map (fun (s,ao) ->
-      match ao with None -> s,1.0 | Some f -> s,f) lcd);
+      match ao with None -> s,Float 1.0 | Some f -> s,f) lcd);
   let np = Data.fold (fun i (s,m) ->print_pl f s i m; i+1) 0 net.Net.place in
   let nt = Data.fold (fun i (s,r) ->print_tr f s i r; i+1) np net.Net.transition in
   let nia = Data.fold (fun i (_,(v,p,t)) ->print_arc f i p (t+np) v false; i+1) nt net.Net.inArc in
@@ -233,13 +231,13 @@ let print_spt_dot fpath net cl p =
   output_string f "\t\tgraph [shape=circle];\n";
   output_string f "\t\tnode [shape=circle,fixedsize=true];\n";*)
   Data.iter (fun (s,m) ->
-    let label = (match m with 
-	0 -> "" | 1 -> "•" | 2 -> "••" | i -> string_of_int i) in
     let pos = (try let x,y = List.assoc s p in
 		   Printf.sprintf ",pos=\"%f,%f!\"" (2.0*.x) (2.0*.y)
       with Not_found -> "") in
 	
-    Printf.fprintf f "\t%s [shape=circle,xlabel=\"%s\",label=\"%s\"%s];\n" s s label pos
+    Printf.fprintf f "\t%s [shape=circle,xlabel=\"%s\",label=\"%a\"%s];\n" s s 
+      print_token m
+      pos
   ) net.Net.place;
   (*output_string f "\t}\n\tsubgraph transition {\n";
   output_string f "\t\tnode [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=black];\n";*)
