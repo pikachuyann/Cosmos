@@ -9,6 +9,7 @@ let print_position outx lexbuf =
   Printf.fprintf outx "%s:%d:%d" pos.pos_fname
     pos.pos_lnum (pos.pos_cnum - pos.pos_bol + 1)
 
+
 let rec acc_var k = function 
   | [] -> raise Not_found
   | (t,a,_)::_ when t=k -> a  
@@ -16,44 +17,43 @@ let rec acc_var k = function
 
 let rec convert_guard modu net trname ((r1,r2) as rset) = function
   | [] -> rset
-  | (v,GE,j)::q when j>0 -> Net.add_inArc net v trname (Int j);
+  | (v,GE,j)::q when sgz j -> Net.add_inArc net v trname (simp_int j);
     convert_guard modu net trname ((StringMap.add v j r1),r2) q
   | (_,GE,_)::q -> convert_guard modu net trname rset q
   | (v,SL,j)::q -> 
     let _,bo = acc_var v modu.varlist in (match bo with
-	Int b ->if b-j>=0 then Net.add_inhibArc net v trname (Int j)
-      | _ -> Net.add_inhibArc net v trname (Int j););
+	Int b ->if gez (Minus(bo,j)) then Net.add_inhibArc net v trname (simp_int j)
+      | _ -> Net.add_inhibArc net v trname (simp_int j););
     convert_guard modu net trname rset q
   | (v,EQ,j)::q -> convert_guard modu net trname 
-    (r1, (StringMap.add v 0 r2))
-    ((v,GE,j)::(v,SL,j+1)::q)
+    (r1, (StringMap.add v (Int 0) r2))
+    ((v,GE,j)::(v,SL,incr_int j)::q)
   | (v,LE,j)::q -> convert_guard modu net trname rset 
-    ((v,SL,j+1)::q)
+    ((v,SL,incr_int j)::q)
   | (v,SG,j)::q -> convert_guard modu net trname rset 
-    ((v,GE,j+1)::q)
+    ((v,GE,incr_int j)::q)
   | (_,NEQ,_)::q -> failwith " != not yet implemented for guard"
 
 let convert_update net trname eqmap varmap = function
   | v,(Plus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
-    let j2 = StringMap.find v varmap in
-    Net.add_outArc net trname v (Plus((Int j2),j));
+    let j2 = simp_int (Plus(StringMap.find v varmap,j)) in
+    Net.add_outArc net trname v j2;
     StringMap.remove v varmap
   | v,(Plus((IntName v2),j)) when v=v2 -> Net.add_outArc net trname v j; varmap
-  | v,(Minus((IntName v2),(Int j)) ) when v=v2 && (StringMap.mem v varmap) -> 
-    let j2 = StringMap.find v varmap in
-    if j2>j then Net.add_outArc net trname v (Int (j2-j))
-    else if j2<j then failwith "ungarded transition";
+  | v,(Minus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
+    let j2 = simp_int (Minus(StringMap.find v varmap,j)) in
+    if sgz j2 then Net.add_outArc net trname v j2;
     StringMap.remove v varmap
   
   | v,(Int j) when StringMap.mem v eqmap -> 
-    let j2 = StringMap.find v eqmap in
-    if j-j2> 0 then Net.add_outArc net trname v (Int (j-j2));
+    let j2 = simp_int (Minus(Int j,StringMap.find v eqmap)) in
+    if sgz j2 then Net.add_outArc net trname v j2;
     (try StringMap.remove v varmap with Not_found -> varmap);
 
   | v,j when (StringMap.mem v eqmap) -> 
     let j2 = StringMap.find v eqmap in
-    if j2= 0 then Net.add_outArc net trname v j
-    else Net.add_outArc net trname v (Minus(j,Int j2));
+    if j2= Int 0 then Net.add_outArc net trname v j
+    else Net.add_outArc net trname v (Minus(j,j2));
     StringMap.remove v varmap
 
   | v,j when StringMap.mem v varmap ->
@@ -71,9 +71,9 @@ let gen_acc i modu net (st,g,f,u) =
   Data.add (trname,Exp f) net.Net.transition;  
 
   let (invar1,invar2) = 
-    convert_guard modu net trname (StringMap.empty,StringMap.empty) g in
+    convert_guard modu net trname (StringMap.empty,StringMap.empty) g in 
   let remaining = List.fold_left (convert_update net trname invar2) invar1 u in
-  StringMap.iter (fun v value -> Net.add_outArc net trname v (Int value)) remaining 
+  StringMap.iter (fun v value -> Net.add_outArc net trname v value) remaining 
 
   (*let diff = StringMap.diff (get_out u) invar in
   StringMap.iter (fun v _ -> 
