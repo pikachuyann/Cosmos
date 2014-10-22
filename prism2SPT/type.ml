@@ -43,6 +43,11 @@ module StringOrdered = struct type t=string let compare=compare end
 module StringSet = Set.Make(StringOrdered)
 module StringMap = Map.Make(StringOrdered)
 
+let find_action sl =
+  List.fold_left (fun set (so,_,_,_) ->
+    match so with None -> set
+      | Some a -> StringSet.add a set) StringSet.empty sl
+
 type constdef = (string*(intExpr option)) list * (string*(floatExpr option)) list
 
 type prism_module = {
@@ -52,7 +57,9 @@ type prism_module = {
   actionset: StringSet.t
 }
 
-type prism_file = prism_module list
+type moduledef = Full of prism_module | Renaming of string*string*(string*string) list
+
+type prism_file = moduledef list
 
 
 let rec printH_int_expr f = function

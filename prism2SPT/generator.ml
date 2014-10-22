@@ -93,6 +93,46 @@ let net_of_prism modu =
 	    1 modu.actionlist);
   net
 
+let print_rename f =
+  List.iter (fun (x,y) -> Printf.fprintf f " %s->%s " x y) 
+
+let rec rename_int_expr rn e = 
+  let rnr = rename_int_expr rn in match e with
+    | IntName(s) -> IntName (rn s);
+    | Int(i) -> Int(i)
+    | Plus(e1,e2) -> Plus(rnr e1,rnr e2)
+    | Minus(e1,e2) -> Minus(rnr e1,rnr e2)
+    | Mult(e1,e2) -> Mult(rnr e1,rnr e2)
+let rec rename_float_expr rn e =
+  let rnr = rename_float_expr rn in match e with
+    | FloatName(x) -> FloatName(rn x)
+    | Float(x) -> Float(x)
+    | CastInt(x) -> CastInt(rename_int_expr rn x) 
+    | PlusF(e1,e2) -> PlusF(rnr e1,rnr e2)
+    | MinusF(e1,e2) -> MinusF(rnr e1,rnr e2)
+    | MultF(e1,e2) -> MultF(rnr e1,rnr e2)
+    | DivF(e1,e2) -> DivF(rnr e1,rnr e2)
+let rename_op rn = function None -> None | Some a -> Some (rn a)
+
+let rec rename_module l1 = function
+  | [] -> l1
+  | (nn,on,rl)::q -> 
+    let rn a = try (List.assoc a rl) with Not_found -> a
+(*output_string stderr (a^" not foud"); print_rename stderr rl; raise Not_found*)  in
+    let template = List.find (fun m -> m.name = on) l1 in
+    let nvarl = List.map (fun (a,b,c) -> (rn a),b,c ) template.varlist in
+    let nactionl = List.map (fun (a,b,c,d) -> 
+      (rename_op rn a),
+      (List.map (fun (s,c,ie) -> (rn s),c,(rename_int_expr rn ie)) b),
+      (rename_float_expr rn c),
+      (List.map (fun (s,ie) -> (rn s),(rename_int_expr rn ie)) d)) template.actionlist in
+    let nm = {
+      name=nn;
+      varlist=nvarl;
+      actionlist=nactionl;
+      actionset=find_action nactionl
+    } in
+    rename_module (nm::l1) q
 
 let compose_module m1 m2 = 
   let open StringSet in
@@ -123,6 +163,7 @@ let _ =
   let inname = ref "stdin" in
   if Array.length Sys.argv >1 then (
     inname := Sys.argv.(1);
+    print_endline ("Opening "^Sys.argv.(1));
     input := open_in !inname;
     if Array.length Sys.argv >2 then output := Sys.argv.(2)
     else output:=String.sub !inname 0 (String.rindex !inname '.'); 
@@ -131,8 +172,11 @@ let _ =
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = !inname };
   try
     let cdef,prismml = Parser.main Lexer.token lexbuf in
+    let (fullmod,renammod) = List.fold_left (fun (l1,l2) m -> match m with 
+	Full fm -> (fm::l1),l2 | Renaming (rm1,rm2,rm3) -> l1,((rm1,rm2,rm3)::l2) ) ([],[]) prismml in
+    let prismm2 = rename_module fullmod renammod in
     let prismmodule = List.fold_left compose_module 
-      (List.hd prismml) (List.tl prismml) in
+      (List.hd prismm2) (List.tl prismm2) in
     let net = net_of_prism prismmodule in
     print_endline "Finish parsing";
     print_spt_dot ((!output)^".dot") net [] [];
@@ -146,4 +190,4 @@ let _ =
     | Parsing.Parse_error ->
       Printf.fprintf stderr "%a: Parsing error: unexpected token:'%s'\n"
 	print_position lexbuf (lexeme lexbuf)
-      
+  
