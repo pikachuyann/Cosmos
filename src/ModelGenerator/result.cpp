@@ -1,8 +1,8 @@
 /*******************************************************************************
- *									                                           *
+ *                                                                             *
  * Cosmos:(C)oncept et (O)utils (S)tatistique pour les (Mo)deles               *
  * (S)tochastiques                                                             *
- *			                                    						       *
+ *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
  * Authors: Paolo Ballarini Benoît Barbot & Hilal Djafri                       *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
@@ -315,10 +315,11 @@ void result::print(ostream &s) {
 }
 
 tuple<string, double> result::split_name(string s) {
+    size_t colon = s.find(":");
     size_t fb = s.find("[");
     size_t comma = s.find(",", fb);
     if (comma != string::npos) {
-        return make_tuple(s.substr(0, fb),
+        return make_tuple(s.substr(0, min(colon,fb)),
                 stod(s.substr(comma + 2, s.length() - comma - 3)));
     } else {
         size_t fb = s.find("$GRAPH$");
@@ -351,9 +352,9 @@ void result::outputCDFPDF(string f) {
 
     outFile << "abscissa" << " ";
     for (auto &itname : namelist2) {
-        outFile << itname << "_low ";
-        outFile << itname << "_mean ";
-        outFile << itname << "_up ";
+        outFile << "\"" << itname << "_low\" ";
+        outFile << "\"" << itname << "_mean\" ";
+        outFile << "\"" << itname << "_up\" ";
     }
     nbColumnGraph = namelist.size();
     outFile << endl;
