@@ -1,11 +1,6 @@
 %{
   open Type
 
-  let find_action sl =
-    List.fold_left (fun set (so,_,_,_) ->
-    match so with None -> set
-      | Some a -> StringSet.add a set) StringSet.empty sl
-
 %}
 
 %token <int> INT
@@ -16,10 +11,10 @@
 %token PLUS MINUS MULT DIV
 %token LSQBRAK RSQBRAK
 %token EOL
-%token SEMICOLON COLON PRIME
+%token SEMICOLON COLON PRIME COMMA
 %token AND OR
 %token NOT
-%token TRUE
+%token BOOL TRUE FALSE
 %token CONST
 %token EQ SG SL GE LE
 %token RANGE
@@ -66,20 +61,37 @@ definition:
 
 modulelist:
   MODULE NAME varlist actionlist ENDMODULE {
-    { name=$2;
+    Full { name=$2;
       varlist=$3;
       actionlist=$4;
       actionset = find_action $4
     }
   }
+  | MODULE NAME EQ NAME LSQBRAK renamelist RSQBRAK ENDMODULE {
+    Renaming ($2,$4,$6)
+  }
+;
+
+renamelist:
+  NAME EQ NAME {[($1,$3)]}
+  | NAME EQ NAME COMMA renamelist {($1,$3)::$5}
 ;
 
 varlist:
- NAME COLON LSQBRAK intexpr RANGE intexpr RSQBRAK INIT intexpr SEMICOLON varlist 
-      { ($1,($4,$6),$9)::$11 }
-| NAME COLON LSQBRAK intexpr RANGE intexpr RSQBRAK SEMICOLON varlist 
-      { ($1,($4,$6),$4)::$9 }
+  NAME COLON rangevar INIT TRUE SEMICOLON varlist 
+  { ($1,$3,Int 1)::$7 }  
+  | NAME COLON rangevar INIT FALSE SEMICOLON varlist 
+      { ($1,$3,Int 0)::$7 }  
+  | NAME COLON rangevar INIT intexpr SEMICOLON varlist 
+      { ($1,$3,$5)::$7 }
+  | NAME COLON rangevar SEMICOLON varlist 
+      { ($1,$3,(fst $3))::$5 }
 | {[]}
+;
+
+rangevar:
+  LSQBRAK intexpr RANGE intexpr RSQBRAK { ($2,$4) }
+| BOOL { (Int 0,Int 1) }
 ;
 
 actionlist:
@@ -118,6 +130,10 @@ TRUE   {[]}
 
 atom:
  NAME cmp intexpr {$1,$2,$3}
+| LPAR NAME cmp intexpr RPAR {$2,$3,$4}
+| NAME {$1,EQ,Int 1}
+| NOT NAME {$2,EQ,Int 0}
+;
 
 cmp:
   EQ {EQ}
@@ -137,6 +153,8 @@ update:
 
 upatom:
   NAME PRIME EQ intexpr {$1,$4}
+| NAME PRIME EQ TRUE {$1,Int 1}
+| NAME PRIME EQ FALSE {$1,Int 0}
 ;
 
 rewards:
@@ -145,6 +163,8 @@ rewards:
 
 actionrewardlist:
 LSQBRAK NAME RSQBRAK stateCondition COLON floatexpr SEMICOLON 
+  {()}
+| LSQBRAK RSQBRAK stateCondition COLON floatexpr SEMICOLON 
   {()}
 |  stateCondition COLON floatexpr SEMICOLON 
   {()}

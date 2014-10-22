@@ -23,6 +23,7 @@ rule token = parse
   | "rewards" {REWARDS} | "endrewards" {ENDREWARDS}
   | "label" {LABEL}
   | "init" {INIT}
+  | "bool" {BOOL}
   | '"'      { read_string (Buffer.create 17) lexbuf }
   | ".." {RANGE}
   | "'" {PRIME}
@@ -35,8 +36,10 @@ rule token = parse
   | '[' {LSQBRAK}
   | ']' {RSQBRAK}
   | ';' {SEMICOLON}
+  | ',' {COMMA}
   | '!' {NOT}
   | "true" {TRUE}
+  | "false" {FALSE}
   | '&' {AND}
   | '|' {OR}
   | '=' {EQ}

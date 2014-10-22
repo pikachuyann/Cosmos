@@ -4,6 +4,14 @@
 
 type anchorT = Init | Final | Norm
 
+
+let sq2 = (sqrt 2.0)/.2.0;;
+let sq3 = (sqrt 3.0)/.2.0;;
+
+
+let mapsq3 l =
+  List.map (fun (x,y,z,(p1,p2)) -> (x,y,z,(p1*.sq3,p2*.sq3))) l
+
 let foldi f c t =
   let acc = ref c in
   for i = 0 to Array.length t-1 do
@@ -24,6 +32,7 @@ let generate_lha fpath li obj =
   ) li;
   let f = open_out fpath in
   Printf.fprintf f "
+const double maxtime=12000;
 VariablesList = { vc0, vc1, DISC vd0 , DISC vd1, DISC vd2, DISC vd3, DISC timefinishcorrect, DISC timefinish};
 LocationsList = {lii, li, li2, lfc,lf,lnf1,ldl,lnf2};
 FinishCorrect=AVG(Last(vd0));
@@ -45,8 +54,8 @@ Locations = {
 };
 Edges = {
 ((lii,lii),ALL,vc0=0,#);
-((lii,li),ALL,vc0>=0.000000000001,{vd3=vd3+1});
-((lii,li2),ALL,vc0>=0.000000000001,{vd3=vd3+1});
+((lii,li),ALL,vc0>=0.000000000001,{vd3=vd3+1,timefinish=maxtime,timefinishcorrect=maxtime});
+((lii,li2),ALL,vc0>=0.000000000001,{vd3=vd3+1,timefinish=maxtime,timefinishcorrect=maxtime});
 ((li,li),ALL,#,{vd3=vd3+1});
 ((li2,li2),ALL,#,{vd3=vd3+1});
 ((li,li2),ALL,#,{vd3=vd3+1});
@@ -55,11 +64,11 @@ Edges = {
 ((li2,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0});
 ((li,lf),ALL,#,{vd1=1,vd3=vd3+1, timefinish=vc0});
 ((li2,lf),ALL,#,{vd1=1,vd3=vd3+1, timefinish=vc0});
-((li,lnf1),#,vc0=12000,#);
-((li2,lnf1),#,vc0=12000,#);
+((li,lnf1),#,vc0=maxtime,#);
+((li2,lnf1),#,vc0=maxtime,#);
 ((lii,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0});
 ((lii,lf),ALL,#,{vd1=1,vd3=vd3+1, timefinish=vc0});
-((lii,lnf1),#,vc0=12000,#);
+((lii,lnf1),#,vc0=maxtime,#);
 ((lnf1,lnf2),ALL,#,#);
 ((lnf1,ldl),#,vc0=1000000000,{vd2=1});
 };" !safe !blockade !safe !blockade obj !safe obj ;
@@ -112,16 +121,15 @@ let gen_spn2 fpath li ks failure=
   
 
   List.iter (fun (n1,t1,i1,p1) ->
-    if t1=Final then 
-      let tl = Printf.sprintf "tloop%i" n1 in 
-      Data.add (tl,(Exp 1.0)) net.Net.transition;
-      Net.add_arc net ("a"^(string_of_int n1)) tl 2;
-      Net.add_arc net tl ("a"^(string_of_int n1)) 2;
+    let tl = Printf.sprintf "tloop%i" n1 in 
+    Data.add (tl,(Exp 0.000000001)) net.Net.transition;
+    Net.add_arc net ("a"^(string_of_int n1)) tl 2;
+    Net.add_arc net tl ("a"^(string_of_int n1)) 2;
   ) li;  
   net;;
   
 
-
+(*
 let gen_spn fpath li ks failure=
   let ksi = ks /.3. in
   print_endline ("Generate "^fpath);
@@ -180,21 +188,21 @@ let gen_spn fpath li ks failure=
       Net.add_arc net tl ("a"^(string_of_int n1)) 1;
   ) li;
   net;;
-
+*)
   (*let lc = foldi (fun acc i l -> (i+1,l)::acc) [] cluster in*)
 
-let generate_spn fpath li ks failure obj =
+let generate_spn fpath li2 ks failure obj =
+  let li = mapsq3 li2 in
   let net = gen_spn2 fpath li ks failure in
   generate_lha (fpath^".lha") li obj;
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
   print_spt_dot (fpath^".dot") net [] 
-    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li)
-  (*ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath))
-  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;*)
-
-let sq2 = (sqrt 2.0)/.2.0;;
-let sq3 = (sqrt 3.0)/.2.0;;
+    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
+(*
+  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));
+  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;
+*)
 
 
 generate_spn "ex" [
@@ -206,62 +214,64 @@ generate_spn "ex" [
 
 (*generate_lha "control.lha" "a8<2" "a8=2" "FALSE";*)
 generate_spn "control" [
-  (1,Init,0,(0.0,0.0)); 
-  (2,Norm,1,(0.0,-1.0)); 
-  (3,Norm,1,(0.0,-2.0));
-  (4,Norm,1,(0.0,-3.0));
-  (5,Norm,1,(0.0,-.4.0));
-  (6,Norm,1,(0.0,-.5.0)); 
-  (7,Norm,1,(0.0,-.6.0));
-  (8,Final,1,(0.0,-.7.0))]
+  (1,Init ,0,(0.0,0.0)); 
+  (2,Norm ,1,(0.5,-1.0)); 
+  (3,Norm ,1,(1.0,-2.0));
+  (4,Norm ,1,(1.5,-3.0));
+  (5,Norm ,1,(2.0,-.4.0));
+  (6,Norm ,1,(2.5,-.5.0)); 
+  (7,Norm ,1,(3.0,-.6.0));
+  (8,Final,1,(3.5,-.7.0))]
 0.009 0.3 "a8=2";; 
 
 
 (*generate_lha "controlMissing1.lha" "a8<2" "a8=2" "FALSE";*)
 generate_spn "controlMissing1" [
-  (1,Init,0,(0.0,0.0)); 
-  (2,Norm,1,(0.0,-1.0)); 
-  (3,Norm,1,(0.0,-2.0));
-  (5,Norm,1,(0.0,-.4.0));
-  (6,Norm,1,(0.0,-.5.0)); 
-  (7,Norm,1,(0.0,-.6.0));
-  (8,Final,1,(0.0,-.7.0))]
+   (1,Init ,0,(0.0,0.0)); 
+  (2,Norm ,1,(0.5,-1.0)); 
+  (3,Norm ,1,(1.0,-2.0));
+  (5,Norm ,1,(2.0,-.4.0));
+  (6,Norm ,1,(2.5,-.5.0)); 
+  (7,Norm ,1,(3.0,-.6.0));
+  (8,Final,1,(3.5,-.7.0))]
 0.009 0.3 "a8=2";; 
 
 (*generate_lha "controlMissing2.lha" "a8<2" "a8=2" "FALSE";*)
 generate_spn "controlMissing2" [
-  (1,Init,0,(0.0,0.0)); 
-  (2,Norm,1,(0.0,-1.0)); 
-  (3,Norm,1,(0.0,-2.0));
-  (6,Norm,1,(0.0,-.5.0)); 
-  (7,Norm,1,(0.0,-.6.0));
-  (8,Final,1,(0.0,-.7.0))]
+   (1,Init ,0,(0.0,0.0)); 
+  (2,Norm ,1,(0.5,-1.0)); 
+  (3,Norm ,1,(1.0,-2.0));
+  (6,Norm ,1,(2.5,-.5.0)); 
+  (7,Norm ,1,(3.0,-.6.0));
+  (8,Final,1,(3.5,-.7.0))]
 0.009 0.3 "a8=2";; 
 
 (*generate_lha "controlMissing7.lha" "a8<2" "a8=2" "FALSE";*)
 generate_spn "controlMissing7" [
-  (1,Init,0,(0.0,0.0)); 
-  (2,Norm,1,(0.0,-1.0)); 
-  (3,Norm,1,(0.0,-2.0));
-  (4,Norm,1,(0.0,-3.0));
-  (5,Norm,1,(0.0,-.4.0));
-  (6,Norm,1,(0.0,-.5.0)); 
-  (8,Final,1,(0.0,-.7.0))]
+  (1,Init ,0,(0.0,0.0)); 
+  (2,Norm ,1,(0.5,-1.0)); 
+  (3,Norm ,1,(1.0,-2.0));
+  (4,Norm ,1,(1.5,-3.0));
+  (5,Norm ,1,(2.0,-.4.0));
+  (6,Norm ,1,(2.5,-.5.0)); 
+  (8,Final,1,(3.5,-.7.0))]
 0.009 0.3 "a8=2";; 
 
+
 (*generate_lha "track12Block1.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
-generate_spn "track12Block1" [ (1,Init,0,(0.0,0.0)); 
-			 (2,Norm,1,(0.0,-1.0)); 
-			 (3,Norm,1,(0.0,-2.0));
-			 (4,Norm,1,(0.0,-3.0));
-			 (5,Norm,0,(-.1.0*.sq3,-.3.5));
-			 (6,Norm,1,(-.2.0*.sq3,-.4.0)); 
-			 (7,Norm,1,(-.3.0*.sq3,-.4.5));
-			 (8,Final,1,(-.4.0*.sq3,-.5.0));
-			 (9,Norm,1,(1.0*.sq3,-.3.5));
-			 (10,Norm,1,(2.0*.sq3,-.4.0));
-			 (11,Norm,1,(3.0*.sq3,-.4.5));
-			 (12,Final,1,(4.0*.sq3,-.5.0))] 0.009 0.3 "a12=2";;
+generate_spn "track12Block1" [ 
+  (1,Init,0,(  0.0,0.0)); 
+  (2,Norm,1,(  0.0,-1.0)); 
+  (3,Norm,1,(  0.0,-2.0));
+  (4,Norm,1,(  0.0,-3.0));
+  (5,Norm,0,(-.1.0,-.3.5));
+  (6,Norm,1,(-.2.0,-.4.0)); 
+  (7,Norm,1,(-.3.0,-.4.5));
+ (8,Final,1,(-.4.0,-.5.0));
+  (9,Norm,1,(  1.0,-.3.5));
+  (10,Norm,1,( 2.0,-.4.0));
+  (11,Norm,1,( 3.0,-.4.5));
+  (12,Final,1,(4.0,-.5.0))] 0.009 0.3 "a12=2";;
 
 (*generate_lha "track12Block2.lha" "a8=0 & a12=0" "a12>0" "a8>0";
 generate_lha "track12Block2.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
@@ -269,14 +279,14 @@ generate_spn "track12Block2" [ (1,Init,0,(0.0,0.0));
 			 (2,Norm,1,(0.0,-1.0)); 
 			 (3,Norm,1,(0.0,-2.0));
 			 (4,Norm,1,(0.0,-3.0));
-			 (5,Norm,0,(-.1.0*.sq3,-.3.5));
-			 (6,Norm,0,(-.2.0*.sq3,-.4.0)); 
-			 (7,Norm,1,(-.3.0*.sq3,-.4.5));
-			 (8,Final,1,(-.4.0*.sq3,-.5.0));
-			 (9,Norm,1,(1.0*.sq3,-.3.5));
-			 (10,Norm,1,(2.0*.sq3,-.4.0));
-			 (11,Norm,1,(3.0*.sq3,-.4.5));
-			 (12,Final,1,(4.0*.sq3,-.5.0));] 0.009 0.3 "a12=2";; 
+			 (5,Norm,0,(-.1.0,-.3.5));
+			 (6,Norm,0,(-.2.0,-.4.0)); 
+			 (7,Norm,1,(-.3.0,-.4.5));
+			(8,Final,1,(-.4.0,-.5.0));
+			 (9,Norm,1,(  1.0,-.3.5));
+			 (10,Norm,1,( 2.0,-.4.0));
+			 (11,Norm,1,( 3.0,-.4.5));
+			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "a12=2";; 
 
 (*generate_lha "track12BlockBoth.lha" "a8=0 & a12=0" "a12>0" "a8>0";
 generate_lha "track12BlockBoth.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
@@ -284,14 +294,14 @@ generate_spn "track12BlockBoth" [ (1,Init,0,(0.0,0.0));
 			 (2,Norm,1,(0.0,-1.0)); 
 			 (3,Norm,1,(0.0,-2.0));
 			 (4,Norm,1,(0.0,-3.0));
-			 (5,Norm,0,(-.1.0*.sq3,-.3.5));
-			 (6,Norm,1,(-.2.0*.sq3,-.4.0)); 
-			 (7,Norm,1,(-.3.0*.sq3,-.4.5));
-			 (8,Final,1,(-.4.0*.sq3,-.5.0));
-			 (9,Norm,0,(1.0*.sq3,-.3.5));
-			 (10,Norm,1,(2.0*.sq3,-.4.0));
-			 (11,Norm,1,(3.0*.sq3,-.4.5));
-			 (12,Final,1,(4.0*.sq3,-.5.0));] 0.009 0.3 "a8=2";; 
+			 (5,Norm,0,(-.1.0,-.3.5));
+			 (6,Norm,1,(-.2.0,-.4.0)); 
+			 (7,Norm,1,(-.3.0,-.4.5));
+			(8,Final,1,(-.4.0,-.5.0));
+			 (9,Norm,0,(  1.0,-.3.5));
+			 (10,Norm,1,( 2.0,-.4.0));
+			 (11,Norm,1,( 3.0,-.4.5));
+			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "a8=2";; 
 
 
 let gen28 f l1 r1 l2 r2 obj =
@@ -300,34 +310,113 @@ generate_spn f [
   (2,Norm,1,(0.0,-1.0)); 
   (3,Norm,1,(0.0,-2.0));
   (4,Norm,1,(0.0,-3.0));
-  (5,Norm,l1,(-.1.0*.sq3,-.3.5));
-  (6,Norm,l1,(-.2.0*.sq3,-.4.0)); 
-  (7,Norm,1,(-.3.0*.sq3,-.4.5));
-  (8,Norm,1,(-.4.0*.sq3,-.5.0));
-  (9,Norm,r1,(1.0*.sq3,-.3.5));
-  (10,Norm,r1,(2.0*.sq3,-.4.0));
-  (11,Norm,1,(3.0*.sq3,-.4.5));
-  (12,Norm,1,(4.0*.sq3,-.5.0));
+  (5,Norm,l1,(-.1.0,-.3.5));
+  (6,Norm,l1,(-.2.0,-.4.0)); 
+  (7,Norm,1 ,(-.3.0,-.4.5));
+  (8,Norm,1 ,(-.4.0,-.5.0));
+  (9,Norm,r1,(  1.0,-.3.5));
+  (10,Norm,r1,( 2.0,-.4.0));
+  (11,Norm,1 ,( 3.0,-.4.5));
+  (12,Norm,1 ,( 4.0,-.5.0));
   
-  (13,Norm,1,(-.4.0*.sq3,-6.0));
-  (14,Norm,1,(-.4.0*.sq3,-7.0));
-  (15,Norm,l2,(-.5.0*.sq3,-.7.5));
-  (16,Norm,l2,(-.6.0*.sq3,-.8.0)); 
-  (17,Final,1,(-.7.0*.sq3,-.8.5));
-  (18,Norm,r2,(-.3.0*.sq3,-.7.5));
-  (19,Norm,r2,(-.2.0*.sq3,-.8.0));
-  (20,Final,1,(-.1.0*.sq3,-.8.5));
+  (13,Norm,1 ,(-.4.0,-6.0));
+  (14,Norm,1 ,(-.4.0,-7.0));
+  (15,Norm,l2,(-.5.0,-.7.5));
+  (16,Norm,l2,(-.6.0,-.8.0)); 
+  (17,Final,1,(-.7.0,-.8.5));
+  (18,Norm,r2,(-.3.0,-.7.5));
+  (19,Norm,r2,(-.2.0,-.8.0));
+  (20,Final,1,(-.1.0,-.8.5));
 
-  (21,Norm,1,(4.0*.sq3,-6.0));
-  (22,Norm,1,(4.0*.sq3,-7.0));
-  (23,Norm,l2,(3.0*.sq3,-.7.5));
-  (24,Norm,l2,(2.0*.sq3,-.8.0)); 
-  (25,Final,1,(1.0*.sq3,-.8.5));
-  (26,Norm,r2,(5.0*.sq3,-.7.5));
-  (27,Norm,r2,(6.0*.sq3,-.8.0));
-  (28,Final,1,(7.0*.sq3,-.8.5));
+  (21,Norm,1 ,(4.0,-6.0));
+  (22,Norm,1 ,(4.0,-7.0));
+  (23,Norm,l2,(3.0,-.7.5));
+  (24,Norm,l2,(2.0,-.8.0)); 
+  (25,Final,1,(1.0,-.8.5));
+  (26,Norm,r2,(5.0,-.7.5));
+  (27,Norm,r2,(6.0,-.8.0));
+  (28,Final,1,(7.0,-.8.5));
 
 ] 0.009 0.3 obj ;; 
+
+
+let gen_xor f x y =
+  let obj = if x <> y then 
+    (*generate_lha (f^".lha") "a7=0 & a17=0" "a17>0" "a7>0"*)
+    "a17=2"
+  else  
+    (*generate_lha (f^".lha") "a7=0 & a17=0" "a7>0" "a17>0";*)
+      "a7=2" in
+  let  xi = if x then 1 else 0
+  and nxi = if x then 0 else 1
+  and  yi = if y then 1 else 0
+  and nyi = if y then 0 else 1 in
+  generate_spn f (
+    [ (1 ,Init,0  ,(   0.0,  0.0)); 
+      (2 ,Norm,nxi ,(-.1.0,  0.5)); 
+      (3 ,Norm,nxi ,(-.2.0,  1.0));
+      (4 ,Norm,nyi ,(-.2.0,  2.0));
+      (5 ,Norm,nyi ,(-.1.0,  2.5));
+      (6 ,Norm,1   ,(  0.0,  3.0)); 
+      (7 ,Final,1  ,(  1.0,  2.5));
+      (8 ,Norm,1   ,(  2.0,  2.0));
+      (9 ,Norm,1   ,(  3.0,  1.5));
+      (10,Norm,yi  ,(  3.0,  0.5));
+      (11,Norm,yi  ,(  3.0,-.0.5));
+      (12,Norm,xi  ,(  2.0,-.1.0));
+      (13,Norm,xi  ,(  1.0,-.0.5));
+      (14,Norm,nyi ,(  2.0,-.2.0));
+      (15,Norm,nyi ,(  1.0,-.2.5));
+      (16,Norm,1   ,(  0.0,-.3.0));
+      (17,Final,1  ,(-.1.0,-.2.5));
+      (18,Norm,1   ,(-.2.0,-.2.0));
+      (19,Norm,1   ,(-.3.0,-.1.5));
+      (20,Norm,yi  ,(-.3.0,-.0.5));
+      (21,Norm,yi  ,(-.3.0,  0.5));
+]) 0.009 0.3 obj;;
+
+let gen_xor_large f x y =
+  let obj = if x <> y then 
+    (*generate_lha (f^".lha") "a7=0 & a17=0" "a17>0" "a7>0"*)
+    "a22=2"
+  else  
+    (*generate_lha (f^".lha") "a7=0 & a17=0" "a7>0" "a17>0";*)
+    "a9=2" in
+  let  xi = if x then 1 else 0
+  and nxi = if x then 0 else 1
+  and  yi = if y then 1 else 0
+  and nyi = if y then 0 else 1 in
+  generate_spn f ( 
+    [ (1 ,Init,0  ,(   0.0,  0.0)); 
+      (2 ,Norm,nxi ,(-.1.0,  0.5)); 
+      (3 ,Norm,nxi ,(-.2.0,  1.0));
+      (4 ,Norm,nyi ,(-.2.0,  2.0));
+      (5 ,Norm,nyi ,(-.2.0,  3.0));
+      (6 ,Norm,1   ,(-.1.0,  3.5)); 
+      (7 ,Norm,1   ,(  0.0,  4.0));
+      (8 ,Norm,1   ,(  1.0,  3.5));
+      (9 ,Final,1  ,(  2.0,  3.0));
+      (10,Norm,1   ,(  3.0,  2.5));
+      (11,Norm,1   ,(  4.0,  2.0));
+      (12,Norm,1   ,(  4.0,  1.0));
+      (13,Norm,yi  ,(  4.0,  0.0));
+      (14,Norm,yi  ,(  3.0,-.0.5));
+      (15,Norm,xi  ,(  2.0,-.1.0));
+      (16,Norm,xi  ,(  1.0,-.0.5));
+      (17,Norm,nyi ,(  2.0,-.2.0));
+      (18,Norm,nyi ,(  2.0,-.3.0));
+      (19,Norm,1   ,(  1.0,-.3.5));
+      (20,Norm,1   ,(  0.0,-.4.0));
+      (21,Norm,1   ,(-.1.0,-.3.5));
+      (22,Final,1  ,(-.2.0,-.3.0));
+      (23,Norm,1   ,(-.3.0,-.2.5));
+      (24,Norm,1   ,(-.4.0,-.2.0));
+      (25,Norm,1   ,(-.4.0,-.1.0));
+      (26,Norm,yi  ,(-.4.0,-.0.0));
+      (27,Norm,yi  ,(-.3.0,  0.5));
+]) 0.009 0.3 obj;;
+
+
 
 
 (*generate_lha "track28LL.lha" "a17<2 & a20<2 & a25<2 & a28<2" 
@@ -348,82 +437,6 @@ gen28 "track28RR" 0 1 0 1 "a28=2";;
 
 
 
-let gen_xor f x y =
-  let obj = if x <> y then 
-    (*generate_lha (f^".lha") "a7=0 & a17=0" "a17>0" "a7>0"*)
-    "a17=2"
-  else  
-    (*generate_lha (f^".lha") "a7=0 & a17=0" "a7>0" "a17>0";*)
-      "a7=2" in
-  let  xi = if x then 1 else 0
-  and nxi = if x then 0 else 1
-  and  yi = if y then 1 else 0
-  and nyi = if y then 0 else 1 in
-  generate_spn f
-    [ (1 ,Init,0  ,(   0.0*.sq3,  0.0)); 
-      (2 ,Norm,nxi ,(-.1.0*.sq3,  0.5)); 
-      (3 ,Norm,nxi ,(-.2.0*.sq3,  1.0));
-      (4 ,Norm,nyi ,(-.2.0*.sq3,  2.0));
-      (5 ,Norm,nyi ,(-.1.0*.sq3,  2.5));
-      (6 ,Norm,1   ,(  0.0*.sq3,  3.0)); 
-      (7 ,Final,1  ,(  1.0*.sq3,  2.5));
-      (8 ,Norm,1   ,(  2.0*.sq3,  2.0));
-      (9 ,Norm,1   ,(  3.0*.sq3,  1.5));
-      (10,Norm,yi  ,(  3.0*.sq3,  0.5));
-      (11,Norm,yi  ,(  3.0*.sq3,-.0.5));
-      (12,Norm,xi  ,(  2.0*.sq3,-.1.0));
-      (13,Norm,xi  ,(  1.0*.sq3,-.0.5));
-      (14,Norm,nyi ,(  2.0*.sq3,-.2.0));
-      (15,Norm,nyi ,(  1.0*.sq3,-.2.5));
-      (16,Norm,1   ,(  0.0*.sq3,-.3.0));
-      (17,Final,1  ,(-.1.0*.sq3,-.2.5));
-      (18,Norm,1   ,(-.2.0*.sq3,-.2.0));
-      (19,Norm,1   ,(-.3.0*.sq3,-.1.5));
-      (20,Norm,yi  ,(-.3.0*.sq3,-.0.5));
-      (21,Norm,yi  ,(-.3.0*.sq3,  0.5));
-] 0.009 0.3 obj;;
-
-let gen_xor_large f x y =
-  let obj = if x <> y then 
-    (*generate_lha (f^".lha") "a7=0 & a17=0" "a17>0" "a7>0"*)
-    "a22=2"
-  else  
-    (*generate_lha (f^".lha") "a7=0 & a17=0" "a7>0" "a17>0";*)
-    "a9=2" in
-  let  xi = if x then 1 else 0
-  and nxi = if x then 0 else 1
-  and  yi = if y then 1 else 0
-  and nyi = if y then 0 else 1 in
-  generate_spn f
-    [ (1 ,Init,0  ,(   0.0*.sq3,  0.0)); 
-      (2 ,Norm,nxi ,(-.1.0*.sq3,  0.5)); 
-      (3 ,Norm,nxi ,(-.2.0*.sq3,  1.0));
-      (4 ,Norm,nyi ,(-.2.0*.sq3,  2.0));
-      (5 ,Norm,nyi ,(-.2.0*.sq3,  3.0));
-      (6 ,Norm,1   ,(-.1.0*.sq3,  3.5)); 
-      (7 ,Norm,1   ,(  0.0*.sq3,  4.0));
-      (8 ,Norm,1   ,(  1.0*.sq3,  3.5));
-      (9 ,Final,1  ,(  2.0*.sq3,  3.0));
-      (10,Norm,1   ,(  3.0*.sq3,  2.5));
-      (11,Norm,1   ,(  4.0*.sq3,  2.0));
-      (12,Norm,1   ,(  4.0*.sq3,  1.0));
-      (13,Norm,yi  ,(  4.0*.sq3,  0.0));
-      (14,Norm,yi  ,(  3.0*.sq3,-.0.5));
-      (15,Norm,xi  ,(  2.0*.sq3,-.1.0));
-      (16,Norm,xi  ,(  1.0*.sq3,-.0.5));
-      (17,Norm,nyi ,(  2.0*.sq3,-.2.0));
-      (18,Norm,nyi ,(  2.0*.sq3,-.3.0));
-      (19,Norm,1   ,(  1.0*.sq3,-.3.5));
-      (20,Norm,1   ,(  0.0*.sq3,-.4.0));
-      (21,Norm,1   ,(-.1.0*.sq3,-.3.5));
-      (22,Final,1  ,(-.2.0*.sq3,-.3.0));
-      (23,Norm,1   ,(-.3.0*.sq3,-.2.5));
-      (24,Norm,1   ,(-.4.0*.sq3,-.2.0));
-      (25,Norm,1   ,(-.4.0*.sq3,-.1.0));
-      (26,Norm,yi  ,(-.4.0*.sq3,-.0.0));
-      (27,Norm,yi  ,(-.3.0*.sq3,  0.5));
-] 0.009 0.3 obj;;
-
 (*
 gen_xor "ringLL" true true;;
 gen_xor "ringRR" false false;;
@@ -434,7 +447,9 @@ gen_xor "ringRL" false true;;
 gen_xor "ringLR" true false;;
 gen_xor "ringRR" false false;;
 
+
 gen_xor_large "ringLLLarge" true true;;
 gen_xor_large "ringRLLarge" false true;;
 gen_xor_large "ringLRLarge" true false;;
 gen_xor_large "ringRRLarge" false false;;
+
