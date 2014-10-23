@@ -33,13 +33,15 @@ let generate_lha fpath li obj =
   let f = open_out fpath in
   Printf.fprintf f "
 const double maxtime=12000;
-VariablesList = { vc0, vc1, DISC vd0 , DISC vd1, DISC vd2, DISC vd3, DISC timefinishcorrect, DISC timefinish};
+VariablesList = { vc0, vc1, DISC vd0 , DISC vd1, DISC vd2, DISC vd3, DISC timefinishcorrect, DISC timefinish, DISC useblocked, DISC corrblock };
 LocationsList = {lii, li, li2, lfc,lf,lnf1,ldl,lnf2};
 FinishCorrect=AVG(Last(vd0));
 Finish=AVG(Last(vd1));
 DeadLock=AVG(Last(vd2));
 Step=AVG(Last(vd3));
 Blockade=AVG(Last(vc1));
+uB=AVG(Last(useblocked));
+corrBlock=AVG(Last(corrblock))/AVG(Last(useblocked));
 InitialLocations = { lii };
 FinalLocations = {lfc,lf,ldl,lnf2};
 Locations = {
@@ -55,13 +57,13 @@ Locations = {
 Edges = {
 ((lii,lii),ALL,vc0=0,#);
 ((lii,li),ALL,vc0>=0.000000000001,{vd3=vd3+1,timefinish=maxtime,timefinishcorrect=maxtime});
-((lii,li2),ALL,vc0>=0.000000000001,{vd3=vd3+1,timefinish=maxtime,timefinishcorrect=maxtime});
+((lii,li2),ALL,vc0>=0.000000000001,{vd3=vd3+1,timefinish=maxtime,timefinishcorrect=maxtime,useblocked=1});
 ((li,li),ALL,#,{vd3=vd3+1});
 ((li2,li2),ALL,#,{vd3=vd3+1});
-((li,li2),ALL,#,{vd3=vd3+1});
+((li,li2),ALL,#,{vd3=vd3+1,useblocked=1});
 ((li2,li),ALL,#,{vd3=vd3+1});
-((li,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0 });
-((li2,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0});
+((li,lfc),ALL,#, {vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0,corrblock=useblocked });
+((li2,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0,corrblock=useblocked });
 ((li,lf),ALL,#,{vd1=1,vd3=vd3+1, timefinish=vc0});
 ((li2,lf),ALL,#,{vd1=1,vd3=vd3+1, timefinish=vc0});
 ((li,lnf1),#,vc0=maxtime,#);
@@ -121,10 +123,11 @@ let gen_spn2 fpath li ks failure=
   
 
   List.iter (fun (n1,t1,i1,p1) ->
+    if t1 = Final then (
     let tl = Printf.sprintf "tloop%i" n1 in 
     Data.add (tl,(Exp 0.000000001)) net.Net.transition;
     Net.add_arc net ("a"^(string_of_int n1)) tl 2;
-    Net.add_arc net tl ("a"^(string_of_int n1)) 2;
+    Net.add_arc net tl ("a"^(string_of_int n1)) 2;)
   ) li;  
   net;;
   
@@ -201,8 +204,8 @@ let generate_spn fpath li2 ks failure obj =
     (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
 (*
   ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));
-  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;
-*)
+  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;*)
+
 
 
 generate_spn "ex" [

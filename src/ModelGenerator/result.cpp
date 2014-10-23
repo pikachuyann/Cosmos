@@ -152,7 +152,7 @@ bool result::continueSim() {
 }
 
 void result::printPercent(double i, double j) {
-    const double t = 106;
+    const double t = 120;
     double u;
     if (j != 0) {
         u = fmax(0.0, fmin(t, (t * i) / j));
@@ -191,7 +191,7 @@ void result::printProgress() {
     cout << chrono::duration_cast<chrono::seconds>(estimated).count() << "s\t Trajectory per second: ";
     cout.precision(2);
     cout << (1000.0 * (double) MeanM2->I) / chrono::duration_cast<chrono::milliseconds>(wallclock).count() << endl;
-    cout.precision(12);
+    cout.precision(7);
 
     endline++;
 
@@ -203,17 +203,15 @@ void result::printProgress() {
         for (size_t i = 0; i < P.HaslFormulasname.size(); i++)
             if (P.HaslFormulasname[i].find("$GRAPH$") == string::npos) {
                 cout << setw(maxformulaname + 1) << left << (P.HaslFormulasname[i] + ":") << " |< ";
-                cout << setw(17) << HaslResult[i].min << " --[ ";
-                cout << setw(17) << HaslResult[i].low << " < ";
-                cout << setw(17) << HaslResult[i].mean << " > ";
-                cout << setw(17) << HaslResult[i].up << " ]-- ";
-                cout << setw(17) << HaslResult[i].max << " >| ";
+                cout << setw(14) << HaslResult[i].min << " -[ ";
+                cout << setw(14) << HaslResult[i].low << " < ";
+                cout << setw(14) << HaslResult[i].mean << " > ";
+                cout << setw(14) << HaslResult[i].up << " ]- ";
+                cout << setw(14) << HaslResult[i].max << " >| ";
                 cout << "width=";
-                cout.precision(7);
-                cout << setw(8) << HaslResult[i].width();
+                cout << setw(12) << HaslResult[i].width();
                 cout << " level=";
                 cout << setw(8) << HaslResult[i].conf << endl;
-                cout.precision(12);
                 endline++;
                 if (!P.RareEvent && ProgressArray[i] != 0 && P.verbose > 2 && P.sequential) {
                     cout << setw(maxformulaname + 2) << left << "% of width:";
@@ -223,12 +221,13 @@ void result::printProgress() {
             }
     }
     if (P.sequential) {
-        cout << setw(maxformulaname + 2) << left << "% of Err: ";
+        cout << setw(maxformulaname+2 ) << left << "% of Err: ";
         printPercent(Progress, 1.0);
         endline++;
     }
     cout << setw(maxformulaname + 2) << left << "% of run: ";
     printPercent(MeanM2->I, P.MaxRuns);
+    cout.precision(12);
     endline++;
 }
 
