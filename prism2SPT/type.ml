@@ -53,7 +53,7 @@ type constdef = (string*(intExpr option)) list * (string*(floatExpr option)) lis
 type prism_module = {
   name:string;
   varlist:(string * (intExpr*intExpr) * intExpr) list;
-  actionlist: (string option * ((string*cmp*intExpr) list) * floatExpr * ((string*intExpr) list)) list;
+  actionlist: (string option * (stateFormula) * floatExpr * ((string*intExpr) list)) list;
   actionset: StringSet.t
 }
 
