@@ -19,6 +19,7 @@ rule token = parse
   | "int" {INTKW}
   | "double" {DOUBLEKW}
   | "const" {CONST}
+  | "formula" {FORMULA}
   | "module" {MODULE} | "endmodule" {ENDMODULE}
   | "rewards" {REWARDS} | "endrewards" {ENDREWARDS}
   | "label" {LABEL}

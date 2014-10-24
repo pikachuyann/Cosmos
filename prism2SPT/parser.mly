@@ -17,8 +17,8 @@
 %token BOOL TRUE FALSE
 %token CONST
 %token EQ SG SL GE LE
-%token RANGE
-%token CTMC MODULE ENDMODULE INIT REWARDS ENDREWARDS
+%token RANGE 
+%token CTMC MODULE ENDMODULE INIT REWARDS ENDREWARDS FORMULA
 %token ARROW
 %token EOF
 %token INTKW DOUBLEKW
@@ -95,7 +95,7 @@ rangevar:
 ;
 
 actionlist:
-  headaction guard ARROW tailaction SEMICOLON actionlist
+  headaction stateCondition ARROW tailaction SEMICOLON actionlist
   { List.fold_left (fun l (r,u) -> ($1,$2,r,u)::l) $6 $4}
 | {[]}
 ;
