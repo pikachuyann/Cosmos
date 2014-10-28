@@ -15,11 +15,15 @@ let rec acc_var k = function
   | (t,a,_)::_ when t=k -> a  
   | _::q -> acc_var k q
 
-let rec flatten_guard l = function
-  | True -> l 
-  | And (e1,e2) -> let l2=flatten_guard l e1 in
-		   flatten_guard l2 e2
-  | IntAtom ((IntName v),cmp,j) -> (v,cmp,j)::l  
+let rec flatten_guard = function
+  | True -> [[]]
+  | False -> []
+  | And (e1,e2) ->
+    let l=flatten_guard e1 in
+    List.fold_left (fun acc l1 ->
+      acc@(List.map (fun x->x@l1) (flatten_guard e2))) [] l
+  | Or (e1,e2) -> (flatten_guard e1)@(flatten_guard e2)
+  | IntAtom ((IntName v),cmp,j) -> [[(v,cmp,j)]] 
   | _-> failwith "Not yet supported guard shape"
 
 let rec convert_guard modu net trname ((r1,r2) as rset) = function
@@ -73,15 +77,20 @@ let convert_update net trname eqmap varmap = function
     varmap
     
 
-let gen_acc i modu net (st,g,f,u) =
-  let flatguard = flatten_guard [] g in
-  let trname = Printf.sprintf "a%i%s" i (match st with None -> "" | Some s-> s) in 
+let gen_acc iinit modu net (st,g,f,u) =
+  let i = ref iinit in
+  let flatguardlist = flatten_guard g in
+  List.iter (fun flatguard ->
+  let trname = Printf.sprintf "a%i%s" !i (match st with None -> "" | Some s-> s) in 
   Data.add (trname,Exp f) net.Net.transition;  
 
   let (invar1,invar2) = 
     convert_guard modu net trname (StringMap.empty,StringMap.empty) flatguard in 
   let remaining = List.fold_left (convert_update net trname invar2) invar1 u in
-  StringMap.iter (fun v value -> Net.add_outArc net trname v value) remaining 
+  StringMap.iter (fun v value -> Net.add_outArc net trname v value) remaining;
+  incr i;
+  ) flatguardlist;
+  !i
 
   (*let diff = StringMap.diff (get_out u) invar in
   StringMap.iter (fun v _ -> 
@@ -96,8 +105,7 @@ let net_of_prism modu =
   List.iter (fun (n,(a,b),i) -> Data.add (n,i) net.Net.place) modu.varlist;
   ignore (List.fold_left 
 	    (fun i ac ->
-	      gen_acc i modu net ac;
-	      i+1)
+	      gen_acc i modu net ac)
 	    1 modu.actionlist);
   net
 
