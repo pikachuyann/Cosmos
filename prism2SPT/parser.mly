@@ -121,20 +121,6 @@ floatexpr:
 | floatexpr DIV floatexpr {DivF($1,$3)}
 | NAME {FloatName($1)}
 
-
-guard:
-TRUE   {[]}
-| atom { [$1] }
-| atom AND guard {$1::$3}
-;
-
-atom:
- NAME cmp intexpr {$1,$2,$3}
-| LPAR NAME cmp intexpr RPAR {$2,$3,$4}
-| NAME {$1,EQ,Int 1}
-| NOT NAME {$2,EQ,Int 0}
-;
-
 cmp:
   EQ {EQ}
  | SG {SG}
@@ -143,7 +129,6 @@ cmp:
  | LE {LE}
  | NOT EQ {NEQ}
 ;
-
 
 update:
   TRUE { [] } 
@@ -172,11 +157,13 @@ LSQBRAK NAME RSQBRAK stateCondition COLON floatexpr SEMICOLON
 
 stateCondition:
 TRUE {True}
+| FALSE {False}
+| NAME { IntAtom(IntName $1,EQ,Int 1) }
 | stateCondition AND stateCondition {And($1,$3)}
 | stateCondition OR stateCondition {Or($1,$3)}
 | NOT stateCondition {Not($2)}
 | LPAR stateCondition RPAR {$2}
-| intexpr cmp intexpr  { IntAtom($1,$2,$3) }
+| NAME cmp intexpr  { IntAtom(IntName $1,$2,$3) }
 ;
 
 intexpr:
