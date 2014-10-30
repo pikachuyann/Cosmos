@@ -23,8 +23,11 @@ let rec flatten_guard = function
     List.fold_left (fun acc l1 ->
       acc@(List.map (fun x->x@l1) (flatten_guard e2))) [] l
   | Or (e1,e2) -> (flatten_guard e1)@(flatten_guard e2)
+  | IntAtom ((IntName v),NEQ,j) -> [[(v,SL,j)];[(v,SG,j)]]
   | IntAtom ((IntName v),cmp,j) -> [[(v,cmp,j)]] 
-  | _-> failwith "Not yet supported guard shape"
+  | Not e -> flatten_guard (neg_bool e)
+  | e-> printH_stateFormula stderr e;
+    failwith "Not yet supported guard shape"
 
 let rec convert_guard modu net trname ((r1,r2) as rset) = function
   | [] -> rset
@@ -43,7 +46,7 @@ let rec convert_guard modu net trname ((r1,r2) as rset) = function
     ((v,SL,incr_int j)::q)
   | (v,SG,j)::q -> convert_guard modu net trname rset 
     ((v,GE,incr_int j)::q)
-  | (_,NEQ,_)::q -> failwith " != not yet implemented for guard"
+  | (_,NEQ,_)::q -> failwith " Should not occur with flatten guard"
 
 let convert_update net trname eqmap varmap = function
   | v,(Plus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
