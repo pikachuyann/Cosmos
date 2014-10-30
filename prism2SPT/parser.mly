@@ -5,7 +5,7 @@
 
 %token <int> INT
 %token <float> FLOAT
-%token <string> NAME
+%token <string> NAME INTNAME BOOLNAME DOUBLENAME
 %token <string> STRING
 %token LPAR RPAR
 %token PLUS MINUS MULT DIV
@@ -18,7 +18,7 @@
 %token CONST
 %token EQ SG SL GE LE
 %token RANGE 
-%token CTMC MODULE ENDMODULE INIT REWARDS ENDREWARDS FORMULA
+%token CTMC MODULE ENDMODULE INIT ENDINIT REWARDS ENDREWARDS FORMULA 
 %token ARROW
 %token EOF
 %token INTKW DOUBLEKW
@@ -40,23 +40,21 @@
 %%
 
 main:
-  CTMC defmod rewards labels EOF {($2)};
+  CTMC defmod initrew labels EOF {($2)};
 
 defmod:
-  definition defmod { let (defl,modl) = $2 in (($1 defl),modl) }
+  definition defmod { let (defi1,defd1) = $1 and ((defi2,defd2),modl) = $2 in 
+		      ((defi1@defi2,defd1@defd2)  ,modl) }
   | modulelist defmod { let (defl,modl) = $2 in (defl,$1::modl) }
   | { (([],[]),[]) }
 ;
 
 definition:
-  CONST INTKW NAME EQ intexpr SEMICOLON { function (intl,doubll) -> 
-						 ($3,Some $5)::intl , doubll }
-  | CONST DOUBLEKW NAME EQ floatexpr SEMICOLON { function  (intl,doubll) ->
-							intl, ($3,Some $5)::doubll }
-  | CONST INTKW NAME SEMICOLON  { function  (intl,doubll) ->
-					   ($3,None)::intl , doubll  }
-  | CONST DOUBLEKW NAME SEMICOLON { function  (intl,doubll) ->
-					       intl, ($3,None)::doubll }
+  CONST INTKW NAME EQ intexpr SEMICOLON { add_int $3; [($3,Some $5)] , [] }
+  | CONST NAME EQ intexpr SEMICOLON     { add_int $2; [($2,Some $4)] , [] }
+  | CONST DOUBLEKW NAME EQ floatexpr SEMICOLON { add_double $3; [], [($3,Some $5)] }
+  | CONST INTKW NAME SEMICOLON  {         add_int $3; [($3,None)]    , []  }
+  | CONST DOUBLEKW NAME SEMICOLON {       add_int $3; [], [($3,None)] }
 ;
 
 modulelist:
@@ -83,7 +81,7 @@ varlist:
   | NAME COLON rangevar INIT FALSE SEMICOLON varlist 
       { ($1,$3,Int 0)::$7 }  
   | NAME COLON rangevar INIT intexpr SEMICOLON varlist 
-      { ($1,$3,$5)::$7 }
+      { ($1,$3,(simp_int $5))::$7 }
   | NAME COLON rangevar SEMICOLON varlist 
       { ($1,$3,(fst $3))::$5 }
 | {[]}
@@ -137,14 +135,16 @@ update:
 ;
 
 upatom:
-  NAME PRIME EQ intexpr {$1,$4}
+  NAME PRIME EQ intexpr {$1,simp_int $4}
 | NAME PRIME EQ TRUE {$1,Int 1}
 | NAME PRIME EQ FALSE {$1,Int 0}
 ;
 
-rewards:
-  REWARDS STRING actionrewardlist ENDREWARDS rewards {()}
-| {()}
+initrew: 
+  INIT TRUE ENDINIT initrew {()}
+| REWARDS STRING actionrewardlist ENDREWARDS initrew {()}
+| {()};
+
 
 actionrewardlist:
 LSQBRAK NAME RSQBRAK stateCondition COLON floatexpr SEMICOLON 
@@ -153,7 +153,7 @@ LSQBRAK NAME RSQBRAK stateCondition COLON floatexpr SEMICOLON
   {()}
 |  stateCondition COLON floatexpr SEMICOLON 
   {()}
-| {()}
+| {()};
 
 stateCondition:
 TRUE {True}
@@ -163,7 +163,7 @@ TRUE {True}
 | stateCondition OR stateCondition {Or($1,$3)}
 | NOT stateCondition {Not($2)}
 | LPAR stateCondition RPAR {$2}
-| NAME cmp intexpr  { IntAtom(IntName $1,$2,$3) }
+| NAME cmp intexpr  { IntAtom(IntName $1,$2,simp_int $3) }
 ;
 
 intexpr:
@@ -173,6 +173,8 @@ intexpr:
  | intexpr PLUS intexpr {Plus($1,$3)}
  | intexpr MULT intexpr {Mult($1,$3)}
  | intexpr MINUS intexpr {Minus($1,$3)}
+ | NOT intexpr {Minus(Int 1,$2)}
+
 ;
 
 
