@@ -23,7 +23,7 @@ rule token = parse
   | "module" {MODULE} | "endmodule" {ENDMODULE}
   | "rewards" {REWARDS} | "endrewards" {ENDREWARDS}
   | "label" {LABEL}
-  | "init" {INIT}
+  | "init" {INIT} | "endinit" {ENDINIT}
   | "bool" {BOOL}
   | '"'      { read_string (Buffer.create 17) lexbuf }
   | ".." {RANGE}
@@ -50,7 +50,15 @@ rule token = parse
   | ">=" {GE}
   | "->" {ARROW}
   | ":" {COLON}
-  | ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* as lxm {NAME(lxm)}
+  | ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* as lxm {
+    (*let open Type in
+	try begin match StringMap.find lxm !mapType with
+	    IntT   -> INTNAME(lxm)
+	  | BoolT  -> BOOLNAME(lxm)
+	  | DoubleT-> DOUBLENAME(lxm)
+	end with
+	    Not_found ->*) NAME(lxm)
+}
   | _ { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
   | eof  {EOF}
 and read_string buf = parse
