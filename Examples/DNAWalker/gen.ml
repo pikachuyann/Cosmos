@@ -28,7 +28,7 @@ let generate_lha fpath li obj =
   and blockade = ref " FALSE " in
   List.iter (fun (n,t,i,_) -> 
     if t= Final then safe := Printf.sprintf " %s & (a%i<2)" !safe n
-    else if i=0 & t<> Init then blockade := Printf.sprintf " %s | (a%i=2)" !blockade n
+    else if i=0 && t<> Init then blockade := Printf.sprintf " %s | (a%i=2)" !blockade n
   ) li;
   let f = open_out fpath in
   Printf.fprintf f "
@@ -77,7 +77,7 @@ Edges = {
   close_out f;;
 
 
-let gen_spn2 fpath li ks failure=
+let gen_spn2 fpath li ks failure gentrans=
   let ksi = ks/.3. in
   print_endline ("Generate2 "^fpath);
   let (net:spt) = Net.create () in
@@ -96,7 +96,7 @@ let gen_spn2 fpath li ks failure=
       :: cluster.(n-1);*) 
     end
   ) li;
-
+  if gentrans then begin
   List.iter (fun (n1,t1,i1,p1) ->
     List.iter (fun (n2,t2,i2,p2) -> 
       let r = (match t1 with 
@@ -120,7 +120,7 @@ let gen_spn2 fpath li ks failure=
 	Net.add_arc net tl ("a"^(string_of_int n2)) 2;
 	(*cluster.(n1-1) <- tl :: cluster.(n1-1);*) 
       ) li ) li;
-  
+  end;
 
   List.iter (fun (n1,t1,i1,p1) ->
     if t1 = Final then (
@@ -137,7 +137,7 @@ let gen_spn fpath li ks failure=
   let ksi = ks /.3. in
   print_endline ("Generate "^fpath);
   let (net:spt) = Net.create () in
-
+ 
   (*let cluster = Array.make (List.length li) [] in*)
 
   List.iter (fun (n,t,i,_) ->
@@ -196,115 +196,16 @@ let gen_spn fpath li ks failure=
 
 let generate_spn fpath li2 ks failure obj =
   let li = mapsq3 li2 in
-  let net = gen_spn2 fpath li ks failure in
+  let net = gen_spn2 fpath li ks failure true in
   generate_lha (fpath^".lha") li obj;
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
   print_spt_dot (fpath^".dot") net [] 
     (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
-(*
-  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));
-  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;*)
+(*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
+(*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;*)
 
 
-
-generate_spn "ex" [
-  (1,Init,0,(0.0,0.0)); 
-  (2,Final,1,(2.0,0.0));] 
-0.009 0.3 "a2=2";; 
-
-
-
-(*generate_lha "control.lha" "a8<2" "a8=2" "FALSE";*)
-generate_spn "control" [
-  (1,Init ,0,(0.0,0.0)); 
-  (2,Norm ,1,(0.5,-1.0)); 
-  (3,Norm ,1,(1.0,-2.0));
-  (4,Norm ,1,(1.5,-3.0));
-  (5,Norm ,1,(2.0,-.4.0));
-  (6,Norm ,1,(2.5,-.5.0)); 
-  (7,Norm ,1,(3.0,-.6.0));
-  (8,Final,1,(3.5,-.7.0))]
-0.009 0.3 "a8=2";; 
-
-
-(*generate_lha "controlMissing1.lha" "a8<2" "a8=2" "FALSE";*)
-generate_spn "controlMissing1" [
-   (1,Init ,0,(0.0,0.0)); 
-  (2,Norm ,1,(0.5,-1.0)); 
-  (3,Norm ,1,(1.0,-2.0));
-  (5,Norm ,1,(2.0,-.4.0));
-  (6,Norm ,1,(2.5,-.5.0)); 
-  (7,Norm ,1,(3.0,-.6.0));
-  (8,Final,1,(3.5,-.7.0))]
-0.009 0.3 "a8=2";; 
-
-(*generate_lha "controlMissing2.lha" "a8<2" "a8=2" "FALSE";*)
-generate_spn "controlMissing2" [
-   (1,Init ,0,(0.0,0.0)); 
-  (2,Norm ,1,(0.5,-1.0)); 
-  (3,Norm ,1,(1.0,-2.0));
-  (6,Norm ,1,(2.5,-.5.0)); 
-  (7,Norm ,1,(3.0,-.6.0));
-  (8,Final,1,(3.5,-.7.0))]
-0.009 0.3 "a8=2";; 
-
-(*generate_lha "controlMissing7.lha" "a8<2" "a8=2" "FALSE";*)
-generate_spn "controlMissing7" [
-  (1,Init ,0,(0.0,0.0)); 
-  (2,Norm ,1,(0.5,-1.0)); 
-  (3,Norm ,1,(1.0,-2.0));
-  (4,Norm ,1,(1.5,-3.0));
-  (5,Norm ,1,(2.0,-.4.0));
-  (6,Norm ,1,(2.5,-.5.0)); 
-  (8,Final,1,(3.5,-.7.0))]
-0.009 0.3 "a8=2";; 
-
-
-(*generate_lha "track12Block1.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
-generate_spn "track12Block1" [ 
-  (1,Init,0,(  0.0,0.0)); 
-  (2,Norm,1,(  0.0,-1.0)); 
-  (3,Norm,1,(  0.0,-2.0));
-  (4,Norm,1,(  0.0,-3.0));
-  (5,Norm,0,(-.1.0,-.3.5));
-  (6,Norm,1,(-.2.0,-.4.0)); 
-  (7,Norm,1,(-.3.0,-.4.5));
- (8,Final,1,(-.4.0,-.5.0));
-  (9,Norm,1,(  1.0,-.3.5));
-  (10,Norm,1,( 2.0,-.4.0));
-  (11,Norm,1,( 3.0,-.4.5));
-  (12,Final,1,(4.0,-.5.0))] 0.009 0.3 "a12=2";;
-
-(*generate_lha "track12Block2.lha" "a8=0 & a12=0" "a12>0" "a8>0";
-generate_lha "track12Block2.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
-generate_spn "track12Block2" [ (1,Init,0,(0.0,0.0)); 
-			 (2,Norm,1,(0.0,-1.0)); 
-			 (3,Norm,1,(0.0,-2.0));
-			 (4,Norm,1,(0.0,-3.0));
-			 (5,Norm,0,(-.1.0,-.3.5));
-			 (6,Norm,0,(-.2.0,-.4.0)); 
-			 (7,Norm,1,(-.3.0,-.4.5));
-			(8,Final,1,(-.4.0,-.5.0));
-			 (9,Norm,1,(  1.0,-.3.5));
-			 (10,Norm,1,( 2.0,-.4.0));
-			 (11,Norm,1,( 3.0,-.4.5));
-			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "a12=2";; 
-
-(*generate_lha "track12BlockBoth.lha" "a8=0 & a12=0" "a12>0" "a8>0";
-generate_lha "track12BlockBoth.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
-generate_spn "track12BlockBoth" [ (1,Init,0,(0.0,0.0)); 
-			 (2,Norm,1,(0.0,-1.0)); 
-			 (3,Norm,1,(0.0,-2.0));
-			 (4,Norm,1,(0.0,-3.0));
-			 (5,Norm,0,(-.1.0,-.3.5));
-			 (6,Norm,1,(-.2.0,-.4.0)); 
-			 (7,Norm,1,(-.3.0,-.4.5));
-			(8,Final,1,(-.4.0,-.5.0));
-			 (9,Norm,0,(  1.0,-.3.5));
-			 (10,Norm,1,( 2.0,-.4.0));
-			 (11,Norm,1,( 3.0,-.4.5));
-			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "a8=2";; 
 
 
 let gen28 f l1 r1 l2 r2 obj =
@@ -420,7 +321,117 @@ let gen_xor_large f x y =
 ]) 0.009 0.3 obj;;
 
 
+let lozange f n m fb =
+  let accl = ref [] in
+  for i = 1 to n do
+    for j = 1 to m do
+      let t = if i=1 && j=1 then Init else if
+	  i=n && j =m then Final else Norm in
+      accl := (i+n*(j-1) ,t ,(fb i j)   ,( 1.0*.(float (j-i)) , 0.5*.(float (i+j)))) :: !accl;
+    done;
+  done;
+  generate_spn f !accl 0.009 0.3 (Printf.sprintf "a%i=2" (n*m));;
 
+(*
+
+
+generate_spn "ex" [
+  (1,Init,0,(0.0,0.0)); 
+  (2,Final,1,(2.0,0.0));] 
+0.009 0.3 "a2=2";; 
+
+
+
+(*generate_lha "control.lha" "a8<2" "a8=2" "FALSE";*)
+generate_spn "control" [
+  (1,Init ,0,(0.0,0.0)); 
+  (2,Norm ,1,(0.5,-1.0)); 
+  (3,Norm ,1,(1.0,-2.0));
+  (4,Norm ,1,(1.5,-3.0));
+  (5,Norm ,1,(2.0,-.4.0));
+  (6,Norm ,1,(2.5,-.5.0)); 
+  (7,Norm ,1,(3.0,-.6.0));
+  (8,Final,1,(3.5,-.7.0))]
+0.009 0.3 "a8=2";; 
+
+
+(*generate_lha "controlMissing1.lha" "a8<2" "a8=2" "FALSE";*)
+generate_spn "controlMissing1" [
+   (1,Init ,0,(0.0,0.0)); 
+  (2,Norm ,1,(0.5,-1.0)); 
+  (3,Norm ,1,(1.0,-2.0));
+  (5,Norm ,1,(2.0,-.4.0));
+  (6,Norm ,1,(2.5,-.5.0)); 
+  (7,Norm ,1,(3.0,-.6.0));
+  (8,Final,1,(3.5,-.7.0))]
+0.009 0.3 "a8=2";; 
+
+(*generate_lha "controlMissing2.lha" "a8<2" "a8=2" "FALSE";*)
+generate_spn "controlMissing2" [
+   (1,Init ,0,(0.0,0.0)); 
+  (2,Norm ,1,(0.5,-1.0)); 
+  (3,Norm ,1,(1.0,-2.0));
+  (6,Norm ,1,(2.5,-.5.0)); 
+  (7,Norm ,1,(3.0,-.6.0));
+  (8,Final,1,(3.5,-.7.0))]
+0.009 0.3 "a8=2";; 
+
+(*generate_lha "controlMissing7.lha" "a8<2" "a8=2" "FALSE";*)
+generate_spn "controlMissing7" [
+  (1,Init ,0,(0.0,0.0)); 
+  (2,Norm ,1,(0.5,-1.0)); 
+  (3,Norm ,1,(1.0,-2.0));
+  (4,Norm ,1,(1.5,-3.0));
+  (5,Norm ,1,(2.0,-.4.0));
+  (6,Norm ,1,(2.5,-.5.0)); 
+  (8,Final,1,(3.5,-.7.0))]
+0.009 0.3 "a8=2";; 
+
+
+(*generate_lha "track12Block1.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
+generate_spn "track12Block1" [ 
+  (1,Init,0,(  0.0,0.0)); 
+  (2,Norm,1,(  0.0,-1.0)); 
+  (3,Norm,1,(  0.0,-2.0));
+  (4,Norm,1,(  0.0,-3.0));
+  (5,Norm,0,(-.1.0,-.3.5));
+  (6,Norm,1,(-.2.0,-.4.0)); 
+  (7,Norm,1,(-.3.0,-.4.5));
+ (8,Final,1,(-.4.0,-.5.0));
+  (9,Norm,1,(  1.0,-.3.5));
+  (10,Norm,1,( 2.0,-.4.0));
+  (11,Norm,1,( 3.0,-.4.5));
+  (12,Final,1,(4.0,-.5.0))] 0.009 0.3 "a12=2";;
+
+(*generate_lha "track12Block2.lha" "a8=0 & a12=0" "a12>0" "a8>0";
+generate_lha "track12Block2.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
+generate_spn "track12Block2" [ (1,Init,0,(0.0,0.0)); 
+			 (2,Norm,1,(0.0,-1.0)); 
+			 (3,Norm,1,(0.0,-2.0));
+			 (4,Norm,1,(0.0,-3.0));
+			 (5,Norm,0,(-.1.0,-.3.5));
+			 (6,Norm,0,(-.2.0,-.4.0)); 
+			 (7,Norm,1,(-.3.0,-.4.5));
+			(8,Final,1,(-.4.0,-.5.0));
+			 (9,Norm,1,(  1.0,-.3.5));
+			 (10,Norm,1,( 2.0,-.4.0));
+			 (11,Norm,1,( 3.0,-.4.5));
+			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "a12=2";; 
+
+(*generate_lha "track12BlockBoth.lha" "a8=0 & a12=0" "a12>0" "a8>0";
+generate_lha "track12BlockBoth.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
+generate_spn "track12BlockBoth" [ (1,Init,0,(0.0,0.0)); 
+			 (2,Norm,1,(0.0,-1.0)); 
+			 (3,Norm,1,(0.0,-2.0));
+			 (4,Norm,1,(0.0,-3.0));
+			 (5,Norm,0,(-.1.0,-.3.5));
+			 (6,Norm,1,(-.2.0,-.4.0)); 
+			 (7,Norm,1,(-.3.0,-.4.5));
+			(8,Final,1,(-.4.0,-.5.0));
+			 (9,Norm,0,(  1.0,-.3.5));
+			 (10,Norm,1,( 2.0,-.4.0));
+			 (11,Norm,1,( 3.0,-.4.5));
+			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "a8=2";; 
 
 (*generate_lha "track28LL.lha" "a17<2 & a20<2 & a25<2 & a28<2" 
  "a17>1" "a20>1 | a25>1 | a28>1";;*)
@@ -455,4 +466,14 @@ gen_xor_large "ringLLLarge" true true;;
 gen_xor_large "ringRLLarge" false true;;
 gen_xor_large "ringLRLarge" true false;;
 gen_xor_large "ringRRLarge" false false;;
+*)
 
+lozange "lozange" 10 10 (fun _ _ -> 1);;
+ 
+let ra x = (float x) -. 5.5;;
+let ra2 x y = (ra x)*.(ra x) +. (ra y)*.(ra y);;
+
+
+lozange "lozangeBlock" 10 10 (fun x y -> 
+  max 0 ( (min 1 (int_of_float ((ra2 x y)/.9.0)))));;
+ 

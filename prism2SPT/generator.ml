@@ -3,6 +3,7 @@ open PetriNet
 open StochasticPetriNet
 open Lexer
 open Lexing
+open Pnmlparser
 
 let print_position outx lexbuf =
   let pos = lexbuf.lex_curr_p in
@@ -102,7 +103,6 @@ let gen_acc iinit modu net (st,g,f,u) =
   List.iter (fun (v,jexp) -> Net.add_outArc net trname v jexp) u*)
 
 
-    
 let net_of_prism modu =
   let net = Net.create () in
   List.iter (fun (n,(a,b),i) -> Data.add (n,i) net.Net.place) modu.varlist;
@@ -174,8 +174,7 @@ let compose_module m1 m2 =
 	  if s1<>s2 then ls2
 	  else (s1,And(g1,g2),MultF(r1,r2),u1@u2) :: ls2) ls1 m2.actionlist)
 	(List.filter (fun (s,_,_,_) -> filt s) m2.actionlist)
-	m1.actionlist in 
-      
+	m1.actionlist in       
       {
 	name = Printf.sprintf "(%s||%s)" m1.name m2.name;
 	varlist=varlist;
@@ -183,20 +182,9 @@ let compose_module m1 m2 =
 	actionset= union m1.actionset m2.actionset
       }
 
-
-let _ =
-  let input = ref stdin in
-  let output = ref "out" in
-  let inname = ref "stdin" in
-  if Array.length Sys.argv >1 then (
-    inname := Sys.argv.(1);
-    print_endline ("Opening "^Sys.argv.(1));
-    input := open_in !inname;
-    if Array.length Sys.argv >2 then output := Sys.argv.(2)
-    else output:=String.sub !inname 0 (String.rindex !inname '.'); 
-  );
-  let lexbuf = Lexing.from_channel !input  in
-  lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = !inname };
+let read_prism s name =
+  let lexbuf = Lexing.from_channel s in
+  lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = name };
   try
     let cdef,prismml = Parser.main Lexer.token lexbuf in
     let (fullmod,renammod) = List.fold_left (fun (l1,l2) m -> match m with 
@@ -204,17 +192,13 @@ let _ =
     let prismm2 = rename_module fullmod renammod in
     let prismmodule = List.fold_left compose_module 
       (List.hd prismm2) (List.tl prismm2) in
-    let net = net_of_prism prismmodule in
-    print_endline "Finish parsing";
-    print_spt_dot ((!output)^".dot") net [] [];
-    print_spt ((!output)^".grml") net cdef;
-    print_endline "Finish exporting";
-    if Array.length Sys.argv =2 then
-      ignore (Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output))
+    (cdef,net_of_prism prismmodule)
   with 
-    | SyntaxError msg ->
-      Printf.fprintf stderr "%a: %s\n" print_position lexbuf msg      
-    | Parsing.Parse_error ->
-      Printf.fprintf stderr "%a: Parsing error: unexpected token:'%s'\n"
-	print_position lexbuf (lexeme lexbuf)
+  | SyntaxError msg ->
+    Printf.fprintf stderr "%a: %s\n" print_position lexbuf msg;
+    failwith "Fail to parse Prism file format"
+  | Parsing.Parse_error ->
+    Printf.fprintf stderr "%a: Parsing error: unexpected token:'%s'\n"
+      print_position lexbuf (lexeme lexbuf);
+    failwith "Fail to parse Prism file format"
   
