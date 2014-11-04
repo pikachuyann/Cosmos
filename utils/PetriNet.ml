@@ -33,14 +33,14 @@ struct
     snd (acca t i) 
       
   let rec add (a,b) t = match t.table with
-      None -> t.table <- Some(Array.create 10 (a,b));
+      None -> t.table <- Some(Array.make 10 (a,b));
         t.size <- 1;
 	Hashtbl.add t.hash a 0;
     | Some(t1) when Array.length t1 > t.size ->
       t1.(t.size) <- (a,b);
       Hashtbl.add t.hash a t.size;
       t.size <- t.size +1
-    | Some(t1) -> let t2 = Array.create (2*t.size) t1.(0) in
+    | Some(t1) -> let t2 = Array.make (2*t.size) t1.(0) in
                   Array.blit t1 0 t2 0 t.size;
                   t.table <- Some(t2);
                   add (a,b) t

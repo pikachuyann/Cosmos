@@ -24,3 +24,4 @@ includes_HEADERS = LHA.hpp marking.hpp spn.hpp
 includesdir = $(includedir)
 
 AM_LDFLAGS = $(PTHREAD_LIBS)
+AM_CPPFLAGS = $(BOOST_CPPFLAGS)
