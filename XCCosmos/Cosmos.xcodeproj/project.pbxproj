@@ -137,6 +137,71 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		03088AAA1A0422C0006BCB27 /* #model.pnml# */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "#model.pnml#"; sourceTree = "<group>"; };
+		03088AAC1A0422C0006BCB27 /* _digests */ = {isa = PBXFileReference; lastKnownFileType = text; path = _digests; sourceTree = "<group>"; };
+		03088AAD1A0422C0006BCB27 /* _log */ = {isa = PBXFileReference; lastKnownFileType = text; path = _log; sourceTree = "<group>"; };
+		03088AAE1A0422C0006BCB27 /* generator.cmi */ = {isa = PBXFileReference; lastKnownFileType = file; path = generator.cmi; sourceTree = "<group>"; };
+		03088AAF1A0422C0006BCB27 /* generator.cmo */ = {isa = PBXFileReference; lastKnownFileType = file; path = generator.cmo; sourceTree = "<group>"; };
+		03088AB01A0422C0006BCB27 /* generator.cmx */ = {isa = PBXFileReference; lastKnownFileType = file; path = generator.cmx; sourceTree = "<group>"; };
+		03088AB11A0422C0006BCB27 /* generator.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = generator.ml; sourceTree = "<group>"; };
+		03088AB21A0422C0006BCB27 /* generator.ml.depends */ = {isa = PBXFileReference; lastKnownFileType = text; path = generator.ml.depends; sourceTree = "<group>"; };
+		03088AB31A0422C0006BCB27 /* generator.native */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = generator.native; sourceTree = "<group>"; };
+		03088AB41A0422C0006BCB27 /* generator.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = generator.o; sourceTree = "<group>"; };
+		03088AB51A0422C0006BCB27 /* lexer.cmi */ = {isa = PBXFileReference; lastKnownFileType = file; path = lexer.cmi; sourceTree = "<group>"; };
+		03088AB61A0422C0006BCB27 /* lexer.cmo */ = {isa = PBXFileReference; lastKnownFileType = file; path = lexer.cmo; sourceTree = "<group>"; };
+		03088AB71A0422C0006BCB27 /* lexer.cmx */ = {isa = PBXFileReference; lastKnownFileType = file; path = lexer.cmx; sourceTree = "<group>"; };
+		03088AB81A0422C0006BCB27 /* lexer.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = lexer.ml; sourceTree = "<group>"; };
+		03088AB91A0422C0006BCB27 /* lexer.ml.depends */ = {isa = PBXFileReference; lastKnownFileType = text; path = lexer.ml.depends; sourceTree = "<group>"; };
+		03088ABA1A0422C0006BCB27 /* lexer.mll */ = {isa = PBXFileReference; lastKnownFileType = text; path = lexer.mll; sourceTree = "<group>"; };
+		03088ABB1A0422C0006BCB27 /* lexer.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = lexer.o; sourceTree = "<group>"; };
+		03088ABC1A0422C0006BCB27 /* ocamlc.where */ = {isa = PBXFileReference; lastKnownFileType = text; path = ocamlc.where; sourceTree = "<group>"; };
+		03088ABD1A0422C0006BCB27 /* parser.cmi */ = {isa = PBXFileReference; lastKnownFileType = file; path = parser.cmi; sourceTree = "<group>"; };
+		03088ABE1A0422C0006BCB27 /* parser.cmx */ = {isa = PBXFileReference; lastKnownFileType = file; path = parser.cmx; sourceTree = "<group>"; };
+		03088ABF1A0422C0006BCB27 /* parser.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = parser.ml; sourceTree = "<group>"; };
+		03088AC01A0422C0006BCB27 /* parser.ml.depends */ = {isa = PBXFileReference; lastKnownFileType = text; path = parser.ml.depends; sourceTree = "<group>"; };
+		03088AC11A0422C0006BCB27 /* parser.mli */ = {isa = PBXFileReference; lastKnownFileType = text; path = parser.mli; sourceTree = "<group>"; };
+		03088AC21A0422C0006BCB27 /* parser.mli.depends */ = {isa = PBXFileReference; lastKnownFileType = text; path = parser.mli.depends; sourceTree = "<group>"; };
+		03088AC31A0422C0006BCB27 /* parser.mly */ = {isa = PBXFileReference; lastKnownFileType = text; path = parser.mly; sourceTree = "<group>"; };
+		03088AC41A0422C0006BCB27 /* parser.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = parser.o; sourceTree = "<group>"; };
+		03088AC51A0422C0006BCB27 /* PetriNet.cmi */ = {isa = PBXFileReference; lastKnownFileType = file; path = PetriNet.cmi; sourceTree = "<group>"; };
+		03088AC61A0422C0006BCB27 /* PetriNet.cmo */ = {isa = PBXFileReference; lastKnownFileType = file; path = PetriNet.cmo; sourceTree = "<group>"; };
+		03088AC71A0422C0006BCB27 /* PetriNet.cmx */ = {isa = PBXFileReference; lastKnownFileType = file; path = PetriNet.cmx; sourceTree = "<group>"; };
+		03088AC81A0422C0006BCB27 /* PetriNet.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = PetriNet.ml; sourceTree = "<group>"; };
+		03088AC91A0422C0006BCB27 /* PetriNet.ml.depends */ = {isa = PBXFileReference; lastKnownFileType = text; path = PetriNet.ml.depends; sourceTree = "<group>"; };
+		03088ACA1A0422C0006BCB27 /* PetriNet.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = PetriNet.o; sourceTree = "<group>"; };
+		03088ACB1A0422C0006BCB27 /* pnmlparser.cmi */ = {isa = PBXFileReference; lastKnownFileType = file; path = pnmlparser.cmi; sourceTree = "<group>"; };
+		03088ACC1A0422C0006BCB27 /* pnmlparser.cmo */ = {isa = PBXFileReference; lastKnownFileType = file; path = pnmlparser.cmo; sourceTree = "<group>"; };
+		03088ACD1A0422C0006BCB27 /* pnmlparser.cmx */ = {isa = PBXFileReference; lastKnownFileType = file; path = pnmlparser.cmx; sourceTree = "<group>"; };
+		03088ACE1A0422C0006BCB27 /* pnmlparser.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = pnmlparser.ml; sourceTree = "<group>"; };
+		03088ACF1A0422C0006BCB27 /* pnmlparser.ml.depends */ = {isa = PBXFileReference; lastKnownFileType = text; path = pnmlparser.ml.depends; sourceTree = "<group>"; };
+		03088AD01A0422C0006BCB27 /* pnmlparser.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = pnmlparser.o; sourceTree = "<group>"; };
+		03088AD11A0422C0006BCB27 /* StochasticPetriNet.cmi */ = {isa = PBXFileReference; lastKnownFileType = file; path = StochasticPetriNet.cmi; sourceTree = "<group>"; };
+		03088AD21A0422C0006BCB27 /* StochasticPetriNet.cmo */ = {isa = PBXFileReference; lastKnownFileType = file; path = StochasticPetriNet.cmo; sourceTree = "<group>"; };
+		03088AD31A0422C0006BCB27 /* StochasticPetriNet.cmx */ = {isa = PBXFileReference; lastKnownFileType = file; path = StochasticPetriNet.cmx; sourceTree = "<group>"; };
+		03088AD41A0422C0006BCB27 /* StochasticPetriNet.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = StochasticPetriNet.ml; sourceTree = "<group>"; };
+		03088AD51A0422C0006BCB27 /* StochasticPetriNet.ml.depends */ = {isa = PBXFileReference; lastKnownFileType = text; path = StochasticPetriNet.ml.depends; sourceTree = "<group>"; };
+		03088AD61A0422C0006BCB27 /* StochasticPetriNet.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = StochasticPetriNet.o; sourceTree = "<group>"; };
+		03088AD71A0422C0006BCB27 /* type.cmi */ = {isa = PBXFileReference; lastKnownFileType = file; path = type.cmi; sourceTree = "<group>"; };
+		03088AD81A0422C0006BCB27 /* type.cmo */ = {isa = PBXFileReference; lastKnownFileType = file; path = type.cmo; sourceTree = "<group>"; };
+		03088AD91A0422C0006BCB27 /* type.cmx */ = {isa = PBXFileReference; lastKnownFileType = file; path = type.cmx; sourceTree = "<group>"; };
+		03088ADA1A0422C0006BCB27 /* type.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = type.ml; sourceTree = "<group>"; };
+		03088ADB1A0422C0006BCB27 /* type.ml.depends */ = {isa = PBXFileReference; lastKnownFileType = text; path = type.ml.depends; sourceTree = "<group>"; };
+		03088ADC1A0422C0006BCB27 /* type.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = type.o; sourceTree = "<group>"; };
+		03088ADD1A0422C0006BCB27 /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
+		03088ADE1A0422C0006BCB27 /* generator.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = generator.ml; sourceTree = "<group>"; };
+		03088AE01A0422C0006BCB27 /* lexer.mll */ = {isa = PBXFileReference; lastKnownFileType = text; path = lexer.mll; sourceTree = "<group>"; };
+		03088AE11A0422C0006BCB27 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		03088AE21A0422C0006BCB27 /* Makefile.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
+		03088AE31A0422C0006BCB27 /* model.pnml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = model.pnml; sourceTree = "<group>"; };
+		03088AE41A0422C0006BCB27 /* nacl.dot */ = {isa = PBXFileReference; lastKnownFileType = text; path = nacl.dot; sourceTree = "<group>"; };
+		03088AE51A0422C0006BCB27 /* nacl.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = nacl.grml; sourceTree = "<group>"; };
+		03088AE61A0422C0006BCB27 /* nacl.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = nacl.pdf; sourceTree = "<group>"; };
+		03088AE71A0422C0006BCB27 /* nacl.sm */ = {isa = PBXFileReference; lastKnownFileType = text; path = nacl.sm; sourceTree = "<group>"; };
+		03088AE81A0422C0006BCB27 /* parser.mly */ = {isa = PBXFileReference; lastKnownFileType = text; path = parser.mly; sourceTree = "<group>"; };
+		03088AE91A0422C0006BCB27 /* PetriNet.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = PetriNet.ml; sourceTree = "<group>"; };
+		03088AEA1A0422C0006BCB27 /* pnmlparser.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = pnmlparser.ml; sourceTree = "<group>"; };
+		03088AEB1A0422C0006BCB27 /* StochasticPetriNet.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = StochasticPetriNet.ml; sourceTree = "<group>"; };
+		03088AEC1A0422C0006BCB27 /* type.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = type.ml; sourceTree = "<group>"; };
 		032A7006181BC0D6006D7332 /* maindoc.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = maindoc.md; sourceTree = "<group>"; };
 		032A7008181BC0D6006D7332 /* casesWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = casesWriter.cpp; sourceTree = "<group>"; };
 		032A7009181BC0D6006D7332 /* casesWriter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = casesWriter.hpp; sourceTree = "<group>"; };
@@ -528,7 +593,7 @@
 		039A3905191A9EE800B42447 /* test.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.ml; sourceTree = "<group>"; };
 		039A3908191A9EE800B42447 /* bench.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = bench.ml; sourceTree = "<group>"; };
 		039A3909191A9EE800B42447 /* benchspeedtest.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = benchspeedtest.sh; sourceTree = "<group>"; };
-		039A390A191A9EE800B42447 /* CamlResultFile */ = {isa = PBXFileReference; lastKnownFileType = file; path = CamlResultFile; sourceTree = "<group>"; };
+		039A390A191A9EE800B42447 /* CamlResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = CamlResultFile; sourceTree = "<group>"; };
 		039A390B191A9EE800B42447 /* csvResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = csvResultFile; sourceTree = "<group>"; };
 		039A390C191A9EE800B42447 /* dataout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dataout.png; sourceTree = "<group>"; };
 		039A390D191A9EE800B42447 /* gnuplotscript.gp */ = {isa = PBXFileReference; lastKnownFileType = text; path = gnuplotscript.gp; sourceTree = "<group>"; };
@@ -826,7 +891,7 @@
 		039A3A58191A9EEB00B42447 /* markingImpl.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
 		039A3A59191A9EEB00B42447 /* spn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
 		039A3A5A191A9EEB00B42447 /* spn.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = spn.o; sourceTree = "<group>"; };
-		039A3A5C191A9EEB00B42447 /* CamlResultFile */ = {isa = PBXFileReference; lastKnownFileType = file; path = CamlResultFile; sourceTree = "<group>"; };
+		039A3A5C191A9EEB00B42447 /* CamlResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = CamlResultFile; sourceTree = "<group>"; };
 		039A3A5D191A9EEB00B42447 /* csvResultFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = csvResultFile; sourceTree = "<group>"; };
 		039A3A5E191A9EEB00B42447 /* gen.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = gen.ml; sourceTree = "<group>"; };
 		039A3A5F191A9EEB00B42447 /* lumpingfun.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfun.cpp; sourceTree = "<group>"; };
@@ -972,6 +1037,87 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		03088AA91A0422C0006BCB27 /* prism2SPT */ = {
+			isa = PBXGroup;
+			children = (
+				03088AAA1A0422C0006BCB27 /* #model.pnml# */,
+				03088AAB1A0422C0006BCB27 /* _build */,
+				03088ADD1A0422C0006BCB27 /* build.sh */,
+				03088ADE1A0422C0006BCB27 /* generator.ml */,
+				03088AE01A0422C0006BCB27 /* lexer.mll */,
+				03088AE11A0422C0006BCB27 /* Makefile.am */,
+				03088AE21A0422C0006BCB27 /* Makefile.in */,
+				03088AE31A0422C0006BCB27 /* model.pnml */,
+				03088AE41A0422C0006BCB27 /* nacl.dot */,
+				03088AE51A0422C0006BCB27 /* nacl.grml */,
+				03088AE61A0422C0006BCB27 /* nacl.pdf */,
+				03088AE71A0422C0006BCB27 /* nacl.sm */,
+				03088AE81A0422C0006BCB27 /* parser.mly */,
+				03088AE91A0422C0006BCB27 /* PetriNet.ml */,
+				03088AEA1A0422C0006BCB27 /* pnmlparser.ml */,
+				03088AEB1A0422C0006BCB27 /* StochasticPetriNet.ml */,
+				03088AEC1A0422C0006BCB27 /* type.ml */,
+			);
+			name = prism2SPT;
+			path = ../prism2SPT;
+			sourceTree = "<group>";
+		};
+		03088AAB1A0422C0006BCB27 /* _build */ = {
+			isa = PBXGroup;
+			children = (
+				03088AAC1A0422C0006BCB27 /* _digests */,
+				03088AAD1A0422C0006BCB27 /* _log */,
+				03088AAE1A0422C0006BCB27 /* generator.cmi */,
+				03088AAF1A0422C0006BCB27 /* generator.cmo */,
+				03088AB01A0422C0006BCB27 /* generator.cmx */,
+				03088AB11A0422C0006BCB27 /* generator.ml */,
+				03088AB21A0422C0006BCB27 /* generator.ml.depends */,
+				03088AB31A0422C0006BCB27 /* generator.native */,
+				03088AB41A0422C0006BCB27 /* generator.o */,
+				03088AB51A0422C0006BCB27 /* lexer.cmi */,
+				03088AB61A0422C0006BCB27 /* lexer.cmo */,
+				03088AB71A0422C0006BCB27 /* lexer.cmx */,
+				03088AB81A0422C0006BCB27 /* lexer.ml */,
+				03088AB91A0422C0006BCB27 /* lexer.ml.depends */,
+				03088ABA1A0422C0006BCB27 /* lexer.mll */,
+				03088ABB1A0422C0006BCB27 /* lexer.o */,
+				03088ABC1A0422C0006BCB27 /* ocamlc.where */,
+				03088ABD1A0422C0006BCB27 /* parser.cmi */,
+				03088ABE1A0422C0006BCB27 /* parser.cmx */,
+				03088ABF1A0422C0006BCB27 /* parser.ml */,
+				03088AC01A0422C0006BCB27 /* parser.ml.depends */,
+				03088AC11A0422C0006BCB27 /* parser.mli */,
+				03088AC21A0422C0006BCB27 /* parser.mli.depends */,
+				03088AC31A0422C0006BCB27 /* parser.mly */,
+				03088AC41A0422C0006BCB27 /* parser.o */,
+				03088AC51A0422C0006BCB27 /* PetriNet.cmi */,
+				03088AC61A0422C0006BCB27 /* PetriNet.cmo */,
+				03088AC71A0422C0006BCB27 /* PetriNet.cmx */,
+				03088AC81A0422C0006BCB27 /* PetriNet.ml */,
+				03088AC91A0422C0006BCB27 /* PetriNet.ml.depends */,
+				03088ACA1A0422C0006BCB27 /* PetriNet.o */,
+				03088ACB1A0422C0006BCB27 /* pnmlparser.cmi */,
+				03088ACC1A0422C0006BCB27 /* pnmlparser.cmo */,
+				03088ACD1A0422C0006BCB27 /* pnmlparser.cmx */,
+				03088ACE1A0422C0006BCB27 /* pnmlparser.ml */,
+				03088ACF1A0422C0006BCB27 /* pnmlparser.ml.depends */,
+				03088AD01A0422C0006BCB27 /* pnmlparser.o */,
+				03088AD11A0422C0006BCB27 /* StochasticPetriNet.cmi */,
+				03088AD21A0422C0006BCB27 /* StochasticPetriNet.cmo */,
+				03088AD31A0422C0006BCB27 /* StochasticPetriNet.cmx */,
+				03088AD41A0422C0006BCB27 /* StochasticPetriNet.ml */,
+				03088AD51A0422C0006BCB27 /* StochasticPetriNet.ml.depends */,
+				03088AD61A0422C0006BCB27 /* StochasticPetriNet.o */,
+				03088AD71A0422C0006BCB27 /* type.cmi */,
+				03088AD81A0422C0006BCB27 /* type.cmo */,
+				03088AD91A0422C0006BCB27 /* type.cmx */,
+				03088ADA1A0422C0006BCB27 /* type.ml */,
+				03088ADB1A0422C0006BCB27 /* type.ml.depends */,
+				03088ADC1A0422C0006BCB27 /* type.o */,
+			);
+			path = _build;
+			sourceTree = "<group>";
+		};
 		032A6FF9181BC0D5006D7332 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -2791,6 +2937,7 @@
 		08FB7794FE84155DC02AAC07 /* Cosmos */ = {
 			isa = PBXGroup;
 			children = (
+				03088AA91A0422C0006BCB27 /* prism2SPT */,
 				0336B7CB198A3BF30043EFC6 /* POMDP */,
 				039A3672191A9EE400B42447 /* Examples */,
 				0367E2B218843ED000F35619 /* test.m */,
@@ -3560,14 +3707,11 @@
 				GCC_VERSION = "";
 				GCC_WARN_SIGN_COMPARE = YES;
 				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = (
-					/usr/local/lib,
-					/opt/local/lib,
-				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = Cosmos;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				USER_HEADER_SEARCH_PATHS = "/Users/barbot/Documents/Cosmos/src/libgrml/ /usr/local/include";
+				USER_HEADER_SEARCH_PATHS = "/Users/benbot/Documents/Cosmos/src/libgrml/ /usr/local/include";
 			};
 			name = Debug;
 		};
@@ -3582,12 +3726,12 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/opt/local/lib,
+					/usr/local/lib,
 				);
 				PRODUCT_NAME = Cosmos;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
-				USER_HEADER_SEARCH_PATHS = "/Users/barbot/Documents/Cosmos/src/libgrml/ /usr/local/include";
+				USER_HEADER_SEARCH_PATHS = "/Users/benbot/Documents/Cosmos/src/libgrml/ /usr/local/include";
 			};
 			name = Release;
 		};

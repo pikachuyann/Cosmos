@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model formalismUrl="http://formalisms.cosyverif.org/sptgd-net.fml" xmlns="http://cosyverif.org/ns/model">
+  <attribute name="declaration"><attribute name="constants">
+    <attribute name="intConsts">
+      <attribute name="intConst">
+        <attribute name="name">N1</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            1
+        </attribute></attribute>
+      </attribute>
+      <attribute name="intConst">
+        <attribute name="name">N2</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            1
+        </attribute></attribute>
+      </attribute>
+    </attribute>
+    <attribute name="realConsts">
+      <attribute name="realConst">
+        <attribute name="name">e1rate</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            100.000000
+        </attribute></attribute>
+      </attribute>
+      <attribute name="realConst">
+        <attribute name="name">e2rate</attribute>
+        <attribute name="expr"><attribute name="numValue">
+            10.000000
+        </attribute></attribute>
+      </attribute>
+     </attribute>
+    </attribute>
+  </attribute>
+  <node id="0" nodeType="place">
+    <attribute name="name">cl</attribute>
+    <attribute name="marking"><attribute name="expr">
+      <attribute name="name">N2</attribute>
+    </attribute></attribute>
+  </node>
+  <node id="1" nodeType="place">
+    <attribute name="name">na</attribute>
+    <attribute name="marking"><attribute name="expr">
+      <attribute name="name">N1</attribute>
+    </attribute></attribute>
+  </node>
+  <node id="2" nodeType="transition">
+    <attribute name="name">a1e1</attribute>
+          <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr">
+<attribute name="function"><attribute name="*">
+  
+<attribute name="function"><attribute name="*">
+  <attribute name="name">e1rate</attribute>
+  <attribute name="name">cl</attribute>
+</attribute></attribute>
+  <attribute name="name">na</attribute>
+</attribute></attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>  <node id="3" nodeType="transition">
+    <attribute name="name">a2e2</attribute>
+          <attribute name="distribution">
+      <attribute name="type">
+        EXPONENTIAL
+      </attribute>
+      <attribute name="param">
+        <attribute name="number">0</attribute>
+        <attribute name="expr">
+<attribute name="function"><attribute name="*">
+  
+<attribute name="function"><attribute name="*">
+  <attribute name="name">e2rate</attribute>
+  
+<attribute name="function"><attribute name="minus">
+  <attribute name="name">N2</attribute>
+  <attribute name="name">cl</attribute>
+</attribute></attribute>
+</attribute></attribute>
+  
+<attribute name="function"><attribute name="minus">
+  <attribute name="name">N1</attribute>
+  <attribute name="name">na</attribute>
+</attribute></attribute>
+</attribute></attribute></attribute>
+      </attribute>
+    </attribute>
+  </node>  <arc id="4" arcType="arc" source="1" target="2">
+    <attribute name="valuation"><attribute name="expr">
+        <attribute name="numValue">1</attribute>
+    </attribute></attribute>
+  </arc>
+  <arc id="5" arcType="arc" source="0" target="2">
+    <attribute name="valuation"><attribute name="expr">
+        <attribute name="numValue">1</attribute>
+    </attribute></attribute>
+  </arc>
+  <arc id="6" arcType="arc" source="3" target="0">
+    <attribute name="valuation"><attribute name="expr">
+        <attribute name="numValue">1</attribute>
+    </attribute></attribute>
+  </arc>
+  <arc id="7" arcType="arc" source="3" target="1">
+    <attribute name="valuation"><attribute name="expr">
+        <attribute name="numValue">1</attribute>
+    </attribute></attribute>
+  </arc>
+  <arc id="8" arcType="inhibitorarc" source="1" target="3">
+    <attribute name="valuation"><attribute name="expr">
+        <attribute name="name">N1</attribute>
+    </attribute></attribute>
+  </arc>
+  <arc id="9" arcType="inhibitorarc" source="0" target="3">
+    <attribute name="valuation"><attribute name="expr">
+        <attribute name="name">N2</attribute>
+    </attribute></attribute>
+  </arc>
+</model>

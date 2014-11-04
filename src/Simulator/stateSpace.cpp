@@ -580,6 +580,11 @@ void stateSpace::inputMat(){
 	fstream inputFile;
 	inputFile.open("matrixFile",fstream::in);
 	
+    if(!inputFile.good()){
+        cerr << "Fail to open matrixFile"<<endl;
+        exit(EXIT_FAILURE);
+    }
+    
 	/*boostmat::matrix<double> m1;
 	 inputFile >> m1;
 	 nbState = m1.size1();*/
