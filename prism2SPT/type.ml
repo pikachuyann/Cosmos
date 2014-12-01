@@ -1,4 +1,7 @@
 
+let (|>) x f = f x 
+let (|>>)
+
 let rec print_list f c = function
   | [] -> ()
   | [t] -> f t;
@@ -156,3 +159,53 @@ let print_token f = function
   | Int 2 -> output_string f "••"
   | Int 3 -> output_string f "•••"
   | i -> printH_int_expr f i;;
+
+
+type triggerT = Imm | Delay of string | RAction of string
+
+
+type simulink_trans_label = {
+  trigger: triggerT;
+  write:  string list;
+  update: string list;
+}
+
+let empty_trans_label = {
+  trigger = Imm;
+  write = [];
+  update = [];
+}
+
+let rec print_list f =function
+  | [] -> ()
+  | [t] -> Printf.fprintf f "%s" t
+  | t::q -> Printf.fprintf f "%s,%a" t print_list q
+
+let print_option f so  =
+  match so with None -> () | Some s -> Printf.fprintf f "%s" s
+
+
+let print_option2 def f so  =
+  match so with None -> output_string f def | Some s -> Printf.fprintf f "%s" s
+
+
+let stateasso s l =
+  try (match List.assoc s l with
+    Some n -> n
+  | None -> string_of_int s)
+  with Not_found -> ""
+
+let stateasso2 s2 l =
+  match s2 with None -> "" | Some s ->
+  try (match List.assoc s l with
+    Some n -> n
+  | None -> string_of_int s)
+  with Not_found -> ""
+
+let print_label_simulink f trans = match trans.trigger with
+    Imm -> Printf.fprintf f "#,![%a],{%a}" print_list trans.write print_list trans.update
+  | Delay(s) -> Printf.fprintf f "wait(%s),![%a],{%a}" s  print_list trans.write print_list trans.update
+  | RAction(s) -> Printf.fprintf f "?%s,![%a],{%a}" s print_list trans.write print_list trans.update
+
+let print_trans_simulink sl f (ssid,src,trans,dst) =
+  Printf.fprintf f "\t%s --(%a)->%s\n" (stateasso2 src sl) print_label_simulink trans (stateasso dst sl);;

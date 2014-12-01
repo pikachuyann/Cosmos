@@ -47,7 +47,7 @@ enum HaslType {
 	HASL_DIV,
 	RE_AVG,
 	RE_Likelyhood,
-	RE_Continuous
+	RE_Continuous,EXISTS, NOTALLS
 };
 
 /**
@@ -86,7 +86,7 @@ public:
  */
 class HaslFormulasTop {
 public:
-	HaslFormulasTop(); //!< PROB operator use to compute \f$ \mathbb{P} \f$ .
+	HaslFormulasTop(const HaslType); //!< PROB operator use to compute \f$ \mathbb{P} \f$ .
 	HaslFormulasTop(double,double,double); //!< Constant confidence interval.
 	HaslFormulasTop(size_t); //!< Expectancy operator use to compute \f$ \mathbb{E} \f$ .
 	HaslFormulasTop(double,double); //!< Hypothesis operator: is the given probability above some thershold.
