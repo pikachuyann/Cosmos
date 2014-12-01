@@ -45,6 +45,7 @@ enum expType {
 
     Ceil,
     Floor,
+    Exp,
 
     Plus,
     Minus,

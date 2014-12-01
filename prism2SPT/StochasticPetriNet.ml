@@ -1,7 +1,7 @@
 open Type
 open PetriNet
 
-type distr = Exp of floatExpr | Imm of floatExpr;;
+type distr = Exp of floatExpr | Imm of floatExpr | Det of floatExpr;;
 
 
 let rec print_int_expr f = function 
@@ -27,6 +27,10 @@ let rec print_float_expr f = function
   | FloatName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
   | Float(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%f</attribute>" fl    
   | CastInt(ie) -> print_int_expr f ie
+  | ExpF(fe1) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"exp\">
+  %a
+</attribute></attribute>" print_float_expr fe1
   | MultF(fe1,fe2) -> Printf.fprintf f "
 <attribute name=\"function\"><attribute name=\"*\">
   %a
@@ -71,15 +75,23 @@ let print_distr f d =
     </attribute>
     <attribute name=\"weight\"><attribute name=\"expr\">
       %a
-    </attribute></attribute>
-  </attribute>" print_float_expr p
+    </attribute></attribute>" print_float_expr p
+     | Det p -> Printf.fprintf f "        DETERMINISTIC
+      </attribute>
+      <attribute name=\"param\">
+        <attribute name=\"number\">0</attribute>
+        <attribute name=\"expr\">
+          %a
+        </attribute>
+      </attribute>
+    </attribute>" print_float_expr p
   end
 
 let print_tr f name id rate =
   Printf.fprintf f "  <node id=\"%i\" nodeType=\"transition\">
     <attribute name=\"name\">%s</attribute>
-      %a
-  </node>" id name print_distr rate
+%a
+  </node>\n" id name print_distr rate
   
 let print_pl f name id tok =
   Printf.fprintf f "  <node id=\"%i\" nodeType=\"place\">
