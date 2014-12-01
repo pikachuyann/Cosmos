@@ -91,10 +91,10 @@ struct
     and i2 = Data.index net.transition s2 in
     Data.add ((),(v,i1,i2)) net.inhibArc
   
-    
   let add_arc net s1 s2 v =
     try add_inArc net s1 s2 v with
 	Not_found -> add_outArc net s1 s2 v
+
 end
 
 (*

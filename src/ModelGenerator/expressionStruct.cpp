@@ -52,6 +52,8 @@ std::ostream& operator<<(std::ostream& os, const class expr& e)
             break;
         case Floor: os << " floor(" << e.lhs << ") ";
             break;
+        case Exp: os << " exp(" << e.lhs << ") ";
+            break;
         case Plus: os << " (" << *(e.lhs) << " + " << *(e.rhs) << ") ";
             break;
         case Times: os << " (" << *(e.lhs) << " * " << *(e.rhs) << ") ";

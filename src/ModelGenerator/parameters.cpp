@@ -93,6 +93,7 @@ dataPDFCDF(""),
 gnuplotDriver(""),
 tracedPlace("ALL"),
 dotfile(""),
+magic_values(""),
 
 HaslFormulas(vector<HaslFormulasTop*>(0)),
 HaslFormulasname(vector<string>(0)),
@@ -234,6 +235,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"tmp-status", required_argument, 0, 5},
             {"bin-path", required_argument, 0, 9},
             {"prism-path", required_argument, 0, 20},
+            {"magic-values", required_argument,0, 29},
             {"version", no_argument, 0, 22},
 
             {0, 0, 0, 0}
@@ -350,6 +352,8 @@ void parameters::parseCommandLine(int argc, char** argv) {
             case 8: dataraw = optarg;
                 break;
             case 28: dotfile = optarg;
+                break;
+            case 29: magic_values = optarg;
                 break;
             case 18:
                 datatrace = optarg;

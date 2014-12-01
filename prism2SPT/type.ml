@@ -1,6 +1,8 @@
 
 let (|>) x f = f x 
-let (|>>)
+let (|>>) x f = match x with 
+    Some y -> f y
+  | None -> None
 
 let rec print_list f c = function
   | [] -> ()
@@ -21,7 +23,8 @@ and floatExpr = FloatName of string | Float of float
                 | MultF of floatExpr*floatExpr
                 | PlusF of floatExpr*floatExpr 
                 | MinusF of floatExpr*floatExpr
-                | DivF of floatExpr*floatExpr;;
+                | DivF of floatExpr*floatExpr
+		| ExpF of floatExpr;;
 
 
 let neg_cmp = function 
@@ -137,6 +140,7 @@ and printH_float_expr f = function
   | DivF(e1,e2) -> Printf.fprintf f "(%a/%a)" 
     printH_float_expr e1 
     printH_float_expr e2
+  | ExpF(x) -> Printf.fprintf f "exp(%a)" printH_float_expr x
 
 let rec printH_stateFormula f = function 
   | True -> output_string f " true " 
@@ -160,8 +164,18 @@ let print_token f = function
   | Int 3 -> output_string f "•••"
   | i -> printH_int_expr f i;;
 
+let rec eval_name data fe= 
+  let enf = eval_name data in match fe with
+    | FloatName(x) -> begin try let v = List.assoc x data in Float (v) with Not_found -> fe end
+    | Float(x) -> fe
+    | CastInt(x) -> fe
+    | PlusF(e1,e2) -> PlusF(enf e1,enf e2)
+    | MinusF(e1,e2) ->  MinusF(enf e1,enf e2)
+    | MultF(e1,e2) ->  MultF(enf e1,enf e2)
+    | DivF(e1,e2) -> DivF(enf e1,enf e2)
+    | ExpF(x) -> ExpF(enf x)
 
-type triggerT = Imm | Delay of string | RAction of string
+type triggerT = Imm | Delay of floatExpr | RAction of string
 
 
 type simulink_trans_label = {
@@ -204,7 +218,7 @@ let stateasso2 s2 l =
 
 let print_label_simulink f trans = match trans.trigger with
     Imm -> Printf.fprintf f "#,![%a],{%a}" print_list trans.write print_list trans.update
-  | Delay(s) -> Printf.fprintf f "wait(%s),![%a],{%a}" s  print_list trans.write print_list trans.update
+  | Delay(s) -> Printf.fprintf f "wait(%a),![%a],{%a}" printH_float_expr s print_list trans.write print_list trans.update
   | RAction(s) -> Printf.fprintf f "?%s,![%a],{%a}" s print_list trans.write print_list trans.update
 
 let print_trans_simulink sl f (ssid,src,trans,dst) =

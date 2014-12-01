@@ -4,11 +4,21 @@ open StochasticPetriNet
 open Type
 open Lexing
 
+
+let ssid_count = ref (-1)
+
+let fresh_ssid () =
+  let f= ! ssid_count in
+  incr ssid_count; f
+
+
 let rec findprop f = function
   | [] -> None
   | t::q -> (match f t with None -> findprop f q | x-> x)
 
-let getSSID al = int_of_string (List.assoc "SSID" al) 
+let getSSID al = let i = int_of_string (List.assoc "SSID" al)  in
+		 ssid_count := max !ssid_count (i+1); i
+
 let getName cl = findprop (function 
   | Element ("P",["Name","labelString"],[PCData(l)])  -> Some l 
   | _ -> None) cl
@@ -131,12 +141,6 @@ let rec prism_of_tree ml = function
        end
     | PCData (s) -> ml
 
-let ssid_count = ref (-1)
-
-let fresh_ssid () =
-  let f= ! ssid_count in
-  decr ssid_count; f
-
 let interface_of_modu tl =
   List.fold_left (fun s (_,_,lab,_) -> match lab.trigger with
     RAction a -> StringSet.add a s | _ -> s) StringSet.empty tl
@@ -185,7 +189,6 @@ let print_modu2 f (ssid,name,sl,ivect,tl) =
 	Printf.fprintf f "\t%i -> pl%i_%i [label=\"%s\"];\n" ssidt ssid i (stateasso s sl)) dst
     ) tl;
   output_string f "}\n"
-    
 
 let print_simulink_dot2 fpath ml =
   let f = open_out fpath in
@@ -229,10 +232,48 @@ let combine_modu (ssid,name,sl,ivect,tl) (ssid2,name2,sl2,ivect2,tl2) =
     not (List.exists (fun x -> StringSet.mem x inaction1) lab.write)) tl3 in
   let tl4 = List.fold_left (fun l t1 ->
     List.fold_left (fun l2 t2 -> comb_trans l2 t1 t2) l tl3) (tlunchanged@tlunchanged2) tl in 
-  (ssid,name,sl,ivect3,tl4)
+  (ssid,name,sl @ sl2 ,ivect3,tl4)
     
-let prune_unread (ssid,name,sl,ivect,tl) =
+let prune_unread (ssid,name,sl ,ivect,tl) =
   let tl2 = List.filter (fun (_,_,lab,_) -> match lab.trigger with
     RAction _-> false
   | _ -> true) tl in
   (ssid,name,sl,ivect,tl2) 
+
+let print_magic fpath sl =
+  let f = open_out fpath in
+  output_string f "const string print_magic(int v){\n";
+  output_string f "\tswitch(v){\n";
+  List.iter (fun (ssid,n) -> match n with 
+    Some n2 -> Printf.fprintf f "\t\tcase %i: return \"%s\";\n" ssid n2
+  | None -> ()) sl;
+  Printf.fprintf f "\t\tdefault: return std::to_string(v);\n\t}\n}";
+  close_out f
+
+let trans_of_int i lab =
+  let j = if i>0 then i else max_int + i in
+  let label = begin match lab.write with [] -> "" | t::_ -> t end in 
+  Printf.sprintf "tr%i_%s" j label
+
+let place_of_int ivect i =
+  match ivect.(i) with
+    _,None -> Printf.sprintf "pl%i" i
+  | _,Some(n) -> Printf.sprintf "%s%i" n i
+
+let stochNet_of_modu (ssid,name,sl,ivect,tl) =
+  print_magic "magic.hpp" sl;
+  let net = Net.create () in 
+  Array.iteri (fun n (x,n2) -> Data.add ((place_of_int ivect n),Int x) net.Net.place) ivect;
+  List.iter (fun (ssidt,src,lab,dst) ->
+    begin match lab.trigger with
+      Imm -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm (Float 1.0)) net.Net.transition
+    | Delay s-> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Det s) net.Net.transition
+    | _ -> failwith "Remaining read action"
+    end;
+    List.iter (fun (i,s) -> (
+      Net.add_inArc net (place_of_int ivect i) (trans_of_int ssidt lab) (Int s);
+      Net.add_inhibArc net (place_of_int ivect i) (trans_of_int ssidt lab) (Int (s+1)))) src;
+    List.iter (fun (i,s) ->
+      Net.add_outArc net (trans_of_int ssidt lab) (place_of_int ivect i) (Int s)) dst
+  ) tl;
+  net

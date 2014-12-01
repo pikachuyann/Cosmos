@@ -126,6 +126,7 @@ let rec rename_float_expr rn e =
     | FloatName(x) -> FloatName(rn x)
     | Float(x) -> Float(x)
     | CastInt(x) -> CastInt(rename_int_expr rn x) 
+    | ExpF(x) -> ExpF(rnr x) 
     | PlusF(e1,e2) -> PlusF(rnr e1,rnr e2)
     | MinusF(e1,e2) -> MinusF(rnr e1,rnr e2)
     | MultF(e1,e2) -> MultF(rnr e1,rnr e2)

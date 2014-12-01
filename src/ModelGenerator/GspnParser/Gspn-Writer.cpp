@@ -782,12 +782,19 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
     }
     SpnCppFile << "}\n";
 
+    if (!P.magic_values.empty())
+        SpnCppFile << "#include \"" << P.magic_values << "\"" << endl;
+    
 	SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
 	if(P.StringInSpnLHA){
 		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
 		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-			 plit!= MyGspn.placeStruct.end(); ++plit) {
-			if (plit->isTraced)SpnCppFile << "\ts << setw(" << maxNameSize << ") << P->_PL_"<< plit->name << ";\n";
+			 plit!= MyGspn.placeStruct.end(); ++plit)
+            if (plit->isTraced){
+                SpnCppFile << "\ts << setw(" << maxNameSize << ") << ";
+                if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit->name << ";\n";
+                }else{ SpnCppFile << "print_magic(P->_PL_"<< plit->name << ");\n";
+                }
 		}
 	}
 	SpnCppFile << "}\n";

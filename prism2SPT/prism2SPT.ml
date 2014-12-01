@@ -49,14 +49,19 @@ let _ =
     StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
     StochasticPetriNet.print_spt ((!output)^".grml") net ([],[]);
     print_endline "Finish exporting";
-  | Simulink ->
+  | Simulink -> begin
     tree_of_pnml !inname 
-  |> (Simulinkparser.prism_of_tree [])
-  |> List.map Simulinkparser.flatten_module 
-  |> List.map Simulinkparser.incr_state
-  |> (fun x -> List.fold_left Simulinkparser.combine_modu (List.hd x) (List.tl x)) 
-  |> Simulinkparser.prune_unread
-  |> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])
+    |> (Simulinkparser.prism_of_tree [])
+    |> List.map Simulinkparser.flatten_module 
+    |> List.map Simulinkparser.incr_state
+    |> (fun x -> List.fold_left Simulinkparser.combine_modu (List.hd x) (List.tl x)) 
+    |> Simulinkparser.prune_unread
+(*    |> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])*)
+    |> Simulinkparser.stochNet_of_modu
+    |> (fun net -> 
+      StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
+      StochasticPetriNet.print_spt ((!output)^".grml") net ([],[]));
+  end
   | _ -> failwith "Format not yet supported";;
 
 if Array.length Sys.argv =2 then
