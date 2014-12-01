@@ -53,13 +53,15 @@ bool ParseBuild() {
         if (P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "pm" 
          || P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "sm"
          || P.PathGspn.substr(P.PathGspn.length() - 4, 4) == "pnml"
+         || P.PathGspn.substr(P.PathGspn.length() - 3, 3) == "xml"
             ){
+            if(P.verbose>0)cerr << "Input file not in GrML try to use convertor."<< endl;
             auto outspt = P.tmpPath + "/generatedspt";
             stringstream cmd;
             cmd << P.Path << "prism2spt " << P.PathGspn << " " << outspt;
             if (P.verbose > 0)cout << cmd.str() << endl;
             if (system(cmd.str().c_str()) != 0) {
-                cerr << "Fail to Convert from prism language to GrML!" << endl;
+                cerr << "Fail to Convert from input language to GrML!" << endl;
                 return false;
             }
             P.PathGspn = outspt+".grml";

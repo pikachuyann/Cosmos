@@ -35,9 +35,11 @@
         DETERMINISTIC
       </attribute>
       <attribute name="param">
-        <attribute name="expr"><attribute name="numValue">
-          2.0
-        </attribute></attribute>
+        <attribute name="expr"><attribute name="function"><attribute name="exp">
+		<attribute name="numValue">
+          		0.69314718056
+        	</attribute>
+	</attribute></attribute></attribute>
       </attribute>
       </attribute>
   </node>
