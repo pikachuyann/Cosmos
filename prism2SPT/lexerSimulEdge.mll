@@ -22,6 +22,7 @@ rule token = parse
   | "bool" {BOOL}
   | "send" {SEND}
   | "after" {AFTER}
+  | "exp"   {EXP}
   | '"'      { read_string (Buffer.create 17) lexbuf }
   | "'" {PRIME}
   | '(' {LPAR}

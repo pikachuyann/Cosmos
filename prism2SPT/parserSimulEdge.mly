@@ -23,6 +23,7 @@
 %token INTKW DOUBLEKW
 %token LABEL
 %token SEND AFTER
+%token EXP
 
 %left OR
 %left AND
@@ -39,8 +40,8 @@
 
 main:
   action EOF { $1 }
- | AFTER LPAR expr COMMA NAME RPAR action { if $7.trigger <> Imm then failwith "two trigger for this transition";
-					    {$7 with trigger = Delay $3 }}; 
+ | AFTER LPAR floatexpr COMMA NAME RPAR action { if $7.trigger <> Imm then failwith "two trigger for this transition";
+					    {$7 with trigger = Delay (eval_name Data.data $3) }}; 
 
 action:
   pre { {empty_trans_label with trigger = $1 } }
@@ -65,3 +66,16 @@ expr:
  | NAME LPAR expr RPAR { Printf.sprintf "%s(%s)" $1 $3}
  | NAME LPAR expr COMMA expr RPAR { Printf.sprintf "%s(%s,%s)" $1 $3 $5};
  | NAME LPAR expr COMMA expr COMMA expr RPAR { Printf.sprintf "%s(%s,%s,%s)" $1 $3 $5 $7};
+
+
+floatexpr:
+  INT {Float (float $1)}
+| FLOAT {Float($1)}
+| LPAR floatexpr RPAR {$2 }
+| floatexpr MULT floatexpr {MultF($1,$3)}
+| floatexpr PLUS floatexpr {PlusF($1,$3)}
+| MINUS floatexpr {MinusF(Float 0.0,$2)}
+| floatexpr MINUS floatexpr {MinusF($1,$3)}
+| floatexpr DIV floatexpr {DivF($1,$3)}
+| NAME {FloatName($1)}
+| EXP LPAR floatexpr RPAR {ExpF($3)};

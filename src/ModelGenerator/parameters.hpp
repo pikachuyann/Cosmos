@@ -82,8 +82,6 @@ struct parameters {
     bool alligatorMode;
     string unfold;
 
-
-
     string gcccmd;
     string gccflags;
 
@@ -101,7 +99,8 @@ struct parameters {
     string gnuplotDriver;
     string tracedPlace;
     string dotfile;
-
+    string magic_values;
+    
     vector<HaslFormulasTop*> HaslFormulas;
     vector<string> HaslFormulasname;
     size_t nbAlgebraic;
