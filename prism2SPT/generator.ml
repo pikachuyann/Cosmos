@@ -10,7 +10,6 @@ let print_position outx lexbuf =
   Printf.fprintf outx "%s:%d:%d" pos.pos_fname
     pos.pos_lnum (pos.pos_cnum - pos.pos_bol + 1)
 
-
 let rec acc_var k = function 
   | [] -> raise Not_found
   | (t,a,_)::_ when t=k -> a  

@@ -351,9 +351,9 @@ void result::outputCDFPDF(string f) {
 
     outFile << "abscissa" << " ";
     for (auto &itname : namelist2) {
-        outFile << "\"" << itname << "_low\" ";
-        outFile << "\"" << itname << "_mean\" ";
-        outFile << "\"" << itname << "_up\" ";
+        outFile << "\"" << itname << "-low\" ";
+        outFile << "\"" << itname << "\" ";
+        outFile << "\"" << itname << "-up\" ";
     }
     nbColumnGraph = namelist.size();
     outFile << endl;

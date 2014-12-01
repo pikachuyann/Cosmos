@@ -573,6 +573,10 @@ void stateSpace::inputVect(){
 		}
 	
 	inputFile.close();
+    if(S.empty()){
+        cerr << "muFile empty" << endl;
+        exit(EXIT_FAILURE);
+    }
 	cerr<< "Finished reading muFile" << endl;
 }
 
