@@ -4,7 +4,7 @@ PACKAGES =
 LIBS     = 
 
 prism2spt: generator.ml lexer.mll parser.mly type.ml
-	cd $(srcdir); ocamlbuild generator.native
+	cd $(srcdir); ocamlbuild -cflags -I,+xml-light -lflags -I,+xml-light -lib xml-light generator.native
 	cp $(srcdir)/generator.native prism2spt
 
 EXTRA_DIST = generator.ml lexer.mll parser.mly type.ml petriNet.ml stochasticPetriNet.ml prism2SPT.ml

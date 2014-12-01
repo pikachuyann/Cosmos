@@ -144,6 +144,9 @@
 %token <name>     PDF
 %token <namd>	  CDF
 
+%token <name>     EXIST_TOK
+%token <name>     NOTALL_TOK
+
 %type<expression> IntMarkingFormula
 %type<expression> RealMarkingFormula
 %type<expression> RealVarMarkingFormula
@@ -766,7 +769,13 @@ AVG LB AlgExpr RB {
 	$$ = new HaslFormulasTop((size_t)Reader.MyLha.Algebraic.size()-1);
 }
 | PROB {
-	$$ = new HaslFormulasTop();
+	$$ = new HaslFormulasTop(PROBABILITY);
+}
+| EXIST_TOK {
+    $$ = new HaslFormulasTop(EXISTS);
+}
+| NOTALL_TOK {
+    $$ = new HaslFormulasTop(NOTALLS);
 }
 | SPRT LB rval COMMA rval RB {
 	$$ = new HaslFormulasTop($3,$5);

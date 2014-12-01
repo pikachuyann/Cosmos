@@ -31,9 +31,10 @@ let generate_lha fpath li obj =
     else if i=0 && t<> Init then blockade := Printf.sprintf " %s | (a%i=2)" !blockade n
   ) li;
   let f = open_out fpath in
+(*\%corrBlock=AVG(Last(corrblock))/AVG(Last(useblocked));*)
   Printf.fprintf f "
 const double maxtime=12000;
-VariablesList = { vc0, vc1, DISC vd0 , DISC vd1, DISC vd2, DISC vd3, DISC timefinishcorrect, DISC timefinish, DISC useblocked, DISC corrblock };
+VariablesList = { vc0, vc1, DISC vd0 , DISC vd1, DISC vd2, DISC vd3, DISC timefinishcorrect, DISC timefinish, DISC useblocked, DISC corrblock, DISC lasttranstime, DISC deadlocktime};
 LocationsList = {lii, li, li2, lfc,lf,lnf1,ldl,lnf2};
 FinishCorrect=AVG(Last(vd0));
 Finish=AVG(Last(vd1));
@@ -41,7 +42,6 @@ DeadLock=AVG(Last(vd2));
 Step=AVG(Last(vd3));
 Blockade=AVG(Last(vc1));
 uB=AVG(Last(useblocked));
-corrBlock=AVG(Last(corrblock))/AVG(Last(useblocked));
 InitialLocations = { lii };
 FinalLocations = {lfc,lf,ldl,lnf2};
 Locations = {
@@ -56,12 +56,12 @@ Locations = {
 };
 Edges = {
 ((lii,lii),ALL,vc0=0,#);
-((lii,li),ALL,vc0>=0.000000000001,{vd3=vd3+1,timefinish=maxtime,timefinishcorrect=maxtime});
-((lii,li2),ALL,vc0>=0.000000000001,{vd3=vd3+1,timefinish=maxtime,timefinishcorrect=maxtime,useblocked=1});
-((li,li),ALL,#,{vd3=vd3+1});
-((li2,li2),ALL,#,{vd3=vd3+1});
-((li,li2),ALL,#,{vd3=vd3+1,useblocked=1});
-((li2,li),ALL,#,{vd3=vd3+1});
+((lii,li),ALL,vc0>=0.000000000001,{vd3=vd3+1,timefinish=maxtime,timefinishcorrect=maxtime,deadlocktime=maxtime});
+((lii,li2),ALL,vc0>=0.000000000001,{vd3=vd3+1,timefinish=maxtime,timefinishcorrect=maxtime,deadlocktime=maxtime,useblocked=1});
+((li,li),ALL,#,{lasttranstime=vc0,vd3=vd3+1});
+((li2,li2),ALL,#,{lasttranstime=vc0,vd3=vd3+1});
+((li,li2),ALL,#,{lasttranstime=vc0,vd3=vd3+1,useblocked=1});
+((li2,li),ALL,#,{lasttranstime=vc0,vd3=vd3+1});
 ((li,lfc),ALL,#, {vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0,corrblock=useblocked });
 ((li2,lfc),ALL,#,{vd0=1,vd1=1,vd3=vd3+1, timefinishcorrect=vc0,corrblock=useblocked });
 ((li,lf),ALL,#,{vd1=1,vd3=vd3+1, timefinish=vc0});
@@ -72,18 +72,18 @@ Edges = {
 ((lii,lf),ALL,#,{vd1=1,vd3=vd3+1, timefinish=vc0});
 ((lii,lnf1),#,vc0=maxtime,#);
 ((lnf1,lnf2),ALL,#,#);
-((lnf1,ldl),#,vc0=1000000000,{vd2=1});
+((lnf1,ldl),#,vc0=1000000000,{deadlocktime=lasttranstime,vd2=1});
 };" !safe !blockade !safe !blockade obj !safe obj ;
   close_out f;;
 
 
-let gen_spn2 fpath li ks failure gentrans=
+let gen_spn2 ?(gentrans=true) ?(genfailure=true) fpath li ks failure=
   let ksi = ks/.3. in
   print_endline ("Generate2 "^fpath);
   let (net:spt) = Net.create () in
   List.iter (fun (n,t,i,_) ->
     Data.add (("a"^(string_of_int n)),(if t=Init then 2 else i)) net.Net.place;
-    if i=0 && t <> Init then begin
+    if i=0 && t <> Init && genfailure then begin
       Data.add (("b"^(string_of_int n)),1) net.Net.place;
       Data.add ("tb"^(string_of_int n) ,(Imm failure)) net.Net.transition;
       Data.add ("tAb"^(string_of_int n) ,(Imm (1.0-.failure))) net.Net.transition;
@@ -196,14 +196,14 @@ let gen_spn fpath li ks failure=
 
 let generate_spn fpath li2 ks failure obj =
   let li = mapsq3 li2 in
-  let net = gen_spn2 fpath li ks failure true in
+  let net = gen_spn2 ~gentrans:true ~genfailure:false fpath li ks failure in
   generate_lha (fpath^".lha") li obj;
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
   print_spt_dot (fpath^".dot") net [] 
     (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
-(*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
-(*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--njob 8");;*)
+  (*ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
+  (*execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--gppflags -O0 --njob 2");;*)
 
 
 
@@ -473,7 +473,12 @@ lozange "lozange" 10 10 (fun _ _ -> 1);;
 let ra x = (float x) -. 5.5;;
 let ra2 x y = (ra x)*.(ra x) +. (ra y)*.(ra y);;
 
+let raman x = abs_float ((float x) -. 5.5);;
+let ra3 x y = max (raman x) (raman y);;
+
+(*lozange "lozangeBlock" 10 10 (fun x y -> 
+  max 0 ( (min 1 (int_of_float ((ra2 x y)/.20.1)))));;
+*)
 
 lozange "lozangeBlock" 10 10 (fun x y -> 
-  max 0 ( (min 1 (int_of_float ((ra2 x y)/.9.0)))));;
- 
+  max 0 ( (min 1 (int_of_float ((ra3 x y)/.4.0)))));;

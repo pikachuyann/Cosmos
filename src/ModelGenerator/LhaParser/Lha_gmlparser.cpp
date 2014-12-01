@@ -370,7 +370,7 @@ HaslFormulasTop* MyLhaModelHandler::exportHASLTop(tree<string>::pre_order_iterat
 		MyLHA->Algebraic.push_back( ss.str() );
 		return (new HaslFormulasTop(MyLHA->Algebraic.size()-1));
 	} else if((*it) == "PROB"){
-		return (new HaslFormulasTop());
+		return (new HaslFormulasTop(PROBABILITY));
 	} else if(*it == "PDF" || *it == "CDF"){
 		string lhafunc;
 		double deltab = 1;

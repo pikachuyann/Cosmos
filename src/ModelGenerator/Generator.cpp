@@ -51,7 +51,9 @@ bool ParseBuild() {
     try {
         // Check the extension of the model file to call the correct parser
         if (P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "pm" 
-         || P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "sm" ){
+         || P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "sm"
+         || P.PathGspn.substr(P.PathGspn.length() - 4, 4) == "pnml"
+            ){
             auto outspt = P.tmpPath + "/generatedspt";
             stringstream cmd;
             cmd << P.Path << "prism2spt " << P.PathGspn << " " << outspt;
