@@ -97,7 +97,7 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
     } else if (*it == "+" || *it == "*"
             || *it == "min" || *it == "max"
             || *it == "floor" || *it == "minus" || *it == "-"
-            || *it == "/" || *it == "power") {
+            || *it == "/" || *it == "power" || *it == "exp") {
 
         expr rhs;
         expr lhs;
@@ -111,22 +111,29 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
 
         }
 
-        if (*it == "+") {
-            return expr(Plus, lhs, rhs);
-        } else if (*it == "*") {
-            return expr(Times, lhs, rhs);
-        } else if (*it == "minus" || *it == "-") {
-            return expr(Minus, lhs, rhs);
-        } else if (*it == "/") {
-            return expr(Div, lhs, rhs);
-        } else if (*it == "power") {
-            return expr(Pow, lhs, rhs);
-        } else if (*it == "ceil") {
-            return expr(Ceil, lhs, rhs);
-        } else {
-            return expr(Floor, lhs, rhs);
+        if (!rhs.empty()){
+            if (*it == "ceil") {
+                return expr(Ceil, lhs, rhs);
+            } else if (*it == "exp") {
+                return expr(Exp, lhs, rhs);
+            } else if (*it == "floor") {
+                return expr(Floor, lhs, rhs);
+            } else if(!lhs.empty()){
+                if (*it == "+") {
+                    return expr(Plus, lhs, rhs);
+                } else if (*it == "*") {
+                    return expr(Times, lhs, rhs);
+                } else if (*it == "minus" || *it == "-") {
+                    return expr(Minus, lhs, rhs);
+                } else if (*it == "/") {
+                    return expr(Div, lhs, rhs);
+                } else if (*it == "power") {
+                    return expr(Pow, lhs, rhs);
+                }
+            }
         }
-
+        cout << "fail eval expr: '" << *it << "'" << endl;
+        throw (gmlioexc);
     } else if (simplifyString(*it).empty())return expr(0);
 
     try {

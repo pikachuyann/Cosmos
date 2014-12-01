@@ -59,7 +59,9 @@ enum expType {
     And,Or,
     Eq, Neq,
     Leq,Sl,
-    Geq,SG
+    Geq,SG,
+
+    Var,Lambda,App
 };
 
 class expr{
