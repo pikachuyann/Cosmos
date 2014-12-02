@@ -86,7 +86,6 @@ let module_of_simul al cl =
   modu
 
 
-
 let print_modu f (ssid,name,sl,tl) =
   Printf.fprintf f "\tsubgraph cluster%i {\n" ssid;
   match name with None -> Printf.fprintf f "\t%i[shape=rectangle]\n" ssid
@@ -251,6 +250,7 @@ let place_of_int ivect i =
 
 let print_magic fpath sl tl=
   let f = open_out fpath in
+  output_string f "#define temporalCount(msec) 0\n";
   output_string f "const string print_magic(int v){\n";
   output_string f "\tswitch(v){\n";
   List.iter (fun (ssid,n) -> match n with 
@@ -258,6 +258,7 @@ let print_magic fpath sl tl=
   | None -> ()) sl;
   Printf.fprintf f "\t\tdefault: return std::to_string(v);\n\t}\n}\n";
   List.iter (fun x -> Printf.fprintf f "double %s=0;\n" x) DataFile.var;
+  List.iter (fun x -> Printf.fprintf f "%s\n" x) DataFile.func;
   Printf.fprintf f "void magicUpdate(int t,double ctime){
   switch(t){\n";
   List.iter (fun (ss,_,lab,_) ->
