@@ -35,5 +35,20 @@ let data = [
 
 
 let var= [
-"avj_refr"; "avj_t4"; "avj_refr_0"; "avj_tRec"
+  "avj_refr"; "avj_t4"; "avj_refr_0"; "avj_tRec"; "refractorylast";
+  "recoverylast" ; "antelast" ; "a_dV"
 ]
+
+let func= [
+"double modulateRefrAnte(double t,double t0,double dV){
+  return AV_refrDMin*pow(t/t0,AV_theta)*pow(fmin(1,dV/(AV_Vt-AV_Vr)),AV_delta);
+}";
+"double modulateRefrRetro(double t,double t0){
+    return AV_refrDMin*pow(t/t0,AV_theta);
+}";
+"double timeToDep(double Vm){
+    return fmax(0,(AV_Vt-Vm)/AV_k4);
+}";
+"double initRefrPeriod(double tRec){
+    return AV_refrDMin + AV_beta*(1 - exp(-tRec/AV_tr));
+}"]
