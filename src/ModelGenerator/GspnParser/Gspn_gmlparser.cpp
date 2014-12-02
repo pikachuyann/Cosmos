@@ -82,7 +82,8 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
     } else if (*it == "name") {
         string var = simplifyString(it.node->first_child->data);
         if (MyGspn->IntConstant.count(var) > 0 ||
-                MyGspn->RealConstant.count(var) > 0) {
+                MyGspn->RealConstant.count(var) > 0 ||
+                MyGspn->ExternalConstant.count(var) > 0  ) {
             return expr(Constant, var);
         } else {
             if ((P.verbose - 3) > 1)cout << "\t" << var << endl;
@@ -394,6 +395,19 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                         MyGspn->RealConstant[constname] = constvalue;
                         if ((P.verbose - 3) > 1)cout << "\tconst double " << constname << "=" << MyGspn->RealConstant[constname] << endl;
 
+                    }
+                }
+            
+            t2 = findbranch(it, "constants/extConsts/");
+            if (t2 != it.end())
+                for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
+                    if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                    if (*it2 == "extConst") {
+                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                        string constname = simplifyString((find(it2.begin(), it2.end(), "name")).node->first_child->data);
+                        MyGspn->ExternalConstant.emplace(constname);
+                        if ((P.verbose - 3) > 1)cout << "\tconst External " << constname << endl;
+                        
                     }
                 }
 
