@@ -29,6 +29,8 @@
         </attribute></attribute>
       </attribute>
      </attribute>
+    <attribute name="extConsts">
+    </attribute>
     </attribute>
   </attribute>
   <node id="0" nodeType="place">
@@ -45,7 +47,7 @@
   </node>
   <node id="2" nodeType="transition">
     <attribute name="name">a1e1</attribute>
-          <attribute name="distribution">
+    <attribute name="distribution">
       <attribute name="type">
         EXPONENTIAL
       </attribute>
@@ -62,9 +64,10 @@
 </attribute></attribute></attribute>
       </attribute>
     </attribute>
-  </node>  <node id="3" nodeType="transition">
+  </node>
+  <node id="3" nodeType="transition">
     <attribute name="name">a2e2</attribute>
-          <attribute name="distribution">
+    <attribute name="distribution">
       <attribute name="type">
         EXPONENTIAL
       </attribute>
@@ -89,7 +92,8 @@
 </attribute></attribute></attribute>
       </attribute>
     </attribute>
-  </node>  <arc id="4" arcType="arc" source="1" target="2">
+  </node>
+  <arc id="4" arcType="arc" source="1" target="2">
     <attribute name="valuation"><attribute name="expr">
         <attribute name="numValue">1</attribute>
     </attribute></attribute>

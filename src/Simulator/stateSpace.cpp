@@ -100,7 +100,7 @@ void stateSpace::exploreStateSpace(){
 
 			if (N.IsEnabled(t,b)) {
 				
-				N.fire(t,b);
+				N.fire(t,b,0.0);
 				//cerr << "transition:" << *it << endl;
 				vector<int> marking = N.Marking.getVector();
 				int SE = A.GetEnabled_S_Edges(t,N.Marking,b);
@@ -164,7 +164,7 @@ void stateSpace::buildTransitionMatrix()
 			abstractBinding b;
 			if (N.IsEnabled(t,b)) {
 				A.CurrentLocation = lhaloc;
-				N.fire(t,b);
+				N.fire(t,b,0.0);
 				vector<int> marking = N.Marking.getVector();
 				int SE = A.GetEnabled_S_Edges( t  , N.Marking,b);
                 if (SE > -1) {

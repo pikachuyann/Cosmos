@@ -183,9 +183,11 @@ public:
 	 * at runtime.
 	 * @param tr a transition of the SPN
 	 * @param b a binding of the transition of the SPN
+     * @param time, the current time of the simulation, only used when link
+     * with external code.
 	 */
 	void
-	fire(size_t tr,const abstractBinding& b);
+	fire(size_t tr,const abstractBinding& b, double time);
 	
 	/**
 	 * \brief unfire a given transition.
