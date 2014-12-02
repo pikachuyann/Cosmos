@@ -984,6 +984,15 @@ void Gspn_Writer::writeDotFile(const string &file){
     
 }
 
+void Gspn_Writer::writeMacro(ofstream &f){
+    for( auto &p : MyGspn.placeStruct)
+        f << "#define PL_"<< p.name << "_LP " << p.id <<endl;
+    for( auto &t : MyGspn.transitionStruct)
+        f << "#define TR_"<< t.label << "_RT " << t.id <<endl;
+    f<< endl;
+}
+
+
 void Gspn_Writer::writeFile(){
 	
 	string Pref = P.tmpPath;
@@ -1014,7 +1023,9 @@ void Gspn_Writer::writeFile(){
 	SpnCppFile << "#include <iomanip>" << endl;
 	
 	//------------- Writing constant--------------------------------------------
-	for (map<string,double>::iterator it= MyGspn.RealConstant.begin();
+    writeMacro(SpnCppFile);
+    
+    for (map<string,double>::iterator it= MyGspn.RealConstant.begin();
 		 it!= MyGspn.RealConstant.end() ; it++) {
 		SpnCppFile << "\tconst double "<<it->first<<"="<<it->second << ";" << endl;
 	}
@@ -1133,8 +1144,9 @@ void Gspn_Writer::writeFile(){
 	SpnCppFile << "}\n" << endl;
 	
 	
-	SpnCppFile << "void SPN::fire(size_t t, const abstractBinding& b){" << endl;
+	SpnCppFile << "void SPN::fire(size_t t, const abstractBinding& b, double time){" << endl;
 	SpnCppFile << "\tlastTransition = t;" << endl;
+    if (!P.magic_values.empty()){SpnCppFile << "\tmagicUpdate(t,time);\n";};
 	SpnCppFile << "\tswitch(t){" << endl;
 	for (size_t t = 0; t < MyGspn.tr; t++) {
 		SpnCppFile << "\t\tcase " << t << ": {  //" << MyGspn.transitionStruct[t].label << endl;

@@ -25,7 +25,7 @@ let _ =
 	  match suf with
 	  "sm" | "pm" -> typeFormat := Prism
 	| "pnml" -> typeFormat := Pnml
-	| "xml" -> typeFormat := Simulink
+	| "slx" -> typeFormat := Simulink
 	| _-> failwith "Unsupported file format"
 	)
     | 2 -> output := s
@@ -37,20 +37,23 @@ let _ =
     Prism ->
       print_endline ("Opening "^ !inname);
       input := open_in !inname;
-      let (cdef,net) = read_prism !input !inname in
+      let net = read_prism !input !inname in
       print_endline "Finish parsing";
       StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
-      StochasticPetriNet.print_spt ((!output)^".grml") net cdef;
+      StochasticPetriNet.print_spt ((!output)^".grml") net;
       print_endline "Finish exporting";
   | Pnml ->
     let xmlf = tree_of_pnml !inname in
     let net = PetriNet.Net.create () in
     net_of_tree net xmlf;
     StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
-    StochasticPetriNet.print_spt ((!output)^".grml") net ([],[]);
+    StochasticPetriNet.print_spt ((!output)^".grml") net;
     print_endline "Finish exporting";
   | Simulink -> begin
-    tree_of_pnml !inname 
+    Zip.open_in !inname
+    |> (fun z -> Zip.find_entry z "simulink/blockdiagram.xml"
+	   |> Zip.read_entry z)
+    |> Xml.parse_string 
     |> (Simulinkparser.prism_of_tree [])
     |> List.map Simulinkparser.flatten_module 
     |> List.map Simulinkparser.incr_state
@@ -60,7 +63,7 @@ let _ =
     |> Simulinkparser.stochNet_of_modu
     |> (fun net -> 
       StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
-      StochasticPetriNet.print_spt ((!output)^".grml") net ([],[]));
+      StochasticPetriNet.print_spt ((!output)^".grml") net);
   end
   | _ -> failwith "Format not yet supported";;
 

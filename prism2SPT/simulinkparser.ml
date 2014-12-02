@@ -4,7 +4,6 @@ open StochasticPetriNet
 open Type
 open Lexing
 
-
 let ssid_count = ref (-1)
 
 let fresh_ssid () =
@@ -240,16 +239,6 @@ let prune_unread (ssid,name,sl ,ivect,tl) =
   | _ -> true) tl in
   (ssid,name,sl,ivect,tl2) 
 
-let print_magic fpath sl =
-  let f = open_out fpath in
-  output_string f "const string print_magic(int v){\n";
-  output_string f "\tswitch(v){\n";
-  List.iter (fun (ssid,n) -> match n with 
-    Some n2 -> Printf.fprintf f "\t\tcase %i: return \"%s\";\n" ssid n2
-  | None -> ()) sl;
-  Printf.fprintf f "\t\tdefault: return std::to_string(v);\n\t}\n}";
-  close_out f
-
 let trans_of_int i lab =
   let j = if i>0 then i else max_int + i in
   let label = begin match lab.write with [] -> "" | t::_ -> t end in 
@@ -260,9 +249,31 @@ let place_of_int ivect i =
     _,None -> Printf.sprintf "pl%i" i
   | _,Some(n) -> Printf.sprintf "%s%i" n i
 
+let print_magic fpath sl tl=
+  let f = open_out fpath in
+  output_string f "const string print_magic(int v){\n";
+  output_string f "\tswitch(v){\n";
+  List.iter (fun (ssid,n) -> match n with 
+    Some n2 -> Printf.fprintf f "\t\tcase %i: return \"%s\";\n" ssid n2
+  | None -> ()) sl;
+  Printf.fprintf f "\t\tdefault: return std::to_string(v);\n\t}\n}\n";
+  List.iter (fun x -> Printf.fprintf f "double %s=0;\n" x) DataFile.var;
+  Printf.fprintf f "void magicUpdate(int t,double ctime){
+  switch(t){\n";
+  List.iter (fun (ss,_,lab,_) ->
+    if lab.update <> [] then begin
+      Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
+      List.iter (fun x -> Printf.fprintf f "\t\t%s;\n" x) lab.update; 
+      output_string f "\tbreak;\n"
+    end) tl;
+  output_string f "\tdefault: break;\n\t}\n}";
+
+  close_out f
+
 let stochNet_of_modu (ssid,name,sl,ivect,tl) =
-  print_magic "magic.hpp" sl;
+  print_magic "magic.hpp" sl tl;
   let net = Net.create () in 
+  net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) DataFile.data),DataFile.var);
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int ivect n),Int x) net.Net.place) ivect;
   List.iter (fun (ssidt,src,lab,dst) ->
     begin match lab.trigger with
@@ -277,3 +288,4 @@ let stochNet_of_modu (ssid,name,sl,ivect,tl) =
       Net.add_outArc net (trans_of_int ssidt lab) (place_of_int ivect i) (Int s)) dst
   ) tl;
   net
+

@@ -102,8 +102,9 @@ let gen_acc iinit modu net (st,g,f,u) =
   List.iter (fun (v,jexp) -> Net.add_outArc net trname v jexp) u*)
 
 
-let net_of_prism modu =
+let net_of_prism modu (li,lf) =
   let net = Net.create () in
+  net.Net.def <- Some (li,lf,[]);
   List.iter (fun (n,(a,b),i) -> Data.add (n,i) net.Net.place) modu.varlist;
   ignore (List.fold_left 
 	    (fun i ac ->
@@ -192,7 +193,7 @@ let read_prism s name =
     let prismm2 = rename_module fullmod renammod in
     let prismmodule = List.fold_left compose_module 
       (List.hd prismm2) (List.tl prismm2) in
-    (cdef,net_of_prism prismmodule)
+    (net_of_prism prismmodule cdef)
   with 
   | SyntaxError msg ->
     Printf.fprintf stderr "%a: %s\n" print_position lexbuf msg;

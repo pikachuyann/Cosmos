@@ -345,7 +345,7 @@ bool Simulator::SimulateOneStep(){
 			}
 		
 		//Fire the transition in the SPN
-		N.fire(E1.transition, E1.binding);
+		N.fire(E1.transition, E1.binding, A.CurrentTime);
 		
         //Check if there exist a valid transition in the automata.
 		int SE = A.GetEnabled_S_Edges(E1.transition, N.Marking, E1.binding);

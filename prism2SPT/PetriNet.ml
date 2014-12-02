@@ -61,7 +61,8 @@ end
 
 module Net =
 struct
-  type ('a,'b,'c) t = { 
+  type ('a,'b,'c,'d) t = {
+    mutable def: 'd option;
     place: (string,'a) Data.t;
     transition: (string,'b) Data.t;
     inArc: (unit,('c*int*int)) Data.t;
@@ -69,6 +70,7 @@ struct
     outArc: (unit,('c*int*int)) Data.t;
   }
   let create () = {
+    def = None;
     place = Data.create ();
     transition = Data.create ();
     inArc = Data.create ();

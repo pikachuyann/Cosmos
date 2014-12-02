@@ -1,1 +1,1 @@
-ocamlbuild -cflags -I,+xml-light -lflags -I,+xml-light -lib xml-light prism2SPT.native
+ocamlbuild -cflags -I,+xml-light,-I,/Users/benbot/.opam/system/lib/zip -lflags -I,+xml-light,-I,/Users/benbot/.opam/system/lib/zip/ -libs unix,xml-light,zip prism2SPT.native

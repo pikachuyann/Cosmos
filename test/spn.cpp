@@ -225,7 +225,7 @@ switch (t){
 }
 }
 
-void SPN::fire(size_t t, const abstractBinding& b){
+void SPN::fire(size_t t, const abstractBinding& b,double time){
 	lastTransition = t;
 	switch(t){
 		case 0: {  //takeLeft
