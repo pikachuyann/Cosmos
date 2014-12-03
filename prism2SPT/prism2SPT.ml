@@ -55,6 +55,7 @@ let _ =
 	   |> Zip.read_entry z)
     |> Xml.parse_string 
     |> (Simulinkparser.prism_of_tree [])
+    |> Simulinkparser.expand_trans
     |> List.map Simulinkparser.flatten_module 
     |> List.map Simulinkparser.incr_state
     |> (fun x -> List.fold_left Simulinkparser.combine_modu (List.hd x) (List.tl x)) 

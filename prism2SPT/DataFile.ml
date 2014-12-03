@@ -51,4 +51,11 @@ let func= [
 }";
 "double initRefrPeriod(double tRec){
     return AV_refrDMin + AV_beta*(1 - exp(-tRec/AV_tr));
-}"]
+}";
+"void magicReset(){
+    avj_t4=timeToDep(AV_Vr);
+    recoverylast=0;
+    antelast=0;
+    refractorylast=0;
+}";
+]

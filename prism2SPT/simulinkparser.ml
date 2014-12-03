@@ -6,6 +6,10 @@ open Lexing
 
 let ssid_count = ref (-1)
 
+let detfun s =
+  let n = 10 in
+  StochasticPetriNet.Erl (Int n,DivF (Float (float n),s))
+
 let fresh_ssid () =
   let f= ! ssid_count in
   incr ssid_count; f
@@ -34,6 +38,13 @@ let getsrc cl = findprop (function
     | _ -> None) cl2
   | _ -> None) cl
 
+let rec exp_data = function
+   | Element (name,alist,clist) ->
+      Printf.printf "<%s " name; List.iter (fun (x,y) -> Printf.printf "%s=\"%s\" " x y) alist;
+     print_newline ();
+     List.iter (exp_data) clist
+    | PCData (s) -> print_endline s
+
 let rec exp_mod (sl,tl) = function
     | Element (name,alist,clist) ->
        begin match name with
@@ -41,8 +52,9 @@ let rec exp_mod (sl,tl) = function
        | "state" -> (((getSSID alist),(getName clist))::sl,tl)
        | "transition" -> (match getdst clist with Some dst ->
 	 (sl,((getSSID alist),(getName clist),(getsrc clist),dst)::tl) | _ -> failwith "Ill formed transition")
+   (*    | "data" ->  List.iter (exp_data) clist; (sl,tl)*)
 
-       | x -> Printf.printf "Dont know wat to do with %s, ignore\n" x; (sl,tl)
+       | x -> Printf.printf "Dont know what to do with %s, ignore\n" x; (sl,tl)
        end
     | PCData (s) -> print_endline s; (sl,tl)
 
@@ -67,7 +79,7 @@ let print_position outx lexbuf =
 let eval_trans (ssid,name,src,dst) = match name with
     None -> (ssid,src,empty_trans_label,dst)
   | Some s -> let lexbuf = Lexing.from_string s in
-	      try	
+	      try     
 		let label = ParserSimulEdge.main LexerSimulEdge.token lexbuf in
 		(ssid,src,label,dst)
     with 
@@ -85,6 +97,32 @@ let module_of_simul al cl =
   (*print_module modu;*)
   modu
 
+let post_name sl s t =
+  match List.assoc s sl with
+    None -> Printf.sprintf "%i_Pre" t
+  | Some(sn) -> Printf.sprintf "%i_Pre_%s" t sn
+
+let expand_trans l=
+  List.map (fun (ssidmod,name,sl,tl) ->
+    let (nsl,ntl) = List.fold_left (fun (sl2,tl2) (ssid,src,label,dst) -> 
+      match (label.trigger,label.write,src) with 
+      | (Delay(_),(_::_),_) -> (* wait and synch loop *)
+	let news = fresh_ssid ()
+	and newsn = post_name sl dst ssid in
+	let newt = fresh_ssid () in
+	((news,Some newsn)::sl2,
+	(ssid,src,{empty_trans_label with trigger=label.trigger},news)::
+	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
+      | (RAction(_),_,Some src2) when src2=dst->  (* self loop with read *)
+	let news = fresh_ssid ()
+	and newsn = post_name sl dst ssid in
+	let newt = fresh_ssid () in
+	((news,Some newsn)::sl2,
+	(ssid,src,{empty_trans_label with trigger=label.trigger},news)::
+	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
+      | _ -> (sl2,(ssid,src,label,dst)::tl2)) (sl,[]) tl in
+    (ssidmod,name,nsl,ntl)) l
+	      
 
 let print_modu f (ssid,name,sl,tl) =
   Printf.fprintf f "\tsubgraph cluster%i {\n" ssid;
@@ -147,9 +185,9 @@ let flatten_module (ssid,name,sl,tl) =
   let inaction = interface_of_modu tl in
   let tl2 = List.fold_left (fun nt2 (ss,_) ->
     StringSet.fold (fun sa tl3 ->
-      if List.exists (fun (_,src,lab,_) ->
+      if not (List.exists (fun (_,src,lab,_) ->
 	match (src,lab.trigger) with ((Some x),(RAction y)) when x=ss && y = sa -> true | _-> false
-      ) tl 
+      ) tl) 
       then ((fresh_ssid ()),Some ss,{empty_trans_label with trigger = RAction(sa) },ss)::tl3 
       else tl3) inaction nt2) tl sl in 
   (ssid,name,sl,tl2)
@@ -279,7 +317,7 @@ let stochNet_of_modu (ssid,name,sl,ivect,tl) =
   List.iter (fun (ssidt,src,lab,dst) ->
     begin match lab.trigger with
       Imm -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm (Float 1.0)) net.Net.transition
-    | Delay s-> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Det s) net.Net.transition
+    | Delay s-> Data.add ((trans_of_int ssidt lab),detfun s) net.Net.transition
     | _ -> failwith "Remaining read action"
     end;
     List.iter (fun (i,s) -> (
