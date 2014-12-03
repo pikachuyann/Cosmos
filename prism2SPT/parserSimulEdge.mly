@@ -34,6 +34,8 @@
 %left LPAR RPAR
 
 %start main
+%start mathcode
+%type <string*string> mathcode 
 %type <Type.simulink_trans_label> main
 
 %%
@@ -82,3 +84,6 @@ floatexpr:
 | floatexpr DIV floatexpr {DivF($1,$3)}
 | NAME {FloatName($1)}
 | EXP LPAR floatexpr RPAR {ExpF($3)};
+
+mathcode:
+  EOF {"",""}
