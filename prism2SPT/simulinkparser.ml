@@ -38,6 +38,12 @@ let getsrc cl = findprop (function
     | _ -> None) cl2
   | _ -> None) cl
 
+let getScript cl = findprop (function 
+  | Element ("eml",_,cl2) -> findprop (function 
+      | Element ("P",["Name","script"],[PCData(l)])  -> Some l 
+      | _ -> None) cl2
+  | _ -> None) cl
+  
 let rec exp_data = function
    | Element (name,alist,clist) ->
       Printf.printf "<%s " name; List.iter (fun (x,y) -> Printf.printf "%s=\"%s\" " x y) alist;
@@ -45,18 +51,42 @@ let rec exp_data = function
      List.iter (exp_data) clist
     | PCData (s) -> print_endline s
 
-let rec exp_mod (sl,tl) = function
+
+let print_position outx lexbuf =
+  let pos = lexbuf.Lexing.lex_curr_p in
+  Printf.fprintf outx "%s:%d:%d" pos.pos_fname
+    pos.pos_lnum (pos.pos_cnum - pos.pos_bol + 1)
+
+let parse_regexp = Str.regexp "function \\([A-Za-z0-9_]+\\)[ ]*=[ ]*\\([A-Za-z0-9_]+[(][A-Za-z0-9_,]*[)]\\)\n\\([^̂†]*\\)\nend"
+let reg_comm = Str.regexp "%"
+  
+let parse_fun scr =
+  assert (Str.string_match parse_regexp scr 0);
+  let var = Str.matched_group 1 scr
+  and name = Str.matched_group 2 scr
+  and body = Str.matched_group 3 scr in
+  let body2 = Str.global_replace reg_comm "//" body in
+  (name,Printf.sprintf "double %s{\n\tdouble %s\n%s\n\treturn %s;\n}" name var body2 var)
+  
+(*parse_fun "function dT  = modulateRefrRetro(t,t0)\n toto\ntata \nend";;*)
+    
+let rec exp_mod (sl,tl,scriptl) = function
     | Element (name,alist,clist) ->
        begin match name with
-       | "Children" -> List.fold_left exp_mod (sl,tl) clist
-       | "state" -> (((getSSID alist),(getName clist))::sl,tl)
+       | "Children" -> List.fold_left exp_mod (sl,tl,scriptl) clist
+       | "state" -> begin match getScript clist with
+	   None -> (((getSSID alist),(getName clist))::sl,tl,scriptl)
+	   | Some scr -> let fn,fb = parse_fun scr in (sl,tl,((Some fn),fb)::scriptl)
+       end 
        | "transition" -> (match getdst clist with Some dst ->
-	 (sl,((getSSID alist),(getName clist),(getsrc clist),dst)::tl) | _ -> failwith "Ill formed transition")
-   (*    | "data" ->  List.iter (exp_data) clist; (sl,tl)*)
-
-       | x -> Printf.printf "Dont know what to do with %s, ignore\n" x; (sl,tl)
+	 (sl,((getSSID alist),(getName clist),(getsrc clist),dst)::tl,scriptl) | _ -> failwith "Ill formed transition")
+       | "data" -> begin try  (sl,tl,(None,List.assoc "name" alist)::scriptl) with
+	   | Not_found -> (sl,tl,scriptl)
        end
-    | PCData (s) -> print_endline s; (sl,tl)
+
+       | x -> Printf.printf "Dont know what to do with %s, ignore\n" x; (sl,tl,scriptl)
+       end
+    | PCData (s) -> print_endline s; (sl,tl,scriptl)
 
 let print_module (ssid,name,sl,tl) =
   Printf.printf "module: %i -> " ssid;
@@ -69,12 +99,6 @@ let print_module (ssid,name,sl,tl) =
   Printf.printf "\ttransition list: [\n";
   List.iter (print_trans_simulink sl stdout) tl;
   Printf.printf "\t]\n"
-
-
-let print_position outx lexbuf =
-  let pos = lexbuf.Lexing.lex_curr_p in
-  Printf.fprintf outx "%s:%d:%d" pos.pos_fname
-    pos.pos_lnum (pos.pos_cnum - pos.pos_bol + 1)
 
 let eval_trans (ssid,name,src,dst) = match name with
     None -> (ssid,src,empty_trans_label,dst)
@@ -92,8 +116,8 @@ let module_of_simul al cl =
   let ssid = getSSID al in
   let name = getName cl in
   let childs = List.find (function Element ("Children",_,_)->true | _-> false) cl in
-  let sl,tl = exp_mod ([],[]) childs in
-  let modu = ssid,name,sl,(List.map eval_trans tl) in 
+  let sl,tl,scriptl = exp_mod ([],[],[]) childs in
+  let modu = ssid,name,sl,(List.map eval_trans tl),scriptl in 
   (*print_module modu;*)
   modu
 
@@ -103,7 +127,7 @@ let post_name sl s t =
   | Some(sn) -> Printf.sprintf "%i_Pre_%s" t sn
 
 let expand_trans l=
-  List.map (fun (ssidmod,name,sl,tl) ->
+  List.map (fun (ssidmod,name,sl,tl,scrl) ->
     let (nsl,ntl) = List.fold_left (fun (sl2,tl2) (ssid,src,label,dst) -> 
       match (label.trigger,label.write,src) with 
       | (Delay(_),(_::_),_) -> (* wait and synch loop *)
@@ -121,10 +145,10 @@ let expand_trans l=
 	(ssid,src,{empty_trans_label with trigger=label.trigger},news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
       | _ -> (sl2,(ssid,src,label,dst)::tl2)) (sl,[]) tl in
-    (ssidmod,name,nsl,ntl)) l
+    (ssidmod,name,nsl,ntl,scrl)) l
 	      
 
-let print_modu f (ssid,name,sl,tl) =
+let print_modu f (ssid,name,sl,tl,scrl) =
   Printf.fprintf f "\tsubgraph cluster%i {\n" ssid;
   match name with None -> Printf.fprintf f "\t%i[shape=rectangle]\n" ssid
   | Some n2 -> Printf.fprintf f "\t%s[shape=rectangle]\n" n2;
@@ -181,7 +205,7 @@ let interface_of_modu tl =
   List.fold_left (fun s (_,_,lab,_) -> match lab.trigger with
     RAction a -> StringSet.add a s | _ -> s) StringSet.empty tl
 
-let flatten_module (ssid,name,sl,tl) =
+let flatten_module (ssid,name,sl,tl,scrl) =
   let inaction = interface_of_modu tl in
   let tl2 = List.fold_left (fun nt2 (ss,_) ->
     StringSet.fold (fun sa tl3 ->
@@ -190,9 +214,9 @@ let flatten_module (ssid,name,sl,tl) =
       ) tl) 
       then ((fresh_ssid ()),Some ss,{empty_trans_label with trigger = RAction(sa) },ss)::tl3 
       else tl3) inaction nt2) tl sl in 
-  (ssid,name,sl,tl2)
+  (ssid,name,sl,tl2,scrl)
   
-let init_state (ssid,name,sl,tl) =
+let init_state (ssid,name,sl,tl,scrl) =
   try
     let (_,_,_,init) =  
       List.find (function (_,None,_,_) -> true | _ -> false) tl in
@@ -207,14 +231,14 @@ let incr_trans l (ssid,src,lab,dst) =
   | Some src2 ->
     (ssid,[(0,src2)],lab,[(0,dst)])::l
   
-let incr_state (ssid,name,sl,tl) =
-  let init = init_state (ssid,name,sl,tl) in
+let incr_state (ssid,name,sl,tl,scrl) =
+  let init = init_state (ssid,name,sl,tl,scrl) in
   let ivect = Array.make 1 (init,name) in
   Printf.printf "\t%s\n" (stateasso init sl);
-  (ssid,name,sl,ivect,List.fold_left incr_trans [] tl)
+  (ssid,name,sl,ivect,List.fold_left incr_trans [] tl,scrl)
 
 
-let print_modu2 f (ssid,name,sl,ivect,tl) =
+let print_modu2 f (ssid,name,sl,ivect,tl,scrl) =
   Printf.fprintf f "\tsubgraph cluster%i {\n" ssid;
   Array.iteri (fun n (x,n2) ->
     Printf.fprintf f "\tpl%i_%i [shape=circle,label=\"%a\"];\n" ssid n print_option n2) ivect;
@@ -256,7 +280,7 @@ let comb_trans l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
     |_-> l
   end
 
-let combine_modu (ssid,name,sl,ivect,tl) (ssid2,name2,sl2,ivect2,tl2) =
+let combine_modu (ssid,name,sl,ivect,tl,scrl) (ssid2,name2,sl2,ivect2,tl2,scrl2) =
   let n = Array.length ivect in
   let ivect3 = Array.append ivect ivect2 in
   let tl3 = List.map (dec_trans n) tl2 in
@@ -268,13 +292,13 @@ let combine_modu (ssid,name,sl,ivect,tl) (ssid2,name2,sl2,ivect2,tl2) =
     not (List.exists (fun x -> StringSet.mem x inaction1) lab.write)) tl3 in
   let tl4 = List.fold_left (fun l t1 ->
     List.fold_left (fun l2 t2 -> comb_trans l2 t1 t2) l tl3) (tlunchanged@tlunchanged2) tl in 
-  (ssid,name,sl @ sl2 ,ivect3,tl4)
+  (ssid,name,sl @ sl2 ,ivect3,tl4,scrl @ scrl2)
     
-let prune_unread (ssid,name,sl ,ivect,tl) =
+let prune_unread (ssid,name,sl ,ivect,tl,scrl) =
   let tl2 = List.filter (fun (_,_,lab,_) -> match lab.trigger with
     RAction _-> false
   | _ -> true) tl in
-  (ssid,name,sl,ivect,tl2) 
+  (ssid,name,sl,ivect,tl2,scrl) 
 
 let trans_of_int i lab =
   let j = if i>0 then i else max_int + i in
@@ -286,7 +310,7 @@ let place_of_int ivect i =
     _,None -> Printf.sprintf "pl%i" i
   | _,Some(n) -> Printf.sprintf "%s%i" n i
 
-let print_magic fpath sl tl=
+let print_magic fpath sl tl scrl=
   let f = open_out fpath in
   output_string f "#define temporalCount(msec) 0\n";
   output_string f "const string print_magic(int v){\n";
@@ -295,8 +319,9 @@ let print_magic fpath sl tl=
     Some n2 -> Printf.fprintf f "\t\tcase %i: return \"%s\";\n" ssid n2
   | None -> ()) sl;
   Printf.fprintf f "\t\tdefault: return std::to_string(v);\n\t}\n}\n";
-  List.iter (fun x -> Printf.fprintf f "double %s=0;\n" x) DataFile.var;
-  List.iter (fun x -> Printf.fprintf f "%s\n" x) DataFile.func;
+  List.iter (function (None,x) -> Printf.fprintf f "double %s=0;\n" x | _->() ) scrl;
+  List.iter (function (Some a,x) -> Printf.fprintf f "%s\n" x | _->() ) scrl;
+  (*List.iter (fun x -> Printf.fprintf f "%s\n" x) DataFile.func;*)
   Printf.fprintf f "void magicUpdate(int t,double ctime){
   switch(t){\n";
   List.iter (fun (ss,_,lab,_) ->
@@ -309,8 +334,8 @@ let print_magic fpath sl tl=
 
   close_out f
 
-let stochNet_of_modu (ssid,name,sl,ivect,tl) =
-  print_magic "magic.hpp" sl tl;
+let stochNet_of_modu (ssid,name,sl,ivect,tl,scrl) =
+  print_magic "magic.hpp" sl tl scrl;
   let net = Net.create () in 
   net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) DataFile.data),DataFile.var);
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int ivect n),Int x) net.Net.place) ivect;
