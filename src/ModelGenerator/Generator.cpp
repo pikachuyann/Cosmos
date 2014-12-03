@@ -53,7 +53,7 @@ bool ParseBuild() {
         if (P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "pm" 
          || P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "sm"
          || P.PathGspn.substr(P.PathGspn.length() - 4, 4) == "pnml"
-         || P.PathGspn.substr(P.PathGspn.length() - 3, 3) == "xml"
+         || P.PathGspn.substr(P.PathGspn.length() - 3, 3) == "slx"
             ){
             if(P.verbose>0)cerr << "Input file not in GrML try to use convertor."<< endl;
             auto outspt = P.tmpPath + "/generatedspt";

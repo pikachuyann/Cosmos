@@ -177,7 +177,6 @@ let rec eval_name data fe=
 
 type triggerT = Imm | Delay of floatExpr | RAction of string
 
-
 type simulink_trans_label = {
   trigger: triggerT;
   write:  string list;
