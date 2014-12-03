@@ -1,7 +1,7 @@
 open Type
 open PetriNet
 
-type distr = Exp of floatExpr | Imm of floatExpr | Det of floatExpr;;
+type distr = Exp of floatExpr | Imm of floatExpr | Det of floatExpr | Erl of (intExpr*floatExpr);;
 
 
 let rec print_int_expr f = function 
@@ -64,6 +64,17 @@ let print_distr f d =
         <attribute name=\"expr\">%a</attribute>
       </attribute>
     </attribute>" print_float_expr r
+  | Erl (i,r) -> Printf.fprintf f "        ERLANG
+      </attribute>
+      <attribute name=\"param\">
+        <attribute name=\"number\">0</attribute>
+        <attribute name=\"expr\">%a</attribute>
+      </attribute>
+      <attribute name=\"param\">
+        <attribute name=\"number\">1</attribute>
+        <attribute name=\"expr\">%a</attribute>
+      </attribute>
+    </attribute>" print_int_expr i print_float_expr r
     | Imm p -> Printf.fprintf f "        DETERMINISTIC
       </attribute>
       <attribute name=\"param\">

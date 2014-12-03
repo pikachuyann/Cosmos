@@ -712,6 +712,9 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::resetToInitMarking(){\n";
+    if(!P.magic_values.empty()){
+        SpnCppFile << "\tmagicReset();" << endl;
+    }
 	for (const auto &plit : MyGspn.placeStruct) {
 		SpnCppFile << "\tP->_PL_"<< plit.name << " =" <<
 		MyGspn.Marking[plit.id] << ";\n";
@@ -776,14 +779,16 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
         for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
              plit!= MyGspn.placeStruct.end(); ++plit) {
             SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit->name <<"\\\\$/\";"<< endl;
-            SpnCppFile << "\ts << P->_PL_"<< plit->name << ";"<<endl;
+            if(P.magic_values.empty()){
+                SpnCppFile << "\ts << P->_PL_"<< plit->name << ";"<<endl;
+            } else {
+                SpnCppFile << "\ts << print_magic(P->_PL_"<< plit->name << ");"<<endl;
+            }
             SpnCppFile << "\ts <<\"/g' \";"<<endl;
         }
     }
     SpnCppFile << "}\n";
 
-    if (!P.magic_values.empty())
-        SpnCppFile << "#include \"" << P.magic_values << "\"" << endl;
     
 	SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
 	if(P.StringInSpnLHA){
@@ -1033,7 +1038,8 @@ void Gspn_Writer::writeFile(){
 		SpnCppFile << "\tconst int _nb_Place_"<< plit.name << "=" << plit.id << ";" << endl;
 	}
 	
-	
+    if (!P.magic_values.empty())
+        SpnCppFile << "#include \"" << P.magic_values << "\"" << endl;
 	if(P.RareEvent){
 		SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
 	}else{
