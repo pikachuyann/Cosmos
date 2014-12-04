@@ -43,9 +43,54 @@ Cosmos model property
 \end{verbatim}
 where the model is specified in the GRML file format or in the
 \verb|.gspn| file format and the property is expressed either in GRML
-or in the \verb|.lha| file format.
+or in the \verb|.lha| file format. Various options change the behaviors 
+of the simulator and are listed below.
 
 Cosmos is shipped with several examples in the \verb|Examples| directory.
+
+Cosmos can also be called thought the CosyVerif platform.
+
+
+
+
+\subsection{Architecture of the Tool}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{overviewcosmos}
+  \caption{Overview of the architecture of Cosmos}
+  \label{fig:overviewCosmos}
+\end{figure}
+
+\cosmos{} is based on the generation of C++ code to produce an efficient
+simulator from the input model and specification. 
+
+From the Petri net given as input the tool produces functions for
+firing transitions, checking whether a transition is enabled and
+computing parameters of probability distributions. Tables are also
+generated that contains for any transitions $t$ the set of transitions
+that might become enabled or disabled due to the firing of $t$. This
+table are computed by an analysis of the structure of the Petri net
+and increase the speed of simulation by testing only small subset of
+transitions after each firing.
+
+HASL formulas are also transform into code. More specifically
+transitions of the automaton that synchronize with the Petri net use
+tables to compute the synchronization. Autonomous transitions of the
+automaton are implemented by precomputing a system of linear equations
+and generating function to finish the computation at run time this is
+possible due to constraints on the expression of the automaton. This
+also compute exact computation of time for the firing of
+transitions. Tools dealing with more general hybrid automaton must
+solve this problem with numerical integration which introduce
+numerical errors. Computations of integral over trajectory of the
+system are also resolved exactly and efficiently thanks to linear
+constraints.
+
+The generated code is link with a library containing other part
+of the simulator that are not dependent of the model or specification.
+This library contains: an event heaps to efficiently between the next event
+in the system, the main synchronization loop that use the generated code
+and a pseudo random generator to produce new events that are put in the heap.
 
 \subsubsection{Model}
 Models taken by \cosmos{} as input are variants of Petri nets.  The main
@@ -69,7 +114,7 @@ models.
 \subsubsection{Property}
 Properties are specified in the Hybrid Linear Automaton Logic~(HASL)
 which, as its name suggests, relies on Linear Hybrid Automaton~(LHA) to
-select pathes and on several HASL expressions to specify various
+select paths and on several HASL expressions to specify various
 performance values.
 
 
