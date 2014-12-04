@@ -7,7 +7,7 @@ open Lexing
 let ssid_count = ref (-1)
 
 let detfun s =
-  let n = 10 in
+  let n = 20 in
   StochasticPetriNet.Erl (Int n,DivF (Float (float n),s))
 
 let fresh_ssid () =
@@ -25,6 +25,10 @@ let getSSID al = let i = int_of_string (List.assoc "SSID" al)  in
 let getName cl = findprop (function 
   | Element ("P",["Name","labelString"],[PCData(l)])  -> Some l 
   | _ -> None) cl
+
+let getScope cl = findprop (function 
+  | Element ("P",["Name","scope"],[PCData(l)])  -> Some l 
+  | _ -> None) cl 
 
 let getdst cl = findprop (function 
   | Element ("dst",_,cl2) -> findprop (function 
@@ -45,11 +49,10 @@ let getScript cl = findprop (function
   | _ -> None) cl
   
 let rec exp_data = function
-   | Element (name,alist,clist) ->
-      Printf.printf "<%s " name; List.iter (fun (x,y) -> Printf.printf "%s=\"%s\" " x y) alist;
-     print_newline ();
-     List.iter (exp_data) clist
-    | PCData (s) -> print_endline s
+   | Element ("data",alist,clist) when getScope clist = Some "LOCAL_DATA" ->
+     let name = List.assoc "name" alist in
+     Some ((getSSID alist),name)
+    | _-> None
 
 
 let print_position outx lexbuf =
@@ -59,14 +62,19 @@ let print_position outx lexbuf =
 
 let parse_regexp = Str.regexp "function \\([A-Za-z0-9_]+\\)[ ]*=[ ]*\\([A-Za-z0-9_]+[(][A-Za-z0-9_,]*[)]\\)\n\\([^̂†]*\\)\nend"
 let reg_comm = Str.regexp "%"
+let reg_type1 = Str.regexp "[(]"
+let reg_type2 = Str.regexp "[,]"
   
 let parse_fun scr =
   assert (Str.string_match parse_regexp scr 0);
   let var = Str.matched_group 1 scr
   and name = Str.matched_group 2 scr
   and body = Str.matched_group 3 scr in
+  let name2 = name 
+    |> Str.global_replace reg_type1 "(double "
+    |> Str.global_replace reg_type2 ", double " in
   let body2 = Str.global_replace reg_comm "//" body in
-  (name,Printf.sprintf "double %s{\n\tdouble %s\n%s\n\treturn %s;\n}" name var body2 var)
+  (name,Printf.sprintf "double %s{\n\tdouble %s;\n%s\n\treturn %s;\n}" name2 var body2 var)
   
 (*parse_fun "function dT  = modulateRefrRetro(t,t0)\n toto\ntata \nend";;*)
     
@@ -80,7 +88,7 @@ let rec exp_mod (sl,tl,scriptl) = function
        end 
        | "transition" -> (match getdst clist with Some dst ->
 	 (sl,((getSSID alist),(getName clist),(getsrc clist),dst)::tl,scriptl) | _ -> failwith "Ill formed transition")
-       | "data" -> begin try  (sl,tl,(None,List.assoc "name" alist)::scriptl) with
+       | "data" -> begin try  (sl,tl,(None,List.assoc "name" alist)::scriptl); with
 	   | Not_found -> (sl,tl,scriptl)
        end
 
@@ -144,6 +152,13 @@ let expand_trans l=
 	((news,Some newsn)::sl2,
 	(ssid,src,{empty_trans_label with trigger=label.trigger},news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
+      | (_,_,None) when label.update <> [] -> (* Initial transition with update*)
+	let news = fresh_ssid ()
+	and newsn = post_name sl dst ssid in
+	let newt = fresh_ssid () in
+	((news,Some newsn)::sl2,
+	 (ssid,None,empty_trans_label,news)::
+	   (newt,Some(news),label,dst)::tl2)
       | _ -> (sl2,(ssid,src,label,dst)::tl2)) (sl,[]) tl in
     (ssidmod,name,nsl,ntl,scrl)) l
 	      
@@ -174,10 +189,9 @@ let print_simulink_dot fpath ml =
   close_out f;;
 
 let rec prism_of_stateflow level ml = function
-    | Element (name,alist,clist) ->
+    | Element (name,alist,clist) as t ->
        begin match name with
        | "xml" | "ModelInformation" | "Model" | "Stateflow" | "machine" | "chart" | "Children" ->
-					 print_endline name;
 					 List.fold_left (prism_of_stateflow level) ml clist
        | "P" -> ml
        | "state" -> if level=1 then (module_of_simul alist clist)::ml
@@ -185,7 +199,10 @@ let rec prism_of_stateflow level ml = function
        | "transition" -> ml
        | "target" -> ml
        | "subviewS" -> ml
-       | "data" -> ml
+       | "instance" -> ml
+       | "data" -> begin match exp_data t with None -> ml | Some (ssid,var) ->
+	 (ssid,None,[],[],[None,var])::ml
+	 end
        | "event" -> ml
        | x -> Printf.printf "Dont know wat to do with %s, ignore\n" x; ml
        end
@@ -232,11 +249,12 @@ let incr_trans l (ssid,src,lab,dst) =
     (ssid,[(0,src2)],lab,[(0,dst)])::l
   
 let incr_state (ssid,name,sl,tl,scrl) =
-  let init = init_state (ssid,name,sl,tl,scrl) in
-  let ivect = Array.make 1 (init,name) in
-  Printf.printf "\t%s\n" (stateasso init sl);
-  (ssid,name,sl,ivect,List.fold_left incr_trans [] tl,scrl)
-
+  if sl=[] then (ssid,name,[],[||],[],scrl)
+  else begin let init = init_state (ssid,name,sl,tl,scrl) in
+	     let ivect = Array.make 1 (init,name) in
+	     (*Printf.printf "\t%s\n" (stateasso init sl);*)
+	     (ssid,name,sl,ivect,List.fold_left incr_trans [] tl,scrl)
+  end
 
 let print_modu2 f (ssid,name,sl,ivect,tl,scrl) =
   Printf.fprintf f "\tsubgraph cluster%i {\n" ssid;
@@ -319,9 +337,9 @@ let print_magic fpath sl tl scrl=
     Some n2 -> Printf.fprintf f "\t\tcase %i: return \"%s\";\n" ssid n2
   | None -> ()) sl;
   Printf.fprintf f "\t\tdefault: return std::to_string(v);\n\t}\n}\n";
-  List.iter (function (None,x) -> Printf.fprintf f "double %s=0;\n" x | _->() ) scrl;
+  List.iter (function (None,x) when x<>"ctime" -> Printf.fprintf f "double %s=0;\n" x | _-> ()) scrl;
+  List.iter (fun x -> Printf.fprintf f "%s\n" x) DataFile.func;
   List.iter (function (Some a,x) -> Printf.fprintf f "%s\n" x | _->() ) scrl;
-  (*List.iter (fun x -> Printf.fprintf f "%s\n" x) DataFile.func;*)
   Printf.fprintf f "void magicUpdate(int t,double ctime){
   switch(t){\n";
   List.iter (fun (ss,_,lab,_) ->
@@ -337,7 +355,8 @@ let print_magic fpath sl tl scrl=
 let stochNet_of_modu (ssid,name,sl,ivect,tl,scrl) =
   print_magic "magic.hpp" sl tl scrl;
   let net = Net.create () in 
-  net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) DataFile.data),DataFile.var);
+  let varlist = List.fold_left (fun tl -> (function (None,x) when x<>"ctime" -> x::tl | _-> tl)) [] scrl in
+  net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) DataFile.data),varlist);
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int ivect n),Int x) net.Net.place) ivect;
   List.iter (fun (ssidt,src,lab,dst) ->
     begin match lab.trigger with

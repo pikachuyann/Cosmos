@@ -33,29 +33,9 @@ let data = [
 "PM_TVRP",320.0;
 "Skrewness",0.2000]
 
-
-let var= [
-  "avj_refr"; "avj_t4"; "avj_refr_0"; "avj_tRec"; "refractorylast";
-  "recoverylast" ; "antelast" ; "a_dV"
-]
-
 let func= [
-"double modulateRefrAnte(double t,double t0,double dV){
-  return AV_refrDMin*pow(t/t0,AV_theta)*pow(fmin(1,dV/(AV_Vt-AV_Vr)),AV_delta);
-}";
-"double modulateRefrRetro(double t,double t0){
-    return AV_refrDMin*pow(t/t0,AV_theta);
-}";
-"double timeToDep(double Vm){
-    return fmax(0,(AV_Vt-Vm)/AV_k4);
-}";
-"double initRefrPeriod(double tRec){
-    return AV_refrDMin + AV_beta*(1 - exp(-tRec/AV_tr));
-}";
-"void magicReset(){
-    avj_t4=timeToDep(AV_Vr);
-    recoverylast=0;
-    antelast=0;
-    refractorylast=0;
-}";
+"double power(double x,double y){return pow(x,y);}\n";
+"double min(double x,double y){return fmin(x,y);}\n";
+"double max(double x,double y){return fmax(x,y);}\n";
+"void magicReset(){}";
 ]
