@@ -44,6 +44,7 @@ public:
 private:
 	
 	int varMultiplier(size_t var);
+    void writeMacro(ofstream &);
     void writeTok(ostream &SpnF, vector<coloredToken>&,const colorDomain&);
     void generateStringVal(arcStore&);
 	void writeMarkingClasse(ofstream &, ofstream &, parameters &);

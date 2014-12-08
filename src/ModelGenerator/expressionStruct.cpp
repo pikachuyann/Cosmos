@@ -48,9 +48,11 @@ std::ostream& operator<<(std::ostream& os, const class expr& e)
             break;
         case Constant: os  << e.stringVal << " ";
             break;
-        case Ceil: os << " ceil(" << e.lhs << ") ";
+        case Ceil: os << " ceil(" << *(e.lhs) << ") ";
             break;
-        case Floor: os << " floor(" << e.lhs << ") ";
+        case Floor: os << " floor(" << *(e.lhs) << ") ";
+            break;
+        case Exp: os << " exp(" << *(e.lhs) << ") ";
             break;
         case Plus: os << " (" << *(e.lhs) << " + " << *(e.rhs) << ") ";
             break;
@@ -84,6 +86,11 @@ std::ostream& operator<<(std::ostream& os, const class expr& e)
             break;
         case SG: os << " (" << *(e.lhs) << " > " << *(e.rhs) << ") ";
             break;
+        case ListContinuation: os << *(e.lhs) << " , " << *(e.rhs);
+            break;
+        case Var: os << e.lhs->stringVal; break;
+        case Lambda: os << "([] (auto "<< e.lhs->stringVal << "){" << *(e.rhs) << "})"; break;
+        case App: os << "("<< *(e.lhs) << "(" << *(e.rhs) << "))"; break;
 
     }
     return os;
@@ -137,10 +144,20 @@ void expr::eval(const map<string,int> &intconst,const map<string,double> &realco
         case Bool:
         case Int:
         case Real:
+        case Var:
+        case Lambda:
+            break;
+        case App:
+            rhs->eval(intconst,realconst);
+            break;
+        case ListContinuation:
+            lhs->eval(intconst,realconst);
+            rhs->eval(intconst,realconst);
             break;
         case Ceil:
         case Floor:
         case Neg:
+        case Exp:
             lhs->eval(intconst,realconst);
             if (lhs->t==Int){
                 expr tmp = *lhs;

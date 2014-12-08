@@ -82,7 +82,8 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
     } else if (*it == "name") {
         string var = simplifyString(it.node->first_child->data);
         if (MyGspn->IntConstant.count(var) > 0 ||
-                MyGspn->RealConstant.count(var) > 0) {
+                MyGspn->RealConstant.count(var) > 0 ||
+                MyGspn->ExternalConstant.count(var) > 0  ) {
             return expr(Constant, var);
         } else {
             if ((P.verbose - 3) > 1)cout << "\t" << var << endl;
@@ -96,8 +97,8 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
         }
     } else if (*it == "+" || *it == "*"
             || *it == "min" || *it == "max"
-            || *it == "floor" || *it == "minus"
-            || *it == "/" || *it == "power") {
+            || *it == "floor" || *it == "minus" || *it == "-"
+            || *it == "/" || *it == "power" || *it == "exp") {
 
         expr rhs;
         expr lhs;
@@ -111,22 +112,29 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
 
         }
 
-        if (*it == "+") {
-            return expr(Plus, lhs, rhs);
-        } else if (*it == "*") {
-            return expr(Times, lhs, rhs);
-        } else if (*it == "-") {
-            return expr(Minus, lhs, rhs);
-        } else if (*it == "/") {
-            return expr(Div, lhs, rhs);
-        } else if (*it == "power") {
-            return expr(Pow, lhs, rhs);
-        } else if (*it == "ceil") {
-            return expr(Ceil, lhs, rhs);
-        } else {
-            return expr(Floor, lhs, rhs);
+        if (!rhs.empty()){
+            if (*it == "ceil") {
+                return expr(Ceil, lhs, rhs);
+            } else if (*it == "exp") {
+                return expr(Exp, lhs, rhs);
+            } else if (*it == "floor") {
+                return expr(Floor, lhs, rhs);
+            } else if(!lhs.empty()){
+                if (*it == "+") {
+                    return expr(Plus, lhs, rhs);
+                } else if (*it == "*") {
+                    return expr(Times, lhs, rhs);
+                } else if (*it == "minus" || *it == "-") {
+                    return expr(Minus, lhs, rhs);
+                } else if (*it == "/") {
+                    return expr(Div, lhs, rhs);
+                } else if (*it == "power") {
+                    return expr(Pow, lhs, rhs);
+                }
+            }
         }
-
+        cout << "fail eval expr: '" << *it << "'" << endl;
+        throw (gmlioexc);
     } else if (simplifyString(*it).empty())return expr(0);
 
     try {
@@ -389,6 +397,19 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 
                     }
                 }
+            
+            t2 = findbranch(it, "constants/extConsts/");
+            if (t2 != it.end())
+                for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
+                    if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                    if (*it2 == "extConst") {
+                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                        string constname = simplifyString((find(it2.begin(), it2.end(), "name")).node->first_child->data);
+                        MyGspn->ExternalConstant.emplace(constname);
+                        if ((P.verbose - 3) > 1)cout << "\tconst External " << constname << endl;
+                        
+                    }
+                }
 
             for (t2 = it.begin(); t2 != it.end(); ++t2) {
                 if ((P.verbose - 3) > 1)cout << endl << *t2 << ": " << endl;
@@ -625,6 +646,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                                     expr pe = eval_expr(it3.begin());
                                     trans.markingDependant |= pe.is_markDep();
                                     trans.dist.Param.push_back(pe);
+                                    if ((P.verbose - 3) > 1)cout << "\tDistrib Param: " << pe << endl;
                                 } else throw gmlioexc;
                             }
                         } else throw gmlioexc;

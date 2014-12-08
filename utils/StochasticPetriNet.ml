@@ -190,7 +190,8 @@ let print_spt_dot fpath net cl p =
   ) net.Net.place;
   (*output_string f "\t}\n\tsubgraph transition {\n";
   output_string f "\t\tnode [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=black];\n";*)
-  Data.iter (fun (s,m) ->Printf.fprintf f "\t%s [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=black,xlabel=\"%s\",label=\"\"];\n" s s) net.Net.transition;
+  Data.iter (fun (s,m) -> let color = (match m with Exp _->"" | _->",fillcolor=black") in
+			  Printf.fprintf f "\t%s [shape=rect,fixedsize=true,height=0.2,style=filled%s,xlabel=\"%s\",label=\"\"];\n" s color s) net.Net.transition;
   (*output_string f "\t}\n";*)
   Data.iter (fun (_,(v,p,t)) ->
     print_arc_dot f (fst (Data.acca net.Net.place p)) 

@@ -45,6 +45,7 @@ enum expType {
 
     Ceil,
     Floor,
+    Exp,
 
     Plus,
     Minus,
@@ -58,7 +59,9 @@ enum expType {
     And,Or,
     Eq, Neq,
     Leq,Sl,
-    Geq,SG
+    Geq,SG,
+
+    Var,Lambda,App,ListContinuation
 };
 
 class expr{

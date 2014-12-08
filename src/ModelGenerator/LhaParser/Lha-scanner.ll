@@ -172,7 +172,13 @@ blank [ \t]
 
 "PROB" {lhalval->name = new std::string (lhatext); return token::PROB;
 	Reader.error (*lhalloc, "PROB expected");}
-	
+
+"EXISTS" {lhalval->name = new std::string (lhatext); return token::EXIST_TOK;
+Reader.error (*lhalloc, "EXISTS expected");}
+
+"NOTALLS" {lhalval->name = new std::string (lhatext); return token::NOTALL_TOK;
+Reader.error (*lhalloc, "NOTALLS expected");}
+
 "HYPOTHESIS" {lhalval->name = new std::string (lhatext); return token::SPRT;
 	Reader.error (*lhalloc, "HYPOTHESIS expected");}
 
