@@ -61,7 +61,7 @@ enum expType {
     Leq,Sl,
     Geq,SG,
 
-    Var,Lambda,App
+    Var,Lambda,App,ListContinuation
 };
 
 class expr{

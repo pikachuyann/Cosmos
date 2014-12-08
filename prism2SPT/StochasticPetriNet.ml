@@ -201,18 +201,22 @@ let rec inline_ls d = function
   | [s] -> s
   | t::q -> t^d^(inline_ls d q);;
 
-let print_arc_marcie net t =
-  let l1 = Data.fold (fun l (_,(v,t2,p)) ->
-    if t<>t2 then l else 
-      (Printf.sprintf "[%s + %i]" (fst (Data.acca net.Net.place p)) v) ::l)
-    [] net.Net.outArc in
-  let l2 = Data.fold (fun l (_,(v,p,t2)) ->
-    if t<>t2 then l else 
-      (Printf.sprintf "[%s - %i]" (fst (Data.acca net.Net.place p)) v) ::l)
-    l1 net.Net.inArc in
-  
-  inline_ls " & " l2;;
-  
+let print_arc_marcie net f t =
+  let fq = Data.fold (fun first (_,(v,t2,p)) ->
+    if t<>t2 then first else begin 
+      if not first then Printf.fprintf f " & ";
+      Printf.fprintf f "[%s + %a]" (fst (Data.acca net.Net.place p)) printH_int_expr v;
+      false
+    end)
+    true net.Net.outArc in
+  ignore (Data.fold (fun first (_,(v,p,t2)) ->
+    if t<>t2 then first else begin
+      if not first then Printf.fprintf f " & ";
+      Printf.fprintf f "[%s - %a]" (fst (Data.acca net.Net.place p)) printH_int_expr v;
+      false
+    end)
+	    fq net.Net.inArc)
+	    
 let float_of_floatexp = function
   | Float f -> f
   | _ -> failwith "Fail to export to marcie"
@@ -222,19 +226,19 @@ let print_spt_marcie fpath net =
   output_string f "gspn [generated_cosmos] {\n";
   
   output_string f "places:\n";
-  Data.iter (fun (s,m) ->Printf.fprintf f "\t%s = %i;\n" s m) net.Net.place;
+  Data.iter (fun (s,m) ->Printf.fprintf f "\t%s = %a;\n" s printH_int_expr m) net.Net.place;
 
   output_string f "\ntransitions:\n";
   output_string f "\tstochastic:\n";
   Data.iter (fun (s,distr) -> match distr with
-      Exp r -> Printf.fprintf f "\t%s : : %s : %f ;\n" s 
-    (print_arc_marcie net (Data.index net.Net.transition s)) (float_of_floatexp r)
+      Exp r -> Printf.fprintf f "\t%s : : %a : %f ;\n" s 
+    (print_arc_marcie net) (Data.index net.Net.transition s) (float_of_floatexp r)
     | _ -> ()   
   ) net.Net.transition;
   output_string f "\timmediate:\n";
   Data.iter (fun (s,distr) -> match distr with
-      Imm r -> Printf.fprintf f "\t%s : : %s : %f ;\n" s 
-    (print_arc_marcie net (Data.index net.Net.transition s)) (float_of_floatexp r)
+      Imm r -> Printf.fprintf f "\t%s : : %a : %f ;\n" s 
+    (print_arc_marcie net) (Data.index net.Net.transition s) (float_of_floatexp r)
     | _ -> ()   
   ) net.Net.transition;
 

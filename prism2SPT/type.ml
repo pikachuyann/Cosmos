@@ -24,8 +24,8 @@ and floatExpr = FloatName of string | Float of float
                 | PlusF of floatExpr*floatExpr 
                 | MinusF of floatExpr*floatExpr
                 | DivF of floatExpr*floatExpr
-		| ExpF of floatExpr;;
-
+		| ExpF of floatExpr
+		| FunCall of string*(floatExpr list) ;;
 
 let neg_cmp = function 
   | EQ -> NEQ  
@@ -141,6 +141,12 @@ and printH_float_expr f = function
     printH_float_expr e1 
     printH_float_expr e2
   | ExpF(x) -> Printf.fprintf f "exp(%a)" printH_float_expr x
+  | FunCall(fu,[]) ->  Printf.fprintf f "%s()" fu;
+  | FunCall(fu,t::q) ->  Printf.fprintf f "%s(%a" fu printH_float_expr t;
+    List.iter (fun x-> Printf.fprintf f ",%a" printH_float_expr x) q;
+    output_string f ")"
+	       
+
 
 let rec printH_stateFormula f = function 
   | True -> output_string f " true " 
@@ -174,6 +180,7 @@ let rec eval_name data fe=
     | MultF(e1,e2) ->  MultF(enf e1,enf e2)
     | DivF(e1,e2) -> DivF(enf e1,enf e2)
     | ExpF(x) -> ExpF(enf x)
+    | FunCall(f,l) -> FunCall(f,List.map enf l)
 
 type triggerT = Imm | Delay of floatExpr | RAction of string
 
