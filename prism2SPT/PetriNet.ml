@@ -61,19 +61,23 @@ end
 
 module Net =
 struct
-  type ('a,'b) t = { 
+  type ('a,'b,'c,'d) t = {
+    mutable def: 'd option;
     place: (string,'a) Data.t;
     transition: (string,'b) Data.t;
-    inArc: (unit,('a*int*int)) Data.t;
-    outArc: (unit,('a*int*int)) Data.t;
+    inArc: (unit,('c*int*int)) Data.t;
+    inhibArc: (unit,('c*int*int)) Data.t;
+    outArc: (unit,('c*int*int)) Data.t;
   }
   let create () = {
+    def = None;
     place = Data.create ();
     transition = Data.create ();
     inArc = Data.create ();
+    inhibArc = Data.create ();
     outArc = Data.create ();
   }
-    
+
   let add_inArc net s1 s2 v =
     let i1 = Data.index net.place s1 
     and i2 = Data.index net.transition s2 in
@@ -83,10 +87,16 @@ struct
     let i1 = Data.index net.transition s1 
     and i2 = Data.index net.place s2 in
     Data.add ((),(v,i1,i2)) net.outArc
-      
+
+  let add_inhibArc net s1 s2 v =
+    let i1 = Data.index net.place s1 
+    and i2 = Data.index net.transition s2 in
+    Data.add ((),(v,i1,i2)) net.inhibArc
+  
   let add_arc net s1 s2 v =
     try add_inArc net s1 s2 v with
 	Not_found -> add_outArc net s1 s2 v
+
 end
 
 (*

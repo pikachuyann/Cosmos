@@ -90,9 +90,10 @@ dataraw(""),
 datatrace(""),
 sampleResol(0.0),
 dataPDFCDF(""),
-gnuplotDriver(false),
+gnuplotDriver(""),
 tracedPlace("ALL"),
 dotfile(""),
+magic_values(""),
 
 HaslFormulas(vector<HaslFormulasTop*>(0)),
 HaslFormulasname(vector<string>(0)),
@@ -156,7 +157,7 @@ void parameters::usage() {
     cout << "\t--output-trace arg resol \tOutput the trace each trajectory in the file arg with a resolution of resol" << endl;
     cout << "\t--output-graph \tOutput the result of CDF or PDF formula in gnuplot file format" << endl;
     cout << "\t--output-dot \tOutput the Petri net in a dot file" << endl;
-    cout << "\t--gnuplot-driver \tRun gnuplot on the output datafile to produce graph" << endl;
+    cout << "\t--gnuplot-driver terminal\tRun gnuplot on the output datafile to produce graph use the given terminal for gnuplot" << endl;
     cout << "\t--trace-pt arg\tSpecify which place to trace in all the output file, arg is a comma separated list of places and transitions name" << endl;
     cout << "\t--HASL-expression \tAllow to define an HASL formula from the command line" << endl;
     cout << "\t--loop t1 [--transtient t2] \tGenerate an LHA that loop for t1 times unit and then t2 time unit. The --transient option alone do not do anything" << endl;
@@ -224,7 +225,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"output-PDFCDF", required_argument, 0, 11},
             {"output-graph", required_argument, 0, 11},
             {"output-dot", required_argument, 0, 28},
-            {"gnuplot-driver", no_argument, 0, 15},
+            {"gnuplot-driver", required_argument, 0, 15},
             {"trace-place", required_argument, 0, 19},
             {"trace-pt", required_argument, 0, 19},
             {"help", no_argument, 0, 'h'},
@@ -234,6 +235,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"tmp-status", required_argument, 0, 5},
             {"bin-path", required_argument, 0, 9},
             {"prism-path", required_argument, 0, 20},
+            {"magic-values", required_argument,0, 29},
             {"version", no_argument, 0, 22},
 
             {0, 0, 0, 0}
@@ -351,6 +353,8 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 break;
             case 28: dotfile = optarg;
                 break;
+            case 29: magic_values = optarg;
+                break;
             case 18:
                 datatrace = optarg;
                 StringInSpnLHA = true;
@@ -403,7 +407,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             case 'f': CSLformula = optarg;
                 break;
 
-            case 15: gnuplotDriver = true;
+            case 15: gnuplotDriver = optarg;
                 break;
 
             case 19: tracedPlace = optarg;

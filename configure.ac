@@ -70,5 +70,5 @@ AC_FUNC_SELECT_ARGTYPES
 AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([dup2 floor gettimeofday memset mkdir pow select sqrt])
 
-AC_CONFIG_FILES([Makefile src/libgrml/Makefile src/ModelGenerator/Eval/Makefile src/ModelGenerator/GspnParser/Makefile src/ModelGenerator/LhaParser/Makefile src/ModelGenerator/Makefile src/Simulator/Makefile test/Makefile automataGen/Makefile utils/Makefile])
+AC_CONFIG_FILES([Makefile src/libgrml/Makefile src/ModelGenerator/Eval/Makefile src/ModelGenerator/GspnParser/Makefile src/ModelGenerator/LhaParser/Makefile src/ModelGenerator/Makefile src/Simulator/Makefile test/Makefile automataGen/Makefile prism2SPT/Makefile utils/Makefile])
 AC_OUTPUT

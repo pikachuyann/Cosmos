@@ -345,7 +345,7 @@ bool Simulator::SimulateOneStep(){
 			}
 		
 		//Fire the transition in the SPN
-		N.fire(E1.transition, E1.binding);
+		N.fire(E1.transition, E1.binding, A.CurrentTime);
 		
         //Check if there exist a valid transition in the automata.
 		int SE = A.GetEnabled_S_Edges(E1.transition, N.Marking, E1.binding);
@@ -377,15 +377,6 @@ bool Simulator::SimulateOneStep(){
 void Simulator::interactiveSimulation(){
 	string input_line;
 	bool continueLoop = true;
-    if(dotFile!=""){
-        stringstream ss;
-        ss << "sed ";
-        N.Marking.printSedCmd(ss);
-        EQ->printSedCmd(N.Transition, ss);
-        ss << tmpPath << "/templatePetriNet.dot > " << tmpPath << "/PetriNet.dot; ";
-        ss << "dot "<< tmpPath <<"/PetriNet.dot -Tpdf -o " << dotFile << endl;
-        system(ss.str().c_str());
-    }
 	while(continueLoop){
 		cerr << "\033[1;31mCosmosSimulator>\033[0m";
 		if (cin.good()) {
@@ -411,6 +402,17 @@ void Simulator::interactiveSimulation(){
 				
 			}else if(input_line.compare("step")==0)continueLoop=false;
 			else if(input_line.compare("stop")==0)exit(EXIT_SUCCESS);
+            else if(input_line == "display" || input_line == "d"){
+                if(!dotFile.empty()){
+                    stringstream ss;
+                    ss << "sed ";
+                    N.Marking.printSedCmd(ss);
+                    EQ->printSedCmd(N.Transition, ss);
+                    ss << tmpPath << "/templatePetriNet.dot > " << tmpPath << "/PetriNet.dot; ";
+                    ss << "dot "<< tmpPath <<"/PetriNet.dot -Tpdf -o " << dotFile << endl;
+                    system(ss.str().c_str());
+                } else cerr << "No dot output specified!" << endl;
+            }
 			else if(input_line.compare("help")==0 || input_line.compare("h")==0){
 				cerr << "Available command:\n\thelp:\tdisplay this message"<<endl;
 				cerr << "\ts, step:\tmake one step of simulation" << endl;
