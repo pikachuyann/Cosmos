@@ -208,6 +208,7 @@ struct GspnType {
 	
     map <std::string, int> IntConstant;
     map <std::string, double> RealConstant;
+    set <std::string> ExternalConstant;
 	
 	inline bool isColored(){
 		return colClasses.size()>0;

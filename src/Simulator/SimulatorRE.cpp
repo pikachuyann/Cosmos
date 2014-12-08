@@ -288,7 +288,7 @@ double SimulatorRE::ComputeDistr(size_t t , const abstractBinding& b, double ori
 	};
 	if(verbose>4)cerr << "mu target : ";
 	double distr;
-	N.fire(t,b);
+	N.fire(t,b,0.0);
 	distr = origin_rate *( mu() / mux);
 	N.unfire(t,b);
 	if(verbose>4)cerr <<endl;

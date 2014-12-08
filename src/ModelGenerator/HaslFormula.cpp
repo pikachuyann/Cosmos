@@ -154,11 +154,12 @@ ConfInt & ConfInt::operator/=(const ConfInt& rhs){
 }
 
 /**
- * Build an HASL formula with the PROB operator.
+ * Build an HASL formula with the PROB,EXISTS,ALLS operators.
  * Compute exact confidence interval.
  */
-HaslFormulasTop::HaslFormulasTop(){
-	TypeOp = PROBABILITY;
+HaslFormulasTop::HaslFormulasTop(const HaslType t){
+    assert( t==PROBABILITY || t==EXISTS || t== NOTALLS);
+	TypeOp = t;
 	Level =0;
 	Value =0;
 	Value2=0;
@@ -308,7 +309,11 @@ void HaslFormulasTop::setLevel(double l){
 				right->setLevel((1+l)/2);
 			}
 			break;
-			
+        case NOTALLS:
+        case EXISTS:
+            Level =1;
+            break;
+            
 		default:
 			std::cerr << "Fail to parse Hasl Formula"<< std::endl;
 			exit(EXIT_FAILURE);
@@ -428,7 +433,7 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 		case RE_Continuous:
 	    {
         /* 
-         * Only used by the rare event engine in for countinious bounded
+         * Only used by the rare event engine in for countinuous bounded
          * Until property. This case apply the uniformization method.
          * The simulator returns the estimate of each \mu_u as well
          * as the Poisson probabilities computed using Fox-glynn algorithm.
@@ -559,6 +564,14 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 		case HASL_DIV:
 			return (left->eval(batch) /= right->eval(batch));
 
+        case EXISTS:
+            if ( batch.Isucc > 0) return ConfInt(1.0,1.0,1.0,0.0,1.0,1.0);
+            else return ConfInt(0.0,0.0,1.0,0.0,0.0,1.0);
+        case NOTALLS:
+            if ( batch.Isucc < batch.I) return ConfInt(1.0,1.0,1.0,0.0,1.0,1.0);
+            else return ConfInt(0.0,0.0,1.0,0.0,0.0,1.0);
+
+            
 		default:
 			std::cerr << "Fail to parse Hasl Formula"<< std::endl;
 			exit(EXIT_FAILURE);

@@ -15,7 +15,7 @@ let uni f =
 exception CmdFail of int
 
 (*let cosmos_path = (Sys.getcwd ())^"/../../bin/Cosmos"*)
-let cosmos_path = "../../bin/Cosmos"
+let cosmos_path = ref "../../bin/Cosmos"
 
 let cosmos_options = ("--level 0.9999"^ ( 
   try
@@ -216,7 +216,7 @@ let string_date () =
     (tm.Unix.tm_year+1900) tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
 
 let exec_cosmos model prop opt printcmd =
-  let cmd = sprintf "%s %s %s %s" cosmos_path model prop opt in
+  let cmd = sprintf "%s %s %s %s" !cosmos_path model prop opt in
   if printcmd then print_endline cmd;
   let retcode =  Sys.command cmd in
   if retcode <> 0 then raise (CmdFail(retcode));
