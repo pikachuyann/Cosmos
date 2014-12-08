@@ -86,6 +86,8 @@ std::ostream& operator<<(std::ostream& os, const class expr& e)
             break;
         case SG: os << " (" << *(e.lhs) << " > " << *(e.rhs) << ") ";
             break;
+        case ListContinuation: os << *(e.lhs) << " , " << *(e.rhs);
+            break;
         case Var: os << e.lhs->stringVal; break;
         case Lambda: os << "([] (auto "<< e.lhs->stringVal << "){" << *(e.rhs) << "})"; break;
         case App: os << "("<< *(e.lhs) << "(" << *(e.rhs) << "))"; break;
@@ -144,7 +146,13 @@ void expr::eval(const map<string,int> &intconst,const map<string,double> &realco
         case Real:
         case Var:
         case Lambda:
+            break;
         case App:
+            rhs->eval(intconst,realconst);
+            break;
+        case ListContinuation:
+            lhs->eval(intconst,realconst);
+            rhs->eval(intconst,realconst);
             break;
         case Ceil:
         case Floor:
