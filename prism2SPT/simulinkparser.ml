@@ -270,27 +270,6 @@ let incr_state (ssid,name,sl,tl,scrl) =
 (*	     (ssid,name,sl,ivect,List.fold_left incr_trans [] tl,scrl)*)
   end
 
-let print_modu2 f (ssid,name,sl,ivect,tl,scrl) =
-  Printf.fprintf f "\tsubgraph cluster%i {\n" ssid;
-  Array.iteri (fun n (x,n2) ->
-    Printf.fprintf f "\tpl%i_%i [shape=circle,label=\"%a\"];\n" ssid n print_option n2) ivect;
-    List.iter (fun (ssidt,src,lab,dst) ->Printf.fprintf f "\t%i [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=black,xlabel=\"%a\",label=\"\"];\n" ssidt print_label_simulink lab;
-      List.iter (fun (i,s) ->
-	Printf.fprintf f "\tpl%i_%i -> %i [label=\"%s\"];\n" ssid i ssidt (stateasso s sl)) src;
-      List.iter (fun (i,s) ->
-	Printf.fprintf f "\t%i -> pl%i_%i [label=\"%s\"];\n" ssidt ssid i (stateasso s sl)) dst
-    ) tl;
-  output_string f "}\n"
-
-let print_simulink_dot2 fpath ml =
-  let f = open_out fpath in
-  output_string f "digraph G {\n";
-(*  output_string f "\tsubgraph place {\n";
-  output_string f "\t\tgraph [shape=circle];\n";
-  output_string f "\t\tnode [shape=circle,fixedsize=true];\n";*)
-  print_modu2 f ml;
-  output_string f "}\n"; 
-  close_out f;;
 
 let dec_trans n (ssid,srcl,lab,dstl) =
   (ssid, (List.map (fun (x,y) -> (x+n,y)) srcl), lab ,(List.map (fun (x,y) -> (x+n,y)) dstl))
@@ -399,7 +378,7 @@ let prune_unread2 m =
   | _ -> true) m.transL in
   {m with transL=tl2}
 
-
+(*
 let comb_trans2 l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
   match (lab2.trigger,lab.trigger) with
     (RAction st,_) when List.exists (fun x -> x=st) lab.write ->
@@ -424,37 +403,31 @@ let comb_trans2 l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
       update = lab.update @ lab2.update} in
     (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
   |_-> l
-
+*)
 
 let combine_modu2 m1 m2 =
 (*(ssid,name,sl,ivect,tl,scrl) (ssid2,name2,sl2,ivect2,tl2,scrl2) =*)
   let n = Array.length m1.ivect in
   let ivect3 = Array.append m1.ivect m2.ivect in
   let tl3 = List.map (dec_trans n) m2.transL in
-  let inaction1 = m1.interfaceR 
-  and inaction2 = m2.interfaceR in
-  let inter = StringSet.inter inaction1 inaction2 in
-  let tlunchanged = List.filter (fun (_,_,lab,_) -> 
-    not ((match lab.trigger with RAction s when StringSet.mem s inter->true |_->false) 
-	    || (List.exists (fun x -> StringSet.mem x inaction2) lab.write))) m1.transL
-  and tlunchanged2 = List.filter (fun (_,_,lab,_) -> 
-    not ((match lab.trigger with RAction s when StringSet.mem s inter->true |_->false)
-	    || (List.exists (fun x -> StringSet.mem x inaction1) lab.write))) tl3 in
-  let tl4 = 
-    List.fold_left (fun l t1 ->
-      List.fold_left (fun l2 t2 -> comb_trans2 l2 t1 t2) l tl3) (tlunchanged@tlunchanged2) m1.transL in 
+  let tl4 = m1.transL @ tl3 in
   let rm,wm = interface_of_modu tl4 in
+  let newname = match (m1.name,m2.name) with 
+      None,None -> None
+    | Some a,None -> Some a
+    | None, Some a -> Some a
+    | Some a,Some b -> Some (Printf.sprintf "( %s | %s )" a b) in
   let mod3 = {ssid= fresh_ssid ();
-	      name= m1.name;
+	      name= newname;
 	      stateL= m1.stateL @ m2.stateL;
 	      ivect=ivect3;
 	      transL=tl4;
 	      scriptL= m1.scriptL @ m2.scriptL;
 	      interfaceR=rm;
 	      interfaceW=wm} in
-  let newname = Printf.sprintf "co%i_%i.dot" m1.ssid m2.ssid in
+  (*let newname = Printf.sprintf "co%i_%i.dot" m1.ssid m2.ssid in
   Printf.fprintf stdout "Combine %s -> %a,%a\n" newname print_option m1.name print_option m2.name;
-  (*print_simulink_dot2 newname mod3;*)
+  print_simulink_dot2 newname mod3;*)
    mod3
 
 let trans_of_int i lab =
@@ -462,7 +435,7 @@ let trans_of_int i lab =
       None -> string_of_list "_" (fun x->x) lab.write
     | Some n -> n) in 
   let lab2 = (match lab.trigger with
-      Imm -> "I" | Delay _ -> "D" | RAction _ -> "R") in
+      Imm -> "I" | Delay _ -> "D" | RAction s -> "R"^s) in
   Printf.sprintf "tr%s%i_%s" lab2 i label
 
 let place_of_int ivect i =
@@ -493,21 +466,29 @@ let print_magic fpath sl tl scrl=
   output_string f "\tdefault: break;\n\t}\n}";
   close_out f
 
-let stochNet_of_modu ml =
-  let is = List.fold_left (fun x y -> StringSet.union x (StringSet.union y.interfaceR y.interfaceW)) StringSet.empty ml in 
-  let net = Net.create () in 
-  Printf.fprintf stdout "Interface [ %a ]\n" (print_set ",") is;   
-  let m = List.hd ml in
+let stochNet_of_modu m =
   print_magic "magic.hpp" m.stateL m.transL m.scriptL;
+  let net = Net.create () in 
+
+  StringSet.union m.interfaceR m.interfaceW
+  |< Printf.fprintf stdout "Interface [ %a ]\n" (print_set ",")
+  |< StringSet.iter (fun x -> Data.add (("SIG_"^x),Int 0) net.Net.place)
+  |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),StochasticPetriNet.Imm ((Float 1.0),(Int 2))) net.Net.transition)
+  |> StringSet.iter (fun x -> Net.add_inArc net ("SIG_"^x) ("EMPTY_"^x) (Int 1));
+
   let varlist = List.fold_left (fun tl -> (function (None,x) when x<>"ctime" -> x::tl | _-> tl)) [] m.scriptL in
   net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) DataFile.data),varlist);
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),Int x) net.Net.place) m.ivect;
   List.iter (fun (ssidt,src,lab,dst) -> 
+    try 
     begin match lab.trigger with
-      Imm -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm (Float 1.0)) net.Net.transition
+      Imm -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm ((Float 1.0),(Int 1))) net.Net.transition
     | Delay s-> Data.add ((trans_of_int ssidt lab),detfun s) net.Net.transition
-    | _ -> print_endline "Remaining read action"
+    | RAction s -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm ((Float 1.0),(Int 3))) net.Net.transition;
+      Net.add_inArc net ("SIG_"^s) (trans_of_int ssidt lab) (Int 1);
+      Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^s) (Int 1);
     end;
+    List.iter (fun x -> Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^x) (Int 1)) lab.write;
     List.iter (fun (i,s) ->
        begin
 	Net.add_inArc net (place_of_int m.ivect i) (trans_of_int ssidt lab) (Int s);
@@ -516,6 +497,7 @@ let stochNet_of_modu ml =
     ) src;
     List.iter (fun (i,s) ->
       Net.add_outArc net (trans_of_int ssidt lab) (place_of_int m.ivect i) (Int s)) dst
+    with Not_found -> print_endline "Not_found uncatch";
   ) m.transL;
   net
 
