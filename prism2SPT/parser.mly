@@ -1,6 +1,6 @@
 %{
   open Type
-
+  open PrismType
 %}
 
 %token <int> INT
@@ -33,7 +33,7 @@
 %left LPAR RPAR
 
 %start main
-%type <Type.constdef*Type.prism_file> main
+%type <PrismType.constdef*PrismType.prism_file> main
 %type <intExpr> intexpr
 %type <floatExpr> floatexpr
 

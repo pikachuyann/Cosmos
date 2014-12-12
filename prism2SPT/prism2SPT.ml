@@ -1,13 +1,12 @@
 open Type
-open Generator
-open Pnmlparser
 
-type format = Prism | Pnml | Dot | Marcie | Simulink
+type format = Prism | Pnml | Dot | Marcie | Simulink | Pdf | GrML
 
 let input = ref stdin
 let output = ref "out"
 let inname = ref "stdin"
 let typeFormat = ref Prism
+let outputFormat = ref [GrML;Dot;Pdf;Marcie]
 
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
@@ -24,49 +23,35 @@ let _ =
 	  output := o;
 	  match suf with
 	  "sm" | "pm" -> typeFormat := Prism
-	| "pnml" -> typeFormat := Pnml
-	| "slx" -> typeFormat := Simulink
 	| _-> failwith "Unsupported file format"
 	)
     | 2 -> output := s
     | _ -> failwith "Do not know what to do with extra arguments.") 
-    "usage"
+    "usage";;
   
-let _ =
-  match !typeFormat with
-    Prism ->
-      print_endline ("Opening "^ !inname);
-      input := open_in !inname;
-      let net = read_prism !input !inname in
-      print_endline "Finish parsing";
-      StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
-      StochasticPetriNet.print_spt ((!output)^".grml") net;
-      print_endline "Finish exporting";
-  | Pnml ->
-    let xmlf = tree_of_pnml !inname in
-    let net = PetriNet.Net.create () in
-    net_of_tree net xmlf;
-    StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
-    StochasticPetriNet.print_spt ((!output)^".grml") net;
-    print_endline "Finish exporting";
-  | Simulink -> begin
-    Zip.open_in !inname
-    |> (fun z -> Zip.find_entry z "simulink/blockdiagram.xml"
-	   |> Zip.read_entry z)
-    |> Xml.parse_string 
-    |> (Simulinkparser.prism_of_tree [])
-    |> Simulinkparser.expand_trans
-    |> List.map Simulinkparser.flatten_module 
-    |> List.map Simulinkparser.incr_state
-    |> (fun x -> List.fold_left Simulinkparser.combine_modu (List.hd x) (List.tl x)) 
-    |> Simulinkparser.prune_unread
-(*    |> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])*)
-    |> Simulinkparser.stochNet_of_modu
-    |> (fun net -> 
-      StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
-      StochasticPetriNet.print_spt ((!output)^".grml") net);
-  end
-  | _ -> failwith "Format not yet supported";;
-
 if Array.length Sys.argv =2 then
-  ignore (Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output))
+  outputFormat := Pdf :: (List.filter (fun x -> x<>Pdf && x <> Dot) !outputFormat)
+
+let _ =
+  print_endline ("Opening "^ !inname);
+  begin match !typeFormat with
+  | Prism -> 
+    input := open_in !inname;
+    Generator.read_prism !input !inname
+  | _ -> failwith "Format not yet supported" end
+	      |> (fun net -> 
+		print_endline "Finish parsing, start writing";
+		List.iter (function 
+	        | Dot ->
+		  StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] []
+		| Pdf -> 
+		  StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
+		  ignore (Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output))
+		| GrML ->
+		  StochasticPetriNet.print_spt ((!output)^".grml") net
+		| Marcie -> 
+		  StochasticPetriNet.print_spt_marcie ((!output)^".andl") net
+		| _ -> print_endline "Output format not supported"
+		) !outputFormat;
+		print_endline "Finish writing.";
+	      );;

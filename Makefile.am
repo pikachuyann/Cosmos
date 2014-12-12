@@ -22,6 +22,7 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 	Examples/testDistribution/testuniform.grml \
     Examples/testDistribution/testagememory.grml \
     Examples/testDistribution/testagememory.lha \
+    Examples/testDistribution/testnormal.grml \
 	Examples/Workflow-Net/test.ml \
 	Examples/Workflow-Net/workflow-out-1-imm.gspn \
 	Examples/Workflow-Net/workflow-out-1-imm.lha \
@@ -74,6 +75,8 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 AM_LDFLAGS = -lrt $(PTHREAD_LIBS)
 AM_CPPFLAGS = $(BOOST_CPPFLAGS)
 
+updatefile:
+	scp cosmos-1.4.tar.gz lsv:/www/web/80/Software/cosmos/files/
 
 # AM_CPPFLAGS = $(BOOST_CPPFLAGS)
 # LIBS = $(BOOST_THREAD_LIBS)

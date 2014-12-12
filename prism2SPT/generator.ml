@@ -1,9 +1,9 @@
 open Type
+open PrismType
 open PetriNet
 open StochasticPetriNet
 open Lexer
 open Lexing
-open Pnmlparser
 
 let print_position outx lexbuf =
   let pos = lexbuf.lex_curr_p in
@@ -123,15 +123,11 @@ let rec rename_int_expr rn e =
     | Minus(e1,e2) -> Minus(rnr e1,rnr e2)
     | Mult(e1,e2) -> Mult(rnr e1,rnr e2)
 let rec rename_float_expr rn e =
-  let rnr = rename_float_expr rn in match e with
-    | FloatName(x) -> FloatName(rn x)
-    | Float(x) -> Float(x)
-    | CastInt(x) -> CastInt(rename_int_expr rn x) 
-    | ExpF(x) -> ExpF(rnr x) 
-    | PlusF(e1,e2) -> PlusF(rnr e1,rnr e2)
-    | MinusF(e1,e2) -> MinusF(rnr e1,rnr e2)
-    | MultF(e1,e2) -> MultF(rnr e1,rnr e2)
-    | DivF(e1,e2) -> DivF(rnr e1,rnr e2)
+  let ifun = function
+   | FloatName(x) -> FloatName(rn x) 
+   | CastInt(x) -> CastInt(rename_int_expr rn x) 
+   | x -> x
+  in iterFloat ifun e
 let rename_op rn = function None -> None | Some a -> Some (rn a)
 let rec rename_bool_expr rn e = 
   let rnr = rename_bool_expr rn in match e with
