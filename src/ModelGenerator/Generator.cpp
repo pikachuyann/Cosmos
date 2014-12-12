@@ -58,7 +58,7 @@ bool ParseBuild() {
             if(P.verbose>0)cerr << "Input file not in GrML try to use convertor."<< endl;
             auto outspt = P.tmpPath + "/generatedspt";
             stringstream cmd;
-            cmd << P.Path << "prism2spt " << P.PathGspn << " " << outspt;
+            cmd << P.Path << "prism2SPT " << P.PathGspn << " " << outspt;
             if (P.verbose > 0)cout << cmd.str() << endl;
             if (system(cmd.str().c_str()) != 0) {
                 cerr << "Fail to Convert from input language to GrML!" << endl;

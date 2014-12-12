@@ -30,3 +30,6 @@ test_cosmos "discrete uniform" "testdiscreteuniform.grml" "testdistrib.lha" ""
 
 test_cosmos "age memory" "testagememory.grml" "testagememory.lha" "--max-run 10000"
   ["MeanVal",(12.0)];;
+
+test_cosmos "normal" "testnormal.grml" "testdistrib.lha" "--max-run 10000"
+["MeanVal",(10.0); "VarVal",(2.0*.2.0)];;

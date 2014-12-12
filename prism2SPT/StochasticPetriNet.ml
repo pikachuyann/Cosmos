@@ -51,7 +51,10 @@ let rec print_float_expr f = function
   %a
   %a
 </attribute></attribute>" print_float_expr fe1 print_float_expr fe2
-
+  | FunCall(s,l) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"%s\">\n  " s;
+    List.iter (fun x ->print_float_expr f x;output_string f "\n  ";) l;
+    output_string f "</attribute></attribute>"
 
 let print_distr f d = 
   output_string f "    <attribute name=\"distribution\">
