@@ -1,7 +1,11 @@
 open Type
 open PetriNet
 
-type distr = Exp of floatExpr | Imm of floatExpr | Det of floatExpr | Erl of (intExpr*floatExpr);;
+type distr = 
+  Exp of floatExpr 
+| Imm of floatExpr*intExpr 
+| Det of floatExpr 
+| Erl of (intExpr*floatExpr);;
 
 
 let rec print_int_expr f = function 
@@ -78,7 +82,7 @@ let print_distr f d =
         <attribute name=\"expr\">%a</attribute>
       </attribute>
     </attribute>" print_int_expr i print_float_expr r
-    | Imm p -> Printf.fprintf f "        DETERMINISTIC
+    | Imm (w,p) -> Printf.fprintf f "        DETERMINISTIC
       </attribute>
       <attribute name=\"param\">
         <attribute name=\"number\">0</attribute>
@@ -89,7 +93,10 @@ let print_distr f d =
     </attribute>
     <attribute name=\"weight\"><attribute name=\"expr\">
       %a
-    </attribute></attribute>" print_float_expr p
+    </attribute></attribute>
+    <attribute name=\"priority\"><attribute name=\"expr\">
+      %a
+    </attribute></attribute>" print_float_expr w print_int_expr p
      | Det p -> Printf.fprintf f "        DETERMINISTIC
       </attribute>
       <attribute name=\"param\">
@@ -240,7 +247,7 @@ let print_spt_marcie fpath net =
   ) net.Net.transition;
   output_string f "\timmediate:\n";
   Data.iter (fun (s,distr) -> match distr with
-      Imm r -> Printf.fprintf f "\t%s : : %a : %f ;\n" s 
+      Imm (r,_) -> Printf.fprintf f "\t%s : : %a : %f ;\n" s 
     (print_arc_marcie net) (Data.index net.Net.transition s) (float_of_floatexp r)
     | _ -> ()   
   ) net.Net.transition;

@@ -94,3 +94,28 @@ let print_module2 m =
   Printf.printf "\ttransition list: [\n";
   List.iter (print_trans_simulink2 m.stateL stdout) m.transL;
   Printf.printf "\t]\n"
+
+
+
+let print_modu2 f m = 
+  (*(ssid,name,sl,ivect,tl,scrl) =*)
+  Printf.fprintf f "\tsubgraph cluster%i {\n" m.ssid;
+  Array.iteri (fun n (x,n2) ->
+    Printf.fprintf f "\tpl%i_%i [shape=circle,label=\"%a\"];\n" m.ssid n print_option n2) m.ivect;
+    List.iter (fun (ssidt,src,lab,dst) ->Printf.fprintf f "\t%i [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=black,xlabel=\"%a\",label=\"\"];\n" ssidt print_label_simulink lab;
+      List.iter (fun (i,s) ->
+	Printf.fprintf f "\tpl%i_%i -> %i [label=\"%s\"];\n" m.ssid i ssidt (stateasso s m.stateL)) src;
+      List.iter (fun (i,s) ->
+	Printf.fprintf f "\t%i -> pl%i_%i [label=\"%s\"];\n" ssidt m.ssid i (stateasso s m.stateL)) dst
+    ) m.transL;
+  output_string f "}\n"
+
+let print_simulink_dot2 fpath ml =
+  let f = open_out fpath in
+  output_string f "digraph G {\n";
+(*  output_string f "\tsubgraph place {\n";
+  output_string f "\t\tgraph [shape=circle];\n";
+  output_string f "\t\tnode [shape=circle,fixedsize=true];\n";*)
+   (print_modu2 f) ml;
+  output_string f "}\n"; 
+  close_out f;;
