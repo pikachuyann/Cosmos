@@ -1,5 +1,6 @@
 %{
   open Type
+  open SimulinkType
 %}
 
 %token <int> INT
@@ -34,7 +35,7 @@
 %left LPAR RPAR
 
 %start main
-%type <Type.simulink_trans_label> main
+%type <SimulinkType.simulink_trans_label> main
 
 %%
 
@@ -82,3 +83,10 @@ floatexpr:
 | floatexpr DIV floatexpr {DivF($1,$3)}
 | NAME {FloatName($1)}
 | EXP LPAR floatexpr RPAR {ExpF($3)};
+| NAME LPAR floatexprlist RPAR {FunCall($1,$3) }
+
+
+floatexprlist:
+  floatexpr COMMA floatexprlist { $1::$3 }
+| floatexpr { [$1] }
+| {[]}

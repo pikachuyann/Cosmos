@@ -3,11 +3,30 @@ let (|>) x f = f x
 let (|>>) x f = match x with 
     Some y -> f y
   | None -> None
+let (|<>|) f (x,y) = f x y
 
-let rec print_list f c = function
-  | [] -> ()
-  | [t] -> f t;
-  | t::q -> f t; c (); print_list f c q
+let rec string_of_list sep f = function
+  | [] -> ""
+  | [t] -> f t
+  | t::q -> Printf.sprintf "%s%s%s" (f t) sep (string_of_list sep f q)
+
+let print_list sep f l =
+  output_string f (string_of_list sep (fun x ->x) l)
+
+let rec selectL fb = function
+  | [] -> raise Not_found
+  | t::q when fb t -> (t,q)
+  | t::q -> let t2,q2 = selectL fb q in
+	    (t2,t::q2)
+
+let print_option2 def f so  =
+  match so with None -> output_string f def | Some s -> Printf.fprintf f "%s" s
+
+let string_of_option def so  =
+  match so with None -> def | Some s -> s
+
+
+let print_option f so  = print_option2 "" f so
 
 type stateFormula = True | False | Not of stateFormula 
                     | And of stateFormula*stateFormula
@@ -27,6 +46,18 @@ and floatExpr = FloatName of string | Float of float
 		| ExpF of floatExpr
 		| FunCall of string*(floatExpr list) ;;
 
+let rec iterFloat f y = 
+  let ri = iterFloat f in match y with
+    | FloatName(x) -> f y;
+    | Float(x) -> f y;
+    | CastInt(x) -> f y;
+    | PlusF(e1,e2) -> PlusF(ri e1,ri e2) |> f
+    | MinusF(e1,e2) -> MinusF(ri e1,ri e2) |> f
+    | MultF(e1,e2) -> MultF(ri e1,ri e2) |> f
+    | DivF(e1,e2) -> DivF(ri e1,ri e2) |> f
+    | ExpF(x) -> ExpF(ri x) |> f 
+    | FunCall(fu,l) -> FunCall(fu,List.map ri l) |> f
+	       
 let neg_cmp = function 
   | EQ -> NEQ  
   | SG -> LE
@@ -65,43 +96,21 @@ let incr_int z = simp_int (Plus(z,Int 1))
 module StringOrdered = struct type t=string let compare=compare end
 module StringSet = Set.Make(StringOrdered)
 module StringMap = Map.Make(StringOrdered)
-type expType = IntT | BoolT | DoubleT
+let add_multi e t =
+  try let i = StringMap.find e t in
+      StringMap.remove e t 
+  |> StringMap.add e (i+1) with
+    Not_found -> StringMap.add e 1 t
+let add_set t s =
+  StringSet.fold add_multi t s
 
-let (mapType:expType StringMap.t ref) = ref StringMap.empty
-(*
-let add_int s = 
-  (*Printf.printf "add int var %s\n" s;*)
-  mapType := StringMap.add s IntT !mapType
-let add_bool s = mapType := StringMap.add s BoolT !mapType
-let add_double s = mapType := StringMap.add s DoubleT !mapType
-let add_copy s1 s2 = try let t = StringMap.find s1 !mapType in
-		     mapType := StringMap.add s2 t !mapType
-  with Not_found -> ()
-*)
-let add_int s = ()
-let add_double s = ()
-let add_bool s = ()
-let add_copy s1 s2 = ()
+let print_set sep f s=
+  ignore (StringSet.fold (fun x c -> if c then output_string f sep;
+    output_string f x;true) s false)
 
-
-let find_action sl =
-  List.fold_left (fun set (so,_,_,_) ->
-    match so with None -> set
-      | Some a -> StringSet.add a set) StringSet.empty sl
-
-type constdef = (string*(intExpr option)) list * (string*(floatExpr option)) list
-
-type prism_module = {
-  name:string;
-  varlist:(string * (intExpr*intExpr) * intExpr) list;
-  actionlist: (string option * (stateFormula) * floatExpr * ((string*intExpr) list)) list;
-  actionset: StringSet.t
-}
-
-type moduledef = Full of prism_module | Renaming of string*string*(string*string) list
-
-type prism_file = moduledef list
-
+let print_multi sep f s=
+  ignore (StringMap.fold (fun x y c -> if c then output_string f sep;
+    Printf.fprintf f "%s:%i" x y;true) s false)
 
 let printH_cmp f = function 
   | EQ -> output_string f "="  
@@ -145,8 +154,6 @@ and printH_float_expr f = function
   | FunCall(fu,t::q) ->  Printf.fprintf f "%s(%a" fu printH_float_expr t;
     List.iter (fun x-> Printf.fprintf f ",%a" printH_float_expr x) q;
     output_string f ")"
-	       
-
 
 let rec printH_stateFormula f = function 
   | True -> output_string f " true " 
@@ -168,64 +175,4 @@ let print_token f = function
   | Int 1 -> output_string f "•" 
   | Int 2 -> output_string f "••"
   | Int 3 -> output_string f "•••"
-  | i -> printH_int_expr f i;;
-
-let rec eval_name data fe= 
-  let enf = eval_name data in match fe with
-    | FloatName(x) -> begin try let v = List.assoc x data in Float (v) with Not_found -> fe end
-    | Float(x) -> fe
-    | CastInt(x) -> fe
-    | PlusF(e1,e2) -> PlusF(enf e1,enf e2)
-    | MinusF(e1,e2) ->  MinusF(enf e1,enf e2)
-    | MultF(e1,e2) ->  MultF(enf e1,enf e2)
-    | DivF(e1,e2) -> DivF(enf e1,enf e2)
-    | ExpF(x) -> ExpF(enf x)
-    | FunCall(f,l) -> FunCall(f,List.map enf l)
-
-type triggerT = Imm | Delay of floatExpr | RAction of string
-
-type simulink_trans_label = {
-  trigger: triggerT;
-  write:  string list;
-  update: string list;
-}
-
-let empty_trans_label = {
-  trigger = Imm;
-  write = [];
-  update = [];
-}
-
-let rec print_list f =function
-  | [] -> ()
-  | [t] -> Printf.fprintf f "%s" t
-  | t::q -> Printf.fprintf f "%s,%a" t print_list q
-
-let print_option f so  =
-  match so with None -> () | Some s -> Printf.fprintf f "%s" s
-
-
-let print_option2 def f so  =
-  match so with None -> output_string f def | Some s -> Printf.fprintf f "%s" s
-
-
-let stateasso s l =
-  try (match List.assoc s l with
-    Some n -> n
-  | None -> string_of_int s)
-  with Not_found -> ""
-
-let stateasso2 s2 l =
-  match s2 with None -> "" | Some s ->
-  try (match List.assoc s l with
-    Some n -> n
-  | None -> string_of_int s)
-  with Not_found -> ""
-
-let print_label_simulink f trans = match trans.trigger with
-    Imm -> Printf.fprintf f "#,![%a],{%a}" print_list trans.write print_list trans.update
-  | Delay(s) -> Printf.fprintf f "wait(%a),![%a],{%a}" printH_float_expr s print_list trans.write print_list trans.update
-  | RAction(s) -> Printf.fprintf f "?%s,![%a],{%a}" s print_list trans.write print_list trans.update
-
-let print_trans_simulink sl f (ssid,src,trans,dst) =
-  Printf.fprintf f "\t%s --(%a)->%s\n" (stateasso2 src sl) print_label_simulink trans (stateasso dst sl);;
+  | i -> printH_int_expr f i

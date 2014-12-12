@@ -135,7 +135,25 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
         }
         cout << "fail eval expr: '" << *it << "'" << endl;
         throw (gmlioexc);
-    } else if (simplifyString(*it).empty())return expr(0);
+    } else if (simplifyString(*it).empty()){
+        return expr(0);
+    } else if (it.node->parent->data =="function" ){
+        if ((P.verbose - 3) > 1)cout << "newfunction:" << *it << endl;
+        expr lhs(*it);
+        expr rhs;
+        for (treeSI it2 = (it.begin()); it2 != (it.end()); ++it2) {
+            if (it2 != it.begin()) {
+                expr rhs2 = rhs;
+                expr interm = eval_expr(it2);
+                rhs = expr(ListContinuation,rhs2,interm);
+            } else {
+                rhs = eval_expr(it2);
+            };
+            
+        }
+        return expr(App, lhs, rhs);
+    }
+    
 
     try {
         return expr(stoi(simplifyString(*it)));

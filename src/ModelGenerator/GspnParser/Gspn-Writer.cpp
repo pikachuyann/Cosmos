@@ -761,14 +761,11 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	if(P.StringInSpnLHA){
 		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
 		//SpnCppFile << "\ts.width(" << maxNameSize+5 <<");" << endl;
-		SpnCppFile << "\ts ";
 		
 		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
 			 plit!= MyGspn.placeStruct.end(); ++plit) {
-			if (plit->isTraced)SpnCppFile << " << setw(" << maxNameSize << ") << \""  << plit->name  << "\"" ;
-			
+			if (plit->isTraced)SpnCppFile << "s << setw(" << maxNameSize << ") << \""  << plit->name  << "\";"<<endl ;
 		}
-		SpnCppFile << ";";
 	}
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";

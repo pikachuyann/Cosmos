@@ -2,25 +2,30 @@ open Xml
 open PetriNet
 open StochasticPetriNet
 open Type
+open SimulinkType
 open Lexing
 
-let ssid_count = ref (-1)
 
 let detfun s =
   let n = 20 in
   StochasticPetriNet.Erl (Int n,DivF (Float (float n),s))
+(*
+let detfun s =
+  StochasticPetriNet.Det s*)
 
+let ssid_count = ref (-1)
 let fresh_ssid () =
-  let f= ! ssid_count in
+  let f= !ssid_count in
   incr ssid_count; f
 
+let getSSID al = 
+  let i = int_of_string (List.assoc "SSID" al)  in
+  ssid_count := max !ssid_count (i+1); 
+  i
 
 let rec findprop f = function
   | [] -> None
   | t::q -> (match f t with None -> findprop f q | x-> x)
-
-let getSSID al = let i = int_of_string (List.assoc "SSID" al)  in
-		 ssid_count := max !ssid_count (i+1); i
 
 let getName cl = findprop (function 
   | Element ("P",["Name","labelString"],[PCData(l)])  -> Some l 
@@ -53,7 +58,6 @@ let rec exp_data = function
      let name = List.assoc "name" alist in
      Some ((getSSID alist),name)
     | _-> None
-
 
 let print_position outx lexbuf =
   let pos = lexbuf.Lexing.lex_curr_p in
@@ -96,24 +100,13 @@ let rec exp_mod (sl,tl,scriptl) = function
        end
     | PCData (s) -> print_endline s; (sl,tl,scriptl)
 
-let print_module (ssid,name,sl,tl) =
-  Printf.printf "module: %i -> " ssid;
-  (match name with
-    Some s -> print_endline s
-  | None -> print_newline ());
-  Printf.printf "\tstate list: [";
-  List.iter (function (x,(Some y))-> Printf.printf " %i->%s, " x y | (x,(None))-> Printf.printf " %i, " x) sl;
-  Printf.printf "]\n";
-  Printf.printf "\ttransition list: [\n";
-  List.iter (print_trans_simulink sl stdout) tl;
-  Printf.printf "\t]\n"
-
 let eval_trans (ssid,name,src,dst) = match name with
     None -> (ssid,src,empty_trans_label,dst)
   | Some s -> let lexbuf = Lexing.from_string s in
 	      try     
 		let label = ParserSimulEdge.main LexerSimulEdge.token lexbuf in
-		(ssid,src,label,dst)
+		let label2 = {label with write = List.sort_uniq compare label.write } in
+		(ssid,src,label2,dst)
     with 
       Parsing.Parse_error ->
 	Printf.fprintf stdout "%a: Parsing error: unexpected token:'%s' in %s\n"
@@ -218,16 +211,15 @@ let rec prism_of_tree ml = function
        end
     | PCData (s) -> ml
 
-let interface_of_modu tl =
-  List.fold_left (fun s (_,_,lab,_) -> match lab.trigger with
-    RAction a -> StringSet.add a s | _ -> s) StringSet.empty tl
-
 let flatten_module (ssid,name,sl,tl,scrl) =
-  let inaction = interface_of_modu tl in
+  let inaction,_ = interface_of_modu tl in
   let tl2 = List.fold_left (fun nt2 (ss,_) ->
     StringSet.fold (fun sa tl3 ->
       if not (List.exists (fun (_,src,lab,_) ->
-	match (src,lab.trigger) with ((Some x),(RAction y)) when x=ss && y = sa -> true | _-> false
+	match (src,lab.trigger) with 
+	  ((Some x),(RAction y)) when x=ss && y = sa -> true 
+	| ((Some x),(Imm)) when x=ss -> true
+	| _-> false
       ) tl) 
       then ((fresh_ssid ()),Some ss,{empty_trans_label with trigger = RAction(sa) },ss)::tl3 
       else tl3) inaction nt2) tl sl in 
@@ -240,7 +232,10 @@ let init_state (ssid,name,sl,tl,scrl) =
     init
   with Not_found -> ( match sl with
     [init,_] -> init
-  | _ -> failwith "No init state")
+  | _ -> begin
+    match name with Some s -> failwith ("No init state in "^s)
+    |None -> failwith ("No init state in "^string_of_int ssid)
+  end)
 
 let incr_trans l (ssid,src,lab,dst) =
   match src with
@@ -249,11 +244,30 @@ let incr_trans l (ssid,src,lab,dst) =
     (ssid,[(0,src2)],lab,[(0,dst)])::l
   
 let incr_state (ssid,name,sl,tl,scrl) =
-  if sl=[] then (ssid,name,[],[||],[],scrl)
+  if sl=[] then { ssid=ssid;
+	       name=name;
+	       stateL=[];
+	       ivect=[||];
+	       transL=[];
+	       scriptL=scrl;
+	       interfaceR=StringSet.empty;
+	       interfaceW=StringSet.empty;
+	     }
   else begin let init = init_state (ssid,name,sl,tl,scrl) in
 	     let ivect = Array.make 1 (init,name) in
+	     let tl2 = List.fold_left incr_trans [] tl in
 	     (*Printf.printf "\t%s\n" (stateasso init sl);*)
-	     (ssid,name,sl,ivect,List.fold_left incr_trans [] tl,scrl)
+	     let (r,w) = interface_of_modu tl2 in
+	     { ssid=ssid;
+	       name=name;
+	       stateL=sl;
+	       ivect=ivect;
+	       transL=tl2;
+	       scriptL=scrl;
+	       interfaceR=r;
+	       interfaceW=w;
+	     }
+(*	     (ssid,name,sl,ivect,List.fold_left incr_trans [] tl,scrl)*)
   end
 
 let print_modu2 f (ssid,name,sl,ivect,tl,scrl) =
@@ -274,7 +288,7 @@ let print_simulink_dot2 fpath ml =
 (*  output_string f "\tsubgraph place {\n";
   output_string f "\t\tgraph [shape=circle];\n";
   output_string f "\t\tnode [shape=circle,fixedsize=true];\n";*)
-  List.iter (print_modu2 f) ml;
+  print_modu2 f ml;
   output_string f "}\n"; 
   close_out f;;
 
@@ -283,45 +297,173 @@ let dec_trans n (ssid,srcl,lab,dstl) =
 
 
 let comb_trans l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
-  match lab2.trigger with
-    RAction st when List.exists (fun x -> x=st) lab.write ->
-      let lab3= { trigger=lab.trigger;
-		  write = lab.write @ lab2.write;
+  match (lab2.trigger,lab.trigger) with
+    (RAction st,_) when List.exists (fun x -> x=st) lab.write ->
+      let lab3= {
+	nameT = Some st;
+	trigger=lab.trigger;
+		  write = List.sort_uniq compare (lab.write @ lab2.write)
+		    |> List.filter (fun x -> x<>st );
 		update = lab.update @ lab2.update} in
       (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
-  | _-> begin match lab.trigger with
-    RAction st when List.exists (fun x -> x=st) lab2.write ->
-      let lab3= { trigger=lab2.trigger;
-		  write = lab.write @ lab2.write;
+  | (_,RAction st) when List.exists (fun x -> x=st) lab2.write ->
+    let lab3= { 
+      nameT = Some st;
+      trigger=lab2.trigger;
+		write = List.sort_uniq compare (lab.write @ lab2.write)
+		  |> List.filter (fun x -> x<>st )
+		;
 		update = lab.update @ lab2.update} in
-      (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
-    |_-> l
-  end
+    (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
+  |_-> l
 
-let combine_modu (ssid,name,sl,ivect,tl,scrl) (ssid2,name2,sl2,ivect2,tl2,scrl2) =
-  let n = Array.length ivect in
-  let ivect3 = Array.append ivect ivect2 in
-  let tl3 = List.map (dec_trans n) tl2 in
-  let inaction1 = interface_of_modu tl 
-  and inaction2 = interface_of_modu tl2 in
+
+let combine_modu m1 m2 =
+(*(ssid,name,sl,ivect,tl,scrl) (ssid2,name2,sl2,ivect2,tl2,scrl2) =*)
+  let n = Array.length m1.ivect in
+  let ivect3 = Array.append m1.ivect m2.ivect in
+  let tl3 = List.map (dec_trans n) m2.transL in
+  let inter = StringSet.union (StringSet.inter m1.interfaceR m2.interfaceW)
+    (StringSet.inter m2.interfaceR m1.interfaceW) in
   let tlunchanged = List.filter (fun (_,_,lab,_) -> 
-    not (List.exists (fun x -> StringSet.mem x inaction2) lab.write)) tl
+     ((match lab.trigger with RAction s when StringSet.mem s inter->false |_->true)
+	 && (List.for_all (fun x -> not (StringSet.mem x inter)) lab.write))) m1.transL
   and tlunchanged2 = List.filter (fun (_,_,lab,_) -> 
-    not (List.exists (fun x -> StringSet.mem x inaction1) lab.write)) tl3 in
-  let tl4 = List.fold_left (fun l t1 ->
-    List.fold_left (fun l2 t2 -> comb_trans l2 t1 t2) l tl3) (tlunchanged@tlunchanged2) tl in 
-  (ssid,name,sl @ sl2 ,ivect3,tl4,scrl @ scrl2)
+     ((match lab.trigger with RAction s when StringSet.mem s inter->false |_->true)
+      && (List.for_all (fun x -> not (StringSet.mem x inter)) lab.write))) tl3 in
+  let tl4 = 
+    List.fold_left (fun l t1 ->
+      List.fold_left (fun l2 t2 -> comb_trans l2 t1 t2) l tl3) (tlunchanged@tlunchanged2) m1.transL 
+in
+  let rm,wm = interface_of_modu tl4 in
+  let newname = match (m1.name,m2.name) with 
+      None,None -> None
+    | Some a,None -> Some a
+    | None, Some a -> Some a
+    | Some a,Some b -> Some (Printf.sprintf "( %s | %s )" a b) in
+  let mod3 = {ssid= fresh_ssid ();
+	      name= newname;
+	      stateL= m1.stateL @ m2.stateL;
+	      ivect=ivect3;
+	      transL=tl4;
+	      scriptL= m1.scriptL @ m2.scriptL;
+	      interfaceR= rm;
+	      interfaceW=wm} in
+  Printf.fprintf stdout "Build %a\n" print_option newname;
+  Printf.fprintf stdout "Interface combinaison: [ %a ]\n" (print_set ", ") inter;
+  print_module2 mod3;
+  (*print_simulink_dot2 newname mod3;*)
+   mod3
+
+let find_read x ml =
+  List.find (fun m ->
+    StringSet.mem x m.interfaceR) ml
+let find_write x ml =
+  List.find (fun m ->
+    StringSet.mem x m.interfaceW) ml
+
+let rec find_combinaison l = 
+  print_endline "Enter find_combinaison";
+  match l with
+  | [] -> []
+  | [t] -> [t]
+  | ml when List.exists (fun x -> StringSet.is_empty x.interfaceR && StringSet.is_empty x.interfaceW) ml ->
+    let m,ol = selectL (fun x -> StringSet.is_empty x.interfaceR && StringSet.is_empty x.interfaceW) ml in
+    (combine_modu m (List.hd ol)) :: (List.tl ol)
+  |> find_combinaison
+  | ml -> 
+    let (in1,out1) = List.fold_left (fun (ii,oi) m ->
+      ((add_set m.interfaceR ii),(add_set m.interfaceW oi))) (StringMap.empty,StringMap.empty) ml in 
+    Printf.fprintf stdout "Read Set: [ %a ]\nWrite Set [ %a ]\n" (print_multi ", ") in1 (print_multi ", ") out1;
+    try let fstread,(frm,fwm) =
+	  StringMap.filter (fun x xn->try xn=1 && StringMap.find x out1 =1 with Not_found -> false) in1 
+  |> StringMap.mapi (fun x _ -> (find_read x ml,find_write x ml))
+  |> StringMap.filter (
+    fun x (rm,wm) -> StringSet.union (StringSet.inter rm.interfaceR wm.interfaceW) (StringSet.inter rm.interfaceW wm.interfaceR) 
+    |> StringSet.for_all (fun x -> (StringMap.find x in1) =1 && (StringMap.find x out1)=1))
+  |> StringMap.choose in
+	      (combine_modu frm fwm) :: (List.filter (fun x -> x<> frm && x<>fwm) ml)
+  |> find_combinaison
+	  with Not_found -> print_endline "No combinaison"; ml
     
-let prune_unread (ssid,name,sl ,ivect,tl,scrl) =
+
+let prune_unread m =
   let tl2 = List.filter (fun (_,_,lab,_) -> match lab.trigger with
     RAction _-> false
-  | _ -> true) tl in
-  (ssid,name,sl,ivect,tl2,scrl) 
+  | _ -> true) m.transL in
+  {m with transL=tl2}
+
+let prune_unread2 m =
+  let tl2 = List.filter (fun (_,src,lab,dst) -> match lab.trigger with
+    RAction _-> not (src = dst && lab.write=[] && lab.update=[])
+  | _ -> true) m.transL in
+  {m with transL=tl2}
+
+
+let comb_trans2 l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
+  match (lab2.trigger,lab.trigger) with
+    (RAction st,_) when List.exists (fun x -> x=st) lab.write ->
+      let lab3= {
+	nameT = Some st;
+	trigger=lab.trigger;
+	write = List.sort_uniq compare (lab.write @ lab2.write);
+	update = lab.update @ lab2.update} in
+      (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
+  | (_,RAction st) when List.exists (fun x -> x=st) lab2.write ->
+    let lab3= { 
+      nameT = Some st;
+      trigger=lab2.trigger;
+      write = List.sort_uniq compare (lab.write @ lab2.write);
+      update = lab.update @ lab2.update} in
+    (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
+  | (RAction st,RAction st2) when st=st2 ->
+    let lab3= { 
+      nameT = Some st;
+      trigger=lab2.trigger;
+      write = List.sort_uniq compare (lab.write @ lab2.write);
+      update = lab.update @ lab2.update} in
+    (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
+  |_-> l
+
+
+let combine_modu2 m1 m2 =
+(*(ssid,name,sl,ivect,tl,scrl) (ssid2,name2,sl2,ivect2,tl2,scrl2) =*)
+  let n = Array.length m1.ivect in
+  let ivect3 = Array.append m1.ivect m2.ivect in
+  let tl3 = List.map (dec_trans n) m2.transL in
+  let inaction1 = m1.interfaceR 
+  and inaction2 = m2.interfaceR in
+  let inter = StringSet.inter inaction1 inaction2 in
+  let tlunchanged = List.filter (fun (_,_,lab,_) -> 
+    not ((match lab.trigger with RAction s when StringSet.mem s inter->true |_->false) 
+	    || (List.exists (fun x -> StringSet.mem x inaction2) lab.write))) m1.transL
+  and tlunchanged2 = List.filter (fun (_,_,lab,_) -> 
+    not ((match lab.trigger with RAction s when StringSet.mem s inter->true |_->false)
+	    || (List.exists (fun x -> StringSet.mem x inaction1) lab.write))) tl3 in
+  let tl4 = 
+    List.fold_left (fun l t1 ->
+      List.fold_left (fun l2 t2 -> comb_trans2 l2 t1 t2) l tl3) (tlunchanged@tlunchanged2) m1.transL in 
+  let rm,wm = interface_of_modu tl4 in
+  let mod3 = {ssid= fresh_ssid ();
+	      name= m1.name;
+	      stateL= m1.stateL @ m2.stateL;
+	      ivect=ivect3;
+	      transL=tl4;
+	      scriptL= m1.scriptL @ m2.scriptL;
+	      interfaceR=rm;
+	      interfaceW=wm} in
+  let newname = Printf.sprintf "co%i_%i.dot" m1.ssid m2.ssid in
+  Printf.fprintf stdout "Combine %s -> %a,%a\n" newname print_option m1.name print_option m2.name;
+  (*print_simulink_dot2 newname mod3;*)
+   mod3
 
 let trans_of_int i lab =
-  let j = if i>0 then i else max_int + i in
-  let label = begin match lab.write with [] -> "" | t::_ -> t end in 
-  Printf.sprintf "tr%i_%s" j label
+  let label = (match lab.nameT with 
+      None -> string_of_list "_" (fun x->x) lab.write
+    | Some n -> n) in 
+  let lab2 = (match lab.trigger with
+      Imm -> "I" | Delay _ -> "D" | RAction _ -> "R") in
+  Printf.sprintf "tr%s%i_%s" lab2 i label
 
 let place_of_int ivect i =
   match ivect.(i) with
@@ -349,26 +491,31 @@ let print_magic fpath sl tl scrl=
       output_string f "\tbreak;\n"
     end) tl;
   output_string f "\tdefault: break;\n\t}\n}";
-
   close_out f
 
-let stochNet_of_modu (ssid,name,sl,ivect,tl,scrl) =
-  print_magic "magic.hpp" sl tl scrl;
+let stochNet_of_modu ml =
+  let is = List.fold_left (fun x y -> StringSet.union x (StringSet.union y.interfaceR y.interfaceW)) StringSet.empty ml in 
   let net = Net.create () in 
-  let varlist = List.fold_left (fun tl -> (function (None,x) when x<>"ctime" -> x::tl | _-> tl)) [] scrl in
+  Printf.fprintf stdout "Interface [ %a ]\n" (print_set ",") is;   
+  let m = List.hd ml in
+  print_magic "magic.hpp" m.stateL m.transL m.scriptL;
+  let varlist = List.fold_left (fun tl -> (function (None,x) when x<>"ctime" -> x::tl | _-> tl)) [] m.scriptL in
   net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) DataFile.data),varlist);
-  Array.iteri (fun n (x,n2) -> Data.add ((place_of_int ivect n),Int x) net.Net.place) ivect;
-  List.iter (fun (ssidt,src,lab,dst) ->
+  Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),Int x) net.Net.place) m.ivect;
+  List.iter (fun (ssidt,src,lab,dst) -> 
     begin match lab.trigger with
       Imm -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm (Float 1.0)) net.Net.transition
     | Delay s-> Data.add ((trans_of_int ssidt lab),detfun s) net.Net.transition
-    | _ -> failwith "Remaining read action"
+    | _ -> print_endline "Remaining read action"
     end;
-    List.iter (fun (i,s) -> (
-      Net.add_inArc net (place_of_int ivect i) (trans_of_int ssidt lab) (Int s);
-      Net.add_inhibArc net (place_of_int ivect i) (trans_of_int ssidt lab) (Int (s+1)))) src;
     List.iter (fun (i,s) ->
-      Net.add_outArc net (trans_of_int ssidt lab) (place_of_int ivect i) (Int s)) dst
-  ) tl;
+       begin
+	Net.add_inArc net (place_of_int m.ivect i) (trans_of_int ssidt lab) (Int s);
+	Net.add_inhibArc net (place_of_int m.ivect i) (trans_of_int ssidt lab) (Int (s+1));
+      end
+    ) src;
+    List.iter (fun (i,s) ->
+      Net.add_outArc net (trans_of_int ssidt lab) (place_of_int m.ivect i) (Int s)) dst
+  ) m.transL;
   net
 

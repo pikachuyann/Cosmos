@@ -51,6 +51,7 @@ using namespace std;
  * Type of probability distribution
  */
 enum DistributionType {
+    NORMAL,
 	GAMMA,
 	UNIFORM,
 	EXPONENTIAL,
@@ -60,7 +61,7 @@ enum DistributionType {
 	GEOMETRIC,
 	ERLANG,
 	DISCRETEUNIF,
-	MASSACTION
+	MASSACTION,
 };
 
 
