@@ -133,19 +133,19 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 }
 
 void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector< set<int> > &vect){
-	SpnF << "\t"<< name << " = vector< set<int> >("<< vect.size() << ");"<< endl;
+	SpnF << "\t"<< name << " = vector< vector<int> >("<< vect.size() << ");"<< endl;
 	for (size_t t = 0; t < vect.size(); t++) {
-		if(vect[t].size()>2){
+            if(vect[t].size()>2){
 			SpnF << "\t{\n\t\tint PE[]= {";
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++) {
 				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
 				if(it != vect[t].begin())SpnF << ", ";
 				SpnF << *it;
 			}
-			SpnF << "};" << endl << "\t\t"<< name <<"[" << t << "] = set<int>(PE,PE+"<< vect[t].size()<< ");\n\t}" << endl;
+			SpnF << "};" << endl << "\t\t"<< name <<"[" << t << "] = vector<int>(PE,PE+"<< vect[t].size()<< ");\n\t}" << endl;
 		}else if(vect[t].size()>0)
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++)
-				SpnF << "\t"<< name << "[" << t << "].insert( " << *it << " );"<< endl;
+				SpnF << "\t"<< name << "[" << t << "].push_back( " << *it << " );"<< endl;
 	}
 	SpnF << endl;
 }
@@ -1352,17 +1352,17 @@ void Gspn_Writer::writeFile(){
 	}
 	SpnCppFile << "}\n" << endl;
 	
-	SpnCppFile << "const set<int>& SPN::PossiblyEn()const {" << endl;
+	SpnCppFile << "const vector<int>& SPN::PossiblyEn()const {" << endl;
 	if (false && P.localTesting)SpnCppFile << "\treturn newlyEnabled;" << endl;
 	else SpnCppFile << "\treturn PossiblyEnabled[lastTransition];" << endl;
 	SpnCppFile << "}" << endl;
 	
-	SpnCppFile << "const set<int>& SPN::PossiblyDis()const {" << endl;
+	SpnCppFile << "const vector<int>& SPN::PossiblyDis()const {" << endl;
 	if (false &&P.localTesting)SpnCppFile << "\treturn newlyDisabled;" << endl;
 	else SpnCppFile << "\treturn PossiblyDisabled[lastTransition];" << endl;
 	SpnCppFile << "}" << endl;
 	
-	SpnCppFile << "const set<int>& SPN::FreeMarkingDependant()const {" << endl;
+	SpnCppFile << "const vector<int>& SPN::FreeMarkingDependant()const {" << endl;
 	SpnCppFile << "\treturn FreeMarkDepT[lastTransition];" << endl;
 	SpnCppFile << "}" << endl;
 	

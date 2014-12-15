@@ -7,11 +7,13 @@ open Lexing
 
 
 let detfun s =
-  let n = 20 in
+  let n = 100 in
   StochasticPetriNet.Erl (Int n,DivF (Float (float n),s))
 (*
 let detfun s =
-  StochasticPetriNet.Det s*)
+  StochasticPetriNet.Det s
+*)
+
 
 let ssid_count = ref (-1)
 let fresh_ssid () =
@@ -96,9 +98,9 @@ let rec exp_mod (sl,tl,scriptl) = function
 	   | Not_found -> (sl,tl,scriptl)
        end
 
-       | x -> Printf.printf "Dont know what to do with %s, ignore\n" x; (sl,tl,scriptl)
+       | x -> Printf.fprintf stderr "Dont know what to do with %s, ignore\n" x; (sl,tl,scriptl)
        end
-    | PCData (s) -> print_endline s; (sl,tl,scriptl)
+    | PCData (s) -> output_string stderr s; (sl,tl,scriptl)
 
 let eval_trans (ssid,name,src,dst) = match name with
     None -> (ssid,src,empty_trans_label,dst)
@@ -109,7 +111,7 @@ let eval_trans (ssid,name,src,dst) = match name with
 		(ssid,src,label2,dst)
     with 
       Parsing.Parse_error ->
-	Printf.fprintf stdout "%a: Parsing error: unexpected token:'%s' in %s\n"
+	Printf.fprintf stderr "%a: Parsing error: unexpected token:'%s' in %s\n"
 	  print_position lexbuf (Lexing.lexeme lexbuf) s;
 	(ssid,src,empty_trans_label,dst)
 
@@ -197,9 +199,9 @@ let rec prism_of_stateflow level ml = function
 	 (ssid,None,[],[],[None,var])::ml
 	 end
        | "event" -> ml
-       | x -> Printf.printf "Dont know wat to do with %s, ignore\n" x; ml
+       | x -> Printf.fprintf stderr "Dont know wat to do with %s, ignore\n" x; ml
        end
-    | PCData (s) -> print_endline s; ml
+    | PCData (s) -> output_string stderr s; ml
 
 let rec prism_of_tree ml = function
   | Element (name,alist,clist) as t->
@@ -328,9 +330,9 @@ in
 	      scriptL= m1.scriptL @ m2.scriptL;
 	      interfaceR= rm;
 	      interfaceW=wm} in
-  Printf.fprintf stdout "Build %a\n" print_option newname;
-  Printf.fprintf stdout "Interface combinaison: [ %a ]\n" (print_set ", ") inter;
-  print_module2 mod3;
+  Printf.fprintf !logout "Build %a\n" print_option newname;
+  Printf.fprintf !logout "Interface combinaison: [ %a ]\n" (print_set ", ") inter;
+  print_module2 !logout mod3;
   (*print_simulink_dot2 newname mod3;*)
    mod3
 
@@ -342,7 +344,7 @@ let find_write x ml =
     StringSet.mem x m.interfaceW) ml
 
 let rec find_combinaison l = 
-  print_endline "Enter find_combinaison";
+  output_string !logout "Enter find_combinaison\n";
   match l with
   | [] -> []
   | [t] -> [t]
@@ -353,7 +355,7 @@ let rec find_combinaison l =
   | ml -> 
     let (in1,out1) = List.fold_left (fun (ii,oi) m ->
       ((add_set m.interfaceR ii),(add_set m.interfaceW oi))) (StringMap.empty,StringMap.empty) ml in 
-    Printf.fprintf stdout "Read Set: [ %a ]\nWrite Set [ %a ]\n" (print_multi ", ") in1 (print_multi ", ") out1;
+    Printf.fprintf !logout "Read Set: [ %a ]\nWrite Set [ %a ]\n" (print_multi ", ") in1 (print_multi ", ") out1;
     try let fstread,(frm,fwm) =
 	  StringMap.filter (fun x xn->try xn=1 && StringMap.find x out1 =1 with Not_found -> false) in1 
   |> StringMap.mapi (fun x _ -> (find_read x ml,find_write x ml))
@@ -363,7 +365,7 @@ let rec find_combinaison l =
   |> StringMap.choose in
 	      (combine_modu frm fwm) :: (List.filter (fun x -> x<> frm && x<>fwm) ml)
   |> find_combinaison
-	  with Not_found -> print_endline "No combinaison"; ml
+	  with Not_found -> output_string !logout "No combinaison\n"; ml
     
 
 let prune_unread m =
@@ -430,6 +432,22 @@ let combine_modu2 m1 m2 =
   print_simulink_dot2 newname mod3;*)
    mod3
 
+let expand_trans2 m =
+  let (nsl,ntl) = List.fold_left (fun (sl2,tl2) (ssid,src,label,dst) -> 
+    match (label.trigger,src) with 
+    | RAction s , [(x,y)]->  (* read *)
+      let news = fresh_ssid ()
+      and newsn = Printf.sprintf "PostRead_%s" s in
+      let newt = fresh_ssid () in
+      ((news,Some newsn)::sl2,
+       (ssid,src,{empty_trans_label with trigger=label.trigger},[x,news])::
+	 (newt,[x,news],{label with trigger=Imm},dst)::tl2)
+    | _ -> (sl2,(ssid,src,label,dst)::tl2)) (m.stateL,[]) m.transL in
+  {
+    m with stateL=nsl;
+      transL =ntl
+  }
+
 let trans_of_int i lab =
   let label = (match lab.nameT with 
       None -> string_of_list "_" (fun x->x) lab.write
@@ -441,7 +459,7 @@ let trans_of_int i lab =
 let place_of_int ivect i =
   match ivect.(i) with
     _,None -> Printf.sprintf "pl%i" i
-  | _,Some(n) -> Printf.sprintf "%s%i" n i
+  | _,Some(n) -> Printf.sprintf "%s" n
 
 let print_magic fpath sl tl scrl=
   let f = open_out fpath in
@@ -471,7 +489,7 @@ let stochNet_of_modu m =
   let net = Net.create () in 
 
   StringSet.union m.interfaceR m.interfaceW
-  |< Printf.fprintf stdout "Interface [ %a ]\n" (print_set ",")
+  |< Printf.fprintf !logout "Interface [ %a ]\n" (print_set ",")
   |< StringSet.iter (fun x -> Data.add (("SIG_"^x),Int 0) net.Net.place)
   |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),StochasticPetriNet.Imm ((Float 1.0),(Int 2))) net.Net.transition)
   |> StringSet.iter (fun x -> Net.add_inArc net ("SIG_"^x) ("EMPTY_"^x) (Int 1));

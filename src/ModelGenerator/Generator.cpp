@@ -50,15 +50,13 @@ bool ParseBuild() {
 
     try {
         // Check the extension of the model file to call the correct parser
-        if (P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "pm" 
-         || P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "sm"
-         || P.PathGspn.substr(P.PathGspn.length() - 4, 4) == "pnml"
-         || P.PathGspn.substr(P.PathGspn.length() - 3, 3) == "slx"
-            ){
+        if (P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "grml"
+        && P.PathGspn.substr(P.PathGspn.length() - 3, 3) != "gml"
+        && P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "gspn"){
             if(P.verbose>0)cerr << "Input file not in GrML try to use convertor."<< endl;
             auto outspt = P.tmpPath + "/generatedspt";
             stringstream cmd;
-            cmd << P.Path << "prism2SPT " << P.PathGspn << " " << outspt;
+            cmd << P.Path << "modelConvert " << P.PathGspn << " " << outspt;
             if (P.verbose > 0)cout << cmd.str() << endl;
             if (system(cmd.str().c_str()) != 0) {
                 cerr << "Fail to Convert from input language to GrML!" << endl;

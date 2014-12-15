@@ -52,18 +52,18 @@ let interface_of_modu tl =
 let print_trans_simulink sl f (ssid,src,trans,dst) =
   Printf.fprintf f "\t%s --(%a)->%s\n" (stateasso2 src sl) print_label_simulink trans (stateasso dst sl);;
 
-let print_module (ssid,name,sl,tl,_) =
+let print_module f (ssid,name,sl,tl,_) =
   let actionr,actionw = interface_of_modu tl in
   let readlist = StringSet.fold (fun x y -> x::y) actionr [] 
   and writelist = StringSet.fold (fun x y -> x::y) actionw [] in 
-  Printf.printf "module: %i -> %a\n" ssid print_option name;
-  Printf.printf "Interface:\n\tRead[ %a ]\n\tWrite[ %a ]\n" (print_list ",") readlist (print_list ",") writelist;
-  Printf.printf "state list: [";
-  List.iter (function (x,(Some y))-> Printf.printf " %i->%s, " x y | (x,(None))-> Printf.printf " %i, " x) sl;
-  Printf.printf "]\n";
-  Printf.printf "\ttransition list: [\n";
-  List.iter (print_trans_simulink sl stdout) tl;
-  Printf.printf "\t]\n"
+  Printf.fprintf f "module: %i -> %a\n" ssid print_option name;
+  Printf.fprintf f "Interface:\n\tRead[ %a ]\n\tWrite[ %a ]\n" (print_list ",") readlist (print_list ",") writelist;
+  Printf.fprintf f "state list: [";
+  List.iter (function (x,(Some y))-> Printf.fprintf f" %i->%s, " x y | (x,(None))-> Printf.fprintf f " %i, " x) sl;
+  Printf.fprintf f "]\n";
+  Printf.fprintf f "\ttransition list: [\n";
+  List.iter (print_trans_simulink sl !logout) tl;
+  Printf.fprintf f "\t]\n"
 
 type simulink_module = {
   ssid : int;
@@ -82,18 +82,18 @@ let print_state_sim sl (x,y) =
 let print_trans_simulink2 sl f (ssid,src,trans,dst) =
   Printf.fprintf f "\t[%s] --(%a)->%s\n" (string_of_list ", " (print_state_sim sl) src) print_label_simulink trans (string_of_list ", " (print_state_sim sl) src);;
 
-let print_module2 m =
+let print_module2 f m =
   let actionr,actionw = interface_of_modu m.transL in
   let readlist = StringSet.fold (fun x y -> x::y) actionr [] 
   and writelist = StringSet.fold (fun x y -> x::y) actionw [] in 
-  Printf.printf "module: %i -> %a\n" m.ssid print_option m.name;
-  Printf.printf "Interface:\n\tRead[ %a ]\n\tWrite[ %a ]\n" (print_list ",") readlist (print_list ",") writelist;
-  Printf.printf "state list: [";
-  List.iter (function (x,(Some y))-> Printf.printf " %i->%s, " x y | (x,(None))-> Printf.printf " %i, " x) m.stateL;
-  Printf.printf "]\n";
-  Printf.printf "\ttransition list: [\n";
-  List.iter (print_trans_simulink2 m.stateL stdout) m.transL;
-  Printf.printf "\t]\n"
+  Printf.fprintf f "module: %i -> %a\n" m.ssid print_option m.name;
+  Printf.fprintf f "Interface:\n\tRead[ %a ]\n\tWrite[ %a ]\n" (print_list ",") readlist (print_list ",") writelist;
+  Printf.fprintf f "state list: [";
+  List.iter (function (x,(Some y))-> Printf.fprintf f " %i->%s, " x y | (x,(None))-> Printf.fprintf f " %i, " x) m.stateL;
+  Printf.fprintf f "]\n";
+  Printf.fprintf f "\ttransition list: [\n";
+  List.iter (print_trans_simulink2 m.stateL f) m.transL;
+  Printf.fprintf f "\t]\n"
 
 
 

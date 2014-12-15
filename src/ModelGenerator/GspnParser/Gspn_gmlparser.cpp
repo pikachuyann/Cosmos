@@ -378,6 +378,15 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 
     for (treeSI it = attribute.begin(); it != attribute.end(); ++it) {
         if ((P.verbose - 3) > 1)cout << *it << ":" << endl;
+        
+        if (*it == "externalDeclaration" && P.magic_values.empty() ) {
+            const auto extdef = simplifyString(*(it.begin()));
+            P.magic_values = "magic.hpp";
+            ofstream extdefhand( P.tmpPath+"magic.hpp", ios::out | ios::trunc);
+            extdefhand << extdef << endl;
+            extdefhand.close();
+        }
+
         if (*it == "declaration") {
             treeSI t1 = findbranch(it, "constants/intConsts/");
             if (t1 != it.end())
