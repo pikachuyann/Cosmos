@@ -7,6 +7,8 @@ let (|<) x f = let () = f x in x
 
 let (|<>|) f (x,y) = f x y
 
+let logout = ref stdout
+
 let rec string_of_list sep f = function
   | [] -> ""
   | [t] -> f t
@@ -26,7 +28,6 @@ let print_option2 def f so  =
 
 let string_of_option def so  =
   match so with None -> def | Some s -> s
-
 
 let print_option f so  = print_option2 "" f so
 

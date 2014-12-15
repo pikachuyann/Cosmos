@@ -1,44 +1,56 @@
 #ifndef _MarkingImpl_HPP
 #define    _MarkingImpl_HPP
 #include <string.h>
-enum philo_Color_Classe {
-	Color_philo_p1,
-	Color_philo_p2,
-	Color_philo_p3,
-	Color_philo_p4,
-	Color_philo_p5,
-	Color_philo_Total,
-	Color_philo_All
+enum patient_Color_Classe {
+	Color_patient_p1,
+	Color_patient_p2,
+	Color_patient_p3,
+	Color_patient_p4,
+	Color_patient_p5,
+	Color_patient_p6,
+	Color_patient_p7,
+	Color_patient_p8,
+	Color_patient_p9,
+	Color_patient_p10,
+	Color_patient_p11,
+	Color_patient_p12,
+	Color_patient_p13,
+	Color_patient_p14,
+	Color_patient_p15,
+	Color_patient_p16,
+	Color_patient_p17,
+	Color_patient_p18,
+	Color_patient_p19,
+	Color_patient_p20,
+	Color_patient_Total,
+	Color_patient_All
 };
-extern const char *Color_philo_names[];
+extern const char *Color_patient_names[];
 
-struct philo_Token{
-	philo_Color_Classe c0;
+struct patient_Token{
+	patient_Color_Classe c0;
 	int mult;
-	philo_Token(  philo_Color_Classe cv0 = (philo_Color_Classe)0, int v =1) {
+	patient_Token(  patient_Color_Classe cv0 = (patient_Color_Classe)0, int v =1) {
 		c0= cv0;
 		mult = v;
 	}
-	philo_Token( const philo_Token& cv0, int v =1) {
+	patient_Token( const patient_Token& cv0, int v =1) {
 		c0= cv0.c0;
 		mult = v;
 	}
-	philo_Token operator * (size_t v){
+	patient_Token operator * (size_t v){
 		mult *= v;
 		return *this;
 	}
 	void iter() {
-		if( c0< (philo_Color_Classe)(Color_philo_Total - 1) ){ c0 = (philo_Color_Classe)(c0+ 1); return;};
-c0 = (philo_Color_Classe)(0);
+		if( c0< (patient_Color_Classe)(Color_patient_Total - 1) ){ c0 = (patient_Color_Classe)(c0+ 1); return;};
+c0 = (patient_Color_Classe)(0);
 	}
 	void print(){
-		std::cerr << mult << "<" << Color_philo_names[c0] << ">";
+		std::cerr << mult << "<" << Color_patient_names[c0] << ">";
 	}
-	philo_Token next(int i)const {
-		philo_Token x((philo_Color_Classe)((c0 +i) % Color_philo_Total),  mult);
-		return x;}
 	bool islast()const {
-		return ( c0== (philo_Color_Classe)(Color_philo_Total -1)  );
+		return ( c0== (patient_Color_Classe)(Color_patient_Total -1)  );
 	}
 	bool operator > (const int x){
 		return mult > x ;
@@ -47,70 +59,70 @@ c0 = (philo_Color_Classe)(0);
 		return mult < x ;
 	}
 };
-struct philo_Domain {
-	int mult[ Color_philo_Total ];
-	philo_Domain(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}
-	philo_Domain(philo_Color_Classe c0) {
+struct patient_Domain {
+	int mult[ Color_patient_Total ];
+	patient_Domain(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}
+	patient_Domain(patient_Color_Classe c0) {
 		fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), 0 );
-		if(c0 != Color_philo_All)
+		if(c0 != Color_patient_All)
 			mult[c0] = 1 ;
 		else{
-			for( int i0= ( c0 == Color_philo_All ? 0 : c0);i0< ( c0 == Color_philo_All ? Color_philo_Total : c0+1);i0++)
+			for( int i0= ( c0 == Color_patient_All ? 0 : c0);i0< ( c0 == Color_patient_All ? Color_patient_Total : c0+1);i0++)
 				mult[i0] = 1 ;
 		}
 	}
-	philo_Domain& operator = (const philo_Domain& x){
+	patient_Domain& operator = (const patient_Domain& x){
 		copy((int*)x.mult,(int*)x.mult + sizeof(mult)/sizeof(int),(int*)mult);
 		return *this;
 	}
-	bool operator == (const philo_Domain& x){
+	bool operator == (const patient_Domain& x){
 		return  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult);
 	}
-	bool operator < (const philo_Domain& x){
+	bool operator < (const patient_Domain& x){
 		return  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::less<int>());
 	}
-	bool operator > (const philo_Domain& x){
+	bool operator > (const patient_Domain& x){
 		return  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::greater<int>());
 	}
-	philo_Domain operator * (int v){
+	patient_Domain operator * (int v){
 		for(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++) ((int*)mult)[count]*= v;
 		return *this;
 	}
-	philo_Domain& operator += (const philo_Domain& x){
+	patient_Domain& operator += (const patient_Domain& x){
 		for(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)
 			((int*)mult)[count]+= ((int*)x.mult)[count] ;
 		return *this;
 	}
-	philo_Domain& operator += (const philo_Token& x){
+	patient_Domain& operator += (const patient_Token& x){
 		mult[ x.c0 ] += x.mult;
 		return *this;
 	}
-	philo_Domain operator + (const philo_Token& x){
-		philo_Domain d(*this);
+	patient_Domain operator + (const patient_Token& x){
+		patient_Domain d(*this);
 		d+=x;
  		return d;
 }
-	philo_Domain& operator -= (const philo_Token& x){
+	patient_Domain& operator -= (const patient_Token& x){
 		mult[ x.c0 ] -= x.mult;
 		return *this;
 	}
-	bool operator < (const philo_Token& x)const{
+	bool operator < (const patient_Token& x)const{
 		return mult[ x.c0 ] < x.mult;
 	}
-	bool operator >= (const philo_Token& x)const{
+	bool operator >= (const patient_Token& x)const{
 		return mult[ x.c0 ] >= x.mult;
 	}
-	philo_Domain operator + (const philo_Domain& x)const{
-		philo_Domain returnval = *this; returnval+= x;
+	patient_Domain operator + (const patient_Domain& x)const{
+		patient_Domain returnval = *this; returnval+= x;
 		return returnval;
 	}
-	philo_Domain& operator -= (const philo_Domain& x){
+	patient_Domain& operator -= (const patient_Domain& x){
 		for(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)
 			((int*)mult)[count]-= ((int*)x.mult)[count] ;
 		return *this;
 	}
-	philo_Domain operator - (const philo_Domain& x)const{
-		philo_Domain returnval = *this; returnval-= x;
+	patient_Domain operator - (const patient_Domain& x)const{
+		patient_Domain returnval = *this; returnval-= x;
 		return returnval;
 	}
 	int card (void){
@@ -120,18 +132,40 @@ struct philo_Domain {
 		return acc;
 	}
 };
-philo_Domain operator + (const philo_Token& t1 ,const philo_Token& t2 )
+patient_Domain operator + (const patient_Token& t1 ,const patient_Token& t2 )
 
 ;class abstractBindingImpl {
 public:
-	philo_Token x;
+	patient_Token x;
 };
 class abstractMarkingImpl {
 public:
-	philo_Domain _PL_Think;
-	philo_Domain _PL_Wait;
-	philo_Domain _PL_Eat;
-	philo_Domain _PL_Fork;
-	philo_Domain x;
+	patient_Domain _PL_ReadyT;
+	patient_Domain _PL_Healthy;
+	patient_Domain _PL_Ill;
+	patient_Domain _PL_Arrival;
+	patient_Domain _PL_ThreatedByDocH;
+	patient_Domain _PL_ThreatedByDocL;
+	patient_Domain _PL_WaitingRoom;
+	int _PL_OperatingRoom;
+	patient_Domain _PL_ArrivalUrgence;
+	patient_Domain _PL_USurgery;
+	int _PL_TraumaTeam;
+	patient_Domain _PL_Ustab;
+	patient_Domain _PL_WSurgery;
+	patient_Domain _PL_WBloodEx;
+	patient_Domain _PL_WXRayEx;
+	int _PL_CountDoctor;
+	patient_Domain _PL_MonitoredRoom;
+	int _PL_Doctor;
+	patient_Domain _PL_PatientRecovered;
+	patient_Domain _PL_UBloodEx;
+	int _PL_ResB;
+	patient_Domain _PL_Waiting;
+	int _PL_ResX;
+	patient_Domain _PL_UXRayEx;
+	patient_Domain _PL_FXRay;
+	patient_Domain _PL_FBloodEx;
+	patient_Domain x;
 };
 #endif
