@@ -139,7 +139,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	}
 	
 	// Possibly adding Events corresponding to newly enabled-transitions
-	const set<int> &net = N.PossiblyEn();
+	const auto &net = N.PossiblyEn();
 	for (const auto &it : net) {
 		size_t bindnum = 0;
 		abstractBinding *bindex = N.nextPossiblyEnabledBinding(it, lb, &bindnum);
@@ -176,7 +176,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	}
 	
 	// Possibly removing Events corresponding to newly disabled-transitions
-	const set<int> &ndt = N.PossiblyDis();
+	const auto &ndt = N.PossiblyDis();
 	for (const auto &it : ndt) {
 		size_t bindnum = 0;
 		abstractBinding *bindex = N.nextPossiblyDisabledBinding(it, lb, &bindnum);
@@ -210,7 +210,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	}
 	
     // Update transition which have no precondition on the Marking
-	const set<int> &fmd = N.FreeMarkingDependant();
+	const auto &fmd = N.FreeMarkingDependant();
 	for (const auto &it : fmd) {
 		for(const auto bindex : N.Transition[it].bindingList){
 			//if (N.IsEnabled(it,bindex)) {

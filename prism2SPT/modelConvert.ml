@@ -32,8 +32,9 @@ let _ =
     "usage";;
   
 if Array.length Sys.argv =2 then
-  outputFormat := Pdf :: (List.filter (fun x -> x<>Pdf && x <> Dot) !outputFormat)
+  outputFormat := Pdf :: (List.filter (fun x -> x<>Pdf && x <> Dot) !outputFormat);;
 
+logout := open_out (!output^".log");;
 
 let _ =
   print_endline ("Opening "^ !inname);
@@ -64,7 +65,7 @@ let _ =
 	|> (Simulinkparser.prism_of_tree [])
 	|> Simulinkparser.expand_trans
 	|> List.map Simulinkparser.flatten_module
-	|> (fun x -> List.iter SimulinkType.print_module x;x)
+	|> (fun x -> List.iter (SimulinkType.print_module !logout) x;x)
 	|> List.map Simulinkparser.incr_state
 	|> Simulinkparser.find_combinaison
 	|> List.map Simulinkparser.prune_unread2
@@ -75,7 +76,7 @@ let _ =
       end
       ENDIF
       ENDIF   
-  | _ -> failwith "Format not yet supported" end
+  | _ -> failwith "Output format not yet supported" end
 	      |> (fun net -> 
 		print_endline "Finish parsing, start writing";
 		List.iter (function 
