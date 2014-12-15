@@ -5,7 +5,6 @@ let (|>>) x f = match x with
   | None -> None
 
 let (|<) x f = let () = f x in x
-
 let (|<>|) f (x,y) = f x y
 
 let logout = ref stdout
@@ -100,6 +99,7 @@ let incr_int z = simp_int (Plus(z,Int 1))
 module StringOrdered = struct type t=string let compare=compare end
 module StringSet = Set.Make(StringOrdered)
 module StringMap = Map.Make(StringOrdered)
+  
 let add_multi e t =
   try let i = StringMap.find e t in
       StringMap.remove e t 
