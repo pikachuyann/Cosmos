@@ -50,7 +50,8 @@ bool ParseBuild() {
 
     try {
         // Check the extension of the model file to call the correct parser
-        if (P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "grml"
+        if (!P.GMLinput
+        && P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "grml"
         && P.PathGspn.substr(P.PathGspn.length() - 3, 3) != "gml"
         && P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "gspn"){
             if(P.verbose>0)cerr << "Input file not in GrML try to use convertor."<< endl;
@@ -65,7 +66,9 @@ bool ParseBuild() {
             P.PathGspn = outspt+".grml";
         }
         
-        if (P.GMLinput || (P.PathGspn.compare(P.PathGspn.length() - 4, 4, "grml") == 0)) {
+        if (P.GMLinput
+            || (P.PathGspn.compare(P.PathGspn.length() - 4, 4, "grml") == 0)
+            || (P.PathGspn.compare(P.PathGspn.length() - 3, 3, "gml") == 0)) {
             parseresult = gReader.parse_gml_file(P);
         } else {
             parseresult = gReader.parse_file(P.PathGspn);

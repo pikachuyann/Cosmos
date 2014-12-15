@@ -117,9 +117,9 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
         {//ERLANG
             boost::uniform_real<> UNIF(0, 1);
             boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
-            double prod = 1;
+            double prod = 1.0;
             for (int i = 0; i < param[0]; i++)
-                prod = prod * gen();
+                prod *=  gen();
             return -log(prod) / param[1];
 			
         }
