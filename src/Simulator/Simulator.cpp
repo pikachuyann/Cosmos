@@ -495,7 +495,9 @@ void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	double t = A.CurrentTime;
 	if (N.Transition[Id].transType == Timed) {
 		getParams(Id,b);
-		t += GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);
+        double t2 = GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);
+        assert(t2>=0.0);
+        t += t2;
         if(verbose > 4){
             cerr << "Sample " << N.Transition[Id].label << " with parameter (";
             cerr << N.ParamDistr[0];

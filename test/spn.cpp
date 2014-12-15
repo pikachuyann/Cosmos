@@ -222,8 +222,8 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 	PossiblyEnabled[0].push_back( 11 );
 	PossiblyEnabled[1].push_back( 2 );
 	{
-		int PE[]= {5, 6, 8};
-		PossiblyEnabled[2] = vector<int>(PE,PE+3);
+
+		PossiblyEnabled[2] = {5, 6, 8};
 	}
 	{
 		int PE[]= {10, 11, 12, 18};
