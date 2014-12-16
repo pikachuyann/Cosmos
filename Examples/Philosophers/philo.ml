@@ -1,3 +1,4 @@
+
 #mod_use "../../prism2SPT/PetriNet.ml"
 #mod_use "../../prism2SPT/Type.ml"
 #use "../../prism2SPT/StochasticPetriNet.ml"
@@ -16,9 +17,9 @@ let generate_net n =
     Data.add (("W"^(string_of_int i)), Int 0) net.Net.place;
     Data.add (("E"^(string_of_int i)), Int 0) net.Net.place;
     Data.add (("F"^(string_of_int i)), Int 1) net.Net.place;
-    Data.add ("TL"^(string_of_int i) ,(Exp (Float 0.34))) net.Net.transition;
-    Data.add ("TR"^(string_of_int i) ,(Exp (Float 0.34))) net.Net.transition;
-    Data.add ("Eat"^(string_of_int i) ,(Exp (Float 0.33))) net.Net.transition;
+    Data.add ("TL"^(string_of_int i) ,(Exp (Float 10.0))) net.Net.transition;
+    Data.add ("TR"^(string_of_int i) ,(Exp (Float 10.0))) net.Net.transition;
+    Data.add ("Eat"^(string_of_int i) ,(Exp (Float 10.0))) net.Net.transition;
   done;
   for i=1 to n do
     Net.add_arc net ("T"^(string_of_int i)) ("TL"^(string_of_int i)) (Int 1);
@@ -35,16 +36,24 @@ let generate_net n =
   done;
   net;;
 
+let generate_ltl fpath n =
+  let f = open_out fpath in
+  Printf.fprintf f "P=? [ [ Counter<%i U [W1>0 " n;
+  for i =2 to n do
+    Printf.fprintf f "& W%i>0 " i;
+  done;
+  output_string f "]]]\n";
+  close_out f
 
 let generate fpath n =
   let net = generate_net n in
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
-  print_spt_dot (fpath^".dot") net [] [];;
+  print_spt_dot (fpath^".dot") net [] [];
+  generate_ltl (fpath^".ltl") n;;
 
+generate "philo5" 5;;
+generate "philo10" 10;;
+generate "philo20" 20;;
+generate "philo50" 50;;
 generate "philo100" 100;;
-
-
-let loop x = 1+((x+3) mod 5);;
-
-loop 5;;
