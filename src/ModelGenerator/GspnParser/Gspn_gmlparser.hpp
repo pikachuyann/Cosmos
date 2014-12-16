@@ -45,10 +45,9 @@ public:
 	map<int,int> Gml2Place;
 	map<int,int> Gml2Trans;
 	GspnType *MyGspn;
-	parameters P;
 	
-	MyModelHandler(GspnType& ,parameters &P) ;
-	MyModelHandler(GspnType& ,parameters &P,map<int,bool>&,map<int,int>&,map<int,int>&);
+	MyModelHandler(GspnType&) ;
+	MyModelHandler(GspnType&,map<int,bool>&,map<int,int>&,map<int,int>&);
 	//~MyModelHandler() { }
 	
 	

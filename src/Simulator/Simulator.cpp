@@ -47,6 +47,7 @@ Simulator::Simulator():verbose(0){
 	sampleTrace = 0.0;
 	Result.second.resize(A.FormulaVal.size());
 	BatchSize = 1000;
+    minInteractiveTime = 0.0;
 }
 
 Simulator::~Simulator() {
@@ -375,7 +376,8 @@ bool Simulator::SimulateOneStep(){
  * Interactive mode stop the simulation until the user choose a transition.
  */
 void Simulator::interactiveSimulation(){
-	string input_line;
+    string input_line;
+    if(A.CurrentTime < minInteractiveTime)return;
 	bool continueLoop = true;
 	while(continueLoop){
 		cerr << "\033[1;31mCosmosSimulator>\033[0m";
@@ -412,8 +414,17 @@ void Simulator::interactiveSimulation(){
                     ss << "dot "<< tmpPath <<"/PetriNet.dot -Tpdf -o " << dotFile << endl;
                     system(ss.str().c_str());
                 } else cerr << "No dot output specified!" << endl;
-            }
-			else if(input_line.compare("help")==0 || input_line.compare("h")==0){
+            } else if(input_line.substr(0,5)=="wait "){
+                try {
+                    minInteractiveTime= A.CurrentTime + stod(input_line.substr(5,input_line.length()-5));
+                    continueLoop = false;
+                } catch (const invalid_argument& ia) {
+                    cerr << "Fail to parse time!" << endl;
+                } catch (const out_of_range& ia) {
+                    cerr << "Fail to parse time!" << endl;
+                }
+
+            } else if(input_line.compare("help")==0 || input_line.compare("h")==0){
 				cerr << "Available command:\n\thelp:\tdisplay this message"<<endl;
 				cerr << "\ts, step:\tmake one step of simulation" << endl;
 				cerr << "\tfire tr:\tfire transition tr" << endl;
@@ -439,7 +450,8 @@ void Simulator::interactiveSimulation(){
  */
 void Simulator::SimulateSinglePath() {
 	
-	InitialEventsQueue();
+    InitialEventsQueue();
+    minInteractiveTime=0.0;
 	
 	if(logtrace.is_open())logtrace << "New Path"<< endl;
     //cerr << "start path"<< endl;
@@ -494,10 +506,8 @@ void Simulator::SimulateSinglePath() {
 void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	double t = A.CurrentTime;
 	if (N.Transition[Id].transType == Timed) {
-		getParams(Id,b);
-        double t2 = GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);
-        assert(t2>=0.0);
-        t += t2;
+        getParams(Id,b);
+        t += fmax(GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr),0.0);
         if(verbose > 4){
             cerr << "Sample " << N.Transition[Id].label << " with parameter (";
             cerr << N.ParamDistr[0];

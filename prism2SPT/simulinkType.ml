@@ -23,6 +23,7 @@ let empty_trans_label = {
 }
 
 
+
 let stateasso s l =
   try (match List.assoc s l with
     Some n -> n

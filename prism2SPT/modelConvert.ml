@@ -31,8 +31,8 @@ let _ =
     | _ -> failwith "Do not know what to do with extra arguments.") 
     "usage";;
   
-if Array.length Sys.argv =2 then
-  outputFormat := Pdf :: (List.filter (fun x -> x<>Pdf && x <> Dot) !outputFormat);;
+if Array.length Sys.argv <>2 then
+  outputFormat := (List.filter (fun x -> x<>Pdf && x <> Dot) !outputFormat);;
 
 logout := open_out (!output^".log");;
 
