@@ -1035,7 +1035,7 @@ void Gspn_Writer::writeFile(){
 		SpnCppFile << "\tconst int _nb_Place_"<< plit.name << "=" << plit.id << ";" << endl;
 	}
 	
-    if (!P.magic_values.empty())
+    if (P.magic_values != "")
         SpnCppFile << "#include \"" << P.magic_values << "\"" << endl;
 	if(P.RareEvent){
 		SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;

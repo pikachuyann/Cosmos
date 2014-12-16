@@ -131,6 +131,8 @@ protected:
 	virtual void SimulateSinglePath();
 	
 	void interactiveSimulation(); //!Wait for the user to choose the next transition
+    double minInteractiveTime;
+
     void printSedCmd();
 	
 	virtual void InitialEventsQueue(); //!initialize the event queue

@@ -130,11 +130,12 @@ let print_arc f id source target valuation inhib =
     </attribute></attribute>
   </arc>\n" id arctype source target print_int_expr valuation
  
-let gen_const f li lr le =
+let gen_const f li lr le fund =
   Printf.fprintf f "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">
+%a
   <attribute name=\"declaration\"><attribute name=\"constants\">
-    <attribute name=\"intConsts\">\n";
+    <attribute name=\"intConsts\">\n" fund ();
   List.iter (fun (n,v) -> 
      Printf.fprintf f "      <attribute name=\"intConst\">
         <attribute name=\"name\">%s</attribute>
@@ -168,12 +169,12 @@ type 'a spt = (int* 'a,distr ,intExpr , (string*int list)* (string*float list)* 
 
 let print_spt fpath net  =
   let f = open_out fpath in
-  let (lci,lcd,lce) = begin match net.Net.def with None -> [],[],[] | Some x ->x end in
+  let (lci,lcd,lce,fund) = begin match net.Net.def with None -> [],[],[],(fun _ ()->()) | Some x ->x end in
   gen_const f 
     (List.map (fun (s,ao) ->
       match ao with None -> s,Int 1 | Some f -> s,f) lci) 
     (List.map (fun (s,ao) ->
-      match ao with None -> s,Float 1.0 | Some f -> s,f) lcd) lce;
+      match ao with None -> s,Float 1.0 | Some f -> s,f) lcd) lce fund;
   let np = Data.fold (fun i (s,m) ->print_pl f s i m; i+1) 0 net.Net.place in
   let nt = Data.fold (fun i (s,r) ->print_tr f s i r; i+1) np net.Net.transition in
   let nia = Data.fold (fun i (_,(v,p,t)) ->print_arc f i p (t+np) v false; i+1) nt net.Net.inArc in
@@ -305,5 +306,3 @@ let print_spt_dot fpath net cl p =
 
   output_string f "}\n"; 
   close_out f;;
-
-

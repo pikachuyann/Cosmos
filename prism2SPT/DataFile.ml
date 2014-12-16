@@ -27,9 +27,9 @@ let data = [
 "Vtr_refrD",200.0;
 "PM_TAVI",150.0;
 "PM_TLRI",1000.0;
-"PM_TURI",1200.0;
+"PM_TURI",400.0;
 "PM_TPVAB",50.0;
-"PM_TPVARP",250.0;
+"PM_TPVARP",125.0;
 "PM_TVRP",320.0;
 "Skrewness",0.2000]
 
