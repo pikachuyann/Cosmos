@@ -5,14 +5,15 @@ open Type
 open SimulinkType
 open Lexing
 
+let modelStoch = true
+
 
 let detfun s =
-  let n = 100 in
-  StochasticPetriNet.Erl (Int n,DivF (Float (float n),s))
-(*
-let detfun s =
-  StochasticPetriNet.Det s
-*)
+  if modelStoch then 
+    let n = 100 in
+    StochasticPetriNet.Erl (Int n,DivF (Float (float n),s))
+  else StochasticPetriNet.Det s
+
 
 
 let ssid_count = ref (-1)
@@ -102,12 +103,13 @@ let rec exp_mod (sl,tl,scriptl) = function
        end
     | PCData (s) -> output_string stderr s; (sl,tl,scriptl)
 
-let eval_trans (ssid,name,src,dst) = match name with
+let eval_trans sl (ssid,name,src,dst) = match name with
     None -> (ssid,src,empty_trans_label,dst)
   | Some s -> let lexbuf = Lexing.from_string s in
 	      try     
 		let label = ParserSimulEdge.main LexerSimulEdge.token lexbuf in
-		let label2 = {label with write = List.sort_uniq compare label.write } in
+		let label2 = {label with write = List.sort_uniq compare label.write;
+			     nameT = src |>> (fun x -> List.assoc x sl) } in
 		(ssid,src,label2,dst)
     with 
       Parsing.Parse_error ->
@@ -120,7 +122,7 @@ let module_of_simul al cl =
   let name = getName cl in
   let childs = List.find (function Element ("Children",_,_)->true | _-> false) cl in
   let sl,tl,scriptl = exp_mod ([],[],[]) childs in
-  let modu = ssid,name,sl,(List.map eval_trans tl),scriptl in 
+  let modu = ssid,name,sl,(List.map (eval_trans sl) tl),scriptl in 
   (*print_module modu;*)
   modu
 
@@ -138,14 +140,14 @@ let expand_trans l=
 	and newsn = post_name sl dst ssid in
 	let newt = fresh_ssid () in
 	((news,Some newsn)::sl2,
-	(ssid,src,{empty_trans_label with trigger=label.trigger},news)::
+	(ssid,src,{empty_trans_label with trigger=label.trigger; nameT=(src |>> (fun x ->List.assoc x sl))  },news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
-      | (RAction(_),_,Some src2) when src2=dst->  (* self loop with read *)
+      | (RAction(sn),_,Some src2) when src2=dst->  (* self loop with read *)
 	let news = fresh_ssid ()
 	and newsn = post_name sl dst ssid in
 	let newt = fresh_ssid () in
 	((news,Some newsn)::sl2,
-	(ssid,src,{empty_trans_label with trigger=label.trigger},news)::
+	(ssid,src,{empty_trans_label with trigger=label.trigger; nameT=Some sn },news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
       | (_,_,None) when label.update <> [] -> (* Initial transition with update*)
 	let news = fresh_ssid ()
@@ -153,7 +155,7 @@ let expand_trans l=
 	let newt = fresh_ssid () in
 	((news,Some newsn)::sl2,
 	 (ssid,None,empty_trans_label,news)::
-	   (newt,Some(news),label,dst)::tl2)
+	   (newt,Some(news),{label  with nameT=Some "init"},dst)::tl2)
       | _ -> (sl2,(ssid,src,label,dst)::tl2)) (sl,[]) tl in
     (ssidmod,name,nsl,ntl,scrl)) l
 	      
@@ -454,15 +456,15 @@ let trans_of_int i lab =
     | Some n -> n) in 
   let lab2 = (match lab.trigger with
       Imm -> "I" | Delay _ -> "D" | RAction s -> "R"^s) in
-  Printf.sprintf "tr%s%i_%s" lab2 i label
+  Printf.sprintf "%s%i_%s" lab2 i label
 
 let place_of_int ivect i =
   match ivect.(i) with
     _,None -> Printf.sprintf "pl%i" i
   | _,Some(n) -> Printf.sprintf "%s" n
 
-let print_magic fpath sl tl scrl=
-  let f = open_out fpath in
+let print_magic f sl tl scrl=
+  output_string f "  <attribute name=\"externalDeclaration\">";
   output_string f "#define temporalCount(msec) 0\n";
   output_string f "const string print_magic(int v){\n";
   output_string f "\tswitch(v){\n";
@@ -481,28 +483,28 @@ let print_magic fpath sl tl scrl=
       List.iter (fun x -> Printf.fprintf f "\t\t%s;\n" x) lab.update; 
       output_string f "\tbreak;\n"
     end) tl;
-  output_string f "\tdefault: break;\n\t}\n}";
-  close_out f
+  output_string f "\tdefault: break;\n\t}\n}\n";
+  output_string f "  </attribute>"
 
 let stochNet_of_modu m =
-  print_magic "magic.hpp" m.stateL m.transL m.scriptL;
+  let fund = fun f () -> print_magic f m.stateL m.transL m.scriptL in
   let net = Net.create () in 
 
   StringSet.union m.interfaceR m.interfaceW
   |< Printf.fprintf !logout "Interface [ %a ]\n" (print_set ",")
   |< StringSet.iter (fun x -> Data.add (("SIG_"^x),Int 0) net.Net.place)
-  |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),StochasticPetriNet.Imm ((Float 1.0),(Int 2))) net.Net.transition)
+  |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),StochasticPetriNet.Imm ((Float 1.0),(Int 3))) net.Net.transition)
   |> StringSet.iter (fun x -> Net.add_inArc net ("SIG_"^x) ("EMPTY_"^x) (Int 1));
 
   let varlist = List.fold_left (fun tl -> (function (None,x) when x<>"ctime" -> x::tl | _-> tl)) [] m.scriptL in
-  net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) DataFile.data),varlist);
+  net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) DataFile.data),varlist,fund);
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),Int x) net.Net.place) m.ivect;
   List.iter (fun (ssidt,src,lab,dst) -> 
     try 
     begin match lab.trigger with
-      Imm -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm ((Float 1.0),(Int 1))) net.Net.transition
+      Imm -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm ((Float 1.0),(Int 2))) net.Net.transition
     | Delay s-> Data.add ((trans_of_int ssidt lab),detfun s) net.Net.transition
-    | RAction s -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm ((Float 1.0),(Int 3))) net.Net.transition;
+    | RAction s -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm ((Float 1.0),(Int 4))) net.Net.transition;
       Net.add_inArc net ("SIG_"^s) (trans_of_int ssidt lab) (Int 1);
       Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^s) (Int 1);
     end;

@@ -212,7 +212,9 @@ void launch_clients(parameters& P){
 		pushstr(argv, argn, cmd.c_str());
 		
 		pushint(argv,argn,P.Batch);
-		pushint(argv,argn,P.verbose);
+        if (P.interactive) {
+            pushint(argv,argn,6);
+        } else pushint(argv,argn,P.verbose);
         pushstr(argv,argn,P.tmpPath.c_str());
 
 		//<< P.Batch << " " << P.verbose;

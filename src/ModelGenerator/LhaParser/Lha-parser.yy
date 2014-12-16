@@ -646,7 +646,7 @@ term:   str
 			}
 			else
 			{
-				cout<<*$1<<" is not Petri-net Place or a definded constant "<<endl;
+				cout<<*$1<<" is not Petri-net Place or a defined constant "<<endl;
 				YYABORT;
 			}
 		}

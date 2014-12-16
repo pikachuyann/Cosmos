@@ -104,7 +104,7 @@ let gen_acc iinit modu net (st,g,f,u) =
 
 let net_of_prism modu (li,lf) =
   let net = Net.create () in
-  net.Net.def <- Some (li,lf,[]);
+  net.Net.def <- Some (li,lf,[],fun _ ()->());
   List.iter (fun (n,(a,b),i) -> Data.add (n,i) net.Net.place) modu.varlist;
   ignore (List.fold_left 
 	    (fun i ac ->

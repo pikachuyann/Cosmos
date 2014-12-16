@@ -345,7 +345,7 @@ expr MyModelHandler::eval_guard(tree<string>::pre_order_iterator it) {
     return expr();
 }
 
-MyModelHandler::MyModelHandler(GspnType &MyGspn2, parameters &Q) : MyGspn(&MyGspn2), P(Q) {
+MyModelHandler::MyModelHandler(GspnType &MyGspn2) : MyGspn(&MyGspn2) {
     MyGspn->tr = 0;
     ParsePl = true;
     if (MyGspn->nbpass == 0) {
@@ -355,7 +355,7 @@ MyModelHandler::MyModelHandler(GspnType &MyGspn2, parameters &Q) : MyGspn(&MyGsp
 }
 //~MyModelHandler() { }
 
-MyModelHandler::MyModelHandler(GspnType &MyGspn2, parameters &Q, map<int, bool> &mip, map<int, int> &mgp, map<int, int> &mgt) : IsPlace(mip), Gml2Place(mgp), Gml2Trans(mgt), MyGspn(&MyGspn2), P(Q) {
+MyModelHandler::MyModelHandler(GspnType &MyGspn2, map<int, bool> &mip, map<int, int> &mgp, map<int, int> &mgt) : IsPlace(mip), Gml2Place(mgp), Gml2Trans(mgt), MyGspn(&MyGspn2) {
     MyGspn->tr = 0;
     ParsePl = true;
     if (MyGspn->nbpass == 0) {
@@ -381,8 +381,9 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
         
         if (*it == "externalDeclaration" && P.magic_values.empty() ) {
             const auto extdef = simplifyString(*(it.begin()));
+            if ((P.verbose - 3) > 1)cout << extdef << endl;
             P.magic_values = "magic.hpp";
-            ofstream extdefhand( P.tmpPath+"magic.hpp", ios::out | ios::trunc);
+            ofstream extdefhand( P.tmpPath+"/magic.hpp", ios::out | ios::trunc);
             extdefhand << extdef << endl;
             extdefhand.close();
         }

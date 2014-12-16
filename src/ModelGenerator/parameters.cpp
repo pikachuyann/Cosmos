@@ -262,7 +262,6 @@ void parameters::parseCommandLine(int argc, char** argv) {
 
             case 'i':
                 interactive = true;
-                verbose = 6;
                 StringInSpnLHA = true;
                 break;
 
