@@ -410,7 +410,11 @@ bool build() {
      */
 
     //Link SPN and LHA with the library
-    cmd = bcmd + " -o " + P.tmpPath + "/ClientSim " + P.tmpPath + "/spn.o " + P.tmpPath + "/LHA.o " + P.Path + "../lib/libClientSim.a ";
+    cmd = bcmd + " -o " + P.tmpPath + "/ClientSim " + P.tmpPath + "/spn.o " + P.tmpPath + "/LHA.o ";
+    if(P.lightSimulator){
+        cmd += P.Path + "../lib/libClientSimLight.a ";
+    } else cmd += P.Path + "../lib/libClientSim.a ";
+
     if (P.verbose > 2)cout << cmd << endl;
     if (system(cmd.c_str())) return false;
 

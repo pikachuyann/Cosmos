@@ -7,6 +7,7 @@ let output = ref "out"
 let inname = ref "stdin"
 let typeFormat = ref Prism
 let outputFormat = ref [GrML;Dot;Pdf;Marcie]
+let const_file = ref ""
 
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
@@ -24,7 +25,9 @@ let _ =
 	  match suf with
 	  "sm" | "pm" -> typeFormat := Prism
 	| "pnml" -> typeFormat := Pnml
-	| "slx" -> typeFormat := Simulink
+	| "slx" -> 
+	  typeFormat := Simulink;
+	  const_file := "const.m"
 	| _-> failwith "Unsupported file format"
 	)
     | 2 -> output := s
@@ -72,7 +75,7 @@ let _ =
       	|> (fun x -> List.fold_left Simulinkparser.combine_modu2 (List.hd x) (List.tl x))
 	|> Simulinkparser.expand_trans2
     (*    |> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])*)
-	|> Simulinkparser.stochNet_of_modu
+	|> Simulinkparser.stochNet_of_modu !const_file
       end
       ENDIF
       ENDIF   

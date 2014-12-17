@@ -137,6 +137,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		030273EB1A41F24D00D6C7B2 /* clientsimLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = clientsimLight.cpp; sourceTree = "<group>"; };
 		03088AAA1A0422C0006BCB27 /* #model.pnml# */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "#model.pnml#"; sourceTree = "<group>"; };
 		03088AAC1A0422C0006BCB27 /* _digests */ = {isa = PBXFileReference; lastKnownFileType = text; path = _digests; sourceTree = "<group>"; };
 		03088AAD1A0422C0006BCB27 /* _log */ = {isa = PBXFileReference; lastKnownFileType = text; path = _log; sourceTree = "<group>"; };
@@ -1242,6 +1243,7 @@
 				032A7063181BC0D6006D7332 /* stateSpace.cpp */,
 				032A7064181BC0D6006D7332 /* stateSpace.hpp */,
 				032A7041181BC0D6006D7332 /* clientsim.cpp */,
+				030273EB1A41F24D00D6C7B2 /* clientsimLight.cpp */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
