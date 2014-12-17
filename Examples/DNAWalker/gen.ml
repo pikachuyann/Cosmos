@@ -7,7 +7,6 @@
 
 type anchorT = Init | Final | Norm
 
-
 let sq2 = (sqrt 2.0)/.2.0;;
 let sq3 = (sqrt 3.0)/.2.0;;
 
@@ -88,8 +87,8 @@ let gen_spn2 ?(gentrans=true) ?(genfailure=true) fpath li ks failure=
     Data.add (("a"^(string_of_int n)),(if t=Init then Int 2 else Int i)) net.Net.place;
     if i=0 && t <> Init && genfailure then begin
       Data.add (("b"^(string_of_int n)), Int 1) net.Net.place;
-      Data.add ("tb"^(string_of_int n) ,(Imm (Float failure))) net.Net.transition;
-      Data.add ("tAb"^(string_of_int n) ,(Imm (Float (1.0-.failure)))) net.Net.transition;
+      Data.add ("tb"^(string_of_int n) ,(Imm ((Float failure),(Int 1)))) net.Net.transition;
+      Data.add ("tAb"^(string_of_int n) ,(Imm ((Float (1.0-.failure)),(Int 1)))) net.Net.transition;
       Net.add_arc net ("b"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("b"^(string_of_int n)) ("tAb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("tb"^(string_of_int n)) ("a"^(string_of_int n)) (Int 1);
@@ -199,14 +198,14 @@ let gen_spn fpath li ks failure=
 
 let generate_spn fpath li2 ks failure obj =
   let li = mapsq3 li2 in
-  let net = gen_spn2 ~gentrans:true ~genfailure:false fpath li ks failure in
+  let net = gen_spn2 ~gentrans:true ~genfailure:true fpath li ks failure in
   generate_lha (fpath^".lha") li obj;
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
   print_spt_dot (fpath^".dot") net [] 
-    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
-  (*ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
-  (*execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--gppflags -O0 --njob 2");;*)
+    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
+  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));
+  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--gppflags -O0 --njob 2");;
 
 
 
@@ -452,8 +451,6 @@ gen28 "track28RL" 0 1 1 0 "a25=2";;
   "a28>1" "a20>1 | a25 >1 | a17>1";;*)
 gen28 "track28RR" 0 1 0 1 "a28=2";;
 
-
-
 (*
 gen_xor "ringLL" true true;;
 gen_xor "ringRR" false false;;
@@ -471,6 +468,54 @@ gen_xor_large "ringLRLarge" true false;;
 gen_xor_large "ringRRLarge" false false;;
 *)
 
+let redondantChoice bl br = 
+  generate_spn (Printf.sprintf "redondantChoice%i%i" bl br) [ (1,Init,0,(0.0,0.0)); 
+				   (2,Norm,1,(0.0,1.0)); 
+				   (3,Norm,1,(0.0,2.0));
+				   (4,Norm,1,(0.0,3.0));
+
+				   (5,Norm,bl,(-.1.0,3.5));
+				   (6,Norm,bl,(-.2.0,4.0)); 
+				   (7,Norm,1,(-.3.0,4.5));
+				   (8,Norm,1,(-.3.0,5.5));
+
+				   (9,Norm,br,(  1.0,3.5));
+				   (10,Norm,br,( 2.0,4.0));
+				   (11,Norm,1,( 3.0,4.5));
+				   (12,Norm,1,(3.0,5.5));
+				   
+				   (13,Norm,bl,(-3.0,6.5));
+				   (14,Norm,bl,(-3.0,7.5));
+				   (15,Norm,bl,(-3.0,8.5));
+				   (16,Norm,bl,(-3.0,9.5));
+				   (17,Norm,1,(-3.0,10.5));
+				   
+				   (18,Norm,br,(3.0,6.5));
+				   (19,Norm,br,(3.0,7.5));
+				   (20,Norm,br,(3.0,8.5));
+				   (21,Norm,br,(3.0,9.5));
+				   (22,Norm,1,(3.0,10.5));
+				   
+				   (23,Norm,br,(-2.0,6.5));
+				   (24,Norm,br,(-1.0,7.0));
+				   (25,Norm,1,(0.0,7.5));
+				   (26,Norm,br,(1.0,8.0));
+				   (27,Norm,br,(2.0,8.5));
+				   
+				   (28,Norm,bl,(2.0,6.5));
+				   (29,Norm,bl,(1.0,7.0));
+				   (30,Norm,bl,(-1.0,8.0));
+				   (31,Norm,bl,(-2.0,8.5));
+
+				   (32,Final,1,(-3.0,11.5));
+				   (33,Final,1,(3.0,11.5));
+
+] 0.009 0.3 (if bl=1 then "a32=2" else "a33=2");; 
+
+redondantChoice 1 0;;
+redondantChoice 0 1;;
+
+(*
 lozange "lozange" 10 10 (fun _ _ -> 1);;
  
 let ra x = (float x) -. 5.5;;
@@ -485,3 +530,4 @@ let ra3 x y = max (raman x) (raman y);;
 
 lozange "lozangeBlock" 10 10 (fun x y -> 
   max 0 ( (min 1 (int_of_float ((ra3 x y)/.4.0)))));;
+*)

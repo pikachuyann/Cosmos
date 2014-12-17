@@ -83,6 +83,7 @@ unfold(""),
 
 gcccmd("g++"),
 gccflags("-O3 -Wno-return-type"),
+lightSimulator(false),
 
 prismPath(""),
 dataoutput(""),
@@ -215,6 +216,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"njob", required_argument, 0, 'n'},
             {"gppcmd", required_argument, 0, 6},
             {"gppflags", required_argument, 0, 7},
+            {"light-simulator", no_argument, 0, 30},
             {"verbose", required_argument, 0, 'v'},
             {"interactive", no_argument, 0, 'i'},
             {"update-time", required_argument, 0, 'u'},
@@ -380,6 +382,9 @@ void parameters::parseCommandLine(int argc, char** argv) {
             case 6: gcccmd = optarg;
                 break;
             case 7: gccflags = optarg;
+                break;
+            case 30:
+                lightSimulator = true;
                 break;
             case 10: seed = atoi(optarg);
                 break;

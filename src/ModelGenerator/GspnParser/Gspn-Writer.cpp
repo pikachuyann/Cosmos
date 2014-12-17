@@ -133,20 +133,27 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 }
 
 void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector< set<int> > &vect){
-	SpnF << "\t"<< name << " = vector< vector<int> >("<< vect.size() << ");"<< endl;
-	for (size_t t = 0; t < vect.size(); t++) {
-            if(vect[t].size()>2){
-			SpnF << "\t{\n\t\tint PE[]= {";
+        //SpnF << "\t"<< name << " = vector< vector<int> >("<< vect.size() << ");"<< endl;
+    for (size_t t = 0; t < vect.size(); t++)
+        if(vect[t].size()>0){
+            const auto tabname = "PE_"+name+"_"+ to_string(t);
+            SpnF << "const int " << tabname << "[" << 1+vect[t].size() <<"]"<<"= {";
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++) {
 				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
-				if(it != vect[t].begin())SpnF << ", ";
-				SpnF << *it;
+				SpnF << *it << ", ";
 			}
-			SpnF << "};" << endl << "\t\t"<< name <<"[" << t << "] = vector<int>(PE,PE+"<< vect[t].size()<< ");\n\t}" << endl;
-		}else if(vect[t].size()>0)
+        SpnF << "-1 };" << endl;// << "\t"<< name <<"[" << t << "] = vector<int>("<<tabname<<","<< tabname<<"+"<< vect[t].size()<< ");" << endl;
+		/*}else if(vect[t].size()>0)
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++)
-				SpnF << "\t"<< name << "[" << t << "].push_back( " << *it << " );"<< endl;
+				SpnF << "\t"<< name << "[" << t << "].push_back( " << *it << " );"<< endl;*/
 	}
+    SpnF << "const int* SPN::"<< name << "[] = {";
+    for (size_t t = 0; t < vect.size(); t++) {
+        if(t != 0)SpnF << ", ";
+        if(vect[t].size()>0){ SpnF << "PE_"<<name<<"_"<< t;
+        } else SpnF << "EMPTY_array";
+    }
+    SpnF << "};"<< endl;
 	SpnF << endl;
 }
 
@@ -156,7 +163,8 @@ void Gspn_Writer::writeEnabledDisabled(ofstream &SpnF){
 	vector< set<int> > FreeMarkDepT;
 	
 	EnabledDisabledTr(PossiblyEnabled,PossiblyDisabled,FreeMarkDepT);
-	
+
+    SpnF << "const int EMPTY_array[1]={-1};" << endl;
 	writeUpdateVect(SpnF, "PossiblyEnabled", PossiblyEnabled);
 	writeUpdateVect(SpnF, "PossiblyDisabled", PossiblyDisabled);
 	writeUpdateVect(SpnF, "FreeMarkDepT", FreeMarkDepT);
@@ -802,7 +810,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "int abstractMarking::getNbOfTokens(int p)const {\n";
-	if(MyGspn.isColored()){
+	if(MyGspn.isColored() || P.lightSimulator){
 		SpnCppFile << "\texit(EXIT_FAILURE);\n";
 	}else{
 		SpnCppFile << "\tswitch (p) {\n";
@@ -814,7 +822,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "std::vector<int> abstractMarking::getVector()const {\n";
-	if(MyGspn.isColored()){
+	if(MyGspn.isColored() || P.lightSimulator){
 		SpnCppFile << "\texit(EXIT_FAILURE);\n";
 	}else{
 		SpnCppFile << "\tstd::vector<int> v("<<MyGspn.pl << ");\n";
@@ -826,7 +834,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::setVector(const std::vector<int>&v) {\n";
-	if(MyGspn.isColored()){
+	if(MyGspn.isColored()|| P.lightSimulator){
 		SpnCppFile << "\texit(EXIT_FAILURE);\n";
 	}else{
 		for (const auto &plit : MyGspn.placeStruct){
@@ -1065,8 +1073,13 @@ void Gspn_Writer::writeFile(){
 	}
 	
 	
-	//--------------- Writing implementation of SPN ----------------------------
-	SpnCppFile << "SPN::SPN():" << endl;
+
+
+    //--------------- Writing synchronization tables ---------------------------
+    writeEnabledDisabled(SpnCppFile);
+
+    //--------------- Writing implementation of SPN ----------------------------
+    SpnCppFile << "SPN::SPN():" << endl;
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
 	SpnCppFile << "tr(" << MyGspn.tr << "), ";
 	SpnCppFile << "Transition(" << MyGspn.tr << "),";
@@ -1074,8 +1087,7 @@ void Gspn_Writer::writeFile(){
 
 	SpnCppFile << "ParamDistr(3), TransitionConditions(" << MyGspn.tr <<",0){" << endl;
 	SpnCppFile << "    Path =\"" << P.PathGspn << "\";" << endl;
-	
-	writeEnabledDisabled(SpnCppFile);
+
 	
 	if(P.localTesting){
 		SpnCppFile << "\tsetConditionsVector();"<< endl;
@@ -1351,7 +1363,8 @@ void Gspn_Writer::writeFile(){
 		unfirecases.writeCases(SpnCppFile);
 	}
 	SpnCppFile << "}\n" << endl;
-	
+
+    /*
 	SpnCppFile << "const vector<int>& SPN::PossiblyEn()const {" << endl;
 	if (false && P.localTesting)SpnCppFile << "\treturn newlyEnabled;" << endl;
 	else SpnCppFile << "\treturn PossiblyEnabled[lastTransition];" << endl;
@@ -1365,6 +1378,7 @@ void Gspn_Writer::writeFile(){
 	SpnCppFile << "const vector<int>& SPN::FreeMarkingDependant()const {" << endl;
 	SpnCppFile << "\treturn FreeMarkDepT[lastTransition];" << endl;
 	SpnCppFile << "}" << endl;
+     */
 	
 	writeEnabledDisabledBinding(SpnCppFile);
 	

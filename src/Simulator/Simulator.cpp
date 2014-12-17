@@ -140,8 +140,9 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	}
 	
 	// Possibly adding Events corresponding to newly enabled-transitions
-	const auto &net = N.PossiblyEn();
-	for (const auto &it : net) {
+    //const auto &net = N.PossiblyEn();
+    for (size_t t=0; N.PossiblyEnabled[N.lastTransition][t] != -1;t++) {
+        const auto &it = N.PossiblyEnabled[N.lastTransition][t];
 		size_t bindnum = 0;
 		abstractBinding *bindex = N.nextPossiblyEnabledBinding(it, lb, &bindnum);
 		while (bindex != NULL){
@@ -177,8 +178,10 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	}
 	
 	// Possibly removing Events corresponding to newly disabled-transitions
-	const auto &ndt = N.PossiblyDis();
-	for (const auto &it : ndt) {
+    //const auto &ndt = N.PossiblyDis();
+    //for (const auto &it : ndt) {
+    for (size_t t=0; N.PossiblyDisabled[N.lastTransition][t] != -1;t++) {
+        const auto &it = N.PossiblyDisabled[N.lastTransition][t];
 		size_t bindnum = 0;
 		abstractBinding *bindex = N.nextPossiblyDisabledBinding(it, lb, &bindnum);
 		while (bindex != NULL){
@@ -211,8 +214,10 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
 	}
 	
     // Update transition which have no precondition on the Marking
-	const auto &fmd = N.FreeMarkingDependant();
-	for (const auto &it : fmd) {
+    for (size_t t=0; N.FreeMarkDepT[N.lastTransition][t]!= -1;t++) {
+        const auto &it = N.FreeMarkDepT[N.lastTransition][t];
+            //const auto &fmd = N.FreeMarkingDependant();
+            //for (const auto &it : fmd) {
 		for(const auto bindex : N.Transition[it].bindingList){
 			//if (N.IsEnabled(it,bindex)) {
 				if (EQ->isScheduled(it, bindex.idcount)) {
