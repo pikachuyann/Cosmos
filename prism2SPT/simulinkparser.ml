@@ -486,7 +486,7 @@ let print_magic f sl tl scrl=
   output_string f "\tdefault: break;\n\t}\n}\n";
   output_string f "  </attribute>"
 
-let stochNet_of_modu m =
+let stochNet_of_modu cf m =
   let fund = fun f () -> print_magic f m.stateL m.transL m.scriptL in
   let net = Net.create () in 
 
@@ -497,7 +497,7 @@ let stochNet_of_modu m =
   |> StringSet.iter (fun x -> Net.add_inArc net ("SIG_"^x) ("EMPTY_"^x) (Int 1));
 
   let varlist = List.fold_left (fun tl -> (function (None,x) when x<>"ctime" -> x::tl | _-> tl)) [] m.scriptL in
-  net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) DataFile.data),varlist,fund);
+  net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) (DataFile.data_of_file cf)),varlist,fund);
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),Int x) net.Net.place) m.ivect;
   List.iter (fun (ssidt,src,lab,dst) -> 
     try 

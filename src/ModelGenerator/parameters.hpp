@@ -84,6 +84,7 @@ struct parameters {
 
     string gcccmd;
     string gccflags;
+    bool lightSimulator;
 
     parameters();
     void View();
