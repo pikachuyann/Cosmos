@@ -147,7 +147,7 @@ let main2 s1 s2 npath =
   seek_in initfile 0;
   let fl = input_line initfile in 
   output_string intermediatefile (fl^"\n");
-  if ne > 10000 then
+  if ne > 100000 then
     let evect = Array.make (int_of_float (1.+.maxtime/.step)) (0.0,0,template) in
     readAndSample evect step initfile template npath;
     Array.iteri (fun i (t,n,d) -> evect.(i) <- (t,1,Data.mult (1.0 /. (float (n-1))) d)) evect;

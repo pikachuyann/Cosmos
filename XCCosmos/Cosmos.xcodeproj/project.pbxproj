@@ -984,6 +984,14 @@
 		03FB40FB18180F9E001F9988 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		03FB40FD18180F9E001F9988 /* Cosmos_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Cosmos_Tests.m; sourceTree = "<group>"; };
 		03FB40FF18180F9E001F9988 /* Cosmos Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cosmos Tests-Prefix.pch"; sourceTree = "<group>"; };
+		03FDF5E41A42F09300AA4DA2 /* automata.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = automata.ml; sourceTree = "<group>"; };
+		03FDF5E51A42F09300AA4DA2 /* generator.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = generator.ml; sourceTree = "<group>"; };
+		03FDF5E61A42F09300AA4DA2 /* lexer.mll */ = {isa = PBXFileReference; lastKnownFileType = text; path = lexer.mll; sourceTree = "<group>"; };
+		03FDF5E71A42F09300AA4DA2 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		03FDF5E81A42F09300AA4DA2 /* Makefile.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
+		03FDF5E91A42F09300AA4DA2 /* parser.mly */ = {isa = PBXFileReference; lastKnownFileType = text; path = parser.mly; sourceTree = "<group>"; };
+		03FDF5EA1A42F09300AA4DA2 /* type.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = type.ml; sourceTree = "<group>"; };
+		03FDF5EB1A42F09400AA4DA2 /* writer.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = writer.ml; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* Cosmos */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Cosmos; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859E8B029090EE04C91782 /* Cosmos.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Cosmos.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2936,9 +2944,26 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		03FDF5E31A42F09300AA4DA2 /* automataGen */ = {
+			isa = PBXGroup;
+			children = (
+				03FDF5E41A42F09300AA4DA2 /* automata.ml */,
+				03FDF5E51A42F09300AA4DA2 /* generator.ml */,
+				03FDF5E61A42F09300AA4DA2 /* lexer.mll */,
+				03FDF5E71A42F09300AA4DA2 /* Makefile.am */,
+				03FDF5E81A42F09300AA4DA2 /* Makefile.in */,
+				03FDF5E91A42F09300AA4DA2 /* parser.mly */,
+				03FDF5EA1A42F09300AA4DA2 /* type.ml */,
+				03FDF5EB1A42F09400AA4DA2 /* writer.ml */,
+			);
+			name = automataGen;
+			path = ../automataGen;
+			sourceTree = "<group>";
+		};
 		08FB7794FE84155DC02AAC07 /* Cosmos */ = {
 			isa = PBXGroup;
 			children = (
+				03FDF5E31A42F09300AA4DA2 /* automataGen */,
 				03088AA91A0422C0006BCB27 /* prism2SPT */,
 				0336B7CB198A3BF30043EFC6 /* POMDP */,
 				039A3672191A9EE400B42447 /* Examples */,

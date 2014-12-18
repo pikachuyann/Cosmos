@@ -1,5 +1,4 @@
 
-let (|>) x f = f x 
 let (|>>) x f = match x with 
     Some y -> f y
   | None -> None
@@ -12,7 +11,7 @@ let logout = ref stdout
 let rec string_of_list sep f = function
   | [] -> ""
   | [t] -> f t
-  | t::q -> Printf.sprintf "%s%s%s" (f t) sep (string_of_list sep f q)
+  | t::q -> Printf.sprintf "%s%s%s" (f t) sep @@ string_of_list sep f q
 
 let print_list sep f l =
   output_string f (string_of_list sep (fun x ->x) l)
