@@ -1,14 +1,30 @@
-#use "../testTeamCity.ml";;
+#directory "../utils";;
+#directory "../../utils";;
+#use "mlcall.ml"
 
-let njob =2;;
-
-test_coverage njob "tqn" ["Overflow",0.1752] "--width 0.01 --level 0.99" 100;
-test_coverage njob "tqn" ["Overflow",0.1752] "--width 0.01 --level 0.95" 100;;
-test_coverage njob "tqn" ["Overflow",0.1752] "--width 0.01 --level 0.9 --batch 100" 100;;
-test_coverage njob "tqn" ["Overflow",0.1752] "--width 0.01 --level 0.5 --batch 100" 100;;
+let nbatch = 100;;
+let coption = "-v 0 --njob 2 --batch 100 ";;
 
 
-test_coverage njob "tqn" ["Overflow",0.1752] "--max-run  150000 --level 0.99" 100;
-test_coverage njob "tqn" ["Overflow",0.1752] "--max-run  150000 --level 0.95" 100;;
-test_coverage njob "tqn" ["Overflow",0.1752] "--max-run  150000 --level 0.9 --batch 100" 100;;
-test_coverage njob "tqn" ["Overflow",0.1752] "--max-run  150000 --level 0.5 --batch 100" 100;;
+let log = (Unix.getcwd ())^"/cosmos_test_log";;
+init_log log;;
+
+test_coverage "tqn" 0.99 ["Overflow",0.1752] (coption^"--width 0.01") nbatch;;
+test_coverage "tqn" 0.95 ["Overflow",0.1752] (coption^"--width 0.01") nbatch;;
+test_coverage "tqn" 0.90 ["Overflow",0.1752] (coption^"--width 0.01") nbatch;;
+test_coverage "tqn" 0.50 ["Overflow",0.1752] (coption^"--width 0.01") nbatch;;
+
+
+test_coverage "tqn" 0.99 ["Overflow",0.1752] (coption^"--max-run  100000") nbatch;;
+test_coverage "tqn" 0.95 ["Overflow",0.1752] (coption^"--max-run  100000") nbatch;;
+test_coverage "tqn" 0.90 ["Overflow",0.1752] (coption^"--max-run  100000") nbatch;;
+test_coverage "tqn" 0.50 ["Overflow",0.1752] (coption^"--max-run  100000") nbatch;;
+
+
+let (succ,failure) = read_log log in
+Printf.printf "Test finished: %i success and %i failure\n" (List.length succ)
+  (List.length failure);
+if List.length failure >0 then (
+  Printf.printf "The following test failed:\n";
+  List.iter print_endline failure
+)

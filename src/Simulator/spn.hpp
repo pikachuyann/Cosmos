@@ -218,24 +218,20 @@ public:
 	
 	//! compute the the priority value of a given transition
 	double GetPriority(size_t)const;
-	
-	//! return the set of transitions that may be enabled after firing the last transition
-    //const vector<int >& PossiblyEn()const;
-	
-	//! return the set of transitions that may be disabled after firing the last transition
-    //const vector<int >& PossiblyDis()const;
-	
-	//!return the set of transition without constrain but marking dependant
-    //const vector<int >& FreeMarkingDependant()const;
-	
-	abstractBinding* nextPossiblyEnabledBinding(size_t tr,const abstractBinding& b,size_t*);
-	abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*);
 
+    //! A table of set of transitions that may be enabled after firing the last transition
     static const int* PossiblyEnabled[];
+
+    //! A table of set of transitions that may be disabled after firing the last transition
     static const int* PossiblyDisabled[];
+
+    //! A table of set of transition without constrain but marking dependant
     static const int* FreeMarkDepT[];
 
     size_t lastTransition; //! store the last fired transition
+
+    abstractBinding* nextPossiblyEnabledBinding(size_t tr,const abstractBinding& b,size_t*);
+    abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*);
 
 private:
 

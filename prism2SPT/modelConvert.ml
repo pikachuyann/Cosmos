@@ -87,7 +87,7 @@ let _ =
 		  StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] []
 		| Pdf -> 
 		  StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
-		  ignore (Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output))
+		  ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output)
 		| GrML ->
 		  StochasticPetriNet.print_spt ((!output)^".grml") net
 		| Marcie -> 

@@ -137,7 +137,7 @@ void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector
     for (size_t t = 0; t < vect.size(); t++)
         if(vect[t].size()>0){
             const auto tabname = "PE_"+name+"_"+ to_string(t);
-            SpnF << "const int " << tabname << "[" << 1+vect[t].size() <<"]"<<"= {";
+            SpnF << "static const int " << tabname << "[" << 1+vect[t].size() <<"]"<<"= {";
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++) {
 				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
 				SpnF << *it << ", ";
@@ -164,7 +164,7 @@ void Gspn_Writer::writeEnabledDisabled(ofstream &SpnF){
 	
 	EnabledDisabledTr(PossiblyEnabled,PossiblyDisabled,FreeMarkDepT);
 
-    SpnF << "const int EMPTY_array[1]={-1};" << endl;
+    SpnF << "static const int EMPTY_array[1]={-1};" << endl;
 	writeUpdateVect(SpnF, "PossiblyEnabled", PossiblyEnabled);
 	writeUpdateVect(SpnF, "PossiblyDisabled", PossiblyDisabled);
 	writeUpdateVect(SpnF, "FreeMarkDepT", FreeMarkDepT);
@@ -474,8 +474,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		header << "\tColor_"<< it->name << "_All\n};\n";
 		header << "extern const char *Color_"<< it->name << "_names[];\n";
 	}
-	
-	
+
 	
 	for (vector<colorDomain>::const_iterator it = MyGspn.colDoms.begin()+1;
 		 it != MyGspn.colDoms.end(); ++it ) {
