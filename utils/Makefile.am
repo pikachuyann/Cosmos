@@ -4,7 +4,7 @@ PACKAGES =
 LIBS     = 
 
 linecombinator: linecombinator.ml
-	cd $(srcdir); ocamlbuild -lib str linecombinator.native
+	cd $(srcdir); $(OCAMLBUILD) -lib str linecombinator.native
 	cp $(srcdir)/linecombinator.native linecombinator
 
 EXTRA_DIST = linecombinator.ml sptToPt ptToSpt mlcall.ml sptToSwn

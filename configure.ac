@@ -23,7 +23,12 @@ AC_PROG_YACC
 AX_CXX_COMPILE_STDCXX_11
 
 AC_PROG_OCAML
+if test "$OCAMLC" = "no"; then
+    AC_MSG_ERROR([You must install the OCaml compiler])
+fi
 AC_PROG_FINDLIB
+AC_CHECK_OCAML_PKG([zip])
+AC_CHECK_OCAML_PKG([xml-light])
 
 AC_CHECK_PROG(have_prog_gnuplot, [gnuplot], [yes],[no])
 AC_MSG_CHECKING([gnuplot])
@@ -44,7 +49,7 @@ AC_CHECK_HEADERS([float.h inttypes.h libintl.h limits.h stdlib.h string.h sys/io
 
 BOOST_REQUIRE([1.46])
 
-AX_PTHREAD
+#AX_PTHREAD
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
