@@ -1,6 +1,6 @@
 #directory "../../utils"
 #mod_use "../../prism2SPT/PetriNet.ml"
-#mod_use "../../prism2SPT/Type.ml"
+#mod_use "../../prism2SPT/type.ml"
 #use "../../prism2SPT/StochasticPetriNet.ml"
 (*#use "StochasticPetriNet.ml"*)
 #use "mlcall.ml";;
@@ -203,9 +203,9 @@ let generate_spn fpath li2 ks failure obj =
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
   print_spt_dot (fpath^".dot") net [] 
-    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
-(*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));
-  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--gppflags -O0 --njob 2");;*)1
+    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
+(*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));*)
+  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--gppflags -O0 --njob 2");;
 
 
 
@@ -334,7 +334,7 @@ let lozange f n m fb =
   done;
   generate_spn f !accl 0.009 0.3 (Printf.sprintf "a%i=2" (n*m));;
 
-(*
+
 
 
 generate_spn "ex" [
@@ -466,7 +466,7 @@ gen_xor_large "ringLLLarge" true true;;
 gen_xor_large "ringRLLarge" false true;;
 gen_xor_large "ringLRLarge" true false;;
 gen_xor_large "ringRRLarge" false false;;
-*)
+
 
 let redondantChoice bl br = 
   generate_spn (Printf.sprintf "redondantChoice%i%i" bl br) [ (1,Init,0,(0.0,0.0)); 
@@ -515,7 +515,7 @@ let redondantChoice bl br =
 redondantChoice 1 0;;
 redondantChoice 0 1;;
 
-(*
+
 lozange "lozange" 10 10 (fun _ _ -> 1);;
  
 let ra x = (float x) -. 5.5;;
@@ -530,4 +530,4 @@ let ra3 x y = max (raman x) (raman y);;
 
 lozange "lozangeBlock" 10 10 (fun x y -> 
   max 0 ( (min 1 (int_of_float ((ra3 x y)/.4.0)))));;
-*)
+
