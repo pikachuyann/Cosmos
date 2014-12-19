@@ -205,7 +205,7 @@ let generate_spn fpath li2 ks failure obj =
   print_spt_dot (fpath^".dot") net [] 
     (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
 (*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));*)
-  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha","--gppflags -O0 --njob 2");;
+  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;
 
 
 
