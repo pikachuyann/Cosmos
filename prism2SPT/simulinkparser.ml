@@ -5,7 +5,7 @@ open Type
 open SimulinkType
 open Lexing
 
-let modelStoch = true
+let modelStoch = false
 
 
 let detfun s =
@@ -37,6 +37,11 @@ let getName cl = findprop (function
 let getScope cl = findprop (function 
   | Element ("P",["Name","scope"],[PCData(l)])  -> Some l 
   | _ -> None) cl 
+
+let getPriority cl = findprop (function 
+  | Element ("P",["Name","executionOrder"],[PCData(l)])  -> Some l 
+  | _ -> None) cl 
+  |>> (fun x -> Some (int_of_string x))
 
 let getdst cl = findprop (function 
   | Element ("dst",_,cl2) -> findprop (function 
@@ -120,9 +125,10 @@ let eval_trans sl (ssid,name,src,dst) = match name with
 let module_of_simul al cl = 
   let ssid = getSSID al in
   let name = getName cl in
+  let priority = getPriority cl in
   let childs = List.find (function Element ("Children",_,_)->true | _-> false) cl in
   let sl,tl,scriptl = exp_mod ([],[],[]) childs in
-  let modu = ssid,name,sl,(List.map (eval_trans sl) tl),scriptl in 
+  let modu = ssid,name,sl,(List.map (eval_trans sl) tl),scriptl,priority in 
   (*print_module modu;*)
   modu
 
@@ -132,7 +138,7 @@ let post_name sl s t =
   | Some(sn) -> Printf.sprintf "%i_Pre_%s" t sn
 
 let expand_trans l=
-  List.map (fun (ssidmod,name,sl,tl,scrl) ->
+  List.map (fun (ssidmod,name,sl,tl,scrl,p) ->
     let (nsl,ntl) = List.fold_left (fun (sl2,tl2) (ssid,src,label,dst) -> 
       match (label.trigger,label.write,src) with 
       | (Delay(_),(_::_),_) -> (* wait and synch loop *)
@@ -157,10 +163,10 @@ let expand_trans l=
 	 (ssid,None,empty_trans_label,news)::
 	   (newt,Some(news),{label  with nameT=Some "init"},dst)::tl2)
       | _ -> (sl2,(ssid,src,label,dst)::tl2)) (sl,[]) tl in
-    (ssidmod,name,nsl,ntl,scrl)) l
+    (ssidmod,name,nsl,ntl,scrl,p)) l
 	      
 
-let print_modu f (ssid,name,sl,tl,scrl) =
+let print_modu f (ssid,name,sl,tl,scrl,p) =
   Printf.fprintf f "\tsubgraph cluster%i {\n" ssid;
   match name with None -> Printf.fprintf f "\t%i[shape=rectangle]\n" ssid
   | Some n2 -> Printf.fprintf f "\t%s[shape=rectangle]\n" n2;
@@ -198,7 +204,7 @@ let rec prism_of_stateflow level ml = function
        | "subviewS" -> ml
        | "instance" -> ml
        | "data" -> begin match exp_data t with None -> ml | Some (ssid,var) ->
-	 (ssid,None,[],[],[None,var])::ml
+	 (ssid,None,[],[],[None,var],None)::ml
 	 end
        | "event" -> ml
        | x -> Printf.fprintf stderr "Dont know wat to do with %s, ignore\n" x; ml
@@ -215,7 +221,7 @@ let rec prism_of_tree ml = function
        end
     | PCData (s) -> ml
 
-let flatten_module (ssid,name,sl,tl,scrl) =
+let flatten_module (ssid,name,sl,tl,scrl,p) =
   let inaction,_ = interface_of_modu tl in
   let tl2 = List.fold_left (fun nt2 (ss,_) ->
     StringSet.fold (fun sa tl3 ->
@@ -227,7 +233,7 @@ let flatten_module (ssid,name,sl,tl,scrl) =
       ) tl) 
       then ((fresh_ssid ()),Some ss,{empty_trans_label with trigger = RAction(sa) },ss)::tl3 
       else tl3) inaction nt2) tl sl in 
-  (ssid,name,sl,tl2,scrl)
+  (ssid,name,sl,tl2,scrl,p)
   
 let init_state (ssid,name,sl,tl,scrl) =
   try
@@ -247,7 +253,7 @@ let incr_trans l (ssid,src,lab,dst) =
   | Some src2 ->
     (ssid,[(0,src2)],lab,[(0,dst)])::l
   
-let incr_state (ssid,name,sl,tl,scrl) =
+let incr_state (ssid,name,sl,tl,scrl,p) =
   if sl=[] then { ssid=ssid;
 	       name=name;
 	       stateL=[];
@@ -256,6 +262,7 @@ let incr_state (ssid,name,sl,tl,scrl) =
 	       scriptL=scrl;
 	       interfaceR=StringSet.empty;
 	       interfaceW=StringSet.empty;
+	       priority = p;
 	     }
   else begin let init = init_state (ssid,name,sl,tl,scrl) in
 	     let ivect = Array.make 1 (init,name) in
@@ -270,6 +277,7 @@ let incr_state (ssid,name,sl,tl,scrl) =
 	       scriptL=scrl;
 	       interfaceR=r;
 	       interfaceW=w;
+	       priority=p;
 	     }
 (*	     (ssid,name,sl,ivect,List.fold_left incr_trans [] tl,scrl)*)
   end
@@ -331,7 +339,9 @@ in
 	      transL=tl4;
 	      scriptL= m1.scriptL @ m2.scriptL;
 	      interfaceR= rm;
-	      interfaceW=wm} in
+	      interfaceW=wm;
+	      priority= None
+	     } in
   Printf.fprintf !logout "Build %a\n" print_option newname;
   Printf.fprintf !logout "Interface combinaison: [ %a ]\n" (print_set ", ") inter;
   print_module2 !logout mod3;
@@ -428,7 +438,9 @@ let combine_modu2 m1 m2 =
 	      transL=tl4;
 	      scriptL= m1.scriptL @ m2.scriptL;
 	      interfaceR=rm;
-	      interfaceW=wm} in
+	      interfaceW=wm;
+	      priority=None;
+} in
   (*let newname = Printf.sprintf "co%i_%i.dot" m1.ssid m2.ssid in
   Printf.fprintf stdout "Combine %s -> %a,%a\n" newname print_option m1.name print_option m2.name;
   print_simulink_dot2 newname mod3;*)
@@ -493,7 +505,7 @@ let stochNet_of_modu cf m =
   StringSet.union m.interfaceR m.interfaceW
   |< Printf.fprintf !logout "Interface [ %a ]\n" (print_set ",")
   |< StringSet.iter (fun x -> Data.add (("SIG_"^x),Int 0) net.Net.place)
-  |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),StochasticPetriNet.Imm ((Float 1.0),(Int 3))) net.Net.transition)
+  |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),(StochasticPetriNet.Imm ((Float 1.0),(Int 3)),Float 1.0,Float 1.0)) net.Net.transition)
   |> StringSet.iter (fun x -> Net.add_inArc net ("SIG_"^x) ("EMPTY_"^x) (Int 1));
 
   let varlist = List.fold_left (fun tl -> (function (None,x) when x<>"ctime" -> x::tl | _-> tl)) [] m.scriptL in
@@ -502,9 +514,11 @@ let stochNet_of_modu cf m =
   List.iter (fun (ssidt,src,lab,dst) -> 
     try 
     begin match lab.trigger with
-      Imm -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm ((Float 1.0),(Int 2))) net.Net.transition
-    | Delay s-> Data.add ((trans_of_int ssidt lab),detfun s) net.Net.transition
-    | RAction s -> Data.add ((trans_of_int ssidt lab),StochasticPetriNet.Imm ((Float 1.0),(Int 4))) net.Net.transition;
+      Imm -> Data.add ((trans_of_int ssidt lab),(StochasticPetriNet.Imm ((Float 1.0),(Int 2)),Float 1.0,Float 1.0)) 
+	net.Net.transition
+    | Delay s-> Data.add ((trans_of_int ssidt lab),(detfun s,Float 1.0,Float 1.0)) net.Net.transition
+    | RAction s -> Data.add ((trans_of_int ssidt lab),(StochasticPetriNet.Imm ((Float 1.0),(Int 4)),Float 1.0,Float 1.0))
+      net.Net.transition;
       Net.add_inArc net ("SIG_"^s) (trans_of_int ssidt lab) (Int 1);
       Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^s) (Int 1);
     end;

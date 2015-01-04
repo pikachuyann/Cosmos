@@ -30,13 +30,13 @@ AV_Vr = -90;
 
 AV_Vt = -40;
 
-PM_TAVI = 250;
+PM_TAVI = 150;
 
-PM_TLRI = 1200;
+PM_TLRI = 1000;
 
 PM_TPVAB = 50;
 
-PM_TPVARP = 150;
+PM_TPVARP = 100;
 
 PM_TURI = 400;
 
@@ -50,7 +50,7 @@ RV_anteD = 49;
 
 RV_retroD = 50;
 
-SA_d = 1000;
+SA_d = 2000;
 
 SA_dV = 50;
 
