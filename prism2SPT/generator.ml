@@ -85,7 +85,7 @@ let gen_acc iinit modu net (st,g,f,u) =
   let flatguardlist = flatten_guard g in
   List.iter (fun flatguard ->
   let trname = Printf.sprintf "a%i%s" !i (match st with None -> "" | Some s-> s) in 
-  Data.add (trname,Exp f) net.Net.transition;  
+  Data.add (trname,(Exp f,Float 1.0,Float 1.0)) net.Net.transition;  
 
   let (invar1,invar2) = 
     convert_guard modu net trname (StringMap.empty,StringMap.empty) flatguard in 

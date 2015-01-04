@@ -108,11 +108,17 @@ let print_distr f d =
     </attribute>" print_float_expr p
   end
 
-let print_tr f name id rate =
+let print_tr f name id (rate,prio,weight) =
   Printf.fprintf f "  <node id=\"%i\" nodeType=\"transition\">
     <attribute name=\"name\">%s</attribute>
 %a
-  </node>\n" id name print_distr rate
+      <attribute name=\"priority\"><attribute name=\"expr\">
+        %a
+      </attribute></attribute>
+      <attribute name=\"weight\"><attribute name=\"expr\">
+        %a
+      </attribute></attribute>
+  </node>\n" id name print_distr rate print_float_expr prio print_float_expr weight
   
 let print_pl f name id tok =
   Printf.fprintf f "  <node id=\"%i\" nodeType=\"place\">
@@ -241,13 +247,13 @@ let print_spt_marcie fpath net =
 
   output_string f "\ntransitions:\n";
   output_string f "\tstochastic:\n";
-  Data.iter (fun (s,distr) -> match distr with
+  Data.iter (fun (s,(distr,_,_)) -> match distr with
       Exp r -> Printf.fprintf f "\t%s : : %a : %f ;\n" s 
     (print_arc_marcie net) (Data.index net.Net.transition s) (float_of_floatexp r)
     | _ -> ()   
   ) net.Net.transition;
   output_string f "\timmediate:\n";
-  Data.iter (fun (s,distr) -> match distr with
+  Data.iter (fun (s,(distr,_,_)) -> match distr with
       Imm (r,_) -> Printf.fprintf f "\t%s : : %a : %f ;\n" s 
     (print_arc_marcie net) (Data.index net.Net.transition s) (float_of_floatexp r)
     | _ -> ()   
