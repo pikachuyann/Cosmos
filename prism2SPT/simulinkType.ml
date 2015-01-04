@@ -53,7 +53,7 @@ let interface_of_modu tl =
 let print_trans_simulink sl f (ssid,src,trans,dst) =
   Printf.fprintf f "\t%s --(%a)->%s\n" (stateasso2 src sl) print_label_simulink trans (stateasso dst sl);;
 
-let print_module f (ssid,name,sl,tl,_) =
+let print_module f (ssid,name,sl,tl,_,p) =
   let actionr,actionw = interface_of_modu tl in
   let readlist = StringSet.fold (fun x y -> x::y) actionr [] 
   and writelist = StringSet.fold (fun x y -> x::y) actionw [] in 
@@ -75,6 +75,7 @@ type simulink_module = {
   scriptL : (string option * string )  list;
   interfaceR : StringSet.t;
   interfaceW : StringSet.t;
+  priority : int option; 
 }
 
 let print_state_sim sl (x,y) =

@@ -42,7 +42,7 @@ FinishCorrect=AVG(Last(vd0));
 Finish=AVG(Last(vd1));
 DeadLock=AVG(Last(vd2));
 Step=AVG(Last(vd3));
-%%Blockade=AVG(Last(vc1));
+Blockade=AVG(Last(vc1));
 %%uB=AVG(Last(useblocked));
 InitialLocations = { lii };
 FinalLocations = {lfc,lf,ldl,lnf2};
@@ -203,9 +203,9 @@ let generate_spn fpath li2 ks failure obj =
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
   print_spt_dot (fpath^".dot") net [] 
-    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
+    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
 (*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));*)
-  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;
+(*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
 
 
 
