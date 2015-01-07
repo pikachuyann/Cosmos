@@ -12,7 +12,8 @@ type simulink_trans_label = {
   trigger: triggerT;
   write:  string list;
   update: string list;
-  nameT: string option
+  nameT: string option;
+  priority: float
 }
 
 let empty_trans_label = {
@@ -20,6 +21,7 @@ let empty_trans_label = {
   trigger = Imm;
   write = [];
   update = [];
+  priority = 1.0;
 }
 
 

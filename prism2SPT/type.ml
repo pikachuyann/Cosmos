@@ -3,6 +3,14 @@ let (|>>) x f = match x with
     Some y -> f y
   | None -> None
 
+let (|>>>) x f = match x with 
+    Some y -> Some (f y)
+  | None -> None
+
+let (|>>|) x v = match x with
+    Some y -> y
+  | None -> v
+
 let (|<) x f = let () = f x in x
 let (|<>|) f (x,y) = f x y
 
@@ -38,7 +46,8 @@ type stateFormula = True | False | Not of stateFormula
 and cmp = EQ | SG | SL | GE | LE | NEQ
 and intExpr = IntName of string | Int of int 
               | Plus of intExpr*intExpr | Minus of intExpr*intExpr
-              | Mult of intExpr*intExpr
+              | Mult of intExpr*intExpr 
+	      | Floor of floatExpr | Ceil of floatExpr
 and floatExpr = FloatName of string | Float of float
                 | CastInt of intExpr
                 | MultF of floatExpr*floatExpr
@@ -135,6 +144,10 @@ let rec printH_int_expr f = function
   | Mult(e1,e2) -> Printf.fprintf f "(%a*%a)" 
     printH_int_expr e1 
     printH_int_expr e2
+  | Ceil(e) -> Printf.fprintf f "ceil(%a)" 
+    printH_float_expr e
+  | Floor(e) -> Printf.fprintf f "floor(%a)" 
+    printH_float_expr e 
 
 and printH_float_expr f = function
   | FloatName(x) -> output_string f x;
