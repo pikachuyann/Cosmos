@@ -23,6 +23,7 @@
 %token EOF
 %token INTKW DOUBLEKW
 %token LABEL
+%token FLOOR CEIL
 
 %left OR
 %left AND
@@ -174,7 +175,8 @@ intexpr:
  | intexpr MULT intexpr {Mult($1,$3)}
  | intexpr MINUS intexpr {Minus($1,$3)}
  | NOT intexpr {Minus(Int 1,$2)}
-
+ | FLOOR LPAR floatexpr RPAR {Floor($3)}
+ | CEIL LPAR floatexpr RPAR {Ceil($3)}
 ;
 
 

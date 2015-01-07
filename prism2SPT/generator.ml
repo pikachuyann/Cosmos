@@ -122,7 +122,9 @@ let rec rename_int_expr rn e =
     | Plus(e1,e2) -> Plus(rnr e1,rnr e2)
     | Minus(e1,e2) -> Minus(rnr e1,rnr e2)
     | Mult(e1,e2) -> Mult(rnr e1,rnr e2)
-let rec rename_float_expr rn e =
+    | Ceil(e) -> Ceil(rename_float_expr rn e)
+    | Floor(e) -> Floor(rename_float_expr rn e)
+and rename_float_expr rn e =
   let ifun = function
    | FloatName(x) -> FloatName(rn x) 
    | CastInt(x) -> CastInt(rename_int_expr rn x) 
@@ -187,7 +189,7 @@ let read_prism s name =
     let (fullmod,renammod) = List.fold_left (fun (l1,l2) m -> match m with 
 	Full fm -> (fm::l1),l2 | Renaming (rm1,rm2,rm3) -> l1,((rm1,rm2,rm3)::l2) ) ([],[]) prismml in
     let prismm2 = rename_module fullmod renammod in
-    let prismmodule = List.fold_left compose_module 
+    let prismmodule = List.fold_left compose_module
       (List.hd prismm2) (List.tl prismm2) in
     (net_of_prism prismmodule cdef)
   with 
@@ -198,4 +200,3 @@ let read_prism s name =
     Printf.fprintf stderr "%a: Parsing error: unexpected token:'%s'\n"
       print_position lexbuf (lexeme lexbuf);
     failwith "Fail to parse Prism file format"
-  

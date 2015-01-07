@@ -6,7 +6,7 @@ let input = ref stdin
 let output = ref "out"
 let inname = ref "stdin"
 let typeFormat = ref Prism
-let outputFormat = ref [GrML;Dot;Pdf;Marcie]
+let outputFormat = ref [GrML;Dot;Pdf]
 let const_file = ref ""
 
 let suffix_of_filename s =
@@ -80,6 +80,7 @@ let _ =
       ENDIF
       ENDIF   
   | _ -> failwith "Output format not yet supported" end
+	      (*|> StochasticPetriNet.remove_erlang*)
 	      |> (fun net -> 
 		print_endline "Finish parsing, start writing";
 		List.iter (function 

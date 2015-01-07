@@ -3,7 +3,7 @@ open PetriNet
 
 type distr = 
   Exp of floatExpr 
-| Imm of floatExpr*intExpr 
+| Imm 
 | Det of floatExpr 
 | Erl of (intExpr*floatExpr);;
 
@@ -26,8 +26,17 @@ let rec print_int_expr f = function
   %a
   %a
 </attribute></attribute>" print_int_expr fe1 print_int_expr fe2
+  | Ceil(fe) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"ceil\">
+  %a
+</attribute></attribute>" print_float_expr fe
+  | Floor(fe) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"floor\">
+  %a
+</attribute></attribute>" print_float_expr fe
  
-let rec print_float_expr f = function 
+
+and print_float_expr f = function 
   | FloatName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
   | Float(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%f</attribute>" fl    
   | CastInt(ie) -> print_int_expr f ie
@@ -82,7 +91,7 @@ let print_distr f d =
         <attribute name=\"expr\">%a</attribute>
       </attribute>
     </attribute>" print_int_expr i print_float_expr r
-    | Imm (w,p) -> Printf.fprintf f "        DETERMINISTIC
+    | Imm -> Printf.fprintf f "        DETERMINISTIC
       </attribute>
       <attribute name=\"param\">
         <attribute name=\"number\">0</attribute>
@@ -90,14 +99,8 @@ let print_distr f d =
           0
         </attribute></attribute>
       </attribute>
-    </attribute>
-    <attribute name=\"weight\"><attribute name=\"expr\">
-      %a
-    </attribute></attribute>
-    <attribute name=\"priority\"><attribute name=\"expr\">
-      %a
-    </attribute></attribute>" print_float_expr w print_int_expr p
-     | Det p -> Printf.fprintf f "        DETERMINISTIC
+    </attribute>"
+    | Det p -> Printf.fprintf f "        DETERMINISTIC
       </attribute>
       <attribute name=\"param\">
         <attribute name=\"number\">0</attribute>
@@ -108,7 +111,7 @@ let print_distr f d =
     </attribute>" print_float_expr p
   end
 
-let print_tr f name id (rate,prio,weight) =
+let print_tr f name id (rate,weight,prio) =
   Printf.fprintf f "  <node id=\"%i\" nodeType=\"transition\">
     <attribute name=\"name\">%s</attribute>
 %a
@@ -171,9 +174,9 @@ let gen_const f li lr le fund =
     </attribute>
   </attribute>\n"
 
-type 'a spt = (int* 'a,distr ,intExpr , (string*int list)* (string*float list)* (string list)  ) Net.t;;
+type spt = (Type.intExpr,distr*Type.floatExpr * Type.floatExpr ,intExpr , ((string*Type.intExpr option) list)* ((string*Type.floatExpr option) list)* (string list)*(out_channel->unit->unit) ) Net.t;;
 
-let print_spt fpath net  =
+let print_spt fpath (net:spt)  =
   let f = open_out fpath in
   let (lci,lcd,lce,fund) = begin match net.Net.def with None -> [],[],[],(fun _ ()->()) | Some x ->x end in
   gen_const f 
@@ -253,8 +256,8 @@ let print_spt_marcie fpath net =
     | _ -> ()   
   ) net.Net.transition;
   output_string f "\timmediate:\n";
-  Data.iter (fun (s,(distr,_,_)) -> match distr with
-      Imm (r,_) -> Printf.fprintf f "\t%s : : %a : %f ;\n" s 
+  Data.iter (fun (s,(distr,r,_)) -> match distr with
+      Imm -> Printf.fprintf f "\t%s : : %a : %f ;\n" s 
     (print_arc_marcie net) (Data.index net.Net.transition s) (float_of_floatexp r)
     | _ -> ()   
   ) net.Net.transition;
@@ -303,12 +306,47 @@ let print_spt_dot fpath net cl p =
   Data.iter (fun (_,(v,t,p)) ->
     print_arc_dot f (fst (Data.acca net.Net.transition t))
       (fst (Data.acca net.Net.place p)) v) net.Net.outArc;
- 
 
   List.iter (fun (s,l) ->
     Printf.fprintf f "\tsubgraph \"test%i\" {\n\trank=%i; " s s;
     List.iter (fun s2 -> Printf.fprintf f " %s;" s2) l; 
     output_string f "}\n";) cl;
-
-  output_string f "}\n"; 
+  output_string f "}\n";
   close_out f;;
+
+open Net
+
+let remove_erlang (net:spt) =
+  let net2 = {net with Net.def = net.Net.def; 
+    transition = Data.copy net.transition;
+    inArc = Data.copy net.inArc;
+    outArc = Data.copy net.outArc;
+    inhibArc = Data.copy net.inhibArc} in
+  Data.iter (fun (y,(z,we,pr)) -> match z with
+    Erl(n,lamb) ->
+      Data.add (("P"^y^"ErCont"), Int 0) net2.Net.place;
+      Data.add ((y^"ErStep"),(Exp lamb,we,pr)) net2.Net.transition;
+      Data.add ((y^"ErEmpty"),(Imm,we,pr)) net2.Net.transition;
+      Net.add_inArc net2 ("P"^y^"ErCont") y n;
+      Net.add_outArc net2 (y^"ErStep") ("P"^y^"ErCont") (Int 1);
+      Net.add_inArc net2 ("P"^y^"ErCont") (y^"ErEmpty") (IntName ("P"^y^"ErCont"));
+      let it = Data.index net.Net.transition y in
+      Data.iter (fun ((),(v,p,t)) -> if t = it then begin
+	let pn,_ = Data.acca net.Net.place p in
+	Net.add_inArc net2 pn (y^"ErStep") v;
+	Net.add_inhibArc net2 pn (y^"ErEmpty") v;
+	Net.add_outArc net2 (y^"ErStep") pn v;
+      end) net.Net.inArc;
+      Data.iter (fun ((),(v,p,t)) -> if t = it then begin
+	let pn,_ = Data.acca net.Net.place p in
+	Net.add_inhibArc net2 pn (y^"ErStep") v;
+	Net.add_inArc net2 pn (y^"ErEmpty") v;
+	Net.add_outArc net2 (y^"ErEmpty") pn v;
+      end) net.Net.inhibArc;
+  | _ ->() ) net.Net.transition;
+
+  let transn2 = Data.map net2.Net.transition (fun (z,we,pr) -> match z with
+      Erl(n,lamb) -> (Imm,we,pr)
+    | _ -> (z,we,pr)) in
+  {net2 with Net.transition= transn2}
+
