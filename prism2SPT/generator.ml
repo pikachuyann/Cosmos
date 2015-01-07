@@ -16,8 +16,8 @@ let rec acc_var k = function
   | _::q -> acc_var k q
 
 let rec flatten_guard = function
-  | True -> [[]]
-  | False -> []
+  | Bool true -> [[]]
+  | Bool false -> []
   | And (e1,e2) ->
     let l=flatten_guard e1 in
     List.fold_left (fun acc l1 ->
@@ -115,30 +115,28 @@ let net_of_prism modu (li,lf) =
 let print_rename f =
   List.iter (fun (x,y) -> Printf.fprintf f " %s->%s " x y) 
 
-let rec rename_int_expr rn e = 
-  let rnr = rename_int_expr rn in match e with
+let rename_op rn = function None -> None | Some a -> Some (rn a)
+
+let rec rename_expr: type a. (string ->string) -> a expr' -> a expr' = fun rn e -> let rnr: type a. a expr' -> a expr' = fun x -> rename_expr rn x in match e with
     | IntName(s) -> IntName (rn s);
     | Int(i) -> Int(i)
     | Plus(e1,e2) -> Plus(rnr e1,rnr e2)
     | Minus(e1,e2) -> Minus(rnr e1,rnr e2)
     | Mult(e1,e2) -> Mult(rnr e1,rnr e2)
-    | Ceil(e) -> Ceil(rename_float_expr rn e)
-    | Floor(e) -> Floor(rename_float_expr rn e)
-and rename_float_expr rn e =
-  let ifun = function
-   | FloatName(x) -> FloatName(rn x) 
-   | CastInt(x) -> CastInt(rename_int_expr rn x) 
-   | x -> x
-  in iterFloat ifun e
-let rename_op rn = function None -> None | Some a -> Some (rn a)
-let rec rename_bool_expr rn e = 
-  let rnr = rename_bool_expr rn in match e with
-  | True -> True
-  | False -> False
-  | Not(e1) -> Not (rnr e1) 
-  | And(e1,e2) -> And(rnr e1,rnr e2)
-  | Or(e1,e2) -> Or(rnr e1,rnr e2)
-  | IntAtom(ie,c,ie2) -> IntAtom(rename_int_expr rn ie,c,rename_int_expr rn ie2)
+    | Div(e1,e2) -> Div(rnr e1,rnr e2)
+    | Exp(e) -> Exp(rnr e)
+    | Ceil(e) -> Ceil(rnr e)
+    | Floor(e) -> Floor(rnr e)
+    | Bool x -> Bool x
+    | BoolName(x) -> BoolName(rn x) 
+    | Not(e1) -> Not (rnr e1) 
+    | And(e1,e2) -> And(rnr e1,rnr e2)
+    | Or(e1,e2) -> Or(rnr e1,rnr e2)
+    | IntAtom(ie,c,ie2) -> IntAtom(rnr ie,c,rnr ie2)
+    | Float(f) -> Float(f)
+    | FloatName(x) -> FloatName(rn x) 
+    | CastInt(x) -> CastInt (rnr x) 
+    | FunCall(x,fl) -> FunCall(x,List.map rnr fl) 
 
 let rec rename_module l1 = function
   | [] -> l1
@@ -149,9 +147,9 @@ let rec rename_module l1 = function
     let nvarl = List.map (fun (a,b,c) -> (rn a),b,c ) template.varlist in
     let nactionl = List.map (fun (a,b,c,d) -> 
       (rename_op rn a),
-      (rename_bool_expr rn b),
-      (rename_float_expr rn c),
-      (List.map (fun (s,ie) -> (rn s),(rename_int_expr rn ie)) d)) template.actionlist in
+      (rename_expr rn b),
+      (rename_expr rn c),
+      (List.map (fun (s,ie) -> (rn s),(rename_expr rn ie)) d)) template.actionlist in
     let nm = {
       name=nn;
       varlist=nvarl;
@@ -171,7 +169,7 @@ let compose_module m1 m2 =
 	if filt s1 then (s1,g1,r1,u1)::ls1
 	else List.fold_left (fun ls2 (s2,g2,r2,u2) -> 
 	  if s1<>s2 then ls2
-	  else (s1,And(g1,g2),MultF(r1,r2),u1@u2) :: ls2) ls1 m2.actionlist)
+	  else (s1,And(g1,g2),Mult(r1,r2),u1@u2) :: ls2) ls1 m2.actionlist)
 	(List.filter (fun (s,_,_,_) -> filt s) m2.actionlist)
 	m1.actionlist in       
       {

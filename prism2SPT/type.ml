@@ -38,35 +38,39 @@ let string_of_option def so  =
 
 let print_option f so  = print_option2 "" f so
 
-type stateFormula = True | False | Not of stateFormula 
-                    | And of stateFormula*stateFormula
-		    | Or of stateFormula*stateFormula
-                    | IntAtom of intExpr*cmp*intExpr  
+type cmp = EQ | SG | SL | GE | LE | NEQ
 
-and cmp = EQ | SG | SL | GE | LE | NEQ
-and intExpr = IntName of string | Int of int 
-              | Plus of intExpr*intExpr | Minus of intExpr*intExpr
-              | Mult of intExpr*intExpr 
-	      | Floor of floatExpr | Ceil of floatExpr
-and floatExpr = FloatName of string | Float of float
-                | CastInt of intExpr
-                | MultF of floatExpr*floatExpr
-                | PlusF of floatExpr*floatExpr 
-                | MinusF of floatExpr*floatExpr
-                | DivF of floatExpr*floatExpr
-		| ExpF of floatExpr
-		| FunCall of string*(floatExpr list) ;;
+type _ expr' =
+  | Bool  : bool -> bool expr'
+  | Int   : int -> int expr'
+  | Float : float -> float expr'
+  | Not : bool expr' -> bool expr'
+  | And : bool expr' * bool expr' -> bool expr'
+  | Or  : bool expr' * bool expr' -> bool expr'
+  | IntAtom : int expr' * cmp * int expr' -> bool expr'
+  | Plus : 'a expr' * 'a expr' -> 'a expr'
+  | Minus : 'a expr' * 'a expr' -> 'a expr'
+  | Mult  : 'a expr' * 'a expr' -> 'a expr'
+  | Floor : float expr' -> int expr'
+  | Ceil  : float expr' -> int expr'
+  | CastInt : int expr' -> float expr'
+  | IntName : string -> int expr'
+  | FloatName : string -> float expr'
+  | BoolName : string -> bool expr'
+  | Div : float expr' *  float expr' -> float expr'
+  | Exp : float expr' -> float expr'
+  | FunCall : string*((float expr') list) -> float expr';;
 
 let rec iterFloat f y = 
   let ri = iterFloat f in match y with
     | FloatName(x) -> f y;
     | Float(x) -> f y;
     | CastInt(x) -> f y;
-    | PlusF(e1,e2) -> PlusF(ri e1,ri e2) |> f
-    | MinusF(e1,e2) -> MinusF(ri e1,ri e2) |> f
-    | MultF(e1,e2) -> MultF(ri e1,ri e2) |> f
-    | DivF(e1,e2) -> DivF(ri e1,ri e2) |> f
-    | ExpF(x) -> ExpF(ri x) |> f 
+    | Plus(e1,e2) -> Plus(ri e1,ri e2) |> f
+    | Minus(e1,e2) -> Minus(ri e1,ri e2) |> f
+    | Mult(e1,e2) -> Mult(ri e1,ri e2) |> f
+    | Div(e1,e2) -> Div(ri e1,ri e2) |> f
+    | Exp(x) -> Exp(ri x) |> f 
     | FunCall(fu,l) -> FunCall(fu,List.map ri l) |> f
 	       
 let neg_cmp = function 
@@ -78,30 +82,52 @@ let neg_cmp = function
   | NEQ-> EQ
 
 let rec neg_bool = function
-  | True -> False
-  | False -> True
+  | Bool x -> Bool (not x)
+  | BoolName x -> Not (BoolName x)
   | Not e -> e
   | IntAtom (ie1,cmp,ie2) -> IntAtom (ie1,neg_cmp cmp,ie2)
   | And (e1,e2) -> Or (neg_bool e1,neg_bool e2)
+  | Mult (e1,e2) -> Or (neg_bool e1,neg_bool e2)
   | Or (e1,e2) -> And (neg_bool e1,neg_bool e2)
+  | Plus (e1,e2) -> And (neg_bool e1,neg_bool e2)
+  | Minus (e1,e2) -> Or (neg_bool e1,e2)
 
-let rec simp_int = function
-  | Plus(e1,e2) as x -> (match (simp_int e1),(simp_int e2) with
-      Int y,Int z -> Int (y+z) | _ -> x)
-  | Minus(e1,e2) as x -> (match (simp_int e1),(simp_int e2) with
-      Int y,Int z -> Int (y-z) | _ -> x)
-  | Mult(e1,e2) as x -> (match (simp_int e1),(simp_int e2) with
-      Int y,Int z -> Int (y*z) | _ -> x) 
+let rec eval : type a . a expr' -> a expr' = fun x -> 
+  match x with
+  | Plus(e1,e2) -> (match (eval e1),(eval e2) with
+      Int y,Int z -> Int (y+z) 
+    | Float y,Float z -> Float (y+.z)
+    | Bool y,Bool z -> Bool (y || z)
+    | _ -> x)
+  | And(e1,e2) -> (match (eval e1),(eval e2) with
+    | Bool y,z -> if y then z else Bool false
+    | y,Bool z -> if z then y else Bool false
+    | _ -> x) 
+  | Or(e1,e2) -> (match (eval e1),(eval e2) with
+    | Bool y,z -> if not y then z else Bool true
+    | y,Bool z -> if not z then y else Bool true
+    | _ -> x) 
+  | Mult(e1,e2) -> (match (eval e1),(eval e2) with
+    Int y,Int z -> Int (y*z) 
+    | Float y,Float z -> Float (y*.z)
+    | Bool y,Bool z -> Bool (y && z)
+    | _ -> x)
+  | Minus(e1,e2) -> (match (eval e1),(eval e2) with
+      Int y,Int z -> Int (y-z) 
+    | Float y,Float z -> Float (y-.z) 
+    | _ -> x)
   | x -> x
 
-let gez x = match simp_int x with
+	       let simp_int : int expr' -> int expr' = eval
+
+let gez x = match eval x with
   | Int y when y>=0 -> true
   | _ -> false
-let sgz x = match simp_int x with
+let sgz x = match eval x with
   | Int y when y>0 -> true
   | _ -> false
 
-let incr_int z = simp_int (Plus(z,Int 1))
+let incr_int z = eval (Plus(z,Int 1))
 
 
 module StringOrdered = struct type t=string let compare=compare end
@@ -132,59 +158,50 @@ let printH_cmp f = function
   | LE -> output_string f "<=" 
   | NEQ-> output_string f "!=" 
 
-let rec printH_int_expr f = function
-  | IntName(s) -> output_string f s;
-  | Int(i) -> Printf.fprintf f "%i" i;
+let rec printH_expr: type a. out_channel -> a expr' -> unit = fun f x -> match x with
+  | Int(i) -> Printf.fprintf f "%i" i
+  | Float(i) -> Printf.fprintf f "%f" i
+  | Bool(i) -> Printf.fprintf f "%B" i
+  | IntName(s) -> output_string f s
+  | FloatName(s) -> output_string f s
+  | BoolName(s) -> output_string f s
   | Plus(e1,e2) -> Printf.fprintf f "(%a+%a)" 
-    printH_int_expr e1 
-    printH_int_expr e2
+    printH_expr e1 
+    printH_expr e2
   | Minus(e1,e2) -> Printf.fprintf f "(%a-%a)" 
-    printH_int_expr e1 
-    printH_int_expr e2
+    printH_expr e1 
+    printH_expr e2
   | Mult(e1,e2) -> Printf.fprintf f "(%a*%a)" 
-    printH_int_expr e1 
-    printH_int_expr e2
+    printH_expr e1 
+    printH_expr e2
   | Ceil(e) -> Printf.fprintf f "ceil(%a)" 
-    printH_float_expr e
+    printH_expr e
   | Floor(e) -> Printf.fprintf f "floor(%a)" 
-    printH_float_expr e 
-
-and printH_float_expr f = function
-  | FloatName(x) -> output_string f x;
-  | Float(x) -> Printf.fprintf f "%f" x;
-  | CastInt(x) -> printH_int_expr f x;
-  | PlusF(e1,e2) -> Printf.fprintf f "(%a+%a)" 
-    printH_float_expr e1 
-    printH_float_expr e2
-  | MinusF(e1,e2) -> Printf.fprintf f "(%a-%a)" 
-    printH_float_expr e1 
-    printH_float_expr e2
-  | MultF(e1,e2) -> Printf.fprintf f "(%a*%a)" 
-    printH_float_expr e1 
-    printH_float_expr e2
-  | DivF(e1,e2) -> Printf.fprintf f "(%a/%a)" 
-    printH_float_expr e1 
-    printH_float_expr e2
-  | ExpF(x) -> Printf.fprintf f "exp(%a)" printH_float_expr x
+    printH_expr e 
+  | Not e-> Printf.fprintf f "(!%a)" printH_expr e
+  | And (e1,e2) -> Printf.fprintf f "(%a & %a)" 
+    printH_expr e1
+    printH_expr e2
+  | Or (e1,e2) -> Printf.fprintf f "(%a | %a)" 
+    printH_expr e1
+    printH_expr e2
+  | IntAtom (e1,c,e2) -> Printf.fprintf f "(%a %a %a)" 
+    printH_expr e1
+    printH_cmp c
+    printH_expr e2  
+  | CastInt(x) -> printH_expr f x
+  | Div(e1,e2) -> Printf.fprintf f "(%a/%a)" 
+    printH_expr e1 
+    printH_expr e2
+  | Exp(x) -> Printf.fprintf f "exp(%a)" printH_expr x
   | FunCall(fu,[]) ->  Printf.fprintf f "%s()" fu;
-  | FunCall(fu,t::q) ->  Printf.fprintf f "%s(%a" fu printH_float_expr t;
-    List.iter (fun x-> Printf.fprintf f ",%a" printH_float_expr x) q;
+  | FunCall(fu,t::q) ->  Printf.fprintf f "%s(%a" fu printH_expr t;
+    List.iter (fun x-> Printf.fprintf f ",%a" printH_expr x) q;
     output_string f ")"
 
-let rec printH_stateFormula f = function 
-  | True -> output_string f " true " 
-  | False -> output_string f " false "
-  | Not e-> Printf.fprintf f "(!%a)" printH_stateFormula e
-  | And (e1,e2) -> Printf.fprintf f "(%a & %a)" 
-    printH_stateFormula e1
-    printH_stateFormula e2
-  | Or (e1,e2) -> Printf.fprintf f "(%a | %a)" 
-    printH_stateFormula e1
-    printH_stateFormula e2
-  | IntAtom (e1,c,e2) -> Printf.fprintf f "(%a %a %a)" 
-    printH_int_expr e1
-    printH_cmp c
-    printH_int_expr e2  
+let printH_int_expr f (x: int expr')= printH_expr f x
+let printH_float_expr f (x: float expr')= printH_expr f x
+let printH_stateFormula f (x: bool expr')= printH_expr f x
 
 let print_token f = function 
   | Int 0 -> ()
