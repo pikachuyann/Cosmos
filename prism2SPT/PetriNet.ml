@@ -9,9 +9,12 @@ sig
   val acc : ('a, 'b) t -> 'a -> 'b
   val add : 'a * 'b -> ('a, 'b) t -> unit
   val fold : ('a -> 'b * 'c -> 'a) -> 'a -> ('b, 'c) t -> 'a
-  val iter : ('b * 'c -> unit) -> ('b, 'c) t -> unit
+  val iter : ( 'a * 'b -> unit ) -> ('a, 'b) t -> unit
+  val map :  ('a, 'b) t -> ('b -> 'c) -> ('a, 'c) t
+  val adds : ('a, 'b) t -> ('a, 'b) t -> unit
   val size : ('a, 'b) t -> int
   val sample : ('a, 'b) t -> 'a * 'b
+  val copy : ('a, 'b) t -> ('a, 'b) t
 end
 
 module Data:DATA = 
@@ -52,11 +55,23 @@ struct
                    buff := f !buff t1.(i);
                  done;
                  !buff
+		   
+  let iter f t = fold (fun _ a -> f a) () t
+
+  let adds t1 t2 =
+    iter (fun x -> add x t1) t2
+
+  let map t1 f =
+    let t2 = create () in
+    iter (fun (x,y) -> add (x,f y) t2) t1;
+    t2
+
+  let copy t1 = map t1 (fun x -> x)
+
   let size t = t.size
   let sample d = match d.table with
       Some(t) -> t.(0)
     | None -> raise Empty
-  let iter f t = fold (fun _ a -> f a) () t
 end
 
 module Net =
@@ -96,7 +111,6 @@ struct
   let add_arc net s1 s2 v =
     try add_inArc net s1 s2 v with
 	Not_found -> add_outArc net s1 s2 v
-
 end
 
 (*

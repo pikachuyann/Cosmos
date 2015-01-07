@@ -78,6 +78,17 @@ Edges = {
 };" !safe !blockade !safe !blockade obj !safe obj ;
   close_out f;;
 
+let generate_csl fpath li obj =
+  let safe = ref " true "
+  and blockade = ref " false " in
+  List.iter (fun (n,t,i,_) -> 
+    if t= Final then safe := Printf.sprintf " %s & [a%i<2]" !safe n
+    else if i=0 && t<> Init then blockade := Printf.sprintf " %s | [a%i=2]" !blockade n
+  ) li;
+  let f = open_out fpath in
+  Printf.fprintf f "P=? [ [%s]  U[0,12000] [%s] ]\n" !safe obj;
+  close_out f
+
 
 let gen_spn2 ?(gentrans=true) ?(genfailure=true) fpath li ks failure=
   let ksi = ks/.3. in
@@ -87,8 +98,8 @@ let gen_spn2 ?(gentrans=true) ?(genfailure=true) fpath li ks failure=
     Data.add (("a"^(string_of_int n)),(if t=Init then Int 2 else Int i)) net.Net.place;
     if i=0 && t <> Init && genfailure then begin
       Data.add (("b"^(string_of_int n)), Int 1) net.Net.place;
-      Data.add ("tb"^(string_of_int n) ,(Imm ((Float failure),(Int 1)))) net.Net.transition;
-      Data.add ("tAb"^(string_of_int n) ,(Imm ((Float (1.0-.failure)),(Int 1)))) net.Net.transition;
+      Data.add ("tb"^(string_of_int n) ,(Imm, (Float failure),(Float 1.0))) net.Net.transition;
+      Data.add ("tAb"^(string_of_int n) ,(Imm, (Float (1.0-.failure)),(Float 1.0))) net.Net.transition;
       Net.add_arc net ("b"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("b"^(string_of_int n)) ("tAb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("tb"^(string_of_int n)) ("a"^(string_of_int n)) (Int 1);
@@ -116,7 +127,7 @@ let gen_spn2 ?(gentrans=true) ?(genfailure=true) fpath li ks failure=
 	| _ -> r2) in
       if r3 <> 0.0 then
 	let tl = Printf.sprintf "t%i_%i" n1 n2 in
-	Data.add (tl,(Exp (Float r3))) net.Net.transition;
+	Data.add (tl,(Exp (Float r3),Float 1.0,Float 1.0)) net.Net.transition;
 	Net.add_arc net ("a"^(string_of_int n1)) tl (Int 2);
 	Net.add_arc net ("a"^(string_of_int n2)) tl (Int 1);
 	Net.add_arc net tl ("a"^(string_of_int n2)) (Int 2);
@@ -127,7 +138,7 @@ let gen_spn2 ?(gentrans=true) ?(genfailure=true) fpath li ks failure=
   List.iter (fun (n1,t1,i1,p1) ->
     if t1 = Final then (
     let tl = Printf.sprintf "tloop%i" n1 in 
-    Data.add (tl,(Exp (Float 0.000000001))) net.Net.transition;
+    Data.add (tl,(Exp (Float 0.000000001),Float 1.0,Float 1.0)) net.Net.transition;
     Net.add_arc net ("a"^(string_of_int n1)) tl (Int 2);
     Net.add_arc net tl ("a"^(string_of_int n1)) (Int 2);)
   ) li;  
@@ -202,8 +213,10 @@ let generate_spn fpath li2 ks failure obj =
   generate_lha (fpath^".lha") li obj;
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
-  print_spt_dot (fpath^".dot") net [] 
-    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
+  generate_csl (fpath^".csl") li obj;
+  print_spt_dot (fpath^".dot") net []
+    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
+  ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl" fpath fpath));;
 (*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));*)
 (*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
 

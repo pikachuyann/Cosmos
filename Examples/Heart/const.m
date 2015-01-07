@@ -30,15 +30,17 @@ AV_Vr = -90;
 
 AV_Vt = -40;
 
-PM_TAVI = 150;
+% maximal time between atrium and ventricle beats
+PM_TAVI = 200;
 
-PM_TLRI = 1000;
+% maximal time between two ventricule beats
+PM_TLRI = 1150;
 
 PM_TPVAB = 50;
 
 PM_TPVARP = 100;
 
-PM_TURI = 400;
+PM_TURI = 1100;
 
 PM_TVRP = 150;
 
@@ -50,7 +52,7 @@ RV_anteD = 49;
 
 RV_retroD = 50;
 
-SA_d = 2000;
+SA_d = 1000;
 
 SA_dV = 50;
 
