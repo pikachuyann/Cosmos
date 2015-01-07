@@ -35,8 +35,8 @@
 
 %start main
 %type <PrismType.constdef*PrismType.prism_file> main
-%type <intExpr> intexpr
-%type <floatExpr> floatexpr
+%type <int expr'> intexpr
+%type <float expr'> floatexpr
 
 %%
 
@@ -114,10 +114,10 @@ floatexpr:
   INT {Float (float $1)}
 | FLOAT {Float($1)}
 | LPAR floatexpr RPAR {$2 }
-| floatexpr MULT floatexpr {MultF($1,$3)}
-| floatexpr PLUS floatexpr {PlusF($1,$3)}
-| floatexpr MINUS floatexpr {MinusF($1,$3)}
-| floatexpr DIV floatexpr {DivF($1,$3)}
+| floatexpr MULT floatexpr {Mult($1,$3)}
+| floatexpr PLUS floatexpr {Plus($1,$3)}
+| floatexpr MINUS floatexpr {Minus($1,$3)}
+| floatexpr DIV floatexpr {Div($1,$3)}
 | NAME {FloatName($1)}
 
 cmp:
@@ -157,8 +157,8 @@ LSQBRAK NAME RSQBRAK stateCondition COLON floatexpr SEMICOLON
 | {()};
 
 stateCondition:
-TRUE {True}
-| FALSE {False}
+TRUE {Bool true}
+| FALSE {Bool false}
 | NAME { IntAtom(IntName $1,EQ,Int 1) }
 | stateCondition AND stateCondition {And($1,$3)}
 | stateCondition OR stateCondition {Or($1,$3)}

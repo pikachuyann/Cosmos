@@ -6,7 +6,7 @@ let rec eval_name data fe=
    | x -> x
   in iterFloat ifun fe
 
-type triggerT = Imm | Delay of floatExpr | RAction of string
+type triggerT = Imm | Delay of float expr' | RAction of string
 
 type simulink_trans_label = {
   trigger: triggerT;
@@ -41,7 +41,7 @@ let stateasso2 s2 l =
 
 let print_label_simulink f trans = match trans.trigger with
     Imm -> Printf.fprintf f "#,![%a],{%a}" (print_list ",") trans.write (print_list ",") trans.update
-  | Delay(s) -> Printf.fprintf f "wait(%a),![%a],{%a}" printH_float_expr s (print_list ",") trans.write (print_list ",") trans.update
+  | Delay(s) -> Printf.fprintf f "wait(%a),![%a],{%a}" printH_expr s (print_list ",") trans.write (print_list ",") trans.update
   | RAction(s) -> Printf.fprintf f "?%s,![%a],{%a}" s (print_list ",") trans.write (print_list ",") trans.update
 
 
