@@ -24,12 +24,12 @@ let find_action sl =
     match so with None -> set
       | Some a -> StringSet.add a set) StringSet.empty sl
 
-type constdef = (string*(intExpr option)) list * (string*(floatExpr option)) list
+type constdef = (string*(int expr' option)) list * (string*(float expr' option)) list
 
 type prism_module = {
   name:string;
-  varlist:(string * (intExpr*intExpr) * intExpr) list;
-  actionlist: (string option * (stateFormula) * floatExpr * ((string*intExpr) list)) list;
+  varlist:(string * (int expr'*int expr') * int expr') list;
+  actionlist: (string option * bool expr' * float expr' * ((string*int expr') list)) list;
   actionset: StringSet.t
 }
 

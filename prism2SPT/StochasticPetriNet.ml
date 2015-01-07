@@ -2,72 +2,83 @@ open Type
 open PetriNet
 
 type distr = 
-  Exp of floatExpr 
+  Exp of float expr' 
 | Imm 
-| Det of floatExpr 
-| Erl of (intExpr*floatExpr);;
+| Det of float expr' 
+| Erl of (int expr'*float expr');;
+
+let print_cmpGrML f = function
+  | EQ -> output_string f "equal"  
+  | NEQ-> output_string f "notEqual" 
 
 
-let rec print_int_expr f = function 
+let rec print_expr: type a. out_channel -> a expr' -> unit = fun f x -> match x with
   | IntName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
   | Int(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%i</attribute>" fl    
+  | FloatName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
+  | Float(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%f</attribute>" fl
+  | BoolName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
+  | Bool(fl) -> Printf.fprintf f "<attribute name=\"boolValue\">%B</attribute>" fl
+  | Not(fe) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"not\">
+  %a
+</attribute></attribute>" print_expr fe
+| And(fe1,fe2) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"and\">
+  %a
+  %a
+</attribute></attribute>" print_expr fe1 print_expr fe2
+| Or(fe1,fe2) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"or\">
+  %a
+  %a
+</attribute></attribute>" print_expr fe1 print_expr fe2
   | Mult(fe1,fe2) -> Printf.fprintf f "
 <attribute name=\"function\"><attribute name=\"*\">
   %a
   %a
-</attribute></attribute>" print_int_expr fe1 print_int_expr fe2
+</attribute></attribute>" print_expr fe1 print_expr fe2
   | Plus(fe1,fe2) -> Printf.fprintf f "
 <attribute name=\"function\"><attribute name=\"+\">
   %a
   %a
-</attribute></attribute>" print_int_expr fe1 print_int_expr fe2
+</attribute></attribute>" print_expr fe1 print_expr fe2
   | Minus(fe1,fe2) -> Printf.fprintf f "
 <attribute name=\"function\"><attribute name=\"minus\">
   %a
   %a
-</attribute></attribute>" print_int_expr fe1 print_int_expr fe2
+</attribute></attribute>" print_expr fe1 print_expr fe2
   | Ceil(fe) -> Printf.fprintf f "
 <attribute name=\"function\"><attribute name=\"ceil\">
   %a
-</attribute></attribute>" print_float_expr fe
+</attribute></attribute>" print_expr fe
   | Floor(fe) -> Printf.fprintf f "
 <attribute name=\"function\"><attribute name=\"floor\">
   %a
-</attribute></attribute>" print_float_expr fe
- 
-
-and print_float_expr f = function 
-  | FloatName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
-  | Float(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%f</attribute>" fl    
-  | CastInt(ie) -> print_int_expr f ie
-  | ExpF(fe1) -> Printf.fprintf f "
+</attribute></attribute>" print_expr fe
+  | CastInt(ie) -> print_expr f ie
+  | Exp(fe1) -> Printf.fprintf f "
 <attribute name=\"function\"><attribute name=\"exp\">
   %a
-</attribute></attribute>" print_float_expr fe1
-  | MultF(fe1,fe2) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"*\">
-  %a
-  %a
-</attribute></attribute>" print_float_expr fe1 print_float_expr fe2
-  | PlusF(fe1,fe2) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"+\">
-  %a
-  %a
-</attribute></attribute>" print_float_expr fe1 print_float_expr fe2
-  | MinusF(fe1,fe2) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"minus\">
-  %a
-  %a
-</attribute></attribute>" print_float_expr fe1 print_float_expr fe2
-  | DivF(fe1,fe2) -> Printf.fprintf f "
+</attribute></attribute>" print_expr fe1
+  | Div(fe1,fe2) -> Printf.fprintf f "
 <attribute name=\"function\"><attribute name=\"/\">
   %a
   %a
-</attribute></attribute>" print_float_expr fe1 print_float_expr fe2
+</attribute></attribute>" print_expr fe1 print_expr fe2
   | FunCall(s,l) -> Printf.fprintf f "
 <attribute name=\"function\"><attribute name=\"%s\">\n  " s;
-    List.iter (fun x ->print_float_expr f x;output_string f "\n  ";) l;
+    List.iter (fun x ->print_expr f x;output_string f "\n  ";) l;
     output_string f "</attribute></attribute>"
+  | IntAtom(rhs,cmp,lhs) -> Printf.fprintf f "
+<attribute name=\"function\"><attribute name=\"%a\">
+  %a
+  %a
+</attribute></attribute>" print_cmpGrML cmp print_expr rhs print_expr lhs
+  
+
+let print_int_expr f (x: int expr') = print_expr f x
+let print_float_expr f (x: float expr') = print_expr f x
 
 let print_distr f d = 
   output_string f "    <attribute name=\"distribution\">
@@ -79,7 +90,7 @@ let print_distr f d =
         <attribute name=\"number\">0</attribute>
         <attribute name=\"expr\">%a</attribute>
       </attribute>
-    </attribute>" print_float_expr r
+    </attribute>" print_expr r
   | Erl (i,r) -> Printf.fprintf f "        ERLANG
       </attribute>
       <attribute name=\"param\">
@@ -90,7 +101,7 @@ let print_distr f d =
         <attribute name=\"number\">1</attribute>
         <attribute name=\"expr\">%a</attribute>
       </attribute>
-    </attribute>" print_int_expr i print_float_expr r
+    </attribute>" print_expr i print_expr r
     | Imm -> Printf.fprintf f "        DETERMINISTIC
       </attribute>
       <attribute name=\"param\">
@@ -108,7 +119,7 @@ let print_distr f d =
           %a
         </attribute>
       </attribute>
-    </attribute>" print_float_expr p
+    </attribute>" print_expr p
   end
 
 let print_tr f name id (rate,weight,prio) =
@@ -174,16 +185,16 @@ let gen_const f li lr le fund =
     </attribute>
   </attribute>\n"
 
-type spt = (Type.intExpr,distr*Type.floatExpr * Type.floatExpr ,intExpr , ((string*Type.intExpr option) list)* ((string*Type.floatExpr option) list)* (string list)*(out_channel->unit->unit) ) Net.t;;
+type spt = (int Type.expr',distr*float Type.expr' * float Type.expr' ,int Type.expr' , ((string*(int Type.expr') option) list)* ((string*(float Type.expr') option) list)* (string list)*(out_channel->unit->unit) ) Net.t;;
 
 let print_spt fpath (net:spt)  =
   let f = open_out fpath in
   let (lci,lcd,lce,fund) = begin match net.Net.def with None -> [],[],[],(fun _ ()->()) | Some x ->x end in
   gen_const f 
     (List.map (fun (s,ao) ->
-      match ao with None -> s,Int 1 | Some f -> s,f) lci) 
+      match ao with None -> s,(Int 1) | Some fl -> s,fl) lci) 
     (List.map (fun (s,ao) ->
-      match ao with None -> s,Float 1.0 | Some f -> s,f) lcd) lce fund;
+      match ao with None -> s,(Float 1.0) | Some fl -> s,fl) lcd) lce fund;
   let np = Data.fold (fun i (s,m) ->print_pl f s i m; i+1) 0 net.Net.place in
   let nt = Data.fold (fun i (s,r) ->print_tr f s i r; i+1) np net.Net.transition in
   let nia = Data.fold (fun i (_,(v,p,t)) ->print_arc f i p (t+np) v false; i+1) nt net.Net.inArc in
@@ -236,7 +247,8 @@ let print_arc_marcie net f t =
       false
     end)
 	    fq net.Net.inArc)
-	    
+	
+    
 let float_of_floatexp = function
   | Float f -> f
   | _ -> failwith "Fail to export to marcie"

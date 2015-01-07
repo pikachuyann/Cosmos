@@ -11,7 +11,7 @@ let modelStoch = true
 let detfun s =
   if modelStoch then 
     let n = 100 in
-    StochasticPetriNet.Erl (Int n,DivF (Float (float n),s))
+    StochasticPetriNet.Erl (Int n,Div (Float (float n),s))
   else StochasticPetriNet.Det s
 
 
