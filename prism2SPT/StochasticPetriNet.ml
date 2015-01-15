@@ -7,75 +7,38 @@ type distr =
 | Det of float expr' 
 | Erl of (int expr'*float expr');;
 
-let print_cmpGrML f = function
-  | EQ -> output_string f "equal"  
-  | NEQ-> output_string f "notEqual" 
+let string_of_cmpGrML = function
+  | EQ -> "equal"  
+  | NEQ-> "notEqual" 
 
+let print_at f x fy v =
+  Printf.fprintf f "<attribute name=\"%s\">%a</attribute>" x fy v
 
-let rec print_expr: type a. out_channel -> a expr' -> unit = fun f x -> match x with
-  | IntName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
-  | Int(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%i</attribute>" fl    
-  | FloatName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
-  | Float(fl) -> Printf.fprintf f "<attribute name=\"numValue\">%f</attribute>" fl
-  | BoolName(n) -> Printf.fprintf f "<attribute name=\"name\">%s</attribute>" n
-  | Bool(fl) -> Printf.fprintf f "<attribute name=\"boolValue\">%B</attribute>" fl
-  | Not(fe) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"not\">
-  %a
-</attribute></attribute>" print_expr fe
-| And(fe1,fe2) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"and\">
-  %a
-  %a
-</attribute></attribute>" print_expr fe1 print_expr fe2
-| Or(fe1,fe2) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"or\">
-  %a
-  %a
-</attribute></attribute>" print_expr fe1 print_expr fe2
-  | Mult(fe1,fe2) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"*\">
-  %a
-  %a
-</attribute></attribute>" print_expr fe1 print_expr fe2
-  | Plus(fe1,fe2) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"+\">
-  %a
-  %a
-</attribute></attribute>" print_expr fe1 print_expr fe2
-  | Minus(fe1,fe2) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"minus\">
-  %a
-  %a
-</attribute></attribute>" print_expr fe1 print_expr fe2
-  | Ceil(fe) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"ceil\">
-  %a
-</attribute></attribute>" print_expr fe
-  | Floor(fe) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"floor\">
-  %a
-</attribute></attribute>" print_expr fe
+let rec print_expr: type a. out_channel -> a expr' -> unit = fun f x -> 
+  let pa x f = print_at f x print_expr in 
+  let pa2 x f = print_at f x (fun f (v1,v2) -> Printf.fprintf f "\n\t%a\n\t%a\n" print_expr v1 print_expr v2) in
+  match x with
+  | IntName(n) -> print_at f "name" output_string n
+  | FloatName(n) -> print_at f "name" output_string n
+  | BoolName(n) -> print_at f "name" output_string n
+  | CastBool(e) -> print_expr f e
+  | Int(fl) -> print_at f "numValue" (fun f ->Printf.fprintf f "%i") fl
+  | Float(fl) -> print_at f "numValue" (fun f ->Printf.fprintf f "%f") fl
+  | Bool(fl) -> print_at f "boolValue" (fun f ->Printf.fprintf f "%B") fl 
+  | Not(fe) -> print_at f "function" (pa "not") fe
+  | And(fe1,fe2) -> print_at f "function" (pa2 "and") (fe1,fe2)
+  | Or(fe1,fe2)  -> print_at f "function" (pa2 "or") (fe1,fe2)
+  | Mult(fe1,fe2) -> print_at f "function" (pa2 "*") (fe1,fe2)
+  | Plus(fe1,fe2) -> print_at f "function" (pa2 "+") (fe1,fe2)
+  | Minus(fe1,fe2) -> print_at f "function" (pa2 "minus") (fe1,fe2)
+  | Ceil(fe) -> print_at f "function" (pa "ceil") fe
+  | Floor(fe) -> print_at f "function" (pa "floor") fe
   | CastInt(ie) -> print_expr f ie
-  | Exp(fe1) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"exp\">
-  %a
-</attribute></attribute>" print_expr fe1
-  | Div(fe1,fe2) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"/\">
-  %a
-  %a
-</attribute></attribute>" print_expr fe1 print_expr fe2
-  | FunCall(s,l) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"%s\">\n  " s;
-    List.iter (fun x ->print_expr f x;output_string f "\n  ";) l;
-    output_string f "</attribute></attribute>"
-  | IntAtom(rhs,cmp,lhs) -> Printf.fprintf f "
-<attribute name=\"function\"><attribute name=\"%a\">
-  %a
-  %a
-</attribute></attribute>" print_cmpGrML cmp print_expr rhs print_expr lhs
-  
+  | Exp(fe) -> print_at f "function" (pa "exp") fe
+  | Div(fe1,fe2) -> print_at f "function" (pa2 "/") (fe1,fe2)
+  | FunCall(s,fl) -> print_at f "function" (fun f -> print_at f s (fun f l ->
+  List.iter (fun x ->print_expr f x;output_string f "\n  ";) l)) fl
+  | IntAtom(fe1,cmp,fe2) -> print_at f "function" (pa2 (string_of_cmpGrML cmp)) (fe1,fe2)
 
 let print_int_expr f (x: int expr') = print_expr f x
 let print_float_expr f (x: float expr') = print_expr f x
@@ -247,11 +210,6 @@ let print_arc_marcie net f t =
       false
     end)
 	    fq net.Net.inArc)
-	
-    
-let float_of_floatexp = function
-  | Float f -> f
-  | _ -> failwith "Fail to export to marcie"
 
 let print_spt_marcie fpath net =
   let f = open_out fpath in
@@ -263,14 +221,14 @@ let print_spt_marcie fpath net =
   output_string f "\ntransitions:\n";
   output_string f "\tstochastic:\n";
   Data.iter (fun (s,(distr,_,_)) -> match distr with
-      Exp r -> Printf.fprintf f "\t%s : : %a : %f ;\n" s 
-    (print_arc_marcie net) (Data.index net.Net.transition s) (float_of_floatexp r)
+      Exp r -> Printf.fprintf f "\t%s : : %a : %a ;\n" s 
+    (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r
     | _ -> ()   
   ) net.Net.transition;
   output_string f "\timmediate:\n";
   Data.iter (fun (s,(distr,r,_)) -> match distr with
-      Imm -> Printf.fprintf f "\t%s : : %a : %f ;\n" s 
-    (print_arc_marcie net) (Data.index net.Net.transition s) (float_of_floatexp r)
+      Imm -> Printf.fprintf f "\t%s : : %a : %a ;\n" s 
+    (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r
     | _ -> ()   
   ) net.Net.transition;
 
@@ -338,22 +296,26 @@ let remove_erlang (net:spt) =
     Erl(n,lamb) ->
       Data.add (("P"^y^"ErCont"), Int 0) net2.Net.place;
       Data.add ((y^"ErStep"),(Exp lamb,we,pr)) net2.Net.transition;
-      Data.add ((y^"ErEmpty"),(Imm,we,pr)) net2.Net.transition;
       Net.add_inArc net2 ("P"^y^"ErCont") y n;
       Net.add_outArc net2 (y^"ErStep") ("P"^y^"ErCont") (Int 1);
-      Net.add_inArc net2 ("P"^y^"ErCont") (y^"ErEmpty") (IntName ("P"^y^"ErCont"));
       let it = Data.index net.Net.transition y in
       Data.iter (fun ((),(v,p,t)) -> if t = it then begin
 	let pn,_ = Data.acca net.Net.place p in
-	Net.add_inArc net2 pn (y^"ErStep") v;
-	Net.add_inhibArc net2 pn (y^"ErEmpty") v;
+	let emptyn = (y^"ErEmptyIn"^pn) in
+        Data.add (emptyn,(Imm,we,pr)) net2.Net.transition;
+        Net.add_inArc net2 ("P"^y^"ErCont") emptyn (Int 1);
 	Net.add_outArc net2 (y^"ErStep") pn v;
+       	Net.add_inArc net2 pn (y^"ErStep") v;
+	Net.add_inhibArc net2 pn emptyn v;
       end) net.Net.inArc;
       Data.iter (fun ((),(v,p,t)) -> if t = it then begin
 	let pn,_ = Data.acca net.Net.place p in
+	let emptyn = (y^"ErEmptyInhib"^pn) in
+	Data.add (emptyn,(Imm,we,pr)) net2.Net.transition;
+        Net.add_inArc net2 ("P"^y^"ErCont") emptyn (Int 1);
 	Net.add_inhibArc net2 pn (y^"ErStep") v;
-	Net.add_inArc net2 pn (y^"ErEmpty") v;
-	Net.add_outArc net2 (y^"ErEmpty") pn v;
+	Net.add_inArc net2 pn emptyn v;
+	Net.add_outArc net2 emptyn pn v;
       end) net.Net.inhibArc;
   | _ ->() ) net.Net.transition;
 

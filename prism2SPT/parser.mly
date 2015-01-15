@@ -37,7 +37,7 @@
 %type <PrismType.constdef*PrismType.prism_file> main
 %type <int expr'> intexpr
 %type <float expr'> floatexpr
-
+%type <bool expr'> stateCondition
 %%
 
 main:
@@ -50,40 +50,47 @@ defmod:
   | { (([],[]),[]) }
 ;
 
+anyname:
+  NAME {$1}
+| BOOLNAME {$1}
+| INTNAME {$1}
+| DOUBLENAME {$1}
+;
+
 definition:
-  CONST INTKW NAME EQ intexpr SEMICOLON { add_int $3; [($3,Some $5)] , [] }
-  | CONST NAME EQ intexpr SEMICOLON     { add_int $2; [($2,Some $4)] , [] }
-  | CONST DOUBLEKW NAME EQ floatexpr SEMICOLON { add_double $3; [], [($3,Some $5)] }
-  | CONST INTKW NAME SEMICOLON  {         add_int $3; [($3,None)]    , []  }
-  | CONST DOUBLEKW NAME SEMICOLON {       add_int $3; [], [($3,None)] }
+  CONST INTKW INTNAME EQ intexpr SEMICOLON { add_int $3; [($3,Some $5)] , [] }
+  | CONST INTNAME EQ intexpr SEMICOLON     { add_int $2; [($2,Some $4)] , [] }
+  | CONST DOUBLEKW DOUBLENAME EQ floatexpr SEMICOLON { add_double $3; [], [($3,Some $5)] }
+  | CONST INTKW INTNAME SEMICOLON  {         add_int $3; [($3,None)]    , []  }
+  | CONST DOUBLEKW DOUBLENAME SEMICOLON {       add_int $3; [], [($3,None)] }
 ;
 
 modulelist:
-  MODULE NAME varlist actionlist ENDMODULE {
+  MODULE anyname varlist actionlist ENDMODULE {
     Full { name=$2;
       varlist=$3;
       actionlist=$4;
       actionset = find_action $4
     }
   }
-  | MODULE NAME EQ NAME LSQBRAK renamelist RSQBRAK ENDMODULE {
+  | MODULE anyname EQ anyname LSQBRAK renamelist RSQBRAK ENDMODULE {
     Renaming ($2,$4,$6)
   }
 ;
 
 renamelist:
-  NAME EQ NAME {[($1,$3)]}
-  | NAME EQ NAME COMMA renamelist {($1,$3)::$5}
+  anyname EQ anyname {[($1,$3)]}
+  | anyname EQ anyname COMMA renamelist {($1,$3)::$5}
 ;
 
 varlist:
-  NAME COLON rangevar INIT TRUE SEMICOLON varlist 
+  anyname COLON rangevar INIT TRUE SEMICOLON varlist 
   { ($1,$3,Int 1)::$7 }  
-  | NAME COLON rangevar INIT FALSE SEMICOLON varlist 
+  | anyname COLON rangevar INIT FALSE SEMICOLON varlist 
       { ($1,$3,Int 0)::$7 }  
-  | NAME COLON rangevar INIT intexpr SEMICOLON varlist 
+  | anyname COLON rangevar INIT intexpr SEMICOLON varlist 
       { ($1,$3,(simp_int $5))::$7 }
-  | NAME COLON rangevar SEMICOLON varlist 
+  | anyname COLON rangevar SEMICOLON varlist 
       { ($1,$3,(fst $3))::$5 }
 | {[]}
 ;
@@ -101,7 +108,7 @@ actionlist:
 
 headaction:
   LSQBRAK RSQBRAK {None}
-| LSQBRAK NAME RSQBRAK {Some $2}
+| LSQBRAK anyname RSQBRAK {Some $2}
 ;
 
 tailaction:
@@ -113,12 +120,13 @@ tailaction:
 floatexpr:
   INT {Float (float $1)}
 | FLOAT {Float($1)}
+| INTNAME {CastInt(IntName $1)}
 | LPAR floatexpr RPAR {$2 }
 | floatexpr MULT floatexpr {Mult($1,$3)}
 | floatexpr PLUS floatexpr {Plus($1,$3)}
 | floatexpr MINUS floatexpr {Minus($1,$3)}
 | floatexpr DIV floatexpr {Div($1,$3)}
-| NAME {FloatName($1)}
+| DOUBLENAME {FloatName($1)}
 
 cmp:
   EQ {EQ}
@@ -136,9 +144,8 @@ update:
 ;
 
 upatom:
-  NAME PRIME EQ intexpr {$1,simp_int $4}
-| NAME PRIME EQ TRUE {$1,Int 1}
-| NAME PRIME EQ FALSE {$1,Int 0}
+  anyname PRIME EQ intexpr {$1,IntUp(eval $4)}
+| anyname PRIME EQ stateCondition {$1,BoolUp(eval $4)}
 ;
 
 initrew: 
@@ -159,17 +166,17 @@ LSQBRAK NAME RSQBRAK stateCondition COLON floatexpr SEMICOLON
 stateCondition:
 TRUE {Bool true}
 | FALSE {Bool false}
-| NAME { IntAtom(IntName $1,EQ,Int 1) }
+| BOOLNAME { BoolName($1) }
 | stateCondition AND stateCondition {And($1,$3)}
 | stateCondition OR stateCondition {Or($1,$3)}
 | NOT stateCondition {Not($2)}
 | LPAR stateCondition RPAR {$2}
-| NAME cmp intexpr  { IntAtom(IntName $1,$2,simp_int $3) }
+| intexpr cmp intexpr  { IntAtom(simp_int $1,$2,simp_int $3) }
 ;
 
 intexpr:
   INT {Int($1)}
- | NAME {IntName($1)}
+ | INTNAME {IntName($1)}
  | LPAR intexpr RPAR {$2}
  | intexpr PLUS intexpr {Plus($1,$3)}
  | intexpr MULT intexpr {Mult($1,$3)}

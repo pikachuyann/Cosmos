@@ -15,18 +15,23 @@ let rec acc_var k = function
   | (t,a,_)::_ when t=k -> a  
   | _::q -> acc_var k q
 
-let rec flatten_guard = function
+let rec flatten_guard x = 
+  print_endline "flattening";
+  match x with
   | Bool true -> [[]]
   | Bool false -> []
   | And (e1,e2) ->
-    let l=flatten_guard e1 in
+    let l=flatten_guard e1 
+    and l2 = flatten_guard e2 in
     List.fold_left (fun acc l1 ->
-      acc@(List.map (fun x->x@l1) (flatten_guard e2))) [] l
+      acc@(List.map (fun x->x@l1) l2)) [] l
   | Or (e1,e2) -> (flatten_guard e1)@(flatten_guard e2)
   | IntAtom ((IntName v),NEQ,j) -> [[(v,SL,j)];[(v,SG,j)]]
-  | IntAtom ((IntName v),cmp,j) -> [[(v,cmp,j)]] 
-  | Not e -> flatten_guard (neg_bool e)
-  | e-> printH_stateFormula stderr e;
+  | IntAtom ((IntName v),cmp,j) -> [[(v,cmp,j)]]  
+  | BoolName v -> [[(v,SG,Int 0)]]
+  | Not (BoolName v) -> [[(v,EQ,Int 0)]]
+  | Not e -> print_endline "Negation"; flatten_guard (neg_bool e)
+ | e-> printH_stateFormula stderr e;
     failwith "Not yet supported guard shape"
 
 let rec convert_guard modu net trname ((r1,r2) as rset) = function
@@ -49,32 +54,38 @@ let rec convert_guard modu net trname ((r1,r2) as rset) = function
   | (_,NEQ,_)::q -> failwith " Should not occur with flatten guard"
 
 let convert_update net trname eqmap varmap = function
-  | v,(Plus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
+  | v,BoolUp(j) when (StringMap.mem v varmap) ->
+    Net.add_outArc net trname v (CastBool j);
+    StringMap.remove v varmap
+  | v,BoolUp(j) -> Net.add_outArc net trname v (CastBool j); varmap
+
+  | v,IntUp(Plus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
     let j2 = simp_int (Plus(StringMap.find v varmap,j)) in
     Net.add_outArc net trname v j2;
     StringMap.remove v varmap
-  | v,(Plus((IntName v2),j)) when v=v2 -> Net.add_outArc net trname v j; varmap
-  | v,(Minus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
+
+  | v,IntUp(Plus((IntName v2),j)) when v=v2 -> Net.add_outArc net trname v j; varmap
+  | v,IntUp(Minus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
     let j2 = simp_int (Minus(StringMap.find v varmap,j)) in
     if sgz j2 then Net.add_outArc net trname v j2;
     StringMap.remove v varmap
   
-  | v,(Int j) when StringMap.mem v eqmap -> 
+  | v,IntUp(Int j) when StringMap.mem v eqmap -> 
     let j2 = simp_int (Minus(Int j,StringMap.find v eqmap)) in
     if sgz j2 then Net.add_outArc net trname v j2;
     (try StringMap.remove v varmap with Not_found -> varmap);
 
-  | v,j when (StringMap.mem v eqmap) -> 
+  | v,IntUp(j) when (StringMap.mem v eqmap) -> 
     let j2 = StringMap.find v eqmap in
     if j2= Int 0 then Net.add_outArc net trname v j
     else Net.add_outArc net trname v (Minus(j,j2));
     StringMap.remove v varmap
 
-  | v,j when StringMap.mem v varmap ->
+  | v,IntUp(j) when StringMap.mem v varmap ->
     printH_int_expr stderr j;
     failwith (Printf.sprintf "Cannot export %s-> %s" trname v);
    
-  | v,j ->
+  | v,IntUp(j) ->
     Net.add_inArc net v trname (IntName (v));
     Net.add_outArc net trname v j; 
     varmap
@@ -86,7 +97,7 @@ let gen_acc iinit modu net (st,g,f,u) =
   List.iter (fun flatguard ->
   let trname = Printf.sprintf "a%i%s" !i (match st with None -> "" | Some s-> s) in 
   Data.add (trname,(Exp f,Float 1.0,Float 1.0)) net.Net.transition;  
-
+  print_endline ("New Trans:"^trname);
   let (invar1,invar2) = 
     convert_guard modu net trname (StringMap.empty,StringMap.empty) flatguard in 
   let remaining = List.fold_left (convert_update net trname invar2) invar1 u in
@@ -103,13 +114,16 @@ let gen_acc iinit modu net (st,g,f,u) =
 
 
 let net_of_prism modu (li,lf) =
+  print_endline "Building net";
   let net = Net.create () in
   net.Net.def <- Some (li,lf,[],fun _ ()->());
   List.iter (fun (n,(a,b),i) -> Data.add (n,i) net.Net.place) modu.varlist;
+  print_endline "Building transitions";
   ignore (List.fold_left 
 	    (fun i ac ->
 	      gen_acc i modu net ac)
 	    1 modu.actionlist);
+  print_endline "Finish net";
   net
 
 let print_rename f =
@@ -135,7 +149,8 @@ let rec rename_expr: type a. (string ->string) -> a expr' -> a expr' = fun rn e 
     | IntAtom(ie,c,ie2) -> IntAtom(rnr ie,c,rnr ie2)
     | Float(f) -> Float(f)
     | FloatName(x) -> FloatName(rn x) 
-    | CastInt(x) -> CastInt (rnr x) 
+    | CastInt(x) -> CastInt (rnr x)
+    | CastBool(x) -> CastBool (rnr x)
     | FunCall(x,fl) -> FunCall(x,List.map rnr fl) 
 
 let rec rename_module l1 = function
@@ -149,7 +164,8 @@ let rec rename_module l1 = function
       (rename_op rn a),
       (rename_expr rn b),
       (rename_expr rn c),
-      (List.map (fun (s,ie) -> (rn s),(rename_expr rn ie)) d)) template.actionlist in
+      (List.map (function (s,IntUp(ie)) -> (rn s),IntUp(rename_expr rn ie) 
+      | (s,BoolUp(ie)) -> (rn s),BoolUp(rename_expr rn ie) ) d)) template.actionlist in
     let nm = {
       name=nn;
       varlist=nvarl;
@@ -183,12 +199,20 @@ let read_prism s name =
   let lexbuf = Lexing.from_channel s in
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = name };
   try
+    Preparser.main Prelexer.token lexbuf;
+    Lexing.flush_input lexbuf;
+    lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_lnum = 1 };
+    seek_in s 0;
+    print_endline "Finish first pass of parsing";
     let cdef,prismml = Parser.main Lexer.token lexbuf in
+    print_endline "Finish second pass of parsing";
     let (fullmod,renammod) = List.fold_left (fun (l1,l2) m -> match m with 
 	Full fm -> (fm::l1),l2 | Renaming (rm1,rm2,rm3) -> l1,((rm1,rm2,rm3)::l2) ) ([],[]) prismml in
     let prismm2 = rename_module fullmod renammod in
+    print_endline "Finish renaming";
     let prismmodule = List.fold_left compose_module
       (List.hd prismm2) (List.tl prismm2) in
+    print_endline "Finish composing";
     (net_of_prism prismmodule cdef)
   with 
   | SyntaxError msg ->

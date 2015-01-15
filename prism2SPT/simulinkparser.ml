@@ -6,15 +6,13 @@ open SimulinkType
 open Lexing
 
 let modelStoch = true
-
+let useerlang = false
 
 let detfun s =
   if modelStoch then 
-    let n = 100 in
+    let n = 10 in
     StochasticPetriNet.Erl (Int n,Div (Float (float n),s))
   else StochasticPetriNet.Det s
-
-
 
 let ssid_count = ref (-1)
 let fresh_ssid () =
@@ -25,6 +23,7 @@ let getSSID al =
   let i = int_of_string (List.assoc "SSID" al)  in
   ssid_count := max !ssid_count (i+1); 
   i
+
 
 let rec findprop f = function
   | [] -> None
