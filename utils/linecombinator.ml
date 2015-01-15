@@ -31,9 +31,10 @@ module Data = struct
     
   let dataElem_of_string d =
     try Floatv (float_of_string d) 
-    with Failure "float_of_string" -> (try 
-					 let spl = List.filter (fun x -> x<>"") (split notint d) in
-					 Floatv (float_of_int (List.fold_left (fun x y -> x + (int_of_string y)) 0 spl)) 
+    with Failure "float_of_string" -> (
+      try 
+	let spl = List.filter (fun x -> x<>"") (split notint d) in
+	Floatv (float_of_int (List.fold_left (fun x y -> x + (int_of_string y)) 0 spl)) 
       with Failure "int_of_string" -> Strv (d)
     )
 
@@ -56,22 +57,33 @@ end
 
 module EventSet = Set.Make(TimeEvent)
 
-
-let rec readEvent f s maxp i =
-  try (
-    let line = input_line f in match split blank line with
+let rec readEvent f s maxp i buff =
+  let lineo = try Some (input_line f) with End_of_file -> None in
+    match lineo with 
+    | None -> (s,i)
+    | Some line -> begin match split blank line with
       | [] -> failwith "empty line"
       | [s1;s2] when s1="New" && s2 = "Path" ->
-	  if i=maxp then raise Max_Path else readEvent f s maxp (i+1)
+	  if i=maxp then (s,i) else 
+	    begin match buff with 
+	    | None -> readEvent f s maxp (i+1) None
+	    | Some (e,_) -> readEvent f (EventSet.add e s) maxp (i+1) None
+	    end 
       | te::q -> (
-	try let ts = float_of_string te in
-	    readEvent f (EventSet.add (ts,i,Data.data_of_stringList q) s) maxp i
-	with
-	    Failure "float_of_string" -> readEvent f s maxp i
+	match try Some (float_of_string te) with Failure "float_of_string" -> None with  
+	  None -> readEvent f s maxp i buff
+	| Some ts -> (
+	  let ed = Data.data_of_stringList q in
+	    match buff with 
+	      None -> readEvent f s maxp i (Some ((ts,i,ed),false))
+	    | Some ((ts2,i2,ed2),_) when ts2=ts && i=i2 && ed=ed2 -> readEvent f s maxp i buff
+	    | Some ((ts2,i2,ed2),true) when i=i2 && ed=ed2 -> readEvent f s maxp i (Some ((ts,i,ed),true))
+	    | Some ((ts2,i2,ed2),_) -> 
+	      readEvent f (EventSet.add (ts2,i2,ed2) s) maxp i (Some ((ts,i,ed),i=i2 && ed=ed2))
+	)
 (* failwith ("line do not start with a timestamp: \""^line^"\"")*)
       )
-  ) with
-      End_of_file | Max_Path -> s,i
+    end
 
 let fillvect evect step d i j =
   for k =i to j do
@@ -147,14 +159,15 @@ let main2 s1 s2 npath =
   seek_in initfile 0;
   let fl = input_line initfile in 
   output_string intermediatefile (fl^"\n");
-  if ne > 100000 then
+  if ne > 10000000 then
     let evect = Array.make (int_of_float (1.+.maxtime/.step)) (0.0,0,template) in
     readAndSample evect step initfile template npath;
     Array.iteri (fun i (t,n,d) -> evect.(i) <- (t,1,Data.mult (1.0 /. (float (n-1))) d)) evect;
     Array.iter (TimeEvent.output intermediatefile) evect
   else 
     let es = EventSet.empty in
-    let esfull,maxi = readEvent initfile es  npath 0 in
+    let esfull,maxi = readEvent initfile es npath 0 None in
+    Printf.printf "number of pruned events: %i\n" (EventSet.fold (fun _ x ->x+1) esfull 0);
     let tabledata = Array.make maxi (Data.empty template) in
     EventSet.iter (function (t,p,d) when t=0.0 -> tabledata.(p-1)<- d | _ ->()) esfull;
     let esunif = EventSet.fold (uniformize tabledata) esfull EventSet.empty in

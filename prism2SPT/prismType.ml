@@ -1,23 +1,18 @@
 open Type 
 
-type expType = IntT | BoolT | DoubleT
+type expType = IntT | BoolT | DoubleT | IntVar | BoolVar
 
 let (mapType:expType StringMap.t ref) = ref StringMap.empty
-(*
+
 let add_int s = 
   (*Printf.printf "add int var %s\n" s;*)
   mapType := StringMap.add s IntT !mapType
 let add_bool s = mapType := StringMap.add s BoolT !mapType
 let add_double s = mapType := StringMap.add s DoubleT !mapType
+let add_var s t = mapType := StringMap.add s t !mapType
 let add_copy s1 s2 = try let t = StringMap.find s1 !mapType in
 		     mapType := StringMap.add s2 t !mapType
   with Not_found -> ()
-*)
-let add_int s = ()
-let add_double s = ()
-let add_bool s = ()
-let add_copy s1 s2 = ()
-
 
 let find_action sl =
   List.fold_left (fun set (so,_,_,_) ->
@@ -26,10 +21,12 @@ let find_action sl =
 
 type constdef = (string*(int expr' option)) list * (string*(float expr' option)) list
 
+type update = IntUp of int expr' | BoolUp of  bool expr'
+
 type prism_module = {
   name:string;
   varlist:(string * (int expr'*int expr') * int expr') list;
-  actionlist: (string option * bool expr' * float expr' * ((string*int expr') list)) list;
+  actionlist: (string option * bool expr' * float expr' * ((string*update) list)) list;
   actionset: StringSet.t
 }
 

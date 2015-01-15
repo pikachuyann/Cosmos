@@ -207,7 +207,7 @@ void launch_clients(parameters& P){
 
 	for(int i = 0;i<P.Njob;i++){
 		string cmd = P.tmpPath + "/ClientSim";;
-		const char *argv[10] = {0};
+		const char *argv[15] = {0};
 		size_t argn = 0;
 		pushstr(argv, argn, cmd.c_str());
 		
