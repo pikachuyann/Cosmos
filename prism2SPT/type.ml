@@ -54,6 +54,7 @@ type _ expr' =
   | Floor : float expr' -> int expr'
   | Ceil  : float expr' -> int expr'
   | CastInt : int expr' -> float expr'
+  | CastBool: bool expr' -> int expr'
   | IntName : string -> int expr'
   | FloatName : string -> float expr'
   | BoolName : string -> bool expr'
@@ -190,6 +191,7 @@ let rec printH_expr: type a. out_channel -> a expr' -> unit = fun f x -> match x
     printH_cmp c
     printH_expr e2  
   | CastInt(x) -> printH_expr f x
+  | CastBool(x) -> printH_expr f x
   | Div(e1,e2) -> Printf.fprintf f "(%a/%a)" 
     printH_expr e1 
     printH_expr e2

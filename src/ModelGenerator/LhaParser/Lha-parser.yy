@@ -357,7 +357,7 @@ VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
 	FuncUpdateVector.resize(Reader.MyLha.NbVar);
     FuncUpdateVectorIndex.resize(Reader.MyLha.NbVar);
 	CoeffsVector.resize(Reader.MyLha.NbVar);
-	
+
 	for(const auto &it : Reader.MyLha.TransitionIndex)
 		PetriTransitions.insert(it.first);
 	
@@ -370,6 +370,7 @@ VLabels : str {
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(CONTINIOUS_VARIABLE);
 	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
+    Reader.MyLha.Vars.isTraced.push_back(true);
 	//Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
 }
 | DISC str {
@@ -378,7 +379,8 @@ VLabels : str {
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(DISCRETE_VARIABLE);
 	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
-	//Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
+    Reader.MyLha.Vars.isTraced.push_back(true);
+    //Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
 	
 }
 | DISC str LSB ival RSB {
@@ -387,6 +389,7 @@ VLabels : str {
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(INT_INDEXED_DISC_ARRAY);
 	Reader.MyLha.Vars.colorDomain.push_back($4);
+    Reader.MyLha.Vars.isTraced.push_back(true);
 	//Reader.MyLha.VarIndex[*$1]=Reader.MyLha.VarLabel.size()-1;
 
 }
@@ -396,6 +399,7 @@ VLabels : str {
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(CONTINIOUS_VARIABLE);
 	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
+    Reader.MyLha.Vars.isTraced.push_back(true);
 	//Reader.MyLha.VarIndex[*$3]=Reader.MyLha.VarLabel.size()-1;
 };
 |VLabels COMMA DISC str {
@@ -403,6 +407,7 @@ VLabels : str {
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(DISCRETE_VARIABLE);
 	Reader.MyLha.Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
+    Reader.MyLha.Vars.isTraced.push_back(true);
 	//Reader.MyLha.VarIndex[*$3]=Reader.MyLha.VarLabel.size()-1;
 }
 |VLabels COMMA DISC str LSB ival RSB {
@@ -410,6 +415,7 @@ VLabels : str {
 	Reader.MyLha.Vars.initialValue.push_back(0.0);
 	Reader.MyLha.Vars.type.push_back(INT_INDEXED_DISC_ARRAY);
 	Reader.MyLha.Vars.colorDomain.push_back($6);
+    Reader.MyLha.Vars.isTraced.push_back(true);
 
 };
 

@@ -76,6 +76,8 @@ end
 
 module Net =
 struct
+  exception InvalidPlaceName of string
+  exception InvalidTransitionName of string
   type ('a,'b,'c,'d) t = {
     mutable def: 'd option;
     place: (string,'a) Data.t;
@@ -94,23 +96,23 @@ struct
   }
 
   let add_inArc net s1 s2 v =
-    let i1 = Data.index net.place s1 
-    and i2 = Data.index net.transition s2 in
+    let i1 = try Data.index net.place s1 with Not_found -> raise @@ InvalidPlaceName(s1)  
+    and i2 = try Data.index net.transition s2 with Not_found -> raise @@ InvalidTransitionName(s2) in
     Data.add ((),(v,i1,i2)) net.inArc
       
   let add_outArc net s1 s2 v =
-    let i1 = Data.index net.transition s1 
-    and i2 = Data.index net.place s2 in
+    let i1 = try Data.index net.transition s1 with Not_found -> raise @@ InvalidTransitionName(s1)
+    and i2 = try Data.index net.place s2 with Not_found -> raise @@ InvalidPlaceName(s2) in
     Data.add ((),(v,i1,i2)) net.outArc
 
   let add_inhibArc net s1 s2 v =
-    let i1 = Data.index net.place s1 
-    and i2 = Data.index net.transition s2 in
+    let i1 = try Data.index net.place s1 with Not_found -> raise @@ InvalidPlaceName(s1)  
+    and i2 = try Data.index net.transition s2 with Not_found -> raise @@ InvalidTransitionName(s2) in
     Data.add ((),(v,i1,i2)) net.inhibArc
   
   let add_arc net s1 s2 v =
     try add_inArc net s1 s2 v with
-	Not_found -> add_outArc net s1 s2 v
+	_ -> add_outArc net s1 s2 v
 end
 
 (*

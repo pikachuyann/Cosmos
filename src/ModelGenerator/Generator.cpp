@@ -79,7 +79,7 @@ bool ParseBuild() {
         //The following code modify the internal representation of the
         //SPN according to options.
 
-        //Set the isTraced flag for places
+        //Set the isTraced flag for places and transitions
         if (P.tracedPlace != "ALL" && P.tracedPlace != "ALLCOLOR") {
             P.nbPlace = 0;
             for (size_t i = 0; i < gReader.MyGspn.pl; i++) {
@@ -195,6 +195,19 @@ bool ParseBuild() {
             //Add external HASL formula to the lha.
             if (P.externalHASL.compare("") != 0)
                 lReader.parse(P.externalHASL);
+
+            //Set the isTraced flag for variables
+            if (P.tracedPlace != "ALL" && P.tracedPlace != "ALLCOLOR") {
+                for (size_t i = 0; i < lReader.MyLha.NbVar; i++) {
+                    size_t j = P.tracedPlace.find(lReader.MyLha.LocLabel[i], 0);
+                    if (j != string::npos && (j + lReader.MyLha.LocLabel[i].length() == P.tracedPlace.length()
+                                              || P.tracedPlace[j + lReader.MyLha.LocLabel[i].length()] == ',')) {
+                        lReader.MyLha.Vars.isTraced[i] = true;
+                    } else {
+                        lReader.MyLha.Vars.isTraced[i] = false;
+                    }
+                }
+            }
 
             //If everythink work correctly, copy the HASL formula and generate the code
             if (!parseresult && lReader.MyLha.NbLoc > 0) {

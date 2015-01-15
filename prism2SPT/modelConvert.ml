@@ -76,11 +76,11 @@ let _ =
 	|> Simulinkparser.expand_trans2
     (*    |> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])*)
 	|> Simulinkparser.stochNet_of_modu !const_file
+	|> (fun x-> if Simulinkparser.useerlang then x else StochasticPetriNet.remove_erlang x)
       end
       ENDIF
       ENDIF   
   | _ -> failwith "Output format not yet supported" end
-	      (*|> StochasticPetriNet.remove_erlang*)
 	      |> (fun net -> 
 		print_endline "Finish parsing, start writing";
 		List.iter (function 
