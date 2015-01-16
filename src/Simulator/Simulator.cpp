@@ -516,6 +516,7 @@ void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
         if(verbose > 4){
             cerr << "Sample " << N.Transition[Id].label << " with parameter (";
             cerr << N.ParamDistr[0];
+            if (N.Transition[E.transition].DistTypeIndex == ERLANG)cerr << "," << N.ParamDistr[1];
             cerr << ")" << endl;
         }
 	}
