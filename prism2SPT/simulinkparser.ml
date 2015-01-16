@@ -10,7 +10,7 @@ let useerlang = false
 
 let detfun s =
   if modelStoch then 
-    let n = 10 in
+    let n = 100 in
     StochasticPetriNet.Erl (Int n,Div (Float (float n),s))
   else StochasticPetriNet.Det s
 

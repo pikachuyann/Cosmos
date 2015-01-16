@@ -16,7 +16,6 @@ let rec acc_var k = function
   | _::q -> acc_var k q
 
 let rec flatten_guard x = 
-  print_endline "flattening";
   match x with
   | Bool true -> [[]]
   | Bool false -> []
@@ -203,16 +202,12 @@ let read_prism s name =
     Lexing.flush_input lexbuf;
     lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_lnum = 1 };
     seek_in s 0;
-    print_endline "Finish first pass of parsing";
     let cdef,prismml = Parser.main Lexer.token lexbuf in
-    print_endline "Finish second pass of parsing";
     let (fullmod,renammod) = List.fold_left (fun (l1,l2) m -> match m with 
 	Full fm -> (fm::l1),l2 | Renaming (rm1,rm2,rm3) -> l1,((rm1,rm2,rm3)::l2) ) ([],[]) prismml in
     let prismm2 = rename_module fullmod renammod in
-    print_endline "Finish renaming";
     let prismmodule = List.fold_left compose_module
       (List.hd prismm2) (List.tl prismm2) in
-    print_endline "Finish composing";
     (net_of_prism prismmodule cdef)
   with 
   | SyntaxError msg ->

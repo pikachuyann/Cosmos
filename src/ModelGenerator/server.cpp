@@ -226,7 +226,7 @@ void launch_clients(parameters& P){
 			//os << " " <<(t.tv_usec + t.tv_sec + getpid()+i);
 			pushint(argv,argn,(t.tv_usec + t.tv_sec + getpid()+i));
 		}else{
-			//is seed is not null add i to the seed to guarantee independance
+			//if seed is not null add i to the seed to guarantee independance
 			// of simulation.
 			//os << " " << (P.seed+i);
 			pushint(argv,argn,P.seed+i);

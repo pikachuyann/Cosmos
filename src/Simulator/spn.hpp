@@ -64,7 +64,6 @@ enum DistributionType {
 	MASSACTION,
 };
 
-
 enum TransType {
 	Timed, unTimed
 };

@@ -302,7 +302,7 @@ let remove_erlang (net:spt) =
       Data.iter (fun ((),(v,p,t)) -> if t = it then begin
 	let pn,_ = Data.acca net.Net.place p in
 	let emptyn = (y^"ErEmptyIn"^pn) in
-        Data.add (emptyn,(Imm,we,pr)) net2.Net.transition;
+        Data.add (emptyn,(Imm,we,Plus(pr,(Float 4.0)))) net2.Net.transition;
         Net.add_inArc net2 ("P"^y^"ErCont") emptyn (Int 1);
 	Net.add_outArc net2 (y^"ErStep") pn v;
        	Net.add_inArc net2 pn (y^"ErStep") v;
@@ -311,7 +311,7 @@ let remove_erlang (net:spt) =
       Data.iter (fun ((),(v,p,t)) -> if t = it then begin
 	let pn,_ = Data.acca net.Net.place p in
 	let emptyn = (y^"ErEmptyInhib"^pn) in
-	Data.add (emptyn,(Imm,we,pr)) net2.Net.transition;
+	Data.add (emptyn,(Imm,we,Plus(pr,(Float 4.0)))) net2.Net.transition;
         Net.add_inArc net2 ("P"^y^"ErCont") emptyn (Int 1);
 	Net.add_inhibArc net2 pn (y^"ErStep") v;
 	Net.add_inArc net2 pn emptyn v;
