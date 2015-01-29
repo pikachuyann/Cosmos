@@ -35,14 +35,17 @@ using namespace std;
 /**
  *	Build an Event queue for the Petri net given as parameter.
  */
-EventsQueue::EventsQueue(const SPN& N){
-	for(size_t it = 0; it< N.Transition.size(); ++it ){
-		evtTbl.push_back(vector<Event>());
+EventsQueue::EventsQueue(const SPN& N):evtTbl(N.Transition.size(),vector<Event>()){
+    auto comp =0;
+    for(size_t it = 0; it< N.Transition.size(); ++it ){
+            //evtTbl.push_back(vector<Event>());
 		evtHeapIndex.push_back(vector<long int>(N.Transition[it].bindingList.size(),-1));
 		for (size_t it2 = 0 ; it2< N.Transition[it].bindingList.size(); ++it2) {
 			evtTbl[it].push_back(Event());
+            comp++;
 		}
 	}
+    evtHeap.reserve(comp);
 }
 
 /**
@@ -85,7 +88,7 @@ void EventsQueue::insert(const Event &e) {
 	//assert(!isScheduled(e.transition, e.binding.id()));
 	evtTbl[e.transition][e.binding.id()] = e;
 	evtHeapIndex[e.transition][e.binding.id()] = evtHeap.size();
-	evtHeap.push_back(make_pair(e.transition,e.binding.id()));
+	evtHeap.push_back(sizeSq(e.transition,e.binding.id()));
 	
 	siftUp(evtHeap.size()-1);
 }
@@ -117,7 +120,7 @@ void EventsQueue::remove(size_t tr, size_t b) {
 			evtHeapIndex[tr][b] = -1;
 			evtHeap.pop_back();
 		} else {
-			evtHeapIndex[evtHeap.back().first][evtHeap.back().second] = i;
+			evtHeapIndex[evtHeap.back().tr][evtHeap.back().bid] = i;
 			evtHeapIndex[tr][b] = -1 ;
 			evtHeap[i] = evtHeap.back();
 			evtHeap.pop_back();
@@ -143,7 +146,7 @@ void EventsQueue::pause(double t, size_t tr,size_t b){
 			evtHeapIndex[tr][b] = -1;
 			evtHeap.pop_back();
 		} else {
-			evtHeapIndex[evtHeap.back().first][evtHeap.back().second] = i;
+			evtHeapIndex[evtHeap.back().tr][evtHeap.back().bid] = i;
 			evtHeapIndex[tr][b] = -1 ;
 			evtHeap[i] = evtHeap.back();
 			evtHeap.pop_back();
@@ -165,7 +168,7 @@ bool EventsQueue::restart(double t, size_t tr,size_t b){
 	if(evtTbl[tr][b].time < 0.0)return false;
 	evtTbl[tr][b].time += t;
 	evtHeapIndex[tr][b] = evtHeap.size();
-	evtHeap.push_back(make_pair(tr,b));
+	evtHeap.push_back(sizeSq(tr,b));
 	
 	siftUp(evtHeap.size()-1);
 	return true;
@@ -173,7 +176,7 @@ bool EventsQueue::restart(double t, size_t tr,size_t b){
 
 const Event& EventsQueue::InPosition(size_t i)const {
 	//assert(i < evtHeap.size());
-    return evtTbl[evtHeap[i].first][evtHeap[i].second];
+    return evtTbl[evtHeap[i].tr][evtHeap[i].bid];
 }
 
 bool EventsQueue::isScheduled(size_t tr,size_t b)const {
@@ -183,10 +186,10 @@ bool EventsQueue::isScheduled(size_t tr,size_t b)const {
 void EventsQueue::swapEvt(size_t i,size_t j){
 	//assert((size_t)evtHeapIndex[evtHeap[j].first][evtHeap[j].second] ==j
 	//	   && (size_t)evtHeapIndex[evtHeap[i].first][evtHeap[i].second] == i);
-	evtHeapIndex[evtHeap[j].first][evtHeap[j].second] = i;
-	evtHeapIndex[evtHeap[i].first][evtHeap[i].second] = j;
+	evtHeapIndex[evtHeap[j].tr][evtHeap[j].bid] = i;
+	evtHeapIndex[evtHeap[i].tr][evtHeap[i].bid] = j;
 	
-	pair<size_t,size_t> swappair = evtHeap[j];
+	sizeSq swappair = evtHeap[j];
 	evtHeap[j] = evtHeap[i];
 	evtHeap[i] = swappair;
 }

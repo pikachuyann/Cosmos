@@ -6,7 +6,7 @@ let input = ref stdin
 let output = ref "out"
 let inname = ref "stdin"
 let typeFormat = ref Prism
-let outputFormat = ref [GrML;Dot;Pdf]
+let outputFormat = ref [GrML;Dot;Pdf;Marcie]
 let const_file = ref ""
 
 let suffix_of_filename s =
@@ -43,6 +43,9 @@ let _ =
   print_endline ("Opening "^ !inname);
   begin match !typeFormat with
   | Prism -> 
+    
+    if 0=Sys.command (Printf.sprintf "prism %s -exportprism %s.expanded  -nobuild > /dev/null" !inname !inname)
+    then inname := !inname ^ ".expanded";
     input := open_in !inname;
     Generator.read_prism !input !inname
   | Pnml ->
@@ -74,7 +77,8 @@ let _ =
 	|> List.map Simulinkparser.prune_unread2
       	|> (fun x -> List.fold_left Simulinkparser.combine_modu2 (List.hd x) (List.tl x))
 	|> Simulinkparser.expand_trans2
-    (*    |> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])*)
+    (*|> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])*)
+    (*|< Simulinkparser.prune*) 
 	|> Simulinkparser.stochNet_of_modu !const_file
 	|> (fun x-> if Simulinkparser.useerlang then x else StochasticPetriNet.remove_erlang x)
       end

@@ -11,7 +11,7 @@
 %token PLUS MINUS MULT DIV
 %token LSQBRAK RSQBRAK
 %token EOL
-%token SEMICOLON COLON PRIME COMMA
+%token SEMICOLON COLON PRIME COMMA QMARK
 %token AND OR
 %token NOT
 %token BOOL TRUE FALSE
@@ -41,7 +41,7 @@
 %%
 
 main:
-  CTMC defmod initrew labels EOF {($2)};
+  CTMC defmod initrew EOF {($2)};
 
 defmod:
   definition defmod { let (defi1,defd1) = $1 and ((defi2,defd2),modl) = $2 in 
@@ -59,10 +59,14 @@ anyname:
 
 definition:
   CONST INTKW INTNAME EQ intexpr SEMICOLON { add_int $3; [($3,Some $5)] , [] }
-  | CONST INTNAME EQ intexpr SEMICOLON     { add_int $2; [($2,Some $4)] , [] }
-  | CONST DOUBLEKW DOUBLENAME EQ floatexpr SEMICOLON { add_double $3; [], [($3,Some $5)] }
-  | CONST INTKW INTNAME SEMICOLON  {         add_int $3; [($3,None)]    , []  }
-  | CONST DOUBLEKW DOUBLENAME SEMICOLON {       add_int $3; [], [($3,None)] }
+| CONST INTNAME EQ intexpr SEMICOLON     { add_int $2; [($2,Some $4)] , [] }
+| CONST DOUBLEKW DOUBLENAME EQ floatexpr SEMICOLON { add_double $3; [], [($3,Some $5)] }
+| CONST INTKW INTNAME SEMICOLON  {         add_int $3; [($3,None)]    , []  }
+| CONST DOUBLEKW DOUBLENAME SEMICOLON {       add_int $3; [], [($3,None)] }
+| FORMULA NAME EQ intexpr SEMICOLON { [],[] }
+| FORMULA NAME EQ stateCondition SEMICOLON { [],[] }
+| FORMULA NAME EQ floatexpr SEMICOLON { [],[] }
+| LABEL STRING EQ stateCondition SEMICOLON { [],[] }
 ;
 
 modulelist:
@@ -127,7 +131,15 @@ floatexpr:
 | floatexpr MINUS floatexpr {Minus($1,$3)}
 | floatexpr DIV floatexpr {Div($1,$3)}
 | DOUBLENAME {FloatName($1)}
+| NAME LPAR floatexprlist RPAR {FunCall($1,$3) }
+| LPAR stateCondition QMARK floatexpr COLON floatexpr RPAR { If($2,$4,$6) }
+;
 
+floatexprlist:
+  floatexpr COMMA floatexprlist {$1::$3}
+| floatexpr { [$1] }
+| { [] }
+;
 cmp:
   EQ {EQ}
  | SG {SG}
@@ -151,17 +163,19 @@ upatom:
 initrew: 
   INIT TRUE ENDINIT initrew {()}
 | REWARDS STRING actionrewardlist ENDREWARDS initrew {()}
-| {()};
+| {()}
+;
 
 
 actionrewardlist:
-LSQBRAK NAME RSQBRAK stateCondition COLON floatexpr SEMICOLON 
+LSQBRAK NAME RSQBRAK stateCondition COLON floatexpr SEMICOLON actionrewardlist
   {()}
-| LSQBRAK RSQBRAK stateCondition COLON floatexpr SEMICOLON 
+| LSQBRAK RSQBRAK stateCondition COLON floatexpr SEMICOLON actionrewardlist
   {()}
-|  stateCondition COLON floatexpr SEMICOLON 
+|  stateCondition COLON floatexpr SEMICOLON actionrewardlist
   {()}
-| {()};
+| {()}
+;
 
 stateCondition:
 TRUE {Bool true}
@@ -172,6 +186,7 @@ TRUE {Bool true}
 | NOT stateCondition {Not($2)}
 | LPAR stateCondition RPAR {$2}
 | intexpr cmp intexpr  { IntAtom(simp_int $1,$2,simp_int $3) }
+| LPAR stateCondition QMARK stateCondition COLON stateCondition RPAR { If($2,$4,$6) }
 ;
 
 intexpr:
@@ -184,10 +199,5 @@ intexpr:
  | NOT intexpr {Minus(Int 1,$2)}
  | FLOOR LPAR floatexpr RPAR {Floor($3)}
  | CEIL LPAR floatexpr RPAR {Ceil($3)}
+ | LPAR stateCondition QMARK intexpr COLON intexpr RPAR { If($2,$4,$6) }
 ;
-
-
-
-labels:
-  LABEL STRING EQ stateCondition SEMICOLON labels{()}
-| {()}

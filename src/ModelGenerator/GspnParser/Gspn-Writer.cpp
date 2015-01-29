@@ -34,7 +34,7 @@ Gspn_Writer::Gspn_Writer(GspnType& mgspn,parameters& Q):MyGspn(mgspn),P(Q){
 	
 }
 
-
+// Precompute effect of transitions over other transitions
 void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
                                     vector< set<int> > &PossiblyDisabled,
                                     vector< set<int> > &FreeMarkDepT) {
@@ -131,6 +131,7 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		FreeMarkDepT.push_back(S);
 	}
 }
+
 
 void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector< set<int> > &vect){
         //SpnF << "\t"<< name << " = vector< vector<int> >("<< vect.size() << ");"<< endl;
@@ -259,7 +260,6 @@ void Gspn_Writer::generateStringVal(arcStore& as){
 }
 
 void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
-	
 	SpnF << "abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){" << endl;
 	SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
 	for(size_t trit = 0; trit != MyGspn.tr;++trit){
@@ -758,56 +758,63 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "\tm.P = P;\n";
 	SpnCppFile << "\tP = tmp;\n";
 	SpnCppFile << "}\n";
-	SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
 	
 	size_t maxNameSize =5;
-	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-		 plit!= MyGspn.placeStruct.end(); ++plit)
-		maxNameSize = max(maxNameSize, plit->name.length());
-	maxNameSize += 5;
-	if(P.StringInSpnLHA){
-		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-		//SpnCppFile << "\ts.width(" << maxNameSize+5 <<");" << endl;
-		
-		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-			 plit!= MyGspn.placeStruct.end(); ++plit) {
-			if (plit->isTraced)SpnCppFile << "s << setw(" << maxNameSize << ") << \""  << plit->name  << "\";"<<endl ;
-		}
-	}
+	for (const auto &plit : MyGspn.placeStruct)
+        if (plit.isTraced)
+            maxNameSize = max(maxNameSize, plit.name.length());
+    vector<place> plitcp((MyGspn.placeStruct.size()));
+
+    auto it = copy_if(MyGspn.placeStruct.begin(), MyGspn.placeStruct.end(), plitcp.begin(), [](place &plit){
+        return plit.isTraced;
+    });
+    plitcp.resize(distance(plitcp.begin(),it));
+
+
+    sort(plitcp.begin(), plitcp.end(), [&](const place &p1, const place &p2){
+        if (P.tracedPlace.count(p1.name)>0 && P.tracedPlace.count(p2.name)>0){
+            return P.tracedPlace[p1.name] < P.tracedPlace[p2.name];
+        } else return false;
+    });
+
+    SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
+    if(P.StringInSpnLHA)
+        for (const auto &plit : plitcp)
+            if (plit.isTraced){
+                SpnCppFile << "s << setw(" << maxNameSize << ") << \"";
+                SpnCppFile << plit.name  << " \";"<<endl;
+            }
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 
+	SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
+	if(P.StringInSpnLHA){
+		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
+		for(const auto &plit : plitcp)
+            if (plit.isTraced){
+                SpnCppFile << "\ts << setw(" << maxNameSize-1 << ") << ";
+                if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit.name << "<<\" \";\n";
+                }else{ SpnCppFile << "print_magic(P->_PL_"<< plit.name << ")<<\" \";\n";
+                }
+		}
+	}
+	SpnCppFile << "}\n";
     SpnCppFile << "void abstractMarking::printSedCmd(ostream &s)const{\n";
     if(P.StringInSpnLHA){
         //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-        for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-             plit!= MyGspn.placeStruct.end(); ++plit) {
-            SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit->name <<"\\\\$/\";"<< endl;
+        for (const auto &plit : MyGspn.placeStruct){
+            SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit.name <<"\\\\$/\";"<< endl;
             if(P.magic_values.empty()){
-                SpnCppFile << "\ts << P->_PL_"<< plit->name << ";"<<endl;
+                SpnCppFile << "\ts << P->_PL_"<< plit.name << ";"<<endl;
             } else {
-                SpnCppFile << "\ts << print_magic(P->_PL_"<< plit->name << ");"<<endl;
+                SpnCppFile << "\ts << print_magic(P->_PL_"<< plit.name << ");"<<endl;
             }
             SpnCppFile << "\ts <<\"/g' \";"<<endl;
         }
     }
     SpnCppFile << "}\n";
 
-    
-	SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
-	if(P.StringInSpnLHA){
-		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-			 plit!= MyGspn.placeStruct.end(); ++plit)
-            if (plit->isTraced){
-                SpnCppFile << "\ts << setw(" << maxNameSize << ") << ";
-                if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit->name << ";\n";
-                }else{ SpnCppFile << "print_magic(P->_PL_"<< plit->name << ");\n";
-                }
-		}
-	}
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
+    SpnCppFile << "\n";
 	SpnCppFile << "int abstractMarking::getNbOfTokens(int p)const {\n";
 	if(MyGspn.isColored() || P.lightSimulator){
 		SpnCppFile << "\texit(EXIT_FAILURE);\n";

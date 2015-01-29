@@ -36,6 +36,12 @@ typedef vector <int> Tab;
 typedef vector <Event> EQueue;
 typedef vector <Event>::iterator EQit;
 
+struct sizeSq {
+    sizeSq(size_t t,size_t b):tr(t),bid(b){};
+    size_t tr;
+    size_t bid;
+};
+
 class EventsQueue {
 public:
     //EventsQueue(size_t);
@@ -69,7 +75,7 @@ private:
 	 * The Events Heap Index vector allow to retrive the index
 	 * of an event in the Events Heap (evtHeap) given its transition
 	 * and binding index in constant time.
-	 * If the return value is -1 the corresponding event is not in the event. heap
+	 * If the return value is -1 the corresponding event is not in the event heap.
 	 */
 	vector<vector< long int > > evtHeapIndex;
 	
@@ -86,8 +92,8 @@ private:
 	 * This vector is a heap for the relation Event::isPriorer.
 	 * The first element of the heap is the most urgent event.
 	 */
-	vector<pair<size_t,size_t> > evtHeap;
-	
+	vector< sizeSq > evtHeap;
+
     size_t getLeftChildIndex(size_t nodeIndex)const {
         return 2 * nodeIndex + 1;
     }

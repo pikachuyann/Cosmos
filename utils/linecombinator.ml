@@ -16,11 +16,11 @@ module Data = struct
       [],[] -> []
     | (Floatv t1)::q1,(Floatv t2)::q2 -> 
       ((Floatv (t1+.t2)) :: merge q1 q2)
-    | (_::q1),(_::q2) -> (Strv("###")::merge q1 q2)
+    | (x::q1),(_::q2) -> (x::merge q1 q2)
     | _ -> failwith "incoherent data"
       
   let mult k = List.map (function 
-  Floatv f -> Floatv (k*.f) | _ -> Strv("###")) 
+  Floatv f -> Floatv (k*.f) | x -> x) 
     
   let empty = mult 0.0 
   let output f d =
@@ -177,5 +177,4 @@ let main2 s1 s2 npath =
 main2 Sys.argv.(1) 
   Sys.argv.(2) 
   (if Array.length Sys.argv<4 then 1 else (int_of_string Sys.argv.(3))) ;;
-
 

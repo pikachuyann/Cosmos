@@ -42,6 +42,21 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "0367E2A118843EAB00F35619"
+               BuildableName = "ClientSim Tests.xctest"
+               BlueprintName = "ClientSim Tests"
+               ReferencedContainer = "container:Cosmos.xcodeproj">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ClientSim_Tests">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
@@ -76,6 +91,14 @@
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/DatabaseBound/DatabaseInitRE.grml"
             isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--trace-place"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "VRGEctopic,VtrNoiseGenerator,AtrNoiseGenerator,SANodeEctopic,RVConductor,AVJOut,RAConductor,SANode,VRG,Ventricle,Atrium,AVJ,LRI,URI,VRP,PVARP,AVI"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--tmp-status"
@@ -199,6 +222,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/barbot/Documents/Cosmos/Examples/DataBase/databasecNfP.grml"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/benbot/Documents/MATLAB/HearthModel/idhp_model_heart_realtime_synReduit.grml"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -280,6 +307,10 @@
          <CommandLineArgument
             argument = "dataout.dat"
             isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-i"
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

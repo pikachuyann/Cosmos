@@ -40,9 +40,9 @@ let stateasso2 s2 l =
   with Not_found -> ""
 
 let print_label_simulink f trans = match trans.trigger with
-    Imm -> Printf.fprintf f "#,![%a],{%a}" (print_list ",") trans.write (print_list ",") trans.update
-  | Delay(s) -> Printf.fprintf f "wait(%a),![%a],{%a}" printH_expr s (print_list ",") trans.write (print_list ",") trans.update
-  | RAction(s) -> Printf.fprintf f "?%s,![%a],{%a}" s (print_list ",") trans.write (print_list ",") trans.update
+    Imm -> Printf.fprintf f "#,![%a],{%a}" (print_list (fun x->x) ",") trans.write (print_list (fun x->x) ",") trans.update
+  | Delay(s) -> Printf.fprintf f "wait(%a),![%a],{%a}" printH_expr s (print_list (fun x->x) ",") trans.write (print_list (fun x->x) ",") trans.update
+  | RAction(s) -> Printf.fprintf f "?%s,![%a],{%a}" s (print_list (fun x->x) ",") trans.write (print_list (fun x->x) ",") trans.update
 
 
 let interface_of_modu tl =
@@ -60,7 +60,7 @@ let print_module f (ssid,name,sl,tl,_,p) =
   let readlist = StringSet.fold (fun x y -> x::y) actionr [] 
   and writelist = StringSet.fold (fun x y -> x::y) actionw [] in 
   Printf.fprintf f "module: %i -> %a\n" ssid print_option name;
-  Printf.fprintf f "Interface:\n\tRead[ %a ]\n\tWrite[ %a ]\n" (print_list ",") readlist (print_list ",") writelist;
+  Printf.fprintf f "Interface:\n\tRead[ %a ]\n\tWrite[ %a ]\n" (print_list(fun x->x) ",") readlist (print_list (fun x->x) ",") writelist;
   Printf.fprintf f "state list: [";
   List.iter (function (x,(Some y))-> Printf.fprintf f" %i->%s, " x y | (x,(None))-> Printf.fprintf f " %i, " x) sl;
   Printf.fprintf f "]\n";
@@ -69,29 +69,30 @@ let print_module f (ssid,name,sl,tl,_,p) =
   Printf.fprintf f "\t]\n"
 
 type simulink_module = {
-  ssid : int;
-  name : string option;
-  stateL : (int * string option) list;
-  ivect: (int*(string option)) array;
-  transL : (int* ((int*int) list) *simulink_trans_label* ((int*int) list)) list;
-  scriptL : (string option * string )  list;
-  interfaceR : StringSet.t;
-  interfaceW : StringSet.t;
-  priority : int option; 
+  ssid : int; (*Unique identifier*)
+  name : string option; (* Name *)
+  stateL : (int * string option) list; (* Map from state ssid to name *)
+  ivect: (int*(string option)) array; (* Initial Value of state + name *)
+  transL : (int* ((int*int) list) *simulink_trans_label* ((int*int) list)) list; 
+  (* List of transition : (ssid, source, label, destination) *)
+  scriptL : (string option * string )  list; (* List of  Matlab function translated to C*)
+  interfaceR : StringSet.t; (* Action label read by this module *)
+  interfaceW : StringSet.t; (* Action label written by this module *)
+  priority : int option; (* Priority *)
 }
 
 let print_state_sim sl (x,y) =
   Printf.sprintf "%i:%s" x (stateasso y sl)
 
 let print_trans_simulink2 sl f (ssid,src,trans,dst) =
-  Printf.fprintf f "\t[%s] --(%a)->%s\n" (string_of_list ", " (print_state_sim sl) src) print_label_simulink trans (string_of_list ", " (print_state_sim sl) src);;
+  Printf.fprintf f "\t[%s] --(%a)->%s\n" (string_of_list ", " (print_state_sim sl) src) print_label_simulink trans (string_of_list ", " (print_state_sim sl) dst);;
 
 let print_module2 f m =
   let actionr,actionw = interface_of_modu m.transL in
   let readlist = StringSet.fold (fun x y -> x::y) actionr [] 
   and writelist = StringSet.fold (fun x y -> x::y) actionw [] in 
   Printf.fprintf f "module: %i -> %a\n" m.ssid print_option m.name;
-  Printf.fprintf f "Interface:\n\tRead[ %a ]\n\tWrite[ %a ]\n" (print_list ",") readlist (print_list ",") writelist;
+  Printf.fprintf f "Interface:\n\tRead[ %a ]\n\tWrite[ %a ]\n" (print_list (fun x->x) ",") readlist (print_list (fun x->x) ",") writelist;
   Printf.fprintf f "state list: [";
   List.iter (function (x,(Some y))-> Printf.fprintf f " %i->%s, " x y | (x,(None))-> Printf.fprintf f " %i, " x) m.stateL;
   Printf.fprintf f "]\n";
