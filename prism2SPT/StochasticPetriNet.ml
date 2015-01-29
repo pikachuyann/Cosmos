@@ -39,6 +39,11 @@ let rec print_expr: type a. out_channel -> a expr' -> unit = fun f x ->
   | FunCall(s,fl) -> print_at f "function" (fun f -> print_at f s (fun f l ->
   List.iter (fun x ->print_expr f x;output_string f "\n  ";) l)) fl
   | IntAtom(fe1,cmp,fe2) -> print_at f "function" (pa2 (string_of_cmpGrML cmp)) (fe1,fe2)
+  | If(c,e1,e2) -> print_at f "function" (fun f -> print_at f "If" (fun f () ->
+    print_expr f c;output_string f "\n  ";
+    print_expr f e1;output_string f "\n  ";
+    print_expr f e2;output_string f "\n  ";
+)) ()
 
 let print_int_expr f (x: int expr') = print_expr f x
 let print_float_expr f (x: float expr') = print_expr f x
@@ -203,13 +208,24 @@ let print_arc_marcie net f t =
       false
     end)
     true net.Net.outArc in
-  ignore (Data.fold (fun first (_,(v,p,t2)) ->
+  let fq2 = Data.fold (fun first (_,(v,p,t2)) ->
     if t<>t2 then first else begin
       if not first then Printf.fprintf f " & ";
       Printf.fprintf f "[%s - %a]" (fst (Data.acca net.Net.place p)) printH_int_expr v;
       false
     end)
-	    fq net.Net.inArc)
+    fq net.Net.inArc in
+  ignore fq2
+
+let print_condition_arc_marcie net f t =
+  let fq3 = Data.fold (fun first (_,(v,p,t2)) ->
+    if t<>t2 then first else begin
+      if not first then Printf.fprintf f " & ";
+      Printf.fprintf f "[%s < %a]" (fst (Data.acca net.Net.place p)) printH_int_expr v;
+      false
+    end)
+    true net.Net.inhibArc in ignore fq3
+
 
 let print_spt_marcie fpath net =
   let f = open_out fpath in
@@ -221,14 +237,16 @@ let print_spt_marcie fpath net =
   output_string f "\ntransitions:\n";
   output_string f "\tstochastic:\n";
   Data.iter (fun (s,(distr,_,_)) -> match distr with
-      Exp r -> Printf.fprintf f "\t%s : : %a : %a ;\n" s 
-    (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r
+    Exp r -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
+      (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r
+  | Det r -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
+    (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r 
     | _ -> ()   
   ) net.Net.transition;
   output_string f "\timmediate:\n";
   Data.iter (fun (s,(distr,r,_)) -> match distr with
-      Imm -> Printf.fprintf f "\t%s : : %a : %a ;\n" s 
-    (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r
+      Imm -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
+     (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r
     | _ -> ()   
   ) net.Net.transition;
 

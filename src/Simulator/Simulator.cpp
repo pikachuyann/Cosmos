@@ -31,6 +31,7 @@
 #include <time.h>
 #include <ratio>
 #include <chrono>
+#include <iomanip>
 
 #include "Simulator.hpp"
 #include "marking.hpp"
@@ -65,11 +66,24 @@ void Simulator::logTrace(const char* path,double sample){
     logtrace.open(path,fstream::out);
 	//logtrace << "# sampling at:" << sample << endl;
     logtrace.precision(15);
-	logtrace << "Time\t";
+	logtrace << "Time      ";
 	N.Marking.printHeader(logtrace);
 	A.printHeader(logtrace);
 	logtrace << endl;
 }
+
+void Simulator::printLog(){
+    if(logtrace.is_open())
+        if((A.CurrentTime - lastSampled) >= sampleTrace){
+            lastSampled = A.CurrentTime;
+            logtrace <<setw(9)<<left<<setprecision(8)<< A.CurrentTime << "  ";
+            logtrace << right;
+            N.Marking.print(logtrace);
+            A.printState(logtrace);
+            logtrace << endl;
+        }
+}
+
 
 
 void Simulator::SetBatchSize(const size_t RI) {
@@ -271,6 +285,7 @@ bool Simulator::transitionSink(size_t ){
     return false;
 }
 
+
 /**
  * Simulate one step of simulation
  * @return true if the simulation did not reach an accepting are refusing state.
@@ -311,22 +326,23 @@ bool Simulator::SimulateOneStep(){
             Result.first=false;
             return false;
         }
-        
+
+        //Hook for rare event simulation
         updateLikelihood(E1.transition);
 		
         //Take all autonomous edge in the automata before the fire time
         //of the transition of the Petri net.
 		while (E1.time >= AE.FiringTime) {
             //cerr << "looping on autonomous edge";
-			
 			A.updateLHA(AE.FiringTime - A.CurrentTime, N.Marking);
+            printLog();
 			A.fireLHA(AE.Index,N.Marking, dummyBinding);
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				A.printState(cerr);
 				cerr << endl;
 			}
-			
+			printLog();
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
@@ -341,14 +357,7 @@ bool Simulator::SimulateOneStep(){
 		A.updateLHA( E1.time - A.CurrentTime, N.Marking );
 		
 		//Print the state of the system after the time elapse
-		if(logtrace.is_open())
-			if((A.CurrentTime - lastSampled) >= sampleTrace){
-				lastSampled = A.CurrentTime;
-				logtrace << A.CurrentTime << "\t";
-				N.Marking.print(logtrace);
-				A.printState(logtrace);
-				logtrace << endl;
-			}
+        printLog();
 		
 		//Fire the transition in the SPN
 		N.fire(E1.transition, E1.binding, A.CurrentTime);
@@ -465,14 +474,7 @@ void Simulator::SimulateSinglePath() {
 	lastSampled = -sampleTrace;
 	while (continueb) {
         //cerr << "continue path"<< endl;
-		if(logtrace.is_open())
-			if((A.CurrentTime - lastSampled) >= sampleTrace){
-				lastSampled = A.CurrentTime;
-				logtrace << A.CurrentTime << "\t";
-				N.Marking.print(logtrace);
-				A.printState(logtrace);
-				logtrace << endl;
-			}
+        printLog();
 		if(verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation

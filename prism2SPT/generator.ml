@@ -29,7 +29,7 @@ let rec flatten_guard x =
   | IntAtom ((IntName v),cmp,j) -> [[(v,cmp,j)]]  
   | BoolName v -> [[(v,SG,Int 0)]]
   | Not (BoolName v) -> [[(v,EQ,Int 0)]]
-  | Not e -> print_endline "Negation"; flatten_guard (neg_bool e)
+  | Not e -> flatten_guard (neg_bool e)
  | e-> printH_stateFormula stderr e;
     failwith "Not yet supported guard shape"
 
@@ -96,7 +96,6 @@ let gen_acc iinit modu net (st,g,f,u) =
   List.iter (fun flatguard ->
   let trname = Printf.sprintf "a%i%s" !i (match st with None -> "" | Some s-> s) in 
   Data.add (trname,(Exp f,Float 1.0,Float 1.0)) net.Net.transition;  
-  print_endline ("New Trans:"^trname);
   let (invar1,invar2) = 
     convert_guard modu net trname (StringMap.empty,StringMap.empty) flatguard in 
   let remaining = List.fold_left (convert_update net trname invar2) invar1 u in
@@ -124,33 +123,6 @@ let net_of_prism modu (li,lf) =
 	    1 modu.actionlist);
   print_endline "Finish net";
   net
-
-let print_rename f =
-  List.iter (fun (x,y) -> Printf.fprintf f " %s->%s " x y) 
-
-let rename_op rn = function None -> None | Some a -> Some (rn a)
-
-let rec rename_expr: type a. (string ->string) -> a expr' -> a expr' = fun rn e -> let rnr: type a. a expr' -> a expr' = fun x -> rename_expr rn x in match e with
-    | IntName(s) -> IntName (rn s);
-    | Int(i) -> Int(i)
-    | Plus(e1,e2) -> Plus(rnr e1,rnr e2)
-    | Minus(e1,e2) -> Minus(rnr e1,rnr e2)
-    | Mult(e1,e2) -> Mult(rnr e1,rnr e2)
-    | Div(e1,e2) -> Div(rnr e1,rnr e2)
-    | Exp(e) -> Exp(rnr e)
-    | Ceil(e) -> Ceil(rnr e)
-    | Floor(e) -> Floor(rnr e)
-    | Bool x -> Bool x
-    | BoolName(x) -> BoolName(rn x) 
-    | Not(e1) -> Not (rnr e1) 
-    | And(e1,e2) -> And(rnr e1,rnr e2)
-    | Or(e1,e2) -> Or(rnr e1,rnr e2)
-    | IntAtom(ie,c,ie2) -> IntAtom(rnr ie,c,rnr ie2)
-    | Float(f) -> Float(f)
-    | FloatName(x) -> FloatName(rn x) 
-    | CastInt(x) -> CastInt (rnr x)
-    | CastBool(x) -> CastBool (rnr x)
-    | FunCall(x,fl) -> FunCall(x,List.map rnr fl) 
 
 let rec rename_module l1 = function
   | [] -> l1
@@ -184,7 +156,7 @@ let compose_module m1 m2 =
 	if filt s1 then (s1,g1,r1,u1)::ls1
 	else List.fold_left (fun ls2 (s2,g2,r2,u2) -> 
 	  if s1<>s2 then ls2
-	  else (s1,And(g1,g2),Mult(r1,r2),u1@u2) :: ls2) ls1 m2.actionlist)
+	  else (s1,eval (And(g1,g2)),eval (Mult(r1,r2)),u1@u2) :: ls2) ls1 m2.actionlist)
 	(List.filter (fun (s,_,_,_) -> filt s) m2.actionlist)
 	m1.actionlist in       
       {
@@ -199,6 +171,7 @@ let read_prism s name =
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = name };
   try
     Preparser.main Prelexer.token lexbuf;
+    print_endline "Finish first pass";
     Lexing.flush_input lexbuf;
     lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_lnum = 1 };
     seek_in s 0;

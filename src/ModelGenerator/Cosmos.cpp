@@ -169,22 +169,22 @@ int main(int argc, char** argv) {
     if(P.generateLHA==2 && P.dataPDFCDF.empty())
         P.dataPDFCDF = P.tmpPath+"/defaultOutput.dat";
 
-
 	//Find the path to the directory containing the binary of cosmos.
 	if(P.Path.compare("")==0){
 		string st = argv[0];
-		if (st == "./Cosmos") P.Path = "";
-		else if (st == "Cosmos")FindPath(P);
-		else P.Path.assign(st.begin(), st.end() - 6);
+        if (st == "./Cosmos")P.Path = "";
+        else if(st.length()>6)P.Path=st.substr(0,st.length()-6);
+        else FindPath(P);
 	}
-	if(P.prismPath.empty())P.prismPath=P.Path+"../prism/bin/prism";
-	
+    if(P.verbose>2)cout << "Binary directory path set to:" << P.Path << endl;
+
+    if(P.prismPath.empty())P.prismPath=P.Path+"../prism/bin/prism";
+
 	//Build the model and lha.
 	if ( ! ParseBuild()) {
 		cout << "Fail to build the model.";
 		return(EXIT_FAILURE);
 	}
-	
 	//stop the timer for building, display the time if required.
 	gettimeofday(&endbuild, NULL);
 	double buildTime = endbuild.tv_sec - startbuild.tv_sec + ((endbuild.tv_usec - startbuild.tv_usec) / 1000000.0);

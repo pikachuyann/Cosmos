@@ -92,7 +92,7 @@ datatrace(""),
 sampleResol(0.0),
 dataPDFCDF(""),
 gnuplotDriver(""),
-tracedPlace("ALL"),
+tracedPlace(),
 dotfile(""),
 magic_values(""),
 
@@ -102,6 +102,7 @@ nbAlgebraic(0),
 nbPlace(0)
 //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
 {
+    tracedPlace.insert(pair<string, int>("ALL",0));
 }
 
 /**
@@ -169,6 +170,34 @@ void parameters::usage() {
 
 }
 
+
+Poption parameters::parsersingleOpt(int i)const{
+    switch (i) {
+        case 'g':
+            return CO_grml_input;
+        case 'i':
+            return CO_interactive;
+        case 'h':
+            return CO_help;
+        case 's':
+            return CO_state_space;
+        case 'c':
+            return CO_boundedcountiniouceRE;
+        case 'r':
+            return CO_rareevent;
+        case 'b':
+            return CO_boundedRE;
+        case 'v':
+            return CO_verbose;
+        case 'p':
+            return CO_prism;
+        case 'd':
+            return CO_output_data;
+        default:
+            return (Poption)i;
+    }
+}
+
 /**
  * Parse the command line and set the parameter structure
  * with the option set by the user
@@ -179,101 +208,101 @@ void parameters::parseCommandLine(int argc, char** argv) {
     while (1) {
         static struct option long_options[] ={
             /* Options for the simulator*/
-            {"level", required_argument, 0, 'l'},
-            {"width", required_argument, 0, 'w'},
-            {"batch", required_argument, 0, 2},
-            {"max-run", required_argument, 0, 'm'},
-            {"seed", required_argument, 0, 10},
-            {"local-test", no_argument, 0, 12},
-            {"sampling", required_argument, 0, 25},
-            {"loop", required_argument, 0, 14},
-            {"transient", required_argument, 0, 16},
-            {"formula", required_argument, 0, 'f'},
-            {"chernoff", required_argument, 0, 17},
-            {"relative", no_argument, 0, 26},
-            {"const", required_argument, 0, 21},
+            {"level",       required_argument, 0, CO_level},
+            {"width",       required_argument, 0, CO_width},
+            {"batch",       required_argument, 0, CO_batch},
+            {"max-run",     required_argument, 0, CO_max_run},
+            {"seed",        required_argument, 0, CO_seed},
+            {"local-test",  no_argument      , 0, CO_local_test},
+            {"sampling",    required_argument, 0, CO_sampling},
+            {"loop",        required_argument, 0, CO_loop},
+            {"transient",   required_argument, 0, CO_transient},
+            {"formula",     required_argument, 0, CO_formula},
+            {"chernoff",    required_argument, 0, CO_chernoff},
+            {"relative",    no_argument      , 0, CO_relative},
+            {"const",       required_argument, 0, CO_const},
 
             /* Options for the rare event engine */
-            {"rareevent", no_argument, 0, 'r'},
-            {"boundedcountiniousRE", no_argument, 0, 'c'},
-            {"boundedRE", required_argument, 0, 'b'},
-            {"step-continuous", required_argument, 0, 23},
-            {"epsilon", required_argument, 0, 'e'},
-            {"set-Horizon", required_argument, 0, 1},
-            {"state-space", no_argument, 0, 's'},
-            {"prism", no_argument, 0, 'p'},
-            {"normalize-IS", no_argument, 0, 27},
+            {"rareevent",   no_argument      , 0, CO_rareevent},
+            {"boundedcountiniousRE", no_argument, 0, CO_boundedcountiniouceRE},
+            {"boundedRE",   required_argument, 0, CO_boundedRE},
+            {"step-continuous", required_argument, 0, CO_step_continuous},
+            {"epsilon",     required_argument, 0, CO_epsilon},
+            {"set-Horizon", required_argument, 0, CO_set_Horizon},
+            {"state-space", no_argument      , 0, CO_state_space},
+            {"prism",       no_argument      , 0, CO_prism},
+            {"normalize-IS", no_argument     , 0, CO_normalize_IS},
 
             /* CosyVerif Options */
-            {"gmlinput", no_argument, 0, 'g'},
-            {"grml-input", no_argument, 0, 'g'},
-            {"alligator-mode", no_argument, 0, 'a'},
+            {"gmlinput",    no_argument      , 0, CO_grml_input},
+            {"grml-input",  no_argument      , 0, CO_grml_input},
+            {"alligator-mode", no_argument   , 0, CO_alligator_mode},
 
             /* Miscellaneous options */
-            {"unfold", required_argument, 0, 24},
-            {"HASL-formula", required_argument, 0, 13},
-            {"HASL-expression", required_argument, 0, 13},
-            {"njob", required_argument, 0, 'n'},
-            {"gppcmd", required_argument, 0, 6},
-            {"gppflags", required_argument, 0, 7},
-            {"light-simulator", no_argument, 0, 30},
-            {"verbose", required_argument, 0, 'v'},
-            {"interactive", no_argument, 0, 'i'},
-            {"update-time", required_argument, 0, 'u'},
-            {"outputdata", required_argument, 0, 'd'},
-            {"output-data", required_argument, 0, 'd'},
-            {"output-raw", required_argument, 0, 8},
-            {"output-trace", required_argument, 0, 18},
-            {"output-PDFCDF", required_argument, 0, 11},
-            {"output-graph", required_argument, 0, 11},
-            {"output-dot", required_argument, 0, 28},
-            {"gnuplot-driver", required_argument, 0, 15},
-            {"trace-place", required_argument, 0, 19},
-            {"trace-pt", required_argument, 0, 19},
-            {"help", no_argument, 0, 'h'},
-            {"count-transition", no_argument, 0, 't'},
-            {"debug-string", no_argument, 0, 3},
-            {"tmp-path", required_argument, 0, 4},
-            {"tmp-status", required_argument, 0, 5},
-            {"bin-path", required_argument, 0, 9},
-            {"prism-path", required_argument, 0, 20},
-            {"magic-values", required_argument,0, 29},
-            {"version", no_argument, 0, 22},
+            {"unfold",      required_argument, 0, CO_unfold},
+            {"HASL-formula", required_argument, 0, CO_HASL_formula},
+            {"HASL-expression", required_argument, 0, CO_HASL_formula},
+            {"njob",        required_argument, 0, CO_njob},
+            {"gppcmd",      required_argument, 0, CO_gppcmd},
+            {"gppflags",    required_argument, 0, CO_gppflags},
+            {"light-simulator", no_argument  , 0, CO_light_simulator},
+            {"verbose",     required_argument, 0, CO_verbose},
+            {"interactive", no_argument      , 0, CO_interactive},
+            {"update-time", required_argument, 0, CO_update_time},
+            {"outputdata",  required_argument, 0, CO_output_data},
+            {"output-data", required_argument, 0, CO_output_data},
+            {"output-raw",  required_argument, 0, CO_output_raw},
+            {"output-trace", required_argument, 0, CO_output_trace},
+            {"output-PDFCDF", required_argument, 0, CO_output_graph},
+            {"output-graph", required_argument, 0, CO_output_graph},
+            {"output-dot", required_argument , 0, CO_output_dot},
+            {"gnuplot-driver", required_argument, 0, CO_gnuplot_driver},
+            {"trace-place", required_argument, 0, CO_trace_pt},
+            {"trace-pt",    required_argument, 0, CO_trace_pt},
+            {"help",        no_argument      , 0, CO_help},
+            {"count-transition", no_argument , 0, CO_count_transition},
+            {"debug-string", no_argument     , 0, CO_debug_string},
+            {"tmp-path",    required_argument, 0, CO_tmp_path},
+            {"tmp-status",  required_argument, 0, CO_tmp_status},
+            {"bin-path",    required_argument, 0, CO_bin_path},
+            {"prism-path",  required_argument, 0, CO_prism_path},
+            {"magic-values", required_argument,0, CO_magic_values},
+            {"version",     no_argument      , 0, CO_version},
 
             {0, 0, 0, 0}
         };
         /* getopt_long stores the option index here. */
         int option_index = 0;
 
-        c = getopt_long(argc, argv, "gihscrb:v:d:",
+        c = getopt_long(argc, argv, "gihspcrb:v:d:",
                 long_options, &option_index);
 
         /* Detect the end of the options. */
         if (c == -1)
             break;
 
-        switch (c) {
-            case 'h':
+        switch (parsersingleOpt(c)) {
+            case CO_help:
                 usage();
                 exit(EXIT_SUCCESS);
                 break;
 
-            case 'v':verbose = atoi(optarg);
+            case CO_verbose:verbose = atoi(optarg);
                 if (verbose >= 4)StringInSpnLHA = true;
                 break;
 
-            case 'i':
+            case CO_interactive:
                 interactive = true;
                 StringInSpnLHA = true;
                 break;
 
-            case 'u':updatetime = chrono::duration_cast<chrono::milliseconds>(chrono::duration<double> (atof(optarg)));
+            case CO_update_time:updatetime = chrono::duration_cast<chrono::milliseconds>(chrono::duration<double> (atof(optarg)));
                 break;
 
-            case 'g':GMLinput = true;
+            case CO_grml_input:GMLinput = true;
                 break;
 
-            case 'r':
+            case CO_rareevent:
                 RareEvent = true;
                 StringInSpnLHA = true; // Need to know the name of place to find
                 // place begining with "RE_"
@@ -281,53 +310,53 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 relative = true;
                 break;
 
-            case 26:
+            case CO_relative:
                 relative = true;
                 break;
 
-            case 27:
+            case CO_normalize_IS:
                 DoubleIS = true;
                 break;
 
-            case 'b':BoundedRE = atoi(optarg);
+            case CO_boundedRE:BoundedRE = atoi(optarg);
                 StringInSpnLHA = true;
                 RareEvent = true;
                 relative = true;
                 break;
 
-            case 'c':BoundedContinuous = true;
+            case CO_boundedcountiniouceRE:BoundedContinuous = true;
                 RareEvent = true;
                 break;
 
-            case 1:horizon = atof(optarg);
+            case CO_set_Horizon :horizon = atof(optarg);
                 break;
 
-            case 's':computeStateSpace = 2;
+            case CO_state_space:computeStateSpace = 2;
                 StringInSpnLHA = true;
                 localTesting = false; //Need to unfire transition, not implemented for local testing
                 break;
 
-            case 'p':computeStateSpace = 1;
+            case CO_prism:computeStateSpace = 1;
                 StringInSpnLHA = true;
                 localTesting = false; //Need to unfire transition, not implemented for local testing
                 break;
 
-            case 'a':alligatorMode = true;
+            case CO_alligator_mode:alligatorMode = true;
                 verbose = 0;
                 break;
 
-            case 24:unfold = optarg;
+            case CO_unfold:unfold = optarg;
                 break;
 
-            case 'l':Level = atof(optarg);
+            case CO_level:Level = atof(optarg);
                 break;
-            case 'w':Width = atof(optarg);
+            case CO_width:Width = atof(optarg);
                 break;
-            case 2: Batch = atol(optarg);
+            case CO_batch: Batch = atol(optarg);
                 break;
-            case 'm': MaxRuns = atol(optarg);
+            case CO_max_run: MaxRuns = atol(optarg);
                 break;
-            case 17: sequential = false;
+            case CO_chernoff: sequential = false;
                 if (strcmp(optarg, "level") == 0)Level = 0;
                 else if (strcmp(optarg, "width") == 0)Width = 0;
                 else if (strcmp(optarg, "nbrun") == 0)MaxRuns = 0;
@@ -340,23 +369,23 @@ void parameters::parseCommandLine(int argc, char** argv) {
 
 
                 break;
-            case 12: localTesting = !localTesting;
+            case CO_local_test: localTesting = !localTesting;
                 break;
-            case 'n': Njob = atoi(optarg);
+            case CO_njob: Njob = atoi(optarg);
                 break;
-            case 'e': epsilon = atof(optarg);
+            case CO_epsilon: epsilon = atof(optarg);
                 break;
-            case 23: continuousStep = atoi(optarg);
+            case CO_step_continuous: continuousStep = atoi(optarg);
                 break;
-            case 'd': dataoutput = optarg;
+            case CO_output_data: dataoutput = optarg;
                 break;
-            case 8: dataraw = optarg;
+            case CO_output_raw: dataraw = optarg;
                 break;
-            case 28: dotfile = optarg;
+            case CO_output_dot: dotfile = optarg;
                 break;
-            case 29: magic_values = optarg;
+            case CO_magic_values: magic_values = optarg;
                 break;
-            case 18:
+            case CO_output_trace:
                 datatrace = optarg;
                 StringInSpnLHA = true;
                 if (optind == argc) {
@@ -367,35 +396,35 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 optind++;
                 break;
 
-            case 11: dataPDFCDF = optarg;
+            case CO_output_graph: dataPDFCDF = optarg;
                 break;
-            case 't': CountTrans = true;
+            case CO_count_transition: CountTrans = true;
                 break;
-            case 3: StringInSpnLHA = true;
+            case CO_debug_string: StringInSpnLHA = true;
                 break;
-            case 4: tmpPath = optarg;
+            case CO_tmp_path: tmpPath = optarg;
                 break;
-            case 9: Path = optarg;
+            case CO_bin_path: Path = optarg;
                 break;
-            case 5: tmpStatus = atoi(optarg);
+            case CO_tmp_status: tmpStatus = atoi(optarg);
                 break;
-            case 6: gcccmd = optarg;
+            case CO_gppcmd: gcccmd = optarg;
                 break;
-            case 7: gccflags = optarg;
+            case CO_gppflags: gccflags = optarg;
                 break;
-            case 30:
+            case CO_light_simulator:
                 lightSimulator = true;
                 break;
-            case 10: seed = atoi(optarg);
+            case CO_seed: seed = atoi(optarg);
                 break;
-            case 13: externalHASL = optarg;
+            case CO_HASL_formula: externalHASL = optarg;
                 break;
-            case 14:
+            case CO_loop:
                 loopLHA = atof(optarg);
                 generateLHA = 1;
                 PathLha = "LOOP";
                 break;
-            case 25:
+            case CO_sampling:
                 loopLHA = atof(optarg);
                 generateLHA = 2;
                 PathLha = "SAMPLING";
@@ -406,20 +435,30 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 loopTransientLHA = atof(argv[optind]);
                 optind++;
                 break;
-            case 16: loopTransientLHA = atof(optarg);
+            case CO_transient: loopTransientLHA = atof(optarg);
                 break;
-            case 'f': CSLformula = optarg;
-                break;
-
-            case 15: gnuplotDriver = optarg;
+            case CO_formula: CSLformula = optarg;
                 break;
 
-            case 19: tracedPlace = optarg;
-                break;
-            case 20: prismPath = optarg;
+            case CO_gnuplot_driver: gnuplotDriver = optarg;
                 break;
 
-            case 21: // const
+            case CO_trace_pt:
+            {
+                tracedPlace.clear();
+                const string st = optarg;
+                for(size_t i=0 ; i< st.length();){
+                    auto j = st.find(',',i+1);
+                    tracedPlace.insert(pair<string, int>(st.substr(i,j-i),i));
+                    if(j == string::npos)break;
+                    i=j+1;
+                }
+                break;
+            }
+            case CO_prism_path: prismPath = optarg;
+                break;
+
+            case CO_const: // const
             {
                 string conststr = optarg;
                 size_t index, index2;
@@ -439,18 +478,15 @@ void parameters::parseCommandLine(int argc, char** argv) {
 
                 break;
             }
-            case 22:
+            case CO_version:
                 cout << BUILD_VERSION << " Build Date:" << __DATE__ " at " << __TIME__ << endl;
                 exit(0);
-
-            case '?':
-                usage();
-                exit(EXIT_FAILURE);
 
             default:
                 usage();
                 exit(EXIT_FAILURE);
         }
+
     }
 
     //If no LHA is required only set the path for the GSPN.

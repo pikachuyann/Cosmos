@@ -80,12 +80,10 @@ bool ParseBuild() {
         //SPN according to options.
 
         //Set the isTraced flag for places and transitions
-        if (P.tracedPlace != "ALL" && P.tracedPlace != "ALLCOLOR") {
+        if (P.tracedPlace.count("ALL") == 0 && P.tracedPlace.count("ALLCOLOR")==0 ) {
             P.nbPlace = 0;
             for (size_t i = 0; i < gReader.MyGspn.pl; i++) {
-                size_t j = P.tracedPlace.find(gReader.MyGspn.placeStruct[i].name, 0);
-                if (j != string::npos && (j + gReader.MyGspn.placeStruct[i].name.length() == P.tracedPlace.length()
-                        || P.tracedPlace[j + gReader.MyGspn.placeStruct[i].name.length()] == ',')) {
+                if (P.tracedPlace.count(gReader.MyGspn.placeStruct[i].name)>0) {
                     gReader.MyGspn.placeStruct[i].isTraced = true;
                     P.nbPlace++;
                 } else {
@@ -93,9 +91,7 @@ bool ParseBuild() {
                 }
             }
             for (size_t i = 0; i < gReader.MyGspn.tr; i++) {
-                size_t j = P.tracedPlace.find(gReader.MyGspn.transitionStruct[i].label, 0);
-                if (j != string::npos && (j + gReader.MyGspn.transitionStruct[i].label.length() == P.tracedPlace.length()
-                        || P.tracedPlace[j + gReader.MyGspn.transitionStruct[i].label.length()] == ',')) {
+                if ( P.tracedPlace.count(gReader.MyGspn.transitionStruct[i].label)>0 ) {
                     gReader.MyGspn.transitionStruct[i].isTraced = true;
                 } else {
                     gReader.MyGspn.transitionStruct[i].isTraced = false;
@@ -197,11 +193,9 @@ bool ParseBuild() {
                 lReader.parse(P.externalHASL);
 
             //Set the isTraced flag for variables
-            if (P.tracedPlace != "ALL" && P.tracedPlace != "ALLCOLOR") {
+            if (P.tracedPlace.count("ALL")==0 && P.tracedPlace.count("ALLCOLOR")==0) {
                 for (size_t i = 0; i < lReader.MyLha.NbVar; i++) {
-                    size_t j = P.tracedPlace.find(lReader.MyLha.LocLabel[i], 0);
-                    if (j != string::npos && (j + lReader.MyLha.LocLabel[i].length() == P.tracedPlace.length()
-                                              || P.tracedPlace[j + lReader.MyLha.LocLabel[i].length()] == ',')) {
+                    if ( P.tracedPlace.count(lReader.MyLha.Vars.label[i])>0){
                         lReader.MyLha.Vars.isTraced[i] = true;
                     } else {
                         lReader.MyLha.Vars.isTraced[i] = false;
@@ -322,7 +316,7 @@ bool ParseBuild() {
 
 }
 
-void generateMain() {
+void generateMain() { // Not use for the moment
     string loc;
 
     loc = P.tmpPath + "/main.cpp";
@@ -516,7 +510,7 @@ void generateLoopLHA(Gspn_Reader &gReader) {
     //elapse and then compute the mean number of token in each place and the throughput
     //of each transition
     bool allcolor = false;
-    if (P.tracedPlace.find("COLOR") != string::npos)allcolor = true;
+    if (P.tracedPlace.count("ALLCOLOR")>0)allcolor = true;
 
 
     P.PathLha = P.tmpPath + "/looplha.lha";
@@ -541,11 +535,15 @@ void generateLoopLHA(Gspn_Reader &gReader) {
     }
     lhastr << "} ;\nLocationsList = {l0, l1,l2};\n";
 
-    for (const auto &itt : gReader.MyGspn.transitionStruct) {
-        if (itt.isTraced)lhastr << "Throughput_" << itt.label << "= AVG(Last(" << itt.label << "));\n";
-    }
-    for (const auto &itt : gReader.MyGspn.placeStruct) {
+    auto nbHASL = 0;
+    for (const auto &itt : gReader.MyGspn.transitionStruct)
+        if (itt.isTraced){
+            nbHASL++;
+            lhastr << "Throughput_" << itt.label << "= AVG(Last(" << itt.label << "));\n";
+        }
+    for (const auto &itt : gReader.MyGspn.placeStruct)
         if (itt.isTraced) {
+            nbHASL++;
             lhastr << "MeanToken_" << itt.name << "= AVG(Last( PLVAR_" << itt.name << "));\n";
             if (allcolor && itt.colorDom != UNCOLORED_DOMAIN) {
                 gReader.iterateDom("", "_", "", "", "", "", gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str, const string&) {
@@ -553,10 +551,12 @@ void generateLoopLHA(Gspn_Reader &gReader) {
                 });
             }
         }
-    }
     lhastr << P.externalHASL << endl;
+    if(P.externalHASL.empty() && nbHASL==0)
+        lhastr << "PROB;" << endl;
+
     lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
-    lhastr << "Locations={(l0, TRUE, (time:1));(l1, TRUE, (time:1 ";
+    lhastr << "Locations={\n(l0, TRUE, (time:1));\n(l1, TRUE, (time:1 ";
     for (const auto &itt : gReader.MyGspn.placeStruct)
         if (itt.isTraced) {
             lhastr << ", PLVAR_" << itt.name << ": " << itt.name << "* invT ";
@@ -567,8 +567,8 @@ void generateLoopLHA(Gspn_Reader &gReader) {
             }
         }
 
-    lhastr << "));(l2, TRUE);};\n";
-    lhastr << "Edges={((l0,l0),ALL,time<= Ttrans ,#);((l0,l1),#,time=Ttrans ,{time=0});";
+    lhastr << "));\n(l2, TRUE);\n};\n";
+    lhastr << "Edges={\n((l0,l0),ALL,time<= Ttrans ,#);\n((l0,l1),#,time=Ttrans ,{time=0});\n";
     size_t nbplntr = 0;
     for (const auto &itt : gReader.MyGspn.transitionStruct) {
         if (itt.isTraced) {
@@ -586,7 +586,7 @@ void generateLoopLHA(Gspn_Reader &gReader) {
             }
         lhastr << "},time<=T,#);\n";
     }
-    lhastr << "((l1,l2),#,time=T ,#);};";
+    lhastr << "((l1,l2),#,time=T ,#);\n};";
     lhastr.close();
 }
 
