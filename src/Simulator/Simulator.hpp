@@ -129,7 +129,9 @@ protected:
 	 * this function loop over SimulateOneStep until a the path terminate.
 	 */
 	virtual void SimulateSinglePath();
-	
+
+    void printLog();
+
 	void interactiveSimulation(); //!Wait for the user to choose the next transition
     double minInteractiveTime;
 

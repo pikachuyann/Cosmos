@@ -6,11 +6,12 @@ open SimulinkType
 open Lexing
 
 let modelStoch = true
-let useerlang = false
+let useerlang = true
+let aggressive_syn = false
 
 let detfun s =
   if modelStoch then 
-    let n = 100 in
+    let n = 200 in
     StochasticPetriNet.Erl (Int n,Div (Float (float n),s))
   else StochasticPetriNet.Det s
 
@@ -137,6 +138,9 @@ let post_name sl s t =
     None -> Printf.sprintf "%i_Pre" t
   | Some(sn) -> Printf.sprintf "%i_Pre_%s" t sn
 
+(*
+  Add intermediate state to some transition to implement simulink semantic
+*)
 let expand_trans l=
   List.map (fun (ssidmod,name,sl,tl,scrl,p) ->
     let (nsl,ntl) = List.fold_left (fun (sl2,tl2) (ssid,src,label,dst) -> 
@@ -286,32 +290,46 @@ let incr_state (ssid,name,sl,tl,scrl,p) =
 let dec_trans n (ssid,srcl,lab,dstl) =
   (ssid, (List.map (fun (x,y) -> (x+n,y)) srcl), lab ,(List.map (fun (x,y) -> (x+n,y)) dstl))
 
-
-let comb_trans l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
+(* Combine transition*)
+let comb_trans ?aggrSyn:(aggrSyn=false) l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
   match (lab2.trigger,lab.trigger) with
     (RAction st,_) when List.exists (fun x -> x=st) lab.write ->
       let lab3= {
 	nameT = Some st;
 	trigger= lab.trigger;
 	priority= lab.priority;
-		  write = List.sort_uniq compare (lab.write @ lab2.write)
-		    |> List.filter (fun x -> x<>st );
-		update = lab.update @ lab2.update} in
-      (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
+	write = List.sort_uniq compare (lab.write @ lab2.write)
+		    |> List.filter (fun x -> x<>st || aggrSyn);
+	update = lab.update @ lab2.update} in
+      (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) :: l
   | (_,RAction st) when List.exists (fun x -> x=st) lab2.write ->
     let lab3= { 
       nameT = Some st;
       trigger= lab2.trigger;
       priority= lab2.priority;
-		write = List.sort_uniq compare (lab.write @ lab2.write)
-		  |> List.filter (fun x -> x<>st )
-		;
-		update = lab.update @ lab2.update} in
+      write = List.sort_uniq compare (lab.write @ lab2.write)
+		  |> List.filter (fun x -> x<>st || aggrSyn )
+      ;
+      update = lab.update @ lab2.update} in
+    (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
+  | (RAction st,RAction st2) when st=st2 && aggrSyn-> 
+    (* This case only happen with aggressive synchronization*)
+    let lab3= { 
+      nameT = Some st;
+      trigger=lab2.trigger;
+      priority=lab2.priority;
+      write = List.sort_uniq compare (lab.write @ lab2.write);
+      update = lab.update @ lab2.update} in
     (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
   |_-> l
 
+let combname n1 n2 = match (n1,n2) with 
+      None,None -> None
+    | Some a,None -> Some a
+    | None, Some a -> Some a
+    | Some a,Some b -> Some (Printf.sprintf "( %s | %s )" a b)
 
-let combine_modu m1 m2 =
+let combine_modu ?aggrSyn:(aggrSyn=false)  m1 m2 =
 (*(ssid,name,sl,ivect,tl,scrl) (ssid2,name2,sl2,ivect2,tl2,scrl2) =*)
   let n = Array.length m1.ivect in
   let ivect3 = Array.append m1.ivect m2.ivect in
@@ -326,14 +344,10 @@ let combine_modu m1 m2 =
       && (List.for_all (fun x -> not (StringSet.mem x inter)) lab.write))) tl3 in
   let tl4 = 
     List.fold_left (fun l t1 ->
-      List.fold_left (fun l2 t2 -> comb_trans l2 t1 t2) l tl3) (tlunchanged@tlunchanged2) m1.transL 
+      List.fold_left (fun l2 t2 -> comb_trans ~aggrSyn l2 t1 t2) l tl3) (tlunchanged@tlunchanged2) m1.transL 
 in
   let rm,wm = interface_of_modu tl4 in
-  let newname = match (m1.name,m2.name) with 
-      None,None -> None
-    | Some a,None -> Some a
-    | None, Some a -> Some a
-    | Some a,Some b -> Some (Printf.sprintf "( %s | %s )" a b) in
+  let newname = combname m1.name m2.name in
   let mod3 = {ssid= fresh_ssid ();
 	      name= newname;
 	      stateL= m1.stateL @ m2.stateL;
@@ -350,6 +364,37 @@ in
   (*print_simulink_dot2 newname mod3;*)
    mod3
 
+(*
+let comb_trans2 l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
+  match (lab2.trigger,lab.trigger) with
+    (RAction st,_) when List.exists (fun x -> x=st) lab.write ->
+      let lab3= {
+	nameT = Some st;
+	trigger = lab.trigger;
+	priority = lab.priority; 
+	write = List.sort_uniq compare (lab.write @ lab2.write);
+	update = lab.update @ lab2.update} in
+      (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
+  | (_,RAction st) when List.exists (fun x -> x=st) lab2.write ->
+    let lab3= { 
+      nameT = Some st;
+      trigger=lab2.trigger;
+      priority = lab2.priority;
+      write = List.sort_uniq compare (lab.write @ lab2.write);
+      update = lab.update @ lab2.update} in
+    (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
+  | (RAction st,RAction st2) when st=st2 ->
+    let lab3= { 
+      nameT = Some st;
+      trigger=lab2.trigger;
+      priority=lab2.priority;
+      write = List.sort_uniq compare (lab.write @ lab2.write);
+      update = lab.update @ lab2.update} in
+    (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
+  |_-> l
+*)
+
+
 let find_read x ml =
   List.find (fun m ->
     StringSet.mem x m.interfaceR) ml
@@ -357,8 +402,12 @@ let find_write x ml =
   List.find (fun m ->
     StringSet.mem x m.interfaceW) ml
 
-let rec find_combinaison l = 
+(* Find module that compose well together, that is they only
+   sychronize throught action shared by no other module
+*)
+let rec find_combinaison l =
   output_string !logout "Enter find_combinaison\n";
+  Printf.fprintf !logout "Module list: [ %a ]\n" (print_list (fun x->x.name |>>| "()" ) ", ") l;
   match l with
   | [] -> []
   | [t] -> [t]
@@ -379,8 +428,13 @@ let rec find_combinaison l =
   |> StringMap.choose in
 	      (combine_modu frm fwm) :: (List.filter (fun x -> x<> frm && x<>fwm) ml)
   |> find_combinaison
-	  with Not_found -> output_string !logout "No combinaison\n"; ml
-    
+    with Not_found -> 
+      if aggressive_syn then ( match ml with 
+      | [] -> []
+      | [t] -> [t]
+      | m1::m2::q -> output_string !logout "Aggressive combinaison\n";
+	(combine_modu ~aggrSyn:true m1 m2)::q |> find_combinaison
+      ) else (output_string !logout "No combinaison\n"; ml)	
 
 let prune_unread m =
   let tl2 = List.filter (fun (_,_,lab,_) -> match lab.trigger with
@@ -394,33 +448,6 @@ let prune_unread2 m =
   | _ -> true) m.transL in
   {m with transL=tl2}
 
-(*
-let comb_trans2 l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
-  match (lab2.trigger,lab.trigger) with
-    (RAction st,_) when List.exists (fun x -> x=st) lab.write ->
-      let lab3= {
-	nameT = Some st;
-	trigger=lab.trigger;
-	write = List.sort_uniq compare (lab.write @ lab2.write);
-	update = lab.update @ lab2.update} in
-      (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
-  | (_,RAction st) when List.exists (fun x -> x=st) lab2.write ->
-    let lab3= { 
-      nameT = Some st;
-      trigger=lab2.trigger;
-      write = List.sort_uniq compare (lab.write @ lab2.write);
-      update = lab.update @ lab2.update} in
-    (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
-  | (RAction st,RAction st2) when st=st2 ->
-    let lab3= { 
-      nameT = Some st;
-      trigger=lab2.trigger;
-      write = List.sort_uniq compare (lab.write @ lab2.write);
-      update = lab.update @ lab2.update} in
-    (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
-  |_-> l
-*)
-
 let combine_modu2 m1 m2 =
 (*(ssid,name,sl,ivect,tl,scrl) (ssid2,name2,sl2,ivect2,tl2,scrl2) =*)
   let n = Array.length m1.ivect in
@@ -428,11 +455,7 @@ let combine_modu2 m1 m2 =
   let tl3 = List.map (dec_trans n) m2.transL in
   let tl4 = m1.transL @ tl3 in
   let rm,wm = interface_of_modu tl4 in
-  let newname = match (m1.name,m2.name) with 
-      None,None -> None
-    | Some a,None -> Some a
-    | None, Some a -> Some a
-    | Some a,Some b -> Some (Printf.sprintf "( %s | %s )" a b) in
+  let newname = combname m1.name m2.name in
   let mod3 = {ssid= fresh_ssid ();
 	      name= newname;
 	      stateL= m1.stateL @ m2.stateL;
@@ -464,6 +487,20 @@ let expand_trans2 m =
       transL =ntl
   }
 
+let prune m =
+  let open IntSQMulti in 
+  m.transL
+	  |> List.fold_left (fun tab (trid,read,label,write) -> 
+	    read |> List.fold_left (fun tab2 st -> add_multi st tab2) tab) empty
+	  |> filter (fun _ i -> i=1)
+	  |< iter (fun (x,y) _->Printf.printf "%i_%s\n" x @@ stateasso y m.stateL)
+	  |> (fun sl -> List.filter (fun (trid,read,label,write) -> 
+	    match (read,label.trigger) with
+	      ([x],Imm) when mem x sl -> true
+	    | _ -> false) m.transL)
+	  |> List.iter (fun tr -> print_trans_simulink2 m.stateL stdout tr) 
+
+
 let trans_of_int i lab =
   let label = (match lab.nameT with 
       None -> string_of_list "_" (fun x->x) lab.write
@@ -476,6 +513,7 @@ let place_of_int ivect i =
   match ivect.(i) with
     _,None -> Printf.sprintf "pl%i" i
   | _,Some(n) -> Printf.sprintf "%s" n
+
 
 let print_magic f sl tl scrl=
   output_string f "  <attribute name=\"externalDeclaration\">";
@@ -524,7 +562,10 @@ let stochNet_of_modu cf m =
       Net.add_inArc net ("SIG_"^s) (trans_of_int ssidt lab) (Int 1);
       Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^s) (Int 1);
     end;
-    List.iter (fun x -> Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^x) (Int 1)) lab.write;
+    List.iter (fun x -> 
+      Net.add_inhibArc net ("SIG_"^x) (trans_of_int ssidt lab) (Int 1);
+      Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^x) (Int 1)
+    ) lab.write;
     List.iter (fun (i,s) ->
        begin
 	Net.add_inArc net (place_of_int m.ivect i) (trans_of_int ssidt lab) (Int s);
@@ -536,4 +577,3 @@ let stochNet_of_modu cf m =
     with Not_found -> print_endline "Not_found uncatch";
   ) m.transL;
   net
-

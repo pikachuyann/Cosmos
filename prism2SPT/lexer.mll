@@ -33,6 +33,7 @@ rule token = parse
   | ')' {RPAR}
   | '+' {PLUS}
   | '-' {MINUS}
+  | '?' {QMARK}
   | '*' {MULT}
   | '/' {DIV}
   | '[' {LSQBRAK}

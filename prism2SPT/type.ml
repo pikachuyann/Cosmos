@@ -21,8 +21,8 @@ let rec string_of_list sep f = function
   | [t] -> f t
   | t::q -> Printf.sprintf "%s%s%s" (f t) sep @@ string_of_list sep f q
 
-let print_list sep f l =
-  output_string f (string_of_list sep (fun x ->x) l)
+let print_list f sep file l =
+  output_string file (string_of_list sep f l)
 
 let rec selectL fb = function
   | [] -> raise Not_found
@@ -60,7 +60,8 @@ type _ expr' =
   | BoolName : string -> bool expr'
   | Div : float expr' *  float expr' -> float expr'
   | Exp : float expr' -> float expr'
-  | FunCall : string*((float expr') list) -> float expr';;
+  | FunCall : string*(('a expr') list) -> 'a expr'
+  | If : (bool expr' * 'a expr' * 'a expr') -> 'a expr'
 
 let rec iterFloat f y = 
   let ri = iterFloat f in match y with
@@ -73,6 +74,7 @@ let rec iterFloat f y =
     | Div(e1,e2) -> Div(ri e1,ri e2) |> f
     | Exp(x) -> Exp(ri x) |> f 
     | FunCall(fu,l) -> FunCall(fu,List.map ri l) |> f
+    | If(c,e1,e2) -> If(c,ri e1,ri e2) |> f
 	       
 let neg_cmp = function 
   | EQ -> NEQ  
@@ -92,6 +94,8 @@ let rec neg_bool = function
   | Or (e1,e2) -> And (neg_bool e1,neg_bool e2)
   | Plus (e1,e2) -> And (neg_bool e1,neg_bool e2)
   | Minus (e1,e2) -> Or (neg_bool e1,e2)
+  | FunCall (e,l) -> Not (FunCall (e,l))
+  | If(c,e1,e2) -> If(c,neg_bool e1,neg_bool e2)
 
 let rec eval : type a . a expr' -> a expr' = fun x -> 
   match x with
@@ -111,6 +115,11 @@ let rec eval : type a . a expr' -> a expr' = fun x ->
   | Mult(e1,e2) -> (match (eval e1),(eval e2) with
     Int y,Int z -> Int (y*z) 
     | Float y,Float z -> Float (y*.z)
+    | Float y,z -> if y=1.0 then z else (if y=0.0 then Float 0.0 else Mult (Float y,z))
+    | z,Float y -> if y=1.0 then z else (if y=0.0 then Float 0.0 else Mult (Float y,z))
+    | Int y,z -> if y=1 then z else (if y=0 then Int 0 else Mult (Int y,z))
+    | z,Int y -> if y=1 then z else (if y=0 then Int 0 else Mult (Int y,z))
+
     | Bool y,Bool z -> Bool (y && z)
     | _ -> x)
   | Minus(e1,e2) -> (match (eval e1),(eval e2) with
@@ -119,7 +128,36 @@ let rec eval : type a . a expr' -> a expr' = fun x ->
     | _ -> x)
   | x -> x
 
-	       let simp_int : int expr' -> int expr' = eval
+let simp_int : int expr' -> int expr' = eval
+
+
+let print_rename f =
+  List.iter (fun (x,y) -> Printf.fprintf f " %s->%s " x y) 
+
+let rename_op rn = function None -> None | Some a -> Some (rn a)
+
+let rec rename_expr: type a. (string ->string) -> a expr' -> a expr' = fun rn e -> let rnr: type a. a expr' -> a expr' = fun x -> rename_expr rn x in match e with
+    | IntName(s) -> IntName (rn s);
+    | Int(i) -> Int(i)
+    | Plus(e1,e2) -> Plus(rnr e1,rnr e2)
+    | Minus(e1,e2) -> Minus(rnr e1,rnr e2)
+    | Mult(e1,e2) -> Mult(rnr e1,rnr e2)
+    | Div(e1,e2) -> Div(rnr e1,rnr e2)
+    | Exp(e) -> Exp(rnr e)
+    | Ceil(e) -> Ceil(rnr e)
+    | Floor(e) -> Floor(rnr e)
+    | Bool x -> Bool x
+    | BoolName(x) -> BoolName(rn x) 
+    | Not(e1) -> Not (rnr e1) 
+    | And(e1,e2) -> And(rnr e1,rnr e2)
+    | Or(e1,e2) -> Or(rnr e1,rnr e2)
+    | IntAtom(ie,c,ie2) -> IntAtom(rnr ie,c,rnr ie2)
+    | Float(f) -> Float(f)
+    | FloatName(x) -> FloatName(rn x) 
+    | CastInt(x) -> CastInt (rnr x)
+    | CastBool(x) -> CastBool (rnr x)
+    | FunCall(x,fl) -> FunCall(x,List.map rnr fl) 
+    | If(c,e1,e2) -> If(rnr c,rnr e1, rnr e2)
 
 let gez x = match eval x with
   | Int y when y>=0 -> true
@@ -130,18 +168,28 @@ let sgz x = match eval x with
 
 let incr_int z = eval (Plus(z,Int 1))
 
+module MultiSet (Ot:Map.OrderedType) = struct
+  include Map.Make(Ot)
+  let add_multi e t =
+    try let i = find e t in
+	remove e t 
+	|> add e (i+1) 
+    with
+      Not_found -> add e 1 t
+end
 
-module StringOrdered = struct type t=string let compare=compare end
-module StringSet = Set.Make(StringOrdered)
-module StringMap = Map.Make(StringOrdered)
-  
-let add_multi e t =
-  try let i = StringMap.find e t in
-      StringMap.remove e t 
-  |> StringMap.add e (i+1) with
-    Not_found -> StringMap.add e 1 t
+module StringSet = Set.Make(String)
+module StringMap = MultiSet(String)
+
+module IntSQ = struct 
+  type t = int * int 
+  let compare = compare 
+end
+
+module IntSQMulti = MultiSet(IntSQ)
+
 let add_set t s =
-  StringSet.fold add_multi t s
+  StringSet.fold StringMap.add_multi t s
 
 let print_set sep f s=
   ignore (StringSet.fold (fun x c -> if c then output_string f sep;
@@ -200,6 +248,10 @@ let rec printH_expr: type a. out_channel -> a expr' -> unit = fun f x -> match x
   | FunCall(fu,t::q) ->  Printf.fprintf f "%s(%a" fu printH_expr t;
     List.iter (fun x-> Printf.fprintf f ",%a" printH_expr x) q;
     output_string f ")"
+  | If (c,e1,e2) -> Printf.fprintf f "(%a ? %a : %a)" 
+    printH_expr c
+    printH_expr e1 
+    printH_expr e2
 
 let printH_int_expr f (x: int expr')= printH_expr f x
 let printH_float_expr f (x: float expr')= printH_expr f x
