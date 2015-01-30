@@ -144,7 +144,7 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
                     count2 += OUTt1Read.count(inarc->first.second);
                     if(OUTt1.count(inarc->first.second)>0 && OUTt1Read.count(inarc->first.second)==0)count++;
                 }
-                for(auto inhibarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
+                for(auto inhibarc= MyGspn.inhibArcsStruct.lower_bound(make_pair(t2, 0));
                     inhibarc != MyGspn.inhibArcsStruct.end() && inhibarc->first.first==t2; ++inhibarc){
                     count2 += OUTt1Read.count(inhibarc->first.second);
                     if(OUTt1.count(inhibarc->first.second)>0 && OUTt1Read.count(inhibarc->first.second)==0)count++;
