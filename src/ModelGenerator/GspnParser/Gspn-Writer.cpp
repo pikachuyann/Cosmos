@@ -49,8 +49,8 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 
         for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
 			if (t1 != t2) {
-				size_t size = INt1.size();
-				set<int> INt1t2 = INt1;
+				auto size = INt1.size();
+				auto INt1t2 = INt1;
 
                 for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
                     inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t2; ++inarc)
@@ -79,8 +79,8 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		PossiblyEnabled.push_back(Sinhib);
 	}
 	for (size_t t1 = 0; t1 < MyGspn.tr; t1++) {
-		set<int> S = PossiblyEnabled[t1];
-		set<int> Sinhib = PossiblyDisabled[t1];
+		auto S = PossiblyEnabled[t1];
+		auto Sinhib = PossiblyDisabled[t1];
 		set<int> OUTt1;
         for(auto outarc= MyGspn.outArcsStruct.lower_bound(make_pair(t1, 0));
             outarc != MyGspn.outArcsStruct.end() && outarc->first.first==t1; ++outarc )
@@ -115,7 +115,64 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		PossiblyEnabled[t1] = S;
 		PossiblyDisabled[t1] = Sinhib;
 	}
-	
+
+    // Prune with equal arcs
+    for (size_t t1 = 0; t1 < MyGspn.tr; t1++) {
+        auto &S = PossiblyEnabled[t1];
+        auto &Sinhib = PossiblyDisabled[t1];
+        set<int> OUTt1Read;
+        set<int> OUTt1;
+        for(auto outarc= MyGspn.outArcsStruct.lower_bound(make_pair(t1, 0));
+            outarc != MyGspn.outArcsStruct.end() && outarc->first.first==t1; ++outarc )
+            if(!outarc->second.isEmpty){
+                OUTt1.insert(outarc->first.second); // insert out place
+                const auto ina = MyGspn.access(MyGspn.inArcsStruct, t1, outarc->first.second);
+                const auto inhiba = MyGspn.access(MyGspn.inhibArcsStruct, t1, outarc->first.second);
+                //Check whether this is an equal arc
+                if(!ina.isEmpty && !ina.isMarkDep && !inhiba.isEmpty && !inhiba.isMarkDep
+                   && ina.intVal == inhiba.intVal -1)
+                    OUTt1Read.insert(outarc->first.second);
+            }
+
+        for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
+            if (t1 != t2) {
+                //Check whether all input places are output places of t1 with equal arc
+                int count=0;
+                int count2=0;
+                for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
+                    inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t2; ++inarc){
+                    count2 += OUTt1Read.count(inarc->first.second);
+                    if(OUTt1.count(inarc->first.second)>0 && OUTt1Read.count(inarc->first.second)==0)count++;
+                }
+                for(auto inhibarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
+                    inhibarc != MyGspn.inhibArcsStruct.end() && inhibarc->first.first==t2; ++inhibarc){
+                    count2 += OUTt1Read.count(inhibarc->first.second);
+                    if(OUTt1.count(inhibarc->first.second)>0 && OUTt1Read.count(inhibarc->first.second)==0)count++;
+                }
+                if(count>0)continue;//One input place is not an equal arc place.
+                if(count2==0)continue;//No input place is an equal arc place.
+
+                for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
+                    inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t2; ++inarc)
+                    if(OUTt1Read.count(inarc->first.second)>0 && !inarc->second.isEmpty && !inarc->second.isMarkDep){
+                    if(!(inarc->second.intVal<=MyGspn.access(MyGspn.outArcsStruct, t1, inarc->first.second).intVal)){
+                        S.erase(t2);
+                    }
+                    if(!(inarc->second.intVal<=MyGspn.access(MyGspn.inArcsStruct, t1, inarc->first.second).intVal)){
+                        Sinhib.erase(t2);
+                    }
+                }
+                for(auto inhibarc= MyGspn.inhibArcsStruct.lower_bound(make_pair(t2, 0));
+                    inhibarc != MyGspn.inhibArcsStruct.end() && inhibarc->first.first==t2; ++inhibarc)
+                    if(OUTt1Read.count(inhibarc->first.second)>0 && !inhibarc->second.isEmpty && !inhibarc->second.isMarkDep){
+                    if(!(inhibarc->second.intVal > MyGspn.access(MyGspn.outArcsStruct, t1, inhibarc->first.second).intVal)){                        S.erase(t2);
+                    }
+                    if(!(inhibarc->second.intVal > MyGspn.access(MyGspn.inArcsStruct, t1, inhibarc->first.second).intVal)){                        Sinhib.erase(t2);
+                    }
+                }
+            }
+    }
+
 	set<int> MarkDepT;
 	for (size_t t = 0; t < MyGspn.tr; t++)
 		if (MyGspn.transitionStruct[t].markingDependant)
@@ -141,9 +198,10 @@ void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector
             SpnF << "static const int " << tabname << "[" << 1+vect[t].size() <<"]"<<"= {";
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++) {
 				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
-				SpnF << *it << ", ";
+				SpnF << "TR_" << MyGspn.transitionStruct[*it].label << "_RT, ";
 			}
-        SpnF << "-1 };" << endl;// << "\t"<< name <<"[" << t << "] = vector<int>("<<tabname<<","<< tabname<<"+"<< vect[t].size()<< ");" << endl;
+        SpnF << "-1 }; /* " << MyGspn.transitionStruct[t].label << "*/"<< endl;
+            // << "\t"<< name <<"[" << t << "] = vector<int>("<<tabname<<","<< tabname<<"+"<< vect[t].size()<< ");" << endl;
 		/*}else if(vect[t].size()>0)
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++)
 				SpnF << "\t"<< name << "[" << t << "].push_back( " << *it << " );"<< endl;*/
@@ -1132,6 +1190,12 @@ void Gspn_Writer::writeFile(){
 			stringstream newcase;
 		    //SpnCppFile << "     case " << t << ":  //" << MyGspn.transitionStruct[t].label <<endl;
 			for (const auto &p : MyGspn.placeStruct) {
+                if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty && !MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty)
+                    if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep && !MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isMarkDep)
+                        if (MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal+1 == MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).intVal) {
+                            newcase << "    if( Marking.P->_PL_" << p.name <<" != " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ") return false;" << endl;
+                            continue;
+                }
 				if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
 					
 					if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)

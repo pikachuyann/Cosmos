@@ -240,7 +240,9 @@ let print_spt_marcie fpath net =
     Exp r -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
       (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r
   | Det r -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
-    (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r 
+    (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r    
+  | Erl (n,r) -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
+      (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr (Div (r,CastInt (n))) 
     | _ -> ()   
   ) net.Net.transition;
   output_string f "\timmediate:\n";
