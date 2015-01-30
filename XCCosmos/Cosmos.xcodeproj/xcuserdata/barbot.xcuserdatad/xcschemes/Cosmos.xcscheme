@@ -94,11 +94,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--trace-place"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "VRGEctopic,VtrNoiseGenerator,AtrNoiseGenerator,SANodeEctopic,RVConductor,AVJOut,RAConductor,SANode,VRG,Ventricle,Atrium,AVJ,LRI,URI,VRP,PVARP,AVI"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--tmp-status"
