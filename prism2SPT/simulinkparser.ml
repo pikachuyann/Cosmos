@@ -442,6 +442,7 @@ let prune_unread m =
   | _ -> true) m.transL in
   {m with transL=tl2}
 
+ (* Remove selfloop on read *)
 let prune_unread2 m =
   let tl2 = List.filter (fun (_,src,lab,dst) -> match lab.trigger with
     RAction _-> not (src = dst && lab.write=[] && lab.update=[])
@@ -537,6 +538,16 @@ let print_magic f sl tl scrl=
     end) tl;
   output_string f "\tdefault: break;\n\t}\n}\n";
   output_string f "  </attribute>"
+
+
+(*
+let print_prism_module f m =
+  Printf.fprintf "module m1\n" f;
+  Array.iteri (fun n (x,n2) -> Printf.printf f "\t%s: [0:%i] init %i;\n" 
+    (place_of_int m.ivect n) 10000 x)  m.ivect;
+  Printf.fprintf "endmodule\n" f;
+*)
+
 
 let stochNet_of_modu cf m =
   let fund = fun f () -> print_magic f m.stateL m.transL m.scriptL in
