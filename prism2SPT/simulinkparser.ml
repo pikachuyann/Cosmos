@@ -257,6 +257,16 @@ let incr_trans l (ssid,src,lab,dst) =
   | Some src2 ->
     (ssid,[(0,src2)],lab,[(0,dst)])::l
   
+
+
+let flatten_state_ssid (ssid,name,sl,tl,scrl,p) =
+  let _,sl2,sl3 = List.fold_left (fun (i,l2,l3) (j,n) ->
+    ((i+1),(i,n)::l2,(j,i)::l3)) (0,[],[]) sl in
+  let tl2 = List.map (fun (ssid,src,lab,dst) ->
+    (ssid,src |>>> (fun x -> List.assoc x sl3),lab,List.assoc dst sl3)) tl in
+  (ssid,name,sl2,tl2,scrl,p)
+
+
 let incr_state (ssid,name,sl,tl,scrl,p) =
   if sl=[] then { ssid=ssid;
 	       name=name;
@@ -540,14 +550,45 @@ let print_magic f sl tl scrl=
   output_string f "  </attribute>"
 
 
-(*
-let print_prism_module f m =
-  Printf.fprintf "module m1\n" f;
-  Array.iteri (fun n (x,n2) -> Printf.printf f "\t%s: [0:%i] init %i;\n" 
-    (place_of_int m.ivect n) 10000 x)  m.ivect;
-  Printf.fprintf "endmodule\n" f;
-*)
 
+let print_prism_module fpath cf ml =
+  let m = List.hd ml in
+  let f = open_out fpath in
+  
+  Printf.fprintf f "ctmc\nconst double imm=100;\n";
+  List.iter (fun (x,y) -> Printf.fprintf f "const double %s=%f;\n" x (y/.1000.)) (DataFile.data_of_file cf);
+  (*List.iter (fun (x,y) -> match y with None -> () | Some s -> Printf.fprintf f "const int S_%s=%i;\n" s x) (m.stateL);*)
+
+  Printf.fprintf f "module m1\n";
+  Array.iteri (fun n (x,n2) -> begin
+    Printf.fprintf f "\t%s: [0..%i] init %i;\n"
+  end
+    (place_of_int m.ivect n) 10000 x) m.ivect;
+  List.iter (fun (ssidt,src,lab,dst) -> 
+    Printf.fprintf f "\t[%s] " (trans_of_int ssidt lab); 
+    ignore @@ List.fold_left (fun b (i,s) ->
+      begin
+	if b then Printf.fprintf f " & ";
+	Printf.fprintf f "(%s=%i)" (place_of_int m.ivect i) s;
+	true
+      end
+    ) false src;
+    
+    begin match lab.trigger with
+      Imm -> Printf.fprintf f " -> imm : ";
+    | Delay s-> Printf.fprintf f " -> 1/(%a) : " printH_expr s;
+    | RAction s  -> Printf.fprintf f " -> imm : ";
+    end;
+
+    ignore @@ List.fold_left (fun b (i,s) ->
+      if b then Printf.fprintf f " & ";
+      Printf.fprintf f "(%s'=%i)" (place_of_int m.ivect i) s;
+      true
+    ) false dst;
+    Printf.fprintf f ";\n";
+  ) m.transL;
+  Printf.fprintf f "endmodule\n" ;
+  close_out f
 
 let stochNet_of_modu cf m =
   let fund = fun f () -> print_magic f m.stateL m.transL m.scriptL in

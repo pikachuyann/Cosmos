@@ -6,9 +6,9 @@ using namespace std;
 #include <math.h>
 #include <float.h>
 #include "LHA.hpp"
-    const double T=100;
+    const double T=1000;
     const double Ttrans=0;
-    const double invT=0.01;
+    const double invT=0.001;
 struct Variables {
 	double time;
 	double EXRayBlood;
@@ -213,7 +213,7 @@ switch (v){
 	case 25:	//PLVAR_Arrival
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_Arrival.card()  * 0.01;
+			return  Marking.P->_PL_Arrival.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -225,7 +225,7 @@ switch (CurrentLocation){
 	case 30:	//PLVAR_ArrivalUrgence
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_ArrivalUrgence.card()  * 0.01;
+			return  Marking.P->_PL_ArrivalUrgence.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -237,7 +237,7 @@ switch (CurrentLocation){
 	case 37:	//PLVAR_CountDoctor
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_CountDoctor  * 0.01;
+			return  Marking.P->_PL_CountDoctor  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -249,7 +249,7 @@ switch (CurrentLocation){
 	case 39:	//PLVAR_Doctor
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_Doctor  * 0.01;
+			return  Marking.P->_PL_Doctor  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -261,7 +261,7 @@ switch (CurrentLocation){
 	case 47:	//PLVAR_FBloodEx
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_FBloodEx.card()  * 0.01;
+			return  Marking.P->_PL_FBloodEx.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -273,7 +273,7 @@ switch (CurrentLocation){
 	case 46:	//PLVAR_FXRay
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_FXRay.card()  * 0.01;
+			return  Marking.P->_PL_FXRay.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -285,7 +285,7 @@ switch (CurrentLocation){
 	case 23:	//PLVAR_Healthy
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_Healthy.card()  * 0.01;
+			return  Marking.P->_PL_Healthy.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -297,7 +297,7 @@ switch (CurrentLocation){
 	case 24:	//PLVAR_Ill
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_Ill.card()  * 0.01;
+			return  Marking.P->_PL_Ill.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -309,7 +309,7 @@ switch (CurrentLocation){
 	case 38:	//PLVAR_MonitoredRoom
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_MonitoredRoom.card()  * 0.01;
+			return  Marking.P->_PL_MonitoredRoom.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -321,7 +321,7 @@ switch (CurrentLocation){
 	case 29:	//PLVAR_OperatingRoom
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_OperatingRoom  * 0.01;
+			return  Marking.P->_PL_OperatingRoom  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -333,7 +333,7 @@ switch (CurrentLocation){
 	case 40:	//PLVAR_PatientRecovered
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_PatientRecovered.card()  * 0.01;
+			return  Marking.P->_PL_PatientRecovered.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -345,7 +345,7 @@ switch (CurrentLocation){
 	case 22:	//PLVAR_ReadyT
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_ReadyT.card()  * 0.01;
+			return  Marking.P->_PL_ReadyT.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -357,7 +357,7 @@ switch (CurrentLocation){
 	case 42:	//PLVAR_ResB
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_ResB  * 0.01;
+			return  Marking.P->_PL_ResB  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -369,7 +369,7 @@ switch (CurrentLocation){
 	case 44:	//PLVAR_ResX
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_ResX  * 0.01;
+			return  Marking.P->_PL_ResX  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -381,7 +381,7 @@ switch (CurrentLocation){
 	case 26:	//PLVAR_ThreatedByDocH
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_ThreatedByDocH.card()  * 0.01;
+			return  Marking.P->_PL_ThreatedByDocH.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -393,7 +393,7 @@ switch (CurrentLocation){
 	case 27:	//PLVAR_ThreatedByDocL
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_ThreatedByDocL.card()  * 0.01;
+			return  Marking.P->_PL_ThreatedByDocL.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -405,7 +405,7 @@ switch (CurrentLocation){
 	case 32:	//PLVAR_TraumaTeam
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_TraumaTeam  * 0.01;
+			return  Marking.P->_PL_TraumaTeam  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -417,7 +417,7 @@ switch (CurrentLocation){
 	case 41:	//PLVAR_UBloodEx
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_UBloodEx.card()  * 0.01;
+			return  Marking.P->_PL_UBloodEx.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -429,7 +429,7 @@ switch (CurrentLocation){
 	case 31:	//PLVAR_USurgery
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_USurgery.card()  * 0.01;
+			return  Marking.P->_PL_USurgery.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -441,7 +441,7 @@ switch (CurrentLocation){
 	case 45:	//PLVAR_UXRayEx
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_UXRayEx.card()  * 0.01;
+			return  Marking.P->_PL_UXRayEx.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -453,7 +453,7 @@ switch (CurrentLocation){
 	case 33:	//PLVAR_Ustab
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_Ustab.card()  * 0.01;
+			return  Marking.P->_PL_Ustab.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -465,7 +465,7 @@ switch (CurrentLocation){
 	case 35:	//PLVAR_WBloodEx
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_WBloodEx.card()  * 0.01;
+			return  Marking.P->_PL_WBloodEx.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -477,7 +477,7 @@ switch (CurrentLocation){
 	case 34:	//PLVAR_WSurgery
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_WSurgery.card()  * 0.01;
+			return  Marking.P->_PL_WSurgery.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -489,7 +489,7 @@ switch (CurrentLocation){
 	case 36:	//PLVAR_WXRayEx
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_WXRayEx.card()  * 0.01;
+			return  Marking.P->_PL_WXRayEx.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -501,7 +501,7 @@ switch (CurrentLocation){
 	case 43:	//PLVAR_Waiting
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_Waiting.card()  * 0.01;
+			return  Marking.P->_PL_Waiting.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -513,7 +513,7 @@ switch (CurrentLocation){
 	case 28:	//PLVAR_WaitingRoom
 switch (CurrentLocation){
 	case 1:	//l1
-			return  Marking.P->_PL_WaitingRoom.card()  * 0.01;
+			return  Marking.P->_PL_WaitingRoom.card()  * 0.001;
 
 		break;
 	default:	//l0,l2,
@@ -562,7 +562,7 @@ switch (ed){
 		break;
 	default:	//,,,,,,,,,,,,,,,,,,,,,
 {
-         if(!( +(1)*Vars->time<=100)) return false;
+         if(!( +(1)*Vars->time<=1000)) return false;
 		return (true);
      }
 
@@ -625,11 +625,11 @@ switch (ed){
              SumAX=+(1)*Vars->time;
 
              if(SumAF==0){
-                  if(!(SumAX==100))
+                  if(!(SumAX==1000))
                       return EmptyInterval;
              }
              else{
-                  double t=CurrentTime+(100-SumAX)/(double)SumAF;
+                  double t=CurrentTime+(1000-SumAX)/(double)SumAF;
                   if(t>=EnablingT.first && t<=EnablingT.second){
                       EnablingT.first=t; EnablingT.second=t;
                   }
@@ -656,127 +656,127 @@ void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBin
 switch (ed){
 	case 18:	//
          {
-		Vars->BBlood=Vars->BBlood + 0.010000;
+		Vars->BBlood=Vars->BBlood + 0.001000;
          }
 
 		break;
 	case 11:	//
          {
-		Vars->BSurgery=Vars->BSurgery + 0.010000;
+		Vars->BSurgery=Vars->BSurgery + 0.001000;
          }
 
 		break;
 	case 15:	//
          {
-		Vars->BToStabilize=Vars->BToStabilize + 0.010000;
+		Vars->BToStabilize=Vars->BToStabilize + 0.001000;
          }
 
 		break;
 	case 19:	//
          {
-		Vars->BXRay=Vars->BXRay + 0.010000;
+		Vars->BXRay=Vars->BXRay + 0.001000;
          }
 
 		break;
 	case 9:	//
          {
-		Vars->DischargeL=Vars->DischargeL + 0.010000;
+		Vars->DischargeL=Vars->DischargeL + 0.001000;
          }
 
 		break;
 	case 20:	//
          {
-		Vars->DischargeM=Vars->DischargeM + 0.010000;
+		Vars->DischargeM=Vars->DischargeM + 0.001000;
          }
 
 		break;
 	case 17:	//
          {
-		Vars->DischargeRec=Vars->DischargeRec + 0.010000;
+		Vars->DischargeRec=Vars->DischargeRec + 0.001000;
          }
 
 		break;
 	case 21:	//
          {
-		Vars->EBloodEx=Vars->EBloodEx + 0.010000;
+		Vars->EBloodEx=Vars->EBloodEx + 0.001000;
          }
 
 		break;
 	case 16:	//
          {
-		Vars->EToStabilize=Vars->EToStabilize + 0.010000;
+		Vars->EToStabilize=Vars->EToStabilize + 0.001000;
          }
 
 		break;
 	case 6:	//
          {
-		Vars->EToSurgery=Vars->EToSurgery + 0.010000;
+		Vars->EToSurgery=Vars->EToSurgery + 0.001000;
          }
 
 		break;
 	case 5:	//
          {
-		Vars->EToThreat=Vars->EToThreat + 0.010000;
+		Vars->EToThreat=Vars->EToThreat + 0.001000;
          }
 
 		break;
 	case 22:	//
          {
-		Vars->EXRay=Vars->EXRay + 0.010000;
+		Vars->EXRay=Vars->EXRay + 0.001000;
          }
 
 		break;
 	case 2:	//
          {
-		Vars->EXRayBlood=Vars->EXRayBlood + 0.010000;
+		Vars->EXRayBlood=Vars->EXRayBlood + 0.001000;
          }
 
 		break;
 	case 3:	//
          {
-		Vars->FallIll=Vars->FallIll + 0.010000;
+		Vars->FallIll=Vars->FallIll + 0.001000;
          }
 
 		break;
 	case 7:	//
          {
-		Vars->HighPrio=Vars->HighPrio + 0.010000;
+		Vars->HighPrio=Vars->HighPrio + 0.001000;
          }
 
 		break;
 	case 4:	//
          {
-		Vars->HospitalArrival=Vars->HospitalArrival + 0.010000;
+		Vars->HospitalArrival=Vars->HospitalArrival + 0.001000;
          }
 
 		break;
 	case 10:	//
          {
-		Vars->LowPrio=Vars->LowPrio + 0.010000;
+		Vars->LowPrio=Vars->LowPrio + 0.001000;
          }
 
 		break;
 	case 8:	//
          {
-		Vars->MediumPrio=Vars->MediumPrio + 0.010000;
+		Vars->MediumPrio=Vars->MediumPrio + 0.001000;
          }
 
 		break;
 	case 13:	//
          {
-		Vars->ToDoctor=Vars->ToDoctor + 0.010000;
+		Vars->ToDoctor=Vars->ToDoctor + 0.001000;
          }
 
 		break;
 	case 14:	//
          {
-		Vars->ToDoctorL=Vars->ToDoctorL + 0.010000;
+		Vars->ToDoctorL=Vars->ToDoctorL + 0.001000;
          }
 
 		break;
 	case 12:	//
          {
-		Vars->ToSurgery=Vars->ToSurgery + 0.010000;
+		Vars->ToSurgery=Vars->ToSurgery + 0.001000;
          }
 
 		break;
