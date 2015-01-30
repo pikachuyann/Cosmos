@@ -318,7 +318,7 @@ void Gspn_Writer::generateStringVal(arcStore& as){
 }
 
 void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
-	SpnF << "abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){" << endl;
+	SpnF << "const abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
 	SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
 	for(size_t trit = 0; trit != MyGspn.tr;++trit){
 		if(!MyGspn.transitionStruct[trit].varDomain.empty())
@@ -399,7 +399,7 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 	SpnF << "\t\treturn &(Transition[targettr].bindingList[*bindingNum-1]);"<< endl;
 	SpnF << "}}"<< endl;
 	
-	SpnF << "abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){" << endl;
+	SpnF << "const abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
 	SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
 	
 	for(size_t trit = 0; trit != MyGspn.tr;++trit){
@@ -973,10 +973,10 @@ void Gspn_Writer::writeTransition(ofstream & spnF, bool bstr){
 	size_t nbbinding = 1;
 	for (size_t v = 0 ; v < MyGspn.colVars.size(); v++)
 		nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
-	
+
 	for (size_t t=0; t < MyGspn.tr; t++ ) {
-		
-		spnF << "\tTransition["<<t<<"] = _trans(" << t << ",";
+
+		/*spnF << "\tTransition["<<t<<"] = _trans(" << t << ",";
 		
 		if (MyGspn.transitionStruct[t].type==Timed) {
 			spnF << "Timed," << MyGspn.transitionStruct[t].dist.name << ",";
@@ -984,16 +984,14 @@ void Gspn_Writer::writeTransition(ofstream & spnF, bool bstr){
 			spnF << "unTimed,DETERMINISTIC,";
 		}
 		
-		spnF << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding <<");" << endl;
-		
-		if(MyGspn.transitionStruct[t].ageMemory)
-			spnF << "\tTransition[" << t << "].AgeMemory = true;" << endl;
-		
+        spnF << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
+        spnF << ", " << MyGspn.transitionStruct[t].ageMemory <<");" << endl;
+
 		if (bstr) {
 			spnF << "\tTransition["<<t<<"].label = \""<< MyGspn.transitionStruct[t].label << "\";"<< endl;
 		}
 		//spnF << "\tTransition["<<t<<"].bindingLinkTable.resize("<< nbbinding <<",string::npos); "<< endl;
-		
+		*/
 		if(MyGspn.colVars.size()>0){
 			spnF << "\t{abstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
 			for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
@@ -1142,11 +1140,33 @@ void Gspn_Writer::writeFile(){
     //--------------- Writing synchronization tables ---------------------------
     writeEnabledDisabled(SpnCppFile);
 
+    //--------------- Writing transitions tables -------------------------------
+    size_t nbbinding = 1;
+    for (size_t v = 0 ; v < MyGspn.colVars.size(); v++)
+        nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
+    SpnCppFile << "static spn_trans TransArray[" << MyGspn.tr << "] = { ";
+    for (size_t t=0; t < MyGspn.tr; t++ ) {
+        SpnCppFile << "_trans(" << t << ",";
+
+        if (MyGspn.transitionStruct[t].type==Timed) {
+            SpnCppFile << "Timed," << MyGspn.transitionStruct[t].dist.name << ",";
+        }else{
+            SpnCppFile << "unTimed,DETERMINISTIC,";
+        }
+
+        SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
+        SpnCppFile << ", " << MyGspn.transitionStruct[t].ageMemory;
+        if(P.StringInSpnLHA)SpnCppFile << ", " << MyGspn.transitionStruct[t].label;
+        SpnCppFile <<"), ";
+    }
+    SpnCppFile << " }; " << endl;
+
+
     //--------------- Writing implementation of SPN ----------------------------
     SpnCppFile << "SPN::SPN():" << endl;
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
 	SpnCppFile << "tr(" << MyGspn.tr << "), ";
-	SpnCppFile << "Transition(" << MyGspn.tr << "),";
+	SpnCppFile << "Transition(TransArray,TransArray +"<< MyGspn.tr <<"),";
     SpnCppFile << "Place("<< MyGspn.pl << "),";
 
 	SpnCppFile << "ParamDistr(3), TransitionConditions(" << MyGspn.tr <<",0){" << endl;
@@ -1434,22 +1454,6 @@ void Gspn_Writer::writeFile(){
 	}
 	SpnCppFile << "}\n" << endl;
 
-    /*
-	SpnCppFile << "const vector<int>& SPN::PossiblyEn()const {" << endl;
-	if (false && P.localTesting)SpnCppFile << "\treturn newlyEnabled;" << endl;
-	else SpnCppFile << "\treturn PossiblyEnabled[lastTransition];" << endl;
-	SpnCppFile << "}" << endl;
-	
-	SpnCppFile << "const vector<int>& SPN::PossiblyDis()const {" << endl;
-	if (false &&P.localTesting)SpnCppFile << "\treturn newlyDisabled;" << endl;
-	else SpnCppFile << "\treturn PossiblyDisabled[lastTransition];" << endl;
-	SpnCppFile << "}" << endl;
-	
-	SpnCppFile << "const vector<int>& SPN::FreeMarkingDependant()const {" << endl;
-	SpnCppFile << "\treturn FreeMarkDepT[lastTransition];" << endl;
-	SpnCppFile << "}" << endl;
-     */
-	
 	writeEnabledDisabledBinding(SpnCppFile);
 	
 	

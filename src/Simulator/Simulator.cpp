@@ -158,7 +158,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
     for (size_t t=0; N.PossiblyEnabled[N.lastTransition][t] != -1;t++) {
         const auto &it = N.PossiblyEnabled[N.lastTransition][t];
 		size_t bindnum = 0;
-		abstractBinding *bindex = N.nextPossiblyEnabledBinding(it, lb, &bindnum);
+		const abstractBinding *bindex = N.nextPossiblyEnabledBinding(it, lb, &bindnum);
 		while (bindex != NULL){
 			if(verbose > 4){
 				cerr << "consider for enabling: " << N.Transition[it].label << ",";
@@ -197,7 +197,7 @@ void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
     for (size_t t=0; N.PossiblyDisabled[N.lastTransition][t] != -1;t++) {
         const auto &it = N.PossiblyDisabled[N.lastTransition][t];
 		size_t bindnum = 0;
-		abstractBinding *bindex = N.nextPossiblyDisabledBinding(it, lb, &bindnum);
+		const abstractBinding *bindex = N.nextPossiblyDisabledBinding(it, lb, &bindnum);
 		while (bindex != NULL){
 			if(verbose > 4){
 				cerr << "consider for disabling: " << N.Transition[it].label << ",";

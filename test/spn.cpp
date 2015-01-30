@@ -159,9 +159,9 @@ void abstractMarking::swap(abstractMarking& m) {
 void abstractMarking::printHeader(ostream &s)const{
 }
 
-void abstractMarking::printSedCmd(ostream &s)const{
-}
 void abstractMarking::print(ostream &s)const{
+}
+void abstractMarking::printSedCmd(ostream &s)const{
 }
 
 int abstractMarking::getNbOfTokens(int p)const {
@@ -215,36 +215,36 @@ const char *Color_patient_names[Color_patient_Total] = {
 "p1","p2","p3","p4","p5","p6","p7","p8","p9","p10","p11","p12","p13","p14","p15","p16","p17","p18","p19","p20",
 };
 static const int EMPTY_array[1]={-1};
-static const int PE_PossiblyEnabled_0[3]= {10, 11, -1 };
-static const int PE_PossiblyEnabled_1[2]= {2, -1 };
-static const int PE_PossiblyEnabled_2[4]= {5, 6, 8, -1 };
-static const int PE_PossiblyEnabled_3[5]= {10, 11, 12, 18, -1 };
-static const int PE_PossiblyEnabled_4[6]= {9, 10, 11, 12, 15, -1 };
-static const int PE_PossiblyEnabled_5[2]= {13, -1 };
-static const int PE_PossiblyEnabled_6[4]= {0, 16, 17, -1 };
-static const int PE_PossiblyEnabled_7[5]= {1, 10, 11, 12, -1 };
-static const int PE_PossiblyEnabled_8[2]= {12, -1 };
-static const int PE_PossiblyEnabled_9[2]= {4, -1 };
-static const int PE_PossiblyEnabled_10[3]= {9, 12, -1 };
-static const int PE_PossiblyEnabled_11[3]= {3, 12, -1 };
-static const int PE_PossiblyEnabled_12[2]= {7, -1 };
-static const int PE_PossiblyEnabled_13[2]= {14, -1 };
-static const int PE_PossiblyEnabled_14[5]= {0, 13, 16, 17, -1 };
-static const int PE_PossiblyEnabled_15[2]= {1, -1 };
-static const int PE_PossiblyEnabled_16[2]= {19, -1 };
-static const int PE_PossiblyEnabled_17[2]= {20, -1 };
-static const int PE_PossiblyEnabled_18[2]= {1, -1 };
-static const int PE_PossiblyEnabled_19[3]= {0, 16, -1 };
-static const int PE_PossiblyEnabled_20[3]= {0, 17, -1 };
+static const int PE_PossiblyEnabled_0[3]= {TR_ToSurgery_RT, TR_ToDoctor_RT, -1 }; /* EXRayBlood*/
+static const int PE_PossiblyEnabled_1[2]= {TR_HospitalArrival_RT, -1 }; /* FallIll*/
+static const int PE_PossiblyEnabled_2[4]= {TR_HighPrio_RT, TR_MediumPrio_RT, TR_LowPrio_RT, -1 }; /* HospitalArrival*/
+static const int PE_PossiblyEnabled_3[5]= {TR_ToSurgery_RT, TR_ToDoctor_RT, TR_ToDoctorL_RT, TR_DischargeM_RT, -1 }; /* EToThreat*/
+static const int PE_PossiblyEnabled_4[6]= {TR_BSurgery_RT, TR_ToSurgery_RT, TR_ToDoctor_RT, TR_ToDoctorL_RT, TR_DischargeRec_RT, -1 }; /* EToSurgery*/
+static const int PE_PossiblyEnabled_5[2]= {TR_BToStabilize_RT, -1 }; /* HighPrio*/
+static const int PE_PossiblyEnabled_6[4]= {TR_EXRayBlood_RT, TR_BBlood_RT, TR_BXRay_RT, -1 }; /* MediumPrio*/
+static const int PE_PossiblyEnabled_7[5]= {TR_FallIll_RT, TR_ToSurgery_RT, TR_ToDoctor_RT, TR_ToDoctorL_RT, -1 }; /* DischargeL*/
+static const int PE_PossiblyEnabled_8[2]= {TR_ToDoctorL_RT, -1 }; /* LowPrio*/
+static const int PE_PossiblyEnabled_9[2]= {TR_EToSurgery_RT, -1 }; /* BSurgery*/
+static const int PE_PossiblyEnabled_10[3]= {TR_BSurgery_RT, TR_ToDoctorL_RT, -1 }; /* ToSurgery*/
+static const int PE_PossiblyEnabled_11[3]= {TR_EToThreat_RT, TR_ToDoctorL_RT, -1 }; /* ToDoctor*/
+static const int PE_PossiblyEnabled_12[2]= {TR_DischargeL_RT, -1 }; /* ToDoctorL*/
+static const int PE_PossiblyEnabled_13[2]= {TR_EToStabilize_RT, -1 }; /* BToStabilize*/
+static const int PE_PossiblyEnabled_14[5]= {TR_EXRayBlood_RT, TR_BToStabilize_RT, TR_BBlood_RT, TR_BXRay_RT, -1 }; /* EToStabilize*/
+static const int PE_PossiblyEnabled_15[2]= {TR_FallIll_RT, -1 }; /* DischargeRec*/
+static const int PE_PossiblyEnabled_16[2]= {TR_EBloodEx_RT, -1 }; /* BBlood*/
+static const int PE_PossiblyEnabled_17[2]= {TR_EXRay_RT, -1 }; /* BXRay*/
+static const int PE_PossiblyEnabled_18[2]= {TR_FallIll_RT, -1 }; /* DischargeM*/
+static const int PE_PossiblyEnabled_19[3]= {TR_EXRayBlood_RT, TR_BBlood_RT, -1 }; /* EBloodEx*/
+static const int PE_PossiblyEnabled_20[3]= {TR_EXRayBlood_RT, TR_BXRay_RT, -1 }; /* EXRay*/
 const int* SPN::PossiblyEnabled[] = {PE_PossiblyEnabled_0, PE_PossiblyEnabled_1, PE_PossiblyEnabled_2, PE_PossiblyEnabled_3, PE_PossiblyEnabled_4, PE_PossiblyEnabled_5, PE_PossiblyEnabled_6, PE_PossiblyEnabled_7, PE_PossiblyEnabled_8, PE_PossiblyEnabled_9, PE_PossiblyEnabled_10, PE_PossiblyEnabled_11, PE_PossiblyEnabled_12, PE_PossiblyEnabled_13, PE_PossiblyEnabled_14, PE_PossiblyEnabled_15, PE_PossiblyEnabled_16, PE_PossiblyEnabled_17, PE_PossiblyEnabled_18, PE_PossiblyEnabled_19, PE_PossiblyEnabled_20};
 
-static const int PE_PossiblyDisabled_0[2]= {12, -1 };
-static const int PE_PossiblyDisabled_5[3]= {6, 8, -1 };
-static const int PE_PossiblyDisabled_6[3]= {5, 8, -1 };
-static const int PE_PossiblyDisabled_8[3]= {5, 6, -1 };
-static const int PE_PossiblyDisabled_10[3]= {11, 12, -1 };
-static const int PE_PossiblyDisabled_11[3]= {10, 12, -1 };
-static const int PE_PossiblyDisabled_12[3]= {10, 11, -1 };
+static const int PE_PossiblyDisabled_0[2]= {TR_ToDoctorL_RT, -1 }; /* EXRayBlood*/
+static const int PE_PossiblyDisabled_5[3]= {TR_MediumPrio_RT, TR_LowPrio_RT, -1 }; /* HighPrio*/
+static const int PE_PossiblyDisabled_6[3]= {TR_HighPrio_RT, TR_LowPrio_RT, -1 }; /* MediumPrio*/
+static const int PE_PossiblyDisabled_8[3]= {TR_HighPrio_RT, TR_MediumPrio_RT, -1 }; /* LowPrio*/
+static const int PE_PossiblyDisabled_10[3]= {TR_ToDoctor_RT, TR_ToDoctorL_RT, -1 }; /* ToSurgery*/
+static const int PE_PossiblyDisabled_11[3]= {TR_ToSurgery_RT, TR_ToDoctorL_RT, -1 }; /* ToDoctor*/
+static const int PE_PossiblyDisabled_12[3]= {TR_ToSurgery_RT, TR_ToDoctor_RT, -1 }; /* ToDoctorL*/
 const int* SPN::PossiblyDisabled[] = {PE_PossiblyDisabled_0, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, PE_PossiblyDisabled_5, PE_PossiblyDisabled_6, EMPTY_array, PE_PossiblyDisabled_8, EMPTY_array, PE_PossiblyDisabled_10, PE_PossiblyDisabled_11, PE_PossiblyDisabled_12, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
 
 const int* SPN::FreeMarkDepT[] = {EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
@@ -252,7 +252,7 @@ const int* SPN::FreeMarkDepT[] = {EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_a
 SPN::SPN():
 pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,0){
     Path ="Hospital.grml";
-	Transition[0] = _trans(0,Timed,DETERMINISTIC,0,20);
+	Transition[0] = _trans(0,Timed,DETERMINISTIC,0,20, 0);
 	{abstractBinding bl = Transition[0].bindingList[0];
 	while(bl.next()){
 		{
@@ -261,7 +261,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[0].bindingLinkTable[bl.idTotal()]= Transition[0].bindingList.size()-1; 
 		}
 	}}
-	Transition[1] = _trans(1,Timed,EXPONENTIAL,0,20);
+	Transition[1] = _trans(1,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[1].bindingList[0];
 	while(bl.next()){
 		{
@@ -270,7 +270,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[1].bindingLinkTable[bl.idTotal()]= Transition[1].bindingList.size()-1; 
 		}
 	}}
-	Transition[2] = _trans(2,Timed,EXPONENTIAL,0,20);
+	Transition[2] = _trans(2,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[2].bindingList[0];
 	while(bl.next()){
 		{
@@ -279,7 +279,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[2].bindingLinkTable[bl.idTotal()]= Transition[2].bindingList.size()-1; 
 		}
 	}}
-	Transition[3] = _trans(3,Timed,EXPONENTIAL,0,20);
+	Transition[3] = _trans(3,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[3].bindingList[0];
 	while(bl.next()){
 		{
@@ -288,7 +288,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[3].bindingLinkTable[bl.idTotal()]= Transition[3].bindingList.size()-1; 
 		}
 	}}
-	Transition[4] = _trans(4,Timed,EXPONENTIAL,0,20);
+	Transition[4] = _trans(4,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[4].bindingList[0];
 	while(bl.next()){
 		{
@@ -297,7 +297,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[4].bindingLinkTable[bl.idTotal()]= Transition[4].bindingList.size()-1; 
 		}
 	}}
-	Transition[5] = _trans(5,Timed,DETERMINISTIC,0,20);
+	Transition[5] = _trans(5,Timed,DETERMINISTIC,0,20, 0);
 	{abstractBinding bl = Transition[5].bindingList[0];
 	while(bl.next()){
 		{
@@ -306,7 +306,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[5].bindingLinkTable[bl.idTotal()]= Transition[5].bindingList.size()-1; 
 		}
 	}}
-	Transition[6] = _trans(6,Timed,DETERMINISTIC,0,20);
+	Transition[6] = _trans(6,Timed,DETERMINISTIC,0,20, 0);
 	{abstractBinding bl = Transition[6].bindingList[0];
 	while(bl.next()){
 		{
@@ -315,7 +315,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[6].bindingLinkTable[bl.idTotal()]= Transition[6].bindingList.size()-1; 
 		}
 	}}
-	Transition[7] = _trans(7,Timed,EXPONENTIAL,0,20);
+	Transition[7] = _trans(7,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[7].bindingList[0];
 	while(bl.next()){
 		{
@@ -324,7 +324,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[7].bindingLinkTable[bl.idTotal()]= Transition[7].bindingList.size()-1; 
 		}
 	}}
-	Transition[8] = _trans(8,Timed,DETERMINISTIC,0,20);
+	Transition[8] = _trans(8,Timed,DETERMINISTIC,0,20, 0);
 	{abstractBinding bl = Transition[8].bindingList[0];
 	while(bl.next()){
 		{
@@ -333,7 +333,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[8].bindingLinkTable[bl.idTotal()]= Transition[8].bindingList.size()-1; 
 		}
 	}}
-	Transition[9] = _trans(9,Timed,DETERMINISTIC,0,20);
+	Transition[9] = _trans(9,Timed,DETERMINISTIC,0,20, 0);
 	{abstractBinding bl = Transition[9].bindingList[0];
 	while(bl.next()){
 		{
@@ -342,7 +342,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[9].bindingLinkTable[bl.idTotal()]= Transition[9].bindingList.size()-1; 
 		}
 	}}
-	Transition[10] = _trans(10,Timed,DETERMINISTIC,0,20);
+	Transition[10] = _trans(10,Timed,DETERMINISTIC,0,20, 0);
 	{abstractBinding bl = Transition[10].bindingList[0];
 	while(bl.next()){
 		{
@@ -351,7 +351,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[10].bindingLinkTable[bl.idTotal()]= Transition[10].bindingList.size()-1; 
 		}
 	}}
-	Transition[11] = _trans(11,Timed,DETERMINISTIC,0,20);
+	Transition[11] = _trans(11,Timed,DETERMINISTIC,0,20, 0);
 	{abstractBinding bl = Transition[11].bindingList[0];
 	while(bl.next()){
 		{
@@ -360,7 +360,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[11].bindingLinkTable[bl.idTotal()]= Transition[11].bindingList.size()-1; 
 		}
 	}}
-	Transition[12] = _trans(12,Timed,EXPONENTIAL,0,20);
+	Transition[12] = _trans(12,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[12].bindingList[0];
 	while(bl.next()){
 		{
@@ -369,7 +369,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[12].bindingLinkTable[bl.idTotal()]= Transition[12].bindingList.size()-1; 
 		}
 	}}
-	Transition[13] = _trans(13,Timed,EXPONENTIAL,0,20);
+	Transition[13] = _trans(13,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[13].bindingList[0];
 	while(bl.next()){
 		{
@@ -378,7 +378,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[13].bindingLinkTable[bl.idTotal()]= Transition[13].bindingList.size()-1; 
 		}
 	}}
-	Transition[14] = _trans(14,Timed,EXPONENTIAL,0,20);
+	Transition[14] = _trans(14,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[14].bindingList[0];
 	while(bl.next()){
 		{
@@ -387,7 +387,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[14].bindingLinkTable[bl.idTotal()]= Transition[14].bindingList.size()-1; 
 		}
 	}}
-	Transition[15] = _trans(15,Timed,EXPONENTIAL,0,20);
+	Transition[15] = _trans(15,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[15].bindingList[0];
 	while(bl.next()){
 		{
@@ -396,7 +396,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[15].bindingLinkTable[bl.idTotal()]= Transition[15].bindingList.size()-1; 
 		}
 	}}
-	Transition[16] = _trans(16,Timed,DETERMINISTIC,0,20);
+	Transition[16] = _trans(16,Timed,DETERMINISTIC,0,20, 0);
 	{abstractBinding bl = Transition[16].bindingList[0];
 	while(bl.next()){
 		{
@@ -405,7 +405,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[16].bindingLinkTable[bl.idTotal()]= Transition[16].bindingList.size()-1; 
 		}
 	}}
-	Transition[17] = _trans(17,Timed,DETERMINISTIC,0,20);
+	Transition[17] = _trans(17,Timed,DETERMINISTIC,0,20, 0);
 	{abstractBinding bl = Transition[17].bindingList[0];
 	while(bl.next()){
 		{
@@ -414,7 +414,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[17].bindingLinkTable[bl.idTotal()]= Transition[17].bindingList.size()-1; 
 		}
 	}}
-	Transition[18] = _trans(18,Timed,EXPONENTIAL,0,20);
+	Transition[18] = _trans(18,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[18].bindingList[0];
 	while(bl.next()){
 		{
@@ -423,7 +423,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[18].bindingLinkTable[bl.idTotal()]= Transition[18].bindingList.size()-1; 
 		}
 	}}
-	Transition[19] = _trans(19,Timed,EXPONENTIAL,0,20);
+	Transition[19] = _trans(19,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[19].bindingList[0];
 	while(bl.next()){
 		{
@@ -432,7 +432,7 @@ pl(26), tr(21), Transition(21),Place(26),ParamDistr(3), TransitionConditions(21,
 			Transition[19].bindingLinkTable[bl.idTotal()]= Transition[19].bindingList.size()-1; 
 		}
 	}}
-	Transition[20] = _trans(20,Timed,EXPONENTIAL,0,20);
+	Transition[20] = _trans(20,Timed,EXPONENTIAL,0,20, 0);
 	{abstractBinding bl = Transition[20].bindingList[0];
 	while(bl.next()){
 		{
@@ -752,7 +752,7 @@ void SPN::fire(size_t t, const abstractBinding& b, double time){
 void SPN::unfire(size_t t ,const abstractBinding& b){
 }
 
-abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){
+const abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {
 	switch(lastTransition*(tr+1) + targettr){
 		//Partial synch over variable: EXRayBlood->ToSurgery var Not set
 		//Partial synch over variable: EXRayBlood->ToDoctor var Not set
@@ -787,7 +787,7 @@ abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractB
 		*bindingNum = *bindingNum +1;
 		return &(Transition[targettr].bindingList[*bindingNum-1]);
 }}
-abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){
+const abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {
 	switch(lastTransition*(tr+1) + targettr){
 		//Partial synch over variable: EXRayBlood->EXRayBlood var Not set
 		//Partial synch over variable: FallIll->FallIll var Not set

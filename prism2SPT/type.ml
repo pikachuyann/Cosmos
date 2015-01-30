@@ -261,5 +261,7 @@ let print_token f = function
   | Int 0 -> ()
   | Int 1 -> output_string f "•" 
   | Int 2 -> output_string f "••"
-  | Int 3 -> output_string f "•••"
+  | Int 3 -> output_string f "••\n•"
+  | Int 4 -> output_string f "••\n••"
+  | Int 5 -> output_string f "•••\n••"
   | i -> printH_int_expr f i
