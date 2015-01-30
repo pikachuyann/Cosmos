@@ -231,6 +231,17 @@ let print_spt_marcie fpath net =
   let f = open_out fpath in
   output_string f "gspn [generated_cosmos] {\n";
   
+  Printf.fprintf f "constants:\n";
+  let (lci,lcd,lce,fund) = begin match net.Net.def with 
+      None -> [],[],[],(fun _ ()->()) 
+    | Some x ->x end in
+  List.iter (fun (s,ao) -> match ao with 
+    None -> Printf.fprintf f "\tint %s;\n" s;
+  | Some iv -> Printf.fprintf f "\tint %s=%a;\n" s printH_expr iv) lci;
+  List.iter (fun (s,ao) -> match ao with 
+    None -> Printf.fprintf f "\tint %s;\n" s;
+  | Some fv -> Printf.fprintf f "\tdouble %s=%a;\n" s printH_expr fv) lcd;
+
   output_string f "places:\n";
   Data.iter (fun (s,m) ->Printf.fprintf f "\t%s = %a;\n" s printH_int_expr m) net.Net.place;
 

@@ -75,13 +75,20 @@ struct _trans {
 	_trans(){};
 	
 	//! transition constructor
-	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb):
-	Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(false),bindingLinkTable(nbb,string::npos){
+	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am):
+	Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,string::npos){
 		abstractBinding bl;
 		bl.idcount = static_cast<int>(bindingList.size());
 		bindingList.push_back( bl );
 		bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
 	};
+    _trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am,string l):
+    Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,string::npos),label(l){
+        abstractBinding bl;
+        bl.idcount = static_cast<int>(bindingList.size());
+        bindingList.push_back( bl );
+        bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
+    };
 	
 	//! number of the transition
 	unsigned int Id;
@@ -134,7 +141,7 @@ public:
 	abstractMarking Marking;
 	
 	//!contains all the transitions of the Petri net
-	vector <spn_trans> Transition;
+	vector<spn_trans> Transition;
 	//!contains all the places of the Petri net
 	vector <spn_place> Place;
 	
@@ -229,8 +236,8 @@ public:
 
     size_t lastTransition; //! store the last fired transition
 
-    abstractBinding* nextPossiblyEnabledBinding(size_t tr,const abstractBinding& b,size_t*);
-    abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*);
+    const abstractBinding* nextPossiblyEnabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
+    const abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
 
 private:
 
