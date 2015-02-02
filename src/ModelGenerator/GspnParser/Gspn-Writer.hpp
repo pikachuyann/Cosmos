@@ -51,7 +51,7 @@ private:
 	void writeEnabledDisabled(ofstream &);
 	void writeEnabledDisabledBinding(ofstream &);
 	void writeUpdateVect(ofstream &,const string &name,const vector< set<int> > &vect);
-	void writeTransition(ofstream &, bool);
+	void writeTransition(ofstream &);
 	void writeVariable(ofstream & spnF);
 	
     void error(const std::string& m);

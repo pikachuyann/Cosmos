@@ -401,10 +401,10 @@ bool build() {
     string cmd = "( ";
     //Compile the SPN
     cmd += bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/spn.o " + P.tmpPath + "/spn.cpp";
-    cmd += " )\\\n&(";
+    cmd += " )\\\n";
     //Compile the LHA
-    cmd += bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp";
-    cmd += ") & wait";
+    if(!P.lightSimulator)cmd += "&(" + bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp)";
+    cmd += " & wait";
 
     if (P.verbose > 2)cout << cmd << endl;
     if (system(cmd.c_str())) return false;
@@ -417,10 +417,13 @@ bool build() {
      */
 
     //Link SPN and LHA with the library
-    cmd = bcmd + " -o " + P.tmpPath + "/ClientSim " + P.tmpPath + "/spn.o " + P.tmpPath + "/LHA.o ";
+    cmd = bcmd + " -o " + P.tmpPath + "/ClientSim " + P.tmpPath + "/spn.o ";
     if(P.lightSimulator){
         cmd += P.Path + "../lib/libClientSimLight.a ";
-    } else cmd += P.Path + "../lib/libClientSim.a ";
+    } else {
+        cmd += P.tmpPath + "/LHA.o ";
+        cmd += P.Path + "../lib/libClientSim.a ";
+    };
 
     if (P.verbose > 2)cout << cmd << endl;
     if (system(cmd.c_str())) return false;

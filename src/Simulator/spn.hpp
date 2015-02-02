@@ -83,7 +83,7 @@ struct _trans {
 		bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
 	};
     _trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am,string l):
-    Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,string::npos),label(l){
+    Id(id),label(l),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,string::npos){
         abstractBinding bl;
         bl.idcount = static_cast<int>(bindingList.size());
         bindingList.push_back( bl );

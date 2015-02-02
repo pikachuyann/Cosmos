@@ -968,31 +968,14 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	
 }
 
-void Gspn_Writer::writeTransition(ofstream & spnF, bool bstr){
+void Gspn_Writer::writeTransition(ofstream & spnF){
 	
 	size_t nbbinding = 1;
 	for (size_t v = 0 ; v < MyGspn.colVars.size(); v++)
 		nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
 
 	for (size_t t=0; t < MyGspn.tr; t++ ) {
-
-		/*spnF << "\tTransition["<<t<<"] = _trans(" << t << ",";
-		
-		if (MyGspn.transitionStruct[t].type==Timed) {
-			spnF << "Timed," << MyGspn.transitionStruct[t].dist.name << ",";
-		}else{
-			spnF << "unTimed,DETERMINISTIC,";
-		}
-		
-        spnF << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
-        spnF << ", " << MyGspn.transitionStruct[t].ageMemory <<");" << endl;
-
-		if (bstr) {
-			spnF << "\tTransition["<<t<<"].label = \""<< MyGspn.transitionStruct[t].label << "\";"<< endl;
-		}
-		//spnF << "\tTransition["<<t<<"].bindingLinkTable.resize("<< nbbinding <<",string::npos); "<< endl;
-		*/
-		if(MyGspn.colVars.size()>0){
+        if(MyGspn.colVars.size()>0){
 			spnF << "\t{abstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
 			for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
 				if( MyGspn.transitionStruct[t].varDomain.count(it)==0){
@@ -1156,7 +1139,7 @@ void Gspn_Writer::writeFile(){
 
         SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
         SpnCppFile << ", " << MyGspn.transitionStruct[t].ageMemory;
-        if(P.StringInSpnLHA)SpnCppFile << ", " << MyGspn.transitionStruct[t].label;
+        if(P.StringInSpnLHA)SpnCppFile << ", \"" << MyGspn.transitionStruct[t].label<< "\"";
         SpnCppFile <<"), ";
     }
     SpnCppFile << " }; " << endl;
@@ -1185,7 +1168,7 @@ void Gspn_Writer::writeFile(){
 		}
 	}
 	
-	writeTransition(SpnCppFile,P.StringInSpnLHA);
+	writeTransition(SpnCppFile);
 	
 	
 	//-------------- Rare Event -----------------

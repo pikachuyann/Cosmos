@@ -258,10 +258,12 @@ let incr_trans l (ssid,src,lab,dst) =
     (ssid,[(0,src2)],lab,[(0,dst)])::l
   
 
+let uni_ssid = ref 0
 
 let flatten_state_ssid (ssid,name,sl,tl,scrl,p) =
-  let _,sl2,sl3 = List.fold_left (fun (i,l2,l3) (j,n) ->
-    ((i+1),(i,n)::l2,(j,i)::l3)) (0,[],[]) sl in
+  let i2,sl2,sl3 = List.fold_left (fun (i,l2,l3) (j,n) ->
+    ((i+1),(i,n)::l2,(j,i)::l3)) (!uni_ssid,[],[]) sl in
+  uni_ssid := i2;
   let tl2 = List.map (fun (ssid,src,lab,dst) ->
     (ssid,src |>>> (fun x -> List.assoc x sl3),lab,List.assoc dst sl3)) tl in
   (ssid,name,sl2,tl2,scrl,p)
@@ -560,6 +562,11 @@ let print_prism_module fpath cf ml =
   (*List.iter (fun (x,y) -> match y with None -> () | Some s -> Printf.fprintf f "const int S_%s=%i;\n" s x) (m.stateL);*)
 
   Printf.fprintf f "module m1\n";
+
+  let st_name = Array.make (Array.length m.ivect) [] in
+
+  
+
   Array.iteri (fun n (x,n2) -> begin
     Printf.fprintf f "\t%s: [0..%i] init %i;\n"
   end
