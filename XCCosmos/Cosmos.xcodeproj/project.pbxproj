@@ -65,6 +65,7 @@
 		03EC8D6E1880714C00731BD3 /* unfolder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03EC8D6C1880714C00731BD3 /* unfolder.cpp */; };
 		03FACB821A7FAE090058C62E /* SimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03FACB801A7FAE090058C62E /* SimLight.cpp */; };
 		03FACB831A7FAE090058C62E /* SimLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03FACB811A7FAE090058C62E /* SimLight.hpp */; };
+		03FACB861A7FEAA30058C62E /* spnLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03FACB851A7FEAA30058C62E /* spnLight.hpp */; };
 		03FB40F618180F9E001F9988 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03FB40F518180F9D001F9988 /* XCTest.framework */; };
 		03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03FB40FA18180F9E001F9988 /* InfoPlist.strings */; };
 		03FB40FE18180F9E001F9988 /* Cosmos_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FB40FD18180F9E001F9988 /* Cosmos_Tests.m */; };
@@ -982,6 +983,8 @@
 		03EC8D6D1880714C00731BD3 /* unfolder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = unfolder.hpp; sourceTree = "<group>"; };
 		03FACB801A7FAE090058C62E /* SimLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimLight.cpp; sourceTree = "<group>"; };
 		03FACB811A7FAE090058C62E /* SimLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SimLight.hpp; sourceTree = "<group>"; };
+		03FACB841A7FE9FC0058C62E /* spnLight */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = spnLight; path = ../src/Simulator/spnLight; sourceTree = "<group>"; };
+		03FACB851A7FEAA30058C62E /* spnLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spnLight.hpp; sourceTree = "<group>"; };
 		03FB40F318180F9D001F9988 /* Cosmos Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cosmos Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		03FB40F518180F9D001F9988 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		03FB40F918180F9E001F9988 /* Cosmos Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Cosmos Tests-Info.plist"; sourceTree = "<group>"; };
@@ -1258,6 +1261,7 @@
 				03FACB801A7FAE090058C62E /* SimLight.cpp */,
 				03FACB811A7FAE090058C62E /* SimLight.hpp */,
 				030273EB1A41F24D00D6C7B2 /* clientsimLight.cpp */,
+				03FACB851A7FEAA30058C62E /* spnLight.hpp */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
@@ -2969,6 +2973,7 @@
 		08FB7794FE84155DC02AAC07 /* Cosmos */ = {
 			isa = PBXGroup;
 			children = (
+				03FACB841A7FE9FC0058C62E /* spnLight */,
 				03FDF5E31A42F09300AA4DA2 /* automataGen */,
 				03088AA91A0422C0006BCB27 /* prism2SPT */,
 				0336B7CB198A3BF30043EFC6 /* POMDP */,
@@ -3027,6 +3032,7 @@
 			files = (
 				0365553B18292D10001B5947 /* foxglynn.hpp in Headers */,
 				03FACB831A7FAE090058C62E /* SimLight.hpp in Headers */,
+				03FACB861A7FEAA30058C62E /* spnLight.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

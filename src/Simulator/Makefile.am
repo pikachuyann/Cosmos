@@ -23,11 +23,11 @@ libClientSim_la_SOURCES = \
 libClientSimLight_la_SOURCES = \
     Event.cpp  Event.hpp \
     EventsQueue.cpp EventsQueue.hpp \
-    marking.hpp spn.hpp \
+    marking.hpp \
     SimLight.cpp SimLight.hpp \
     clientsimLight.cpp
 
-includes_HEADERS = LHA.hpp marking.hpp spn.hpp
+includes_HEADERS = LHA.hpp marking.hpp spn.hpp spnLight.hpp
 includesdir = $(includedir)
 
 AM_LDFLAGS = $(PTHREAD_LIBS)
