@@ -21,13 +21,10 @@ libClientSim_la_SOURCES = \
 	clientsim.cpp
 
 libClientSimLight_la_SOURCES = \
-    BatchR.cpp BatchR.hpp \
     Event.cpp  Event.hpp \
     EventsQueue.cpp EventsQueue.hpp \
-    timeGen.cpp timeGen.hpp \
     marking.hpp spn.hpp \
-    LHA_orig.cpp LHA.hpp \
-    Simulator.cpp Simulator.hpp \
+    SimLight.cpp SimLight.hpp \
     clientsimLight.cpp
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp

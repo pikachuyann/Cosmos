@@ -39,9 +39,6 @@
 #include <fstream>
 
 
-
-using namespace std;
-
 #ifndef _SIMULATOR_HPP
 #define _SIMULATOR_HPP
 
