@@ -25,6 +25,7 @@ rule token = parse
   | "label" {LABEL}
   | "init" {INIT} | "endinit" {ENDINIT}
   | "bool" {BOOL}
+  | "floor" {FLOOR} | "ceil" {CEIL}
   | '"'      { read_string (Buffer.create 17) lexbuf }
   | ".." {RANGE}
   | "'" {PRIME}
@@ -32,6 +33,7 @@ rule token = parse
   | ')' {RPAR}
   | '+' {PLUS}
   | '-' {MINUS}
+  | '?' {QMARK}
   | '*' {MULT}
   | '/' {DIV}
   | '[' {LSQBRAK}
@@ -51,13 +53,15 @@ rule token = parse
   | "->" {ARROW}
   | ":" {COLON}
   | ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* as lxm {
-    (*let open Type in
+    let open Type in let open PrismType in
 	try begin match StringMap.find lxm !mapType with
 	    IntT   -> INTNAME(lxm)
 	  | BoolT  -> BOOLNAME(lxm)
 	  | DoubleT-> DOUBLENAME(lxm)
+	  | IntVar -> INTNAME(lxm)
+	  | BoolVar-> BOOLNAME(lxm)
 	end with
-	    Not_found ->*) NAME(lxm)
+	    Not_found -> NAME(lxm)
 }
   | _ { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
   | eof  {EOF}
