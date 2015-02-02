@@ -48,6 +48,10 @@
 #define TR_EBloodEx_RT 19
 #define TR_EXRay_RT 20
 
+
+using namespace std;
+
+
 	const int _nb_Place_ReadyT=0;
 	const int _nb_Place_Healthy=1;
 	const int _nb_Place_Ill=2;
