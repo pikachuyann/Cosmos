@@ -1,4 +1,5 @@
 
+
 all:
 	(cd TandemQN && ocaml test.ml $(INTC))
 	(cd pi && ocaml test.ml $(INTC))
@@ -18,3 +19,6 @@ all:
 
 bash:
 	ocaml bench.ml
+
+coverage:
+	(cd TandemQN && ocaml testcoverage.ml bash cosmos_test_log)

@@ -1,13 +1,14 @@
-bin_SCRIPTS = prism2spt
+bin_SCRIPTS = modelConvert
 
 PACKAGES = 
 LIBS     = 
 
-prism2spt: generator.ml lexer.mll parser.mly type.ml
-	cd $(srcdir); ocamlbuild -cflags -I,+xml-light -lflags -I,+xml-light -lib xml-light generator.native
-	cp $(srcdir)/generator.native prism2spt
+modelConvert: generator.ml lexer.mll parser.mly type.ml
+	cd $(srcdir); $(OCAMLBUILD) -libs unix,str prism2SPT.native
+	cp $(srcdir)/prism2SPT.native modelConvert
 
-EXTRA_DIST = generator.ml lexer.mll parser.mly type.ml petriNet.ml stochasticPetriNet.ml prism2SPT.ml
+EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml data.ml generator.ml  pnmlparser.ml prism2SPT.ml prismType.ml simulinkType.ml simulinkparser.ml type.ml parser.mly parserSimulEdge.mly lexer.mll lexerSimulEdge.mll
+
 
 CLEANFILES = _build/* $(bin_SCRIPTS) *~
 

@@ -51,6 +51,7 @@ using namespace std;
  * Type of probability distribution
  */
 enum DistributionType {
+    NORMAL,
 	GAMMA,
 	UNIFORM,
 	EXPONENTIAL,
@@ -60,9 +61,8 @@ enum DistributionType {
 	GEOMETRIC,
 	ERLANG,
 	DISCRETEUNIF,
-	MASSACTION
+	MASSACTION,
 };
-
 
 enum TransType {
 	Timed, unTimed
@@ -75,13 +75,20 @@ struct _trans {
 	_trans(){};
 	
 	//! transition constructor
-	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb):
-	Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(false),bindingLinkTable(nbb,string::npos){
+	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am):
+	Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,string::npos){
 		abstractBinding bl;
 		bl.idcount = static_cast<int>(bindingList.size());
 		bindingList.push_back( bl );
 		bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
 	};
+    _trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am,string l):
+    Id(id),label(l),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,string::npos){
+        abstractBinding bl;
+        bl.idcount = static_cast<int>(bindingList.size());
+        bindingList.push_back( bl );
+        bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
+    };
 	
 	//! number of the transition
 	unsigned int Id;
@@ -134,7 +141,7 @@ public:
 	abstractMarking Marking;
 	
 	//!contains all the transitions of the Petri net
-	vector <spn_trans> Transition;
+	vector<spn_trans> Transition;
 	//!contains all the places of the Petri net
 	vector <spn_place> Place;
 	
@@ -217,27 +224,23 @@ public:
 	
 	//! compute the the priority value of a given transition
 	double GetPriority(size_t)const;
-	
-	//! return the set of transitions that may be enabled after firing the last transition
-	const set<int >& PossiblyEn()const;
-	
-	//! return the set of transitions that may be disabled after firing the last transition
-	const set<int >& PossiblyDis()const;
-	
-	//!return the set of transition without constrain but marking dependant
-	const set<int >& FreeMarkingDependant()const;
-	
-	abstractBinding* nextPossiblyEnabledBinding(size_t tr,const abstractBinding& b,size_t*);
-	abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*);
-	
+
+    //! A table of set of transitions that may be enabled after firing the last transition
+    static const int* PossiblyEnabled[];
+
+    //! A table of set of transitions that may be disabled after firing the last transition
+    static const int* PossiblyDisabled[];
+
+    //! A table of set of transition without constrain but marking dependant
+    static const int* FreeMarkDepT[];
+
+    size_t lastTransition; //! store the last fired transition
+
+    const abstractBinding* nextPossiblyEnabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
+    const abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
+
 private:
-	size_t lastTransition; //! store the last fired transition
-	
-	
-	vector< set<int > > PossiblyEnabled;
-	vector< set<int > > PossiblyDisabled;
-	vector< set<int > > FreeMarkDepT;
-	
+
 	//------------------------- On the fly enabling disabling transition--------
 	vector<int> TransitionConditions;
 	vector<int> initTransitionConditions;

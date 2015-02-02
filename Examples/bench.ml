@@ -1,3 +1,5 @@
+#!/usr/local/bin/ocaml
+
 #use "testTeamCity.ml";;
 
 let log = (Unix.getcwd ())^"/cosmos_test_log";;

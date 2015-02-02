@@ -536,6 +536,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 							else cerr << "Unknown color Domain " << domname << endl;
 						}else MyLHA->Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
 						MyLHA->Vars.type.push_back(CONTINIOUS_VARIABLE);
+                        MyLHA->Vars.isTraced.push_back(true);
 						MyLHA->NbVar++;
 						
 						if((P.verbose-3)>1)cout << "\tcontinuous var " << constname << " index: " << MyLHA->NbVar-1 << " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] <<endl;
@@ -559,7 +560,8 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						}else MyLHA->Vars.colorDomain.push_back(UNCOLORED_DOMAIN);
 						
 						MyLHA->Vars.type.push_back(DISCRETE_VARIABLE);
-						MyLHA->NbVar++;
+                        MyLHA->Vars.isTraced.push_back(true);
+                        MyLHA->NbVar++;
 						if((P.verbose-3)>1)cout << "\tdiscrete var " << constname << " index: " << MyLHA->NbVar-1 << " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] <<endl;
 					}
 				}
@@ -581,6 +583,7 @@ void MyLhaModelHandler::on_read_model_attribute(const Attribute& attribute) {
 						
 						MyLHA->Vars.type.push_back(COLOR_VARIABLE);
 						MyLHA->NbVar++;
+                        MyLHA->Vars.isTraced.push_back(true);
 						if((P.verbose-3)>1)cout << "\tcolor var " << constname << " index: " << MyLHA->NbVar-1<< " domain: " << MyLHA->Vars.colorDomain[MyLHA->NbVar-1] << endl;
 					}
 				}

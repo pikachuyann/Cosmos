@@ -34,7 +34,7 @@ Gspn_Writer::Gspn_Writer(GspnType& mgspn,parameters& Q):MyGspn(mgspn),P(Q){
 	
 }
 
-
+// Precompute effect of transitions over other transitions
 void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
                                     vector< set<int> > &PossiblyDisabled,
                                     vector< set<int> > &FreeMarkDepT) {
@@ -49,8 +49,8 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 
         for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
 			if (t1 != t2) {
-				size_t size = INt1.size();
-				set<int> INt1t2 = INt1;
+				auto size = INt1.size();
+				auto INt1t2 = INt1;
 
                 for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
                     inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t2; ++inarc)
@@ -79,8 +79,8 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		PossiblyEnabled.push_back(Sinhib);
 	}
 	for (size_t t1 = 0; t1 < MyGspn.tr; t1++) {
-		set<int> S = PossiblyEnabled[t1];
-		set<int> Sinhib = PossiblyDisabled[t1];
+		auto S = PossiblyEnabled[t1];
+		auto Sinhib = PossiblyDisabled[t1];
 		set<int> OUTt1;
         for(auto outarc= MyGspn.outArcsStruct.lower_bound(make_pair(t1, 0));
             outarc != MyGspn.outArcsStruct.end() && outarc->first.first==t1; ++outarc )
@@ -115,7 +115,64 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 		PossiblyEnabled[t1] = S;
 		PossiblyDisabled[t1] = Sinhib;
 	}
-	
+
+    // Prune with equal arcs
+    for (size_t t1 = 0; t1 < MyGspn.tr; t1++) {
+        auto &S = PossiblyEnabled[t1];
+        auto &Sinhib = PossiblyDisabled[t1];
+        set<int> OUTt1Read;
+        set<int> OUTt1;
+        for(auto outarc= MyGspn.outArcsStruct.lower_bound(make_pair(t1, 0));
+            outarc != MyGspn.outArcsStruct.end() && outarc->first.first==t1; ++outarc )
+            if(!outarc->second.isEmpty){
+                OUTt1.insert(outarc->first.second); // insert out place
+                const auto ina = MyGspn.access(MyGspn.inArcsStruct, t1, outarc->first.second);
+                const auto inhiba = MyGspn.access(MyGspn.inhibArcsStruct, t1, outarc->first.second);
+                //Check whether this is an equal arc
+                if(!ina.isEmpty && !ina.isMarkDep && !inhiba.isEmpty && !inhiba.isMarkDep
+                   && ina.intVal == inhiba.intVal -1)
+                    OUTt1Read.insert(outarc->first.second);
+            }
+
+        for (size_t t2 = 0; t2 < MyGspn.tr; t2++)
+            if (t1 != t2) {
+                //Check whether all input places are output places of t1 with equal arc
+                int count=0;
+                int count2=0;
+                for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
+                    inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t2; ++inarc){
+                    count2 += OUTt1Read.count(inarc->first.second);
+                    if(OUTt1.count(inarc->first.second)>0 && OUTt1Read.count(inarc->first.second)==0)count++;
+                }
+                for(auto inhibarc= MyGspn.inhibArcsStruct.lower_bound(make_pair(t2, 0));
+                    inhibarc != MyGspn.inhibArcsStruct.end() && inhibarc->first.first==t2; ++inhibarc){
+                    count2 += OUTt1Read.count(inhibarc->first.second);
+                    if(OUTt1.count(inhibarc->first.second)>0 && OUTt1Read.count(inhibarc->first.second)==0)count++;
+                }
+                if(count>0)continue;//One input place is not an equal arc place.
+                if(count2==0)continue;//No input place is an equal arc place.
+
+                for(auto inarc= MyGspn.inArcsStruct.lower_bound(make_pair(t2, 0));
+                    inarc != MyGspn.inArcsStruct.end() && inarc->first.first==t2; ++inarc)
+                    if(OUTt1Read.count(inarc->first.second)>0 && !inarc->second.isEmpty && !inarc->second.isMarkDep){
+                    if(!(inarc->second.intVal<=MyGspn.access(MyGspn.outArcsStruct, t1, inarc->first.second).intVal)){
+                        S.erase(t2);
+                    }
+                    if(!(inarc->second.intVal<=MyGspn.access(MyGspn.inArcsStruct, t1, inarc->first.second).intVal)){
+                        Sinhib.erase(t2);
+                    }
+                }
+                for(auto inhibarc= MyGspn.inhibArcsStruct.lower_bound(make_pair(t2, 0));
+                    inhibarc != MyGspn.inhibArcsStruct.end() && inhibarc->first.first==t2; ++inhibarc)
+                    if(OUTt1Read.count(inhibarc->first.second)>0 && !inhibarc->second.isEmpty && !inhibarc->second.isMarkDep){
+                    if(!(inhibarc->second.intVal > MyGspn.access(MyGspn.outArcsStruct, t1, inhibarc->first.second).intVal)){                        S.erase(t2);
+                    }
+                    if(!(inhibarc->second.intVal > MyGspn.access(MyGspn.inArcsStruct, t1, inhibarc->first.second).intVal)){                        Sinhib.erase(t2);
+                    }
+                }
+            }
+    }
+
 	set<int> MarkDepT;
 	for (size_t t = 0; t < MyGspn.tr; t++)
 		if (MyGspn.transitionStruct[t].markingDependant)
@@ -132,21 +189,30 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 	}
 }
 
+
 void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector< set<int> > &vect){
-	SpnF << "\t"<< name << " = vector< set<int> >("<< vect.size() << ");"<< endl;
-	for (size_t t = 0; t < vect.size(); t++) {
-		if(vect[t].size()>2){
-			SpnF << "\t{\n\t\tint PE[]= {";
+        //SpnF << "\t"<< name << " = vector< vector<int> >("<< vect.size() << ");"<< endl;
+    for (size_t t = 0; t < vect.size(); t++)
+        if(vect[t].size()>0){
+            const auto tabname = "PE_"+name+"_"+ to_string(t);
+            SpnF << "static const int " << tabname << "[" << 1+vect[t].size() <<"]"<<"= {";
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++) {
 				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
-				if(it != vect[t].begin())SpnF << ", ";
-				SpnF << *it;
+				SpnF << "TR_" << MyGspn.transitionStruct[*it].label << "_RT, ";
 			}
-			SpnF << "};" << endl << "\t\t"<< name <<"[" << t << "] = set<int>(PE,PE+"<< vect[t].size()<< ");\n\t}" << endl;
-		}else if(vect[t].size()>0)
+        SpnF << "-1 }; /* " << MyGspn.transitionStruct[t].label << "*/"<< endl;
+            // << "\t"<< name <<"[" << t << "] = vector<int>("<<tabname<<","<< tabname<<"+"<< vect[t].size()<< ");" << endl;
+		/*}else if(vect[t].size()>0)
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++)
-				SpnF << "\t"<< name << "[" << t << "].insert( " << *it << " );"<< endl;
+				SpnF << "\t"<< name << "[" << t << "].push_back( " << *it << " );"<< endl;*/
 	}
+    SpnF << "const int* SPN::"<< name << "[] = {";
+    for (size_t t = 0; t < vect.size(); t++) {
+        if(t != 0)SpnF << ", ";
+        if(vect[t].size()>0){ SpnF << "PE_"<<name<<"_"<< t;
+        } else SpnF << "EMPTY_array";
+    }
+    SpnF << "};"<< endl;
 	SpnF << endl;
 }
 
@@ -156,7 +222,8 @@ void Gspn_Writer::writeEnabledDisabled(ofstream &SpnF){
 	vector< set<int> > FreeMarkDepT;
 	
 	EnabledDisabledTr(PossiblyEnabled,PossiblyDisabled,FreeMarkDepT);
-	
+
+    SpnF << "static const int EMPTY_array[1]={-1};" << endl;
 	writeUpdateVect(SpnF, "PossiblyEnabled", PossiblyEnabled);
 	writeUpdateVect(SpnF, "PossiblyDisabled", PossiblyDisabled);
 	writeUpdateVect(SpnF, "FreeMarkDepT", FreeMarkDepT);
@@ -251,8 +318,7 @@ void Gspn_Writer::generateStringVal(arcStore& as){
 }
 
 void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
-	
-	SpnF << "abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){" << endl;
+	SpnF << "const abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
 	SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
 	for(size_t trit = 0; trit != MyGspn.tr;++trit){
 		if(!MyGspn.transitionStruct[trit].varDomain.empty())
@@ -333,7 +399,7 @@ void Gspn_Writer::writeEnabledDisabledBinding(ofstream &SpnF){
 	SpnF << "\t\treturn &(Transition[targettr].bindingList[*bindingNum-1]);"<< endl;
 	SpnF << "}}"<< endl;
 	
-	SpnF << "abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum){" << endl;
+	SpnF << "const abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
 	SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
 	
 	for(size_t trit = 0; trit != MyGspn.tr;++trit){
@@ -466,8 +532,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		header << "\tColor_"<< it->name << "_All\n};\n";
 		header << "extern const char *Color_"<< it->name << "_names[];\n";
 	}
-	
-	
+
 	
 	for (vector<colorDomain>::const_iterator it = MyGspn.colDoms.begin()+1;
 		 it != MyGspn.colDoms.end(); ++it ) {
@@ -751,61 +816,65 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "\tm.P = P;\n";
 	SpnCppFile << "\tP = tmp;\n";
 	SpnCppFile << "}\n";
-	SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
 	
 	size_t maxNameSize =5;
-	for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-		 plit!= MyGspn.placeStruct.end(); ++plit)
-		maxNameSize = max(maxNameSize, plit->name.length());
-	maxNameSize += 5;
-	if(P.StringInSpnLHA){
-		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-		//SpnCppFile << "\ts.width(" << maxNameSize+5 <<");" << endl;
-		SpnCppFile << "\ts ";
-		
-		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-			 plit!= MyGspn.placeStruct.end(); ++plit) {
-			if (plit->isTraced)SpnCppFile << " << setw(" << maxNameSize << ") << \""  << plit->name  << "\"" ;
-			
-		}
-		SpnCppFile << ";";
-	}
+	for (const auto &plit : MyGspn.placeStruct)
+        if (plit.isTraced)
+            maxNameSize = max(maxNameSize, plit.name.length());
+    vector<place> plitcp((MyGspn.placeStruct.size()));
+
+    auto it = copy_if(MyGspn.placeStruct.begin(), MyGspn.placeStruct.end(), plitcp.begin(), [](place &plit){
+        return plit.isTraced;
+    });
+    plitcp.resize(distance(plitcp.begin(),it));
+
+
+    sort(plitcp.begin(), plitcp.end(), [&](const place &p1, const place &p2){
+        if (P.tracedPlace.count(p1.name)>0 && P.tracedPlace.count(p2.name)>0){
+            return P.tracedPlace[p1.name] < P.tracedPlace[p2.name];
+        } else return false;
+    });
+
+    SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
+    if(P.StringInSpnLHA)
+        for (const auto &plit : plitcp)
+            if (plit.isTraced){
+                SpnCppFile << "s << setw(" << maxNameSize << ") << \"";
+                SpnCppFile << plit.name  << " \";"<<endl;
+            }
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 
+	SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
+	if(P.StringInSpnLHA){
+		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
+		for(const auto &plit : plitcp)
+            if (plit.isTraced){
+                SpnCppFile << "\ts << setw(" << maxNameSize-1 << ") << ";
+                if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit.name << "<<\" \";\n";
+                }else{ SpnCppFile << "print_magic(P->_PL_"<< plit.name << ")<<\" \";\n";
+                }
+		}
+	}
+	SpnCppFile << "}\n";
     SpnCppFile << "void abstractMarking::printSedCmd(ostream &s)const{\n";
     if(P.StringInSpnLHA){
         //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-        for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-             plit!= MyGspn.placeStruct.end(); ++plit) {
-            SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit->name <<"\\\\$/\";"<< endl;
+        for (const auto &plit : MyGspn.placeStruct){
+            SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit.name <<"\\\\$/\";"<< endl;
             if(P.magic_values.empty()){
-                SpnCppFile << "\ts << P->_PL_"<< plit->name << ";"<<endl;
+                SpnCppFile << "\ts << P->_PL_"<< plit.name << ";"<<endl;
             } else {
-                SpnCppFile << "\ts << print_magic(P->_PL_"<< plit->name << ");"<<endl;
+                SpnCppFile << "\ts << print_magic(P->_PL_"<< plit.name << ");"<<endl;
             }
             SpnCppFile << "\ts <<\"/g' \";"<<endl;
         }
     }
     SpnCppFile << "}\n";
 
-    
-	SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
-	if(P.StringInSpnLHA){
-		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-		for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
-			 plit!= MyGspn.placeStruct.end(); ++plit)
-            if (plit->isTraced){
-                SpnCppFile << "\ts << setw(" << maxNameSize << ") << ";
-                if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit->name << ";\n";
-                }else{ SpnCppFile << "print_magic(P->_PL_"<< plit->name << ");\n";
-                }
-		}
-	}
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
+    SpnCppFile << "\n";
 	SpnCppFile << "int abstractMarking::getNbOfTokens(int p)const {\n";
-	if(MyGspn.isColored()){
+	if(MyGspn.isColored() || P.lightSimulator){
 		SpnCppFile << "\texit(EXIT_FAILURE);\n";
 	}else{
 		SpnCppFile << "\tswitch (p) {\n";
@@ -817,7 +886,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "std::vector<int> abstractMarking::getVector()const {\n";
-	if(MyGspn.isColored()){
+	if(MyGspn.isColored() || P.lightSimulator){
 		SpnCppFile << "\texit(EXIT_FAILURE);\n";
 	}else{
 		SpnCppFile << "\tstd::vector<int> v("<<MyGspn.pl << ");\n";
@@ -829,7 +898,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 	SpnCppFile << "void abstractMarking::setVector(const std::vector<int>&v) {\n";
-	if(MyGspn.isColored()){
+	if(MyGspn.isColored()|| P.lightSimulator){
 		SpnCppFile << "\texit(EXIT_FAILURE);\n";
 	}else{
 		for (const auto &plit : MyGspn.placeStruct){
@@ -899,33 +968,14 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	
 }
 
-void Gspn_Writer::writeTransition(ofstream & spnF, bool bstr){
+void Gspn_Writer::writeTransition(ofstream & spnF){
 	
 	size_t nbbinding = 1;
 	for (size_t v = 0 ; v < MyGspn.colVars.size(); v++)
 		nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
-	
+
 	for (size_t t=0; t < MyGspn.tr; t++ ) {
-		
-		spnF << "\tTransition["<<t<<"] = _trans(" << t << ",";
-		
-		if (MyGspn.transitionStruct[t].type==Timed) {
-			spnF << "Timed," << MyGspn.transitionStruct[t].dist.name << ",";
-		}else{
-			spnF << "unTimed,DETERMINISTIC,";
-		}
-		
-		spnF << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding <<");" << endl;
-		
-		if(MyGspn.transitionStruct[t].ageMemory)
-			spnF << "\tTransition[" << t << "].AgeMemory = true;" << endl;
-		
-		if (bstr) {
-			spnF << "\tTransition["<<t<<"].label = \""<< MyGspn.transitionStruct[t].label << "\";"<< endl;
-		}
-		//spnF << "\tTransition["<<t<<"].bindingLinkTable.resize("<< nbbinding <<",string::npos); "<< endl;
-		
-		if(MyGspn.colVars.size()>0){
+        if(MyGspn.colVars.size()>0){
 			spnF << "\t{abstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
 			for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
 				if( MyGspn.transitionStruct[t].varDomain.count(it)==0){
@@ -1038,7 +1088,7 @@ void Gspn_Writer::writeFile(){
 		SpnCppFile << "\tconst int _nb_Place_"<< plit.name << "=" << plit.id << ";" << endl;
 	}
 	
-    if (!P.magic_values.empty())
+    if (P.magic_values != "")
         SpnCppFile << "#include \"" << P.magic_values << "\"" << endl;
 	if(P.RareEvent){
 		SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
@@ -1068,17 +1118,43 @@ void Gspn_Writer::writeFile(){
 	}
 	
 	
-	//--------------- Writing implementation of SPN ----------------------------
-	SpnCppFile << "SPN::SPN():" << endl;
+
+
+    //--------------- Writing synchronization tables ---------------------------
+    writeEnabledDisabled(SpnCppFile);
+
+    //--------------- Writing transitions tables -------------------------------
+    size_t nbbinding = 1;
+    for (size_t v = 0 ; v < MyGspn.colVars.size(); v++)
+        nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
+    SpnCppFile << "static spn_trans TransArray[" << MyGspn.tr << "] = { ";
+    for (size_t t=0; t < MyGspn.tr; t++ ) {
+        SpnCppFile << "_trans(" << t << ",";
+
+        if (MyGspn.transitionStruct[t].type==Timed) {
+            SpnCppFile << "Timed," << MyGspn.transitionStruct[t].dist.name << ",";
+        }else{
+            SpnCppFile << "unTimed,DETERMINISTIC,";
+        }
+
+        SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
+        SpnCppFile << ", " << MyGspn.transitionStruct[t].ageMemory;
+        if(P.StringInSpnLHA)SpnCppFile << ", \"" << MyGspn.transitionStruct[t].label<< "\"";
+        SpnCppFile <<"), ";
+    }
+    SpnCppFile << " }; " << endl;
+
+
+    //--------------- Writing implementation of SPN ----------------------------
+    SpnCppFile << "SPN::SPN():" << endl;
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
 	SpnCppFile << "tr(" << MyGspn.tr << "), ";
-	SpnCppFile << "Transition(" << MyGspn.tr << "),";
+	SpnCppFile << "Transition(TransArray,TransArray +"<< MyGspn.tr <<"),";
     SpnCppFile << "Place("<< MyGspn.pl << "),";
 
 	SpnCppFile << "ParamDistr(3), TransitionConditions(" << MyGspn.tr <<",0){" << endl;
 	SpnCppFile << "    Path =\"" << P.PathGspn << "\";" << endl;
-	
-	writeEnabledDisabled(SpnCppFile);
+
 	
 	if(P.localTesting){
 		SpnCppFile << "\tsetConditionsVector();"<< endl;
@@ -1092,7 +1168,7 @@ void Gspn_Writer::writeFile(){
 		}
 	}
 	
-	writeTransition(SpnCppFile,P.StringInSpnLHA);
+	writeTransition(SpnCppFile);
 	
 	
 	//-------------- Rare Event -----------------
@@ -1117,6 +1193,12 @@ void Gspn_Writer::writeFile(){
 			stringstream newcase;
 		    //SpnCppFile << "     case " << t << ":  //" << MyGspn.transitionStruct[t].label <<endl;
 			for (const auto &p : MyGspn.placeStruct) {
+                if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty && !MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty)
+                    if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep && !MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isMarkDep)
+                        if (MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal+1 == MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).intVal) {
+                            newcase << "    if( Marking.P->_PL_" << p.name <<" != " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ") return false;" << endl;
+                            continue;
+                }
 				if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
 					
 					if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
@@ -1354,21 +1436,7 @@ void Gspn_Writer::writeFile(){
 		unfirecases.writeCases(SpnCppFile);
 	}
 	SpnCppFile << "}\n" << endl;
-	
-	SpnCppFile << "const set<int>& SPN::PossiblyEn()const {" << endl;
-	if (false && P.localTesting)SpnCppFile << "\treturn newlyEnabled;" << endl;
-	else SpnCppFile << "\treturn PossiblyEnabled[lastTransition];" << endl;
-	SpnCppFile << "}" << endl;
-	
-	SpnCppFile << "const set<int>& SPN::PossiblyDis()const {" << endl;
-	if (false &&P.localTesting)SpnCppFile << "\treturn newlyDisabled;" << endl;
-	else SpnCppFile << "\treturn PossiblyDisabled[lastTransition];" << endl;
-	SpnCppFile << "}" << endl;
-	
-	SpnCppFile << "const set<int>& SPN::FreeMarkingDependant()const {" << endl;
-	SpnCppFile << "\treturn FreeMarkDepT[lastTransition];" << endl;
-	SpnCppFile << "}" << endl;
-	
+
 	writeEnabledDisabledBinding(SpnCppFile);
 	
 	

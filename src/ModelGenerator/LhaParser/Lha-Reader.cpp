@@ -217,7 +217,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "\ts << \"\tLocation\\t";
     if(P.StringInSpnLHA){
         for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++)
-            LhaCppFile << MyLha.Vars.label[v] << "\\t";
+            if(MyLha.Vars.isTraced[v])LhaCppFile << MyLha.Vars.label[v] << "\\t";
 	}
 	LhaCppFile << "\";\n";
 	LhaCppFile << "};\n";
@@ -226,7 +226,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "\ts << \"\\t\" << LocLabel[CurrentLocation] << \"\\t\";\n";
     if(P.StringInSpnLHA){
         for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++)
-            LhaCppFile << "\ts << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
+            if(MyLha.Vars.isTraced[v])LhaCppFile << "\ts << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
 
     }
 	LhaCppFile << "};\n";

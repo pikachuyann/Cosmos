@@ -50,15 +50,14 @@ bool ParseBuild() {
 
     try {
         // Check the extension of the model file to call the correct parser
-        if (P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "pm" 
-         || P.PathGspn.substr(P.PathGspn.length() - 2, 2) == "sm"
-         || P.PathGspn.substr(P.PathGspn.length() - 4, 4) == "pnml"
-         || P.PathGspn.substr(P.PathGspn.length() - 3, 3) == "slx"
-            ){
+        if (!P.GMLinput
+        && P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "grml"
+        && P.PathGspn.substr(P.PathGspn.length() - 3, 3) != "gml"
+        && P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "gspn"){
             if(P.verbose>0)cerr << "Input file not in GrML try to use convertor."<< endl;
             auto outspt = P.tmpPath + "/generatedspt";
             stringstream cmd;
-            cmd << P.Path << "prism2spt " << P.PathGspn << " " << outspt;
+            cmd << P.Path << "modelConvert " << P.PathGspn << " " << outspt;
             if (P.verbose > 0)cout << cmd.str() << endl;
             if (system(cmd.str().c_str()) != 0) {
                 cerr << "Fail to Convert from input language to GrML!" << endl;
@@ -67,7 +66,9 @@ bool ParseBuild() {
             P.PathGspn = outspt+".grml";
         }
         
-        if (P.GMLinput || (P.PathGspn.compare(P.PathGspn.length() - 4, 4, "grml") == 0)) {
+        if (P.GMLinput
+            || (P.PathGspn.compare(P.PathGspn.length() - 4, 4, "grml") == 0)
+            || (P.PathGspn.compare(P.PathGspn.length() - 3, 3, "gml") == 0)) {
             parseresult = gReader.parse_gml_file(P);
         } else {
             parseresult = gReader.parse_file(P.PathGspn);
@@ -78,13 +79,11 @@ bool ParseBuild() {
         //The following code modify the internal representation of the
         //SPN according to options.
 
-        //Set the isTraced flag for places
-        if (P.tracedPlace != "ALL" && P.tracedPlace != "ALLCOLOR") {
+        //Set the isTraced flag for places and transitions
+        if (P.tracedPlace.count("ALL") == 0 && P.tracedPlace.count("ALLCOLOR")==0 ) {
             P.nbPlace = 0;
             for (size_t i = 0; i < gReader.MyGspn.pl; i++) {
-                size_t j = P.tracedPlace.find(gReader.MyGspn.placeStruct[i].name, 0);
-                if (j != string::npos && (j + gReader.MyGspn.placeStruct[i].name.length() == P.tracedPlace.length()
-                        || P.tracedPlace[j + gReader.MyGspn.placeStruct[i].name.length()] == ',')) {
+                if (P.tracedPlace.count(gReader.MyGspn.placeStruct[i].name)>0) {
                     gReader.MyGspn.placeStruct[i].isTraced = true;
                     P.nbPlace++;
                 } else {
@@ -92,9 +91,7 @@ bool ParseBuild() {
                 }
             }
             for (size_t i = 0; i < gReader.MyGspn.tr; i++) {
-                size_t j = P.tracedPlace.find(gReader.MyGspn.transitionStruct[i].label, 0);
-                if (j != string::npos && (j + gReader.MyGspn.transitionStruct[i].label.length() == P.tracedPlace.length()
-                        || P.tracedPlace[j + gReader.MyGspn.transitionStruct[i].label.length()] == ',')) {
+                if ( P.tracedPlace.count(gReader.MyGspn.transitionStruct[i].label)>0 ) {
                     gReader.MyGspn.transitionStruct[i].isTraced = true;
                 } else {
                     gReader.MyGspn.transitionStruct[i].isTraced = false;
@@ -194,6 +191,17 @@ bool ParseBuild() {
             //Add external HASL formula to the lha.
             if (P.externalHASL.compare("") != 0)
                 lReader.parse(P.externalHASL);
+
+            //Set the isTraced flag for variables
+            if (P.tracedPlace.count("ALL")==0 && P.tracedPlace.count("ALLCOLOR")==0) {
+                for (size_t i = 0; i < lReader.MyLha.NbVar; i++) {
+                    if ( P.tracedPlace.count(lReader.MyLha.Vars.label[i])>0){
+                        lReader.MyLha.Vars.isTraced[i] = true;
+                    } else {
+                        lReader.MyLha.Vars.isTraced[i] = false;
+                    }
+                }
+            }
 
             //If everythink work correctly, copy the HASL formula and generate the code
             if (!parseresult && lReader.MyLha.NbLoc > 0) {
@@ -308,7 +316,7 @@ bool ParseBuild() {
 
 }
 
-void generateMain() {
+void generateMain() { // Not use for the moment
     string loc;
 
     loc = P.tmpPath + "/main.cpp";
@@ -393,10 +401,10 @@ bool build() {
     string cmd = "( ";
     //Compile the SPN
     cmd += bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/spn.o " + P.tmpPath + "/spn.cpp";
-    cmd += " )\\\n&(";
+    cmd += " )\\\n";
     //Compile the LHA
-    cmd += bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp";
-    cmd += ") & wait";
+    if(!P.lightSimulator)cmd += "&(" + bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp)";
+    cmd += " & wait";
 
     if (P.verbose > 2)cout << cmd << endl;
     if (system(cmd.c_str())) return false;
@@ -409,7 +417,14 @@ bool build() {
      */
 
     //Link SPN and LHA with the library
-    cmd = bcmd + " -o " + P.tmpPath + "/ClientSim " + P.tmpPath + "/spn.o " + P.tmpPath + "/LHA.o " + P.Path + "../lib/libClientSim.a ";
+    cmd = bcmd + " -o " + P.tmpPath + "/ClientSim " + P.tmpPath + "/spn.o ";
+    if(P.lightSimulator){
+        cmd += P.Path + "../lib/libClientSimLight.a ";
+    } else {
+        cmd += P.tmpPath + "/LHA.o ";
+        cmd += P.Path + "../lib/libClientSim.a ";
+    };
+
     if (P.verbose > 2)cout << cmd << endl;
     if (system(cmd.c_str())) return false;
 
@@ -498,7 +513,7 @@ void generateLoopLHA(Gspn_Reader &gReader) {
     //elapse and then compute the mean number of token in each place and the throughput
     //of each transition
     bool allcolor = false;
-    if (P.tracedPlace.find("COLOR") != string::npos)allcolor = true;
+    if (P.tracedPlace.count("ALLCOLOR")>0)allcolor = true;
 
 
     P.PathLha = P.tmpPath + "/looplha.lha";
@@ -523,11 +538,15 @@ void generateLoopLHA(Gspn_Reader &gReader) {
     }
     lhastr << "} ;\nLocationsList = {l0, l1,l2};\n";
 
-    for (const auto &itt : gReader.MyGspn.transitionStruct) {
-        if (itt.isTraced)lhastr << "Throughput_" << itt.label << "= AVG(Last(" << itt.label << "));\n";
-    }
-    for (const auto &itt : gReader.MyGspn.placeStruct) {
+    auto nbHASL = 0;
+    for (const auto &itt : gReader.MyGspn.transitionStruct)
+        if (itt.isTraced){
+            nbHASL++;
+            lhastr << "Throughput_" << itt.label << "= AVG(Last(" << itt.label << "));\n";
+        }
+    for (const auto &itt : gReader.MyGspn.placeStruct)
         if (itt.isTraced) {
+            nbHASL++;
             lhastr << "MeanToken_" << itt.name << "= AVG(Last( PLVAR_" << itt.name << "));\n";
             if (allcolor && itt.colorDom != UNCOLORED_DOMAIN) {
                 gReader.iterateDom("", "_", "", "", "", "", gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str, const string&) {
@@ -535,10 +554,12 @@ void generateLoopLHA(Gspn_Reader &gReader) {
                 });
             }
         }
-    }
     lhastr << P.externalHASL << endl;
+    if(P.externalHASL.empty() && nbHASL==0)
+        lhastr << "PROB;" << endl;
+
     lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
-    lhastr << "Locations={(l0, TRUE, (time:1));(l1, TRUE, (time:1 ";
+    lhastr << "Locations={\n(l0, TRUE, (time:1));\n(l1, TRUE, (time:1 ";
     for (const auto &itt : gReader.MyGspn.placeStruct)
         if (itt.isTraced) {
             lhastr << ", PLVAR_" << itt.name << ": " << itt.name << "* invT ";
@@ -549,8 +570,8 @@ void generateLoopLHA(Gspn_Reader &gReader) {
             }
         }
 
-    lhastr << "));(l2, TRUE);};\n";
-    lhastr << "Edges={((l0,l0),ALL,time<= Ttrans ,#);((l0,l1),#,time=Ttrans ,{time=0});";
+    lhastr << "));\n(l2, TRUE);\n};\n";
+    lhastr << "Edges={\n((l0,l0),ALL,time<= Ttrans ,#);\n((l0,l1),#,time=Ttrans ,{time=0});\n";
     size_t nbplntr = 0;
     for (const auto &itt : gReader.MyGspn.transitionStruct) {
         if (itt.isTraced) {
@@ -568,7 +589,7 @@ void generateLoopLHA(Gspn_Reader &gReader) {
             }
         lhastr << "},time<=T,#);\n";
     }
-    lhastr << "((l1,l2),#,time=T ,#);};";
+    lhastr << "((l1,l2),#,time=T ,#);\n};";
     lhastr.close();
 }
 

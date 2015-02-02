@@ -207,12 +207,14 @@ void launch_clients(parameters& P){
 
 	for(int i = 0;i<P.Njob;i++){
 		string cmd = P.tmpPath + "/ClientSim";;
-		const char *argv[10] = {0};
+		const char *argv[15] = {0};
 		size_t argn = 0;
 		pushstr(argv, argn, cmd.c_str());
 		
 		pushint(argv,argn,P.Batch);
-		pushint(argv,argn,P.verbose);
+        if (P.interactive) {
+            pushint(argv,argn,6);
+        } else pushint(argv,argn,P.verbose);
         pushstr(argv,argn,P.tmpPath.c_str());
 
 		//<< P.Batch << " " << P.verbose;
@@ -224,7 +226,7 @@ void launch_clients(parameters& P){
 			//os << " " <<(t.tv_usec + t.tv_sec + getpid()+i);
 			pushint(argv,argn,(t.tv_usec + t.tv_sec + getpid()+i));
 		}else{
-			//is seed is not null add i to the seed to guarantee independance
+			//if seed is not null add i to the seed to guarantee independance
 			// of simulation.
 			//os << " " << (P.seed+i);
 			pushint(argv,argn,P.seed+i);
