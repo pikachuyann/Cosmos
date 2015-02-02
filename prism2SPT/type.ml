@@ -179,6 +179,7 @@ module MultiSet (Ot:Map.OrderedType) = struct
 end
 
 module StringSet = Set.Make(String)
+module IntSet = Set.Make(struct type t = int let compare=compare end)
 module StringMap = MultiSet(String)
 
 module IntSQ = struct 
