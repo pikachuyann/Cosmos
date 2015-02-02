@@ -244,19 +244,24 @@ let test_cosmosBash testname model prop opt v =
       print_color (sprintf "testFailed: %s Test %s fail due to uncaught exception: %s\n" testname testname (Printexc.to_string x)) 31
 
 
-let test_coverage job name v o n =
-  let _ = exec_cosmos (name^".gspn") (name^".lha") ("--batch 10 --tmp-status 2 --max-run 10") false  in
-  print_endline ("Cosmos "^o^" -v 0 --tmp-status 3 "^name^".gspn "^name^".lha");
+let test_coverage name level v o n =
+  let _ = exec_cosmos (name^".gspn") (name^".lha") ("--batch 10 -v 0 --tmp-status 2 --max-run 10") false  in
+  let cmd = Printf.sprintf "Cosmos %s -v 0 --tmp-status 3 %s.gspn %s.lha --level %f" o name name level in
+  print_endline cmd;
   let succ = ref 0 in
   for i = 1 to n do
-    let result = exec_cosmos (name^".gspn") (name^".lha") (o^" --tmp-status 3") false in
+    let result = exec_cosmos (name^".gspn") (name^".lha") (o^" --tmp-status 3 --level "^(string_of_float level)) false in
     if check_result result.haslResult v then (
       incr succ;
       print_string "+";
     ) else print_string "-";
     flush stdout;
   done;
-  printf "Coverage:\t%f\n" ((float !succ)/.(float n))
+  let cov = ((float !succ)/.(float n)) in
+  printf "\nCoverage:\t%f\n" cov;
+  if cov <= level*.0.9 || cov >= level*.1.1 then
+    update_log false ("Coverage_"^name^"_"^(string_of_float level))
+  else update_log true ("Coverage_"^name^"_"^(string_of_float level))
 
 
 let execCosmosLog_free resultFile csvFile (name,model,prop,option,prefix) =

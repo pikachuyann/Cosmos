@@ -80,7 +80,14 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
 		{//DETERMINISTIC
 			return param[0];
 		}
-			
+		
+        case NORMAL:
+        {
+            boost::normal_distribution<> NORMAL(param[0], param[1]);
+            boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > gen(RandomNumber, NORMAL);
+            return fmax(0.0,gen());
+        }
+            
 		case LOGNORMAL:
 		{//LogNormal
 			boost::lognormal_distribution<> LOGNORMAL(param[0], param[1]);
@@ -110,10 +117,10 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
         {//ERLANG
             boost::uniform_real<> UNIF(0, 1);
             boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
-            double prod = 1;
+            double sum = 0.0;
             for (int i = 0; i < param[0]; i++)
-                prod = prod * gen();
-            return -log(prod) / param[1];
+                sum -= log(gen());
+            return sum / param[1];
 			
         }
         case GAMMA:

@@ -29,6 +29,7 @@
 #define Cosmos_parameters_h
 
 #include <string>
+#include <set>
 #include <vector>
 #include <map>
 #include <chrono>
@@ -36,6 +37,59 @@
 #include "HaslFormula.hpp"
 
 using namespace std;
+
+enum Poption {
+    CO_level,
+    CO_width,
+    CO_batch,
+    CO_max_run,
+    CO_seed,
+    CO_local_test,
+    CO_sampling,
+    CO_loop,
+    CO_transient,
+    CO_formula,
+    CO_chernoff,
+    CO_relative,
+    CO_const,
+    CO_rareevent,
+    CO_boundedcountiniouceRE,
+    CO_boundedRE,
+    CO_step_continuous,
+    CO_epsilon,
+    CO_set_Horizon,
+    CO_state_space,
+    CO_prism,
+    CO_normalize_IS,
+    CO_grml_input,
+    CO_alligator_mode,
+    CO_unfold,
+    CO_HASL_formula,
+    CO_njob,
+    CO_gppcmd,
+    CO_gppflags,
+    CO_light_simulator,
+    CO_verbose,
+    CO_interactive,
+    CO_update_time,
+    CO_output_data,
+    CO_output_raw,
+    CO_output_trace,
+    CO_output_graph,
+    CO_output_dot,
+    CO_gnuplot_driver,
+    CO_trace_pt,
+    CO_help,
+    CO_count_transition,
+    CO_debug_string,
+    CO_tmp_path,
+    CO_tmp_status,
+    CO_bin_path,
+    CO_prism_path,
+    CO_magic_values,
+    CO_version,
+};
+
 
 struct parameters {
     int verbose;
@@ -84,11 +138,13 @@ struct parameters {
 
     string gcccmd;
     string gccflags;
+    bool lightSimulator;
 
     parameters();
     void View();
     void usage();
     void parseCommandLine(int argc, char** argv);
+    Poption parsersingleOpt(int i) const;
     //void parseCommandLine2(int argc, char** argv);
     string prismPath;
     string dataoutput;
@@ -97,7 +153,7 @@ struct parameters {
     double sampleResol;
     string dataPDFCDF;
     string gnuplotDriver;
-    string tracedPlace;
+    map<string,int> tracedPlace;
     string dotfile;
     string magic_values;
     

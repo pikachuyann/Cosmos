@@ -20,54 +20,54 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file Gspn-Writer.hpp created by Benoit Barbot on 14/01/14.                  *
+ * file clientsim.cpp created by Benoit Barbot.                                *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__Gspn_Writer__
-#define __Cosmos__Gspn_Writer__
-
-#include <iostream>
-#include "Gspn-Reader.hpp"
-
-
-class Gspn_Writer {
-public:
-	Gspn_Writer(GspnType& mgspn,parameters& Q);
-	
-	GspnType MyGspn;
-	parameters P;
-	
-	void writeFile();
-    void writeDotFile(const string &file);
-	
-private:
-	
-	int varMultiplier(size_t var);
-    void writeMacro(ofstream &);
-    void writeTok(ostream &SpnF, vector<coloredToken>&,const colorDomain&);
-    void generateStringVal(arcStore&);
-	void writeMarkingClasse(ofstream &, ofstream &, parameters &);
-	void writeEnabledDisabled(ofstream &);
-	void writeEnabledDisabledBinding(ofstream &);
-	void writeUpdateVect(ofstream &,const string &name,const vector< set<int> > &vect);
-	void writeTransition(ofstream &);
-	void writeVariable(ofstream & spnF);
-	
-    void error(const std::string& m);
-    
-    void view();
-	
-	
-	void printloot(ofstream& sf, size_t domain, size_t nesting );
-	
-	void EnabledDisabledTr(vector< set<int> >&,
-						   vector< set<int> >&,
-						   vector< set<int> >&);
-
-	
-	
-};
+#include "SimLight.hpp"
+#include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
 
 
-#endif /* defined(__Cosmos__Gspn_Writer__) */
+// Handler for interuption of the server
+void signalHandler(int);
+
+void signalHandler( int )
+{
+    exit(EXIT_SUCCESS);
+}
+
+/**
+ * main function it read the options given as arguments and initialyse
+ * the simulator.
+ * Then it start a while loop which compute a batch of trajectory
+ * and output the result.
+ * The loop stop only when the programme receive end_of_file on
+ * his standart input
+ */
+int main(int argc, char** argv) {
+
+	signal(SIGINT, signalHandler);
+	
+	SimulatorLight mySim;
+    const int optioni=5;
+	
+	if(argc>=optioni-1){
+		mySim.SetBatchSize(atoi(argv[1])); //set the batch size
+		mySim.verbose = atoi(argv[2]);
+        mySim.tmpPath=argv[3];
+	}else{
+		cerr << "Not enough argument";
+		return (EXIT_FAILURE);
+	}
+	
+    if(mySim.verbose>=4)mySim.RunBatch();
+    else while( !cin.eof() ){
+		mySim.RunBatch(); //simulate a batch of trajectory
+    }
+	
+    return (EXIT_SUCCESS);
+	
+	
+}

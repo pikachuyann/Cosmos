@@ -58,6 +58,7 @@ struct variables {
 	vector<string> label;
 	vector<double> initialValue;
 	vector<size_t> colorDomain;
+    vector<bool> isTraced;
 	size_t find(const string &st){
 		return (std::find(label.begin(), label.end(), st) - label.begin());
 	};

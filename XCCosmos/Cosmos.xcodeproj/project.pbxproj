@@ -63,6 +63,8 @@
 		03E39B1B183E4A110070911A /* clientsim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7041181BC0D6006D7332 /* clientsim.cpp */; };
 		03E39B1E183E4AC90070911A /* libClientSim.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 034509A616A80AC8002088B3 /* libClientSim.a */; };
 		03EC8D6E1880714C00731BD3 /* unfolder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03EC8D6C1880714C00731BD3 /* unfolder.cpp */; };
+		03FACB821A7FAE090058C62E /* SimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03FACB801A7FAE090058C62E /* SimLight.cpp */; };
+		03FACB831A7FAE090058C62E /* SimLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03FACB811A7FAE090058C62E /* SimLight.hpp */; };
 		03FB40F618180F9E001F9988 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03FB40F518180F9D001F9988 /* XCTest.framework */; };
 		03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03FB40FA18180F9E001F9988 /* InfoPlist.strings */; };
 		03FB40FE18180F9E001F9988 /* Cosmos_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FB40FD18180F9E001F9988 /* Cosmos_Tests.m */; };
@@ -137,6 +139,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		030273EB1A41F24D00D6C7B2 /* clientsimLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = clientsimLight.cpp; sourceTree = "<group>"; };
 		03088AAA1A0422C0006BCB27 /* #model.pnml# */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "#model.pnml#"; sourceTree = "<group>"; };
 		03088AAC1A0422C0006BCB27 /* _digests */ = {isa = PBXFileReference; lastKnownFileType = text; path = _digests; sourceTree = "<group>"; };
 		03088AAD1A0422C0006BCB27 /* _log */ = {isa = PBXFileReference; lastKnownFileType = text; path = _log; sourceTree = "<group>"; };
@@ -977,12 +980,22 @@
 		03CB8F4E1893CB1A00A9938A /* timeGen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGen.hpp; sourceTree = "<group>"; };
 		03EC8D6C1880714C00731BD3 /* unfolder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unfolder.cpp; sourceTree = "<group>"; };
 		03EC8D6D1880714C00731BD3 /* unfolder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = unfolder.hpp; sourceTree = "<group>"; };
+		03FACB801A7FAE090058C62E /* SimLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimLight.cpp; sourceTree = "<group>"; };
+		03FACB811A7FAE090058C62E /* SimLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SimLight.hpp; sourceTree = "<group>"; };
 		03FB40F318180F9D001F9988 /* Cosmos Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cosmos Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		03FB40F518180F9D001F9988 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		03FB40F918180F9E001F9988 /* Cosmos Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Cosmos Tests-Info.plist"; sourceTree = "<group>"; };
 		03FB40FB18180F9E001F9988 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		03FB40FD18180F9E001F9988 /* Cosmos_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Cosmos_Tests.m; sourceTree = "<group>"; };
 		03FB40FF18180F9E001F9988 /* Cosmos Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cosmos Tests-Prefix.pch"; sourceTree = "<group>"; };
+		03FDF5E41A42F09300AA4DA2 /* automata.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = automata.ml; sourceTree = "<group>"; };
+		03FDF5E51A42F09300AA4DA2 /* generator.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = generator.ml; sourceTree = "<group>"; };
+		03FDF5E61A42F09300AA4DA2 /* lexer.mll */ = {isa = PBXFileReference; lastKnownFileType = text; path = lexer.mll; sourceTree = "<group>"; };
+		03FDF5E71A42F09300AA4DA2 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		03FDF5E81A42F09300AA4DA2 /* Makefile.in */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
+		03FDF5E91A42F09300AA4DA2 /* parser.mly */ = {isa = PBXFileReference; lastKnownFileType = text; path = parser.mly; sourceTree = "<group>"; };
+		03FDF5EA1A42F09300AA4DA2 /* type.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = type.ml; sourceTree = "<group>"; };
+		03FDF5EB1A42F09400AA4DA2 /* writer.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = writer.ml; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* Cosmos */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Cosmos; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859E8B029090EE04C91782 /* Cosmos.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Cosmos.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1242,6 +1255,9 @@
 				032A7063181BC0D6006D7332 /* stateSpace.cpp */,
 				032A7064181BC0D6006D7332 /* stateSpace.hpp */,
 				032A7041181BC0D6006D7332 /* clientsim.cpp */,
+				03FACB801A7FAE090058C62E /* SimLight.cpp */,
+				03FACB811A7FAE090058C62E /* SimLight.hpp */,
+				030273EB1A41F24D00D6C7B2 /* clientsimLight.cpp */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
@@ -2934,9 +2950,26 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		03FDF5E31A42F09300AA4DA2 /* automataGen */ = {
+			isa = PBXGroup;
+			children = (
+				03FDF5E41A42F09300AA4DA2 /* automata.ml */,
+				03FDF5E51A42F09300AA4DA2 /* generator.ml */,
+				03FDF5E61A42F09300AA4DA2 /* lexer.mll */,
+				03FDF5E71A42F09300AA4DA2 /* Makefile.am */,
+				03FDF5E81A42F09300AA4DA2 /* Makefile.in */,
+				03FDF5E91A42F09300AA4DA2 /* parser.mly */,
+				03FDF5EA1A42F09300AA4DA2 /* type.ml */,
+				03FDF5EB1A42F09400AA4DA2 /* writer.ml */,
+			);
+			name = automataGen;
+			path = ../automataGen;
+			sourceTree = "<group>";
+		};
 		08FB7794FE84155DC02AAC07 /* Cosmos */ = {
 			isa = PBXGroup;
 			children = (
+				03FDF5E31A42F09300AA4DA2 /* automataGen */,
 				03088AA91A0422C0006BCB27 /* prism2SPT */,
 				0336B7CB198A3BF30043EFC6 /* POMDP */,
 				039A3672191A9EE400B42447 /* Examples */,
@@ -2993,6 +3026,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0365553B18292D10001B5947 /* foxglynn.hpp in Headers */,
+				03FACB831A7FAE090058C62E /* SimLight.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3219,6 +3253,7 @@
 				03E39B1B183E4A110070911A /* clientsim.cpp in Sources */,
 				03E39B19183E4A0C0070911A /* SimulatorContinuousBounded.cpp in Sources */,
 				03E39B18183E4A0A0070911A /* SimulatorBoundedRE.cpp in Sources */,
+				03FACB821A7FAE090058C62E /* SimLight.cpp in Sources */,
 				03E39B10183E49D60070911A /* Event.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

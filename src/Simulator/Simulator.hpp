@@ -39,9 +39,6 @@
 #include <fstream>
 
 
-
-using namespace std;
-
 #ifndef _SIMULATOR_HPP
 #define _SIMULATOR_HPP
 
@@ -129,8 +126,12 @@ protected:
 	 * this function loop over SimulateOneStep until a the path terminate.
 	 */
 	virtual void SimulateSinglePath();
-	
+
+    void printLog();
+
 	void interactiveSimulation(); //!Wait for the user to choose the next transition
+    double minInteractiveTime;
+
     void printSedCmd();
 	
 	virtual void InitialEventsQueue(); //!initialize the event queue

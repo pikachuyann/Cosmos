@@ -135,7 +135,25 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
         }
         cout << "fail eval expr: '" << *it << "'" << endl;
         throw (gmlioexc);
-    } else if (simplifyString(*it).empty())return expr(0);
+    } else if (simplifyString(*it).empty()){
+        return expr(0);
+    } else if (it.node->parent->data =="function" ){
+        if ((P.verbose - 3) > 1)cout << "newfunction:" << *it << endl;
+        expr lhs(*it);
+        expr rhs;
+        for (treeSI it2 = (it.begin()); it2 != (it.end()); ++it2) {
+            if (it2 != it.begin()) {
+                expr rhs2 = rhs;
+                expr interm = eval_expr(it2);
+                rhs = expr(ListContinuation,rhs2,interm);
+            } else {
+                rhs = eval_expr(it2);
+            };
+            
+        }
+        return expr(App, lhs, rhs);
+    }
+    
 
     try {
         return expr(stoi(simplifyString(*it)));
@@ -327,7 +345,7 @@ expr MyModelHandler::eval_guard(tree<string>::pre_order_iterator it) {
     return expr();
 }
 
-MyModelHandler::MyModelHandler(GspnType &MyGspn2, parameters &Q) : MyGspn(&MyGspn2), P(Q) {
+MyModelHandler::MyModelHandler(GspnType &MyGspn2) : MyGspn(&MyGspn2) {
     MyGspn->tr = 0;
     ParsePl = true;
     if (MyGspn->nbpass == 0) {
@@ -337,7 +355,7 @@ MyModelHandler::MyModelHandler(GspnType &MyGspn2, parameters &Q) : MyGspn(&MyGsp
 }
 //~MyModelHandler() { }
 
-MyModelHandler::MyModelHandler(GspnType &MyGspn2, parameters &Q, map<int, bool> &mip, map<int, int> &mgp, map<int, int> &mgt) : IsPlace(mip), Gml2Place(mgp), Gml2Trans(mgt), MyGspn(&MyGspn2), P(Q) {
+MyModelHandler::MyModelHandler(GspnType &MyGspn2, map<int, bool> &mip, map<int, int> &mgp, map<int, int> &mgt) : IsPlace(mip), Gml2Place(mgp), Gml2Trans(mgt), MyGspn(&MyGspn2) {
     MyGspn->tr = 0;
     ParsePl = true;
     if (MyGspn->nbpass == 0) {
@@ -360,6 +378,16 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 
     for (treeSI it = attribute.begin(); it != attribute.end(); ++it) {
         if ((P.verbose - 3) > 1)cout << *it << ":" << endl;
+        
+        if (*it == "externalDeclaration" && P.magic_values.empty() ) {
+            const auto extdef = simplifyString(*(it.begin()));
+            if ((P.verbose - 3) > 1)cout << extdef << endl;
+            P.magic_values = "magic.hpp";
+            ofstream extdefhand( P.tmpPath+"/magic.hpp", ios::out | ios::trunc);
+            extdefhand << extdef << endl;
+            extdefhand.close();
+        }
+
         if (*it == "declaration") {
             treeSI t1 = findbranch(it, "constants/intConsts/");
             if (t1 != it.end())
