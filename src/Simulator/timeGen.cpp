@@ -33,6 +33,8 @@
 #include <boost/math/distributions/binomial.hpp>
 #include <float.h>
 
+using namespace std;
+
 void timeGen::initRandomGenerator(unsigned int seed){
 	RandomNumber.seed(seed);
 }
