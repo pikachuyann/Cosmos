@@ -33,14 +33,8 @@
 
 #include <iostream>
 #include <string>
-#include <sstream>
-#include <set>
 #include <vector>
-#include <map>
 #include <math.h>
-#include <assert.h>
-#include <limits.h>
-#include <stdlib.h>
 
 
 #ifndef Cosmos_marking_h
@@ -159,7 +153,7 @@ public:
 	//!contains all the transitions of the Petri net
 	std::vector<spn_trans> Transition;
 	//!contains all the places of the Petri net
-	std::vector <spn_place> Place;
+	std::vector<spn_place> Place;
 	
 	//! set the marking to the initial marking
 	void

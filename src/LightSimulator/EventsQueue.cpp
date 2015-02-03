@@ -25,10 +25,6 @@
 
 #include "EventsQueue.hpp"
 #include "Event.hpp"
-#include <iostream>
-#include <assert.h>
-#include <algorithm>
-#include <iomanip>
 
 using namespace std;
 
@@ -234,39 +230,6 @@ void EventsQueue::siftDown(size_t i) {
 
 bool EventsQueue::isEmpty()const {
     return (evtHeap.size()==0);
-}
-
-void EventsQueue::printSedCmd(const vector<_trans> &trlabl,ostream& df)const {
-    if(evtHeap.size()>0){
-        df << "-e 's/\\$CF_" << trlabl[InPosition(0).transition].label << "\\$/Red/g' ";
-        for (unsigned int i = 1; i < evtHeap.size(); i++){
-            df << "-e 's/\\$CF_" << trlabl[InPosition(i).transition].label << "\\$/Blue/g' ";
-        }
-    }
-    df << "-e 's/\\$CF_[^\\$]*\\$/Black/g' ";
-}
-
-/**
- *	Print the content of the queues in a human readable format.
- */
-void EventsQueue::view(const vector<_trans> &trlabl)const {
-    cerr << "********** EVENTS-QUEUE VIEW **********" << endl;
-	
-    //cerr << "Qsize:" << evtHeap.size() << endl;
-	
-    if (evtHeap.size() == 0)
-        cerr << "EVENTS-QUEUE is empty!" << endl;
-    else
-        for (unsigned int i = 0; i < evtHeap.size(); i++){
-			Event e = InPosition(i);
-            //cerr << "Equeue[" << i << "]:" << "( ";
-            auto trname = trlabl[e.transition].label;
-                //if(i==0)trname = "\033[1;33m" + trlabl[e.transition].label + "\033[0m";
-            cerr << setw(15) << left << trname << ":";
-			cerr << "tr ID:" << setw(4)<< e.transition << " ";
-			cerr << ",\tt=" << e.time << ",\tp=" << e.priority << ",\tw=" << e.weight;
-			cerr << endl;
-		}
 }
 
 size_t EventsQueue::getSize()const {
