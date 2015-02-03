@@ -39,7 +39,6 @@
 #include <map>
 #include <math.h>
 #include <assert.h>
-
 #include <limits.h>
 #include <stdlib.h>
 
@@ -62,20 +61,12 @@ public:
     abstractMarkingImpl* P;
 
     abstractMarking();
-    abstractMarking(const std::vector<int>& m);
-    abstractMarking(const abstractMarking& m);
-    abstractMarking& operator = (const abstractMarking& m);
     ~abstractMarking();
 
-    //! Swap marking in constant time
-    void swap(abstractMarking& m);
     void printHeader(std::ostream &)const;
     void print(std::ostream &)const;
-    void printSedCmd(std::ostream &)const;
+
     void resetToInitMarking();
-    int getNbOfTokens(int)const;
-    std::vector<int> getVector()const;
-    void setVector(const std::vector<int>&);
     
 };
 
@@ -247,13 +238,6 @@ public:
     static const int* FreeMarkDepT[];
 
     size_t lastTransition; //! store the last fired transition
-
-private:
-
-    //------------------------- On the fly enabling disabling transition--------
-    std::vector<int> TransitionConditions;
-    std::vector<int> initTransitionConditions;
-    //-------------------------/On the fly enabling disabling transition--------
 	
 };
 #endif  /* _SPN_HPP */

@@ -34,6 +34,16 @@
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
+		<key>LigthLibrairie copy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
+		<key>LigthLibrairie.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
 		<key>POMDP.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -83,6 +93,16 @@
 			<true/>
 		</dict>
 		<key>03B6EE8C1487BB8F0099A6CC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>03BBD5EE1A80D0D700492779</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>03BBD5FE1A80DF5200492779</key>
 		<dict>
 			<key>primary</key>
 			<true/>
