@@ -31,7 +31,6 @@
 #include <stdio.h>
 #include "spnLight.hpp"
 #include "EventsQueue.hpp"
-#include "BatchR.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -39,6 +38,7 @@
 
 using namespace std;
 
+typedef std::pair<bool, std::vector<double> > SimOutput;
 
 class SimulatorLight {
 public:

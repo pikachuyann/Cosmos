@@ -83,9 +83,10 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
+    /*
     //check if the current transition is still enabled
     bool Nenabled = N.IsEnabled(E1_transitionNum);
-    bool NScheduled = EQ->isScheduled(E1_transitionNum,'0');
+    bool NScheduled = EQ->isScheduled(E1_transitionNum);
 
     if (Nenabled && NScheduled) {
         GenerateEvent(F, E1_transitionNum);
@@ -94,7 +95,7 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum){
         GenerateEvent(F, E1_transitionNum);
         EQ->insert(F);
     } else if (!Nenabled && NScheduled) {
-        EQ->remove(E1_transitionNum,'0');
+        EQ->remove(E1_transitionNum);
     }
 
 
@@ -110,12 +111,12 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum){
             //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
             //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
             if (N.IsEnabled(it)) {
-                if (!EQ->isScheduled(it,'0')) {
+                if (!EQ->isScheduled(it)) {
                     if(verbose > 4){
                         cerr << "->New transition enabled: " << N.Transition[it].label << ",";
                         cerr << endl;
                     }
-                    if(!EQ->restart(curr_time,it,'0')){
+                    if(!EQ->restart(curr_time,it)){
                         GenerateEvent(F, (it));
                         (*EQ).insert(F);
                     }
@@ -141,15 +142,15 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum){
             }
             //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
             //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-            if (EQ->isScheduled(it,'0')) {
+            if (EQ->isScheduled(it)) {
                 if (!N.IsEnabled(it )){
                     if(verbose > 4){
                         cerr << "<-New transition disabled: " << N.Transition[it].label << ",";
                         cerr << endl;
                     }
                     if(N.Transition[it].AgeMemory){
-                        EQ->pause(curr_time, it,'0');
-                    }else EQ->remove(it,'0');
+                        EQ->pause(curr_time, it);
+                    }else EQ->remove(it);
                 }else {
                     if (N.Transition[it].MarkingDependent) {
                         GenerateEvent(F, it);
@@ -165,35 +166,38 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum){
         //const auto &fmd = N.FreeMarkingDependant();
         //for (const auto &it : fmd) {
             //if (N.IsEnabled(it,bindex)) {
-            if (EQ->isScheduled(it,'0')) {
+            if (EQ->isScheduled(it)) {
                 GenerateEvent(F, it);
                 (*EQ).replace(F);
             }
 
     }
     //assert(cerr<< "assert!"<< endl);
-
-
-    /*
-     //In Debug mode check that transition are scheduled iff they are enabled
-     for (const auto &t : N.Transition){
-     for(const auto &bindex : t.bindingList){
-     if (N.IsEnabled(t.Id, bindex) !=
-     EQ->isScheduled(t.Id, bindex.idcount)){
-     cerr << "N.IsEnabled(" << t.label << ",";
-     bindex.print();
-     cerr <<")" << endl;
-     if(EQ->isScheduled(t.Id, bindex.idcount)){
-					cerr << "Scheduled and not enabled!"<< endl;
-     }else{
-					cerr << "Enabled and not scheduled!" << endl;
-     }
-     assert(N.IsEnabled(t.Id, bindex) ==
-     EQ->isScheduled(t.Id, bindex.idcount));
-     }
-     }
-     }
      */
+
+
+    //In Debug mode check that transition are scheduled iff they are enabled
+    for (const auto &it : N.Transition){
+        if (N.IsEnabled(it.Id)){
+            if (!EQ->isScheduled(it.Id)) {
+                if(!EQ->restart(curr_time,it.Id)){
+                    GenerateEvent(F, (it.Id));
+                    (*EQ).insert(F);
+                }
+            } else {
+                if (N.Transition[it.Id].MarkingDependent) {
+                    GenerateEvent(F, it.Id);
+                    (*EQ).replace(F);
+                }
+            }
+        } else {
+            if (EQ->isScheduled(it.Id)) {
+                if(N.Transition[it.Id].AgeMemory){
+                    EQ->pause(curr_time, it.Id);
+                }else EQ->remove(it.Id);
+            }
+        }
+    }
 }
 
 /**
@@ -283,7 +287,6 @@ void SimulatorLight::GenerateEvent(Event& E,size_t Id) {
     E.time = t;
     E.priority = N.GetPriority(Id);
     E.weight = 0.0;
-    E.binding = '0';
 }
 
 
