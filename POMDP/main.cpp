@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
 	
     int Memory = 2; // Number of memory step for the strategy
     double H=1000; //Simulation horizon
-	bool discounted = true; // Compute steady-state or discounted reward.
+	bool discounted = false; // Compute steady-state or discounted reward.
     
 	double Prec=1e-6; // Threshold to stop the iteration
 	int MaxIteration=10; //Max number of iteration
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
 	//This is the command line to invoke cosmos.
 	//This one use clang for the compilation of the model
 	//If clang is not install command in comment can be used.
-	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 1 --output-data test --max-run 50000 --batch 100 --count-transition --width 0.01 -v 1  --tmp-status 2";
+	string Cosmoscmd = "Cosmos generated.gspn generated.lha --njob 1 --output-data test --max-run 50000 --njob 12 --batch 100 --count-transition --width 0.01 -v 1  --tmp-status 2";
 	
 	//string Cosmoscmd = "../bin/Cosmos generated.gspn generated.lha -d test --max-run 50000 --batch 100 --count-transition --width 0.01 -v 1";
 
