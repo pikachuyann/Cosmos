@@ -844,8 +844,9 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
     if(P.StringInSpnLHA)
         for (const auto &plit : plitcp)
             if (plit.isTraced){
-                SpnCppFile << "s << setw(" << maxNameSize << ") << \"";
-                SpnCppFile << plit.name  << " \";"<<endl;
+                SpnCppFile << "s << ";
+                if(!P.lightSimulator)SpnCppFile << " setw(" << maxNameSize << ") << ";
+                SpnCppFile << "\"" <<plit.name  << " \";"<<endl;
             }
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
@@ -855,7 +856,8 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
         //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
         for(const auto &plit : plitcp)
             if (plit.isTraced){
-                SpnCppFile << "\ts << setw(" << maxNameSize-1 << ") << ";
+                SpnCppFile << "\ts << ";
+                if(!P.lightSimulator)SpnCppFile << " setw(" << maxNameSize-1 << ") << ";
                 if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit.name << "<<\" \";\n";
                 }else{ SpnCppFile << "print_magic(P->_PL_"<< plit.name << ")<<\" \";\n";
                 }
