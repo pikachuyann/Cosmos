@@ -57,12 +57,9 @@ void SimulatorLight::InitialEventsQueue() {
 
     Event E;
     for(const auto &t : N.Transition) {
-        for(auto &bindex : t.bindingList){
-            if (N.IsEnabled(t.Id,bindex)) {
-                GenerateEvent(E, t.Id ,bindex);
-                EQ->insert(E);
-            }
-        }
+        GenerateEvent(E, t.Id);
+        EQ->insert(E);
+
     }
 }
 
@@ -82,62 +79,55 @@ void SimulatorLight::reset() {
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-void SimulatorLight::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
+void SimulatorLight::updateSPN(size_t E1_transitionNum){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
     //check if the current transition is still enabled
-    for(const auto &bindex : N.Transition[E1_transitionNum].bindingList){
-        bool Nenabled = N.IsEnabled(E1_transitionNum, bindex);
-        bool NScheduled = EQ->isScheduled(E1_transitionNum, bindex.idcount);
+    bool Nenabled = N.IsEnabled(E1_transitionNum);
+    bool NScheduled = EQ->isScheduled(E1_transitionNum,'0');
 
-        if (Nenabled && NScheduled && lb.idcount == bindex.idcount ) {
-            GenerateEvent(F, E1_transitionNum, bindex);
-            EQ->replace(F); //replace the transition with the new generated time
-        } else if (Nenabled && !NScheduled) {
-            GenerateEvent(F, E1_transitionNum, bindex);
-            EQ->insert(F);
-        } else if (!Nenabled && NScheduled) {
-            EQ->remove(E1_transitionNum,bindex.idcount );
-        }
+    if (Nenabled && NScheduled) {
+        GenerateEvent(F, E1_transitionNum);
+        EQ->replace(F); //replace the transition with the new generated time
+    } else if (Nenabled && !NScheduled) {
+        GenerateEvent(F, E1_transitionNum);
+        EQ->insert(F);
+    } else if (!Nenabled && NScheduled) {
+        EQ->remove(E1_transitionNum,'0');
     }
+
 
     // Possibly adding Events corresponding to newly enabled-transitions
     //const auto &net = N.PossiblyEn();
     for (size_t t=0; N.PossiblyEnabled[N.lastTransition][t] != -1;t++) {
         const auto &it = N.PossiblyEnabled[N.lastTransition][t];
-        size_t bindnum = 0;
-        const abstractBinding *bindex = N.nextPossiblyEnabledBinding(it, lb, &bindnum);
-        while (bindex != NULL){
             if(verbose > 4){
                 cerr << "consider for enabling: " << N.Transition[it].label << ",";
-                bindex->print();
                 cerr << endl;
             }
 
             //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
             //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-            if (N.IsEnabled(it,*bindex)) {
-                if (!EQ->isScheduled(it,bindex->idcount)) {
+            if (N.IsEnabled(it)) {
+                if (!EQ->isScheduled(it,'0')) {
                     if(verbose > 4){
                         cerr << "->New transition enabled: " << N.Transition[it].label << ",";
-                        bindex->print();
                         cerr << endl;
                     }
-                    if(!EQ->restart(curr_time,it,bindex->idcount)){
-                        GenerateEvent(F, (it), *bindex);
+                    if(!EQ->restart(curr_time,it,'0')){
+                        GenerateEvent(F, (it));
                         (*EQ).insert(F);
                     }
 
                 } else {
                     if (N.Transition[it].MarkingDependent) {
-                        GenerateEvent(F, it,*bindex);
+                        GenerateEvent(F, it);
                         (*EQ).replace(F);
                     }
                 }
             }
-            bindex = N.nextPossiblyEnabledBinding(it, lb, &bindnum);
-        }
+
     }
 
     // Possibly removing Events corresponding to newly disabled-transitions
@@ -145,50 +135,40 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum, const abstractBinding& l
     //for (const auto &it : ndt) {
     for (size_t t=0; N.PossiblyDisabled[N.lastTransition][t] != -1;t++) {
         const auto &it = N.PossiblyDisabled[N.lastTransition][t];
-        size_t bindnum = 0;
-        const abstractBinding *bindex = N.nextPossiblyDisabledBinding(it, lb, &bindnum);
-        while (bindex != NULL){
             if(verbose > 4){
                 cerr << "consider for disabling: " << N.Transition[it].label << ",";
-                bindex->print();
                 cerr << endl;
             }
             //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
             //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-            if (EQ->isScheduled(it, bindex->idcount)) {
-                if (!N.IsEnabled(it, *bindex )){
+            if (EQ->isScheduled(it,'0')) {
+                if (!N.IsEnabled(it )){
                     if(verbose > 4){
                         cerr << "<-New transition disabled: " << N.Transition[it].label << ",";
-                        bindex->print();
                         cerr << endl;
                     }
                     if(N.Transition[it].AgeMemory){
-                        EQ->pause(curr_time, it, bindex->idcount);
-                    }else EQ->remove(it,bindex->idcount);
+                        EQ->pause(curr_time, it,'0');
+                    }else EQ->remove(it,'0');
                 }else {
                     if (N.Transition[it].MarkingDependent) {
-                        GenerateEvent(F, it,*bindex);
+                        GenerateEvent(F, it);
                         EQ->replace(F);
                     }
                 }
             }
-            bindex = N.nextPossiblyDisabledBinding(it, lb, &bindnum);
-        }
-    }
+               }
 
     // Update transition which have no precondition on the Marking
     for (size_t t=0; N.FreeMarkDepT[N.lastTransition][t]!= -1;t++) {
         const auto &it = N.FreeMarkDepT[N.lastTransition][t];
         //const auto &fmd = N.FreeMarkingDependant();
         //for (const auto &it : fmd) {
-        for(const auto bindex : N.Transition[it].bindingList){
             //if (N.IsEnabled(it,bindex)) {
-            if (EQ->isScheduled(it, bindex.idcount)) {
-                GenerateEvent(F, it,bindex);
+            if (EQ->isScheduled(it,'0')) {
+                GenerateEvent(F, it);
                 (*EQ).replace(F);
             }
-            //}
-        }
 
     }
     //assert(cerr<< "assert!"<< endl);
@@ -221,7 +201,6 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum, const abstractBinding& l
  * @return true if the simulation did not reach an accepting are refusing state.
  */
 bool SimulatorLight::SimulateOneStep(){
-    static const abstractBinding dummyBinding;
 
     //If there is no enabled transition in the Petri net
     //try to reach an accepting state by using autonomous edge of
@@ -234,15 +213,14 @@ bool SimulatorLight::SimulateOneStep(){
 
         if(verbose>3){
             cerr << "\033[1;33mFiring:\033[0m" << N.Transition[E1.transition].label ;
-            E1.binding.print();
         }
 
         curr_time = E1.time;
 
         //Fire the transition in the SPN
-        N.fire(E1.transition, E1.binding, curr_time);
+        N.fire(E1.transition, curr_time);
 
-        updateSPN(E1.transition, E1.binding);
+        updateSPN(E1.transition);
     }
     return true;
 }
@@ -288,15 +266,15 @@ void SimulatorLight::SimulateSinglePath() {
  * @param Id the number of the transition to of the SPN
  * @param b is the binding of the variable of the SPN for the transition.
  */
-void SimulatorLight::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
+void SimulatorLight::GenerateEvent(Event& E,size_t Id) {
+
     double t = curr_time;
     if (N.Transition[Id].transType == Timed) {
-        N.GetDistParameters(Id,b);
+        N.GetDistParameters(Id);
         t += N.ParamDistr[0];
         if(verbose > 4){
             cerr << "Sample " << N.Transition[Id].label << " with parameter (";
             cerr << N.ParamDistr[0];
-            if (N.Transition[E.transition].DistTypeIndex == ERLANG)cerr << "," << N.ParamDistr[1];
             cerr << ")" << endl;
         }
     }
@@ -305,7 +283,7 @@ void SimulatorLight::GenerateEvent(Event& E,size_t Id,const abstractBinding& b )
     E.time = t;
     E.priority = N.GetPriority(Id);
     E.weight = 0.0;
-    E.binding = b;
+    E.binding = '0';
 }
 
 

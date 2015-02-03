@@ -1,6 +1,9 @@
 #ifndef _MarkingImpl_HPP
 #define    _MarkingImpl_HPP
 #include <string.h>
+
+using namespace std;
+
 enum patient_Color_Classe {
 	Color_patient_p1,
 	Color_patient_p2,
