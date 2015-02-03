@@ -45,8 +45,6 @@
 #include <stdlib.h>
 
 
-using namespace std;
-
 /**
  * Type of probability distribution
  */
@@ -76,14 +74,14 @@ struct _trans {
 	
 	//! transition constructor
 	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am):
-	Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,string::npos){
+    Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,std::string::npos){
 		abstractBinding bl;
 		bl.idcount = static_cast<int>(bindingList.size());
 		bindingList.push_back( bl );
 		bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
 	};
-    _trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am,string l):
-    Id(id),label(l),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,string::npos){
+    _trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am,std::string l):
+    Id(id),label(l),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,std::string::npos){
         abstractBinding bl;
         bl.idcount = static_cast<int>(bindingList.size());
         bindingList.push_back( bl );
@@ -94,7 +92,7 @@ struct _trans {
 	unsigned int Id;
 	
 	//! Name of the transition, can be empty
-	string label;
+    std::string label;
 	TransType transType;
 	DistributionType DistTypeIndex;
 	
@@ -102,9 +100,9 @@ struct _trans {
 	//! true if the memory policy of the transition is age memory
 	bool AgeMemory;
 	//! List of alowed binding for this transition.
-	vector<abstractBinding> bindingList;
+    std::vector<abstractBinding> bindingList;
 	//! Table to access bindings of the transition.
-	vector<size_t> bindingLinkTable;
+    std::vector<size_t> bindingLinkTable;
 };
 typedef struct _trans spn_trans;
 
@@ -115,7 +113,7 @@ struct _place {
 	_place():isTraced(true){};
 	
 	//! name of the place, can be empty
-	string label;
+    std::string label;
 	
 	//! set to true if the place should appear in outputted trace
 	bool isTraced;
@@ -141,16 +139,16 @@ public:
 	abstractMarking Marking;
 	
 	//!contains all the transitions of the Petri net
-	vector<spn_trans> Transition;
+    std::vector<spn_trans> Transition;
 	//!contains all the places of the Petri net
-	vector <spn_place> Place;
+	std::vector <spn_place> Place;
 	
 	//! set the marking to the initial marking
 	void
 	reset();
 	
 	//! The path of the file use to generate the implementation
-	string Path;
+	std::string Path;
 	
 	/**
 	 * \brief A vector use to store temporary parameters value.
@@ -159,18 +157,18 @@ public:
 	 * store them inside this vector.
 	 * This is done to avoid allocating a new vector too frequently.
 	 */
-	mutable vector<double> ParamDistr;
+	mutable std::vector<double> ParamDistr;
 	
 	//------------------------- Rare Event -------------------------------------
-	vector <double> Rate_Table;
-	vector <double> Origine_Rate_Table;
+	std::vector <double> Rate_Table;
+	std::vector <double> Origine_Rate_Table;
 	double Rate_Sum;
 	double Origine_Rate_Sum;
-	vector <int> Msimpletab; //special places
+	std::vector <int> Msimpletab; //special places
 	
 	void Msimple();
-	void print_state(const vector<int>&);
-	void lumpingFun(const abstractMarking& ,vector<int>&);
+	void print_state(const std::vector<int>&);
+	void lumpingFun(const abstractMarking& ,std::vector<int>&);
 	bool precondition(const abstractMarking&);
 	//-------------------------/Rare Event -------------------------------------
 	
@@ -242,8 +240,8 @@ public:
 private:
 
 	//------------------------- On the fly enabling disabling transition--------
-	vector<int> TransitionConditions;
-	vector<int> initTransitionConditions;
+	std::vector<int> TransitionConditions;
+	std::vector<int> initTransitionConditions;
 	//-------------------------/On the fly enabling disabling transition--------
 	
 	

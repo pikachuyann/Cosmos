@@ -18409,7 +18409,7 @@ fi
 done
 
 
-ac_config_files="$ac_config_files Makefile src/libgrml/Makefile src/ModelGenerator/Eval/Makefile src/ModelGenerator/GspnParser/Makefile src/ModelGenerator/LhaParser/Makefile src/ModelGenerator/Makefile src/Simulator/Makefile test/Makefile automataGen/Makefile prism2SPT/Makefile utils/Makefile"
+ac_config_files="$ac_config_files Makefile src/libgrml/Makefile src/ModelGenerator/Eval/Makefile src/ModelGenerator/GspnParser/Makefile src/ModelGenerator/LhaParser/Makefile src/ModelGenerator/Makefile src/Simulator/Makefile src/LightSimulator/Makefile test/Makefile automataGen/Makefile prism2SPT/Makefile utils/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -19525,6 +19525,7 @@ do
     "src/ModelGenerator/LhaParser/Makefile") CONFIG_FILES="$CONFIG_FILES src/ModelGenerator/LhaParser/Makefile" ;;
     "src/ModelGenerator/Makefile") CONFIG_FILES="$CONFIG_FILES src/ModelGenerator/Makefile" ;;
     "src/Simulator/Makefile") CONFIG_FILES="$CONFIG_FILES src/Simulator/Makefile" ;;
+    "src/LightSimulator/Makefile") CONFIG_FILES="$CONFIG_FILES src/LightSimulator/Makefile" ;;
     "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
     "automataGen/Makefile") CONFIG_FILES="$CONFIG_FILES automataGen/Makefile" ;;
     "prism2SPT/Makefile") CONFIG_FILES="$CONFIG_FILES prism2SPT/Makefile" ;;

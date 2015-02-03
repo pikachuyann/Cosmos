@@ -36,7 +36,7 @@ class timeGen {
 public:
 	
 	//! generate a time acording to the distribution d with parameters p
-	double GenerateTime(DistributionType distribution,const vector<double> &param);
+	double GenerateTime(DistributionType distribution,const std::vector<double> &param);
 	
 	/**
 	 * \brief Initialize the random number generator with the given seed

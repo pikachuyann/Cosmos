@@ -290,7 +290,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 bin_SCRIPTS = modelConvert
 PACKAGES = 
-EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml data.ml generator.ml  pnmlparser.ml prism2SPT.ml prismType.ml simulinkType.ml simulinkparser.ml type.ml parser.mly parserSimulEdge.mly lexer.mll lexerSimulEdge.mll
+EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml data.ml generator.ml  pnmlparser.ml prism2SPT.ml prismType.ml simulinkType.ml simulinkparser.ml type.ml parser.mly parserSimulEdge.mly lexer.mll lexerSimulEdge.mll prelexer.mll preparser.mly
 CLEANFILES = _build/* $(bin_SCRIPTS) *~
 all: all-am
 
@@ -523,9 +523,13 @@ uninstall-am: uninstall-binSCRIPTS
 	uninstall-am uninstall-binSCRIPTS
 
 
+#modelConvert: generator.ml lexer.mll parser.mly type.ml
+#	cd $(srcdir); $(OCAMLBUILD) -libs unix,str prism2SPT.native
+#	cp $(srcdir)/prism2SPT.native modelConvert
+
 modelConvert: generator.ml lexer.mll parser.mly type.ml
-	cd $(srcdir); $(OCAMLBUILD) -libs unix,str prism2SPT.native
-	cp $(srcdir)/prism2SPT.native modelConvert
+	cd $(srcdir); $(OCAMLBUILD) -use-ocamlfind -pp "camlp4o pa_macro.cmo -DHAS_XML -DHAS_ZIP" prism2SPT.native modelConvert.native
+	cp $(srcdir)/modelConvert.native modelConvert
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

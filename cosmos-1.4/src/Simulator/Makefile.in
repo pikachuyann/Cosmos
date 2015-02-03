@@ -135,10 +135,6 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-libClientSimLight_la_LIBADD =
-am_libClientSimLight_la_OBJECTS = Event.lo EventsQueue.lo SimLight.lo \
-	clientsimLight.lo
-libClientSimLight_la_OBJECTS = $(am_libClientSimLight_la_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -191,9 +187,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libClientSim_la_SOURCES) $(libClientSimLight_la_SOURCES)
-DIST_SOURCES = $(libClientSim_la_SOURCES) \
-	$(libClientSimLight_la_SOURCES)
+SOURCES = $(libClientSim_la_SOURCES)
+DIST_SOURCES = $(libClientSim_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -365,7 +360,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-lib_LTLIBRARIES = libClientSim.la libClientSimLight.la
+lib_LTLIBRARIES = libClientSim.la
 libClientSim_la_SOURCES = \
 	BatchR.cpp BatchR.hpp \
 	Event.cpp  Event.hpp \
@@ -384,13 +379,6 @@ libClientSim_la_SOURCES = \
 	foxglynn.cpp foxglynn.hpp \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
 	clientsim.cpp
-
-libClientSimLight_la_SOURCES = \
-    Event.cpp  Event.hpp \
-    EventsQueue.cpp EventsQueue.hpp \
-    marking.hpp spn.hpp \
-    SimLight.cpp SimLight.hpp \
-    clientsimLight.cpp
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp
 includesdir = $(includedir)
@@ -469,9 +457,6 @@ clean-libLTLIBRARIES:
 libClientSim.la: $(libClientSim_la_OBJECTS) $(libClientSim_la_DEPENDENCIES) $(EXTRA_libClientSim_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libClientSim_la_OBJECTS) $(libClientSim_la_LIBADD) $(LIBS)
 
-libClientSimLight.la: $(libClientSimLight_la_OBJECTS) $(libClientSimLight_la_DEPENDENCIES) $(EXTRA_libClientSimLight_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libClientSimLight_la_OBJECTS) $(libClientSimLight_la_LIBADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -482,13 +467,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Event.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EventsQueue.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LHA_orig.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimLight.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimulatorBoundedRE.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimulatorContinuousBounded.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimulatorRE.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clientsim.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clientsimLight.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/foxglynn.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/numSolverBB.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/numSolverSH.Plo@am__quote@

@@ -40,7 +40,7 @@
 #define	_LHA_HPP
 
 
-typedef pair <double, double> t_interval;
+typedef std::pair <double, double> t_interval;
 
 using namespace std;
 
