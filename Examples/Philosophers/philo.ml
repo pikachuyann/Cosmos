@@ -1,6 +1,6 @@
 
 #mod_use "../../prism2SPT/PetriNet.ml"
-#mod_use "../../prism2SPT/Type.ml"
+#mod_use "../../prism2SPT/type.ml"
 #use "../../prism2SPT/StochasticPetriNet.ml"
 #use "../../utils/mlcall.ml"
 
@@ -51,6 +51,7 @@ let generate fpath n =
   print_spt_marcie (fpath^".andl") net;
   print_spt_dot (fpath^".dot") net [] [];
   generate_ltl (fpath^".ltl") n;;
+
 
 generate "philo5" 5;;
 generate "philo10" 10;;
