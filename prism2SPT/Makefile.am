@@ -8,7 +8,7 @@ LIBS     =
 #	cp $(srcdir)/prism2SPT.native modelConvert
 
 modelConvert: generator.ml lexer.mll parser.mly type.ml
-	cd $(srcdir); $(OCAMLBUILD) -pp "camlp4o pa_macro.cmo -DHAS_XML -DHAS_ZIP" -cflags -I,+xml-light,-I,+zip -lflags -I,+xml-light,-I,+zip -libs unix,xml-light,zip,Str prism2SPT.native modelConvert.native
+	cd $(srcdir); $(OCAMLBUILD) -pp "camlp4o pa_macro.cmo -DHAS_XML -DHAS_ZIP" -cflags -I,+xml-light,-I,+zip -lflags -I,+xml-light,-I,+zip -libs unix,xml-light,zip,str prism2SPT.native modelConvert.native
 	cp $(srcdir)/modelConvert.native modelConvert
 
 
