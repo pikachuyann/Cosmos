@@ -25,18 +25,6 @@
  */
 
 #include "SimLight.hpp"
-#include <sys/types.h>
-#include <unistd.h>
-#include <signal.h>
-
-
-// Handler for interuption of the server
-void signalHandler(int);
-
-void signalHandler( int )
-{
-    exit(EXIT_SUCCESS);
-}
 
 /**
  * main function it read the options given as arguments and initialyse
@@ -48,8 +36,6 @@ void signalHandler( int )
  */
 int main(int argc, char** argv) {
 
-	signal(SIGINT, signalHandler);
-	
 	SimulatorLight mySim;
     const int optioni=5;
 	
@@ -57,13 +43,9 @@ int main(int argc, char** argv) {
 		mySim.SetBatchSize(atoi(argv[1])); //set the batch size
 		mySim.verbose = atoi(argv[2]);
         mySim.tmpPath=argv[3];
-	}else{
-		cerr << "Not enough argument";
-		return (EXIT_FAILURE);
-	}
-	
-    if(mySim.verbose>=4)mySim.RunBatch();
-    else while( !cin.eof() ){
+    }
+
+    while( !cin.eof() ){
 		mySim.RunBatch(); //simulate a batch of trajectory
     }
 	

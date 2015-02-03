@@ -28,12 +28,8 @@
 #ifndef __Cosmos__SimLight__
 #define __Cosmos__SimLight__
 
-#include <stdio.h>
 #include "spnLight.hpp"
 #include "EventsQueue.hpp"
-
-#include <iostream>
-#include <fstream>
 
 
 using namespace std;
