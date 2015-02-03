@@ -30,7 +30,7 @@
 #ifndef _EVENT_HPP
 #define	_EVENT_HPP
 
-#include "string"
+typedef unsigned long size_t;
 
 class Event {
 public:
@@ -38,7 +38,6 @@ public:
 	Event();
     Event(const Event& orig);
 	const Event& operator = (const Event&);
-    virtual ~Event();
     void setTime(double);
     void setPriority(size_t);
     void setWeight(double);

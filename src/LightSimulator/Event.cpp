@@ -40,9 +40,6 @@ Event::Event(const Event& orig) :
 transition(orig.transition),time(orig.time), priority(orig.priority),
 weight(orig.weight) {}
 
-Event::~Event() {
-}
-
 const Event& Event::operator = (const Event& orig){
 	transition = orig.transition;
 	time = orig.time;

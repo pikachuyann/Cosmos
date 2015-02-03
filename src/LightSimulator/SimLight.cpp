@@ -79,7 +79,7 @@ void SimulatorLight::reset() {
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-void SimulatorLight::updateSPN(size_t E1_transitionNum){
+void SimulatorLight::updateSPN(size_t){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
@@ -247,7 +247,6 @@ void SimulatorLight::SimulateSinglePath() {
             cerr << endl;
             N.Marking.print(cerr);
             cerr << endl;
-            if(verbose>4)EQ->view(N.Transition);
         }
 
         continueb = SimulateOneStep();
@@ -259,7 +258,6 @@ void SimulatorLight::SimulateSinglePath() {
         cerr << endl;
         N.Marking.print(cerr);
         cerr << endl;
-        if(verbose>4)EQ->view(N.Transition);
     }
     //cerr << "finish path"<< endl;
 }

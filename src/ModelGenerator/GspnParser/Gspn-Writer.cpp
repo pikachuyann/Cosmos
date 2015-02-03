@@ -1086,7 +1086,7 @@ void Gspn_Writer::writeFile(){
     }else{
         SpnCppFile << "#include \"spn.hpp\"" << endl;
     }
-    SpnCppFile << "#include <iomanip>" << endl;
+    if(!P.lightSimulator)SpnCppFile << "#include <iomanip>" << endl;
     header << "using namespace std;" <<endl;
     SpnCppFile << "using namespace std;" <<endl;
 

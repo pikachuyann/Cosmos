@@ -59,9 +59,7 @@ public:
 	
 	
     bool isEmpty()const;
-    void printSedCmd(const vector<_trans> &,ostream&)const;
-    void view(const vector<_trans> &)const;
-	
+
     void reset();
     size_t getSize()const ;
 	
