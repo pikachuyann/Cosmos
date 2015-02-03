@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES = libClientSim.la libClientSimLight.la
+lib_LTLIBRARIES = libClientSim.la
 
 libClientSim_la_SOURCES = \
 	BatchR.cpp BatchR.hpp \
@@ -20,14 +20,7 @@ libClientSim_la_SOURCES = \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
 	clientsim.cpp
 
-libClientSimLight_la_SOURCES = \
-    Event.cpp  Event.hpp \
-    EventsQueue.cpp EventsQueue.hpp \
-    marking.hpp \
-    SimLight.cpp SimLight.hpp \
-    clientsimLight.cpp
-
-includes_HEADERS = LHA.hpp marking.hpp spn.hpp spnLight.hpp
+includes_HEADERS = LHA.hpp marking.hpp spn.hpp
 includesdir = $(includedir)
 
 AM_LDFLAGS = $(PTHREAD_LIBS)

@@ -784,38 +784,43 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 		SpnCppFile << "\tP->_PL_"<< plit.name << " =" <<
 		MyGspn.Marking[plit.id] << ";\n";
 	}
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "abstractMarking::abstractMarking() {\n";
-	SpnCppFile << "\tP= new abstractMarkingImpl;\n";
-	SpnCppFile << "\tresetToInitMarking();\n";
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "abstractMarking::abstractMarking(const std::vector<int>& m) {\n";
-	SpnCppFile << "\tP = new abstractMarkingImpl;\n";
-	SpnCppFile << "\tsetVector(m);\n";
-	SpnCppFile << "}\n";
-	SpnCppFile << "abstractMarking::abstractMarking(const abstractMarking& m) {\n";
-	SpnCppFile << "\tP= new abstractMarkingImpl;\n";
-	SpnCppFile << "\t*this = m;\n";
-	SpnCppFile << "};\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "abstractMarking& abstractMarking::operator = (const abstractMarking& m) {\n";
-	SpnCppFile << "\t*P = *(m.P);\n";
-	SpnCppFile << "\treturn *this;\n";
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "abstractMarking::~abstractMarking() {\n";
-	SpnCppFile << "\tdelete(P);\n";
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "void abstractMarking::swap(abstractMarking& m) {\n";
-	SpnCppFile << "\tabstractMarkingImpl* tmp = m.P;\n";
-	SpnCppFile << "\tm.P = P;\n";
-	SpnCppFile << "\tP = tmp;\n";
-	SpnCppFile << "}\n";
+    SpnCppFile << "}\n";
+    SpnCppFile << "\n";
+    SpnCppFile << "\n";
+
+    SpnCppFile << "abstractMarking::abstractMarking() {\n";
+    SpnCppFile << "\tP= new abstractMarkingImpl;\n";
+    SpnCppFile << "\tresetToInitMarking();\n";
+    SpnCppFile << "}\n";
+    SpnCppFile << "\n";
+    if(!P.lightSimulator){
+        SpnCppFile << "abstractMarking::abstractMarking(const std::vector<int>& m) {\n";
+        SpnCppFile << "\tP = new abstractMarkingImpl;\n";
+        SpnCppFile << "\tsetVector(m);\n";
+        SpnCppFile << "}\n";
+        SpnCppFile << "abstractMarking::abstractMarking(const abstractMarking& m) {\n";
+        SpnCppFile << "\tP= new abstractMarkingImpl;\n";
+        SpnCppFile << "\t*this = m;\n";
+        SpnCppFile << "};\n";
+        SpnCppFile << "\n";
+        SpnCppFile << "abstractMarking& abstractMarking::operator = (const abstractMarking& m) {\n";
+        SpnCppFile << "\t*P = *(m.P);\n";
+        SpnCppFile << "\treturn *this;\n";
+        SpnCppFile << "}\n";
+        SpnCppFile << "\n";
+    }
+    SpnCppFile << "abstractMarking::~abstractMarking() {\n";
+    SpnCppFile << "\tdelete(P);\n";
+    SpnCppFile << "}\n";
+    SpnCppFile << "\n";
+    SpnCppFile << "\n";
+    if(!P.lightSimulator){
+        SpnCppFile << "void abstractMarking::swap(abstractMarking& m) {\n";
+        SpnCppFile << "\tabstractMarkingImpl* tmp = m.P;\n";
+        SpnCppFile << "\tm.P = P;\n";
+        SpnCppFile << "\tP = tmp;\n";
+        SpnCppFile << "}\n";
+    }
 	
 	size_t maxNameSize =5;
 	for (const auto &plit : MyGspn.placeStruct)
@@ -845,69 +850,69 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 	SpnCppFile << "}\n";
 	SpnCppFile << "\n";
 
-	SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
-	if(P.StringInSpnLHA){
-		//SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-		for(const auto &plit : plitcp)
+    SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
+    if(P.StringInSpnLHA){
+        //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
+        for(const auto &plit : plitcp)
             if (plit.isTraced){
                 SpnCppFile << "\ts << setw(" << maxNameSize-1 << ") << ";
                 if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit.name << "<<\" \";\n";
                 }else{ SpnCppFile << "print_magic(P->_PL_"<< plit.name << ")<<\" \";\n";
                 }
-		}
-	}
-	SpnCppFile << "}\n";
-    SpnCppFile << "void abstractMarking::printSedCmd(ostream &s)const{\n";
-    if(P.StringInSpnLHA){
-        //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-        for (const auto &plit : MyGspn.placeStruct){
-            SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit.name <<"\\\\$/\";"<< endl;
-            if(P.magic_values.empty()){
-                SpnCppFile << "\ts << P->_PL_"<< plit.name << ";"<<endl;
-            } else {
-                SpnCppFile << "\ts << print_magic(P->_PL_"<< plit.name << ");"<<endl;
             }
-            SpnCppFile << "\ts <<\"/g' \";"<<endl;
-        }
     }
     SpnCppFile << "}\n";
-
-    SpnCppFile << "\n";
-	SpnCppFile << "int abstractMarking::getNbOfTokens(int p)const {\n";
-	if(MyGspn.isColored() || P.lightSimulator){
-		SpnCppFile << "\texit(EXIT_FAILURE);\n";
-	}else{
-		SpnCppFile << "\tswitch (p) {\n";
-		for (const auto &plit : MyGspn.placeStruct) {
-			SpnCppFile << "\t\tcase "<< plit.id << ": return P->_PL_"<< plit.name << ";\n";
-		}
-		SpnCppFile << "     }\n";
-	}
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "std::vector<int> abstractMarking::getVector()const {\n";
-	if(MyGspn.isColored() || P.lightSimulator){
-		SpnCppFile << "\texit(EXIT_FAILURE);\n";
-	}else{
-		SpnCppFile << "\tstd::vector<int> v("<<MyGspn.pl << ");\n";
-		for (const auto &plit : MyGspn.placeStruct){
-			SpnCppFile << "\tv[" << plit.id <<"] = P->_PL_" << plit.name << ";\n";
-		}
-		SpnCppFile << "     return v;\n";
-	}
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
-	SpnCppFile << "void abstractMarking::setVector(const std::vector<int>&v) {\n";
-	if(MyGspn.isColored()|| P.lightSimulator){
-		SpnCppFile << "\texit(EXIT_FAILURE);\n";
-	}else{
-		for (const auto &plit : MyGspn.placeStruct){
-			SpnCppFile << "\tP->_PL_" << plit.name << " = v[" << plit.id << "];\n";
-		}
-	}
-	SpnCppFile << "};"<<endl<<endl;
-
     if(!P.lightSimulator){
+        SpnCppFile << "void abstractMarking::printSedCmd(ostream &s)const{\n";
+        if(P.StringInSpnLHA){
+            //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
+            for (const auto &plit : MyGspn.placeStruct){
+                SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit.name <<"\\\\$/\";"<< endl;
+                if(P.magic_values.empty()){
+                    SpnCppFile << "\ts << P->_PL_"<< plit.name << ";"<<endl;
+                } else {
+                    SpnCppFile << "\ts << print_magic(P->_PL_"<< plit.name << ");"<<endl;
+                }
+                SpnCppFile << "\ts <<\"/g' \";"<<endl;
+            }
+        }
+        SpnCppFile << "}\n";
+
+        SpnCppFile << "\n";
+        SpnCppFile << "int abstractMarking::getNbOfTokens(int p)const {\n";
+        if(MyGspn.isColored() || P.lightSimulator){
+            SpnCppFile << "\texit(EXIT_FAILURE);\n";
+        }else{
+            SpnCppFile << "\tswitch (p) {\n";
+            for (const auto &plit : MyGspn.placeStruct) {
+                SpnCppFile << "\t\tcase "<< plit.id << ": return P->_PL_"<< plit.name << ";\n";
+            }
+            SpnCppFile << "     }\n";
+        }
+        SpnCppFile << "}\n";
+        SpnCppFile << "\n";
+        SpnCppFile << "std::vector<int> abstractMarking::getVector()const {\n";
+        if(MyGspn.isColored() || P.lightSimulator){
+            SpnCppFile << "\texit(EXIT_FAILURE);\n";
+        }else{
+            SpnCppFile << "\tstd::vector<int> v("<<MyGspn.pl << ");\n";
+            for (const auto &plit : MyGspn.placeStruct){
+                SpnCppFile << "\tv[" << plit.id <<"] = P->_PL_" << plit.name << ";\n";
+            }
+            SpnCppFile << "     return v;\n";
+        }
+        SpnCppFile << "}\n";
+        SpnCppFile << "\n";
+        SpnCppFile << "void abstractMarking::setVector(const std::vector<int>&v) {\n";
+        if(MyGspn.isColored()|| P.lightSimulator){
+            SpnCppFile << "\texit(EXIT_FAILURE);\n";
+        }else{
+            for (const auto &plit : MyGspn.placeStruct){
+                SpnCppFile << "\tP->_PL_" << plit.name << " = v[" << plit.id << "];\n";
+            }
+        }
+        SpnCppFile << "};"<<endl<<endl;
+
         SpnCppFile << "bool abstractBinding::next() {\n";
         SpnCppFile << "\tidcount++;\n";
         for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
@@ -1129,7 +1134,7 @@ void Gspn_Writer::writeFile(){
 
 
     //--------------- Writing synchronization tables ---------------------------
-    writeEnabledDisabled(SpnCppFile);
+    if(!P.lightSimulator)writeEnabledDisabled(SpnCppFile);
 
     //--------------- Writing transitions tables -------------------------------
     size_t nbbinding = 1;
@@ -1160,7 +1165,9 @@ void Gspn_Writer::writeFile(){
 	SpnCppFile << "Transition(TransArray,TransArray +"<< MyGspn.tr <<"),";
     SpnCppFile << "Place("<< MyGspn.pl << "),";
 
-	SpnCppFile << "ParamDistr(3), TransitionConditions(" << MyGspn.tr <<",0){" << endl;
+	SpnCppFile << "ParamDistr(3)";
+    if(!P.lightSimulator)SpnCppFile << ",TransitionConditions(" << MyGspn.tr <<",0)";
+    SpnCppFile << "{" << endl;
 	SpnCppFile << "    Path =\"" << P.PathGspn << "\";" << endl;
 
 	
@@ -1573,7 +1580,7 @@ void Gspn_Writer::writeFile(){
 
 	SpnCppFile << "void SPN::reset() {"<< endl;
 	SpnCppFile << "\tMarking.resetToInitMarking();"<< endl;
-	SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
+	if(P.localTesting)SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
 	SpnCppFile << "}"<< endl<< endl;
 	
 	SpnCppFile.close();
