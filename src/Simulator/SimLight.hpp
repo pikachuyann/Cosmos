@@ -29,7 +29,7 @@
 #define __Cosmos__SimLight__
 
 #include <stdio.h>
-#include "spn.hpp"
+#include "spnLight.hpp"
 #include "EventsQueue.hpp"
 #include "BatchR.hpp"
 
@@ -108,10 +108,10 @@ protected:
 
     void reset(); //! reset the simulator
 
-    void GenerateEvent(Event &,size_t,const abstractBinding&); //! generate a new event use Generate Time
+    void GenerateEvent(Event &,size_t); //! generate a new event use Generate Time
 
     //! update value in the SPN after a transition
-    void updateSPN(size_t,const abstractBinding& );
+    void updateSPN(size_t);
 
 };
 

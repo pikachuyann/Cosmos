@@ -563,14 +563,17 @@ let print_prism_module fpath cf ml =
 
   Printf.fprintf f "module m1\n";
 
-  let st_name = Array.make (Array.length m.ivect) [] in
+  let st_name = Array.make (Array.length m.ivect) IntSet.empty in
 
-  
+  List.iter (fun (ssidt,src,lab,dst) -> 
+    List.iter (fun (i,s) -> st_name.(i) <- IntSet.add s st_name.(i)) src;
+    List.iter (fun (i,s) -> st_name.(i) <- IntSet.add s st_name.(i)) dst;
+  ) m.transL;
 
   Array.iteri (fun n (x,n2) -> begin
-    Printf.fprintf f "\t%s: [0..%i] init %i;\n"
-  end
-    (place_of_int m.ivect n) 10000 x) m.ivect;
+    Printf.fprintf f "\t%s: [%i..%i] init %i;\n" (place_of_int m.ivect n) (IntSet.min_elt st_name.(n)) (IntSet.max_elt st_name.(n)) x;
+    IntSet.iter (fun x -> Printf.fprintf f "\t//%i -> %s;\n" x (stateasso x m.stateL)) st_name.(n)
+  end) m.ivect;
   List.iter (fun (ssidt,src,lab,dst) -> 
     Printf.fprintf f "\t[%s] " (trans_of_int ssidt lab); 
     ignore @@ List.fold_left (fun b (i,s) ->

@@ -40,27 +40,68 @@
 #include <math.h>
 #include <assert.h>
 
-#include "marking.hpp"
 #include <limits.h>
 #include <stdlib.h>
 
+
+#ifndef Cosmos_marking_h
+#define Cosmos_marking_h
+
+
+
+
+
+class abstractMarkingImpl;
+
+class abstractMarking {
+public:
+    /**
+     * Pointer to to the actual marking inmplementation
+     * which is generated.
+     */
+    abstractMarkingImpl* P;
+
+    abstractMarking();
+    abstractMarking(const std::vector<int>& m);
+    abstractMarking(const abstractMarking& m);
+    abstractMarking& operator = (const abstractMarking& m);
+    ~abstractMarking();
+
+    //! Swap marking in constant time
+    void swap(abstractMarking& m);
+    void printHeader(std::ostream &)const;
+    void print(std::ostream &)const;
+    void printSedCmd(std::ostream &)const;
+    void resetToInitMarking();
+    int getNbOfTokens(int)const;
+    std::vector<int> getVector()const;
+    void setVector(const std::vector<int>&);
+    
+};
+
+typedef char abstractBinding;
+
+
+inline bool contains(int i, int j){ return i>=j;}
+#endif
 
 /**
  * Type of probability distribution
  */
 enum DistributionType {
     NORMAL,
-	GAMMA,
-	UNIFORM,
-	EXPONENTIAL,
-	DETERMINISTIC,
-	LOGNORMAL,
-	TRIANGLE,
-	GEOMETRIC,
-	ERLANG,
-	DISCRETEUNIF,
-	MASSACTION,
+    GAMMA,
+    UNIFORM,
+    EXPONENTIAL,
+    DETERMINISTIC,
+    LOGNORMAL,
+    TRIANGLE,
+    GEOMETRIC,
+    ERLANG,
+    DISCRETEUNIF,
+    MASSACTION,
 };
+
 
 enum TransType {
 	Timed, unTimed
@@ -73,20 +114,11 @@ struct _trans {
 	_trans(){};
 	
 	//! transition constructor
-	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am):
-    Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,std::string::npos){
-		abstractBinding bl;
-		bl.idcount = static_cast<int>(bindingList.size());
-		bindingList.push_back( bl );
-		bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
-	};
-    _trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am,std::string l):
-    Id(id),label(l),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,std::string::npos){
-        abstractBinding bl;
-        bl.idcount = static_cast<int>(bindingList.size());
-        bindingList.push_back( bl );
-        bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
-    };
+	_trans(unsigned int id,TransType tt,DistributionType,bool MD,size_t,bool am):
+    Id(id),transType(tt),MarkingDependent(MD),AgeMemory(am){};
+
+    _trans(unsigned int id,TransType tt,DistributionType,bool MD,size_t,bool am,std::string l):
+    Id(id),label(l),transType(tt),MarkingDependent(MD),AgeMemory(am){};
 	
 	//! number of the transition
 	unsigned int Id;
@@ -94,15 +126,10 @@ struct _trans {
 	//! Name of the transition, can be empty
     std::string label;
 	TransType transType;
-	DistributionType DistTypeIndex;
-	
+
 	bool MarkingDependent;
 	//! true if the memory policy of the transition is age memory
 	bool AgeMemory;
-	//! List of alowed binding for this transition.
-    std::vector<abstractBinding> bindingList;
-	//! Table to access bindings of the transition.
-    std::vector<size_t> bindingLinkTable;
 };
 typedef struct _trans spn_trans;
 
@@ -113,7 +140,7 @@ struct _place {
 	_place():isTraced(true){};
 	
 	//! name of the place, can be empty
-    std::string label;
+	std::string label;
 	
 	//! set to true if the place should appear in outputted trace
 	bool isTraced;
@@ -139,7 +166,7 @@ public:
 	abstractMarking Marking;
 	
 	//!contains all the transitions of the Petri net
-    std::vector<spn_trans> Transition;
+	std::vector<spn_trans> Transition;
 	//!contains all the places of the Petri net
 	std::vector <spn_place> Place;
 	
@@ -158,20 +185,7 @@ public:
 	 * This is done to avoid allocating a new vector too frequently.
 	 */
 	mutable std::vector<double> ParamDistr;
-	
-	//------------------------- Rare Event -------------------------------------
-	std::vector <double> Rate_Table;
-	std::vector <double> Origine_Rate_Table;
-	double Rate_Sum;
-	double Origine_Rate_Sum;
-	std::vector <int> Msimpletab; //special places
-	
-	void Msimple();
-	void print_state(const std::vector<int>&);
-	void lumpingFun(const abstractMarking& ,std::vector<int>&);
-	bool precondition(const abstractMarking&);
-	//-------------------------/Rare Event -------------------------------------
-	
+
 	/**
 	 * \brief Check if a given transition is enabled.
 	 * The implementation of this function is generated
@@ -180,7 +194,7 @@ public:
 	 * @param b a binding of the transition of the SPN
 	 */
 	bool
-	IsEnabled(size_t tr,const abstractBinding& b)const;
+	IsEnabled(size_t tr)const;
 	
 	/**
 	 * \brief fire a given transition.
@@ -192,7 +206,7 @@ public:
      * with external code.
 	 */
 	void
-	fire(size_t tr,const abstractBinding& b, double time);
+	fire(size_t tr, double time);
 	
 	/**
 	 * \brief unfire a given transition.
@@ -202,7 +216,7 @@ public:
 	 * @param tr a transition of the SPN
 	 * @param b a binding of the transition of the SPN
 	 */
-	void unfire(size_t tr,const abstractBinding& b);
+	void unfire(size_t tr);
 	
 	
 	void setConditionsVector();
@@ -215,7 +229,7 @@ public:
 	 * @param tr a transition of the SPN
 	 * @param b a binding of the transition of the SPN
 	 */
-	void GetDistParameters(size_t tr, const abstractBinding& b)const;
+	void GetDistParameters(size_t tr)const;
 	
 	//! compute the the weight value of a given transition
 	double GetWeight(size_t)const;
@@ -234,16 +248,12 @@ public:
 
     size_t lastTransition; //! store the last fired transition
 
-    const abstractBinding* nextPossiblyEnabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
-    const abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
-
 private:
 
-	//------------------------- On the fly enabling disabling transition--------
-	std::vector<int> TransitionConditions;
-	std::vector<int> initTransitionConditions;
-	//-------------------------/On the fly enabling disabling transition--------
-	
+    //------------------------- On the fly enabling disabling transition--------
+    std::vector<int> TransitionConditions;
+    std::vector<int> initTransitionConditions;
+    //-------------------------/On the fly enabling disabling transition--------
 	
 };
 #endif  /* _SPN_HPP */
