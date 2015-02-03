@@ -290,7 +290,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 bin_SCRIPTS = modelConvert
 PACKAGES = 
-EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml data.ml generator.ml  pnmlparser.ml prism2SPT.ml prismType.ml simulinkType.ml simulinkparser.ml type.ml parser.mly parserSimulEdge.mly lexer.mll lexerSimulEdge.mll prelexer.mll preparser.mly
+EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml data.ml generator.ml  pnmlparser.ml prism2SPT.ml prismType.ml simulinkType.ml simulinkparser.ml type.ml parser.mly parserSimulEdge.mly lexer.mll lexerSimulEdge.mll prelexer.mll preparser.mly _tags
 CLEANFILES = _build/* $(bin_SCRIPTS) *~
 all: all-am
 
