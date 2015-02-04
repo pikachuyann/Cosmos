@@ -31,8 +31,8 @@ using namespace std;
 /**
  *	Build an Event queue for the Petri net given as parameter.
  */
-EventsQueue::EventsQueue(const SPN& N):evtTbl(N.Transition.size(),Event()){
-    for(size_t it = 0; it< N.Transition.size(); ++it ){
+EventsQueue::EventsQueue(const SPN& N):evtTbl(N.tr,Event()){
+    for(size_t it = 0; it< N.tr; ++it ){
             //evtTbl.push_back(vector<Event>());
 		evtHeapIndex.push_back(-1);
 	}

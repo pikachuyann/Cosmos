@@ -26,10 +26,6 @@
 
 #include "SimLight.hpp"
 
-
-
-using namespace std;
-
 /**
  * Constructor for the Simulator initialize the event queue
  * but don't fill it.
@@ -51,8 +47,8 @@ void SimulatorLight::InitialEventsQueue() {
     //time is simulated and added to the structure.
 
     Event E;
-    for(const auto &t : N.Transition) {
-        GenerateEvent(E, t.Id);
+    for(size_t t=0; t<N.tr ; t++) {
+        GenerateEvent(E, t);
         EQ.insert(E);
     }
 }
@@ -171,24 +167,17 @@ void SimulatorLight::updateSPN(size_t){
 
 
     //In Debug mode check that transition are scheduled iff they are enabled
-    for (const auto &it : N.Transition){
-        if (N.IsEnabled(it.Id)){
-            if (!EQ.isScheduled(it.Id)) {
-                if(!EQ.restart(curr_time,it.Id)){
-                    GenerateEvent(F, (it.Id));
+    for(size_t t=0; t<N.tr ; t++) {
+        if (N.IsEnabled(t)){
+            if (!EQ.isScheduled(t)) {
+                if(!EQ.restart(curr_time,t)){
+                    GenerateEvent(F, (t));
                     EQ.insert(F);
-                }
-            } else {
-                if (N.Transition[it.Id].MarkingDependent) {
-                    GenerateEvent(F, it.Id);
-                    EQ.replace(F);
                 }
             }
         } else {
-            if (EQ.isScheduled(it.Id)) {
-                if(N.Transition[it.Id].AgeMemory){
-                    EQ.pause(curr_time, it.Id);
-                }else EQ.remove(it.Id);
+            if (EQ.isScheduled(t)) {
+                EQ.remove(t);
             }
         }
     }
@@ -210,7 +199,7 @@ bool SimulatorLight::SimulateOneStep(){
         const Event &E1 = EQ.InPosition(0);
 
         if(verbose>3){
-            cerr << "\033[1;33mFiring:\033[0m" << N.Transition[E1.transition].label <<endl;
+            cerr << "\033[1;33mFiring:\033[0m" << E1.transition <<endl;
         }
 
         curr_time = E1.time;
@@ -266,14 +255,12 @@ void SimulatorLight::SimulateSinglePath() {
 void SimulatorLight::GenerateEvent(Event& E,size_t Id) {
 
     double t = curr_time;
-    if (N.Transition[Id].transType == Timed) {
-        N.GetDistParameters(Id);
-        t += N.ParamDistr[0];
-        if(verbose > 4){
-            cerr << "Sample " << N.Transition[Id].label << " with parameter (";
-            cerr << N.ParamDistr[0];
-            cerr << ")" << endl;
-        }
+    N.GetDistParameters(Id);
+    t += N.ParamDistr[0];
+    if(verbose > 4){
+        cerr << "Sample " << Id << " with parameter (";
+        cerr << N.ParamDistr[0];
+        cerr << ")" << endl;
     }
 
     E.transition = Id;

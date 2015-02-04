@@ -490,7 +490,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
     }
 
     //If no LHA is required only set the path for the GSPN.
-    if (optind + 1 == argc && (loopLHA > 0.0 || !CSLformula.empty() || !unfold.empty())) {
+    if (optind + 1 == argc && (loopLHA > 0.0 || !CSLformula.empty() || !unfold.empty() || P.lightSimulator)) {
         PathGspn = argv[optind];
     } else if (optind + 2 == argc) {
         PathGspn = argv[optind];
