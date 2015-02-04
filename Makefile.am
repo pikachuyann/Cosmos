@@ -69,7 +69,8 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 	Examples/RareEventU/tandem_agr.lha \
 	Examples/RareEventU/test.ml \
 	Examples/signallingCascade/MAPK.grml Examples/signallingCascade/Prop3/prop3.lha \
-	Examples/signallingCascade/test.ml
+	Examples/signallingCascade/test.ml \
+	Examples/bench.ml
 
 
 AM_LDFLAGS = -lrt $(PTHREAD_LIBS)

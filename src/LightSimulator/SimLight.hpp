@@ -39,7 +39,6 @@ typedef std::pair<bool, std::vector<double> > SimOutput;
 class SimulatorLight {
 public:
     SimulatorLight();
-    ~SimulatorLight();
 
     //! verbose level of the simulator
     int verbose;
@@ -86,7 +85,7 @@ protected:
      * enabled transitions with
      * the time at wich they will be fire if still enabled
      */
-    EventsQueue* EQ;
+    EventsQueue EQ;
 
     /**
      * \brief Simulate a step of the system,

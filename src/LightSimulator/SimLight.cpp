@@ -34,14 +34,9 @@ using namespace std;
  * Constructor for the Simulator initialize the event queue
  * but don't fill it.
  */
-SimulatorLight::SimulatorLight():verbose(0),curr_time(0.0){
-    EQ = new EventsQueue(N); //initialization of the event queue
+SimulatorLight::SimulatorLight():verbose(0),curr_time(0.0),EQ(N){
     Result.second.resize(1);
     BatchSize = 1000;
-}
-
-SimulatorLight::~SimulatorLight() {
-    delete EQ;
 }
 
 void SimulatorLight::SetBatchSize(const size_t RI) {
@@ -58,8 +53,7 @@ void SimulatorLight::InitialEventsQueue() {
     Event E;
     for(const auto &t : N.Transition) {
         GenerateEvent(E, t.Id);
-        EQ->insert(E);
-
+        EQ.insert(E);
     }
 }
 
@@ -69,7 +63,7 @@ void SimulatorLight::InitialEventsQueue() {
 void SimulatorLight::reset() {
     curr_time=0.0;
     N.reset();
-    EQ->reset();
+    EQ.reset();
 }
 
 
@@ -179,22 +173,22 @@ void SimulatorLight::updateSPN(size_t){
     //In Debug mode check that transition are scheduled iff they are enabled
     for (const auto &it : N.Transition){
         if (N.IsEnabled(it.Id)){
-            if (!EQ->isScheduled(it.Id)) {
-                if(!EQ->restart(curr_time,it.Id)){
+            if (!EQ.isScheduled(it.Id)) {
+                if(!EQ.restart(curr_time,it.Id)){
                     GenerateEvent(F, (it.Id));
-                    (*EQ).insert(F);
+                    EQ.insert(F);
                 }
             } else {
                 if (N.Transition[it.Id].MarkingDependent) {
                     GenerateEvent(F, it.Id);
-                    (*EQ).replace(F);
+                    EQ.replace(F);
                 }
             }
         } else {
-            if (EQ->isScheduled(it.Id)) {
+            if (EQ.isScheduled(it.Id)) {
                 if(N.Transition[it.Id].AgeMemory){
-                    EQ->pause(curr_time, it.Id);
-                }else EQ->remove(it.Id);
+                    EQ.pause(curr_time, it.Id);
+                }else EQ.remove(it.Id);
             }
         }
     }
@@ -209,14 +203,14 @@ bool SimulatorLight::SimulateOneStep(){
     //If there is no enabled transition in the Petri net
     //try to reach an accepting state by using autonomous edge of
     //the automata refuse the simulation otherwise.
-    if ((*EQ).isEmpty()) {
+    if (EQ.isEmpty()) {
         return false;
     } else {
         //Take the first event in the queue
-        const Event &E1 = EQ->InPosition(0);
+        const Event &E1 = EQ.InPosition(0);
 
         if(verbose>3){
-            cerr << "\033[1;33mFiring:\033[0m" << N.Transition[E1.transition].label ;
+            cerr << "\033[1;33mFiring:\033[0m" << N.Transition[E1.transition].label <<endl;
         }
 
         curr_time = E1.time;
@@ -244,7 +238,7 @@ void SimulatorLight::SimulateSinglePath() {
             //Print marking and location of the automata
             //Usefull to track a simulation
             N.Marking.printHeader(cerr);
-            cerr << endl;
+            cerr << endl << curr_time << "\t";
             N.Marking.print(cerr);
             cerr << endl;
         }
