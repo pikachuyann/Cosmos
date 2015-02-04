@@ -31,6 +31,8 @@
 #ifndef _SPN_HPP
 #define _SPN_HPP
 
+#define TR_PL_ID size_t
+
 #include <iostream>
 #include <math.h>
 
@@ -80,19 +82,16 @@ public:
 	SPN();
 	
 	//! Number of places
-	const size_t pl;
+	const TR_PL_ID pl;
 	//! Number of transitions
-	const size_t tr;
+	const TR_PL_ID tr;
 	//! Current marking
 	abstractMarking Marking;
 
 	//! set the marking to the initial marking
 	void
 	reset();
-	
-	//! The path of the file use to generate the implementation
-	std::string Path;
-	
+
 	/**
 	 * \brief A vector use to store temporary parameters value.
 	 * This vector is used to to store parameter of distribution
@@ -110,7 +109,7 @@ public:
 	 * @param b a binding of the transition of the SPN
 	 */
 	bool
-	IsEnabled(size_t tr)const;
+	IsEnabled(TR_PL_ID tr)const;
 	
 	/**
 	 * \brief fire a given transition.
@@ -122,7 +121,7 @@ public:
      * with external code.
 	 */
 	void
-	fire(size_t tr, double time);
+	fire(TR_PL_ID tr, double time);
 	
 	/**
 	 * \brief unfire a given transition.
@@ -132,7 +131,7 @@ public:
 	 * @param tr a transition of the SPN
 	 * @param b a binding of the transition of the SPN
 	 */
-	void unfire(size_t tr);
+	void unfire(TR_PL_ID tr);
 	
 	
 	void setConditionsVector();
@@ -145,13 +144,13 @@ public:
 	 * @param tr a transition of the SPN
 	 * @param b a binding of the transition of the SPN
 	 */
-	void GetDistParameters(size_t tr)const;
+	void GetDistParameters(TR_PL_ID tr)const;
 	
 	//! compute the the weight value of a given transition
-	double GetWeight(size_t)const;
+	double GetWeight(TR_PL_ID)const;
 	
 	//! compute the the priority value of a given transition
-	double GetPriority(size_t)const;
+	double GetPriority(TR_PL_ID)const;
 
     //! A table of set of transitions that may be enabled after firing the last transition
     static const int* PossiblyEnabled[];
@@ -162,7 +161,7 @@ public:
     //! A table of set of transition without constrain but marking dependant
     static const int* FreeMarkDepT[];
 
-    size_t lastTransition; //! store the last fired transition
+    TR_PL_ID lastTransition; //! store the last fired transition
 	
 };
 #endif  /* _SPN_HPP */

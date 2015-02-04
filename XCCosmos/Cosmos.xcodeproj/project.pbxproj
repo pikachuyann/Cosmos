@@ -48,10 +48,11 @@
 		03BBD5F21A80D0D700492779 /* LigthLibrairie.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BBD5F11A80D0D700492779 /* LigthLibrairie.h */; };
 		03BBD5F41A80D0D700492779 /* LigthLibrairiePriv.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BBD5F31A80D0D700492779 /* LigthLibrairiePriv.h */; };
 		03BBD5FA1A80D0F100492779 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E61A80D08A00492779 /* Event.cpp */; };
-		03BBD5FB1A80D0F100492779 /* EventsQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E81A80D08A00492779 /* EventsQueue.cpp */; };
 		03BBD5FC1A80D0F100492779 /* clientsimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E21A80CFDE00492779 /* clientsimLight.cpp */; };
 		03BBD5FD1A80D0F100492779 /* SimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E31A80CFDE00492779 /* SimLight.cpp */; };
 		03C480391A826281007B8969 /* spnLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C480381A826281007B8969 /* spnLight.cpp */; };
+		03C4803C1A8283FA007B8969 /* EventsQueueLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */; };
+		03C4803D1A8283FA007B8969 /* EventsQueueLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */; };
 		03CB8F501893CCA900A9938A /* timeGen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03CB8F4D1893CB1A00A9938A /* timeGen.cpp */; };
 		03E39B0C183E48410070911A /* LHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7094181BC14A006D7332 /* LHA.cpp */; };
 		03E39B0E183E484D0070911A /* spn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A709A181BC14A006D7332 /* spn.cpp */; };
@@ -994,6 +995,8 @@
 		03BBD5F31A80D0D700492779 /* LigthLibrairiePriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LigthLibrairiePriv.h; sourceTree = "<group>"; };
 		03BBD5F51A80D0D700492779 /* LigthLibrairie.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LigthLibrairie.cp; sourceTree = "<group>"; };
 		03C480381A826281007B8969 /* spnLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spnLight.cpp; sourceTree = "<group>"; };
+		03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventsQueueLight.cpp; sourceTree = "<group>"; };
+		03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueueLight.hpp; sourceTree = "<group>"; };
 		03CB8F4D1893CB1A00A9938A /* timeGen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeGen.cpp; sourceTree = "<group>"; };
 		03CB8F4E1893CB1A00A9938A /* timeGen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGen.hpp; sourceTree = "<group>"; };
 		03EC8D6C1880714C00731BD3 /* unfolder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unfolder.cpp; sourceTree = "<group>"; };
@@ -2954,6 +2957,8 @@
 				03BBD5E71A80D08A00492779 /* Event.hpp */,
 				03BBD5E81A80D08A00492779 /* EventsQueue.cpp */,
 				03BBD5E91A80D08A00492779 /* EventsQueue.hpp */,
+				03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */,
+				03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */,
 				03BBD5E51A80CFDE00492779 /* spnLight.hpp */,
 				03BBD5E31A80CFDE00492779 /* SimLight.cpp */,
 				03BBD5E41A80CFDE00492779 /* SimLight.hpp */,
@@ -3086,6 +3091,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03BBD5F41A80D0D700492779 /* LigthLibrairiePriv.h in Headers */,
+				03C4803D1A8283FA007B8969 /* EventsQueueLight.hpp in Headers */,
 				03BBD5F21A80D0D700492779 /* LigthLibrairie.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3360,7 +3366,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03BBD5FA1A80D0F100492779 /* Event.cpp in Sources */,
-				03BBD5FB1A80D0F100492779 /* EventsQueue.cpp in Sources */,
+				03C4803C1A8283FA007B8969 /* EventsQueueLight.cpp in Sources */,
 				03BBD5FC1A80D0F100492779 /* clientsimLight.cpp in Sources */,
 				03BBD5FD1A80D0F100492779 /* SimLight.cpp in Sources */,
 				03C480391A826281007B8969 /* spnLight.cpp in Sources */,
