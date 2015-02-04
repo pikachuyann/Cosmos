@@ -3,7 +3,7 @@ lib_LTLIBRARIES = libClientSimLight.la
 libClientSimLight_la_SOURCES = \
 	clientsimLight.cpp \
 	Event.cpp  Event.hpp \
-	EventsQueue.cpp EventsQueue.hpp \
+	EventsQueueLight.cpp EventsQueueLight.hpp \
 	SimLight.cpp SimLight.hpp \
 	spnLight.hpp
 

@@ -4,7 +4,7 @@
  * (S)tochastiques                                                             *
  *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
- * Authors: Paolo Ballarini Benoît Barbot & Hilal Djafri                       *
+ * Authors: Paolo Ballarini & Hilal Djafri                                     *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
  *                                                                             *
  * This program is free software; you can redistribute it and/or modify        *
@@ -20,29 +20,40 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file clientsim.cpp created by Benoit Barbot.                                *
+ * file EventsQueueLight.hpp created by Benoit Barbot on 4/02/2015.            *
  *******************************************************************************
  */
 
-#include "SimLight.hpp"
+#include "Event.hpp"
+#include "spnLight.hpp"
 
-/**
- * main function it read the options given as arguments and initialyse
- * the simulator.
- * Then it start a while loop which compute a batch of trajectory
- * and output the result.
- * The loop stop only when the programme receive end_of_file on
- * his standart input
- */
-int main(int argc, char** argv) {
+#ifndef __Cosmos__EventsQueueLight__
+#define __Cosmos__EventsQueueLight__
 
-	SimulatorLight mySim;
-    mySim.SetBatchSize(1); //set the batch size
-    mySim.verbose=4;
 
-    mySim.RunBatch(); //simulate a batch of trajectory
+class EventsQueue {
+public:
+    //EventsQueue(size_t);
+    EventsQueue(const SPN& N);
 
-    return (0);
-	
-	
-}
+    void insert(const Event &);
+    void replace(const Event &);
+    void remove(size_t);
+    bool isScheduled(size_t)const;
+
+    bool isEmpty()const;
+
+    void reset();
+    size_t getSize()const ;
+
+
+    const Event& InPosition(size_t)const ;
+
+private:
+    Event fstEvent;
+    bool isempty;
+
+};
+
+
+#endif /* defined(__Cosmos__EventsQueueLight__) */

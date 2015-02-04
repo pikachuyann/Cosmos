@@ -4,7 +4,7 @@
  * (S)tochastiques                                                             *
  *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
- * Authors: Paolo Ballarini Benoît Barbot & Hilal Djafri                       *
+ * Authors: Paolo Ballarini & Hilal Djafri                                     *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
  *                                                                             *
  * This program is free software; you can redistribute it and/or modify        *
@@ -20,29 +20,68 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file clientsim.cpp created by Benoit Barbot.                                *
+ * file EventsQueueLight.cpp created by Benoit Barbot on 4/02/2015.            *
  *******************************************************************************
  */
 
-#include "SimLight.hpp"
+
+#include "EventsQueueLight.hpp"
 
 /**
- * main function it read the options given as arguments and initialyse
- * the simulator.
- * Then it start a while loop which compute a batch of trajectory
- * and output the result.
- * The loop stop only when the programme receive end_of_file on
- * his standart input
+ *	Build an Event queue for the Petri net given as parameter.
  */
-int main(int argc, char** argv) {
+EventsQueue::EventsQueue(const SPN&):fstEvent(Event()),isempty(true){
+}
 
-	SimulatorLight mySim;
-    mySim.SetBatchSize(1); //set the batch size
-    mySim.verbose=4;
+/**
+ * Clear the events queue. The resulting events queues does not contain any event.
+ */
+void EventsQueue::reset() {
+    isempty=true;
+}
 
-    mySim.RunBatch(); //simulate a batch of trajectory
+/*
+ *	Insert a new event in the events queue and update the tree.
+ *  @param e an event of the Petri net.
+ */
+void EventsQueue::insert(const Event &e) {
+    if(isempty){
+        fstEvent=e;
+        isempty=false;
+    }else{
+        if(e.isPriorer(fstEvent))fstEvent=e;
+    }
+}
 
-    return (0);
-	
-	
+/*
+ *	Replace the time, priority,service of an event and update the tree.
+ *  @param e an event of the Petri net.
+ */
+void EventsQueue::replace(const Event &e) {
+    if (!isempty && e.isPriorer(fstEvent)) {
+        fstEvent =e;
+    }
+}
+
+/*
+ *	Remove an event and update the tree.
+ *  @param tr a transition of the Petri net.
+ *  @param b a binding of the Petri net.
+ */
+void EventsQueue::remove(size_t tr) {
+    if (!isempty && fstEvent.transition==tr) {
+        isempty=true;
+    }
+}
+
+bool EventsQueue::isEmpty()const{
+    return isempty;
+}
+
+const Event& EventsQueue::InPosition(size_t)const {
+    return fstEvent;
+}
+
+bool EventsQueue::isScheduled(size_t tr)const {
+    return (fstEvent.transition == tr && !isempty);
 }

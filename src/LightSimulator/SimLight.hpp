@@ -29,9 +29,7 @@
 #define __Cosmos__SimLight__
 
 #include "spnLight.hpp"
-#include "EventsQueue.hpp"
-
-typedef std::pair<bool, std::vector<double> > SimOutput;
+#include "EventsQueueLight.hpp"
 
 class SimulatorLight {
 public:
@@ -44,7 +42,7 @@ public:
      * \brief Set the batch size
      * @param RI the new batch size to use
      */
-    void SetBatchSize(const size_t); // set the batch size
+    void SetBatchSize(const TR_PL_ID); // set the batch size
 
     /**
      * \brief Main entry point of the object simulate a batch of trajectory .
@@ -66,10 +64,10 @@ protected:
     Event F;
 
     //! Store result beetween two trajectory simulation.
-    SimOutput Result;
+    bool Result;
 
     //! Size of the batch.
-    size_t BatchSize;
+    TR_PL_ID BatchSize;
 
     SPN N; //!The object representing the SPN
 
@@ -97,10 +95,10 @@ protected:
 
     void reset(); //! reset the simulator
 
-    void GenerateEvent(Event &,size_t); //! generate a new event use Generate Time
+    void GenerateEvent(Event &,TR_PL_ID); //! generate a new event use Generate Time
 
     //! update value in the SPN after a transition
-    void updateSPN(size_t);
+    void updateSPN(TR_PL_ID);
 
 };
 
