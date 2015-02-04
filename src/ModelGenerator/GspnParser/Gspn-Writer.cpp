@@ -840,30 +840,51 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
         } else return false;
     });
 
-    SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
-    if(P.StringInSpnLHA)
-        for (const auto &plit : plitcp)
-            if (plit.isTraced){
-                SpnCppFile << "s << ";
-                if(!P.lightSimulator)SpnCppFile << " setw(" << maxNameSize << ") << ";
-                SpnCppFile << "\"" <<plit.name  << " \";"<<endl;
+    if(P.lightSimulator){
+        SpnCppFile << "void abstractMarking::printHeader()const{\n";
+        if(P.StringInSpnLHA)
+            for (const auto &plit : plitcp)
+                SpnCppFile << "::print(\"" << plit.name << "\t\");"<<endl;
+        SpnCppFile << "}\n";
+        SpnCppFile << "\n";
+        SpnCppFile << "void abstractMarking::print()const{\n";
+        if(P.StringInSpnLHA){
+            for (const auto &plit : plitcp){
+                SpnCppFile << "::print((TR_PL_ID)P->_PL_"<< plit.name << ");"<<endl;
+                SpnCppFile << "::print(\"\t\");"<<endl;
             }
-	SpnCppFile << "}\n";
-	SpnCppFile << "\n";
+        }
+        SpnCppFile << "}\n";
 
-    SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
-    if(P.StringInSpnLHA){
-        //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
-        for(const auto &plit : plitcp)
-            if (plit.isTraced){
-                SpnCppFile << "\ts << ";
-                if(!P.lightSimulator)SpnCppFile << " setw(" << maxNameSize-1 << ") << ";
-                if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit.name << "<<\" \";\n";
-                }else{ SpnCppFile << "print_magic(P->_PL_"<< plit.name << ")<<\" \";\n";
+    } else {
+
+        SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
+        if(P.StringInSpnLHA)
+            for (const auto &plit : plitcp)
+                if (plit.isTraced){
+                    SpnCppFile << "s << ";
+                    SpnCppFile << " setw(" << maxNameSize << ") << ";
+                    SpnCppFile << "\"" <<plit.name  << " \";"<<endl;
                 }
-            }
+        SpnCppFile << "}\n";
+        SpnCppFile << "\n";
+
+        SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
+        if(P.StringInSpnLHA){
+            //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
+            for(const auto &plit : plitcp)
+                if (plit.isTraced){
+                    SpnCppFile << "\ts << ";
+                    SpnCppFile << " setw(" << maxNameSize-1 << ") << ";
+                    if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit.name << "<<\" \";\n";
+                    }else{ SpnCppFile << "print_magic(P->_PL_"<< plit.name << ")<<\" \";\n";
+                    }
+                }
+        }
+        SpnCppFile << "}\n";
     }
-    SpnCppFile << "}\n";
+    
+
     if(!P.lightSimulator){
         SpnCppFile << "void abstractMarking::printSedCmd(ostream &s)const{\n";
         if(P.StringInSpnLHA){
@@ -1088,9 +1109,11 @@ void Gspn_Writer::writeFile(){
     }else{
         SpnCppFile << "#include \"spn.hpp\"" << endl;
     }
-    if(!P.lightSimulator)SpnCppFile << "#include <iomanip>" << endl;
-    header << "using namespace std;" <<endl;
-    SpnCppFile << "using namespace std;" <<endl;
+    if(!P.lightSimulator){
+        SpnCppFile << "#include <iomanip>" << endl;
+        header << "using namespace std;" <<endl;
+        SpnCppFile << "using namespace std;" <<endl;
+    }
 
 	//------------- Writing constant--------------------------------------------
     writeMacro(SpnCppFile);
@@ -1112,9 +1135,8 @@ void Gspn_Writer::writeFile(){
 		SpnCppFile << "void SPN::lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
 		SpnCppFile << "bool SPN::precondition(const abstractMarking &M){return true;}" << endl;
 	}
-	
-	SpnCppFile << "#include <iostream>" << endl;
-	
+
+    
 	//------------- Writing Marking type and header ----------------------------
 	writeMarkingClasse(SpnCppFile,header,P);
 	header << "#endif" << endl;
@@ -1182,7 +1204,7 @@ void Gspn_Writer::writeFile(){
 	}
 	
 	for (const auto &plit : MyGspn.placeStruct) {
-		if(P.StringInSpnLHA){
+        if(P.StringInSpnLHA && !P.lightSimulator){
 			SpnCppFile << "    Place[" << plit.id << "].label =\" " << plit.name << "\";" << endl;
 			SpnCppFile << "    Place[" << plit.id << "].isTraced = " << plit.isTraced << ";" << endl;
 		}
@@ -1203,7 +1225,7 @@ void Gspn_Writer::writeFile(){
 	SpnCppFile << "}\n" << endl;
 	
 	
-	SpnCppFile << "bool SPN::IsEnabled(size_t t";
+	SpnCppFile << "bool SPN::IsEnabled(TR_PL_ID t";
     if (!P.lightSimulator)SpnCppFile << ",const abstractBinding& b";
     SpnCppFile << ")const {" << endl;
 	if(P.localTesting){
@@ -1254,7 +1276,7 @@ void Gspn_Writer::writeFile(){
 	SpnCppFile << "}\n" << endl;
 	
 	
-    SpnCppFile << "void SPN::fire(size_t t";
+    SpnCppFile << "void SPN::fire(TR_PL_ID t";
     if (!P.lightSimulator)SpnCppFile << ",const abstractBinding& b";
     SpnCppFile << ",  double time){" << endl;
 	SpnCppFile << "\tlastTransition = t;" << endl;
@@ -1436,7 +1458,7 @@ void Gspn_Writer::writeFile(){
     SpnCppFile << "}" << endl;
 
     if(!P.lightSimulator){
-        SpnCppFile << "void SPN::unfire(size_t t ,const abstractBinding& b){" << endl;
+        SpnCppFile << "void SPN::unfire(TR_PL_ID t ,const abstractBinding& b){" << endl;
         if(P.RareEvent || P.computeStateSpace){
             casesHandler unfirecases("t");
             for (size_t t = 0; t < MyGspn.tr; t++) {
@@ -1496,7 +1518,7 @@ void Gspn_Writer::writeFile(){
 	
 	SpnCppFile << "}" << endl;
 	
-    SpnCppFile << "void SPN::GetDistParameters(size_t t ";
+    SpnCppFile << "void SPN::GetDistParameters(TR_PL_ID t ";
     if (!P.lightSimulator)SpnCppFile << ",const abstractBinding& b";
     SpnCppFile << ")const {" << endl;
 	casesHandler parametercases("t");
@@ -1547,7 +1569,7 @@ void Gspn_Writer::writeFile(){
 	
 	
 	
-	SpnCppFile << "double SPN::GetPriority(size_t t)const {" << endl;
+	SpnCppFile << "double SPN::GetPriority(TR_PL_ID t)const {" << endl;
 	casesHandler prioritycases("t");
 	for (size_t t = 0; t < MyGspn.tr; t++){
 		stringstream newcase;
@@ -1561,7 +1583,7 @@ void Gspn_Writer::writeFile(){
 	
 	
 	/////////////////////////////////////////
-	SpnCppFile << "double SPN::GetWeight(size_t t)const{" << endl;
+	SpnCppFile << "double SPN::GetWeight(TR_PL_ID t)const{" << endl;
 	casesHandler weightcases("t");
 	for (size_t t = 0; t < MyGspn.tr; t++){
 		stringstream newcase;

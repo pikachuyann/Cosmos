@@ -198,7 +198,9 @@ bool SimulatorLight::SimulateOneStep(){
         const Event &E1 = EQ.InPosition(0);
 
         if(verbose>3){
-            std::cerr << "\033[1;33mFiring:\033[0m" << E1.transition << std::endl;
+            print("Firing:");
+            print(E1.transition);
+            print("\n");
         }
 
         curr_time = E1.time;
@@ -226,10 +228,11 @@ void SimulatorLight::SimulateSinglePath() {
         if(verbose>3){
             //Print marking and location of the automata
             //Usefull to track a simulation
-            N.Marking.printHeader(std::cerr);
-            std::cerr << std::endl << curr_time << "\t";
-            N.Marking.print(std::cerr);
-            std::cerr << std::endl;
+            N.Marking.printHeader();
+            print("\n");
+            print(curr_time);
+            N.Marking.print();
+            print("\n");
         }
 
         continueb = SimulateOneStep();
@@ -237,10 +240,11 @@ void SimulatorLight::SimulateSinglePath() {
     if(verbose>3){
         //Print marking and location of the automata
         //Usefull to track a simulation
-        N.Marking.printHeader(std::cerr);
-        std::cerr << std::endl;
-        N.Marking.print(std::cerr);
-        std::cerr << std::endl;
+        N.Marking.printHeader();
+        print("\n");
+        print(curr_time);
+        N.Marking.print();
+        print("\n");
     }
     //cerr << "finish path"<< endl;
 }
@@ -257,9 +261,8 @@ void SimulatorLight::GenerateEvent(Event& E,TR_PL_ID Id) {
     N.GetDistParameters(Id);
     t += N.ParamDistr[0];
     if(verbose > 4){
-        std::cerr << "Sample " << Id << " with parameter (";
-        std::cerr << N.ParamDistr[0];
-        std::cerr << ")" << std::endl;
+        print("Sample:");
+        print(Id);
     }
 
     E.transition = Id;

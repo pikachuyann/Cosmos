@@ -24,7 +24,10 @@
  *******************************************************************************
  */
 
+#include "spnLight.hpp"
 #include "SimLight.hpp"
+
+#include <iostream>
 
 /**
  * main function it read the options given as arguments and initialyse
@@ -34,7 +37,7 @@
  * The loop stop only when the programme receive end_of_file on
  * his standart input
  */
-int main(int argc, char** argv) {
+int main(int, char**) {
 
 	SimulatorLight mySim;
     mySim.SetBatchSize(1); //set the batch size
@@ -43,6 +46,14 @@ int main(int argc, char** argv) {
     mySim.RunBatch(); //simulate a batch of trajectory
 
     return (0);
-	
-	
+}
+
+void print(const char * s){
+    std::cerr << s;
+}
+void print(TR_PL_ID i){
+    std::cerr << i;
+}
+void print(REAL_TYPE r){
+    std::cerr << r;
 }
