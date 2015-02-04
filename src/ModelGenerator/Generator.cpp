@@ -146,7 +146,7 @@ bool ParseBuild() {
         unfold.export_grml(unfoldfile);
         return true;
     }
-
+    if(P.lightSimulator)return build();
 
     // Intialize an empty structure for the automaton
     Lha_Reader lReader(gReader.MyGspn, P);

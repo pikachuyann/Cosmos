@@ -32,8 +32,6 @@
 #define _SPN_HPP
 
 #include <iostream>
-#include <string>
-#include <vector>
 #include <math.h>
 
 
@@ -70,68 +68,6 @@ typedef char abstractBinding;
 inline bool contains(int i, int j){ return i>=j;}
 #endif
 
-/**
- * Type of probability distribution
- */
-enum DistributionType {
-    NORMAL,
-    GAMMA,
-    UNIFORM,
-    EXPONENTIAL,
-    DETERMINISTIC,
-    LOGNORMAL,
-    TRIANGLE,
-    GEOMETRIC,
-    ERLANG,
-    DISCRETEUNIF,
-    MASSACTION,
-};
-
-
-enum TransType {
-	Timed, unTimed
-};
-
-/**
- * Datatype for transition of the SPN
- */
-struct _trans {
-	_trans(){};
-	
-	//! transition constructor
-	_trans(unsigned int id,TransType tt,DistributionType,bool MD,size_t,bool am):
-    Id(id),transType(tt),MarkingDependent(MD),AgeMemory(am){};
-
-    _trans(unsigned int id,TransType tt,DistributionType,bool MD,size_t,bool am,std::string l):
-    Id(id),label(l),transType(tt),MarkingDependent(MD),AgeMemory(am){};
-	
-	//! number of the transition
-	unsigned int Id;
-	
-	//! Name of the transition, can be empty
-    std::string label;
-	TransType transType;
-
-	bool MarkingDependent;
-	//! true if the memory policy of the transition is age memory
-	bool AgeMemory;
-};
-typedef struct _trans spn_trans;
-
-/**
- * DataType for place of the SPN
- */
-struct _place {
-	_place():isTraced(true){};
-	
-	//! name of the place, can be empty
-	std::string label;
-	
-	//! set to true if the place should appear in outputted trace
-	bool isTraced;
-};
-typedef struct _place spn_place;
-
 
 /**
  * \brief Class of the SPN.
@@ -149,12 +85,7 @@ public:
 	const size_t tr;
 	//! Current marking
 	abstractMarking Marking;
-	
-	//!contains all the transitions of the Petri net
-	std::vector<spn_trans> Transition;
-	//!contains all the places of the Petri net
-	std::vector<spn_place> Place;
-	
+
 	//! set the marking to the initial marking
 	void
 	reset();
@@ -169,7 +100,7 @@ public:
 	 * store them inside this vector.
 	 * This is done to avoid allocating a new vector too frequently.
 	 */
-	mutable std::vector<double> ParamDistr;
+	mutable double ParamDistr[2];
 
 	/**
 	 * \brief Check if a given transition is enabled.

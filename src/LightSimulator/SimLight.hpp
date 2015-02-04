@@ -31,9 +31,6 @@
 #include "spnLight.hpp"
 #include "EventsQueue.hpp"
 
-
-using namespace std;
-
 typedef std::pair<bool, std::vector<double> > SimOutput;
 
 class SimulatorLight {
@@ -42,9 +39,6 @@ public:
 
     //! verbose level of the simulator
     int verbose;
-
-    //! Path to the temporary directory
-    string tmpPath;
 
     /**
      * \brief Set the batch size
