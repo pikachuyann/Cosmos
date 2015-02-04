@@ -220,6 +220,7 @@ bool SimulatorLight::SimulateOneStep(){
 
         updateSPN(E1.transition);
     }
+    if(curr_time >= 100000)return false;
     return true;
 }
 
