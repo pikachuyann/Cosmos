@@ -38,9 +38,6 @@ public:
 	Event();
     Event(const Event& orig);
 	const Event& operator = (const Event&);
-    void setTime(double);
-    void setPriority(size_t);
-    void setWeight(double);
 	
 	
     size_t transition;

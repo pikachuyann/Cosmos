@@ -32,16 +32,6 @@
 
 using namespace std;
 
-typedef vector <int> Tab;
-typedef vector <Event> EQueue;
-typedef vector <Event>::iterator EQit;
-
-struct sizeSq {
-    sizeSq(size_t t,size_t b):tr(t),bid(b){};
-    size_t tr;
-    size_t bid;
-};
-
 class EventsQueue {
 public:
     //EventsQueue(size_t);
@@ -75,14 +65,14 @@ private:
 	 * and binding index in constant time.
 	 * If the return value is -1 the corresponding event is not in the event heap.
 	 */
-	vector<vector< long int > > evtHeapIndex;
+    vector< long int > evtHeapIndex;
 	
 	/**
 	 * This is the vector of events, all the events of every transition
 	 * and every binding must occurs in this vector.
 	 * the first index is allong transition and the second along binding index.
 	 */
-	vector<vector< Event > > evtTbl;
+    vector< Event > evtTbl;
 	
 	/**
 	 * The event heap is a vector of pairs. each pairs are the transition index
@@ -90,7 +80,7 @@ private:
 	 * This vector is a heap for the relation Event::isPriorer.
 	 * The first element of the heap is the most urgent event.
 	 */
-	vector< sizeSq > evtHeap;
+	vector< size_t > evtHeap;
 
     size_t getLeftChildIndex(size_t nodeIndex)const {
         return 2 * nodeIndex + 1;
