@@ -146,10 +146,10 @@ abstractMarking::~abstractMarking() {
 }
 
 
-void abstractMarking::printHeader(ostream &s)const{
+void abstractMarking::printHeader()const{
 }
 
-void abstractMarking::print(ostream &s)const{
+void abstractMarking::print()const{
 }
 SPN::SPN():
 pl(13), tr(55) {
