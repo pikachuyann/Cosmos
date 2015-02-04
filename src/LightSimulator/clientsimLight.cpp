@@ -45,9 +45,9 @@ int main(int argc, char** argv) {
         mySim.tmpPath=argv[3];
     }
 
-    while( !cin.eof() ){
+    //while( !cin.eof() ){
 		mySim.RunBatch(); //simulate a batch of trajectory
-    }
+    //}
 	
     return (EXIT_SUCCESS);
 	
