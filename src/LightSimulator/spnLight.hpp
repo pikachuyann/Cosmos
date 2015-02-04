@@ -31,9 +31,9 @@
 #ifndef _SPN_HPP
 #define _SPN_HPP
 
-#define TR_PL_ID size_t
+#define TR_PL_ID unsigned long
+#define REAL_TYPE double
 
-#include <iostream>
 #include <math.h>
 
 
@@ -41,6 +41,9 @@
 #define Cosmos_marking_h
 
 
+void print(const char *);
+void print(TR_PL_ID i);
+void print(REAL_TYPE r);
 
 
 
@@ -57,8 +60,8 @@ public:
     abstractMarking();
     ~abstractMarking();
 
-    void printHeader(std::ostream &)const;
-    void print(std::ostream &)const;
+    void printHeader()const;
+    void print()const;
 
     void resetToInitMarking();
     
