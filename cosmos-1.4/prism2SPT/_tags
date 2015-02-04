@@ -1,2 +1,0 @@
-<*.ml>:package(str)
-"modelConvert.native" or "modelConvert.ml" or "simulinkparser.ml": package(zip),package(xml-light),package(str)
