@@ -31,11 +31,11 @@
  * but don't fill it.
  */
 SimulatorLight::SimulatorLight():verbose(0),curr_time(0.0),EQ(N){
-    Result.second.resize(1);
+    Result=true;
     BatchSize = 1000;
 }
 
-void SimulatorLight::SetBatchSize(const size_t RI) {
+void SimulatorLight::SetBatchSize(const TR_PL_ID RI) {
     BatchSize = RI;
 }
 
@@ -47,7 +47,7 @@ void SimulatorLight::InitialEventsQueue() {
     //time is simulated and added to the structure.
 
     Event E;
-    for(size_t t=0; t<N.tr ; t++) {
+    for(TR_PL_ID t=0; t<N.tr ; t++) {
         GenerateEvent(E, t);
         EQ.insert(E);
     }
@@ -69,7 +69,7 @@ void SimulatorLight::reset() {
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-void SimulatorLight::updateSPN(size_t){
+void SimulatorLight::updateSPN(TR_PL_ID){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
@@ -165,15 +165,14 @@ void SimulatorLight::updateSPN(size_t){
     //assert(cerr<< "assert!"<< endl);
      */
 
+    EQ.reset();
 
     //In Debug mode check that transition are scheduled iff they are enabled
-    for(size_t t=0; t<N.tr ; t++) {
+    for(TR_PL_ID t=0; t<N.tr ; t++) {
         if (N.IsEnabled(t)){
             if (!EQ.isScheduled(t)) {
-                if(!EQ.restart(curr_time,t)){
                     GenerateEvent(F, (t));
                     EQ.insert(F);
-                }
             }
         } else {
             if (EQ.isScheduled(t)) {
@@ -199,7 +198,7 @@ bool SimulatorLight::SimulateOneStep(){
         const Event &E1 = EQ.InPosition(0);
 
         if(verbose>3){
-            cerr << "\033[1;33mFiring:\033[0m" << E1.transition <<endl;
+            std::cerr << "\033[1;33mFiring:\033[0m" << E1.transition << std::endl;
         }
 
         curr_time = E1.time;
@@ -227,10 +226,10 @@ void SimulatorLight::SimulateSinglePath() {
         if(verbose>3){
             //Print marking and location of the automata
             //Usefull to track a simulation
-            N.Marking.printHeader(cerr);
-            cerr << endl << curr_time << "\t";
-            N.Marking.print(cerr);
-            cerr << endl;
+            N.Marking.printHeader(std::cerr);
+            std::cerr << std::endl << curr_time << "\t";
+            N.Marking.print(std::cerr);
+            std::cerr << std::endl;
         }
 
         continueb = SimulateOneStep();
@@ -238,10 +237,10 @@ void SimulatorLight::SimulateSinglePath() {
     if(verbose>3){
         //Print marking and location of the automata
         //Usefull to track a simulation
-        N.Marking.printHeader(cerr);
-        cerr << endl;
-        N.Marking.print(cerr);
-        cerr << endl;
+        N.Marking.printHeader(std::cerr);
+        std::cerr << std::endl;
+        N.Marking.print(std::cerr);
+        std::cerr << std::endl;
     }
     //cerr << "finish path"<< endl;
 }
@@ -252,15 +251,15 @@ void SimulatorLight::SimulateSinglePath() {
  * @param Id the number of the transition to of the SPN
  * @param b is the binding of the variable of the SPN for the transition.
  */
-void SimulatorLight::GenerateEvent(Event& E,size_t Id) {
+void SimulatorLight::GenerateEvent(Event& E,TR_PL_ID Id) {
 
     double t = curr_time;
     N.GetDistParameters(Id);
     t += N.ParamDistr[0];
     if(verbose > 4){
-        cerr << "Sample " << Id << " with parameter (";
-        cerr << N.ParamDistr[0];
-        cerr << ")" << endl;
+        std::cerr << "Sample " << Id << " with parameter (";
+        std::cerr << N.ParamDistr[0];
+        std::cerr << ")" << std::endl;
     }
 
     E.transition = Id;
@@ -271,7 +270,7 @@ void SimulatorLight::GenerateEvent(Event& E,size_t Id) {
 
 
 void SimulatorLight::RunBatch(){
-    size_t i=0;
+    TR_PL_ID i=0;
     while (i < BatchSize) {
         i++;
         reset();
