@@ -1139,38 +1139,41 @@ void Gspn_Writer::writeFile(){
     if(!P.lightSimulator)writeEnabledDisabled(SpnCppFile);
 
     //--------------- Writing transitions tables -------------------------------
-    size_t nbbinding = 1;
-    for (size_t v = 0 ; v < MyGspn.colVars.size(); v++)
-        nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
-    SpnCppFile << "static spn_trans TransArray[" << MyGspn.tr << "] = { ";
-    for (size_t t=0; t < MyGspn.tr; t++ ) {
-        SpnCppFile << "_trans(" << t << ",";
+    if(!P.lightSimulator){
+        size_t nbbinding = 1;
+        for (size_t v = 0 ; v < MyGspn.colVars.size(); v++)
+            nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
+        SpnCppFile << "static spn_trans TransArray[" << MyGspn.tr << "] = { ";
+        for (size_t t=0; t < MyGspn.tr; t++ ) {
+            SpnCppFile << "_trans(" << t << ",";
 
-        if (MyGspn.transitionStruct[t].type==Timed) {
-            SpnCppFile << "Timed," << MyGspn.transitionStruct[t].dist.name << ",";
-        }else{
-            SpnCppFile << "unTimed,DETERMINISTIC,";
+            if (MyGspn.transitionStruct[t].type==Timed) {
+                SpnCppFile << "Timed," << MyGspn.transitionStruct[t].dist.name << ",";
+            }else{
+                SpnCppFile << "unTimed,DETERMINISTIC,";
+            }
+
+            SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
+            SpnCppFile << ", " << MyGspn.transitionStruct[t].ageMemory;
+            if(P.StringInSpnLHA)SpnCppFile << ", \"" << MyGspn.transitionStruct[t].label<< "\"";
+            SpnCppFile <<"), ";
         }
-
-        SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
-        SpnCppFile << ", " << MyGspn.transitionStruct[t].ageMemory;
-        if(P.StringInSpnLHA)SpnCppFile << ", \"" << MyGspn.transitionStruct[t].label<< "\"";
-        SpnCppFile <<"), ";
+        SpnCppFile << " }; " << endl;
     }
-    SpnCppFile << " }; " << endl;
-
 
     //--------------- Writing implementation of SPN ----------------------------
     SpnCppFile << "SPN::SPN():" << endl;
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
-	SpnCppFile << "tr(" << MyGspn.tr << "), ";
-	SpnCppFile << "Transition(TransArray,TransArray +"<< MyGspn.tr <<"),";
-    SpnCppFile << "Place("<< MyGspn.pl << "),";
+	SpnCppFile << "tr(" << MyGspn.tr << ") ";
+    if(!P.lightSimulator){
+        SpnCppFile << ",Transition(TransArray,TransArray +"<< MyGspn.tr <<")";
+        SpnCppFile << ",Place("<< MyGspn.pl << ")";
+        SpnCppFile << ",ParamDistr(3)";
+        SpnCppFile << ",TransitionConditions(" << MyGspn.tr <<",0)";
+    }
 
-	SpnCppFile << "ParamDistr(3)";
-    if(!P.lightSimulator)SpnCppFile << ",TransitionConditions(" << MyGspn.tr <<",0)";
     SpnCppFile << "{" << endl;
-	SpnCppFile << "    Path =\"" << P.PathGspn << "\";" << endl;
+	if(!P.lightSimulator)SpnCppFile << "    Path =\"" << P.PathGspn << "\";" << endl;
 
 	
 	if(P.localTesting){

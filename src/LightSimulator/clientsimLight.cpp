@@ -42,7 +42,6 @@ int main(int argc, char** argv) {
 	if(argc>=optioni-1){
 		mySim.SetBatchSize(atoi(argv[1])); //set the batch size
 		mySim.verbose = atoi(argv[2]);
-        mySim.tmpPath=argv[3];
     }
 
     //while( !cin.eof() ){
