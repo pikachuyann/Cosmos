@@ -48,19 +48,6 @@ const Event& Event::operator = (const Event& orig){
 	return *this;
 }
 
-void Event::setTime(double t) {
-    time = t;
-}
-
-void Event::setPriority(size_t pr) {
-    priority = pr;
-	
-}
-
-void Event::setWeight(double w) {
-    weight = w;
-}
-
 bool Event::isPriorer(const Event& e)const {
     //smallest time is priorer
     if (time > e.time) return false;
