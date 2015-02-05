@@ -56,7 +56,7 @@ public:
     /**
      *  Current simulation time
      */
-    double curr_time;
+    REAL_TYPE curr_time;
 
 protected:
 

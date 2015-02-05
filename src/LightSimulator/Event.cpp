@@ -26,25 +26,23 @@
 #include "Event.hpp"
 
 
-Event::Event() : transition(0), time(-1.0), priority(0) , weight(0)
+Event::Event() : transition(0), time(-1.0), priority(0)
 {}
 
-Event::Event(unsigned int tr, double t): transition(tr),time(t), priority(0),weight(0) {}
+Event::Event(unsigned int tr, double t): transition(tr),time(t), priority(0){}
 
-Event::Event(unsigned int tr, double t, unsigned int pr, double w) :
-transition(tr),time(t), priority(pr),weight(w) {}
+Event::Event(unsigned int tr, double t, unsigned int pr) :
+transition(tr),time(t), priority(pr) {}
 
 
 
 Event::Event(const Event& orig) :
-transition(orig.transition),time(orig.time), priority(orig.priority),
-weight(orig.weight) {}
+transition(orig.transition),time(orig.time), priority(orig.priority) {}
 
 const Event& Event::operator = (const Event& orig){
 	transition = orig.transition;
 	time = orig.time;
 	priority = orig.priority;
-	weight = orig.weight;
 	return *this;
 }
 
@@ -56,7 +54,5 @@ bool Event::isPriorer(const Event& e)const {
     // highest priority is priorer
     if (priority < e.priority) return false;
     if (priority > e.priority) return true;
-    //bigest weight is priorer
-    if (weight > e.weight) return false;
     else return true;
 }

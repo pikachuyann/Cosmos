@@ -31,8 +31,8 @@
 #ifndef _SPN_HPP
 #define _SPN_HPP
 
-#define TR_PL_ID unsigned long
-#define REAL_TYPE double
+#define TR_PL_ID unsigned short
+#define REAL_TYPE float
 
 #include <math.h>
 
