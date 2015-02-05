@@ -38,6 +38,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <stdlib.h>
 #include <err.h>
 #include <errno.h>
 #include <math.h>
@@ -181,18 +182,32 @@ int main(int argc, char** argv) {
     if(P.prismPath.empty())P.prismPath=P.Path+"../prism/bin/prism";
 
 	//Build the model and lha.
-	if ( ! ParseBuild()) {
+	if ( ! Parse()) {
 		cout << "Fail to build the model.";
 		return(EXIT_FAILURE);
 	}
-	//stop the timer for building, display the time if required.
-	gettimeofday(&endbuild, NULL);
-	double buildTime = endbuild.tv_sec - startbuild.tv_sec + ((endbuild.tv_usec - startbuild.tv_usec) / 1000000.0);
-	if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildTime<< "s"<< endl;
 
     if(!P.unfold.empty())return EXIT_SUCCESS;
 
-    if(P.MaxRuns == 0)return EXIT_SUCCESS;
+    if(P.MaxRuns == 0 && P.lightSimulator){
+        auto cmd = "cp "+P.Path+"../src/LightSimulator/*.* "+P.tmpPath;
+        if(P.verbose>=3)cout << cmd << endl;
+        system(cmd.c_str());
+        cmd = "cd "+P.tmpPath+"; ./build.sh";
+        if(P.verbose>=3)cout << cmd << endl;
+        system(cmd.c_str());
+        return EXIT_SUCCESS;
+    }
+
+    if ( ! build()) {
+        cout << "Fail to Compile the model.";
+        return(EXIT_FAILURE);
+    }
+
+    //stop the timer for building, display the time if required.
+    gettimeofday(&endbuild, NULL);
+    double buildTime = endbuild.tv_sec - startbuild.tv_sec + ((endbuild.tv_usec - startbuild.tv_usec) / 1000000.0);
+    if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildTime<< "s"<< endl;
 
 	if(!P.sequential){ //Compute Chernoff-Hoeffding bounds
 		double b = 0.0;

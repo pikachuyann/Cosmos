@@ -68,7 +68,7 @@ void EventsQueue::replace(const Event &e) {
  *  @param tr a transition of the Petri net.
  *  @param b a binding of the Petri net.
  */
-void EventsQueue::remove(size_t tr) {
+void EventsQueue::remove(TR_PL_ID tr) {
     if (!isempty && fstEvent.transition==tr) {
         isempty=true;
     }
@@ -78,10 +78,10 @@ bool EventsQueue::isEmpty()const{
     return isempty;
 }
 
-const Event& EventsQueue::InPosition(size_t)const {
+const Event& EventsQueue::InPosition(TR_PL_ID)const {
     return fstEvent;
 }
 
-bool EventsQueue::isScheduled(size_t tr)const {
+bool EventsQueue::isScheduled(TR_PL_ID tr)const {
     return (fstEvent.transition == tr && !isempty);
 }

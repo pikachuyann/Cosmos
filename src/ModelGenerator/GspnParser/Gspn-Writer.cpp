@@ -850,7 +850,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
         SpnCppFile << "void abstractMarking::print()const{\n";
         if(P.StringInSpnLHA){
             for (const auto &plit : plitcp){
-                SpnCppFile << "::print((TR_PL_ID)P->_PL_"<< plit.name << ");"<<endl;
+                SpnCppFile << "print_magic(P->_PL_"<< plit.name << ");"<<endl;
                 SpnCppFile << "::print(\"\t\");"<<endl;
             }
         }
