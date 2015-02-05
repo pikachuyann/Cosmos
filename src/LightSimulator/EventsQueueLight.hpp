@@ -30,6 +30,7 @@
 #ifndef __Cosmos__EventsQueueLight__
 #define __Cosmos__EventsQueueLight__
 
+#define NB_EVENT 54
 
 class EventsQueue {
 public:
@@ -42,16 +43,57 @@ public:
     bool isScheduled(TR_PL_ID)const;
 
     bool isEmpty()const;
-
     void reset();
     TR_PL_ID getSize()const ;
 
 
     const Event& InPosition(TR_PL_ID)const ;
 
+    //void view()const;
+
 private:
-    Event fstEvent;
-    bool isempty;
+    TR_PL_ID heap_size;
+
+    /**
+     * The Events Heap Index vector allow to retrive the index
+     * of an event in the Events Heap (evtHeap) given its transition
+     * and binding index in constant time.
+     * If the return value is -1 the corresponding event is not in the event heap.
+     */
+    long int evtHeapIndex[NB_EVENT];
+
+    /**
+     * This is the vector of events, all the events of every transition
+     * and every binding must occurs in this vector.
+     * the first index is allong transition and the second along binding index.
+     */
+    Event evtTbl[NB_EVENT];
+
+
+    /**
+     * The event heap is a vector of pairs. each pairs are the transition index
+     * and binding index of an event in the event table.
+     * This vector is a heap for the relation Event::isPriorer.
+     * The first element of the heap is the most urgent event.
+     */
+    TR_PL_ID evtHeap[NB_EVENT];
+
+    TR_PL_ID getLeftChildIndex(TR_PL_ID nodeIndex)const {
+        return 2 * nodeIndex + 1;
+    }
+
+    TR_PL_ID getRightChildIndex(TR_PL_ID nodeIndex)const {
+        return 2 * nodeIndex + 2;
+    }
+
+    TR_PL_ID getParentIndex(TR_PL_ID nodeIndex)const {
+        return (nodeIndex - 1) / 2;
+    }
+
+    void siftUp(TR_PL_ID );
+    void siftDown(TR_PL_ID );
+    void swapEvt(TR_PL_ID ,TR_PL_ID );
+
 
 };
 

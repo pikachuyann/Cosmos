@@ -27,17 +27,29 @@
 
 #include "EventsQueueLight.hpp"
 
+
+
+
 /**
  *	Build an Event queue for the Petri net given as parameter.
  */
-EventsQueue::EventsQueue(const SPN&):fstEvent(Event()),isempty(true){
+EventsQueue::EventsQueue(const SPN& N):heap_size(0){
+    for(TR_PL_ID it = 0; it< N.tr; ++it ){
+        evtHeapIndex[it]= -1;
+        evtTbl[it].time = -1.0;
+    }
 }
 
 /**
  * Clear the events queue. The resulting events queues does not contain any event.
  */
 void EventsQueue::reset() {
-    isempty=true;
+    for(TR_PL_ID it = 0; it< heap_size; ++it ){
+        evtHeapIndex[it]= -1;
+        evtTbl[it].time = -1.0;
+    }
+    heap_size = 0;
+    //Qsize = 0;
 }
 
 /*
@@ -45,12 +57,13 @@ void EventsQueue::reset() {
  *  @param e an event of the Petri net.
  */
 void EventsQueue::insert(const Event &e) {
-    if(isempty){
-        fstEvent=e;
-        isempty=false;
-    }else{
-        if(e.isPriorer(fstEvent))fstEvent=e;
-    }
+    //assert(!isScheduled(e.transition, e.binding.id()));
+    evtTbl[e.transition] = e;
+    evtHeapIndex[e.transition] = heap_size;
+    evtHeap[heap_size] = e.transition;
+    heap_size++;
+
+    siftUp(heap_size-1);
 }
 
 /*
@@ -58,9 +71,12 @@ void EventsQueue::insert(const Event &e) {
  *  @param e an event of the Petri net.
  */
 void EventsQueue::replace(const Event &e) {
-    if (!isempty && e.isPriorer(fstEvent)) {
-        fstEvent =e;
-    }
+    //assert(isScheduled(e.transition, e.binding.id()));
+    long int k = evtHeapIndex[e.transition];
+    evtTbl[e.transition] = e;
+
+    siftUp(k);
+    siftDown(k);
 }
 
 /*
@@ -69,19 +85,116 @@ void EventsQueue::replace(const Event &e) {
  *  @param b a binding of the Petri net.
  */
 void EventsQueue::remove(TR_PL_ID tr) {
-    if (!isempty && fstEvent.transition==tr) {
-        isempty=true;
+    long int i = evtHeapIndex[tr];
+    evtTbl[tr].time = -1.0;
+    //assert(i>=0);
+    if(i>=0){
+        if ((TR_PL_ID)i == heap_size-1) {
+            evtHeapIndex[tr] = -1;
+            heap_size--;
+        } else {
+            evtHeapIndex[evtHeap[heap_size-1]] = i;
+            evtHeapIndex[tr] = -1 ;
+            evtHeap[i] = evtHeap[heap_size-1];
+            heap_size--;
+
+            siftDown(i);
+            siftUp(i);
+        }
     }
 }
 
-bool EventsQueue::isEmpty()const{
-    return isempty;
-}
-
-const Event& EventsQueue::InPosition(TR_PL_ID)const {
-    return fstEvent;
+const Event& EventsQueue::InPosition(TR_PL_ID i)const {
+    //assert(i < evtHeap.size());
+    return evtTbl[evtHeap[i]];
 }
 
 bool EventsQueue::isScheduled(TR_PL_ID tr)const {
-    return (fstEvent.transition == tr && !isempty);
+    return (evtHeapIndex[tr] >= 0);
 }
+
+
+
+
+
+
+
+bool EventsQueue::isEmpty()const{
+    return heap_size==0;
+}
+
+void EventsQueue::swapEvt(TR_PL_ID i,TR_PL_ID j){
+    //assert((size_t)evtHeapIndex[evtHeap[j].first][evtHeap[j].second] ==j
+    //	   && (size_t)evtHeapIndex[evtHeap[i].first][evtHeap[i].second] == i);
+    evtHeapIndex[evtHeap[j]] = i;
+    evtHeapIndex[evtHeap[i]] = j;
+
+    TR_PL_ID swappair = evtHeap[j];
+    evtHeap[j] = evtHeap[i];
+    evtHeap[i] = swappair;
+}
+
+void EventsQueue::siftUp(TR_PL_ID i) {
+    TR_PL_ID parentIndex;
+
+    if (i != 0) {
+        parentIndex = getParentIndex(i);
+
+        if (InPosition(i).isPriorer(InPosition(parentIndex))){
+            swapEvt(i, parentIndex);
+            siftUp(parentIndex);
+        }
+    }
+}
+
+void EventsQueue::siftDown(TR_PL_ID i) {
+    TR_PL_ID leftChildIndex, rightChildIndex, minIndex;
+    leftChildIndex = getLeftChildIndex(i);
+    rightChildIndex = getRightChildIndex(i);
+    if (rightChildIndex >= heap_size) {
+        if (leftChildIndex >= heap_size)
+            return;
+        else
+            minIndex = leftChildIndex;
+    } else {
+
+        if (InPosition(leftChildIndex).isPriorer(InPosition(rightChildIndex)))
+            minIndex = leftChildIndex;
+        else
+            minIndex = rightChildIndex;
+    }
+
+    if (InPosition(minIndex).isPriorer(InPosition(i))) {
+        swapEvt(minIndex,i);
+        siftDown(minIndex);
+    }
+    
+    
+}
+
+
+
+/**
+ *	Print the content of the queues in a human readable format.
+ */
+/*void EventsQueue::view()const {
+    print("********** EVENTS-QUEUE VIEW **********\n");
+
+    //cerr << "Qsize:" << evtHeap.size() << endl;
+
+    if (heap_size == 0)
+        print("EVENTS-QUEUE is empty!\n");
+    else
+        for (TR_PL_ID i = 0; i < heap_size; i++){
+            Event e = InPosition(i);
+            print(e.transition);
+            print(":\tt=");
+            print(e.time);
+            print(",\tp=");
+            print(e.priority);
+            print("\n");
+        }
+}*/
+
+
+

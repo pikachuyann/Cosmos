@@ -22,13 +22,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
  *******************************************************************************
  */
-
-#include <vector>
 #include "Event.hpp"
 #include "spnLight.hpp"
 
 #ifndef _EVENTSQUEUE_HPP
 #define	_EVENTSQUEUE_HPP
+
+#define NB_EVENT 100
 
 using namespace std;
 
@@ -65,14 +65,14 @@ private:
 	 * and binding index in constant time.
 	 * If the return value is -1 the corresponding event is not in the event heap.
 	 */
-    vector< long int > evtHeapIndex;
+    long int evtHeapIndex[NB_EVENT];
 	
 	/**
 	 * This is the vector of events, all the events of every transition
 	 * and every binding must occurs in this vector.
 	 * the first index is allong transition and the second along binding index.
 	 */
-    vector< Event > evtTbl;
+    Event evtTbl[NB_EVENT];
 	
 	/**
 	 * The event heap is a vector of pairs. each pairs are the transition index
@@ -80,7 +80,7 @@ private:
 	 * This vector is a heap for the relation Event::isPriorer.
 	 * The first element of the heap is the most urgent event.
 	 */
-	vector< size_t > evtHeap;
+    size_t evtHeap{NB_EVENT};
 
     size_t getLeftChildIndex(size_t nodeIndex)const {
         return 2 * nodeIndex + 1;
