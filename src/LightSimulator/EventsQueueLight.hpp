@@ -38,16 +38,16 @@ public:
 
     void insert(const Event &);
     void replace(const Event &);
-    void remove(size_t);
-    bool isScheduled(size_t)const;
+    void remove(TR_PL_ID);
+    bool isScheduled(TR_PL_ID)const;
 
     bool isEmpty()const;
 
     void reset();
-    size_t getSize()const ;
+    TR_PL_ID getSize()const ;
 
 
-    const Event& InPosition(size_t)const ;
+    const Event& InPosition(TR_PL_ID)const ;
 
 private:
     Event fstEvent;

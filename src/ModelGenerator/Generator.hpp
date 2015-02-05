@@ -42,7 +42,7 @@
  * @return a boolean equal to true if everything run correctly
  */
 
-bool ParseBuild();
+bool Parse();
 
 void generateLoopLHA(Gspn_Reader &);
 void generateSamplingLHA(Gspn_Reader &);

@@ -70,6 +70,7 @@
 		03E39B1A183E4A0E0070911A /* stateSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7063181BC0D6006D7332 /* stateSpace.cpp */; };
 		03E39B1B183E4A110070911A /* clientsim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7041181BC0D6006D7332 /* clientsim.cpp */; };
 		03E39B1E183E4AC90070911A /* libClientSim.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 034509A616A80AC8002088B3 /* libClientSim.a */; };
+		03E6624D1A838A1800C36695 /* sketchArduino.ino in Resources */ = {isa = PBXBuildFile; fileRef = 03E6624C1A838A1800C36695 /* sketchArduino.ino */; };
 		03EC8D6E1880714C00731BD3 /* unfolder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03EC8D6C1880714C00731BD3 /* unfolder.cpp */; };
 		03FB40F618180F9E001F9988 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03FB40F518180F9D001F9988 /* XCTest.framework */; };
 		03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03FB40FA18180F9E001F9988 /* InfoPlist.strings */; };
@@ -999,6 +1000,8 @@
 		03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueueLight.hpp; sourceTree = "<group>"; };
 		03CB8F4D1893CB1A00A9938A /* timeGen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeGen.cpp; sourceTree = "<group>"; };
 		03CB8F4E1893CB1A00A9938A /* timeGen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGen.hpp; sourceTree = "<group>"; };
+		03E6624B1A83862D00C36695 /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
+		03E6624C1A838A1800C36695 /* sketchArduino.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = sketchArduino.ino; sourceTree = "<group>"; };
 		03EC8D6C1880714C00731BD3 /* unfolder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unfolder.cpp; sourceTree = "<group>"; };
 		03EC8D6D1880714C00731BD3 /* unfolder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = unfolder.hpp; sourceTree = "<group>"; };
 		03FACB841A7FE9FC0058C62E /* spnLight */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = spnLight; path = ../src/Simulator/spnLight; sourceTree = "<group>"; };
@@ -2963,6 +2966,8 @@
 				03BBD5E31A80CFDE00492779 /* SimLight.cpp */,
 				03BBD5E41A80CFDE00492779 /* SimLight.hpp */,
 				03BBD5E21A80CFDE00492779 /* clientsimLight.cpp */,
+				03E6624B1A83862D00C36695 /* build.sh */,
+				03E6624C1A838A1800C36695 /* sketchArduino.ino */,
 			);
 			path = LightSimulator;
 			sourceTree = "<group>";
@@ -3300,6 +3305,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */,
+				03E6624D1A838A1800C36695 /* sketchArduino.ino in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
