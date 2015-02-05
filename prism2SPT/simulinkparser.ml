@@ -5,7 +5,7 @@ open Type
 open SimulinkType
 open Lexing
 
-let modelStoch = true
+let modelStoch = false
 let useerlang = true
 let aggressive_syn = false
 
@@ -526,7 +526,6 @@ let place_of_int ivect i =
   match ivect.(i) with
     _,None -> Printf.sprintf "pl%i" i
   | _,Some(n) -> Printf.sprintf "%s" n
-
 
 let print_magic f sl tl scrl=
   output_string f "  <attribute name=\"externalDeclaration\">";

@@ -41,7 +41,7 @@ int main(int, char**) {
 
 	SimulatorLight mySim;
     mySim.SetBatchSize(1); //set the batch size
-    mySim.verbose=4;
+    mySim.verbose=5;
 
     mySim.RunBatch(); //simulate a batch of trajectory
 

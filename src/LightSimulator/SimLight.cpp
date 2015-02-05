@@ -47,9 +47,10 @@ void SimulatorLight::InitialEventsQueue() {
     //time is simulated and added to the structure.
 
     Event E;
-    for(TR_PL_ID t=0; t<N.tr ; t++) {
-        GenerateEvent(E, t);
-        EQ.insert(E);
+    for(TR_PL_ID t=0; t<N.tr ; t++)
+        if (N.IsEnabled(t)){
+            GenerateEvent(E, t);
+            EQ.insert(E);
     }
 }
 
@@ -165,8 +166,6 @@ void SimulatorLight::updateSPN(TR_PL_ID){
     //assert(cerr<< "assert!"<< endl);
      */
 
-    EQ.reset();
-
     //In Debug mode check that transition are scheduled iff they are enabled
     for(TR_PL_ID t=0; t<N.tr ; t++) {
         if (N.IsEnabled(t)){
@@ -235,22 +234,12 @@ void SimulatorLight::SimulateSinglePath() {
             print("\t");
             N.Marking.print();
             print("\n");
+            //EQ.view();
+            print("\n");
         }
 
         continueb = SimulateOneStep();
     }
-    if(verbose>3){
-        //Print marking and location of the automata
-        //Usefull to track a simulation
-        print("Time\t");
-        N.Marking.printHeader();
-        print("\n");
-        print(curr_time);
-        print("\t");
-        N.Marking.print();
-        print("\n");
-    }
-    //cerr << "finish path"<< endl;
 }
 
 /**
@@ -267,12 +256,14 @@ void SimulatorLight::GenerateEvent(Event& E,TR_PL_ID Id) {
     if(verbose > 4){
         print("Sample:");
         print(Id);
+        print(" -> ");
+        print((REAL_TYPE)N.ParamDistr[0]);
+        print("\n");
     }
 
     E.transition = Id;
     E.time = t;
     E.priority = N.GetPriority(Id);
-    E.weight = 0.0;
 }
 
 
