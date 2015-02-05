@@ -228,9 +228,11 @@ void SimulatorLight::SimulateSinglePath() {
         if(verbose>3){
             //Print marking and location of the automata
             //Usefull to track a simulation
+            print("Time\t");
             N.Marking.printHeader();
             print("\n");
             print(curr_time);
+            print("\t");
             N.Marking.print();
             print("\n");
         }
@@ -240,9 +242,11 @@ void SimulatorLight::SimulateSinglePath() {
     if(verbose>3){
         //Print marking and location of the automata
         //Usefull to track a simulation
+        print("Time\t");
         N.Marking.printHeader();
         print("\n");
         print(curr_time);
+        print("\t");
         N.Marking.print();
         print("\n");
     }

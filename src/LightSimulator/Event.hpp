@@ -30,7 +30,7 @@
 #ifndef _EVENT_HPP
 #define	_EVENT_HPP
 
-typedef unsigned long size_t;
+#include "spnLight.hpp"
 
 class Event {
 public:
@@ -40,7 +40,7 @@ public:
 	const Event& operator = (const Event&);
 	
 	
-    size_t transition;
+    TR_PL_ID transition;
     double time;
     double priority;
     double weight;

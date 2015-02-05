@@ -379,7 +379,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
     for (treeSI it = attribute.begin(); it != attribute.end(); ++it) {
         if ((P.verbose - 3) > 1)cout << *it << ":" << endl;
         
-        if (*it == "externalDeclaration" && P.magic_values.empty() && !P.lightSimulator ) {
+        if (*it == "externalDeclaration" && P.magic_values.empty() ) {
             const auto extdef = simplifyString(*(it.begin()));
             if ((P.verbose - 3) > 1)cout << extdef << endl;
             P.magic_values = "magic.hpp";
