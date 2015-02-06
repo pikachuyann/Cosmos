@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-SUBDIRS = src/libgrml src/ModelGenerator/Eval src/ModelGenerator/GspnParser src/ModelGenerator/LhaParser src/ModelGenerator src/Simulator test automataGen utils
-=======
+
 SUBDIRS = src/libgrml src/ModelGenerator/Eval src/ModelGenerator/GspnParser src/ModelGenerator/LhaParser src/ModelGenerator src/Simulator src/LightSimulator test automataGen prism2SPT utils
->>>>>>> 03381e07ac98502e028cb17a4bc0b54ff1e0826f
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -79,6 +76,13 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 
 AM_LDFLAGS = -lrt $(PTHREAD_LIBS)
 AM_CPPFLAGS = $(BOOST_CPPFLAGS)
+
+.PHONY: test updatefile
+
+test:
+	test/gtest
+	cd $(srcdir)/Examples; make bash
+
 
 updatefile:
 	scp cosmos-1.4.tar.gz lsv:/www/web/80/Software/cosmos/files/
