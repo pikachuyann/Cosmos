@@ -37,4 +37,4 @@ ino build -m fio
 
 SERIAL=`ls /dev/tty.usbserial-* /dev/ttyUSB*`
 
-ino upload -p $SERIAL
+ino upload -m fio -p $SERIAL
