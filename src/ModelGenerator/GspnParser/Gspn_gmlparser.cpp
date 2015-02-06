@@ -381,10 +381,10 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
         
         if (*it == "externalDeclaration" && P.magic_values.empty() ) {
             const auto extdef = simplifyString(*(it.begin()));
-            if ((P.verbose - 3) > 1)cout << extdef << endl;
+            if ((P.verbose - 3) > 1)cout <<  extdef << endl;
             P.magic_values = "magic.hpp";
             ofstream extdefhand( P.tmpPath+"/magic.hpp", ios::out | ios::trunc);
-            extdefhand << extdef << endl;
+            extdefhand << "#include <string>\nusing namespace std;\n" << extdef << endl;
             extdefhand.close();
         }
 

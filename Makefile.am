@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 SUBDIRS = src/libgrml src/ModelGenerator/Eval src/ModelGenerator/GspnParser src/ModelGenerator/LhaParser src/ModelGenerator src/Simulator test automataGen utils
+=======
+SUBDIRS = src/libgrml src/ModelGenerator/Eval src/ModelGenerator/GspnParser src/ModelGenerator/LhaParser src/ModelGenerator src/Simulator src/LightSimulator test automataGen prism2SPT utils
+>>>>>>> 03381e07ac98502e028cb17a4bc0b54ff1e0826f
 
 ACLOCAL_AMFLAGS = -I m4
 
@@ -69,7 +73,8 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 	Examples/RareEventU/tandem_agr.lha \
 	Examples/RareEventU/test.ml \
 	Examples/signallingCascade/MAPK.grml Examples/signallingCascade/Prop3/prop3.lha \
-	Examples/signallingCascade/test.ml
+	Examples/signallingCascade/test.ml \
+	Examples/bench.ml
 
 
 AM_LDFLAGS = -lrt $(PTHREAD_LIBS)

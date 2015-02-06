@@ -40,7 +40,7 @@
 
 using namespace std;
 
-bool ParseBuild() {
+bool Parse() {
 
     // initialize an empty structure for the model.
     Gspn_Reader gReader(P);
@@ -146,7 +146,7 @@ bool ParseBuild() {
         unfold.export_grml(unfoldfile);
         return true;
     }
-
+    if(P.lightSimulator)return true;
 
     // Intialize an empty structure for the automaton
     Lha_Reader lReader(gReader.MyGspn, P);
@@ -312,7 +312,7 @@ bool ParseBuild() {
 
     //generateMain();
 
-    return build();
+    return true;
 
 }
 
