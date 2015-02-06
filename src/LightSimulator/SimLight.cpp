@@ -26,25 +26,16 @@
 
 #include "SimLight.hpp"
 
-
-
-using namespace std;
-
 /**
  * Constructor for the Simulator initialize the event queue
  * but don't fill it.
  */
-SimulatorLight::SimulatorLight():verbose(0),curr_time(0.0){
-    EQ = new EventsQueue(N); //initialization of the event queue
-    Result.second.resize(1);
-    BatchSize = 1000;
+SimulatorLight::SimulatorLight():verbose(0),curr_time(0.0),EQ(N){
+    Result=true;
+    BatchSize = 100;
 }
 
-SimulatorLight::~SimulatorLight() {
-    delete EQ;
-}
-
-void SimulatorLight::SetBatchSize(const size_t RI) {
+void SimulatorLight::SetBatchSize(const TR_PL_ID RI) {
     BatchSize = RI;
 }
 
@@ -56,10 +47,10 @@ void SimulatorLight::InitialEventsQueue() {
     //time is simulated and added to the structure.
 
     Event E;
-    for(const auto &t : N.Transition) {
-        GenerateEvent(E, t.Id);
-        EQ->insert(E);
-
+    for(TR_PL_ID t=0; t<N.tr ; t++)
+        if (N.IsEnabled(t)){
+            GenerateEvent(E, t);
+            EQ.insert(E);
     }
 }
 
@@ -69,7 +60,7 @@ void SimulatorLight::InitialEventsQueue() {
 void SimulatorLight::reset() {
     curr_time=0.0;
     N.reset();
-    EQ->reset();
+    EQ.reset();
 }
 
 
@@ -79,13 +70,14 @@ void SimulatorLight::reset() {
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-void SimulatorLight::updateSPN(size_t E1_transitionNum){
+void SimulatorLight::updateSPN(TR_PL_ID){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
+    /*
     //check if the current transition is still enabled
     bool Nenabled = N.IsEnabled(E1_transitionNum);
-    bool NScheduled = EQ->isScheduled(E1_transitionNum,'0');
+    bool NScheduled = EQ->isScheduled(E1_transitionNum);
 
     if (Nenabled && NScheduled) {
         GenerateEvent(F, E1_transitionNum);
@@ -94,7 +86,7 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum){
         GenerateEvent(F, E1_transitionNum);
         EQ->insert(F);
     } else if (!Nenabled && NScheduled) {
-        EQ->remove(E1_transitionNum,'0');
+        EQ->remove(E1_transitionNum);
     }
 
 
@@ -110,12 +102,12 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum){
             //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
             //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
             if (N.IsEnabled(it)) {
-                if (!EQ->isScheduled(it,'0')) {
+                if (!EQ->isScheduled(it)) {
                     if(verbose > 4){
                         cerr << "->New transition enabled: " << N.Transition[it].label << ",";
                         cerr << endl;
                     }
-                    if(!EQ->restart(curr_time,it,'0')){
+                    if(!EQ->restart(curr_time,it)){
                         GenerateEvent(F, (it));
                         (*EQ).insert(F);
                     }
@@ -141,15 +133,15 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum){
             }
             //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
             //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-            if (EQ->isScheduled(it,'0')) {
+            if (EQ->isScheduled(it)) {
                 if (!N.IsEnabled(it )){
                     if(verbose > 4){
                         cerr << "<-New transition disabled: " << N.Transition[it].label << ",";
                         cerr << endl;
                     }
                     if(N.Transition[it].AgeMemory){
-                        EQ->pause(curr_time, it,'0');
-                    }else EQ->remove(it,'0');
+                        EQ->pause(curr_time, it);
+                    }else EQ->remove(it);
                 }else {
                     if (N.Transition[it].MarkingDependent) {
                         GenerateEvent(F, it);
@@ -165,35 +157,28 @@ void SimulatorLight::updateSPN(size_t E1_transitionNum){
         //const auto &fmd = N.FreeMarkingDependant();
         //for (const auto &it : fmd) {
             //if (N.IsEnabled(it,bindex)) {
-            if (EQ->isScheduled(it,'0')) {
+            if (EQ->isScheduled(it)) {
                 GenerateEvent(F, it);
                 (*EQ).replace(F);
             }
 
     }
     //assert(cerr<< "assert!"<< endl);
-
-
-    /*
-     //In Debug mode check that transition are scheduled iff they are enabled
-     for (const auto &t : N.Transition){
-     for(const auto &bindex : t.bindingList){
-     if (N.IsEnabled(t.Id, bindex) !=
-     EQ->isScheduled(t.Id, bindex.idcount)){
-     cerr << "N.IsEnabled(" << t.label << ",";
-     bindex.print();
-     cerr <<")" << endl;
-     if(EQ->isScheduled(t.Id, bindex.idcount)){
-					cerr << "Scheduled and not enabled!"<< endl;
-     }else{
-					cerr << "Enabled and not scheduled!" << endl;
-     }
-     assert(N.IsEnabled(t.Id, bindex) ==
-     EQ->isScheduled(t.Id, bindex.idcount));
-     }
-     }
-     }
      */
+
+    //In Debug mode check that transition are scheduled iff they are enabled
+    for(TR_PL_ID t=0; t<N.tr ; t++) {
+        if (N.IsEnabled(t)){
+            if (!EQ.isScheduled(t)) {
+                    GenerateEvent(F, (t));
+                    EQ.insert(F);
+            }
+        } else {
+            if (EQ.isScheduled(t)) {
+                EQ.remove(t);
+            }
+        }
+    }
 }
 
 /**
@@ -205,14 +190,16 @@ bool SimulatorLight::SimulateOneStep(){
     //If there is no enabled transition in the Petri net
     //try to reach an accepting state by using autonomous edge of
     //the automata refuse the simulation otherwise.
-    if ((*EQ).isEmpty()) {
+    if (EQ.isEmpty()) {
         return false;
     } else {
         //Take the first event in the queue
-        const Event &E1 = EQ->InPosition(0);
+        const Event &E1 = EQ.InPosition(0);
 
         if(verbose>3){
-            cerr << "\033[1;33mFiring:\033[0m" << N.Transition[E1.transition].label ;
+            print("Firing:");
+            print(E1.transition);
+            print("\n");
         }
 
         curr_time = E1.time;
@@ -222,6 +209,7 @@ bool SimulatorLight::SimulateOneStep(){
 
         updateSPN(E1.transition);
     }
+    if(curr_time >= 10000)return false;
     return true;
 }
 
@@ -239,25 +227,19 @@ void SimulatorLight::SimulateSinglePath() {
         if(verbose>3){
             //Print marking and location of the automata
             //Usefull to track a simulation
-            N.Marking.printHeader(cerr);
-            cerr << endl;
-            N.Marking.print(cerr);
-            cerr << endl;
-            if(verbose>4)EQ->view(N.Transition);
+            print("Time\t");
+            N.Marking.printHeader();
+            print("\n");
+            print(curr_time);
+            print("\t");
+            N.Marking.print();
+            print("\n");
+            //EQ.view();
+            print("\n");
         }
 
         continueb = SimulateOneStep();
     }
-    if(verbose>3){
-        //Print marking and location of the automata
-        //Usefull to track a simulation
-        N.Marking.printHeader(cerr);
-        cerr << endl;
-        N.Marking.print(cerr);
-        cerr << endl;
-        if(verbose>4)EQ->view(N.Transition);
-    }
-    //cerr << "finish path"<< endl;
 }
 
 /**
@@ -266,29 +248,26 @@ void SimulatorLight::SimulateSinglePath() {
  * @param Id the number of the transition to of the SPN
  * @param b is the binding of the variable of the SPN for the transition.
  */
-void SimulatorLight::GenerateEvent(Event& E,size_t Id) {
+void SimulatorLight::GenerateEvent(Event& E,TR_PL_ID Id) {
 
     double t = curr_time;
-    if (N.Transition[Id].transType == Timed) {
-        N.GetDistParameters(Id);
-        t += N.ParamDistr[0];
-        if(verbose > 4){
-            cerr << "Sample " << N.Transition[Id].label << " with parameter (";
-            cerr << N.ParamDistr[0];
-            cerr << ")" << endl;
-        }
+    N.GetDistParameters(Id);
+    t += N.ParamDistr[0];
+    if(verbose > 4){
+        print("Sample:");
+        print(Id);
+        print(" -> ");
+        print((REAL_TYPE)N.ParamDistr[0]);
+        print("\n");
     }
 
     E.transition = Id;
-    E.time = t;
-    E.priority = N.GetPriority(Id);
-    E.weight = 0.0;
-    E.binding = '0';
+    E.time = (REAL_TYPE)t;
 }
 
 
 void SimulatorLight::RunBatch(){
-    size_t i=0;
+    TR_PL_ID i=0;
     while (i < BatchSize) {
         i++;
         reset();

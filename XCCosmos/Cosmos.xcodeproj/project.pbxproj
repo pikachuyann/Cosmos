@@ -45,6 +45,14 @@
 		0367E2B71885288900F35619 /* Gspn-Writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0367E2B51885288900F35619 /* Gspn-Writer.cpp */; };
 		039B4F8B188E7B2400C63ED7 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 039B4F89188E7B2400C63ED7 /* Generator.cpp */; };
 		03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */; };
+		03BBD5F21A80D0D700492779 /* LigthLibrairie.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BBD5F11A80D0D700492779 /* LigthLibrairie.h */; };
+		03BBD5F41A80D0D700492779 /* LigthLibrairiePriv.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BBD5F31A80D0D700492779 /* LigthLibrairiePriv.h */; };
+		03BBD5FA1A80D0F100492779 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E61A80D08A00492779 /* Event.cpp */; };
+		03BBD5FC1A80D0F100492779 /* clientsimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E21A80CFDE00492779 /* clientsimLight.cpp */; };
+		03BBD5FD1A80D0F100492779 /* SimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E31A80CFDE00492779 /* SimLight.cpp */; };
+		03C480391A826281007B8969 /* spnLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C480381A826281007B8969 /* spnLight.cpp */; };
+		03C4803C1A8283FA007B8969 /* EventsQueueLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */; };
+		03C4803D1A8283FA007B8969 /* EventsQueueLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */; };
 		03CB8F501893CCA900A9938A /* timeGen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03CB8F4D1893CB1A00A9938A /* timeGen.cpp */; };
 		03E39B0C183E48410070911A /* LHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7094181BC14A006D7332 /* LHA.cpp */; };
 		03E39B0E183E484D0070911A /* spn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A709A181BC14A006D7332 /* spn.cpp */; };
@@ -62,10 +70,9 @@
 		03E39B1A183E4A0E0070911A /* stateSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7063181BC0D6006D7332 /* stateSpace.cpp */; };
 		03E39B1B183E4A110070911A /* clientsim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7041181BC0D6006D7332 /* clientsim.cpp */; };
 		03E39B1E183E4AC90070911A /* libClientSim.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 034509A616A80AC8002088B3 /* libClientSim.a */; };
+		03E6624D1A838A1800C36695 /* sketchArduino.ino in Resources */ = {isa = PBXBuildFile; fileRef = 03E6624C1A838A1800C36695 /* sketchArduino.ino */; };
 		03EC8D6E1880714C00731BD3 /* unfolder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03EC8D6C1880714C00731BD3 /* unfolder.cpp */; };
-		03FACB821A7FAE090058C62E /* SimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03FACB801A7FAE090058C62E /* SimLight.cpp */; };
-		03FACB831A7FAE090058C62E /* SimLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03FACB811A7FAE090058C62E /* SimLight.hpp */; };
-		03FACB861A7FEAA30058C62E /* spnLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03FACB851A7FEAA30058C62E /* spnLight.hpp */; };
+		03F0293B1A84CA2900A83E1E /* macro.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03F0293A1A84CA2900A83E1E /* macro.hpp */; };
 		03FB40F618180F9E001F9988 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03FB40F518180F9D001F9988 /* XCTest.framework */; };
 		03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03FB40FA18180F9E001F9988 /* InfoPlist.strings */; };
 		03FB40FE18180F9E001F9988 /* Cosmos_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FB40FD18180F9E001F9988 /* Cosmos_Tests.m */; };
@@ -140,7 +147,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		030273EB1A41F24D00D6C7B2 /* clientsimLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = clientsimLight.cpp; sourceTree = "<group>"; };
 		03088AAA1A0422C0006BCB27 /* #model.pnml# */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "#model.pnml#"; sourceTree = "<group>"; };
 		03088AAC1A0422C0006BCB27 /* _digests */ = {isa = PBXFileReference; lastKnownFileType = text; path = _digests; sourceTree = "<group>"; };
 		03088AAD1A0422C0006BCB27 /* _log */ = {isa = PBXFileReference; lastKnownFileType = text; path = _log; sourceTree = "<group>"; };
@@ -977,14 +983,28 @@
 		03B6EE8D1487BB8F0099A6CC /* CosmosSim */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CosmosSim; sourceTree = BUILT_PRODUCTS_DIR; };
 		03B7D355181901AC007AA90D /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.am; path = ../Makefile.am; sourceTree = "<group>"; };
 		03B7D356181901BB007AA90D /* configure.ac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = configure.ac; path = ../configure.ac; sourceTree = "<group>"; };
+		03BBD5E21A80CFDE00492779 /* clientsimLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = clientsimLight.cpp; sourceTree = "<group>"; };
+		03BBD5E31A80CFDE00492779 /* SimLight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SimLight.cpp; sourceTree = "<group>"; };
+		03BBD5E41A80CFDE00492779 /* SimLight.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SimLight.hpp; sourceTree = "<group>"; };
+		03BBD5E51A80CFDE00492779 /* spnLight.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = spnLight.hpp; sourceTree = "<group>"; };
+		03BBD5E61A80D08A00492779 /* Event.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cpp; sourceTree = "<group>"; };
+		03BBD5E71A80D08A00492779 /* Event.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Event.hpp; sourceTree = "<group>"; };
+		03BBD5EA1A80D08A00492779 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		03BBD5EF1A80D0D700492779 /* libLightLibrairie.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libLightLibrairie.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		03BBD5F11A80D0D700492779 /* LigthLibrairie.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LigthLibrairie.h; sourceTree = "<group>"; };
+		03BBD5F31A80D0D700492779 /* LigthLibrairiePriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LigthLibrairiePriv.h; sourceTree = "<group>"; };
+		03BBD5F51A80D0D700492779 /* LigthLibrairie.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LigthLibrairie.cp; sourceTree = "<group>"; };
+		03C480381A826281007B8969 /* spnLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spnLight.cpp; sourceTree = "<group>"; };
+		03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventsQueueLight.cpp; sourceTree = "<group>"; };
+		03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueueLight.hpp; sourceTree = "<group>"; };
 		03CB8F4D1893CB1A00A9938A /* timeGen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeGen.cpp; sourceTree = "<group>"; };
 		03CB8F4E1893CB1A00A9938A /* timeGen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGen.hpp; sourceTree = "<group>"; };
+		03E6624B1A83862D00C36695 /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
+		03E6624C1A838A1800C36695 /* sketchArduino.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = sketchArduino.ino; sourceTree = "<group>"; };
 		03EC8D6C1880714C00731BD3 /* unfolder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unfolder.cpp; sourceTree = "<group>"; };
 		03EC8D6D1880714C00731BD3 /* unfolder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = unfolder.hpp; sourceTree = "<group>"; };
-		03FACB801A7FAE090058C62E /* SimLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimLight.cpp; sourceTree = "<group>"; };
-		03FACB811A7FAE090058C62E /* SimLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SimLight.hpp; sourceTree = "<group>"; };
+		03F0293A1A84CA2900A83E1E /* macro.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = macro.hpp; sourceTree = "<group>"; };
 		03FACB841A7FE9FC0058C62E /* spnLight */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = spnLight; path = ../src/Simulator/spnLight; sourceTree = "<group>"; };
-		03FACB851A7FEAA30058C62E /* spnLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spnLight.hpp; sourceTree = "<group>"; };
 		03FB40F318180F9D001F9988 /* Cosmos Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cosmos Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		03FB40F518180F9D001F9988 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		03FB40F918180F9E001F9988 /* Cosmos Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Cosmos Tests-Info.plist"; sourceTree = "<group>"; };
@@ -1031,6 +1051,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				03E39B1E183E4AC90070911A /* libClientSim.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		03BBD5EC1A80D0D700492779 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1139,6 +1166,7 @@
 			children = (
 				032A7006181BC0D6006D7332 /* maindoc.md */,
 				032A709B181BC307006D7332 /* libgrml */,
+				03BBD5E11A80CFDE00492779 /* LightSimulator */,
 				032A703E181BC0D6006D7332 /* Simulator */,
 				032A7007181BC0D6006D7332 /* ModelGenerator */,
 			);
@@ -1258,10 +1286,6 @@
 				032A7063181BC0D6006D7332 /* stateSpace.cpp */,
 				032A7064181BC0D6006D7332 /* stateSpace.hpp */,
 				032A7041181BC0D6006D7332 /* clientsim.cpp */,
-				03FACB801A7FAE090058C62E /* SimLight.cpp */,
-				03FACB811A7FAE090058C62E /* SimLight.hpp */,
-				030273EB1A41F24D00D6C7B2 /* clientsimLight.cpp */,
-				03FACB851A7FEAA30058C62E /* spnLight.hpp */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
@@ -1269,6 +1293,7 @@
 		032A708E181BC14A006D7332 /* test */ = {
 			isa = PBXGroup;
 			children = (
+				03C480381A826281007B8969 /* spnLight.cpp */,
 				032A7094181BC14A006D7332 /* LHA.cpp */,
 				032A7097181BC14A006D7332 /* Makefile.am */,
 				032A7099181BC14A006D7332 /* markingImpl.hpp */,
@@ -2927,6 +2952,35 @@
 			name = utils;
 			sourceTree = "<group>";
 		};
+		03BBD5E11A80CFDE00492779 /* LightSimulator */ = {
+			isa = PBXGroup;
+			children = (
+				03BBD5EA1A80D08A00492779 /* Makefile.am */,
+				03BBD5E61A80D08A00492779 /* Event.cpp */,
+				03BBD5E71A80D08A00492779 /* Event.hpp */,
+				03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */,
+				03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */,
+				03BBD5E51A80CFDE00492779 /* spnLight.hpp */,
+				03BBD5E31A80CFDE00492779 /* SimLight.cpp */,
+				03BBD5E41A80CFDE00492779 /* SimLight.hpp */,
+				03BBD5E21A80CFDE00492779 /* clientsimLight.cpp */,
+				03E6624B1A83862D00C36695 /* build.sh */,
+				03E6624C1A838A1800C36695 /* sketchArduino.ino */,
+				03F0293A1A84CA2900A83E1E /* macro.hpp */,
+			);
+			path = LightSimulator;
+			sourceTree = "<group>";
+		};
+		03BBD5F01A80D0D700492779 /* LigthLibrairie */ = {
+			isa = PBXGroup;
+			children = (
+				03BBD5F11A80D0D700492779 /* LigthLibrairie.h */,
+				03BBD5F31A80D0D700492779 /* LigthLibrairiePriv.h */,
+				03BBD5F51A80D0D700492779 /* LigthLibrairie.cp */,
+			);
+			path = LigthLibrairie;
+			sourceTree = "<group>";
+		};
 		03FB40F418180F9D001F9988 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -2984,6 +3038,7 @@
 				C6859E8C029090F304C91782 /* Documentation */,
 				03FB40F718180F9E001F9988 /* Cosmos Tests */,
 				0367E2A418843EAB00F35619 /* ClientSim Tests */,
+				03BBD5F01A80D0D700492779 /* LigthLibrairie */,
 				03FB40F418180F9D001F9988 /* Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
@@ -3011,6 +3066,7 @@
 				034509A616A80AC8002088B3 /* libClientSim.a */,
 				03FB40F318180F9D001F9988 /* Cosmos Tests.xctest */,
 				0367E2A218843EAB00F35619 /* ClientSim Tests.xctest */,
+				03BBD5EF1A80D0D700492779 /* libLightLibrairie.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3031,8 +3087,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				0365553B18292D10001B5947 /* foxglynn.hpp in Headers */,
-				03FACB831A7FAE090058C62E /* SimLight.hpp in Headers */,
-				03FACB861A7FEAA30058C62E /* spnLight.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		03BBD5ED1A80D0D700492779 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				03BBD5F41A80D0D700492779 /* LigthLibrairiePriv.h in Headers */,
+				03C4803D1A8283FA007B8969 /* EventsQueueLight.hpp in Headers */,
+				03BBD5F21A80D0D700492779 /* LigthLibrairie.h in Headers */,
+				03F0293B1A84CA2900A83E1E /* macro.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3125,6 +3190,23 @@
 			productReference = 03B6EE8D1487BB8F0099A6CC /* CosmosSim */;
 			productType = "com.apple.product-type.tool";
 		};
+		03BBD5EE1A80D0D700492779 /* LightLibrairie */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 03BBD5F71A80D0D700492779 /* Build configuration list for PBXNativeTarget "LightLibrairie" */;
+			buildPhases = (
+				03BBD5EB1A80D0D700492779 /* Sources */,
+				03BBD5EC1A80D0D700492779 /* Frameworks */,
+				03BBD5ED1A80D0D700492779 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LightLibrairie;
+			productName = LigthLibrairie;
+			productReference = 03BBD5EF1A80D0D700492779 /* libLightLibrairie.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		03FB40F218180F9D001F9988 /* Cosmos Tests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 03FB410218180F9E001F9988 /* Build configuration list for PBXNativeTarget "Cosmos Tests" */;
@@ -3169,10 +3251,13 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0610;
 				TargetAttributes = {
 					0367E2A118843EAB00F35619 = {
 						TestTargetID = 034509A516A80AC8002088B3;
+					};
+					03BBD5EE1A80D0D700492779 = {
+						CreatedOnToolsVersion = 6.1.1;
 					};
 					03FB40F218180F9D001F9988 = {
 						TestTargetID = 8DD76F620486A84900D96B5E;
@@ -3201,6 +3286,7 @@
 				03128742180B0A4F0018560F /* CosmosMakefile */,
 				03FB40F218180F9D001F9988 /* Cosmos Tests */,
 				0367E2A118843EAB00F35619 /* ClientSim Tests */,
+				03BBD5EE1A80D0D700492779 /* LightLibrairie */,
 			);
 		};
 /* End PBXProject section */
@@ -3219,6 +3305,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */,
+				03E6624D1A838A1800C36695 /* sketchArduino.ino in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3259,7 +3346,6 @@
 				03E39B1B183E4A110070911A /* clientsim.cpp in Sources */,
 				03E39B19183E4A0C0070911A /* SimulatorContinuousBounded.cpp in Sources */,
 				03E39B18183E4A0A0070911A /* SimulatorBoundedRE.cpp in Sources */,
-				03FACB821A7FAE090058C62E /* SimLight.cpp in Sources */,
 				03E39B10183E49D60070911A /* Event.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3278,6 +3364,18 @@
 			files = (
 				03E39B0C183E48410070911A /* LHA.cpp in Sources */,
 				03E39B0E183E484D0070911A /* spn.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		03BBD5EB1A80D0D700492779 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				03BBD5FA1A80D0F100492779 /* Event.cpp in Sources */,
+				03C4803C1A8283FA007B8969 /* EventsQueueLight.cpp in Sources */,
+				03BBD5FC1A80D0F100492779 /* clientsimLight.cpp in Sources */,
+				03BBD5FD1A80D0F100492779 /* SimLight.cpp in Sources */,
+				03C480391A826281007B8969 /* spnLight.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3659,6 +3757,83 @@
 			};
 			name = Release;
 		};
+		03BBD5F81A80D0D700492779 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		03BBD5F91A80D0D700492779 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		03FB410318180F9E001F9988 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3899,6 +4074,15 @@
 			buildConfigurations = (
 				03B6EE8F1487BB900099A6CC /* Debug */,
 				03B6EE901487BB900099A6CC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		03BBD5F71A80D0D700492779 /* Build configuration list for PBXNativeTarget "LightLibrairie" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				03BBD5F81A80D0D700492779 /* Debug */,
+				03BBD5F91A80D0D700492779 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
