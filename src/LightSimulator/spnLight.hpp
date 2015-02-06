@@ -31,11 +31,11 @@
 #ifndef _SPN_HPP
 #define _SPN_HPP
 
-#define TR_PL_ID unsigned short
+#define TR_PL_ID unsigned char
 #define REAL_TYPE float
 
 #include <math.h>
-
+#include "macro.hpp"
 
 #ifndef Cosmos_marking_h
 #define Cosmos_marking_h
