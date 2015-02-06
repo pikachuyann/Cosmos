@@ -31,24 +31,19 @@
 #ifndef _SPN_HPP
 #define _SPN_HPP
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <set>
-#include <vector>
-#include <map>
+#define TR_PL_ID unsigned char
+#define REAL_TYPE float
+
 #include <math.h>
-#include <assert.h>
-
-#include <limits.h>
-#include <stdlib.h>
-
 
 #ifndef Cosmos_marking_h
 #define Cosmos_marking_h
 
 
-
+void print(const char *);
+void print(TR_PL_ID i);
+void print(REAL_TYPE r);
+REAL_TYPE getPr(TR_PL_ID);
 
 
 class abstractMarkingImpl;
@@ -62,20 +57,12 @@ public:
     abstractMarkingImpl* P;
 
     abstractMarking();
-    abstractMarking(const std::vector<int>& m);
-    abstractMarking(const abstractMarking& m);
-    abstractMarking& operator = (const abstractMarking& m);
     ~abstractMarking();
 
-    //! Swap marking in constant time
-    void swap(abstractMarking& m);
-    void printHeader(std::ostream &)const;
-    void print(std::ostream &)const;
-    void printSedCmd(std::ostream &)const;
+    void printHeader()const;
+    void print()const;
+
     void resetToInitMarking();
-    int getNbOfTokens(int)const;
-    std::vector<int> getVector()const;
-    void setVector(const std::vector<int>&);
     
 };
 
@@ -84,68 +71,6 @@ typedef char abstractBinding;
 
 inline bool contains(int i, int j){ return i>=j;}
 #endif
-
-/**
- * Type of probability distribution
- */
-enum DistributionType {
-    NORMAL,
-    GAMMA,
-    UNIFORM,
-    EXPONENTIAL,
-    DETERMINISTIC,
-    LOGNORMAL,
-    TRIANGLE,
-    GEOMETRIC,
-    ERLANG,
-    DISCRETEUNIF,
-    MASSACTION,
-};
-
-
-enum TransType {
-	Timed, unTimed
-};
-
-/**
- * Datatype for transition of the SPN
- */
-struct _trans {
-	_trans(){};
-	
-	//! transition constructor
-	_trans(unsigned int id,TransType tt,DistributionType,bool MD,size_t,bool am):
-    Id(id),transType(tt),MarkingDependent(MD),AgeMemory(am){};
-
-    _trans(unsigned int id,TransType tt,DistributionType,bool MD,size_t,bool am,std::string l):
-    Id(id),label(l),transType(tt),MarkingDependent(MD),AgeMemory(am){};
-	
-	//! number of the transition
-	unsigned int Id;
-	
-	//! Name of the transition, can be empty
-    std::string label;
-	TransType transType;
-
-	bool MarkingDependent;
-	//! true if the memory policy of the transition is age memory
-	bool AgeMemory;
-};
-typedef struct _trans spn_trans;
-
-/**
- * DataType for place of the SPN
- */
-struct _place {
-	_place():isTraced(true){};
-	
-	//! name of the place, can be empty
-	std::string label;
-	
-	//! set to true if the place should appear in outputted trace
-	bool isTraced;
-};
-typedef struct _place spn_place;
 
 
 /**
@@ -159,24 +84,16 @@ public:
 	SPN();
 	
 	//! Number of places
-	const size_t pl;
+	const TR_PL_ID pl;
 	//! Number of transitions
-	const size_t tr;
+	const TR_PL_ID tr;
 	//! Current marking
 	abstractMarking Marking;
-	
-	//!contains all the transitions of the Petri net
-	std::vector<spn_trans> Transition;
-	//!contains all the places of the Petri net
-	std::vector <spn_place> Place;
-	
+
 	//! set the marking to the initial marking
 	void
 	reset();
-	
-	//! The path of the file use to generate the implementation
-	std::string Path;
-	
+
 	/**
 	 * \brief A vector use to store temporary parameters value.
 	 * This vector is used to to store parameter of distribution
@@ -184,7 +101,7 @@ public:
 	 * store them inside this vector.
 	 * This is done to avoid allocating a new vector too frequently.
 	 */
-	mutable std::vector<double> ParamDistr;
+	mutable double ParamDistr[2];
 
 	/**
 	 * \brief Check if a given transition is enabled.
@@ -194,7 +111,7 @@ public:
 	 * @param b a binding of the transition of the SPN
 	 */
 	bool
-	IsEnabled(size_t tr)const;
+	IsEnabled(TR_PL_ID tr)const;
 	
 	/**
 	 * \brief fire a given transition.
@@ -206,7 +123,7 @@ public:
      * with external code.
 	 */
 	void
-	fire(size_t tr, double time);
+	fire(TR_PL_ID tr, double time);
 	
 	/**
 	 * \brief unfire a given transition.
@@ -216,7 +133,7 @@ public:
 	 * @param tr a transition of the SPN
 	 * @param b a binding of the transition of the SPN
 	 */
-	void unfire(size_t tr);
+	void unfire(TR_PL_ID tr);
 	
 	
 	void setConditionsVector();
@@ -229,13 +146,13 @@ public:
 	 * @param tr a transition of the SPN
 	 * @param b a binding of the transition of the SPN
 	 */
-	void GetDistParameters(size_t tr)const;
+	void GetDistParameters(TR_PL_ID tr)const;
 	
 	//! compute the the weight value of a given transition
-	double GetWeight(size_t)const;
+	double GetWeight(TR_PL_ID)const;
 	
 	//! compute the the priority value of a given transition
-	double GetPriority(size_t)const;
+    double GetPriority(TR_PL_ID)const;
 
     //! A table of set of transitions that may be enabled after firing the last transition
     static const int* PossiblyEnabled[];
@@ -246,14 +163,7 @@ public:
     //! A table of set of transition without constrain but marking dependant
     static const int* FreeMarkDepT[];
 
-    size_t lastTransition; //! store the last fired transition
-
-private:
-
-    //------------------------- On the fly enabling disabling transition--------
-    std::vector<int> TransitionConditions;
-    std::vector<int> initTransitionConditions;
-    //-------------------------/On the fly enabling disabling transition--------
+    TR_PL_ID lastTransition; //! store the last fired transition
 	
 };
 #endif  /* _SPN_HPP */

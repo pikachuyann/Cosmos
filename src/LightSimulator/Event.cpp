@@ -4,7 +4,7 @@
  * (S)tochastiques                                                             *
  *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
- * Authors: Paolo Ballarini Benoît Barbot & Hilal Djafri                       *
+ * Authors: Paolo Ballarini & Hilal Djafri                                     *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
  *                                                                             *
  * This program is free software; you can redistribute it and/or modify        *
@@ -20,34 +20,33 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file Generator.hpp                                                          *
- * Created by Benoit Barbot on 21/01/2014.                                     *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__Generator__
-#define __Cosmos__Generator__
+#include "Event.hpp"
 
-#include <iostream>
 
-#include "GspnParser/Gspn-Reader.hpp"
+Event::Event() : transition(0), time(-1.0)
+{}
 
-/**
- * Parse the input file and build the simulator
- * Return true iff the parsing was successfull
- * input file are read as Grml file or .gspn and .lha file or
- * directly .cpp for LHA
- * according to the P.GMLinput parameters or extension
- * If require by some option modify the SPN or the LHA on the fly.
- * @return a boolean equal to true if everything run correctly
- */
+Event::Event(TR_PL_ID tr, REAL_TYPE t): transition(tr),time(t){}
 
-bool Parse();
 
-void generateLoopLHA(Gspn_Reader &);
-void generateSamplingLHA(Gspn_Reader &);
-void generateMain();
+Event::Event(const Event& orig) :
+transition(orig.transition),time(orig.time) {}
 
-bool build();
+const Event& Event::operator = (const Event& orig){
+	transition = orig.transition;
+	time = orig.time;
+	return *this;
+}
 
-#endif /* defined(__Cosmos__Generator__) */
+bool Event::isPriorer(const Event& e)const {
+    //smallest time is priorer
+    if (time > e.time) return false;
+    if (time < e.time) return true;
+    // if not(< or >) so it is =
+    // highest priority is priorer
+    if (getPr(transition) < getPr(e.transition)) return false;
+    else return true;
+}

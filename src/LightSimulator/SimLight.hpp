@@ -28,34 +28,21 @@
 #ifndef __Cosmos__SimLight__
 #define __Cosmos__SimLight__
 
-#include <stdio.h>
 #include "spnLight.hpp"
-#include "EventsQueue.hpp"
-#include "BatchR.hpp"
-
-#include <iostream>
-#include <fstream>
-
-
-using namespace std;
-
+#include "EventsQueueLight.hpp"
 
 class SimulatorLight {
 public:
     SimulatorLight();
-    ~SimulatorLight();
 
     //! verbose level of the simulator
     int verbose;
-
-    //! Path to the temporary directory
-    string tmpPath;
 
     /**
      * \brief Set the batch size
      * @param RI the new batch size to use
      */
-    void SetBatchSize(const size_t); // set the batch size
+    void SetBatchSize(const TR_PL_ID); // set the batch size
 
     /**
      * \brief Main entry point of the object simulate a batch of trajectory .
@@ -69,7 +56,9 @@ public:
     /**
      *  Current simulation time
      */
-    double curr_time;
+    REAL_TYPE curr_time;
+
+    SPN N; //!The object representing the SPN
 
 protected:
 
@@ -77,12 +66,10 @@ protected:
     Event F;
 
     //! Store result beetween two trajectory simulation.
-    SimOutput Result;
+    bool Result;
 
     //! Size of the batch.
-    size_t BatchSize;
-
-    SPN N; //!The object representing the SPN
+    TR_PL_ID BatchSize;
 
     /**
      * \brief The event queue of the simulator.
@@ -90,7 +77,7 @@ protected:
      * enabled transitions with
      * the time at wich they will be fire if still enabled
      */
-    EventsQueue* EQ;
+    EventsQueue EQ;
 
     /**
      * \brief Simulate a step of the system,
@@ -108,10 +95,10 @@ protected:
 
     void reset(); //! reset the simulator
 
-    void GenerateEvent(Event &,size_t); //! generate a new event use Generate Time
+    void GenerateEvent(Event &,TR_PL_ID); //! generate a new event use Generate Time
 
     //! update value in the SPN after a transition
-    void updateSPN(size_t);
+    void updateSPN(TR_PL_ID);
 
 };
 

@@ -4,7 +4,7 @@
  * (S)tochastiques                                                             *
  *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
- * Authors: Paolo Ballarini Benoît Barbot & Hilal Djafri                       *
+ * Authors: Paolo Ballarini & Hilal Djafri                                     *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
  *                                                                             *
  * This program is free software; you can redistribute it and/or modify        *
@@ -20,34 +20,34 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file Generator.hpp                                                          *
- * Created by Benoit Barbot on 21/01/2014.                                     *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__Generator__
-#define __Cosmos__Generator__
-
-#include <iostream>
-
-#include "GspnParser/Gspn-Reader.hpp"
-
-/**
- * Parse the input file and build the simulator
- * Return true iff the parsing was successfull
- * input file are read as Grml file or .gspn and .lha file or
- * directly .cpp for LHA
- * according to the P.GMLinput parameters or extension
- * If require by some option modify the SPN or the LHA on the fly.
- * @return a boolean equal to true if everything run correctly
+/*
+ *  This file implement an object for Event of the system
  */
 
-bool Parse();
+#ifndef _EVENT_HPP
+#define	_EVENT_HPP
 
-void generateLoopLHA(Gspn_Reader &);
-void generateSamplingLHA(Gspn_Reader &);
-void generateMain();
+#include "spnLight.hpp"
 
-bool build();
+class Event {
+public:
+    
+	Event();
+    Event(const Event& orig);
+	const Event& operator = (const Event&);
+	
+	
+    TR_PL_ID transition;
+    REAL_TYPE time;
 
-#endif /* defined(__Cosmos__Generator__) */
+	bool isPriorer(const Event& e)const;
+private:
+	Event(TR_PL_ID, REAL_TYPE);
+};
+
+
+#endif	/* _EVENT_HPP */
+

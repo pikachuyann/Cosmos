@@ -24,20 +24,12 @@
  *******************************************************************************
  */
 
+#include "spnLight.hpp"
 #include "SimLight.hpp"
-#include <sys/types.h>
-#include <unistd.h>
-#include <signal.h>
 
+#include <iostream>
 
-// Handler for interuption of the server
-void signalHandler(int);
-
-void signalHandler( int )
-{
-    exit(EXIT_SUCCESS);
-}
-
+SimulatorLight mySim;
 /**
  * main function it read the options given as arguments and initialyse
  * the simulator.
@@ -46,28 +38,28 @@ void signalHandler( int )
  * The loop stop only when the programme receive end_of_file on
  * his standart input
  */
-int main(int argc, char** argv) {
+int main(int, char**) {
 
-	signal(SIGINT, signalHandler);
-	
-	SimulatorLight mySim;
-    const int optioni=5;
-	
-	if(argc>=optioni-1){
-		mySim.SetBatchSize(atoi(argv[1])); //set the batch size
-		mySim.verbose = atoi(argv[2]);
-        mySim.tmpPath=argv[3];
-	}else{
-		cerr << "Not enough argument";
-		return (EXIT_FAILURE);
-	}
-	
-    if(mySim.verbose>=4)mySim.RunBatch();
-    else while( !cin.eof() ){
-		mySim.RunBatch(); //simulate a batch of trajectory
-    }
-	
-    return (EXIT_SUCCESS);
-	
-	
+
+    mySim.SetBatchSize(1); //set the batch size
+    mySim.verbose=5;
+
+    mySim.RunBatch(); //simulate a batch of trajectory
+
+    return (0);
+}
+
+
+REAL_TYPE getPr(TR_PL_ID t){
+    return (REAL_TYPE)mySim.N.GetPriority(t);
+}
+
+void print(const char * s){
+    std::cerr << s;
+}
+void print(TR_PL_ID i){
+    std::cerr << (int)i;
+}
+void print(REAL_TYPE r){
+    std::cerr << r;
 }

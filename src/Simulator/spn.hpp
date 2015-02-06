@@ -44,6 +44,9 @@
 #include <limits.h>
 #include <stdlib.h>
 
+#define TR_PL_ID unsigned long
+#define REAL_TYPE double
+
 
 /**
  * Type of probability distribution
