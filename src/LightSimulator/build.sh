@@ -33,7 +33,7 @@ cp sketchArduino.ino sketchArduino/src/sketch.ino
 cp -r $LPATH ~/Documents/Arduino/libraries
 
 cd sketchArduino
-ino build
+ino build -m fio
 
 SERIAL=`ls /dev/tty.usbserial-*`
 
