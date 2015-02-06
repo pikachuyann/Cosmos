@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+SUBDIRS = src/libgrml src/ModelGenerator/Eval src/ModelGenerator/GspnParser src/ModelGenerator/LhaParser src/ModelGenerator src/Simulator test automataGen utils
+=======
 SUBDIRS = src/libgrml src/ModelGenerator/Eval src/ModelGenerator/GspnParser src/ModelGenerator/LhaParser src/ModelGenerator src/Simulator src/LightSimulator test automataGen prism2SPT utils
+>>>>>>> 03381e07ac98502e028cb17a4bc0b54ff1e0826f
 
 ACLOCAL_AMFLAGS = -I m4
 
