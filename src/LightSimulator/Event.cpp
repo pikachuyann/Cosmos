@@ -26,23 +26,18 @@
 #include "Event.hpp"
 
 
-Event::Event() : transition(0), time(-1.0), priority(0)
+Event::Event() : transition(0), time(-1.0)
 {}
 
-Event::Event(unsigned int tr, double t): transition(tr),time(t), priority(0){}
-
-Event::Event(unsigned int tr, double t, unsigned int pr) :
-transition(tr),time(t), priority(pr) {}
-
+Event::Event(TR_PL_ID tr, REAL_TYPE t): transition(tr),time(t){}
 
 
 Event::Event(const Event& orig) :
-transition(orig.transition),time(orig.time), priority(orig.priority) {}
+transition(orig.transition),time(orig.time) {}
 
 const Event& Event::operator = (const Event& orig){
 	transition = orig.transition;
 	time = orig.time;
-	priority = orig.priority;
 	return *this;
 }
 
@@ -52,6 +47,6 @@ bool Event::isPriorer(const Event& e)const {
     if (time < e.time) return true;
     // if not(< or >) so it is =
     // highest priority is priorer
-    if (priority < e.priority) return false;
+    if (getPr(transition) < getPr(e.transition)) return false;
     else return true;
 }

@@ -58,6 +58,8 @@ public:
      */
     REAL_TYPE curr_time;
 
+    SPN N; //!The object representing the SPN
+
 protected:
 
     //! a Temporary event
@@ -68,8 +70,6 @@ protected:
 
     //! Size of the batch.
     TR_PL_ID BatchSize;
-
-    SPN N; //!The object representing the SPN
 
     /**
      * \brief The event queue of the simulator.
