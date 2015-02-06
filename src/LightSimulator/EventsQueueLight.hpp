@@ -59,7 +59,7 @@ private:
      * and binding index in constant time.
      * If the return value is -1 the corresponding event is not in the event heap.
      */
-    short int evtHeapIndex[NB_EVENT];
+    TR_PL_ID evtHeapIndex[NB_EVENT];
 
     /**
      * This is the vector of events, all the events of every transition

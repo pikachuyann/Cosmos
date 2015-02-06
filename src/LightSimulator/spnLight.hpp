@@ -101,7 +101,7 @@ public:
 	 * store them inside this vector.
 	 * This is done to avoid allocating a new vector too frequently.
 	 */
-	mutable double ParamDistr[2];
+	mutable REAL_TYPE ParamDistr[2];
 
 	/**
 	 * \brief Check if a given transition is enabled.
@@ -123,7 +123,7 @@ public:
      * with external code.
 	 */
 	void
-	fire(TR_PL_ID tr, double time);
+	fire(TR_PL_ID tr, REAL_TYPE time);
 	
 	/**
 	 * \brief unfire a given transition.
@@ -149,10 +149,10 @@ public:
 	void GetDistParameters(TR_PL_ID tr)const;
 	
 	//! compute the the weight value of a given transition
-	double GetWeight(TR_PL_ID)const;
+	REAL_TYPE GetWeight(TR_PL_ID)const;
 	
 	//! compute the the priority value of a given transition
-    double GetPriority(TR_PL_ID)const;
+    REAL_TYPE GetPriority(TR_PL_ID)const;
 
     //! A table of set of transitions that may be enabled after firing the last transition
     static const int* PossiblyEnabled[];

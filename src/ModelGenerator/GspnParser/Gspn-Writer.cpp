@@ -1285,7 +1285,7 @@ void Gspn_Writer::writeFile(){
 	
     SpnCppFile << "void SPN::fire(TR_PL_ID t";
     if (!P.lightSimulator)SpnCppFile << ",const abstractBinding& b";
-    SpnCppFile << ",  double time){" << endl;
+    SpnCppFile << ",  REAL_TYPE time){" << endl;
 	SpnCppFile << "\tlastTransition = t;" << endl;
     if (!P.magic_values.empty()){SpnCppFile << "\tmagicUpdate(t,time);\n";};
 	SpnCppFile << "\tswitch(t){" << endl;
@@ -1576,7 +1576,7 @@ void Gspn_Writer::writeFile(){
 	
 	
 	
-	SpnCppFile << "double SPN::GetPriority(TR_PL_ID t)const {" << endl;
+	SpnCppFile << "REAL_TYPE SPN::GetPriority(TR_PL_ID t)const {" << endl;
 	casesHandler prioritycases("t");
 	for (size_t t = 0; t < MyGspn.tr; t++){
 		stringstream newcase;
@@ -1590,7 +1590,7 @@ void Gspn_Writer::writeFile(){
 	
 	
 	/////////////////////////////////////////
-	SpnCppFile << "double SPN::GetWeight(TR_PL_ID t)const{" << endl;
+	SpnCppFile << "REAL_TYPE SPN::GetWeight(TR_PL_ID t)const{" << endl;
 	casesHandler weightcases("t");
 	for (size_t t = 0; t < MyGspn.tr; t++){
 		stringstream newcase;
