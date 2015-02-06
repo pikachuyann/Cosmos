@@ -7,5 +7,5 @@ libClientSimLight_la_SOURCES = \
 	SimLight.cpp SimLight.hpp \
 	spnLight.hpp
 
-includes_HEADERS = spnLight.hpp
+includes_HEADERS = spnLight.hpp macro.hpp
 includesdir = $(includedir)
