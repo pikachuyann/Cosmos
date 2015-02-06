@@ -1,5 +1,5 @@
 
-noinst_PROGRAMS = ClientSim2
+noinst_PROGRAMS = ClientSim2 gtest
 
 # ClientSim1_SOURCES = \
 	../src/Simulator/BatchR.cpp \
@@ -9,4 +9,12 @@ ClientSim2_SOURCES = LHA.cpp markingImpl.hpp spn.cpp
 
 ClientSim2_LDADD = ../src/Simulator/libClientSim.la
 
-AM_CPPFLAGS = -I$(srcdir)/../src/Simulator $(BOOST_CPPFLAGS)
+gtest_SOURCES = \
+	src/gtest-all.cc \
+	src/gtest_main.cc \
+	sample1.cc \
+	sample1_unittest.cc
+
+AM_CPPFLAGS = -I$(srcdir)/../src/Simulator -I$(srcdir)/include/gtest/internal/ -I$(srcdir)/include $(BOOST_CPPFLAGS) $(PTHREAD_LIBS)
+
+AUTOMAKE_OPTIONS = subdir-objects
