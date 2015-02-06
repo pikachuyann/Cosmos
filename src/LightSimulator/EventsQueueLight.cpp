@@ -28,14 +28,14 @@
 #include "EventsQueueLight.hpp"
 
 
-
+#define UNSET (TR_PL_ID)(-1)
 
 /**
  *	Build an Event queue for the Petri net given as parameter.
  */
 EventsQueue::EventsQueue(const SPN& N):heap_size(0){
     for(TR_PL_ID it = 0; it< N.tr; ++it ){
-        evtHeapIndex[it]= -1;
+        evtHeapIndex[it]= UNSET;
         evtHeap[it].time = -1;
     }
 }
@@ -45,7 +45,7 @@ EventsQueue::EventsQueue(const SPN& N):heap_size(0){
  */
 void EventsQueue::reset() {
     for(TR_PL_ID it = 0; it< heap_size; ++it ){
-        evtHeapIndex[it]= -1;
+        evtHeapIndex[it]= UNSET;
         evtHeap[it].time = -1;
     }
     heap_size = 0;
@@ -89,11 +89,11 @@ void EventsQueue::remove(TR_PL_ID tr) {
     if(pos>=0){
         evtHeap[pos].time = -1.0;
         if ((TR_PL_ID)pos == heap_size-1) {
-            evtHeapIndex[tr] = -1;
+            evtHeapIndex[tr] = UNSET;
             heap_size--;
         } else {
             evtHeapIndex[evtHeap[heap_size-1].transition] = (TR_PL_ID)pos;
-            evtHeapIndex[tr] = -1 ;
+            evtHeapIndex[tr] = UNSET ;
             evtHeap[pos] = evtHeap[heap_size-1];
             heap_size--;
 
@@ -109,7 +109,7 @@ const Event& EventsQueue::InPosition(TR_PL_ID i)const {
 }
 
 bool EventsQueue::isScheduled(TR_PL_ID tr)const {
-    return (evtHeapIndex[tr] >= 0);
+    return (evtHeapIndex[tr] != UNSET);
 }
 
 
