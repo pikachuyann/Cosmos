@@ -17,6 +17,10 @@ void print(REAL_TYPE r){
 SimulatorLight mySim;
 bool blink = false;
 
+REAL_TYPE getPr(TR_PL_ID t){
+    return (REAL_TYPE)mySim.N.GetPriority(t);
+}
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
