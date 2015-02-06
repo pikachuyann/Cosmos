@@ -43,7 +43,7 @@
 void print(const char *);
 void print(TR_PL_ID i);
 void print(REAL_TYPE r);
-
+REAL_TYPE getPr(TR_PL_ID);
 
 
 class abstractMarkingImpl;

@@ -262,8 +262,7 @@ void SimulatorLight::GenerateEvent(Event& E,TR_PL_ID Id) {
     }
 
     E.transition = Id;
-    E.time = t;
-    E.priority = N.GetPriority(Id);
+    E.time = (REAL_TYPE)t;
 }
 
 

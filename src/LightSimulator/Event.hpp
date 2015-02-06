@@ -42,12 +42,10 @@ public:
 	
     TR_PL_ID transition;
     REAL_TYPE time;
-    REAL_TYPE priority;
 
 	bool isPriorer(const Event& e)const;
 private:
-	Event(unsigned int, double);
-    Event(unsigned int, double, unsigned int);
+	Event(TR_PL_ID, REAL_TYPE);
 };
 
 

@@ -29,6 +29,7 @@
 
 #include <iostream>
 
+SimulatorLight mySim;
 /**
  * main function it read the options given as arguments and initialyse
  * the simulator.
@@ -39,13 +40,18 @@
  */
 int main(int, char**) {
 
-	SimulatorLight mySim;
+
     mySim.SetBatchSize(1); //set the batch size
     mySim.verbose=5;
 
     mySim.RunBatch(); //simulate a batch of trajectory
 
     return (0);
+}
+
+
+REAL_TYPE getPr(TR_PL_ID t){
+    return (REAL_TYPE)mySim.N.GetPriority(t);
 }
 
 void print(const char * s){

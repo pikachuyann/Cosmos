@@ -92,7 +92,7 @@ void EventsQueue::remove(TR_PL_ID tr) {
             evtHeapIndex[tr] = -1;
             heap_size--;
         } else {
-            evtHeapIndex[evtHeap[heap_size-1].transition] = pos;
+            evtHeapIndex[evtHeap[heap_size-1].transition] = (TR_PL_ID)pos;
             evtHeapIndex[tr] = -1 ;
             evtHeap[pos] = evtHeap[heap_size-1];
             heap_size--;
