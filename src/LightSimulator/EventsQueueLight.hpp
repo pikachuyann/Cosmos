@@ -26,11 +26,10 @@
 
 #include "Event.hpp"
 #include "spnLight.hpp"
+#include "macro.hpp"
 
 #ifndef __Cosmos__EventsQueueLight__
 #define __Cosmos__EventsQueueLight__
-
-#define NB_EVENT 54
 
 class EventsQueue {
 public:
@@ -67,7 +66,7 @@ private:
      * and every binding must occurs in this vector.
      * the first index is allong transition and the second along binding index.
      */
-    Event evtTbl[NB_EVENT];
+    //Event evtTbl[NB_EVENT];
 
 
     /**
@@ -76,7 +75,7 @@ private:
      * This vector is a heap for the relation Event::isPriorer.
      * The first element of the heap is the most urgent event.
      */
-    TR_PL_ID evtHeap[NB_EVENT];
+    Event evtHeap[NB_EVENT];
 
     TR_PL_ID getLeftChildIndex(TR_PL_ID nodeIndex)const {
         return 2 * nodeIndex + 1;

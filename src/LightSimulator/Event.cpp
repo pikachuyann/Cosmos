@@ -53,6 +53,5 @@ bool Event::isPriorer(const Event& e)const {
     // if not(< or >) so it is =
     // highest priority is priorer
     if (priority < e.priority) return false;
-    if (priority > e.priority) return true;
     else return true;
 }
