@@ -35,7 +35,6 @@
 #define REAL_TYPE float
 
 #include <math.h>
-#include "macro.hpp"
 
 #ifndef Cosmos_marking_h
 #define Cosmos_marking_h

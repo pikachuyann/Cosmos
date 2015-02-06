@@ -52,7 +52,7 @@ void print(const char * s){
     std::cerr << s;
 }
 void print(TR_PL_ID i){
-    std::cerr << i;
+    std::cerr << (int)i;
 }
 void print(REAL_TYPE r){
     std::cerr << r;
