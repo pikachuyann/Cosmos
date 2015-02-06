@@ -36,7 +36,7 @@
 EventsQueue::EventsQueue(const SPN& N):heap_size(0){
     for(TR_PL_ID it = 0; it< N.tr; ++it ){
         evtHeapIndex[it]= -1;
-        evtTbl[it].time = -1.0;
+        evtHeap[it].time = -1;
     }
 }
 
@@ -46,7 +46,7 @@ EventsQueue::EventsQueue(const SPN& N):heap_size(0){
 void EventsQueue::reset() {
     for(TR_PL_ID it = 0; it< heap_size; ++it ){
         evtHeapIndex[it]= -1;
-        evtTbl[it].time = -1.0;
+        evtHeap[it].time = -1;
     }
     heap_size = 0;
     //Qsize = 0;
@@ -58,9 +58,8 @@ void EventsQueue::reset() {
  */
 void EventsQueue::insert(const Event &e) {
     //assert(!isScheduled(e.transition, e.binding.id()));
-    evtTbl[e.transition] = e;
     evtHeapIndex[e.transition] = heap_size;
-    evtHeap[heap_size] = e.transition;
+    evtHeap[heap_size] = e;
     heap_size++;
 
     siftUp(heap_size-1);
@@ -72,11 +71,11 @@ void EventsQueue::insert(const Event &e) {
  */
 void EventsQueue::replace(const Event &e) {
     //assert(isScheduled(e.transition, e.binding.id()));
-    long int k = evtHeapIndex[e.transition];
-    evtTbl[e.transition] = e;
+    long int pos = evtHeapIndex[e.transition];
+    evtHeap[pos] = e;
 
-    siftUp(k);
-    siftDown(k);
+    siftUp((TR_PL_ID)pos);
+    siftDown((TR_PL_ID)pos);
 }
 
 /*
@@ -85,38 +84,33 @@ void EventsQueue::replace(const Event &e) {
  *  @param b a binding of the Petri net.
  */
 void EventsQueue::remove(TR_PL_ID tr) {
-    long int i = evtHeapIndex[tr];
-    evtTbl[tr].time = -1.0;
+    long int pos = evtHeapIndex[tr];
     //assert(i>=0);
-    if(i>=0){
-        if ((TR_PL_ID)i == heap_size-1) {
+    if(pos>=0){
+        evtHeap[pos].time = -1.0;
+        if ((TR_PL_ID)pos == heap_size-1) {
             evtHeapIndex[tr] = -1;
             heap_size--;
         } else {
-            evtHeapIndex[evtHeap[heap_size-1]] = i;
+            evtHeapIndex[evtHeap[heap_size-1].transition] = pos;
             evtHeapIndex[tr] = -1 ;
-            evtHeap[i] = evtHeap[heap_size-1];
+            evtHeap[pos] = evtHeap[heap_size-1];
             heap_size--;
 
-            siftDown(i);
-            siftUp(i);
+            siftDown((TR_PL_ID)pos);
+            siftUp((TR_PL_ID)pos);
         }
     }
 }
 
 const Event& EventsQueue::InPosition(TR_PL_ID i)const {
     //assert(i < evtHeap.size());
-    return evtTbl[evtHeap[i]];
+    return evtHeap[i];
 }
 
 bool EventsQueue::isScheduled(TR_PL_ID tr)const {
     return (evtHeapIndex[tr] >= 0);
 }
-
-
-
-
-
 
 
 bool EventsQueue::isEmpty()const{
@@ -126,10 +120,10 @@ bool EventsQueue::isEmpty()const{
 void EventsQueue::swapEvt(TR_PL_ID i,TR_PL_ID j){
     //assert((size_t)evtHeapIndex[evtHeap[j].first][evtHeap[j].second] ==j
     //	   && (size_t)evtHeapIndex[evtHeap[i].first][evtHeap[i].second] == i);
-    evtHeapIndex[evtHeap[j]] = i;
-    evtHeapIndex[evtHeap[i]] = j;
+    evtHeapIndex[evtHeap[j].transition] = i;
+    evtHeapIndex[evtHeap[i].transition] = j;
 
-    TR_PL_ID swappair = evtHeap[j];
+    Event swappair = evtHeap[j];
     evtHeap[j] = evtHeap[i];
     evtHeap[i] = swappair;
 }
