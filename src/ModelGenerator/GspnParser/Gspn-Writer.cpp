@@ -1102,6 +1102,13 @@ void Gspn_Writer::writeFile(){
 	ofstream header(headerloc.c_str(), ios::out | ios::trunc);
 	header << "#ifndef _MarkingImpl_HPP" << endl;
 	header << "#define    _MarkingImpl_HPP" << endl;
+
+    if(P.lightSimulator){
+        loc = Pref + "/macro.h";
+        ofstream macroF(loc.c_str(),ios::out | ios::trunc);
+        macroF << "#define NB_EVENT " << MyGspn.tr << endl;
+        macroF.close();
+    }
 	
 	//SpnCppFile << "#include \"spn_orig.hpp\"" << endl;
     if(P.lightSimulator){

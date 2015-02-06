@@ -32,7 +32,7 @@
  */
 SimulatorLight::SimulatorLight():verbose(0),curr_time(0.0),EQ(N){
     Result=true;
-    BatchSize = 1000;
+    BatchSize = 100;
 }
 
 void SimulatorLight::SetBatchSize(const TR_PL_ID RI) {

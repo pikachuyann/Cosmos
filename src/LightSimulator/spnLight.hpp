@@ -153,7 +153,7 @@ public:
 	double GetWeight(TR_PL_ID)const;
 	
 	//! compute the the priority value of a given transition
-	double GetPriority(TR_PL_ID)const;
+    double GetPriority(TR_PL_ID)const;
 
     //! A table of set of transitions that may be enabled after firing the last transition
     static const int* PossiblyEnabled[];
