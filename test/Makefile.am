@@ -15,6 +15,6 @@ gtest_SOURCES = \
 	sample1.cc \
 	sample1_unittest.cc
 
-AM_CPPFLAGS = -I$(srcdir)/../src/Simulator -I$(srcdir)/include/gtest/internal/ -I$(srcdir)/include $(BOOST_CPPFLAGS) $(PTHREAD_LIBS)
+AM_CPPFLAGS = -I$(srcdir)/../src/Simulator -I$(srcdir)/include/gtest/internal/ -I$(srcdir)/include -isystem -I$(srcdir)/include $(BOOST_CPPFLAGS) $(PTHREAD_LIBS)
 
 AUTOMAKE_OPTIONS = subdir-objects
