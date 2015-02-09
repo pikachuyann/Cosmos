@@ -386,7 +386,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
             ofstream extdefhand( P.tmpPath+"/magic.hpp", ios::out | ios::trunc);
             extdefhand << "#include <string>\nusing namespace std;\n" << extdef << endl;
             extdefhand.close();
-            if(P.lightSimulator){auto cmd = "sed -i backup -e 's/return \\(\"[^\"]*\"\\);/print(\\1);break;/g' -e 's/return std::to_string(v)/print((TR_PL_ID)v);break;/g' -e 's/ string / void /g' "+ P.tmpPath+"/magic.hpp";
+            if(P.lightSimulator){auto cmd = "sed -ibackup -e 's/return \\(\"[^\"]*\"\\);/print(\\1);break;/g' -e 's/return std::to_string(v)/print((TR_PL_ID)v);break;/g' -e 's/ string / void /g' "+ P.tmpPath+"/magic.hpp";
             if(P.verbose>2)cout << cmd << endl;
             system(cmd.c_str());
             }
