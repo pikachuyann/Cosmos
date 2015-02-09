@@ -24,7 +24,6 @@ REAL_TYPE getPr(TR_PL_ID t){
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  Serial.println("\nStart");
   mySim.SetBatchSize(1); //set the batch size
   mySim.verbose=5;
 
@@ -32,6 +31,7 @@ void setup() {
 }
 
 void loop() {
+    Serial.println("\nStart");
     if(blink){
         digitalWrite(13, HIGH);
     } else {
