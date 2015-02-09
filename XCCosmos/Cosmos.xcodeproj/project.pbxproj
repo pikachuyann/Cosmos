@@ -77,6 +77,13 @@
 		03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03FB40FA18180F9E001F9988 /* InfoPlist.strings */; };
 		03FB40FE18180F9E001F9988 /* Cosmos_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FB40FD18180F9E001F9988 /* Cosmos_Tests.m */; };
 		8DD76F6A0486A84900D96B5E /* Cosmos.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* Cosmos.1 */; };
+		BCBEC7E51A8924C800453811 /* magicLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCBEC7E41A8924C800453811 /* magicLight.hpp */; };
+		BCBEC7E71A89255A00453811 /* markingImplLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCBEC7E61A89255A00453811 /* markingImplLight.hpp */; };
+		BCBEC7F31A8927AA00453811 /* spnLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C480381A826281007B8969 /* spnLight.cpp */; };
+		BCBEC7F41A8927AA00453811 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E61A80D08A00492779 /* Event.cpp */; };
+		BCBEC7F51A8927AA00453811 /* EventsQueueLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */; };
+		BCBEC7F61A8927AA00453811 /* SimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E31A80CFDE00492779 /* SimLight.cpp */; };
+		BCBEC7F71A8927AA00453811 /* clientsimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E21A80CFDE00492779 /* clientsimLight.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -141,6 +148,15 @@
 			dstSubfolderSpec = 0;
 			files = (
 				8DD76F6A0486A84900D96B5E /* Cosmos.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		BCBEC7EA1A89278D00453811 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -1020,6 +1036,10 @@
 		03FDF5EA1A42F09300AA4DA2 /* type.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = type.ml; sourceTree = "<group>"; };
 		03FDF5EB1A42F09400AA4DA2 /* writer.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = writer.ml; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* Cosmos */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Cosmos; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCBEC7E41A8924C800453811 /* magicLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = magicLight.hpp; path = ../../pacemaker/PaceMakerModel/tmp/magicLight.hpp; sourceTree = "<group>"; };
+		BCBEC7E61A89255A00453811 /* markingImplLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = markingImplLight.hpp; path = ../../pacemaker/PaceMakerModel/tmp/markingImplLight.hpp; sourceTree = "<group>"; };
+		BCBEC7EC1A89278D00453811 /* ClientSimLight */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ClientSimLight; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCBEC7EE1A89278D00453811 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C6859E8B029090EE04C91782 /* Cosmos.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Cosmos.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1074,6 +1094,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BCBEC7E91A89278D00453811 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1295,6 +1322,8 @@
 			children = (
 				03C480381A826281007B8969 /* spnLight.cpp */,
 				032A7094181BC14A006D7332 /* LHA.cpp */,
+				BCBEC7E61A89255A00453811 /* markingImplLight.hpp */,
+				BCBEC7E41A8924C800453811 /* magicLight.hpp */,
 				032A7097181BC14A006D7332 /* Makefile.am */,
 				032A7099181BC14A006D7332 /* markingImpl.hpp */,
 				032A709A181BC14A006D7332 /* spn.cpp */,
@@ -3039,6 +3068,7 @@
 				03FB40F718180F9E001F9988 /* Cosmos Tests */,
 				0367E2A418843EAB00F35619 /* ClientSim Tests */,
 				03BBD5F01A80D0D700492779 /* LigthLibrairie */,
+				BCBEC7ED1A89278D00453811 /* ClientSimLight */,
 				03FB40F418180F9D001F9988 /* Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
@@ -3067,8 +3097,17 @@
 				03FB40F318180F9D001F9988 /* Cosmos Tests.xctest */,
 				0367E2A218843EAB00F35619 /* ClientSim Tests.xctest */,
 				03BBD5EF1A80D0D700492779 /* libLightLibrairie.dylib */,
+				BCBEC7EC1A89278D00453811 /* ClientSimLight */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BCBEC7ED1A89278D00453811 /* ClientSimLight */ = {
+			isa = PBXGroup;
+			children = (
+				BCBEC7EE1A89278D00453811 /* main.cpp */,
+			);
+			path = ClientSimLight;
 			sourceTree = "<group>";
 		};
 		C6859E8C029090F304C91782 /* Documentation */ = {
@@ -3095,9 +3134,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				03BBD5F41A80D0D700492779 /* LigthLibrairiePriv.h in Headers */,
+				BCBEC7E71A89255A00453811 /* markingImplLight.hpp in Headers */,
 				03C4803D1A8283FA007B8969 /* EventsQueueLight.hpp in Headers */,
 				03BBD5F21A80D0D700492779 /* LigthLibrairie.h in Headers */,
 				03F0293B1A84CA2900A83E1E /* macro.hpp in Headers */,
+				BCBEC7E51A8924C800453811 /* magicLight.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3245,6 +3286,23 @@
 			productReference = 8DD76F6C0486A84900D96B5E /* Cosmos */;
 			productType = "com.apple.product-type.tool";
 		};
+		BCBEC7EB1A89278D00453811 /* ClientSimLight */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCBEC7F01A89278D00453811 /* Build configuration list for PBXNativeTarget "ClientSimLight" */;
+			buildPhases = (
+				BCBEC7E81A89278D00453811 /* Sources */,
+				BCBEC7E91A89278D00453811 /* Frameworks */,
+				BCBEC7EA1A89278D00453811 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ClientSimLight;
+			productName = ClientSimLight;
+			productReference = BCBEC7EC1A89278D00453811 /* ClientSimLight */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -3261,6 +3319,9 @@
 					};
 					03FB40F218180F9D001F9988 = {
 						TestTargetID = 8DD76F620486A84900D96B5E;
+					};
+					BCBEC7EB1A89278D00453811 = {
+						CreatedOnToolsVersion = 6.1.1;
 					};
 				};
 			};
@@ -3287,6 +3348,7 @@
 				03FB40F218180F9D001F9988 /* Cosmos Tests */,
 				0367E2A118843EAB00F35619 /* ClientSim Tests */,
 				03BBD5EE1A80D0D700492779 /* LightLibrairie */,
+				BCBEC7EB1A89278D00453811 /* ClientSimLight */,
 			);
 		};
 /* End PBXProject section */
@@ -3415,6 +3477,18 @@
 				0367E29718842F0F00F35619 /* Lha-scanner.cc in Sources */,
 				039B4F8B188E7B2400C63ED7 /* Generator.cpp in Sources */,
 				032A7073181BC0D6006D7332 /* HaslFormula.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BCBEC7E81A89278D00453811 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCBEC7F41A8927AA00453811 /* Event.cpp in Sources */,
+				BCBEC7F71A8927AA00453811 /* clientsimLight.cpp in Sources */,
+				BCBEC7F31A8927AA00453811 /* spnLight.cpp in Sources */,
+				BCBEC7F51A8927AA00453811 /* EventsQueueLight.cpp in Sources */,
+				BCBEC7F61A8927AA00453811 /* SimLight.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4030,6 +4104,70 @@
 			};
 			name = Release;
 		};
+		BCBEC7F11A89278D00453811 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BCBEC7F21A89278D00453811 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -4113,6 +4251,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		BCBEC7F01A89278D00453811 /* Build configuration list for PBXNativeTarget "ClientSimLight" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCBEC7F11A89278D00453811 /* Debug */,
+				BCBEC7F21A89278D00453811 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
