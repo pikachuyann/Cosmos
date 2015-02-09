@@ -26,7 +26,6 @@
 
 #include "Event.hpp"
 #include "spnLight.hpp"
-#include "macro.hpp"
 
 #ifndef __Cosmos__EventsQueueLight__
 #define __Cosmos__EventsQueueLight__

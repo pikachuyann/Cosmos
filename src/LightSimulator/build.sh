@@ -27,7 +27,7 @@ sed -e $SEDCMD SimLight.hpp > $LPATH/SimLight.h
 sed -e $SEDCMD SimLight.cpp > $LPATH/SimLight.cpp
 sed -e $SEDCMD markingImpl.hpp > $LPATH/markingImpl.h
 sed -e $SEDCMD macro.h > $LPATH/macro.h
-echo "#include <spnLight.h>\n" > $LPATH/magic.h
+echo "#include \"spnLight.h\"\n" $LPATH/magic.h
 sed -e 's/return \("[^"]*"\);/print(\1);break;/g' -e 's/return std::to_string(v)/print((TR_PL_ID)v);break;/g' -e 's/ string / void /g' magic.hpp >> $LPATH/magic.h
 
 cp sketchArduino.ino sketchArduino/src/sketch.ino

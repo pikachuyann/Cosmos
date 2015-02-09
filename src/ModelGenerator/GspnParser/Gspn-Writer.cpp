@@ -841,21 +841,22 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
     });
 
     if(P.lightSimulator){
-        SpnCppFile << "void abstractMarking::printHeader()const{\n";
-        if(P.StringInSpnLHA)
-            for (const auto &plit : plitcp)
-                SpnCppFile << "::print(\"" << plit.name << "\t\");"<<endl;
-        SpnCppFile << "}\n";
-        SpnCppFile << "\n";
-        SpnCppFile << "void abstractMarking::print()const{\n";
         if(P.StringInSpnLHA){
-            for (const auto &plit : plitcp){
-                SpnCppFile << "print_magic(P->_PL_"<< plit.name << ");"<<endl;
-                SpnCppFile << "::print(\"\t\");"<<endl;
+            SpnCppFile << "void abstractMarking::printHeader()const{\n";
+            if(P.StringInSpnLHA)
+                for (const auto &plit : plitcp)
+                    SpnCppFile << "::print(\"" << plit.name << "\t\");"<<endl;
+            SpnCppFile << "}\n";
+            SpnCppFile << "\n";
+            SpnCppFile << "void abstractMarking::print()const{\n";
+            if(P.StringInSpnLHA){
+                for (const auto &plit : plitcp){
+                    SpnCppFile << "print_magic(P->_PL_"<< plit.name << ");"<<endl;
+                    SpnCppFile << "::print(\"\t\");"<<endl;
+                }
             }
+            SpnCppFile << "}\n";
         }
-        SpnCppFile << "}\n";
-
     } else {
 
         SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
@@ -1107,6 +1108,7 @@ void Gspn_Writer::writeFile(){
         loc = Pref + "/macro.h";
         ofstream macroF(loc.c_str(),ios::out | ios::trunc);
         macroF << "#define NB_EVENT " << MyGspn.tr << endl;
+        if(!P.StringInSpnLHA)macroF << "#define NO_STRING_SIM" <<endl;
         macroF.close();
     }
 	
