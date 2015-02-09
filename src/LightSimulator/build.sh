@@ -13,6 +13,7 @@ rm -rf sketchArduino
 mkdir -p sketchArduino
 cd sketchArduino
 ino init
+rm -rf src/sketch.ino
 cd ..
 mkdir -p $LPATH
 touch $LPATH/string
