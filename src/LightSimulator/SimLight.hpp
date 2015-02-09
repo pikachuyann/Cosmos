@@ -80,12 +80,6 @@ protected:
     EventsQueue EQ;
 
     /**
-     * \brief Simulate a step of the system,
-     * this function do most of the simulation job.
-     */
-    bool SimulateOneStep();
-
-    /**
      * \brief Simulate single path
      * this function loop over SimulateOneStep until a the path terminate.
      */

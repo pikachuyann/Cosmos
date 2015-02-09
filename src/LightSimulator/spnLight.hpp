@@ -59,8 +59,10 @@ public:
     abstractMarking();
     ~abstractMarking();
 
+#ifndef NO_STRING_SIM
     void printHeader()const;
     void print()const;
+#endif
 
     void resetToInitMarking();
     

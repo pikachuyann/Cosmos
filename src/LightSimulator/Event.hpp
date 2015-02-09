@@ -36,7 +36,7 @@ class Event {
 public:
     
 	Event();
-    Event(const Event& orig);
+    Event(TR_PL_ID, REAL_TYPE);
 	const Event& operator = (const Event&);
 	
 	
@@ -44,8 +44,6 @@ public:
     REAL_TYPE time;
 
 	bool isPriorer(const Event& e)const;
-private:
-	Event(TR_PL_ID, REAL_TYPE);
 };
 
 
