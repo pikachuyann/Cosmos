@@ -1,3 +1,0 @@
-#!/usr/bin/sed -f
-s/formalism='Cosmos'/formalism='swn'/g
-s/'declaration'/'declarations'/g  
