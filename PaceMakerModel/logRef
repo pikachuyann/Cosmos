@@ -1,4 +1,3 @@
-Input file not in GrML try to use convertor.
 Sample:7 -> 850
 Sample:32 -> 500
 Time	SIG_AP	SIG_AS	SIG_Aget	SIG_RLRI	SIG_VP	SIG_VS	SIG_Vget	TAVIcmp	AVI	URI	PVARP	VRP	LRI	
@@ -2142,5 +2141,3 @@ Time	SIG_AP	SIG_AS	SIG_Aget	SIG_RLRI	SIG_VP	SIG_VS	SIG_Vget	TAVIcmp	AVI	URI	PVAR
 
 Firing:32
 Sample:39 -> 0
-Warning uncomplete Batch Result
-Deconnection Simulator:59685
