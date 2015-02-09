@@ -31,6 +31,7 @@
 #ifndef _SPN_HPP
 #define _SPN_HPP
 
+#include "macro.hpp"
 #define TR_PL_ID unsigned char
 #define REAL_TYPE float
 

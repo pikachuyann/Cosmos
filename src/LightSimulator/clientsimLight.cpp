@@ -38,11 +38,11 @@ SimulatorLight mySim;
  * The loop stop only when the programme receive end_of_file on
  * his standart input
  */
-int main(int, char**) {
+int main(int, char** argv) {
 
 
     mySim.SetBatchSize(1); //set the batch size
-    mySim.verbose=5;
+    mySim.verbose= atoi(argv[2]);
 
     mySim.RunBatch(); //simulate a batch of trajectory
 
