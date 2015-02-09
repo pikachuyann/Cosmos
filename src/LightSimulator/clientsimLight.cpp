@@ -40,7 +40,7 @@ SimulatorLight mySim;
  */
 int main(int, char** argv) {
 
-    std::cout<<"Test\n";
+    // Hardcode the serial communication for PC client
     
     mySim.SetBatchSize(1); //set the batch size
     mySim.verbose= atoi(argv[2]);
