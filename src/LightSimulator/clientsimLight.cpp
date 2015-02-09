@@ -40,7 +40,8 @@ SimulatorLight mySim;
  */
 int main(int, char** argv) {
 
-
+    std::cout<<"Test\n";
+    
     mySim.SetBatchSize(1); //set the batch size
     mySim.verbose= atoi(argv[2]);
 
