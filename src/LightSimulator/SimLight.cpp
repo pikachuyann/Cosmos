@@ -182,49 +182,15 @@ void SimulatorLight::updateSPN(TR_PL_ID){
 }
 
 /**
- * Simulate one step of simulation
- * @return true if the simulation did not reach an accepting are refusing state.
- */
-bool SimulatorLight::SimulateOneStep(){
-
-    //If there is no enabled transition in the Petri net
-    //try to reach an accepting state by using autonomous edge of
-    //the automata refuse the simulation otherwise.
-    if (EQ.isEmpty()) {
-        return false;
-    } else {
-        //Take the first event in the queue
-        const Event &E1 = EQ.InPosition(0);
-
-        if(verbose>3){
-            print("Firing:");
-            print(E1.transition);
-            print("\n");
-        }
-
-        curr_time = E1.time;
-
-        //Fire the transition in the SPN
-        N.fire(E1.transition, curr_time);
-
-        updateSPN(E1.transition);
-    }
-    if(curr_time >= 10000)return false;
-    return true;
-}
-
-
-/**
  * Simulate a whole trajectory in the system. Result is store in SimOutput
  */
 void SimulatorLight::SimulateSinglePath() {
 
     InitialEventsQueue();
 
-    bool continueb = true;
-    while (continueb) {
+    while (true) {
         //cerr << "continue path"<< endl;
-        if(verbose>3){
+#ifndef NO_STRING_SIM
             //Print marking and location of the automata
             //Usefull to track a simulation
             print("Time\t");
@@ -234,11 +200,33 @@ void SimulatorLight::SimulateSinglePath() {
             print("\t");
             N.Marking.print();
             print("\n");
-            //EQ.view();
+            if(verbose>2)EQ.view();
             print("\n");
-        }
+#endif
 
-        continueb = SimulateOneStep();
+        //If there is no enabled transition in the Petri net
+        //try to reach an accepting state by using autonomous edge of
+        //the automata refuse the simulation otherwise.
+        if (EQ.isEmpty()) {
+            break;
+        } else {
+            //Take the first event in the queue
+            const Event &E1 = EQ.InPosition(0);
+
+#ifndef NO_STRING_SIM
+            print("Firing:");
+            print(E1.transition);
+            print("\n");
+#endif
+
+            curr_time = E1.time;
+
+            //Fire the transition in the SPN
+            N.fire(E1.transition, curr_time);
+
+            updateSPN(E1.transition);
+        }
+        if(curr_time >= 10000)break;
     }
 }
 
@@ -253,14 +241,15 @@ void SimulatorLight::GenerateEvent(Event& E,TR_PL_ID Id) {
     double t = curr_time;
     N.GetDistParameters(Id);
     t += N.ParamDistr[0];
-    if(verbose > 4){
+#ifndef NO_STRING_SIM
+    if(verbose > 2){
         print("Sample:");
         print(Id);
         print(" -> ");
         print((REAL_TYPE)N.ParamDistr[0]);
         print("\n");
     }
-
+#endif
     E.transition = Id;
     E.time = (REAL_TYPE)t;
 }

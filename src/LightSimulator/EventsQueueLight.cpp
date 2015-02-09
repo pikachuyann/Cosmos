@@ -167,11 +167,11 @@ void EventsQueue::siftDown(TR_PL_ID i) {
 }
 
 
-
+#ifndef NO_STRING_SIM
 /**
  *	Print the content of the queues in a human readable format.
  */
-/*void EventsQueue::view()const {
+void EventsQueue::view()const {
     print("********** EVENTS-QUEUE VIEW **********\n");
 
     //cerr << "Qsize:" << evtHeap.size() << endl;
@@ -185,10 +185,10 @@ void EventsQueue::siftDown(TR_PL_ID i) {
             print(":\tt=");
             print(e.time);
             print(",\tp=");
-            print(e.priority);
+            print(getPr(e.transition));
             print("\n");
         }
-}*/
-
+}
+#endif
 
 
