@@ -26,14 +26,8 @@
 #include "Event.hpp"
 
 
-Event::Event() : transition(0), time(-1.0)
-{}
-
+Event::Event() : transition(0), time(-1.0){}
 Event::Event(TR_PL_ID tr, REAL_TYPE t): transition(tr),time(t){}
-
-
-Event::Event(const Event& orig) :
-transition(orig.transition),time(orig.time) {}
 
 const Event& Event::operator = (const Event& orig){
 	transition = orig.transition;

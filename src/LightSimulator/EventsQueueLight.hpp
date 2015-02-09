@@ -48,7 +48,9 @@ public:
 
     const Event& InPosition(TR_PL_ID)const ;
 
-    //void view()const;
+#ifndef NO_STRING_SIM 
+    void view()const;
+#endif
 
 private:
     TR_PL_ID heap_size;
