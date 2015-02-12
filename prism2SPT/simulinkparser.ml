@@ -596,7 +596,7 @@ let print_magic f sl tl scrl=
   | _ -> ();
   end) tl;
   output_string f "\tdefault: return true; \n\t}\n}\n";
-  output_string f "void abstractMarking::moveSerialState(){ P->_PL_Parameter_Serial = DATA_AVAILABLE;};\n";
+  output_string f "void abstractMarking::moveSerialState(){ P->_PL_SerialPort = DATA_AVAILABLE;};\n";
   output_string f "  </attribute>"
 
 
