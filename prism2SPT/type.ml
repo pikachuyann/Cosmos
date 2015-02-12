@@ -48,6 +48,7 @@ type _ expr' =
   | And : bool expr' * bool expr' -> bool expr'
   | Or  : bool expr' * bool expr' -> bool expr'
   | IntAtom : int expr' * cmp * int expr' -> bool expr'
+  | FloatAtom : float expr' * cmp * float expr' -> bool expr'
   | Plus : 'a expr' * 'a expr' -> 'a expr'
   | Minus : 'a expr' * 'a expr' -> 'a expr'
   | Mult  : 'a expr' * 'a expr' -> 'a expr'
@@ -89,6 +90,7 @@ let rec neg_bool = function
   | BoolName x -> Not (BoolName x)
   | Not e -> e
   | IntAtom (ie1,cmp,ie2) -> IntAtom (ie1,neg_cmp cmp,ie2)
+  | FloatAtom (ie1,cmp,ie2) -> FloatAtom (ie1,neg_cmp cmp,ie2)
   | And (e1,e2) -> Or (neg_bool e1,neg_bool e2)
   | Mult (e1,e2) -> Or (neg_bool e1,neg_bool e2)
   | Or (e1,e2) -> And (neg_bool e1,neg_bool e2)
@@ -152,6 +154,7 @@ let rec rename_expr: type a. (string ->string) -> a expr' -> a expr' = fun rn e 
     | And(e1,e2) -> And(rnr e1,rnr e2)
     | Or(e1,e2) -> Or(rnr e1,rnr e2)
     | IntAtom(ie,c,ie2) -> IntAtom(rnr ie,c,rnr ie2)
+    | FloatAtom(ie,c,ie2) -> FloatAtom(rnr ie,c,rnr ie2)
     | Float(f) -> Float(f)
     | FloatName(x) -> FloatName(rn x) 
     | CastInt(x) -> CastInt (rnr x)
@@ -236,6 +239,10 @@ let rec printH_expr: type a. out_channel -> a expr' -> unit = fun f x -> match x
     printH_expr e1
     printH_expr e2
   | IntAtom (e1,c,e2) -> Printf.fprintf f "(%a %a %a)" 
+    printH_expr e1
+    printH_cmp c
+    printH_expr e2  
+  | FloatAtom (e1,c,e2) -> Printf.fprintf f "(%a %a %a)" 
     printH_expr e1
     printH_cmp c
     printH_expr e2  
