@@ -25,6 +25,7 @@
 %token LABEL
 %token SEND AFTER
 %token EXP
+%token FUNCTION ENDFUN
 
 %left OR
 %left AND
@@ -36,6 +37,7 @@
 
 %start main
 %type <SimulinkType.simulink_trans_label> main
+//%type <string*string> matlabfun
 
 %%
 
@@ -50,12 +52,28 @@ action:
 
 pre:
   NAME { RAction($1)} 
-| { Imm };
+| { Imm }
+| LSQBRAK boolexp RSQBRAK { ImmWC($2) };
+
+boolexp:
+ NAME cmp NAME { (Printf.sprintf "%s%s%s" $1 $2 $3) }
+| boolexp OR OR boolexp { (Printf.sprintf "(%s || %s)" $1 $4) };
+
+cmp:
+EQ EQ {"=="}
+| SG {">"}
+| SL {"<"}
+| GE {">="}
+| LE {"<="}
+| NOT EQ {"!="}
+;
+
 
 post:
   NAME SEMICOLON post { {$3 with write = ($1)::($3.write) }; }
  | NAME EQ expr SEMICOLON post { {$5 with update = (Printf.sprintf "%s=%s" $1 $3)::($5.update) } }
  | SEND LPAR NAME COMMA NAME RPAR SEMICOLON post {  {$8 with write = ($3::($8.write)) } }
+ | funcall SEMICOLON post { {$3 with update =  ($1)::($3.update) } } 
  | {empty_trans_label};
   
 
@@ -67,10 +85,14 @@ expr:
  | expr MULT expr {Printf.sprintf "%s*%s" $1 $3}
  | expr MINUS expr {Printf.sprintf "%s-%s" $1 $3}
  | LPAR expr RPAR { Printf.sprintf "(%s)" $2}
+ | funcall { $1 }
+ 
+
+funcall:
+ | NAME LPAR RPAR { Printf.sprintf "%s()" $1 }
  | NAME LPAR expr RPAR { Printf.sprintf "%s(%s)" $1 $3}
  | NAME LPAR expr COMMA expr RPAR { Printf.sprintf "%s(%s,%s)" $1 $3 $5};
  | NAME LPAR expr COMMA expr COMMA expr RPAR { Printf.sprintf "%s(%s,%s,%s)" $1 $3 $5 $7};
-
 
 floatexpr:
   INT {Float (float $1)}
@@ -90,3 +112,18 @@ floatexprlist:
   floatexpr COMMA floatexprlist { $1::$3 }
 | floatexpr { [$1] }
 | {[]}
+
+/*
+matlabfun:
+  FUNCTION NAME EQ NAME body ENDFUN
+  {($4,Printf.sprintf "double %s(){\n\tdouble %s;\n%s\n\treturn %s;\n}" $4 $2 $5 $2)}
+ | FUNCTION NAME EQ NAME LPAR arglist RPAR body ENDFUN 
+  {($4,Printf.sprintf "double %s(%s){\n\tdouble %s;\n%s\n\treturn %s;\n}" $4 $2 $6 $8 $2)};
+
+arglist:
+  NAME COMMA arglist { Printf.sprintf "double $1,$3"}
+| NAME { Printf.sprintf "double $1"} 
+| {""};
+
+body: {""}
+*/
