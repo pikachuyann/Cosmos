@@ -39,6 +39,7 @@ let rec print_expr: type a. out_channel -> a expr' -> unit = fun f x ->
   | FunCall(s,fl) -> print_at f "function" (fun f -> print_at f s (fun f l ->
   List.iter (fun x ->print_expr f x;output_string f "\n  ";) l)) fl
   | IntAtom(fe1,cmp,fe2) -> print_at f "function" (pa2 (string_of_cmpGrML cmp)) (fe1,fe2)
+  | FloatAtom(fe1,cmp,fe2) -> print_at f "function" (pa2 (string_of_cmpGrML cmp)) (fe1,fe2)
   | If(c,e1,e2) -> print_at f "function" (fun f -> print_at f "If" (fun f () ->
     print_expr f c;output_string f "\n  ";
     print_expr f e1;output_string f "\n  ";
