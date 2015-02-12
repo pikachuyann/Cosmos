@@ -38,7 +38,6 @@ PM_TPVAB = 50;
 
 PM_TPVARP = 250;
 
-PM_TURI = 500;
 
 PM_TVRP = 320;
 
