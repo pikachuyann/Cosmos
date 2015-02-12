@@ -6,6 +6,7 @@
 
 #include <Timer1.h>
 
+//print function
 void print(const char * s){
     Serial.print(s);
 }
@@ -16,20 +17,46 @@ void print(REAL_TYPE r){
     Serial.print(r);
 }
 
+
+//Real time function
 void wait(REAL_TYPE t){
     if(t<=0)return;
+#ifndef NO_STRING_SIM
     Serial.println("Got to Sleep");
     Serial.flush();
+#endif
     sleepMillis((unsigned long)t);
 }
-
 REAL_TYPE cRealTime(){
     return (REAL_TYPE)millis1();
 }
 
+//Serial comm function
+char buff[4];
+
 bool InDataAvailable(){
     Serial.available();
 }
+
+double SetParameter(double id, double  parval){}
+double SReceive4(){
+    Serial.readBytes(buff,4);
+    return (double)((long)buff[0]+ ((long)buff[1] << 4)+ ((long)buff[2] << 8)+ ((long)buff[4] << 12));
+}
+double SReceive2(){
+    Serial.readBytes(buff,2);
+    return (double)((int)buff[0]+ ((int)buff[1] << 4));
+}
+double SReceive(){
+    Serial.readBytes(buff,1);
+    return (double)buff[0];
+}
+double SWrite(double h, double d, double e){
+    Serial.write((byte)h);
+    Serial.write((byte)d);
+    Serial.write((byte)e);
+}
+
 
 SimulatorLight mySim;
 bool blink = false;

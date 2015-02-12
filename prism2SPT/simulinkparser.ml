@@ -37,6 +37,10 @@ let getScope cl = findprop (function
   | Element ("P",["Name","scope"],[PCData(l)])  -> Some l 
   | _ -> None) cl 
 
+let getDescription cl = findprop (function 
+  | Element ("P",["Name","description"],[PCData(l)])  -> Some l 
+  | _ -> None) cl 
+
 let getPriority cl = findprop (function 
   | Element ("P",["Name","executionOrder"],[PCData(l)])  -> Some l 
   | _ -> None) cl 
@@ -82,7 +86,8 @@ let reg_comm = Str.regexp "%"
 let reg_type1 = Str.regexp "[(]"
 let reg_type2 = Str.regexp "[,]"
   
-let parse_fun scr =
+(* transform matlab function into C function *)
+let parse_fun comm scr =
   if not (Str.string_match parse_regexp scr 0) then failwith ("Fail to parse:"^scr);
   let var = Str.matched_group 1 scr
   and name = Str.matched_group 2 scr
@@ -92,7 +97,9 @@ let parse_fun scr =
     |> Str.global_replace reg_type1 "(double "
     |> Str.global_replace reg_type2 ", double " in
   let body2 = Str.global_replace reg_comm "//" body in
-  (name,Printf.sprintf "double %s%s{\n\tdouble %s;\n%s\n\treturn %s;\n}" name arg2 var body2 var)
+  match comm with 
+    Some s when s="Cosmos" -> (name,Printf.sprintf "double %s%s;" name arg2)
+  | _ ->  (name,Printf.sprintf "double %s%s{\n//%s\n\tdouble %s;\n%s\n\treturn %s;\n}" name arg2 (string_of_option "" comm) var body2 var)
   
 (*parse_fun "function dT  = modulateRefrRetro(t,t0)\n toto\ntata \nend";;*)
     
@@ -102,7 +109,9 @@ let rec exp_mod (sl,tl,scriptl) = function
        | "Children" -> List.fold_left exp_mod (sl,tl,scriptl) clist
        | "state" -> begin match getScript clist with
 	   None -> (((getSSID alist),(getName clist))::sl,tl,scriptl)
-	   | Some scr -> let fn,fb = parse_fun scr in (sl,tl,((Some fn),fb)::scriptl)
+	   | Some scr -> 
+	     let comm = getDescription clist in
+	     let fn,fb = parse_fun comm scr in (sl,tl,((Some fn),fb)::scriptl)
        end 
        | "transition" -> (match getdst clist with Some dst ->
 	 (sl,((getSSID alist),(getName clist),(getsrc clist),dst)::tl,scriptl) | _ -> failwith "Ill formed transition")
@@ -274,7 +283,7 @@ let flatten_state_ssid (ssid,name,sl,tl,scrl,p) =
     (ssid,src |>>> (fun x -> List.assoc x sl3),lab,List.assoc dst sl3)) tl in
   (ssid,name,sl2,tl2,scrl,p)
 
-
+(* Transform state from interger to an array of integer to allows composition *)
 let incr_state (ssid,name,sl,tl,scrl,p) =
   if sl=[] then { ssid=ssid;
 	       name=name;
@@ -538,7 +547,9 @@ let print_magic f sl tl scrl=
   output_string f "#define temporalCount(msec) 0\n";
   (*List.iter (fun (x,y) -> match y with None ->()
   | Some s ->  Printf.fprintf f "#define %s %i\n" s x) sl;*)
-  (*Printf.fprintf f "#define DATA_AVAILABLE %i\n" List.find *)
+  output_string f "#include \"markingImpl.hpp\"\n";
+  List.iter (fun (x,y) -> match y with
+   Some s when s="DataAvailable" -> Printf.fprintf f "#define DATA_AVAILABLE %i\n"  x | _->() ) sl;
   output_string f "const string print_magic(int v){\n";
   output_string f "\tswitch(v){\n";
   List.iter (fun (ssid,n) -> match n with 
@@ -566,6 +577,7 @@ let print_magic f sl tl scrl=
   | _ -> ();
   end) tl;
   output_string f "\tdefault: return true; \n\t}\n}\n";
+  output_string f "void abstractMarking::moveSerialState(){ P->_PL_Parameter_Serial = DATA_AVAILABLE;};\n";
   output_string f "  </attribute>"
 
 

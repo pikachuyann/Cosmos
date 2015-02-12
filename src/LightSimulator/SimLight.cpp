@@ -196,7 +196,9 @@ void SimulatorLight::SimulateSinglePath() {
             wait(E1.time - cRealTime());
             curr_time = cRealTime();
             if (InDataAvailable()) {
-                //To Complete -> Benoit
+                N.Marking.moveSerialState();
+                print("Receive DATA\n");
+                updateSPN(0);   //reschedule the queue
             }
 
 

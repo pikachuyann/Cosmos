@@ -67,6 +67,9 @@ public:
      * which is generated.
      */
     abstractMarkingImpl* P;
+    
+    //Special transition that change state of serial automaton
+    void moveSerialState();
 
     abstractMarking();
     ~abstractMarking();
