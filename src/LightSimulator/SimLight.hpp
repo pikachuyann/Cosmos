@@ -37,28 +37,19 @@ public:
 
     //! verbose level of the simulator
     int verbose;
-
-    /**
-     * \brief Set the batch size
-     * @param RI the new batch size to use
-     */
-    void SetBatchSize(const TR_PL_ID); // set the batch size
-
-    /**
-     * \brief Main entry point of the object simulate a batch of trajectory .
-     *
-     * Run a batch of simulation, the result is return as a BatchR structure.
-     * @return a new BatchR structure containing the result
-     * of the batch of simulation.
-     */
-    void RunBatch();
-
+    
     /**
      *  Current simulation time
      */
     REAL_TYPE curr_time;
 
     SPN N; //!The object representing the SPN
+
+    /**
+     * \brief Simulate single path
+     * this function loop over SimulateOneStep until a the path terminate.
+     */
+    void SimulateSinglePath();
 
 protected:
 
@@ -67,10 +58,7 @@ protected:
 
     //! Store result beetween two trajectory simulation.
     bool Result;
-
-    //! Size of the batch.
-    TR_PL_ID BatchSize;
-
+    
     /**
      * \brief The event queue of the simulator.
      * The event queue is a datastructure containing the
@@ -78,12 +66,6 @@ protected:
      * the time at wich they will be fire if still enabled
      */
     EventsQueue EQ;
-
-    /**
-     * \brief Simulate single path
-     * this function loop over SimulateOneStep until a the path terminate.
-     */
-    void SimulateSinglePath();
 
     void InitialEventsQueue(); //!initialize the event queue
 

@@ -49,7 +49,9 @@ rule token = parse
   | ">=" {GE}
   | "->" {ARROW}
   | ":" {COLON}
-  | ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* as lxm {
+  | "function" {FUNCTION}
+  | "end" {ENDFUN}
+  | ['a'-'z' 'A'-'Z' '_' '0'-'9']* ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '_' '0'-'9']* as lxm {
     (*let open Type in
 	try begin match StringMap.find lxm !mapType with
 	    IntT   -> INTNAME(lxm)

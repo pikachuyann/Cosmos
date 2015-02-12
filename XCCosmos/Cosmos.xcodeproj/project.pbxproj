@@ -1020,6 +1020,8 @@
 		03EC8D6C1880714C00731BD3 /* unfolder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unfolder.cpp; sourceTree = "<group>"; };
 		03EC8D6D1880714C00731BD3 /* unfolder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = unfolder.hpp; sourceTree = "<group>"; };
 		03F0293A1A84CA2900A83E1E /* macro.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = macro.hpp; sourceTree = "<group>"; };
+		03F29A321A8B9CFF005B2228 /* Timer1.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Timer1.c; sourceTree = "<group>"; };
+		03F29A331A8B9CFF005B2228 /* Timer1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Timer1.h; sourceTree = "<group>"; };
 		03FACB841A7FE9FC0058C62E /* spnLight */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = spnLight; path = ../src/Simulator/spnLight; sourceTree = "<group>"; };
 		03FB40F318180F9D001F9988 /* Cosmos Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cosmos Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		03FB40F518180F9D001F9988 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -2996,6 +2998,8 @@
 				03E6624B1A83862D00C36695 /* build.sh */,
 				03E6624C1A838A1800C36695 /* sketchArduino.ino */,
 				03F0293A1A84CA2900A83E1E /* macro.hpp */,
+				03F29A321A8B9CFF005B2228 /* Timer1.c */,
+				03F29A331A8B9CFF005B2228 /* Timer1.h */,
 			);
 			path = LightSimulator;
 			sourceTree = "<group>";
@@ -4259,6 +4263,7 @@
 				BCBEC7F21A89278D00453811 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

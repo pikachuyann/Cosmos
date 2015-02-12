@@ -41,11 +41,9 @@ SimulatorLight mySim;
 int main(int, char** argv) {
 
     // Hardcode the serial communication for PC client
-    
-    mySim.SetBatchSize(1); //set the batch size
     mySim.verbose= atoi(argv[2]);
 
-    mySim.RunBatch(); //simulate a batch of trajectory
+    mySim.SimulateSinglePath(); //simulate a batch of trajectory
 
     return (0);
 }
@@ -63,4 +61,19 @@ void print(TR_PL_ID i){
 }
 void print(REAL_TYPE r){
     std::cerr << r;
+}
+
+bool InDataAvailable(){
+    return false;
+    //TO COMPLETE
+}
+
+// fake real time
+void wait(REAL_TYPE t){
+    if(t<=0)return;
+    mySim.curr_time += t
+    ;}
+
+REAL_TYPE cRealTime(){
+    return mySim.curr_time;
 }
