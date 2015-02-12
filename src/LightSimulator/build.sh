@@ -30,7 +30,7 @@ sed -e $SEDCMD macro.h > $LPATH/macro.h
 cp Timer1.h $LPATH/Timer1.h
 cp Timer1.c $LPATH/Timer1.c
 echo "#include \"spnLight.h\"\n" $LPATH/magic.h
-sed -e 's/return \("[^"]*"\);/print(\1);break;/g' -e 's/return std::to_string(v)/print((TR_PL_ID)v);break;/g' -e 's/ string / void /g' magic.hpp >> $LPATH/magic.h
+sed -e 's/return \("[^"]*"\);/print(\1);break;/g' -e 's/return std::to_string(v)/print((TR_PL_ID)v);break;/g' -e 's/ string / void /g' -e $SEDCMD magic.hpp >> $LPATH/magic.h
 
 cp sketchArduino.ino sketchArduino/src/sketch.ino
 cp -r $LPATH ~/Documents/Arduino/libraries
