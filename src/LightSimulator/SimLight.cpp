@@ -197,7 +197,6 @@ void SimulatorLight::SimulateSinglePath() {
             curr_time = cRealTime();
             if (InDataAvailable()) {
                 N.Marking.moveSerialState();
-                print("Receive DATA\n");
                 updateSPN(0);   //reschedule the queue
             }
 
