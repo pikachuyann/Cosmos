@@ -25,7 +25,6 @@ let getSSID al =
   ssid_count := max !ssid_count (i+1); 
   i
 
-
 let rec findprop f = function
   | [] -> None
   | t::q -> (match f t with None -> findprop f q | x-> x)
@@ -72,21 +71,28 @@ let print_position outx lexbuf =
   Printf.fprintf outx "%s:%d:%d" pos.pos_fname
     pos.pos_lnum (pos.pos_cnum - pos.pos_bol + 1)
 
-let parse_regexp = Str.regexp "function \\([A-Za-z0-9_]+\\)[ ]*=[ ]*\\([A-Za-z0-9_]+[(][A-Za-z0-9_,]*[)]\\)\n\\([^̂†]*\\)\nend"
+
+
+let regexp = "f[^̂†]*\\)\nend"
+let parse_regexp = Str.regexp 
+  "function[ ]*\\([A-Za-z0-9_]+\\)[ ]*=[ ]*\\([A-Za-z0-9_]+\\)\\([(][A-Za-z0-9_, ]*[)]\\)[ ]*\n\\([^§]*\\)\nend";;
+
+
 let reg_comm = Str.regexp "%"
 let reg_type1 = Str.regexp "[(]"
 let reg_type2 = Str.regexp "[,]"
   
 let parse_fun scr =
-  assert (Str.string_match parse_regexp scr 0);
+  if not (Str.string_match parse_regexp scr 0) then failwith ("Fail to parse:"^scr);
   let var = Str.matched_group 1 scr
   and name = Str.matched_group 2 scr
-  and body = Str.matched_group 3 scr in
-  let name2 = name 
+  and arg = Str.matched_group 3 scr
+  and body = Str.matched_group 4 scr in
+  let arg2 = if arg= "()" then "()" else arg
     |> Str.global_replace reg_type1 "(double "
     |> Str.global_replace reg_type2 ", double " in
   let body2 = Str.global_replace reg_comm "//" body in
-  (name,Printf.sprintf "double %s{\n\tdouble %s;\n%s\n\treturn %s;\n}" name2 var body2 var)
+  (name,Printf.sprintf "double %s%s{\n\tdouble %s;\n%s\n\treturn %s;\n}" name arg2 var body2 var)
   
 (*parse_fun "function dT  = modulateRefrRetro(t,t0)\n toto\ntata \nend";;*)
     
@@ -519,7 +525,7 @@ let trans_of_int i lab =
       None -> string_of_list "_" (fun x->x) lab.write
     | Some n -> n) in 
   let lab2 = (match lab.trigger with
-      Imm -> "I" | Delay _ -> "D" | RAction s -> "R"^s) in
+      Imm -> "I" | Delay _ -> "D" | RAction s -> "R"^s | ImmWC _ -> "C") in
   Printf.sprintf "%s%i_%s" lab2 i label
 
 let place_of_int ivect i =
@@ -530,6 +536,9 @@ let place_of_int ivect i =
 let print_magic f sl tl scrl=
   output_string f "  <attribute name=\"externalDeclaration\">";
   output_string f "#define temporalCount(msec) 0\n";
+  (*List.iter (fun (x,y) -> match y with None ->()
+  | Some s ->  Printf.fprintf f "#define %s %i\n" s x) sl;*)
+  (*Printf.fprintf f "#define DATA_AVAILABLE %i\n" List.find *)
   output_string f "const string print_magic(int v){\n";
   output_string f "\tswitch(v){\n";
   List.iter (fun (ssid,n) -> match n with 
@@ -547,9 +556,17 @@ let print_magic f sl tl scrl=
       List.iter (fun x -> Printf.fprintf f "\t\t%s;\n" x) lab.update; 
       output_string f "\tbreak;\n"
     end) tl;
-  output_string f "\tdefault: break;\n\t}\n}\n";
+  output_string f "\tdefault: break; \n\t}\n}\n";
+  Printf.fprintf f "bool magicConditional(int t){
+  switch(t){\n";
+  List.iter (fun (ss,_,lab,_) -> begin match lab.trigger with
+    ImmWC c -> 
+      Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
+      Printf.fprintf f "\t\treturn %s;\n" c; 
+  | _ -> ();
+  end) tl;
+  output_string f "\tdefault: return true; \n\t}\n}\n";
   output_string f "  </attribute>"
-
 
 
 let print_prism_module fpath cf ml =
@@ -587,6 +604,7 @@ let print_prism_module fpath cf ml =
       Imm -> Printf.fprintf f " -> imm : ";
     | Delay s-> Printf.fprintf f " -> 1/(%a) : " printH_expr s;
     | RAction s  -> Printf.fprintf f " -> imm : ";
+    | ImmWC s  -> Printf.fprintf f " -> imm : ";
     end;
 
     ignore @@ List.fold_left (fun b (i,s) ->
@@ -615,7 +633,7 @@ let stochNet_of_modu cf m =
   List.iter (fun (ssidt,src,lab,dst) -> 
     try 
     begin match lab.trigger with
-      Imm -> Data.add ((trans_of_int ssidt lab),(StochasticPetriNet.Imm,Float 1.0,Float (2.0-.0.01*.lab.priority))) 
+      ImmWC _ | Imm -> Data.add ((trans_of_int ssidt lab),(StochasticPetriNet.Imm,Float 1.0,Float (2.0-.0.01*.lab.priority))) 
 	net.Net.transition
     | Delay s-> Data.add ((trans_of_int ssidt lab),(detfun s,Float 1.0,Float (1.0-.0.01*.lab.priority))) net.Net.transition
     | RAction s -> Data.add ((trans_of_int ssidt lab),(StochasticPetriNet.Imm,Float 1.0,Float (4.0-.0.01*.lab.priority)))

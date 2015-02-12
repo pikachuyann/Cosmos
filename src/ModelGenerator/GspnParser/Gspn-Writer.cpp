@@ -1240,6 +1240,7 @@ void Gspn_Writer::writeFile(){
 	if(P.localTesting){
 		SpnCppFile << "\treturn (TransitionConditions[t]==0);" << endl;
 	} else {
+        if (!P.magic_values.empty()){SpnCppFile << "\tif(!magicConditional(t))return false;\n";};
 		casesHandler isenabledHandler("t");
 		//SpnCppFile << "    switch(t){" << endl;
 		for (size_t t = 0; t < MyGspn.tr; t++) {

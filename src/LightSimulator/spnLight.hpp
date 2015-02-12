@@ -41,11 +41,22 @@
 #define Cosmos_marking_h
 
 
+
+//print function
 void print(const char *);
 void print(TR_PL_ID i);
 void print(REAL_TYPE r);
-REAL_TYPE getPr(TR_PL_ID);
 
+//Real time function
+void wait(REAL_TYPE);
+REAL_TYPE cRealTime();
+
+//Serial comm function
+bool InDataAvailable();
+
+
+
+REAL_TYPE getPr(TR_PL_ID);
 
 class abstractMarkingImpl;
 
