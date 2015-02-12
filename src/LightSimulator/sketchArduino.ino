@@ -38,20 +38,19 @@ bool InDataAvailable(){
     Serial.available();
 }
 
-double SetParameter(double id, double  parval){}
-double SReceive4(){
+long SReceive4(){
     Serial.readBytes(buff,4);
-    return (double)((long)buff[0]+ ((long)buff[1] << 4)+ ((long)buff[2] << 8)+ ((long)buff[4] << 12));
+    return ((long)buff[0]+ ((long)buff[1] << 4)+ ((long)buff[2] << 8)+ ((long)buff[4] << 12));
 }
-double SReceive2(){
+int SReceive2(){
     Serial.readBytes(buff,2);
-    return (double)((int)buff[0]+ ((int)buff[1] << 4));
+    return ((int)buff[0]+ ((int)buff[1] << 4));
 }
-double SReceive(){
+char SReceive(){
     Serial.readBytes(buff,1);
-    return (double)buff[0];
+    return buff[0];
 }
-double SWrite(double h, double d, double e){
+void SWrite(char h, char d, char e){
     Serial.write((byte)h);
     Serial.write((byte)d);
     Serial.write((byte)e);

@@ -41,6 +41,10 @@ let getDescription cl = findprop (function
   | Element ("P",["Name","description"],[PCData(l)])  -> Some l 
   | _ -> None) cl 
 
+let getType cl =  findprop (function 
+  | Element ("P",["Name","type"],[PCData(l)])  -> Some l 
+  | _ -> None) cl 
+
 let getPriority cl = findprop (function 
   | Element ("P",["Name","executionOrder"],[PCData(l)])  -> Some l 
   | _ -> None) cl 
@@ -98,11 +102,13 @@ let parse_fun comm scr =
     |> Str.global_replace reg_type2 ", double " in
   let body2 = Str.global_replace reg_comm "//" body in
   match comm with 
-    Some s when s="Cosmos" -> (name,Printf.sprintf "double %s%s;" name arg2)
+    Some s when String.sub s 0 6 = "Cosmos" -> 
+      let s2 = String.sub s 7 (String.length s -7) in
+      (name,s2)
   | _ ->  (name,Printf.sprintf "double %s%s{\n//%s\n\tdouble %s;\n%s\n\treturn %s;\n}" name arg2 (string_of_option "" comm) var body2 var)
   
 (*parse_fun "function dT  = modulateRefrRetro(t,t0)\n toto\ntata \nend";;*)
-    
+				   
 let rec exp_mod (sl,tl,scriptl) = function
     | Element (name,alist,clist) ->
        begin match name with
@@ -210,14 +216,27 @@ let print_simulink_dot fpath ml =
   output_string f "}\n"; 
   close_out f;;
 
-let rec prism_of_stateflow level ml = function
+let rec prism_of_stateflow ml = function
     | Element (name,alist,clist) as t ->
        begin match name with
        | "xml" | "ModelInformation" | "Model" | "Stateflow" | "machine" | "chart" | "Children" ->
-					 List.fold_left (prism_of_stateflow level) ml clist
+					 List.fold_left prism_of_stateflow ml clist
        | "P" -> ml
-       | "state" -> if level=1 then (module_of_simul alist clist)::ml
-	 else List.fold_left (prism_of_stateflow (level+1)) ml clist
+       | "state" -> begin match  getType clist with
+	 None -> ml
+	 | Some t when t= "OR_STATE" -> List.fold_left prism_of_stateflow ml clist
+	 | Some t when t= "AND_STATE" -> (module_of_simul alist clist)::ml
+	 | Some t when t= "FUNC_STATE" -> begin
+	   match getScript clist with
+	     None -> ml
+	   | Some scr -> 
+	     let comm = getDescription clist in
+	     let fn,fb = parse_fun comm scr in 
+	     let modu = (getSSID alist),(Some fn),[],[],[((Some fn),fb)],None in
+	     modu::ml
+	 end
+	 | Some t -> Printf.fprintf stderr "Dont know wat to do with %s, ignore\n" t; ml
+       end
        | "transition" -> ml
        | "target" -> ml
        | "subviewS" -> ml
@@ -235,7 +254,7 @@ let rec prism_of_tree ml = function
     begin match name with
     | "xml" | "ModelInformation" | "Model" | "P" ->
       List.fold_left prism_of_tree ml clist
-       | "Stateflow" -> prism_of_stateflow 0 ml t
+       | "Stateflow" -> prism_of_stateflow ml t
        | _ -> ml
        end
     | PCData (s) -> ml
