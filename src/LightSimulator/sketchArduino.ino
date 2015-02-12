@@ -60,6 +60,7 @@ int SReceive2(){
     Serial.print(buff[1]);
     Serial.println("'");
 
+    
     return ((int)buff[0]+ ((int)buff[1] << 4));
 }
 char SReceive(){
