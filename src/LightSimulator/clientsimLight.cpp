@@ -29,51 +29,26 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <errno.h>
 #include <paths.h>
-#include <termios.h>
-#include <sysexits.h>
-#include <sys/ioctl.h>
-#include <sys/param.h>
-#include <sys/select.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/poll.h>
-#include <signal.h>
 #include <assert.h>
 #include <pthread.h>
 #include <curses.h>
 #include <time.h>
+#include <termios.h>
 
 #include "SimLight.hpp"
-#include "Print.h"
-
-#define MAX_DEVICES		5
-
-int             gftHandle[MAX_DEVICES];
-char            gcBufLD[MAX_DEVICES][64];
-char            gEndThread = 1;
-int             giDeviceID = 0;
-struct termios  gOldTio;
-
-pthread_t gThreadID;
-
+#include "SerialPort.h"
 
 SimulatorLight mySim;
+struct ThreadSerialInfo gThreadInfo;
 
-
-void ClosePortDevice(void)
+static void *SerialReadThread(void *pArgs)
 {
-    /* Cleanup */
-    tcdrain(gftHandle[giDeviceID]);
-    tcsetattr(gftHandle[giDeviceID],TCSANOW,&gOldTio);
-    close(gftHandle[giDeviceID]);
+    struct ThreadSerialInfo *threadInfo = (struct ThreadSerialInfo*)pArgs;
     
-    print("Closed device ");
-    print(gcBufLD[giDeviceID]);
-    print("\n");
+    ProcessSerial(threadInfo);
+    return NULL;
 }
 
 /**
@@ -87,7 +62,13 @@ void ClosePortDevice(void)
 
 int main(int nargs, char** argv)
 {
-    char *dSerialNumber;
+    char serialBuf[SERIAL_BUF_SIZE];
+    int             ftHandle[MAX_DEVICES];
+    int             iDeviceID = 0;
+    struct termios  oldTio;
+    
+    pthread_t threadID;
+
     
     if (nargs!=4) {
         print("Error: Not enough arguments\n");
@@ -98,49 +79,96 @@ int main(int nargs, char** argv)
     mySim.verbose= atoi(argv[2]);
     
     // The third parameter for the app is the port name
-    dSerialNumber = argv[3];
-    
-    if((gftHandle[giDeviceID] = open(argv[3], O_RDWR | O_NOCTTY | O_NONBLOCK))==-1) {
-        print("Error: Could not connect to ");
-        print(argv[3]);
-        print("\n");
+    if((ftHandle[iDeviceID] = open(argv[3], O_RDWR | O_NOCTTY | O_NONBLOCK))==-1) {
+        print("Error: Could not connect to "); print(argv[3]); print("\n");
         return 1;
+    } else {
+        print("Opened device "); print(argv[3]); print("\n");
+        
+        SetDefaultPortSettings(&ftHandle[iDeviceID], &oldTio);
+        
+        gThreadInfo.endThread = 1;
+        gThreadInfo.nBytesRead = 0;
+        gThreadInfo.portHandle = ftHandle[iDeviceID];
+        
+        // Create the thread
+        if(pthread_create(&threadID, NULL, &SerialReadThread, &gThreadInfo)) {
+            print("Error: Couldn't create the thread\n");
+            
+            ClosePortDevice(&ftHandle[iDeviceID], &oldTio, argv[3]);
+            return 1;
+        }
+        
+        //simulate a batch of trajectory
+        mySim.SimulateSinglePath();
     }
+
+    // End the thread
+    gThreadInfo.endThread = 0;
+    pthread_join(threadID, NULL);
     
-    mySim.SimulateSinglePath(); //simulate a batch of trajectory
+    ClosePortDevice(&ftHandle[iDeviceID], &oldTio, argv[3]);
     
-    ClosePortDevice();
     return (0);
 }
-
 
 REAL_TYPE getPr(TR_PL_ID t){
     return (REAL_TYPE)mySim.N.GetPriority(t);
 }
 
-void SWrite(char header, char data, char end)
+void ShiftArray(int offset, char *buf, int bufsize)
 {
     
 }
 
+void SWrite(char header, char data, char end)
+{
+    char Buf[3] = {header, data, end};
+    WriteToPort(&gThreadInfo.portHandle, 3, &Buf[0]);
+}
+
 char SReceive(void)
 {
-    return 0;
+    char retVal = 0;
+    
+    if(gThreadInfo.nBytesRead>0) {
+        retVal = gThreadInfo.bytesRead[0];
+        ShiftArray(1, &gThreadInfo.bytesRead[0], SERIAL_BUF_SIZE);
+    }
+    
+    return retVal;
 }
 
 int SReceive2(void)
 {
-    return 0;
+    int retVal = 0;
+    
+    if(gThreadInfo.nBytesRead>1) {
+        retVal = gThreadInfo.bytesRead[1] << 8;
+        retVal = retVal | gThreadInfo.bytesRead[0];
+        ShiftArray(2, &gThreadInfo.bytesRead[0], SERIAL_BUF_SIZE);
+    }
+
+    return retVal;
 }
 
 int SReceive4(void)
 {
-    return 0;
+    int retVal = 0, tmp = 0;
+    
+    if(gThreadInfo.nBytesRead>1) {
+        retVal = gThreadInfo.bytesRead[3] << 32;
+        retVal = retVal | (gThreadInfo.bytesRead[2] << 16);
+        retVal = retVal | (gThreadInfo.bytesRead[1] << 8);
+        retVal = retVal | gThreadInfo.bytesRead[0];
+        ShiftArray(4, &gThreadInfo.bytesRead[0], SERIAL_BUF_SIZE);
+    }
+    
+    return retVal;
 }
 
 bool InDataAvailable(){
-    return false;
-    //TO COMPLETE
+    return gThreadInfo.nBytesRead>0;
 }
 
 // fake real time

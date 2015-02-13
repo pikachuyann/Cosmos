@@ -89,6 +89,10 @@
 		BCD7DA251A8D1FD4001A2D80 /* SerialPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */; };
 		BCD7DA261A8D1FD4001A2D80 /* SerialPort.h in Headers */ = {isa = PBXBuildFile; fileRef = BCD7DA221A8D1FD4001A2D80 /* SerialPort.h */; };
 		BCD7DA281A8D207E001A2D80 /* Print.h in Headers */ = {isa = PBXBuildFile; fileRef = BCD7DA271A8D207E001A2D80 /* Print.h */; };
+		BCF9142D1A8E573A0044F3B0 /* Print.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCF9142C1A8E573A0044F3B0 /* Print.cpp */; };
+		BCF9142E1A8E573A0044F3B0 /* Print.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCF9142C1A8E573A0044F3B0 /* Print.cpp */; };
+		BCF9142F1A8E573A0044F3B0 /* Print.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCF9142C1A8E573A0044F3B0 /* Print.cpp */; };
+		BCF914301A8E573A0044F3B0 /* Print.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCF9142C1A8E573A0044F3B0 /* Print.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -1050,6 +1054,7 @@
 		BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPort.cpp; sourceTree = "<group>"; };
 		BCD7DA221A8D1FD4001A2D80 /* SerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SerialPort.h; sourceTree = "<group>"; };
 		BCD7DA271A8D207E001A2D80 /* Print.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Print.h; sourceTree = "<group>"; };
+		BCF9142C1A8E573A0044F3B0 /* Print.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Print.cpp; sourceTree = "<group>"; };
 		C6859E8B029090EE04C91782 /* Cosmos.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Cosmos.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -3011,6 +3016,7 @@
 				BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */,
 				BCD7DA221A8D1FD4001A2D80 /* SerialPort.h */,
 				BCD7DA271A8D207E001A2D80 /* Print.h */,
+				BCF9142C1A8E573A0044F3B0 /* Print.cpp */,
 			);
 			path = LightSimulator;
 			sourceTree = "<group>";
@@ -3426,6 +3432,7 @@
 				03E39B1B183E4A110070911A /* clientsim.cpp in Sources */,
 				03E39B19183E4A0C0070911A /* SimulatorContinuousBounded.cpp in Sources */,
 				03E39B18183E4A0A0070911A /* SimulatorBoundedRE.cpp in Sources */,
+				BCF9142E1A8E573A0044F3B0 /* Print.cpp in Sources */,
 				03E39B10183E49D60070911A /* Event.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3434,6 +3441,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCF9142F1A8E573A0044F3B0 /* Print.cpp in Sources */,
 				BCD7DA241A8D1FD4001A2D80 /* SerialPort.cpp in Sources */,
 				0367E2AB18843EAB00F35619 /* ClientSim_Tests.m in Sources */,
 			);
@@ -3494,6 +3502,7 @@
 				0367E29A18842F2400F35619 /* Eval-parser.cc in Sources */,
 				032A7071181BC0D6006D7332 /* Gspn_gmlparser.cpp in Sources */,
 				0367E29718842F0F00F35619 /* Lha-scanner.cc in Sources */,
+				BCF9142D1A8E573A0044F3B0 /* Print.cpp in Sources */,
 				039B4F8B188E7B2400C63ED7 /* Generator.cpp in Sources */,
 				032A7073181BC0D6006D7332 /* HaslFormula.cpp in Sources */,
 			);
@@ -3506,6 +3515,7 @@
 				BCBEC7F41A8927AA00453811 /* Event.cpp in Sources */,
 				BCBEC7F71A8927AA00453811 /* clientsimLight.cpp in Sources */,
 				BCD7DA251A8D1FD4001A2D80 /* SerialPort.cpp in Sources */,
+				BCF914301A8E573A0044F3B0 /* Print.cpp in Sources */,
 				BCBEC7F31A8927AA00453811 /* spnLight.cpp in Sources */,
 				BCBEC7F51A8927AA00453811 /* EventsQueueLight.cpp in Sources */,
 				BCBEC7F61A8927AA00453811 /* SimLight.cpp in Sources */,
