@@ -23,13 +23,59 @@
  * file clientsim.cpp created by Benoit Barbot.                                *
  *******************************************************************************
  */
+#include <float.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <time.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <paths.h>
+#include <termios.h>
+#include <sysexits.h>
+#include <sys/ioctl.h>
+#include <sys/param.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/poll.h>
+#include <signal.h>
+#include <assert.h>
+#include <pthread.h>
+#include <curses.h>
+#include <time.h>
 
-#include "spnLight.hpp"
 #include "SimLight.hpp"
+#include "Print.h"
 
-#include <iostream>
+#define MAX_DEVICES		5
+
+int             gftHandle[MAX_DEVICES];
+char            gcBufLD[MAX_DEVICES][64];
+char            gEndThread = 1;
+int             giDeviceID = 0;
+struct termios  gOldTio;
+
+pthread_t gThreadID;
+
 
 SimulatorLight mySim;
+
+
+void ClosePortDevice(void)
+{
+    /* Cleanup */
+    tcdrain(gftHandle[giDeviceID]);
+    tcsetattr(gftHandle[giDeviceID],TCSANOW,&gOldTio);
+    close(gftHandle[giDeviceID]);
+    
+    print("Closed device ");
+    print(gcBufLD[giDeviceID]);
+    print("\n");
+}
+
 /**
  * main function it read the options given as arguments and initialyse
  * the simulator.
@@ -38,13 +84,32 @@ SimulatorLight mySim;
  * The loop stop only when the programme receive end_of_file on
  * his standart input
  */
-int main(int, char** argv) {
 
+int main(int nargs, char** argv)
+{
+    char *dSerialNumber;
+    
+    if (nargs!=4) {
+        print("Error: Not enough arguments\n");
+        return 1;
+    }
+    
     // Hardcode the serial communication for PC client
     mySim.verbose= atoi(argv[2]);
-
+    
+    // The third parameter for the app is the port name
+    dSerialNumber = argv[3];
+    
+    if((gftHandle[giDeviceID] = open(argv[3], O_RDWR | O_NOCTTY | O_NONBLOCK))==-1) {
+        print("Error: Could not connect to ");
+        print(argv[3]);
+        print("\n");
+        return 1;
+    }
+    
     mySim.SimulateSinglePath(); //simulate a batch of trajectory
-
+    
+    ClosePortDevice();
     return (0);
 }
 
@@ -53,14 +118,24 @@ REAL_TYPE getPr(TR_PL_ID t){
     return (REAL_TYPE)mySim.N.GetPriority(t);
 }
 
-void print(const char * s){
-    std::cerr << s;
+void SWrite(char header, char data, char end)
+{
+    
 }
-void print(TR_PL_ID i){
-    std::cerr << (int)i;
+
+char SReceive(void)
+{
+    return 0;
 }
-void print(REAL_TYPE r){
-    std::cerr << r;
+
+int SReceive2(void)
+{
+    return 0;
+}
+
+int SReceive4(void)
+{
+    return 0;
 }
 
 bool InDataAvailable(){
@@ -71,8 +146,8 @@ bool InDataAvailable(){
 // fake real time
 void wait(REAL_TYPE t){
     if(t<=0)return;
-    mySim.curr_time += t
-    ;}
+    mySim.curr_time += t;
+}
 
 REAL_TYPE cRealTime(){
     return mySim.curr_time;
