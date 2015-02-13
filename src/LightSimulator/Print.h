@@ -10,18 +10,12 @@
 #define Cosmos_Print_h
 
 #include <iostream>
-#include "spnLight.hpp"
 
-void print(const char * s){
-    std::cerr << s;
-}
+#include "macro.hpp"
 
-void print(TR_PL_ID i){
-    std::cerr << (int)i;
-}
-
-void print(REAL_TYPE r){
-    std::cerr << r;
-}
+//print function
+void print(const char *);
+void print(TR_PL_ID i);
+void print(REAL_TYPE r);
 
 #endif
