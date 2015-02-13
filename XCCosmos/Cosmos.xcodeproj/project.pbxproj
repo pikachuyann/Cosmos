@@ -84,6 +84,11 @@
 		BCBEC7F51A8927AA00453811 /* EventsQueueLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */; };
 		BCBEC7F61A8927AA00453811 /* SimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E31A80CFDE00492779 /* SimLight.cpp */; };
 		BCBEC7F71A8927AA00453811 /* clientsimLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E21A80CFDE00492779 /* clientsimLight.cpp */; };
+		BCD7DA231A8D1FD4001A2D80 /* SerialPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */; };
+		BCD7DA241A8D1FD4001A2D80 /* SerialPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */; };
+		BCD7DA251A8D1FD4001A2D80 /* SerialPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */; };
+		BCD7DA261A8D1FD4001A2D80 /* SerialPort.h in Headers */ = {isa = PBXBuildFile; fileRef = BCD7DA221A8D1FD4001A2D80 /* SerialPort.h */; };
+		BCD7DA281A8D207E001A2D80 /* Print.h in Headers */ = {isa = PBXBuildFile; fileRef = BCD7DA271A8D207E001A2D80 /* Print.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -1042,6 +1047,9 @@
 		BCBEC7E61A89255A00453811 /* markingImplLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = markingImplLight.hpp; path = ../../pacemaker/PaceMakerModel/tmp/markingImplLight.hpp; sourceTree = "<group>"; };
 		BCBEC7EC1A89278D00453811 /* ClientSimLight */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ClientSimLight; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCBEC7EE1A89278D00453811 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPort.cpp; sourceTree = "<group>"; };
+		BCD7DA221A8D1FD4001A2D80 /* SerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SerialPort.h; sourceTree = "<group>"; };
+		BCD7DA271A8D207E001A2D80 /* Print.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Print.h; sourceTree = "<group>"; };
 		C6859E8B029090EE04C91782 /* Cosmos.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Cosmos.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -3000,6 +3008,9 @@
 				03F0293A1A84CA2900A83E1E /* macro.hpp */,
 				03F29A321A8B9CFF005B2228 /* Timer1.c */,
 				03F29A331A8B9CFF005B2228 /* Timer1.h */,
+				BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */,
+				BCD7DA221A8D1FD4001A2D80 /* SerialPort.h */,
+				BCD7DA271A8D207E001A2D80 /* Print.h */,
 			);
 			path = LightSimulator;
 			sourceTree = "<group>";
@@ -3129,7 +3140,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCD7DA281A8D207E001A2D80 /* Print.h in Headers */,
 				0365553B18292D10001B5947 /* foxglynn.hpp in Headers */,
+				BCD7DA261A8D1FD4001A2D80 /* SerialPort.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3402,6 +3415,7 @@
 				03E39B0F183E49D30070911A /* BatchR.cpp in Sources */,
 				03E39B11183E49D80070911A /* EventsQueue.cpp in Sources */,
 				03E39B12183E49DB0070911A /* LHA_orig.cpp in Sources */,
+				BCD7DA231A8D1FD4001A2D80 /* SerialPort.cpp in Sources */,
 				03E39B13183E49E00070911A /* numericalSolver.cpp in Sources */,
 				03E39B15183E49E50070911A /* numSolverSH.cpp in Sources */,
 				03E39B17183E49E90070911A /* SimulatorRE.cpp in Sources */,
@@ -3420,6 +3434,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCD7DA241A8D1FD4001A2D80 /* SerialPort.cpp in Sources */,
 				0367E2AB18843EAB00F35619 /* ClientSim_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3490,6 +3505,7 @@
 			files = (
 				BCBEC7F41A8927AA00453811 /* Event.cpp in Sources */,
 				BCBEC7F71A8927AA00453811 /* clientsimLight.cpp in Sources */,
+				BCD7DA251A8D1FD4001A2D80 /* SerialPort.cpp in Sources */,
 				BCBEC7F31A8927AA00453811 /* spnLight.cpp in Sources */,
 				BCBEC7F51A8927AA00453811 /* EventsQueueLight.cpp in Sources */,
 				BCBEC7F61A8927AA00453811 /* SimLight.cpp in Sources */,
