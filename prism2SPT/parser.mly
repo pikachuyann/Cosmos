@@ -60,8 +60,8 @@ anyname:
 definition:
   CONST INTKW INTNAME EQ intexpr SEMICOLON { add_int $3; [($3,Some $5)] , [] }
 | CONST INTNAME EQ intexpr SEMICOLON     { add_int $2; [($2,Some $4)] , [] }
-| CONST DOUBLEKW DOUBLENAME EQ floatexpr SEMICOLON { add_double $3; [], [($3,Some $5)] }
-| CONST INTKW INTNAME SEMICOLON  {         add_int $3; [($3,None)]    , []  }
+| CONST DOUBLEKW DOUBLENAME EQ floatOrInt SEMICOLON { add_double $3; [], [($3,Some $5)] }
+| CONST INTKW INTNAME SEMICOLON  { add_int $3; [($3,None)]    , []  }
 | CONST DOUBLEKW DOUBLENAME SEMICOLON {       add_int $3; [], [($3,None)] }
 | FORMULA NAME EQ intexpr SEMICOLON { [],[] }
 | FORMULA NAME EQ stateCondition SEMICOLON { [],[] }
@@ -117,27 +117,48 @@ headaction:
 
 tailaction:
  update {[Float(1.0),$1]}
-| floatexpr COLON update {[$1,$3]}
-| floatexpr COLON update PLUS tailaction {($1,$3)::$5}
+| floatOrInt COLON update {[$1,$3]}
+| floatOrInt COLON update PLUS tailaction {($1,$3)::$5}
 ; 
 
 floatexpr:
-  INT {Float (float $1)}
+//  INT {Float (float $1)}
 | FLOAT {Float($1)}
-| INTNAME {CastInt(IntName $1)}
+//| INTNAME {CastInt(IntName $1)}
 | LPAR floatexpr RPAR {$2 }
 | floatexpr MULT floatexpr {Mult($1,$3)}
+| floatexpr MULT intexpr   {Mult($1,(CastInt $3))}
+| intexpr   MULT floatexpr {Mult(CastInt $1,$3)}
+
 | floatexpr PLUS floatexpr {Plus($1,$3)}
+| floatexpr PLUS intexpr   {Mult($1,(CastInt $3))}
+| intexpr   PLUS floatexpr {Plus(CastInt $1,$3)}
+
 | floatexpr MINUS floatexpr {Minus($1,$3)}
+| floatexpr MINUS intexpr   {Minus($1,CastInt $3)}
+| intexpr   MINUS floatexpr {Minus(CastInt $1,$3)}
+
 | floatexpr DIV floatexpr {Div($1,$3)}
+| floatexpr DIV intexpr   {Div($1,CastInt $3)}
+| intexpr   DIV floatexpr {Div(CastInt $1,$3)}
+| intexpr   DIV intexpr   {Div(CastInt $1,CastInt $3)}
+
 | DOUBLENAME {FloatName($1)}
 | NAME LPAR floatexprlist RPAR {FunCall($1,$3) }
 | LPAR stateCondition QMARK floatexpr COLON floatexpr RPAR { If($2,$4,$6) }
+| LPAR stateCondition QMARK intexpr   COLON floatexpr RPAR { If($2,CastInt $4,$6) }
+| LPAR stateCondition QMARK floatexpr COLON intexpr   RPAR { If($2,$4,CastInt $6) }
 ;
+
+floatOrInt:
+  floatexpr {eval $1};
+| intexpr {eval (CastInt $1)}
 
 floatexprlist:
   floatexpr COMMA floatexprlist {$1::$3}
+| intexpr COMMA floatexprlist {(CastInt $1)::$3}
 | floatexpr { [$1] }
+| intexpr { [CastInt $1] }
 | { [] }
 ;
 cmp:
@@ -168,11 +189,11 @@ initrew:
 
 
 actionrewardlist:
-LSQBRAK NAME RSQBRAK stateCondition COLON floatexpr SEMICOLON actionrewardlist
+LSQBRAK NAME RSQBRAK stateCondition COLON floatOrInt SEMICOLON actionrewardlist
   {()}
-| LSQBRAK RSQBRAK stateCondition COLON floatexpr SEMICOLON actionrewardlist
+| LSQBRAK RSQBRAK stateCondition COLON floatOrInt SEMICOLON actionrewardlist
   {()}
-|  stateCondition COLON floatexpr SEMICOLON actionrewardlist
+|  stateCondition COLON floatOrInt SEMICOLON actionrewardlist
   {()}
 | {()}
 ;
@@ -186,6 +207,9 @@ TRUE {Bool true}
 | NOT stateCondition {Not($2)}
 | LPAR stateCondition RPAR {$2}
 | intexpr cmp intexpr  { IntAtom(simp_int $1,$2,simp_int $3) }
+| floatexpr cmp floatexpr  { FloatAtom(eval $1,$2,eval $3) }
+| floatexpr cmp intexpr  { FloatAtom(eval $1,$2,CastInt (eval $3)) }
+| intexpr cmp floatexpr  { FloatAtom(CastInt(eval $1),$2,eval $3) }
 | LPAR stateCondition QMARK stateCondition COLON stateCondition RPAR { If($2,$4,$6) }
 ;
 
