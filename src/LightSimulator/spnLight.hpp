@@ -31,24 +31,15 @@
 #ifndef _SPN_HPP
 #define _SPN_HPP
 
-#include "macro.hpp"
-#define TR_PL_ID unsigned char
-#define REAL_TYPE float
-
 #include <math.h>
+#include "Print.h"
 
 #ifndef Cosmos_marking_h
 #define Cosmos_marking_h
 
-
-
-//print function
-void print(const char *);
-void print(TR_PL_ID i);
-void print(REAL_TYPE r);
-
 //Real time function
 void wait(REAL_TYPE);
+
 REAL_TYPE cRealTime();
 
 //Serial comm function
