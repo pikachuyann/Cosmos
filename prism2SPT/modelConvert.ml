@@ -71,7 +71,7 @@ let _ =
 	|> (Simulinkparser.prism_of_tree [])
 	|> Simulinkparser.expand_trans
 	|> List.map Simulinkparser.flatten_module
-	|> List.map Simulinkparser.flatten_state_ssid
+	(*|> List.map Simulinkparser.flatten_state_ssid*)
 	|< List.iter (SimulinkType.print_module !logout)
 	|> List.map Simulinkparser.incr_state
 	|> Simulinkparser.find_combinaison
