@@ -24,7 +24,7 @@ void print(REAL_TYPE r){
 void wait(REAL_TYPE t){
     if(t<=0)return;
 #ifndef NO_STRING_SIM
-    Serial.println("Got to Sleep");
+    Serial.println("Go to Sleep");
     Serial.flush();
 #endif
     sleepMillis((unsigned long)t);
