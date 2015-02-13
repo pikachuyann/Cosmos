@@ -6,6 +6,8 @@
 
 #include <Timer1.h>
 
+bool blink = true;
+
 //print function
 void print(const char * s){
     Serial.print(s);
@@ -35,30 +37,56 @@ REAL_TYPE cRealTime(){
 char buff[4];
 
 bool InDataAvailable(){
-    Serial.available();
+    if(Serial.available()){
+        print("DATA Available\n");
+        return true;
+    } else return false;
 }
 
 long SReceive4(){
     Serial.readBytes(buff,4);
+    Serial.print("Received'");
+    Serial.print(buff[0]);
+    Serial.print(buff[1]);
+    Serial.print(buff[2]);
+    Serial.print(buff[3]);
+    Serial.println("'");
     return ((long)buff[0]+ ((long)buff[1] << 4)+ ((long)buff[2] << 8)+ ((long)buff[4] << 12));
 }
 int SReceive2(){
     Serial.readBytes(buff,2);
+    Serial.print("Received'");
+    Serial.print(buff[0]);
+    Serial.print(buff[1]);
+    Serial.println("'");
+
+
     return ((int)buff[0]+ ((int)buff[1] << 4));
 }
 char SReceive(){
     Serial.readBytes(buff,1);
+    Serial.print("Received'");
+    Serial.print(buff[0]);
+    Serial.println("'");
     return buff[0];
 }
 void SWrite(char h, char d, char e){
-    Serial.write((byte)h);
-    Serial.write((byte)d);
-    Serial.write((byte)e);
+    if(blink){
+        digitalWrite(13, HIGH);
+    } else {
+        digitalWrite(13, LOW);
+    }
+    blink = ! blink;
+    if (Serial) {
+        Serial.write((byte)h);
+        Serial.write((byte)d);
+        Serial.write((byte)e);
+    }
 }
 
 
 SimulatorLight mySim;
-bool blink = false;
+
 
 REAL_TYPE getPr(TR_PL_ID t){
     return (REAL_TYPE)mySim.N.GetPriority(t);
@@ -75,12 +103,6 @@ void setup() {
 
 void loop() {
     Serial.println("\nStart");
-    if(blink){
-        digitalWrite(13, HIGH);
-    } else {
-        digitalWrite(13, LOW);
-    }
-    blink = ! blink;
     // put your main code here, to run repeatedly:
     mySim.SimulateSinglePath(); //simulate a batch of trajectory
 }
