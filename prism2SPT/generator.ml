@@ -27,10 +27,15 @@ let rec flatten_guard x =
   | Or (e1,e2) -> (flatten_guard e1)@(flatten_guard e2)
   | IntAtom ((IntName v),NEQ,j) -> [[(v,SL,j)];[(v,SG,j)]]
   | IntAtom ((IntName v),cmp,j) -> [[(v,cmp,j)]]  
+  | FloatAtom ((CastInt (IntName v)),SL,j) -> [[(v,SL,Ceil j)]]
+  | FloatAtom ((CastInt (IntName v)),LE,j) -> [[(v,LE,Ceil j)]]
+  | FloatAtom ((CastInt (IntName v)),SG,j) -> [[(v,SG,Floor j)]]
+  | FloatAtom ((CastInt (IntName v)),GE,j) -> [[(v,GE,Floor j)]]
+
   | BoolName v -> [[(v,SG,Int 0)]]
   | Not (BoolName v) -> [[(v,EQ,Int 0)]]
   | Not e -> flatten_guard (neg_bool e)
- | e-> printH_stateFormula stderr e;
+  | e-> printH_stateFormula stderr e;
     failwith "Not yet supported guard shape"
 
 let rec convert_guard modu net trname ((r1,r2) as rset) = function
@@ -88,7 +93,7 @@ let convert_update net trname eqmap varmap = function
     Net.add_inArc net v trname (IntName (v));
     Net.add_outArc net trname v j; 
     varmap
-    
+  
 
 let gen_acc iinit modu net (st,g,f,u) =
   let i = ref iinit in
