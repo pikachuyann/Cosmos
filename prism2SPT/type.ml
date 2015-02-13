@@ -128,6 +128,9 @@ let rec eval : type a . a expr' -> a expr' = fun x ->
       Int y,Int z -> Int (y-z) 
     | Float y,Float z -> Float (y-.z) 
     | _ -> x)
+  | CastInt(e) -> (match eval e with 
+    | Int i -> Float (float i)
+    | y -> CastInt(y))
   | x -> x
 
 let simp_int : int expr' -> int expr' = eval
