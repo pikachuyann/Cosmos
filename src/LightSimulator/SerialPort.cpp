@@ -6,7 +6,10 @@
 //
 //
 
+#include <string.h>
+
 #include "SerialPort.h"
+
 
 void ClosePortDevice(int *portHandle, struct termios  *tio, char *seriaPortName)
 {
