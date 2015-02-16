@@ -29,7 +29,6 @@
 #include <config.h>
 #endif
 
-#include "Lha_gmlparser.hpp"
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -38,6 +37,9 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <cstdlib>
+#include <regex>
+
+#include "Lha_gmlparser.hpp"
 #include "expatmodelparser.hh"
 #include "modelhandler.hh"
 #include "../Eval/Eval.hpp"
@@ -702,66 +704,81 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
 	edge.Index=MyLHA->Edge.size();
 	edge.Source= Gml2Loc[sourceGML];
 	edge.Target= Gml2Loc[targetGML];
-	MyLHA->Edge.push_back(edge);
-	
-	set <string> SubSet;
-	AttributeMap::const_iterator attrf = attributes.find("label");
-	if (attrf != attributes.end()) {
-		tree<string> itaction = attrf->second.begin().begin();
-		string actionstr = simplifyString(*(itaction.begin()));
-		if((actionstr) == "ALL"){
-			SubSet= PetriTransitions;
-		}else{
-			for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
-				if ((*it2) == "actionName") {
-					string actionstr2 = simplifyString(*(it2.begin()));
-					if(MyLHA->MyGspn->TransId.count(actionstr2) ==0 ){
-						cerr << "Unknown action name: "<< actionstr2 <<endl;
-						throw lhagmlioexc;
-					}
-					SubSet.insert(actionstr2);
-				}
-			}
-		}
-	}
-	attrf = attributes.find("action");
-	if (attrf != attributes.end()) {
-		treeSI itaction = attrf->second.begin();
-		for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
-			if ((*it2) == "actionName") {
-				string actionstr2 = simplifyString(*(it2.begin()));
-				if(MyLHA->MyGspn->TransId.count(actionstr2) ==0 ){
-					cerr << "Unknown action name: "<< actionstr2 <<endl;
-					throw lhagmlioexc;
-				}
-				SubSet.insert(actionstr2);
-			}
-		}
-	}
-	attrf = attributes.find("allExcept");
-	if (attrf != attributes.end()) {
-		treeSI itaction = attrf->second.begin();
-		SubSet = MyLHA->MyGspn->TransList;
-		for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
-			if (*it2 == "actionName") {
-				string actionstr2 = simplifyString(*(it2.begin()));
-				if((P.verbose-3)>0)cout << "All except: " << actionstr2 << endl;
-				if(MyLHA->MyGspn->TransId.count(actionstr2) ==0 ){
-					cerr << "Unknown action name: "<< actionstr2 <<endl;
-					throw lhagmlioexc;
-				}
-				SubSet.erase(actionstr2);
-			}
-		}
-	}
-	
-	
-	
-	MyLHA->EdgeActions.push_back(SubSet);
-	if(SubSet.size()>0) MyLHA->Out_S_Edges[edge.Source].insert(edge.Index);
-	else MyLHA->Out_A_Edges[edge.Source].insert(edge.Index);
-	
-	bool markdep=false;
+    MyLHA->Edge.push_back(edge);
+
+    set <string> SubSet;
+    AttributeMap::const_iterator attrf = attributes.find("label");
+    if (attrf != attributes.end()) {
+        tree<string> itaction = attrf->second.begin().begin();
+        string actionstr = simplifyString(*(itaction.begin()));
+        if((actionstr) == "ALL"){
+            SubSet= PetriTransitions;
+        }else{
+            for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
+                if ((*it2) == "actionName") {
+                    string actionstr2 = simplifyString(*(it2.begin()));
+                    regex actionreg(actionstr2);
+                    size_t countmatch = 0;
+                    for(const auto &acs : PetriTransitions)
+                        if(regex_match(acs, actionreg)){
+                            countmatch++;
+                            SubSet.insert(acs);
+                        }
+                    if(countmatch==0){
+                        cerr << "No match for action name: "<< actionstr2 <<endl;
+                    }
+                }
+            }
+        }
+    }
+    attrf = attributes.find("action");
+    if (attrf != attributes.end()) {
+        treeSI itaction = attrf->second.begin();
+        for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
+            if ((*it2) == "actionName") {
+                string actionstr2 = simplifyString(*(it2.begin()));
+                regex actionreg(actionstr2);
+                size_t countmatch = 0;
+                for(const auto &acs : PetriTransitions)
+                    if(regex_match(acs, actionreg)){
+                        countmatch++;
+                        SubSet.insert(acs);
+                    }
+                if(countmatch==0){
+                    cerr << "No match for action name: "<< actionstr2 <<endl;
+                }
+            }
+        }
+    }
+    attrf = attributes.find("allExcept");
+    if (attrf != attributes.end()) {
+        treeSI itaction = attrf->second.begin();
+        SubSet = MyLHA->MyGspn->TransList;
+        for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
+            if (*it2 == "actionName") {
+                string actionstr2 = simplifyString(*(it2.begin()));
+                if((P.verbose-3)>0)cout << "All except: " << actionstr2 << endl;
+                regex actionreg(actionstr2);
+                size_t countmatch = 0;
+                for(const auto &acs : PetriTransitions)
+                    if(regex_match(acs, actionreg)){
+                        countmatch++;
+                        SubSet.erase(acs);
+                    }
+                if(countmatch==0){
+                    cerr << "No match for action name: "<< actionstr2 <<endl;
+                }
+            }
+        }
+    }
+    
+    
+    
+    MyLHA->EdgeActions.push_back(SubSet);
+    if(SubSet.size()>0) MyLHA->Out_S_Edges[edge.Source].insert(edge.Index);
+    else MyLHA->Out_A_Edges[edge.Source].insert(edge.Index);
+    
+    bool markdep=false;
 	
 	treeSI itflow = attributes.find("updates")->second.begin();
 	vector<string> v1(MyLHA->NbVar,"");
