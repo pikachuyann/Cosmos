@@ -1109,6 +1109,8 @@ void Gspn_Writer::writeFile(){
         ofstream macroF(loc.c_str(),ios::out | ios::trunc);
         macroF << "#define NB_EVENT " << MyGspn.tr << endl;
         if(!P.StringInSpnLHA)macroF << "#define NO_STRING_SIM" <<endl;
+        macroF << "#define TR_PL_ID unsigned char" << endl;
+        macroF << "#define REAL_TYPE float" << endl;
         macroF.close();
     }
 	
