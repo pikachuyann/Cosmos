@@ -68,11 +68,38 @@ vector<FILE*> clientstream;
 //! A vector of PID of the simulators
 vector<pid_t> clientPID;
 
+
+
 //! The maximal index of file descriptor in client_list.
 int max_client=0 ;
 
+
+int selfPipe;
+
+void init_self_pipe(){
+    int pipefd[2];
+
+    //create the self pipe
+    if(pipe(pipefd) !=0  )err(1,"Fail to create a self pipe");
+
+    FILE* output = fdopen(pipefd[0], "r");
+    selfPipe = fileno(fdopen(pipefd[1], "w"));
+
+    clientstream.push_back(output);
+    int streamfd = fileno(output);
+    if(streamfd >max_client)max_client = streamfd;
+    clientPID.push_back(0);
+
+}
+
 //! Boolean indicating if the simulation should continue.
 bool continueSelect=false;
+
+void signalHandlerSP(int signum){
+    char buff[1];
+    buff[0] = (char)signum;
+    write(selfPipe, buff, 1);
+}
 
 void signalHandler( int signum )
 {
@@ -119,7 +146,7 @@ int systemsigsafe(const char*cmd){
 	int retValue;
 	signal(SIGCHLD , SIG_DFL );
 	retValue = system(cmd) ;
-	signal(SIGCHLD , signalHandler);
+	signal(SIGCHLD , signalHandlerSP);
 	return retValue;
 }
 
@@ -201,8 +228,8 @@ void freestr(const char *argv[],size_t t){
 }
 
 void launch_clients(parameters& P){
-    signal(SIGCHLD , signalHandler);
-    signal(SIGINT, signalHandler);
+    signal(SIGCHLD , signalHandlerSP);
+    signal(SIGINT, signalHandlerSP);
 	//pid_t readpid;
 
 	for(int i = 0;i<P.Njob;i++){
@@ -282,28 +309,26 @@ void launch_clients(parameters& P){
 		if(P.verbose >2){
 			for(size_t i=0; i<argn; i++ )cout << " " << argv[i];
 			cout << endl;
-		}
-		
-		popenClient(cmd.c_str(),argv);
-		freestr(argv, argn);
-		
+        }
+
+        popenClient(cmd.c_str(),argv);
+        freestr(argv, argn);
+
     }
-    
+
 }
 
 void kill_client(){
-	
-    while (!clientPID.empty())
-		{
-        kill(clientPID.back(),2);
+    while (!clientPID.empty()){
+        if (clientPID.back()!=0)kill(clientPID.back(),2);
         clientstream.pop_back();
         clientPID.pop_back();
-		}
+    }
 }
 
 void wait_client(){
-	pid_t child= 1;
-	while (child != -1) {
+    pid_t child= 1;
+    while (child != -1) {
 		int termstat;
 		child = wait(&termstat);
 	}
@@ -344,6 +369,13 @@ void launchServer(parameters& P){
 		//Iterate over the simultor to check wich one has some results.
         for(size_t it = 0;it < clientstream.size() ;it++){
             if(FD_ISSET(fileno(clientstream[it]),  &client_list)){
+                if (clientPID[it]==0) {
+                    // Receive through self pipe
+                    char buff[1];
+                    read(fileno(clientstream[it]), buff, 1);
+                    signalHandler((int)buff[0]);
+                    continue;
+                }
                 //aggregate the new result to the total result
                 BatchR batchResult(P.nbAlgebraic);
                 if(batchResult.inputR(clientstream[it])){
@@ -355,7 +387,7 @@ void launchServer(parameters& P){
 				} else {
 					//The batch result was not complete.
 					//If the simulator was kill by the server it is OK otherwise
-					//It is a problem.
+					//it is a problem.
 					if(P.verbose>2) cerr << "Warning uncomplete Batch Result"<<endl;
 					if(feof( clientstream[it] )!=0){
 						if(P.verbose>2)cerr << "Deconnection Simulator:" << clientPID[it] << endl;

@@ -224,4 +224,11 @@ intexpr:
  | FLOOR LPAR floatexpr RPAR {Floor($3)}
  | CEIL LPAR floatexpr RPAR {Ceil($3)}
  | LPAR stateCondition QMARK intexpr COLON intexpr RPAR { If($2,$4,$6) }
+// | NAME LPAR intexprlist RPAR { FunCall($1,$3) }
 ;
+
+//intexprlist:
+//| intexpr COMMA intexprlist { $1::$3 }
+//| intexpr { [$1] }
+//| { [] }
+//;
