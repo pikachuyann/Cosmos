@@ -68,7 +68,7 @@ let _ =
 	|> (fun z -> Zip.find_entry z "simulink/blockdiagram.xml"
 	       |> Zip.read_entry z)
 	|> Xml.parse_string 
-	|> (Simulinkparser.prism_of_tree [])
+	|> (Simulinkparser.modulist_of_tree [])
 	|> Simulinkparser.expand_trans
 	|> List.map Simulinkparser.flatten_module
 	(*|> List.map Simulinkparser.flatten_state_ssid*)

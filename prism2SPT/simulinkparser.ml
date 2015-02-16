@@ -5,21 +5,25 @@ open Type
 open SimulinkType
 open Lexing
 
-let modelStoch = false
+let ligthSim = false
+let modelStoch = true
 let useerlang = true
 let aggressive_syn = false
 
+(* Distribution to attribute to Deterministic Delays*)
 let detfun s =
   if modelStoch then 
     let n = 200 in
     StochasticPetriNet.Erl (Int n,Div (Float (float n),s))
   else StochasticPetriNet.Det s
 
+(* Handling of SSID*)
 let ssid_count = ref (-1)
 let fresh_ssid () =
   let f= !ssid_count in
   incr ssid_count; f
 
+(* Function to fetch various attribute in XML tree*)
 let getSSID al = 
   let i = int_of_string (List.assoc "SSID" al)  in
   ssid_count := max !ssid_count (i+1); 
@@ -29,43 +33,31 @@ let rec findprop f = function
   | [] -> None
   | t::q -> (match f t with None -> findprop f q | x-> x)
 
-let getName cl = findprop (function 
-  | Element ("P",["Name","labelString"],[PCData(l)])  -> Some l 
+let findpropName s cl = 
+  findprop (function 
+  | Element ("P",["Name",x],[PCData(l)]) when x=s -> Some l 
   | _ -> None) cl
 
-let getScope cl = findprop (function 
-  | Element ("P",["Name","scope"],[PCData(l)])  -> Some l 
-  | _ -> None) cl 
+let getName = findpropName "labelString"
+let getScope = findpropName "scope"
+let getDescription = findpropName "description"
+let getType = findpropName "type"
 
-let getDescription cl = findprop (function 
-  | Element ("P",["Name","description"],[PCData(l)])  -> Some l 
-  | _ -> None) cl 
-
-let getType cl =  findprop (function 
-  | Element ("P",["Name","type"],[PCData(l)])  -> Some l 
-  | _ -> None) cl 
-
-let getPriority cl = findprop (function 
-  | Element ("P",["Name","executionOrder"],[PCData(l)])  -> Some l 
-  | _ -> None) cl 
+let getPriority cl = findpropName "executionOrder" cl
   |>> (fun x -> Some (int_of_string x))
 
 let getdst cl = findprop (function 
-  | Element ("dst",_,cl2) -> findprop (function 
-    | Element ("P",["Name","SSID"],[PCData(l)])  -> Some (int_of_string l) 
-    | _ -> None) cl2
+  | Element ("dst",_,cl2) -> 
+    findpropName "SSID" cl2 |>>> int_of_string
   | _ -> None) cl
 
 let getsrc cl = findprop (function 
-  | Element ("src",_,cl2) -> findprop (function 
-    | Element ("P",["Name","SSID"],[PCData(l)])  -> Some (int_of_string l) 
-    | _ -> None) cl2
+  | Element ("src",_,cl2) -> 
+    findpropName "SSID" cl2 |>>> int_of_string
   | _ -> None) cl
 
 let getScript cl = findprop (function 
-  | Element ("eml",_,cl2) -> findprop (function 
-      | Element ("P",["Name","script"],[PCData(l)])  -> Some l 
-      | _ -> None) cl2
+  | Element ("eml",_,cl2) -> findpropName "script" cl2
   | _ -> None) cl
   
 let rec exp_data = function
@@ -74,11 +66,11 @@ let rec exp_data = function
      Some ((getSSID alist),name)
     | _-> None
 
+(* position for error reporting in the parser of edge*)
 let print_position outx lexbuf =
   let pos = lexbuf.Lexing.lex_curr_p in
   Printf.fprintf outx "%s:%d:%d" pos.pos_fname
     pos.pos_lnum (pos.pos_cnum - pos.pos_bol + 1)
-
 
 
 let regexp = "f[^̂†]*\\)\nend"
@@ -107,8 +99,8 @@ let parse_fun comm scr =
       (name,s2)
   | _ ->  (name,Printf.sprintf "double %s%s{\n//%s\n\tdouble %s;\n%s\n\treturn %s;\n}" name arg2 (string_of_option "" comm) var body2 var)
   
-(*parse_fun "function dT  = modulateRefrRetro(t,t0)\n toto\ntata \nend";;*)
-				   
+
+(* Parse a simulink automaton recursively *)				   
 let rec exp_mod (sl,tl,scriptl) = function
     | Element (name,alist,clist) ->
        begin match name with
@@ -129,6 +121,7 @@ let rec exp_mod (sl,tl,scriptl) = function
        end
     | PCData (s) -> output_string stderr s; (sl,tl,scriptl)
 
+(*Parse edge of automaton use the grammar define in ParserSimulEdge.mly  *)
 let eval_trans sl priority (ssid,name,src,dst) = match name with
     None -> (ssid,src,empty_trans_label,dst)
   | Some s -> let lexbuf = Lexing.from_string s in
@@ -144,6 +137,7 @@ let eval_trans sl priority (ssid,name,src,dst) = match name with
 	  print_position lexbuf (Lexing.lexeme lexbuf) s;
 	(ssid,src,empty_trans_label,dst)
 
+(* Parse a simulink automaton*) 
 let module_of_simul al cl = 
   let ssid = getSSID al in
   let name = getName cl in
@@ -154,33 +148,46 @@ let module_of_simul al cl =
   (*print_module modu;*)
   modu
 
+(* Generate human readable name*)
 let post_name sl s t =
   match List.assoc s sl with
     None -> Printf.sprintf "%i_Pre" t
   | Some(sn) -> Printf.sprintf "%i_Pre_%s" t sn
 
+let exist_delay s l =
+  List.exists (fun (ssid,src,label,dst) -> match (src,label.trigger) with 
+  Some (src2), Delay(_) -> src2 = s
+  |_ -> false) l
+
 (*
   Add intermediate state to some transition to implement simulink semantic
 *)
-let expand_trans l=
+let expand_trans l =
   List.map (fun (ssidmod,name,sl,tl,scrl,p) ->
     let (nsl,ntl) = List.fold_left (fun (sl2,tl2) (ssid,src,label,dst) -> 
       match (label.trigger,label.write,src) with 
       | (Delay(_),(_::_),_) -> (* wait and synch loop *)
+	(* This is necessary to make delay transition independant, therefor they do not synchronize
+	   with anything thus cannot be disabled by synchronization.
+	   use only when write list is not empty*)
 	let news = fresh_ssid ()
 	and newsn = post_name sl dst ssid in
 	let newt = fresh_ssid () in
 	((news,Some newsn)::sl2,
 	(ssid,src,{empty_trans_label with trigger=label.trigger; priority =label.priority; nameT=(src |>> (fun x ->List.assoc x sl))  },news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
-      | (RAction(sn),_,Some src2) when src2=dst->  (* self loop with read *)
+      | (RAction(sn),_,Some src2) when src2=dst && exist_delay src2 tl->  (* self loop with read *)
+	(* This case is used to reset delay transition waiting on this state,
+	   without this delay transition are note disabled by a selfloop read action*)
 	let news = fresh_ssid ()
 	and newsn = post_name sl dst ssid in
 	let newt = fresh_ssid () in
 	((news,Some newsn)::sl2,
 	(ssid,src,{empty_trans_label with trigger=label.trigger; priority =label.priority; nameT=Some sn },news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
-      | (_,_,None) when label.update <> [] -> (* Initial transition with update*)
+      | (_,_,None) when label.update <> [] -> (* Initial transition with update *)
+	(* Initial transition are not real transition thus a new state and a new transition
+	   is introduce to implement updates*)
 	let news = fresh_ssid ()
 	and newsn = post_name sl dst ssid in
 	let newt = fresh_ssid () in
@@ -190,7 +197,7 @@ let expand_trans l=
       | _ -> (sl2,(ssid,src,label,dst)::tl2)) (sl,[]) tl in
     (ssidmod,name,nsl,ntl,scrl,p)) l
 	      
-
+(* Print a simulink automaton for dot *)
 let print_modu f (ssid,name,sl,tl,scrl,p) =
   Printf.fprintf f "\tsubgraph cluster%i {\n" ssid;
   match name with None -> Printf.fprintf f "\t%i[shape=rectangle]\n" ssid
@@ -206,32 +213,30 @@ let print_modu f (ssid,name,sl,tl,scrl,p) =
 let print_simulink_dot fpath ml =
   let f = open_out fpath in
   output_string f "digraph G {\n";
-  
 (*  output_string f "\tsubgraph place {\n";
   output_string f "\t\tgraph [shape=circle];\n";
   output_string f "\t\tnode [shape=circle,fixedsize=true];\n";*)
-  
   List.iter (print_modu f) ml;
-
   output_string f "}\n"; 
   close_out f;;
 
-let rec prism_of_stateflow ml = function
+(* Walk the tree and build a list of module*)
+let rec modulist_of_stateflow ml = function
     | Element (name,alist,clist) as t ->
        begin match name with
        | "xml" | "ModelInformation" | "Model" | "Stateflow" | "machine" | "chart" | "Children" ->
-					 List.fold_left prism_of_stateflow ml clist
+					 List.fold_left modulist_of_stateflow ml clist
        | "P" -> ml
        | "state" -> begin match  getType clist with
 	 None -> ml
-	 | Some t when t= "OR_STATE" -> List.fold_left prism_of_stateflow ml clist
+	 | Some t when t= "OR_STATE" -> List.fold_left modulist_of_stateflow ml clist
 	 | Some t when t= "AND_STATE" -> (module_of_simul alist clist)::ml
 	 | Some t when t= "FUNC_STATE" -> begin
 	   match getScript clist with
 	     None -> ml
 	   | Some scr -> 
 	     let comm = getDescription clist in
-	     let fn,fb = parse_fun comm scr in 
+	     let fn,fb = parse_fun comm scr in
 	     let modu = (getSSID alist),(Some fn),[],[],[((Some fn),fb)],None in
 	     modu::ml
 	 end
@@ -244,35 +249,51 @@ let rec prism_of_stateflow ml = function
        | "data" -> begin match exp_data t with None -> ml | Some (ssid,var) ->
 	 (ssid,None,[],[],[None,var],None)::ml
 	 end
-       | "event" -> ml
+       | "event" -> begin
+	 let name = findpropName "name" clist |>>| "__NO_NAME"
+	 and ssid = getSSID alist 
+	 and scope = findpropName "scope" clist in
+	 Printf.fprintf !logout "New event: %s : %i : %a\n" name ssid print_option scope;
+	 (*match scope with
+	   Some "OUTPUT_EVENT" -> 
+	     (ssid,Some ("Output_sig_"^name),[ssid,Some "q0"],
+	      [ssid,Some ssid,{empty_trans_label with trigger = RAction name},ssid],[],None)::ml
+	 |_ ->*) ml
+       end
        | x -> Printf.fprintf stderr "Dont know wat to do with %s, ignore\n" x; ml
        end
     | PCData (s) -> output_string stderr s; ml
 
-let rec prism_of_tree ml = function
+let rec modulist_of_tree ml = function
   | Element (name,alist,clist) as t->
     begin match name with
     | "xml" | "ModelInformation" | "Model" | "P" ->
-      List.fold_left prism_of_tree ml clist
-       | "Stateflow" -> prism_of_stateflow ml t
+      List.fold_left modulist_of_tree ml clist
+       | "Stateflow" -> modulist_of_stateflow ml t
        | _ -> ml
        end
     | PCData (s) -> ml
 
+(* Add self loop such that if a module may read a signal it can read it from any state*)
 let flatten_module (ssid,name,sl,tl,scrl,p) =
   let inaction,_ = interface_of_modu tl in
-  let tl2 = List.fold_left (fun nt2 (ss,_) ->
-    StringSet.fold (fun sa tl3 ->
-      if not (List.exists (fun (_,src,lab,_) ->
-	match (src,lab.trigger) with 
-	  ((Some x),(RAction y)) when x=ss && y = sa -> true 
-	| ((Some x),(Imm)) when x=ss -> true
-	| _-> false
-      ) tl) 
-      then ((fresh_ssid ()),Some ss,{empty_trans_label with trigger = RAction(sa) },ss)::tl3 
-      else tl3) inaction nt2) tl sl in 
+  let tl2 = sl
+    |> List.fold_left (fun nt2 (ss,_) -> (*Itere over state*)
+      nt2 |> StringSet.fold (fun sa tl3 ->  (* Iter over signal name*)
+	if not (tl |> List.exists (fun (_,src,lab,_) -> (* iter over transition*)
+	  match (src,lab.trigger) with 
+	    ((Some x),(RAction y)) when x=ss && y = sa -> true 
+	  | ((Some x),(Imm)) when x=ss -> true
+	  | _-> false
+	)) 
+	then (* There is no transition from state src that read signal ss or that are immediate. Add selfloop*)
+	  ((fresh_ssid ()),Some ss,{empty_trans_label with trigger = RAction(sa) },ss)::tl3 
+	else (* Nothing to do *) 
+	  tl3
+      ) inaction) tl in 
   (ssid,name,sl,tl2,scrl,p)
-  
+    
+(* Look for the initial transition to determinate initial state *)
 let init_state (ssid,name,sl,tl,scrl) =
   try
     let (_,_,_,init) =  
@@ -285,6 +306,11 @@ let init_state (ssid,name,sl,tl,scrl) =
     |None -> failwith ("No init state in "^string_of_int ssid)
   end)
 
+(* 
+   - Replace type for state from an id to an array of one id
+in order to compose state in transitions. 
+   - Remove initial transition
+*)
 let incr_trans l (ssid,src,lab,dst) =
   match src with
   | None -> l
@@ -294,6 +320,10 @@ let incr_trans l (ssid,src,lab,dst) =
 
 let uni_ssid = ref 0
 
+(* 
+   Replace type for state from an id to an array of one id
+in order to compose state in state. 
+*)
 let flatten_state_ssid (ssid,name,sl,tl,scrl,p) =
   let i2,sl2,sl3 = List.fold_left (fun (i,l2,l3) (j,n) ->
     ((i+1),(i,n)::l2,(j,i)::l3)) (!uni_ssid,[],[]) sl in
@@ -561,6 +591,7 @@ let place_of_int ivect i =
     _,None -> Printf.sprintf "pl%i" i
   | _,Some(n) -> Printf.sprintf "%s" n
 
+(* Print magic file for Cosmos*) 
 let print_magic f sl tl scrl=
   output_string f "  <attribute name=\"externalDeclaration\">";
   output_string f "#define temporalCount(msec) 0\n";
@@ -596,10 +627,10 @@ let print_magic f sl tl scrl=
   | _ -> ();
   end) tl;
   output_string f "\tdefault: return true; \n\t}\n}\n";
-  output_string f "void abstractMarking::moveSerialState(){ P->_PL_SerialPort = DATA_AVAILABLE;};\n";
+  if ligthSim then output_string f "void abstractMarking::moveSerialState(){ P->_PL_SerialPort = DATA_AVAILABLE;};\n";
   output_string f "  </attribute>"
 
-
+(* Print as a prism CTMC model*)
 let print_prism_module fpath cf ml =
   let m = List.hd ml in
   let f = open_out fpath in
@@ -648,6 +679,7 @@ let print_prism_module fpath cf ml =
   Printf.fprintf f "endmodule\n" ;
   close_out f
 
+(* Convertion to SPT *)
 let stochNet_of_modu cf m =
   let fund = fun f () -> print_magic f m.stateL m.transL m.scriptL in
   let net = Net.create () in 

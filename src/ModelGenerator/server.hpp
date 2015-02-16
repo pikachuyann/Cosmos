@@ -80,6 +80,11 @@ void signalHandler( int signum );
 //istream streamOfFile(int fd);
 
 /*
+ * Initialize a self pipe used for signal handling
+ */
+void init_self_pipe();
+
+/*
  * Open a child processes retring both PID and an a pipe
  * to the standart input of the child.
  * This function fork and execute the given binary
