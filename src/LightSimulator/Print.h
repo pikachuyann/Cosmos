@@ -9,8 +9,6 @@
 #ifndef Cosmos_Print_h
 #define Cosmos_Print_h
 
-#include <iostream>
-
 #include "macro.hpp"
 
 //print function

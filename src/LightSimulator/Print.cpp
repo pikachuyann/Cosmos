@@ -7,6 +7,7 @@
 //
 
 #include "Print.h"
+#include <iostream>
 
 void print(const char * s){
     std::cerr << s;
