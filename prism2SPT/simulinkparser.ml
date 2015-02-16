@@ -5,7 +5,7 @@ open Type
 open SimulinkType
 open Lexing
 
-let ligthSim = false
+let ligthSim = true
 let modelStoch = true
 let useerlang = true
 let aggressive_syn = false
