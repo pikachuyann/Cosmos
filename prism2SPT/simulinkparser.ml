@@ -367,7 +367,7 @@ let dec_trans n (ssid,srcl,lab,dstl) =
   (ssid, (List.map (fun (x,y) -> (x+n,y)) srcl), lab ,(List.map (fun (x,y) -> (x+n,y)) dstl))
 
 (* Combine transition*)
-let comb_trans ?aggrSyn:(aggrSyn=false) l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
+let comb_trans (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
   match (lab2.trigger,lab.trigger) with
     (RAction st,_) when List.exists (fun x -> x=st) lab.write ->
       let lab3= {
@@ -375,29 +375,20 @@ let comb_trans ?aggrSyn:(aggrSyn=false) l (ssidt,srcl,lab,dstl) (ssidt2,srcl2,la
 	trigger= lab.trigger;
 	priority= lab.priority;
 	write = List.sort_uniq compare (lab.write @ lab2.write)
-		    |> List.filter (fun x -> x<>st || aggrSyn);
+		    |> List.filter (fun x -> x<>st);
 	update = lab.update @ lab2.update} in
-      (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) :: l
+      Some (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 )
   | (_,RAction st) when List.exists (fun x -> x=st) lab2.write ->
     let lab3= { 
       nameT = Some st;
       trigger= lab2.trigger;
       priority= lab2.priority;
       write = List.sort_uniq compare (lab.write @ lab2.write)
-		  |> List.filter (fun x -> x<>st || aggrSyn )
+		  |> List.filter (fun x -> x<>st )
       ;
       update = lab.update @ lab2.update} in
-    (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
-  | (RAction st,RAction st2) when st=st2 && aggrSyn-> 
-    (* This case only happen with aggressive synchronization*)
-    let lab3= { 
-      nameT = Some st;
-      trigger=lab2.trigger;
-      priority=lab2.priority;
-      write = List.sort_uniq compare (lab.write @ lab2.write);
-      update = lab.update @ lab2.update} in
-    (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 ) ::l
-  |_-> l
+    Some (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 )
+  |_-> None
 
 let combname n1 n2 = match (n1,n2) with 
       None,None -> None
@@ -405,23 +396,37 @@ let combname n1 n2 = match (n1,n2) with
     | None, Some a -> Some a
     | Some a,Some b -> Some (Printf.sprintf "( %s | %s )" a b)
 
+let is_changed inter (_,_,lab,_) =
+  match lab.trigger with 
+  | RAction s when StringSet.mem s inter->true 
+  |_-> List.exists (fun x -> (StringSet.mem x inter)) lab.write
+
+let rec combine_trans_list inter l = function
+  | [] -> l
+  | [_] -> l
+  | t1::lt -> 
+    let lchanged2,lunchanged2 =
+      lt |> List.fold_left (fun (lchanged,lunchanged) t2 ->
+	match comb_trans t1 t2 with
+	  None -> (lchanged,lunchanged)
+	| Some t -> if is_changed inter t
+	  then t::lchanged,lunchanged
+	  else lchanged,t::lunchanged) (lt,l) in
+    combine_trans_list inter lunchanged2 lchanged2
+
 let combine_modu ?aggrSyn:(aggrSyn=false)  m1 m2 =
 (*(ssid,name,sl,ivect,tl,scrl) (ssid2,name2,sl2,ivect2,tl2,scrl2) =*)
   let n = Array.length m1.ivect in
-  let ivect3 = Array.append m1.ivect m2.ivect in
-  let tl3 = List.map (dec_trans n) m2.transL in
+  let ivect3 = Array.append m1.ivect m2.ivect in (* Concatenate state vector*)
+  let tl3 = List.map (dec_trans n) m2.transL in  (* Shift state in transition from m2 *)
+  (* Compute the set of action on which to synchronize *)
   let inter = StringSet.union (StringSet.inter m1.interfaceR m2.interfaceW)
-    (StringSet.inter m2.interfaceR m1.interfaceW) in
-  let tlunchanged = List.filter (fun (_,_,lab,_) -> 
-     ((match lab.trigger with RAction s when StringSet.mem s inter->false |_->true)
-	 && (List.for_all (fun x -> not (StringSet.mem x inter)) lab.write))) m1.transL
-  and tlunchanged2 = List.filter (fun (_,_,lab,_) -> 
-     ((match lab.trigger with RAction s when StringSet.mem s inter->false |_->true)
-      && (List.for_all (fun x -> not (StringSet.mem x inter)) lab.write))) tl3 in
-  let tl4 = 
-    List.fold_left (fun l t1 ->
-      List.fold_left (fun l2 t2 -> comb_trans ~aggrSyn l2 t1 t2) l tl3) (tlunchanged@tlunchanged2) m1.transL 
-in
+    (StringSet.inter m2.interfaceR m1.interfaceW) in 
+  (* Transition in m1 unchanged by synchronization *)
+  let tlchanged,tlunchanged = List.partition (is_changed inter) m1.transL 
+  (* Transition in m2 unchanged by synchronization *)
+  and tlchanged2,tlunchanged2 = List.partition (is_changed inter) tl3 in
+  let tl4 = combine_trans_list inter (tlunchanged@tlunchanged2)  (tlchanged@tlchanged2) in
   let rm,wm = interface_of_modu tl4 in
   let newname = combname m1.name m2.name in
   let mod3 = {ssid= fresh_ssid ();
@@ -478,6 +483,11 @@ let find_write x ml =
   List.find (fun m ->
     StringSet.mem x m.interfaceW) ml
 
+let markmode m = m.transL |>
+  List.fold_left (fun (x,y) (_,_,lab,_) -> match (lab.trigger,lab.write) with
+    RAction(_),(_::_) -> (x+1,y+1) |_ -> (x,y+1)) (0,0)
+    |> fun (x,y) -> (float x)/.(float y) 
+
 (* Find module that compose well together, that is they only
    sychronize throught action shared by no other module
 *)
@@ -495,12 +505,13 @@ let rec find_combinaison l =
     let (in1,out1) = List.fold_left (fun (ii,oi) m ->
       ((add_set m.interfaceR ii),(add_set m.interfaceW oi))) (StringMap.empty,StringMap.empty) ml in 
     Printf.fprintf !logout "Read Set: [ %a ]\nWrite Set [ %a ]\n" (print_multi ", ") in1 (print_multi ", ") out1;
-    try let fstread,(frm,fwm) =
-	  StringMap.filter (fun x xn->try xn=1 && StringMap.find x out1 =1 with Not_found -> false) in1 
+    try 
+      let fstread,(frm,fwm) =
+	StringMap.filter (fun x xn->try xn=1 && StringMap.find x out1 =1 with Not_found -> false) in1 
   |> StringMap.mapi (fun x _ -> (find_read x ml,find_write x ml))
   |> StringMap.filter (
     fun x (rm,wm) -> StringSet.union (StringSet.inter rm.interfaceR wm.interfaceW) (StringSet.inter rm.interfaceW wm.interfaceR) 
-    |> StringSet.for_all (fun x -> (StringMap.find x in1) =1 && (StringMap.find x out1)=1))
+			  |> StringSet.for_all (fun x -> (StringMap.find x in1) =1 && (StringMap.find x out1)=1))
   |> StringMap.choose in
 	      (combine_modu frm fwm) :: (List.filter (fun x -> x<> frm && x<>fwm) ml)
   |> find_combinaison
