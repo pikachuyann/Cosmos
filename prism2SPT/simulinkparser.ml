@@ -5,7 +5,7 @@ open Type
 open SimulinkType
 open Lexing
 
-let ligthSim = true
+let ligthSim = false
 let modelStoch = true
 let useerlang = true
 let aggressive_syn = false
@@ -366,12 +366,18 @@ let incr_state (ssid,name,sl,tl,scrl,p) =
 let dec_trans n (ssid,srcl,lab,dstl) =
   (ssid, (List.map (fun (x,y) -> (x+n,y)) srcl), lab ,(List.map (fun (x,y) -> (x+n,y)) dstl))
 
-(* Combine transition*)
+let comb_name_trans n1 n2 = match n1,n2 with 
+      None,None -> None
+    | Some a,None -> Some a
+    | None, Some a -> Some a
+    | Some a,Some b -> Some (Printf.sprintf "%s_%s" a b)
+
+(* Combine 2 transitions *)
 let comb_trans (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
   match (lab2.trigger,lab.trigger) with
     (RAction st,_) when List.exists (fun x -> x=st) lab.write ->
       let lab3= {
-	nameT = Some st;
+	nameT = comb_name_trans (Some st) (comb_name_trans lab.nameT lab2.nameT);
 	trigger= lab.trigger;
 	priority= lab.priority;
 	write = List.sort_uniq compare (lab.write @ lab2.write)
@@ -380,7 +386,7 @@ let comb_trans (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
       Some (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 )
   | (_,RAction st) when List.exists (fun x -> x=st) lab2.write ->
     let lab3= { 
-      nameT = Some st;
+      nameT = comb_name_trans (Some st) (comb_name_trans lab.nameT lab2.nameT);
       trigger= lab2.trigger;
       priority= lab2.priority;
       write = List.sort_uniq compare (lab.write @ lab2.write)
