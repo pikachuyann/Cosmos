@@ -14,8 +14,8 @@ rule token = parse
   | newline  {new_line lexbuf; token lexbuf}
   | ['/']['/'][^'\n']*    {token lexbuf}
   | "..." {token lexbuf}
-  | digit+ as lxm  { INT(int_of_string lxm)}
-  | digit*['.']?digit+(['e' 'E']['-' '+']?digit+)? as lxm  {FLOAT(float_of_string lxm)}
+  | ['-' '+']?digit+ as lxm  { INT(int_of_string lxm)}
+  | ['-' '+']?digit*['.']?digit+(['e' 'E']['-' '+']?digit+)? as lxm  {FLOAT(float_of_string lxm)}
   | "int" {INTKW}
   | "double" {DOUBLEKW}
   | "const" {CONST}

@@ -9,5 +9,5 @@ libClientSimLight_la_SOURCES = \
     SerialPort.cpp SerialPort.h \
 	spnLight.hpp
 
-includes_HEADERS = spnLight.hpp macro.hpp
+includes_HEADERS = spnLight.hpp macro.hpp Print.h
 includesdir = $(includedir)

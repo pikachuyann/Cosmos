@@ -36,6 +36,7 @@
 #include <curses.h>
 #include <time.h>
 #include <termios.h>
+#include <iostream>
 
 #include "SimLight.hpp"
 #include "SerialPort.h"
@@ -91,6 +92,7 @@ REAL_TYPE getPr(TR_PL_ID t){
 void SWrite(char header, char data, char end)
 {
     char Buf[3] = {header, data, end};
+    std::cout << "Heart -> Pace: ["<< (int)header << "]["<< (int)data << "]["<< (int)end << "]"<< std::endl;
     WriteToPort(&gftHandle[giDeviceID], 3, &Buf[0]);
 }
 
@@ -100,6 +102,7 @@ char SReceive(void)
     
     if(gDataAvailable) {
         read(gftHandle[giDeviceID], &retVal, (int)1);
+        std::cout << "Pace -> Heart: [" << (int)retVal << ":" << retVal << "]" << std::endl;
         gDataAvailable = 0;
     }
     
