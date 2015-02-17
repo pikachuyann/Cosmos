@@ -57,7 +57,8 @@ pre:
 
 boolexp:
  NAME cmp NAME { (Printf.sprintf "%s%s%s" $1 $2 $3) }
-| boolexp OR OR boolexp { (Printf.sprintf "(%s || %s)" $1 $4) };
+| boolexp OR OR boolexp { (Printf.sprintf "(%s || %s)" $1 $4) }
+| boolexp AND AND boolexp { (Printf.sprintf "(%s || %s)" $1 $4) };
 
 cmp:
 EQ EQ {"=="}
@@ -85,6 +86,8 @@ expr:
  | expr MULT expr {Printf.sprintf "%s*%s" $1 $3}
  | expr MINUS expr {Printf.sprintf "%s-%s" $1 $3}
  | LPAR expr RPAR { Printf.sprintf "(%s)" $2}
+ | expr SL SL expr { Printf.sprintf "%s &lt;&lt; %s" $1 $4}
+ | expr OR expr { Printf.sprintf "%s | %s" $1 $3}
  | funcall { $1 }
  
 
@@ -106,7 +109,6 @@ floatexpr:
 | NAME {FloatName($1)}
 | EXP LPAR floatexpr RPAR {Exp($3)};
 | NAME LPAR floatexprlist RPAR {FunCall($1,$3) }
-
 
 floatexprlist:
   floatexpr COMMA floatexprlist { $1::$3 }
