@@ -717,12 +717,13 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
             for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
                 if ((*it2) == "actionName") {
                     string actionstr2 = simplifyString(*(it2.begin()));
-                    regex actionreg(actionstr2);
+                    regex actionreg(".*"+actionstr2+".*");
                     size_t countmatch = 0;
                     for(const auto &acs : PetriTransitions)
                         if(regex_match(acs, actionreg)){
                             countmatch++;
                             SubSet.insert(acs);
+                            if((P.verbose-3)>0)cout << "action:" << acs << " matches " << actionstr2 << endl;
                         }
                     if(countmatch==0){
                         cerr << "No match for action name: "<< actionstr2 <<endl;
@@ -737,12 +738,13 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
         for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
             if ((*it2) == "actionName") {
                 string actionstr2 = simplifyString(*(it2.begin()));
-                regex actionreg(actionstr2);
+                regex actionreg(".*"+actionstr2+".*");
                 size_t countmatch = 0;
                 for(const auto &acs : PetriTransitions)
                     if(regex_match(acs, actionreg)){
                         countmatch++;
                         SubSet.insert(acs);
+                        if((P.verbose-3)>0)cout << "action" << acs << " matches " << actionstr2 << endl;
                     }
                 if(countmatch==0){
                     cerr << "No match for action name: "<< actionstr2 <<endl;
@@ -758,12 +760,13 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
             if (*it2 == "actionName") {
                 string actionstr2 = simplifyString(*(it2.begin()));
                 if((P.verbose-3)>0)cout << "All except: " << actionstr2 << endl;
-                regex actionreg(actionstr2);
+                regex actionreg(".*"+actionstr2+".*");
                 size_t countmatch = 0;
                 for(const auto &acs : PetriTransitions)
                     if(regex_match(acs, actionreg)){
                         countmatch++;
                         SubSet.erase(acs);
+                        if((P.verbose-3)>0)cout << "action" << acs << " matches " << actionstr2 << endl;
                     }
                 if(countmatch==0){
                     cerr << "No match for action name: "<< actionstr2 <<endl;
