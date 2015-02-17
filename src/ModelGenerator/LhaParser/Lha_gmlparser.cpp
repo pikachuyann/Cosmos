@@ -717,6 +717,7 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
             for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
                 if ((*it2) == "actionName") {
                     string actionstr2 = simplifyString(*(it2.begin()));
+                    if((P.verbose-3)>0)cout << "Action: " << actionstr2 << endl;
                     regex actionreg(".*"+actionstr2+".*");
                     size_t countmatch = 0;
                     for(const auto &acs : PetriTransitions)
@@ -738,6 +739,7 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
         for(treeSI it2 = itaction.begin(); it2!=itaction.end();++it2){
             if ((*it2) == "actionName") {
                 string actionstr2 = simplifyString(*(it2.begin()));
+                if((P.verbose-3)>0)cout << "Action: " << actionstr2 << endl;
                 regex actionreg(".*"+actionstr2+".*");
                 size_t countmatch = 0;
                 for(const auto &acs : PetriTransitions)

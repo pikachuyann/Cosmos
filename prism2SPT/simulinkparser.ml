@@ -5,10 +5,11 @@ open Type
 open SimulinkType
 open Lexing
 
-let ligthSim = false
+let ligthSim = true
 let modelStoch = true
 let useerlang = true
 let aggressive_syn = false
+
 
 (* Distribution to attribute to Deterministic Delays*)
 let detfun s =
@@ -62,8 +63,9 @@ let getScript cl = findprop (function
   
 let rec exp_data = function
    | Element ("data",alist,clist) when getScope clist = Some "LOCAL_DATA" ->
-     let name = List.assoc "name" alist in
-     Some ((getSSID alist),name)
+     let name = List.assoc "name" alist
+     and datatype = findpropName "dataType" clist |>>| "double" in
+     Some ((getSSID alist),(datatype^" "^name))
     | _-> None
 
 (* position for error reporting in the parser of edge*)
@@ -97,6 +99,12 @@ let parse_fun comm scr =
     Some s when String.sub s 0 6 = "Cosmos" -> 
       let s2 = String.sub s 7 (String.length s -7) in
       (name,s2)
+  | Some s when String.sub s 0 9 = "Prototype" -> 
+    let s2 = String.sub s 9 (String.length s -9) in
+    (name,s2)
+  | Some s when String.sub s 0 9 = "Cfunction" -> 
+    let s2 = String.sub s 9 (String.length s -9) in
+    (name,s2)
   | _ ->  (name,Printf.sprintf "double %s%s{\n//%s\n\tdouble %s;\n%s\n\treturn %s;\n}" name arg2 (string_of_option "" comm) var body2 var)
   
 
@@ -113,8 +121,13 @@ let rec exp_mod (sl,tl,scriptl) = function
        end 
        | "transition" -> (match getdst clist with Some dst ->
 	 (sl,((getSSID alist),(getName clist),(getsrc clist),dst)::tl,scriptl) | _ -> failwith "Ill formed transition")
-       | "data" -> begin try  (sl,tl,(None,List.assoc "name" alist)::scriptl); with
-	   | Not_found -> (sl,tl,scriptl)
+       | "data" -> begin try 
+			   let name = List.assoc "name" alist
+			   and datatype = findpropName "dataType" clist |>>| "double" in
+			   Printf.fprintf stdout "new var data:%s with type: %s\n" name datatype;
+			   (sl,tl,(None,datatype^" "^name)::scriptl); 
+	 with
+	 | Not_found -> (sl,tl,scriptl)
        end
 
        | x -> Printf.fprintf stderr "Dont know what to do with %s, ignore\n" x; (sl,tl,scriptl)
@@ -623,7 +636,7 @@ let print_magic f sl tl scrl=
     Some n2 -> Printf.fprintf f "\t\tcase %i: return \"%s\";\n" ssid n2
   | None -> ()) sl;
   Printf.fprintf f "\t\tdefault: return std::to_string(v);\n\t}\n}\n";
-  List.iter (function (None,x) when x<>"ctime" -> Printf.fprintf f "double %s=0;\n" x | _-> ()) scrl;
+  List.iter (function (None,x) when x<>"double ctime" -> Printf.fprintf f "%s=0;\n" x | _-> ()) scrl;
   List.iter (fun x -> Printf.fprintf f "%s\n" x) DataFile.func;
   List.iter (function (Some a,x) -> Printf.fprintf f "%s\n" x | _->() ) scrl;
   Printf.fprintf f "void magicUpdate(int t,double ctime){
@@ -696,6 +709,10 @@ let print_prism_module fpath cf ml =
   Printf.fprintf f "endmodule\n" ;
   close_out f
 
+let strip_type s=
+  let i = String.rindex s ' ' in
+  String.sub s (i+1) (String.length s-i-1) 
+
 (* Convertion to SPT *)
 let stochNet_of_modu cf m =
   let fund = fun f () -> print_magic f m.stateL m.transL m.scriptL in
@@ -707,7 +724,11 @@ let stochNet_of_modu cf m =
   |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),(StochasticPetriNet.Imm,Float 1.0,Float 3.0)) net.Net.transition)
   |> StringSet.iter (fun x -> Net.add_inArc net ("SIG_"^x) ("EMPTY_"^x) (Int 1));
 
-  let varlist = List.fold_left (fun tl -> (function (None,x) when x<>"ctime" -> x::tl | _-> tl)) [] m.scriptL in
+  let varlist = 
+    m.scriptL |>
+    List.fold_left (fun tl -> 
+    (function (None,x) when x<>"double ctime" -> (strip_type x)::tl | _-> tl)
+  ) [] in
   net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) (DataFile.data_of_file cf)),varlist,fund);
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),Int x) net.Net.place) m.ivect;
   List.iter (fun (ssidt,src,lab,dst) -> 
