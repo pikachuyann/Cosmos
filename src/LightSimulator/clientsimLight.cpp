@@ -41,15 +41,9 @@
 #include "SerialPort.h"
 
 SimulatorLight mySim;
-struct ThreadSerialInfo gThreadInfo;
-
-static void *SerialReadThread(void *pArgs)
-{
-    struct ThreadSerialInfo *threadInfo = (struct ThreadSerialInfo*)pArgs;
-    
-    ProcessSerial(threadInfo);
-    return NULL;
-}
+int             gftHandle[MAX_DEVICES];
+int             giDeviceID = 0;
+bool            gDataAvailable = 0;
 
 /**
  * main function it read the options given as arguments and initialyse
@@ -62,13 +56,7 @@ static void *SerialReadThread(void *pArgs)
 
 int main(int nargs, char** argv)
 {
-    char serialBuf[SERIAL_BUF_SIZE];
-    int             ftHandle[MAX_DEVICES];
-    int             iDeviceID = 0;
     struct termios  oldTio;
-    
-    pthread_t threadID;
-
     
     if (nargs!=4) {
         print("Error: Not enough arguments\n");
@@ -79,35 +67,19 @@ int main(int nargs, char** argv)
     mySim.verbose= atoi(argv[2]);
     
     // The third parameter for the app is the port name
-    if((ftHandle[iDeviceID] = open(argv[3], O_RDWR | O_NOCTTY | O_NONBLOCK))==-1) {
+    if((gftHandle[giDeviceID] = open(argv[3], O_RDWR | O_NOCTTY | O_NONBLOCK))==-1) {
         print("Error: Could not connect to "); print(argv[3]); print("\n");
         return 1;
     } else {
         print("Opened device "); print(argv[3]); print("\n");
         
-        SetDefaultPortSettings(&ftHandle[iDeviceID], &oldTio);
-        
-        gThreadInfo.endThread = 1;
-        gThreadInfo.nBytesRead = 0;
-        gThreadInfo.portHandle = ftHandle[iDeviceID];
-        
-        // Create the thread
-        if(pthread_create(&threadID, NULL, &SerialReadThread, &gThreadInfo)) {
-            print("Error: Couldn't create the thread\n");
-            
-            ClosePortDevice(&ftHandle[iDeviceID], &oldTio, argv[3]);
-            return 1;
-        }
+        SetDefaultPortSettings(&gftHandle[giDeviceID], &oldTio);
         
         //simulate a batch of trajectory
         mySim.SimulateSinglePath();
     }
 
-    // End the thread
-    gThreadInfo.endThread = 0;
-    pthread_join(threadID, NULL);
-    
-    ClosePortDevice(&ftHandle[iDeviceID], &oldTio, argv[3]);
+    ClosePortDevice(&gftHandle[giDeviceID], &oldTio, argv[3]);
     
     return (0);
 }
@@ -116,65 +88,61 @@ REAL_TYPE getPr(TR_PL_ID t){
     return (REAL_TYPE)mySim.N.GetPriority(t);
 }
 
-void ShiftArray(int offset, char *buf, int bufsize)
-{
-    
-}
-
 void SWrite(char header, char data, char end)
 {
     char Buf[3] = {header, data, end};
-    WriteToPort(&gThreadInfo.portHandle, 3, &Buf[0]);
+    WriteToPort(&gftHandle[giDeviceID], 3, &Buf[0]);
 }
 
 char SReceive(void)
 {
     char retVal = 0;
     
-    if(gThreadInfo.nBytesRead>0) {
-        retVal = gThreadInfo.bytesRead[0];
-        ShiftArray(1, &gThreadInfo.bytesRead[0], SERIAL_BUF_SIZE);
+    if(gDataAvailable) {
+        read(gftHandle[giDeviceID], &retVal, (int)1);
+        gDataAvailable = 0;
     }
     
     return retVal;
 }
 
-int SReceive2(void)
+char SReceive2(void)
 {
-    int retVal = 0;
-    
-    if(gThreadInfo.nBytesRead>1) {
-        retVal = gThreadInfo.bytesRead[1] << 8;
-        retVal = retVal | gThreadInfo.bytesRead[0];
-        ShiftArray(2, &gThreadInfo.bytesRead[0], SERIAL_BUF_SIZE);
-    }
-
-    return retVal;
+    return 0;
 }
 
-int SReceive4(void)
+char SReceive4(void)
 {
-    int retVal = 0, tmp = 0;
-    
-    if(gThreadInfo.nBytesRead>1) {
-        retVal = gThreadInfo.bytesRead[3] << 32;
-        retVal = retVal | (gThreadInfo.bytesRead[2] << 16);
-        retVal = retVal | (gThreadInfo.bytesRead[1] << 8);
-        retVal = retVal | gThreadInfo.bytesRead[0];
-        ShiftArray(4, &gThreadInfo.bytesRead[0], SERIAL_BUF_SIZE);
-    }
-    
-    return retVal;
+    return 0;
 }
 
 bool InDataAvailable(){
-    return gThreadInfo.nBytesRead>0;
+    return gDataAvailable;
 }
 
 // fake real time
 void wait(REAL_TYPE t){
+    struct pollfd   fds;
+    int pollRc;
+    
     if(t<=0)return;
-    mySim.curr_time += t;
+    
+    gDataAvailable = 0;
+
+    fds.fd = gftHandle[giDeviceID];
+    fds.events = POLLIN;
+    
+    pollRc = poll(&fds, 1, (int)(t));
+    
+    if (pollRc < 0)
+        print("Error: setting the poll\n");
+    else if(pollRc > 0)
+        if( fds.revents & POLLIN )
+            gDataAvailable = 1;
+        else if(fds.revents & POLLHUP || fds.revents & POLLERR)
+            printf("Error: poll read\n");
+    
+    //mySim.curr_time += t;
 }
 
 REAL_TYPE cRealTime(){
