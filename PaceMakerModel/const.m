@@ -3,7 +3,6 @@
 %  MATLAB version: 8.3.0.532 (R2014a)
 % -------------------------------------------------------------------
                                      
-
 Atr_refrD = 50;
 
 AV_alpha = 150;
@@ -30,17 +29,6 @@ AV_Vr = -90;
 
 AV_Vt = -40;
 
-PM_TAVI = 150;
-
-PM_TLRI = 1000;
-
-PM_TPVAB = 50;
-
-PM_TPVARP = 250;
-
-
-PM_TVRP = 320;
-
 RA_anteD = 30;
 
 RA_retroD = 30;
@@ -49,15 +37,9 @@ RV_anteD = 50;
 
 RV_retroD = 50;
 
-SA_d = 850;
-
 SA_dV = 50;
 
-SA_ectopD = 10400;
-
 SA_ectopdV = 50;
-
-SA_noiseD = 1.0E+6;
 
 Skrewness = 0.2;
 
@@ -70,4 +52,3 @@ VRG_noiseD = 1.0E+6;
 Vtr_refrD = 200;
 
 Reduce_TimeToDep = 1666.7;
-
