@@ -139,34 +139,6 @@ char SReceive(void)
     return retVal;
 }
 
-int SReceive2(void)
-{
-    int retVal = 0;
-    
-    if(gThreadInfo.nBytesRead>1) {
-        retVal = gThreadInfo.bytesRead[1] << 8;
-        retVal = retVal | gThreadInfo.bytesRead[0];
-        ShiftArray(2, &gThreadInfo.bytesRead[0], SERIAL_BUF_SIZE);
-    }
-
-    return retVal;
-}
-
-int SReceive4(void)
-{
-    int retVal = 0, tmp = 0;
-    
-    if(gThreadInfo.nBytesRead>1) {
-        retVal = gThreadInfo.bytesRead[3] << 32;
-        retVal = retVal | (gThreadInfo.bytesRead[2] << 16);
-        retVal = retVal | (gThreadInfo.bytesRead[1] << 8);
-        retVal = retVal | gThreadInfo.bytesRead[0];
-        ShiftArray(4, &gThreadInfo.bytesRead[0], SERIAL_BUF_SIZE);
-    }
-    
-    return retVal;
-}
-
 bool InDataAvailable(){
     return gThreadInfo.nBytesRead>0;
 }
