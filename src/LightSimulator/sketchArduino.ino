@@ -43,26 +43,6 @@ bool InDataAvailable(){
     } else return false;
 }
 
-long SReceive4(){
-    Serial.readBytes(buff,4);
-    Serial.print("Received'");
-    Serial.print(buff[0]);
-    Serial.print(buff[1]);
-    Serial.print(buff[2]);
-    Serial.print(buff[3]);
-    Serial.println("'");
-    return ((long)buff[0]+ ((long)buff[1] << 4)+ ((long)buff[2] << 8)+ ((long)buff[4] << 12));
-}
-int SReceive2(){
-    Serial.readBytes(buff,2);
-    Serial.print("Received'");
-    Serial.print(buff[0]);
-    Serial.print(buff[1]);
-    Serial.println("'");
-
-
-    return ((int)buff[0]+ ((int)buff[1] << 4));
-}
 char SReceive(){
     Serial.readBytes(buff,1);
     Serial.print("Received'");
