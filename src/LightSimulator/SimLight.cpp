@@ -223,19 +223,18 @@ void SimulatorLight::SimulateSinglePath() {
 #ifndef NO_STRING_SIM
         //Print marking and location of the automata
         //Usefull to track a simulation
-        print("Time\t");
         if (verbose>1) {
+            print("Time\t");
             N.Marking.printHeader();
             print("\n");
-        }
-        print(curr_time);
-        if (verbose>1) {
+            print(curr_time);
             print("\t");
             N.Marking.print();
             print("\n");
             if(verbose>2)EQ.view();
+            print("\n");
         }
-        print("\n");
+
 #endif
         //if(curr_time >= 10000)break;
     }

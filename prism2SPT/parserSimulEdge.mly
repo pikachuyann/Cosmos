@@ -58,7 +58,8 @@ pre:
 boolexp:
  NAME cmp NAME { (Printf.sprintf "%s%s%s" $1 $2 $3) }
 | boolexp OR OR boolexp { (Printf.sprintf "(%s || %s)" $1 $4) }
-| boolexp AND AND boolexp { (Printf.sprintf "(%s || %s)" $1 $4) };
+| boolexp AND AND boolexp { (Printf.sprintf "(%s &amp;&amp; %s)" $1 $4) };
+| LPAR boolexp RPAR { (Printf.sprintf "(%s)" $2) }
 
 cmp:
 EQ EQ {"=="}
