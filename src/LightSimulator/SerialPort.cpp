@@ -41,15 +41,15 @@ void SetDefaultPortSettings(int *portHandle, struct termios  *tio)
     newtio.c_cc[VMIN]=1;
     newtio.c_cc[VTIME]=0;
     
-    cfsetospeed(&newtio,B115200);
-    cfsetispeed(&newtio,B115200);
+    cfsetospeed(&newtio,B57600);
+    cfsetispeed(&newtio,B57600);
     
     tcflush(*portHandle, TCIOFLUSH);
     tcsetattr(*portHandle,TCSANOW,&newtio);
 
 }
 
-bool WriteToPort(int *portHandle, int nbytes, char *buf)
+bool WriteToPort(int *portHandle, int nbytes, unsigned char *buf)
 {
     if(write(*portHandle, buf, nbytes)==-1)
         return 0;
@@ -57,7 +57,7 @@ bool WriteToPort(int *portHandle, int nbytes, char *buf)
     return 1;
 }
 
-void ProcessSerial(struct ThreadSerialInfo *sInfo)
+void ProcessSerial(struct ThreadSerialInfo *)
 {
 
 }

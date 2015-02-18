@@ -55,10 +55,15 @@ bool            gDataAvailable = 0;
  * his standart input
  */
 
+struct timeval gStartTime;
+
 int main(int nargs, char** argv)
 {
     struct termios  oldTio;
-    
+
+    gettimeofday(&gStartTime, NULL);
+
+
     if (nargs!=4) {
         print("Error: Not enough arguments\n");
         return 1;
@@ -89,20 +94,29 @@ REAL_TYPE getPr(TR_PL_ID t){
     return (REAL_TYPE)mySim.N.GetPriority(t);
 }
 
-void SWrite(char header, char data, char end)
+void SWrite(unsigned char header,unsigned char data, unsigned char end)
 {
-    char Buf[3] = {header, data, end};
-    std::cout << "Heart -> Pace: ["<< (int)header << "]["<< (int)data << "]["<< (int)end << "]"<< std::endl;
+    unsigned char Buf[3] = {header, data, end};
+    std::cout << "Heart -> Pace: "<< mySim.curr_time << " ["<< (int)header << "]["<< (int)data << "]["<< (int)end << "]"<< std::endl;
     WriteToPort(&gftHandle[giDeviceID], 3, &Buf[0]);
 }
 
 char SReceive(void)
 {
-    char retVal = 0;
-    
+    /*if(gDataAvailable) {
+        char retVal[101];
+        size_t bytesRead = read(gftHandle[giDeviceID], &retVal, (int)100);
+        std::cout << retVal;
+        std::cout.flush();
+    }
+    return 0;*/
+
+
+    unsigned char retVal = 0;
+    int bytesRead = 0;
     if(gDataAvailable) {
-        read(gftHandle[giDeviceID], &retVal, (int)1);
-        std::cout << "Pace -> Heart: [" << (int)retVal << ":" << retVal << "]" << std::endl;
+        bytesRead = read(gftHandle[giDeviceID], &retVal, (int)1);
+        printf("Pace -> Heart: %f [%x:%c] (bytes read %d)\n",mySim.curr_time,retVal,retVal, bytesRead);
         gDataAvailable = 0;
     }
     
@@ -124,20 +138,23 @@ void wait(REAL_TYPE t){
 
     fds.fd = gftHandle[giDeviceID];
     fds.events = POLLIN;
-    
+
     pollRc = poll(&fds, 1, (int)(t));
     
     if (pollRc < 0)
         print("Error: setting the poll\n");
-    else if(pollRc > 0)
-        if( fds.revents & POLLIN )
+    else if(pollRc > 0){
+        if( fds.revents & POLLIN ){
             gDataAvailable = 1;
-        else if(fds.revents & POLLHUP || fds.revents & POLLERR)
+        } else if(fds.revents & POLLHUP || fds.revents & POLLERR)
             printf("Error: poll read\n");
-    
+    }
     //mySim.curr_time += t;
 }
 
 REAL_TYPE cRealTime(){
-    return mySim.curr_time;
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    float timef = (time.tv_sec - gStartTime.tv_sec)*1000 + (time.tv_usec - gStartTime.tv_usec)/1000;
+    return timef;
 }

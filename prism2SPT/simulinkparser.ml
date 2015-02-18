@@ -6,7 +6,7 @@ open SimulinkType
 open Lexing
 
 let ligthSim = true
-let modelStoch = true
+let modelStoch = false
 let useerlang = true
 let aggressive_syn = false
 
@@ -621,6 +621,14 @@ let place_of_int ivect i =
     _,None -> Printf.sprintf "pl%i" i
   | _,Some(n) -> Printf.sprintf "%s" n
 
+let escape_XML s =
+  let reg = Str.regexp"[&<>]" in
+  Str.global_substitute reg (function x -> match Str.matched_string x with 
+    "&" -> "&amp;" 
+  | "<" -> "&lt;" 
+  | ">" -> "&gt;" 
+  | x-> x) s
+
 (* Print magic file for Cosmos*) 
 let print_magic f sl tl scrl=
   output_string f "  <attribute name=\"externalDeclaration\">";
@@ -638,7 +646,7 @@ let print_magic f sl tl scrl=
   Printf.fprintf f "\t\tdefault: return std::to_string(v);\n\t}\n}\n";
   List.iter (function (None,x) when x<>"double ctime" -> Printf.fprintf f "%s=0;\n" x | _-> ()) scrl;
   List.iter (fun x -> Printf.fprintf f "%s\n" x) DataFile.func;
-  List.iter (function (Some a,x) -> Printf.fprintf f "%s\n" x | _->() ) scrl;
+  List.iter (function (Some a,x) -> Printf.fprintf f "%s\n" (escape_XML x) | _->() ) scrl;
   Printf.fprintf f "void magicUpdate(int t,double ctime){
   switch(t){\n";
   List.iter (fun (ss,_,lab,_) ->

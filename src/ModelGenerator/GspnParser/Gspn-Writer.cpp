@@ -1111,6 +1111,10 @@ void Gspn_Writer::writeFile(){
         if(!P.StringInSpnLHA)macroF << "#define NO_STRING_SIM" <<endl;
         macroF << "#define TR_PL_ID unsigned char" << endl;
         macroF << "#define REAL_TYPE float" << endl;
+
+        macroF << "#define uint8 unsigned char" << endl;
+        macroF << "#define uint16 unsigned int" << endl;
+        macroF << "#define uint32 unsigned long" << endl;
         macroF.close();
     }
 	
