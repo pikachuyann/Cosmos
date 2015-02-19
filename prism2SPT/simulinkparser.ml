@@ -5,15 +5,15 @@ open Type
 open SimulinkType
 open Lexing
 
-let ligthSim = true
-let modelStoch = false
-let useerlang = true
+let ligthSim = ref false
+let modelStoch = ref false
+let useerlang = ref true
 let aggressive_syn = false
 
 
 (* Distribution to attribute to Deterministic Delays*)
 let detfun s =
-  if modelStoch then 
+  if !modelStoch then 
     let n = 200 in
     StochasticPetriNet.Erl (Int n,Div (Float (float n),s))
   else StochasticPetriNet.Det s
@@ -141,7 +141,7 @@ let eval_trans sl priority (ssid,name,src,dst) = match name with
 	      try     
 		let label = ParserSimulEdge.main LexerSimulEdge.token lexbuf in
 		let label2 = {label with write = List.sort_uniq compare label.write;
-			     nameT = src |>> (fun x -> List.assoc x sl);
+			     nameT = src |>> (fun x -> List.assoc x sl) |>>> (fun x -> "L_"^x) ;
 			     priority = priority |>>> float |>>| 1.0 } in
 		(ssid,src,label2,dst)
     with 
@@ -390,7 +390,7 @@ let comb_trans (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
   match (lab2.trigger,lab.trigger) with
     (RAction st,_) when List.exists (fun x -> x=st) lab.write ->
       let lab3= {
-	nameT = comb_name_trans (Some st) (comb_name_trans lab.nameT lab2.nameT);
+	nameT = comb_name_trans (Some ("S_"^st)) (comb_name_trans lab.nameT lab2.nameT);
 	trigger= lab.trigger;
 	priority= lab.priority;
 	write = List.sort_uniq compare (lab.write @ lab2.write)
@@ -399,7 +399,7 @@ let comb_trans (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
       Some (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 )
   | (_,RAction st) when List.exists (fun x -> x=st) lab2.write ->
     let lab3= { 
-      nameT = comb_name_trans (Some st) (comb_name_trans lab.nameT lab2.nameT);
+      nameT = comb_name_trans (Some ("S_"^st)) (comb_name_trans lab.nameT lab2.nameT);
       trigger= lab2.trigger;
       priority= lab2.priority;
       write = List.sort_uniq compare (lab.write @ lab2.write)
@@ -665,7 +665,7 @@ let print_magic f sl tl scrl=
   | _ -> ();
   end) tl;
   output_string f "\tdefault: return true; \n\t}\n}\n";
-  if ligthSim then output_string f "void abstractMarking::moveSerialState(){ P->_PL_SerialPort = DATA_AVAILABLE;};\n";
+  if !ligthSim then output_string f "void abstractMarking::moveSerialState(){ P->_PL_SerialPort = DATA_AVAILABLE;};\n";
   output_string f "  </attribute>"
 
 (* Print as a prism CTMC model*)

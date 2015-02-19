@@ -77,8 +77,6 @@
 		03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03FB40FA18180F9E001F9988 /* InfoPlist.strings */; };
 		03FB40FE18180F9E001F9988 /* Cosmos_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FB40FD18180F9E001F9988 /* Cosmos_Tests.m */; };
 		8DD76F6A0486A84900D96B5E /* Cosmos.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* Cosmos.1 */; };
-		BCBEC7E51A8924C800453811 /* magicLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCBEC7E41A8924C800453811 /* magicLight.hpp */; };
-		BCBEC7E71A89255A00453811 /* markingImplLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = BCBEC7E61A89255A00453811 /* markingImplLight.hpp */; };
 		BCBEC7F31A8927AA00453811 /* spnLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C480381A826281007B8969 /* spnLight.cpp */; };
 		BCBEC7F41A8927AA00453811 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E61A80D08A00492779 /* Event.cpp */; };
 		BCBEC7F51A8927AA00453811 /* EventsQueueLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */; };
@@ -237,6 +235,8 @@
 		03088AEA1A0422C0006BCB27 /* pnmlparser.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = pnmlparser.ml; sourceTree = "<group>"; };
 		03088AEB1A0422C0006BCB27 /* StochasticPetriNet.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = StochasticPetriNet.ml; sourceTree = "<group>"; };
 		03088AEC1A0422C0006BCB27 /* type.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = type.ml; sourceTree = "<group>"; };
+		032573981A9652F600974A89 /* magicLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = magicLight.hpp; sourceTree = "<group>"; };
+		032573991A96530800974A89 /* markingImplLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = markingImplLight.hpp; sourceTree = "<group>"; };
 		032A7006181BC0D6006D7332 /* maindoc.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = maindoc.md; sourceTree = "<group>"; };
 		032A7008181BC0D6006D7332 /* casesWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = casesWriter.cpp; sourceTree = "<group>"; };
 		032A7009181BC0D6006D7332 /* casesWriter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = casesWriter.hpp; sourceTree = "<group>"; };
@@ -1047,8 +1047,6 @@
 		03FDF5EA1A42F09300AA4DA2 /* type.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = type.ml; sourceTree = "<group>"; };
 		03FDF5EB1A42F09400AA4DA2 /* writer.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = writer.ml; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* Cosmos */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Cosmos; sourceTree = BUILT_PRODUCTS_DIR; };
-		BCBEC7E41A8924C800453811 /* magicLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = magicLight.hpp; path = ../../pacemaker/PaceMakerModel/tmp/magicLight.hpp; sourceTree = "<group>"; };
-		BCBEC7E61A89255A00453811 /* markingImplLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = markingImplLight.hpp; path = ../../pacemaker/PaceMakerModel/tmp/markingImplLight.hpp; sourceTree = "<group>"; };
 		BCBEC7EC1A89278D00453811 /* ClientSimLight */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ClientSimLight; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCBEC7EE1A89278D00453811 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPort.cpp; sourceTree = "<group>"; };
@@ -1335,13 +1333,13 @@
 		032A708E181BC14A006D7332 /* test */ = {
 			isa = PBXGroup;
 			children = (
-				03C480381A826281007B8969 /* spnLight.cpp */,
 				032A7094181BC14A006D7332 /* LHA.cpp */,
-				BCBEC7E61A89255A00453811 /* markingImplLight.hpp */,
-				BCBEC7E41A8924C800453811 /* magicLight.hpp */,
-				032A7097181BC14A006D7332 /* Makefile.am */,
 				032A7099181BC14A006D7332 /* markingImpl.hpp */,
 				032A709A181BC14A006D7332 /* spn.cpp */,
+				032A7097181BC14A006D7332 /* Makefile.am */,
+				032573991A96530800974A89 /* markingImplLight.hpp */,
+				032573981A9652F600974A89 /* magicLight.hpp */,
+				03C480381A826281007B8969 /* spnLight.cpp */,
 			);
 			name = test;
 			path = ../test;
@@ -3157,11 +3155,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				03BBD5F41A80D0D700492779 /* LigthLibrairiePriv.h in Headers */,
-				BCBEC7E71A89255A00453811 /* markingImplLight.hpp in Headers */,
 				03C4803D1A8283FA007B8969 /* EventsQueueLight.hpp in Headers */,
 				03BBD5F21A80D0D700492779 /* LigthLibrairie.h in Headers */,
 				03F0293B1A84CA2900A83E1E /* macro.hpp in Headers */,
-				BCBEC7E51A8924C800453811 /* magicLight.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

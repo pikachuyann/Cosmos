@@ -1,4 +1,4 @@
-bin_SCRIPTS = linecombinator sptToPt ptToSpt sptToSwn
+bin_SCRIPTS = linecombinator sptToPt ptToSpt sptToSwn readserial.ml
 
 PACKAGES = 
 LIBS     = 

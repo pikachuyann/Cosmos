@@ -26,13 +26,32 @@ void wait(REAL_TYPE t){
 #ifndef NO_STRING_SIM
     Serial.println("Go to Sleep");
 #endif
-    unsigned long ti = millis() + t;
     Serial.flush();
-    while(!Serial.available() && millis()< ti ){}
-    //sleepMillis((unsigned long)t);
+    /*unsigned long ti = millis() + t;
+    bool davailable = false;
+    while(!davailable && millis()< ti ){
+        davailable = Serial.available();
+    }*/
+
+    unsigned long ti = millis1() + 5;
+    Serial.flush();
+    bool davailable = false;
+    while(!davailable && millis1()< ti ){
+        davailable = Serial.available();
+    }
+    if(!davailable){
+        t-=5;
+        if(t>0){
+            digitalWrite(13, LOW);
+            sleepMillis((unsigned long)(t));
+            digitalWrite(13, HIGH);
+        }
+
+    }
 }
+
 REAL_TYPE cRealTime(){
-    return (REAL_TYPE)millis();
+    return (REAL_TYPE)millis1();
 }
 
 //Serial comm function
@@ -56,17 +75,15 @@ unsigned char SReceive(){
 #endif
     return (unsigned char)buff[0];
 }
-void SWrite(unsigned char h,unsigned char d, unsigned char e){
-    if(blink){
+void SWrite(unsigned char h){
+    /*if(blink){
         digitalWrite(13, HIGH);
     } else {
         digitalWrite(13, LOW);
     }
-    blink = ! blink;
+    blink = ! blink;*/
     if (Serial) {
         Serial.write(h);
-        Serial.write(d);
-        Serial.write(e);
         Serial.flush();
     }
 }
@@ -82,7 +99,7 @@ REAL_TYPE getPr(TR_PL_ID t){
 
 void setup() {
     Serial.begin(57600);
-    mySim.verbose=0;
+    mySim.verbose=5;
     initTimer1();
 }
 
