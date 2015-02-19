@@ -1,4 +1,4 @@
-bin_SCRIPT = modelConvert
+bin_SCRIPTS = modelConvert
 
 #modelConvert: generator.ml lexer.mll parser.mly type.ml
 #	cd $(srcdir); $(OCAMLBUILD) -libs unix,str prism2SPT.native
