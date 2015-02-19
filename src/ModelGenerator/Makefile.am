@@ -1,7 +1,7 @@
 
 
-
 bin_PROGRAMS = Cosmos
+
 Cosmos_SOURCES = \
 	../Simulator/BatchR.cpp ../Simulator/BatchR.hpp \
 	casesWriter.cpp casesWriter.hpp \

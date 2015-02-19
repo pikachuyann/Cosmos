@@ -1173,7 +1173,8 @@ void Gspn_Writer::writeFile(){
 
 
     //--------------- Writing synchronization tables ---------------------------
-    if(!P.lightSimulator)writeEnabledDisabled(SpnCppFile);
+    //if(!P.lightSimulator)
+        writeEnabledDisabled(SpnCppFile);
 
     //--------------- Writing transitions tables -------------------------------
     if(!P.lightSimulator){
