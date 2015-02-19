@@ -13,8 +13,8 @@
 #include <avr/sleep.h>
 #include <Arduino.h>
 
-#define TIME1_PRESCALLER 64
-// the prescaler is set so that timer1 ticks every 64 clock cycles, and the
+#define TIME1_PRESCALLER 256
+// the prescaler is set so that timer1 ticks every 256 clock cycles, and the
 // the overflow handler is called every 65536 ticks.
 #define MICROSECONDS_PER_TIMER1_OVERFLOW (clockCyclesToMicroseconds(TIME1_PRESCALLER * 65536))
 
@@ -60,10 +60,9 @@ void initTimer1(){
      */
     TCNT1=0x0000;
 
-    /* Configure the prescaler for 1:1024, giving us a
-     * timeout of 4.09 seconds.
+    /* Configure the prescaler for 1:256,
      */
-    TCCR1B = 0x03;
+    TCCR1B = 0x04;
 
     /* Enable the timer overlow interrupt. */
     TIMSK1=0x01;

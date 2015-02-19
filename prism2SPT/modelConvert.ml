@@ -6,7 +6,7 @@ let input = ref stdin
 let output = ref "out"
 let inname = ref "stdin"
 let typeFormat = ref Prism
-let outputFormat = ref [GrML;Dot;Pdf;Marcie]
+let outputFormat = ref [GrML;Dot;Marcie]
 let const_file = ref ""
 
 let suffix_of_filename s =
@@ -17,7 +17,11 @@ let suffix_of_filename s =
 let nbarg = ref 0
 
 let _ = 
-  Arg.parse []
+  Arg.parse ["--light",Arg.Set Simulinkparser.ligthSim,"light simulator";
+	     "--pdf",Arg.Unit (fun () -> outputFormat:= Pdf:: !outputFormat),"Output as PDF";
+	     "--stoch",Arg.Set Simulinkparser.ligthSim,"Use probabilistic delay";
+	     "--no-erlang",Arg.Clear Simulinkparser.useerlang,"Replace erlang distribution by exponentials";
+	    ]
     (function s -> incr nbarg; match !nbarg with
       1 -> inname:= s;
 	( let o,suf = suffix_of_filename s in 
@@ -34,8 +38,9 @@ let _ =
     | _ -> failwith "Do not know what to do with extra arguments.") 
     "usage";;
   
-if Array.length Sys.argv <>2 then
+(*if Array.length Sys.argv <>2 then
   outputFormat := (List.filter (fun x -> x<>Pdf && x <> Dot) !outputFormat);;
+*)
 
 logout := open_out (!output^".log");;
 
@@ -82,7 +87,7 @@ let _ =
     (*|> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])*)
     (*|< Simulinkparser.prune*) 
 	|> Simulinkparser.stochNet_of_modu !const_file
-	|> (fun x-> if Simulinkparser.useerlang then x else StochasticPetriNet.remove_erlang x)
+	|> (fun x-> if !Simulinkparser.useerlang then x else StochasticPetriNet.remove_erlang x)
       end
       ENDIF
       ENDIF   

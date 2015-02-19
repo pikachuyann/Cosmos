@@ -59,100 +59,103 @@ void SimulatorLight::reset() {
 }
 
 
+#define UNSET_TRANS (TR_PL_ID)(-1)
+
 /**
  * Update the enabling transition of the SPN, and update the event queue.
  * @param E1_transitionNum the number of the transition which last
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-void SimulatorLight::updateSPN(TR_PL_ID){
+void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
+    if (E1_transitionNum != UNSET_TRANS ){
+        //check if the current transition is still enabled
+        bool Nenabled = N.IsEnabled(E1_transitionNum);
+        bool NScheduled = EQ.isScheduled(E1_transitionNum);
+
+        if (Nenabled && NScheduled) {
+            GenerateEvent(F, E1_transitionNum);
+            EQ.replace(F); //replace the transition with the new generated time
+        } else if (Nenabled && !NScheduled) {
+            GenerateEvent(F, E1_transitionNum);
+            EQ.insert(F);
+        } else if (!Nenabled && NScheduled) {
+            EQ.remove(E1_transitionNum);
+        }
+    }
+
+/*
+    // Possibly adding Events corresponding to newly enabled-transitions
+    //const auto &net = N.PossiblyEn();
+    for (TR_PL_ID t=0; N.PossiblyEnabled[N.lastTransition][t] != -1;t++) {
+        const TR_PL_ID it = N.PossiblyEnabled[N.lastTransition][t];
+#ifndef NO_STRING_SIM
+        if(verbose > 4){
+            print("consider for enabling: ");
+            print(it);
+            print("\n");
+        }
+#endif
+        //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
+        //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
+        if (N.IsEnabled(it)) {
+            if (!EQ.isScheduled(it)) {
+#ifndef NO_STRING_SIM
+                if(verbose > 4){
+                    print("-> New transition enabled: ");
+                    print(it);
+                    print("\n");
+                }
+#endif
+                //if(!EQ.restart(curr_time,it)){
+                GenerateEvent(F, (it));
+                EQ.insert(F);
+                //}
+
+            }
+        }
+
+    }
+
+    // Possibly removing Events corresponding to newly disabled-transitions
+    //const auto &ndt = N.PossiblyDis();
+    //for (const auto &it : ndt) {
+    for (TR_PL_ID t=0; N.PossiblyDisabled[N.lastTransition][t] != -1;t++) {
+        const TR_PL_ID it = N.PossiblyDisabled[N.lastTransition][t];
+#ifndef NO_STRING_SIM
+        if(verbose > 4){
+            print("consider for disabling: ");
+            print(it);
+            print("\n");
+        }
+#endif
+        //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
+        //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
+        if (EQ.isScheduled(it)) {
+            if (!N.IsEnabled(it )){
+#ifndef NO_STRING_SIM
+                if(verbose > 4){
+                    print("-> New transition disabled: ");
+                    print(it);
+                    print("\n");
+                }
+#endif
+                EQ.remove(it);
+            }
+        }
+    }*/
+
     /*
-     //check if the current transition is still enabled
-     bool Nenabled = N.IsEnabled(E1_transitionNum);
-     bool NScheduled = EQ->isScheduled(E1_transitionNum);
-
-     if (Nenabled && NScheduled) {
-     GenerateEvent(F, E1_transitionNum);
-     EQ->replace(F); //replace the transition with the new generated time
-     } else if (Nenabled && !NScheduled) {
-     GenerateEvent(F, E1_transitionNum);
-     EQ->insert(F);
-     } else if (!Nenabled && NScheduled) {
-     EQ->remove(E1_transitionNum);
-     }
-
-
-     // Possibly adding Events corresponding to newly enabled-transitions
-     //const auto &net = N.PossiblyEn();
-     for (size_t t=0; N.PossiblyEnabled[N.lastTransition][t] != -1;t++) {
-     const auto &it = N.PossiblyEnabled[N.lastTransition][t];
-     if(verbose > 4){
-     cerr << "consider for enabling: " << N.Transition[it].label << ",";
-     cerr << endl;
-     }
-
-     //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-     //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-     if (N.IsEnabled(it)) {
-     if (!EQ->isScheduled(it)) {
-     if(verbose > 4){
-     cerr << "->New transition enabled: " << N.Transition[it].label << ",";
-     cerr << endl;
-     }
-     if(!EQ->restart(curr_time,it)){
-     GenerateEvent(F, (it));
-     (*EQ).insert(F);
-     }
-
-     } else {
-     if (N.Transition[it].MarkingDependent) {
-     GenerateEvent(F, it);
-     (*EQ).replace(F);
-     }
-     }
-     }
-
-     }
-
-     // Possibly removing Events corresponding to newly disabled-transitions
-     //const auto &ndt = N.PossiblyDis();
-     //for (const auto &it : ndt) {
-     for (size_t t=0; N.PossiblyDisabled[N.lastTransition][t] != -1;t++) {
-     const auto &it = N.PossiblyDisabled[N.lastTransition][t];
-     if(verbose > 4){
-     cerr << "consider for disabling: " << N.Transition[it].label << ",";
-     cerr << endl;
-     }
-     //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-     //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-     if (EQ->isScheduled(it)) {
-     if (!N.IsEnabled(it )){
-     if(verbose > 4){
-     cerr << "<-New transition disabled: " << N.Transition[it].label << ",";
-     cerr << endl;
-     }
-     if(N.Transition[it].AgeMemory){
-     EQ->pause(curr_time, it);
-     }else EQ->remove(it);
-     }else {
-     if (N.Transition[it].MarkingDependent) {
-     GenerateEvent(F, it);
-     EQ->replace(F);
-     }
-     }
-     }
-     }
-
      // Update transition which have no precondition on the Marking
      for (size_t t=0; N.FreeMarkDepT[N.lastTransition][t]!= -1;t++) {
      const auto &it = N.FreeMarkDepT[N.lastTransition][t];
      //const auto &fmd = N.FreeMarkingDependant();
      //for (const auto &it : fmd) {
      //if (N.IsEnabled(it,bindex)) {
-     if (EQ->isScheduled(it)) {
+     if (EQ.isScheduled(it)) {
      GenerateEvent(F, it);
      (*EQ).replace(F);
      }
@@ -162,18 +165,20 @@ void SimulatorLight::updateSPN(TR_PL_ID){
      */
 
     //In Debug mode check that transition are scheduled iff they are enabled
-    for(TR_PL_ID t=0; t<N.tr ; t++) {
-        if (N.IsEnabled(t)){
-            if (!EQ.isScheduled(t)) {
-                GenerateEvent(F, (t));
-                EQ.insert(F);
-            }
-        } else {
-            if (EQ.isScheduled(t)) {
-                EQ.remove(t);
+    //if(E1_transitionNum== UNSET_TRANS)
+        for(TR_PL_ID t=0; t<N.tr ; t++) {
+            if (N.IsEnabled(t)){
+                if (!EQ.isScheduled(t)) {
+                    GenerateEvent(F, (t));
+                    EQ.insert(F);
+                }
+            } else {
+                if (EQ.isScheduled(t)) {
+                    EQ.remove(t);
+                }
             }
         }
-    }
+
 }
 
 /**
@@ -197,7 +202,7 @@ void SimulatorLight::SimulateSinglePath() {
             curr_time = cRealTime();
             if (InDataAvailable()) {
                 N.Marking.moveSerialState();
-                updateSPN(0);   //reschedule the queue
+                updateSPN(UNSET_TRANS);   //reschedule the queue
             }
 
 
@@ -215,6 +220,7 @@ void SimulatorLight::SimulateSinglePath() {
 
             //Fire the transition in the SPN
             N.fire(E1.transition, curr_time);
+            //EQ.remove(E1.transition);
 
             updateSPN(E1.transition);
 

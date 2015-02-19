@@ -73,7 +73,7 @@ int main(int nargs, char** argv)
     mySim.verbose= atoi(argv[2]);
     
     // The third parameter for the app is the port name
-    if((gftHandle[giDeviceID] = open(argv[3], O_RDWR | O_NOCTTY | O_NONBLOCK))==-1) {
+    if((gftHandle[giDeviceID] = open(argv[3], O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))==-1) {
         print("Error: Could not connect to "); print(argv[3]); print("\n");
         return 1;
     } else {
@@ -94,11 +94,18 @@ REAL_TYPE getPr(TR_PL_ID t){
     return (REAL_TYPE)mySim.N.GetPriority(t);
 }
 
-void SWrite(unsigned char header,unsigned char data, unsigned char end)
+void SWrite3(unsigned char header,unsigned char data, unsigned char end)
 {
     unsigned char Buf[3] = {header, data, end};
     std::cout << "Heart -> Pace: "<< mySim.curr_time << " ["<< (int)header << "]["<< (int)data << "]["<< (int)end << "]"<< std::endl;
     WriteToPort(&gftHandle[giDeviceID], 3, &Buf[0]);
+}
+
+void SWrite(unsigned char data)
+{
+    unsigned char Buf[1] = {data};
+    std::cout << "Heart -> Pace: "<< mySim.curr_time << " ["<< (int)data << "]"<< std::endl;
+    WriteToPort(&gftHandle[giDeviceID], 1, &Buf[0]);
 }
 
 char SReceive(void)
