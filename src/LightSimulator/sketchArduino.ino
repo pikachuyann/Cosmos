@@ -24,7 +24,7 @@ void print(REAL_TYPE r){
 void wait(REAL_TYPE t){
     if(t<=0)return;
 #ifndef NO_STRING_SIM
-    Serial.println("Go to Sleep");
+    Serial.println("->Sleep");
 #endif
     Serial.flush();
     /*unsigned long ti = millis() + t;
@@ -60,7 +60,7 @@ char buff[4];
 bool InDataAvailable(){
     if(Serial.available()){
 #ifndef NO_STRING_SIM
-        print("DATA Available\n");
+        print("DATA R\n");
 #endif
         return true;
     } else return false;

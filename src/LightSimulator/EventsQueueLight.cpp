@@ -172,12 +172,12 @@ void EventsQueue::siftDown(TR_PL_ID i) {
  *	Print the content of the queues in a human readable format.
  */
 void EventsQueue::view()const {
-    print("********** EVENTS-QUEUE VIEW **********\n");
+    print("*EQVIEW *\n");
 
     //cerr << "Qsize:" << evtHeap.size() << endl;
 
     if (heap_size == 0)
-        print("EVENTS-QUEUE is empty!\n");
+        print("EQ empty!\n");
     else
         for (TR_PL_ID i = 0; i < heap_size; i++){
             Event e = InPosition(i);
