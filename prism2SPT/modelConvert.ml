@@ -8,6 +8,7 @@ let inname = ref "stdin"
 let typeFormat = ref Prism
 let outputFormat = ref [GrML;Dot;Marcie]
 let const_file = ref ""
+let verbose = ref 1
 
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
@@ -17,10 +18,12 @@ let suffix_of_filename s =
 let nbarg = ref 0
 
 let _ = 
-  Arg.parse ["--light",Arg.Set Simulinkparser.ligthSim,"light simulator";
+  Arg.parse ["--light",Arg.Set SimulinkType.ligthSim,"light simulator";
 	     "--pdf",Arg.Unit (fun () -> outputFormat:= Pdf:: !outputFormat),"Output as PDF";
-	     "--stoch",Arg.Set Simulinkparser.ligthSim,"Use probabilistic delay";
-	     "--no-erlang",Arg.Clear Simulinkparser.useerlang,"Replace erlang distribution by exponentials";
+	     "--prism",Arg.Unit (fun () -> outputFormat:= Prism:: !outputFormat),"Output in Prism File Format";
+	     "--stoch",Arg.Set SimulinkType.ligthSim,"Use probabilistic delay";
+	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
+	     "-v",Arg.Set_int verbose,"Set verbose level default 1";
 	    ]
     (function s -> incr nbarg; match !nbarg with
       1 -> inname:= s;
@@ -74,20 +77,21 @@ let _ =
 	       |> Zip.read_entry z)
 	|> Xml.parse_string 
 	|> (Simulinkparser.modulist_of_tree [])
-	|> Simulinkparser.expand_trans
-	|> List.map Simulinkparser.flatten_module
+	|> SimulinkTrans.expand_trans
+	|> List.map SimulinkTrans.flatten_module
 	(*|> List.map Simulinkparser.flatten_state_ssid*)
 	|< List.iter (SimulinkType.print_module !logout)
-	|> List.map Simulinkparser.incr_state
-	|> Simulinkparser.find_combinaison
-	|< Simulinkparser.print_prism_module ((!output)^".sm") !const_file
-	|> List.map Simulinkparser.prune_unread2
-      	|> (fun x -> List.fold_left Simulinkparser.combine_modu2 (List.hd x) (List.tl x))
-	|> Simulinkparser.expand_trans2
+	|> List.map SimulinkTrans.incr_state
+	|> SimulinkTrans.find_combinaison
+	|< (fun x -> if List.mem Prism !outputFormat then
+	    x |> SimulinkTrans.print_prism_module ((!output)^".sm") !const_file)
+	|> List.map SimulinkTrans.prune_unread2
+      	|> (fun x -> List.fold_left SimulinkTrans.combine_modu2 (List.hd x) (List.tl x))
+	|> SimulinkTrans.expand_trans2
     (*|> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])*)
     (*|< Simulinkparser.prune*) 
-	|> Simulinkparser.stochNet_of_modu !const_file
-	|> (fun x-> if !Simulinkparser.useerlang then x else StochasticPetriNet.remove_erlang x)
+	|> SimulinkTrans.stochNet_of_modu !const_file
+	|> (fun x-> if !SimulinkType.useerlang then x else StochasticPetriNet.remove_erlang x)
       end
       ENDIF
       ENDIF   
@@ -104,6 +108,7 @@ let _ =
 		  StochasticPetriNet.print_spt ((!output)^".grml") net
 		| Marcie -> 
 		  StochasticPetriNet.print_spt_marcie ((!output)^".andl") net
+		| Prism when !typeFormat = Simulink -> ()
 		| _ -> print_endline "Output format not supported"
 		) !outputFormat;
 		print_endline "Finish writing.";

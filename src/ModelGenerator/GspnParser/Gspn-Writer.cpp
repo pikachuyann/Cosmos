@@ -195,7 +195,9 @@ void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector
     for (size_t t = 0; t < vect.size(); t++)
         if(vect[t].size()>0){
             const auto tabname = "PE_"+name+"_"+ to_string(t);
-            SpnF << "static const int " << tabname << "[" << 1+vect[t].size() <<"]"<<"= {";
+            if(P.lightSimulator){
+                SpnF << "static const TR_PL_ID " << tabname << "[" << 1+vect[t].size() <<"]"<<"= {";
+            } else SpnF << "static const int " << tabname << "[" << 1+vect[t].size() <<"]"<<"= {";
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++) {
 				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
 				SpnF << "TR_" << MyGspn.transitionStruct[*it].label << "_RT, ";
@@ -206,7 +208,9 @@ void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++)
 				SpnF << "\t"<< name << "[" << t << "].push_back( " << *it << " );"<< endl;*/
 	}
-    SpnF << "const int* SPN::"<< name << "[] = {";
+    if(P.lightSimulator){
+        SpnF << "const TR_PL_ID* SPN::"<< name << "[] = {";
+    } else SpnF << "const int* SPN::"<< name << "[] = {";
     for (size_t t = 0; t < vect.size(); t++) {
         if(t != 0)SpnF << ", ";
         if(vect[t].size()>0){ SpnF << "PE_"<<name<<"_"<< t;
@@ -223,7 +227,9 @@ void Gspn_Writer::writeEnabledDisabled(ofstream &SpnF){
 	
 	EnabledDisabledTr(PossiblyEnabled,PossiblyDisabled,FreeMarkDepT);
 
-    SpnF << "static const int EMPTY_array[1]={-1};" << endl;
+    if(P.lightSimulator){
+        SpnF << "static const TR_PL_ID EMPTY_array[1]={-1};" << endl;
+    } else SpnF << "static const int EMPTY_array[1]={-1};" << endl;
 	writeUpdateVect(SpnF, "PossiblyEnabled", PossiblyEnabled);
 	writeUpdateVect(SpnF, "PossiblyDisabled", PossiblyDisabled);
 	writeUpdateVect(SpnF, "FreeMarkDepT", FreeMarkDepT);
@@ -1109,6 +1115,7 @@ void Gspn_Writer::writeFile(){
         ofstream macroF(loc.c_str(),ios::out | ios::trunc);
         macroF << "#define NB_EVENT " << MyGspn.tr << endl;
         if(!P.StringInSpnLHA)macroF << "#define NO_STRING_SIM" <<endl;
+        macroF << "#define FAST_SIM" << endl;
         macroF << "#define TR_PL_ID unsigned char" << endl;
         macroF << "#define REAL_TYPE float" << endl;
 

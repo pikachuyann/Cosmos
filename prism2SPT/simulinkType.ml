@@ -1,5 +1,11 @@
 open Type
 
+
+let ligthSim = ref false
+let modelStoch = ref false
+let useerlang = ref true
+
+
 let rec eval_name data fe= 
   let ifun = function
    | FloatName(x) -> begin try let v = List.assoc x data in Float (v) with Not_found -> FloatName(x) end

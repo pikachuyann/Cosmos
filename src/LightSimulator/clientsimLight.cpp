@@ -104,7 +104,7 @@ void SWrite3(unsigned char header,unsigned char data, unsigned char end)
 void SWrite(unsigned char data)
 {
     unsigned char Buf[1] = {data};
-    std::cout << "Heart -> Pace: "<< mySim.curr_time << " ["<< (int)data << "]"<< std::endl;
+    std::cout << "Heart -> Pace: "<< mySim.curr_time << " ["<< data << "]"<< std::endl;
     WriteToPort(&gftHandle[giDeviceID], 1, &Buf[0]);
 }
 
@@ -123,7 +123,7 @@ char SReceive(void)
     int bytesRead = 0;
     if(gDataAvailable) {
         bytesRead = read(gftHandle[giDeviceID], &retVal, (int)1);
-        printf("Pace -> Heart: %f [%x:%c] (bytes read %d)\n",mySim.curr_time,retVal,retVal, bytesRead);
+        printf("Pace -> Heart: %f [%x:%c]\n",mySim.curr_time,retVal,retVal);
         gDataAvailable = 0;
     }
     
