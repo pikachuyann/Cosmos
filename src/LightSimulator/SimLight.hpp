@@ -52,7 +52,7 @@ public:
     void SimulateSinglePath();
 
 protected:
-
+    
     //! a Temporary event
     Event F;
 

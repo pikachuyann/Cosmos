@@ -163,13 +163,13 @@ public:
     REAL_TYPE GetPriority(TR_PL_ID)const;
 
     //! A table of set of transitions that may be enabled after firing the last transition
-    static const int* PossiblyEnabled[];
+    static const TR_PL_ID* PossiblyEnabled[];
 
     //! A table of set of transitions that may be disabled after firing the last transition
-    static const int* PossiblyDisabled[];
+    static const TR_PL_ID* PossiblyDisabled[];
 
     //! A table of set of transition without constrain but marking dependant
-    static const int* FreeMarkDepT[];
+    static const TR_PL_ID* FreeMarkDepT[];
 
     TR_PL_ID lastTransition; //! store the last fired transition
 	

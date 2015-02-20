@@ -58,7 +58,6 @@ void SimulatorLight::reset() {
     EQ.reset();
 }
 
-
 #define UNSET_TRANS (TR_PL_ID)(-1)
 
 /**
@@ -87,14 +86,14 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
         }
     }
 
-/*
+#ifdef FAST_SIM
     // Possibly adding Events corresponding to newly enabled-transitions
     //const auto &net = N.PossiblyEn();
-    for (TR_PL_ID t=0; N.PossiblyEnabled[N.lastTransition][t] != -1;t++) {
+    for (TR_PL_ID t=0; N.PossiblyEnabled[N.lastTransition][t] != UNSET_TRANS ;t++) {
         const TR_PL_ID it = N.PossiblyEnabled[N.lastTransition][t];
 #ifndef NO_STRING_SIM
         if(verbose > 4){
-            print("consider for enabling: ");
+            print("enabled ?: ");
             print(it);
             print("\n");
         }
@@ -105,9 +104,7 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
             if (!EQ.isScheduled(it)) {
 #ifndef NO_STRING_SIM
                 if(verbose > 4){
-                    print("-> New transition enabled: ");
-                    print(it);
-                    print("\n");
+                    print("-> yes \n");
                 }
 #endif
                 //if(!EQ.restart(curr_time,it)){
@@ -123,11 +120,11 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
     // Possibly removing Events corresponding to newly disabled-transitions
     //const auto &ndt = N.PossiblyDis();
     //for (const auto &it : ndt) {
-    for (TR_PL_ID t=0; N.PossiblyDisabled[N.lastTransition][t] != -1;t++) {
+    for (TR_PL_ID t=0; N.PossiblyDisabled[N.lastTransition][t] != UNSET_TRANS;t++) {
         const TR_PL_ID it = N.PossiblyDisabled[N.lastTransition][t];
 #ifndef NO_STRING_SIM
         if(verbose > 4){
-            print("consider for disabling: ");
+            print("disabled ?: ");
             print(it);
             print("\n");
         }
@@ -138,15 +135,14 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
             if (!N.IsEnabled(it )){
 #ifndef NO_STRING_SIM
                 if(verbose > 4){
-                    print("-> New transition disabled: ");
-                    print(it);
-                    print("\n");
+                    print("-> yes \n ");
                 }
 #endif
                 EQ.remove(it);
             }
         }
-    }*/
+    }
+#endif
 
     /*
      // Update transition which have no precondition on the Marking
@@ -165,7 +161,9 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
      */
 
     //In Debug mode check that transition are scheduled iff they are enabled
-    //if(E1_transitionNum== UNSET_TRANS)
+#ifdef FAST_SIM 
+    if(E1_transitionNum== UNSET_TRANS)
+#endif
         for(TR_PL_ID t=0; t<N.tr ; t++) {
             if (N.IsEnabled(t)){
                 if (!EQ.isScheduled(t)) {
