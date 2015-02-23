@@ -42,9 +42,9 @@ void wait(REAL_TYPE t){
     if(!davailable){
         t-=5;
         if(t>0){
-            digitalWrite(13, LOW);
+            //digitalWrite(13, LOW);
             sleepMillis((unsigned long)(t));
-            digitalWrite(13, HIGH);
+            //digitalWrite(13, HIGH);
         }
 
     }
@@ -98,8 +98,15 @@ REAL_TYPE getPr(TR_PL_ID t){
 
 
 void setup() {
+    //Switch off all leds
+    DDRD &= B00000011;       // set Arduino pins 2 to 7 as inputs, leaves 0 & 1 (RX & TX) as is
+    DDRB = B00000000;        // set pins 8 to 13 as inputs
+    PORTD |= B11111100;      // enable pullups on pins 2 to 7, leave pins 0 and 1 alone
+    PORTB |= B11111111;      // enable pullups on pins 8 to 13
+    //pinMode(13,OUTPUT);
+
     Serial.begin(57600);
-    mySim.verbose=5;
+    mySim.verbose= VERBOSE_LEVEL;
     initTimer1();
 }
 

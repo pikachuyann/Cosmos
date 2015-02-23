@@ -58,8 +58,6 @@ void SimulatorLight::reset() {
     EQ.reset();
 }
 
-#define UNSET_TRANS (TR_PL_ID)(-1)
-
 /**
  * Update the enabling transition of the SPN, and update the event queue.
  * @param E1_transitionNum the number of the transition which last
@@ -198,12 +196,13 @@ void SimulatorLight::SimulateSinglePath() {
         if(E1.time > curr_time){
             wait(E1.time - cRealTime());
             curr_time = cRealTime();
-            if (InDataAvailable()) {
-                N.Marking.moveSerialState();
-                updateSPN(UNSET_TRANS);   //reschedule the queue
+            if (InDataAvailable()){
+                TR_PL_ID trs = N.getIncomingTrans();
+                if (trs != UNSET_TRANS) {
+                    N.fire(trs, curr_time); // Fire the special transition for incoming message
+                    updateSPN(trs);
+                }
             }
-
-
         } else {
 
 #ifndef NO_STRING_SIM

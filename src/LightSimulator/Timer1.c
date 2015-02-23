@@ -11,6 +11,7 @@
 
 #include <avr/power.h>
 #include <avr/sleep.h>
+#include <avr/interrupt.h>
 #include <Arduino.h>
 
 #define TIME1_PRESCALLER 256
@@ -118,6 +119,7 @@ void sleepMillis(unsigned long k)
     power_timer0_disable();
     power_timer2_disable();
     power_twi_disable();
+    //sleep_bod_disable();
 
     uint8_t oldSREG = SREG;
     cli();
