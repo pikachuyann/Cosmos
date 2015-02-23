@@ -33,7 +33,7 @@ let exist_delay s l =
   Add intermediate state to some transition to implement simulink semantic
 *)
 let expand_trans l =
-  List.map (fun (ssidmod,name,sl,tl,scrl,p) ->
+  List.map (fun (ssidmod,name,sl,tl,scrl,p,ss) ->
     let (nsl,ntl) = List.fold_left (fun (sl2,tl2) (ssid,src,label,dst) -> 
       match (label.trigger,label.write,src) with 
       | (Delay(_),(_::_),_) -> (* wait and synch loop *)
@@ -65,10 +65,10 @@ let expand_trans l =
 	 (ssid,None,{empty_trans_label with priority =label.priority},news)::
 	   (newt,Some(news),{label  with nameT=Some "init"},dst)::tl2)
       | _ -> (sl2,(ssid,src,label,dst)::tl2)) (sl,[]) tl in
-    (ssidmod,name,nsl,ntl,scrl,p)) l
+    (ssidmod,name,nsl,ntl,scrl,p,ss)) l
 
 (* Add self loop such that if a module may read a signal it can read it from any state*)
-let flatten_module (ssid,name,sl,tl,scrl,p) =
+let flatten_module (ssid,name,sl,tl,scrl,p,ss) =
   let inaction,_ = interface_of_modu tl in
   let tl2 = sl
     |> List.fold_left (fun nt2 (ss,_) -> (*Itere over state*)
@@ -84,7 +84,7 @@ let flatten_module (ssid,name,sl,tl,scrl,p) =
 	else (* Nothing to do *) 
 	  tl3
       ) inaction) tl in 
-  (ssid,name,sl,tl2,scrl,p)
+  (ssid,name,sl,tl2,scrl,p,ss)
     
 (* Look for the initial transition to determinate initial state *)
 let init_state (ssid,name,sl,tl,scrl) =
@@ -117,7 +117,7 @@ let uni_ssid = ref 0
    Replace type for state from an id to an array of one id
 in order to compose state in state. 
 *)
-let flatten_state_ssid (ssid,name,sl,tl,scrl,p) =
+let flatten_state_ssid (ssid,name,sl,tl,scrl,p,ss) =
   let i2,sl2,sl3 = List.fold_left (fun (i,l2,l3) (j,n) ->
     ((i+1),(i,n)::l2,(j,i)::l3)) (!uni_ssid,[],[]) sl in
   uni_ssid := i2;
@@ -126,7 +126,7 @@ let flatten_state_ssid (ssid,name,sl,tl,scrl,p) =
   (ssid,name,sl2,tl2,scrl,p)
 
 (* Transform state from interger to an array of integer to allows composition *)
-let incr_state (ssid,name,sl,tl,scrl,p) =
+let incr_state (ssid,name,sl,tl,scrl,p,ss) =
   if sl=[] then { ssid=ssid;
 	       name=name;
 	       stateL=[];
@@ -136,6 +136,7 @@ let incr_state (ssid,name,sl,tl,scrl,p) =
 	       interfaceR=StringSet.empty;
 	       interfaceW=StringSet.empty;
 	       priority = p;
+	       signals=ss;
 	     }
   else begin let init = init_state (ssid,name,sl,tl,scrl) in
 	     let ivect = Array.make 1 (init,name) in
@@ -151,6 +152,7 @@ let incr_state (ssid,name,sl,tl,scrl,p) =
 	       interfaceR=r;
 	       interfaceW=w;
 	       priority=p;
+	       signals=ss;
 	     }
 (*	     (ssid,name,sl,ivect,List.fold_left incr_trans [] tl,scrl)*)
   end
@@ -236,7 +238,12 @@ let combine_modu ?aggrSyn:(aggrSyn=false)  m1 m2 =
 	      scriptL= m1.scriptL @ m2.scriptL;
 	      interfaceR= rm;
 	      interfaceW=wm;
-	      priority= None
+	      priority= None;
+	      signals= StringMap.merge (fun _ a b ->(match (a,b) with
+	      | Some x,None -> Some x
+	      | None,Some x-> Some x 
+	      | Some x,Some y -> Some x 
+	      | _ -> None)) m1.signals m2.signals
 	     } in
   Printf.fprintf !logout "Build %a\n" print_option newname;
   Printf.fprintf !logout "Interface combinaison: [ %a ]\n" (print_set ", ") inter;
@@ -352,7 +359,17 @@ let combine_modu2 m1 m2 =
 	      interfaceR=rm;
 	      interfaceW=wm;
 	      priority=None;
-} in
+	      signals= StringMap.merge (fun _ a b ->(match (a,b) with
+	      | Some x,None -> Some x
+	      | None,Some x-> Some x 
+	      | Some x,Some y -> Some x 
+	      | _ -> None)) m1.signals m2.signals
+	     } in
+  Printf.fprintf !logout "Build %a\n" print_option newname;
+  let inter = StringSet.union (StringSet.inter m1.interfaceR m2.interfaceW)
+    (StringSet.inter m2.interfaceR m1.interfaceW) in 
+  Printf.fprintf !logout "Interface combinaison: [ %a ]\n" (print_set ", ") inter;
+  print_module2 !logout mod3;
   (*let newname = Printf.sprintf "co%i_%i.dot" m1.ssid m2.ssid in
   Printf.fprintf stdout "Combine %s -> %a,%a\n" newname print_option m1.name print_option m2.name;
   print_simulink_dot2 newname mod3;*)
@@ -445,7 +462,7 @@ let print_magic f sl tl scrl=
   | _ -> ();
   end) tl;
   output_string f "\tdefault: return true; \n\t}\n}\n";
-  if !ligthSim then output_string f "void abstractMarking::moveSerialState(){ P->_PL_SerialPort = DATA_AVAILABLE;};\n";
+  (*if !lightSim then output_string f "void abstractMarking::moveSerialState(){ P->_PL_SerialPort = DATA_AVAILABLE;};\n";*)
   output_string f "  </attribute>"
 
 (* Print as a prism CTMC model*)
@@ -506,12 +523,23 @@ let stochNet_of_modu cf m =
   let fund = fun f () -> print_magic f m.stateL m.transL m.scriptL in
   let net = Net.create () in 
 
-  StringSet.union m.interfaceR m.interfaceW
-  |< Printf.fprintf !logout "Interface [ %a ]\n" (print_set ",")
-  |< StringSet.iter (fun x -> Data.add (("SIG_"^x),Int 0) net.Net.place)
-  |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),(StochasticPetriNet.Imm,Float 1.0,Float 3.0)) net.Net.transition)
-  |> StringSet.iter (fun x -> Net.add_inArc net ("SIG_"^x) ("EMPTY_"^x) (Int 1));
-
+  m.signals
+  |> StringMap.filter (fun x (y,z) -> z=In) 
+  |< (fun x -> x
+	 |> (fun s -> StringMap.fold (fun x _ y -> StringSet.add x y) s StringSet.empty)
+	     
+	 |> StringSet.union m.interfaceW
+	 |> StringSet.union m.interfaceR 
+	     
+	 |< Printf.fprintf !logout "Interface [ %a ]\n" (print_set ",")
+	 |< StringSet.iter (fun x -> Data.add (("SIG_"^x),Int 0) net.Net.place)
+	 |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),(StochasticPetriNet.Imm,Float 1.0,Float 3.0)) net.Net.transition)
+	 |> StringSet.iter (fun x -> Net.add_inArc net ("SIG_"^x) ("EMPTY_"^x) (Int 1)))
+      
+  |< StringMap.iter (fun x _ -> Data.add (("INCOMING_"^x),(StochasticPetriNet.Imm,Float 1.0,Float 5.0)) net.Net.transition)
+  |< StringMap.iter (fun x _ -> Net.add_outArc net ("INCOMING_"^x) ("SIG_"^x) (Int 1))
+  |> StringMap.iter (fun x _ -> Net.add_inhibArc net ("SIG_"^x) ("INCOMING_"^x) (Int 0));
+   
   let varlist = 
     m.scriptL |>
     List.fold_left (fun tl -> 

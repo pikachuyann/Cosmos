@@ -63,21 +63,22 @@ int main(int nargs, char** argv)
 
     gettimeofday(&gStartTime, NULL);
 
-
-    if (nargs!=4) {
-        print("Error: Not enough arguments\n");
+    auto serial = "arduino";
+    /*if (nargs==4) {
+        serial = argv[3];
+        //print("Error: Not enough arguments\n");
         return 1;
-    }
+    }*/
     
     // Hardcode the serial communication for PC client
     mySim.verbose= atoi(argv[2]);
     
     // The third parameter for the app is the port name
-    if((gftHandle[giDeviceID] = open(argv[3], O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))==-1) {
+    if((gftHandle[giDeviceID] = open(serial, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))==-1) {
         print("Error: Could not connect to "); print(argv[3]); print("\n");
         return 1;
     } else {
-        print("Opened device "); print(argv[3]); print("\n");
+        print("Opened device "); print(serial); print("\n");
         
         SetDefaultPortSettings(&gftHandle[giDeviceID], &oldTio);
         
@@ -97,14 +98,14 @@ REAL_TYPE getPr(TR_PL_ID t){
 void SWrite3(unsigned char header,unsigned char data, unsigned char end)
 {
     unsigned char Buf[3] = {header, data, end};
-    std::cout << "Heart -> Pace: "<< mySim.curr_time << " ["<< (int)header << "]["<< (int)data << "]["<< (int)end << "]"<< std::endl;
+    std::cerr << "Heart -> Pace: "<< mySim.curr_time << " ["<< (int)header << "]["<< (int)data << "]["<< (int)end << "]"<< std::endl;
     WriteToPort(&gftHandle[giDeviceID], 3, &Buf[0]);
 }
 
 void SWrite(unsigned char data)
 {
     unsigned char Buf[1] = {data};
-    std::cout << "Heart -> Pace: "<< mySim.curr_time << " ["<< data << "]"<< std::endl;
+    std::cerr << "Heart -> Pace: "<< mySim.curr_time << " ["<< data << "]"<< std::endl;
     WriteToPort(&gftHandle[giDeviceID], 1, &Buf[0]);
 }
 
@@ -120,10 +121,10 @@ char SReceive(void)
 
 
     unsigned char retVal = 0;
-    int bytesRead = 0;
+    size_t bytesRead = 0;
     if(gDataAvailable) {
         bytesRead = read(gftHandle[giDeviceID], &retVal, (int)1);
-        printf("Pace -> Heart: %f [%x:%c]\n",mySim.curr_time,retVal,retVal);
+        std::cerr << "<<<<<<< Pace -> Heart: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
         gDataAvailable = 0;
     }
     

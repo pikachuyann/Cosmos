@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #  Script.sh
 #  Cosmos
@@ -37,8 +37,24 @@ cp sketchArduino.ino sketchArduino/src/sketch.ino
 cp -r $LPATH ~/Documents/Arduino/libraries
 
 cd sketchArduino
-ino build -m fio
 
-SERIAL=`ls /dev/tty.usbserial-* /dev/ttyUSB*`
 
-ino upload -m fio -p $SERIAL
+SERIAL_FIO=`ls /dev/tty.usbserial-* /dev/ttyUSB* 2>/dev/null`
+SERIAL_BLEND=`ls /dev/tty.usbmodem* /dev/ttyACM* 2>/dev/null`
+
+if [[ -n $SERIAL_BLEND ]]; then
+    BOARD=blendmicro8
+    SERIAL=$SERIAL_BLEND
+    echo "Blend micro detected on "$SERIAL
+else
+    BOARD=fio
+    SERIAL=$SERIAL_FIO
+    echo "Fio detected on "$SERIAL
+fi
+
+ino build -m $BOARD
+
+ino upload -m $BOARD -p $SERIAL
+
+cd ../..
+ln -s $SERIAL arduino

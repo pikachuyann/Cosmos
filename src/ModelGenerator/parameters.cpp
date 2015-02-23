@@ -489,6 +489,9 @@ void parameters::parseCommandLine(int argc, char** argv) {
 
     }
 
+    if (lightSimulator && MaxRuns>0)StringInSpnLHA=true;
+
+
     //If no LHA is required only set the path for the GSPN.
     if (optind + 1 == argc && (loopLHA > 0.0 || !CSLformula.empty() || !unfold.empty() || P.lightSimulator)) {
         PathGspn = argv[optind];

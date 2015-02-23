@@ -45,7 +45,7 @@ REAL_TYPE cRealTime();
 //Serial comm function
 bool InDataAvailable();
 
-
+#define UNSET_TRANS (TR_PL_ID)(-1)
 
 REAL_TYPE getPr(TR_PL_ID);
 
@@ -58,9 +58,6 @@ public:
      * which is generated.
      */
     abstractMarkingImpl* P;
-    
-    //Special transition that change state of serial automaton
-    void moveSerialState();
 
     abstractMarking();
     ~abstractMarking();
@@ -172,6 +169,10 @@ public:
     static const TR_PL_ID* FreeMarkDepT[];
 
     TR_PL_ID lastTransition; //! store the last fired transition
+
+    //Special transition that change state of serial automaton
+    TR_PL_ID getIncomingTrans();
+
 	
 };
 #endif  /* _SPN_HPP */

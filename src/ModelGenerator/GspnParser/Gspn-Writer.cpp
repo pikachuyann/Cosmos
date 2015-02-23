@@ -1118,6 +1118,7 @@ void Gspn_Writer::writeFile(){
         macroF << "#define FAST_SIM" << endl;
         macroF << "#define TR_PL_ID unsigned char" << endl;
         macroF << "#define REAL_TYPE float" << endl;
+        macroF << "#define VERBOSE_LEVEL " << P.verbose << endl;
 
         macroF << "#define uint8 unsigned char" << endl;
         macroF << "#define uint16 unsigned int" << endl;
@@ -1157,7 +1158,6 @@ void Gspn_Writer::writeFile(){
 		SpnCppFile << "void SPN::lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
 		SpnCppFile << "bool SPN::precondition(const abstractMarking &M){return true;}" << endl;
 	}
-
     
 	//------------- Writing Marking type and header ----------------------------
 	writeMarkingClasse(SpnCppFile,header,P);
@@ -1246,7 +1246,16 @@ void Gspn_Writer::writeFile(){
 	//------------- /Rare Event -----------------
 	
 	SpnCppFile << "}\n" << endl;
-	
+
+    if(P.lightSimulator){
+        SpnCppFile << "TR_PL_ID SPN::getIncomingTrans(){ return ";
+        if(MyGspn.TransId.count("INCOMING_SREC")>0){
+            SpnCppFile << "TR_INCOMING_SREC_RT;};\n"<< endl;
+        } else {
+            SpnCppFile << "UNSET_TRANS;};\n"<< endl;
+        }
+    }
+
 	
 	SpnCppFile << "bool SPN::IsEnabled(TR_PL_ID t";
     if (!P.lightSimulator)SpnCppFile << ",const abstractBinding& b";

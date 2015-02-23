@@ -1,7 +1,7 @@
 open Type
 
 
-let ligthSim = ref false
+let lightSim = ref false
 let modelStoch = ref false
 let useerlang = ref true
 
@@ -30,7 +30,7 @@ let empty_trans_label = {
   priority = 1.0;
 }
 
-
+type signalT = Local | In | Out
 
 let stateasso s l =
   try (match List.assoc s l with
@@ -62,11 +62,13 @@ let interface_of_modu tl =
 let print_trans_simulink sl f (ssid,src,trans,dst) =
   Printf.fprintf f "\t%s --(%a)->%s\n" (stateasso2 src sl) print_label_simulink trans (stateasso dst sl);;
 
-let print_module f (ssid,name,sl,tl,_,p) =
+let print_module f (ssid,name,sl,tl,_,p,ss) =
+  let siglist = StringMap.fold (fun x y z -> (x,y)::z) ss [] in 
   let actionr,actionw = interface_of_modu tl in
   let readlist = StringSet.fold (fun x y -> x::y) actionr [] 
   and writelist = StringSet.fold (fun x y -> x::y) actionw [] in 
   Printf.fprintf f "module: %i -> %a\n" ssid print_option name;
+  Printf.fprintf f "Signals: [ %a ]\n" (print_list (fun (x,(y,z))->x) ",") siglist; 
   Printf.fprintf f "Interface:\n\tRead[ %a ]\n\tWrite[ %a ]\n" (print_list(fun x->x) ",") readlist (print_list (fun x->x) ",") writelist;
   Printf.fprintf f "state list: [";
   List.iter (function (x,(Some y))-> Printf.fprintf f" %i->%s, " x y | (x,(None))-> Printf.fprintf f " %i, " x) sl;
@@ -86,6 +88,7 @@ type simulink_module = {
   interfaceR : StringSet.t; (* Action label read by this module *)
   interfaceW : StringSet.t; (* Action label written by this module *)
   priority : int option; (* Priority *)
+  signals : (int * signalT) StringMap.t;
 }
 
 let print_state_sim sl (x,y) =
@@ -95,10 +98,12 @@ let print_trans_simulink2 sl f (ssid,src,trans,dst) =
   Printf.fprintf f "\t[%s] --(%a)->%s\n" (string_of_list ", " (print_state_sim sl) src) print_label_simulink trans (string_of_list ", " (print_state_sim sl) dst);;
 
 let print_module2 f m =
+  let siglist = StringMap.fold (fun x y z -> (x,y)::z) m.signals [] in 
   let actionr,actionw = interface_of_modu m.transL in
   let readlist = StringSet.fold (fun x y -> x::y) actionr [] 
-  and writelist = StringSet.fold (fun x y -> x::y) actionw [] in 
+  and writelist = StringSet.fold (fun x y -> x::y) actionw [] in
   Printf.fprintf f "module: %i -> %a\n" m.ssid print_option m.name;
+  Printf.fprintf f "Signals:\n[ %a ]\n" (print_list (fun (x,(y,z))->x) ",") siglist; 
   Printf.fprintf f "Interface:\n\tRead[ %a ]\n\tWrite[ %a ]\n" (print_list (fun x->x) ",") readlist (print_list (fun x->x) ",") writelist;
   Printf.fprintf f "state list: [";
   List.iter (function (x,(Some y))-> Printf.fprintf f " %i->%s, " x y | (x,(None))-> Printf.fprintf f " %i, " x) m.stateL;
