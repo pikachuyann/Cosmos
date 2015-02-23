@@ -68,7 +68,7 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
-    if (E1_transitionNum != UNSET_TRANS ){
+    //if (E1_transitionNum != UNSET_TRANS ){
         //check if the current transition is still enabled
         bool Nenabled = N.IsEnabled(E1_transitionNum);
         bool NScheduled = EQ.isScheduled(E1_transitionNum);
@@ -82,7 +82,7 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
         } else if (!Nenabled && NScheduled) {
             EQ.remove(E1_transitionNum);
         }
-    }
+    //}
 
 #ifdef FAST_SIM
     // Possibly adding Events corresponding to newly enabled-transitions
@@ -159,21 +159,22 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
      */
 
     //In Debug mode check that transition are scheduled iff they are enabled
-#ifdef FAST_SIM 
-    if(E1_transitionNum== UNSET_TRANS)
-#endif
-        for(TR_PL_ID t=0; t<N.tr ; t++) {
-            if (N.IsEnabled(t)){
-                if (!EQ.isScheduled(t)) {
-                    GenerateEvent(F, (t));
-                    EQ.insert(F);
-                }
-            } else {
-                if (EQ.isScheduled(t)) {
-                    EQ.remove(t);
-                }
+
+#ifndef FAST_SIM
+    //if(E1_transitionNum== UNSET_TRANS)
+    for(TR_PL_ID t=0; t<N.tr ; t++) {
+        if (N.IsEnabled(t)){
+            if (!EQ.isScheduled(t)) {
+                GenerateEvent(F, (t));
+                EQ.insert(F);
+            }
+        } else {
+            if (EQ.isScheduled(t)) {
+                EQ.remove(t);
             }
         }
+    }
+#endif
 
 }
 
