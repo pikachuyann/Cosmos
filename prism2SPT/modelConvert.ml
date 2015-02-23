@@ -21,7 +21,7 @@ let _ =
   Arg.parse ["--light",Arg.Set SimulinkType.lightSim,"light simulator";
 	     "--pdf",Arg.Unit (fun () -> outputFormat:= Pdf:: !outputFormat),"Output as PDF";
 	     "--prism",Arg.Unit (fun () -> outputFormat:= Prism:: !outputFormat),"Output in Prism File Format";
-	     "--stoch",Arg.Set SimulinkType.lightSim,"Use probabilistic delay";
+	     "--stoch",Arg.Set SimulinkType.modelStoch,"Use probabilistic delay";
 	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
 	     "-v",Arg.Set_int verbose,"Set verbose level default 1";
 	    ]
@@ -46,9 +46,12 @@ let _ =
 *)
 
 let _ =
-  if !verbose>1 then
-    Printf.printf "Light Sim: %b" !SimulinkType.lightSim;
-
+  if !verbose>1 then begin
+    Printf.printf "Verbose level: %i\n" !verbose;
+    Printf.printf "Light Sim: %b\n" !SimulinkType.lightSim;
+    Printf.printf "Stochastic transition: %b\n" !SimulinkType.modelStoch;
+    Printf.printf "Use Erlang: %b\n" !SimulinkType.useerlang;
+  end;
 
 logout := open_out (!output^".log");;
 
