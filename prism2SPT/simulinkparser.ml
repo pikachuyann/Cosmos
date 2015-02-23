@@ -54,11 +54,9 @@ let print_position outx lexbuf =
   Printf.fprintf outx "%s:%d:%d" pos.pos_fname
     pos.pos_lnum (pos.pos_cnum - pos.pos_bol + 1)
 
-
 let regexp = "f[^̂†]*\\)\nend"
 let parse_regexp = Str.regexp 
   "function[ ]*\\([A-Za-z0-9_]+\\)[ ]*=[ ]*\\([A-Za-z0-9_]+\\)\\([(][A-Za-z0-9_, ]*[)]\\)[ ]*\n\\([^§]*\\)\nend";;
-
 
 let reg_comm = Str.regexp "%"
 let reg_type1 = Str.regexp "[(]"
@@ -137,12 +135,12 @@ let module_of_simul al cl =
   let priority = getPriority cl in
   let childs = List.find (function Element ("Children",_,_)->true | _-> false) cl in
   let sl,tl,scriptl = exp_mod ([],[],[]) childs in
-  let modu = ssid,name,sl,(List.map (eval_trans sl priority) tl),scriptl,priority in 
+  let modu = ssid,name,sl,(List.map (eval_trans sl priority) tl),scriptl,priority,StringMap.empty in 
   (*print_module modu;*)
   modu
 
 (* Print a simulink automaton for dot *)
-let print_modu f (ssid,name,sl,tl,scrl,p) =
+let print_modu f (ssid,name,sl,tl,scrl,p,_) =
   Printf.fprintf f "\tsubgraph cluster%i {\n" ssid;
   match name with None -> Printf.fprintf f "\t%i[shape=rectangle]\n" ssid
   | Some n2 -> Printf.fprintf f "\t%s[shape=rectangle]\n" n2;
@@ -169,9 +167,9 @@ let rec modulist_of_stateflow ml = function
     | Element (name,alist,clist) as t ->
        begin match name with
        | "xml" | "ModelInformation" | "Model" | "Stateflow" | "machine" | "chart" | "Children" ->
-					 List.fold_left modulist_of_stateflow ml clist
+	 List.fold_left modulist_of_stateflow ml clist
        | "P" -> ml
-       | "state" -> begin match  getType clist with
+       | "state" -> begin match getType clist with
 	 None -> ml
 	 | Some t when t= "OR_STATE" -> List.fold_left modulist_of_stateflow ml clist
 	 | Some t when t= "AND_STATE" -> (module_of_simul alist clist)::ml
@@ -181,7 +179,7 @@ let rec modulist_of_stateflow ml = function
 	   | Some scr -> 
 	     let comm = getDescription clist in
 	     let fn,fb = parse_fun comm scr in
-	     let modu = (getSSID alist),(Some fn),[],[],[((Some fn),fb)],None in
+	     let modu = (getSSID alist),(Some fn),[],[],[((Some fn),fb)],None,StringMap.empty in
 	     modu::ml
 	 end
 	 | Some t -> Printf.fprintf stderr "Dont know wat to do with %s, ignore\n" t; ml
@@ -191,18 +189,24 @@ let rec modulist_of_stateflow ml = function
        | "subviewS" -> ml
        | "instance" -> ml
        | "data" -> begin match exp_data t with None -> ml | Some (ssid,var) ->
-	 (ssid,None,[],[],[None,var],None)::ml
+	 (ssid,None,[],[],[None,var],None,StringMap.empty)::ml
 	 end
        | "event" -> begin
 	 let name = findpropName "name" clist |>>| "__NO_NAME"
 	 and ssid = getSSID alist 
-	 and scope = findpropName "scope" clist in
+	 and scope = findpropName "scope" clist in 
+	 let scope2 = scope |>>| "No type" |> (function 
+	     ("OUTPUT_EVENT") -> Out
+	   | ("LOCAL_EVENT") -> Local
+	   | ("INPUT_EVENT") -> In
+	   | x -> failwith ("Unknowm event type:"^x))  in
 	 Printf.fprintf !logout "New event: %s : %i : %a\n" name ssid print_option scope;
+	 (ssid,None,[],[],[],None,(StringMap.singleton name (ssid,scope2)))::ml
 	 (*match scope with
 	   Some "OUTPUT_EVENT" -> 
 	     (ssid,Some ("Output_sig_"^name),[ssid,Some "q0"],
 	      [ssid,Some ssid,{empty_trans_label with trigger = RAction name},ssid],[],None)::ml
-	 |_ ->*) ml
+	 |_ ->*)
        end
        | x -> Printf.fprintf stderr "Dont know wat to do with %s, ignore\n" x; ml
        end

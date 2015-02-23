@@ -18,10 +18,10 @@ let suffix_of_filename s =
 let nbarg = ref 0
 
 let _ = 
-  Arg.parse ["--light",Arg.Set SimulinkType.ligthSim,"light simulator";
+  Arg.parse ["--light",Arg.Set SimulinkType.lightSim,"light simulator";
 	     "--pdf",Arg.Unit (fun () -> outputFormat:= Pdf:: !outputFormat),"Output as PDF";
 	     "--prism",Arg.Unit (fun () -> outputFormat:= Prism:: !outputFormat),"Output in Prism File Format";
-	     "--stoch",Arg.Set SimulinkType.ligthSim,"Use probabilistic delay";
+	     "--stoch",Arg.Set SimulinkType.lightSim,"Use probabilistic delay";
 	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
 	     "-v",Arg.Set_int verbose,"Set verbose level default 1";
 	    ]
@@ -44,6 +44,11 @@ let _ =
 (*if Array.length Sys.argv <>2 then
   outputFormat := (List.filter (fun x -> x<>Pdf && x <> Dot) !outputFormat);;
 *)
+
+let _ =
+  if !verbose>1 then
+    Printf.printf "Light Sim: %b" !SimulinkType.lightSim;
+
 
 logout := open_out (!output^".log");;
 
