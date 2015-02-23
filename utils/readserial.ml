@@ -53,8 +53,9 @@ let _ =
   let b = (if Array.length Sys.argv>2 then int_of_string Sys.argv.(2) else 115200) in
   print_endline ("Opening:"^Sys.argv.(1)^" at rate:"^(string_of_int b));
   let serial = open_connection Sys.argv.(1) b in
+  let closeimm = Array.length Sys.argv <=3 in
   let s = Bytes.create (101) in
-  while true do
+  while closeimm do
     ignore (Unix.select [serial] [] [] (-1.0));
     let nread =  Unix.read serial s 0 100 in
     if nread = 0 then raise End_of_file;
