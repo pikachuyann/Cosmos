@@ -14,6 +14,11 @@ let (|>>|) x v = match x with
 let (|<) x f = let () = f x in x
 let (|<>|) f (x,y) = f x y
 
+let merge_option f x y = match (x,y) with
+    None, x -> x
+  | x, None -> x
+  | Some a,Some b -> Some (f a b)
+
 let logout = ref stdout
 
 let rec string_of_list sep f = function

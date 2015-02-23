@@ -6,7 +6,7 @@ open SimulinkType
 (* Distribution to attribute to Deterministic Delays*)
 let detfun s =
   if !modelStoch then 
-    let n = 200 in
+    let n = 10 in
     StochasticPetriNet.Erl (Int n,Div (Float (float n),s))
   else StochasticPetriNet.Det s
 
@@ -37,7 +37,7 @@ let expand_trans l =
     let (nsl,ntl) = List.fold_left (fun (sl2,tl2) (ssid,src,label,dst) -> 
       match (label.trigger,label.write,src) with 
       | (Delay(_),(_::_),_) -> (* wait and synch loop *)
-	(* This is necessary to make delay transition independant, therefor they do not synchronize
+	(* This is necessary to make delay transition independant, therefore they do not synchronize
 	   with anything thus cannot be disabled by synchronization.
 	   use only when write list is not empty*)
 	let news = fresh_ssid ()
@@ -161,14 +161,23 @@ let incr_state (ssid,name,sl,tl,scrl,p,ss) =
 let dec_trans n (ssid,srcl,lab,dstl) =
   (ssid, (List.map (fun (x,y) -> (x+n,y)) srcl), lab ,(List.map (fun (x,y) -> (x+n,y)) dstl))
 
-let comb_name_trans n1 n2 = match n1,n2 with 
-      None,None -> None
-    | Some a,None -> Some a
-    | None, Some a -> Some a
-    | Some a,Some b -> Some (Printf.sprintf "%s_%s" a b)
+let comb_name_trans n1 n2 = merge_option (Printf.sprintf "%s_%s") n1 n2
 
-(* Combine 2 transitions *)
-let comb_trans (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
+(* Combine 2 transitions that read the same signal  Use List.merge to sort all elements*)
+let comb_transRR  (ssidt,srcl,lab,dstl) l (ssidt2,srcl2,lab2,dstl2) =
+   match (lab2.trigger,lab.trigger) with
+    (RAction st,RAction st2) when st=st2 ->
+      let lab3= {
+	nameT = comb_name_trans lab.nameT lab2.nameT;
+	trigger= lab.trigger;
+	priority= min lab.priority lab2.priority;
+	write = List.sort_uniq compare (lab.write @ lab2.write);
+	update = lab.update @ lab2.update} in
+      (fresh_ssid (),List.merge compare srcl srcl2,lab3 ,List.merge compare dstl dstl2 ):: l
+  |_-> l
+
+(* Combine 2 transitions one reading the other writing Use List.merge to sort all elements*)
+let comb_trans (ssidt,srcl,lab,dstl)  (ssidt2,srcl2,lab2,dstl2) =
   match (lab2.trigger,lab.trigger) with
     (RAction st,_) when List.exists (fun x -> x=st) lab.write ->
       let lab3= {
@@ -178,7 +187,7 @@ let comb_trans (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
 	write = List.sort_uniq compare (lab.write @ lab2.write)
 		    |> List.filter (fun x -> x<>st);
 	update = lab.update @ lab2.update} in
-      Some (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 )
+      Some (fresh_ssid (),List.merge compare srcl srcl2,lab3 ,List.merge compare dstl dstl2 )
   | (_,RAction st) when List.exists (fun x -> x=st) lab2.write ->
     let lab3= { 
       nameT = comb_name_trans (Some ("S_"^st)) (comb_name_trans lab.nameT lab2.nameT);
@@ -188,46 +197,67 @@ let comb_trans (ssidt,srcl,lab,dstl) (ssidt2,srcl2,lab2,dstl2) =
 		  |> List.filter (fun x -> x<>st )
       ;
       update = lab.update @ lab2.update} in
-    Some (fresh_ssid (),srcl@srcl2,lab3 ,dstl@dstl2 )
+    Some (fresh_ssid (),List.merge compare srcl srcl2,lab3 ,List.merge compare dstl dstl2 )
   |_-> None
 
-let combname n1 n2 = match (n1,n2) with 
-      None,None -> None
-    | Some a,None -> Some a
-    | None, Some a -> Some a
-    | Some a,Some b -> Some (Printf.sprintf "( %s | %s )" a b)
+let combname x y = merge_option (Printf.sprintf "( %s | %s )") x y
 
 let is_changed inter (_,_,lab,_) =
   match lab.trigger with 
   | RAction s when StringSet.mem s inter->true 
   |_-> List.exists (fun x -> (StringSet.mem x inter)) lab.write
 
-let rec combine_trans_list inter l = function
-  | [] -> l
-  | [_] -> l
-  | t1::lt -> 
-    let lchanged2,lunchanged2 =
-      lt |> List.fold_left (fun (lchanged,lunchanged) t2 ->
-	match comb_trans t1 t2 with
+(* Avoid inserting twice the same transition *)
+let rec inser_trans ((_,srcl,lab,dstl) as t1) = function 
+  | [] -> [t1]
+  | ((_,srcl2,lab2,dstl2) as t2)::q when srcl = srcl2 && dstl=dstl2 && lab.trigger = lab2.trigger ->
+    t2::q
+  | t2::q -> t2::(inser_trans t1 q)
+
+let rec combine_trans_list inter statel l l2 = 
+  Printf.fprintf !logout "\ttransition list: [\n";
+  List.iter (print_trans_simulink2 statel !logout) l2;
+  Printf.fprintf !logout "\t]\n";
+  match l2 with
+    | [] -> l
+    | [_] -> l
+    | t1::lt -> 
+      let lchanged2,lunchanged2 =
+	lt |> List.fold_left (fun (lchanged,lunchanged) t2 ->
+	  match comb_trans t1 t2 with
 	  None -> (lchanged,lunchanged)
 	| Some t -> if is_changed inter t
-	  then t::lchanged,lunchanged
-	  else lchanged,t::lunchanged) (lt,l) in
-    combine_trans_list inter lunchanged2 lchanged2
+	  then (inser_trans t lchanged),lunchanged
+	  else lchanged,(inser_trans t lunchanged)) (lt,l) in
+    combine_trans_list inter  statel lunchanged2 lchanged2
+
+let split_trans_sync interRR interRW tl =
+  let tlchangedRW,tlunchangedRW = List.partition (is_changed interRW) tl in
+  let tlchangedRR,tlunchanged = List.partition (fun (_,_,lab,_) -> match lab.trigger with
+      RAction st when StringSet.mem st interRR -> true | _-> false) tlunchangedRW in
+  (tlchangedRW,tlchangedRR,tlunchanged)
+    
 
 let combine_modu ?aggrSyn:(aggrSyn=false)  m1 m2 =
 (*(ssid,name,sl,ivect,tl,scrl) (ssid2,name2,sl2,ivect2,tl2,scrl2) =*)
   let n = Array.length m1.ivect in
   let ivect3 = Array.append m1.ivect m2.ivect in (* Concatenate state vector*)
   let tl3 = List.map (dec_trans n) m2.transL in  (* Shift state in transition from m2 *)
-  (* Compute the set of action on which to synchronize *)
-  let inter = StringSet.union (StringSet.inter m1.interfaceR m2.interfaceW)
+  (* Compute the set of action on which to synchronize with RW *)
+  let interRW = StringSet.union (StringSet.inter m1.interfaceR m2.interfaceW)
     (StringSet.inter m2.interfaceR m1.interfaceW) in 
-  (* Transition in m1 unchanged by synchronization *)
-  let tlchanged,tlunchanged = List.partition (is_changed inter) m1.transL 
-  (* Transition in m2 unchanged by synchronization *)
-  and tlchanged2,tlunchanged2 = List.partition (is_changed inter) tl3 in
-  let tl4 = combine_trans_list inter (tlunchanged@tlunchanged2)  (tlchanged@tlchanged2) in
+  (* Compute the set of action on which to synchronize with RR *)
+  let interRR = StringSet.inter m1.interfaceR m2.interfaceR in
+  (* Transition in m1 unchanged by synchronization RW *)
+  let tlchangedRW1,tlchangedRR1,tlunchanged1 = split_trans_sync interRR interRW m1.transL 
+  (* Transition in m2 unchanged by synchronization RW *)
+  and tlchangedRW2,tlchangedRR2,tlunchanged2 = split_trans_sync interRR interRW tl3 in
+
+  let tlsynchRR= 
+    tlchangedRR1 |> List.fold_left (fun l1 t1 -> 
+      tlchangedRR2 |> List.fold_left (fun l2 t2 -> comb_transRR t1 l2 t2) l1) [] in
+  
+  let tl4 = combine_trans_list interRW (m1.stateL @ m2.stateL) (tlunchanged1@tlunchanged2@tlsynchRR) (tlchangedRW1@tlchangedRW2) in
   let rm,wm = interface_of_modu tl4 in
   let newname = combname m1.name m2.name in
   let mod3 = {ssid= fresh_ssid ();
@@ -246,7 +276,8 @@ let combine_modu ?aggrSyn:(aggrSyn=false)  m1 m2 =
 	      | _ -> None)) m1.signals m2.signals
 	     } in
   Printf.fprintf !logout "Build %a\n" print_option newname;
-  Printf.fprintf !logout "Interface combinaison: [ %a ]\n" (print_set ", ") inter;
+  Printf.fprintf !logout "Interface combinaisonRW: [ %a ]\n" (print_set ", ") interRW;
+  Printf.fprintf !logout "Interface combinaisonRR: [ %a ]\n" (print_set ", ") interRR;
   print_module2 !logout mod3;
   (*print_simulink_dot2 newname mod3;*)
    mod3
