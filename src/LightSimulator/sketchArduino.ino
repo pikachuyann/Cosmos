@@ -25,20 +25,17 @@ void print(REAL_TYPE r){
 
 //Real time function
 void wait(REAL_TYPE t){
+    const int wait_sleep = 2;
     if(t<=0)return;
+
+    unsigned long ti = millis1() + min(wait_sleep,t);
+
 #ifndef NO_STRING_SIM
     Serial.println("->Sleep");
 #endif
-    /*unsigned long ti = millis() + t;
-    bool davailable = false;
-    while(!davailable && millis()< ti ){
-        davailable = Serial.available();
-    }*/
 
-    unsigned long ti = millis1() + min(2,t);
-    digitalWrite(MARKER_PORT, HIGH);
-    
     Serial.flush();
+
     bool davailable = false;
     while(!davailable && millis1()< ti ){
         davailable = Serial.available();
@@ -46,7 +43,7 @@ void wait(REAL_TYPE t){
     
     digitalWrite(MARKER_PORT, LOW);
     if(!davailable){
-        t-=2;
+        t-= wait_sleep;
         if(t>0){
             //digitalWrite(13, LOW);
             sleepMillis((unsigned long)(t));
