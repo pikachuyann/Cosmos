@@ -12,6 +12,9 @@ bin/*
 *.res
 *.log
 *.in
+*.DS_Store
+*.dylib
+*.jnilib
 doc/overview.pdf
 *csvResultFile
 *camlResultFile
@@ -21,6 +24,7 @@ doc/overview.pdf
 *prismProperty.ctl
 *prismStates.sta
 *lumpingfunTmp.cpp
+*/tmpCosmos-*/
 *~
 XCCosmos/Cosmos.xcodeproj/project.xcworkspace/xcuserdata/barbot.xcuserdatad/UserInterfaceState.xcuserstate
 XCCosmos/Cosmos.xcodeproj/xcuserdata/*

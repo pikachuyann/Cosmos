@@ -3,13 +3,14 @@ open StochasticPetriNet
 open Type
 open SimulinkType
 
+let erlangstep = ref 10
+
 (* Distribution to attribute to Deterministic Delays*)
 let detfun s =
-  if !modelStoch then 
-    let n = 10 in
-    StochasticPetriNet.Erl (Int n,Div (Float (float n),s))
+  if !modelStoch then if !erlangstep=1 then
+      StochasticPetriNet.Exp (Div (Float (float !erlangstep),s))
+    else StochasticPetriNet.Erl (Int !erlangstep,Div (Float (float !erlangstep),s))
   else StochasticPetriNet.Det s
-
 
 (* Handling of SSID*)
 let fresh_ssid () =
