@@ -1,5 +1,3 @@
-#!/usr/local/bin/ocaml
-#load "unix.cma"
 
 let open_connection s b =
   let serial = Unix.openfile s [Unix.O_RDWR;Unix.O_NOCTTY; Unix.O_NONBLOCK] 0o666 in
@@ -48,6 +46,7 @@ let open_connection s b =
       };
   serial
 
+
 let _ =
   assert (Array.length Sys.argv > 1);
   let b = (if Array.length Sys.argv>2 then int_of_string Sys.argv.(2) else 115200) in
@@ -56,12 +55,15 @@ let _ =
   let closeimm = Array.length Sys.argv <=3 in
   let s = Bytes.create (101) in
   while closeimm do
-    ignore (Unix.select [serial] [] [] (-1.0));
-    let nread =  Unix.read serial s 0 100 in
-    if nread = 0 then raise End_of_file;
-    (*for i =0 to nread do
-      Printf.printf "[%i:%c]" (int_of_char s.[i]) s.[i]
-    done;*)
-    print_string (String.sub s 0 nread);
-    flush stdout;
+    let rf,_,_ = (Unix.select [serial;Unix.stdin] [] [] (-1.0)) in
+    match rf with
+      x::_ when x=serial ->
+	let nread =  Unix.read serial s 0 100 in
+	if nread = 0 then raise End_of_file;
+	print_string (String.sub s 0 nread);
+	flush stdout;
+    | x::_ when x=Unix.stdin ->
+      let nread =  Unix.read Unix.stdin s 0 100 in
+      if nread = 0 then raise End_of_file;
+      ignore @@ Unix.write serial  s 0 nread;
   done
