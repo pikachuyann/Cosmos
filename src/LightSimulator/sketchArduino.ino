@@ -22,29 +22,26 @@ void print(REAL_TYPE r){
 
 //Real time function
 void wait(REAL_TYPE t){
+    const int wait_sleep = 2;
     if(t<=0)return;
+
+    unsigned long ti = millis1() + min(wait_sleep,t);
+
 #ifndef NO_STRING_SIM
     Serial.println("->Sleep");
 #endif
     Serial.flush();
-    /*unsigned long ti = millis() + t;
-    bool davailable = false;
-    while(!davailable && millis()< ti ){
-        davailable = Serial.available();
-    }*/
 
-    unsigned long ti = millis1() + 5;
-    Serial.flush();
     bool davailable = false;
     while(!davailable && millis1()< ti ){
         davailable = Serial.available();
     }
     if(!davailable){
-        t-=5;
+        t-= wait_sleep;
         if(t>0){
-            digitalWrite(13, LOW);
+            //digitalWrite(13, LOW);
             sleepMillis((unsigned long)(t));
-            digitalWrite(13, HIGH);
+            //digitalWrite(13, HIGH);
         }
 
     }
