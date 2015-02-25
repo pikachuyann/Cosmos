@@ -131,8 +131,10 @@ char SReceive(void)
     return retVal;
 }
 
-bool InDataAvailable(){
-    return gDataAvailable;
+unsigned char InDataAvailable(){
+    if(gDataAvailable){
+        return 1;} else {return 0;
+    };
 }
 
 // fake real time

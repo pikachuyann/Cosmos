@@ -184,28 +184,33 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
 void SimulatorLight::SimulateSinglePath() {
     reset();
     InitialEventsQueue();
-
+    
     while (true) {
         //cerr << "continue path"<< endl;
-
+        
         if (EQ.isEmpty())break; //No event should not happen
-
+        
         //Take the first event in the queue
         const Event &E1 = EQ.InPosition(0);
-
+        
         //need to wait
         if(E1.time > curr_time){
             wait(E1.time - cRealTime());
             curr_time = cRealTime();
-            if (InDataAvailable()){
-                TR_PL_ID trs = N.getIncomingTrans();
-                if (trs != UNSET_TRANS) {
-                    N.fire(trs, curr_time); // Fire the special transition for incoming message
-                    updateSPN(trs);
+            unsigned char data = InDataAvailable();
+            if (data ==2) {
+                break;
+            }else{
+                if(data ==1 ){
+                    TR_PL_ID trs = N.getIncomingTrans();
+                    if (trs != UNSET_TRANS) {
+                        N.fire(trs, curr_time); // Fire the special transition for incoming message
+                        updateSPN(trs);
+                    }
                 }
             }
         } else {
-
+            
 #ifndef NO_STRING_SIM
             if(verbose > 2){
                 print("Firing:");
