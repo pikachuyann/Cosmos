@@ -43,7 +43,8 @@ void wait(REAL_TYPE);
 REAL_TYPE cRealTime();
 
 //Serial comm function
-bool InDataAvailable();
+unsigned char InDataAvailable();
+void SetParameters(unsigned char, double);
 
 #define UNSET_TRANS (TR_PL_ID)(-1)
 
