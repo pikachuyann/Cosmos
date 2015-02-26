@@ -35,12 +35,12 @@ const Event& Event::operator = (const Event& orig){
 	return *this;
 }
 
-bool Event::isPriorer(const Event& e)const {
+bool eventIsPriorer(const Event& lhs,const Event&rhs) {
     //smallest time is priorer
-    if (time > e.time) return false;
-    if (time < e.time) return true;
+    if (lhs.time > rhs.time) return false;
+    if (lhs.time < rhs.time) return true;
     // if not(< or >) so it is =
     // highest priority is priorer
-    if (getPr(transition) < getPr(e.transition)) return false;
+    if (getPr(lhs.transition) < getPr(rhs.transition)) return false;
     else return true;
 }

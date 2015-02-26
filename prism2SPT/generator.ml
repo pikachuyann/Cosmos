@@ -93,7 +93,6 @@ let convert_update net trname eqmap varmap = function
     Net.add_inArc net v trname (IntName (v));
     Net.add_outArc net trname v j; 
     varmap
-  
 
 let gen_acc iinit modu net (st,g,f,u) =
   let i = ref iinit in
