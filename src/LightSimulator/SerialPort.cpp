@@ -11,16 +11,14 @@
 #include "SerialPort.h"
 
 
-void ClosePortDevice(int *portHandle, struct termios  *tio, char *seriaPortName)
+void ClosePortDevice(int *portHandle, struct termios  *tio)
 {
     /* Cleanup */
     tcdrain(*portHandle);
     tcsetattr(*portHandle,TCSANOW,tio);
     close(*portHandle);
     
-    print("Closed device ");
-    print(seriaPortName);
-    print("\n");
+    print("Closed serial port\n");
 }
 
 void SetDefaultPortSettings(int *portHandle, struct termios  *tio)
