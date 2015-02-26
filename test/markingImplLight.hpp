@@ -18,6 +18,8 @@ public:
 	int _PL_URI;
 	int _PL_PVARP;
 	int _PL_SerialPort;
+	int _PL_PaceLedVentricle;
+	int _PL_PaceLedAtrium;
 	int _PL_VRP;
 	int _PL_LRI;
 };

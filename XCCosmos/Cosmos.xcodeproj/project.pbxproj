@@ -3005,16 +3005,16 @@
 				03BBD5E51A80CFDE00492779 /* spnLight.hpp */,
 				03BBD5E31A80CFDE00492779 /* SimLight.cpp */,
 				03BBD5E41A80CFDE00492779 /* SimLight.hpp */,
-				03BBD5E21A80CFDE00492779 /* clientsimLight.cpp */,
 				03E6624B1A83862D00C36695 /* build.sh */,
-				03E6624C1A838A1800C36695 /* sketchArduino.ino */,
-				03F0293A1A84CA2900A83E1E /* macro.hpp */,
-				03F29A321A8B9CFF005B2228 /* Timer1.c */,
-				03F29A331A8B9CFF005B2228 /* Timer1.h */,
-				BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */,
-				BCD7DA221A8D1FD4001A2D80 /* SerialPort.h */,
 				BCD7DA271A8D207E001A2D80 /* Print.h */,
 				BCF9142C1A8E573A0044F3B0 /* Print.cpp */,
+				03BBD5E21A80CFDE00492779 /* clientsimLight.cpp */,
+				03F0293A1A84CA2900A83E1E /* macro.hpp */,
+				BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */,
+				BCD7DA221A8D1FD4001A2D80 /* SerialPort.h */,
+				03E6624C1A838A1800C36695 /* sketchArduino.ino */,
+				03F29A321A8B9CFF005B2228 /* Timer1.c */,
+				03F29A331A8B9CFF005B2228 /* Timer1.h */,
 			);
 			path = LightSimulator;
 			sourceTree = "<group>";

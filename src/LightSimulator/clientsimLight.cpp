@@ -57,7 +57,7 @@ bool            gDataAvailable = 0;
 
 struct timeval gStartTime;
 
-int main(int nargs, char** argv)
+int main(int , char** argv)
 {
     struct termios  oldTio;
 
