@@ -6,7 +6,8 @@ libClientSimLight_la_SOURCES = \
 	EventsQueueLight.cpp EventsQueueLight.hpp \
 	SimLight.cpp SimLight.hpp \
     Print.h Print.cpp \
-    SerialPort.cpp SerialPort.h \
+	SerialPort.cpp SerialPort.h \
+	SocketPort.h SocketPort.cpp \
 	spnLight.hpp
 
 includes_HEADERS = spnLight.hpp macro.hpp Print.h
