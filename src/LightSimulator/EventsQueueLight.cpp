@@ -134,7 +134,7 @@ void EventsQueue::siftUp(TR_PL_ID i) {
     if (i != 0) {
         parentIndex = getParentIndex(i);
 
-        if (InPosition(i).isPriorer(InPosition(parentIndex))){
+        if (eventIsPriorer(InPosition(i),InPosition(parentIndex))){
             swapEvt(i, parentIndex);
             siftUp(parentIndex);
         }
@@ -152,13 +152,13 @@ void EventsQueue::siftDown(TR_PL_ID i) {
             minIndex = leftChildIndex;
     } else {
 
-        if (InPosition(leftChildIndex).isPriorer(InPosition(rightChildIndex)))
+        if (eventIsPriorer(InPosition(leftChildIndex),InPosition(rightChildIndex)))
             minIndex = leftChildIndex;
         else
             minIndex = rightChildIndex;
     }
 
-    if (InPosition(minIndex).isPriorer(InPosition(i))) {
+    if (eventIsPriorer(InPosition(minIndex),InPosition(i))) {
         swapEvt(minIndex,i);
         siftDown(minIndex);
     }

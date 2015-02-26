@@ -746,7 +746,7 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
                     if(regex_match(acs, actionreg)){
                         countmatch++;
                         SubSet.insert(acs);
-                        if((P.verbose-3)>0)cout << "action" << acs << " matches " << actionstr2 << endl;
+                        if((P.verbose-3)>0)cout << "action " << acs << " matches " << actionstr2 << endl;
                     }
                 if(countmatch==0){
                     cerr << "No match for action name: "<< actionstr2 <<endl;
@@ -768,7 +768,7 @@ void MyLhaModelHandler::on_read_arc(const XmlString& id,
                     if(regex_match(acs, actionreg)){
                         countmatch++;
                         SubSet.erase(acs);
-                        if((P.verbose-3)>0)cout << "action" << acs << " matches " << actionstr2 << endl;
+                        if((P.verbose-3)>0)cout << "action " << acs << " matches " << actionstr2 << endl;
                     }
                 if(countmatch==0){
                     cerr << "No match for action name: "<< actionstr2 <<endl;
