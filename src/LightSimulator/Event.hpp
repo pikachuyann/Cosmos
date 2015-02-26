@@ -43,9 +43,10 @@ public:
     TR_PL_ID transition;
     REAL_TYPE time;
 
-	bool isPriorer(const Event& e)const;
+    //bool isPriorer(const Event& e)const;
 };
 
+bool eventIsPriorer(const Event& lhs,const Event& rhs);
 
 #endif	/* _EVENT_HPP */
 
