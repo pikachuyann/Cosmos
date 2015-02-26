@@ -5,7 +5,8 @@
 #include <spnLight.h>
 
 #include <Timer1.h>
-#define MARKER_PORT 4
+#define MARKER_PORT_ONE 4
+#define MARKER_PORT_TWO 7
 #define AP_PORT 12
 #define VP_PORT 11
 
@@ -36,12 +37,13 @@ void wait(REAL_TYPE t){
 
     Serial.flush();
 
+    digitalWrite(MARKER_PORT_ONE, HIGH);
     bool davailable = false;
     while(!davailable && millis1()< ti ){
         davailable = Serial.available();
     }
     
-    digitalWrite(MARKER_PORT, LOW);
+    digitalWrite(MARKER_PORT_ONE, LOW);
     if(!davailable){
         t-= wait_sleep;
         if(t>0){
@@ -135,10 +137,12 @@ void setup() {
     DDRB = B00000000;        // set pins 8 to 13 as inputs
     PORTD |= B11111100;      // enable pullups on pins 2 to 7, leave pins 0 and 1 alone
     PORTB |= B11111111;      // enable pullups on pins 8 to 13*/
-    pinMode(MARKER_PORT,OUTPUT);
+    pinMode(MARKER_PORT_ONE,OUTPUT);
+    pinMode(MARKER_PORT_TWO,OUTPUT);
     pinMode(AP_PORT,OUTPUT);
     pinMode(VP_PORT,OUTPUT);
-    digitalWrite(MARKER_PORT, LOW);
+    digitalWrite(MARKER_PORT_ONE, LOW);
+    digitalWrite(MARKER_PORT_TWO, LOW);
     
     Serial.begin(57600);
     mySim.verbose= VERBOSE_LEVEL;
