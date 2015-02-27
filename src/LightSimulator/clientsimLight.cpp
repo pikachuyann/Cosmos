@@ -137,7 +137,7 @@ unsigned char InDataAvailable(){
     };
 }
 
-// fake real time
+// real time
 void wait(REAL_TYPE t){
     struct pollfd   fds;
     int pollRc;
