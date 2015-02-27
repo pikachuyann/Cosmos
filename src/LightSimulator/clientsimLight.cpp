@@ -40,11 +40,18 @@
 
 #include "SimLight.hpp"
 #include "SerialPort.h"
+#include "SocketPort.h"
 
-SimulatorLight mySim;
+SimulatorLight  mySim;
 int             gftHandle[MAX_DEVICES];
 int             giDeviceID = 0;
 bool            gDataAvailable = 0;
+
+int             gSocketHandle = -1;
+int             gListenSocketHandle = -1;
+pthread_t       gThreadID;
+
+char            gEndThread = 1;
 
 /**
  * main function it read the options given as arguments and initialyse
@@ -57,13 +64,80 @@ bool            gDataAvailable = 0;
 
 struct timeval gStartTime;
 
-int main(int , char** argv)
+// Main thread for socket read
+void *SerialReadThread(void *pArgs)
+{
+    struct pollfd   fds;
+    int             pollrc;
+
+    print("Socket thread created\n");
+    
+    fds.fd = gSocketHandle;
+    fds.events = POLLIN;
+    
+    while(gEndThread) {
+        pollrc = poll(&fds, 1, -1);
+        
+        
+        // Check if bytes are available in the read queue
+        if (pollrc < 0) {
+            print("Error: setting the poll\n");
+            return NULL;
+        }else if(pollrc > 0) {
+            if (fds.revents & POLLIN && fds.fd==gSocketHandle) {
+                gListenSocketHandle = accept(gSocketHandle, NULL, NULL);
+                
+                if (gListenSocketHandle < 0) {
+                    if (errno != EWOULDBLOCK)
+                        print("Error: accept() failed");
+                    return NULL;
+                }
+                
+                print("Client socket connected\n");
+                
+                fds.fd = gListenSocketHandle;
+                fds.events = POLLIN;
+            } else if (fds.revents & POLLIN && fds.fd==gListenSocketHandle) {
+                
+                char data[2]={0,0};
+                ssize_t rc = recv(fds.fd, (void*)&data[0], 1, 0);
+                
+                print("Data"); print(&data[0]); print("\n");
+                
+                if (rc < 0) {
+                    if (errno != EWOULDBLOCK)
+                        print("Error:  recv() failed\n");
+                    return NULL;
+                }
+                if (rc == 0) {
+                    printf("Connection closed\n");
+                    return NULL;
+                }
+                
+                if(data[0]=='q') {
+                    print("Hit\n");
+                    gEndThread = 0;
+                    return NULL;
+                }
+                
+            } else if(fds.revents & POLLHUP || fds.revents & POLLERR) {
+                printf("Error: socket poll read\n");
+                return NULL;
+            }
+        }
+    }
+    return NULL;
+}
+
+int main(int nargs, char** argv)
 {
     struct termios  oldTio;
+    struct addrinfo *hostInfoList = nullptr; // Pointer to the to the linked list of host_info's.
 
     gettimeofday(&gStartTime, NULL);
 
     auto serial = "arduino";
+    
     /*if (nargs==4) {
         serial = argv[3];
         //print("Error: Not enough arguments\n");
@@ -79,14 +153,40 @@ int main(int , char** argv)
         return 1;
     } else {
         print("Opened device "); print(serial); print("\n");
-        
         SetDefaultPortSettings(&gftHandle[giDeviceID], &oldTio);
         
+        if(!CreateSocket(&gSocketHandle, hostInfoList)) {
+            ClosePortDevice(&gftHandle[giDeviceID], &oldTio);
+            return 1;
+        }
+        
+        // Create the thread
+        if(pthread_create(&gThreadID, NULL, &SerialReadThread, NULL)) {
+            print("Error: Couldn't create the thread\n");
+            
+            CloseSocket(&gSocketHandle, &gListenSocketHandle, hostInfoList);
+            ClosePortDevice(&gftHandle[giDeviceID], &oldTio);
+            
+            return 1;
+        }
+        
+        // For testing
+        while(gEndThread) {
+            sleep(1);
+        }
+        
         //simulate a batch of trajectory
-        mySim.SimulateSinglePath();
+        //mySim.SimulateSinglePath();
     }
+    
+    // End the thread
+    gEndThread = 0;
 
-    ClosePortDevice(&gftHandle[giDeviceID], &oldTio, argv[3]);
+    // wait for the thread to exit
+    pthread_join(gThreadID, NULL);
+
+    CloseSocket(&gSocketHandle, &gListenSocketHandle, hostInfoList);
+    ClosePortDevice(&gftHandle[giDeviceID], &oldTio);
     
     return (0);
 }

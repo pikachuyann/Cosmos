@@ -34,7 +34,7 @@ struct ThreadSerialInfo {
     bool endThread; // Input parameter
 };
 
-void ClosePortDevice(int *portHandle, struct termios  *tio, char *seriaPortName);
+void ClosePortDevice(int *portHandle, struct termios  *tio);
 void SetDefaultPortSettings(int *portHandle, struct termios  *tio);
 bool WriteToPort(int *portHandle, int nbytes, unsigned char *buf);
 
