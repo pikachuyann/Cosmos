@@ -21,18 +21,10 @@
 #include <signal.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <pthread.h>
 
 #include "Print.h"
-
-#define SERIAL_BUF_SIZE 64
-#define MAX_DEVICES		5
-
-struct ThreadSerialInfo {
-    int portHandle; // Input parameter
-    int nBytesRead; // Output parameter
-    char bytesRead[SERIAL_BUF_SIZE]; // Output parameter
-    bool endThread; // Input parameter
-};
+//#include "macro.hpp"
 
 void ClosePortDevice(int *portHandle, struct termios  *tio);
 void SetDefaultPortSettings(int *portHandle, struct termios  *tio);

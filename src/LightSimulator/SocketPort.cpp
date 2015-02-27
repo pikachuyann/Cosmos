@@ -56,7 +56,7 @@ bool CreateSocket(int *socketHandle, struct addrinfo *hostInfoList)
     sockStatus =  listen(*socketHandle, 5);
     
     if (sockStatus == -1) {
-        printf("Error: listen error\n");
+        print("Error: listen error\n");
         return 1;
     }
 
@@ -72,3 +72,77 @@ void CloseSocket(int *socketHandle, int *socketListenHandle, struct addrinfo *ho
     print("Socket closed\n");
 }
 
+bool MainSocketRead(struct ThreadSerialInfo *sInfo)
+{
+    struct pollfd   fds;
+    int             pollrc;
+
+    fds.fd = sInfo->gSocketHandle;
+    fds.events = POLLIN;
+    
+    while(sInfo->gEndThread) {
+        pollrc = poll(&fds, 1, -1);
+        
+        
+        // Check if bytes are available in the read queue
+        if (pollrc < 0) {
+            print("Error: setting the poll\n");
+            return 0;
+        }else if(pollrc > 0) {
+            if (fds.revents & POLLIN && fds.fd==sInfo->gSocketHandle) {
+                sInfo->gListenSocketHandle = accept(sInfo->gSocketHandle, NULL, NULL);
+                
+                if (sInfo->gListenSocketHandle < 0) {
+                    if (errno != EWOULDBLOCK)
+                        print("Error: accept() failed");
+                    return 0;
+                }
+                
+                print("Client socket connected\n");
+                
+                fds.fd = sInfo->gListenSocketHandle;
+                fds.events = POLLIN;
+            } else if (fds.revents & POLLIN && fds.fd==sInfo->gListenSocketHandle) {
+                
+                unsigned char dataSocket = 0;
+                ssize_t rc = recv(fds.fd, (void*)&dataSocket, 1, 0);
+                
+                if (rc < 0) {
+                    if (errno != EWOULDBLOCK)
+                        print("Error:  recv() failed\n");
+                    return 0;
+                }
+                if (rc == 0) {
+                    print("Connection closed\n");
+                    return 1;
+                }
+                
+                if(dataSocket==SIM_END) {
+                    print("Ending simulation\n");
+                    sInfo->gEndThread = 0;
+                    return 1;
+                } else if(dataSocket==SIM_STOP) {
+                    char tmpbuf;
+                    print("Received simulation stop\n");
+                    
+                    //struct sigaction killAction, termAction;
+                    
+                    //memset(&killAction, 0, sizeof(struct sigaction));
+                    
+                    //killAction.sa_handler = NULL;
+                    //sigemptyset(&killAction.sa_mask);
+                    //killAction.sa_flags = 0;
+                    //sigaction(SIGTERM, &killAction, NULL);
+                    raise(SIGUSR1);
+                    
+                }
+                
+            } else if(fds.revents & POLLHUP || fds.revents & POLLERR) {
+                print("Error: socket poll read\n");
+                return 0;
+            }
+        }
+    }
+    
+    return 1;
+}
