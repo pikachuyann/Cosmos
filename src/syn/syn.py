@@ -38,7 +38,7 @@ class PowerMonitorThread (threading.Thread):
 #threadMonitor.start()
 
 HOST = 'localhost'    		# The remote host
-PORT = 27777              # The same port as used by the server
+PORT = 27778              # The same port as used by the server
 s = None
 for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
     af, socktype, proto, canonname, sa = res
@@ -57,7 +57,13 @@ for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
 if s is None:
     print 'could not open socket'
     sys.exit(1)
-s.sendall('a')
-s.sendall('q')
+
+s.sendall('\xF1')
+
+while True:
+    print "This prints once a minute."
+    time.sleep(60)  # Delay for 1 minute (60 seconds)
+
+#s.sendall('q')
 #data = s.recv(1024)
 s.close()
