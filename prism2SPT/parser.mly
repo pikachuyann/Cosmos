@@ -5,7 +5,7 @@
 
 %token <int> INT
 %token <float> FLOAT
-%token <string> NAME INTNAME BOOLNAME DOUBLENAME
+%token <string> NAME INTNAME BOOLNAME DOUBLENAME FUNNAME
 %token <string> STRING
 %token LPAR RPAR
 %token PLUS MINUS MULT DIV
@@ -144,7 +144,7 @@ floatexpr:
 | intexpr   DIV intexpr   {Div(CastInt $1,CastInt $3)}
 
 | DOUBLENAME {FloatName($1)}
-| NAME LPAR floatexprlist RPAR {FunCall($1,$3) }
+| FUNNAME LPAR floatexprlist RPAR {FunCall($1,$3) }
 | LPAR stateCondition QMARK floatexpr COLON floatexpr RPAR { If($2,$4,$6) }
 | LPAR stateCondition QMARK intexpr   COLON floatexpr RPAR { If($2,CastInt $4,$6) }
 | LPAR stateCondition QMARK floatexpr COLON intexpr   RPAR { If($2,$4,CastInt $6) }
@@ -184,6 +184,7 @@ upatom:
 initrew: 
   INIT TRUE ENDINIT initrew {()}
 | REWARDS STRING actionrewardlist ENDREWARDS initrew {()}
+| REWARDS actionrewardlist ENDREWARDS initrew {()}
 | {()}
 ;
 
@@ -206,6 +207,8 @@ TRUE {Bool true}
 | stateCondition OR stateCondition {Or($1,$3)}
 | NOT stateCondition {Not($2)}
 | LPAR stateCondition RPAR {$2}
+| stateCondition EQ stateCondition {eval @@ BoolAtom($1,EQ, $3) }
+| stateCondition NOT EQ stateCondition {eval @@ BoolAtom($1,NEQ,$4) }
 | intexpr cmp intexpr  { IntAtom(simp_int $1,$2,simp_int $3) }
 | floatexpr cmp floatexpr  { FloatAtom(eval $1,$2,eval $3) }
 | floatexpr cmp intexpr  { FloatAtom(eval $1,$2,CastInt (eval $3)) }
@@ -224,11 +227,13 @@ intexpr:
  | FLOOR LPAR floatexpr RPAR {Floor($3)}
  | CEIL LPAR floatexpr RPAR {Ceil($3)}
  | LPAR stateCondition QMARK intexpr COLON intexpr RPAR { If($2,$4,$6) }
-// | NAME LPAR intexprlist RPAR { FunCall($1,$3) }
+// | FUNNAME LPAR intexprlist RPAR { FunCall($1,$3) }
+;
+/*
+intexprlist:
+| intexpr COMMA intexprlist { $1::$3 }
+| intexpr { [$1] }
+| { [] }
 ;
 
-//intexprlist:
-//| intexpr COMMA intexprlist { $1::$3 }
-//| intexpr { [$1] }
-//| { [] }
-//;
+*/

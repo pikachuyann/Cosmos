@@ -60,6 +60,7 @@ rule token = parse
 	  | DoubleT-> DOUBLENAME(lxm)
 	  | IntVar -> INTNAME(lxm)
 	  | BoolVar-> BOOLNAME(lxm)
+	  | FunT -> FUNNAME(lxm)
 	end with
 	    Not_found -> NAME(lxm)
 }

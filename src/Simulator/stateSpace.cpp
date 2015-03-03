@@ -140,8 +140,9 @@ void stateSpace::buildTransitionMatrix()
     cerr << "Building transition matrix" << endl;
     
 	// transform the transition list into a sparse transition probability matrix
-	boost::numeric::ublas::compressed_matrix<double> mat(nbState, nbState, nbTrans);
-	
+    transitionsMatrix = new boost::numeric::ublas::compressed_matrix<double>(nbState, nbState, nbTrans);
+    auto &mat = *transitionsMatrix;
+
 	cerr << "Exploring graph" << endl;
     
     for (size_t i=0; i<nbState; i++) {
@@ -158,7 +159,7 @@ void stateSpace::buildTransitionMatrix()
         }
         cerr << endl;*/
 
-        mat (i,i) = 1.0;
+        mat(i,i) = 1.0;
 		for (size_t t = 0; t < N.tr; t++){
 			//Loop over binding here
 			abstractBinding b;
@@ -223,22 +224,20 @@ void stateSpace::buildTransitionMatrix()
 		}
 	
     cerr << " copying" << endl;
-    
-	transitionsMatrix = new boost::numeric::ublas::compressed_matrix<double>(mat);
-    
-	boost::numeric::ublas::vector<double> vect(nbState);
+
+
+    finalVector = new boost::numeric::ublas::vector<double> (nbState);
 	for(hash_state::iterator it=S.begin();  it!=S.end() ; it++){
 		A.CurrentLocation = it->first->back();
 		if(A.isFinal()){
-			vect(it->second)=1.0;
+			(*finalVector)(it->second)=1.0;
 			//cerr << "final:" << it->second << endl;
 		}else {
-			vect(it->second)=0.0;
+			(*finalVector)(it->second)=0.0;
 		}
 		
 	}
-	
-	finalVector = new boost::numeric::ublas::vector<double> (vect);
+
 }
 
 /*double stateSpace::maxRate(){
@@ -279,8 +278,6 @@ double stateSpace::uniformizeMatrix(){
 			if(it2.index1()== it2.index2())*it2 +=1.0;
 		}
 		}
-    
-    
     return lambda;
 }
 
