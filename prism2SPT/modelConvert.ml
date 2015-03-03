@@ -60,9 +60,10 @@ let _ =
   print_endline ("Opening "^ !inname);
   begin match !typeFormat with
   | Prism -> 
-    
-    if 0=Sys.command (Printf.sprintf "prism %s -exportprism %s.expanded  -nobuild > /dev/null" !inname !inname)
-    then inname := !inname ^ ".expanded";
+    let s = Printf.sprintf "prism %s -exportprism %s.expanded  -nobuild > /dev/null" !inname !inname in
+    Printf.printf "Using prism to expand file :%s\n" s;
+    ignore @@ Sys.command s;
+    inname := !inname ^ ".expanded";
     input := open_in !inname;
     Generator.read_prism !input !inname
   | Pnml ->
