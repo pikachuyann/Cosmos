@@ -122,18 +122,7 @@ bool MainSocketRead(struct ThreadSerialInfo *sInfo)
                     sInfo->gEndThread = 0;
                     return 1;
                 } else if(dataSocket==SIM_STOP) {
-                    char tmpbuf;
                     print("Received simulation stop\n");
-                    
-                    //struct sigaction killAction, termAction;
-                    
-                    //memset(&killAction, 0, sizeof(struct sigaction));
-                    
-                    //killAction.sa_handler = NULL;
-                    //sigemptyset(&killAction.sa_mask);
-                    //killAction.sa_flags = 0;
-                    //sigaction(SIGTERM, &killAction, NULL);
-                    raise(SIGUSR1);
                     
                 }
                 

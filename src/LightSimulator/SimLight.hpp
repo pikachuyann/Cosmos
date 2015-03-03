@@ -58,7 +58,7 @@ protected:
 
     //! Store result beetween two trajectory simulation.
     bool Result;
-    
+    bool simStatus;
     /**
      * \brief The event queue of the simulator.
      * The event queue is a datastructure containing the
