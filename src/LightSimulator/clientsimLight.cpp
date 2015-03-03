@@ -37,22 +37,19 @@
 #include <time.h>
 #include <termios.h>
 #include <iostream>
+#include <signal.h>
+#include <poll.h>
 
 #include "SimLight.hpp"
 #include "SerialPort.h"
 #include "SocketPort.h"
 
 SimulatorLight  mySim;
-int             gftHandle[MAX_DEVICES];
+int             gftHandle[MAX_DEVICES] = {-1, -1, -1, -1, -1};
 int             giDeviceID = 0;
 bool            gDataAvailable = 0;
 
-int             gSocketHandle = -1;
-int             gListenSocketHandle = -1;
-pthread_t       gThreadID;
-
-char            gEndThread = 1;
-
+struct pollfd   gWaitDescriptors[2];
 /**
  * main function it read the options given as arguments and initialyse
  * the simulator.
@@ -65,84 +62,23 @@ char            gEndThread = 1;
 struct timeval gStartTime;
 
 // Main thread for socket read
-void *SerialReadThread(void *pArgs)
+void *SocketReadThread(void *pArgs)
 {
-    struct pollfd   fds;
-    int             pollrc;
-
-    print("Socket thread created\n");
+    struct ThreadSerialInfo *sInfo = (struct ThreadSerialInfo *)pArgs;
     
-    fds.fd = gSocketHandle;
-    fds.events = POLLIN;
-    
-    while(gEndThread) {
-        pollrc = poll(&fds, 1, -1);
-        
-        
-        // Check if bytes are available in the read queue
-        if (pollrc < 0) {
-            print("Error: setting the poll\n");
-            return NULL;
-        }else if(pollrc > 0) {
-            if (fds.revents & POLLIN && fds.fd==gSocketHandle) {
-                gListenSocketHandle = accept(gSocketHandle, NULL, NULL);
-                
-                if (gListenSocketHandle < 0) {
-                    if (errno != EWOULDBLOCK)
-                        print("Error: accept() failed");
-                    return NULL;
-                }
-                
-                print("Client socket connected\n");
-                
-                fds.fd = gListenSocketHandle;
-                fds.events = POLLIN;
-            } else if (fds.revents & POLLIN && fds.fd==gListenSocketHandle) {
-                
-                char data[2]={0,0};
-                ssize_t rc = recv(fds.fd, (void*)&data[0], 1, 0);
-                
-                print("Data"); print(&data[0]); print("\n");
-                
-                if (rc < 0) {
-                    if (errno != EWOULDBLOCK)
-                        print("Error:  recv() failed\n");
-                    return NULL;
-                }
-                if (rc == 0) {
-                    printf("Connection closed\n");
-                    return NULL;
-                }
-                
-                if(data[0]=='q') {
-                    print("Hit\n");
-                    gEndThread = 0;
-                    return NULL;
-                }
-                
-            } else if(fds.revents & POLLHUP || fds.revents & POLLERR) {
-                printf("Error: socket poll read\n");
-                return NULL;
-            }
-        }
-    }
+    MainSocketRead(sInfo);
     return NULL;
 }
 
 int main(int nargs, char** argv)
 {
-    struct termios  oldTio;
-    struct addrinfo *hostInfoList = nullptr; // Pointer to the to the linked list of host_info's.
-
-    gettimeofday(&gStartTime, NULL);
-
-    auto serial = "arduino";
+    struct  termios             oldTio;
+    struct  addrinfo            *hostInfoList = nullptr; // Pointer to the to the linked list of host_info's.
+    struct  ThreadSerialInfo    sInfo = {-1, -1, -1, 1,};
+    auto                        serial = ARDUINO_SP_NAME;
+    pthread_t                   threadID;
     
-    /*if (nargs==4) {
-        serial = argv[3];
-        //print("Error: Not enough arguments\n");
-        return 1;
-    }*/
+    gettimeofday(&gStartTime, NULL);
     
     // Hardcode the serial communication for PC client
     mySim.verbose= atoi(argv[2]);
@@ -151,41 +87,60 @@ int main(int nargs, char** argv)
     if((gftHandle[giDeviceID] = open(serial, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))==-1) {
         print("Error: Could not connect to "); print(serial); print("\n");
         return 1;
-    } else {
-        print("Opened device "); print(serial); print("\n");
-        SetDefaultPortSettings(&gftHandle[giDeviceID], &oldTio);
+    
+    // Create the the thread
+    if(pthread_create(&threadID, NULL, &SocketReadThread, &sInfo)) {
+        print("Error: Couldn't create the thread\n");
         
-        if(!CreateSocket(&gSocketHandle, hostInfoList)) {
-            ClosePortDevice(&gftHandle[giDeviceID], &oldTio);
-            return 1;
-        }
-        
-        // Create the thread
-        if(pthread_create(&gThreadID, NULL, &SerialReadThread, NULL)) {
-            print("Error: Couldn't create the thread\n");
-            
-            CloseSocket(&gSocketHandle, &gListenSocketHandle, hostInfoList);
-            ClosePortDevice(&gftHandle[giDeviceID], &oldTio);
-            
-            return 1;
-        }
-        
-        // For testing
-        while(gEndThread) {
-            sleep(1);
-        }
-        
-        //simulate a batch of trajectory
-        //mySim.SimulateSinglePath();
+        CloseSocket(&sInfo.gSocketHandle, &sInfo.gListenSocketHandle, hostInfoList);
+        return 1;
     }
     
+    while(sInfo.gSocketHandle==-1)
+        usleep(WAIT_TIME_INF_LOOP);
+    
+    print("Waiting for python script app to connect...\n");
+    
+    while(sInfo.gListenSocketHandle==-1)
+        usleep(WAIT_TIME_INF_LOOP);
+    
+    print("Python script connected\n");
+
+    // The third parameter for the app is the port name
+    //if((gftHandle[giDeviceID] = open(serial, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))==-1) {
+    //    print("Error: Could not connect to "); print(argv[3]); print("\n");
+    //    CloseSocket(&sInfo.gSocketHandle, &sInfo.gListenSocketHandle, hostInfoList);
+    //    return 1;
+    //} else {
+        print("Opened device "); print(serial); print("\n");
+        
+        SetDefaultPortSettings(&gftHandle[giDeviceID], &oldTio);
+        
+        sInfo.serialPortHandle = gftHandle[giDeviceID];
+    
+        gWaitDescriptors[0].fd = gftHandle[giDeviceID];
+        gWaitDescriptors[0].events = POLLIN;
+        gWaitDescriptors[1].fd = sInfo.gListenSocketHandle;
+        gWaitDescriptors[1].events = POLLIN;
+    
+        print("Waiting...");
+        wait(100000);
+        // For testing
+        //while(sInfo.gEndThread) {
+        //    sleep(1);
+        //}
+        
+        //simulate a batch of trajectory
+        mySim.SimulateSinglePath();
+    //}
+    
     // End the thread
-    gEndThread = 0;
+    sInfo.gEndThread = 0;
 
     // wait for the thread to exit
-    pthread_join(gThreadID, NULL);
+    pthread_join(threadID, NULL);
 
-    CloseSocket(&gSocketHandle, &gListenSocketHandle, hostInfoList);
+    CloseSocket(&sInfo.gSocketHandle, &sInfo.gListenSocketHandle, hostInfoList);
     ClosePortDevice(&gftHandle[giDeviceID], &oldTio);
     
     return (0);
@@ -239,26 +194,27 @@ unsigned char InDataAvailable(){
 
 // real time
 void wait(REAL_TYPE t){
-    struct pollfd   fds;
-    int pollRc;
-    
-    if(t<=0)return;
+    if (t<=0) return;
     
     gDataAvailable = 0;
 
-    fds.fd = gftHandle[giDeviceID];
-    fds.events = POLLIN;
-
-    pollRc = poll(&fds, 1, (int)(t));
+    int pollRc = poll(&gWaitDescriptors[0], 2, (int)(t));
     
-    if (pollRc < 0)
+    if (pollRc < 0) {
         print("Error: setting the poll\n");
-    else if(pollRc > 0){
-        if( fds.revents & POLLIN ){
+    } else if(pollRc > 0) {
+        
+        if( gWaitDescriptors[0].revents & POLLIN )
             gDataAvailable = 1;
-        } else if(fds.revents & POLLHUP || fds.revents & POLLERR)
-            printf("Error: poll read\n");
+        else if(gWaitDescriptors[0].revents & POLLHUP || gWaitDescriptors[0].revents & POLLERR)
+            print("Error: poll read gftHandle\n");
+
+        if( gWaitDescriptors[1].revents & POLLIN )
+            print("Received SocketListen in wait\n");
+        else if(gWaitDescriptors[1].revents & POLLHUP || gWaitDescriptors[1].revents & POLLERR)
+            print("Error: poll read SocketListen\n");
     }
+    
     //mySim.curr_time += t;
 }
 

@@ -28,10 +28,18 @@
 #include <pthread.h>
 
 #include "Print.h"
+//#include "macro.hpp"
 
-#define PORT_NUMBER "27777"
+struct ThreadSerialInfo {
+    int             serialPortHandle;
+    int             gSocketHandle;
+    int             gListenSocketHandle;
+    char            gEndThread;
+};
 
 bool CreateSocket(int *socketHandle, struct addrinfo *hostInfoList);
 void CloseSocket(int *socketHandle, int *socketListenHandle, struct addrinfo *hostInfoList);
+
+bool MainSocketRead(struct ThreadSerialInfo *sInfo);
 
 #endif /* defined(__Cosmos__SocketPort__) */
