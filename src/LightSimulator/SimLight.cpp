@@ -59,6 +59,14 @@ void SimulatorLight::reset() {
     EQ.reset();
 }
 
+void SimulatorLight::StartSimulation(void) {
+    simStatus = true;
+}
+
+void SimulatorLight::StopSimulation(void) {
+    simStatus = false;
+}
+
 /**
  * Update the enabling transition of the SPN, and update the event queue.
  * @param E1_transitionNum the number of the transition which last
@@ -186,6 +194,8 @@ void SimulatorLight::SimulateSinglePath() {
     reset();
     InitialEventsQueue();
     
+    print("Current time: "); print((float)(curr_time)); print("\n");
+    
     while (simStatus) {
         //cerr << "continue path"<< endl;
         
@@ -194,9 +204,12 @@ void SimulatorLight::SimulateSinglePath() {
         //Take the first event in the queue
         const Event &E1 = EQ.InPosition(0);
         
+        print((float)(E1.time)); print(" "); print((float)(cRealTime())); print("\n");
+        
         //need to wait
         if(E1.time > curr_time){
             wait(E1.time - cRealTime());
+            print("Here again\n");
             curr_time = cRealTime();
             unsigned char data = InDataAvailable();
             if (data ==2) {
