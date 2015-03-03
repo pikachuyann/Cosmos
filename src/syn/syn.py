@@ -71,12 +71,16 @@ if s is None:
     print 'could not open socket'
     sys.exit(1)
 
-time.sleep(10)
-s.sendall('\xF1')
-
 while True:
-	print 'Simulating...'
-	time.sleep(60)
+	print "Press a key: "
+	key = sys.stdin.read(1)
+
+	if key=='w':
+		s.sendall('\xF0')
+	elif key=='s':
+		s.sendall('\xF1')
+	elif key=='a':
+		s.sendall('\xF2')
 #    char = getchar()
 #    if char=='a':
 #    	s.sendall('\xF1')

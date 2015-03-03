@@ -40,11 +40,11 @@
 #include <signal.h>
 #include <poll.h>
 
-#include "SimLight.hpp"
 #include "SerialPort.h"
 #include "SocketPort.h"
 
-SimulatorLight  mySim;
+SimulatorLight  mySim; 
+
 int             gftHandle[MAX_DEVICES] = {-1, -1, -1, -1, -1};
 int             giDeviceID = 0;
 bool            gDataAvailable = 0;
@@ -70,11 +70,21 @@ void *SocketReadThread(void *pArgs)
     return NULL;
 }
 
+void SendSerialStop(void)
+{
+    
+}
+
+void SendSerialStart(void)
+{
+    
+}
+
 int main(int nargs, char** argv)
 {
     struct  termios             oldTio;
     struct  addrinfo            *hostInfoList = nullptr; // Pointer to the to the linked list of host_info's.
-    struct  ThreadSerialInfo    sInfo = {-1, -1, -1, 1,};
+    struct  ThreadSerialInfo    sInfo = {-1, -1, -1, 1, SIM_NONE, &mySim};
     auto                        serial = ARDUINO_SP_NAME;
     pthread_t                   threadID;
     
@@ -121,15 +131,34 @@ int main(int nargs, char** argv)
         gWaitDescriptors[1].fd = sInfo.gListenSocketHandle;
         gWaitDescriptors[1].events = POLLIN;
     
-        print("Waiting...");
-        wait(100000);
         // For testing
         //while(sInfo.gEndThread) {
         //    sleep(1);
         //}
-        
-        //simulate a batch of trajectory
-        mySim.SimulateSinglePath();
+    
+        mySim.StopSimulation();
+        while(sInfo.gCommands!=SIM_END) {
+
+            //simulate a batch of trajectory
+            mySim.SimulateSinglePath();
+            switch (sInfo.gCommands)
+            {
+                case SIM_START:
+                    SendSerialStart();
+                    mySim.StartSimulation();
+                    sInfo.gCommands = SIM_NONE;
+                    break;
+                case SIM_END:
+                    break;
+                case SIM_STOP:
+                    SendSerialStop();
+                    sInfo.gCommands = SIM_NONE;
+                    break;
+                case SIM_NONE:
+                    break;
+            }
+            
+        }
     //}
     
     // End the thread

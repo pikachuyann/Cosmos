@@ -50,7 +50,8 @@ public:
      * this function loop over SimulateOneStep until a the path terminate.
      */
     void SimulateSinglePath();
-
+    void StartSimulation(void);
+    void StopSimulation(void);
 protected:
 
     //! a Temporary event
