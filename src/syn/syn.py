@@ -5,8 +5,21 @@ import threading
 import time
 import socket
 import sys
+import tty, termios
+
 
 exitFlag = 0
+
+def getchar():
+	#Returns a single character from standard input
+	fd = sys.stdin.fileno()
+	old_settings = termios.tcgetattr(fd)
+	try:
+		tty.setraw(sys.stdin.fileno())
+		ch = sys.stdin.read(1)
+	finally:
+		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+	return ch
 
 class PowerMonitorThread (threading.Thread):
     def __init__(self, monitor):
@@ -58,11 +71,15 @@ if s is None:
     print 'could not open socket'
     sys.exit(1)
 
+time.sleep(10)
 s.sendall('\xF1')
 
 while True:
-    print "This prints once a minute."
-    time.sleep(60)  # Delay for 1 minute (60 seconds)
+	print 'Simulating...'
+	time.sleep(60)
+#    char = getchar()
+#    if char=='a':
+#    	s.sendall('\xF1')
 
 #s.sendall('q')
 #data = s.recv(1024)

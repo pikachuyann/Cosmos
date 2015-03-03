@@ -7,7 +7,7 @@
 
 #define SERIAL_BUF_SIZE 64
 #define MAX_DEVICES		5
-
+#define WAIT_TIME_INF_LOOP      4000 // In microseconds
 #define TR_PL_ID unsigned char
 #define REAL_TYPE float
 #define NO_STRING_SIM_FALSE
