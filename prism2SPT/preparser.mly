@@ -44,6 +44,7 @@ defmod:
   definition defmod { }
   | modulelist defmod { }
   | INIT TRUE ENDINIT defmod {}
+  | REWARDS actionrewardlist ENDREWARDS defmod {}      
   | REWARDS STRING actionrewardlist ENDREWARDS defmod {}      
   | LABEL STRING EQ expr SEMICOLON defmod {}
   | EOF {}

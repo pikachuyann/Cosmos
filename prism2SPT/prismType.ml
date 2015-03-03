@@ -1,8 +1,11 @@
 open Type 
 
-type expType = IntT | BoolT | DoubleT | IntVar | BoolVar
+type expType = IntT | BoolT | DoubleT | IntVar | BoolVar | FunT
 
-let (mapType:expType StringMap.t ref) = ref StringMap.empty
+let (mapType:expType StringMap.t ref) = ref 
+  (StringMap.empty
+      |> StringMap.add "min" FunT
+      |> StringMap.add "max" FunT)
 
 let add_int s = 
   (*Printf.printf "add int var %s\n" s;*)

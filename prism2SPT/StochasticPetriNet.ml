@@ -40,6 +40,7 @@ let rec print_expr: type a. out_channel -> a expr' -> unit = fun f x ->
   List.iter (fun x ->print_expr f x;output_string f "\n  ";) l)) fl
   | IntAtom(fe1,cmp,fe2) -> print_at f "function" (pa2 (string_of_cmpGrML cmp)) (fe1,fe2)
   | FloatAtom(fe1,cmp,fe2) -> print_at f "function" (pa2 (string_of_cmpGrML cmp)) (fe1,fe2)
+  | BoolAtom(fe1,cmp,fe2) -> print_at f "function" (pa2 (string_of_cmpGrML cmp)) (fe1,fe2)
   | If(c,e1,e2) -> print_at f "function" (fun f -> print_at f "If" (fun f () ->
     print_expr f c;output_string f "\n  ";
     print_expr f e1;output_string f "\n  ";
@@ -329,6 +330,7 @@ let remove_erlang (net:spt) =
       Data.add (("P"^y^"ErCont"), Int 0) net2.Net.place;
       Data.add ((y^"ErStep"),(Exp lamb,we,pr)) net2.Net.transition;
       Net.add_inArc net2 ("P"^y^"ErCont") y n;
+      Net.add_inhibArc net2 ("P"^y^"ErCont")  (y^"ErStep") n;
       Net.add_outArc net2 (y^"ErStep") ("P"^y^"ErCont") (Int 1);
       let it = Data.index net.Net.transition y in
       Data.iter (fun ((),(v,p,t)) -> if t = it then begin
