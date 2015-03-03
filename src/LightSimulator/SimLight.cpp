@@ -32,6 +32,7 @@
  */
 SimulatorLight::SimulatorLight():verbose(0),curr_time(0.0),EQ(N){
     Result=true;
+    simStatus = false;
 }
 
 /**
@@ -185,7 +186,7 @@ void SimulatorLight::SimulateSinglePath() {
     reset();
     InitialEventsQueue();
     
-    while (true) {
+    while (simStatus) {
         //cerr << "continue path"<< endl;
         
         if (EQ.isEmpty())break; //No event should not happen

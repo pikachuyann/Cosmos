@@ -45,10 +45,11 @@
 #include "SocketPort.h"
 
 SimulatorLight  mySim;
-int             gftHandle[MAX_DEVICES];
+int             gftHandle[MAX_DEVICES] = {-1, -1, -1, -1, -1};
 int             giDeviceID = 0;
 bool            gDataAvailable = 0;
 
+struct pollfd   gWaitDescriptors[2];
 /**
  * main function it read the options given as arguments and initialyse
  * the simulator.
@@ -65,7 +66,6 @@ void *SocketReadThread(void *pArgs)
 {
     struct ThreadSerialInfo *sInfo = (struct ThreadSerialInfo *)pArgs;
     
-    print("Socket thread created\n");
     MainSocketRead(sInfo);
     return NULL;
 }
@@ -83,32 +83,46 @@ int main(int nargs, char** argv)
     // Hardcode the serial communication for PC client
     mySim.verbose= atoi(argv[2]);
     
-    // The third parameter for the app is the port name
-    if((gftHandle[giDeviceID] = open(serial, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))!=-1) {
-        print("Error: Could not connect to "); print(argv[3]); print("\n");
+    if(!CreateSocket(&sInfo.gSocketHandle, hostInfoList))
         return 1;
-    } else {
+    
+    // Create the the thread
+    if(pthread_create(&threadID, NULL, &SocketReadThread, &sInfo)) {
+        print("Error: Couldn't create the thread\n");
+        
+        CloseSocket(&sInfo.gSocketHandle, &sInfo.gListenSocketHandle, hostInfoList);
+        return 1;
+    }
+    
+    while(sInfo.gSocketHandle==-1)
+        usleep(WAIT_TIME_INF_LOOP);
+    
+    print("Waiting for python script app to connect...\n");
+    
+    while(sInfo.gListenSocketHandle==-1)
+        usleep(WAIT_TIME_INF_LOOP);
+    
+    print("Python script connected\n");
+
+    // The third parameter for the app is the port name
+    //if((gftHandle[giDeviceID] = open(serial, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))==-1) {
+    //    print("Error: Could not connect to "); print(argv[3]); print("\n");
+    //    CloseSocket(&sInfo.gSocketHandle, &sInfo.gListenSocketHandle, hostInfoList);
+    //    return 1;
+    //} else {
         print("Opened device "); print(serial); print("\n");
         
         SetDefaultPortSettings(&gftHandle[giDeviceID], &oldTio);
         
         sInfo.serialPortHandle = gftHandle[giDeviceID];
-        
-        if(!CreateSocket(&sInfo.gSocketHandle, hostInfoList)) {
-            ClosePortDevice(&gftHandle[giDeviceID], &oldTio);
-            return 1;
-        }
-        
-        // Create the the thread
-        if(pthread_create(&threadID, NULL, &SocketReadThread, &sInfo)) {
-            print("Error: Couldn't create the thread\n");
-            
-            CloseSocket(&sInfo.gSocketHandle, &sInfo.gListenSocketHandle, hostInfoList);
-            ClosePortDevice(&gftHandle[giDeviceID], &oldTio);
-            
-            return 1;
-        }
-        
+    
+        gWaitDescriptors[0].fd = gftHandle[giDeviceID];
+        gWaitDescriptors[0].events = POLLIN;
+        gWaitDescriptors[1].fd = sInfo.gListenSocketHandle;
+        gWaitDescriptors[1].events = POLLIN;
+    
+        print("Waiting...");
+        wait(100000);
         // For testing
         //while(sInfo.gEndThread) {
         //    sleep(1);
@@ -116,7 +130,7 @@ int main(int nargs, char** argv)
         
         //simulate a batch of trajectory
         mySim.SimulateSinglePath();
-    }
+    //}
     
     // End the thread
     sInfo.gEndThread = 0;
@@ -178,35 +192,27 @@ unsigned char InDataAvailable(){
 
 // fake real time
 void wait(REAL_TYPE t){
-    struct pollfd   fds;
-    int             pollRc;
-    sigset_t        origmask;
-    sigset_t        mask;
-    
-    sigemptyset(&mask);
-    sigaddset(&mask, SIGUSR1);
-    
-    if(t<=0) return;
+    if (t<=0) return;
     
     gDataAvailable = 0;
 
-    fds.fd = gftHandle[giDeviceID];
-    fds.events = POLLIN;
-
-    sigprocmask(SIG_BLOCK, &mask, &origmask);
-    pollRc = poll(&fds, 1, (int)(t));
-    sigprocmask(SIG_SETMASK, &origmask, NULL);
+    int pollRc = poll(&gWaitDescriptors[0], 2, (int)(t));
     
     if (pollRc < 0) {
         print("Error: setting the poll\n");
-    }
-    else if(pollRc > 0){
-        if( fds.revents & POLLIN ){
-            gDataAvailable = 1;
-        } else if(fds.revents & POLLHUP || fds.revents & POLLERR)
-            print("Error: poll read gftHandle\n");
+    } else if(pollRc > 0) {
         
+        if( gWaitDescriptors[0].revents & POLLIN )
+            gDataAvailable = 1;
+        else if(gWaitDescriptors[0].revents & POLLHUP || gWaitDescriptors[0].revents & POLLERR)
+            print("Error: poll read gftHandle\n");
+
+        if( gWaitDescriptors[1].revents & POLLIN )
+            print("Received SocketListen in wait\n");
+        else if(gWaitDescriptors[1].revents & POLLHUP || gWaitDescriptors[1].revents & POLLERR)
+            print("Error: poll read SocketListen\n");
     }
+    
     //mySim.curr_time += t;
 }
 
