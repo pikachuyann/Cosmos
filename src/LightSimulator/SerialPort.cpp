@@ -10,6 +10,7 @@
 
 #include "SerialPort.h"
 
+static pthread_mutex_t gSerialWriteLock = PTHREAD_MUTEX_INITIALIZER;
 
 void ClosePortDevice(int *portHandle, struct termios  *tio)
 {
@@ -49,10 +50,13 @@ void SetDefaultPortSettings(int *portHandle, struct termios  *tio)
 
 bool WriteToPort(int *portHandle, int nbytes, unsigned char *buf)
 {
-    if(write(*portHandle, buf, nbytes)==-1)
-        return 0;
+    ssize_t retBytes = -1;
     
-    return 1;
+    pthread_mutex_lock( &gSerialWriteLock );
+    retBytes = write(*portHandle, buf, nbytes);
+    pthread_mutex_unlock( &gSerialWriteLock );
+    
+    return (retBytes==-1) ? 0 : 1;
 }
 
 void ProcessSerial(struct ThreadSerialInfo *)
