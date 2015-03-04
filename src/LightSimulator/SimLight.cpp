@@ -41,13 +41,31 @@ SimulatorLight::SimulatorLight():verbose(0),curr_time(0.0),EQ(N){
 void SimulatorLight::InitialEventsQueue() {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
-
+    
     Event E;
     for(TR_PL_ID t=0; t<N.tr ; t++)
         if (N.IsEnabled(t)){
             GenerateEvent(E, t);
             EQ.insert(E);
         }
+    
+#ifndef NO_STRING_SIM
+    //Print marking and location of the automata
+    //Usefull to track a simulation
+    if (verbose>1) {
+        print("Initial Event Queue");
+        print("Time\t");
+        N.Marking.printHeader();
+        print("\n");
+        print(curr_time);
+        print("\t");
+        N.Marking.print();
+        print("\n");
+        if(verbose>2)EQ.view();
+        print("\n");
+    }
+    
+#endif
 }
 
 /**
@@ -108,6 +126,11 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
         //for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
         //	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
         if (N.IsEnabled(it)) {
+#ifndef NO_STRING_SIM
+            if(verbose > 4){
+                print("-> enabled -> is schedule? \n");
+            }
+#endif
             if (!EQ.isScheduled(it)) {
 #ifndef NO_STRING_SIM
                 if(verbose > 4){
@@ -194,7 +217,7 @@ void SimulatorLight::SimulateSinglePath() {
     reset();
     InitialEventsQueue();
     
-    print("Current time: "); print((float)(curr_time)); print("\n");
+    //print("Current time: "); print((float)(curr_time)); print("\n");
     
     while (simStatus) {
         //cerr << "continue path"<< endl;
@@ -204,12 +227,12 @@ void SimulatorLight::SimulateSinglePath() {
         //Take the first event in the queue
         const Event &E1 = EQ.InPosition(0);
         
-        print((float)(E1.time)); print(" "); print((float)(cRealTime())); print("\n");
+        //print((float)(E1.time)); print(" "); print((float)(cRealTime())); print("\n");
         
         //need to wait
         if(E1.time > curr_time){
             wait(E1.time - cRealTime());
-            print("Here again\n");
+            //print("Here again\n");
             curr_time = cRealTime();
             unsigned char data = InDataAvailable();
             if (data ==2) {

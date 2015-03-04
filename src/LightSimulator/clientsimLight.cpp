@@ -145,6 +145,7 @@ int main(int nargs, char** argv)
             {
                 case SIM_START:
                     SendSerialStart();
+                    gettimeofday(&gStartTime, NULL);
                     mySim.StartSimulation();
                     sInfo.gCommands = SIM_NONE;
                     break;
