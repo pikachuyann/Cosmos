@@ -45,7 +45,7 @@ EventsQueue::EventsQueue(const SPN& N):heap_size(0){
  */
 void EventsQueue::reset() {
     for(TR_PL_ID it = 0; it< heap_size; ++it ){
-        evtHeapIndex[it]= UNSET;
+        evtHeapIndex[evtHeap[it].transition]= UNSET;
         evtHeap[it].time = -1;
     }
     heap_size = 0;
@@ -84,9 +84,9 @@ void EventsQueue::replace(const Event &e) {
  *  @param b a binding of the Petri net.
  */
 void EventsQueue::remove(TR_PL_ID tr) {
-    long int pos = evtHeapIndex[tr];
+    TR_PL_ID pos = evtHeapIndex[tr];
     //assert(i>=0);
-    if(pos>=0){
+    if(pos!=UNSET){
         evtHeap[pos].time = -1.0;
         if ((TR_PL_ID)pos == heap_size-1) {
             evtHeapIndex[tr] = UNSET;

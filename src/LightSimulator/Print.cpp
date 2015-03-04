@@ -27,4 +27,5 @@ void print(TR_PL_ID i){
 void print(REAL_TYPE r){
     pthread_mutex_lock( &gPrintLock );
     std::cerr << r;
+    pthread_mutex_unlock( &gPrintLock );
 }
