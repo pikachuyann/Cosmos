@@ -78,6 +78,11 @@
 		03FB40FC18180F9E001F9988 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03FB40FA18180F9E001F9988 /* InfoPlist.strings */; };
 		03FB40FE18180F9E001F9988 /* Cosmos_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 03FB40FD18180F9E001F9988 /* Cosmos_Tests.m */; };
 		8DD76F6A0486A84900D96B5E /* Cosmos.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* Cosmos.1 */; };
+		BC956BC21AA0875F00AB8BD1 /* SocketPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC956BC01AA0875F00AB8BD1 /* SocketPort.cpp */; };
+		BC956BC31AA0875F00AB8BD1 /* SocketPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC956BC01AA0875F00AB8BD1 /* SocketPort.cpp */; };
+		BC956BC41AA0875F00AB8BD1 /* SocketPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC956BC01AA0875F00AB8BD1 /* SocketPort.cpp */; };
+		BC956BC51AA0875F00AB8BD1 /* SocketPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC956BC01AA0875F00AB8BD1 /* SocketPort.cpp */; };
+		BC956BC61AA0875F00AB8BD1 /* SocketPort.h in Headers */ = {isa = PBXBuildFile; fileRef = BC956BC11AA0875F00AB8BD1 /* SocketPort.h */; };
 		BCBEC7F31A8927AA00453811 /* spnLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C480381A826281007B8969 /* spnLight.cpp */; };
 		BCBEC7F41A8927AA00453811 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E61A80D08A00492779 /* Event.cpp */; };
 		BCBEC7F51A8927AA00453811 /* EventsQueueLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */; };
@@ -1050,6 +1055,8 @@
 		03FDF5EA1A42F09300AA4DA2 /* type.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = type.ml; sourceTree = "<group>"; };
 		03FDF5EB1A42F09400AA4DA2 /* writer.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = writer.ml; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* Cosmos */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Cosmos; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC956BC01AA0875F00AB8BD1 /* SocketPort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SocketPort.cpp; sourceTree = "<group>"; };
+		BC956BC11AA0875F00AB8BD1 /* SocketPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketPort.h; sourceTree = "<group>"; };
 		BCBEC7EC1A89278D00453811 /* ClientSimLight */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ClientSimLight; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCBEC7EE1A89278D00453811 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPort.cpp; sourceTree = "<group>"; };
@@ -3018,11 +3025,8 @@
 				03F29A331A8B9CFF005B2228 /* Timer1.h */,
 				BCD7DA211A8D1FD4001A2D80 /* SerialPort.cpp */,
 				BCD7DA221A8D1FD4001A2D80 /* SerialPort.h */,
-				0353F3EB1AA07A1900E64563 /* SocketPort.cpp */,
-				0353F3EC1AA07A1900E64563 /* SocketPort.h */,
-				03E6624C1A838A1800C36695 /* sketchArduino.ino */,
-				03F29A321A8B9CFF005B2228 /* Timer1.c */,
-				03F29A331A8B9CFF005B2228 /* Timer1.h */,
+				BCD7DA271A8D207E001A2D80 /* Print.h */,
+				BCF9142C1A8E573A0044F3B0 /* Print.cpp */,
 			);
 			path = LightSimulator;
 			sourceTree = "<group>";
@@ -3152,6 +3156,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC956BC61AA0875F00AB8BD1 /* SocketPort.h in Headers */,
 				BCD7DA281A8D207E001A2D80 /* Print.h in Headers */,
 				0365553B18292D10001B5947 /* foxglynn.hpp in Headers */,
 				BCD7DA261A8D1FD4001A2D80 /* SerialPort.h in Headers */,
@@ -3424,6 +3429,7 @@
 				0365553A18292D10001B5947 /* foxglynn.cpp in Sources */,
 				03E39B0F183E49D30070911A /* BatchR.cpp in Sources */,
 				03E39B11183E49D80070911A /* EventsQueue.cpp in Sources */,
+				BC956BC31AA0875F00AB8BD1 /* SocketPort.cpp in Sources */,
 				03E39B12183E49DB0070911A /* LHA_orig.cpp in Sources */,
 				BCD7DA231A8D1FD4001A2D80 /* SerialPort.cpp in Sources */,
 				03E39B13183E49E00070911A /* numericalSolver.cpp in Sources */,
@@ -3446,6 +3452,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCF9142F1A8E573A0044F3B0 /* Print.cpp in Sources */,
+				BC956BC41AA0875F00AB8BD1 /* SocketPort.cpp in Sources */,
 				BCD7DA241A8D1FD4001A2D80 /* SerialPort.cpp in Sources */,
 				0367E2AB18843EAB00F35619 /* ClientSim_Tests.m in Sources */,
 			);
@@ -3495,7 +3502,7 @@
 				032A707B181BC0D6006D7332 /* server.cpp in Sources */,
 				0367E2B71885288900F35619 /* Gspn-Writer.cpp in Sources */,
 				032A7079181BC0D6006D7332 /* parameters.cpp in Sources */,
-				0353F3ED1AA07A1900E64563 /* SocketPort.cpp in Sources */,
+				BC956BC21AA0875F00AB8BD1 /* SocketPort.cpp in Sources */,
 				0367E29118842E8C00F35619 /* Gspn-parser.cc in Sources */,
 				032A7076181BC0D6006D7332 /* Lha-Reader.cpp in Sources */,
 				0367E29B18842F2400F35619 /* Eval-scanner.cc in Sources */,
@@ -3522,6 +3529,7 @@
 				BCD7DA251A8D1FD4001A2D80 /* SerialPort.cpp in Sources */,
 				BCF914301A8E573A0044F3B0 /* Print.cpp in Sources */,
 				BCBEC7F31A8927AA00453811 /* spnLight.cpp in Sources */,
+				BC956BC51AA0875F00AB8BD1 /* SocketPort.cpp in Sources */,
 				BCBEC7F51A8927AA00453811 /* EventsQueueLight.cpp in Sources */,
 				BCBEC7F61A8927AA00453811 /* SimLight.cpp in Sources */,
 			);
