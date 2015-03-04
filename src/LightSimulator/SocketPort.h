@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <pthread.h>
 
+#include "SimLight.hpp"
 #include "Print.h"
 //#include "macro.hpp"
 
@@ -35,6 +36,8 @@ struct ThreadSerialInfo {
     int             gSocketHandle;
     int             gListenSocketHandle;
     char            gEndThread;
+    SimCommands     gCommands;
+    SimulatorLight  *pmySim;
 };
 
 bool CreateSocket(int *socketHandle, struct addrinfo *hostInfoList);

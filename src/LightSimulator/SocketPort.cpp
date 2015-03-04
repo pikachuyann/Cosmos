@@ -115,17 +115,28 @@ bool MainSocketRead(struct ThreadSerialInfo *sInfo)
                 }
                 if (rc == 0) {
                     print("Connection closed\n");
+                    sInfo->pmySim->StopSimulation();
+                    sInfo->gCommands = SIM_END;
+                    sInfo->gEndThread = 0;                    
                     return 1;
                 }
                 
                 if(dataSocket==SIM_END) {
                     print("Ending simulation\n");
+                    sInfo->pmySim->StopSimulation();
+                    sInfo->gCommands = SIM_END;
                     sInfo->gEndThread = 0;
                     return 1;
                 } else if(dataSocket==SIM_STOP) {
                     print("Received simulation stop\n");
+                    sInfo->pmySim->StopSimulation();
+                    sInfo->gCommands = SIM_STOP;
                     
-                }
+                } else if(dataSocket==SIM_START) {
+                    print("Received simulation start\n");
+                    sInfo->gCommands = SIM_START;
+                } else
+                    sInfo->gCommands = SIM_NONE;
                 
             } else if(fds.revents & POLLHUP || fds.revents & POLLERR) {
                 print("Error: socket poll read\n");
