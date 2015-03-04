@@ -473,9 +473,9 @@ let print_magic f sl tl scrl=
     Some n2 -> Printf.fprintf f "\t\tcase %i: return \"%s\";\n" ssid n2
   | None -> ()) sl;
   Printf.fprintf f "\t\tdefault: return std::to_string(v);\n\t}\n}\n";
-  List.iter (function (None,x) when x<>"double ctime" -> Printf.fprintf f "%s=0;\n" x | _-> ()) scrl;
+  List.iter (function Var(ty,x,initv) when x<>"ctime" -> Printf.fprintf f "%s %s=%s;\n" ty x initv | _-> ()) scrl;
   List.iter (fun x -> Printf.fprintf f "%s\n" x) DataFile.func;
-  List.iter (function (Some a,x) -> Printf.fprintf f "%s\n" (escape_XML x) | _->() ) scrl;
+  List.iter (function Funct(a,x) -> Printf.fprintf f "%s\n" (escape_XML x) | _->() ) scrl;
   Printf.fprintf f "void magicUpdate(int t,double ctime){
   switch(t){\n";
   List.iter (fun (ss,_,lab,_) ->
@@ -575,7 +575,7 @@ let stochNet_of_modu cf m =
   let varlist = 
     m.scriptL |>
     List.fold_left (fun tl -> 
-    (function (None,x) when x<>"double ctime" -> (strip_type x)::tl | _-> tl)
+    (function (Var(ty,x,init)) when x<>"ctime" -> x::tl | _-> tl)
   ) [] in
   net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) (DataFile.data_of_file cf)),varlist,fund);
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),Int x) net.Net.place) m.ivect;
