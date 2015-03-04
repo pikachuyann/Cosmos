@@ -8,10 +8,7 @@ linecombinator: linecombinator.ml readserial.ml
 	cp $(srcdir)/linecombinator.native linecombinator
 	cp $(srcdir)/readserial.native readserial
 
-readserial: linecombinator.ml readserial.ml
-	cd $(srcdir); $(OCAMLBUILD) -libs str,unix linecombinator.native readserial.native
-	cp $(srcdir)/linecombinator.native linecombinator
-	cp $(srcdir)/readserial.native readserial
+readserial: linecombinator
 
 EXTRA_DIST = linecombinator.ml sptToPt ptToSpt mlcall.ml sptToSwn readserial.ml
 
