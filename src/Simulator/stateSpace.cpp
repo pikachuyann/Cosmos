@@ -599,8 +599,8 @@ void stateSpace::inputMat(){
 	
 	//cerr << *transitionsMatrix << endl;
 
-    finalVector = new boostmat::vector<double>(v1);
-    inputFile >> (*v1);
+    finalVector = new boostmat::vector<double>();
+    inputFile >> (*finalVector);
 
 	
 	string line;
