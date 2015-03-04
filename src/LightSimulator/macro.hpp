@@ -18,5 +18,5 @@
 #define uint32 uint32_t
 
 enum SimCommands {
-    SIM_START = 0xF0, SIM_STOP = 0xF1, SIM_END = 0xF2
+    SIM_NONE = 0x0, SIM_START = 0xF0, SIM_STOP = 0xF1, SIM_END = 0xF2
 };
