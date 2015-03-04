@@ -12,7 +12,12 @@ let getSSID al =
 
 let rec findprop f = function
   | [] -> None
-  | t::q -> (match f t with None -> findprop f q | x-> x)
+  | te::q -> match te with
+    | Element ("props",_,cl2) -> begin match findprop f cl2 with
+      None -> (match f te with None -> findprop f q | x-> x)
+      | x -> x
+    end
+    | t -> (match f t with None -> findprop f q | x-> x)
 
 let findpropName s cl = 
   findprop (function 
@@ -40,12 +45,13 @@ let getsrc cl = findprop (function
 let getScript cl = findprop (function 
   | Element ("eml",_,cl2) -> findpropName "script" cl2
   | _ -> None) cl
-  
+
 let rec exp_data = function
    | Element ("data",alist,clist) when getScope clist = Some "LOCAL_DATA" ->
      let name = List.assoc "name" alist
+     and initValue = findpropName "initialValue" clist |>>| "0"
      and datatype = findpropName "dataType" clist |>>| "double" in
-     Some ((getSSID alist),(datatype^" "^name))
+     Some ((getSSID alist),Var(datatype,name,initValue))
     | _-> None
 
 (* position for error reporting in the parser of edge*)
@@ -95,15 +101,16 @@ let rec exp_mod (sl,tl,scriptl) = function
 	   None -> (((getSSID alist),(getName clist))::sl,tl,scriptl)
 	   | Some scr -> 
 	     let comm = getDescription clist in
-	     let fn,fb = parse_fun comm scr in (sl,tl,((Some fn),fb)::scriptl)
+	     let fn,fb = parse_fun comm scr in (sl,tl,(Funct(fn,fb))::scriptl)
        end 
        | "transition" -> (match getdst clist with Some dst ->
 	 (sl,((getSSID alist),(getName clist),(getsrc clist),dst)::tl,scriptl) | _ -> failwith "Ill formed transition")
        | "data" -> begin try 
 			   let name = List.assoc "name" alist
+			   and initValue = findpropName "initialValue" clist |>>| "0"
 			   and datatype = findpropName "dataType" clist |>>| "double" in
 			   Printf.fprintf stdout "new var data:%s with type: %s\n" name datatype;
-			   (sl,tl,(None,datatype^" "^name)::scriptl); 
+			   (sl,tl,(Var(datatype,name,initValue))::scriptl); 
 	 with
 	 | Not_found -> (sl,tl,scriptl)
        end
@@ -179,7 +186,7 @@ let rec modulist_of_stateflow ml = function
 	   | Some scr -> 
 	     let comm = getDescription clist in
 	     let fn,fb = parse_fun comm scr in
-	     let modu = (getSSID alist),(Some fn),[],[],[((Some fn),fb)],None,StringMap.empty in
+	     let modu = (getSSID alist),(Some fn),[],[],[Funct(fn,fb)],None,StringMap.empty in
 	     modu::ml
 	 end
 	 | Some t -> Printf.fprintf stderr "Dont know wat to do with %s, ignore\n" t; ml
@@ -188,8 +195,9 @@ let rec modulist_of_stateflow ml = function
        | "target" -> ml
        | "subviewS" -> ml
        | "instance" -> ml
-       | "data" -> begin match exp_data t with None -> ml | Some (ssid,var) ->
-	 (ssid,None,[],[],[None,var],None,StringMap.empty)::ml
+       | "data" -> begin match exp_data t with None -> ml 
+	 | Some (ssid,var) ->
+	   (ssid,None,[],[],[var],None,StringMap.empty)::ml
 	 end
        | "event" -> begin
 	 let name = findpropName "name" clist |>>| "__NO_NAME"
