@@ -83,9 +83,7 @@ int main(int nargs, char** argv)
     // Hardcode the serial communication for PC client
     mySim.verbose= atoi(argv[2]);
     
-    // The third parameter for the app is the port name
-    if((gftHandle[giDeviceID] = open(serial, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))==-1) {
-        print("Error: Could not connect to "); print(serial); print("\n");
+    if(!CreateSocket(&sInfo.gSocketHandle, hostInfoList))
         return 1;
     
     // Create the the thread
