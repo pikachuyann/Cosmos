@@ -31,6 +31,8 @@ let empty_trans_label = {
 }
 
 type signalT = Local | In | Out
+type dataElem = Funct of string*string | Var of string*string*string
+
 
 let stateasso s l =
   try (match List.assoc s l with
@@ -84,7 +86,7 @@ type simulink_module = {
   ivect: (int*(string option)) array; (* Initial Value of state + name *)
   transL : (int* ((int*int) list) *simulink_trans_label* ((int*int) list)) list; 
   (* List of transition : (ssid, source, label, destination) *)
-  scriptL : (string option * string )  list; (* List of  Matlab function translated to C*)
+  scriptL : (dataElem )  list; (* List of  Matlab function translated to C*)
   interfaceR : StringSet.t; (* Action label read by this module *)
   interfaceW : StringSet.t; (* Action label written by this module *)
   priority : int option; (* Priority *)
