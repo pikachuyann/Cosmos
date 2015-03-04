@@ -7,6 +7,7 @@
 //
 
 #include "SocketPort.h"
+#include <string.h>
 
 bool CreateSocket(int *socketHandle, struct addrinfo *hostInfoList)
 {

@@ -598,10 +598,10 @@ void stateSpace::inputMat(){
 	transitionsMatrix = new boostmat::compressed_matrix<double>(m);
 	
 	//cerr << *transitionsMatrix << endl;
-	
-	boostmat::vector<double> v1;
-	inputFile >> v1;
-	finalVector = new boostmat::vector<double>(v1);
+
+    finalVector = new boostmat::vector<double>(v1);
+    inputFile >> (*v1);
+
 	
 	string line;
 	size_t poseq;

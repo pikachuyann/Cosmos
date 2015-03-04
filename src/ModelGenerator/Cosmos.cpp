@@ -77,7 +77,7 @@ void FindPath(parameters& P) {
 	uint32_t size = sizeof(path);
 	if (_NSGetExecutablePath(path, &size) != 0){
 		printf("buffer too small; need size %u\n", size);
-		exit(0);
+		exit(EXIT_FAILURE);
 	}
 	
 	P.Path=path;
