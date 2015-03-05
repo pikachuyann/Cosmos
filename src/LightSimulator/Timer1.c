@@ -67,6 +67,9 @@ void initTimer1(){
 
     /* Enable the timer overlow interrupt. */
     TIMSK1=0x01;
+    
+    timer1_millis = 0;
+    timer1_fract = 0;
 }
 
 /*********************************************

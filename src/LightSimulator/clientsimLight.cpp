@@ -70,16 +70,6 @@ void *SocketReadThread(void *pArgs)
     return NULL;
 }
 
-void SendSerialStop(void)
-{
-    
-}
-
-void SendSerialStart(void)
-{
-    
-}
-
 int main(int nargs, char** argv)
 {
     struct  termios             oldTio;
@@ -115,11 +105,11 @@ int main(int nargs, char** argv)
     print("Python script connected\n");
 
     // The third parameter for the app is the port name
-    //if((gftHandle[giDeviceID] = open(serial, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))==-1) {
-    //    print("Error: Could not connect to "); print(argv[3]); print("\n");
-    //    CloseSocket(&sInfo.gSocketHandle, &sInfo.gListenSocketHandle, hostInfoList);
-    //    return 1;
-    //} else {
+    if((gftHandle[giDeviceID] = open(serial, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))==-1) {
+        print("Error: Could not connect to "); print(argv[3]); print("\n");
+        CloseSocket(&sInfo.gSocketHandle, &sInfo.gListenSocketHandle, hostInfoList);
+        return 1;
+    } else {
         print("Opened device "); print(serial); print("\n");
         
         SetDefaultPortSettings(&gftHandle[giDeviceID], &oldTio);
@@ -131,36 +121,45 @@ int main(int nargs, char** argv)
         gWaitDescriptors[1].fd = sInfo.gListenSocketHandle;
         gWaitDescriptors[1].events = POLLIN;
     
-        // For testing
-        //while(sInfo.gEndThread) {
-        //    sleep(1);
-        //}
-    
-        mySim.StopSimulation();
         while(sInfo.gCommands!=SIM_END) {
-
+            unsigned char Buf = 0;
+            
             //simulate a batch of trajectory
             mySim.SimulateSinglePath();
+            
             switch (sInfo.gCommands)
             {
                 case SIM_START:
-                    SendSerialStart();
                     gettimeofday(&gStartTime, NULL);
+                    
                     mySim.StartSimulation();
+                    
                     sInfo.gCommands = SIM_NONE;
+                    
+                    Buf = 'W';
+                    WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
+                    
                     break;
+                    
                 case SIM_END:
+                    Buf = 'S';
+                    WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
+                    
                     break;
+                    
                 case SIM_STOP:
-                    SendSerialStop();
                     sInfo.gCommands = SIM_NONE;
+                    
+                    Buf = 'S';
+                    WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
                     break;
+                    
                 case SIM_NONE:
                     break;
             }
             
         }
-    //}
+    }
     
     // End the thread
     sInfo.gEndThread = 0;
