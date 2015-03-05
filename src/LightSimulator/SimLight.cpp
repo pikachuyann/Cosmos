@@ -217,10 +217,15 @@ void SimulatorLight::SimulateSinglePath() {
     reset();
     InitialEventsQueue();
     
+    //print("Test");
+    
     //print("Current time: "); print((float)(curr_time)); print("\n");
     
     while (simStatus) {
         //cerr << "continue path"<< endl;
+        //print("Test\n");
+        
+        //for (int i=0;i<10000; i++);
         
         if (EQ.isEmpty())break; //No event should not happen
         
@@ -235,7 +240,7 @@ void SimulatorLight::SimulateSinglePath() {
             //print("Here again\n");
             curr_time = cRealTime();
             unsigned char data = InDataAvailable();
-            if (data ==2) {
+            if (data == 2) {
                 break;
             }else{
                 if(data ==1 ){
@@ -248,6 +253,8 @@ void SimulatorLight::SimulateSinglePath() {
             }
         } else {
             
+            if (InDataAvailable() == 2) break;
+
 #ifndef NO_STRING_SIM
             if(verbose > 2){
                 print("Firing:");
