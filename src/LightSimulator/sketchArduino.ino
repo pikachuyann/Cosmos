@@ -5,8 +5,8 @@
 #include <spnLight.h>
 
 #include <Timer1.h>
-#define MARKER_PORT_ONE 4
-#define MARKER_PORT_TWO 7
+#define MARKER_PORT_ONE 7
+#define MARKER_PORT_TWO 4
 #define AP_PORT 12
 #define VP_PORT 11
 
@@ -16,9 +16,11 @@ bool blink = true;
 void print(const char * s){
     Serial.print(s);
 }
+
 void print(TR_PL_ID i){
     Serial.print(i);
 }
+
 void print(REAL_TYPE r){
     Serial.print(r);
 }
@@ -38,20 +40,17 @@ void wait(REAL_TYPE t){
     Serial.flush();
 
     digitalWrite(MARKER_PORT_ONE, HIGH);
+    
     bool davailable = false;
     while(!davailable && millis1()< ti ){
         davailable = Serial.available();
     }
     
     digitalWrite(MARKER_PORT_ONE, LOW);
+    
     if(!davailable){
         t-= wait_sleep;
-        if(t>0){
-            //digitalWrite(13, LOW);
-            sleepMillis((unsigned long)(t));
-            //digitalWrite(13, HIGH);
-        }
-
+        if (t>0) sleepMillis((unsigned long)(t));
     }
 }
 
@@ -61,32 +60,10 @@ REAL_TYPE cRealTime(){
 
 //Serial comm function
 unsigned char InDataAvailable(){
-    char buff[5];
     if(Serial.available()){
-        if (Serial.peek()=='A') {
-            buff[0] = Serial.read();
-            Serial.println(buff[0]);
-            char cnt = 0;
-            //Serial.readBytes(buff, 5);
-            while(cnt<5) {
-                if(Serial.available()) {
-                    buff[cnt] = Serial.read();
-                    Serial.println(buff[cnt]);
-                    cnt++;
-                }
-            }
-            
-            unsigned long ri = 0;
-            ri = (unsigned long)(buff[1]);
-            ri = (ri << 8) | (unsigned long)(buff[2]);
-            ri = (ri << 8) | (unsigned long)(buff[3]);
-            ri = (ri << 8) | (unsigned long)(buff[4]);
-            
-            double r = *(double*)&ri;
-            SetParameters((unsigned char)(buff[0]), r);
-            
+        if (Serial.peek()=='A' || Serial.peek()=='S' || Serial.peek()=='W' || Serial.peek()=='D')
             return 2;
-        }else{
+        else{
 #ifndef NO_STRING_SIM
             print("DATA R\n");
 #endif
@@ -98,6 +75,7 @@ unsigned char InDataAvailable(){
 unsigned char SReceive(){
     char buff[2];
     Serial.readBytes(&buff[0],1);
+    
 #ifndef NO_STRING_SIM
     Serial.print("Received'");
     Serial.print(buff[0]);
@@ -105,13 +83,8 @@ unsigned char SReceive(){
 #endif
     return (unsigned char)buff[0];
 }
+
 void SWrite(unsigned char h){
-    /*if(blink){
-        digitalWrite(13, HIGH);
-    } else {
-        digitalWrite(13, LOW);
-    }
-    blink = ! blink;*/
     if (Serial) {
         Serial.write(h);
         Serial.flush();
@@ -142,7 +115,7 @@ void setup() {
     pinMode(AP_PORT,OUTPUT);
     pinMode(VP_PORT,OUTPUT);
     digitalWrite(MARKER_PORT_ONE, LOW);
-    digitalWrite(MARKER_PORT_TWO, LOW);
+    digitalWrite(MARKER_PORT_TWO, HIGH);
     
     Serial.begin(57600);
     mySim.verbose= VERBOSE_LEVEL;
@@ -152,7 +125,64 @@ void setup() {
 
 
 void loop() {
-    Serial.println("\nStart");
-    // put your main code here, to run repeatedly:
+    char buff[5];
+    char cnt;
+    unsigned long ri = 0;
+    double r;
+    
+    delay(1);
+    
+    //digitalWrite(MARKER_PORT_TWO, LOW);
+    
     mySim.SimulateSinglePath(); //simulate a batch of trajectory
+
+    if(InDataAvailable()==2) {
+        switch (Serial.peek()) {
+            case 'A':
+            case 'S':
+                digitalWrite(MARKER_PORT_TWO, HIGH);
+                
+                buff[0] = Serial.read();
+                
+                mySim.StopSimulation();
+                
+                break;
+                
+            case 'W':
+                digitalWrite(MARKER_PORT_TWO, LOW);
+                
+                buff[0] = Serial.read();
+                
+                mySim.StartSimulation();
+                
+                initTimer1();
+                
+                break;
+                
+            case 'D':
+                buff[0] = Serial.read();
+                cnt = 0;
+                
+                while(cnt<5) {
+                    if(Serial.available()) {
+                        buff[cnt] = Serial.read();
+                        cnt++;
+                    }
+                }
+                
+                ri = (unsigned long)(buff[1]);
+                ri = (ri << 8) | (unsigned long)(buff[2]);
+                ri = (ri << 8) | (unsigned long)(buff[3]);
+                ri = (ri << 8) | (unsigned long)(buff[4]);
+                
+                r = *(double*)&ri;
+                SetParameters((unsigned char)(buff[0]), r);
+                
+                break;
+                
+            default:
+                break;
+        }
+    }
+
 }
