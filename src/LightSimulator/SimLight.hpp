@@ -28,6 +28,13 @@
 #ifndef __Cosmos__SimLight__
 #define __Cosmos__SimLight__
 
+#define CLIENT_SIM
+
+#ifdef CLIENT_SIM
+#include <iostream>
+#include <list>
+#endif
+
 #include "spnLight.hpp"
 #include "EventsQueueLight.hpp"
 
@@ -37,6 +44,10 @@ public:
 
     //! verbose level of the simulator
     int verbose;
+    
+#ifdef CLIENT_SIM
+    std::list<int> tranList;
+#endif
     
     /**
      *  Current simulation time
@@ -52,8 +63,9 @@ public:
     void SimulateSinglePath();
     void StartSimulation(void);
     void StopSimulation(void);
+    
 protected:
-
+    
     //! a Temporary event
     Event F;
 

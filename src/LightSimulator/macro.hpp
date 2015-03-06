@@ -12,6 +12,7 @@
 #define REAL_TYPE float
 #define NO_STRING_SIM_FALSE
 #define FAST_SIM
+#define CLIENT_SIM
 
 #define uint8 uint8_t
 #define uint16 uint16_t
