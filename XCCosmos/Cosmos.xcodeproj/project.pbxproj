@@ -29,7 +29,6 @@
 		0336B7F9198A3BF30043EFC6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D7198A3BF30043EFC6 /* main.cpp */; };
 		0336B7FA198A3BF30043EFC6 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D8198A3BF30043EFC6 /* Makefile */; };
 		0336B7FB198A3BF30043EFC6 /* readPlast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D9198A3BF30043EFC6 /* readPlast.cpp */; };
-		0353F3ED1AA07A1900E64563 /* SocketPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0353F3EB1AA07A1900E64563 /* SocketPort.cpp */; };
 		035EBAB418FFD70F00B73DBF /* expressionStruct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035EBAB218FFD70F00B73DBF /* expressionStruct.cpp */; };
 		0365553A18292D10001B5947 /* foxglynn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0365553818292D10001B5947 /* foxglynn.cpp */; };
 		0365553B18292D10001B5947 /* foxglynn.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0365553918292D10001B5947 /* foxglynn.hpp */; };
@@ -55,8 +54,6 @@
 		03C4803C1A8283FA007B8969 /* EventsQueueLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */; };
 		03C4803D1A8283FA007B8969 /* EventsQueueLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */; };
 		03CB8F501893CCA900A9938A /* timeGen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03CB8F4D1893CB1A00A9938A /* timeGen.cpp */; };
-		03E39B0C183E48410070911A /* LHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7094181BC14A006D7332 /* LHA.cpp */; };
-		03E39B0E183E484D0070911A /* spn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A709A181BC14A006D7332 /* spn.cpp */; };
 		03E39B0F183E49D30070911A /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703F181BC0D6006D7332 /* BatchR.cpp */; };
 		03E39B10183E49D60070911A /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7042181BC0D6006D7332 /* Event.cpp */; };
 		03E39B11183E49D80070911A /* EventsQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7044181BC0D6006D7332 /* EventsQueue.cpp */; };
@@ -301,10 +298,7 @@
 		032A7062181BC0D6006D7332 /* spn.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spn.hpp; sourceTree = "<group>"; };
 		032A7063181BC0D6006D7332 /* stateSpace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stateSpace.cpp; sourceTree = "<group>"; };
 		032A7064181BC0D6006D7332 /* stateSpace.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stateSpace.hpp; sourceTree = "<group>"; };
-		032A7094181BC14A006D7332 /* LHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA.cpp; sourceTree = "<group>"; };
 		032A7097181BC14A006D7332 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		032A7099181BC14A006D7332 /* markingImpl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
-		032A709A181BC14A006D7332 /* spn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
 		032A709D181BC307006D7332 /* expatmodelparser.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = expatmodelparser.cc; sourceTree = "<group>"; };
 		032A709E181BC307006D7332 /* expatmodelparser.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = expatmodelparser.hh; sourceTree = "<group>"; };
 		032A709F181BC307006D7332 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
@@ -329,8 +323,6 @@
 		0336B7DA198A3BF30043EFC6 /* readPlast.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = readPlast.hpp; sourceTree = "<group>"; };
 		0341401C15AEF45E0009FEFC /* POMDP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = POMDP; sourceTree = BUILT_PRODUCTS_DIR; };
 		034509A616A80AC8002088B3 /* libClientSim.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClientSim.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		0353F3EB1AA07A1900E64563 /* SocketPort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SocketPort.cpp; sourceTree = "<group>"; };
-		0353F3EC1AA07A1900E64563 /* SocketPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketPort.h; sourceTree = "<group>"; };
 		035EBAB218FFD70F00B73DBF /* expressionStruct.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = expressionStruct.cpp; sourceTree = "<group>"; };
 		035EBAB318FFD70F00B73DBF /* expressionStruct.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = expressionStruct.hpp; sourceTree = "<group>"; };
 		0365553818292D10001B5947 /* foxglynn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = foxglynn.cpp; sourceTree = "<group>"; };
@@ -1343,9 +1335,6 @@
 		032A708E181BC14A006D7332 /* test */ = {
 			isa = PBXGroup;
 			children = (
-				032A7094181BC14A006D7332 /* LHA.cpp */,
-				032A7099181BC14A006D7332 /* markingImpl.hpp */,
-				032A709A181BC14A006D7332 /* spn.cpp */,
 				032A7097181BC14A006D7332 /* Makefile.am */,
 				032573991A96530800974A89 /* markingImplLight.hpp */,
 				032573981A9652F600974A89 /* magicLight.hpp */,
@@ -3462,8 +3451,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03E39B0C183E48410070911A /* LHA.cpp in Sources */,
-				03E39B0E183E484D0070911A /* spn.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

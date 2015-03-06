@@ -198,8 +198,9 @@ int main(int argc, char** argv) {
         system(cmd.c_str());
         return EXIT_SUCCESS;
     }
+    if(P.MaxRuns==0)return EXIT_SUCCESS;
 
-    if ( ! build()) {
+    if ( !build()) {
         cout << "Fail to Compile the model.";
         return(EXIT_FAILURE);
     }
