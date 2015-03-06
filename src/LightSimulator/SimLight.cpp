@@ -94,7 +94,7 @@ void SimulatorLight::StopSimulation(void) {
 void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
-
+    
     //if (E1_transitionNum != UNSET_TRANS ){
         //check if the current transition is still enabled
         bool Nenabled = N.IsEnabled(E1_transitionNum);
@@ -207,7 +207,7 @@ void SimulatorLight::updateSPN(TR_PL_ID E1_transitionNum){
         }
     }
 #endif
-
+    
 }
 
 /**
@@ -217,36 +217,31 @@ void SimulatorLight::SimulateSinglePath() {
     reset();
     InitialEventsQueue();
     
-    //print("Test");
-    
-    //print("Current time: "); print((float)(curr_time)); print("\n");
-    
     while (simStatus) {
-        //cerr << "continue path"<< endl;
-        //print("Test\n");
-        
-        //for (int i=0;i<10000; i++);
-        
         if (EQ.isEmpty())break; //No event should not happen
         
         //Take the first event in the queue
         const Event &E1 = EQ.InPosition(0);
         
-        //print((float)(E1.time)); print(" "); print((float)(cRealTime())); print("\n");
-        
         //need to wait
         if(E1.time > curr_time){
+            
             wait(E1.time - cRealTime());
-            //print("Here again\n");
+
             curr_time = cRealTime();
             unsigned char data = InDataAvailable();
             if (data == 2) {
                 break;
             }else{
-                if(data ==1 ){
+                if(data == 1 ){
                     TR_PL_ID trs = N.getIncomingTrans();
                     if (trs != UNSET_TRANS) {
                         N.fire(trs, curr_time); // Fire the special transition for incoming message
+                        
+                        print("Firing:");
+                        print(trs);
+                        print("\n");
+
                         updateSPN(trs);
                     }
                 }
@@ -263,14 +258,16 @@ void SimulatorLight::SimulateSinglePath() {
             }
 #endif
 
+            print("Firing:");
+            print(E1.transition);
+            print("\n");
+
             curr_time = E1.time;
 
             //Fire the transition in the SPN
             N.fire(E1.transition, curr_time);
-            //EQ.remove(E1.transition);
-
+            
             updateSPN(E1.transition);
-
         }
 
 #ifndef NO_STRING_SIM
