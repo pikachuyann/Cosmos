@@ -11,6 +11,7 @@ import tty, termios
 exitFlag = 1
 stDataColl = 0
 collectedSamples = []
+useVM = 1
 
 def ProcessPowerMonitorData(pmData):
 	currentTran = []
@@ -58,20 +59,21 @@ class PowerMonitorThread (threading.Thread):
 
 		print "Ending PowerMonitor Thread\n"
 
-mon = monsoon.Monsoon("/dev/tty.usbmodemfd141")
+if useVM==0:
+	mon = monsoon.Monsoon("/dev/tty.usbmodemfd141")
 
-mon.SetVoltage(3.7)
-mon.SetUsbPassthrough(0)
+	mon.SetVoltage(3.7)
+	mon.SetUsbPassthrough(0)
 
-items = sorted(mon.GetStatus().items())
-print "\n".join(["%s: %s" % item for item in items])
-mon.StopDataCollection()
+	items = sorted(mon.GetStatus().items())
+	print "\n".join(["%s: %s" % item for item in items])
+	mon.StopDataCollection()
 
-# Create new threads
-threadMonitor = PowerMonitorThread(mon)
+	# Create new threads
+	threadMonitor = PowerMonitorThread(mon)
 
-# Start new Threads
-threadMonitor.start()
+	# Start new Threads
+	threadMonitor.start()
 
 HOST = 'localhost'			# The remote host
 PORT = 27778				# The same port as used by the server
@@ -94,44 +96,44 @@ if s is None:
 	print 'could not open socket'
 	sys.exit(1)
 
-print "Preparing the PowerMonitor device..."
-time.sleep(4);
 
-for iters in range(0, 1):
+if useVM==0:
+	print "Preparing the PowerMonitor device..."
+	time.sleep(4);
+
+	for iters in range(0, 1):
 	
-	print "Start collecting data..."
+		print "Start collecting data..."
 
-	s.sendall('\xF0')
-	stDataColl = 1
+		s.sendall('\xF0')
+		stDataColl = 1
 
-	time.sleep(10);
+		time.sleep(10);
 
-	s.sendall('\xF1')
-	time.sleep(1);
-	stDataColl = 0
+		s.sendall('\xF1')
+		time.sleep(1);
+		stDataColl = 0
 
-	print "Stopped collecting data"
-	currentTran = ProcessPowerMonitorData(collectedSamples)
+		print "Stopped collecting data"
+		currentTran = ProcessPowerMonitorData(collectedSamples)
 
-	#print collectedSamples
-	collectedSamples = []
+		#print collectedSamples
+		collectedSamples = []
 
+	s.sendall('\xF2')
+	exitFlag = 0
 
-s.sendall('\xF2')
+else:
+	key = ''
+	while key!='a':
+		print "Press a key: "
+		key = sys.stdin.read(1)
 
-#key = ''
-#while key!='a':
-#	print "Press a key: "
-#	key = sys.stdin.read(1)
-#
-#	if key=='w':
-#		s.sendall('\xF0')
-#	elif key=='s':
-#		s.sendall('\xF1')
-#	elif key=='a':
-#		s.sendall('\xF2')
-
-
-exitFlag = 0
+		if key=='w':
+			s.sendall('\xF0')
+		elif key=='s':
+			s.sendall('\xF1')
+		elif key=='a':
+			s.sendall('\xF2')
 
 s.close()
