@@ -14,14 +14,21 @@ let uni f =
 	
 exception CmdFail of int
 
-(*let cosmos_path = (Sys.getcwd ())^"/../../bin/Cosmos"*)
-let cosmos_path = ref "../../bin/Cosmos"
 
-let cosmos_options = ("--level 0.9999"^ ( 
+let cosmos_options = ref ( 
   try
     let _ = Sys.getenv "COV" in
     " --gppflags \"--coverage -Wno-return-type\" --gppcmd clang++"
-  with Not_found -> ""));;
+  with Not_found -> "");;
+
+(*let cosmos_path = (Sys.getcwd ())^"/../../bin/Cosmos"*)
+let cosmos_path = ref (try
+    let cp = Sys.getenv "COSMOS" in 
+    cosmos_options := !cosmos_options^" --bin-path ../../src/Simulator/bin "; 
+    cp
+  with Not_found -> "../../bin/Cosmos");;
+
+
 
 (*" --gppflags --coverage --gppcmd clang++" 
  let _ = Sys.getenv "COV" in " --gppflags --coverage --gppcmd clang++"
@@ -216,7 +223,7 @@ let string_date () =
     (tm.Unix.tm_year+1900) tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
 
 let exec_cosmos model prop opt printcmd =
-  let cmd = sprintf "%s %s %s %s" !cosmos_path model prop opt in
+  let cmd = sprintf "%s %s %s %s %s" !cosmos_path model prop !cosmos_options opt in
   if printcmd then print_endline cmd;
   let retcode =  Sys.command cmd in
   if retcode <> 0 then raise (CmdFail(retcode));
