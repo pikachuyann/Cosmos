@@ -132,6 +132,7 @@ int main(int nargs, char** argv)
                 case SIM_START:
                     gettimeofday(&gStartTime, NULL);
                     
+                    mySim.tranList.clear();
                     mySim.StartSimulation();
                     
                     sInfo.gCommands = SIM_NONE;
@@ -193,15 +194,6 @@ void SWrite(unsigned char data)
 
 char SReceive(void)
 {
-    /*if(gDataAvailable) {
-        char retVal[101];
-        size_t bytesRead = read(gftHandle[giDeviceID], &retVal, (int)100);
-        std::cout << retVal;
-        std::cout.flush();
-    }
-    return 0;*/
-
-
     unsigned char retVal = 0;
     size_t bytesRead = 0;
     if(gDataAvailable) {
