@@ -238,9 +238,10 @@ void SimulatorLight::SimulateSinglePath() {
                     if (trs != UNSET_TRANS) {
                         N.fire(trs, curr_time); // Fire the special transition for incoming message
                         
-                        print("Firing:");
-                        print(trs);
-                        print("\n");
+                        //print("Firing:");
+                        //print(trs);
+                        AddTransitionID(trs);
+                        //print("\n");
 
                         updateSPN(trs);
                     }
@@ -258,9 +259,10 @@ void SimulatorLight::SimulateSinglePath() {
             }
 #endif
 
-            print("Firing:");
-            print(E1.transition);
-            print("\n");
+            //print("Firing:");
+            //print(E1.transition);
+            AddTransitionID(E1.transition);
+            //print("\n");
 
             curr_time = E1.time;
 

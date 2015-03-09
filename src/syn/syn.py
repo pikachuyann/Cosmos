@@ -11,7 +11,7 @@ import tty, termios
 exitFlag = 1
 stDataColl = 0
 collectedSamples = []
-useVM = 1
+useVM = 0
 
 def ProcessPowerMonitorData(pmData):
 	currentTran = []
@@ -59,21 +59,20 @@ class PowerMonitorThread (threading.Thread):
 
 		print "Ending PowerMonitor Thread\n"
 
-if useVM==0:
-	mon = monsoon.Monsoon("/dev/tty.usbmodemfd141")
+mon = monsoon.Monsoon("/dev/tty.usbmodemfd141")
 
-	mon.SetVoltage(3.7)
-	mon.SetUsbPassthrough(0)
+mon.SetVoltage(3.7)
+mon.SetUsbPassthrough(0)
 
-	items = sorted(mon.GetStatus().items())
-	print "\n".join(["%s: %s" % item for item in items])
-	mon.StopDataCollection()
+items = sorted(mon.GetStatus().items())
+print "\n".join(["%s: %s" % item for item in items])
+mon.StopDataCollection()
 
-	# Create new threads
-	threadMonitor = PowerMonitorThread(mon)
+# Create new threads
+threadMonitor = PowerMonitorThread(mon)
 
-	# Start new Threads
-	threadMonitor.start()
+# Start new Threads
+threadMonitor.start()
 
 HOST = 'localhost'			# The remote host
 PORT = 27778				# The same port as used by the server
@@ -117,6 +116,13 @@ if useVM==0:
 		print "Stopped collecting data"
 		currentTran = ProcessPowerMonitorData(collectedSamples)
 
+		s.sendall('\xF3')
+
+		bufIDs = []
+		while len(bufIDs)==0:
+			bufIDs = s.recv(293)
+
+		print "Number of transitions IDs received: "+str(len(bufIDs))
 		#print collectedSamples
 		collectedSamples = []
 

@@ -135,6 +135,11 @@ bool MainSocketRead(struct ThreadSerialInfo *sInfo)
                 } else if(dataSocket==SIM_START) {
                     print("Received simulation start\n");
                     sInfo->gCommands = SIM_START;
+                    
+                } else if(dataSocket==SIM_GET_ID) {
+                    print("Received get ID\n");
+                    sInfo->gCommands = SIM_GET_ID;
+                                                   
                 } else
                     sInfo->gCommands = SIM_NONE;
                 

@@ -40,6 +40,10 @@
 #include <signal.h>
 #include <poll.h>
 
+#include <iostream>
+#include <list>
+
+
 #include "SerialPort.h"
 #include "SocketPort.h"
 
@@ -60,6 +64,7 @@ struct pollfd   gWaitDescriptors[2];
  */
 
 struct timeval gStartTime;
+std::list<TR_PL_ID> gTranList;
 
 // Main thread for socket read
 void *SocketReadThread(void *pArgs)
@@ -123,19 +128,23 @@ int main(int nargs, char** argv)
     
         while(sInfo.gCommands!=SIM_END) {
             unsigned char Buf = 0;
+            int idx = 0;
+            ssize_t dwBytes;
+            TR_PL_ID *bufIDs = NULL;
             
             //simulate a batch of trajectory
-            mySim.SimulateSinglePath();
+            if(sInfo.gCommands != SIM_NONE)
+                mySim.SimulateSinglePath();
+            
+            //usleep(WAIT_TIME_INF_LOOP);
             
             switch (sInfo.gCommands)
             {
                 case SIM_START:
                     gettimeofday(&gStartTime, NULL);
                     
-                    mySim.tranList.clear();
+                    gTranList.clear();
                     mySim.StartSimulation();
-                    
-                    sInfo.gCommands = SIM_NONE;
                     
                     Buf = 'W';
                     WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
@@ -143,6 +152,7 @@ int main(int nargs, char** argv)
                     break;
                     
                 case SIM_END:
+                    
                     Buf = 'S';
                     WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
                     
@@ -153,6 +163,22 @@ int main(int nargs, char** argv)
                     
                     Buf = 'S';
                     WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
+                    
+                    break;
+                case SIM_GET_ID:
+                    sInfo.gCommands = SIM_NONE;
+                    
+                    print("Number of transition IDs: "); print((float)(gTranList.size())); print("\n");
+                    bufIDs = new TR_PL_ID[gTranList.size()];
+                    
+                    for (std::list<TR_PL_ID>::iterator it=gTranList.begin(); it != gTranList.end(); ++it)
+                        bufIDs[idx] = *it;
+                    dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, sizeof(bufIDs), 0);
+                    
+                    delete [] bufIDs;
+                    
+                    if(!dwBytes)
+                        print("No IDs or write socket error\n");
                     break;
                     
                 case SIM_NONE:
@@ -242,4 +268,9 @@ REAL_TYPE cRealTime(){
     gettimeofday(&time, NULL);
     float timef = (time.tv_sec - gStartTime.tv_sec)*1000 + (time.tv_usec - gStartTime.tv_usec)/1000;
     return timef;
+}
+
+void AddTransitionID(TR_PL_ID tranID)
+{
+    gTranList.push_back(tranID);
 }

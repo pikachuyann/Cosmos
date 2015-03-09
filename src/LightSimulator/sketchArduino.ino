@@ -103,6 +103,9 @@ REAL_TYPE getPr(TR_PL_ID t){
     return (REAL_TYPE)mySim.N.GetPriority(t);
 }
 
+void AddTransitionID(TR_PL_ID tranID)
+{
+}
 
 void setup() {
     //Switch off all leds
