@@ -1,6 +1,13 @@
 #!/usr/local/bin/ocaml
+#load "unix.cma";;
+
+if Array.length Sys.argv >1 then
+  Unix.putenv "COSMOS" Sys.argv.(1);;
 
 #use "testTeamCity.ml";;
+
+
+print_endline ("Cosmos Path set to:"^ (!cosmos_path));;
 
 let log = (Unix.getcwd ())^"/cosmos_test_log";;
 
