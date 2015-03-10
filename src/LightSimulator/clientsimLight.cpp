@@ -66,6 +66,21 @@ struct pollfd   gWaitDescriptors[2];
 struct timeval gStartTime;
 std::list<TR_PL_ID> gTranList;
 
+double BytesToFloat(unsigned char iBytes[4])
+{
+    unsigned int ri = 0;
+    double r;
+    
+    ri = (unsigned int)(iBytes[0]);
+    ri = (ri << 8) | (unsigned int)(iBytes[1]);
+    ri = (ri << 8) | (unsigned int)(iBytes[2]);
+    ri = (ri << 8) | (unsigned int)(iBytes[3]);
+    
+    r = *(double*)&ri;
+    
+    return r;
+}
+
 // Main thread for socket read
 void *SocketReadThread(void *pArgs)
 {
@@ -79,7 +94,7 @@ int main(int nargs, char** argv)
 {
     struct  termios             oldTio;
     struct  addrinfo            *hostInfoList = nullptr; // Pointer to the to the linked list of host_info's.
-    struct  ThreadSerialInfo    sInfo = {-1, -1, -1, 1, SIM_NONE, &mySim};
+    struct  ThreadSerialInfo    sInfo = {-1, -1, -1, 1, SIM_NONE, &mySim, 0, {0, 0, 0, 0}};
     auto                        serial = ARDUINO_SP_NAME;
     pthread_t                   threadID;
     
@@ -125,12 +140,15 @@ int main(int nargs, char** argv)
         gWaitDescriptors[0].events = POLLIN;
         gWaitDescriptors[1].fd = sInfo.gListenSocketHandle;
         gWaitDescriptors[1].events = POLLIN;
-    
+        
+        TR_PL_ID *bufIDs = NULL;
+        
         while(sInfo.gCommands!=SIM_END) {
             unsigned char Buf = 0;
             int idx = 0;
             ssize_t dwBytes;
-            TR_PL_ID *bufIDs = NULL;
+            unsigned int nBufIDs = 0;
+            float parValue = 0.0;
             
             //simulate a batch of trajectory
             if(sInfo.gCommands != SIM_NONE)
@@ -165,20 +183,41 @@ int main(int nargs, char** argv)
                     WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
                     
                     break;
+                    
                 case SIM_GET_ID:
                     sInfo.gCommands = SIM_NONE;
                     
-                    print("Number of transition IDs: "); print((float)(gTranList.size())); print("\n");
-                    bufIDs = new TR_PL_ID[gTranList.size()];
+                    nBufIDs = gTranList.size();
                     
-                    for (std::list<TR_PL_ID>::iterator it=gTranList.begin(); it != gTranList.end(); ++it)
+                    if(bufIDs!=NULL) delete [] bufIDs;
+                    
+                    bufIDs = new TR_PL_ID[nBufIDs];
+                    
+                    print("Number of transition IDs: "); print((float)(nBufIDs)); print("\n");
+                    
+                    dwBytes = send(sInfo.gListenSocketHandle, (void*)&nBufIDs, sizeof(nBufIDs), 0);
+                    
+                    for (std::list<TR_PL_ID>::iterator it=gTranList.begin(); it != gTranList.end(); ++it, ++idx)
                         bufIDs[idx] = *it;
-                    dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, sizeof(bufIDs), 0);
                     
-                    delete [] bufIDs;
+                    dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, (size_t)(nBufIDs)*sizeof(TR_PL_ID), 0);
                     
                     if(!dwBytes)
                         print("No IDs or write socket error\n");
+                    else {
+                        print("Number of bytes sent: "); print((float)(dwBytes)); print("\n");
+                    }
+
+                    break;
+                    
+                case SIM_SET_CPAR:
+                    sInfo.gCommands = SIM_NONE;
+                    parValue = BytesToFloat(sInfo.gParBuf);
+                    print("Setting parameter ID: "); print((float)(sInfo.gParId)); print(" Value: "); print(parValue); print("\n");
+                    break;
+                    
+                case SIM_SET_PPAR:
+                    sInfo.gCommands = SIM_NONE;
                     break;
                     
                 case SIM_NONE:
@@ -186,6 +225,9 @@ int main(int nargs, char** argv)
             }
             
         }
+        
+        if(bufIDs!=NULL)
+            delete [] bufIDs;
     }
     
     // End the thread
