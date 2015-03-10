@@ -41,6 +41,7 @@
 void wait(REAL_TYPE);
 
 REAL_TYPE cRealTime();
+void AddTransitionID(TR_PL_ID tranID);
 
 //Serial comm function
 unsigned char InDataAvailable();
