@@ -280,7 +280,16 @@ let print_inhib_arc_dot f s1 s2 v =
   else Printf.fprintf f "\t%s -> %s [arrowhead=odot];\n" s1 s2;;
 
 
-let print_spt_dot fpath net cl p =
+let colorOfTrans = function
+  Exp (Float r) -> begin match r/. 0.009 with 
+    x when x >=1. -> "\"#505050\""
+  | x when x>= 1./.50. -> "\"#919191\""
+  | _ -> "\"#D0D0D0\""
+  end
+  |_ -> "black";;
+  
+
+let print_spt_dot ?(showlabel=true) fpath net cl p =
   let f = open_out fpath in
   output_string f "digraph G {\n";
   
@@ -292,13 +301,13 @@ let print_spt_dot fpath net cl p =
 		   Printf.sprintf ",pos=\"%f,%f!\"" (2.0*.x) (2.0*.y)
       with Not_found -> "") in
 	
-    Printf.fprintf f "\t%s [shape=circle,xlabel=\"%s\",label=\"%a\"%s];\n" s s 
+    Printf.fprintf f "\t%s [shape=circle,xlabel=\"%s\",label=\"%a\"%s];\n" s (if showlabel then s else "") 
       print_token m
       pos
   ) net.Net.place;
   (*output_string f "\t}\n\tsubgraph transition {\n";
   output_string f "\t\tnode [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=black];\n";*)
-  Data.iter (fun (s,m) ->Printf.fprintf f "\t%s [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=black,xlabel=\"%s\",label=\"\"];\n" s s) net.Net.transition;
+  Data.iter (fun (s,(d,_,_)) ->Printf.fprintf f "\t%s [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=%s,xlabel=\"%s\",label=\"\"];\n" s (colorOfTrans d) (if showlabel then s else "")) net.Net.transition;
   (*output_string f "\t}\n";*)
   Data.iter (fun (_,(v,p,t)) ->
     print_arc_dot f (fst (Data.acca net.Net.place p)) 
