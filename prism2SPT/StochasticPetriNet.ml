@@ -7,9 +7,25 @@ type distr =
 | Det of float expr' 
 | Erl of (int expr'*float expr');;
 
+
+type spt = 
+  (int Type.expr',  (* Initial Marking type*)
+   distr*float Type.expr' * float Type.expr' , (* Label of transitions type *)
+   int Type.expr' , (* valuation of arcs *)
+   ((string*(int Type.expr') option) list)
+   * ((string*(float Type.expr') option) list)
+   * (string list)
+   * (out_channel->unit->unit) (* Initialization *)
+  ) Net.t;;
+
+
 let string_of_cmpGrML = function
   | EQ -> "equal"  
   | NEQ-> "notEqual" 
+  | LE-> "lessOrEqual"
+  | SL-> "stricltyLess"
+  | GE-> "greaterOrEqual"
+  | SG-> "strictlyGreater"
 
 let print_at f x fy v =
   Printf.fprintf f "<attribute name=\"%s\">%a</attribute>" x fy v
@@ -155,8 +171,6 @@ let gen_const f li lr le fund =
     </attribute>
   </attribute>\n"
 
-type spt = (int Type.expr',distr*float Type.expr' * float Type.expr' ,int Type.expr' , ((string*(int Type.expr') option) list)* ((string*(float Type.expr') option) list)* (string list)*(out_channel->unit->unit) ) Net.t;;
-
 let print_spt fpath (net:spt)  =
   let f = open_out fpath in
   let (lci,lcd,lce,fund) = begin match net.Net.def with None -> [],[],[],(fun _ ()->()) | Some x ->x end in
@@ -167,9 +181,9 @@ let print_spt fpath (net:spt)  =
       match ao with None -> s,(Float 1.0) | Some fl -> s,fl) lcd) lce fund;
   let np = Data.fold (fun i (s,m) ->print_pl f s i m; i+1) 0 net.Net.place in
   let nt = Data.fold (fun i (s,r) ->print_tr f s i r; i+1) np net.Net.transition in
-  let nia = Data.fold (fun i (_,(v,p,t)) ->print_arc f i p (t+np) v false; i+1) nt net.Net.inArc in
-  let nio = Data.fold (fun i (_,(v,t,p)) ->print_arc f i (t+np) p v false; i+1) nia net.Net.outArc in
-  let _ = Data.fold (fun i (_,(v,p,t)) ->print_arc f i p (t+np) v true; i+1) nio net.Net.inhibArc in
+  let nia = Data.fold (fun i (_,(v,p,t)) ->print_arc f i (Obj.magic p) ((Obj.magic t)+np) v false; i+1) nt net.Net.inArc in
+  let nio = Data.fold (fun i (_,(v,t,p)) ->print_arc f i ((Obj.magic t)+np) (Obj.magic p) v false; i+1) nia net.Net.outArc in
+  let _ = Data.fold (fun i (_,(v,p,t)) ->print_arc f i (Obj.magic p) ((Obj.magic t)+np) v true; i+1) nio net.Net.inhibArc in
   ();
 (*
   for i =1 to n do
@@ -291,7 +305,7 @@ let colorOfTrans = function
 
 let print_spt_dot ?(showlabel=true) fpath net cl p =
   let f = open_out fpath in
-  output_string f "digraph G {\n";
+  output_string f "digraph G {\n\tnode[fontsize=60];\n";
   
 (*  output_string f "\tsubgraph place {\n";
   output_string f "\t\tgraph [shape=circle];\n";
@@ -327,6 +341,73 @@ let print_spt_dot ?(showlabel=true) fpath net cl p =
   close_out f;;
 
 open Net
+
+(* Print as a prism CTMC model*)
+let print_prism_module fpath net =
+  let f = open_out fpath in
+  
+  Printf.fprintf f "ctmc\nconst double imm=100000;\n";
+
+  Printf.fprintf f "module m1\n";
+
+  Data.iter (fun (n,x) ->
+    Printf.fprintf f "\t%s: [%i..%i] init %a;\n" n 0 2 printH_expr x;
+  ) net.place;
+
+  Data.iteri  (fun i (n,x) ->
+    Printf.fprintf f "\t[] ";
+    let prims = Data.fold (fun b (_,(s,p,t)) -> if t=i then
+      begin
+	if b then Printf.fprintf f " & ";
+	Printf.fprintf f "(%s>=%a)" (Data.acca net.place p |> fst) printH_expr s;
+	true
+      end
+      else b
+    ) false net.inArc in
+    ignore @@ Data.fold (fun b (_,(s,p,t)) -> if t =i then
+      begin
+	if b then Printf.fprintf f " & ";
+	Printf.fprintf f "(%s<%a)" (Data.acca net.place p |> fst) printH_expr s;
+	true
+      end
+      else b
+    ) prims net.inhibArc;
+     
+    begin match x with
+      (Imm,w,_) -> Printf.fprintf f " -> imm*%a : " printH_expr w ;
+    | (Exp(s),w,_) -> Printf.fprintf f " -> %a : " printH_expr s;
+    |_ -> failwith "Prism does not support distribution shape"
+    end;
+
+    let update = Data.create () in
+
+    Data.iteri (fun ip _ ->
+      Data.iter (fun (_,(s,t,p)) -> if t=i && p=ip then Data.add (p,s) update)
+      net.outArc;
+      Data.iter (fun (_,(s,p,t)) -> if t=i && p=ip then 
+	  try let iup = Data.index update p in
+	      let v2 = eval (Minus((Data.acca update iup |> snd),s)) in
+	      Data.updatea iup v2 update
+	  with Data.Empty | Not_found -> Data.add (p,eval (Minus((Int 0),s)) ) update)
+      net.inArc;
+
+      ) net.place;
+
+    ignore @@ Data.fold (fun b (p,v) -> begin
+      if b then Printf.fprintf f " & ";
+      let pname = (Data.acca net.place p |> fst) in
+      Printf.fprintf f "(%s'=%s+(%a))" pname pname printH_expr v;
+      true
+    end
+    ) false update;
+
+    Printf.fprintf f ";\n";
+
+  ) net.transition;
+
+  Printf.fprintf f "endmodule\n" ;
+  close_out f
+
 
 let remove_erlang (net:spt) =
   let net2 = {net with Net.def = net.Net.def; 

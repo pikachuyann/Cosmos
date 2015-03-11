@@ -1,7 +1,8 @@
 #directory "../../utils"
-#mod_use "../../prism2SPT/PetriNet.ml"
 #mod_use "../../prism2SPT/type.ml"
+#mod_use "../../prism2SPT/PetriNet.ml"
 #use "../../prism2SPT/StochasticPetriNet.ml"
+
 (*#use "StochasticPetriNet.ml"*)
 #use "mlcall.ml";;
 
@@ -89,8 +90,12 @@ let generate_csl fpath li obj =
   Printf.fprintf f "P=? [ [%s]  U[0,12000] [%s] ]\n" !safe obj;
   close_out f
 
+let imm_trans imm weight =
+  if imm then (Imm, (Float weight),(Float 1.0))
+  else let rate = 1000000.0 in 
+       (Exp (Float (weight*.rate)),(Float 1.0),(Float 1.0))
 
-let gen_spn2 ?(gentrans=true) ?(genfailure=true) fpath li ks failure=
+let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true)  fpath li ks failure=
   let ksi = ks/.3. in
   print_endline ("Generate2 "^fpath);
   let net = Net.create () in
@@ -98,8 +103,8 @@ let gen_spn2 ?(gentrans=true) ?(genfailure=true) fpath li ks failure=
     Data.add (("a"^(string_of_int n)),(if t=Init then Int 2 else Int i)) net.Net.place;
     if i=0 && t <> Init && genfailure then begin
       Data.add (("b"^(string_of_int n)), Int 1) net.Net.place;
-      Data.add ("tb"^(string_of_int n) ,(Imm, (Float failure),(Float 1.0))) net.Net.transition;
-      Data.add ("tAb"^(string_of_int n) ,(Imm, (Float (1.0-.failure)),(Float 1.0))) net.Net.transition;
+      Data.add ("tb"^(string_of_int n) ,(imm_trans genimm failure)) net.Net.transition;
+      Data.add ("tAb"^(string_of_int n) ,(imm_trans genimm (1.0-.failure))) net.Net.transition;
       Net.add_arc net ("b"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("b"^(string_of_int n)) ("tAb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("tb"^(string_of_int n)) ("a"^(string_of_int n)) (Int 1);
@@ -135,89 +140,28 @@ let gen_spn2 ?(gentrans=true) ?(genfailure=true) fpath li ks failure=
       ) li ) li;
   end;
 
-  List.iter (fun (n1,t1,i1,p1) ->
-    if t1 = Final then (
-    let tl = Printf.sprintf "tloop%i" n1 in 
-    Data.add (tl,(Exp (Float 0.000000001),Float 1.0,Float 1.0)) net.Net.transition;
-    Net.add_arc net ("a"^(string_of_int n1)) tl (Int 2);
-    Net.add_arc net tl ("a"^(string_of_int n1)) (Int 2);)
-  ) li;  
+  if genloop then 
+    List.iter (fun (n1,t1,i1,p1) ->
+      if t1 = Final then (
+	let tl = Printf.sprintf "tloop%i" n1 in 
+	Data.add (tl,(Exp (Float 0.000000001),Float 1.0,Float 1.0)) net.Net.transition;
+	Net.add_arc net ("a"^(string_of_int n1)) tl (Int 2);
+	Net.add_arc net tl ("a"^(string_of_int n1)) (Int 2);)
+    ) li;  
   net;;
   
-
-(*
-let gen_spn fpath li ks failure=
-  let ksi = ks /.3. in
-  print_endline ("Generate "^fpath);
-  let (net:spt) = Net.create () in
- 
-  (*let cluster = Array.make (List.length li) [] in*)
-
-  List.iter (fun (n,t,i,_) ->
-    Data.add (("a"^(string_of_int n)),(if t=Init then 1 else 0)) net.Net.place;
-    Data.add (("s"^(string_of_int n)),(if t=Init then 0 else 1) ) net.Net.place;
-    (*cluster.(n-1) <- ("a"^(string_of_int n))
-      :: ("s"^(string_of_int n)) :: cluster.(n-1);*) 
-    if i=0 && t <> Init then begin
-      Data.add (("b"^(string_of_int n)),1) net.Net.place;
-      Data.add ("tb"^(string_of_int n) ,(Imm failure)) net.Net.transition;
-      Data.add ("tAb"^(string_of_int n) ,(Imm (1.0-.failure))) net.Net.transition;
-      Net.add_arc net ("b"^(string_of_int n)) ("tb"^(string_of_int n)) 1;
-      Net.add_arc net ("b"^(string_of_int n)) ("tAb"^(string_of_int n)) 1;
-      Net.add_arc net ("s"^(string_of_int n)) ("tAb"^(string_of_int n)) 1;
-      (*cluster.(n-1) <- ("b"^(string_of_int n)) 
-      :: ("tb"^(string_of_int n))
-      :: ("tAb"^(string_of_int n))
-      :: cluster.(n-1);*) 
-    end
-  ) li;
-
- (* List.iter (fun (n1,t1,i1,p1) ->
-    List.iter (fun (n2,t2,i2,p2) -> 
-      let r = (match t1 with 
-	  Init -> ksi
-	| Final -> 0.0
-	| _ -> ks) in
-      let r2 = (match dist p1 p2 with
-	| x when x< 0.1 -> 0.0
-	| x when x< 1.5 -> r
-	| x when x< 2.5 -> r/.50.0
-	| x when x< 3.87 -> r/.100.0
-	| _->0.0 ) in
-      let r3 = (match t2 with 
-	  Final -> r2 /. 10.
-	| _ -> r2) in
-      if r3 <> 0.0 then
-	let tl = Printf.sprintf "t%i_%i" n1 n2 in
-	Data.add (tl,(Exp r3)) net.Net.transition;
-	Net.add_arc net ("a"^(string_of_int n1)) tl 1;
-	Net.add_arc net ("s"^(string_of_int n2)) tl 1;
-	Net.add_arc net tl ("a"^(string_of_int n2)) 1;
-	(*cluster.(n1-1) <- tl :: cluster.(n1-1);*) 
-      ) li ) li;*)
-
-  List.iter (fun (n1,t1,i1,p1) ->
-    if t1=Final then 
-      let tl = Printf.sprintf "tloop%i" n1 in 
-      Data.add (tl,(Exp 1.0)) net.Net.transition;
-      Net.add_arc net ("a"^(string_of_int n1)) tl 1;
-      Net.add_arc net tl ("a"^(string_of_int n1)) 1;
-  ) li;
-  net;;
-*)
-  (*let lc = foldi (fun acc i l -> (i+1,l)::acc) [] cluster in*)
-
 let generate_spn fpath li2 ks failure obj =
   let li = mapsq3 li2 in
-  let net = gen_spn2 ~gentrans:true ~genfailure:true fpath li ks failure in
+  let net = gen_spn2 ~gentrans:true ~genloop:true ~genfailure:true ~genimm:false fpath li ks failure in
   generate_lha (fpath^".lha") li obj;
   print_spt (fpath^".grml") net;
   print_spt_marcie (fpath^".andl") net;
   generate_csl (fpath^".csl") li obj;
-  print_spt_dot (fpath^".dot") net []
-    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
-(*  ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl" fpath));;*)
-  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;
+  print_prism_module (fpath^".sm") net;
+  print_spt_dot ~showlabel:false (fpath^".dot") net []
+    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
+(* ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl --approximative" fpath fpath));;*)
+(*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
 (*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
 
 
