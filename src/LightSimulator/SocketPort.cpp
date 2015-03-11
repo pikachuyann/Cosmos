@@ -105,8 +105,8 @@ bool MainSocketRead(struct ThreadSerialInfo *sInfo)
                 fds.events = POLLIN;
             } else if (fds.revents & POLLIN && fds.fd==sInfo->gListenSocketHandle) {
                 
-                unsigned char dataSocket = 0;
-                ssize_t rc = recv(fds.fd, (void*)&dataSocket, 1, 0);
+                unsigned char dataSocket[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+                ssize_t rc = recv(fds.fd, (void*)&dataSocket, 8, 0);
                 
                 if (rc < 0) {
                     if (errno != EWOULDBLOCK)
@@ -121,25 +121,41 @@ bool MainSocketRead(struct ThreadSerialInfo *sInfo)
                     return 1;
                 }
                 
-                if(dataSocket==SIM_END) {
+                if(dataSocket[0]==SIM_END) {
                     print("Ending simulation\n");
                     sInfo->pmySim->StopSimulation();
                     sInfo->gCommands = SIM_END;
                     sInfo->gEndThread = 0;
                     return 1;
-                } else if(dataSocket==SIM_STOP) {
+                } else if(dataSocket[0]==SIM_STOP) {
                     print("Received simulation stop\n");
                     sInfo->pmySim->StopSimulation();
                     sInfo->gCommands = SIM_STOP;
                     
-                } else if(dataSocket==SIM_START) {
+                } else if(dataSocket[0]==SIM_START) {
                     print("Received simulation start\n");
                     sInfo->gCommands = SIM_START;
                     
-                } else if(dataSocket==SIM_GET_ID) {
+                } else if(dataSocket[0]==SIM_GET_ID) {
                     print("Received get ID\n");
                     sInfo->gCommands = SIM_GET_ID;
                                                    
+                } else if (dataSocket[0]==SIM_SET_CPAR) {
+                    print("Received set client parameter\n");
+                    
+                    sInfo->gParId = dataSocket[1];
+                    memcpy((void*)&sInfo->gParBuf[0], (const void*)&dataSocket[4], 4);
+                    
+                    sInfo->gCommands = SIM_SET_CPAR;
+                    
+                } else if (dataSocket[0]==SIM_SET_PPAR) {
+                    print("Received set arduino parameter\n");
+                    
+                    sInfo->gParId = dataSocket[1];
+                    memcpy((void*)&sInfo->gParBuf[0], (const void*)&dataSocket[4], 4);
+
+                    sInfo->gCommands = SIM_SET_PPAR;
+                    
                 } else
                     sInfo->gCommands = SIM_NONE;
                 
