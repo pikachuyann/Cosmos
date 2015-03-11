@@ -194,3 +194,4 @@ let read_prism s name =
     Printf.fprintf stderr "%a: Parsing error: unexpected token:'%s'\n"
       print_position lexbuf (lexeme lexbuf);
     failwith "Fail to parse Prism file format"
+
