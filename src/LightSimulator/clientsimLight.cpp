@@ -39,7 +39,7 @@
 #include <iostream>
 #include <signal.h>
 #include <poll.h>
-
+#include <limits.h>
 #include <iostream>
 #include <list>
 
@@ -66,6 +66,18 @@ struct pollfd   gWaitDescriptors[2];
 struct timeval gStartTime;
 std::list<TR_PL_ID> gTranList;
 
+unsigned int BytesToInt(unsigned char iBytes[4])
+{
+    unsigned int ri = 0;
+    
+    ri = (unsigned int)(iBytes[3]);
+    ri = (ri << 8) | (unsigned int)(iBytes[2]);
+    ri = (ri << 8) | (unsigned int)(iBytes[1]);
+    ri = (ri << 8) | (unsigned int)(iBytes[0]);
+    
+    return ri;
+}
+
 // Main thread for socket read
 void *SocketReadThread(void *pArgs)
 {
@@ -79,7 +91,7 @@ int main(int nargs, char** argv)
 {
     struct  termios             oldTio;
     struct  addrinfo            *hostInfoList = nullptr; // Pointer to the to the linked list of host_info's.
-    struct  ThreadSerialInfo    sInfo = {-1, -1, -1, 1, SIM_NONE, &mySim};
+    struct  ThreadSerialInfo    sInfo = {-1, -1, -1, 1, SIM_NONE, &mySim, 0, {0, 0, 0, 0}};
     auto                        serial = ARDUINO_SP_NAME;
     pthread_t                   threadID;
     
@@ -125,12 +137,16 @@ int main(int nargs, char** argv)
         gWaitDescriptors[0].events = POLLIN;
         gWaitDescriptors[1].fd = sInfo.gListenSocketHandle;
         gWaitDescriptors[1].events = POLLIN;
-    
+        
+        TR_PL_ID *bufIDs = NULL;
+        
         while(sInfo.gCommands!=SIM_END) {
-            unsigned char Buf = 0;
+            unsigned char Buf = 0, sParBuf[6];
             int idx = 0;
             ssize_t dwBytes;
-            TR_PL_ID *bufIDs = NULL;
+            unsigned int nBufIDs = 0, parValue = 0;
+            int pollRc;
+            size_t bytesRead = 0;
             
             //simulate a batch of trajectory
             if(sInfo.gCommands != SIM_NONE)
@@ -165,27 +181,92 @@ int main(int nargs, char** argv)
                     WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
                     
                     break;
+                    
                 case SIM_GET_ID:
                     sInfo.gCommands = SIM_NONE;
                     
-                    print("Number of transition IDs: "); print((float)(gTranList.size())); print("\n");
-                    bufIDs = new TR_PL_ID[gTranList.size()];
+                    nBufIDs = gTranList.size();
                     
-                    for (std::list<TR_PL_ID>::iterator it=gTranList.begin(); it != gTranList.end(); ++it)
+                    if(bufIDs!=NULL) delete [] bufIDs;
+                    
+                    bufIDs = new TR_PL_ID[nBufIDs];
+                    
+                    print("Number of transition IDs: "); print((float)(nBufIDs)); print("\n");
+                    
+                    dwBytes = send(sInfo.gListenSocketHandle, (void*)&nBufIDs, sizeof(nBufIDs), 0);
+                    
+                    for (std::list<TR_PL_ID>::iterator it=gTranList.begin(); it != gTranList.end(); ++it, ++idx)
                         bufIDs[idx] = *it;
-                    dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, sizeof(bufIDs), 0);
                     
-                    delete [] bufIDs;
+                    dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, (size_t)(nBufIDs)*sizeof(TR_PL_ID), 0);
                     
                     if(!dwBytes)
                         print("No IDs or write socket error\n");
+                    else {
+                        print("Number of bytes sent: "); print((float)(dwBytes)); print("\n");
+                    }
+
+                    break;
+                    
+                case SIM_SET_CPAR:
+                    sInfo.gCommands = SIM_NONE;
+                    
+                    parValue = BytesToInt(sInfo.gParBuf);
+                    print("Setting Client parameter ID: "); print((float)(sInfo.gParId)); print(" Value: "); print((float)parValue); print("\n");
+                    
+                    SetParameters(sInfo.gParId, (unsigned long)(parValue));
+                    
+                    Buf = SIM_READY;
+                    dwBytes = send(sInfo.gListenSocketHandle, (void*)&Buf, 1, 0);
+                    
+                    break;
+                    
+                case SIM_SET_PPAR:
+                    sInfo.gCommands = SIM_NONE;
+                    
+                    parValue = BytesToInt(sInfo.gParBuf);
+                    print("Setting Arduino parameter ID: "); print((float)(sInfo.gParId)); print(" Value: "); print((float)parValue); print("\n");
+                    
+                    sParBuf[0] = 'D';
+                    sParBuf[1] = sInfo.gParId;
+                    memcpy((void*)&sParBuf[2], (const void*)&sInfo.gParBuf[0], 4);
+                    
+                    WriteToPort(&gftHandle[giDeviceID], 6, &sParBuf[0]);
+                    
+                    pollRc = poll(&gWaitDescriptors[0], 2, -1);
+                    
+                    if (pollRc < 0) {
+                        print("Error: setting the poll\n");
+                    } else if(pollRc > 0) {
+                        
+                        if( gWaitDescriptors[0].revents & POLLIN ) {
+                            bytesRead = read(gftHandle[giDeviceID], &Buf, (int)1);
+                            
+                            if (Buf!=SIM_READY) {
+                                print("Wrong Arduino reply\n");
+                                Buf=SIM_READY;
+                                dwBytes = send(sInfo.gListenSocketHandle, (void*)&Buf, 1, 0);
+                                break;
+                            }
+                            
+                            dwBytes = send(sInfo.gListenSocketHandle, (void*)&Buf, 1, 0);
+                        }
+                        else if(gWaitDescriptors[0].revents & POLLHUP || gWaitDescriptors[0].revents & POLLERR)
+                            print("Error: poll read gftHandle\n");
+                    }
                     break;
                     
                 case SIM_NONE:
                     break;
+                    
+                default:
+                    sInfo.gCommands = SIM_NONE;
             }
             
         }
+        
+        if(bufIDs!=NULL)
+            delete [] bufIDs;
     }
     
     // End the thread
@@ -224,7 +305,13 @@ char SReceive(void)
     size_t bytesRead = 0;
     if(gDataAvailable) {
         bytesRead = read(gftHandle[giDeviceID], &retVal, (int)1);
-        std::cerr << "<<<<<<< Pace -> Heart: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
+        if(retVal==0x33 || retVal==0x34)
+            std::cerr << "<<<<<<< Pace -> Heart: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
+        else if(retVal==0x35)
+            std::cerr << "<<<<<<< Syn: "<< mySim.curr_time << std::endl;
+        else
+            std::cerr << "<<<<<<< Data: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;;
+        
         gDataAvailable = 0;
     }
     

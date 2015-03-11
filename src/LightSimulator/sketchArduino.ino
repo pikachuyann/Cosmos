@@ -103,6 +103,18 @@ REAL_TYPE getPr(TR_PL_ID t){
     return (REAL_TYPE)mySim.N.GetPriority(t);
 }
 
+unsigned long BytesToLong(char iBytes[4])
+{
+    unsigned long ri = 0;
+    
+    ri = (unsigned long)(iBytes[3]);
+    ri = (ri << 8) | (unsigned long)(iBytes[2]);
+    ri = (ri << 8) | (unsigned long)(iBytes[1]);
+    ri = (ri << 8) | (unsigned long)(iBytes[0]);
+    
+    return ri;
+}
+
 void AddTransitionID(TR_PL_ID tranID)
 {
 }
@@ -119,7 +131,9 @@ void setup() {
     pinMode(VP_PORT,OUTPUT);
     digitalWrite(MARKER_PORT_ONE, LOW);
     digitalWrite(MARKER_PORT_TWO, HIGH);
-    
+    digitalWrite(AP_PORT, LOW);
+    digitalWrite(VP_PORT, LOW);
+
     Serial.begin(57600);
     mySim.verbose= VERBOSE_LEVEL;
     initTimer1();
@@ -173,14 +187,10 @@ void loop() {
                     }
                 }
                 
-                ri = (unsigned long)(buff[1]);
-                ri = (ri << 8) | (unsigned long)(buff[2]);
-                ri = (ri << 8) | (unsigned long)(buff[3]);
-                ri = (ri << 8) | (unsigned long)(buff[4]);
-                
-                r = *(double*)&ri;
+                r = BytesToLong(&buff[1]);
                 SetParameters((unsigned char)(buff[0]), r);
                 
+                SWrite(0xF6);
                 break;
                 
             default:

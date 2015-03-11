@@ -6,7 +6,10 @@ import time
 import socket
 import sys
 import tty, termios
-
+import struct
+import binascii
+import random
+import ctypes
 
 exitFlag = 1
 stDataColl = 0
@@ -95,20 +98,42 @@ if s is None:
 	print 'could not open socket'
 	sys.exit(1)
 
+#s.setblocking(0)
 
 if useVM==0:
 	print "Preparing the PowerMonitor device..."
 	time.sleep(4);
 
-	for iters in range(0, 1):
-	
-		print "Start collecting data..."
+	for iters in range(0, 5):
 
+		# Generate random parameter
+		headerID = 0xF4
+		parID = 1
+		parValue = random.randint(1, 2000)
+
+		print "Sending parameter ID: "+str(parID)+" value: "+str(parValue)
+
+		parStr = struct.pack('BBI',headerID, parID, parValue)
+
+		# Send parameter to Client
+		s.sendall(parStr)
+
+		buftmp = bytearray(1)
+		buflen = s.recv_into(buftmp,1)
+
+		if buftmp[0]!=0xF6:
+			print "Wrong return value"
+			break
+
+		print "Start iteration: "+str(iters)
+
+		# Start iteration
 		s.sendall('\xF0')
 		stDataColl = 1
 
-		time.sleep(10);
+		time.sleep(60);
 
+		# Stop iteration
 		s.sendall('\xF1')
 		time.sleep(1);
 		stDataColl = 0
@@ -116,14 +141,35 @@ if useVM==0:
 		print "Stopped collecting data"
 		currentTran = ProcessPowerMonitorData(collectedSamples)
 
+		# Send get list of IDs
 		s.sendall('\xF3')
 
-		bufIDs = []
-		while len(bufIDs)==0:
-			bufIDs = s.recv(293)
+		bufSize = bytearray(4)
+		buflen = s.recv_into(bufSize, 4)
 
-		print "Number of transitions IDs received: "+str(len(bufIDs))
-		#print collectedSamples
+		if buflen!=4:
+			print "Wrong packet length"
+			break
+
+		bufSize = struct.unpack("I",bufSize)
+
+		print "Packet size: "+str(bufSize[0])
+
+		bufIDs = bytearray()
+		buftmp = bytearray(2048)
+		bytes_recd = 0
+
+		while bytes_recd < bufSize[0]:
+			chunkLen = s.recv_into(buftmp,2048)
+			bufIDs[bytes_recd:] = buftmp[:chunkLen]
+			bytes_recd = bytes_recd + chunkLen
+
+		if 	bytes_recd != bufSize[0]:
+			print "Wrong data"
+			break
+
+		#print binascii.hexlify(bufIDs)
+
 		collectedSamples = []
 
 	s.sendall('\xF2')

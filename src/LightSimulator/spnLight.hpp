@@ -45,7 +45,7 @@ void AddTransitionID(TR_PL_ID tranID);
 
 //Serial comm function
 unsigned char InDataAvailable();
-void SetParameters(unsigned char, double);
+void SetParameters(unsigned char, unsigned long);
 
 #define UNSET_TRANS (TR_PL_ID)(-1)
 
