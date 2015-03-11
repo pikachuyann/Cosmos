@@ -105,8 +105,8 @@ bool MainSocketRead(struct ThreadSerialInfo *sInfo)
                 fds.events = POLLIN;
             } else if (fds.revents & POLLIN && fds.fd==sInfo->gListenSocketHandle) {
                 
-                unsigned char dataSocket[6] = {0, 0, 0, 0, 0, 0};
-                ssize_t rc = recv(fds.fd, (void*)&dataSocket, 6, 0);
+                unsigned char dataSocket[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+                ssize_t rc = recv(fds.fd, (void*)&dataSocket, 8, 0);
                 
                 if (rc < 0) {
                     if (errno != EWOULDBLOCK)
@@ -144,7 +144,7 @@ bool MainSocketRead(struct ThreadSerialInfo *sInfo)
                     print("Received set client parameter\n");
                     
                     sInfo->gParId = dataSocket[1];
-                    memcpy((void*)&sInfo->gParBuf[0], (const void*)&dataSocket[2], 4);
+                    memcpy((void*)&sInfo->gParBuf[0], (const void*)&dataSocket[4], 4);
                     
                     sInfo->gCommands = SIM_SET_CPAR;
                     
@@ -152,7 +152,7 @@ bool MainSocketRead(struct ThreadSerialInfo *sInfo)
                     print("Received set arduino parameter\n");
                     
                     sInfo->gParId = dataSocket[1];
-                    memcpy((void*)&sInfo->gParBuf[0], (const void*)&dataSocket[2], 4);
+                    memcpy((void*)&sInfo->gParBuf[0], (const void*)&dataSocket[4], 4);
 
                     sInfo->gCommands = SIM_SET_PPAR;
                     
