@@ -104,29 +104,36 @@ if useVM==0:
 	print "Preparing the PowerMonitor device..."
 	time.sleep(4);
 
-	for iters in range(0, 1):
+	for iters in range(0, 5):
 
+		# Generate random parameter
 		headerID = 0xF4
 		parID = 1
-		parValue = ctypes.c_float(float(random.uniform(1, 2000)))
+		parValue = random.randint(1, 2000)
 
-		print "Sending paramtere ID: "+str(parID)+" value: "+str(parValue.value)
+		print "Sending parameter ID: "+str(parID)+" value: "+str(parValue)
 
-		parStr = struct.pack('BBf',headerID, parID, parValue.value)
+		parStr = struct.pack('BBI',headerID, parID, parValue)
 
-		print parStr.encode("hex")
-
+		# Send parameter to Client
 		s.sendall(parStr)
 
-		time.sleep(0.001);
+		buftmp = bytearray(1)
+		buflen = s.recv_into(buftmp,1)
+
+		if buftmp[0]!=0xF6:
+			print "Wrong return value"
+			break
 
 		print "Start iteration: "+str(iters)
 
+		# Start iteration
 		s.sendall('\xF0')
 		stDataColl = 1
 
-		time.sleep(2);
+		time.sleep(60);
 
+		# Stop iteration
 		s.sendall('\xF1')
 		time.sleep(1);
 		stDataColl = 0
@@ -134,6 +141,7 @@ if useVM==0:
 		print "Stopped collecting data"
 		currentTran = ProcessPowerMonitorData(collectedSamples)
 
+		# Send get list of IDs
 		s.sendall('\xF3')
 
 		bufSize = bytearray(4)
