@@ -38,6 +38,8 @@ struct ThreadSerialInfo {
     char            gEndThread;
     SimCommands     gCommands;
     SimulatorLight  *pmySim;
+    unsigned char   gParId;
+    unsigned char   gParBuf[4];
 };
 
 bool CreateSocket(int *socketHandle, struct addrinfo *hostInfoList);
