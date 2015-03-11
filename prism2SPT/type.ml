@@ -230,7 +230,7 @@ let printH_cmp f = function
 
 let rec printH_expr: type a. out_channel -> a expr' -> unit = fun f x -> match x with
   | Int(i) -> Printf.fprintf f "%i" i
-  | Float(i) -> Printf.fprintf f "%f" i
+  | Float(i) -> Printf.fprintf f "%g" i
   | Bool(i) -> Printf.fprintf f "%B" i
   | IntName(s) -> output_string f s
   | FloatName(s) -> output_string f s
@@ -287,7 +287,7 @@ let printH_float_expr f (x: float expr')= printH_expr f x
 let printH_stateFormula f (x: bool expr')= printH_expr f x
 
 let print_token f = function 
-  | Int 0 -> ()
+  | Int 0 -> output_string f " "
   | Int 1 -> output_string f "•" 
   | Int 2 -> output_string f "••"
   | Int 3 -> output_string f "••\n•"
