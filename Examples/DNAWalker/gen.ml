@@ -44,7 +44,7 @@ Finish=AVG(Last(vd1));
 DeadLock=AVG(Last(vd2));
 Step=AVG(Last(vd3));
 Blockade=AVG(Last(vc1));
-%%uB=AVG(Last(useblocked));
+uB=AVG(Last(useblocked));
 InitialLocations = { lii };
 FinalLocations = {lfc,lf,ldl,lnf2};
 Locations = {
@@ -160,12 +160,10 @@ let generate_spn fpath li2 ks failure obj =
   print_prism_module (fpath^".sm") net;
   print_spt_dot ~showlabel:false (fpath^".dot") net []
     (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
+ (* execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 8 --max-run 200000 --batch 10000 --width 0");;*)
 (* ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl --approximative" fpath fpath));;*)
 (*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
 (*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
-
-
-
 
 let gen28 f l1 r1 l2 r2 obj =
 generate_spn f [ 
