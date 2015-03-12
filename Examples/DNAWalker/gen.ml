@@ -82,16 +82,16 @@ Edges = {
 
 
 let generate_pctl fpath li obj =
-  let safe = ref " TRUE "
-  and blockade = ref " FALSE " in
+  let safe = ref " true "
+  and blockade = ref " false " in
   List.iter (fun (n,t,i,_) -> 
     if t= Final then safe := Printf.sprintf " %s & (a%i<2)" !safe n
     else if i=0 && t<> Init then blockade := Printf.sprintf " %s | (a%i=2)" !blockade n
   ) li;
   let f = open_out fpath in
   Printf.fprintf f "P=? [ (%s)  U[0,12000] (%s) ]\n" !safe obj;
+  Printf.fprintf f "R{\"steps\"}=? [ C<=12000 ]\n";
   close_out f
-
 
 let generate_csl fpath li obj =
   let safe = ref " true "
@@ -174,7 +174,8 @@ let generate_spn fpath li2 ks failure obj =
   print_prism_module (fpath^".sm") net;
   generate_pctl (fpath^".pctl") li obj;
   print_spt_dot ~showlabel:false (fpath^".dot") net []
-    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
+    (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
+  ignore (Sys.command (Printf.sprintf "prism %s.sm %s.pctl --sim --simsamples 2000000" fpath fpath));;
 (* ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl --approximative" fpath fpath));;*)
 (*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
 (*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
