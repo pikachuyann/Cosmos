@@ -355,7 +355,10 @@ let print_prism_module fpath net =
   ) net.place;
 
   Data.iteri  (fun i (n,x) ->
-    Printf.fprintf f "\t[] ";
+    begin match x with 
+      (Imm,w,_) -> Printf.fprintf f "\t[] ";
+    | _ -> Printf.fprintf f "\t[step] ";
+    end;
     let prims = Data.fold (fun b (_,(s,p,t)) -> if t=i then
       begin
 	if b then Printf.fprintf f " & ";
@@ -406,6 +409,10 @@ let print_prism_module fpath net =
   ) net.transition;
 
   Printf.fprintf f "endmodule\n" ;
+
+  Printf.fprintf f "rewards \"steps\"
+\t[step] true : 1;
+endrewards";
   close_out f
 
 
