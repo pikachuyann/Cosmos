@@ -78,6 +78,20 @@ Edges = {
 ((lnf1,ldl),#,vc0=1000000000,{deadlocktime=lasttranstime,vd2=1});
 };" !safe !blockade !safe !blockade obj !safe obj ;
   close_out f;;
+  
+
+
+let generate_pctl fpath li obj =
+  let safe = ref " TRUE "
+  and blockade = ref " FALSE " in
+  List.iter (fun (n,t,i,_) -> 
+    if t= Final then safe := Printf.sprintf " %s & (a%i<2)" !safe n
+    else if i=0 && t<> Init then blockade := Printf.sprintf " %s | (a%i=2)" !blockade n
+  ) li;
+  let f = open_out fpath in
+  Printf.fprintf f "P=? [ (%s)  U[0,12000] (%s) ]\n" !safe obj;
+  close_out f
+
 
 let generate_csl fpath li obj =
   let safe = ref " true "
@@ -153,11 +167,12 @@ let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true) 
 let generate_spn fpath li2 ks failure obj =
   let li = mapsq3 li2 in
   let net = gen_spn2 ~gentrans:true ~genloop:true ~genfailure:true ~genimm:false fpath li ks failure in
-  generate_lha (fpath^".lha") li obj;
   print_spt (fpath^".grml") net;
+  generate_lha (fpath^".lha") li obj;
   print_spt_marcie (fpath^".andl") net;
   generate_csl (fpath^".csl") li obj;
   print_prism_module (fpath^".sm") net;
+  generate_pctl (fpath^".pctl") li obj;
   print_spt_dot ~showlabel:false (fpath^".dot") net []
     (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
 (* ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl --approximative" fpath fpath));;*)
