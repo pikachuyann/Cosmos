@@ -16,14 +16,16 @@ stDataColl = 0
 collectedSamples = []
 useVM = 0
 
-def ProcessPowerMonitorData(pmData):
+def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 	currentTran = []
 
 	firstPosM2 = 0
 	firstPosM1 = 0
 	sumCurrent = 0
-
+	sampleCnt = 0
 	for it in range(len(pmData)):
+		sampleCnt = sampleCnt + 1
+
 		if pmData[it][1]!=2 and firstPosM2 == 0:
 			firstPosM2 = 1
 		elif pmData[it][1]==2 and firstPosM2 == 1:
@@ -36,8 +38,11 @@ def ProcessPowerMonitorData(pmData):
 				sumCurrent = sumCurrent + pmData[it][0]
 			elif pmData[it][1] == 0 and firstPosM1 == 1:
 				firstPosM1 = 0
-				currentTran.append(sumCurrent)
-				print sumCurrent
+				stime = sampleCnt/monitorSampligFreq
+
+				currentTran.append((sumCurrent,stime))
+
+				print "Sum: "+str(sumCurrent)+" time: "+str(stime)
 				sumCurrent = pmData[it][0]
 
 
@@ -67,7 +72,8 @@ mon = monsoon.Monsoon("/dev/tty.usbmodemfd141")
 mon.SetVoltage(3.7)
 mon.SetUsbPassthrough(0)
 
-items = sorted(mon.GetStatus().items())
+monItems = mon.GetStatus()
+items = sorted(monItems.items())
 print "\n".join(["%s: %s" % item for item in items])
 mon.StopDataCollection()
 
@@ -104,7 +110,7 @@ if useVM==0:
 	print "Preparing the PowerMonitor device..."
 	time.sleep(4);
 
-	for iters in range(0, 5):
+	for iters in range(0, 1):
 
 		# Generate random parameter
 		headerID = 0xF4
@@ -131,7 +137,7 @@ if useVM==0:
 		s.sendall('\xF0')
 		stDataColl = 1
 
-		time.sleep(60);
+		time.sleep(2);
 
 		# Stop iteration
 		s.sendall('\xF1')
@@ -139,7 +145,10 @@ if useVM==0:
 		stDataColl = 0
 
 		print "Stopped collecting data"
-		currentTran = ProcessPowerMonitorData(collectedSamples)
+
+		currentTran = ProcessPowerMonitorData(collectedSamples, monItems['sampleRate'])
+
+		print "Number of energy samples: "+str(len(currentTran))
 
 		# Send get list of IDs
 		s.sendall('\xF3')
