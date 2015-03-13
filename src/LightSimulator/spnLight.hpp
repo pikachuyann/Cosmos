@@ -40,6 +40,8 @@
 //Real time function
 void wait(REAL_TYPE);
 
+void dW(uint8 port, uint8 value);
+
 REAL_TYPE cRealTime();
 void AddTransitionID(TR_PL_ID tranID, unsigned int time);
 

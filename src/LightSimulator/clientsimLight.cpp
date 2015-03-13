@@ -147,7 +147,7 @@ int main(int nargs, char** argv)
         TR_PL_ID *bufIDs = NULL;
         
         while(sInfo.gCommands!=SIM_END) {
-            unsigned char Buf = 0, sParBuf[6];
+            unsigned char Buf = 0, sParBuf[6], tmpBuf[2048];
             int idx = 0;
             ssize_t dwBytes;
             unsigned int nBufIDSize = 0, parValue = 0;
@@ -163,7 +163,9 @@ int main(int nargs, char** argv)
             switch (sInfo.gCommands)
             {
                 case SIM_START:
+                    
                     gettimeofday(&gStartTime, NULL);
+                    
                     
                     gTranList.clear();
                     mySim.StartSimulation();
@@ -199,13 +201,14 @@ int main(int nargs, char** argv)
                     
                     bufIDs = new TR_PL_ID[nBufIDSize];
                     
+                    memset((void*)&bufIDs[0], 0, nBufIDSize);
+                    
                     dwBytes = send(sInfo.gListenSocketHandle, (void*)&nBufIDSize, sizeof(nBufIDSize), 0);
                     
                     for (std::list<EventTime>::iterator it=gTranList.begin(); it != gTranList.end(); ++it) {
                         bufIDs[idx] = (*it).event;
                         memcpy(&bufIDs[idx+1], (const void*)&(*it).time, sizeof(unsigned int));
-                        memcpy(&test, (const void*)&bufIDs[idx+1], sizeof(unsigned int));
-                        print((float)(*it).event); print(" "); print((float)(*it).time); print(" "); print((float)test); print("\n");
+                        print((float)(*it).time); print(" "); print((float)(*it).event); print("\n");
                         idx+=5;
                     }
                     dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, (size_t)(nBufIDSize), 0);
@@ -317,8 +320,8 @@ char SReceive(void)
         bytesRead = read(gftHandle[giDeviceID], &retVal, (int)1);
         if(retVal==0x33 || retVal==0x34)
             std::cerr << "<<<<<<< Pace -> Heart: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
-        else if(retVal>=0x35 && retVal<=0x3A) {
-            //std::cerr << "<<<<<<< Syn: "<< mySim.curr_time << std::endl;
+        else if(retVal>=0x35 && retVal<=0x3C) {
+            std::cerr << "<<<<<<< Syn: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
             AddTransitionID(retVal, (unsigned int)(mySim.curr_time));
         }
         else
@@ -365,7 +368,7 @@ void wait(REAL_TYPE t){
 REAL_TYPE cRealTime(){
     struct timeval time;
     gettimeofday(&time, NULL);
-    float timef = (time.tv_sec - gStartTime.tv_sec)*1000 + (time.tv_usec - gStartTime.tv_usec)/1000;
+    float timef = ((double)time.tv_sec - (double)gStartTime.tv_sec)*1000.0 + ((double)time.tv_usec - (double)gStartTime.tv_usec)/1000.0;
     return timef;
 }
 
