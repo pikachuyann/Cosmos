@@ -53,6 +53,9 @@ public:
     void StartSimulation(void);
     void StopSimulation(void);
     
+    void InitialEventsQueue(); //!initialize the event queue
+    void reset(); //! reset the simulator
+    
 protected:
     
     //! a Temporary event
@@ -68,10 +71,6 @@ protected:
      * the time at wich they will be fire if still enabled
      */
     EventsQueue EQ;
-
-    void InitialEventsQueue(); //!initialize the event queue
-
-    void reset(); //! reset the simulator
 
     void GenerateEvent(Event &,TR_PL_ID); //! generate a new event use Generate Time
 

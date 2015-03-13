@@ -36,10 +36,11 @@ void wait(REAL_TYPE t){
 #ifndef NO_STRING_SIM
     Serial.println("->Sleep");
 #endif
-
+    
     Serial.flush();
 
     digitalWrite(MARKER_PORT_ONE, HIGH);
+    digitalWrite(MARKER_PORT_TWO, HIGH);
     
     bool davailable = false;
     while(!davailable && millis1()< ti ){
@@ -47,11 +48,13 @@ void wait(REAL_TYPE t){
     }
     
     digitalWrite(MARKER_PORT_ONE, LOW);
+    digitalWrite(MARKER_PORT_TWO, LOW);
     
     if(!davailable){
         t-= wait_sleep;
         if (t>0) sleepMillis((unsigned long)(t));
     }
+    
 }
 
 REAL_TYPE cRealTime(){
@@ -69,7 +72,9 @@ unsigned char InDataAvailable(){
 #endif
             return 1;
         }
-    } else return 0;
+    } else {
+        return 0;
+    }
 }
 
 unsigned char SReceive(){
@@ -86,6 +91,10 @@ unsigned char SReceive(){
 
 void SWrite(unsigned char h){
     if (Serial) {
+        if(h>=0x35 && h<=0x3A) {
+            digitalWrite(MARKER_PORT_ONE, HIGH);
+            digitalWrite(MARKER_PORT_TWO, LOW);
+        }
         Serial.write(h);
         Serial.flush();
     }
@@ -137,6 +146,7 @@ void setup() {
     Serial.begin(57600);
     mySim.verbose= VERBOSE_LEVEL;
     initTimer1();
+    
 }
 
 
@@ -157,6 +167,7 @@ void loop() {
         switch (Serial.peek()) {
             case 'A':
             case 'S':
+                digitalWrite(MARKER_PORT_ONE, LOW);
                 digitalWrite(MARKER_PORT_TWO, HIGH);
                 
                 buff[0] = Serial.read();
@@ -167,6 +178,7 @@ void loop() {
                 
             case 'W':
                 digitalWrite(MARKER_PORT_TWO, LOW);
+                digitalWrite(MARKER_PORT_ONE, LOW);
                 
                 buff[0] = Serial.read();
                 
@@ -190,7 +202,10 @@ void loop() {
                 r = BytesToLong(&buff[1]);
                 SetParameters((unsigned char)(buff[0]), r);
                 
-                SWrite(0xF6);
+                if (Serial) {
+                    Serial.write(0xF6);
+                    Serial.flush();
+                }
                 break;
                 
             default:
