@@ -51,16 +51,8 @@
 void launchServer(parameters& P);
 
 /**
- * This function desactivate the signal handler on sigchld for the
- * time of the execution of a shell script. This function is necessary
- * to avoid a deadlock where the signal wait for a child wich status
- * have been retrieved by system.
- */
-int systemsigsafe(const char*cmd);
-
-
-/**
  * Signal handler.
+ *
  * The signals this function is expecting are SIGCHLD which append if
  * child simulator terminate. In this case the return status of the child
  * must be retrive to know what make the simulator terminate.
@@ -83,6 +75,11 @@ void signalHandler( int signum );
  * Initialize a self pipe used for signal handling
  */
 void init_self_pipe();
+
+/**
+ * Self pipe trick : push the signal in a pipe to be read by the main thread
+ */
+void signalHandlerSP(int);
 
 /*
  * Open a child processes retring both PID and an a pipe

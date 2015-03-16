@@ -51,6 +51,7 @@
 #include <errno.h>
 #include <algorithm>
 #include <err.h>
+#include <assert.h>
 //#include <ext/stdio_filebuf.h>
 
 #include "../Simulator/BatchR.hpp"
@@ -83,11 +84,10 @@ void init_self_pipe(){
     if(pipe(pipefd) !=0  )err(1,"Fail to create a self pipe");
 
     FILE* output = fdopen(pipefd[0], "r");
-    selfPipe = fileno(fdopen(pipefd[1], "w"));
+    selfPipe=pipefd[1];
 
     clientstream.push_back(output);
-    int streamfd = fileno(output);
-    if(streamfd >max_client)max_client = streamfd;
+    if(pipefd[0] >max_client)max_client = pipefd[0];
     clientPID.push_back(0);
 
 }
@@ -98,67 +98,51 @@ bool continueSelect=false;
 void signalHandlerSP(int signum){
     char buff[1];
     buff[0] = (char)signum;
-    write(selfPipe, buff, 1);
+    assert(1==write(selfPipe, buff, 1));
 }
 
 void signalHandler( int signum )
 {
-	switch (signum){
-		case SIGCHLD: {
-			int status;
-			pid_t child = wait(&status);
-			
-			if(child != -1){
-				if(status!=0){
-					if(count(clientPID.begin(),clientPID.end(),child)==0)
-						cerr << "The unknown child "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
-					else{
-						if(WIFSIGNALED(status)){
-							if(WTERMSIG(status) != 2){
-								cerr << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
-								exit(EXIT_FAILURE);
-							}
-						} else if(WIFEXITED(status)){
-							if(WEXITSTATUS(status) != 130)cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
-						}else {
-							cerr << "Simulator "<< child << " Crash ! with unknown status "<< status  << endl;
-						}
-					}
-				}
-			}
-			break;
-		}
-		case SIGINT:
-			continueSelect = false;
-			break;
-		default:
-			cerr << " Unexpected signal: " << signum << endl;
-	}
+    switch (signum){
+        case SIGCHLD: {
+            int status;
+            pid_t child = wait(&status);
+
+            if(child != -1){
+                if(!WIFEXITED(status)){ //Something to report
+                    if(count(clientPID.begin(),clientPID.end(),child)==0)
+                        cerr << "The unknown child "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
+                    else{
+                        if(WIFSIGNALED(status)){
+                            cerr << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
+                            exit(EXIT_FAILURE);
+                        } else if(WIFEXITED(status)){
+                            if(WEXITSTATUS(status) != 130){
+                                cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
+                            }
+                        }else {
+                            cerr << "Simulator "<< child << " Crash ! with unknown status "<< status  << endl;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        case SIGINT:
+            continueSelect = false;
+            break;
+        case SIGPIPE:
+            cerr << "receive a sigpipe" <<endl;
+            break;
+
+
+        default:
+            cerr << " Unexpected signal: " << signum << endl;
+    }
 }
-
-
-/**
- * A wrapper for the call to system that turn off the signal handling this is require
- * otherwise the handler get stuck after receiving a signal for the death of an unknown child.
- * @param cmd the command to execute
- */
-int systemsigsafe(const char*cmd){
-	int retValue;
-	signal(SIGCHLD , SIG_DFL );
-	retValue = system(cmd) ;
-	signal(SIGCHLD , signalHandlerSP);
-	return retValue;
-}
-
-/*istream streamOfFile(int fd){
-    __gnu_cxx::stdio_filebuf<char> filebuf(fd, std::ios::in);
-    istream is(&filebuf);
-    return is;
-}*/
-
 
 /*
- * Open a child processes retring both PID and an a pipe
+ * Open a child processes retriving both PID and an a pipe
  * to the standart input of the child.
  * This function fork and execute the given binary
  * on the child.
@@ -228,8 +212,10 @@ void freestr(const char *argv[],size_t t){
 }
 
 void launch_clients(parameters& P){
+    init_self_pipe();
     signal(SIGCHLD , signalHandlerSP);
     signal(SIGINT, signalHandlerSP);
+    signal(SIGPIPE, signalHandlerSP);
 	//pid_t readpid;
 
 	for(int i = 0;i<P.Njob;i++){
@@ -320,7 +306,7 @@ void launch_clients(parameters& P){
 
 void kill_client(){
     while (!clientPID.empty()){
-        if (clientPID.back()!=0)kill(clientPID.back(),2);
+        if (clientPID.back()!=0)kill(clientPID.back(),SIGHUP);
         clientstream.pop_back();
         clientPID.pop_back();
     }
@@ -373,6 +359,7 @@ void launchServer(parameters& P){
                     // Receive through self pipe
                     char buff[1];
                     read(fileno(clientstream[it]), buff, 1);
+                    //cerr << "receive signal" << (int)buff[0] <<endl;
                     signalHandler((int)buff[0]);
                     continue;
                 }
@@ -399,9 +386,12 @@ void launchServer(parameters& P){
         }
 		//Check if the simulation should continue.
     }while(Result.continueSim() && clientstream.size()>0 && continueSelect);
-    //Kill all the simulator
+    signal(SIGCHLD, signalHandler);
+    signal(SIGPIPE, signalHandler);
 
+    //Kill all the simulator
     kill_client();
+    //signal(SIGCHLD, SIG_IGN);
 	
 	//Output all the results
     if(P.verbose>0)cout << endl;
