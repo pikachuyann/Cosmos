@@ -122,6 +122,7 @@ let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true) 
       Net.add_arc net ("b"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("b"^(string_of_int n)) ("tAb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("tb"^(string_of_int n)) ("a"^(string_of_int n)) (Int 1);
+      Net.add_inhibArc net ("a"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
       (*cluster.(n-1) <- ("b"^(string_of_int n)) 
       :: ("tb"^(string_of_int n))
       :: ("tAb"^(string_of_int n))
@@ -150,6 +151,7 @@ let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true) 
 	Net.add_arc net ("a"^(string_of_int n1)) tl (Int 2);
 	Net.add_arc net ("a"^(string_of_int n2)) tl (Int 1);
 	Net.add_arc net tl ("a"^(string_of_int n2)) (Int 2);
+	Net.add_inhibArc net ("a"^(string_of_int n2)) tl (Int 2);
 	(*cluster.(n1-1) <- tl :: cluster.(n1-1);*) 
       ) li ) li;
   end;
