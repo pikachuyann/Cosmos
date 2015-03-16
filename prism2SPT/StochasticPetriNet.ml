@@ -362,7 +362,7 @@ let print_prism_module fpath net =
     let prims = Data.fold (fun b (_,(s,p,t)) -> if t=i then
       begin
 	if b then Printf.fprintf f " & ";
-	Printf.fprintf f "(%s>=%a)" (Data.acca net.place p |> fst) printH_expr s;
+	  Printf.fprintf f "(%s=%a)" (Data.acca net.place p |> fst) printH_expr s;
 	true
       end
       else b
@@ -403,13 +403,9 @@ let print_prism_module fpath net =
       true
     end
     ) false update;
-
     Printf.fprintf f ";\n";
-
   ) net.transition;
-
   Printf.fprintf f "endmodule\n" ;
-
   Printf.fprintf f "rewards \"steps\"
 \t[step] true : 1;
 endrewards";
