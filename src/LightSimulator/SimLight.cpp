@@ -218,6 +218,10 @@ void SimulatorLight::SimulateSinglePath() {
     InitialEventsQueue();
     
     while (simStatus) {
+        
+        dW(MARKER_PORT_ONE, 0);
+        dW(MARKER_PORT_TWO, 0);
+        
         if (EQ.isEmpty())break; //No event should not happen
         
         //Take the first event in the queue
@@ -236,13 +240,7 @@ void SimulatorLight::SimulateSinglePath() {
                 if(data == 1 ){
                     TR_PL_ID trs = N.getIncomingTrans();
                     if (trs != UNSET_TRANS) {
-                        N.fire(trs, curr_time); // Fire the special transition for incoming message
-                        
-                        //print("Firing:");
-                        //print(trs);
-                        AddTransitionID(trs);
-                        //print("\n");
-
+                        N.fire(trs, curr_time); // Fire the special transition for incoming message                        
                         updateSPN(trs);
                     }
                 }
@@ -258,11 +256,6 @@ void SimulatorLight::SimulateSinglePath() {
                 print("\n");
             }
 #endif
-
-            //print("Firing:");
-            //print(E1.transition);
-            AddTransitionID(E1.transition);
-            //print("\n");
 
             curr_time = E1.time;
 
