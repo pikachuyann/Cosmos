@@ -48,7 +48,6 @@ result::result() : HaslResult(P.HaslFormulasname.size()) {
     gnuplotstream = NULL;
     lastprint = chrono::system_clock::now();
     lastdraw = chrono::system_clock::now();
-
     MeanM2 = new BatchR(P.nbAlgebraic);
 
     Progress = 0;
@@ -419,7 +418,7 @@ void result::printGnuplot() {
 
         combicmd = P.Path + "linecombinator " + P.datatrace + " " + P.tmpPath + "/tmpdatafilecomb.dat " + to_string(MeanM2->I);
         if (P.verbose > 2)cout << combicmd << endl;
-        systemsigsafe(combicmd.c_str());
+        system(combicmd.c_str());
         cout << "system returned" << endl;
         stringstream ss;
         ss << "set output '" << P.datatrace << "." << gnuplotextenstion << "'\n";

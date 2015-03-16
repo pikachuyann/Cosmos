@@ -37,9 +37,9 @@
 // Handler for interuption of the server
 void signalHandler(int);
 
-void signalHandler( int )
+void signalHandler( int s)
 {
-    exit(EXIT_SUCCESS);
+    if(s == SIGHUP )exit(EXIT_SUCCESS);
 }
 
 /**
@@ -60,7 +60,8 @@ int main(int argc, char** argv) {
 
   //retrive_segment();
 
-	signal(SIGINT, signalHandler);
+	signal(SIGINT, SIG_IGN);
+    signal(SIGHUP, signalHandler);
 	
 	Simulator* mySim;
 	
