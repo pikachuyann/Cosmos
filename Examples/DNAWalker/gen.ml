@@ -175,8 +175,9 @@ let generate_spn fpath li2 ks failure obj =
   generate_pctl (fpath^".pctl") li obj;
   print_spt_dot ~showlabel:false (fpath^".dot") net []
         (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
- (* execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 8 --max-run 200000 --batch 10000 --width 0");;*)
-  ignore (Sys.command (Printf.sprintf "prism %s.sm %s.pctl --sim --simsamples 2000000" fpath fpath));;
+(* execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 8 --max-run 200000 --batch 10000 --width 0");;*)
+(*  ignore (Sys.command (Printf.sprintf "prism %s.sm %s.pctl --sim --simsamples 2000000" fpath fpath));;*)
+  ignore (Sys.command (Printf.sprintf "prism %s.sm %s.pctl" fpath fpath));;
 (* ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl --approximative" fpath fpath));;*)
 (*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
 (*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
