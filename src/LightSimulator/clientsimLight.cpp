@@ -54,6 +54,12 @@ int             giDeviceID = 0;
 bool            gDataAvailable = 0;
 
 struct pollfd   gWaitDescriptors[2];
+
+typedef struct EventTime{
+    TR_PL_ID event;
+    unsigned int time;
+}EventTime;
+
 /**
  * main function it read the options given as arguments and initialyse
  * the simulator.
@@ -64,7 +70,7 @@ struct pollfd   gWaitDescriptors[2];
  */
 
 struct timeval gStartTime;
-std::list<TR_PL_ID> gTranList;
+std::list<EventTime> gTranList;
 
 unsigned int BytesToInt(unsigned char iBytes[4])
 {
@@ -141,13 +147,13 @@ int main(int nargs, char** argv)
         TR_PL_ID *bufIDs = NULL;
         
         while(sInfo.gCommands!=SIM_END) {
-            unsigned char Buf = 0, sParBuf[6];
+            unsigned char Buf = 0, sParBuf[6], tmpBuf[2048];
             int idx = 0;
             ssize_t dwBytes;
-            unsigned int nBufIDs = 0, parValue = 0;
+            unsigned int nBufIDSize = 0, parValue = 0;
             int pollRc;
             size_t bytesRead = 0;
-            
+            unsigned int test = 0;
             //simulate a batch of trajectory
             if(sInfo.gCommands != SIM_NONE)
                 mySim.SimulateSinglePath();
@@ -157,7 +163,9 @@ int main(int nargs, char** argv)
             switch (sInfo.gCommands)
             {
                 case SIM_START:
+                    
                     gettimeofday(&gStartTime, NULL);
+                    
                     
                     gTranList.clear();
                     mySim.StartSimulation();
@@ -185,20 +193,25 @@ int main(int nargs, char** argv)
                 case SIM_GET_ID:
                     sInfo.gCommands = SIM_NONE;
                     
-                    nBufIDs = gTranList.size();
+                    print("Number of transition IDs: "); print((float)(gTranList.size())); print("\n");
+                    
+                    nBufIDSize = (gTranList.size())*sizeof(EventTime);
                     
                     if(bufIDs!=NULL) delete [] bufIDs;
                     
-                    bufIDs = new TR_PL_ID[nBufIDs];
+                    bufIDs = new TR_PL_ID[nBufIDSize];
                     
-                    print("Number of transition IDs: "); print((float)(nBufIDs)); print("\n");
+                    memset((void*)&bufIDs[0], 0, nBufIDSize);
                     
-                    dwBytes = send(sInfo.gListenSocketHandle, (void*)&nBufIDs, sizeof(nBufIDs), 0);
+                    dwBytes = send(sInfo.gListenSocketHandle, (void*)&nBufIDSize, sizeof(nBufIDSize), 0);
                     
-                    for (std::list<TR_PL_ID>::iterator it=gTranList.begin(); it != gTranList.end(); ++it, ++idx)
-                        bufIDs[idx] = *it;
-                    
-                    dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, (size_t)(nBufIDs)*sizeof(TR_PL_ID), 0);
+                    for (std::list<EventTime>::iterator it=gTranList.begin(); it != gTranList.end(); ++it) {
+                        bufIDs[idx] = (*it).event;
+                        memcpy(&bufIDs[idx+1], (const void*)&(*it).time, sizeof(unsigned int));
+                        print((float)(*it).time); print(" "); print((float)(*it).event); print("\n");
+                        idx+=5;
+                    }
+                    dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, (size_t)(nBufIDSize), 0);
                     
                     if(!dwBytes)
                         print("No IDs or write socket error\n");
@@ -307,8 +320,10 @@ char SReceive(void)
         bytesRead = read(gftHandle[giDeviceID], &retVal, (int)1);
         if(retVal==0x33 || retVal==0x34)
             std::cerr << "<<<<<<< Pace -> Heart: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
-        else if(retVal==0x35)
-            std::cerr << "<<<<<<< Syn: "<< mySim.curr_time << std::endl;
+        else if(retVal>=0x35 && retVal<=0x3C) {
+            std::cerr << "<<<<<<< Syn: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
+            AddTransitionID(retVal, (unsigned int)(mySim.curr_time));
+        }
         else
             std::cerr << "<<<<<<< Data: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;;
         
@@ -353,11 +368,12 @@ void wait(REAL_TYPE t){
 REAL_TYPE cRealTime(){
     struct timeval time;
     gettimeofday(&time, NULL);
-    float timef = (time.tv_sec - gStartTime.tv_sec)*1000 + (time.tv_usec - gStartTime.tv_usec)/1000;
+    float timef = ((double)time.tv_sec - (double)gStartTime.tv_sec)*1000.0 + ((double)time.tv_usec - (double)gStartTime.tv_usec)/1000.0;
     return timef;
 }
 
-void AddTransitionID(TR_PL_ID tranID)
+void AddTransitionID(TR_PL_ID tranID, unsigned int time)
 {
-    gTranList.push_back(tranID);
+    EventTime stEvent = {tranID, time};
+    gTranList.push_back(stEvent);
 }
