@@ -1,5 +1,5 @@
 
-noinst_PROGRAMS = ClientSim2 gtest
+noinst_PROGRAMS = ClientSim2
 
 # ClientSim1_SOURCES = \
 	../src/Simulator/BatchR.cpp \
@@ -22,12 +22,6 @@ ClientSim2_SOURCES = LHA.cpp markingImpl.hpp spn.cpp
 ClientSim2_LDADD = ../src/Simulator/libClientSim.la
 
 ClientSim2_CPPFLAGS = -Wno-unused-const-variable -Wno-unused-parameter -I$(srcdir)/../src/Simulator
-
-gtest_SOURCES = \
-	src/gtest-all.cc src/gtest-death-test.cc src/gtest-filepath.cc src/gtest-internal-inl.h src/gtest-port.cc src/gtest-printers.cc src/gtest-test-part.cc src/gtest-typed-test.cc src/gtest.cc src/gtest_main.cc \
-	include/gtest/gtest-death-test.h include/gtest/gtest-message.h include/gtest/gtest-param-test.h include/gtest/gtest-param-test.h.pump include/gtest/gtest-printers.h include/gtest/gtest-spi.h include/gtest/gtest-test-part.h include/gtest/gtest-typed-test.h include/gtest/gtest.h include/gtest/gtest_pred_impl.h include/gtest/gtest_prod.h  \
-	sample1.cc \
-	sample1_unittest.cc
 
 AM_CPPFLAGS =  -I$(srcdir)/include/gtest/internal/ -I$(srcdir)/include -isystem -I$(srcdir)/include $(BOOST_CPPFLAGS) $(PTHREAD_CFLAGS)
 
