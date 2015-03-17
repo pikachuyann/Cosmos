@@ -1,7 +1,7 @@
 
-
-bin_PROGRAMS = Cosmos
 noinst_LTLIBRARIES = libeval.la libgspn.la liblha.la
+bin_PROGRAMS = Cosmos
+
 
 Cosmos_SOURCES = \
 	../Simulator/BatchR.cpp ../Simulator/BatchR.hpp \
@@ -26,7 +26,7 @@ BUILT_SOURCES = LhaParser/Lha-parser.cc GspnParser/Gspn-parser.cc Eval/Eval-pars
 
 
 libeval_la_SOURCES = Eval/Eval.cpp Eval/Eval.hpp Eval/Eval-scanner.ll Eval/Eval-parser.yy
-libeval_AM_YFLAGS = -y -p eval -b Eval/Eval-parser.c
+libeval_AM_YFLAGS = -y -p eval -o Eval/Eval-parser.c
 libeval_AM_LFLAGS = -oEval/$(LEX_OUTPUT_ROOT).c --prefix=eval
 
 
