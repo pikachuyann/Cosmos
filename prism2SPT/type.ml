@@ -112,7 +112,11 @@ let rec eval : type a . a expr' -> a expr' = fun x ->
       Int y,Int z -> Int (y+z) 
     | Float y,Float z -> Float (y+.z)
     | Bool y,Bool z -> Bool (y || z)
-    | _ -> x)
+    | ee1,ee2 -> begin match ee2 with
+      Int y when y <0 -> Minus(ee1,Int (-y))
+      | Float y when y<0.0 -> Minus(ee1,Float (-.y))
+      |_-> Plus(ee1,ee2)
+    end)
   | And(e1,e2) -> (match (eval e1),(eval e2) with
     | Bool y,z -> if y then z else Bool false
     | y,Bool z -> if z then y else Bool false
