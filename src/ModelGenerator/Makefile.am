@@ -27,7 +27,7 @@ BUILT_SOURCES = LhaParser/Lha-parser.cc GspnParser/Gspn-parser.cc Eval/Eval-pars
 
 libeval_la_SOURCES = Eval/Eval.cpp Eval/Eval.hpp Eval/Eval-scanner.ll Eval/Eval-parser.yy
 libeval_AM_YFLAGS = -y -p eval
-libeval_AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --prefix=eval
+libeval_AM_LFLAGS = -oEval/$(LEX_OUTPUT_ROOT).c --prefix=eval
 
 
 libgspn_la_SOURCES = \
@@ -39,7 +39,7 @@ libgspn_la_SOURCES = \
 libgspn_la_LIBADD = ../libgrml/libgrml.la
 libgspn_la_AM_YFLAGS = -y -p gspn
 libgspn_la_AM_CPPFLAGS = -I$(srcdir)/../../libgrml -I../Eval -I$(srcdir)/../Eval
-libgspn_la_AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --prefix=gspn
+libgspn_la_AM_LFLAGS = -oGspnParser/$(LEX_OUTPUT_ROOT).c --prefix=gspn
 
 
 liblha_la_SOURCES = \
@@ -48,4 +48,4 @@ liblha_la_SOURCES = \
 	LhaParser/Lha_gmlparser.cpp LhaParser/Lha_gmlparser.hpp
 liblha_la_AM_YFLAGS = -y -p lha
 liblha_la_AM_CPPFLAGS = -I$(srcdir)/../../libgrml -I../Eval -I$(srcdir)/../Eval -I../GspnParser -I$(srcdir)/../GspnParser
-liblha_la_AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --prefix=lha
+liblha_la_AM_LFLAGS = -oLhsParser$(LEX_OUTPUT_ROOT).c --prefix=lha
