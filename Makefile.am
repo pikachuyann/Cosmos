@@ -6,7 +6,7 @@ ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = doc/manual.tex doc/overview.graffle \
     doc/figures/convergence.png doc/figures/sampling.png \
     doc/figures/spn.tex doc/figures/trace.png \
-    Examples/Makefile Examples/testTeamCity.ml \
+    Examples/Makefile.am Examples/testTeamCity.ml \
 	Examples/TandemQN/test.ml Examples/TandemQN/tqn.gspn Examples/TandemQN/tqn.lha\
 	Examples/pi/test.ml Examples/pi/pi.grml Examples/pi/pilha.grml \
 	Examples/testDistribution/test.ml Examples/testDistribution/test.ml \
