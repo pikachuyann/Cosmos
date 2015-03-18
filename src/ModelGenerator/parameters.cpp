@@ -359,7 +359,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             case CO_chernoff: sequential = false;
                 if (strcmp(optarg, "level") == 0)Level = 0;
                 else if (strcmp(optarg, "width") == 0)Width = 0;
-                else if (strcmp(optarg, "nbrun") == 0)MaxRuns = 0;
+                else if (strcmp(optarg, "nbrun") == 0)MaxRuns = (unsigned long)-1;
                 else {
                     cerr << "Required one of (level | width | nbrun) to specify which ";
                     cerr << "parameter should be computed" << endl;

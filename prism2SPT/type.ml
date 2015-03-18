@@ -113,25 +113,27 @@ let rec eval : type a . a expr' -> a expr' = fun x ->
     | Float y,Float z -> Float (y+.z)
     | Bool y,Bool z -> Bool (y || z)
     | ee1,ee2 -> begin match ee2 with
-      Int y when y <0 -> Minus(ee1,Int (-y))
+      Int 0 -> ee1
+      | Int y when y <0 -> Minus(ee1,Int (-y))
+      | Float 0.0 -> ee1
       | Float y when y<0.0 -> Minus(ee1,Float (-.y))
       |_-> Plus(ee1,ee2)
     end)
   | And(e1,e2) -> (match (eval e1),(eval e2) with
     | Bool y,z -> if y then z else Bool false
     | y,Bool z -> if z then y else Bool false
-    | _ -> x) 
+    | ee1,ee2 -> And(ee1,ee2)) 
   | Or(e1,e2) -> (match (eval e1),(eval e2) with
     | Bool y,z -> if not y then z else Bool true
     | y,Bool z -> if not z then y else Bool true
-    | _ -> x) 
+    | ee1,ee2 -> Or(ee1,ee2))
  | BoolAtom(e1,cmp,e2) -> (match (eval e1),cmp,(eval e2) with
     | Bool y,EQ,z -> if y then z else eval (Not z)
     | Bool y,NEQ,z -> if not y then z else  z
     | z,EQ,Bool y -> if y then z else eval (Not z)
     | z,NEQ,Bool y -> if not y then z else  z
     | y,EQ,z -> Or( And(y,z), (And( eval (Not y),eval (Not z)) ))
-    | _ -> x) 
+    | ee1,cmp,ee2 -> BoolAtom(ee1,cmp,ee2))
   | Mult(e1,e2) -> (match (eval e1),(eval e2) with
     Int y,Int z -> Int (y*z) 
     | Float y,Float z -> Float (y*.z)
@@ -141,17 +143,15 @@ let rec eval : type a . a expr' -> a expr' = fun x ->
     | z,Int y -> if y=1 then z else (if y=0 then Int 0 else Mult (Int y,z))
 
     | Bool y,Bool z -> Bool (y && z)
-    | _ -> x)
+    | ee1,ee2 -> Mult(ee1,ee2))
   | Minus(e1,e2) -> (match (eval e1),(eval e2) with
       Int y,Int z -> Int (y-z) 
     | Float y,Float z -> Float (y-.z) 
-    | _ -> x)
+    | ee1,ee2 -> Minus(ee1,ee2))
   | CastInt(e) -> (match eval e with 
     | Int i -> Float (float i)
     | y -> CastInt(y))
   | x -> x
-
-let simp_int : int expr' -> int expr' = eval
 
 let print_rename f =
   List.iter (fun (x,y) -> Printf.fprintf f " %s->%s " x y) 
@@ -232,7 +232,7 @@ let printH_cmp f = function
   | LE -> output_string f "<=" 
   | NEQ-> output_string f "!=" 
 
-let rec printH_expr: type a. out_channel -> a expr' -> unit = fun f x -> match x with
+let rec printH_expr: type a. out_channel -> a expr' -> unit = fun f x -> match eval x with
   | Int(i) -> Printf.fprintf f "%i" i
   | Float(i) -> Printf.fprintf f "%g" i
   | Bool(i) -> Printf.fprintf f "%B" i
@@ -286,10 +286,6 @@ let rec printH_expr: type a. out_channel -> a expr' -> unit = fun f x -> match x
     printH_expr e1 
     printH_expr e2
 
-let printH_int_expr f (x: int expr')= printH_expr f x
-let printH_float_expr f (x: float expr')= printH_expr f x
-let printH_stateFormula f (x: bool expr')= printH_expr f x
-
 let print_token f = function 
   | Int 0 -> output_string f " "
   | Int 1 -> output_string f "•" 
@@ -297,4 +293,4 @@ let print_token f = function
   | Int 3 -> output_string f "••\n•"
   | Int 4 -> output_string f "••\n••"
   | Int 5 -> output_string f "•••\n••"
-  | i -> printH_int_expr f i
+  | i -> printH_expr f i

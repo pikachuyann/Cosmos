@@ -33,11 +33,11 @@
 %left MULT DIV
 %left LPAR RPAR
 
-%start main
+%start main floatexpr intexpr stateCondition
 %type <PrismType.constdef*PrismType.prism_file> main
-%type <int expr'> intexpr
-%type <float expr'> floatexpr
-%type <bool expr'> stateCondition
+%type <int Type.expr'> intexpr
+%type <float Type.expr'> floatexpr
+%type <bool Type.expr'> stateCondition
 %%
 
 main:
@@ -93,7 +93,7 @@ varlist:
   | anyname COLON rangevar INIT FALSE SEMICOLON varlist 
       { ($1,$3,Int 0)::$7 }  
   | anyname COLON rangevar INIT intexpr SEMICOLON varlist 
-      { ($1,$3,(simp_int $5))::$7 }
+      { ($1,$3,(eval $5))::$7 }
   | anyname COLON rangevar SEMICOLON varlist 
       { ($1,$3,(fst $3))::$5 }
 | {[]}
@@ -209,7 +209,7 @@ TRUE {Bool true}
 | LPAR stateCondition RPAR {$2}
 | stateCondition EQ stateCondition {eval @@ BoolAtom($1,EQ, $3) }
 | stateCondition NOT EQ stateCondition {eval @@ BoolAtom($1,NEQ,$4) }
-| intexpr cmp intexpr  { IntAtom(simp_int $1,$2,simp_int $3) }
+| intexpr cmp intexpr  { IntAtom(eval $1,$2,eval $3) }
 | floatexpr cmp floatexpr  { FloatAtom(eval $1,$2,eval $3) }
 | floatexpr cmp intexpr  { FloatAtom(eval $1,$2,CastInt (eval $3)) }
 | intexpr cmp floatexpr  { FloatAtom(CastInt(eval $1),$2,eval $3) }

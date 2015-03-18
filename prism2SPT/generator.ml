@@ -35,18 +35,18 @@ let rec flatten_guard x =
   | BoolName v -> [[(v,SG,Int 0)]]
   | Not (BoolName v) -> [[(v,EQ,Int 0)]]
   | Not e -> flatten_guard (neg_bool e)
-  | e-> printH_stateFormula stderr e;
+  | e-> printH_expr stderr e;
     failwith "Not yet supported guard shape"
 
 let rec convert_guard modu net trname ((r1,r2) as rset) = function
   | [] -> rset
-  | (v,GE,j)::q when sgz j -> Net.add_inArc net v trname (simp_int j);
+  | (v,GE,j)::q when sgz j -> Net.add_inArc net v trname (eval j);
     convert_guard modu net trname ((StringMap.add v j r1),r2) q
   | (_,GE,_)::q -> convert_guard modu net trname rset q
   | (v,SL,j)::q -> 
     let _,bo = acc_var v modu.varlist in (match bo with
-	Int b ->if gez (Minus(bo,j)) then Net.add_inhibArc net v trname (simp_int j)
-      | _ -> Net.add_inhibArc net v trname (simp_int j););
+	Int b ->if gez (Minus(bo,j)) then Net.add_inhibArc net v trname (eval j)
+      | _ -> Net.add_inhibArc net v trname (eval j););
     convert_guard modu net trname rset q
   | (v,EQ,j)::q -> convert_guard modu net trname 
     (r1, (StringMap.add v (Int 0) r2))
@@ -64,18 +64,18 @@ let convert_update net trname eqmap varmap = function
   | v,BoolUp(j) -> Net.add_outArc net trname v (CastBool j); varmap
 
   | v,IntUp(Plus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
-    let j2 = simp_int (Plus(StringMap.find v varmap,j)) in
+    let j2 = eval (Plus(StringMap.find v varmap,j)) in
     Net.add_outArc net trname v j2;
     StringMap.remove v varmap
 
   | v,IntUp(Plus((IntName v2),j)) when v=v2 -> Net.add_outArc net trname v j; varmap
   | v,IntUp(Minus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
-    let j2 = simp_int (Minus(StringMap.find v varmap,j)) in
+    let j2 = eval (Minus(StringMap.find v varmap,j)) in
     if sgz j2 then Net.add_outArc net trname v j2;
     StringMap.remove v varmap
   
   | v,IntUp(Int j) when StringMap.mem v eqmap -> 
-    let j2 = simp_int (Minus(Int j,StringMap.find v eqmap)) in
+    let j2 = eval (Minus(Int j,StringMap.find v eqmap)) in
     if sgz j2 then Net.add_outArc net trname v j2;
     (try StringMap.remove v varmap with Not_found -> varmap);
 
@@ -86,7 +86,7 @@ let convert_update net trname eqmap varmap = function
     StringMap.remove v varmap
 
   | v,IntUp(j) when StringMap.mem v varmap ->
-    printH_int_expr stderr j;
+    printH_expr stderr j;
     failwith (Printf.sprintf "Cannot export %s-> %s" trname v);
    
   | v,IntUp(j) ->

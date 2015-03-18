@@ -126,11 +126,9 @@ bool Parse() {
 
         //Check that the model is not empty and generate the code
         if (!parseresult && gReader.MyGspn.pl > 0 && gReader.MyGspn.tr > 0) {
-            if (P.tmpStatus == 0 || P.tmpStatus == 2) {
-                Gspn_Writer writer(gReader.MyGspn, P);
-                writer.writeFile();
-                writer.writeDotFile(P.tmpPath + "/templatePetriNet.dot");
-            }
+            Gspn_Writer writer(gReader.MyGspn, P);
+            writer.writeFile();
+            writer.writeDotFile(P.tmpPath + "/templatePetriNet.dot");
         } else {
             Gspn_Reader gr(P);
             gReader = gr;
@@ -225,7 +223,7 @@ bool Parse() {
                 }
 
                 //Generate the code for the LHA
-                if (P.tmpStatus == 0 || P.tmpStatus == 2)lReader.WriteFile(P);
+                lReader.WriteFile(P);
 
             } else {
                 return false;
@@ -308,9 +306,6 @@ bool Parse() {
 
     //Set the confidence level to all Hasl formula
     for (auto &it : P.HaslFormulas)it->setLevel(P.Level);
-
-    //If the code should not be compiled return
-    if (P.tmpStatus == 1 || P.tmpStatus == 3)return true;
 
     //generateMain();
 
