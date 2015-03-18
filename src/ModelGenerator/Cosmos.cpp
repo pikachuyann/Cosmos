@@ -37,13 +37,11 @@
 #include <sstream>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <sys/time.h>
 #include <stdlib.h>
 #include <err.h>
 #include <errno.h>
 #include <math.h>
 
-//#include "directsim.hpp"
 #include "server.hpp"
 #include "parameters.hpp"
 #include "Generator.hpp"
@@ -106,7 +104,6 @@ void FindPath(parameters& P) {
 
 using namespace std;
 
-
 string systemStringResult(const char* cmd) {
     FILE* pipe = popen(cmd, "r");
     if (!pipe) return "";
@@ -140,16 +137,13 @@ void cleanTmp(void){
  * Build the simulator and launch it.
  */
 int main(int argc, char** argv) {
-	//parameters P;
-	
-	timeval startbuild,endbuild;
+
+    //Start the timer for build time.
+    auto startbuild = chrono::steady_clock::now();
 	
 	// Fill the P structure from the command line
 	P.parseCommandLine(argc,argv);
 
-	//Start the timer for build time.
-	gettimeofday(&startbuild, NULL);
-	
 	if (P.verbose>0)cout << "Cosmos" << endl;
 	//assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
 	
@@ -176,16 +170,16 @@ int main(int argc, char** argv) {
         if (st == "./Cosmos")P.Path = "";
         else if(st.length()>6)P.Path=st.substr(0,st.length()-6);
         else FindPath(P);
-	}
+    }
     if(P.verbose>2)cout << "Binary directory path set to:" << P.Path << endl;
 
     if(P.prismPath.empty())P.prismPath="prism";
 
-	//Build the model and lha.
-	if ( ! Parse()) {
-		cout << "Fail to build the model.";
-		return(EXIT_FAILURE);
-	}
+    //Parse and generate the gspn and lha.
+    if ( ! Parse()) {
+        cout << "Fail to build the model.";
+        return(EXIT_FAILURE);
+    }
 
     if(!P.unfold.empty())return EXIT_SUCCESS;
 
@@ -200,24 +194,27 @@ int main(int argc, char** argv) {
     }
     if(P.MaxRuns==0)return EXIT_SUCCESS;
 
-    if ( !build()) {
-        cout << "Fail to Compile the model.";
-        return(EXIT_FAILURE);
+    //Compile the simulator
+    if(P.tmpStatus==0 || P.tmpStatus==2){
+        if ( !build()) {
+            cout << "Fail to Compile the model.";
+            return(EXIT_FAILURE);
+        }
     }
 
     //stop the timer for building, display the time if required.
-    gettimeofday(&endbuild, NULL);
-    double buildTime = endbuild.tv_sec - startbuild.tv_sec + ((endbuild.tv_usec - startbuild.tv_usec) / 1000000.0);
-    if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildTime<< "s"<< endl;
+    auto endtime = chrono::steady_clock::now();
+    chrono::duration<double> buildtime= endtime-startbuild;
+    if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildtime.count() << "s"<< endl;
 
-	if(!P.sequential){ //Compute Chernoff-Hoeffding bounds
-		double b = 0.0;
-		for(const auto it : P.HaslFormulas) b = fmax(b,it->bound());
+    if(!P.sequential){ //Compute Chernoff-Hoeffding bounds
+        double b = 0.0;
+        for(const auto it : P.HaslFormulas) b = fmax(b,it->bound());
         if(b== INFINITY){
             cerr << "Cannot use Chernoff-Hoeffding bounds: no bounds on the computed value" << endl;
             return EXIT_FAILURE;
         }
-		if(P.MaxRuns==0){
+		if(P.MaxRuns== (unsigned long)-1){
 			P.MaxRuns = (int)(2.0*2.0*2.0*b*b/(P.Width*P.Width) * log(2/(1-P.Level)));
 		}else if(P.Width == 0){
 			P.Width = 2.0*b * sqrt( (2.0/P.MaxRuns) * log(2.0/(1.0-P.Level)));
