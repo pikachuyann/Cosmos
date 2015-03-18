@@ -21,6 +21,7 @@ let benchlist = [
   "QueueMM1", None;
   "signallingCascade", None;
   "DataBase" , None;
+  "Hospital", None;
   "RareEventUnbounded", None;
   "RareEventUnbounded", Some("test2.ml");
   "TandemCosy", Some("testPrism.ml");
