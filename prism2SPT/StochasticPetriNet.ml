@@ -399,7 +399,7 @@ let print_prism_module fpath net =
     ignore @@ Data.fold (fun b (p,v) -> begin
       if b then Printf.fprintf f " & ";
       let pname = (Data.acca net.place p |> fst) in
-      Printf.fprintf f "(%s'=%s+(%a))" pname pname printH_expr v;
+      Printf.fprintf f "(%s'=%a)" pname printH_expr (Plus((IntName pname),v));
       true
     end
     ) false update;

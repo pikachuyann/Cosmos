@@ -385,7 +385,7 @@ void launchServer(parameters& P){
 			}
         }
 		//Check if the simulation should continue.
-    }while(Result.continueSim() && clientstream.size()>0 && continueSelect);
+    }while(Result.continueSim() && clientstream.size()>1 && continueSelect);
     signal(SIGCHLD, signalHandler);
     signal(SIGPIPE, signalHandler);
 
