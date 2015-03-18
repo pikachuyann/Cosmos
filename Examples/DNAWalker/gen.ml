@@ -44,7 +44,7 @@ Finish=AVG(Last(vd1));
 DeadLock=AVG(Last(vd2));
 Step=AVG(Last(vd3));
 Blockade=AVG(Last(vc1));
-uB=AVG(Last(useblocked));
+uB=AVG(Last(corrblocked))/AVG(Last(vd0));
 InitialLocations = { lii };
 FinalLocations = {lfc,lf,ldl,lnf2};
 Locations = {
@@ -179,7 +179,8 @@ let generate_spn fpath li2 ks failure obj =
         (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);
 (* execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 8 --max-run 200000 --batch 10000 --width 0");;*)
 (*  ignore (Sys.command (Printf.sprintf "prism %s.sm %s.pctl --sim --simsamples 2000000" fpath fpath));;*)
-  ignore (Sys.command (Printf.sprintf "prism %s.sm %s.pctl" fpath fpath));;
+  ignore (Sys.command (Printf.sprintf "/usr/bin/time -v prism %s.sm %s.pctl" fpath fpath));;
+ (* ignore (Sys.command (Printf.sprintf "/usr/bin/time -v prism %s.sm %s.pctl -transientmethod fau -faudelta 1E-10 -fauepsilon 1E-8" fpath fpath));;*)
 (* ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl --approximative" fpath fpath));;*)
 (*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
 (*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
@@ -310,7 +311,7 @@ let lozange f n m fb =
 
 
 
-
+(*
 generate_spn "ex" [
   (1,Init,0,(0.0,0.0)); 
   (2,Final,1,(2.0,0.0));] 
@@ -429,7 +430,7 @@ gen28 "track28RR" 0 1 0 1 "a28=2";;
 gen_xor "ringLL" true true;;
 gen_xor "ringRR" false false;;
 *)
-
+*)
 gen_xor "ringLL" true true;;
 gen_xor "ringRL" false true;;
 gen_xor "ringLR" true false;;
