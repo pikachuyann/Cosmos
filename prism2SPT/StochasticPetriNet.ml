@@ -148,7 +148,7 @@ let gen_const f li lr le fund =
         <attribute name=\"expr\"><attribute name=\"numValue\">
             %a
         </attribute></attribute>
-      </attribute>\n" n printH_int_expr v) li;
+      </attribute>\n" n printH_expr v) li;
   
   Printf.fprintf f "    </attribute>
     <attribute name=\"realConsts\">\n";
@@ -158,7 +158,7 @@ let gen_const f li lr le fund =
         <attribute name=\"expr\"><attribute name=\"numValue\">
             %a
         </attribute></attribute>
-      </attribute>\n" n printH_float_expr v) lr;
+      </attribute>\n" n printH_expr v) lr;
     Printf.fprintf f
       "     </attribute>
     <attribute name=\"extConsts\">\n";
@@ -220,14 +220,14 @@ let print_arc_marcie net f t =
   let fq = Data.fold (fun first (_,(v,t2,p)) ->
     if t<>t2 then first else begin 
       if not first then Printf.fprintf f " & ";
-      Printf.fprintf f "[%s + %a]" (fst (Data.acca net.Net.place p)) printH_int_expr v;
+      Printf.fprintf f "[%s + %a]" (fst (Data.acca net.Net.place p)) printH_expr v;
       false
     end)
     true net.Net.outArc in
   let fq2 = Data.fold (fun first (_,(v,p,t2)) ->
     if t<>t2 then first else begin
       if not first then Printf.fprintf f " & ";
-      Printf.fprintf f "[%s - %a]" (fst (Data.acca net.Net.place p)) printH_int_expr v;
+      Printf.fprintf f "[%s - %a]" (fst (Data.acca net.Net.place p)) printH_expr v;
       false
     end)
     fq net.Net.inArc in
@@ -237,7 +237,7 @@ let print_condition_arc_marcie net f t =
   let fq3 = Data.fold (fun first (_,(v,p,t2)) ->
     if t<>t2 then first else begin
       if not first then Printf.fprintf f " & ";
-      Printf.fprintf f "[%s < %a]" (fst (Data.acca net.Net.place p)) printH_int_expr v;
+      Printf.fprintf f "[%s < %a]" (fst (Data.acca net.Net.place p)) printH_expr v;
       false
     end)
     true net.Net.inhibArc in ignore fq3
@@ -259,23 +259,23 @@ let print_spt_marcie fpath net =
   | Some fv -> Printf.fprintf f "\tdouble %s=%a;\n" s printH_expr fv) lcd;
 
   output_string f "places:\n";
-  Data.iter (fun (s,m) ->Printf.fprintf f "\t%s = %a;\n" s printH_int_expr m) net.Net.place;
+  Data.iter (fun (s,m) ->Printf.fprintf f "\t%s = %a;\n" s printH_expr m) net.Net.place;
 
   output_string f "\ntransitions:\n";
   output_string f "\tstochastic:\n";
   Data.iter (fun (s,(distr,_,_)) -> match distr with
     Exp r -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
-      (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r
+      (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_expr r
   | Det r -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
-    (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r    
+    (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_expr r    
   | Erl (n,r) -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
-      (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr (Div (r,CastInt (n))) 
+      (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_expr (Div (r,CastInt (n))) 
     | _ -> ()   
   ) net.Net.transition;
   output_string f "\timmediate:\n";
   Data.iter (fun (s,(distr,r,_)) -> match distr with
       Imm -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
-     (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_float_expr r
+     (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_expr r
     | _ -> ()   
   ) net.Net.transition;
 
@@ -285,12 +285,12 @@ let print_spt_marcie fpath net =
 
 let print_arc_dot f s1 s2 v =
   if v<>Int 1 then
-    Printf.fprintf f "\t%s -> %s [label=\"%a\"];\n" s1 s2 printH_int_expr v
+    Printf.fprintf f "\t%s -> %s [label=\"%a\"];\n" s1 s2 printH_expr v
   else Printf.fprintf f "\t%s -> %s;\n" s1 s2;;
 
 let print_inhib_arc_dot f s1 s2 v =
   if v<>Int 1 then
-    Printf.fprintf f "\t%s -> %s [arrowhead=odot,label=\"%a\"];\n" s1 s2 printH_int_expr v
+    Printf.fprintf f "\t%s -> %s [arrowhead=odot,label=\"%a\"];\n" s1 s2 printH_expr v
   else Printf.fprintf f "\t%s -> %s [arrowhead=odot];\n" s1 s2;;
 
 

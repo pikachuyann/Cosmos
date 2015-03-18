@@ -28,7 +28,8 @@ let benchlist = [
   "SharedMemory" , None;
   "RareEventU", None;
   "DNAWalker", None;
-	 
+  "fms", None;  
+  	 
  ];;
 
 List.iter (fun (s,n) -> 
