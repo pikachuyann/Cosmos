@@ -179,7 +179,7 @@ int main(int argc, char** argv) {
 	}
     if(P.verbose>2)cout << "Binary directory path set to:" << P.Path << endl;
 
-    if(P.prismPath.empty())P.prismPath=P.Path+"../prism/bin/prism";
+    if(P.prismPath.empty())P.prismPath="prism";
 
 	//Build the model and lha.
 	if ( ! Parse()) {

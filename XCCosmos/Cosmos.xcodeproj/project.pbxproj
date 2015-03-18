@@ -981,9 +981,6 @@
 		039A3AE3191A9EEC00B42447 /* workflow-out-5.gspn */ = {isa = PBXFileReference; lastKnownFileType = text; path = "workflow-out-5.gspn"; sourceTree = "<group>"; };
 		039B4F89188E7B2400C63ED7 /* Generator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Generator.cpp; sourceTree = "<group>"; };
 		039B4F8A188E7B2400C63ED7 /* Generator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Generator.hpp; sourceTree = "<group>"; };
-		03A7F877182BCEA7006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		03A7F878182BCEB1006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
-		03A7F879182BCEBB006F0BC8 /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03A7F87B182C12DB006F0BC8 /* gnuplotScript.gnu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gnuplotScript.gnu; path = ../utils/gnuplotScript.gnu; sourceTree = "<group>"; };
 		03A7F87C182C12DB006F0BC8 /* gnuplotScriptbenchmanycore.gnu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gnuplotScriptbenchmanycore.gnu; path = ../utils/gnuplotScriptbenchmanycore.gnu; sourceTree = "<group>"; };
 		03A7F87D182C12DB006F0BC8 /* gnuplotScriptCMD.gnu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gnuplotScriptCMD.gnu; path = ../utils/gnuplotScriptCMD.gnu; sourceTree = "<group>"; };
@@ -1223,7 +1220,6 @@
 			children = (
 				0367E29818842F2400F35619 /* Eval-parser.cc */,
 				0367E29918842F2400F35619 /* Eval-scanner.cc */,
-				03A7F877182BCEA7006F0BC8 /* Makefile.am */,
 				032A7010181BC0D6006D7332 /* Eval-parser.yy */,
 				032A7011181BC0D6006D7332 /* Eval-scanner.ll */,
 				032A7012181BC0D6006D7332 /* Eval.cpp */,
@@ -1237,7 +1233,6 @@
 			children = (
 				0367E29018842E8C00F35619 /* Gspn-parser.cc */,
 				0367E29218842EE600F35619 /* Gspn-scanner.cc */,
-				03A7F878182BCEB1006F0BC8 /* Makefile.am */,
 				032A701C181BC0D6006D7332 /* Gspn-parser.yy */,
 				032A701D181BC0D6006D7332 /* Gspn-Reader.cpp */,
 				032A701E181BC0D6006D7332 /* Gspn-Reader.hpp */,
@@ -1257,7 +1252,6 @@
 			children = (
 				0367E29418842F0F00F35619 /* Lha-parser.cc */,
 				0367E29518842F0F00F35619 /* Lha-scanner.cc */,
-				03A7F879182BCEBB006F0BC8 /* Makefile.am */,
 				032A702D181BC0D6006D7332 /* Lha-parser.yy */,
 				032A702E181BC0D6006D7332 /* Lha-Reader.cpp */,
 				032A702F181BC0D6006D7332 /* Lha-Reader.hpp */,

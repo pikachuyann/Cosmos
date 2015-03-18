@@ -1,5 +1,5 @@
 
-noinst_PROGRAMS = ClientSim2 gtest
+noinst_PROGRAMS = ClientSim2
 
 # ClientSim1_SOURCES = \
 	../src/Simulator/BatchR.cpp \
@@ -22,12 +22,6 @@ ClientSim2_SOURCES = LHA.cpp markingImpl.hpp spn.cpp
 ClientSim2_LDADD = ../src/Simulator/libClientSim.la
 
 ClientSim2_CPPFLAGS = -Wno-unused-const-variable -Wno-unused-parameter -I$(srcdir)/../src/Simulator
-
-gtest_SOURCES = \
-	src/gtest-all.cc \
-	src/gtest_main.cc \
-	sample1.cc \
-	sample1_unittest.cc
 
 AM_CPPFLAGS =  -I$(srcdir)/include/gtest/internal/ -I$(srcdir)/include -isystem -I$(srcdir)/include $(BOOST_CPPFLAGS) $(PTHREAD_CFLAGS)
 
