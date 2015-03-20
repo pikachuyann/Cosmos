@@ -14,30 +14,75 @@ import ctypes
 exitFlag = 1
 stDataColl = 0
 collectedSamples = []
-useVM = 1
+useVM = 0
 
 def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 	currentTran = []
 
-	firstPosM2 = 0
-	firstPosM1 = 0
+	#firstPosM2 = 0
+	#firstPosM1 = 0
+
 	sumCurrent = 0
-	sampleCnt = 0
-	for it in range(len(pmData)):
+	sampleCnt = 1
+	prev = pmData[0][1]
+	state = 0
+
+	for it in range(1,len(pmData)):
 		sampleCnt = sampleCnt + 1
 
-		if pmData[it][1]!=2 and firstPosM2 == 0:
-			firstPosM2 = 1
-		elif pmData[it][1]==2 and firstPosM2 == 1:
-			break
-		elif pmData[it][1]!=2 and firstPosM2 == 1:
-			if pmData[it][1] == 1:
-				firstPosM1 = 1
+		if state==0:
+			if pmData[it][1]==2 and prev==2:
+				state = 0
+			elif pmData[it][1]==0 and prev==2:
+				state = 1
 				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1] == 0 and firstPosM1 == 0:
+			elif pmData[it][1]==1 and prev==2:	
+				state = 2
 				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1] == 0 and firstPosM1 == 1:
-				firstPosM1 = 0
+
+		if state==1:
+			if pmData[it][1]==0 and prev==0:
+				state = 1
+				sumCurrent = sumCurrent + pmData[it][0]
+			elif pmData[it][1]==1 and prev==0:
+				state = 2
+				sumCurrent = sumCurrent + pmData[it][0]
+			elif pmData[it][1]==2 and prev==0:
+				state = 5	
+
+		if state==2:
+			if pmData[it][1]==0 and prev==1:
+				state = 3
+				sumCurrent = sumCurrent + pmData[it][0]
+			elif pmData[it][1]==1 and prev==1:
+				state = 2
+				sumCurrent = sumCurrent + pmData[it][0]
+			elif pmData[it][1]==2 and prev==1:
+				state = 5
+			elif pmData[it][1]==3 and prev==1:
+				state = 4
+
+		if state==3:
+			if pmData[it][1]==0 and prev==0:
+				state = 3
+				sumCurrent = sumCurrent + pmData[it][0]
+			elif pmData[it][1]==1 and prev==0:
+				state = 2
+				stime = sampleCnt/monitorSampligFreq
+
+				currentTran.append((sumCurrent,stime))
+
+				print str(stime)+"  "+str(sumCurrent)
+				sumCurrent = pmData[it][0]
+			elif pmData[it][1]==2 and prev==0:
+				state = 5
+			elif pmData[it][1]==3 and prev==0:
+				state = 4
+				sumCurrent = sumCurrent + pmData[it][0]
+
+		if state==4:
+			if pmData[it][1]==0 and prev==3:
+				state = 1
 				stime = sampleCnt/monitorSampligFreq
 
 				currentTran.append((sumCurrent,stime))
@@ -45,6 +90,33 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 				print str(stime)+"  "+str(sumCurrent)
 				sumCurrent = pmData[it][0]
 
+			elif pmData[it][1]==2 and prev==3:
+				state = 5
+			elif pmData[it][1]==3 and prev==3:
+				state = 4
+				sumCurrent = sumCurrent + pmData[it][0]
+
+		prev = pmData[it][1]
+
+
+#		if pmData[it][1]!=2 and firstPosM2 == 0:
+#			firstPosM2 = 1
+#		elif pmData[it][1]==2 and firstPosM2 == 1:
+#			break
+#		elif pmData[it][1]!=2 and firstPosM2 == 1:
+#			if pmData[it][1] == 1:
+#				firstPosM1 = 1
+#				sumCurrent = sumCurrent + pmData[it][0]
+#			elif pmData[it][1] == 0 and firstPosM1 == 0:
+#				sumCurrent = sumCurrent + pmData[it][0]
+#			elif pmData[it][1] == 0 and firstPosM1 == 1:
+#				firstPosM1 = 0
+#				stime = sampleCnt/monitorSampligFreq
+#
+#				currentTran.append((sumCurrent,stime))
+#
+#				print str(stime)+"  "+str(sumCurrent)
+#				sumCurrent = pmData[it][0]
 
 	return currentTran
 
