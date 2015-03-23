@@ -66,7 +66,9 @@ private:
 						   vector< set<int> >&);
 
 	
-	
+    void writeMarkingUpdate(ofstream &f, size_t t,const place &p,const arcStore &as2,bool direct);
+    void writeMarkingUpdateIn(ofstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos,const arcStore &as2,bool directionxs);
+
 };
 
 

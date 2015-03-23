@@ -1072,7 +1072,6 @@ void Gspn_Writer::writeDotFile(const string &file){
             }
         }
     df << "}" << endl;
-    
 }
 
 void Gspn_Writer::writeMacro(ofstream &f){
@@ -1081,6 +1080,56 @@ void Gspn_Writer::writeMacro(ofstream &f){
     for( auto &t : MyGspn.transitionStruct)
         f << "#define TR_"<< t.label << "_RT " << t.id <<endl;
     f<< endl;
+}
+
+
+void Gspn_Writer::writeMarkingUpdateIn(ofstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos, const arcStore &as2, bool direct){
+    if (!MyGspn.access(as,t2,p.id).isEmpty) {
+        if(!MyGspn.access(as2,t,p.id).isMarkDep && !MyGspn.access(as,t2,p.id).isMarkDep){
+            int decrement = MyGspn.access(as2,t,p.id).intVal;
+            int seuil = MyGspn.access(as,t2,p.id).intVal;
+            if(seuil-decrement >0){
+                f << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+ (direct? decrement: 0);
+                f << " && Marking.P->_PL_" << p.name <<"+"<< (direct? 0: decrement)<<" >=" << seuil <<")";
+                f << "TransitionConditions["<< t2 << (pos? "]++ ;":"]-- ;") << endl;
+            } else
+                f << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+(direct? decrement: 0) << ")TransitionConditions["<< t2 << (pos? "]++ ;":"]-- ;") << endl;
+        } else {
+            string decrement;
+            if (MyGspn.access(as2,t,p.id).isMarkDep) {
+                searchreplace(MyGspn.access(as2,t,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , decrement);
+            }else{
+                decrement = to_string(MyGspn.access(as2,t,p.id).intVal);
+            }
+            string seuil;
+            if(MyGspn.access(as,t2,p.id).isMarkDep){
+                searchreplace(MyGspn.access(as,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
+            }else{
+                seuil = to_string(MyGspn.access(as,t2,p.id).intVal);
+            }
+            f << "\t\t\tif(Marking.P->_PL_" << p.name << (direct? "": "+"+decrement) <<" >= "<< seuil;
+            f << " && Marking.P->_PL_" << p.name <<" < " << seuil << (direct? "+"+decrement: "") <<")";
+            f << "TransitionConditions["<< t2 <<(pos? "]++ ;":"]-- ;") << endl;
+        }
+    }
+}
+
+void Gspn_Writer::writeMarkingUpdate(ofstream &f, size_t t,const place &p,const arcStore &as2,bool direct){
+
+    if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
+        if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty)
+            writeMarkingUpdateIn(f, MyGspn.inArcsStruct, t, p, t2, direct  ,as2,direct);
+
+        if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isEmpty)
+            writeMarkingUpdateIn(f, MyGspn.inhibArcsStruct, t, p, t2, !direct ,as2,direct);
+    }
+    string decrement;
+    if (MyGspn.access(as2,t,p.id).isMarkDep) {
+        searchreplace(MyGspn.access(as2,t,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , decrement);
+    }else{
+        decrement = to_string(MyGspn.access(as2,t,p.id).intVal);
+    }
+    f << "\t\t\tMarking.P->_PL_" << p.name << (direct? " -= " : " += ") << decrement << ";"<< endl;
 }
 
 
@@ -1328,161 +1377,16 @@ void Gspn_Writer::writeFile(){
 		//update the marking
 		for (const auto &p : MyGspn.placeStruct) {
 			if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
-				if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep){
-					int decrement = MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal;
-					if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
-						if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty) {
-							if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isMarkDep){
-								int seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).intVal;
-								if(seuil-decrement >0){
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+decrement;
-									SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
-									SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
-								} else
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+decrement << ")TransitionConditions["<< t2 <<"]++ ;" << endl;
-							}else {
-								string seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).stringVal;
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" >= "<< seuil;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<" < " << seuil <<"+"<< decrement <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
-							}
-						}
-						
-						if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isEmpty) {
-							if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isMarkDep){
-								int seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).intVal;
-								if(seuil-decrement >0){
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+decrement;
-									SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
-									SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
-								} else
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+decrement << ")TransitionConditions["<< t2 <<"]-- ;" << endl;
-							}else {
-								string seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).stringVal;
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil <<"+"<< decrement;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
-							}
-						}
-					}
-					SpnCppFile << "\t\t\tMarking.P->_PL_" << p.name <<" -= " << decrement << ";"<< endl;
-				} else {
-					string decrement;
-					searchreplace(MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , decrement);
-					
-					if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
-						if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty) {
-							if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isMarkDep){
-								int seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).intVal;
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil <<"+"<< decrement;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
-							}else {
-								string seuil;
-								searchreplace(MyGspn.access(MyGspn.inArcsStruct,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil <<"+" << decrement;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
-							}
-						}
-						
-						if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isEmpty) {
-							if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isMarkDep){
-								int seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).intVal;
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil <<"+"<<decrement;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
-							}else {
-								string seuil;
-								searchreplace(MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil << "+" <<decrement;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
-							}
-						}
-					}
-					SpnCppFile << "\t\t\tMarking.P->_PL_" << p.name <<" -= " << decrement << ";"<< endl;
-				}
+                //update for place in place
+                writeMarkingUpdate(SpnCppFile, t, p,MyGspn.inArcsStruct,true);
 			}
-			
-			if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isEmpty) {
-				if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isMarkDep){
-					int increment = MyGspn.access(MyGspn.outArcsStruct,t,p.id).intVal;
-					if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
-						if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty) {
-							if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isMarkDep){
-								int seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).intVal;
-								if(seuil-increment >0){
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
-									SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
-									SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
-								} else
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil << ")TransitionConditions["<< t2 <<"]-- ;" << endl;
-							}else {
-								string seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).stringVal;
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
-							}
-						}
-						
-						if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isEmpty) {
-							if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isMarkDep){
-								int seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).intVal;
-								if(seuil-increment >0){
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
-									SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
-									SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
-								} else
-									SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil << ")TransitionConditions["<< t2 <<"]++ ;" << endl;
-							}else {
-								string seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).stringVal;
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
-							}
-						}
-					}
-					SpnCppFile << "\t\t\tMarking.P->_PL_" << p.name <<" += " << increment << ";"<< endl;
-				} else {
-					string increment;
-					searchreplace(MyGspn.access(MyGspn.outArcsStruct,t,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , increment);
-					if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
-						if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty) {
-							if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isMarkDep){
-								int seuil = MyGspn.access(MyGspn.inArcsStruct,t2,p.id).intVal;
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
-							}else {
-								string seuil;
-								searchreplace(MyGspn.access(MyGspn.inArcsStruct,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]-- ;" << endl;
-							}
-						}
-						
-						if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isEmpty) {
-							if (!MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).isMarkDep){
-								int seuil = MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).intVal;
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
-							}else {
-								string seuil;
-								searchreplace(MyGspn.access(MyGspn.inhibArcsStruct,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
-								
-								SpnCppFile << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil;
-								SpnCppFile << " && Marking.P->_PL_" << p.name <<"+"<<increment<<" >=" << seuil <<")";
-								SpnCppFile << "TransitionConditions["<< t2 <<"]++ ;" << endl;
-							}
-						}
-					}
-					SpnCppFile << "\t\t\tMarking.P->_PL_" << p.name <<" += " << increment << ";"<< endl;
-				}
-			}
-		}
+
+            if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isEmpty) {
+                //update for outplace
+                writeMarkingUpdate(SpnCppFile, t, p,MyGspn.outArcsStruct,false);
+            }
+
+        }
 		//
 		SpnCppFile << "       break;" << endl;
 		SpnCppFile << "     } " << endl;

@@ -29,6 +29,7 @@ let benchlist = [
   "RareEventU", None;
   "DNAWalker", None;
   "fms", None;  
+  "Philosophers", None;
   	 
  ];;
 
