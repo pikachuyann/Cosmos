@@ -44,7 +44,6 @@ public:
 private:
 	
 	int varMultiplier(size_t var);
-    void writeMacro(ofstream &);
     void writeTok(ostream &SpnF, vector<coloredToken>&,const colorDomain&);
     void generateStringVal(arcStore&);
 	void writeMarkingClasse(ofstream &, ofstream &, parameters &);
@@ -65,9 +64,16 @@ private:
 						   vector< set<int> >&,
 						   vector< set<int> >&);
 
-	
+    void writeMacro(ofstream &);
+
     void writeMarkingUpdate(ofstream &f, size_t t,const place &p,const arcStore &as2,bool direct);
     void writeMarkingUpdateIn(ofstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos,const arcStore &as2,bool directionxs);
+    void writeFire(ofstream &f);
+    void writeIsEnabled(ofstream &f);
+    void writeSetConditionsVector(ofstream &f);
+    void writeGetDistParameters(ofstream &f);
+    void writeGetPriority(ofstream &f);
+    void writeGetWeight(ofstream &f);
 
 };
 
