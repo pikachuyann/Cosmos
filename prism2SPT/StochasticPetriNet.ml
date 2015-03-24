@@ -285,12 +285,12 @@ let print_spt_marcie fpath net =
 
 let print_arc_dot f s1 s2 v =
   if v<>Int 1 then
-    Printf.fprintf f "\t%s -> %s [label=\"%a\"];\n" s1 s2 printH_expr v
+    Printf.fprintf f "\t%s -> %s [xlabel=\"%a\"];\n" s1 s2 printH_expr v
   else Printf.fprintf f "\t%s -> %s;\n" s1 s2;;
 
 let print_inhib_arc_dot f s1 s2 v =
   if v<>Int 1 then
-    Printf.fprintf f "\t%s -> %s [arrowhead=odot,label=\"%a\"];\n" s1 s2 printH_expr v
+    Printf.fprintf f "\t%s -> %s [arrowhead=odot,xlabel=\"  %a  \"];\n" s1 s2 printH_expr v
   else Printf.fprintf f "\t%s -> %s [arrowhead=odot];\n" s1 s2;;
 
 
@@ -305,14 +305,14 @@ let colorOfTrans = function
 
 let print_spt_dot ?(showlabel=true) fpath net cl p =
   let f = open_out fpath in
-  output_string f "digraph G {\n\tnode[fontsize=60];\n";
+  output_string f "digraph G {\n\n\tnode[fontsize=18];\n\tedge[fontsize=18];\n";
   
 (*  output_string f "\tsubgraph place {\n";
   output_string f "\t\tgraph [shape=circle];\n";
   output_string f "\t\tnode [shape=circle,fixedsize=true];\n";*)
   Data.iter (fun (s,m) ->
     let pos = (try let x,y = List.assoc s p in
-		   Printf.sprintf ",pos=\"%f,%f!\"" (2.0*.x) (2.0*.y)
+		   Printf.sprintf ",pos=\"%f,%f!\"" (0.75*.x) (0.75*.y)
       with Not_found -> "") in
 	
     Printf.fprintf f "\t%s [shape=circle,xlabel=\"%s\",label=\"%a\"%s];\n" s (if showlabel then s else "") 
@@ -321,7 +321,11 @@ let print_spt_dot ?(showlabel=true) fpath net cl p =
   ) net.Net.place;
   (*output_string f "\t}\n\tsubgraph transition {\n";
   output_string f "\t\tnode [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=black];\n";*)
-  Data.iter (fun (s,(d,_,_)) ->Printf.fprintf f "\t%s [shape=rect,fixedsize=true,height=0.2,style=filled,fillcolor=%s,xlabel=\"%s\",label=\"\"];\n" s (colorOfTrans d) (if showlabel then s else "")) net.Net.transition;
+  Data.iter (fun (s,(d,_,_)) ->
+    let pos = (try let x,y = List.assoc s p in
+		   Printf.sprintf ",pos=\"%f,%f!\"" (0.75*.x) (0.75*.y)
+      with Not_found -> "") in
+    Printf.fprintf f "\t%s [shape=rect,fixedsize=true,height=0.12,width=0.5,style=filled,fillcolor=%s,xlabel=\"%s\",label=\"\"%s];\n" s (colorOfTrans d) (if showlabel then "" else "") pos) net.Net.transition;
   (*output_string f "\t}\n";*)
   Data.iter (fun (_,(v,p,t)) ->
     print_arc_dot f (fst (Data.acca net.Net.place p)) 
@@ -347,7 +351,7 @@ let print_prism_module fpath net =
   let f = open_out fpath in
   
   Printf.fprintf f "ctmc\nconst double imm=100000;\n";
-
+ 
   Printf.fprintf f "module m1\n";
 
   Data.iter (fun (n,x) ->

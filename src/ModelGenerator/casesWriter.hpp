@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <string.h>
 
+
 struct cmp_str
 {
 	bool operator()(const std::string a,const std::string b)const{
@@ -62,6 +63,7 @@ private:
 	std::map<int,std::string> mapcomment;
 };
 
+void writeFunT(std::ostream &s,const std::string &rtype, size_t n, std::function< std::string(unsigned int)>, std::function< std::string(unsigned int)>);
 
 
 

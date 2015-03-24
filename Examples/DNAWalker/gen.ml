@@ -30,8 +30,8 @@ let generate_lha fpath li obj =
   let safe = ref " TRUE "
   and blockade = ref " FALSE " in
   List.iter (fun (n,t,i,_) -> 
-    if t= Final then safe := Printf.sprintf " %s & (a%i<2)" !safe n
-    else if i=0 && t<> Init then blockade := Printf.sprintf " %s | (a%i=2)" !blockade n
+    if t= Final then safe := Printf.sprintf " %s & (A%i<2)" !safe n
+    else if i=0 && t<> Init then blockade := Printf.sprintf " %s | (A%i=2)" !blockade n
   ) li;
   let f = open_out fpath in
 (*\%corrBlock=AVG(Last(corrblock))/AVG(Last(useblocked));*)
@@ -85,8 +85,8 @@ let generate_pctl fpath li obj =
   let safe = ref " true "
   and blockade = ref " false " in
   List.iter (fun (n,t,i,_) -> 
-    if t= Final then safe := Printf.sprintf " %s & (a%i<2)" !safe n
-    else if i=0 && t<> Init then blockade := Printf.sprintf " %s | (a%i=2)" !blockade n
+    if t= Final then safe := Printf.sprintf " %s & (A%i<2)" !safe n
+    else if i=0 && t<> Init then blockade := Printf.sprintf " %s | (A%i=2)" !blockade n
   ) li;
   let f = open_out fpath in
   Printf.fprintf f "P=? [ (%s)  U[0,12000] (%s) ]\n" !safe obj;
@@ -97,8 +97,8 @@ let generate_csl fpath li obj =
   let safe = ref " true "
   and blockade = ref " false " in
   List.iter (fun (n,t,i,_) -> 
-    if t= Final then safe := Printf.sprintf " %s & [a%i<2]" !safe n
-    else if i=0 && t<> Init then blockade := Printf.sprintf " %s | [a%i=2]" !blockade n
+    if t= Final then safe := Printf.sprintf " %s & [A%i<2]" !safe n
+    else if i=0 && t<> Init then blockade := Printf.sprintf " %s | [A%i=2]" !blockade n
   ) li;
   let f = open_out fpath in
   Printf.fprintf f "P=? [ [%s]  U[0,12000] [%s] ]\n" !safe obj;
@@ -114,15 +114,15 @@ let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true) 
   print_endline ("Generate2 "^fpath);
   let net = Net.create () in
   List.iter (fun (n,t,i,_) ->
-    Data.add (("a"^(string_of_int n)),(if t=Init then Int 2 else Int i)) net.Net.place;
+    Data.add (("A"^(string_of_int n)),(if t=Init then Int 2 else Int i)) net.Net.place;
     if i=0 && t <> Init && genfailure then begin
-      Data.add (("b"^(string_of_int n)), Int 1) net.Net.place;
+      Data.add (("B"^(string_of_int n)), Int 1) net.Net.place;
       Data.add ("tb"^(string_of_int n) ,(imm_trans genimm failure)) net.Net.transition;
       Data.add ("tAb"^(string_of_int n) ,(imm_trans genimm (1.0-.failure))) net.Net.transition;
-      Net.add_arc net ("b"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
-      Net.add_arc net ("b"^(string_of_int n)) ("tAb"^(string_of_int n)) (Int 1);
-      Net.add_arc net ("tb"^(string_of_int n)) ("a"^(string_of_int n)) (Int 1);
-      Net.add_inhibArc net ("a"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
+      Net.add_arc net ("B"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
+      Net.add_arc net ("B"^(string_of_int n)) ("tAb"^(string_of_int n)) (Int 1);
+      Net.add_arc net ("tb"^(string_of_int n)) ("A"^(string_of_int n)) (Int 1);
+(*      Net.add_inhibArc net ("a"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);*)
       (*cluster.(n-1) <- ("b"^(string_of_int n)) 
       :: ("tb"^(string_of_int n))
       :: ("tAb"^(string_of_int n))
@@ -148,12 +148,12 @@ let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true) 
       if r3 <> 0.0 then
 	let tl = Printf.sprintf "t%i_%i" n1 n2 in
 	Data.add (tl,(Exp (Float r3),Float 1.0,Float 1.0)) net.Net.transition;
-	Net.add_arc net ("a"^(string_of_int n1)) tl (Int 2);
-	Net.add_arc net ("a"^(string_of_int n2)) tl (Int 1);
-	Net.add_arc net tl ("a"^(string_of_int n2)) (Int 2);
-	Net.add_inhibArc net ("a"^(string_of_int n2)) tl (Int 2);
+	Net.add_arc net ("A"^(string_of_int n1)) tl (Int 2);
+	Net.add_arc net ("A"^(string_of_int n2)) tl (Int 1);
+	Net.add_arc net tl ("A"^(string_of_int n2)) (Int 2);
+	Net.add_inhibArc net ("A"^(string_of_int n2)) tl (Int 2);
 	(*cluster.(n1-1) <- tl :: cluster.(n1-1);*) 
-      ) li ) li;
+      ) li ) li; 
   end;
 
   if genloop then 
@@ -161,28 +161,35 @@ let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true) 
       if t1 = Final then (
 	let tl = Printf.sprintf "tloop%i" n1 in 
 	Data.add (tl,(Exp (Float 0.000000001),Float 1.0,Float 1.0)) net.Net.transition;
-	Net.add_arc net ("a"^(string_of_int n1)) tl (Int 2);
-	Net.add_arc net tl ("a"^(string_of_int n1)) (Int 2);)
+	Net.add_arc net ("A"^(string_of_int n1)) tl (Int 2);
+	Net.add_arc net tl ("A"^(string_of_int n1)) (Int 2);)
     ) li;  
   net;;
   
+let dist = 0.675 ;;
+
 let generate_spn fpath li2 ks failure obj =
   let li = mapsq3 li2 in
-  let net = gen_spn2 ~gentrans:true ~genloop:true ~genfailure:true ~genimm:false fpath li ks failure in
+  let net = gen_spn2 ~gentrans:false ~genloop:true ~genfailure:false ~genimm:false fpath li ks failure in
   print_spt (fpath^".grml") net;
   generate_lha (fpath^".lha") li obj;
   print_spt_marcie (fpath^".andl") net;
   generate_csl (fpath^".csl") li obj;
   print_prism_module (fpath^".sm") net;
   generate_pctl (fpath^".pctl") li obj;
-  print_spt_dot ~showlabel:false (fpath^".dot") net []
-        (List.map (fun (n,_,_,p) -> ("a"^(string_of_int n)),p) li);;
+  print_spt_dot ~showlabel:true (fpath^".dot") net []
+        (List.fold_left (fun q (n,_,_,(px,py)) -> 
+	  (("A"^(string_of_int n)),(px,py))::
+	    (*(("tloop"^(string_of_int n)),(px,py-.(copysign 1.0 py)))::*)
+	    (("tb"^(string_of_int n)),(px,py-.(copysign dist py)))::
+	    (("tAb"^(string_of_int n)),(px,py-.(copysign (3.*.dist) py)))::
+	    (("B"^(string_of_int n)),(px,py-.(copysign (2.0*.dist) py)))::q) [] li);
 (* execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 8 --max-run 200000 --batch 10000 --width 0");;*)
 (*  ignore (Sys.command (Printf.sprintf "prism %s.sm %s.pctl --sim --simsamples 2000000" fpath fpath));;*)
 (*  ignore (Sys.command (Printf.sprintf "/usr/bin/time -v prism %s.sm %s.pctl" fpath fpath));;*)
  (* ignore (Sys.command (Printf.sprintf "/usr/bin/time -v prism %s.sm %s.pctl -transientmethod fau -faudelta 1E-10 -fauepsilon 1E-8" fpath fpath));;*)
 (* ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl --approximative" fpath fpath));;*)
-(*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
+  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;
 (*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
 
 let gen28 f l1 r1 l2 r2 obj =
@@ -224,10 +231,10 @@ generate_spn f [
 let gen_xor f x y =
   let obj = if x <> y then 
     (*generate_lha (f^".lha") "a7=0 & a17=0" "a17>0" "a7>0"*)
-    "a17=2"
+    "A17=2"
   else  
     (*generate_lha (f^".lha") "a7=0 & a17=0" "a7>0" "a17>0";*)
-      "a7=2" in
+      "A7=2" in
   let  xi = if x then 1 else 0
   and nxi = if x then 0 else 1
   and  yi = if y then 1 else 0
@@ -259,10 +266,10 @@ let gen_xor f x y =
 let gen_xor_large f x y =
   let obj = if x <> y then 
     (*generate_lha (f^".lha") "a7=0 & a17=0" "a17>0" "a7>0"*)
-    "a22=2"
+    "A22=2"
   else  
     (*generate_lha (f^".lha") "a7=0 & a17=0" "a7>0" "a17>0";*)
-    "a9=2" in
+    "A9=2" in
   let  xi = if x then 1 else 0
   and nxi = if x then 0 else 1
   and  yi = if y then 1 else 0
@@ -307,7 +314,7 @@ let lozange f n m fb =
       accl := (i+n*(j-1) ,t ,(fb i j)   ,( 1.0*.(float (j-i)) , 0.5*.(float (i+j)))) :: !accl;
     done;
   done;
-  generate_spn f !accl 0.009 0.3 (Printf.sprintf "a%i=2" (n*m));;
+  generate_spn f !accl 0.009 0.3 (Printf.sprintf "A%i=2" (n*m));;
 
 
 
@@ -363,8 +370,9 @@ generate_spn "controlMissing7" [
   (6,Norm ,1,(2.5,-.5.0)); 
   (8,Final,1,(3.5,-.7.0))]
 0.009 0.3 "a8=2";; 
+*)
 
-
+(*
 (*generate_lha "track12Block1.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
 generate_spn "track12Block1" [ 
   (1,Init,0,(  0.0,0.0)); 
@@ -383,17 +391,17 @@ generate_spn "track12Block1" [
 (*generate_lha "track12Block2.lha" "a8=0 & a12=0" "a12>0" "a8>0";
 generate_lha "track12Block2.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
 generate_spn "track12Block2" [ (1,Init,0,(0.0,0.0)); 
-			 (2,Norm,1,(0.0,-1.0)); 
-			 (3,Norm,1,(0.0,-2.0));
-			 (4,Norm,1,(0.0,-3.0));
-			 (5,Norm,0,(-.1.0,-.3.5));
-			 (6,Norm,0,(-.2.0,-.4.0)); 
-			 (7,Norm,1,(-.3.0,-.4.5));
-			(8,Final,1,(-.4.0,-.5.0));
-			 (9,Norm,1,(  1.0,-.3.5));
-			 (10,Norm,1,( 2.0,-.4.0));
-			 (11,Norm,1,( 3.0,-.4.5));
-			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "a12=2";; 
+			 (2,Norm,1,(0.0,1.0)); 
+			 (3,Norm,1,(0.0,2.0));
+			 (4,Norm,1,(0.0,3.0));
+			 (5,Norm,0,(-.1.0,3.5));
+			 (6,Norm,0,(-.2.0,4.0)); 
+			 (7,Norm,1,(-.3.0,4.5));
+			(8,Final,1,(-.4.0,5.0));
+			 (9,Norm,1,(  1.0,3.5));
+			 (10,Norm,1,( 2.0,4.0));
+			 (11,Norm,1,( 3.0,4.5));
+			 (12,Final,1,(4.0,5.0));] 0.009 0.3 "a12=2";; 
 
 (*generate_lha "track12BlockBoth.lha" "a8=0 & a12=0" "a12>0" "a8>0";
 generate_lha "track12BlockBoth.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
@@ -409,7 +417,8 @@ generate_spn "track12BlockBoth" [ (1,Init,0,(0.0,0.0));
 			 (10,Norm,1,( 2.0,-.4.0));
 			 (11,Norm,1,( 3.0,-.4.5));
 			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "a8=2";; 
-
+*)
+(*
 (*generate_lha "track28LL.lha" "a17<2 & a20<2 & a25<2 & a28<2" 
  "a17>1" "a20>1 | a25>1 | a28>1";;*)
 gen28 "track28LL" 1 0 1 0 "a17=2";;
@@ -425,23 +434,22 @@ gen28 "track28RL" 0 1 1 0 "a25=2";;
 (*generate_lha "track28RR.lha" "a17<2 & a20<2 & a25<2 & a28<2" 
   "a28>1" "a20>1 | a25 >1 | a17>1";;*)
 gen28 "track28RR" 0 1 0 1 "a28=2";;
-
+*)
 (*
 gen_xor "ringLL" true true;;
 gen_xor "ringRR" false false;;
 *)
-*)
+(*
 gen_xor "ringLL" true true;;
 gen_xor "ringRL" false true;;
 gen_xor "ringLR" true false;;
 gen_xor "ringRR" false false;;
 
-
 gen_xor_large "ringLLLarge" true true;;
 gen_xor_large "ringRLLarge" false true;;
 gen_xor_large "ringLRLarge" true false;;
 gen_xor_large "ringRRLarge" false false;;
-
+*)
 
 let redondantChoice bl br = 
   generate_spn (Printf.sprintf "redondantChoice%i%i" bl br) [ (1,Init,0,(0.0,0.0)); 
@@ -490,7 +498,7 @@ let redondantChoice bl br =
 redondantChoice 1 0;;
 redondantChoice 0 1;;
 
-
+(*
 lozange "lozange" 10 10 (fun _ _ -> 1);;
  
 let ra x = (float x) -. 5.5;;
@@ -506,3 +514,4 @@ let ra3 x y = max (raman x) (raman y);;
 lozange "lozangeBlock" 10 10 (fun x y -> 
   max 0 ( (min 1 (int_of_float ((ra3 x y)/.4.0)))));;
 
+*)
