@@ -195,7 +195,7 @@ int main(int nargs, char** argv)
                     
                     print("Number of transition IDs: "); print((float)(gTranList.size())); print("\n");
                     
-                    nBufIDSize = (gTranList.size())*sizeof(EventTime);
+                    nBufIDSize = (gTranList.size())*sizeof(TR_PL_ID);
                     
                     if(bufIDs!=NULL) delete [] bufIDs;
                     
@@ -207,9 +207,9 @@ int main(int nargs, char** argv)
                     
                     for (std::list<EventTime>::iterator it=gTranList.begin(); it != gTranList.end(); ++it) {
                         bufIDs[idx] = (*it).event;
-                        memcpy(&bufIDs[idx+1], (const void*)&(*it).time, sizeof(unsigned int));
+                        //memcpy(&bufIDs[idx+1], (const void*)&(*it).time, sizeof(unsigned int));
                         print((float)(*it).time); print(" "); print((float)(*it).event); print("\n");
-                        idx+=5;
+                        idx++;
                     }
                     dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, (size_t)(nBufIDSize), 0);
                     
@@ -363,6 +363,10 @@ void wait(REAL_TYPE t){
     }
     
     //mySim.curr_time += t;
+}
+
+void ClearMarkers(void)
+{
 }
 
 REAL_TYPE cRealTime(){
