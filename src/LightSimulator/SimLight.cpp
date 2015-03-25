@@ -219,8 +219,9 @@ void SimulatorLight::SimulateSinglePath() {
     
     while (simStatus) {
         
-        dW(MARKER_PORT_ONE, 0);
-        dW(MARKER_PORT_TWO, 0);
+        ClearMarkers();
+        //dW(MARKER_PORT_ONE, 0);
+        //dW(MARKER_PORT_TWO, 0);
         
         if (EQ.isEmpty())break; //No event should not happen
         

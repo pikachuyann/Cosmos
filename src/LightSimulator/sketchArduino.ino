@@ -5,10 +5,17 @@
 #include <spnLight.h>
 
 #include <Timer1.h>
-#define MARKER_PORT_ONE 7
-#define MARKER_PORT_TWO 4
 #define AP_PORT 12
 #define VP_PORT 11
+
+#define MARKER_PORT_ONE 7
+#define MARKER_PORT_TWO 4
+
+#define SET_BOTH_LOW(PORT_ONE, PORT_TWO) B00000000
+#define SET_BOTH_HIGH(PORT_ONE, PORT_TWO) ((B1<<PORT_ONE) | (B1<<PORT_TWO))
+#define SET_ONEH_TWOL(PORT_ONE, PORT_TWO) (B1<<PORT_ONE)
+#define SET_ONEL_TWOH(PORT_ONE, PORT_TWO) (B1<<PORT_TWO)
+
 
 bool blink = true;
 
@@ -39,16 +46,18 @@ void wait(REAL_TYPE t){
     
     Serial.flush();
 
-    digitalWrite(MARKER_PORT_ONE, HIGH);
-    digitalWrite(MARKER_PORT_TWO, HIGH);
+    //digitalWrite(MARKER_PORT_ONE, HIGH);
+    //digitalWrite(MARKER_PORT_TWO, HIGH);
+    PORTD = SET_BOTH_HIGH(MARKER_PORT_ONE, MARKER_PORT_TWO);
     
     bool davailable = false;
     while(!davailable && millis1()< ti ){
         davailable = Serial.available();
     }
     
-    digitalWrite(MARKER_PORT_ONE, LOW);
-    digitalWrite(MARKER_PORT_TWO, LOW);
+    //digitalWrite(MARKER_PORT_ONE, LOW);
+    //digitalWrite(MARKER_PORT_TWO, LOW);
+    PORTD = SET_BOTH_LOW(MARKER_PORT_ONE, MARKER_PORT_TWO);
     
     if(!davailable){
         t-= wait_sleep;
@@ -92,12 +101,18 @@ unsigned char SReceive(){
 void SWrite(unsigned char h){
     if (Serial) {
         if(h>=0x35 && h<=0x3A) {
-            digitalWrite(MARKER_PORT_ONE, HIGH);
-            digitalWrite(MARKER_PORT_TWO, LOW);
+            //digitalWrite(MARKER_PORT_ONE, HIGH);
+            //digitalWrite(MARKER_PORT_TWO, LOW);
+            PORTD = SET_ONEH_TWOL(MARKER_PORT_ONE, MARKER_PORT_TWO);
         }
         Serial.write(h);
         Serial.flush();
     }
+}
+
+void ClearMarkers(void)
+{
+    PORTD = SET_BOTH_LOW(MARKER_PORT_ONE, MARKER_PORT_TWO);
 }
 
 void dW(uint8 port, uint8 value)
@@ -167,9 +182,10 @@ void loop() {
         switch (Serial.peek()) {
             case 'A':
             case 'S':
-                digitalWrite(MARKER_PORT_ONE, LOW);
-                digitalWrite(MARKER_PORT_TWO, HIGH);
-                
+                //digitalWrite(MARKER_PORT_ONE, LOW);
+                //digitalWrite(MARKER_PORT_TWO, HIGH);
+                PORTD = SET_ONEL_TWOH(MARKER_PORT_ONE, MARKER_PORT_TWO);
+
                 buff[0] = Serial.read();
                 
                 mySim.StopSimulation();
@@ -177,8 +193,9 @@ void loop() {
                 break;
                 
             case 'W':
-                digitalWrite(MARKER_PORT_TWO, LOW);
-                digitalWrite(MARKER_PORT_ONE, LOW);
+                //digitalWrite(MARKER_PORT_TWO, LOW);
+                //digitalWrite(MARKER_PORT_ONE, LOW);
+                PORTD = SET_BOTH_LOW(MARKER_PORT_ONE, MARKER_PORT_TWO);
                 
                 buff[0] = Serial.read();
                 

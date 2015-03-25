@@ -15,20 +15,35 @@ exitFlag = 1
 stDataColl = 0
 collectedSamples = []
 useVM = 0
+logTime = 5 # in Seconds
+
+def SaveToFile(handle, dta):
+	if dta==0:
+		handle.write(str(0)+" "+str(0)+"\n")
+	elif dta==1:
+		handle.write(str(1)+" "+str(0)+"\n")
+	elif dta==2:
+		handle.write(str(0)+" "+str(1)+"\n")
+	elif dta==3:
+		handle.write(str(1)+" "+str(1)+"\n")
 
 def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 	currentTran = []
 
 	#firstPosM2 = 0
 	#firstPosM1 = 0
-
+	filedta = open('markers.txt', 'w+')
 	sumCurrent = 0
 	sampleCnt = 1
 	prev = pmData[0][1]
 	state = 0
 
+	SaveToFile(filedta, prev)
+
 	for it in range(1,len(pmData)):
 		sampleCnt = sampleCnt + 1
+
+		SaveToFile(filedta, pmData[it][1])
 
 		if state==0:
 			if pmData[it][1]==2 and prev==2:
@@ -48,7 +63,10 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 				state = 2
 				sumCurrent = sumCurrent + pmData[it][0]
 			elif pmData[it][1]==2 and prev==0:
-				state = 5	
+				state = 5
+			elif pmData[it][1]==3 and prev==0:
+				state = 6
+				sumCurrent = sumCurrent + pmData[it][0]
 
 		if state==2:
 			if pmData[it][1]==0 and prev==1:
@@ -61,18 +79,19 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 				state = 5
 			elif pmData[it][1]==3 and prev==1:
 				state = 4
+				sumCurrent = sumCurrent + pmData[it][0]
 
 		if state==3:
 			if pmData[it][1]==0 and prev==0:
 				state = 3
 				sumCurrent = sumCurrent + pmData[it][0]
 			elif pmData[it][1]==1 and prev==0:
-				state = 2
+				state = 3
 				stime = sampleCnt/monitorSampligFreq
 
 				currentTran.append((sumCurrent,stime))
 
-				print str(stime)+"  "+str(sumCurrent)
+				#print str(stime)+"  "+str(sumCurrent)
 				sumCurrent = pmData[it][0]
 			elif pmData[it][1]==2 and prev==0:
 				state = 5
@@ -81,44 +100,60 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 				sumCurrent = sumCurrent + pmData[it][0]
 
 		if state==4:
-			if pmData[it][1]==0 and prev==3:
+			if (pmData[it][1]==0 and prev==3) or (pmData[it][1]==0 and prev==2):
 				state = 1
 				stime = sampleCnt/monitorSampligFreq
 
 				currentTran.append((sumCurrent,stime))
 
-				print str(stime)+"  "+str(sumCurrent)
+				#print str(stime)+"  "+str(sumCurrent)
 				sumCurrent = pmData[it][0]
 
-			elif pmData[it][1]==2 and prev==3:
-				state = 5
+			#elif pmData[it][1]==2 and prev==3:
+			#	state = 5
+			elif (pmData[it][1]==2 and prev==3) or (pmData[it][1]==2 and prev==2):
+				state = 4
+				sumCurrent = sumCurrent + pmData[it][0]
 			elif pmData[it][1]==3 and prev==3:
 				state = 4
 				sumCurrent = sumCurrent + pmData[it][0]
 
+		if state==5:
+			state = 5
+
+		if state==6:
+			if pmData[it][1]==0 and prev==3:
+				state = 1
+				sumCurrent = sumCurrent + pmData[it][0]
+			elif pmData[it][1]==1 and prev==3:
+				state = 2
+				sumCurrent = sumCurrent + pmData[it][0]
+			elif pmData[it][1]==2 and prev==3:
+				state = 5
+			elif pmData[it][1]==3 and prev==3:
+				state = 6
+				sumCurrent = sumCurrent + pmData[it][0]
+
 		prev = pmData[it][1]
 
-
-#		if pmData[it][1]!=2 and firstPosM2 == 0:
-#			firstPosM2 = 1
-#		elif pmData[it][1]==2 and firstPosM2 == 1:
-#			break
-#		elif pmData[it][1]!=2 and firstPosM2 == 1:
-#			if pmData[it][1] == 1:
-#				firstPosM1 = 1
-#				sumCurrent = sumCurrent + pmData[it][0]
-#			elif pmData[it][1] == 0 and firstPosM1 == 0:
-#				sumCurrent = sumCurrent + pmData[it][0]
-#			elif pmData[it][1] == 0 and firstPosM1 == 1:
-#				firstPosM1 = 0
-#				stime = sampleCnt/monitorSampligFreq
-#
-#				currentTran.append((sumCurrent,stime))
-#
-#				print str(stime)+"  "+str(sumCurrent)
-#				sumCurrent = pmData[it][0]
+	filedta.close()
 
 	return currentTran
+
+def SaveDistribution(dData):
+		dIdCurr = {}
+		fileconst = open('const.m', 'w+')
+		for key, val in dData:
+			dIdCurr.setdefault(key, []).append(val)
+
+		for key in 	dIdCurr:
+			fileconst.write("T"+str(key)+"_min"+" = "+str(min(dIdCurr[key]))+"\n")
+			fileconst.write("T"+str(key)+"_max"+" = "+str(max(dIdCurr[key]))+"\n")
+			fileconst.write("T"+str(key)+"_mean"+" = "+str(statistics.mean(dIdCurr[key]))+"\n")
+			#print dIdCurr[key]
+
+		fileconst.close()	
+		#print dIdCurr
 
 class PowerMonitorThread (threading.Thread):
 	def __init__(self, monitor):
@@ -211,7 +246,7 @@ if useVM==0:
 		s.sendall('\xF0')
 		stDataColl = 1
 
-		time.sleep(5);
+		time.sleep(logTime);
 
 		# Stop iteration
 		s.sendall('\xF1')
@@ -222,7 +257,14 @@ if useVM==0:
 
 		currentTran = ProcessPowerMonitorData(collectedSamples, monItems['sampleRate'])
 
-		print "Number of energy samples: "+str(len(currentTran))
+		for idx in range(len(currentTran)-1,-1,-1):
+			if currentTran[idx][1]<logTime*1000:
+				break
+
+		currentTran = currentTran[:idx+1]
+		print "Number of valid energy samples: "+str(len(currentTran))
+
+		#print "\n".join(["%s: %s" % item for item in currentTran])
 
 		# Send get list of IDs
 		s.sendall('\xF3')
@@ -251,7 +293,17 @@ if useVM==0:
 			print "Wrong data"
 			break
 
+		if bufSize[0]!=len(currentTran):
+			print "Diffent number of samples(client, power monitor)"
+			break
+
 		#print binascii.hexlify(bufIDs)
+	
+		idCurr = []
+		for idx in range(bufSize[0]):
+			idCurr.append([bufIDs[idx],currentTran[idx][0]])
+
+		SaveDistribution(idCurr)
 
 		collectedSamples = []
 
@@ -325,7 +377,7 @@ else:
 				print "Wrong data"
 				break
 
-			#print binascii.hexlify(bufIDs)
+			print binascii.hexlify(bufIDs)
 
 			collectedSamples = []
 
