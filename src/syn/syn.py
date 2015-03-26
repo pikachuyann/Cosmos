@@ -10,12 +10,13 @@ import struct
 import binascii
 import random
 import ctypes
+import numpy as np
 
 exitFlag = 1
 stDataColl = 0
 collectedSamples = []
 useVM = 0
-logTime = 5 # in Seconds
+logTime = 60 # in Seconds
 
 def SaveToFile(handle, dta):
 	if dta==0:
@@ -149,7 +150,9 @@ def SaveDistribution(dData):
 		for key in 	dIdCurr:
 			fileconst.write("T"+str(key)+"_min"+" = "+str(min(dIdCurr[key]))+"\n")
 			fileconst.write("T"+str(key)+"_max"+" = "+str(max(dIdCurr[key]))+"\n")
-			fileconst.write("T"+str(key)+"_mean"+" = "+str(statistics.mean(dIdCurr[key]))+"\n")
+			fileconst.write("T"+str(key)+"_mean"+" = "+str(np.mean(dIdCurr[key]))+"\n")
+			fileconst.write("T"+str(key)+"_var"+" = "+str(np.var(dIdCurr[key]))+"\n")
+			fileconst.write("T"+str(key)+"_list"+" = "+str(dIdCurr[key])+"\n")
 			#print dIdCurr[key]
 
 		fileconst.close()	
