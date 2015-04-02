@@ -104,7 +104,7 @@ int main(int nargs, char** argv)
     gettimeofday(&gStartTime, NULL);
     
     // Hardcode the serial communication for PC client
-    mySim.verbose= atoi(argv[2]);
+    mySim.verbose = 3;//atoi(argv[2]);
     
     if(!CreateSocket(&sInfo.gSocketHandle, hostInfoList))
         return 1;
@@ -154,6 +154,7 @@ int main(int nargs, char** argv)
             int pollRc;
             size_t bytesRead = 0;
             unsigned int test = 0;
+            
             //simulate a batch of trajectory
             if(sInfo.gCommands != SIM_NONE)
                 mySim.SimulateSinglePath();
@@ -184,6 +185,8 @@ int main(int nargs, char** argv)
                     
                 case SIM_STOP:
                     sInfo.gCommands = SIM_NONE;
+                    
+                    std::cerr << "Client simulation stop at time: "<< mySim.curr_time << std::endl;
                     
                     Buf = 'S';
                     WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
@@ -367,6 +370,7 @@ void wait(REAL_TYPE t){
 
 void ClearMarkers(void)
 {
+    
 }
 
 REAL_TYPE cRealTime(){

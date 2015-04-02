@@ -101,8 +101,6 @@ unsigned char SReceive(){
 void SWrite(unsigned char h){
     if (Serial) {
         if(h>=0x35 && h<=0x3A) {
-            //digitalWrite(MARKER_PORT_ONE, HIGH);
-            //digitalWrite(MARKER_PORT_TWO, LOW);
             PORTD = SET_ONEH_TWOL(MARKER_PORT_ONE, MARKER_PORT_TWO);
         }
         Serial.write(h);
@@ -176,7 +174,7 @@ void loop() {
     
     //digitalWrite(MARKER_PORT_TWO, LOW);
     
-    mySim.SimulateSinglePath(); //simulate a batch of trajectory
+    //mySim.SimulateSinglePath(); //simulate a batch of trajectory
 
     if(InDataAvailable()==2) {
         switch (Serial.peek()) {
