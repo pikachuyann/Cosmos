@@ -16,7 +16,7 @@ exitFlag = 1
 stDataColl = 0
 collectedSamples = []
 useVM = 0
-logTime = 60 # in Seconds
+logTime = 2 # in Seconds
 
 def SaveToFile(handle, dta):
 	if dta==0:
@@ -27,6 +27,16 @@ def SaveToFile(handle, dta):
 		handle.write(str(0)+" "+str(1)+"\n")
 	elif dta==3:
 		handle.write(str(1)+" "+str(1)+"\n")
+
+def GetRisingEdge(pmData):
+	cnt = 0
+	prev = pmData[0][1]
+	for it in range(1,len(pmData)):
+
+		if prev==0 and 	pmData[it][1]==1:
+			cnt = cnt + 1
+		prev = pmData[it][1]	
+	return cnt
 
 def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 	currentTran = []
@@ -46,6 +56,8 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 
 		SaveToFile(filedta, pmData[it][1])
 
+		#print str(state)+":"+str(sampleCnt/monitorSampligFreq)
+
 		if state==0:
 			if pmData[it][1]==2 and prev==2:
 				state = 0
@@ -64,7 +76,7 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 				state = 2
 				sumCurrent = sumCurrent + pmData[it][0]
 			elif pmData[it][1]==2 and prev==0:
-				state = 5
+				state = 1
 			elif pmData[it][1]==3 and prev==0:
 				state = 6
 				sumCurrent = sumCurrent + pmData[it][0]
@@ -79,7 +91,7 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 			elif pmData[it][1]==2 and prev==1:
 				state = 5
 			elif pmData[it][1]==3 and prev==1:
-				state = 4
+				state = 6
 				sumCurrent = sumCurrent + pmData[it][0]
 
 		if state==3:
@@ -123,15 +135,15 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 			state = 5
 
 		if state==6:
-			if pmData[it][1]==0 and prev==3:
+			if (pmData[it][1]==0 and prev==3) or (pmData[it][1]==0 and prev==2):
 				state = 1
 				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1]==1 and prev==3:
+			elif (pmData[it][1]==1 and prev==3):
 				state = 2
 				sumCurrent = sumCurrent + pmData[it][0]
 			elif pmData[it][1]==2 and prev==3:
-				state = 5
-			elif pmData[it][1]==3 and prev==3:
+				state = 6
+			elif (pmData[it][1]==3 and prev==3) or (pmData[it][1]==2 and prev==2):
 				state = 6
 				sumCurrent = sumCurrent + pmData[it][0]
 
@@ -141,22 +153,17 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 
 	return currentTran
 
-def SaveDistribution(dData):
+def SaveDistribution(handle, dData):
 		dIdCurr = {}
-		fileconst = open('const.m', 'w+')
 		for key, val in dData:
 			dIdCurr.setdefault(key, []).append(val)
 
 		for key in 	dIdCurr:
-			fileconst.write("T"+str(key)+"_min"+" = "+str(min(dIdCurr[key]))+"\n")
-			fileconst.write("T"+str(key)+"_max"+" = "+str(max(dIdCurr[key]))+"\n")
-			fileconst.write("T"+str(key)+"_mean"+" = "+str(np.mean(dIdCurr[key]))+"\n")
-			fileconst.write("T"+str(key)+"_var"+" = "+str(np.var(dIdCurr[key]))+"\n")
-			fileconst.write("T"+str(key)+"_list"+" = "+str(dIdCurr[key])+"\n")
-			#print dIdCurr[key]
-
-		fileconst.close()	
-		#print dIdCurr
+			handle.write("T"+str(key)+"_min"+" = "+str(min(dIdCurr[key]))+"\n")
+			handle.write("T"+str(key)+"_max"+" = "+str(max(dIdCurr[key]))+"\n")
+			handle.write("T"+str(key)+"_mean"+" = "+str(np.mean(dIdCurr[key]))+"\n")
+			handle.write("T"+str(key)+"_var"+" = "+str(np.var(dIdCurr[key]))+"\n")
+			handle.write("T"+str(key)+"_list"+" = "+str(dIdCurr[key])+"\n")
 
 class PowerMonitorThread (threading.Thread):
 	def __init__(self, monitor):
@@ -217,31 +224,34 @@ if s is None:
 
 #s.setblocking(0)
 
+idCurr = []
+
 if useVM==0:
 	print "Preparing the PowerMonitor device..."
 	time.sleep(4);
 
-	for iters in range(0, 1):
+	for iters in range(0, 10):
 
 		# Generate random parameter
 		headerID = 0xF4
 		parID = 1
 		#parValue = random.randint(1, 2000)
+		#parValue = 809 		# Very slow Sa-node rate
 		parValue = 30000
 
-		print "Sending parameter ID: "+str(parID)+" value: "+str(parValue)
+		#print "Sending parameter ID: "+str(parID)+" value: "+str(parValue)
 
-		parStr = struct.pack('BBI',headerID, parID, parValue)
+		#parStr = struct.pack('BBI',headerID, parID, parValue)
 
 		# Send parameter to Client
-		s.sendall(parStr)
+		#s.sendall(parStr)
 
-		buftmp = bytearray(1)
-		buflen = s.recv_into(buftmp,1)
+		#buftmp = bytearray(1)
+		#buflen = s.recv_into(buftmp,1)
 
-		if buftmp[0]!=0xF6:
-			print "Wrong return value"
-			break
+		#if buftmp[0]!=0xF6:
+		#	print "Wrong return value"
+		#	break
 
 		print "Start iteration: "+str(iters)
 
@@ -259,15 +269,22 @@ if useVM==0:
 		print "Stopped collecting data"
 
 		currentTran = ProcessPowerMonitorData(collectedSamples, monItems['sampleRate'])
+		idx = -1
 
 		for idx in range(len(currentTran)-1,-1,-1):
 			if currentTran[idx][1]<logTime*1000:
 				break
 
+		if idx==-1:
+			print "No energy samples"
+			break
+
 		currentTran = currentTran[:idx+1]
 		print "Number of valid energy samples: "+str(len(currentTran))
 
-		#print "\n".join(["%s: %s" % item for item in currentTran])
+		print "\n".join(["%s: %s" % item for item in currentTran])
+		nrising = GetRisingEdge(collectedSamples)
+		print "Numbert of rising edges: "+str(nrising)
 
 		# Send get list of IDs
 		s.sendall('\xF3')
@@ -301,17 +318,20 @@ if useVM==0:
 			break
 
 		#print binascii.hexlify(bufIDs)
-	
-		idCurr = []
+		
+		# Save energy readings to list	
 		for idx in range(bufSize[0]):
 			idCurr.append([bufIDs[idx],currentTran[idx][0]])
-
-		SaveDistribution(idCurr)
 
 		collectedSamples = []
 
 	s.sendall('\xF2')
 	exitFlag = 0
+
+	# Save energy readings
+	fileconst = open('const.m', 'w+')
+	SaveDistribution(fileconst, idCurr)
+	fileconst.close()
 
 else:
 	key = ''
