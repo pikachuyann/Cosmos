@@ -104,7 +104,7 @@ int main(int nargs, char** argv)
     gettimeofday(&gStartTime, NULL);
     
     // Hardcode the serial communication for PC client
-    mySim.verbose= atoi(argv[2]);
+    mySim.verbose = 3;//atoi(argv[2]);
     
     if(!CreateSocket(&sInfo.gSocketHandle, hostInfoList))
         return 1;
@@ -154,6 +154,7 @@ int main(int nargs, char** argv)
             int pollRc;
             size_t bytesRead = 0;
             unsigned int test = 0;
+            
             //simulate a batch of trajectory
             if(sInfo.gCommands != SIM_NONE)
                 mySim.SimulateSinglePath();
@@ -185,6 +186,8 @@ int main(int nargs, char** argv)
                 case SIM_STOP:
                     sInfo.gCommands = SIM_NONE;
                     
+                    std::cerr << "Client simulation stop at time: "<< mySim.curr_time << std::endl;
+                    
                     Buf = 'S';
                     WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
                     
@@ -195,7 +198,7 @@ int main(int nargs, char** argv)
                     
                     print("Number of transition IDs: "); print((float)(gTranList.size())); print("\n");
                     
-                    nBufIDSize = (gTranList.size())*sizeof(EventTime);
+                    nBufIDSize = (gTranList.size())*sizeof(TR_PL_ID);
                     
                     if(bufIDs!=NULL) delete [] bufIDs;
                     
@@ -207,9 +210,9 @@ int main(int nargs, char** argv)
                     
                     for (std::list<EventTime>::iterator it=gTranList.begin(); it != gTranList.end(); ++it) {
                         bufIDs[idx] = (*it).event;
-                        memcpy(&bufIDs[idx+1], (const void*)&(*it).time, sizeof(unsigned int));
+                        //memcpy(&bufIDs[idx+1], (const void*)&(*it).time, sizeof(unsigned int));
                         print((float)(*it).time); print(" "); print((float)(*it).event); print("\n");
-                        idx+=5;
+                        idx++;
                     }
                     dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, (size_t)(nBufIDSize), 0);
                     
@@ -363,6 +366,11 @@ void wait(REAL_TYPE t){
     }
     
     //mySim.curr_time += t;
+}
+
+void ClearMarkers(void)
+{
+    
 }
 
 REAL_TYPE cRealTime(){
