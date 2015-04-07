@@ -2,7 +2,7 @@ open Type
 
 
 let lightSim = ref false
-let modelStoch = ref true
+let modelStoch = ref false
 let useerlang = ref true
 
 
