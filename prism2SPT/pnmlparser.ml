@@ -31,7 +31,7 @@ let rec net_of_tree n = function
 					 print_endline name;
 					 List.iter (net_of_tree n) clist
 |  "transition" -> (match ((find_name "name" t),(find_id alist)) with
-        (Some name,Some id) -> Data.add (id,Exp (Float 1.0)) n.Net.transition
+        (Some name,Some id) -> Data.add (id,(StochasticPetriNet.Exp (Float 1.0),(Float 1.0),(Float 1.0))) n.Net.transition
         | _-> ()
        )
     |  "place" -> ( match ((find_name "name" t),(find_name "initialMarking" t),(find_id alist)) with

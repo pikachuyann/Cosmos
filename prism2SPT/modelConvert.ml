@@ -9,6 +9,7 @@ let typeFormat = ref Prism
 let outputFormat = ref [GrML;Dot;Marcie]
 let const_file = ref ""
 let verbose = ref 1
+let add_reward = ref false
 
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
@@ -25,6 +26,7 @@ let _ =
 	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
 	     "--erlang-step",Arg.Set_int SimulinkTrans.erlangstep,"Number of erlang step for stochastic model";
 	     "-v",Arg.Set_int verbose,"Set verbose level default 1";
+	     "--add-reward",Arg.Set add_reward, "Add reward transition to each non immediate transition";
 	    ]
     (function s -> incr nbarg; match !nbarg with
       1 -> inname:= s;
@@ -36,6 +38,7 @@ let _ =
 	| "slx" -> 
 	  typeFormat := Simulink;
 	  const_file := "const.m"
+	| "gml" | "grml" -> typeFormat := GrML
 	| _-> failwith "Unsupported file format"
 	)
     | 2 -> output := s
@@ -67,12 +70,21 @@ let _ =
     input := open_in !inname;
     Generator.read_prism !input !inname
   | Pnml ->
-    IFNDEF HASXML THEN
+    IFNDEF HAS_XML THEN
       failwith "XML library required to read PNML" 
       ELSE 
   let xmlf = Pnmlparser.tree_of_pnml !inname in
   let net = PetriNet.Net.create () in
   Pnmlparser.net_of_tree net xmlf;
+  net
+    ENDIF
+  | GrML ->
+    IFNDEF HAS_XML THEN
+      failwith "XML library required to read GrML" 
+      ELSE 
+  let xmlf = GrMLParser.tree_of_pnml !inname in
+  let net = PetriNet.Net.create () in
+  GrMLParser.net_of_tree net xmlf;
   net
     ENDIF
   | Simulink -> 
@@ -101,25 +113,27 @@ let _ =
     (*|> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])*)
     (*|< Simulinkparser.prune*) 
 	|> SimulinkTrans.stochNet_of_modu !const_file
-	|> (fun x-> if !SimulinkType.useerlang then x else StochasticPetriNet.remove_erlang x)
       end
       ENDIF
       ENDIF   
   | _ -> failwith "Output format not yet supported" end
-	      |> (fun net -> 
-		print_endline "Finish parsing, start writing";
-		List.iter (function 
-	        | Dot ->
-		  StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] []
-		| Pdf -> 
-		  StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
-		  ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output)
-		| GrML ->
-		  StochasticPetriNet.print_spt ((!output)^".grml") net
-		| Marcie -> 
-		  StochasticPetriNet.print_spt_marcie ((!output)^".andl") net
-		| Prism when !typeFormat = Simulink -> ()
-		| _ -> print_endline "Output format not supported"
-		) !outputFormat;
-		print_endline "Finish writing.";
-	      );;
+    |< (fun _-> print_endline "Finish parsing, start transformation")
+    |> (fun x-> if !SimulinkType.useerlang then x else StochasticPetriNet.remove_erlang x)
+    |> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)
+    |> (fun net -> 
+      print_endline "Finish transformation, start writing";
+      List.iter (function 
+      | Dot ->
+	StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] []
+      | Pdf -> 
+	StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
+	ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output)
+      | GrML ->
+	StochasticPetriNet.print_spt ((!output)^".grml") net
+      | Marcie -> 
+	StochasticPetriNet.print_spt_marcie ((!output)^".andl") net
+      | Prism when !typeFormat = Simulink -> ()
+      | _ -> print_endline "Output format not supported"
+      ) !outputFormat;
+      print_endline "Finish writing.";
+    );;
