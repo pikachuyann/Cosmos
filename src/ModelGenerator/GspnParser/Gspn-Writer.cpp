@@ -1034,7 +1034,6 @@ void Gspn_Writer::writeVariable(ofstream & spnF){
 		spnF << "\t" << MyGspn.colDoms[MyGspn.colVars[v].type].cname();
 		spnF << " " << MyGspn.colVars[v].name << ";\n";
 	}
-	
 }
 
 void Gspn_Writer::writeDotFile(const string &file){
@@ -1180,9 +1179,7 @@ void Gspn_Writer::writeGetDistParameters(ofstream &f){
         parametercases.addCase((int)t,newcase.str(),MyGspn.transitionStruct[t].label );
     }
     parametercases.writeCases(f);
-    
     f << "}\n" << endl;
-
 }
 
 void Gspn_Writer::writeIsEnabled(ofstream &f){
@@ -1207,7 +1204,6 @@ void Gspn_Writer::writeIsEnabled(ofstream &f){
 
                     if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
                         newcase << "    if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << "))) return false;" << endl;
-
                     else {
                         newcase << "    if ( !(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << " < 1)) " << endl;
                         newcase << "        if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << "))) return false;" << endl;
@@ -1221,7 +1217,6 @@ void Gspn_Writer::writeIsEnabled(ofstream &f){
                     else {
                         newcase << "    if ( !(" << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << " < 1) ) " << endl;
                         newcase << "        if (contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << ")) return false;" << endl;
-
                     }
                 }
             }
@@ -1307,32 +1302,25 @@ void Gspn_Writer::writeSetConditionsVector(ofstream &f){
         f << "\tTransitionConditions["<< t <<"]=0;" << endl;
         for (const auto &p : MyGspn.placeStruct)  {
             if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
-
                 if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
                     f << "\tif (Marking.P->_PL_" << p.name <<" < " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ")TransitionConditions["<< t <<"]++;" << endl;
-
                 else {
                     f << "\tif ( " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << "> 0) " << endl;
                     f << "\t\tif (Marking.P->_PL_" << p.name <<" < " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << ")TransitionConditions["<< t <<"]++;" << endl;
                 }
             }
             if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty) {
-
                 if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isMarkDep)
                     f << "\tif (Marking.P->_PL_" << p.name <<" >= " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).intVal << ")TransitionConditions["<< t <<"]++;" << endl;
-
                 else {
                     f << "\tif ( " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << " > 0 ) " << endl;
                     f << "\t\tif (Marking.P->_PL_" << p.name <<" >= " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << ")TransitionConditions["<< t <<"]++;" << endl;
-                    
                 }
             }
         }
     }
-    
     f << "}" << endl;
 }
-
 
 void Gspn_Writer::writeGetPriority(ofstream &f){
     writeFunT(f, "REAL_TYPE SPN::GetPriority(TR_PL_ID t)const" , MyGspn.tr,
@@ -1502,7 +1490,6 @@ void Gspn_Writer::writeFile(){
 	
 	writeTransition(SpnCppFile);
 	
-	
 	//-------------- Rare Event -----------------
 	if(P.RareEvent || P.computeStateSpace>0){
 		SpnCppFile << "    Msimple();" << endl;
@@ -1546,5 +1533,4 @@ void Gspn_Writer::writeFile(){
 	SpnCppFile << "}"<< endl<< endl;
 	
 	SpnCppFile.close();
-	
 }

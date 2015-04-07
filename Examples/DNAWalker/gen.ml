@@ -44,7 +44,9 @@ Finish=AVG(Last(vd1));
 DeadLock=AVG(Last(vd2));
 Step=AVG(Last(vd3));
 Blockade=AVG(Last(vc1));
-uB=AVG(Last(corrblocked))/AVG(Last(vd0));
+%%DeadLockTime=CDF(Last(deadlocktime),100.0,0.0,maxtime);
+%%FinishTime=CDF(Last(timefinishcorrect),100.0,0.0,maxtime);
+uB=AVG(Last(corrblock))/AVG(Last(vd0));
 InitialLocations = { lii };
 FinalLocations = {lfc,lf,ldl,lnf2};
 Locations = {
@@ -79,7 +81,6 @@ Edges = {
 };" !safe !blockade !safe !blockade obj !safe obj ;
   close_out f;;
   
-
 
 let generate_pctl fpath li obj =
   let safe = ref " true "
@@ -122,7 +123,7 @@ let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true) 
       Net.add_arc net ("B"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("B"^(string_of_int n)) ("tAb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("tb"^(string_of_int n)) ("A"^(string_of_int n)) (Int 1);
-(*      Net.add_inhibArc net ("a"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);*)
+      Net.add_inhibArc net ("A"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
       (*cluster.(n-1) <- ("b"^(string_of_int n)) 
       :: ("tb"^(string_of_int n))
       :: ("tAb"^(string_of_int n))
@@ -170,26 +171,26 @@ let dist = 0.675 ;;
 
 let generate_spn fpath li2 ks failure obj =
   let li = mapsq3 li2 in
-  let net = gen_spn2 ~gentrans:false ~genloop:true ~genfailure:false ~genimm:false fpath li ks failure in
+  let net = gen_spn2 ~gentrans:false ~genloop:true ~genfailure:false ~genimm:true fpath li ks failure in
   print_spt (fpath^".grml") net;
   generate_lha (fpath^".lha") li obj;
   print_spt_marcie (fpath^".andl") net;
   generate_csl (fpath^".csl") li obj;
   print_prism_module (fpath^".sm") net;
   generate_pctl (fpath^".pctl") li obj;
-  print_spt_dot ~showlabel:true (fpath^".dot") net []
+  print_spt_dot ~showlabel:false (fpath^".dot") net []
         (List.fold_left (fun q (n,_,_,(px,py)) -> 
 	  (("A"^(string_of_int n)),(px,py))::
-	    (*(("tloop"^(string_of_int n)),(px,py-.(copysign 1.0 py)))::*)
+	    (("tloop"^(string_of_int n)),(px,py+.(copysign 1.0 py)))::
 	    (("tb"^(string_of_int n)),(px,py-.(copysign dist py)))::
 	    (("tAb"^(string_of_int n)),(px,py-.(copysign (3.*.dist) py)))::
-	    (("B"^(string_of_int n)),(px,py-.(copysign (2.0*.dist) py)))::q) [] li);
-(* execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 8 --max-run 200000 --batch 10000 --width 0");;*)
+	    (("B"^(string_of_int n)),(px,py-.(copysign (2.0*.dist) py)))::q) [] li);;
+ (*execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2 --max-run 20000 --batch 1000 --width 0");;*)
 (*  ignore (Sys.command (Printf.sprintf "prism %s.sm %s.pctl --sim --simsamples 2000000" fpath fpath));;*)
-(*  ignore (Sys.command (Printf.sprintf "/usr/bin/time -v prism %s.sm %s.pctl" fpath fpath));;*)
+ (* ignore (Sys.command (Printf.sprintf "/usr/bin/time -l prism %s.sm %s.pctl" fpath fpath));;*)
  (* ignore (Sys.command (Printf.sprintf "/usr/bin/time -v prism %s.sm %s.pctl -transientmethod fau -faudelta 1E-10 -fauepsilon 1E-8" fpath fpath));;*)
 (* ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl --approximative" fpath fpath));;*)
-  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;
+ (* ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
 (*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
 
 let gen28 f l1 r1 l2 r2 obj =
@@ -318,11 +319,11 @@ let lozange f n m fb =
 
 
 
-(*
+
 generate_spn "ex" [
   (1,Init,0,(0.0,0.0)); 
   (2,Final,1,(2.0,0.0));] 
-0.009 0.3 "a2=2";; 
+0.009 0.3 "A2=2";; 
 
 
 
@@ -336,7 +337,7 @@ generate_spn "control" [
   (6,Norm ,1,(2.5,-.5.0)); 
   (7,Norm ,1,(3.0,-.6.0));
   (8,Final,1,(3.5,-.7.0))]
-0.009 0.3 "a8=2";; 
+0.009 0.3 "A8=2";; 
 
 
 (*generate_lha "controlMissing1.lha" "a8<2" "a8=2" "FALSE";*)
@@ -348,7 +349,7 @@ generate_spn "controlMissing1" [
   (6,Norm ,1,(2.5,-.5.0)); 
   (7,Norm ,1,(3.0,-.6.0));
   (8,Final,1,(3.5,-.7.0))]
-0.009 0.3 "a8=2";; 
+0.009 0.3 "A8=2";; 
 
 (*generate_lha "controlMissing2.lha" "a8<2" "a8=2" "FALSE";*)
 generate_spn "controlMissing2" [
@@ -358,7 +359,7 @@ generate_spn "controlMissing2" [
   (6,Norm ,1,(2.5,-.5.0)); 
   (7,Norm ,1,(3.0,-.6.0));
   (8,Final,1,(3.5,-.7.0))]
-0.009 0.3 "a8=2";; 
+0.009 0.3 "A8=2";; 
 
 (*generate_lha "controlMissing7.lha" "a8<2" "a8=2" "FALSE";*)
 generate_spn "controlMissing7" [
@@ -369,10 +370,10 @@ generate_spn "controlMissing7" [
   (5,Norm ,1,(2.0,-.4.0));
   (6,Norm ,1,(2.5,-.5.0)); 
   (8,Final,1,(3.5,-.7.0))]
-0.009 0.3 "a8=2";; 
-*)
+0.009 0.3 "A8=2";; 
 
-(*
+
+
 (*generate_lha "track12Block1.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
 generate_spn "track12Block1" [ 
   (1,Init,0,(  0.0,0.0)); 
@@ -386,7 +387,7 @@ generate_spn "track12Block1" [
   (9,Norm,1,(  1.0,-.3.5));
   (10,Norm,1,( 2.0,-.4.0));
   (11,Norm,1,( 3.0,-.4.5));
-  (12,Final,1,(4.0,-.5.0))] 0.009 0.3 "a12=2";;
+  (12,Final,1,(4.0,-.5.0))] 0.009 0.3 "A12=2";;
 
 (*generate_lha "track12Block2.lha" "a8=0 & a12=0" "a12>0" "a8>0";
 generate_lha "track12Block2.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
@@ -401,7 +402,7 @@ generate_spn "track12Block2" [ (1,Init,0,(0.0,0.0));
 			 (9,Norm,1,(  1.0,3.5));
 			 (10,Norm,1,( 2.0,4.0));
 			 (11,Norm,1,( 3.0,4.5));
-			 (12,Final,1,(4.0,5.0));] 0.009 0.3 "a12=2";; 
+			 (12,Final,1,(4.0,5.0));] 0.009 0.3 "A12=2";; 
 
 (*generate_lha "track12BlockBoth.lha" "a8=0 & a12=0" "a12>0" "a8>0";
 generate_lha "track12BlockBoth.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
@@ -416,8 +417,8 @@ generate_spn "track12BlockBoth" [ (1,Init,0,(0.0,0.0));
 			 (9,Norm,0,(  1.0,-.3.5));
 			 (10,Norm,1,( 2.0,-.4.0));
 			 (11,Norm,1,( 3.0,-.4.5));
-			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "a8=2";; 
-*)
+			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "A8=2";; 
+
 (*
 (*generate_lha "track28LL.lha" "a17<2 & a20<2 & a25<2 & a28<2" 
  "a17>1" "a20>1 | a25>1 | a28>1";;*)
@@ -493,13 +494,13 @@ let redondantChoice bl br =
 				   (32,Final,1,(-3.0,11.5));
 				   (33,Final,1,(3.0,11.5));
 
-] 0.009 0.3 (if bl=1 then "a32=2" else "a33=2");; 
-
+] 0.009 0.3 (if bl=1 then "A32=2" else "A33=2");; 
+(*
 redondantChoice 1 0;;
 redondantChoice 0 1;;
+*)
 
-(*
-lozange "lozange" 10 10 (fun _ _ -> 1);;
+(*lozange "lozange" 10 10 (fun _ _ -> 1);;*)
  
 let ra x = (float x) -. 5.5;;
 let ra2 x y = (ra x)*.(ra x) +. (ra y)*.(ra y);;
@@ -514,4 +515,4 @@ let ra3 x y = max (raman x) (raman y);;
 lozange "lozangeBlock" 10 10 (fun x y -> 
   max 0 ( (min 1 (int_of_float ((ra3 x y)/.4.0)))));;
 
-*)
+

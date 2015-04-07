@@ -1,12 +1,20 @@
+(*
+#mod_use "type.ml"
+#mod_use "PetriNet.ml"
+*)
+
 open Type
 open PetriNet
 
 type distr = 
   Exp of float expr' 
 | Imm 
+| Unif of (float expr' *float expr')
+| Norm of (float expr' *float expr')
 | Det of float expr' 
 | Erl of (int expr'*float expr');;
 
+type position = (float*float) option;;
 
 type spt = 
   (int Type.expr',  (* Initial Marking type*)
@@ -88,7 +96,18 @@ let print_distr f d =
         <attribute name=\"expr\">%a</attribute>
       </attribute>
     </attribute>" print_expr i print_expr r
-    | Imm -> Printf.fprintf f "        DETERMINISTIC
+  | Unif (l,h) -> Printf.fprintf f "        UNIFORM
+      </attribute>
+      <attribute name=\"param\">
+        <attribute name=\"number\">0</attribute>
+        <attribute name=\"expr\">%a</attribute>
+      </attribute>
+      <attribute name=\"param\">
+        <attribute name=\"number\">1</attribute>
+        <attribute name=\"expr\">%a</attribute>
+      </attribute>
+    </attribute>" print_expr l print_expr h
+  | Imm -> Printf.fprintf f "        DETERMINISTIC
       </attribute>
       <attribute name=\"param\">
         <attribute name=\"number\">0</attribute>
@@ -97,7 +116,7 @@ let print_distr f d =
         </attribute></attribute>
       </attribute>
     </attribute>"
-    | Det p -> Printf.fprintf f "        DETERMINISTIC
+  | Det p -> Printf.fprintf f "        DETERMINISTIC
       </attribute>
       <attribute name=\"param\">
         <attribute name=\"number\">0</attribute>
@@ -106,6 +125,18 @@ let print_distr f d =
         </attribute>
       </attribute>
     </attribute>" print_expr p
+  | Norm (m,v) -> Printf.fprintf f "        NORMAL
+      </attribute>
+      <attribute name=\"param\">
+        <attribute name=\"number\">0</attribute>
+        <attribute name=\"expr\">%a</attribute>
+      </attribute>
+      <attribute name=\"param\">
+        <attribute name=\"number\">1</attribute>
+        <attribute name=\"expr\">%a</attribute>
+      </attribute>
+    </attribute>" print_expr m print_expr v
+
   end
 
 let print_tr f name id (rate,weight,prio) =
@@ -344,6 +375,12 @@ let print_spt_dot ?(showlabel=true) fpath net cl p =
   output_string f "}\n";
   close_out f;;
 
+let display_dot net =
+  let file = "tmpgraph" in
+  print_spt_dot (file^".dot") net [] [];
+  ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" file file );
+  ignore @@ Sys.command (Printf.sprintf "open  %s.pdf" file )
+
 open Net
 
 (* Print as a prism CTMC model*)
@@ -455,3 +492,12 @@ let remove_erlang (net:spt) =
     | _ -> (z,we,pr)) in
   {net2 with Net.transition= transn2}
 
+let add_reward_struct (net:spt) =
+  Data.iter (fun (y,(z,we,pr)) -> if z <> Imm then begin 
+    Data.add (("P"^y^"_RewardStr"),(Int 0)) net.Net.place;
+    Data.add (("Tr_"^y^"RewardStr"),(Unif(FloatName (y^"min"),FloatName (y^"max")),Float 1.0,Float 1.0)) net.Net.transition;
+    Net.add_outArc net y ("P"^y^"_RewardStr") (Int 1);
+    Net.add_inArc net ("P"^y^"_RewardStr") ("Tr_"^y^"RewardStr") (Int 1);
+  end
+  )
+    net.Net.transition

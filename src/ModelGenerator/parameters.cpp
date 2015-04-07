@@ -350,7 +350,12 @@ void parameters::parseCommandLine(int argc, char** argv) {
 
             case CO_level:Level = atof(optarg);
                 break;
-            case CO_width:Width = atof(optarg);
+            case CO_width:
+            {
+                double w = atof(optarg);
+                if(w==0.0)sequential=false;
+                Width = w;
+            }
                 break;
             case CO_batch: Batch = atol(optarg);
                 break;
@@ -366,8 +371,6 @@ void parameters::parseCommandLine(int argc, char** argv) {
                     usage();
                     exit(EXIT_FAILURE);
                 }
-
-
                 break;
             case CO_local_test: localTesting = !localTesting;
                 break;
@@ -490,7 +493,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
     }
 
     if (lightSimulator && MaxRuns>0)StringInSpnLHA=true;
-
+    if (Batch != 0)Batch = min(Batch,MaxRuns);
 
     //If no LHA is required only set the path for the GSPN.
     if (optind + 1 == argc && (loopLHA > 0.0 || !CSLformula.empty() || !unfold.empty() || P.lightSimulator)) {

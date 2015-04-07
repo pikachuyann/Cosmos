@@ -66,7 +66,8 @@ struct
       None -> e
     | Some t1 -> let buff = ref e in
                  for i = 0 to t.size-1 do
-                   buff := f !buff i t1.(i);
+		   (* Here we cannot used t.(i) in case f reschedules the table*)
+                   buff := f !buff i (acca t i); 
                  done;
                  !buff
 
