@@ -28,6 +28,11 @@ def SaveToFile(handle, dta):
 	elif dta==3:
 		handle.write(str(1)+" "+str(1)+"\n")
 
+def GetEnergyReadings(pmData, monitorSamplingFreq, tranListTimes):
+	sumCurrent = 0
+	sampleCnt = 1
+	prev = pmData[0][1]
+	
 def GetRisingEdge(pmData):
 	cnt = 0
 	prev = pmData[0][1]
@@ -48,6 +53,7 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 	sampleCnt = 1
 	prev = pmData[0][1]
 	state = 0
+	prev_time = 0.0
 
 	SaveToFile(filedta, prev)
 
@@ -102,8 +108,10 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 				state = 3
 				stime = sampleCnt/monitorSampligFreq
 
-				currentTran.append((sumCurrent,stime))
+				if stime-prev_time>5.0:
+					currentTran.append((sumCurrent,stime))
 
+				prev_time = stime	
 				#print str(stime)+"  "+str(sumCurrent)
 				sumCurrent = pmData[it][0]
 			elif pmData[it][1]==2 and prev==0:
@@ -117,8 +125,10 @@ def ProcessPowerMonitorData(pmData, monitorSampligFreq):
 				state = 1
 				stime = sampleCnt/monitorSampligFreq
 
-				currentTran.append((sumCurrent,stime))
+				if stime-prev_time>5.0:
+					currentTran.append((sumCurrent,stime))
 
+				prev_time = stime	
 				#print str(stime)+"  "+str(sumCurrent)
 				sumCurrent = pmData[it][0]
 
@@ -230,28 +240,29 @@ if useVM==0:
 	print "Preparing the PowerMonitor device..."
 	time.sleep(4);
 
-	for iters in range(0, 10):
+	for iters in range(0, 1):
 
 		# Generate random parameter
 		headerID = 0xF4
 		parID = 1
-		#parValue = random.randint(1, 2000)
+		parValue = random.randint(1, 2000)
 		#parValue = 809 		# Very slow Sa-node rate
 		parValue = 30000
+		#parValue = 177
 
-		#print "Sending parameter ID: "+str(parID)+" value: "+str(parValue)
+		print "Sending parameter ID: "+str(parID)+" value: "+str(parValue)
 
-		#parStr = struct.pack('BBI',headerID, parID, parValue)
+		parStr = struct.pack('BBI',headerID, parID, parValue)
 
 		# Send parameter to Client
-		#s.sendall(parStr)
+		s.sendall(parStr)
 
-		#buftmp = bytearray(1)
-		#buflen = s.recv_into(buftmp,1)
+		buftmp = bytearray(1)
+		buflen = s.recv_into(buftmp,1)
 
-		#if buftmp[0]!=0xF6:
-		#	print "Wrong return value"
-		#	break
+		if buftmp[0]!=0xF6:
+			print "Wrong return value"
+			break
 
 		print "Start iteration: "+str(iters)
 
@@ -269,22 +280,22 @@ if useVM==0:
 		print "Stopped collecting data"
 
 		currentTran = ProcessPowerMonitorData(collectedSamples, monItems['sampleRate'])
-		idx = -1
+		#idx = -1
 
-		for idx in range(len(currentTran)-1,-1,-1):
-			if currentTran[idx][1]<logTime*1000:
-				break
+		#for idx in range(len(currentTran)-1,-1,-1):
+		#	if currentTran[idx][1]<logTime*1000:
+		#		break
 
-		if idx==-1:
-			print "No energy samples"
-			break
+		#if idx==-1:
+		#	print "No energy samples"
+		#	break
 
-		currentTran = currentTran[:idx+1]
-		print "Number of valid energy samples: "+str(len(currentTran))
+		#currentTran = currentTran[:idx+1]
+		#print "Number of valid energy samples: "+str(len(currentTran))
 
-		print "\n".join(["%s: %s" % item for item in currentTran])
-		nrising = GetRisingEdge(collectedSamples)
-		print "Numbert of rising edges: "+str(nrising)
+		#print "\n".join(["%s: %s" % item for item in currentTran])
+		#nrising = GetRisingEdge(collectedSamples)
+		#print "Numbert of rising edges: "+str(nrising)
 
 		# Send get list of IDs
 		s.sendall('\xF3')
@@ -313,15 +324,25 @@ if useVM==0:
 			print "Wrong data"
 			break
 
-		if bufSize[0]!=len(currentTran):
-			print "Diffent number of samples(client, power monitor)"
-			break
+		nTranCnt = 	bufSize[0]/8
+		print "Number of transitions received: "+str(nTranCnt)
+
+		#if bufSize[0]!=len(currentTran):
+		#	print "Diffent number of samples(client, power monitor)"
+		#	break
 
 		#print binascii.hexlify(bufIDs)
 		
+		tTimeList = []
+		for idx in range(0,nTranCnt):
+			tID = bufIDs[idx*8]
+			tTime = struct.unpack("I",bufIDs[idx*8+1:idx*8+1+4])
+			tTimeList.append(tTime[0])
+			print str(tTime[0])+" "+str(bufIDs[idx*8])
+
 		# Save energy readings to list	
-		for idx in range(bufSize[0]):
-			idCurr.append([bufIDs[idx],currentTran[idx][0]])
+		#for idx in range(bufSize[0]):
+		#	idCurr.append([bufIDs[idx],currentTran[idx][0]])
 
 		collectedSamples = []
 
