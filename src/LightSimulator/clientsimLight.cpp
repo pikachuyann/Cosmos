@@ -55,10 +55,13 @@ bool            gDataAvailable = 0;
 
 struct pollfd   gWaitDescriptors[2];
 
+#pragma pack(push, 1)
 typedef struct EventTime{
     TR_PL_ID event;
     unsigned int time;
+    unsigned char dymmy[3];
 }EventTime;
+#pragma pack(pop)
 
 /**
  * main function it read the options given as arguments and initialyse
@@ -104,7 +107,7 @@ int main(int nargs, char** argv)
     gettimeofday(&gStartTime, NULL);
     
     // Hardcode the serial communication for PC client
-    mySim.verbose = 3;//atoi(argv[2]);
+    mySim.verbose = atoi(argv[2]);
     
     if(!CreateSocket(&sInfo.gSocketHandle, hostInfoList))
         return 1;
@@ -198,7 +201,8 @@ int main(int nargs, char** argv)
                     
                     print("Number of transition IDs: "); print((float)(gTranList.size())); print("\n");
                     
-                    nBufIDSize = (gTranList.size())*sizeof(TR_PL_ID);
+                    //nBufIDSize = (gTranList.size())*sizeof(TR_PL_ID);
+                    nBufIDSize = (gTranList.size())*sizeof(EventTime);
                     
                     if(bufIDs!=NULL) delete [] bufIDs;
                     
@@ -210,10 +214,12 @@ int main(int nargs, char** argv)
                     
                     for (std::list<EventTime>::iterator it=gTranList.begin(); it != gTranList.end(); ++it) {
                         bufIDs[idx] = (*it).event;
-                        //memcpy(&bufIDs[idx+1], (const void*)&(*it).time, sizeof(unsigned int));
+                        memcpy(&bufIDs[idx+1], (const void*)&(*it).time, sizeof(unsigned int));
                         print((float)(*it).time); print(" "); print((float)(*it).event); print("\n");
-                        idx++;
+                        //idx++;
+                        idx+=sizeof(EventTime);
                     }
+                    
                     dwBytes = send(sInfo.gListenSocketHandle, (void*)bufIDs, (size_t)(nBufIDSize), 0);
                     
                     if(!dwBytes)
@@ -325,6 +331,7 @@ char SReceive(void)
             std::cerr << "<<<<<<< Pace -> Heart: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
         else if(retVal>=0x35 && retVal<=0x3C) {
             std::cerr << "<<<<<<< Syn: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
+            
             AddTransitionID(retVal, (unsigned int)(mySim.curr_time));
         }
         else
@@ -382,6 +389,6 @@ REAL_TYPE cRealTime(){
 
 void AddTransitionID(TR_PL_ID tranID, unsigned int time)
 {
-    EventTime stEvent = {tranID, time};
+    EventTime stEvent = {tranID, time, {0,0,0}};
     gTranList.push_back(stEvent);
 }
