@@ -102,7 +102,12 @@ void SWrite(unsigned char h){
     if (Serial) {
         if(h>=0x35 && h<=0x3A) {
             PORTD = SET_ONEH_TWOL(MARKER_PORT_ONE, MARKER_PORT_TWO);
+            //delay(5);
+        
+            //Serial.write(h);
+            //Serial.flush();
         }
+        
         Serial.write(h);
         Serial.flush();
     }
@@ -174,7 +179,7 @@ void loop() {
     
     //digitalWrite(MARKER_PORT_TWO, LOW);
     
-    //mySim.SimulateSinglePath(); //simulate a batch of trajectory
+    mySim.SimulateSinglePath(); //simulate a batch of trajectory
 
     if(InDataAvailable()==2) {
         switch (Serial.peek()) {
@@ -185,7 +190,8 @@ void loop() {
                 PORTD = SET_ONEL_TWOH(MARKER_PORT_ONE, MARKER_PORT_TWO);
 
                 buff[0] = Serial.read();
-                
+                Serial.flush();
+
                 mySim.StopSimulation();
                 
                 break;
@@ -196,6 +202,8 @@ void loop() {
                 PORTD = SET_BOTH_LOW(MARKER_PORT_ONE, MARKER_PORT_TWO);
                 
                 buff[0] = Serial.read();
+                Serial.flush();
+
                 
                 mySim.StartSimulation();
                 
