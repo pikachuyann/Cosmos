@@ -119,7 +119,7 @@ let _ =
   | _ -> failwith "Output format not yet supported" end
     |< (fun _-> print_endline "Finish parsing, start transformation")
     |> (fun x-> if !SimulinkType.useerlang then x else StochasticPetriNet.remove_erlang x)
-    |> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)
+    (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
     |> (fun net -> 
       print_endline "Finish transformation, start writing";
       List.iter (function 
