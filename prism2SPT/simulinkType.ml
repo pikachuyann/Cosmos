@@ -19,7 +19,8 @@ type simulink_trans_label = {
   write:  string list;
   update: string list;
   nameT: string option;
-  priority: float
+  priority: float;
+  description: string option;
 }
 
 let empty_trans_label = {
@@ -28,6 +29,7 @@ let empty_trans_label = {
   write = [];
   update = [];
   priority = 1.0;
+  description = None;
 }
 
 type signalT = Local | In | Out

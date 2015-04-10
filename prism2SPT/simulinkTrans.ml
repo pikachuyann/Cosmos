@@ -45,7 +45,7 @@ let expand_trans l =
 	and newsn = post_name sl dst ssid in
 	let newt = fresh_ssid () in
 	((news,Some newsn)::sl2,
-	(ssid,src,{empty_trans_label with trigger=label.trigger; priority =label.priority; nameT=(src |>> (fun x ->List.assoc x sl))  },news)::
+	(ssid,src,{empty_trans_label with trigger=label.trigger; priority =label.priority; nameT=(src |>> (fun x ->List.assoc x sl)) },news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
       | (RAction(sn),_,Some src2) when src2=dst && exist_delay src2 tl->  (* self loop with read *)
 	(* This case is used to reset delay transition waiting on this state,
@@ -173,7 +173,9 @@ let comb_transRR  (ssidt,srcl,lab,dstl) l (ssidt2,srcl2,lab2,dstl2) =
 	trigger= lab.trigger;
 	priority= min lab.priority lab2.priority;
 	write = List.sort_uniq compare (lab.write @ lab2.write);
-	update = lab.update @ lab2.update} in
+	update = lab.update @ lab2.update;
+	description = merge_option (Printf.sprintf "%s%s") lab.description lab2.description
+      } in
       (fresh_ssid (),List.merge compare srcl srcl2,lab3 ,List.merge compare dstl dstl2 ):: l
   |_-> l
 
@@ -187,7 +189,9 @@ let comb_trans (ssidt,srcl,lab,dstl)  (ssidt2,srcl2,lab2,dstl2) =
 	priority= lab.priority;
 	write = List.sort_uniq compare (lab.write @ lab2.write)
 		    |> List.filter (fun x -> x<>st);
-	update = lab.update @ lab2.update} in
+	update = lab.update @ lab2.update;
+	description = merge_option (Printf.sprintf "%s%s") lab.description lab2.description
+      } in
       Some (fresh_ssid (),List.merge compare srcl srcl2,lab3 ,List.merge compare dstl dstl2 )
   | (_,RAction st) when List.exists (fun x -> x=st) lab2.write ->
     let lab3= { 
@@ -197,7 +201,9 @@ let comb_trans (ssidt,srcl,lab,dstl)  (ssidt2,srcl2,lab2,dstl2) =
       write = List.sort_uniq compare (lab.write @ lab2.write)
 		  |> List.filter (fun x -> x<>st )
       ;
-      update = lab.update @ lab2.update} in
+      update = lab.update @ lab2.update;
+      description = merge_option (Printf.sprintf "%s%s") lab.description lab2.description
+    } in
     Some (fresh_ssid (),List.merge compare srcl srcl2,lab3 ,List.merge compare dstl dstl2 )
   |_-> None
 
@@ -601,7 +607,21 @@ let stochNet_of_modu cf m =
       end
     ) src;
     List.iter (fun (i,s) ->
-      Net.add_outArc net (trans_of_int ssidt lab) (place_of_int m.ivect i) (Int s)) dst
-    with Not_found -> print_endline "Not_found uncatch";
+      Net.add_outArc net (trans_of_int ssidt lab) (place_of_int m.ivect i) (Int s)) dst;
+    
+    (*Add reward struct*)
+    begin
+      match lab.description with
+	None ->()
+      | Some sn ->  begin
+	
+	Data.add (("P"^sn^"_RewardStr"),(Int 0)) net.Net.place;
+	Data.add (("Tr_"^sn^"RewardStr"),(Unif(FloatName (sn^"_min"),FloatName (sn^"_max")),Float 1.0,Float 1.0)) net.Net.transition;
+	Net.add_outArc net (trans_of_int ssidt lab) ("P"^sn^"_RewardStr") (Int 1);
+	Net.add_inArc net ("P"^sn^"_RewardStr") ("Tr_"^sn^"RewardStr") (Int 1);
+      end
+    end
+
+    with Not_found -> print_endline "Not_found uncatch";      
   ) m.transL;
   net

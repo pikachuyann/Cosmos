@@ -104,7 +104,11 @@ let rec exp_mod (sl,tl,scriptl) = function
 	     let fn,fb = parse_fun comm scr in (sl,tl,(Funct(fn,fb))::scriptl)
        end 
        | "transition" -> (match getdst clist with Some dst ->
-	 (sl,((getSSID alist),(getName clist),(getsrc clist),dst)::tl,scriptl) | _ -> failwith "Ill formed transition")
+	 let desc = getDescription clist
+	 |>> (fun x -> let n = String.length x in if n<=7 then None 
+	   else if String.sub x 0 7 = "Cosmos\n" then Some (String.sub x 7 (n-7)) else None) in
+	 (sl,((getSSID alist),(getName clist),(getsrc clist),dst,desc)::tl,scriptl) 
+	 | _ -> failwith "Ill formed transition")
        | "data" -> begin try 
 			   let name = List.assoc "name" alist
 			   and initValue = findpropName "initialValue" clist |>>| "0"
@@ -120,20 +124,22 @@ let rec exp_mod (sl,tl,scriptl) = function
     | PCData (s) -> output_string stderr s; (sl,tl,scriptl)
 
 (*Parse edge of automaton use the grammar define in ParserSimulEdge.mly  *)
-let eval_trans sl priority (ssid,name,src,dst) = match name with
-    None -> (ssid,src,empty_trans_label,dst)
+let eval_trans sl priority (ssid,name,src,dst,com) = match name with
+    None -> (ssid,src,{empty_trans_label with description=com} ,dst)
   | Some s -> let lexbuf = Lexing.from_string s in
 	      try     
 		let label = ParserSimulEdge.main LexerSimulEdge.token lexbuf in
 		let label2 = {label with write = List.sort_uniq compare label.write;
 			     nameT = src |>> (fun x -> List.assoc x sl) |>>> (fun x -> "L_"^x) ;
-			     priority = priority |>>> float |>>| 1.0 } in
+			     priority = priority |>>> float |>>| 1.0 ;
+			     description=com
+			     } in
 		(ssid,src,label2,dst)
     with 
       Parsing.Parse_error ->
 	Printf.fprintf stderr "%a: Parsing error: unexpected token:'%s' in %s\n"
 	  print_position lexbuf (Lexing.lexeme lexbuf) s;
-	(ssid,src,empty_trans_label,dst)
+	(ssid,src,{empty_trans_label with description=com},dst)
 
 (* Parse a simulink automaton*) 
 let module_of_simul al cl = 
