@@ -168,6 +168,7 @@ let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true) 
   net;;
   
 let dist = 0.675 ;;
+let dist2 = 1.15;;
 
 let generate_spn fpath li2 ks failure obj =
   let li = mapsq3 li2 in
@@ -178,8 +179,9 @@ let generate_spn fpath li2 ks failure obj =
   generate_csl (fpath^".csl") li obj;
   print_prism_module (fpath^".sm") net;
   generate_pctl (fpath^".pctl") li obj;
-  print_spt_dot ~showlabel:false (fpath^".dot") net []
-        (List.fold_left (fun q (n,_,_,(px,py)) -> 
+  print_spt_dot ~showlabel:true (fpath^".dot") net []
+        (List.fold_left (fun q (n,_,_,(px1,py1)) ->
+	  let px,py = (px1*.dist2,py1*.dist2) in
 	  (("A"^(string_of_int n)),(px,py))::
 	    (("tloop"^(string_of_int n)),(px,py+.(copysign 1.0 py)))::
 	    (("tb"^(string_of_int n)),(px,py-.(copysign dist py)))::
@@ -318,7 +320,7 @@ let lozange f n m fb =
   generate_spn f !accl 0.009 0.3 (Printf.sprintf "A%i=2" (n*m));;
 
 
-
+(*
 
 generate_spn "ex" [
   (1,Init,0,(0.0,0.0)); 
@@ -418,6 +420,7 @@ generate_spn "track12BlockBoth" [ (1,Init,0,(0.0,0.0));
 			 (10,Norm,1,( 2.0,-.4.0));
 			 (11,Norm,1,( 3.0,-.4.5));
 			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "A8=2";; 
+*)
 
 (*
 (*generate_lha "track28LL.lha" "a17<2 & a20<2 & a25<2 & a28<2" 
@@ -440,7 +443,7 @@ gen28 "track28RR" 0 1 0 1 "a28=2";;
 gen_xor "ringLL" true true;;
 gen_xor "ringRR" false false;;
 *)
-(*
+
 gen_xor "ringLL" true true;;
 gen_xor "ringRL" false true;;
 gen_xor "ringLR" true false;;
@@ -450,7 +453,7 @@ gen_xor_large "ringLLLarge" true true;;
 gen_xor_large "ringRLLarge" false true;;
 gen_xor_large "ringLRLarge" true false;;
 gen_xor_large "ringRRLarge" false false;;
-*)
+
 
 let redondantChoice bl br = 
   generate_spn (Printf.sprintf "redondantChoice%i%i" bl br) [ (1,Init,0,(0.0,0.0)); 
