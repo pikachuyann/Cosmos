@@ -2,7 +2,7 @@
 let value_of_line l =
   try
     let eq = String.index l '=' in
-    let semicolon = String.index l ';' in
+    let semicolon = try String.index l ';' with Not_found -> String.length l in
     let v = float_of_string (String.sub l (eq+1) (semicolon-eq-1)) in
     Some ((String.trim (String.sub l 0 eq) ),v)
   with
