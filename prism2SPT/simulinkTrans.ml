@@ -470,6 +470,7 @@ let print_magic f sl tl scrl=
   output_string f "#define temporalCount(msec) 0\n";
   (*List.iter (fun (x,y) -> match y with None ->()
   | Some s ->  Printf.fprintf f "#define %s %i\n" s x) sl;*)
+  output_string f "#ifndef uint8\n#define uint8 uint8_t\n#define uint16 uint16_t\n#define uint32 uint32_t\n#endif\n";
   output_string f "#include \"markingImpl.hpp\"\n";
   List.iter (fun (x,y) -> match y with
    Some s when s="DataAvailable" -> Printf.fprintf f "#define DATA_AVAILABLE %i\n"  x | _->() ) sl;
@@ -613,12 +614,12 @@ let stochNet_of_modu cf m =
     begin
       match lab.description with
 	None ->()
-      | Some sn ->  begin
+      | Some sn -> begin
 	
-	Data.add (("P"^sn^"_RewardStr"),(Int 0)) net.Net.place;
-	Data.add (("Tr_"^sn^"RewardStr"),(Unif(FloatName (sn^"_min"),FloatName (sn^"_max")),Float 1.0,Float 1.0)) net.Net.transition;
-	Net.add_outArc net (trans_of_int ssidt lab) ("P"^sn^"_RewardStr") (Int 1);
-	Net.add_inArc net ("P"^sn^"_RewardStr") ("Tr_"^sn^"RewardStr") (Int 1);
+	Data.add ((Printf.sprintf "P_%s_RewardStr_%i" sn ssidt),(Int 0)) net.Net.place;
+	Data.add ((Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt),(Unif(FloatName (sn^"_min"),FloatName (sn^"_max")),Float 1.0,Float 1.0)) net.Net.transition;
+	Net.add_outArc net (trans_of_int ssidt lab) (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Int 1);
+	Net.add_inArc net (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt) (Int 1);
       end
     end
 
