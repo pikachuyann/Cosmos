@@ -19,7 +19,7 @@ let find_id l = find_at "id" l
 let find_type l = find_at "nodeType" l
 
 let rec find_name_rec s e = function
-    Element (x,_,cl) when s=x-> find_child_list "text" cl
+    Element (x,_,cl) when s=x-> find_child_list "name" cl
   | Element (_,_,cl) -> List.fold_left (find_name_rec s) e cl
   | PCData _ -> e
 
@@ -56,11 +56,15 @@ let rec net_of_tree n = function
 	   idmap := StringMap.add id name !idmap;
 	   Data.add (name,Int 0) n.Net.place;
 	 end
-         | _-> ()
+         | (None,None,Some _) -> 	 Printf.printf "new node";
+	 | _ ->()
+
        )
        |  "arc" -> ( match ((find_id alist),(find_at "source" alist),(find_at "target" alist),(find_name "inscription" t)) with
-         (_,Some source,Some target,Some v) -> Net.add_arc n source target (Int (int_of_string v))
-	 | (_,Some source,Some target,_) -> Net.add_arc n source target (Int 1)
+         | (_,Some source,Some target,Some v) -> Net.add_arc n source target (Int (int_of_string v))
+	 | (_,Some source,Some target,_) -> Printf.printf " (%s)->(%s)" source target ;
+	   print_spt_marcie "test.andl" n ;
+	   Net.add_arc n source target (Int 1)
 	 | _-> ()
     )
 
