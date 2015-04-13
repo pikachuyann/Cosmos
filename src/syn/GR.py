@@ -27,7 +27,7 @@ def sample(x):
     cmd += " --max-run 250 --batch 0 --njob 2"
     print(cmd+"\n")
     os.system(cmd)
-    os.system("grep -A 1 \"AtriumPace:\" Result.res | grep \"Estimated value\" | sed \"s/Estimated value:\t//g\" > tmpResult")
+    os.system("grep -A 1 \"Total:\" Result.res | grep \"Estimated value\" | sed \"s/Estimated value:\t//g\" > tmpResult")
     v = eval(get_my_string("tmpResult"))
     return -v
 
