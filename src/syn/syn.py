@@ -1,3 +1,4 @@
+#!env python
 import monsoon
 import sys
 import threading
@@ -38,6 +39,10 @@ def GetReward():
     os.system("grep -A 1 \"Total:\" Result.res | grep \"Estimated value\" | sed \"s/Estimated value:\t//g\" > tmpResult")
     v = eval(get_my_string("tmpResult"))
     return v
+
+if len(sys.argv) > 1:
+	useVM = False
+
 
 def SetArduinoParameter(handle, parID, parValue):
 		headerID = 0xF5
@@ -383,7 +388,9 @@ if useVM==0:
 
 	monItems = mon.GetStatus()
 	items = sorted(monItems.items())
+
 	print "\n".join(["%s: %s" % item for item in items])
+
 	mon.StopDataCollection()
 
 	# Create new threads
@@ -392,8 +399,13 @@ if useVM==0:
 	# Start new Threads
 	threadMonitor.start()
 
+
 HOST = 'localhost'			# The remote host
 PORT = 27778				# The same port as used by the server
+
+if len(sys.argv) > 1:
+	PORT = int(sys.argv[1])
+
 s = None
 for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
 	af, socktype, proto, canonname, sa = res
@@ -421,6 +433,7 @@ parVals = [[0, 300, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 3
 parDict = {'SA_d':0, 'SA_ectopD':1, 'VRG_d':2, 'TURI':3, 'TAVI':4, 'TLRI':5}
 
 if useVM==0:
+	
 	print "Preparing the PowerMonitor device..."
 	time.sleep(4);
 
