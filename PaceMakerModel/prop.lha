@@ -20,8 +20,8 @@ PLVAR_P_T56_RewardStr: P_T56_RewardStr_968* invT ,
 PLVAR_P_T53_RewardStr: P_T53_RewardStr_998* invT , 
 PLVAR_P_T57_RewardStr: P_T57_RewardStr_963* invT , 
 PLVAR_P_T58_RewardStr: P_T58_RewardStr_976* invT , 
-PLVAR_P_T55_RewardStr: P_T55_RewardStr_1212* invT + P_T55_RewardStr_1211* invT + P_T55_RewardStr_1210* invT + P_T55_RewardStr_1209* invT + P_T55_RewardStr_1208* invT , 
-PLVAR_P_T54_RewardStr: P_T54_RewardStr_1202* invT + P_T54_RewardStr_1201* invT + P_T54_RewardStr_1196* invT + P_T54_RewardStr_1195* invT + P_T54_RewardStr_1194* invT ));
+PLVAR_P_T55_RewardStr: P_T55_RewardStr_1207* invT + P_T55_RewardStr_1211* invT + P_T55_RewardStr_1210* invT + P_T55_RewardStr_1209* invT + P_T55_RewardStr_1208* invT , 
+PLVAR_P_T54_RewardStr: P_T54_RewardStr_1201* invT + P_T54_RewardStr_1200* invT + P_T54_RewardStr_1193* invT + P_T54_RewardStr_1195* invT + P_T54_RewardStr_1194* invT ));
 (l2, TRUE);
 };
 Edges={
