@@ -323,12 +323,24 @@ def SaveDistribution(handle, dData):
 		for key, val in dData:
 			dIdCurr.setdefault(key, []).append(val)
 
-		for key in 	dIdCurr:
-			handle.write("T"+str(key)+"_min"+" = "+str(min(dIdCurr[key]))+"\n")
-			handle.write("T"+str(key)+"_max"+" = "+str(max(dIdCurr[key]))+"\n")
-			handle.write("T"+str(key)+"_mean"+" = "+str(np.mean(dIdCurr[key]))+"\n")
-			handle.write("T"+str(key)+"_var"+" = "+str(np.var(dIdCurr[key]))+"\n")
-			handle.write("T"+str(key)+"_list"+" = "+str(dIdCurr[key])+"\n")
+		keyRange = range(53, 59)
+
+		for key in keyRange:
+			if key not in dIdCurr:
+				handle.write("T"+str(key)+"_min"+" = "+str(0)+"\n")
+				handle.write("T"+str(key)+"_max"+" = "+str(0)+"\n")
+				handle.write("T"+str(key)+"_mean"+" = "+str(0)+"\n")
+				handle.write("T"+str(key)+"_var"+" = "+str(0)+"\n")
+				handle.write("T"+str(key)+"_list"+" = "+str([0])+"\n")
+			else:
+				handle.write("T"+str(key)+"_min"+" = "+str(min(dIdCurr[key]))+"\n")
+				handle.write("T"+str(key)+"_max"+" = "+str(max(dIdCurr[key]))+"\n")
+				handle.write("T"+str(key)+"_mean"+" = "+str(np.mean(dIdCurr[key]))+"\n")
+				handle.write("T"+str(key)+"_var"+" = "+str(np.var(dIdCurr[key]))+"\n")
+				handle.write("T"+str(key)+"_list"+" = "+str(dIdCurr[key])+"\n")
+
+
+
 
 class PowerMonitorThread (threading.Thread):
 	def __init__(self, monitor):
@@ -406,15 +418,19 @@ if useVM==0:
 
 	for iters in range(0, 1):
 
+		# Save energy readings
+		fileconst = open('const.m', 'w+')
+
 		# Generate random parameter for Client
 		parValue = random.randint(parVals[parDict["SA_d"]][1], parVals[parDict["SA_d"]][2])
 		parVals[parDict["SA_d"]][3] = parValue
+		fileconst.write("SA_d = "+str(parValue)+"\n")
 		if SetClientParameter(s, parVals[parDict["SA_d"]][0], parValue)!=1:
 			break;
 
 		parValue = random.randint(parVals[parDict["TURI"]][1], parVals[parDict["TURI"]][2])
 		parll = [parVals[parDict["TLRI"]][3]-parVals[parDict["TAVI"]][3], parValue]
-
+		fileconst.write("TURI = "+str(parValue)+"\n")
 		if isParamValuationFeasible(parll)!=1:
 			print "Parameter not feasible: "+str(parll)
 			#break
@@ -469,16 +485,16 @@ if useVM==0:
 		for item in cummCurrentList:
 			idCurr.append([item[0],item[2]])
 
+		SaveDistribution(fileconst, idCurr)
+
 		collectedSamples = []
+
+		fileconst.close()
+
 
 	s.sendall('\xF2')
 	exitFlag = 0
-
-	# Save energy readings
-	fileconst = open('const.m', 'w+')
-	SaveDistribution(fileconst, idCurr)
-	fileconst.close()
-
+	
 else:
 	key = ''
 
