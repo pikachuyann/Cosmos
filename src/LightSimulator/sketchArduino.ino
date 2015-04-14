@@ -130,16 +130,35 @@ REAL_TYPE getPr(TR_PL_ID t){
     return (REAL_TYPE)mySim.N.GetPriority(t);
 }
 
-unsigned long BytesToLong(char iBytes[4])
+unsigned long BytesToLong(/*char iBytes[4]*/ int iBytesOne, int iBytesTwo)
 {
-    unsigned long ri = 0;
+    /*unsigned long ri = 0;*/
+    word ri = 0;
     
+    /*
     ri = (unsigned long)(iBytes[3]);
-    ri = (ri << 8) | (unsigned long)(iBytes[2]);
-    ri = (ri << 8) | (unsigned long)(iBytes[1]);
-    ri = (ri << 8) | (unsigned long)(iBytes[0]);
     
-    return ri;
+    Serial.println((unsigned long)(ri));
+    
+    ri = (ri << 8) | (unsigned long)(iBytes[2]);
+    
+    Serial.println((unsigned long)(ri));
+    
+    
+    ri = (ri << 8) | (unsigned long)(iBytes[1]);
+    */
+    /*
+    ri = (unsigned short)(iBytes[1]);
+    
+    Serial.println((unsigned short)(ri));
+    
+    ri = (ri << 8) | (unsigned short)(iBytes[0]);
+    
+    Serial.println((unsigned short)(ri));
+    */
+    ri = (word)(iBytesOne)+(word)(iBytesTwo*256);
+    Serial.println((unsigned short)(ri));
+    return (unsigned long)(ri);
 }
 
 void AddTransitionID(TR_PL_ID tranID)
@@ -170,11 +189,9 @@ void setup() {
 
 
 void loop() {
-    char buff[6];
-    char cnt;
+    int buff0, buff1, buff2, buff3, buff4, buff5;
     unsigned long ri = 0;
-    double r;
-    
+
     delay(1);
     
     //digitalWrite(MARKER_PORT_TWO, LOW);
@@ -189,11 +206,16 @@ void loop() {
                 //digitalWrite(MARKER_PORT_TWO, HIGH);
                 PORTD = SET_ONEL_TWOH(MARKER_PORT_ONE, MARKER_PORT_TWO);
 
-                buff[0] = Serial.read();
+                buff0 = Serial.read();
                 Serial.flush();
 
                 mySim.StopSimulation();
                 
+                if (Serial) {
+                    Serial.write(0xF6);
+                    Serial.flush();
+                }
+
                 break;
                 
             case 'W':
@@ -201,7 +223,7 @@ void loop() {
                 //digitalWrite(MARKER_PORT_ONE, LOW);
                 PORTD = SET_BOTH_LOW(MARKER_PORT_ONE, MARKER_PORT_TWO);
                 
-                buff[0] = Serial.read();
+                buff0 = Serial.read();
                 Serial.flush();
 
                 
@@ -212,27 +234,32 @@ void loop() {
                 break;
                 
             case 'D':
-                Serial.readBytes( &buff[0], 6);
+                buff0 = Serial.read();
                 
-                /*
-                buff[0] = Serial.read();
-                cnt = 0;
+                while(!Serial.available());
                 
-                while(cnt<5) {
-                    if(Serial.available()) {
-                        buff[cnt] = Serial.read();
-                        cnt++;
-                    }
-                }
-                */
+                buff1 = Serial.read();
                 
-                r = BytesToLong(&buff[2]);
-                Serial.println(buff[1]);
-                Serial.println(r);
-                SetParameters((unsigned char)(buff[1]), r);
-                mySim.N.GetDistParameters(66);
-                Serial.print(mySim.N.ParamDistr[0]);
+                while(!Serial.available());
+                
+                buff2 = Serial.read();
+                
+                while(!Serial.available());
+                
+                buff3 = Serial.read();
 
+                while(!Serial.available());
+                
+                buff4 = Serial.read();
+
+                while(!Serial.available());
+                
+                buff5 = Serial.read();
+
+                ri = (unsigned long)(buff2)+(unsigned long)(buff3)*(unsigned long)(256)+(unsigned long)(buff4)*(unsigned long)(65536)+(unsigned long)(buff5)*(unsigned long)(16777216);
+                
+                SetParameters((unsigned char)(buff1), ri);
+                
                 if (Serial) {
                     Serial.write(0xF6);
                     Serial.flush();
