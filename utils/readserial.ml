@@ -46,6 +46,33 @@ let open_connection s b =
       };
   serial
 
+let mapping_fun = function
+|'0' ->  0
+|'1' ->  1
+|'2' ->  2
+|'3' ->  3
+|'4' ->  4
+|'5' ->  5
+|'6' ->  6
+|'7' ->  7
+|'8' ->  8
+|'9' ->  9
+|'A' ->  10
+|'B' ->  11
+|'C' ->  12
+|'D' ->  13
+|'E' ->  14
+|'F' ->  15
+|'\n' -> 0
+| x -> print_char x; failwith "not hex"
+
+let map_hex s n =
+let s2= Bytes.create n in
+for i =0 to (n-1)/2 do
+s2.[i] <- char_of_int ((mapping_fun s.[2*i])*16 + (mapping_fun s.[2*i+1]))
+done;
+s2
+
 
 let _ =
   assert (Array.length Sys.argv > 1);
@@ -65,5 +92,6 @@ let _ =
     | x::_ when x=Unix.stdin ->
       let nread =  Unix.read Unix.stdin s 0 100 in
       if nread = 0 then raise End_of_file;
-      ignore @@ Unix.write serial  s 0 nread;
+      let s2 =  map_hex s nread in
+      ignore @@ Unix.write serial  s2 0 (nread/2);
   done
