@@ -44,36 +44,43 @@ let open_connection s b =
     (*  Unix.c_hupcl = false;*)
       
       };
-  serial
+  serial;;
 
-let mapping_fun = function
-|'0' ->  0
-|'1' ->  1
-|'2' ->  2
-|'3' ->  3
-|'4' ->  4
-|'5' ->  5
-|'6' ->  6
-|'7' ->  7
-|'8' ->  8
-|'9' ->  9
-|'A' ->  10
-|'B' ->  11
-|'C' ->  12
-|'D' ->  13
-|'E' ->  14
-|'F' ->  15
-|'\n' -> 0
-| x -> print_char x; failwith "not hex"
+let get_int s = 
+  try 
+    let nr = ref '0' in
+    Scanf.sscanf s "%i" (fun n -> nr := char_of_int n);
+    Some !nr
+  with 
+    _ -> None;;
+  
+let splitnb = Str.regexp "[ \n]"
 
-let map_hex s n =
-let s2= Bytes.create n in
-for i =0 to (n-1)/2 do
-s2.[i] <- char_of_int ((mapping_fun s.[2*i])*16 + (mapping_fun s.[2*i+1]))
-done;
-s2
+let interpret_str s =
+  let s2 = Bytes.create (String.length s) in
+  let nchar = ref 0 in
+  let lastnb =ref false in
+  let spl = Str.full_split splitnb s in
+  List.iter (function 
+  | Str.Text x -> begin match get_int x with
+    | Some n -> 
+      s2.[!nchar] <- n; 
+      incr nchar;
+      lastnb:=true;
+    | None -> let nl = String.length x in
+	      Bytes.blit_string x 0 s2 !nchar nl;
+	      nchar := !nchar + nl;
+	      lastnb := false
 
-
+  end
+  | Str.Delim x when x = "\n" || !lastnb -> lastnb:= false
+  | Str.Delim x -> let nl = String.length x in
+	       Bytes.blit_string x 0 s2 !nchar nl;
+	       nchar := !nchar + nl;
+	       lastnb := false
+  ) spl;
+  Bytes.sub_string s2 0 !nchar;;
+	 
 let _ =
   assert (Array.length Sys.argv > 1);
   let b = (if Array.length Sys.argv>2 then int_of_string Sys.argv.(2) else 115200) in
@@ -89,9 +96,27 @@ let _ =
 	if nread = 0 then raise End_of_file;
 	print_string (String.sub s 0 nread);
 	flush stdout;
-    | x::_ when x=Unix.stdin ->
+    | x::_ when x=Unix.stdin -> 
       let nread =  Unix.read Unix.stdin s 0 100 in
       if nread = 0 then raise End_of_file;
-      let s2 =  map_hex s nread in
-      ignore @@ Unix.write serial  s2 0 (nread/2);
+      let s2 = interpret_str (Bytes.sub_string s 0 nread ) in
+      print_string "Send";
+      for i = 0 to String.length s2-1 do
+	Printf.printf "[%i:%c]" (int_of_char s2.[i]) s2.[i]; 
+      done;
+      print_newline ();
+      ignore @@ Unix.write serial  s2 0 (String.length s2);
+      
   done
+
+
+(*
+begin
+	begin try
+		Scanf.bscanf Scanf.Scanning.stdin "%i\n" (fun n -> s.[0]<- char_of_int n)
+	  with 
+	    _ -> Scanf.bscanf Scanf.Scanning.stdin "%c" (fun c -> s.[0]<- c)
+	end;
+	ignore @@ Unix.write serial s 0 1;
+	
+      end*)
