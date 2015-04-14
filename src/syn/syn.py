@@ -1,3 +1,4 @@
+#!env python
 import monsoon
 import sys
 import threading
@@ -17,7 +18,12 @@ exitFlag = 1
 stDataColl = 0
 collectedSamples = []
 useVM = 0
+usePM = True
 logTime = 10 # in Seconds
+
+if len(sys.argv) > 1:
+                usePM = False
+
 
 def SetArduinoParameter(handle, parID, parValue):
 		headerID = 0xF5
@@ -343,25 +349,31 @@ class PowerMonitorThread (threading.Thread):
 
 		print "Ending PowerMonitor Thread\n"
 
-if useVM==0:
-	mon = monsoon.Monsoon("/dev/tty.usbmodemfd141")
+if usePM:
+	if useVM==0:
+		mon = monsoon.Monsoon("/dev/tty.usbmodemfd141")
 
-	mon.SetVoltage(3.7)
-	mon.SetUsbPassthrough(0)
+		mon.SetVoltage(3.7)
+		mon.SetUsbPassthrough(0)
 
-	monItems = mon.GetStatus()
-	items = sorted(monItems.items())
-	print "\n".join(["%s: %s" % item for item in items])
-	mon.StopDataCollection()
+		monItems = mon.GetStatus()
+		items = sorted(monItems.items())
+		print "\n".join(["%s: %s" % item for item in items])
+		mon.StopDataCollection()
 
-	# Create new threads
-	threadMonitor = PowerMonitorThread(mon)
+		# Create new threads
+		threadMonitor = PowerMonitorThread(mon)
 
-	# Start new Threads
-	threadMonitor.start()
+		# Start new Threads
+		threadMonitor.start()
+
 
 HOST = 'localhost'			# The remote host
 PORT = 27778				# The same port as used by the server
+
+if len(sys.argv) > 1:
+                PORT = int(sys.argv[1])
+
 s = None
 for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
 	af, socktype, proto, canonname, sa = res
