@@ -10,6 +10,7 @@ import binascii
 import random
 import ctypes
 import numpy as np
+import os
 
 from fparams import isParamValuationFeasible
 
@@ -18,6 +19,25 @@ stDataColl = 0
 collectedSamples = []
 useVM = 0
 logTime = 10 # in Seconds
+constfile = "const.m"
+
+def get_my_string(fp):
+    f = open(fp, 'r')
+    string = str(f.read())
+    f.close()
+    return string
+
+def GetReward():
+    cmd="Cosmos"
+    cmd += " HeartModelAll.slx"
+    cmd += " prop.lha"
+    #cmd += format(" --const \"SA_d=%f\""%x)
+    cmd += " --max-run 10 --batch 0 -v 0 --njob 2"
+    print(cmd+"\n")
+    os.system(cmd)
+    os.system("grep -A 1 \"Total:\" Result.res | grep \"Estimated value\" | sed \"s/Estimated value:\t//g\" > tmpResult")
+    v = eval(get_my_string("tmpResult"))
+    return v
 
 def SetArduinoParameter(handle, parID, parValue):
 		headerID = 0xF5
@@ -407,7 +427,7 @@ if useVM==0:
 	for iters in range(0, 1):
 
 		# Save energy readings
-		fileconst = open('const.m', 'w+')
+		fileconst = open(constfile, 'w+')
 
 		# Generate random parameter for Client
 		parValue = random.randint(parVals[parDict["SA_d"]][1], parVals[parDict["SA_d"]][2])
@@ -421,7 +441,7 @@ if useVM==0:
 		fileconst.write("TURI = "+str(parValue)+"\n")
 		if isParamValuationFeasible(parll)!=1:
 			print "Parameter not feasible: "+str(parll)
-			#break
+		#	#break
 
 		parVals[parDict["TURI"]][3] = parValue
 		if SetArduinoParameter(s, parVals[parDict["TURI"]][0], parValue)!=1:
@@ -474,10 +494,16 @@ if useVM==0:
 			idCurr.append([item[0],item[2]])
 
 		SaveDistribution(fileconst, idCurr)
+		fileconst.close()
 
+		rewardNet = GetReward()
+
+		print rewardNet
+
+		os.system(constfile)
 		collectedSamples = []
 
-		fileconst.close()
+
 
 
 	s.sendall('\xF2')

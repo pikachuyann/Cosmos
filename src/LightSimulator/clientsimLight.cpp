@@ -108,7 +108,7 @@ int main(int nargs, char** argv)
     
     // Hardcode the serial communication for PC client
     mySim.verbose = atoi(argv[2]);
-    
+
     if(!CreateSocket(&sInfo.gSocketHandle, hostInfoList))
         return 1;
     
@@ -259,22 +259,24 @@ int main(int nargs, char** argv)
                     
                     if (pollRc < 0) {
                         print("Error: setting the poll\n");
+                        sInfo.gCommands = SIM_END;
                     } else if(pollRc > 0) {
                         
                         if( gWaitDescriptors[0].revents & POLLIN ) {
                             bytesRead = read(gftHandle[giDeviceID], &Buf, (int)1);
-                            
                             if (Buf!=SIM_READY) {
                                 print("Wrong Arduino reply\n");
-                                Buf=SIM_READY;
-                                dwBytes = send(sInfo.gListenSocketHandle, (void*)&Buf, 1, 0);
-                                break;
+                                sInfo.gCommands = SIM_END;
                             }
                             
+                            Buf=SIM_READY;
                             dwBytes = send(sInfo.gListenSocketHandle, (void*)&Buf, 1, 0);
+
                         }
-                        else if(gWaitDescriptors[0].revents & POLLHUP || gWaitDescriptors[0].revents & POLLERR)
+                        else if(gWaitDescriptors[0].revents & POLLHUP || gWaitDescriptors[0].revents & POLLERR) {
                             print("Error: poll read gftHandle\n");
+                            sInfo.gCommands = SIM_END;
+                        }
                     }
                     break;
                     
@@ -329,13 +331,13 @@ char SReceive(void)
         bytesRead = read(gftHandle[giDeviceID], &retVal, (int)1);
         if(retVal==0x33 || retVal==0x34)
             std::cerr << "<<<<<<< Pace -> Heart: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
-        else if(retVal>=0x35 && retVal<=0x3C) {
+        else if(retVal>=0x35 && retVal<=0x3A) {
             std::cerr << "<<<<<<< Syn: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
             
             AddTransitionID(retVal, (unsigned int)(mySim.curr_time));
         }
         else
-            std::cerr << "<<<<<<< Data: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;;
+            std::cerr << "<<<<<<< Data: "<< mySim.curr_time << " ["<< std::hex << retVal << "]"<< std::endl;
         
         gDataAvailable = 0;
     }

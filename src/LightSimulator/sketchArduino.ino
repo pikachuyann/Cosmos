@@ -170,7 +170,7 @@ void setup() {
 
 
 void loop() {
-    char buff[5];
+    char buff[6];
     char cnt;
     unsigned long ri = 0;
     double r;
@@ -212,6 +212,9 @@ void loop() {
                 break;
                 
             case 'D':
+                Serial.readBytes( &buff[0], 6);
+                
+                /*
                 buff[0] = Serial.read();
                 cnt = 0;
                 
@@ -221,10 +224,15 @@ void loop() {
                         cnt++;
                     }
                 }
+                */
                 
-                r = BytesToLong(&buff[1]);
-                SetParameters((unsigned char)(buff[0]), r);
-                
+                r = BytesToLong(&buff[2]);
+                Serial.println(buff[1]);
+                Serial.println(r);
+                SetParameters((unsigned char)(buff[1]), r);
+                mySim.N.GetDistParameters(66);
+                Serial.print(mySim.N.ParamDistr[0]);
+
                 if (Serial) {
                     Serial.write(0xF6);
                     Serial.flush();
