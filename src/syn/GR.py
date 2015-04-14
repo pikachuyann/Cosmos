@@ -13,23 +13,23 @@ minv = 300
 maxv = 1100
 
 def get_my_string(fp):
-   f = open(fp, 'r')
-   string = str(f.read())
-   f.close()
-   return string
+    f = open(fp, 'r')
+    string = str(f.read())
+    f.close()
+    return string
 
 
-def sample(x):
+def sample():
     cmd="Cosmos"
-    cmd += " /Users/benbot/Documents/Cosmos/Examples/Heart/idhp_model_heart_realtime_syn.slx"
-    cmd += " /Users/benbot/Documents/Cosmos/Examples/Heart/nbBeat.lha"
-    cmd += format(" --const \"SA_d=%f\""%x)
+    cmd += " HeartModelAll.slx"
+    cmd += " prop.lha"
+    #cmd += format(" --const \"SA_d=%f\""%x)
     cmd += " --max-run 250 --batch 0 --njob 2"
     print(cmd+"\n")
     os.system(cmd)
     os.system("grep -A 1 \"Total:\" Result.res | grep \"Estimated value\" | sed \"s/Estimated value:\t//g\" > tmpResult")
     v = eval(get_my_string("tmpResult"))
-    return -v
+    return v
 
 """def sample(x):
     return np.sin(10*x) + np.random.randn(1,1)*0.01"""
