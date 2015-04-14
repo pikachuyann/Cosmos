@@ -3,7 +3,7 @@
 #define NB_EVENT 200
 
 #define ARDUINO_SP_NAME "arduino"
-#define PORT_NUMBER "27778"
+#define PORT_NUMBER "27770"
 
 #define SERIAL_BUF_SIZE 64
 #define MAX_DEVICES		5

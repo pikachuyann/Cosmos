@@ -96,6 +96,14 @@ void *SocketReadThread(void *pArgs)
     return NULL;
 }
 
+// Handler for interuption of the server
+void signalHandler(int);
+
+void signalHandler( int s)
+{
+    if(s == SIGHUP )exit(EXIT_SUCCESS);
+}
+
 int main(int nargs, char** argv)
 {
     struct  termios             oldTio;
@@ -105,7 +113,11 @@ int main(int nargs, char** argv)
     pthread_t                   threadID;
     
     gettimeofday(&gStartTime, NULL);
-    
+
+    signal(SIGINT, SIG_IGN);
+    signal(SIGHUP, signalHandler);
+
+
     // Hardcode the serial communication for PC client
     mySim.verbose = atoi(argv[2]);
 
