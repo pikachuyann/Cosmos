@@ -433,11 +433,11 @@ parVals = [[0, 300, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 3
 parDict = {'SA_d':0, 'SA_ectopD':1, 'VRG_d':2, 'TURI':3, 'TAVI':4, 'TLRI':5}
 
 if useVM==0:
-	
+
 	print "Preparing the PowerMonitor device..."
 	time.sleep(4);
 
-	for iters in range(0, 1):
+	for iters in range(0, 3):
 
 		# Save energy readings
 		fileconst = open(constfile, 'w+')
@@ -513,7 +513,8 @@ if useVM==0:
 
 		print rewardNet
 
-		os.system(constfile)
+		os.system("rm "+constfile)
+
 		collectedSamples = []
 
 

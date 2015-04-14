@@ -105,7 +105,8 @@ let _ =
 	Printf.printf "[%i:%c]" (int_of_char s2.[i]) s2.[i]; 
       done;
       print_newline ();
-      ignore @@ Unix.write serial  s2 0 (String.length s2);
+      let n = String.length s2 in
+      let n2 =Unix.write serial  s2 0 n in assert (n=n2);
       
   done
 
