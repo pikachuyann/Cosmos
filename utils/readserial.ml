@@ -100,6 +100,11 @@ let _ =
       let nread =  Unix.read Unix.stdin s 0 100 in
       if nread = 0 then raise End_of_file;
       let s2 = interpret_str (Bytes.sub_string s 0 nread ) in
+      print_string "Send";
+      for i = 0 to String.length s2-1 do
+	Printf.printf "[%i:%c]" (int_of_char s2.[i]) s2.[i]; 
+      done;
+      print_newline ();
       ignore @@ Unix.write serial  s2 0 (String.length s2);
       
   done
