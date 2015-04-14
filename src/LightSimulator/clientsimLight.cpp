@@ -206,6 +206,25 @@ int main(int nargs, char** argv)
                     Buf = 'S';
                     WriteToPort(&gftHandle[giDeviceID], 1, &Buf);
                     
+                    Buf = 0;
+                    while(Buf!=SIM_READY) {
+                        pollRc = poll(&gWaitDescriptors[0], 2, -1);
+                        
+                        if (pollRc < 0) {
+                            print("Error: setting the poll\n");
+                            sInfo.gCommands = SIM_END;
+                        } else if(pollRc > 0) {
+                            
+                            if( gWaitDescriptors[0].revents & POLLIN )
+                                bytesRead = read(gftHandle[giDeviceID], &Buf, (int)1);
+                            else if(gWaitDescriptors[0].revents & POLLHUP || gWaitDescriptors[0].revents & POLLERR) {
+                                print("Error: poll read gftHandle\n");
+                                sInfo.gCommands = SIM_END;
+                            }
+                        }
+    
+                    }
+                    
                     break;
                     
                 case SIM_GET_ID:
@@ -258,6 +277,7 @@ int main(int nargs, char** argv)
                 case SIM_SET_PPAR:
                     sInfo.gCommands = SIM_NONE;
                     
+                    
                     parValue = BytesToInt(sInfo.gParBuf);
                     print("Setting Arduino parameter ID: "); print((float)(sInfo.gParId)); print(" Value: "); print((float)parValue); print("\n");
                     
@@ -266,6 +286,7 @@ int main(int nargs, char** argv)
                     memcpy((void*)&sParBuf[2], (const void*)&sInfo.gParBuf[0], 4);
                     
                     WriteToPort(&gftHandle[giDeviceID], 6, &sParBuf[0]);
+                    
                     
                     pollRc = poll(&gWaitDescriptors[0], 2, -1);
                     
@@ -277,7 +298,7 @@ int main(int nargs, char** argv)
                         if( gWaitDescriptors[0].revents & POLLIN ) {
                             bytesRead = read(gftHandle[giDeviceID], &Buf, (int)1);
                             if (Buf!=SIM_READY) {
-                                print("Wrong Arduino reply\n");
+                                print("Wrong Arduino reply: "); print(Buf); print("\n");
                                 sInfo.gCommands = SIM_END;
                             }
                             
