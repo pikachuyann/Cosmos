@@ -36,7 +36,6 @@
 
 #include "HaslFormula.hpp"
 
-using namespace std;
 
 enum Poption {
     CO_level,
@@ -92,6 +91,7 @@ enum Poption {
 
 
 struct parameters {
+    std::string commandLine;
     int verbose;
     bool interactive;
     std::chrono::milliseconds updatetime;
@@ -107,20 +107,20 @@ struct parameters {
     bool sequential;
     bool relative;
 
-    string comp_uuid;
-    string tmpPath;
+    std::string comp_uuid;
+    std::string tmpPath;
     unsigned int tmpStatus; // 0 create and destroy tmp,
     //1 do not build but destroy,2 do not destroy, 3 do not build nor destoy
-    string Path;
-    string PathGspn;
-    string PathLha;
-    map<string, string> constants;
+    std::string Path;
+    std::string PathGspn;
+    std::string PathLha;
+    std::map<std::string, std::string> constants;
 
     int generateLHA;
     double loopLHA;
     double loopTransientLHA;
-    string CSLformula;
-    string externalHASL;
+    std::string CSLformula;
+    std::string externalHASL;
     bool localTesting;
     bool RareEvent;
     bool DoubleIS;
@@ -134,10 +134,10 @@ struct parameters {
     int computeStateSpace;
 
     bool alligatorMode;
-    string unfold;
+    std::string unfold;
 
-    string gcccmd;
-    string gccflags;
+    std::string gcccmd;
+    std::string gccflags;
     bool lightSimulator;
 
     parameters();
@@ -146,19 +146,19 @@ struct parameters {
     void parseCommandLine(int argc, char** argv);
     Poption parsersingleOpt(int i) const;
     //void parseCommandLine2(int argc, char** argv);
-    string prismPath;
-    string dataoutput;
-    string dataraw;
-    string datatrace;
+    std::string prismPath;
+    std::string dataoutput;
+    std::string dataraw;
+    std::string datatrace;
     double sampleResol;
-    string dataPDFCDF;
-    string gnuplotDriver;
-    map<string,int> tracedPlace;
-    string dotfile;
-    string magic_values;
+    std::string dataPDFCDF;
+    std::string gnuplotDriver;
+    std::map<std::string,int> tracedPlace;
+    std::string dotfile;
+    std::string magic_values;
     
-    vector<HaslFormulasTop*> HaslFormulas;
-    vector<string> HaslFormulasname;
+    std::vector<HaslFormulasTop*> HaslFormulas;
+    std::vector<std::string> HaslFormulasname;
     size_t nbAlgebraic;
     size_t nbPlace;
 };
