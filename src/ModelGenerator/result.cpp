@@ -240,6 +240,7 @@ void result::print(ostream &s) {
 
     //if(!P.computeStateSpace)
     {
+        s << "Command line:\t" << P.commandLine << endl;
         s << "Model path:\t" << P.PathGspn << endl;
         if (P.loopLHA > 0.0) {
             s << "LHA loop:\t" << P.loopLHA << " transient:\t" << P.loopTransientLHA << endl;
