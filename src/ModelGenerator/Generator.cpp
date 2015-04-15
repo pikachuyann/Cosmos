@@ -505,7 +505,7 @@ void generateSamplingLHA(Gspn_Reader &gReader) {
 }
 
 void generateLoopLHA(Gspn_Reader &gReader) {
-    //If the automaton need to be generateed to mesure simple perfomance indices generate it
+    //If the automaton need to be generated to mesure simple perfomance indices generate it
     //An automaton is produce with two loop the first make time elapse until transient time
     //elapse and then compute the mean number of token in each place and the throughput
     //of each transition

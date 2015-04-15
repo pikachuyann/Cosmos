@@ -40,7 +40,7 @@ cd sketchArduino
 
 
 SERIAL_FIO=`ls /dev/tty.usbserial-* /dev/ttyUSB* 2>/dev/null`
-#SERIAL_BLEND=`ls /dev/tty.usbmodem* /dev/ttyACM* 2>/dev/null`
+SERIAL_BLEND=`ls /dev/tty.usbmodem* /dev/ttyACM* 2>/dev/null`
 
 if [[ -n $SERIAL_BLEND ]]; then
     BOARD=blendmicro8
@@ -53,6 +53,7 @@ else
 fi
 
 ino build -m $BOARD
+readserial $SERIAL 1200 reset
 
 ino upload -m $BOARD -p $SERIAL
 

@@ -62,10 +62,10 @@ public:
 	void stopclock();
 	
 	//! print the result of the simulation to a stream.
-	void print(ostream &s);
+    void print(std::ostream &s);
 	
 	//! print the result of the simulation to a file.
-	void printResultFile(string);
+	void printResultFile(std::string);
 	
 	//! print the result of the simulation to stdout in format well suited for alligator.
 	void printAlligator();
@@ -74,7 +74,7 @@ public:
 	void printGnuplot();
 	
 	//! Output the data of CDF or PDF to a file in the gnuplot file format
-	void outputCDFPDF(string);
+	void outputCDFPDF(std::string);
 	
 	//! Output data of the simulation in the gnuplot file format.
 	void outputData();
@@ -100,14 +100,14 @@ private:
 	double cpu_time_used;
 	
 	//! Stream where to print data.
-	fstream outdatastream;
+	std::fstream outdatastream;
 	
 	//! Flush the gnuplot stream and check for error.
 	void flushgnuplot();
 	
 	//! Stream to the interactive gnuplot session.
 	FILE* gnuplotstream;
-        string gnuplotextenstion;
+        std::string gnuplotextenstion;
 	
 	//! Number of lines written by the function printProgress.
 	int endline;
@@ -119,10 +119,10 @@ private:
 	double Progress;
 	
 	//! The relative error for each formula.
-	vector<double> ProgressArray;
+	std::vector<double> ProgressArray;
 	
 	//! The result of the estimator of the confidence interval for each formula.
-	vector<ConfInt> HaslResult;
+	std::vector<ConfInt> HaslResult;
 	
 	//! Print a progress bar.
 	void printPercent(double i, double j);

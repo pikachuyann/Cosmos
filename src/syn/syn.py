@@ -13,6 +13,11 @@ import ctypes
 import numpy as np
 import os
 import GPy
+import math
+from scipy.special import erf
+import matplotlib
+from IPython.display import display
+from matplotlib import pyplot as plt
 
 from fparams import isParamValuationFeasible
 
@@ -20,9 +25,13 @@ exitFlag = 1
 stDataColl = 0
 collectedSamples = []
 useVM = 0
-logTime = 2 # in Seconds
+logTime = 10 # in Seconds
 constfile = "const.m"
 kernel = GPy.kern.RBF(input_dim=1, variance=1., lengthscale=1.)
+
+N_INITIAL_SAMPLES = 10
+N_OPT_STEPS = 1000
+resultfile = "result.m"
 
 def get_my_string(fp):
     f = open(fp, 'r')
@@ -43,7 +52,7 @@ def GetReward():
     return v
 
 if len(sys.argv) > 1:
-	useVM = False
+	useVM = 1
 
 
 def SetArduinoParameter(handle, parID, parValue):
@@ -233,8 +242,8 @@ def normcdf(x):
 def findMax(m, X2, minv, maxv, fmin):
 	mu,s2 = m.predict(X2)
 	t = np.argmax((fmin-mu) * normcdf( (fmin-mu)/np.sqrt(s2) ) + np.sqrt(s2)*normpdf( (fmin-mu)/np.sqrt(s2) ))
-	t2 = minv + (maxv - minv)*t/n
-	return t2
+	#t2 = minv + (maxv - minv)*t/len(X2)
+	return X2[t]
 
 class PowerMonitorThread (threading.Thread):
 	def __init__(self, monitor):
@@ -321,7 +330,9 @@ if useVM==0:
 	print "Preparing the PowerMonitor device..."
 	time.sleep(4);
 
-	for iters in range(0, 5):
+	print "Get initial values"
+	logTime = 120
+	for iters in range(0, N_INITIAL_SAMPLES):
 
 		# Generate random parameter for pacemaker	
 		parValueArduino = random.randint(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2])
@@ -391,17 +402,98 @@ if useVM==0:
 	print XPace
 	print YPace
 
-	m = GPy.models.GPRegression(XPace,YPace,kernel)
-	m.optimize_restarts(num_restarts = 10)
-	Xin = np.linspace(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2],num=1000).reshape((1000,1))
+	print "Optimize parameters"
+	logTime = 120
+	for iters in range(0, N_OPT_STEPS):
 
-	print X2
+		m = GPy.models.GPRegression(XPace,YPace,kernel)
+		m.optimize_restarts(num_restarts = 10)
 
-	retMax = findMax(m, Xin, parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2], 0.5)
+		Xin = np.linspace(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2],num=1000).reshape((1000,1))
+
+		Xf = np.array([0])
+
+		for idx in range(len(Xin)):
+			parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], Xin[idx]]
+			if isParamValuationFeasible(parll)==1:
+				Xf = np.vstack((Xf,Xin[idx]))
+
+		Xf = Xf[1:len(Xf)]
+
+		parValueArduino = int(findMax(m, Xf, parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2], min(YPace)))
+
+		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parValueArduino]
+		if isParamValuationFeasible(parll)!=1:
+			print "Pacemaker parameter not feasible: "+str(parll)
+			continue
+
+		parVals[parDict[parNameA]][3] = parValueArduino
+		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parValueArduino)!=1:
+			break
+
+		# Generate random parameter for Client
+		parValueClient = random.randint(parVals[parDict[parNameC]][1], parVals[parDict[parNameC]][2])
+		parVals[parDict[parNameC]][3] = parValueClient
+		if SetClientParameter(s, parVals[parDict[parNameC]][0], parValueClient)!=1:
+			break;
+
+		# Save energy readings
+		fileconst = open(constfile, 'w+')
+		fileconst.write(parNameA+" = "+str(parValueArduino)+"\n")
+		fileconst.write(parNameC+" = "+str(parValueClient)+"\n")
+			
+		#isParamValuationFeasible(param)	
+		print "Start iteration: "+str(iters)
+
+		# Start iteration
+		s.sendall('\xF0')
+		stDataColl = 1
+
+		time.sleep(logTime);
+
+		# Stop iteration
+		s.sendall('\xF1')
+		time.sleep(1);
+		stDataColl = 0
+
+		print "Stopped collecting data"
+
+		cummCurrentList = GetTotalCurrents(s, collectedSamples, monItems['sampleRate'])
+
+		if len(cummCurrentList)==0:
+			break
+
+		# Save energy readings to list	
+		for item in cummCurrentList:
+			idCurr.append([item[0],item[2]])
+
+		SaveDistribution(fileconst, idCurr)
+		fileconst.close()
+
+		energyValue = GetReward()
+
+		XPace = np.vstack((XPace,parValueArduino))
+		YPace = np.vstack((YPace,energyValue))
+
+		os.system("rm "+constfile)
+
+		collectedSamples = []
+
+		m.plot()
+		display(m)
+		plt.savefig(format('gaussfig%i'%iters))
+
 
 	s.sendall('\xF2')
 	exitFlag = 0
 	
+	rfhandle = open(resultfile, 'w+')
+	rfhandle.write("paramp = ["+"\n")
+	for idx in range(len(XPace)):
+		rfhandle.write(str(XPace[idx])+" "+str(YPace[idx])+";\n")
+
+	rfhandle.write("];"+"\n")
+	rfhandle.close()
 
 else:
 	key = ''
