@@ -50,10 +50,10 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
 	switch (distribution) {
 		case UNIFORM:
 		{//UNIF
+            if(param[0] == param[1]) return param[0];
 			boost::uniform_real<> UNIF(param[0], param[1]);
 			boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
 			return gen();
-			break;
 		}
 			
 		case MASSACTION:

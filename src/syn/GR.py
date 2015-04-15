@@ -51,5 +51,6 @@ print X
 
 for c in range(0,1):
     X,Y,m=optstep(X,Y)
-    #m.plot()
-    #plt.savefig(format('gaussfig%i'%c))
+    m.plot()
+    display(m)
+    plt.savefig(format('gaussfig%i'%c))
