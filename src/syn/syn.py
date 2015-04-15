@@ -41,7 +41,7 @@ def GetReward():
     return v
 
 if len(sys.argv) > 1:
-	useVM = False
+	useVM = 1
 
 
 def SetArduinoParameter(handle, parID, parValue):

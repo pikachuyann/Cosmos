@@ -31,6 +31,7 @@
 #include <getopt.h>
 #include <string.h>
 
+using namespace std;
 
 #define BUILD_VERSION "Cosmos 1.4"
 
@@ -38,6 +39,7 @@
  * Constructor for parameters, set all default values
  */
 parameters::parameters() :
+commandLine(""),
 verbose(2),
 interactive(false),
 updatetime(100),
@@ -203,6 +205,12 @@ Poption parameters::parsersingleOpt(int i)const{
  * with the option set by the user
  */
 void parameters::parseCommandLine(int argc, char** argv) {
+    commandLine = argv[0];
+    for (int i = 1; i<argc; i++){
+        commandLine += " ";
+        commandLine += argv[i];
+    }
+
     int c;
 
     while (1) {

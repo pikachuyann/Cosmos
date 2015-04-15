@@ -107,7 +107,7 @@ void signalHandler( int s)
 int main(int nargs, char** argv)
 {
     struct  termios             oldTio;
-    struct  addrinfo            *hostInfoList = nullptr; // Pointer to the to the linked list of host_info's.
+    struct  addrinfo            *hostInfoList = nullptr; // Pointer to the linked list of host_info's.
     struct  ThreadSerialInfo    sInfo = {-1, -1, -1, 1, SIM_NONE, &mySim, 0, {0, 0, 0, 0}};
     auto                        serial = ARDUINO_SP_NAME;
     pthread_t                   threadID;
