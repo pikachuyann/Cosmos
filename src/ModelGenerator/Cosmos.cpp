@@ -144,7 +144,11 @@ int main(int argc, char** argv) {
 	// Fill the P structure from the command line
 	P.parseCommandLine(argc,argv);
 
-	if (P.verbose>0)cout << "Cosmos" << endl;
+    if (P.verbose>0){
+        cout << "################################################################################" << endl;
+        cout << "##########################           Cosmos           ##########################" << endl;
+        cout << "################################################################################" << endl;
+    }
 	//assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
 	
 	//If tmpStatus is zero generate random tmp directory
