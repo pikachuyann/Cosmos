@@ -29,9 +29,10 @@ logTime = 10 # in Seconds
 constfile = "const.m"
 kernel = GPy.kern.RBF(input_dim=1, variance=1., lengthscale=1.)
 
-N_INITIAL_SAMPLES = 10
+N_INITIAL_SAMPLES = 1
 N_OPT_STEPS = 1000
 resultfile = "result.m"
+tmpconstfile = "tmpconst.m"
 
 def get_my_string(fp):
     f = open(fp, 'r')
@@ -313,7 +314,7 @@ if s is None:
 
 idCurr = []
 # 0 = ID, 1 = min, 2 = max, 3 = set value
-parVals = [[0, 300, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 300, 2000, 500], [1, 0, 200, 131], [2, 200, 1200, 1000]]
+parVals = [[0, 300, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 0, 300, 500], [1, 0, 200, 131], [2, 200, 1200, 1000]]
 parDict = {'SA_d':0, 'SA_ectopD':1, 'VRG_d':2, 'TURI':3, 'TAVI':4, 'TLRI':5}
 
 XPace = np.array([0])
@@ -331,11 +332,15 @@ if useVM==0:
 	time.sleep(4);
 
 	print "Get initial values"
-	logTime = 120
+	logTime = 600
 	for iters in range(0, N_INITIAL_SAMPLES):
 
 		# Generate random parameter for pacemaker	
 		parValueArduino = random.randint(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2])
+
+		# For testing purposes
+		parValueArduino = 500
+
 		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parValueArduino]
 		if isParamValuationFeasible(parll)!=1:
 			print "Pacemaker parameter not feasible: "+str(parll)
@@ -347,6 +352,10 @@ if useVM==0:
 
 		# Generate random parameter for Client
 		parValueClient = random.randint(parVals[parDict[parNameC]][1], parVals[parDict[parNameC]][2])
+
+		# For testing purposes
+		#parValueClient = 2000
+
 		parVals[parDict[parNameC]][3] = parValueClient
 		if SetClientParameter(s, parVals[parDict[parNameC]][0], parValueClient)!=1:
 			break;
@@ -389,10 +398,17 @@ if useVM==0:
 		XPace = np.vstack((XPace,parValueArduino))
 		YPace = np.vstack((YPace,energyValue))
 
+		print XPace
+		print YPace
 		os.system("rm "+constfile)
 
 		collectedSamples = []
 
+
+	# For testing purposes	
+	tmpfileconst = open(tmpconstfile, 'w+')
+	SaveDistribution(tmpfileconst, idCurr)	
+	tmpfileconst.close()
 
 	print "Initial sample:"	
 
@@ -404,10 +420,23 @@ if useVM==0:
 
 	print "Optimize parameters"
 	logTime = 120
+
+	# Store the initial values of parameters
+	rfhandle = open(resultfile, 'w+')
+	rfhandle.close()
+
+	rfhandle = open(resultfile, 'a')
+	rfhandle.write("paramp = ["+"\n")
+
+	for idx in range(len(XPace)):
+		rfhandle.write(str(XPace[idx])+" "+str(YPace[idx])+";\n")
+
+	rfhandle.close()
+
 	for iters in range(0, N_OPT_STEPS):
 
 		m = GPy.models.GPRegression(XPace,YPace,kernel)
-		m.optimize_restarts(num_restarts = 10)
+		m.optimize_restarts(num_restarts = 20)
 
 		Xin = np.linspace(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2],num=1000).reshape((1000,1))
 
@@ -434,6 +463,10 @@ if useVM==0:
 		# Generate random parameter for Client
 		parValueClient = random.randint(parVals[parDict[parNameC]][1], parVals[parDict[parNameC]][2])
 		parVals[parDict[parNameC]][3] = parValueClient
+
+		# For testing purposes
+		parValueClient = 2000
+
 		if SetClientParameter(s, parVals[parDict[parNameC]][0], parValueClient)!=1:
 			break;
 
@@ -483,15 +516,16 @@ if useVM==0:
 		display(m)
 		plt.savefig(format('gaussfig%i'%iters))
 
+		# Save to file
+		rfhandle = open(resultfile, 'a')
+		rfhandle.write(str(parValueArduino)+" "+str(energyValue)+";\n")
+		rfhandle.close()
 
 	s.sendall('\xF2')
 	exitFlag = 0
 	
-	rfhandle = open(resultfile, 'w+')
-	rfhandle.write("paramp = ["+"\n")
-	for idx in range(len(XPace)):
-		rfhandle.write(str(XPace[idx])+" "+str(YPace[idx])+";\n")
-
+	# Save to file
+	rfhandle = open(resultfile, 'a')
 	rfhandle.write("];"+"\n")
 	rfhandle.close()
 
