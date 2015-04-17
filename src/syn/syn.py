@@ -29,8 +29,8 @@ logTime = 10 # in Seconds
 constfile = "const.m"
 kernel = GPy.kern.RBF(input_dim=1, variance=1., lengthscale=1.)
 
-N_INITIAL_SAMPLES = 1
-N_OPT_STEPS = 1000
+N_INITIAL_SAMPLES = 10
+N_OPT_STEPS = 100
 resultfile = "result.m"
 tmpconstfile = "tmpconst.m"
 
@@ -91,6 +91,10 @@ def SetParameter(handle, headerID, parID, parValue):
 
 		return 1
 
+def Save2DArray(handle, arr):
+	for idx in range(len(arr)):
+		handle.write(str(arr[idx][0])+" "+str(arr[idx][1])+"\n")
+
 def SaveMarkersToFile(handle, dta):
 	if dta==0:
 		handle.write(str(0)+" "+str(0))
@@ -114,6 +118,24 @@ def GetMinCurrent(pmData):
 	currList = [it[0] for it in pmData]
 
 	return min(currList)
+
+def GetSumCurrent(pmData, monitorSamplingFreq):
+	sumCurrent = 0
+	prev = pmData[0][1]
+
+	it_beg = 0
+
+	for it in range(1,len(pmData)):
+		if pmData[it][1]!=2 and prev==2:
+			it_beg = it
+			break
+
+	for it in range(it_beg,len(pmData)):
+		if pmData[it][1]==2 and prev!=2:
+			break
+		sumCurrent = sumCurrent + pmData[it][0]
+	
+	return sumCurrent
 
 def GetEnergyReadings(pmData, monitorSamplingFreq, tranListTimes, minCurrent):
 	cummCurrentList = []
@@ -314,17 +336,20 @@ if s is None:
 
 idCurr = []
 # 0 = ID, 1 = min, 2 = max, 3 = set value
-parVals = [[0, 300, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 0, 300, 500], [1, 0, 200, 131], [2, 200, 1200, 1000]]
+parVals = [[0, 1000, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 0, 2000, 500], [1, 10, 500, 131], [2, 200, 1200, 1000]]
 parDict = {'SA_d':0, 'SA_ectopD':1, 'VRG_d':2, 'TURI':3, 'TAVI':4, 'TLRI':5}
 
 XPace = np.array([0])
 YPace = np.array([0])
+XYPace = np.array([0])
 
-print XPace
+#parNameC = "SA_d"
+#parNameA = "TURI"
+#parNameF = ["TLRI", "TAVI"]
 
 parNameC = "SA_d"
-parNameA = "TURI"
-parNameF = ["TLRI", "TAVI"]
+parNameA = "TAVI"
+parNameF = ["TLRI", "TAVI", "TURI"]
 
 if useVM==0:
 
@@ -332,21 +357,21 @@ if useVM==0:
 	time.sleep(4);
 
 	print "Get initial values"
-	logTime = 600
+	logTime = 60
 	for iters in range(0, N_INITIAL_SAMPLES):
 
 		# Generate random parameter for pacemaker	
 		parValueArduino = random.randint(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2])
 
-		# For testing purposes
-		parValueArduino = 500
+		tmpParArduino = parVals[parDict[parNameA]][3]
+		parVals[parDict[parNameA]][3] = parValueArduino
 
-		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parValueArduino]
+		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parVals[parDict[parNameF[2]]][3]]
 		if isParamValuationFeasible(parll)!=1:
 			print "Pacemaker parameter not feasible: "+str(parll)
+			parVals[parDict[parNameA]][3] = tmpParArduino
 			continue
 
-		parVals[parDict[parNameA]][3] = parValueArduino
 		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parValueArduino)!=1:
 			break
 
@@ -393,9 +418,11 @@ if useVM==0:
 		SaveDistribution(fileconst, idCurr)
 		fileconst.close()
 
-		energyValue = GetReward()
+		#energyValue = GetReward()
+		energyValue = GetSumCurrent(collectedSamples, monItems['sampleRate'])
 
 		XPace = np.vstack((XPace,parValueArduino))
+		XYPace = np.vstack((XYPace,parValueClient))
 		YPace = np.vstack((YPace,energyValue))
 
 		print XPace
@@ -405,21 +432,22 @@ if useVM==0:
 		collectedSamples = []
 
 
-	# For testing purposes	
-	tmpfileconst = open(tmpconstfile, 'w+')
-	SaveDistribution(tmpfileconst, idCurr)	
-	tmpfileconst.close()
-
 	print "Initial sample:"	
 
 	XPace = XPace[1:len(XPace)]
 	YPace = YPace[1:len(YPace)]
+	XYPace = XYPace[1:len(XYPace)]
 
-	print XPace
-	print YPace
+	XYPace = np.hstack((XYPace,YPace))
+
+	# For testing purposes	
+	tmpfileconst = open(tmpconstfile, 'w+')
+	Save2DArray(tmpfileconst, XYPace)	
+	tmpfileconst.close()
+
 
 	print "Optimize parameters"
-	logTime = 120
+	logTime = 60
 
 	# Store the initial values of parameters
 	rfhandle = open(resultfile, 'w+')
@@ -443,7 +471,8 @@ if useVM==0:
 		Xf = np.array([0])
 
 		for idx in range(len(Xin)):
-			parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], Xin[idx]]
+			#parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], Xin[idx]]
+			parll = [parVals[parDict[parNameF[0]]][3]-Xin[idx], parVals[parDict[parNameF[2]]][3]]
 			if isParamValuationFeasible(parll)==1:
 				Xf = np.vstack((Xf,Xin[idx]))
 
@@ -451,12 +480,17 @@ if useVM==0:
 
 		parValueArduino = int(findMax(m, Xf, parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2], min(YPace)))
 
-		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parValueArduino]
+		tmpParArduino = parVals[parDict[parNameA]][3]
+		parVals[parDict[parNameA]][3] = parValueArduino
+
+		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parVals[parDict[parNameF[2]]][3]]
 		if isParamValuationFeasible(parll)!=1:
 			print "Pacemaker parameter not feasible: "+str(parll)
+
+			parVals[parDict[parNameA]][3] = tmpParArduino
 			continue
 
-		parVals[parDict[parNameA]][3] = parValueArduino
+		
 		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parValueArduino)!=1:
 			break
 
@@ -465,7 +499,7 @@ if useVM==0:
 		parVals[parDict[parNameC]][3] = parValueClient
 
 		# For testing purposes
-		parValueClient = 2000
+		#parValueClient = 2000
 
 		if SetClientParameter(s, parVals[parDict[parNameC]][0], parValueClient)!=1:
 			break;
@@ -503,7 +537,8 @@ if useVM==0:
 		SaveDistribution(fileconst, idCurr)
 		fileconst.close()
 
-		energyValue = GetReward()
+		#energyValue = GetReward()
+		energyValue = GetSumCurrent(collectedSamples, monItems['sampleRate'])
 
 		XPace = np.vstack((XPace,parValueArduino))
 		YPace = np.vstack((YPace,energyValue))
@@ -536,7 +571,7 @@ else:
 	headerID = 0xF4
 	parID = 1
 	#parValue = random.randint(1, 2000)
-	parValue = 30000
+	parValue = 2000
 
 	print "Sending parameter ID: "+str(parID)+" value: "+str(parValue)
 

@@ -179,7 +179,11 @@ void setup() {
     digitalWrite(MARKER_PORT_TWO, HIGH);
     digitalWrite(AP_PORT, LOW);
     digitalWrite(VP_PORT, LOW);
-
+    
+    // Test port
+    //pinMode(13,OUTPUT);
+    //digitalWrite(13, HIGH);
+    
     Serial.begin(57600);
     mySim.verbose= VERBOSE_LEVEL;
     initTimer1();
