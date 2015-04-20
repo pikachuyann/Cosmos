@@ -3,6 +3,7 @@ noinst_LTLIBRARIES = libgspn.la
 
 libgspn_la_SOURCES = \
 	Gspn-Writer.cpp Gspn-Writer.hpp \
+	Gspn-Writer-Color.cpp Gspn-Writer-Color.hpp \
 	Gspn-Reader.cpp Gspn-Reader.hpp \
 	Gspn-scanner.ll Gspn-parser.yy \
 	unfolder.cpp unfolder.hpp \

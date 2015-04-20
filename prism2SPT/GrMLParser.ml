@@ -63,7 +63,7 @@ let rec net_of_tree n = function
        |  "arc" -> ( match ((find_id alist),(find_at "source" alist),(find_at "target" alist),(find_name "inscription" t)) with
          | (_,Some source,Some target,Some v) -> Net.add_arc n source target (Int (int_of_string v))
 	 | (_,Some source,Some target,_) -> Printf.printf " (%s)->(%s)" source target ;
-	   print_spt_marcie "test.andl" n ;
+	   StochPTPrinter.print_spt_marcie "test.andl" n ;
 	   Net.add_arc n source target (Int 1)
 	 | _-> ()
     )

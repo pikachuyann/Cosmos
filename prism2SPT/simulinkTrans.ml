@@ -114,19 +114,18 @@ let incr_trans l (ssid,src,lab,dst) =
 
 let uni_ssid = ref 0
 
-(* 
-   Replace type for state from an id to an array of one id
-in order to compose state in state. 
-*)
 let flatten_state_ssid (ssid,name,sl,tl,scrl,p,ss) =
   let i2,sl2,sl3 = List.fold_left (fun (i,l2,l3) (j,n) ->
-    ((i+1),(i,n)::l2,(j,i)::l3)) (!uni_ssid,[],[]) sl in
+    ((i+1),(i,n)::l2,(j,i)::l3)) (0,[],[]) sl in
   uni_ssid := i2;
   let tl2 = List.map (fun (ssid,src,lab,dst) ->
     (ssid,src |>>> (fun x -> List.assoc x sl3),lab,List.assoc dst sl3)) tl in
-  (ssid,name,sl2,tl2,scrl,p)
+  (ssid,name,sl2,tl2,scrl,p,ss)
 
-(* Transform state from interger to an array of integer to allows composition *)
+(* 
+   Replace type for state from an id to an array of one id
+in order to compose state in state. 
+ Transform state from interger to an array of integer to allows composition *)
 let incr_state (ssid,name,sl,tl,scrl,p,ss) =
   if sl=[] then { ssid=ssid;
 	       name=name;
@@ -504,16 +503,9 @@ let print_magic f sl tl scrl=
   (*if !lightSim then output_string f "void abstractMarking::moveSerialState(){ P->_PL_SerialPort = DATA_AVAILABLE;};\n";*)
   output_string f "  </attribute>"
 
-(* Print as a prism CTMC model*)
-let print_prism_module fpath cf ml =
-  let m = List.hd ml in
-  let f = open_out fpath in
-  
-  Printf.fprintf f "ctmc\nconst double imm=100;\n";
-  List.iter (fun (x,y) -> Printf.fprintf f "const double %s=%f;\n" x (y/.1000.)) (DataFile.data_of_file cf);
-  (*List.iter (fun (x,y) -> match y with None -> () | Some s -> Printf.fprintf f "const int S_%s=%i;\n" s x) (m.stateL);*)
 
-  Printf.fprintf f "module m1\n";
+let print_prism_mod f m =
+  Printf.fprintf f "module m%i\n" m.ssid;
 
   let st_name = Array.make (Array.length m.ivect) IntSet.empty in
 
@@ -550,7 +542,18 @@ let print_prism_module fpath cf ml =
     ) false dst;
     Printf.fprintf f ";\n";
   ) m.transL;
-  Printf.fprintf f "endmodule\n" ;
+  Printf.fprintf f "endmodule\n"
+
+
+(* Print as a prism CTMC model*)
+let print_prism_module fpath cf ml =
+  let f = open_out fpath in
+  
+  Printf.fprintf f "ctmc\nconst double imm=100;\n";
+  List.iter (fun (x,y) -> Printf.fprintf f "const double %s=%f;\n" x (y/.1000.)) (DataFile.data_of_file cf);
+  (*List.iter (fun (x,y) -> match y with None -> () | Some s -> Printf.fprintf f "const int S_%s=%i;\n" s x) (m.stateL);*)
+  List.iter (print_prism_mod f) ml;
+  
   close_out f
 
 let strip_type s=
