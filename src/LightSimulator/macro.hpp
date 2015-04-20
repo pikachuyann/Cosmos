@@ -18,6 +18,8 @@
 #define uint16 uint16_t
 #define uint32 uint32_t
 
+#define isProb(tid) (tid==5)
+
 enum SimCommands {
     SIM_NONE = 0x0, SIM_START = 0xF0, SIM_STOP = 0xF1, SIM_END = 0xF2, SIM_GET_ID = 0xF3, SIM_SET_CPAR = 0xF4, SIM_SET_PPAR = 0xF5, SIM_READY = 0xF6
 };

@@ -20,62 +20,27 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file Gspn-Writer.hpp created by Benoit Barbot on 14/01/14.                  *
+ * file Gspn-Writer-Color.hpp                                                  *
+ * Created by Benoit Barbot on 17/04/15.                                       *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__Gspn_Writer__
-#define __Cosmos__Gspn_Writer__
 
-#include <iostream>
-#include "Gspn-Reader.hpp"
+#ifndef __Cosmos__Gspn_Writer_Color__
+#define __Cosmos__Gspn_Writer_Color__
 
+#include <stdio.h>
 
-class Gspn_Writer {
+#include "Gspn-Writer.hpp"
+
+class Gspn_Writer_Color: public Gspn_Writer{
 public:
-	Gspn_Writer(GspnType& mgspn,parameters& Q);
-	
-	GspnType MyGspn;
-	parameters P;
-	
-	void writeFile();
-    void writeDotFile(const string &file);
-	
-protected:
-	
-	int varMultiplier(size_t var);
-    void writeTok(ostream &SpnF, vector<coloredToken>&,const colorDomain&);
-    void generateStringVal(arcStore&);
-	virtual void writeMarkingClasse(ofstream &, ofstream &, parameters &);
-	void writeEnabledDisabled(ofstream &);
-	virtual void writeEnabledDisabledBinding(ofstream &)=0;
-	void writeUpdateVect(ofstream &,const string &name,const vector< set<int> > &vect);
-	void writeTransition(ofstream &);
-	void writeVariable(ofstream & spnF);
-	
-    void error(const std::string& m);
-    
-    void view();
-	
-	
-	virtual void printloot(ofstream& sf, size_t domain, size_t nesting )=0;
-	
-	void EnabledDisabledTr(vector< set<int> >&,
-						   vector< set<int> >&,
-						   vector< set<int> >&);
+    Gspn_Writer_Color(GspnType& mgspn,parameters& Q);
 
-    void writeMacro(ofstream &);
-
-    void writeMarkingUpdate(ofstream &f, size_t t,const place &p,const arcStore &as2,bool direct);
-    void writeMarkingUpdateIn(ofstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos,const arcStore &as2,bool directionxs);
-    void writeFire(ofstream &f);
-    void writeIsEnabled(ofstream &f);
-    void writeSetConditionsVector(ofstream &f);
-    void writeGetDistParameters(ofstream &f);
-    void writeGetPriority(ofstream &f);
-    void writeGetWeight(ofstream &f);
+    void writeMarkingClasse(ofstream &, ofstream &, parameters &);
+    void printloot(ofstream& sf, size_t domain, size_t nesting );
+    void writeEnabledDisabledBinding(ofstream &);
 
 };
 
-
-#endif /* defined(__Cosmos__Gspn_Writer__) */
+#endif /* defined(__Cosmos__Gspn_Writer_Color__) */

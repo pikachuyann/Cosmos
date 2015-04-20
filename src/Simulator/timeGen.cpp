@@ -26,8 +26,6 @@
 
 #include "timeGen.hpp"
 
-#include <boost/random.hpp>
-#include <boost/generator_iterator.hpp>
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/lognormal.hpp>
 #include <boost/math/distributions/binomial.hpp>

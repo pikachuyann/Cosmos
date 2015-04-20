@@ -33,6 +33,11 @@
 SimulatorLight::SimulatorLight():verbose(0),curr_time(0.0),EQ(N){
     Result=true;
     simStatus = false;
+#ifdef CLIENT_SIM
+    initRandomGenerator(0);/////////////  Change seed     //////////////////////////
+
+#endif
+
 }
 
 /**
@@ -286,6 +291,27 @@ void SimulatorLight::SimulateSinglePath() {
     }
 }
 
+
+#ifdef CLIENT_SIM
+void SimulatorLight::initRandomGenerator(unsigned int seed){
+    RandomNumber.seed(seed);
+}
+
+
+/**
+ * Call the random generator to generate fire time.
+ * @param distribution is the type of distribution
+ * @param param is a vector of parameters of the distribution.
+ */
+double SimulatorLight::GenerateTime(REAL_TYPE a, REAL_TYPE b) {
+    if(a == b) return a;
+    boost::uniform_real<> UNIF(a, b);
+    boost::variate_generator<boost::mt19937&, boost::uniform_real<> > gen(RandomNumber, UNIF);
+    return gen();
+}
+
+#endif
+
 /**
  * Generate an event based on the type of his distribution
  * @param E the event to update
@@ -293,10 +319,19 @@ void SimulatorLight::SimulateSinglePath() {
  * @param b is the binding of the variable of the SPN for the transition.
  */
 void SimulatorLight::GenerateEvent(Event& E,TR_PL_ID Id) {
-
     double t = curr_time;
     N.GetDistParameters(Id);
+
+    #ifdef CLIENT_SIM
+    if(isProb(Id)){
+        t += GenerateTime(N.ParamDistr[0],N.ParamDistr[1]);
+    } else {
+        t += N.ParamDistr[0];
+    }
+#else
     t += N.ParamDistr[0];
+#endif
+
 #ifndef NO_STRING_SIM
     if(verbose > 3){
         print("Sample:");
