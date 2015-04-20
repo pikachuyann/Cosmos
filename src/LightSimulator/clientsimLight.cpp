@@ -63,6 +63,10 @@ typedef struct EventTime{
 }EventTime;
 #pragma pack(pop)
 
+// Variables for statistics
+int nAtriumBeats = 0;
+int nVentricleBeats = 0;
+
 /**
  * main function it read the options given as arguments and initialyse
  * the simulator.
@@ -180,6 +184,8 @@ int main(int nargs, char** argv)
             {
                 case SIM_START:
                     
+                    nAtriumBeats = 0;
+                    nVentricleBeats = 0;
                     gettimeofday(&gStartTime, NULL);
                     
                     
@@ -201,6 +207,7 @@ int main(int nargs, char** argv)
                 case SIM_STOP:
                     sInfo.gCommands = SIM_NONE;
                     
+                    std::cerr << "********************************"<<std::endl;
                     std::cerr << "Client simulation stop at time: "<< mySim.curr_time << std::endl;
                     
                     Buf = 'S';
@@ -225,6 +232,9 @@ int main(int nargs, char** argv)
     
                     }
                     
+                    std::cerr << "Number of atrium beats: "<< nAtriumBeats << std::endl;
+                    std::cerr << "Number of ventricle beats: "<< nVentricleBeats << std::endl;
+                    
                     break;
                     
                 case SIM_GET_ID:
@@ -246,7 +256,7 @@ int main(int nargs, char** argv)
                     for (std::list<EventTime>::iterator it=gTranList.begin(); it != gTranList.end(); ++it) {
                         bufIDs[idx] = (*it).event;
                         memcpy(&bufIDs[idx+1], (const void*)&(*it).time, sizeof(unsigned int));
-                        print((float)(*it).time); print(" "); print((float)(*it).event); print("\n");
+                        //print((float)(*it).time); print(" "); print((float)(*it).event); print("\n");
                         //idx++;
                         idx+=sizeof(EventTime);
                     }
@@ -362,8 +372,14 @@ char SReceive(void)
     size_t bytesRead = 0;
     if(gDataAvailable) {
         bytesRead = read(gftHandle[giDeviceID], &retVal, (int)1);
-        if(retVal==0x33 || retVal==0x34)
+        if(retVal==0x33 || retVal==0x34) {
             std::cerr << "<<<<<<< Pace -> Heart: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
+            
+            if (retVal==0x33) nAtriumBeats = nAtriumBeats+1;
+            else nVentricleBeats = nVentricleBeats+1;
+            
+            int nVentricleBeats = 0;
+        }
         else if(retVal>=0x35 && retVal<=0x3A) {
             std::cerr << "<<<<<<< Syn: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
             
