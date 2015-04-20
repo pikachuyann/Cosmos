@@ -12,6 +12,12 @@ import random
 import ctypes
 import numpy as np
 import os
+import GPy
+import math
+from scipy.special import erf
+import matplotlib
+from IPython.display import display
+from matplotlib import pyplot as plt
 
 from fparams import isParamValuationFeasible
 
@@ -21,6 +27,12 @@ collectedSamples = []
 useVM = 0
 logTime = 10 # in Seconds
 constfile = "const.m"
+kernel = GPy.kern.RBF(input_dim=1, variance=1., lengthscale=1.)
+
+N_INITIAL_SAMPLES = 10
+N_OPT_STEPS = 100
+resultfile = "result.m"
+tmpconstfile = "tmpconst.m"
 
 def get_my_string(fp):
     f = open(fp, 'r')
@@ -79,6 +91,10 @@ def SetParameter(handle, headerID, parID, parValue):
 
 		return 1
 
+def Save2DArray(handle, arr):
+	for idx in range(len(arr)):
+		handle.write(str(arr[idx][0])+" "+str(arr[idx][1])+"\n")
+
 def SaveMarkersToFile(handle, dta):
 	if dta==0:
 		handle.write(str(0)+" "+str(0))
@@ -102,6 +118,24 @@ def GetMinCurrent(pmData):
 	currList = [it[0] for it in pmData]
 
 	return min(currList)
+
+def GetSumCurrent(pmData, monitorSamplingFreq):
+	sumCurrent = 0
+	prev = pmData[0][1]
+
+	it_beg = 0
+
+	for it in range(1,len(pmData)):
+		if pmData[it][1]!=2 and prev==2:
+			it_beg = it
+			break
+
+	for it in range(it_beg,len(pmData)):
+		if pmData[it][1]==2 and prev!=2:
+			break
+		sumCurrent = sumCurrent + pmData[it][0]
+	
+	return sumCurrent
 
 def GetEnergyReadings(pmData, monitorSamplingFreq, tranListTimes, minCurrent):
 	cummCurrentList = []
@@ -181,18 +215,12 @@ def GetTotalCurrents(handle, esamples, monitorSamplingFreq):
 		nTranCnt = 	bufSize[0]/8
 		print "Number of transitions received: "+str(nTranCnt)
 
-		#if bufSize[0]!=len(currentTran):
-		#	print "Diffent number of samples(client, power monitor)"
-		#	break
-
-		#print binascii.hexlify(bufIDs)
-		
 		tTimeList = []
 		for idx in range(0,nTranCnt):
 			tID = bufIDs[idx*8]
 			tTime = struct.unpack("I",bufIDs[idx*8+1:idx*8+1+4])
 			tTimeList.append([tID, tTime[0]])
-			print str(tTime[0])+" "+str(bufIDs[idx*8])
+			#print str(tTime[0])+" "+str(bufIDs[idx*8])
 
 		toRemove = []	
 		for idx in range(len(tTimeList)-1):
@@ -206,136 +234,6 @@ def GetTotalCurrents(handle, esamples, monitorSamplingFreq):
 		cummCurrentList = GetEnergyReadings(esamples, monitorSamplingFreq, tTimeList, minCurrent)
 
 		return cummCurrentList
-
-def GetRisingEdge(pmData):
-	cnt = 0
-	prev = pmData[0][1]
-	for it in range(1,len(pmData)):
-
-		if prev==0 and 	pmData[it][1]==1:
-			cnt = cnt + 1
-		prev = pmData[it][1]	
-	return cnt
-
-def ProcessPowerMonitorData(pmData, monitorSampligFreq):
-	currentTran = []
-
-	#firstPosM2 = 0
-	#firstPosM1 = 0
-	filedta = open('markers.txt', 'w+')
-	sumCurrent = 0
-	sampleCnt = 1
-	prev = pmData[0][1]
-	state = 0
-	prev_time = 0.0
-
-	SaveToFile(filedta, prev)
-
-	for it in range(1,len(pmData)):
-		sampleCnt = sampleCnt + 1
-
-		SaveToFile(filedta, pmData[it][1])
-
-		#print str(state)+":"+str(sampleCnt/monitorSampligFreq)
-
-		if state==0:
-			if pmData[it][1]==2 and prev==2:
-				state = 0
-			elif pmData[it][1]==0 and prev==2:
-				state = 1
-				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1]==1 and prev==2:	
-				state = 2
-				sumCurrent = sumCurrent + pmData[it][0]
-
-		if state==1:
-			if pmData[it][1]==0 and prev==0:
-				state = 1
-				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1]==1 and prev==0:
-				state = 2
-				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1]==2 and prev==0:
-				state = 1
-			elif pmData[it][1]==3 and prev==0:
-				state = 6
-				sumCurrent = sumCurrent + pmData[it][0]
-
-		if state==2:
-			if pmData[it][1]==0 and prev==1:
-				state = 3
-				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1]==1 and prev==1:
-				state = 2
-				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1]==2 and prev==1:
-				state = 5
-			elif pmData[it][1]==3 and prev==1:
-				state = 6
-				sumCurrent = sumCurrent + pmData[it][0]
-
-		if state==3:
-			if pmData[it][1]==0 and prev==0:
-				state = 3
-				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1]==1 and prev==0:
-				state = 3
-				stime = sampleCnt/monitorSampligFreq
-
-				if stime-prev_time>5.0:
-					currentTran.append((sumCurrent,stime))
-
-				prev_time = stime	
-				#print str(stime)+"  "+str(sumCurrent)
-				sumCurrent = pmData[it][0]
-			elif pmData[it][1]==2 and prev==0:
-				state = 5
-			elif pmData[it][1]==3 and prev==0:
-				state = 4
-				sumCurrent = sumCurrent + pmData[it][0]
-
-		if state==4:
-			if (pmData[it][1]==0 and prev==3) or (pmData[it][1]==0 and prev==2):
-				state = 1
-				stime = sampleCnt/monitorSampligFreq
-
-				if stime-prev_time>5.0:
-					currentTran.append((sumCurrent,stime))
-
-				prev_time = stime	
-				#print str(stime)+"  "+str(sumCurrent)
-				sumCurrent = pmData[it][0]
-
-			#elif pmData[it][1]==2 and prev==3:
-			#	state = 5
-			elif (pmData[it][1]==2 and prev==3) or (pmData[it][1]==2 and prev==2):
-				state = 4
-				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1]==3 and prev==3:
-				state = 4
-				sumCurrent = sumCurrent + pmData[it][0]
-
-		if state==5:
-			state = 5
-
-		if state==6:
-			if (pmData[it][1]==0 and prev==3) or (pmData[it][1]==0 and prev==2):
-				state = 1
-				sumCurrent = sumCurrent + pmData[it][0]
-			elif (pmData[it][1]==1 and prev==3):
-				state = 2
-				sumCurrent = sumCurrent + pmData[it][0]
-			elif pmData[it][1]==2 and prev==3:
-				state = 6
-			elif (pmData[it][1]==3 and prev==3) or (pmData[it][1]==2 and prev==2):
-				state = 6
-				sumCurrent = sumCurrent + pmData[it][0]
-
-		prev = pmData[it][1]
-
-	filedta.close()
-
-	return currentTran
 
 def SaveDistribution(handle, dData):
 		dIdCurr = {}
@@ -358,8 +256,17 @@ def SaveDistribution(handle, dData):
 				handle.write("T"+str(key)+"_var"+" = "+str(np.var(dIdCurr[key]))+"\n")
 				handle.write("T"+str(key)+"_list"+" = "+str(dIdCurr[key])+"\n")
 
+def normpdf(x):
+	return np.exp(-x*x/2)/np.sqrt(2*math.pi)
 
+def normcdf(x):
+	return (1+ erf(x/np.sqrt(2)))/2
 
+def findMax(m, X2, minv, maxv, fmin):
+	mu,s2 = m.predict(X2)
+	t = np.argmax((fmin-mu) * normcdf( (fmin-mu)/np.sqrt(s2) ) + np.sqrt(s2)*normpdf( (fmin-mu)/np.sqrt(s2) ))
+	#t2 = minv + (maxv - minv)*t/len(X2)
+	return X2[t]
 
 class PowerMonitorThread (threading.Thread):
 	def __init__(self, monitor):
@@ -429,37 +336,60 @@ if s is None:
 
 idCurr = []
 # 0 = ID, 1 = min, 2 = max, 3 = set value
-parVals = [[0, 300, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 300, 2000, 500], [1, 0, 200, 131], [2, 200, 1200, 1000]]
+parVals = [[0, 1000, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 0, 2000, 500], [1, 10, 500, 131], [2, 200, 1200, 1000]]
 parDict = {'SA_d':0, 'SA_ectopD':1, 'VRG_d':2, 'TURI':3, 'TAVI':4, 'TLRI':5}
+
+XPace = np.array([0])
+YPace = np.array([0])
+XYPace = np.array([0])
+
+#parNameC = "SA_d"
+#parNameA = "TURI"
+#parNameF = ["TLRI", "TAVI"]
+
+parNameC = "SA_d"
+parNameA = "TAVI"
+parNameF = ["TLRI", "TAVI", "TURI"]
 
 if useVM==0:
 
 	print "Preparing the PowerMonitor device..."
 	time.sleep(4);
 
-	for iters in range(0, 3):
+	print "Get initial values"
+	logTime = 60
+	for iters in range(0, N_INITIAL_SAMPLES):
+
+		# Generate random parameter for pacemaker	
+		parValueArduino = random.randint(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2])
+
+		tmpParArduino = parVals[parDict[parNameA]][3]
+		parVals[parDict[parNameA]][3] = parValueArduino
+
+		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parVals[parDict[parNameF[2]]][3]]
+		if isParamValuationFeasible(parll)!=1:
+			print "Pacemaker parameter not feasible: "+str(parll)
+			parVals[parDict[parNameA]][3] = tmpParArduino
+			continue
+
+		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parValueArduino)!=1:
+			break
+
+		# Generate random parameter for Client
+		parValueClient = random.randint(parVals[parDict[parNameC]][1], parVals[parDict[parNameC]][2])
+
+		# For testing purposes
+		#parValueClient = 2000
+
+		parVals[parDict[parNameC]][3] = parValueClient
+		if SetClientParameter(s, parVals[parDict[parNameC]][0], parValueClient)!=1:
+			break;
 
 		# Save energy readings
 		fileconst = open(constfile, 'w+')
-
-		# Generate random parameter for Client
-		parValue = random.randint(parVals[parDict["SA_d"]][1], parVals[parDict["SA_d"]][2])
-		parVals[parDict["SA_d"]][3] = parValue
-		fileconst.write("SA_d = "+str(parValue)+"\n")
-		if SetClientParameter(s, parVals[parDict["SA_d"]][0], parValue)!=1:
-			break;
-
-		parValue = random.randint(parVals[parDict["TURI"]][1], parVals[parDict["TURI"]][2])
-		parll = [parVals[parDict["TLRI"]][3]-parVals[parDict["TAVI"]][3], parValue]
-		fileconst.write("TURI = "+str(parValue)+"\n")
-		if isParamValuationFeasible(parll)!=1:
-			print "Parameter not feasible: "+str(parll)
-		#	#break
-
-		parVals[parDict["TURI"]][3] = parValue
-		if SetArduinoParameter(s, parVals[parDict["TURI"]][0], parValue)!=1:
-			break
-	
+		fileconst.write(parNameA+" = "+str(parValueArduino)+"\n")
+		fileconst.write(parNameC+" = "+str(parValueClient)+"\n")
+			
 		#isParamValuationFeasible(param)	
 		print "Start iteration: "+str(iters)
 
@@ -476,26 +406,124 @@ if useVM==0:
 
 		print "Stopped collecting data"
 
-		#currentTran = ProcessPowerMonitorData(collectedSamples, monItems['sampleRate'])
-		#idx = -1
+		cummCurrentList = GetTotalCurrents(s, collectedSamples, monItems['sampleRate'])
 
-		#for idx in range(len(currentTran)-1,-1,-1):
-		#	if currentTran[idx][1]<logTime*1000:
-		#		break
+		if len(cummCurrentList)==0:
+			break
 
-		#if idx==-1:
-		#	print "No energy samples"
-		#	break
+		# Save energy readings to list	
+		for item in cummCurrentList:
+			idCurr.append([item[0],item[2]])
 
-		#currentTran = currentTran[:idx+1]
-		#print "Number of valid energy samples: "+str(len(currentTran))
+		SaveDistribution(fileconst, idCurr)
+		fileconst.close()
 
-		#print "\n".join(["%s: %s" % item for item in currentTran])
-		#nrising = GetRisingEdge(collectedSamples)
-		#print "Numbert of rising edges: "+str(nrising)
+		#energyValue = GetReward()
+		energyValue = GetSumCurrent(collectedSamples, monItems['sampleRate'])
+
+		XPace = np.vstack((XPace,parValueArduino))
+		XYPace = np.vstack((XYPace,parValueClient))
+		YPace = np.vstack((YPace,energyValue))
+
+		print XPace
+		print YPace
+		os.system("rm "+constfile)
+
+		collectedSamples = []
 
 
-		#print cummCurrentList
+	print "Initial sample:"	
+
+	XPace = XPace[1:len(XPace)]
+	YPace = YPace[1:len(YPace)]
+	XYPace = XYPace[1:len(XYPace)]
+
+	XYPace = np.hstack((XYPace,YPace))
+
+	# For testing purposes	
+	tmpfileconst = open(tmpconstfile, 'w+')
+	Save2DArray(tmpfileconst, XYPace)	
+	tmpfileconst.close()
+
+
+	print "Optimize parameters"
+	logTime = 60
+
+	# Store the initial values of parameters
+	rfhandle = open(resultfile, 'w+')
+	rfhandle.close()
+
+	rfhandle = open(resultfile, 'a')
+	rfhandle.write("paramp = ["+"\n")
+
+	for idx in range(len(XPace)):
+		rfhandle.write(str(XPace[idx])+" "+str(YPace[idx])+";\n")
+
+	rfhandle.close()
+
+	for iters in range(0, N_OPT_STEPS):
+
+		m = GPy.models.GPRegression(XPace,YPace,kernel)
+		m.optimize_restarts(num_restarts = 20)
+
+		Xin = np.linspace(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2],num=1000).reshape((1000,1))
+
+		Xf = np.array([0])
+
+		for idx in range(len(Xin)):
+			#parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], Xin[idx]]
+			parll = [parVals[parDict[parNameF[0]]][3]-Xin[idx], parVals[parDict[parNameF[2]]][3]]
+			if isParamValuationFeasible(parll)==1:
+				Xf = np.vstack((Xf,Xin[idx]))
+
+		Xf = Xf[1:len(Xf)]
+
+		parValueArduino = int(findMax(m, Xf, parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2], min(YPace)))
+
+		tmpParArduino = parVals[parDict[parNameA]][3]
+		parVals[parDict[parNameA]][3] = parValueArduino
+
+		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parVals[parDict[parNameF[2]]][3]]
+		if isParamValuationFeasible(parll)!=1:
+			print "Pacemaker parameter not feasible: "+str(parll)
+
+			parVals[parDict[parNameA]][3] = tmpParArduino
+			continue
+
+		
+		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parValueArduino)!=1:
+			break
+
+		# Generate random parameter for Client
+		parValueClient = random.randint(parVals[parDict[parNameC]][1], parVals[parDict[parNameC]][2])
+		parVals[parDict[parNameC]][3] = parValueClient
+
+		# For testing purposes
+		#parValueClient = 2000
+
+		if SetClientParameter(s, parVals[parDict[parNameC]][0], parValueClient)!=1:
+			break;
+
+		# Save energy readings
+		fileconst = open(constfile, 'w+')
+		fileconst.write(parNameA+" = "+str(parValueArduino)+"\n")
+		fileconst.write(parNameC+" = "+str(parValueClient)+"\n")
+			
+		#isParamValuationFeasible(param)	
+		print "Start iteration: "+str(iters)
+
+		# Start iteration
+		s.sendall('\xF0')
+		stDataColl = 1
+
+		time.sleep(logTime);
+
+		# Stop iteration
+		s.sendall('\xF1')
+		time.sleep(1);
+		stDataColl = 0
+
+		print "Stopped collecting data"
 
 		cummCurrentList = GetTotalCurrents(s, collectedSamples, monItems['sampleRate'])
 
@@ -509,20 +537,33 @@ if useVM==0:
 		SaveDistribution(fileconst, idCurr)
 		fileconst.close()
 
-		rewardNet = GetReward()
+		#energyValue = GetReward()
+		energyValue = GetSumCurrent(collectedSamples, monItems['sampleRate'])
 
-		print rewardNet
+		XPace = np.vstack((XPace,parValueArduino))
+		YPace = np.vstack((YPace,energyValue))
 
 		os.system("rm "+constfile)
 
 		collectedSamples = []
 
+		m.plot()
+		display(m)
+		plt.savefig(format('gaussfig%i'%iters))
 
-
+		# Save to file
+		rfhandle = open(resultfile, 'a')
+		rfhandle.write(str(parValueArduino)+" "+str(energyValue)+";\n")
+		rfhandle.close()
 
 	s.sendall('\xF2')
 	exitFlag = 0
 	
+	# Save to file
+	rfhandle = open(resultfile, 'a')
+	rfhandle.write("];"+"\n")
+	rfhandle.close()
+
 else:
 	key = ''
 
@@ -530,7 +571,7 @@ else:
 	headerID = 0xF4
 	parID = 1
 	#parValue = random.randint(1, 2000)
-	parValue = 30000
+	parValue = 2000
 
 	print "Sending parameter ID: "+str(parID)+" value: "+str(parValue)
 
