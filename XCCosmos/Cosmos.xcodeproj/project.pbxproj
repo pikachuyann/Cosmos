@@ -68,6 +68,7 @@
 		03E39B1A183E4A0E0070911A /* stateSpace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7063181BC0D6006D7332 /* stateSpace.cpp */; };
 		03E39B1B183E4A110070911A /* clientsim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7041181BC0D6006D7332 /* clientsim.cpp */; };
 		03E39B1E183E4AC90070911A /* libClientSim.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 034509A616A80AC8002088B3 /* libClientSim.a */; };
+		03E43E1F1AE1027300E9A2BF /* Gspn-Writer-Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03E43E1D1AE1027300E9A2BF /* Gspn-Writer-Color.cpp */; };
 		03EC8D6E1880714C00731BD3 /* unfolder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03EC8D6C1880714C00731BD3 /* unfolder.cpp */; };
 		03F0293B1A84CA2900A83E1E /* macro.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03F0293A1A84CA2900A83E1E /* macro.hpp */; };
 		8DD76F6A0486A84900D96B5E /* Cosmos.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* Cosmos.1 */; };
@@ -1007,6 +1008,8 @@
 		03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueueLight.hpp; sourceTree = "<group>"; };
 		03CB8F4D1893CB1A00A9938A /* timeGen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeGen.cpp; sourceTree = "<group>"; };
 		03CB8F4E1893CB1A00A9938A /* timeGen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGen.hpp; sourceTree = "<group>"; };
+		03E43E1D1AE1027300E9A2BF /* Gspn-Writer-Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Writer-Color.cpp"; sourceTree = "<group>"; };
+		03E43E1E1AE1027300E9A2BF /* Gspn-Writer-Color.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Writer-Color.hpp"; sourceTree = "<group>"; };
 		03E6624B1A83862D00C36695 /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 		03E6624C1A838A1800C36695 /* sketchArduino.ino */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = sketchArduino.ino; sourceTree = "<group>"; };
 		03EC8D6C1880714C00731BD3 /* unfolder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unfolder.cpp; sourceTree = "<group>"; };
@@ -1243,6 +1246,8 @@
 				032A7021181BC0D6006D7332 /* Gspn_gmlparser.hpp */,
 				03EC8D6C1880714C00731BD3 /* unfolder.cpp */,
 				03EC8D6D1880714C00731BD3 /* unfolder.hpp */,
+				03E43E1D1AE1027300E9A2BF /* Gspn-Writer-Color.cpp */,
+				03E43E1E1AE1027300E9A2BF /* Gspn-Writer-Color.hpp */,
 			);
 			path = GspnParser;
 			sourceTree = "<group>";
@@ -3414,6 +3419,7 @@
 				032A7067181BC0D6006D7332 /* casesWriter.cpp in Sources */,
 				032A707A181BC0D6006D7332 /* result.cpp in Sources */,
 				0367E29C18842FB700F35619 /* BatchR.cpp in Sources */,
+				03E43E1F1AE1027300E9A2BF /* Gspn-Writer-Color.cpp in Sources */,
 				032A707B181BC0D6006D7332 /* server.cpp in Sources */,
 				0367E2B71885288900F35619 /* Gspn-Writer.cpp in Sources */,
 				032A7079181BC0D6006D7332 /* parameters.cpp in Sources */,

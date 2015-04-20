@@ -101,7 +101,9 @@ let _ =
 	|> (Simulinkparser.modulist_of_tree [])
 	|> SimulinkTrans.expand_trans
 	|> List.map SimulinkTrans.flatten_module
-	(*|> List.map Simulinkparser.flatten_state_ssid*)
+
+(*	|> List.map SimulinkTrans.flatten_state_ssid*)
+
 	|< List.iter (SimulinkType.print_module !logout)
 	|> List.map SimulinkTrans.incr_state
 	|> SimulinkTrans.find_combinaison
@@ -124,14 +126,14 @@ let _ =
       print_endline "Finish transformation, start writing";
       List.iter (function 
       | Dot ->
-	StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] []
+	StochPTPrinter.print_spt_dot ((!output)^".dot") net [] []
       | Pdf -> 
-	StochasticPetriNet.print_spt_dot ((!output)^".dot") net [] [];
+	StochPTPrinter.print_spt_dot ((!output)^".dot") net [] [];
 	ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output)
       | GrML ->
-	StochasticPetriNet.print_spt ((!output)^".grml") net
+	StochPTPrinter.print_spt ((!output)^".grml") net
       | Marcie -> 
-	StochasticPetriNet.print_spt_marcie ((!output)^".andl") net
+	StochPTPrinter.print_spt_marcie ((!output)^".andl") net
       | Prism when !typeFormat = Simulink -> ()
       | _ -> print_endline "Output format not supported"
       ) !outputFormat;

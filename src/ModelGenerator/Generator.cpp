@@ -35,6 +35,7 @@
 #include "parameters.hpp"
 #include "LhaParser/Lha-Reader.hpp"
 #include "GspnParser/Gspn-Writer.hpp"
+#include "GspnParser/Gspn-Writer-Color.hpp"
 #include "GspnParser/unfolder.hpp"
 
 
@@ -126,7 +127,7 @@ bool Parse() {
 
         //Check that the model is not empty and generate the code
         if (!parseresult && gReader.MyGspn.pl > 0 && gReader.MyGspn.tr > 0) {
-            Gspn_Writer writer(gReader.MyGspn, P);
+            Gspn_Writer_Color writer(gReader.MyGspn, P);
             writer.writeFile();
             writer.writeDotFile(P.tmpPath + "/templatePetriNet.dot");
         } else {

@@ -31,6 +31,12 @@
 #include "spnLight.hpp"
 #include "EventsQueueLight.hpp"
 
+#ifdef CLIENT_SIM
+#include "boost/random.hpp"
+#include "boost/generator_iterator.hpp"
+#endif
+
+
 class SimulatorLight {
 public:
     SimulatorLight();
@@ -76,6 +82,16 @@ protected:
 
     //! update value in the SPN after a transition
     void updateSPN(TR_PL_ID);
+
+
+#ifdef CLIENT_SIM
+    void initRandomGenerator(unsigned int seed);
+    double GenerateTime(REAL_TYPE a, REAL_TYPE b);
+
+    //!The random Generator Mersenne Twister from the boost library
+    boost::mt19937 RandomNumber;
+#endif
+
 
 };
 

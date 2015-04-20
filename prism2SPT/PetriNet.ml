@@ -160,15 +160,20 @@ struct
     let i1 = try Data.index net.transition s1 with Not_found -> raise @@ InvalidTransitionName(s1)
     and i2 = try Data.index net.place s2 with Not_found -> raise @@ InvalidPlaceName(s2) in
     Data.add ((),(v,i1,i2)) net.outArc
-
-  let add_inhibArc net s1 s2 v =
+  
+  let add_inhibArc_in net s1 s2 v =
     let i1 = try Data.index net.place s1 with Not_found -> raise @@ InvalidPlaceName(s1)  
     and i2 = try Data.index net.transition s2 with Not_found -> raise @@ InvalidTransitionName(s2) in
     Data.add ((),(v,i1,i2)) net.inhibArc
-  
+
   let add_arc net s1 s2 v =
     try add_inArc net s1 s2 v with
 	_ -> add_outArc net s1 s2 v
+
+  let add_inhibArc net s1 s2 v =
+    try add_inhibArc_in net s1 s2 v with
+	_ -> add_inhibArc_in net s1 s2 v
+
 
   let merge net1 net2 pequiv tequiv fdef fplace ftrans =
     let net3 = create () in
