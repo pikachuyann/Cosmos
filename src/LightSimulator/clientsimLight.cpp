@@ -148,7 +148,7 @@ int main(int nargs, char** argv)
 
     // The third parameter for the app is the port name
     if((gftHandle[giDeviceID] = open(serial, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY))==-1) {
-        print("Error: Could not connect to "); print(argv[3]); print("\n");
+        print("Error: Could not connect to "); print(serial); print("\n");
         CloseSocket(&sInfo.gSocketHandle, &sInfo.gListenSocketHandle, hostInfoList);
         return 1;
     } else {
