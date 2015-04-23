@@ -323,9 +323,9 @@ void SimulatorLight::GenerateEvent(Event& E,TR_PL_ID Id) {
     double t = curr_time;
     N.GetDistParameters(Id);
 
-    #ifdef CLIENT_SIM
+#ifdef CLIENT_SIM
     if(isProb(Id)){
-        t += GenerateTime(N.ParamDistr[0],N.ParamDistr[1]);
+        t += GenerateTime(N.ParamDistr[0]-UNIF_WIDTH,N.ParamDistr[0]+UNIF_WIDTH);
     } else {
         t += N.ParamDistr[0];
     }

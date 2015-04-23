@@ -40,12 +40,17 @@ cd sketchArduino
 
 
 SERIAL_FIO=`ls /dev/tty.usbserial-* /dev/ttyUSB* 2>/dev/null`
+SERIAL_UNO=`ls /dev/tty.usbmodemfd* 2>/dev/null`
 #SERIAL_BLEND=`ls /dev/tty.usbmodem* /dev/ttyACM* 2>/dev/null`
 
 if [[ -n $SERIAL_BLEND ]]; then
     BOARD=blendmicro8
     SERIAL=$SERIAL_BLEND
     echo "Blend micro detected on "$SERIAL
+elif [[ -n $SERIAL_UNO ]]; then
+    BOARD=uno
+    SERIAL=$SERIAL_UNO
+    echo "Uno detected on "$SERIAL
 else
     BOARD=fio
     SERIAL=$SERIAL_FIO
@@ -53,9 +58,11 @@ else
 fi
 
 ino build -m $BOARD
-readserial $SERIAL 1200 reset
+#readserial $SERIAL 1200 reset
 
 ino upload -m $BOARD -p $SERIAL
+
+rm arduino
 
 cd ../..
 ln -s $SERIAL arduino
