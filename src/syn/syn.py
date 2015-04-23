@@ -29,10 +29,13 @@ logTime = 10 # in Seconds
 constfile = "const.m"
 kernel = GPy.kern.RBF(input_dim=1, variance=1., lengthscale=1.)
 
-N_INITIAL_SAMPLES = 10
-N_OPT_STEPS = 100
+N_INITIAL_SAMPLES = 2
+N_OPT_STEPS = 1000
 resultfile = "result.m"
 tmpconstfile = "tmpconst.m"
+
+XMAX = 400.0
+YMAX = 20000.0
 
 def get_my_string(fp):
     f = open(fp, 'r')
@@ -130,10 +133,17 @@ def GetSumCurrent(pmData, monitorSamplingFreq):
 			it_beg = it
 			break
 
+	cnt = 0		
 	for it in range(it_beg,len(pmData)):
-		if pmData[it][1]==2 and prev!=2:
+		if pmData[it][1]==2 and cnt>=20:
 			break
+		elif pmData[it][1]==2 and cnt<20: 	
+			cnt = cnt + 1
+		elif prev==2 and pmData[it][1]!=2:
+			cnt = 0
 		sumCurrent = sumCurrent + pmData[it][0]
+		prev = pmData[it][1]
+
 	
 	return sumCurrent
 
@@ -288,9 +298,9 @@ class PowerMonitorThread (threading.Thread):
 		print "Ending PowerMonitor Thread\n"
 
 if useVM==0:
-	mon = monsoon.Monsoon("/dev/tty.usbmodemfd141")
+	mon = monsoon.Monsoon("/dev/tty.usbmodemfa131")
 
-	mon.SetVoltage(3.7)
+	mon.SetVoltage(4.55)
 	mon.SetUsbPassthrough(0)
 
 	monItems = mon.GetStatus()
@@ -306,9 +316,21 @@ if useVM==0:
 	# Start new Threads
 	threadMonitor.start()
 
+############################
+#X = np.random.uniform(-3000.,3000.,(20,1))
+#Y = np.sin(X/1000) + np.random.randn(20,1)*0.05
+#kernel = GPy.kern.RBF(input_dim=1, variance=1., lengthscale=1.)
+#m = GPy.models.GPRegression(X,Y,kernel)
+#m.optimize_restarts(num_restarts = 10)
+#m.plot()
+#display(m)
+#plt.savefig(format('gaussfig0'))
 
+############################
 HOST = 'localhost'			# The remote host
 PORT = 27778				# The same port as used by the server
+
+time.sleep(4);
 
 if len(sys.argv) > 1:
 	PORT = int(sys.argv[1])
@@ -363,7 +385,11 @@ if useVM==0:
 		# Generate random parameter for pacemaker	
 		parValueArduino = random.randint(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2])
 
+		# For testing
+		#parValueArduino = 150
+
 		tmpParArduino = parVals[parDict[parNameA]][3]
+
 		parVals[parDict[parNameA]][3] = parValueArduino
 
 		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parVals[parDict[parNameF[2]]][3]]
@@ -372,23 +398,22 @@ if useVM==0:
 			parVals[parDict[parNameA]][3] = tmpParArduino
 			continue
 
-		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parValueArduino)!=1:
+		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parVals[parDict[parNameA]][3])!=1:
 			break
 
 		# Generate random parameter for Client
-		parValueClient = random.randint(parVals[parDict[parNameC]][1], parVals[parDict[parNameC]][2])
+		parVals[parDict[parNameC]][3] = random.randint(parVals[parDict[parNameC]][1], parVals[parDict[parNameC]][2])
 
 		# For testing purposes
 		#parValueClient = 2000
 
-		parVals[parDict[parNameC]][3] = parValueClient
-		if SetClientParameter(s, parVals[parDict[parNameC]][0], parValueClient)!=1:
+		if SetClientParameter(s, parVals[parDict[parNameC]][0], parVals[parDict[parNameC]][3])!=1:
 			break;
 
 		# Save energy readings
 		fileconst = open(constfile, 'w+')
-		fileconst.write(parNameA+" = "+str(parValueArduino)+"\n")
-		fileconst.write(parNameC+" = "+str(parValueClient)+"\n")
+		fileconst.write(parNameA+" = "+str(parVals[parDict[parNameA]][3])+"\n")
+		fileconst.write(parNameC+" = "+str(parVals[parDict[parNameC]][3])+"\n")
 			
 		#isParamValuationFeasible(param)	
 		print "Start iteration: "+str(iters)
@@ -421,8 +446,8 @@ if useVM==0:
 		#energyValue = GetReward()
 		energyValue = GetSumCurrent(collectedSamples, monItems['sampleRate'])
 
-		XPace = np.vstack((XPace,parValueArduino))
-		XYPace = np.vstack((XYPace,parValueClient))
+		XPace = np.vstack((XPace,parVals[parDict[parNameA]][3]))
+		XYPace = np.vstack((XYPace,parVals[parDict[parNameC]][3]))
 		YPace = np.vstack((YPace,energyValue))
 
 		print XPace
@@ -463,7 +488,7 @@ if useVM==0:
 
 	for iters in range(0, N_OPT_STEPS):
 
-		m = GPy.models.GPRegression(XPace,YPace,kernel)
+		m = GPy.models.GPRegression(XPace/float(XMAX),YPace/float(YMAX),kernel)
 		m.optimize_restarts(num_restarts = 20)
 
 		Xin = np.linspace(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2],num=1000).reshape((1000,1))
@@ -478,10 +503,13 @@ if useVM==0:
 
 		Xf = Xf[1:len(Xf)]
 
-		parValueArduino = int(findMax(m, Xf, parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2], min(YPace)))
+		
+
+		parValueArduino = findMax(m, Xf/XMAX, parVals[parDict[parNameA]][1]/XMAX, parVals[parDict[parNameA]][2]/XMAX, min(YPace/YMAX))
 
 		tmpParArduino = parVals[parDict[parNameA]][3]
-		parVals[parDict[parNameA]][3] = parValueArduino
+
+		parVals[parDict[parNameA]][3] = int(parValueArduino*XMAX)
 
 		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parVals[parDict[parNameF[2]]][3]]
 		if isParamValuationFeasible(parll)!=1:
@@ -491,23 +519,22 @@ if useVM==0:
 			continue
 
 		
-		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parValueArduino)!=1:
+		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parVals[parDict[parNameA]][3])!=1:
 			break
 
 		# Generate random parameter for Client
-		parValueClient = random.randint(parVals[parDict[parNameC]][1], parVals[parDict[parNameC]][2])
-		parVals[parDict[parNameC]][3] = parValueClient
+		parVals[parDict[parNameC]][3] = random.randint(parVals[parDict[parNameC]][1], parVals[parDict[parNameC]][2])
 
 		# For testing purposes
 		#parValueClient = 2000
 
-		if SetClientParameter(s, parVals[parDict[parNameC]][0], parValueClient)!=1:
+		if SetClientParameter(s, parVals[parDict[parNameC]][0], parVals[parDict[parNameC]][3])!=1:
 			break;
 
 		# Save energy readings
 		fileconst = open(constfile, 'w+')
-		fileconst.write(parNameA+" = "+str(parValueArduino)+"\n")
-		fileconst.write(parNameC+" = "+str(parValueClient)+"\n")
+		fileconst.write(parNameA+" = "+str(parVals[parDict[parNameA]][3])+"\n")
+		fileconst.write(parNameC+" = "+str(parVals[parDict[parNameC]][3])+"\n")
 			
 		#isParamValuationFeasible(param)	
 		print "Start iteration: "+str(iters)
@@ -540,7 +567,7 @@ if useVM==0:
 		#energyValue = GetReward()
 		energyValue = GetSumCurrent(collectedSamples, monItems['sampleRate'])
 
-		XPace = np.vstack((XPace,parValueArduino))
+		XPace = np.vstack((XPace,parVals[parDict[parNameA]][3]))
 		YPace = np.vstack((YPace,energyValue))
 
 		os.system("rm "+constfile)
@@ -548,7 +575,11 @@ if useVM==0:
 		collectedSamples = []
 
 		m.plot()
+		plt.plot(XPace,YPace,'bo')
+		plt.xlabel('$\mathrm{TLRI}$')
+		plt.ylabel('$\mathrm{Energy}$')
 		display(m)
+		display(plt)
 		plt.savefig(format('gaussfig%i'%iters))
 
 		# Save to file
