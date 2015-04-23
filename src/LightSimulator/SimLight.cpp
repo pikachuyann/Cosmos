@@ -299,6 +299,7 @@ void SimulatorLight::initRandomGenerator(unsigned int seed){
 
 
 /**
+ 
  * Call the random generator to generate fire time.
  * @param distribution is the type of distribution
  * @param param is a vector of parameters of the distribution.
