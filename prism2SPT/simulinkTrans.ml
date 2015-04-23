@@ -2,6 +2,7 @@ open PetriNet
 open StochasticPetriNet
 open Type
 open SimulinkType
+open Simulinkparser
 
 let erlangstep = ref 10
 
@@ -12,18 +13,11 @@ let detfun s =
     else StochasticPetriNet.Erl (Int !erlangstep,Div (Float (float !erlangstep),s))
   else StochasticPetriNet.Det s
 
-(* Handling of SSID*)
-let fresh_ssid () =
-  let f= !Simulinkparser.ssid_count in
-  incr Simulinkparser.ssid_count; f
-
-
 (* Generate human readable name*)
 let post_name sl s t =
   match List.assoc s sl with
     None -> Printf.sprintf "%i_Pre" t
   | Some(sn) -> Printf.sprintf "%i_Pre_%s" t sn
-
 
 let exist_delay s l =
   List.exists (fun (ssid,src,label,dst) -> match (src,label.trigger) with 
@@ -37,18 +31,20 @@ let expand_trans l =
   List.map (fun (ssidmod,name,sl,tl,scrl,p,ss) ->
     let (nsl,ntl) = List.fold_left (fun (sl2,tl2) (ssid,src,label,dst) -> 
       match (label.trigger,label.write,src) with 
-      | (Delay(_),(_::_),_) -> (* wait and synch loop *)
-	(* This is necessary to make delay transition independant, therefore they do not synchronize
+      | (Delay(_),(_::_),_) -> 
+	(* wait and synch loop 
+	   This is necessary to make delay transition independant, therefore they do not synchronize
 	   with anything thus cannot be disabled by synchronization.
-	   use only when write list is not empty*)
+	   use only when write list is not empty *)
 	let news = fresh_ssid ()
 	and newsn = post_name sl dst ssid in
 	let newt = fresh_ssid () in
 	((news,Some newsn)::sl2,
 	(ssid,src,{empty_trans_label with trigger=label.trigger; priority =label.priority; nameT=(src |>> (fun x ->List.assoc x sl)) },news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
-      | (RAction(sn),_,Some src2) when src2=dst && exist_delay src2 tl->  (* self loop with read *)
-	(* This case is used to reset delay transition waiting on this state,
+      | (RAction(sn),_,Some src2) when src2=dst && exist_delay src2 tl->  
+	(* self loop with read 
+	   This case is used to reset delay transition waiting on this state,
 	   without this delay transition are note disabled by a selfloop read action*)
 	let news = fresh_ssid ()
 	and newsn = post_name sl dst ssid in
@@ -56,8 +52,9 @@ let expand_trans l =
 	((news,Some newsn)::sl2,
 	(ssid,src,{empty_trans_label with trigger=label.trigger; priority =label.priority; nameT=Some sn },news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
-      | (_,_,None) when label.update <> [] -> (* Initial transition with update *)
-	(* Initial transition are not real transition thus a new state and a new transition
+      | (_,_,None) when label.update <> [] -> 
+	(* Initial transition with update 
+	   Initial transition are not real transition thus a new state and a new transition
 	   is introduce to implement updates*)
 	let news = fresh_ssid ()
 	and newsn = post_name sl dst ssid in
@@ -86,7 +83,7 @@ let flatten_module (ssid,name,sl,tl,scrl,p,ss) =
 	  tl3
       ) inaction) tl in 
   (ssid,name,sl,tl2,scrl,p,ss)
-    
+
 (* Look for the initial transition to determinate initial state *)
 let init_state (ssid,name,sl,tl,scrl) =
   try
@@ -111,7 +108,6 @@ let incr_trans l (ssid,src,lab,dst) =
   | Some src2 ->
     (ssid,[(0,src2)],lab,[(0,dst)])::l
   
-
 let uni_ssid = ref 0
 
 let flatten_state_ssid (ssid,name,sl,tl,scrl,p,ss) =
@@ -124,7 +120,7 @@ let flatten_state_ssid (ssid,name,sl,tl,scrl,p,ss) =
 
 (* 
    Replace type for state from an id to an array of one id
-in order to compose state in state. 
+ in order to compose state in state. 
  Transform state from interger to an array of integer to allows composition *)
 let incr_state (ssid,name,sl,tl,scrl,p,ss) =
   if sl=[] then { ssid=ssid;
@@ -170,6 +166,7 @@ let comb_transRR  (ssidt,srcl,lab,dstl) l (ssidt2,srcl2,lab2,dstl2) =
       let lab3= {
 	nameT = comb_name_trans lab.nameT lab2.nameT;
 	trigger= lab.trigger;
+	guard = None;
 	priority= min lab.priority lab2.priority;
 	write = List.sort_uniq compare (lab.write @ lab2.write);
 	update = lab.update @ lab2.update;
@@ -185,6 +182,7 @@ let comb_trans (ssidt,srcl,lab,dstl)  (ssidt2,srcl2,lab2,dstl2) =
       let lab3= {
 	nameT = comb_name_trans (Some ("S_"^st)) (comb_name_trans lab.nameT lab2.nameT);
 	trigger= lab.trigger;
+	guard = lab.guard; (* The guard come from the transition that write *)
 	priority= lab.priority;
 	write = List.sort_uniq compare (lab.write @ lab2.write)
 		    |> List.filter (fun x -> x<>st);
@@ -196,6 +194,7 @@ let comb_trans (ssidt,srcl,lab,dstl)  (ssidt2,srcl2,lab2,dstl2) =
     let lab3= { 
       nameT = comb_name_trans (Some ("S_"^st)) (comb_name_trans lab.nameT lab2.nameT);
       trigger= lab2.trigger;
+      guard = lab2.guard; (* The guard come from the transition that write *)
       priority= lab2.priority;
       write = List.sort_uniq compare (lab.write @ lab2.write)
 		  |> List.filter (fun x -> x<>st )
@@ -241,8 +240,7 @@ let split_trans_sync interRR interRW tl =
   let tlchangedRW,tlunchangedRW = List.partition (is_changed interRW) tl in
   let tlchangedRR,tlunchanged = List.partition (fun (_,_,lab,_) -> match lab.trigger with
       RAction st when StringSet.mem st interRR -> true | _-> false) tlunchangedRW in
-  (tlchangedRW,tlchangedRR,tlunchanged)
-    
+  (tlchangedRW,tlchangedRR,tlunchanged)    
 
 let combine_modu ?aggrSyn:(aggrSyn=false)  m1 m2 =
 (*(ssid,name,sl,ivect,tl,scrl) (ssid2,name2,sl2,ivect2,tl2,scrl2) =*)
@@ -493,10 +491,16 @@ let print_magic f sl tl scrl=
   output_string f "\tdefault: break; \n\t}\n}\n";
   Printf.fprintf f "bool magicConditional(int t){
   switch(t){\n";
-  List.iter (fun (ss,_,lab,_) -> begin match lab.trigger with
-    ImmWC c -> 
+  List.iter (fun (ss,_,lab,_) -> begin match lab.trigger,lab.guard with
+    ((ImmWC c),Some g) -> 
       Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
-      Printf.fprintf f "\t\treturn %s;\n" c; 
+      Printf.fprintf f "\t\treturn (%s && %s);\n" c g; 
+  | ((ImmWC c),None) -> 
+      Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
+      Printf.fprintf f "\t\treturn %s;\n" c;
+  | (_,Some g) -> 
+      Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
+      Printf.fprintf f "\t\treturn %s;\n" g;
   | _ -> ();
   end) tl;
   output_string f "\tdefault: return true; \n\t}\n}\n";
