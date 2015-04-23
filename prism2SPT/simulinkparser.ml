@@ -3,13 +3,18 @@ open Type
 open SimulinkType
 open Lexing
 
-(* Function to fetch various attribute in XML tree*)
+(* Handling of SSID*)
 let ssid_count = ref (-1)
 let getSSID al = 
   let i = int_of_string (List.assoc "SSID" al)  in
   ssid_count := max !ssid_count (i+1); 
   i
 
+let fresh_ssid () =
+  let f= !ssid_count in
+  incr ssid_count; f
+
+(* Function to fetch various attribute in XML tree*)
 let rec findprop f = function
   | [] -> None
   | te::q -> match te with

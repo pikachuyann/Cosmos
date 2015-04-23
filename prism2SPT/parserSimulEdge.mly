@@ -43,8 +43,20 @@
 
 main:
   action EOF { $1 }
- | AFTER LPAR floatexpr COMMA NAME RPAR action { if $7.trigger <> Imm then failwith "two trigger for this transition";
-					    {$7 with trigger = Delay ($3) }}; 
+   | LSQBRAK boolexp RSQBRAK action EOF {
+     begin
+       match $4.trigger with  RAction _ -> failwith "Guard on read action not permitted";
+       | _ ->{$4 with guard = Some $2}
+     end }
+   | delay action EOF 
+       { if $2.trigger <> Imm then failwith "two trigger for this transition";
+	 {$2 with trigger = $1 }}; 
+   | delay LSQBRAK boolexp RSQBRAK action EOF 
+     { if $5.trigger <> Imm then failwith "two trigger for this transition";
+       {$5 with trigger = $1; guard = Some $3 }}; 
+
+delay:
+  AFTER LPAR floatexpr COMMA NAME RPAR { Delay($3) };
 
 action:
   pre { {empty_trans_label with trigger = $1 } }
@@ -57,6 +69,8 @@ pre:
 
 boolexp:
  NAME cmp NAME { (Printf.sprintf "%s%s%s" $1 $2 $3) }
+| NAME cmp FLOAT { (Printf.sprintf "%s%s%f" $1 $2 $3) }
+| FLOAT cmp NAME { (Printf.sprintf "%f%s%s" $1 $2 $3) }
 | boolexp OR OR boolexp { (Printf.sprintf "(%s || %s)" $1 $4) }
 | boolexp AND AND boolexp { (Printf.sprintf "(%s &amp;&amp; %s)" $1 $4) };
 | LPAR boolexp RPAR { (Printf.sprintf "(%s)" $2) }

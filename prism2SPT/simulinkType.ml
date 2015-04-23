@@ -16,6 +16,7 @@ type triggerT = Imm | Delay of float expr' | RAction of string | ImmWC of string
 
 type simulink_trans_label = {
   trigger: triggerT;
+  guard: string option;
   write:  string list;
   update: string list;
   nameT: string option;
@@ -26,6 +27,7 @@ type simulink_trans_label = {
 let empty_trans_label = {
   nameT = None;
   trigger = Imm;
+  guard = None;
   write = [];
   update = [];
   priority = 1.0;
@@ -50,9 +52,9 @@ let stateasso2 s2 l =
   with Not_found -> ""
 
 let print_label_simulink f trans = match trans.trigger with
-    Imm -> Printf.fprintf f "#,![%a],{%a}" (print_list (fun x->x) ",") trans.write (print_list (fun x->x) ",") trans.update
+    Imm -> Printf.fprintf f "#[%s],![%a],{%a}" (trans.guard |>>| "") (print_list (fun x->x) ",") trans.write (print_list (fun x->x) ",") trans.update
   | ImmWC c -> Printf.fprintf f "#?%s,![%a],{%a}" c (print_list (fun x->x) ",") trans.write (print_list (fun x->x) ",") trans.update
-  | Delay(s) -> Printf.fprintf f "wait(%a),![%a],{%a}" printH_expr s (print_list (fun x->x) ",") trans.write (print_list (fun x->x) ",") trans.update
+  | Delay(s) -> Printf.fprintf f "wait(%a)[%s],![%a],{%a}" printH_expr s (trans.guard |>>| "") (print_list (fun x->x) ",") trans.write (print_list (fun x->x) ",") trans.update
   | RAction(s) -> Printf.fprintf f "?%s,![%a],{%a}" s (print_list (fun x->x) ",") trans.write (print_list (fun x->x) ",") trans.update
 
 
