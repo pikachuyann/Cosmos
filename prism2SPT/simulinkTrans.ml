@@ -469,11 +469,11 @@ let print_magic f sl tl scrl=
   | Some s ->  Printf.fprintf f "#define %s %i\n" s x) sl;*)
   output_string f "#ifndef uint8\n#define uint8 uint8_t\n#define uint16 uint16_t\n#define uint32 uint32_t\n#endif\n";
   output_string f "#include \"markingImpl.hpp\"\n";
-  output_string f "template <typename T>
+  output_string f (escape_XML "template <typename T>
 std::string to_string2(T value){
 	std::ostringstream os ;
 	os << value ;
-	return os.str(); }\n";
+	return os.str(); }\n");
   List.iter (fun (x,y) -> match y with
    Some s when s="DataAvailable" -> Printf.fprintf f "#define DATA_AVAILABLE %i\n"  x | _->() ) sl;
   output_string f "const string print_magic(int v){\n";
