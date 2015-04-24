@@ -481,7 +481,7 @@ std::string to_string2(T value){
   List.iter (fun (ssid,n) -> match n with 
     Some n2 -> Printf.fprintf f "\t\tcase %i: return \"%s\";\n" ssid n2
   | None -> ()) sl;
-  Printf.fprintf f "\t\tdefault: return std::to_string2(v);\n\t}\n}\n";
+  Printf.fprintf f "\t\tdefault: return to_string2(v);\n\t}\n}\n";
   List.iter (function Var(ty,x,initv) when x<>"ctime" -> Printf.fprintf f "%s %s=%s;\n" ty x initv | _-> ()) scrl;
   List.iter (fun x -> Printf.fprintf f "%s\n" x) DataFile.func;
   List.iter (function Funct(a,x) -> Printf.fprintf f "%s\n" (escape_XML x) | _->() ) scrl;
