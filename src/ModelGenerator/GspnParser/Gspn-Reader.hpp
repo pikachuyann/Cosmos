@@ -40,8 +40,6 @@
 #include "modelhandler.hh"
 
 
-using namespace std;
-
 //! A type to discriminate timed and untimmed transition.
 enum TransType {
     Timed, unTimed
@@ -50,7 +48,7 @@ enum TransType {
 //! a structure for probability distribution
 struct ProbabiliteDistribution {
     std::string name;
-    vector<expr> Param;
+    std::vector<expr> Param;
     ProbabiliteDistribution(){};
     ProbabiliteDistribution(const expr &s):name("EXPONENTIAL"),Param(1,s){};
 };
@@ -58,17 +56,17 @@ typedef struct ProbabiliteDistribution Distribution;
 
 
 struct color {
-	string name;
+	std::string name;
 	size_t id;
 	size_t cc;
 	color(){};
-	color(const string s,size_t i,size_t c){ name =s;id = i; cc=c;}
+	color(const std::string s,size_t i,size_t c){ name =s;id = i; cc=c;}
 };
 struct colorClass {
-	string name;
+	std::string name;
 	bool isCircular;
-	vector<color> colors;
-	inline string cname()const {
+	std::vector<color> colors;
+	inline std::string cname()const {
 		return name+ "_Color_Classe";
 	}
 };
@@ -77,23 +75,23 @@ struct colorClass {
 #define UNCOLORED_DOMAIN (0)
 
 struct colorDomain {
-	string name;
-	vector<size_t> colorClassIndex;
+	std::string name;
+	std::vector<size_t> colorClassIndex;
 	inline bool isUncolored()const {
 		return name.size() ==0;
 	}
-	inline string cname()const {
+	inline std::string cname()const {
 		if(isUncolored())return "int";
 		return name+ "_Domain";
 	}
-	inline string tokname()const {
+	inline std::string tokname()const {
 		if(isUncolored())return " ";
 		return name+ "_Token";
 	}
 };
 
 struct colorVariable {
-	string name;
+	std::string name;
 	size_t type;
 };
 
@@ -104,19 +102,19 @@ enum varType {
 };
 
 struct coloredToken {
-	string mult;
-	vector<size_t> field;
-	vector<varType> Flags;
-	vector<int> varIncrement;
+	std::string mult;
+	std::vector<size_t> field;
+	std::vector<varType> Flags;
+	std::vector<int> varIncrement;
 	bool hasAll;
     coloredToken():hasAll(false){};
     coloredToken(string st):mult(st),hasAll(false){};
-    coloredToken(int i):mult(to_string(i)),hasAll(false){};
+    coloredToken(int i):mult(std::to_string(i)),hasAll(false){};
 };
 
 struct transition {
 	size_t id;
-	string label;
+	std::string label;
     bool isTraced;
 	TransType type;
 	Distribution dist;
@@ -126,10 +124,10 @@ struct transition {
 	bool markingDependant;
 	int nbServers;
 	bool ageMemory;
-	set<size_t> varDomain;
+	std::set<size_t> varDomain;
 	expr guard;
     transition(){ isTraced = true; }
-    transition(size_t i,const string &n,const expr &p,bool md):id(i),label(n),isTraced(true),
+    transition(size_t i,const std::string &n,const expr &p,bool md):id(i),label(n),isTraced(true),
     type(Timed),dist(p),priority(expr(1)),weight(expr(1.0)),singleService(true),
     markingDependant(md),nbServers(1),ageMemory(false){};
 };

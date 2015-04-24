@@ -30,7 +30,6 @@
 #include <iostream>
 #include "Gspn-Reader.hpp"
 
-
 class Gspn_Writer {
 public:
 	Gspn_Writer(GspnType& mgspn,parameters& Q);
@@ -40,9 +39,16 @@ public:
 	
 	void writeFile();
     void writeDotFile(const string &file);
-	
+
+
+
 protected:
-	
+
+    std::string trId= "TR_PL_ID t, const abstractBinding &b";
+    std::string objName= "SPN::";
+
+    void writeFunT(std::ostream &s,const std::string &rtype,const std::string &name,const std::string &extraArg, std::function< std::string(unsigned int)>,std::string);
+
 	int varMultiplier(size_t var);
     void writeTok(ostream &SpnF, vector<coloredToken>&,const colorDomain&);
     void generateStringVal(arcStore&);
@@ -66,8 +72,8 @@ protected:
 
     void writeMacro(ofstream &);
 
-    void writeMarkingUpdate(ofstream &f, size_t t,const place &p,const arcStore &as2,bool direct);
-    void writeMarkingUpdateIn(ofstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos,const arcStore &as2,bool directionxs);
+    void writeMarkingUpdate(stringstream &f, size_t t,const place &p,const arcStore &as2,bool direct);
+    void writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos,const arcStore &as2,bool directionxs);
     void writeFire(ofstream &f);
     void writeIsEnabled(ofstream &f);
     void writeSetConditionsVector(ofstream &f);
@@ -76,6 +82,7 @@ protected:
     void writeGetWeight(ofstream &f);
 
 };
+
 
 
 #endif /* defined(__Cosmos__Gspn_Writer__) */

@@ -174,7 +174,7 @@ void SimulatorRE::GenerateEvent(Event& E,size_t Id,const abstractBinding& b) {
     }
 	double w=0.0;
 	if (N.Transition[Id].DistTypeIndex > 2) {
-		N.ParamDistr[0]= N.GetWeight(Id);
+		N.ParamDistr[0]= N.GetWeight(Id,b);
 		w = GenerateTime(EXPONENTIAL, N.ParamDistr);
 		//vector<double> wParam(1, N.GetWeight(Id));
 		//w = GenerateTime(2, wParam);
@@ -182,7 +182,7 @@ void SimulatorRE::GenerateEvent(Event& E,size_t Id,const abstractBinding& b) {
 	
     E.transition = Id;
     E.time = t;
-    E.priority = N.GetPriority(Id);
+    E.priority = N.GetPriority(Id,b);
     E.weight = w;
 	E.binding = b;
 	

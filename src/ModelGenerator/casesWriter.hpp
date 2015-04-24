@@ -63,7 +63,7 @@ private:
 	std::map<int,std::string> mapcomment;
 };
 
-void writeFunT(std::ostream &s,const std::string &rtype, size_t n, std::function< std::string(unsigned int)>, std::function< std::string(unsigned int)>);
+
 
 
 

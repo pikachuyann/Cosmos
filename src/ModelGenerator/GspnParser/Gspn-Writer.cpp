@@ -31,8 +31,26 @@
 #include <algorithm>
 
 Gspn_Writer::Gspn_Writer(GspnType& mgspn,parameters& Q):MyGspn(mgspn),P(Q){
-	
+    if(P.lightSimulator){
+        trId = "TR_PL_ID t";
+    }
 }
+
+
+
+void Gspn_Writer::writeFunT(ostream &f,const std::string &rtype,const std::string &name,const std::string &extraArg,function<string(unsigned int)> ft,const std::string init = ""){
+    f << rtype <<" "<< objName << name << trId << extraArg << "{" << endl;
+    f << init << endl;
+    casesHandler weightcases("t");
+    for (size_t t = 0; t < MyGspn.tr ; t++){
+        stringstream newcase;
+        newcase << "\t\t" << ft(t) << endl;
+        weightcases.addCase(t, newcase.str(),MyGspn.transitionStruct[t].label);
+    }
+    weightcases.writeCases(f);
+    f << "}\n" << endl;
+}
+
 
 // Precompute effect of transitions over other transitions
 void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
@@ -165,9 +183,11 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
                 for(auto inhibarc= MyGspn.inhibArcsStruct.lower_bound(make_pair(t2, 0));
                     inhibarc != MyGspn.inhibArcsStruct.end() && inhibarc->first.first==t2; ++inhibarc)
                     if(OUTt1Read.count(inhibarc->first.second)>0 && !inhibarc->second.isEmpty && !inhibarc->second.isMarkDep){
-                    if(!(inhibarc->second.intVal > MyGspn.access(MyGspn.outArcsStruct, t1, inhibarc->first.second).intVal)){                        S.erase(t2);
+                    if(!(inhibarc->second.intVal > MyGspn.access(MyGspn.outArcsStruct, t1, inhibarc->first.second).intVal)){
+                        S.erase(t2);
                     }
-                    if(!(inhibarc->second.intVal > MyGspn.access(MyGspn.inArcsStruct, t1, inhibarc->first.second).intVal)){                        Sinhib.erase(t2);
+                    if(!(inhibarc->second.intVal > MyGspn.access(MyGspn.inArcsStruct, t1, inhibarc->first.second).intVal)){
+                        Sinhib.erase(t2);
                     }
                 }
             }
@@ -400,7 +420,7 @@ void Gspn_Writer::writeMacro(ofstream &f){
 }
 
 
-void Gspn_Writer::writeMarkingUpdateIn(ofstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos, const arcStore &as2, bool direct){
+void Gspn_Writer::writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos, const arcStore &as2, bool direct){
     if (!MyGspn.access(as,t2,p.id).isEmpty) {
         if(!MyGspn.access(as2,t,p.id).isMarkDep && !MyGspn.access(as,t2,p.id).isMarkDep){
             int decrement = MyGspn.access(as2,t,p.id).intVal;
@@ -431,7 +451,7 @@ void Gspn_Writer::writeMarkingUpdateIn(ofstream &f,const arcStore &as, size_t t,
     }
 }
 
-void Gspn_Writer::writeMarkingUpdate(ofstream &f, size_t t,const place &p,const arcStore &as2,bool direct){
+void Gspn_Writer::writeMarkingUpdate(stringstream &f, size_t t,const place &p,const arcStore &as2,bool direct){
 
     if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
         if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty)
@@ -451,144 +471,144 @@ void Gspn_Writer::writeMarkingUpdate(ofstream &f, size_t t,const place &p,const 
 
 
 void Gspn_Writer::writeGetDistParameters(ofstream &f){
-    f << "void SPN::GetDistParameters(TR_PL_ID t ";
-    if (!P.lightSimulator)f << ",const abstractBinding& b";
-    f << ")const {" << endl;
-    casesHandler parametercases("t");
-    for (size_t t = 0; t < MyGspn.tr; t++) {
-        stringstream newcase;
-        if (MyGspn.transitionStruct[t].type == Timed) {
-            newcase << "\t{" << endl;
-            if (MyGspn.transitionStruct[t].singleService)
-                for (size_t i = 0; i < MyGspn.transitionStruct[t].dist.Param.size(); i++) {
-
-                    newcase << "\t\tParamDistr[" << i << "]= ( double ) " << MyGspn.transitionStruct[t].dist.Param[i] << ";" << endl;
-                } else {
-                    newcase << "\t\tdouble EnablingDegree = INT_MAX; " << endl;
-                    bool AtLeastOneMarkDepArc = false;
-                    for (const auto &p : MyGspn.placeStruct)
-                        if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
-                            if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
-                                newcase << "\t\tEnablingDegree=min(floor(Marking.P->_PL_" << p.name <<"/(double)(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ")),EnablingDegree);" << endl;
-                            else {
-                                AtLeastOneMarkDepArc = true;
-                                newcase << "\t\tif(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << ">0)" << endl;
-                                newcase << "\t\t\tEnablingDegree=min(floor(Marking.P->_PL_" << p.name <<"/(double)(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << ")),EnablingDegree);" << endl;
-                            }
-
-                        }
-                    if (AtLeastOneMarkDepArc) {
-                        if (MyGspn.transitionStruct[t].nbServers >= INT_MAX) {
-                            newcase << "\t\t\tif(EnablingDegree < INT_MAX ) ParamDistr[0] = EnablingDegree * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
-                            newcase << "\t\t\telse ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
-                        } else {
-                            newcase << "\t\t\tif(EnablingDegree < INT_MAX ) P[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
-                            newcase << "\t\t\telse ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
-                        }
-                    } else {
-                        if (MyGspn.transitionStruct[t].nbServers >= INT_MAX)
-                            newcase << "\t\t\tParamDistr[0] = EnablingDegree  * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
-                        else
-                            newcase << "\t\t\tParamDistr[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
-                    }
-                }
-            newcase << "\t}" << endl;
-        }
-        parametercases.addCase((int)t,newcase.str(),MyGspn.transitionStruct[t].label );
-    }
-    parametercases.writeCases(f);
-    f << "}\n" << endl;
+    writeFunT(f, "void", "GetDistParameters(", ")const",
+              [&](unsigned int t){
+                  stringstream newcase;
+                  if (MyGspn.transitionStruct[t].type == Timed) {
+                      newcase << "\t{" << endl;
+                      if (MyGspn.transitionStruct[t].singleService)
+                          for (size_t i = 0; i < MyGspn.transitionStruct[t].dist.Param.size(); i++) {
+                              newcase << "\t\tParamDistr[" << i << "]= ( double ) " << MyGspn.transitionStruct[t].dist.Param[i] << ";" << endl;
+                          } else {
+                              newcase << "\t\tdouble EnablingDegree = INT_MAX; " << endl;
+                              bool AtLeastOneMarkDepArc = false;
+                              for (const auto &p : MyGspn.placeStruct)
+                                  if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
+                                      if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
+                                          newcase << "\t\tEnablingDegree=min(floor(Marking.P->_PL_" << p.name <<"/(double)(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ")),EnablingDegree);" << endl;
+                                      else {
+                                          AtLeastOneMarkDepArc = true;
+                                          newcase << "\t\tif(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << ">0)" << endl;
+                                          newcase << "\t\t\tEnablingDegree=min(floor(Marking.P->_PL_" << p.name <<"/(double)(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << ")),EnablingDegree);" << endl;
+                                      }
+                                  }
+                              if (AtLeastOneMarkDepArc) {
+                                  if (MyGspn.transitionStruct[t].nbServers >= INT_MAX) {
+                                      newcase << "\t\t\tif(EnablingDegree < INT_MAX ) ParamDistr[0] = EnablingDegree * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+                                      newcase << "\t\t\telse ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
+                                  } else {
+                                      newcase << "\t\t\tif(EnablingDegree < INT_MAX ) P[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+                                      newcase << "\t\t\telse ParamDistr[0] = " << MyGspn.transitionStruct[t].dist.Param[0] << " ;" << endl;
+                                  }
+                              } else {
+                                  if (MyGspn.transitionStruct[t].nbServers >= INT_MAX)
+                                      newcase << "\t\t\tParamDistr[0] = EnablingDegree  * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+                                  else
+                                      newcase << "\t\t\tParamDistr[0] = min(EnablingDegree , " << MyGspn.transitionStruct[t].nbServers << " ) * ( " << MyGspn.transitionStruct[t].dist.Param[0] << " );" << endl;
+                              }
+                          }
+                      newcase << "\t}" << endl;
+                  }else{
+                      newcase << "break;" <<endl;
+                  }
+                  return newcase.str();});
 }
 
 void Gspn_Writer::writeIsEnabled(ofstream &f){
-    f << "bool SPN::IsEnabled(TR_PL_ID t";
-    if (!P.lightSimulator)f << ",const abstractBinding& b";
-    f << ")const {" << endl;
-    if(P.localTesting){
-        f << "\treturn (TransitionConditions[t]==0);" << endl;
-    } else {
-        if (!P.magic_values.empty()){f << "\tif(!magicConditional(t))return false;\n";};
-        casesHandler isenabledHandler("t");
-        for (size_t t = 0; t < MyGspn.tr; t++) {
-            stringstream newcase;
-            for (const auto &p : MyGspn.placeStruct) {
-                if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty && !MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty)
-                    if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep && !MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isMarkDep)
-                        if (MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal+1 == MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).intVal) {
-                            newcase << "    if( Marking.P->_PL_" << p.name <<" != " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ") return false;" << endl;
-                            continue;
-                        }
-                if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
+    writeFunT(f, "bool", "IsEnabled(", ")const",
+              [&](unsigned int t){
+                  stringstream newcase;
+                  if(P.localTesting){
+                      newcase << "\treturn (TransitionConditions[t]==0);" << endl;
+                  } else {
+                      for (const auto &p : MyGspn.placeStruct) {
+                          if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty && !MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty)
+                              if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep && !MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isMarkDep)
+                                  if (MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal+1 == MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).intVal) {
+                                      newcase << "    if( Marking.P->_PL_" << p.name <<" != " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ") return false;" << endl;
+                                      continue;
+                                  }
+                          if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
 
-                    if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
-                        newcase << "    if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << "))) return false;" << endl;
-                    else {
-                        newcase << "    if ( !(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << " < 1)) " << endl;
-                        newcase << "        if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << "))) return false;" << endl;
-                    }
-                }
-                if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty) {
+                              if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
+                                  newcase << "    if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << "))) return false;" << endl;
+                              else {
+                                  newcase << "    if ( !(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << " < 1)) " << endl;
+                                  newcase << "        if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << "))) return false;" << endl;
+                              }
+                          }
+                          if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty) {
 
-                    if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isMarkDep)
-                        newcase << "    if (Marking.P->_PL_" << p.name <<" >= " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).intVal << ") return false;" << endl;
+                              if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isMarkDep)
+                                  newcase << "    if (Marking.P->_PL_" << p.name <<" >= " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).intVal << ") return false;" << endl;
 
-                    else {
-                        newcase << "    if ( !(" << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << " < 1) ) " << endl;
-                        newcase << "        if (contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << ")) return false;" << endl;
-                    }
-                }
-            }
-            newcase << "    return true;" << endl;
-            isenabledHandler.addCase(t,newcase.str(), MyGspn.transitionStruct[t].label );
-        }
-        isenabledHandler.writeCases(f);
-    }
-    f << "}\n" << endl;
+                              else {
+                                  newcase << "    if ( !(" << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << " < 1) ) " << endl;
+                                  newcase << "        if (contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).stringVal << ")) return false;" << endl;
+                              }
+                          }
+                      }
+                      newcase << "    return true;" << endl;
+                  }
+                  return newcase.str();
+              },(!P.magic_values.empty() ? "\tif(!magicConditional(t))return false;\n":""));
 }
 
 void Gspn_Writer::writeFire(ofstream &f){
-    f << "void SPN::fire(TR_PL_ID t";
-    if (!P.lightSimulator)f << ",const abstractBinding& b";
-    f << ",  REAL_TYPE time){" << endl;
-    f << "\tlastTransition = t;" << endl;
-    if (!P.magic_values.empty()){f << "\tmagicUpdate(t,time);\n";};
-    f << "\tswitch(t){" << endl;
-    for (size_t t = 0; t < MyGspn.tr; t++) {
-        f << "\t\tcase " << t << ": {  //" << MyGspn.transitionStruct[t].label << endl;
-        //Write value of Marking dependant place to a temporary variable
-        for (const auto &p : MyGspn.placeStruct) {
-            if (MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep || MyGspn.access(MyGspn.outArcsStruct,t,p.id).isMarkDep) {
-                f << "\t\t\t"<< MyGspn.colDoms[p.colorDom].cname() <<" tmpMark_" << p.name;
-                f << " = Marking.P->_PL_" << p.name << ";" << endl;
-            }
-        }
+    writeFunT(f, "void", "fire(", ",REAL_TYPE time)",
+              [&](unsigned int t){
+                  stringstream newcase;
 
-        //update the marking
-        for (const auto &p : MyGspn.placeStruct) {
-            if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
-                //update for place in place
-                writeMarkingUpdate(f, t, p,MyGspn.inArcsStruct,true);
-            }
+                  /*
+                   f << "void SPN::fire(TR_PL_ID t";
+                   if (!P.lightSimulator)f << ",const abstractBinding& b";
+                   f << ",  REAL_TYPE time){" << endl;
 
-            if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isEmpty) {
-                //update for outplace
-                writeMarkingUpdate(f, t, p,MyGspn.outArcsStruct,false);
-            }
 
-        }
-        //
-        f << "       break;" << endl;
-        f << "     } " << endl;
-    }
-    f << "\t}" << endl;
-    f << "}" << endl;
+                   f << "\tlastTransition = t;" << endl;
+                   if (!P.magic_values.empty()){f << "\tmagicUpdate(t,time);\n";};
+                   f << "\tswitch(t){" << endl;
+                   for (size_t t = 0; t < MyGspn.tr; t++) {
+                   */
+                  //      f << "\t\tcase " << t << ": {  //" << MyGspn.transitionStruct[t].label << endl;
+                  newcase << "{";
+
+                  //Write value of Marking dependant place to a temporary variable
+                  for (const auto &p : MyGspn.placeStruct) {
+                      if (MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep || MyGspn.access(MyGspn.outArcsStruct,t,p.id).isMarkDep) {
+                          newcase << "\t\t\t"<< MyGspn.colDoms[p.colorDom].cname() <<" tmpMark_" << p.name;
+                          newcase << " = Marking.P->_PL_" << p.name << ";" << endl;
+                      }
+                  }
+
+                  //update the marking
+                  for (const auto &p : MyGspn.placeStruct) {
+                      if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
+                          //update for place in place
+                          writeMarkingUpdate(newcase, t, p,MyGspn.inArcsStruct,true);
+                      }
+
+                      if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isEmpty) {
+                          //update for outplace
+                          writeMarkingUpdate(newcase, t, p,MyGspn.outArcsStruct,false);
+                      }
+
+                  }
+                  newcase << "}";
+                  return newcase.str();
+                  //
+                  //        f << "       break;" << endl;
+                  //f << "     } " << endl;
+                  //f << "\t}" << endl;
+                  //f << "}" << endl;
+              },
+              (!P.magic_values.empty()? "\tlastTransition = t;\n\tmagicUpdate(t,time);\n":"\tlastTransition = t;\n" )
+              );
 
     if(!P.lightSimulator){
-        f << "void SPN::unfire(TR_PL_ID t ,const abstractBinding& b){" << endl;
-        if(P.RareEvent || P.computeStateSpace){
-            casesHandler unfirecases("t");
-            for (size_t t = 0; t < MyGspn.tr; t++) {
-                stringstream newcase;
+        writeFunT(f, "void", "unfire(", ")", [&](unsigned int t){
+            stringstream newcase;
+            if(P.RareEvent || P.computeStateSpace){
                 for (const auto &p : MyGspn.placeStruct)  {
                     if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
                         if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
@@ -604,18 +624,17 @@ void Gspn_Writer::writeFire(ofstream &f){
                             newcase << "    Marking.P->_PL_" << p.name <<" -= " << MyGspn.access(MyGspn.outArcsStruct,t,p.id).stringVal << ";" << endl;
                     }
                 }
-                unfirecases.addCase(t,newcase.str(),MyGspn.transitionStruct[t].label);
             }
-            unfirecases.writeCases(f);
-        }
-        f << "}\n" << endl;
-        writeEnabledDisabledBinding(f);
+            return newcase.str();
+        });
+
+    writeEnabledDisabledBinding(f);
     }
 }
 
 
 void Gspn_Writer::writeSetConditionsVector(ofstream &f){
-    f << "void SPN::setConditionsVector(){" << endl;
+    f << "void "<< objName <<"setConditionsVector(){" << endl;
     if(P.localTesting)for (size_t t = 0; t < MyGspn.tr; t++) {
         f << "\tTransitionConditions["<< t <<"]=0;" << endl;
         for (const auto &p : MyGspn.placeStruct)  {
@@ -641,24 +660,19 @@ void Gspn_Writer::writeSetConditionsVector(ofstream &f){
 }
 
 void Gspn_Writer::writeGetPriority(ofstream &f){
-    writeFunT(f, "REAL_TYPE SPN::GetPriority(TR_PL_ID t)const" , MyGspn.tr,
+    writeFunT(f, "REAL_TYPE","GetPriority(", ")const",
               [&](unsigned int t){stringstream ss;
                   ss << "\t\treturn (double)" << MyGspn.transitionStruct[t].priority << ";";
-                  return ss.str();},
-              [&](unsigned int t){return MyGspn.transitionStruct[t].label;}
-              );
+                  return ss.str();});
 }
 
 
 void Gspn_Writer::writeGetWeight(ofstream &f){
-    writeFunT(f, "REAL_TYPE SPN::GetWeight(TR_PL_ID t)const" , MyGspn.tr,
+    writeFunT(f, "REAL_TYPE","GetWeight(", ")const",
               [&](unsigned int t){stringstream ss;
                 ss << "\t\treturn (double)" << MyGspn.transitionStruct[t].weight << ";";
-                  return ss.str();},
-              [&](unsigned int t){return MyGspn.transitionStruct[t].label;}
-              );
+                  return ss.str();});
 }
-
 
 void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, parameters &P){
     header << "class abstractBindingImpl {\npublic:\n";
