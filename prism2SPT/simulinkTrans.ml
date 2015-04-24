@@ -45,7 +45,7 @@ let expand_trans l =
       | (RAction(sn),_,Some src2) when src2=dst && exist_delay src2 tl->  
 	(* self loop with read 
 	   This case is used to reset delay transition waiting on this state,
-	   without this delay transition are note disabled by a selfloop read action*)
+	   without this delay transition are not disabled by a selfloop read action*)
 	let news = fresh_ssid ()
 	and newsn = post_name sl dst ssid in
 	let newt = fresh_ssid () in
@@ -469,6 +469,11 @@ let print_magic f sl tl scrl=
   | Some s ->  Printf.fprintf f "#define %s %i\n" s x) sl;*)
   output_string f "#ifndef uint8\n#define uint8 uint8_t\n#define uint16 uint16_t\n#define uint32 uint32_t\n#endif\n";
   output_string f "#include \"markingImpl.hpp\"\n";
+  output_string f "template <typename T>
+std::string to_string2(T value){
+	std::ostringstream os ;
+	os << value ;
+	return os.str(); }\n";
   List.iter (fun (x,y) -> match y with
    Some s when s="DataAvailable" -> Printf.fprintf f "#define DATA_AVAILABLE %i\n"  x | _->() ) sl;
   output_string f "const string print_magic(int v){\n";
@@ -476,7 +481,7 @@ let print_magic f sl tl scrl=
   List.iter (fun (ssid,n) -> match n with 
     Some n2 -> Printf.fprintf f "\t\tcase %i: return \"%s\";\n" ssid n2
   | None -> ()) sl;
-  Printf.fprintf f "\t\tdefault: return std::to_string(v);\n\t}\n}\n";
+  Printf.fprintf f "\t\tdefault: return std::to_string2(v);\n\t}\n}\n";
   List.iter (function Var(ty,x,initv) when x<>"ctime" -> Printf.fprintf f "%s %s=%s;\n" ty x initv | _-> ()) scrl;
   List.iter (fun x -> Printf.fprintf f "%s\n" x) DataFile.func;
   List.iter (function Funct(a,x) -> Printf.fprintf f "%s\n" (escape_XML x) | _->() ) scrl;
