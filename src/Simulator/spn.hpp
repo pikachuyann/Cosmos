@@ -221,10 +221,10 @@ public:
 	void GetDistParameters(size_t tr, const abstractBinding& b)const;
 	
 	//! compute the the weight value of a given transition
-	double GetWeight(size_t)const;
+	double GetWeight(size_t, const abstractBinding&)const;
 	
 	//! compute the the priority value of a given transition
-	double GetPriority(size_t)const;
+	double GetPriority(size_t, const abstractBinding&)const;
 
     //! A table of set of transitions that may be enabled after firing the last transition
     static const int* PossiblyEnabled[];

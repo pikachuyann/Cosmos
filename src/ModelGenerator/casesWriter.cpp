@@ -80,19 +80,8 @@ void casesHandler::writeCases(ostream &s){
 					s << mapcomment[it2->first] << ",";
 			
 			s << endl << itmax->first << endl;
+            s << "\t\tbreak;" << endl;
 		}
 		s << "}" << endl;
 	}
-}
-
-void writeFunT(ostream &f,const std::string &rtype,size_t n,function<string(unsigned int)> ft,function<string(unsigned int)> ftl){
-    f << rtype << "{" << endl;
-    casesHandler weightcases("t");
-    for (size_t t = 0; t < n; t++){
-        stringstream newcase;
-        newcase << "\t\t" << ft(t) << endl;
-        weightcases.addCase(t, newcase.str(),ftl(t));
-    }
-    weightcases.writeCases(f);
-    f << "}\n" << endl;
 }
