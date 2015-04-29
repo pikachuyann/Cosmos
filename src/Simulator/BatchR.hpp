@@ -28,6 +28,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <ostream>
 
 #ifndef _BATCHR_HPP
 #define	_BATCHR_HPP
@@ -79,7 +80,7 @@ public:
     //! Merge the result of two batch of simulation.
     void unionR(const BatchR&);
 	
-    void outputR();
+    void outputR(std::ostream &f);
 	
     bool inputR(FILE* f);
     void print()const; //! Print human readable version of batch on stdout.

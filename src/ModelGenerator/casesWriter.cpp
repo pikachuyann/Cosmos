@@ -57,13 +57,13 @@ void casesHandler::writeCases(ostream &s){
 	if(cases.size()==1) {
 		s << cases.begin()->first << endl;
 	}else{
-		s << "switch (" << scase << "){" << endl;
+		s << "\tswitch (" << scase << "){" << endl;
 		map<const string,int>::iterator itmax = cases.begin();
 		for(map<const string,int>::iterator it = cases.begin(); it != cases.end(); ++it){
-			if(it->second != maxc){
+			if(it->second != maxc || maxc ==1){
 				for(map<int,std::string>::iterator it2 = mapping.begin(); it2 != mapping.end(); ++it2){
 					if(it2->second.compare(it->first)==0)
-						s << "\tcase " << it2->first << ":\t//" << mapcomment[it2->first] << endl;
+						s << "\t\tcase " << it2->first << ":\t//" << mapcomment[it2->first] << endl;
 				}
 				s << it->first << endl;
 				s << "\t\tbreak;" << endl;
@@ -72,8 +72,8 @@ void casesHandler::writeCases(ostream &s){
 				maxc++;
 			}
 		}
-		if(itmax->first.compare("")!=0){
-			s<< "\tdefault:\t//";
+		if(itmax->first.compare("")!=0 && maxc != 1){
+			s<< "\t\tdefault:\t//";
 			for(map<int,std::string>::iterator it2 = mapping.begin();
 				it2 != mapping.end(); ++it2)
 				if(it2->second.compare(itmax->first)==0)
@@ -82,6 +82,6 @@ void casesHandler::writeCases(ostream &s){
 			s << endl << itmax->first << endl;
             s << "\t\tbreak;" << endl;
 		}
-		s << "}" << endl;
+		s << "\t}" << endl;
 	}
 }

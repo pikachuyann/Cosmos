@@ -38,13 +38,15 @@ Gspn_Writer::Gspn_Writer(GspnType& mgspn,parameters& Q):MyGspn(mgspn),P(Q){
 
 
 
-void Gspn_Writer::writeFunT(ostream &f,const std::string &rtype,const std::string &name,const std::string &extraArg,function<string(unsigned int)> ft,const std::string init = ""){
+void Gspn_Writer::writeFunT(ostream &f,const std::string &rtype,const std::string &name,const std::string &extraArg,function<void(unsigned int,stringstream &)> ft,const std::string init = ""){
     f << rtype <<" "<< objName << name << trId << extraArg << "{" << endl;
     f << init << endl;
     casesHandler weightcases("t");
     for (size_t t = 0; t < MyGspn.tr ; t++){
         stringstream newcase;
-        newcase << "\t\t" << ft(t) << endl;
+        //newcase << "\t\t" <<
+        ft(t,newcase);
+        //<< endl;
         weightcases.addCase(t, newcase.str(),MyGspn.transitionStruct[t].label);
     }
     weightcases.writeCases(f);
@@ -472,8 +474,7 @@ void Gspn_Writer::writeMarkingUpdate(stringstream &f, size_t t,const place &p,co
 
 void Gspn_Writer::writeGetDistParameters(ofstream &f){
     writeFunT(f, "void", "GetDistParameters(", ")const",
-              [&](unsigned int t){
-                  stringstream newcase;
+              [&](unsigned int t,stringstream &newcase){
                   if (MyGspn.transitionStruct[t].type == Timed) {
                       newcase << "\t{" << endl;
                       if (MyGspn.transitionStruct[t].singleService)
@@ -511,30 +512,30 @@ void Gspn_Writer::writeGetDistParameters(ofstream &f){
                   }else{
                       newcase << "break;" <<endl;
                   }
-                  return newcase.str();});
+                  });
 }
 
 void Gspn_Writer::writeIsEnabled(ofstream &f){
     writeFunT(f, "bool", "IsEnabled(", ")const",
-              [&](unsigned int t){
-                  stringstream newcase;
+              [&](unsigned int t,stringstream &newcase){
                   if(P.localTesting){
                       newcase << "\treturn (TransitionConditions[t]==0);" << endl;
                   } else {
+                      newcase<<endl;
                       for (const auto &p : MyGspn.placeStruct) {
                           if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty && !MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty)
                               if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep && !MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isMarkDep)
                                   if (MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal+1 == MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).intVal) {
-                                      newcase << "    if( Marking.P->_PL_" << p.name <<" != " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ") return false;" << endl;
+                                      newcase << "\t\t\tif( Marking.P->_PL_" << p.name <<" != " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ") return false;" << endl;
                                       continue;
                                   }
                           if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
 
                               if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
-                                  newcase << "    if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << "))) return false;" << endl;
+                                  newcase << "\t\t\tif (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << "))) return false;" << endl;
                               else {
-                                  newcase << "    if ( !(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << " < 1)) " << endl;
-                                  newcase << "        if (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << "))) return false;" << endl;
+                                  newcase << "\t\t\tif ( !(" << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << " < 1)) " << endl;
+                                  newcase << "\t\t\tif (!(contains(Marking.P->_PL_" << p.name <<" , " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << "))) return false;" << endl;
                               }
                           }
                           if (!MyGspn.access(MyGspn.inhibArcsStruct,t,p.id).isEmpty) {
@@ -548,30 +549,15 @@ void Gspn_Writer::writeIsEnabled(ofstream &f){
                               }
                           }
                       }
-                      newcase << "    return true;" << endl;
+                      newcase << "\t\treturn true;";
                   }
-                  return newcase.str();
               },(!P.magic_values.empty() ? "\tif(!magicConditional(t))return false;\n":""));
 }
 
 void Gspn_Writer::writeFire(ofstream &f){
     writeFunT(f, "void", "fire(", ",REAL_TYPE time)",
-              [&](unsigned int t){
-                  stringstream newcase;
-
-                  /*
-                   f << "void SPN::fire(TR_PL_ID t";
-                   if (!P.lightSimulator)f << ",const abstractBinding& b";
-                   f << ",  REAL_TYPE time){" << endl;
-
-
-                   f << "\tlastTransition = t;" << endl;
-                   if (!P.magic_values.empty()){f << "\tmagicUpdate(t,time);\n";};
-                   f << "\tswitch(t){" << endl;
-                   for (size_t t = 0; t < MyGspn.tr; t++) {
-                   */
-                  //      f << "\t\tcase " << t << ": {  //" << MyGspn.transitionStruct[t].label << endl;
-                  newcase << "{";
+              [&](unsigned int t,stringstream &newcase){
+                newcase << "{" << endl;
 
                   //Write value of Marking dependant place to a temporary variable
                   for (const auto &p : MyGspn.placeStruct) {
@@ -594,20 +580,13 @@ void Gspn_Writer::writeFire(ofstream &f){
                       }
 
                   }
-                  newcase << "}";
-                  return newcase.str();
-                  //
-                  //        f << "       break;" << endl;
-                  //f << "     } " << endl;
-                  //f << "\t}" << endl;
-                  //f << "}" << endl;
+                  newcase << "\t}";
               },
               (!P.magic_values.empty()? "\tlastTransition = t;\n\tmagicUpdate(t,time);\n":"\tlastTransition = t;\n" )
               );
 
     if(!P.lightSimulator){
-        writeFunT(f, "void", "unfire(", ")", [&](unsigned int t){
-            stringstream newcase;
+        writeFunT(f, "void", "unfire(", ")", [&](unsigned int t,stringstream &newcase){
             if(P.RareEvent || P.computeStateSpace){
                 for (const auto &p : MyGspn.placeStruct)  {
                     if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
@@ -625,7 +604,6 @@ void Gspn_Writer::writeFire(ofstream &f){
                     }
                 }
             }
-            return newcase.str();
         });
 
     writeEnabledDisabledBinding(f);
@@ -661,17 +639,17 @@ void Gspn_Writer::writeSetConditionsVector(ofstream &f){
 
 void Gspn_Writer::writeGetPriority(ofstream &f){
     writeFunT(f, "REAL_TYPE","GetPriority(", ")const",
-              [&](unsigned int t){stringstream ss;
+              [&](unsigned int t,stringstream &ss){
                   ss << "\t\treturn (double)" << MyGspn.transitionStruct[t].priority << ";";
-                  return ss.str();});
+            });
 }
 
 
 void Gspn_Writer::writeGetWeight(ofstream &f){
     writeFunT(f, "REAL_TYPE","GetWeight(", ")const",
-              [&](unsigned int t){stringstream ss;
+              [&](unsigned int t,stringstream &ss){
                 ss << "\t\treturn (double)" << MyGspn.transitionStruct[t].weight << ";";
-                  return ss.str();});
+            });
 }
 
 void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, parameters &P){
@@ -986,9 +964,9 @@ void Gspn_Writer::writeFile(){
 	if(P.RareEvent){
 		SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
 	}else if(!P.lightSimulator){
-		SpnCppFile << "void SPN::print_state(const vector<int> &vect){}" << endl;
-		SpnCppFile << "void SPN::lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
-		SpnCppFile << "bool SPN::precondition(const abstractMarking &M){return true;}" << endl;
+		SpnCppFile << "void "<<objName<<"print_state(const vector<int> &vect){}" << endl;
+		SpnCppFile << "void "<<objName<<"lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
+		SpnCppFile << "bool "<<objName<<"precondition(const abstractMarking &M){return true;}" << endl;
 	}
     
 	//------------- Writing Marking type and header ----------------------------
@@ -1039,7 +1017,7 @@ void Gspn_Writer::writeFile(){
     }
 
     //--------------- Writing implementation of SPN ----------------------------
-    SpnCppFile << "SPN::SPN():" << endl;
+    SpnCppFile << objName<<"SPN():" << endl;
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
 	SpnCppFile << "tr(" << MyGspn.tr << ") ";
     if(!P.lightSimulator){
@@ -1095,7 +1073,7 @@ void Gspn_Writer::writeFile(){
     writeGetWeight(SpnCppFile);
 
     if(!P.lightSimulator){
-	SpnCppFile << "void SPN::Msimple(){"<<endl;
+	SpnCppFile << "void "<<objName<<"Msimple(){"<<endl;
 	SpnCppFile << "\tvector<int> tab;"<<endl;
 	for (const auto &p : MyGspn.placeStruct) {
 		if(p.name.substr(0,3).compare("RE_") == 0)
@@ -1104,7 +1082,7 @@ void Gspn_Writer::writeFile(){
 	SpnCppFile << "\tMsimpletab = tab;\n}"<< endl;
     }
 
-	SpnCppFile << "void SPN::reset() {"<< endl;
+	SpnCppFile << "void "<<objName<<"reset() {"<< endl;
 	SpnCppFile << "\tMarking.resetToInitMarking();"<< endl;
 	if(P.localTesting)SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
 	SpnCppFile << "}"<< endl<< endl;

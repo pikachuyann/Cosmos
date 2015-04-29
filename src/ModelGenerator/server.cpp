@@ -52,7 +52,6 @@
 #include <algorithm>
 #include <err.h>
 #include <assert.h>
-//#include <ext/stdio_filebuf.h>
 
 #include "../Simulator/BatchR.hpp"
 #include "result.hpp"
@@ -365,6 +364,7 @@ void launchServer(parameters& P){
                 }
                 //aggregate the new result to the total result
                 BatchR batchResult(P.nbAlgebraic);
+
                 if(batchResult.inputR(clientstream[it])){
 					//batchResult.print();
 					Result.addBatch(batchResult);
@@ -394,9 +394,17 @@ void launchServer(parameters& P){
     //signal(SIGCHLD, SIG_IGN);
 	
 	//Output all the results
-    if(P.verbose>0)cout << endl;
     Result.stopclock();
-    
+    if(P.verbose>0){
+        Result.printCompactResult();
+        cout<< endl;
+    }
+
+    {
+        ofstream savetraj(P.tmpPath+"/saveTraj");
+        Result.MeanM2.outputR(savetraj);
+    }
+
 	//use gnuplot
 	if(P.dataPDFCDF.length()>0)Result.outputCDFPDF(P.dataPDFCDF);
 	//if(P.alligatorMode)

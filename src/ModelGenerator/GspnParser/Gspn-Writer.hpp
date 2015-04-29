@@ -47,7 +47,7 @@ protected:
     std::string trId= "TR_PL_ID t, const abstractBinding &b";
     std::string objName= "SPN::";
 
-    void writeFunT(std::ostream &s,const std::string &rtype,const std::string &name,const std::string &extraArg, std::function< std::string(unsigned int)>,std::string);
+    void writeFunT(std::ostream &s,const std::string &rtype,const std::string &name,const std::string &extraArg, std::function< void(unsigned int,std::stringstream &)>,std::string);
 
 	int varMultiplier(size_t var);
     void writeTok(ostream &SpnF, vector<coloredToken>&,const colorDomain&);
