@@ -26,11 +26,12 @@
  */
 
 #include <iostream>
-#include "HaslFormula.hpp"
+#include <limits>
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/binomial.hpp>
-#include <limits>
-#include <parameters.hpp>
+
+#include "HaslFormula.hpp"
+#include "parameters.hpp"
 
 /**
  * Trivial confidence interval containing all R.

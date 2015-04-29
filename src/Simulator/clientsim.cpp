@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
 			states.outputMat();
 			states.outputTmpLumpingFun();
             BatchR dummR(0);
-            dummR.outputR();
+            dummR.outputR(cout);
             cerr << "Finish Exporting" << endl;
 			exit(EXIT_SUCCESS);
 		}else if(str== "-STSP"){
@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
 			double prResult = states.returnPrismResult();
             BatchR dummR(1);
             dummR.addSim(make_pair<bool,vector<double> >(true,vector<double>(1,prResult)));
-            dummR.outputR();
+            dummR.outputR(cout);
 			/*cout << "Prism Result:\t"<< prResult << endl;
 			ofstream ResultsFile("Result.res", ios::out | ios::trunc);
 			ResultsFile << "Result Computed by Prism:" << endl;
@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
     else while( !cin.eof() ){
 		BatchR batchResult = mySim->RunBatch(); //simulate a batch of trajectory
 		
-		batchResult.outputR();// output the result on the standart output
+		batchResult.outputR(cout);// output the result on the standart output
 		
 		//cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
 		//<< ":" << batchResult->M2[0] << endl;

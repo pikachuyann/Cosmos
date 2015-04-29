@@ -24,11 +24,14 @@
  *******************************************************************************
  */
 
-#include "BatchR.hpp"
+
 #include <unistd.h>
 #include <math.h>
 #include <float.h>
 #include <stdlib.h>
+
+
+#include "BatchR.hpp"
 
 using namespace std;
 
@@ -120,34 +123,28 @@ void BatchR::unionR(const BatchR &batch){
  * This function write a batch on the standart output it is suposed to
  * be read by the function BatchR::inputR
  */
-void BatchR::outputR() {
-    size_t writesize = 0;
-    writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&I),sizeof(I));
-    writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
+void BatchR::outputR(ostream &f) {
+    f.write(reinterpret_cast<char*>(&I),sizeof(I));
+    f.write(reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
     size_t v = Mean.size();
-	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&v),sizeof(size_t));
+	f.write(reinterpret_cast<char*>(&v),sizeof(size_t));
     v = bernVar.size();
-    writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&v),sizeof(size_t));
+    f.write(reinterpret_cast<char*>(&v),sizeof(size_t));
 	
     for(unsigned int i =0; i< Mean.size(); i++){
         bool tmpbool = IsBernoulli[i];
-        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&tmpbool),sizeof(bool));
-        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Mean[i]),sizeof(Mean[0]));
-        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M2[i]),sizeof(Mean[0]));
-       	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M3[i]),sizeof(Mean[0]));
-       	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&M4[i]),sizeof(Mean[0]));
-		writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Min[i]),sizeof(Mean[0]));
-       	writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&Max[i]),sizeof(Mean[0]));
+        f.write(reinterpret_cast<char*>(&tmpbool),sizeof(bool));
+        f.write(reinterpret_cast<char*>(&Mean[i]),sizeof(Mean[0]));
+        f.write(reinterpret_cast<char*>(&M2[i]),sizeof(Mean[0]));
+       	f.write(reinterpret_cast<char*>(&M3[i]),sizeof(Mean[0]));
+       	f.write(reinterpret_cast<char*>(&M4[i]),sizeof(Mean[0]));
+		f.write(reinterpret_cast<char*>(&Min[i]),sizeof(Mean[0]));
+       	f.write(reinterpret_cast<char*>(&Max[i]),sizeof(Mean[0]));
     }
     for(unsigned int i =0; i< bernVar.size(); i++)
-        writesize += write(STDOUT_FILENO,reinterpret_cast<char*>(&bernVar[i]),sizeof(bernVar[0]));
+        f.write(reinterpret_cast<char*>(&bernVar[i]),sizeof(bernVar[0]));
 
-    if(writesize != (sizeof(I) + sizeof(Isucc)+ sizeof(size_t) + sizeof(size_t)
-                     + Mean.size() * (sizeof(bool) + 6*sizeof(double))
-                     + bernVar.size() * sizeof(bernVar[0]))){
-		cerr << "Fail to write to stdout";
-		exit(EXIT_FAILURE);
-    }
+    f.flush();
 }
 
 /**

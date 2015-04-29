@@ -78,6 +78,7 @@ bool Parse() {
         }
         P.nbPlace = gReader.MyGspn.pl;
 
+        if(parseresult==1)return false;
 
         //The following code modify the internal representation of the
         //SPN according to options.
