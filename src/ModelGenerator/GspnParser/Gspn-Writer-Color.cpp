@@ -30,7 +30,7 @@
 Gspn_Writer_Color::Gspn_Writer_Color(GspnType& mgspn,parameters& Q):Gspn_Writer(mgspn,Q){}
 
 void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF){
-    SpnF << "const abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
+    SpnF << "const abstractBinding* "<<objName<<"nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
     SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
     for(size_t trit = 0; trit != MyGspn.tr;++trit){
         if(!MyGspn.transitionStruct[trit].varDomain.empty())
@@ -111,7 +111,7 @@ void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF){
     SpnF << "\t\treturn &(Transition[targettr].bindingList[*bindingNum-1]);"<< endl;
     SpnF << "}}"<< endl;
 
-    SpnF << "const abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
+    SpnF << "const abstractBinding* "<<objName<<"nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
     SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
 
     for(size_t trit = 0; trit != MyGspn.tr;++trit){

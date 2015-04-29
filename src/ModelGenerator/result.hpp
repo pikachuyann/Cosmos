@@ -47,14 +47,17 @@
 class result {
 public:
 	result();
-	~result();
 	
 	//! Add a new batch of result to the result.
 	void addBatch(BatchR&);
 	
 	//! return true if the simulation should continue.
 	bool continueSim();
-	
+
+
+    //! Print the result in a compact way on stdout.
+    void printCompactResult();
+
 	//! Print the progress of the computation on stdout.
 	void printProgress();
 	
@@ -81,7 +84,10 @@ public:
 	
 	//! Close the interactive gnuplot session.
 	void close_gnuplot();
-	
+
+    //! The raw result of the computation.
+    BatchR MeanM2;
+    
 private:
 	
 	//! A copy of the parameters.
@@ -112,9 +118,6 @@ private:
 	//! Number of lines written by the function printProgress.
 	int endline;
 	
-	//! The raw result of the computation.
-	BatchR* MeanM2;
-	
 	//! The maximal relative error of the result.
 	double Progress;
 	
@@ -129,6 +132,8 @@ private:
 
     int nbColumnGraph;
     std::tuple<std::string,double> split_name(std::string);
+
+    size_t maxformulaname;
 
 };
 

@@ -43,12 +43,12 @@
 
 using namespace std;
 
-result::result() : HaslResult(P.HaslFormulasname.size()) {
+result::result() : MeanM2(P.nbAlgebraic),HaslResult(P.HaslFormulasname.size()) {
     //P= Q;
     gnuplotstream = NULL;
     lastprint = chrono::system_clock::now();
     lastdraw = chrono::system_clock::now();
-    MeanM2 = new BatchR(P.nbAlgebraic);
+    
 
     Progress = 0;
     ProgressArray = vector<double>(P.HaslFormulasname.size()); //relative error
@@ -94,15 +94,14 @@ result::result() : HaslResult(P.HaslFormulasname.size()) {
         }
     }
 
+    maxformulaname = 11;
+    for (size_t i = 0; i < P.HaslFormulasname.size(); i++)
+        maxformulaname = max(maxformulaname, P.HaslFormulasname[i].size());
+
     start = chrono::system_clock::now();
     ;
     lastprint = chrono::system_clock::now();
     if (P.verbose > 0)cout << endl << endl << endl;
-}
-
-result::~result() {
-    delete MeanM2;
-    //close_gnuplot();
 }
 
 void result::close_gnuplot() {
@@ -114,10 +113,10 @@ void result::close_gnuplot() {
 }
 
 void result::addBatch(BatchR &batchResult) {
-    MeanM2->unionR(batchResult);
+    MeanM2.unionR(batchResult);
     Progress = 1.0;
     for (size_t i = 0; i < P.HaslFormulasname.size(); i++) {
-        HaslResult[i] = P.HaslFormulas[i]->eval(*MeanM2);
+        HaslResult[i] = P.HaslFormulas[i]->eval(MeanM2);
         if (P.BoundedContinuous) {
             HaslResult[i].low *= (1 - P.epsilon);
         }
@@ -140,7 +139,7 @@ void result::addBatch(BatchR &batchResult) {
 }
 
 bool result::continueSim() {
-    if (MeanM2->I >= P.MaxRuns)return false;
+    if (MeanM2.I >= P.MaxRuns)return false;
     if (!P.sequential)return true;
     if (P.Width == 0)return true;
 
@@ -165,6 +164,29 @@ void result::printPercent(double i, double j) {
     cout << "] " << (int) (100 * (u / t)) << "%\t" << endl;
 }
 
+void result::printCompactResult(){
+    
+    for (size_t i = 0; i < P.HaslFormulasname.size(); i++)
+        if (P.HaslFormulasname[i].find("$GRAPH$") == string::npos) {
+            cout << setw(maxformulaname + 1) << left << (P.HaslFormulasname[i] + ":") << " |< ";
+            cout << setw(14) << HaslResult[i].min << " -[ ";
+            cout << setw(14) << HaslResult[i].low << " < ";
+            cout << setw(14) << HaslResult[i].mean << " > ";
+            cout << setw(14) << HaslResult[i].up << " ]- ";
+            cout << setw(14) << HaslResult[i].max << " >| ";
+            cout << "width=";
+            cout << setw(12) << HaslResult[i].width();
+            cout << " level=";
+            cout << setw(8) << HaslResult[i].conf << endl;
+            endline++;
+            if (!P.RareEvent && ProgressArray[i] != 0 && P.verbose > 2 && P.sequential) {
+                cout << setw(maxformulaname + 2) << left << "% of width:";
+                printPercent(ProgressArray[i], 1.0);
+                endline++;
+            }
+        }
+}
+
 void result::printProgress() {
     auto current = chrono::system_clock::now();
     if (chrono::duration_cast<chrono::milliseconds>(current - lastprint) < P.updatetime)
@@ -179,45 +201,23 @@ void result::printProgress() {
         cout << "\033[A\033[2K";
     }
     cout << "Total paths: ";
-    cout << setw(10) << MeanM2->I << "\t Accepted paths: ";
-    cout << setw(10) << MeanM2->Isucc << "\t Wall-clock time: ";
+    cout << setw(10) << MeanM2.I << "\t Accepted paths: ";
+    cout << setw(10) << MeanM2.Isucc << "\t Wall-clock time: ";
 
-    double ProgressTot = max(Progress, (double) MeanM2->I / (double) P.MaxRuns);
+    double ProgressTot = max(Progress, (double) MeanM2.I / (double) P.MaxRuns);
     auto wallclock = chrono::duration_cast<chrono::milliseconds>(current - start);
 
     auto estimated = wallclock * (1.0 / ProgressTot - 1.0);
     cout << chrono::duration_cast<chrono::seconds>(wallclock).count() << "s\t Remaining(approximative): ";
     cout << chrono::duration_cast<chrono::seconds>(estimated).count() << "s\t Trajectory per second: ";
     cout.precision(2);
-    cout << (1000.0 * (double) MeanM2->I) / chrono::duration_cast<chrono::milliseconds>(wallclock).count() << endl;
+    cout << (1000.0 * (double) MeanM2.I) / chrono::duration_cast<chrono::milliseconds>(wallclock).count() << endl;
     cout.precision(7);
 
     endline++;
 
-    size_t maxformulaname = 11;
-    for (size_t i = 0; i < P.HaslFormulasname.size(); i++)
-        maxformulaname = max(maxformulaname, P.HaslFormulasname[i].size());
-
     if (P.verbose > 1) {
-        for (size_t i = 0; i < P.HaslFormulasname.size(); i++)
-            if (P.HaslFormulasname[i].find("$GRAPH$") == string::npos) {
-                cout << setw(maxformulaname + 1) << left << (P.HaslFormulasname[i] + ":") << " |< ";
-                cout << setw(14) << HaslResult[i].min << " -[ ";
-                cout << setw(14) << HaslResult[i].low << " < ";
-                cout << setw(14) << HaslResult[i].mean << " > ";
-                cout << setw(14) << HaslResult[i].up << " ]- ";
-                cout << setw(14) << HaslResult[i].max << " >| ";
-                cout << "width=";
-                cout << setw(12) << HaslResult[i].width();
-                cout << " level=";
-                cout << setw(8) << HaslResult[i].conf << endl;
-                endline++;
-                if (!P.RareEvent && ProgressArray[i] != 0 && P.verbose > 2 && P.sequential) {
-                    cout << setw(maxformulaname + 2) << left << "% of width:";
-                    printPercent(ProgressArray[i], 1.0);
-                    endline++;
-                }
-            }
+        printCompactResult();
     }
     if (P.sequential) {
         cout << setw(maxformulaname+2 ) << left << "% of Err: ";
@@ -225,7 +225,7 @@ void result::printProgress() {
         endline++;
     }
     cout << setw(maxformulaname + 2) << left << "% of run: ";
-    printPercent(MeanM2->I, P.MaxRuns);
+    printPercent(MeanM2.I, P.MaxRuns);
     cout.precision(12);
     endline++;
 }
@@ -233,6 +233,10 @@ void result::printProgress() {
 void result::stopclock() {
     end = chrono::system_clock::now();
     cpu_time_used = chrono::duration_cast<chrono::duration<double> >(end - start).count();
+    while (endline >= 0) {
+        endline--;
+        cout << "\033[A\033[2K";
+    }
 }
 
 void result::print(ostream &s) {
@@ -280,15 +284,15 @@ void result::print(ostream &s) {
             s << "Result computed numerically" << endl;
         } else if (!P.sequential) {
             s << "Confidence interval computed using Chernoff-Hoeffding bound." << endl;
-        } else if (P.MaxRuns > MeanM2->I) {
+        } else if (P.MaxRuns > MeanM2.I) {
             s << "Confidence interval computed sequentially using Chows-Robbin algorithm or SPRT." << endl;
         } else
             s << "Confidence interval computed using approximation to normal low." << endl;
 
         s << "Confidence level:\t" << P.Level << endl;
         //s << "Relative error:\t" << RelErr << endl;
-        s << "Total paths:\t" << MeanM2->I << endl;
-        s << "Accepted paths:\t" << MeanM2->Isucc << endl;
+        s << "Total paths:\t" << MeanM2.I << endl;
+        s << "Accepted paths:\t" << MeanM2.Isucc << endl;
         stopclock();
         s << "Batch size:\t" << P.Batch << endl;
         s << "Time for simulation:\t" << cpu_time_used << "s" << endl;
@@ -417,7 +421,7 @@ void result::printGnuplot() {
         //if(P.verbose>2)cout << combicmd << endl;
         //system(combicmd.c_str());
 
-        combicmd = P.Path + "linecombinator " + P.datatrace + " " + P.tmpPath + "/tmpdatafilecomb.dat " + to_string(MeanM2->I);
+        combicmd = P.Path + "linecombinator " + P.datatrace + " " + P.tmpPath + "/tmpdatafilecomb.dat " + to_string(MeanM2.I);
         if (P.verbose > 2)cout << combicmd << endl;
         system(combicmd.c_str());
         cout << "system returned" << endl;
@@ -445,7 +449,7 @@ void result::flushgnuplot() {
  }*/
 
 void result::outputData() {
-    outdatastream << MeanM2->I << " " << MeanM2-> Isucc;
+    outdatastream << MeanM2.I << " " << MeanM2.Isucc;
     for (size_t i = 0; i < P.HaslFormulasname.size(); i++) {
         outdatastream << " " << HaslResult[i].mean
                 << " " << HaslResult[i].width()
