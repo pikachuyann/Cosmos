@@ -19,7 +19,7 @@ import matplotlib
 from IPython.display import display
 from matplotlib import pyplot as plt
 
-from fparams import isParamValuationFeasible
+from fparams_tavi import isParamValuationFeasible
 
 exitFlag = 1
 stDataColl = 0
@@ -29,12 +29,12 @@ logTime = 10 # in Seconds
 constfile = "const.m"
 kernel = GPy.kern.RBF(input_dim=1, variance=1., lengthscale=1.)
 
-N_INITIAL_SAMPLES = 20
+N_INITIAL_SAMPLES = 2
 N_OPT_STEPS = 1000
 resultfile = "result.m"
 tmpconstfile = "tmpconst.m"
 
-XMAX = 1000.0
+XMAX = 400.0
 YMAX = 20000.0
 
 def get_my_string(fp):
@@ -358,7 +358,7 @@ if s is None:
 
 idCurr = []
 # 0 = ID, 1 = min, 2 = max, 3 = set value
-parVals = [[0, 1000, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 10, 2000, 500], [1, 10, 500, 131], [2, 200, 1200, 1000]]
+parVals = [[0, 1000, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 0, 2000, 500], [1, 10, 500, 131], [2, 200, 1200, 1000]]
 parDict = {'SA_d':0, 'SA_ectopD':1, 'VRG_d':2, 'TURI':3, 'TAVI':4, 'TLRI':5}
 
 XPace = np.array([0])
@@ -370,7 +370,7 @@ XYPace = np.array([0])
 #parNameF = ["TLRI", "TAVI"]
 
 parNameC = "SA_d"
-parNameA = "TURI"
+parNameA = "TAVI"
 parNameF = ["TLRI", "TAVI", "TURI"]
 
 if useVM==0:
@@ -497,7 +497,7 @@ if useVM==0:
 
 		for idx in range(len(Xin)):
 			#parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], Xin[idx]]
-			parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], Xin[idx]]
+			parll = [parVals[parDict[parNameF[0]]][3]-Xin[idx], parVals[parDict[parNameF[2]]][3]]
 			if isParamValuationFeasible(parll)==1:
 				Xf = np.vstack((Xf,Xin[idx]))
 
@@ -576,7 +576,7 @@ if useVM==0:
 
 		m.plot()
 		plt.plot(XPace,YPace,'bo')
-		plt.xlabel('$\mathrm{TURI}$')
+		plt.xlabel('$\mathrm{TAVI}$')
 		plt.ylabel('$\mathrm{Energy}$')
 		display(m)
 		display(plt)
