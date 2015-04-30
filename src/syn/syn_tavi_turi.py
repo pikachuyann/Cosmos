@@ -19,7 +19,7 @@ import matplotlib
 from IPython.display import display
 from matplotlib import pyplot as plt
 
-from fparams import isParamValuationFeasible
+from fparams_tavi_turi import isParamValuationFeasible
 
 exitFlag = 1
 stDataColl = 0
@@ -27,7 +27,12 @@ collectedSamples = []
 useVM = 0
 logTime = 10 # in Seconds
 constfile = "const.m"
-kernel = GPy.kern.RBF(input_dim=1, variance=1., lengthscale=1.)
+#kernel = GPy.kern.RBF(input_dim=2, ARD=True)+GPy.kern.Bias(input_dim=2)
+kernel = GPy.kern.Matern52(2,ARD=True) + GPy.kern.White(2)
+#k_cst = GPy.kern.Bias(1,variance=1.)
+#k_mat = GPy.kern.Matern52(1,variance=1., lengthscale=3)
+#k_sum = k_cst + k_mat
+#kernel = k_sum.prod(k_sum)
 
 N_INITIAL_SAMPLES = 20
 N_OPT_STEPS = 1000
@@ -272,11 +277,13 @@ def normpdf(x):
 def normcdf(x):
 	return (1+ erf(x/np.sqrt(2)))/2
 
-def findMax(m, X2, minv, maxv, fmin):
+def findMax(m, X2, fmin):
 	mu,s2 = m.predict(X2)
+
+	print s2
 	t = np.argmax((fmin-mu) * normcdf( (fmin-mu)/np.sqrt(s2) ) + np.sqrt(s2)*normpdf( (fmin-mu)/np.sqrt(s2) ))
-	#t2 = minv + (maxv - minv)*t/len(X2)
-	return X2[t]
+
+	return t
 
 class PowerMonitorThread (threading.Thread):
 	def __init__(self, monitor):
@@ -370,7 +377,8 @@ XYPace = np.array([0])
 #parNameF = ["TLRI", "TAVI"]
 
 parNameC = "SA_d"
-parNameA = "TURI"
+parNameA = "TAVI"
+parNameAA = "TURI"
 parNameF = ["TLRI", "TAVI", "TURI"]
 
 if useVM==0:
@@ -380,25 +388,34 @@ if useVM==0:
 
 	print "Get initial values"
 	logTime = 60
-	for iters in range(0, N_INITIAL_SAMPLES):
+	iters = 0
+	#for iters in range(0, N_INITIAL_SAMPLES):
+	while len(XPace)<N_INITIAL_SAMPLES+1:
 
 		# Generate random parameter for pacemaker	
 		parValueArduino = random.randint(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2])
+		parValueArduinoAA = random.randint(parVals[parDict[parNameAA]][1], parVals[parDict[parNameAA]][2])
 
 		# For testing
 		#parValueArduino = 150
 
 		tmpParArduino = parVals[parDict[parNameA]][3]
+		tmpParArduinoAA = parVals[parDict[parNameAA]][3]
 
 		parVals[parDict[parNameA]][3] = parValueArduino
+		parVals[parDict[parNameAA]][3] = parValueArduinoAA
 
-		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parVals[parDict[parNameF[2]]][3]]
+		parll = [parVals[parDict[parNameA]][3], parVals[parDict[parNameAA]][3]]
 		if isParamValuationFeasible(parll)!=1:
 			print "Pacemaker parameter not feasible: "+str(parll)
 			parVals[parDict[parNameA]][3] = tmpParArduino
+			parVals[parDict[parNameAA]][3] = tmpParArduinoAA
 			continue
 
 		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parVals[parDict[parNameA]][3])!=1:
+			break
+
+		if SetArduinoParameter(s, parVals[parDict[parNameAA]][0], parVals[parDict[parNameAA]][3])!=1:
 			break
 
 		# Generate random parameter for Client
@@ -413,6 +430,7 @@ if useVM==0:
 		# Save energy readings
 		fileconst = open(constfile, 'w+')
 		fileconst.write(parNameA+" = "+str(parVals[parDict[parNameA]][3])+"\n")
+		fileconst.write(parNameAA+" = "+str(parVals[parDict[parNameAA]][3])+"\n")
 		fileconst.write(parNameC+" = "+str(parVals[parDict[parNameC]][3])+"\n")
 			
 		#isParamValuationFeasible(param)	
@@ -447,7 +465,7 @@ if useVM==0:
 		energyValue = GetSumCurrent(collectedSamples, monItems['sampleRate'])
 
 		XPace = np.vstack((XPace,parVals[parDict[parNameA]][3]))
-		XYPace = np.vstack((XYPace,parVals[parDict[parNameC]][3]))
+		XYPace = np.vstack((XYPace,parVals[parDict[parNameAA]][3]))
 		YPace = np.vstack((YPace,energyValue))
 
 		print XPace
@@ -455,7 +473,13 @@ if useVM==0:
 		os.system("rm "+constfile)
 
 		collectedSamples = []
+		iters = iters + 1
 
+	# test samples
+	#XPace = np.array([[0], [423], [445], [479], [491]])
+	#YPace = np.array([[0],[11871.93333533], [11914.50527166], [12007.19632017], [11994.68392745]])
+	#XYPace = np.array([[0],[780], [986], [565], [891]])
+	
 
 	print "Initial sample:"	
 
@@ -463,11 +487,11 @@ if useVM==0:
 	YPace = YPace[1:len(YPace)]
 	XYPace = XYPace[1:len(XYPace)]
 
-	XYPace = np.hstack((XYPace,YPace))
+	XYPace = np.hstack((XPace,XYPace))
 
 	# For testing purposes	
 	tmpfileconst = open(tmpconstfile, 'w+')
-	Save2DArray(tmpfileconst, XYPace)	
+	Save2DArray(tmpfileconst, XYPace)
 	tmpfileconst.close()
 
 
@@ -486,40 +510,52 @@ if useVM==0:
 
 	rfhandle.close()
 
+	XinA = np.linspace(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2],num=100).reshape((100,1))
+	XinAA = np.linspace(parVals[parDict[parNameAA]][1], parVals[parDict[parNameAA]][2],num=100).reshape((100,1))
+
+	Xf = np.array([0,0])
+
+	#rfhandle = open(resultfile, 'a')
+
+	for idxA in range(len(XinA)):
+		for idxAA in range(len(XinAA)):
+			parll = [XinA[idxA], XinAA[idxAA]]
+			if isParamValuationFeasible(parll)==1:
+				Xf = np.vstack((Xf,[int(XinA[idxA]),int(XinAA[idxAA])]))
+				#print str(int(XinA[idxA]))+" "+str(int(XinAA[idxAA]))
+				#rfhandle.write(str(XinA[idxA])+" "+str(XinAA[idxAA])+"\n")
+
+	Xf = Xf[1:len(Xf)]
+
 	for iters in range(0, N_OPT_STEPS):
 
-		m = GPy.models.GPRegression(XPace/float(XMAX),YPace/float(YMAX),kernel)
-		m.optimize_restarts(num_restarts = 20)
+		m = GPy.models.GPRegression(XYPace/float(XMAX),YPace/float(YMAX),kernel)
+		m.optimize_restarts(num_restarts = 1000)
 
-		Xin = np.linspace(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2],num=1000).reshape((1000,1))
+		parIdx = findMax(m, Xf/XMAX, min(YPace/YMAX))
 
-		Xf = np.array([0])
+		print "ID:"+str(parIdx)
 
-		for idx in range(len(Xin)):
-			#parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], Xin[idx]]
-			parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], Xin[idx]]
-			if isParamValuationFeasible(parll)==1:
-				Xf = np.vstack((Xf,Xin[idx]))
+		tmpParArduinoA = parVals[parDict[parNameA]][3]
+		tmpParArduinoAA = parVals[parDict[parNameAA]][3]
 
-		Xf = Xf[1:len(Xf)]
+		parVals[parDict[parNameA]][3] = int(Xf[parIdx][0])
+		parVals[parDict[parNameAA]][3] = int(Xf[parIdx][1])
 
-		
+		print str(Xf[parIdx][0])+" "+str(Xf[parIdx][1])+" "+str(parVals[parDict[parNameF[0]]][3])
 
-		parValueArduino = findMax(m, Xf/XMAX, parVals[parDict[parNameA]][1]/XMAX, parVals[parDict[parNameA]][2]/XMAX, min(YPace/YMAX))
-
-		tmpParArduino = parVals[parDict[parNameA]][3]
-
-		parVals[parDict[parNameA]][3] = int(parValueArduino*XMAX)
-
-		parll = [parVals[parDict[parNameF[0]]][3]-parVals[parDict[parNameF[1]]][3], parVals[parDict[parNameF[2]]][3]]
+		parll = [parVals[parDict[parNameA]][3], parVals[parDict[parNameAA]][3]]
 		if isParamValuationFeasible(parll)!=1:
 			print "Pacemaker parameter not feasible: "+str(parll)
 
-			parVals[parDict[parNameA]][3] = tmpParArduino
+			parVals[parDict[parNameA]][3] = tmpParArduinoA
+			parVals[parDict[parNameAA]][3] = tmpParArduinoAA
 			continue
 
-		
 		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parVals[parDict[parNameA]][3])!=1:
+			break
+
+		if SetArduinoParameter(s, parVals[parDict[parNameAA]][0], parVals[parDict[parNameAA]][3])!=1:
 			break
 
 		# Generate random parameter for Client
@@ -534,6 +570,7 @@ if useVM==0:
 		# Save energy readings
 		fileconst = open(constfile, 'w+')
 		fileconst.write(parNameA+" = "+str(parVals[parDict[parNameA]][3])+"\n")
+		fileconst.write(parNameAA+" = "+str(parVals[parDict[parNameAA]][3])+"\n")
 		fileconst.write(parNameC+" = "+str(parVals[parDict[parNameC]][3])+"\n")
 			
 		#isParamValuationFeasible(param)	
@@ -567,7 +604,7 @@ if useVM==0:
 		#energyValue = GetReward()
 		energyValue = GetSumCurrent(collectedSamples, monItems['sampleRate'])
 
-		XPace = np.vstack((XPace,parVals[parDict[parNameA]][3]))
+		XYPace = np.vstack((XYPace,[int(parVals[parDict[parNameA]][3]),int(parVals[parDict[parNameAA]][3])]))
 		YPace = np.vstack((YPace,energyValue))
 
 		os.system("rm "+constfile)
@@ -575,17 +612,17 @@ if useVM==0:
 		collectedSamples = []
 
 		m.plot()
-		plt.plot(XPace,YPace,'bo')
-		plt.xlabel('$\mathrm{TURI}$')
-		plt.ylabel('$\mathrm{Energy}$')
+		#plt.plot(XPace,YPace,'bo')
+		plt.xlabel('$\mathrm{TAVI}$')
+		plt.ylabel('$\mathrm{TURI}$')
 		display(m)
-		display(plt)
+		#display(plt)
 		plt.savefig(format('gaussfig%i'%iters))
 
 		# Save to file
-		rfhandle = open(resultfile, 'a')
-		rfhandle.write(str(parValueArduino)+" "+str(energyValue)+";\n")
-		rfhandle.close()
+		#rfhandle = open(resultfile, 'a')
+		#rfhandle.write(str(parValueArduino)+" "+str(energyValue)+";\n")
+		#rfhandle.close()
 
 	s.sendall('\xF2')
 	exitFlag = 0
