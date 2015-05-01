@@ -1,7 +1,13 @@
-cd('~/Projects/Cosmos/src/syn/sumo-toolbox_DDD/');
-path = '~/Projects/pacemaker/PaceMakerModel/';
-mat2py = strcat(path,'mat2py.dat');
-py2mat = strcat(path,'py2mat.dat');
+% sumoPath='~/Projects/Cosmos/src/syn/sumo-toolbox_DDD/';
+% pyPath='~/Projects/pacemaker/PaceMakerModel/';
+% usePipes=1
+sumoPath='~/work/gitFolders/Cosmos/src/syn/sumo-toolbox_DDD/';
+pyPath='~/work/gitFolders/pacemaker/PaceMakerModel/';
+usePipes=0;
+
+cd(sumoPath);
+mat2py = strcat(pyPath,'mat2py.dat');
+py2mat = strcat(pyPath,'py2mat.dat');
 
 % default
 % saferegscript = 'saferegion';
@@ -18,4 +24,5 @@ numTotalSamples = 50;
 load(safeRegionFile);
 
 startSumoOptimization(mat2py, py2mat, saferegscript, ...
-    nParams, ranges, paramNames, paramSpace, experimentName, numInitSamples, numTotalSamples) 
+    nParams, ranges, paramNames, paramSpace, experimentName, ...
+    numInitSamples, numTotalSamples, usePipes) 
