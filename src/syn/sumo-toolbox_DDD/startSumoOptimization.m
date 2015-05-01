@@ -1,6 +1,6 @@
 
-function startSumoOptimization(outFileName, inFileName, nonLinearConstrainsFile, ...
-    nParams, ranges, paramNames, safeRegionFile, experimentName, numInitSamples, numTotalSamples)
+function startSumoOptimization(mat2py, py2mat, nonLinearConstrainsFile, ...
+    nParams, ranges, paramNames, safeRegIn, experimentName, numInitSamples, numTotalSamples)
 % init SUMO toolbox
 %startup
 
@@ -8,17 +8,26 @@ function startSumoOptimization(outFileName, inFileName, nonLinearConstrainsFile,
 global currentSampleNum;
 currentSampleNum=0;
 
-%path of the file where points to simulate are written
-global outFile;
-outFile=outFileName;
-
 %file descriptor where simulated results are taken
 global inFile;
-inFile = inFileName;
+inFile=fopen(py2mat,'r');
+
+if inFile < 1
+    disp(strcat('Error opening ', py2mat))
+end
+
+%path of the file where points to simulate are written
+global outFile;
+
+outFile=fopen(mat2py,'w');
+if outFile < 1
+    disp(strcat('Error opening ', mat2py))
+end
 
 %load the safe region file
 global safeReg;
-safeReg=load(safeRegionFile);
+
+safeReg = safeRegIn;
 
 global experimentNam;
 experimentNam=experimentName;
