@@ -1,4 +1,5 @@
 function y = safeRegPM(x)
+
 global safeReg;
 p1_dis = ceil(x(:,1)/10);
 p2_dis = ceil(x(:,2)/10);
