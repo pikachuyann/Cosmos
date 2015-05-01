@@ -21,8 +21,8 @@ experimentName = 'PM_TURI_TLRI';
 numInitSamples = 3;
 numTotalSamples = 50;
 
-load(safeRegionFile);
+loadedMATFile=load(safeRegionFile);
 
 startSumoOptimization(mat2py, py2mat, saferegscript, ...
-    nParams, ranges, paramNames, paramSpace, experimentName, ...
+    nParams, ranges, paramNames, loadedMATFile.paramSpace, experimentName, ...
     numInitSamples, numTotalSamples, usePipes) 
