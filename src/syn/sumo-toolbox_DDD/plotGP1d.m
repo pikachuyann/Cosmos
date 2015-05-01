@@ -18,5 +18,6 @@ plot(X,meanVal,'Color',[1,0,0])
 xlabel(paramName) 
 title(strcat('Expected value \pm SD. Experiment: ',experimentName))
 scatter(samples(:,1),samples(:,2),50,[0 0 0],'filled')
+savefig(strcat('examples/OneParam/output_'),experimentName,'/plot_mean_sd.fig')
 hold off
 end
