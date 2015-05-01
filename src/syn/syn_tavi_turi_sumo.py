@@ -36,7 +36,7 @@ kernel = GPy.kern.Matern52(2,ARD=True) + GPy.kern.White(2)
 #k_sum = k_cst + k_mat
 #kernel = k_sum.prod(k_sum)
 
-N_INITIAL_SAMPLES = 0
+N_INITIAL_SAMPLES = 10
 #N_OPT_STEPS = 1000
 resultfile = "result.m"
 tmpconstfile = "tmpconst.m"
