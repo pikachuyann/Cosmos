@@ -1,62 +1,54 @@
 
 function startSumoOptimization(mat2py, py2mat, nonLinearConstrainsFile, ...
-    nParams, ranges, paramNames, safeRegIn, experimentName, numInitSamples, numTotalSamples, usePipes)
+    nParams, ranges, paramNames, safeRegIn, experimentName, numInitSamples, numTotalSamples)
 % init SUMO toolbox
 %startup
 
-%load the safe region file
-global safeReg;
-safeReg = safeRegIn;
+%save the safe region file on a default .mat
+safeReg = load(safeRegIn);
+paramSpace = safeReg.paramSpace;
+save('safeReg_tmp.mat','paramSpace');
 
-%global var to store the current number of samples
-global currentSampleNum;
-currentSampleNum=0;
-
-global pipes;
-pipes = usePipes;
 
 %file descriptor where simulated results are taken
-global inFile;
-if pipes
-    inFile=fopen(py2mat,'r');
-    if inFile < 1
-        error(strcat('Error opening ', py2mat))
-    end
-
-else
-    inFile = py2mat;
+inFile=fopen(py2mat,'r');
+if inFile < 1
+    error(strcat('Error opening ', py2mat))
 end
+save('inFile_tmp.mat','inFile');
 
 
 %path of the file where points to simulate are written
-global outFile;
-if pipes
-    outFile=fopen(mat2py,'w');
-    if outFile < 1
-        disp(strcat('Error opening ', mat2py))
-    end
-else outFile=mat2py;
-    
+outFile=fopen(mat2py,'w');
+if outFile < 1
+    disp(strcat('Error opening ', mat2py))
 end
 
-global experimentNam;
-experimentNam=experimentName;
+save('outFile_tmp.mat','outFile');
 
-global currentSamples;
-currentSamples=zeros(numTotalSamples,nParams+1);
+smpls=zeros(0,nParams+1);
+save('samples_tmp.mat','smpls');
 
 if nParams==1
     configFile=writeConfigFile1D(numInitSamples, numTotalSamples, experimentName);
     writeExampleFile1D(nonLinearConstrainsFile, ranges(1,:), paramNames{1}, experimentName);
     surrogateModels = go(configFile);
-    plotGP1d(surrogateModels{1}{1}, currentSamples, paramNames{1},ranges(1,:),experimentName);
+    currentSamples = load('samples_tmp.mat');
+    plotGP1d(surrogateModels{1}{1}, currentSamples.smpls, paramNames{1},ranges(1,:),experimentName);
 elseif nParams==2
     configFile=writeConfigFile2D(numInitSamples, numTotalSamples, experimentName);
-	writeExampleFile2D(nonLinearConstrainsFile, ranges, paramNames, experimentName);
+    writeExampleFile2D(nonLinearConstrainsFile, ranges, paramNames, experimentName);
     surrogateModels = go(configFile);
-    plotGP2d(surrogateModels{1}{1}, currentSamples, paramNames,ranges,experimentName);
-else 
+    currentSamples = load('samples_tmp.mat');
+    plotGP2d(surrogateModels{1}{1}, currentSamples.smpls, paramNames,ranges,experimentName);
+else
     disp('Only two params are supported. Exiting...');
 end
+
+%close pipes
+inFile = load('inFile_tmp.mat');
+fclose(inFile.inFile);
+outFile = load('outFile_tmp.mat');
+fclose(outFile.outFile);
 
 end

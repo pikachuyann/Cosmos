@@ -11,13 +11,13 @@ end
 
 sd = sqrt(varianceVal);
 sd_plot=[(meanVal-sd)',(sd+sd)'];
-figure
+h = figure;
 hold on
 area(X,sd_plot);
 plot(X,meanVal,'Color',[1,0,0])
 xlabel(paramName) 
 title(strcat('Expected value \pm SD. Experiment: ',experimentName))
 scatter(samples(:,1),samples(:,2),50,[0 0 0],'filled')
-savefig(strcat('examples/OneParam/output_'),experimentName,'/plot_mean_sd.fig')
 hold off
+savefig(h,strcat('examples/OneParam/output_',experimentName,'/plot_mean_sd.fig'))
 end
