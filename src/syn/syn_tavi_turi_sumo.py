@@ -36,7 +36,7 @@ kernel = GPy.kern.Matern52(2,ARD=True) + GPy.kern.White(2)
 #k_sum = k_cst + k_mat
 #kernel = k_sum.prod(k_sum)
 
-N_INITIAL_SAMPLES = 10
+N_INITIAL_SAMPLES = 1000
 #N_OPT_STEPS = 1000
 resultfile = "result.m"
 tmpconstfile = "tmpconst.m"
@@ -385,8 +385,8 @@ parNameF = ["TLRI", "TURI"]
 
 # Open Matlab
 subprocess.Popen([matlabPath, "-nodisplay", "-nosplash", "-nodesktop", "-r",simmPar])
-
 py2matFile = open(py2mat,'w')
+
 mat2pyFile = open(mat2py,'r')
 
 if useVM==0:
@@ -400,25 +400,28 @@ if useVM==0:
 	#for iters in range(0, N_INITIAL_SAMPLES):
 	while len(XPace)<N_INITIAL_SAMPLES:
 
+		pipeline = mat2pyFile.readline()
+		parValueArduino = int(pipeline.split(',')[0])
+		parValueArduinoAA = int(pipeline.split(',')[1])	
+
+		#print pipeline
+
 		# Generate random parameter for pacemaker	
-		parValueArduino = random.randint(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2])
-		parValueArduinoAA = random.randint(parVals[parDict[parNameAA]][1], parVals[parDict[parNameAA]][2])
+		#parValueArduino = random.randint(parVals[parDict[parNameA]][1], parVals[parDict[parNameA]][2])
+		#parValueArduinoAA = random.randint(parVals[parDict[parNameAA]][1], parVals[parDict[parNameAA]][2])
 
 		# For testing
 		#parValueArduino = 150
 
-		tmpParArduino = parVals[parDict[parNameA]][3]
-		tmpParArduinoAA = parVals[parDict[parNameAA]][3]
-
 		parVals[parDict[parNameA]][3] = parValueArduino
 		parVals[parDict[parNameAA]][3] = parValueArduinoAA
 
-		parll = [parVals[parDict[parNameA]][3], parVals[parDict[parNameAA]][3]]
-		if isParamValuationFeasible(parll)!=1:
-			print "Pacemaker parameter not feasible: "+str(parll)
-			parVals[parDict[parNameA]][3] = tmpParArduino
-			parVals[parDict[parNameAA]][3] = tmpParArduinoAA
-			continue
+		#parll = [parVals[parDict[parNameA]][3], parVals[parDict[parNameAA]][3]]
+		#if isParamValuationFeasible(parll)!=1:
+		#	print "Pacemaker parameter not feasible: "+str(parll)
+		#	parVals[parDict[parNameA]][3] = tmpParArduino
+		#	parVals[parDict[parNameAA]][3] = tmpParArduinoAA
+		#	continue
 
 		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parVals[parDict[parNameA]][3])!=1:
 			break
@@ -471,6 +474,10 @@ if useVM==0:
 
 		#energyValue = GetReward()
 		energyValue = GetSumCurrent(collectedSamples, monItems['sampleRate'])
+
+		# Write to pipe
+		py2matFile.write(str(energyValue)+'\n\n')
+		py2matFile.flush()
 
 		XPace = np.vstack((XPace,parVals[parDict[parNameA]][3]))
 		XYPace = np.vstack((XYPace,parVals[parDict[parNameAA]][3]))
