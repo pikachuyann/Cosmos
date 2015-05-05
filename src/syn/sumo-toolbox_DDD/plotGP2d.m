@@ -12,19 +12,19 @@ for ii=1:length(X)
        [meanVal(jj,ii),varianceVal(jj,ii)]=evaluate(model,[X(ii), Y(jj)]);    
    end
 end
-figure
+h = figure;
 hold on
 surf(X,Y,meanVal)
 title(strcat('Expected value. Experiment: ',experimentName))
 xlabel(paramNames{1}) 
 ylabel(paramNames{2})
 scatter3(samples(:,1),samples(:,2),samples(:,3),50,[0 0 0],'filled')
-savefig(strcat('examples/OneParam/output_'),experimentName,'/plot_mean.fig')
 hold off
-figure
+savefig(h, strcat('examples/TwoParams/output_',experimentName,'/plot_mean.fig'))
+h = figure;
 surf(X,Y,sqrt(varianceVal))
 title(strcat('Standard deviation. Experiment: ',experimentName))
 xlabel(paramNames{1}) 
 ylabel(paramNames{2})
-savefig(strcat('examples/OneParam/output_'),experimentName,'/plot_sd.fig')
+savefig(h,strcat('examples/TwoParams/output_',experimentName,'/plot_sd.fig'))
 end
