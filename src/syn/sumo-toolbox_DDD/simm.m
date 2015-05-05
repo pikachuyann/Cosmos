@@ -1,7 +1,7 @@
-% sumoPath='~/Projects/Cosmos/src/syn/sumo-toolbox_DDD/';
-% pyPath='~/Projects/pacemaker/PaceMakerModel/';
-sumoPath='~/work/gitFolders/Cosmos/src/syn/sumo-toolbox_DDD/';
-pyPath='~/work/gitFolders/pacemaker/PaceMakerModel/';
+sumoPath='~/Projects/Cosmos/src/syn/sumo-toolbox_DDD/';
+pyPath='~/Projects/pacemaker/PaceMakerModel/';
+%sumoPath='~/work/gitFolders/Cosmos/src/syn/sumo-toolbox_DDD/';
+%pyPath='~/work/gitFolders/pacemaker/PaceMakerModel/';
 
 cd(sumoPath);
 mat2py = strcat(pyPath,'mat2py.dat');
