@@ -1,6 +1,6 @@
 function y = saferegion(x)
 
-safeReg = load('safeReg_tmp.mat');
+safeReg = load('tmp/safeReg.mat');
 p1_dis = ceil(x(:,1));
 p2_dis = ceil(x(:,2));
 y= p1_dis;

@@ -1,11 +1,11 @@
 function f = computeVal(x)
 
-inFile = load('inFile_tmp.mat');
+inFile = load('tmp/inFile.mat');
 inFile = inFile.inFile;
-outFile = load('outFile_tmp.mat');
+outFile = load('tmp/outFile.mat');
 outFile = outFile.outFile;
 
-currentSamples = load('samples_tmp.mat');
+currentSamples = load('tmp/samples.mat');
 smpls = currentSamples.smpls;
 currentSampleNum = size(smpls,1)+1;
 
@@ -27,4 +27,4 @@ f=sscanf(tline,'%f');
 disp(strcat('Result: ',tline));
 
 smpls(currentSampleNum,:)=[x,f];
-save('samples_tmp.mat','smpls');
+save('tmp/samples.mat','smpls');
