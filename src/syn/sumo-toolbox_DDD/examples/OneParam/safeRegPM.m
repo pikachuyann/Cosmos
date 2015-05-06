@@ -1,6 +1,6 @@
 function y = safeRegPM(x)
 
-safeReg = load('safeReg_tmp.mat');
+safeReg = load('tmp/safeReg.mat');
 p1_dis = ceil(x(:,1)/10);
 y= p1_dis;
 for i=1:size(y,1)
