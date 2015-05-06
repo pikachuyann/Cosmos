@@ -19,12 +19,18 @@ title(strcat('Expected value. Experiment: ',experimentName))
 xlabel(paramNames{1}) 
 ylabel(paramNames{2})
 scatter3(samples(:,1),samples(:,2),samples(:,3),50,[0 0 0],'filled')
+[min_val,min_idxs]=min(samples(:,3));
+minEntry = samples(min_idxs(1),:);
+scatter3(minEntry(:,1),minEntry(:,2),minEntry(:,3),100,[1 0 0],'filled')
 hold off
-savefig(h, strcat('examples/TwoParams/output_',experimentName,'/plot_mean.fig'))
+savefig(h, strcat('experiments/out_plots/',experimentName,'_plot_mean.fig'))
+minfile = fopen(strcat('experiments/out_plots/',experimentName,'_minSample.txt'));
+fprintf(minfile,'%f,%f,%f',minEntry);
+fclose(minfile);
 h = figure;
 surf(X,Y,sqrt(varianceVal))
 title(strcat('Standard deviation. Experiment: ',experimentName))
 xlabel(paramNames{1}) 
 ylabel(paramNames{2})
-savefig(h,strcat('examples/TwoParams/output_',experimentName,'/plot_sd.fig'))
+savefig(h,strcat('experiments/out_plots/',experimentName,'_plot_sd.fig'))
 end
