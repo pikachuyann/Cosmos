@@ -4,7 +4,7 @@ open Type
 let lightSim = ref false
 let modelStoch = ref false
 let useerlang = ref true
-
+let doremoveImm = ref false
 
 let rec eval_name data fe= 
   let ifun = function
@@ -16,6 +16,7 @@ type triggerT = Imm | Delay of float expr' | RAction of string | ImmWC of string
 
 type simulink_trans_label = {
   trigger: triggerT;
+  isFinal: bool;
   guard: string option;
   write:  string list;
   update: string list;
@@ -27,6 +28,7 @@ type simulink_trans_label = {
 let empty_trans_label = {
   nameT = None;
   trigger = Imm;
+  isFinal = false;
   guard = None;
   write = [];
   update = [];

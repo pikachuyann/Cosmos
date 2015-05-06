@@ -24,6 +24,7 @@ let _ =
 	     "--prism",Arg.Unit (fun () -> outputFormat:= Prism:: !outputFormat),"Output in Prism File Format";
 	     "--stoch",Arg.Set SimulinkType.modelStoch,"Use probabilistic delay";
 	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
+	     "--no-imm",Arg.Set SimulinkType.doremoveImm,"Remove Instantaneous transition in prims model";
 	     "--erlang-step",Arg.Set_int SimulinkTrans.erlangstep,"Number of erlang step for stochastic model";
 	     "-v",Arg.Set_int verbose,"Set verbose level default 1";
 	     "--add-reward",Arg.Set add_reward, "Add reward transition to each non immediate transition";
@@ -108,7 +109,10 @@ let _ =
 	|> List.map SimulinkTrans.incr_state
 	|> SimulinkTrans.find_combinaison
 	|< (fun x -> if List.mem Prism !outputFormat then
-	    x |> SimulinkTrans.print_prism_module ((!output)^".sm") !const_file)
+	    x 
+	       |> (fun x -> if !SimulinkType.doremoveImm then 
+		   List.map SimulinkTrans.removeImm x else x)
+	       |> SimulinkTrans.print_prism_module ((!output)^".sm") !const_file)
 	|> List.map SimulinkTrans.prune_unread2
       	|> (fun x -> List.fold_left SimulinkTrans.combine_modu2 (List.hd x) (List.tl x))
 	|> SimulinkTrans.expand_trans2

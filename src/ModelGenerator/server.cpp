@@ -333,10 +333,20 @@ void makeselectlist(void){
  * The precision criterion is reach.
  */
 void launchServer(parameters& P){
-    if(P.verbose>0)cout << "START SIMULATION ..." << endl;
-    
     //Init result
     result Result;
+
+    //Try to read previous batch
+    {
+        FILE* intraj = fopen((P.tmpPath+"/saveTraj").c_str(),"r");
+        if(intraj != NULL){
+            Result.MeanM2.inputR(intraj);
+            cout << Result.MeanM2.I << " Previous Trajectories found and loaded" << endl;
+        }
+    }
+
+    if(P.verbose>0)cout << "START SIMULATION ..." << endl<< endl << endl << endl;
+
     //Launch a set of simulators
     launch_clients(P);
     //Make a list of file system for polling
@@ -400,7 +410,7 @@ void launchServer(parameters& P){
         cout<< endl;
     }
 
-    {
+    if(P.tmpStatus != 0){
         ofstream savetraj(P.tmpPath+"/saveTraj");
         Result.MeanM2.outputR(savetraj);
     }
