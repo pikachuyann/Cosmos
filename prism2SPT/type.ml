@@ -14,6 +14,16 @@ let (|>>|) x v = match x with
 let (|<) x f = let () = f x in x
 let (|<>|) f (x,y) = f x y
 
+let fix_point f x =
+  let y = ref x 
+  and z = ref (f x) in
+  while !y <> !z do
+    let t = f !z in
+    y := !z;
+    z := t;
+  done;
+  !z
+
 let merge_option f x y = match (x,y) with
     None, x -> x
   | x, None -> x

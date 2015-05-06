@@ -40,8 +40,16 @@ let expand_trans l =
 	and newsn = post_name sl dst ssid in
 	let newt = fresh_ssid () in
 	((news,Some newsn)::sl2,
-	(ssid,src,{empty_trans_label with trigger=label.trigger; priority =label.priority; nameT=(src |>> (fun x ->List.assoc x sl)) },news)::
+	(ssid,src,{empty_trans_label with trigger=label.trigger; priority =label.priority; nameT=(src |>> (fun x ->List.assoc x sl)); isFinal=false },news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
+      | (Delay(_),[],_) -> 
+	(* wait loop Check whether an instanenous transition exist in target state
+	   change isFinal accordingly *)
+	if List.exists (fun (_,s,l,_) -> s= Some dst && l.trigger=Imm) tl then
+	  (sl2,(ssid,src,label,dst)::tl2)
+	else
+	  (sl2,(ssid,src,{label with isFinal=true},dst)::tl2)
+
       | (RAction(sn),_,Some src2) when src2=dst && exist_delay src2 tl->  
 	(* self loop with read 
 	   This case is used to reset delay transition waiting on this state,
@@ -166,6 +174,7 @@ let comb_transRR  (ssidt,srcl,lab,dstl) l (ssidt2,srcl2,lab2,dstl2) =
       let lab3= {
 	nameT = comb_name_trans lab.nameT lab2.nameT;
 	trigger= lab.trigger;
+	isFinal= lab.isFinal && lab2.isFinal;
 	guard = None;
 	priority= min lab.priority lab2.priority;
 	write = List.sort_uniq compare (lab.write @ lab2.write);
@@ -182,6 +191,7 @@ let comb_trans (ssidt,srcl,lab,dstl)  (ssidt2,srcl2,lab2,dstl2) =
       let lab3= {
 	nameT = comb_name_trans (Some ("S_"^st)) (comb_name_trans lab.nameT lab2.nameT);
 	trigger= lab.trigger;
+	isFinal= lab2.isFinal;
 	guard = lab.guard; (* The guard come from the transition that write *)
 	priority= lab.priority;
 	write = List.sort_uniq compare (lab.write @ lab2.write)
@@ -194,6 +204,7 @@ let comb_trans (ssidt,srcl,lab,dstl)  (ssidt2,srcl2,lab2,dstl2) =
     let lab3= { 
       nameT = comb_name_trans (Some ("S_"^st)) (comb_name_trans lab.nameT lab2.nameT);
       trigger= lab2.trigger;
+      isFinal= lab.isFinal;
       guard = lab2.guard; (* The guard come from the transition that write *)
       priority= lab2.priority;
       write = List.sort_uniq compare (lab.write @ lab2.write)
@@ -500,13 +511,13 @@ std::string to_string2(T value){
   List.iter (fun (ss,_,lab,_) -> begin match lab.trigger,lab.guard with
     ((ImmWC c),Some g) -> 
       Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
-      Printf.fprintf f "\t\treturn (%s && %s);\n" c g; 
+      Printf.fprintf f "\t\treturn (%s && %s);\n" ( c) ( g); 
   | ((ImmWC c),None) -> 
       Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
-      Printf.fprintf f "\t\treturn %s;\n" c;
+      Printf.fprintf f "\t\treturn %s;\n" ( c);
   | (_,Some g) -> 
       Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
-      Printf.fprintf f "\t\treturn %s;\n" g;
+      Printf.fprintf f "\t\treturn %s;\n" ( g);
   | _ -> ();
   end) tl;
   output_string f "\tdefault: return true; \n\t}\n}\n";
@@ -517,7 +528,9 @@ std::string to_string2(T value){
 let print_prism_mod f m =
   Printf.fprintf f "module m%i\n" m.ssid;
 
-  let st_name = Array.make (Array.length m.ivect) IntSet.empty in
+  let st_name = Array.init (Array.length m.ivect) (fun i -> 
+    IntSet.singleton (fst m.ivect.(i))
+  ) in
 
   List.iter (fun (ssidt,src,lab,dst) -> 
     List.iter (fun (i,s) -> st_name.(i) <- IntSet.add s st_name.(i)) src;
@@ -525,9 +538,12 @@ let print_prism_mod f m =
   ) m.transL;
 
   Array.iteri (fun n (x,n2) -> begin
-    Printf.fprintf f "\t%s: [%i..%i] init %i;\n" (place_of_int m.ivect n) (IntSet.min_elt st_name.(n)) (IntSet.max_elt st_name.(n)) x;
+    let minelem = IntSet.min_elt st_name.(n)
+    and maxelem = IntSet.max_elt st_name.(n) in
+    Printf.fprintf f "\t%s: [%i..%i] init %i;\n" (place_of_int m.ivect n) minelem (max (minelem+1) maxelem) x;
     IntSet.iter (fun x -> Printf.fprintf f "\t//%i -> %s;\n" x (stateasso x m.stateL)) st_name.(n)
   end) m.ivect;
+
   List.iter (fun (ssidt,src,lab,dst) -> 
     Printf.fprintf f "\t[%s] " (trans_of_int ssidt lab); 
     ignore @@ List.fold_left (fun b (i,s) ->
@@ -553,6 +569,43 @@ let print_prism_mod f m =
     Printf.fprintf f ";\n";
   ) m.transL;
   Printf.fprintf f "endmodule\n"
+
+
+(* Check wether two transition can be merged toghether. in O(n^2) should be O(ln(n)) *)
+let compat_trans (_,_,_,t1) (_,s2,_,_) =
+  t1 |> List.for_all 
+      (fun (x,y) -> List.exists (fun (z,t) -> if z=x then t=y else false) s2)
+    
+let merge_trans (ssid1,s1,l1,t1) (ssid2,s2,l2,t2) =
+  Printf.printf "new merge %a,%a" print_option l1.nameT print_option l2.nameT;
+  print_newline ();
+  (fresh_ssid (),
+   s1 @ (s2 |> List.filter (fun (x,y) -> not @@ List.exists (fun (z,_)->x=z) t1)),
+   l1,
+   t2 @ (t1 |> List.filter (fun (x,y) -> not @@ List.exists (fun (z,_)->x=z) s2)))
+ 
+(*remove instantaneous transition form simulink module*)
+let removeImm m = 
+  let limm2, lstoch = List.partition (fun (_,_,l,_) -> match l.trigger with Delay _ -> false |_ -> true) m.transL in
+  let limm = List.filter (fun t -> not  @@ compat_trans t t) limm2 in (* filter loop*)
+  let it l = 
+    List.fold_left (fun a ((_,_,l,_) as b) -> 
+      if l.isFinal then b::a
+      else let cmp =ref 0 in
+	   let l2 = List.fold_left (fun c d ->
+	     if compat_trans b d then (incr cmp; (merge_trans b d)::c) else c
+	   ) a limm in
+	   if !cmp=0 then b::a  else l2
+    ) [] l in
+  let stoch2 = ref lstoch in
+  let ssidref= ref (-1) in
+  while !ssid_count <> !ssidref do
+    print_endline "test";
+    ssidref := !ssid_count;
+    stoch2 := it !stoch2;
+  done;
+  {m with transL=(*m.transL*) !stoch2}
+    
 
 
 (* Print as a prism CTMC model*)

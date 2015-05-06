@@ -99,9 +99,7 @@ result::result() : MeanM2(P.nbAlgebraic),HaslResult(P.HaslFormulasname.size()) {
         maxformulaname = max(maxformulaname, P.HaslFormulasname[i].size());
 
     start = chrono::system_clock::now();
-    ;
     lastprint = chrono::system_clock::now();
-    if (P.verbose > 0)cout << endl << endl << endl;
 }
 
 void result::close_gnuplot() {
