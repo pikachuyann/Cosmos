@@ -74,6 +74,9 @@ public:
     //! Bernouilly variable vector
     std::vector< unsigned long int > bernVar;
 
+    //! Time of simulation to produce the result
+    double simTime;
+
     //! Add the result of one simulation to the Batch.
     void addSim(const SimOutput&);
     

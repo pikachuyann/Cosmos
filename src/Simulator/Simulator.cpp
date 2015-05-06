@@ -570,5 +570,6 @@ BatchR Simulator::RunBatch(){
 		}
         currenttime=chrono::steady_clock::now();
     }
+    batchResult.simTime = (currenttime - starttime).count();
 	return batchResult;
 }

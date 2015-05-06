@@ -49,7 +49,8 @@ M2(vector<double>(i,0.0)),
 M3(vector<double>(i,0.0)),
 M4(vector<double>(i,0.0)),
 Min(vector<double>(i,DBL_MAX)),
-Max(vector<double>(i,-DBL_MAX))
+Max(vector<double>(i,-DBL_MAX)),
+simTime(0.0)
 {}
 
 /**
@@ -117,6 +118,7 @@ void BatchR::unionR(const BatchR &batch){
     for(size_t i = 0; i< bernVar.size();i++)
         bernVar[i] += batch.bernVar[i];
 
+    simTime += batch.simTime;
 }
 
 /**
@@ -143,6 +145,7 @@ void BatchR::outputR(ostream &f) {
     }
     for(unsigned int i =0; i< bernVar.size(); i++)
         f.write(reinterpret_cast<char*>(&bernVar[i]),sizeof(bernVar[0]));
+    f.write(reinterpret_cast<char*>(&simTime),sizeof(simTime));
 
     f.flush();
 }
@@ -207,6 +210,9 @@ bool BatchR::inputR(FILE* f) {
         ok &= (readbyte == 1);
     }
 
+    readbyte = fread(reinterpret_cast<char*>( &simTime), sizeof simTime ,1, f);
+    ok &= (readbyte == 1);
+
     return ok;
 }
 
@@ -218,4 +224,5 @@ void BatchR::print()const{
     for(size_t i =0; i< bernVar.size(); i++){
         cerr << "Bernouilli:\t" << bernVar[i] << endl;
     }
+    cerr << "Simulation Time:\t" << simTime << endl;
 }
