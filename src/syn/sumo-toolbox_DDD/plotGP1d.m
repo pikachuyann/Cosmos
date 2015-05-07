@@ -23,7 +23,7 @@ minEntry = samples(min_idxs(1),:);
 scatter(minEntry(:,1),minEntry(:,2),100,[1 0 0],'filled')
 hold off
 savefig(h,strcat('examples/OneParam/output_',experimentName,'/plot_mean_sd.fig'))
-minfile = fopen(strcat('experiments/out_plots/',experimentName,'_minSample.txt'));
+minfile = fopen(strcat('experiments/out_plots/',experimentName,'_minSample.txt'),'w');
 fprintf(minfile,'%f,%f',minEntry);
 fclose(minfile);
 end
