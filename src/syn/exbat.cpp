@@ -55,7 +55,8 @@ double TransitionTime(int id)
     int idx = rand() % rt.size;
     
     timeVal = rt.pt[idx].time;
-    gCurrentReward = rt.pt[idx].reward;
+    gCurrentReward = rt.pt[idx].reward/timeVal;
+    
     return timeVal;
 }
 
