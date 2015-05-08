@@ -478,6 +478,7 @@ let print_magic f sl tl scrl=
   output_string f "#define temporalCount(msec) 0\n";
   (*List.iter (fun (x,y) -> match y with None ->()
   | Some s ->  Printf.fprintf f "#define %s %i\n" s x) sl;*)
+  if !add_reward then output_string f "#include \"../exbat.cpp\"\n";
   output_string f "#ifndef uint8\n#define uint8 uint8_t\n#define uint16 uint16_t\n#define uint32 uint32_t\n#endif\n";
   output_string f "#include \"markingImpl.hpp\"\n";
   if not !lightSim then
@@ -500,11 +501,25 @@ std::string to_string2(T value){
   Printf.fprintf f "void magicUpdate(int t,double ctime){
   switch(t){\n";
   List.iter (fun (ss,_,lab,_) ->
-    if lab.update <> [] then begin
+    if lab.description <> None ||  lab.update <> [] then begin
       Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
       List.iter (fun x -> Printf.fprintf f "\t\t%s;\n" x) lab.update; 
+      if !add_reward then begin
+	match lab.description with
+	  None ->()
+	| Some sn2 ->
+	  let sn = String.sub sn2 1 ((String.length sn2) -1) in
+	  Printf.fprintf f "\t\tenterActive(%s,ctime);\n" sn;
+	  output_string f "\tbreak;\n";
+	  
+	  Printf.fprintf f "\tcase TR_TR_%s_RewardStr_%i_RT:\n" sn ss;
+	  Printf.fprintf f "\t\tenterIdle(%s,ctime);\n" sn;
+	  
+      end;
+      
       output_string f "\tbreak;\n"
-    end) tl;
+    end
+  ) tl;
   output_string f "\tdefault: break; \n\t}\n}\n";
   Printf.fprintf f "bool magicConditional(int t){
   switch(t){\n";
@@ -520,6 +535,12 @@ std::string to_string2(T value){
       Printf.fprintf f "\t\treturn %s;\n" ( g);
   | _ -> ();
   end) tl;
+
+  if !add_reward then begin
+    Printf.fprintf f "\tcase TR_STOP_RT:\n";
+    Printf.fprintf f "\t\treturn isBatterieDepleted();\n";
+  end;
+
   output_string f "\tdefault: return true; \n\t}\n}\n";
   (*if !lightSim then output_string f "void abstractMarking::moveSerialState(){ P->_PL_SerialPort = DATA_AVAILABLE;};\n";*)
   output_string f "  </attribute>"
@@ -652,6 +673,8 @@ let stochNet_of_modu cf m =
   ) [] in
   net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) (DataFile.data_of_file cf)),varlist,fund);
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),Int x) net.Net.place) m.ivect;
+  if !add_reward then 
+    Data.add (("STOP"),(Det (Float 0.0),Float 1.0,Float 1.0)) net.Net.transition;
   List.iter (fun (ssidt,src,lab,dst) -> 
     try 
     begin match lab.trigger with
@@ -677,15 +700,16 @@ let stochNet_of_modu cf m =
       Net.add_outArc net (trans_of_int ssidt lab) (place_of_int m.ivect i) (Int s)) dst;
     
     (*Add reward struct*)
-    begin
+    if !add_reward then begin
       match lab.description with
 	None ->()
-      | Some sn -> begin
-	
+      | Some sn2 -> begin
+	let sn = String.sub sn2 1 (String.length sn2 -1) in
 	Data.add ((Printf.sprintf "P_%s_RewardStr_%i" sn ssidt),(Int 0)) net.Net.place;
-	Data.add ((Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt),(Unif(FloatName (sn^"_min"),FloatName (sn^"_max")),Float 1.0,Float 1.0)) net.Net.transition;
+	Data.add ((Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt),(Det(FunCall ("TransitionTime",[Float (float_of_string sn)])),Float 1.0,Float 1.0)) net.Net.transition;
 	Net.add_outArc net (trans_of_int ssidt lab) (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Int 1);
 	Net.add_inArc net (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt) (Int 1);
+	Net.add_inhibArc net (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Printf.sprintf "STOP") (Int 1);
       end
     end
 
