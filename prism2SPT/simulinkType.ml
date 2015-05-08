@@ -5,6 +5,8 @@ let lightSim = ref false
 let modelStoch = ref false
 let useerlang = ref true
 let doremoveImm = ref false
+let add_reward = ref false
+
 
 let rec eval_name data fe= 
   let ifun = function

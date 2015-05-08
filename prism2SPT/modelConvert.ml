@@ -9,7 +9,7 @@ let typeFormat = ref Prism
 let outputFormat = ref [GrML;Dot;Marcie]
 let const_file = ref ""
 let verbose = ref 1
-let add_reward = ref false
+
 
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
@@ -27,7 +27,7 @@ let _ =
 	     "--no-imm",Arg.Set SimulinkType.doremoveImm,"Remove Instantaneous transition in prims model";
 	     "--erlang-step",Arg.Set_int SimulinkTrans.erlangstep,"Number of erlang step for stochastic model";
 	     "-v",Arg.Set_int verbose,"Set verbose level default 1";
-	     "--add-reward",Arg.Set add_reward, "Add reward transition to each non immediate transition";
+	     "--add-reward",Arg.Set SimulinkType.add_reward, "Add reward transition to each non immediate transition";
 	    ]
     (function s -> incr nbarg; match !nbarg with
       1 -> inname:= s;
