@@ -16,8 +16,8 @@ ranges = [150,450;540,1010];
 paramNames = {'TURI','TLRI'};
 safeRegionFile = 'PM_TURI_TLRI.mat';
 experimentName = 'PM_TURI_TLRI';
-numInitSamples = 4;
-numTotalSamples = 10;
+numInitSamples = 10;
+numTotalSamples = 100;
 
 
 startSumoOptimization(mat2py, py2mat, saferegscript, ...
