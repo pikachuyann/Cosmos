@@ -34,14 +34,17 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include "expatmodelparser.hh"
-#include "modelhandler.hh"
-#include "Gspn_gmlparser.hpp"
-
-#include "Gspn-Reader.hpp"
+#include <iomanip>
 
 //#include "tree.hh"
 #include "tree/tree_util.hh"
+
+
+#include "expatmodelparser.hh"
+#include "modelhandler.hh"
+#include "Gspn_gmlparser.hpp"
+#include "Gspn-Reader.hpp"
+
 
 Eval Evaluate_gml;
 
@@ -138,7 +141,7 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
     } else if (simplifyString(*it).empty()){
         return expr(0);
     } else if (it.node->parent->data =="function" ){
-        if ((P.verbose - 3) > 1)cout << "newfunction:" << *it << endl;
+        if ((P.verbose - 3) > 1)cout << "newfunction:'" << *it << "'" << endl;
         expr lhs(*it);
         expr rhs;
         for (treeSI it2 = (it.begin()); it2 != (it.end()); ++it2) {
@@ -678,7 +681,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                                     expr pe = eval_expr(it3.begin());
                                     trans.markingDependant |= pe.is_markDep();
                                     trans.dist.Param.push_back(pe);
-                                    if ((P.verbose - 3) > 1)cout << "\tDistrib Param: " << pe << endl;
+                                    if ((P.verbose - 3) > 1)cout << "\tDistrib Param:'" << setw(0) << pe << "'" << endl;
                                 } else throw gmlioexc;
                             }
                         } else throw gmlioexc;
