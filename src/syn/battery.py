@@ -5,7 +5,7 @@ def SaveBatteryParams(handle, pardict):
 
 	return
 
-def SaveBatteryFileHeader(handle, gK, gc, gC, gIR):
+def SaveBatteryFileHeader(handle, gK, gc, gC, gIR, gAvgReward):
 
 	handle.write("\n");
 
@@ -13,6 +13,7 @@ def SaveBatteryFileHeader(handle, gK, gc, gC, gIR):
 	handle.write("double gc"+" = "+str(gc)+";\n");
 	handle.write("double gC"+" = "+str(gC)+";\n");
 	handle.write("double gIR"+" = "+str(gIR)+";\n");
+	handle.write("double gAvgReward"+" = "+str(gAvgReward)+";\n");
 
 	handle.write("\n");
 
@@ -92,7 +93,10 @@ def SaveBatteryFooter(handle):
 	
 	handle.write("\n");
 
-	handle.write("\tsrand (time(NULL));\n")
+	handle.write("\tif (!rt.size)\n")
+	handle.write("\t\t return gAvgReward;\n")
+	handle.write("\n");
+
 	handle.write("\tint idx = rand() % rt.size;\n")
 	
 	handle.write("\n");
@@ -107,34 +111,38 @@ def SaveBatteryFooter(handle):
 
 	handle.write("\n");
 
-	handle.write("double y1fun(double kc, double kmc, double t, double y10, double y20, double L)\n")
+	handle.write("double y1fun(double c, double kp, double k, double t, double y0, double y10, double y20, double I)\n")
 	handle.write("{\n")
-	handle.write("\treturn (exp(-(t*(kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/2)*(kc*((y20*(kc*kc + 6*kc*kmc + kmc*kmc) - 4*L*kc + 2*kc*kc*y10 - kc*kc*y20 + kmc*kmc*y20 - 2*kc*kmc*y10 - 2*kc*y10*sqrt(kc*kc + 6*kc*kmc + kmc*kmc) + 2*kmc*y20*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/(2*(kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc)) + (2*L*kc*exp(-(kc*t)/2)*exp((kmc*t)/2)*exp((t*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/2))/((kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc))) + kmc*((y20*(kc*kc + 6*kc*kmc + kmc*kmc) - 4*L*kc + 2*kc*kc*y10 - kc*kc*y20 + kmc*kmc*y20 - 2*kc*kmc*y10 - 2*kc*y10*sqrt(kc*kc + 6*kc*kmc + kmc*kmc) + 2*kmc*y20*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/(2*(kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc)) + (2*L*kc*exp(-(kc*t)/2)*exp((kmc*t)/2)*exp((t*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/2))/((kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc))) - ((y20*(kc*kc + 6*kc*kmc + kmc*kmc) - 4*L*kc + 2*kc*kc*y10 - kc*kc*y20 + kmc*kmc*y20 - 2*kc*kmc*y10 - 2*kc*y10*sqrt(kc*kc + 6*kc*kmc + kmc*kmc) + 2*kmc*y20*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/(2*(kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc)) + (2*L*kc*exp(-(kc*t)/2)*exp((kmc*t)/2)*exp((t*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/2))/((kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc)))*sqrt(kc*kc + 6*kc*kmc + kmc*kmc) + kc*exp((t*(kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/2)*exp((t*(kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/2)*((y20*(kc*kc + 6*kc*kmc + kmc*kmc) - 4*L*kc + 2*kc*kc*y10 - kc*kc*y20 + kmc*kmc*y20 - 2*kc*kmc*y10 + 2*kc*y10*sqrt(kc*kc + 6*kc*kmc + kmc*kmc) - 2*kmc*y20*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/(2*(kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc)) + (2*L*kc*exp(-(kc*t)/2)*exp((kmc*t)/2)*exp(-(t*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/2))/((kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc))) + kmc*exp((t*(kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/2)*exp((t*(kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/2)*((y20*(kc*kc + 6*kc*kmc + kmc*kmc) - 4*L*kc + 2*kc*kc*y10 - kc*kc*y20 + kmc*kmc*y20 - 2*kc*kmc*y10 + 2*kc*y10*sqrt(kc*kc + 6*kc*kmc + kmc*kmc) - 2*kmc*y20*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/(2*(kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc)) + (2*L*kc*exp(-(kc*t)/2)*exp((kmc*t)/2)*exp(-(t*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/2))/((kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc))) + exp((t*(kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/2)*exp((t*(kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/2)*((y20*(kc*kc + 6*kc*kmc + kmc*kmc) - 4*L*kc + 2*kc*kc*y10 - kc*kc*y20 + kmc*kmc*y20 - 2*kc*kmc*y10 + 2*kc*y10*sqrt(kc*kc + 6*kc*kmc + kmc*kmc) - 2*kmc*y20*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/(2*(kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc)) + (2*L*kc*exp(-(kc*t)/2)*exp((kmc*t)/2)*exp(-(t*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/2))/((kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(6*kc*kmc + kc*kc + kmc*kmc)))*sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/(2*kc);\n")
+	#handle.write("\tcerr<<\"Battery state: \"<<y10<<\" \"<<y20<<\" \"<<I<<\" \"<<t<<endl;")
+	handle.write("\n")
+	handle.write("\treturn y10*exp(-kp*t)+(y0*kp*c-I)*(1-exp(-kp*t))/kp-I*c*(kp*t-1+exp(-kp*t))/kp;\n")
 	handle.write("}\n")
 
 	handle.write("\n");
 
-	handle.write("double y2fun(double kc, double kmc, double t, double y10, double y20, double L)\n")
+	handle.write("double y2fun(double c, double kp, double k, double t, double y0, double y10, double y20, double I)\n")
 	handle.write("{\n")
-	handle.write("\treturn exp(-(t*(kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/2)*((y20*(kc*kc + 6*kc*kmc + kmc*kmc) - 4*L*kc + 2*kc*kc*y10 - kc*kc*y20 + kmc*kmc*y20 - 2*kc*kmc*y10 - 2*kc*y10*sqrt(kc*kc + 6*kc*kmc + kmc*kmc) + 2*kmc*y20*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/(2*(kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(kc*kc + 6*kc*kmc + kmc*kmc)) + exp((t*(kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/2)*exp((t*(kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc)))/2)*((y20*(kc*kc + 6*kc*kmc + kmc*kmc) - 4*L*kc + 2*kc*kc*y10 - kc*kc*y20 + kmc*kmc*y20 - 2*kc*kmc*y10 + 2*kc*y10*sqrt(kc*kc + 6*kc*kmc + kmc*kmc) - 2*kmc*y20*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/(2*(kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(kc*kc + 6*kc*kmc + kmc*kmc)) + (2*L*kc*exp(-(kc*t)/2)*exp((kmc*t)/2)*exp(-(t*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/2))/((kc - kmc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))) + (2*L*kc*exp(-(kc*t)/2)*exp((kmc*t)/2)*exp((t*sqrt(kc*kc + 6*kc*kmc + kmc*kmc))/2))/((kmc - kc + sqrt(kc*kc + 6*kc*kmc + kmc*kmc))*sqrt(kc*kc + 6*kc*kmc + kmc*kmc)));\n")
+	#handle.write("\tcerr<<\"Battery state: \"<<y10<<\" \"<<y20<<\" \"<<I<<\" \"<<t<<endl;")
+	handle.write("\n")
+	handle.write("\treturn y20*exp(-kp*t)+y0*(1-c)*(1-exp(-kp*t))-I*(1-c)*(kp*t-1+exp(-kp*t))/kp;\n")
 	handle.write("}\n");
 
 	handle.write("\n");
 
 	handle.write("void enterActive(int id, double time)\n")
 	handle.write("{\n")
-	handle.write("\tgY1 = y1fun(gK/gc, gK/(1-gc), time-gTime, gY1, gY2, gCurrentReward);\n")
-	handle.write("\tgY2 = y2fun(gK/gc, gK/(1-gc), time-gTime, gY1, gY2, gCurrentReward);\n")
-	handle.write("\tgTime += time;\n")
+	handle.write("\tgY1 = y1fun(gc, gK/(gc*(1-gc)), gK, (time-gTime)/1000.0, gY1+gY2, gY1, gY2, gIR);\n")
+	handle.write("\tgY2 = y2fun(gc, gK/(gc*(1-gc)), gK, (time-gTime)/1000.0, gY1+gY2, gY1, gY2, gIR);\n")
+	handle.write("\tgTime = time;\n")
 	handle.write("}\n")
 
 	handle.write("\n");
 
 	handle.write("void enterIdle(int id, double time)\n")
 	handle.write("{\n")
-	handle.write("\tgY1 = y1fun(gK/gc, gK/(1-gc), time-gTime, gY1, gY2, gIR);\n")
-	handle.write("\tgY2 = y2fun(gK/gc, gK/(1-gc), time-gTime, gY1, gY2, gIR);\n")
-	handle.write("\tgTime += time;\n")
+	handle.write("\tgY1 = y1fun(gc, gK/(gc*(1-gc)), gK, (time-gTime)/1000.0, gY1+gY2, gY1, gY2, gCurrentReward);\n")
+	handle.write("\tgY2 = y2fun(gc, gK/(gc*(1-gc)), gK, (time-gTime)/1000.0, gY1+gY2, gY1, gY2, gCurrentReward);\n")
+	handle.write("\tgTime = time;\n")
 	handle.write("}\n")
 
 	handle.write("\n")
@@ -143,5 +151,18 @@ def SaveBatteryFooter(handle):
 	handle.write("{\n")
 	handle.write("\treturn (gY1<0.0);\n")
 	handle.write("}\n")
+
+	handle.write("\n")
+
+	handle.write("bool ResetBatteryState(void)\n")
+	handle.write("{\n")
+	handle.write("\tgCurrentReward = 0.0;\n");
+	handle.write("\tgTime = 0.0;\n");
+	handle.write("\tgY1 = (1-gc)*gC;\n");
+	handle.write("\tgY2 = gc*gC;\n");
+	handle.write("\tsrand (time(NULL));\n")
+	handle.write("}\n")
+
+	handle.write("\n")
 
 	return
