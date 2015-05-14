@@ -11,12 +11,6 @@
 #define MARKER_PORT_ONE 7
 #define MARKER_PORT_TWO 4
 
-#define SET_BOTH_LOW(PORT_ONE, PORT_TWO) B00000000
-#define SET_BOTH_HIGH(PORT_ONE, PORT_TWO) ((B1<<PORT_ONE) | (B1<<PORT_TWO))
-#define SET_ONEH_TWOL(PORT_ONE, PORT_TWO) (B1<<PORT_ONE)
-#define SET_ONEL_TWOH(PORT_ONE, PORT_TWO) (B1<<PORT_TWO)
-
-
 bool blink = true;
 
 //print function
@@ -45,19 +39,17 @@ void wait(REAL_TYPE t){
 #endif
     
     Serial.flush();
-
-    //digitalWrite(MARKER_PORT_ONE, HIGH);
-    //digitalWrite(MARKER_PORT_TWO, HIGH);
-    PORTD = SET_BOTH_HIGH(MARKER_PORT_ONE, MARKER_PORT_TWO);
+    
+    // Added just now
+    //PORTD = SET_BOTH_HIGH(MARKER_PORT_ONE, MARKER_PORT_TWO);
     
     bool davailable = false;
     while(!davailable && millis1()< ti ){
         davailable = Serial.available();
     }
     
-    //digitalWrite(MARKER_PORT_ONE, LOW);
-    //digitalWrite(MARKER_PORT_TWO, LOW);
-    PORTD = SET_BOTH_LOW(MARKER_PORT_ONE, MARKER_PORT_TWO);
+    // Added just now
+    //PORTD = SET_BOTH_LOW(MARKER_PORT_ONE, MARKER_PORT_TWO);
     
     if(!davailable){
         t-= wait_sleep;
@@ -101,11 +93,10 @@ unsigned char SReceive(){
 void SWrite(unsigned char h){
     if (Serial) {
         if(h>=0x35 && h<=0x3A) {
-            PORTD = SET_ONEH_TWOL(MARKER_PORT_ONE, MARKER_PORT_TWO);
-            //delay(5);
-        
-            //Serial.write(h);
-            //Serial.flush();
+            dW(7, 1);
+            
+            // Added just now
+            //PORTD = SET_ONEH_TWOL(MARKER_PORT_ONE, MARKER_PORT_TWO);
         }
         
         Serial.write(h);
@@ -130,32 +121,10 @@ REAL_TYPE getPr(TR_PL_ID t){
     return (REAL_TYPE)mySim.N.GetPriority(t);
 }
 
-unsigned long BytesToLong(/*char iBytes[4]*/ int iBytesOne, int iBytesTwo)
+unsigned long BytesToLong(int iBytesOne, int iBytesTwo)
 {
-    /*unsigned long ri = 0;*/
     word ri = 0;
     
-    /*
-    ri = (unsigned long)(iBytes[3]);
-    
-    Serial.println((unsigned long)(ri));
-    
-    ri = (ri << 8) | (unsigned long)(iBytes[2]);
-    
-    Serial.println((unsigned long)(ri));
-    
-    
-    ri = (ri << 8) | (unsigned long)(iBytes[1]);
-    */
-    /*
-    ri = (unsigned short)(iBytes[1]);
-    
-    Serial.println((unsigned short)(ri));
-    
-    ri = (ri << 8) | (unsigned short)(iBytes[0]);
-    
-    Serial.println((unsigned short)(ri));
-    */
     ri = (word)(iBytesOne)+(word)(iBytesTwo*256);
     Serial.println((unsigned short)(ri));
     return (unsigned long)(ri);
@@ -198,16 +167,12 @@ void loop() {
 
     delay(1);
     
-    //digitalWrite(MARKER_PORT_TWO, LOW);
-    
     mySim.SimulateSinglePath(); //simulate a batch of trajectory
 
     if(InDataAvailable()==2) {
         switch (Serial.peek()) {
             case 'A':
             case 'S':
-                //digitalWrite(MARKER_PORT_ONE, LOW);
-                //digitalWrite(MARKER_PORT_TWO, HIGH);
                 PORTD = SET_ONEL_TWOH(MARKER_PORT_ONE, MARKER_PORT_TWO);
 
                 buff0 = Serial.read();
@@ -223,8 +188,6 @@ void loop() {
                 break;
                 
             case 'W':
-                //digitalWrite(MARKER_PORT_TWO, LOW);
-                //digitalWrite(MARKER_PORT_ONE, LOW);
                 PORTD = SET_BOTH_LOW(MARKER_PORT_ONE, MARKER_PORT_TWO);
                 
                 buff0 = Serial.read();

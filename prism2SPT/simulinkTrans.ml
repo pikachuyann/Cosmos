@@ -5,6 +5,7 @@ open SimulinkType
 open Simulinkparser
 
 let erlangstep = ref 10
+let escape_XML_var = ref false
 
 (* Distribution to attribute to Deterministic Delays*)
 let detfun s =
@@ -466,7 +467,7 @@ let place_of_int ivect i =
 
 let escape_XML s =
   let reg = Str.regexp"[&<>]" in
-  Str.global_substitute reg (function x -> match Str.matched_string x with 
+    Str.global_substitute reg (function x -> match Str.matched_string x with 
     "&" -> "&amp;" 
   | "<" -> "&lt;" 
   | ">" -> "&gt;" 
@@ -526,13 +527,13 @@ std::string to_string2(T value){
   List.iter (fun (ss,_,lab,_) -> begin match lab.trigger,lab.guard with
     ((ImmWC c),Some g) -> 
       Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
-      Printf.fprintf f "\t\treturn (%s && %s);\n" ( c) ( g); 
+      Printf.fprintf f "\t\treturn (%s && %s);\n" (if !escape_XML_var then escape_XML c else c) (if !escape_XML_var then escape_XML g else g); 
   | ((ImmWC c),None) -> 
       Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
-      Printf.fprintf f "\t\treturn %s;\n" ( c);
+      Printf.fprintf f "\t\treturn %s;\n" (if !escape_XML_var then escape_XML c else c);
   | (_,Some g) -> 
       Printf.fprintf f "\tcase TR_%s_RT:\n" (trans_of_int ss lab);
-      Printf.fprintf f "\t\treturn %s;\n" ( g);
+      Printf.fprintf f "\t\treturn %s;\n" (if !escape_XML_var then escape_XML g else g);
   | _ -> ();
   end) tl;
 
