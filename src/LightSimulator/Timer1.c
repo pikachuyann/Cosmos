@@ -114,7 +114,9 @@ void sleepMillis(unsigned long k)
     }
 
     set_sleep_mode(SLEEP_MODE_IDLE);   // sleep mode is set here
-
+    
+    PORTD = SET_BOTH_LOW(7, 4);
+    
     sleep_enable();          // enables the sleep bit in the mcucr register
                              // so sleep is possible. just a safety pin
     power_adc_disable();

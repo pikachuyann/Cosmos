@@ -355,14 +355,14 @@ REAL_TYPE getPr(TR_PL_ID t){
 void SWrite3(unsigned char header,unsigned char data, unsigned char end)
 {
     unsigned char Buf[3] = {header, data, end};
-    std::cerr << "Heart -> Pace: "<< mySim.curr_time << " ["<< (int)header << "]["<< (int)data << "]["<< (int)end << "]"<< std::endl;
+    std::cerr << "Plant data: "<< mySim.curr_time << " ["<< (int)header << "]["<< (int)data << "]["<< (int)end << "]"<< std::endl;
     WriteToPort(&gftHandle[giDeviceID], 3, &Buf[0]);
 }
 
 void SWrite(unsigned char data)
 {
     unsigned char Buf[1] = {data};
-    std::cerr << "Heart -> Pace: "<< mySim.curr_time << " ["<< data << "]"<< std::endl;
+    std::cerr << "Plant data: "<< mySim.curr_time << " ["<< data << "]"<< std::endl;
     WriteToPort(&gftHandle[giDeviceID], 1, &Buf[0]);
 }
 
@@ -372,21 +372,17 @@ char SReceive(void)
     size_t bytesRead = 0;
     if(gDataAvailable) {
         bytesRead = read(gftHandle[giDeviceID], &retVal, (int)1);
-        if(retVal==0x33 || retVal==0x34) {
-            std::cerr << "<<<<<<< Pace -> Heart: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
+        if(retVal==0x33 || retVal==0x34 ) {
+            std::cerr << "<<<<<<< Controller data: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
             
-            if (retVal==0x33) nAtriumBeats = nAtriumBeats+1;
-            else nVentricleBeats = nVentricleBeats+1;
-            
-            int nVentricleBeats = 0;
         }
         else if(retVal>=0x35 && retVal<=0x3A) {
-            std::cerr << "<<<<<<< Syn: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
+            std::cerr << "<<<<<<< Controller transition ID: "<< mySim.curr_time << " ["<< retVal << "]"<< std::endl;
             
             AddTransitionID(retVal, (unsigned int)(mySim.curr_time));
         }
         else
-            std::cerr << "<<<<<<< Data: "<< mySim.curr_time << " ["<< std::hex << retVal << "]"<< std::endl;
+            std::cerr << "<<<<<<< Various Data: "<< mySim.curr_time << " ["<< std::hex << retVal << "]"<< std::endl;
         
         gDataAvailable = 0;
     }
