@@ -674,8 +674,13 @@ let stochNet_of_modu cf m =
   ) [] in
   net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) (DataFile.data_of_file cf)),varlist,fund);
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),Int x) net.Net.place) m.ivect;
-  if !add_reward then 
-    Data.add (("STOP"),(Det (Float 0.0),Float 1.0,Float 1.0)) net.Net.transition;
+  if !add_reward then begin
+    Data.add ("STOP_PL",Int 0) net.Net.place;
+    Data.add (("STOP"),(Det (Float 0.0),Float 1.0,Float 2.0)) net.Net.transition;
+    Data.add (("CONTINUE"),(Det (Float 0.0),Float 1.0,Float 1.0)) net.Net.transition;
+    Net.add_inArc net "STOP_PL" "STOP" (Int 1);
+    Net.add_inArc net "STOP_PL" "CONTINUE" (Int 1);
+  end;
   List.iter (fun (ssidt,src,lab,dst) -> 
     try 
     begin match lab.trigger with
@@ -710,7 +715,8 @@ let stochNet_of_modu cf m =
 	Data.add ((Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt),(Det(FunCall ("TransitionTime",[Float (float_of_string sn)])),Float 1.0,Float 1.0)) net.Net.transition;
 	Net.add_outArc net (trans_of_int ssidt lab) (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Int 1);
 	Net.add_inArc net (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt) (Int 1);
-	Net.add_inhibArc net (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Printf.sprintf "STOP") (Int 1);
+	Net.add_outArc net (trans_of_int ssidt lab) ("STOP_PL") (Int 1);
+	Net.add_outArc net (Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt) ("STOP_PL") (Int 1);
       end
     end
 
