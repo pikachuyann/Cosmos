@@ -25,9 +25,10 @@
  *******************************************************************************
  */
 
-#include "expressionStruct.hpp"
 
 #include <cmath>
+
+#include "expressionStruct.hpp"
 
 using namespace std;
 
@@ -90,7 +91,7 @@ std::ostream& operator<<(std::ostream& os, const class expr& e)
             break;
         case Var: os << e.lhs->stringVal; break;
         case Lambda: os << "([] (auto "<< e.lhs->stringVal << "){" << *(e.rhs) << "})"; break;
-        case App: os << "("<< *(e.lhs) << "(" << *(e.rhs) << "))"; break;
+        case App: os << "("<<  e.lhs->stringVal << "(" << *(e.rhs) << "))"; break;
 
     }
     return os;
