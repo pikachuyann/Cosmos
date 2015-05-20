@@ -131,6 +131,9 @@ def SaveBatteryFooter(handle):
 
 	handle.write("void enterActive(int id, double time)\n")
 	handle.write("{\n")
+
+	handle.write("\tif (time==gTime || gCurrentReward==0.0) return;\n")
+	handle.write("\n");
 	handle.write("\tgY1 = y1fun(gc, gK/(gc*(1-gc)), gK, (time-gTime)/1000.0, gY1+gY2, gY1, gY2, gIR);\n")
 	handle.write("\tgY2 = y2fun(gc, gK/(gc*(1-gc)), gK, (time-gTime)/1000.0, gY1+gY2, gY1, gY2, gIR);\n")
 	handle.write("\tgTime = time;\n")
@@ -140,6 +143,8 @@ def SaveBatteryFooter(handle):
 
 	handle.write("void enterIdle(int id, double time)\n")
 	handle.write("{\n")
+	handle.write("\tif (time==gTime || gCurrentReward==0.0) return;\n")
+	handle.write("\n");	
 	handle.write("\tgY1 = y1fun(gc, gK/(gc*(1-gc)), gK, (time-gTime)/1000.0, gY1+gY2, gY1, gY2, gCurrentReward);\n")
 	handle.write("\tgY2 = y2fun(gc, gK/(gc*(1-gc)), gK, (time-gTime)/1000.0, gY1+gY2, gY1, gY2, gCurrentReward);\n")
 	handle.write("\tgTime = time;\n")
