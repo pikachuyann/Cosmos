@@ -105,7 +105,16 @@ struct colorVariable {
 enum varType {
     CT_SINGLE_COLOR,
     CT_VARIABLE,
-    CT_ALL
+    CT_ALL,
+    CV_CLOCK,
+    CV_REAL,
+    CV_INT
+};
+
+struct hybridVariable {
+    std::string name;
+    varType type;
+    std::string initialValue;
 };
 
 struct coloredToken {
@@ -187,6 +196,7 @@ struct GspnType {
 	vector<colorClass> colClasses;
 	vector<colorDomain> colDoms;
 	vector<colorVariable> colVars;
+    vector<hybridVariable> hybridVars;
 	
     map<string, int> PlacesId;
     map<string, int> TransId;
