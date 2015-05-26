@@ -48,9 +48,8 @@ private:
 	
 	//!The random Generator Mersenne Twister from the boost library
 	boost::mt19937 RandomNumber;
-	
-};
 
+};
 
 #endif /* defined(__Cosmos__File__) */
 

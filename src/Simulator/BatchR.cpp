@@ -126,6 +126,8 @@ void BatchR::unionR(const BatchR &batch){
  * be read by the function BatchR::inputR
  */
 void BatchR::outputR(ostream &f) {
+    unsigned long int check = 8427;   //magic value
+    f.write(reinterpret_cast<char*>(&check),sizeof(check));
     f.write(reinterpret_cast<char*>(&I),sizeof(I));
     f.write(reinterpret_cast<char*>(&Isucc),sizeof(Isucc));
     size_t v = Mean.size();
@@ -160,7 +162,12 @@ bool BatchR::inputR(FILE* f) {
     bool readb;
 	size_t readbyte;
     bool ok = true;
-	
+
+    unsigned long int check = 0;
+    readbyte = fread(reinterpret_cast<char*>( &check ), sizeof check ,1, f);
+    ok &= (check==8427);   //check magic value
+    ok &= (readbyte == 1);
+
 	readbyte = fread(reinterpret_cast<char*>( &I ), sizeof I ,1, f);
 	ok &= (readbyte == 1);
 	

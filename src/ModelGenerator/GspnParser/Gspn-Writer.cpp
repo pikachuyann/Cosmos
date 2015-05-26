@@ -345,7 +345,6 @@ void Gspn_Writer::generateStringVal(arcStore& as){
 }
 
 void Gspn_Writer::writeTransition(ofstream & spnF){
-	
 	size_t nbbinding = 1;
 	for (size_t v = 0 ; v < MyGspn.colVars.size(); v++)
 		nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
@@ -435,17 +434,10 @@ void Gspn_Writer::writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_
                 f << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+(direct? decrement: 0) << ")TransitionConditions["<< t2 << (pos? "]++ ;":"]-- ;") << endl;
         } else {
             string decrement;
-            if (MyGspn.access(as2,t,p.id).isMarkDep) {
-                searchreplace(MyGspn.access(as2,t,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , decrement);
-            }else{
-                decrement = to_string(MyGspn.access(as2,t,p.id).intVal);
-            }
+            searchreplace(MyGspn.access(as2,t,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , decrement);
             string seuil;
-            if(MyGspn.access(as,t2,p.id).isMarkDep){
-                searchreplace(MyGspn.access(as,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
-            }else{
-                seuil = to_string(MyGspn.access(as,t2,p.id).intVal);
-            }
+            searchreplace(MyGspn.access(as,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
+
             f << "\t\t\tif(Marking.P->_PL_" << p.name << (direct? "": "+"+decrement) <<" >= "<< seuil;
             f << " && Marking.P->_PL_" << p.name <<" < " << seuil << (direct? "+"+decrement: "") <<")";
             f << "TransitionConditions["<< t2 <<(pos? "]++ ;":"]-- ;") << endl;
@@ -579,6 +571,10 @@ void Gspn_Writer::writeFire(ofstream &f){
                           writeMarkingUpdate(newcase, t, p,MyGspn.outArcsStruct,false);
                       }
 
+                  }
+                  const auto ts = MyGspn.transitionStruct[t];
+                  if(!ts.update.empty()){
+                      newcase << ts.update << endl;
                   }
                   newcase << "\t}";
               },
@@ -1003,9 +999,9 @@ void Gspn_Writer::writeFile(){
             SpnCppFile << "_trans(" << t << ",";
 
             if (MyGspn.transitionStruct[t].type==Timed) {
-                SpnCppFile << "Timed," << MyGspn.transitionStruct[t].dist.name << ",";
+                SpnCppFile  << MyGspn.transitionStruct[t].dist.name << ",";
             }else{
-                SpnCppFile << "unTimed,DETERMINISTIC,";
+                SpnCppFile << "IMMEDIATE,";
             }
 
             SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
@@ -1086,6 +1082,44 @@ void Gspn_Writer::writeFile(){
 	SpnCppFile << "\tMarking.resetToInitMarking();"<< endl;
 	if(P.localTesting)SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
 	SpnCppFile << "}"<< endl<< endl;
+
+    writeUserDefineDistr(SpnCppFile);
 	
 	SpnCppFile.close();
 }
+
+void Gspn_Writer::writeUserDefineDistr(ofstream &f){
+    f << "double userDefineCDF(vector<double> const& param, double funvar){" <<endl;
+    {
+    auto ch = casesHandler("(int)param[0]");
+    for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
+        const auto &dist = MyGspn.distribStruct[it];
+        stringstream newcase;
+        newcase << "\t{" << endl;
+        newcase << "\t\tdouble " << dist.var << " = funvar;" << endl;
+        newcase << "\t\treturn (" << dist.cdf << ");" << endl;
+        newcase << "\t}" << endl;
+        ch.addCase(it , newcase.str(),dist.name);
+    }
+    ch.writeCases(f);
+    f << "}\n" << endl;
+    }
+    {
+    f << "double userDefinePDF(vector<double> const& param, double funvar){" <<endl;
+    auto ch = casesHandler("(int)param[0]");
+    for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
+        const auto &dist = MyGspn.distribStruct[it];
+        stringstream newcase;
+        newcase << "\t{" << endl;
+        newcase << "\t\tdouble " << dist.var << " = funvar;" << endl;
+        newcase << "\t\treturn (" << dist.pdf << ");" << endl;
+        newcase << "\t}" << endl;
+        ch.addCase(it , newcase.str(),dist.name);
+    }
+    ch.writeCases(f);
+    f << "}\n" << endl;
+    }
+
+}
+
+

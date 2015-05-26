@@ -54,6 +54,13 @@ struct ProbabiliteDistribution {
 };
 typedef struct ProbabiliteDistribution Distribution;
 
+struct userDefineDistribution{
+    std::string name;
+    std::string var;
+    std::string cdf;
+    std::string pdf;
+    size_t nbparam;
+};
 
 struct color {
 	std::string name;
@@ -126,6 +133,7 @@ struct transition {
 	bool ageMemory;
 	std::set<size_t> varDomain;
 	expr guard;
+    std::string update;
     transition(){ isTraced = true; }
     transition(size_t i,const std::string &n,const expr &p,bool md):id(i),label(n),isTraced(true),
     type(Timed),dist(p),priority(expr(1)),weight(expr(1.0)),singleService(true),
@@ -185,6 +193,7 @@ struct GspnType {
 	
 	vector<transition> transitionStruct;
 	vector<place> placeStruct;
+    vector<userDefineDistribution> distribStruct;
 
     inline pair<size_t, size_t> arckey(size_t t,size_t p)const { return make_pair(t,p); };
     inline size_t get_t(pair<size_t, size_t> key)const {return key.first;};
