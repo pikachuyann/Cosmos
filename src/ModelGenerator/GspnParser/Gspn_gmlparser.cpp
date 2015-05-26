@@ -453,6 +453,52 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                         
                     }
                 }
+            t2 = findbranch(it, "variables/clocks/");
+            if (t2 != it.end())
+                for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
+                    if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                    if (*it2 == "clock") {
+                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                        hybridVariable cl;
+                        cl.name = simplifyString((find(it2.begin(), it2.end(), "name")).node->first_child->data);
+                        cl.initialValue = "0";
+                        cl.type = CV_CLOCK;
+                        MyGspn->hybridVars.push_back(cl);
+                        if ((P.verbose - 3) > 1)cout << "\tclock " << cl.name << endl;
+
+                    }
+                }
+            t2 = findbranch(it, "variables/reals/");
+            if (t2 != it.end())
+                for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
+                    if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                    if (*it2 == "real") {
+                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                        hybridVariable cl;
+                        cl.name = simplifyString((find(it2.begin(), it2.end(), "name")).node->first_child->data);
+                        cl.initialValue = simplifyString(*((find(it2.begin(), it2.end(), "value").begin())));
+                        cl.type = CV_REAL;
+                        MyGspn->hybridVars.push_back(cl);
+                        if ((P.verbose - 3) > 1)cout << "\treal " << cl.name << endl;
+
+                    }
+                }
+
+            t2 = findbranch(it, "variables/ints/");
+            if (t2 != it.end())
+                for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
+                    if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                    if (*it2 == "int") {
+                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                        hybridVariable cl;
+                        cl.name = simplifyString((find(it2.begin(), it2.end(), "name")).node->first_child->data);
+                        cl.initialValue = simplifyString(*((find(it2.begin(), it2.end(), "value").begin())));
+                        cl.type = CV_INT;
+                        MyGspn->hybridVars.push_back(cl);
+                        if ((P.verbose - 3) > 1)cout << "\tint " << cl.name << endl;
+
+                    }
+                }
 
             for (t2 = it.begin(); t2 != it.end(); ++t2) {
                 if ((P.verbose - 3) > 1)cout << endl << *t2 << ": " << endl;

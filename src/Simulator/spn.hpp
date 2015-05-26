@@ -232,6 +232,7 @@ public:
     static const int* FreeMarkDepT[];
 
     size_t lastTransition; //! store the last fired transition
+    double lastTransitionTime; //! store the last fired transition time for hybrid part.
 
     const abstractBinding* nextPossiblyEnabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
     const abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
