@@ -385,7 +385,7 @@ void launchServer(parameters& P){
 					//The batch result was not complete.
 					//If the simulator was kill by the server it is OK otherwise
 					//it is a problem.
-					if(P.verbose>2) cerr << "Warning uncomplete Batch Result"<<endl;
+					if(P.verbose>2) cerr << "Warning uncomplete or ill formed Batch Result"<<endl;
 					if(feof( clientstream[it] )!=0){
 						if(P.verbose>2)cerr << "Deconnection Simulator:" << clientPID[it] << endl;
 						clientstream.erase(clientstream.begin() + it);
