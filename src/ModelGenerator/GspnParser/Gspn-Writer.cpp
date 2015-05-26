@@ -650,7 +650,7 @@ void Gspn_Writer::writeGetPriority(ofstream &f){
     writeFunT(f, "REAL_TYPE","GetPriority(", ")const",
               [&](unsigned int t,stringstream &ss){
                   ss << "\t\treturn (double)" << MyGspn.transitionStruct[t].priority << ";";
-            });
+            }, "using namespace hybridVar;\n");
 }
 
 
@@ -658,7 +658,7 @@ void Gspn_Writer::writeGetWeight(ofstream &f){
     writeFunT(f, "REAL_TYPE","GetWeight(", ")const",
               [&](unsigned int t,stringstream &ss){
                 ss << "\t\treturn (double)" << MyGspn.transitionStruct[t].weight << ";";
-            });
+            }, "using namespace hybridVar;\n");
 }
 
 void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, parameters &P){
