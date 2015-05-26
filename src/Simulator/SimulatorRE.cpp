@@ -162,7 +162,7 @@ bool SimulatorRE::transitionSink(size_t i){
 void SimulatorRE::GenerateEvent(Event& E,size_t Id,const abstractBinding& b) {
 	
     double t = A.CurrentTime;
-    if (N.Transition[Id].transType == Timed) {
+    if (N.Transition[Id].DistTypeIndex != IMMEDIATE) {
         getParams(Id, b);
         t += GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);
 		
