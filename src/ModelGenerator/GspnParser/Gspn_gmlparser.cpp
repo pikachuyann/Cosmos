@@ -677,8 +677,8 @@ void MyModelHandler::on_read_node(const XmlString& id,
                 }
 
                 if ((P.verbose - 3) > 1)cout << "\tmarking:" << st << endl;
-                MyGspn->Marking.push_back(st);
-                MyGspn->InitialMarking.push_back(inMark);
+                p.Marking=st;
+                p.initMarking=inMark;
 
             } else if (*it2 == "name") {
                 string Plname = simplifyString(*(it2.begin()));
@@ -876,10 +876,11 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             }
 
             //Add a place
-            MyGspn->Marking.push_back("0");
-            coloredToken ctok(0);
-            MyGspn->InitialMarking.push_back(vector<coloredToken>(1, ctok));
             place p;
+            p.Marking = "0";
+            coloredToken ctok(0);
+            p.initMarking=vector<coloredToken>(1, ctok);
+
             string Plname = "Puit";
             p.name = Plname;
             p.id = MyGspn->pl;

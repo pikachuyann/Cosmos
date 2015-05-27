@@ -236,8 +236,7 @@ PlacesList: PList EQ '{' PLabels '}' SEMICOLON {
     YYABORT;
   }
   
-  Reader.MyGspn.Marking= vector<string>(Reader.MyGspn.pl, " ");
-  Reader.MyGspn.InitialMarking = vector<vector<coloredToken>>(Reader.MyGspn.pl);
+  //Reader.MyGspn.Marking= vector<string>(Reader.MyGspn.pl, " ");
 
   MarkingDependent=false;
   AgeMemory=false;
@@ -302,8 +301,8 @@ PLACE: LB str COMMA IntStringFormula RB SEMICOLON
   }
   stringstream ss;
   ss << Evaluate.IntResult;
-  Reader.MyGspn.Marking[Reader.MyGspn.PlacesId[*$2]]=ss.str();
-  Reader.MyGspn.InitialMarking[Reader.MyGspn.PlacesId[*$2]].push_back(coloredToken(ss.str()));
+  Reader.MyGspn.placeStruct[Reader.MyGspn.PlacesId[*$2]].Marking=ss.str();
+  Reader.MyGspn.placeStruct[Reader.MyGspn.PlacesId[*$2]].initMarking=vector<coloredToken>(1, coloredToken(ss.str()));
 };
 
 

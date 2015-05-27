@@ -83,7 +83,7 @@ bool Parse() {
         //The following code modify the internal representation of the
         //SPN according to options.
 
-        //Set the isTraced flag for places and transitions
+        //Set the isTraced flag for places, transitions and hybrid var
         if (P.tracedPlace.count("ALL") == 0 && P.tracedPlace.count("ALLCOLOR")==0 ) {
             P.nbPlace = 0;
             for (size_t i = 0; i < gReader.MyGspn.pl; i++) {
@@ -99,6 +99,13 @@ bool Parse() {
                     gReader.MyGspn.transitionStruct[i].isTraced = true;
                 } else {
                     gReader.MyGspn.transitionStruct[i].isTraced = false;
+                }
+            }
+            for (auto &v: gReader.MyGspn.hybridVars) {
+                if ( P.tracedPlace.count(v.name)>0 ) {
+                    v.isTraced = true;
+                } else {
+                    v.isTraced = false;
                 }
             }
         }
