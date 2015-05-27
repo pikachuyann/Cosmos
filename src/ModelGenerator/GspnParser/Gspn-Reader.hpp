@@ -114,7 +114,9 @@ enum varType {
 struct hybridVariable {
     std::string name;
     varType type;
+    bool isTraced;
     std::string initialValue;
+    hybridVariable():type(CV_CLOCK),isTraced(true) {}
 };
 
 struct coloredToken {
@@ -216,10 +218,7 @@ struct GspnType {
     arcStore inArcsStruct;
     arcStore outArcsStruct;
     arcStore inhibArcsStruct;
-    /*vector< vector<arc> > inArcsStruct;
-	vector< vector<arc> > outArcsStruct;
-	vector< vector<arc> > inhibArcsStruct;*/
-	
+
     vector<string> Marking;
     vector<vector<coloredToken> > InitialMarking;
 	
