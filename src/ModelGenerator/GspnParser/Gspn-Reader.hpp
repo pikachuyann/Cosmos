@@ -156,7 +156,8 @@ struct place {
 	string name;
     bool isTraced;
 	size_t colorDom;
-    //vector<coloredToken> initMarking;
+    vector<coloredToken> initMarking;
+    std::string Marking;
 	place(){ colorDom = UNCOLORED_DOMAIN; isTraced = true; }
 };
 
@@ -218,10 +219,7 @@ struct GspnType {
     arcStore inArcsStruct;
     arcStore outArcsStruct;
     arcStore inhibArcsStruct;
-
-    vector<string> Marking;
-    vector<vector<coloredToken> > InitialMarking;
-	
+    
     map <std::string, int> IntConstant;
     map <std::string, double> RealConstant;
     set <std::string> ExternalConstant;

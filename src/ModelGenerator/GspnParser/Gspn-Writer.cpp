@@ -686,8 +686,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
         SpnCppFile << "\tmagicReset();" << endl;
     }
     for (const auto &plit : MyGspn.placeStruct) {
-        SpnCppFile << "\tP->_PL_"<< plit.name << " =" <<
-        MyGspn.Marking[plit.id] << ";\n";
+        SpnCppFile << "\tP->_PL_"<< plit.name << " =" << plit.Marking << ";\n";
     }
     if (!MyGspn.hybridVars.empty()) {
         for(const auto &v:MyGspn.hybridVars)
@@ -776,7 +775,8 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
                     SpnCppFile << " setw(" << maxNameSize << ") << ";
                     SpnCppFile << "\"" <<plit.name  << " \";"<<endl;
                 }
-            for (const auto &v : MyGspn.hybridVars){
+            for (const auto &v : MyGspn.hybridVars)
+                if(v.isTraced){
                     SpnCppFile << "s << ";
                     SpnCppFile << " setw(" << maxNameSize << ") << ";
                     SpnCppFile << "\"" <<v.name  << " \";"<<endl;
@@ -797,7 +797,8 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
                     }else{ SpnCppFile << "print_magic(P->_PL_"<< plit.name << ")<<\" \";\n";
                     }
                 }
-            for (const auto &v : MyGspn.hybridVars){
+            for (const auto &v : MyGspn.hybridVars)
+                if(v.isTraced){
                 SpnCppFile << "s << ";
                 SpnCppFile << " setw(" << maxNameSize << ") ";
                 SpnCppFile << " << hybridVar::"<< v.name <<" ;"<<endl;
@@ -929,8 +930,8 @@ void Gspn_Writer::writeFile(){
     generateStringVal(MyGspn.inhibArcsStruct);
     for(auto &p: MyGspn.placeStruct){
         stringstream ss;
-        writeTok(ss, MyGspn.InitialMarking[p.id],MyGspn.colDoms[p.colorDom]);
-        MyGspn.Marking[p.id] = ss.str();
+        writeTok(ss, p.initMarking,MyGspn.colDoms[p.colorDom]);
+        p.Marking = ss.str();
     }
 
 	//loc = Pref + "../SOURCES/Cosmos/spn.cpp";
@@ -984,12 +985,12 @@ void Gspn_Writer::writeFile(){
 	}
 
     //------------- Hybrid Variable --------------------------------------------
-    if (!MyGspn.hybridVars.empty()){
-        SpnCppFile << "namespace hybridVar {" << endl;
+    SpnCppFile << "namespace hybridVar {" << endl;
+    //if (!MyGspn.hybridVars.empty()){
         for(const auto &v:MyGspn.hybridVars)
             SpnCppFile << (v.type == CV_INT? "\tint ":"\tdouble ") << v.name << "=" << v.initialValue << ";" << endl;
-        SpnCppFile << "}" << endl;
-    }
+    //}
+    SpnCppFile << "}" << endl;
 
 	
     if (P.magic_values != "")

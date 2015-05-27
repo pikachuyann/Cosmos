@@ -992,6 +992,7 @@
 		03C480381A826281007B8969 /* spnLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spnLight.cpp; sourceTree = "<group>"; };
 		03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventsQueueLight.cpp; sourceTree = "<group>"; };
 		03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueueLight.hpp; sourceTree = "<group>"; };
+		03C67B121B15DFBF00EDC743 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		03CB8F4D1893CB1A00A9938A /* timeGen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeGen.cpp; sourceTree = "<group>"; };
 		03CB8F4E1893CB1A00A9938A /* timeGen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGen.hpp; sourceTree = "<group>"; };
 		03E43E1D1AE1027300E9A2BF /* Gspn-Writer-Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Writer-Color.cpp"; sourceTree = "<group>"; };
@@ -1212,6 +1213,7 @@
 		032A7018181BC0D6006D7332 /* GspnParser */ = {
 			isa = PBXGroup;
 			children = (
+				03C67B121B15DFBF00EDC743 /* Makefile.am */,
 				0367E29018842E8C00F35619 /* Gspn-parser.cc */,
 				0367E29218842EE600F35619 /* Gspn-scanner.cc */,
 				032A701C181BC0D6006D7332 /* Gspn-parser.yy */,
