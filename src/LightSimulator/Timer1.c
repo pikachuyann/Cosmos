@@ -2,7 +2,7 @@
 //  Timer1.c
 //  Cosmos
 //
-//  Created by Benoît Barbot on 11/02/2015.
+//  Created by Benoît Barbot on 11/02/2015. Based on Arduino librairy
 //
 //
 
