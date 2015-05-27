@@ -5,7 +5,7 @@ open SimulinkType
 open Simulinkparser
 
 let erlangstep = ref 10
-let escape_XML_var = ref false
+let escape_XML_var = ref true
 
 (* Distribution to attribute to Deterministic Delays*)
 let detfun s =
@@ -680,6 +680,8 @@ let stochNet_of_modu cf m =
     Data.add (("CONTINUE"),(Det (Float 0.0),Float 1.0,Float 1.0)) net.Net.transition;
     Net.add_inArc net "STOP_PL" "STOP" (Int 1);
     Net.add_inArc net "STOP_PL" "CONTINUE" (Int 1);
+    Data.add (("CHECK_ST"),(Det (Float 10.0),Float 1.0,Float 1.0)) net.Net.transition;
+    Net.add_outArc net "CHECK_ST" "STOP_PL" (Int 1);
   end;
   List.iter (fun (ssidt,src,lab,dst) -> 
     try 
@@ -715,8 +717,8 @@ let stochNet_of_modu cf m =
 	Data.add ((Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt),(Det(FunCall ("TransitionTime",[Float (float_of_string sn)])),Float 1.0,Float 1.0)) net.Net.transition;
 	Net.add_outArc net (trans_of_int ssidt lab) (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Int 1);
 	Net.add_inArc net (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt) (Int 1);
-	Net.add_outArc net (trans_of_int ssidt lab) ("STOP_PL") (Int 1);
-	Net.add_outArc net (Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt) ("STOP_PL") (Int 1);
+	(*Net.add_outArc net (trans_of_int ssidt lab) ("STOP_PL") (Int 1);
+	Net.add_outArc net (Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt) ("STOP_PL") (Int 1);*)
       end
     end
 
