@@ -35,6 +35,7 @@
 #include <string>
 #include <algorithm>
 #include <iomanip>
+#include <boost/algorithm/string/replace.hpp>
 
 //#include "tree.hh"
 #include "tree/tree_util.hh"
@@ -52,6 +53,7 @@ using namespace std;
 
 gmlinputexception gmlioexc;
 
+// Do not remove, sometime usefull for debugging
 /*void print_tree(const tree<string>& tr, tree<string>::pre_order_iterator it, tree<string>::pre_order_iterator end)
  {
  if(!tr.is_valid(it)) return;
@@ -69,7 +71,13 @@ string MyModelHandler::simplifyString(string str) {
     size_t n1 = str.find_first_not_of(" \n\t");
     size_t n2 = str.find_last_not_of(" \n\t");
     if (n1 == std::string::npos)return "";
-    return str.substr(n1, n2 - n1 + 1);
+    auto str2 = str.substr(n1, n2 - n1 + 1);
+    using boost::algorithm::replace_all;
+    replace_all(str2, "&amp;", "&");
+    replace_all(str2, "&lt;", "<");
+    replace_all(str2, "&gt;", ">");
+
+    return str2;
 }
 
 expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
