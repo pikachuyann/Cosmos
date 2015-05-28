@@ -74,12 +74,12 @@ void unfolder::export_place_grml(ofstream &fout,const place &p){
 		fout << "\t<node id=\"" << get_uid("place"+str) << "\" nodeType=\"place\">"<< endl;
 		fout << "\t\t<attribute name=\"name\">" << str << "</attribute>" << endl;
 		fout << "\t\t<attribute name=\"marking\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
-		if(MyGspn.Marking[p.id].compare("0")==0){
+		if(p.Marking.compare("0")==0){
 			fout << "\t\t\t0" << endl;
 		} else if(p.colorDom != UNCOLORED_DOMAIN) {
 			fout << "\t\t\t1" << endl;
 		} else {
-            auto str = cleanstr(MyGspn.Marking[p.id]);
+            auto str = cleanstr(p.Marking);
             fout << "\t\t\t" << str;
         }
             fout << "\t\t</attribute></attribute></attribute>" << endl;

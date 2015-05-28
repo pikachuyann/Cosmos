@@ -512,7 +512,7 @@ void Simulator::SimulateSinglePath() {
  */
 void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	double t = A.CurrentTime;
-	if (N.Transition[Id].transType == Timed) {
+	if (N.Transition[Id].DistTypeIndex != IMMEDIATE) {
         getParams(Id,b);
         t += fmax(GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr),0.0);
         if(verbose > 4){

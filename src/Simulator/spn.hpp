@@ -63,10 +63,8 @@ enum DistributionType {
 	ERLANG,
 	DISCRETEUNIF,
 	MASSACTION,
-};
-
-enum TransType {
-	Timed, unTimed
+    IMMEDIATE,
+    USERDEFINE
 };
 
 /**
@@ -76,15 +74,15 @@ struct _trans {
 	_trans(){};
 	
 	//! transition constructor
-	_trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am):
-    Id(id),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,std::string::npos){
+	_trans(unsigned int id,DistributionType dti,bool MD,size_t nbb,bool am):
+    Id(id),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,std::string::npos){
 		abstractBinding bl;
 		bl.idcount = static_cast<int>(bindingList.size());
 		bindingList.push_back( bl );
 		bindingLinkTable[bl.idTotal()]= bindingList.size()-1;
 	};
-    _trans(unsigned int id,TransType tt,DistributionType dti,bool MD,size_t nbb,bool am,std::string l):
-    Id(id),label(l),transType(tt),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,std::string::npos){
+    _trans(unsigned int id,DistributionType dti,bool MD,size_t nbb,bool am,std::string l):
+    Id(id),label(l),DistTypeIndex(dti),MarkingDependent(MD),AgeMemory(am),bindingLinkTable(nbb,std::string::npos){
         abstractBinding bl;
         bl.idcount = static_cast<int>(bindingList.size());
         bindingList.push_back( bl );
@@ -96,7 +94,6 @@ struct _trans {
 	
 	//! Name of the transition, can be empty
     std::string label;
-	TransType transType;
 	DistributionType DistTypeIndex;
 	
 	bool MarkingDependent;
@@ -122,7 +119,6 @@ struct _place {
 	bool isTraced;
 };
 typedef struct _place spn_place;
-
 
 /**
  * \brief Class of the SPN.
@@ -236,6 +232,7 @@ public:
     static const int* FreeMarkDepT[];
 
     size_t lastTransition; //! store the last fired transition
+    double lastTransitionTime; //! store the last fired transition time for hybrid part.
 
     const abstractBinding* nextPossiblyEnabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
     const abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
@@ -249,4 +246,11 @@ private:
 	
 	
 };
+
+double userDefineCDF(const std::vector<double> &param, double x);
+double userDefinePDF(const std::vector<double> &param, double x);
+
+
+
+
 #endif  /* _SPN_HPP */
