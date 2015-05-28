@@ -92,9 +92,10 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
         else return expr(stod(str));
     } else if (*it == "name") {
         string var = simplifyString(it.node->first_child->data);
-        if (MyGspn->IntConstant.count(var) > 0 ||
-                MyGspn->RealConstant.count(var) > 0 ||
-                MyGspn->ExternalConstant.count(var) > 0  ) {
+        if (MyGspn->IntConstant.count(var) > 0
+            || MyGspn->RealConstant.count(var) > 0
+            || MyGspn->ExternalConstant.count(var) > 0
+            || any_of(MyGspn->hybridVars.begin(), MyGspn->hybridVars.end(), [&](const hybridVariable &v){return v.name == var;})){
             return expr(Constant, var);
         } else {
             if ((P.verbose - 3) > 1)cout << "\t" << var << endl;
