@@ -587,7 +587,7 @@ void Gspn_Writer::writeFire(ofstream &f){
                   }
                   const auto &ts = MyGspn.transitionStruct[t];
                   if(!ts.update.empty()){
-                      newcase << "namespace hybridVar {" << ts.update << "}" << endl;
+                        newcase << "{using namespace hybridVar;" <<endl << ts.update << "}" << endl;
                   }
                   newcase << "\t}";
               },
