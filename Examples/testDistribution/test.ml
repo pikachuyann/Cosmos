@@ -33,3 +33,6 @@ test_cosmos "age memory" "testagememory.grml" "testagememory.lha" "--max-run 100
 
 test_cosmos "normal" "testnormal.grml" "testdistrib.lha" "--max-run 10000"
 ["MeanVal",(10.0); "VarVal",(2.0*.2.0)];;
+
+test_cosmos "Userdefined" "testuserdefine.grml" "testdistrib.lha" "--max-run 1000"
+["MeanVal",(4.0); "VarVal",(5.33321869776)];;   
