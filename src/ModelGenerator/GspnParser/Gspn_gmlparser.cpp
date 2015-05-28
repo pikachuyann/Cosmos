@@ -92,14 +92,15 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
         else return expr(stod(str));
     } else if (*it == "name") {
         string var = simplifyString(it.node->first_child->data);
-        if (MyGspn->IntConstant.count(var) > 0 ||
-                MyGspn->RealConstant.count(var) > 0 ||
-                MyGspn->ExternalConstant.count(var) > 0  ) {
+        if (MyGspn->IntConstant.count(var) > 0
+            || MyGspn->RealConstant.count(var) > 0
+            || MyGspn->ExternalConstant.count(var) > 0
+            || any_of(MyGspn->hybridVars.begin(), MyGspn->hybridVars.end(), [&](const hybridVariable &v){return v.name == var;})){
             return expr(Constant, var);
         } else {
             if ((P.verbose - 3) > 1)cout << "\t" << var << endl;
             if (MyGspn->PlacesId.count(var) == 0) {
-                cerr << "Place " << var << "being referenced before being define" << endl;
+                cerr << "Identifier " << var << " unbound" << endl;
                 throw gmlioexc;
             }
             if (MyGspn->placeStruct[MyGspn->PlacesId[var]].colorDom != 0) {
@@ -453,6 +454,52 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                         
                     }
                 }
+            t2 = findbranch(it, "variables/clocks/");
+            if (t2 != it.end())
+                for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
+                    if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                    if (*it2 == "clock") {
+                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                        hybridVariable cl;
+                        cl.name = simplifyString((find(it2.begin(), it2.end(), "name")).node->first_child->data);
+                        cl.initialValue = "0";
+                        cl.type = CV_CLOCK;
+                        MyGspn->hybridVars.push_back(cl);
+                        if ((P.verbose - 3) > 1)cout << "\tclock " << cl.name << endl;
+
+                    }
+                }
+            t2 = findbranch(it, "variables/reals/");
+            if (t2 != it.end())
+                for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
+                    if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                    if (*it2 == "real") {
+                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                        hybridVariable cl;
+                        cl.name = simplifyString((find(it2.begin(), it2.end(), "name")).node->first_child->data);
+                        cl.initialValue = simplifyString(*((find(it2.begin(), it2.end(), "value").begin())));
+                        cl.type = CV_REAL;
+                        MyGspn->hybridVars.push_back(cl);
+                        if ((P.verbose - 3) > 1)cout << "\treal " << cl.name << endl;
+
+                    }
+                }
+
+            t2 = findbranch(it, "variables/ints/");
+            if (t2 != it.end())
+                for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
+                    if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                    if (*it2 == "int") {
+                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ":" << endl;
+                        hybridVariable cl;
+                        cl.name = simplifyString((find(it2.begin(), it2.end(), "name")).node->first_child->data);
+                        cl.initialValue = simplifyString(*((find(it2.begin(), it2.end(), "value").begin())));
+                        cl.type = CV_INT;
+                        MyGspn->hybridVars.push_back(cl);
+                        if ((P.verbose - 3) > 1)cout << "\tint " << cl.name << endl;
+
+                    }
+                }
 
             for (t2 = it.begin(); t2 != it.end(); ++t2) {
                 if ((P.verbose - 3) > 1)cout << endl << *t2 << ": " << endl;
@@ -553,6 +600,30 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                     }
                     MyGspn->colVars.push_back(cv);
                 }
+
+                if (*t2 == "UserDefineDistribution") {
+                    userDefineDistribution dist;
+                    for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
+                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ": ";
+                        if (*it2 == "name") {
+                            dist.name = simplifyString(*(it2.begin()));
+                            if ((P.verbose - 3) > 1)cout << *(it2.begin());
+                        }
+                        if (*it2 == "var") {
+                            dist.var = simplifyString(*(it2.begin()));
+                            if ((P.verbose - 3) > 1)cout << *(it2.begin());
+                        }
+                        if (*it2 == "cdf") {
+                            dist.cdf = simplifyString(*(it2.begin()));
+                            if ((P.verbose - 3) > 1)cout << *(it2.begin());
+                        }
+                        if (*it2 == "pdf") {
+                            dist.pdf = simplifyString(*(it2.begin()));
+                            if ((P.verbose - 3) > 1)cout << *(it2.begin());
+                        }
+                    }
+                    MyGspn->distribStruct.push_back(dist);
+                }
             }
         }
     }
@@ -607,8 +678,8 @@ void MyModelHandler::on_read_node(const XmlString& id,
                 }
 
                 if ((P.verbose - 3) > 1)cout << "\tmarking:" << st << endl;
-                MyGspn->Marking.push_back(st);
-                MyGspn->InitialMarking.push_back(inMark);
+                p.Marking=st;
+                p.initMarking=inMark;
 
             } else if (*it2 == "name") {
                 string Plname = simplifyString(*(it2.begin()));
@@ -686,8 +757,21 @@ void MyModelHandler::on_read_node(const XmlString& id,
                                 if (*it3 == "number") {
                                     //number = atoi((*leaf).c_str());
                                 } else if (*it3 == "expr") {
-                                    expr pe = eval_expr(it3.begin());
-                                    trans.markingDependant |= pe.is_markDep();
+                                    expr pe;
+                                    if(trans.dist.Param.size()==0 && trans.dist.name == "USERDEFINE" ){
+                                        string distname = simplifyString(*(it3.begin()));
+                                        auto did = find_if(MyGspn->distribStruct.begin(), MyGspn->distribStruct.end(), [&](userDefineDistribution &d){
+                                            return (d.name == distname);});
+                                        if( did != MyGspn->distribStruct.end()){
+                                            pe = expr((int)(did - MyGspn->distribStruct.begin()));
+                                        } else {
+                                            cerr << "Unkown distribution " << distname << endl;
+                                            throw gmlioexc;
+                                        }
+                                    }else {
+                                        pe = eval_expr(it3.begin());
+                                        trans.markingDependant |= pe.is_markDep();
+                                    }
                                     trans.dist.Param.push_back(pe);
                                     if ((P.verbose - 3) > 1)cout << "\tDistrib Param:'" << setw(0) << pe << "'" << endl;
                                 } else throw gmlioexc;
@@ -739,14 +823,17 @@ void MyModelHandler::on_read_node(const XmlString& id,
 
                 } else if ((*(it->second.begin())) == "ageMemory") {
                     trans.ageMemory = true;
+                } else if ((*(it->second.begin())) == "update") {
+                    trans.update = simplifyString(*(++(it->second.begin())));
+
                 } else cout << "fail to parse gml transition attribute" << endl;
 
             }
 
             if (trans.dist.name == "") {
-                trans.type = unTimed;
+                trans.type = Timed;
                 trans.dist.name = "EXPONENTIAL";
-                trans.dist.Param.push_back(expr(0.0));
+                trans.dist.Param.push_back(expr(1.0));
                 if ((P.verbose - 3) >= 0) {
                     cout << "[Warning] Transition " << trans.label;
                     cout << " have no distribution.";
@@ -790,10 +877,11 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             }
 
             //Add a place
-            MyGspn->Marking.push_back("0");
-            coloredToken ctok(0);
-            MyGspn->InitialMarking.push_back(vector<coloredToken>(1, ctok));
             place p;
+            p.Marking = "0";
+            coloredToken ctok(0);
+            p.initMarking=vector<coloredToken>(1, ctok);
+
             string Plname = "Puit";
             p.name = Plname;
             p.id = MyGspn->pl;

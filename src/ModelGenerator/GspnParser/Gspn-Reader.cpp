@@ -23,7 +23,7 @@
  *******************************************************************************
  */
 
-
+#include "../../Simulator/spn.hpp"
 #include "Gspn-Reader.hpp"
 #include "Gspn_gmlparser.hpp"
 
@@ -60,14 +60,17 @@ int Gspn_Reader::parse(string& expr) {
 	
 	scan_expression(expr);
 	
-	IndexDist["UNIFORM"] = 1;
-	IndexDist["EXPONENTIAL"] = 2;
-	IndexDist["DETERMINISTIC"] = 3;
-	IndexDist["LOGNORMAL"] = 4;
-	IndexDist["TRIANGLE"] = 5;
-	IndexDist["GEOMETRIC"] = 6;
-	IndexDist["ERLANG"] = 7;
-	IndexDist["GAMMA"] =8;
+	IndexDist["UNIFORM"] = UNIFORM;
+	IndexDist["EXPONENTIAL"] = EXPONENTIAL;
+	IndexDist["DETERMINISTIC"] = DETERMINISTIC;
+	IndexDist["LOGNORMAL"] = LOGNORMAL;
+	IndexDist["TRIANGLE"] = TRIANGLE;
+	IndexDist["GEOMETRIC"] = GEOMETRIC;
+	IndexDist["ERLANG"] = ERLANG;
+	IndexDist["GAMMA"] =GAMMA;
+    IndexDist["IMMEDIATE"] = IMMEDIATE;
+    IndexDist["USERDEFINED"] = USERDEFINE;
+
 	
 	gspn::Gspn_parser parser(*this);
 	

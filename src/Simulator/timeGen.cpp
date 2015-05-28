@@ -29,6 +29,7 @@
 #include <boost/math/distributions/normal.hpp>
 #include <boost/math/distributions/lognormal.hpp>
 #include <boost/math/distributions/binomial.hpp>
+#include <boost/math/tools/roots.hpp>
 #include <float.h>
 
 using namespace std;
@@ -136,6 +137,21 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
 			return gen();
 			break;
 		}
+        case USERDEFINE:
+        {
+        // Use boost to implement inverse method for sampling arbitrary distribution
+
+            boost::uniform_01<> UNIF;
+            boost::variate_generator<boost::mt19937&, boost::uniform_01<> > gen(RandomNumber, UNIF);
+            auto gentime = gen();
+        //cerr << "sample" << gentime <<":";
+            return boost::math::tools::newton_raphson_iterate([&](double x){
+                //cerr << x << " , ";
+                return make_tuple(userDefineCDF(param,x)-gentime, userDefinePDF(param,x));
+            }, 0.0, 0.0, numeric_limits<double>::infinity(), 10);
+
+            break;
+        }
 			
 			
 		default: cerr << "Unknown distribution: "<< distribution << endl;

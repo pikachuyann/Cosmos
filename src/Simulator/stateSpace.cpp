@@ -525,8 +525,7 @@ double stateSpace::returnPrismResult(){
 
 void stateSpace::inputVect(){
     cerr<< "Start reading muFile" << endl;
-    ifstream inputFile;
-	inputFile.open("muFile",fstream::in);
+    ifstream inputFile("muFile",fstream::in);
     
 	if(!inputFile.good()){
 		cerr << "Fail to open muFile"<<endl;
@@ -578,14 +577,14 @@ void stateSpace::inputVect(){
 }
 
 void stateSpace::inputMat(){
-	fstream inputFile;
-	inputFile.open("matrixFile",fstream::in);
+	fstream inputFile("matrixFile",fstream::in);
 	
     if(!inputFile.good()){
         cerr << "Fail to open matrixFile"<<endl;
         exit(EXIT_FAILURE);
+        return;
     }
-    
+
 	/*boostmat::matrix<double> m1;
 	 inputFile >> m1;
 	 nbState = m1.size1();*/

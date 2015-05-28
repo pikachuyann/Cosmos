@@ -80,6 +80,7 @@ protected:
     void writeGetDistParameters(ofstream &f);
     void writeGetPriority(ofstream &f);
     void writeGetWeight(ofstream &f);
+    void writeUserDefineDistr(ofstream &f);
 
 };
 

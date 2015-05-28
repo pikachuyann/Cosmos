@@ -54,6 +54,13 @@ struct ProbabiliteDistribution {
 };
 typedef struct ProbabiliteDistribution Distribution;
 
+struct userDefineDistribution{
+    std::string name;
+    std::string var;
+    std::string cdf;
+    std::string pdf;
+    size_t nbparam;
+};
 
 struct color {
 	std::string name;
@@ -98,7 +105,18 @@ struct colorVariable {
 enum varType {
     CT_SINGLE_COLOR,
     CT_VARIABLE,
-    CT_ALL
+    CT_ALL,
+    CV_CLOCK,
+    CV_REAL,
+    CV_INT
+};
+
+struct hybridVariable {
+    std::string name;
+    varType type;
+    bool isTraced;
+    std::string initialValue;
+    hybridVariable():type(CV_CLOCK),isTraced(true) {}
 };
 
 struct coloredToken {
@@ -126,6 +144,7 @@ struct transition {
 	bool ageMemory;
 	std::set<size_t> varDomain;
 	expr guard;
+    std::string update;
     transition(){ isTraced = true; }
     transition(size_t i,const std::string &n,const expr &p,bool md):id(i),label(n),isTraced(true),
     type(Timed),dist(p),priority(expr(1)),weight(expr(1.0)),singleService(true),
@@ -137,7 +156,8 @@ struct place {
 	string name;
     bool isTraced;
 	size_t colorDom;
-    //vector<coloredToken> initMarking;
+    vector<coloredToken> initMarking;
+    std::string Marking;
 	place(){ colorDom = UNCOLORED_DOMAIN; isTraced = true; }
 };
 
@@ -179,12 +199,14 @@ struct GspnType {
 	vector<colorClass> colClasses;
 	vector<colorDomain> colDoms;
 	vector<colorVariable> colVars;
+    vector<hybridVariable> hybridVars;
 	
     map<string, int> PlacesId;
     map<string, int> TransId;
 	
 	vector<transition> transitionStruct;
 	vector<place> placeStruct;
+    vector<userDefineDistribution> distribStruct;
 
     inline pair<size_t, size_t> arckey(size_t t,size_t p)const { return make_pair(t,p); };
     inline size_t get_t(pair<size_t, size_t> key)const {return key.first;};
@@ -197,13 +219,7 @@ struct GspnType {
     arcStore inArcsStruct;
     arcStore outArcsStruct;
     arcStore inhibArcsStruct;
-    /*vector< vector<arc> > inArcsStruct;
-	vector< vector<arc> > outArcsStruct;
-	vector< vector<arc> > inhibArcsStruct;*/
-	
-    vector<string> Marking;
-    vector<vector<coloredToken> > InitialMarking;
-	
+    
     map <std::string, int> IntConstant;
     map <std::string, double> RealConstant;
     set <std::string> ExternalConstant;
