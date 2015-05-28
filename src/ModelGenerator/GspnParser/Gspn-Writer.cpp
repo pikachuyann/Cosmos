@@ -501,8 +501,6 @@ void Gspn_Writer::writeGetDistParameters(ofstream &f){
                               }
                           }
                       newcase << "\t}" << endl;
-                  }else{
-                      newcase << "break;" <<endl;
                   }
                   }, "using namespace hybridVar;\n");
 }
