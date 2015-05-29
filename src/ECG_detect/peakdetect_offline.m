@@ -1,4 +1,4 @@
-function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, heart_rate,buffer_plot]=peakdetect_offline(ecg,fs,view)
+function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, S_data_filtered, Q_data_filtered, heart_rate,buffer_plot]=peakdetect_offline(ecg,fs,view)
 %% Inputs
 % ecg : raw ecg vector
 % fs : sampling frequency
@@ -11,11 +11,13 @@ function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, hear
 % - buffer_plot : processed signal. Note that this has to be divided by the sampling rate
 % - QR, RT, RR, PQ intervals (1st column: duration, 2nd column: start index).
 % - ectopic: vector of R waves indices caused by ectopic beats
+% - S_data_filtered and Q_data_filtered are obtained after removing the
+% Gaussians of the R, P, T waves
 % Note that these have to be divided by the sampling rate
 %% how to use
 % for example after loading the the ecg mat files in matlab call the
 % function as below ;
-% [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, heart_rate,buffer_plot]=peakdetect(EKG1,250,10);
+% [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, S_data_filtered, Q_data_filtered, heart_rate,buffer_plot]=peakdetect_offline(EKG1,250,10);
 
 
 %% Adapted from:
@@ -427,4 +429,85 @@ linkaxes(ax,'x');
 zoom on;
 
 
+%% remove gaussians for P R and T waves
+x = 1:length(buffer_plot);
+gaussians = zeros(size(buffer_plot));
+for i=1:length(R_i)
+    %sd = half_width/(2*sqrt(2*log(2)))
+    sd = R_wdt(i)/(2*sqrt(2*log(2)));
+    mn = R_i(i);
+    gaussians = gaussians - R_amp(i)*(exp(-(((x-mn)).^2)/(2*sd.^2)))';
+end
 
+for i=1:length(T_i)
+    sd = T_wdt(i)/(2*sqrt(2*log(2)));
+    mn = T_i(i);
+    gaussians = gaussians - T_amp(i)*(exp(-(((x-mn)).^2)/(2*sd.^2)))';
+end
+
+for i=1:length(P_i)
+    sd = P_wdt(i)/(2*sqrt(2*log(2)));
+    mn = P_i(i);
+    gaussians = gaussians - P_amp(i)*(exp(-(((x-mn)).^2)/(2*sd.^2)))';
+end
+
+filtered = buffer_plot+gaussians;
+
+Q_flt = [];
+S_flt = [];
+%compute filtered "gaussians" for Q and S waves
+for i=1:length(R_i)
+    
+    %find previous and next R waves
+    if i > 1
+        prev_R = R_i(i-1);
+    else
+        prev_R = 1;
+    end
+    
+    if i < length(R_i)
+        next_R = R_i(i+1);
+    else
+        next_R = length(filtered);
+    end
+    
+    curr_R = R_i(i);
+    
+    %find the P wave between the current and the previous R waves
+    P_ws = P_i((P_i>=prev_R) & (P_i<=curr_R));
+    %if any exists, take the last. 
+    if length(P_ws) > 0
+        P_w = P_ws(end);
+        % the Q wave is the minimum between the current P and R waves in
+        % the filtered signal
+        [Q_amp_flt, Q_flt_t] = min(filtered(P_w:curr_R));
+        Q_flt = [Q_flt Q_flt_t+P_w];
+    end
+    
+    %find the T wave between the current and the next R waves
+    T_ws = T_i(T_i>=curr_R & T_i<=next_R);
+    %if any exists, take the last. 
+    if length(T_ws) > 0
+        T_w = T_ws(1);
+        % the S wave is the minimum between the current R and T waves in
+        % the filtered signal
+        [S_amp_flt, S_flt_t] = min(filtered(curr_R:T_w));
+        S_flt = [S_flt S_flt_t+curr_R];
+    end
+   
+end
+
+S_amp_flt = filtered(S_flt);
+S_wdt_flt = zeros(size(S_flt));
+for idx = 1:length(S_wdt_flt)
+    S_wdt_flt(idx) = findRightHalfAmplitutePoint(S_flt(idx),filtered) - findLeftHalfAmplitutePoint(S_flt(idx),filtered);
+end
+
+Q_amp_flt = filtered(Q_flt);
+Q_wdt_flt = zeros(size(Q_flt));
+for idx = 1:length(Q_wdt_flt)
+    Q_wdt_flt(idx) = findRightHalfAmplitutePoint(Q_flt(idx),filtered) - findLeftHalfAmplitutePoint(Q_flt(idx),filtered);
+end
+
+S_data_filtered = [(S_flt)',(S_amp_flt),(S_wdt_flt)'];
+Q_data_filtered = [(Q_flt)',(Q_amp_flt),(Q_wdt_flt)'];
