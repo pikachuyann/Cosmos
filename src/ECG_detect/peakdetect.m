@@ -48,6 +48,9 @@ if nargin < 3
     
 end
 
+%Q_window = 0.04;%original value
+Q_window = 0.1;%enlarged window
+
 %% initialize
 R_i = [];%save index of R wave
 R_amp = []; %save amp of R wave
@@ -76,6 +79,7 @@ sleep = 0; % counter that avoids the detection of several R waves in a short tim
 S_amp1 = []; % buffer to set the adaptive T wave onset
 buffer_base=[]; %buffer to determine online adaptive mean of the signal
 dum = 0; %counter for detecting the exact R wave
+% window = round(fs/25); % averaging window size
 window = round(fs/25); % averaging window size
 weight = 1.8; %initial value of the weigth
 co = 0; % T wave counter to come out of state after a certain time
@@ -95,6 +99,11 @@ time_scale = length(ecg_raw)/fs; % total time;
 %Noise cancelation(Filtering)
 f1=0.5; %cuttoff low frequency to get rid of baseline wander
 f2=45; %cuttoff frequency to discard high frequency noise
+
+if fs <= 90
+    f2 = floor((fs-1)/2);
+end
+
 Wn=[f1 f2]*2/fs; % cutt off based on fs
 N = 3; % order of 3 less processing
 [a,b] = butter(N,Wn); %bandpass filtering
@@ -154,9 +163,10 @@ for i = 1 : length(ecg)
 %                     end
                     % RR interval saved later
                     
+                    if ind-round(Q_window*fs) > 0 
                     % Locate Q wave
-                    [Q_tamp Q_ti] = min(buffer_plot(ind-round(0.040*fs):(ind)));
-                    Q_ti = ind-round(0.040*fs) + Q_ti -1;
+                    [Q_tamp Q_ti] = min(buffer_plot(ind-round(Q_window*fs):(ind)));
+                    Q_ti = ind-round(Q_window*fs) + Q_ti -1;
                     
                     %save QR interval
                     QR_i(size(QR_i,1)+1,:) = [ind - Q_ti, Q_ti];
@@ -168,7 +178,13 @@ for i = 1 : length(ecg)
                         P_ti = start_idx_p + P_ti -1;
                         
                         
-                        if P_ti < Q_ti
+                        
+                        last_T = -1;
+                        if length(T_i) > 0 
+                            last_T=T_i(end);
+                        end
+                        
+                        if P_ti < Q_ti && last_T < P_ti
                             Q_i = [Q_i Q_ti];
                             Q_amp = [Q_amp Q_tamp];
                             
@@ -180,7 +196,7 @@ for i = 1 : length(ecg)
                             ectopic = [ectopic ind];
                         end
                         
-                        
+                    end
                     end
                     
                     
