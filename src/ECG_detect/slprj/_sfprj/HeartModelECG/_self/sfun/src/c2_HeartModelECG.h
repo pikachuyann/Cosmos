@@ -17,8 +17,8 @@ typedef struct {
   uint32_T chartNumber;
   uint32_T instanceNumber;
   uint32_T c2_AgetEventCounter;
-  uint32_T c2_VgetEventCounter;
   uint32_T c2_AVReachedEventCounter;
+  uint32_T c2_VgetEventCounter;
   uint32_T c2_RefractEventCounter;
   int32_T c2_sfEvent;
   uint8_T c2_tp_Heart;
@@ -116,7 +116,6 @@ typedef struct {
   real_T c2_RA_retroD;
   real_T c2_RV_anteD;
   real_T c2_RV_retroD;
-  real_T c2_SA_d;
   real_T c2_SA_dV;
   real_T c2_SA_ectopD;
   real_T c2_SA_ectopdV;
