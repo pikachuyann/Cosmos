@@ -201,12 +201,12 @@ static void initialize_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
   *chartInstance)
 {
   boolean_T *c2_Aget;
-  boolean_T *c2_Vget;
   boolean_T *c2_AVReached;
+  boolean_T *c2_Vget;
   boolean_T *c2_Refract;
   c2_Refract = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 4);
-  c2_AVReached = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 3);
-  c2_Vget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 2);
+  c2_Vget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 3);
+  c2_AVReached = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 2);
   c2_Aget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 1);
   chartInstance->c2_sfEvent = CALL_EVENT;
   _sfTime_ = sf_get_time(chartInstance->S);
@@ -317,10 +317,10 @@ static void initialize_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
   chartInstance->c2_refractorylast = 0.0;
   chartInstance->c2_AgetEventCounter = 0U;
   *c2_Aget = false;
-  chartInstance->c2_VgetEventCounter = 0U;
-  *c2_Vget = false;
   chartInstance->c2_AVReachedEventCounter = 0U;
   *c2_AVReached = false;
+  chartInstance->c2_VgetEventCounter = 0U;
+  *c2_Vget = false;
   chartInstance->c2_RefractEventCounter = 0U;
   *c2_Refract = false;
 }
@@ -359,7 +359,6 @@ static void initialize_params_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct 
   real_T c2_d28;
   real_T c2_d29;
   real_T c2_d30;
-  real_T c2_d31;
   sf_mex_import_named("Atr_refrD", sf_mex_get_sfun_param(chartInstance->S, 12, 0),
                       &c2_d0, 0, 0, 0U, 0, 0U, 0);
   chartInstance->c2_Atr_refrD = c2_d0;
@@ -411,51 +410,48 @@ static void initialize_params_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct 
   sf_mex_import_named("RV_retroD", sf_mex_get_sfun_param(chartInstance->S, 22, 0),
                       &c2_d16, 0, 0, 0U, 0, 0U, 0);
   chartInstance->c2_RV_retroD = c2_d16;
-  sf_mex_import_named("SA_d", sf_mex_get_sfun_param(chartInstance->S, 23, 0),
+  sf_mex_import_named("SA_dV", sf_mex_get_sfun_param(chartInstance->S, 23, 0),
                       &c2_d17, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_SA_d = c2_d17;
-  sf_mex_import_named("SA_dV", sf_mex_get_sfun_param(chartInstance->S, 24, 0),
+  chartInstance->c2_SA_dV = c2_d17;
+  sf_mex_import_named("SA_ectopD", sf_mex_get_sfun_param(chartInstance->S, 24, 0),
                       &c2_d18, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_SA_dV = c2_d18;
-  sf_mex_import_named("SA_ectopD", sf_mex_get_sfun_param(chartInstance->S, 25, 0),
-                      &c2_d19, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_SA_ectopD = c2_d19;
-  sf_mex_import_named("SA_ectopdV", sf_mex_get_sfun_param(chartInstance->S, 26,
-    0), &c2_d20, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_SA_ectopdV = c2_d20;
-  sf_mex_import_named("SA_noiseD", sf_mex_get_sfun_param(chartInstance->S, 27, 0),
+  chartInstance->c2_SA_ectopD = c2_d18;
+  sf_mex_import_named("SA_ectopdV", sf_mex_get_sfun_param(chartInstance->S, 25,
+    0), &c2_d19, 0, 0, 0U, 0, 0U, 0);
+  chartInstance->c2_SA_ectopdV = c2_d19;
+  sf_mex_import_named("SA_noiseD", sf_mex_get_sfun_param(chartInstance->S, 26, 0),
+                      &c2_d20, 0, 0, 0U, 0, 0U, 0);
+  chartInstance->c2_SA_noiseD = c2_d20;
+  sf_mex_import_named("VRG_d", sf_mex_get_sfun_param(chartInstance->S, 27, 0),
                       &c2_d21, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_SA_noiseD = c2_d21;
-  sf_mex_import_named("VRG_d", sf_mex_get_sfun_param(chartInstance->S, 28, 0),
-                      &c2_d22, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_VRG_d = c2_d22;
-  sf_mex_import_named("VRG_ectopD", sf_mex_get_sfun_param(chartInstance->S, 29,
+  chartInstance->c2_VRG_d = c2_d21;
+  sf_mex_import_named("VRG_ectopD", sf_mex_get_sfun_param(chartInstance->S, 28,
+    0), &c2_d22, 0, 0, 0U, 0, 0U, 0);
+  chartInstance->c2_VRG_ectopD = c2_d22;
+  sf_mex_import_named("VRG_noiseD", sf_mex_get_sfun_param(chartInstance->S, 29,
     0), &c2_d23, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_VRG_ectopD = c2_d23;
-  sf_mex_import_named("VRG_noiseD", sf_mex_get_sfun_param(chartInstance->S, 30,
-    0), &c2_d24, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_VRG_noiseD = c2_d24;
-  sf_mex_import_named("Vtr_refrD", sf_mex_get_sfun_param(chartInstance->S, 31, 0),
-                      &c2_d25, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_Vtr_refrD = c2_d25;
+  chartInstance->c2_VRG_noiseD = c2_d23;
+  sf_mex_import_named("Vtr_refrD", sf_mex_get_sfun_param(chartInstance->S, 30, 0),
+                      &c2_d24, 0, 0, 0U, 0, 0U, 0);
+  chartInstance->c2_Vtr_refrD = c2_d24;
   sf_mex_import_named("PM_TAVI", sf_mex_get_sfun_param(chartInstance->S, 13, 0),
-                      &c2_d26, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_PM_TAVI = c2_d26;
+                      &c2_d25, 0, 0, 0U, 0, 0U, 0);
+  chartInstance->c2_PM_TAVI = c2_d25;
   sf_mex_import_named("PM_TLRI", sf_mex_get_sfun_param(chartInstance->S, 14, 0),
-                      &c2_d27, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_PM_TLRI = c2_d27;
+                      &c2_d26, 0, 0, 0U, 0, 0U, 0);
+  chartInstance->c2_PM_TLRI = c2_d26;
   sf_mex_import_named("PM_TPVAB", sf_mex_get_sfun_param(chartInstance->S, 15, 0),
-                      &c2_d28, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_PM_TPVAB = c2_d28;
+                      &c2_d27, 0, 0, 0U, 0, 0U, 0);
+  chartInstance->c2_PM_TPVAB = c2_d27;
   sf_mex_import_named("PM_TPVARP", sf_mex_get_sfun_param(chartInstance->S, 16, 0),
-                      &c2_d29, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_PM_TPVARP = c2_d29;
+                      &c2_d28, 0, 0, 0U, 0, 0U, 0);
+  chartInstance->c2_PM_TPVARP = c2_d28;
   sf_mex_import_named("PM_TURI", sf_mex_get_sfun_param(chartInstance->S, 17, 0),
-                      &c2_d30, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_PM_TURI = c2_d30;
+                      &c2_d29, 0, 0, 0U, 0, 0U, 0);
+  chartInstance->c2_PM_TURI = c2_d29;
   sf_mex_import_named("PM_TVRP", sf_mex_get_sfun_param(chartInstance->S, 18, 0),
-                      &c2_d31, 0, 0, 0U, 0, 0U, 0);
-  chartInstance->c2_PM_TVRP = c2_d31;
+                      &c2_d30, 0, 0, 0U, 0, 0U, 0);
+  chartInstance->c2_PM_TVRP = c2_d30;
 }
 
 static void enable_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
@@ -958,8 +954,8 @@ static const mxArray *get_sim_state_c2_HeartModelECG
   boolean_T *c2_Refract;
   boolean_T *c2_Vget;
   c2_Refract = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 4);
-  c2_AVReached = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 3);
-  c2_Vget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 2);
+  c2_Vget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 3);
+  c2_AVReached = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 2);
   c2_Aget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 1);
   c2_st = NULL;
   c2_st = NULL;
@@ -1258,8 +1254,8 @@ static void set_sim_state_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
   boolean_T *c2_Refract;
   boolean_T *c2_Vget;
   c2_Refract = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 4);
-  c2_AVReached = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 3);
-  c2_Vget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 2);
+  c2_Vget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 3);
+  c2_AVReached = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 2);
   c2_Aget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 1);
   c2_u = sf_mex_dup(c2_st);
   chartInstance->c2_avj_refr = c2_emlrt_marshallIn(chartInstance, sf_mex_dup
@@ -1770,14 +1766,22 @@ static void finalize_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
 static void sf_gateway_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
   *chartInstance)
 {
+  real_T *c2_SA_d;
+  real_T *c2_QR_delay;
+  real_T *c2_RT_delay;
+  real_T *c2_PQ_delay;
   boolean_T *c2_Aget;
-  boolean_T *c2_Vget;
   boolean_T *c2_AVReached;
+  boolean_T *c2_Vget;
   boolean_T *c2_Refract;
   c2_Refract = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 4);
-  c2_AVReached = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 3);
-  c2_Vget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 2);
+  c2_Vget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 3);
+  c2_AVReached = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 2);
   c2_Aget = (boolean_T *)ssGetOutputPortSignal(chartInstance->S, 1);
+  c2_PQ_delay = (real_T *)ssGetInputPortSignal(chartInstance->S, 3);
+  c2_RT_delay = (real_T *)ssGetInputPortSignal(chartInstance->S, 2);
+  c2_QR_delay = (real_T *)ssGetInputPortSignal(chartInstance->S, 1);
+  c2_SA_d = (real_T *)ssGetInputPortSignal(chartInstance->S, 0);
   c2_set_sim_state_side_effects_c2_HeartModelECG(chartInstance);
   _SFD_SYMBOL_SCOPE_PUSH(0U, 0U);
   _sfTime_ = sf_get_time(chartInstance->S);
@@ -1847,7 +1851,7 @@ static void sf_gateway_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_RA_retroD, 14U);
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_RV_anteD, 15U);
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_RV_retroD, 16U);
-  _SFD_DATA_RANGE_CHECK(chartInstance->c2_SA_d, 17U);
+  _SFD_DATA_RANGE_CHECK(*c2_SA_d, 17U);
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_SA_dV, 18U);
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_SA_ectopD, 19U);
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_SA_ectopdV, 20U);
@@ -1870,6 +1874,9 @@ static void sf_gateway_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_avj_refr, 37U);
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_avj_refr_0, 38U);
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_refractorylast, 39U);
+  _SFD_DATA_RANGE_CHECK(*c2_QR_delay, 40U);
+  _SFD_DATA_RANGE_CHECK(*c2_RT_delay, 41U);
+  _SFD_DATA_RANGE_CHECK(*c2_PQ_delay, 42U);
   chartInstance->c2_sfEvent = CALL_EVENT;
   c2_c2_HeartModelECG(chartInstance);
   if (chartInstance->c2_AgetEventCounter > 0U) {
@@ -1877,14 +1884,14 @@ static void sf_gateway_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
     chartInstance->c2_AgetEventCounter--;
   }
 
-  if (chartInstance->c2_VgetEventCounter > 0U) {
-    *c2_Vget = !*c2_Vget;
-    chartInstance->c2_VgetEventCounter--;
-  }
-
   if (chartInstance->c2_AVReachedEventCounter > 0U) {
     *c2_AVReached = !*c2_AVReached;
     chartInstance->c2_AVReachedEventCounter--;
+  }
+
+  if (chartInstance->c2_VgetEventCounter > 0U) {
+    *c2_Vget = !*c2_Vget;
+    chartInstance->c2_VgetEventCounter--;
   }
 
   if (chartInstance->c2_RefractEventCounter > 0U) {
@@ -2474,8 +2481,10 @@ static void c2_RAConductor(SFc2_HeartModelECGInstanceStruct *chartInstance)
   boolean_T c2_b_temp;
   boolean_T c2_f_out;
   int32_T c2_b_previousEvent;
+  real_T *c2_PQ_delay;
   boolean_T guard1 = false;
   boolean_T guard2 = false;
+  c2_PQ_delay = (real_T *)ssGetInputPortSignal(chartInstance->S, 3);
   _SFD_CS_CALL(STATE_ENTER_DURING_FUNCTION_TAG, 27U, chartInstance->c2_sfEvent);
   switch (chartInstance->c2_is_RAConductor) {
    case c2_IN_Ante:
@@ -2499,9 +2508,8 @@ static void c2_RAConductor(SFc2_HeartModelECGInstanceStruct *chartInstance)
       c2_temp = (_SFD_CCP_CALL(10U, 0, 1 != 0U, chartInstance->c2_sfEvent) != 0);
       if (c2_temp) {
         c2_temp = (_SFD_CCP_CALL(10U, 1, (real_T)
-                    chartInstance->c2_temporalCounter_i3 >=
-                    chartInstance->c2_RA_anteD != 0U, chartInstance->c2_sfEvent)
-                   != 0);
+                    chartInstance->c2_temporalCounter_i3 >= *c2_PQ_delay != 0U,
+                    chartInstance->c2_sfEvent) != 0);
       }
 
       c2_b_out = (CV_TRANSITION_EVAL(10U, (int32_T)c2_temp) != 0);
@@ -2671,8 +2679,10 @@ static void c2_AVJOut(SFc2_HeartModelECGInstanceStruct *chartInstance)
   boolean_T c2_b_temp;
   boolean_T c2_d_out;
   int32_T c2_b_previousEvent;
+  real_T *c2_QR_delay;
   boolean_T guard1 = false;
   boolean_T guard2 = false;
+  c2_QR_delay = (real_T *)ssGetInputPortSignal(chartInstance->S, 1);
   _SFD_CS_CALL(STATE_ENTER_DURING_FUNCTION_TAG, 10U, chartInstance->c2_sfEvent);
   switch (chartInstance->c2_is_AVJOut) {
    case c2_IN_Ante:
@@ -2683,9 +2693,8 @@ static void c2_AVJOut(SFc2_HeartModelECGInstanceStruct *chartInstance)
     if (c2_temp) {
       c2_temp = (_SFD_CCP_CALL(29U, 1, (real_T)
                   chartInstance->c2_temporalCounter_i4 >= c2_AVJDelay
-                  (chartInstance, chartInstance->c2_avj_tRec,
-                   chartInstance->c2_AV_anteDMin) != 0U,
-                  chartInstance->c2_sfEvent) != 0);
+                  (chartInstance, chartInstance->c2_avj_tRec, *c2_QR_delay *
+                   0.666) != 0U, chartInstance->c2_sfEvent) != 0);
     }
 
     c2_out = (CV_TRANSITION_EVAL(29U, (int32_T)c2_temp) != 0);
@@ -2842,8 +2851,10 @@ static void c2_RVConductor(SFc2_HeartModelECGInstanceStruct *chartInstance)
   boolean_T c2_b_temp;
   boolean_T c2_f_out;
   int32_T c2_b_previousEvent;
+  real_T *c2_QR_delay;
   boolean_T guard1 = false;
   boolean_T guard2 = false;
+  c2_QR_delay = (real_T *)ssGetInputPortSignal(chartInstance->S, 1);
   _SFD_CS_CALL(STATE_ENTER_DURING_FUNCTION_TAG, 31U, chartInstance->c2_sfEvent);
   switch (chartInstance->c2_is_RVConductor) {
    case c2_IN_Ante:
@@ -2868,9 +2879,8 @@ static void c2_RVConductor(SFc2_HeartModelECGInstanceStruct *chartInstance)
       c2_temp = (_SFD_CCP_CALL(22U, 0, 1 != 0U, chartInstance->c2_sfEvent) != 0);
       if (c2_temp) {
         c2_temp = (_SFD_CCP_CALL(22U, 1, (real_T)
-                    chartInstance->c2_temporalCounter_i6 >=
-                    chartInstance->c2_RV_anteD != 0U, chartInstance->c2_sfEvent)
-                   != 0);
+                    chartInstance->c2_temporalCounter_i6 >= *c2_QR_delay / 3.0
+                    != 0U, chartInstance->c2_sfEvent) != 0);
       }
 
       c2_b_out = (CV_TRANSITION_EVAL(22U, (int32_T)c2_temp) != 0);
@@ -3038,7 +3048,9 @@ static void c2_SANode(SFc2_HeartModelECGInstanceStruct *chartInstance)
   int32_T c2_previousEvent;
   int32_T c2_b_previousEvent;
   boolean_T c2_c_out;
+  real_T *c2_SA_d;
   boolean_T guard1 = false;
+  c2_SA_d = (real_T *)ssGetInputPortSignal(chartInstance->S, 0);
   _SFD_CS_CALL(STATE_ENTER_DURING_FUNCTION_TAG, 35U, chartInstance->c2_sfEvent);
   switch (chartInstance->c2_is_SANode) {
    case c2_IN_Wait4ABeat:
@@ -3064,9 +3076,8 @@ static void c2_SANode(SFc2_HeartModelECGInstanceStruct *chartInstance)
       c2_temp = (_SFD_CCP_CALL(1U, 0, 1 != 0U, chartInstance->c2_sfEvent) != 0);
       if (c2_temp) {
         c2_temp = (_SFD_CCP_CALL(1U, 1, (real_T)
-                    chartInstance->c2_temporalCounter_i8 >=
-                    chartInstance->c2_SA_d != 0U, chartInstance->c2_sfEvent) !=
-                   0);
+                    chartInstance->c2_temporalCounter_i8 >= *c2_SA_d != 0U,
+                    chartInstance->c2_sfEvent) != 0);
       }
 
       c2_b_out = (CV_TRANSITION_EVAL(1U, (int32_T)c2_temp) != 0);
@@ -3643,6 +3654,8 @@ static void c2_Ventricle(SFc2_HeartModelECGInstanceStruct *chartInstance)
   boolean_T c2_temp;
   boolean_T c2_d_out;
   int32_T c2_b_previousEvent;
+  real_T *c2_RT_delay;
+  c2_RT_delay = (real_T *)ssGetInputPortSignal(chartInstance->S, 2);
   _SFD_CS_CALL(STATE_ENTER_DURING_FUNCTION_TAG, 45U, chartInstance->c2_sfEvent);
   switch (chartInstance->c2_is_Ventricle) {
    case c2_IN_Excitable:
@@ -3733,9 +3746,8 @@ static void c2_Ventricle(SFc2_HeartModelECGInstanceStruct *chartInstance)
     c2_temp = (_SFD_CCP_CALL(32U, 0, 1 != 0U, chartInstance->c2_sfEvent) != 0);
     if (c2_temp) {
       c2_temp = (_SFD_CCP_CALL(32U, 1, (real_T)
-                  chartInstance->c2_temporalCounter_i11 >=
-                  chartInstance->c2_Vtr_refrD != 0U, chartInstance->c2_sfEvent)
-                 != 0);
+                  chartInstance->c2_temporalCounter_i11 >= *c2_RT_delay != 0U,
+                  chartInstance->c2_sfEvent) != 0);
     }
 
     c2_d_out = (CV_TRANSITION_EVAL(32U, (int32_T)c2_temp) != 0);
@@ -4044,10 +4056,10 @@ static real_T c2_b_emlrt_marshallIn(SFc2_HeartModelECGInstanceStruct
   *chartInstance, const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId)
 {
   real_T c2_y;
-  real_T c2_d32;
+  real_T c2_d31;
   (void)chartInstance;
-  sf_mex_import(c2_parentId, sf_mex_dup(c2_u), &c2_d32, 1, 0, 0U, 0, 0U, 0);
-  c2_y = c2_d32;
+  sf_mex_import(c2_parentId, sf_mex_dup(c2_u), &c2_d31, 1, 0, 0U, 0, 0U, 0);
+  c2_y = c2_d31;
   sf_mex_destroy(&c2_u);
   return c2_y;
 }
@@ -4897,9 +4909,9 @@ static real_T c2_AVJDelay(SFc2_HeartModelECGInstanceStruct *chartInstance,
   real_T c2_d_y;
   real_T c2_d_x;
   real_T c2_e_x;
-  _SFD_SET_DATA_VALUE_PTR(40U, &c2_t);
-  _SFD_SET_DATA_VALUE_PTR(42U, &c2_minDly);
-  _SFD_SET_DATA_VALUE_PTR(41U, &c2_tRec);
+  _SFD_SET_DATA_VALUE_PTR(43U, &c2_t);
+  _SFD_SET_DATA_VALUE_PTR(45U, &c2_minDly);
+  _SFD_SET_DATA_VALUE_PTR(44U, &c2_tRec);
   _SFD_SYMBOL_SCOPE_PUSH_EML(0U, 5U, 5U, c2_debug_family_names,
     c2_debug_family_var_map);
   _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_nargin, 0U, c2_sf_marshallOut,
@@ -4931,9 +4943,9 @@ static real_T c2_AVJDelay(SFc2_HeartModelECGInstanceStruct *chartInstance,
   c2_t = c2_minDly + c2_hoistedGlobal * c2_e_x;
   _SFD_EML_CALL(11U, chartInstance->c2_sfEvent, -2);
   _SFD_SYMBOL_SCOPE_POP();
-  _SFD_UNSET_DATA_VALUE_PTR(40U);
-  _SFD_UNSET_DATA_VALUE_PTR(42U);
-  _SFD_UNSET_DATA_VALUE_PTR(41U);
+  _SFD_UNSET_DATA_VALUE_PTR(43U);
+  _SFD_UNSET_DATA_VALUE_PTR(45U);
+  _SFD_UNSET_DATA_VALUE_PTR(44U);
   return c2_t;
 }
 
@@ -4961,8 +4973,8 @@ static real_T c2_timeToDep(SFc2_HeartModelECGInstanceStruct *chartInstance,
   real_T c2_f_y;
   real_T c2_yk;
   real_T c2_g_y;
-  _SFD_SET_DATA_VALUE_PTR(43U, &c2_t);
-  _SFD_SET_DATA_VALUE_PTR(44U, &c2_Vm);
+  _SFD_SET_DATA_VALUE_PTR(46U, &c2_t);
+  _SFD_SET_DATA_VALUE_PTR(47U, &c2_Vm);
   _SFD_SYMBOL_SCOPE_PUSH_EML(0U, 4U, 4U, c2_b_debug_family_names,
     c2_debug_family_var_map);
   _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_nargin, 0U, c2_sf_marshallOut,
@@ -4997,8 +5009,8 @@ static real_T c2_timeToDep(SFc2_HeartModelECGInstanceStruct *chartInstance,
   c2_t = muDoubleScalarMax(0.0, c2_g_y);
   _SFD_EML_CALL(9U, chartInstance->c2_sfEvent, -2);
   _SFD_SYMBOL_SCOPE_POP();
-  _SFD_UNSET_DATA_VALUE_PTR(43U);
-  _SFD_UNSET_DATA_VALUE_PTR(44U);
+  _SFD_UNSET_DATA_VALUE_PTR(46U);
+  _SFD_UNSET_DATA_VALUE_PTR(47U);
   return c2_t;
 }
 
@@ -5023,8 +5035,8 @@ static real_T c2_initRefrPeriod(SFc2_HeartModelECGInstanceStruct *chartInstance,
   real_T c2_d_y;
   real_T c2_d_x;
   real_T c2_e_x;
-  _SFD_SET_DATA_VALUE_PTR(45U, &c2_t);
-  _SFD_SET_DATA_VALUE_PTR(46U, &c2_tRec);
+  _SFD_SET_DATA_VALUE_PTR(48U, &c2_t);
+  _SFD_SET_DATA_VALUE_PTR(49U, &c2_tRec);
   _SFD_SYMBOL_SCOPE_PUSH_EML(0U, 4U, 4U, c2_c_debug_family_names,
     c2_debug_family_var_map);
   _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_nargin, 0U, c2_sf_marshallOut,
@@ -5055,8 +5067,8 @@ static real_T c2_initRefrPeriod(SFc2_HeartModelECGInstanceStruct *chartInstance,
   c2_t = c2_hoistedGlobal + c2_b_hoistedGlobal * (1.0 - c2_e_x);
   _SFD_EML_CALL(6U, chartInstance->c2_sfEvent, -2);
   _SFD_SYMBOL_SCOPE_POP();
-  _SFD_UNSET_DATA_VALUE_PTR(45U);
-  _SFD_UNSET_DATA_VALUE_PTR(46U);
+  _SFD_UNSET_DATA_VALUE_PTR(48U);
+  _SFD_UNSET_DATA_VALUE_PTR(49U);
   return c2_t;
 }
 
@@ -5077,9 +5089,9 @@ static real_T c2_modulateRefrRetro(SFc2_HeartModelECGInstanceStruct
   real_T c2_c_x;
   real_T c2_c_y;
   real_T c2_d_y;
-  _SFD_SET_DATA_VALUE_PTR(48U, &c2_dT);
-  _SFD_SET_DATA_VALUE_PTR(49U, &c2_t0);
-  _SFD_SET_DATA_VALUE_PTR(47U, &c2_t);
+  _SFD_SET_DATA_VALUE_PTR(51U, &c2_dT);
+  _SFD_SET_DATA_VALUE_PTR(52U, &c2_t0);
+  _SFD_SET_DATA_VALUE_PTR(50U, &c2_t);
   _SFD_SYMBOL_SCOPE_PUSH_EML(0U, 5U, 5U, c2_d_debug_family_names,
     c2_debug_family_var_map);
   _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_nargin, 0U, c2_sf_marshallOut,
@@ -5108,9 +5120,9 @@ static real_T c2_modulateRefrRetro(SFc2_HeartModelECGInstanceStruct
     chartInstance->c2_AV_theta);
   _SFD_EML_CALL(8U, chartInstance->c2_sfEvent, -3);
   _SFD_SYMBOL_SCOPE_POP();
-  _SFD_UNSET_DATA_VALUE_PTR(48U);
-  _SFD_UNSET_DATA_VALUE_PTR(49U);
-  _SFD_UNSET_DATA_VALUE_PTR(47U);
+  _SFD_UNSET_DATA_VALUE_PTR(51U);
+  _SFD_UNSET_DATA_VALUE_PTR(52U);
+  _SFD_UNSET_DATA_VALUE_PTR(50U);
   return c2_dT;
 }
 
@@ -5150,10 +5162,10 @@ static real_T c2_modulateRefrAnte(SFc2_HeartModelECGInstanceStruct
   real_T c2_yk;
   real_T c2_k_y;
   real_T c2_minval;
-  _SFD_SET_DATA_VALUE_PTR(52U, &c2_dT);
-  _SFD_SET_DATA_VALUE_PTR(53U, &c2_dV);
-  _SFD_SET_DATA_VALUE_PTR(51U, &c2_t0);
-  _SFD_SET_DATA_VALUE_PTR(50U, &c2_t);
+  _SFD_SET_DATA_VALUE_PTR(55U, &c2_dT);
+  _SFD_SET_DATA_VALUE_PTR(56U, &c2_dV);
+  _SFD_SET_DATA_VALUE_PTR(54U, &c2_t0);
+  _SFD_SET_DATA_VALUE_PTR(53U, &c2_t);
   _SFD_SYMBOL_SCOPE_PUSH_EML(0U, 6U, 6U, c2_e_debug_family_names,
     c2_debug_family_var_map);
   _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_nargin, 0U, c2_sf_marshallOut,
@@ -5205,10 +5217,10 @@ static real_T c2_modulateRefrAnte(SFc2_HeartModelECGInstanceStruct
     * c2_power(chartInstance, c2_minval, chartInstance->c2_AV_delta);
   _SFD_EML_CALL(7U, chartInstance->c2_sfEvent, -4);
   _SFD_SYMBOL_SCOPE_POP();
-  _SFD_UNSET_DATA_VALUE_PTR(52U);
+  _SFD_UNSET_DATA_VALUE_PTR(55U);
+  _SFD_UNSET_DATA_VALUE_PTR(56U);
+  _SFD_UNSET_DATA_VALUE_PTR(54U);
   _SFD_UNSET_DATA_VALUE_PTR(53U);
-  _SFD_UNSET_DATA_VALUE_PTR(51U);
-  _SFD_UNSET_DATA_VALUE_PTR(50U);
   return c2_dT;
 }
 
@@ -5525,10 +5537,10 @@ extern void utFree(void*);
 
 void sf_c2_HeartModelECG_get_check_sum(mxArray *plhs[])
 {
-  ((real_T *)mxGetPr((plhs[0])))[0] = (real_T)(3483544216U);
-  ((real_T *)mxGetPr((plhs[0])))[1] = (real_T)(2687762968U);
-  ((real_T *)mxGetPr((plhs[0])))[2] = (real_T)(3721619838U);
-  ((real_T *)mxGetPr((plhs[0])))[3] = (real_T)(3884984584U);
+  ((real_T *)mxGetPr((plhs[0])))[0] = (real_T)(2296937912U);
+  ((real_T *)mxGetPr((plhs[0])))[1] = (real_T)(800573474U);
+  ((real_T *)mxGetPr((plhs[0])))[2] = (real_T)(656876107U);
+  ((real_T *)mxGetPr((plhs[0])))[3] = (real_T)(1707787456U);
 }
 
 mxArray *sf_c2_HeartModelECG_get_autoinheritance_info(void)
@@ -5540,18 +5552,97 @@ mxArray *sf_c2_HeartModelECG_get_autoinheritance_info(void)
     autoinheritanceFields);
 
   {
-    mxArray *mxChecksum = mxCreateString("c7lFRJkhdReerUZS9j6QLG");
+    mxArray *mxChecksum = mxCreateString("LxHgVwa3lEflkd7ZPhE2uH");
     mxSetField(mxAutoinheritanceInfo,0,"checksum",mxChecksum);
-  }
-
-  {
-    mxSetField(mxAutoinheritanceInfo,0,"inputs",mxCreateDoubleMatrix(0,0,mxREAL));
   }
 
   {
     const char *dataFields[] = { "size", "type", "complexity" };
 
-    mxArray *mxData = mxCreateStructMatrix(1,32,3,dataFields);
+    mxArray *mxData = mxCreateStructMatrix(1,4,3,dataFields);
+
+    {
+      mxArray *mxSize = mxCreateDoubleMatrix(1,2,mxREAL);
+      double *pr = mxGetPr(mxSize);
+      pr[0] = (double)(1);
+      pr[1] = (double)(1);
+      mxSetField(mxData,0,"size",mxSize);
+    }
+
+    {
+      const char *typeFields[] = { "base", "fixpt" };
+
+      mxArray *mxType = mxCreateStructMatrix(1,1,2,typeFields);
+      mxSetField(mxType,0,"base",mxCreateDoubleScalar(10));
+      mxSetField(mxType,0,"fixpt",mxCreateDoubleMatrix(0,0,mxREAL));
+      mxSetField(mxData,0,"type",mxType);
+    }
+
+    mxSetField(mxData,0,"complexity",mxCreateDoubleScalar(0));
+
+    {
+      mxArray *mxSize = mxCreateDoubleMatrix(1,2,mxREAL);
+      double *pr = mxGetPr(mxSize);
+      pr[0] = (double)(1);
+      pr[1] = (double)(1);
+      mxSetField(mxData,1,"size",mxSize);
+    }
+
+    {
+      const char *typeFields[] = { "base", "fixpt" };
+
+      mxArray *mxType = mxCreateStructMatrix(1,1,2,typeFields);
+      mxSetField(mxType,0,"base",mxCreateDoubleScalar(10));
+      mxSetField(mxType,0,"fixpt",mxCreateDoubleMatrix(0,0,mxREAL));
+      mxSetField(mxData,1,"type",mxType);
+    }
+
+    mxSetField(mxData,1,"complexity",mxCreateDoubleScalar(0));
+
+    {
+      mxArray *mxSize = mxCreateDoubleMatrix(1,2,mxREAL);
+      double *pr = mxGetPr(mxSize);
+      pr[0] = (double)(1);
+      pr[1] = (double)(1);
+      mxSetField(mxData,2,"size",mxSize);
+    }
+
+    {
+      const char *typeFields[] = { "base", "fixpt" };
+
+      mxArray *mxType = mxCreateStructMatrix(1,1,2,typeFields);
+      mxSetField(mxType,0,"base",mxCreateDoubleScalar(10));
+      mxSetField(mxType,0,"fixpt",mxCreateDoubleMatrix(0,0,mxREAL));
+      mxSetField(mxData,2,"type",mxType);
+    }
+
+    mxSetField(mxData,2,"complexity",mxCreateDoubleScalar(0));
+
+    {
+      mxArray *mxSize = mxCreateDoubleMatrix(1,2,mxREAL);
+      double *pr = mxGetPr(mxSize);
+      pr[0] = (double)(1);
+      pr[1] = (double)(1);
+      mxSetField(mxData,3,"size",mxSize);
+    }
+
+    {
+      const char *typeFields[] = { "base", "fixpt" };
+
+      mxArray *mxType = mxCreateStructMatrix(1,1,2,typeFields);
+      mxSetField(mxType,0,"base",mxCreateDoubleScalar(10));
+      mxSetField(mxType,0,"fixpt",mxCreateDoubleMatrix(0,0,mxREAL));
+      mxSetField(mxData,3,"type",mxType);
+    }
+
+    mxSetField(mxData,3,"complexity",mxCreateDoubleScalar(0));
+    mxSetField(mxAutoinheritanceInfo,0,"inputs",mxData);
+  }
+
+  {
+    const char *dataFields[] = { "size", "type", "complexity" };
+
+    mxArray *mxData = mxCreateStructMatrix(1,31,3,dataFields);
 
     {
       mxArray *mxSize = mxCreateDoubleMatrix(1,2,mxREAL);
@@ -6141,25 +6232,6 @@ mxArray *sf_c2_HeartModelECG_get_autoinheritance_info(void)
     }
 
     mxSetField(mxData,30,"complexity",mxCreateDoubleScalar(0));
-
-    {
-      mxArray *mxSize = mxCreateDoubleMatrix(1,2,mxREAL);
-      double *pr = mxGetPr(mxSize);
-      pr[0] = (double)(1);
-      pr[1] = (double)(1);
-      mxSetField(mxData,31,"size",mxSize);
-    }
-
-    {
-      const char *typeFields[] = { "base", "fixpt" };
-
-      mxArray *mxType = mxCreateStructMatrix(1,1,2,typeFields);
-      mxSetField(mxType,0,"base",mxCreateDoubleScalar(10));
-      mxSetField(mxType,0,"fixpt",mxCreateDoubleMatrix(0,0,mxREAL));
-      mxSetField(mxData,31,"type",mxType);
-    }
-
-    mxSetField(mxData,31,"complexity",mxCreateDoubleScalar(0));
     mxSetField(mxAutoinheritanceInfo,0,"parameters",mxData);
   }
 
@@ -6228,7 +6300,7 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
            54,
            70,
            0,
-           54,
+           57,
            42,
            0,
            0,
@@ -6269,7 +6341,7 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
           _SFD_SET_DATA_PROPS(14,10,0,0,"RA_retroD");
           _SFD_SET_DATA_PROPS(15,10,0,0,"RV_anteD");
           _SFD_SET_DATA_PROPS(16,10,0,0,"RV_retroD");
-          _SFD_SET_DATA_PROPS(17,10,0,0,"SA_d");
+          _SFD_SET_DATA_PROPS(17,1,1,0,"SA_d");
           _SFD_SET_DATA_PROPS(18,10,0,0,"SA_dV");
           _SFD_SET_DATA_PROPS(19,10,0,0,"SA_ectopD");
           _SFD_SET_DATA_PROPS(20,10,0,0,"SA_ectopdV");
@@ -6292,20 +6364,23 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
           _SFD_SET_DATA_PROPS(37,0,0,0,"avj_refr");
           _SFD_SET_DATA_PROPS(38,0,0,0,"avj_refr_0");
           _SFD_SET_DATA_PROPS(39,0,0,0,"refractorylast");
-          _SFD_SET_DATA_PROPS(40,9,0,0,"");
-          _SFD_SET_DATA_PROPS(41,8,0,0,"");
-          _SFD_SET_DATA_PROPS(42,8,0,0,"");
+          _SFD_SET_DATA_PROPS(40,1,1,0,"QR_delay");
+          _SFD_SET_DATA_PROPS(41,1,1,0,"RT_delay");
+          _SFD_SET_DATA_PROPS(42,1,1,0,"PQ_delay");
           _SFD_SET_DATA_PROPS(43,9,0,0,"");
           _SFD_SET_DATA_PROPS(44,8,0,0,"");
-          _SFD_SET_DATA_PROPS(45,9,0,0,"");
-          _SFD_SET_DATA_PROPS(46,8,0,0,"");
+          _SFD_SET_DATA_PROPS(45,8,0,0,"");
+          _SFD_SET_DATA_PROPS(46,9,0,0,"");
           _SFD_SET_DATA_PROPS(47,8,0,0,"");
           _SFD_SET_DATA_PROPS(48,9,0,0,"");
           _SFD_SET_DATA_PROPS(49,8,0,0,"");
           _SFD_SET_DATA_PROPS(50,8,0,0,"");
-          _SFD_SET_DATA_PROPS(51,8,0,0,"");
-          _SFD_SET_DATA_PROPS(52,9,0,0,"");
+          _SFD_SET_DATA_PROPS(51,9,0,0,"");
+          _SFD_SET_DATA_PROPS(52,8,0,0,"");
           _SFD_SET_DATA_PROPS(53,8,0,0,"");
+          _SFD_SET_DATA_PROPS(54,8,0,0,"");
+          _SFD_SET_DATA_PROPS(55,9,0,0,"");
+          _SFD_SET_DATA_PROPS(56,8,0,0,"");
           _SFD_EVENT_SCOPE(0,0);
           _SFD_EVENT_SCOPE(1,0);
           _SFD_EVENT_SCOPE(2,0);
@@ -6865,9 +6940,9 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
         _SFD_CV_INIT_TRANS(27,0,NULL,NULL,0,NULL);
 
         {
-          static unsigned int sStartGuardMap[] = { 41, 0 };
+          static unsigned int sStartGuardMap[] = { 44, 0 };
 
-          static unsigned int sEndGuardMap[] = { 45, 46 };
+          static unsigned int sEndGuardMap[] = { 48, 49 };
 
           static int sPostFixPredicateTree[] = { 0, 1, -3 };
 
@@ -6957,9 +7032,9 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
         }
 
         {
-          static unsigned int sStartGuardMap[] = { 15, 0 };
+          static unsigned int sStartGuardMap[] = { 17, 0 };
 
-          static unsigned int sEndGuardMap[] = { 19, 20 };
+          static unsigned int sEndGuardMap[] = { 21, 22 };
 
           static int sPostFixPredicateTree[] = { 0, 1, -3 };
 
@@ -7176,9 +7251,9 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
         _SFD_CV_INIT_TRANS(41,0,NULL,NULL,0,NULL);
 
         {
-          static unsigned int sStartGuardMap[] = { 16, 0 };
+          static unsigned int sStartGuardMap[] = { 15, 0 };
 
-          static unsigned int sEndGuardMap[] = { 20, 21 };
+          static unsigned int sEndGuardMap[] = { 19, 20 };
 
           static int sPostFixPredicateTree[] = { 0, 1, -3 };
 
@@ -7323,7 +7398,7 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
         _SFD_SET_DATA_COMPILED_PROPS(16,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
           (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
         _SFD_SET_DATA_COMPILED_PROPS(17,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
-          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
+          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)NULL);
         _SFD_SET_DATA_COMPILED_PROPS(18,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
           (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
         _SFD_SET_DATA_COMPILED_PROPS(19,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
@@ -7369,11 +7444,11 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
         _SFD_SET_DATA_COMPILED_PROPS(39,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
           (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
         _SFD_SET_DATA_COMPILED_PROPS(40,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
-          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
+          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)NULL);
         _SFD_SET_DATA_COMPILED_PROPS(41,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
-          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
+          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)NULL);
         _SFD_SET_DATA_COMPILED_PROPS(42,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
-          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
+          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)NULL);
         _SFD_SET_DATA_COMPILED_PROPS(43,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
           (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
         _SFD_SET_DATA_COMPILED_PROPS(44,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
@@ -7396,9 +7471,12 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
           (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
         _SFD_SET_DATA_COMPILED_PROPS(53,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
           (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
-        _SFD_SET_DATA_VALUE_PTR(40,(void *)(NULL));
-        _SFD_SET_DATA_VALUE_PTR(41,(void *)(NULL));
-        _SFD_SET_DATA_VALUE_PTR(42,(void *)(NULL));
+        _SFD_SET_DATA_COMPILED_PROPS(54,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
+          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
+        _SFD_SET_DATA_COMPILED_PROPS(55,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
+          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
+        _SFD_SET_DATA_COMPILED_PROPS(56,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
+          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
         _SFD_SET_DATA_VALUE_PTR(43,(void *)(NULL));
         _SFD_SET_DATA_VALUE_PTR(44,(void *)(NULL));
         _SFD_SET_DATA_VALUE_PTR(45,(void *)(NULL));
@@ -7410,46 +7488,63 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
         _SFD_SET_DATA_VALUE_PTR(51,(void *)(NULL));
         _SFD_SET_DATA_VALUE_PTR(52,(void *)(NULL));
         _SFD_SET_DATA_VALUE_PTR(53,(void *)(NULL));
-        _SFD_SET_DATA_VALUE_PTR(0U, &chartInstance->c2_Atr_refrD);
-        _SFD_SET_DATA_VALUE_PTR(1U, &chartInstance->c2_AV_alpha);
-        _SFD_SET_DATA_VALUE_PTR(2U, &chartInstance->c2_AV_anteDMin);
-        _SFD_SET_DATA_VALUE_PTR(3U, &chartInstance->c2_AV_beta);
-        _SFD_SET_DATA_VALUE_PTR(4U, &chartInstance->c2_AV_delta);
-        _SFD_SET_DATA_VALUE_PTR(5U, &chartInstance->c2_AV_k4);
-        _SFD_SET_DATA_VALUE_PTR(6U, &chartInstance->c2_AV_refrDMin);
-        _SFD_SET_DATA_VALUE_PTR(7U, &chartInstance->c2_AV_retroDMin);
-        _SFD_SET_DATA_VALUE_PTR(8U, &chartInstance->c2_AV_tauC);
-        _SFD_SET_DATA_VALUE_PTR(9U, &chartInstance->c2_AV_theta);
-        _SFD_SET_DATA_VALUE_PTR(10U, &chartInstance->c2_AV_tr);
-        _SFD_SET_DATA_VALUE_PTR(11U, &chartInstance->c2_AV_Vr);
-        _SFD_SET_DATA_VALUE_PTR(12U, &chartInstance->c2_AV_Vt);
-        _SFD_SET_DATA_VALUE_PTR(13U, &chartInstance->c2_RA_anteD);
-        _SFD_SET_DATA_VALUE_PTR(14U, &chartInstance->c2_RA_retroD);
-        _SFD_SET_DATA_VALUE_PTR(15U, &chartInstance->c2_RV_anteD);
-        _SFD_SET_DATA_VALUE_PTR(16U, &chartInstance->c2_RV_retroD);
-        _SFD_SET_DATA_VALUE_PTR(17U, &chartInstance->c2_SA_d);
-        _SFD_SET_DATA_VALUE_PTR(18U, &chartInstance->c2_SA_dV);
-        _SFD_SET_DATA_VALUE_PTR(19U, &chartInstance->c2_SA_ectopD);
-        _SFD_SET_DATA_VALUE_PTR(20U, &chartInstance->c2_SA_ectopdV);
-        _SFD_SET_DATA_VALUE_PTR(21U, &chartInstance->c2_SA_noiseD);
-        _SFD_SET_DATA_VALUE_PTR(22U, &chartInstance->c2_VRG_d);
-        _SFD_SET_DATA_VALUE_PTR(23U, &chartInstance->c2_VRG_ectopD);
-        _SFD_SET_DATA_VALUE_PTR(24U, &chartInstance->c2_VRG_noiseD);
-        _SFD_SET_DATA_VALUE_PTR(25U, &chartInstance->c2_Vtr_refrD);
-        _SFD_SET_DATA_VALUE_PTR(26U, &chartInstance->c2_avj_tRec);
-        _SFD_SET_DATA_VALUE_PTR(27U, &chartInstance->c2_clk);
-        _SFD_SET_DATA_VALUE_PTR(28U, &chartInstance->c2_PM_TAVI);
-        _SFD_SET_DATA_VALUE_PTR(29U, &chartInstance->c2_PM_TLRI);
-        _SFD_SET_DATA_VALUE_PTR(30U, &chartInstance->c2_PM_TPVAB);
-        _SFD_SET_DATA_VALUE_PTR(31U, &chartInstance->c2_PM_TPVARP);
-        _SFD_SET_DATA_VALUE_PTR(32U, &chartInstance->c2_PM_TURI);
-        _SFD_SET_DATA_VALUE_PTR(33U, &chartInstance->c2_PM_TVRP);
-        _SFD_SET_DATA_VALUE_PTR(34U, &chartInstance->c2_recoverylast);
-        _SFD_SET_DATA_VALUE_PTR(35U, &chartInstance->c2_avj_t4);
-        _SFD_SET_DATA_VALUE_PTR(36U, &chartInstance->c2_ctime);
-        _SFD_SET_DATA_VALUE_PTR(37U, &chartInstance->c2_avj_refr);
-        _SFD_SET_DATA_VALUE_PTR(38U, &chartInstance->c2_avj_refr_0);
-        _SFD_SET_DATA_VALUE_PTR(39U, &chartInstance->c2_refractorylast);
+        _SFD_SET_DATA_VALUE_PTR(54,(void *)(NULL));
+        _SFD_SET_DATA_VALUE_PTR(55,(void *)(NULL));
+        _SFD_SET_DATA_VALUE_PTR(56,(void *)(NULL));
+
+        {
+          real_T *c2_SA_d;
+          real_T *c2_QR_delay;
+          real_T *c2_RT_delay;
+          real_T *c2_PQ_delay;
+          c2_PQ_delay = (real_T *)ssGetInputPortSignal(chartInstance->S, 3);
+          c2_RT_delay = (real_T *)ssGetInputPortSignal(chartInstance->S, 2);
+          c2_QR_delay = (real_T *)ssGetInputPortSignal(chartInstance->S, 1);
+          c2_SA_d = (real_T *)ssGetInputPortSignal(chartInstance->S, 0);
+          _SFD_SET_DATA_VALUE_PTR(0U, &chartInstance->c2_Atr_refrD);
+          _SFD_SET_DATA_VALUE_PTR(1U, &chartInstance->c2_AV_alpha);
+          _SFD_SET_DATA_VALUE_PTR(2U, &chartInstance->c2_AV_anteDMin);
+          _SFD_SET_DATA_VALUE_PTR(3U, &chartInstance->c2_AV_beta);
+          _SFD_SET_DATA_VALUE_PTR(4U, &chartInstance->c2_AV_delta);
+          _SFD_SET_DATA_VALUE_PTR(5U, &chartInstance->c2_AV_k4);
+          _SFD_SET_DATA_VALUE_PTR(6U, &chartInstance->c2_AV_refrDMin);
+          _SFD_SET_DATA_VALUE_PTR(7U, &chartInstance->c2_AV_retroDMin);
+          _SFD_SET_DATA_VALUE_PTR(8U, &chartInstance->c2_AV_tauC);
+          _SFD_SET_DATA_VALUE_PTR(9U, &chartInstance->c2_AV_theta);
+          _SFD_SET_DATA_VALUE_PTR(10U, &chartInstance->c2_AV_tr);
+          _SFD_SET_DATA_VALUE_PTR(11U, &chartInstance->c2_AV_Vr);
+          _SFD_SET_DATA_VALUE_PTR(12U, &chartInstance->c2_AV_Vt);
+          _SFD_SET_DATA_VALUE_PTR(13U, &chartInstance->c2_RA_anteD);
+          _SFD_SET_DATA_VALUE_PTR(14U, &chartInstance->c2_RA_retroD);
+          _SFD_SET_DATA_VALUE_PTR(15U, &chartInstance->c2_RV_anteD);
+          _SFD_SET_DATA_VALUE_PTR(16U, &chartInstance->c2_RV_retroD);
+          _SFD_SET_DATA_VALUE_PTR(17U, c2_SA_d);
+          _SFD_SET_DATA_VALUE_PTR(18U, &chartInstance->c2_SA_dV);
+          _SFD_SET_DATA_VALUE_PTR(19U, &chartInstance->c2_SA_ectopD);
+          _SFD_SET_DATA_VALUE_PTR(20U, &chartInstance->c2_SA_ectopdV);
+          _SFD_SET_DATA_VALUE_PTR(21U, &chartInstance->c2_SA_noiseD);
+          _SFD_SET_DATA_VALUE_PTR(22U, &chartInstance->c2_VRG_d);
+          _SFD_SET_DATA_VALUE_PTR(23U, &chartInstance->c2_VRG_ectopD);
+          _SFD_SET_DATA_VALUE_PTR(24U, &chartInstance->c2_VRG_noiseD);
+          _SFD_SET_DATA_VALUE_PTR(25U, &chartInstance->c2_Vtr_refrD);
+          _SFD_SET_DATA_VALUE_PTR(26U, &chartInstance->c2_avj_tRec);
+          _SFD_SET_DATA_VALUE_PTR(27U, &chartInstance->c2_clk);
+          _SFD_SET_DATA_VALUE_PTR(28U, &chartInstance->c2_PM_TAVI);
+          _SFD_SET_DATA_VALUE_PTR(29U, &chartInstance->c2_PM_TLRI);
+          _SFD_SET_DATA_VALUE_PTR(30U, &chartInstance->c2_PM_TPVAB);
+          _SFD_SET_DATA_VALUE_PTR(31U, &chartInstance->c2_PM_TPVARP);
+          _SFD_SET_DATA_VALUE_PTR(32U, &chartInstance->c2_PM_TURI);
+          _SFD_SET_DATA_VALUE_PTR(33U, &chartInstance->c2_PM_TVRP);
+          _SFD_SET_DATA_VALUE_PTR(34U, &chartInstance->c2_recoverylast);
+          _SFD_SET_DATA_VALUE_PTR(35U, &chartInstance->c2_avj_t4);
+          _SFD_SET_DATA_VALUE_PTR(36U, &chartInstance->c2_ctime);
+          _SFD_SET_DATA_VALUE_PTR(37U, &chartInstance->c2_avj_refr);
+          _SFD_SET_DATA_VALUE_PTR(38U, &chartInstance->c2_avj_refr_0);
+          _SFD_SET_DATA_VALUE_PTR(39U, &chartInstance->c2_refractorylast);
+          _SFD_SET_DATA_VALUE_PTR(40U, c2_QR_delay);
+          _SFD_SET_DATA_VALUE_PTR(41U, c2_RT_delay);
+          _SFD_SET_DATA_VALUE_PTR(42U, c2_PQ_delay);
+        }
       }
     } else {
       sf_debug_reset_current_state_configuration(sfGlobalDebugInstanceStruct,
@@ -7461,7 +7556,7 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
 
 static const char* sf_get_instance_specialization(void)
 {
-  return "5S4AiXAd1DoLYgOMPFMDVE";
+  return "oJecBbo3mfT93mMB83nTGF";
 }
 
 static void sf_opaque_initialize_c2_HeartModelECG(void *chartInstanceVar)
@@ -7599,14 +7694,14 @@ static void mdlProcessParameters_c2_HeartModelECG(SimStruct *S)
 static void mdlSetWorkWidths_c2_HeartModelECG(SimStruct *S)
 {
   /* Actual parameters from chart:
-     AV_Vr AV_Vt AV_alpha AV_anteDMin AV_beta AV_delta AV_k4 AV_refrDMin AV_retroDMin AV_tauC AV_theta AV_tr Atr_refrD PM_TAVI PM_TLRI PM_TPVAB PM_TPVARP PM_TURI PM_TVRP RA_anteD RA_retroD RV_anteD RV_retroD SA_d SA_dV SA_ectopD SA_ectopdV SA_noiseD VRG_d VRG_ectopD VRG_noiseD Vtr_refrD
+     AV_Vr AV_Vt AV_alpha AV_anteDMin AV_beta AV_delta AV_k4 AV_refrDMin AV_retroDMin AV_tauC AV_theta AV_tr Atr_refrD PM_TAVI PM_TLRI PM_TPVAB PM_TPVARP PM_TURI PM_TVRP RA_anteD RA_retroD RV_anteD RV_retroD SA_dV SA_ectopD SA_ectopdV SA_noiseD VRG_d VRG_ectopD VRG_noiseD Vtr_refrD
    */
   const char_T *rtParamNames[] = { "AV_Vr", "AV_Vt", "AV_alpha", "AV_anteDMin",
     "AV_beta", "AV_delta", "AV_k4", "AV_refrDMin", "AV_retroDMin", "AV_tauC",
     "AV_theta", "AV_tr", "Atr_refrD", "PM_TAVI", "PM_TLRI", "PM_TPVAB",
     "PM_TPVARP", "PM_TURI", "PM_TVRP", "RA_anteD", "RA_retroD", "RV_anteD",
-    "RV_retroD", "SA_d", "SA_dV", "SA_ectopD", "SA_ectopdV", "SA_noiseD",
-    "VRG_d", "VRG_ectopD", "VRG_noiseD", "Vtr_refrD" };
+    "RV_retroD", "SA_dV", "SA_ectopD", "SA_ectopdV", "SA_noiseD", "VRG_d",
+    "VRG_ectopD", "VRG_noiseD", "Vtr_refrD" };
 
   ssSetNumRunTimeParams(S,ssGetSFcnParamsCount(S));
 
@@ -7679,32 +7774,29 @@ static void mdlSetWorkWidths_c2_HeartModelECG(SimStruct *S)
   /* registration for RV_retroD*/
   ssRegDlgParamAsRunTimeParam(S, 22, 22, rtParamNames[22], SS_DOUBLE);
 
-  /* registration for SA_d*/
+  /* registration for SA_dV*/
   ssRegDlgParamAsRunTimeParam(S, 23, 23, rtParamNames[23], SS_DOUBLE);
 
-  /* registration for SA_dV*/
+  /* registration for SA_ectopD*/
   ssRegDlgParamAsRunTimeParam(S, 24, 24, rtParamNames[24], SS_DOUBLE);
 
-  /* registration for SA_ectopD*/
+  /* registration for SA_ectopdV*/
   ssRegDlgParamAsRunTimeParam(S, 25, 25, rtParamNames[25], SS_DOUBLE);
 
-  /* registration for SA_ectopdV*/
+  /* registration for SA_noiseD*/
   ssRegDlgParamAsRunTimeParam(S, 26, 26, rtParamNames[26], SS_DOUBLE);
 
-  /* registration for SA_noiseD*/
+  /* registration for VRG_d*/
   ssRegDlgParamAsRunTimeParam(S, 27, 27, rtParamNames[27], SS_DOUBLE);
 
-  /* registration for VRG_d*/
+  /* registration for VRG_ectopD*/
   ssRegDlgParamAsRunTimeParam(S, 28, 28, rtParamNames[28], SS_DOUBLE);
 
-  /* registration for VRG_ectopD*/
+  /* registration for VRG_noiseD*/
   ssRegDlgParamAsRunTimeParam(S, 29, 29, rtParamNames[29], SS_DOUBLE);
 
-  /* registration for VRG_noiseD*/
-  ssRegDlgParamAsRunTimeParam(S, 30, 30, rtParamNames[30], SS_DOUBLE);
-
   /* registration for Vtr_refrD*/
-  ssRegDlgParamAsRunTimeParam(S, 31, 31, rtParamNames[31], SS_DOUBLE);
+  ssRegDlgParamAsRunTimeParam(S, 30, 30, rtParamNames[30], SS_DOUBLE);
   ssSetModelReferenceSampleTimeDisallowInheritance(S);
   if (sim_mode_is_rtw_gen(S) || sim_mode_is_external(S)) {
     mxArray *infoStruct = load_HeartModelECG_optimization_info();
@@ -7718,6 +7810,12 @@ static void mdlSetWorkWidths_c2_HeartModelECG(SimStruct *S)
        "gatewayCannotBeInlinedMultipleTimes"));
     sf_update_buildInfo(sf_get_instance_specialization(),infoStruct,2);
     if (chartIsInlinable) {
+      ssSetInputPortOptimOpts(S, 0, SS_REUSABLE_AND_LOCAL);
+      ssSetInputPortOptimOpts(S, 1, SS_REUSABLE_AND_LOCAL);
+      ssSetInputPortOptimOpts(S, 2, SS_REUSABLE_AND_LOCAL);
+      ssSetInputPortOptimOpts(S, 3, SS_REUSABLE_AND_LOCAL);
+      sf_mark_chart_expressionable_inputs(S,sf_get_instance_specialization(),
+        infoStruct,2,4);
     }
 
     {
@@ -7727,16 +7825,23 @@ static void mdlSetWorkWidths_c2_HeartModelECG(SimStruct *S)
       }
     }
 
+    {
+      unsigned int inPortIdx;
+      for (inPortIdx=0; inPortIdx < 4; ++inPortIdx) {
+        ssSetInputPortOptimizeInIR(S, inPortIdx, 1U);
+      }
+    }
+
     sf_set_rtw_dwork_info(S,sf_get_instance_specialization(),infoStruct,2);
     ssSetHasSubFunctions(S,!(chartIsInlinable));
   } else {
   }
 
   ssSetOptions(S,ssGetOptions(S)|SS_OPTION_WORKS_WITH_CODE_REUSE);
-  ssSetChecksum0(S,(2201204270U));
-  ssSetChecksum1(S,(1526087296U));
-  ssSetChecksum2(S,(2124415095U));
-  ssSetChecksum3(S,(3702455618U));
+  ssSetChecksum0(S,(1920026790U));
+  ssSetChecksum1(S,(651573269U));
+  ssSetChecksum2(S,(1891328245U));
+  ssSetChecksum3(S,(1990617368U));
   ssSetmdlDerivatives(S, NULL);
   ssSetExplicitFCSSCtrl(S,1);
   ssSupportsMultipleExecInstances(S,1);

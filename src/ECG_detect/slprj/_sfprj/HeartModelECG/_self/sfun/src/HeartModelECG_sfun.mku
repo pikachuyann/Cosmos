@@ -23,7 +23,7 @@ MLSLSF_INCLUDES  = \
     -I"/Applications/MATLAB_R2014a.app/simulink/include" \
     -I"/Applications/MATLAB_R2014a.app/stateflow/c/mex/include" \
     -I"/Applications/MATLAB_R2014a.app/rtw/c/src" \
-    -I"/Users/paoletti/work/gitFolders/Cosmos/src/ECG_detect/slprj/_sfprj/HeartModelECG/_self/sfun/src" 
+    -I"/Users/benbot/Documents/Cosmos/src/ECG_detect/slprj/_sfprj/HeartModelECG/_self/sfun/src" 
 
 THIRD_PARTY_INCLUDES = 
 
