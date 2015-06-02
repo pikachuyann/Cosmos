@@ -1,23 +1,23 @@
-function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, S_data_filtered, Q_data_filtered, heart_rate,buffer_plot]=peakdetect_offline(ecg,fs,view)
+function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_filtered, P_filtered, T_filtered, S_filtered, Q_filtered, heart_rate,buffer_plot]=peakdetect_offline(ecg,fs,view)
 %% Inputs
 % ecg : raw ecg vector
 % fs : sampling frequency
 % view : display span of the signal e.g. 8 seconds (8 seconds is the default)
 
 %% Outputs
-% - extracted R, P, Q, T, S waves (R_data, P_data,...). 1st column: index;
-% 2nd column: amplitute; 3rd column: width. Note that these have to be divided by the sampling rate
+% - extracted R, P, Q, T, S waves (R_data, P_data,...). 1st column: index; , 2nd column: location of corresponding R wave
+% 3rd column: amplitute; 4thcolumn: width. Note that these have to be divided by the sampling rate
 % - heart_rate: computed heart rate
 % - buffer_plot : processed signal. Note that this has to be divided by the sampling rate
 % - QR, RT, RR, PQ intervals (1st column: duration, 2nd column: start index).
 % - ectopic: vector of R waves indices caused by ectopic beats
-% - S_data_filtered and Q_data_filtered are obtained after removing the
-% Gaussians of the R, P, T waves
+% - filtered data obtained after removing the Gaussians of the R, P, T
+% waves and removing incomplete ECGS
 % Note that these have to be divided by the sampling rate
 %% how to use
 % for example after loading the the ecg mat files in matlab call the
 % function as below ;
-% [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, S_data_filtered, Q_data_filtered, heart_rate,buffer_plot]=peakdetect_offline(EKG1,250,10);
+% [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_filtered, P_filtered, T_filtered, S_filtered, Q_filtered, heart_rate,buffer_plot]=peakdetect_offline(EKG1,250,10);
 
 
 %% Adapted from:
@@ -113,7 +113,6 @@ buffer_T = mean(ecg(1:2*fs));%second adaptive threshold to be used for T wave de
 %% start online inference (Assuming the signal is being acquired online)
 
 
-
 for i = 1 : length(ecg)
     
     buffer_long = [buffer_long ecg(i)] ; % save the upcoming new samples
@@ -149,7 +148,7 @@ for i = 1 : length(ecg)
         %             end
         %         end
         if state == 0
-            if ~(isempty(find(R_i==i-1-window,1,'first')))
+            if ~(isempty(find(R_i==i-1-window,1)))
                 state = 1;
                 ind=i-1-window;
                 currentmax = buffer_plot(ind);
@@ -190,9 +189,9 @@ for i = 1 : length(ecg)
                             end
                             
                             if P_ti < Q_ti && last_T < P_ti
-                                Q_i = [Q_i Q_ti];
+                                Q_i = [Q_i; Q_ti ind];
                                 
-                                P_i = [P_i P_ti];
+                                P_i = [P_i; P_ti ind];
                                 
                                 %save PQ interval
                                 PQ_i(size(PQ_i,1)+1,:) = [Q_ti - P_ti, P_ti];
@@ -237,7 +236,7 @@ for i = 1 : length(ecg)
                     if S_on >= noise_window
                         %S_ti = i-window-4;
                         S_ti = i-window-S_on;
-                        S_i = [S_i S_ti];%save index of S wave
+                        S_i = [S_i; S_ti ind];%save index of S wave
                         
                         S_amp1 = [S_amp1  buffer_plot(S_ti)]; %ecg(i-4)
                         S_amp1_i = [S_amp1_i ind]; %index of S_amp1_i
@@ -294,7 +293,7 @@ for i = 1 : length(ecg)
                 %T_ti = i-window-11;
                 [T_amp, best_T] = max(buffer_plot(T_candidates));
                 T_ti = T_candidates(best_T);
-                T_i = [T_i T_ti];%save index of T wave
+                T_i = [T_i; T_ti ind];%save index of T wave
                 
                 %% edit
                 %SAVE RT interval
@@ -361,44 +360,48 @@ for idx = 1:length(R_wdt)
     R_wdt(idx) = findRightHalfAmplitutePoint(R_i(idx),buffer_plot) - findLeftHalfAmplitutePoint(R_i(idx),buffer_plot);
 end
 
-S_amp = buffer_plot(S_i);
-S_wdt = zeros(size(S_i));
+S_amp = buffer_plot(S_i(:,1));
+S_wdt = zeros(size(S_amp));
 for idx = 1:length(S_wdt)
-    S_wdt(idx) = findRightHalfAmplitutePoint(S_i(idx),buffer_plot) - findLeftHalfAmplitutePoint(S_i(idx),buffer_plot);
+    S_wdt(idx) = findRightHalfAmplitutePoint(S_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(S_i(idx,1),buffer_plot);
 end
 
-Q_amp = buffer_plot(Q_i);
-Q_wdt = zeros(size(Q_i));
+Q_amp = buffer_plot(Q_i(:,1));
+Q_wdt = zeros(size(Q_amp));
 for idx = 1:length(Q_wdt)
-    Q_wdt(idx) = findRightHalfAmplitutePoint(Q_i(idx),buffer_plot) - findLeftHalfAmplitutePoint(Q_i(idx),buffer_plot);
+    Q_wdt(idx) = findRightHalfAmplitutePoint(Q_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(Q_i(idx,1),buffer_plot);
 end
 
-T_amp = buffer_plot(T_i);
-T_wdt = zeros(size(T_i));
+T_amp = buffer_plot(T_i(:,1));
+T_wdt = zeros(size(T_amp));
 for idx = 1:length(T_wdt)
-    T_wdt(idx) = findRightHalfAmplitutePoint(T_i(idx),buffer_plot) - findLeftHalfAmplitutePoint(T_i(idx),buffer_plot);
+    T_wdt(idx) = findRightHalfAmplitutePoint(T_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(T_i(idx,1),buffer_plot);
 end
 
-P_amp = buffer_plot(P_i);
-P_wdt = zeros(size(P_i));
+P_amp = buffer_plot(P_i(:,1));
+P_wdt = zeros(size(P_amp));
 for idx = 1:length(P_wdt)
-    P_wdt(idx) = findRightHalfAmplitutePoint(P_i(idx),buffer_plot) - findLeftHalfAmplitutePoint(P_i(idx),buffer_plot);
+    P_wdt(idx) = findRightHalfAmplitutePoint(P_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(P_i(idx,1),buffer_plot);
 end
 
 %%output preparation
+S_data= [(S_i),(S_amp),(S_wdt)];
+Q_data= [(Q_i),(Q_amp),(Q_wdt)];
+P_data= [(P_i),(P_amp),(P_wdt)];
+T_data= [(T_i),(T_amp),(T_wdt)];
 R_data= [(R_i)',(R_amp),(R_wdt)'];
-S_data= [(S_i)',(S_amp),(S_wdt)'];
-Q_data= [(Q_i)',(Q_amp),(Q_wdt)'];
-P_data= [(P_i)',(P_amp),(P_wdt)'];
-T_data= [(T_i)',(T_amp),(T_wdt)'];
 
+S_i=S_i(:,1);
+T_i=T_i(:,1);
+Q_i=Q_i(:,1);
+P_i=P_i(:,1);
 %% plottings
 time = 1/fs:1/fs:view;
 R = find(R_i <= view*fs); % determine the length for plotting vectors
-S = find(S_i <= view*fs); % determine the length for plotting vectors
-T = find(T_i <= view*fs); % determine the length for plotting vectors
-Q = find(Q_i <= view*fs); % determine the length for plotting vector
-P = find(P_i <= view*fs); % determine the length for plotting vectors
+S = find(S_i(:,1) <= view*fs); % determine the length for plotting vectors
+T = find(T_i(:,1) <= view*fs); % determine the length for plotting vectors
+Q = find(Q_i(:,1) <= view*fs); % determine the length for plotting vector
+P = find(P_i(:,1) <= view*fs); % determine the length for plotting vectors
 
 % L1 = find(thres_p_i <= view*fs);
 %L2 = find(S_amp1_i <= view*fs);
@@ -428,6 +431,22 @@ legend();
 linkaxes(ax,'x');
 zoom on;
 
+%% remove incomplete ECGs
+R_filtered = [];
+P_filtered = [];
+T_filtered = [];
+for i=1:length(R_i)
+    curr_R = R_i(i);
+    P_w = find(P_data(:,2)==curr_R,1);
+    S_w = find(S_data(:,2)==curr_R,1);
+    Q_w = find(Q_data(:,2)==curr_R,1);
+    T_w = find(T_data(:,2)==curr_R,1);
+    if ~(isempty(P_w) || isempty(S_w) || isempty(Q_w) || isempty(T_w))
+        R_filtered = [R_filtered; R_data(i,:)];
+        P_filtered = [P_filtered; P_data(P_w,[1 3 4])];
+        T_filtered = [T_filtered; T_data(T_w,[1 3 4])];
+    end
+end
 
 %% remove gaussians for P R and T waves
 x = 1:length(buffer_plot);
@@ -453,42 +472,27 @@ end
 
 filtered = buffer_plot+gaussians;
 
+
+
 Q_flt = [];
 S_flt = [];
+R_i = R_filtered(:,1);
 %compute filtered "gaussians" for Q and S waves
 for i=1:length(R_i)
-    
-    %find previous and next R waves
-    if i > 1
-        prev_R = R_i(i-1);
-    else
-        prev_R = 1;
-    end
-    
-    if i < length(R_i)
-        next_R = R_i(i+1);
-    else
-        next_R = length(filtered);
-    end
-    
     curr_R = R_i(i);
     
-    %find the P wave between the current and the previous R waves
-    P_ws = P_i((P_i>=prev_R) & (P_i<=curr_R));
-    %if any exists, take the last. 
-    if length(P_ws) > 0
-        P_w = P_ws(end);
+    P_idx = find(P_data(:,2)==curr_R,1);
+    if ~(isempty(P_idx))         
+        P_w = P_i(P_idx);
         % the Q wave is the minimum between the current P and R waves in
         % the filtered signal
         [Q_amp_flt, Q_flt_t] = min(filtered(P_w:curr_R));
         Q_flt = [Q_flt Q_flt_t+P_w];
     end
     
-    %find the T wave between the current and the next R waves
-    T_ws = T_i(T_i>=curr_R & T_i<=next_R);
-    %if any exists, take the last. 
-    if length(T_ws) > 0
-        T_w = T_ws(1);
+    T_idx = find(T_data(:,2)==curr_R,1);
+    if ~(isempty(T_idx))         
+        T_w = T_i(T_idx);
         % the S wave is the minimum between the current R and T waves in
         % the filtered signal
         [S_amp_flt, S_flt_t] = min(filtered(curr_R:T_w));
@@ -509,5 +513,7 @@ for idx = 1:length(Q_wdt_flt)
     Q_wdt_flt(idx) = findRightHalfAmplitutePoint(Q_flt(idx),filtered) - findLeftHalfAmplitutePoint(Q_flt(idx),filtered);
 end
 
-S_data_filtered = [(S_flt)',(S_amp_flt),(S_wdt_flt)'];
-Q_data_filtered = [(Q_flt)',(Q_amp_flt),(Q_wdt_flt)'];
+S_filtered = [(S_flt)',(S_amp_flt),(S_wdt_flt)'];
+Q_filtered = [(Q_flt)',(Q_amp_flt),(Q_wdt_flt)'];
+
+
