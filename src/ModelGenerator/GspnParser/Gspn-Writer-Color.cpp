@@ -29,7 +29,7 @@
 
 Gspn_Writer_Color::Gspn_Writer_Color(GspnType& mgspn,parameters& Q):Gspn_Writer(mgspn,Q){}
 
-void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF){
+void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF)const{
     SpnF << "const abstractBinding* "<<objName<<"nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
     SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
     for(size_t trit = 0; trit != MyGspn.tr;++trit){
@@ -204,7 +204,7 @@ void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF){
 }
 
 
-void Gspn_Writer_Color::printloot(ofstream& fs, size_t domain, size_t nesting ){
+void Gspn_Writer_Color::printloot(ofstream& fs, size_t domain, size_t nesting )const{
     const colorDomain& dom = MyGspn.colDoms[domain];
     if(nesting == dom.colorClassIndex.size()){
         stringstream mult;
@@ -228,7 +228,7 @@ void Gspn_Writer_Color::printloot(ofstream& fs, size_t domain, size_t nesting ){
     printloot(fs, domain, nesting+1);
 }
 
-void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, parameters &P){
+void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const{
 
     for (vector<colorClass>::const_iterator it = MyGspn.colClasses.begin();
          it != MyGspn.colClasses.end(); ++it ) {
@@ -466,6 +466,6 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         SpnCppFile << "}\n";
     }
 
-    Gspn_Writer::writeMarkingClasse(SpnCppFile, header, P);
+    Gspn_Writer::writeMarkingClasse(SpnCppFile, header);
 }
 

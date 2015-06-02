@@ -32,14 +32,13 @@
 
 class Gspn_Writer {
 public:
-	Gspn_Writer(GspnType& mgspn,parameters& Q);
+	Gspn_Writer(GspnType& mgspn,const parameters& Q);
 	
 	GspnType MyGspn;
-	parameters P;
+	const parameters P;
 	
 	void writeFile();
-    void writeDotFile(const string &file);
-
+    void writeDotFile(const string &file)const;
 
 
 protected:
@@ -47,40 +46,39 @@ protected:
     std::string trId= "TR_PL_ID t, const abstractBinding &b";
     std::string objName= "SPN::";
 
-    void writeFunT(std::ostream &s,const std::string &rtype,const std::string &name,const std::string &extraArg, std::function< void(unsigned int,std::stringstream &)>,std::string);
+    void writeFunT(std::ostream &s,const std::string &rtype,const std::string &name,const std::string &extraArg, std::function< void(unsigned int,std::stringstream &)>,std::string) const;
 
-	int varMultiplier(size_t var);
-    void writeTok(ostream &SpnF, vector<coloredToken>&,const colorDomain&);
+	int varMultiplier(size_t var)const;
+    void writeTok(ostream &SpnF,const vector<coloredToken>&,const colorDomain&)const;
     void generateStringVal(arcStore&);
-	virtual void writeMarkingClasse(ofstream &, ofstream &, parameters &);
-	void writeEnabledDisabled(ofstream &);
-	virtual void writeEnabledDisabledBinding(ofstream &)=0;
-	void writeUpdateVect(ofstream &,const string &name,const vector< set<int> > &vect);
-	void writeTransition(ofstream &);
-	void writeVariable(ofstream & spnF);
+	virtual void writeMarkingClasse(ofstream &, ofstream &)const;
+	void writeEnabledDisabled(ofstream &)const;
+	virtual void writeEnabledDisabledBinding(ofstream &)const=0;
+	void writeUpdateVect(ofstream &,const string &name,const vector< set<int> > &vect)const;
+	void writeTransition(ofstream &)const;
+	void writeVariable(ofstream & spnF)const;
 	
     void error(const std::string& m);
-    
     void view();
 	
 	
-	virtual void printloot(ofstream& sf, size_t domain, size_t nesting )=0;
+	virtual void printloot(ofstream& sf, size_t domain, size_t nesting )const=0;
 	
 	void EnabledDisabledTr(vector< set<int> >&,
 						   vector< set<int> >&,
-						   vector< set<int> >&);
+						   vector< set<int> >&)const;
 
-    void writeMacro(ofstream &);
+    void writeMacro(ofstream &)const;
 
-    void writeMarkingUpdate(stringstream &f, size_t t,const place &p,const arcStore &as2,bool direct);
-    void writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos,const arcStore &as2,bool directionxs);
-    void writeFire(ofstream &f);
-    void writeIsEnabled(ofstream &f);
-    void writeSetConditionsVector(ofstream &f);
-    void writeGetDistParameters(ofstream &f);
-    void writeGetPriority(ofstream &f);
-    void writeGetWeight(ofstream &f);
-    void writeUserDefineDistr(ofstream &f);
+    void writeMarkingUpdate(stringstream &f, size_t t,const place &p,const arcStore &as2,bool direct)const;
+    void writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos,const arcStore &as2,bool directionxs)const;
+    void writeFire(ofstream &f)const;
+    void writeIsEnabled(ofstream &f)const;
+    void writeSetConditionsVector(ofstream &f)const;
+    void writeGetDistParameters(ofstream &f)const;
+    void writeGetPriority(ofstream &f)const;
+    void writeGetWeight(ofstream &f)const;
+    void writeUserDefineDistr(ofstream &f)const;
 
 };
 
