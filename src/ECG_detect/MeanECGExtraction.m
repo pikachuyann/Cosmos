@@ -1,4 +1,4 @@
-function [ECGmean,ECGsd,meanPhase] = MeanECGExtraction(x,phase,bins,flag)
+function [ECGmean,ECGsd,meanPhase,discreteDistrs] = MeanECGExtraction(x,phase,bins,flag)
 %
 % [ECGmean,ECGsd,meanPhase] = MeanECGExtraction(x,phase,bins,flag)
 % Calculation of the mean and SD of ECG waveforms in different beats
@@ -36,12 +36,14 @@ function [ECGmean,ECGsd,meanPhase] = MeanECGExtraction(x,phase,bins,flag)
 meanPhase = zeros(1,bins);
 ECGmean = zeros(1,bins);
 ECGsd = zeros(1,bins);
+discreteDistrs = [];
 
 I = find( phase>=(pi-pi/bins)  | phase<(-pi+pi/bins) );
 if(~isempty(I))
     meanPhase(1) = -pi;
     ECGmean(1) = mean(x(I));
     ECGsd(1) = std(x(I));
+    discreteDistrs = [discreteDistrs; struct('at',1,'vals',x(I))];
 else
     meanPhase(1) = 0;
     ECGmean(1) =0;
@@ -53,6 +55,7 @@ for i = 1 : bins-1;
         meanPhase(i + 1) = mean(phase(I));
         ECGmean(i + 1) = mean(x(I));
         ECGsd(i + 1) = std(x(I));
+        discreteDistrs = [discreteDistrs; struct('at',i+1,'vals',x(I))];
     else
         meanPhase(i + 1) = 0;
         ECGmean(i + 1) = 0;
