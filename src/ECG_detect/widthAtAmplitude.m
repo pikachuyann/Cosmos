@@ -15,7 +15,7 @@ if amp<0
 end
 
 i = startIdx;
-while i < length(array) && array(i)~=amp*ratio && ~(array(i)>amp/2 && array(i+1)<amp*ratio)
+while i < length(array) && array(i)~=amp*ratio && ~(array(i)>amp*ratio  && array(i+1)<amp*ratio)
     i = i+1;
 end
 
