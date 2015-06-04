@@ -357,31 +357,31 @@ heart_rate=length(R_i)/(time_scale/60); % calculate heart rate
 R_amp = buffer_plot(R_i);
 R_wdt = zeros(size(R_i));
 for idx = 1:length(R_wdt)
-    R_wdt(idx) = findRightHalfAmplitutePoint(R_i(idx),buffer_plot) - findLeftHalfAmplitutePoint(R_i(idx),buffer_plot);
+    R_wdt(idx) = widthAtAmplitude(R_i(idx),buffer_plot);
 end
 
 S_amp = buffer_plot(S_i(:,1));
 S_wdt = zeros(size(S_amp));
 for idx = 1:length(S_wdt)
-    S_wdt(idx) = findRightHalfAmplitutePoint(S_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(S_i(idx,1),buffer_plot);
+    S_wdt(idx) = widthAtAmplitude(S_i(idx,1),buffer_plot);
 end
 
 Q_amp = buffer_plot(Q_i(:,1));
 Q_wdt = zeros(size(Q_amp));
 for idx = 1:length(Q_wdt)
-    Q_wdt(idx) = findRightHalfAmplitutePoint(Q_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(Q_i(idx,1),buffer_plot);
+    Q_wdt(idx) = widthAtAmplitude(Q_i(idx,1),buffer_plot);
 end
 
 T_amp = buffer_plot(T_i(:,1));
 T_wdt = zeros(size(T_amp));
 for idx = 1:length(T_wdt)
-    T_wdt(idx) = findRightHalfAmplitutePoint(T_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(T_i(idx,1),buffer_plot);
+    T_wdt(idx) = widthAtAmplitude(T_i(idx,1),buffer_plot);
 end
 
 P_amp = buffer_plot(P_i(:,1));
 P_wdt = zeros(size(P_amp));
 for idx = 1:length(P_wdt)
-    P_wdt(idx) = findRightHalfAmplitutePoint(P_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(P_i(idx,1),buffer_plot);
+    P_wdt(idx) = widthAtAmplitude(P_i(idx,1),buffer_plot);
 end
 
 %%output preparation
@@ -504,13 +504,13 @@ end
 S_amp_flt = filtered(S_flt);
 S_wdt_flt = zeros(size(S_flt));
 for idx = 1:length(S_wdt_flt)
-    S_wdt_flt(idx) = findRightHalfAmplitutePoint(S_flt(idx),filtered) - findLeftHalfAmplitutePoint(S_flt(idx),filtered);
+    S_wdt_flt(idx) = widthAtAmplitude(S_flt(idx),filtered,2/3);
 end
 
 Q_amp_flt = filtered(Q_flt);
 Q_wdt_flt = zeros(size(Q_flt));
 for idx = 1:length(Q_wdt_flt)
-    Q_wdt_flt(idx) = findRightHalfAmplitutePoint(Q_flt(idx),filtered) - findLeftHalfAmplitutePoint(Q_flt(idx),filtered);
+    Q_wdt_flt(idx) = widthAtAmplitude(Q_flt(idx),filtered,2/3);
 end
 
 S_filtered = [(S_flt)',(S_amp_flt),(S_wdt_flt)'];
