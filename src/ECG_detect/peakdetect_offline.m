@@ -357,31 +357,31 @@ heart_rate=length(R_i)/(time_scale/60); % calculate heart rate
 R_amp = buffer_plot(R_i);
 R_wdt = zeros(size(R_i));
 for idx = 1:length(R_wdt)
-    R_wdt(idx) = findRightHalfAmplitutePoint(R_i(idx),buffer_plot) - findLeftHalfAmplitutePoint(R_i(idx),buffer_plot);
+    R_wdt(idx) = widthAtAmplitude(R_i(idx),buffer_plot);
 end
 
 S_amp = buffer_plot(S_i(:,1));
 S_wdt = zeros(size(S_amp));
 for idx = 1:length(S_wdt)
-    S_wdt(idx) = findRightHalfAmplitutePoint(S_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(S_i(idx,1),buffer_plot);
+    S_wdt(idx) = widthAtAmplitude(S_i(idx,1),buffer_plot);
 end
 
 Q_amp = buffer_plot(Q_i(:,1));
 Q_wdt = zeros(size(Q_amp));
 for idx = 1:length(Q_wdt)
-    Q_wdt(idx) = findRightHalfAmplitutePoint(Q_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(Q_i(idx,1),buffer_plot);
+    Q_wdt(idx) = widthAtAmplitude(Q_i(idx,1),buffer_plot);
 end
 
 T_amp = buffer_plot(T_i(:,1));
 T_wdt = zeros(size(T_amp));
 for idx = 1:length(T_wdt)
-    T_wdt(idx) = findRightHalfAmplitutePoint(T_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(T_i(idx,1),buffer_plot);
+    T_wdt(idx) = widthAtAmplitude(T_i(idx,1),buffer_plot);
 end
 
 P_amp = buffer_plot(P_i(:,1));
 P_wdt = zeros(size(P_amp));
 for idx = 1:length(P_wdt)
-    P_wdt(idx) = findRightHalfAmplitutePoint(P_i(idx,1),buffer_plot) - findLeftHalfAmplitutePoint(P_i(idx,1),buffer_plot);
+    P_wdt(idx) = widthAtAmplitude(P_i(idx,1),buffer_plot);
 end
 
 %%output preparation
@@ -453,19 +453,19 @@ x = 1:length(buffer_plot);
 gaussians = zeros(size(buffer_plot));
 for i=1:length(R_i)
     %sd = half_width/(2*sqrt(2*log(2)))
-    sd = R_wdt(i)/(2*sqrt(2*log(2)));
+    sd = SDfromGaussianWidth(R_wdt(i));
     mn = R_i(i);
     gaussians = gaussians - R_amp(i)*(exp(-(((x-mn)).^2)/(2*sd.^2)))';
 end
 
 for i=1:length(T_i)
-    sd = T_wdt(i)/(2*sqrt(2*log(2)));
+    sd = SDfromGaussianWidth(T_wdt(i));
     mn = T_i(i);
     gaussians = gaussians - T_amp(i)*(exp(-(((x-mn)).^2)/(2*sd.^2)))';
 end
 
 for i=1:length(P_i)
-    sd = P_wdt(i)/(2*sqrt(2*log(2)));
+    sd = SDfromGaussianWidth(P_wdt(i));
     mn = P_i(i);
     gaussians = gaussians - P_amp(i)*(exp(-(((x-mn)).^2)/(2*sd.^2)))';
 end
@@ -504,16 +504,38 @@ end
 S_amp_flt = filtered(S_flt);
 S_wdt_flt = zeros(size(S_flt));
 for idx = 1:length(S_wdt_flt)
-    S_wdt_flt(idx) = findRightHalfAmplitutePoint(S_flt(idx),filtered) - findLeftHalfAmplitutePoint(S_flt(idx),filtered);
+    shortWidth = widthAtAmplitude(S_flt(idx),filtered,1/4);
+    S_wdt_flt(idx) = convertGaussianWidths(shortWidth,1/4,1/2);
 end
 
 Q_amp_flt = filtered(Q_flt);
 Q_wdt_flt = zeros(size(Q_flt));
 for idx = 1:length(Q_wdt_flt)
-    Q_wdt_flt(idx) = findRightHalfAmplitutePoint(Q_flt(idx),filtered) - findLeftHalfAmplitutePoint(Q_flt(idx),filtered);
+    shortWidth = widthAtAmplitude(Q_flt(idx),filtered,1/4);
+    Q_wdt_flt(idx) = convertGaussianWidths(shortWidth,1/4,1/2);
 end
 
 S_filtered = [(S_flt)',(S_amp_flt),(S_wdt_flt)'];
 Q_filtered = [(Q_flt)',(Q_amp_flt),(Q_wdt_flt)'];
 
+end
+
+function sd = SDfromGaussianWidth(width,amplituteRatio)
+    if nargin < 2
+        amplituteRatio = 1/2;
+    end
+    sd = width/(2*sqrt(2*log(1/amplituteRatio)));
+end
+
+function width = widthfromGaussianSD(sd,amplituteRatio)
+    if nargin < 2
+        amplituteRatio = 1/2;
+    end
+    width = sd*(2*sqrt(2*log(1/amplituteRatio)));
+end
+
+function width_out = convertGaussianWidths(width_in,amplituteRatio_in, amplituteRatio_out)
+    sd = SDfromGaussianWidth(width_in,amplituteRatio_in);
+    width_out = widthfromGaussianSD(sd,amplituteRatio_out);
+end
 
