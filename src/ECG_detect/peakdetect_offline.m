@@ -453,19 +453,19 @@ x = 1:length(buffer_plot);
 gaussians = zeros(size(buffer_plot));
 for i=1:length(R_i)
     %sd = half_width/(2*sqrt(2*log(2)))
-    sd = R_wdt(i)/(2*sqrt(2*log(2)));
+    sd = SDfromGaussianWidth(R_wdt(i));
     mn = R_i(i);
     gaussians = gaussians - R_amp(i)*(exp(-(((x-mn)).^2)/(2*sd.^2)))';
 end
 
 for i=1:length(T_i)
-    sd = T_wdt(i)/(2*sqrt(2*log(2)));
+    sd = SDfromGaussianWidth(T_wdt(i));
     mn = T_i(i);
     gaussians = gaussians - T_amp(i)*(exp(-(((x-mn)).^2)/(2*sd.^2)))';
 end
 
 for i=1:length(P_i)
-    sd = P_wdt(i)/(2*sqrt(2*log(2)));
+    sd = SDfromGaussianWidth(P_wdt(i));
     mn = P_i(i);
     gaussians = gaussians - P_amp(i)*(exp(-(((x-mn)).^2)/(2*sd.^2)))';
 end
@@ -504,16 +504,38 @@ end
 S_amp_flt = filtered(S_flt);
 S_wdt_flt = zeros(size(S_flt));
 for idx = 1:length(S_wdt_flt)
-    S_wdt_flt(idx) = widthAtAmplitude(S_flt(idx),filtered,2/3);
+    shortWidth = widthAtAmplitude(S_flt(idx),filtered,1/4);
+    S_wdt_flt(idx) = convertGaussianWidths(shortWidth,1/4,1/2);
 end
 
 Q_amp_flt = filtered(Q_flt);
 Q_wdt_flt = zeros(size(Q_flt));
 for idx = 1:length(Q_wdt_flt)
-    Q_wdt_flt(idx) = widthAtAmplitude(Q_flt(idx),filtered,2/3);
+    shortWidth = widthAtAmplitude(Q_flt(idx),filtered,1/4);
+    Q_wdt_flt(idx) = convertGaussianWidths(shortWidth,1/4,1/2);
 end
 
 S_filtered = [(S_flt)',(S_amp_flt),(S_wdt_flt)'];
 Q_filtered = [(Q_flt)',(Q_amp_flt),(Q_wdt_flt)'];
 
+end
+
+function sd = SDfromGaussianWidth(width,amplituteRatio)
+    if nargin < 2
+        amplituteRatio = 1/2;
+    end
+    sd = width/(2*sqrt(2*log(1/amplituteRatio)));
+end
+
+function width = widthfromGaussianSD(sd,amplituteRatio)
+    if nargin < 2
+        amplituteRatio = 1/2;
+    end
+    width = sd*(2*sqrt(2*log(1/amplituteRatio)));
+end
+
+function width_out = convertGaussianWidths(width_in,amplituteRatio_in, amplituteRatio_out)
+    sd = SDfromGaussianWidth(width_in,amplituteRatio_in);
+    width_out = widthfromGaussianSD(sd,amplituteRatio_out);
+end
 
