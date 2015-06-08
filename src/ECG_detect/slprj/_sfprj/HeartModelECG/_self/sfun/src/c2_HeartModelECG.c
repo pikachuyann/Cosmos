@@ -474,7 +474,7 @@ static void c2_update_debugger_state_c2_HeartModelECG
   _SFD_SET_ANIMATION(0U);
   _SFD_SET_HONOR_BREAKPOINTS(0U);
   if (chartInstance->c2_is_active_c2_HeartModelECG == 1U) {
-    _SFD_CC_CALL(CHART_ACTIVE_TAG, 0U, chartInstance->c2_sfEvent);
+    _SFD_CC_CALL(CHART_ACTIVE_TAG, 1U, chartInstance->c2_sfEvent);
   }
 
   if (chartInstance->c2_is_c2_HeartModelECG == c2_IN_Heart) {
@@ -1833,7 +1833,7 @@ static void sf_gateway_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
     chartInstance->c2_temporalCounter_i12++;
   }
 
-  _SFD_CC_CALL(CHART_ENTER_SFUNCTION_TAG, 0U, chartInstance->c2_sfEvent);
+  _SFD_CC_CALL(CHART_ENTER_SFUNCTION_TAG, 1U, chartInstance->c2_sfEvent);
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_Atr_refrD, 0U);
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_AV_alpha, 1U);
   _SFD_DATA_RANGE_CHECK(chartInstance->c2_AV_anteDMin, 2U);
@@ -1906,11 +1906,11 @@ static void sf_gateway_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct
 
 static void c2_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct *chartInstance)
 {
-  _SFD_CC_CALL(CHART_ENTER_DURING_FUNCTION_TAG, 0U, chartInstance->c2_sfEvent);
+  _SFD_CC_CALL(CHART_ENTER_DURING_FUNCTION_TAG, 1U, chartInstance->c2_sfEvent);
   if (chartInstance->c2_is_active_c2_HeartModelECG == 0U) {
-    _SFD_CC_CALL(CHART_ENTER_ENTRY_FUNCTION_TAG, 0U, chartInstance->c2_sfEvent);
+    _SFD_CC_CALL(CHART_ENTER_ENTRY_FUNCTION_TAG, 1U, chartInstance->c2_sfEvent);
     chartInstance->c2_is_active_c2_HeartModelECG = 1U;
-    _SFD_CC_CALL(EXIT_OUT_OF_FUNCTION_TAG, 0U, chartInstance->c2_sfEvent);
+    _SFD_CC_CALL(EXIT_OUT_OF_FUNCTION_TAG, 1U, chartInstance->c2_sfEvent);
     _SFD_CT_CALL(TRANSITION_ACTIVE_TAG, 49U, chartInstance->c2_sfEvent);
     chartInstance->c2_is_c2_HeartModelECG = c2_IN_Heart;
     _SFD_CS_CALL(STATE_ACTIVE_TAG, 0U, chartInstance->c2_sfEvent);
@@ -1921,7 +1921,7 @@ static void c2_c2_HeartModelECG(SFc2_HeartModelECGInstanceStruct *chartInstance)
     c2_Heart(chartInstance);
   }
 
-  _SFD_CC_CALL(EXIT_OUT_OF_FUNCTION_TAG, 0U, chartInstance->c2_sfEvent);
+  _SFD_CC_CALL(EXIT_OUT_OF_FUNCTION_TAG, 1U, chartInstance->c2_sfEvent);
 }
 
 static void initSimStructsc2_HeartModelECG(SFc2_HeartModelECGInstanceStruct

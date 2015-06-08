@@ -8,7 +8,7 @@ LD = $(CC)
  
 MACHINE     = HeartModelECG
 TARGET      = sfun
-CHART_SRCS   = c2_HeartModelECG.c
+CHART_SRCS   = c1_HeartModelECG.c c2_HeartModelECG.c c3_HeartModelECG.c c4_HeartModelECG.c c5_HeartModelECG.c c6_HeartModelECG.c c7_HeartModelECG.c c8_HeartModelECG.c c9_HeartModelECG.c c10_HeartModelECG.c c11_HeartModelECG.c c12_HeartModelECG.c c13_HeartModelECG.c c14_HeartModelECG.c c15_HeartModelECG.c c16_HeartModelECG.c c17_HeartModelECG.c c18_HeartModelECG.c c19_HeartModelECG.c c20_HeartModelECG.c c21_HeartModelECG.c
 MACHINE_SRC  = HeartModelECG_sfun.c
 MACHINE_REG = HeartModelECG_sfun_registry.c
 MAKEFILE    = HeartModelECG_sfun.mku
