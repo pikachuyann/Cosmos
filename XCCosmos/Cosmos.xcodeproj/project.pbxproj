@@ -41,6 +41,7 @@
 		0367E29C18842FB700F35619 /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703F181BC0D6006D7332 /* BatchR.cpp */; };
 		0367E2B71885288900F35619 /* Gspn-Writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0367E2B51885288900F35619 /* Gspn-Writer.cpp */; };
 		039B4F8B188E7B2400C63ED7 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 039B4F89188E7B2400C63ED7 /* Generator.cpp */; };
+		03A5DCFC1B273A79003F470A /* Gspn-model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03A5DCFA1B273A79003F470A /* Gspn-model.cpp */; };
 		03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */; };
 		03BBD5F21A80D0D700492779 /* LigthLibrairie.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BBD5F11A80D0D700492779 /* LigthLibrairie.h */; };
 		03BBD5F41A80D0D700492779 /* LigthLibrairiePriv.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BBD5F31A80D0D700492779 /* LigthLibrairiePriv.h */; };
@@ -968,6 +969,8 @@
 		039A3AE3191A9EEC00B42447 /* workflow-out-5.gspn */ = {isa = PBXFileReference; lastKnownFileType = text; path = "workflow-out-5.gspn"; sourceTree = "<group>"; };
 		039B4F89188E7B2400C63ED7 /* Generator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Generator.cpp; sourceTree = "<group>"; };
 		039B4F8A188E7B2400C63ED7 /* Generator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Generator.hpp; sourceTree = "<group>"; };
+		03A5DCFA1B273A79003F470A /* Gspn-model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-model.cpp"; sourceTree = "<group>"; };
+		03A5DCFB1B273A79003F470A /* Gspn-model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-model.hpp"; sourceTree = "<group>"; };
 		03A7F87B182C12DB006F0BC8 /* gnuplotScript.gnu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gnuplotScript.gnu; path = ../utils/gnuplotScript.gnu; sourceTree = "<group>"; };
 		03A7F87C182C12DB006F0BC8 /* gnuplotScriptbenchmanycore.gnu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gnuplotScriptbenchmanycore.gnu; path = ../utils/gnuplotScriptbenchmanycore.gnu; sourceTree = "<group>"; };
 		03A7F87D182C12DB006F0BC8 /* gnuplotScriptCMD.gnu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gnuplotScriptCMD.gnu; path = ../utils/gnuplotScriptCMD.gnu; sourceTree = "<group>"; };
@@ -1228,6 +1231,8 @@
 				03EC8D6D1880714C00731BD3 /* unfolder.hpp */,
 				03E43E1D1AE1027300E9A2BF /* Gspn-Writer-Color.cpp */,
 				03E43E1E1AE1027300E9A2BF /* Gspn-Writer-Color.hpp */,
+				03A5DCFA1B273A79003F470A /* Gspn-model.cpp */,
+				03A5DCFB1B273A79003F470A /* Gspn-model.hpp */,
 			);
 			path = GspnParser;
 			sourceTree = "<group>";
@@ -3347,6 +3352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				032A706F181BC0D6006D7332 /* Gspn-Reader.cpp in Sources */,
+				03A5DCFC1B273A79003F470A /* Gspn-model.cpp in Sources */,
 				0367E29318842EE600F35619 /* Gspn-scanner.cc in Sources */,
 				035EBAB418FFD70F00B73DBF /* expressionStruct.cpp in Sources */,
 				032A70A8181BC307006D7332 /* modelwriter.cc in Sources */,

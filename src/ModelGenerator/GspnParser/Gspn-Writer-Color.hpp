@@ -37,9 +37,9 @@ class Gspn_Writer_Color: public Gspn_Writer{
 public:
     Gspn_Writer_Color(GspnType& mgspn,parameters& Q);
 
-    void writeMarkingClasse(ofstream &, ofstream &)const;
-    void printloot(ofstream& sf, size_t domain, size_t nesting )const;
-    void writeEnabledDisabledBinding(ofstream &)const;
+    void writeMarkingClasse(std::ofstream &, std::ofstream &)const;
+    void printloot(std::ofstream& sf, size_t domain, size_t nesting )const;
+    void writeEnabledDisabledBinding(std::ofstream &)const;
 
 };
 

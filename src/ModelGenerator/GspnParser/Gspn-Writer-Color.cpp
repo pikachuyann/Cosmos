@@ -25,7 +25,12 @@
  *******************************************************************************
  */
 
+#include <assert.h>
+#include <sstream>
+
 #include "Gspn-Writer-Color.hpp"
+
+using namespace std;
 
 Gspn_Writer_Color::Gspn_Writer_Color(GspnType& mgspn,parameters& Q):Gspn_Writer(mgspn,Q){}
 

@@ -90,6 +90,9 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
         const auto str = simplifyString(it.node->first_child->data);
         if (*it == "intValue")return expr(stoi(str));
         else return expr(stod(str));
+    } else if (*it == "unParsed") {
+        const auto str = simplifyString(it.node->first_child->data);
+        return expr(str);
     } else if (*it == "name") {
         string var = simplifyString(it.node->first_child->data);
         if (MyGspn->IntConstant.count(var) > 0
@@ -704,6 +707,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
             } else throw (gmlioexc);
 
         }
+        if(P.verbose>2)cout << p;
         MyGspn->placeStruct.push_back(p);
 
     } else {
@@ -841,6 +845,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                 }
             }
 
+            if(P.verbose>2)cout << trans ;
             MyGspn->transitionStruct.push_back(trans);
         } else cout << "fail to parse gml" << endl;
     }
@@ -897,7 +902,6 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             MyGspn->TransList.insert(trans.label);
             MyGspn->tr++;
         }
-
     }
 
     if ((P.verbose - 3) > 1)cout << "read arc : " << id << ", " << arcType << ", " << source << " -> " << target << endl;
