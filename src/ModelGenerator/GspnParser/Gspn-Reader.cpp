@@ -38,16 +38,6 @@
 using namespace std;
 
 
-void searchreplace(const string &in,const string &motif,const string &rep,string &out){
-	out = in;
-	size_t pos = out.find(motif);
-	while (pos != string::npos) {
-		out.replace(pos, motif.size(), rep);
-		pos = out.find(motif,pos);
-	}
-}
-
-
 Gspn_Reader::Gspn_Reader(parameters &Q):P(Q) {
 	trace_scanning = false;
 	trace_parsing = false;

@@ -24,11 +24,15 @@
  *******************************************************************************
  */
 
+
+#include <algorithm>
+#include <sstream>
+
 #include "Gspn-Writer.hpp"
 #include "../casesWriter.hpp"
 
 
-#include <algorithm>
+using namespace std;
 
 Gspn_Writer::Gspn_Writer(GspnType& mgspn,const parameters& Q):MyGspn(mgspn),P(Q){
     if(P.lightSimulator){

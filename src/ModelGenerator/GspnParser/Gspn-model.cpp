@@ -20,71 +20,46 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file Gspn_gmlparser.hpp                                                     *
- * Created by Benoit Barbot on 05/10/12.                                       *
+ * file Gspn-model.hpp                                                         *
+ * Created by Benoit Barbot on 09/06/15.                                       *
  *******************************************************************************
  */
 
-#ifndef _SPN_GML_HPP
-#define	_SPN_GML_HPP
+#include <fstream>
 
-
-#include "expatmodelparser.hh"
-#include "modelhandler.hh"
 #include "Gspn-model.hpp"
-#include <map>
 
-#include <exception>
+using namespace std;
 
+void searchreplace(const string &in,const string &motif,const string &rep,string &out){
+    out = in;
+    size_t pos = out.find(motif);
+    while (pos != string::npos) {
+        out.replace(pos, motif.size(), rep);
+        pos = out.find(motif,pos);
+    }
+}
 
-class MyModelHandler: public ModelHandler
-{
-public:
-	bool ParsePl;
-    std::map<int,bool> IsPlace;
-	std::map<int,int> Gml2Place;
-	std::map<int,int> Gml2Trans;
-	GspnType *MyGspn;
-	
-	MyModelHandler(GspnType&) ;
-	MyModelHandler(GspnType&,std::map<int,bool>&,std::map<int,int>&,std::map<int,int>&);
-	//~MyModelHandler() { }
-	
-	
-    void on_read_model(const XmlString& formalismUrl) ;
-	
-    void on_read_model_attribute(const Attribute& attribute)	;
-	
-    void on_read_node(const XmlString& id,
-					  const XmlString& nodeType,
-					  const AttributeMap& attributes,
-					  const XmlStringList& references) ;
-	
-    void on_read_arc(const XmlString& id,
-					 const XmlString& arcType,
-					 const XmlString& source,
-					 const XmlString& target,
-					 const AttributeMap& attributes,
-					 const XmlStringList& references);
-	
-private:
-	expr eval_expr(tree<std::string>::pre_order_iterator it );
-    int eval_intFormula( tree<std::string>::pre_order_iterator it );
-    double eval_realFormula(tree<std::string>::pre_order_iterator it );
-	void eval_tokenProfileArc(coloredToken& ,bool &, std::set<size_t>& , tree<std::string>::pre_order_iterator);
-	expr eval_guard(tree<std::string>::pre_order_iterator);
+std::ostream& operator<<(std::ostream& os, const ProbabiliteDistribution& obj){
+    os << obj.name << "(";
+    for( const auto &e : obj.Param){
+        os << e << ",";
+    }
+    os << ")";
 
-	std::string simplifyString(std::string str);
-	treeSI findbranch(treeSI t, std::string branch);
-};
+    return os;
+}
 
+std::ostream& operator<<(std::ostream& os, const transition& obj){
+    os << "transition " << obj.label << "(" << obj.id << "){" << endl;
+    os << "\tdistribution:" << obj.dist << endl;
+    os << "\tpriority:" << obj.priority << endl;
+    os << "\tweight:" << obj.weight << endl << "}" << endl;
+    return os;
+}
 
-
-
-
-
-
-
-#endif
-
-
+std::ostream& operator<<(std::ostream& os, const place& obj){
+    os << "place " << obj.name << "(" << obj.id << "){" << endl;
+    os << "\tmarking:" << obj.Marking << endl;
+    return os;
+}
