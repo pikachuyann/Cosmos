@@ -7,6 +7,7 @@ libgspn_la_SOURCES = \
 	Gspn-Reader.cpp Gspn-Reader.hpp \
 	Gspn-scanner.ll Gspn-parser.yy \
 	unfolder.cpp unfolder.hpp \
+    Gspn-model.cpp Gspm-model.hpp \
 	Gspn_gmlparser.cpp Gspn_gmlparser.hpp
 
 libgspn_la_LIBADD = ../../libgrml/libgrml.la ../Eval/libeval.la

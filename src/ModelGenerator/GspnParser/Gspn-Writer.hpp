@@ -28,7 +28,8 @@
 #define __Cosmos__Gspn_Writer__
 
 #include <iostream>
-#include "Gspn-Reader.hpp"
+#include "Gspn-model.hpp"
+#include "parameters.hpp"
 
 class Gspn_Writer {
 public:
@@ -38,7 +39,7 @@ public:
 	const parameters P;
 	
 	void writeFile();
-    void writeDotFile(const string &file)const;
+    void writeDotFile(const std::string &file)const;
 
 
 protected:
@@ -49,36 +50,36 @@ protected:
     void writeFunT(std::ostream &s,const std::string &rtype,const std::string &name,const std::string &extraArg, std::function< void(unsigned int,std::stringstream &)>,std::string) const;
 
 	int varMultiplier(size_t var)const;
-    void writeTok(ostream &SpnF,const vector<coloredToken>&,const colorDomain&)const;
+    void writeTok(std::ostream &SpnF,const std::vector<coloredToken>&,const colorDomain&)const;
     void generateStringVal(arcStore&);
-	virtual void writeMarkingClasse(ofstream &, ofstream &)const;
-	void writeEnabledDisabled(ofstream &)const;
-	virtual void writeEnabledDisabledBinding(ofstream &)const=0;
-	void writeUpdateVect(ofstream &,const string &name,const vector< set<int> > &vect)const;
-	void writeTransition(ofstream &)const;
-	void writeVariable(ofstream & spnF)const;
+	virtual void writeMarkingClasse(std::ofstream &, std::ofstream &)const;
+	void writeEnabledDisabled(std::ofstream &)const;
+	virtual void writeEnabledDisabledBinding(std::ofstream &)const=0;
+	void writeUpdateVect(std::ofstream &,const std::string &name,const std::vector< std::set<int> > &vect)const;
+	void writeTransition(std::ofstream &)const;
+	void writeVariable(std::ofstream & spnF)const;
 	
     void error(const std::string& m);
     void view();
 	
 	
-	virtual void printloot(ofstream& sf, size_t domain, size_t nesting )const=0;
+	virtual void printloot(std::ofstream& sf, size_t domain, size_t nesting )const=0;
 	
-	void EnabledDisabledTr(vector< set<int> >&,
-						   vector< set<int> >&,
-						   vector< set<int> >&)const;
+	void EnabledDisabledTr(std::vector< std::set<int> >&,
+						   std::vector< std::set<int> >&,
+						   std::vector< std::set<int> >&)const;
 
-    void writeMacro(ofstream &)const;
+    void writeMacro(std::ofstream &)const;
 
-    void writeMarkingUpdate(stringstream &f, size_t t,const place &p,const arcStore &as2,bool direct)const;
-    void writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos,const arcStore &as2,bool directionxs)const;
-    void writeFire(ofstream &f)const;
-    void writeIsEnabled(ofstream &f)const;
-    void writeSetConditionsVector(ofstream &f)const;
-    void writeGetDistParameters(ofstream &f)const;
-    void writeGetPriority(ofstream &f)const;
-    void writeGetWeight(ofstream &f)const;
-    void writeUserDefineDistr(ofstream &f)const;
+    void writeMarkingUpdate(std::stringstream &f, size_t t,const place &p,const arcStore &as2,bool direct)const;
+    void writeMarkingUpdateIn(std::stringstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos,const arcStore &as2,bool directionxs)const;
+    void writeFire(std::ofstream &f)const;
+    void writeIsEnabled(std::ofstream &f)const;
+    void writeSetConditionsVector(std::ofstream &f)const;
+    void writeGetDistParameters(std::ofstream &f)const;
+    void writeGetPriority(std::ofstream &f)const;
+    void writeGetWeight(std::ofstream &f)const;
+    void writeUserDefineDistr(std::ofstream &f)const;
 
 };
 

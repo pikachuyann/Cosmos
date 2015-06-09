@@ -1,13 +1,12 @@
-#!/home/basset/Downloads/sage-6.3-x86_64-Linux/sage
-translist=[[[0 , 0 , 1 , 2,[[1,1,0,1.0]]],[0 , 0 , 2 , 2,[[2,0,1,1.0]]],[1 , 2 , 2 , 2,[[3,1,0,1.0]]]],
-[[0 , 0 , 1 , 1,[[1,1,0,1.0]]],[0 , 0 , 2 , 2,[[2,0,1,1.0]]],[1 , 1 , 2 , 1,[[3,1,0,1.0]]]],
-[[0 , 0 , 1 , 1,[[1,1,0,1.0]]],[0 , 0 , 2 , 2,[[2,0,1,1.0]]],[1 , 1 , 2 , 1,[[3,1,0,1.0]]]],
-[[0 , 0 , 3 , 1,[[2,0,1,1.0]]],[0 , 0 , 2 , 1,[[3,1,0,1.0]]]]];
-redcoord=[[[0, 1, 2]],[[0, 2], [1]],[[0, 1], [2]],[[0, 2], [1]]];
+#!/Applications/Sage-6.7.app/Contents/Resources/sage/sage
+
+import sys
+
+load(str(sys.argv[1]))
 
 numpoly=50;
 mgrand=numpoly-1;
-numsamples=10;
+
 cardclocks=len(translist[0][0][4][0])-2;
 card_states=len(translist);
 xsanszero=['x_%d' %i for i in range(1,cardclocks+1)];
@@ -159,6 +158,7 @@ for i in range(1,numpoly+1):
 mgrand=3;
 lastone=WeightsPdfCdf(listres[mgrand]);
 
+
 def toCOSMOS(triple):
     s='<?xml version="1.0" encoding=\"UTF-8\"?>\n\n<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">\n';
     s+='  <attribute name=\"declaration\">\n';
@@ -173,8 +173,8 @@ def toCOSMOS(triple):
     s+='    <attribute name="variables">\n';
     s+='      <attribute name="clocks">\n';
     for i in range(cardclocks):
-	s+='        <attribute name="clock">\n';
-        s+='        <attribute name="name"> x_%d '%i+'</attribute>\n';
+        s+='        <attribute name="clock">\n';
+        s+='        <attribute name="name"> x_%d '%(i+1)+'</attribute>\n';
         s+='        </attribute>\n';
     s+='      </attribute>\n';
     s+='    </attribute>\n';
@@ -206,13 +206,13 @@ def toCOSMOS(triple):
             s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
             s+='    </attribute></attribute>\n';
             s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\">'+ poly_to_c_bis(triple[0][i][j]) +'</attribute>\n';
+            s+='      <attribute name=\"unParsed\">'+ poly_to_c_bis(triple[0][i][j]) +'</attribute>\n';
             s+='    </attribute></attribute>\n';
             s+='  </node>\n';
     for i in range(len(translist)):
         for j in  range(len(translist[i])):
             s+='  <node id=\"6%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
-            s+='    <attribute name=\"name\">t_%d' %i +'_%d' %j +'</attribute>\n';
+            s+='    <attribute name=\"name\">tt_%d' %i +'_%d' %j +'</attribute>\n';
             s+='    <attribute name=\"distribution\">\n';
             s+='      <attribute name=\"type\">\n' ;
             s+='      USERDEFINE\n';
@@ -224,7 +224,7 @@ def toCOSMOS(triple):
             for c in range(cardclocks):
                 s+='      <attribute name="param">\n';
                 s+='        <attribute name="expr"><attribute name="name">\n';
-	        s+='          x_%d'%(c+1)+'\n';
+                s+='          x_%d'%(c+1)+'\n';
                 s+='        </attribute></attribute>\n';
                 s+='      </attribute>\n';
             s+='    </attribute>\n';
@@ -269,7 +269,9 @@ def toCOSMOS(triple):
             s+='  </arc>\n';
     s+='</model>\n';
     return(s);
-fichier=open("/home/basset/Stage/toward_COSMOS/my_first_cosmos_model.grml","w");
+
+
+fichier=open(str(sys.argv[2]),"w");
 fichier.write(toCOSMOS(lastone));
 fichier.close();
-print "output written in my_first_cosmos_model.grml";
+print ("output written in "+str(sys.argv[2])) ;
