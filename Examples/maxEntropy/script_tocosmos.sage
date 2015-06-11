@@ -1,9 +1,22 @@
 #!/Applications/Sage-6.7.app/Contents/Resources/sage/sage
 
 import sys
+import os
 
-load(str(sys.argv[1]))
+prismpath="~/Documents/prism-ptasmc/prism/bin/prism";
+
+sagepath,ext = os.path.splitext(str(sys.argv[1]))
+print(str(sys.argv[1]) + ' -> ' + sagepath + '.sage' );
+
+retval=os.system(prismpath + ' ' + str(sys.argv[1]) + ' -exportsplitreach ' + sagepath + '.sage');
+
+print(sagepath + '.sage -> ' + sys.argv[2] );
+load(sagepath+'.sage')
 numpoly=3;
+if len(sys.argv)>3:
+    numpoly=int(sys.argv[3])
+
+
 
 cardclocks=len(translist[0][0][4][0])-2;
 card_states=len(translist);
@@ -166,7 +179,7 @@ def toCOSMOS(quadriple):
             s+='      <attribute name=\"var\"> t </attribute>\n';
             s+='      <attribute name=\"lowerBound\">' + poly_to_c(quadriple[3][i][j]) + '</attribute>\n';
             s+='      <attribute name=\"cdf\">('+ poly_to_c(quadriple[2][i][j]) +')/('+ poly_to_c(quadriple[3][i][j]) +')'+ '</attribute>\n';
-            s+='      <attribute name=\"pdf\">'+ poly_to_c(quadriple[1][i][j]) +')/('+ poly_to_c(quadriple[3][i][j]) +')'+ '</attribute>\n';
+            s+='      <attribute name=\"pdf\">('+ poly_to_c(quadriple[1][i][j]) +')/('+ poly_to_c(quadriple[3][i][j]) +')'+ '</attribute>\n';
             s+='    </attribute>\n';
     s+='    <attribute name="variables">\n';
     s+='      <attribute name="clocks">\n';
