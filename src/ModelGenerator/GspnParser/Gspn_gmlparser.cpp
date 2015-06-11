@@ -606,26 +606,27 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
 
                 if (*t2 == "UserDefineDistribution") {
                     userDefineDistribution dist;
+                    dist.lowerBound = "0";
                     for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
                         if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ": ";
                         if (*it2 == "name") {
                             dist.name = simplifyString(*(it2.begin()));
-                            if ((P.verbose - 3) > 1)cout << *(it2.begin());
                         }
                         if (*it2 == "var") {
                             dist.var = simplifyString(*(it2.begin()));
-                            if ((P.verbose - 3) > 1)cout << *(it2.begin());
                         }
                         if (*it2 == "cdf") {
                             dist.cdf = simplifyString(*(it2.begin()));
-                            if ((P.verbose - 3) > 1)cout << *(it2.begin());
                         }
                         if (*it2 == "pdf") {
                             dist.pdf = simplifyString(*(it2.begin()));
-                            if ((P.verbose - 3) > 1)cout << *(it2.begin());
+                        }
+                        if (*it2 == "lowerBound") {
+                            dist.lowerBound = simplifyString(*(it2.begin()));
                         }
                     }
                     MyGspn->distribStruct.push_back(dist);
+                    if ((P.verbose - 3) > 1)cout << dist << endl;
                 }
             }
         }
