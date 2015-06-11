@@ -88,10 +88,12 @@ def WeightsPdfCdf(f):
     psiDeltaf=[];            #psiDeltaf[i][j][k] weight of Delta
     Cdf=[];                #Integ[i][j][k] primitive of f(r(x+t)) wrt t;
     Pdf=[];
+    lowerBound=[];
     for i in range(card_states):
         psiDeltaf.append([]);
         Cdf.append([]);
         Pdf.append([]);
+        lowerBound.append([]);
         for j in range(len(translist[i])):
             trans=translist[i][j];
             probaedges=trans[4];
@@ -103,11 +105,13 @@ def WeightsPdfCdf(f):
                 pol=(probaedges[k][len(probaedges[k])-1])*integral(pol2,t);
                 cdf=pol - pol(t=trans[0]-clockO(x,i,trans[1]));
                 weight=pol(t=trans[2]-clockO(x,i,trans[3]))-pol(t=trans[0]-clockO(x,i,trans[1]));
+                lb=trans[2]-clockO(x,i,trans[3]);
                 psiDeltaf[i].append(weight);
-                Pdf[i].append(pol2/weight);
-                Cdf[i].append(cdf/weight);
-    return([psiDeltaf,Pdf,Cdf]);
-    
+                Pdf[i].append(pol2);
+                Cdf[i].append(cdf);
+                lowerBound[i].append(R(lb));
+    return([psiDeltaf,Pdf,Cdf,lowerBound]);    
+
 def poly_to_c(p):
     supp=p.exponents();
     s='0.0';
@@ -152,16 +156,17 @@ for i in range(1,numpoly+1):
 
 lastone=WeightsPdfCdf(listres[numpoly]);
 
-def toCOSMOS(triple):
+def toCOSMOS(quadriple):
     s='<?xml version="1.0" encoding=\"UTF-8\"?>\n\n<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">\n';
     s+='  <attribute name=\"declaration\">\n';
-    for i in range(len(triple[1])):
-        for j in range(len(triple[1][i])):
+    for i in range(len(quadriple[1])):
+        for j in range(len(quadriple[1][i])):
             s+='    <attribute name=\"UserDefineDistribution\">\n';            
             s+='      <attribute name=\"name\"> '+ "trans_%d"%i+"_%d"%j+ ' </attribute>\n';
-            s+="      <attribute name=\"var\"> t </attribute>\n";
-            s+='      <attribute name=\"cdf\">'+ poly_to_c(triple[2][i][j]) +'</attribute>\n';
-            s+='      <attribute name=\"pdf\">'+ poly_to_c(triple[1][i][j]) +'</attribute>\n';
+            s+='      <attribute name=\"var\"> t </attribute>\n';
+            s+='      <attribute name=\"lowerBound\">' + poly_to_c(quadriple[3][i][j]) + '</attribute>\n';
+            s+='      <attribute name=\"cdf\">('+ poly_to_c(quadriple[2][i][j]) +')/('+ poly_to_c(quadriple[3][i][j]) +')'+ '</attribute>\n';
+            s+='      <attribute name=\"pdf\">'+ poly_to_c(quadriple[1][i][j]) +')/('+ poly_to_c(quadriple[3][i][j]) +')'+ '</attribute>\n';
             s+='    </attribute>\n';
     s+='    <attribute name="variables">\n';
     s+='      <attribute name="clocks">\n';
@@ -199,7 +204,7 @@ def toCOSMOS(triple):
             s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
             s+='    </attribute></attribute>\n';
             s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"unParsed\">'+ poly_to_c_bis(triple[0][i][j]) +'</attribute>\n';
+            s+='      <attribute name=\"unParsed\">'+ poly_to_c_bis(quadriple[0][i][j]) +'</attribute>\n';
             s+='    </attribute></attribute>\n';
             s+='  </node>\n';
     for i in range(len(translist)):
@@ -262,7 +267,6 @@ def toCOSMOS(triple):
             s+='  </arc>\n';
     s+='</model>\n';
     return(s);
-
 
 fichier=open(str(sys.argv[2]),"w");
 fichier.write(toCOSMOS(lastone));
