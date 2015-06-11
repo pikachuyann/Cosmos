@@ -59,8 +59,12 @@ struct userDefineDistribution{
     std::string var;
     std::string cdf;
     std::string pdf;
+    std::string lowerBound;
     size_t nbparam;
 };
+
+std::ostream& operator<<(std::ostream& os, const userDefineDistribution& obj);
+
 
 struct color {
     std::string name;

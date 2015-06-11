@@ -29,7 +29,7 @@
 
 #include <iostream>
 #include "Gspn-model.hpp"
-#include "parameters.hpp"
+#include "../parameters.hpp"
 
 class Gspn_Writer {
 public:

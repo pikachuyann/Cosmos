@@ -249,7 +249,7 @@ private:
 
 double userDefineCDF(const std::vector<double> &param, double x);
 double userDefinePDF(const std::vector<double> &param, double x);
-
+double userDefineLowerBound(const std::vector<double> &param);
 
 
 
