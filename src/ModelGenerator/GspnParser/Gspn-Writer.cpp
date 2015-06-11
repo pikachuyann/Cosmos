@@ -1061,7 +1061,7 @@ void Gspn_Writer::writeFile(){
     if(!P.lightSimulator){
         SpnCppFile << ",Transition(TransArray,TransArray +"<< MyGspn.tr <<")";
         SpnCppFile << ",Place("<< MyGspn.pl << ")";
-        SpnCppFile << ",ParamDistr(3)";
+        SpnCppFile << ",ParamDistr(10)";
         SpnCppFile << ",TransitionConditions(" << MyGspn.tr <<",0)";
     }
 
@@ -1162,6 +1162,19 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     ch.writeCases(f);
     f << "}\n" << endl;
     }
+    {
+    f << "double userDefineLowerBound(vector<double> const& param){" <<endl;
+    auto ch = casesHandler("(int)param[0]");
+    for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
+        const auto &dist = MyGspn.distribStruct[it];
+        stringstream newcase;
+        newcase << "\t\treturn (" << dist.lowerBound << ");" << endl;
+        ch.addCase(it , newcase.str(),dist.name);
+    }
+    ch.writeCases(f);
+    f << "}\n" << endl;
+    }
+
 
 }
 

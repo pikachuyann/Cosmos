@@ -145,10 +145,11 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
             boost::variate_generator<boost::mt19937&, boost::uniform_01<> > gen(RandomNumber, UNIF);
             auto gentime = gen();
         //cerr << "sample" << gentime <<":";
+            double initialpt = userDefineLowerBound(param);
             return boost::math::tools::newton_raphson_iterate([&](double x){
                 //cerr << x << " , ";
                 return make_tuple(userDefineCDF(param,x)-gentime, userDefinePDF(param,x));
-            }, 0.0, 0.0, numeric_limits<double>::infinity(), 10);
+            }, initialpt, initialpt, numeric_limits<double>::infinity(), 10);
 
             break;
         }
