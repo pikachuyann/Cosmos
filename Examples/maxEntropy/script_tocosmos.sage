@@ -3,9 +3,7 @@
 import sys
 
 load(str(sys.argv[1]))
-
-numpoly=50;
-mgrand=numpoly-1;
+numpoly=3;
 
 cardclocks=len(translist[0][0][4][0])-2;
 card_states=len(translist);
@@ -102,11 +100,12 @@ def WeightsPdfCdf(f):
                 listcoef=[(probaedges[k][l])*(clockO(x,i,l)+t) for l in range(1,cardclocks+1)];
                 listcoef.append(0);
                 pol2=pol1(listcoef);
-                Pdf[i].append(pol2);
                 pol=(probaedges[k][len(probaedges[k])-1])*integral(pol2,t);
                 cdf=pol - pol(t=trans[0]-clockO(x,i,trans[1]));
-                Cdf[i].append(cdf);
-                psiDeltaf[i].append(pol(t=trans[2]-clockO(x,i,trans[3]))-pol(t=trans[0]-clockO(x,i,trans[1])));
+                weight=pol(t=trans[2]-clockO(x,i,trans[3]))-pol(t=trans[0]-clockO(x,i,trans[1]));
+                psiDeltaf[i].append(weight);
+                Pdf[i].append(pol2/weight);
+                Cdf[i].append(cdf/weight);
     return([psiDeltaf,Pdf,Cdf]);
     
 def poly_to_c(p):
@@ -147,17 +146,11 @@ def sumlist(l):
         accu=accu+l[i];
     return(accu);
 
-numpoly=3;
-list_time=[];
-tim_1=cputime();
 listres=[[R(1) for i in range(card_states)]];
 for i in range(1,numpoly+1):
-    list_time.append(cputime(tim_1));
     listres.append(Op(listres[i-1]));
 
-mgrand=3;
-lastone=WeightsPdfCdf(listres[mgrand]);
-
+lastone=WeightsPdfCdf(listres[numpoly]);
 
 def toCOSMOS(triple):
     s='<?xml version="1.0" encoding=\"UTF-8\"?>\n\n<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">\n';
