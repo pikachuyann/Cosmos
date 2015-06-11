@@ -40,6 +40,14 @@ void searchreplace(const string &in,const string &motif,const string &rep,string
     }
 }
 
+
+std::ostream& operator<<(std::ostream& os, const place& obj){
+    os << "place " << obj.name << "(" << obj.id << "){" << endl;
+    os << "\tmarking:" << obj.Marking << endl;
+    return os;
+}
+
+
 std::ostream& operator<<(std::ostream& os, const ProbabiliteDistribution& obj){
     os << obj.name << "(";
     for( const auto &e : obj.Param){
@@ -58,8 +66,11 @@ std::ostream& operator<<(std::ostream& os, const transition& obj){
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const place& obj){
-    os << "place " << obj.name << "(" << obj.id << "){" << endl;
-    os << "\tmarking:" << obj.Marking << endl;
+std::ostream& operator<<(std::ostream& os, const userDefineDistribution& obj){
+    os << "UserDefineDistribution " << obj.name << "{" << endl;
+    os << "\tvar:" << obj.var << endl;
+    os << "\tcdf:" << obj.cdf << endl;
+    os << "\tpdf:" << obj.pdf << endl;
+    os << "\tlowerBound:" << obj.lowerBound << endl << "}" << endl;
     return os;
 }
