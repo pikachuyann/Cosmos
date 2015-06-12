@@ -1,4 +1,4 @@
-#!/Applications/Sage-6.7.app/Contents/Resources/sage/sage
+#!env sage
 
 import sys
 import os
