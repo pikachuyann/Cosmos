@@ -7,7 +7,7 @@ if nargin < 6
     end
 end
 
-ecgBins=max(fs_1,fs_2)/2;
+ecgBins=min(fs_1,fs_2)/2;
 [ECGmean_1,ECGsd_1,ECG_distr_1] = computeECGDistr(ecg_1',fs_1,ecgBins,plot,'Data 1');
 [ECGmean_2,ECGsd_2,ECG_distr_2] = computeECGDistr(ecg_2',fs_2,ecgBins,plot,'Data 2');
 
