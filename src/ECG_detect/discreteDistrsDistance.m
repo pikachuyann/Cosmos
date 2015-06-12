@@ -2,6 +2,8 @@ function [score,scores] = discreteDistrsDistance(dist1,dist2,nbins,nbinsECG)
 if length(dist1)~=length(dist2)
     disp 'The two ECGs are divided with different num of bins'
     score = inf;
+    scores=ones(size(dist1));
+    scores=scores*inf;
 else
     score = 0;
     scores=zeros(size(dist1));
