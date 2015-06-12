@@ -443,8 +443,8 @@ for i=1:length(R_i)
     T_w = find(T_data(:,2)==curr_R,1);
     if ~(isempty(P_w) || isempty(S_w) || isempty(Q_w) || isempty(T_w))
         R_filtered = [R_filtered; R_data(i,:)];
-        P_filtered = [P_filtered; P_data(P_w,[1 3 4])];
-        T_filtered = [T_filtered; T_data(T_w,[1 3 4])];
+        P_filtered = [P_filtered; P_data(P_w,:)];
+        T_filtered = [T_filtered; T_data(T_w,:)];
     end
 end
 
@@ -475,8 +475,11 @@ filtered = buffer_plot+gaussians;
 
 
 Q_flt = [];
+Q_flt_R_idxs = [];
 S_flt = [];
+S_flt_R_idxs = [];
 R_i = R_filtered(:,1);
+
 %compute filtered "gaussians" for Q and S waves
 for i=1:length(R_i)
     curr_R = R_i(i);
@@ -488,6 +491,7 @@ for i=1:length(R_i)
         % the filtered signal
         [Q_amp_flt, Q_flt_t] = min(filtered(P_w:curr_R));
         Q_flt = [Q_flt Q_flt_t+P_w];
+        Q_flt_R_idxs=[Q_flt_R_idxs curr_R];
     end
     
     T_idx = find(T_data(:,2)==curr_R,1);
@@ -497,7 +501,9 @@ for i=1:length(R_i)
         % the filtered signal
         [S_amp_flt, S_flt_t] = min(filtered(curr_R:T_w));
         S_flt = [S_flt S_flt_t+curr_R];
+        S_flt_R_idxs=[S_flt_R_idxs curr_R];
     end
+    
    
 end
 
@@ -515,8 +521,8 @@ for idx = 1:length(Q_wdt_flt)
     Q_wdt_flt(idx) = convertGaussianWidths(shortWidth,1/4,1/2);
 end
 
-S_filtered = [(S_flt)',(S_amp_flt),(S_wdt_flt)'];
-Q_filtered = [(Q_flt)',(Q_amp_flt),(Q_wdt_flt)'];
+S_filtered = [(S_flt)',S_flt_R_idxs',(S_amp_flt),(S_wdt_flt)'];
+Q_filtered = [(Q_flt)',Q_flt_R_idxs', (Q_amp_flt),(Q_wdt_flt)'];
 
 end
 
