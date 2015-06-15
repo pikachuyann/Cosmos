@@ -3,6 +3,7 @@
   open Parser
 
   exception SyntaxError  of string
+
 }
 
 let digit = ['0'-'9']
@@ -62,7 +63,10 @@ rule token = parse
 	  | BoolVar-> BOOLNAME(lxm)
 	  | FunT -> FUNNAME(lxm)
 	end with
-	    Not_found -> NAME(lxm)
+	    Not_found -> 
+	      if !allInt then INTNAME(lxm)
+	      else if !allReal then DOUBLENAME(lxm)
+	      else NAME(lxm)
 }
   | _ { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
   | eof  {EOF}

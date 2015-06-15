@@ -2,6 +2,10 @@ open Type
 
 type expType = IntT | BoolT | DoubleT | IntVar | BoolVar | FunT
 
+
+let allInt = ref false
+let allReal = ref false
+
 let (mapType:expType StringMap.t ref) = ref 
   (StringMap.empty
       |> StringMap.add "min" FunT
