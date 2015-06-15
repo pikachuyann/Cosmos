@@ -153,7 +153,14 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
 
             break;
         }
-			
+
+        case DISCRETEUSERDEFINE:
+        {
+            boost::uniform_int<> UNIF(0, (int)param[1]);
+            boost::variate_generator<boost::mt19937&, boost::uniform_int<> > gen(RandomNumber, UNIF);
+            unsigned int i=gen();
+            return userdefineDiscreteDistr(param,i);
+        }
 			
 		default: cerr << "Unknown distribution: "<< distribution << endl;
 			break;
