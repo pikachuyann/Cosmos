@@ -1,4 +1,4 @@
-function [ECGmean_1,ECGsd_1,ECG_distr_1,ECGmean_2,ECGsd_2,ECG_distr_2,score,scores] = computeECGsdistance(ecg_1,fs_1,ecg_2,fs_2,plot,nbinsDiscreteDistr,nbinsRRDistr)
+function [score,scores,ECGmean_1,ECGsd_1,ECG_distr_1,ECGmean_2,ECGsd_2,ECG_distr_2] = computeECGsdistance(ecg_1,fs_1,ecg_2,fs_2,plot,nbinsDiscreteDistr)
 
 if nargin < 6
     nbinsDiscreteDistr = 10;
