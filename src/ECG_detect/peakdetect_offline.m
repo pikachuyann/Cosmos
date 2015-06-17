@@ -1,4 +1,4 @@
-function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_filtered, P_filtered, T_filtered, S_filtered, Q_filtered, heart_rate,buffer_plot]=peakdetect_offline(ecg,fs,view)
+function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_filtered, P_filtered, T_filtered, S_filtered, Q_filtered, heart_rate,buffer_plot]=peakdetect_offline(ecg,fs,view,plot)
 %% Inputs
 % ecg : raw ecg vector
 % fs : sampling frequency
@@ -27,6 +27,13 @@ function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_fi
 
 
 %% initialize
+
+if nargin < 4
+    plot=false;
+end
+
+
+
 S_i = [];%save index of S wave
 T_i = [];%save index of T wave
 Q_i = []; % vectors to store Q wave
@@ -306,7 +313,7 @@ for i = 1 : length(ecg)
                 %% end edit
                 T_on = 0;
                 T_on1 = 0;
-
+                
                 %                 %% edit
                 %                 %state= 5; % enter Sleep mode
                 %                 c=0;
@@ -395,42 +402,44 @@ S_i=S_i(:,1);
 T_i=T_i(:,1);
 Q_i=Q_i(:,1);
 P_i=P_i(:,1);
+
 %% plottings
-time = 1/fs:1/fs:view;
-R = find(R_i <= view*fs); % determine the length for plotting vectors
-S = find(S_i(:,1) <= view*fs); % determine the length for plotting vectors
-T = find(T_i(:,1) <= view*fs); % determine the length for plotting vectors
-Q = find(Q_i(:,1) <= view*fs); % determine the length for plotting vector
-P = find(P_i(:,1) <= view*fs); % determine the length for plotting vectors
-
-% L1 = find(thres_p_i <= view*fs);
-%L2 = find(S_amp1_i <= view*fs);
-% L3 = find(thres2_p_i <= view*fs);
-if view*fs > length(buffer_plot)
-    ax(1) = subplot(211);plot(time(1:length(buffer_plot)),buffer_plot(1:end));
-else
-    ax(1) = subplot(211);plot(time,buffer_plot(1:(view*fs)));
+if plot
+    time = 1/fs:1/fs:view;
+    R = find(R_i <= view*fs); % determine the length for plotting vectors
+    S = find(S_i(:,1) <= view*fs); % determine the length for plotting vectors
+    T = find(T_i(:,1) <= view*fs); % determine the length for plotting vectors
+    Q = find(Q_i(:,1) <= view*fs); % determine the length for plotting vector
+    P = find(P_i(:,1) <= view*fs); % determine the length for plotting vectors
+    
+    % L1 = find(thres_p_i <= view*fs);
+    %L2 = find(S_amp1_i <= view*fs);
+    % L3 = find(thres2_p_i <= view*fs);
+    if view*fs > length(buffer_plot)
+        ax(1) = subplot(211);plot(time(1:length(buffer_plot)),buffer_plot(1:end));
+    else
+        ax(1) = subplot(211);plot(time,buffer_plot(1:(view*fs)));
+    end
+    hold on,scatter(R_i(1:R(end))./fs,R_amp(1:R(end)),'r');
+    hold on,scatter(S_i(1:S(end))./fs,S_amp(1:S(end)),'g');
+    hold on,scatter(T_i(1:T(end))./fs,T_amp(1:T(end)),'k');
+    hold on,scatter(Q_i(1:Q(end))./fs,Q_amp(1:Q(end)),'m');
+    hold on,scatter(P_i(1:P(end))./fs,P_amp(1:P(end)),'y');
+    % hold on,plot(thres_p_i(1:L1(end))./fs,thres_p(1:L1(end)),'LineStyle','-.','color','r',...
+    %     'LineWidth',2.5);
+    % hold on,plot(S_amp1_i(1:L2(end))./fs,S_amp1(1:L2(end)),'LineStyle','--','color','c',...
+    %     'LineWidth',2.5);
+    % hold on,plot(thres2_p_i(1:L3(end))./fs,thres2_p(1:L3(end)),'-k','LineWidth',2);
+    % legend('Raw ECG Signal','R wave','S wave','T wave','R adaptive thres','Latest S wave','T wave adaptive threshold threshold','Location','NorthOutside','Orientation','horizontal');
+    legend('Raw ECG Signal','R wave','S wave','T wave','Q wave','P wave','Location','NorthOutside','Orientation','horizontal');
+    xlabel('Time(sec)'),ylabel('V');
+    axis tight; title('Zoom in to see both signal details overlaied');title('Filtered, smoothed and processed signal');
+    ax(2) =subplot(212);plot(time,ecg_raw(1:(view*fs)));title('Raw ECG')
+    xlabel('Time(sec)'),ylabel('V');
+    legend();
+    linkaxes(ax,'x');
+    zoom on;
 end
-hold on,scatter(R_i(1:R(end))./fs,R_amp(1:R(end)),'r');
-hold on,scatter(S_i(1:S(end))./fs,S_amp(1:S(end)),'g');
-hold on,scatter(T_i(1:T(end))./fs,T_amp(1:T(end)),'k');
-hold on,scatter(Q_i(1:Q(end))./fs,Q_amp(1:Q(end)),'m');
-hold on,scatter(P_i(1:P(end))./fs,P_amp(1:P(end)),'y');
-% hold on,plot(thres_p_i(1:L1(end))./fs,thres_p(1:L1(end)),'LineStyle','-.','color','r',...
-%     'LineWidth',2.5);
-% hold on,plot(S_amp1_i(1:L2(end))./fs,S_amp1(1:L2(end)),'LineStyle','--','color','c',...
-%     'LineWidth',2.5);
-% hold on,plot(thres2_p_i(1:L3(end))./fs,thres2_p(1:L3(end)),'-k','LineWidth',2);
-% legend('Raw ECG Signal','R wave','S wave','T wave','R adaptive thres','Latest S wave','T wave adaptive threshold threshold','Location','NorthOutside','Orientation','horizontal');
-legend('Raw ECG Signal','R wave','S wave','T wave','Q wave','P wave','Location','NorthOutside','Orientation','horizontal');
-xlabel('Time(sec)'),ylabel('V');
-axis tight; title('Zoom in to see both signal details overlaied');title('Filtered, smoothed and processed signal');
-ax(2) =subplot(212);plot(time,ecg_raw(1:(view*fs)));title('Raw ECG')
-xlabel('Time(sec)'),ylabel('V');
-legend();
-linkaxes(ax,'x');
-zoom on;
-
 %% remove incomplete ECGs
 R_filtered = [];
 P_filtered = [];
@@ -485,7 +494,7 @@ for i=1:length(R_i)
     curr_R = R_i(i);
     
     P_idx = find(P_data(:,2)==curr_R,1);
-    if ~(isempty(P_idx))         
+    if ~(isempty(P_idx))
         P_w = P_i(P_idx);
         % the Q wave is the minimum between the current P and R waves in
         % the filtered signal
@@ -495,7 +504,7 @@ for i=1:length(R_i)
     end
     
     T_idx = find(T_data(:,2)==curr_R,1);
-    if ~(isempty(T_idx))         
+    if ~(isempty(T_idx))
         T_w = T_i(T_idx);
         % the S wave is the minimum between the current R and T waves in
         % the filtered signal
@@ -504,7 +513,7 @@ for i=1:length(R_i)
         S_flt_R_idxs=[S_flt_R_idxs curr_R];
     end
     
-   
+    
 end
 
 S_amp_flt = filtered(S_flt);
@@ -527,21 +536,21 @@ Q_filtered = [(Q_flt)',Q_flt_R_idxs', (Q_amp_flt),(Q_wdt_flt)'];
 end
 
 function sd = SDfromGaussianWidth(width,amplituteRatio)
-    if nargin < 2
-        amplituteRatio = 1/2;
-    end
-    sd = width/(2*sqrt(2*log(1/amplituteRatio)));
+if nargin < 2
+    amplituteRatio = 1/2;
+end
+sd = width/(2*sqrt(2*log(1/amplituteRatio)));
 end
 
 function width = widthfromGaussianSD(sd,amplituteRatio)
-    if nargin < 2
-        amplituteRatio = 1/2;
-    end
-    width = sd*(2*sqrt(2*log(1/amplituteRatio)));
+if nargin < 2
+    amplituteRatio = 1/2;
+end
+width = sd*(2*sqrt(2*log(1/amplituteRatio)));
 end
 
 function width_out = convertGaussianWidths(width_in,amplituteRatio_in, amplituteRatio_out)
-    sd = SDfromGaussianWidth(width_in,amplituteRatio_in);
-    width_out = widthfromGaussianSD(sd,amplituteRatio_out);
+sd = SDfromGaussianWidth(width_in,amplituteRatio_in);
+width_out = widthfromGaussianSD(sd,amplituteRatio_out);
 end
 
