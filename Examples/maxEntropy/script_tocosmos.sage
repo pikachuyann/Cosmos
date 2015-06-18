@@ -5,12 +5,16 @@ import os
 
 prismpath="~/Documents/prism-ptasmc/prism/bin/prism";
 
-sagepath,ext = os.path.splitext(str(sys.argv[1]))
+sagepath,ext = os.path.splitext(str(sys.argv[1]));
+outpath=sagepath+'.grml';
+if len(sys.argv)>2:
+    outpath=str(sys.argv[2]);
+
 print(str(sys.argv[1]) + ' -> ' + sagepath + '.sage' );
 
 retval=os.system(prismpath + ' ' + str(sys.argv[1]) + ' -exportsplitreach ' + sagepath + '.sage');
 
-print(sagepath + '.sage -> ' + sys.argv[2] );
+print(sagepath + '.sage -> ' + outpath );
 load(sagepath+'.sage')
 numpoly=3;
 if len(sys.argv)>3:
@@ -102,11 +106,13 @@ def WeightsPdfCdf(f):
     Cdf=[];                #Integ[i][j][k] primitive of f(r(x+t)) wrt t;
     Pdf=[];
     lowerBound=[];
+    upperBound=[];
     for i in range(card_states):
         psiDeltaf.append([]);
         Cdf.append([]);
         Pdf.append([]);
         lowerBound.append([]);
+        upperBound.append([]);
         for j in range(len(translist[i])):
             trans=translist[i][j];
             probaedges=trans[4];
@@ -118,12 +124,14 @@ def WeightsPdfCdf(f):
                 pol=(probaedges[k][len(probaedges[k])-1])*integral(pol2,t);
                 cdf=pol - pol(t=trans[0]-clockO(x,i,trans[1]));
                 weight=pol(t=trans[2]-clockO(x,i,trans[3]))-pol(t=trans[0]-clockO(x,i,trans[1]));
-                lb=trans[2]-clockO(x,i,trans[3]);
+                lb=trans[0]-clockO(x,i,trans[1]);
+                ub=trans[2]-clockO(x,i,trans[3]);
                 psiDeltaf[i].append(weight);
                 Pdf[i].append(pol2);
                 Cdf[i].append(cdf);
                 lowerBound[i].append(R(lb));
-    return([psiDeltaf,Pdf,Cdf,lowerBound]);    
+                upperBound[i].append(R(ub));
+    return([psiDeltaf,Pdf,Cdf,lowerBound,upperBound]);    
 
 def poly_to_c(p):
     supp=p.exponents();
@@ -169,6 +177,11 @@ for i in range(1,numpoly+1):
 
 lastone=WeightsPdfCdf(listres[numpoly]);
 
+def escapename(s):
+    s2=s.replace('(','').replace(')','').replace('>','G').replace('<','L').replace('&','^');
+    s3=s2.replace(',','_').replace('{','').replace('}','').replace('=','E').replace('-','M');
+    return s3
+
 def toCOSMOS(quadriple):
     s='<?xml version="1.0" encoding=\"UTF-8\"?>\n\n<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">\n';
     s+='  <attribute name=\"declaration\">\n';
@@ -178,8 +191,9 @@ def toCOSMOS(quadriple):
             s+='      <attribute name=\"name\"> '+ "trans_%d"%i+"_%d"%j+ ' </attribute>\n';
             s+='      <attribute name=\"var\"> t </attribute>\n';
             s+='      <attribute name=\"lowerBound\">' + poly_to_c(quadriple[3][i][j]) + '</attribute>\n';
-            s+='      <attribute name=\"cdf\">('+ poly_to_c(quadriple[2][i][j]) +')/('+ poly_to_c(quadriple[3][i][j]) +')'+ '</attribute>\n';
-            s+='      <attribute name=\"pdf\">('+ poly_to_c(quadriple[1][i][j]) +')/('+ poly_to_c(quadriple[3][i][j]) +')'+ '</attribute>\n';
+            s+='      <attribute name=\"upperBound\">' + poly_to_c(quadriple[4][i][j]) + '</attribute>\n';
+            s+='      <attribute name=\"cdf\">('+ poly_to_c(quadriple[2][i][j]) +')/('+ poly_to_c(quadriple[0][i][j]) +')'+ '</attribute>\n';
+            s+='      <attribute name=\"pdf\">('+ poly_to_c(quadriple[1][i][j]) +')/('+ poly_to_c(quadriple[0][i][j]) +')'+ '</attribute>\n';
             s+='    </attribute>\n';
     s+='    <attribute name="variables">\n';
     s+='      <attribute name="clocks">\n';
@@ -192,7 +206,7 @@ def toCOSMOS(quadriple):
     s+='  </attribute>\n';
     for i in range(len(translist)):
         s+='  <node id=\"1%d\" ' %i +' nodeType=\"place\">\n';
-        s+='    <attribute name=\"name\">s_%d ' %i +' </attribute>\n';
+        s+='    <attribute name=\"name\">s_%d_' %i + escapename(namelist[i]) + ' </attribute>\n';
         s+='    <attribute name=\"marking\"><attribute name=\"expr\">\n';
         s+='      <attribute name=\"numValue\">%d '%(i==0)+' </attribute>\n';
         s+='    </attribute></attribute>\n';
@@ -241,7 +255,8 @@ def toCOSMOS(quadriple):
             s+='    </attribute>\n';
             s+='    <attribute name=\"update\">\n    ';
             for c in range(cardclocks):
-                s+='x_%d'%(c+1)+'=0;';
+                if translist[i][j][4][0][c+1]==0:
+                    s+='x_%d'%(c+1)+'=0;';
             s+='\n    </attribute>\n';
             s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
             s+='      <attribute name=\"numValue\"> 1.000000 </attribute>\n';
@@ -281,7 +296,7 @@ def toCOSMOS(quadriple):
     s+='</model>\n';
     return(s);
 
-fichier=open(str(sys.argv[2]),"w");
+fichier=open(outpath,"w");
 fichier.write(toCOSMOS(lastone));
 fichier.close();
-print ("output written in "+str(sys.argv[2])) ;
+print ("output written in "+outpath) ;

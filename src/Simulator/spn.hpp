@@ -251,7 +251,7 @@ private:
 double userDefineCDF(const std::vector<double> &param, double x);
 double userDefinePDF(const std::vector<double> &param, double x);
 double userDefineLowerBound(const std::vector<double> &param);
-double userdefineDiscreteDistr(const std::vector<double> &param,unsigned int i);
+double userDefineDiscreteDistr(const std::vector<double> &param,unsigned int i);
 
 
 

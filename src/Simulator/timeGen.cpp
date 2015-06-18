@@ -147,8 +147,10 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
         //cerr << "sample" << gentime <<":";
             double initialpt = userDefineLowerBound(param);
             return boost::math::tools::newton_raphson_iterate([&](double x){
-                //cerr << x << " , ";
-                return make_tuple(userDefineCDF(param,x)-gentime, userDefinePDF(param,x));
+                const auto cdf = userDefineCDF(param,x);
+                const auto pdf = userDefinePDF(param,x);
+                cerr << "(" << x << " , " << cdf << "," << pdf <<")";
+                return make_tuple(cdf-gentime, pdf);
             }, initialpt, initialpt, numeric_limits<double>::infinity(), 10);
 
             break;
@@ -159,7 +161,7 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
             boost::uniform_int<> UNIF(0, (int)param[1]);
             boost::variate_generator<boost::mt19937&, boost::uniform_int<> > gen(RandomNumber, UNIF);
             unsigned int i=gen();
-            return userdefineDiscreteDistr(param,i);
+            return userDefineDiscreteDistr(param,i);
         }
 			
 		default: cerr << "Unknown distribution: "<< distribution << endl;
