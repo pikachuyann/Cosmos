@@ -1,4 +1,4 @@
-function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_filtered, P_filtered, T_filtered, S_filtered, Q_filtered, heart_rate,buffer_plot]=peakdetect_offline(ecg,fs,view,plot)
+function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_filtered, P_filtered, T_filtered, S_filtered, Q_filtered, heart_rate,buffer_plot]=peakdetect_offline(ecg,fs,view,showplot)
 %% Inputs
 % ecg : raw ecg vector
 % fs : sampling frequency
@@ -29,7 +29,7 @@ function [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_fi
 %% initialize
 
 if nargin < 4
-    plot=false;
+    showplot=false;
 end
 
 
@@ -404,7 +404,7 @@ Q_i=Q_i(:,1);
 P_i=P_i(:,1);
 
 %% plottings
-if plot
+if showplot
     time = 1/fs:1/fs:view;
     R = find(R_i <= view*fs); % determine the length for plotting vectors
     S = find(S_i(:,1) <= view*fs); % determine the length for plotting vectors
