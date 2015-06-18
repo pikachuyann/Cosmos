@@ -416,9 +416,9 @@ if showplot
     %L2 = find(S_amp1_i <= view*fs);
     % L3 = find(thres2_p_i <= view*fs);
     if view*fs > length(buffer_plot)
-        ax(1) = subplot(211);plot(time(1:length(buffer_plot)),buffer_plot(1:end));
+        ax(1) = subplot(311);plot(time(1:length(buffer_plot)),buffer_plot(1:end));
     else
-        ax(1) = subplot(211);plot(time,buffer_plot(1:(view*fs)));
+        ax(1) = subplot(311);plot(time,buffer_plot(1:(view*fs)));
     end
     hold on,scatter(R_i(1:R(end))./fs,R_amp(1:R(end)),'r');
     hold on,scatter(S_i(1:S(end))./fs,S_amp(1:S(end)),'g');
