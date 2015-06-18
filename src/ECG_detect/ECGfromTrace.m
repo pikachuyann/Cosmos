@@ -1,4 +1,4 @@
-function [ time,y ] = ECGfromTrace( trace,ECGPar,sample)
+function [ y,time] = ECGfromTrace( trace,ECGPar,sample)
 %ECGFROMTRACE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -38,10 +38,10 @@ end
 for i=1:nbsample
    x= i*sample;
    time(i,1)=x;
-   while(elist(mins,1)<x-2.0 && mins<length(elist) )
+   while(elist(mins,1)<x-5.0 && mins<length(elist) )
        mins = mins+1;
    end
-   while(elist(maxs,5)<x+2.0 && maxs<length(elist))
+   while(elist(maxs,5)<x+5.0 && maxs<length(elist))
        maxs = maxs+1;
    end
    
