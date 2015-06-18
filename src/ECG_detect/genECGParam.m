@@ -1,11 +1,11 @@
-function [ECGParams, filteredECG] = genECGParam( EKG,rate,time,plot )
+function [ECGParams, filteredECG] = genECGParam( EKG,rate,time,showplot )
 %GENECGPARAM Summary of this function goes here
 %   Detailed explanation goes here
 
 if nargin < 4
-    plot = false;
+    showplot = false;
 end
-[R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_filtered, P_filtered, T_filtered, S_filtered, Q_filtered, heart_rate,filteredECG]=peakdetect_offline(EKG,rate,time,plot);
+[R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_filtered, P_filtered, T_filtered, S_filtered, Q_filtered, heart_rate,filteredECG]=peakdetect_offline(EKG,rate,time,showplot);
 [ dT2 , hT2, wT2] = extractDelay( R_filtered,S_data,S_filtered,T_filtered,Q_filtered,P_filtered,rate);
 
 dT=dT2;
