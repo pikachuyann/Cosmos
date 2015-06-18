@@ -257,7 +257,8 @@ def toCOSMOS(quadriple):
             s+='    </attribute>\n';
             s+='    <attribute name=\"update\">\n    ';
             for c in range(cardclocks):
-                s+='x_%d'%(c+_sage_const_1 )+'=0;';
+                if translist[i][j][_sage_const_4 ][_sage_const_0 ][c+_sage_const_1 ]==_sage_const_0 :
+                    s+='x_%d'%(c+_sage_const_1 )+'=0;';
             s+='\n    </attribute>\n';
             s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
             s+='      <attribute name=\"numValue\"> 1.000000 </attribute>\n';
