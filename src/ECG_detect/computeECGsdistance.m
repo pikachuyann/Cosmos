@@ -24,9 +24,10 @@ end
 teta = 0;                                       % desired phase shift
 f = 1;                                          % approximate R-peak frequency
 
-bsline = LPFilter(data,.7/fs);                 % baseline wander removal (may be replaced by other approaches)
+%bsline = LPFilter(data,.7/fs);                 % baseline wander removal (may be replaced by other approaches)
 
-x = data-bsline;
+%x = data-bsline;
+x = data;
 % peaks = PeakDetection(x,f/fs);                  % peak detection
 [~,peaks_idxs] = pan_tompkin(x',fs,0);
 peaks = zeros(size(x));
