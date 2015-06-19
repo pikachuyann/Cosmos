@@ -39,6 +39,19 @@ pphase = PhaseShifting(phase,teta);             % phase shifting
 
 %bins = fs/2;                                     % number of phase bins
 [ECGmean,ECGsd,meanphase,discreteDistrs] = MeanECGExtraction(x,pphase,bins,1); % mean ECG extraction
+
+%scale
+scaleFact=max(ECGmean);
+%scale the ECG mean and SD
+ECGmean=ECGmean./scaleFact;
+ECGsd=ECGsd./scaleFact;
+%scale the distributions
+for i = 1:length(discreteDistrs)
+    discreteDistrs(i).vals=discreteDistrs(i).vals./scaleFact;
+end
+
+
+
 if showplot
     t = (0:length(data)-1)/fs;
     figure;
