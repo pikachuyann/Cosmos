@@ -6,7 +6,9 @@ if nargin < 4
     showplot = false;
 end
 [R_data,S_data,T_data,Q_data,P_data,PQ_i, QR_i,RT_i,RR_i, ectopic, R_filtered, P_filtered, T_filtered, S_filtered, Q_filtered, heart_rate,filteredECG]=peakdetect_offline(EKG,rate,time,showplot);
-[ dT2 , hT2, wT2] = extractDelay( R_filtered,S_data,S_filtered,T_filtered,Q_filtered,P_filtered,rate);
+
+
+[ dT2 , hT2, wT2] = extractDelay( R_filtered,S_data,S_filtered,T_filtered,Q_data,Q_filtered,P_filtered,rate);
 
 dT=dT2;
 hT=hT2;
