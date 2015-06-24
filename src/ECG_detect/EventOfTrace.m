@@ -1,6 +1,8 @@
-function [ elist ] = EventOfTrace( trace, stepSize )
+function [ elist ] = EventOfTrace( tracefull, stepSize )
 %EVENTOFTRACE Summary of this function goes here
 %   Detailed explanation goes here
+
+trace = tracefull.signals(1).values;
 
 ne = 4;
 elist = zeros(1,ne);
