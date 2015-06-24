@@ -1,14 +1,14 @@
-function [ y,time] = ECGfromTrace( trace,ECGPar,sample)
+function [ y,time] = ECGfromTrace( trace,ECGPar,sample, stepSize)
 %ECGFROMTRACE Summary of this function goes here
 %   Detailed explanation goes here
 
-elist = EventOfTrace(trace);
+elist = EventOfTrace(trace, stepSize);
 elist = [elist(:,1:3) elist(:,3) elist(:,4)];
 %Add S wave:
 for i=1:length(elist)
    if(elist(i,4)~=0)
        r = unidrnd(size(ECGPar,1),1,1);
-       elist(i,4) = elist(i,4) + ECGPar(r,14)/1000;
+       elist(i,4) = elist(i,4) + ECGPar(r,14)*stepSize;
    end
 end
 time = max(max(elist))+1;
