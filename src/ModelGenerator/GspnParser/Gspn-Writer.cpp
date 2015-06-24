@@ -1176,14 +1176,13 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     }
     {
     f << "double userDefineDiscreteDistr(vector<double> const& param,unsigned int i){" <<endl;
-    auto ch = casesHandler("(int)param[0]");
-    stringstream newcase;
-    newcase << "\t\treturn (0);" << endl;
-    ch.addCase(0, newcase.str());
-    ch.writeCases(f);
+    if( any_of(MyGspn.transitionStruct.begin(),MyGspn.transitionStruct.end(),[](const transition &t){return t.dist.name == "DISCRETEUSERDEFINE";})){
+        f << "\treturn (magicUDDD(param,i));" << endl;
+    } else {
+        f << "\treturn (0.0);" << endl;
+    }
     f << "}\n" << endl;
     }
-
 
 }
 

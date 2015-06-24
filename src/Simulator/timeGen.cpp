@@ -39,13 +39,46 @@ void timeGen::initRandomGenerator(unsigned int seed){
 }
 
 
+string string_of_dist(DistributionType d){
+    switch (d) {
+        case   NORMAL:
+            return "Normal";
+        case   GAMMA:
+            return "Gamma";
+        case   UNIFORM:
+            return "Uniform";
+        case   EXPONENTIAL:
+            return "Exponential";
+        case   DETERMINISTIC:
+            return "Deterministic";
+        case   LOGNORMAL:
+            return "LogNormal";
+        case   TRIANGLE:
+            return "Triangle";
+        case   GEOMETRIC:
+            return "Geometric";
+        case   ERLANG:
+            return "Erlang";
+        case   DISCRETEUNIF:
+            return "DiscreteUnif";
+        case   MASSACTION:
+            return "MassAction";
+        case   IMMEDIATE:
+            return "Immediate";
+        case   USERDEFINE:
+            return "Userdefine";
+        case   DISCRETEUSERDEFINE:
+            return "DiscreteUserDefine";
+    }
+}
+
 /**
  * Call the random generator to generate fire time.
  * @param distribution is the type of distribution
  * @param param is a vector of parameters of the distribution.
  */
 double timeGen::GenerateTime(DistributionType distribution,const vector<double> &param) {
-	
+    //cerr << "sampling " << string_of_dist(distribution) << endl;;
 	switch (distribution) {
 		case UNIFORM:
 		{//UNIF
@@ -158,7 +191,7 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
 
         case DISCRETEUSERDEFINE:
         {
-            boost::uniform_int<> UNIF(0, (int)param[1]);
+            boost::uniform_int<> UNIF(0, 100000);
             boost::variate_generator<boost::mt19937&, boost::uniform_int<> > gen(RandomNumber, UNIF);
             unsigned int i=gen();
             return userDefineDiscreteDistr(param,i);

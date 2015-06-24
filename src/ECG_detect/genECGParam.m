@@ -1,4 +1,4 @@
-function [ECGParams, filteredECG] = genECGParam( EKG,rate,time,showplot )
+function [ECGParams, filteredECG] = genECGParam( EKG,rate,time,showplot, quant )
 %GENECGPARAM Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -22,7 +22,11 @@ delay = [RRdelay PQdelay QRdelay Sdelay RTdelay];
 
 %ECGParams =  [ hT(index,:)' (wT(index,:)') (delay(index,:)') ];
 
-ECGParams =  [ hT wT delay];
+ECGParams =  sort([ hT wT delay]);
+
+n = ceil(quant*length(ECGParams)/2);
+
+ECGParams = ECGParams(n:(end-n),:);
 
 end
 
