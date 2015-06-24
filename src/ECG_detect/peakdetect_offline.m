@@ -89,7 +89,9 @@ ecg = ecg (:); % make sure its a vector
 ecg_raw =ecg; %take the raw signal for plotting later
 time_scale = length(ecg_raw)/fs; % total time;
 %Noise cancelation(Filtering)
-f1=0.5; %cuttoff low frequency to get rid of baseline wander
+% f1=0.5; %cuttoff low frequency to get rid of baseline wander
+% f2=45; %cuttoff frequency to discard high frequency noise
+f1=2; %cuttoff low frequency to get rid of baseline wander
 f2=45; %cuttoff frequency to discard high frequency noise
 
 if fs <= 90
@@ -122,6 +124,7 @@ buffer_mean=mean(abs(ecg(1:2*fs)-mean(ecg(1:2*fs)))); % adaptive threshold DC co
 buffer_T = mean(ecg(1:2*fs));%second adaptive threshold to be used for T wave detection
 
 buffer_plot = smooth(ecg,window);
+
 %% define two buffers
 
 buffer_mean=mean(abs(ecg(1:2*fs)-mean(ecg(1:2*fs)))); % adaptive threshold DC corrected (baseline removed)
