@@ -111,6 +111,13 @@ let print_distr f d =
         <attribute name=\"expr\">%a</attribute>
       </attribute>
     </attribute>" print_expr m print_expr v
+  | DiscUserDef (i) -> Printf.fprintf f "        DISCRETEUSERDEFINE
+      </attribute>
+      <attribute name=\"param\">
+        <attribute name=\"number\">0</attribute>
+        <attribute name=\"expr\"><attribute name=\"numValue\">%i</attribute></attribute>
+      </attribute>
+    </attribute>" i
 
   end
 

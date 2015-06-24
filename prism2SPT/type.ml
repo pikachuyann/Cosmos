@@ -4,7 +4,7 @@ let (|>>) x f = match x with
   | None -> None
 
 let (|>>>) x f = match x with 
-    Some y -> Some (f y)
+    Some y -> begin try Some (f y) with _ -> None end
   | None -> None
 
 let (|>>|) x v = match x with
