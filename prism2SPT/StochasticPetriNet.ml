@@ -12,7 +12,10 @@ type distr =
 | Unif of (float expr' *float expr')
 | Norm of (float expr' *float expr')
 | Det of float expr' 
-| Erl of (int expr'*float expr');;
+| Erl of (int expr'*float expr')
+| DiscUserDef of int
+;;
+
 
 type position = (float*float) option;;
 

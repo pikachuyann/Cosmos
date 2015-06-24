@@ -103,6 +103,15 @@ N = 3; % order of 3 less processing
 [a,b] = butter(N,Wn); %bandpass filtering
 ecg = filtfilt(a,b,ecg);
 
+
+%%%%
+% bsline = LPFilter(ecg',.7/fs);                 % baseline wander removal (may be replaced by other approaches)
+% 
+% ecg = ecg-bsline';
+%%%%
+
+
+
 %% edit
 %compute R peaks with pan_tompkin
 [~,R_i] = pan_tompkin(ecg,fs,0);
@@ -263,7 +272,7 @@ for i = 1 : length(ecg)
         if state == 4
             if mean_online < buffer_mean % see if the signal drops below mean
                 state = 6; % confirm
-                [T_tamp initCandidate] = max(buffer_plot(i:min(length(ecg),i+0.3*fs)));
+                [T_tamp initCandidate] = max(buffer_plot(i:min(length(ecg),i+floor(0.3*fs))));
                 T_candidates = [initCandidate+i];
             end
         end
@@ -416,9 +425,9 @@ if showplot
     %L2 = find(S_amp1_i <= view*fs);
     % L3 = find(thres2_p_i <= view*fs);
     if view*fs > length(buffer_plot)
-        ax(1) = subplot(311);plot(time(1:length(buffer_plot)),buffer_plot(1:end));
+        ax(1) = subplot(211);plot(time(1:length(buffer_plot)),buffer_plot(1:end));
     else
-        ax(1) = subplot(311);plot(time,buffer_plot(1:(view*fs)));
+        ax(1) = subplot(211);plot(time,buffer_plot(1:(view*fs)));
     end
     hold on,scatter(R_i(1:R(end))./fs,R_amp(1:R(end)),'r');
     hold on,scatter(S_i(1:S(end))./fs,S_amp(1:S(end)),'g');

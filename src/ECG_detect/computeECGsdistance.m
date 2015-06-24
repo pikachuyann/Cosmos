@@ -1,33 +1,36 @@
-function [score,scores,ECGmean_1,ECGsd_1,ECG_distr_1,ECGmean_2,ECGsd_2,ECG_distr_2] = computeECGsdistance(ecg_1,fs_1,ecg_2,fs_2,showplot,nbinsDiscreteDistr)
+function [score,scores,ECGmean_1,ECGsd_1,ECG_distr_1,ECGmean_2,ECGsd_2,ECG_distr_2] = computeECGsdistance(ecg_1,fs_1,ecg_2,fs_2,showplot,scaling,nbinsDiscreteDistr)
 
-if nargin < 6
+if nargin< 7
     nbinsDiscreteDistr = 10;
-    if nargin < 5
-        plot = 0;
+    if nargin < 6
+        scaling = true;
+        if nargin < 5
+            showplot = 0;
+        end
     end
 end
-
-ecgBins=min(fs_1,fs_2)/2;
-[ECGmean_1,ECGsd_1,ECG_distr_1] = computeECGDistr(ecg_1',fs_1,ecgBins,showplot,'Data 1');
-[ECGmean_2,ECGsd_2,ECG_distr_2] = computeECGDistr(ecg_2',fs_2,ecgBins,showplot,'Data 2');
+ecgBins=floor(min(fs_1,fs_2)/2);
+[ECGmean_1,ECGsd_1,ECG_distr_1] = computeECGDistr(ecg_1',fs_1,ecgBins,showplot,scaling,'Data 1');
+[ECGmean_2,ECGsd_2,ECG_distr_2] = computeECGDistr(ecg_2',fs_2,ecgBins,showplot,scaling,'Data 2');
 
 [score,scores] = discreteDistrsDistance(ECG_distr_1,ECG_distr_2,nbinsDiscreteDistr,ecgBins);
 end
 
-function [ECGmean,ECGsd,discreteDistrs] = computeECGDistr(data,fs,bins,showplot,desc)
+function [ECGmean,ECGsd,discreteDistrs] = computeECGDistr(data,fs,bins,showplot,scaling,desc)
 
 if nargin == 3
     showplot = 0;
     desc = '';
+    scaling = true;
 end
 
 teta = 0;                                       % desired phase shift
 f = 1;                                          % approximate R-peak frequency
 
-%bsline = LPFilter(data,.7/fs);                 % baseline wander removal (may be replaced by other approaches)
+bsline = LPFilter(data,.7/fs);                 % baseline wander removal (may be replaced by other approaches)
 
-%x = data-bsline;
-x = data;
+x = data-bsline;
+% x = data;
 % peaks = PeakDetection(x,f/fs);                  % peak detection
 [~,peaks_idxs] = pan_tompkin(x',fs,0);
 peaks = zeros(size(x));
@@ -41,7 +44,10 @@ pphase = PhaseShifting(phase,teta);             % phase shifting
 [ECGmean,ECGsd,meanphase,discreteDistrs] = MeanECGExtraction(x,pphase,bins,1); % mean ECG extraction
 
 %scale
-scaleFact=max(ECGmean);
+scaleFact=1;
+if scaling
+    scaleFact=max(ECGmean);
+end
 %scale the ECG mean and SD
 ECGmean=ECGmean./scaleFact;
 ECGsd=ECGsd./scaleFact;
