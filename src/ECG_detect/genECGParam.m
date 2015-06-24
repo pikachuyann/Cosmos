@@ -24,11 +24,11 @@ delay = [RRdelay PQdelay QRdelay Sdelay RTdelay];
 
 %ECGParams =  [ hT(index,:)' (wT(index,:)') (delay(index,:)') ];
 
-ECGParams =  sort([ hT wT delay]);
+ECGParams = [ hT wT delay];
 
-n = ceil(quant*length(ECGParams)/2);
-
-ECGParams = ECGParams(n:(end-n),:);
+%ECGParams =  sort([ hT wT delay]);
+%n = ceil(quant*length(ECGParams)/2);
+%ECGParams = ECGParams(n:(end-n),:);
 
 end
 
