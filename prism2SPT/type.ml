@@ -14,6 +14,10 @@ let (|>>|) x v = match x with
 let (|<) x f = let () = f x in x
 let (|<>|) f (x,y) = f x y
 
+let opHd = function
+  | t::_ -> Some t
+  | [] -> None
+
 let fix_point f x =
   let y = ref x 
   and z = ref (f x) in
@@ -80,6 +84,13 @@ type _ expr' =
   | FunCall : string*(('a expr') list) -> 'a expr'
   | If : (bool expr' * 'a expr' * 'a expr') -> 'a expr'
 
+type cmdAttr =
+  | Close
+  | ParseInt of int expr'
+  | ParseFloat of float expr'
+  | ParseBool of bool expr'
+  | ParseDistr of string*((float expr') list) 
+		   
 let rec iterFloat f y = 
   let ri = iterFloat f in match y with
     | FloatName(x) -> f y;
@@ -304,3 +315,5 @@ let print_token f = function
   | Int 4 -> output_string f "••\n••"
   | Int 5 -> output_string f "•••\n••"
   | i -> printH_expr f i
+
+   
