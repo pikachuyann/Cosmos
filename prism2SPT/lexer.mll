@@ -27,6 +27,8 @@ rule token = parse
   | "init" {INIT} | "endinit" {ENDINIT}
   | "bool" {BOOL}
   | "floor" {FLOOR} | "ceil" {CEIL}
+  | "ParseInt" {PARSEINT} | "ParseFloat" {PARSEFLOAT}
+  | "ParseBool" {PARSEBOOL} | "ParseDistribution" {PARSEDISTR}   
   | '"'      { read_string (Buffer.create 17) lexbuf }
   | ".." {RANGE}
   | "'" {PRIME}
