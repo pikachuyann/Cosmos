@@ -44,7 +44,6 @@ let rec net_of_tree n = function
       | (_,Some source,Some target,_) -> Net.add_arc n source target (Int 1)
       | _-> ()
     )
-
-| x-> Printf.printf "Dont know wat to do with %s, ignore\n" x;
+    | x-> Printf.printf "Dont know wat to do with %s, ignore\n" x;
        end
     | _ ->()

@@ -198,30 +198,41 @@ let print_spt fpath (net:spt)  =
   let nio = Data.fold (fun i (_,(v,t,p)) ->print_arc f i ((Obj.magic t)+np) (Obj.magic p) v false; i+1) nia net.Net.outArc in
   let _ = Data.fold (fun i (_,(v,p,t)) ->print_arc f i (Obj.magic p) ((Obj.magic t)+np) v true; i+1) nio net.Net.inhibArc in
   ();
-(*
-  for i =1 to n do
-    print_pl f ("RE_Queue"^(string_of_int i)) countid (if i=1 then 1 else 0);
-  done;
-
-  print_tr f "Arrive" countid "lambda";
-
-  for i =1 to n do
-    print_tr f ("Serve"^(string_of_int i)) countid ("rho"^(string_of_int i));
-  done;
-  
-  if genDTMC then for i =1 to n do
-      print_tr f ("AServe"^(string_of_int i)) countid ("rho"^(string_of_int i));
-    done;
-
-  for i =0 to n-1 do
-    print_arc f countid (n+i) i 1 false;
-    print_arc f countid i (n+i+1) 1 false;
-  done;
-  
-  if genDTMC then for i =0 to n-1 do
-      print_arc f countid i (2*n+i+1) 1 true;
-    done;*)
   Printf.fprintf f "</model>";
+  close_out f;;
+
+let print_pnml_arc f id source target valuation inhib =
+  if inhib then failwith "inhibitor Arc not supported yet for PNML";
+  Printf.fprintf f "      <arc id=\"%i\" source=\"%i\" target=\"%i\">
+        <inscription><text>%a</text></inscription>
+      </arc>\n" id source target printH_expr valuation
+
+let print_pnml fpath (net:spt)  =
+  let f = open_out fpath in
+  Printf.fprintf f "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<pnml xmlns=\"http://www.pnml.org/version-2009/grammar/pnml\">
+  <net id=\"Generate-By-Cosmos-0001\" type=\"http://www.pnml.org/version-2009/grammar/ptnet\">
+    <page id=\"page0\">
+      <name><text>DefaultPage</text></name>\n";
+  let np = Data.fold (fun i (s,m) ->
+    Printf.fprintf f "      <place id=\"%i\">
+        <name><text>%s</text></name>
+        <initialMarking><text>%a</text></initialMarking>
+      </place>\n" i s printH_expr m;
+    i+1) 0 net.Net.place in
+  let nt = Data.fold (fun i (s,_) ->
+    Printf.fprintf f "      <transition id=\"%i\">
+        <name><text>%s</text></name>
+      </transition>\n" i s;
+    i+1) np net.Net.transition in
+  let nia = Data.fold (fun i (_,(v,p,t)) ->print_pnml_arc f i (Obj.magic p) ((Obj.magic t)+np) v false; i+1) nt net.Net.inArc in
+  let nio = Data.fold (fun i (_,(v,t,p)) ->print_pnml_arc f i ((Obj.magic t)+np) (Obj.magic p) v false; i+1) nia net.Net.outArc in
+  let _ = Data.fold (fun i (_,(v,p,t)) ->print_pnml_arc f i (Obj.magic p) ((Obj.magic t)+np) v true; i+1) nio net.Net.inhibArc in
+  ();
+  Printf.fprintf f "    </page>
+  </net>
+</pnml>
+<xml>";
   close_out f;;
 
 let rec inline_ls d = function

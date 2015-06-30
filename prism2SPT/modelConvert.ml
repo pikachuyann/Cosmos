@@ -22,6 +22,7 @@ let _ =
   Arg.parse ["--light",Arg.Set SimulinkType.lightSim,"light simulator";
 	     "--pdf",Arg.Unit (fun () -> outputFormat:= Pdf:: !outputFormat),"Output as PDF";
 	     "--prism",Arg.Unit (fun () -> outputFormat:= Prism:: !outputFormat),"Output in Prism File Format";
+	     "--pnml",Arg.Unit (fun () -> outputFormat:= Pnml:: !outputFormat),"Output in Pnml File Format";
 	     "--stoch",Arg.Set SimulinkType.modelStoch,"Use probabilistic delay";
 	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
 	     "--no-imm",Arg.Set SimulinkType.doremoveImm,"Remove Instantaneous transition in prims model";
@@ -136,6 +137,8 @@ let _ =
 	ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output)
       | GrML ->
 	StochPTPrinter.print_spt ((!output)^".grml") net
+      | Pnml ->
+	StochPTPrinter.print_pnml ((!output)^".pnml") net
       | Marcie -> 
 	StochPTPrinter.print_spt_marcie ((!output)^".andl") net
       | Prism when !typeFormat = Simulink -> ()
