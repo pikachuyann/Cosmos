@@ -7,6 +7,7 @@
 %token <float> FLOAT
 %token <string> NAME INTNAME BOOLNAME DOUBLENAME FUNNAME
 %token <string> STRING
+%token <string> XMLTOK
 %token LPAR RPAR
 %token PLUS MINUS MULT DIV
 %token LSQBRAK RSQBRAK
@@ -25,6 +26,7 @@
 %token INTKW DOUBLEKW
 %token LABEL
 %token FLOOR CEIL
+
 
 %left OR
 %left AND
@@ -46,8 +48,11 @@ parseCmd:
 | EOF {Close}
 | PARSEINT COLON intexpr SEMICOLON {ParseInt(eval $3)}
 | PARSEFLOAT COLON floatexpr SEMICOLON {ParseFloat(eval $3)}
-| PARSEBOOL COLON stateCondition SEMICOLON {ParseBool(eval $3)};
-
+| PARSEBOOL COLON stateCondition SEMICOLON {ParseBool(eval $3)}
+| PARSEINT COLON XMLTOK SEMICOLON {XMLInt $3}
+| PARSEFLOAT COLON XMLTOK SEMICOLON {XMLFloat $3}
+| PARSEBOOL COLON XMLTOK SEMICOLON {XMLBool $3};
+  
 main:
   CTMC defmod initrew EOF {($2)};
 

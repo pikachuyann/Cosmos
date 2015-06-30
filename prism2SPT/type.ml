@@ -90,7 +90,12 @@ type cmdAttr =
   | ParseFloat of float expr'
   | ParseBool of bool expr'
   | ParseDistr of string*((float expr') list) 
-		   
+  | XMLInt of string
+  | XMLFloat of string
+  | XMLBool of string
+  | XMLDistr of string
+      
+      
 let rec iterFloat f y = 
   let ri = iterFloat f in match y with
     | FloatName(x) -> f y;

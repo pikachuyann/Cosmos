@@ -30,6 +30,7 @@ rule token = parse
   | "ParseInt" {PARSEINT} | "ParseFloat" {PARSEFLOAT}
   | "ParseBool" {PARSEBOOL} | "ParseDistribution" {PARSEDISTR}   
   | '"'      { read_string (Buffer.create 17) lexbuf }
+  | "#XML#" {read_xml (Buffer.create 17) lexbuf}
   | ".." {RANGE}
   | "'" {PRIME}
   | '(' {LPAR}
@@ -87,3 +88,10 @@ and read_string buf = parse
     }
   | _ { raise (SyntaxError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }
   | eof { raise (SyntaxError ("String is not terminated")) }
+and read_xml buf = shortest
+  | "#XML#" { XMLTOK (Buffer.contents buf) }
+  | [^ '#']+
+      { Buffer.add_string buf (Lexing.lexeme lexbuf);
+	read_xml buf lexbuf
+      }
+  | eof { raise (SyntaxError ("XML is not terminated")) }
