@@ -35,8 +35,8 @@ let rec net_of_tree n = function
         | _-> ()
        )
     |  "place" -> ( match ((find_name "name" t),(find_name "initialMarking" t),(find_id alist)) with
-        | (_,Some im,Some id) -> Data.add (id,Int (int_of_string im)) n.Net.place
-        | (_,None,Some id) -> Data.add (id,Int 0) n.Net.place
+        | (_,Some im,Some id) -> Data.add (id,(Int (int_of_string im),None)) n.Net.place
+        | (_,None,Some id) -> Data.add (id,(Int 0,None)) n.Net.place
         | _-> ()
     )
     |  "arc" -> ( match ((find_id alist),(find_at "source" alist),(find_at "target" alist),(find_name "inscription" t)) with
