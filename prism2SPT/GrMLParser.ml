@@ -97,12 +97,12 @@ let rec net_of_tree n = function
            | (Some name,Some im,Some id) ->  begin
 	   idmap := StringMap.add id name !idmap;
       	   Printf.printf "new place: %s marking: %a\n" name printH_expr im;
-	   Data.add (name,im) n.Net.place;
+	   Data.add (name,(im,None)) n.Net.place;
 	 end
          | (Some name,None,Some id) -> begin
 	   Printf.printf "new place: %s\n" name;
 	   idmap := StringMap.add id name !idmap;
-	   Data.add (name,Int 0) n.Net.place;
+	   Data.add (name,(Int 0,None)) n.Net.place;
 	 end  
          | (None,None,Some _) ->  Printf.printf "Unknown node\n";
 	 | _ ->()

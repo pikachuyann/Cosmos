@@ -682,7 +682,7 @@ let stochNet_of_modu cf m =
 	 |> StringSet.union m.interfaceR 
 	     
 	 |< Printf.fprintf !logout "Interface [ %a ]\n" (print_set ",")
-	 |< StringSet.iter (fun x -> Data.add (("SIG_"^x),Int 0) net.Net.place)
+	 |< StringSet.iter (fun x -> Data.add (("SIG_"^x),(Int 0,Some (Int 1))) net.Net.place)
 	 |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),(StochasticPetriNet.Imm,Float 1.0,Float 3.0)) net.Net.transition)
 	 |> StringSet.iter (fun x -> Net.add_inArc net ("SIG_"^x) ("EMPTY_"^x) (Int 1)))
       
@@ -696,9 +696,9 @@ let stochNet_of_modu cf m =
     (function (Var(ty,x,init)) when x<>"ctime" -> x::tl | _-> tl)
   ) [] in
   net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) (DataFile.data_of_file cf)),varlist,fund);
-  Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),Int x) net.Net.place) m.ivect;
+  Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),(Int x,Some (Int !ssid_count) )) net.Net.place) m.ivect;
   if !add_reward then begin
-    Data.add ("STOP_PL",Int 0) net.Net.place;
+    Data.add ("STOP_PL",(Int 0,Some (Int 1))) net.Net.place;
     Data.add (("STOP"),(Det (Float 0.0),Float 1.0,Float 2.0)) net.Net.transition;
     Data.add (("CONTINUE"),(Det (Float 0.0),Float 1.0,Float 1.0)) net.Net.transition;
     Net.add_inArc net "STOP_PL" "STOP" (Int 1);
@@ -735,7 +735,7 @@ let stochNet_of_modu cf m =
 	None ->()
       | Some sn2 -> begin
 	let sn = String.sub sn2 1 (String.length sn2 -1) in
-	Data.add ((Printf.sprintf "P_%s_RewardStr_%i" sn ssidt),(Int 0)) net.Net.place;
+	Data.add ((Printf.sprintf "P_%s_RewardStr_%i" sn ssidt),(Int 0,Some (Int 1))) net.Net.place;
 	Data.add ((Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt),(Det(FunCall ("TransitionTime",[Float (float_of_string sn)])),Float 1.0,Float 1.0)) net.Net.transition;
 	Net.add_outArc net (trans_of_int ssidt lab) (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Int 1);
 	Net.add_inArc net (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt) (Int 1);

@@ -192,7 +192,7 @@ let print_spt fpath (net:spt)  =
       match ao with None -> s,(Int 1) | Some fl -> s,fl) lci) 
     (List.map (fun (s,ao) ->
       match ao with None -> s,(Float 1.0) | Some fl -> s,fl) lcd) lce fund;
-  let np = Data.fold (fun i (s,m) ->print_pl f s i m; i+1) 0 net.Net.place in
+  let np = Data.fold (fun i (s,(m,_)) ->print_pl f s i m; i+1) 0 net.Net.place in
   let nt = Data.fold (fun i (s,r) ->print_tr f s i r; i+1) np net.Net.transition in
   let nia = Data.fold (fun i (_,(v,p,t)) ->print_arc f i (Obj.magic p) ((Obj.magic t)+np) v false; i+1) nt net.Net.inArc in
   let nio = Data.fold (fun i (_,(v,t,p)) ->print_arc f i ((Obj.magic t)+np) (Obj.magic p) v false; i+1) nia net.Net.outArc in
@@ -214,7 +214,7 @@ let print_pnml fpath (net:spt)  =
   <net id=\"Generate-By-Cosmos-0001\" type=\"http://www.pnml.org/version-2009/grammar/ptnet\">
     <page id=\"page0\">
       <name><text>DefaultPage</text></name>\n";
-  let np = Data.fold (fun i (s,m) ->
+  let np = Data.fold (fun i (s,(m,_)) ->
     Printf.fprintf f "      <place id=\"%i\">
         <name><text>%s</text></name>
         <initialMarking><text>%a</text></initialMarking>
@@ -283,7 +283,7 @@ let print_spt_marcie fpath net =
   | Some fv -> Printf.fprintf f "\tdouble %s=%a;\n" s printH_expr fv) lcd;
 
   output_string f "places:\n";
-  Data.iter (fun (s,m) ->Printf.fprintf f "\t%s = %a;\n" s printH_expr m) net.Net.place;
+  Data.iter (fun (s,(m,_)) ->Printf.fprintf f "\t%s = %a;\n" s printH_expr m) net.Net.place;
 
   output_string f "\ntransitions:\n";
   output_string f "\tstochastic:\n";
@@ -334,7 +334,7 @@ let print_spt_dot ?(showlabel=true) fpath net cl p =
 (*  output_string f "\tsubgraph place {\n";
   output_string f "\t\tgraph [shape=circle];\n";
   output_string f "\t\tnode [shape=circle,fixedsize=true];\n";*)
-  Data.iter (fun (s,m) ->
+  Data.iter (fun (s,(m,_)) ->
     let pos = (try let x,y = List.assoc s p in
 		   Printf.sprintf ",pos=\"%f,%f!\"" (0.75*.x) (0.75*.y)
       with Not_found -> "") in

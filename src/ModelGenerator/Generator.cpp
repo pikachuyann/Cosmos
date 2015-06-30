@@ -58,7 +58,7 @@ bool Parse() {
             if(P.verbose>0)cerr << "Input file not in GrML try to use convertor."<< endl;
             auto outspt = P.tmpPath + "/generatedspt";
             stringstream cmd;
-            cmd << P.Path << "modelConvert ";
+            cmd << P.Path << "modelConvert --grml ";
             if(P.lightSimulator)cmd << "--light ";
             cmd << P.PathGspn << " " << outspt;
             if (P.verbose > 0)cout << cmd.str() << endl;
