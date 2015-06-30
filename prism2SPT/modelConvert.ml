@@ -6,7 +6,7 @@ let input = ref stdin
 let output = ref "out"
 let inname = ref "stdin"
 let typeFormat = ref Prism
-let outputFormat = ref [GrML;Dot;Marcie]
+let outputFormat = ref [Dot;Marcie]
 let const_file = ref ""
 let verbose = ref 1
 
