@@ -632,6 +632,26 @@ let removeImm m =
   {m with transL=(*m.transL*) !stoch2}
     
 
+let distr_of_trans lab =
+  match (lab.trigger,lab.description) with
+    (ImmWC _),_ | (Imm,_) -> (StochasticPetriNet.Imm,Float 1.0,Float (2.0-.0.01*.lab.priority)) 
+  | (Delay s),None -> (detfun s,Float 1.0,Float (1.0-.0.01*.lab.priority))
+  | (Delay s),(Some desc) ->
+    if String.length desc = 0 then (detfun s,Float 1.0,Float (1.0-.0.01*.lab.priority))
+    else if desc.[0] = 'T' then
+      desc		     
+  |> (fun s -> Some (String.sub s 1 (String.length s -1))) 
+  |>>> int_of_string 
+  |>>| 0 
+  |> (fun x -> StochasticPetriNet.DiscUserDef x,Float 1.0,Float (1.0-.0.01*.lab.priority))
+    else desc
+  |> (fun s -> Some (String.sub s 1 (String.length s -1))) 
+  |>>> float_of_string 
+  |>>| 1.0
+  |> (fun x -> StochasticPetriNet.Exp (Float x),Float 1.0,Float (1.0-.0.01*.lab.priority))
+
+ | (RAction s),_ -> (StochasticPetriNet.Imm,Float 1.0,Float (4.0-.0.01*.lab.priority))
+   
 
 (* Print as a prism CTMC model*)
 let print_prism_module fpath cf ml =
@@ -688,21 +708,14 @@ let stochNet_of_modu cf m =
   end;
   List.iter (fun (ssidt,src,lab,dst) -> 
     try 
-    begin match lab.trigger with
-      ImmWC _ | Imm -> Data.add ((trans_of_int ssidt lab),(StochasticPetriNet.Imm,Float 1.0,Float (2.0-.0.01*.lab.priority))) 
-	net.Net.transition
-    | Delay s when lab.description = None-> Data.add ((trans_of_int ssidt lab),(detfun s,Float 1.0,Float (1.0-.0.01*.lab.priority))) net.Net.transition
-    | Delay s -> 
-      let distrnum = lab.description 
-    |>>> (fun s -> String.sub s 1 (String.length s -1)) 
-    |>>> int_of_string 
-    |>>| 0 in 
-      Data.add ((trans_of_int ssidt lab),(StochasticPetriNet.DiscUserDef distrnum,Float 1.0,Float (1.0-.0.01*.lab.priority))) net.Net.transition
-    | RAction s -> Data.add ((trans_of_int ssidt lab),(StochasticPetriNet.Imm,Float 1.0,Float (4.0-.0.01*.lab.priority)))
-      net.Net.transition;
-      Net.add_inArc net ("SIG_"^s) (trans_of_int ssidt lab) (Int 1);
-      Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^s) (Int 1);
-    end;
+      let d= distr_of_trans lab in
+      begin match lab.trigger with
+      ImmWC _ | Imm | Delay _-> Data.add ((trans_of_int ssidt lab),d) net.Net.transition
+      | RAction s -> Data.add ((trans_of_int ssidt lab),d)
+	net.Net.transition;
+	Net.add_inArc net ("SIG_"^s) (trans_of_int ssidt lab) (Int 1);
+	Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^s) (Int 1);
+      end;
     List.iter (fun x -> 
       Net.add_inhibArc net ("SIG_"^x) (trans_of_int ssidt lab) (Int 1);
       Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^x) (Int 1)

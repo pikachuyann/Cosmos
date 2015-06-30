@@ -44,7 +44,7 @@ let rec selectL fb = function
   | t::q when fb t -> (t,q)
   | t::q -> let t2,q2 = selectL fb q in
 	    (t2,t::q2)
-
+ 
 let print_option2 def f so  =
   match so with None -> output_string f def | Some s -> Printf.fprintf f "%s" s
 
