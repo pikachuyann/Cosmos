@@ -19,6 +19,7 @@
 %token EQ SG SL GE LE
 %token RANGE 
 %token CTMC MODULE ENDMODULE INIT ENDINIT REWARDS ENDREWARDS FORMULA 
+%token PARSEINT PARSEFLOAT PARSEBOOL PARSEDISTR
 %token ARROW
 %token EOF
 %token INTKW DOUBLEKW
@@ -33,12 +34,19 @@
 %left MULT DIV
 %left LPAR RPAR
 
-%start main floatexpr intexpr stateCondition
+%start main floatexpr intexpr stateCondition parseCmd
 %type <PrismType.constdef*PrismType.prism_file> main
 %type <int Type.expr'> intexpr
 %type <float Type.expr'> floatexpr
 %type <bool Type.expr'> stateCondition
+%type <Type.cmdAttr> parseCmd
 %%
+
+parseCmd:
+| EOF {Close}
+| PARSEINT COLON intexpr SEMICOLON {ParseInt(eval $3)}
+| PARSEFLOAT COLON floatexpr SEMICOLON {ParseFloat(eval $3)}
+| PARSEBOOL COLON stateCondition SEMICOLON {ParseBool(eval $3)};
 
 main:
   CTMC defmod initrew EOF {($2)};
