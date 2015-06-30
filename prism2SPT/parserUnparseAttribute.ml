@@ -1,3 +1,4 @@
+open Xml
 open Type
 open PrismType
 open PetriNet
@@ -17,8 +18,19 @@ let parse_expr s name =
       begin try
 	      let e = Parser.parseCmd Lexer.token lexbuf in
 	      begin match e with
-		  ParseInt(ei) -> Printf.fprintf stdout "[%a,%a]" printH_expr ei 
+		  ParseInt(ei) -> Printf.fprintf stdout "#%a#%a#" printH_expr ei 
 		    StochPTPrinter.print_expr ei
+		| XMLInt(xi) ->
+		  let ei = 
+		    xi
+		|> Xml.parse_string
+		|> GrMLParser.parse_Grml_expr (Int 0) in
+		  begin match ei with
+		      None -> ()
+		    | Some e -> let e2 = eval e in
+				Printf.fprintf stdout "#%a#%a#" printH_expr e2 
+				  StochPTPrinter.print_expr e2
+		  end
 		| _ -> raise End_of_file
 	      end
 	with 
@@ -32,7 +44,6 @@ let parse_expr s name =
     done;
   with
       _ ->exit 0;;
-	  
 
 allInt:=true;;
 
