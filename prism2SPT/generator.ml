@@ -119,7 +119,7 @@ let net_of_prism modu (li,lf) =
   print_endline "Building net";
   let net = Net.create () in
   net.Net.def <- Some (li,lf,[],fun _ ()->());
-  List.iter (fun (n,(a,b),i) -> Data.add (n,i) net.Net.place) modu.varlist;
+  List.iter (fun (n,(a,b),i) -> Data.add (n,(i,Some b)) net.Net.place) modu.varlist;
   print_endline "Building transitions";
   ignore (List.fold_left 
 	    (fun i ac ->
