@@ -118,8 +118,19 @@ let print_distr f d =
         <attribute name=\"expr\"><attribute name=\"numValue\">%i</attribute></attribute>
       </attribute>
     </attribute>" i
-
   end
+
+let printH_distr f = function
+  | Imm -> Printf.fprintf f "DETERMINISTIC(0.0)"
+  | Det r -> Printf.fprintf f "DETERMINISTIC(%a)" printH_expr r
+  | Exp r -> Printf.fprintf f "EXPONENTIAL(%a)" printH_expr r
+  | Erl (i,r) -> Printf.fprintf f "EXPONENTIAL(%a,%a)" printH_expr i
+    printH_expr r
+  | Unif (i,r) -> Printf.fprintf f "UNIFORM(%a,%a)" printH_expr i
+    printH_expr r
+  | Norm (m,v) -> Printf.fprintf f "NORMAL(%a,%a)" printH_expr m
+    printH_expr v
+  | DiscUserDef (i) -> Printf.fprintf f "EXPONENTIAL(%i)" i
 
 let print_tr f name id (rate,weight,prio) =
   Printf.fprintf f "  <node id=\"%i\" nodeType=\"transition\">
