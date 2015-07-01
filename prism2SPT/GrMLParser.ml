@@ -39,9 +39,9 @@ let find_simp_prop s l =
 let find_name s t = find_name_rec s None t
 
 let idmap = ref StringMap.empty
-
+  
 let rec parse_Grml_expr : type a . a expr' -> Xml.xml -> a expr' option = fun parseType e ->
-  match e with 
+  begin match e with 
   | Element ("attribute",atl,cl) ->
     let t = find_at "name" atl in
     begin match t with
@@ -55,24 +55,61 @@ let rec parse_Grml_expr : type a . a expr' -> Xml.xml -> a expr' option = fun pa
 	  | Some fv,Float _ -> Some (Float (float_of_string fv))
 	  | _ -> None
 	end
-			       
+      | Some "name" ->
+	let sv = cl |> (function [PCData x] -> Some (String.trim x) | _ -> None) in
+	begin match sv,parseType with
+	    None,_ -> None
+	  | Some bv,Bool _ -> Some (BoolName bv)
+	  | Some iv,Int _ -> Some (IntName iv)
+	  | Some fv,Float _ -> Some (FloatName fv)
+	  | _ -> None
+	end
+	  
       | Some te -> Printf.printf "at type : %s\n" te;
 	None
       |_ ->  None
     end
   |  _ -> None
+  end
 
-   
 let int_expr_of_atr s at =
-  find_prop s at
-  |>> (function  x::_ -> parse_Grml_expr (Int 0) x | _-> None )
+  let a =		    
+    find_prop s at |>> (function  x::_ -> parse_Grml_expr (Int 0) x; | _-> None ) in
+  begin match a with
+      Some x -> printH_expr stdout x
+    | _ ->();
+  end;
+    a
 let float_expr_of_atr s at =
   find_prop s at
   |>> (function  x::_ -> parse_Grml_expr (Float 0.0) x | _-> None )
 let bool_expr_of_atr s at =
   find_prop s at
   |>> (function  x::_ -> parse_Grml_expr (Bool false) x | _-> None )
-    
+
+let parse_distr at =
+  match find_prop "distribution" at with
+      Some (cl) -> begin
+	let dist = find_simp_prop "type" cl in
+	let larg = List.fold_left (fun c child ->
+	  match child with
+	      Element ("attribute",["name","param"],cl2) ->
+		let n= find_simp_prop "number" cl2 |>>> int_of_string in
+		let ex = float_expr_of_atr "expr" cl2 in
+		n
+	    |>> (fun x -> ex |>>> (fun y -> (x,y)::c))
+	    |>>| c
+	    | _ -> c
+	) [] cl
+	  |> List.sort (fun (i,_) (j,_) -> compare i j) in
+	match dist,larg with
+	    (Some "EXPONENTIAL",[_,f]) -> StochasticPetriNet.Exp(f)
+	  | (Some "IMMEDIATE",[]) -> Imm
+	  | (Some "DETERMINISTIC",[_,f]) -> Det(f)
+	  | _ -> failwith "ill define distribution"
+      end
+    | _ -> failwith "ill define distribution"
+ 
 
 
 let rec net_of_tree n = function
@@ -84,19 +121,20 @@ let rec net_of_tree n = function
 	     
        |  "node" when find_at "nodeType" alist = Some "transition" ->
 	 (match ((find_simp_prop "name" clist),(find_id alist)) with
-	 (Some name,Some id) -> begin
-	   Printf.printf "new transition: %s\n" name;
-	   idmap := StringMap.add id name !idmap;
-	   Data.add (name,(StochasticPetriNet.Exp (Float 1.0),(Float 1.0),(Float 1.0))) n.Net.transition
-	 end
-         | _-> ()
-       )
+	     (Some name,Some id) -> begin
+	       let d = parse_distr clist in
+	       Printf.printf "new transition: %s\n\tdistribution: %a\n" name StochPTPrinter.printH_distr d;
+	       idmap := StringMap.add id name !idmap;
+	       Data.add (name,(d,(Float 1.0),(Float 1.0))) n.Net.transition
+	     end
+           | _-> ()
+	 )
 
        |  "node" when find_at "nodeType" alist = Some "place" ->
 	 ( match ((find_simp_prop "name" clist),(int_expr_of_atr "marking" clist),(find_id alist)) with
            | (Some name,Some im,Some id) ->  begin
 	   idmap := StringMap.add id name !idmap;
-      	   Printf.printf "new place: %s marking: %a\n" name printH_expr im;
+      	   Printf.printf "new place: %s\n\tmarking: %a\n" name printH_expr im;
 	   Data.add (name,(im,None)) n.Net.place;
 	 end
          | (Some name,None,Some id) -> begin
@@ -113,9 +151,9 @@ let rec net_of_tree n = function
 	 and tid = find_at "target" alist |>>> (fun x -> StringMap.find x !idmap) in
 	 begin match ((find_id alist),(sid),(tid),(int_expr_of_atr "valuation" clist)) with
            | (_,Some source,Some target,Some v) ->
-	     Printf.printf " (%s)-(%a)->(%s)" source printH_expr v target ;
+	     Printf.printf " (%s)-(%a)->(%s)\n" source printH_expr v target ;
 	     Net.add_arc n source target v
-	   | (_,Some source,Some target,_) -> Printf.printf " (%s)-(1)->(%s)" source target ;
+	   | (_,Some source,Some target,_) -> Printf.printf " (%s)-(1)->(%s)\n" source target ;
 	     StochPTPrinter.print_spt_marcie "test.andl" n ;
 	     Net.add_arc n source target (Int 1)
 	   | _-> ()
