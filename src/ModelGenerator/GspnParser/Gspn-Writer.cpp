@@ -782,7 +782,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
             for (const auto &v : MyGspn.hybridVars)
                 if(v.isTraced){
                     SpnCppFile << "s << ";
-                    SpnCppFile << " setw(" << maxNameSize << ") << ";
+                    SpnCppFile << " setw(" << maxNameSize+3 << ") << ";
                     SpnCppFile << "\"" <<v.name  << " \";"<<endl;
                 }
 
@@ -805,7 +805,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
                 if(v.isTraced){
                 SpnCppFile << "s << ";
                 SpnCppFile << " setw(" << maxNameSize << ") ";
-                SpnCppFile << " << hybridVar::"<< v.name <<" ;"<<endl;
+                SpnCppFile << " << hybridVar::"<< v.name <<" << \"  \1" ;"<<endl;
             }
         }
         SpnCppFile << "}\n";
