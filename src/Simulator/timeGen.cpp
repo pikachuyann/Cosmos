@@ -182,7 +182,6 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
             return boost::math::tools::newton_raphson_iterate([&](double x){
                 const auto cdf = userDefineCDF(param,x);
                 const auto pdf = userDefinePDF(param,x);
-                cerr << "(" << x << " , " << cdf << "," << pdf <<")";
                 return make_tuple(cdf-gentime, pdf);
             }, initialpt, initialpt, numeric_limits<double>::infinity(), 10);
 
