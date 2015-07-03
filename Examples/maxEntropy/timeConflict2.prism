@@ -1,6 +1,7 @@
 pta
 
 const int n = 5;
+const int wt = 10;
 
 module c1
 	state1: [1..n] init 1;
@@ -8,12 +9,12 @@ module c1
 
 	invariant
 		  ( state1<n => x1<1) 
-		& ( state1=n => x1 < 10)
+		& ( state1=n => x1 < wt)
 	endinvariant
 
 	[] state1<n & x1<1 -> 1.0 : (state1'=state1+1);
 	[] state1<n & x1<1 -> 1.0 : (state1'=1);
-	[] state1=n & x1<10 -> 1.0 : (state1'=1)&(x1'=0);
+	[] state1=n & x1<wt -> 1.0 : (state1'=1)&(x1'=0);
 endmodule
 
 module c2 = c1 [state1=state2,x1=x2 ] endmodule
