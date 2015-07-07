@@ -805,7 +805,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
                 if(v.isTraced){
                 SpnCppFile << "s << ";
                 SpnCppFile << " setw(" << maxNameSize << ") ";
-                SpnCppFile << " << hybridVar::"<< v.name <<" << \"  \1" ;"<<endl;
+                SpnCppFile << " << hybridVar::"<< v.name <<" ;"<<endl;
             }
         }
         SpnCppFile << "}\n";
@@ -1174,6 +1174,19 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     ch.writeCases(f);
     f << "}\n" << endl;
     }
+    {
+    f << "double userDefineUpperBound(vector<double> const& param){" <<endl;
+    auto ch = casesHandler("(int)param[0]");
+    for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
+        const auto &dist = MyGspn.distribStruct[it];
+        stringstream newcase;
+        newcase << "\t\treturn (" << dist.upperBound << ");" << endl;
+        ch.addCase(it , newcase.str(),dist.name);
+    }
+    ch.writeCases(f);
+    f << "}\n" << endl;
+    }
+
     {
     f << "double userDefineDiscreteDistr(vector<double> const& param,unsigned int i){" <<endl;
     if( any_of(MyGspn.transitionStruct.begin(),MyGspn.transitionStruct.end(),[](const transition &t){return t.dist.name == "DISCRETEUSERDEFINE";})){

@@ -60,6 +60,7 @@ struct userDefineDistribution{
     std::string cdf;
     std::string pdf;
     std::string lowerBound;
+    std::string upperBound;
     size_t nbparam;
 };
 
@@ -237,6 +238,13 @@ struct GspnType {
         nbpass=0;
         colDoms.push_back(colorDomain());
     }
+
+    void iterateDom(const std::string &s,const std::string &sop, const std::string &sclos ,const std::string &s2,const std::string &sop2, const std::string &sclos2 ,const colorDomain & cd, size_t prof,std::function<void (const std::string&,const std::string&)> func);
+    void iterateDomVec(std::vector<color> &v, const colorDomain & cd, size_t prof,std::function<void (const std::vector<color>&)> func);
+
+
+    void iterateVars(const std::string &s,const std::string &sop, const std::string &sclos ,const std::set<size_t> &varDom, size_t prof,std::function<void (const std::string&)> func);
+    void iterateVars(std::vector<color> &v, const std::set<size_t> &varDom, size_t prof,std::function<void (const std::vector<color>&)> func);
 };
 
 void searchreplace(const std::string &in,const std::string &motif,const std::string &rep,std::string &out);

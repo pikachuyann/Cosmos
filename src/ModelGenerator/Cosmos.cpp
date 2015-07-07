@@ -45,6 +45,7 @@
 #include "server.hpp"
 #include "parameters.hpp"
 #include "Generator.hpp"
+#include "GspnParser/unfolder.hpp"
 
 /**
  * Retrive the real absolute path of the executable of Cosmos
@@ -180,12 +181,25 @@ int main(int argc, char** argv) {
     if(P.prismPath.empty())P.prismPath="prism";
 
     //Parse and generate the gspn and lha.
-    if ( ! Parse()) {
-        cout << "Fail to build the model.";
+    shared_ptr<GspnType> pGSPN = ParseGSPN();
+    if ( pGSPN.use_count()==0) {
+        cout << "Fail to build the GSPN." << endl;
         return(EXIT_FAILURE);
     }
 
-    if(!P.unfold.empty())return EXIT_SUCCESS;
+    if (!P.unfold.empty()) {
+        unfolder unfold(*pGSPN);
+        ofstream unfoldfile(P.unfold, ios::out | ios::trunc);
+        unfold.export_grml(unfoldfile);
+        return EXIT_SUCCESS;
+    }
+    if(P.lightSimulator)return true;
+
+    if ( ! ParseLHA(*pGSPN)) {
+        cout << "Fail to build the LHA." << endl;;
+        return(EXIT_FAILURE);
+    }
+
 
     if(P.MaxRuns == 0 && P.lightSimulator){
         auto cmd = "cp "+P.Path+"../src/LightSimulator/*.* "+P.tmpPath;

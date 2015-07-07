@@ -5,7 +5,7 @@
 
 %token <int> INT
 %token <float> FLOAT
-%token <string> NAME INTNAME BOOLNAME DOUBLENAME FUNNAME
+%token <string> NAME INTNAME BOOLNAME DOUBLENAME FUNNAME CLOCKNAME
 %token <string> STRING
 %token <string> XMLTOK
 %token LPAR RPAR
@@ -15,11 +15,11 @@
 %token SEMICOLON COLON PRIME COMMA QMARK
 %token AND OR
 %token NOT
-%token BOOL TRUE FALSE
+%token BOOL TRUE FALSE CLOCK
 %token CONST
 %token EQ SG SL GE LE
 %token RANGE 
-%token CTMC MODULE ENDMODULE INIT ENDINIT REWARDS ENDREWARDS FORMULA 
+%token CTMC PTA MODULE ENDMODULE INIT ENDINIT REWARDS ENDREWARDS FORMULA INVARIANT ENDINVARIANT
 %token PARSEINT PARSEFLOAT PARSEBOOL PARSEDISTR
 %token ARROW
 %token EOF
@@ -54,7 +54,8 @@ parseCmd:
 | PARSEBOOL COLON XMLTOK SEMICOLON {XMLBool $3};
   
 main:
-  CTMC defmod initrew EOF {($2)};
+| CTMC defmod initrew EOF {($2)}
+| PTA defmod initrew EOF {($2)};
 
 defmod:
   definition defmod { let (defi1,defd1) = $1 and ((defi2,defd2),modl) = $2 in 
@@ -68,6 +69,7 @@ anyname:
 | BOOLNAME {$1}
 | INTNAME {$1}
 | DOUBLENAME {$1}
+| CLOCKNAME {$1}
 ;
 
 definition:
@@ -83,17 +85,21 @@ definition:
 ;
 
 modulelist:
-  MODULE anyname varlist actionlist ENDMODULE {
+  MODULE anyname varlist invariant  actionlist ENDMODULE {
     Full { name=$2;
       varlist=$3;
-      actionlist=$4;
-      actionset = find_action $4
+      actionlist=$5;
+      actionset = find_action $5
     }
   }
   | MODULE anyname EQ anyname LSQBRAK renamelist RSQBRAK ENDMODULE {
     Renaming ($2,$4,$6)
   }
 ;
+
+invariant:
+  INVARIANT stateCondition ENDINVARIANT {};
+
 
 renamelist:
   anyname EQ anyname {[($1,$3)]}
@@ -102,13 +108,14 @@ renamelist:
 
 varlist:
   anyname COLON rangevar INIT TRUE SEMICOLON varlist 
-  { ($1,$3,Int 1)::$7 }  
+  { IntK($1,$3,Int 1)::$7 }  
   | anyname COLON rangevar INIT FALSE SEMICOLON varlist 
-      { ($1,$3,Int 0)::$7 }  
+      { IntK($1,$3,Int 0)::$7 }  
   | anyname COLON rangevar INIT intexpr SEMICOLON varlist 
-      { ($1,$3,(eval $5))::$7 }
+      { IntK($1,$3,(eval $5))::$7 }
   | anyname COLON rangevar SEMICOLON varlist 
-      { ($1,$3,(fst $3))::$5 }
+      { IntK($1,$3,(fst $3))::$5 }
+  | anyname COLON CLOCK SEMICOLON varlist { ClockK($1)::$5 }
 | {[]}
 ;
 
@@ -157,6 +164,7 @@ floatexpr:
 | intexpr   DIV intexpr   {Div(CastInt $1,CastInt $3)}
 
 | DOUBLENAME {FloatName($1)}
+| CLOCKNAME {FloatName($1)}
 | FUNNAME LPAR floatexprlist RPAR {FunCall($1,$3) }
 | LPAR stateCondition QMARK floatexpr COLON floatexpr RPAR { If($2,$4,$6) }
 | LPAR stateCondition QMARK intexpr   COLON floatexpr RPAR { If($2,CastInt $4,$6) }
@@ -218,6 +226,7 @@ TRUE {Bool true}
 | BOOLNAME { BoolName($1) }
 | stateCondition AND stateCondition {And($1,$3)}
 | stateCondition OR stateCondition {Or($1,$3)}
+| stateCondition EQ SG stateCondition {Or(Not $1,$4)}
 | NOT stateCondition {Not($2)}
 | LPAR stateCondition RPAR {$2}
 | stateCondition EQ stateCondition {eval @@ BoolAtom($1,EQ, $3) }

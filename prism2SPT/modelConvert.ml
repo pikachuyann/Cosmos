@@ -37,7 +37,7 @@ let _ =
 	( let o,suf = suffix_of_filename s in 
 	  output := o;
 	  match suf with
-	  "sm" | "pm" -> typeFormat := Prism
+	  "sm" | "pm" | "nm" | "prism" -> typeFormat := Prism
 	| "pnml" -> typeFormat := Pnml
 	| "slx" -> 
 	  typeFormat := Simulink;

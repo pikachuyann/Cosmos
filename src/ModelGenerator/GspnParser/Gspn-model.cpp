@@ -74,3 +74,54 @@ std::ostream& operator<<(std::ostream& os, const userDefineDistribution& obj){
     os << "\tlowerBound:" << obj.lowerBound << endl << "}" << endl;
     return os;
 }
+
+
+void GspnType::iterateDom(const string &s,const string &sop, const string &sclos ,const string &s2,const string &sop2, const string &sclos2 ,const colorDomain & cd, size_t prof,function<void (const string&,const string&)> func){
+    if(prof == cd.colorClassIndex.size() ){func(s,s2);}
+    else{
+        for(const auto cc : colClasses[cd.colorClassIndex[prof]].colors )
+            iterateDom(s+ sop + cc.name + sclos, sop, sclos,
+                       s2+sop2+ "Color_"+colClasses[cd.colorClassIndex[prof]].name+"_"+cc.name+sclos2,sop2, sclos2, cd, prof+1, func);
+    }
+
+}
+
+void GspnType::iterateDomVec(vector<color> &v, const colorDomain & cd, size_t prof,function<void (const vector<color>&)> func){
+    if(prof == cd.colorClassIndex.size() ){func(v);}
+    else{
+        for(const auto cc : colClasses[cd.colorClassIndex[prof]].colors ){
+            v.push_back(cc);
+            iterateDomVec(v, cd, prof+1, func);
+            v.pop_back();
+        }
+    }
+
+}
+
+void GspnType::iterateVars(const string &s,const string &sop, const string &sclos ,const set<size_t> &vd, size_t prof,function<void (const string&)> func){
+    if(prof == colVars.size() ){func(s);}
+    else{
+        if (vd.count(prof)>0) {
+            for(const auto cc : colClasses[colDoms[colVars[prof].type].colorClassIndex[0]].colors )
+                iterateVars(s+ sop + cc.name + sclos, sop, sclos, vd, prof+1, func);
+        }else{
+            iterateVars(s, sop, sclos,vd, prof+1, func);
+        }
+    }
+}
+
+void GspnType::iterateVars(vector<color> &v,const set<size_t> &vd, size_t prof,function<void (const vector<color>&)> func){
+    if(prof == colVars.size() ){func(v);}
+    else{
+        if (vd.count(prof)>0) {
+            for(const auto cc : colClasses[colDoms[colVars[prof].type].colorClassIndex[0]].colors ){
+                v.push_back(cc);
+                iterateVars(v, vd, prof+1, func);
+                v.pop_back();
+            }
+        }else{
+            iterateVars(v,vd, prof+1, func);
+        }
+    }
+}
+
