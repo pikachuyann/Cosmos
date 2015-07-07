@@ -516,10 +516,9 @@ void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
         getParams(Id,b);
         t += fmax(GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr),0.0);
         if(verbose > 4){
-            cerr << "Sample " << N.Transition[Id].label << " with parameter (";
-            cerr << N.ParamDistr[0];
-            if (N.Transition[E.transition].DistTypeIndex == ERLANG)cerr << "," << N.ParamDistr[1];
-            cerr << ")" << endl;
+            cerr << "Sample " << N.Transition[Id].label << ": ";
+            cerr << string_of_dist(N.Transition[Id].DistTypeIndex, N.ParamDistr);
+            cerr << endl;
         }
 	}
     
@@ -530,8 +529,11 @@ void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	if (N.Transition[Id].DistTypeIndex > 2) {
 		N.ParamDistr[0]= N.GetWeight(Id,b);
 		w = GenerateTime(EXPONENTIAL, N.ParamDistr);
-		//vector<double> wParam(1, N.GetWeight(Id));
-		//w = GenerateTime(2, wParam);
+        if(verbose>4){
+            cerr << "weight : ";
+            cerr << string_of_dist(EXPONENTIAL, N.ParamDistr);
+            cerr << endl;
+        }
     }
     
 	E.transition = Id;

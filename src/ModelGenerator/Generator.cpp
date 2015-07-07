@@ -30,18 +30,16 @@
 #include <iostream>
 #include <string>
 
-
 #include "Generator.hpp"
 #include "parameters.hpp"
 #include "LhaParser/Lha-Reader.hpp"
 #include "GspnParser/Gspn-Writer.hpp"
 #include "GspnParser/Gspn-Writer-Color.hpp"
-#include "GspnParser/unfolder.hpp"
 
 
 using namespace std;
 
-bool Parse() {
+shared_ptr<GspnType> ParseGSPN() {
 
     // initialize an empty structure for the model.
     Gspn_Reader gReader(P);
@@ -64,7 +62,7 @@ bool Parse() {
             if (P.verbose > 0)cout << cmd.str() << endl;
             if (system(cmd.str().c_str()) != 0) {
                 cerr << "Fail to Convert from input language to GrML!" << endl;
-                return false;
+                return nullptr;
             }
             P.PathGspn = outspt+".grml";
         }
@@ -78,7 +76,7 @@ bool Parse() {
         }
         P.nbPlace = gReader.MyGspn.pl;
 
-        if(parseresult==1)return false;
+        if(parseresult==1)return nullptr;
 
         //The following code modify the internal representation of the
         //SPN according to options.
@@ -139,30 +137,25 @@ bool Parse() {
             writer.writeFile();
             writer.writeDotFile(P.tmpPath + "/templatePetriNet.dot");
         } else {
-            Gspn_Reader gr(P);
-            gReader = gr;
-            return false;
+            cout << "Empty model for the GSPN: abort" << endl;
+            return nullptr;
         }
     } catch (exception& e) {
         cerr << "The following exception append during import: " << e.what() << endl;
-        return false;
+        return nullptr;
     }
 
-
-    if (!P.unfold.empty()) {
-        unfolder unfold(gReader);
-        ofstream unfoldfile(P.unfold, ios::out | ios::trunc);
-        unfold.export_grml(unfoldfile);
-        return true;
+    return shared_ptr<GspnType>(new GspnType(gReader.MyGspn));
     }
-    if(P.lightSimulator)return true;
 
+bool ParseLHA(GspnType &spn){
     // Intialize an empty structure for the automaton
-    Lha_Reader lReader(gReader.MyGspn, P);
+    Lha_Reader lReader(spn, P);
+    int parseresult;
 
     //Copy name of transition and place required for synchronization.
-    lReader.MyLha.TransitionIndex = gReader.MyGspn.TransId;
-    lReader.MyLha.PlaceIndex = gReader.MyGspn.PlacesId;
+    lReader.MyLha.TransitionIndex = spn.TransId;
+    lReader.MyLha.PlaceIndex = spn.PlacesId;
     lReader.MyLha.ConfidenceLevel = P.Level;
 
     if (P.verbose > 0)cout << "Start Parsing " << P.PathLha << endl;
@@ -182,8 +175,8 @@ bool Parse() {
             }
         }
 
-        if (P.generateLHA == 1)generateLoopLHA(gReader);
-        if (P.generateLHA == 2)generateSamplingLHA(gReader);
+        if (P.generateLHA == 1)generateLoopLHA(spn);
+        if (P.generateLHA == 2)generateSamplingLHA(spn);
 
         //check the type of the LHA file
         //First check if it is not C++ code
@@ -439,7 +432,7 @@ bool build() {
     return true;
 }
 
-void generateSamplingLHA(Gspn_Reader &gReader) {
+void generateSamplingLHA(GspnType &spn) {
     //bool allcolor = false;
     //if (P.tracedPlace == "ALLCOLOR")allcolor= true;
     P.sampleResol = P.loopTransientLHA;
@@ -454,7 +447,7 @@ void generateSamplingLHA(Gspn_Reader &gReader) {
     lhastr << "const double invT2=" << 1 / P.sampleResol << ";\n";
 
     lhastr << "VariablesList = {time,time2, DISC counter";
-    for (const auto &itt : gReader.MyGspn.placeStruct)if (itt.isTraced) {
+    for (const auto &itt : spn.placeStruct)if (itt.isTraced) {
             lhastr << ", PLVARACC_" << itt.name;
             lhastr << ", DISC PLVAR_" << itt.name << "[" << nbsample << "]";
             //if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
@@ -468,7 +461,7 @@ void generateSamplingLHA(Gspn_Reader &gReader) {
     //for (size_t i = 0; i < nbsample ; ++i ) lhastr << "l" << i << ", ";
     lhastr << "l2 };\n";
 
-    for (const auto &itt : gReader.MyGspn.placeStruct) {
+    for (const auto &itt : spn.placeStruct) {
         if (itt.isTraced)for (size_t i = 0; i < nbsample; ++i) {
                 lhastr << "MeanToken_" << itt.name << "$GRAPH$" << (double) i * P.sampleResol << "$" << (double) (i + 1) * P.sampleResol << "$= AVG(Last( PLVAR_" << itt.name << "[" << i << "]));\n";
                 /*if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
@@ -483,7 +476,7 @@ void generateSamplingLHA(Gspn_Reader &gReader) {
     lhastr << "Locations={" << endl;
     //for (size_t i = 0; i < nbsample ; ++i ) {
     lhastr << "(l" << 0 << ", TRUE , (time:1,time2:1";
-    for (const auto &itt : gReader.MyGspn.placeStruct)
+    for (const auto &itt : spn.placeStruct)
         if (itt.isTraced) {
             lhastr << ", PLVARACC_" << itt.name << ": " << itt.name << "* invT2 ";
             /*if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
@@ -499,7 +492,7 @@ void generateSamplingLHA(Gspn_Reader &gReader) {
     //for (size_t i = 0; i < nbsample ; ++i ) {
     lhastr << "((l0,l0),ALL,time<= invT ,#);";
     lhastr << "((l0,l0),#,time=invT ,{time=0,counter=counter+1";
-    for (const auto &itt : gReader.MyGspn.placeStruct)if (itt.isTraced) {
+    for (const auto &itt : spn.placeStruct)if (itt.isTraced) {
             lhastr << ", PLVARACC_" << itt.name << " = 0.0 ";
             lhastr << ", PLVAR_" << itt.name << "[" << "counter" << "]=PLVARACC_" << itt.name;
         }
@@ -513,7 +506,7 @@ void generateSamplingLHA(Gspn_Reader &gReader) {
 
 }
 
-void generateLoopLHA(Gspn_Reader &gReader) {
+void generateLoopLHA(GspnType &spn) {
     //If the automaton need to be generated to mesure simple perfomance indices generate it
     //An automaton is produce with two loop the first make time elapse until transient time
     //elapse and then compute the mean number of token in each place and the throughput
@@ -529,14 +522,14 @@ void generateLoopLHA(Gspn_Reader &gReader) {
     lhastr << "const double invT=" << 1 / P.loopLHA << ";\n";
     lhastr << "const double Ttrans=" << P.loopTransientLHA << ";\n";
     lhastr << "VariablesList = {time";
-    for (const auto &itt : gReader.MyGspn.transitionStruct)
+    for (const auto &itt : spn.transitionStruct)
         if (itt.isTraced)lhastr << ", " << itt.label;
 
-    for (const auto &itt : gReader.MyGspn.placeStruct) {
+    for (const auto &itt : spn.placeStruct) {
         if (itt.isTraced) {
             lhastr << ", PLVAR_" << itt.name;
             if (allcolor && itt.colorDom != UNCOLORED_DOMAIN) {
-                gReader.iterateDom("", "_", "", "", "", "", gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str, const string&) {
+                spn.iterateDom("", "_", "", "", "", "", spn.colDoms[itt.colorDom], 0, [&] (const string &str, const string&) {
                     lhastr << ", PLVAR_" + itt.name + str;
                 });
             }
@@ -545,17 +538,17 @@ void generateLoopLHA(Gspn_Reader &gReader) {
     lhastr << "} ;\nLocationsList = {l0, l1,l2};\n";
 
     auto nbHASL = 0;
-    for (const auto &itt : gReader.MyGspn.transitionStruct)
+    for (const auto &itt : spn.transitionStruct)
         if (itt.isTraced){
             nbHASL++;
             lhastr << "Throughput_" << itt.label << "= AVG(Last(" << itt.label << "));\n";
         }
-    for (const auto &itt : gReader.MyGspn.placeStruct)
+    for (const auto &itt : spn.placeStruct)
         if (itt.isTraced) {
             nbHASL++;
             lhastr << "MeanToken_" << itt.name << "= AVG(Last( PLVAR_" << itt.name << "));\n";
             if (allcolor && itt.colorDom != UNCOLORED_DOMAIN) {
-                gReader.iterateDom("", "_", "", "", "", "", gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str, const string&) {
+                spn.iterateDom("", "_", "", "", "", "", spn.colDoms[itt.colorDom], 0, [&] (const string &str, const string&) {
                     lhastr << "MeanToken_" << itt.name << str << "= AVG(Last( PLVAR_" << itt.name << str << "));\n";
                 });
             }
@@ -566,11 +559,11 @@ void generateLoopLHA(Gspn_Reader &gReader) {
 
     lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
     lhastr << "Locations={\n(l0, TRUE, (time:1));\n(l1, TRUE, (time:1 ";
-    for (const auto &itt : gReader.MyGspn.placeStruct)
+    for (const auto &itt : spn.placeStruct)
         if (itt.isTraced) {
             lhastr << ", PLVAR_" << itt.name << ": " << itt.name << "* invT ";
             if (allcolor && itt.colorDom != UNCOLORED_DOMAIN) {
-                gReader.iterateDom("", "_", "", "", "", ",", gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str, const string & str2) {
+                spn.iterateDom("", "_", "", "", "", ",", spn.colDoms[itt.colorDom], 0, [&] (const string &str, const string & str2) {
                     lhastr << ", PLVAR_" << itt.name << str << ": " << itt.name << "[" << str2 << "]* invT ";
                 });
             }
@@ -579,7 +572,7 @@ void generateLoopLHA(Gspn_Reader &gReader) {
     lhastr << "));\n(l2, TRUE);\n};\n";
     lhastr << "Edges={\n((l0,l0),ALL,time<= Ttrans ,#);\n((l0,l1),#,time=Ttrans ,{time=0});\n";
     size_t nbplntr = 0;
-    for (const auto &itt : gReader.MyGspn.transitionStruct) {
+    for (const auto &itt : spn.transitionStruct) {
         if (itt.isTraced) {
             lhastr << "((l1,l1),{" << itt.label << "},time<=T,{" << itt.label << " = " << itt.label << " + " << 1.0 / P.loopLHA << " });\n";
         } else nbplntr++;
@@ -587,7 +580,7 @@ void generateLoopLHA(Gspn_Reader &gReader) {
     if (nbplntr > 0) {
         lhastr << "((l1,l1),{";
         nbplntr = 0;
-        for (const auto &itt : gReader.MyGspn.transitionStruct)
+        for (const auto &itt : spn.transitionStruct)
             if (!itt.isTraced) {
                 if (nbplntr > 0)lhastr << ",";
                 lhastr << itt.label;

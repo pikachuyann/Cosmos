@@ -182,9 +182,8 @@ def escapename(s):
     s3=s2.replace(',','_').replace('{','').replace('}','').replace('=','E').replace('-','M');
     return s3
 
-def toCOSMOS(quadriple):
-    s='<?xml version="1.0" encoding=\"UTF-8\"?>\n\n<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">\n';
-    s+='  <attribute name=\"declaration\">\n';
+def printGRML_distribution(quadriple):
+    s="";
     for i in range(len(quadriple[1])):
         for j in range(len(quadriple[1][i])):
             s+='    <attribute name=\"UserDefineDistribution\">\n';            
@@ -194,77 +193,11 @@ def toCOSMOS(quadriple):
             s+='      <attribute name=\"upperBound\">' + poly_to_c(quadriple[4][i][j]) + '</attribute>\n';
             s+='      <attribute name=\"cdf\">('+ poly_to_c(quadriple[2][i][j]) +')/('+ poly_to_c(quadriple[0][i][j]) +')'+ '</attribute>\n';
             s+='      <attribute name=\"pdf\">('+ poly_to_c(quadriple[1][i][j]) +')/('+ poly_to_c(quadriple[0][i][j]) +')'+ '</attribute>\n';
-            s+='    </attribute>\n';
-    s+='    <attribute name="variables">\n';
-    s+='      <attribute name="clocks">\n';
-    for i in range(cardclocks):
-        s+='        <attribute name="clock">\n';
-        s+='        <attribute name="name"> x_%d '%(i+1)+'</attribute>\n';
-        s+='        </attribute>\n';
-    s+='      </attribute>\n';
-    s+='    </attribute>\n';
-    s+='  </attribute>\n';
-    for i in range(len(translist)):
-        s+='  <node id=\"1%d\" ' %i +' nodeType=\"place\">\n';
-        s+='    <attribute name=\"name\">s_%d_' %i + escapename(namelist[i]) + ' </attribute>\n';
-        s+='    <attribute name=\"marking\"><attribute name=\"expr\">\n';
-        s+='      <attribute name=\"numValue\">%d '%(i==0)+' </attribute>\n';
-        s+='    </attribute></attribute>\n';
-        s+='  </node>\n';
-        for j in  range(len(translist[i])):
-            s+='  <node id=\"2%d\" ' %(idtrans[i][j]) +' nodeType=\"place\">\n';
-            s+='    <attribute name=\"name\">s_%d' %i +'_%d' %j +'</attribute>\n';
-            s+='    <attribute name=\"marking\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\"> 0 </attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='  </node>\n';
-    for i in range(len(translist)):
-        for j in  range(len(translist[i])):
-            s+='  <node id=\"3%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
-            s+='    <attribute name=\"name\">t_%d' %i +'_%d' %j +'</attribute>\n';
-            s+='    <attribute name=\"distribution\">\n';
-            s+='      <attribute name=\"type\">\n';
-            s+='      IMDT\n';
-            s+='      </attribute>\n'
-            s+='    </attribute>\n';
-            s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
-            s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"unParsed\">'+ poly_to_c_bis(quadriple[0][i][j]) +'</attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='  </node>\n';
-    for i in range(len(translist)):
-        for j in  range(len(translist[i])):
-            s+='  <node id=\"6%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
-            s+='    <attribute name=\"name\">tt_%d' %i +'_%d' %j +'</attribute>\n';
-            s+='    <attribute name=\"distribution\">\n';
-            s+='      <attribute name=\"type\">\n' ;
-            s+='      USERDEFINE\n';
-            s+='      </attribute>\n';
-            s+='      <attribute name="param">\n'
-            s+='        <attribute name="expr"><attribute name=\"'+'trans_%d'%i+'_%d'%j+'\">\n';
-            s+='        </attribute></attribute>\n';
-            s+='      </attribute>\n';
-            for c in range(cardclocks):
-                s+='      <attribute name="param">\n';
-                s+='        <attribute name="expr"><attribute name="name">\n';
-                s+='          x_%d'%(c+1)+'\n';
-                s+='        </attribute></attribute>\n';
-                s+='      </attribute>\n';
-            s+='    </attribute>\n';
-            s+='    <attribute name=\"update\">\n    ';
-            for c in range(cardclocks):
-                if translist[i][j][4][0][c+1]==0:
-                    s+='x_%d'%(c+1)+'=0;';
-            s+='\n    </attribute>\n';
-            s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\"> 1.000000 </attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\">1</attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='  </node>\n';
+            s+='    </attribute>\n'
+    return(s);
+
+def printGRML_arc(translist):
+    s="";
     for i in range(len(translist)):
         for j in  range(len(translist[i])):
             s+='  <arc id=\"4%d\"'%(idtrans[i][j])+' arcType=\"arc\" source=\"1%d\" ' %i + 'target=\"3%d\" ' %(idtrans[i][j])+'>\n';
@@ -292,11 +225,114 @@ def toCOSMOS(quadriple):
             s+='    <attribute name=\"valuation\"><attribute name=\"expr\">\n';
             s+='      <attribute name=\"numValue\">1</attribute>\n';
             s+='    </attribute></attribute>\n';
-            s+='  </arc>\n';
+            s+='  </arc>\n'
+    return(s);
+
+def printGRML_place(translist):
+    s="";
+    for i in range(len(translist)):
+        s+='  <node id=\"1%d\" ' %i +' nodeType=\"place\">\n';
+        s+='    <attribute name=\"name\">s_%d_' %i + escapename(namelist[i]) + ' </attribute>\n';
+        s+='    <attribute name=\"marking\"><attribute name=\"expr\">\n';
+        s+='      <attribute name=\"numValue\">%d '%(i==0)+' </attribute>\n';
+        s+='    </attribute></attribute>\n';
+        s+='  </node>\n';
+        for j in  range(len(translist[i])):
+            s+='  <node id=\"2%d\" ' %(idtrans[i][j]) +' nodeType=\"place\">\n';
+            s+='    <attribute name=\"name\">s_%d' %i +'_%d' %j +'</attribute>\n';
+            s+='    <attribute name=\"marking\"><attribute name=\"expr\">\n';
+            s+='      <attribute name=\"numValue\"> 0 </attribute>\n';
+            s+='    </attribute></attribute>\n';
+            s+='  </node>\n';
+    return(s);
+
+def printGRML_transition(translist,quadriple,isIsotropic):
+    s="";
+    for i in range(len(translist)):
+        for j in  range(len(translist[i])):
+            s+='  <node id=\"3%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
+            s+='    <attribute name=\"name\">t_%d' %i +'_%d' %j +'</attribute>\n';
+            s+='    <attribute name=\"distribution\">\n';
+            s+='      <attribute name=\"type\">\n';
+            s+='      IMDT\n';
+            s+='      </attribute>\n'
+            s+='    </attribute>\n';
+            s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
+            s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
+            s+='    </attribute></attribute>\n';
+            s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
+            if(isIsotropic):
+                s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
+            else:
+                s+='    <attribute name=\"unParsed\">'+ poly_to_c_bis(quadriple[0][i][j]) +'</attribute>\n';
+            s+='    </attribute></attribute>\n';
+            s+='  </node>\n';
+    for i in range(len(translist)):
+        for j in  range(len(translist[i])):
+            s+='  <node id=\"6%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
+            s+='    <attribute name=\"name\">tt_%d' %i +'_%d' %j +'</attribute>\n';
+            s+='    <attribute name=\"distribution\">\n';
+            s+='      <attribute name=\"type\">\n' ;
+            if(isIsotropic):
+                s+='      UNIFORM\n';
+            else:
+                s+='      USERDEFINE\n';
+            s+='      </attribute>\n';
+
+            if(isIsotropic):
+                s+='      <attribute name="param">\n'
+                s+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_bis(quadriple[3][i][j]) +'</attribute></attribute>\n';
+                s+='      </attribute>\n'
+                s+='      <attribute name="param">\n'
+                s+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_bis(quadriple[4][i][j]) +'</attribute></attribute>\n';
+                s+='      </attribute>\n'
+            else:
+                s+='      <attribute name="param">\n'
+                s+='        <attribute name="expr"><attribute name=\"'+'trans_%d'%i+'_%d'%j+'\">\n';
+                s+='        </attribute></attribute>\n';
+                s+='      </attribute>\n';
+                for c in range(cardclocks):
+                    s+='      <attribute name="param">\n';
+                    s+='        <attribute name="expr"><attribute name="name">\n';
+                    s+='          x_%d'%(c+1)+'\n';
+                    s+='        </attribute></attribute>\n';
+                    s+='      </attribute>\n';
+            s+='    </attribute>\n';
+            s+='    <attribute name=\"update\">\n    ';
+            for c in range(cardclocks):
+                if translist[i][j][4][0][c+1]==0:
+                    s+='x_%d'%(c+1)+'=0;';
+            s+='\n    </attribute>\n';
+            s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
+            s+='      <attribute name=\"numValue\"> 1.000000 </attribute>\n';
+            s+='    </attribute></attribute>\n';
+            s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
+            s+='      <attribute name=\"numValue\">1</attribute>\n';
+            s+='    </attribute></attribute>\n';
+            s+='  </node>\n';
+    return(s);
+
+def toCOSMOS(quadriple,isIsotropic):
+    s='<?xml version="1.0" encoding=\"UTF-8\"?>\n\n<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">\n';
+    s+='  <attribute name=\"declaration\">\n';
+    if( not isIsotropic):
+        s+=printGRML_distribution(quadriple);
+    s+='    <attribute name="variables">\n';
+    s+='      <attribute name="clocks">\n';
+    for i in range(cardclocks):
+        s+='        <attribute name="clock">\n';
+        s+='        <attribute name="name"> x_%d '%(i+1)+'</attribute>\n';
+        s+='        </attribute>\n';
+    s+='      </attribute>\n';
+    s+='    </attribute>\n';
+    s+='  </attribute>\n';
+    s+=printGRML_place(translist);
+    s+=printGRML_transition(translist,quadriple,isIsotropic);
+    s+=printGRML_arc(translist);
     s+='</model>\n';
     return(s);
 
 fichier=open(outpath,"w");
-fichier.write(toCOSMOS(lastone));
+fichier.write(toCOSMOS(lastone,True));
 fichier.close();
 print ("output written in "+outpath) ;
