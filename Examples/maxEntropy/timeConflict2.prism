@@ -1,7 +1,7 @@
 pta
 
 const int n = 5;
-const int wt = 10;
+const int wt = 3;
 
 module c1
 	state1: [1..n] init 1;

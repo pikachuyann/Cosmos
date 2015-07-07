@@ -39,18 +39,18 @@ void timeGen::initRandomGenerator(unsigned int seed){
 }
 
 
-string string_of_dist(DistributionType d){
+string timeGen::string_of_dist(DistributionType d,const vector<double> &param)const{
     switch (d) {
         case   NORMAL:
-            return "Normal";
+            return "Normal("+ to_string(param[0]) +","+ to_string(param[1])+")";
         case   GAMMA:
-            return "Gamma";
+            return "Gamma("+ to_string(param[0]) +","+ to_string(param[1])+")";
         case   UNIFORM:
-            return "Uniform";
+            return "Uniform("+ to_string(param[0]) +","+ to_string(param[1])+")";
         case   EXPONENTIAL:
-            return "Exponential";
+            return "Exponential("+ to_string(param[0])+")";
         case   DETERMINISTIC:
-            return "Deterministic";
+            return "Deterministic("+ to_string(param[0])+")";
         case   LOGNORMAL:
             return "LogNormal";
         case   TRIANGLE:
@@ -58,17 +58,17 @@ string string_of_dist(DistributionType d){
         case   GEOMETRIC:
             return "Geometric";
         case   ERLANG:
-            return "Erlang";
+            return "Erlang("+ to_string(param[0]) +","+ to_string(param[1])+")";
         case   DISCRETEUNIF:
-            return "DiscreteUnif";
+            return "DiscreteUnif("+ to_string(param[0]) +","+ to_string(param[1])+")";
         case   MASSACTION:
-            return "MassAction";
+            return "MassAction("+ to_string(param[0])+")";
         case   IMMEDIATE:
             return "Immediate";
         case   USERDEFINE:
-            return "Userdefine";
+            return "Userdefine("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[3])+","+ to_string(param[4])+")";
         case   DISCRETEUSERDEFINE:
-            return "DiscreteUserDefine";
+            return "DiscreteUserDefine("+ to_string(param[0]) +","+ to_string(param[1])+")";
     }
 }
 
@@ -78,7 +78,7 @@ string string_of_dist(DistributionType d){
  * @param param is a vector of parameters of the distribution.
  */
 double timeGen::GenerateTime(DistributionType distribution,const vector<double> &param) {
-    //cerr << "sampling " << string_of_dist(distribution) << endl;;
+    //cerr << "sampling " << string_of_dist(distribution,param) << endl;;
 	switch (distribution) {
 		case UNIFORM:
 		{//UNIF
@@ -176,15 +176,18 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
 
             boost::uniform_01<> UNIF;
             boost::variate_generator<boost::mt19937&, boost::uniform_01<> > gen(RandomNumber, UNIF);
-            auto gentime = gen();
-        //cerr << "sample" << gentime <<":";
-            double initialpt = userDefineLowerBound(param);
+            const auto gentime = gen();
+            const auto lower = userDefineLowerBound(param);
+            const auto upper = userDefineUpperBound(param);
+
+        //cerr << "sample(" << gentime << ",[" << lower << "," << upper << "]):" <<endl;
+            double initialpt = (lower+upper)/ 2.0;
             return boost::math::tools::newton_raphson_iterate([&](double x){
                 const auto cdf = userDefineCDF(param,x);
                 const auto pdf = userDefinePDF(param,x);
+                //      cerr << "it:" << x << endl;
                 return make_tuple(cdf-gentime, pdf);
-            }, initialpt, initialpt, numeric_limits<double>::infinity(), 10);
-
+            }, initialpt, lower, upper, 100);
             break;
         }
 

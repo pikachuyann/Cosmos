@@ -624,6 +624,9 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                         if (*it2 == "lowerBound") {
                             dist.lowerBound = simplifyString(*(it2.begin()));
                         }
+                        if (*it2 == "upperBound") {
+                            dist.upperBound = simplifyString(*(it2.begin()));
+                        }
                     }
                     MyGspn->distribStruct.push_back(dist);
                     if ((P.verbose - 3) > 1)cout << dist << endl;

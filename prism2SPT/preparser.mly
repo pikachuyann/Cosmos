@@ -14,11 +14,12 @@
 %token SEMICOLON COLON PRIME COMMA QMARK
 %token AND OR
 %token NOT
+%token CLOCK
 %token BOOL TRUE FALSE
 %token CONST
 %token NEQ EQ SG SL GE LE
 %token RANGE 
-%token CTMC MODULE ENDMODULE INIT ENDINIT REWARDS ENDREWARDS FORMULA 
+%token CTMC MODULE ENDMODULE INIT ENDINIT REWARDS ENDREWARDS FORMULA INVARIANT ENDINVARIANT
 %token ARROW
 %token EOF
 %token INTKW DOUBLEKW
@@ -61,8 +62,12 @@ definition:
 
 modulelist:
   MODULE NAME varlist actionlist ENDMODULE { }
+  |  MODULE NAME varlist invariant actionlist ENDMODULE { }
   | MODULE NAME EQ NAME LSQBRAK renamelist RSQBRAK ENDMODULE { }
 ;
+
+invariant:
+  INVARIANT expr ENDINVARIANT {};
 
 renamelist:
   NAME EQ NAME { add_copy $1 $3 }
@@ -72,6 +77,7 @@ renamelist:
 varlist:
   | NAME COLON rangevar INIT expr SEMICOLON varlist { add_var $1 $3 }
   | NAME COLON rangevar SEMICOLON varlist { add_var $1 $3 }
+  | NAME COLON CLOCK SEMICOLON varlist { add_var $1 Clock }
   | {}
 ;
 

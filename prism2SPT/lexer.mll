@@ -17,15 +17,17 @@ rule token = parse
   | digit+ as lxm  { INT(int_of_string lxm)}
   | digit*['.']?digit+(['e' 'E']['-' '+']?digit+)? as lxm  {FLOAT(float_of_string lxm)}
   | "ctmc" | "dtmc" {CTMC}
+  | "pta" {PTA}
   | "int" {INTKW}
   | "double" {DOUBLEKW}
   | "const" {CONST}
   | "formula" {FORMULA}
   | "module" {MODULE} | "endmodule" {ENDMODULE}
   | "rewards" {REWARDS} | "endrewards" {ENDREWARDS}
+  | "invariant" {INVARIANT} | "endinvariant" {ENDINVARIANT}
   | "label" {LABEL}
   | "init" {INIT} | "endinit" {ENDINIT}
-  | "bool" {BOOL}
+  | "bool" {BOOL} | "clock" {CLOCK}
   | "floor" {FLOOR} | "ceil" {CEIL}
   | "ParseInt" {PARSEINT} | "ParseFloat" {PARSEFLOAT}
   | "ParseBool" {PARSEBOOL} | "ParseDistribution" {PARSEDISTR}   
@@ -65,6 +67,7 @@ rule token = parse
 	  | IntVar -> INTNAME(lxm)
 	  | BoolVar-> BOOLNAME(lxm)
 	  | FunT -> FUNNAME(lxm)
+	  | Clock -> CLOCKNAME(lxm)
 	end with
 	    Not_found -> 
 	      if !allInt then INTNAME(lxm)
