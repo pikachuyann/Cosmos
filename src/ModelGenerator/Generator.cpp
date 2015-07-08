@@ -526,8 +526,7 @@ void generateLoopLHA(GspnType &spn) {
         lhastr << "const double invT= 1.0 ;\n";
     }
     lhastr << "const double Ttrans=" << P.loopTransientLHA << ";\n";
-    lhastr << "VariablesList = {time";
-    if(P.generateLHA== ActionLoop){lhastr << ",DISC countT";};
+    lhastr << "VariablesList = {time,DISC countT";
     for (let itt : spn.transitionStruct)
         if (itt.isTraced)lhastr << ", " << itt.label;
 
@@ -584,7 +583,7 @@ void generateLoopLHA(GspnType &spn) {
         if (itt.isTraced) {
             lhastr << "((l1,l1),{" << itt.label << "}," << stopcond;
             if(P.loopLHA>0.0){
-                lhastr << "{" << itt.label << " = " << itt.label << " + invT });\n";
+                lhastr << "{" << itt.label << " = " << itt.label << " + invT, countT = countT+1 });\n";
             }else{
                 lhastr << "{" << itt.label << " = " << itt.label << " + 1, countT = countT+1 });\n";
             }
