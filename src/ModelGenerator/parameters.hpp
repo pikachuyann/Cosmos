@@ -39,6 +39,7 @@
 #define let const auto&
 
 enum LHAGenType {
+    NoGen,
     TimeLoop,
     ActionLoop,
     SamplingLoop,
