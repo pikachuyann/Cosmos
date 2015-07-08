@@ -54,7 +54,7 @@ public:
 	
     virtual ~Gspn_Reader();
 	
-    GspnType MyGspn;
+    shared_ptr<GspnType> spn;
 	
 	int parse(std::string&);
     int parse_file(std::string&);
