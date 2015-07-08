@@ -62,7 +62,7 @@ Path(""),
 PathGspn(""),
 PathLha(""),
 constants(),
-generateLHA(0),
+generateLHA(TimeLoop),
 loopLHA(0.0),
 loopTransientLHA(0.0),
 CSLformula(""),
@@ -167,7 +167,7 @@ void parameters::usage() {
     cout << "\t--loop t1 [--transtient t2] \tGenerate an LHA that loop for t1 times unit and then t2 time unit. The --transient option alone do not do anything" << endl;
     cout << "\t--sampling t1 t2 \tGenerate an LHA that loop for t1 times unit and sample the average number of token each t2 time units" << endl;
     cout << "\t--formula f\t specify a CSL formula to use instead of an automata" << endl;
-    cout << "\t--prism \tExport the state space and lauch prism." << endl;
+    cout << "\t--prism \tExport the state space and launch prism." << endl;
     cout << "\t-s,--state-space \tExport the state space." << endl;
 
 }
@@ -431,13 +431,19 @@ void parameters::parseCommandLine(int argc, char** argv) {
             case CO_HASL_formula: externalHASL = optarg;
                 break;
             case CO_loop:
-                loopLHA = atof(optarg);
-                generateLHA = 1;
+                if(optarg[0]!='#'){
+                    loopLHA = atof(optarg);
+                    generateLHA = TimeLoop;
+                }else{
+                    const auto st = string(optarg);
+                    loopLHA = stod(st.substr(1,st.length()-1));
+                    generateLHA = ActionLoop;
+                }
                 PathLha = "LOOP";
                 break;
             case CO_sampling:
                 loopLHA = atof(optarg);
-                generateLHA = 2;
+                generateLHA = SamplingLoop;
                 PathLha = "SAMPLING";
                 if (optind == argc) {
                     usage();
@@ -511,7 +517,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
         PathLha = argv[optind + 1];
     } else {
         if (optind + 2 > argc) {
-            cout << "Two files are require." << endl;
+            cout << "Two files are required." << endl;
         } else {
             cout << "Unrecognize option:" << argv[optind + 2] << endl;
         }

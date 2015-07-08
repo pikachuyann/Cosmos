@@ -7,6 +7,8 @@
       <attribute name="var">t</attribute>
       <attribute name="cdf">0.125 * t</attribute>
       <attribute name="pdf">0.125</attribute>
+      <attribute name="lowerBound">0.0</attribute>
+      <attribute name="upperBound">8.0</attribute>
     </attribute>
   </attribute>
   <node id="3" nodeType="place" x="385" y="133">
