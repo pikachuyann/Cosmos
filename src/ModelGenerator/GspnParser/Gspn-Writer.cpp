@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <limits.h>
 
 #include "Gspn-Writer.hpp"
 #include "../casesWriter.hpp"
