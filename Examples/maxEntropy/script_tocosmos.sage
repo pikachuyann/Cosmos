@@ -7,6 +7,9 @@ prismpath="~/Documents/prism-ptasmc/prism/bin/prism";
 
 sagepath,ext = os.path.splitext(str(sys.argv[1]));
 outpath=sagepath+'.grml';
+
+isIsotropic=False;
+
 if len(sys.argv)>2:
     outpath=str(sys.argv[2]);
 
@@ -20,6 +23,9 @@ numpoly=3;
 if len(sys.argv)>3:
     numpoly=int(sys.argv[3])
 
+if len(sys.argv)>4:
+    if sys.argv[4] == "-isotropic" :
+        isIsotropic = True;
 
 
 cardclocks=len(translist[0][0][4][0])-2;
@@ -172,10 +178,12 @@ def sumlist(l):
     return(accu);
 
 listres=[[R(1) for i in range(card_states)]];
-for i in range(1,numpoly+1):
-    listres.append(Op(listres[i-1]));
-
-lastone=WeightsPdfCdf(listres[numpoly]);
+if not isIsotropic :
+    for i in range(1,numpoly+1):
+        listres.append(Op(listres[i-1]));
+    lastone=WeightsPdfCdf(listres[numpoly]);
+else :
+    lastone=WeightsPdfCdf(listres[0]);
 
 def escapename(s):
     s2=s.replace('(','').replace(')','').replace('>','G').replace('<','L').replace('&','^');
@@ -333,6 +341,6 @@ def toCOSMOS(quadriple,isIsotropic):
     return(s);
 
 fichier=open(outpath,"w");
-fichier.write(toCOSMOS(lastone,True));
+fichier.write(toCOSMOS(lastone,isIsotropic));
 fichier.close();
 print ("output written in "+outpath) ;
