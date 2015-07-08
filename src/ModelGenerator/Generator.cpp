@@ -599,11 +599,7 @@ void generateLoopLHA(GspnType &spn) {
                 nbplntr++;
             }
         lhastr << "}," << stopcond;
-        if(P.generateLHA == TimeLoop){
-            lhastr << "#);" << endl;
-        }else{
-            lhastr << "{countT = countT+1 });" << endl;
-        }
+        lhastr << "{countT = countT+1 });" << endl;
     }
     if (P.generateLHA == TimeLoop){
         lhastr << "((l1,l2),#,time=T ,#);\n};";
