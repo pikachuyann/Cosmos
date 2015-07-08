@@ -182,7 +182,7 @@ int main(int argc, char** argv) {
 
     //Parse and generate the gspn and lha.
     shared_ptr<GspnType> pGSPN = ParseGSPN();
-    if ( pGSPN.use_count()==0) {
+    if ( !pGSPN ) {
         cout << "Fail to build the GSPN." << endl;
         return(EXIT_FAILURE);
     }
