@@ -7,11 +7,12 @@
 #include <math.h>
 #include <limits.h>
 #include <string>
-
 #include <fstream>
-#include "../expressionStruct.hpp"
 #include <sstream>
 #include <set>
+
+#include "../expressionStruct.hpp"
+#include "../../Simulator/spn.hpp"
 #include "../Eval/Eval.hpp"
   class Gspn_Reader;
 
@@ -373,11 +374,12 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
     {MarkingDependent=true;v[0]=st;
     }
   else{ if (Evaluate.RealResult<= 0 ) {
-      cout << "In exponential ditribution Lambda > 0" << endl;
+      cout << "In exponential distribution Lambda > 0" << endl;
       YYABORT;
     }
     std::ostringstream s;s<<Evaluate.RealResult;
     v[0]=s.str();
+    Par.clear();
   }
   
   transition *trans = new transition();
@@ -396,6 +398,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
 	Reader.spn->TransId[*$2]=sz;
   Reader.spn->transitionStruct.push_back(*trans);
 
+    Par.clear();
   MarkingDependent=false;
 
  }
@@ -414,7 +417,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
     {MarkingDependent=true;v[0]=st;
     }
   else{ if (Evaluate.RealResult<= 0 ) {
-      cout << "In exponential ditribution Lambda > 0" << endl;
+      cout << "In exponential distribution Lambda > 0" << endl;
       YYABORT;
     }
     std::ostringstream s;s<<Evaluate.RealResult;
@@ -438,6 +441,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
 	Reader.spn->TransId[*$2]=sz;
   MarkingDependent=false;
   AgeMemory=false;
+  Par.clear();
  }
 
 |LB str COMMA IMDT COMMA PRIORITY COMMA WEIGHT  RB SEMICOLON {
@@ -461,7 +465,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
 	int sz=Reader.spn->TransId.size();
 	Reader.spn->TransId[*$2]=sz;
   Reader.spn->transitionStruct.push_back(*trans);
-
+  Par.clear();
  };
 
 
@@ -525,10 +529,10 @@ dist:str LB params RB {
   distrib=*$1;
   int np=Par.size();
   switch (Reader.IndexDist[distrib]) {
-    case 1:
+    case UNIFORM:
       {
         if (np != 2){
-          cout << "Uniform ditribution has two parameters: min and max where 0<=min<max" << endl;
+          cout << "Uniform distribution has two parameters: min and max where 0<=min<max" << endl;
           YYABORT;
         }
         double p1,p2;
@@ -537,16 +541,18 @@ dist:str LB params RB {
         st=Par[1];
         Evaluate.parse(st);p2=Evaluate.RealResult;
         if ((p1>=p2) || (p1<0)) {
-          cout << "In uniform ditribution 0 <= min< max " << endl;
+          cout << "In uniform distribution 0 <= min< max " << endl;
           YYABORT;
         }
         break;
       }
 
-    case 2:
+    case EXPONENTIAL:
       {
         if (np != 1) {
-          cout << "exponential ditribution has one parameter: Lambda > 0" << endl;
+          cout << "exponential distribution has one parameter: Lambda > 0, got "<< np << " parameters "<< distrib <<"[";
+          for(const auto &x : Par) cout << x << ", ";
+          cout << "]" << endl;
           YYABORT;
         }
 
@@ -554,16 +560,16 @@ dist:str LB params RB {
         string st=Par[0];
         Evaluate.parse(st);p1=Evaluate.RealResult;
         if (p1<= 0 ) {
-          cout << "In exponential ditribution Lambda > 0" << endl;
+          cout << "In exponential distribution Lambda > 0" << endl;
           YYABORT;
         }
         break;
       }
 
-    case 3:
+    case DETERMINISTIC:
       {
         if (np != 1) {
-          cout << "Deterministic ditribution has one parameter:  T >= 0" << endl;
+          cout << "Deterministic distribution has one parameter:  T >= 0" << endl;
           YYABORT;
         }
 
@@ -571,16 +577,16 @@ dist:str LB params RB {
         string st=Par[0];
         Evaluate.parse(st);p1=Evaluate.RealResult;
         if (p1<0 ) {
-          cout << "In Deterministic ditribution Lambda > 0" << endl;
+          cout << "In Deterministic distribution Lambda > 0" << endl;
           YYABORT;
         }
         break;
       }
 
-    case 4:
+    case LOGNORMAL:
       {
         if (np != 2) {
-          cout << "Lognormal ditribution has two parameters: mu and sigma^2, where mu > 0 sigma^2 > 0" << endl;
+          cout << "Lognormal distribution has two parameters: mu and sigma^2, where mu > 0 sigma^2 > 0" << endl;
           YYABORT;
         }
 
@@ -590,16 +596,16 @@ dist:str LB params RB {
         st=Par[1];
         Evaluate.parse(st);p2=Evaluate.RealResult;
         if ((p1<=0) || (p2<=0)) {
-          cout << "In Lognormal ditribution mu > 0 sigma^2 > 0" << endl;
+          cout << "In Lognormal distribution mu > 0 sigma^2 > 0" << endl;
           YYABORT;
         }
         break;
       }
 
-    case 5:
+    case TRIANGLE:
       {
         if (np != 3) {
-          cout << "Triangle ditribution has three parameters: 0 <= b <= c <= a" << endl;
+          cout << "Triangle distribution has three parameters: 0 <= b <= c <= a" << endl;
           YYABORT;
         }
         double p1,p2,p3;
@@ -610,7 +616,7 @@ dist:str LB params RB {
         st=Par[2];
         Evaluate.parse(st);p3=Evaluate.RealResult;
         if ((p1<0) || (p2<p1) || (p3<p2)) {
-          cout << "In Triangle ditribution: 0 <= b <= c<= a" << endl;
+          cout << "In Triangle distribution: 0 <= b <= c<= a" << endl;
           YYABORT;
         }
 
@@ -618,10 +624,10 @@ dist:str LB params RB {
         break;
       }
 
-    case 6:
+    case GEOMETRIC:
       {
         if (np != 2) {
-          cout << "Geometric ditribution has two parameters: 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
+          cout << "Geometric distribution has two parameters: 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
           YYABORT;
         }
         double p1,p2;
@@ -630,12 +636,12 @@ dist:str LB params RB {
         st=Par[1];
         Evaluate.parse(st);p2=Evaluate.RealResult;
         if ((p1<0) || (p1>1) || p2<=0) {
-          cout << "In Geometric ditribution 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
+          cout << "In Geometric distribution 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
           YYABORT;
         }
         break;
       }
-    case 7:
+    case ERLANG:
       {
         if (np != 2) {
           cout << "Erlang distribution has two parameters: Shape and Rate, where Shape is a positive integer and Rate > 0" << endl;
@@ -658,7 +664,7 @@ dist:str LB params RB {
         }
         break;
       }
-    case 8:
+    case GAMMA:
       {
         if (np != 2) {
           cout << "Gamma distribution has two parameters: Shape>0 and Scale>0" << endl;
@@ -698,7 +704,7 @@ params:param
 
 param:RealStringFormula {string st=$1;
    if(Evaluate.parse(st))
-     {cout<<"The exponential ditribution is the only marking dependent distribution: '"<<st<<"'"<<endl;YYABORT; }
+     {cout<<"The exponential distribution is the only marking dependent distribution: '"<<st<<"'"<<endl;YYABORT; }
    else{std::ostringstream s;s<<Evaluate.RealResult;
      Par.push_back(s.str());
    }
