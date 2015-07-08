@@ -6,7 +6,7 @@
 %code requires {
 #include <math.h>
 #include <limits.h>
-# include <string>
+#include <string>
 
 #include <fstream>
 #include "../expressionStruct.hpp"
