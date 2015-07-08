@@ -38,7 +38,7 @@
 using namespace std;
 
 
-Gspn_Reader::Gspn_Reader(parameters &Q):P(Q) {
+Gspn_Reader::Gspn_Reader(parameters &Q):spn(new GspnType()),P(Q) {
 	trace_scanning = false;
 	trace_parsing = false;
 }
@@ -101,21 +101,21 @@ int Gspn_Reader::parse_gml_file(parameters &P) {
 	ifstream ifile(P.PathGspn.c_str());
 	if(ifile){
 		//cout << "parse GML:" << filename << endl;
-		MyGspn.nbpass=0;
+		spn->nbpass=0;
 		//first pass declaration and place.
-		MyModelHandler* handler = new MyModelHandler(MyGspn);
+		MyModelHandler* handler = new MyModelHandler(*spn);
 		ModelHandlerPtr handlerPtr(handler);
 		ExpatModelParser parser = ExpatModelParser(handlerPtr);
 		parser.parse_file(P.PathGspn);
 		
-		MyGspn.nbpass=1;
+		spn->nbpass=1;
 		//second pass transitions and arcs.
-		ModelHandlerPtr handlerPtr2(new MyModelHandler(MyGspn,handler->IsPlace,handler->Gml2Place,handler->Gml2Trans));
+		ModelHandlerPtr handlerPtr2(new MyModelHandler(*spn,handler->IsPlace,handler->Gml2Place,handler->Gml2Trans));
 		ExpatModelParser parser2 = ExpatModelParser(handlerPtr2);
 		parser2.parse_file(P.PathGspn);
 		
 		
-		//cout << "end parse GML:"<< MyGspn.pl << endl;
+		//cout << "end parse GML:"<< spn->pl << endl;
 		if (P.RareEvent)addSinkTrans();
 		return 0;
 	}else{
@@ -137,5 +137,5 @@ Gspn_Reader::error(const std::string& m) {
 
 
 void Gspn_Reader::addSinkTrans(){
-    MyGspn.outArcsStruct.insert(make_pair(MyGspn.arckey(MyGspn.tr-1, MyGspn.pl-1), arc(1)));
+    spn->outArcsStruct.insert(make_pair(spn->arckey(spn->tr-1, spn->pl-1), arc(1)));
 }

@@ -74,9 +74,9 @@ shared_ptr<GspnType> ParseGSPN() {
         } else {
             parseresult = gReader.parse_file(P.PathGspn);
         }
-        P.nbPlace = gReader.MyGspn.pl;
+        P.nbPlace = gReader.spn->pl;
 
-        if(parseresult==1)return nullptr;
+        if(parseresult==1 || !gReader.spn)return nullptr;
 
         //The following code modify the internal representation of the
         //SPN according to options.
@@ -84,22 +84,22 @@ shared_ptr<GspnType> ParseGSPN() {
         //Set the isTraced flag for places, transitions and hybrid var
         if (P.tracedPlace.count("ALL") == 0 && P.tracedPlace.count("ALLCOLOR")==0 ) {
             P.nbPlace = 0;
-            for (size_t i = 0; i < gReader.MyGspn.pl; i++) {
-                if (P.tracedPlace.count(gReader.MyGspn.placeStruct[i].name)>0) {
-                    gReader.MyGspn.placeStruct[i].isTraced = true;
+            for (size_t i = 0; i < gReader.spn->pl; i++) {
+                if (P.tracedPlace.count(gReader.spn->placeStruct[i].name)>0) {
+                    gReader.spn->placeStruct[i].isTraced = true;
                     P.nbPlace++;
                 } else {
-                    gReader.MyGspn.placeStruct[i].isTraced = false;
+                    gReader.spn->placeStruct[i].isTraced = false;
                 }
             }
-            for (size_t i = 0; i < gReader.MyGspn.tr; i++) {
-                if ( P.tracedPlace.count(gReader.MyGspn.transitionStruct[i].label)>0 ) {
-                    gReader.MyGspn.transitionStruct[i].isTraced = true;
+            for (size_t i = 0; i < gReader.spn->tr; i++) {
+                if ( P.tracedPlace.count(gReader.spn->transitionStruct[i].label)>0 ) {
+                    gReader.spn->transitionStruct[i].isTraced = true;
                 } else {
-                    gReader.MyGspn.transitionStruct[i].isTraced = false;
+                    gReader.spn->transitionStruct[i].isTraced = false;
                 }
             }
-            for (auto &v: gReader.MyGspn.hybridVars) {
+            for (auto &v: gReader.spn->hybridVars) {
                 if ( P.tracedPlace.count(v.name)>0 ) {
                     v.isTraced = true;
                 } else {
@@ -109,19 +109,19 @@ shared_ptr<GspnType> ParseGSPN() {
         }
 
         //Apply Law of mass action for MASSACTION distribution:
-        for (size_t t = 0; t < gReader.MyGspn.tr; t++) {
-            ProbabiliteDistribution *trDistr = &gReader.MyGspn.transitionStruct[t].dist;
+        for (size_t t = 0; t < gReader.spn->tr; t++) {
+            ProbabiliteDistribution *trDistr = &gReader.spn->transitionStruct[t].dist;
             if (trDistr->name.compare("MASSACTION") == 0) {
-                gReader.MyGspn.transitionStruct[t].markingDependant = true;
-                for (size_t p = 0; p < gReader.MyGspn.pl; p++) {
-                    if (!gReader.MyGspn.access(gReader.MyGspn.inArcsStruct, t, p).isEmpty) {
+                gReader.spn->transitionStruct[t].markingDependant = true;
+                for (size_t p = 0; p < gReader.spn->pl; p++) {
+                    if (!gReader.spn->access(gReader.spn->inArcsStruct, t, p).isEmpty) {
                         expr exponent;
-                        if (gReader.MyGspn.access(gReader.MyGspn.inArcsStruct, t, p).isMarkDep) {
-                            exponent = expr(gReader.MyGspn.access(gReader.MyGspn.inArcsStruct, t, p).stringVal);
+                        if (gReader.spn->access(gReader.spn->inArcsStruct, t, p).isMarkDep) {
+                            exponent = expr(gReader.spn->access(gReader.spn->inArcsStruct, t, p).stringVal);
                         } else {
-                            exponent = expr((int) gReader.MyGspn.access(gReader.MyGspn.inArcsStruct, t, p).intVal);
+                            exponent = expr((int) gReader.spn->access(gReader.spn->inArcsStruct, t, p).intVal);
                         }
-                        expr pl = expr(PlaceName, gReader.MyGspn.placeStruct[p].name);
+                        expr pl = expr(PlaceName, gReader.spn->placeStruct[p].name);
                         expr mult = expr(Pow, pl, exponent);
                         expr dist = expr(Times, trDistr->Param[0], mult);
 
@@ -132,8 +132,8 @@ shared_ptr<GspnType> ParseGSPN() {
         }
 
         //Check that the model is not empty and generate the code
-        if (!parseresult && gReader.MyGspn.pl > 0 && gReader.MyGspn.tr > 0) {
-            Gspn_Writer_Color writer(gReader.MyGspn, P);
+        if (!parseresult && gReader.spn->pl > 0 && gReader.spn->tr > 0) {
+            Gspn_Writer_Color writer(*gReader.spn, P);
             writer.writeFile();
             writer.writeDotFile(P.tmpPath + "/templatePetriNet.dot");
         } else {
@@ -145,7 +145,7 @@ shared_ptr<GspnType> ParseGSPN() {
         return nullptr;
     }
 
-    return shared_ptr<GspnType>(new GspnType(gReader.MyGspn));
+    return gReader.spn;
     }
 
 bool ParseLHA(GspnType &spn){
@@ -441,7 +441,7 @@ void generateSamplingLHA(GspnType &spn) {
     P.PathLha = P.tmpPath + "/samplelha.lha";
     ofstream lhastr(P.PathLha.c_str(), ios::out | ios::trunc);
 
-    //lhastr << "NbVariables = "<<1+gReader.MyGspn.tr + P.nbPlace <<";\nNbLocations = 3;\n";
+    //lhastr << "NbVariables = "<<1+gReader.spn->tr + P.nbPlace <<";\nNbLocations = 3;\n";
     lhastr << "const double T=" << P.loopLHA << ";\n";
     lhastr << "const double invT=" << P.sampleResol << ";\n";
     lhastr << "const double invT2=" << 1 / P.sampleResol << ";\n";
@@ -451,7 +451,7 @@ void generateSamplingLHA(GspnType &spn) {
             lhastr << ", PLVARACC_" << itt.name;
             lhastr << ", DISC PLVAR_" << itt.name << "[" << nbsample << "]";
             //if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
-            //	gReader.iterateDom("", "_", "","","","" ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
+            //	gReader.iterateDom("", "_", "","","","" ,gReader.spn->colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
             //		lhastr << ", PLVAR_" + itt.name + str;
             //	});
 
@@ -465,7 +465,7 @@ void generateSamplingLHA(GspnType &spn) {
         if (itt.isTraced)for (size_t i = 0; i < nbsample; ++i) {
                 lhastr << "MeanToken_" << itt.name << "$GRAPH$" << (double) i * P.sampleResol << "$" << (double) (i + 1) * P.sampleResol << "$= AVG(Last( PLVAR_" << itt.name << "[" << i << "]));\n";
                 /*if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
-                    gReader.iterateDom("", "_", "","","","" ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
+                    gReader.iterateDom("", "_", "","","","" ,gReader.spn->colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
                         lhastr << "MeanToken_" << itt.name << str << "= AVG(Last( PLVAR_" << itt.name<< str <<"));\n";
                     });
                 }*/
@@ -480,7 +480,7 @@ void generateSamplingLHA(GspnType &spn) {
         if (itt.isTraced) {
             lhastr << ", PLVARACC_" << itt.name << ": " << itt.name << "* invT2 ";
             /*if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
-             gReader.iterateDom("", "_", "","","","," ,gReader.MyGspn.colDoms[itt.colorDom], 0, [&] (const string &str,const string &str2){
+             gReader.iterateDom("", "_", "","","","," ,gReader.spn->colDoms[itt.colorDom], 0, [&] (const string &str,const string &str2){
              lhastr << ", PLVAR_" << itt.name << str << ": " << itt.name << "[" << str2 <<"]* invT ";
              });
              }*/
