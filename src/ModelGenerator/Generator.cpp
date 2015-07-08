@@ -175,8 +175,8 @@ bool ParseLHA(GspnType &spn){
             }
         }
 
-        if (P.generateLHA == 1)generateLoopLHA(spn);
-        if (P.generateLHA == 2)generateSamplingLHA(spn);
+        if (P.generateLHA == TimeLoop || P.generateLHA == ActionLoop)generateLoopLHA(spn);
+        if (P.generateLHA == SamplingLoop)generateSamplingLHA(spn);
 
         //check the type of the LHA file
         //First check if it is not C++ code
@@ -512,20 +512,26 @@ void generateLoopLHA(GspnType &spn) {
     //elapse and then compute the mean number of token in each place and the throughput
     //of each transition
     bool allcolor = false;
-    if (P.tracedPlace.count("ALLCOLOR")>0)allcolor = true;
+    if (P.tracedPlace.count("ALLCOLOR")>0.0)allcolor = true;
 
 
     P.PathLha = P.tmpPath + "/looplha.lha";
     ofstream lhastr(P.PathLha.c_str(), ios::out | ios::trunc);
 
-    lhastr << "const double T=" << P.loopLHA << ";\n";
-    lhastr << "const double invT=" << 1 / P.loopLHA << ";\n";
+    if(P.generateLHA ==TimeLoop){
+        lhastr << "const double T=" << P.loopLHA << ";\n";
+        lhastr << "const double invT=" << 1 / P.loopLHA << ";\n";
+    } else {
+        lhastr << "const double TDiscr=" << P.loopLHA << ";\n";
+        lhastr << "const double invT= 1.0 ;\n";
+    }
     lhastr << "const double Ttrans=" << P.loopTransientLHA << ";\n";
     lhastr << "VariablesList = {time";
-    for (const auto &itt : spn.transitionStruct)
+    if(P.generateLHA== ActionLoop){lhastr << ",DISC countT";};
+    for (let itt : spn.transitionStruct)
         if (itt.isTraced)lhastr << ", " << itt.label;
 
-    for (const auto &itt : spn.placeStruct) {
+    for (let itt : spn.placeStruct) {
         if (itt.isTraced) {
             lhastr << ", PLVAR_" << itt.name;
             if (allcolor && itt.colorDom != UNCOLORED_DOMAIN) {
@@ -538,12 +544,12 @@ void generateLoopLHA(GspnType &spn) {
     lhastr << "} ;\nLocationsList = {l0, l1,l2};\n";
 
     auto nbHASL = 0;
-    for (const auto &itt : spn.transitionStruct)
+    for (let itt : spn.transitionStruct)
         if (itt.isTraced){
             nbHASL++;
             lhastr << "Throughput_" << itt.label << "= AVG(Last(" << itt.label << "));\n";
         }
-    for (const auto &itt : spn.placeStruct)
+    for (let itt : spn.placeStruct)
         if (itt.isTraced) {
             nbHASL++;
             lhastr << "MeanToken_" << itt.name << "= AVG(Last( PLVAR_" << itt.name << "));\n";
@@ -557,9 +563,11 @@ void generateLoopLHA(GspnType &spn) {
     if(P.externalHASL.empty() && nbHASL==0)
         lhastr << "PROB;" << endl;
 
+    const auto stopcond = (P.generateLHA == TimeLoop ? "time<=T," : "countT<=TDiscr -1,");
+
     lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
     lhastr << "Locations={\n(l0, TRUE, (time:1));\n(l1, TRUE, (time:1 ";
-    for (const auto &itt : spn.placeStruct)
+    for (let itt : spn.placeStruct)
         if (itt.isTraced) {
             lhastr << ", PLVAR_" << itt.name << ": " << itt.name << "* invT ";
             if (allcolor && itt.colorDom != UNCOLORED_DOMAIN) {
@@ -572,23 +580,35 @@ void generateLoopLHA(GspnType &spn) {
     lhastr << "));\n(l2, TRUE);\n};\n";
     lhastr << "Edges={\n((l0,l0),ALL,time<= Ttrans ,#);\n((l0,l1),#,time=Ttrans ,{time=0});\n";
     size_t nbplntr = 0;
-    for (const auto &itt : spn.transitionStruct) {
+    for (let itt : spn.transitionStruct) {
         if (itt.isTraced) {
-            lhastr << "((l1,l1),{" << itt.label << "},time<=T,{" << itt.label << " = " << itt.label << " + " << 1.0 / P.loopLHA << " });\n";
+            lhastr << "((l1,l1),{" << itt.label << "}," << stopcond;
+            if(P.loopLHA>0.0){
+                lhastr << "{" << itt.label << " = " << itt.label << " + invT });\n";
+            }else{
+                lhastr << "{" << itt.label << " = " << itt.label << " + 1, countT = countT+1 });\n";
+            }
         } else nbplntr++;
     }
     if (nbplntr > 0) {
         lhastr << "((l1,l1),{";
         nbplntr = 0;
-        for (const auto &itt : spn.transitionStruct)
+        for (let itt : spn.transitionStruct)
             if (!itt.isTraced) {
                 if (nbplntr > 0)lhastr << ",";
                 lhastr << itt.label;
                 nbplntr++;
             }
-        lhastr << "},time<=T,#);\n";
+        lhastr << "}," << stopcond;
+        if(P.generateLHA == TimeLoop){
+            lhastr << "#);" << endl;
+        }else{
+            lhastr << "{countT = countT+1 });" << endl;
+        }
     }
-    lhastr << "((l1,l2),#,time=T ,#);\n};";
+    if (P.generateLHA == TimeLoop){
+        lhastr << "((l1,l2),#,time=T ,#);\n};";
+    }else lhastr << "((l1,l2),ALL,countT=TDiscr ,#);\n};";
     lhastr.close();
 }
 

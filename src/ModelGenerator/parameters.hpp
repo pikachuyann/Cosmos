@@ -36,6 +36,13 @@
 
 #include "HaslFormula.hpp"
 
+#define let const auto&
+
+enum LHAGenType {
+    TimeLoop,
+    ActionLoop,
+    SamplingLoop,
+};
 
 enum Poption {
     CO_level,
@@ -116,7 +123,7 @@ struct parameters {
     std::string PathLha;
     std::map<std::string, std::string> constants;
 
-    int generateLHA;
+    LHAGenType generateLHA;
     double loopLHA;
     double loopTransientLHA;
     std::string CSLformula;

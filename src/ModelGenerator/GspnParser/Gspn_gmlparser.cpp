@@ -607,6 +607,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                 if (*t2 == "UserDefineDistribution") {
                     userDefineDistribution dist;
                     dist.lowerBound = "0";
+                    dist.upperBound = "0";
                     for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
                         if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ": ";
                         if (*it2 == "name") {
