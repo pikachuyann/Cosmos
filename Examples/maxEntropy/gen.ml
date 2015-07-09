@@ -53,9 +53,9 @@ Edges={
 };";
   close_out prop;
   ignore (Sys.command (Printf.sprintf "sage script_tocosmos.sage %s.prism %s.grml %i -uniform \".*(%s).*\"" name name polysize !target));
-  execSavedCosmos ~prefix:false (name,name^".grml",name^".lha"," --njob 2 --max-run 20000 --batch 0");
+  execSavedCosmos ~prefix:false (name,name^".grml",name^".lha"," --njob 2 --max-run 20000 --gppflags \"-O0\" --batch 0");
 (*  ignore (Sys.command (Printf.sprintf "sage script_tocosmos.sage %s.prism %s.grml 1 -isotropic \".*(%s).*\"" name name !target)); *)
-  execSavedCosmos ~prefix:false ("Iso_"^name,name^".grml",name^".lha"," --njob 2 --max-run 20000 --batch 0");;
+  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^".grml",name^".lha"," --njob 2 --max-run 20000 --gppflags \"-O0\" --batch 0");;
   
 
 printHeadCsv ();;
@@ -76,5 +76,5 @@ timeConflict "first13_1_13" 13 1 13;;
 
 (* Second Table *)
 for i = 2 to 8 do 
-    timeConflict (Printf.sprintf "second%i_2_15" i) i 2 15;
+    timeConflict (Printf.sprintf "second%i_2_15" i) i 2 7;
 done;;
