@@ -3,7 +3,7 @@
 import sys
 import os
 
-prismpath="~/Documents/prism-ptasmc/prism/bin/prism";
+prismpath="prism";
 
 sagepath,ext = os.path.splitext(str(sys.argv[1]));
 outpath=sagepath+'.grml';
