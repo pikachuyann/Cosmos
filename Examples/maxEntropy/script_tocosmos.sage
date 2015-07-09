@@ -240,7 +240,7 @@ def printGRML_place(translist):
     s="";
     for i in range(len(translist)):
         s+='  <node id=\"1%d\" ' %i +' nodeType=\"place\">\n';
-        s+='    <attribute name=\"name\">s_%d_' %i + escapename(namelist[i]) + ' </attribute>\n';
+        s+='    <attribute name=\"name\">s_%d_' %i + ' </attribute>\n';
         s+='    <attribute name=\"marking\"><attribute name=\"expr\">\n';
         s+='      <attribute name=\"numValue\">%d '%(i==0)+' </attribute>\n';
         s+='    </attribute></attribute>\n';
