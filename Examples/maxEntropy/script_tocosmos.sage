@@ -2,6 +2,7 @@
 
 import sys
 import os
+import re
 
 prismpath="~/Documents/prism-ptasmc/prism/bin/prism";
 
@@ -27,6 +28,11 @@ if len(sys.argv)>4:
     if sys.argv[4] == "-isotropic" :
         isIsotropic = True;
 
+objregexp= re.compile('')
+if len(sys.argv)>5:
+    objregexp=re.compile(sys.argv[5])
+
+finstate = [ objregexp.match(namelist[i]) for i in range(len(namelist))];
 
 cardclocks=len(translist[0][0][4][0])-2;
 card_states=len(translist);
@@ -204,54 +210,47 @@ def printGRML_distribution(quadriple):
             s+='    </attribute>\n'
     return(s);
 
+def printGRML_OneArc(id,source,target):
+    s="";
+    s+='  <arc id=\"%s\"' %id +' arcType=\"arc\" source=\"%s\" ' %source + 'target=\"%s\" ' %target+'>\n';
+    s+='    <attribute name=\"valuation\"><attribute name=\"expr\">\n';
+    s+='      <attribute name=\"numValue\">1</attribute>\n';
+    s+='    </attribute></attribute>\n';
+    s+='  </arc>\n';
+    return s;
+
+
+def printGRML_OnePlace(id,name,marking):
+    s="";
+    s+='  <node id=\"%s\" ' %id +' nodeType=\"place\">\n';
+    s+='    <attribute name=\"name\">%s' %name + ' </attribute>\n';
+    s+='    <attribute name=\"marking\"><attribute name=\"expr\">\n';
+    s+='      <attribute name=\"numValue\">%d '%marking+' </attribute>\n';
+    s+='    </attribute></attribute>\n';
+    s+='  </node>\n';
+    return(s);
+
+    
 def printGRML_arc(translist):
     s="";
     for i in range(len(translist)):
         for j in  range(len(translist[i])):
-            s+='  <arc id=\"4%d\"'%(idtrans[i][j])+' arcType=\"arc\" source=\"1%d\" ' %i + 'target=\"3%d\" ' %(idtrans[i][j])+'>\n';
-            s+='    <attribute name=\"valuation\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\">1</attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='  </arc>\n';
-    for i in range(len(translist)):
-        for j in  range(len(translist[i])):
-            s+='  <arc id=\"5%d\"'%(idtrans[i][j])+' arcType=\"arc\" source=\"3%d\" ' %(idtrans[i][j]) + 'target=\"2%d\" '%(idtrans[i][j])+'>\n';
-            s+='    <attribute name=\"valuation\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\"> 1 </attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='  </arc>\n';
-    for i in range(len(translist)):
-        for j in  range(len(translist[i])):
-            s+='   <arc id=\"7%d\"'%(idtrans[i][j])+' arcType=\"arc\" source=\"2%d\" ' %(idtrans[i][j]) + 'target=\"6%d\" '%(idtrans[i][j])+'>\n';
-            s+='    <attribute name=\"valuation\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\">1</attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='  </arc>\n';
-    for i in range(len(translist)):
-        for j in  range(len(translist[i])):
-            s+='  <arc id=\"8%d\"'%(idtrans[i][j])+' arcType=\"arc\" source=\"6%d\" ' %(idtrans[i][j]) + 'target=\"1%d\" '%(translist[i][j][4][0][0])+'>\n';
-            s+='    <attribute name=\"valuation\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\">1</attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='  </arc>\n'
+            s+=printGRML_OneArc('4%d'%(idtrans[i][j]) , '1%d' %i, '3%d' %(idtrans[i][j]));
+            s+=printGRML_OneArc('5%d'%(idtrans[i][j]) , '3%d' %(idtrans[i][j]), '2%d' %(idtrans[i][j]));
+            s+=printGRML_OneArc('7%d'%(idtrans[i][j]) , '2%d' %(idtrans[i][j]), '6%d' %(idtrans[i][j]));
+            s+=printGRML_OneArc('8%d'%(idtrans[i][j]) , '6%d' %(idtrans[i][j]), '1%d' %(translist[i][j][4][0][0]));
+            if ( finstate[translist[i][j][4][0][0]]) :
+                s+=printGRML_OneArc('8%d'%(idtrans[i][j]) , '6%d' %(idtrans[i][j]), '9');
     return(s);
 
+    
 def printGRML_place(translist):
     s="";
+    s+= printGRML_OnePlace('9','TargetState',0);
     for i in range(len(translist)):
-        s+='  <node id=\"1%d\" ' %i +' nodeType=\"place\">\n';
-        s+='    <attribute name=\"name\">s_%d_' %i + ' </attribute>\n';
-        s+='    <attribute name=\"marking\"><attribute name=\"expr\">\n';
-        s+='      <attribute name=\"numValue\">%d '%(i==0)+' </attribute>\n';
-        s+='    </attribute></attribute>\n';
-        s+='  </node>\n';
+        s+= printGRML_OnePlace('1%d' %i,'s_%d_' %i, (i==0) );
         for j in  range(len(translist[i])):
-            s+='  <node id=\"2%d\" ' %(idtrans[i][j]) +' nodeType=\"place\">\n';
-            s+='    <attribute name=\"name\">s_%d' %i +'_%d' %j +'</attribute>\n';
-            s+='    <attribute name=\"marking\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\"> 0 </attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='  </node>\n';
+            s+= printGRML_OnePlace('2%d' %(idtrans[i][j]),'s_%d' %i +'_%d' %j, 0 );
     return(s);
 
 def printGRML_transition(translist,quadriple,isIsotropic):
@@ -344,3 +343,8 @@ fichier=open(outpath,"w");
 fichier.write(toCOSMOS(lastone,isIsotropic));
 fichier.close();
 print ("output written in "+outpath) ;
+
+if(not isIsotropic):
+    fichier=open("Iso_"+outpath,"w");
+    fichier.write(toCOSMOS(lastone,true));
+    fichier.close();
