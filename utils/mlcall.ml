@@ -11,9 +11,7 @@ let uni f =
 	      v := Some v2;
 	      v2
       
-	
 exception CmdFail of int
-
 
 let cosmos_options = ref ( 
   try
@@ -300,6 +298,8 @@ let csv = uni (fun () -> open_out_gen [Open_wronly; Open_creat; Open_append] 0o6
 
 let execSavedCosmos ?(prefix=false) x = execSavedCosmos_free prefix (rf ()) (csv ()) x
 
+let printHeadCsv () = 
+  print_header (csv ()) ",";;
 
 let producelog resultFile =
   let rf = open_in resultFile in (
