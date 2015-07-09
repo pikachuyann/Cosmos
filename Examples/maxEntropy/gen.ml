@@ -56,10 +56,20 @@ Edges={
   execSavedCosmos ~prefix:false (name^"_iso",name^".grml",name^".lha"," --njob 2 --max-run 20000 --batch 1000");;
   
 (*
+ First Table *)
 timeConflict "first3_1_3" 3 1 3;;
 timeConflict "first4_1_4" 4 1 4;;
 timeConflict "first5_1_5" 5 1 5;;
 timeConflict "first6_1_6" 6 1 6;;
-timeConflict "first7_1_7" 7 1 7;;*)
+timeConflict "first7_1_7" 7 1 7;;
 timeConflict "first8_1_8" 8 1 8;;
 timeConflict "first9_1_9" 9 1 9;;
+timeConflict "first10_1_10" 10 1 10;;
+timeConflict "first11_1_11" 11 1 11;;
+timeConflict "first12_1_12" 12 1 12;;
+timeConflict "first13_1_13" 13 1 13;;
+
+(*
+(* Second Table *)
+timeConflict "second3_2_3" 3 2 3;;
+*)
