@@ -63,7 +63,7 @@ def toDisjointSet(list,m):
 
 yy=[[toDisjointSet(redcoord[i],cardclocks+1).find(j) for j in range(1,cardclocks+1)] for i in range(len(redcoord))];
 
-#Two next function two change coefficient of translist to R 
+#Two next function too change coefficient of translist to R 
 def tominiedge(miniedge,R):
     miniedge[len(miniedge)-1]=R(miniedge[len(miniedge)-1])
     return();
