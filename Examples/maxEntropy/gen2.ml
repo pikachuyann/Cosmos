@@ -76,7 +76,6 @@ timeConflict "first13_1_13" 13 1 13;;
 *)
 
 (* Second Table *)
-(*for i = 2 to 8 do 
+for i = 2 to 5 do 
     timeConflict (Printf.sprintf "second%i_2_15" i) i 2 7;
-done;;*)
-
+done;
