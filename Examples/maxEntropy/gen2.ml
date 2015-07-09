@@ -16,12 +16,14 @@ module c1
 	x1: clock;
 
 	invariant
-		  ( state1<n => x1<1) 
+		  ( state1<n => x1<2) 
 		& ( state1=n => x1 < wt)
 	endinvariant
 
-	[] state1<n & x1<1 -> 1.0 : (state1'=state1+1);
-	[] state1<n & x1<1 -> 1.0 : (state1'=1);
+	[] state1<n-1 & x1<2 -> 1.0 : (state1'=state1+1);
+	[] state1=n-1 & x1<1 -> 1.0 : (state1'=n);
+	[] state1=n-1 & x1>1 & x1<2  -> 1.0 : (state1'=1)&(x1'=0);	
+	[] state1<n & x1<2 -> 1.0 : (state1'=1);
 	[] state1=n & x1<wt -> 1.0 : (state1'=1)&(x1'=0);
 endmodule\n" nbstate;
   let target = ref ("state1="^(string_of_int nbstate)) in
@@ -57,12 +59,11 @@ Edges={
 (*  ignore (Sys.command (Printf.sprintf "sage script_tocosmos.sage %s.prism %s.grml 1 -isotropic \".*(%s).*\"" name name !target)); *)
   execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^".grml",name^".lha"," --njob 2 --max-run 20000 --gppflags \"-O0\" --batch 0");;
   
-
 printHeadCsv ();;
-(*
+
 (* First Table *)
-timeConflict "first3_1_3" 3 1 13;;
-timeConflict "first4_1_4" 4 1 13;;
+timeConflict "firstbis5_1_10" 5 1 10;;
+(*timeConflict "first4_1_4" 4 1 13;;
 timeConflict "first5_1_5" 5 1 13;;
 timeConflict "first6_1_6" 6 1 13;;
 timeConflict "first7_1_7" 7 1 13;;
@@ -75,6 +76,7 @@ timeConflict "first13_1_13" 13 1 13;;
 *)
 
 (* Second Table *)
-for i = 2 to 8 do 
+(*for i = 2 to 8 do 
     timeConflict (Printf.sprintf "second%i_2_15" i) i 2 7;
-done;;
+done;;*)
+

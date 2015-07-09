@@ -6,7 +6,7 @@ import sys
 import os
 import re
 
-prismpath="~/Documents/prism-ptasmc/prism/bin/prism";
+prismpath="prism";
 
 sagepath,ext = os.path.splitext(str(sys.argv[_sage_const_1 ]));
 outpath=sagepath+'.grml';
@@ -65,7 +65,7 @@ def toDisjointSet(list,m):
 
 yy=[[toDisjointSet(redcoord[i],cardclocks+_sage_const_1 ).find(j) for j in range(_sage_const_1 ,cardclocks+_sage_const_1 )] for i in range(len(redcoord))];
 
-#Two next function two change coefficient of translist to R 
+#Two next function too change coefficient of translist to R 
 def tominiedge(miniedge,R):
     miniedge[len(miniedge)-_sage_const_1 ]=R(miniedge[len(miniedge)-_sage_const_1 ])
     return();
