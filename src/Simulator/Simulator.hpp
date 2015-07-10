@@ -127,7 +127,7 @@ protected:
 	 */
 	virtual void SimulateSinglePath();
 
-    void printLog();
+    void printLog(double);
 
 	void interactiveSimulation(); //!Wait for the user to choose the next transition
     double minInteractiveTime;
