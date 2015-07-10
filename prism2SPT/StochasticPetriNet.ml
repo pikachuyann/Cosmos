@@ -35,11 +35,8 @@ open Net
 (* Print as a prism CTMC model*)
 let print_prism_module fpath net =
   let f = open_out fpath in
-  
   Printf.fprintf f "ctmc\nconst double imm=100000;\n";
- 
   Printf.fprintf f "module m1\n";
-
   Data.iter (fun (n,x) ->
     Printf.fprintf f "\t%s: [%i..%i] init %a;\n" n 0 2 printH_expr x;
   ) net.place;
