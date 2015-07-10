@@ -72,13 +72,13 @@ void Simulator::logTrace(const char* path,double sample){
 	logtrace << endl;
 }
 
-void Simulator::printLog(){
+void Simulator::printLog(double eTime){
     if(logtrace.is_open())
         if((A.CurrentTime - lastSampled) >= sampleTrace){
             lastSampled = A.CurrentTime;
             logtrace <<setw(9)<<left<<setprecision(8)<< A.CurrentTime << "  ";
             logtrace << right;
-            N.Marking.print(logtrace);
+            N.Marking.print(logtrace,eTime);
             A.printState(logtrace);
             logtrace << endl;
         }
@@ -334,15 +334,16 @@ bool Simulator::SimulateOneStep(){
         //of the transition of the Petri net.
 		while (E1.time >= AE.FiringTime) {
             //cerr << "looping on autonomous edge";
-			A.updateLHA(AE.FiringTime - A.CurrentTime, N.Marking);
-            printLog();
+            double eTime = AE.FiringTime - A.CurrentTime;
+			A.updateLHA(eTime , N.Marking);
+            printLog(eTime);
 			A.fireLHA(AE.Index,N.Marking, dummyBinding);
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				A.printState(cerr);
 				cerr << endl;
 			}
-			printLog();
+			printLog(eTime);
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
@@ -354,10 +355,11 @@ bool Simulator::SimulateOneStep(){
 		}
 		
 		//Make time elapse in the LHA
-		A.updateLHA( E1.time - A.CurrentTime, N.Marking );
+        double eTime = E1.time - A.CurrentTime;
+		A.updateLHA( eTime, N.Marking );
 		
 		//Print the state of the system after the time elapse
-        printLog();
+        printLog(eTime);
 		
 		//Fire the transition in the SPN
 		N.fire(E1.transition, E1.binding, A.CurrentTime);
@@ -474,14 +476,14 @@ void Simulator::SimulateSinglePath() {
 	lastSampled = -sampleTrace;
 	while (continueb) {
         //cerr << "continue path"<< endl;
-        printLog();
+        printLog(0.0);
 		if(verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation
 			N.Marking.printHeader(cerr);
 			A.printHeader(cerr);
 			cerr << endl;
-			N.Marking.print(cerr);
+			N.Marking.print(cerr,0.0);
 			A.printState(cerr);
 			cerr << endl;
 			if(verbose>4)EQ->view(N.Transition);
@@ -496,7 +498,7 @@ void Simulator::SimulateSinglePath() {
         N.Marking.printHeader(cerr);
         A.printHeader(cerr);
         cerr << endl;
-        N.Marking.print(cerr);
+        N.Marking.print(cerr,0.0);
         A.printState(cerr);
         cerr << endl;
         if(verbose>4)EQ->view(N.Transition);

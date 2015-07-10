@@ -208,7 +208,7 @@ void SimulatorRE::SimulateSinglePath() {
         //cerr << "continue path"<< endl;
 		if(logtrace.is_open()){
 			logtrace << A.CurrentTime << "\t";
-			N.Marking.print(logtrace);
+			N.Marking.print(logtrace,0.0);
 			A.printState(logtrace);
 			logtrace << endl;
 		}
@@ -218,7 +218,7 @@ void SimulatorRE::SimulateSinglePath() {
 			N.Marking.printHeader(cerr);
 			A.printHeader(cerr);
 			cerr << endl;
-			N.Marking.print(cerr);
+			N.Marking.print(cerr,0.0);
 			A.printState(cerr);
 			cerr << endl;
 			if(verbose>4)EQ->view(N.Transition);
@@ -260,7 +260,7 @@ double SimulatorRE::mu(){
         cerr << ") ->" << i << endl;
 		N.Marking.printHeader(cerr);
 		cerr << endl;
-		N.Marking.print(cerr);
+		N.Marking.print(cerr,0.0);
 		cerr << endl;
 		N.print_state(vect);
         if(i<0)exit(EXIT_FAILURE);

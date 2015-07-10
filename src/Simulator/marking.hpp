@@ -49,7 +49,7 @@ public:
 	//! Swap marking in constant time
 	void swap(abstractMarking& m);
 	void printHeader(std::ostream &)const;
-	void print(std::ostream &)const;
+	void print(std::ostream &, double eTime)const;
     void printSedCmd(std::ostream &)const;
 	void resetToInitMarking();
 	int getNbOfTokens(int)const;

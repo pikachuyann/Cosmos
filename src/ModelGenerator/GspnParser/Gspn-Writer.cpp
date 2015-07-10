@@ -791,7 +791,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
         SpnCppFile << "}\n";
         SpnCppFile << "\n";
 
-        SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
+        SpnCppFile << "void abstractMarking::print(ostream &s,double eTime)const{\n";
         if(P.StringInSpnLHA){
             //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
             for(const auto &plit : plitcp)
@@ -806,7 +806,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
                 if(v.isTraced){
                 SpnCppFile << "s << ";
                 SpnCppFile << " setw(" << maxNameSize-1 << ") ";
-                SpnCppFile << " << hybridVar::"<< v.name  <<"<<\" \";"<<endl;
+                SpnCppFile << " << hybridVar::"<< v.name  <<"+ eTime <<\" \";"<<endl;
             }
         }
         SpnCppFile << "}\n";

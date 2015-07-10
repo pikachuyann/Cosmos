@@ -228,7 +228,7 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 		
 		if(verbose>3){
 			N.Marking.printHeader(cerr);cerr << endl;
-			N.Marking.print(cerr);cerr << endl;
+			N.Marking.print(cerr,0.0);cerr << endl;
 			vector<int> vect (numSolv->S.begin()->first->size(),0);
 			N.lumpingFun(N.Marking,vect);
 			N.print_state(vect);
