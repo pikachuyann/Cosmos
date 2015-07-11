@@ -47,8 +47,9 @@ let parse_expr s name =
 		  let ei = begin match dist,fl with
 		      ("EXPONENTIAL",[f]) -> StochasticPetriNet.Exp(f)
 		    | ("IMMEDIATE",[]) -> StochasticPetriNet.Imm
+		    | ("IMDT",[]) -> StochasticPetriNet.Imm
 		    | ("DETERMINISTIC",[f]) -> StochasticPetriNet.Det(f)
-		    | _ -> failwith "ill define distribution"
+		    | _ -> failwith ("ill define distribution"^dist)
 		  end in
 		  Printf.fprintf stdout "#%a#%a#" StochPTPrinter.printH_distr ei 
 		    StochPTPrinter.print_distr ei
@@ -63,11 +64,12 @@ let parse_expr s name =
 	  | Parsing.Parse_error ->
 	    Printf.printf "%a: Parsing error: unexpected token:'%s'\n"
 	      print_position lexbuf (lexeme lexbuf);
+	  | Failure x -> print_endline x
       end;
       print_newline();
     done;
   with
-      _ ->exit 0;;
+  | End_of_file ->exit 0;;
 
 allInt:=true;;
 
