@@ -105,7 +105,9 @@ let parse_distr at =
 	match dist,larg with
 	    (Some "EXPONENTIAL",[_,f]) -> StochasticPetriNet.Exp(f)
 	  | (Some "IMMEDIATE",[]) -> Imm
+	  | (Some "IMDT",[]) -> Imm
 	  | (Some "DETERMINISTIC",[_,f]) -> Det(f)
+	  | (Some x,_) -> failwith ("Unknown distribution"^x)
 	  | _ -> failwith "ill define distribution"
       end
     | _ -> failwith "ill define distribution"
