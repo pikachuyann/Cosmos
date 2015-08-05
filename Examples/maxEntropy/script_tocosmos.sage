@@ -5,7 +5,7 @@ import os
 import re
 
 
-prismpath="~/Documents/prism-ptasmc/prism/bin/prism";
+prismpath="prism";
 
 
 sagepath,ext = os.path.splitext(str(sys.argv[1]));
@@ -232,34 +232,56 @@ def printGRML_OnePlace(id,name,marking):
     s+='  </node>\n';
     return(s);
 
-    
+idalpha=dict((alphabet[i],i) for i in range(len(alphabet)));
+
 def printGRML_arc(translist):
     s="";
+    for i in range(len(alphabet)):
+        s+=printGRML_OneArc('22%d' %i, '20%d' %i, '21%d' %i);
     for i in range(len(translist)):
-        for j in  range(len(translist[i])):
-            s+=printGRML_OneArc('4%d'%(idtrans[i][j]) , '1%d' %i, '3%d' %(idtrans[i][j]));
-            s+=printGRML_OneArc('5%d'%(idtrans[i][j]) , '3%d' %(idtrans[i][j]), '2%d' %(idtrans[i][j]));
-            s+=printGRML_OneArc('7%d'%(idtrans[i][j]) , '2%d' %(idtrans[i][j]), '6%d' %(idtrans[i][j]));
-            s+=printGRML_OneArc('8%d'%(idtrans[i][j]) , '6%d' %(idtrans[i][j]), '1%d' %(translist[i][j][4][0][0]));
+        for j in range(len(translist[i])):
+            action=idalpha[translist[i][j][5]];
+            s+=printGRML_OneArc('14%d'%(idtrans[i][j]) , '11%d' %i, '13%d' %(idtrans[i][j]));
+            s+=printGRML_OneArc('15%d'%(idtrans[i][j]) , '13%d' %(idtrans[i][j]), '12%d' %(idtrans[i][j]));
+            s+=printGRML_OneArc('17%d'%(idtrans[i][j]) , '12%d' %(idtrans[i][j]), '16%d' %(idtrans[i][j]));
+            s+=printGRML_OneArc('18%d'%(idtrans[i][j]) , '16%d' %(idtrans[i][j]), '11%d' %(translist[i][j][4][0][0]));
+            s+=printGRML_OneArc('23%d' %(idtrans[i][j]), '13%d' %(idtrans[i][j]), '20%d' %action);
             if ( finstate[translist[i][j][4][0][0]]) :
-                s+=printGRML_OneArc('8%d'%(idtrans[i][j]) , '6%d' %(idtrans[i][j]), '9');
+                s+=printGRML_OneArc('18%d'%(idtrans[i][j]) , '16%d' %(idtrans[i][j]), '19');
     return(s);
 
     
 def printGRML_place(translist):
     s="";
-    s+= printGRML_OnePlace('9','TargetState',0);
+    s+= printGRML_OnePlace('19','TargetState',0);
     for i in range(len(translist)):
-        s+= printGRML_OnePlace('1%d' %i,'s_%d_' %i, (i==0) );
+        s+= printGRML_OnePlace('11%d' %i,'s_%d_' %i, (i==0) );
         for j in  range(len(translist[i])):
-            s+= printGRML_OnePlace('2%d' %(idtrans[i][j]),'s_%d' %i +'_%d' %j, 0 );
+            s+= printGRML_OnePlace('12%d' %(idtrans[i][j]),'s_%d' %i +'_%d' %j, 0 );
+    for i in range(len(alphabet)):
+        s+= printGRML_OnePlace('20%d' %i,'s_%s_' %(alphabet[i]), 0);
     return(s);
 
 def printGRML_transition(translist,quadriple,isIsotropic):
     s="";
+    for i in range(len(alphabet)):
+        s+='  <node id=\"21%d\" ' %i +' nodeType=\"transition\">\n';
+        s+='    <attribute name=\"name\">t_%s' %(alphabet[i]) +'</attribute>\n';
+        s+='    <attribute name=\"distribution\">\n';
+        s+='      <attribute name=\"type\">\n';
+        s+='      IMDT\n';
+        s+='      </attribute>\n'
+        s+='    </attribute>\n';
+        s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
+        s+='    <attribute name=\"numValue\"> 2.000000 </attribute>\n';
+        s+='    </attribute></attribute>\n';
+        s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
+        s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
+        s+='    </attribute></attribute>\n';
+        s+='  </node>\n';
     for i in range(len(translist)):
         for j in  range(len(translist[i])):
-            s+='  <node id=\"3%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
+            s+='  <node id=\"13%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
             s+='    <attribute name=\"name\">t_%d' %i +'_%d' %j +'</attribute>\n';
             s+='    <attribute name=\"distribution\">\n';
             s+='      <attribute name=\"type\">\n';
@@ -278,7 +300,7 @@ def printGRML_transition(translist,quadriple,isIsotropic):
             s+='  </node>\n';
     for i in range(len(translist)):
         for j in  range(len(translist[i])):
-            s+='  <node id=\"6%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
+            s+='  <node id=\"16%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
             s+='    <attribute name=\"name\">tt_%d' %i +'_%d' %j +'</attribute>\n';
             s+='    <attribute name=\"distribution\">\n';
             s+='      <attribute name=\"type\">\n' ;
