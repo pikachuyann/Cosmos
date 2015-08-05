@@ -113,6 +113,7 @@
 
 %token <name>     MIN
 %token <name>     MAX
+%token <name>     MOD
 
 %token <name>     LhaMIN
 %token <name>     LhaMAX
@@ -234,6 +235,7 @@ ival {sprintf($$,"%i",$1);}
 | FLOOR LB IntMarkingFormula DIV IntMarkingFormula RB {sprintf($$,"floor( %s /double(%s))", $3,$5);  }
 | MIN LB IntMarkingFormula COMMA IntMarkingFormula RB {sprintf($$,"min(%s , %s)", $3, $5);  }
 | MAX LB IntMarkingFormula COMMA IntMarkingFormula RB {sprintf($$,"max(%s , %s)", $3, $5);  };
+| MOD LB IntMarkingFormula COMMA IntMarkingFormula RB {sprintf($$,"((int)%s %% (int)%s)", $3, $5);  };
 
 
 RealMarkingFormula:  rval {sprintf($$, "%f",$1);}
@@ -289,6 +291,13 @@ RealVarMarkingFormula:  rval {sprintf($$, "%f",$1);}
 		}
 	}
 }
+| str LSB IntMarkingFormula RSB {
+    size_t varin = Reader.MyLha.Vars.find(*$1);
+    if(varin != Reader.MyLha.Vars.label.size()){
+        sprintf($$, "Vars->%s[%s]", $1->c_str(),$3);
+    }
+        else {cout<<"'"<<*$1<<"' is not an lha array variable"<<endl;YYABORT;}
+    }
 | str LSB ColorClassList RSB {
 	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
 	{std::ostringstream s;
@@ -360,9 +369,6 @@ VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
 
 	for(const auto &it : Reader.MyLha.TransitionIndex)
 		PetriTransitions.insert(it.first);
-	
-	
-
 };
 
 VLabels : str {

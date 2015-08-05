@@ -5,6 +5,8 @@
 # include <string>
 # include "Lha-Reader.hpp"
 
+#pragma clang diagnostic ignored "-Wdeprecated-register"
+
 # undef yywrap
 # define yywrap() 1
 
@@ -145,6 +147,9 @@ blank [ \t]
 
 "max" {lhalval->name = new std::string (lhatext); return token::MAX;
             Reader.error (*lhalloc, "max expected");}
+
+"mod" {lhalval->name = new std::string (lhatext); return token::MOD;
+Reader.error (*lhalloc, "mod expected");}
 
 "TRUE" {lhalval->name = new std::string (lhatext); return token::TRUE;
             Reader.error (*lhalloc, "TRUE expected");}
