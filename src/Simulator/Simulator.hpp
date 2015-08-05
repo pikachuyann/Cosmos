@@ -47,7 +47,8 @@
 
 class Simulator:public timeGen {
 public:
-	Simulator();
+	Simulator(LHA&);
+    //Simulator();
 	~Simulator();
 	
 	//! verbose level of the simulator
@@ -105,7 +106,7 @@ protected:
 	
     
 	SPN N; //!The object representing the SPN
-	LHA A; //!The object representing the LHA
+	LHA &A; //!The object representing the LHA
 	
     
     /**

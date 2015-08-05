@@ -202,6 +202,10 @@ Reader.error (*lhalloc, "NOTALLS expected");}
 "DISC" {lhalval->name = new std::string (lhatext); return token::DISC;
 	Reader.error (*lhalloc, "DISC expected");}
 
+"NOTDETERMINISTIC" {lhalval->name = new std::string (lhatext); return token::NOTDET;
+Reader.error (*lhalloc, "NOTDETERMINISTIC expected");}
+
+
 {INT}      {
   errno = 0; 
   int x=atoi(lhatext);
