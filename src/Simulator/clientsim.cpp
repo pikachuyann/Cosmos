@@ -62,7 +62,15 @@ int main(int argc, char** argv) {
 
 	signal(SIGINT, SIG_IGN);
     signal(SIGHUP, signalHandler);
-	
+
+    LHA* Aptr;
+    if(IsLHADeterministic){
+        Aptr = new LHA();
+    }else{
+        Aptr = new NLHA();
+    }
+    LHA& A = *Aptr;
+
 	Simulator* mySim;
 	
 	string str;
@@ -72,17 +80,17 @@ int main(int argc, char** argv) {
 		
 		str = argv[optioni];
 		if(str== "-RE"){
-			SimulatorRE* myRESim= new SimulatorRE(false);
+			SimulatorRE* myRESim= new SimulatorRE(A,false);
 			myRESim->initVect();
 			mySim=myRESim;
 		}else if(str== "-RE2"){
-			SimulatorRE* myRESim= (new SimulatorRE(true));
+			SimulatorRE* myRESim= (new SimulatorRE(A,true));
 			myRESim->initVect();
 			mySim = myRESim;
 		}else if(str== "-BURE"){
             int m = atoi(argv[optioni+1]);
             int T = atoi(argv[optioni+2]);
-            SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(m);
+            SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(A,m);
             myBoundedSim->initVect(T);
 			mySim= myBoundedSim;
 		}else if(str== "-COBURE"){
@@ -90,7 +98,7 @@ int main(int argc, char** argv) {
             double t = atof(argv[optioni+2]);
             double e = atof(argv[optioni+3]);
 			int stepc = atoi(argv[optioni+4]);
-            SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(m,e,stepc);
+            SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(A,m,e,stepc);
             myBoundedSim->initVectCo(t);
 			mySim= myBoundedSim;
 		}else if(str== "-STSPBU"){
@@ -126,10 +134,10 @@ int main(int argc, char** argv) {
 			ResultsFile << " , " << prResult*1.00001 << "]" << endl;
 			ResultsFile.close();*/
 			exit(EXIT_SUCCESS);
-		} else mySim= (new Simulator);
+		} else mySim= (new Simulator(A));
 		
     } else {
-		mySim= (new Simulator);
+		mySim= new Simulator(A);
 	}
 	
 	for(int i=1; i<argc ;i++){

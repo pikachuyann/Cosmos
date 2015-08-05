@@ -126,6 +126,8 @@
 %token <name>	  MEAN
 %token <name>	  DISC
 
+%token <name>     NOTDET
+
 %token <name>     LhaName
 
 %token <name>     Const
@@ -184,12 +186,13 @@
 %start LHA;
 
 LHA: 
-	declarations InitFinal definitions
+| NOTDET declarations InitFinal definitions {Reader.MyLha.isDeterministic=false;}
+    | declarations InitFinal definitions
 	| HaslExps;
 
-declarations:  Sizes Constants Lists HaslExps
-| Sizes  Lists HaslExps ;
-
+declarations:
+    | Sizes Constants Lists HaslExps
+| Sizes  Lists HaslExps;
 
 
 

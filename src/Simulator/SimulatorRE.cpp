@@ -37,13 +37,14 @@
 
 using namespace std;
 
-SimulatorRE::SimulatorRE(bool b) {
+SimulatorRE::SimulatorRE(LHA& A,bool b):Simulator(A) {
 	rareEventEnabled = false;
 	doubleIS_mode=b;
 }
 
-SimulatorRE::SimulatorRE(){
-	SimulatorRE(false);
+SimulatorRE::SimulatorRE(LHA& A):Simulator(A) {
+    rareEventEnabled = false;
+    doubleIS_mode=false;
 }
 
 void SimulatorRE::initVect(){

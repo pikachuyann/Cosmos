@@ -41,7 +41,7 @@
 
 using namespace std;
 
-LhaType::LhaType(GspnType& Mspn) : MyGspn(&Mspn),NbLoc(0) {
+LhaType::LhaType(GspnType& Mspn) : MyGspn(&Mspn),NbLoc(0),isDeterministic(true) {
 	for (auto it= MyGspn->IntConstant.begin(); it!= MyGspn->IntConstant.end() ; ++it){
 		LhaRealConstant[it->first]=it->second;
 		LhaIntConstant[it->first]=it->second;
@@ -661,6 +661,8 @@ void Lha_Reader::WriteFile(parameters& P) {
 		}
 	}
 	LhaCppFile << "}\n" << endl;
+
+    LhaCppFile << "bool IsLHADeterministic = "<< MyLha.isDeterministic<< ";";
 
     LhaCppFile << "fullState::fullState():loc(0){\n\tvar= new Variables;\n}\n" << endl;
     LhaCppFile << "fullState::fullState(int l,const Variables &v):loc(l){\n\tvar= new Variables(v);\n}\n" << endl;
