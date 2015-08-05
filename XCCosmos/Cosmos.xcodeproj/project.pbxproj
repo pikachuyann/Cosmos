@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0315F53A1B7215E600DA8EDA /* NLHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0315F5381B7215E600DA8EDA /* NLHA.cpp */; };
+		0315F53B1B7215E600DA8EDA /* NLHA.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0315F5391B7215E600DA8EDA /* NLHA.hpp */; };
 		032A7067181BC0D6006D7332 /* casesWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7008181BC0D6006D7332 /* casesWriter.cpp */; };
 		032A7068181BC0D6006D7332 /* Cosmos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A700A181BC0D6006D7332 /* Cosmos.cpp */; };
 		032A706C181BC0D6006D7332 /* Eval.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7012181BC0D6006D7332 /* Eval.cpp */; };
@@ -213,6 +215,8 @@
 		03088AEA1A0422C0006BCB27 /* pnmlparser.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = pnmlparser.ml; sourceTree = "<group>"; };
 		03088AEB1A0422C0006BCB27 /* StochasticPetriNet.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = StochasticPetriNet.ml; sourceTree = "<group>"; };
 		03088AEC1A0422C0006BCB27 /* type.ml */ = {isa = PBXFileReference; lastKnownFileType = text; path = type.ml; sourceTree = "<group>"; };
+		0315F5381B7215E600DA8EDA /* NLHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NLHA.cpp; sourceTree = "<group>"; };
+		0315F5391B7215E600DA8EDA /* NLHA.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = NLHA.hpp; sourceTree = "<group>"; };
 		032573981A9652F600974A89 /* magicLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = magicLight.hpp; sourceTree = "<group>"; };
 		032573991A96530800974A89 /* markingImplLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = markingImplLight.hpp; sourceTree = "<group>"; };
 		032A7006181BC0D6006D7332 /* maindoc.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = maindoc.md; sourceTree = "<group>"; };
@@ -1266,6 +1270,8 @@
 				032A7045181BC0D6006D7332 /* EventsQueue.hpp */,
 				032A7049181BC0D6006D7332 /* LHA.hpp */,
 				032A704A181BC0D6006D7332 /* LHA_orig.cpp */,
+				0315F5381B7215E600DA8EDA /* NLHA.cpp */,
+				0315F5391B7215E600DA8EDA /* NLHA.hpp */,
 				032A7062181BC0D6006D7332 /* spn.hpp */,
 				032A7050181BC0D6006D7332 /* marking.hpp */,
 				032A7052181BC0D6006D7332 /* numericalSolver.cpp */,
@@ -3102,6 +3108,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0315F53B1B7215E600DA8EDA /* NLHA.hpp in Headers */,
 				BC956BC61AA0875F00AB8BD1 /* SocketPort.h in Headers */,
 				BCD7DA281A8D207E001A2D80 /* Print.h in Headers */,
 				0365553B18292D10001B5947 /* foxglynn.hpp in Headers */,
@@ -3308,6 +3315,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0315F53A1B7215E600DA8EDA /* NLHA.cpp in Sources */,
 				0365553A18292D10001B5947 /* foxglynn.cpp in Sources */,
 				03E39B0F183E49D30070911A /* BatchR.cpp in Sources */,
 				03E39B11183E49D80070911A /* EventsQueue.cpp in Sources */,

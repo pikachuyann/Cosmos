@@ -72,7 +72,7 @@ void LHA::setInitLocation(const abstractMarking& Marking) {
  * @param NextMarking, The marking in with the Petri net will be after the transition.
  * @return an index of synchronized edge or -1 if there is no suitable synchronized edge.
  */
-int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding)const {
+int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
     const size_t mult = NbLoc*NbTrans;
 	for (int i =1 ; i <= LHA::ActionEdgesAr[NbTrans*CurrentLocation+ PetriNetTransition]; i++){
         //cerr << i << endl;

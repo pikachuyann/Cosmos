@@ -254,6 +254,8 @@ double userDefineLowerBound(const std::vector<double> &param);
 double userDefineUpperBound(const std::vector<double> &param);
 double userDefineDiscreteDistr(const std::vector<double> &param,unsigned int i);
 
-
+#pragma clang diagnostic ignored "-Wunused-variable"
+#pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma clang diagnostic ignored "-Wreturn-type"
 
 #endif  /* _SPN_HPP */
