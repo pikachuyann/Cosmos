@@ -72,7 +72,8 @@ struct LhaType {
     
 	string label;
     size_t NbLoc; // number of locations
-	
+    bool isDeterministic;
+
     set <unsigned int, less<unsigned int> > InitLoc; // initial locations
     set <unsigned int, less<unsigned int> > FinalLoc; // final locations
 	

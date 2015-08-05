@@ -83,6 +83,8 @@ bool varOrder(const Variables &,const Variables &);
 
 t_interval GetEdgeEnablingTime(int,const abstractMarking&);
 
+extern bool IsLHADeterministic;
+
 /**
  * Class implementing the Linear Hybrid Automaton.
  * Part of the implementation is generated at runtime for efficiency.

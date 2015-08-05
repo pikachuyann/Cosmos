@@ -1,3 +1,5 @@
+NOTDETERMINISTIC
+
 const int bo = 14;
 
 VariablesList = {time,DISC countT, DISC index, DISC varTab[14], DISC diff} ;

@@ -32,7 +32,7 @@
 
 using namespace std;
 
-SimulatorBoundedRE::SimulatorBoundedRE(int m){
+SimulatorBoundedRE::SimulatorBoundedRE(LHA& A,int m):SimulatorRE(A){
     switch (m) {
         case 1:
             numSolv = new numericalSolver();

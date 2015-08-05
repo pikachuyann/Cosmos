@@ -42,7 +42,7 @@ using namespace std;
  * Constructor for the Simulator initialize the event queue
  * but don't fill it.
  */
-Simulator::Simulator():verbose(0){
+Simulator::Simulator(LHA& automate):verbose(0),A(automate){
 	EQ = new EventsQueue(N); //initialization of the event queue
 	logResult=false;
 	sampleTrace = 0.0;
@@ -50,6 +50,16 @@ Simulator::Simulator():verbose(0){
 	BatchSize = 1000;
     minInteractiveTime = 0.0;
 }
+
+
+/*Simulator::Simulator():verbose(0)){
+    EQ = new EventsQueue(N); //initialization of the event queue
+    logResult=false;
+    sampleTrace = 0.0;
+    Result.second.resize(A.FormulaVal.size());
+    BatchSize = 1000;
+    minInteractiveTime = 0.0;
+}*/
 
 Simulator::~Simulator() {
   delete EQ;

@@ -90,7 +90,7 @@ public:
 class SimulatorBoundedRE: public SimulatorRE{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedRE(int m);
+    SimulatorBoundedRE(LHA&,int m);
 	BatchR RunBatch() override;
 	using SimulatorRE::initVect;
     virtual void initVect(int T);
