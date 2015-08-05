@@ -6,6 +6,7 @@
 # include "Gspn-Reader.hpp"
 //# include "Gspn-parser.tab.hh"
 
+#pragma clang diagnostic ignored "-Wdeprecated-register"
 
 # undef yywrap
 # define yywrap() 1

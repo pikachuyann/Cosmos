@@ -323,8 +323,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->type = Timed;
   trans->dist.name = distrib;
   for(auto &s:Par)trans->dist.Param.push_back(expr(s));
-  trans->priority = $6;
-  trans->weight = $8;
+  trans->priority = *$6;
+  trans->weight = *$8;
   trans->singleService = true;
   trans->markingDependant = false;
   trans->ageMemory = false;
@@ -347,8 +347,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->type = Timed;
   trans->dist.name = distrib;
   for(auto &s:Par)trans->dist.Param.push_back(expr(s));
-  trans->priority = $6;
-  trans->weight = $8;
+  trans->priority = *$6;
+  trans->weight = *$8;
   trans->singleService = true;
   trans->markingDependant = false;
   trans->ageMemory = AgeMemory;
@@ -387,8 +387,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->type = Timed;
   trans->dist.name = "EXPONENTIAL";
   for(auto &s:v)trans->dist.Param.push_back(expr(s));
-  trans->priority = $9;
-  trans->weight = $11;
+  trans->priority = *$9;
+  trans->weight = *$11;
   trans->singleService = SingleService;
   trans->markingDependant = MarkingDependent;
   trans->ageMemory = false;
@@ -429,8 +429,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->type = Timed;
   trans->dist.name = "EXPONENTIAL";
   for(auto &s:v)trans->dist.Param.push_back(expr(s));
-  trans->priority = $9;
-  trans->weight = $11;
+  trans->priority = *$9;
+  trans->weight = *$11;
   trans->singleService = SingleService;
   trans->markingDependant = MarkingDependent;
   trans->ageMemory = AgeMemory;
@@ -455,8 +455,8 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->label = $2->c_str();
   trans->type = unTimed;
   trans->dist.name = "IMMEDIATE";
-  trans->priority = $6;
-  trans->weight = $8;
+  trans->priority = *$6;
+  trans->weight = *$8;
   trans->singleService = true;
   trans->markingDependant = false;
   trans->ageMemory = false;

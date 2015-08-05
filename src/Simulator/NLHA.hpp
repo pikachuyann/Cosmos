@@ -20,78 +20,43 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file marking.cpp created by Benoit Barbot on 28/01/13.                      *
+ * file NLHA.hpp created by Benoit Barbot on 05/08/15.                         *
  *******************************************************************************
  */
 
-#ifndef Cosmos_marking_h
-#define Cosmos_marking_h
+#ifndef __Cosmos__NLHA__
+#define __Cosmos__NLHA__
 
-#define let const auto&
+#include <stdio.h>
+#include <set>
 
-#include <vector>
-#include <iostream>
+#include "LHA.hpp"
 
-class abstractMarkingImpl;
+class NLHA: public LHA {
 
-class abstractMarking {
+    std::set<fullState, std::less<fullState> > powerSet[2];
+    std::set<fullState, std::less<fullState> > *powerSetState;
+    int selectPS;
+
 public:
-	/**
-	 * Pointer to to the actual marking inmplementation
-	 * which is generated.
-	 */
-	abstractMarkingImpl* P;
-	
-	abstractMarking();
-	abstractMarking(const std::vector<int>& m);
-	abstractMarking(const abstractMarking& m);
-	abstractMarking& operator = (const abstractMarking& m);
-	~abstractMarking();
-	
-	//! Swap marking in constant time
-	void swap(abstractMarking& m);
-	void printHeader(std::ostream &)const;
-	void print(std::ostream &, double eTime)const;
-    void printSedCmd(std::ostream &)const;
-	void resetToInitMarking();
-	int getNbOfTokens(int)const;
-	std::vector<int> getVector()const;
-	void setVector(const std::vector<int>&);
-	
+    NLHA():powerSetState(&powerSet[0]),selectPS(0){};
+    virtual void updateLHA(double DeltaT, const abstractMarking &) override;
+    virtual int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&) override;
+    virtual AutEdge GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db)const override;
+
+    virtual void fireLHA(int,const abstractMarking&, const abstractBinding&) override;
+    virtual void printState(ostream&) override;
+    virtual bool isFinal()const override;
+    virtual void reset(const abstractMarking&) override;
+
+private:
+    virtual void setInitLocation(const abstractMarking& Marking) override;
+
+
 };
 
-struct markingEqState{
-	bool operator()(const abstractMarking &t1,const abstractMarking &t2) const;
-};
-
-struct markingHashState{
-	int operator()(const abstractMarking &t1) const;
-};
-
-class abstractBindingImpl;
-
-class abstractBinding {
-public:
-	abstractBindingImpl* P;
-	abstractBinding();
-	~abstractBinding();
-	abstractBinding(const abstractBinding& b);
-	abstractBinding& operator = (const abstractBinding& m);
-	
-	//! Nexte binding in the bindin list of the transition.
-	bool next();
-	//! Print in human readable format.
-	void print()const;
-	//! Transition to which the binding belong.
-	int transition()const;
-	//! Total number of binding in binding list.
-	int idTotal()const;
-	//! Identifier for this binding
-	int id()const;
-	int idcount;
-};
-
-inline bool contains(int i, int j){ return i>=j;}
 
 
-#endif
+
+
+#endif /* defined(__Cosmos__NLHA__) */

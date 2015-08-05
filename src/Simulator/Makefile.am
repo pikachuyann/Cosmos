@@ -8,6 +8,7 @@ libClientSim_la_SOURCES = \
 	timeGen.cpp timeGen.hpp \
 	marking.hpp spn.hpp \
 	LHA_orig.cpp LHA.hpp \
+    NLHA.cpp NLHA.hpp \
 	Simulator.cpp Simulator.hpp \
 	SimulatorRE.cpp SimulatorRE.hpp \
 	sparse_io.hpp \

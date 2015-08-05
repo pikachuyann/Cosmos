@@ -203,6 +203,18 @@ void Lha_Reader::WriteFile(parameters& P) {
 	}
 	LhaCppFile << "};\n";
 
+    LhaCppFile << "bool varOrder(const Variables &v1,const Variables &v2){\n";
+    for(size_t v =0 ; v< MyLha.Vars.type.size(); v++){
+        if(MyLha.Vars.type[v] == COLOR_VARIABLE){
+            LhaCppFile << "\tcerr << \"Not yet supported\";\n";
+        }else if(MyLha.Vars.type[v] == INT_INDEXED_DISC_ARRAY){
+            LhaCppFile << "\tfor(unsigned int i =0; i<" << MyLha.Vars.colorDomain[v] << ";i++)";
+            LhaCppFile << "if(v1."<<MyLha.Vars.label[v]<<"[i]<v2."<<MyLha.Vars.label[v]<<"[i])return true;"<< endl;
+        } else LhaCppFile << "\tif(v1."<<MyLha.Vars.label[v]<<"<v2."<<MyLha.Vars.label[v]<<")return true;"<< endl;
+    }
+    LhaCppFile << "\treturn false;\n};\n";
+
+
 	LhaCppFile << "void LHA::resetVariables(){\n";
 	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
 		if(MyLha.Vars.type[v] == COLOR_VARIABLE){
@@ -222,12 +234,20 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "\";\n";
 	LhaCppFile << "};\n";
 
-	LhaCppFile << "void LHA::printState(ostream &s)const{\n";
+	LhaCppFile << "void LHA::printState(ostream &s){\n";
 	LhaCppFile << "\ts << \"\\t\" << LocLabel[CurrentLocation] << \"\\t\";\n";
     if(P.StringInSpnLHA){
         for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++)
-            if(MyLha.Vars.isTraced[v])LhaCppFile << "\ts << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
-
+            if(MyLha.Vars.isTraced[v]){
+                if(MyLha.Vars.type[v] == INT_INDEXED_DISC_ARRAY){
+                    LhaCppFile << "\ts << \"[\";" <<endl;
+                    LhaCppFile << "\tfor(unsigned int i=0; i<"<< MyLha.Vars.colorDomain[v] <<"; i++)";
+                    LhaCppFile << "s << Vars->"<< MyLha.Vars.label[v] << "[i] << \", \";" << endl;
+                    LhaCppFile << "s <<\"] \\t\";\n";
+                }else{
+                    LhaCppFile << "\ts << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
+                }
+            }
     }
 	LhaCppFile << "};\n";
 
@@ -641,8 +661,13 @@ void Lha_Reader::WriteFile(parameters& P) {
 		}
 	}
 	LhaCppFile << "}\n" << endl;
-	
-	
+
+    LhaCppFile << "fullState::fullState():loc(0){\n\tvar= new Variables;\n}\n" << endl;
+    LhaCppFile << "fullState::fullState(int l,const Variables &v):loc(l){\n\tvar= new Variables(v);\n}\n" << endl;
+    LhaCppFile << "fullState::fullState(const fullState &fs):loc(fs.loc){\n\tvar= new Variables(*(fs.var));\n}\n" << endl;
+    LhaCppFile << "fullState::~fullState(){delete var;}\n" << endl;
+
+
 	LhaCppFile.close();
 	
 	

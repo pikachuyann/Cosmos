@@ -30,6 +30,7 @@
 
 
 #include "LHA.hpp"
+#include "NLHA.hpp"
 #include "spn.hpp"
 #include "EventsQueue.hpp"
 #include "BatchR.hpp"

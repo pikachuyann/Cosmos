@@ -293,7 +293,7 @@ void launch_clients(parameters& P){
 		
 		if(P.verbose >2){
 			for(size_t i=0; i<argn; i++ )cout << " " << argv[i];
-			cout << endl;
+			cout << endl << endl;
         }
 
         popenClient(cmd.c_str(),argv);
