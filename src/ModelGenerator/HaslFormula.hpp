@@ -37,6 +37,7 @@ enum HaslType {
 	EXPECTANCY,
 	BOUNDED_EXPECTANCY,
 	PROBABILITY,
+    PROBCOND,
 	HYPOTHESIS,
 	PDF_PART,
 	CDF_PART,
@@ -87,6 +88,7 @@ public:
 class HaslFormulasTop {
 public:
 	HaslFormulasTop(const HaslType); //!< PROB operator use to compute \f$ \mathbb{P} \f$ .
+    HaslFormulasTop(const HaslType,size_t); //!< PROBCOND operator use to compute \f$ \mathbb{P} \f$ .
 	HaslFormulasTop(double,double,double); //!< Constant confidence interval.
 	HaslFormulasTop(size_t); //!< Expectancy operator use to compute \f$ \mathbb{E} \f$ .
 	HaslFormulasTop(double,double); //!< Hypothesis operator: is the given probability above some thershold.

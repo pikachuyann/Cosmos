@@ -168,6 +168,7 @@ struct parameters {
     std::vector<HaslFormulasTop*> HaslFormulas;
     std::vector<std::string> HaslFormulasname;
     size_t nbAlgebraic;
+    size_t nbQualitatif;
     size_t nbPlace;
 };
 

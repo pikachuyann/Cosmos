@@ -101,6 +101,7 @@ magic_values(""),
 HaslFormulas(vector<HaslFormulasTop*>(0)),
 HaslFormulasname(vector<string>(0)),
 nbAlgebraic(0),
+nbQualitatif(0),
 nbPlace(0)
 //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
 {

@@ -2,7 +2,7 @@ NOTDETERMINISTIC
 
 const double timeB = 10;
 const double timeC = 5;
-const double Dline = 50;
+const double Dline = 200;
 
 VariablesList = {time,DISC countT, x,y,t,t1,t2} ;
 LocationsList = {AutAli1,AutAli2, AutAle1,AutAle2,AutAle3 , AutAlo1,AutAlo2,AutAlo3, AutAlf1,AutAlf2, AutAlff, li1,li2, le1,le2,le3 , lo1,lo2,lo3, lf1,lf2, lff};

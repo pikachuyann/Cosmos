@@ -82,7 +82,7 @@ BatchR SimulatorContinuousBounded::RunBatch(){
     int n =-1;
     
 
-    BatchR batchResult(2*(Nmax+1));
+    BatchR batchResult(2*(Nmax+1),0);
 
 	
 	//Copy and sum Poisson Weight
@@ -164,27 +164,27 @@ BatchR SimulatorContinuousBounded::RunBatch(){
 						int i = (int)ceil((double)(it->maxStep- left)/jumpsize) ;
 						int i2 =(int)fmax(0.0,ceil((double)(n - left)/jumpsize));
 						//cerr << "Successfull trajectory: "<< it->maxStep << " -> " << i << endl;
-                        if (Result.first ) {
+                        if (Result.accept ) {
                             
-                            if (Result.second[0] * (1 - Result.second[0]) != 0) batchResult.IsBernoulli[0] = false;
+                            if (Result.quantR[0] * (1 - Result.quantR[0]) != 0) batchResult.IsBernoulli[0] = false;
 							
 							batchResult.Isucc+=1;
 							if(singleIS)for(int j = i2; j<= Nmax; j++){
 								batchResult.Mean[2*j]+=1;
-								batchResult.Mean[2*j+1] += Result.second[0];
-								batchResult.M2[2*j+1] += pow(Result.second[0] , 2);
-								batchResult.M3[2*j+1] += pow(Result.second[0] , 3);
-								batchResult.M4[2*j+1] += pow(Result.second[0] , 4);
-								batchResult.Min[2*j+1] = fmin(batchResult.Min[2*j+1],Result.second[0]);
-								batchResult.Max[2*j+1] = fmax(batchResult.Max[2*j+1],Result.second[0]);
+								batchResult.Mean[2*j+1] += Result.quantR[0];
+								batchResult.M2[2*j+1] += pow(Result.quantR[0] , 2);
+								batchResult.M3[2*j+1] += pow(Result.quantR[0] , 3);
+								batchResult.M4[2*j+1] += pow(Result.quantR[0] , 4);
+								batchResult.Min[2*j+1] = fmin(batchResult.Min[2*j+1],Result.quantR[0]);
+								batchResult.Max[2*j+1] = fmax(batchResult.Max[2*j+1],Result.quantR[0]);
                             } else {
 								batchResult.Mean[2*i]+=1;
-								batchResult.Mean[2*i+1] += Result.second[0];
-								batchResult.M2[2*i+1] += pow(Result.second[0] , 2);
-								batchResult.M3[2*i+1] += pow(Result.second[0] , 3);
-								batchResult.M4[2*i+1] += pow(Result.second[0] , 4);
-								batchResult.Min[2*i+1] = fmin(batchResult.Min[2*i+1],Result.second[0]);
-								batchResult.Max[2*i+1] = fmax(batchResult.Max[2*i+1],Result.second[0]);
+								batchResult.Mean[2*i+1] += Result.quantR[0];
+								batchResult.M2[2*i+1] += pow(Result.quantR[0] , 2);
+								batchResult.M3[2*i+1] += pow(Result.quantR[0] , 3);
+								batchResult.M4[2*i+1] += pow(Result.quantR[0] , 4);
+								batchResult.Min[2*i+1] = fmin(batchResult.Min[2*i+1],Result.quantR[0]);
+								batchResult.Max[2*i+1] = fmax(batchResult.Max[2*i+1],Result.quantR[0]);
 							}
                             
                         }

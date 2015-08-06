@@ -373,7 +373,7 @@ void launchServer(parameters& P){
                     continue;
                 }
                 //aggregate the new result to the total result
-                BatchR batchResult(P.nbAlgebraic);
+                BatchR batchResult(P.nbAlgebraic,P.nbQualitatif);
 
                 if(batchResult.inputR(clientstream[it])){
 					//batchResult.print();
