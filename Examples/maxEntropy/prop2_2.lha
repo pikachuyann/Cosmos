@@ -1,6 +1,7 @@
 NOTDETERMINISTIC
 
 const double timeB = 10;
+const double timeC=2;
 const double Dline = 100;
 
 VariablesList = {time,DISC countT, x,y,t1,t2} ;
@@ -53,11 +54,11 @@ Edges={
 ((le1,le1),{t_a}, x<=timeB  ,{countT = countT+1});
 ((lo1,lo1),{t_a}, y<=timeB  ,{countT = countT+1});
 
-((le2,le3),{t_b}, y<=timeB & t1<=timeB ,{countT = countT+1,y'=0});
-((lo2,lo3),{t_b}, x<=timeB & t1<=timeB ,{countT = countT+1,x'=0});
+((le2,le3),{t_b}, y<=timeB & t1<=timeC ,{countT = countT+1,y'=0});
+((lo2,lo3),{t_b}, x<=timeB & t1<=timeC ,{countT = countT+1,x'=0});
 
-((le3,lf1),{t_a}, x<=timeB & t2<=timeB ,{countT = countT+1});
-((lo3,lf2),{t_a}, y<=timeB & t2<=timeB ,{countT = countT+1});
+((le3,lf1),{t_a}, x<=timeB & t2<=timeC ,{countT = countT+1});
+((lo3,lf2),{t_a}, y<=timeB & t2<=timeC ,{countT = countT+1});
 
 ((lf1,lf1),{t_a}, x<=timeB  ,{countT = countT+1});
 ((lf1,lf2),{t_b}, x<=timeB ,{countT = countT+1,x'=0});
