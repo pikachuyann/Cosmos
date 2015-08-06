@@ -55,13 +55,9 @@ Edges={
 
 ((le2,le3),{t_b}, y<=timeB & z<=timeB,{countT = countT+1,y'=0,z'=0});
 ((lo2,lo3),{t_b}, x<=timeB & z<=timeB,{countT = countT+1,x'=0,z'=0});
-((le2,le2),{t_a}, z<=timeB  ,{countT = countT+1,z'=0});
-((lo2,lo2),{t_a}, z<=timeB  ,{countT = countT+1,z'=0});
 
 ((le3,lf1),{t_a}, z<=timeB  ,{countT = countT+1,z'=0});
 ((lo3,lf2),{t_a}, z<=timeB  ,{countT = countT+1,z'=0});
-((le3,le3),{t_a}, z<=timeB  ,{countT = countT+1,z'=0});
-((lo3,lo3),{t_a}, z<=timeB  ,{countT = countT+1,z'=0});
 
 ((lf1,lf1),{t_a}, z<=timeB  ,{countT = countT+1,z'=0});
 ((lf1,lf2),{t_b}, x<=timeB & z<=timeB,{countT = countT+1,x'=0,z'=0});
