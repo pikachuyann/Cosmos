@@ -245,7 +245,7 @@ def printGRML_arc(translist):
             s+=printGRML_OneArc('15%d'%(idtrans[i][j]) , '13%d' %(idtrans[i][j]), '12%d' %(idtrans[i][j]));
             s+=printGRML_OneArc('17%d'%(idtrans[i][j]) , '12%d' %(idtrans[i][j]), '16%d' %(idtrans[i][j]));
             s+=printGRML_OneArc('18%d'%(idtrans[i][j]) , '16%d' %(idtrans[i][j]), '11%d' %(translist[i][j][4][0][0]));
-            s+=printGRML_OneArc('23%d' %(idtrans[i][j]), '13%d' %(idtrans[i][j]), '20%d' %action);
+            s+=printGRML_OneArc('23%d' %(idtrans[i][j]), '16%d' %(idtrans[i][j]), '20%d' %action);
             if ( finstate[translist[i][j][4][0][0]]) :
                 s+=printGRML_OneArc('18%d'%(idtrans[i][j]) , '16%d' %(idtrans[i][j]), '19');
     return(s);
