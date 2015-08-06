@@ -1,9 +1,9 @@
 NOTDETERMINISTIC
 
 const double timeB = 10;
-const double Dline = 1000;
+const double Dline = 200;
 
-VariablesList = {time,DISC countT, x,y,z} ;
+VariablesList = {time,DISC countT, x,y,z,t} ;
 LocationsList = {li1,li2, le1,le2,le3 , lo1,lo2,lo3, lf1,lf2, lff};
 
 PROB;
