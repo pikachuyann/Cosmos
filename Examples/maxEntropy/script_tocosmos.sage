@@ -5,7 +5,7 @@ import os
 import re
 
 
-prismpath="prism";
+prismpath="/Users/benbot/Documents/prism-ptasmc/prism/bin/prism";
 
 
 sagepath,ext = os.path.splitext(str(sys.argv[1]));
