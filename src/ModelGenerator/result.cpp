@@ -271,7 +271,7 @@ void result::print(ostream &s) {
                     s << "Width:\t" << HaslResult[i].width() << endl;
                     s << "Level:\t" << HaslResult[i].conf << endl;
                 } else {
-                    s << "Confidence interval:\t[" << HaslResult[i].mean - P.Width / 2.0 << " , " << HaslResult[i].mean + P.Width / 2.0 << "]" << endl;
+                    s << "Confidence interval:\t[" << HaslResult[i].low << " , " << HaslResult[i].up << "]" << endl;
                     s << "Minimal and maximal value:\t[" << HaslResult[i].min << " , " << HaslResult[i].max << "]" << endl;
                     s << "Width:\t" << P.Width << endl;
                 }
