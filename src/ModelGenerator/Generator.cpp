@@ -210,6 +210,8 @@ bool ParseLHA(GspnType &spn){
                 P.HaslFormulasname = lReader.MyLha.HASLname;
                 P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
                 P.nbAlgebraic = lReader.MyLha.Algebraic.size();
+                P.nbQualitatif = lReader.MyLha.FinalStateCond.size();
+
                 //If the countTrans option is set then add HASL formula counting the occurance of each transition of the LHA.
                 if (P.CountTrans) {
                     for (size_t tr = 0; tr < lReader.MyLha.Edge.size(); tr++) {

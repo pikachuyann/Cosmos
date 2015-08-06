@@ -64,7 +64,7 @@ BatchR SimulatorBoundedRE::RunBatch(){
 	numSolv->reset();
 	//cerr << ")" << endl;
 	
-	BatchR batchResult(1);
+	BatchR batchResult(1,0);
 	
 	list<simulationState> statevect(BatchSize);
 	//delete EQ;
@@ -108,7 +108,7 @@ BatchR SimulatorBoundedRE::RunBatch(){
 			//cerr << mu() << endl;
 			if(numSolv->getVect().size() <= 1){
 				continueb=false;
-				Result.first=false;
+				Result.accept=false;
 			}
 			
 			if((!EQ->isEmpty()) && continueb) {
@@ -120,10 +120,10 @@ BatchR SimulatorBoundedRE::RunBatch(){
 				it--;
 				
 				//log the result
-				if (Result.first && logResult){
-					for(size_t i=0; i<Result.second.size();i++){
+				if (Result.accept && logResult){
+					for(size_t i=0; i<Result.quantR.size();i++){
 						if (i>0)logvalue << "\t";
-						logvalue << Result.second[i];
+						logvalue << Result.quantR[i];
 					}
 					logvalue << endl;
 				}

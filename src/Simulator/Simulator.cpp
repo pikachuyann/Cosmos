@@ -46,7 +46,8 @@ Simulator::Simulator(LHA& automate):verbose(0),A(automate){
 	EQ = new EventsQueue(N); //initialization of the event queue
 	logResult=false;
 	sampleTrace = 0.0;
-	Result.second.resize(A.FormulaVal.size());
+	Result.quantR.resize(A.FormulaVal.size());
+    Result.qualR.resize(A.FormulaValQual.size());
 	BatchSize = 1000;
     minInteractiveTime = 0.0;
 }
@@ -133,8 +134,8 @@ void Simulator::reset() {
  * Hasl formula.
  */
 void Simulator::returnResultTrue(){
-	A.getFinalValues(N.Marking,Result.second);
-	Result.first = true;
+	A.getFinalValues(N.Marking,Result.quantR,Result.qualR);
+	Result.accept = true;
 }
 
 /**
@@ -323,7 +324,7 @@ bool Simulator::SimulateOneStep(){
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking,dummyBinding);
 		}
-		Result.first=false;
+		Result.accept=false;
 		return false;
 	} else {
         //Take the first event in the queue
@@ -333,7 +334,7 @@ bool Simulator::SimulateOneStep(){
         //Only usefull for Rare Event handling.
 		if(transitionSink(E1.transition)){
 			if(verbose>3)cerr << "\033[1;33mFiring:\033[0m" << "Transition Sink\n";
-            Result.first=false;
+            Result.accept=false;
             return false;
         }
 
@@ -380,7 +381,7 @@ bool Simulator::SimulateOneStep(){
 		//If no synchronisation is possible the trajectory is rejected
 		if (SE < 0) {
 			//cerr << "no synchronization" << endl;
-			Result.first=false;
+			Result.accept=false;
 			return false;
 		} else {
 			if(verbose>3)cerr << " Synch with " << SE << endl;
@@ -568,17 +569,17 @@ BatchR Simulator::RunBatch(){
     auto starttime = chrono::steady_clock::now();
     auto currenttime = chrono::steady_clock::now();
     chrono::duration<double> timesize(0.03);
-	BatchR batchResult(A.FormulaVal.size());
+	BatchR batchResult(A.FormulaVal.size(),A.FormulaValQual.size());
 	while ((batchResult.I < BatchSize && BatchSize!=0) || (currenttime-starttime < timesize && BatchSize==0) ) {
 		reset();
 		SimulateSinglePath();
         batchResult.addSim(Result);
 		if(verbose>3)batchResult.print();
 		
-		if (Result.first && logResult){
-			for(size_t i=0; i<Result.second.size();i++){
+		if (Result.accept && logResult){
+			for(size_t i=0; i<Result.quantR.size();i++){
 				if (i>0)logvalue << "\t";
-				logvalue << Result.second[i];
+				logvalue << Result.quantR[i];
 			}
 			logvalue << endl;
 		}
