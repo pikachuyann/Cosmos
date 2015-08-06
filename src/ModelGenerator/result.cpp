@@ -43,7 +43,7 @@
 
 using namespace std;
 
-result::result() : MeanM2(P.nbAlgebraic),HaslResult(P.HaslFormulasname.size()) {
+result::result() : MeanM2(P.nbAlgebraic,P.nbQualitatif),HaslResult(P.HaslFormulasname.size()) {
     //P= Q;
     gnuplotstream = NULL;
     lastprint = chrono::system_clock::now();

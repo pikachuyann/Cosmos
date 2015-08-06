@@ -33,7 +33,11 @@
 #ifndef _BATCHR_HPP
 #define	_BATCHR_HPP
 
-typedef std::pair<bool, std::vector<double> > SimOutput;
+struct SimOutput {
+    bool accept;
+    std::vector<double> quantR;
+    std::vector<bool> qualR;
+};
 
 /**
  * This file implement a structure for the result of a batch of
@@ -42,7 +46,7 @@ typedef std::pair<bool, std::vector<double> > SimOutput;
  */
 class BatchR {
 public:
-    BatchR(size_t i);
+    BatchR(size_t,size_t);
 	
 	//! Number of simulation.
     unsigned long int I;

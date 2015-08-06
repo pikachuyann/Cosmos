@@ -113,6 +113,20 @@ int NLHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& N
 
 }
 
+void NLHA::getFinalValues(const abstractMarking& m,vector<double>& v,vector<bool>& v2){
+    for(size_t i=0; i< FormulaValQual.size();i++){
+        v2[i] = false;
+    }
+    for(let fs : *powerSetState){
+        Vars = fs.var;
+        CurrentLocation=fs.loc;
+        UpdateFormulaVal();
+        for(size_t i=0; i< FormulaValQual.size();i++){
+            v2[i] = v2[i] || FormulaValQual[i];
+        }
+    }
+}
+
 AutEdge NLHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db)const {
     AutEdge Ed;
     Ed.Index = -1;

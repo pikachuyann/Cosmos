@@ -97,6 +97,7 @@ public:
     const unsigned int NbLoc; // number of locations
     
     vector<double> FormulaVal;
+    vector<bool> FormulaValQual;
 
     /**
      * Current time of the LHA
@@ -145,7 +146,7 @@ public:
 	 */
     virtual void reset(const abstractMarking&);
 	
-	void getFinalValues(const abstractMarking&,vector<double>&);
+    virtual void getFinalValues(const abstractMarking&,vector<double>&,vector<bool>&);
 	
 	virtual void printState(ostream &);
 	void printHeader(ostream &)const;

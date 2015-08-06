@@ -59,9 +59,9 @@ void SimulatorRE::InitialEventsQueue() {
 }
 
 void SimulatorRE::returnResultTrue(){
-	A.getFinalValues(N.Marking,Result.second);
-	Result.first = true;
-    for(size_t i = 0; i< A.FormulaVal.size() ; i++)Result.second[i] *= A.Likelihood;
+	A.getFinalValues(N.Marking,Result.quantR,Result.qualR);
+	Result.accept = true;
+    for(size_t i = 0; i< A.FormulaVal.size() ; i++)Result.quantR[i] *= A.Likelihood;
 	if(verbose>3)cerr << "---------------\n TRUE \n------\n";
 }
 

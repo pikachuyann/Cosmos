@@ -48,6 +48,7 @@ public:
     virtual void printState(ostream&) override;
     virtual bool isFinal()const override;
     virtual void reset(const abstractMarking&) override;
+    virtual void getFinalValues(const abstractMarking& m,vector<double>&,vector<bool>&) override;
 
 private:
     virtual void setInitLocation(const abstractMarking& Marking) override;
