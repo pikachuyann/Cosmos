@@ -40,7 +40,7 @@ using namespace std;
  *Initialize the batch with zeros
  * @param i is the number of formula evaluated by the automaton.
  */
-BatchR::BatchR(size_t i) :
+BatchR::BatchR(size_t i,size_t j) :
 I(0) ,
 Isucc(0),
 IsBernoulli(vector<bool>(i,true)),
@@ -50,6 +50,7 @@ M3(vector<double>(i,0.0)),
 M4(vector<double>(i,0.0)),
 Min(vector<double>(i,DBL_MAX)),
 Max(vector<double>(i,-DBL_MAX)),
+bernVar(j,false),
 simTime(0.0)
 {}
 
@@ -60,25 +61,29 @@ simTime(0.0)
  */
 void BatchR::addSim(const SimOutput &Result){
     I++;
-    if (Result.first) {
+    if (Result.accept) {
         Isucc++;
-        
+
+        for(size_t i =0; i< bernVar.size(); i++){
+            if(Result.qualR[i])bernVar[i]++;
+        }
+
         for(size_t i =0; i< Mean.size(); i++){
             
-            if (Result.second[i] * (1 - Result.second[i]) != 0){
+            if (Result.quantR[i] * (1 - Result.quantR[i]) != 0){
                 IsBernoulli[i] = false;
             }
 			
-			double temp = Result.second[i];
+			double temp = Result.quantR[i];
             Mean[i] += temp;
-			temp *= Result.second[i];
+			temp *= Result.quantR[i];
             M2[i] += temp;
-			temp *= Result.second[i];
+			temp *= Result.quantR[i];
 			M3[i] += temp;
-			temp *= Result.second[i];
+			temp *= Result.quantR[i];
 			M4[i] += temp;
-			Min[i] = min(Min[i],Result.second[i]);
-			Max[i] = max(Max[i],Result.second[i]);
+			Min[i] = min(Min[i],Result.quantR[i]);
+			Max[i] = max(Max[i],Result.quantR[i]);
         }
     }
 }
