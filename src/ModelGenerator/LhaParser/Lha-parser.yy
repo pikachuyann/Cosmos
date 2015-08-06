@@ -786,6 +786,13 @@ AVG LB AlgExpr RB {
 | PROB {
 	$$ = new HaslFormulasTop(PROBABILITY);
 }
+| PROB LB RB {
+    $$ = new HaslFormulasTop(PROBABILITY);
+}
+| PROB LB str RB {
+    Reader.MyLha.FinalStateCond.push_back(*$3);
+    $$ = new HaslFormulasTop(PROBCOND,(size_t)Reader.MyLha.FinalStateCond.size()-1);
+}
 | EXIST_TOK {
     $$ = new HaslFormulasTop(EXISTS);
 }

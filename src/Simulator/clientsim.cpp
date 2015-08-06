@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
 			//states.uniformizeMatrix();
 			states.outputMat();
 			states.outputTmpLumpingFun();
-            BatchR dummR(0);
+            BatchR dummR(0,0);
             dummR.outputR(cout);
             cerr << "Finish Exporting" << endl;
 			exit(EXIT_SUCCESS);
@@ -123,8 +123,11 @@ int main(int argc, char** argv) {
 			states.outputTmpLumpingFun();
 			//cout << "Finish Exporting" << endl;
 			double prResult = states.returnPrismResult();
-            BatchR dummR(1);
-            dummR.addSim(make_pair<bool,vector<double> >(true,vector<double>(1,prResult)));
+            BatchR dummR(1,0);
+            SimOutput sd;
+            sd.accept=true;
+            sd.quantR.push_back(prResult);
+            dummR.addSim(sd);
             dummR.outputR(cout);
 			/*cout << "Prism Result:\t"<< prResult << endl;
 			ofstream ResultsFile("Result.res", ios::out | ios::trunc);
@@ -167,6 +170,7 @@ int main(int argc, char** argv) {
 		BatchR batchResult = mySim->RunBatch(); //simulate a batch of trajectory
 		
 		batchResult.outputR(cout);// output the result on the standart output
+                                  //batchResult.print();
 		
 		//cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
 		//<< ":" << batchResult->M2[0] << endl;

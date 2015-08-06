@@ -120,6 +120,7 @@ struct LhaType {
     vector<int> LhaFuncArg;
     vector<string> LhaFuncType;
     vector<string> Algebraic;
+    vector<string> FinalStateCond;
 	double ConfidenceLevel;
 	vector<string> HASLname;
 	vector<HaslFormulasTop*> HASLtop;

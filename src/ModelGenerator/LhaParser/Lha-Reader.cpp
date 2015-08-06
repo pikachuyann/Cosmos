@@ -347,6 +347,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	} else {
 		LhaCppFile << "    FormulaVal = vector<double>(" << MyLha.Algebraic.size() << ",0.0);" << endl;
     }
+    LhaCppFile << "    FormulaValQual = vector<bool>(" << MyLha.FinalStateCond.size() << ",false);" << endl;
 
     LhaCppFile << "}\n" << endl;
 
@@ -660,7 +661,11 @@ void Lha_Reader::WriteFile(parameters& P) {
 			LhaCppFile << "    FormulaVal["<<j<<"]= EdgeCounter[" << i << "];\n";
 		}
 	}
-	LhaCppFile << "}\n" << endl;
+    for(size_t i = 0; i < MyLha.FinalStateCond.size(); i++){
+        LhaCppFile << "    FormulaValQual[" << i << "] = CurrentLocation == " << MyLha.LocIndex.find(MyLha.FinalStateCond[i])->second << ";"<< endl;
+    }
+
+    LhaCppFile << "}\n" << endl;
 
     LhaCppFile << "bool IsLHADeterministic = "<< MyLha.isDeterministic<< ";";
 

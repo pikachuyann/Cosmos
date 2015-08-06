@@ -170,6 +170,21 @@ HaslFormulasTop::HaslFormulasTop(const HaslType t){
 }
 
 /**
+ * Build an HASL formula with the PROB,EXISTS,ALLS operators.
+ * Compute exact confidence interval.
+ */
+HaslFormulasTop::HaslFormulasTop(const HaslType t,size_t al){
+    assert( t==PROBCOND);
+    TypeOp = t;
+    Level =0;
+    Value =0;
+    Value2=0;
+    Algebraic = al;
+    left = NULL;
+    right = NULL;
+}
+
+/**
  * Build a CONSTANT Hasl formula.
  * @param v the value of the constant
  */
@@ -269,6 +284,7 @@ void HaslFormulasTop::setLevel(double l){
     switch (TypeOp) {
         case HYPOTHESIS:
         case PROBABILITY:
+        case PROBCOND:
             Level = l;
             break;
 
@@ -357,6 +373,19 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
             } // In Sequential case fall back to show robin algorithm
 
             // NO BREAK on purpose here !
+        case PROBCOND:
+        {
+            //Same as PROB but with a more specific constraint
+            double mean = (double)batch.bernVar[Algebraic] / (double)batch.Isucc;
+            double l = boost::math::binomial_distribution<>::find_lower_bound_on_p(batch.Isucc,batch.bernVar[Algebraic], (1-Level)/2);
+            double u = boost::math::binomial_distribution<>::find_upper_bound_on_p(batch.Isucc,batch.bernVar[Algebraic], (1-Level)/2);
+
+            if(batch.bernVar[Algebraic] ==0)return ConfInt(mean,l,u,0.0,0.0,Level);
+            if(batch.bernVar[Algebraic] == batch.Isucc)return ConfInt(mean,l,u,1.0,1.0,Level);
+
+            return ConfInt(mean,l,u,0.0,1.0,Level);
+
+        }
 
             /*
              * Here Gaussian confidence interval are computed.
