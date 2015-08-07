@@ -193,13 +193,6 @@ int main(int argc, char** argv) {
         unfold.export_grml(unfoldfile);
         return EXIT_SUCCESS;
     }
-    if(P.lightSimulator)return true;
-
-    if ( ! ParseLHA(*pGSPN)) {
-        cout << "Fail to build the LHA." << endl;;
-        return(EXIT_FAILURE);
-    }
-
 
     if(P.MaxRuns == 0 && P.lightSimulator){
         auto cmd = "cp "+P.Path+"../src/LightSimulator/*.* "+P.tmpPath;
@@ -210,8 +203,17 @@ int main(int argc, char** argv) {
         system(cmd.c_str());
         return EXIT_SUCCESS;
     }
+    
+    if(!P.lightSimulator)
+        if ( ! ParseLHA(*pGSPN)) {
+            cout << "Fail to build the LHA." << endl;;
+            return(EXIT_FAILURE);
+        }
+    
     if(P.MaxRuns==0)return EXIT_SUCCESS;
 
+    
+    
     //Compile the simulator
     if(P.tmpStatus==0 || P.tmpStatus==2){
         if ( !build()) {
