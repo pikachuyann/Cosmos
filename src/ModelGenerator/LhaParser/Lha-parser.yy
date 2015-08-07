@@ -456,13 +456,13 @@ iLLabels : str {
 	
 	if(Reader.MyLha.LocIndex.find(*$1)!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.InitLoc.insert(Reader.MyLha.LocIndex[*$1]);
-	else cout<<"Unknown location"<<endl;
+	else cout<<"Unknown location: " << *$1 <<endl;
 	
 	
 }
 |iLLabels COMMA str {if(Reader.MyLha.LocIndex.find(*$3)!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.InitLoc.insert(Reader.MyLha.LocIndex[*$3]);
-	else cout<<"Unknown location"<<endl;
+	else cout<<"Unknown location:"<< *$3 << endl;
 };
 
 final: Floc EQ '{' fLLabels '}' SEMICOLON;
@@ -471,13 +471,13 @@ fLLabels : str {
 	
 	if(Reader.MyLha.LocIndex.find(*$1)!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.FinalLoc.insert(Reader.MyLha.LocIndex[*$1]);
-	else cout<<"Unknown location"<<endl;
+	else cout<<"Unknown location: "<< *$1 <<endl;
 	
 	
 }
 |fLLabels COMMA str {if(Reader.MyLha.LocIndex.find(*$3)!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.FinalLoc.insert(Reader.MyLha.LocIndex[*$3]);
-	else {cout<<"Unknown location"<<endl;YYABORT;}
+	else {cout<<"Unknown location: "<< *$3 <<endl;YYABORT;}
 };
 
 
@@ -510,7 +510,7 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 		Reader.MyLha.FuncFlow[loc->second] = FuncFlowVector;
         FuncFlowVector=vector<string>(Reader.MyLha.NbVar,"");
 	}
-	else {cout<<"Unknown location"<<endl;YYABORT;}
+	else {cout<<"Unknown location: "<< *$2 <<endl;YYABORT;}
 	
 }
 |LB str COMMA LogExpr RB SEMICOLON
@@ -522,7 +522,7 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 		Reader.MyLha.FuncLocProperty[loc->second]= $4;
 		Reader.MyLha.FuncFlow[loc->second] = FuncFlowVector;
 	}
-	else {cout<<"Unknown location"<<endl;YYABORT;}
+	else {cout<<"Unknown location: "<< *$2 <<endl;YYABORT;}
 	
 	
 };
