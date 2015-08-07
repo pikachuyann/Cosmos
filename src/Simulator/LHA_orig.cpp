@@ -93,7 +93,7 @@ int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& Ne
  *	@param Marking is the current marking of the Petri net.
  *	@return the most urgent autonomous edge
  */
-AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db)const {
+AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db) {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
@@ -123,6 +123,20 @@ void LHA::resetLinForms() {
     }
     for (size_t i = 0; i < LhaFunc.size(); i++)
         LhaFunc[i] = 0;
+}
+
+/**
+ *
+ */
+int LHA::synchroniseWith(size_t tr, const abstractMarking& m,const abstractBinding& b){
+    //Check if there exist a valid transition in the automata.
+    int SE = GetEnabled_S_Edges(tr, m, b);
+
+    if (SE >= 0) {
+        //If synchronisation is possible fire it
+        fireLHA(SE,m, b);
+    }
+    return SE;
 }
 
 /**

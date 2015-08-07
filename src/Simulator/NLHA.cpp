@@ -76,7 +76,7 @@ void NLHA::updateLHA(double DeltaT, const abstractMarking &Marking){
  In Non deterninistic LHA this function actually compute the new state. Fire will
  do nothing.
  */
-int NLHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
+int NLHA::synchroniseWith(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
     auto &newPS = powerSet[1-selectPS];
     for(let fs : *powerSetState){
         const auto fs2 = fs;
@@ -127,14 +127,23 @@ void NLHA::getFinalValues(const abstractMarking& m,vector<double>& v,vector<bool
     }
 }
 
-AutEdge NLHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db)const {
+AutEdge NLHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db) {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
+
+    for (let fs : *powerSetState) {
+        Vars = fs.var;
+        CurrentLocation=fs.loc;
+        let I = LHA::GetEnabled_A_Edges(Marking, db);
+        if (I.FiringTime < Ed.FiringTime) {
+            Ed.Index = Ed.Index;
+            Ed.FiringTime = Ed.FiringTime;
+        }
+    }
     return Ed;
 }
 
-void NLHA::fireLHA(int,const abstractMarking&, const abstractBinding&){};
 
 bool NLHA::isFinal()const{
     for(let fs : *powerSetState){
