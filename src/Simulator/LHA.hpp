@@ -120,22 +120,23 @@ public:
 	 *  It only copy pointer thus is in constant time.
 	 */
 	void copyState(LHA*);
-	
-	/**
-	 * \brief Return a synchronized edge for a given transition of the SPN.
-	 */
-	virtual int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
-	
+
+    //! fire the transition of an LHA
+    void fireLHA(int,const abstractMarking&, const abstractBinding&);
+
+    /**
+     * \brief Synchronized the execution of the LHA with a transition of the SPN.
+     */
+    virtual int synchroniseWith(size_t, const abstractMarking&,const abstractBinding&);
+
 	/**
 	 * \brief Return an autonomous edge for a given marking.
 	 */
-	virtual AutEdge GetEnabled_A_Edges(const abstractMarking&,const abstractBinding&)const;
+    virtual AutEdge GetEnabled_A_Edges(const abstractMarking&,const abstractBinding&);
 	
 	//! update value in the LHA by elapsing time
 	virtual void updateLHA(double DeltaT, const abstractMarking &);
-	
-	//! fire the transition of an LHA
-	virtual void fireLHA(int,const abstractMarking&, const abstractBinding&);
+
 	
 	//! test if the automaton is in a final state
 	virtual bool isFinal()const;
@@ -153,6 +154,12 @@ public:
 	
 protected:
 	vector <LhaEdge> Edge;
+
+    /**
+     * \brief Return a synchronized edge for a given transition of the SPN.
+     */
+    int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
+
 
     set <int> InitLoc; // initial locations
     vector<bool> FinalLoc; // final locations
