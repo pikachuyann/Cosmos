@@ -217,6 +217,14 @@ void launch_clients(parameters& P){
     signal(SIGPIPE, signalHandlerSP);
 	//pid_t readpid;
 
+    // if seed is zero generate a pseudo random seed.
+    if(P.seed==0){
+        timeval t;
+        gettimeofday(&t,(struct timezone*)0);
+        //os << " " <<(t.tv_usec + t.tv_sec + getpid()+i);
+        P.seed = t.tv_usec +    t.tv_sec + getpid();
+    }
+
 	for(int i = 0;i<P.Njob;i++){
 		string cmd = P.tmpPath + "/ClientSim";;
 		const char *argv[15] = {0};
@@ -231,18 +239,10 @@ void launch_clients(parameters& P){
 
 		//<< P.Batch << " " << P.verbose;
 		
-		// if seed is zero generate a pseudo random seed.
-		if(P.seed==0){
-			timeval t;
-			gettimeofday(&t,(struct timezone*)0);
-			//os << " " <<(t.tv_usec + t.tv_sec + getpid()+i);
-			pushint(argv,argn,(t.tv_usec + t.tv_sec + getpid()+i));
-		}else{
-			//if seed is not null add i to the seed to guarantee independance
-			// of simulation.
-			//os << " " << (P.seed+i);
-			pushint(argv,argn,P.seed+i);
-		}
+        //if seed is not null add i to the seed to guarantee independance
+        // of simulation.
+        pushint(argv,argn,P.seed+i);
+
 		
 		//Argument to select the simulator to use.
 		if(P.BoundedContinuous){
@@ -402,7 +402,7 @@ void launchServer(parameters& P){
     //Kill all the simulator
     kill_client();
     //signal(SIGCHLD, SIG_IGN);
-	
+
 	//Output all the results
     Result.stopclock();
     if(P.verbose>0){
