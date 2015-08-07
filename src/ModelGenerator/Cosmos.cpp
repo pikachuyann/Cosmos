@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
         cout << "################################################################################" << endl;
     }
 	//assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
-	
+
 	//If tmpStatus is zero generate random tmp directory
 	if (P.tmpStatus == 0) {
 		string newtmp = systemStringResult("mktemp -d tmpCosmos-XXXXXX");
