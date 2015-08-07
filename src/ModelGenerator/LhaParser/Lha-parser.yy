@@ -456,7 +456,7 @@ iLLabels : str {
 	
 	if(Reader.MyLha.LocIndex.find(*$1)!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.InitLoc.insert(Reader.MyLha.LocIndex[*$1]);
-	else cout<<"Unknown location: " << *$1 <<endl;
+	else cout<<"Unknown location:" << *$1 <<endl;
 	
 	
 }

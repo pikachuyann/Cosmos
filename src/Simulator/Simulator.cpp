@@ -375,8 +375,8 @@ bool Simulator::SimulateOneStep(){
 		//Fire the transition in the SPN
 		N.fire(E1.transition, E1.binding, A.CurrentTime);
 		
-        //Check if there exist a valid transition in the automata.
-		int SE = A.GetEnabled_S_Edges(E1.transition, N.Marking, E1.binding);
+        //Check if there exist a valid Sinchronisation in the automata.
+		int SE = A.synchroniseWith(E1.transition, N.Marking, E1.binding);
 		
 		//If no synchronisation is possible the trajectory is rejected
 		if (SE < 0) {
@@ -385,9 +385,8 @@ bool Simulator::SimulateOneStep(){
 			return false;
 		} else {
 			if(verbose>3)cerr << " Synch with " << SE << endl;
-			//If synchronisation is possible fire it and check if the
+			//If synchronisation is possible check if the
 			// reached state is final. Then update the SPN.
-			A.fireLHA(SE,N.Marking, E1.binding);
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
