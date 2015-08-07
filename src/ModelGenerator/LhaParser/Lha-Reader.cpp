@@ -127,7 +127,7 @@ bool is_simple(const string &s){
             && s.find(")") == string::npos);
 }
 
-string Lha_Reader::InvRelOp(string& str) {
+string Lha_Reader::InvRelOp(const string& str)const {
     if (str == "<=") return ">=";
     if (str == ">=") return "<=";
 	cerr << "Fail to inverse RelOp"<< endl;
@@ -149,18 +149,10 @@ void Lha_Reader::view() {
 
 }
 
-void Lha_Reader::WriteFile(parameters& P) {
+void Lha_Reader::WriteFile(parameters& P)const {
 	string Pref = P.tmpPath;
 
     string loc;
-
-
-    //some cleaning:
-    MyLha.SimplyUsedLinearForm = vector<bool>(MyLha.LinearForm.size(),true);
-    for( size_t i = 0; i< MyLha.LhaFuncArg.size();++i)
-        if(MyLha.LhaFuncType[i]!="Last")
-            MyLha.SimplyUsedLinearForm[MyLha.LhaFuncArg[i]] = false;
-
 
     //loc = Pref + "../SOURCES/Cosmos/LHA.cpp";
     loc = Pref + "/LHA.cpp";
@@ -178,8 +170,8 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "#include <float.h>" << endl;
 	LhaCppFile << "#include \"LHA.hpp\"" << endl;
 
-	for (map<string,double>::iterator it= MyLha.LhaRealConstant.begin(); it!= MyLha.LhaRealConstant.end() ; it++) {
-		LhaCppFile << "    const double " << it->first << "=" << it->second << ";" << endl;
+    for (let it : MyLha.LhaRealConstant) {
+		LhaCppFile << "    const double " << it.first << "=" << it.second << ";" << endl;
 	}
 
 	LhaCppFile << "struct Variables {\n";
@@ -495,8 +487,8 @@ void Lha_Reader::WriteFile(parameters& P) {
                         newcase << "                      }" << endl;
 
                         newcase << "                  else{" << endl;
-                        RelOp = InvRelOp(RelOp);
-                        if (RelOp == "<=") {
+                        const auto RelOp2 = InvRelOp(RelOp);
+                        if (RelOp2 == "<=") {
                             newcase << "                     if(EnablingT.second>t) EnablingT.second=t;" << endl;
                             newcase << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
 
@@ -593,9 +585,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 	}
 	edgeUpdateHandler.writeCases(LhaCppFile);
 	//LhaCppFile << "    }" << endl;
-	for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++)
-        if(!MyLha.SimplyUsedLinearForm[it->second]){
-            LhaCppFile << "    OldLinForm[" << it->second << "]=LinForm[" << it->second << "];" << endl;
+    for (let it : MyLha.LinearForm)
+        if(!MyLha.SimplyUsedLinearForm[it.second]){
+            LhaCppFile << "    OldLinForm[" << it.second << "]=LinForm[" << it.second << "];" << endl;
 
         }
 
@@ -610,9 +602,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 	 }*/
 
 	LhaCppFile << "void LHA::UpdateLinForm(const abstractMarking& Marking){" << endl;
-	for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++)
-        if(!MyLha.SimplyUsedLinearForm[it->second]){
-            LhaCppFile << "    LinForm[" << (*it).second << "]=" << (*it).first << ";" << endl;
+    for (let it : MyLha.LinearForm)
+        if(!MyLha.SimplyUsedLinearForm[it.second]){
+            LhaCppFile << "    LinForm[" << it.second << "]=" << it.first << ";" << endl;
 
         }
 	LhaCppFile << "    }\n" << endl;
@@ -676,6 +668,58 @@ void Lha_Reader::WriteFile(parameters& P) {
 
 
 	LhaCppFile.close();
-	
-	
 }
+
+
+void Lha_Reader::writeDotFile(const string &file)const{
+    ofstream df(file.c_str(), ios::out | ios::trunc);
+    df << "digraph G {" << endl;
+
+    for (let l : MyLha.LocLabel ) {
+        df << "\t" << l;
+        df << " [shape=circle];" << endl;
+    }
+
+    for (let e : MyLha.Edge ){
+        df << "\t" << MyLha.LocLabel[e.Source] << "->" << MyLha.LocLabel[e.Target];
+        df << " [label=\"{";
+        if(MyLha.EdgeActions[e.Index].size()>5){df<< "##";}else for(let a :MyLha.EdgeActions[e.Index])df << a << ", ";
+        df<< "}, {";
+
+        if((MyLha.ConstraintsRelOp[e.Index].size()>0 && MyLha.EdgeActions[e.Index].size() > 0) || MyLha.unTimeEdgeConstraints[e.Index]!="true" ){
+            if(MyLha.ConstraintsRelOp[e.Index].size()>0 && MyLha.EdgeActions[e.Index].size() > 0){
+                for (size_t c = 0; c < MyLha.ConstraintsRelOp[e.Index].size(); c++) {
+                    size_t k = 0;
+                    for (size_t v = 0; v < MyLha.NbVar; v++)
+                        if (MyLha.ConstraintsCoeffs[e.Index][c][v] != "")k++;
+                    if(k>0){
+                        for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
+                            if (MyLha.ConstraintsCoeffs[e.Index][c][v] != "" )
+                                df << "(" << MyLha.ConstraintsCoeffs[e.Index][c][v] << ")*" << MyLha.Vars.label[v];
+
+                        }
+                        df << MyLha.ConstraintsRelOp[e.Index][c] << MyLha.ConstraintsConstants[e.Index][c] << ", ";
+                    }
+                }
+            }
+        }
+
+        df << "}, {";
+        for (size_t v = 0; v < MyLha.NbVar; v++)
+            if (MyLha.FuncEdgeUpdates[e.Index][v] != ""){
+                df << MyLha.Vars.label[v] << ":=" << MyLha.FuncEdgeUpdates[e.Index][v] << ",";
+            }
+        df<<"} \"];" << endl;
+    }
+    df << "}" << endl;
+}
+
+
+
+
+
+
+
+
+
+

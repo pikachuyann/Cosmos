@@ -160,7 +160,9 @@ public:
 	int parse_gml_file(parameters&);
 	
 	//!< generate code for the LHA.
-	void WriteFile(parameters&);
+	void WriteFile(parameters&)const;
+    void writeDotFile(const std::string &file)const;
+    
 	
 	parameters P;
 private:
@@ -172,7 +174,7 @@ private:
 	
 	
 	
-    string InvRelOp(string &);
+    string InvRelOp(const string &)const;
 	
     bool trace_parsing;
 	
