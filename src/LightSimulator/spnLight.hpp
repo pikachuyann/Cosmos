@@ -174,6 +174,7 @@ public:
     static const TR_PL_ID* FreeMarkDepT[];
 
     TR_PL_ID lastTransition; //! store the last fired transition
+    REAL_TYPE lastTransitionTime; //! store the time at wich last transition fired.
 
     //Special transition that change state of serial automaton
     TR_PL_ID getIncomingTrans();
