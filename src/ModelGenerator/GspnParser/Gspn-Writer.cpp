@@ -1127,7 +1127,8 @@ void Gspn_Writer::writeFile(){
 	if(P.localTesting)SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
 	SpnCppFile << "}"<< endl<< endl;
 
-    writeUserDefineDistr(SpnCppFile);
+    if(!P.lightSimulator)
+        writeUserDefineDistr(SpnCppFile);
 	
 	SpnCppFile.close();
 }
