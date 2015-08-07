@@ -128,6 +128,7 @@ void NLHA::getFinalValues(const abstractMarking& m,vector<double>& v,vector<bool
 }
 
 AutEdge NLHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db) {
+    //TODO Check for bugs
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
