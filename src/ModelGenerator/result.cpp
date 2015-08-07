@@ -235,11 +235,11 @@ void result::stopclock() {
         endline--;
         cout << "\033[A\033[2K";
     }
+    cout << endl;
 }
 
 void result::print(ostream &s) {
     s.precision(15);
-
     //if(!P.computeStateSpace)
     {
         s << "Command line:\t" << P.commandLine << endl;
@@ -249,6 +249,7 @@ void result::print(ostream &s) {
         } else if (!P.CSLformula.empty()) {
             s << "Formula:\t" << P.CSLformula << endl;
         } else s << "LHA path:\t" << P.PathLha << endl;
+    s << "Seed:\t" << P.seed<<endl;
 
         for (size_t i = 0; i < P.HaslFormulasname.size(); i++) {
             if (!P.alligatorMode || (P.HaslFormulas[i]->TypeOp != PDF_PART && P.HaslFormulas[i]->TypeOp != CDF_PART)) {
@@ -291,7 +292,6 @@ void result::print(ostream &s) {
         //s << "Relative error:\t" << RelErr << endl;
         s << "Total paths:\t" << MeanM2.I << endl;
         s << "Accepted paths:\t" << MeanM2.Isucc << endl;
-        stopclock();
         s << "Batch size:\t" << P.Batch << endl;
         s << "Time for simulation:\t" << cpu_time_used << "s" << endl;
         rusage cpu_child;
