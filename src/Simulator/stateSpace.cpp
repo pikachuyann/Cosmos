@@ -103,10 +103,9 @@ void stateSpace::exploreStateSpace(){
 				N.fire(t,b,0.0);
 				//cerr << "transition:" << *it << endl;
 				vector<int> marking = N.Marking.getVector();
-				int SE = A.GetEnabled_S_Edges(t,N.Marking,b);
+				int SE = A.synchroniseWith(t,N.Marking,b);
 
                 if (SE > -1) {
-					A.fireLHA(SE, N.Marking, b);
 					nbTrans++;
 					marking.push_back( A.CurrentLocation );
 					//vector<double> Param = N.GetDistParameters(*it);
@@ -167,9 +166,8 @@ void stateSpace::buildTransitionMatrix()
 				A.CurrentLocation = lhaloc;
 				N.fire(t,b,0.0);
 				vector<int> marking = N.Marking.getVector();
-				int SE = A.GetEnabled_S_Edges( t  , N.Marking,b);
+				int SE = A.synchroniseWith( t  , N.Marking,b);
                 if (SE > -1) {
-					A.fireLHA(SE, N.Marking, b);
                     N.unfire(t,b);
 					marking.push_back( A.CurrentLocation );
 					N.GetDistParameters(t,b);
