@@ -5,8 +5,8 @@ import os
 import re
 
 
-prismpath="prism";
-
+#prismpath="prism";
+prismpath="~/Documents/prism-ptasmc/prism/bin/prism";
 
 sagepath,ext = os.path.splitext(str(sys.argv[1]));
 outpath=sagepath+'.grml';

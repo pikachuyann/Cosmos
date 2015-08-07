@@ -41,10 +41,9 @@ class NLHA: public LHA {
 public:
     NLHA():powerSetState(&powerSet[0]),selectPS(0){};
     virtual void updateLHA(double DeltaT, const abstractMarking &) override;
-    virtual int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&) override;
-    virtual AutEdge GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db)const override;
+    virtual int  synchroniseWith(size_t, const abstractMarking&,const abstractBinding&) override;
+    virtual AutEdge GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db) override;
 
-    virtual void fireLHA(int,const abstractMarking&, const abstractBinding&) override;
     virtual void printState(ostream&) override;
     virtual bool isFinal()const override;
     virtual void reset(const abstractMarking&) override;
