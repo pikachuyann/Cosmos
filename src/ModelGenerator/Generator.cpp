@@ -151,12 +151,14 @@ shared_ptr<GspnType> ParseGSPN() {
 bool ParseLHA(GspnType &spn){
     // Intialize an empty structure for the automaton
     Lha_Reader lReader(spn, P);
+    auto &A = lReader.MyLha;
+
     int parseresult;
 
     //Copy name of transition and place required for synchronization.
-    lReader.MyLha.TransitionIndex = spn.TransId;
-    lReader.MyLha.PlaceIndex = spn.PlacesId;
-    lReader.MyLha.ConfidenceLevel = P.Level;
+    A.TransitionIndex = spn.TransId;
+    A.PlaceIndex = spn.PlacesId;
+    A.ConfidenceLevel = P.Level;
 
     if (P.verbose > 0)cout << "Start Parsing " << P.PathLha << endl;
 
@@ -196,38 +198,46 @@ bool ParseLHA(GspnType &spn){
 
             //Set the isTraced flag for variables
             if (P.tracedPlace.count("ALL")==0 && P.tracedPlace.count("ALLCOLOR")==0) {
-                for (size_t i = 0; i < lReader.MyLha.NbVar; i++) {
-                    if ( P.tracedPlace.count(lReader.MyLha.Vars.label[i])>0){
-                        lReader.MyLha.Vars.isTraced[i] = true;
+                for (size_t i = 0; i < A.NbVar; i++) {
+                    if ( P.tracedPlace.count(A.Vars.label[i])>0){
+                        A.Vars.isTraced[i] = true;
                     } else {
-                        lReader.MyLha.Vars.isTraced[i] = false;
+                        A.Vars.isTraced[i] = false;
                     }
                 }
             }
 
             //If everythink work correctly, copy the HASL formula and generate the code
-            if (!parseresult && lReader.MyLha.NbLoc > 0) {
-                P.HaslFormulasname = lReader.MyLha.HASLname;
-                P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
-                P.nbAlgebraic = lReader.MyLha.Algebraic.size();
-                P.nbQualitatif = lReader.MyLha.FinalStateCond.size();
+            if (!parseresult && A.NbLoc > 0) {
+                P.HaslFormulasname = A.HASLname;
+                P.HaslFormulas = vector<HaslFormulasTop*>(A.HASLtop);
+                P.nbAlgebraic = A.Algebraic.size();
+                P.nbQualitatif = A.FinalStateCond.size();
 
                 //If the countTrans option is set then add HASL formula counting the occurance of each transition of the LHA.
                 if (P.CountTrans) {
-                    for (size_t tr = 0; tr < lReader.MyLha.Edge.size(); tr++) {
+                    for (size_t tr = 0; tr < A.Edge.size(); tr++) {
                         P.nbAlgebraic++;
                         std::stringstream transname;
                         transname << "P_";
-                        transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Source];
+                        transname << A.LocLabel[A.Edge[tr].Source];
                         transname << "->";
-                        transname << lReader.MyLha.LocLabel[lReader.MyLha.Edge[tr].Target];
+                        transname << A.LocLabel[A.Edge[tr].Target];
                         P.HaslFormulasname.push_back(transname.str());
-                        P.HaslFormulas.push_back(new HaslFormulasTop(lReader.MyLha.Algebraic.size() + tr));
+                        P.HaslFormulas.push_back(new HaslFormulasTop(A.Algebraic.size() + tr));
                     }
                 }
 
+                //some cleaning:
+                A.SimplyUsedLinearForm = vector<bool>(A.LinearForm.size(),true);
+                for( size_t i = 0; i< A.LhaFuncArg.size();++i)
+                    if(A.LhaFuncType[i]!="Last")
+                        A.SimplyUsedLinearForm[A.LhaFuncArg[i]] = false;
+
+
                 //Generate the code for the LHA
                 lReader.WriteFile(P);
+                lReader.writeDotFile(P.tmpPath + "/templateLHA.dot");
 
             } else {
                 return false;
@@ -237,7 +247,7 @@ bool ParseLHA(GspnType &spn){
             //and add external HASL formula
         } else if (P.PathLha.compare(P.PathLha.length() - 3, 3, "cpp") == 0) {
             //The code for the LHA is provided by the user
-            lReader.MyLha.ConfidenceLevel = P.Level;
+            A.ConfidenceLevel = P.Level;
             //Add external HASL formula
             if (P.externalHASL.compare("") == 0) {
                 P.HaslFormulasname.push_back("preComputedLHA");
@@ -247,9 +257,9 @@ bool ParseLHA(GspnType &spn){
             } else {
                 parseresult = lReader.parse(P.externalHASL);
                 if (!parseresult) {
-                    P.HaslFormulasname = lReader.MyLha.HASLname;
-                    P.HaslFormulas = vector<HaslFormulasTop*>(lReader.MyLha.HASLtop);
-                    P.nbAlgebraic = lReader.MyLha.Algebraic.size();
+                    P.HaslFormulasname = A.HASLname;
+                    P.HaslFormulas = vector<HaslFormulasTop*>(A.HASLtop);
+                    P.nbAlgebraic = A.Algebraic.size();
                 } else
                     cerr << "Fail to parse extra Hasl Formula" << endl;
             }
