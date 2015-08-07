@@ -1,8 +1,8 @@
 pta
-const int n = 3;
+const int n = 5;
 const int B = 20;
-const int timeC = 19;
-const int wt = 100;
+const int timeC = 10;
+const int wt = 1000;
 
 module c1
 	state1: [1..n] init 1;
