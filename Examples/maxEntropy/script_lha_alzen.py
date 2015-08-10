@@ -1,11 +1,16 @@
 #!env python
+import sys
 
-n=5
+n= int(sys.argv[1]);
+Dline=sys.argv[2];
+wt=sys.argv[3]; 
+B=sys.argv[4];
+
 s="";
 s+="NOTDETERMINISTIC\n\n";
-s+="const double Dline=1000;\n";
-s+="const double wt=1000;\n";
-s+="const double B = 20;\n";
+s+="const double Dline="+Dline+";\n";
+s+="const double wt="+wt+";\n";
+s+="const double B = "+B+";\n";
 s+="const double C = 10;\n\n";
 s+="const double D = 9;\n\n";
 s+="const double E = 50;\n\n";
@@ -54,7 +59,7 @@ for i in range(1,n-2):
 s+="((ll_%d"%(n-2)+",ll_%d"%(n-1) +"),{t_b}, x<=D & t<=E ,{countT = countT+1});\n";
 s+="((ll_%d"%(n-1)+",lf_0),{t_e}, x<=wt& t>=F,  {countT = countT+1,x'=0});\n";
 for i in range(n-1):
-    s+="((ll_%d" %i + ",ll_0),{t_d}, x<=D  ,{countT = countT+1});\n";
+    s+="((ll_%d" %i + ",ll_0),{t_d}, x<=B  ,{countT = countT+1});\n";
 
 
 s+="%copy of the automaton when the final states are reached\n";
