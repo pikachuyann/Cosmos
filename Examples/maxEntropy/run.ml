@@ -37,26 +37,29 @@ endmodule" n b timeC wt;
     print_endline cmd2;
     assert (0=Sys.command cmd2)
 
-let gen_faillure_repair name n b npoly =
+let gen_faillure_repair name n b minRep npoly =
   let f = open_out (name^"_C.prism") in
   Printf.fprintf f  "pta
     const int n = %i;
     const int B = %i;
+    const int minRep = %i;
 
     module c1
         state1: [1..n+1] init 1;
         x: clock;
+        y: clock;
 
         invariant
               ( x<B)
         endinvariant
 
-        [a] state1<n & x<B -> 1.0 : (state1'=state1+1);
+        [a] state1<n & x<B & y>minRep-> 1.0 : (state1'=state1+1)&(y'=0);
         [b] state1<n+1 & state1>1 & x<B  -> 1.0 : (state1'=state1-1);
-        [c] state1=n & x<B -> 1.0 : (state1'=n+1)&(x'=0);
-        [c] state1=n+1 & x<B -> 1.0 : (state1'=n+1)&(x'=0);
+        [b] state1=1 & x<B  -> 1.0 : (state1'=1);
+        [c] state1=n & x<B -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
+        [c] state1=n+1 & x<B -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
         [b] state1=n+1 & x<B  -> 1.0 : (state1'=1);
-endmodule" n b;
+endmodule" n b minRep;
   close_out f;
   let cmd = Printf.sprintf "sage script_tocosmos.sage %s_C.prism %s_C.grml %i" name name npoly in
   print_endline cmd;
@@ -84,5 +87,5 @@ let exp1 () =
 
 (* EXP2 *)
 
-gen_faillure_repair "exp2" 5 10 5
+gen_faillure_repair "exp2" 4 11 2 6
 
