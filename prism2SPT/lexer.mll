@@ -3,6 +3,7 @@
   open Parser
 
   exception SyntaxError  of string
+
 }
 
 let digit = ['0'-'9']
@@ -16,17 +17,22 @@ rule token = parse
   | digit+ as lxm  { INT(int_of_string lxm)}
   | digit*['.']?digit+(['e' 'E']['-' '+']?digit+)? as lxm  {FLOAT(float_of_string lxm)}
   | "ctmc" | "dtmc" {CTMC}
+  | "pta" {PTA}
   | "int" {INTKW}
   | "double" {DOUBLEKW}
   | "const" {CONST}
   | "formula" {FORMULA}
   | "module" {MODULE} | "endmodule" {ENDMODULE}
   | "rewards" {REWARDS} | "endrewards" {ENDREWARDS}
+  | "invariant" {INVARIANT} | "endinvariant" {ENDINVARIANT}
   | "label" {LABEL}
   | "init" {INIT} | "endinit" {ENDINIT}
-  | "bool" {BOOL}
+  | "bool" {BOOL} | "clock" {CLOCK}
   | "floor" {FLOOR} | "ceil" {CEIL}
+  | "ParseInt" {PARSEINT} | "ParseFloat" {PARSEFLOAT}
+  | "ParseBool" {PARSEBOOL} | "ParseDistribution" {PARSEDISTR}   
   | '"'      { read_string (Buffer.create 17) lexbuf }
+  | "#XML#" {read_xml (Buffer.create 17) lexbuf}
   | ".." {RANGE}
   | "'" {PRIME}
   | '(' {LPAR}
@@ -61,8 +67,12 @@ rule token = parse
 	  | IntVar -> INTNAME(lxm)
 	  | BoolVar-> BOOLNAME(lxm)
 	  | FunT -> FUNNAME(lxm)
+	  | Clock -> CLOCKNAME(lxm)
 	end with
-	    Not_found -> NAME(lxm)
+	    Not_found -> 
+	      if !allInt then INTNAME(lxm)
+	      else if !allReal then DOUBLENAME(lxm)
+	      else NAME(lxm)
 }
   | _ { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
   | eof  {EOF}
@@ -81,3 +91,10 @@ and read_string buf = parse
     }
   | _ { raise (SyntaxError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }
   | eof { raise (SyntaxError ("String is not terminated")) }
+and read_xml buf = shortest
+  | "#XML#" { XMLTOK (Buffer.contents buf) }
+  | [^ '#']+
+      { Buffer.add_string buf (Lexing.lexeme lexbuf);
+	read_xml buf lexbuf
+      }
+  | eof { raise (SyntaxError ("XML is not terminated")) }

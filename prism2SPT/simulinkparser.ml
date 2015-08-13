@@ -111,7 +111,7 @@ let rec exp_mod (sl,tl,scriptl) = function
        | "transition" -> (match getdst clist with Some dst ->
 	 let desc = getDescription clist
 	 |>> (fun x -> let n = String.length x in if n<=7 then None 
-	   else if String.sub x 0 7 = "Cosmos\n" then Some (String.sub x 7 (n-7)) else None) in
+	   else if String.sub x 0 7 = "Cosmos\n" then Some (let s2 = String.sub x 7 (n-7) in s2) else None) in
 	 (sl,((getSSID alist),(getName clist),(getsrc clist),dst,desc)::tl,scriptl) 
 	 | _ -> failwith "Ill formed transition")
        | "data" -> begin try 

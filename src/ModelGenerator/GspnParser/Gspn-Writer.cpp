@@ -24,13 +24,18 @@
  *******************************************************************************
  */
 
+
+#include <algorithm>
+#include <sstream>
+#include <limits.h>
+
 #include "Gspn-Writer.hpp"
 #include "../casesWriter.hpp"
 
 
-#include <algorithm>
+using namespace std;
 
-Gspn_Writer::Gspn_Writer(GspnType& mgspn,parameters& Q):MyGspn(mgspn),P(Q){
+Gspn_Writer::Gspn_Writer(GspnType& mgspn,const parameters& Q):MyGspn(mgspn),P(Q){
     if(P.lightSimulator){
         trId = "TR_PL_ID t";
     }
@@ -38,7 +43,7 @@ Gspn_Writer::Gspn_Writer(GspnType& mgspn,parameters& Q):MyGspn(mgspn),P(Q){
 
 
 
-void Gspn_Writer::writeFunT(ostream &f,const std::string &rtype,const std::string &name,const std::string &extraArg,function<void(unsigned int,stringstream &)> ft,const std::string init = ""){
+void Gspn_Writer::writeFunT(ostream &f,const std::string &rtype,const std::string &name,const std::string &extraArg,function<void(unsigned int,stringstream &)> ft,const std::string init = "")const {
     f << rtype <<" "<< objName << name << trId << extraArg << "{" << endl;
     f << init << endl;
     casesHandler weightcases("t");
@@ -57,7 +62,7 @@ void Gspn_Writer::writeFunT(ostream &f,const std::string &rtype,const std::strin
 // Precompute effect of transitions over other transitions
 void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
                                     vector< set<int> > &PossiblyDisabled,
-                                    vector< set<int> > &FreeMarkDepT) {
+                                    vector< set<int> > &FreeMarkDepT)const {
 	
 	for (size_t t1 = 0; t1 < MyGspn.tr; t1++) {
 		set<int> S;
@@ -211,7 +216,7 @@ void Gspn_Writer::EnabledDisabledTr(vector< set<int> > &PossiblyEnabled,
 	}
 }
 
-void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector< set<int> > &vect){
+void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector< set<int> > &vect)const{
         //SpnF << "\t"<< name << " = vector< vector<int> >("<< vect.size() << ");"<< endl;
     for (size_t t = 0; t < vect.size(); t++)
         if(vect[t].size()>0){
@@ -241,7 +246,7 @@ void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector
 	SpnF << endl;
 }
 
-void Gspn_Writer::writeEnabledDisabled(ofstream &SpnF){
+void Gspn_Writer::writeEnabledDisabled(ofstream &SpnF)const{
 	vector< set<int> > PossiblyEnabled;
 	vector< set<int> > PossiblyDisabled;
 	vector< set<int> > FreeMarkDepT;
@@ -256,7 +261,7 @@ void Gspn_Writer::writeEnabledDisabled(ofstream &SpnF){
 	writeUpdateVect(SpnF, "FreeMarkDepT", FreeMarkDepT);
 }
 
-int Gspn_Writer::varMultiplier(size_t var){
+int Gspn_Writer::varMultiplier(size_t var)const{
 	int acc = 1;
 	for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end()&& colvar != (MyGspn.colVars.begin() + var); ++colvar) {
 		acc *= MyGspn.colClasses[colvar->type].colors.size();
@@ -292,7 +297,7 @@ void printset(set<T1> s1){
 	cerr << "}";
 }
 
-void Gspn_Writer::writeTok(ostream &SpnF,vector<coloredToken> &ct,const colorDomain &cd){
+void Gspn_Writer::writeTok(ostream &SpnF,const vector<coloredToken> &ct,const colorDomain &cd)const{
     if(ct.size()==1 && ct[0].field.size()==0){
         SpnF << ct[0].mult;
         return;
@@ -344,8 +349,7 @@ void Gspn_Writer::generateStringVal(arcStore& as){
     }
 }
 
-void Gspn_Writer::writeTransition(ofstream & spnF){
-	
+void Gspn_Writer::writeTransition(ofstream & spnF)const{
 	size_t nbbinding = 1;
 	for (size_t v = 0 ; v < MyGspn.colVars.size(); v++)
 		nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
@@ -369,24 +373,24 @@ void Gspn_Writer::writeTransition(ofstream & spnF){
 	}
 }
 
-void Gspn_Writer::writeVariable(ofstream & spnF){
+void Gspn_Writer::writeVariable(ofstream & spnF)const{
 	for (size_t v = 0 ; v < MyGspn.colVars.size(); v++) {
 		spnF << "\t" << MyGspn.colDoms[MyGspn.colVars[v].type].cname();
 		spnF << " " << MyGspn.colVars[v].name << ";\n";
 	}
 }
 
-void Gspn_Writer::writeDotFile(const string &file){
+void Gspn_Writer::writeDotFile(const string &file)const{
     ofstream df(file.c_str(), ios::out | ios::trunc);
     df << "digraph G {" << endl;
 
-    for (auto &p : MyGspn.placeStruct ) {
+    for (const auto &p : MyGspn.placeStruct ) {
         df << "\t" << p.name;
         df << " [shape=circle,xlabel=\""<< p.name;
         df <<"\",label=\"$"<< p.name << "$\"];" << endl;
     }
 
-    for (auto &t : MyGspn.transitionStruct ) {
+    for (const auto &t : MyGspn.transitionStruct ) {
         df << "\t" << t.label;
         df << " [shape=rect,height=0.2,style=filled,fillcolor=$CF_";
         df << t.label << "$ ,xlabel=\"" << t.label << "\",label=\"\"];"<< endl;
@@ -413,7 +417,7 @@ void Gspn_Writer::writeDotFile(const string &file){
     df << "}" << endl;
 }
 
-void Gspn_Writer::writeMacro(ofstream &f){
+void Gspn_Writer::writeMacro(ofstream &f)const{
     for( auto &p : MyGspn.placeStruct)
         f << "#define PL_"<< p.name << "_LP " << p.id <<endl;
     for( auto &t : MyGspn.transitionStruct)
@@ -422,7 +426,7 @@ void Gspn_Writer::writeMacro(ofstream &f){
 }
 
 
-void Gspn_Writer::writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos, const arcStore &as2, bool direct){
+void Gspn_Writer::writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos, const arcStore &as2, bool direct)const{
     if (!MyGspn.access(as,t2,p.id).isEmpty) {
         if(!MyGspn.access(as2,t,p.id).isMarkDep && !MyGspn.access(as,t2,p.id).isMarkDep){
             int decrement = MyGspn.access(as2,t,p.id).intVal;
@@ -435,17 +439,10 @@ void Gspn_Writer::writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_
                 f << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+(direct? decrement: 0) << ")TransitionConditions["<< t2 << (pos? "]++ ;":"]-- ;") << endl;
         } else {
             string decrement;
-            if (MyGspn.access(as2,t,p.id).isMarkDep) {
-                searchreplace(MyGspn.access(as2,t,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , decrement);
-            }else{
-                decrement = to_string(MyGspn.access(as2,t,p.id).intVal);
-            }
+            searchreplace(MyGspn.access(as2,t,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , decrement);
             string seuil;
-            if(MyGspn.access(as,t2,p.id).isMarkDep){
-                searchreplace(MyGspn.access(as,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
-            }else{
-                seuil = to_string(MyGspn.access(as,t2,p.id).intVal);
-            }
+            searchreplace(MyGspn.access(as,t2,p.id).stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
+
             f << "\t\t\tif(Marking.P->_PL_" << p.name << (direct? "": "+"+decrement) <<" >= "<< seuil;
             f << " && Marking.P->_PL_" << p.name <<" < " << seuil << (direct? "+"+decrement: "") <<")";
             f << "TransitionConditions["<< t2 <<(pos? "]++ ;":"]-- ;") << endl;
@@ -453,7 +450,7 @@ void Gspn_Writer::writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_
     }
 }
 
-void Gspn_Writer::writeMarkingUpdate(stringstream &f, size_t t,const place &p,const arcStore &as2,bool direct){
+void Gspn_Writer::writeMarkingUpdate(stringstream &f, size_t t,const place &p,const arcStore &as2,bool direct)const{
 
     if(P.localTesting)for (size_t t2 = 0; t2 < MyGspn.tr; t2++) {
         if (!MyGspn.access(MyGspn.inArcsStruct,t2,p.id).isEmpty)
@@ -472,7 +469,7 @@ void Gspn_Writer::writeMarkingUpdate(stringstream &f, size_t t,const place &p,co
 }
 
 
-void Gspn_Writer::writeGetDistParameters(ofstream &f){
+void Gspn_Writer::writeGetDistParameters(ofstream &f)const{
     writeFunT(f, "void", "GetDistParameters(", ")const",
               [&](unsigned int t,stringstream &newcase){
                   if (MyGspn.transitionStruct[t].type == Timed) {
@@ -509,13 +506,11 @@ void Gspn_Writer::writeGetDistParameters(ofstream &f){
                               }
                           }
                       newcase << "\t}" << endl;
-                  }else{
-                      newcase << "break;" <<endl;
                   }
-                  });
+                  }, "using namespace hybridVar;\n");
 }
 
-void Gspn_Writer::writeIsEnabled(ofstream &f){
+void Gspn_Writer::writeIsEnabled(ofstream &f)const{
     writeFunT(f, "bool", "IsEnabled(", ")const",
               [&](unsigned int t,stringstream &newcase){
                   if(P.localTesting){
@@ -554,7 +549,20 @@ void Gspn_Writer::writeIsEnabled(ofstream &f){
               },(!P.magic_values.empty() ? "\tif(!magicConditional(t))return false;\n":""));
 }
 
-void Gspn_Writer::writeFire(ofstream &f){
+void Gspn_Writer::writeFire(ofstream &f)const{
+    stringstream preamble;
+    preamble << "\tlastTransition = t;" << endl;
+    if(!P.magic_values.empty()){
+        preamble << "\tmagicUpdate(t,time);" << endl;
+    }
+    if(!MyGspn.hybridVars.empty()){
+        preamble << "\tdouble incrtime = time - lastTransitionTime;" << endl;
+        preamble << "\tlastTransitionTime = time;" << endl;
+        for(const auto &v:MyGspn.hybridVars)
+            if (v.type == CV_CLOCK)
+                preamble << "\thybridVar::" << v.name << "+= incrtime;" << endl;
+    }
+
     writeFunT(f, "void", "fire(", ",REAL_TYPE time)",
               [&](unsigned int t,stringstream &newcase){
                 newcase << "{" << endl;
@@ -580,9 +588,13 @@ void Gspn_Writer::writeFire(ofstream &f){
                       }
 
                   }
+                  const auto &ts = MyGspn.transitionStruct[t];
+                  if(!ts.update.empty()){
+                        newcase << "{using namespace hybridVar;" <<endl << ts.update << "}" << endl;
+                  }
                   newcase << "\t}";
               },
-              (!P.magic_values.empty()? "\tlastTransition = t;\n\tmagicUpdate(t,time);\n":"\tlastTransition = t;\n" )
+              preamble.str()
               );
 
     if(!P.lightSimulator){
@@ -611,7 +623,7 @@ void Gspn_Writer::writeFire(ofstream &f){
 }
 
 
-void Gspn_Writer::writeSetConditionsVector(ofstream &f){
+void Gspn_Writer::writeSetConditionsVector(ofstream &f)const{
     f << "void "<< objName <<"setConditionsVector(){" << endl;
     if(P.localTesting)for (size_t t = 0; t < MyGspn.tr; t++) {
         f << "\tTransitionConditions["<< t <<"]=0;" << endl;
@@ -637,22 +649,22 @@ void Gspn_Writer::writeSetConditionsVector(ofstream &f){
     f << "}" << endl;
 }
 
-void Gspn_Writer::writeGetPriority(ofstream &f){
+void Gspn_Writer::writeGetPriority(ofstream &f)const{
     writeFunT(f, "REAL_TYPE","GetPriority(", ")const",
               [&](unsigned int t,stringstream &ss){
                   ss << "\t\treturn (double)" << MyGspn.transitionStruct[t].priority << ";";
-            });
+            }, "using namespace hybridVar;\n");
 }
 
 
-void Gspn_Writer::writeGetWeight(ofstream &f){
+void Gspn_Writer::writeGetWeight(ofstream &f)const{
     writeFunT(f, "REAL_TYPE","GetWeight(", ")const",
               [&](unsigned int t,stringstream &ss){
                 ss << "\t\treturn (double)" << MyGspn.transitionStruct[t].weight << ";";
-            });
+            }, "using namespace hybridVar;\n");
 }
 
-void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, parameters &P){
+void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const{
     header << "class abstractBindingImpl {\npublic:\n";
     for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
         header << "\t" << MyGspn.colDoms[colvar->type].tokname() << " " << colvar->name << ";\n";
@@ -677,9 +689,13 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
         SpnCppFile << "\tmagicReset();" << endl;
     }
     for (const auto &plit : MyGspn.placeStruct) {
-        SpnCppFile << "\tP->_PL_"<< plit.name << " =" <<
-        MyGspn.Marking[plit.id] << ";\n";
+        SpnCppFile << "\tP->_PL_"<< plit.name << " =" << plit.Marking << ";\n";
     }
+    if (!MyGspn.hybridVars.empty()) {
+        for(const auto &v:MyGspn.hybridVars)
+            SpnCppFile << "\thybridVar::" << v.name << "=" << v.initialValue << ";" << endl;
+    }
+
     SpnCppFile << "}\n";
     SpnCppFile << "\n";
     SpnCppFile << "\n";
@@ -724,7 +740,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
             maxNameSize = max(maxNameSize, plit.name.length());
     vector<place> plitcp((MyGspn.placeStruct.size()));
 
-    auto it = copy_if(MyGspn.placeStruct.begin(), MyGspn.placeStruct.end(), plitcp.begin(), [](place &plit){
+    auto it = copy_if(MyGspn.placeStruct.begin(), MyGspn.placeStruct.end(), plitcp.begin(), [](const place &plit){
         return plit.isTraced;
     });
     plitcp.resize(distance(plitcp.begin(),it));
@@ -732,7 +748,9 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
 
     sort(plitcp.begin(), plitcp.end(), [&](const place &p1, const place &p2){
         if (P.tracedPlace.count(p1.name)>0 && P.tracedPlace.count(p2.name)>0){
-            return P.tracedPlace[p1.name] < P.tracedPlace[p2.name];
+            const auto i1= P.tracedPlace.at(p1.name);
+            const auto i2= P.tracedPlace.at(p2.name);
+            return i1 < i2;
         } else return false;
     });
 
@@ -754,19 +772,26 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
             SpnCppFile << "}\n";
         }
     } else {
-
         SpnCppFile << "void abstractMarking::printHeader(ostream &s)const{\n";
-        if(P.StringInSpnLHA)
+        if(P.StringInSpnLHA){
             for (const auto &plit : plitcp)
                 if (plit.isTraced){
                     SpnCppFile << "s << ";
                     SpnCppFile << " setw(" << maxNameSize << ") << ";
                     SpnCppFile << "\"" <<plit.name  << " \";"<<endl;
                 }
+            for (const auto &v : MyGspn.hybridVars)
+                if(v.isTraced){
+                    SpnCppFile << "s << ";
+                    SpnCppFile << " setw(" << maxNameSize << ") << ";
+                    SpnCppFile << "\"" << v.name  << "\";"<<endl;
+                }
+
+        }
         SpnCppFile << "}\n";
         SpnCppFile << "\n";
 
-        SpnCppFile << "void abstractMarking::print(ostream &s)const{\n";
+        SpnCppFile << "void abstractMarking::print(ostream &s,double eTime)const{\n";
         if(P.StringInSpnLHA){
             //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
             for(const auto &plit : plitcp)
@@ -777,6 +802,12 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header, para
                     }else{ SpnCppFile << "print_magic(P->_PL_"<< plit.name << ")<<\" \";\n";
                     }
                 }
+            for (const auto &v : MyGspn.hybridVars)
+                if(v.isTraced){
+                SpnCppFile << "s << ";
+                SpnCppFile << " setw(" << maxNameSize-1 << ") ";
+                SpnCppFile << " << hybridVar::"<< v.name  <<"+ eTime <<\" \";"<<endl;
+            }
         }
         SpnCppFile << "}\n";
     }
@@ -904,8 +935,8 @@ void Gspn_Writer::writeFile(){
     generateStringVal(MyGspn.inhibArcsStruct);
     for(auto &p: MyGspn.placeStruct){
         stringstream ss;
-        writeTok(ss, MyGspn.InitialMarking[p.id],MyGspn.colDoms[p.colorDom]);
-        MyGspn.Marking[p.id] = ss.str();
+        writeTok(ss, p.initMarking,MyGspn.colDoms[p.colorDom]);
+        p.Marking = ss.str();
     }
 
 	//loc = Pref + "../SOURCES/Cosmos/spn.cpp";
@@ -950,14 +981,22 @@ void Gspn_Writer::writeFile(){
 
 	//------------- Writing constant--------------------------------------------
     writeMacro(SpnCppFile);
-    
     for (map<string,double>::iterator it= MyGspn.RealConstant.begin();
 		 it!= MyGspn.RealConstant.end() ; it++) {
-		SpnCppFile << "\tconst double "<<it->first<<"="<<it->second << ";" << endl;
+		SpnCppFile << "const double "<<it->first<<"="<<it->second << ";" << endl;
 	}
 	for (const auto &plit : MyGspn.placeStruct) {
-		SpnCppFile << "\tconst int _nb_Place_"<< plit.name << "=" << plit.id << ";" << endl;
+		SpnCppFile << "const int _nb_Place_"<< plit.name << "=" << plit.id << ";" << endl;
 	}
+
+    //------------- Hybrid Variable --------------------------------------------
+    SpnCppFile << "namespace hybridVar {" << endl;
+    //if (!MyGspn.hybridVars.empty()){
+        for(const auto &v:MyGspn.hybridVars)
+            SpnCppFile << (v.type == CV_INT? "\tint ":"\tdouble ") << v.name << "=" << v.initialValue << ";" << endl;
+    //}
+    SpnCppFile << "}" << endl;
+
 	
     if (P.magic_values != "")
         SpnCppFile << "#include \"" << P.magic_values << "\"" << endl;
@@ -973,7 +1012,7 @@ void Gspn_Writer::writeFile(){
     if(!P.lightSimulator)SpnCppFile << "#include \"marking.hpp\"\n";
     SpnCppFile << "#include \"markingImpl.hpp\"\n";
     header << "#include <string.h>\n";
-	writeMarkingClasse(SpnCppFile,header,P);
+	writeMarkingClasse(SpnCppFile,header);
 	header << "#endif" << endl;
 	header.close();
 	
@@ -1003,9 +1042,9 @@ void Gspn_Writer::writeFile(){
             SpnCppFile << "_trans(" << t << ",";
 
             if (MyGspn.transitionStruct[t].type==Timed) {
-                SpnCppFile << "Timed," << MyGspn.transitionStruct[t].dist.name << ",";
+                SpnCppFile  << MyGspn.transitionStruct[t].dist.name << ",";
             }else{
-                SpnCppFile << "unTimed,DETERMINISTIC,";
+                SpnCppFile << "IMMEDIATE,";
             }
 
             SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
@@ -1023,7 +1062,7 @@ void Gspn_Writer::writeFile(){
     if(!P.lightSimulator){
         SpnCppFile << ",Transition(TransArray,TransArray +"<< MyGspn.tr <<")";
         SpnCppFile << ",Place("<< MyGspn.pl << ")";
-        SpnCppFile << ",ParamDistr(3)";
+        SpnCppFile << ",ParamDistr(10)";
         SpnCppFile << ",TransitionConditions(" << MyGspn.tr <<",0)";
     }
 
@@ -1083,9 +1122,83 @@ void Gspn_Writer::writeFile(){
     }
 
 	SpnCppFile << "void "<<objName<<"reset() {"<< endl;
+    SpnCppFile << "\tlastTransitionTime = 0;"<< endl;
 	SpnCppFile << "\tMarking.resetToInitMarking();"<< endl;
 	if(P.localTesting)SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
 	SpnCppFile << "}"<< endl<< endl;
+
+    if(!P.lightSimulator)
+        writeUserDefineDistr(SpnCppFile);
 	
 	SpnCppFile.close();
 }
+
+void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
+    f << "double userDefineCDF(vector<double> const& param, double funvar){" <<endl;
+    {
+    auto ch = casesHandler("(int)param[0]");
+    for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
+        const auto &dist = MyGspn.distribStruct[it];
+        stringstream newcase;
+        newcase << "\t{" << endl;
+        newcase << "\t\tdouble " << dist.var << " = funvar;" << endl;
+        newcase << "\t\treturn (" << dist.cdf << ");" << endl;
+        newcase << "\t}" << endl;
+        ch.addCase(it , newcase.str(),dist.name);
+    }
+    ch.writeCases(f);
+    f << "}\n" << endl;
+    }
+    {
+    f << "double userDefinePDF(vector<double> const& param, double funvar){" <<endl;
+    auto ch = casesHandler("(int)param[0]");
+    for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
+        const auto &dist = MyGspn.distribStruct[it];
+        stringstream newcase;
+        newcase << "\t{" << endl;
+        newcase << "\t\tdouble " << dist.var << " = funvar;" << endl;
+        newcase << "\t\treturn (" << dist.pdf << ");" << endl;
+        newcase << "\t}" << endl;
+        ch.addCase(it , newcase.str(),dist.name);
+    }
+    ch.writeCases(f);
+    f << "}\n" << endl;
+    }
+    {
+    f << "double userDefineLowerBound(vector<double> const& param){" <<endl;
+    auto ch = casesHandler("(int)param[0]");
+    for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
+        const auto &dist = MyGspn.distribStruct[it];
+        stringstream newcase;
+        newcase << "\t\treturn (" << dist.lowerBound << ");" << endl;
+        ch.addCase(it , newcase.str(),dist.name);
+    }
+    ch.writeCases(f);
+    f << "}\n" << endl;
+    }
+    {
+    f << "double userDefineUpperBound(vector<double> const& param){" <<endl;
+    auto ch = casesHandler("(int)param[0]");
+    for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
+        const auto &dist = MyGspn.distribStruct[it];
+        stringstream newcase;
+        newcase << "\t\treturn (" << dist.upperBound << ");" << endl;
+        ch.addCase(it , newcase.str(),dist.name);
+    }
+    ch.writeCases(f);
+    f << "}\n" << endl;
+    }
+
+    {
+    f << "double userDefineDiscreteDistr(vector<double> const& param,unsigned int i){" <<endl;
+    if( any_of(MyGspn.transitionStruct.begin(),MyGspn.transitionStruct.end(),[](const transition &t){return t.dist.name == "DISCRETEUSERDEFINE";})){
+        f << "\treturn (magicUDDD(param,i));" << endl;
+    } else {
+        f << "\treturn (0.0);" << endl;
+    }
+    f << "}\n" << endl;
+    }
+
+}
+
+

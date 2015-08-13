@@ -113,6 +113,7 @@
 
 %token <name>     MIN
 %token <name>     MAX
+%token <name>     MOD
 
 %token <name>     LhaMIN
 %token <name>     LhaMAX
@@ -124,6 +125,8 @@
 %token <name> 	  INTEGRAL
 %token <name>	  MEAN
 %token <name>	  DISC
+
+%token <name>     NOTDET
 
 %token <name>     LhaName
 
@@ -183,12 +186,13 @@
 %start LHA;
 
 LHA: 
-	declarations InitFinal definitions
+| NOTDET declarations InitFinal definitions {Reader.MyLha.isDeterministic=false;}
+    | declarations InitFinal definitions
 	| HaslExps;
 
-declarations:  Sizes Constants Lists HaslExps
-| Sizes  Lists HaslExps ;
-
+declarations:
+    | Sizes Constants Lists HaslExps
+| Sizes  Lists HaslExps;
 
 
 
@@ -234,6 +238,7 @@ ival {sprintf($$,"%i",$1);}
 | FLOOR LB IntMarkingFormula DIV IntMarkingFormula RB {sprintf($$,"floor( %s /double(%s))", $3,$5);  }
 | MIN LB IntMarkingFormula COMMA IntMarkingFormula RB {sprintf($$,"min(%s , %s)", $3, $5);  }
 | MAX LB IntMarkingFormula COMMA IntMarkingFormula RB {sprintf($$,"max(%s , %s)", $3, $5);  };
+| MOD LB IntMarkingFormula COMMA IntMarkingFormula RB {sprintf($$,"((int)%s %% (int)%s)", $3, $5);  };
 
 
 RealMarkingFormula:  rval {sprintf($$, "%f",$1);}
@@ -289,6 +294,13 @@ RealVarMarkingFormula:  rval {sprintf($$, "%f",$1);}
 		}
 	}
 }
+| str LSB IntMarkingFormula RSB {
+    size_t varin = Reader.MyLha.Vars.find(*$1);
+    if(varin != Reader.MyLha.Vars.label.size()){
+        sprintf($$, "Vars->%s[%s]", $1->c_str(),$3);
+    }
+        else {cout<<"'"<<*$1<<"' is not an lha array variable"<<endl;YYABORT;}
+    }
 | str LSB ColorClassList RSB {
 	if(Reader.MyLha.PlaceIndex.find(*$1)!=Reader.MyLha.PlaceIndex.end())
 	{std::ostringstream s;
@@ -360,9 +372,6 @@ VariablesList: VList EQ '{' VLabels '}' SEMICOLON {
 
 	for(const auto &it : Reader.MyLha.TransitionIndex)
 		PetriTransitions.insert(it.first);
-	
-	
-
 };
 
 VLabels : str {
@@ -447,13 +456,13 @@ iLLabels : str {
 	
 	if(Reader.MyLha.LocIndex.find(*$1)!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.InitLoc.insert(Reader.MyLha.LocIndex[*$1]);
-	else cout<<"Unknown location"<<endl;
+	else cout<<"Unknown location:" << *$1 <<endl;
 	
 	
 }
 |iLLabels COMMA str {if(Reader.MyLha.LocIndex.find(*$3)!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.InitLoc.insert(Reader.MyLha.LocIndex[*$3]);
-	else cout<<"Unknown location"<<endl;
+	else cout<<"Unknown location:"<< *$3 << endl;
 };
 
 final: Floc EQ '{' fLLabels '}' SEMICOLON;
@@ -462,13 +471,13 @@ fLLabels : str {
 	
 	if(Reader.MyLha.LocIndex.find(*$1)!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.FinalLoc.insert(Reader.MyLha.LocIndex[*$1]);
-	else cout<<"Unknown location"<<endl;
+	else cout<<"Unknown location: "<< *$1 <<endl;
 	
 	
 }
 |fLLabels COMMA str {if(Reader.MyLha.LocIndex.find(*$3)!=Reader.MyLha.LocIndex.end())
 	Reader.MyLha.FinalLoc.insert(Reader.MyLha.LocIndex[*$3]);
-	else {cout<<"Unknown location"<<endl;YYABORT;}
+	else {cout<<"Unknown location: "<< *$3 <<endl;YYABORT;}
 };
 
 
@@ -501,7 +510,7 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 		Reader.MyLha.FuncFlow[loc->second] = FuncFlowVector;
         FuncFlowVector=vector<string>(Reader.MyLha.NbVar,"");
 	}
-	else {cout<<"Unknown location"<<endl;YYABORT;}
+	else {cout<<"Unknown location: "<< *$2 <<endl;YYABORT;}
 	
 }
 |LB str COMMA LogExpr RB SEMICOLON
@@ -513,7 +522,7 @@ LOCATION: LB str COMMA LogExpr COMMA LB FLOWS RB RB SEMICOLON
 		Reader.MyLha.FuncLocProperty[loc->second]= $4;
 		Reader.MyLha.FuncFlow[loc->second] = FuncFlowVector;
 	}
-	else {cout<<"Unknown location"<<endl;YYABORT;}
+	else {cout<<"Unknown location: "<< *$2 <<endl;YYABORT;}
 	
 	
 };
@@ -776,6 +785,13 @@ AVG LB AlgExpr RB {
 }
 | PROB {
 	$$ = new HaslFormulasTop(PROBABILITY);
+}
+| PROB LB RB {
+    $$ = new HaslFormulasTop(PROBABILITY);
+}
+| PROB LB str RB {
+    Reader.MyLha.FinalStateCond.push_back(*$3);
+    $$ = new HaslFormulasTop(PROBCOND,(size_t)Reader.MyLha.FinalStateCond.size()-1);
 }
 | EXIST_TOK {
     $$ = new HaslFormulasTop(EXISTS);

@@ -37,13 +37,14 @@
 
 using namespace std;
 
-SimulatorRE::SimulatorRE(bool b) {
+SimulatorRE::SimulatorRE(LHA& A,bool b):Simulator(A) {
 	rareEventEnabled = false;
 	doubleIS_mode=b;
 }
 
-SimulatorRE::SimulatorRE(){
-	SimulatorRE(false);
+SimulatorRE::SimulatorRE(LHA& A):Simulator(A) {
+    rareEventEnabled = false;
+    doubleIS_mode=false;
 }
 
 void SimulatorRE::initVect(){
@@ -58,9 +59,9 @@ void SimulatorRE::InitialEventsQueue() {
 }
 
 void SimulatorRE::returnResultTrue(){
-	A.getFinalValues(N.Marking,Result.second);
-	Result.first = true;
-    for(size_t i = 0; i< A.FormulaVal.size() ; i++)Result.second[i] *= A.Likelihood;
+	A.getFinalValues(N.Marking,Result.quantR,Result.qualR);
+	Result.accept = true;
+    for(size_t i = 0; i< A.FormulaVal.size() ; i++)Result.quantR[i] *= A.Likelihood;
 	if(verbose>3)cerr << "---------------\n TRUE \n------\n";
 }
 
@@ -162,7 +163,7 @@ bool SimulatorRE::transitionSink(size_t i){
 void SimulatorRE::GenerateEvent(Event& E,size_t Id,const abstractBinding& b) {
 	
     double t = A.CurrentTime;
-    if (N.Transition[Id].transType == Timed) {
+    if (N.Transition[Id].DistTypeIndex != IMMEDIATE) {
         getParams(Id, b);
         t += GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr);
 		
@@ -208,7 +209,7 @@ void SimulatorRE::SimulateSinglePath() {
         //cerr << "continue path"<< endl;
 		if(logtrace.is_open()){
 			logtrace << A.CurrentTime << "\t";
-			N.Marking.print(logtrace);
+			N.Marking.print(logtrace,0.0);
 			A.printState(logtrace);
 			logtrace << endl;
 		}
@@ -218,7 +219,7 @@ void SimulatorRE::SimulateSinglePath() {
 			N.Marking.printHeader(cerr);
 			A.printHeader(cerr);
 			cerr << endl;
-			N.Marking.print(cerr);
+			N.Marking.print(cerr,0.0);
 			A.printState(cerr);
 			cerr << endl;
 			if(verbose>4)EQ->view(N.Transition);
@@ -260,7 +261,7 @@ double SimulatorRE::mu(){
         cerr << ") ->" << i << endl;
 		N.Marking.printHeader(cerr);
 		cerr << endl;
-		N.Marking.print(cerr);
+		N.Marking.print(cerr,0.0);
 		cerr << endl;
 		N.print_state(vect);
         if(i<0)exit(EXIT_FAILURE);

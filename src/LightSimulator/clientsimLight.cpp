@@ -422,6 +422,11 @@ void wait(REAL_TYPE t){
     //mySim.curr_time += t;
 }
 
+void dW(uint8 port, uint8 value)
+{
+ 
+}
+
 void ClearMarkers(void)
 {
     

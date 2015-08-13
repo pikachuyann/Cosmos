@@ -6,12 +6,13 @@
 %code requires {
 #include <math.h>
 #include <limits.h>
-# include <string>
-
+#include <string>
 #include <fstream>
-#include "../expressionStruct.hpp"
 #include <sstream>
 #include <set>
+
+#include "../expressionStruct.hpp"
+#include "../../Simulator/spn.hpp"
 #include "../Eval/Eval.hpp"
   class Gspn_Reader;
 
@@ -126,12 +127,12 @@
 
 IntStringFormula: ival {sprintf($$,"%d",$1);}
 | str {
-  if(Reader.MyGspn.PlacesId.find(*$1)!=Reader.MyGspn.PlacesId.end())
+  if(Reader.spn->PlacesId.find(*$1)!=Reader.spn->PlacesId.end())
     {std::ostringstream s; s<<" Marking.P->_PL_"<< $1->c_str() <<" ";
       sprintf($$, "%s",(s.str()).c_str());
     }
-  else if(Reader.MyGspn.IntConstant.find(*$1)!=Reader.MyGspn.IntConstant.end())
-    {std::ostringstream s; s<<Reader.MyGspn.IntConstant[*$1];
+  else if(Reader.spn->IntConstant.find(*$1)!=Reader.spn->IntConstant.end())
+    {std::ostringstream s; s<<Reader.spn->IntConstant[*$1];
       sprintf($$, "%s",(s.str()).c_str());
 
     }
@@ -150,12 +151,12 @@ IntStringFormula: ival {sprintf($$,"%d",$1);}
 RealStringFormula:  rval {sprintf($$, "%f",$1);}
 | ival {sprintf($$,"%d",$1);}
 | str {
-  if(Reader.MyGspn.PlacesId.find(*$1)!=Reader.MyGspn.PlacesId.end())
+  if(Reader.spn->PlacesId.find(*$1)!=Reader.spn->PlacesId.end())
     {std::ostringstream s; s<<" Marking.P->_PL_"<<$1->c_str()<<" ";
       sprintf($$, "%s",(s.str()).c_str());
     }
-  else if(Reader.MyGspn.RealConstant.find(*$1)!=Reader.MyGspn.RealConstant.end())
-    {std::ostringstream s; s<<Reader.MyGspn.RealConstant[*$1];
+  else if(Reader.spn->RealConstant.find(*$1)!=Reader.spn->RealConstant.end())
+    {std::ostringstream s; s<<Reader.spn->RealConstant[*$1];
       sprintf($$, "%s",(s.str()).c_str());
     }
   else{cout<<"'"<<*$1<<"' has not been declared"<<endl;YYABORT;}}
@@ -186,58 +187,57 @@ Sizes: NbPlaces NbTransitions
 |NbTransitions NbPlaces;
 
 Constant: Const INT str EQ IntStringFormula SEMICOLON
-{if(Reader.MyGspn.RealConstant.find(*$3)!=Reader.MyGspn.RealConstant.end())
+{if(Reader.spn->RealConstant.find(*$3)!=Reader.spn->RealConstant.end())
     {cout<<"Constant "<<*$3<<" already defined."<<endl; YYABORT;}
   else {string st=$5;
 	if (Reader.P.constants.count(*$3)>0)st = Reader.P.constants[*$3];
 	  
     Evaluate.parse(st);
-    Reader.MyGspn.IntConstant[*$3]=Evaluate.IntResult;Reader.MyGspn.RealConstant[*$3]=Evaluate.RealResult;}
+    Reader.spn->IntConstant[*$3]=Evaluate.IntResult;Reader.spn->RealConstant[*$3]=Evaluate.RealResult;}
 }
 | Const DOUBLE str EQ RealStringFormula SEMICOLON
-{if(Reader.MyGspn.RealConstant.find(*$3)!=Reader.MyGspn.RealConstant.end())
+{if(Reader.spn->RealConstant.find(*$3)!=Reader.spn->RealConstant.end())
     {cout<<"Constant "<<*$3<<" already defined."<<endl; YYABORT;}
   else {string st=$5;
 	  if (Reader.P.constants.count(*$3)>0)st = Reader.P.constants[*$3];
     Evaluate.parse(st);
-    Reader.MyGspn.RealConstant[*$3]=Evaluate.RealResult;}
+    Reader.spn->RealConstant[*$3]=Evaluate.RealResult;}
 };
 
 Lists: PlacesList TransitionsList
 |TransitionsList PlacesList;
 
-NbPlaces: NbPl EQ ival SEMICOLON {Reader.MyGspn.pl=$3;
+NbPlaces: NbPl EQ ival SEMICOLON {Reader.spn->pl=$3;
 
  }
-|NbPl EQ str SEMICOLON {if(Reader.MyGspn.IntConstant.find(*$3)==Reader.MyGspn.IntConstant.end())
+|NbPl EQ str SEMICOLON {if(Reader.spn->IntConstant.find(*$3)==Reader.spn->IntConstant.end())
      {
        std::cout<<*$3<<" was not declared"<<std::endl;
        YYABORT;
      }
-   Reader.MyGspn.pl=Reader.MyGspn.IntConstant[*$3];
+   Reader.spn->pl=Reader.spn->IntConstant[*$3];
 
  };
 
-NbTransitions: NbTr EQ ival SEMICOLON {Reader.MyGspn.tr=$3;
+NbTransitions: NbTr EQ ival SEMICOLON {Reader.spn->tr=$3;
 
  }
-|NbTr EQ str SEMICOLON {if(Reader.MyGspn.IntConstant.find(*$3)==Reader.MyGspn.IntConstant.end())
+|NbTr EQ str SEMICOLON {if(Reader.spn->IntConstant.find(*$3)==Reader.spn->IntConstant.end())
      {
        std::cout<<*$3<<" was not declared"<<std::endl;
        YYABORT;
      }
-   Reader.MyGspn.tr=Reader.MyGspn.IntConstant[*$3];
+   Reader.spn->tr=Reader.spn->IntConstant[*$3];
 
  };
 
 PlacesList: PList EQ '{' PLabels '}' SEMICOLON {
-  if(Reader.MyGspn.PlacesId.size()!=Reader.MyGspn.pl){
+  if(Reader.spn->PlacesId.size()!=Reader.spn->pl){
     std::cout<<"Place label missing or redeclared, please check your places list"<<std::endl;
     YYABORT;
   }
   
-  Reader.MyGspn.Marking= vector<string>(Reader.MyGspn.pl, " ");
-  Reader.MyGspn.InitialMarking = vector<vector<coloredToken>>(Reader.MyGspn.pl);
+  //Reader.spn->Marking= vector<string>(Reader.spn->pl, " ");
 
   MarkingDependent=false;
   AgeMemory=false;
@@ -248,36 +248,36 @@ PlacesList: PList EQ '{' PLabels '}' SEMICOLON {
 PLabels : str {
 	place p;
 	p.name = *$1;
-	p.id = Reader.MyGspn.placeStruct.size();
-	Reader.MyGspn.placeStruct.push_back(p);
-    int sz=Reader.MyGspn.PlacesId.size();
-    Reader.MyGspn.PlacesId[*$1]=sz;
+	p.id = Reader.spn->placeStruct.size();
+	Reader.spn->placeStruct.push_back(p);
+    int sz=Reader.spn->PlacesId.size();
+    Reader.spn->PlacesId[*$1]=sz;
  }
 |PLabels COMMA str {
 	place p;
 	p.name = *$3;
-	p.id = Reader.MyGspn.placeStruct.size();
-	Reader.MyGspn.placeStruct.push_back(p);
-	int sz=Reader.MyGspn.PlacesId.size();
-    Reader.MyGspn.PlacesId[*$3]=sz;
+	p.id = Reader.spn->placeStruct.size();
+	Reader.spn->placeStruct.push_back(p);
+	int sz=Reader.spn->PlacesId.size();
+    Reader.spn->PlacesId[*$3]=sz;
  };
 
 TransitionsList: TList EQ '{' TLabels '}' SEMICOLON {
-  if(Reader.MyGspn.TransList.size()!=Reader.MyGspn.tr){
+  if(Reader.spn->TransList.size()!=Reader.spn->tr){
     std::cout<<"Transition label missing or redeclared, please check your transitions list"<<std::endl;
     YYABORT;
   }
 
  };
 
-TLabels : str {Reader.MyGspn.TransList.insert(*$1);
-   /*int sz=Reader.MyGspn.TransId.size();
-   Reader.MyGspn.TransId[*$1]=sz;*/
+TLabels : str {Reader.spn->TransList.insert(*$1);
+   /*int sz=Reader.spn->TransId.size();
+   Reader.spn->TransId[*$1]=sz;*/
 
  }
-|TLabels COMMA str {Reader.MyGspn.TransList.insert(*$3);
-   /*int sz=Reader.MyGspn.TransId.size();
-   Reader.MyGspn.TransId[*$3]=sz;*/
+|TLabels COMMA str {Reader.spn->TransList.insert(*$3);
+   /*int sz=Reader.spn->TransId.size();
+   Reader.spn->TransId[*$3]=sz;*/
 
  };
 
@@ -291,7 +291,7 @@ PLACES: PLACE
 |PLACES  PLACE;
 
 PLACE: LB str COMMA IntStringFormula RB SEMICOLON
-{ if(Reader.MyGspn.PlacesId.find(*$2)==Reader.MyGspn.PlacesId.end())
+{ if(Reader.spn->PlacesId.find(*$2)==Reader.spn->PlacesId.end())
     {cout<<"'"<<*$2<<"' has not been declared"<<endl;
       YYABORT;
     }
@@ -302,8 +302,8 @@ PLACE: LB str COMMA IntStringFormula RB SEMICOLON
   }
   stringstream ss;
   ss << Evaluate.IntResult;
-  Reader.MyGspn.Marking[Reader.MyGspn.PlacesId[*$2]]=ss.str();
-  Reader.MyGspn.InitialMarking[Reader.MyGspn.PlacesId[*$2]].push_back(coloredToken(ss.str()));
+  Reader.spn->placeStruct[Reader.spn->PlacesId[*$2]].Marking=ss.str();
+  Reader.spn->placeStruct[Reader.spn->PlacesId[*$2]].initMarking=vector<coloredToken>(1, coloredToken(ss.str()));
 };
 
 
@@ -313,7 +313,7 @@ TRANSITIONS: TRANSITION {}
 |TRANSITIONS TRANSITION {};
 
 TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
-  if(Reader.MyGspn.TransList.find(*$2)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$2)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
@@ -323,21 +323,21 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->type = Timed;
   trans->dist.name = distrib;
   for(auto &s:Par)trans->dist.Param.push_back(expr(s));
-  trans->priority = $6;
-  trans->weight = $8;
+  trans->priority = *$6;
+  trans->weight = *$8;
   trans->singleService = true;
   trans->markingDependant = false;
   trans->ageMemory = false;
   trans->nbServers = 1;
-  trans->id = Reader.MyGspn.transitionStruct.size();
-  int sz=Reader.MyGspn.TransId.size();
-  Reader.MyGspn.TransId[*$2]=sz;
-  Reader.MyGspn.transitionStruct.push_back(*trans);
+  trans->id = Reader.spn->transitionStruct.size();
+  int sz=Reader.spn->TransId.size();
+  Reader.spn->TransId[*$2]=sz;
+  Reader.spn->transitionStruct.push_back(*trans);
 
   Par.clear();
  }
 | LB str COMMA dist COMMA PRIORITY COMMA WEIGHT COMMA MEMORY RB SEMICOLON {
-  if(Reader.MyGspn.TransList.find(*$2)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$2)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
@@ -347,22 +347,22 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->type = Timed;
   trans->dist.name = distrib;
   for(auto &s:Par)trans->dist.Param.push_back(expr(s));
-  trans->priority = $6;
-  trans->weight = $8;
+  trans->priority = *$6;
+  trans->weight = *$8;
   trans->singleService = true;
   trans->markingDependant = false;
   trans->ageMemory = AgeMemory;
   trans->nbServers = 1;
-  trans->id = Reader.MyGspn.transitionStruct.size();
-	int sz=Reader.MyGspn.TransId.size();
-	Reader.MyGspn.TransId[*$2]=sz;
-  Reader.MyGspn.transitionStruct.push_back(*trans);
+  trans->id = Reader.spn->transitionStruct.size();
+	int sz=Reader.spn->TransId.size();
+	Reader.spn->TransId[*$2]=sz;
+  Reader.spn->transitionStruct.push_back(*trans);
 
   Par.clear();
   AgeMemory=false;
  }
 | LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE RB SEMICOLON {
-  if(Reader.MyGspn.TransList.find(*$2)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$2)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
@@ -374,11 +374,12 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
     {MarkingDependent=true;v[0]=st;
     }
   else{ if (Evaluate.RealResult<= 0 ) {
-      cout << "In exponential ditribution Lambda > 0" << endl;
+      cout << "In exponential distribution Lambda > 0" << endl;
       YYABORT;
     }
     std::ostringstream s;s<<Evaluate.RealResult;
     v[0]=s.str();
+    Par.clear();
   }
   
   transition *trans = new transition();
@@ -386,23 +387,24 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->type = Timed;
   trans->dist.name = "EXPONENTIAL";
   for(auto &s:v)trans->dist.Param.push_back(expr(s));
-  trans->priority = $9;
-  trans->weight = $11;
+  trans->priority = *$9;
+  trans->weight = *$11;
   trans->singleService = SingleService;
   trans->markingDependant = MarkingDependent;
   trans->ageMemory = false;
   trans->nbServers = NbServers;
-  trans->id = Reader.MyGspn.transitionStruct.size();
-	int sz=Reader.MyGspn.TransId.size();
-	Reader.MyGspn.TransId[*$2]=sz;
-  Reader.MyGspn.transitionStruct.push_back(*trans);
+  trans->id = Reader.spn->transitionStruct.size();
+	int sz=Reader.spn->TransId.size();
+	Reader.spn->TransId[*$2]=sz;
+  Reader.spn->transitionStruct.push_back(*trans);
 
+    Par.clear();
   MarkingDependent=false;
 
  }
 
 | LB str COMMA EXPO LB RealStringFormula RB COMMA PRIORITY COMMA WEIGHT COMMA SERVICE COMMA MEMORY RB SEMICOLON {
-  if(Reader.MyGspn.TransList.find(*$2)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$2)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
@@ -415,7 +417,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
     {MarkingDependent=true;v[0]=st;
     }
   else{ if (Evaluate.RealResult<= 0 ) {
-      cout << "In exponential ditribution Lambda > 0" << endl;
+      cout << "In exponential distribution Lambda > 0" << endl;
       YYABORT;
     }
     std::ostringstream s;s<<Evaluate.RealResult;
@@ -427,22 +429,23 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->type = Timed;
   trans->dist.name = "EXPONENTIAL";
   for(auto &s:v)trans->dist.Param.push_back(expr(s));
-  trans->priority = $9;
-  trans->weight = $11;
+  trans->priority = *$9;
+  trans->weight = *$11;
   trans->singleService = SingleService;
   trans->markingDependant = MarkingDependent;
   trans->ageMemory = AgeMemory;
   trans->nbServers = NbServers;
-  trans->id = Reader.MyGspn.transitionStruct.size();
-  Reader.MyGspn.transitionStruct.push_back(*trans);
-	int sz=Reader.MyGspn.TransId.size();
-	Reader.MyGspn.TransId[*$2]=sz;
+  trans->id = Reader.spn->transitionStruct.size();
+  Reader.spn->transitionStruct.push_back(*trans);
+	int sz=Reader.spn->TransId.size();
+	Reader.spn->TransId[*$2]=sz;
   MarkingDependent=false;
   AgeMemory=false;
+  Par.clear();
  }
 
 |LB str COMMA IMDT COMMA PRIORITY COMMA WEIGHT  RB SEMICOLON {
-  if(Reader.MyGspn.TransList.find(*$2)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$2)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
@@ -452,17 +455,17 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   trans->label = $2->c_str();
   trans->type = unTimed;
   trans->dist.name = "IMMEDIATE";
-  trans->priority = $6;
-  trans->weight = $8;
+  trans->priority = *$6;
+  trans->weight = *$8;
   trans->singleService = true;
   trans->markingDependant = false;
   trans->ageMemory = false;
   trans->nbServers = 1;
-  trans->id = Reader.MyGspn.transitionStruct.size();
-	int sz=Reader.MyGspn.TransId.size();
-	Reader.MyGspn.TransId[*$2]=sz;
-  Reader.MyGspn.transitionStruct.push_back(*trans);
-
+  trans->id = Reader.spn->transitionStruct.size();
+	int sz=Reader.spn->TransId.size();
+	Reader.spn->TransId[*$2]=sz;
+  Reader.spn->transitionStruct.push_back(*trans);
+  Par.clear();
  };
 
 
@@ -505,8 +508,8 @@ SERVICE: SINGLE {SingleService=true; NbServers=1;}
 
  }
 | MULTIPLE LB str RB {
-  if(Reader.MyGspn.IntConstant.find(*$3)!=Reader.MyGspn.IntConstant.end()){
-    NbServers=Reader.MyGspn.IntConstant[*$3];
+  if(Reader.spn->IntConstant.find(*$3)!=Reader.spn->IntConstant.end()){
+    NbServers=Reader.spn->IntConstant[*$3];
     if(NbServers<1)
       { cout<<"Number of servers should be at least one"<<endl;
         YYABORT;
@@ -526,10 +529,10 @@ dist:str LB params RB {
   distrib=*$1;
   int np=Par.size();
   switch (Reader.IndexDist[distrib]) {
-    case 1:
+    case UNIFORM:
       {
         if (np != 2){
-          cout << "Uniform ditribution has two parameters: min and max where 0<=min<max" << endl;
+          cout << "Uniform distribution has two parameters: min and max where 0<=min<max" << endl;
           YYABORT;
         }
         double p1,p2;
@@ -538,16 +541,18 @@ dist:str LB params RB {
         st=Par[1];
         Evaluate.parse(st);p2=Evaluate.RealResult;
         if ((p1>=p2) || (p1<0)) {
-          cout << "In uniform ditribution 0 <= min< max " << endl;
+          cout << "In uniform distribution 0 <= min< max " << endl;
           YYABORT;
         }
         break;
       }
 
-    case 2:
+    case EXPONENTIAL:
       {
         if (np != 1) {
-          cout << "exponential ditribution has one parameter: Lambda > 0" << endl;
+          cout << "exponential distribution has one parameter: Lambda > 0, got "<< np << " parameters "<< distrib <<"[";
+          for(const auto &x : Par) cout << x << ", ";
+          cout << "]" << endl;
           YYABORT;
         }
 
@@ -555,16 +560,16 @@ dist:str LB params RB {
         string st=Par[0];
         Evaluate.parse(st);p1=Evaluate.RealResult;
         if (p1<= 0 ) {
-          cout << "In exponential ditribution Lambda > 0" << endl;
+          cout << "In exponential distribution Lambda > 0" << endl;
           YYABORT;
         }
         break;
       }
 
-    case 3:
+    case DETERMINISTIC:
       {
         if (np != 1) {
-          cout << "Deterministic ditribution has one parameter:  T >= 0" << endl;
+          cout << "Deterministic distribution has one parameter:  T >= 0" << endl;
           YYABORT;
         }
 
@@ -572,16 +577,16 @@ dist:str LB params RB {
         string st=Par[0];
         Evaluate.parse(st);p1=Evaluate.RealResult;
         if (p1<0 ) {
-          cout << "In Deterministic ditribution Lambda > 0" << endl;
+          cout << "In Deterministic distribution Lambda > 0" << endl;
           YYABORT;
         }
         break;
       }
 
-    case 4:
+    case LOGNORMAL:
       {
         if (np != 2) {
-          cout << "Lognormal ditribution has two parameters: mu and sigma^2, where mu > 0 sigma^2 > 0" << endl;
+          cout << "Lognormal distribution has two parameters: mu and sigma^2, where mu > 0 sigma^2 > 0" << endl;
           YYABORT;
         }
 
@@ -591,16 +596,16 @@ dist:str LB params RB {
         st=Par[1];
         Evaluate.parse(st);p2=Evaluate.RealResult;
         if ((p1<=0) || (p2<=0)) {
-          cout << "In Lognormal ditribution mu > 0 sigma^2 > 0" << endl;
+          cout << "In Lognormal distribution mu > 0 sigma^2 > 0" << endl;
           YYABORT;
         }
         break;
       }
 
-    case 5:
+    case TRIANGLE:
       {
         if (np != 3) {
-          cout << "Triangle ditribution has three parameters: 0 <= b <= c <= a" << endl;
+          cout << "Triangle distribution has three parameters: 0 <= b <= c <= a" << endl;
           YYABORT;
         }
         double p1,p2,p3;
@@ -611,7 +616,7 @@ dist:str LB params RB {
         st=Par[2];
         Evaluate.parse(st);p3=Evaluate.RealResult;
         if ((p1<0) || (p2<p1) || (p3<p2)) {
-          cout << "In Triangle ditribution: 0 <= b <= c<= a" << endl;
+          cout << "In Triangle distribution: 0 <= b <= c<= a" << endl;
           YYABORT;
         }
 
@@ -619,10 +624,10 @@ dist:str LB params RB {
         break;
       }
 
-    case 6:
+    case GEOMETRIC:
       {
         if (np != 2) {
-          cout << "Geometric ditribution has two parameters: 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
+          cout << "Geometric distribution has two parameters: 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
           YYABORT;
         }
         double p1,p2;
@@ -631,12 +636,12 @@ dist:str LB params RB {
         st=Par[1];
         Evaluate.parse(st);p2=Evaluate.RealResult;
         if ((p1<0) || (p1>1) || p2<=0) {
-          cout << "In Geometric ditribution 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
+          cout << "In Geometric distribution 0 <= p <= 1 (probability of success) and T > 0 (duration of one step)" << endl;
           YYABORT;
         }
         break;
       }
-    case 7:
+    case ERLANG:
       {
         if (np != 2) {
           cout << "Erlang distribution has two parameters: Shape and Rate, where Shape is a positive integer and Rate > 0" << endl;
@@ -659,7 +664,7 @@ dist:str LB params RB {
         }
         break;
       }
-    case 8:
+    case GAMMA:
       {
         if (np != 2) {
           cout << "Gamma distribution has two parameters: Shape>0 and Scale>0" << endl;
@@ -699,7 +704,7 @@ params:param
 
 param:RealStringFormula {string st=$1;
    if(Evaluate.parse(st))
-     {cout<<"The exponential ditribution is the only marking dependent distribution: '"<<st<<"'"<<endl;YYABORT; }
+     {cout<<"The exponential distribution is the only marking dependent distribution: '"<<st<<"'"<<endl;YYABORT; }
    else{std::ostringstream s;s<<Evaluate.RealResult;
      Par.push_back(s.str());
    }
@@ -712,12 +717,12 @@ incells: incell {}
 |incells incell {};
 
 incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
-  if(Reader.MyGspn.PlacesId.find(*$2)==Reader.MyGspn.PlacesId.end())
+  if(Reader.spn->PlacesId.find(*$2)==Reader.spn->PlacesId.end())
     {
       std::cout<<"Place: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
     }
-  if(Reader.MyGspn.TransList.find(*$4)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$4)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
@@ -725,22 +730,22 @@ incell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
   string st=$6;
 
   if(Evaluate.parse(st)){
-    Reader.MyGspn.inArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]), arc(st)));
-  }else Reader.MyGspn.inArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]),arc(Evaluate.IntResult)));
+    Reader.spn->inArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.spn->arckey(Reader.spn->TransId[*$4],Reader.spn->PlacesId[*$2]), arc(st)));
+  }else Reader.spn->inArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.spn->arckey(Reader.spn->TransId[*$4],Reader.spn->PlacesId[*$2]),arc(Evaluate.IntResult)));
 
  }
 |LB str COMMA str   RB SEMICOLON {
-  if(Reader.MyGspn.PlacesId.find(*$2)==Reader.MyGspn.PlacesId.end())
+  if(Reader.spn->PlacesId.find(*$2)==Reader.spn->PlacesId.end())
     {
       std::cout<<"Place: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
     }
-  if(Reader.MyGspn.TransList.find(*$4)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$4)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
     }
-  Reader.MyGspn.inArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]),arc(1)));
+  Reader.spn->inArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.spn->arckey(Reader.spn->TransId[*$4],Reader.spn->PlacesId[*$2]),arc(1)));
 
  };
 
@@ -750,12 +755,12 @@ outcells: outcell {}
 |outcells outcell {};
 
 outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
-  if(Reader.MyGspn.TransList.find(*$2)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$2)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
     }
-  if(Reader.MyGspn.PlacesId.find(*$4)==Reader.MyGspn.PlacesId.end())
+  if(Reader.spn->PlacesId.find(*$4)==Reader.spn->PlacesId.end())
     {
       std::cout<<"Place: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
@@ -763,23 +768,23 @@ outcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
   string st=$6;
 
   if(Evaluate.parse(st)){
-	  Reader.MyGspn.outArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$2],Reader.MyGspn.PlacesId[*$4]),arc(st)));
+	  Reader.spn->outArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.spn->arckey(Reader.spn->TransId[*$2],Reader.spn->PlacesId[*$4]),arc(st)));
   }
-  else Reader.MyGspn.outArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$2],Reader.MyGspn.PlacesId[*$4]),arc(Evaluate.IntResult)));
+  else Reader.spn->outArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.spn->arckey(Reader.spn->TransId[*$2],Reader.spn->PlacesId[*$4]),arc(Evaluate.IntResult)));
 
  }
 |LB str COMMA str   RB SEMICOLON {
-  if(Reader.MyGspn.TransList.find(*$2)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$2)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
     }
-  if(Reader.MyGspn.PlacesId.find(*$4)==Reader.MyGspn.PlacesId.end())
+  if(Reader.spn->PlacesId.find(*$4)==Reader.spn->PlacesId.end())
     {
       std::cout<<"Place: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
     }
-  Reader.MyGspn.outArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$2],Reader.MyGspn.PlacesId[*$4]),arc(1)));
+  Reader.spn->outArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.spn->arckey(Reader.spn->TransId[*$2],Reader.spn->PlacesId[*$4]),arc(1)));
  };
 
 
@@ -790,12 +795,12 @@ inhibcells: inhibcell {}
 |inhibcells inhibcell {};
 
 inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
-  if(Reader.MyGspn.PlacesId.find(*$2)==Reader.MyGspn.PlacesId.end())
+  if(Reader.spn->PlacesId.find(*$2)==Reader.spn->PlacesId.end())
     {
       std::cout<<"Place: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
     }
-  if(Reader.MyGspn.TransList.find(*$4)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$4)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
@@ -803,24 +808,24 @@ inhibcell: LB str COMMA str COMMA IntStringFormula RB SEMICOLON {
   string st=$6;
 
   if(Evaluate.parse(st)){
-    Reader.MyGspn.inhibArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]),arc(st)));
+    Reader.spn->inhibArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.spn->arckey(Reader.spn->TransId[*$4],Reader.spn->PlacesId[*$2]),arc(st)));
   }
-  else Reader.MyGspn.inhibArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]),arc(Evaluate.IntResult)));
+  else Reader.spn->inhibArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.spn->arckey(Reader.spn->TransId[*$4],Reader.spn->PlacesId[*$2]),arc(Evaluate.IntResult)));
 
  }
 
 |LB str COMMA str   RB SEMICOLON {
-  if(Reader.MyGspn.PlacesId.find(*$2)==Reader.MyGspn.PlacesId.end())
+  if(Reader.spn->PlacesId.find(*$2)==Reader.spn->PlacesId.end())
     {
       std::cout<<"Place: "<<*$2<<" was not declared"<<std::endl;
       YYABORT;
     }
-  if(Reader.MyGspn.TransList.find(*$4)==Reader.MyGspn.TransList.end())
+  if(Reader.spn->TransList.find(*$4)==Reader.spn->TransList.end())
     {
       std::cout<<"Transition: "<<*$4<<" was not declared"<<std::endl;
       YYABORT;
     }
-  Reader.MyGspn.inhibArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.MyGspn.arckey(Reader.MyGspn.TransId[*$4],Reader.MyGspn.PlacesId[*$2]),arc(1)));
+  Reader.spn->inhibArcsStruct.insert(make_pair<pair<size_t,size_t>,arc>(Reader.spn->arckey(Reader.spn->TransId[*$4],Reader.spn->PlacesId[*$2]),arc(1)));
 
  };
 

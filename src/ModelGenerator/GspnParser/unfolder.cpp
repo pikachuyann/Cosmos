@@ -46,11 +46,11 @@ void unfolder::export_grml(ofstream& fout){
 	fout << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
 	fout << "<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">" << endl;
 	
-	for(const auto &p: MyGspn.placeStruct)export_place_grml(fout,p);
+	for(const auto &p: placeStruct)export_place_grml(fout,p);
 	
-	for(const auto &t: MyGspn.transitionStruct)export_transition_grml(fout,t);
+	for(const auto &t: transitionStruct)export_transition_grml(fout,t);
 	
-	for(const auto &t: MyGspn.transitionStruct)export_arc_grml(fout, t);
+	for(const auto &t: transitionStruct)export_arc_grml(fout, t);
 	
 	fout << "</model>" << endl;
     cout << "Number of Places:" << nbPlace << "\tNumber of Transitions:" << nbTrans << "\tNumber of Arcs:" << nbArc << endl;
@@ -69,17 +69,17 @@ size_t unfolder::get_uid(const string &str){
 }
 
 void unfolder::export_place_grml(ofstream &fout,const place &p){
-	iterateDom(p.name, "_", "", "", "_", "", MyGspn.colDoms[p.colorDom], 0, [&](const string& str,const string&){
+	iterateDom(p.name, "_", "", "", "_", "", colDoms[p.colorDom], 0, [&](const string& str,const string&){
         nbPlace++;
 		fout << "\t<node id=\"" << get_uid("place"+str) << "\" nodeType=\"place\">"<< endl;
 		fout << "\t\t<attribute name=\"name\">" << str << "</attribute>" << endl;
 		fout << "\t\t<attribute name=\"marking\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
-		if(MyGspn.Marking[p.id].compare("0")==0){
+		if(p.Marking.compare("0")==0){
 			fout << "\t\t\t0" << endl;
 		} else if(p.colorDom != UNCOLORED_DOMAIN) {
 			fout << "\t\t\t1" << endl;
 		} else {
-            auto str = cleanstr(MyGspn.Marking[p.id]);
+            auto str = cleanstr(p.Marking);
             fout << "\t\t\t" << str;
         }
             fout << "\t\t</attribute></attribute></attribute>" << endl;
@@ -131,7 +131,7 @@ void unfolder::export_coltoken(ofstream &fout,const vector<color> &vec,
 	size_t truid = get_uid("transition"+t.label+str_of_vect(vec, "_"));
 	vector<color> vec2;
 	for ( size_t i =0 ; i != coltoken.field.size(); ++i) {
-		colorClass cc = MyGspn.colClasses[vec[coltoken.field[i]].cc];
+		colorClass cc = colClasses[vec[coltoken.field[i]].cc];
         size_t col;
         if(coltoken.Flags[i] == CT_SINGLE_COLOR){
             col = coltoken.field[i];
@@ -158,13 +158,13 @@ void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const t
         export_coltoken(fout,vec,toklist[0],t,p,dir);
     } else if(toklist.size()>0){
         vector<color> iteratevec;
-        iterateDomVec(iteratevec, MyGspn.colDoms[p.colorDom], 0, [&](const vector<color> &v){
+        iterateDomVec(iteratevec, colDoms[p.colorDom], 0, [&](const vector<color> &v){
             int mult=0;
             for (auto coltoken: toklist) {
                 bool match = true;
                 for ( size_t i =0 ; i != coltoken.field.size(); ++i) {
                     if(coltoken.Flags[i]!=CT_ALL){
-                        colorClass cc = MyGspn.colClasses[vec[coltoken.field[i]].cc];
+                        colorClass cc = colClasses[vec[coltoken.field[i]].cc];
                         size_t col;
                         if(coltoken.Flags[i] == CT_SINGLE_COLOR){
                             col = coltoken.field[i];
@@ -189,10 +189,10 @@ void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const t
 void unfolder::export_arc_grml(ofstream &fout, const transition &t){
 	vector<color> iteratevec;
 	iterateVars(iteratevec , t.varDomain , 0, [&](const vector<color> &vec){
-		for(const auto &p: MyGspn.placeStruct){
-            auto a = MyGspn.access(MyGspn.inArcsStruct,t.id,p.id);
+		for(const auto &p: placeStruct){
+            auto a = access(inArcsStruct,t.id,p.id);
             if (!a.isEmpty)export_multcoltok(fout,vec,t,p,true,a);
-            auto b = MyGspn.access(MyGspn.outArcsStruct,t.id,p.id);
+            auto b = access(outArcsStruct,t.id,p.id);
             if (!b.isEmpty)export_multcoltok(fout,vec,t,p,false,b);
 		}
 	});

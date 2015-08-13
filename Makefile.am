@@ -45,6 +45,8 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 	Examples/QueueMM1/SystemLength/MM1.gspn \
 	Examples/QueueMM1/SystemLength/MM1.lha \
 	Examples/QueueMM1/test.ml \
+    Examples/Hospital/Hospital.grml \
+    Examples/Hospital/test.ml \
 	Examples/RareEventUnbounded/lumpingfun.cpp \
 	Examples/RareEventUnbounded/tandem.grml \
 	Examples/RareEventUnbounded/tandem.gspn \

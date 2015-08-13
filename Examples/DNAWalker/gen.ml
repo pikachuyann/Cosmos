@@ -1,7 +1,12 @@
 #directory "../../utils"
 #mod_use "../../prism2SPT/type.ml"
 #mod_use "../../prism2SPT/PetriNet.ml"
-#use "../../prism2SPT/StochasticPetriNet.ml"
+#mod_use "../../prism2SPT/StochasticPetriNet.ml"
+#mod_use "../../prism2SPT/StochPTPrinter.ml"
+
+open Type
+open PetriNet 
+open StochasticPetriNet
 
 (*#use "StochasticPetriNet.ml"*)
 #use "mlcall.ml";;
@@ -115,16 +120,19 @@ let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true) 
   print_endline ("Generate2 "^fpath);
   let net = Net.create () in
   List.iter (fun (n,t,i,_) ->
-    Data.add (("A"^(string_of_int n)),(if t=Init then Int 2 else Int i)) net.Net.place;
+    Data.add (("A"^(string_of_int n)),((if t=Init then Int 2 else Int i),Some (Int 2))) net.Net.place;
     if i=0 && t <> Init && genfailure then begin
-      Data.add (("B"^(string_of_int n)), Int 1) net.Net.place;
+      Data.add (("B"^(string_of_int n)), (Int 1,Some (Int 1))) net.Net.place;
       Data.add ("tb"^(string_of_int n) ,(imm_trans genimm failure)) net.Net.transition;
       Data.add ("tAb"^(string_of_int n) ,(imm_trans genimm (1.0-.failure))) net.Net.transition;
       Net.add_arc net ("B"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("B"^(string_of_int n)) ("tAb"^(string_of_int n)) (Int 1);
       Net.add_arc net ("tb"^(string_of_int n)) ("A"^(string_of_int n)) (Int 1);
-      Net.add_inhibArc net ("A"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);
-      (*cluster.(n-1) <- ("b"^(string_of_int n)) 
+
+      (* For Marcie *)
+      (*Net.add_inhibArc net ("A"^(string_of_int n)) ("tb"^(string_of_int n)) (Int 1);*)
+      
+    (*cluster.(n-1) <- ("b"^(string_of_int n)) 
       :: ("tb"^(string_of_int n))
       :: ("tAb"^(string_of_int n))
       :: cluster.(n-1);*) 
@@ -152,7 +160,10 @@ let gen_spn2 ?(genimm=true) ?(gentrans=true) ?(genfailure=true) ?(genloop=true) 
 	Net.add_arc net ("A"^(string_of_int n1)) tl (Int 2);
 	Net.add_arc net ("A"^(string_of_int n2)) tl (Int 1);
 	Net.add_arc net tl ("A"^(string_of_int n2)) (Int 2);
-	Net.add_inhibArc net ("A"^(string_of_int n2)) tl (Int 2);
+
+	(* For Marcie *)
+	(*Net.add_inhibArc net ("A"^(string_of_int n2)) tl (Int 2);*)
+
 	(*cluster.(n1-1) <- tl :: cluster.(n1-1);*) 
       ) li ) li; 
   end;
@@ -172,27 +183,28 @@ let dist2 = 1.15;;
 
 let generate_spn fpath li2 ks failure obj =
   let li = mapsq3 li2 in
-  let net = gen_spn2 ~gentrans:false ~genloop:true ~genfailure:false ~genimm:true fpath li ks failure in
-  print_spt (fpath^".grml") net;
+  let net = gen_spn2 ~gentrans:false ~genloop:true ~genfailure:true ~genimm:true fpath li ks failure in
+  (*StochPTPrinter.print_spt (fpath^".grml") net;
+  StochPTPrinter.print_pnml (fpath^".pnml") net;
   generate_lha (fpath^".lha") li obj;
-  print_spt_marcie (fpath^".andl") net;
+  StochPTPrinter.print_spt_marcie (fpath^".andl") net;
   generate_csl (fpath^".csl") li obj;
   print_prism_module (fpath^".sm") net;
-  generate_pctl (fpath^".pctl") li obj;
-  print_spt_dot ~showlabel:true (fpath^".dot") net []
+  generate_pctl (fpath^".pctl") li obj;*)
+  StochPTPrinter.print_spt_dot ~showlabel:true (fpath^".dot") net []
         (List.fold_left (fun q (n,_,_,(px1,py1)) ->
 	  let px,py = (px1*.dist2,py1*.dist2) in
 	  (("A"^(string_of_int n)),(px,py))::
 	    (("tloop"^(string_of_int n)),(px,py+.(copysign 1.0 py)))::
 	    (("tb"^(string_of_int n)),(px,py-.(copysign dist py)))::
 	    (("tAb"^(string_of_int n)),(px,py-.(copysign (3.*.dist) py)))::
-	    (("B"^(string_of_int n)),(px,py-.(copysign (2.0*.dist) py)))::q) [] li);;
+	    (("B"^(string_of_int n)),(px,py-.(copysign (2.0*.dist) py)))::q) [] li);
  (*execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2 --max-run 20000 --batch 1000 --width 0");;*)
 (*  ignore (Sys.command (Printf.sprintf "prism %s.sm %s.pctl --sim --simsamples 2000000" fpath fpath));;*)
  (* ignore (Sys.command (Printf.sprintf "/usr/bin/time -l prism %s.sm %s.pctl" fpath fpath));;*)
  (* ignore (Sys.command (Printf.sprintf "/usr/bin/time -v prism %s.sm %s.pctl -transientmethod fau -faudelta 1E-10 -fauepsilon 1E-8" fpath fpath));;*)
 (* ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl --approximative" fpath fpath));;*)
- (* ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
+  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;
 (*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
 
 let gen28 f l1 r1 l2 r2 obj =
@@ -320,13 +332,19 @@ let lozange f n m fb =
   generate_spn f !accl 0.009 0.3 (Printf.sprintf "A%i=2" (n*m));;
 
 
-(*
+
 
 generate_spn "ex" [
   (1,Init,0,(0.0,0.0)); 
   (2,Final,1,(2.0,0.0));] 
 0.009 0.3 "A2=2";; 
 
+
+generate_spn "ex2" [
+  (1,Init,0,(0.0,0.0)); 
+  (2,Norm,1,(2.0,0.0));
+  (3,Final,1,(4.0,0.0));] 
+0.009 0.3 "A3=2";; 
 
 
 (*generate_lha "control.lha" "a8<2" "a8=2" "FALSE";*)
@@ -374,8 +392,6 @@ generate_spn "controlMissing7" [
   (8,Final,1,(3.5,-.7.0))]
 0.009 0.3 "A8=2";; 
 
-
-
 (*generate_lha "track12Block1.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
 generate_spn "track12Block1" [ 
   (1,Init,0,(  0.0,0.0)); 
@@ -420,9 +436,8 @@ generate_spn "track12BlockBoth" [ (1,Init,0,(0.0,0.0));
 			 (10,Norm,1,( 2.0,-.4.0));
 			 (11,Norm,1,( 3.0,-.4.5));
 			 (12,Final,1,(4.0,-.5.0));] 0.009 0.3 "A8=2";; 
-*)
 
-(*
+
 (*generate_lha "track28LL.lha" "a17<2 & a20<2 & a25<2 & a28<2" 
  "a17>1" "a20>1 | a25>1 | a28>1";;*)
 gen28 "track28LL" 1 0 1 0 "a17=2";;
@@ -438,7 +453,7 @@ gen28 "track28RL" 0 1 1 0 "a25=2";;
 (*generate_lha "track28RR.lha" "a17<2 & a20<2 & a25<2 & a28<2" 
   "a28>1" "a20>1 | a25 >1 | a17>1";;*)
 gen28 "track28RR" 0 1 0 1 "a28=2";;
-*)
+
 (*
 gen_xor "ringLL" true true;;
 gen_xor "ringRR" false false;;
@@ -498,10 +513,10 @@ let redondantChoice bl br =
 				   (33,Final,1,(3.0,11.5));
 
 ] 0.009 0.3 (if bl=1 then "A32=2" else "A33=2");; 
-(*
+
 redondantChoice 1 0;;
 redondantChoice 0 1;;
-*)
+
 
 (*lozange "lozange" 10 10 (fun _ _ -> 1);;*)
  

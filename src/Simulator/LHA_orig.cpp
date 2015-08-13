@@ -72,7 +72,7 @@ void LHA::setInitLocation(const abstractMarking& Marking) {
  * @param NextMarking, The marking in with the Petri net will be after the transition.
  * @return an index of synchronized edge or -1 if there is no suitable synchronized edge.
  */
-int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding)const {
+int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
     const size_t mult = NbLoc*NbTrans;
 	for (int i =1 ; i <= LHA::ActionEdgesAr[NbTrans*CurrentLocation+ PetriNetTransition]; i++){
         //cerr << i << endl;
@@ -93,7 +93,7 @@ int LHA::GetEnabled_S_Edges(size_t PetriNetTransition, const abstractMarking& Ne
  *	@param Marking is the current marking of the Petri net.
  *	@return the most urgent autonomous edge
  */
-AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db)const {
+AutEdge LHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db) {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
@@ -123,6 +123,20 @@ void LHA::resetLinForms() {
     }
     for (size_t i = 0; i < LhaFunc.size(); i++)
         LhaFunc[i] = 0;
+}
+
+/**
+ *
+ */
+int LHA::synchroniseWith(size_t tr, const abstractMarking& m,const abstractBinding& b){
+    //Check if there exist a valid transition in the automata.
+    int SE = GetEnabled_S_Edges(tr, m, b);
+
+    if (SE >= 0) {
+        //If synchronisation is possible fire it
+        fireLHA(SE,m, b);
+    }
+    return SE;
 }
 
 /**
@@ -165,11 +179,12 @@ void LHA::updateLHA(double DeltaT, const abstractMarking &Marking){
  *	This function is called when the automaton reach a final state.
  *	The result of path formula is stored in vector v
  */
-void LHA::getFinalValues(const abstractMarking& m,vector<double>& v){
+void LHA::getFinalValues(const abstractMarking& m,vector<double>& v,vector<bool>& v2){
 	UpdateLinForm(m);
 	UpdateLhaFuncLast();
 	UpdateFormulaVal();
 	v=FormulaVal;
+    v2=FormulaValQual;
 }
 
 /**

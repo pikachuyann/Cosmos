@@ -62,7 +62,15 @@ int main(int argc, char** argv) {
 
 	signal(SIGINT, SIG_IGN);
     signal(SIGHUP, signalHandler);
-	
+
+    LHA* Aptr;
+    if(IsLHADeterministic){
+        Aptr = new LHA();
+    }else{
+        Aptr = new NLHA();
+    }
+    LHA& A = *Aptr;
+
 	Simulator* mySim;
 	
 	string str;
@@ -72,17 +80,17 @@ int main(int argc, char** argv) {
 		
 		str = argv[optioni];
 		if(str== "-RE"){
-			SimulatorRE* myRESim= new SimulatorRE(false);
+			SimulatorRE* myRESim= new SimulatorRE(A,false);
 			myRESim->initVect();
 			mySim=myRESim;
 		}else if(str== "-RE2"){
-			SimulatorRE* myRESim= (new SimulatorRE(true));
+			SimulatorRE* myRESim= (new SimulatorRE(A,true));
 			myRESim->initVect();
 			mySim = myRESim;
 		}else if(str== "-BURE"){
             int m = atoi(argv[optioni+1]);
             int T = atoi(argv[optioni+2]);
-            SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(m);
+            SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(A,m);
             myBoundedSim->initVect(T);
 			mySim= myBoundedSim;
 		}else if(str== "-COBURE"){
@@ -90,7 +98,7 @@ int main(int argc, char** argv) {
             double t = atof(argv[optioni+2]);
             double e = atof(argv[optioni+3]);
 			int stepc = atoi(argv[optioni+4]);
-            SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(m,e,stepc);
+            SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(A,m,e,stepc);
             myBoundedSim->initVectCo(t);
 			mySim= myBoundedSim;
 		}else if(str== "-STSPBU"){
@@ -100,7 +108,7 @@ int main(int argc, char** argv) {
 			//states.uniformizeMatrix();
 			states.outputMat();
 			states.outputTmpLumpingFun();
-            BatchR dummR(0);
+            BatchR dummR(0,0);
             dummR.outputR(cout);
             cerr << "Finish Exporting" << endl;
 			exit(EXIT_SUCCESS);
@@ -115,8 +123,11 @@ int main(int argc, char** argv) {
 			states.outputTmpLumpingFun();
 			//cout << "Finish Exporting" << endl;
 			double prResult = states.returnPrismResult();
-            BatchR dummR(1);
-            dummR.addSim(make_pair<bool,vector<double> >(true,vector<double>(1,prResult)));
+            BatchR dummR(1,0);
+            SimOutput sd;
+            sd.accept=true;
+            sd.quantR.push_back(prResult);
+            dummR.addSim(sd);
             dummR.outputR(cout);
 			/*cout << "Prism Result:\t"<< prResult << endl;
 			ofstream ResultsFile("Result.res", ios::out | ios::trunc);
@@ -126,10 +137,10 @@ int main(int argc, char** argv) {
 			ResultsFile << " , " << prResult*1.00001 << "]" << endl;
 			ResultsFile.close();*/
 			exit(EXIT_SUCCESS);
-		} else mySim= (new Simulator);
+		} else mySim= (new Simulator(A));
 		
     } else {
-		mySim= (new Simulator);
+		mySim= new Simulator(A);
 	}
 	
 	for(int i=1; i<argc ;i++){
@@ -159,6 +170,7 @@ int main(int argc, char** argv) {
 		BatchR batchResult = mySim->RunBatch(); //simulate a batch of trajectory
 		
 		batchResult.outputR(cout);// output the result on the standart output
+                                  //batchResult.print();
 		
 		//cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
 		//<< ":" << batchResult->M2[0] << endl;
