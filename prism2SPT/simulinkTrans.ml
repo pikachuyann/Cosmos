@@ -482,8 +482,10 @@ let print_magic f sl tl scrl=
   if !add_reward then output_string f "#include \"../exbat.cpp\"\n";
   output_string f "#ifndef uint8\n#define uint8 uint8_t\n#define uint16 uint16_t\n#define uint32 uint32_t\n#endif\n";
   output_string f "#include \"markingImpl.hpp\"\n";
-  if List.exists (fun (_,_,t,_) -> t.description <>None) tl then
-     output_string f "#include \"../distr.cpp\"\n";
+  (*
+    Now in exbat.cpp files
+    if List.exists (fun (_,_,t,_) -> t.description <>None) tl then
+     output_string f "#include \"../distr.cpp\"\n";*) 
 
   if not !lightSim then
     output_string f (escape_XML "template <typename T>
@@ -736,7 +738,7 @@ let stochNet_of_modu cf m =
       | Some sn2 -> begin
 	let sn = String.sub sn2 1 (String.length sn2 -1) in
 	Data.add ((Printf.sprintf "P_%s_RewardStr_%i" sn ssidt),(Int 0,Some (Int 1))) net.Net.place;
-	Data.add ((Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt),(Det(FunCall ("TransitionTime",[Float (float_of_string sn)])),Float 1.0,Float 1.0)) net.Net.transition;
+	Data.add ((Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt),((DiscUserDef(int_of_string sn)),Float 1.0,Float 1.0)) net.Net.transition;
 	Net.add_outArc net (trans_of_int ssidt lab) (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Int 1);
 	Net.add_inArc net (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt) (Int 1);
 	(*Net.add_outArc net (trans_of_int ssidt lab) ("STOP_PL") (Int 1);
