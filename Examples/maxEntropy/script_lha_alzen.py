@@ -45,8 +45,8 @@ for i in range(n-2):
 s+="((l_%d"%(n-2)+",l_%d"%(n-1) +"),{t_b}, x<=C  ,{countT = countT+1});\n";
 
 s+="%back edges in the automaton\n";
-s+="((l_%d"%(n-2)+",l_0),{t_c}, x>=C & x<=B , {countT = countT+1,x'=0});\n";
-s+="((l_%d"%(n-1)+",l_0),{t_e}, x<=wt , {countT = countT+1,x'=0});\n";
+s+="((l_%d"%(n-2)+",l_0),{t_c}, x>=C & x<=B , {countT = countT+1,x=0});\n";
+s+="((l_%d"%(n-1)+",l_0),{t_e}, x<=wt , {countT = countT+1,x=0});\n";
 for i in range(n-1):
     s+="((l_%d" %i + ",l_0),{t_d}, x<=B  ,{countT = countT+1});\n";
 
@@ -57,7 +57,7 @@ s+="((ll_0,ll_1),{t_a}, x<=D  ,{countT = countT+1});\n";
 for i in range(1,n-2):
     s+="((ll_%d" %i + ",ll_%d"%(i+1)+"),{t_a}, x<=D  ,{countT = countT+1});\n";
 s+="((ll_%d"%(n-2)+",ll_%d"%(n-1) +"),{t_b}, x<=D & t<=E ,{countT = countT+1});\n";
-s+="((ll_%d"%(n-1)+",lf_0),{t_e}, x<=wt& t>=F,  {countT = countT+1,x'=0});\n";
+s+="((ll_%d"%(n-1)+",lf_0),{t_e}, x<=wt& t>=F,  {countT = countT+1,x=0});\n";
 for i in range(n-1):
     s+="((ll_%d" %i + ",ll_0),{t_d}, x<=B  ,{countT = countT+1});\n";
 
@@ -69,8 +69,8 @@ for i in range(n-2):
 s+="((lf_%d"%(n-2)+",lf_%d"%(n-1) +"),{t_b}, x<=C  ,{countT = countT+1});\n";
 
 s+="%back edges in the automaton\n";
-s+="((lf_%d"%(n-2)+",lf_0),{t_c}, x>=C & x<=B , {countT = countT+1,x'=0});\n";
-s+="((lf_%d"%(n-1)+",lf_0),{t_e}, x<=wt , {countT = countT+1,x'=0});\n";
+s+="((lf_%d"%(n-2)+",lf_0),{t_c}, x>=C & x<=B , {countT = countT+1,x=0});\n";
+s+="((lf_%d"%(n-1)+",lf_0),{t_e}, x<=wt , {countT = countT+1,x=0});\n";
 for i in range(n-1):
     s+="((lf_%d" %i + ",lf_0),{t_d}, x<=B  ,{countT = countT+1});\n";
 s+="};\n\n"

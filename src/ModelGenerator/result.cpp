@@ -231,11 +231,12 @@ void result::printProgress() {
 void result::stopclock() {
     end = chrono::system_clock::now();
     cpu_time_used = chrono::duration_cast<chrono::duration<double> >(end - start).count();
-    while (endline >= 0) {
+    if(P.verbose>0){while (endline >= 0) {
         endline--;
         cout << "\033[A\033[2K";
     }
     cout << endl;
+    }
 }
 
 void result::print(ostream &s) {

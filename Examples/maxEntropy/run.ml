@@ -66,6 +66,64 @@ endmodule" n b minRep;
   assert (0=Sys.command cmd)
 
 
+let gen_faillure_repairB name c1 c2 dline =
+  let f = open_out (name^"_B.lha") in
+  Printf.fprintf f  "NOTDETERMINISTIC
+const int c1 =%i;
+const int c2 = %i;
+const int Dline =%i;
+
+VariablesList = {DISC countT, t1,t2};
+LocationsList = {li,l1,l2,lf, li2,l12,l22,lf2};
+
+reach=PROB;
+reachCond=PROB(lf);
+
+InitialLocations={li,li2};
+FinalLocations={lf2};
+Locations={
+(li, TRUE, (t1:1,t2:1));
+(l1, TRUE, (t1:1,t2:1));
+(l2, TRUE, (t1:1,t2:1));
+(lf, TRUE, (t1:1,t2:1));
+
+(li2, TRUE, (t1:1,t2:1));
+(l12, TRUE, (t1:1,t2:1));
+(l22, TRUE, (t1:1,t2:1));
+(lf2, TRUE, (t1:1,t2:1));
+};
+
+Edges={
+((li,li),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
+((l1,l1),ALL\\{t_a,t_b,t_c},countT <=Dline & t1<=c2 ,#);
+((l2,l2),ALL\\{t_a,t_b,t_c},countT <=Dline & t1<=c2 ,#);
+((lf,lf),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
+
+((li,li),{t_a,t_b,t_c}, # ,{countT = countT+1});
+((li,l1),{t_a}, # ,{countT = countT+1,t1=0});
+((l1,l1),{t_a,t_b,t_c}, t1<=c2 ,{countT = countT+1});
+((l1,l2),{t_c}, t1>=c1& t1<=c2 ,{countT = countT+1,t2=0});
+((l2,l2),{t_a,t_b,t_c}, t1<=c2 ,{countT = countT+1});
+((l2,lf),{t_a}, t2>=c1&t1<=c2 ,{countT = countT+1});
+((lf,lf),{t_a,t_b,t_c}, # ,{countT = countT+1});
+
+
+((li2,li2),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
+((l12,l12),ALL\\{t_a,t_b,t_c},countT <=Dline & t1<=c2 ,#);
+((l22,l22),ALL\\{t_a,t_b,t_c},countT <=Dline & t1<=c2 ,#);
+((lf2,lf2),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
+
+((li2,li2),{t_a,t_b,t_c}, # ,{countT = countT+1});
+((li2,l12),{t_a}, # ,{countT = countT+1,t1=0});
+((l12,l12),{t_a,t_b,t_c}, t1<=c2 ,{countT = countT+1});
+((l12,l22),{t_c}, t1>=c1& t1<=c2 ,{countT = countT+1});
+((l22,l22),{t_a,t_b,t_c}, t1<=c2 ,{countT = countT+1});
+((l22,lf2),{t_a}, t1>=2*c1&t1<=c2 ,{countT = countT+1});
+((lf2,lf2),{t_a,t_b,t_c}, # ,{countT = countT+1});
+};
+" c1 c2 dline;
+  close_out f
+
 let run1 n b timeC wt npoly =
   let name = "exp1_"^string_of_int n in
     gen_diff_to_reach name n b timeC wt npoly;
@@ -83,9 +141,18 @@ let exp1 () =
 
 (*exp1 ()*)
 
+let run2 n b minRep npoly c1 c2 dline =
+  let name = "exp2_"^string_of_int n in
+  gen_faillure_repair name n b minRep npoly;
+  gen_faillure_repairB name c1 c2 dline;
+  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_B.lha"," --njob 2 --max-run 50000 --batch 1000 --width 0");
+  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_B.lha"," --njob 2 --max-run 50000 --batch 1000 --width 0");;
 
 
 (* EXP2 *)
 
-gen_faillure_repair "exp2" 4 11 2 6
+run2 2 8 1 6 9 20 100;;
+run2 3 8 1 6 9 20 100;;
+run2 4 8 1 6 9 20 100;;
+run2 5 8 1 6 9 20 100;;
 

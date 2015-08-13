@@ -27,12 +27,12 @@ constfile = "const.m"
 batterycppfile = "exbat.cpp"
 resultfile = "result.m"
 markersFileName = 'markers.txt'
-mat2py = "/Users/paoletti/work/gitFolders/pacemaker/PaceMakerModel/mat2py.dat"
-py2mat = "/Users/paoletti/work/gitFolders/pacemaker/PaceMakerModel/py2mat.dat"
+mat2py = "mat2py.dat"
+py2mat = "py2mat.dat"
 
 matlabPath = "/Applications/MATLAB_R2014a.app/bin/matlab"
 #simmPar = "run('~/Projects/Cosmos/src/syn/sumo-toolbox_DDD/experiments/PM_TURI_TAVI.m');"
-simmPar = "run('~/work/gitFolders/Cosmos/src/syn/sumo-toolbox_DDD/experiments/PM_TURI_TAVI.m');"
+simmPar = "run('~/Documents/Cosmos/src/syn/sumo-toolbox_DDD/experiments/PM_TURI_TAVI.m');"
 monsoonDeviceName = "/dev/tty.usbmodemfa131"
 
 # modelName = "HeartModel_costs.slx"

@@ -613,6 +613,7 @@ ConfInt HaslFormulasTop::eval(const BatchR &batch)const{
 double HaslFormulasTop::bound()const{
     switch (TypeOp) {
         case PROBABILITY:
+        case PROBCOND:
             return 0.5;
             
         case EXPECTANCY:
