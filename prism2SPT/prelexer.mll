@@ -15,13 +15,15 @@ rule token = parse
   | ['/']['/'][^'\n']*    {token lexbuf}
   | digit+ as lxm  { INT(int_of_string lxm)}
   | digit*['.']?digit+(['e' 'E']['-' '+']?digit+)? as lxm  {FLOAT(float_of_string lxm)}
-  | "ctmc" | "dtmc" {CTMC}
+  | "ctmc" | "dtmc" | "pta" {CTMC}
   | "int" {INTKW}
+  | "clock" {CLOCK}
   | "double" {DOUBLEKW}
   | "const" {CONST}
   | "formula" {FORMULA}
   | "module" {MODULE} | "endmodule" {ENDMODULE}
   | "rewards" {REWARDS} | "endrewards" {ENDREWARDS}
+  | "invariant" {INVARIANT} | "endinvariant" {ENDINVARIANT}
   | "label" {LABEL}
   | "init" {INIT} | "endinit" {ENDINIT}
   | "bool" {BOOL}

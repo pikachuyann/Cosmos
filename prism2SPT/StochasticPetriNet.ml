@@ -12,12 +12,15 @@ type distr =
 | Unif of (float expr' *float expr')
 | Norm of (float expr' *float expr')
 | Det of float expr' 
-| Erl of (int expr'*float expr');;
+| Erl of (int expr'*float expr')
+| DiscUserDef of int
+;;
+
 
 type position = (float*float) option;;
 
 type spt = 
-  (int Type.expr',  (* Initial Marking type*)
+  (int Type.expr' * (int Type.expr') option,  (* Initial Marking type and bound on place*)
    distr*float Type.expr' * float Type.expr' , (* Label of transitions type *)
    int Type.expr' , (* valuation of arcs *)
    ((string*(int Type.expr') option) list)
@@ -32,11 +35,8 @@ open Net
 (* Print as a prism CTMC model*)
 let print_prism_module fpath net =
   let f = open_out fpath in
-  
   Printf.fprintf f "ctmc\nconst double imm=100000;\n";
- 
   Printf.fprintf f "module m1\n";
-
   Data.iter (fun (n,x) ->
     Printf.fprintf f "\t%s: [%i..%i] init %a;\n" n 0 2 printH_expr x;
   ) net.place;
@@ -107,7 +107,7 @@ let remove_erlang (net:spt) =
     inhibArc = Data.copy net.inhibArc} in
   Data.iter (fun (y,(z,we,pr)) -> match z with
     Erl(n,lamb) ->
-      Data.add (("P"^y^"ErCont"), Int 0) net2.Net.place;
+      Data.add (("P"^y^"ErCont"), (Int 0, Some n)) net2.Net.place;
       Data.add ((y^"ErStep"),(Exp lamb,we,pr)) net2.Net.transition;
       Net.add_inArc net2 ("P"^y^"ErCont") y n;
       Net.add_inhibArc net2 ("P"^y^"ErCont")  (y^"ErStep") n;
@@ -140,7 +140,7 @@ let remove_erlang (net:spt) =
 
 let add_reward_struct (net:spt) =
   Data.iter (fun (y,(z,we,pr)) -> if z <> Imm then begin 
-    Data.add (("P"^y^"_RewardStr"),(Int 0)) net.Net.place;
+    Data.add (("P"^y^"_RewardStr"),(Int 0, Some (Int 1))) net.Net.place;
     Data.add (("Tr_"^y^"RewardStr"),(Unif(FloatName (y^"min"),FloatName (y^"max")),Float 1.0,Float 1.0)) net.Net.transition;
     Net.add_outArc net y ("P"^y^"_RewardStr") (Int 1);
     Net.add_inArc net ("P"^y^"_RewardStr") ("Tr_"^y^"RewardStr") (Int 1);

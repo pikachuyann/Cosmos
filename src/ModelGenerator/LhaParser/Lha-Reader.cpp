@@ -41,7 +41,7 @@
 
 using namespace std;
 
-LhaType::LhaType(GspnType& Mspn) : MyGspn(&Mspn),NbLoc(0) {
+LhaType::LhaType(GspnType& Mspn) : MyGspn(&Mspn),NbLoc(0),isDeterministic(true) {
 	for (auto it= MyGspn->IntConstant.begin(); it!= MyGspn->IntConstant.end() ; ++it){
 		LhaRealConstant[it->first]=it->second;
 		LhaIntConstant[it->first]=it->second;
@@ -127,7 +127,7 @@ bool is_simple(const string &s){
             && s.find(")") == string::npos);
 }
 
-string Lha_Reader::InvRelOp(string& str) {
+string Lha_Reader::InvRelOp(const string& str)const {
     if (str == "<=") return ">=";
     if (str == ">=") return "<=";
 	cerr << "Fail to inverse RelOp"<< endl;
@@ -149,18 +149,10 @@ void Lha_Reader::view() {
 
 }
 
-void Lha_Reader::WriteFile(parameters& P) {
+void Lha_Reader::WriteFile(parameters& P)const {
 	string Pref = P.tmpPath;
 
     string loc;
-
-
-    //some cleaning:
-    MyLha.SimplyUsedLinearForm = vector<bool>(MyLha.LinearForm.size(),true);
-    for( size_t i = 0; i< MyLha.LhaFuncArg.size();++i)
-        if(MyLha.LhaFuncType[i]!="Last")
-            MyLha.SimplyUsedLinearForm[MyLha.LhaFuncArg[i]] = false;
-
 
     //loc = Pref + "../SOURCES/Cosmos/LHA.cpp";
     loc = Pref + "/LHA.cpp";
@@ -178,8 +170,8 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "#include <float.h>" << endl;
 	LhaCppFile << "#include \"LHA.hpp\"" << endl;
 
-	for (map<string,double>::iterator it= MyLha.LhaRealConstant.begin(); it!= MyLha.LhaRealConstant.end() ; it++) {
-		LhaCppFile << "    const double " << it->first << "=" << it->second << ";" << endl;
+    for (let it : MyLha.LhaRealConstant) {
+		LhaCppFile << "    const double " << it.first << "=" << it.second << ";" << endl;
 	}
 
 	LhaCppFile << "struct Variables {\n";
@@ -203,6 +195,18 @@ void Lha_Reader::WriteFile(parameters& P) {
 	}
 	LhaCppFile << "};\n";
 
+    LhaCppFile << "bool varOrder(const Variables &v1,const Variables &v2){\n";
+    for(size_t v =0 ; v< MyLha.Vars.type.size(); v++){
+        if(MyLha.Vars.type[v] == COLOR_VARIABLE){
+            LhaCppFile << "\tcerr << \"Not yet supported\";\n";
+        }else if(MyLha.Vars.type[v] == INT_INDEXED_DISC_ARRAY){
+            LhaCppFile << "\tfor(unsigned int i =0; i<" << MyLha.Vars.colorDomain[v] << ";i++)";
+            LhaCppFile << "if(v1."<<MyLha.Vars.label[v]<<"[i]<v2."<<MyLha.Vars.label[v]<<"[i])return true;"<< endl;
+        } else LhaCppFile << "\tif(v1."<<MyLha.Vars.label[v]<<"<v2."<<MyLha.Vars.label[v]<<")return true;"<< endl;
+    }
+    LhaCppFile << "\treturn false;\n};\n";
+
+
 	LhaCppFile << "void LHA::resetVariables(){\n";
 	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
 		if(MyLha.Vars.type[v] == COLOR_VARIABLE){
@@ -222,12 +226,20 @@ void Lha_Reader::WriteFile(parameters& P) {
 	LhaCppFile << "\";\n";
 	LhaCppFile << "};\n";
 
-	LhaCppFile << "void LHA::printState(ostream &s)const{\n";
+	LhaCppFile << "void LHA::printState(ostream &s){\n";
 	LhaCppFile << "\ts << \"\\t\" << LocLabel[CurrentLocation] << \"\\t\";\n";
     if(P.StringInSpnLHA){
         for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++)
-            if(MyLha.Vars.isTraced[v])LhaCppFile << "\ts << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
-
+            if(MyLha.Vars.isTraced[v]){
+                if(MyLha.Vars.type[v] == INT_INDEXED_DISC_ARRAY){
+                    LhaCppFile << "\ts << \"[\";" <<endl;
+                    LhaCppFile << "\tfor(unsigned int i=0; i<"<< MyLha.Vars.colorDomain[v] <<"; i++)";
+                    LhaCppFile << "s << Vars->"<< MyLha.Vars.label[v] << "[i] << \", \";" << endl;
+                    LhaCppFile << "s <<\"] \\t\";\n";
+                }else{
+                    LhaCppFile << "\ts << Vars->"<< MyLha.Vars.label[v] << " << \"\\t\";\n";
+                }
+            }
     }
 	LhaCppFile << "};\n";
 
@@ -327,6 +339,7 @@ void Lha_Reader::WriteFile(parameters& P) {
 	} else {
 		LhaCppFile << "    FormulaVal = vector<double>(" << MyLha.Algebraic.size() << ",0.0);" << endl;
     }
+    LhaCppFile << "    FormulaValQual = vector<bool>(" << MyLha.FinalStateCond.size() << ",false);" << endl;
 
     LhaCppFile << "}\n" << endl;
 
@@ -474,8 +487,8 @@ void Lha_Reader::WriteFile(parameters& P) {
                         newcase << "                      }" << endl;
 
                         newcase << "                  else{" << endl;
-                        RelOp = InvRelOp(RelOp);
-                        if (RelOp == "<=") {
+                        const auto RelOp2 = InvRelOp(RelOp);
+                        if (RelOp2 == "<=") {
                             newcase << "                     if(EnablingT.second>t) EnablingT.second=t;" << endl;
                             newcase << "                     if(EnablingT.second<EnablingT.first) return EmptyInterval;" << endl;
 
@@ -572,9 +585,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 	}
 	edgeUpdateHandler.writeCases(LhaCppFile);
 	//LhaCppFile << "    }" << endl;
-	for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++)
-        if(!MyLha.SimplyUsedLinearForm[it->second]){
-            LhaCppFile << "    OldLinForm[" << it->second << "]=LinForm[" << it->second << "];" << endl;
+    for (let it : MyLha.LinearForm)
+        if(!MyLha.SimplyUsedLinearForm[it.second]){
+            LhaCppFile << "    OldLinForm[" << it.second << "]=LinForm[" << it.second << "];" << endl;
 
         }
 
@@ -589,9 +602,9 @@ void Lha_Reader::WriteFile(parameters& P) {
 	 }*/
 
 	LhaCppFile << "void LHA::UpdateLinForm(const abstractMarking& Marking){" << endl;
-	for (map<string, int>::iterator it = MyLha.LinearForm.begin(); it != MyLha.LinearForm.end(); it++)
-        if(!MyLha.SimplyUsedLinearForm[it->second]){
-            LhaCppFile << "    LinForm[" << (*it).second << "]=" << (*it).first << ";" << endl;
+    for (let it : MyLha.LinearForm)
+        if(!MyLha.SimplyUsedLinearForm[it.second]){
+            LhaCppFile << "    LinForm[" << it.second << "]=" << it.first << ";" << endl;
 
         }
 	LhaCppFile << "    }\n" << endl;
@@ -640,10 +653,73 @@ void Lha_Reader::WriteFile(parameters& P) {
 			LhaCppFile << "    FormulaVal["<<j<<"]= EdgeCounter[" << i << "];\n";
 		}
 	}
-	LhaCppFile << "}\n" << endl;
-	
-	
+    for(size_t i = 0; i < MyLha.FinalStateCond.size(); i++){
+        LhaCppFile << "    FormulaValQual[" << i << "] = CurrentLocation == " << MyLha.LocIndex.find(MyLha.FinalStateCond[i])->second << ";"<< endl;
+    }
+
+    LhaCppFile << "}\n" << endl;
+
+    LhaCppFile << "bool IsLHADeterministic = "<< MyLha.isDeterministic<< ";";
+
+    LhaCppFile << "fullState::fullState():loc(0){\n\tvar= new Variables;\n}\n" << endl;
+    LhaCppFile << "fullState::fullState(int l,const Variables &v):loc(l){\n\tvar= new Variables(v);\n}\n" << endl;
+    LhaCppFile << "fullState::fullState(const fullState &fs):loc(fs.loc){\n\tvar= new Variables(*(fs.var));\n}\n" << endl;
+    LhaCppFile << "fullState::~fullState(){delete var;}\n" << endl;
+
+
 	LhaCppFile.close();
-	
-	
 }
+
+
+void Lha_Reader::writeDotFile(const string &file)const{
+    ofstream df(file.c_str(), ios::out | ios::trunc);
+    df << "digraph G {" << endl;
+
+    for (let l : MyLha.LocLabel ) {
+        df << "\t" << l;
+        df << " [shape=circle];" << endl;
+    }
+
+    for (let e : MyLha.Edge ){
+        df << "\t" << MyLha.LocLabel[e.Source] << "->" << MyLha.LocLabel[e.Target];
+        df << " [label=\"{";
+        if(MyLha.EdgeActions[e.Index].size()>5){df<< "##";}else for(let a :MyLha.EdgeActions[e.Index])df << a << ", ";
+        df<< "}, {";
+
+        if((MyLha.ConstraintsRelOp[e.Index].size()>0 && MyLha.EdgeActions[e.Index].size() > 0) || MyLha.unTimeEdgeConstraints[e.Index]!="true" ){
+            if(MyLha.ConstraintsRelOp[e.Index].size()>0 && MyLha.EdgeActions[e.Index].size() > 0){
+                for (size_t c = 0; c < MyLha.ConstraintsRelOp[e.Index].size(); c++) {
+                    size_t k = 0;
+                    for (size_t v = 0; v < MyLha.NbVar; v++)
+                        if (MyLha.ConstraintsCoeffs[e.Index][c][v] != "")k++;
+                    if(k>0){
+                        for (size_t v = 0; v < MyLha.Vars.label.size(); v++) {
+                            if (MyLha.ConstraintsCoeffs[e.Index][c][v] != "" )
+                                df << "(" << MyLha.ConstraintsCoeffs[e.Index][c][v] << ")*" << MyLha.Vars.label[v];
+
+                        }
+                        df << MyLha.ConstraintsRelOp[e.Index][c] << MyLha.ConstraintsConstants[e.Index][c] << ", ";
+                    }
+                }
+            }
+        }
+
+        df << "}, {";
+        for (size_t v = 0; v < MyLha.NbVar; v++)
+            if (MyLha.FuncEdgeUpdates[e.Index][v] != ""){
+                df << MyLha.Vars.label[v] << ":=" << MyLha.FuncEdgeUpdates[e.Index][v] << ",";
+            }
+        df<<"} \"];" << endl;
+    }
+    df << "}" << endl;
+}
+
+
+
+
+
+
+
+
+
+

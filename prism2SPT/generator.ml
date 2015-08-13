@@ -12,7 +12,7 @@ let print_position outx lexbuf =
 
 let rec acc_var k = function 
   | [] -> raise Not_found
-  | (t,a,_)::_ when t=k -> a  
+  | IntK(t,a,_)::_ when t=k -> a  
   | _::q -> acc_var k q
 
 let rec flatten_guard x = 
@@ -119,7 +119,10 @@ let net_of_prism modu (li,lf) =
   print_endline "Building net";
   let net = Net.create () in
   net.Net.def <- Some (li,lf,[],fun _ ()->());
-  List.iter (fun (n,(a,b),i) -> Data.add (n,i) net.Net.place) modu.varlist;
+  List.iter (function 
+  | IntK(n,(a,b),i) -> Data.add (n,(i,Some b)) net.Net.place
+  | BoolK(n,(a,b),i) -> Data.add (n,(i,Some b)) net.Net.place
+  | ClockK _ -> ()) modu.varlist;
   print_endline "Building transitions";
   ignore (List.fold_left 
 	    (fun i ac ->
@@ -134,7 +137,10 @@ let rec rename_module l1 = function
     let rn a = try (List.assoc a rl) with Not_found -> a
 (*output_string stderr (a^" not foud"); print_rename stderr rl; raise Not_found*)  in
     let template = List.find (fun m -> m.name = on) l1 in
-    let nvarl = List.map (fun (a,b,c) -> (rn a),b,c ) template.varlist in
+    let nvarl = List.map (function  
+      | IntK(a,b,c) -> IntK((rn a),b,c) 
+      | BoolK(a,b,c) -> BoolK((rn a),b,c)
+      | ClockK(a) -> ClockK((rn a)) ) template.varlist in
     let nactionl = List.map (fun (a,b,c,d) -> 
       (rename_op rn a),
       (rename_expr rn b),

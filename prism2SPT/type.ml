@@ -4,7 +4,7 @@ let (|>>) x f = match x with
   | None -> None
 
 let (|>>>) x f = match x with 
-    Some y -> Some (f y)
+    Some y -> begin try Some (f y) with _ -> None end
   | None -> None
 
 let (|>>|) x v = match x with
@@ -13,6 +13,10 @@ let (|>>|) x v = match x with
 
 let (|<) x f = let () = f x in x
 let (|<>|) f (x,y) = f x y
+
+let opHd = function
+  | t::_ -> Some t
+  | [] -> None
 
 let fix_point f x =
   let y = ref x 
@@ -44,7 +48,7 @@ let rec selectL fb = function
   | t::q when fb t -> (t,q)
   | t::q -> let t2,q2 = selectL fb q in
 	    (t2,t::q2)
-
+ 
 let print_option2 def f so  =
   match so with None -> output_string f def | Some s -> Printf.fprintf f "%s" s
 
@@ -80,6 +84,18 @@ type _ expr' =
   | FunCall : string*(('a expr') list) -> 'a expr'
   | If : (bool expr' * 'a expr' * 'a expr') -> 'a expr'
 
+type cmdAttr =
+  | Close
+  | ParseInt of int expr'
+  | ParseFloat of float expr'
+  | ParseBool of bool expr'
+  | ParseDistr of string*((float expr') list) 
+  | XMLInt of string
+  | XMLFloat of string
+  | XMLBool of string
+  | XMLDistr of string
+      
+      
 let rec iterFloat f y = 
   let ri = iterFloat f in match y with
     | FloatName(x) -> f y;
@@ -304,3 +320,5 @@ let print_token f = function
   | Int 4 -> output_string f "••\n••"
   | Int 5 -> output_string f "•••\n••"
   | i -> printH_expr f i
+
+   

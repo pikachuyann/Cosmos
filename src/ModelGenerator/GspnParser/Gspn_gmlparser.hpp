@@ -31,7 +31,7 @@
 
 #include "expatmodelparser.hh"
 #include "modelhandler.hh"
-#include "Gspn-Reader.hpp"
+#include "Gspn-model.hpp"
 #include <map>
 
 #include <exception>
@@ -41,13 +41,13 @@ class MyModelHandler: public ModelHandler
 {
 public:
 	bool ParsePl;
-	map<int,bool> IsPlace;
-	map<int,int> Gml2Place;
-	map<int,int> Gml2Trans;
+    std::map<int,bool> IsPlace;
+	std::map<int,int> Gml2Place;
+	std::map<int,int> Gml2Trans;
 	GspnType *MyGspn;
 	
 	MyModelHandler(GspnType&) ;
-	MyModelHandler(GspnType&,map<int,bool>&,map<int,int>&,map<int,int>&);
+	MyModelHandler(GspnType&,std::map<int,bool>&,std::map<int,int>&,std::map<int,int>&);
 	//~MyModelHandler() { }
 	
 	
@@ -68,14 +68,14 @@ public:
 					 const XmlStringList& references);
 	
 private:
-	expr eval_expr(tree<string>::pre_order_iterator it );
-    int eval_intFormula( tree<string>::pre_order_iterator it );
-    double eval_realFormula(tree<string>::pre_order_iterator it );
-	void eval_tokenProfileArc(coloredToken& ,bool &, set<size_t>& , tree<string>::pre_order_iterator);
-	expr eval_guard(tree<string>::pre_order_iterator);
+	expr eval_expr(tree<std::string>::pre_order_iterator it );
+    int eval_intFormula( tree<std::string>::pre_order_iterator it );
+    double eval_realFormula(tree<std::string>::pre_order_iterator it );
+	void eval_tokenProfileArc(coloredToken& ,bool &, std::set<size_t>& , tree<std::string>::pre_order_iterator);
+	expr eval_guard(tree<std::string>::pre_order_iterator);
 
-	string simplifyString(string str);
-	treeSI findbranch(treeSI t, string branch);
+	std::string simplifyString(std::string str);
+	treeSI findbranch(treeSI t, std::string branch);
 };
 
 

@@ -1,6 +1,9 @@
 open Type 
 
-type expType = IntT | BoolT | DoubleT | IntVar | BoolVar | FunT
+type expType = IntT | BoolT | DoubleT | IntVar | BoolVar | FunT | Clock
+
+let allInt = ref false
+let allReal = ref false
 
 let (mapType:expType StringMap.t ref) = ref 
   (StringMap.empty
@@ -26,9 +29,13 @@ type constdef = (string*(int expr' option)) list * (string*(float expr' option))
 
 type update = IntUp of int expr' | BoolUp of  bool expr'
 
+type varKind = IntK of string * (int expr'*int expr') * int expr'
+	       | BoolK of string * (int expr'*int expr') * int expr'
+	       | ClockK of string 
+  
 type prism_module = {
   name:string;
-  varlist:(string * (int expr'*int expr') * int expr') list;
+  varlist: varKind list;
   actionlist: (string option * bool expr' * float expr' * ((string*update) list)) list;
   actionset: StringSet.t
 }

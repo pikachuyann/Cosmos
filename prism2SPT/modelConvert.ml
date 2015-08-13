@@ -6,7 +6,7 @@ let input = ref stdin
 let output = ref "out"
 let inname = ref "stdin"
 let typeFormat = ref Prism
-let outputFormat = ref [GrML;Dot;Marcie]
+let outputFormat = ref [Dot;Marcie]
 let const_file = ref ""
 let verbose = ref 1
 
@@ -22,6 +22,9 @@ let _ =
   Arg.parse ["--light",Arg.Set SimulinkType.lightSim,"light simulator";
 	     "--pdf",Arg.Unit (fun () -> outputFormat:= Pdf:: !outputFormat),"Output as PDF";
 	     "--prism",Arg.Unit (fun () -> outputFormat:= Prism:: !outputFormat),"Output in Prism File Format";
+	     "--pnml",Arg.Unit (fun () -> outputFormat:= Pnml:: !outputFormat),"Output in Pnml File Format";
+	     "--grml",Arg.Unit (fun () -> outputFormat:= GrML:: !outputFormat),"Output in Pnml File Format";
+	     "--andl",Arg.Unit (fun () -> outputFormat:= Marcie:: !outputFormat),"Output in Marcie File Format";
 	     "--stoch",Arg.Set SimulinkType.modelStoch,"Use probabilistic delay";
 	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
 	     "--no-imm",Arg.Set SimulinkType.doremoveImm,"Remove Instantaneous transition in prims model";
@@ -34,7 +37,7 @@ let _ =
 	( let o,suf = suffix_of_filename s in 
 	  output := o;
 	  match suf with
-	  "sm" | "pm" -> typeFormat := Prism
+	  "sm" | "pm" | "nm" | "prism" -> typeFormat := Prism
 	| "pnml" -> typeFormat := Pnml
 	| "slx" -> 
 	  typeFormat := Simulink;
@@ -136,6 +139,8 @@ let _ =
 	ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output)
       | GrML ->
 	StochPTPrinter.print_spt ((!output)^".grml") net
+      | Pnml ->
+	StochPTPrinter.print_pnml ((!output)^".pnml") net
       | Marcie -> 
 	StochPTPrinter.print_spt_marcie ((!output)^".andl") net
       | Prism when !typeFormat = Simulink -> ()

@@ -36,9 +36,9 @@
 #include "Gspn-Reader.hpp"
 #include "../Eval/Eval.hpp"
 
-class unfolder: public Gspn_Reader {
+class unfolder: public GspnType {
 public:
-	unfolder(Gspn_Reader& g):Gspn_Reader(g),nbPlace(0),nbTrans(0),nbArc(0){};
+	unfolder(GspnType& g):GspnType(g),nbPlace(0),nbTrans(0),nbArc(0){};
 	
 	void export_grml(ofstream &fout);
 private:

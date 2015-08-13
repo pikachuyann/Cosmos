@@ -35,8 +35,8 @@
 
 class SimulatorRE: public Simulator{
 public:
-	SimulatorRE(bool);
-	SimulatorRE();
+	SimulatorRE(LHA&,bool);
+	SimulatorRE(LHA&);
 	
 	virtual void initVect();
 	

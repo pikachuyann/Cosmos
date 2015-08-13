@@ -68,7 +68,6 @@ struct LhaEdge {
 struct _AutEdge {
     int Index;
     double FiringTime;
-	
 };
 typedef struct _AutEdge AutEdge;
 
@@ -77,9 +76,14 @@ typedef struct _AutEdge AutEdge;
  * Implementation is provide only at runtime.
  */
 struct Variables;
-
+/**
+ Strict order on valuation set provide at runtime.
+ */
+bool varOrder(const Variables &,const Variables &);
 
 t_interval GetEdgeEnablingTime(int,const abstractMarking&);
+
+extern bool IsLHADeterministic;
 
 /**
  * Class implementing the Linear Hybrid Automaton.
@@ -93,6 +97,7 @@ public:
     const unsigned int NbLoc; // number of locations
     
     vector<double> FormulaVal;
+    vector<bool> FormulaValQual;
 
     /**
      * Current time of the LHA
@@ -115,39 +120,46 @@ public:
 	 *  It only copy pointer thus is in constant time.
 	 */
 	void copyState(LHA*);
-	
-	/**
-	 * \brief Return a synchronized edge for a given transition of the SPN.
-	 */
-	int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&)const;
-	
+
+    //! fire the transition of an LHA
+    void fireLHA(int,const abstractMarking&, const abstractBinding&);
+
+    /**
+     * \brief Synchronized the execution of the LHA with a transition of the SPN.
+     */
+    virtual int synchroniseWith(size_t, const abstractMarking&,const abstractBinding&);
+
 	/**
 	 * \brief Return an autonomous edge for a given marking.
 	 */
-	AutEdge GetEnabled_A_Edges(const abstractMarking&,const abstractBinding&)const;
+    virtual AutEdge GetEnabled_A_Edges(const abstractMarking&,const abstractBinding&);
 	
 	//! update value in the LHA by elapsing time
-	void updateLHA(double DeltaT, const abstractMarking &);
-	
-	//! fire the transition of an LHA
-	virtual void fireLHA(int,const abstractMarking&, const abstractBinding&);
+	virtual void updateLHA(double DeltaT, const abstractMarking &);
+
 	
 	//! test if the automaton is in a final state
-	bool isFinal()const;
+	virtual bool isFinal()const;
     
 	/**
 	 * reset the automata to its initial state according to the
 	 * marking of the SPN.
 	 */
-    void reset(const abstractMarking&);
+    virtual void reset(const abstractMarking&);
 	
-	void getFinalValues(const abstractMarking&,vector<double>&);
+    virtual void getFinalValues(const abstractMarking&,vector<double>&,vector<bool>&);
 	
-	void printState(ostream &)const;
+	virtual void printState(ostream &);
 	void printHeader(ostream &)const;
 	
-private:
+protected:
 	vector <LhaEdge> Edge;
+
+    /**
+     * \brief Return a synchronized edge for a given transition of the SPN.
+     */
+    int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
+
 
     set <int> InitLoc; // initial locations
     vector<bool> FinalLoc; // final locations
@@ -179,7 +191,7 @@ private:
 	 * \brief Set the initial location of the LHA for a marking
 	 * Loop over the set of initial location to find one enabled.
 	 */
-	void setInitLocation(const abstractMarking&);
+	virtual void setInitLocation(const abstractMarking&);
 	
 	
 	void DoElapsedTimeUpdate(double, const abstractMarking&);
@@ -215,8 +227,21 @@ private:
     double Max(double, double, double);
     double Integral(double, double, double, double, double);
     double BoxedIntegral(double OldInt, double t, double Delta, double x, double y, double t1,double t2);
-
 };
 
+class fullState {
+public:
+    int loc;
+    Variables* var;
+    inline bool operator< (const fullState& other)const {
+        return this->loc < other.loc
+        || (this->loc == other.loc && varOrder( *(this->var), *(other.var)));
+    }
+    fullState();
+    fullState(int l,const Variables &v);
+    fullState(const fullState&);
+    ~fullState();
+
+};
 #endif	/* _LHA_HPP */
 

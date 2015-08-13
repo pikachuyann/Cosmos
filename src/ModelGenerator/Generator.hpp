@@ -42,10 +42,11 @@
  * @return a boolean equal to true if everything run correctly
  */
 
-bool Parse();
+shared_ptr<GspnType> ParseGSPN();
+bool ParseLHA(GspnType &);
 
-void generateLoopLHA(Gspn_Reader &);
-void generateSamplingLHA(Gspn_Reader &);
+void generateLoopLHA(GspnType &);
+void generateSamplingLHA(GspnType &);
 void generateMain();
 
 bool build();
