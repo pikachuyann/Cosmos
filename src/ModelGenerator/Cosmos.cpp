@@ -45,6 +45,7 @@
 #include "server.hpp"
 #include "parameters.hpp"
 #include "Generator.hpp"
+#include "GspnParser/unfolder.hpp"
 
 /**
  * Retrive the real absolute path of the executable of Cosmos
@@ -150,7 +151,7 @@ int main(int argc, char** argv) {
         cout << "################################################################################" << endl;
     }
 	//assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
-	
+
 	//If tmpStatus is zero generate random tmp directory
 	if (P.tmpStatus == 0) {
 		string newtmp = systemStringResult("mktemp -d tmpCosmos-XXXXXX");
@@ -180,12 +181,18 @@ int main(int argc, char** argv) {
     if(P.prismPath.empty())P.prismPath="prism";
 
     //Parse and generate the gspn and lha.
-    if ( ! Parse()) {
-        cout << "Fail to build the model.";
+    shared_ptr<GspnType> pGSPN = ParseGSPN();
+    if ( !pGSPN ) {
+        cout << "Fail to build the GSPN." << endl;
         return(EXIT_FAILURE);
     }
 
-    if(!P.unfold.empty())return EXIT_SUCCESS;
+    if (!P.unfold.empty()) {
+        unfolder unfold(*pGSPN);
+        ofstream unfoldfile(P.unfold, ios::out | ios::trunc);
+        unfold.export_grml(unfoldfile);
+        return EXIT_SUCCESS;
+    }
 
     if(P.MaxRuns == 0 && P.lightSimulator){
         auto cmd = "cp "+P.Path+"../src/LightSimulator/*.* "+P.tmpPath;
@@ -196,8 +203,17 @@ int main(int argc, char** argv) {
         system(cmd.c_str());
         return EXIT_SUCCESS;
     }
+    
+    if(!P.lightSimulator)
+        if ( ! ParseLHA(*pGSPN)) {
+            cout << "Fail to build the LHA." << endl;;
+            return(EXIT_FAILURE);
+        }
+    
     if(P.MaxRuns==0)return EXIT_SUCCESS;
 
+    
+    
     //Compile the simulator
     if(P.tmpStatus==0 || P.tmpStatus==2){
         if ( !build()) {

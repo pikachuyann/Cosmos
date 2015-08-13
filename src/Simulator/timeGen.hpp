@@ -44,13 +44,14 @@ public:
 	 */
 	void initRandomGenerator(unsigned int seed);
 
+    std::string string_of_dist(DistributionType d,const std::vector<double> &param)const;
+
 private:
 	
 	//!The random Generator Mersenne Twister from the boost library
 	boost::mt19937 RandomNumber;
-	
-};
 
+};
 
 #endif /* defined(__Cosmos__File__) */
 

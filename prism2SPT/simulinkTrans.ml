@@ -41,7 +41,7 @@ let expand_trans l =
 	and newsn = post_name sl dst ssid in
 	let newt = fresh_ssid () in
 	((news,Some newsn)::sl2,
-	(ssid,src,{empty_trans_label with trigger=label.trigger; priority =label.priority; nameT=(src |>> (fun x ->List.assoc x sl)); isFinal=false },news)::
+	(ssid,src,{empty_trans_label with trigger=label.trigger; priority =label.priority; nameT=(src |>> (fun x ->List.assoc x sl)); description=label.description ; isFinal=false },news)::
 	  (newt,Some(news),{label with trigger=Imm},dst)::tl2)
       | (Delay(_),[],_) -> 
 	(* wait loop Check whether an instanenous transition exist in target state
@@ -482,6 +482,9 @@ let print_magic f sl tl scrl=
   if !add_reward then output_string f "#include \"../exbat.cpp\"\n";
   output_string f "#ifndef uint8\n#define uint8 uint8_t\n#define uint16 uint16_t\n#define uint32 uint32_t\n#endif\n";
   output_string f "#include \"markingImpl.hpp\"\n";
+  if List.exists (fun (_,_,t,_) -> t.description <>None) tl then
+     output_string f "#include \"../distr.cpp\"\n";
+
   if not !lightSim then
     output_string f (escape_XML "template <typename T>
 std::string to_string2(T value){
@@ -629,6 +632,26 @@ let removeImm m =
   {m with transL=(*m.transL*) !stoch2}
     
 
+let distr_of_trans lab =
+  match (lab.trigger,lab.description) with
+    (ImmWC _),_ | (Imm,_) -> (StochasticPetriNet.Imm,Float 1.0,Float (2.0-.0.01*.lab.priority)) 
+  | (Delay s),None -> (detfun s,Float 1.0,Float (1.0-.0.01*.lab.priority))
+  | (Delay s),(Some desc) ->
+    if String.length desc = 0 then (detfun s,Float 1.0,Float (1.0-.0.01*.lab.priority))
+    else if desc.[0] = 'T' then
+      desc		     
+  |> (fun s -> Some (String.sub s 1 (String.length s -1))) 
+  |>>> int_of_string 
+  |>>| 0 
+  |> (fun x -> StochasticPetriNet.DiscUserDef x,Float 1.0,Float (1.0-.0.01*.lab.priority))
+    else desc
+  |> (fun s -> Some (String.sub s 1 (String.length s -1))) 
+  |>>> float_of_string 
+  |>>| 1.0
+  |> (fun x -> StochasticPetriNet.Exp (Float x),Float 1.0,Float (1.0-.0.01*.lab.priority))
+
+ | (RAction s),_ -> (StochasticPetriNet.Imm,Float 1.0,Float (4.0-.0.01*.lab.priority))
+   
 
 (* Print as a prism CTMC model*)
 let print_prism_module fpath cf ml =
@@ -659,7 +682,7 @@ let stochNet_of_modu cf m =
 	 |> StringSet.union m.interfaceR 
 	     
 	 |< Printf.fprintf !logout "Interface [ %a ]\n" (print_set ",")
-	 |< StringSet.iter (fun x -> Data.add (("SIG_"^x),Int 0) net.Net.place)
+	 |< StringSet.iter (fun x -> Data.add (("SIG_"^x),(Int 0,Some (Int 1))) net.Net.place)
 	 |< StringSet.iter (fun x -> Data.add (("EMPTY_"^x),(StochasticPetriNet.Imm,Float 1.0,Float 3.0)) net.Net.transition)
 	 |> StringSet.iter (fun x -> Net.add_inArc net ("SIG_"^x) ("EMPTY_"^x) (Int 1)))
       
@@ -673,9 +696,9 @@ let stochNet_of_modu cf m =
     (function (Var(ty,x,init)) when x<>"ctime" -> x::tl | _-> tl)
   ) [] in
   net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) (DataFile.data_of_file cf)),varlist,fund);
-  Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),Int x) net.Net.place) m.ivect;
+  Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),(Int x,Some (Int !ssid_count) )) net.Net.place) m.ivect;
   if !add_reward then begin
-    Data.add ("STOP_PL",Int 0) net.Net.place;
+    Data.add ("STOP_PL",(Int 0,Some (Int 1))) net.Net.place;
     Data.add (("STOP"),(Det (Float 0.0),Float 1.0,Float 2.0)) net.Net.transition;
     Data.add (("CONTINUE"),(Det (Float 0.0),Float 1.0,Float 1.0)) net.Net.transition;
     Net.add_inArc net "STOP_PL" "STOP" (Int 1);
@@ -685,15 +708,14 @@ let stochNet_of_modu cf m =
   end;
   List.iter (fun (ssidt,src,lab,dst) -> 
     try 
-    begin match lab.trigger with
-      ImmWC _ | Imm -> Data.add ((trans_of_int ssidt lab),(StochasticPetriNet.Imm,Float 1.0,Float (2.0-.0.01*.lab.priority))) 
-	net.Net.transition
-    | Delay s-> Data.add ((trans_of_int ssidt lab),(detfun s,Float 1.0,Float (1.0-.0.01*.lab.priority))) net.Net.transition
-    | RAction s -> Data.add ((trans_of_int ssidt lab),(StochasticPetriNet.Imm,Float 1.0,Float (4.0-.0.01*.lab.priority)))
-      net.Net.transition;
-      Net.add_inArc net ("SIG_"^s) (trans_of_int ssidt lab) (Int 1);
-      Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^s) (Int 1);
-    end;
+      let d= distr_of_trans lab in
+      begin match lab.trigger with
+      ImmWC _ | Imm | Delay _-> Data.add ((trans_of_int ssidt lab),d) net.Net.transition
+      | RAction s -> Data.add ((trans_of_int ssidt lab),d)
+	net.Net.transition;
+	Net.add_inArc net ("SIG_"^s) (trans_of_int ssidt lab) (Int 1);
+	Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^s) (Int 1);
+      end;
     List.iter (fun x -> 
       Net.add_inhibArc net ("SIG_"^x) (trans_of_int ssidt lab) (Int 1);
       Net.add_outArc net (trans_of_int ssidt lab) ("SIG_"^x) (Int 1)
@@ -713,7 +735,7 @@ let stochNet_of_modu cf m =
 	None ->()
       | Some sn2 -> begin
 	let sn = String.sub sn2 1 (String.length sn2 -1) in
-	Data.add ((Printf.sprintf "P_%s_RewardStr_%i" sn ssidt),(Int 0)) net.Net.place;
+	Data.add ((Printf.sprintf "P_%s_RewardStr_%i" sn ssidt),(Int 0,Some (Int 1))) net.Net.place;
 	Data.add ((Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt),(Det(FunCall ("TransitionTime",[Float (float_of_string sn)])),Float 1.0,Float 1.0)) net.Net.transition;
 	Net.add_outArc net (trans_of_int ssidt lab) (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Int 1);
 	Net.add_inArc net (Printf.sprintf "P_%s_RewardStr_%i" sn ssidt) (Printf.sprintf "TR_%s_RewardStr_%i" sn ssidt) (Int 1);

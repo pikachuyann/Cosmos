@@ -72,7 +72,8 @@ struct LhaType {
     
 	string label;
     size_t NbLoc; // number of locations
-	
+    bool isDeterministic;
+
     set <unsigned int, less<unsigned int> > InitLoc; // initial locations
     set <unsigned int, less<unsigned int> > FinalLoc; // final locations
 	
@@ -119,6 +120,7 @@ struct LhaType {
     vector<int> LhaFuncArg;
     vector<string> LhaFuncType;
     vector<string> Algebraic;
+    vector<string> FinalStateCond;
 	double ConfidenceLevel;
 	vector<string> HASLname;
 	vector<HaslFormulasTop*> HASLtop;
@@ -158,7 +160,9 @@ public:
 	int parse_gml_file(parameters&);
 	
 	//!< generate code for the LHA.
-	void WriteFile(parameters&);
+	void WriteFile(parameters&)const;
+    void writeDotFile(const std::string &file)const;
+    
 	
 	parameters P;
 private:
@@ -170,7 +174,7 @@ private:
 	
 	
 	
-    string InvRelOp(string &);
+    string InvRelOp(const string &)const;
 	
     bool trace_parsing;
 	

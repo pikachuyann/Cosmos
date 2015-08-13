@@ -42,14 +42,25 @@ using namespace std;
  * Constructor for the Simulator initialize the event queue
  * but don't fill it.
  */
-Simulator::Simulator():verbose(0){
+Simulator::Simulator(LHA& automate):verbose(0),A(automate){
 	EQ = new EventsQueue(N); //initialization of the event queue
 	logResult=false;
 	sampleTrace = 0.0;
-	Result.second.resize(A.FormulaVal.size());
+	Result.quantR.resize(A.FormulaVal.size());
+    Result.qualR.resize(A.FormulaValQual.size());
 	BatchSize = 1000;
     minInteractiveTime = 0.0;
 }
+
+
+/*Simulator::Simulator():verbose(0)){
+    EQ = new EventsQueue(N); //initialization of the event queue
+    logResult=false;
+    sampleTrace = 0.0;
+    Result.second.resize(A.FormulaVal.size());
+    BatchSize = 1000;
+    minInteractiveTime = 0.0;
+}*/
 
 Simulator::~Simulator() {
   delete EQ;
@@ -72,13 +83,13 @@ void Simulator::logTrace(const char* path,double sample){
 	logtrace << endl;
 }
 
-void Simulator::printLog(){
+void Simulator::printLog(double eTime){
     if(logtrace.is_open())
         if((A.CurrentTime - lastSampled) >= sampleTrace){
             lastSampled = A.CurrentTime;
             logtrace <<setw(9)<<left<<setprecision(8)<< A.CurrentTime << "  ";
             logtrace << right;
-            N.Marking.print(logtrace);
+            N.Marking.print(logtrace,eTime);
             A.printState(logtrace);
             logtrace << endl;
         }
@@ -123,8 +134,8 @@ void Simulator::reset() {
  * Hasl formula.
  */
 void Simulator::returnResultTrue(){
-	A.getFinalValues(N.Marking,Result.second);
-	Result.first = true;
+	A.getFinalValues(N.Marking,Result.quantR,Result.qualR);
+	Result.accept = true;
 }
 
 /**
@@ -313,7 +324,7 @@ bool Simulator::SimulateOneStep(){
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking,dummyBinding);
 		}
-		Result.first=false;
+		Result.accept=false;
 		return false;
 	} else {
         //Take the first event in the queue
@@ -323,7 +334,7 @@ bool Simulator::SimulateOneStep(){
         //Only usefull for Rare Event handling.
 		if(transitionSink(E1.transition)){
 			if(verbose>3)cerr << "\033[1;33mFiring:\033[0m" << "Transition Sink\n";
-            Result.first=false;
+            Result.accept=false;
             return false;
         }
 
@@ -334,15 +345,16 @@ bool Simulator::SimulateOneStep(){
         //of the transition of the Petri net.
 		while (E1.time >= AE.FiringTime) {
             //cerr << "looping on autonomous edge";
-			A.updateLHA(AE.FiringTime - A.CurrentTime, N.Marking);
-            printLog();
+            double eTime = AE.FiringTime - A.CurrentTime;
+			A.updateLHA(eTime , N.Marking);
+            printLog(eTime);
 			A.fireLHA(AE.Index,N.Marking, dummyBinding);
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				A.printState(cerr);
 				cerr << endl;
 			}
-			printLog();
+			printLog(eTime);
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
@@ -354,27 +366,27 @@ bool Simulator::SimulateOneStep(){
 		}
 		
 		//Make time elapse in the LHA
-		A.updateLHA( E1.time - A.CurrentTime, N.Marking );
+        double eTime = E1.time - A.CurrentTime;
+		A.updateLHA( eTime, N.Marking );
 		
 		//Print the state of the system after the time elapse
-        printLog();
+        printLog(eTime);
 		
 		//Fire the transition in the SPN
 		N.fire(E1.transition, E1.binding, A.CurrentTime);
 		
-        //Check if there exist a valid transition in the automata.
-		int SE = A.GetEnabled_S_Edges(E1.transition, N.Marking, E1.binding);
+        //Check if there exist a valid Sinchronisation in the automata.
+		int SE = A.synchroniseWith(E1.transition, N.Marking, E1.binding);
 		
 		//If no synchronisation is possible the trajectory is rejected
 		if (SE < 0) {
 			//cerr << "no synchronization" << endl;
-			Result.first=false;
+			Result.accept=false;
 			return false;
 		} else {
 			if(verbose>3)cerr << " Synch with " << SE << endl;
-			//If synchronisation is possible fire it and check if the
+			//If synchronisation is possible check if the
 			// reached state is final. Then update the SPN.
-			A.fireLHA(SE,N.Marking, E1.binding);
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
@@ -474,14 +486,14 @@ void Simulator::SimulateSinglePath() {
 	lastSampled = -sampleTrace;
 	while (continueb) {
         //cerr << "continue path"<< endl;
-        printLog();
+        printLog(0.0);
 		if(verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation
 			N.Marking.printHeader(cerr);
 			A.printHeader(cerr);
 			cerr << endl;
-			N.Marking.print(cerr);
+			N.Marking.print(cerr,0.0);
 			A.printState(cerr);
 			cerr << endl;
 			if(verbose>4)EQ->view(N.Transition);
@@ -496,7 +508,7 @@ void Simulator::SimulateSinglePath() {
         N.Marking.printHeader(cerr);
         A.printHeader(cerr);
         cerr << endl;
-        N.Marking.print(cerr);
+        N.Marking.print(cerr,0.0);
         A.printState(cerr);
         cerr << endl;
         if(verbose>4)EQ->view(N.Transition);
@@ -512,14 +524,13 @@ void Simulator::SimulateSinglePath() {
  */
 void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	double t = A.CurrentTime;
-	if (N.Transition[Id].transType == Timed) {
+	if (N.Transition[Id].DistTypeIndex != IMMEDIATE) {
         getParams(Id,b);
         t += fmax(GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr),0.0);
         if(verbose > 4){
-            cerr << "Sample " << N.Transition[Id].label << " with parameter (";
-            cerr << N.ParamDistr[0];
-            if (N.Transition[E.transition].DistTypeIndex == ERLANG)cerr << "," << N.ParamDistr[1];
-            cerr << ")" << endl;
+            cerr << "Sample " << N.Transition[Id].label << ": ";
+            cerr << string_of_dist(N.Transition[Id].DistTypeIndex, N.ParamDistr);
+            cerr << endl;
         }
 	}
     
@@ -530,8 +541,11 @@ void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
 	if (N.Transition[Id].DistTypeIndex > 2) {
 		N.ParamDistr[0]= N.GetWeight(Id,b);
 		w = GenerateTime(EXPONENTIAL, N.ParamDistr);
-		//vector<double> wParam(1, N.GetWeight(Id));
-		//w = GenerateTime(2, wParam);
+        if(verbose>4){
+            cerr << "weight : ";
+            cerr << string_of_dist(EXPONENTIAL, N.ParamDistr);
+            cerr << endl;
+        }
     }
     
 	E.transition = Id;
@@ -554,17 +568,17 @@ BatchR Simulator::RunBatch(){
     auto starttime = chrono::steady_clock::now();
     auto currenttime = chrono::steady_clock::now();
     chrono::duration<double> timesize(0.03);
-	BatchR batchResult(A.FormulaVal.size());
+	BatchR batchResult(A.FormulaVal.size(),A.FormulaValQual.size());
 	while ((batchResult.I < BatchSize && BatchSize!=0) || (currenttime-starttime < timesize && BatchSize==0) ) {
 		reset();
 		SimulateSinglePath();
         batchResult.addSim(Result);
 		if(verbose>3)batchResult.print();
 		
-		if (Result.first && logResult){
-			for(size_t i=0; i<Result.second.size();i++){
+		if (Result.accept && logResult){
+			for(size_t i=0; i<Result.quantR.size();i++){
 				if (i>0)logvalue << "\t";
-				logvalue << Result.second[i];
+				logvalue << Result.quantR[i];
 			}
 			logvalue << endl;
 		}

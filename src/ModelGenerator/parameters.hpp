@@ -36,6 +36,14 @@
 
 #include "HaslFormula.hpp"
 
+#define let const auto&
+
+enum LHAGenType {
+    NoGen,
+    TimeLoop,
+    ActionLoop,
+    SamplingLoop,
+};
 
 enum Poption {
     CO_level,
@@ -116,7 +124,7 @@ struct parameters {
     std::string PathLha;
     std::map<std::string, std::string> constants;
 
-    int generateLHA;
+    LHAGenType generateLHA;
     double loopLHA;
     double loopTransientLHA;
     std::string CSLformula;
@@ -160,6 +168,7 @@ struct parameters {
     std::vector<HaslFormulasTop*> HaslFormulas;
     std::vector<std::string> HaslFormulasname;
     size_t nbAlgebraic;
+    size_t nbQualitatif;
     size_t nbPlace;
 };
 

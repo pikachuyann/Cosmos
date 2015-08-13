@@ -30,6 +30,7 @@
 
 
 #include "LHA.hpp"
+#include "NLHA.hpp"
 #include "spn.hpp"
 #include "EventsQueue.hpp"
 #include "BatchR.hpp"
@@ -46,7 +47,8 @@
 
 class Simulator:public timeGen {
 public:
-	Simulator();
+	Simulator(LHA&);
+    //Simulator();
 	~Simulator();
 	
 	//! verbose level of the simulator
@@ -104,7 +106,7 @@ protected:
 	
     
 	SPN N; //!The object representing the SPN
-	LHA A; //!The object representing the LHA
+	LHA &A; //!The object representing the LHA
 	
     
     /**
@@ -127,7 +129,7 @@ protected:
 	 */
 	virtual void SimulateSinglePath();
 
-    void printLog();
+    void printLog(double);
 
 	void interactiveSimulation(); //!Wait for the user to choose the next transition
     double minInteractiveTime;
