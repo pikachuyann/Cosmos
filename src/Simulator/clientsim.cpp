@@ -32,6 +32,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdlib.h>
 
 
 // Handler for interuption of the server
@@ -39,7 +40,9 @@ void signalHandler(int);
 
 void signalHandler( int s)
 {
-    if(s == SIGHUP )exit(EXIT_SUCCESS);
+    if(s == SIGHUP )abort();
+        //exit(EXIT_SUCCESS);
+
 }
 
 /**
@@ -61,7 +64,7 @@ int main(int argc, char** argv) {
   //retrive_segment();
 
 	signal(SIGINT, SIG_IGN);
-    signal(SIGHUP, signalHandler);
+    //signal(SIGHUP, signalHandler);
 
     LHA* Aptr;
     if(IsLHADeterministic){

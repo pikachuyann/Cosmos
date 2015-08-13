@@ -109,18 +109,20 @@ void signalHandler( int signum )
 
             if(child != -1){
                 if(!WIFEXITED(status)){ //Something to report
-                    if(count(clientPID.begin(),clientPID.end(),child)==0)
-                        cerr << "The unknown child "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
-                    else{
-                        if(WIFSIGNALED(status)){
-                            cerr << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
-                            exit(EXIT_FAILURE);
-                        } else if(WIFEXITED(status)){
-                            if(WEXITSTATUS(status) != 130){
-                                cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
+                    if(WTERMSIG(status)!=SIGHUP){ //Normal termination of process
+                        if(count(clientPID.begin(),clientPID.end(),child)==0)
+                            cerr << "The unknown child "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
+                        else{
+                            if(WIFSIGNALED(status)){
+                                cerr << "Simulator "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
+                                exit(EXIT_FAILURE);
+                            } else if(WIFEXITED(status)){
+                                if(WEXITSTATUS(status) != 130){
+                                    cout << "Simulator exit with code " << WEXITSTATUS(status) << endl;
+                                }
+                            }else {
+                                cerr << "Simulator "<< child << " Crash ! with unknown status "<< status  << endl;
                             }
-                        }else {
-                            cerr << "Simulator "<< child << " Crash ! with unknown status "<< status  << endl;
                         }
                     }
                 }
@@ -133,8 +135,8 @@ void signalHandler( int signum )
         case SIGPIPE:
             cerr << "receive a sigpipe" <<endl;
             break;
-
-
+            
+            
         default:
             cerr << " Unexpected signal: " << signum << endl;
     }
@@ -304,11 +306,14 @@ void launch_clients(parameters& P){
 }
 
 void kill_client(){
+    //cout << "Enter kill client" << endl << endl << endl;
     while (!clientPID.empty()){
         if (clientPID.back()!=0)kill(clientPID.back(),SIGHUP);
+        //cerr << "Kill Client " << clientPID.back() << endl;
         clientstream.pop_back();
         clientPID.pop_back();
     }
+    //cerr << "Quit kill client" << endl << endl << endl << endl << endl;
 }
 
 void wait_client(){
