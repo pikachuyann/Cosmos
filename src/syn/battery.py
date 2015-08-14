@@ -1,4 +1,40 @@
+import monsoon
+import sys
+import threading
+import time
 import socket
+import tty, termios
+import struct
+import binascii
+import random
+import ctypes
+import numpy as np
+import os
+import math
+import subprocess
+
+def Save2DArray(handle, arr):
+	for idx in range(len(arr)):
+		handle.write(str(arr[idx][0])+" "+str(arr[idx][1])+"\n")
+
+def SaveMarkersToFile(handle, dta):
+	if dta==0:
+		handle.write(str(0)+" "+str(0))
+	elif dta==1:
+		handle.write(str(1)+" "+str(0))
+	elif dta==2:
+		handle.write(str(0)+" "+str(1))
+	elif dta==3:
+		handle.write(str(1)+" "+str(1))
+
+def SaveToFile(handle, dta):
+	SaveMarkersToFile(handle, dta)
+	handle.write("\n")
+
+def SaveToFileAll(handle, dta, current):
+	SaveMarkersToFile(handle, dta)
+	handle.write(" "+str(current))
+	handle.write("\n")
 
 def GetReward(cname, modelname, propName):
     cmd=cname
@@ -11,6 +47,12 @@ def GetReward(cname, modelname, propName):
     os.system("grep \"Estimated value\" Result_waitDepleted.res | sed \"s/Estimated value:\t//g\" > tmpResult")
     v = eval(get_my_string("tmpResult"))
     return v
+
+def GetMinCurrent(pmData):
+	currList = [it[0] for it in pmData]
+
+	return min(currList)
+
 
 def GetSumCurrent(pmData, monitorSamplingFreq):
 	sumCurrent = 0
