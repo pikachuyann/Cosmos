@@ -4,7 +4,6 @@ import sys
 import threading
 import time
 import socket
-import sys
 import tty, termios
 import struct
 import binascii
@@ -14,17 +13,18 @@ import numpy as np
 import os
 import math
 import subprocess
-from battery import SaveBatteryFileHeader, SaveBatteryDistribution, SaveBatteryParams
-
+from battery import * 
+from comm import * 
 
 idCurr = []
-
+useVM = 0
+useMATLABGUI = 1
 HOST = 'localhost'			# The remote host
 PORT = 27778				# The same port as used by the serve
 
-logTime = 10 # in Seconds
+logTime = 20 # in Seconds
 
-N_INITIAL_SAMPLES = 1000
+n_samples = 20
 
 constfile = "const.m"
 batterycppfile = "exbat.cpp"
@@ -53,15 +53,17 @@ gc = 0.166
 gC = 16.66
 
 # 0 = ID, 1 = min, 2 = max, 3 = set value
-parVals = [[0, 1000, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 10, 2000, 500], [1, 10, 500, 131], [2, 10, 1200, 1000]]
-parDict = {'SA_d':0, 'SA_ectopD':1, 'VRG_d':2, 'TURI':3, 'TAVI':4, 'TLRI':5}
-parNameC = "SA_d"
+parVals = [[0, 1000, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 10, 2000, 500], [1, 10, 500, 131], [2, 10, 1200, 1000], [6, -70, -10, -40]]
+parDict = {'SA_d':0, 'SA_ectopD':1, 'VRG_d':2, 'TURI':3, 'TAVI':4, 'TLRI':5, 'AV_Vt':6}
+# parNameC = "SA_d"
+parNameC = "AV_Vt"
 parNameA = "TURI"
 parNameAA = "TAVI"
 parNameF = ["TURI", "TAVI"]
 
 # Set the heart parameter
-parVals[parDict[parNameC]][3] = 1500 # SA_d = 1500 (bradycardia)
+# parVals[parDict[parNameC]][3] = 1500 # SA_d = 1500 (bradycardia)
+parVals[parDict[parNameC]][3] = -10 # AV_Vt = -10 (wenckheback)
 
 def get_my_string(fp):
     f = open(fp, 'r')
@@ -76,11 +78,14 @@ os.system("rm "+modelNameAllGrml)
 #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 XPace = np.array([0])
-#YPace = np.array([0])
+YPace = np.array([0])
 XYPace = np.array([0])
 
 # Open Matlab with no GUI
-subprocess.Popen([matlabPath, "-nodisplay", "-nosplash", "-nodesktop", "-r",simmPar])
+if useMATLABGUI==1:
+	subprocess.Popen([matlabPath, "-nosplash", matlabPath,"-r",simmPar])
+else:	
+	subprocess.Popen([matlabPath, "-nodisplay", "-nosplash", "-nodesktop", "-r",simmPar])
 py2matFile = open(py2mat,'w')
 mat2pyFile = open(mat2py,'r')
 
@@ -113,7 +118,7 @@ if useVM==0:
 
 
 
-while len(XPace)<N_INITIAL_SAMPLES:
+while len(XPace)<n_samples:
 
 	# Matlab code
 	pipeline = mat2pyFile.readline()
@@ -147,7 +152,7 @@ while len(XPace)<N_INITIAL_SAMPLES:
 	fileconst.write(parNameA+" = "+str(parVals[parDict[parNameA]][3])+"\n")
 	fileconst.write(parNameAA+" = "+str(parVals[parDict[parNameAA]][3])+"\n")
 	fileconst.write(parNameC+" = "+str(parVals[parDict[parNameC]][3])+"\n")
-	fileconst.close()
+	# fileconst.close()
 		
 	if useVM==0:
 		# Start iteration
@@ -172,7 +177,7 @@ while len(XPace)<N_INITIAL_SAMPLES:
 		SaveBatteryDistribution(fileconst, idCurr)
 		fileconst.close()
 
-		energyValue = GetSumCurrent(collectedSamples, monItems['sampleRate'])
+		energyValue = GetSumCurrent(threadMonitor.getCollectedSamples(), monItems['sampleRate'])
 	
 	else:
 		os.system(modelConvertName+" "+fullmodelName+"  --add-reward --grml")
