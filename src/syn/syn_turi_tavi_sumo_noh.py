@@ -104,7 +104,7 @@ while len(XPace)<N_INITIAL_SAMPLES:
 	parValueArduinoAA = int(pipeline.split(',')[1])	
 
 	# Set the heart parameter
-	parVals[parDict[parNameC]][3] = 1500
+	parVals[parDict[parNameC]][3] = 1500 # SA_d = 1500
 
 	# Save energy readings
 	fileconst = open(constfile, 'w+')
