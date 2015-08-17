@@ -24,7 +24,7 @@ from fparams_tavi_turi import isParamValuationFeasible
 exitFlag = 1
 stDataColl = 0
 collectedSamples = []
-useVM = 0
+useVM = 1
 logTime = 10 # in Seconds
 constfile = "const.m"
 #kernel = GPy.kern.RBF(input_dim=2, ARD=True)+GPy.kern.Bias(input_dim=2)
