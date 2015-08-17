@@ -30,6 +30,7 @@
 #include <cstdlib>
 #include <getopt.h>
 #include <string.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -83,6 +84,7 @@ GMLinput(false),
 computeStateSpace(0),
 alligatorMode(false),
 unfold(""),
+isTTY(true),
 
 gcccmd("g++"),
 gccflags("-O3 -Wno-return-type"),
@@ -504,6 +506,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 break;
             }
             case CO_version:
+                cout << "Source Version:" << GIT_REVISION << endl;
                 cout << BUILD_VERSION << " Build Date:" << __DATE__ " at " << __TIME__ << endl;
                 exit(0);
 
@@ -513,6 +516,9 @@ void parameters::parseCommandLine(int argc, char** argv) {
         }
 
     }
+
+    //Additionnal parameter handling.
+    isTTY = isatty(fileno(stdout));
 
     if (lightSimulator && MaxRuns>0)StringInSpnLHA=true;
     if (Batch != 0)Batch = min(Batch,MaxRuns);

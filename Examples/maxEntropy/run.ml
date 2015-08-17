@@ -143,10 +143,10 @@ let exp1 () =
 
 let run2 n b minRep npoly c1 c2 dline =
   let name = "exp2_"^string_of_int n in
-  gen_faillure_repair name n b minRep npoly;
-  gen_faillure_repairB name c1 c2 dline;
-  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_B.lha"," --njob 2 --max-run 50000 --batch 1000 --width 0");
-  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_B.lha"," --njob 2 --max-run 50000 --batch 1000 --width 0");;
+  (*gen_faillure_repair name n b minRep npoly;
+  gen_faillure_repairB name c1 c2 dline;*)
+  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_B.lha"," --njob 2 --max-run 200000 --batch 1000 --width 0");
+  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_B.lha"," --njob 2 --max-run 200000 --batch 1000 --width 0");;
 
 
 (* EXP2 *)
@@ -155,4 +155,8 @@ run2 2 8 1 6 9 20 100;;
 run2 3 8 1 6 9 20 100;;
 run2 4 8 1 6 9 20 100;;
 run2 5 8 1 6 9 20 100;;
-
+run2 6 8 1 6 9 20 100;;
+run2 7 8 1 6 9 20 100;;
+run2 8 8 1 6 9 20 100;;
+run2 9 8 1 6 9 20 100;;
+run2 10 8 1 6 9 20 100;;
