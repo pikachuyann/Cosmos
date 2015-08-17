@@ -444,8 +444,3 @@ void AddTransitionID(TR_PL_ID tranID, unsigned int time)
     EventTime stEvent = {tranID, time, {0,0,0}};
     gTranList.push_back(stEvent);
 }
-
-void dW(uint8 port, uint8 value)
-{
-    
-}
