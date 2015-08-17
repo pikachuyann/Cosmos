@@ -342,7 +342,7 @@ void launchServer(parameters& P){
     result Result;
 
     //Try to read previous batch
-    {
+    if(P.reuse){
         FILE* intraj = fopen((P.tmpPath+"/saveTraj").c_str(),"r");
         if(intraj != NULL){
             Result.MeanM2.inputR(intraj);

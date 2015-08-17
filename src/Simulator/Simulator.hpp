@@ -129,6 +129,7 @@ protected:
 	 */
 	virtual void SimulateSinglePath();
 
+    void printLog(double,size_t);
     void printLog(double);
 
 	void interactiveSimulation(); //!Wait for the user to choose the next transition

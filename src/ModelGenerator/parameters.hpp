@@ -95,6 +95,7 @@ enum Poption {
     CO_prism_path,
     CO_magic_values,
     CO_version,
+    CO_reuse,
 };
 
 
@@ -119,6 +120,8 @@ struct parameters {
     std::string tmpPath;
     unsigned int tmpStatus; // 0 create and destroy tmp,
     //1 do not build but destroy,2 do not destroy, 3 do not build nor destoy
+    bool reuse;
+
     std::string Path;
     std::string PathGspn;
     std::string PathLha;

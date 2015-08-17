@@ -58,6 +58,7 @@ relative(false),
 comp_uuid("tmpuuid"),
 tmpPath("tmp"),
 tmpStatus(0),
+reuse(false),
 Path(""),
 PathGspn(""),
 PathLha(""),
@@ -127,6 +128,7 @@ void parameters::usage() {
     cout << "\t--njob    \tset the number of parralel thread" << endl;
     cout << "\t--gppcmd  \tset the C++ compiler (default g++)" << endl;
     cout << "\t--gppflags\tset the C++ compiler flags (default -O3)" << endl;
+    cout << "\t--reuse\ttry to load previous simulation and save simulations" << endl;
 
     cout << "Option of simulation:" << endl;
     cout << "\t--level \tset the confidence level for the simulation (default=0.99)" << endl;
@@ -230,6 +232,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"chernoff",    required_argument, 0, CO_chernoff},
             {"relative",    no_argument      , 0, CO_relative},
             {"const",       required_argument, 0, CO_const},
+            {"reuse",       no_argument      , 0, CO_reuse},
 
             /* Options for the rare event engine */
             {"rareevent",   no_argument      , 0, CO_rareevent},
@@ -419,6 +422,10 @@ void parameters::parseCommandLine(int argc, char** argv) {
             case CO_bin_path: Path = optarg;
                 break;
             case CO_tmp_status: tmpStatus = atoi(optarg);
+                break;
+            case CO_reuse:
+                tmpStatus = 2;
+                reuse = true;
                 break;
             case CO_gppcmd: gcccmd = optarg;
                 break;

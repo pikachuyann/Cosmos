@@ -83,7 +83,7 @@ void Simulator::logTrace(const char* path,double sample){
 	logtrace << endl;
 }
 
-void Simulator::printLog(double eTime){
+void Simulator::printLog(double eTime,size_t t){
     if(logtrace.is_open())
         if((A.CurrentTime - lastSampled) >= sampleTrace){
             lastSampled = A.CurrentTime;
@@ -91,11 +91,14 @@ void Simulator::printLog(double eTime){
             logtrace << right;
             N.Marking.print(logtrace,eTime);
             A.printState(logtrace);
+            if(t!=string::npos)logtrace << " ->" <<N.Transition[t].label;
             logtrace << endl;
         }
 }
 
-
+void Simulator::printLog(double eTime){
+    printLog(eTime, string::npos);
+}
 
 void Simulator::SetBatchSize(const size_t RI) {
 	BatchSize = RI;
@@ -369,8 +372,8 @@ bool Simulator::SimulateOneStep(){
         double eTime = E1.time - A.CurrentTime;
 		A.updateLHA( eTime, N.Marking );
 		
-		//Print the state of the system after the time elapse
-        printLog(eTime);
+		//Print the state of the system after the time elapse and the transition name
+        printLog(eTime,E1.transition);
 		
 		//Fire the transition in the SPN
 		N.fire(E1.transition, E1.binding, A.CurrentTime);
