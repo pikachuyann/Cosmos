@@ -77,7 +77,7 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 
 
 AM_LDFLAGS = -lrt $(PTHREAD_LIBS)
-AM_CPPFLAGS = $(BOOST_CPPFLAGS)
+AM_CPPFLAGS = $(BOOST_CPPFLAGS) -DGIT_REVISION=`git describe --abbrev=6 --dirty --always --tags`
 
 .PHONY: test updatefile
 

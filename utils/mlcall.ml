@@ -127,7 +127,7 @@ type result = {
 
 let print_header f sep =
   Printf.fprintf f "%s%s%s%s%s%s%s%s%s%s%s%s%s%s" "ExpName" sep "ModelName" sep "PropName" sep "NumberOfRun" sep "NumberOfSuccessfullRun" sep "NumberOfThread" sep "BatchSize" sep;
-  Printf.fprintf f "%s%s%s%s%s%s%s" "simulationTime" sep "SystemTime" sep "Memory" sep "Date";
+  Printf.fprintf f "%s%s%s%s%s%s%s%s" "simulationTime" sep "SystemTime" sep "Memory" sep "Date" sep ;
   print_hasl_header f sep;
   output_string f "\n"
 
@@ -293,8 +293,15 @@ let execCosmosLog_free resultFile csvFile (name,model,prop,option,prefix) =
 let execSavedCosmos_free prefix resultFile csvfile (name,model,prop,option)  =
   execCosmosLog_free resultFile csvfile (name,model,prop,option,prefix)
 
-let rf = uni (fun () -> open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "CamlResultFile");;
-let csv = uni (fun () -> open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 "csvResultFile");;
+let openCreate path fu =
+  let e = Sys.file_exists path in
+  let f = open_out_gen [Open_wronly; Open_creat; Open_append] 0o644 path in
+  if not e then fu f;
+  f
+
+let rf = uni (fun () -> openCreate "CamlResultFile" (fun _->() ));;
+let csv = uni (fun () -> openCreate "csvResultFile" (fun f->(
+  print_header f ",\t")));;
 
 let execSavedCosmos ?(prefix=false) x = execSavedCosmos_free prefix (rf ()) (csv ()) x
 

@@ -17,7 +17,7 @@
 		032A7073181BC0D6006D7332 /* HaslFormula.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7026181BC0D6006D7332 /* HaslFormula.cpp */; };
 		032A7076181BC0D6006D7332 /* Lha-Reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A702E181BC0D6006D7332 /* Lha-Reader.cpp */; };
 		032A7078181BC0D6006D7332 /* Lha_gmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7031181BC0D6006D7332 /* Lha_gmlparser.cpp */; };
-		032A7079181BC0D6006D7332 /* parameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7038181BC0D6006D7332 /* parameters.cpp */; };
+		032A7079181BC0D6006D7332 /* parameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7038181BC0D6006D7332 /* parameters.cpp */; settings = {COMPILER_FLAGS = "-DGIT_REVISION=\\\"XCODE\\\""; }; };
 		032A707A181BC0D6006D7332 /* result.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703A181BC0D6006D7332 /* result.cpp */; };
 		032A707B181BC0D6006D7332 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703C181BC0D6006D7332 /* server.cpp */; };
 		032A70A7181BC307006D7332 /* expatmodelparser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A709D181BC307006D7332 /* expatmodelparser.cc */; };
