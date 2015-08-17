@@ -146,6 +146,7 @@ struct parameters {
 
     bool alligatorMode;
     std::string unfold;
+    bool isTTY;
 
     std::string gcccmd;
     std::string gccflags;
