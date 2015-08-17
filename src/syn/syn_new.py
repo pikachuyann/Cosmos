@@ -1,9 +1,7 @@
 #!env python
 import monsoon
 import sys
-import threading
 import time
-import socket
 import sys
 import tty, termios
 import struct
@@ -20,6 +18,8 @@ from IPython.display import display
 from matplotlib import pyplot as plt
 
 from fparams import isParamValuationFeasible
+
+import comm
 
 exitFlag = 1
 stDataColl = 0
@@ -59,40 +59,7 @@ if len(sys.argv) > 1:
 	useVM = 1
 
 
-def SetArduinoParameter(handle, parID, parValue):
-		headerID = 0xF5
 
-		print "Sending Arduino parameter ID: "+str(parID)+" value: "+str(parValue)
-
-		if SetParameter(handle, headerID, parID, parValue)!=1:
-			return 0
-
-		return 1
-
-def SetClientParameter(handle, parID, parValue):
-		headerID = 0xF4
-
-		print "Sending Client parameter ID: "+str(parID)+" value: "+str(parValue)
-
-		if SetParameter(handle, headerID, parID, parValue)!=1:
-			return 0
-
-		return 1
-
-def SetParameter(handle, headerID, parID, parValue):
-		parStr = struct.pack('BBI',headerID, parID, parValue)
-
-		# Send parameter
-		handle.sendall(parStr)
-
-		buftmp = bytearray(1)
-		buflen = handle.recv_into(buftmp,1)
-
-		if buftmp[0]!=0xF6:
-			print "Wrong return value"
-			return 0
-
-		return 1
 
 def Save2DArray(handle, arr):
 	for idx in range(len(arr)):
@@ -192,58 +159,7 @@ def GetEnergyReadings(pmData, monitorSamplingFreq, tranListTimes, minCurrent):
 	filedta.close()
 	return cummCurrentList
 
-def GetTotalCurrents(handle, esamples, monitorSamplingFreq):
-		cummCurrentList = []
 
-		# Send get list of IDs
-		handle.sendall('\xF3')
-
-		bufSize = bytearray(4)
-		buflen = handle.recv_into(bufSize, 4)
-
-		if buflen!=4:
-			print "Wrong packet length"
-			return cummCurrentList
-
-		bufSize = struct.unpack("I",bufSize)
-
-		print "Packet size: "+str(bufSize[0])
-
-		bufIDs = bytearray()
-		buftmp = bytearray(2048)
-		bytes_recd = 0
-
-		while bytes_recd < bufSize[0]:
-			chunkLen = handle.recv_into(buftmp,2048)
-			bufIDs[bytes_recd:] = buftmp[:chunkLen]
-			bytes_recd = bytes_recd + chunkLen
-
-		if 	bytes_recd != bufSize[0]:
-			print "Wrong data"
-			return cummCurrentList
-
-		nTranCnt = 	bufSize[0]/8
-		print "Number of transitions received: "+str(nTranCnt)
-
-		tTimeList = []
-		for idx in range(0,nTranCnt):
-			tID = bufIDs[idx*8]
-			tTime = struct.unpack("I",bufIDs[idx*8+1:idx*8+1+4])
-			tTimeList.append([tID, tTime[0]])
-			#print str(tTime[0])+" "+str(bufIDs[idx*8])
-
-		toRemove = []	
-		for idx in range(len(tTimeList)-1):
-			if tTimeList[idx][1]==tTimeList[idx+1][1]:
-				toRemove.append(tTimeList[idx])
-
-		for rem in toRemove:
-			tTimeList.remove(rem)
-
-		minCurrent = GetMinCurrent(esamples)
-		cummCurrentList = GetEnergyReadings(esamples, monitorSamplingFreq, tTimeList, minCurrent)
-
-		return cummCurrentList
 
 def SaveDistribution(handle, dData):
 		dIdCurr = {}
@@ -278,24 +194,6 @@ def findMax(m, X2, minv, maxv, fmin):
 	#t2 = minv + (maxv - minv)*t/len(X2)
 	return X2[t]
 
-class PowerMonitorThread (threading.Thread):
-	def __init__(self, monitor):
-		threading.Thread.__init__(self)
-		self.monitor = monitor
-	def run(self):
-		print "Starting PowerMonitor Thread\n"
-		self.monitor.StartDataCollection()
-
-		while exitFlag:
-			samples = self.monitor.CollectData()
-			if stDataColl:
-				collectedSamples.extend(samples)
-
-				#print "\n".join(map(str, samples))
-
-		self.monitor.StopDataCollection()
-
-		print "Ending PowerMonitor Thread\n"
 
 if useVM==0:
 	mon = monsoon.Monsoon("/dev/tty.usbmodem1411")
@@ -330,7 +228,7 @@ if useVM==0:
 HOST = 'localhost'			# The remote host
 PORT = 27778				# The same port as used by the server
 
-s = connectToSocket(HOST,PORT);
+s = connectToSimulator(HOST,PORT);
 
 
 #s.setblocking(0)
@@ -380,7 +278,7 @@ if useVM==0:
 		if SetArduinoParameter(s, parVals[parDict[parNameA]][0], parVals[parDict[parNameA]][3])!=1:
 			break
 
-		# Generate random parameter for Client
+		# Generate random parameter for Client (random heart param)
 		parVals[parDict[parNameC]][3] = random.randint(parVals[parDict[parNameC]][1], parVals[parDict[parNameC]][2])
 
 		# For testing purposes
