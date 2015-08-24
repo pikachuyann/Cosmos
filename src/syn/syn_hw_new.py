@@ -53,7 +53,7 @@ gc = 0.166
 gC = 16.66
 
 # 0 = ID, 1 = min, 2 = max, 3 = set value
-parVals = [[0, 1000, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 10, 2000, 500], [1, 10, 500, 131], [2, 10, 1200, 1000], [6, -70, -10, -40]]
+parVals = [[0, 1000, 2000, 1000], [1, 20000, 10400], [2, 100, 30000, 3000], [0, 10, 2000, 500], [1, 10, 500, 131], [2, 10, 1200, 1000], [6, 10, 70, 40]]
 parDict = {'SA_d':0, 'SA_ectopD':1, 'VRG_d':2, 'TURI':3, 'TAVI':4, 'TLRI':5, 'AV_Vt':6}
 # parNameC = "SA_d"
 parNameC = "AV_Vt"
@@ -63,7 +63,7 @@ parNameF = ["TURI", "TAVI"]
 
 # Set the heart parameter
 # parVals[parDict[parNameC]][3] = 1500 # SA_d = 1500 (bradycardia)
-parVals[parDict[parNameC]][3] = -10 # AV_Vt = -10 (wenckheback)
+parVals[parDict[parNameC]][3] = 10 # AV_Vt = -10 (wenckheback)
 
 def get_my_string(fp):
     f = open(fp, 'r')
