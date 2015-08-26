@@ -196,7 +196,7 @@ void result::printProgress() {
     }
     while (endline >= 0) {
         endline--;
-        cout << "\033[A\033[2K";
+        if(P.isTTY)cout << "\033[A\033[2K";
     }
     cout << "Total paths: ";
     cout << setw(10) << MeanM2.I << "\t Accepted paths: ";
@@ -214,9 +214,12 @@ void result::printProgress() {
 
     endline++;
 
+    if(P.isTTY)cout << "\033[1;33m";
     if (P.verbose > 1) {
         printCompactResult();
     }
+    if(P.isTTY)cout <<"\033[0m";
+    if(P.isTTY)cout << "\033[1;3m";
     if (P.sequential) {
         cout << setw(maxformulaname+2 ) << left << "% of Err: ";
         printPercent(Progress, 1.0);
@@ -225,6 +228,7 @@ void result::printProgress() {
     cout << setw(maxformulaname + 2) << left << "% of run: ";
     printPercent(MeanM2.I, P.MaxRuns);
     cout.precision(12);
+    if(P.isTTY)cout <<"\033[0m";
     endline++;
 }
 

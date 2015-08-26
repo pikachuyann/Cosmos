@@ -187,9 +187,12 @@ def sumlist(l):
 
 listres=[[R(1) for i in range(card_states)]];
 if not isIsotropic :
+    print("Polynome Computation: ["),
     for i in range(1,numpoly+1):
         listres.append(Op(listres[i-1]));
+        print("|"),
     lastone=WeightsPdfCdf(listres[numpoly]);
+    print("]\n");
 else :
     lastone=WeightsPdfCdf(listres[0]);
 
@@ -282,7 +285,7 @@ def printGRML_transition(translist,quadriple,isIsotropic):
     for i in range(len(translist)):
         for j in  range(len(translist[i])):
             s+='  <node id=\"13%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
-            s+='    <attribute name=\"name\">t_%d' %i +'_%d' %j +'</attribute>\n';
+            s+='    <attribute name=\"name\">t_%d' %i +'_%d_' %j + (translist[i][j][5]) +'</attribute>\n';
             s+='    <attribute name=\"distribution\">\n';
             s+='      <attribute name=\"type\">\n';
             s+='      IMDT\n';

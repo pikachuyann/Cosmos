@@ -627,23 +627,19 @@ void Lha_Reader::WriteFile(parameters& P)const {
 	}
 	LhaCppFile << "\n    }\n" << endl;
 	
-	LhaCppFile << "void LHA::UpdateLhaFuncLast(){" << endl;
-	for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
-		if (MyLha.LhaFuncType[i] == "Last" && MyLha.SimplyUsedLinearForm[MyLha.LhaFuncArg[i]]){
+	LhaCppFile << "void LHA::UpdateFormulaVal(){\n" << endl;
+    for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
+        if (MyLha.LhaFuncType[i] == "Last" && MyLha.SimplyUsedLinearForm[MyLha.LhaFuncArg[i]]){
             string str;
             for( auto it : MyLha.LinearForm) if(it.second== MyLha.LhaFuncArg[i])str=it.first;
-			LhaCppFile << "    LhaFunc[" << i << "]= " << str << ";" << endl;
+            LhaCppFile << "    LhaFunc[" << i << "]= " << str << ";" << endl;
         }else if (MyLha.LhaFuncType[i] == "Last"){
             LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
-		} else if(MyLha.LhaFuncType[i] == "Mean")
-			LhaCppFile << "    LhaFunc[" << i << "]=LhaFunc[" << MyLha.LhaFuncArg[i] << "] / CurrentTime ;" << endl;
-	}
-	LhaCppFile << "\n    }\n" << endl;
-	
-	
-	
-	LhaCppFile << "void LHA::UpdateFormulaVal(){\n" << endl;
-	for(size_t i=0;i<MyLha.Algebraic.size();i++){
+        } else if(MyLha.LhaFuncType[i] == "Mean")
+            LhaCppFile << "    LhaFunc[" << i << "]=LhaFunc[" << MyLha.LhaFuncArg[i] << "] / CurrentTime ;" << endl;
+    }
+
+    for(size_t i=0;i<MyLha.Algebraic.size();i++){
 		//haCppFile << "    OldFormulaVal=FormulaVal["<<i<<"];" << endl;
 		LhaCppFile << "    FormulaVal["<<i<<"]=" << MyLha.Algebraic[i] << ";" << endl;
 	}
@@ -659,7 +655,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
 
     LhaCppFile << "}\n" << endl;
 
-    LhaCppFile << "bool IsLHADeterministic = "<< MyLha.isDeterministic<< ";";
+    LhaCppFile << "bool IsLHADeterministic = "<< MyLha.isDeterministic<< ";" << endl;
 
     LhaCppFile << "fullState::fullState():loc(0){\n\tvar= new Variables;\n}\n" << endl;
     LhaCppFile << "fullState::fullState(int l,const Variables &v):loc(l){\n\tvar= new Variables(v);\n}\n" << endl;

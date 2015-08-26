@@ -41,7 +41,7 @@ class simulationState{
 private:
 	abstractMarking marking;
 	EventsQueue *EQ;
-	LHA lhaState;
+	LHA_orig lhaState;
     
 	//rare event variable
 	vector <double> Rate_Table;
@@ -58,7 +58,7 @@ public:
 	};
 	~simulationState(){};
 	
-	void saveState(SPN* N,LHA* A,EventsQueue** EQsim){
+	void saveState(SPN* N,LHA_orig* A,EventsQueue** EQsim){
 		marking.swap(N->Marking);
 		//AE = *AEsim;
 		EQ = *EQsim; //new EventsQueue(*EQsim);
@@ -71,7 +71,7 @@ public:
 		Origine_Rate_Sum = N-> Origine_Rate_Sum;
 		
 	};
-	void loadState(SPN* N,LHA* A,EventsQueue** EQsim){
+	void loadState(SPN* N,LHA_orig* A,EventsQueue** EQsim){
 		
 		N->Marking.swap(marking);
 		//*AEsim = AE;
@@ -90,7 +90,7 @@ public:
 class SimulatorBoundedRE: public SimulatorRE{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedRE(LHA&,int m);
+    SimulatorBoundedRE(LHA_orig&,int m);
 	BatchR RunBatch() override;
 	using SimulatorRE::initVect;
     virtual void initVect(int T);

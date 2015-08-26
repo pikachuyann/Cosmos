@@ -66,13 +66,13 @@ int main(int argc, char** argv) {
 	signal(SIGINT, SIG_IGN);
     //signal(SIGHUP, signalHandler);
 
-    LHA* Aptr;
+    LHA_orig* Aptr;
     if(IsLHADeterministic){
-        Aptr = new LHA();
+        Aptr = new LHA_orig();
     }else{
         Aptr = new NLHA();
     }
-    LHA& A = *Aptr;
+    LHA_orig& A = *Aptr;
 
 	Simulator* mySim;
 	
