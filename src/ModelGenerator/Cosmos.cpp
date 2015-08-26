@@ -29,18 +29,19 @@
  * \author   Benoît Barbot
  */
 
+#include <unistd.h>
+#include <sys/stat.h>
+#include <stdlib.h>
+#include <cstdlib>
+#include <err.h>
+#include <errno.h>
+#include <math.h>
 
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <cstdlib>
 #include <sstream>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <err.h>
-#include <errno.h>
-#include <math.h>
+#include <iomanip>
 
 #include "server.hpp"
 #include "parameters.hpp"
@@ -125,7 +126,7 @@ string systemStringResult(const char* cmd) {
 parameters P;
 
 void cleanTmp(void){
-	if(P.tmpStatus==0 || P.tmpStatus==1){
+	if(P.tmpStatus & TS_DESTROY){
 		string cmd;
 		cmd = "rm -rf " + P.tmpPath;
 		if(system(cmd.c_str()) !=0)warnx("Fail to clean temporary file");
@@ -146,14 +147,17 @@ int main(int argc, char** argv) {
 	P.parseCommandLine(argc,argv);
 
     if (P.verbose>0){
-        cout << "################################################################################" << endl;
-        cout << "##########################           Cosmos           ##########################" << endl;
-        cout << "################################################################################" << endl;
+        cout.fill('#');
+        cout << setw(P.terminalWidth) << "#" << endl;
+        cout << setw(P.terminalWidth/2+14) << "           Cosmos           ";
+        cout << setw(P.terminalWidth-(P.terminalWidth/2 +14)) << "#" << endl;
+        cout << setw(P.terminalWidth) << "#" << endl;
+        cout.fill(' ');
     }
 	//assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
 
 	//If tmpStatus is zero generate random tmp directory
-	if (P.tmpStatus == 0) {
+	if (P.tmpStatus & TS_DESTROY) {
 		string newtmp = systemStringResult("mktemp -d tmpCosmos-XXXXXX");
 		if(!newtmp.empty())P.tmpPath=newtmp.substr(0,newtmp.length()-1);
 	}
@@ -181,7 +185,7 @@ int main(int argc, char** argv) {
     if(P.prismPath.empty())P.prismPath="prism";
 
 
-    if(P.tmpStatus==0 || P.tmpStatus==2){
+    if(P.tmpStatus & TS_GEN){
         //Parse and generate the gspn and lha.
         shared_ptr<GspnType> pGSPN = ParseGSPN();
         if ( !pGSPN ) {
@@ -213,14 +217,13 @@ int main(int argc, char** argv) {
             }
     } else {
         if ( ! ParseLHA()) {
-            cout << "Fail to build the LHA." << endl;;
-            return(EXIT_FAILURE);
+            cout << "Fail to build the LHA. Try to go on anyway" << endl;;
         }
     }
 
     if(P.MaxRuns==0)return EXIT_SUCCESS;
 
-    if(P.tmpStatus==0 || P.tmpStatus==2){
+    if(P.tmpStatus & TS_BUILD){
         //Compile the simulator
         if ( !build()) {
             cout << "Fail to Compile the model.";
@@ -248,7 +251,8 @@ int main(int argc, char** argv) {
 			P.Level = (1.0 - (2.0* fmin(0.5 ,exp( (double)P.MaxRuns * P.Width*P.Width / (-2.0*2.0*2.0*b*b)))));
 		}
 	}
-    launchServer(P);
-	
+    if(P.tmpStatus & TS_RUN)launchServer(P);
+
+    cleanTmp();
 	return (EXIT_SUCCESS);
 }

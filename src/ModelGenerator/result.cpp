@@ -148,7 +148,7 @@ bool result::continueSim() {
 }
 
 void result::printPercent(double i, double j) {
-    const double t = 120;
+    const double t = P.terminalWidth - (maxformulaname+2) - 6;
     double u;
     if (j != 0) {
         u = fmax(0.0, fmin(t, (t * i) / j));

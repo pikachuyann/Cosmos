@@ -305,9 +305,8 @@ bool Simulator::transitionSink(size_t ){
  * @return true if the simulation did not reach an accepting are refusing state.
  */
 bool Simulator::SimulateOneStep(){
-	static const abstractBinding dummyBinding;
-	
-	AutEdge AE = A.GetEnabled_A_Edges( N.Marking,dummyBinding);
+
+	AutEdge AE = A.GetEnabled_A_Edges( N.Marking);
 	
     //If there is no enabled transition in the Petri net
     //try to reach an accepting state by using autonomous edge of
@@ -321,11 +320,11 @@ bool Simulator::SimulateOneStep(){
 				cerr << endl;
 			}
 			A.updateLHA( AE.FiringTime - A.CurrentTime, N.Marking );
-			A.fireLHA(AE.Index,N.Marking, dummyBinding );
+			A.fireAutonomous(AE.Index,N.Marking);
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
-			} else AE = A.GetEnabled_A_Edges( N.Marking,dummyBinding);
+			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
 		Result.accept=false;
 		return false;
@@ -351,7 +350,7 @@ bool Simulator::SimulateOneStep(){
             double eTime = AE.FiringTime - A.CurrentTime;
 			A.updateLHA(eTime , N.Marking);
             printLog(eTime);
-			A.fireLHA(AE.Index,N.Marking, dummyBinding);
+			A.fireAutonomous(AE.Index,N.Marking);
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				A.printState(cerr);
@@ -361,7 +360,7 @@ bool Simulator::SimulateOneStep(){
 			if (A.isFinal()) {
 				returnResultTrue();
 				return false;
-			} else AE = A.GetEnabled_A_Edges( N.Marking,dummyBinding);
+			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
 		if(verbose>3){
 			cerr << "\033[1;33mFiring:\033[0m" << N.Transition[E1.transition].label ;

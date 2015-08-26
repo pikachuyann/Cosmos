@@ -286,7 +286,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
      <<"]["<< MyLha.TransitionIndex.size() <<"] = " << accset3.str() << ";"<< endl;
      LhaCppFile << "const int* LHAActionEdges = (const int***)LHAActionEdgesAr;"<< endl;
      */
-    LhaCppFile << "LHA::LHA():NbLoc(" << MyLha.NbLoc << "),FinalLoc(" << MyLha.NbLoc << ",false),NbTrans(" << MyLha.TransitionIndex.size() << "),NbVar(" << MyLha.NbVar << "){" << endl;
+    LhaCppFile << "LHA::LHA():NbLoc(" << MyLha.NbLoc << "),NbTrans(" << MyLha.TransitionIndex.size()<<"),NbVar(" << MyLha.NbVar << "),FinalLoc( " << MyLha.NbLoc << ",false){" << endl;
 
     for (set<unsigned int>::iterator it = MyLha.InitLoc.begin(); it != MyLha.InitLoc.end(); it++)
         LhaCppFile << "    InitLoc.insert(" << (*it) << ");" << endl;
