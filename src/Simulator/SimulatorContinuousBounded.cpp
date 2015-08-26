@@ -38,7 +38,7 @@
 #include <limits>
 
 
-SimulatorContinuousBounded::SimulatorContinuousBounded(LHA& a,int m,double e,int js):SimulatorBoundedRE(A,m){
+SimulatorContinuousBounded::SimulatorContinuousBounded(LHA_orig& a,int m,double e,int js):SimulatorBoundedRE(A,m){
     epsilon = e;
 	if(js>0){
 		jumpsize = js;

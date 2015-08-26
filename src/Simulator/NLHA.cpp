@@ -55,8 +55,9 @@ void NLHA::printState(ostream& s){
     for(let fs : *powerSetState){
         Vars=fs.var;
         CurrentLocation=fs.loc;
+        s << "(";
         LHA::printState(s);
-        s << ", ";
+        s << "), ";
     }
     s << "} ";
 }
@@ -136,10 +137,11 @@ AutEdge NLHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBi
     for (let fs : *powerSetState) {
         Vars = fs.var;
         CurrentLocation=fs.loc;
-        let I = LHA::GetEnabled_A_Edges(Marking, db);
+        let I = LHA_orig::GetEnabled_A_Edges(Marking, db);
         if (I.FiringTime < Ed.FiringTime) {
-            Ed.Index = Ed.Index;
-            Ed.FiringTime = Ed.FiringTime;
+            cerr << "Autonomous: " << I.Index << "\tTime:" << I.FiringTime <<endl;
+            Ed.Index = I.Index;
+            Ed.FiringTime = I.FiringTime;
         }
     }
     return Ed;

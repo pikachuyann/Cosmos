@@ -109,6 +109,8 @@ nbPlace(0)
 //prismPath = "/import/barbot/prism-4.0.1-linux64/bin/prism";
 {
     tracedPlace.insert(pair<string, int>("ALL",0));
+    isTTY = isatty(fileno(stdout));
+
 }
 
 /**
@@ -518,8 +520,6 @@ void parameters::parseCommandLine(int argc, char** argv) {
     }
 
     //Additionnal parameter handling.
-    isTTY = isatty(fileno(stdout));
-
     if (lightSimulator && MaxRuns>0)StringInSpnLHA=true;
     if (Batch != 0)Batch = min(Batch,MaxRuns);
 
@@ -539,4 +539,9 @@ void parameters::parseCommandLine(int argc, char** argv) {
         usage();
         exit(EXIT_FAILURE);
     }
+
+    if(P.tmpStatus==1 || P.tmpStatus==3){
+        P.PathLha = P.tmpPath+"/LHA.cpp";
+    }
+
 }

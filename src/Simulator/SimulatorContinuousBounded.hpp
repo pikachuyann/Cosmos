@@ -32,7 +32,7 @@
 
 class SimulatorContinuousBounded: public SimulatorBoundedRE{
 public:
-    SimulatorContinuousBounded(LHA& A,int m,double e, int js);
+    SimulatorContinuousBounded(LHA_orig& A,int m,double e, int js);
     void initVectCo(double t);
     double epsilon;
 	int jumpsize;

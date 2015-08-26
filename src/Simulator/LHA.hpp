@@ -92,74 +92,27 @@ extern bool IsLHADeterministic;
 class LHA {
 public:
 	LHA();
-	~LHA();
 
     const unsigned int NbLoc; // number of locations
-    
-    vector<double> FormulaVal;
-    vector<bool> FormulaValQual;
-
-    /**
-     * Current time of the LHA
-     */
-	double CurrentTime;
 
     /**
      * Current location of the LHA
      */
-	int CurrentLocation;
-
-    /*
-     * Curent likelihood.
-     * Use only for importance sampling
-     */
-    double Likelihood;
-
-	/**
-	 *  Copy the state of an other LHA.
-	 *  It only copy pointer thus is in constant time.
-	 */
-	void copyState(LHA*);
-
-    //! fire the transition of an LHA
-    void fireLHA(int,const abstractMarking&, const abstractBinding&);
+    int CurrentLocation;
 
     /**
-     * \brief Synchronized the execution of the LHA with a transition of the SPN.
+     * Current time of the LHA
      */
-    virtual int synchroniseWith(size_t, const abstractMarking&,const abstractBinding&);
+    double CurrentTime;
 
-	/**
-	 * \brief Return an autonomous edge for a given marking.
-	 */
-    virtual AutEdge GetEnabled_A_Edges(const abstractMarking&,const abstractBinding&);
-	
-	//! update value in the LHA by elapsing time
-	virtual void updateLHA(double DeltaT, const abstractMarking &);
+    vector<double> FormulaVal;
+    vector<bool> FormulaValQual;
 
-	
-	//! test if the automaton is in a final state
-	virtual bool isFinal()const;
-    
-	/**
-	 * reset the automata to its initial state according to the
-	 * marking of the SPN.
-	 */
-    virtual void reset(const abstractMarking&);
-	
-    virtual void getFinalValues(const abstractMarking&,vector<double>&,vector<bool>&);
-	
-	virtual void printState(ostream &);
-	void printHeader(ostream &)const;
+    void printHeader(ostream &)const;
+    virtual void printState(ostream &);
 	
 protected:
 	vector <LhaEdge> Edge;
-
-    /**
-     * \brief Return a synchronized edge for a given transition of the SPN.
-     */
-    int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
-
 
     set <int> InitLoc; // initial locations
     vector<bool> FinalLoc; // final locations
@@ -174,8 +127,6 @@ protected:
 	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l
     static const int ActionEdgesAr[];
 
-	vector<int> EdgeCounter;
-
 	const int NbTrans;
     const int NbVar;
 
@@ -183,50 +134,17 @@ protected:
     string label;
 	vector <string> LocLabel;
 
-	void UpdateFormulaVal();
-	void UpdateLinForm(const abstractMarking&);
-	void UpdateLhaFuncLast();
-	
-	/**
-	 * \brief Set the initial location of the LHA for a marking
-	 * Loop over the set of initial location to find one enabled.
-	 */
-	virtual void setInitLocation(const abstractMarking&);
-	
-	
-	void DoElapsedTimeUpdate(double, const abstractMarking&);
-    
-	void UpdateLhaFunc( double&);
-
-	
-	void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
-	double GetFlow(int, const abstractMarking&)const;
-	bool CheckLocation(int,const abstractMarking&)const;
-	bool CheckEdgeContraints(int,size_t, const abstractBinding&, const abstractMarking&)const;
-	
+    void resetVariables();
+    void DoElapsedTimeUpdate(double, const abstractMarking&);
+    double GetFlow(int, const abstractMarking&)const;
+    bool CheckLocation(int,const abstractMarking&)const;
+    bool CheckEdgeContraints(int,size_t, const abstractBinding&, const abstractMarking&)const;
     t_interval GetEdgeEnablingTime(int,const abstractMarking&)const;
-	
-	void resetVariables();
-	
-	
-	void doPathVarsUpdate(double, double, const abstractMarking&);
-	
-	
-	
-    void ViewEdge(int);
-    void ViewAllEdges();
+    void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
+	void UpdateLinForm(const abstractMarking&);
+	void UpdateLhaFunc( double&);
+	void UpdateFormulaVal();
 
-	
-	void resetPathVarsTable();
-	
-	bool isVar(string, double &);
-	
-	void resetLinForms();
-
-    double Min(double, double, double);
-    double Max(double, double, double);
-    double Integral(double, double, double, double, double);
-    double BoxedIntegral(double OldInt, double t, double Delta, double x, double y, double t1,double t2);
 };
 
 class fullState {

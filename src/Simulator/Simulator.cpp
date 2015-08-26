@@ -42,7 +42,7 @@ using namespace std;
  * Constructor for the Simulator initialize the event queue
  * but don't fill it.
  */
-Simulator::Simulator(LHA& automate):verbose(0),A(automate){
+Simulator::Simulator(LHA_orig& automate):verbose(0),A(automate){
 	EQ = new EventsQueue(N); //initialization of the event queue
 	logResult=false;
 	sampleTrace = 0.0;
@@ -89,7 +89,7 @@ void Simulator::printLog(double eTime,size_t t){
             lastSampled = A.CurrentTime;
             logtrace <<setw(9)<<left<<setprecision(8)<< A.CurrentTime << "  ";
             logtrace << right;
-            N.Marking.print(logtrace,eTime);
+            N.Marking.print(logtrace,A.CurrentTime+eTime);
             A.printState(logtrace);
             if(t!=string::npos)logtrace << " ->" <<N.Transition[t].label;
             logtrace << endl;

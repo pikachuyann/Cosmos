@@ -44,6 +44,8 @@
 
 shared_ptr<GspnType> ParseGSPN();
 bool ParseLHA(GspnType &);
+bool ParseLHA();
+
 
 void generateLoopLHA(GspnType &);
 void generateSamplingLHA(GspnType &);

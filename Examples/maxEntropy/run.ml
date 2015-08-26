@@ -1,7 +1,8 @@
+
 #directory "../../utils"
 
 #use "mlcall.ml";;
-
+open Printf;;
 
 (*script for experiment*)
 
@@ -50,15 +51,15 @@ let gen_faillure_repair name n b minRep npoly =
         y: clock;
 
         invariant
-              ( x<B)
+              ( x<B) & (state1<=n | x<4*minRep )
         endinvariant
 
         [a] state1<n & x<B & y>minRep-> 1.0 : (state1'=state1+1)&(y'=0);
         [b] state1<n+1 & state1>1 & x<B  -> 1.0 : (state1'=state1-1);
         [b] state1=1 & x<B  -> 1.0 : (state1'=1);
         [c] state1=n & x<B -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
-        [c] state1=n+1 & x<B -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
-        [b] state1=n+1 & x<B  -> 1.0 : (state1'=1);
+        [c] state1=n+1 & x<2*minRep -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
+        [b] state1=n+1 & x<2*minRep  -> 1.0 : (state1'=1);
 endmodule" n b minRep;
   close_out f;
   let cmd = Printf.sprintf "sage script_tocosmos.sage %s_C.prism %s_C.grml %i" name name npoly in
@@ -124,6 +125,99 @@ Edges={
 " c1 c2 dline;
   close_out f
 
+
+let gen_faillure_third name n m k dline c1 c2 evt bB=
+  let f = open_out (name^"_A.lha") in
+  fprintf f  "NOTDETERMINISTIC
+const int Dline =%i;
+const int nstep =%i;
+const int c1 = %i;
+const int c2 = %i;
+const int evt = %i;
+const int B= %i;
+
+VariablesList = {DISC countT, t1 " dline 2 c1 c2 evt bB;
+  let tstr = ref "t1:1" in
+  let tstr2 = ref "countT=0" in
+  for i =1 to n do 
+    fprintf f ", time%i,ctime%i,DISC compA%i,DISC compB%i" i i i i; 
+    tstr := (!tstr) ^", time"^ (string_of_int i)^":1"^", ctime"^ (string_of_int i)^":1";
+    tstr2 := (!tstr2) ^", compA"^ (string_of_int i)^"=0, compB"^ (string_of_int i)^"=0, time"^ (string_of_int i)
+    ^"=1, ctime"^ (string_of_int i)^"=0";
+  done;
+  fprintf f "
+ };
+LocationsList = {li,l1,l2,l3,lf,li2,l12,l22,lf2};
+
+reach=PROB;
+reachCond=PROB(lf2);
+
+InitialLocations={li,li2};
+FinalLocations={lf};
+Locations={
+(li, TRUE, (%s));
+(l1, TRUE, (%s));
+(l2, TRUE, (%s));
+(l3, TRUE, (%s));
+(lf, TRUE, (%s));
+
+(li2, TRUE, (t1:1));
+(l12, TRUE, (t1:1));
+(l22, TRUE, (t1:1));
+(lf2, TRUE, (t1:1));
+};
+
+Edges={
+((li,l1),ALL,#,{%s});
+((l1,l1),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
+((l2,l2),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
+((l3,l3),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
+((lf,lf),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);\n" !tstr !tstr !tstr !tstr !tstr !tstr2;
+  fprintf f "((l1,l1),{t_b}, # ,{countT = countT+1});\n";
+  for i =1 to n do
+    fprintf f "\n((l1,l2),{t_a}, # ,{countT = countT+1,compA%i=compA%i+1,time%i=0,ctime%i=0});\n" i i i i;
+    fprintf f "((l2,l2),{t_a}, time%i>=2 & compA%i<=nstep-1 & ctime%i<=evt ,{countT = countT+1,compA%i=compA%i+1,time%i=0,ctime%i=0});\n" i i i i i i i;
+    fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i>=1& ctime%i<=evt ,{countT = countT+1,compB%i=compB%i+1,compA%i=compA%i-1,ctime%i=0});\n" i (k-1) i i i i i i i;
+    fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i<=0& ctime%i<=evt ,{countT = countT+1,compB%i=compB%i+1,ctime%i=0});\n" i (k-1) i i i i i;
+  done;
+  fprintf f "((l2,l3),{t_c},compA1>=nstep & t1<= B";
+  for i =2 to n do fprintf f "& compA%i>=nstep" i done;
+  fprintf f ",{countT=countT+1,t1=0";
+  for i =1 to n do fprintf f ", compA%i=0, compB%i=0" i i done;
+  fprintf f "});\n((l3,l3),{t_c},#,{countT = countT+1,t1=0});\n";
+  fprintf f "((l3,l1),{t_b},#,{countT=countT+1";
+  for i =1 to n do fprintf f ",ctime%i=0" i done;
+  fprintf f "});\n" ;
+
+  fprintf f "((l1,lf),{t_a,t_b,t_c}, countT=Dline+1 ,#);
+((l2,lf),{t_a,t_b,t_c}, countT=Dline ,#);
+((l3,lf),{t_a,t_b,t_c}, countT=Dline ,#);
+((lf,lf),{t_a,t_b,t_c}, countT=Dline ,#);
+
+
+
+((li2,li2),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
+((l12,l12),ALL\\{t_a,t_b,t_c},countT <=Dline & t1<=c2 ,#);
+((l22,l22),ALL\\{t_a,t_b,t_c},countT <=Dline & t1<=c2 ,#);
+((lf2,lf2),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
+
+((li2,li2),{t_a,t_b,t_c}, # ,{countT = countT+1});
+((li2,l12),{t_a}, # ,{countT = countT+1,t1=0});
+((l12,l12),{t_a,t_b,t_c}, t1<=c2 ,{countT = countT+1});
+((l12,l22),{t_c}, t1>=c1& t1<=c2 ,{countT = countT+1});
+((l22,l22),{t_a,t_b,t_c}, t1<=c2 ,{countT = countT+1});
+((l22,lf2),{t_a}, t1>=2*c1&t1<=c2 ,{countT = countT+1});
+((lf2,lf2),{t_a,t_b,t_c}, # ,{countT = countT+1});
+
+};
+
+
+";
+  close_out f
+
+
+
+
 let run1 n b timeC wt npoly =
   let name = "exp1_"^string_of_int n in
     gen_diff_to_reach name n b timeC wt npoly;
@@ -145,18 +239,48 @@ let run2 n b minRep npoly c1 c2 dline =
   let name = "exp2_"^string_of_int n in
   (*gen_faillure_repair name n b minRep npoly;
   gen_faillure_repairB name c1 c2 dline;*)
-  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_B.lha"," --njob 2 --max-run 200000 --batch 1000 --width 0");
-  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_B.lha"," --njob 2 --max-run 200000 --batch 1000 --width 0");;
+  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_B.lha"," --njob 2 --max-run 100000 --batch 1000 --width 0");
+  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_B.lha"," --njob 2 --max-run 100000 --batch 1000 --width 0");;
 
 
 (* EXP2 *)
+let exp2 () =
+  let b = 10
+  and minRep = 1 
+  and npoly = 8
+  and c1 = 9
+  and c2= 20
+  and dline = 100 in
+  for i = 2 to 7 do
+    run2 i b minRep npoly c1 c2 dline;
+  done;;
 
-run2 2 8 1 6 9 20 100;;
-run2 3 8 1 6 9 20 100;;
-run2 4 8 1 6 9 20 100;;
-run2 5 8 1 6 9 20 100;;
-run2 6 8 1 6 9 20 100;;
-run2 7 8 1 6 9 20 100;;
-run2 8 8 1 6 9 20 100;;
-run2 9 8 1 6 9 20 100;;
-run2 10 8 1 6 9 20 100;;
+(*gen_faillure_repair "exp2" 5 12 1 10;*)
+(*gen_faillure_third "exp2_2" 2 2 2 50 9 20 8;*)
+(*exp2 ();;*)
+
+
+let run3 n b minRep npoly c1 c2 dline nm evt=
+  let name = "exp3_"^string_of_int n in
+  gen_faillure_repair name (n+1) b minRep npoly;
+  (*gen_faillure_repairB name c1 c2 dline;*)
+  gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;
+  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0");
+  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0");;
+
+
+(* EXP3 *)
+let exp3 () =
+  let b = 12
+  and minRep = 1 
+  and npoly = 11
+  and c1 = 9
+  and c2= 20
+  and dline = 50 in
+
+      (*run3 (4) b minRep npoly c1 c2 dline 2 8;*)
+  for i = 3 to 3 do
+    run3 (2*i) b minRep npoly c1 c2 dline 2 8;
+  done;;
+
+exp3 ()

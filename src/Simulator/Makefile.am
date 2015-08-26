@@ -7,7 +7,8 @@ libClientSim_la_SOURCES = \
 	EventsQueue.cpp EventsQueue.hpp \
 	timeGen.cpp timeGen.hpp \
 	marking.hpp spn.hpp \
-	LHA_orig.cpp LHA.hpp \
+	LHA_orig.cpp LHA_orig.hpp \
+    LHA.hpp \
     NLHA.cpp NLHA.hpp \
 	Simulator.cpp Simulator.hpp \
 	SimulatorRE.cpp SimulatorRE.hpp \

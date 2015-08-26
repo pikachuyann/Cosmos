@@ -161,17 +161,17 @@ int main(int argc, char** argv) {
 	if(mkdir(P.tmpPath.c_str(), 0777) != 0){
 		if(errno != EEXIST){
 			err(EXIT_FAILURE,"Fail to build temporary directory:%s",P.tmpPath.c_str());
-		}
-	}
-	if(P.verbose>2)cout << "Temporary directory set to:" << P.tmpPath << endl;
-	atexit(cleanTmp);
+        }
+    }
+    if(P.verbose>2)cout << "Temporary directory set to:" << P.tmpPath << endl;
+    atexit(cleanTmp);
 
     if(P.generateLHA==2 && P.dataPDFCDF.empty())
         P.dataPDFCDF = P.tmpPath+"/defaultOutput.dat";
 
-	//Find the path to the directory containing the binary of cosmos.
-	if(P.Path.compare("")==0){
-		string st = argv[0];
+    //Find the path to the directory containing the binary of cosmos.
+    if(P.Path.compare("")==0){
+        string st = argv[0];
         if (st == "./Cosmos")P.Path = "";
         else if(st.length()>6)P.Path=st.substr(0,st.length()-6);
         else FindPath(P);
@@ -180,42 +180,48 @@ int main(int argc, char** argv) {
 
     if(P.prismPath.empty())P.prismPath="prism";
 
-    //Parse and generate the gspn and lha.
-    shared_ptr<GspnType> pGSPN = ParseGSPN();
-    if ( !pGSPN ) {
-        cout << "Fail to build the GSPN." << endl;
-        return(EXIT_FAILURE);
-    }
 
-    if (!P.unfold.empty()) {
-        unfolder unfold(*pGSPN);
-        ofstream unfoldfile(P.unfold, ios::out | ios::trunc);
-        unfold.export_grml(unfoldfile);
-        return EXIT_SUCCESS;
-    }
+    if(P.tmpStatus==0 || P.tmpStatus==2){
+        //Parse and generate the gspn and lha.
+        shared_ptr<GspnType> pGSPN = ParseGSPN();
+        if ( !pGSPN ) {
+            cout << "Fail to build the GSPN." << endl;
+            return(EXIT_FAILURE);
+        }
 
-    if(P.MaxRuns == 0 && P.lightSimulator){
-        auto cmd = "cp "+P.Path+"../src/LightSimulator/*.* "+P.tmpPath;
-        if(P.verbose>=3)cout << cmd << endl;
-        system(cmd.c_str());
-        cmd = "cd "+P.tmpPath+"; ./build.sh";
-        if(P.verbose>=3)cout << cmd << endl;
-        system(cmd.c_str());
-        return EXIT_SUCCESS;
-    }
-    
-    if(!P.lightSimulator)
-        if ( ! ParseLHA(*pGSPN)) {
+        if (!P.unfold.empty()) {
+            unfolder unfold(*pGSPN);
+            ofstream unfoldfile(P.unfold, ios::out | ios::trunc);
+            unfold.export_grml(unfoldfile);
+            return EXIT_SUCCESS;
+        }
+
+        if(P.MaxRuns == 0 && P.lightSimulator){
+            auto cmd = "cp "+P.Path+"../src/LightSimulator/*.* "+P.tmpPath;
+            if(P.verbose>=3)cout << cmd << endl;
+            system(cmd.c_str());
+            cmd = "cd "+P.tmpPath+"; ./build.sh";
+            if(P.verbose>=3)cout << cmd << endl;
+            system(cmd.c_str());
+            return EXIT_SUCCESS;
+        }
+
+        if(!P.lightSimulator)
+            if ( ! ParseLHA(*pGSPN)) {
+                cout << "Fail to build the LHA." << endl;;
+                return(EXIT_FAILURE);
+            }
+    } else {
+        if ( ! ParseLHA()) {
             cout << "Fail to build the LHA." << endl;;
             return(EXIT_FAILURE);
         }
-    
+    }
+
     if(P.MaxRuns==0)return EXIT_SUCCESS;
 
-    
-    
-    //Compile the simulator
     if(P.tmpStatus==0 || P.tmpStatus==2){
+        //Compile the simulator
         if ( !build()) {
             cout << "Fail to Compile the model.";
             return(EXIT_FAILURE);
@@ -229,7 +235,7 @@ int main(int argc, char** argv) {
 
     if(!P.sequential){ //Compute Chernoff-Hoeffding bounds
         double b = 0.0;
-        for(const auto it : P.HaslFormulas) b = fmax(b,it->bound());
+        for(let it : P.HaslFormulas) b = fmax(b,it->bound());
         if(b== INFINITY){
             cerr << "Cannot use Chernoff-Hoeffding bounds: no bounds on the computed value" << endl;
             return EXIT_FAILURE;

@@ -22,6 +22,7 @@
 		032A707B181BC0D6006D7332 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703C181BC0D6006D7332 /* server.cpp */; };
 		032A70A7181BC307006D7332 /* expatmodelparser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A709D181BC307006D7332 /* expatmodelparser.cc */; };
 		032A70A8181BC307006D7332 /* modelwriter.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A70A2181BC307006D7332 /* modelwriter.cc */; };
+		032C6B461B8DC4E2007EFB67 /* LHA_orig.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 032C6B451B8DC4E2007EFB67 /* LHA_orig.hpp */; };
 		0336B7F3198A3BF30043EFC6 /* exPapier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7CC198A3BF30043EFC6 /* exPapier.cpp */; };
 		0336B7F4198A3BF30043EFC6 /* experiments.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7CE198A3BF30043EFC6 /* experiments.cpp */; };
 		0336B7F5198A3BF30043EFC6 /* generateLHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7CF198A3BF30043EFC6 /* generateLHA.cpp */; };
@@ -286,6 +287,7 @@
 		032A70A3181BC307006D7332 /* modelwriter.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = modelwriter.hh; sourceTree = "<group>"; };
 		032A70A5181BC307006D7332 /* tree.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree.hh; sourceTree = "<group>"; };
 		032A70A6181BC307006D7332 /* tree_util.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_util.hh; sourceTree = "<group>"; };
+		032C6B451B8DC4E2007EFB67 /* LHA_orig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LHA_orig.hpp; sourceTree = "<group>"; };
 		0336B7CC198A3BF30043EFC6 /* exPapier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exPapier.cpp; sourceTree = "<group>"; };
 		0336B7CD198A3BF30043EFC6 /* exPapier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = exPapier.hpp; sourceTree = "<group>"; };
 		0336B7CE198A3BF30043EFC6 /* experiments.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = experiments.cpp; sourceTree = "<group>"; };
@@ -1270,6 +1272,7 @@
 				032A7045181BC0D6006D7332 /* EventsQueue.hpp */,
 				032A7049181BC0D6006D7332 /* LHA.hpp */,
 				032A704A181BC0D6006D7332 /* LHA_orig.cpp */,
+				032C6B451B8DC4E2007EFB67 /* LHA_orig.hpp */,
 				0315F5381B7215E600DA8EDA /* NLHA.cpp */,
 				0315F5391B7215E600DA8EDA /* NLHA.hpp */,
 				032A7062181BC0D6006D7332 /* spn.hpp */,
@@ -3109,6 +3112,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0315F53B1B7215E600DA8EDA /* NLHA.hpp in Headers */,
+				032C6B461B8DC4E2007EFB67 /* LHA_orig.hpp in Headers */,
 				BC956BC61AA0875F00AB8BD1 /* SocketPort.h in Headers */,
 				BCD7DA281A8D207E001A2D80 /* Print.h in Headers */,
 				0365553B18292D10001B5947 /* foxglynn.hpp in Headers */,

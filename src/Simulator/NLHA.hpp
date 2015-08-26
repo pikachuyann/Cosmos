@@ -30,9 +30,9 @@
 #include <stdio.h>
 #include <set>
 
-#include "LHA.hpp"
+#include "LHA_orig.hpp"
 
-class NLHA: public LHA {
+class NLHA: public LHA_orig {
 
     std::set<fullState, std::less<fullState> > powerSet[2];
     std::set<fullState, std::less<fullState> > *powerSetState;
