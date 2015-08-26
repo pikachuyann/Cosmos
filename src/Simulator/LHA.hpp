@@ -93,7 +93,8 @@ class LHA {
 public:
 	LHA();
 
-    const unsigned int NbLoc; // number of locations
+    // number of locations
+    const unsigned int NbLoc;
 
     /**
      * Current location of the LHA
@@ -105,34 +106,37 @@ public:
      */
     double CurrentTime;
 
+    // Result of Computation
     vector<double> FormulaVal;
     vector<bool> FormulaValQual;
 
+    // Pretty printing
     void printHeader(ostream &)const;
     virtual void printState(ostream &);
 	
 protected:
-	vector <LhaEdge> Edge;
 
+    // Topologie of automata
+    const int NbTrans;
+    const int NbVar;
+    vector <LhaEdge> Edge;
     set <int> InitLoc; // initial locations
     vector<bool> FinalLoc; // final locations
-
-	Variables *Vars; // Var[i] value of the variable indexed by i
-    Variables *tempVars;
-
-	vector<double> LinForm;
-    vector<double> OldLinForm;
-    vector<double> LhaFunc;
-
 	vector < set <int> > Out_A_Edges; // for a given location l returns the set of autonomous edges  starting from l
     static const int ActionEdgesAr[];
 
-	const int NbTrans;
-    const int NbVar;
-
+    // Labels for pretty printing, empty when verbose < 4
     vector <string> VarLabel;
     string label;
 	vector <string> LocLabel;
+
+    // Runtime variables
+    Variables *Vars; // Var[i] value of the variable indexed by i
+    Variables *tempVars; //Temporary compy of vars
+    vector<double> LinForm;
+    vector<double> OldLinForm;
+    vector<double> LhaFunc;
+
 
     void resetVariables();
     void DoElapsedTimeUpdate(double, const abstractMarking&);
@@ -144,7 +148,6 @@ protected:
 	void UpdateLinForm(const abstractMarking&);
 	void UpdateLhaFunc( double&);
 	void UpdateFormulaVal();
-
 };
 
 class fullState {

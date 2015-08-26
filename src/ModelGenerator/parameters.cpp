@@ -31,6 +31,9 @@
 #include <getopt.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <stdio.h>
 
 using namespace std;
 
@@ -58,7 +61,7 @@ relative(false),
 
 comp_uuid("tmpuuid"),
 tmpPath("tmp"),
-tmpStatus(0),
+tmpStatus((TmpStat)(TS_GEN | TS_BUILD | TS_RUN | TS_DESTROY)),
 reuse(false),
 Path(""),
 PathGspn(""),
@@ -85,6 +88,7 @@ computeStateSpace(0),
 alligatorMode(false),
 unfold(""),
 isTTY(true),
+terminalWidth(80),
 
 gcccmd("g++"),
 gccflags("-O3 -Wno-return-type"),
@@ -110,7 +114,10 @@ nbPlace(0)
 {
     tracedPlace.insert(pair<string, int>("ALL",0));
     isTTY = isatty(fileno(stdout));
-
+    struct winsize ws;
+    if(isTTY && ioctl(fileno(stdout), TIOCGWINSZ, &ws)>=0){
+        terminalWidth=ws.ws_col;
+    }
 }
 
 /**
@@ -425,10 +432,30 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 break;
             case CO_bin_path: Path = optarg;
                 break;
-            case CO_tmp_status: tmpStatus = atoi(optarg);
+            case CO_tmp_status:
+                switch (atoi(optarg)) {
+                    case 0:
+                        tmpStatus = (TmpStat)( TS_GEN | TS_BUILD | TS_RUN | TS_DESTROY);
+                        break;
+                    case 1:
+                        tmpStatus = (TmpStat)( TS_RUN | TS_DESTROY);
+                        break;
+                    case 2:
+                        tmpStatus = (TmpStat)( TS_GEN | TS_BUILD | TS_RUN );
+                        break;
+                    case 3:
+                        tmpStatus = (TmpStat)( TS_RUN );
+                        break;
+                    case 4:
+                        tmpStatus = (TmpStat)( TS_BUILD | TS_RUN );
+                        break;
+                    default:
+                        tmpStatus = (TmpStat)atoi(optarg);
+                        break;
+                }
                 break;
             case CO_reuse:
-                tmpStatus = 2;
+                tmpStatus = (TmpStat)(tmpStatus & (TS_GEN | TS_BUILD | TS_RUN));
                 reuse = true;
                 break;
             case CO_gppcmd: gcccmd = optarg;

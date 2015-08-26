@@ -128,20 +128,20 @@ void NLHA::getFinalValues(const abstractMarking& m,vector<double>& v,vector<bool
     }
 }
 
-AutEdge NLHA::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db) {
-    //TODO Check for bugs
+AutEdge NLHA::GetEnabled_A_Edges(const abstractMarking& Marking) {
+    //TODO Check for bugs Not working due to infinit loop
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
-
     for (let fs : *powerSetState) {
         Vars = fs.var;
         CurrentLocation=fs.loc;
-        let I = LHA_orig::GetEnabled_A_Edges(Marking, db);
+        let I = LHA_orig::GetEnabled_A_Edges(Marking);
         if (I.FiringTime < Ed.FiringTime) {
             cerr << "Autonomous: " << I.Index << "\tTime:" << I.FiringTime <<endl;
             Ed.Index = I.Index;
             Ed.FiringTime = I.FiringTime;
+            assert(false); //Does not work currently
         }
     }
     return Ed;
