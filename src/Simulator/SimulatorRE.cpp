@@ -37,12 +37,12 @@
 
 using namespace std;
 
-SimulatorRE::SimulatorRE(LHA& A,bool b):Simulator(A) {
+SimulatorRE::SimulatorRE(LHA_orig& A,bool b):Simulator(A) {
 	rareEventEnabled = false;
 	doubleIS_mode=b;
 }
 
-SimulatorRE::SimulatorRE(LHA& A):Simulator(A) {
+SimulatorRE::SimulatorRE(LHA_orig& A):Simulator(A) {
     rareEventEnabled = false;
     doubleIS_mode=false;
 }

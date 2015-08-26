@@ -148,6 +148,12 @@ shared_ptr<GspnType> ParseGSPN() {
     return gReader.spn;
     }
 
+bool ParseLHA(){
+    GspnType emptyGSPN;
+
+    return ParseLHA(emptyGSPN);
+}
+
 bool ParseLHA(GspnType &spn){
     // Intialize an empty structure for the automaton
     Lha_Reader lReader(spn, P);
@@ -265,11 +271,13 @@ bool ParseLHA(GspnType &spn){
             }
 
             //Copy the code into the temporary directory
-            string cmd = "cp " + P.PathLha + " " + P.tmpPath + "/LHA.cpp";
-            if (P.verbose > 2)cout << cmd << endl;
-            if (system(cmd.c_str()) != 0) {
-                cerr << "Fail to copy LHA to temporary" << endl;
-                return false;
+            if( P.PathLha != P.tmpPath + "/LHA.cpp"){
+                string cmd = "cp " + P.PathLha + " " + P.tmpPath + "/LHA.cpp";
+                if (P.verbose > 2)cout << cmd << endl;
+                if (system(cmd.c_str()) != 0) {
+                    cerr << "Fail to copy LHA to temporary" << endl;
+                    return false;
+                }
             }
         }
     } catch (exception& e) {

@@ -41,7 +41,7 @@
 #include <map>
 #include <stack>
 #include <cstring>
-#include "LHA.hpp"
+#include "LHA_orig.hpp"
 #include "spn.hpp"
 
 #include <iostream>
@@ -113,7 +113,7 @@ public:
 	void buildTransitionMatrix();
 	
 	SPN N; //The object representing the SPN
-	LHA A; //The object representing the LHA
+	LHA_orig A; //The object representing the LHA
 	
     //double maxRate();
     double uniformizeMatrix();

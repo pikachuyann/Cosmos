@@ -30,6 +30,7 @@
 
 
 #include "LHA.hpp"
+#include "LHA_orig.hpp"
 #include "NLHA.hpp"
 #include "spn.hpp"
 #include "EventsQueue.hpp"
@@ -47,7 +48,7 @@
 
 class Simulator:public timeGen {
 public:
-	Simulator(LHA&);
+	Simulator(LHA_orig&);
     //Simulator();
 	~Simulator();
 	
@@ -106,7 +107,7 @@ protected:
 	
     
 	SPN N; //!The object representing the SPN
-	LHA &A; //!The object representing the LHA
+	LHA_orig &A; //!The object representing the LHA
 	
     
     /**
