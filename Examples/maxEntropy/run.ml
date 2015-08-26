@@ -38,7 +38,7 @@ endmodule" n b timeC wt;
     print_endline cmd2;
     assert (0=Sys.command cmd2)
 
-let gen_faillure_repair name n b minRep npoly =
+let gen_faillure_repair name n b minRep npoly cWeight=
   let f = open_out (name^"_C.prism") in
   Printf.fprintf f  "pta
     const int n = %i;
@@ -51,7 +51,7 @@ let gen_faillure_repair name n b minRep npoly =
         y: clock;
 
         invariant
-              ( x<B) & (state1<=n | x<4*minRep )
+              ( x<B) & (state1<=n | x< %i )
         endinvariant
 
         [a] state1<n & x<B & y>minRep-> 1.0 : (state1'=state1+1)&(y'=0);
@@ -60,7 +60,7 @@ let gen_faillure_repair name n b minRep npoly =
         [c] state1=n & x<B -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
         [c] state1=n+1 & x<2*minRep -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
         [b] state1=n+1 & x<2*minRep  -> 1.0 : (state1'=1);
-endmodule" n b minRep;
+endmodule" n b minRep cWeight;
   close_out f;
   let cmd = Printf.sprintf "sage script_tocosmos.sage %s_C.prism %s_C.grml %i" name name npoly in
   print_endline cmd;
@@ -262,7 +262,7 @@ let exp2 () =
 
 let run3 n b minRep npoly c1 c2 dline nm evt=
   let name = "exp3_"^string_of_int n in
-  gen_faillure_repair name (n+1) b minRep npoly;
+  gen_faillure_repair name (n+1) b minRep npoly n;
   (*gen_faillure_repairB name c1 c2 dline;*)
   gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;
   execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0");
@@ -271,9 +271,9 @@ let run3 n b minRep npoly c1 c2 dline nm evt=
 
 (* EXP3 *)
 let exp3 () =
-  let b = 12
+  let b = 10
   and minRep = 1 
-  and npoly = 11
+  and npoly = 12
   and c1 = 9
   and c2= 20
   and dline = 50 in

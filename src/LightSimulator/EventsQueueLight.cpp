@@ -166,7 +166,6 @@ void EventsQueue::siftDown(TR_PL_ID i) {
     
 }
 
-
 #ifndef NO_STRING_SIM
 /**
  *	Print the content of the queues in a human readable format.

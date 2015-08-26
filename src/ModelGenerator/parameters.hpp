@@ -98,6 +98,12 @@ enum Poption {
     CO_reuse,
 };
 
+enum TmpStat:int {
+    TS_GEN       = 0x01,
+    TS_BUILD     = 0x02,
+    TS_RUN       = 0x04,
+    TS_DESTROY   = 0x08
+};
 
 struct parameters {
     std::string commandLine;
@@ -118,8 +124,11 @@ struct parameters {
 
     std::string comp_uuid;
     std::string tmpPath;
-    unsigned int tmpStatus; // 0 create and destroy tmp,
-    //1 do not build but destroy,2 do not destroy, 3 do not build nor destoy
+    TmpStat tmpStatus;      // 0 create and destroy tmp (default),
+                            // 1 do not build but destroy,
+                            // 2 do not destroy,
+                            // 3 do not build nor destoy
+                            // 4 do not generate but build and do not destroy
     bool reuse;
 
     std::string Path;
@@ -147,6 +156,7 @@ struct parameters {
     bool alligatorMode;
     std::string unfold;
     bool isTTY;
+    int terminalWidth;
 
     std::string gcccmd;
     std::string gccflags;

@@ -46,19 +46,22 @@ void LHA_orig::copyState(LHA_orig *A){
 
 
 /**
- * This function makes the automaton takes an edge.
- * The edge can be either a autonomous or a synchronize on.
+ * This function makes the automaton takes an autonomous edge.
  * @param EdgeIndex the number of the edge of the LHA
  * @param M is the marking of the SPN
- * @param b a binding of the colored variable of the SPN for the transition.
  */
-void LHA_orig::fireLHA(int EdgeIndex,const abstractMarking &M, const abstractBinding &b){
-    DoEdgeUpdates(EdgeIndex, M, b);
+void LHA_orig::fireAutonomous(int EdgeIndex,const abstractMarking &M){
+    static const abstractBinding dummyBinding;
+    DoEdgeUpdates(EdgeIndex, M, dummyBinding);
     CurrentLocation = Edge[EdgeIndex].Target;
 }
 
+
 /**
- *
+ * Find a suitable syncronized transitions in the LHA 
+ * @param tr a SPN transiiton index
+ * @param M is the marking of the SPN
+ * @param b a binding of the colored variable of the SPN for the transition.
  */
 int LHA_orig::synchroniseWith(size_t tr, const abstractMarking& m,const abstractBinding& b){
     //Check if there exist a valid transition in the automata.
@@ -71,18 +74,18 @@ int LHA_orig::synchroniseWith(size_t tr, const abstractMarking& m,const abstract
     return SE;
 }
 
-
 /**
  *	Return the next autonomous edge.
  *	@param Marking is the current marking of the Petri net.
  *	@return the most urgent autonomous edge
  */
-AutEdge LHA_orig::GetEnabled_A_Edges(const abstractMarking& Marking,const abstractBinding& db) {
+AutEdge LHA_orig::GetEnabled_A_Edges(const abstractMarking& Marking) {
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
+    static const abstractBinding dummyBinding;
     for (auto it : Out_A_Edges[CurrentLocation]) {
-        if (CheckLocation(Edge[it].Target, Marking) && CheckEdgeContraints(it, 0, db, Marking)) {
+        if (CheckLocation(Edge[it].Target, Marking) && CheckEdgeContraints(it, 0, dummyBinding, Marking)) {
             t_interval I = GetEdgeEnablingTime(it, Marking);
             if (I.first <= I.second) {
                 if (I.first < Ed.FiringTime) {
@@ -144,6 +147,17 @@ void LHA_orig::getFinalValues(const abstractMarking& m,vector<double>& v,vector<
     v2=FormulaValQual;
 }
 
+/**
+ * This function makes the automaton takes an edge.
+ * The edge can be either a autonomous or a synchronize on.
+ * @param EdgeIndex the number of the edge of the LHA
+ * @param M is the marking of the SPN
+ * @param b a binding of the colored variable of the SPN for the transition.
+ */
+void LHA_orig::fireLHA(int EdgeIndex,const abstractMarking &M, const abstractBinding &b){
+    DoEdgeUpdates(EdgeIndex, M, b);
+    CurrentLocation = Edge[EdgeIndex].Target;
+}
 
 /**
  *	Set the automaton to its initial location.

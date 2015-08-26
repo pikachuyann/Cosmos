@@ -48,8 +48,8 @@ public:
      */
     void copyState(LHA_orig*);
 
-    //! fire the transition of an LHA
-    void fireLHA(int,const abstractMarking&, const abstractBinding&);
+    //! fire an autonomous transition of an LHA
+    void fireAutonomous(int,const abstractMarking&);
 
     /**
      * \brief Synchronized the execution of the LHA with a transition of the SPN.
@@ -59,11 +59,10 @@ public:
     /**
      * \brief Return an autonomous edge for a given marking.
      */
-    virtual AutEdge GetEnabled_A_Edges(const abstractMarking&,const abstractBinding&);
+    virtual AutEdge GetEnabled_A_Edges(const abstractMarking&);
 
     //! update value in the LHA by elapsing time
     virtual void updateLHA(double DeltaT, const abstractMarking &);
-
 
     //! test if the automaton is in a final state
     virtual bool isFinal()const;
@@ -77,6 +76,9 @@ public:
     virtual void getFinalValues(const abstractMarking&,vector<double>&,vector<bool>&);
 
 protected:
+
+    //! fire the transition of an LHA
+    void fireLHA(int,const abstractMarking&, const abstractBinding&);
 
     /**
      * \brief Set the initial location of the LHA for a marking

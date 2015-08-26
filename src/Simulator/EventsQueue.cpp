@@ -263,7 +263,7 @@ void EventsQueue::view(const vector<_trans> &trlabl)const {
             auto trname = trlabl[e.transition].label;
                 //if(i==0)trname = "\033[1;33m" + trlabl[e.transition].label + "\033[0m";
             cerr << setw(15) << left << trname << ":";
-			cerr << "tr ID:" << setw(4)<< e.transition << " ";
+            //cerr << "tr ID:" << setw(4)<< e.transition << " ";
 			e.binding.print();
 			cerr << ",\tt=" << e.time << ",\tp=" << e.priority << ",\tw=" << e.weight;
 			cerr << endl;
