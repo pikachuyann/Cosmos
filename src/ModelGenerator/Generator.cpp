@@ -326,9 +326,6 @@ bool ParseLHA(GspnType &spn){
         }
     }
 
-    //Set the confidence level to all Hasl formula
-    for (auto &it : P.HaslFormulas)it->setLevel(P.Level);
-
     //generateMain();
 
     return true;

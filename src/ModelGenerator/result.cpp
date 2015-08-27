@@ -44,7 +44,25 @@
 using namespace std;
 
 result::result() : MeanM2(P.nbAlgebraic,P.nbQualitatif),HaslResult(P.HaslFormulasname.size()) {
-    //P= Q;
+
+    if(!P.sequential){ //Compute Chernoff-Hoeffding bounds should be somewhere else
+        double b = 0.0;
+        for(let it : P.HaslFormulas) b = fmax(b,it->bound());
+        if(b== INFINITY){
+            cerr << "Cannot use Chernoff-Hoeffding bounds: no bounds on the computed value" << endl;
+            exit(EXIT_FAILURE);
+        }
+        if(P.MaxRuns== (unsigned long)-1){
+            P.MaxRuns = (int)(2.0*2.0*2.0*b*b/(P.Width*P.Width) * log(2/(1-P.Level)));
+        }else if(P.Width == 0){
+            P.Width = 2.0*b * sqrt( (2.0/P.MaxRuns) * log(2.0/(1.0-P.Level)));
+        }else if(P.Level ==0){
+            P.Level = (1.0 - (2.0* fmin(0.5 ,exp( (double)P.MaxRuns * P.Width*P.Width / (-2.0*2.0*2.0*b*b)))));
+        }
+    }
+    //Set the confidence level to all Hasl formula
+    for (auto &it : P.HaslFormulas)it->setLevel(P.Level);
+
     gnuplotstream = NULL;
     lastprint = chrono::system_clock::now();
     lastdraw = chrono::system_clock::now();

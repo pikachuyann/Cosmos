@@ -26,6 +26,7 @@
  */
 
 #include "parameters.hpp"
+
 #include <iostream>
 #include <cstdlib>
 #include <getopt.h>
@@ -433,7 +434,15 @@ void parameters::parseCommandLine(int argc, char** argv) {
             case CO_bin_path: Path = optarg;
                 break;
             case CO_tmp_status:
-                switch (atoi(optarg)) {
+            {
+                int order = 0;
+                if (strcmp(optarg, "full") == 0) order = 0;
+                else if (strcmp(optarg, "keep") == 0)order = 2;
+                else if (strcmp(optarg, "reuse") == 0)order = 3;
+                else if (strcmp(optarg, "only-build") == 0)order = 5;
+                else if (strcmp(optarg, "only-gen") == 0)order = 6;
+                else { order = atoi(optarg);};
+                switch (order) {
                     case 0:
                         tmpStatus = (TmpStat)( TS_GEN | TS_BUILD | TS_RUN | TS_DESTROY);
                         break;
@@ -448,12 +457,19 @@ void parameters::parseCommandLine(int argc, char** argv) {
                         break;
                     case 4:
                         tmpStatus = (TmpStat)( TS_BUILD | TS_RUN );
+                    case 5:
+                        tmpStatus = (TmpStat)( TS_GEN | TS_BUILD  );
                         break;
+                    case 6:
+                        tmpStatus = (TmpStat)( TS_GEN );
+                        break;
+
                     default:
                         tmpStatus = (TmpStat)atoi(optarg);
                         break;
                 }
                 break;
+            }
             case CO_reuse:
                 tmpStatus = (TmpStat)(tmpStatus & (TS_GEN | TS_BUILD | TS_RUN));
                 reuse = true;
@@ -547,8 +563,16 @@ void parameters::parseCommandLine(int argc, char** argv) {
     }
 
     //Additionnal parameter handling.
-    if (lightSimulator && MaxRuns>0)StringInSpnLHA=true;
+
+    //MaxRuns =0 mean no run.
+    if(MaxRuns==0)tmpStatus= (TmpStat)(tmpStatus & (~TS_RUN));
+
+    if (lightSimulator && (tmpStatus & TS_RUN))StringInSpnLHA=true;
+
+    //Batch must be smaller than maxRuns
     if (Batch != 0)Batch = min(Batch,MaxRuns);
+
+    if(P.prismPath.empty())P.prismPath="prism";
 
     //If no LHA is required only set the path for the GSPN.
     if (optind + 1 == argc && (loopLHA > 0.0 || !CSLformula.empty() || !unfold.empty() || P.lightSimulator)) {
@@ -567,7 +591,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
 
-    if(P.tmpStatus==1 || P.tmpStatus==3){
+    if( ! (tmpStatus & TS_GEN)){
         P.PathLha = P.tmpPath+"/LHA.cpp";
     }
 
