@@ -31,6 +31,7 @@
 #define __Cosmos__HaslFormula__
 
 #include <utility>
+
 #include "../Simulator/BatchR.hpp"
 
 enum HaslType {
@@ -87,6 +88,7 @@ public:
  */
 class HaslFormulasTop {
 public:
+
 	HaslFormulasTop(const HaslType); //!< PROB operator use to compute \f$ \mathbb{P} \f$ .
     HaslFormulasTop(const HaslType,size_t); //!< PROBCOND operator use to compute \f$ \mathbb{P} \f$ .
 	HaslFormulasTop(double,double,double); //!< Constant confidence interval.
@@ -103,9 +105,11 @@ public:
 	double bound()const; //!< Return a bound on the formula result
 	HaslType TypeOp; //!< type of the HaslFormula.
 
-        double Value; //!< A double value, have different purpose depending of the type of the operator
+    double Value; //!< A double value, have different purpose depending of the type of the operator
 	double Value2; //!< A double value, have different purpose depending of the type of the operator
 
+    // Compute chernoff-Hoeffding bounds.
+    static void computeChernoff();
 	
 protected:
 	double Level; //!< The confidence level which should be used for the computation of the confidence interval
