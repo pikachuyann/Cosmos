@@ -265,7 +265,7 @@ let run3 n b minRep npoly c1 c2 dline nm evt=
   gen_faillure_repair name (n+1) b minRep npoly b;
   (*gen_faillure_repairB name c1 c2 dline;*)
   gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;
-  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0 --tmp-status build-only")
+  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0 -i --tmp-status only-build")
   (*execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0");;*)
 
 
@@ -284,3 +284,4 @@ let exp3 () =
   done;;
 
 exp3 ()
+ 

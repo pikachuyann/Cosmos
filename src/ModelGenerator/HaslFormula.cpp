@@ -334,6 +334,24 @@ void HaslFormulasTop::setLevel(double l){
     }
 }
 
+
+void HaslFormulasTop::computeChernoff(){
+    double b = 0.0;
+    for(let it : P.HaslFormulas) b = fmax(b,it->bound());
+    if(b== INFINITY){
+        std::cerr << "Cannot use Chernoff-Hoeffding bounds: no bounds on the computed value" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    if(P.MaxRuns== (unsigned long)-1){
+        P.MaxRuns = (int)(2.0*2.0*2.0*b*b/(P.Width*P.Width) * log(2/(1-P.Level)));
+    }else if(P.Width == 0){
+        P.Width = 2.0*b * sqrt( (2.0/P.MaxRuns) * log(2.0/(1.0-P.Level)));
+    }else if(P.Level ==0){
+        P.Level = (1.0 - (2.0* fmin(0.5 ,exp( (double)P.MaxRuns * P.Width*P.Width / (-2.0*2.0*2.0*b*b)))));
+    }
+}
+
+
 /**
  * The function eval compute confidence interval for the HASL formula
  * from the simualation result return by the simulators.

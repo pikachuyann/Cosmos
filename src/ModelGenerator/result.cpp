@@ -45,20 +45,8 @@ using namespace std;
 
 result::result() : MeanM2(P.nbAlgebraic,P.nbQualitatif),HaslResult(P.HaslFormulasname.size()) {
 
-    if(!P.sequential){ //Compute Chernoff-Hoeffding bounds should be somewhere else
-        double b = 0.0;
-        for(let it : P.HaslFormulas) b = fmax(b,it->bound());
-        if(b== INFINITY){
-            cerr << "Cannot use Chernoff-Hoeffding bounds: no bounds on the computed value" << endl;
-            exit(EXIT_FAILURE);
-        }
-        if(P.MaxRuns== (unsigned long)-1){
-            P.MaxRuns = (int)(2.0*2.0*2.0*b*b/(P.Width*P.Width) * log(2/(1-P.Level)));
-        }else if(P.Width == 0){
-            P.Width = 2.0*b * sqrt( (2.0/P.MaxRuns) * log(2.0/(1.0-P.Level)));
-        }else if(P.Level ==0){
-            P.Level = (1.0 - (2.0* fmin(0.5 ,exp( (double)P.MaxRuns * P.Width*P.Width / (-2.0*2.0*2.0*b*b)))));
-        }
+    if(!P.sequential){ //Compute Chernoff-Hoeffding bounds
+        HaslFormulasTop::computeChernoff();
     }
     //Set the confidence level to all Hasl formula
     for (auto &it : P.HaslFormulas)it->setLevel(P.Level);
@@ -181,19 +169,21 @@ void result::printPercent(double i, double j) {
 }
 
 void result::printCompactResult(){
-    
+    int precision = (P.terminalWidth - maxformulaname -40)/7;
+    if (precision>10)precision=10;
+    if (precision<1)precision=1;
     for (size_t i = 0; i < P.HaslFormulasname.size(); i++)
         if (P.HaslFormulasname[i].find("$GRAPH$") == string::npos) {
             cout << setw(maxformulaname + 1) << left << (P.HaslFormulasname[i] + ":") << " |< ";
-            cout << setw(14) << HaslResult[i].min << " -[ ";
-            cout << setw(14) << HaslResult[i].low << " < ";
-            cout << setw(14) << HaslResult[i].mean << " > ";
-            cout << setw(14) << HaslResult[i].up << " ]- ";
-            cout << setw(14) << HaslResult[i].max << " >| ";
-            cout << "width=";
-            cout << setw(12) << HaslResult[i].width();
-            cout << " level=";
+            cout.precision(precision-2);
+            cout << setw(precision) << HaslResult[i].min << " -[ ";
+            cout << setw(precision) << HaslResult[i].low << " < ";
+            cout << setw(precision) << HaslResult[i].mean << " > ";
+            cout << setw(precision) << HaslResult[i].up << " ]- ";
+            cout << setw(precision) << HaslResult[i].max << " >| width=";
+            cout << fixed << setw(precision) << HaslResult[i].width() << defaultfloat <<" level=";
             cout << setw(8) << HaslResult[i].conf << endl;
+            cout.precision(12);
             endline++;
             if (!P.RareEvent && ProgressArray[i] != 0 && P.verbose > 2 && P.sequential) {
                 cout << setw(maxformulaname + 2) << left << "% of width:";
