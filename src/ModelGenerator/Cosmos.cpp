@@ -154,14 +154,20 @@ int main(int argc, char** argv) {
         cout << setw(P.terminalWidth) << "#" << endl;
         cout.fill(' ');
     }
+    if(P.verbose>1){
+        cout << "Actions: " << ((P.tmpStatus& TS_GEN) ? "Generate " : "");
+        cout << ((P.tmpStatus& TS_BUILD) ? " Build " : "");
+        cout << ((P.tmpStatus& TS_RUN) ? " Run " : "");
+        cout << ((P.tmpStatus& TS_DESTROY) ? " Clean " : "") << endl;
+    }
 	//assert(cout<< "Cosmos compile in DEBUG mode!"<<endl);
 
-	//If tmpStatus is zero generate random tmp directory
+	//If tmpStatus require it generate random tmp directory
 	if (P.tmpStatus & TS_DESTROY) {
 		string newtmp = systemStringResult("mktemp -d tmpCosmos-XXXXXX");
 		if(!newtmp.empty())P.tmpPath=newtmp.substr(0,newtmp.length()-1);
 	}
-	//If the tmp directory did not exist generate it.
+	//If the tmp directory do not exist generate it.
 	if(mkdir(P.tmpPath.c_str(), 0777) != 0){
 		if(errno != EEXIST){
 			err(EXIT_FAILURE,"Fail to build temporary directory:%s",P.tmpPath.c_str());
@@ -170,21 +176,19 @@ int main(int argc, char** argv) {
     if(P.verbose>2)cout << "Temporary directory set to:" << P.tmpPath << endl;
     atexit(cleanTmp);
 
-    if(P.generateLHA==2 && P.dataPDFCDF.empty())
+    if(P.generateLHA==SamplingLoop && P.dataPDFCDF.empty())
         P.dataPDFCDF = P.tmpPath+"/defaultOutput.dat";
 
     //Find the path to the directory containing the binary of cosmos.
     if(P.Path.compare("")==0){
         string st = argv[0];
-        if (st == "./Cosmos")P.Path = "";
-        else if(st.length()>6)P.Path=st.substr(0,st.length()-6);
-        else FindPath(P);
+        if (st == "./Cosmos")P.Path = ""; //local directory
+        else if(st.length()>6)P.Path=st.substr(0,st.length()-6); //direct Path to Cosmos
+        else FindPath(P); //Ask the system where Cosmos is (System dependant)
     }
     if(P.verbose>2)cout << "Binary directory path set to:" << P.Path << endl;
 
-    if(P.prismPath.empty())P.prismPath="prism";
-
-
+    //Parse models and generate code
     if(P.tmpStatus & TS_GEN){
         //Parse and generate the gspn and lha.
         shared_ptr<GspnType> pGSPN = ParseGSPN();
@@ -221,10 +225,8 @@ int main(int argc, char** argv) {
         }
     }
 
-    if(P.MaxRuns==0)return EXIT_SUCCESS;
-
+    //Compile the simulator
     if(P.tmpStatus & TS_BUILD){
-        //Compile the simulator
         if ( !build()) {
             cout << "Fail to Compile the model.";
             return(EXIT_FAILURE);
@@ -236,22 +238,10 @@ int main(int argc, char** argv) {
     chrono::duration<double> buildtime= endtime-startbuild;
     if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildtime.count() << "s"<< endl;
 
-    if(!P.sequential){ //Compute Chernoff-Hoeffding bounds
-        double b = 0.0;
-        for(let it : P.HaslFormulas) b = fmax(b,it->bound());
-        if(b== INFINITY){
-            cerr << "Cannot use Chernoff-Hoeffding bounds: no bounds on the computed value" << endl;
-            return EXIT_FAILURE;
-        }
-		if(P.MaxRuns== (unsigned long)-1){
-			P.MaxRuns = (int)(2.0*2.0*2.0*b*b/(P.Width*P.Width) * log(2/(1-P.Level)));
-		}else if(P.Width == 0){
-			P.Width = 2.0*b * sqrt( (2.0/P.MaxRuns) * log(2.0/(1.0-P.Level)));
-		}else if(P.Level ==0){
-			P.Level = (1.0 - (2.0* fmin(0.5 ,exp( (double)P.MaxRuns * P.Width*P.Width / (-2.0*2.0*2.0*b*b)))));
-		}
-	}
-    if(P.tmpStatus & TS_RUN)launchServer(P);
+    // Run
+    if(P.tmpStatus & TS_RUN){
+        launchServer(P);
+    }
 
     cleanTmp();
 	return (EXIT_SUCCESS);

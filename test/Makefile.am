@@ -7,7 +7,7 @@ noinst_PROGRAMS = ClientSim2
 
 
 spn.cpp: ../src/ModelGenerator/Cosmos $(srcdir)/../Examples/Hospital/Hospital.grml
-	../src/ModelGenerator/Cosmos $(srcdir)/../Examples/Hospital/Hospital.grml --loop 100000 --max-run 0 --tmp-status 2
+	../src/ModelGenerator/Cosmos $(srcdir)/../Examples/Hospital/Hospital.grml --loop 100000 --tmp-status only-gen
 	cp tmp/spn.cpp ./
 	cp tmp/LHA.cpp ./
 	cp tmp/markingImpl.hpp ./
