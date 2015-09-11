@@ -42,9 +42,10 @@ using namespace std;
  * Constructor for the Simulator initialize the event queue
  * but don't fill it.
  */
-Simulator::Simulator(LHA_orig& automate):verbose(0),A(automate){
+Simulator::Simulator(SPN_orig& spn,LHA_orig& automate):verbose(0),N(spn),A(automate){
 	EQ = new EventsQueue(N); //initialization of the event queue
-	logResult=false;
+    N.initialize(EQ, this);
+    logResult=false;
 	sampleTrace = 0.0;
 	Result.quantR.resize(A.FormulaVal.size());
     Result.qualR.resize(A.FormulaValQual.size());
@@ -105,24 +106,6 @@ void Simulator::SetBatchSize(const size_t RI) {
 }
 
 /**
- * Fill the event queue with the initially enabled transition
- */
-void Simulator::InitialEventsQueue() {
-    //Check each transition. If a transition is enabled then his fire
-    //time is simulated and added to the structure.
-	
-	Event E;
-	for(const auto &t : N.Transition) {
-		for(auto &bindex : t.bindingList){
-			if (N.IsEnabled(t.Id,bindex)) {
-				GenerateEvent(E, t.Id ,bindex);
-				EQ->insert(E);
-			}
-		}
-	}
-}
-
-/**
  * Reset the SPN, The LHA and the Event Queue to the initial state.
  */
 void Simulator::reset() {
@@ -139,146 +122,6 @@ void Simulator::reset() {
 void Simulator::returnResultTrue(){
 	A.getFinalValues(N.Marking,Result.quantR,Result.qualR);
 	Result.accept = true;
-}
-
-/**
- * Update the enabling transition of the SPN, and update the event queue.
- * @param E1_transitionNum the number of the transition which last
- * occured in the SPN.
- * @param b is the binding of the last transition.
- */
-void Simulator::updateSPN(size_t E1_transitionNum, const abstractBinding& lb){
-    //This function update the Petri net according to a transition.
-    //In particular it update the set of enabled transition.
-    
-    //check if the current transition is still enabled
-	for(const auto &bindex : N.Transition[E1_transitionNum].bindingList){
-		bool Nenabled = N.IsEnabled(E1_transitionNum, bindex);
-		bool NScheduled = EQ->isScheduled(E1_transitionNum, bindex.idcount);
-		
-		if (Nenabled && NScheduled && lb.idcount == bindex.idcount ) {
-			GenerateEvent(F, E1_transitionNum, bindex);
-			EQ->replace(F); //replace the transition with the new generated time
-		} else if (Nenabled && !NScheduled) {
-			GenerateEvent(F, E1_transitionNum, bindex);
-			EQ->insert(F);
-		} else if (!Nenabled && NScheduled) {
-			EQ->remove(E1_transitionNum,bindex.idcount );
-		}
-	}
-	
-	// Possibly adding Events corresponding to newly enabled-transitions
-    //const auto &net = N.PossiblyEn();
-    for (size_t t=0; N.PossiblyEnabled[N.lastTransition][t] != -1;t++) {
-        const auto &it = N.PossiblyEnabled[N.lastTransition][t];
-		size_t bindnum = 0;
-		const abstractBinding *bindex = N.nextPossiblyEnabledBinding(it, lb, &bindnum);
-		while (bindex != NULL){
-			if(verbose > 4){
-				cerr << "consider for enabling: " << N.Transition[it].label << ",";
-				bindex->print();
-				cerr << endl;
-			}
-			
-			//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-			//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-			if (N.IsEnabled(it,*bindex)) {
-				if (!EQ->isScheduled(it,bindex->idcount)) {
-					if(verbose > 4){
-						cerr << "->New transition enabled: " << N.Transition[it].label << ",";
-						bindex->print();
-						cerr << endl;
-					}
-					if(!EQ->restart(A.CurrentTime,it,bindex->idcount)){
-						GenerateEvent(F, (it), *bindex);
-						(*EQ).insert(F);
-					}
-					
-				} else {
-					if (N.Transition[it].MarkingDependent) {
-						GenerateEvent(F, it,*bindex);
-						(*EQ).replace(F);
-					}
-				}
-			}
-			bindex = N.nextPossiblyEnabledBinding(it, lb, &bindnum);
-		}
-	}
-	
-	// Possibly removing Events corresponding to newly disabled-transitions
-    //const auto &ndt = N.PossiblyDis();
-    //for (const auto &it : ndt) {
-    for (size_t t=0; N.PossiblyDisabled[N.lastTransition][t] != -1;t++) {
-        const auto &it = N.PossiblyDisabled[N.lastTransition][t];
-		size_t bindnum = 0;
-		const abstractBinding *bindex = N.nextPossiblyDisabledBinding(it, lb, &bindnum);
-		while (bindex != NULL){
-			if(verbose > 4){
-				cerr << "consider for disabling: " << N.Transition[it].label << ",";
-				bindex->print();
-				cerr << endl;
-			}
-			//for(vector<abstractBinding>::const_iterator bindex = N.Transition[*it].bindingList.begin() ;
-			//	bindex != N.Transition[*it].bindingList.end() ; ++bindex){
-			if (EQ->isScheduled(it, bindex->idcount)) {
-				if (!N.IsEnabled(it, *bindex )){
-					if(verbose > 4){
-						cerr << "<-New transition disabled: " << N.Transition[it].label << ",";
-						bindex->print();
-						cerr << endl;
-					}
-					if(N.Transition[it].AgeMemory){
-						EQ->pause(A.CurrentTime, it, bindex->idcount);
-					}else EQ->remove(it,bindex->idcount);
-				}else {
-					if (N.Transition[it].MarkingDependent) {
-						GenerateEvent(F, it,*bindex);
-						EQ->replace(F);
-					}
-				}
-			}
-			bindex = N.nextPossiblyDisabledBinding(it, lb, &bindnum);
-		}
-	}
-	
-    // Update transition which have no precondition on the Marking
-    for (size_t t=0; N.FreeMarkDepT[N.lastTransition][t]!= -1;t++) {
-        const auto &it = N.FreeMarkDepT[N.lastTransition][t];
-            //const auto &fmd = N.FreeMarkingDependant();
-            //for (const auto &it : fmd) {
-		for(const auto bindex : N.Transition[it].bindingList){
-			//if (N.IsEnabled(it,bindex)) {
-				if (EQ->isScheduled(it, bindex.idcount)) {
-					GenerateEvent(F, it,bindex);
-					(*EQ).replace(F);
-				}
-			//}
-		}
-		
-	}
-	//assert(cerr<< "assert!"<< endl);
-	
-	
-        /*
-	//In Debug mode check that transition are scheduled iff they are enabled
-	for (const auto &t : N.Transition){
-		for(const auto &bindex : t.bindingList){
-			if (N.IsEnabled(t.Id, bindex) !=
-				EQ->isScheduled(t.Id, bindex.idcount)){
-				cerr << "N.IsEnabled(" << t.label << ",";
-				bindex.print();
-				cerr <<")" << endl;
-				if(EQ->isScheduled(t.Id, bindex.idcount)){
-					cerr << "Scheduled and not enabled!"<< endl;
-				}else{
-					cerr << "Enabled and not scheduled!" << endl;
-				}
-				assert(N.IsEnabled(t.Id, bindex) ==
-					   EQ->isScheduled(t.Id, bindex.idcount));
-			}
-		}
-	}
-	 */ 
 }
 
 /**
@@ -393,7 +236,7 @@ bool Simulator::SimulateOneStep(){
 				returnResultTrue();
 				return false;
 			} else {
-				updateSPN(E1.transition, E1.binding);
+				N.update(A.CurrentTime, E1.transition, E1.binding);
 			}
 		}
 	}
@@ -477,8 +320,9 @@ void Simulator::interactiveSimulation(){
  * Simulate a whole trajectory in the system. Result is store in SimOutput
  */
 void Simulator::SimulateSinglePath() {
-	
-    InitialEventsQueue();
+
+    reset();
+    N.InitialEventsQueue();
     minInteractiveTime=0.0;
 	
 	if(logtrace.is_open())logtrace << "New Path"<< endl;
@@ -518,61 +362,12 @@ void Simulator::SimulateSinglePath() {
     //cerr << "finish path"<< endl;
 }
 
-/**
- * Generate an event based on the type of his distribution
- * @param E the event to update
- * @param Id the number of the transition to of the SPN
- * @param b is the binding of the variable of the SPN for the transition.
- */
-void Simulator::GenerateEvent(Event& E,size_t Id,const abstractBinding& b ) {
-	double t = A.CurrentTime;
-	if (N.Transition[Id].DistTypeIndex != IMMEDIATE) {
-        getParams(Id,b);
-        t += fmax(GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr),0.0);
-        if(verbose > 4){
-            cerr << "Sample " << N.Transition[Id].label << ": ";
-            cerr << string_of_dist(N.Transition[Id].DistTypeIndex, N.ParamDistr);
-            cerr << endl;
-        }
-	}
-    
-    //The weight of a transition is always distributed exponentially
-    //It is used to solved conflict of two transitions with same time
-    //and same priority.
-	double w=0.0;
-	if (N.Transition[Id].DistTypeIndex > 2) {
-		N.ParamDistr[0]= N.GetWeight(Id,b);
-		w = GenerateTime(EXPONENTIAL, N.ParamDistr);
-        if(verbose>4){
-            cerr << "weight : ";
-            cerr << string_of_dist(EXPONENTIAL, N.ParamDistr);
-            cerr << endl;
-        }
-    }
-    
-	E.transition = Id;
-	E.time = t;
-	E.priority = N.GetPriority(Id,b);
-	E.weight = w;
-	E.binding = b;
-}
-
-/**
- * Return the parameter of a transition
- * @param Id the number of the transition of the SPN
- * @param b the binding of the transition of the SPN
- */
-void Simulator::getParams(size_t Id, const abstractBinding& b){
-	N.GetDistParameters(Id,b);
-}
-
 BatchR Simulator::RunBatch(){
     auto starttime = chrono::steady_clock::now();
     auto currenttime = chrono::steady_clock::now();
     chrono::duration<double> timesize(0.03);
 	BatchR batchResult(A.FormulaVal.size(),A.FormulaValQual.size());
 	while ((batchResult.I < BatchSize && BatchSize!=0) || (currenttime-starttime < timesize && BatchSize==0) ) {
-		reset();
 		SimulateSinglePath();
         batchResult.addSim(Result);
 		if(verbose>3)batchResult.print();

@@ -42,14 +42,19 @@ namespace boostmat = boost::numeric::ublas;
 stateSpace::stateSpace(){
 	nbState=0;
 	nbTrans=0;
+    maxRate=0;
 }
 
-int stateSpace::findHash(const vector<int>* vect){
-    hash_state::iterator it = S.find (vect);
+int stateSpace::findHash(const vector<int>* vect)const{
+    const auto it = S.find (vect);
     if (it != S.end ())
 		return(it->second); // found
     else
 		return(-1);
+}
+
+double stateSpace::getMu(int state)const{
+    return (*muvect)[state];
 }
 
 void stateSpace::add_state(vector<int> v){
@@ -276,6 +281,7 @@ double stateSpace::uniformizeMatrix(){
 			if(it2.index1()== it2.index2())*it2 +=1.0;
 		}
 		}
+    maxRate = lambda;
     return lambda;
 }
 
@@ -571,7 +577,7 @@ void stateSpace::inputVect(){
         cerr << "muFile empty" << endl;
         exit(EXIT_FAILURE);
     }
-	cerr<< "Finished reading muFile" << endl;
+	cerr<< "Finished reading muFile with "<< nbState << " states" << endl;
 }
 
 void stateSpace::inputMat(){

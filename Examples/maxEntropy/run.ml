@@ -1,4 +1,3 @@
-
 #directory "../../utils"
 
 #use "mlcall.ml";;
@@ -215,8 +214,16 @@ Edges={
 ";
   close_out f
 
+(* Running Example *)
+let exp () =
+    let name= "twoears" in
+      let cmd = Printf.sprintf "sage script_tocosmos.sage %s.prism %s.grml %i" name name 5 in
+      ignore (Sys.command cmd);
+      execSavedCosmos ~prefix:false (name,name^".grml","runningExB.lha"," --njob 1 --batch 1000 --width 0.01");;
 
+exp ();;
 
+exit 0;;
 
 let run1 n b timeC wt npoly =
   let name = "exp1_"^string_of_int n in

@@ -27,39 +27,54 @@
 
 #include "Simulator.hpp"
 #include "stateSpace.hpp"
+#include "spn_orig.hpp"
 
 #ifndef _SIMULATOR_RE_HPP
 #define _SIMULATOR_RE_HPP
 
+class SPN_RE: public SPN_orig{
+public:
+    SPN_RE(int& v,bool doubleIS);
+
+    bool rareEventEnabled;
+
+    using SPN_orig::initialize;
+    virtual void initialize(EventsQueue *eq,timeGen *tg, stateSpace *muprob);
+    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b )override;
+    virtual void update(double ctime,size_t, const abstractBinding& )override;
+    virtual void InitialEventsQueue()override;
+
+    virtual double mu();
+    const bool doubleIS_mode;
+
+protected:
+    stateSpace * muprob;
+
+private:
+    virtual void getParams(size_t,const abstractBinding&) ;
+    virtual double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
+};
 
 
 class SimulatorRE: public Simulator{
 public:
-	SimulatorRE(LHA_orig&,bool);
-	SimulatorRE(LHA_orig&);
+	SimulatorRE(SPN_orig&,LHA_orig&);
 	
 	virtual void initVect();
 	
 protected:
-	
-	//TAB muprob;  // mu(s) table
-    stateSpace muprob;
-    
-	bool doubleIS_mode;
-	bool rareEventEnabled;
-	virtual void InitialEventsQueue() override;
+
+    //TAB muprob;  // mu(s) table
+    stateSpace * muprob;
+
 	virtual void SimulateSinglePath() override;
 	virtual void returnResultTrue() override;
-	virtual void updateSPN(size_t,const abstractBinding&) override;
-	virtual void GenerateEvent(Event &,size_t,const abstractBinding& ) override;
 	//virtual void GenerateDummyEvent(Event &, size_t);
 	virtual void updateLikelihood(size_t) override;
     virtual bool transitionSink(size_t) override;
-	virtual void getParams(size_t,const abstractBinding&) override;
 	virtual void reset() override;
 	
-	virtual double mu();
-	virtual double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
+
 };
 
 

@@ -101,8 +101,9 @@ class stateSpace {
 public:
 	stateSpace();
 	hash_state S;
-	int findHash(const vector<int>* vect);
-    
+	int findHash(const vector<int>* vect)const ;
+    virtual double getMu(int)const;
+
 	size_t nbState;
 	size_t nbTrans;
 	boost::numeric::ublas::compressed_matrix<double>* transitionsMatrix;
@@ -117,6 +118,7 @@ public:
 	
     //double maxRate();
     double uniformizeMatrix();
+    double maxRate;
     
 	void printP();
 	

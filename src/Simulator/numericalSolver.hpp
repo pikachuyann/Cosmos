@@ -63,7 +63,7 @@ public:
 	
 	//! Return a vector of the current distribution
 	virtual boostmat::vector<double> getVect();
-	virtual double getMu(int);
+	virtual double getMu(int)const override ;
 	virtual void previousVect();
 	virtual void stepVect();
 	virtual int currentRound();

@@ -32,7 +32,7 @@
 
 using namespace std;
 
-SimulatorBoundedRE::SimulatorBoundedRE(LHA_orig& A,int m):SimulatorRE(A){
+SimulatorBoundedRE::SimulatorBoundedRE(SPN_orig& N,LHA_orig& A,int m):SimulatorRE(N,A){
     switch (m) {
         case 1:
             numSolv = new numericalSolver();
@@ -46,7 +46,7 @@ SimulatorBoundedRE::SimulatorBoundedRE(LHA_orig& A,int m):SimulatorRE(A){
             numSolv = new numSolverSH();
             break;
     }
-    
+    muprob = numSolv;
     delete EQ;
 	
 	//numSolv->initVect(T);
@@ -81,8 +81,8 @@ BatchR SimulatorBoundedRE::RunBatch(){
 		EQ = new EventsQueue(N);
 		reset();
 		
-		Simulator::InitialEventsQueue();
-		
+        N.SPN_orig::InitialEventsQueue();
+
 		//AE = A.GetEnabled_A_Edges( N.Marking);
         
 		it->saveState(&N,&A,&EQ);
@@ -146,43 +146,43 @@ BatchR SimulatorBoundedRE::RunBatch(){
 }
 
 
-double SimulatorBoundedRE::mu(){
+double SPN_BoundedRE::mu(){
 	
-	vector<int> vect (numSolv->S.begin()->first->size(),0);
+	vector<int> vect (muprob->S.begin()->first->size(),0);
 	
-    N.lumpingFun(N.Marking,vect);
-	int stateN = numSolv->findHash(&vect);
+    lumpingFun(Marking,vect);
+	int stateN = muprob->findHash(&vect);
 	
 	if(stateN<0){
 		//cerr << numSolv->getVect()<< endl
 		cerr << "statevect(";
         for(size_t i =0 ; i<vect.size() ; i++)cerr << vect[i]<< ",";
 		cerr << ")" << endl<<"state not found" << endl;
-		N.print_state(vect);
+		print_state(vect);
 		return 0.0;
 		//exit(EXIT_FAILURE);
 	}
 	
-	return(numSolv->getMu(stateN));
+	return(muprob->getMu(stateN));
 }
 
-void SimulatorBoundedRE::updateSPN(size_t,const abstractBinding&){
+void SPN_BoundedRE::update(double ctime,size_t,const abstractBinding&){
 	Event F;
     //check if the current transition is still enabled
 	
-	N.Rate_Sum = 0;
-	N.Origine_Rate_Sum = 0;
+	Rate_Sum = 0;
+	Origine_Rate_Sum = 0;
 	
 	//Run over all transition
-	for (size_t it = 0; it < N.tr-2; it++) {
-		for(vector<abstractBinding>::const_iterator bindex = N.Transition[it].bindingList.begin() ;
-			bindex != N.Transition[it].bindingList.end() ; ++bindex){
-			if(N.IsEnabled(it, *bindex)){
+    for (size_t it = 0; it < SPN::tr-2; it++) {
+		for(vector<abstractBinding>::const_iterator bindex = Transition[it].bindingList.begin() ;
+			bindex != Transition[it].bindingList.end() ; ++bindex){
+			if(IsEnabled(it, *bindex)){
 				if (EQ->isScheduled(it, bindex->id())) {
-					GenerateEvent(F, it ,*bindex );
+					GenerateEvent(ctime,F, it ,*bindex );
 					EQ->replace(F);
 				} else {
-					GenerateEvent(F, it ,*bindex );
+					GenerateEvent(ctime,F, it ,*bindex );
 					EQ->insert(F);
 				}
 			}else{
@@ -193,55 +193,55 @@ void SimulatorBoundedRE::updateSPN(size_t,const abstractBinding&){
 	}
 	
 	abstractBinding bpuit;
-    GenerateEvent(F, (N.tr-2),bpuit);
+    GenerateEvent(ctime,F, (SPN::tr-2),bpuit);
 	if(!doubleIS_mode){
 		EQ->replace(F);
 	}
 	
-	GenerateEvent(F, (N.tr-1),bpuit);
+    GenerateEvent(ctime,F, (SPN::tr-1),bpuit);
 	if(!doubleIS_mode){
 		EQ->replace(F);
 	}
 	
 };
 
-void SimulatorBoundedRE::getParams(size_t Id,const abstractBinding& b){
+void SPN_BoundedRE::getParams(size_t Id,const abstractBinding& b){
 	
-	N.GetDistParameters(Id,b);
-	double origin_rate = N.ParamDistr[0];
-    if(Id== N.tr-2){
-        origin_rate = lambda - N.Origine_Rate_Sum;
+	GetDistParameters(Id,b);
+	double origin_rate = ParamDistr[0];
+    if(Id== SPN::tr-2){
+        origin_rate = muprob->maxRate - Origine_Rate_Sum;
         //cerr << "lambda:\t" << lambda << "\tselfloop:\t" << origin_rate << endl;
     }
-    N.ParamDistr[0]= ComputeDistr( Id, b,origin_rate);
-	N.ParamDistr[1]= origin_rate;
+    ParamDistr[0]= ComputeDistr( Id, b,origin_rate);
+	ParamDistr[1]= origin_rate;
 }
 
 
-double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, double origin_rate ){
+double SPN_BoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, double origin_rate ){
 	
 	//cerr << endl<< "mux" << endl;
 	double mux = mu();
     
-	if(t== N.tr-1){
+    if(t== SPN::tr-1){
 		if (mux==0.0)return 1E200;
 		
 		if(verbose>3){
-			N.Marking.printHeader(cerr);cerr << endl;
-			N.Marking.print(cerr,0.0);cerr << endl;
-			vector<int> vect (numSolv->S.begin()->first->size(),0);
-			N.lumpingFun(N.Marking,vect);
-			N.print_state(vect);
+			Marking.printHeader(cerr);cerr << endl;
+			Marking.print(cerr,0.0);cerr << endl;
+			vector<int> vect (muprob->S.begin()->first->size(),0);
+			lumpingFun(Marking,vect);
+			print_state(vect);
 		}
 		
-		if(N.Origine_Rate_Sum >= N.Rate_Sum){
-			if(verbose>3 )cerr << "trans:sink distr: "<< N.Origine_Rate_Sum - N.Rate_Sum << " origine_rate:" << N.Origine_Rate_Sum <<" Rate: " << N.Rate_Sum << endl;
+		if(Origine_Rate_Sum >= Rate_Sum){
+			if(verbose>3 )cerr << "trans:sink distr: "<< Origine_Rate_Sum - Rate_Sum << " origine_rate:" << Origine_Rate_Sum <<" Rate: " << Rate_Sum << endl;
 			//cerr << "strange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-			return( (N.Origine_Rate_Sum - N.Rate_Sum)  );
+			return( (Origine_Rate_Sum - Rate_Sum)  );
 		}else{
-			if(verbose>3 && (N.Origine_Rate_Sum < 0.99*N.Rate_Sum)){
+			if(verbose>3 && (Origine_Rate_Sum < 0.99*Rate_Sum)){
 				cerr << "Reduce model does not guarantee variance" << endl;
-				cerr << "Initial sum of rate: " << N.Origine_Rate_Sum << " Reduce one: " << N.Rate_Sum << " difference: " << N.Origine_Rate_Sum - N.Rate_Sum << endl ;
+				cerr << "Initial sum of rate: " << Origine_Rate_Sum << " Reduce one: " << Rate_Sum << " difference: " << Origine_Rate_Sum - Rate_Sum << endl ;
 				//exit(EXIT_FAILURE);
 			}
 			//cerr << "trans:sink distr: 0 " << endl;
@@ -250,12 +250,12 @@ double SimulatorBoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, doub
 	if( mux==0.0 || mux==1.0) return(origin_rate);
 	
 	double distr;
-	N.fire(t,b,0.0);
-	numSolv->stepVect();
+	fire(t,b,0.0);
+	static_cast<numericalSolver*>(muprob)->stepVect();
 	distr = origin_rate *( mu() / mux);
-	if(verbose>3 )cerr << "trans: " << N.Transition[t].label << "\tdistr: "<< distr << "\torigin Rate: "<< origin_rate << "\tmu: " << mu()<< "\tmu prec: " << mux << endl;
+	if(verbose>3 )cerr << "trans: " << Transition[t].label << "\tdistr: "<< distr << "\torigin Rate: "<< origin_rate << "\tmu: " << mu()<< "\tmu prec: " << mux << endl;
 	
-	numSolv->previousVect();
-	N.unfire(t,b);
+	static_cast<numericalSolver*>(muprob)->previousVect();
+	unfire(t,b);
 	return(distr);
 }
