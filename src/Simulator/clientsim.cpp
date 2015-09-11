@@ -66,6 +66,9 @@ int main(int argc, char** argv) {
 	signal(SIGINT, SIG_IGN);
     //signal(SIGHUP, signalHandler);
 
+    int verbose=0;
+
+    SPN_orig* Nptr;
     LHA_orig* Aptr;
     if(IsLHADeterministic){
         Aptr = new LHA_orig();
@@ -78,22 +81,66 @@ int main(int argc, char** argv) {
 	
 	string str;
     const int optioni=5;
-	
+
 	if(argc > optioni){
-		
 		str = argv[optioni];
-		if(str== "-RE"){
-			SimulatorRE* myRESim= new SimulatorRE(A,false);
+        if(str== "-STSPBU"){
+            stateSpace states;
+            states.exploreStateSpace();
+            states.buildTransitionMatrix();
+            //states.uniformizeMatrix();
+            states.outputMat();
+            states.outputTmpLumpingFun();
+            BatchR dummR(0,0);
+            dummR.outputR(cout);
+            cerr << "Finish Exporting" << endl;
+            exit(EXIT_SUCCESS);
+        }else if(str== "-STSP"){
+            stateSpace states;
+            states.exploreStateSpace();
+            states.buildTransitionMatrix();
+            states.outputPrism();
+            states.launchPrism(argv[optioni+1]);
+            states.importPrism();
+            states.outputVect();
+            states.outputTmpLumpingFun();
+            //cout << "Finish Exporting" << endl;
+            double prResult = states.returnPrismResult();
+            BatchR dummR(1,0);
+            SimOutput sd;
+            sd.accept=true;
+            sd.quantR.push_back(prResult);
+            dummR.addSim(sd);
+            dummR.outputR(cout);
+            /*cout << "Prism Result:\t"<< prResult << endl;
+             ofstream ResultsFile("Result.res", ios::out | ios::trunc);
+             ResultsFile << "Result Computed by Prism:" << endl;
+             ResultsFile << "Estimated value:\t" << prResult << endl;
+             ResultsFile << "Confidence interval:\t[" <<prResult*0.9999;
+             ResultsFile << " , " << prResult*1.00001 << "]" << endl;
+             ResultsFile.close();*/
+            exit(EXIT_SUCCESS);
+        }
+
+        if(str== "-RE"){
+            Nptr = new SPN_RE(verbose,false);
+        }else if(str== "-RE2"){
+            Nptr = new SPN_RE(verbose,true);
+        }else if(str== "-BURE" || str== "-COBURE"){
+            Nptr = new SPN_RE(verbose,false);
+        } else {
+            Nptr = new SPN_orig(verbose);
+        }
+        SPN_orig& N = *Nptr;
+
+		if(str== "-RE" || str== "-RE2"){
+			SimulatorRE* myRESim= new SimulatorRE(N,A);
 			myRESim->initVect();
 			mySim=myRESim;
-		}else if(str== "-RE2"){
-			SimulatorRE* myRESim= (new SimulatorRE(A,true));
-			myRESim->initVect();
-			mySim = myRESim;
 		}else if(str== "-BURE"){
             int m = atoi(argv[optioni+1]);
             int T = atoi(argv[optioni+2]);
-            SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(A,m);
+            SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(N,A,m);
             myBoundedSim->initVect(T);
 			mySim= myBoundedSim;
 		}else if(str== "-COBURE"){
@@ -101,49 +148,14 @@ int main(int argc, char** argv) {
             double t = atof(argv[optioni+2]);
             double e = atof(argv[optioni+3]);
 			int stepc = atoi(argv[optioni+4]);
-            SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(A,m,e,stepc);
+            SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(N,A,m,e,stepc);
             myBoundedSim->initVectCo(t);
 			mySim= myBoundedSim;
-		}else if(str== "-STSPBU"){
-			stateSpace states;
-			states.exploreStateSpace();
-			states.buildTransitionMatrix();
-			//states.uniformizeMatrix();
-			states.outputMat();
-			states.outputTmpLumpingFun();
-            BatchR dummR(0,0);
-            dummR.outputR(cout);
-            cerr << "Finish Exporting" << endl;
-			exit(EXIT_SUCCESS);
-		}else if(str== "-STSP"){
-			stateSpace states;
-			states.exploreStateSpace();
-			states.buildTransitionMatrix();
-			states.outputPrism();
-			states.launchPrism(argv[optioni+1]);
-			states.importPrism();
-			states.outputVect();
-			states.outputTmpLumpingFun();
-			//cout << "Finish Exporting" << endl;
-			double prResult = states.returnPrismResult();
-            BatchR dummR(1,0);
-            SimOutput sd;
-            sd.accept=true;
-            sd.quantR.push_back(prResult);
-            dummR.addSim(sd);
-            dummR.outputR(cout);
-			/*cout << "Prism Result:\t"<< prResult << endl;
-			ofstream ResultsFile("Result.res", ios::out | ios::trunc);
-			ResultsFile << "Result Computed by Prism:" << endl;
-			ResultsFile << "Estimated value:\t" << prResult << endl;
-			ResultsFile << "Confidence interval:\t[" <<prResult*0.9999;
-			ResultsFile << " , " << prResult*1.00001 << "]" << endl;
-			ResultsFile.close();*/
-			exit(EXIT_SUCCESS);
-		} else mySim= (new Simulator(A));
+		} else mySim= (new Simulator(N,A));
 		
     } else {
-		mySim= new Simulator(A);
+        Nptr = new SPN_orig(verbose);
+		mySim= new Simulator(*Nptr,A);
 	}
 	
 	for(int i=1; i<argc ;i++){
@@ -161,6 +173,7 @@ int main(int argc, char** argv) {
 	if(argc>=optioni-1){
 		mySim->SetBatchSize(atoi(argv[1])); //set the batch size
 		mySim->verbose = atoi(argv[2]);
+        Nptr->verbose = atoi(argv[2]);
 		mySim->initRandomGenerator(atoi(argv[4]));
         mySim->tmpPath=argv[3];
 	}else{

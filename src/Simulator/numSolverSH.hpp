@@ -34,7 +34,7 @@ public:
 	void reset() override;
 	void switchOff();
 	void printState() override;
-	double getMu(int)  override;
+    virtual double getMu(int)const override ;
 	boostmat::vector<double> getVect()  override;
 	int currentRound()  override;
 protected:

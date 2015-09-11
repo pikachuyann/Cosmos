@@ -87,21 +87,27 @@ public:
 	
 };
 
+class SPN_BoundedRE: public SPN_RE{
+public:
+    SPN_BoundedRE(int& v,bool doubleIS);
+
+    virtual void update(double ctime,size_t, const abstractBinding&) override;
+    virtual void getParams(size_t, const abstractBinding&) override;
+    virtual double mu() override;
+    virtual double ComputeDistr(size_t i,const abstractBinding&, double origin_rate) override;
+};
+
 class SimulatorBoundedRE: public SimulatorRE{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedRE(LHA_orig&,int m);
+    SimulatorBoundedRE(SPN_orig & N,LHA_orig&,int m);
 	BatchR RunBatch() override;
 	using SimulatorRE::initVect;
     virtual void initVect(int T);
-	void updateSPN(size_t, const abstractBinding&) override;
-	void getParams(size_t, const abstractBinding&) override;
+
 protected:
 	numericalSolver* numSolv;
-	
 	double lambda;
-	virtual double mu() override;
-	virtual double ComputeDistr(size_t i,const abstractBinding&, double origin_rate) override;
 };
 
 
