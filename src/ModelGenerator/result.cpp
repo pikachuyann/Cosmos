@@ -181,7 +181,7 @@ void result::printCompactResult(){
             cout << setw(precision) << HaslResult[i].mean << " > ";
             cout << setw(precision) << HaslResult[i].up << " ]- ";
             cout << setw(precision) << HaslResult[i].max << " >| width=";
-            cout << fixed << setw(precision) << HaslResult[i].width() << defaultfloat <<" level=";
+            cout << fixed << setw(precision) << HaslResult[i].width() /*<< defaultfloat*/ <<" level=";
             cout << setw(8) << HaslResult[i].conf << endl;
             cout.precision(12);
             endline++;
