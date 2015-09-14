@@ -221,9 +221,7 @@ let exp () =
       ignore (Sys.command cmd);
       execSavedCosmos ~prefix:false (name,name^".grml","runningExB.lha"," --njob 1 --batch 1000 --width 0.01");;
 
-exp ();;
-
-exit 0;;
+(*exp ();;*)
 
 let run1 n b timeC wt npoly =
   let name = "exp1_"^string_of_int n in
