@@ -117,7 +117,11 @@ nbPlace(0)
     isTTY = isatty(fileno(stdout));
     struct winsize ws;
     if(isTTY && ioctl(fileno(stdout), TIOCGWINSZ, &ws)>=0){
-        terminalWidth=ws.ws_col;
+        if(ws.ws_col == 0){
+            isTTY=false;
+        }else{
+            terminalWidth=ws.ws_col;
+        }
     }
 }
 
