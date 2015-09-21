@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0306A22F1BACA88E0045B056 /* LHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0306A22B1BACA88E0045B056 /* LHA.cpp */; };
+		0306A2311BACA88E0045B056 /* spn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0306A22E1BACA88E0045B056 /* spn.cpp */; };
 		0315F53A1B7215E600DA8EDA /* NLHA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0315F5381B7215E600DA8EDA /* NLHA.cpp */; };
 		0315F53B1B7215E600DA8EDA /* NLHA.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0315F5391B7215E600DA8EDA /* NLHA.hpp */; };
 		032A7067181BC0D6006D7332 /* casesWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7008181BC0D6006D7332 /* casesWriter.cpp */; };
@@ -144,6 +146,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0306A22B1BACA88E0045B056 /* LHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA.cpp; sourceTree = "<group>"; };
+		0306A22C1BACA88E0045B056 /* lumpingfun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfun.cpp; sourceTree = "<group>"; };
+		0306A22D1BACA88E0045B056 /* markingImpl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
+		0306A22E1BACA88E0045B056 /* spn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spn.cpp; sourceTree = "<group>"; };
 		03088AAA1A0422C0006BCB27 /* #model.pnml# */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "#model.pnml#"; sourceTree = "<group>"; };
 		03088AAC1A0422C0006BCB27 /* _digests */ = {isa = PBXFileReference; lastKnownFileType = text; path = _digests; sourceTree = "<group>"; };
 		03088AAD1A0422C0006BCB27 /* _log */ = {isa = PBXFileReference; lastKnownFileType = text; path = _log; sourceTree = "<group>"; };
@@ -1301,6 +1307,10 @@
 		032A708E181BC14A006D7332 /* test */ = {
 			isa = PBXGroup;
 			children = (
+				0306A22B1BACA88E0045B056 /* LHA.cpp */,
+				0306A22C1BACA88E0045B056 /* lumpingfun.cpp */,
+				0306A22D1BACA88E0045B056 /* markingImpl.hpp */,
+				0306A22E1BACA88E0045B056 /* spn.cpp */,
 				032A7097181BC14A006D7332 /* Makefile.am */,
 				032573991A96530800974A89 /* markingImplLight.hpp */,
 				032573981A9652F600974A89 /* magicLight.hpp */,
@@ -3342,6 +3352,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0306A2311BACA88E0045B056 /* spn.cpp in Sources */,
+				0306A22F1BACA88E0045B056 /* LHA.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

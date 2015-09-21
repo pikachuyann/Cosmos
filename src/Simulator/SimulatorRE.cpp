@@ -194,17 +194,15 @@ void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding
 }
 
 void SimulatorRE::reset(){
-	Simulator::reset();
     A.Likelihood=1.0;
-	N.Origine_Rate_Sum=0;
-	N.Rate_Sum=0;
+    Simulator::reset();
 }
 
 /**
  * Simulate a whole trajectory in the system. Result is store in SimOutput
  */
 void SimulatorRE::SimulateSinglePath() {
-    auto raenabled = static_cast<SPN_RE&>(N).rareEventEnabled;
+    auto &raenabled = static_cast<SPN_RE&>(N).rareEventEnabled;
 	raenabled = N.precondition(N.Marking);
     reset();
 	N.InitialEventsQueue();
