@@ -1,3 +1,4 @@
+#!/usr/bin/env ocaml
 
 #directory "../../utils"
 
@@ -51,15 +52,15 @@ let gen_faillure_repair name n b minRep npoly cWeight=
         y: clock;
 
         invariant
-              ( x<B) & (state1<=n | x< %i )
+              ( x<B) & (state1<=n | x< %i ) & ( x < B-(n-state1)*minRep | state1>n )
         endinvariant
 
-        [a] state1<n & x<B & y>minRep-> 1.0 : (state1'=state1+1)&(y'=0);
-        [b] state1<n+1 & state1>1 & x<B  -> 1.0 : (state1'=state1-1);
-        [b] state1=1 & x<B  -> 1.0 : (state1'=1);
+        [a] state1<n & x< B-(n-state1)*minRep  & y>minRep-> 1.0 : (state1'=state1+1)&(y'=0);
+        [b] state1<n+1 & state1>1 & x<B-(n-state1)*minRep  -> 1.0 : (state1'=state1-1);
+        [b] state1=1 & x<B-(n-state1)*minRep  -> 1.0 : (state1'=1);
         [c] state1=n & x<B -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
-        [c] state1=n+1 & x<2*minRep -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
-        [b] state1=n+1 & x<2*minRep  -> 1.0 : (state1'=1);
+        [c] state1=n+1 -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
+        [b] state1=n+1 -> 1.0 : (state1'=1);
 endmodule" n b minRep cWeight;
   close_out f;
   let cmd = Printf.sprintf "sage script_tocosmos.sage %s_C.prism %s_C.grml %i" name name npoly in
@@ -215,9 +216,6 @@ Edges={
 ";
   close_out f
 
-
-
-
 let run1 n b timeC wt npoly =
   let name = "exp1_"^string_of_int n in
     gen_diff_to_reach name n b timeC wt npoly;
@@ -265,7 +263,7 @@ let run3 n b minRep npoly c1 c2 dline nm evt=
   gen_faillure_repair name (n+1) b minRep npoly b;
   (*gen_faillure_repairB name c1 c2 dline;*)
   gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;
-  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0 -i --tmp-status only-build")
+  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0 --tmp-status 2")
   (*execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0");;*)
 
 
@@ -273,18 +271,15 @@ let run3 n b minRep npoly c1 c2 dline nm evt=
 let exp3 () =
   let b = 12
   and minRep = 1 
-  and npoly = 14
+  and npoly = 10
   and c1 = 9
   and c2= 20
   and dline = 50 in
 
       (*run3 (4) b minRep npoly c1 c2 dline 2 8;*)
-  for i = 3 to 3 do
+  for i = 2 to 2 do
     run3 (2*i) b minRep npoly c1 c2 dline 2 8;
   done;;
 
 exp3 ()
 
-
-|< 0  -[ 0.2 < 0.2 > 0.2 ]- 1  >| width=0  level=1
-|< 0    -[ 0.17 < 0.17 > 0.18 ]- 1    >| width=0.01 level=0.99

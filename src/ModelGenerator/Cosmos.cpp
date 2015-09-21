@@ -147,12 +147,28 @@ int main(int argc, char** argv) {
 	P.parseCommandLine(argc,argv);
 
     if (P.verbose>0){
-        cout.fill('#');
-        cout << setw(P.terminalWidth) << "#" << endl;
-        cout << setw(P.terminalWidth/2+14) << "           Cosmos           ";
-        cout << setw(P.terminalWidth-(P.terminalWidth/2 +14)) << "#" << endl;
-        cout << setw(P.terminalWidth) << "#" << endl;
-        cout.fill(' ');
+        if(P.isTTY){
+            cout << "\033(0";
+            cout << setw(P.terminalWidth/2-14) << "\x6c";
+            cout.fill('\x71');
+            cout << setw(28) << "\x6b" << endl;
+            cout.fill(' ');
+            cout << setw(P.terminalWidth/2-14) << "\x78";
+            cout << "\033(B" << "           Cosmos          " << "\033(0";
+            cout << "\x78" << endl;
+            cout << setw(P.terminalWidth/2-14) << "\x6d";
+            cout.fill('\x71');
+            cout << setw(28) << "\x6a" << endl;
+            cout.fill(' ');
+            cout << "\033(B";
+        }else {
+            cout.fill('#');
+            cout << setw(P.terminalWidth) << "#" << endl;
+            cout << setw(P.terminalWidth/2+14) << "           Cosmos           ";
+            cout << setw(P.terminalWidth-(P.terminalWidth/2 +14)) << "#" << endl;
+            cout << setw(P.terminalWidth) << "#" << endl;
+            cout.fill(' ');
+        }
     }
     if(P.verbose>1){
         cout << "Actions: " << ((P.tmpStatus& TS_GEN) ? "Generate " : "");
