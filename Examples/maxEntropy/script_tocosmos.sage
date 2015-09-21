@@ -24,8 +24,9 @@ print(sagepath + '.sage -> ' + outpath );
 load(sagepath+'.sage')
 
 #Put [] in sink states using iteration on graphs;
-modified=false;#false until fixed point is reached
-while modified==false:
+modified=true;#true until fixed point is reached
+while modified==true:
+    modified=false;
     for i in range(len(translist)):
         new_state=[];
         for j in range(len(translist[i])):
@@ -53,6 +54,7 @@ for i in range(len(translist)):
         new_index.append(count);
         
 #Remove sink states
+namelist=[namelist[i] for i in range(len(translist)) if translist[i]!=[]];
 redcoord=[redcoord[i] for i in range(len(translist)) if translist[i]!=[]];
 translist=[translist[i] for i in range(len(translist)) if translist[i]!=[]];
 
@@ -60,8 +62,7 @@ translist=[translist[i] for i in range(len(translist)) if translist[i]!=[]];
 for i in range(len(translist)):
     for j in range(len(translist[i])):
         for k in range(len(translist[i][j][4])):
-            translist[i][j][4][k][0]=new_index[translist[i][j][4][k][0]];
-
+            translist[i][j][4][k][0]=new_index[translist[i][j][4][k][0]];            
 numpoly=3;
 if len(sys.argv)>3:
     numpoly=int(sys.argv[3])
