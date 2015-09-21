@@ -1,27 +1,57 @@
+
 #include "markingImpl.hpp"
 
-const int reducePL_RE_p1 = 0;
-const int reducePL_RE_p2 = 1;
-const int reducePL_RE_p3 = 2;
-const int reducePL_RE_p5 = 3;
-const int reducePL_RE_p6 = 4;
-const int reducePL_RE_p4 = 5;
+const int reducePL_RE_Queue1 = 0;
+const int reducePL_RE_Queue2 = 1;
+
+
 void SPN::print_state(const vector<int> &vect){
-	cerr << "RE_p1 = " << vect[reducePL_RE_p1] << endl;
-	cerr << "RE_p2 = " << vect[reducePL_RE_p2] << endl;
-	cerr << "RE_p3 = " << vect[reducePL_RE_p3] << endl;
-	cerr << "RE_p5 = " << vect[reducePL_RE_p5] << endl;
-	cerr << "RE_p6 = " << vect[reducePL_RE_p6] << endl;
-	cerr << "RE_p4 = " << vect[reducePL_RE_p4] << endl;
+	cerr << "RE_Queue1 = " << vect[reducePL_RE_Queue1] << endl;
+	cerr << "RE_Queue2 = " << vect[reducePL_RE_Queue2] << endl;
+	
 }
+
 bool SPN::precondition(const abstractMarking &Marking){return true;}
 
 void SPN::lumpingFun(const abstractMarking &Marking,vector<int> &vect){
-	vect[reducePL_RE_p1] = Marking.P->_PL_RE_p1 + Marking.P->_PL_RE_p1bis; //To Complete
-	vect[reducePL_RE_p2] = Marking.P->_PL_RE_p2 + Marking.P->_PL_RE_p2bis; //To Complete
-	vect[reducePL_RE_p3] = Marking.P->_PL_RE_p3; //To Complete
-    vect[reducePL_RE_p4] = Marking.P->_PL_RE_p4 + Marking.P->_PL_RE_p4bis; //To Complete
-    vect[reducePL_RE_p5] = Marking.P->_PL_RE_p5; //To Complete
-	vect[reducePL_RE_p6] = Marking.P->_PL_RE_p6 + Marking.P->_PL_RE_p6bis; //To Complete
+	
+	vect[reducePL_RE_Queue1] = Marking.P->_PL_RE_Queue1; //To Complete
+	vect[reducePL_RE_Queue2] = Marking.P->_PL_RE_Queue2; //To Complete
+
+	int reste =0;
+    for (int i=vect.size()-1; i>0; i--) {
+        if(vect[i]>r){
+            reste += vect[i]-r ;
+            vect[i]=r;
+        } else if(vect[i]+reste>r){
+            reste -= (r - vect[i]);
+            vect[i]=r;
+        } else {
+            vect[i] += reste;
+            reste =0;
+        }
+    }
+    vect[0] += reste;
 
 }
+
+/*
+
+void SPN::lumpingFun(vector<int>* vect){
+    int reste =0;
+    for (int i=vect->size()-1; i>0; i--) {
+        if((*vect)[i]>r){
+            reste += (*vect)[i]-r ;
+            (*vect)[i]=r;
+        } else if((*vect)[i]+reste>r){
+            reste -= (r -(*vect)[i]);
+            (*vect)[i]=r;
+        } else {
+            (*vect)[i] += reste;
+            reste =0;
+        }
+    }
+    (*vect)[0] += reste;
+    
+}
+*/

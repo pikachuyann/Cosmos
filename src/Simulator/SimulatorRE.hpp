@@ -51,7 +51,7 @@ protected:
     stateSpace * muprob;
 
 private:
-    virtual void getParams(size_t,const abstractBinding&) ;
+    virtual void getParams(size_t,const abstractBinding&);
     virtual double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
 };
 
