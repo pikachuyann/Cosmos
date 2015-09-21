@@ -984,6 +984,7 @@
 		03A7F87F182C12DB006F0BC8 /* ptToSpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ptToSpt; path = ../utils/ptToSpt; sourceTree = "<group>"; };
 		03A7F880182C12DB006F0BC8 /* sptToPt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sptToPt; path = ../utils/sptToPt; sourceTree = "<group>"; };
 		03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libexpat.dylib; path = usr/lib/libexpat.dylib; sourceTree = SDKROOT; };
+		03B35DE31BB053E4008C71EB /* maxEntropy */ = {isa = PBXFileReference; lastKnownFileType = folder; path = maxEntropy; sourceTree = "<group>"; };
 		03B6EE8D1487BB8F0099A6CC /* CosmosSim */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CosmosSim; sourceTree = BUILT_PRODUCTS_DIR; };
 		03B7D355181901AC007AA90D /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.am; path = ../Makefile.am; sourceTree = "<group>"; };
 		03B7D356181901BB007AA90D /* configure.ac */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = configure.ac; path = ../configure.ac; sourceTree = "<group>"; };
@@ -1380,6 +1381,7 @@
 		039A3672191A9EE400B42447 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
+				03B35DE31BB053E4008C71EB /* maxEntropy */,
 				039A3673191A9EE400B42447 /* BlackJack */,
 				039A368A191A9EE400B42447 /* Bluetooth */,
 				039A3690191A9EE400B42447 /* ClientServer */,
