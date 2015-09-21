@@ -22,6 +22,46 @@ retval=os.system(prismpath + ' ' + str(sys.argv[1]) + ' -exportsplitreach ' + sa
 
 print(sagepath + '.sage -> ' + outpath );
 load(sagepath+'.sage')
+
+#Put [] in sink states using iteration on graphs;
+modified=false;#false until fixed point is reached
+while modified==false:
+    for i in range(len(translist)):
+        new_state=[];
+        for j in range(len(translist[i])):
+            trans=translist[i][j];
+            trans2=[trans[k] for k in range(4)];
+            trans2.append([]);
+            trans2.append(trans[5]);
+            for edge in trans[4]:
+                if translist[edge[0]]==[]:
+                    modified=true;
+                else:
+                    trans2[4].append(edge)
+            if trans2[4]!=[]:
+                new_state.append(trans2);
+        translist[i]=new_state;
+
+#New indexing of states
+new_index=[];
+count=-1;
+for i in range(len(translist)):
+    if translist[i]==[]:
+        new_index.append(-1);
+    else:
+        count=count+1;
+        new_index.append(count);
+        
+#Remove sink states
+redcoord=[redcoord[i] for i in range(len(translist)) if translist[i]!=[]];
+translist=[translist[i] for i in range(len(translist)) if translist[i]!=[]];
+
+#Update the indexing for outgoing transitions
+for i in range(len(translist)):
+    for j in range(len(translist[i])):
+        for k in range(len(translist[i][j][4])):
+            translist[i][j][4][k][0]=new_index[translist[i][j][4][k][0]];
+
 numpoly=3;
 if len(sys.argv)>3:
     numpoly=int(sys.argv[3])
