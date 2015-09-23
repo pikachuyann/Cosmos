@@ -92,11 +92,6 @@ protected:
     int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
 
     void resetLinForms();
-
-    double Min(double, double, double);
-    double Max(double, double, double);
-    double Integral(double, double, double, double, double);
-    double BoxedIntegral(double OldInt, double t, double Delta, double x, double y, double t1,double t2);
 };
 
 

@@ -218,21 +218,21 @@ void LHA_orig::resetLinForms() {
 
 
 
-double LHA_orig::Min(double a, double b, double c) {
+double LHA::Min(double a, double b, double c) {
     double x = min(b, c);
     return min(a, x);
 }
 
-double LHA_orig::Max(double a, double b, double c) {
+double LHA::Max(double a, double b, double c) {
     double x = max(b, c);
     return max(a, x);
 }
 
-double LHA_orig::Integral(double OldInt, double, double Delta, double x, double y) {
+double LHA::Integral(double OldInt, double, double Delta, double x, double y) {
     return (OldInt + Delta * (x + y) / 2);
 }
 
-double LHA_orig::BoxedIntegral(double OldInt, double t, double Delta, double x, double y, double t1,double t2) {
+double LHA::BoxedIntegral(double OldInt, double t, double Delta, double x, double y, double t1,double t2) {
     if(t>=t2 || t+Delta <= t1) return OldInt;
     double slope = (y-x)/Delta;
     if(t1>t){
