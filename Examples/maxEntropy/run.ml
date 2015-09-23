@@ -56,7 +56,7 @@ let gen_faillure_repair name n b minRep npoly cWeight=
         endinvariant
 
         [a] state1<n & x< B-(n-state1)*minRep  & y>minRep-> 1.0 : (state1'=state1+1)&(y'=0);
-        [b] state1<n+1 & state1>1 & x<B-(n-state1)*minRep  -> 1.0 : (state1'=state1-1);
+        [b] state1<n+1 & state1>1 & x<B-(n-state1-1)*minRep  -> 1.0 : (state1'=state1-1);
         [b] state1=1 & x<B-(n-state1)*minRep  -> 1.0 : (state1'=1);
         [c] state1=n & x<B -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
         [c] state1=n+1 -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
@@ -260,7 +260,7 @@ let exp2 () =
 
 let run3 n b minRep npoly c1 c2 dline nm evt=
   let name = "exp3_"^string_of_int n in
-  gen_faillure_repair name (n+1) b minRep npoly b;
+  gen_faillure_repair name (n+1) b minRep npoly 2;
   (*gen_faillure_repairB name c1 c2 dline;*)
   gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;
   execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0 --tmp-status 2")
@@ -277,7 +277,7 @@ let exp3 () =
   and dline = 50 in
 
       (*run3 (4) b minRep npoly c1 c2 dline 2 8;*)
-  for i = 2 to 2 do
+  for i = 3 to 3 do
     run3 (2*i) b minRep npoly c1 c2 dline 2 8;
   done;;
 
