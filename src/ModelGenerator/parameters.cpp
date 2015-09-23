@@ -572,6 +572,8 @@ void parameters::parseCommandLine(int argc, char** argv) {
     if(MaxRuns==0)tmpStatus= (TmpStat)(tmpStatus & (~TS_RUN));
 
     if (lightSimulator && (tmpStatus & TS_RUN))StringInSpnLHA=true;
+    
+    if(interactive)Njob=1;
 
     //Batch must be smaller than maxRuns
     if (Batch != 0)Batch = min(Batch,MaxRuns);
