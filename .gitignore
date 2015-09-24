@@ -24,7 +24,11 @@ doc/overview.pdf
 *prismProperty.ctl
 *prismStates.sta
 *lumpingfunTmp.cpp
-*/tmpCosmos-*/
+Examples/*/tmpCosmos-*/
+Examples/*/tmp
+Examples/*/*.sage.py
+Examples/maxEntropy/prism
+Examples/maxEntropy/twoears.sage
 *~
 XCCosmos/Cosmos.xcodeproj/project.xcworkspace/xcuserdata/barbot.xcuserdatad/UserInterfaceState.xcuserstate
 XCCosmos/Cosmos.xcodeproj/xcuserdata/*
@@ -70,3 +74,8 @@ lib/*
 ltmain.sh
 missing
 ylwrap
+Examples/maxEntropy/*exp*
+prism/bin
+prism/classes
+prism/cudd/include
+prism/obj
