@@ -87,9 +87,9 @@ Locations={
 (li, TRUE, (t1:1,t2:1));
 (l1, TRUE, (t1:1,t2:1));
 (l2, TRUE, (t1:1,t2:1));
-(lf, TRUE, (t1:1,t2:1));
+(lf, TRUE, (t1:1,t2:li2));
 
-(li2, TRUE, (t1:1,t2:1));
+(1, TRUE, (t1:1,t2:1));
 (l12, TRUE, (t1:1,t2:1));
 (l22, TRUE, (t1:1,t2:1));
 (lf2, TRUE, (t1:1,t2:1));
@@ -137,7 +137,7 @@ const int c2 = %i;
 const int evt = %i;
 const int B= %i;
 
-VariablesList = {DISC countT, t1 " dline 2 c1 c2 evt bB;
+VariablesList = {DISC countT,DISC pos, t1 " dline 2 c1 c2 evt bB;
   let tstr = ref "t1:1" in
   let tstr2 = ref "countT=0" in
   for i =1 to n do 
@@ -174,12 +174,16 @@ Edges={
 ((l2,l2),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
 ((l3,l3),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);
 ((lf,lf),ALL\\{t_a,t_b,t_c},countT <=Dline ,#);\n" !tstr !tstr !tstr !tstr !tstr !tstr2;
-  fprintf f "((l1,l1),{t_b}, # ,{countT = countT+1});\n";
+  fprintf f "((l1,l1),{t_b}, pos>=1 ,{countT = countT+1,pos=pos-1});\n";
+  fprintf f "((l1,l1),{t_b}, pos<=0 ,{countT = countT+1});\n";
   for i =1 to n do
-    fprintf f "\n((l1,l2),{t_a}, # ,{countT = countT+1,compA%i=compA%i+1,time%i=0,ctime%i=0});\n" i i i i;
-    fprintf f "((l2,l2),{t_a}, time%i>=2 & compA%i<=nstep-1 & ctime%i<=evt ,{countT = countT+1,compA%i=compA%i+1,time%i=0,ctime%i=0});\n" i i i i i i i;
-    fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i>=1& ctime%i<=evt ,{countT = countT+1,compB%i=compB%i+1,compA%i=compA%i-1,ctime%i=0});\n" i (k-1) i i i i i i i;
-    fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i<=0& ctime%i<=evt ,{countT = countT+1,compB%i=compB%i+1,ctime%i=0});\n" i (k-1) i i i i i;
+    fprintf f "\n((l1,l2),{t_a}, # ,{countT = countT+1,compA%i=compA%i+1,time%i=0,ctime%i=0,pos=pos+1});\n" i i i i;
+    fprintf f "((l2,l2),{t_a}, time%i>=2 & compA%i<=nstep-1 & ctime%i<=evt ,{countT = countT+1,compA%i=compA%i+1,time%i=0,ctime%i=0,pos=pos+1});\n" i i i i i i i;
+    fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i>=1& ctime%i<=evt  & pos<=0,{countT = countT+1,compB%i=compB%i+1,compA%i=compA%i-1,ctime%i=0});\n" i (k-1) i i i i i i i;
+    fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i<=0& ctime%i<=evt & pos<=0,{countT = countT+1,compB%i=compB%i+1,ctime%i=0});\n" i (k-1) i i i i i;
+
+    fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i>=1& ctime%i<=evt & pos>=1,{countT = countT+1,compB%i=compB%i+1,compA%i=compA%i-1,ctime%i=0,pos=pos-1});\n" i (k-1) i i i i i i i;
+    fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i<=0& ctime%i<=evt & pos>=1,{countT = countT+1,compB%i=compB%i+1,ctime%i=0,pos=pos-1});\n" i (k-1) i i i i i;
   done;
   fprintf f "((l2,l3),{t_c},compA1>=nstep & t1<= B";
   for i =2 to n do fprintf f "& compA%i>=nstep" i done;
@@ -271,13 +275,13 @@ let run3 n b minRep npoly c1 c2 dline nm evt=
 let exp3 () =
   let b = 12
   and minRep = 1 
-  and npoly = 10
+  and npoly = 14
   and c1 = 9
   and c2= 20
   and dline = 50 in
 
       (*run3 (4) b minRep npoly c1 c2 dline 2 8;*)
-  for i = 3 to 3 do
+  for i = 2 to 2 do
     run3 (2*i) b minRep npoly c1 c2 dline 2 8;
   done;;
 

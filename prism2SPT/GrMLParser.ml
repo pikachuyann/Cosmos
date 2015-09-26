@@ -107,7 +107,8 @@ let parse_distr at =
 	  | (Some "IMMEDIATE",[]) -> Imm
 	  | (Some "IMDT",[]) -> Imm
 	  | (Some "DETERMINISTIC",[_,f]) -> Det(f)
-	  | (Some x,_) -> failwith ("Unknown distribution"^x)
+	  | (Some "USERDEFINE",_) -> DiscUserDef(0)				       
+	  | (Some x,_) -> failwith ("Unknown distribution "^x)
 	  | _ -> failwith "ill define distribution"
       end
     | _ -> failwith "ill define distribution"
