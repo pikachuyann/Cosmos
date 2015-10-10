@@ -1062,7 +1062,7 @@ void Gspn_Writer::writeFile(){
     if(!P.lightSimulator){
         SpnCppFile << ",Transition(TransArray,TransArray +"<< MyGspn.tr <<")";
         SpnCppFile << ",Place("<< MyGspn.pl << ")";
-        SpnCppFile << ",ParamDistr(10)";
+        SpnCppFile << ",ParamDistr(20)";
         SpnCppFile << ",TransitionConditions(" << MyGspn.tr <<",0)";
     }
 
