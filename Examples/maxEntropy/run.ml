@@ -137,7 +137,7 @@ const int c2 = %i;
 const int evt = %i;
 const int B= %i;
 
-VariablesList = {DISC countT,DISC pos, t1 " dline 2 c1 c2 evt bB;
+VariablesList = {DISC countT,DISC pos, t1 " dline m c1 c2 evt bB;
   let tstr = ref "t1:1" in
   let tstr2 = ref "countT=0" in
   for i =1 to n do 
@@ -248,6 +248,7 @@ let run2 n b minRep npoly c1 c2 dline =
 (* EXP2 *)
 let exp2 () =
   let b = 10
+	    
   and minRep = 1 
   and npoly = 8
   and c1 = 9
@@ -264,11 +265,11 @@ let exp2 () =
 
 let run3 n b minRep npoly c1 c2 dline nm evt=
   let name = "exp3_"^string_of_int n in
-  gen_faillure_repair name (n+1) b minRep npoly 2;
+(*  gen_faillure_repair name (n+1) b minRep npoly 2;
   (*gen_faillure_repairB name c1 c2 dline;*)
-  gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;
-  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0 --tmp-status 2")
-  (*execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 2 --gppflags '-O0' --max-run 10000 --batch 1000 --width 0");;*)
+  gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;*)
+  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0' --gppcmd g++-5 --max-run 100000 --batch 100 --width 0 --tmp-status 2");
+  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0' --gppcmd g++-5 --max-run 100000 --batch 100 --width 0");;
 
 
 (* EXP3 *)
@@ -281,8 +282,8 @@ let exp3 () =
   and dline = 50 in
 
       (*run3 (4) b minRep npoly c1 c2 dline 2 8;*)
-  for i = 2 to 2 do
-    run3 (2*i) b minRep npoly c1 c2 dline 2 8;
+  for i = 2 to 7 do
+    run3 (2*i) (8+2*i) minRep (2*i+5) c1 c2 dline 2 8;
   done;;
 
 exp3 ()
