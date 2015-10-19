@@ -60,7 +60,7 @@ let gen_faillure_repair name n b minRep npoly cWeight=
         [b] state1=1 & x<B-(n-state1)*minRep  -> 1.0 : (state1'=1);
         [c] state1=n & x<B -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
         [c] state1=n+1 -> 1.0 : (state1'=n+1)&(x'=0)&(y'=0);
-        [b] state1=n+1 -> 1.0 : (state1'=1);
+        [b] state1=n+1 -> 1.0 : (state1'=1)&(x'=0)&(y'=0);
 endmodule" n b minRep cWeight;
   close_out f;
   let cmd = Printf.sprintf "sage script_tocosmos.sage %s_C.prism %s_C.grml %i" name name npoly in
@@ -265,11 +265,25 @@ let exp2 () =
 
 let run3 n b minRep npoly c1 c2 dline nm evt=
   let name = "exp3_"^string_of_int n in
-(*  gen_faillure_repair name (n+1) b minRep npoly 2;
+  gen_faillure_repair name (n+1) b minRep npoly 2;
   (*gen_faillure_repairB name c1 c2 dline;*)
-  gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;*)
+  gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;
   execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0' --gppcmd g++-5 --max-run 100000 --batch 100 --width 0 --tmp-status 2");
   execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0' --gppcmd g++-5 --max-run 100000 --batch 100 --width 0");;
+
+let timeold f x =
+    let t = Sys.time() in
+    let fx = f x in
+    Printf.printf "Execution time: %fs\n" (Sys.time() -. t);
+    fx
+
+let time f x =
+    let start = Unix.gettimeofday ()
+    in let res = f x
+    in let stop = Unix.gettimeofday ()
+    in let () = Printf.printf "Execution time: %fs\n%!" (stop -. start)
+    in
+       res
 
 (* EXP3 *)
 let exp3 () =
@@ -281,8 +295,9 @@ let exp3 () =
   and dline = 50 in
 
       (*run3 (4) b minRep npoly c1 c2 dline 2 8;*)
-  for i = 2 to 7 do
-    run3 (2*i) (8+2*i) minRep (2*i+5) c1 c2 dline 2 8;
+  for i = 2 to 6 do
+    
+    time (run3 (2*i) (8+2*i) minRep (2*i+5) c1 c2 dline 2) 8;
   done;;
 
 exp3 ()

@@ -20,5 +20,5 @@ set xtic 1
 set ytic 1
 
 plot 'preplota.dat' using 2:3 notitle with points pt 5 lc rgb '#FFA02F',\
-     'preplotb.dat' using 2:3 notitle with points pt 5 lc rgb '#829600'
-     
+     'preplotb.dat' using 2:3 notitle with points pt 5 lc rgb '#829600',\
+     'preplotc.dat' using 2:3 notitle with points pt 5 lc rgb '#800080'   
