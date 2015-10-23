@@ -60,6 +60,9 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 	Examples/DataBase/database.grml \
 	Examples/DataBase/databaselha.grml \
 	Examples/DataBase/test.ml \
+    Examples/maxEntropy/genGraph.sh Examples/maxEntropy/run.ml \
+    Examples/maxEntropy/script_tocosmos.sage \
+    Examples/maxEntropy/twoears.prism Examples/maxEntropy/twoears.prism.grml \
 	Examples/TandemCosy/tandemPrism.grml \
 	Examples/TandemCosy/tandemPrismlha.grml \
 	Examples/TandemCosy/testPrism.ml \

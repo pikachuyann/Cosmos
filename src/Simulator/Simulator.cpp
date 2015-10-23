@@ -89,7 +89,7 @@ void Simulator::printLog(double eTime,size_t t){
             lastSampled = A.CurrentTime;
             logtrace <<setw(9)<<left<<setprecision(8)<< A.CurrentTime << "  ";
             logtrace << right;
-            N.Marking.print(logtrace,eTime);
+            N.Marking.print(logtrace,eTime);
             A.printState(logtrace);
             if(t!=string::npos)logtrace << " ->" <<N.Transition[t].label;
             logtrace << endl;
