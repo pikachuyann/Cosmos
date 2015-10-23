@@ -23,6 +23,7 @@ let benchlist = [
   "DataBase" , None;
   "Hospital", None;
   "RareEventUnbounded", None;
+  "maxEntropy", None;
   "RareEventUnbounded", Some("test2.ml");
   "TandemCosy", Some("testPrism.ml");
   "SharedMemory" , None;

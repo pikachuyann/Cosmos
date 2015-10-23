@@ -268,8 +268,8 @@ let run3 n b minRep npoly c1 c2 dline nm evt=
   gen_faillure_repair name (n+1) b minRep npoly 2;
   (*gen_faillure_repairB name c1 c2 dline;*)
   gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;
-  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0' --gppcmd g++-5 --max-run 100000 --batch 100 --width 0 --tmp-status 2");
-  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0' --gppcmd g++-5 --max-run 100000 --batch 100 --width 0");;
+  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0' --max-run 100000 --batch 100 --width 0 --tmp-status 2");
+  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0' --max-run 100000 --batch 100 --width 0");;
 
 let timeold f x =
     let t = Sys.time() in
@@ -285,6 +285,15 @@ let time f x =
     in
        res
 
+(* Running Example *)
+let runExp () =
+  let cmd = Printf.sprintf "sage script_tocosmos.sage %s %s.grml %i" "twoears.prism" "twoears.prism" 5 in
+  print_endline cmd;
+  assert (0=Sys.command cmd);
+  execSavedCosmos ~prefix:false ("Running Example","twoears.prism.grml","runningExB.lha"," --max-run 10000 --width 0");
+
+
+	 
 (* EXP3 *)
 let exp3 () =
   let b = 12
@@ -300,4 +309,6 @@ let exp3 () =
     time (run3 (2*i) (8+2*i) minRep (2*i+5) c1 c2 dline 2) 8;
   done;;
 
-exp3 ()
+let _ = runExp ()
+
+	       let _ = exp3 ()
