@@ -194,7 +194,7 @@ let gen_const f li lr le fund =
   Printf.fprintf f "    </attribute>
     </attribute>
   </attribute>\n"
-
+		 
 let print_spt fpath (net:spt)  =
   let f = open_out fpath in
   let (lci,lcd,lce,fund) = begin match net.Net.def with None -> [],[],[],(fun _ ()->()) | Some x ->x end in
