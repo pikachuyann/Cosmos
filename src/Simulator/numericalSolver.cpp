@@ -137,7 +137,7 @@ boostmat::vector<double> numericalSolver::getVect(){
 	return (*circularvect)[matOffset];
 }
 
-double numericalSolver::getMu(int i){
+double numericalSolver::getMu(int i)const{
 	//cerr << "indice" << matOffset << endl;
 	if (matOffset>=0) return (*circularvect)[matOffset][i];
 	else return 1.0;
