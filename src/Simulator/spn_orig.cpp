@@ -28,25 +28,20 @@
 
 SPN_orig::SPN_orig(int& v):verbose(v){}
 
-void SPN_orig::initialize(EventsQueue *EQ,timeGen *TG){
-    this->EQ=EQ;
-    this->TG=TG;
-}
-
 /**
  * Generate an event based on the type of his distribution
  * @param E the event to update
  * @param Id the number of the transition to of the SPN
  * @param b is the binding of the variable of the SPN for the transition.
  */
-void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b) {
+void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG) {
     double t=ctime;
     if (Transition[Id].DistTypeIndex != IMMEDIATE) {
         GetDistParameters(Id,b);
-        t += fmax(TG->GenerateTime(Transition[Id].DistTypeIndex, ParamDistr),0.0);
+        t += fmax(TG.GenerateTime(Transition[Id].DistTypeIndex, ParamDistr),0.0);
         if(verbose > 4){
             cerr << "Sample " << Transition[Id].label << ": ";
-            cerr << TG->string_of_dist(Transition[Id].DistTypeIndex, ParamDistr);
+            cerr << TG.string_of_dist(Transition[Id].DistTypeIndex, ParamDistr);
             cerr << endl;
         }
     }
@@ -57,10 +52,10 @@ void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBindi
     double w=0.0;
     if (Transition[Id].DistTypeIndex > 2) {
         ParamDistr[0]= GetWeight(Id,b);
-        w = TG->GenerateTime(EXPONENTIAL, ParamDistr);
+        w = TG.GenerateTime(EXPONENTIAL, ParamDistr);
         if(verbose>4){
             cerr << "weight : ";
-            cerr << TG->string_of_dist(EXPONENTIAL, ParamDistr);
+            cerr << TG.string_of_dist(EXPONENTIAL, ParamDistr);
             cerr << endl;
         }
     }
@@ -75,7 +70,7 @@ void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBindi
 /**
  * Fill the event queue with the initially enabled transition
  */
-void SPN_orig::InitialEventsQueue() {
+void SPN_orig::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
 
@@ -83,8 +78,8 @@ void SPN_orig::InitialEventsQueue() {
     for(const auto &t : Transition) {
         for(auto &bindex : t.bindingList){
             if (IsEnabled(t.Id,bindex)) {
-                GenerateEvent(0.0,E, t.Id ,bindex);
-                EQ->insert(E);
+                GenerateEvent(0.0,E, t.Id ,bindex,TG);
+                EQ.insert(E);
             }
         }
     }
@@ -97,23 +92,23 @@ void SPN_orig::InitialEventsQueue() {
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb){
+void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue &EQ,timeGen &TG){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
     //check if the current transition is still enabled
     for(const auto &bindex : Transition[E1_transitionNum].bindingList){
         bool Nenabled = IsEnabled(E1_transitionNum, bindex);
-        bool NScheduled = EQ->isScheduled(E1_transitionNum, bindex.idcount);
+        bool NScheduled = EQ.isScheduled(E1_transitionNum, bindex.idcount);
 
         if (Nenabled && NScheduled && lb.idcount == bindex.idcount ) {
-            GenerateEvent(ctime,F, E1_transitionNum, bindex);
-            EQ->replace(F); //replace the transition with the new generated time
+            GenerateEvent(ctime,F, E1_transitionNum, bindex,TG);
+            EQ.replace(F); //replace the transition with the new generated time
         } else if (Nenabled && !NScheduled) {
-            GenerateEvent(ctime,F, E1_transitionNum, bindex);
-            EQ->insert(F);
+            GenerateEvent(ctime,F, E1_transitionNum, bindex,TG);
+            EQ.insert(F);
         } else if (!Nenabled && NScheduled) {
-            EQ->remove(E1_transitionNum,bindex.idcount );
+            EQ.remove(E1_transitionNum,bindex.idcount );
         }
     }
 
@@ -133,21 +128,21 @@ void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBindin
             //for(vector<abstractBinding>::const_iterator bindex = Transition[*it].bindingList.begin() ;
             //	bindex != Transition[*it].bindingList.end() ; ++bindex){
             if (IsEnabled(it,*bindex)) {
-                if (!EQ->isScheduled(it,bindex->idcount)) {
+                if (!EQ.isScheduled(it,bindex->idcount)) {
                     if(verbose > 4){
                         cerr << "->New transition enabled: " << Transition[it].label << ",";
                         bindex->print();
                         cerr << endl;
                     }
-                    if(!EQ->restart(ctime,it,bindex->idcount)){
-                        GenerateEvent(ctime,F, (it), *bindex);
-                        EQ->insert(F);
+                    if(!EQ.restart(ctime,it,bindex->idcount)){
+                        GenerateEvent(ctime,F, (it), *bindex,TG);
+                        EQ.insert(F);
                     }
 
                 } else {
                     if (Transition[it].MarkingDependent) {
-                        GenerateEvent(ctime,F, it,*bindex);
-                        EQ->replace(F);
+                        GenerateEvent(ctime,F, it,*bindex,TG);
+                        EQ.replace(F);
                     }
                 }
             }
@@ -170,7 +165,7 @@ void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBindin
             }
             //for(vector<abstractBinding>::const_iterator bindex = Transition[*it].bindingList.begin() ;
             //	bindex != Transition[*it].bindingList.end() ; ++bindex){
-            if (EQ->isScheduled(it, bindex->idcount)) {
+            if (EQ.isScheduled(it, bindex->idcount)) {
                 if (!IsEnabled(it, *bindex )){
                     if(verbose > 4){
                         cerr << "<-New transition disabled: " << Transition[it].label << ",";
@@ -178,12 +173,12 @@ void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBindin
                         cerr << endl;
                     }
                     if(Transition[it].AgeMemory){
-                        EQ->pause(ctime, it, bindex->idcount);
-                    }else EQ->remove(it,bindex->idcount);
+                        EQ.pause(ctime, it, bindex->idcount);
+                    }else EQ.remove(it,bindex->idcount);
                 }else {
                     if (Transition[it].MarkingDependent) {
-                        GenerateEvent(ctime,F, it,*bindex);
-                        EQ->replace(F);
+                        GenerateEvent(ctime,F, it,*bindex,TG);
+                        EQ.replace(F);
                     }
                 }
             }
@@ -198,9 +193,9 @@ void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBindin
         //for (const auto &it : fmd) {
         for(const auto bindex : Transition[it].bindingList){
             //if (IsEnabled(it,bindex)) {
-            if (EQ->isScheduled(it, bindex.idcount)) {
-                GenerateEvent(ctime,F, it,bindex);
-                EQ->replace(F);
+            if (EQ.isScheduled(it, bindex.idcount)) {
+                GenerateEvent(ctime,F, it,bindex,TG);
+                EQ.replace(F);
             }
             //}
         }

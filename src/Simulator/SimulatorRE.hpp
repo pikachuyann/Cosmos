@@ -38,11 +38,10 @@ public:
 
     bool rareEventEnabled;
 
-    using SPN_orig::initialize;
-    virtual void initialize(EventsQueue *eq,timeGen *tg, stateSpace *muprob);
-    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b )override;
-    virtual void update(double ctime,size_t, const abstractBinding& )override;
-    virtual void InitialEventsQueue()override;
+    virtual void initialize(stateSpace *muprob);
+    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &)override;
+    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &)override;
+    virtual void InitialEventsQueue(EventsQueue &,timeGen &)override;
 
     virtual double mu();
     const bool doubleIS_mode;

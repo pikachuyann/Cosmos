@@ -7,9 +7,9 @@ using namespace std;
 #include <float.h>
 #include "LHA.hpp"
     const double N=50;
+    const double mu=0.23;
     const double r=5;
-    const double rho0=0.1;
-    const double rho1=0.45;
+    const double rho=0.385;
 struct Variables {
 	double x;
 };
@@ -28,25 +28,26 @@ void LHA::printState(ostream &s){
 	s << Vars->x << "\t";
 };
 const int LHA::ActionEdgesAr[] = {
-	3 ,3 ,3 ,0 ,0 ,0 ,0 ,0 ,0 ,
-	0 ,0 ,0 ,-1,-1,-1,-1,-1,-1,
-	1 ,1 ,1 ,-1,-1,-1,-1,-1,-1,
-	2 ,2 ,2 ,-1,-1,-1,-1,-1,-1,};
-LHA::LHA():NbLoc(3),NbTrans(3),NbVar(1),FinalLoc( 3,false){
+	3 ,3 ,3 ,3 ,3 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	1 ,1 ,1 ,1 ,1 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	2 ,2 ,2 ,2 ,2 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,};
+LHA::LHA():NbLoc(3),NbTrans(5),NbVar(1),FinalLoc( 3,false){
     InitLoc.insert(0);
     FinalLoc[1]=true;
+    FinalLoc[2]=true;
     Edge= vector<LhaEdge>(3);
 
     vector<string> vlstr(NbLoc);
     LocLabel= vlstr;
-    LocLabel[0]="s0";
-    LocLabel[1]="sp";
-    LocLabel[2]="sm";
+    LocLabel[0]="l1";
+    LocLabel[1]="lp";
+    LocLabel[2]="lm";
     VarLabel= vector<string>(NbVar);
     VarLabel[0]="x";
-    Edge[0] = LhaEdge(0, 0, 1,Synch);
-    Edge[1] = LhaEdge(1, 0, 2,Synch);
-    Edge[2] = LhaEdge(2, 0, 0,Synch);
+    Edge[0] = LhaEdge(0, 0, 0,Synch);
+    Edge[1] = LhaEdge(1, 0, 1,Synch);
+    Edge[2] = LhaEdge(2, 0, 2,Synch);
 	Vars = new Variables;
 	tempVars = new Variables;
 	resetVariables();
@@ -69,16 +70,16 @@ double LHA::GetFlow(int v, const abstractMarking& Marking)const{
 
 bool LHA::CheckLocation(int loc,const abstractMarking& Marking)const{
 	switch (loc){
-		case 0:	//s0
-         return (((Marking.P->_PL_RE_Queue1 +Marking.P->_PL_RE_Queue2 )<N) && ((Marking.P->_PL_RE_Queue1 +Marking.P->_PL_RE_Queue2 )>0));
+		case 2:	//lm
+         return (  Marking.P->_PL_RE_Queue1  +  Marking.P->_PL_RE_Queue2  == 0 ) || (  Marking.P->_PL_Puit  > 0 );
 
 		break;
-		case 2:	//sm
-         return ((Marking.P->_PL_RE_Queue1 +Marking.P->_PL_RE_Queue2 )==0);
+		case 1:	//lp
+         return (  Marking.P->_PL_RE_Queue1  +  Marking.P->_PL_RE_Queue2  == 50 ) && (  Marking.P->_PL_Puit  == 0 );
 
 		break;
-		case 1:	//sp
-         return ((Marking.P->_PL_RE_Queue1 +Marking.P->_PL_RE_Queue2 )==N);
+		case 0:	//l1
+         return (  Marking.P->_PL_RE_Queue1  +  Marking.P->_PL_RE_Queue2  > 0 ) && (  Marking.P->_PL_RE_Queue1  +  Marking.P->_PL_RE_Queue2  < 50 ) && (  Marking.P->_PL_Puit  == 0 );
 
 		break;
 	}
@@ -103,16 +104,16 @@ t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{
 
 void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBinding& b){
 	switch (ed){
-		case 2:	//
+		case 0:	//
 
 		break;
-		case 1:	//
+		case 2:	//
          {
 		Vars->x=0;
          }
 
 		break;
-		case 0:	//
+		case 1:	//
          {
 		Vars->x=1;
          }

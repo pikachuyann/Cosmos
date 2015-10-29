@@ -48,7 +48,7 @@ SimulatorBoundedRE::SimulatorBoundedRE(SPN_orig& N,LHA_orig& A,int m):SimulatorR
     }
     muprob = numSolv;
     delete EQ;
-	
+	static_cast<SPN_RE&>(N).initialize( muprob);
 	//numSolv->initVect(T);
 }
 
@@ -81,7 +81,7 @@ BatchR SimulatorBoundedRE::RunBatch(){
 		EQ = new EventsQueue(N);
 		reset();
 		
-        N.SPN_orig::InitialEventsQueue();
+        N.SPN_orig::InitialEventsQueue(*EQ,*this);
 
 		//AE = A.GetEnabled_A_Edges( N.Marking);
         
@@ -101,6 +101,7 @@ BatchR SimulatorBoundedRE::RunBatch(){
 		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
             
 			it->loadState(&N,&A,&EQ);
+            
             
 			//cerr << A.Likelihood << endl;
 			//cerr << "mu:\t" << mu() << " ->\t";
@@ -146,6 +147,10 @@ BatchR SimulatorBoundedRE::RunBatch(){
 }
 
 
+SPN_BoundedRE::SPN_BoundedRE(int& v,bool doubleIS):SPN_RE(v,doubleIS){
+    
+}
+
 double SPN_BoundedRE::mu(){
 	
 	vector<int> vect (muprob->S.begin()->first->size(),0);
@@ -166,7 +171,7 @@ double SPN_BoundedRE::mu(){
 	return(muprob->getMu(stateN));
 }
 
-void SPN_BoundedRE::update(double ctime,size_t,const abstractBinding&){
+void SPN_BoundedRE::update(double ctime,size_t,const abstractBinding&,EventsQueue &EQ, timeGen &TG){
 	Event F;
     //check if the current transition is still enabled
 	
@@ -178,29 +183,29 @@ void SPN_BoundedRE::update(double ctime,size_t,const abstractBinding&){
 		for(vector<abstractBinding>::const_iterator bindex = Transition[it].bindingList.begin() ;
 			bindex != Transition[it].bindingList.end() ; ++bindex){
 			if(IsEnabled(it, *bindex)){
-				if (EQ->isScheduled(it, bindex->id())) {
-					GenerateEvent(ctime,F, it ,*bindex );
-					EQ->replace(F);
+				if (EQ.isScheduled(it, bindex->id())) {
+					GenerateEvent(ctime,F, it ,*bindex, TG );
+					EQ.replace(F);
 				} else {
-					GenerateEvent(ctime,F, it ,*bindex );
-					EQ->insert(F);
+					GenerateEvent(ctime,F, it ,*bindex, TG );
+					EQ.insert(F);
 				}
 			}else{
-				if(EQ->isScheduled(it, bindex->id()))
-					EQ->remove(it,bindex->id());
+				if(EQ.isScheduled(it, bindex->id()))
+					EQ.remove(it,bindex->id());
 			}
 		}
 	}
 	
 	abstractBinding bpuit;
-    GenerateEvent(ctime,F, (SPN::tr-2),bpuit);
+    GenerateEvent(ctime,F, (SPN::tr-2),bpuit, TG);
 	if(!doubleIS_mode){
-		EQ->replace(F);
+		EQ.replace(F);
 	}
 	
-    GenerateEvent(ctime,F, (SPN::tr-1),bpuit);
+    GenerateEvent(ctime,F, (SPN::tr-1),bpuit, TG);
 	if(!doubleIS_mode){
-		EQ->replace(F);
+		EQ.replace(F);
 	}
 	
 };

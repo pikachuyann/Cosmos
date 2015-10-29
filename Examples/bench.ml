@@ -34,9 +34,10 @@ let benchlist = [
  ];;
 
 List.iter (fun (s,n) -> 
-  let cmd = Printf.sprintf "cd %s && ocaml %s bash %s" s (
-    match n with None->"test.ml" | Some c ->c) log in
-  ignore (Sys.command cmd)) benchlist;;
+   print_endline ("In directory "^s);
+   let cmd = Printf.sprintf "cd %s && ocaml %s bash %s" s (
+			      match n with None->"test.ml" | Some c ->c) log in
+   ignore (Sys.command cmd)) benchlist;;
 
 let (succ,failure) = read_log log in
 Printf.printf "Test finished: %i success and %i failure\n" (List.length succ)
