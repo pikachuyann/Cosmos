@@ -32,7 +32,7 @@
 #include "LHA.hpp"
 #include "LHA_orig.hpp"
 #include "NLHA.hpp"
-#include "spn.hpp"
+#include "spn_orig.hpp"
 #include "EventsQueue.hpp"
 #include "BatchR.hpp"
 #include "timeGen.hpp"
@@ -48,7 +48,7 @@
 
 class Simulator:public timeGen {
 public:
-	Simulator(LHA_orig&);
+	Simulator(SPN_orig&,LHA_orig&);
     //Simulator();
 	~Simulator();
 	
@@ -83,9 +83,6 @@ public:
     virtual BatchR RunBatch();
 
 protected:
-	
-	//! a Temporary event
-	Event F;
 
 	//! File stream to log value.
 	fstream logvalue;
@@ -106,7 +103,7 @@ protected:
 	size_t BatchSize;
 	
     
-	SPN N; //!The object representing the SPN
+	SPN_orig &N; //!The object representing the SPN
 	LHA_orig &A; //!The object representing the LHA
 	
     
@@ -138,16 +135,16 @@ protected:
 
     void printSedCmd();
 	
-	virtual void InitialEventsQueue(); //!initialize the event queue
+//	virtual void InitialEventsQueue(); //!initialize the event queue
 	
 	virtual void reset(); //! reset the simulator
 	
-	virtual void GenerateEvent(Event &,size_t,const abstractBinding&); //! generate a new event use Generate Time
+//	virtual void GenerateEvent(Event &,size_t,const abstractBinding&); //! generate a new event use Generate Time
 	
 	virtual void returnResultTrue();
 	
 	//! update value in the SPN after a transition
-	virtual void updateSPN(size_t,const abstractBinding& );
+//	virtual void updateSPN(size_t,const abstractBinding& );
 	
 	//! update the likelyhood for the Rare event case
 	virtual void updateLikelihood(size_t);
@@ -156,7 +153,7 @@ protected:
 	virtual bool transitionSink(size_t);
 	
 	//! return the parameters of a transition distribution
-	virtual void getParams(size_t, const abstractBinding&);
+//	virtual void getParams(size_t, const abstractBinding&);
 };
 
 
