@@ -4,14 +4,15 @@ using namespace std;
 #define PL_RE_Queue1_LP 0
 #define PL_RE_Queue2_LP 1
 #define PL_Puit_LP 2
-#define TR_rho0_RT 0
+#define TR_mu_RT 0
 #define TR_rho1_RT 1
 #define TR_rho2_RT 2
-#define TR_Puittrans_RT 3
+#define TR_selfloop_RT 3
+#define TR_Puittrans_RT 4
 
+const double mu=0.23;
 const double r=5;
-const double rho0=0.1;
-const double rho1=0.45;
+const double rho=0.385;
 const int _nb_Place_RE_Queue1=0;
 const int _nb_Place_RE_Queue2=1;
 const int _nb_Place_Puit=2;
@@ -127,22 +128,23 @@ int abstractBinding::idTotal()const{
 	 return 0;
 }
 static const int EMPTY_array[1]={-1};
-static const int PE_PossiblyEnabled_0[2]= {TR_rho1_RT, -1 }; /* rho0*/
+static const int PE_PossiblyEnabled_0[2]= {TR_rho1_RT, -1 }; /* mu*/
 static const int PE_PossiblyEnabled_1[2]= {TR_rho2_RT, -1 }; /* rho1*/
-const int* SPN::PossiblyEnabled[] = {PE_PossiblyEnabled_0, PE_PossiblyEnabled_1, EMPTY_array, EMPTY_array};
+const int* SPN::PossiblyEnabled[] = {PE_PossiblyEnabled_0, PE_PossiblyEnabled_1, EMPTY_array, EMPTY_array, EMPTY_array};
 
-const int* SPN::PossiblyDisabled[] = {EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
+const int* SPN::PossiblyDisabled[] = {EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
 
-static const int PE_FreeMarkDepT_0[2]= {TR_Puittrans_RT, -1 }; /* rho0*/
-static const int PE_FreeMarkDepT_1[2]= {TR_Puittrans_RT, -1 }; /* rho1*/
-static const int PE_FreeMarkDepT_2[2]= {TR_Puittrans_RT, -1 }; /* rho2*/
-static const int PE_FreeMarkDepT_3[2]= {TR_Puittrans_RT, -1 }; /* Puittrans*/
-const int* SPN::FreeMarkDepT[] = {PE_FreeMarkDepT_0, PE_FreeMarkDepT_1, PE_FreeMarkDepT_2, PE_FreeMarkDepT_3};
+static const int PE_FreeMarkDepT_0[3]= {TR_selfloop_RT, TR_Puittrans_RT, -1 }; /* mu*/
+static const int PE_FreeMarkDepT_1[3]= {TR_selfloop_RT, TR_Puittrans_RT, -1 }; /* rho1*/
+static const int PE_FreeMarkDepT_2[3]= {TR_selfloop_RT, TR_Puittrans_RT, -1 }; /* rho2*/
+static const int PE_FreeMarkDepT_3[3]= {TR_selfloop_RT, TR_Puittrans_RT, -1 }; /* selfloop*/
+static const int PE_FreeMarkDepT_4[3]= {TR_selfloop_RT, TR_Puittrans_RT, -1 }; /* Puittrans*/
+const int* SPN::FreeMarkDepT[] = {PE_FreeMarkDepT_0, PE_FreeMarkDepT_1, PE_FreeMarkDepT_2, PE_FreeMarkDepT_3, PE_FreeMarkDepT_4};
 
-static spn_trans TransArray[4] = { _trans(0,EXPONENTIAL,0,1, 0, "rho0"), _trans(1,EXPONENTIAL,0,1, 0, "rho1"), _trans(2,EXPONENTIAL,0,1, 0, "rho2"), _trans(3,EXPONENTIAL,1,1, 0, "Puittrans"),  }; 
+static spn_trans TransArray[5] = { _trans(0,EXPONENTIAL,0,1, 0, "mu"), _trans(1,EXPONENTIAL,0,1, 0, "rho1"), _trans(2,EXPONENTIAL,0,1, 0, "rho2"), _trans(3,EXPONENTIAL,1,1, 0, "selfloop"), _trans(4,EXPONENTIAL,1,1, 0, "Puittrans"),  }; 
 SPN::SPN():
-pl(3), tr(4) ,Transition(TransArray,TransArray +4),Place(3),ParamDistr(10),TransitionConditions(4,0){
-    Path ="tandemRE.grml";
+pl(3), tr(5) ,Transition(TransArray,TransArray +5),Place(3),ParamDistr(10),TransitionConditions(5,0){
+    Path ="tandem.gspn";
     Place[0].label =" RE_Queue1";
     Place[0].isTraced = 1;
     Place[1].label =" RE_Queue2";
@@ -168,7 +170,7 @@ bool SPN::IsEnabled(TR_PL_ID t, const abstractBinding &b)const{
 			if (!(contains(Marking.P->_PL_RE_Queue2 , 1))) return false;
 		return true;
 		break;
-		default:	//rho0,Puittrans,
+		default:	//mu,selfloop,Puittrans,
 
 		return true;
 		break;
@@ -179,12 +181,12 @@ void SPN::fire(TR_PL_ID t, const abstractBinding &b,REAL_TYPE time){
 	lastTransition = t;
 
 	switch (t){
-		case 3:	//Puittrans
+		case 4:	//Puittrans
 {
 			Marking.P->_PL_Puit += 1;
 	}
 		break;
-		case 0:	//rho0
+		case 0:	//mu
 {
 			Marking.P->_PL_RE_Queue1 += 1;
 	}
@@ -200,13 +202,20 @@ void SPN::fire(TR_PL_ID t, const abstractBinding &b,REAL_TYPE time){
 			Marking.P->_PL_RE_Queue2 -= 1;
 	}
 		break;
+		case 3:	//selfloop
+{
+	}
+		break;
 	}
 }
 
 void SPN::unfire(TR_PL_ID t, const abstractBinding &b){
 
 	switch (t){
-		case 3:	//Puittrans
+		case 3:	//selfloop
+
+		break;
+		case 4:	//Puittrans
     Marking.P->_PL_Puit -= 1;
 
 		break;
@@ -215,7 +224,7 @@ void SPN::unfire(TR_PL_ID t, const abstractBinding &b){
     Marking.P->_PL_RE_Queue2 -= 1;
 
 		break;
-		case 0:	//rho0
+		case 0:	//mu
     Marking.P->_PL_RE_Queue1 -= 1;
 
 		break;
@@ -246,21 +255,22 @@ void SPN::GetDistParameters(TR_PL_ID t, const abstractBinding &b)const{
 using namespace hybridVar;
 
 	switch (t){
-		case 3:	//Puittrans
+		case 0:	//mu
 	{
-		ParamDistr[0]= ( double ) 0 ;
+		ParamDistr[0]= ( double ) 0.23 ;
 	}
 
 		break;
-		case 0:	//rho0
+		case 1:	//rho1
+		case 2:	//rho2
 	{
-		ParamDistr[0]= ( double ) rho0 ;
+		ParamDistr[0]= ( double ) 0.385 ;
 	}
 
 		break;
-		default:	//rho1,rho2,
+		default:	//selfloop,Puittrans,
 	{
-		ParamDistr[0]= ( double ) rho1 ;
+		ParamDistr[0]= ( double ) 0 *  Marking.P->_PL_RE_Queue1  ;
 	}
 
 		break;
@@ -270,13 +280,13 @@ using namespace hybridVar;
 REAL_TYPE SPN::GetPriority(TR_PL_ID t, const abstractBinding &b)const{
 using namespace hybridVar;
 
-		return (double)1 ;
+		return (double)49 ;
 }
 
 REAL_TYPE SPN::GetWeight(TR_PL_ID t, const abstractBinding &b)const{
 using namespace hybridVar;
 
-		return (double)1 ;
+		return (double)49 ;
 }
 
 void SPN::Msimple(){

@@ -36,11 +36,9 @@ class SPN_orig : public SPN
 public:
     SPN_orig(int&);
 
-    virtual void initialize(EventsQueue *eq,timeGen *tg);
-
-    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b );
-    virtual void update(double ctime,size_t, const abstractBinding&);
-    virtual void InitialEventsQueue();
+    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &);
+    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &);
+    virtual void InitialEventsQueue(EventsQueue &,timeGen &);
 
     int &verbose;
 
@@ -48,8 +46,8 @@ protected:
     //! a Temporary event
     Event F;
 
-    EventsQueue* EQ;
-    timeGen* TG;
+    //EventsQueue* EQ;
+    //timeGen* TG;
 
 
 };

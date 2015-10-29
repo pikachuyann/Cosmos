@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
         }else if(str== "-RE2"){
             Nptr = new SPN_RE(verbose,true);
         }else if(str== "-BURE" || str== "-COBURE"){
-            Nptr = new SPN_RE(verbose,false);
+            Nptr = new SPN_BoundedRE(verbose,false);
         } else {
             Nptr = new SPN_orig(verbose);
         }

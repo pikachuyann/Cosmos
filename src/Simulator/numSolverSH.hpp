@@ -32,7 +32,7 @@ public:
 	void previousVect() override;
 	void stepVect() override;
 	void reset() override;
-	void switchOff();
+	void switchOff() override;
 	void printState() override;
     virtual double getMu(int)const override ;
 	boostmat::vector<double> getVect()  override;

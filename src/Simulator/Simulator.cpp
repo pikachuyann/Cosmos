@@ -44,7 +44,6 @@ using namespace std;
  */
 Simulator::Simulator(SPN_orig& spn,LHA_orig& automate):verbose(0),N(spn),A(automate){
 	EQ = new EventsQueue(N); //initialization of the event queue
-    N.initialize(EQ, this);
     logResult=false;
 	sampleTrace = 0.0;
 	Result.quantR.resize(A.FormulaVal.size());
@@ -236,7 +235,7 @@ bool Simulator::SimulateOneStep(){
 				returnResultTrue();
 				return false;
 			} else {
-				N.update(A.CurrentTime, E1.transition, E1.binding);
+                N.update(A.CurrentTime, E1.transition, E1.binding, *EQ,*this);
 			}
 		}
 	}
@@ -322,7 +321,7 @@ void Simulator::interactiveSimulation(){
 void Simulator::SimulateSinglePath() {
 
     reset();
-    N.InitialEventsQueue();
+    N.InitialEventsQueue(*EQ,*this);
     minInteractiveTime=0.0;
 	
 	if(logtrace.is_open())logtrace << "New Path"<< endl;
