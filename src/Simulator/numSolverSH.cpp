@@ -190,7 +190,7 @@ boostmat::vector<double> numSolverSH::getVect(){
 	}else return current_vect;
 }
 
-double numSolverSH::getMu(int i){
+double numSolverSH::getMu(int i)const{
 	if(u<0)return 1.0;
 	
 	if(is_previous){

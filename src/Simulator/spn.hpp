@@ -144,8 +144,7 @@ public:
 	std::vector <spn_place> Place;
 	
 	//! set the marking to the initial marking
-	void
-	reset();
+	void reset();
 	
 	//! The path of the file use to generate the implementation
 	std::string Path;
