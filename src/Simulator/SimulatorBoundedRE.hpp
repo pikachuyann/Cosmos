@@ -91,7 +91,7 @@ class SPN_BoundedRE: public SPN_RE{
 public:
     SPN_BoundedRE(int& v,bool doubleIS);
 
-    virtual void update(double ctime,size_t, const abstractBinding&) override;
+    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &, timeGen &) override;
     virtual void getParams(size_t, const abstractBinding&) override;
     virtual double mu() override;
     virtual double ComputeDistr(size_t i,const abstractBinding&, double origin_rate) override;

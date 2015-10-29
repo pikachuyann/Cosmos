@@ -41,8 +41,7 @@ SPN_RE::SPN_RE(int& v,bool doubleIS):SPN_orig(v),doubleIS_mode(doubleIS){
     rareEventEnabled=false;
 }
 
-void SPN_RE::initialize(EventsQueue *eq,timeGen *tg, stateSpace *muprob){
-    SPN_orig::initialize(eq, tg);
+void SPN_RE::initialize( stateSpace *muprob){
     this->muprob=muprob;
 }
 
@@ -53,13 +52,13 @@ SimulatorRE::SimulatorRE(SPN_orig& N,LHA_orig& A):Simulator(N,A) {
 void SimulatorRE::initVect(){
     muprob = new stateSpace();
 	muprob->inputVect();
-    static_cast<SPN_RE&>(N).initialize(EQ, this, muprob);
+    static_cast<SPN_RE&>(N).initialize(muprob);
 }
 
-void SPN_RE::InitialEventsQueue() {
+void SPN_RE::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
 	Rate_Sum = 0;
 	Origine_Rate_Sum = 0;
-	SPN_orig::InitialEventsQueue();
+	SPN_orig::InitialEventsQueue(EQ,TG);
 }
 
 void SimulatorRE::returnResultTrue(){
@@ -69,7 +68,7 @@ void SimulatorRE::returnResultTrue(){
 	if(verbose>3)cerr << "---------------\n TRUE: Likelyhood: "<< A.Likelihood <<" \n------\n";
 }
 
-void SPN_RE::update(double ctime,size_t t, const abstractBinding& b){
+void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue &EQ,timeGen &TG){
 	//If rareevent not require yet call the parent function
 	
 	if(!rareEventEnabled){
@@ -77,7 +76,7 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b){
 			rareEventEnabled = true;
 			//A.Likelihood = 1.0;
 		}else{
-			update(ctime, t, b);
+			update(ctime, t, b,EQ, TG);
 		return;
 		}
 	}
@@ -92,25 +91,25 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b){
         if(tr.Id != SPN::tr - 1){
 			for(const auto &bindex : tr.bindingList ){
 				if(IsEnabled(tr.Id, bindex)){
-					if (EQ->isScheduled(tr.Id, bindex.id())) {
-						GenerateEvent(ctime,F, tr.Id ,bindex );
-						EQ->replace(F);
+					if (EQ.isScheduled(tr.Id, bindex.id())) {
+						GenerateEvent(ctime,F, tr.Id ,bindex, TG );
+						EQ.replace(F);
 					} else {
-						GenerateEvent(ctime,F, tr.Id ,bindex );
-						EQ->insert(F);
+						GenerateEvent(ctime,F, tr.Id ,bindex, TG );
+						EQ.insert(F);
 					}
 				}else{
-					if(EQ->isScheduled(tr.Id, bindex.id()))
-						EQ->remove(tr.Id,bindex.id());
+					if(EQ.isScheduled(tr.Id, bindex.id()))
+						EQ.remove(tr.Id,bindex.id());
 				}
 			}
 		}
 	}
 	
 	abstractBinding bpuit;
-	GenerateEvent(ctime,F, (tr-1), bpuit);
+	GenerateEvent(ctime,F, (tr-1), bpuit,TG);
 	if(!doubleIS_mode){
-		EQ->replace(F);
+		EQ.replace(F);
 	}
 	
 	/*
@@ -164,12 +163,12 @@ bool SimulatorRE::transitionSink(size_t i){
  E.weight = 0.0;
  }*/
 
-void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b){
+void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b, timeGen &TG){
 	
     double t = ctime;
     if (Transition[Id].DistTypeIndex != IMMEDIATE) {
         getParams(Id, b);
-        t += TG->GenerateTime(Transition[Id].DistTypeIndex, ParamDistr);
+        t += TG.GenerateTime(Transition[Id].DistTypeIndex, ParamDistr);
 		
 		Rate_Table[Id] = ParamDistr[0];
 		Origine_Rate_Table[Id] = ParamDistr[1];
@@ -180,7 +179,7 @@ void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding
 	double w=0.0;
 	if (Transition[Id].DistTypeIndex > 2) {
 		ParamDistr[0]= GetWeight(Id,b);
-		w = TG->GenerateTime(EXPONENTIAL, ParamDistr);
+		w = TG.GenerateTime(EXPONENTIAL, ParamDistr);
 		//vector<double> wParam(1, N.GetWeight(Id));
 		//w = GenerateTime(2, wParam);
     }
@@ -205,7 +204,7 @@ void SimulatorRE::SimulateSinglePath() {
     auto &raenabled = static_cast<SPN_RE&>(N).rareEventEnabled;
 	raenabled = N.precondition(N.Marking);
     reset();
-	N.InitialEventsQueue();
+	N.InitialEventsQueue(*EQ,*this);
 	
 	if(logtrace.is_open())logtrace << "New Path"<< endl;
     
