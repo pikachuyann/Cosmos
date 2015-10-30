@@ -46,10 +46,6 @@ protected:
     //! a Temporary event
     Event F;
 
-    //EventsQueue* EQ;
-    //timeGen* TG;
-
-
 };
 
 #endif /* defined(__Cosmos__spn_orig__) */
