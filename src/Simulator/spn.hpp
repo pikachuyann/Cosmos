@@ -130,25 +130,57 @@ class SPN {
 public:
 	//! Initialize all the data
 	SPN();
-	
-	//! Number of places
-	const size_t pl;
-	//! Number of transitions
-	const size_t tr;
-	//! Current marking
-	abstractMarking Marking;
-	
-	//!contains all the transitions of the Petri net
+
+    //! Number of places
+    const size_t pl;
+    //! Number of transitions
+    const size_t tr;
+    //! Current marking
+    abstractMarking Marking;
+    
+    //!contains all the transitions of the Petri net
     std::vector<spn_trans> Transition;
-	//!contains all the places of the Petri net
-	std::vector <spn_place> Place;
-	
+    //!contains all the places of the Petri net
+    std::vector <spn_place> Place;
+
 	//! set the marking to the initial marking
 	void reset();
-	
-	//! The path of the file use to generate the implementation
-	std::string Path;
-	
+
+    /**
+     * \brief fire a given transition.
+     * The implementation of this function is generated
+     * at runtime.
+     * @param tr a transition of the SPN
+     * @param b a binding of the transition of the SPN
+     * @param time, the current time of the simulation, only used when link
+     * with external code.
+     */
+    void
+    fire(size_t tr,const abstractBinding& b, double time);
+    
+    /**
+     * \brief unfire a given transition.
+     * The implementation of this function is generated
+     * at runtime.
+     * This function is only used for rare event
+     * @param tr a transition of the SPN
+     * @param b a binding of the transition of the SPN
+     */
+    void unfire(size_t tr,const abstractBinding& b);
+
+    //------------------------- Rare Event -------------------------------------
+    std::vector <double> Rate_Table;
+    std::vector <double> Origine_Rate_Table;
+    double Rate_Sum;
+    double Origine_Rate_Sum;
+    std::vector <int> Msimpletab; //special places
+    void Msimple();
+    
+    void print_state(const std::vector<int>&);
+    void lumpingFun(const abstractMarking& ,std::vector<int>&);
+    bool precondition(const abstractMarking&);
+    //-------------------------/Rare Event -------------------------------------
+    
 	/**
 	 * \brief A vector use to store temporary parameters value.
 	 * This vector is used to to store parameter of distribution
@@ -157,19 +189,6 @@ public:
 	 * This is done to avoid allocating a new vector too frequently.
 	 */
 	mutable std::vector<double> ParamDistr;
-	
-	//------------------------- Rare Event -------------------------------------
-	std::vector <double> Rate_Table;
-	std::vector <double> Origine_Rate_Table;
-	double Rate_Sum;
-	double Origine_Rate_Sum;
-	std::vector <int> Msimpletab; //special places
-	
-	void Msimple();
-	void print_state(const std::vector<int>&);
-	void lumpingFun(const abstractMarking& ,std::vector<int>&);
-	bool precondition(const abstractMarking&);
-	//-------------------------/Rare Event -------------------------------------
 	
 	/**
 	 * \brief Check if a given transition is enabled.
@@ -180,41 +199,22 @@ public:
 	 */
 	bool
 	IsEnabled(size_t tr,const abstractBinding& b)const;
-	
-	/**
-	 * \brief fire a given transition.
-	 * The implementation of this function is generated
-	 * at runtime.
-	 * @param tr a transition of the SPN
-	 * @param b a binding of the transition of the SPN
-     * @param time, the current time of the simulation, only used when link
-     * with external code.
-	 */
-	void
-	fire(size_t tr,const abstractBinding& b, double time);
-	
-	/**
-	 * \brief unfire a given transition.
-	 * The implementation of this function is generated
-	 * at runtime.
-	 * This function is only used for rare event
-	 * @param tr a transition of the SPN
-	 * @param b a binding of the transition of the SPN
-	 */
-	void unfire(size_t tr,const abstractBinding& b);
-	
-	
+    
+    
+    /**
+     * \brief compute the the parameters value of a given
+     * transition.
+     * The implementation of this function is generated
+     * at runtime.
+     * @param tr a transition of the SPN
+     * @param b a binding of the transition of the SPN
+     */
+    void GetDistParameters(size_t tr, const abstractBinding& b)const;
+    
+    
+protected:
+    
 	void setConditionsVector();
-	
-	/**
-	 * \brief compute the the parameters value of a given
-	 * transition.
-	 * The implementation of this function is generated
-	 * at runtime.
-	 * @param tr a transition of the SPN
-	 * @param b a binding of the transition of the SPN
-	 */
-	void GetDistParameters(size_t tr, const abstractBinding& b)const;
 	
 	//! compute the the weight value of a given transition
 	double GetWeight(size_t, const abstractBinding&)const;
@@ -238,7 +238,11 @@ public:
     const abstractBinding* nextPossiblyDisabledBinding(size_t tr,const abstractBinding& b,size_t*) const;
 
 private:
-
+    
+    //! The path of the file use to generate the implementation
+    std::string Path;
+    
+    
 	//------------------------- On the fly enabling disabling transition--------
 	std::vector<int> TransitionConditions;
 	std::vector<int> initTransitionConditions;
