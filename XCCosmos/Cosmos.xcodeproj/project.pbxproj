@@ -3271,11 +3271,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-<<<<<<< HEAD
 				LastUpgradeCheck = 0700;
-=======
-				LastUpgradeCheck = 0710;
->>>>>>> SplitSPN
 				TargetAttributes = {
 					03BBD5EE1A80D0D700492779 = {
 						CreatedOnToolsVersion = 6.1.1;

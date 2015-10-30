@@ -153,7 +153,7 @@ bool Simulator::SimulateOneStep(){
     //If there is no enabled transition in the Petri net
     //try to reach an accepting state by using autonomous edge of
     //the automata refuse the simulation otherwise.
-	if ((*EQ).isEmpty()) {
+	if (EQ->isEmpty()) {
 		while (AE.Index>-1) {
             if(verbose>3){
 				cerr << "Autonomous transition with Empty Queue:";
