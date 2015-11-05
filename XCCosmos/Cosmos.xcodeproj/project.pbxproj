@@ -34,6 +34,7 @@
 		0336B7F9198A3BF30043EFC6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D7198A3BF30043EFC6 /* main.cpp */; };
 		0336B7FA198A3BF30043EFC6 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D8198A3BF30043EFC6 /* Makefile */; };
 		0336B7FB198A3BF30043EFC6 /* readPlast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D9198A3BF30043EFC6 /* readPlast.cpp */; };
+		03541DD71BE7B7A9005741C6 /* Gspn-Grml-Output.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */; };
 		035EBAB418FFD70F00B73DBF /* expressionStruct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035EBAB218FFD70F00B73DBF /* expressionStruct.cpp */; };
 		0365553A18292D10001B5947 /* foxglynn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0365553818292D10001B5947 /* foxglynn.cpp */; };
 		0365553B18292D10001B5947 /* foxglynn.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0365553918292D10001B5947 /* foxglynn.hpp */; };
@@ -303,6 +304,8 @@
 		0336B7DA198A3BF30043EFC6 /* readPlast.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = readPlast.hpp; sourceTree = "<group>"; };
 		0341401C15AEF45E0009FEFC /* POMDP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = POMDP; sourceTree = BUILT_PRODUCTS_DIR; };
 		034509A616A80AC8002088B3 /* libClientSim.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClientSim.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Grml-Output.cpp"; sourceTree = "<group>"; };
+		03541DD61BE7B7A9005741C6 /* Gspn-Grml-Output.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Grml-Output.hpp"; sourceTree = "<group>"; };
 		035EBAB218FFD70F00B73DBF /* expressionStruct.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = expressionStruct.cpp; sourceTree = "<group>"; };
 		035EBAB318FFD70F00B73DBF /* expressionStruct.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = expressionStruct.hpp; sourceTree = "<group>"; };
 		0365553818292D10001B5947 /* foxglynn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = foxglynn.cpp; sourceTree = "<group>"; };
@@ -1241,6 +1244,8 @@
 				03E43E1E1AE1027300E9A2BF /* Gspn-Writer-Color.hpp */,
 				03A5DCFA1B273A79003F470A /* Gspn-model.cpp */,
 				03A5DCFB1B273A79003F470A /* Gspn-model.hpp */,
+				03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */,
+				03541DD61BE7B7A9005741C6 /* Gspn-Grml-Output.hpp */,
 			);
 			path = GspnParser;
 			sourceTree = "<group>";
@@ -3377,6 +3382,7 @@
 			files = (
 				0381D5451B905FFC00D0AC20 /* Eval-parser.cc in Sources */,
 				0381D5461B905FFC00D0AC20 /* Eval-scanner.cc in Sources */,
+				03541DD71BE7B7A9005741C6 /* Gspn-Grml-Output.cpp in Sources */,
 				0381D5471B90600000D0AC20 /* Gspn-parser.cc in Sources */,
 				0381D5481B90600000D0AC20 /* Gspn-scanner.cc in Sources */,
 				0381D5491B90600500D0AC20 /* Lha-parser.cc in Sources */,

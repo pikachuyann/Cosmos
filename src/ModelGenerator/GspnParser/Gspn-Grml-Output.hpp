@@ -20,88 +20,32 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file expressionStruct.hpp                                                   *
- * Created by Benoit Barbot on 17/04/14.                                       *
+ * file Gspn-Grml-Output.hpp                                                   *
+ * Created by Benoit Barbot on 02/11/2015.                                     *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__expressionStruct__
-#define __Cosmos__expressionStruct__
+#ifndef Gspn_Grml_Output_hpp
+#define Gspn_Grml_Output_hpp
 
-#include <iostream>
-#include <memory>
-#include <map>
-#include <set>
+#include <stdio.h>
 
-enum expType {
-    Empty,
-    UnParsed,
+#include "Gspn-model.hpp"
+#include "Gspn-Reader.hpp"
 
-    Bool,
-    Int,
-    Real,
-    PlaceName,
-    Constant,
-
-    Ceil,
-    Floor,
-    Exp,
-
-    Plus,
-    Minus,
-    Times,
-    Div,
-    Min,
-    Max,
-    Pow,
-
-    Neg,
-    And,Or,
-    Eq, Neq,
-    Leq,Sl,
-    Geq,SG,
-
-    Var,Lambda,App,ListContinuation
-};
-
-class expr{
+class GspnGrmlOutput: public GspnType {
+    
 public:
-    expType t;
-    bool boolVal;
-    int intVal;
-    double realVal;
-    std::string stringVal;
-    std::shared_ptr<expr> lhs;
-    std::shared_ptr<expr> rhs;
-
-    expr():t(Int),intVal(0),realVal(0.0){};
-    expr(const std::string &p):t(UnParsed),intVal(0),realVal(0.0),stringVal(p){};
-    expr(bool b):t(Bool),boolVal(b){};
-    expr(int i):t(Int),intVal(i),realVal(0.0){};
-    expr(double d):t(Real),intVal(0),realVal(d){};
-
-    expr(expType et,const std::string &p):t(et),intVal(0),realVal(0.0),stringVal(p){};
-    expr(expType et,expr &l,expr &r):t(et),intVal(0),realVal(0.0),
-    lhs(std::make_shared<expr>(l)),rhs(std::make_shared<expr>(r)){};
-
-    bool empty()const;
-    bool is_concrete()const;
-    bool is_markDep()const;
-    void get_places(std::set<std::string>&)const;
-    void eval(const std::map<std::string,int>&,const std::map<std::string,double>&);
-    void eval();
-    void printXML(std::ostream&) const;
+    GspnGrmlOutput(GspnType& g):GspnType(g){};
     
-    friend std::ostream& operator<<(std::ostream& os, const expr& e);
-    
+    void print(std::ostream&);
 private:
-    double get_real()const;
-    expType mix(const expr &l, const expr &r)const;
-
+    void printPlace(std::ostream&,const place &);
+    void printDistribution(std::ostream&,const Distribution &);
+    void printTransition(std::ostream&,const transition &);
+    void printToken(ostream& os, const coloredToken& c, size_t)const;
+    void printArc(ostream& os, const pair<size_t,size_t> &p, const arc& a,bool,size_t);
 };
 
 
-
-
-#endif /* defined(__Cosmos__expressionStruct__) */
-
+#endif /* Gspn_Grml_Output_hpp */

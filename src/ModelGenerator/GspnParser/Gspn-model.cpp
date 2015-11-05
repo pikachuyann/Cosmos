@@ -41,41 +41,6 @@ void searchreplace(const string &in,const string &motif,const string &rep,string
 }
 
 
-std::ostream& operator<<(std::ostream& os, const place& obj){
-    os << "place " << obj.name << "(" << obj.id << "){" << endl;
-    os << "\tmarking:" << obj.Marking << endl;
-    return os;
-}
-
-
-std::ostream& operator<<(std::ostream& os, const ProbabiliteDistribution& obj){
-    os << obj.name << "(";
-    for( const auto &e : obj.Param){
-        os << e << ",";
-    }
-    os << ")";
-
-    return os;
-}
-
-std::ostream& operator<<(std::ostream& os, const transition& obj){
-    os << "transition " << obj.label << "(" << obj.id << "){" << endl;
-    os << "\tdistribution:" << obj.dist << endl;
-    os << "\tpriority:" << obj.priority << endl;
-    os << "\tweight:" << obj.weight << endl << "}" << endl;
-    return os;
-}
-
-std::ostream& operator<<(std::ostream& os, const userDefineDistribution& obj){
-    os << "UserDefineDistribution " << obj.name << "{" << endl;
-    os << "\tvar:" << obj.var << endl;
-    os << "\tcdf:" << obj.cdf << endl;
-    os << "\tpdf:" << obj.pdf << endl;
-    os << "\tlowerBound:" << obj.lowerBound << endl << "}" << endl;
-    return os;
-}
-
-
 void GspnType::iterateDom(const string &s,const string &sop, const string &sclos ,const string &s2,const string &sop2, const string &sclos2 ,const colorDomain & cd, size_t prof,function<void (const string&,const string&)> func){
     if(prof == cd.colorClassIndex.size() ){func(s,s2);}
     else{
@@ -124,4 +89,60 @@ void GspnType::iterateVars(vector<color> &v,const set<size_t> &vd, size_t prof,f
         }
     }
 }
+
+
+size_t GspnType::get_uid(const string &str){
+    //cout << "debug:\t" << str;
+    if(uid.count(str)>0){
+        //cout << " -> " << uid[str] << endl;
+        return uid[str];
+    }
+    size_t it = uid.size();
+    uid[str] = it;
+    //cout << " -> " << uid[str] << endl;
+    return it;
+}
+
+size_t GspnType::new_uid(const string &str){
+    const auto i = uid.size();
+    return get_uid(str+"U"+ to_string(i));
+}
+
+namespace textOutput{
+    std::ostream& operator<<(std::ostream& os, const place& obj){
+        os << "place " << obj.name << "(" << obj.id << "){" << endl;
+        os << "\tmarking:" << obj.Marking << endl;
+        return os;
+    }
+    
+    
+    std::ostream& operator<<(std::ostream& os, const ProbabiliteDistribution& obj){
+        os << obj.name << "(";
+        for( const auto &e : obj.Param){
+            os << e << ",";
+        }
+        os << ")";
+        
+        return os;
+    }
+    
+    std::ostream& operator<<(std::ostream& os, const transition& obj){
+        os << "transition " << obj.label << "(" << obj.id << "){" << endl;
+        os << "\tdistribution:" << obj.dist << endl;
+        os << "\tpriority:" << obj.priority << endl;
+        os << "\tweight:" << obj.weight << endl << "}" << endl;
+        return os;
+    }
+    
+    std::ostream& operator<<(std::ostream& os, const userDefineDistribution& obj){
+        os << "UserDefineDistribution " << obj.name << "{" << endl;
+        os << "\tvar:" << obj.var << endl;
+        os << "\tcdf:" << obj.cdf << endl;
+        os << "\tpdf:" << obj.pdf << endl;
+        os << "\tlowerBound:" << obj.lowerBound << endl << "}" << endl;
+        return os;
+    }
+}
+
+
 
