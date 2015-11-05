@@ -50,6 +50,7 @@
 Eval Evaluate_gml;
 
 using namespace std;
+using namespace textOutput;
 
 gmlinputexception gmlioexc;
 
@@ -215,9 +216,7 @@ void MyModelHandler::eval_tokenProfileArc(coloredToken& tok, bool &markingdepend
             if (*it2 == "occurs") {
                 const auto e = eval_expr(it2.begin());
                 markingdependant |= e.is_markDep();
-                stringstream ss;
-                ss << e;
-                tok.mult = ss.str();
+                tok.mult = e;
             }
             if (*it2 == "tokenProfile") {
                 if ((P.verbose - 3) > 1)cout << *it2 << endl;
@@ -532,6 +531,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                                 intBound = find(tclasstypeenum.begin(), tclasstypeenum.end(), "higherBound");
                                 high = eval_intFormula(intBound.begin());
 
+                                cc.intIntervalName = cc.name+"_IC_";
                                 for (int i = low; i <= high; i++) {
                                     stringstream ss;
                                     ss << cc.name << "_IC_" << i;

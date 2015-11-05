@@ -52,8 +52,6 @@ struct ProbabiliteDistribution {
 };
 typedef struct ProbabiliteDistribution Distribution;
 
-std::ostream& operator<<(std::ostream& os, const ProbabiliteDistribution& obj);
-
 struct userDefineDistribution{
     std::string name;
     std::string var;
@@ -63,9 +61,6 @@ struct userDefineDistribution{
     std::string upperBound;
     size_t nbparam;
 };
-
-std::ostream& operator<<(std::ostream& os, const userDefineDistribution& obj);
-
 
 struct color {
     std::string name;
@@ -78,6 +73,7 @@ struct colorClass {
     std::string name;
     bool isCircular;
     std::vector<color> colors;
+    std::string intIntervalName;
     inline std::string cname()const {
         return name+ "_Color_Classe";
     }
@@ -125,14 +121,14 @@ struct hybridVariable {
 };
 
 struct coloredToken {
-    std::string mult;
+    expr mult;
     std::vector<size_t> field;
     std::vector<varType> Flags;
     std::vector<int> varIncrement;
     bool hasAll;
     coloredToken():hasAll(false){};
     coloredToken(std::string st):mult(st),hasAll(false){};
-    coloredToken(int i):mult(std::to_string(i)),hasAll(false){};
+    coloredToken(int i):mult(i),hasAll(false){};
 };
 
 struct transition {
@@ -156,7 +152,6 @@ struct transition {
     markingDependant(md),nbServers(1),ageMemory(false){};
 };
 
-std::ostream& operator<<(std::ostream& os, const transition& obj);
 
 struct place {
     size_t id;
@@ -164,10 +159,9 @@ struct place {
     bool isTraced;
     size_t colorDom;
     std::vector<coloredToken> initMarking;
-    std::string Marking;
+    expr Marking;
     place(){ colorDom = UNCOLORED_DOMAIN; isTraced = true; }
 };
-std::ostream& operator<<(std::ostream& os, const place& obj);
 
 struct arc {
     arc(size_t v):isEmpty(false),isMarkDep(false),isColored(false),intVal(v){};
@@ -184,6 +178,7 @@ struct arc {
     std::vector<coloredToken> coloredVal;
 };
 
+//first is transition, second is place.
 struct classcomp {
     bool operator() (const std::pair<size_t,size_t> &lhs,const std::pair<size_t,size_t> &rhs) const
     {
@@ -195,6 +190,13 @@ struct classcomp {
 };
 
 typedef std::map< std::pair<size_t,size_t>, arc, classcomp>  arcStore;
+
+namespace textOutput {
+    std::ostream& operator<<(std::ostream& os, const ProbabiliteDistribution& obj);
+    std::ostream& operator<<(std::ostream& os, const userDefineDistribution& obj);
+    std::ostream& operator<<(std::ostream& os, const transition& obj);
+    std::ostream& operator<<(std::ostream& os, const place& obj);
+}
 
 struct GspnType {
     size_t tr;
@@ -245,6 +247,11 @@ struct GspnType {
 
     void iterateVars(const std::string &s,const std::string &sop, const std::string &sclos ,const std::set<size_t> &varDom, size_t prof,std::function<void (const std::string&)> func);
     void iterateVars(std::vector<color> &v, const std::set<size_t> &varDom, size_t prof,std::function<void (const std::vector<color>&)> func);
+
+protected:
+    std::map<std::string,size_t> uid;
+    size_t get_uid(const std::string &str);
+    size_t new_uid(const std::string &str);
 };
 
 void searchreplace(const std::string &in,const std::string &motif,const std::string &rep,std::string &out);

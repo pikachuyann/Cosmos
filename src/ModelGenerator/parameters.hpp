@@ -71,6 +71,7 @@ enum Poption {
     CO_grml_input,
     CO_alligator_mode,
     CO_unfold,
+    CO_output_model,
     CO_HASL_formula,
     CO_njob,
     CO_gppcmd,
@@ -155,6 +156,7 @@ struct parameters {
 
     bool alligatorMode;
     std::string unfold;
+    std::string outputModel;
     bool isTTY;
     int terminalWidth;
 

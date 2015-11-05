@@ -170,6 +170,7 @@ void parameters::usage() {
     cout << "\t-g,--grmlinput \tuse gml file format for input file" << endl;
     cout << "\t--alligator-mode \toutput easy to parse result" << endl;
     cout << "\t--unfold arg \tUnfold the GSPN given as input" << endl;
+    cout << "\t--output-model arg \tReturn the GSPN file given as input" << endl;
     cout << "\t--count-transition \tAdd a Hasl formula for wich count the number of time each transition occurs" << endl;
     cout << "\t--tmp-path arg \tPath to the temporary directory by default ./tmp/" << endl;
     cout << "\t--bin-path arg \tPath to the binary of cosmos (guess automatically)" << endl;
@@ -268,6 +269,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
 
             /* Miscellaneous options */
             {"unfold",      required_argument, 0, CO_unfold},
+            {"output-model", required_argument,0, CO_output_model},
             {"HASL-formula", required_argument, 0, CO_HASL_formula},
             {"HASL-expression", required_argument, 0, CO_HASL_formula},
             {"njob",        required_argument, 0, CO_njob},
@@ -374,6 +376,8 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 break;
 
             case CO_unfold:unfold = optarg;
+                break;
+            case CO_output_model:outputModel =optarg;
                 break;
 
             case CO_level:Level = atof(optarg);
