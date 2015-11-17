@@ -274,8 +274,8 @@ let simule n n2 r mu rho batch =
 
 
 
-(*
-simule 1 50 5;;
+
+(*simule 1 50 5;;
 simule 2 50 5;;
 simule 3 50 5;;
 simule 4 50 5;;
@@ -286,15 +286,13 @@ simule 8 50 5;;
 simule 9 50 5;;
 simule 10 50 5;;
 *)
-(*
+
 assert (Array.length Sys.argv>3);;
 let n = int_of_string Sys.argv.(1);;
 let n2 = int_of_string Sys.argv.(2);;
 let r = int_of_string Sys.argv.(3);;
 assert(n>=1);;
-*)
-(*
-generate n n2 r 0.05 (fun _-> 0.45);;
 
+generate n n2 r 0.05 (fun _-> 0.45);;
 simule n n2 r 0.01 (fun _-> 0.11);;
-*)
+
