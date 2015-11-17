@@ -4,8 +4,8 @@
 ctmc
 
 // constants
-const int N1; // number of Na molecules
-const int N2; // number of Cl molecules
+const int N1 =5 ; // number of Na molecules
+const int N2 = 100; // number of Cl molecules
 
 // Na and Na+ module
 module na

@@ -709,6 +709,8 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     cerr << "Unknown Domain '" << Pldomain << "'" << endl;
                 else p.colorDom = colord;
 
+            } else if (*it2 == "bound") {
+                
             } else throw (gmlioexc);
 
         }

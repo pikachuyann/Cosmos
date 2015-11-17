@@ -133,9 +133,11 @@ let remove_erlang (net:spt) =
       end) net.Net.inhibArc;
   | _ ->() ) net.Net.transition;
 
-  let transn2 = Data.map net2.Net.transition (fun (z,we,pr) -> match z with
-      Erl(n,lamb) -> (Imm,we,pr)
-    | _ -> (z,we,pr)) in
+  let transn2 =
+    net2.Net.transition
+    |> Data.map (fun name (z,we,pr) -> match z with
+      Erl(n,lamb) -> (name,(Imm,we,pr))
+    | _ -> (name,(z,we,pr))) in
   {net2 with Net.transition= transn2}
 
 let add_reward_struct (net:spt) =
@@ -147,3 +149,54 @@ let add_reward_struct (net:spt) =
   end
   )
     net.Net.transition
+    
+let remove_inhibitor (net:spt) =
+  let place2 = Data.copy net.place in
+  net.place
+  |> Data.filter (fun x (_,bm) -> bm <> None)
+  |> Data.map (fun name (im,bm) ->
+	       match bm with
+		 None -> failwith "Not Possible"
+	       | Some b ->
+		  (("A_"^name),(eval (Minus (b,im)),bm)))
+  |> Data.iter (fun (x,y) -> Data.add (x,y) place2);
+
+  let inArc2 = Data.copy net.inArc in
+  let outArc2 = Data.copy net.outArc in
+  net.place |> Data.iteri (fun p (namep,(_,bmo)) ->
+	begin match bmo with 
+	 | Some bm ->
+	let p2 = Data.index place2 ("A_"^namep) in
+	net.transition |> Data.iteri (fun t (namet,_) ->
+	    let inval =
+	      net.inArc
+	      |> Data.filter (fun _ (_,p3,t3) -> t3=t && p3=p) 
+	      |> Data.fold (fun v1 (_,(v2,_,_)) -> Plus (v1,v2)) (Int 0)
+	      |> eval
+	    and outval =
+ 	      net.outArc
+	      |> Data.filter (fun _ (_,t3,p3) -> t3=t && p3=p) 
+	      |> Data.fold (fun v1 (_,(v2,_,_)) -> Plus (v1,v2)) (Int 0)
+	      |> eval
+	    and inhibval =
+	      net.inhibArc
+	      |> Data.filter (fun _ (_,p3,t3) -> t3=t && p3=p) 
+	      |> Data.fold (fun v1 (_,(v2,_,_)) -> Plus (v1,v2)) (Int 0)
+	      |> eval in
+	    let v2 = (if inhibval<>Int 0 then (Plus ((Int 1),(Minus (bm,inhibval))))
+		      else Int 0 ) in
+	    let v3 = Plus (Minus (inval,outval),v2) in 
+	    let v4 = eval (v3) in
+	    if( v2 <> Int (0) ) then Data.add ((),(v2,p2,t)) inArc2;
+	    if( v4 <> Int 0 ) then Data.add ((),(v4,t,p2)) outArc2;
+				     )
+	 | None -> ()
+	end
+			  );
+
+  { def = net.def;
+    place = place2;
+    transition = Data.copy net.transition;
+    inArc = inArc2;
+    outArc = outArc2;
+    inhibArc = Data.create ()}  

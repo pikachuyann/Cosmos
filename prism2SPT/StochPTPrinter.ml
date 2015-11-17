@@ -294,7 +294,9 @@ let print_spt_marcie fpath net =
   | Some fv -> Printf.fprintf f "\tdouble %s=%a;\n" s printH_expr fv) lcd;
 
   output_string f "places:\n";
-  Data.iter (fun (s,(m,_)) ->Printf.fprintf f "\t%s = %a;\n" s printH_expr m) net.Net.place;
+  Data.iter (fun (s,(m,bo)) ->
+	     Printf.fprintf f "\t%s = %a;\n" s printH_expr m
+	    ) net.Net.place;
 
   output_string f "\ntransitions:\n";
   output_string f "\tstochastic:\n";
