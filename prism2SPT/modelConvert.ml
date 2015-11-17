@@ -9,7 +9,7 @@ let typeFormat = ref Prism
 let outputFormat = ref [Dot;Marcie]
 let const_file = ref ""
 let verbose = ref 1
-
+let inHibitor = ref true
 
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
@@ -28,6 +28,7 @@ let _ =
 	     "--stoch",Arg.Set SimulinkType.modelStoch,"Use probabilistic delay";
 	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
 	     "--no-imm",Arg.Set SimulinkType.doremoveImm,"Remove Instantaneous transition in prims model";
+	     "--no-inhib",Arg.Clear inHibitor,"Remove inhibitor arcs";
 	     "--erlang-step",Arg.Set_int SimulinkTrans.erlangstep,"Number of erlang step for stochastic model";
 	     "-v",Arg.Set_int verbose,"Set verbose level default 1";
 	     "--add-reward",Arg.Set SimulinkType.add_reward, "Add reward transition to each non immediate transition";
@@ -69,8 +70,9 @@ let _ =
   | Prism -> 
     let s = Printf.sprintf "prism %s -exportprism %s.expanded  -nobuild > /dev/null" !inname !inname in
     Printf.printf "Using prism to expand file :%s\n" s;
-    ignore @@ Sys.command s;
-    inname := !inname ^ ".expanded";
+    if( Sys.command s = 0) then
+      inname := !inname ^ ".expanded"
+    else Printf.printf "Fail to start prism to expand the file\n";
     input := open_in !inname;
     Generator.read_prism !input !inname
   | Pnml ->
@@ -128,7 +130,8 @@ let _ =
   | _ -> failwith "Output format not yet supported" end
     |< (fun _-> print_endline "Finish parsing, start transformation")
     |> (fun x-> if !SimulinkType.useerlang then x else StochasticPetriNet.remove_erlang x)
-    (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
+  (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
+  |> (fun x -> if !inHibitor then x else StochasticPetriNet.remove_inhibitor x)
     |> (fun net -> 
       print_endline "Finish transformation, start writing";
       List.iter (function 
@@ -140,7 +143,9 @@ let _ =
       | GrML ->
 	StochPTPrinter.print_spt ((!output)^".grml") net
       | Pnml ->
-	StochPTPrinter.print_pnml ((!output)^".pnml") net
+	 net
+	 |> StochasticPetriNet.remove_inhibitor
+	 |> StochPTPrinter.print_pnml ((!output)^".pnml")
       | Marcie -> 
 	StochPTPrinter.print_spt_marcie ((!output)^".andl") net
       | Prism when !typeFormat = Simulink -> ()
