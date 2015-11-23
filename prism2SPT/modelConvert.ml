@@ -78,11 +78,11 @@ let _ =
   | Pnml ->
     IFNDEF HAS_XML THEN
       failwith "XML library required to read PNML" 
-      ELSE 
-  let xmlf = Pnmlparser.tree_of_pnml !inname in
-  let net = PetriNet.Net.create () in
-  Pnmlparser.net_of_tree net xmlf;
-  net
+      ELSE
+      let xmlf = Pnmlparser.tree_of_pnml !inname in
+	  let net = PetriNet.Net.create () in
+	  Pnmlparser.net_of_tree net xmlf;
+	  net
     ENDIF
   | GrML ->
     IFNDEF HAS_XML THEN
@@ -101,13 +101,14 @@ let _ =
       ELSE
       begin 
 	Zip.open_in !inname
-	|> (fun z -> Zip.find_entry z "simulink/blockdiagram.xml"
-	       |> Zip.read_entry z)
-	|> Xml.parse_string 
+	|> (fun z -> (
+	    try Zip.find_entry z "simulink/stateflow.xml"
+	    with Not_found -> Zip.find_entry z "simulink/blockdiagram.xml")
+		     |> Zip.read_entry z)
+	|> Xml.parse_string
 	|> (Simulinkparser.modulist_of_tree [])
 	|> SimulinkTrans.expand_trans
 	|> List.map SimulinkTrans.flatten_module
-
 (*	|> List.map SimulinkTrans.flatten_state_ssid*)
 
 	|< List.iter (SimulinkType.print_module !logout)
@@ -144,7 +145,6 @@ let _ =
 	StochPTPrinter.print_spt ((!output)^".grml") net
       | Pnml ->
 	 net
-	 |> StochasticPetriNet.remove_inhibitor
 	 |> StochPTPrinter.print_pnml ((!output)^".pnml")
       | Marcie -> 
 	StochPTPrinter.print_spt_marcie ((!output)^".andl") net
