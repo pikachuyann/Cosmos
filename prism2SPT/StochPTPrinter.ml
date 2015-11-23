@@ -212,9 +212,8 @@ let print_spt fpath (net:spt)  =
   Printf.fprintf f "</model>";
   close_out f;;
 
-let print_pnml_arc f id source target valuation inhib =
-  if inhib then failwith "inhibitor Arc not supported yet for PNML";
-  Printf.fprintf f "      <arc id=\"%i\" source=\"%i\" target=\"%i\">
+let print_pnml_arc f id source target valuation =
+  Printf.fprintf f "      <arc id=\"A_%i\" source=\"PT_%i\" target=\"PT_%i\">
         <inscription><text>%a</text></inscription>
       </arc>\n" id source target printH_expr valuation
 
@@ -222,28 +221,27 @@ let print_pnml fpath (net:spt)  =
   let f = open_out fpath in
   Printf.fprintf f "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <pnml xmlns=\"http://www.pnml.org/version-2009/grammar/pnml\">
-  <net id=\"Generate-By-Cosmos-0001\" type=\"http://www.pnml.org/version-2009/grammar/ptnet\">
+  <net id=\"Generated-By-Cosmos-0001\" type=\"http://www.pnml.org/version-2009/grammar/ptnet\">
     <page id=\"page0\">
       <name><text>DefaultPage</text></name>\n";
   let np = Data.fold (fun i (s,(m,_)) ->
-    Printf.fprintf f "      <place id=\"%i\">
+    Printf.fprintf f "      <place id=\"PT_%i\">
         <name><text>%s</text></name>
         <initialMarking><text>%a</text></initialMarking>
       </place>\n" i s printH_expr m;
     i+1) 0 net.Net.place in
   let nt = Data.fold (fun i (s,_) ->
-    Printf.fprintf f "      <transition id=\"%i\">
+    Printf.fprintf f "      <transition id=\"PT_%i\">
         <name><text>%s</text></name>
       </transition>\n" i s;
     i+1) np net.Net.transition in
-  let nia = Data.fold (fun i (_,(v,p,t)) ->print_pnml_arc f i (Obj.magic p) ((Obj.magic t)+np) v false; i+1) nt net.Net.inArc in
-  let nio = Data.fold (fun i (_,(v,t,p)) ->print_pnml_arc f i ((Obj.magic t)+np) (Obj.magic p) v false; i+1) nia net.Net.outArc in
-  let _ = Data.fold (fun i (_,(v,p,t)) ->print_pnml_arc f i (Obj.magic p) ((Obj.magic t)+np) v true; i+1) nio net.Net.inhibArc in
+  let nia = Data.fold (fun i (_,(v,p,t)) ->print_pnml_arc f i (Obj.magic p) ((Obj.magic t)+np) v; i+1) nt net.Net.inArc in
+  let nio = Data.fold (fun i (_,(v,t,p)) ->print_pnml_arc f i ((Obj.magic t)+np) (Obj.magic p) v; i+1) nia net.Net.outArc in
+  let _ = Data.fold (fun _ _ ->failwith "inhibitor Arc not supported in PNML";) nio net.Net.inhibArc in
   ();
   Printf.fprintf f "    </page>
   </net>
-</pnml>
-<xml>";
+</pnml>";
   close_out f;;
 
 let rec inline_ls d = function

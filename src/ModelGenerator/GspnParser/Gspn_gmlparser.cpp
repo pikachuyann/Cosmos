@@ -890,7 +890,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
 
             //Add a place
             place p;
-            p.Marking = "0";
+            p.Marking = expr(0);
             coloredToken ctok(0);
             p.initMarking=vector<coloredToken>(1, ctok);
 
