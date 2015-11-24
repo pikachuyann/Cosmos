@@ -93,7 +93,7 @@ shared_ptr<GspnType> ParseGSPN() {
                 }
             }
             for (size_t i = 0; i < gReader.spn->tr; i++) {
-                if ( P.tracedPlace.count(gReader.spn->transitionStruct[i].label)>0 ) {
+                if ( P.tracedPlace.count(gReader.spn->transitionStruct[i].name)>0 ) {
                     gReader.spn->transitionStruct[i].isTraced = true;
                 } else {
                     gReader.spn->transitionStruct[i].isTraced = false;
@@ -545,7 +545,7 @@ void generateLoopLHA(GspnType &spn) {
     lhastr << "const double Ttrans=" << P.loopTransientLHA << ";\n";
     lhastr << "VariablesList = {time,DISC countT";
     for (let itt : spn.transitionStruct)
-        if (itt.isTraced)lhastr << ", " << itt.label;
+        if (itt.isTraced)lhastr << ", " << itt.name;
 
     for (let itt : spn.placeStruct) {
         if (itt.isTraced) {
@@ -563,7 +563,7 @@ void generateLoopLHA(GspnType &spn) {
     for (let itt : spn.transitionStruct)
         if (itt.isTraced){
             nbHASL++;
-            lhastr << "Throughput_" << itt.label << "= AVG(Last(" << itt.label << "));\n";
+            lhastr << "Throughput_" << itt.name << "= AVG(Last(" << itt.name << "));\n";
         }
     for (let itt : spn.placeStruct)
         if (itt.isTraced) {
@@ -598,11 +598,11 @@ void generateLoopLHA(GspnType &spn) {
     size_t nbplntr = 0;
     for (let itt : spn.transitionStruct) {
         if (itt.isTraced) {
-            lhastr << "((l1,l1),{" << itt.label << "}," << stopcond;
+            lhastr << "((l1,l1),{" << itt.name << "}," << stopcond;
             if(P.loopLHA>0.0){
-                lhastr << "{" << itt.label << " = " << itt.label << " + invT, countT = countT+1 });\n";
+                lhastr << "{" << itt.name << " = " << itt.name << " + invT, countT = countT+1 });\n";
             }else{
-                lhastr << "{" << itt.label << " = " << itt.label << " + 1, countT = countT+1 });\n";
+                lhastr << "{" << itt.name << " = " << itt.name << " + 1, countT = countT+1 });\n";
             }
         } else nbplntr++;
     }
@@ -612,7 +612,7 @@ void generateLoopLHA(GspnType &spn) {
         for (let itt : spn.transitionStruct)
             if (!itt.isTraced) {
                 if (nbplntr > 0)lhastr << ",";
-                lhastr << itt.label;
+                lhastr << itt.name;
                 nbplntr++;
             }
         lhastr << "}," << stopcond;

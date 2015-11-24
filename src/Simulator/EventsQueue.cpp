@@ -260,12 +260,13 @@ void EventsQueue::view(const vector<_trans> &trlabl)const {
         for (unsigned int i = 0; i < evtHeap.size(); i++){
 			Event e = InPosition(i);
             //cerr << "Equeue[" << i << "]:" << "( ";
-            auto trname = trlabl[e.transition].label;
-                //if(i==0)trname = "\033[1;33m" + trlabl[e.transition].label + "\033[0m";
-            cerr << setw(15) << left << trname << ":";
+            auto tr = trlabl[e.transition];
+            if(tr.DistTypeIndex == IMMEDIATE)cerr << "\033[1;33m";
+            cerr << setw(15) << left << tr.label << ":";
             //cerr << "tr ID:" << setw(4)<< e.transition << " ";
 			e.binding.print();
 			cerr << ",\tt=" << e.time << ",\tp=" << e.priority << ",\tw=" << e.weight;
+            if(tr.DistTypeIndex == IMMEDIATE)cerr << "\033[0m";
 			cerr << endl;
 		}
 }

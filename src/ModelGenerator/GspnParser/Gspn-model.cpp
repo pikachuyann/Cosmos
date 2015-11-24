@@ -127,7 +127,7 @@ namespace textOutput{
     }
     
     std::ostream& operator<<(std::ostream& os, const transition& obj){
-        os << "transition " << obj.label << "(" << obj.id << "){" << endl;
+        os << "transition " << obj.name << "(" << obj.id << "){" << endl;
         os << "\tdistribution:" << obj.dist << endl;
         os << "\tpriority:" << obj.priority << endl;
         os << "\tweight:" << obj.weight << endl << "}" << endl;

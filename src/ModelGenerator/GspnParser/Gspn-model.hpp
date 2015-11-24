@@ -77,6 +77,9 @@ struct colorClass {
     inline std::string cname()const {
         return name+ "_Color_Classe";
     }
+    inline unsigned int size()const {
+        return colors.size();
+    }
 };
 
 
@@ -133,7 +136,7 @@ struct coloredToken {
 
 struct transition {
     size_t id;
-    std::string label;
+    std::string name;
     bool isTraced;
     TransType type;
     Distribution dist;
@@ -147,11 +150,16 @@ struct transition {
     expr guard;
     std::string update;
     transition(){ isTraced = true; }
-    transition(size_t i,const std::string &n,const expr &p,bool md):id(i),label(n),isTraced(true),
+    transition(size_t i,const std::string &n,const expr &p,bool md):id(i),name(n),isTraced(true),
     type(Timed),dist(p),priority(expr(1)),weight(expr(1.0)),singleService(true),
     markingDependant(md),nbServers(1),ageMemory(false){};
 };
 
+struct InterfaceSRG {
+    bool isInterface;
+    unsigned int index;
+    InterfaceSRG():isInterface(false),index(0){};
+};
 
 struct place {
     size_t id;
@@ -160,6 +168,7 @@ struct place {
     size_t colorDom;
     std::vector<coloredToken> initMarking;
     expr Marking;
+    InterfaceSRG isrg;
     place(){ colorDom = UNCOLORED_DOMAIN; isTraced = true; }
 };
 

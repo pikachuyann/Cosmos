@@ -204,7 +204,7 @@ void GspnGrmlOutput::printArc(ostream& os, const pair<size_t,size_t>& p, const a
 
 void GspnGrmlOutput::printTransition(ostream& os, const transition& t){
     os << "\t<node id=\""<< GspnType::get_uid("T_"+ to_string(t.id)) << "\" nodeType=\"transition\">"<<endl;
-    os << "\t\t<attribute name=\"name\">" + t.label + "</attribute>"<< endl;
+    os << "\t\t<attribute name=\"name\">" + t.name + "</attribute>"<< endl;
     os << "\t\t<attribute name=\"weight\">";
     t.weight.printXML(os);
     os << "</attribute>" << endl;

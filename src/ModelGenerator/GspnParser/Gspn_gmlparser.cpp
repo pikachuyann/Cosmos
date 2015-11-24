@@ -728,7 +728,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 
             transition trans;
             trans.id = MyGspn->transitionStruct.size();
-            trans.label = id;
+            trans.name = id;
             trans.type = Timed;
             trans.priority = expr(1);
             trans.weight = expr(1.0);
@@ -742,7 +742,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     string Trname = simplifyString(*(++(it->second.begin())));
                     if ((P.verbose - 3) > 1)cout << "\tname:" << Trname << endl;
                     MyGspn->TransList.insert(Trname);
-                    trans.label = Trname;
+                    trans.name = Trname;
                     if (MyGspn->TransId.count(Trname) > 0) {
                         cerr << "error:Two transitions with the name:" << Trname << endl;
                         throw gmlioexc;
@@ -846,7 +846,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                 trans.dist.name = "EXPONENTIAL";
                 trans.dist.Param.push_back(expr(1.0));
                 if ((P.verbose - 3) >= 0) {
-                    cout << "[Warning] Transition " << trans.label;
+                    cout << "[Warning] Transition " << trans.name;
                     cout << " have no distribution.";
                     cout << " Assigne exponential with parameter 1" << endl;
                 }
@@ -884,7 +884,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
                 MyGspn->transitionStruct.push_back(trans);
 
                 MyGspn->TransId["selfloop"] = MyGspn->tr;
-                MyGspn->TransList.insert(trans.label);
+                MyGspn->TransList.insert(trans.name);
                 MyGspn->tr++;
             }
 
@@ -906,7 +906,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             transition trans(MyGspn->transitionStruct.size(), "Puittrans", expr(0.0), true);
             MyGspn->transitionStruct.push_back(trans);
 
-            MyGspn->TransList.insert(trans.label);
+            MyGspn->TransList.insert(trans.name);
             MyGspn->tr++;
         }
     }
