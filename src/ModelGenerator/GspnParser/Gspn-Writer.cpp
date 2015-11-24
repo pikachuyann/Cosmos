@@ -36,6 +36,14 @@
 using namespace std;
 
 Gspn_Writer::Gspn_Writer(GspnType& mgspn,const parameters& Q):MyGspn(mgspn),P(Q){
+    markingSize = 0;
+    for( let p : MyGspn.placeStruct){
+        size_t t =1;
+            for ( let cd : MyGspn.colDoms[p.colorDom].colorClassIndex)
+            t*= MyGspn.colClasses[cd].size();
+        markingSize +=t;
+    }
+        
     if(P.lightSimulator){
         trId = "TR_PL_ID t";
     }
@@ -52,7 +60,7 @@ void Gspn_Writer::writeFunT(ostream &f,const std::string &rtype,const std::strin
         //newcase << "\t\t" <<
         ft(t,newcase);
         //<< endl;
-        weightcases.addCase(t, newcase.str(),MyGspn.transitionStruct[t].label);
+        weightcases.addCase(t, newcase.str(),MyGspn.transitionStruct[t].name);
     }
     weightcases.writeCases(f);
     f << "}\n" << endl;
@@ -226,9 +234,9 @@ void Gspn_Writer::writeUpdateVect(ofstream &SpnF,const string &name,const vector
             } else SpnF << "static const int " << tabname << "[" << 1+vect[t].size() <<"]"<<"= {";
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++) {
 				//SpnF << "\tPossiblyEnabled[" << t << "].insert( " << *it << " );"<< endl;
-				SpnF << "TR_" << MyGspn.transitionStruct[*it].label << "_RT, ";
+				SpnF << "TR_" << MyGspn.transitionStruct[*it].name << "_RT, ";
 			}
-        SpnF << "-1 }; /* " << MyGspn.transitionStruct[t].label << "*/"<< endl;
+        SpnF << "-1 }; /* " << MyGspn.transitionStruct[t].name << "*/"<< endl;
             // << "\t"<< name <<"[" << t << "] = vector<int>("<<tabname<<","<< tabname<<"+"<< vect[t].size()<< ");" << endl;
 		/*}else if(vect[t].size()>0)
 			for (set<int>::iterator it = vect[t].begin(); it != vect[t].end(); it++)
@@ -391,26 +399,26 @@ void Gspn_Writer::writeDotFile(const string &file)const{
     }
 
     for (const auto &t : MyGspn.transitionStruct ) {
-        df << "\t" << t.label;
+        df << "\t" << t.name;
         df << " [shape=rect,height=0.2,style=filled,fillcolor=$CF_";
-        df << t.label << "$ ,xlabel=\"" << t.label << "\",label=\"\"];"<< endl;
+        df << t.name << "$ ,xlabel=\"" << t.name << "\",label=\"\"];"<< endl;
     }
 
     for (auto &p : MyGspn.placeStruct )
         for(auto &t : MyGspn.transitionStruct){
             const auto ia = MyGspn.access(MyGspn.inArcsStruct, t.id, p.id);
             if(! ia.isEmpty) {
-                df << "\t" << p.name << "->" << t.label;
+                df << "\t" << p.name << "->" << t.name;
                 df << " [label=\""<< ia.stringVal << " \"];" << endl;
             }
             const auto oa = MyGspn.access(MyGspn.outArcsStruct, t.id, p.id);
             if(! oa.isEmpty) {
-                df << "\t" <<  t.label <<"->" << p.name ;
+                df << "\t" <<  t.name <<"->" << p.name ;
                 df << " [label=\""<< oa.stringVal << " \"];" << endl;
             }
             const auto iha = MyGspn.access(MyGspn.inhibArcsStruct, t.id, p.id);
             if(! iha.isEmpty) {
-                df << "\t" << p.name << "->" << t.label;
+                df << "\t" << p.name << "->" << t.name;
                 df << " [arrowhead=odot,label=\""<< iha.stringVal << " \"];" << endl;
             }
         }
@@ -421,7 +429,7 @@ void Gspn_Writer::writeMacro(ofstream &f)const{
     for( auto &p : MyGspn.placeStruct)
         f << "#define PL_"<< p.name << "_LP " << p.id <<endl;
     for( auto &t : MyGspn.transitionStruct)
-        f << "#define TR_"<< t.label << "_RT " << t.id <<endl;
+        f << "#define TR_"<< t.name << "_RT " << t.id <<endl;
     f<< endl;
 }
 
@@ -600,20 +608,18 @@ void Gspn_Writer::writeFire(ofstream &f)const{
     if(!P.lightSimulator){
         writeFunT(f, "void", "unfire(", ")", [&](unsigned int t,stringstream &newcase){
             if(P.RareEvent || P.computeStateSpace){
-                for (const auto &p : MyGspn.placeStruct)  {
+                //update the marking
+                for (const auto &p : MyGspn.placeStruct) {
                     if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
-                        if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep)
-                            newcase << "    Marking.P->_PL_" << p.name <<" += " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).intVal << ";" << endl;
-                        else
-                            newcase << "    Marking.P->_PL_" << p.name <<" += " << MyGspn.access(MyGspn.inArcsStruct,t,p.id).stringVal << ";" << endl;
+                        //update for place in place
+                        writeMarkingUpdate(newcase, t, p,MyGspn.inArcsStruct,false);
                     }
-
+                    
                     if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isEmpty) {
-                        if (!MyGspn.access(MyGspn.outArcsStruct,t,p.id).isMarkDep)
-                            newcase << "    Marking.P->_PL_" << p.name <<" -= " << MyGspn.access(MyGspn.outArcsStruct,t,p.id).intVal << ";" << endl;
-                        else
-                            newcase << "    Marking.P->_PL_" << p.name <<" -= " << MyGspn.access(MyGspn.outArcsStruct,t,p.id).stringVal << ";" << endl;
+                        //update for outplace
+                        writeMarkingUpdate(newcase, t, p,MyGspn.outArcsStruct,true);
                     }
+                    
                 }
             }
         });
@@ -843,24 +849,21 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
         SpnCppFile << "}\n";
         SpnCppFile << "\n";
         SpnCppFile << "std::vector<int> abstractMarking::getVector()const {\n";
-        if(MyGspn.isColored() || P.lightSimulator){
+        if( P.lightSimulator){
             SpnCppFile << "\texit(EXIT_FAILURE);\n";
         }else{
-            SpnCppFile << "\tstd::vector<int> v("<<MyGspn.pl << ");\n";
-            for (const auto &plit : MyGspn.placeStruct){
-                SpnCppFile << "\tv[" << plit.id <<"] = P->_PL_" << plit.name << ";\n";
-            }
+            SpnCppFile << "\tstd::vector<int> v("<< markingSize <<");" << endl;
+            SpnCppFile << "\tv.reserve("<< markingSize +1<<");" << endl;
+            SpnCppFile << "\tcopy((int*) P,(int*)P + "<< markingSize <<",v.data() );"<< endl;
             SpnCppFile << "     return v;\n";
         }
         SpnCppFile << "}\n";
         SpnCppFile << "\n";
         SpnCppFile << "void abstractMarking::setVector(const std::vector<int>&v) {\n";
-        if(MyGspn.isColored()|| P.lightSimulator){
+        if(P.lightSimulator){
             SpnCppFile << "\texit(EXIT_FAILURE);\n";
         }else{
-            for (const auto &plit : MyGspn.placeStruct){
-                SpnCppFile << "\tP->_PL_" << plit.name << " = v[" << plit.id << "];\n";
-            }
+            SpnCppFile << "\tcopy((int*)v.data(),(int*)v.data() + v.size(), (int*)P );"<< endl;
         }
         SpnCppFile << "};"<<endl<<endl;
 
@@ -900,8 +903,9 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
         SpnCppFile << "void abstractBinding::print()const{\n";
         //SpnCppFile << "\tstd::cerr << \"Binding:\"<< std::endl;\n";
         for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
+            
             SpnCppFile << "\tstd::cerr << \"\\t"<< colvar->name <<": \";";
-            SpnCppFile << "P->"<< colvar->name << ".print();\n\tcerr << endl;\n";
+            SpnCppFile << "P->"<< colvar->name << ".print();\n"; //\tcerr << endl;\n
         }
         SpnCppFile << "}\n";
 
@@ -1049,7 +1053,7 @@ void Gspn_Writer::writeFile(){
 
             SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
             SpnCppFile << ", " << MyGspn.transitionStruct[t].ageMemory;
-            if(P.StringInSpnLHA)SpnCppFile << ", \"" << MyGspn.transitionStruct[t].label<< "\"";
+            if(P.StringInSpnLHA)SpnCppFile << ", \"" << MyGspn.transitionStruct[t].name<< "\"";
             SpnCppFile <<"), ";
         }
         SpnCppFile << " }; " << endl;

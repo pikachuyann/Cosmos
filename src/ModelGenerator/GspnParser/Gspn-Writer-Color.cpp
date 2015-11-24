@@ -77,9 +77,9 @@ void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF)const{
                         // Here we implement only the case with one place one token on the arc
                         // For all other casess fall back to enumeration.
                         SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
-                        ":\t//" << MyGspn.transitionStruct[trit].label << "->"
+                        ":\t//" << MyGspn.transitionStruct[trit].name << "->"
                         << MyGspn.placeStruct[pivotplace].name <<
-                        "->" << MyGspn.transitionStruct[trit2].label << endl;
+                        "->" << MyGspn.transitionStruct[trit2].name << endl;
                         SpnF << "\t{"<< endl;
                         SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
                         SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
@@ -99,9 +99,9 @@ void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF)const{
                         SpnF << "\t\treturn &(Transition[targettr].bindingList[bloc]);" << endl;
                         SpnF << "\t}"<< endl;
                     }else if(fallback){
-                        SpnF << "\t\t//Fallback:" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.transitionStruct[trit2].label << endl;
+                        SpnF << "\t\t//Fallback:" << MyGspn.transitionStruct[trit].name << "->" << MyGspn.transitionStruct[trit2].name << endl;
                     } else if(varList.size() < MyGspn.transitionStruct[trit2].varDomain.size()){
-                        SpnF << "\t\t//Partial synch over variable: " << MyGspn.transitionStruct[trit].label << "->" << MyGspn.transitionStruct[trit2].label << " var ";
+                        SpnF << "\t\t//Partial synch over variable: " << MyGspn.transitionStruct[trit].name << "->" << MyGspn.transitionStruct[trit2].name << " var ";
                         for (set<size_t>::const_iterator itset = varList.begin(); itset != varList.end(); ++itset) {
                             SpnF << MyGspn.colVars[*itset].name << ", ";
                         }
@@ -158,9 +158,9 @@ void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF)const{
                         // Here we implement only the case with one place one token on the arc
                         // For all other casess fall back to enumeration.
                         SpnF << "\tcase " << trit*(MyGspn.tr+1) + trit2 <<
-                        ":\t//" << MyGspn.transitionStruct[trit].label << "->"
+                        ":\t//" << MyGspn.transitionStruct[trit].name << "->"
                         << MyGspn.placeStruct[pivotplace].name <<
-                        "->" << MyGspn.transitionStruct[trit2].label << endl;
+                        "->" << MyGspn.transitionStruct[trit2].name << endl;
                         SpnF << "\t{"<< endl;
                         SpnF << "\t\tif(*bindingNum==1)return NULL;" << endl; //return NULL if it is the second call
                         SpnF << "\t\tsize_t btotal = b.idTotal();" << endl;
@@ -180,9 +180,9 @@ void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF)const{
                         SpnF << "\t\treturn &(Transition[targettr].bindingList[bloc]);" << endl;
                         SpnF << "\t}"<< endl;
                     }else if(fallback){
-                        SpnF << "\t\t//Fallback:" << MyGspn.transitionStruct[trit].label << "->" << MyGspn.transitionStruct[trit2].label << endl;
+                        SpnF << "\t\t//Fallback:" << MyGspn.transitionStruct[trit].name << "->" << MyGspn.transitionStruct[trit2].name << endl;
                     } else if(varList.size() < MyGspn.transitionStruct[trit2].varDomain.size()){
-                        SpnF << "\t\t//Partial synch over variable: " << MyGspn.transitionStruct[trit].label << "->" << MyGspn.transitionStruct[trit2].label << " var ";
+                        SpnF << "\t\t//Partial synch over variable: " << MyGspn.transitionStruct[trit].name << "->" << MyGspn.transitionStruct[trit2].name << " var ";
                         for (set<size_t>::const_iterator itset = varList.begin(); itset != varList.end(); ++itset) {
                             SpnF << MyGspn.colVars[*itset].name << ", ";
                         }
@@ -445,6 +445,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         header << "\t\treturn acc;\n\t}\n";
 
         header << "};\n";
+        
         //end of domain class definition
 
 
