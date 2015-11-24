@@ -58,6 +58,7 @@ public:
 	std::vector<int> getVector()const;
 	void setVector(const std::vector<int>&);
 	
+    void Symmetrize();
 };
 
 struct markingEqState{

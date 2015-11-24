@@ -34,15 +34,18 @@
 class Gspn_Writer {
 public:
 	Gspn_Writer(GspnType& mgspn,const parameters& Q);
-	
+    
 	GspnType MyGspn;
 	const parameters P;
 	
 	void writeFile();
     void writeDotFile(const std::string &file)const;
 
+    
 
 protected:
+    
+    size_t markingSize;
 
     std::string trId= "TR_PL_ID t, const abstractBinding &b";
     std::string objName= "SPN::";
