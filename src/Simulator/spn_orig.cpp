@@ -203,6 +203,7 @@ void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBindin
     }
     //assert(cerr<< "assert!"<< endl);
     
+    
     /*
      //In Debug mode check that transition are scheduled iff they are enabled
      for (const auto &t : Transition){

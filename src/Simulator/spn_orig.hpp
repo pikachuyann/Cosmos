@@ -47,6 +47,22 @@ protected:
     //! a Temporary event
     Event F;
 
+    std::vector<size_t> getPerm(int tab[] ,size_t s){
+        vector<size_t> index(s, 0);
+        for (size_t i = 0 ; i != index.size() ; i++)index[i] = i;
+        sort(index.begin(), index.end(),
+             [&](const int& a, const int& b) {
+                 return (tab[a] > tab[b]);
+             });
+        return index;
+    };
+    void applyPerm(int tab[] ,size_t s, const std::vector<size_t> &index){
+        int temp[s];
+        copy(tab, tab+s, temp);
+        for (size_t i = 0 ; i != index.size() ; i++)
+            tab[i] = temp[index[i]];
+    };
+
 };
 
 #endif /* defined(__Cosmos__spn_orig__) */
