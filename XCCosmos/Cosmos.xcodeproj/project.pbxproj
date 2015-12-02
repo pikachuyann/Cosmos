@@ -326,6 +326,7 @@
 		0367E2B61885288900F35619 /* Gspn-Writer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Writer.hpp"; sourceTree = "<group>"; };
 		03796A741B984AA80004BF0B /* spn_orig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spn_orig.cpp; sourceTree = "<group>"; };
 		03796A751B984AA80004BF0B /* spn_orig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spn_orig.hpp; sourceTree = "<group>"; };
+		038CC6911C0F245000C5A0F5 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = CMakeLists.txt; path = ../CMakeLists.txt; sourceTree = "<group>"; };
 		039A3674191A9EE400B42447 /* Deck.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Deck.grml; sourceTree = "<group>"; };
 		039A3675191A9EE400B42447 /* DeckInfiny.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = DeckInfiny.grml; sourceTree = "<group>"; };
 		039A3676191A9EE400B42447 /* HardTotalStrat.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = HardTotalStrat.grml; sourceTree = "<group>"; };
@@ -3059,6 +3060,7 @@
 		08FB7794FE84155DC02AAC07 /* Cosmos */ = {
 			isa = PBXGroup;
 			children = (
+				038CC6911C0F245000C5A0F5 /* CMakeLists.txt */,
 				03FDF5E31A42F09300AA4DA2 /* automataGen */,
 				03088AA91A0422C0006BCB27 /* prism2SPT */,
 				0336B7CB198A3BF30043EFC6 /* POMDP */,
