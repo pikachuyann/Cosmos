@@ -109,12 +109,10 @@ void stateSpace::exploreStateSpace(){
                     existImm = true;
                     break;
                 }
-        const auto savMark = N.Marking;
         
         for (size_t t = 0; t < N.tr; t++)
             for(let b : N.Transition[t].bindingList){
                 
-                N.Marking = savMark;
                 A.CurrentLocation = lhaloc;
                 
                 if (N.IsEnabled(t,b) &&
@@ -124,12 +122,12 @@ void stateSpace::exploreStateSpace(){
                         N.fire(t,b,0.0);
                         N.Marking.Symmetrize();
                         
+                        
+                        //cerr << "transition:" << *it << endl;
+                        vector<int> marking = N.Marking.getVector();
                         int SE = A.synchroniseWith(t,N.Marking,b);
                         
                         if (SE > -1) {
-                            //cerr << "transition:" << *it << endl;
-                            vector<int> marking = N.Marking.getVector();
-                            
                             nbTrans++;
                             marking.push_back( A.CurrentLocation );
                             //vector<double> Param = N.GetDistParameters(*it);
@@ -138,20 +136,16 @@ void stateSpace::exploreStateSpace(){
                             auto its = S.find (&marking);
                             if (its == S.end ()){
                                 
-                                /*
-                                //N.Marking.printHeader(cerr);
-                                 cerr << "state:"<< nbState << " -> ";
-                                    for( let i : marking)cerr << i << " ";
-                                    //N.Marking.print(cerr, 0.0);
-                                 cerr << endl;
-                                */
-                                
+                                /*N.Marking.printHeader(cerr);
+                                 cerr << endl << "state:"<< nbState << " -> ";
+                                 N.Marking.print(cerr, 0.0);
+                                 cerr << endl;*/
                                 
                                 toBeExplore.push(marking);
                                 add_state(marking);
-                            } //else { cerr << " -> " << its->second  << endl;}
+                            }
                         }
-                        //N.unfire(t,b);
+                        N.unfire(t,b);
                     }
                 
             }

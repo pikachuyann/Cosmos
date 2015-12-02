@@ -66,7 +66,6 @@ enum Poption {
     CO_epsilon,
     CO_set_Horizon,
     CO_state_space,
-    CO_lump,
     CO_prism,
     CO_normalize_IS,
     CO_grml_input,
@@ -154,8 +153,7 @@ struct parameters {
 
     bool GMLinput;
     int computeStateSpace;
-    bool lumpStateSpace;
-    
+
     bool alligatorMode;
     std::string unfold;
     std::string outputModel;

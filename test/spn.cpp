@@ -182,57 +182,17 @@ int abstractMarking::getNbOfTokens(int p)const {
 }
 
 std::vector<int> abstractMarking::getVector()const {
-	std::vector<int> v(32);
-	v.reserve(33);
-	size_t i = 0;
-	i= P->_PL_int0.copyVector(v,i);
-	i= P->_PL_ploadm0.copyVector(v,i);
-	i= P->_PL_pf0.copyVector(v,i);
-	i= P->_PL_ph1m0.copyVector(v,i);
-	i= P->_PL_pb1.copyVector(v,i);
-	i= P->_PL_readym1.copyVector(v,i);
-	i= P->_PL_int1.copyVector(v,i);
-	i= P->_PL_block1.copyVector(v,i);
+	std::vector<int> v(52);
+	v.reserve(53);
+	copy((int*) P,(int*)P + 52,v.data() );
      return v;
 }
 
 void abstractMarking::setVector(const std::vector<int>&v) {
-	size_t i = 0;
-	i= P->_PL_int0.setVector(v,i);
-	i= P->_PL_ploadm0.setVector(v,i);
-	i= P->_PL_pf0.setVector(v,i);
-	i= P->_PL_ph1m0.setVector(v,i);
-	i= P->_PL_pb1.setVector(v,i);
-	i= P->_PL_readym1.setVector(v,i);
-	i= P->_PL_int1.setVector(v,i);
-	i= P->_PL_block1.setVector(v,i);
+	copy((int*)v.data(),(int*)v.data() + v.size(), (int*)P );
 };
 
-void abstractMarking::Symmetrize(){
-	{
-	const vector<contains_proc_Color_Classe* > vClasse = {
-		&(P->_PL_int0),
-		&(P->_PL_ploadm0),
-		&(P->_PL_pf0),
-		&(P->_PL_ph1m0),
-		&(P->_PL_pb1),
-		&(P->_PL_readym1),
-		&(P->_PL_int1),
-		};
-		const vector<size_t> v = getPerm(vClasse, Color_proc_Total);
-		applyPerm(vClasse, Color_proc_Total, v);
-	}
-	{
-	const vector<contains_mach1_Color_Classe* > vClasse = {
-		&(P->_PL_ploadm0),
-		&(P->_PL_ph1m0),
-		&(P->_PL_readym1),
-		&(P->_PL_block1),
-		};
-		const vector<size_t> v = getPerm(vClasse, Color_mach1_Total);
-		applyPerm(vClasse, Color_mach1_Total, v);
-	}
-}bool abstractBinding::next() {
+bool abstractBinding::next() {
 	idcount++;
 	if(P->x.mult >= 0){
 		if (! P->x.islast()){	P->x.iter(); return true; };
@@ -248,6 +208,13 @@ void abstractMarking::Symmetrize(){
 	}
 	return false;
 };
+
+
+void abstractMarking::Symmetrize(){
+    
+}
+
+
 abstractBinding::abstractBinding() {
  P= new abstractBindingImpl;
        idcount=0;
@@ -277,7 +244,7 @@ int abstractBinding::idTotal()const{
 	 return P->x.c0 + Color_proc_Total *(P->y.c0 + Color_proc_Total *(P->b.c0 + Color_mach1_Total *(0)));
 }
 const char *Color_proc_names[Color_proc_Total] = {
-"p1","p2","p3",
+"p1","p2","p3","p4","p5",
 };
 const char *Color_mach1_names[Color_mach1_Total] = {
 "B1","B2",
@@ -309,10 +276,10 @@ const int* SPN::PossiblyDisabled[] = {PE_PossiblyDisabled_0, PE_PossiblyDisabled
 
 const int* SPN::FreeMarkDepT[] = {EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
 
-static spn_trans TransArray[10] = { _trans(0,EXPONENTIAL,0,18, 0, "unload1"), _trans(1,EXPONENTIAL,0,18, 0, "fin0m"), _trans(2,EXPONENTIAL,0,18, 0, "pend1"), _trans(3,EXPONENTIAL,0,18, 0, "bin1m"), _trans(4,EXPONENTIAL,0,18, 0, "predo2"), _trans(5,IMMEDIATE,0,18, 0, "fin0p"), _trans(6,EXPONENTIAL,0,18, 0, "pend2"), _trans(7,IMMEDIATE,0,18, 0, "bin1p"), _trans(8,EXPONENTIAL,0,18, 0, "bex0"), _trans(9,EXPONENTIAL,0,18, 0, "fex1"),  }; 
+static spn_trans TransArray[10] = { _trans(0,EXPONENTIAL,0,50, 0, "unload1"), _trans(1,EXPONENTIAL,0,50, 0, "fin0m"), _trans(2,EXPONENTIAL,0,50, 0, "pend1"), _trans(3,EXPONENTIAL,0,50, 0, "bin1m"), _trans(4,EXPONENTIAL,0,50, 0, "predo2"), _trans(5,IMMEDIATE,0,50, 0, "fin0p"), _trans(6,EXPONENTIAL,0,50, 0, "pend2"), _trans(7,IMMEDIATE,0,50, 0, "bin1p"), _trans(8,EXPONENTIAL,0,50, 0, "bex0"), _trans(9,EXPONENTIAL,0,50, 0, "fex1"),  }; 
 SPN::SPN():
 pl(8), tr(10) ,Transition(TransArray,TransArray +10),Place(8),ParamDistr(10),TransitionConditions(10,0){
-    Path ="FMSSmall.grml";
+    Path ="FMS.grml";
     Place[0].label =" int0";
     Place[0].isTraced = 1;
     Place[1].label =" ploadm0";

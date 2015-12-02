@@ -854,12 +854,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
         }else{
             SpnCppFile << "\tstd::vector<int> v("<< markingSize <<");" << endl;
             SpnCppFile << "\tv.reserve("<< markingSize +1<<");" << endl;
-            SpnCppFile << "\tsize_t i = 0;" << endl;
-            for (let plit : MyGspn.placeStruct) {
-                if(plit.colorDom == UNCOLORED_DOMAIN ){SpnCppFile << "\tv[i++]= P->_PL_"<< plit.name << ";"<< endl;}
-                else SpnCppFile << "\ti= P->_PL_"<< plit.name << ".copyVector(v,i);"<< endl;
-            }
-            //SpnCppFile << "\tcopy((int*) P,(int*)P + "<< markingSize <<",v.data() );"<< endl;
+            SpnCppFile << "\tcopy((int*) P,(int*)P + "<< markingSize <<",v.data() );"<< endl;
             SpnCppFile << "     return v;\n";
         }
         SpnCppFile << "}\n";
@@ -868,35 +863,9 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
         if(P.lightSimulator){
             SpnCppFile << "\texit(EXIT_FAILURE);\n";
         }else{
-            SpnCppFile << "\tsize_t i = 0;" << endl;
-            for (let plit : MyGspn.placeStruct) {
-                if(plit.colorDom == UNCOLORED_DOMAIN ){SpnCppFile << "\tP->_PL_"<< plit.name << " = v[i++];"<< endl;}
-                else SpnCppFile << "\ti= P->_PL_"<< plit.name << ".setVector(v,i);"<< endl;
-            }
+            SpnCppFile << "\tcopy((int*)v.data(),(int*)v.data() + v.size(), (int*)P );"<< endl;
         }
         SpnCppFile << "};"<<endl<<endl;
-        
-        
-        SpnCppFile << "void abstractMarking::Symmetrize(){" << endl;
-        if(P.lumpStateSpace)
-        for (size_t cci=0 ; cci<MyGspn.colClasses.size(); cci++) {
-            let cc = MyGspn.colClasses[cci];
-            SpnCppFile << "\t{"<< endl;
-            SpnCppFile << "\tconst vector<contains_"<< cc.cname()<< "* > vClasse = {" << endl;
-            for(let plit: MyGspn.placeStruct){
-                let cciv = MyGspn.colDoms[plit.colorDom].colorClassIndex;
-                if( count(cciv.begin(), cciv.end(), cci )>0 )
-                    SpnCppFile << "\t\t&(P->_PL_"<<plit.name << ")," << endl;
-            }
-            SpnCppFile << "\t\t};" << endl;
-            
-            SpnCppFile << "\t\tconst vector<size_t> v = getPerm(vClasse, Color_"<< cc.name <<"_Total);"<< endl;
-            SpnCppFile << "\t\tapplyPerm(vClasse, Color_"<< cc.name <<"_Total, v);"<<endl;
-            SpnCppFile << "\t}"<< endl;
-        }
-        SpnCppFile << "}";
-
-        
 
         SpnCppFile << "bool abstractBinding::next() {\n";
         SpnCppFile << "\tidcount++;\n";
