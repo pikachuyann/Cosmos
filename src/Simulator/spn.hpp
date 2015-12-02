@@ -107,6 +107,16 @@ struct _trans {
 };
 typedef struct _trans spn_trans;
 
+template<typename T, typename C >
+bool greaterIndex(std::vector< T * > v,C c ,int i,int j) {
+    for(let d:v){
+        int r = d->compare(c,i,j);
+        if( r > 0)return true;
+        if( r < 0 )return false;
+    }
+    return false;
+}
+
 /**
  * DataType for place of the SPN
  */

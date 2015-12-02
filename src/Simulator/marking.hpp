@@ -31,6 +31,7 @@
 
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 class abstractMarkingImpl;
 
@@ -59,6 +60,32 @@ public:
 	void setVector(const std::vector<int>&);
 	
     void Symmetrize();
+    
+    
+    
+    template <typename T, typename C>
+    std::vector<size_t> getPerm(const std::vector<T> v, C c)const{
+        std::vector<size_t> index( static_cast<int>(c), 0);
+        for (size_t i = 0 ; i != index.size() ; i++)index[i] = i;
+        sort(index.begin(), index.end(),
+             [&](const int& a, const int& b) {
+                 return greaterIndex(v, c, a, b);
+             });
+        return index;
+    }
+    
+    
+    template <typename T, typename C>
+    void applyPerm(const std::vector<T *> v, C c,const std::vector<size_t> id){
+        for( let d : v)d->apply_perm(c,id);
+    }
+    
+
+/*
+    template <typename T, typename C>
+    std::vector<size_t> getPerm(const std::vector<T> v, C c) const;
+    template <typename T, typename C>
+    void applyPerm(const std::vector<T *> v, C c,const std::vector<size_t>);*/
 };
 
 struct markingEqState{
