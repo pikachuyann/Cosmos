@@ -6,12 +6,14 @@ enum proc_Color_Classe {
 	Color_proc_p1,
 	Color_proc_p2,
 	Color_proc_p3,
-	Color_proc_p4,
-	Color_proc_p5,
 	Color_proc_Total,
 	Color_proc_All
 };
 extern const char *Color_proc_names[];
+struct contains_proc_Color_Classe{
+	virtual void apply_perm(proc_Color_Classe,const std::vector<size_t> &index)=0;
+	virtual int compare(proc_Color_Classe,int,int) const =0;
+};
 enum mach1_Color_Classe {
 	Color_mach1_B1,
 	Color_mach1_B2,
@@ -19,6 +21,10 @@ enum mach1_Color_Classe {
 	Color_mach1_All
 };
 extern const char *Color_mach1_names[];
+struct contains_mach1_Color_Classe{
+	virtual void apply_perm(mach1_Color_Classe,const std::vector<size_t> &index)=0;
+	virtual int compare(mach1_Color_Classe,int,int) const =0;
+};
 
 struct proc_Token{
 	proc_Color_Classe c0;
@@ -55,7 +61,7 @@ c0 = (proc_Color_Classe)(0);
 		return mult < x ;
 	}
 };
-struct proc_Domain {
+struct proc_Domain: contains_proc_Color_Classe {
 	int mult[ Color_proc_Total ];
 	proc_Domain(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}
 	proc_Domain(proc_Color_Classe c0) {
@@ -66,6 +72,14 @@ struct proc_Domain {
 			for( int i0= ( c0 == Color_proc_All ? 0 : c0);i0< ( c0 == Color_proc_All ? Color_proc_Total : c0+1);i0++)
 				mult[i0] = 1 ;
 		}
+	}
+	size_t copyVector(vector<int> &v ,size_t s)const{
+		copy((int*)mult,(int*)mult + sizeof(mult)/sizeof(int), v.begin() + s );
+		return s+sizeof(mult)/sizeof(int);
+	}
+	size_t setVector(const vector<int> &v ,size_t s){
+		copy(v.begin() + s, v.begin() + s + sizeof(mult)/sizeof(int), (int*)mult );
+		return s+sizeof(mult)/sizeof(int);
 	}
 	proc_Domain& operator = (const proc_Domain& x){
 		copy((int*)x.mult,(int*)x.mult + sizeof(mult)/sizeof(int),(int*)mult);
@@ -97,7 +111,7 @@ struct proc_Domain {
 		proc_Domain d(*this);
 		d+=x;
  		return d;
-}
+	}
 	proc_Domain& operator -= (const proc_Token& x){
 		mult[ x.c0 ] -= x.mult;
 		return *this;
@@ -127,10 +141,23 @@ struct proc_Domain {
 			acc += ((int*)mult)[count] ;
 		return acc;
 	}
+	virtual void apply_perm(proc_Color_Classe,const std::vector<size_t> &index){
+		proc_Domain temp = *this ;
+		for( int i0= 0 ; i0< Color_proc_Total ;i0++)
+			mult[i0] = temp.mult[ index[i0] ];
+	}
+	virtual int compare(proc_Color_Classe,int cci,int ccj)const{
+		{
+			if(mult[ cci ] > mult[ ccj ])return 1;
+			if(mult[ cci ] < mult[ ccj ])return -1;
+		}
+		return 0;
+	}
 };
 proc_Domain operator + (const proc_Token& t1 ,const proc_Token& t2 )
 
-;
+;std::ostream& operator << (std::ostream& out, const proc_Domain& x);
+
 struct mach1_Token{
 	mach1_Color_Classe c0;
 	int mult;
@@ -166,7 +193,7 @@ c0 = (mach1_Color_Classe)(0);
 		return mult < x ;
 	}
 };
-struct mach1_Domain {
+struct mach1_Domain: contains_mach1_Color_Classe {
 	int mult[ Color_mach1_Total ];
 	mach1_Domain(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}
 	mach1_Domain(mach1_Color_Classe c0) {
@@ -177,6 +204,14 @@ struct mach1_Domain {
 			for( int i0= ( c0 == Color_mach1_All ? 0 : c0);i0< ( c0 == Color_mach1_All ? Color_mach1_Total : c0+1);i0++)
 				mult[i0] = 1 ;
 		}
+	}
+	size_t copyVector(vector<int> &v ,size_t s)const{
+		copy((int*)mult,(int*)mult + sizeof(mult)/sizeof(int), v.begin() + s );
+		return s+sizeof(mult)/sizeof(int);
+	}
+	size_t setVector(const vector<int> &v ,size_t s){
+		copy(v.begin() + s, v.begin() + s + sizeof(mult)/sizeof(int), (int*)mult );
+		return s+sizeof(mult)/sizeof(int);
 	}
 	mach1_Domain& operator = (const mach1_Domain& x){
 		copy((int*)x.mult,(int*)x.mult + sizeof(mult)/sizeof(int),(int*)mult);
@@ -208,7 +243,7 @@ struct mach1_Domain {
 		mach1_Domain d(*this);
 		d+=x;
  		return d;
-}
+	}
 	mach1_Domain& operator -= (const mach1_Token& x){
 		mult[ x.c0 ] -= x.mult;
 		return *this;
@@ -238,10 +273,23 @@ struct mach1_Domain {
 			acc += ((int*)mult)[count] ;
 		return acc;
 	}
+	virtual void apply_perm(mach1_Color_Classe,const std::vector<size_t> &index){
+		mach1_Domain temp = *this ;
+		for( int i0= 0 ; i0< Color_mach1_Total ;i0++)
+			mult[i0] = temp.mult[ index[i0] ];
+	}
+	virtual int compare(mach1_Color_Classe,int cci,int ccj)const{
+		{
+			if(mult[ cci ] > mult[ ccj ])return 1;
+			if(mult[ cci ] < mult[ ccj ])return -1;
+		}
+		return 0;
+	}
 };
 mach1_Domain operator + (const mach1_Token& t1 ,const mach1_Token& t2 )
 
-;
+;std::ostream& operator << (std::ostream& out, const mach1_Domain& x);
+
 struct Block_Token{
 	proc_Color_Classe c0;
 	mach1_Color_Classe c1;
@@ -279,7 +327,7 @@ c1 = (mach1_Color_Classe)(0);
 		return mult < x ;
 	}
 };
-struct Block_Domain {
+struct Block_Domain: contains_proc_Color_Classe, contains_mach1_Color_Classe {
 	int mult[ Color_proc_Total ][ Color_mach1_Total ];
 	Block_Domain(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}
 	Block_Domain(proc_Color_Classe c0,mach1_Color_Classe c1) {
@@ -291,6 +339,14 @@ struct Block_Domain {
 			for( int i1= ( c1 == Color_mach1_All ? 0 : c1);i1< ( c1 == Color_mach1_All ? Color_mach1_Total : c1+1);i1++)
 				mult[i0][i1] = 1 ;
 		}
+	}
+	size_t copyVector(vector<int> &v ,size_t s)const{
+		copy((int*)mult,(int*)mult + sizeof(mult)/sizeof(int), v.begin() + s );
+		return s+sizeof(mult)/sizeof(int);
+	}
+	size_t setVector(const vector<int> &v ,size_t s){
+		copy(v.begin() + s, v.begin() + s + sizeof(mult)/sizeof(int), (int*)mult );
+		return s+sizeof(mult)/sizeof(int);
 	}
 	Block_Domain& operator = (const Block_Domain& x){
 		copy((int*)x.mult,(int*)x.mult + sizeof(mult)/sizeof(int),(int*)mult);
@@ -322,7 +378,7 @@ struct Block_Domain {
 		Block_Domain d(*this);
 		d+=x;
  		return d;
-}
+	}
 	Block_Domain& operator -= (const Block_Token& x){
 		mult[ x.c0 ][ x.c1 ] -= x.mult;
 		return *this;
@@ -352,10 +408,39 @@ struct Block_Domain {
 			acc += ((int*)mult)[count] ;
 		return acc;
 	}
+	virtual void apply_perm(proc_Color_Classe,const std::vector<size_t> &index){
+		Block_Domain temp = *this ;
+		for( int i0= 0 ; i0< Color_proc_Total ;i0++)
+		for( int i1= 0 ; i1< Color_mach1_Total ;i1++)
+			mult[i0][i1] = temp.mult[ index[i0] ][ i1 ];
+	}
+	virtual void apply_perm(mach1_Color_Classe,const std::vector<size_t> &index){
+		Block_Domain temp = *this ;
+		for( int i0= 0 ; i0< Color_proc_Total ;i0++)
+		for( int i1= 0 ; i1< Color_mach1_Total ;i1++)
+			mult[i0][i1] = temp.mult[ i0 ][ index[i1] ];
+	}
+	virtual int compare(proc_Color_Classe,int cci,int ccj)const{
+		for( int i1= 0 ; i1< Color_mach1_Total ;i1++)
+		{
+			if(mult[ cci ][ i1 ] > mult[ ccj ][ i1 ])return 1;
+			if(mult[ cci ][ i1 ] < mult[ ccj ][ i1 ])return -1;
+		}
+		return 0;
+	}
+	virtual int compare(mach1_Color_Classe,int cci,int ccj)const{
+		for( int i0= 0 ; i0< Color_proc_Total ;i0++)
+		{
+			if(mult[ i0 ][ cci ] > mult[ i0 ][ ccj ])return 1;
+			if(mult[ i0 ][ cci ] < mult[ i0 ][ ccj ])return -1;
+		}
+		return 0;
+	}
 };
 Block_Domain operator + (const Block_Token& t1 ,const Block_Token& t2 )
 
-;class abstractBindingImpl {
+;std::ostream& operator << (std::ostream& out, const Block_Domain& x);
+class abstractBindingImpl {
 public:
 	proc_Token x;
 	proc_Token y;
