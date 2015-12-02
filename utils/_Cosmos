@@ -16,7 +16,6 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--version[Display version number]' \
 	   '-b:Bounded Rare Event:->bounded' \
 	   '--state-space[Generate the state space in the prism format]' \
-       '--lump-state-space[Lump the generated state space]' \
 	   '--prism[Use prism to performe the computation]' \
 	   '--prism-path:Path to the prism executable:->data' \
 	   '--gppcmd:C++ compiler to use:->gppcmd' \

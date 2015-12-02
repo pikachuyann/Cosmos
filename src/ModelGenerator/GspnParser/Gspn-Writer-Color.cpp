@@ -245,10 +245,6 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         header << "\tColor_" << it->name << "_Total,\n";
         header << "\tColor_"<< it->name << "_All\n};\n";
         header << "extern const char *Color_"<< it->name << "_names[];\n";
-        header << "struct contains_"<< it->cname() << "{"<< endl;
-        header << "\tvirtual void apply_perm("<< it->cname() << ",const std::vector<size_t> &index)=0;"<<endl;
-        header << "\tvirtual int compare("<< it->cname() << ",int,int) const =0;"<<endl;
-        header << "};"<< endl;
     }
 
 
@@ -335,16 +331,16 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
 
 
 
-        stringstream domaindecl;
         stringstream colorArgsName;
         stringstream colorArrayAccess;
         stringstream colorArrayAccess2;
         stringstream allCondition;
         stringstream forLoop;
 
+        header << "struct " << it->cname() << " {\n\tint mult";
         for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
              it2 != it->colorClassIndex.end(); ++it2 ) {
-            domaindecl << "[ Color_" << MyGspn.colClasses[*it2].name << "_Total ]";
+            header << "[ Color_" << MyGspn.colClasses[*it2].name << "_Total ]";
             size_t countCol = it2 - it->colorClassIndex.begin();
             if(countCol > 0){
                 colorArgsName << ",";
@@ -359,11 +355,9 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
             forLoop << "i" << countCol <<"< ( c" << countCol << " == Color_" << MyGspn.colClasses[*it2].name << "_All ? Color_"<< MyGspn.colClasses[*it2].name <<"_Total : c" << countCol << "+1);";
             forLoop << "i" << countCol << "++)\n";
 
+
         }
-        
-        header << "struct " << it->cname() << ":";
-        for (let it2 : it->colorClassIndex) header << (it2==it->colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
-        header << " {\n\tint mult" << domaindecl.str() << ";\n";
+        header << ";\n";
         header << "\t" << it->cname() << "(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}"<< endl;
         header << "\t" << it->cname() << "(" << colorArgsName.str() << ") {\n";
         //header << "\t\t" << "memset(&mult,0 , sizeof(mult));\n";
@@ -372,16 +366,9 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         header << "\t\t\t" << "mult" << colorArrayAccess.str() << " = 1 ;\n";
         header << "\t\telse{\n";
         header << forLoop.str() << "\t\t\t\tmult" << colorArrayAccess2.str() << " = 1 ;\n";
+
         header << "\t\t}\n";
         header << "\t}\n";
-        
-        header << "\tsize_t copyVector(vector<int> &v ,size_t s)const{\n";
-        header << "\t\tcopy((int*)mult,(int*)mult + sizeof(mult)/sizeof(int), v.begin() + s );\n\t\treturn s+sizeof(mult)/sizeof(int);\n\t}\n";
-        header << "\tsize_t setVector(const vector<int> &v ,size_t s){\n";
-        header << "\t\tcopy(v.begin() + s, v.begin() + s + sizeof(mult)/sizeof(int), (int*)mult );\n\t\treturn s+sizeof(mult)/sizeof(int);\n\t}\n";
-
-        
-        
         header << "\t" << it->cname() << "& operator = (const " << it->cname() << "& x){\n";
         header << "\t\tcopy((int*)x.mult,(int*)x.mult + sizeof(mult)/sizeof(int),(int*)mult);\n\t\treturn *this;\n\t}\n";
 
@@ -412,7 +399,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
 
         header << "\t" << it->cname() << " operator + (const " << it->tokname() << "& x){\n";
         header << "\t\t"<< it->cname()<< " d(*this);\n\t\td+=x;\n ";
-        header << "\t\treturn d;\n\t}\n";
+        header << "\t\treturn d;\n}\n";
 
         header << "\t" << it->cname() << "& operator -= (const " << it->tokname() << "& x){\n";
         header << "\t\tmult";
@@ -457,69 +444,12 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         header << "\n\t\t\tacc += ((int*)mult)[count] ;\n";
         header << "\t\treturn acc;\n\t}\n";
 
-        for( let cci : it->colorClassIndex){
-            let cc = MyGspn.colClasses[cci];
-            header << "\tvirtual void apply_perm("<< cc.cname() <<",const std::vector<size_t> &index){\n";
-            header << "\t\t"<< it->cname() <<" temp = *this ;\n";
-            //header << "\t\tstd::copy( mult, mult + sizeof(mult)/sizeof(int), temp);\n";
-            
-            stringstream forloop2;
-            stringstream accessperm;
-            for (auto it2 = it->colorClassIndex.begin(); it2 != it->colorClassIndex.end(); ++it2 ) {
-                size_t countCol = it2 - it->colorClassIndex.begin();
-                forloop2 << "\t\tfor( int i" << countCol <<"= 0 ; i" << countCol <<"< Color_"<< MyGspn.colClasses[*it2].name <<"_Total ;";
-                forloop2 << "i" << countCol << "++)\n";
-                if(*it2 == cci){
-                    accessperm << "[ index[i"<< countCol <<"] ]";
-                }else{
-                    accessperm << "[ i"<< countCol <<" ]";
-                }
-            }
-            
-            header << forloop2.str();
-            header << "\t\t\tmult" << colorArrayAccess2.str() << " = temp.mult" << accessperm.str();
-            header << ";" << endl;
-            header << "\t}\n";
-        }
+        header << "};\n";
         
-        for( let cci : it->colorClassIndex){
-            let cc = MyGspn.colClasses[cci];
-            header << "\tvirtual int compare("<< cc.cname() <<",int cci,int ccj)const{\n";
-            
-            stringstream forloop2;
-            stringstream accesspermi;
-            stringstream accesspermj;
-            for (auto it2 = it->colorClassIndex.begin(); it2 != it->colorClassIndex.end(); ++it2 ) {
-                size_t countCol = it2 - it->colorClassIndex.begin();
-                if(*it2 != cci){
-                    forloop2 << "\t\tfor( int i" << countCol <<"= 0 ; i" << countCol <<"< Color_"<< MyGspn.colClasses[*it2].name <<"_Total ;";
-                    forloop2 << "i" << countCol << "++)\n";
-                }
-                if(*it2 == cci){
-                    accesspermi << "[ cci ]";
-                    accesspermj << "[ ccj ]";
-                }else{
-                    accesspermi << "[ i"<< countCol <<" ]";
-                    accesspermj << "[ i"<< countCol <<" ]";
-                }
-            }
-            
-            header << forloop2.str() << "\t\t{"<<endl;;
-            header << "\t\t\tif(mult" << accesspermi.str() << " > mult" << accesspermj.str() <<")return 1;" << endl;
-            header << "\t\t\tif(mult" << accesspermi.str() << " < mult" << accesspermj.str() <<")return -1;" << endl;
-            header << "\t\t}"<< endl;
-            
-            header << "\t\treturn 0;" << endl;
-            header << "\t}\n";
-        }
-        
-        
-         header << "};\n";
         //end of domain class definition
 
 
         header << it->cname() << " operator + (const " << it->tokname() << "& t1 ,const " << it->tokname() << "& t2 )\n\n;";
-        header << "std::ostream& operator << (std::ostream& out, const " << it->cname() << "& x);" << endl;
 
         SpnCppFile << "" << it->cname() << " operator + (const " << it->tokname() << "& t1 ,const " << it->tokname() << "& t2 ){\n";
         SpnCppFile << "\t"<< it->cname() << " d; d += t1; d+=t2 ;\n";
