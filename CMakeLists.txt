@@ -18,7 +18,7 @@ OUTPUT_STRIP_TRAILING_WHITESPACE
 
 ADD_DEFINITIONS(
     -O3
--DGIT_REVISION=\"${GIT_REVISION}\"
+    -DGIT_REVISION=\"${GIT_REVISION}\"
 )
 
 
@@ -59,6 +59,20 @@ DEPENDS Cosmos
 COMMAND Cosmos ${CMAKE_SOURCE_DIR}/Examples/Hospital/Hospital.grml --loop 100000 --tmp-status only-gen
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+
+file(GLOB_RECURSE ml_SOURCES "prism2SPT/*.ml*")
+
+add_custom_target(modelConvert ALL
+${CMAKE_SOURCE_DIR}/prism2SPT/build.sh
+#OUTPUT modelConvert
+BYPRODUCTS ${CMAKE_SOURCE_DIR}/prism2SPT/modelConvert.native
+#DEPENDS Cosmos
+#TARGET modelConvert
+WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/prism2SPT/
+SOURCES  ${ml_SOURCES}
+)
+
 
 add_executable(testClientSim ${CMAKE_CURRENT_BINARY_DIR}/tmp/spn.cpp ${CMAKE_CURRENT_BINARY_DIR}/tmp/LHA.cpp)
 include_directories("src/Simulator")
