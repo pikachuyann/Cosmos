@@ -74,31 +74,9 @@ vector<pid_t> clientPID;
 int max_client=0 ;
 
 
-int selfPipe;
-
-void init_self_pipe(){
-    int pipefd[2];
-
-    //create the self pipe
-    if(pipe(pipefd) !=0  )err(1,"Fail to create a self pipe");
-
-    FILE* output = fdopen(pipefd[0], "r");
-    selfPipe=pipefd[1];
-
-    clientstream.push_back(output);
-    if(pipefd[0] >max_client)max_client = pipefd[0];
-    clientPID.push_back(0);
-
-}
-
 //! Boolean indicating if the simulation should continue.
 bool continueSelect=false;
 
-void signalHandlerSP(int signum){
-    char buff[1];
-    buff[0] = (char)signum;
-    assert(1==write(selfPipe, buff, 1));
-}
 
 void signalHandler( int signum )
 {
@@ -213,12 +191,10 @@ void freestr(const char *argv[],size_t t){
 }
 
 void launch_clients(parameters& P){
-    init_self_pipe();
-    signal(SIGCHLD , signalHandlerSP);
-    signal(SIGINT, signalHandlerSP);
-    signal(SIGPIPE, signalHandlerSP);
-	//pid_t readpid;
-
+    signal(SIGCHLD , signalHandler);
+    signal(SIGINT, signalHandler);
+    signal(SIGPIPE, signalHandler);
+	
     // if seed is zero generate a pseudo random seed.
     if(P.seed==0){
         timeval t;
@@ -356,34 +332,27 @@ void launchServer(parameters& P){
     launch_clients(P);
     //Make a list of file system for polling
     
+    sigset_t blockingset;
+    sigfillset(&blockingset);
+    
 	continueSelect = true;
     do{
         makeselectlist();
-		if(!continueSelect)break;
         //wait for a simulator to return some result
-        if(select(max_client+1, &client_list, NULL, NULL, NULL) == -1){
-			if(errno == EINTR)break;
+        if(pselect(max_client+1, &client_list, NULL, NULL, NULL,&blockingset) == -1){
             perror("Server-select() error!");
             exit(EXIT_FAILURE);
         }
 		//Iterate over the simultor to check wich one has some results.
         for(size_t it = 0;it < clientstream.size() ;it++){
             if(FD_ISSET(fileno(clientstream[it]),  &client_list)){
-                if (clientPID[it]==0) {
-                    // Receive through self pipe
-                    char buff[1];
-                    read(fileno(clientstream[it]), buff, 1);
-                    //cerr << "receive signal" << (int)buff[0] <<endl;
-                    signalHandler((int)buff[0]);
-                    continue;
-                }
                 //aggregate the new result to the total result
                 BatchR batchResult(P.nbAlgebraic,P.nbQualitatif);
 
                 if(batchResult.inputR(clientstream[it])){
 					//batchResult.print();
 					Result.addBatch(batchResult);
-					//If neaded output the progress of the computation.
+					//If required output the progress of the computation.
 					if((P.verbose>0 || P.alligatorMode) && P.computeStateSpace==0 )
                         Result.printProgress();
 				} else {
@@ -400,7 +369,7 @@ void launchServer(parameters& P){
 			}
         }
 		//Check if the simulation should continue.
-    }while(Result.continueSim() && clientstream.size()>1 && continueSelect);
+    }while(Result.continueSim() && !clientstream.empty() && continueSelect);
     signal(SIGCHLD, signalHandler);
     signal(SIGPIPE, signalHandler);
 
