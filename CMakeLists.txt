@@ -31,7 +31,7 @@ COMMAND ${FLEX_EXECUTABLE} -o Eval-scanner.cc --prefix=eval Eval-scanner.ll
 COMMAND ${BISON_EXECUTABLE} -o Eval-parser.cc -y -p eval Eval-parser.yy
 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/Eval")
 
-add_custom_command( OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser/Gspn-parser.hh ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser/Gspn-parser.cc
+add_custom_command( OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser/Gspn-scanner.hh ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser/Gspn-parser.hh
 COMMAND ${FLEX_EXECUTABLE} -o Gspn-scanner.cc --prefix=gspn Gspn-scanner.ll
 COMMAND ${BISON_EXECUTABLE} -o Gspn-parser.cc -y -p gspn Gspn-parser.yy
 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser")
