@@ -1,6 +1,7 @@
 build:
   script:
+    - rm -rf buildmake
     - mkdir buildcmake
     - cd buildcmake
     - cmake ../
-    - make -j4
+    - make
