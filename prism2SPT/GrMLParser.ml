@@ -134,16 +134,17 @@ let rec net_of_tree n = function
 	 )
 
        |  "node" when find_at "nodeType" alist = Some "place" ->
-	 ( match ((find_simp_prop "name" clist),(int_expr_of_atr "marking" clist),(find_id alist)) with
+	   let bo = (int_expr_of_atr "bound" clist) in
+	   ( match ((find_simp_prop "name" clist),(int_expr_of_atr "marking" clist),(find_id alist)) with
            | (Some name,Some im,Some id) ->  begin
 	   idmap := StringMap.add id name !idmap;
       	   Printf.printf "new place: %s\n\tmarking: %a\n" name printH_expr im;
-	   Data.add (name,(im,None)) n.Net.place;
+	   Data.add (name,(im,bo)) n.Net.place;
 	 end
          | (Some name,None,Some id) -> begin
 	   Printf.printf "new place: %s\n" name;
 	   idmap := StringMap.add id name !idmap;
-	   Data.add (name,(Int 0,None)) n.Net.place;
+	   Data.add (name,(Int 0,bo)) n.Net.place;
 	 end  
          | (None,None,Some _) ->  Printf.printf "Unknown node\n";
 	 | _ ->()
@@ -151,14 +152,21 @@ let rec net_of_tree n = function
        )
        |  "arc" -> (
 	 let sid = find_at "source" alist |>>> (fun x -> StringMap.find x !idmap)
-	 and tid = find_at "target" alist |>>> (fun x -> StringMap.find x !idmap) in
-	 begin match ((find_id alist),(sid),(tid),(int_expr_of_atr "valuation" clist)) with
-           | (_,Some source,Some target,Some v) ->
+	 and tid = find_at "target" alist |>>> (fun x -> StringMap.find x !idmap)
+	 and arctype = find_at "arcType" alist |>>| "arc" in
+	 begin match ((find_id alist),(sid),(tid),(int_expr_of_atr "valuation" clist),arctype ="inhibitorarc" ) with
+           | (_,Some source,Some target,Some v, false) ->
 	     Printf.printf " (%s)-(%a)->(%s)\n" source printH_expr v target ;
 	     Net.add_arc n source target v
-	   | (_,Some source,Some target,_) -> Printf.printf " (%s)-(1)->(%s)\n" source target ;
+	   | (_,Some source,Some target,Some v, true) ->
+	     Printf.printf " (%s)-(%a)-o(%s)\n" source printH_expr v target ;
+	     Net.add_inhibArc n source target v
+	   | (_,Some source,Some target, None ,false) -> Printf.printf " (%s)-(1)->(%s)\n" source target ;
 	     StochPTPrinter.print_spt_marcie "test.andl" n ;
 	     Net.add_arc n source target (Int 1)
+	   | (_,Some source,Some target,None, true) -> Printf.printf " (%s)-(1)-o(%s)\n" source target ;
+	     StochPTPrinter.print_spt_marcie "test.andl" n ;
+	     Net.add_inhibArc n source target (Int 1)
 	   | _-> ()
 	 end
     )

@@ -86,13 +86,14 @@ StringInSpnLHA(false),
 
 GMLinput(false),
 computeStateSpace(0),
+lumpStateSpace(false),
 alligatorMode(false),
 unfold(""),
 isTTY(true),
 terminalWidth(80),
 
 gcccmd("g++"),
-gccflags("-O3 -Wno-return-type"),
+gccflags("-Wno-return-type -std=c++11"),
 lightSimulator(false),
 
 prismPath(""),
@@ -167,9 +168,10 @@ void parameters::usage() {
 
 
     cout << "Miscellaneous options:" << endl;
-    cout << "\t-g,--grmlinput \tuse gml file format for input file" << endl;
+    cout << "\t-g,--grmlinput \tforce use of grml file format for input file" << endl;
     cout << "\t--alligator-mode \toutput easy to parse result" << endl;
     cout << "\t--unfold arg \tUnfold the GSPN given as input" << endl;
+    cout << "\t--output-model arg \tReturn the GSPN file given as input" << endl;
     cout << "\t--count-transition \tAdd a Hasl formula for wich count the number of time each transition occurs" << endl;
     cout << "\t--tmp-path arg \tPath to the temporary directory by default ./tmp/" << endl;
     cout << "\t--bin-path arg \tPath to the binary of cosmos (guess automatically)" << endl;
@@ -188,6 +190,8 @@ void parameters::usage() {
     cout << "\t--formula f\t specify a CSL formula to use instead of an automata" << endl;
     cout << "\t--prism \tExport the state space and launch prism." << endl;
     cout << "\t-s,--state-space \tExport the state space." << endl;
+    cout << "\t--lump-state-space \tLump the state space before exporting." << endl;
+    
 
 }
 
@@ -258,6 +262,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"epsilon",     required_argument, 0, CO_epsilon},
             {"set-Horizon", required_argument, 0, CO_set_Horizon},
             {"state-space", no_argument      , 0, CO_state_space},
+            {"lump-state-space", no_argument , 0, CO_lump},
             {"prism",       no_argument      , 0, CO_prism},
             {"normalize-IS", no_argument     , 0, CO_normalize_IS},
 
@@ -268,6 +273,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
 
             /* Miscellaneous options */
             {"unfold",      required_argument, 0, CO_unfold},
+            {"output-model", required_argument,0, CO_output_model},
             {"HASL-formula", required_argument, 0, CO_HASL_formula},
             {"HASL-expression", required_argument, 0, CO_HASL_formula},
             {"njob",        required_argument, 0, CO_njob},
@@ -363,6 +369,9 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 StringInSpnLHA = true;
                 localTesting = false; //Need to unfire transition, not implemented for local testing
                 break;
+                
+            case CO_lump: lumpStateSpace = true;
+                break;
 
             case CO_prism:computeStateSpace = 1;
                 StringInSpnLHA = true;
@@ -374,6 +383,8 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 break;
 
             case CO_unfold:unfold = optarg;
+                break;
+            case CO_output_model:outputModel =optarg;
                 break;
 
             case CO_level:Level = atof(optarg);
