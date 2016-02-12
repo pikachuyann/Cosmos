@@ -12,9 +12,11 @@ sig
   val add : 'a * 'b -> ('a, 'b, 'k) t -> unit
   val foldi : ('a -> 'k key -> 'b * 'c -> 'a) -> 'a -> ('b, 'c, 'k) t -> 'a
   val fold : ('a -> 'b * 'c -> 'a) -> 'a -> ('b, 'c, 'k) t -> 'a
+  val reduce : ( 'a*'b -> 'a*'b -> 'a*'b) -> ('a, 'b, 'k) t -> ('a*'b) option
   val iteri : ( 'k key -> 'a * 'b -> unit ) -> ('a, 'b, 'k) t -> unit
   val iter : ( 'a * 'b -> unit ) -> ('a, 'b, 'k) t -> unit
-  val map :  ('a, 'b, 'k) t -> ('b -> 'c) -> ('a, 'c, 'k) t
+  val map :  ('a -> 'b -> ('a *'c)) -> ('a, 'b, 'k) t -> ('a, 'c, 'k) t
+  val filter : ('a -> 'b -> bool) -> ('a, 'b, 'k) t ->  ('a, 'b, 'k) t 
   val adds : ('a, 'b, 'k) t -> ('a, 'b, 'l) t -> unit
   val size : ('a, 'b, 'k) t -> int
   val sample : ('a, 'b, 'k) t -> 'a * 'b
@@ -71,6 +73,17 @@ struct
                  done;
                  !buff
 
+  let reduce f t = match t.table with
+      None -> None
+    | Some t1 ->
+       if t.size =0 then None
+       else  let buff = ref t1.(0) in
+                 for i = 1 to t.size-1 do
+		   (* Here we cannot used t.(i) in case f reschedules the table*)
+                   buff := f !buff (acca t i); 
+                 done;
+                 Some (!buff)
+
   let fold f e t = foldi (fun b _ a -> f b a) e t
   let iteri f t = foldi (fun _ i a -> f i a) () t
   let iter f t = foldi (fun _ _ a -> f a) () t
@@ -78,12 +91,17 @@ struct
   let adds t1 t2 =
     iter (fun x -> add x t1) t2
 
-  let map t1 f =
+  let map f t1 =
     let t2 = create () in
-    iter (fun (x,y) -> add (x,f y) t2) t1;
+    iter (fun (x,y) -> add (f x y) t2) t1;
     t2
 
-  let copy t1 = map t1 (fun x -> x)
+  let filter p t1 =
+    let t2 = create () in
+    iter (fun (x,y) -> if p x y then add (x,y) t2) t1;
+    t2
+      
+  let copy t1 = map (fun x y -> x,y) t1
 
   let size t = t.size
   let sample d = match d.table with

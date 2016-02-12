@@ -89,12 +89,17 @@ public:
     bool is_markDep()const;
     void get_places(std::set<std::string>&)const;
     void eval(const std::map<std::string,int>&,const std::map<std::string,double>&);
+    void eval();
+    void printXML(std::ostream&) const;
+    
     friend std::ostream& operator<<(std::ostream& os, const expr& e);
+    
 private:
     double get_real()const;
     expType mix(const expr &l, const expr &r)const;
 
 };
+
 
 
 

@@ -97,6 +97,53 @@ std::ostream& operator<<(std::ostream& os, const class expr& e)
     return os;
 }
 
+void expr::printXML(ostream &os)const{
+    switch (t) {
+        case Empty:
+            break;
+        case UnParsed: os << "<attribute name=\"expr\"><attribute name=\"unParsed\">"<< stringVal << "</attribute></attribute>";
+            break;
+        case Bool: os << "<attribute name=\"expr\"><attribute name=\"boolValue\">"<< boolalpha << boolVal << "</attribute></attribute>";
+            break;
+        case Int:  os << "<attribute name=\"expr\"><attribute name=\"intValue\">"<< intVal << "</attribute></attribute>";
+            break;
+        case Real: os << "<attribute name=\"expr\"><attribute name=\"numValue\">"<< realVal << "</attribute></attribute>";
+            break;
+        case PlaceName: os << "<attribute name=\"expr\"><attribute name=\"name\">"<< stringVal << "</attribute></attribute>";
+            break;
+        case Constant: os << "<attribute name=\"expr\"><attribute name=\"name\">"<< stringVal << "</attribute></attribute>";
+            break;
+        case Plus:
+            os << "<attribute name=\"expr\"><attribute name=\"function\"><attribute name=\"+\">";
+            lhs->printXML(os);
+            rhs->printXML(os);
+            os << "</attribute></attribute></attribute>";
+            break;
+        case Times:
+            os << "<attribute name=\"expr\"><attribute name=\"function\"><attribute name=\"*\">";
+            lhs->printXML(os);
+            rhs->printXML(os);
+            os << "</attribute></attribute></attribute>";
+            break;
+        case Minus:
+            os << "<attribute name=\"expr\"><attribute name=\"function\"><attribute name=\"-\">";
+            lhs->printXML(os);
+            rhs->printXML(os);
+            os << "</attribute></attribute></attribute>";
+            break;
+
+        case Div:
+            os << "<attribute name=\"expr\"><attribute name=\"function\"><attribute name=\"/\">";
+            lhs->printXML(os);
+            rhs->printXML(os);
+            os << "</attribute></attribute></attribute>";
+            break;
+       default:
+            cerr << "PrintXML Not yet implemented";
+            exit(EXIT_FAILURE);
+    }
+}
+
 double expr::get_real()const{
     if(t==Int) return (double)intVal;
     else if(t==Real) return realVal;
@@ -261,6 +308,10 @@ void expr::eval(const map<string,int> &intconst,const map<string,double> &realco
             }
             break;
     }
+}
+
+void expr::eval(){
+    eval(map<string,int>(), map<string,double>());
 }
 
 void expr::get_places(set<string> & acset)const{

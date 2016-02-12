@@ -50,6 +50,7 @@
 Eval Evaluate_gml;
 
 using namespace std;
+using namespace textOutput;
 
 gmlinputexception gmlioexc;
 
@@ -215,9 +216,7 @@ void MyModelHandler::eval_tokenProfileArc(coloredToken& tok, bool &markingdepend
             if (*it2 == "occurs") {
                 const auto e = eval_expr(it2.begin());
                 markingdependant |= e.is_markDep();
-                stringstream ss;
-                ss << e;
-                tok.mult = ss.str();
+                tok.mult = e;
             }
             if (*it2 == "tokenProfile") {
                 if ((P.verbose - 3) > 1)cout << *it2 << endl;
@@ -532,6 +531,7 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                                 intBound = find(tclasstypeenum.begin(), tclasstypeenum.end(), "higherBound");
                                 high = eval_intFormula(intBound.begin());
 
+                                cc.intIntervalName = cc.name+"_IC_";
                                 for (int i = low; i <= high; i++) {
                                     stringstream ss;
                                     ss << cc.name << "_IC_" << i;
@@ -709,6 +709,8 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     cerr << "Unknown Domain '" << Pldomain << "'" << endl;
                 else p.colorDom = colord;
 
+            } else if (*it2 == "bound") {
+                
             } else throw (gmlioexc);
 
         }
@@ -726,7 +728,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
 
             transition trans;
             trans.id = MyGspn->transitionStruct.size();
-            trans.label = id;
+            trans.name = id;
             trans.type = Timed;
             trans.priority = expr(1);
             trans.weight = expr(1.0);
@@ -740,7 +742,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                     string Trname = simplifyString(*(++(it->second.begin())));
                     if ((P.verbose - 3) > 1)cout << "\tname:" << Trname << endl;
                     MyGspn->TransList.insert(Trname);
-                    trans.label = Trname;
+                    trans.name = Trname;
                     if (MyGspn->TransId.count(Trname) > 0) {
                         cerr << "error:Two transitions with the name:" << Trname << endl;
                         throw gmlioexc;
@@ -844,7 +846,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
                 trans.dist.name = "EXPONENTIAL";
                 trans.dist.Param.push_back(expr(1.0));
                 if ((P.verbose - 3) >= 0) {
-                    cout << "[Warning] Transition " << trans.label;
+                    cout << "[Warning] Transition " << trans.name;
                     cout << " have no distribution.";
                     cout << " Assigne exponential with parameter 1" << endl;
                 }
@@ -882,13 +884,13 @@ void MyModelHandler::on_read_arc(const XmlString& id,
                 MyGspn->transitionStruct.push_back(trans);
 
                 MyGspn->TransId["selfloop"] = MyGspn->tr;
-                MyGspn->TransList.insert(trans.label);
+                MyGspn->TransList.insert(trans.name);
                 MyGspn->tr++;
             }
 
             //Add a place
             place p;
-            p.Marking = "0";
+            p.Marking = expr(0);
             coloredToken ctok(0);
             p.initMarking=vector<coloredToken>(1, ctok);
 
@@ -904,7 +906,7 @@ void MyModelHandler::on_read_arc(const XmlString& id,
             transition trans(MyGspn->transitionStruct.size(), "Puittrans", expr(0.0), true);
             MyGspn->transitionStruct.push_back(trans);
 
-            MyGspn->TransList.insert(trans.label);
+            MyGspn->TransList.insert(trans.name);
             MyGspn->tr++;
         }
     }

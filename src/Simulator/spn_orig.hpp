@@ -20,62 +20,33 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file SimulatorRE.hpp created by Benoit Barbot on 09/11/11.                  *
+ * file spn_orig.hpp created by Benoit Barbot on 03/09/15.                     *
  *******************************************************************************
  */
 
+#ifndef __Cosmos__spn_orig__
+#define __Cosmos__spn_orig__
 
-#include "Simulator.hpp"
-#include "stateSpace.hpp"
-#include "spn_orig.hpp"
 
-#ifndef _SIMULATOR_RE_HPP
-#define _SIMULATOR_RE_HPP
+#include "spn.hpp"
+#include "EventsQueue.hpp"
+#include "timeGen.hpp"
 
-class SPN_RE: public SPN_orig{
+class SPN_orig : public SPN
+{
 public:
-    SPN_RE(int& v,bool doubleIS);
+    SPN_orig(int&);
 
-    bool rareEventEnabled;
+    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &);
+    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &);
+    virtual void InitialEventsQueue(EventsQueue &,timeGen &);
 
-    virtual void initialize(stateSpace *muprob);
-    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &)override;
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &)override;
-    virtual void InitialEventsQueue(EventsQueue &,timeGen &)override;
-
-    virtual double mu();
-    const bool doubleIS_mode;
+    int &verbose;
 
 protected:
-    stateSpace * muprob;
-
-private:
-    virtual void getParams(size_t,const abstractBinding&);
-    virtual double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
-};
-
-
-class SimulatorRE: public Simulator{
-public:
-	SimulatorRE(SPN_orig&,LHA_orig&);
-	
-	virtual void initVect();
-	
-protected:
-
-    //TAB muprob;  // mu(s) table
-    stateSpace * muprob;
-
-	virtual void SimulateSinglePath() override;
-	virtual void returnResultTrue() override;
-	//virtual void GenerateDummyEvent(Event &, size_t);
-	virtual void updateLikelihood(size_t) override;
-    virtual bool transitionSink(size_t) override;
-	virtual void reset() override;
-	
+    //! a Temporary event
+    Event F;
 
 };
 
-
-#endif  /* _SIMULATOR_RE_HPP */
-
+#endif /* defined(__Cosmos__spn_orig__) */

@@ -47,6 +47,7 @@
 #include "parameters.hpp"
 #include "Generator.hpp"
 #include "GspnParser/unfolder.hpp"
+#include "GspnParser/Gspn-Grml-Output.hpp"
 
 /**
  * Retrive the real absolute path of the executable of Cosmos
@@ -220,6 +221,13 @@ int main(int argc, char** argv) {
             return EXIT_SUCCESS;
         }
 
+        if (!P.outputModel.empty()) {
+            GspnGrmlOutput outspn(*pGSPN);
+            ofstream outfile(P.outputModel, ios::out | ios::trunc);
+            outspn.print(outfile);
+            return EXIT_SUCCESS;
+        }
+        
         if(P.MaxRuns == 0 && P.lightSimulator){
             auto cmd = "cp "+P.Path+"../src/LightSimulator/*.* "+P.tmpPath;
             if(P.verbose>=3)cout << cmd << endl;

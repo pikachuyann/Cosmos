@@ -6,6 +6,7 @@ import re
 
 
 #prismpath="prism";
+
 prismpath="./prism";
 
 sagepath,ext = os.path.splitext(str(sys.argv[1]));

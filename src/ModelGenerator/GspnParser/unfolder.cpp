@@ -30,9 +30,9 @@
 
 string unfolder::str_of_vect(const vector<color> &v,const string &smid)const {
 	string acc;
-	for( auto s=v.begin(); s != v.end(); ++s){
+    for( let s : v){
 		acc += smid;
-		acc += s->name;
+		acc += s.name;
 	}
 	return acc;
 }
@@ -46,26 +46,14 @@ void unfolder::export_grml(ofstream& fout){
 	fout << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
 	fout << "<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">" << endl;
 	
-	for(const auto &p: placeStruct)export_place_grml(fout,p);
+	for(let p: placeStruct)export_place_grml(fout,p);
 	
-	for(const auto &t: transitionStruct)export_transition_grml(fout,t);
+	for(let t: transitionStruct)export_transition_grml(fout,t);
 	
-	for(const auto &t: transitionStruct)export_arc_grml(fout, t);
+	for(let t: transitionStruct)export_arc_grml(fout, t);
 	
 	fout << "</model>" << endl;
     cout << "Number of Places:" << nbPlace << "\tNumber of Transitions:" << nbTrans << "\tNumber of Arcs:" << nbArc << endl;
-}
-
-size_t unfolder::get_uid(const string &str){
-	//cout << "debug:\t" << str;
-	if(uid.count(str)>0){
-        //cout << " -> " << uid[str] << endl;
-        return uid[str];
-    }
-	size_t it = uid.size();
-	uid[str] = it;
-    //cout << " -> " << uid[str] << endl;
-	return it;
 }
 
 void unfolder::export_place_grml(ofstream &fout,const place &p){
@@ -74,24 +62,23 @@ void unfolder::export_place_grml(ofstream &fout,const place &p){
 		fout << "\t<node id=\"" << get_uid("place"+str) << "\" nodeType=\"place\">"<< endl;
 		fout << "\t\t<attribute name=\"name\">" << str << "</attribute>" << endl;
 		fout << "\t\t<attribute name=\"marking\"><attribute name=\"expr\"><attribute name=\"numValue\">" << endl;
-		if(p.Marking.compare("0")==0){
+		if(p.Marking.t == Int && p.Marking.intVal==0){
 			fout << "\t\t\t0" << endl;
 		} else if(p.colorDom != UNCOLORED_DOMAIN) {
 			fout << "\t\t\t1" << endl;
 		} else {
-            auto str = cleanstr(p.Marking);
-            fout << "\t\t\t" << str;
+            
+            fout << "\t\t\t";
+            p.Marking.printXML(fout);
         }
             fout << "\t\t</attribute></attribute></attribute>" << endl;
-
-		
 		fout << "\t</node>" << endl;
 		
 	});
 }
 
 void unfolder::export_transition_grml(ofstream &fout, const transition &t){
-		iterateVars(t.label , "_", "", t.varDomain , 0, [&](const string& str){
+		iterateVars(t.name , "_", "", t.varDomain , 0, [&](const string& str){
             nbTrans++;
 			fout << "\t<node id=\"" << get_uid("transition"+str) << "\" nodeType=\"transition\">"<< endl;
 			fout << "\t\t<attribute name=\"name\">" << str << "</attribute>" << endl;
@@ -114,7 +101,7 @@ void unfolder::export_transition_grml(ofstream &fout, const transition &t){
 		});
 }
 
-void unfolder::print_arc(ofstream &fout,size_t arcuid,size_t truid, size_t pluid, bool dir, const string val){
+void unfolder::print_arc(ofstream &fout,size_t arcuid,size_t truid, size_t pluid, bool dir, const expr &val){
     fout << "\t<arc id=\"" << arcuid;
 	fout << "\" arcType=\"arc\" source=\"";
 	if(dir){
@@ -128,7 +115,7 @@ void unfolder::print_arc(ofstream &fout,size_t arcuid,size_t truid, size_t pluid
 
 void unfolder::export_coltoken(ofstream &fout,const vector<color> &vec,
 							   const coloredToken &coltoken,const transition &t,const place &p,bool dir){
-	size_t truid = get_uid("transition"+t.label+str_of_vect(vec, "_"));
+	size_t truid = get_uid("transition"+t.name+str_of_vect(vec, "_"));
 	vector<color> vec2;
 	for ( size_t i =0 ; i != coltoken.field.size(); ++i) {
 		colorClass cc = colClasses[vec[coltoken.field[i]].cc];
@@ -140,16 +127,16 @@ void unfolder::export_coltoken(ofstream &fout,const vector<color> &vec,
 	}
 	size_t pluid = get_uid("place"+p.name+str_of_vect(vec2, "_"));
 	nbArc++;
-    size_t arcuid = get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
+    size_t arcuid = get_uid("arcpre_"+t.name+str_of_vect(vec, "_")+"_"+p.name);
 
 	print_arc(fout, arcuid, truid, pluid, dir, coltoken.mult);
 }
 
 void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const transition &t,const place &p, bool dir, const arc inoutarc){
     if (!inoutarc.isColored && !inoutarc.isEmpty) {
-        size_t truid = get_uid("transition"+t.label+str_of_vect(vec, "_"));
+        size_t truid = get_uid("transition"+t.name+str_of_vect(vec, "_"));
         size_t pluid = get_uid("place"+p.name);
-        size_t arcuid = get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
+        size_t arcuid = get_uid("arcpre_"+t.name+str_of_vect(vec, "_")+"_"+p.name);
         print_arc(fout,arcuid,truid,pluid,dir,to_string(inoutarc.intVal));
         return;
     }
@@ -159,7 +146,7 @@ void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const t
     } else if(toklist.size()>0){
         vector<color> iteratevec;
         iterateDomVec(iteratevec, colDoms[p.colorDom], 0, [&](const vector<color> &v){
-            int mult=0;
+            expr mult(0);
             for (auto coltoken: toklist) {
                 bool match = true;
                 for ( size_t i =0 ; i != coltoken.field.size(); ++i) {
@@ -172,14 +159,15 @@ void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const t
                         if(col != v[i].id)match=false;
                     }
                 }
-                if(match)mult += stoi(coltoken.mult);
+                if(match)mult = expr(Plus,mult,coltoken.mult);
             }
-            if(mult != 0){
+            mult.eval();
+            if(!mult.empty() || (mult.t == Int && mult.intVal != 0) ){
                 nbArc++;
-                size_t truid = get_uid("transition"+t.label+str_of_vect(vec, "_"));
+                size_t truid = get_uid("transition"+t.name+str_of_vect(vec, "_"));
                 size_t pluid = get_uid("place"+p.name+str_of_vect(v, "_"));
-                size_t arcuid = get_uid("arcpre_"+t.label+str_of_vect(vec, "_")+"_"+p.name);
-                print_arc(fout,arcuid,truid,pluid,dir,to_string(mult));
+                size_t arcuid = get_uid("arcpre_"+t.name+str_of_vect(vec, "_")+"_"+p.name);
+                print_arc(fout,arcuid,truid,pluid,dir,mult);
             }
         });
     }
