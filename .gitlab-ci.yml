@@ -14,4 +14,4 @@ Cosmos:
 modelConvert:
   script:
     - cd prism2SPT
-    - ./build
+    - ./build.sh
