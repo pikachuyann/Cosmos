@@ -181,7 +181,6 @@ Edges={
     fprintf f "((l2,l2),{t_a}, time%i>=2 & compA%i<=nstep-1 & ctime%i<=evt ,{countT = countT+1,compA%i=compA%i+1,time%i=0,ctime%i=0,pos=pos+1});\n" i i i i i i i;
     fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i>=1& ctime%i<=evt  & pos<=0,{countT = countT+1,compB%i=compB%i+1,compA%i=compA%i-1,ctime%i=0});\n" i (k-1) i i i i i i i;
     fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i<=0& ctime%i<=evt & pos<=0,{countT = countT+1,compB%i=compB%i+1,ctime%i=0});\n" i (k-1) i i i i i;
-
     fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i>=1& ctime%i<=evt & pos>=1,{countT = countT+1,compB%i=compB%i+1,compA%i=compA%i-1,ctime%i=0,pos=pos-1});\n" i (k-1) i i i i i i i;
     fprintf f "((l2,l2),{t_b}, compB%i<=%i & compA%i<=0& ctime%i<=evt & pos>=1,{countT = countT+1,compB%i=compB%i+1,ctime%i=0,pos=pos-1});\n" i (k-1) i i i i i;
   done;
