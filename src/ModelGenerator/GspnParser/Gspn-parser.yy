@@ -319,7 +319,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
       YYABORT;
     }
   transition *trans = new transition();
-  trans->label = $2->c_str();
+  trans->name = $2->c_str();
   trans->type = Timed;
   trans->dist.name = distrib;
   for(auto &s:Par)trans->dist.Param.push_back(expr(s));
@@ -343,7 +343,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
       YYABORT;
     }
   transition *trans = new transition();
-  trans->label = $2->c_str();
+  trans->name = $2->c_str();
   trans->type = Timed;
   trans->dist.name = distrib;
   for(auto &s:Par)trans->dist.Param.push_back(expr(s));
@@ -383,7 +383,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   }
   
   transition *trans = new transition();
-  trans->label = $2->c_str();
+  trans->name = $2->c_str();
   trans->type = Timed;
   trans->dist.name = "EXPONENTIAL";
   for(auto &s:v)trans->dist.Param.push_back(expr(s));
@@ -425,7 +425,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
   }
   
   transition *trans = new transition();
-  trans->label = $2->c_str();
+  trans->name= $2->c_str();
   trans->type = Timed;
   trans->dist.name = "EXPONENTIAL";
   for(auto &s:v)trans->dist.Param.push_back(expr(s));
@@ -452,7 +452,7 @@ TRANSITION: LB str COMMA dist COMMA PRIORITY COMMA WEIGHT RB SEMICOLON {
     }
 
   transition *trans = new transition();
-  trans->label = $2->c_str();
+  trans->name = $2->c_str();
   trans->type = unTimed;
   trans->dist.name = "IMMEDIATE";
   trans->priority = *$6;

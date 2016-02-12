@@ -20,62 +20,32 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file SimulatorRE.hpp created by Benoit Barbot on 09/11/11.                  *
+ * file Gspn-Grml-Output.hpp                                                   *
+ * Created by Benoit Barbot on 02/11/2015.                                     *
  *******************************************************************************
  */
 
+#ifndef Gspn_Grml_Output_hpp
+#define Gspn_Grml_Output_hpp
 
-#include "Simulator.hpp"
-#include "stateSpace.hpp"
-#include "spn_orig.hpp"
+#include <stdio.h>
 
-#ifndef _SIMULATOR_RE_HPP
-#define _SIMULATOR_RE_HPP
+#include "Gspn-model.hpp"
+#include "Gspn-Reader.hpp"
 
-class SPN_RE: public SPN_orig{
+class GspnGrmlOutput: public GspnType {
+    
 public:
-    SPN_RE(int& v,bool doubleIS);
-
-    bool rareEventEnabled;
-
-    virtual void initialize(stateSpace *muprob);
-    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &)override;
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &)override;
-    virtual void InitialEventsQueue(EventsQueue &,timeGen &)override;
-
-    virtual double mu();
-    const bool doubleIS_mode;
-
-protected:
-    stateSpace * muprob;
-
+    GspnGrmlOutput(GspnType& g):GspnType(g){};
+    
+    void print(std::ostream&);
 private:
-    virtual void getParams(size_t,const abstractBinding&);
-    virtual double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
+    void printPlace(std::ostream&,const place &);
+    void printDistribution(std::ostream&,const Distribution &);
+    void printTransition(std::ostream&,const transition &);
+    void printToken(ostream& os, const coloredToken& c, size_t)const;
+    void printArc(ostream& os, const pair<size_t,size_t> &p, const arc& a,bool,size_t);
 };
 
 
-class SimulatorRE: public Simulator{
-public:
-	SimulatorRE(SPN_orig&,LHA_orig&);
-	
-	virtual void initVect();
-	
-protected:
-
-    //TAB muprob;  // mu(s) table
-    stateSpace * muprob;
-
-	virtual void SimulateSinglePath() override;
-	virtual void returnResultTrue() override;
-	//virtual void GenerateDummyEvent(Event &, size_t);
-	virtual void updateLikelihood(size_t) override;
-    virtual bool transitionSink(size_t) override;
-	virtual void reset() override;
-	
-
-};
-
-
-#endif  /* _SIMULATOR_RE_HPP */
-
+#endif /* Gspn_Grml_Output_hpp */

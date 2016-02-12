@@ -38,7 +38,7 @@
 #include <limits>
 
 
-SimulatorContinuousBounded::SimulatorContinuousBounded(LHA_orig& a,int m,double e,int js):SimulatorBoundedRE(A,m){
+SimulatorContinuousBounded::SimulatorContinuousBounded(SPN_orig &N,LHA_orig& A,int m,double e,int js):SimulatorBoundedRE(N,A,m){
     epsilon = e;
 	if(js>0){
 		jumpsize = js;
@@ -149,7 +149,7 @@ BatchR SimulatorContinuousBounded::RunBatch(){
                 
                 if (it->maxStep == fg->right -n) {
                     //We first need to initialise the trajectory
-                    Simulator::InitialEventsQueue();
+                    N.InitialEventsQueue(*EQ,*this);
 					if(verbose>=2)
 						//cerr << "new Path: " << it->maxStep << "\tmuinit: " << mu() << endl;
                     it->saveState(&N,&A,&EQ);
