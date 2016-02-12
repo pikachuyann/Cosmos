@@ -1,3 +1,6 @@
+before_script:
+  - eval `opam config env`
+
 build:
   script:
     - rm -rf build
