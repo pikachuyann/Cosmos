@@ -1,0 +1,6 @@
+build:
+  script:
+    - mkdir buildcmake
+    - cd buildcmake
+    - cmake ../
+    - make -j4
