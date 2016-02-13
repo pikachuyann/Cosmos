@@ -27,9 +27,13 @@ modelConvert:
     - mkdir -p bin
     - cd prism2SPT
     - ./build.sh
+  artifacts:
+    paths:
+      - bin/
     
 test:
   stage: test
   script:
+    - echo `pwd`
     - cd Examples
     - ocaml bench.ml
