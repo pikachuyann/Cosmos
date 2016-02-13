@@ -5,7 +5,7 @@ stages:
   - build
   - test
 
-cmake-build
+cmake-build:
   stage: build
   script:
     mkdir -p build-cmake
