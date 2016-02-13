@@ -4,6 +4,7 @@ before_script:
 stages:
   - configure
   - build
+  - test
 
 configure:
     stage: configure
