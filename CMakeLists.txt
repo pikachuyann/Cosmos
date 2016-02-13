@@ -31,7 +31,7 @@ COMMAND ${FLEX_EXECUTABLE} -o Eval-scanner.cc --prefix=eval Eval-scanner.ll
 COMMAND ${BISON_EXECUTABLE} -o Eval-parser.cc -y -p eval Eval-parser.yy
 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/Eval")
 
-add_custom_command( OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser/Gspn-scanner.hh ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser/Gspn-parser.hh
+add_custom_command( OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser/Gspn-scanner.cc ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser/Gspn-parser.cc
 COMMAND ${FLEX_EXECUTABLE} -o Gspn-scanner.cc --prefix=gspn Gspn-scanner.ll
 COMMAND ${BISON_EXECUTABLE} -o Gspn-parser.cc -y -p gspn Gspn-parser.yy
 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser")
@@ -42,6 +42,11 @@ COMMAND ${BISON_EXECUTABLE} -o Lha-parser.cc -y -p lha Lha-parser.yy
 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/LhaParser")
 
 file(GLOB_RECURSE Cosmos_SOURCES "src/ModelGenerator/*.cpp" "src/ModelGenerator/*.cc" "src/libgrml/*.cc" "src/Simulator/BatchR.cpp" )
+
+SET_SOURCE_FILES_PROPERTIES("src/ModelGenerator/GspnParser/Gspn-Reader.cpp" PROPERTIES OBJECT_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/GspnParser/Gspn-parser.cc)
+SET_SOURCE_FILES_PROPERTIES("src/ModelGenerator/Eval/Eval.cpp" PROPERTIES OBJECT_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/Eval/Eval-parser.cc)
+SET_SOURCE_FILES_PROPERTIES("src/ModelGenerator/LhaParser/Lha-Reader.cpp" PROPERTIES OBJECT_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/ModelGenerator/LhaParser/Lha-parser.cc)
+
 include_directories ("src/libgrml" ${EXPAT_INCLUDE_DIR})
 add_executable(Cosmos ${Cosmos_SOURCES})
 target_link_libraries (Cosmos grml ${EXPAT_LIBRARY})
