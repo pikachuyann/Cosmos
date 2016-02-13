@@ -5,6 +5,15 @@ stages:
   - build
   - test
 
+cmake-build
+  stage: build
+  script:
+    mkdir -p build-cmake
+    cd build-cmake
+    cmake ../
+    make -j 4
+
+
 Cosmos:
   stage: build
   script:
