@@ -20,6 +20,11 @@ Cosmos:
       - bin/
       - lib/
       - include/
+  cache:
+    paths:
+      - bin/
+      - lib/
+      - include/
 
 modelConvert:
   stage: build
@@ -28,6 +33,9 @@ modelConvert:
     - cd prism2SPT
     - ./build.sh
   artifacts:
+    paths:
+      - bin/
+  cache:
     paths:
       - bin/
     
