@@ -8,10 +8,10 @@ stages:
 cmake-build:
   stage: build
   script:
-    mkdir -p build-cmake
-    cd build-cmake
-    cmake ../
-    make -j 4
+    - mkdir -p build-cmake
+    - cd build-cmake
+    - cmake ../
+    - make -j 4
 
 
 Cosmos:
