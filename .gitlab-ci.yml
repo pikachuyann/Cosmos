@@ -15,6 +15,11 @@ Cosmos:
     - ../configure --prefix=`pwd`/../ LEX=/usr/local/Cellar/flex/2.5.39/bin/flex YACC=/usr/local/Cellar/bison/3.0.4/bin/bison --enable-silent-rules
     - make -j 4
     - make install    
+  artifacts:
+    paths:
+      - bin/
+      - lib/
+      - include/
 
 modelConvert:
   stage: build
