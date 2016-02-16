@@ -35,6 +35,7 @@
 		0336B7FA198A3BF30043EFC6 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D8198A3BF30043EFC6 /* Makefile */; };
 		0336B7FB198A3BF30043EFC6 /* readPlast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D9198A3BF30043EFC6 /* readPlast.cpp */; };
 		03541DD71BE7B7A9005741C6 /* Gspn-Grml-Output.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */; };
+		035A30B21C623F8F0009AF0A /* libboost_serialization.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 035A30B11C623F8F0009AF0A /* libboost_serialization.dylib */; };
 		035EBAB418FFD70F00B73DBF /* expressionStruct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035EBAB218FFD70F00B73DBF /* expressionStruct.cpp */; };
 		0365553A18292D10001B5947 /* foxglynn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0365553818292D10001B5947 /* foxglynn.cpp */; };
 		0365553B18292D10001B5947 /* foxglynn.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0365553918292D10001B5947 /* foxglynn.hpp */; };
@@ -288,6 +289,7 @@
 		032A70A5181BC307006D7332 /* tree.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree.hh; sourceTree = "<group>"; };
 		032A70A6181BC307006D7332 /* tree_util.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_util.hh; sourceTree = "<group>"; };
 		032C6B451B8DC4E2007EFB67 /* LHA_orig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LHA_orig.hpp; sourceTree = "<group>"; };
+		0334C0901C3EA8F200D0C79E /* Polynome.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Polynome.hpp; sourceTree = "<group>"; };
 		0336B7CC198A3BF30043EFC6 /* exPapier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exPapier.cpp; sourceTree = "<group>"; };
 		0336B7CD198A3BF30043EFC6 /* exPapier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = exPapier.hpp; sourceTree = "<group>"; };
 		0336B7CE198A3BF30043EFC6 /* experiments.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = experiments.cpp; sourceTree = "<group>"; };
@@ -306,6 +308,7 @@
 		034509A616A80AC8002088B3 /* libClientSim.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClientSim.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Grml-Output.cpp"; sourceTree = "<group>"; };
 		03541DD61BE7B7A9005741C6 /* Gspn-Grml-Output.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Grml-Output.hpp"; sourceTree = "<group>"; };
+		035A30B11C623F8F0009AF0A /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = ../../../../../usr/local/lib/libboost_serialization.dylib; sourceTree = "<group>"; };
 		035EBAB218FFD70F00B73DBF /* expressionStruct.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = expressionStruct.cpp; sourceTree = "<group>"; };
 		035EBAB318FFD70F00B73DBF /* expressionStruct.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = expressionStruct.hpp; sourceTree = "<group>"; };
 		0365553818292D10001B5947 /* foxglynn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = foxglynn.cpp; sourceTree = "<group>"; };
@@ -1079,6 +1082,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */,
+				035A30B21C623F8F0009AF0A /* libboost_serialization.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1306,6 +1310,7 @@
 				032A705C181BC0D6006D7332 /* SimulatorContinuousBounded.cpp */,
 				032A705D181BC0D6006D7332 /* SimulatorContinuousBounded.hpp */,
 				032A7060181BC0D6006D7332 /* sparse_io.hpp */,
+				0334C0901C3EA8F200D0C79E /* Polynome.hpp */,
 				032A7041181BC0D6006D7332 /* clientsim.cpp */,
 			);
 			path = Simulator;
@@ -3017,6 +3022,7 @@
 		03FB40F418180F9D001F9988 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				035A30B11C623F8F0009AF0A /* libboost_serialization.dylib */,
 				03FB40F518180F9D001F9988 /* XCTest.framework */,
 			);
 			name = Frameworks;
