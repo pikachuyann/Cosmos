@@ -29,6 +29,9 @@
 #include <iostream>
 #include <fstream>
 #include <ostream>
+//#include <boost/archive/text_oarchive.hpp>
+//#include <boost/archive/text_iarchive.hpp>
+//#include <boost/serialization/vector.hpp>
 
 #ifndef _BATCHR_HPP
 #define	_BATCHR_HPP
@@ -45,6 +48,7 @@ struct SimOutput {
  * It is used both by the simulator and the main program.
  */
 class BatchR {
+    
 public:
     BatchR(size_t,size_t);
 	
@@ -90,7 +94,14 @@ public:
     void outputR(std::ostream &f);
 	
     bool inputR(FILE* f);
+    //void inputR(std::istream &f);
     void print()const; //! Print human readable version of batch on stdout.
+/*
+private:
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version);*/
+    
 };
 
 

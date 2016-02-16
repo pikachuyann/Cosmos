@@ -298,11 +298,11 @@ let time f x =
 let runExp () =
   let cmd = Printf.sprintf "sage script_tocosmos.sage %s %s.grml %i" "twoears.prism" "twoears.prism" 5 in
   print_endline cmd;
-  assert (0=Sys.command cmd);
-  execSavedCosmos ~prefix:false ("Running Example","twoears.prism.grml","runningExB.lha"," --max-run 10000 --width 0");
+  assert (0=Sys.command cmd);;
+  execSavedCosmos ~prefix:false ("Running Example","twoears.prism.grml","runningExB.lha"," --max-run 10000 --width 0")
 
 
-	 
+	 (*
 (* EXP3 *)
 let exp3 () =
   let b = 12
@@ -314,10 +314,11 @@ let exp3 () =
 
       (*run3 (4) b minRep npoly c1 c2 dline 2 8;*)
   for i = 2 to 6 do
-    
     time (run3 (2*i) (8+2*i) minRep (2*i+5) c1 c2 dline 2) 8;
   done;;
+	  *)
+let _ = runExp ();;
 
-let _ = runExp ()
-
-	       let _ = exp3 ()
+  (*
+let _ = exp3 ();;
+   *)

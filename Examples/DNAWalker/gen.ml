@@ -183,14 +183,14 @@ let dist2 = 1.15;;
 
 let generate_spn fpath li2 ks failure obj =
   let li = mapsq3 li2 in
-  let net = gen_spn2 ~gentrans:false ~genloop:true ~genfailure:true ~genimm:true fpath li ks failure in
-  (*StochPTPrinter.print_spt (fpath^".grml") net;
+  let net = gen_spn2 ~gentrans:true ~genloop:true ~genfailure:true ~genimm:true fpath li ks failure in
+  StochPTPrinter.print_spt (fpath^".grml") net;
   StochPTPrinter.print_pnml (fpath^".pnml") net;
   generate_lha (fpath^".lha") li obj;
   StochPTPrinter.print_spt_marcie (fpath^".andl") net;
   generate_csl (fpath^".csl") li obj;
-  print_prism_module (fpath^".sm") net;
-  generate_pctl (fpath^".pctl") li obj;*)
+  (*print_prism_module (fpath^".sm") net;*)
+  generate_pctl (fpath^".pctl") li obj;
   StochPTPrinter.print_spt_dot ~showlabel:true (fpath^".dot") net []
         (List.fold_left (fun q (n,_,_,(px1,py1)) ->
 	  let px,py = (px1*.dist2,py1*.dist2) in
@@ -203,8 +203,8 @@ let generate_spn fpath li2 ks failure obj =
 (*  ignore (Sys.command (Printf.sprintf "prism %s.sm %s.pctl --sim --simsamples 2000000" fpath fpath));;*)
  (* ignore (Sys.command (Printf.sprintf "/usr/bin/time -l prism %s.sm %s.pctl" fpath fpath));;*)
  (* ignore (Sys.command (Printf.sprintf "/usr/bin/time -v prism %s.sm %s.pctl -transientmethod fau -faudelta 1E-10 -fauepsilon 1E-8" fpath fpath));;*)
-(* ignore (Sys.command (Printf.sprintf "marcie --net-file %s.andl --csl-file %s.csl --approximative" fpath fpath));;*)
-  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;
+  ignore (Sys.command (Printf.sprintf "./marcie --net-file %s.andl" (* --csl-file %s.csl --approximative fpath*) fpath));;
+(*  ignore (Sys.command (Printf.sprintf "dot -Kfdp -Tpdf %s.dot -o %s.pdf" fpath fpath));;*)
 (*  execSavedCosmos ~prefix:false (fpath,fpath^".grml",fpath^".lha"," --njob 2");;*)
 
 let gen28 f l1 r1 l2 r2 obj =
@@ -333,7 +333,7 @@ let lozange f n m fb =
 
 
 
-
+(*
 generate_spn "ex" [
   (1,Init,0,(0.0,0.0)); 
   (2,Final,1,(2.0,0.0));] 
@@ -391,6 +391,8 @@ generate_spn "controlMissing7" [
   (6,Norm ,1,(2.5,-.5.0)); 
   (8,Final,1,(3.5,-.7.0))]
 0.009 0.3 "A8=2";; 
+
+ *)
 
 (*generate_lha "track12Block1.lha" "a8<2 & a12<2" "a12=2" "a8=2";*)
 generate_spn "track12Block1" [ 
@@ -514,11 +516,12 @@ let redondantChoice bl br =
 
 ] 0.009 0.3 (if bl=1 then "A32=2" else "A33=2");; 
 
+(*
 redondantChoice 1 0;;
 redondantChoice 0 1;;
+*)
 
-
-(*lozange "lozange" 10 10 (fun _ _ -> 1);;*)
+lozange "lozange" 10 10 (fun _ _ -> 1);;
  
 let ra x = (float x) -. 5.5;;
 let ra2 x y = (ra x)*.(ra x) +. (ra y)*.(ra y);;

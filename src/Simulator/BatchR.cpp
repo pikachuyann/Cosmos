@@ -30,7 +30,6 @@
 #include <float.h>
 #include <stdlib.h>
 
-
 #include "BatchR.hpp"
 
 using namespace std;
@@ -131,6 +130,10 @@ void BatchR::unionR(const BatchR &batch){
  * be read by the function BatchR::inputR
  */
 void BatchR::outputR(ostream &f) {
+    //boost::archive::text_oarchive foa(f);
+    
+    //foa << *this;
+    
     unsigned long int check = 8427;   //magic value
     f.write(reinterpret_cast<char*>(&check),sizeof(check));
     f.write(reinterpret_cast<char*>(&I),sizeof(I));
@@ -156,6 +159,12 @@ void BatchR::outputR(ostream &f) {
 
     f.flush();
 }
+
+/*void BatchR::inputR(istream &f){
+    boost::archive::text_iarchive fia(f);
+    fia >> *this;
+}*/
+
 
 /**
  * Read a batch from a file.
@@ -227,6 +236,14 @@ bool BatchR::inputR(FILE* f) {
 
     return ok;
 }
+
+/*
+template<class Archive>
+void BatchR::serialize(Archive & ar, const unsigned int)
+{
+    ar & I & Isucc & IsBernoulli & Mean & M2 & M3 & M4 & Min & Max & bernVar & simTime;
+}*/
+
 
 void BatchR::print()const{
   cerr << "I:\t" << I << endl << "Isucc:\t" << Isucc << endl << "TableLength:\t" << Mean.size() << endl;

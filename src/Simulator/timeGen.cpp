@@ -40,6 +40,7 @@ void timeGen::initRandomGenerator(unsigned int seed){
 
 
 string timeGen::string_of_dist(DistributionType d,const vector<double> &param)const{
+    //use for debuging
     switch (d) {
         case   NORMAL:
             return "Normal("+ to_string(param[0]) +","+ to_string(param[1])+")";
@@ -69,6 +70,8 @@ string timeGen::string_of_dist(DistributionType d,const vector<double> &param)co
             return "Userdefine("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[3])+","+ to_string(param[4])+")";
         case   DISCRETEUSERDEFINE:
             return "DiscreteUserDefine("+ to_string(param[0]) +","+ to_string(param[1])+")";
+        case   USERDEFINEPOLYNOMIAL:
+            return "UserdefinePolynomial("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[3])+","+ to_string(param[4])+")";
     }
 }
 
@@ -109,7 +112,10 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
 			return gen();
 			
 		}
-			
+		
+        case IMMEDIATE:
+            return 0;
+            
 		case DETERMINISTIC:
 		{//DETERMINISTIC
 			return param[0];
@@ -198,10 +204,29 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
             unsigned int i=gen();
             return userDefineDiscreteDistr(param,i);
         }
+            
+        case USERDEFINEPOLYNOMIAL:
+        {
+            boost::uniform_01<> UNIF;
+            boost::variate_generator<boost::mt19937&, boost::uniform_01<> > gen(RandomNumber, UNIF);
+            const auto gentime = gen();
+            const auto lower = userDefineLowerBound(param);
+            const auto upper = userDefineUpperBound(param);
+            
+            //cerr << "sample(" << gentime << ",[" << lower << "," << upper << "]):" <<endl;
+            double initialpt = (lower+upper)/ 2.0;
+            return boost::math::tools::newton_raphson_iterate([&](double x){
+                const auto cdf = userDefineCDF(param,x);
+                const auto pdf = userDefinePDF(param,x);
+                //      cerr << "it:" << x << endl;
+                return make_tuple(cdf-gentime, pdf);
+            }, initialpt, lower, upper, 100);
+            break;
+
+        }
+        
 			
-		default: cerr << "Unknown distribution: "<< distribution << endl;
-			break;
-	}
+    }
 	return DBL_MIN;
 	
 }

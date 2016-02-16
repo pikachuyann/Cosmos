@@ -83,6 +83,7 @@ protected:
     void writeGetPriority(std::ofstream &f)const;
     void writeGetWeight(std::ofstream &f)const;
     void writeUserDefineDistr(std::ofstream &f)const;
+    void writePolynome(std::ofstream &f)const;
 
 };
 
