@@ -72,7 +72,7 @@ let parse_regexp = Str.regexp
 let reg_comm = Str.regexp "%"
 let reg_type1 = Str.regexp "[(]"
 let reg_type2 = Str.regexp "[,]"
-  
+
 (* transform matlab function into C function *)
 let parse_fun comm scr =
   if not (Str.string_match parse_regexp scr 0) then failwith ("Fail to parse:"^scr);
@@ -95,18 +95,18 @@ let parse_fun comm scr =
     let s2 = String.sub s 9 (String.length s -9) in
     (name,s2)
   | _ ->  (name,Printf.sprintf "double %s%s{\n//%s\n\tdouble %s;\n%s\n\treturn %s;\n}" name arg2 (string_of_option "" comm) var body2 var)
-  
-
+	    
 (* Parse a simulink automaton recursively *)				   
 let rec exp_mod (sl,tl,scriptl) = function
     | Element (name,alist,clist) ->
        begin match name with
        | "Children" -> List.fold_left exp_mod (sl,tl,scriptl) clist
        | "state" -> begin match getScript clist with
-	   None -> (((getSSID alist),(getName clist))::sl,tl,scriptl)
-	   | Some scr -> 
-	     let comm = getDescription clist in
-	     let fn,fb = parse_fun comm scr in (sl,tl,(Funct(fn,fb))::scriptl)
+			    None -> (* It is a real state add it to list of state *)
+			    (((getSSID alist),(getName clist))::sl,tl,scriptl)
+			  | Some scr -> (* It is a Matlab function definition *)
+			     let comm = getDescription clist in
+			     let fn,fb = parse_fun comm scr in (sl,tl,(Funct(fn,fb))::scriptl)
        end 
        | "transition" -> (match getdst clist with Some dst ->
 	 let desc = getDescription clist
@@ -200,7 +200,7 @@ let rec modulist_of_stateflow ml = function
 	     let modu = (getSSID alist),(Some fn),[],[],[Funct(fn,fb)],None,StringMap.empty in
 	     modu::ml
 	 end
-	 | Some t -> Printf.fprintf stderr "Dont know wat to do with %s, ignore\n" t; ml
+	 | Some t -> Printf.fprintf stderr "Dont know what to do with %s, ignore\n" t; ml
        end
        | "transition" -> ml
        | "target" -> ml

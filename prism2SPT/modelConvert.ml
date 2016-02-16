@@ -18,6 +18,7 @@ let suffix_of_filename s =
 
 let nbarg = ref 0
 
+
 let _ = 
   Arg.parse ["--light",Arg.Set SimulinkType.lightSim,"light simulator";
 	     "--pdf",Arg.Unit (fun () -> outputFormat:= Pdf:: !outputFormat),"Output as PDF";
@@ -106,10 +107,10 @@ let _ =
 	    with Not_found -> Zip.find_entry z "simulink/blockdiagram.xml")
 		     |> Zip.read_entry z)
 	|> Xml.parse_string
-	|> (Simulinkparser.modulist_of_tree [])
+	|> Simulinkparser.modulist_of_tree []
 	|> SimulinkTrans.expand_trans
 	|> List.map SimulinkTrans.flatten_module
-(*	|> List.map SimulinkTrans.flatten_state_ssid*)
+	(*|> List.map SimulinkTrans.flatten_state_ssid*)
 
 	|< List.iter (SimulinkType.print_module !logout)
 	|> List.map SimulinkTrans.incr_state
@@ -128,7 +129,7 @@ let _ =
       end
       ENDIF
       ENDIF   
-  | _ -> failwith "Output format not yet supported" end
+  | _ -> failwith "Input format not yet supported" end
     |< (fun _-> print_endline "Finish parsing, start transformation")
     |> (fun x-> if !SimulinkType.useerlang then x else StochasticPetriNet.remove_erlang x)
   (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)

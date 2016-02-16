@@ -7,7 +7,7 @@ import re
 
 #prismpath="prism";
 
-prismpath="./prism";
+prismpath="~/Documents/prism/prism-ptasmc/prism/bin/prism ";
 
 sagepath,ext = os.path.splitext(str(sys.argv[1]));
 outpath=sagepath+'.grml';
@@ -189,7 +189,7 @@ def WeightsPdfCdf(f):
                 upperBound[i].append(R(ub));
     return([psiDeltaf,Pdf,Cdf,lowerBound,upperBound]);    
 
-def poly_to_c(p):
+def poly_to_c_first(p):
     supp=p.exponents();
     s='0.0';
     for triplet in supp:
@@ -220,6 +220,20 @@ def poly_to_c_bis(p):
         if triplet[cardclocks]>1:
             s+="*pow(t,"+ str(triplet[cardclocks])+')';
     return(s);
+
+
+def poly_to_c_ter(poly):
+    s0=re.sub('\{\(','{{',str(poly.dict()))
+    s1=re.sub('\, *?\(','}, {',s0)
+    s2=re.sub('\):' , ',' ,s1)
+    s3='0'
+    for i in range(cardclocks):
+        s3 = s3+',0';
+    
+    return(s2+ ',{0 ' +s3+',0}' +'}');
+
+def poly_to_c(p):
+    return (poly_to_c_ter(p));
 
 def sumlist(l):
     accu=0;

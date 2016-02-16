@@ -29,11 +29,15 @@
 #include "SimulatorRE.hpp"
 #include "SimulatorBoundedRE.hpp"
 #include "SimulatorContinuousBounded.hpp"
+
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stdlib.h>
 
+
+
+//#include "Polynome.hpp"
 
 // Handler for interuption of the server
 void signalHandler(int);
@@ -62,6 +66,8 @@ int main(int argc, char** argv) {
 	//cerr << "pid : "<< pid << endl;
 
   //retrive_segment();
+    
+  //  cerr << "polyeval:" << test << endl;
 
 	signal(SIGINT, SIG_IGN);
     //signal(SIGHUP, signalHandler);

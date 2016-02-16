@@ -1162,9 +1162,11 @@ void Gspn_Writer::writeFile(){
 	if(P.localTesting)SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
 	SpnCppFile << "}"<< endl<< endl;
 
-    if(!P.lightSimulator)
+    if(!P.lightSimulator){
         writeUserDefineDistr(SpnCppFile);
-	
+        writePolynome(SpnCppFile);
+    }
+        
 	SpnCppFile.close();
 }
 
@@ -1234,6 +1236,40 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     f << "}\n" << endl;
     }
 
+}
+
+void Gspn_Writer::writePolynome(ofstream &f)const{
+    unsigned int n = 3;
+    
+    f << "#include \"Polynome.hpp\""<< endl;
+    
+    f << "Monome<3> toto[] = {{2, 1, 0, 1.00000000000000}, {0, 0, 0, 11.5000000000000}, {0, 2, 0, 0.500000000000000}, {0, 1, 0, -4.00000000000000}, {0,0,0,0}};" << endl;
+    
+    f << "double test =eval(toto, {0,0,1} );" << endl;
+
+    /*
+    f << "namespace polynome{" << endl;
+    f << "\tstruct Monome {"<<endl;
+    f << "\t\tint d["<< n <<"];"<<endl;
+    f << "\t\tdouble coeff;"<<endl;
+    f << "\t};"<<endl;
+    
+    f << "\ttemplate <N>"<< endl;
+    f << "\tdouble eval(array<Monome,N> p, vector<double> const& param){"<<endl;
+    f << "\t\tdouble rslt = 0.0;"<< endl;
+    //f << "\t\tunsigned int index=0;" << endl;
+    f << "\t\tfor(const auto & m: p){" << endl;
+    f << "\t\t\tdouble mv = m.coeff;"<< endl;
+    f << "\t\t\tfor(unsigned int j=0; j<"<< n<<";j++)";
+    f << "}" << endl;
+    f << "return 0.0;";
+    
+    f << "\t};"<<endl;
+    
+    f << "\tarray<Monome,4> toto = {{{2, 1, 0, 1.00000000000000}, {0, 0, 0, 11.5000000000000}, {0, 2, 0, 0.500000000000000}, {0, 1, 0, -4.00000000000000}}};"<< endl;
+    */
+    //f << "};"<<endl;
+    
 }
 
 
