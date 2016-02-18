@@ -113,8 +113,6 @@ COMMAND Cosmos ${CMAKE_SOURCE_DIR}/Examples/Hospital/Hospital.grml --loop 100000
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-
-
 file(GLOB_RECURSE ml_SOURCES "prism2SPT/*.ml*")
 
 add_custom_target(modelConvert ALL
@@ -131,3 +129,11 @@ add_executable(testClientSim ${CMAKE_CURRENT_BINARY_DIR}/tmp/spn.cpp ${CMAKE_CUR
 include_directories("src/Simulator")
 add_dependencies(testClientSim Cosmos)
 target_link_libraries (testClientSim ClientSim)
+
+enable_testing()
+
+add_test(NAME benchTest 
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Examples/
+            COMMAND ocaml bench.ml)
+set_tests_properties (benchTest 
+  PROPERTIES PASS_REGULAR_EXPRESSION "25 is 5")
