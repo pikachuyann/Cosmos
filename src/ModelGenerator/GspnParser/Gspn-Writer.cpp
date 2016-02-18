@@ -1164,7 +1164,7 @@ void Gspn_Writer::writeFile(){
 
     if(!P.lightSimulator){
         writeUserDefineDistr(SpnCppFile);
-        writePolynome(SpnCppFile);
+        //writePolynome(SpnCppFile);
     }
         
 	SpnCppFile.close();

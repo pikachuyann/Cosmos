@@ -11,7 +11,7 @@
 \usepackage{tikz}
 \usetikzlibrary{automata,shapes.multipart} %
 \usetikzlibrary{arrows,petri}
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 %\usepackage[noend]{algorithmic}
 \usepackage{algorithm}
 %\usepackage{algo}
@@ -37,13 +37,13 @@ This is the user manual for the tool \cosmos{} version 1.4
 \section{Tool Usage}
 
 \subsection{Basic Usage}
-The primary usage of the tool \cosmos{} is as follow:
+The primary usage of the tool \cosmos{} is as follows:
 \begin{verbatim}
 Cosmos model property
 \end{verbatim}
-where the model is specified in the GRML file format or in the
+Where the model is specified in the GRML file format or in the
 \verb|.gspn| file format and the property is expressed either in GRML
-or in the \verb|.lha| file format. Various options change the behaviors 
+or in the \verb|.lha| file format. Various options change the behaviours 
 of the simulator and are listed below.
 
 Cosmos is shipped with several examples in the \verb|Examples| directory.
@@ -70,34 +70,34 @@ computing parameters of probability distributions. Tables are also
 generated that contains for any transitions $t$ the set of transitions
 that might become enabled or disabled due to the firing of $t$. This
 table are computed by an analysis of the structure of the Petri net
-and increase the speed of simulation by testing only small subset of
+and increase the speed of the simulation by testing only small subset of
 transitions after each firing.
 
-HASL formulas are also transform into code. More specifically
-transitions of the automaton that synchronize with the Petri net use
-tables to compute the synchronization. Autonomous transitions of the
+HASL formulas are also transformed into the code. More specifically
+transitions of the automaton that synchronise with the Petri net use
+tables to compute the synchronisation. Autonomous transitions of the
 automaton are implemented by precomputing a system of linear equations
 and generating function to finish the computation at run time this is
 possible due to constraints on the expression of the automaton. This
 also compute exact computation of time for the firing of
 transitions. Tools dealing with more general hybrid automaton must
-solve this problem with numerical integration which introduce
-numerical errors. Computations of integral over trajectory of the
+solve this problem with numerical integration which introduces
+numerical errors. Computations of integral over the trajectory of the
 system are also resolved exactly and efficiently thanks to linear
 constraints.
 
-The generated code is link with a library containing other part
-of the simulator that are not dependent of the model or specification.
+The generated code is linked with a library containing other parts
+of the simulator that is not dependent on the model or specification.
 This library contains: an event heaps to efficiently between the next event
-in the system, the main synchronization loop that use the generated code
-and a pseudo random generator to produce new events that are put in the heap.
+in the system, the main synchronisation loop that uses the generated code
+and a pseudo-random generator to produce new events that are put in the heap.
 
 \subsubsection{Model}
 Models taken by \cosmos{} as input are variants of Petri nets.  The main
 models supported by \cosmos{} are stochastic Petri nets with inhibitor
 arcs and general distributions. The file format of \cosyverif{} (GRML) 
-allows to specified different variants of Petri nets which are also 
-recognized by \cosmos{}:
+allows to specify different variants of Petri nets which are also 
+recognised by \cosmos{}:
 \begin{itemize}
 \item Plain Petri nets can be read: in this case, an exponential
   distribution of rate $1$ is assigned to each transition.
@@ -119,8 +119,8 @@ performance values.
 
 
 \subsection{Statistical Options}
-Several options can be used to control the behavior of the statistical engine.
-The default behavior is to simulate trajectories until either
+Several options can be used to control the behaviour of the statistical engine.
+The default behaviour is to simulate trajectories until either
 \begin{itemize}
 \item The maximum number of trajectories is reached.
 \item The specified width for the confidence interval is reached.
@@ -133,7 +133,7 @@ until the maximum number of trajectories is reached.  The default
 value is $0.001$.
 
 \subsubsection{\texttt{--max-run arg}  option}
-This option specifies \texttt{arg} as the maximal number of run.
+This option specifies \texttt{arg} as the maximal number of runs.
 The default value is $2,000,000$.
 
 \subsubsection{\texttt{--level arg}  option}
@@ -141,12 +141,12 @@ This option sets the confidence level to \texttt{arg}.
 The default value is $0.99$.
 
 \subsubsection{\texttt{--batch arg}  option}
-This option sets the number of simulation to perform between each
+This option sets the number of simulations to perform between each
 statistical test.  The default value is $1000$. When this value is 
 set to $0$, the tool will perform a test at constant time period.
 
 \subsubsection{\texttt{--njob arg}  option}
-This option sets the number of parallel computation to \texttt{arg}.
+This option sets the number of parallel computations to \texttt{arg}.
 The default value is $1$.
 
 \subsubsection{\texttt{--relative}  option}
@@ -177,16 +177,16 @@ The syntax of \texttt{arg} is the one of HASL{} expressions in the
 
 \subsubsection{\texttt{--loop arg [--transient arg2]}  option}
 This produces a set of HASL formulas evaluating the mean number of 
-token in each place and the mean throughput of each transition until time
+tokens in each place and the mean throughput of each transition until time
 \texttt{arg}. The optional additional argument allows one to specify a transient
-time where the mean number of token and throughput are not recorded.
-See option \texttt{--trace-place} to specify which places and transitions 
+time where the mean number of tokens and throughput are not recorded.
+See options \texttt{--trace-place} to specify which places and transitions 
 to monitor.
 
 \subsubsection{\texttt{--sampling t1 t2} option}
 This produces an automaton which samples, each \texttt{t2} time unit, the
-mean number of token in each place for this period, until time
-\texttt{t1} is reached.  See option \texttt{--output-graph} to format
+mean number of tokens in each place for this period, until time
+\texttt{t1} is reached.  See options \texttt{--output-graph} to format
 the output in a more manageable way.
 
 \subsubsection{\texttt{--count-transition} option}
@@ -198,7 +198,7 @@ Sends the expression \texttt{arg} to the \emph{AutomataGen} tool to produce
 the LHA used for the simulation. The tool AutomataGen is a work in progress.
 
 \subsection{Output formatting Options}
-The default behavior of \cosmos{} for displaying results is as follows:
+The default behaviour of \cosmos{} for displaying results is as follows:
 During the simulation a synthetic overview is displayed:
 \begin{scriptsize}
 \begin{verbatim}
@@ -213,7 +213,7 @@ pi2:    |< 0               --[ 0.7853114033    < 0.7855092754    > 0.7857070525 
 The first line provides information on the speed of simulation. The
 remaining time is computed differently depending of the statistical
 procedure used. For fixed-sample-size algorithms, the estimation of
-the computation time is straightforward. For the Chow-Robbins method,
+the computation time is straightforward. For the Chow-Robbins’s method,
 the size of the confidence interval is assumed to decrease in
 $1/\sqrt{N}$ with $N$ the number of trajectories, which is quite
 reliable. For the SPRT, a heuristic is used and the estimation is a lot
@@ -264,10 +264,10 @@ Results are saved in 'Result.res'
 \end{verbatim}
 \end{scriptsize}
 All the simulation parameters are recalled. The additional information
-are the \texttt{Time for simulation} which is the wall clock time used
+is the \texttt{Time for simulation} which is the wall clock time used
 by the simulation.  It decreases when the number of parallel processes
-increases on multi-processor machine.  The \texttt{Total CPU time} is
-the cpu time consumed by the whole computation, it slightly increases
+increases on multiprocessor machine.  The \texttt{Total CPU time} is
+the CPU time consumed by the whole computation, it slightly increases
 when the number of parallel processes increases. The \texttt{Total
   Memory used} line reports the memory used by the whole
 computation. In most cases, the maximum memory consumption is reached
@@ -300,7 +300,7 @@ is well suited for HASL expressions specifying a graph like
 \texttt{--sampling} option.  Figure~\ref{fig:sampling} shows a graph
 generated by the \texttt{--sampling 2 0.001} option on the shared
 memory example. The \texttt{--output-graph} option generates a file
-starting as file:
+starting as files:
 \begin{scriptsize}
 \begin{verbatim}
 abscissa MeanToken_Access1_low MeanToken_Access1_mean MeanToken_Access1_up           ... 
@@ -309,10 +309,10 @@ abscissa MeanToken_Access1_low MeanToken_Access1_mean MeanToken_Access1_up      
 ...
 \end{verbatim}
 \end{scriptsize}
-which can easily be plotted as the figure using \texttt{gnuplot}.
-{\color{red}This can also be used for user defined HASL formulas by using name ending by
+Which can easily be plotted as the figure using \texttt{gnuplot}.
+{\color{red}This can also be used for the user defined HASL formulas by using names ending by
 \verb|$GRAPH$x1$x2$| for HASL expressions where $(x1+x2)/2$ is the
-abcsissa of the point computed by the expression.}
+abscissa of the point computed by the expression.}
 
 \begin{figure}[h]
   \centering
@@ -325,7 +325,7 @@ abcsissa of the point computed by the expression.}
 This option generates a file showing the evolution of the confidence
 interval along the time. This allows one to observe the speed of
 convergence. Figure~\ref{fig:convergence} shows a graph plotted from
-these data.
+this data.
 
 \begin{figure}[h]
   \centering
@@ -336,8 +336,7 @@ these data.
 
 \subsubsection{\texttt{--output-raw arg} option}
 This option allows one to output the final value of the HASL
-expressions at the end of each trajectory. This option was introduced
-for debug purposes and should not be used in normal use. This option
+expressions at the end of each trajectory. This option was introduced for debug purposes and should not be used in normal use. This option
 is not compatible with \texttt{--njob n} when $n>1$
 
 \subsubsection{\texttt{--output-trace arg arg2} option}
@@ -348,7 +347,7 @@ a line containing \texttt{New Path}.  Figure~\ref{fig:trace} contains
 a trace of one trajectory of the shared memory example.  The second
 argument \texttt{arg2} specifies a minimum sampling time. If
 \texttt{arg2} $>0$, no consecutive lines in the output file are
-separated by less than \texttt{arg2} time unit. This is useful when
+separated by less than \texttt{arg2} time units. This is useful when
 the trace becomes too big to reduce the size of the generated file.
 
 \begin{figure}[h]
@@ -363,12 +362,12 @@ Specifies which place and transition should be traced in the various
 output files.  \texttt{arg} is a list of places and transition
 names. There are two keywords, \texttt{ALL} which is the default, and
 \texttt{COLOR}. The first one allows one to trace all places and transitions,
-the second, allows one to trace all color tokens and all bindings of
+the second, allows one to trace all colour tokens and all bindings of
 transition for stochastic symmetric nets.
 
 \subsubsection{\texttt{--gnuplot-driver} option}
 This option makes \cosmos{} call \texttt{gnuplot} interactively and
-display the graph of all outputs specified by an \texttt{--output-*}
+displays the graph of all outputs specified by a \texttt{--output-*}
 option.  All the graphs of this manual have been created using this
 option.
 
@@ -439,45 +438,45 @@ can take four values:
   is useful to examine generated code.
 \item $1$. \cosmos{} assumes that the directory \texttt{tmp} exists
   and contains a fully build version of the model and property. The
-  simulator is launched without being rebuild. At the end of computation,
+  simulator is launched without being rebuilt. At the end of computation,
   the directory is destroyed.
 \item $3$. Same as $1$ but does not destroy the \texttt{tmp} directory
   at the end.
 \end{itemize}
-These option allow one to build only once a model and reuse it for
+These options allow one to build only once a model and reuse it for
 several simulations. Only statistical parameters can be changed between simulations
-as the model is not rebuild. Use with caution!
+as the model is not rebuilding. Use with caution!
 
 \subsubsection{\texttt{--tmp-path arg} option}
 Specifies where to put the temporary directory. This option is useless
-if the \texttt{--tmp-status arg} with \texttt{arg}$>0$ is not specify.
+if the \texttt{--tmp-status arg} with \texttt{arg}$>0$ is not specified.
 
 \subsubsection{\texttt{--bin-path arg} option}
 Overrides the path to the installation of \cosmos{}. This path is used
 by \cosmos{} to find headers and libraries required to build the model.
 
 \subsubsection{\texttt{--debug-string} option}
-Adds debuging information to the generated code. This option is activated
+Adds debugging information to the generated code. This option is activated
 and required by a verbose mode greater than $4$.
 
 \subsection{Rare Events Options}
 \subsubsection{\texttt{-r} option}
-Use importance sampling during the simulation. This option estimate
-time-unbounded reachability probability. This require a file name
+Use importance sampling during the simulation. This option estimates
+time-unbounded teachability probability. This requires a file name
 \texttt{lumpingfun.cpp} to be in the current directory containing a
 function mapping marking of the net to marking of the reduce model. A
 file name \texttt{muFile} containing the vector of probability in a
-reduce model is also required. This file can be produce withe the
+reduce model is also required. This file can be produced with the
 \texttt{--prism} option.
 
 \subsubsection{\texttt{-b arg1 --set-horizon arg2} option}
 Use time-bounded importance sampling assuming a discrete semantic of
-the model. \texttt{arg1} specify wich algorithm to use between $1$,$2$
+the model. \texttt{arg1} specify which algorithms to use between $1$,$2$
 and $3$. $1$ is the fastest while $3$ consume the least memory. $2$ is
 a trade-off. \texttt{arg2} specify the integer time horizon. This
-option require the file \texttt{lumpingfun.cpp} and
+option requires the file \texttt{lumpingfun.cpp} and
 \texttt{matrixFile} to be in the same directory. This last file can 
-be produce with the option \texttt{--state-space} on the reduce model.
+be produced with the option \texttt{--state-space} on the reduce model.
 
 \subsubsection{\texttt{-c -b arg1 --set-horizon arg2} option}
 This option use time-bounded importance sampling assuming a continuous
@@ -486,7 +485,7 @@ number.
 
 \subsubsection{\texttt{--epsilon} option}
 When using continuous importance sampling this option specify the
-precision of numerical computation.
+precision of numerical computations.
 
 \subsubsection{\texttt{--step-continuous} option}
 When using continuous importance sampling this option specify the width
@@ -501,7 +500,7 @@ GrML for Graph Markup Language is the graph base language to define
 models in the \cosyverif platform. This language is based on XML.
 
 
-\subsection{Generalized Stochastic Petri Net (.gspn)}
+\subsection{Generalised Stochastic Petri Net (.gspn)}
 This file format is used to describe GSPN.
 First we describe an example:\\
 \begin{figure}[h]
@@ -579,7 +578,7 @@ The initial marking of the net is given as a set of pairs
 in the \verb|Marking| statement.\\
 The transition distribution is given as a set of tuples like
 this one:\\ \verb|(Arrive_1,EXPONENTIAL(lambda1),1,1, SINGLE)|
-each tuple contains first the name of the transition then
+Each tuple contains first the name of the transition then
 the probability distribution with some parameters, then two positive
 reals defining the priority and weight of the event generated.
 For an exponential distribution,  the policy of service can be specified
@@ -752,20 +751,20 @@ The complete grammar is:
 \end{scriptsize}
 
 All the expressions are typed with a domain. An expression of a domain
-$D$ is a function that map to each color of the domain $D$ an integer
+$D$ is a function that map to each colour of the domain $D$ an integer
 or real expression. 
 
-Values of the domain ``Uncolored'' act as scalar.  The construction
+Values of the domain ``Uncoloured'' act as scalar.  The construction
 ``Card'' takes an expression over a domain and return an expression of
-the uncolored domain by taking the sum of the expression over all
+the uncoloured domain by taking the sum of the expression over all
 colors. The construction ``Expr[c1,c2]'' returns a value in the
-uncolored domain equal to the valuation of ``Expr'' for the color
+uncoloured domain equal to the valuation of ``Expr'' for the colour
 ``c1,c2''.
 
 
 There are two types of expression. The one described
-by ``Expr'' can depend of any quantities defined in the Net or in the
-automaton whereas ``MarkingDepExpr'' cannot depend of quantities
+by ``Expr'' can depend on any quantities defined in the Net or in the
+automaton whereas ``MarkingDepExpr'' cannot depend on quantities
 which are continuous variables. The difference is that
 ``MarkingDepExpr'' is constant between two transitions of the
 automaton whereas ``Expr'' evolves linearly between two
@@ -801,7 +800,7 @@ as well as their domain.
 \end{grammar}
 \end{scriptsize}
 
-Location invariants do not depend of continuous variable value.
+Location invariants do not depend on continuous variable value.
 It ensures that location invariants are constant between two transitions
 of the automaton.
 

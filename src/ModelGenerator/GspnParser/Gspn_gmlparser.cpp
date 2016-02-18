@@ -146,6 +146,10 @@ expr MyModelHandler::eval_expr(tree<string>::pre_order_iterator it) {
                     return expr(Div, lhs, rhs);
                 } else if (*it == "power") {
                     return expr(Pow, lhs, rhs);
+                } else if (*it == "min") {
+                    return expr(Min, lhs, rhs);
+                } else if (*it == "max") {
+                    return expr(Max, lhs, rhs);
                 }
             }
         }
