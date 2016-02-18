@@ -13,11 +13,11 @@ module Data = struct
   type t = elt list
 
   let rec merge d1 d2 = match d1,d2 with
-      [],[] -> []
     | (Floatv t1)::q1,(Floatv t2)::q2 -> 
       ((Floatv (t1+.t2)) :: merge q1 q2)
     | (x::q1),(_::q2) -> (x::merge q1 q2)
-    | _ -> failwith "incoherent data"
+    | q1, [] -> q1
+    | [], q2 -> q2
       
   let mult k = List.map (function 
   Floatv f -> Floatv (k*.f) | x -> x) 
@@ -159,7 +159,7 @@ let main2 s1 s2 npath =
   seek_in initfile 0;
   let fl = input_line initfile in 
   output_string intermediatefile (fl^"\n");
-  if ne > 10000000 then
+  if ne > 500000 then
     let evect = Array.make (int_of_float (1.+.maxtime/.step)) (0.0,0,template) in
     readAndSample evect step initfile template npath;
     Array.iteri (fun i (t,n,d) -> evect.(i) <- (t,1,Data.mult (1.0 /. (float (n-1))) d)) evect;
