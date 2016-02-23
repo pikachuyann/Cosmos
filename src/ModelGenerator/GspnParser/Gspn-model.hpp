@@ -57,6 +57,7 @@ struct userDefineDistribution{
     std::string var;
     std::string cdf;
     std::string pdf;
+    std::string norm;
     std::string lowerBound;
     std::string upperBound;
     size_t nbparam;

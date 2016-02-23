@@ -266,8 +266,9 @@ def printGRML_distribution(quadriple):
             s+='      <attribute name=\"var\"> t </attribute>\n';
             s+='      <attribute name=\"lowerBound\">' + poly_to_c(quadriple[3][i][j]) + '</attribute>\n';
             s+='      <attribute name=\"upperBound\">' + poly_to_c(quadriple[4][i][j]) + '</attribute>\n';
-            s+='      <attribute name=\"cdf\">('+ poly_to_c(quadriple[2][i][j]) +')/('+ poly_to_c(quadriple[0][i][j]) +')'+ '</attribute>\n';
-            s+='      <attribute name=\"pdf\">('+ poly_to_c(quadriple[1][i][j]) +')/('+ poly_to_c(quadriple[0][i][j]) +')'+ '</attribute>\n';
+            s+='      <attribute name=\"norm\">('+ poly_to_c(quadriple[0][i][j]) + '</attribute>\n';
+            s+='      <attribute name=\"cdf\">'+ poly_to_c(quadriple[2][i][j]) + '</attribute>\n';
+            s+='      <attribute name=\"pdf\">'+ poly_to_c(quadriple[1][i][j]) + '</attribute>\n';
             s+='    </attribute>\n'
     return(s);
 
