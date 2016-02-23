@@ -623,6 +623,9 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                         if (*it2 == "cdf") {
                             dist.cdf = simplifyString(*(it2.begin()));
                         }
+                        if (*it2 == "norm") {
+                            dist.norm = simplifyString(*(it2.begin()));
+                        }
                         if (*it2 == "pdf") {
                             dist.pdf = simplifyString(*(it2.begin()));
                         }

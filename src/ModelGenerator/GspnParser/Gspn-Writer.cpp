@@ -51,7 +51,12 @@ Gspn_Writer::Gspn_Writer(GspnType& mgspn,const parameters& Q):MyGspn(mgspn),P(Q)
 
 
 
-void Gspn_Writer::writeFunT(ostream &f,const std::string &rtype,const std::string &name,const std::string &extraArg,function<void(unsigned int,stringstream &)> ft,const std::string init = "")const {
+void Gspn_Writer::writeFunT(ostream &f,
+                            const std::string &rtype,
+                            const std::string &name,
+                            const std::string &extraArg,
+                            function<void(unsigned int,stringstream &)> ft,
+                            const std::string init = "")const {
     f << rtype <<" "<< objName << name << trId << extraArg << "{" << endl;
     f << init << endl;
     casesHandler weightcases("t");
