@@ -229,9 +229,11 @@ def poly_to_c_ter(poly):
     s3='0'
     for i in range(cardclocks):
         s3 = s3+',0';
+    if poly != 0:
+        return (s2+ ',{ ' +s3+',0}' +'}');
+    else :
+        return ('{{ ' +s3+',0}}');
     
-    return(s2+ ',{0 ' +s3+',0}' +'}');
-
 def poly_to_c(p):
     return (poly_to_c_ter(p));
 
@@ -266,7 +268,7 @@ def printGRML_distribution(quadriple):
             s+='      <attribute name=\"var\"> t </attribute>\n';
             s+='      <attribute name=\"lowerBound\">' + poly_to_c(quadriple[3][i][j]) + '</attribute>\n';
             s+='      <attribute name=\"upperBound\">' + poly_to_c(quadriple[4][i][j]) + '</attribute>\n';
-            s+='      <attribute name=\"norm\">('+ poly_to_c(quadriple[0][i][j]) + '</attribute>\n';
+            s+='      <attribute name=\"norm\">'+ poly_to_c(quadriple[0][i][j]) + '</attribute>\n';
             s+='      <attribute name=\"cdf\">'+ poly_to_c(quadriple[2][i][j]) + '</attribute>\n';
             s+='      <attribute name=\"pdf\">'+ poly_to_c(quadriple[1][i][j]) + '</attribute>\n';
             s+='    </attribute>\n'

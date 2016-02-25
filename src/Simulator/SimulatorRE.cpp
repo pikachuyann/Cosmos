@@ -168,7 +168,7 @@ void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding
     double t = ctime;
     if (Transition[Id].DistTypeIndex != IMMEDIATE) {
         getParams(Id, b);
-        t += TG.GenerateTime(Transition[Id].DistTypeIndex, ParamDistr);
+        t += TG.GenerateTime(Transition[Id].DistTypeIndex, ParamDistr, customDistr);
 		
 		Rate_Table[Id] = ParamDistr[0];
 		Origine_Rate_Table[Id] = ParamDistr[1];
@@ -179,7 +179,7 @@ void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding
 	double w=0.0;
 	if (Transition[Id].DistTypeIndex > 2) {
 		ParamDistr[0]= GetWeight(Id,b);
-		w = TG.GenerateTime(EXPONENTIAL, ParamDistr);
+		w = TG.GenerateTime(EXPONENTIAL, ParamDistr, customDistr);
 		//vector<double> wParam(1, N.GetWeight(Id));
 		//w = GenerateTime(2, wParam);
     }

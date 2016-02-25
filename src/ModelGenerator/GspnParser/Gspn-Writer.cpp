@@ -1067,6 +1067,14 @@ void Gspn_Writer::writeFile(){
 		SpnCppFile << "\n};\n";
 	}
 
+    
+    //------------ Writing polynomes -------------------------------------------
+    if(!P.lightSimulator){
+        //writeUserDefineDistr(SpnCppFile);
+        writePolynome(SpnCppFile);
+    }
+
+
 
     //--------------- Writing synchronization tables ---------------------------
     //if(!P.lightSimulator)
@@ -1097,6 +1105,7 @@ void Gspn_Writer::writeFile(){
 
     //--------------- Writing implementation of SPN ----------------------------
     SpnCppFile << objName<<"SPN():" << endl;
+    if(!MyGspn.distribStruct.empty())SpnCppFile << "customDistr(CustomDistrPoly()),";
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
 	SpnCppFile << "tr(" << MyGspn.tr << ") ";
     if(!P.lightSimulator){
@@ -1167,15 +1176,11 @@ void Gspn_Writer::writeFile(){
 	if(P.localTesting)SpnCppFile << "\tTransitionConditions = initTransitionConditions;"<< endl;
 	SpnCppFile << "}"<< endl<< endl;
 
-    if(!P.lightSimulator){
-        writeUserDefineDistr(SpnCppFile);
-        //writePolynome(SpnCppFile);
-    }
-        
 	SpnCppFile.close();
 }
 
 void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
+    
     f << "double userDefineCDF(vector<double> const& param, double funvar){" <<endl;
     {
     auto ch = casesHandler("(int)param[0]");
@@ -1244,14 +1249,64 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
 }
 
 void Gspn_Writer::writePolynome(ofstream &f)const{
-    unsigned int n = 3;
+    if(MyGspn.distribStruct.empty())return;
     
     f << "#include \"Polynome.hpp\""<< endl;
     
-    f << "Monome<3> toto[] = {{2, 1, 0, 1.00000000000000}, {0, 0, 0, 11.5000000000000}, {0, 2, 0, 0.500000000000000}, {0, 1, 0, -4.00000000000000}, {0,0,0,0}};" << endl;
+    f << "class CustomDistrPoly: public CustomDistr {" << endl;
+    //f << "Monome<3> toto[] = {{2, 1, 0, 1.00000000000000}, {0, 0, 0, 11.5000000000000}, {0, 2, 0, 0.500000000000000}, {0, 1, 0, -4.00000000000000}, {0,0,0,0}};" << endl;
     
-    f << "double test =eval(toto, {0,0,1} );" << endl;
+    //f << "double test =eval(toto, {0,0,1} );" << endl;
 
+    stringstream polTable;
+    for ( let d : MyGspn.distribStruct) {
+        f << "\tconst static Monome<3> POLY_CDF_" << d.name << "[] =" << d.cdf << ";" << endl;
+        polTable << "((Monome<3> *const)POLY_CDF_" << d.name << "), ";
+        f << "\tconst static Monome<3> POLY_PDF_" << d.name << "[] =" << d.pdf << ";" << endl;
+        polTable << "((Monome<3> *const)POLY_PDF_" << d.name << "), ";
+        f << "\tconst static Monome<3> POLY_NORM_" << d.name << "[] =" << d.norm << ";" << endl;
+        polTable << "((Monome<3> *const)POLY_NORM_" << d.name << "), ";
+        f << "\tconst static Monome<3> POLY_LOW_" << d.name << "[] =" << d.lowerBound << ";" << endl;
+        polTable << "((Monome<3> *const)POLY_LOW_" << d.name << "), ";
+        f << "\tconst static Monome<3> POLY_UP_" << d.name << "[] =" << d.upperBound << ";" << endl;
+        polTable << "((Monome<3> *const)POLY_UP_" << d.name << "), ";
+    }
+    f << "\tconst static Monome<3>* poly_table[] = { "<< polTable.str() << "};" << endl;
+    
+    f << "public:" << endl;
+   
+    f << "\tdouble virtual userDefineCDF(vector<double> const& param, double funvar)const{" <<endl;
+    //f << "\tparam[0]=funvar;" << endl;
+    f << "\t\treturn (eval(poly_table[ 5*((int)param[0]) ],param,funvar)/eval(poly_table[ 5*((int)param[0])+2 ],param,funvar))  ;"<< endl;
+    f << "\t}"<<endl;
+
+    f << "\tdouble  virtual userDefinePDF(vector<double> const& param, double funvar)const{" <<endl;
+    //f << "\tparam[0]=funvar;" << endl;
+    f << "\t\treturn (eval(poly_table[ 5*((int)param[0])+1 ],param,funvar)/eval(poly_table[ 5*((int)param[0])+2 ],param,funvar))  ;"<< endl;
+    f << "\t}"<<endl;
+
+    {
+        f << "\tdouble virtual userDefineLowerBound(vector<double> const& param)const{" <<endl;
+        f << "\t\treturn eval(poly_table[ 5*((int)param[0])+3 ],param);" << endl;
+        f << "\t}\n" << endl;
+    }
+    {
+        f << "\tdouble virtual userDefineUpperBound(vector<double> const& param)const{" <<endl;
+        f << "\t\treturn eval(poly_table[ 5*((int)param[0])+4 ],param);" << endl;
+        f << "\t}\n" << endl;
+    }
+    
+    {
+        f << "\tdouble virtual userDefineDiscreteDistr(vector<double> const& param,unsigned int i)const{" <<endl;
+        if( any_of(MyGspn.transitionStruct.begin(),MyGspn.transitionStruct.end(),[](const transition &t){return t.dist.name == "DISCRETEUSERDEFINE";})){
+            f << "\t\treturn (magicUDDD(param,i));" << endl;
+        } else {
+            f << "\t\treturn (0.0);" << endl;
+        }
+        f << "\t}\n" << endl;
+    }
+    f << "};" << endl;
+    
     /*
     f << "namespace polynome{" << endl;
     f << "\tstruct Monome {"<<endl;
