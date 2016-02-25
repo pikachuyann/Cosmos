@@ -34,21 +34,31 @@ struct Monome {
 };
 
 template <unsigned int N>
-double eval(Monome<N> p[], vector<double> const& param){
+double eval(const Monome<N> p[], vector<double> const& param){
     double rslt = 0.0;
     for(unsigned int i=0; p[i].coeff != 0.0 ; i++){
         double mv = p[i].coeff;
         for(unsigned int j=0; j<N;j++)
             mv *= pow( param[j+1] , p[i].d[j]);
-        cerr << "mon:" << mv << endl;
         rslt += mv;
     }
     return rslt;
 }
 
-//Monome<3> toto[] = {{2, 1, 0, 1.00000000000000}, {0, 0, 0, 11.5000000000000}, {0, 2, 0, 0.500000000000000}, {0, 1, 0, -4.00000000000000}, {0,0,0,0}};
-
-//double test =eval(toto, {0,0,1} );
-
+template <unsigned int N>
+double eval(const Monome<N> p[], vector<double> const& param, double t){
+    //cerr << "poly " << param[0] << ": ("<< t << ")" ;
+    double rslt = 0.0;
+    for(unsigned int i=0; p[i].coeff != 0.0 ; i++){
+        double mv = p[i].coeff;
+        for(unsigned int j=0; j<N-1;j++)
+            mv *= pow( param[j+1] , p[i].d[j]);
+        mv *= pow(t,p[i].d[N-1]);
+        //cerr << " mon:" << mv;
+        rslt += mv;
+    }
+    //cerr << "res: " << rslt << endl;
+    return rslt;
+}
 
 #endif /* Polynome_h */

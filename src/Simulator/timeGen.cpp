@@ -80,7 +80,7 @@ string timeGen::string_of_dist(DistributionType d,const vector<double> &param)co
  * @param distribution is the type of distribution
  * @param param is a vector of parameters of the distribution.
  */
-double timeGen::GenerateTime(DistributionType distribution,const vector<double> &param) {
+double timeGen::GenerateTime(DistributionType distribution,const vector<double> &param, const CustomDistr &cd) {
     //cerr << "sampling " << string_of_dist(distribution,param) << endl;;
 	switch (distribution) {
 		case UNIFORM:
@@ -183,14 +183,14 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
             boost::uniform_01<> UNIF;
             boost::variate_generator<boost::mt19937&, boost::uniform_01<> > gen(RandomNumber, UNIF);
             const auto gentime = gen();
-            const auto lower = userDefineLowerBound(param);
-            const auto upper = userDefineUpperBound(param);
+            const auto lower = cd.userDefineLowerBound(param);
+            const auto upper = cd.userDefineUpperBound(param);
 
         //cerr << "sample(" << gentime << ",[" << lower << "," << upper << "]):" <<endl;
             double initialpt = (lower+upper)/ 2.0;
             return boost::math::tools::newton_raphson_iterate([&](double x){
-                const auto cdf = userDefineCDF(param,x);
-                const auto pdf = userDefinePDF(param,x);
+                const auto cdf = cd.userDefineCDF(param,x);
+                const auto pdf = cd.userDefinePDF(param,x);
                 //      cerr << "it:" << x << endl;
                 return make_tuple(cdf-gentime, pdf);
             }, initialpt, lower, upper, 100);
@@ -202,7 +202,7 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
             boost::uniform_int<> UNIF(0, 100000);
             boost::variate_generator<boost::mt19937&, boost::uniform_int<> > gen(RandomNumber, UNIF);
             unsigned int i=gen();
-            return userDefineDiscreteDistr(param,i);
+            return cd.userDefineDiscreteDistr(param,i);
         }
             
         case USERDEFINEPOLYNOMIAL:
@@ -210,14 +210,14 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
             boost::uniform_01<> UNIF;
             boost::variate_generator<boost::mt19937&, boost::uniform_01<> > gen(RandomNumber, UNIF);
             const auto gentime = gen();
-            const auto lower = userDefineLowerBound(param);
-            const auto upper = userDefineUpperBound(param);
+            const auto lower = cd.userDefineLowerBound(param);
+            const auto upper = cd.userDefineUpperBound(param);
             
             //cerr << "sample(" << gentime << ",[" << lower << "," << upper << "]):" <<endl;
             double initialpt = (lower+upper)/ 2.0;
             return boost::math::tools::newton_raphson_iterate([&](double x){
-                const auto cdf = userDefineCDF(param,x);
-                const auto pdf = userDefinePDF(param,x);
+                const auto cdf = cd.userDefineCDF(param,x);
+                const auto pdf = cd.userDefinePDF(param,x);
                 //      cerr << "it:" << x << endl;
                 return make_tuple(cdf-gentime, pdf);
             }, initialpt, lower, upper, 100);

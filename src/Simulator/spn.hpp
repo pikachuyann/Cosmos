@@ -133,6 +133,19 @@ struct _place {
 typedef struct _place spn_place;
 
 /**
+ * Class handling custom distribution
+ */
+class CustomDistr {
+public:
+    double virtual userDefineCDF(const std::vector<double> &, double )const{return 0.0;};
+    double virtual userDefinePDF(const std::vector<double> &, double )const{return 0.0;};
+    double virtual userDefineLowerBound(const std::vector<double> &)const{return 0.0;};
+    double virtual userDefineUpperBound(const std::vector<double> &)const{return 0.0;};
+    double virtual userDefineDiscreteDistr(const std::vector<double> &,unsigned int)const{return 0.0;};
+};
+
+
+/**
  * \brief Class of the SPN.
  *
  * All the implementation of this class are generated at runtime.
@@ -153,6 +166,8 @@ public:
     std::vector<spn_trans> Transition;
     //!contains all the places of the Petri net
     std::vector <spn_place> Place;
+    
+    CustomDistr customDistr;
 
 	//! set the marking to the initial marking
 	void reset();
@@ -261,12 +276,6 @@ private:
 	
 	
 };
-
-double userDefineCDF(const std::vector<double> &param, double x);
-double userDefinePDF(const std::vector<double> &param, double x);
-double userDefineLowerBound(const std::vector<double> &param);
-double userDefineUpperBound(const std::vector<double> &param);
-double userDefineDiscreteDistr(const std::vector<double> &param,unsigned int i);
 
 #pragma clang diagnostic ignored "-Wunused-variable"
 #pragma clang diagnostic ignored "-Wunused-parameter"
