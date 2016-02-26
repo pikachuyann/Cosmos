@@ -263,9 +263,10 @@ def printGRML_distribution(quadriple):
     s="";
     for i in range(len(quadriple[1])):
         for j in range(len(quadriple[1][i])):
-            s+='    <attribute name=\"UserDefineDistribution\">\n';            
+            s+='    <attribute name=\"UserDefineDistributionPoly\">\n';            
             s+='      <attribute name=\"name\"> '+ "trans_%d"%i+"_%d"%j+ ' </attribute>\n';
             s+='      <attribute name=\"var\"> t </attribute>\n';
+            s+='      <attribute name=\"nbParam\">'+ "%i"%(cardclocks+1) + '</attribute>\n';
             s+='      <attribute name=\"lowerBound\">' + poly_to_c(quadriple[3][i][j]) + '</attribute>\n';
             s+='      <attribute name=\"upperBound\">' + poly_to_c(quadriple[4][i][j]) + '</attribute>\n';
             s+='      <attribute name=\"norm\">'+ poly_to_c(quadriple[0][i][j]) + '</attribute>\n';

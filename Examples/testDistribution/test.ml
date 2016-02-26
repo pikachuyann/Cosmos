@@ -36,3 +36,6 @@ test_cosmos "normal" "testnormal.grml" "testdistrib.lha" "--max-run 10000"
 
 test_cosmos "Userdefined" "testuserdefine.grml" "testdistrib.lha" "--max-run 1000"
 ["MeanVal",(4.0); "VarVal",(5.33321869776)];;   
+
+test_cosmos "Userdefined" "testuserdefinepoly.grml" "testdistrib.lha" "--max-run 1000"
+["MeanVal",(4.0); "VarVal",(5.33321869776)];;       

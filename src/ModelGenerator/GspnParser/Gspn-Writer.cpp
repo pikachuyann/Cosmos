@@ -1068,10 +1068,13 @@ void Gspn_Writer::writeFile(){
 	}
 
     
-    //------------ Writing polynomes -------------------------------------------
-    if(!P.lightSimulator){
-        //writeUserDefineDistr(SpnCppFile);
-        writePolynome(SpnCppFile);
+    //------------ Writing polynomials ------------------------------------------
+    if(!P.lightSimulator && !MyGspn.distribStruct.empty()){
+        if(userDefineDistribution::isPolynome){
+            writePolynome(SpnCppFile);
+        }else{
+            writeUserDefineDistr(SpnCppFile);
+        }
     }
 
 
@@ -1105,7 +1108,16 @@ void Gspn_Writer::writeFile(){
 
     //--------------- Writing implementation of SPN ----------------------------
     SpnCppFile << objName<<"SPN():" << endl;
-    if(!MyGspn.distribStruct.empty())SpnCppFile << "customDistr(CustomDistrPoly()),";
+    if(!MyGspn.distribStruct.empty()){
+        if(userDefineDistribution::isPolynome){
+            SpnCppFile << "customDistr(*(new CustomDistrPoly())),";
+        }else{
+            SpnCppFile << "customDistr(*(new CustomDistrOverride())),";
+        }
+    }else{
+        SpnCppFile << "customDistr(*(new CustomDistr())),";
+    }
+    
 	SpnCppFile << "pl(" << MyGspn.pl << "), ";
 	SpnCppFile << "tr(" << MyGspn.tr << ") ";
     if(!P.lightSimulator){
@@ -1180,9 +1192,11 @@ void Gspn_Writer::writeFile(){
 }
 
 void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
-    
-    f << "double userDefineCDF(vector<double> const& param, double funvar){" <<endl;
+    f << "class CustomDistrOverride: public CustomDistr {" << endl;
+    f << "public:"<< endl;
+    f << "double virtual userDefineCDF(vector<double> const& param, double funvar)const override{" <<endl;
     {
+        //f<< "std::cerr << \"test\" << std::endl;"<<endl;
     auto ch = casesHandler("(int)param[0]");
     for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
         const auto &dist = MyGspn.distribStruct[it];
@@ -1197,7 +1211,7 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     f << "}\n" << endl;
     }
     {
-    f << "double userDefinePDF(vector<double> const& param, double funvar){" <<endl;
+    f << "double virtual userDefinePDF(vector<double> const& param, double funvar)const override{" <<endl;
     auto ch = casesHandler("(int)param[0]");
     for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
         const auto &dist = MyGspn.distribStruct[it];
@@ -1212,7 +1226,7 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     f << "}\n" << endl;
     }
     {
-    f << "double userDefineLowerBound(vector<double> const& param){" <<endl;
+    f << "double virtual userDefineLowerBound(vector<double> const& param)const override{" <<endl;
     auto ch = casesHandler("(int)param[0]");
     for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
         const auto &dist = MyGspn.distribStruct[it];
@@ -1224,7 +1238,7 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     f << "}\n" << endl;
     }
     {
-    f << "double userDefineUpperBound(vector<double> const& param){" <<endl;
+    f << "double virtual userDefineUpperBound(vector<double> const& param)const override{" <<endl;
     auto ch = casesHandler("(int)param[0]");
     for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
         const auto &dist = MyGspn.distribStruct[it];
@@ -1237,7 +1251,7 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     }
 
     {
-    f << "double userDefineDiscreteDistr(vector<double> const& param,unsigned int i){" <<endl;
+    f << "double virtual userDefineDiscreteDistr(vector<double> const& param,unsigned int i)const override{" <<endl;
     if( any_of(MyGspn.transitionStruct.begin(),MyGspn.transitionStruct.end(),[](const transition &t){return t.dist.name == "DISCRETEUSERDEFINE";})){
         f << "\treturn (magicUDDD(param,i));" << endl;
     } else {
@@ -1245,33 +1259,32 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     }
     f << "}\n" << endl;
     }
+    f << "};" << endl;
 
 }
 
 void Gspn_Writer::writePolynome(ofstream &f)const{
     if(MyGspn.distribStruct.empty())return;
+    size_t n = userDefineDistribution::nbparam;
     
     f << "#include \"Polynome.hpp\""<< endl;
     
     f << "class CustomDistrPoly: public CustomDistr {" << endl;
-    //f << "Monome<3> toto[] = {{2, 1, 0, 1.00000000000000}, {0, 0, 0, 11.5000000000000}, {0, 2, 0, 0.500000000000000}, {0, 1, 0, -4.00000000000000}, {0,0,0,0}};" << endl;
-    
-    //f << "double test =eval(toto, {0,0,1} );" << endl;
-
-    stringstream polTable;
+   
+    /*stringstream polTable;
     for ( let d : MyGspn.distribStruct) {
-        f << "\tconst static Monome<3> POLY_CDF_" << d.name << "[] =" << d.cdf << ";" << endl;
+        f << "\tconst static Monome<3> POLY_CDF_" << d.name << "[];" << endl;
         polTable << "((Monome<3> *const)POLY_CDF_" << d.name << "), ";
-        f << "\tconst static Monome<3> POLY_PDF_" << d.name << "[] =" << d.pdf << ";" << endl;
+        f << "\tconst static Monome<3> POLY_PDF_" << d.name << "[];" << endl;
         polTable << "((Monome<3> *const)POLY_PDF_" << d.name << "), ";
-        f << "\tconst static Monome<3> POLY_NORM_" << d.name << "[] =" << d.norm << ";" << endl;
+        f << "\tconst static Monome<3> POLY_NORM_" << d.name << "[];" << endl;
         polTable << "((Monome<3> *const)POLY_NORM_" << d.name << "), ";
-        f << "\tconst static Monome<3> POLY_LOW_" << d.name << "[] =" << d.lowerBound << ";" << endl;
+        f << "\tconst static Monome<3> POLY_LOW_" << d.name << "[];" << endl;
         polTable << "((Monome<3> *const)POLY_LOW_" << d.name << "), ";
-        f << "\tconst static Monome<3> POLY_UP_" << d.name << "[] =" << d.upperBound << ";" << endl;
+        f << "\tconst static Monome<3> POLY_UP_" << d.name << "[];" << endl;
         polTable << "((Monome<3> *const)POLY_UP_" << d.name << "), ";
-    }
-    f << "\tconst static Monome<3>* poly_table[] = { "<< polTable.str() << "};" << endl;
+    }*/
+    f << "\tconst static Poly<"<< n <<"> poly_table[];" << endl;
     
     f << "public:" << endl;
    
@@ -1307,28 +1320,15 @@ void Gspn_Writer::writePolynome(ofstream &f)const{
     }
     f << "};" << endl;
     
-    /*
-    f << "namespace polynome{" << endl;
-    f << "\tstruct Monome {"<<endl;
-    f << "\t\tint d["<< n <<"];"<<endl;
-    f << "\t\tdouble coeff;"<<endl;
-    f << "\t};"<<endl;
-    
-    f << "\ttemplate <N>"<< endl;
-    f << "\tdouble eval(array<Monome,N> p, vector<double> const& param){"<<endl;
-    f << "\t\tdouble rslt = 0.0;"<< endl;
-    //f << "\t\tunsigned int index=0;" << endl;
-    f << "\t\tfor(const auto & m: p){" << endl;
-    f << "\t\t\tdouble mv = m.coeff;"<< endl;
-    f << "\t\t\tfor(unsigned int j=0; j<"<< n<<";j++)";
-    f << "}" << endl;
-    f << "return 0.0;";
-    
-    f << "\t};"<<endl;
-    
-    f << "\tarray<Monome,4> toto = {{{2, 1, 0, 1.00000000000000}, {0, 0, 0, 11.5000000000000}, {0, 2, 0, 0.500000000000000}, {0, 1, 0, -4.00000000000000}}};"<< endl;
-    */
-    //f << "};"<<endl;
+    f << "const Poly<"<< n <<"> CustomDistrPoly::poly_table[]= { " << endl;
+    for ( let d : MyGspn.distribStruct) {
+        f << d.cdf <<"," << endl;
+        f << d.pdf <<"," << endl;
+        f << d.norm << "," << endl;
+        f << d.lowerBound << "," << endl;
+        f << d.upperBound << "," << endl;
+    }
+    f << "};" << endl;
     
 }
 
