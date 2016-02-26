@@ -270,8 +270,6 @@ private:
 
 class REHandling{
 public:
-    std::vector <double> Rate_Table;
-    std::vector <double> Origine_Rate_Table;
     void print_state(const std::vector<int>&);
     void lumpingFun(const abstractMarking& ,std::vector<int>&);
     bool precondition(const abstractMarking&);

@@ -49,6 +49,8 @@ public:
 
     double Rate_Sum;
     double Origine_Rate_Sum;
+    std::vector <double> Rate_Table;
+    std::vector <double> Origine_Rate_Table;
     
 protected:
     stateSpace * muprob;
