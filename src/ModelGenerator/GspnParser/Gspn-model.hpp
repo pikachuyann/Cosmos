@@ -53,6 +53,8 @@ struct ProbabiliteDistribution {
 typedef struct ProbabiliteDistribution Distribution;
 
 struct userDefineDistribution{
+    static bool isPolynome;
+    static size_t nbparam;
     std::string name;
     std::string var;
     std::string cdf;
@@ -60,7 +62,6 @@ struct userDefineDistribution{
     std::string norm;
     std::string lowerBound;
     std::string upperBound;
-    size_t nbparam;
 };
 
 struct color {

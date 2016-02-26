@@ -34,7 +34,10 @@ struct Monome {
 };
 
 template <unsigned int N>
-double eval(const Monome<N> p[], vector<double> const& param){
+using Poly=vector<const Monome<N>>;
+
+template <unsigned int N>
+double eval(const Poly<N> p, vector<double> const& param){
     double rslt = 0.0;
     for(unsigned int i=0; p[i].coeff != 0.0 ; i++){
         double mv = p[i].coeff;
@@ -46,7 +49,7 @@ double eval(const Monome<N> p[], vector<double> const& param){
 }
 
 template <unsigned int N>
-double eval(const Monome<N> p[], vector<double> const& param, double t){
+double eval(const Poly<N> p, vector<double> const& param, double t){
     //cerr << "poly " << param[0] << ": ("<< t << ")" ;
     double rslt = 0.0;
     for(unsigned int i=0; p[i].coeff != 0.0 ; i++){
