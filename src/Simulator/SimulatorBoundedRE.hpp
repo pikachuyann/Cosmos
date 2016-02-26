@@ -58,20 +58,20 @@ public:
 	};
 	~simulationState(){};
 	
-	void saveState(SPN* N,LHA_orig* A,EventsQueue** EQsim){
+	void saveState(SPN_RE* N,LHA_orig* A,EventsQueue** EQsim){
 		marking.swap(N->Marking);
 		//AE = *AEsim;
 		EQ = *EQsim; //new EventsQueue(*EQsim);
 		
 		lhaState.copyState(A);
-		
+        
 		Rate_Table.swap(N->Rate_Table);
 		Origine_Rate_Table.swap(N->Origine_Rate_Table);
 		Rate_Sum = N->Rate_Sum;
 		Origine_Rate_Sum = N-> Origine_Rate_Sum;
 		
 	};
-	void loadState(SPN* N,LHA_orig* A,EventsQueue** EQsim){
+	void loadState(SPN_RE* N,LHA_orig* A,EventsQueue** EQsim){
 		
 		N->Marking.swap(marking);
 		//*AEsim = AE;

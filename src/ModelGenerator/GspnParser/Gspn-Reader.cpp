@@ -23,7 +23,6 @@
  *******************************************************************************
  */
 
-#include "../../Simulator/spn.hpp"
 #include "Gspn-Reader.hpp"
 #include "Gspn_gmlparser.hpp"
 

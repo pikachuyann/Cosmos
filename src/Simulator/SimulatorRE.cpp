@@ -39,6 +39,10 @@ using namespace std;
 
 SPN_RE::SPN_RE(int& v,bool doubleIS):SPN_orig(v),doubleIS_mode(doubleIS){
     rareEventEnabled=false;
+    Rate_Sum = 0;
+    Origine_Rate_Sum = 0;
+    Rate_Table = vector<double>(tr,0.0);
+    Origine_Rate_Table = vector<double>(tr,0.0);
 }
 
 void SPN_RE::initialize( stateSpace *muprob){
@@ -136,17 +140,25 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 };
 
 void SimulatorRE::updateLikelihood(size_t E1_transitionNum){
-    //cerr << "initialised?:\t" << E1_transitionNum << endl;
-	if(static_cast<SPN_RE&>(N).doubleIS_mode){
+    let NRE = static_cast<SPN_RE&>(N);
+    
+    /*cerr << "initialised?:\t" << E1_transitionNum << "\t" << A.Likelihood << endl;
+    cerr << NRE.Rate_Sum << "\t" << NRE.Origine_Rate_Sum << "\t[";
+    for(let cv:NRE.Rate_Table)cerr << cv << ", ";
+    cerr << "]\t[";
+    for(let cv:NRE.Origine_Rate_Table)cerr << cv << ", ";
+    cerr << "]" << endl;*/
+    
+	if(NRE.doubleIS_mode){
 		A.Likelihood = A.Likelihood *
-		(N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) *
-		((N.Rate_Sum-N.Rate_Table[N.tr-1]) / N.Rate_Table[E1_transitionNum]);
+		(NRE.Origine_Rate_Table[E1_transitionNum] / NRE.Origine_Rate_Sum) *
+		((NRE.Rate_Sum-NRE.Rate_Table[N.tr-1]) / NRE.Rate_Table[E1_transitionNum]);
 	}else{
 		A.Likelihood = A.Likelihood *
 		//
 		//(N.Origine_Rate_Table[E1_transitionNum] / 1.0) *
-		(N.Origine_Rate_Table[E1_transitionNum] / N.Origine_Rate_Sum) *
-		(N.Rate_Sum / N.Rate_Table[E1_transitionNum]);
+		(NRE.Origine_Rate_Table[E1_transitionNum] / NRE.Origine_Rate_Sum) *
+		(NRE.Rate_Sum / NRE.Rate_Table[E1_transitionNum]);
 	}
 }
 
@@ -194,17 +206,19 @@ void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding
 
 void SimulatorRE::reset(){
     A.Likelihood=1.0;
-    Simulator::reset();
+    N.reset();
+    A.reset(N.Marking);
+    EQ->reset();
 }
 
 /**
  * Simulate a whole trajectory in the system. Result is store in SimOutput
  */
 void SimulatorRE::SimulateSinglePath() {
-    auto &raenabled = static_cast<SPN_RE&>(N).rareEventEnabled;
-	raenabled = N.precondition(N.Marking);
+    auto &NRE = static_cast<SPN_RE&>(N);
+	NRE.rareEventEnabled = NRE.precondition(N.Marking);
     reset();
-	N.InitialEventsQueue(*EQ,*this);
+    N.InitialEventsQueue(*EQ,*this);
 	
 	if(logtrace.is_open())logtrace << "New Path"<< endl;
     
@@ -225,13 +239,14 @@ void SimulatorRE::SimulateSinglePath() {
 			cerr << endl;
 			N.Marking.print(cerr,0.0);
 			A.printState(cerr);
+            cerr << "\t" << A.Likelihood;
 			cerr << endl;
 			if(verbose>4)EQ->view(N.Transition);
 			if(verbose==6)interactiveSimulation();
 		}
 		
 		continueb = SimulateOneStep();
-		if(!raenabled)raenabled = N.precondition(N.Marking);
+		if(!NRE.rareEventEnabled)NRE.rareEventEnabled = NRE.precondition(N.Marking);
 	}
     //cerr << "finish path"<< endl;
 }

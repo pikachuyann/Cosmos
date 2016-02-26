@@ -25,14 +25,15 @@
  */
 
 
+#ifndef _SIMULATOR_RE_HPP
+#define _SIMULATOR_RE_HPP
+
+
 #include "Simulator.hpp"
 #include "stateSpace.hpp"
 #include "spn_orig.hpp"
 
-#ifndef _SIMULATOR_RE_HPP
-#define _SIMULATOR_RE_HPP
-
-class SPN_RE: public SPN_orig{
+class SPN_RE: public SPN_orig, public REHandling{
 public:
     SPN_RE(int& v,bool doubleIS);
 
@@ -46,9 +47,12 @@ public:
     virtual double mu();
     const bool doubleIS_mode;
 
+    double Rate_Sum;
+    double Origine_Rate_Sum;
+    
 protected:
     stateSpace * muprob;
-
+    
 private:
     virtual void getParams(size_t,const abstractBinding&);
     virtual double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);

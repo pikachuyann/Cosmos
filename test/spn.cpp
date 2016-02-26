@@ -1,20 +1,30 @@
 #include "spn.hpp"
 #include <iomanip>
 using namespace std;
-#define PL_i_LP 0
-#define TR_ln_RT 0
+#define PL_RE_Queue1_LP 0
+#define PL_RE_Queue2_LP 1
+#define PL_Puit_LP 2
+#define TR_rho0_RT 0
+#define TR_rho1_RT 1
+#define TR_rho2_RT 2
+#define TR_Puittrans_RT 3
 
-const int _nb_Place_i=0;
+const double r=5;
+const double rho0=0.1;
+const double rho1=0.45;
+const int _nb_Place_RE_Queue1=0;
+const int _nb_Place_RE_Queue2=1;
+const int _nb_Place_Puit=2;
 namespace hybridVar {
 }
-void SPN::print_state(const vector<int> &vect){}
-void SPN::lumpingFun(const abstractMarking &M,vector<int> &vect){}
-bool SPN::precondition(const abstractMarking &M){return true;}
+#include "lumpingfun.cpp"
 #include "marking.hpp"
 #include "markingImpl.hpp"
 
 void abstractMarking::resetToInitMarking(){
-	P->_PL_i =0  ;
+	P->_PL_RE_Queue1 =1  ;
+	P->_PL_RE_Queue2 =0  ;
+	P->_PL_Puit =0  ;
 }
 
 
@@ -48,35 +58,51 @@ void abstractMarking::swap(abstractMarking& m) {
 	P = tmp;
 }
 void abstractMarking::printHeader(ostream &s)const{
-s <<  setw(5) << "i ";
+s <<  setw(9) << "RE_Queue1 ";
+s <<  setw(9) << "RE_Queue2 ";
+s <<  setw(9) << "Puit ";
 }
 
 void abstractMarking::print(ostream &s,double eTime)const{
-	s <<  setw(4) << P->_PL_i<<" ";
+	s <<  setw(8) << P->_PL_RE_Queue1<<" ";
+	s <<  setw(8) << P->_PL_RE_Queue2<<" ";
+	s <<  setw(8) << P->_PL_Puit<<" ";
 }
 void abstractMarking::printSedCmd(ostream &s)const{
-	s << "-e 's/\\$i\\$/";
-	s << P->_PL_i;
+	s << "-e 's/\\$RE_Queue1\\$/";
+	s << P->_PL_RE_Queue1;
+	s <<"/g' ";
+	s << "-e 's/\\$RE_Queue2\\$/";
+	s << P->_PL_RE_Queue2;
+	s <<"/g' ";
+	s << "-e 's/\\$Puit\\$/";
+	s << P->_PL_Puit;
 	s <<"/g' ";
 }
 
 int abstractMarking::getNbOfTokens(int p)const {
 	switch (p) {
-		case 0: return P->_PL_i;
+		case 0: return P->_PL_RE_Queue1;
+		case 1: return P->_PL_RE_Queue2;
+		case 2: return P->_PL_Puit;
      }
 }
 
 std::vector<int> abstractMarking::getVector()const {
-	std::vector<int> v(1);
-	v.reserve(2);
+	std::vector<int> v(3);
+	v.reserve(4);
 	size_t i = 0;
-	v[i++]= P->_PL_i;
+	v[i++]= P->_PL_RE_Queue1;
+	v[i++]= P->_PL_RE_Queue2;
+	v[i++]= P->_PL_Puit;
      return v;
 }
 
 void abstractMarking::setVector(const std::vector<int>&v) {
 	size_t i = 0;
-	P->_PL_i = v[i++];
+	P->_PL_RE_Queue1 = v[i++];
+	P->_PL_RE_Queue2 = v[i++];
+	P->_PL_Puit = v[i++];
 };
 
 void abstractMarking::Symmetrize(){
@@ -104,78 +130,101 @@ int abstractBinding::id()const{
 int abstractBinding::idTotal()const{
 	 return 0;
 }
-class CustomDistrOverride: public CustomDistr {
-public:
-    
-    CustomDistrOverride(){
-        std::cerr << "test" << std::endl;
-    }
-    
-double virtual userDefineCDF(vector<double> const& param, double funvar)const override{
-    
-std::cerr << "test" << std::endl;
-	{
-		double t = funvar;
-		return (0.125 * t);
-	}
-
-}
-
-virtual double userDefinePDF(vector<double> const& param, double funvar)const override{
-	{
-		double t = funvar;
-		return (0.125);
-	}
-
-}
-
-virtual double userDefineLowerBound(vector<double> const& param)const override{
-		return (0.0);
-
-}
-
-virtual double userDefineUpperBound(vector<double> const& param)const override{
-		return (8.0);
-
-}
-
-double virtual userDefineDiscreteDistr(vector<double> const& param,unsigned int i)const override{
-	return (0.0);
-}
-
-};
 static const int EMPTY_array[1]={-1};
-const int* SPN::PossiblyEnabled[] = {EMPTY_array};
+static const int PE_PossiblyEnabled_0[2]= {TR_rho1_RT, -1 }; /* rho0*/
+static const int PE_PossiblyEnabled_1[2]= {TR_rho2_RT, -1 }; /* rho1*/
+const int* SPN::PossiblyEnabled[] = {PE_PossiblyEnabled_0, PE_PossiblyEnabled_1, EMPTY_array, EMPTY_array};
 
-const int* SPN::PossiblyDisabled[] = {EMPTY_array};
+const int* SPN::PossiblyDisabled[] = {EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
 
-const int* SPN::FreeMarkDepT[] = {EMPTY_array};
+static const int PE_FreeMarkDepT_0[2]= {TR_Puittrans_RT, -1 }; /* rho0*/
+static const int PE_FreeMarkDepT_1[2]= {TR_Puittrans_RT, -1 }; /* rho1*/
+static const int PE_FreeMarkDepT_2[2]= {TR_Puittrans_RT, -1 }; /* rho2*/
+static const int PE_FreeMarkDepT_3[2]= {TR_Puittrans_RT, -1 }; /* Puittrans*/
+const int* SPN::FreeMarkDepT[] = {PE_FreeMarkDepT_0, PE_FreeMarkDepT_1, PE_FreeMarkDepT_2, PE_FreeMarkDepT_3};
 
-static spn_trans TransArray[1] = { _trans(0,USERDEFINE,0,1, 0, "ln"),  }; 
+static spn_trans TransArray[4] = { _trans(0,EXPONENTIAL,0,1, 0, "rho0"), _trans(1,EXPONENTIAL,0,1, 0, "rho1"), _trans(2,EXPONENTIAL,0,1, 0, "rho2"), _trans(3,EXPONENTIAL,1,1, 0, "Puittrans"),  }; 
 SPN::SPN():
-customDistr(CustomDistrOverride()),pl(1), tr(1) ,Transition(TransArray,TransArray +1),Place(1),ParamDistr(10),TransitionConditions(1,0){
-    Path ="testuserdefine.grml";
-    Place[0].label =" i";
+customDistr(*(new CustomDistr())),pl(3), tr(4) ,Transition(TransArray,TransArray +4),Place(3),ParamDistr(10),TransitionConditions(4,0){
+    Path ="tandemRE.grml";
+    Place[0].label =" RE_Queue1";
     Place[0].isTraced = 1;
+    Place[1].label =" RE_Queue2";
+    Place[1].isTraced = 1;
+    Place[2].label =" Puit";
+    Place[2].isTraced = 1;
+	Msimple();
 }
 
 bool SPN::IsEnabled(TR_PL_ID t, const abstractBinding &b)const{
 
+	switch (t){
+		case 1:	//rho1
+
+			if (!(contains(Marking.P->_PL_RE_Queue1 , 1))) return false;
+		return true;
+		break;
+		case 2:	//rho2
+
+			if (!(contains(Marking.P->_PL_RE_Queue2 , 1))) return false;
+		return true;
+		break;
+		default:	//rho0,Puittrans,
 
 		return true;
+		break;
+	}
 }
 
 void SPN::fire(TR_PL_ID t, const abstractBinding &b,REAL_TYPE time){
 	lastTransition = t;
 
+	switch (t){
+		case 3:	//Puittrans
 {
-			Marking.P->_PL_i += 1;
+			Marking.P->_PL_Puit += 1;
+	}
+		break;
+		case 0:	//rho0
+{
+			Marking.P->_PL_RE_Queue1 += 1;
+	}
+		break;
+		case 1:	//rho1
+{
+			Marking.P->_PL_RE_Queue1 -= 1;
+			Marking.P->_PL_RE_Queue2 += 1;
+	}
+		break;
+		case 2:	//rho2
+{
+			Marking.P->_PL_RE_Queue2 -= 1;
+	}
+		break;
 	}
 }
 
 void SPN::unfire(TR_PL_ID t, const abstractBinding &b){
 
+	switch (t){
+		case 3:	//Puittrans
+			Marking.P->_PL_Puit -= 1;
 
+		break;
+		case 1:	//rho1
+			Marking.P->_PL_RE_Queue1 += 1;
+			Marking.P->_PL_RE_Queue2 -= 1;
+
+		break;
+		case 0:	//rho0
+			Marking.P->_PL_RE_Queue1 -= 1;
+
+		break;
+		case 2:	//rho2
+			Marking.P->_PL_RE_Queue2 += 1;
+
+		break;
+	}
 }
 
 const abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {
@@ -197,10 +246,26 @@ void SPN::setConditionsVector(){
 void SPN::GetDistParameters(TR_PL_ID t, const abstractBinding &b)const{
 using namespace hybridVar;
 
+	switch (t){
+		case 3:	//Puittrans
 	{
 		ParamDistr[0]= ( double ) 0 ;
 	}
 
+		break;
+		case 0:	//rho0
+	{
+		ParamDistr[0]= ( double ) rho0 ;
+	}
+
+		break;
+		default:	//rho1,rho2,
+	{
+		ParamDistr[0]= ( double ) rho1 ;
+	}
+
+		break;
+	}
 }
 
 REAL_TYPE SPN::GetPriority(TR_PL_ID t, const abstractBinding &b)const{
@@ -217,6 +282,8 @@ using namespace hybridVar;
 
 void SPN::Msimple(){
 	vector<int> tab;
+		tab.push_back(0);
+		tab.push_back(1);
 	Msimpletab = tab;
 }
 void SPN::reset() {
