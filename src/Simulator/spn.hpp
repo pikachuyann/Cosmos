@@ -137,11 +137,11 @@ typedef struct _place spn_place;
  */
 class CustomDistr {
 public:
-    double virtual userDefineCDF(const std::vector<double> &, double )const{return 0.0;};
-    double virtual userDefinePDF(const std::vector<double> &, double )const{return 0.0;};
-    double virtual userDefineLowerBound(const std::vector<double> &)const{return 0.0;};
-    double virtual userDefineUpperBound(const std::vector<double> &)const{return 0.0;};
-    double virtual userDefineDiscreteDistr(const std::vector<double> &,unsigned int)const{return 0.0;};
+    virtual double userDefineCDF(const std::vector<double> &, double )const{return 0.0;};
+    virtual double userDefinePDF(const std::vector<double> &, double )const{return 0.0;};
+    virtual double userDefineLowerBound(const std::vector<double> &)const{return 0.0;};
+    virtual double userDefineUpperBound(const std::vector<double> &)const{return 0.0;};
+    virtual double userDefineDiscreteDistr(const std::vector<double> &,unsigned int)const{return 0.0;};
 };
 
 
@@ -155,6 +155,8 @@ public:
 	//! Initialize all the data
 	SPN();
 
+    const CustomDistr& customDistr;
+    
     //! Number of places
     const size_t pl;
     //! Number of transitions
@@ -166,8 +168,6 @@ public:
     std::vector<spn_trans> Transition;
     //!contains all the places of the Petri net
     std::vector <spn_place> Place;
-    
-    CustomDistr customDistr;
 
 	//! set the marking to the initial marking
 	void reset();

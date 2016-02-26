@@ -87,7 +87,7 @@ void signalHandler( int signum )
 
             if(child != -1){
                 if(!WIFEXITED(status)){ //Something to report
-                    if(WTERMSIG(status)!=SIGHUP){ //Normal termination of process
+                    if(WTERMSIG(status)!=SIGHUP && WTERMSIG(status)!=SIGINT){ //Normal termination of process
                         if(count(clientPID.begin(),clientPID.end(),child)==0)
                             cerr << "The unknown child "<< child << "Terminated by signal :" << WTERMSIG(status) << endl;
                         else{
@@ -191,10 +191,7 @@ void freestr(const char *argv[],size_t t){
 }
 
 void launch_clients(parameters& P){
-    signal(SIGCHLD , signalHandler);
-    signal(SIGINT, signalHandler);
-    signal(SIGPIPE, signalHandler);
-	
+    
     // if seed is zero generate a pseudo random seed.
     if(P.seed==0){
         timeval t;
@@ -314,6 +311,11 @@ void makeselectlist(void){
  * The precision criterion is reach.
  */
 void launchServer(parameters& P){
+    
+    signal(SIGCHLD , signalHandler);
+    signal(SIGINT, signalHandler);
+    signal(SIGPIPE, signalHandler);
+    
     //Init result
     result Result;
 

@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
     
   //  cerr << "polyeval:" << test << endl;
 
-	signal(SIGINT, SIG_IGN);
+	//signal(SIGINT, SIG_IGN);
     //signal(SIGHUP, signalHandler);
 
     int verbose=0;

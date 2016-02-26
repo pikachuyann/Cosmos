@@ -31,6 +31,9 @@
 
 using namespace std;
 
+bool userDefineDistribution::isPolynome = false;
+size_t userDefineDistribution::nbparam = 1;
+
 void searchreplace(const string &in,const string &motif,const string &rep,string &out){
     out = in;
     size_t pos = out.find(motif);

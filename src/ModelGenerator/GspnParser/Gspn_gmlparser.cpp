@@ -608,7 +608,8 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                     MyGspn->colVars.push_back(cv);
                 }
 
-                if (*t2 == "UserDefineDistribution") {
+                if (*t2 == "UserDefineDistribution" || *t2 == "UserDefineDistributionPoly") {
+                    if(*t2 == "UserDefineDistributionPoly")userDefineDistribution::isPolynome = true;
                     userDefineDistribution dist;
                     dist.lowerBound = "0";
                     dist.upperBound = "0";
@@ -628,6 +629,9 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                         }
                         if (*it2 == "pdf") {
                             dist.pdf = simplifyString(*(it2.begin()));
+                        }
+                        if (*it2 == "nbParam") {
+                            dist.nbparam = stol(simplifyString(*(it2.begin())));
                         }
                         if (*it2 == "lowerBound") {
                             dist.lowerBound = simplifyString(*(it2.begin()));
