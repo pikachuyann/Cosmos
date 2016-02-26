@@ -7,6 +7,8 @@ public:
 };
 class abstractMarkingImpl {
 public:
-	int _PL_i;
+	int _PL_RE_Queue1;
+	int _PL_RE_Queue2;
+	int _PL_Puit;
 };
 #endif

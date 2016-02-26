@@ -1043,9 +1043,9 @@ void Gspn_Writer::writeFile(){
 	if(P.RareEvent){
 		SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
 	}else if(!P.lightSimulator){
-		SpnCppFile << "void "<<objName<<"print_state(const vector<int> &vect){}" << endl;
-		SpnCppFile << "void "<<objName<<"lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
-		SpnCppFile << "bool "<<objName<<"precondition(const abstractMarking &M){return true;}" << endl;
+		SpnCppFile << "void "<<"REHandling::"<<"print_state(const vector<int> &vect){}" << endl;
+		SpnCppFile << "void "<<"REHandling::"<<"lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
+		SpnCppFile << "bool "<<"REHandling::"<<"precondition(const abstractMarking &M){return true;}" << endl;
 	}
     
 	//------------- Writing Marking type and header ----------------------------
@@ -1147,10 +1147,7 @@ void Gspn_Writer::writeFile(){
 	
 	//-------------- Rare Event -----------------
 	if(P.RareEvent || P.computeStateSpace>0){
-		SpnCppFile << "    Msimple();" << endl;
-		SpnCppFile << "vector <double> Rate_Table_init (tr);" << endl;
-		SpnCppFile << "Rate_Table = Rate_Table_init;" << endl;
-		SpnCppFile << "Origine_Rate_Table = Rate_Table_init;" << endl;
+		SpnCppFile << "\tMsimple();" << endl;
 	}
 	//------------- /Rare Event -----------------
 	
@@ -1268,26 +1265,9 @@ void Gspn_Writer::writePolynome(ofstream &f)const{
     size_t n = userDefineDistribution::nbparam;
     
     f << "#include \"Polynome.hpp\""<< endl;
-    
     f << "class CustomDistrPoly: public CustomDistr {" << endl;
-   
-    /*stringstream polTable;
-    for ( let d : MyGspn.distribStruct) {
-        f << "\tconst static Monome<3> POLY_CDF_" << d.name << "[];" << endl;
-        polTable << "((Monome<3> *const)POLY_CDF_" << d.name << "), ";
-        f << "\tconst static Monome<3> POLY_PDF_" << d.name << "[];" << endl;
-        polTable << "((Monome<3> *const)POLY_PDF_" << d.name << "), ";
-        f << "\tconst static Monome<3> POLY_NORM_" << d.name << "[];" << endl;
-        polTable << "((Monome<3> *const)POLY_NORM_" << d.name << "), ";
-        f << "\tconst static Monome<3> POLY_LOW_" << d.name << "[];" << endl;
-        polTable << "((Monome<3> *const)POLY_LOW_" << d.name << "), ";
-        f << "\tconst static Monome<3> POLY_UP_" << d.name << "[];" << endl;
-        polTable << "((Monome<3> *const)POLY_UP_" << d.name << "), ";
-    }*/
     f << "\tconst static Poly<"<< n <<"> poly_table[];" << endl;
-    
     f << "public:" << endl;
-   
     f << "\tdouble virtual userDefineCDF(vector<double> const& param, double funvar)const{" <<endl;
     //f << "\tparam[0]=funvar;" << endl;
     f << "\t\treturn (eval(poly_table[ 5*((int)param[0]) ],param,funvar)/eval(poly_table[ 5*((int)param[0])+2 ],param,funvar))  ;"<< endl;
