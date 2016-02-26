@@ -144,7 +144,6 @@ public:
     virtual double userDefineDiscreteDistr(const std::vector<double> &,unsigned int)const{return 0.0;};
 };
 
-
 /**
  * \brief Class of the SPN.
  *
@@ -156,7 +155,7 @@ public:
 	SPN();
 
     const CustomDistr& customDistr;
-    
+
     //! Number of places
     const size_t pl;
     //! Number of transitions
@@ -194,20 +193,7 @@ public:
      */
     void unfire(size_t tr,const abstractBinding& b);
 
-    //------------------------- Rare Event -------------------------------------
-    std::vector <double> Rate_Table;
-    std::vector <double> Origine_Rate_Table;
-    double Rate_Sum;
-    double Origine_Rate_Sum;
-    std::vector <int> Msimpletab; //special places
-    void Msimple();
-    
-    void print_state(const std::vector<int>&);
-    void lumpingFun(const abstractMarking& ,std::vector<int>&);
-    bool precondition(const abstractMarking&);
-    //-------------------------/Rare Event -------------------------------------
-    
-	/**
+    /**
 	 * \brief A vector use to store temporary parameters value.
 	 * This vector is used to to store parameter of distribution
 	 * When the simulator ask for parameters the function GetDistParameter
@@ -237,6 +223,10 @@ public:
      */
     void GetDistParameters(size_t tr, const abstractBinding& b)const;
     
+    /**
+     *  Selected Place for state space exploration
+     */
+    std::vector<int> Msimpletab;
     
 protected:
     
@@ -268,6 +258,7 @@ private:
     //! The path of the file use to generate the implementation
     std::string Path;
     
+    void Msimple();
     
 	//------------------------- On the fly enabling disabling transition--------
 	std::vector<int> TransitionConditions;
@@ -275,6 +266,15 @@ private:
 	//-------------------------/On the fly enabling disabling transition--------
 	
 	
+};
+
+class REHandling{
+public:
+    std::vector <double> Rate_Table;
+    std::vector <double> Origine_Rate_Table;
+    void print_state(const std::vector<int>&);
+    void lumpingFun(const abstractMarking& ,std::vector<int>&);
+    bool precondition(const abstractMarking&);
 };
 
 #pragma clang diagnostic ignored "-Wunused-variable"

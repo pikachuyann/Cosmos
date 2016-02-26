@@ -32,6 +32,10 @@
  *
  */
 
+
+#ifndef _STATESPACE_HPP
+#define	_STATESPACE_HPP
+
 #include <set>
 #include <utility>
 #include <string>
@@ -41,32 +45,19 @@
 #include <map>
 #include <stack>
 #include <cstring>
-#include "LHA_orig.hpp"
-#include "spn.hpp"
-
 #include <iostream>
 #include <boost/numeric/ublas/fwd.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <unordered_map>
+
 #include "marking.hpp"
+#include "LHA_orig.hpp"
+#include "spn.hpp"
 
 //using namespace arma;
 using namespace std;
-
-/*
-#ifdef __GNUC__
-#include <ext/hash_map>
-#else
-#include <hash_map>
-#endif
-*/
-#include <unordered_map>
-
-#ifndef _STATESPACE_HPP
-#define	_STATESPACE_HPP
-
-//using namespace __gnu_cxx;
 
 struct eqstate{
 	bool operator()(const vector<int>* t1,const vector<int>* t2) const {

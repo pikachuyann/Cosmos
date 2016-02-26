@@ -71,6 +71,7 @@ void SimulatorContinuousBounded::initVectCo(double t){
 BatchR SimulatorContinuousBounded::RunBatch(){
 	//cerr << "test(";
 	numSolv->reset();
+    auto & NRE = static_cast<SPN_RE&>(N);
 	
 	//cerr << ")" << endl;
     int left = (int)max(numSolv->getMinT(),fg->left);
@@ -100,8 +101,8 @@ BatchR SimulatorContinuousBounded::RunBatch(){
     int c =0;
 	if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
-		N.Origine_Rate_Table = vector<double>(N.tr,0.0);
-		N.Rate_Table = vector<double>(N.tr,0.0);
+		NRE.Origine_Rate_Table = vector<double>(N.tr,0.0);
+		NRE.Rate_Table = vector<double>(N.tr,0.0);
 		
 		bool continueb = false;
 		//we try to find a trajectory reaching the precondition.
@@ -111,7 +112,7 @@ BatchR SimulatorContinuousBounded::RunBatch(){
 			EQ = new EventsQueue(N);
 			reset();
 			//We simulate until either the condition is satisfied or the trajectory reach a deadend.
-			while(!N.precondition(N.Marking) && continueb){
+			while(!NRE.precondition(N.Marking) && continueb){
 				continueb = SimulateOneStep();
 			}
 		}
@@ -126,7 +127,7 @@ BatchR SimulatorContinuousBounded::RunBatch(){
 		
 		c++;
 		
-		it->saveState(&N,&A,&EQ);
+		it->saveState(&NRE,&A,&EQ);
 	}
 	
 	//cout << "new batch" << endl;
@@ -140,7 +141,7 @@ BatchR SimulatorContinuousBounded::RunBatch(){
             if(it->maxStep >= fg->right -n){
 				
                 //cerr << "vect:\t" << it->maxStep;
-                it->loadState(&N,&A,&EQ);
+                it->loadState(&NRE,&A,&EQ);
                 
                 
                 //cerr << A.Likelihood << endl;
@@ -152,14 +153,14 @@ BatchR SimulatorContinuousBounded::RunBatch(){
                     N.InitialEventsQueue(*EQ,*this);
 					if(verbose>=2)
 						//cerr << "new Path: " << it->maxStep << "\tmuinit: " << mu() << endl;
-                    it->saveState(&N,&A,&EQ);
+                    it->saveState(&NRE,&A,&EQ);
                 } else {
                     
                     bool continueb = SimulateOneStep();
                     //cerr << "\t" << mu() << endl;
                     
                     if((!EQ->isEmpty()) && continueb) {
-                        it->saveState(&N,&A,&EQ);
+                        it->saveState(&NRE,&A,&EQ);
                     } else {
 						int i = (int)ceil((double)(it->maxStep- left)/jumpsize) ;
 						int i2 =(int)fmax(0.0,ceil((double)(n - left)/jumpsize));
