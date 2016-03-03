@@ -302,7 +302,7 @@ let runExp () =
   execSavedCosmos ~prefix:false ("Running Example","twoears.prism.grml","runningExB.lha"," --max-run 10000 --width 0")
 
 
-	 (*
+
 (* EXP3 *)
 let exp3 () =
   let b = 12
@@ -313,12 +313,12 @@ let exp3 () =
   and dline = 50 in
 
       (*run3 (4) b minRep npoly c1 c2 dline 2 8;*)
-  for i = 2 to 6 do
+  for i = 2 to 2 (*6*) do
     time (run3 (2*i) (8+2*i) minRep (2*i+5) c1 c2 dline 2) 8;
   done;;
-	  *)
+
 let _ = runExp ();;
 
-  (*
+
 let _ = exp3 ();;
-   *)
+
