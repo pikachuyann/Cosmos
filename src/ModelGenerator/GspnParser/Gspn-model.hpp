@@ -53,7 +53,7 @@ struct ProbabiliteDistribution {
 typedef struct ProbabiliteDistribution Distribution;
 
 struct userDefineDistribution{
-    static bool isPolynome;
+    static std::string polyfile;
     static size_t nbparam;
     std::string name;
     std::string var;

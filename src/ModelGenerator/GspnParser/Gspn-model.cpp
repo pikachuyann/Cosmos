@@ -31,8 +31,8 @@
 
 using namespace std;
 
-bool userDefineDistribution::isPolynome = false;
 size_t userDefineDistribution::nbparam = 1;
+string userDefineDistribution::polyfile;
 
 void searchreplace(const string &in,const string &motif,const string &rep,string &out){
     out = in;
