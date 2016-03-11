@@ -237,6 +237,16 @@ def poly_to_c_ter(poly):
 def poly_to_c(p):
     return (poly_to_c_ter(p));
 
+def poly_to_data(p,f):
+    f.write((str(cardclocks+1)+','));
+    s0=re.sub('\(','',str(p.dict()))
+    s1=re.sub('\, *?\(',' , ',s0)
+    s2=re.sub('\):' , ',' ,s1)
+    s3=re.sub('}' , '' , s2)
+    s4=re.sub('{' , '' , s3)
+    f.write(s4);
+    f.write('\n');
+
 def sumlist(l):
     accu=0;
     for i in range(len(l)):
@@ -260,19 +270,33 @@ def escapename(s):
     return s3
 
 def printGRML_distribution(quadriple):
+    fichier=open(outpath+'.data',"w");
+    nbpoly=-1;
     s="";
     for i in range(len(quadriple[1])):
         for j in range(len(quadriple[1][i])):
-            s+='    <attribute name=\"UserDefineDistributionPoly\">\n';            
+            s+='    <attribute name=\"UserDefineDistributionPoly\">\n';
+            s+='      <attribute name=\"dataPolyFile\"> '+outpath + '.data </attribute>\n';
             s+='      <attribute name=\"name\"> '+ "trans_%d"%i+"_%d"%j+ ' </attribute>\n';
             s+='      <attribute name=\"var\"> t </attribute>\n';
             s+='      <attribute name=\"nbParam\">'+ "%i"%(cardclocks+1) + '</attribute>\n';
-            s+='      <attribute name=\"lowerBound\">' + poly_to_c(quadriple[3][i][j]) + '</attribute>\n';
-            s+='      <attribute name=\"upperBound\">' + poly_to_c(quadriple[4][i][j]) + '</attribute>\n';
-            s+='      <attribute name=\"norm\">'+ poly_to_c(quadriple[0][i][j]) + '</attribute>\n';
-            s+='      <attribute name=\"cdf\">'+ poly_to_c(quadriple[2][i][j]) + '</attribute>\n';
-            s+='      <attribute name=\"pdf\">'+ poly_to_c(quadriple[1][i][j]) + '</attribute>\n';
+            poly_to_data(quadriple[3][i][j],fichier);
+            nbpoly+=1;
+            s+="      <attribute name=\"lowerBound\">%i</attribute>\n"%nbpoly ;
+            poly_to_data(quadriple[4][i][j],fichier);
+            nbpoly+=1;
+            s+="      <attribute name=\"upperBound\">%i</attribute>\n"%nbpoly;
+            poly_to_data(quadriple[0][i][j],fichier);
+            nbpoly+=1;
+            s+="      <attribute name=\"norm\">%i</attribute>\n"%nbpoly;
+            poly_to_data(quadriple[2][i][j],fichier);
+            nbpoly+=1;
+            s+="      <attribute name=\"cdf\">%i</attribute>\n"%nbpoly;
+            poly_to_data(quadriple[1][i][j],fichier);
+            nbpoly+=1;
+            s+="      <attribute name=\"pdf\">%i</attribute>\n"%nbpoly;
             s+='    </attribute>\n'
+    fichier.close();
     return(s);
 
 def printGRML_OneArc(id,source,target):

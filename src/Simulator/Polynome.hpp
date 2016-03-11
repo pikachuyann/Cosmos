@@ -27,10 +27,19 @@
 #ifndef Polynome_h
 #define Polynome_h
 
+#include <iostream>
+#include <fstream>
+#include <array>
+
 template <unsigned int N>
 struct Monome {
-    int d[N];
+    array<int, N> d;
     double coeff;
+    Monome(){
+        coeff=0.0;
+    }
+    ~Monome(){
+    }
 };
 
 template <unsigned int N>
@@ -47,6 +56,41 @@ double eval(const Poly<N> p, vector<double> const& param){
     }
     return rslt;
 }
+
+template <unsigned int N>
+std::vector<Poly<N>> parse(const std::string file){
+    vector<Poly<N>> polyT;
+    std::ifstream polyf(file);
+    if(polyf.is_open()){
+    std::cerr << "start reading:" << file << endl;
+    while( polyf.good()){
+        string line;
+        std::getline(polyf, line);
+        size_t pos = line.find_first_of(',', 0);
+        if(pos== string::npos)continue;
+        if(std::stoi(line.substr(0,pos)) != N ) cerr << "fail to parse file" << endl;
+        Poly<N> p;
+        while (pos < line.length()-1) {
+            Monome<N> m;
+            for(size_t i=0; i<N;i++){
+                auto pos2 = line.find_first_of(',', pos+1);
+                m.d[i] = stoi(line.substr(pos+1,pos2-pos-1));
+                pos = pos2;
+            }
+            auto pos2 = line.find_first_of(',', pos+1);
+            if(pos2 == string::npos)pos2 = line.length();
+            m.coeff = stod(line.substr(pos+1,pos2-pos-1));
+            pos = pos2;
+            p.push_back(m);
+        }
+        p.push_back(Monome<N>());
+        polyT.push_back(p);
+    }
+    }
+    cerr << "Finish parsing found "<< polyT.size() <<" polynomes" << endl;
+    return polyT;
+}
+
 
 template <unsigned int N>
 double eval(const Poly<N> p, vector<double> const& param, double t){
