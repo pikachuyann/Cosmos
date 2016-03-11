@@ -29,6 +29,7 @@
 #include "SimulatorRE.hpp"
 #include "SimulatorBoundedRE.hpp"
 #include "SimulatorContinuousBounded.hpp"
+#include "Polynome.hpp"
 
 #include <sys/types.h>
 #include <unistd.h>
