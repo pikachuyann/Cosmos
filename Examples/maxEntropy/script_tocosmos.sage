@@ -253,17 +253,31 @@ def sumlist(l):
         accu=accu+l[i];
     return(accu);
 
-listres=[[R(1) for i in range(card_states)]];
+#listres=[[R(1) for i in range(card_states)]];
+#if not isIsotropic :
+#    print("Polynome Computation: ["),
+#    for i in range(1,numpoly+1):
+#        listres.append(Op(listres[i-1]));
+#        print("|");
+#        sys.stdout.flush(),
+#    lastone=WeightsPdfCdf(listres[numpoly]);
+#    print("]\n");
+#else :
+#    lastone=WeightsPdfCdf(listres[0]);
+
+numpoly=5;
+allones=[WeightsPdfCdf([R(1) for i in range(card_states)])];
 if not isIsotropic :
     print("Polynome Computation: ["),
-    for i in range(1,numpoly+1):
-        listres.append(Op(listres[i-1]));
+    for k in range(1,numpoly+1):
+        allones.append(WeightsPdfCdf([sumlist(allones[k-1][0][i]) for i in range(len(allones[k-1][0]))]));
         print("|");
         sys.stdout.flush(),
-    lastone=WeightsPdfCdf(listres[numpoly]);
+    #lastone=WeightsPdfCdf(listres[numpoly]);
     print("]\n");
 else :
-    lastone=WeightsPdfCdf(listres[0]);
+    lastone=allones[0];
+
 
 def escapename(s):
     s2=s.replace('(','').replace(')','').replace('>','G').replace('<','L').replace('&','^');
