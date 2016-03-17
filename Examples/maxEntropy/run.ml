@@ -277,8 +277,8 @@ let run3 n b minRep npoly c1 c2 dline nm evt=
   gen_faillure_repair name (n+1) b minRep npoly 2;
   (*gen_faillure_repairB name c1 c2 dline;*)
   gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;
-  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0 -std=c++11' --max-run 100000 --batch 100 --width 0 --tmp-status 2");
-  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0 -std=c++11' --max-run 100000 --batch 100 --width 0");;
+  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O3 -std=c++11' --max-run 100000 --batch 100 --width 0 --tmp-status 2");;
+  (*execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0 -std=c++11' --max-run 100000 --batch 100 --width 0");;*)
 
 let timeold f x =
     let t = Sys.time() in
@@ -313,7 +313,7 @@ let exp3 () =
   and dline = 50 in
 
       (*run3 (4) b minRep npoly c1 c2 dline 2 8;*)
-  for i = 2 to 6 do
+  for i = 2 to 4 do
     time (run3 (2*i) (8+2*i) minRep (2*i+5) c1 c2 dline 2) 8;
   done;;
 

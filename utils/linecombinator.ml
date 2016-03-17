@@ -171,7 +171,8 @@ let main2 s1 s2 npath =
     let tabledata = Array.make maxi (Data.empty template) in
     EventSet.iter (function (t,p,d) when t=0.0 -> tabledata.(p-1)<- d | _ ->()) esfull;
     let esunif = EventSet.fold (uniformize tabledata) esfull EventSet.empty in
-    EventSet.iter (TimeEvent.output intermediatefile) esunif;;
+    EventSet.iter (TimeEvent.output intermediatefile) esunif;
+    exit 0;;
 
 
 main2 Sys.argv.(1) 
