@@ -258,7 +258,8 @@ if not isIsotropic :
     print("Polynome Computation: ["),
     for i in range(1,numpoly+1):
         listres.append(Op(listres[i-1]));
-        print("|"),
+        print("|");
+        sys.stdout.flush(),
     lastone=WeightsPdfCdf(listres[numpoly]);
     print("]\n");
 else :
@@ -276,7 +277,7 @@ def printGRML_distribution(quadriple):
     for i in range(len(quadriple[1])):
         for j in range(len(quadriple[1][i])):
             s+='    <attribute name=\"UserDefineDistributionPoly\">\n';
-            s+='      <attribute name=\"dataPolyFile\"> '+outpath + '.data </attribute>\n';
+            s+='      <attribute name=\"polyDataFile\"> '+outpath + '.data </attribute>\n';
             s+='      <attribute name=\"name\"> '+ "trans_%d"%i+"_%d"%j+ ' </attribute>\n';
             s+='      <attribute name=\"var\"> t </attribute>\n';
             s+='      <attribute name=\"nbParam\">'+ "%i"%(cardclocks+1) + '</attribute>\n';
