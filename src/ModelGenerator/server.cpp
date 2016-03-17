@@ -77,11 +77,16 @@ int max_client=0 ;
 //! Boolean indicating if the simulation should continue.
 bool continueSelect=false;
 
+void signalHandlerIgn(int signum){
+    //cerr << "Receive signal: "<< signum << endl;
+};
 
 void signalHandler( int signum )
 {
+    //cerr << "Receive signal: "<< signum << endl;
     switch (signum){
         case SIGCHLD: {
+            
             int status;
             pid_t child = wait(&status);
 
@@ -372,12 +377,10 @@ void launchServer(parameters& P){
         }
 		//Check if the simulation should continue.
     }while(Result.continueSim() && !clientstream.empty() && continueSelect);
-    signal(SIGCHLD, signalHandler);
-    signal(SIGPIPE, signalHandler);
+    /*signal(SIGPIPE, signalHandler);*/
 
     //Kill all the simulator
     kill_client();
-    //signal(SIGCHLD, SIG_IGN);
 
 	//Output all the results
     Result.stopclock();
@@ -394,9 +397,12 @@ void launchServer(parameters& P){
 	//use gnuplot
 	if(P.dataPDFCDF.length()>0)Result.outputCDFPDF(P.dataPDFCDF);
 	//if(P.alligatorMode)
+    signal(SIGCHLD, signalHandlerIgn);
 	Result.printGnuplot();
-	
-	Result.close_gnuplot();
+    signal(SIGCHLD, signalHandler);
+
+    Result.close_gnuplot();
+    
 	wait_client();
     
 	if(P.alligatorMode){
