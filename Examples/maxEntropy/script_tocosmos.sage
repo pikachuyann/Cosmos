@@ -20,7 +20,6 @@ if len(sys.argv)>2:
 print(str(sys.argv[1]) + ' -> ' + sagepath + '.sage' );
 
 retval=os.system(prismpath + ' ' + str(sys.argv[1]) + ' -exportsplitreach ' + sagepath + '.sage');
-
 print(sagepath + '.sage -> ' + outpath );
 load(sagepath+'.sage')
 
@@ -68,10 +67,15 @@ numpoly=3;
 if len(sys.argv)>3:
     numpoly=int(sys.argv[3])
 
+Dline=50;
 if len(sys.argv)>4:
-    if sys.argv[4] == "-isotropic" :
+    Dline = int(sys.argv[4])
+
+if len(sys.argv)>5:
+    if sys.argv[5] == "-isotropic" :
         isIsotropic = True;
 
+        
 objregexp= re.compile('')
 if len(sys.argv)>5:
     objregexp=re.compile(sys.argv[5])
@@ -221,7 +225,19 @@ def poly_to_c_bis(p):
             s+="*pow(t,"+ str(triplet[cardclocks])+')';
     return(s);
 
-
+def matrix_to_c(tab,name):
+    n = len(tab);
+    m = len(tab[0]);
+    s= 'const int '+name+'[%d]' %n +'[%d] ={ '%m;
+    for v in tab:
+        s+= '{ ';
+        v.reverse();
+        for v2 in v:
+            s+= '%d, ' %v2;
+        s+= '}, ';
+    
+    return s+'};\n';
+    
 def poly_to_c_ter(poly):
     s0=re.sub('\{\(','{{',str(poly.dict()))
     s1=re.sub('\, *?\(','}, {',s0)
@@ -237,15 +253,30 @@ def poly_to_c_ter(poly):
 def poly_to_c(p):
     return (poly_to_c_ter(p));
 
-def poly_to_data(p,f):
-    f.write((str(cardclocks+1)+','));
+fichier_data=open(outpath+'.data',"w");
+nbpoly= -1;
+
+def poly_to_data(p):
+    global nbpoly;
+    nbpoly+=1;
+    fichier_data.write((str(cardclocks+1)+','));
     s0=re.sub('\(','',str(p.dict()))
     s1=re.sub('\, *?\(',' , ',s0)
     s2=re.sub('\):' , ',' ,s1)
     s3=re.sub('}' , '' , s2)
     s4=re.sub('{' , '' , s3)
-    f.write(s4);
-    f.write('\n');
+    fichier_data.write(s4);
+    fichier_data.write('\n');
+    return nbpoly;
+
+
+def poly_to_c_data(p):
+    n =poly_to_data(p);
+    s= "{0";
+    for i in range(cardclocks):
+        s+=",x_%d " %(i+1);
+        
+    return ("customDistr.evalPoly(%i" %n) + (",%s,0.0})" %s);
 
 def sumlist(l):
     accu=0;
@@ -265,54 +296,52 @@ def sumlist(l):
 #else :
 #    lastone=WeightsPdfCdf(listres[0]);
 
-numpoly=5;
+#numpoly=5;
 allones=[WeightsPdfCdf([R(1) for i in range(card_states)])];
 if not isIsotropic :
     print("Polynome Computation: ["),
     for k in range(1,numpoly+1):
         allones.append(WeightsPdfCdf([sumlist(allones[k-1][0][i]) for i in range(len(allones[k-1][0]))]));
-        print("|");
+        print("|"),
         sys.stdout.flush(),
     #lastone=WeightsPdfCdf(listres[numpoly]);
     print("]\n");
-else :
-    lastone=allones[0];
-
+lastone=allones[len(allones)-1];
 
 def escapename(s):
     s2=s.replace('(','').replace(')','').replace('>','G').replace('<','L').replace('&','^');
     s3=s2.replace(',','_').replace('{','').replace('}','').replace('=','E').replace('-','M');
     return s3
 
-def printGRML_distribution(quadriple):
-    fichier=open(outpath+'.data',"w");
-    nbpoly=-1;
+def printGRML_distribution(alldistr):
     s="";
-    for i in range(len(quadriple[1])):
-        for j in range(len(quadriple[1][i])):
-            s+='    <attribute name=\"UserDefineDistributionPoly\">\n';
-            s+='      <attribute name=\"polyDataFile\"> '+outpath + '.data </attribute>\n';
-            s+='      <attribute name=\"name\"> '+ "trans_%d"%i+"_%d"%j+ ' </attribute>\n';
-            s+='      <attribute name=\"var\"> t </attribute>\n';
-            s+='      <attribute name=\"nbParam\">'+ "%i"%(cardclocks+1) + '</attribute>\n';
-            poly_to_data(quadriple[3][i][j],fichier);
-            nbpoly+=1;
-            s+="      <attribute name=\"lowerBound\">%i</attribute>\n"%nbpoly ;
-            poly_to_data(quadriple[4][i][j],fichier);
-            nbpoly+=1;
-            s+="      <attribute name=\"upperBound\">%i</attribute>\n"%nbpoly;
-            poly_to_data(quadriple[0][i][j],fichier);
-            nbpoly+=1;
-            s+="      <attribute name=\"norm\">%i</attribute>\n"%nbpoly;
-            poly_to_data(quadriple[2][i][j],fichier);
-            nbpoly+=1;
-            s+="      <attribute name=\"cdf\">%i</attribute>\n"%nbpoly;
-            poly_to_data(quadriple[1][i][j],fichier);
-            nbpoly+=1;
-            s+="      <attribute name=\"pdf\">%i</attribute>\n"%nbpoly;
-            s+='    </attribute>\n'
-    fichier.close();
-    return(s);
+    maxid = sum( [len(idtrans[i]) for i in range(len(idtrans))]);
+    tabidDistrHorizon = [[ -1 for k in range(len(alldistr)) ] for id in range(maxid)]
+    count=0;
+    for k in range(len(alldistr)):
+        quadriple = alldistr[k];
+        for i in range(len(quadriple[1])):
+            for j in range(len(quadriple[1][i])):
+                tabidDistrHorizon[idtrans[i][j]][k]=count;
+                count+=1;
+                s+='    <attribute name=\"UserDefineDistributionPoly\">\n';
+                s+='      <attribute name=\"polyDataFile\"> '+outpath + '.data </attribute>\n';
+                s+='      <attribute name=\"name\"> '+ "trans_%d"%i+"_%d"%j+"_%d"%k + ' </attribute>\n';
+                s+='      <attribute name=\"var\"> t </attribute>\n';
+                s+='      <attribute name=\"nbParam\">'+ "%i"%(cardclocks+1) + '</attribute>\n';
+                poly_to_data(quadriple[3][i][j]);
+                s+="      <attribute name=\"lowerBound\">%i</attribute>\n"%nbpoly ;
+                poly_to_data(quadriple[4][i][j]);
+                s+="      <attribute name=\"upperBound\">%i</attribute>\n"%nbpoly;
+                poly_to_data(quadriple[0][i][j]);
+                s+="      <attribute name=\"norm\">%i</attribute>\n"%nbpoly;
+                poly_to_data(quadriple[2][i][j]);
+                s+="      <attribute name=\"cdf\">%i</attribute>\n"%nbpoly;
+                poly_to_data(quadriple[1][i][j]);
+                s+="      <attribute name=\"pdf\">%i</attribute>\n"%nbpoly;
+                s+='    </attribute>\n'
+    #fichier_data.write("//fin distr\n")
+    return((s,tabidDistrHorizon));
 
 def printGRML_OneArc(id,source,target):
     s="";
@@ -348,6 +377,7 @@ def printGRML_arc(translist):
             s+=printGRML_OneArc('17%d'%(idtrans[i][j]) , '12%d' %(idtrans[i][j]), '16%d' %(idtrans[i][j]));
             s+=printGRML_OneArc('18%d'%(idtrans[i][j]) , '16%d' %(idtrans[i][j]), '11%d' %(translist[i][j][4][0][0]));
             s+=printGRML_OneArc('23%d' %(idtrans[i][j]), '16%d' %(idtrans[i][j]), '20%d' %action);
+            s+=printGRML_OneArc('241', '16%d' %(idtrans[i][j]), '240');
             if ( finstate[translist[i][j][4][0][0]]) :
                 s+=printGRML_OneArc('18%d'%(idtrans[i][j]) , '16%d' %(idtrans[i][j]), '19');
     return(s);
@@ -355,6 +385,7 @@ def printGRML_arc(translist):
     
 def printGRML_place(translist):
     s="";
+    s+= printGRML_OnePlace('240','Counter',0);
     s+= printGRML_OnePlace('19','TargetState',0);
     for i in range(len(translist)):
         s+= printGRML_OnePlace('11%d' %i,'s_%d_' %i, (i==0) );
@@ -364,8 +395,9 @@ def printGRML_place(translist):
         s+= printGRML_OnePlace('20%d' %i,'s_%s_' %(alphabet[i]), 0);
     return(s);
 
-def printGRML_transition(translist,quadriple,isIsotropic):
+def printGRML_transition(translist,allones,isIsotropic,Dline):
     s="";
+    quadriple = allones[len(allones)-1];
     for i in range(len(alphabet)):
         s+='  <node id=\"21%d\" ' %i +' nodeType=\"transition\">\n';
         s+='    <attribute name=\"name\">t_%s' %(alphabet[i]) +'</attribute>\n';
@@ -397,7 +429,11 @@ def printGRML_transition(translist,quadriple,isIsotropic):
             if(isIsotropic):
                 s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
             else:
-                s+='    <attribute name=\"unParsed\">'+ poly_to_c_bis(quadriple[0][i][j]) +'</attribute>\n';
+                s+='    <attribute name=\"unParsed\"> customDistr.evalPoly(%d' %nbpoly +' + min( %i '%(Dline) + '-Marking.P->_PL_Counter, %d )' %(len(allones)-1);
+                for k in range(len(allones)):
+                    poly_to_c_data(allones[k][0][i][j]);
+                    
+                s+= ', {0.0,x_1,x_2,0.0}) </attribute>\n';
             s+='    </attribute></attribute>\n';
             s+='  </node>\n';
     for i in range(len(translist)):
@@ -414,14 +450,14 @@ def printGRML_transition(translist,quadriple,isIsotropic):
 
             if(isIsotropic):
                 s+='      <attribute name="param">\n'
-                s+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_bis(quadriple[3][i][j]) +'</attribute></attribute>\n';
+                s+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_data(quadriple[3][i][j]) +'</attribute></attribute>\n';
                 s+='      </attribute>\n'
                 s+='      <attribute name="param">\n'
-                s+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_bis(quadriple[4][i][j]) +'</attribute></attribute>\n';
+                s+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_data(quadriple[4][i][j]) +'</attribute></attribute>\n';
                 s+='      </attribute>\n'
             else:
                 s+='      <attribute name="param">\n'
-                s+='        <attribute name="expr"><attribute name=\"'+'trans_%d'%i+'_%d'%j+'\">\n';
+                s+='        <attribute name="expr"><attribute name=\"unParsed\"> transDistrTab[%d]' %(idtrans[i][j]) +'[min( %i' %(Dline) + '-Marking.P->_PL_Counter, %d )]' %(len(allones)-1); 
                 s+='        </attribute></attribute>\n';
                 s+='      </attribute>\n';
                 for c in range(cardclocks):
@@ -445,11 +481,22 @@ def printGRML_transition(translist,quadriple,isIsotropic):
             s+='  </node>\n';
     return(s);
 
-def toCOSMOS(quadriple,isIsotropic):
+def toCOSMOS(quadriple,isIsotropic,Dline):
     s='<?xml version="1.0" encoding=\"UTF-8\"?>\n\n<model formalismUrl=\"http://formalisms.cosyverif.org/sptgd-net.fml\" xmlns=\"http://cosyverif.org/ns/model\">\n';
     s+='  <attribute name=\"declaration\">\n';
+    s+='  <attribute name=\"constants\">\n';
+    s+='  <attribute name=\"intConsts\">\n';
+    s+='  <attribute name=\"intConst\">\n';
+    s+='      <attribute name=\"name\">Dline</attribute>\n';
+    s+='      <attribute name=\"expr\"><attribute name=\"numValue\">%i</attribute></attribute>\n' %(Dline);
+    s+='  </attribute>\n';
+    s+='  </attribute>\n';
+    s+='  </attribute>\n';    
+    tab = "";
     if( not isIsotropic):
-        s+=printGRML_distribution(quadriple);
+        (s2,tab2)=printGRML_distribution(quadriple);
+        s+=s2;
+        tab=matrix_to_c(tab2,"transDistrTab");
     s+='    <attribute name="variables">\n';
     s+='      <attribute name="clocks">\n';
     for i in range(cardclocks):
@@ -459,18 +506,24 @@ def toCOSMOS(quadriple,isIsotropic):
     s+='      </attribute>\n';
     s+='    </attribute>\n';
     s+='  </attribute>\n';
+    s+= '  <attribute name=\"externalDeclaration\">\n'
+    s+= 'void magicReset(){};\n'
+    s+= 'bool magicConditional(int){return true;};\n'
+    s+= 'void magicUpdate(int,double){};\n'
+    s+= 'int print_magic(int i){return i;};\n'
+    s+= tab+'</attribute>\n';
     s+=printGRML_place(translist);
-    s+=printGRML_transition(translist,quadriple,isIsotropic);
+    s+=printGRML_transition(translist,quadriple,isIsotropic,Dline);
     s+=printGRML_arc(translist);
     s+='</model>\n';
     return(s);
 
 fichier=open(outpath,"w");
-fichier.write(toCOSMOS(lastone,isIsotropic));
+fichier.write(toCOSMOS(allones,isIsotropic,Dline));
 fichier.close();
-print ("output written in "+outpath) ;
 
+print ("output written in "+outpath) ;
 if(not isIsotropic):
     fichier=open("Iso_"+outpath,"w");
-    fichier.write(toCOSMOS(lastone,true));
+    fichier.write(toCOSMOS(allones,true,Dline));
     fichier.close();

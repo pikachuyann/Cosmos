@@ -175,17 +175,18 @@ struct place {
 };
 
 struct arc {
-    arc(size_t v):isEmpty(false),isMarkDep(false),isColored(false),intVal(v){};
-    arc(const std::string &s):isEmpty(false),isMarkDep(true),isColored(false),intVal(1),stringVal(s){};
-    arc():isEmpty(true),isMarkDep(false),isColored(false),intVal(0){};
-    arc(const std::string &s,const std::vector<coloredToken> &vct):isEmpty(false),isMarkDep(true),intVal(1),stringVal(s),coloredVal(vct){
+    arc(size_t v):isEmpty(false),isMarkDep(false),isColored(false),exprVal((int)v){};
+    arc(const std::string &s):isEmpty(false),isMarkDep(true),isColored(false),exprVal(s){};
+    arc():isEmpty(true),isMarkDep(false),isColored(false),exprVal(0){};
+    arc(const std::string &s,const std::vector<coloredToken> &vct):isEmpty(false),isMarkDep(true),exprVal(s),coloredVal(vct){
         isColored = vct.size()>0;
     }
     bool isEmpty;
     bool isMarkDep;
     bool isColored;
-    size_t intVal;
-    std::string stringVal;
+    expr exprVal;
+/*    size_t intVal;
+    std::string stringVal;*/
     std::vector<coloredToken> coloredVal;
 };
 

@@ -39,7 +39,7 @@ endmodule" n b timeC wt;
     print_endline cmd2;
     assert (0=Sys.command cmd2)
 
-let gen_faillure_repair name n b minRep npoly cWeight=
+let gen_faillure_repair name n b minRep npoly cWeight dline=
   let f = open_out (name^"_C.prism") in
   Printf.fprintf f  "pta
     const int n = %i;
@@ -63,17 +63,16 @@ let gen_faillure_repair name n b minRep npoly cWeight=
         [b] state1=n+1 -> 1.0 : (state1'=1)&(x'=0)&(y'=0);
 endmodule" n b minRep cWeight;
   close_out f;
-  let cmd = Printf.sprintf "sage script_tocosmos.sage %s_C.prism %s_C.grml %i" name name npoly in
+  let cmd = Printf.sprintf "sage script_tocosmos.sage %s_C.prism %s_C.grml %i %i" name name npoly dline in
   print_endline cmd;
   assert (0=Sys.command cmd)
 
 
-let gen_faillure_repairB name c1 c2 dline =
+let gen_faillure_repairB name c1 c2 =
   let f = open_out (name^"_B.lha") in
   Printf.fprintf f  "NOTDETERMINISTIC
 const int c1 =%i;
 const int c2 = %i;
-const int Dline =%i;
 
 VariablesList = {DISC countT, t1,t2};
 LocationsList = {li,l1,l2,lf, li2,l12,l22,lf2};
@@ -123,21 +122,20 @@ Edges={
 ((l22,lf2),{t_a}, t1>=2*c1&t1<=c2 ,{countT = countT+1});
 ((lf2,lf2),{t_a,t_b,t_c}, # ,{countT = countT+1});
 };
-" c1 c2 dline;
+" c1 c2;
   close_out f
 
 
 let gen_faillure_third name n m k dline c1 c2 evt bB=
   let f = open_out (name^"_A.lha") in
   fprintf f  "NOTDETERMINISTIC
-const int Dline =%i;
 const int nstep =%i;
 const int c1 = %i;
 const int c2 = %i;
 const int evt = %i;
 const int B= %i;
 
-VariablesList = {DISC countT,DISC pos, t1 " dline m c1 c2 evt bB;
+VariablesList = {DISC countT,DISC pos, t1 " m c1 c2 evt bB;
   let tstr = ref "t1:1" in
   let tstr2 = ref "countT=0" in
   for i =1 to n do 
@@ -274,11 +272,11 @@ let exp2 () =
 
 let run3 n b minRep npoly c1 c2 dline nm evt=
   let name = "exp3_"^string_of_int n in
-  gen_faillure_repair name (n+1) b minRep npoly 2;
+  gen_faillure_repair name (n+1) b minRep npoly 2 dline;
   (*gen_faillure_repairB name c1 c2 dline;*)
   gen_faillure_third name nm ((n/2)) 2 dline c1 c2 evt b;
-  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O3 -std=c++11' --max-run 100000 --batch 100 --width 0 --tmp-status 2");;
-  (*execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 4 --gppflags '-O0 -std=c++11' --max-run 100000 --batch 100 --width 0");;*)
+  execSavedCosmos ~prefix:false (name,name^"_C.grml",name^"_A.lha"," --njob 4 --max-run 100000 --batch 100 --width 0 --tmp-status 2");
+  execSavedCosmos ~prefix:false ("Iso_"^name,"Iso_"^name^"_C.grml",name^"_A.lha"," --njob 4 --max-run 100000 --batch 100 --width 0");;
 
 let timeold f x =
     let t = Sys.time() in
@@ -313,7 +311,7 @@ let exp3 () =
   and dline = 50 in
 
       (*run3 (4) b minRep npoly c1 c2 dline 2 8;*)
-  for i = 2 to 4 do
+  for i = 2 to 2 do
     time (run3 (2*i) (8+2*i) minRep (2*i+5) c1 c2 dline 2) 8;
   done;;
 

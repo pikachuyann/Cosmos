@@ -115,12 +115,12 @@ shared_ptr<GspnType> ParseGSPN() {
                 gReader.spn->transitionStruct[t].markingDependant = true;
                 for (size_t p = 0; p < gReader.spn->pl; p++) {
                     if (!gReader.spn->access(gReader.spn->inArcsStruct, t, p).isEmpty) {
-                        expr exponent;
-                        if (gReader.spn->access(gReader.spn->inArcsStruct, t, p).isMarkDep) {
+                        expr exponent = gReader.spn->access(gReader.spn->inArcsStruct, t, p).exprVal;
+                        /*if (gReader.spn->access(gReader.spn->inArcsStruct, t, p).isMarkDep) {
                             exponent = expr(gReader.spn->access(gReader.spn->inArcsStruct, t, p).stringVal);
                         } else {
                             exponent = expr((int) gReader.spn->access(gReader.spn->inArcsStruct, t, p).intVal);
-                        }
+                        }*/
                         expr pl = expr(PlaceName, gReader.spn->placeStruct[p].name);
                         expr mult = expr(Pow, pl, exponent);
                         expr dist = expr(Times, trDistr->Param[0], mult);

@@ -142,6 +142,7 @@ public:
     virtual double userDefineLowerBound(const std::vector<double> &)const{return 0.0;};
     virtual double userDefineUpperBound(const std::vector<double> &)const{return 0.0;};
     virtual double userDefineDiscreteDistr(const std::vector<double> &,unsigned int)const{return 0.0;};
+    virtual double evalPoly(unsigned long,const std::vector<double> &)const {return 0.0;};
 };
 
 /**

@@ -69,7 +69,7 @@ let _ =
   print_endline ("Opening "^ !inname);
   begin match !typeFormat with
   | Prism -> 
-    let s = Printf.sprintf "prism %s -exportprism %s.expanded  -nobuild > /dev/null" !inname !inname in
+    let s = Printf.sprintf "./prism %s -exportprism %s.expanded  -nobuild > /dev/null" !inname !inname in
     Printf.printf "Using prism to expand file :%s\n" s;
     if( Sys.command s = 0) then
       inname := !inname ^ ".expanded"

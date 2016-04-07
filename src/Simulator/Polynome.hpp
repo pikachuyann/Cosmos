@@ -46,16 +46,35 @@ template <unsigned int N>
 using Poly=vector<const Monome<N>>;
 
 template <unsigned int N>
-double eval(const Poly<N> p, vector<double> const& param){
+ostream& operator<<(ostream& f, const Poly<N>& p){
+    for(unsigned int i=0; p[i].coeff != 0.0 ; i++){
+        f << " + "<< p[i].coeff;
+        for(unsigned int j=0; j<N;j++)
+            if(p[i].d[j]>0){
+                if(j== N-1){f << "t^";
+                }else{
+                    f<< "x_" << (j+1) << "^";
+                }
+                
+                    f << p[i].d[j]<< " ";
+            }
+    }
+    return f;
+}
+
+template <unsigned int N>
+double eval(const Poly<N> &p, vector<double> const& param){
     double rslt = 0.0;
     for(unsigned int i=0; p[i].coeff != 0.0 ; i++){
         double mv = p[i].coeff;
         for(unsigned int j=0; j<N;j++)
-            mv *= pow( param[j+1] , p[i].d[j]);
+            if(p[i].d[j]>0)mv *= pow( param[j+1] , p[i].d[j]);
         rslt += mv;
     }
+    //cerr << "eval poly:" << p << "= "<< rslt << endl;
     return rslt;
 }
+
 
 template <unsigned int N>
 std::vector<Poly<N>> parse(const std::string file){
@@ -93,17 +112,18 @@ std::vector<Poly<N>> parse(const std::string file){
 
 
 template <unsigned int N>
-double eval(const Poly<N> p, vector<double> const& param, double t){
+double eval(const Poly<N> &p, vector<double> const& param, double t){
     //cerr << "poly " << param[0] << ": ("<< t << ")" ;
     double rslt = 0.0;
     for(unsigned int i=0; p[i].coeff != 0.0 ; i++){
         double mv = p[i].coeff;
         for(unsigned int j=0; j<N-1;j++)
-            mv *= pow( param[j+1] , p[i].d[j]);
+            if(p[i].d[j]>0)mv *= pow( param[j+1] , p[i].d[j]);
         mv *= pow(t,p[i].d[N-1]);
         //cerr << " mon:" << mv;
         rslt += mv;
     }
+    //cerr << "eval poly:" << p << "= "<< rslt << endl;
     //cerr << "res: " << rslt << endl;
     return rslt;
 }

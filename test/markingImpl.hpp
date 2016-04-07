@@ -7,6 +7,7 @@ public:
 };
 class abstractMarkingImpl {
 public:
+	int _PL_Counter;
 	int _PL_TargetState;
 	int _PL_s_0_;
 	int _PL_s_0_0;

@@ -613,33 +613,33 @@ void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
                     dist.lowerBound = "0";
                     dist.upperBound = "0";
                     for (treeSI it2 = (t2.begin()); it2 != (t2.end()); ++it2) {
-                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ": ";
-                        if(*it2=="dataPolyFile"){
-                            dist.polyfile = simplifyString(*(it2.begin()));
+                        string val = simplifyString(*(it2.begin()));
+                        if ((P.verbose - 3) > 1)cout << "\t" << *it2 << ": " << val << endl;
+                        if(*it2=="polyDataFile"){
+                            dist.polyfile = val;
                         }
                         if (*it2 == "name") {
-                            dist.name = simplifyString(*(it2.begin()));
-                        }
+                            dist.name = val;                        }
                         if (*it2 == "var") {
-                            dist.var = simplifyString(*(it2.begin()));
+                            dist.var = val;
                         }
                         if (*it2 == "cdf") {
-                            dist.cdf = simplifyString(*(it2.begin()));
+                            dist.cdf = val;
                         }
                         if (*it2 == "norm") {
-                            dist.norm = simplifyString(*(it2.begin()));
+                            dist.norm = val;
                         }
                         if (*it2 == "pdf") {
-                            dist.pdf = simplifyString(*(it2.begin()));
+                            dist.pdf = val;
                         }
                         if (*it2 == "nbParam") {
-                            dist.nbparam = stol(simplifyString(*(it2.begin())));
+                            dist.nbparam = stol(val);
                         }
                         if (*it2 == "lowerBound") {
-                            dist.lowerBound = simplifyString(*(it2.begin()));
+                            dist.lowerBound = val;
                         }
                         if (*it2 == "upperBound") {
-                            dist.upperBound = simplifyString(*(it2.begin()));
+                            dist.upperBound = val;
                         }
                     }
                     MyGspn->distribStruct.push_back(dist);
@@ -789,8 +789,10 @@ void MyModelHandler::on_read_node(const XmlString& id,
                                         if( did != MyGspn->distribStruct.end()){
                                             pe = expr((int)(did - MyGspn->distribStruct.begin()));
                                         } else {
-                                            cerr << "Unkown distribution " << distname << endl;
-                                            throw gmlioexc;
+                                            pe = eval_expr(it3.begin());
+                                            trans.markingDependant |= pe.is_markDep();
+                                            //cerr << "Unkown distribution " << distname << endl;
+                                            //throw gmlioexc;
                                         }
                                     }else {
                                         pe = eval_expr(it3.begin());

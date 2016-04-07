@@ -67,11 +67,11 @@ string timeGen::string_of_dist(DistributionType d,const vector<double> &param)co
         case   IMMEDIATE:
             return "Immediate";
         case   USERDEFINE:
-            return "Userdefine("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[3])+","+ to_string(param[4])+")";
+            return "Userdefine("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[2])+","+ to_string(param[3])+")";
         case   DISCRETEUSERDEFINE:
             return "DiscreteUserDefine("+ to_string(param[0]) +","+ to_string(param[1])+")";
         case   USERDEFINEPOLYNOMIAL:
-            return "UserdefinePolynomial("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[3])+","+ to_string(param[4])+")";
+            return "UserdefinePolynomial("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[2])+","+ to_string(param[3])+")";
     }
 }
 
