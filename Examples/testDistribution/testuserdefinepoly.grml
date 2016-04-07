@@ -3,14 +3,15 @@
 <model id="1" formalismUrl="http://formalisms.cosyverif.org/sptgd-net.fml" xmlns="http://cosyverif.org/ns/model">
   <attribute name="declaration">
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="name">userdefunif</attribute>
-      <attribute name="var">t</attribute>
-      <attribute name="nbParam">1</attribute> 
-      <attribute name="cdf">{{ 1, 0.125},{ 0,0}}</attribute>
-      <attribute name="pdf">{{ 0, 0.125},{ 0,0}}</attribute>
-      <attribute name="norm">{{ 0, 1},{0,0}}</attribute> 
-      <attribute name="lowerBound">{{ 0,0}}</attribute>
-      <attribute name="upperBound">{{ 0, 8},{ 0,0}}</attribute>
+      <attribute name="polyDataFile"> testuserdefine.data </attribute>
+      <attribute name="name"> userdefunif </attribute>
+      <attribute name="var"> t </attribute>
+      <attribute name="nbParam">1</attribute>
+      <attribute name="lowerBound">0</attribute>
+      <attribute name="upperBound">1</attribute>
+      <attribute name="norm">2</attribute>
+      <attribute name="cdf">3</attribute>
+      <attribute name="pdf">4</attribute>
     </attribute>
   </attribute>
   <node id="3" nodeType="place" x="385" y="133">

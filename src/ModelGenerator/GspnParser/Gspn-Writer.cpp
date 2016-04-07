@@ -351,14 +351,12 @@ void Gspn_Writer::writeTok(ostream &SpnF,const vector<coloredToken> &ct,const co
 void Gspn_Writer::generateStringVal(arcStore& as){
     for(auto &inarcit: as){
         auto &inarc = inarcit.second;
-        stringstream stringval;
-        if (!inarc.isMarkDep) {
-            stringval << inarc.exprVal.intVal;
-        } else{
+        if (inarc.isMarkDep) {
+            stringstream stringval;
             const auto cd = MyGspn.colDoms[MyGspn.placeStruct[inarcit.first.second].colorDom];
             writeTok(stringval, inarc.coloredVal, cd);
+            inarc.exprVal = expr(stringval.str());
         }
-        inarc.exprVal = expr(stringval.str());
     }
 }
 
@@ -441,7 +439,7 @@ void Gspn_Writer::writeMacro(ofstream &f)const{
 
 void Gspn_Writer::writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_t t,const place &p , size_t t2, bool pos, const arcStore &as2, bool direct)const{
     if (!MyGspn.access(as,t2,p.id).isEmpty) {
-        if(MyGspn.access(as2,t,p.id).isMarkDep && !MyGspn.access(as,t2,p.id).isMarkDep){
+        if(!MyGspn.access(as2,t,p.id).isMarkDep && !MyGspn.access(as,t2,p.id).isMarkDep){
             int decrement = MyGspn.access(as2,t,p.id).exprVal.intVal;
             int seuil = MyGspn.access(as,t2,p.id).exprVal.intVal;
             if(seuil-decrement >0){
