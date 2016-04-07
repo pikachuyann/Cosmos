@@ -137,7 +137,7 @@ void unfolder::export_multcoltok(ofstream &fout,const vector<color> &vec,const t
         size_t truid = get_uid("transition"+t.name+str_of_vect(vec, "_"));
         size_t pluid = get_uid("place"+p.name);
         size_t arcuid = get_uid("arcpre_"+t.name+str_of_vect(vec, "_")+"_"+p.name);
-        print_arc(fout,arcuid,truid,pluid,dir,to_string(inoutarc.intVal));
+        print_arc(fout,arcuid,truid,pluid,dir,to_string(inoutarc.exprVal.intVal));
         return;
     }
     auto toklist = inoutarc.coloredVal;

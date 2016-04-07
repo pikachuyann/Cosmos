@@ -248,7 +248,7 @@
 		032A7039181BC0D6006D7332 /* parameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parameters.hpp; sourceTree = "<group>"; };
 		032A703A181BC0D6006D7332 /* result.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = result.cpp; sourceTree = "<group>"; };
 		032A703B181BC0D6006D7332 /* result.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = result.hpp; sourceTree = "<group>"; };
-		032A703C181BC0D6006D7332 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
+		032A703C181BC0D6006D7332 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = server.cpp; path = ../server.cpp; sourceTree = "<group>"; };
 		032A703D181BC0D6006D7332 /* server.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = server.hpp; sourceTree = "<group>"; };
 		032A703F181BC0D6006D7332 /* BatchR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BatchR.cpp; sourceTree = "<group>"; };
 		032A7040181BC0D6006D7332 /* BatchR.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BatchR.hpp; sourceTree = "<group>"; };
@@ -1207,7 +1207,6 @@
 				032A7039181BC0D6006D7332 /* parameters.hpp */,
 				032A703A181BC0D6006D7332 /* result.cpp */,
 				032A703B181BC0D6006D7332 /* result.hpp */,
-				032A703C181BC0D6006D7332 /* server.cpp */,
 				032A703D181BC0D6006D7332 /* server.hpp */,
 				039B4F89188E7B2400C63ED7 /* Generator.cpp */,
 				039B4F8A188E7B2400C63ED7 /* Generator.hpp */,
@@ -1250,6 +1249,7 @@
 				03A5DCFA1B273A79003F470A /* Gspn-model.cpp */,
 				03A5DCFB1B273A79003F470A /* Gspn-model.hpp */,
 				03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */,
+				032A703C181BC0D6006D7332 /* server.cpp */,
 				03541DD61BE7B7A9005741C6 /* Gspn-Grml-Output.hpp */,
 			);
 			path = GspnParser;
