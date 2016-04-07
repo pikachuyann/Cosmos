@@ -29,10 +29,14 @@ void LHA::resetVariables(){
 	Vars->time= 0;
 };
 void LHA::printHeader(ostream &s)const{
-	s << "	Location\t";
+	s << "	Location\tcountT\tt1\tt2\ttime\t";
 };
 void LHA::printState(ostream &s){
 	s << "\t" << LocLabel[CurrentLocation] << "\t";
+	s << Vars->countT << "\t";
+	s << Vars->t1 << "\t";
+	s << Vars->t2 << "\t";
+	s << Vars->time << "\t";
 };
 const int LHA::ActionEdgesAr[] = {
 	2 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,2 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,2 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
@@ -42,6 +46,18 @@ LHA::LHA():NbLoc(4),NbTrans(24),NbVar(4),FinalLoc( 4,false){
     InitLoc.insert(0);
     FinalLoc[3]=true;
     Edge= vector<LhaEdge>(11);
+
+    vector<string> vlstr(NbLoc);
+    LocLabel= vlstr;
+    LocLabel[0]="li";
+    LocLabel[1]="l1";
+    LocLabel[2]="l2";
+    LocLabel[3]="lf";
+    VarLabel= vector<string>(NbVar);
+    VarLabel[0]="countT";
+    VarLabel[1]="t1";
+    VarLabel[2]="t2";
+    VarLabel[3]="time";
     Edge[0] = LhaEdge(0, 0, 0,Synch);
     Edge[1] = LhaEdge(1, 1, 1,Synch);
     Edge[2] = LhaEdge(2, 2, 2,Synch);
@@ -89,6 +105,23 @@ bool LHA::CheckLocation(int loc,const abstractMarking& Marking)const{
 
 bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{
 	switch (ed){
+		case 0:	//
+		case 3:	//
+{
+         if(!( +(1)*Vars->countT<=10)) return false;
+		return (true);
+     }
+
+		break;
+		case 1:	//
+		case 2:	//
+{
+         if(!( +(1)*Vars->countT<=10)) return false;
+         if(!( +(1)*Vars->t1<=3)) return false;
+		return (true);
+     }
+
+		break;
 		case 6:	//
 		case 8:	//
 {
@@ -108,23 +141,6 @@ bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const a
 		case 9:	//
 {
          if(!( +(1)*Vars->t2>=1)) return false;
-         if(!( +(1)*Vars->t1<=3)) return false;
-		return (true);
-     }
-
-		break;
-		case 0:	//
-		case 3:	//
-{
-         if(!( +(1)*Vars->time<=10)) return false;
-		return (true);
-     }
-
-		break;
-		case 1:	//
-		case 2:	//
-{
-         if(!( +(1)*Vars->time<=10)) return false;
          if(!( +(1)*Vars->t1<=3)) return false;
 		return (true);
      }

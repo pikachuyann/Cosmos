@@ -37,7 +37,6 @@
 #include <stdlib.h>
 
 
-
 //#include "Polynome.hpp"
 
 // Handler for interuption of the server

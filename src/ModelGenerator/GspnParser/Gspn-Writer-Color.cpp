@@ -146,8 +146,9 @@ void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF)const{
                                         }
                                     }
                                 }else fallback = true;//Handling of ALL token not yet implemented
-                            }else
+                            }else {
                                 fallback= true; // Handling of several token not yet implemented
+                            }
                         }else {
                             //Sychronization over an uncolored place
                             nbp++;

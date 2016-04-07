@@ -1,24 +1,25 @@
 #include "spn.hpp"
 #include <iomanip>
 using namespace std;
-#define PL_TargetState_LP 0
-#define PL_s_0__LP 1
-#define PL_s_0_0_LP 2
-#define PL_s_0_1_LP 3
-#define PL_s_0_2_LP 4
-#define PL_s_1__LP 5
-#define PL_s_1_0_LP 6
-#define PL_s_1_1_LP 7
-#define PL_s_1_2_LP 8
-#define PL_s_2__LP 9
-#define PL_s_2_0_LP 10
-#define PL_s_2_1_LP 11
-#define PL_s_2_2_LP 12
-#define PL_s_3__LP 13
-#define PL_s_3_0_LP 14
-#define PL_s_3_1_LP 15
-#define PL_s_a__LP 16
-#define PL_s_b__LP 17
+#define PL_Counter_LP 0
+#define PL_TargetState_LP 1
+#define PL_s_0__LP 2
+#define PL_s_0_0_LP 3
+#define PL_s_0_1_LP 4
+#define PL_s_0_2_LP 5
+#define PL_s_1__LP 6
+#define PL_s_1_0_LP 7
+#define PL_s_1_1_LP 8
+#define PL_s_1_2_LP 9
+#define PL_s_2__LP 10
+#define PL_s_2_0_LP 11
+#define PL_s_2_1_LP 12
+#define PL_s_2_2_LP 13
+#define PL_s_3__LP 14
+#define PL_s_3_0_LP 15
+#define PL_s_3_1_LP 16
+#define PL_s_a__LP 17
+#define PL_s_b__LP 18
 #define TR_t_a_RT 0
 #define TR_t_b_RT 1
 #define TR_t_0_0_a_RT 2
@@ -44,28 +45,31 @@ using namespace std;
 #define TR_tt_3_0_RT 22
 #define TR_tt_3_1_RT 23
 
-const int _nb_Place_TargetState=0;
-const int _nb_Place_s_0_=1;
-const int _nb_Place_s_0_0=2;
-const int _nb_Place_s_0_1=3;
-const int _nb_Place_s_0_2=4;
-const int _nb_Place_s_1_=5;
-const int _nb_Place_s_1_0=6;
-const int _nb_Place_s_1_1=7;
-const int _nb_Place_s_1_2=8;
-const int _nb_Place_s_2_=9;
-const int _nb_Place_s_2_0=10;
-const int _nb_Place_s_2_1=11;
-const int _nb_Place_s_2_2=12;
-const int _nb_Place_s_3_=13;
-const int _nb_Place_s_3_0=14;
-const int _nb_Place_s_3_1=15;
-const int _nb_Place_s_a_=16;
-const int _nb_Place_s_b_=17;
+const double Dline=10;
+const int _nb_Place_Counter=0;
+const int _nb_Place_TargetState=1;
+const int _nb_Place_s_0_=2;
+const int _nb_Place_s_0_0=3;
+const int _nb_Place_s_0_1=4;
+const int _nb_Place_s_0_2=5;
+const int _nb_Place_s_1_=6;
+const int _nb_Place_s_1_0=7;
+const int _nb_Place_s_1_1=8;
+const int _nb_Place_s_1_2=9;
+const int _nb_Place_s_2_=10;
+const int _nb_Place_s_2_0=11;
+const int _nb_Place_s_2_1=12;
+const int _nb_Place_s_2_2=13;
+const int _nb_Place_s_3_=14;
+const int _nb_Place_s_3_0=15;
+const int _nb_Place_s_3_1=16;
+const int _nb_Place_s_a_=17;
+const int _nb_Place_s_b_=18;
 namespace hybridVar {
 	double x_1=0;
 	double x_2=0;
 }
+#include "magic.hpp"
 void REHandling::print_state(const vector<int> &vect){}
 void REHandling::lumpingFun(const abstractMarking &M,vector<int> &vect){}
 bool REHandling::precondition(const abstractMarking &M){return true;}
@@ -73,6 +77,8 @@ bool REHandling::precondition(const abstractMarking &M){return true;}
 #include "markingImpl.hpp"
 
 void abstractMarking::resetToInitMarking(){
+	magicReset();
+	P->_PL_Counter =0  ;
 	P->_PL_TargetState =0  ;
 	P->_PL_s_0_ =1  ;
 	P->_PL_s_0_0 =0  ;
@@ -126,40 +132,141 @@ void abstractMarking::swap(abstractMarking& m) {
 	P = tmp;
 }
 void abstractMarking::printHeader(ostream &s)const{
+s <<  setw(11) << "Counter ";
+s <<  setw(11) << "TargetState ";
+s <<  setw(11) << "s_0_ ";
+s <<  setw(11) << "s_0_0 ";
+s <<  setw(11) << "s_0_1 ";
+s <<  setw(11) << "s_0_2 ";
+s <<  setw(11) << "s_1_ ";
+s <<  setw(11) << "s_1_0 ";
+s <<  setw(11) << "s_1_1 ";
+s <<  setw(11) << "s_1_2 ";
+s <<  setw(11) << "s_2_ ";
+s <<  setw(11) << "s_2_0 ";
+s <<  setw(11) << "s_2_1 ";
+s <<  setw(11) << "s_2_2 ";
+s <<  setw(11) << "s_3_ ";
+s <<  setw(11) << "s_3_0 ";
+s <<  setw(11) << "s_3_1 ";
+s <<  setw(11) << "s_a_ ";
+s <<  setw(11) << "s_b_ ";
+s <<  setw(11) << "x_1";
+s <<  setw(11) << "x_2";
 }
 
 void abstractMarking::print(ostream &s,double eTime)const{
+	s <<  setw(10) << print_magic(P->_PL_Counter)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_TargetState)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_0_)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_0_0)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_0_1)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_0_2)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_1_)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_1_0)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_1_1)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_1_2)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_2_)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_2_0)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_2_1)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_2_2)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_3_)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_3_0)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_3_1)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_a_)<<" ";
+	s <<  setw(10) << print_magic(P->_PL_s_b_)<<" ";
+s <<  setw(10)  << hybridVar::x_1+ eTime <<" ";
+s <<  setw(10)  << hybridVar::x_2+ eTime <<" ";
 }
 void abstractMarking::printSedCmd(ostream &s)const{
+	s << "-e 's/\\$Counter\\$/";
+	s << print_magic(P->_PL_Counter);
+	s <<"/g' ";
+	s << "-e 's/\\$TargetState\\$/";
+	s << print_magic(P->_PL_TargetState);
+	s <<"/g' ";
+	s << "-e 's/\\$s_0_\\$/";
+	s << print_magic(P->_PL_s_0_);
+	s <<"/g' ";
+	s << "-e 's/\\$s_0_0\\$/";
+	s << print_magic(P->_PL_s_0_0);
+	s <<"/g' ";
+	s << "-e 's/\\$s_0_1\\$/";
+	s << print_magic(P->_PL_s_0_1);
+	s <<"/g' ";
+	s << "-e 's/\\$s_0_2\\$/";
+	s << print_magic(P->_PL_s_0_2);
+	s <<"/g' ";
+	s << "-e 's/\\$s_1_\\$/";
+	s << print_magic(P->_PL_s_1_);
+	s <<"/g' ";
+	s << "-e 's/\\$s_1_0\\$/";
+	s << print_magic(P->_PL_s_1_0);
+	s <<"/g' ";
+	s << "-e 's/\\$s_1_1\\$/";
+	s << print_magic(P->_PL_s_1_1);
+	s <<"/g' ";
+	s << "-e 's/\\$s_1_2\\$/";
+	s << print_magic(P->_PL_s_1_2);
+	s <<"/g' ";
+	s << "-e 's/\\$s_2_\\$/";
+	s << print_magic(P->_PL_s_2_);
+	s <<"/g' ";
+	s << "-e 's/\\$s_2_0\\$/";
+	s << print_magic(P->_PL_s_2_0);
+	s <<"/g' ";
+	s << "-e 's/\\$s_2_1\\$/";
+	s << print_magic(P->_PL_s_2_1);
+	s <<"/g' ";
+	s << "-e 's/\\$s_2_2\\$/";
+	s << print_magic(P->_PL_s_2_2);
+	s <<"/g' ";
+	s << "-e 's/\\$s_3_\\$/";
+	s << print_magic(P->_PL_s_3_);
+	s <<"/g' ";
+	s << "-e 's/\\$s_3_0\\$/";
+	s << print_magic(P->_PL_s_3_0);
+	s <<"/g' ";
+	s << "-e 's/\\$s_3_1\\$/";
+	s << print_magic(P->_PL_s_3_1);
+	s <<"/g' ";
+	s << "-e 's/\\$s_a_\\$/";
+	s << print_magic(P->_PL_s_a_);
+	s <<"/g' ";
+	s << "-e 's/\\$s_b_\\$/";
+	s << print_magic(P->_PL_s_b_);
+	s <<"/g' ";
 }
 
 int abstractMarking::getNbOfTokens(int p)const {
 	switch (p) {
-		case 0: return P->_PL_TargetState;
-		case 1: return P->_PL_s_0_;
-		case 2: return P->_PL_s_0_0;
-		case 3: return P->_PL_s_0_1;
-		case 4: return P->_PL_s_0_2;
-		case 5: return P->_PL_s_1_;
-		case 6: return P->_PL_s_1_0;
-		case 7: return P->_PL_s_1_1;
-		case 8: return P->_PL_s_1_2;
-		case 9: return P->_PL_s_2_;
-		case 10: return P->_PL_s_2_0;
-		case 11: return P->_PL_s_2_1;
-		case 12: return P->_PL_s_2_2;
-		case 13: return P->_PL_s_3_;
-		case 14: return P->_PL_s_3_0;
-		case 15: return P->_PL_s_3_1;
-		case 16: return P->_PL_s_a_;
-		case 17: return P->_PL_s_b_;
+		case 0: return P->_PL_Counter;
+		case 1: return P->_PL_TargetState;
+		case 2: return P->_PL_s_0_;
+		case 3: return P->_PL_s_0_0;
+		case 4: return P->_PL_s_0_1;
+		case 5: return P->_PL_s_0_2;
+		case 6: return P->_PL_s_1_;
+		case 7: return P->_PL_s_1_0;
+		case 8: return P->_PL_s_1_1;
+		case 9: return P->_PL_s_1_2;
+		case 10: return P->_PL_s_2_;
+		case 11: return P->_PL_s_2_0;
+		case 12: return P->_PL_s_2_1;
+		case 13: return P->_PL_s_2_2;
+		case 14: return P->_PL_s_3_;
+		case 15: return P->_PL_s_3_0;
+		case 16: return P->_PL_s_3_1;
+		case 17: return P->_PL_s_a_;
+		case 18: return P->_PL_s_b_;
      }
 }
 
 std::vector<int> abstractMarking::getVector()const {
-	std::vector<int> v(18);
-	v.reserve(19);
+	std::vector<int> v(19);
+	v.reserve(20);
 	size_t i = 0;
+	v[i++]= P->_PL_Counter;
 	v[i++]= P->_PL_TargetState;
 	v[i++]= P->_PL_s_0_;
 	v[i++]= P->_PL_s_0_0;
@@ -183,6 +290,7 @@ std::vector<int> abstractMarking::getVector()const {
 
 void abstractMarking::setVector(const std::vector<int>&v) {
 	size_t i = 0;
+	P->_PL_Counter = v[i++];
 	P->_PL_TargetState = v[i++];
 	P->_PL_s_0_ = v[i++];
 	P->_PL_s_0_0 = v[i++];
@@ -234,7 +342,7 @@ class CustomDistrPoly: public CustomDistr {
 	vector<Poly<3>> ptable;
 public:
 	CustomDistrPoly(){
-		ptable = parse<3>("data.data");
+		ptable = parse<3>("twoears.grml.data");
 	}
 	double virtual userDefineCDF(vector<double> const& param, double funvar)const{
 		return (eval(ptable[poly_table[ 5*((int)param[0]) ]],param,funvar)/eval(ptable[poly_table[ 5*((int)param[0])+2 ]],param,funvar))  ;
@@ -254,9 +362,12 @@ public:
 		return (0.0);
 	}
 
+	double virtual evalPoly(unsigned long i,vector<double> const & param)const {
+		return eval(ptable[i],param);
+	}
 };
 const int CustomDistrPoly::poly_table[]= { 
-3,4,2,0,1,8,9,7,5,6,13,14,12,10,11,18,19,17,15,16,23,24,22,20,21,28,29,27,25,26,33,34,32,30,31,38,39,37,35,36,43,44,42,40,41,48,49,47,45,46,53,54,52,50,51,};
+3,4,2,0,1,8,9,7,5,6,13,14,12,10,11,18,19,17,15,16,23,24,22,20,21,28,29,27,25,26,33,34,32,30,31,38,39,37,35,36,43,44,42,40,41,48,49,47,45,46,53,54,52,50,51,58,59,57,55,56,63,64,62,60,61,68,69,67,65,66,73,74,72,70,71,78,79,77,75,76,83,84,82,80,81,88,89,87,85,86,93,94,92,90,91,98,99,97,95,96,103,104,102,100,101,108,109,107,105,106,113,114,112,110,111,118,119,117,115,116,123,124,122,120,121,128,129,127,125,126,133,134,132,130,131,138,139,137,135,136,143,144,142,140,141,148,149,147,145,146,153,154,152,150,151,158,159,157,155,156,163,164,162,160,161,168,169,167,165,166,173,174,172,170,171,178,179,177,175,176,183,184,182,180,181,188,189,187,185,186,193,194,192,190,191,198,199,197,195,196,203,204,202,200,201,208,209,207,205,206,213,214,212,210,211,218,219,217,215,216,};
 static const int EMPTY_array[1]={-1};
 static const int PE_PossiblyEnabled_2[2]= {TR_tt_0_0_RT, -1 }; /* t_0_0_a*/
 static const int PE_PossiblyEnabled_3[2]= {TR_tt_0_1_RT, -1 }; /* t_0_1_b*/
@@ -297,13 +408,52 @@ const int* SPN::PossiblyDisabled[] = {EMPTY_array, EMPTY_array, PE_PossiblyDisab
 
 const int* SPN::FreeMarkDepT[] = {EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
 
-static spn_trans TransArray[24] = { _trans(0,IMMEDIATE,0,1, 0), _trans(1,IMMEDIATE,0,1, 0), _trans(2,IMMEDIATE,0,1, 0), _trans(3,IMMEDIATE,0,1, 0), _trans(4,IMMEDIATE,0,1, 0), _trans(5,IMMEDIATE,0,1, 0), _trans(6,IMMEDIATE,0,1, 0), _trans(7,IMMEDIATE,0,1, 0), _trans(8,IMMEDIATE,0,1, 0), _trans(9,IMMEDIATE,0,1, 0), _trans(10,IMMEDIATE,0,1, 0), _trans(11,IMMEDIATE,0,1, 0), _trans(12,IMMEDIATE,0,1, 0), _trans(13,USERDEFINE,0,1, 0), _trans(14,USERDEFINE,0,1, 0), _trans(15,USERDEFINE,0,1, 0), _trans(16,USERDEFINE,0,1, 0), _trans(17,USERDEFINE,0,1, 0), _trans(18,USERDEFINE,0,1, 0), _trans(19,USERDEFINE,0,1, 0), _trans(20,USERDEFINE,0,1, 0), _trans(21,USERDEFINE,0,1, 0), _trans(22,USERDEFINE,0,1, 0), _trans(23,USERDEFINE,0,1, 0),  }; 
+static spn_trans TransArray[24] = { _trans(0,IMMEDIATE,0,1, 0, "t_a"), _trans(1,IMMEDIATE,0,1, 0, "t_b"), _trans(2,IMMEDIATE,0,1, 0, "t_0_0_a"), _trans(3,IMMEDIATE,0,1, 0, "t_0_1_b"), _trans(4,IMMEDIATE,0,1, 0, "t_0_2_a"), _trans(5,IMMEDIATE,0,1, 0, "t_1_0_a"), _trans(6,IMMEDIATE,0,1, 0, "t_1_1_b"), _trans(7,IMMEDIATE,0,1, 0, "t_1_2_a"), _trans(8,IMMEDIATE,0,1, 0, "t_2_0_a"), _trans(9,IMMEDIATE,0,1, 0, "t_2_1_b"), _trans(10,IMMEDIATE,0,1, 0, "t_2_2_a"), _trans(11,IMMEDIATE,0,1, 0, "t_3_0_b"), _trans(12,IMMEDIATE,0,1, 0, "t_3_1_a"), _trans(13,USERDEFINE,0,1, 0, "tt_0_0"), _trans(14,USERDEFINE,0,1, 0, "tt_0_1"), _trans(15,USERDEFINE,0,1, 0, "tt_0_2"), _trans(16,USERDEFINE,0,1, 0, "tt_1_0"), _trans(17,USERDEFINE,0,1, 0, "tt_1_1"), _trans(18,USERDEFINE,0,1, 0, "tt_1_2"), _trans(19,USERDEFINE,0,1, 0, "tt_2_0"), _trans(20,USERDEFINE,0,1, 0, "tt_2_1"), _trans(21,USERDEFINE,0,1, 0, "tt_2_2"), _trans(22,USERDEFINE,0,1, 0, "tt_3_0"), _trans(23,USERDEFINE,0,1, 0, "tt_3_1"),  }; 
 SPN::SPN():
-customDistr(*(new CustomDistrPoly())),pl(18), tr(24) ,Transition(TransArray,TransArray +24),Place(18),ParamDistr(10),TransitionConditions(24,0){
-    Path ="twoears.prism.grml";
+customDistr(*(new CustomDistrPoly())),pl(19), tr(24) ,Transition(TransArray,TransArray +24),Place(19),ParamDistr(10),TransitionConditions(24,0){
+    Path ="twoears.grml";
+    Place[0].label =" Counter";
+    Place[0].isTraced = 1;
+    Place[1].label =" TargetState";
+    Place[1].isTraced = 1;
+    Place[2].label =" s_0_";
+    Place[2].isTraced = 1;
+    Place[3].label =" s_0_0";
+    Place[3].isTraced = 1;
+    Place[4].label =" s_0_1";
+    Place[4].isTraced = 1;
+    Place[5].label =" s_0_2";
+    Place[5].isTraced = 1;
+    Place[6].label =" s_1_";
+    Place[6].isTraced = 1;
+    Place[7].label =" s_1_0";
+    Place[7].isTraced = 1;
+    Place[8].label =" s_1_1";
+    Place[8].isTraced = 1;
+    Place[9].label =" s_1_2";
+    Place[9].isTraced = 1;
+    Place[10].label =" s_2_";
+    Place[10].isTraced = 1;
+    Place[11].label =" s_2_0";
+    Place[11].isTraced = 1;
+    Place[12].label =" s_2_1";
+    Place[12].isTraced = 1;
+    Place[13].label =" s_2_2";
+    Place[13].isTraced = 1;
+    Place[14].label =" s_3_";
+    Place[14].isTraced = 1;
+    Place[15].label =" s_3_0";
+    Place[15].isTraced = 1;
+    Place[16].label =" s_3_1";
+    Place[16].isTraced = 1;
+    Place[17].label =" s_a_";
+    Place[17].isTraced = 1;
+    Place[18].label =" s_b_";
+    Place[18].isTraced = 1;
 }
 
 bool SPN::IsEnabled(TR_PL_ID t, const abstractBinding &b)const{
+	if(!magicConditional(t))return false;
 
 	switch (t){
 		case 13:	//tt_0_0
@@ -401,6 +551,7 @@ bool SPN::IsEnabled(TR_PL_ID t, const abstractBinding &b)const{
 
 void SPN::fire(TR_PL_ID t, const abstractBinding &b,REAL_TYPE time){
 	lastTransition = t;
+	magicUpdate(t,time);
 	double incrtime = time - lastTransitionTime;
 	lastTransitionTime = time;
 	hybridVar::x_1+= incrtime;
@@ -409,6 +560,7 @@ void SPN::fire(TR_PL_ID t, const abstractBinding &b,REAL_TYPE time){
 	switch (t){
 		case 13:	//tt_0_0
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_0_0 -= 1;
 			Marking.P->_PL_s_1_ += 1;
@@ -419,6 +571,7 @@ x_2=0;}
 		break;
 		case 14:	//tt_0_1
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_0_1 -= 1;
 			Marking.P->_PL_s_2_ += 1;
@@ -429,6 +582,7 @@ x_1=0;}
 		break;
 		case 15:	//tt_0_2
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_0_2 -= 1;
 			Marking.P->_PL_s_3_ += 1;
@@ -439,6 +593,7 @@ x_2=0;}
 		break;
 		case 16:	//tt_1_0
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_1_ += 1;
 			Marking.P->_PL_s_1_0 -= 1;
@@ -449,6 +604,7 @@ x_2=0;}
 		break;
 		case 19:	//tt_2_0
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_1_ += 1;
 			Marking.P->_PL_s_2_0 -= 1;
@@ -459,6 +615,7 @@ x_2=0;}
 		break;
 		case 17:	//tt_1_1
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_1_1 -= 1;
 			Marking.P->_PL_s_2_ += 1;
@@ -469,6 +626,7 @@ x_1=0;}
 		break;
 		case 18:	//tt_1_2
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_1_2 -= 1;
 			Marking.P->_PL_s_3_ += 1;
@@ -479,6 +637,7 @@ x_2=0;}
 		break;
 		case 20:	//tt_2_1
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_2_ += 1;
 			Marking.P->_PL_s_2_1 -= 1;
@@ -489,6 +648,7 @@ x_1=0;}
 		break;
 		case 22:	//tt_3_0
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_2_ += 1;
 			Marking.P->_PL_s_3_0 -= 1;
@@ -499,6 +659,7 @@ x_1=0;}
 		break;
 		case 21:	//tt_2_2
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_2_2 -= 1;
 			Marking.P->_PL_s_3_ += 1;
@@ -509,6 +670,7 @@ x_2=0;}
 		break;
 		case 23:	//tt_3_1
 {
+			Marking.P->_PL_Counter += 1;
 			Marking.P->_PL_TargetState += 1;
 			Marking.P->_PL_s_3_ += 1;
 			Marking.P->_PL_s_3_1 -= 1;
@@ -623,15 +785,7 @@ using namespace hybridVar;
 	switch (t){
 		case 13:	//tt_0_0
 	{
-		ParamDistr[0]= ( double ) 0 ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
-	}
-
-		break;
-		case 14:	//tt_0_1
-	{
-		ParamDistr[0]= ( double ) 1 ;
+		ParamDistr[0]= ( double ) transDistrTab[0][min( 10-Marking.P->_PL_Counter, 4 )] ;
 		ParamDistr[1]= ( double ) x_1 ;
 		ParamDistr[2]= ( double ) x_2 ;
 	}
@@ -639,7 +793,15 @@ using namespace hybridVar;
 		break;
 		case 23:	//tt_3_1
 	{
-		ParamDistr[0]= ( double ) 10 ;
+		ParamDistr[0]= ( double ) transDistrTab[10][min( 10-Marking.P->_PL_Counter, 4 )] ;
+		ParamDistr[1]= ( double ) x_1 ;
+		ParamDistr[2]= ( double ) x_2 ;
+	}
+
+		break;
+		case 14:	//tt_0_1
+	{
+		ParamDistr[0]= ( double ) transDistrTab[1][min( 10-Marking.P->_PL_Counter, 4 )] ;
 		ParamDistr[1]= ( double ) x_1 ;
 		ParamDistr[2]= ( double ) x_2 ;
 	}
@@ -647,7 +809,7 @@ using namespace hybridVar;
 		break;
 		case 15:	//tt_0_2
 	{
-		ParamDistr[0]= ( double ) 2 ;
+		ParamDistr[0]= ( double ) transDistrTab[2][min( 10-Marking.P->_PL_Counter, 4 )] ;
 		ParamDistr[1]= ( double ) x_1 ;
 		ParamDistr[2]= ( double ) x_2 ;
 	}
@@ -655,7 +817,7 @@ using namespace hybridVar;
 		break;
 		case 16:	//tt_1_0
 	{
-		ParamDistr[0]= ( double ) 3 ;
+		ParamDistr[0]= ( double ) transDistrTab[3][min( 10-Marking.P->_PL_Counter, 4 )] ;
 		ParamDistr[1]= ( double ) x_1 ;
 		ParamDistr[2]= ( double ) x_2 ;
 	}
@@ -663,7 +825,7 @@ using namespace hybridVar;
 		break;
 		case 17:	//tt_1_1
 	{
-		ParamDistr[0]= ( double ) 4 ;
+		ParamDistr[0]= ( double ) transDistrTab[4][min( 10-Marking.P->_PL_Counter, 4 )] ;
 		ParamDistr[1]= ( double ) x_1 ;
 		ParamDistr[2]= ( double ) x_2 ;
 	}
@@ -671,7 +833,7 @@ using namespace hybridVar;
 		break;
 		case 18:	//tt_1_2
 	{
-		ParamDistr[0]= ( double ) 5 ;
+		ParamDistr[0]= ( double ) transDistrTab[5][min( 10-Marking.P->_PL_Counter, 4 )] ;
 		ParamDistr[1]= ( double ) x_1 ;
 		ParamDistr[2]= ( double ) x_2 ;
 	}
@@ -679,7 +841,7 @@ using namespace hybridVar;
 		break;
 		case 19:	//tt_2_0
 	{
-		ParamDistr[0]= ( double ) 6 ;
+		ParamDistr[0]= ( double ) transDistrTab[6][min( 10-Marking.P->_PL_Counter, 4 )] ;
 		ParamDistr[1]= ( double ) x_1 ;
 		ParamDistr[2]= ( double ) x_2 ;
 	}
@@ -687,7 +849,7 @@ using namespace hybridVar;
 		break;
 		case 20:	//tt_2_1
 	{
-		ParamDistr[0]= ( double ) 7 ;
+		ParamDistr[0]= ( double ) transDistrTab[7][min( 10-Marking.P->_PL_Counter, 4 )] ;
 		ParamDistr[1]= ( double ) x_1 ;
 		ParamDistr[2]= ( double ) x_2 ;
 	}
@@ -695,7 +857,7 @@ using namespace hybridVar;
 		break;
 		case 21:	//tt_2_2
 	{
-		ParamDistr[0]= ( double ) 8 ;
+		ParamDistr[0]= ( double ) transDistrTab[8][min( 10-Marking.P->_PL_Counter, 4 )] ;
 		ParamDistr[1]= ( double ) x_1 ;
 		ParamDistr[2]= ( double ) x_2 ;
 	}
@@ -703,7 +865,7 @@ using namespace hybridVar;
 		break;
 		case 22:	//tt_3_0
 	{
-		ParamDistr[0]= ( double ) 9 ;
+		ParamDistr[0]= ( double ) transDistrTab[9][min( 10-Marking.P->_PL_Counter, 4 )] ;
 		ParamDistr[1]= ( double ) x_1 ;
 		ParamDistr[2]= ( double ) x_2 ;
 	}
@@ -730,32 +892,38 @@ REAL_TYPE SPN::GetWeight(TR_PL_ID t, const abstractBinding &b)const{
 using namespace hybridVar;
 
 	switch (t){
-		case 11:	//t_3_0_b
-		return (double)0.0+(-0.00138888888888889)*pow(x_1,6)+(-0.00833333333333335)*pow(x_1,5)+(-0.166666666666666)*pow(x_1,4)+(-1.77777777777778)*pow(x_1,3)+(-14.6666666666667)*pow(x_1,2)+(-80.8833333333334)*x_1+(439.187500000000) ;
-		break;
-		case 5:	//t_1_0_a
-		return (double)0.0+(0.00138888888888889)*pow(x_1,6)+(-0.0333333333333333)*pow(x_1,5)+(0.479166666666666)*pow(x_1,4)+(-5.27777777777778)*pow(x_1,3)+(43.6041666666667)*pow(x_1,2)+(-240.283333333333)*x_1+(201.509722222222) ;
-		break;
-		case 9:	//t_2_1_b
-		return (double)0.0+(0.00138888888888889)*pow(x_2,6)+(-0.0333333333333333)*pow(x_2,5)+(0.479166666666666)*pow(x_2,4)+(-5.27777777777778)*pow(x_2,3)+(43.6041666666666)*pow(x_2,2)+(-240.283333333333)*x_2+(341.683333333333) ;
-		break;
-		case 12:	//t_3_1_a
-		return (double)0.0+(0.00277777777777778)*pow(x_1,6)+(-0.0416666666666666)*pow(x_1,5)+(0.729166666666666)*pow(x_1,4)+(-6.22222222222222)*pow(x_1,3)+(66.1041666666667)*pow(x_1,2)+(-283.416666666667)*x_1+(341.683333333333) ;
-		break;
-		case 4:	//t_0_2_a
-		case 10:	//t_2_2_a
-		return (double)0.0+(118.838888888889) ;
-		break;
 		case 2:	//t_0_0_a
-		case 8:	//t_2_0_a
-		return (double)0.0+(201.509722222222) ;
+		return (double)customDistr.evalPoly(219 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
 		break;
 		case 3:	//t_0_1_b
+		return (double)customDistr.evalPoly(223 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
+		break;
+		case 4:	//t_0_2_a
+		return (double)customDistr.evalPoly(227 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
+		break;
+		case 5:	//t_1_0_a
+		return (double)customDistr.evalPoly(231 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
+		break;
 		case 6:	//t_1_1_b
-		return (double)0.0+(341.683333333333) ;
+		return (double)customDistr.evalPoly(235 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
 		break;
 		case 7:	//t_1_2_a
-		return (double)0.0+(5.55111512312578e-17)*pow(x_1,5)+(4.44089209850063e-16)*pow(x_1,4)+(8.88178419700125e-16)*pow(x_1,3)+(5.68434188608080e-14)*x_1+(118.838888888889) ;
+		return (double)customDistr.evalPoly(239 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
+		break;
+		case 8:	//t_2_0_a
+		return (double)customDistr.evalPoly(243 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
+		break;
+		case 9:	//t_2_1_b
+		return (double)customDistr.evalPoly(247 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
+		break;
+		case 10:	//t_2_2_a
+		return (double)customDistr.evalPoly(251 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
+		break;
+		case 11:	//t_3_0_b
+		return (double)customDistr.evalPoly(255 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
+		break;
+		case 12:	//t_3_1_a
+		return (double)customDistr.evalPoly(259 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
 		break;
 		default:	//t_a,t_b,tt_0_0,tt_0_1,tt_0_2,tt_1_0,tt_1_1,tt_1_2,tt_2_0,tt_2_1,tt_2_2,tt_3_0,tt_3_1,
 		return (double)1 ;
