@@ -38,9 +38,11 @@ public:
     Gspn_Writer_Color(GspnType& mgspn,parameters& Q);
 
     void writeMarkingClasse(std::ofstream &, std::ofstream &)const;
-    void printloot(std::ofstream& sf, size_t domain, size_t nesting )const;
+    void printloot(std::ofstream& sf, const colorDomain &domain, size_t nesting )const;
     void writeEnabledDisabledBinding(std::ofstream &)const;
-
+    void writeDomainTable(std::ofstream &cpp, std::ofstream &hpp, const colorDomain &d)const ;
+    void writeDomainToken(std::ofstream &header, const colorDomain & it)const;
+    void writeDomainSet(std::ofstream &SpnCppFile , std::ofstream &header, const colorDomain & it)const;
 };
 
 #endif /* defined(__Cosmos__Gspn_Writer_Color__) */

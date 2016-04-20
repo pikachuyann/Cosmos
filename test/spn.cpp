@@ -1,104 +1,131 @@
 #include "spn.hpp"
 #include <iomanip>
 using namespace std;
-#define PL_Counter_LP 0
-#define PL_TargetState_LP 1
-#define PL_s_0__LP 2
-#define PL_s_0_0_LP 3
-#define PL_s_0_1_LP 4
-#define PL_s_0_2_LP 5
-#define PL_s_1__LP 6
-#define PL_s_1_0_LP 7
-#define PL_s_1_1_LP 8
-#define PL_s_1_2_LP 9
-#define PL_s_2__LP 10
-#define PL_s_2_0_LP 11
-#define PL_s_2_1_LP 12
-#define PL_s_2_2_LP 13
-#define PL_s_3__LP 14
-#define PL_s_3_0_LP 15
-#define PL_s_3_1_LP 16
-#define PL_s_a__LP 17
-#define PL_s_b__LP 18
-#define TR_t_a_RT 0
-#define TR_t_b_RT 1
-#define TR_t_0_0_a_RT 2
-#define TR_t_0_1_b_RT 3
-#define TR_t_0_2_a_RT 4
-#define TR_t_1_0_a_RT 5
-#define TR_t_1_1_b_RT 6
-#define TR_t_1_2_a_RT 7
-#define TR_t_2_0_a_RT 8
-#define TR_t_2_1_b_RT 9
-#define TR_t_2_2_a_RT 10
-#define TR_t_3_0_b_RT 11
-#define TR_t_3_1_a_RT 12
-#define TR_tt_0_0_RT 13
-#define TR_tt_0_1_RT 14
-#define TR_tt_0_2_RT 15
-#define TR_tt_1_0_RT 16
-#define TR_tt_1_1_RT 17
-#define TR_tt_1_2_RT 18
-#define TR_tt_2_0_RT 19
-#define TR_tt_2_1_RT 20
-#define TR_tt_2_2_RT 21
-#define TR_tt_3_0_RT 22
-#define TR_tt_3_1_RT 23
+#define PL_ReadyT_LP 0
+#define PL_Healthy_LP 1
+#define PL_Ill_LP 2
+#define PL_Arrival_LP 3
+#define PL_ThreatedByDocH_LP 4
+#define PL_ThreatedByDocL_LP 5
+#define PL_WaitingRoom_LP 6
+#define PL_OperatingRoom_LP 7
+#define PL_ArrivalUrgence_LP 8
+#define PL_USurgery_LP 9
+#define PL_TraumaTeam_LP 10
+#define PL_Ustab_LP 11
+#define PL_WSurgery_LP 12
+#define PL_WBloodEx_LP 13
+#define PL_WXRayEx_LP 14
+#define PL_CountDoctor_LP 15
+#define PL_MonitoredRoom_LP 16
+#define PL_Doctor_LP 17
+#define PL_PatientRecovered_LP 18
+#define PL_UBloodEx_LP 19
+#define PL_ResB_LP 20
+#define PL_Waiting_LP 21
+#define PL_ResX_LP 22
+#define PL_UXRayEx_LP 23
+#define PL_FXRay_LP 24
+#define PL_FBloodEx_LP 25
+#define TR_EXRayBlood_RT 0
+#define TR_FallIll_RT 1
+#define TR_HospitalArrival_RT 2
+#define TR_EToThreat_RT 3
+#define TR_EToSurgery_RT 4
+#define TR_HighPrio_RT 5
+#define TR_MediumPrio_RT 6
+#define TR_DischargeL_RT 7
+#define TR_LowPrio_RT 8
+#define TR_BSurgery_RT 9
+#define TR_ToSurgery_RT 10
+#define TR_ToDoctor_RT 11
+#define TR_ToDoctorL_RT 12
+#define TR_BToStabilize_RT 13
+#define TR_EToStabilize_RT 14
+#define TR_DischargeRec_RT 15
+#define TR_BBlood_RT 16
+#define TR_BXRay_RT 17
+#define TR_DischargeM_RT 18
+#define TR_EBloodEx_RT 19
+#define TR_EXRay_RT 20
 
-const double Dline=10;
-const int _nb_Place_Counter=0;
-const int _nb_Place_TargetState=1;
-const int _nb_Place_s_0_=2;
-const int _nb_Place_s_0_0=3;
-const int _nb_Place_s_0_1=4;
-const int _nb_Place_s_0_2=5;
-const int _nb_Place_s_1_=6;
-const int _nb_Place_s_1_0=7;
-const int _nb_Place_s_1_1=8;
-const int _nb_Place_s_1_2=9;
-const int _nb_Place_s_2_=10;
-const int _nb_Place_s_2_0=11;
-const int _nb_Place_s_2_1=12;
-const int _nb_Place_s_2_2=13;
-const int _nb_Place_s_3_=14;
-const int _nb_Place_s_3_0=15;
-const int _nb_Place_s_3_1=16;
-const int _nb_Place_s_a_=17;
-const int _nb_Place_s_b_=18;
+const int _nb_Place_ReadyT=0;
+const int _nb_Place_Healthy=1;
+const int _nb_Place_Ill=2;
+const int _nb_Place_Arrival=3;
+const int _nb_Place_ThreatedByDocH=4;
+const int _nb_Place_ThreatedByDocL=5;
+const int _nb_Place_WaitingRoom=6;
+const int _nb_Place_OperatingRoom=7;
+const int _nb_Place_ArrivalUrgence=8;
+const int _nb_Place_USurgery=9;
+const int _nb_Place_TraumaTeam=10;
+const int _nb_Place_Ustab=11;
+const int _nb_Place_WSurgery=12;
+const int _nb_Place_WBloodEx=13;
+const int _nb_Place_WXRayEx=14;
+const int _nb_Place_CountDoctor=15;
+const int _nb_Place_MonitoredRoom=16;
+const int _nb_Place_Doctor=17;
+const int _nb_Place_PatientRecovered=18;
+const int _nb_Place_UBloodEx=19;
+const int _nb_Place_ResB=20;
+const int _nb_Place_Waiting=21;
+const int _nb_Place_ResX=22;
+const int _nb_Place_UXRayEx=23;
+const int _nb_Place_FXRay=24;
+const int _nb_Place_FBloodEx=25;
 namespace hybridVar {
-	double x_1=0;
-	double x_2=0;
 }
-#include "magic.hpp"
 void REHandling::print_state(const vector<int> &vect){}
 void REHandling::lumpingFun(const abstractMarking &M,vector<int> &vect){}
 bool REHandling::precondition(const abstractMarking &M){return true;}
 #include "marking.hpp"
 #include "markingImpl.hpp"
+patient_Domain operator + (const patient_Token& t1 ,const patient_Token& t2 ){
+	patient_Domain d; d += t1; d+=t2 ;
+	return d;
+}
+std::ostream& operator << (std::ostream& out, const patient_Domain& x) {
+	stringstream outprintloot;
+	for(size_t c0 = 0 ; c0< Color_patient_Total; c0++ )
+		if(x.mult[c0])
+					outprintloot << x.mult[c0]<< "<" << Color_patient_names[c0]<< ">,";
+	out << "(" << outprintloot.str() << ")";
+	return out;
+}
+inline bool contains(const patient_Domain& d1, const patient_Domain& d2){	return (d1-d2) > -1;
+}
+inline bool contains(const patient_Domain& d1, const patient_Token& tok){	return d1 >= tok;
+}
 
 void abstractMarking::resetToInitMarking(){
-	magicReset();
-	P->_PL_Counter =0  ;
-	P->_PL_TargetState =0  ;
-	P->_PL_s_0_ =1  ;
-	P->_PL_s_0_0 =0  ;
-	P->_PL_s_0_1 =0  ;
-	P->_PL_s_0_2 =0  ;
-	P->_PL_s_1_ =0  ;
-	P->_PL_s_1_0 =0  ;
-	P->_PL_s_1_1 =0  ;
-	P->_PL_s_1_2 =0  ;
-	P->_PL_s_2_ =0  ;
-	P->_PL_s_2_0 =0  ;
-	P->_PL_s_2_1 =0  ;
-	P->_PL_s_2_2 =0  ;
-	P->_PL_s_3_ =0  ;
-	P->_PL_s_3_0 =0  ;
-	P->_PL_s_3_1 =0  ;
-	P->_PL_s_a_ =0  ;
-	P->_PL_s_b_ =0  ;
-	hybridVar::x_1=0;
-	hybridVar::x_2=0;
+	P->_PL_ReadyT =0  ;
+	P->_PL_Healthy =((patient_Domain(Color_patient_All) * (1 ))) ;
+	P->_PL_Ill =0  ;
+	P->_PL_Arrival =0  ;
+	P->_PL_ThreatedByDocH =0  ;
+	P->_PL_ThreatedByDocL =0  ;
+	P->_PL_WaitingRoom =0  ;
+	P->_PL_OperatingRoom =2  ;
+	P->_PL_ArrivalUrgence =0  ;
+	P->_PL_USurgery =0  ;
+	P->_PL_TraumaTeam =2  ;
+	P->_PL_Ustab =0  ;
+	P->_PL_WSurgery =0  ;
+	P->_PL_WBloodEx =0  ;
+	P->_PL_WXRayEx =0  ;
+	P->_PL_CountDoctor =0  ;
+	P->_PL_MonitoredRoom =0  ;
+	P->_PL_Doctor =4  ;
+	P->_PL_PatientRecovered =0  ;
+	P->_PL_UBloodEx =0  ;
+	P->_PL_ResB =2  ;
+	P->_PL_Waiting =0  ;
+	P->_PL_ResX =2  ;
+	P->_PL_UXRayEx =0  ;
+	P->_PL_FXRay =0  ;
+	P->_PL_FBloodEx =0  ;
 }
 
 
@@ -132,418 +159,470 @@ void abstractMarking::swap(abstractMarking& m) {
 	P = tmp;
 }
 void abstractMarking::printHeader(ostream &s)const{
-s <<  setw(11) << "Counter ";
-s <<  setw(11) << "TargetState ";
-s <<  setw(11) << "s_0_ ";
-s <<  setw(11) << "s_0_0 ";
-s <<  setw(11) << "s_0_1 ";
-s <<  setw(11) << "s_0_2 ";
-s <<  setw(11) << "s_1_ ";
-s <<  setw(11) << "s_1_0 ";
-s <<  setw(11) << "s_1_1 ";
-s <<  setw(11) << "s_1_2 ";
-s <<  setw(11) << "s_2_ ";
-s <<  setw(11) << "s_2_0 ";
-s <<  setw(11) << "s_2_1 ";
-s <<  setw(11) << "s_2_2 ";
-s <<  setw(11) << "s_3_ ";
-s <<  setw(11) << "s_3_0 ";
-s <<  setw(11) << "s_3_1 ";
-s <<  setw(11) << "s_a_ ";
-s <<  setw(11) << "s_b_ ";
-s <<  setw(11) << "x_1";
-s <<  setw(11) << "x_2";
 }
 
 void abstractMarking::print(ostream &s,double eTime)const{
-	s <<  setw(10) << print_magic(P->_PL_Counter)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_TargetState)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_0_)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_0_0)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_0_1)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_0_2)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_1_)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_1_0)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_1_1)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_1_2)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_2_)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_2_0)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_2_1)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_2_2)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_3_)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_3_0)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_3_1)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_a_)<<" ";
-	s <<  setw(10) << print_magic(P->_PL_s_b_)<<" ";
-s <<  setw(10)  << hybridVar::x_1+ eTime <<" ";
-s <<  setw(10)  << hybridVar::x_2+ eTime <<" ";
 }
 void abstractMarking::printSedCmd(ostream &s)const{
-	s << "-e 's/\\$Counter\\$/";
-	s << print_magic(P->_PL_Counter);
-	s <<"/g' ";
-	s << "-e 's/\\$TargetState\\$/";
-	s << print_magic(P->_PL_TargetState);
-	s <<"/g' ";
-	s << "-e 's/\\$s_0_\\$/";
-	s << print_magic(P->_PL_s_0_);
-	s <<"/g' ";
-	s << "-e 's/\\$s_0_0\\$/";
-	s << print_magic(P->_PL_s_0_0);
-	s <<"/g' ";
-	s << "-e 's/\\$s_0_1\\$/";
-	s << print_magic(P->_PL_s_0_1);
-	s <<"/g' ";
-	s << "-e 's/\\$s_0_2\\$/";
-	s << print_magic(P->_PL_s_0_2);
-	s <<"/g' ";
-	s << "-e 's/\\$s_1_\\$/";
-	s << print_magic(P->_PL_s_1_);
-	s <<"/g' ";
-	s << "-e 's/\\$s_1_0\\$/";
-	s << print_magic(P->_PL_s_1_0);
-	s <<"/g' ";
-	s << "-e 's/\\$s_1_1\\$/";
-	s << print_magic(P->_PL_s_1_1);
-	s <<"/g' ";
-	s << "-e 's/\\$s_1_2\\$/";
-	s << print_magic(P->_PL_s_1_2);
-	s <<"/g' ";
-	s << "-e 's/\\$s_2_\\$/";
-	s << print_magic(P->_PL_s_2_);
-	s <<"/g' ";
-	s << "-e 's/\\$s_2_0\\$/";
-	s << print_magic(P->_PL_s_2_0);
-	s <<"/g' ";
-	s << "-e 's/\\$s_2_1\\$/";
-	s << print_magic(P->_PL_s_2_1);
-	s <<"/g' ";
-	s << "-e 's/\\$s_2_2\\$/";
-	s << print_magic(P->_PL_s_2_2);
-	s <<"/g' ";
-	s << "-e 's/\\$s_3_\\$/";
-	s << print_magic(P->_PL_s_3_);
-	s <<"/g' ";
-	s << "-e 's/\\$s_3_0\\$/";
-	s << print_magic(P->_PL_s_3_0);
-	s <<"/g' ";
-	s << "-e 's/\\$s_3_1\\$/";
-	s << print_magic(P->_PL_s_3_1);
-	s <<"/g' ";
-	s << "-e 's/\\$s_a_\\$/";
-	s << print_magic(P->_PL_s_a_);
-	s <<"/g' ";
-	s << "-e 's/\\$s_b_\\$/";
-	s << print_magic(P->_PL_s_b_);
-	s <<"/g' ";
 }
 
 int abstractMarking::getNbOfTokens(int p)const {
-	switch (p) {
-		case 0: return P->_PL_Counter;
-		case 1: return P->_PL_TargetState;
-		case 2: return P->_PL_s_0_;
-		case 3: return P->_PL_s_0_0;
-		case 4: return P->_PL_s_0_1;
-		case 5: return P->_PL_s_0_2;
-		case 6: return P->_PL_s_1_;
-		case 7: return P->_PL_s_1_0;
-		case 8: return P->_PL_s_1_1;
-		case 9: return P->_PL_s_1_2;
-		case 10: return P->_PL_s_2_;
-		case 11: return P->_PL_s_2_0;
-		case 12: return P->_PL_s_2_1;
-		case 13: return P->_PL_s_2_2;
-		case 14: return P->_PL_s_3_;
-		case 15: return P->_PL_s_3_0;
-		case 16: return P->_PL_s_3_1;
-		case 17: return P->_PL_s_a_;
-		case 18: return P->_PL_s_b_;
-     }
+	exit(EXIT_FAILURE);
 }
 
 std::vector<int> abstractMarking::getVector()const {
-	std::vector<int> v(19);
-	v.reserve(20);
+	std::vector<int> v(406);
+	v.reserve(407);
 	size_t i = 0;
-	v[i++]= P->_PL_Counter;
-	v[i++]= P->_PL_TargetState;
-	v[i++]= P->_PL_s_0_;
-	v[i++]= P->_PL_s_0_0;
-	v[i++]= P->_PL_s_0_1;
-	v[i++]= P->_PL_s_0_2;
-	v[i++]= P->_PL_s_1_;
-	v[i++]= P->_PL_s_1_0;
-	v[i++]= P->_PL_s_1_1;
-	v[i++]= P->_PL_s_1_2;
-	v[i++]= P->_PL_s_2_;
-	v[i++]= P->_PL_s_2_0;
-	v[i++]= P->_PL_s_2_1;
-	v[i++]= P->_PL_s_2_2;
-	v[i++]= P->_PL_s_3_;
-	v[i++]= P->_PL_s_3_0;
-	v[i++]= P->_PL_s_3_1;
-	v[i++]= P->_PL_s_a_;
-	v[i++]= P->_PL_s_b_;
+	i= P->_PL_ReadyT.copyVector(v,i);
+	i= P->_PL_Healthy.copyVector(v,i);
+	i= P->_PL_Ill.copyVector(v,i);
+	i= P->_PL_Arrival.copyVector(v,i);
+	i= P->_PL_ThreatedByDocH.copyVector(v,i);
+	i= P->_PL_ThreatedByDocL.copyVector(v,i);
+	i= P->_PL_WaitingRoom.copyVector(v,i);
+	v[i++]= P->_PL_OperatingRoom;
+	i= P->_PL_ArrivalUrgence.copyVector(v,i);
+	i= P->_PL_USurgery.copyVector(v,i);
+	v[i++]= P->_PL_TraumaTeam;
+	i= P->_PL_Ustab.copyVector(v,i);
+	i= P->_PL_WSurgery.copyVector(v,i);
+	i= P->_PL_WBloodEx.copyVector(v,i);
+	i= P->_PL_WXRayEx.copyVector(v,i);
+	v[i++]= P->_PL_CountDoctor;
+	i= P->_PL_MonitoredRoom.copyVector(v,i);
+	v[i++]= P->_PL_Doctor;
+	i= P->_PL_PatientRecovered.copyVector(v,i);
+	i= P->_PL_UBloodEx.copyVector(v,i);
+	v[i++]= P->_PL_ResB;
+	i= P->_PL_Waiting.copyVector(v,i);
+	v[i++]= P->_PL_ResX;
+	i= P->_PL_UXRayEx.copyVector(v,i);
+	i= P->_PL_FXRay.copyVector(v,i);
+	i= P->_PL_FBloodEx.copyVector(v,i);
      return v;
 }
 
 void abstractMarking::setVector(const std::vector<int>&v) {
 	size_t i = 0;
-	P->_PL_Counter = v[i++];
-	P->_PL_TargetState = v[i++];
-	P->_PL_s_0_ = v[i++];
-	P->_PL_s_0_0 = v[i++];
-	P->_PL_s_0_1 = v[i++];
-	P->_PL_s_0_2 = v[i++];
-	P->_PL_s_1_ = v[i++];
-	P->_PL_s_1_0 = v[i++];
-	P->_PL_s_1_1 = v[i++];
-	P->_PL_s_1_2 = v[i++];
-	P->_PL_s_2_ = v[i++];
-	P->_PL_s_2_0 = v[i++];
-	P->_PL_s_2_1 = v[i++];
-	P->_PL_s_2_2 = v[i++];
-	P->_PL_s_3_ = v[i++];
-	P->_PL_s_3_0 = v[i++];
-	P->_PL_s_3_1 = v[i++];
-	P->_PL_s_a_ = v[i++];
-	P->_PL_s_b_ = v[i++];
+	i= P->_PL_ReadyT.setVector(v,i);
+	i= P->_PL_Healthy.setVector(v,i);
+	i= P->_PL_Ill.setVector(v,i);
+	i= P->_PL_Arrival.setVector(v,i);
+	i= P->_PL_ThreatedByDocH.setVector(v,i);
+	i= P->_PL_ThreatedByDocL.setVector(v,i);
+	i= P->_PL_WaitingRoom.setVector(v,i);
+	P->_PL_OperatingRoom = v[i++];
+	i= P->_PL_ArrivalUrgence.setVector(v,i);
+	i= P->_PL_USurgery.setVector(v,i);
+	P->_PL_TraumaTeam = v[i++];
+	i= P->_PL_Ustab.setVector(v,i);
+	i= P->_PL_WSurgery.setVector(v,i);
+	i= P->_PL_WBloodEx.setVector(v,i);
+	i= P->_PL_WXRayEx.setVector(v,i);
+	P->_PL_CountDoctor = v[i++];
+	i= P->_PL_MonitoredRoom.setVector(v,i);
+	P->_PL_Doctor = v[i++];
+	i= P->_PL_PatientRecovered.setVector(v,i);
+	i= P->_PL_UBloodEx.setVector(v,i);
+	P->_PL_ResB = v[i++];
+	i= P->_PL_Waiting.setVector(v,i);
+	P->_PL_ResX = v[i++];
+	i= P->_PL_UXRayEx.setVector(v,i);
+	i= P->_PL_FXRay.setVector(v,i);
+	i= P->_PL_FBloodEx.setVector(v,i);
 };
 
 void abstractMarking::Symmetrize(){
 }bool abstractBinding::next() {
 	idcount++;
+	if(P->x.mult >= 0){
+		if (! P->x.islast()){	P->x.iter(); return true; };
+		P->x = patient_Token();
+	}
 	return false;
 };
 abstractBinding::abstractBinding() {
+ P= new abstractBindingImpl;
        idcount=0;
 }
 abstractBinding::abstractBinding(const abstractBinding& m) {
+ P= new abstractBindingImpl;
+ *P = *m.P;
 	idcount = m.idcount;
 }
 abstractBinding::~abstractBinding() {
+ delete P;
 }
 abstractBinding& abstractBinding::operator = (const abstractBinding& m) {
+ *P = *m.P;
 	idcount = m.idcount;
        return *this;
 }
 void abstractBinding::print()const{
+	std::cerr << "\tx: ";P->x.print();
 }
 int abstractBinding::id()const{
 	return idcount;
 }
 int abstractBinding::idTotal()const{
-	 return 0;
+	 return P->x.c0 + Color_patient_Total *(0);
 }
-#include "Polynome.hpp"
-class CustomDistrPoly: public CustomDistr {
-	const static int poly_table[];
-	vector<Poly<3>> ptable;
-public:
-	CustomDistrPoly(){
-		ptable = parse<3>("twoears.grml.data");
-	}
-	double virtual userDefineCDF(vector<double> const& param, double funvar)const{
-		return (eval(ptable[poly_table[ 5*((int)param[0]) ]],param,funvar)/eval(ptable[poly_table[ 5*((int)param[0])+2 ]],param,funvar))  ;
-	}
-	double  virtual userDefinePDF(vector<double> const& param, double funvar)const{
-		return (eval(ptable[poly_table[ 5*((int)param[0])+1 ]],param,funvar)/eval(ptable[poly_table[ 5*((int)param[0])+2 ]],param,funvar))  ;
-	}
-	double virtual userDefineLowerBound(vector<double> const& param)const{
-		return eval(ptable[poly_table[ 5*((int)param[0])+3 ]],param);
-	}
-
-	double virtual userDefineUpperBound(vector<double> const& param)const{
-		return eval(ptable[poly_table[ 5*((int)param[0])+4] ],param);
-	}
-
-	double virtual userDefineDiscreteDistr(vector<double> const& param,unsigned int i)const{
-		return (0.0);
-	}
-
-	double virtual evalPoly(unsigned long i,vector<double> const & param)const {
-		return eval(ptable[i],param);
-	}
+const char *Color_patient_names[Color_patient_Total] = {
+"p1","p2","p3","p4","p5","p6","p7","p8","p9","p10","p11","p12","p13","p14","p15","p16","p17","p18","p19","p20",
 };
-const int CustomDistrPoly::poly_table[]= { 
-3,4,2,0,1,8,9,7,5,6,13,14,12,10,11,18,19,17,15,16,23,24,22,20,21,28,29,27,25,26,33,34,32,30,31,38,39,37,35,36,43,44,42,40,41,48,49,47,45,46,53,54,52,50,51,58,59,57,55,56,63,64,62,60,61,68,69,67,65,66,73,74,72,70,71,78,79,77,75,76,83,84,82,80,81,88,89,87,85,86,93,94,92,90,91,98,99,97,95,96,103,104,102,100,101,108,109,107,105,106,113,114,112,110,111,118,119,117,115,116,123,124,122,120,121,128,129,127,125,126,133,134,132,130,131,138,139,137,135,136,143,144,142,140,141,148,149,147,145,146,153,154,152,150,151,158,159,157,155,156,163,164,162,160,161,168,169,167,165,166,173,174,172,170,171,178,179,177,175,176,183,184,182,180,181,188,189,187,185,186,193,194,192,190,191,198,199,197,195,196,203,204,202,200,201,208,209,207,205,206,213,214,212,210,211,218,219,217,215,216,};
 static const int EMPTY_array[1]={-1};
-static const int PE_PossiblyEnabled_2[2]= {TR_tt_0_0_RT, -1 }; /* t_0_0_a*/
-static const int PE_PossiblyEnabled_3[2]= {TR_tt_0_1_RT, -1 }; /* t_0_1_b*/
-static const int PE_PossiblyEnabled_4[2]= {TR_tt_0_2_RT, -1 }; /* t_0_2_a*/
-static const int PE_PossiblyEnabled_5[2]= {TR_tt_1_0_RT, -1 }; /* t_1_0_a*/
-static const int PE_PossiblyEnabled_6[2]= {TR_tt_1_1_RT, -1 }; /* t_1_1_b*/
-static const int PE_PossiblyEnabled_7[2]= {TR_tt_1_2_RT, -1 }; /* t_1_2_a*/
-static const int PE_PossiblyEnabled_8[2]= {TR_tt_2_0_RT, -1 }; /* t_2_0_a*/
-static const int PE_PossiblyEnabled_9[2]= {TR_tt_2_1_RT, -1 }; /* t_2_1_b*/
-static const int PE_PossiblyEnabled_10[2]= {TR_tt_2_2_RT, -1 }; /* t_2_2_a*/
-static const int PE_PossiblyEnabled_11[2]= {TR_tt_3_0_RT, -1 }; /* t_3_0_b*/
-static const int PE_PossiblyEnabled_12[2]= {TR_tt_3_1_RT, -1 }; /* t_3_1_a*/
-static const int PE_PossiblyEnabled_13[5]= {TR_t_a_RT, TR_t_1_0_a_RT, TR_t_1_1_b_RT, TR_t_1_2_a_RT, -1 }; /* tt_0_0*/
-static const int PE_PossiblyEnabled_14[5]= {TR_t_b_RT, TR_t_2_0_a_RT, TR_t_2_1_b_RT, TR_t_2_2_a_RT, -1 }; /* tt_0_1*/
-static const int PE_PossiblyEnabled_15[4]= {TR_t_a_RT, TR_t_3_0_b_RT, TR_t_3_1_a_RT, -1 }; /* tt_0_2*/
-static const int PE_PossiblyEnabled_16[5]= {TR_t_a_RT, TR_t_1_0_a_RT, TR_t_1_1_b_RT, TR_t_1_2_a_RT, -1 }; /* tt_1_0*/
-static const int PE_PossiblyEnabled_17[5]= {TR_t_b_RT, TR_t_2_0_a_RT, TR_t_2_1_b_RT, TR_t_2_2_a_RT, -1 }; /* tt_1_1*/
-static const int PE_PossiblyEnabled_18[4]= {TR_t_a_RT, TR_t_3_0_b_RT, TR_t_3_1_a_RT, -1 }; /* tt_1_2*/
-static const int PE_PossiblyEnabled_19[5]= {TR_t_a_RT, TR_t_1_0_a_RT, TR_t_1_1_b_RT, TR_t_1_2_a_RT, -1 }; /* tt_2_0*/
-static const int PE_PossiblyEnabled_20[5]= {TR_t_b_RT, TR_t_2_0_a_RT, TR_t_2_1_b_RT, TR_t_2_2_a_RT, -1 }; /* tt_2_1*/
-static const int PE_PossiblyEnabled_21[4]= {TR_t_a_RT, TR_t_3_0_b_RT, TR_t_3_1_a_RT, -1 }; /* tt_2_2*/
-static const int PE_PossiblyEnabled_22[5]= {TR_t_b_RT, TR_t_2_0_a_RT, TR_t_2_1_b_RT, TR_t_2_2_a_RT, -1 }; /* tt_3_0*/
-static const int PE_PossiblyEnabled_23[4]= {TR_t_a_RT, TR_t_3_0_b_RT, TR_t_3_1_a_RT, -1 }; /* tt_3_1*/
-const int* SPN::PossiblyEnabled[] = {EMPTY_array, EMPTY_array, PE_PossiblyEnabled_2, PE_PossiblyEnabled_3, PE_PossiblyEnabled_4, PE_PossiblyEnabled_5, PE_PossiblyEnabled_6, PE_PossiblyEnabled_7, PE_PossiblyEnabled_8, PE_PossiblyEnabled_9, PE_PossiblyEnabled_10, PE_PossiblyEnabled_11, PE_PossiblyEnabled_12, PE_PossiblyEnabled_13, PE_PossiblyEnabled_14, PE_PossiblyEnabled_15, PE_PossiblyEnabled_16, PE_PossiblyEnabled_17, PE_PossiblyEnabled_18, PE_PossiblyEnabled_19, PE_PossiblyEnabled_20, PE_PossiblyEnabled_21, PE_PossiblyEnabled_22, PE_PossiblyEnabled_23};
+static const int PE_PossiblyEnabled_0[3]= {TR_ToSurgery_RT, TR_ToDoctor_RT, -1 }; /* EXRayBlood*/
+static const int PE_PossiblyEnabled_1[2]= {TR_HospitalArrival_RT, -1 }; /* FallIll*/
+static const int PE_PossiblyEnabled_2[4]= {TR_HighPrio_RT, TR_MediumPrio_RT, TR_LowPrio_RT, -1 }; /* HospitalArrival*/
+static const int PE_PossiblyEnabled_3[5]= {TR_ToSurgery_RT, TR_ToDoctor_RT, TR_ToDoctorL_RT, TR_DischargeM_RT, -1 }; /* EToThreat*/
+static const int PE_PossiblyEnabled_4[6]= {TR_BSurgery_RT, TR_ToSurgery_RT, TR_ToDoctor_RT, TR_ToDoctorL_RT, TR_DischargeRec_RT, -1 }; /* EToSurgery*/
+static const int PE_PossiblyEnabled_5[2]= {TR_BToStabilize_RT, -1 }; /* HighPrio*/
+static const int PE_PossiblyEnabled_6[4]= {TR_EXRayBlood_RT, TR_BBlood_RT, TR_BXRay_RT, -1 }; /* MediumPrio*/
+static const int PE_PossiblyEnabled_7[5]= {TR_FallIll_RT, TR_ToSurgery_RT, TR_ToDoctor_RT, TR_ToDoctorL_RT, -1 }; /* DischargeL*/
+static const int PE_PossiblyEnabled_8[2]= {TR_ToDoctorL_RT, -1 }; /* LowPrio*/
+static const int PE_PossiblyEnabled_9[2]= {TR_EToSurgery_RT, -1 }; /* BSurgery*/
+static const int PE_PossiblyEnabled_10[3]= {TR_BSurgery_RT, TR_ToDoctorL_RT, -1 }; /* ToSurgery*/
+static const int PE_PossiblyEnabled_11[3]= {TR_EToThreat_RT, TR_ToDoctorL_RT, -1 }; /* ToDoctor*/
+static const int PE_PossiblyEnabled_12[2]= {TR_DischargeL_RT, -1 }; /* ToDoctorL*/
+static const int PE_PossiblyEnabled_13[2]= {TR_EToStabilize_RT, -1 }; /* BToStabilize*/
+static const int PE_PossiblyEnabled_14[5]= {TR_EXRayBlood_RT, TR_BToStabilize_RT, TR_BBlood_RT, TR_BXRay_RT, -1 }; /* EToStabilize*/
+static const int PE_PossiblyEnabled_15[2]= {TR_FallIll_RT, -1 }; /* DischargeRec*/
+static const int PE_PossiblyEnabled_16[2]= {TR_EBloodEx_RT, -1 }; /* BBlood*/
+static const int PE_PossiblyEnabled_17[2]= {TR_EXRay_RT, -1 }; /* BXRay*/
+static const int PE_PossiblyEnabled_18[2]= {TR_FallIll_RT, -1 }; /* DischargeM*/
+static const int PE_PossiblyEnabled_19[3]= {TR_EXRayBlood_RT, TR_BBlood_RT, -1 }; /* EBloodEx*/
+static const int PE_PossiblyEnabled_20[3]= {TR_EXRayBlood_RT, TR_BXRay_RT, -1 }; /* EXRay*/
+const int* SPN::PossiblyEnabled[] = {PE_PossiblyEnabled_0, PE_PossiblyEnabled_1, PE_PossiblyEnabled_2, PE_PossiblyEnabled_3, PE_PossiblyEnabled_4, PE_PossiblyEnabled_5, PE_PossiblyEnabled_6, PE_PossiblyEnabled_7, PE_PossiblyEnabled_8, PE_PossiblyEnabled_9, PE_PossiblyEnabled_10, PE_PossiblyEnabled_11, PE_PossiblyEnabled_12, PE_PossiblyEnabled_13, PE_PossiblyEnabled_14, PE_PossiblyEnabled_15, PE_PossiblyEnabled_16, PE_PossiblyEnabled_17, PE_PossiblyEnabled_18, PE_PossiblyEnabled_19, PE_PossiblyEnabled_20};
 
-static const int PE_PossiblyDisabled_2[3]= {TR_t_0_1_b_RT, TR_t_0_2_a_RT, -1 }; /* t_0_0_a*/
-static const int PE_PossiblyDisabled_3[3]= {TR_t_0_0_a_RT, TR_t_0_2_a_RT, -1 }; /* t_0_1_b*/
-static const int PE_PossiblyDisabled_4[3]= {TR_t_0_0_a_RT, TR_t_0_1_b_RT, -1 }; /* t_0_2_a*/
-static const int PE_PossiblyDisabled_5[3]= {TR_t_1_1_b_RT, TR_t_1_2_a_RT, -1 }; /* t_1_0_a*/
-static const int PE_PossiblyDisabled_6[3]= {TR_t_1_0_a_RT, TR_t_1_2_a_RT, -1 }; /* t_1_1_b*/
-static const int PE_PossiblyDisabled_7[3]= {TR_t_1_0_a_RT, TR_t_1_1_b_RT, -1 }; /* t_1_2_a*/
-static const int PE_PossiblyDisabled_8[3]= {TR_t_2_1_b_RT, TR_t_2_2_a_RT, -1 }; /* t_2_0_a*/
-static const int PE_PossiblyDisabled_9[3]= {TR_t_2_0_a_RT, TR_t_2_2_a_RT, -1 }; /* t_2_1_b*/
-static const int PE_PossiblyDisabled_10[3]= {TR_t_2_0_a_RT, TR_t_2_1_b_RT, -1 }; /* t_2_2_a*/
-static const int PE_PossiblyDisabled_11[2]= {TR_t_3_1_a_RT, -1 }; /* t_3_0_b*/
-static const int PE_PossiblyDisabled_12[2]= {TR_t_3_0_b_RT, -1 }; /* t_3_1_a*/
-const int* SPN::PossiblyDisabled[] = {EMPTY_array, EMPTY_array, PE_PossiblyDisabled_2, PE_PossiblyDisabled_3, PE_PossiblyDisabled_4, PE_PossiblyDisabled_5, PE_PossiblyDisabled_6, PE_PossiblyDisabled_7, PE_PossiblyDisabled_8, PE_PossiblyDisabled_9, PE_PossiblyDisabled_10, PE_PossiblyDisabled_11, PE_PossiblyDisabled_12, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
+static const int PE_PossiblyDisabled_0[2]= {TR_ToDoctorL_RT, -1 }; /* EXRayBlood*/
+static const int PE_PossiblyDisabled_5[3]= {TR_MediumPrio_RT, TR_LowPrio_RT, -1 }; /* HighPrio*/
+static const int PE_PossiblyDisabled_6[3]= {TR_HighPrio_RT, TR_LowPrio_RT, -1 }; /* MediumPrio*/
+static const int PE_PossiblyDisabled_8[3]= {TR_HighPrio_RT, TR_MediumPrio_RT, -1 }; /* LowPrio*/
+static const int PE_PossiblyDisabled_10[3]= {TR_ToDoctor_RT, TR_ToDoctorL_RT, -1 }; /* ToSurgery*/
+static const int PE_PossiblyDisabled_11[3]= {TR_ToSurgery_RT, TR_ToDoctorL_RT, -1 }; /* ToDoctor*/
+static const int PE_PossiblyDisabled_12[3]= {TR_ToSurgery_RT, TR_ToDoctor_RT, -1 }; /* ToDoctorL*/
+const int* SPN::PossiblyDisabled[] = {PE_PossiblyDisabled_0, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, PE_PossiblyDisabled_5, PE_PossiblyDisabled_6, EMPTY_array, PE_PossiblyDisabled_8, EMPTY_array, PE_PossiblyDisabled_10, PE_PossiblyDisabled_11, PE_PossiblyDisabled_12, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
 
-const int* SPN::FreeMarkDepT[] = {EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
+const int* SPN::FreeMarkDepT[] = {EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_array};
 
-static spn_trans TransArray[24] = { _trans(0,IMMEDIATE,0,1, 0, "t_a"), _trans(1,IMMEDIATE,0,1, 0, "t_b"), _trans(2,IMMEDIATE,0,1, 0, "t_0_0_a"), _trans(3,IMMEDIATE,0,1, 0, "t_0_1_b"), _trans(4,IMMEDIATE,0,1, 0, "t_0_2_a"), _trans(5,IMMEDIATE,0,1, 0, "t_1_0_a"), _trans(6,IMMEDIATE,0,1, 0, "t_1_1_b"), _trans(7,IMMEDIATE,0,1, 0, "t_1_2_a"), _trans(8,IMMEDIATE,0,1, 0, "t_2_0_a"), _trans(9,IMMEDIATE,0,1, 0, "t_2_1_b"), _trans(10,IMMEDIATE,0,1, 0, "t_2_2_a"), _trans(11,IMMEDIATE,0,1, 0, "t_3_0_b"), _trans(12,IMMEDIATE,0,1, 0, "t_3_1_a"), _trans(13,USERDEFINE,0,1, 0, "tt_0_0"), _trans(14,USERDEFINE,0,1, 0, "tt_0_1"), _trans(15,USERDEFINE,0,1, 0, "tt_0_2"), _trans(16,USERDEFINE,0,1, 0, "tt_1_0"), _trans(17,USERDEFINE,0,1, 0, "tt_1_1"), _trans(18,USERDEFINE,0,1, 0, "tt_1_2"), _trans(19,USERDEFINE,0,1, 0, "tt_2_0"), _trans(20,USERDEFINE,0,1, 0, "tt_2_1"), _trans(21,USERDEFINE,0,1, 0, "tt_2_2"), _trans(22,USERDEFINE,0,1, 0, "tt_3_0"), _trans(23,USERDEFINE,0,1, 0, "tt_3_1"),  }; 
+static spn_trans TransArray[21] = { _trans(0,DETERMINISTIC,0,20, 0), _trans(1,EXPONENTIAL,0,20, 0), _trans(2,EXPONENTIAL,0,20, 0), _trans(3,EXPONENTIAL,0,20, 0), _trans(4,EXPONENTIAL,0,20, 0), _trans(5,DETERMINISTIC,0,20, 0), _trans(6,DETERMINISTIC,0,20, 0), _trans(7,EXPONENTIAL,0,20, 0), _trans(8,DETERMINISTIC,0,20, 0), _trans(9,DETERMINISTIC,0,20, 0), _trans(10,DETERMINISTIC,0,20, 0), _trans(11,DETERMINISTIC,0,20, 0), _trans(12,EXPONENTIAL,0,20, 0), _trans(13,EXPONENTIAL,0,20, 0), _trans(14,EXPONENTIAL,0,20, 0), _trans(15,EXPONENTIAL,0,20, 0), _trans(16,DETERMINISTIC,0,20, 0), _trans(17,DETERMINISTIC,0,20, 0), _trans(18,EXPONENTIAL,0,20, 0), _trans(19,EXPONENTIAL,0,20, 0), _trans(20,EXPONENTIAL,0,20, 0),  }; 
 SPN::SPN():
-customDistr(*(new CustomDistrPoly())),pl(19), tr(24) ,Transition(TransArray,TransArray +24),Place(19),ParamDistr(10),TransitionConditions(24,0){
-    Path ="twoears.grml";
-    Place[0].label =" Counter";
-    Place[0].isTraced = 1;
-    Place[1].label =" TargetState";
-    Place[1].isTraced = 1;
-    Place[2].label =" s_0_";
-    Place[2].isTraced = 1;
-    Place[3].label =" s_0_0";
-    Place[3].isTraced = 1;
-    Place[4].label =" s_0_1";
-    Place[4].isTraced = 1;
-    Place[5].label =" s_0_2";
-    Place[5].isTraced = 1;
-    Place[6].label =" s_1_";
-    Place[6].isTraced = 1;
-    Place[7].label =" s_1_0";
-    Place[7].isTraced = 1;
-    Place[8].label =" s_1_1";
-    Place[8].isTraced = 1;
-    Place[9].label =" s_1_2";
-    Place[9].isTraced = 1;
-    Place[10].label =" s_2_";
-    Place[10].isTraced = 1;
-    Place[11].label =" s_2_0";
-    Place[11].isTraced = 1;
-    Place[12].label =" s_2_1";
-    Place[12].isTraced = 1;
-    Place[13].label =" s_2_2";
-    Place[13].isTraced = 1;
-    Place[14].label =" s_3_";
-    Place[14].isTraced = 1;
-    Place[15].label =" s_3_0";
-    Place[15].isTraced = 1;
-    Place[16].label =" s_3_1";
-    Place[16].isTraced = 1;
-    Place[17].label =" s_a_";
-    Place[17].isTraced = 1;
-    Place[18].label =" s_b_";
-    Place[18].isTraced = 1;
+customDistr(*(new CustomDistr())),pl(26), tr(21) ,Transition(TransArray,TransArray +21),Place(26),ParamDistr(10),TransitionConditions(21,0){
+    Path ="../../test/../Examples/Hospital/Hospital.grml";
+	{ //EXRayBlood
+	abstractBinding bl = Transition[0].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[0].bindingList.size();
+			Transition[0].bindingList.push_back( bl );
+			Transition[0].bindingLinkTable[bl.idTotal()]= Transition[0].bindingList.size()-1; 
+		}
+	}}
+	{ //FallIll
+	abstractBinding bl = Transition[1].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[1].bindingList.size();
+			Transition[1].bindingList.push_back( bl );
+			Transition[1].bindingLinkTable[bl.idTotal()]= Transition[1].bindingList.size()-1; 
+		}
+	}}
+	{ //HospitalArrival
+	abstractBinding bl = Transition[2].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[2].bindingList.size();
+			Transition[2].bindingList.push_back( bl );
+			Transition[2].bindingLinkTable[bl.idTotal()]= Transition[2].bindingList.size()-1; 
+		}
+	}}
+	{ //EToThreat
+	abstractBinding bl = Transition[3].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[3].bindingList.size();
+			Transition[3].bindingList.push_back( bl );
+			Transition[3].bindingLinkTable[bl.idTotal()]= Transition[3].bindingList.size()-1; 
+		}
+	}}
+	{ //EToSurgery
+	abstractBinding bl = Transition[4].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[4].bindingList.size();
+			Transition[4].bindingList.push_back( bl );
+			Transition[4].bindingLinkTable[bl.idTotal()]= Transition[4].bindingList.size()-1; 
+		}
+	}}
+	{ //HighPrio
+	abstractBinding bl = Transition[5].bindingList[0];
+	while(bl.next()){
+		if( ( ( (bl.P->x.c0  == Color_patient_p9 )  ||  (bl.P->x.c0  == Color_patient_p10 ) )  ||  ( (bl.P->x.c0  == Color_patient_p11 )  ||  (bl.P->x.c0  == Color_patient_p12 ) ) ) ){
+			bl.idcount = Transition[5].bindingList.size();
+			Transition[5].bindingList.push_back( bl );
+			Transition[5].bindingLinkTable[bl.idTotal()]= Transition[5].bindingList.size()-1; 
+		}
+	}}
+	{ //MediumPrio
+	abstractBinding bl = Transition[6].bindingList[0];
+	while(bl.next()){
+		if( ( ( ( (bl.P->x.c0  == Color_patient_p8 )  ||  (bl.P->x.c0  == Color_patient_p7 ) )  ||  ( (bl.P->x.c0  == Color_patient_p6 )  ||  (bl.P->x.c0  == Color_patient_p5 ) ) )  ||  ( ( (bl.P->x.c0  == Color_patient_p13 )  ||  (bl.P->x.c0  == Color_patient_p14 ) )  ||  ( (bl.P->x.c0  == Color_patient_p15 )  ||  (bl.P->x.c0  == Color_patient_p16 ) ) ) ) ){
+			bl.idcount = Transition[6].bindingList.size();
+			Transition[6].bindingList.push_back( bl );
+			Transition[6].bindingLinkTable[bl.idTotal()]= Transition[6].bindingList.size()-1; 
+		}
+	}}
+	{ //DischargeL
+	abstractBinding bl = Transition[7].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[7].bindingList.size();
+			Transition[7].bindingList.push_back( bl );
+			Transition[7].bindingLinkTable[bl.idTotal()]= Transition[7].bindingList.size()-1; 
+		}
+	}}
+	{ //LowPrio
+	abstractBinding bl = Transition[8].bindingList[0];
+	while(bl.next()){
+		if( ( ( ( (bl.P->x.c0  == Color_patient_p1 )  ||  (bl.P->x.c0  == Color_patient_p2 ) )  ||  ( (bl.P->x.c0  == Color_patient_p3 )  ||  (bl.P->x.c0  == Color_patient_p4 ) ) )  ||  ( ( (bl.P->x.c0  == Color_patient_p17 )  ||  (bl.P->x.c0  == Color_patient_p18 ) )  ||  ( (bl.P->x.c0  == Color_patient_p19 )  ||  (bl.P->x.c0  == Color_patient_p20 ) ) ) ) ){
+			bl.idcount = Transition[8].bindingList.size();
+			Transition[8].bindingList.push_back( bl );
+			Transition[8].bindingLinkTable[bl.idTotal()]= Transition[8].bindingList.size()-1; 
+		}
+	}}
+	{ //BSurgery
+	abstractBinding bl = Transition[9].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[9].bindingList.size();
+			Transition[9].bindingList.push_back( bl );
+			Transition[9].bindingLinkTable[bl.idTotal()]= Transition[9].bindingList.size()-1; 
+		}
+	}}
+	{ //ToSurgery
+	abstractBinding bl = Transition[10].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[10].bindingList.size();
+			Transition[10].bindingList.push_back( bl );
+			Transition[10].bindingLinkTable[bl.idTotal()]= Transition[10].bindingList.size()-1; 
+		}
+	}}
+	{ //ToDoctor
+	abstractBinding bl = Transition[11].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[11].bindingList.size();
+			Transition[11].bindingList.push_back( bl );
+			Transition[11].bindingLinkTable[bl.idTotal()]= Transition[11].bindingList.size()-1; 
+		}
+	}}
+	{ //ToDoctorL
+	abstractBinding bl = Transition[12].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[12].bindingList.size();
+			Transition[12].bindingList.push_back( bl );
+			Transition[12].bindingLinkTable[bl.idTotal()]= Transition[12].bindingList.size()-1; 
+		}
+	}}
+	{ //BToStabilize
+	abstractBinding bl = Transition[13].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[13].bindingList.size();
+			Transition[13].bindingList.push_back( bl );
+			Transition[13].bindingLinkTable[bl.idTotal()]= Transition[13].bindingList.size()-1; 
+		}
+	}}
+	{ //EToStabilize
+	abstractBinding bl = Transition[14].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[14].bindingList.size();
+			Transition[14].bindingList.push_back( bl );
+			Transition[14].bindingLinkTable[bl.idTotal()]= Transition[14].bindingList.size()-1; 
+		}
+	}}
+	{ //DischargeRec
+	abstractBinding bl = Transition[15].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[15].bindingList.size();
+			Transition[15].bindingList.push_back( bl );
+			Transition[15].bindingLinkTable[bl.idTotal()]= Transition[15].bindingList.size()-1; 
+		}
+	}}
+	{ //BBlood
+	abstractBinding bl = Transition[16].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[16].bindingList.size();
+			Transition[16].bindingList.push_back( bl );
+			Transition[16].bindingLinkTable[bl.idTotal()]= Transition[16].bindingList.size()-1; 
+		}
+	}}
+	{ //BXRay
+	abstractBinding bl = Transition[17].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[17].bindingList.size();
+			Transition[17].bindingList.push_back( bl );
+			Transition[17].bindingLinkTable[bl.idTotal()]= Transition[17].bindingList.size()-1; 
+		}
+	}}
+	{ //DischargeM
+	abstractBinding bl = Transition[18].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[18].bindingList.size();
+			Transition[18].bindingList.push_back( bl );
+			Transition[18].bindingLinkTable[bl.idTotal()]= Transition[18].bindingList.size()-1; 
+		}
+	}}
+	{ //EBloodEx
+	abstractBinding bl = Transition[19].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[19].bindingList.size();
+			Transition[19].bindingList.push_back( bl );
+			Transition[19].bindingLinkTable[bl.idTotal()]= Transition[19].bindingList.size()-1; 
+		}
+	}}
+	{ //EXRay
+	abstractBinding bl = Transition[20].bindingList[0];
+	while(bl.next()){
+		{
+			bl.idcount = Transition[20].bindingList.size();
+			Transition[20].bindingList.push_back( bl );
+			Transition[20].bindingLinkTable[bl.idTotal()]= Transition[20].bindingList.size()-1; 
+		}
+	}}
 }
 
 bool SPN::IsEnabled(TR_PL_ID t, const abstractBinding &b)const{
-	if(!magicConditional(t))return false;
 
 	switch (t){
-		case 13:	//tt_0_0
+		case 13:	//BToStabilize
 
-			if (!(contains(Marking.P->_PL_s_0_0 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_ArrivalUrgence , ((patient_Token(b.P->x) * (1 )))))) return false;
+			if (!(contains(Marking.P->_PL_TraumaTeam , 1))) return false;
 		return true;
 		break;
-		case 14:	//tt_0_1
+		case 1:	//FallIll
 
-			if (!(contains(Marking.P->_PL_s_0_1 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_Healthy , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 15:	//tt_0_2
+		case 2:	//HospitalArrival
 
-			if (!(contains(Marking.P->_PL_s_0_2 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_Ill , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 5:	//t_1_0_a
-		case 6:	//t_1_1_b
-		case 7:	//t_1_2_a
+		case 0:	//EXRayBlood
 
-			if (!(contains(Marking.P->_PL_s_1_ , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_MonitoredRoom , ((patient_Token(b.P->x) * (1 )))))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_FXRay , ((patient_Token(b.P->x) * (1 )))))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_FBloodEx , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 16:	//tt_1_0
+		case 15:	//DischargeRec
 
-			if (!(contains(Marking.P->_PL_s_1_0 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_PatientRecovered , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 17:	//tt_1_1
+		case 10:	//ToSurgery
+		case 11:	//ToDoctor
 
-			if (!(contains(Marking.P->_PL_s_1_1 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_ReadyT , ((patient_Token(b.P->x) * (1 )))))) return false;
+			if (!(contains(Marking.P->_PL_CountDoctor , 1))) return false;
+			if (!(contains(Marking.P->_PL_Doctor , 1))) return false;
 		return true;
 		break;
-		case 18:	//tt_1_2
+		case 3:	//EToThreat
 
-			if (!(contains(Marking.P->_PL_s_1_2 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_ThreatedByDocH , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 8:	//t_2_0_a
-		case 9:	//t_2_1_b
-		case 10:	//t_2_2_a
+		case 7:	//DischargeL
 
-			if (!(contains(Marking.P->_PL_s_2_ , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_ThreatedByDocL , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 19:	//tt_2_0
+		case 19:	//EBloodEx
 
-			if (!(contains(Marking.P->_PL_s_2_0 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_UBloodEx , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 20:	//tt_2_1
+		case 4:	//EToSurgery
 
-			if (!(contains(Marking.P->_PL_s_2_1 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_USurgery , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 21:	//tt_2_2
+		case 20:	//EXRay
 
-			if (!(contains(Marking.P->_PL_s_2_2 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_UXRayEx , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 11:	//t_3_0_b
-		case 12:	//t_3_1_a
+		case 14:	//EToStabilize
 
-			if (!(contains(Marking.P->_PL_s_3_ , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_Ustab , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 22:	//tt_3_0
+		case 16:	//BBlood
 
-			if (!(contains(Marking.P->_PL_s_3_0 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_WBloodEx , ((patient_Token(b.P->x) * (1 )))))) return false;
+			if (!(contains(Marking.P->_PL_ResB , 1))) return false;
 		return true;
 		break;
-		case 23:	//tt_3_1
+		case 17:	//BXRay
 
-			if (!(contains(Marking.P->_PL_s_3_1 , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_WXRayEx , ((patient_Token(b.P->x) * (1 )))))) return false;
+			if (!(contains(Marking.P->_PL_ResX , 1))) return false;
 		return true;
 		break;
-		case 0:	//t_a
+		case 18:	//DischargeM
 
-			if (!(contains(Marking.P->_PL_s_a_ , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_Waiting , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
-		case 1:	//t_b
+		case 12:	//ToDoctorL
 
-			if (!(contains(Marking.P->_PL_s_b_ , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_WaitingRoom , ((patient_Token(b.P->x) * (1 )))))) return false;
+    if (Marking.P->_PL_CountDoctor >= 1) return false;
+			if (!(contains(Marking.P->_PL_Doctor , 1))) return false;
 		return true;
 		break;
-		default:	//t_0_0_a,t_0_1_b,t_0_2_a,
+		case 9:	//BSurgery
 
-			if (!(contains(Marking.P->_PL_s_0_ , 1))) return false;
+			if (!(contains(Marking.P->_PL_OperatingRoom , 1))) return false;
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_WSurgery , ((patient_Token(b.P->x) * (1 )))))) return false;
+		return true;
+		break;
+		default:	//HighPrio,MediumPrio,LowPrio,
+
+			if ( !(((patient_Token(b.P->x) * (1 ))) < 1)) 
+			if (!(contains(Marking.P->_PL_Arrival , ((patient_Token(b.P->x) * (1 )))))) return false;
 		return true;
 		break;
 	}
@@ -551,208 +630,203 @@ bool SPN::IsEnabled(TR_PL_ID t, const abstractBinding &b)const{
 
 void SPN::fire(TR_PL_ID t, const abstractBinding &b,REAL_TYPE time){
 	lastTransition = t;
-	magicUpdate(t,time);
-	double incrtime = time - lastTransitionTime;
-	lastTransitionTime = time;
-	hybridVar::x_1+= incrtime;
-	hybridVar::x_2+= incrtime;
 
 	switch (t){
-		case 13:	//tt_0_0
+		case 5:	//HighPrio
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_0_0 -= 1;
-			Marking.P->_PL_s_1_ += 1;
-			Marking.P->_PL_s_a_ += 1;
-{using namespace hybridVar;
-x_2=0;}
+			patient_Domain tmpMark_Arrival = Marking.P->_PL_Arrival;
+			patient_Domain tmpMark_ArrivalUrgence = Marking.P->_PL_ArrivalUrgence;
+			Marking.P->_PL_Arrival -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_ArrivalUrgence += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 14:	//tt_0_1
+		case 6:	//MediumPrio
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_0_1 -= 1;
-			Marking.P->_PL_s_2_ += 1;
-			Marking.P->_PL_s_b_ += 1;
-{using namespace hybridVar;
-x_1=0;}
+			patient_Domain tmpMark_Arrival = Marking.P->_PL_Arrival;
+			patient_Domain tmpMark_WBloodEx = Marking.P->_PL_WBloodEx;
+			patient_Domain tmpMark_WXRayEx = Marking.P->_PL_WXRayEx;
+			patient_Domain tmpMark_MonitoredRoom = Marking.P->_PL_MonitoredRoom;
+			Marking.P->_PL_Arrival -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_WBloodEx += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_WXRayEx += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_MonitoredRoom += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 15:	//tt_0_2
+		case 8:	//LowPrio
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_0_2 -= 1;
-			Marking.P->_PL_s_3_ += 1;
-			Marking.P->_PL_s_a_ += 1;
-{using namespace hybridVar;
-x_2=0;}
+			patient_Domain tmpMark_Arrival = Marking.P->_PL_Arrival;
+			patient_Domain tmpMark_WaitingRoom = Marking.P->_PL_WaitingRoom;
+			Marking.P->_PL_Arrival -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_WaitingRoom += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 16:	//tt_1_0
+		case 13:	//BToStabilize
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_1_ += 1;
-			Marking.P->_PL_s_1_0 -= 1;
-			Marking.P->_PL_s_a_ += 1;
-{using namespace hybridVar;
-x_2=0;}
+			patient_Domain tmpMark_ArrivalUrgence = Marking.P->_PL_ArrivalUrgence;
+			patient_Domain tmpMark_Ustab = Marking.P->_PL_Ustab;
+			Marking.P->_PL_ArrivalUrgence -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_TraumaTeam -= 1;
+			Marking.P->_PL_Ustab += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 19:	//tt_2_0
+		case 1:	//FallIll
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_1_ += 1;
-			Marking.P->_PL_s_2_0 -= 1;
-			Marking.P->_PL_s_a_ += 1;
-{using namespace hybridVar;
-x_2=0;}
+			patient_Domain tmpMark_Healthy = Marking.P->_PL_Healthy;
+			patient_Domain tmpMark_Ill = Marking.P->_PL_Ill;
+			Marking.P->_PL_Healthy -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_Ill += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 17:	//tt_1_1
+		case 15:	//DischargeRec
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_1_1 -= 1;
-			Marking.P->_PL_s_2_ += 1;
-			Marking.P->_PL_s_b_ += 1;
-{using namespace hybridVar;
-x_1=0;}
+			patient_Domain tmpMark_Healthy = Marking.P->_PL_Healthy;
+			patient_Domain tmpMark_PatientRecovered = Marking.P->_PL_PatientRecovered;
+			Marking.P->_PL_Healthy += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_PatientRecovered -= ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 18:	//tt_1_2
+		case 7:	//DischargeL
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_1_2 -= 1;
-			Marking.P->_PL_s_3_ += 1;
-			Marking.P->_PL_s_a_ += 1;
-{using namespace hybridVar;
-x_2=0;}
+			patient_Domain tmpMark_Healthy = Marking.P->_PL_Healthy;
+			patient_Domain tmpMark_ThreatedByDocL = Marking.P->_PL_ThreatedByDocL;
+			Marking.P->_PL_Healthy += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_ThreatedByDocL -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_Doctor += 1;
 	}
 		break;
-		case 20:	//tt_2_1
+		case 18:	//DischargeM
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_2_ += 1;
-			Marking.P->_PL_s_2_1 -= 1;
-			Marking.P->_PL_s_b_ += 1;
-{using namespace hybridVar;
-x_1=0;}
+			patient_Domain tmpMark_Healthy = Marking.P->_PL_Healthy;
+			patient_Domain tmpMark_Waiting = Marking.P->_PL_Waiting;
+			Marking.P->_PL_Healthy += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_Waiting -= ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 22:	//tt_3_0
+		case 2:	//HospitalArrival
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_2_ += 1;
-			Marking.P->_PL_s_3_0 -= 1;
-			Marking.P->_PL_s_b_ += 1;
-{using namespace hybridVar;
-x_1=0;}
+			patient_Domain tmpMark_Ill = Marking.P->_PL_Ill;
+			patient_Domain tmpMark_Arrival = Marking.P->_PL_Arrival;
+			Marking.P->_PL_Ill -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_Arrival += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 21:	//tt_2_2
+		case 0:	//EXRayBlood
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_2_2 -= 1;
-			Marking.P->_PL_s_3_ += 1;
-			Marking.P->_PL_s_a_ += 1;
-{using namespace hybridVar;
-x_2=0;}
+			patient_Domain tmpMark_ReadyT = Marking.P->_PL_ReadyT;
+			patient_Domain tmpMark_MonitoredRoom = Marking.P->_PL_MonitoredRoom;
+			patient_Domain tmpMark_FXRay = Marking.P->_PL_FXRay;
+			patient_Domain tmpMark_FBloodEx = Marking.P->_PL_FBloodEx;
+			Marking.P->_PL_ReadyT += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_CountDoctor += 1;
+			Marking.P->_PL_MonitoredRoom -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_FXRay -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_FBloodEx -= ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 23:	//tt_3_1
+		case 11:	//ToDoctor
 {
-			Marking.P->_PL_Counter += 1;
-			Marking.P->_PL_TargetState += 1;
-			Marking.P->_PL_s_3_ += 1;
-			Marking.P->_PL_s_3_1 -= 1;
-			Marking.P->_PL_s_a_ += 1;
-{using namespace hybridVar;
-x_2=0;}
+			patient_Domain tmpMark_ReadyT = Marking.P->_PL_ReadyT;
+			patient_Domain tmpMark_ThreatedByDocH = Marking.P->_PL_ThreatedByDocH;
+			Marking.P->_PL_ReadyT -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_ThreatedByDocH += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_CountDoctor -= 1;
+			Marking.P->_PL_Doctor -= 1;
 	}
 		break;
-		case 2:	//t_0_0_a
+		case 10:	//ToSurgery
 {
-			Marking.P->_PL_s_0_ -= 1;
-			Marking.P->_PL_s_0_0 += 1;
+			patient_Domain tmpMark_ReadyT = Marking.P->_PL_ReadyT;
+			patient_Domain tmpMark_WSurgery = Marking.P->_PL_WSurgery;
+			Marking.P->_PL_ReadyT -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_WSurgery += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_CountDoctor -= 1;
+			Marking.P->_PL_Doctor -= 1;
 	}
 		break;
-		case 3:	//t_0_1_b
+		case 3:	//EToThreat
 {
-			Marking.P->_PL_s_0_ -= 1;
-			Marking.P->_PL_s_0_1 += 1;
+			patient_Domain tmpMark_ThreatedByDocH = Marking.P->_PL_ThreatedByDocH;
+			patient_Domain tmpMark_Waiting = Marking.P->_PL_Waiting;
+			Marking.P->_PL_ThreatedByDocH -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_Doctor += 1;
+			Marking.P->_PL_Waiting += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 4:	//t_0_2_a
+		case 12:	//ToDoctorL
 {
-			Marking.P->_PL_s_0_ -= 1;
-			Marking.P->_PL_s_0_2 += 1;
+			patient_Domain tmpMark_ThreatedByDocL = Marking.P->_PL_ThreatedByDocL;
+			patient_Domain tmpMark_WaitingRoom = Marking.P->_PL_WaitingRoom;
+			Marking.P->_PL_ThreatedByDocL += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_WaitingRoom -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_Doctor -= 1;
 	}
 		break;
-		case 5:	//t_1_0_a
+		case 19:	//EBloodEx
 {
-			Marking.P->_PL_s_1_ -= 1;
-			Marking.P->_PL_s_1_0 += 1;
+			patient_Domain tmpMark_UBloodEx = Marking.P->_PL_UBloodEx;
+			patient_Domain tmpMark_FBloodEx = Marking.P->_PL_FBloodEx;
+			Marking.P->_PL_UBloodEx -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_ResB += 1;
+			Marking.P->_PL_FBloodEx += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 6:	//t_1_1_b
+		case 4:	//EToSurgery
 {
-			Marking.P->_PL_s_1_ -= 1;
-			Marking.P->_PL_s_1_1 += 1;
+			patient_Domain tmpMark_USurgery = Marking.P->_PL_USurgery;
+			patient_Domain tmpMark_PatientRecovered = Marking.P->_PL_PatientRecovered;
+			Marking.P->_PL_OperatingRoom += 1;
+			Marking.P->_PL_USurgery -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_Doctor += 1;
+			Marking.P->_PL_PatientRecovered += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 7:	//t_1_2_a
+		case 9:	//BSurgery
 {
-			Marking.P->_PL_s_1_ -= 1;
-			Marking.P->_PL_s_1_2 += 1;
+			patient_Domain tmpMark_USurgery = Marking.P->_PL_USurgery;
+			patient_Domain tmpMark_WSurgery = Marking.P->_PL_WSurgery;
+			Marking.P->_PL_OperatingRoom -= 1;
+			Marking.P->_PL_USurgery += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_WSurgery -= ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 8:	//t_2_0_a
+		case 20:	//EXRay
 {
-			Marking.P->_PL_s_2_ -= 1;
-			Marking.P->_PL_s_2_0 += 1;
+			patient_Domain tmpMark_UXRayEx = Marking.P->_PL_UXRayEx;
+			patient_Domain tmpMark_FXRay = Marking.P->_PL_FXRay;
+			Marking.P->_PL_ResX += 1;
+			Marking.P->_PL_UXRayEx -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_FXRay += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 9:	//t_2_1_b
+		case 14:	//EToStabilize
 {
-			Marking.P->_PL_s_2_ -= 1;
-			Marking.P->_PL_s_2_1 += 1;
+			patient_Domain tmpMark_Ustab = Marking.P->_PL_Ustab;
+			patient_Domain tmpMark_WBloodEx = Marking.P->_PL_WBloodEx;
+			patient_Domain tmpMark_WXRayEx = Marking.P->_PL_WXRayEx;
+			patient_Domain tmpMark_MonitoredRoom = Marking.P->_PL_MonitoredRoom;
+			Marking.P->_PL_TraumaTeam += 1;
+			Marking.P->_PL_Ustab -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_WBloodEx += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_WXRayEx += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_MonitoredRoom += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
-		case 10:	//t_2_2_a
+		case 16:	//BBlood
 {
-			Marking.P->_PL_s_2_ -= 1;
-			Marking.P->_PL_s_2_2 += 1;
+			patient_Domain tmpMark_WBloodEx = Marking.P->_PL_WBloodEx;
+			patient_Domain tmpMark_UBloodEx = Marking.P->_PL_UBloodEx;
+			Marking.P->_PL_WBloodEx -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_UBloodEx += ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_ResB -= 1;
 	}
 		break;
-		case 11:	//t_3_0_b
+		case 17:	//BXRay
 {
-			Marking.P->_PL_s_3_ -= 1;
-			Marking.P->_PL_s_3_0 += 1;
-	}
-		break;
-		case 12:	//t_3_1_a
-{
-			Marking.P->_PL_s_3_ -= 1;
-			Marking.P->_PL_s_3_1 += 1;
-	}
-		break;
-		case 0:	//t_a
-{
-			Marking.P->_PL_s_a_ -= 1;
-	}
-		break;
-		case 1:	//t_b
-{
-			Marking.P->_PL_s_b_ -= 1;
+			patient_Domain tmpMark_WXRayEx = Marking.P->_PL_WXRayEx;
+			patient_Domain tmpMark_UXRayEx = Marking.P->_PL_UXRayEx;
+			Marking.P->_PL_WXRayEx -= ((patient_Token(b.P->x) * (1 )));
+			Marking.P->_PL_ResX -= 1;
+			Marking.P->_PL_UXRayEx += ((patient_Token(b.P->x) * (1 )));
 	}
 		break;
 	}
@@ -765,6 +839,34 @@ void SPN::unfire(TR_PL_ID t, const abstractBinding &b){
 
 const abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {
 	switch(lastTransition*(tr+1) + targettr){
+		//Partial synch over variable: EXRayBlood->ToSurgery var Not set
+		//Partial synch over variable: EXRayBlood->ToDoctor var Not set
+		//Partial synch over variable: FallIll->HospitalArrival var Not set
+		//Partial synch over variable: HospitalArrival->HighPrio var Not set
+		//Partial synch over variable: HospitalArrival->MediumPrio var Not set
+		//Partial synch over variable: HospitalArrival->LowPrio var Not set
+		//Partial synch over variable: EToThreat->DischargeM var Not set
+		//Partial synch over variable: EToSurgery->DischargeRec var Not set
+		//Partial synch over variable: HighPrio->BToStabilize var Not set
+		//Partial synch over variable: MediumPrio->EXRayBlood var Not set
+		//Partial synch over variable: MediumPrio->BBlood var Not set
+		//Partial synch over variable: MediumPrio->BXRay var Not set
+		//Partial synch over variable: DischargeL->FallIll var Not set
+		//Partial synch over variable: LowPrio->ToDoctorL var Not set
+		//Partial synch over variable: BSurgery->EToSurgery var Not set
+		//Partial synch over variable: ToSurgery->BSurgery var Not set
+		//Partial synch over variable: ToDoctor->EToThreat var Not set
+		//Partial synch over variable: ToDoctorL->DischargeL var Not set
+		//Partial synch over variable: BToStabilize->EToStabilize var Not set
+		//Partial synch over variable: EToStabilize->EXRayBlood var Not set
+		//Partial synch over variable: EToStabilize->BBlood var Not set
+		//Partial synch over variable: EToStabilize->BXRay var Not set
+		//Partial synch over variable: DischargeRec->FallIll var Not set
+		//Partial synch over variable: BBlood->EBloodEx var Not set
+		//Partial synch over variable: BXRay->EXRay var Not set
+		//Partial synch over variable: DischargeM->FallIll var Not set
+		//Partial synch over variable: EBloodEx->EXRayBlood var Not set
+		//Partial synch over variable: EXRay->EXRayBlood var Not set
 	default:
 		if(*bindingNum==Transition[targettr].bindingList.size())return NULL;
 		*bindingNum = *bindingNum +1;
@@ -772,6 +874,35 @@ const abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abs
 }}
 const abstractBinding* SPN::nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {
 	switch(lastTransition*(tr+1) + targettr){
+		//Partial synch over variable: EXRayBlood->EXRayBlood var Not set
+		//Partial synch over variable: FallIll->FallIll var Not set
+		//Partial synch over variable: HospitalArrival->HospitalArrival var Not set
+		//Partial synch over variable: EToThreat->EToThreat var Not set
+		//Partial synch over variable: EToSurgery->EToSurgery var Not set
+		//Partial synch over variable: HighPrio->HighPrio var Not set
+		//Partial synch over variable: HighPrio->MediumPrio var Not set
+		//Partial synch over variable: HighPrio->LowPrio var Not set
+		//Partial synch over variable: MediumPrio->HighPrio var Not set
+		//Partial synch over variable: MediumPrio->MediumPrio var Not set
+		//Partial synch over variable: MediumPrio->LowPrio var Not set
+		//Partial synch over variable: DischargeL->DischargeL var Not set
+		//Partial synch over variable: LowPrio->HighPrio var Not set
+		//Partial synch over variable: LowPrio->MediumPrio var Not set
+		//Partial synch over variable: LowPrio->LowPrio var Not set
+		//Partial synch over variable: BSurgery->BSurgery var Not set
+		//Partial synch over variable: ToSurgery->ToSurgery var Not set
+		//Partial synch over variable: ToSurgery->ToDoctor var Not set
+		//Partial synch over variable: ToDoctor->ToSurgery var Not set
+		//Partial synch over variable: ToDoctor->ToDoctor var Not set
+		//Partial synch over variable: ToDoctorL->ToDoctorL var Not set
+		//Partial synch over variable: BToStabilize->BToStabilize var Not set
+		//Partial synch over variable: EToStabilize->EToStabilize var Not set
+		//Partial synch over variable: DischargeRec->DischargeRec var Not set
+		//Partial synch over variable: BBlood->BBlood var Not set
+		//Partial synch over variable: BXRay->BXRay var Not set
+		//Partial synch over variable: DischargeM->DischargeM var Not set
+		//Partial synch over variable: EBloodEx->EBloodEx var Not set
+		//Partial synch over variable: EXRay->EXRay var Not set
 	default:
 		if(*bindingNum==Transition[targettr].bindingList.size())return NULL;
 		*bindingNum = *bindingNum +1;
@@ -783,91 +914,29 @@ void SPN::GetDistParameters(TR_PL_ID t, const abstractBinding &b)const{
 using namespace hybridVar;
 
 	switch (t){
-		case 13:	//tt_0_0
+		case 0:	//EXRayBlood
+		case 5:	//HighPrio
+		case 6:	//MediumPrio
+		case 8:	//LowPrio
+		case 9:	//BSurgery
+		case 10:	//ToSurgery
+		case 11:	//ToDoctor
+		case 16:	//BBlood
+		case 17:	//BXRay
 	{
-		ParamDistr[0]= ( double ) transDistrTab[0][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
+		ParamDistr[0]= ( double ) 0 ;
 	}
 
 		break;
-		case 23:	//tt_3_1
+		case 1:	//FallIll
 	{
-		ParamDistr[0]= ( double ) transDistrTab[10][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
+		ParamDistr[0]= ( double ) 0.1 ;
 	}
 
 		break;
-		case 14:	//tt_0_1
+		default:	//HospitalArrival,EToThreat,EToSurgery,DischargeL,ToDoctorL,BToStabilize,EToStabilize,DischargeRec,DischargeM,EBloodEx,EXRay,
 	{
-		ParamDistr[0]= ( double ) transDistrTab[1][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
-	}
-
-		break;
-		case 15:	//tt_0_2
-	{
-		ParamDistr[0]= ( double ) transDistrTab[2][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
-	}
-
-		break;
-		case 16:	//tt_1_0
-	{
-		ParamDistr[0]= ( double ) transDistrTab[3][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
-	}
-
-		break;
-		case 17:	//tt_1_1
-	{
-		ParamDistr[0]= ( double ) transDistrTab[4][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
-	}
-
-		break;
-		case 18:	//tt_1_2
-	{
-		ParamDistr[0]= ( double ) transDistrTab[5][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
-	}
-
-		break;
-		case 19:	//tt_2_0
-	{
-		ParamDistr[0]= ( double ) transDistrTab[6][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
-	}
-
-		break;
-		case 20:	//tt_2_1
-	{
-		ParamDistr[0]= ( double ) transDistrTab[7][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
-	}
-
-		break;
-		case 21:	//tt_2_2
-	{
-		ParamDistr[0]= ( double ) transDistrTab[8][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
-	}
-
-		break;
-		case 22:	//tt_3_0
-	{
-		ParamDistr[0]= ( double ) transDistrTab[9][min( 10-Marking.P->_PL_Counter, 4 )] ;
-		ParamDistr[1]= ( double ) x_1 ;
-		ParamDistr[2]= ( double ) x_2 ;
+		ParamDistr[0]= ( double ) 1 ;
 	}
 
 		break;
@@ -877,58 +946,13 @@ using namespace hybridVar;
 REAL_TYPE SPN::GetPriority(TR_PL_ID t, const abstractBinding &b)const{
 using namespace hybridVar;
 
-	switch (t){
-		case 0:	//t_a
-		case 1:	//t_b
-		return (double)2 ;
-		break;
-		default:	//t_0_0_a,t_0_1_b,t_0_2_a,t_1_0_a,t_1_1_b,t_1_2_a,t_2_0_a,t_2_1_b,t_2_2_a,t_3_0_b,t_3_1_a,tt_0_0,tt_0_1,tt_0_2,tt_1_0,tt_1_1,tt_1_2,tt_2_0,tt_2_1,tt_2_2,tt_3_0,tt_3_1,
 		return (double)1 ;
-		break;
-	}
 }
 
 REAL_TYPE SPN::GetWeight(TR_PL_ID t, const abstractBinding &b)const{
 using namespace hybridVar;
 
-	switch (t){
-		case 2:	//t_0_0_a
-		return (double)customDistr.evalPoly(219 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		case 3:	//t_0_1_b
-		return (double)customDistr.evalPoly(223 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		case 4:	//t_0_2_a
-		return (double)customDistr.evalPoly(227 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		case 5:	//t_1_0_a
-		return (double)customDistr.evalPoly(231 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		case 6:	//t_1_1_b
-		return (double)customDistr.evalPoly(235 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		case 7:	//t_1_2_a
-		return (double)customDistr.evalPoly(239 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		case 8:	//t_2_0_a
-		return (double)customDistr.evalPoly(243 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		case 9:	//t_2_1_b
-		return (double)customDistr.evalPoly(247 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		case 10:	//t_2_2_a
-		return (double)customDistr.evalPoly(251 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		case 11:	//t_3_0_b
-		return (double)customDistr.evalPoly(255 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		case 12:	//t_3_1_a
-		return (double)customDistr.evalPoly(259 + min( 10 -Marking.P->_PL_Counter, 4 ), {0.0,x_1,x_2,0.0}) ;
-		break;
-		default:	//t_a,t_b,tt_0_0,tt_0_1,tt_0_2,tt_1_0,tt_1_1,tt_1_2,tt_2_0,tt_2_1,tt_2_2,tt_3_0,tt_3_1,
 		return (double)1 ;
-		break;
-	}
 }
 
 void SPN::Msimple(){
