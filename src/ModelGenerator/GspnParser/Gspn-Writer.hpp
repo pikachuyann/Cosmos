@@ -66,7 +66,7 @@ protected:
     void view();
 	
 	
-	virtual void printloot(std::ofstream& sf, size_t domain, size_t nesting )const=0;
+	virtual void printloot(std::ofstream& sf, const colorDomain &domain, size_t nesting )const=0;
 	
 	void EnabledDisabledTr(std::vector< std::set<int> >&,
 						   std::vector< std::set<int> >&,

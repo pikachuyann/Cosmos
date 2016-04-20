@@ -94,9 +94,9 @@ let parse_distr at =
 	let larg = List.fold_left (fun c child ->
 	  match child with
 	      Element ("attribute",["name","param"],cl2) ->
-		let n= find_simp_prop "number" cl2 |>>> int_of_string in
+		let n= find_simp_prop "number" cl2 |>>> int_of_string |>>| 1 in
 		let ex = float_expr_of_atr "expr" cl2 in
-		n
+		Some n
 	    |>> (fun x -> ex |>>> (fun y -> (x,y)::c))
 	    |>>| c
 	    | _ -> c
@@ -108,7 +108,7 @@ let parse_distr at =
 	  | (Some "IMDT",[]) -> Imm
 	  | (Some "DETERMINISTIC",[_,f]) -> Det(f)
 	  | (Some "USERDEFINE",_) -> DiscUserDef(0)				       
-	  | (Some x,_) -> failwith ("Unknown distribution "^x)
+	  | (Some x,l) -> failwith ("Unknown distribution \""^x^"("^(string_of_int (List.length l))^")\"")
 	  | _ -> failwith "ill define distribution"
       end
     | _ -> failwith "ill define distribution"
