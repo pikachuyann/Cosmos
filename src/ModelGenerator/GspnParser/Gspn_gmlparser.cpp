@@ -255,6 +255,29 @@ void MyModelHandler::eval_tokenProfileArc(coloredToken& tok, bool &markingdepend
         } else {
             cerr << "Unknown variable '" << varname << "'" << endl;
         }
+    } else if (*it == "intConst") {
+        for (treeSI it2 = it.begin(); it2 != it.end(); ++it2) {
+            if (*it2 == "type") {
+                string colname = simplifyString(*(it2.begin()));
+                vector<colorClass>::const_iterator cols;
+                for (cols = MyGspn->colClasses.begin();
+                     (cols != MyGspn->colClasses.end() && cols->name != colname); ++cols);
+                if (cols != MyGspn->colClasses.end()) {
+                    //tok.field.push_back(cols - MyGspn->colClasses.begin());
+                    tok.Flags.push_back(CT_SINGLE_COLOR);
+                    tok.varIncrement.push_back(0);
+                } else {
+                    cerr << "Unknown colorClasse '" << colname << "'" << endl;
+                }
+            }
+            if (*it2 == "intValue") {
+                auto e = eval_expr(it2);
+                e.eval();
+                tok.field.push_back(e.intVal);
+            }
+        }
+    } else {
+        cerr << "Ill formed Expression \""<< *it << "\" ! " << endl;
     }
 }
 
