@@ -1249,8 +1249,8 @@
 				03A5DCFA1B273A79003F470A /* Gspn-model.cpp */,
 				03A5DCFB1B273A79003F470A /* Gspn-model.hpp */,
 				03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */,
-				032A703C181BC0D6006D7332 /* server.cpp */,
 				03541DD61BE7B7A9005741C6 /* Gspn-Grml-Output.hpp */,
+				032A703C181BC0D6006D7332 /* server.cpp */,
 			);
 			path = GspnParser;
 			sourceTree = "<group>";

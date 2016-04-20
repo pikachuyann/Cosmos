@@ -210,8 +210,8 @@ void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF)const{
 }
 
 
-void Gspn_Writer_Color::printloot(ofstream& fs, size_t domain, size_t nesting )const{
-    const colorDomain& dom = MyGspn.colDoms[domain];
+void Gspn_Writer_Color::printloot(ofstream& fs, const colorDomain& dom, size_t nesting )const{
+    //const colorDomain& dom = MyGspn.colDoms[domain];
     if(nesting == dom.colorClassIndex.size()){
         stringstream mult;
         mult << "x.mult";
@@ -231,7 +231,394 @@ void Gspn_Writer_Color::printloot(ofstream& fs, size_t domain, size_t nesting )c
     fs << "\tfor(size_t c" << nesting << " = 0 ; c"<<nesting<<"< Color_";
     fs << MyGspn.colClasses[dom.colorClassIndex[nesting]].name << "_Total; c";
     fs << nesting << "++ )\n";
-    printloot(fs, domain, nesting+1);
+    printloot(fs, dom, nesting+1);
+}
+
+
+void Gspn_Writer_Color::writeDomainToken(std::ofstream &header, const colorDomain & it)const{
+    //token class def
+    header << "\nstruct " << it.tokname() << "{\n";
+    vector<size_t>::const_iterator itcol;
+    for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
+        header << "\t" << MyGspn.colClasses[*itcol].cname() << " c" << itcol - it.colorClassIndex.begin() << ";\n";
+    }
+    header << "\tint mult;\n";
+    
+    header << "\t" << it.tokname() << "( ";
+    for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
+        header << " "<<MyGspn.colClasses[*itcol].cname() << " cv" << itcol - it.colorClassIndex.begin()<< " = ("<< MyGspn.colClasses[*itcol].cname() << ")0, " ;
+    }
+    header << "int v =1) {\n";
+    for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
+        size_t pos = itcol - it.colorClassIndex.begin();
+        header << "\t\tc" << pos << "= cv"<<pos <<";\n";
+    }
+    header << "\t\tmult = v;\n\t}\n";
+    
+    
+    header << "\t" << it.tokname() << "( ";
+    for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
+        header << "const "<<MyGspn.colClasses[*itcol].name << "_Token& cv" << itcol - it.colorClassIndex.begin()<< ", " ;
+    }
+    header << "int v =1) {\n";
+    for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
+        size_t pos = itcol - it.colorClassIndex.begin();
+        header << "\t\tc" << pos << "= cv";
+        header << pos << ".c0" << ";\n";
+    }
+    header << "\t\tmult = v;\n\t}\n";
+    
+    header << "\t" << it.tokname() << " operator * (size_t v){\n";
+    header << "\t\tmult *= v;\n\t\treturn *this;\n\t}\n";
+    
+    
+    header << "\tvoid iter() {\n";
+    for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
+        size_t pos = itcol - it.colorClassIndex.begin();
+        header << "\t\tif( c" << pos << "< ("<< MyGspn.colClasses[*itcol].cname() << ")(Color_";
+        header << MyGspn.colClasses[*itcol].name << "_Total - 1) )";
+        header << "{ c"<< pos << " = ("<< MyGspn.colClasses[*itcol].cname() << ")(c"<< pos <<"+ 1); return;};\n";
+        header << "c"<< pos << " = ("<< MyGspn.colClasses[*itcol].cname() << ")(0);\n";
+    }
+    header << "\t}\n";
+    
+    header << "\tvoid print(){\n\t\tstd::cerr << mult << \"<\" <<";
+    for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
+        if(itcol != it.colorClassIndex.begin())header << "<< \" , \" << ";
+        header << " Color_"<< MyGspn.colClasses[*itcol].name << "_names[c" << itcol - it.colorClassIndex.begin() << "]";
+    }
+    header << " << \">\";\n";
+    header << "\t}\n";
+    
+    
+    if (it.colorClassIndex.size()==1 && MyGspn.colClasses[it.colorClassIndex[0]].isCircular) {
+        header << "\t" << it.tokname() << " next(int i)const {\n";
+        header << "\t\t" << it.tokname() << " x(("<< MyGspn.colClasses[it.colorClassIndex[0]].cname() << ")((c0 +i) % Color_";
+        header << MyGspn.colClasses[it.colorClassIndex[0]].name << "_Total), ";
+        header << " mult);\n\t\treturn x;}\n";
+    }
+    
+    header << "\tbool islast()const {\n\t\treturn (";
+    for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
+        size_t pos = itcol - it.colorClassIndex.begin();
+        if (pos > 0)header << " && ";
+        header << " c" << pos << "== ("<< MyGspn.colClasses[*itcol].cname() << ")(Color_";
+        header << MyGspn.colClasses[*itcol].name << "_Total -1) ";
+    }
+    header << " );\n\t}\n";
+    
+    header << "\tbool operator > (const int x){\n";
+    header << "\t\treturn mult > x ;\n\t}\n";
+    header << "\tbool operator < (const int x){\n";
+    header << "\t\treturn mult < x ;\n\t}\n";
+    
+    header << "};\n";
+}
+
+void Gspn_Writer_Color::writeDomainTable(std::ofstream &SpnCppFile , std::ofstream &header, const colorDomain & it)const{
+    
+    stringstream domaindecl;
+    stringstream colorArgsName;
+    stringstream colorArrayAccess;
+    stringstream colorArrayAccess2;
+    stringstream allCondition;
+    stringstream forLoop;
+    
+    for (vector<size_t>::const_iterator it2 = it.colorClassIndex.begin();
+         it2 != it.colorClassIndex.end(); ++it2 ) {
+        domaindecl << "[ Color_" << MyGspn.colClasses[*it2].name << "_Total ]";
+        size_t countCol = it2 - it.colorClassIndex.begin();
+        if(countCol > 0){
+            colorArgsName << ",";
+            allCondition << " && ";
+        }
+        colorArgsName << MyGspn.colClasses[ *it2 ].cname() << " c" << countCol;
+        colorArrayAccess << "[c" << countCol << "]";
+        colorArrayAccess2 << "[i" << countCol << "]";
+        allCondition << "c" << countCol << " != Color_" << MyGspn.colClasses[*it2].name << "_All";
+        forLoop << "\t\t\tfor( int i" <<
+        countCol <<"= ( c" << countCol << " == Color_" << MyGspn.colClasses[*it2].name << "_All ? 0 : c" << countCol << ");";
+        forLoop << "i" << countCol <<"< ( c" << countCol << " == Color_" << MyGspn.colClasses[*it2].name << "_All ? Color_"<< MyGspn.colClasses[*it2].name <<"_Total : c" << countCol << "+1);";
+        forLoop << "i" << countCol << "++)\n";
+        
+    }
+    
+    header << "struct " << it.cname() << ":";
+    for (let it2 : it.colorClassIndex) header << (it2==it.colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
+    header << " {\n\tint mult" << domaindecl.str() << ";\n";
+    header << "\t" << it.cname() << "(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}"<< endl;
+    header << "\t" << it.cname() << "(" << colorArgsName.str() << ") {\n";
+    //header << "\t\t" << "memset(&mult,0 , sizeof(mult));\n";
+    header << "\t\t" << "fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), 0 );"<< endl;
+    header << "\t\t" << "if(" << allCondition.str() << ")\n";
+    header << "\t\t\t" << "mult" << colorArrayAccess.str() << " = 1 ;\n";
+    header << "\t\telse{\n";
+    header << forLoop.str() << "\t\t\t\tmult" << colorArrayAccess2.str() << " = 1 ;\n";
+    header << "\t\t}\n";
+    header << "\t}\n";
+    
+    header << "\tsize_t copyVector(vector<int> &v ,size_t s)const{\n";
+    header << "\t\tcopy((int*)mult,(int*)mult + sizeof(mult)/sizeof(int), v.begin() + s );\n\t\treturn s+sizeof(mult)/sizeof(int);\n\t}\n";
+    header << "\tsize_t setVector(const vector<int> &v ,size_t s){\n";
+    header << "\t\tcopy(v.begin() + s, v.begin() + s + sizeof(mult)/sizeof(int), (int*)mult );\n\t\treturn s+sizeof(mult)/sizeof(int);\n\t}\n";
+    
+    
+    
+    header << "\t" << it.cname() << "& operator = (const " << it.cname() << "& x){\n";
+    header << "\t\tcopy((int*)x.mult,(int*)x.mult + sizeof(mult)/sizeof(int),(int*)mult);\n\t\treturn *this;\n\t}\n";
+    
+    header << "\tbool operator == (const " << it.cname() << "& x){\n";
+    header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult);\n\t}\n";
+    
+    header << "\tbool operator < (const " << it.cname() << "& x){\n";
+    header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::less<int>());\n\t}\n";
+    
+    header << "\tbool operator > (const " << it.cname() << "& x){\n";
+    header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::greater<int>());\n\t}\n";
+    
+    header << "\t" << it.cname() << " operator * (int v){\n";
+    header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++) ((int*)mult)[count]*= v;\n\t\treturn *this;\n\t}\n";
+    
+    header << "\t" << it.cname() << "& operator += (const " << it.cname() << "& x){\n";
+    header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)";
+    header << "\n\t\t\t((int*)mult)[count]+= ((int*)x.mult)[count] ;\n";
+    header << "\t\treturn *this;\n\t}\n";
+    
+    header << "\t" << it.cname() << "& operator += (const " << it.tokname() << "& x){\n";
+    header << "\t\tmult";
+    for (vector<size_t>::const_iterator it2 = it.colorClassIndex.begin();
+         it2 != it.colorClassIndex.end(); ++it2 ) {
+        header << "[ x.c" << it2- it.colorClassIndex.begin() << " ]" ;
+    }
+    header << " += x.mult;\n\t\treturn *this;\n\t}\n";
+    
+    header << "\t" << it.cname() << " operator + (const " << it.tokname() << "& x){\n";
+    header << "\t\t"<< it.cname()<< " d(*this);\n\t\td+=x;\n ";
+    header << "\t\treturn d;\n\t}\n";
+    
+    header << "\t" << it.cname() << "& operator -= (const " << it.tokname() << "& x){\n";
+    header << "\t\tmult";
+    for (vector<size_t>::const_iterator it2 = it.colorClassIndex.begin();
+         it2 != it.colorClassIndex.end(); ++it2 ) {
+        header << "[ x.c" << it2- it.colorClassIndex.begin() << " ]" ;
+    }
+    header << " -= x.mult;\n\t\treturn *this;\n\t}\n";
+    
+    header << "\tbool operator < (const " << it.tokname() << "& x)const{\n";
+    header << "\t\treturn mult";
+    for (vector<size_t>::const_iterator it2 = it.colorClassIndex.begin();
+         it2 != it.colorClassIndex.end(); ++it2 ) {
+        header << "[ x.c" << it2- it.colorClassIndex.begin() << " ]" ;
+    }
+    header << " < x.mult;\n\t}\n";
+    
+    header << "\tbool operator >= (const " << it.tokname() << "& x)const{\n";
+    header << "\t\treturn mult";
+    for (vector<size_t>::const_iterator it2 = it.colorClassIndex.begin();
+         it2 != it.colorClassIndex.end(); ++it2 ) {
+        header << "[ x.c" << it2- it.colorClassIndex.begin() << " ]" ;
+    }
+    header << " >= x.mult;\n\t}\n";
+    
+    header << "\t" << it.cname() << " operator + (const " << it.cname() << "& x)const{\n";
+    header << "\t\t"<< it.cname() << " returnval = *this; returnval+= x;\n";
+    header << "\t\treturn returnval;\n\t}\n";
+    
+    header << "\t" << it.cname() << "& operator -= (const " << it.cname() << "& x){\n";
+    header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)";
+    header << "\n\t\t\t((int*)mult)[count]-= ((int*)x.mult)[count] ;\n";
+    header << "\t\treturn *this;\n\t}\n";
+    
+    header << "\t" << it.cname() << " operator - (const " << it.cname() << "& x)const{\n";
+    header << "\t\t"<< it.cname() << " returnval = *this; returnval-= x;\n";
+    header << "\t\treturn returnval;\n\t}\n";
+    
+    header << "\tint card (void){\n";
+    header << "\tint acc=0;\n";
+    header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)";
+    header << "\n\t\t\tacc += ((int*)mult)[count] ;\n";
+    header << "\t\treturn acc;\n\t}\n";
+    
+    for( let cci : it.colorClassIndex){
+        let cc = MyGspn.colClasses[cci];
+        header << "\tvirtual void apply_perm("<< cc.cname() <<",const std::vector<size_t> &index){\n";
+        header << "\t\t"<< it.cname() <<" temp = *this ;\n";
+        //header << "\t\tstd::copy( mult, mult + sizeof(mult)/sizeof(int), temp);\n";
+        
+        stringstream forloop2;
+        stringstream accessperm;
+        for (auto it2 = it.colorClassIndex.begin(); it2 != it.colorClassIndex.end(); ++it2 ) {
+            size_t countCol = it2 - it.colorClassIndex.begin();
+            forloop2 << "\t\tfor( int i" << countCol <<"= 0 ; i" << countCol <<"< Color_"<< MyGspn.colClasses[*it2].name <<"_Total ;";
+            forloop2 << "i" << countCol << "++)\n";
+            if(*it2 == cci){
+                accessperm << "[ index[i"<< countCol <<"] ]";
+            }else{
+                accessperm << "[ i"<< countCol <<" ]";
+            }
+        }
+        
+        header << forloop2.str();
+        header << "\t\t\tmult" << colorArrayAccess2.str() << " = temp.mult" << accessperm.str();
+        header << ";" << endl;
+        header << "\t}\n";
+    }
+    
+    for( let cci : it.colorClassIndex){
+        let cc = MyGspn.colClasses[cci];
+        header << "\tvirtual int compare("<< cc.cname() <<",int cci,int ccj)const{\n";
+        
+        stringstream forloop2;
+        stringstream accesspermi;
+        stringstream accesspermj;
+        for (auto it2 = it.colorClassIndex.begin(); it2 != it.colorClassIndex.end(); ++it2 ) {
+            size_t countCol = it2 - it.colorClassIndex.begin();
+            if(*it2 != cci){
+                forloop2 << "\t\tfor( int i" << countCol <<"= 0 ; i" << countCol <<"< Color_"<< MyGspn.colClasses[*it2].name <<"_Total ;";
+                forloop2 << "i" << countCol << "++)\n";
+            }
+            if(*it2 == cci){
+                accesspermi << "[ cci ]";
+                accesspermj << "[ ccj ]";
+            }else{
+                accesspermi << "[ i"<< countCol <<" ]";
+                accesspermj << "[ i"<< countCol <<" ]";
+            }
+        }
+        
+        header << forloop2.str() << "\t\t{"<<endl;;
+        header << "\t\t\tif(mult" << accesspermi.str() << " > mult" << accesspermj.str() <<")return 1;" << endl;
+        header << "\t\t\tif(mult" << accesspermi.str() << " < mult" << accesspermj.str() <<")return -1;" << endl;
+        header << "\t\t}"<< endl;
+        
+        header << "\t\treturn 0;" << endl;
+        header << "\t}\n";
+    }
+    
+    
+    header << "};\n";
+    //end of domain class definition
+    
+    
+    header << it.cname() << " operator + (const " << it.tokname() << "& t1 ,const " << it.tokname() << "& t2 )\n\n;";
+    header << "std::ostream& operator << (std::ostream& out, const " << it.cname() << "& x);" << endl;
+    
+    SpnCppFile << "" << it.cname() << " operator + (const " << it.tokname() << "& t1 ,const " << it.tokname() << "& t2 ){\n";
+    SpnCppFile << "\t"<< it.cname() << " d; d += t1; d+=t2 ;\n";
+    SpnCppFile << "\treturn d;\n}\n";
+    
+    
+    SpnCppFile << "std::ostream& operator << (std::ostream& out, const " << it.cname();
+    SpnCppFile << "& x) {\n";
+    SpnCppFile << "\tstringstream outprintloot;" << endl;
+    printloot(SpnCppFile, it, 0);
+    SpnCppFile << "\tout << \"(\" << outprintloot.str() << \")\";" << endl;
+    SpnCppFile << "\treturn out;\n}\n";
+    
+    SpnCppFile << "inline bool contains(const "<<it.cname() << "& d1, const " << it.cname() << "& d2){";
+    SpnCppFile << "\treturn (d1-d2) > -1;\n";
+    SpnCppFile << "}\n";
+    
+    SpnCppFile << "inline bool contains(const "<<it.cname() << "& d1, const " << it.tokname() << "& tok){";
+    SpnCppFile << "\treturn d1 >= tok;\n";
+    SpnCppFile << "}\n";
+}
+
+void Gspn_Writer_Color::writeDomainSet(std::ofstream &SpnCppFile , std::ofstream &header, const colorDomain & it)const{
+    /*stringstream domaindecl;
+    stringstream colorArgsName;
+    stringstream colorArrayAccess;
+    stringstream colorArrayAccess2;
+    stringstream allCondition;
+    stringstream forLoop;
+    
+    for (vector<size_t>::const_iterator it2 = it.colorClassIndex.begin();
+         it2 != it.colorClassIndex.end(); ++it2 ) {
+        domaindecl << "[ Color_" << MyGspn.colClasses[*it2].name << "_Total ]";
+        size_t countCol = it2 - it.colorClassIndex.begin();
+        if(countCol > 0){
+            colorArgsName << ",";
+            allCondition << " && ";
+        }
+        colorArgsName << MyGspn.colClasses[ *it2 ].cname() << " c" << countCol;
+        colorArrayAccess << "[c" << countCol << "]";
+        colorArrayAccess2 << "[i" << countCol << "]";
+        allCondition << "c" << countCol << " != Color_" << MyGspn.colClasses[*it2].name << "_All";
+        forLoop << "\t\t\tfor( int i" <<
+        countCol <<"= ( c" << countCol << " == Color_" << MyGspn.colClasses[*it2].name << "_All ? 0 : c" << countCol << ");";
+        forLoop << "i" << countCol <<"< ( c" << countCol << " == Color_" << MyGspn.colClasses[*it2].name << "_All ? Color_"<< MyGspn.colClasses[*it2].name <<"_Total : c" << countCol << "+1);";
+        forLoop << "i" << countCol << "++)\n";
+        
+    }*/
+
+    
+    header << "struct " << it.cname() << ":";
+    for (let it2 : it.colorClassIndex) header << (it2==it.colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
+    header << " {\n\tstd::map<"<< it.tokname() << ", unsigned int > mult;\n";
+    header << "\t" << it.cname() << "(size_t v =0) { }"<< endl;
+    
+    header << "\tsize_t copyVector(vector<int> &v ,size_t s)const{\n";
+    header << "\t\treturn 0;\n\t}\n";
+    header << "\tsize_t setVector(const vector<int> &v ,size_t s){\n";
+    header << "\t\treturn 0;\n\t}\n";
+    
+    header << "\t" << it.cname() << "& operator = (const " << it.cname() << "& x){\n";
+    header << "\t\tmult=x.mult;\n\t\treturn *this;\n\t}\n";
+    
+    header << "\tbool operator == (const " << it.cname() << "& x){\n";
+    header << "\t\treturn mult==x.mult;\n\t}\n";
+    
+    header << "\tbool operator < (const " << it.cname() << "& x){\n";
+    header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::less<int>());\n\t}\n";
+    
+    header << "\tbool operator > (const " << it.cname() << "& x){\n";
+    header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::greater<int>());\n\t}\n";
+    
+    header << "\t" << it.cname() << " operator * (int v){\n";
+    header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++) ((int*)mult)[count]*= v;\n\t\treturn *this;\n\t}\n";
+    
+    header << "\t" << it.cname() << "& operator += (const " << it.cname() << "& x){\n";
+    header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)";
+    header << "\n\t\t\t((int*)mult)[count]+= ((int*)x.mult)[count] ;\n";
+    header << "\t\treturn *this;\n\t}\n";
+    
+    header << "\t" << it.cname() << "& operator += (const " << it.tokname() << "& x){\n";
+    header << "\t\tmult";
+    for (vector<size_t>::const_iterator it2 = it.colorClassIndex.begin();
+         it2 != it.colorClassIndex.end(); ++it2 ) {
+        header << "[ x.c" << it2- it.colorClassIndex.begin() << " ]" ;
+    }
+    header << " += x.mult;\n\t\treturn *this;\n\t}\n";
+    
+    header << "\t" << it.cname() << " operator + (const " << it.tokname() << "& x){\n";
+    header << "\t\t"<< it.cname()<< " d(*this);\n\t\td+=x;\n ";
+    header << "\t\treturn d;\n\t}\n";
+    
+    header << "\t" << it.cname() << "& operator -= (const " << it.tokname() << "& x){\n";
+    header << "\t\tmult";
+    for (vector<size_t>::const_iterator it2 = it.colorClassIndex.begin();
+         it2 != it.colorClassIndex.end(); ++it2 ) {
+        header << "[ x.c" << it2- it.colorClassIndex.begin() << " ]" ;
+    }
+    header << " -= x.mult;\n\t\treturn *this;\n\t}\n";
+    
+    header << "\tbool operator < (const " << it.tokname() << "& x)const{\n";
+    header << "\t\treturn mult";
+    for (vector<size_t>::const_iterator it2 = it.colorClassIndex.begin();
+         it2 != it.colorClassIndex.end(); ++it2 ) {
+        header << "[ x.c" << it2- it.colorClassIndex.begin() << " ]" ;
+    }
+    header << " < x.mult;\n\t}\n";
+    
+    header << "\tbool operator >= (const " << it.tokname() << "& x)const{\n";
+    header << "\t\treturn mult";
+    for (vector<size_t>::const_iterator it2 = it.colorClassIndex.begin();
+         it2 != it.colorClassIndex.end(); ++it2 ) {
+        header << "[ x.c" << it2- it.colorClassIndex.begin() << " ]" ;
+    }
+    header << " >= x.mult;\n\t}\n";
+    
+    header << "};" << endl;
 }
 
 void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const{
@@ -251,298 +638,16 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         header << "\tvirtual int compare("<< it->cname() << ",int,int) const =0;"<<endl;
         header << "};"<< endl;
     }
-
-
+    
+    header << "#include <map>" << endl;
+    
     for (vector<colorDomain>::const_iterator it = MyGspn.colDoms.begin()+1;
          it != MyGspn.colDoms.end(); ++it ) {
-
-        //token class def
-        header << "\nstruct " << it->tokname() << "{\n";
-        vector<size_t>::const_iterator itcol;
-        for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-            header << "\t" << MyGspn.colClasses[*itcol].cname() << " c" << itcol - it->colorClassIndex.begin() << ";\n";
-        }
-        header << "\tint mult;\n";
-
-        header << "\t" << it->tokname() << "( ";
-        for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-            header << " "<<MyGspn.colClasses[*itcol].cname() << " cv" << itcol - it->colorClassIndex.begin()<< " = ("<< MyGspn.colClasses[*itcol].cname() << ")0, " ;
-        }
-        header << "int v =1) {\n";
-        for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-            size_t pos = itcol - it->colorClassIndex.begin();
-            header << "\t\tc" << pos << "= cv"<<pos <<";\n";
-        }
-        header << "\t\tmult = v;\n\t}\n";
-
-
-        header << "\t" << it->tokname() << "( ";
-        for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-            header << "const "<<MyGspn.colClasses[*itcol].name << "_Token& cv" << itcol - it->colorClassIndex.begin()<< ", " ;
-        }
-        header << "int v =1) {\n";
-        for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-            size_t pos = itcol - it->colorClassIndex.begin();
-            header << "\t\tc" << pos << "= cv";
-            header << pos << ".c0" << ";\n";
-        }
-        header << "\t\tmult = v;\n\t}\n";
-
-        header << "\t" << it->tokname() << " operator * (size_t v){\n";
-        header << "\t\tmult *= v;\n\t\treturn *this;\n\t}\n";
-
-
-        header << "\tvoid iter() {\n";
-        for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-            size_t pos = itcol - it->colorClassIndex.begin();
-            header << "\t\tif( c" << pos << "< ("<< MyGspn.colClasses[*itcol].cname() << ")(Color_";
-            header << MyGspn.colClasses[*itcol].name << "_Total - 1) )";
-            header << "{ c"<< pos << " = ("<< MyGspn.colClasses[*itcol].cname() << ")(c"<< pos <<"+ 1); return;};\n";
-            header << "c"<< pos << " = ("<< MyGspn.colClasses[*itcol].cname() << ")(0);\n";
-        }
-        header << "\t}\n";
-
-        header << "\tvoid print(){\n\t\tstd::cerr << mult << \"<\" <<";
-        for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-            if(itcol != it->colorClassIndex.begin())header << "<< \" , \" << ";
-            header << " Color_"<< MyGspn.colClasses[*itcol].name << "_names[c" << itcol - it->colorClassIndex.begin() << "]";
-        }
-        header << " << \">\";\n";
-        header << "\t}\n";
-
-
-        if (it->colorClassIndex.size()==1 && MyGspn.colClasses[it->colorClassIndex[0]].isCircular) {
-            header << "\t" << it->tokname() << " next(int i)const {\n";
-            header << "\t\t" << it->tokname() << " x(("<< MyGspn.colClasses[it->colorClassIndex[0]].cname() << ")((c0 +i) % Color_";
-            header << MyGspn.colClasses[it->colorClassIndex[0]].name << "_Total), ";
-            header << " mult);\n\t\treturn x;}\n";
-        }
-
-        header << "\tbool islast()const {\n\t\treturn (";
-        for (itcol = it->colorClassIndex.begin(); itcol != it->colorClassIndex.end() ; ++itcol ) {
-            size_t pos = itcol - it->colorClassIndex.begin();
-            if (pos > 0)header << " && ";
-            header << " c" << pos << "== ("<< MyGspn.colClasses[*itcol].cname() << ")(Color_";
-            header << MyGspn.colClasses[*itcol].name << "_Total -1) ";
-        }
-        header << " );\n\t}\n";
-
-        header << "\tbool operator > (const int x){\n";
-        header << "\t\treturn mult > x ;\n\t}\n";
-        header << "\tbool operator < (const int x){\n";
-        header << "\t\treturn mult < x ;\n\t}\n";
-
-        header << "};\n";
-
-
-
-        stringstream domaindecl;
-        stringstream colorArgsName;
-        stringstream colorArrayAccess;
-        stringstream colorArrayAccess2;
-        stringstream allCondition;
-        stringstream forLoop;
-
-        for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
-             it2 != it->colorClassIndex.end(); ++it2 ) {
-            domaindecl << "[ Color_" << MyGspn.colClasses[*it2].name << "_Total ]";
-            size_t countCol = it2 - it->colorClassIndex.begin();
-            if(countCol > 0){
-                colorArgsName << ",";
-                allCondition << " && ";
-            }
-            colorArgsName << MyGspn.colClasses[ *it2 ].cname() << " c" << countCol;
-            colorArrayAccess << "[c" << countCol << "]";
-            colorArrayAccess2 << "[i" << countCol << "]";
-            allCondition << "c" << countCol << " != Color_" << MyGspn.colClasses[*it2].name << "_All";
-            forLoop << "\t\t\tfor( int i" <<
-            countCol <<"= ( c" << countCol << " == Color_" << MyGspn.colClasses[*it2].name << "_All ? 0 : c" << countCol << ");";
-            forLoop << "i" << countCol <<"< ( c" << countCol << " == Color_" << MyGspn.colClasses[*it2].name << "_All ? Color_"<< MyGspn.colClasses[*it2].name <<"_Total : c" << countCol << "+1);";
-            forLoop << "i" << countCol << "++)\n";
-
-        }
-        
-        header << "struct " << it->cname() << ":";
-        for (let it2 : it->colorClassIndex) header << (it2==it->colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
-        header << " {\n\tint mult" << domaindecl.str() << ";\n";
-        header << "\t" << it->cname() << "(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}"<< endl;
-        header << "\t" << it->cname() << "(" << colorArgsName.str() << ") {\n";
-        //header << "\t\t" << "memset(&mult,0 , sizeof(mult));\n";
-        header << "\t\t" << "fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), 0 );"<< endl;
-        header << "\t\t" << "if(" << allCondition.str() << ")\n";
-        header << "\t\t\t" << "mult" << colorArrayAccess.str() << " = 1 ;\n";
-        header << "\t\telse{\n";
-        header << forLoop.str() << "\t\t\t\tmult" << colorArrayAccess2.str() << " = 1 ;\n";
-        header << "\t\t}\n";
-        header << "\t}\n";
-        
-        header << "\tsize_t copyVector(vector<int> &v ,size_t s)const{\n";
-        header << "\t\tcopy((int*)mult,(int*)mult + sizeof(mult)/sizeof(int), v.begin() + s );\n\t\treturn s+sizeof(mult)/sizeof(int);\n\t}\n";
-        header << "\tsize_t setVector(const vector<int> &v ,size_t s){\n";
-        header << "\t\tcopy(v.begin() + s, v.begin() + s + sizeof(mult)/sizeof(int), (int*)mult );\n\t\treturn s+sizeof(mult)/sizeof(int);\n\t}\n";
-
-        
-        
-        header << "\t" << it->cname() << "& operator = (const " << it->cname() << "& x){\n";
-        header << "\t\tcopy((int*)x.mult,(int*)x.mult + sizeof(mult)/sizeof(int),(int*)mult);\n\t\treturn *this;\n\t}\n";
-
-        header << "\tbool operator == (const " << it->cname() << "& x){\n";
-        header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult);\n\t}\n";
-
-        header << "\tbool operator < (const " << it->cname() << "& x){\n";
-        header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::less<int>());\n\t}\n";
-
-        header << "\tbool operator > (const " << it->cname() << "& x){\n";
-        header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::greater<int>());\n\t}\n";
-
-        header << "\t" << it->cname() << " operator * (int v){\n";
-        header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++) ((int*)mult)[count]*= v;\n\t\treturn *this;\n\t}\n";
-
-        header << "\t" << it->cname() << "& operator += (const " << it->cname() << "& x){\n";
-        header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)";
-        header << "\n\t\t\t((int*)mult)[count]+= ((int*)x.mult)[count] ;\n";
-        header << "\t\treturn *this;\n\t}\n";
-
-        header << "\t" << it->cname() << "& operator += (const " << it->tokname() << "& x){\n";
-        header << "\t\tmult";
-        for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
-             it2 != it->colorClassIndex.end(); ++it2 ) {
-            header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
-        }
-        header << " += x.mult;\n\t\treturn *this;\n\t}\n";
-
-        header << "\t" << it->cname() << " operator + (const " << it->tokname() << "& x){\n";
-        header << "\t\t"<< it->cname()<< " d(*this);\n\t\td+=x;\n ";
-        header << "\t\treturn d;\n\t}\n";
-
-        header << "\t" << it->cname() << "& operator -= (const " << it->tokname() << "& x){\n";
-        header << "\t\tmult";
-        for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
-             it2 != it->colorClassIndex.end(); ++it2 ) {
-            header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
-        }
-        header << " -= x.mult;\n\t\treturn *this;\n\t}\n";
-
-        header << "\tbool operator < (const " << it->tokname() << "& x)const{\n";
-        header << "\t\treturn mult";
-        for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
-             it2 != it->colorClassIndex.end(); ++it2 ) {
-            header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
-        }
-        header << " < x.mult;\n\t}\n";
-
-        header << "\tbool operator >= (const " << it->tokname() << "& x)const{\n";
-        header << "\t\treturn mult";
-        for (vector<size_t>::const_iterator it2 = it->colorClassIndex.begin();
-             it2 != it->colorClassIndex.end(); ++it2 ) {
-            header << "[ x.c" << it2- it->colorClassIndex.begin() << " ]" ;
-        }
-        header << " >= x.mult;\n\t}\n";
-
-        header << "\t" << it->cname() << " operator + (const " << it->cname() << "& x)const{\n";
-        header << "\t\t"<< it->cname() << " returnval = *this; returnval+= x;\n";
-        header << "\t\treturn returnval;\n\t}\n";
-
-        header << "\t" << it->cname() << "& operator -= (const " << it->cname() << "& x){\n";
-        header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)";
-        header << "\n\t\t\t((int*)mult)[count]-= ((int*)x.mult)[count] ;\n";
-        header << "\t\treturn *this;\n\t}\n";
-
-        header << "\t" << it->cname() << " operator - (const " << it->cname() << "& x)const{\n";
-        header << "\t\t"<< it->cname() << " returnval = *this; returnval-= x;\n";
-        header << "\t\treturn returnval;\n\t}\n";
-
-        header << "\tint card (void){\n";
-        header << "\tint acc=0;\n";
-        header << "\t\tfor(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)";
-        header << "\n\t\t\tacc += ((int*)mult)[count] ;\n";
-        header << "\t\treturn acc;\n\t}\n";
-
-        for( let cci : it->colorClassIndex){
-            let cc = MyGspn.colClasses[cci];
-            header << "\tvirtual void apply_perm("<< cc.cname() <<",const std::vector<size_t> &index){\n";
-            header << "\t\t"<< it->cname() <<" temp = *this ;\n";
-            //header << "\t\tstd::copy( mult, mult + sizeof(mult)/sizeof(int), temp);\n";
-            
-            stringstream forloop2;
-            stringstream accessperm;
-            for (auto it2 = it->colorClassIndex.begin(); it2 != it->colorClassIndex.end(); ++it2 ) {
-                size_t countCol = it2 - it->colorClassIndex.begin();
-                forloop2 << "\t\tfor( int i" << countCol <<"= 0 ; i" << countCol <<"< Color_"<< MyGspn.colClasses[*it2].name <<"_Total ;";
-                forloop2 << "i" << countCol << "++)\n";
-                if(*it2 == cci){
-                    accessperm << "[ index[i"<< countCol <<"] ]";
-                }else{
-                    accessperm << "[ i"<< countCol <<" ]";
-                }
-            }
-            
-            header << forloop2.str();
-            header << "\t\t\tmult" << colorArrayAccess2.str() << " = temp.mult" << accessperm.str();
-            header << ";" << endl;
-            header << "\t}\n";
-        }
-        
-        for( let cci : it->colorClassIndex){
-            let cc = MyGspn.colClasses[cci];
-            header << "\tvirtual int compare("<< cc.cname() <<",int cci,int ccj)const{\n";
-            
-            stringstream forloop2;
-            stringstream accesspermi;
-            stringstream accesspermj;
-            for (auto it2 = it->colorClassIndex.begin(); it2 != it->colorClassIndex.end(); ++it2 ) {
-                size_t countCol = it2 - it->colorClassIndex.begin();
-                if(*it2 != cci){
-                    forloop2 << "\t\tfor( int i" << countCol <<"= 0 ; i" << countCol <<"< Color_"<< MyGspn.colClasses[*it2].name <<"_Total ;";
-                    forloop2 << "i" << countCol << "++)\n";
-                }
-                if(*it2 == cci){
-                    accesspermi << "[ cci ]";
-                    accesspermj << "[ ccj ]";
-                }else{
-                    accesspermi << "[ i"<< countCol <<" ]";
-                    accesspermj << "[ i"<< countCol <<" ]";
-                }
-            }
-            
-            header << forloop2.str() << "\t\t{"<<endl;;
-            header << "\t\t\tif(mult" << accesspermi.str() << " > mult" << accesspermj.str() <<")return 1;" << endl;
-            header << "\t\t\tif(mult" << accesspermi.str() << " < mult" << accesspermj.str() <<")return -1;" << endl;
-            header << "\t\t}"<< endl;
-            
-            header << "\t\treturn 0;" << endl;
-            header << "\t}\n";
-        }
-        
-        
-         header << "};\n";
-        //end of domain class definition
-
-
-        header << it->cname() << " operator + (const " << it->tokname() << "& t1 ,const " << it->tokname() << "& t2 )\n\n;";
-        header << "std::ostream& operator << (std::ostream& out, const " << it->cname() << "& x);" << endl;
-
-        SpnCppFile << "" << it->cname() << " operator + (const " << it->tokname() << "& t1 ,const " << it->tokname() << "& t2 ){\n";
-        SpnCppFile << "\t"<< it->cname() << " d; d += t1; d+=t2 ;\n";
-        SpnCppFile << "\treturn d;\n}\n";
-
-
-        SpnCppFile << "std::ostream& operator << (std::ostream& out, const " << it->cname();
-        SpnCppFile << "& x) {\n";
-        SpnCppFile << "\tstringstream outprintloot;" << endl;
-        printloot(SpnCppFile, it - MyGspn.colDoms.begin(), 0);
-        SpnCppFile << "\tout << \"(\" << outprintloot.str() << \")\";" << endl;
-        SpnCppFile << "\treturn out;\n}\n";
-
-        SpnCppFile << "inline bool contains(const "<<it->cname() << "& d1, const " << it->cname() << "& d2){";
-        SpnCppFile << "\treturn (d1-d2) > -1;\n";
-        SpnCppFile << "}\n";
-
-        SpnCppFile << "inline bool contains(const "<<it->cname() << "& d1, const " << it->tokname() << "& tok){";
-        SpnCppFile << "\treturn d1 >= tok;\n";
-        SpnCppFile << "}\n";
+        writeDomainToken(header, *it);
+        //writeDomainTable(SpnCppFile, header, *it );
+        writeDomainSet(SpnCppFile, header, *it);
     }
-
+   
     Gspn_Writer::writeMarkingClasse(SpnCppFile, header);
 }
 
