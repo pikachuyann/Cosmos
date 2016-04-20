@@ -551,10 +551,14 @@ void Gspn_Writer_Color::writeDomainSet(std::ofstream &SpnCppFile , std::ofstream
         
     }*/
 
+    header << "typedef DomainGen< " << it.tokname()<< ", ";
+    for (let it2 : it.colorClassIndex) header << (it2==it.colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
+    header << "> " << it.cname() << ";" << endl;
     
+    /*
     header << "struct " << it.cname() << ":";
     for (let it2 : it.colorClassIndex) header << (it2==it.colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
-    header << " {\n\tstd::map<"<< it.tokname() << ", unsigned int > mult;\n";
+    header << " {\n\tstd::set<"<< it.tokname() << " > mult;\n";
     header << "\t" << it.cname() << "(size_t v =0) { }"<< endl;
     
     header << "\tsize_t copyVector(vector<int> &v ,size_t s)const{\n";
@@ -569,7 +573,7 @@ void Gspn_Writer_Color::writeDomainSet(std::ofstream &SpnCppFile , std::ofstream
     header << "\t\treturn mult==x.mult;\n\t}\n";
     
     header << "\tbool operator < (const " << it.cname() << "& x){\n";
-    header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::less<int>());\n\t}\n";
+    header << "\t\treturn equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::less<int>());\n\t}\n";
     
     header << "\tbool operator > (const " << it.cname() << "& x){\n";
     header << "\t\treturn  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::greater<int>());\n\t}\n";
@@ -618,7 +622,7 @@ void Gspn_Writer_Color::writeDomainSet(std::ofstream &SpnCppFile , std::ofstream
     }
     header << " >= x.mult;\n\t}\n";
     
-    header << "};" << endl;
+    header << "};" << endl;*/
 }
 
 void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const{
@@ -639,7 +643,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         header << "};"<< endl;
     }
     
-    header << "#include <map>" << endl;
+    header << "#include \"marking.hpp\"" << endl;
     
     for (vector<colorDomain>::const_iterator it = MyGspn.colDoms.begin()+1;
          it != MyGspn.colDoms.end(); ++it ) {

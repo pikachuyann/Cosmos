@@ -32,6 +32,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <map>
 
 class abstractMarkingImpl;
 
@@ -121,5 +122,106 @@ public:
 
 inline bool contains(int i, int j){ return i>=j;}
 
+template <typename T,typename R>
+struct DomainGen {
+    std::map<T, unsigned int > mult;
+    
+    public:
+    
+    DomainGen(size_t v =0) { }
+    size_t copyVector(std::vector<int> &v ,size_t s)const{
+        return 0;
+    }
+    size_t setVector(const std::vector<int> &v ,size_t s){
+        return 0;
+    }
+    DomainGen& operator = (const DomainGen& x){
+        mult=x.mult;
+        return *this;
+    }
+    bool operator == (const DomainGen& x){
+        return mult==x.mult;
+    }
+
+    bool operator < (const T& x)const{
+        if(mult.empty())return true;
+        if(mult.size()> 1) return false;
+        
+        auto xsing = x;
+        xsing.mult = 1;
+        auto tokDom = mult.find(xsing);
+        if(tokDom != mult.end()) return *tokDom < x.mult;
+        return false;
+    }
+    
+    bool operator >= (const T& x)const{
+        auto xsing = x;
+        xsing.mult = 1;
+        auto tokDom = mult.find(xsing);
+        if(tokDom != mult.end()) return *tokDom >= x.mult;
+        return false;
+    }
+    
+    bool operator < (const DomainGen& x){
+        bool strictEq = false;
+        for(const auto &tok : mult ){
+            auto tokDom2 = x.mult.find(tok.first);
+            if(tokDom2 != x.mult.end()){
+                if(*tokDom2 < tok.second) return false;
+                if(*tokDom2 > tok.second) strictEq = true;
+            } else {
+                return false;
+            }
+        }
+        return strictEq;
+    }
+    
+    unsigned int card(){
+        unsigned int acc=0;
+        for( const auto &tok: mult)
+            acc += tok.second;
+        return acc;
+    }
+    /*
+    bool operator > (const patient_Domain& x){
+        return  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::greater<int>());
+    }
+    patient_Domain operator * (int v){
+        for(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++) ((int*)mult)[count]*= v;
+        return *this;
+    }
+    patient_Domain& operator += (const patient_Domain& x){
+        for(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)
+        ((int*)mult)[count]+= ((int*)x.mult)[count] ;
+        return *this;
+    }
+    patient_Domain& operator += (const patient_Token& x){
+        mult[ x.c0 ] += x.mult;
+        return *this;
+    }
+    patient_Domain operator + (const patient_Token& x){
+        patient_Domain d(*this);
+        d+=x;
+        return d;
+    }
+    patient_Domain& operator -= (const patient_Token& x){
+        mult[ x.c0 ] -= x.mult;
+        return *this;
+    }*/
+    
+    
+
+    virtual void apply_perm(T,const std::vector<size_t> &){
+        std::cerr << "non implémenté";
+        exit(1);
+    }
+    virtual int compare(T,int cci,int ccj)const{
+        std::cerr << "non implémenté";
+        exit(1);
+        return 0;
+    }
+
+    
+};
 
 #endif
