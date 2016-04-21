@@ -124,7 +124,7 @@ inline bool contains(int i, int j){ return i>=j;}
 
 template <typename T,typename R>
 struct DomainGen {
-    std::map<T, unsigned int > mult;
+    std::map<T, unsigned int > tokens;
     
     public:
     
@@ -136,37 +136,37 @@ struct DomainGen {
         return 0;
     }
     DomainGen& operator = (const DomainGen& x){
-        mult=x.mult;
+        tokens=x.tokens;
         return *this;
     }
     bool operator == (const DomainGen& x){
-        return mult==x.mult;
+        return tokens==x.tokens;
     }
 
     bool operator < (const T& x)const{
-        if(mult.empty())return true;
-        if(mult.size()> 1) return false;
+        if(tokens.empty())return true;
+        if(tokens.size()> 1) return false;
         
         auto xsing = x;
         xsing.mult = 1;
-        auto tokDom = mult.find(xsing);
-        if(tokDom != mult.end()) return *tokDom < x.mult;
+        auto tokDom = tokens.find(xsing);
+        if(tokDom != tokens.end()) return tokDom->second < x.mult;
         return false;
     }
     
     bool operator >= (const T& x)const{
         auto xsing = x;
         xsing.mult = 1;
-        auto tokDom = mult.find(xsing);
-        if(tokDom != mult.end()) return *tokDom >= x.mult;
+        auto tokDom = tokens.find(xsing);
+        if(tokDom != tokens.end()) return tokDom->second >= x.mult;
         return false;
     }
     
-    bool operator < (const DomainGen& x){
+    bool operator < (const DomainGen& x)const{
         bool strictEq = false;
-        for(const auto &tok : mult ){
-            auto tokDom2 = x.mult.find(tok.first);
-            if(tokDom2 != x.mult.end()){
+        for(const auto &tok : tokens ){
+            auto tokDom2 = x.tokens.find(tok.first);
+            if(tokDom2 != x.tokens.end()){
                 if(*tokDom2 < tok.second) return false;
                 if(*tokDom2 > tok.second) strictEq = true;
             } else {
@@ -176,38 +176,57 @@ struct DomainGen {
         return strictEq;
     }
     
-    unsigned int card(){
+    unsigned int card()const{
         unsigned int acc=0;
-        for( const auto &tok: mult)
+        for( const auto &tok: tokens)
             acc += tok.second;
         return acc;
     }
+    
+    DomainGen& operator += (const DomainGen &x) {
+        for (const auto &tok : x.tokens) {
+            auto tokDom1 = tokens.find(tok.first);
+            if (tokDom1 != tokens.end()) { tokDom1->second += tok.second; }
+            else { tokens.insert(tok); }
+        }
+    }
+    DomainGen& operator += (const T& x) {
+       auto xsing = x;
+       xsing.mult = 1;
+       auto tokDom1 = tokens.find(xsing);
+       if (tokDom1 != tokens.end()) { tokDom1->second += x.mult; }
+       else { tokens.insert(std::pair<T,unsigned int>(x,x.mult)); } 
+       return *this;
+    }
+    
+    DomainGen& operator + (const T& x) {
+        DomainGen& d(*this);
+        d+=x;
+        return d;
+    }
+    
+    DomainGen& operator -= (const T& x) {
+       auto xsing = x;
+       xsing.mult = 1;
+       auto tokDom1 = tokens.find(xsing);
+       if (tokDom1 != tokens.end()) { tokDom1->second -= x.mult; } // Il faudrait peut-être vérifier qu'on arrive pas à un nombre de zéro (et enlever le token dans ce cas)
+       else { tokens.insert(tokens.insert(std::pair<T,unsigned int>(x,x.mult))); } 
+       return *this;
+    }
+    
+    DomainGen& operator * (int v) {
+        for (const auto tok : tokens) {
+            tok.second *= v;
+        }
+        return *this;
+    }
+    
+    
     /*
     bool operator > (const patient_Domain& x){
         return  equal((int*)mult, ((int*)mult) + sizeof(mult)/sizeof(int), (int*)x.mult,std::greater<int>());
     }
-    patient_Domain operator * (int v){
-        for(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++) ((int*)mult)[count]*= v;
-        return *this;
-    }
-    patient_Domain& operator += (const patient_Domain& x){
-        for(size_t count = 0 ; count < sizeof(mult)/sizeof(int);count++)
-        ((int*)mult)[count]+= ((int*)x.mult)[count] ;
-        return *this;
-    }
-    patient_Domain& operator += (const patient_Token& x){
-        mult[ x.c0 ] += x.mult;
-        return *this;
-    }
-    patient_Domain operator + (const patient_Token& x){
-        patient_Domain d(*this);
-        d+=x;
-        return d;
-    }
-    patient_Domain& operator -= (const patient_Token& x){
-        mult[ x.c0 ] -= x.mult;
-        return *this;
-    }*/
+*/
     
     
 
