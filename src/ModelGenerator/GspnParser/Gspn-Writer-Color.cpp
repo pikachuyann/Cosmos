@@ -366,6 +366,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         for (let it2 : it->colorClassIndex) header << (it2==it->colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
         header << " {\n\tint mult" << domaindecl.str() << ";\n";
         header << "\t" << it->cname() << "(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}"<< endl;
+        header << "\t" << it->cname() << "(const "<< it->tokname() <<"& tok) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), 0 ); *this += tok; }"<< endl;
         header << "\t" << it->cname() << "(" << colorArgsName.str() << ") {\n";
         //header << "\t\t" << "memset(&mult,0 , sizeof(mult));\n";
         header << "\t\t" << "fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), 0 );"<< endl;
