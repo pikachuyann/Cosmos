@@ -39,3 +39,6 @@ test_cosmos "Userdefined" "testuserdefine.grml" "testdistrib.lha" "--max-run 100
 
 test_cosmos "Userdefined" "testuserdefinepoly.grml" "testdistrib.lha" "--max-run 1000"
 ["MeanVal",(4.0); "VarVal",(5.33321869776)];;       
+
+test_cosmos "TokenInitialGuard"  "tokenInitGuard.grml" "testdistrib.lha" "--max-run 1000"
+["MeanVal",(1.0); "VarVal",(1.0)];;       
