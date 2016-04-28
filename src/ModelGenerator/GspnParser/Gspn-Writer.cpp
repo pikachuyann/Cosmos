@@ -342,7 +342,9 @@ void Gspn_Writer::writeTok(ostream &SpnF,const vector<coloredToken> &ct,const co
                 if(sct.varIncrement[pr] != 0)
                     SpnF << ".next(" << sct.varIncrement[pr] << ")";
             }
-            SpnF << ") * (" << sct.mult<< "))";
+            SpnF << ")";
+            if( !sct.mult.is_concrete() || sct.mult.intVal != 1) SpnF << " * (" << sct.mult<< ")";
+            SpnF << ")";
         }else SpnF << sct.mult<< ")";
     }
     SpnF << ")";
