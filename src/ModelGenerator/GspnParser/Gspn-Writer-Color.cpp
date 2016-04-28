@@ -457,12 +457,13 @@ void Gspn_Writer_Color::writeDomainTable(std::ofstream &SpnCppFile , std::ofstre
                 accessperm << "[ i"<< countCol <<" ]";
             }
         }
-        
-<<<<<<< HEAD
+ 
+        /*
+<<<<<<< HEAD */
         header << forloop2.str();
         header << "\t\t\tmult" << colorArrayAccess2.str() << " = temp.mult" << accessperm.str();
         header << ";" << endl;
-=======
+/*=======
         header << "struct " << it->cname() << ":";
         for (let it2 : it->colorClassIndex) header << (it2==it->colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
         header << " {\n\tint mult" << domaindecl.str() << ";\n";
@@ -476,7 +477,7 @@ void Gspn_Writer_Color::writeDomainTable(std::ofstream &SpnCppFile , std::ofstre
         header << "\t\telse{\n";
         header << forLoop.str() << "\t\t\t\tmult" << colorArrayAccess2.str() << " = 1 ;\n";
         header << "\t\t}\n";
->>>>>>> 52f10676cba75de991953697c5888d3dae58b6f4
+>>>>>>> 52f10676cba75de991953697c5888d3dae58b6f4*/
         header << "\t}\n";
     }
     
