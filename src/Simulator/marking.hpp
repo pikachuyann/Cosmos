@@ -210,8 +210,22 @@ struct DomainGen {
        xsing.mult = 1;
        auto tokDom1 = tokens.find(xsing);
        if (tokDom1 != tokens.end()) { tokDom1->second -= x.mult; } // Il faudrait peut-être vérifier qu'on arrive pas à un nombre de zéro (et enlever le token dans ce cas)
-       else { tokens.insert(tokens.insert(std::pair<T,unsigned int>(x,x.mult))); } 
+       else { tokens.insert(std::pair<T,unsigned int>(x,x.mult)); } 
        return *this;
+    }
+    
+    DomainGen& operator -= (const DomainGen &x) {
+        for (const auto &tok : x.tokens) {
+            auto tokDom1 = tokens.find(tok.first);
+            if (tokDom1 != tokens.end()) { tokDom1->second -= tok.second; } // Vérifier qu'on arrive pas déjà à zéro
+            else { tok.second *= -1; tokens.insert(tok); }
+        }
+    }
+    
+    DomainGen& operator - (const T& x) {
+        DomainGen& d(*this);
+        d-=x;
+        return d;
     }
     
     DomainGen& operator * (int v) {
