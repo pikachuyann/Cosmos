@@ -167,8 +167,8 @@ struct DomainGen {
         for(const auto &tok : tokens ){
             auto tokDom2 = x.tokens.find(tok.first);
             if(tokDom2 != x.tokens.end()){
-                if(*tokDom2 < tok.second) return false;
-                if(*tokDom2 > tok.second) strictEq = true;
+                if(tokDom2->second < tok.second) return false;
+                if(tokDom2->second > tok.second) strictEq = true;
             } else {
                 return false;
             }
@@ -220,6 +220,13 @@ struct DomainGen {
             if (tokDom1 != tokens.end()) { tokDom1->second -= tok.second; } // Vérifier qu'on arrive pas déjà à zéro
             else { tok.second *= -1; tokens.insert(tok); }
         }
+        return *this;
+    }
+    
+    DomainGen& operator - (const DomainGen &x) {
+        DomainGen& d(*this);
+        d-=x;
+        return d;
     }
     
     DomainGen& operator - (const T& x) {
