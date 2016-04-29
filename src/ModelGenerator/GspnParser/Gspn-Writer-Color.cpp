@@ -307,12 +307,28 @@ void Gspn_Writer_Color::writeDomainToken(std::ofstream &header, const colorDomai
     }
     header << " );\n\t}\n";
     
+    /* header << "\tbool operator > (const " << it.tokname() << " x){\n";
+    header << "\t\treturn mult > x.mult ;\n\t}\n"; // Solution temporaire, il faudrait peut-être vérifier que c'est bien des tokens du même type ?
+    header << "\tbool operator < (const " << it.tokname() << " x){\n";
+    header << "\t\treturn mult < x.mult ;\n\t}\n"; */
+    
     header << "\tbool operator > (const int x){\n";
     header << "\t\treturn mult > x ;\n\t}\n";
     header << "\tbool operator < (const int x){\n";
     header << "\t\treturn mult < x ;\n\t}\n";
     
     header << "};\n";
+    
+    header << "bool operator < (const " << it.tokname() << " x, const " << it.tokname() << " y) {\n\tbool result = false;\n"; // Comparaison demandée par la structure Map
+    int currIndex = 0;
+    for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
+        // Comparaison en ordre lexico
+        currIndex = itcol - it.colorClassIndex.begin();
+        header << "\tif (x.c" << currIndex << " < y.c" << currIndex << ") { result = true; goto ENDCMP" << it.tokname() << "; }\n";
+        header << "\tif (x.c" << currIndex << " > y.c" << currIndex << ") { result = false; goto ENDCMP" << it.tokname() << "; }\n";
+    }
+    header << "\tENDCMP" << it.tokname() << ":\nreturn result;\n";
+    header << "}\n";
 }
 
 void Gspn_Writer_Color::writeDomainTable(std::ofstream &SpnCppFile , std::ofstream &header, const colorDomain & it)const{
@@ -573,7 +589,8 @@ void Gspn_Writer_Color::writeDomainSet(std::ofstream &SpnCppFile , std::ofstream
     header << "> " << it.cname() << ";" << endl;
     
     SpnCppFile << "inline bool contains(const "<<it.cname() << "& d1, const " << it.cname() << "& d2){";
-    SpnCppFile << "\treturn (d1-d2) > -1;\n";
+    //SpnCppFile << "\treturn (d1-d2) > -1;\n";
+    SpnCppFile << "\treturn not (d1 < d2);\n";
     SpnCppFile << "}\n";
     
     SpnCppFile << "inline bool contains(const "<<it.cname() << "& d1, const " << it.tokname() << "& tok){";
