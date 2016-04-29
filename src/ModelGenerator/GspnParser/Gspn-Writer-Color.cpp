@@ -572,6 +572,14 @@ void Gspn_Writer_Color::writeDomainSet(std::ofstream &SpnCppFile , std::ofstream
     for (let it2 : it.colorClassIndex) header << (it2==it.colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
     header << "> " << it.cname() << ";" << endl;
     
+    SpnCppFile << "inline bool contains(const "<<it.cname() << "& d1, const " << it.cname() << "& d2){";
+    SpnCppFile << "\treturn (d1-d2) > -1;\n";
+    SpnCppFile << "}\n";
+    
+    SpnCppFile << "inline bool contains(const "<<it.cname() << "& d1, const " << it.tokname() << "& tok){";
+    SpnCppFile << "\treturn d1 >= tok;\n";
+    SpnCppFile << "}\n";
+    
     /*
     header << "struct " << it.cname() << ":";
     for (let it2 : it.colorClassIndex) header << (it2==it.colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
