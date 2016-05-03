@@ -75,10 +75,6 @@ let rec parse_Grml_expr : type a . a expr' -> Xml.xml -> a expr' option = fun pa
 let int_expr_of_atr s at =
   let a =		    
     find_prop s at |>> (function  x::_ -> parse_Grml_expr (Int 0) x; | _-> None ) in
-  begin match a with
-      Some x -> printH_expr stdout x
-    | _ ->();
-  end;
     a
 let float_expr_of_atr s at =
   find_prop s at
@@ -94,7 +90,7 @@ let parse_distr at =
 	let larg = List.fold_left (fun c child ->
 	  match child with
 	      Element ("attribute",["name","param"],cl2) ->
-		let n= find_simp_prop "number" cl2 |>>> int_of_string in
+		let n= Some (find_simp_prop "number" cl2 |>>> int_of_string |>>| 0 )in
 		let ex = float_expr_of_atr "expr" cl2 in
 		n
 	    |>> (fun x -> ex |>>> (fun y -> (x,y)::c))
@@ -107,26 +103,53 @@ let parse_distr at =
 	  | (Some "IMMEDIATE",[]) -> Imm
 	  | (Some "IMDT",[]) -> Imm
 	  | (Some "DETERMINISTIC",[_,f]) -> Det(f)
-	  | (Some "USERDEFINE",_) -> DiscUserDef(0)				       
-	  | (Some x,_) -> failwith ("Unknown distribution "^x)
+	  | (Some "USERDEFINE",_) -> DiscUserDef(0)
+	  | (Some "PLAYER1",[]) -> Player1
+	  | (Some x,y) -> failwith ("Unknown distribution "^x^"/"^(string_of_int (List.length y)) )
 	  | _ -> failwith "ill define distribution"
       end
     | _ -> failwith "ill define distribution"
  
 
 
-let rec net_of_tree n = function
+let rec net_of_tree (n:StochasticPetriNet.spt) = function
   | Element (name,alist,clist) -> begin
     (*Printf.printf "new xmlnode: %s\n" name;*)
     begin match name with
       "xml" | "model" ->
 	List.iter (net_of_tree n) clist
-	     
-       |  "node" when find_at "nodeType" alist = Some "transition" ->
+      | "attribute" ->
+	 begin match find_at "name" alist |>>| "" with
+	       | "declaration" | "constants" | "intConsts" | "realConsts"->
+		  List.iter (net_of_tree n) clist
+	       | "intConst" ->
+		  let nameopt = find_simp_prop "name" clist in
+		  let value = (int_expr_of_atr "expr" clist) in
+		  begin match nameopt,n.Net.def with
+			  Some(name),Some(def) ->
+			  Printf.fprintf !logout "intconst: %s:%a\n" name printH_expr (value |>>| Int(0));
+			  def.intconst <- ((name,value)::def.intconst)
+			| _ ,None -> failwith "undefined preembule"
+			| _ -> failwith "fail to read intConst"
+		  end
+	       | "realConst" ->
+		  let nameopt = find_simp_prop "name" clist in
+		  let value = (float_expr_of_atr "expr" clist) in
+		  begin match nameopt,n.Net.def with
+			  Some(name),Some(def) ->
+			  Printf.fprintf !logout "floatconst: %s:%a\n" name printH_expr (value |>>| Float(0.0));
+			  def.floatconst <- ((name,value)::def.floatconst)
+			| _ ,None -> failwith "undefined preembule"
+			| _ -> failwith "fail to read intConst"
+		  end
+	       | x-> Printf.fprintf stderr "Dont know what to do with attibute \"%s\", ignore\n" x;
+	 end
+		      
+      |  "node" when find_at "nodeType" alist = Some "transition" ->
 	 (match ((find_simp_prop "name" clist),(find_id alist)) with
 	     (Some name,Some id) -> begin
 	       let d = parse_distr clist in
-	       Printf.printf "new transition: %s\n\tdistribution: %a\n" name StochPTPrinter.printH_distr d;
+	       Printf.fprintf !logout "new transition: %s\n\tdistribution: %a\n" name StochPTPrinter.printH_distr d;
 	       idmap := StringMap.add id name !idmap;
 	       Data.add (name,(d,(Float 1.0),(Float 1.0))) n.Net.transition
 	     end
@@ -138,15 +161,15 @@ let rec net_of_tree n = function
 	   ( match ((find_simp_prop "name" clist),(int_expr_of_atr "marking" clist),(find_id alist)) with
            | (Some name,Some im,Some id) ->  begin
 	   idmap := StringMap.add id name !idmap;
-      	   Printf.printf "new place: %s\n\tmarking: %a\n" name printH_expr im;
+      	   Printf.fprintf !logout "new place: %s\n\tmarking: %a\n" name printH_expr im;
 	   Data.add (name,(im,bo)) n.Net.place;
 	 end
          | (Some name,None,Some id) -> begin
-	   Printf.printf "new place: %s\n" name;
+	   Printf.fprintf !logout "new place: %s\n" name;
 	   idmap := StringMap.add id name !idmap;
 	   Data.add (name,(Int 0,bo)) n.Net.place;
 	 end  
-         | (None,None,Some _) ->  Printf.printf "Unknown node\n";
+         | (None,None,Some _) ->  Printf.fprintf stderr "Unknown node\n";
 	 | _ ->()
 
        )
@@ -156,10 +179,10 @@ let rec net_of_tree n = function
 	 and arctype = find_at "arcType" alist |>>| "arc" in
 	 begin match ((find_id alist),(sid),(tid),(int_expr_of_atr "valuation" clist),arctype ="inhibitorarc" ) with
            | (_,Some source,Some target,Some v, false) ->
-	     Printf.printf " (%s)-(%a)->(%s)\n" source printH_expr v target ;
+	     Printf.fprintf !logout " (%s)-(%a)->(%s)\n" source printH_expr v target ;
 	     Net.add_arc n source target v
 	   | (_,Some source,Some target,Some v, true) ->
-	     Printf.printf " (%s)-(%a)-o(%s)\n" source printH_expr v target ;
+	     Printf.fprintf !logout " (%s)-(%a)-o(%s)\n" source printH_expr v target ;
 	     Net.add_inhibArc n source target v
 	   | (_,Some source,Some target, None ,false) -> Printf.printf " (%s)-(1)->(%s)\n" source target ;
 	     StochPTPrinter.print_spt_marcie "test.andl" n ;

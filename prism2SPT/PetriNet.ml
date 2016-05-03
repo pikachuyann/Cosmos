@@ -21,22 +21,23 @@ sig
   val size : ('a, 'b, 'k) t -> int
   val sample : ('a, 'b, 'k) t -> 'a * 'b
   val copy : ('a, 'b, 'k) t -> ('a, 'b, 'l) t
+  val unsafe : int -> 'a key
+  val unsafe_rev : 'a key -> int 
 end
 
 module Data:DATA = 
 struct
   exception Empty
   type ('a,'b, 'k) t = { 
-    mutable table:('a * 'b) array option;
+    mutable table:('a * 'b) array;
     mutable hash: ('a,int) Hashtbl.t;
     mutable size:int
   }
   type 'k key= int
 
-  let create () = {table = None; hash = Hashtbl.create 10; size=0}
-  let acca t i = match t.table with
-      None -> raise Empty
-    | Some(t) -> t.(i)
+  let create () = {table = [||]; hash = Hashtbl.create 10; size=0}
+  let acca t i = if Array.length t.table =0 then raise Empty
+		 else t.table.(i)
   let index t s = Hashtbl.find t.hash s
   let acc t s = 
     index t s
@@ -44,40 +45,39 @@ struct
     |> snd
 
   let updatea i v t =
-    match t.table with
-      None -> raise Empty
-    | Some(ti) ->
-      let a,_ = ti.(i) in
-      ti.(i) <- (a,v) 
+    if Array.length t.table =0 then raise Empty
+    else 
+      let a,_ = t.table.(i) in
+      t.table.(i) <- (a,v) 
       
-  let rec add (a,b) t = match t.table with
-      None -> t.table <- Some(Array.make 10 (a,b));
+  let rec add (a,b) t = match Array.length t.table with
+      0 -> t.table <- Array.make 10 (a,b);
         t.size <- 1;
 	Hashtbl.add t.hash a 0;
-    | Some(t1) when Array.length t1 > t.size ->
-      t1.(t.size) <- (a,b);
+    | s when s > t.size ->
+      t.table.(t.size) <- (a,b);
       Hashtbl.add t.hash a t.size;
       t.size <- t.size +1
-    | Some(t1) -> 
-      let t2 = Array.make (2*t.size) t1.(0) in
-      Array.blit t1 0 t2 0 t.size;
-      t.table <- Some(t2);
+    | _ -> 
+      let t2 = Array.make (2*t.size) t.table.(0) in
+      Array.blit t.table 0 t2 0 t.size;
+      t.table <- t2;
       add (a,b) t
 
-  let foldi f e t = match t.table with
-      None -> e
-    | Some t1 -> let buff = ref e in
+  let foldi f e t = match Array.length t.table with
+      0 -> e
+    | _ -> let buff = ref e in
                  for i = 0 to t.size-1 do
 		   (* Here we cannot used t.(i) in case f reschedules the table*)
                    buff := f !buff i (acca t i); 
                  done;
                  !buff
 
-  let reduce f t = match t.table with
-      None -> None
-    | Some t1 ->
+  let reduce f t = match Array.length t.table with
+      0 -> None
+    | _ ->
        if t.size =0 then None
-       else  let buff = ref t1.(0) in
+       else  let buff = ref t.table.(0) in
                  for i = 1 to t.size-1 do
 		   (* Here we cannot used t.(i) in case f reschedules the table*)
                    buff := f !buff (acca t i); 
@@ -104,9 +104,15 @@ struct
   let copy t1 = map (fun x y -> x,y) t1
 
   let size t = t.size
-  let sample d = match d.table with
-      Some(t) -> t.(0)
-    | None -> raise Empty
+  let sample d =
+    if Array.length d.table >0 then d.table.(0)
+    else raise Empty
+
+  let unsafe x =
+    assert(x>=0);
+    x
+
+  let unsafe_rev x = x
 end
 
 
@@ -127,6 +133,11 @@ module type NET = sig
       outArc   : (unit, 'c * (transitionkey Data.key)* (placekey Data.key),inhibArcKey) Data.t;
     }
     val create : unit -> ('a, 'b, 'c, 'd) t
+    val add_place : ('a, 'b, 'c, 'd) t -> string -> 'a -> placekey Data.key
+    val print_place : ('a, 'b, 'c, 'd) t -> out_channel -> placekey Data.key -> unit
+    val add_transition : ('a, 'b, 'c, 'd) t -> string -> 'b -> transitionkey Data.key
+    val print_transition : ('a, 'b, 'c, 'd) t -> out_channel -> transitionkey Data.key -> unit
+									     
     val add_inArc : ('a, 'b, 'c, 'd) t -> string -> string -> 'c -> unit
     val add_outArc : ('a, 'b, 'c, 'd) t -> string -> string -> 'c -> unit
     val add_inhibArc : ('a, 'b, 'c, 'd) t -> string -> string -> 'c -> unit
@@ -169,6 +180,20 @@ struct
     outArc = Data.create ();
   }
 
+  let add_place net p im =
+    Data.add (p,im) net.place;
+    Data.index net.place p
+
+  let print_place net f p =
+    output_string f (fst (Data.acca net.place p)) 
+		  
+  let add_transition net t d =
+    Data.add (t,d) net.transition;
+    Data.index net.transition t
+	       
+  let print_transition net f p =
+    output_string f (fst (Data.acca net.transition p))
+	       
   let add_inArc net s1 s2 v =
     let i1 = try Data.index net.place s1 with Not_found -> raise @@ InvalidPlaceName(s1)  
     and i2 = try Data.index net.transition s2 with Not_found -> raise @@ InvalidTransitionName(s2) in

@@ -60,6 +60,15 @@ let print_distr f d =
         <attribute name=\"expr\">%a</attribute>
       </attribute>
     </attribute>" print_expr r
+ |       Player1 -> Printf.fprintf f "        PLAYER1
+      </attribute>
+      <attribute name=\"param\">
+        <attribute name=\"number\">0</attribute>
+        <attribute name=\"expr\"><attribute name=\"numValue\">
+          0
+        </attribute></attribute>
+      </attribute>
+    </attribute>"
   | Erl (i,r) -> Printf.fprintf f "        ERLANG
       </attribute>
       <attribute name=\"param\">
@@ -131,6 +140,7 @@ let printH_distr f = function
   | Norm (m,v) -> Printf.fprintf f "NORMAL(%a,%a)" printH_expr m
     printH_expr v
   | DiscUserDef (i) -> Printf.fprintf f "EXPONENTIAL(%i)" i
+  | Player1 -> Printf.fprintf f "PLAYER1()"
 
 let print_tr f name id (rate,weight,prio) =
   Printf.fprintf f "  <node id=\"%i\" nodeType=\"transition\">
@@ -197,7 +207,8 @@ let gen_const f li lr le fund =
 		 
 let print_spt fpath (net:spt)  =
   let f = open_out fpath in
-  let (lci,lcd,lce,fund) = begin match net.Net.def with None -> [],[],[],(fun _ ()->()) | Some x ->x end in
+  let (lci,lcd,lce,fund) = begin match net.Net.def with None -> [],[],[],(fun _ ()->())
+						      | Some a -> a.intconst,a.floatconst,a.clock,a.printer end in
   gen_const f 
     (List.map (fun (s,ao) ->
       match ao with None -> s,(Int 1) | Some fl -> s,fl) lci) 
@@ -281,9 +292,9 @@ let print_spt_marcie fpath net =
   output_string f "gspn [generated_cosmos] {\n";
   
   Printf.fprintf f "constants:\n";
-  let (lci,lcd,lce,fund) = begin match net.Net.def with 
-      None -> [],[],[],(fun _ ()->()) 
-    | Some x ->x end in
+  let (lci,lcd,lce,fund) =
+    begin match net.Net.def with None -> [],[],[],(fun _ ()->())
+			       | Some a -> a.intconst,a.floatconst,a.clock,a.printer end in
   List.iter (fun (s,ao) -> match ao with 
     None -> Printf.fprintf f "\tint %s;\n" s;
   | Some iv -> Printf.fprintf f "\tint %s=%a;\n" s printH_expr iv) lci;
