@@ -673,7 +673,7 @@ let strip_type s=
 (* Convertion to SPT *)
 let stochNet_of_modu cf m =
   let fund = fun f () -> print_magic f m.stateL m.transL m.scriptL in
-  let net = Net.create () in 
+  let net = (Net.create ():StochasticPetriNet.spt) in 
 
   m.signals
   |> StringMap.filter (fun x (y,z) -> z=In) 
@@ -697,7 +697,10 @@ let stochNet_of_modu cf m =
     List.fold_left (fun tl -> 
     (function (Var(ty,x,init)) when x<>"ctime" -> x::tl | _-> tl)
   ) [] in
-  net.Net.def <- Some ([],(List.map (fun (x,y) -> (x,Some (Float(y)))) (DataFile.data_of_file cf)),varlist,fund);
+  net.Net.def <- Some { intconst=[];
+			floatconst=List.map (fun (x,y) -> (x,Some (Float(y)))) (DataFile.data_of_file cf);
+			clock=varlist;
+			printer=fund};
   Array.iteri (fun n (x,n2) -> Data.add ((place_of_int m.ivect n),(Int x,Some (Int !ssid_count) )) net.Net.place) m.ivect;
   if !add_reward then begin
     Data.add ("STOP_PL",(Int 0,Some (Int 1))) net.Net.place;

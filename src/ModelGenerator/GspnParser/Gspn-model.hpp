@@ -172,6 +172,9 @@ struct place {
     expr Marking;
     InterfaceSRG isrg;
     place(){ colorDom = UNCOLORED_DOMAIN; isTraced = true; }
+    bool operator < (const place &p)const{ return id < p.id ;}
+    bool operator > (const place &p)const{ return id > p.id ;}
+    bool operator == (const place &p)const{ return id == p.id ;}
 };
 
 struct arc {
