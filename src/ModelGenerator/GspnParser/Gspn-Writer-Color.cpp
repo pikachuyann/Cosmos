@@ -317,18 +317,17 @@ void Gspn_Writer_Color::writeDomainToken(std::ofstream &header, const colorDomai
     header << "\tbool operator < (const int x){\n";
     header << "\t\treturn mult < x ;\n\t}\n";
     
+    header << "bool operator < (const " << it.tokname() << " &tok)constr    {\n"; // Comparaison demandée par la structure Map
+    for (size_t colIndex=0; colIndex< it.colorClassIndex.size(); colIndex++ ) {
+        // Comparaison en ordre lexico
+        header << "\tif (c" << colIndex << " < tok.c" << colIndex << ") { return true; }\n";
+        header << "\tif (c" << colIndex << " > tok.c" << colIndex << ") { return false; }\n";
+    }
+    header << "return false;\n";
+    header << "}\n";
+    
     header << "};\n";
     
-    header << "bool operator < (const " << it.tokname() << " x, const " << it.tokname() << " y) {\n\tbool result = false;\n"; // Comparaison demandée par la structure Map
-    int currIndex = 0;
-    for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
-        // Comparaison en ordre lexico
-        currIndex = itcol - it.colorClassIndex.begin();
-        header << "\tif (x.c" << currIndex << " < y.c" << currIndex << ") { result = true; goto ENDCMP" << it.tokname() << "; }\n";
-        header << "\tif (x.c" << currIndex << " > y.c" << currIndex << ") { result = false; goto ENDCMP" << it.tokname() << "; }\n";
-    }
-    header << "\tENDCMP" << it.tokname() << ":\nreturn result;\n";
-    header << "}\n";
 }
 
 void Gspn_Writer_Color::writeDomainTable(std::ofstream &SpnCppFile , std::ofstream &header, const colorDomain & it)const{
