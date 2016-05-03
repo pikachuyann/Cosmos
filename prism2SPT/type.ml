@@ -117,6 +117,14 @@ let neg_cmp = function
   | LE -> SG
   | NEQ-> EQ
 
+let eval_cmp x y = function
+    EQ -> x=y
+  | NEQ -> x!=y
+  | SG -> x>y
+  | SL -> x<y
+  | GE -> x>=y
+  | LE -> x<=y
+	    
 let rec neg_bool = function
   | Bool x -> Bool (not x)
   | BoolName x -> Not (BoolName x)
@@ -132,9 +140,20 @@ let rec neg_bool = function
   | FunCall (e,l) -> Not (FunCall (e,l))
   | If(c,e1,e2) -> If(c,neg_bool e1,neg_bool e2)
 
-let rec eval : type a . a expr' -> a expr' = fun x -> 
+let rec eval: type a.
+		   ?iname:(string -> int expr' option) ->
+		   ?fname:(string -> float expr' option) ->
+		   ?bname:(string -> bool expr' option) ->
+		   a expr' -> a expr' = fun
+    ?iname:(iv=(fun _ -> None))
+    ?fname:(fv=(fun _ -> None))
+    ?bname:(bv=(fun _ -> None)) x ->
+  let ev x = eval ~iname:iv ~fname:fv ~bname:bv x in
   match x with
-  | Plus(e1,e2) -> (match (eval e1),(eval e2) with
+  | IntName(s) -> (match iv s with Some e -> ev e | None -> x)
+  | FloatName(s) -> (match fv s with Some e -> ev e | None -> x)
+  | BoolName(s) -> (match bv s with Some e -> ev e | None -> x)
+  | Plus(e1,e2) -> (match (ev e1),(ev e2) with
       Int y,Int z -> Int (y+z) 
     | Float y,Float z -> Float (y+.z)
     | Bool y,Bool z -> Bool (y || z)
@@ -144,23 +163,24 @@ let rec eval : type a . a expr' -> a expr' = fun x ->
       | Float 0.0 -> ee1
       | Float y when y<0.0 -> Minus(ee1,Float (-.y))
       |_-> Plus(ee1,ee2)
-    end)
-  | And(e1,e2) -> (match (eval e1),(eval e2) with
+		 end)
+  | Not(be) -> (match ev be with Bool(b) -> Bool(not b) | x -> Not(x))
+  | And(e1,e2) -> (match (ev e1),(ev e2) with
     | Bool y,z -> if y then z else Bool false
     | y,Bool z -> if z then y else Bool false
     | ee1,ee2 -> And(ee1,ee2)) 
-  | Or(e1,e2) -> (match (eval e1),(eval e2) with
+  | Or(e1,e2) -> (match (ev e1),(ev e2) with
     | Bool y,z -> if not y then z else Bool true
     | y,Bool z -> if not z then y else Bool true
     | ee1,ee2 -> Or(ee1,ee2))
- | BoolAtom(e1,cmp,e2) -> (match (eval e1),cmp,(eval e2) with
-    | Bool y,EQ,z -> if y then z else eval (Not z)
+ | BoolAtom(e1,cmp,e2) -> (match (ev e1),cmp,(ev e2) with
+    | Bool y,EQ,z -> if y then z else ev (Not z)
     | Bool y,NEQ,z -> if not y then z else  z
-    | z,EQ,Bool y -> if y then z else eval (Not z)
+    | z,EQ,Bool y -> if y then z else ev (Not z)
     | z,NEQ,Bool y -> if not y then z else  z
-    | y,EQ,z -> Or( And(y,z), (And( eval (Not y),eval (Not z)) ))
+    | y,EQ,z -> Or( And(y,z), (And( ev (Not y),ev (Not z)) ))
     | ee1,cmp,ee2 -> BoolAtom(ee1,cmp,ee2))
-  | Mult(e1,e2) -> (match (eval e1),(eval e2) with
+  | Mult(e1,e2) -> (match (ev e1),(ev e2) with
     Int y,Int z -> Int (y*z) 
     | Float y,Float z -> Float (y*.z)
     | Float y,z -> if y=1.0 then z else (if y=0.0 then Float 0.0 else Mult (Float y,z))
@@ -170,15 +190,38 @@ let rec eval : type a . a expr' -> a expr' = fun x ->
 
     | Bool y,Bool z -> Bool (y && z)
     | ee1,ee2 -> Mult(ee1,ee2))
-  | Minus(e1,e2) -> (match (eval e1),(eval e2) with
+  | Div(e1,e2) -> (match (ev e1),(ev e2) with
+    | Float y,Float z -> Float (y/.z)
+    | z,Float 1.0 -> z
+    | ee1,ee2 -> Div(ee1,ee2))
+  | Minus(e1,e2) -> (match (ev e1),(ev e2) with
       Int y,Int z -> Int (y-z) 
     | Float y,Float z -> Float (y-.z) 
     | ee1,ee2 -> Minus(ee1,ee2))
-  | CastInt(e) -> (match eval e with 
+  | CastInt(e) -> (match ev e with 
     | Int i -> Float (float i)
     | y -> CastInt(y))
+  | IntAtom(ie1,c,ie2) -> (match (ev ie1,ev ie2) with
+			  | Int i1,Int i2 -> Bool (eval_cmp i1 i2 c)
+			  | x,y -> IntAtom(x,c,y))
+  | FloatAtom(fe1,c,fe2) -> (match (ev fe1,ev fe2) with
+			  | Float f1,Float f2 -> Bool (eval_cmp f1 f2 c)
+			  | x,y -> FloatAtom(x,c,y))
+  | Bool b -> Bool b
+  | Int i -> Int i
+  | Float f -> Float f
+  | Floor(f) -> (match ev f with Float(fv) -> Int(int_of_float (floor fv))
+			       | x -> Floor(x))
+  | Ceil(f) -> (match ev f with Float(fv) -> Int(int_of_float (ceil fv))
+			      | x -> Floor(x))
+  | CastBool(be) -> (match ev be with Bool(true) -> Int(1) | Bool(false) -> Int(0)
+			      | x -> CastBool(x))
+  | Exp(f) -> (match ev f with Float(fv) -> Float(exp fv)
+			      | x -> Exp(x))
+  | If(c,e1,e2) -> (match ev c with Bool(true) -> ev e1 | Bool(false) -> ev e2
+				    | x -> If(x,ev e1,ev e2))
   | x -> x
-
+		
 let print_rename f =
   List.iter (fun (x,y) -> Printf.fprintf f " %s->%s " x y) 
 
@@ -209,6 +252,20 @@ let rec rename_expr: type a. (string ->string) -> a expr' -> a expr' = fun rn e 
     | FunCall(x,fl) -> FunCall(x,List.map rnr fl) 
     | If(c,e1,e2) -> If(rnr c,rnr e1, rnr e2)
 
+let rec replace_expr vi e = 
+  let rn x = replace_expr vi x in
+  match e with
+    | IntName(s) -> (match vi s with Some(x) -> x | _ -> IntName (s))
+    | Int(i) -> Int(i)
+    | Plus(e1,e2) -> Plus(rn e1,rn e2)
+    | Minus(e1,e2) -> Minus(rn e1,rn e2)
+    | Mult(e1,e2) -> Mult(rn e1,rn e2)
+    | CastBool(x) -> CastBool (x)
+    | FunCall(x,fl) -> FunCall(x,fl) 
+    | If(c,e1,e2) -> If( c, e1,  e2)
+    | Floor(f) -> Floor(f)
+    | Ceil(f) -> Ceil(f)
+		       
 let gez x = match eval x with
   | Int y when y>=0 -> true
   | _ -> false
@@ -238,7 +295,56 @@ module IntSQ = struct
 end
 
 module IntSQMulti = MultiSet(IntSQ)
+			    
+let rec simp_bool : bool expr' -> bool expr' = fun x -> match x with
+  | Bool(x) -> Bool(x)
+  | Or(x,y) -> Or(simp_bool x,simp_bool y)
+  | And(x,y) -> And(simp_bool x,simp_bool y)
+  | Not(Not(x)) -> simp_bool x
+  | Not(Bool(x)) -> Bool (not x)
+  | Not(Or(x,y)) -> And(simp_bool (Not(x)),simp_bool (Not(y)))
+  | Not(And(x,y)) -> Or(simp_bool (Not(x)),simp_bool (Not(y)))
+  | Not(IntAtom (ie1,cmp,ie2)) -> IntAtom (ie1,neg_cmp cmp,ie2)
+  | Not(FloatAtom (ie1,cmp,ie2)) -> FloatAtom (ie1,neg_cmp cmp,ie2)
+  | Not(x) -> Not(simp_bool x)
+  | x -> x
 
+let rec form_dij : bool expr' -> bool expr' list = fun x -> match x with
+  | Or(x,y) -> (form_dij x) @ (form_dij y)
+  | And(x,y) -> [And(x,y)]
+  | x -> [x]
+		   
+			    
+let rec dependency : type a . StringSet.t -> a expr' -> StringSet.t = fun set x -> 
+  match x with
+  | BoolName(x) -> StringSet.add x set
+  | IntName(x) -> StringSet.add x set
+  | FloatName(x) -> StringSet.add x set
+  | Bool(_) -> set
+  | Int(_) -> set
+  | Float(_) -> set
+  | Not(b) -> dependency set b
+  | Exp(b) -> dependency set b
+  | Floor(b) -> dependency set b  
+  | Ceil(b) -> dependency set b
+  | CastInt(b) -> dependency set b			  
+  | CastBool(b) -> dependency set b
+  | And(b1,b2) -> dependency (dependency set b1) b2
+  | Or(b1,b2) -> dependency (dependency set b1) b2
+  | Plus(b1,b2) -> dependency (dependency set b1) b2
+  | Minus(b1,b2) -> dependency (dependency set b1) b2
+  | Mult(b1,b2) -> dependency (dependency set b1) b2
+  | Div(b1,b2) -> dependency (dependency set b1) b2
+  | IntAtom(i1,_,i2) -> dependency (dependency set i1) i2
+  | FloatAtom(i1,_,i2) -> dependency (dependency set i1) i2
+  | BoolAtom(i1,_,i2) -> dependency (dependency set i1) i2
+  | FunCall(s,l) -> List.fold_left dependency set l
+  | If(b,e1,e2) ->
+     let set2 = dependency set b in
+     let set3 = dependency set2 e1 in
+      dependency set3 e2				   
+				     
+			    
 let add_set t s =
   StringSet.fold StringMap.add_multi t s
 
@@ -322,3 +428,17 @@ let print_token f = function
   | i -> printH_expr f i
 
    
+let eval_or_die: type a.
+		      ?iname:(string -> int expr' option) ->
+		      ?fname:(string -> float expr' option) ->
+		      ?bname:(string -> bool expr' option) ->
+		      a expr' -> a = fun
+    ?iname:(iv=(fun _ -> None))
+    ?fname:(fv=(fun _ -> None))
+    ?bname:(bv=(fun _ -> None)) x ->
+  match eval ~iname:iv ~fname:fv ~bname:bv x with
+  | Int(i) -> i
+  | Float(f) -> f
+  | Bool(b) -> b
+  | x -> printH_expr stderr x; output_string stderr "\n";
+	 failwith ("Unable to evaluate")

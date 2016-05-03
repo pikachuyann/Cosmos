@@ -455,6 +455,8 @@ void Gspn_Writer::writeMarkingUpdateIn(stringstream &f,const arcStore &as, size_
                 f << "\t\t\tif(Marking.P->_PL_" << p.name <<" < "<< seuil+(direct? decrement: 0) << ")TransitionConditions["<< t2 << (pos? "]++ ;":"]-- ;") << endl;
         } else {
             string decrement;
+            
+            
             searchreplace(MyGspn.access(as2,t,p.id).exprVal.stringVal, "Marking.P->_PL_", "tmpMark_" , decrement);
             string seuil;
             searchreplace(MyGspn.access(as,t2,p.id).exprVal.stringVal, "Marking.P->_PL_", "tmpMark_" , seuil);
@@ -584,15 +586,19 @@ void Gspn_Writer::writeFire(ofstream &f)const{
                 newcase << "{" << endl;
 
                   //Write value of Marking dependant place to a temporary variable
-                  for (const auto &p : MyGspn.placeStruct) {
-                      if (MyGspn.access(MyGspn.inArcsStruct,t,p.id).isMarkDep || MyGspn.access(MyGspn.outArcsStruct,t,p.id).isMarkDep) {
-                          newcase << "\t\t\t"<< MyGspn.colDoms[p.colorDom].cname() <<" tmpMark_" << p.name;
-                          newcase << " = Marking.P->_PL_" << p.name << ";" << endl;
-                      }
+                  set<place> dependency;
+                  for (let p : MyGspn.placeStruct) {
+                      if(!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty
+                         || !MyGspn.access(MyGspn.outArcsStruct,t,p.id).isEmpty)
+                          dependency.insert(p);
+                  }
+                  for(let p : dependency){
+                      newcase << "\t\t\t"<< MyGspn.colDoms[p.colorDom].cname() <<" tmpMark_" << p.name;
+                      newcase << " = Marking.P->_PL_" << p.name << ";" << endl;
                   }
 
                   //update the marking
-                  for (const auto &p : MyGspn.placeStruct) {
+                  for (let p : MyGspn.placeStruct) {
                       if (!MyGspn.access(MyGspn.inArcsStruct,t,p.id).isEmpty) {
                           //update for place in place
                           writeMarkingUpdate(newcase, t, p,MyGspn.inArcsStruct,true);

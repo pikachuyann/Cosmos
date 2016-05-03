@@ -14,21 +14,29 @@ type distr =
 | Det of float expr' 
 | Erl of (int expr'*float expr')
 | DiscUserDef of int
+| Player1
 ;;
 
 
 type position = (float*float) option;;
 
-type spt = 
-  (int Type.expr' * (int Type.expr') option,  (* Initial Marking type and bound on place*)
-   distr*float Type.expr' * float Type.expr' , (* Label of transitions type *)
-   int Type.expr' , (* valuation of arcs *)
-   ((string*(int Type.expr') option) list)
-   * ((string*(float Type.expr') option) list)
-   * (string list)
-   * (out_channel->unit->unit) (* Initialization *)
-  ) Net.t;;
+type placetypeSPT = int Type.expr' * (int Type.expr') option
+type valuationtypeSPT = int Type.expr'
+type transitiontypeSPT = distr*float Type.expr' * float Type.expr'
 
+type declarationSPT = {
+    mutable intconst:(string*(int Type.expr') option) list;
+    mutable floatconst:(string*(float Type.expr') option) list;
+    mutable clock:string list;
+    mutable printer:out_channel->unit->unit
+  }
+							
+type spt = 
+  ( placetypeSPT,  (* Initial Marking type and bound on place*)
+    transitiontypeSPT , (* Label of transitions type *)
+   int Type.expr' , (* valuation of arcs *)
+   declarationSPT (* Initialization *)
+  ) Net.t;;
 
 open Net
 

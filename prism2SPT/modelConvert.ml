@@ -1,6 +1,6 @@
 open Type
 
-type format = Prism | Pnml | Dot | Marcie | Simulink | Pdf | GrML
+type format = Prism | Pnml | Dot | Marcie | Simulink | Pdf | GrML | CLess
 
 let input = ref stdin
 let output = ref "out"
@@ -10,7 +10,9 @@ let outputFormat = ref [Dot;Marcie]
 let const_file = ref ""
 let verbose = ref 1
 let inHibitor = ref true
-
+let traceSize = ref 0
+let statespace = ref false
+		    
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
   (String.sub s 0  (fa -1)),(
@@ -18,7 +20,7 @@ let suffix_of_filename s =
 
 let nbarg = ref 0
 
-
+	       
 let _ = 
   Arg.parse ["--light",Arg.Set SimulinkType.lightSim,"light simulator";
 	     "--pdf",Arg.Unit (fun () -> outputFormat:= Pdf:: !outputFormat),"Output as PDF";
@@ -27,6 +29,8 @@ let _ =
 	     "--grml",Arg.Unit (fun () -> outputFormat:= GrML:: !outputFormat),"Output in Pnml File Format";
 	     "--andl",Arg.Unit (fun () -> outputFormat:= Marcie:: !outputFormat),"Output in Marcie File Format";
 	     "--stoch",Arg.Set SimulinkType.modelStoch,"Use probabilistic delay";
+	     "--trace",Arg.Set_int traceSize, "Generate a trace of the model";
+	     "--state-space", Arg.Set statespace, "Compute state space of the model";
 	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
 	     "--no-imm",Arg.Set SimulinkType.doremoveImm,"Remove Instantaneous transition in prims model";
 	     "--no-inhib",Arg.Clear inHibitor,"Remove inhibitor arcs";
@@ -39,7 +43,8 @@ let _ =
 	( let o,suf = suffix_of_filename s in 
 	  output := o;
 	  match suf with
-	  "sm" | "pm" | "nm" | "prism" -> typeFormat := Prism
+	    "sm" | "pm" | "nm" | "prism" -> typeFormat := Prism
+	    | "c" -> typeFormat := CLess
 	| "pnml" -> typeFormat := Pnml
 	| "slx" -> 
 	  typeFormat := Simulink;
@@ -82,6 +87,8 @@ let _ =
       ELSE
       let xmlf = Pnmlparser.tree_of_pnml !inname in
 	  let net = PetriNet.Net.create () in
+	  let open StochasticPetriNet in
+	  net.PetriNet.Net.def <- Some {intconst=[]; floatconst=[]; clock=[]; printer = (fun _ _ -> ()); };
 	  Pnmlparser.net_of_tree net xmlf;
 	  net
     ENDIF
@@ -90,8 +97,15 @@ let _ =
       failwith "XML library required to read GrML" 
       ELSE 
   let xmlf = GrMLParser.tree_of_pnml !inname in
-  let net = PetriNet.Net.create () in
-  GrMLParser.net_of_tree net xmlf;
+      let net = PetriNet.Net.create () in
+       let open StochasticPetriNet in
+       net.PetriNet.Net.def <- (Some {
+				 intconst=[];
+				 floatconst=[];
+				 clock=[];
+				 printer = (fun _ _ -> ())
+			       });
+      GrMLParser.net_of_tree net xmlf;
   net
     ENDIF
   | Simulink -> 
@@ -128,13 +142,57 @@ let _ =
 	|> SimulinkTrans.stochNet_of_modu !const_file
       end
       ENDIF
-      ENDIF   
+      ENDIF
+  | CLess -> 
+     let ast = try
+	 Cless.expr_list_of_file !inname
+	 |< (fun x ->ignore (List.fold_left Cless2PT.sanity StringMap.empty x))
+       with
+       | Cless_ast.Parse_error(l,m) as x -> Cless.print_location Format.std_formatter l;
+					    print_endline m;
+					    raise x
+       | Cless2PT.Type_error(l,m) as x -> Cless.print_location Format.std_formatter l;
+				 print_endline m;
+				 raise x;
+     in
+	     let net = PetriNet.Net.create () in
+	     let pstart = PetriNet.Net.add_place net ("PSTA") (Int(1),Some (Int(1))) in
+	     let pend = PetriNet.Net.add_place net ("PEND") (Int(0),Some (Int(1))) in
+     ignore(Cless2PT.build_spt_list net StringMap.empty pstart pend ast);
+     net
   | _ -> failwith "Input format not yet supported" end
-    |< (fun _-> print_endline "Finish parsing, start transformation")
-    |> (fun x-> if !SimulinkType.useerlang then x else StochasticPetriNet.remove_erlang x)
+  |< (fun _-> print_endline "Finish parsing, start transformation")
+  |> (fun x-> if !SimulinkType.useerlang then x else StochasticPetriNet.remove_erlang x)
   (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
+  |< (fun net -> if !statespace then let n = List.length (Simulation.SemanticSPT.state_space net) in
+				   Printf.printf  "State-space size:%i\n" n)
+  |< (fun net -> if !traceSize <> 0 then let open Simulation.SemanticSPT in
+      try
+	print_endline "Trace:";
+	let m0 = init net in	  
+	print_marking net stdout m0;
+	print_newline ();
+	(*let en = enabled net m0 in
+	List.iter (fun t -> print_endline (fst (PetriNet.Data.acca net.PetriNet.Net.transition t))) en;*)
+	let l,result = trace net m0 !traceSize in
+	List.iter (fun (en,t,m) ->
+		   let pt x = (fst (PetriNet.Data.acca net.PetriNet.Net.transition x)) in
+		   print_string "{";
+		   List.iter (fun x -> Printf.printf "%s, " (pt x)) en;
+		   print_string "}->";
+		   print_endline (pt t);
+		   print_marking net stdout m;
+		   print_newline ()) l;
+	match result with
+	  None -> print_endline "Unfinished trajectory"
+	| Some(true) -> print_endline "Accepting trajectory"
+	| Some(false) -> print_endline "Rejecting trajectory"
+      with
+	Illegal_fire(tr,(pm,_),v) ->
+	let tn,_ = PetriNet.Data.acca net.PetriNet.Net.transition tr in
+	Printf.printf "tr:%s m:%a v:%a\n" tn printH_expr pm printH_expr v)
   |> (fun x -> if !inHibitor then x else StochasticPetriNet.remove_inhibitor x)
-    |> (fun net -> 
+  |> (fun net -> 
       print_endline "Finish transformation, start writing";
       List.iter (function 
       | Dot ->

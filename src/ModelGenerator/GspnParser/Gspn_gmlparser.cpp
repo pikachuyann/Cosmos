@@ -381,6 +381,25 @@ expr MyModelHandler::eval_guard(tree<string>::pre_order_iterator it) {
             }
         }
         return expr("Color_" + typestr + "_" + colorstr);
+    } else if (*it == "intConst") {
+        auto colorclass = MyGspn->colClasses.begin() ;
+        string colorstr;
+        for (treeSI it2 = it.begin(); it2 != it.end(); ++it2) {
+            if (*it2 == "type") {
+                string typestr = simplifyString(*(it2.begin()));
+                for(;colorclass != MyGspn->colClasses.end() && colorclass->name  != typestr; ++colorclass);
+            }
+            if (*it2 == "intValue") {
+                colorstr = simplifyString(*(it2.begin()));
+            }
+        }
+        if( colorclass != MyGspn->colClasses.end() ){
+            return expr( "Color_" + colorclass->name +"_"+ colorclass->colors[ stoi(colorstr) ].name );
+        }else{
+            cerr << "Unknown color \n";
+            return expr();
+        }
+        
     }
     cerr << "Unknown attribute " << *it << "\n";
     return expr();

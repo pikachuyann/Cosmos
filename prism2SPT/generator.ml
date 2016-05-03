@@ -118,7 +118,11 @@ let gen_acc iinit modu net (st,g,f,u) =
 let net_of_prism modu (li,lf) =
   print_endline "Building net";
   let net = Net.create () in
-  net.Net.def <- Some (li,lf,[],fun _ ()->());
+  net.Net.def <- Some {
+		     intconst=li ;
+		     floatconst=lf;
+		     clock=[];
+		     printer=fun _ ()->()} ;
   List.iter (function 
   | IntK(n,(a,b),i) -> Data.add (n,(i,Some b)) net.Net.place
   | BoolK(n,(a,b),i) -> Data.add (n,(i,Some b)) net.Net.place
