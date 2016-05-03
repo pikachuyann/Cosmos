@@ -224,6 +224,11 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
             break;
 
         }
+            
+        case PLAYER1:
+        {
+            return 0;
+        }
         
 			
     }
