@@ -11,6 +11,7 @@ let const_file = ref ""
 let verbose = ref 1
 let inHibitor = ref true
 let traceSize = ref 0
+let simule = ref 0
 let statespace = ref false
 		    
 let suffix_of_filename s =
@@ -30,6 +31,7 @@ let _ =
 	     "--andl",Arg.Unit (fun () -> outputFormat:= Marcie:: !outputFormat),"Output in Marcie File Format";
 	     "--stoch",Arg.Set SimulinkType.modelStoch,"Use probabilistic delay";
 	     "--trace",Arg.Set_int traceSize, "Generate a trace of the model";
+	     "--simule",Arg.Set_int simule, "Simulate trajectories";
 	     "--state-space", Arg.Set statespace, "Compute state space of the model";
 	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
 	     "--no-imm",Arg.Set SimulinkType.doremoveImm,"Remove Instantaneous transition in prims model";
@@ -166,8 +168,15 @@ let _ =
   (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
   |< (fun net -> if !statespace then let n = List.length (Simulation.SemanticSPT.state_space net) in
 				   Printf.printf  "State-space size:%i\n" n)
+  |< (fun net -> if !simule<> 0 then let open Simulation.SemanticSPT in
+				     Printf.printf "Simulate %n trajectories:\n" !simule;
+				     let nbsucc =
+				       simulate net !simule
+				       |> List.filter (function Some true -> true |_-> false)
+				       |> List.length in
+				     Printf.printf "Result: %f\n" ((float nbsucc) /. (float !simule)))
   |< (fun net -> if !traceSize <> 0 then let open Simulation.SemanticSPT in
-      try
+     try
 	print_endline "Trace:";
 	let m0 = init net in	  
 	print_marking net stdout m0;
