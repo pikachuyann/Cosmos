@@ -23,7 +23,7 @@ libClientSim_la_SOURCES = \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
 	clientsim.cpp
 
-includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp
+includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp
 includesdir = $(includedir)
 
 AM_LDFLAGS = $(PTHREAD_LIBS)

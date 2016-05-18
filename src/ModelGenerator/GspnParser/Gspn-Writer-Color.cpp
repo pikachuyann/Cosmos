@@ -685,7 +685,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
     }
     
     header << "#include \"marking.hpp\"" << endl;
-    //header << "#include \"../tmpPrintMarking.hpp\"" << endl;
+    header << "#include \"markingTemplate.hpp\"" << endl;
     
     for (vector<colorDomain>::const_iterator it = MyGspn.colDoms.begin()+1;
          it != MyGspn.colDoms.end(); ++it ) {
