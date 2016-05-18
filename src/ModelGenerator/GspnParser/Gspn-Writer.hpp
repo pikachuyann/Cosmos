@@ -58,6 +58,7 @@ protected:
 	virtual void writeMarkingClasse(std::ofstream &, std::ofstream &)const;
 	void writeEnabledDisabled(std::ofstream &)const;
 	virtual void writeEnabledDisabledBinding(std::ofstream &)const=0;
+        virtual void writeEnabledDisabledBindingSet(std::ofstream &)const=0;
 	void writeUpdateVect(std::ofstream &,const std::string &name,const std::vector< std::set<int> > &vect)const;
 	void writeTransition(std::ofstream &)const;
 	void writeVariable(std::ofstream & spnF)const;
