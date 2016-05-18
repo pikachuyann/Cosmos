@@ -650,7 +650,8 @@ void Gspn_Writer::writeFire(ofstream &f)const{
             }
         });
 
-    writeEnabledDisabledBinding(f);
+        if (P.is_domain_impl_set) { writeEnabledDisabledBindingSet(f); }
+            else { writeEnabledDisabledBinding(f); }
     }
 }
 
