@@ -107,6 +107,7 @@ tracedPlace(),
 dotfile(""),
 magic_values(""),
 use_magic_print(false),
+is_domain_impl_set(false),
 
 HaslFormulas(vector<HaslFormulasTop*>(0)),
 HaslFormulasname(vector<string>(0)),
@@ -303,6 +304,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"prism-path",  required_argument, 0, CO_prism_path},
             {"magic-values", required_argument,0, CO_magic_values},
             {"no-magic-print", no_argument, 0, CO_use_magic_print},
+            {"use-setdomain-impl", no_argument, 0, CO_domain_impl},
             {"version",     no_argument      , 0, CO_version},
 
             {0, 0, 0, 0}
@@ -431,6 +433,8 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 use_magic_print = true;
                 break;
             case CO_use_magic_print: use_magic_print = false;
+                break;
+            case CO_domain_impl: is_domain_impl_set = true;
                 break;
             case CO_output_trace:
                 datatrace = optarg;
