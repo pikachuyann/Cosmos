@@ -52,6 +52,7 @@
 		039B4F8B188E7B2400C63ED7 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 039B4F89188E7B2400C63ED7 /* Generator.cpp */; };
 		03A5DCFC1B273A79003F470A /* Gspn-model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03A5DCFA1B273A79003F470A /* Gspn-model.cpp */; };
 		03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */; };
+		03B0C5521CEC791900FCBF20 /* markingTemplate.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03B0C5511CEC791900FCBF20 /* markingTemplate.hpp */; };
 		03BBD5F21A80D0D700492779 /* LigthLibrairie.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BBD5F11A80D0D700492779 /* LigthLibrairie.h */; };
 		03BBD5F41A80D0D700492779 /* LigthLibrairiePriv.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BBD5F31A80D0D700492779 /* LigthLibrairiePriv.h */; };
 		03BBD5FA1A80D0F100492779 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03BBD5E61A80D08A00492779 /* Event.cpp */; };
@@ -992,6 +993,7 @@
 		03A7F87F182C12DB006F0BC8 /* ptToSpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ptToSpt; path = ../utils/ptToSpt; sourceTree = "<group>"; };
 		03A7F880182C12DB006F0BC8 /* sptToPt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sptToPt; path = ../utils/sptToPt; sourceTree = "<group>"; };
 		03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libexpat.dylib; path = usr/lib/libexpat.dylib; sourceTree = SDKROOT; };
+		03B0C5511CEC791900FCBF20 /* markingTemplate.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = markingTemplate.hpp; sourceTree = "<group>"; };
 		03B35DE31BB053E4008C71EB /* maxEntropy */ = {isa = PBXFileReference; lastKnownFileType = folder; path = maxEntropy; sourceTree = "<group>"; };
 		03B6EE8D1487BB8F0099A6CC /* CosmosSim */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CosmosSim; sourceTree = BUILT_PRODUCTS_DIR; };
 		03B7D355181901AC007AA90D /* Makefile.am */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.am; path = ../Makefile.am; sourceTree = "<group>"; };
@@ -1289,6 +1291,7 @@
 				0315F5391B7215E600DA8EDA /* NLHA.hpp */,
 				032A7062181BC0D6006D7332 /* spn.hpp */,
 				032A7050181BC0D6006D7332 /* marking.hpp */,
+				03B0C5511CEC791900FCBF20 /* markingTemplate.hpp */,
 				03796A741B984AA80004BF0B /* spn_orig.cpp */,
 				03796A751B984AA80004BF0B /* spn_orig.hpp */,
 				032A7063181BC0D6006D7332 /* stateSpace.cpp */,
@@ -3139,6 +3142,7 @@
 				BCD7DA281A8D207E001A2D80 /* Print.h in Headers */,
 				0365553B18292D10001B5947 /* foxglynn.hpp in Headers */,
 				03796A771B984AA80004BF0B /* spn_orig.hpp in Headers */,
+				03B0C5521CEC791900FCBF20 /* markingTemplate.hpp in Headers */,
 				BCD7DA261A8D1FD4001A2D80 /* SerialPort.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
