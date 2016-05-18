@@ -99,6 +99,7 @@ enum Poption {
     CO_version,
     CO_reuse,
     CO_use_magic_print,
+    CO_domain_impl,
 };
 
 enum TmpStat:int {
@@ -184,6 +185,7 @@ struct parameters {
     std::string dotfile;
     std::string magic_values;
     bool use_magic_print;
+    bool is_domain_impl_set;
     
     std::vector<HaslFormulasTop*> HaslFormulas;
     std::vector<std::string> HaslFormulasname;
