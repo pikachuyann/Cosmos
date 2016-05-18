@@ -36,6 +36,10 @@ Gspn_Writer_Color::Gspn_Writer_Color(GspnType& mgspn,parameters& Q):Gspn_Writer(
 
 void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF)const{
     SpnF << "const abstractBinding* "<<objName<<"nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
+    /*if (P.verbose > 7) {
+        SpnF << "\t\t\t\tstd::cerr << \"Transition \" << targettr << \" enabled : \"; \n\t\t\t\t((Transition[targettr].bindingList[*bindingNum])).print();\n";
+        SpnF << "\t\t\t\tstd::cerr << \"\\n\";\n";
+    }*/
     SpnF << "\tswitch(lastTransition*(tr+1) + targettr){"<< endl;
     for(size_t trit = 0; trit != MyGspn.tr;++trit){
         if(!MyGspn.transitionStruct[trit].varDomain.empty())

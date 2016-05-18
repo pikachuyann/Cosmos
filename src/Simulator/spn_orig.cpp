@@ -76,7 +76,15 @@ void SPN_orig::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
 
     Event E;
     for(const auto &t : Transition) {
+        if (verbose > 5) {
+            std::cerr << "IEQ pour Transition " << t.Id << "(" << t.label << ") : \n";
+        }
         for(auto &bindex : t.bindingList){
+                if (verbose > 5) {
+                    std::cerr << "Transition " << t.label << " IEQ : ";
+                    bindex.print();
+                    std::cerr << "\n";
+                }
             if (IsEnabled(t.Id,bindex)) {
                 GenerateEvent(0.0,E, t.Id ,bindex,TG);
                 EQ.insert(E);
