@@ -368,14 +368,24 @@ void Gspn_Writer::writeTransition(ofstream & spnF)const{
 		nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
 
 	for (size_t t=0; t < MyGspn.tr; t++ ) {
+            if (P.verbose > 7) {
+                spnF << "\t\t\t\tstd::cerr << \"TRANSITION " << t << "\" << \" : \\n\";\n";
+            }
         if(MyGspn.colVars.size()>0){
-			spnF << "\t{ //"<< MyGspn.transitionStruct[t].name << "\n\tabstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
+			spnF << "\t{ ";
+                        spnF << "//"<< MyGspn.transitionStruct[t].name << "\n\tabstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
 			for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
 				if( MyGspn.transitionStruct[t].varDomain.count(it)==0){
 					spnF<< "\tbl.P->" << MyGspn.colVars[it].name<<".mult = -1;\n";
 				}
 			}
-			spnF << "\twhile(bl.next()){\n";
+                        spnF << "\t\t\tTransition["<<t<<"].bindingList[0] = bl;\n";
+                        if (P.verbose > 7) {
+                            //spnF << "\t\t\t\tstd::cerr << \"" << t << "\" << \" : \"; \n\t\t\t\tbl.print();\n";
+                            spnF << "\t\t\t\tbl.print();\n";
+                            spnF << "\t\t\t\tstd::cerr << \"\\n\";\n";
+                        }
+			spnF << "\twhile(bl.next()){\n";                        
             if(MyGspn.transitionStruct[t].guard.t == Bool && MyGspn.transitionStruct[t].guard.boolVal ){
                 spnF << "\t\t{\n";
             } else {
@@ -383,9 +393,17 @@ void Gspn_Writer::writeTransition(ofstream & spnF)const{
             }
 			spnF << "\t\t\tbl.idcount = Transition["<<t<<"].bindingList.size();\n";
 			spnF << "\t\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";
+                        if (P.verbose > 7) {
+                            //spnF << "\t\t\t\tstd::cerr << \"" << t << "\" << \" : \"; \n\t\t\t\tbl.print();\n";
+                            spnF << "\t\t\t\tbl.print();\n";
+                            spnF << "\t\t\t\tstd::cerr << \"\\n\";\n";
+                        }
 			spnF << "\t\t\tTransition["<<t<<"].bindingLinkTable[bl.idTotal()]= Transition["<<t<<"].bindingList.size()-1; "<< endl;
 			spnF << "\t\t}\n\t}}\n";
 		}
+        if (P.verbose > 7) {
+            spnF << "\tstd::cerr << \"\\n\\n\";\n";
+        }
 	}
 }
 
