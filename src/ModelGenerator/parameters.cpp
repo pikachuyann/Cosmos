@@ -106,6 +106,7 @@ gnuplotDriver(""),
 tracedPlace(),
 dotfile(""),
 magic_values(""),
+use_magic_print(false),
 
 HaslFormulas(vector<HaslFormulasTop*>(0)),
 HaslFormulasname(vector<string>(0)),
@@ -301,6 +302,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"bin-path",    required_argument, 0, CO_bin_path},
             {"prism-path",  required_argument, 0, CO_prism_path},
             {"magic-values", required_argument,0, CO_magic_values},
+            {"no-magic-print", no_argument, 0, CO_use_magic_print},
             {"version",     no_argument      , 0, CO_version},
 
             {0, 0, 0, 0}
@@ -426,6 +428,9 @@ void parameters::parseCommandLine(int argc, char** argv) {
             case CO_output_dot: dotfile = optarg;
                 break;
             case CO_magic_values: magic_values = optarg;
+                use_magic_print = true;
+                break;
+            case CO_use_magic_print: use_magic_print = false;
                 break;
             case CO_output_trace:
                 datatrace = optarg;

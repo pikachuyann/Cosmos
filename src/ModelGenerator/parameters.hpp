@@ -98,6 +98,7 @@ enum Poption {
     CO_magic_values,
     CO_version,
     CO_reuse,
+    CO_use_magic_print,
 };
 
 enum TmpStat:int {
@@ -182,6 +183,7 @@ struct parameters {
     std::map<std::string,int> tracedPlace;
     std::string dotfile;
     std::string magic_values;
+    bool use_magic_print;
     
     std::vector<HaslFormulasTop*> HaslFormulas;
     std::vector<std::string> HaslFormulasname;

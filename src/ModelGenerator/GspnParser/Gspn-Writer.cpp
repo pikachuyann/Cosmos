@@ -812,7 +812,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
                 if (plit.isTraced){
                     SpnCppFile << "\ts << ";
                     SpnCppFile << " setw(" << maxNameSize-1 << ") << ";
-                    if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit.name << "<<\" \";\n";
+                    if (not P.use_magic_print){ SpnCppFile << "P->_PL_"<< plit.name << "<<\" \";\n";
                     }else{ SpnCppFile << "print_magic(P->_PL_"<< plit.name << ")<<\" \";\n";
                     }
                 }
@@ -833,7 +833,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
             //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
             for (const auto &plit : MyGspn.placeStruct){
                 SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit.name <<"\\\\$/\";"<< endl;
-                if(P.magic_values.empty()){
+                if(not P.use_magic_print){
                     SpnCppFile << "\ts << P->_PL_"<< plit.name << ";"<<endl;
                 } else {
                     SpnCppFile << "\ts << print_magic(P->_PL_"<< plit.name << ");"<<endl;
@@ -944,7 +944,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
         for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
             
             SpnCppFile << "\tstd::cerr << \"\\t"<< colvar->name <<": \";";
-            SpnCppFile << "P->"<< colvar->name << ".print();\n"; //\tcerr << endl;\n
+            SpnCppFile << "P->"<< colvar->name << ".print(std::cerr);\n"; //\tcerr << endl;\n
         }
         SpnCppFile << "}\n";
 
@@ -1043,13 +1043,13 @@ void Gspn_Writer::writeFile(){
 	
     if (P.magic_values != "")
         SpnCppFile << "#include \"" << P.magic_values << "\"" << endl;
-	if(P.RareEvent){
-		SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
-	}else if(!P.lightSimulator){
-		SpnCppFile << "void "<<"REHandling::"<<"print_state(const vector<int> &vect){}" << endl;
-		SpnCppFile << "void "<<"REHandling::"<<"lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
-		SpnCppFile << "bool "<<"REHandling::"<<"precondition(const abstractMarking &M){return true;}" << endl;
-	}
+    if(P.RareEvent){
+	SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
+    }else if(!P.lightSimulator){
+	SpnCppFile << "void "<<"REHandling::"<<"print_state(const vector<int> &vect){}" << endl;
+	SpnCppFile << "void "<<"REHandling::"<<"lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
+	SpnCppFile << "bool "<<"REHandling::"<<"precondition(const abstractMarking &M){return true;}" << endl;
+    }
     
 	//------------- Writing Marking type and header ----------------------------
     if(!P.lightSimulator)SpnCppFile << "#include \"marking.hpp\"\n";
