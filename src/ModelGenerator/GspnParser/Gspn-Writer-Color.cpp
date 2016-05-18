@@ -282,7 +282,7 @@ void Gspn_Writer_Color::writeDomainToken(std::ofstream &header, const colorDomai
     }
     header << "\t}\n";
     
-    header << "\tvoid print(){\n\t\tstd::cerr << mult << \"<\" <<";
+    header << "\tvoid print(std::ostream& out) const {\n\t\tout << mult << \"<\" <<";
     for (itcol = it.colorClassIndex.begin(); itcol != it.colorClassIndex.end() ; ++itcol ) {
         if(itcol != it.colorClassIndex.begin())header << "<< \" , \" << ";
         header << " Color_"<< MyGspn.colClasses[*itcol].name << "_names[c" << itcol - it.colorClassIndex.begin() << "]";
@@ -317,14 +317,14 @@ void Gspn_Writer_Color::writeDomainToken(std::ofstream &header, const colorDomai
     header << "\tbool operator < (const int x){\n";
     header << "\t\treturn mult < x ;\n\t}\n";
     
-    header << "bool operator < (const " << it.tokname() << " &tok)constr    {\n"; // Comparaison demandée par la structure Map
+    header << "\tbool operator < (const " << it.tokname() << " &tok) const {\n"; // Comparaison demandée par la structure Map
     for (size_t colIndex=0; colIndex< it.colorClassIndex.size(); colIndex++ ) {
         // Comparaison en ordre lexico
-        header << "\tif (c" << colIndex << " < tok.c" << colIndex << ") { return true; }\n";
-        header << "\tif (c" << colIndex << " > tok.c" << colIndex << ") { return false; }\n";
+        header << "\t\tif (c" << colIndex << " < tok.c" << colIndex << ") { return true; }\n";
+        header << "\t\tif (c" << colIndex << " > tok.c" << colIndex << ") { return false; }\n";
     }
-    header << "return false;\n";
-    header << "}\n";
+    header << "\t\treturn false;\n";
+    header << "\t}\n";
     
     header << "};\n";
     
@@ -583,8 +583,8 @@ void Gspn_Writer_Color::writeDomainSet(std::ofstream &SpnCppFile , std::ofstream
         
     }*/
 
-    header << "typedef DomainGen< " << it.tokname()<< ", ";
-    for (let it2 : it.colorClassIndex) header << (it2==it.colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
+    header << "typedef DomainGen< " << it.tokname();
+    /* for (let it2 : it.colorClassIndex) header << (it2==it.colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname(); */
     header << "> " << it.cname() << ";" << endl;
     
     SpnCppFile << "inline bool contains(const "<<it.cname() << "& d1, const " << it.cname() << "& d2){";
@@ -685,6 +685,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
     }
     
     header << "#include \"marking.hpp\"" << endl;
+    //header << "#include \"../tmpPrintMarking.hpp\"" << endl;
     
     for (vector<colorDomain>::const_iterator it = MyGspn.colDoms.begin()+1;
          it != MyGspn.colDoms.end(); ++it ) {

@@ -122,7 +122,7 @@ public:
 
 inline bool contains(int i, int j){ return i>=j;}
 
-template <typename T,typename R>
+template <typename T>
 struct DomainGen {
     std::map<T, unsigned int > tokens;
     
@@ -263,5 +263,17 @@ struct DomainGen {
 
     
 };
+
+template <typename T>
+std::ostream& operator << (std::ostream& out, const DomainGen<T>& x) {
+    out << "(";
+    for (const auto& t:x.tokens) {
+        out << t.second << "*";
+        t.first.print(out);
+        out << ",";
+    }
+    out << ")";
+    return out;
+}
 
 #endif
