@@ -477,26 +477,9 @@ void Gspn_Writer_Color::writeDomainTable(std::ofstream &SpnCppFile , std::ofstre
             }
         }
  
-        /*
-<<<<<<< HEAD */
         header << forloop2.str();
         header << "\t\t\tmult" << colorArrayAccess2.str() << " = temp.mult" << accessperm.str();
         header << ";" << endl;
-/*=======
-        header << "struct " << it->cname() << ":";
-        for (let it2 : it->colorClassIndex) header << (it2==it->colorClassIndex[0]?" ":", ") << "contains_" << MyGspn.colClasses[it2].cname();
-        header << " {\n\tint mult" << domaindecl.str() << ";\n";
-        header << "\t" << it->cname() << "(size_t v =0) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), v );}"<< endl;
-        header << "\t" << it->cname() << "(const "<< it->tokname() <<"& tok) { fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), 0 ); *this += tok; }"<< endl;
-        header << "\t" << it->cname() << "(" << colorArgsName.str() << ") {\n";
-        //header << "\t\t" << "memset(&mult,0 , sizeof(mult));\n";
-        header << "\t\t" << "fill( (int*)mult ,((int*)mult) + sizeof(mult)/sizeof(int), 0 );"<< endl;
-        header << "\t\t" << "if(" << allCondition.str() << ")\n";
-        header << "\t\t\t" << "mult" << colorArrayAccess.str() << " = 1 ;\n";
-        header << "\t\telse{\n";
-        header << forLoop.str() << "\t\t\t\tmult" << colorArrayAccess2.str() << " = 1 ;\n";
-        header << "\t\t}\n";
->>>>>>> 52f10676cba75de991953697c5888d3dae58b6f4*/
         header << "\t}\n";
     }
     
