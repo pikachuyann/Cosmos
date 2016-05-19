@@ -240,10 +240,18 @@ void EventsQueue::printSedCmd(const vector<_trans> &trlabl,ostream& df)const {
     if(evtHeap.size()>0){
         df << "-e 's/\\$CF_" << trlabl[InPosition(0).transition].label << "\\$/Red/g' ";
         for (unsigned int i = 1; i < evtHeap.size(); i++){
-            df << "-e 's/\\$CF_" << trlabl[InPosition(i).transition].label << "\\$/Blue/g' ";
+            df << "-e 's/\\$CF_" << trlabl[InPosition(i).transition].label << "\\$/Lightblue/g' ";
         }
     }
     df << "-e 's/\\$CF_[^\\$]*\\$/Black/g' ";
+    for(let t : trlabl ){
+        df << "-e 's/\\$ET_" << t.label << "\\$/";
+        if(isScheduled( t.Id , 0)){
+            let ev = evtTbl[t.Id][0];
+            df << "(" << ev.time << ", " << ev.priority << ", " << ev.weight << ")";
+        }
+        df << "/g' ";
+    }
 }
 
 /**
