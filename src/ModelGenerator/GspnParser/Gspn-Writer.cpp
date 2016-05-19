@@ -409,7 +409,8 @@ void Gspn_Writer::writeDotFile(const string &file)const{
     for (const auto &t : MyGspn.transitionStruct ) {
         df << "\t" << t.name;
         df << " [shape=rect,height=0.2,style=filled,fillcolor=$CF_";
-        df << t.name << "$ ,xlabel=\"" << t.name << "\",label=\"\"];"<< endl;
+        df << t.name << "$ ,xlabel=\"" << t.name << "\",label=\"$ET_";
+        df << t.name << "$\"];"<< endl;
     }
 
     for (auto &p : MyGspn.placeStruct )
