@@ -29,6 +29,7 @@
 #include <sstream>
 
 #include "Gspn-Writer-Color.hpp"
+#include "../casesWriter.hpp"
 
 using namespace std;
 
@@ -616,15 +617,68 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                 header << "\tstd::map<"<< MyGspn.colDoms[plit->colorDom].tokname() << ", unsigned int>::const_iterator _PL_"<< plit->name << ";\n";
             }
         }
+        for (let var : MyGspn.colVars) {
+            header << "\tsize_t _ITVAR_" << var.name << ";\n";
+        }
         
         header << "\n\tvoid reset(abstractMarkingImpl& m) {";
         for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
             plit!= MyGspn.placeStruct.end(); ++plit) {
             if (not MyGspn.colDoms[plit->colorDom].isUncolored()) {
-                header << "\t\t_PL_" << plit->name << " = m._PL_" << plit->name << ".tokens.begin();\n";
+                header << "\t\t_IT_" << plit->name << " = m._PL_" << plit->name << ".tokens.begin();\n";
             }
         }
+        header << "\n\t}\n";
+        
+        header << "private:\n";
+        header << "\n\tbool nextInterieur(transition& t, abstractMarkingImpl& m) {\n";
+        // BIDON
+        casesHandler bindingcases("t");
+        for (size_t t = 0; t < MyGspn.tr ; t++){
+            stringstream newcase;
+        
+            // liste des variables
+            const auto& trans = MyGspn.transitionStruct[t];
+            auto varlist = trans.varDomain;
+            // Pour chaque variable :
+            for (let var : varlist) {
+                bool isUsed = false;
+                for (let place : MyGspn.placeStruct) {
+                    let vartemp = MyGspn.access(MyGspn.inArcsStruct, t, place.id);
+                    if (not vartemp.containsVar(var)) { continue; }
+                    isUsed = true;
+                    newcase << "\t\tif (not _IT_" << place.name << " == m._PL_" << place.name << ".end()) { ";
+                    newcase << "_IT_" << place.name << "++; return true;";
+                    newcase << " }\n";
+                    newcase << "\t\t_IT_" << place.name << " = m._PL_" << place.name << ".tokens.begin();\n";
+                }
+                /* if (not isUsed) {
+                    auto& currvar = MyGspn.colVars[var];
+                    newcase << "\t\tif (not _ITVAR_" << currvar.name << " == " << MyGspn.colClasses[currvar.type].size() << ") { ";
+                    newcase << "_ITVAR_" << currvar.name << "++; return true;";
+                    newcase << " }\n";
+                    newcase << "_ITVAR_" << currvar.name << " = 0;";
+                } */
+            }
+            newcase << "\t\treturn false;\n";
+            bindingcases.addCase(t, newcase.str(),MyGspn.transitionStruct[t].name);
+        }
+        bindingcases.writeCases(header);
         header << "\n\t}";
+
+        header << "\n\tbool isCoherent(transition& t,abstractMarkingImpl& m) {\n";
+        // Lister les variables, mettre des valeurs "tentatives" en parcourant les valeurs actuelles
+        // des différents itérateurs. Si échec/Collision => forcer le next
+        header << "\n\t}";
+        
+        header << "\npublic:\n";
+
+        header << "\n\tbool nextInterieur(transition& t, abstractMarkingImpl& m) {\n";
+        header << "\n\n\tbool estCoherent = false;";
+        // Tant que c'est pas cohérent, je pop le next itérateur
+        header << "\n\t}";
+        
+        // Créer une fonction qui génère concreteBinding ?
         
         header << "};\n";
     }
