@@ -212,6 +212,11 @@ void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF)const{
 void Gspn_Writer_Color::writeEnabledDisabledBindingSet(ofstream &SpnF)const{
     SpnF << "const abstractBinding* "<<objName<<"nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
     
+    // Switch sur les transitions :
+    
+    // 1. récupérer les variables d'entrées
+    // 2. itérer sur les places d'entrées
+    
     SpnF << "\t\tif(*bindingNum==Transition[targettr].bindingList.size())return NULL;"<<endl;
     SpnF << "\t\t*bindingNum = *bindingNum +1;"<< endl;
     SpnF << "\t\treturn &(Transition[targettr].bindingList[*bindingNum-1]);"<< endl;
@@ -600,5 +605,28 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
     }
    
     Gspn_Writer::writeMarkingClasse(SpnCppFile, header);
+    
+    if (P.is_domain_impl_set) {
+        header << "class abstractMarkingIterator {\n";
+        header << "public:\n";
+
+        for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+            plit!= MyGspn.placeStruct.end(); ++plit) {
+            if (not MyGspn.colDoms[plit->colorDom].isUncolored()) {
+                header << "\tstd::map<"<< MyGspn.colDoms[plit->colorDom].tokname() << ", unsigned int>::const_iterator _PL_"<< plit->name << ";\n";
+            }
+        }
+        
+        header << "\n\tvoid reset(abstractMarkingImpl& m) {";
+        for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
+            plit!= MyGspn.placeStruct.end(); ++plit) {
+            if (not MyGspn.colDoms[plit->colorDom].isUncolored()) {
+                header << "\t\t_PL_" << plit->name << " = m._PL_" << plit->name << ".tokens.begin();\n";
+            }
+        }
+        header << "\n\t}";
+        
+        header << "};\n";
+    }
 }
 
