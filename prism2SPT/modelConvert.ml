@@ -84,20 +84,20 @@ let _ =
     input := open_in !inname;
     Generator.read_prism !input !inname
   | Pnml ->
-    IFNDEF HAS_XML THEN
+     (*IFNDEF HAS_XML THEN
       failwith "XML library required to read PNML" 
-      ELSE
+      ELSE*)
       let xmlf = Pnmlparser.tree_of_pnml !inname in
 	  let net = PetriNet.Net.create () in
 	  let open StochasticPetriNet in
 	  net.PetriNet.Net.def <- Some {intconst=[]; floatconst=[]; clock=[]; printer = (fun _ _ -> ()); };
 	  Pnmlparser.net_of_tree net xmlf;
 	  net
-    ENDIF
+  (* ENDIF *)
   | GrML ->
-    IFNDEF HAS_XML THEN
+  (*  IFNDEF HAS_XML THEN
       failwith "XML library required to read GrML" 
-      ELSE 
+      ELSE *)
   let xmlf = GrMLParser.tree_of_pnml !inname in
       let net = PetriNet.Net.create () in
        let open StochasticPetriNet in
@@ -109,13 +109,13 @@ let _ =
 			       });
       GrMLParser.net_of_tree net xmlf;
   net
-    ENDIF
+  (* ENDIF *)
   | Simulink -> 
-    IFNDEF HAS_XML THEN
+   (* IFNDEF HAS_XML THEN
       failwith "XML library required to read Simulink file" 
       ELSE IFNDEF HAS_ZIP THEN
       failwith "ZIP library required to read Simulink file" 
-      ELSE
+      ELSE*)
       begin 
 	Zip.open_in !inname
 	|> (fun z -> (
@@ -143,8 +143,8 @@ let _ =
     (*|< Simulinkparser.prune*) 
 	|> SimulinkTrans.stochNet_of_modu !const_file
       end
-      ENDIF
-      ENDIF
+     (* ENDIF
+      ENDIF *)
   | CLess -> 
      let ast = try
 	 Cless.expr_list_of_file !inname
@@ -183,7 +183,7 @@ let _ =
 	print_newline ();
 	(*let en = enabled net m0 in
 	List.iter (fun t -> print_endline (fst (PetriNet.Data.acca net.PetriNet.Net.transition t))) en;*)
-	let l,result = trace net m0 !traceSize in
+	let l,result = trace  net m0 !traceSize in
 	List.iter (fun (en,t,m) ->
 		   let pt x = (fst (PetriNet.Data.acca net.PetriNet.Net.transition x)) in
 		   print_string "{";
