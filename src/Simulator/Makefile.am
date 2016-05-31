@@ -4,7 +4,7 @@ lib_LTLIBRARIES = libClientSim.la
 libClientSim_la_SOURCES = \
 	BatchR.cpp BatchR.hpp \
 	Event.cpp  Event.hpp \
-	EventsQueue.cpp EventsQueue.hpp \
+	EventsQueueSet.cpp EventsQueueSet.hpp \
 	timeGen.cpp timeGen.hpp \
 	marking.hpp spn.hpp \
     spn_orig.cpp spn_orig.hpp \

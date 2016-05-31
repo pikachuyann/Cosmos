@@ -24,7 +24,7 @@
  *******************************************************************************
  */
 
-#include "EventsQueue.hpp"
+#include "EventsQueueSet.hpp"
 #include <iostream>
 #include <set>
 #include <math.h>
@@ -59,7 +59,7 @@ void SimulatorRE::initVect(){
     static_cast<SPN_RE&>(N).initialize(muprob);
 }
 
-void SPN_RE::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
+void SPN_RE::InitialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
 	Rate_Sum = 0;
 	Origine_Rate_Sum = 0;
 	SPN_orig::InitialEventsQueue(EQ,TG);
@@ -72,7 +72,7 @@ void SimulatorRE::returnResultTrue(){
 	if(verbose>3)cerr << "---------------\n TRUE: Likelyhood: "<< A.Likelihood <<" \n------\n";
 }
 
-void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue &EQ,timeGen &TG){
+void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueueSet &EQ,timeGen &TG){
 	//If rareevent not require yet call the parent function
 	
 	if(!rareEventEnabled){
