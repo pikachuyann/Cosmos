@@ -50,7 +50,11 @@ void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBindi
     //It is used to solved conflict of two transitions with same time
     //and same priority.
     double w=0.0;
-    if (Transition[Id].DistTypeIndex > 2) {
+    switch (Transition[Id].DistTypeIndex){
+        case DETERMINISTIC:
+        case DISCRETEUNIF:
+        case IMMEDIATE:
+        case DISCRETEUSERDEFINE:
         ParamDistr[0]= GetWeight(Id,b);
         w = TG.GenerateTime(EXPONENTIAL, ParamDistr, customDistr);
         if(verbose>4){
@@ -58,6 +62,20 @@ void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBindi
             cerr << TG.string_of_dist(EXPONENTIAL, ParamDistr);
             cerr << endl;
         }
+            break;
+        case NORMAL:
+        case GAMMA:
+        case GEOMETRIC:
+        case UNIFORM:
+        case ERLANG:
+        case EXPONENTIAL:
+        case LOGNORMAL:
+        case TRIANGLE:
+        case USERDEFINE:
+        case USERDEFINEPOLYNOMIAL:
+        case MASSACTION:
+        case PLAYER1:
+            ;
     }
 
     E.transition = Id;
