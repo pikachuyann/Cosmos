@@ -43,7 +43,7 @@ using namespace std;
  * but don't fill it.
  */
 Simulator::Simulator(SPN_orig& spn,LHA_orig& automate):verbose(0),N(spn),A(automate){
-	EQ = new EventsQueue(N); //initialization of the event queue
+	EQ = new EventsQueueSet(N); //initialization of the event queue
     logResult=false;
 	sampleTrace = 0.0;
 	Result.quantR.resize(A.FormulaVal.size());

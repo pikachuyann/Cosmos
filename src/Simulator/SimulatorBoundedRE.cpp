@@ -80,7 +80,7 @@ BatchR SimulatorBoundedRE::RunBatch(){
 	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
 		NRE.Origine_Rate_Table = vector<double>(N.tr,0.0);
 		NRE.Rate_Table = vector<double>(N.tr,0.0);
-		EQ = new EventsQueue(N);
+		EQ = new EventsQueueSet(N);
 		reset();
 		
         N.SPN_orig::InitialEventsQueue(*EQ,*this);
@@ -173,7 +173,7 @@ double SPN_BoundedRE::mu(){
 	return(muprob->getMu(stateN));
 }
 
-void SPN_BoundedRE::update(double ctime,size_t,const abstractBinding&,EventsQueue &EQ, timeGen &TG){
+void SPN_BoundedRE::update(double ctime,size_t,const abstractBinding&,EventsQueueSet &EQ, timeGen &TG){
 	Event F;
     //check if the current transition is still enabled
 	

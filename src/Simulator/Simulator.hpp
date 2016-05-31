@@ -33,7 +33,7 @@
 #include "LHA_orig.hpp"
 #include "NLHA.hpp"
 #include "spn_orig.hpp"
-#include "EventsQueue.hpp"
+#include "EventsQueueSet.hpp"
 #include "BatchR.hpp"
 #include "timeGen.hpp"
 
@@ -113,7 +113,7 @@ protected:
 	 * enabled transitions with
      * the time at wich they will be fire if still enabled
 	 */
-	EventsQueue* EQ;
+	EventsQueueSet* EQ;
 	
 	/**
 	 * \brief Simulate a step of the system,

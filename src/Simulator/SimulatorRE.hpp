@@ -41,8 +41,8 @@ public:
 
     virtual void initialize(stateSpace *muprob);
     virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &)override;
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &)override;
-    virtual void InitialEventsQueue(EventsQueue &,timeGen &)override;
+    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &)override;
+    virtual void InitialEventsQueue(EventsQueueSet &,timeGen &)override;
 
     virtual double mu();
     const bool doubleIS_mode;
