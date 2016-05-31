@@ -40,7 +40,7 @@
 class simulationState{
 private:
 	abstractMarking marking;
-	EventsQueue *EQ;
+	EventsQueueSet *EQ;
 	LHA_orig lhaState;
     
 	//rare event variable
@@ -58,7 +58,7 @@ public:
 	};
 	~simulationState(){};
 	
-	void saveState(SPN_RE* N,LHA_orig* A,EventsQueue** EQsim){
+	void saveState(SPN_RE* N,LHA_orig* A,EventsQueueSet** EQsim){
 		marking.swap(N->Marking);
 		//AE = *AEsim;
 		EQ = *EQsim; //new EventsQueue(*EQsim);
@@ -71,7 +71,7 @@ public:
 		Origine_Rate_Sum = N-> Origine_Rate_Sum;
 		
 	};
-	void loadState(SPN_RE* N,LHA_orig* A,EventsQueue** EQsim){
+	void loadState(SPN_RE* N,LHA_orig* A,EventsQueueSet** EQsim){
 		
 		N->Marking.swap(marking);
 		//*AEsim = AE;
@@ -91,7 +91,7 @@ class SPN_BoundedRE: public SPN_RE{
 public:
     SPN_BoundedRE(int& v,bool doubleIS);
 
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &, timeGen &) override;
+    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueueSet &, timeGen &) override;
     virtual void getParams(size_t, const abstractBinding&) override;
     virtual double mu() override;
     virtual double ComputeDistr(size_t i,const abstractBinding&, double origin_rate) override;

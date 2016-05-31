@@ -107,7 +107,7 @@ public:
 	abstractBinding(const abstractBinding& b);
 	abstractBinding& operator = (const abstractBinding& m);
 	
-	//! Nexte binding in the bindin list of the transition.
+	//! Next binding in the binding list of the transition.
 	bool next();
 	//! Print in human readable format.
 	void print()const;

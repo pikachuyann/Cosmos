@@ -26,6 +26,8 @@
 
 #include "spn_orig.hpp"
 
+using namespace std;
+
 SPN_orig::SPN_orig(int& v):verbose(v){}
 
 /**
@@ -70,7 +72,7 @@ void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBindi
 /**
  * Fill the event queue with the initially enabled transition
  */
-void SPN_orig::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
+void SPN_orig::InitialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
 
@@ -100,7 +102,7 @@ void SPN_orig::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue &EQ,timeGen &TG){
+void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueueSet &EQ,timeGen &TG){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 

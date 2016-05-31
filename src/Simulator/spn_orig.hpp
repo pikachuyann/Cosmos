@@ -29,7 +29,7 @@
 
 
 #include "spn.hpp"
-#include "EventsQueue.hpp"
+#include "EventsQueueSet.hpp"
 #include "timeGen.hpp"
 
 class SPN_orig : public SPN
@@ -38,8 +38,8 @@ public:
     SPN_orig(int&);
 
     virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &);
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &);
-    virtual void InitialEventsQueue(EventsQueue &,timeGen &);
+    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &);
+    virtual void InitialEventsQueue(EventsQueueSet &,timeGen &);
 
     int &verbose;
 

@@ -109,7 +109,7 @@ BatchR SimulatorContinuousBounded::RunBatch(){
 		while(!continueb){
 			//we build a new trajectory from the initial state.
 			continueb =true;
-			EQ = new EventsQueue(N);
+			EQ = new EventsQueueSet(N);
 			reset();
 			//We simulate until either the condition is satisfied or the trajectory reach a deadend.
 			while(!NRE.precondition(N.Marking) && continueb){
