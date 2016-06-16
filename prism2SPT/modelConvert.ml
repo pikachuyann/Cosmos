@@ -13,7 +13,7 @@ let inHibitor = ref true
 let traceSize = ref 0
 let simule = ref 0
 let statespace = ref false
-		    
+		     
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
   (String.sub s 0  (fa -1)),(
@@ -39,6 +39,7 @@ let _ =
 	     "--erlang-step",Arg.Set_int SimulinkTrans.erlangstep,"Number of erlang step for stochastic model";
 	     "-v",Arg.Set_int verbose,"Set verbose level default 1";
 	     "--add-reward",Arg.Set SimulinkType.add_reward, "Add reward transition to each non immediate transition";
+	     "--mdp-strat", Arg.Set_string Simulation.mdpstrat, "MDP strategy load/save file";
 	    ]
     (function s -> incr nbarg; match !nbarg with
       1 -> inname:= s;
@@ -57,6 +58,8 @@ let _ =
     | 2 -> output := s
     | _ -> failwith "Do not know what to do with extra arguments.") 
     "usage";;
+
+let _ = Simulation.MdpOp.read_strat ();;
   
 (*if Array.length Sys.argv <>2 then
   outputFormat := (List.filter (fun x -> x<>Pdf && x <> Dot) !outputFormat);;
@@ -174,7 +177,10 @@ let _ =
 				       simulate net !simule
 				       |> List.filter (function Some true -> true |_-> false)
 				       |> List.length in
-				     Printf.printf "Result: %f\n" ((float nbsucc) /. (float !simule)))
+				     Printf.printf "Result: %f\n" ((float nbsucc) /. (float !simule));
+				     Simulation.MdpOp.print_state_mdp ()
+     )
+  
   |< (fun net -> if !traceSize <> 0 then let open Simulation.SemanticSPT in
      try
 	print_endline "Trace:";
