@@ -427,7 +427,6 @@ let print_token f = function
   | Int 5 -> output_string f "•••\n••"
   | i -> printH_expr f i
 
-   
 let eval_or_die: type a.
 		      ?iname:(string -> int expr' option) ->
 		      ?fname:(string -> float expr' option) ->
@@ -441,4 +440,4 @@ let eval_or_die: type a.
   | Float(f) -> f
   | Bool(b) -> b
   | x -> printH_expr stderr x; output_string stderr "\n";
-	 failwith ("Unable to evaluate")
+	 failwith @@ "Unable to evaluate"
