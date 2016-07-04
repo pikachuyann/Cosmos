@@ -647,7 +647,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                     let vartemp = MyGspn.access(MyGspn.inArcsStruct, t, place.id);
                     if (not vartemp.containsVar(var)) { continue; }
                     isUsed = true;
-                    newcase << "\t\tif (not (_IT_" << place.name << " == m._PL_" << place.name << ".end())) { ";
+                    newcase << "\t\tif (not (_IT_" << place.name << " == m._PL_" << place.name << ".tokens.end())) { ";
                     newcase << "_IT_" << place.name << "++; return true;";
                     newcase << " }\n";
                     newcase << "\t\t_IT_" << place.name << " = m._PL_" << place.name << ".tokens.begin();\n";
