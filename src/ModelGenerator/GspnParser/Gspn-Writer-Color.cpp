@@ -619,6 +619,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         }
         for (let var : MyGspn.colVars) {
             header << "\tsize_t _ITVAR_" << var.name << ";\n";
+            header << "\tbool _ISDEFITVAR_" << var.name << ";\n";
         }
         
         header << "\n\tvoid reset(abstractMarkingImpl& m) {\n";
@@ -630,9 +631,9 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         }
         header << "\n\t}\n";
         
-        header << "public:\n";
+        header << "private:\n";
         header << "\n\tbool nextInterieur(size_t& t, abstractMarkingImpl& m) {\n";
-        // BIDON
+        
         casesHandler bindingcases("t");
         for (size_t t = 0; t < MyGspn.tr ; t++){
             stringstream newcase;
@@ -640,6 +641,9 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
             // liste des variables
             const auto& trans = MyGspn.transitionStruct[t];
             auto varlist = trans.varDomain;
+            // tableau d'utilisations des placesz
+            //bool estVisitee[MyGspn.placeStruct.size()];
+            vector<bool> isVisited(MyGspn.placeStruct.size(),false);
             // Pour chaque variable :
             for (let var : varlist) {
                 bool isUsed = false;
@@ -647,18 +651,20 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                     let vartemp = MyGspn.access(MyGspn.inArcsStruct, t, place.id);
                     if (not vartemp.containsVar(var)) { continue; }
                     isUsed = true;
+                    if (isVisited[place.id]) { continue; }
+                    isVisited[place.id] = true;
                     newcase << "\t\tif (not (_IT_" << place.name << " == m._PL_" << place.name << ".tokens.end())) { ";
                     newcase << "_IT_" << place.name << "++; return true;";
                     newcase << " }\n";
                     newcase << "\t\t_IT_" << place.name << " = m._PL_" << place.name << ".tokens.begin();\n";
                 }
-                /* if (not isUsed) {
+                if (not isUsed) {
                     auto& currvar = MyGspn.colVars[var];
                     newcase << "\t\tif (not _ITVAR_" << currvar.name << " == " << MyGspn.colClasses[currvar.type].size() << ") { ";
                     newcase << "_ITVAR_" << currvar.name << "++; return true;";
                     newcase << " }\n";
                     newcase << "_ITVAR_" << currvar.name << " = 0;";
-                } */
+                }
             }
             newcase << "\t\treturn false;\n";
             bindingcases.addCase(t, newcase.str(),MyGspn.transitionStruct[t].name);
@@ -666,20 +672,73 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         bindingcases.writeCases(header);
         header << "\n\t}";
 
-        header << "\nprivate:\n";
+        //header << "\nprivate:\n";
+        
+        //    header << "\tsize_t _ITVAR_" << var.name << ";\n";
+        //    header << "\tbool _ISDEFITVAR_" << var.name << ";\n";
         
         header << "\n\tbool isCoherent(size_t& t,abstractMarkingImpl& m) {\n";
+        for (let var : MyGspn.colVars) {
+            header << "\t _ISDEFITVAR_" << var.name << " = false;\n";
+        }
+        casesHandler bindingcasesB("t");
+        for (size_t t = 0; t < MyGspn.tr ; t++){
+            stringstream newcase;
+        
+            // liste des variables
+            const auto& trans = MyGspn.transitionStruct[t];
+            auto varlist = trans.varDomain;
+            vector<bool> isVisited(MyGspn.placeStruct.size(),false);
+            for (let var : varlist) {
+                auto& currvar = MyGspn.colVars[var];
+                bool isUsed = false;
+                for (let place : MyGspn.placeStruct) {
+                    if (isUsed) { continue; }
+                    isUsed = true;
+                }
+                if (not isUsed) { newcase << "\t _ISDEFITVAR_" << currvar.name << " = true;\n"; }
+            }
+            
+            // TODO : sortir le _ISDEFITVAR_ du code généré vers le code générateur
+            for (let place : MyGspn.placeStruct) {
+                let vartempB = MyGspn.access(MyGspn.inArcsStruct, t, place.id).coloredVal;
+                for (const auto& vartemp : vartempB) {
+                for (size_t varnum = 0;varnum < vartemp.field.size();varnum++) {
+                //for (let var : vartemp) {
+                    if (not (vartemp.Flags[varnum] == CT_VARIABLE)) { 
+                        fprintf(stderr, "Un élément de l'arc n'est pas une variable"); exit(2);
+                    }
+                    auto& currvar = MyGspn.colVars[vartemp.field[varnum]];
+                    newcase << "\tif (_ISDEFITVAR_" << currvar.name << ") {";
+                    newcase << "if (not _ITVAR_" << currvar.name << " == (*_IT_" << place.name << ").first.c" << varnum << ") { return false; } ";
+                    // Cas où la variable est déjà définie
+                    newcase << "}\n\telse {\n";
+                    // _IT_place : token ds un Domain
+                    newcase << "\t\t_ITVAR_" << currvar.name << " = (*_IT_" << place.name << ").first.c" << varnum << ";\n";
+                    newcase << "\t\t_ISDEFITVAR_" << currvar.name << " = true;\n"; 
+                    newcase << "\t}\n";
+                }
+                }
+            }
+            newcase << "\treturn true;";
+            bindingcasesB.addCase(t, newcase.str(),MyGspn.transitionStruct[t].name);
+        }
         // Lister les variables, mettre des valeurs "tentatives" en parcourant les valeurs actuelles
         // des différents itérateurs. Si échec/Collision => forcer le next
+        bindingcasesB.writeCases(header);
         header << "\n\t}";
         
         header << "\npublic:\n";
-/*
-        header << "\n\tbool nextInterieur(size_t& t, abstractMarkingImpl& m) {\n";
-        header << "\n\n\tbool estCoherent = false;";
+        
+        header << "\n\tbool next(size_t& t, abstractMarkingImpl& m) {";
+        header << "\n\t\tbool estCoherent = false; bool nint = true;";
+        header << "\n\t\twhile ((not estCoherent) and nint) {";
+        header << "\n\t\t\tnint = nextInterieur(t,m); estCoherent = isCoherent(t,m);";
+        header << "\n\t\t}";
+        header << "\n\t\treturn estCoherent;";
         // Tant que c'est pas cohérent, je pop le next itérateur
         header << "\n\t}";
-  */      
+ 
         // Créer une fonction qui génère concreteBinding ?
         
         header << "};\n";
