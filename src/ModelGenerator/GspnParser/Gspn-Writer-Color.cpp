@@ -211,6 +211,7 @@ void Gspn_Writer_Color::writeEnabledDisabledBinding(ofstream &SpnF)const{
 }
 
 void Gspn_Writer_Color::writeEnabledDisabledBindingSet(ofstream &SpnF)const{
+    //SpnF << "const abstMarkIter = new abstractMarkingIterator();";
     SpnF << "const abstractBinding* "<<objName<<"nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
     
     // Switch sur les transitions :
