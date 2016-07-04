@@ -371,7 +371,7 @@ let print_spt_dot ?(showlabel=true) fpath net cl p =
     let pos = (try let x,y = List.assoc s p in
 		   Printf.sprintf ",pos=\"%f,%f!\"" (0.75*.x) (0.75*.y)
       with Not_found -> "") in
-    Printf.fprintf f "\t%s [shape=rect,fixedsize=true,height=0.12,width=0.5,style=filled,fillcolor=%s,xlabel=\"%s\",label=\"\"%s];\n" s (colorOfTrans d) (if showlabel then "" else "") pos) net.Net.transition;
+    Printf.fprintf f "\t%s [shape=rect,fixedsize=true,height=0.12,width=0.5,style=filled,fillcolor=%s,xlabel=\"%s\",label=\"\"%s];\n" s (colorOfTrans d) (if showlabel then s else "") pos) net.Net.transition;
   (*output_string f "\t}\n";*)
   Data.iter (fun (_,(v,p,t)) ->
     print_arc_dot f (fst (Data.acca net.Net.place p)) 

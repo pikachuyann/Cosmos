@@ -260,6 +260,22 @@ struct
 
 end
 
+	
+let parse_bool s =
+  let open Lexing in
+  let lexbuf = from_string s in
+  try
+    Some (Parser.stateCondition Lexer.token lexbuf)
+  with
+    | Lexer.SyntaxError msg ->
+       print_endline msg;
+       None
+    | Parsing.Parse_error ->
+       Printf.printf "Parsing error: unexpected token:'%s'\n"
+		     (lexeme lexbuf);
+       None
+    | Failure x -> print_endline x;
+		   None
 
 
 (*

@@ -41,7 +41,7 @@ void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBindi
         t += fmax(TG.GenerateTime(Transition[Id].DistTypeIndex, ParamDistr, customDistr),0.0);
         if(verbose > 4){
             cerr << "Sample " << Transition[Id].label << ": ";
-            cerr << TG.string_of_dist(Transition[Id].DistTypeIndex, ParamDistr);
+            cerr << TG.string_of_dist(Transition[Id].DistTypeIndex, ParamDistr,customDistr);
             cerr << endl;
         }
     }
@@ -59,7 +59,7 @@ void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBindi
         w = TG.GenerateTime(EXPONENTIAL, ParamDistr, customDistr);
         if(verbose>4){
             cerr << "weight : ";
-            cerr << TG.string_of_dist(EXPONENTIAL, ParamDistr);
+            cerr << TG.string_of_dist(EXPONENTIAL, ParamDistr,customDistr);
             cerr << endl;
         }
             break;

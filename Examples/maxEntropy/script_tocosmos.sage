@@ -257,6 +257,7 @@ fichier_data=open(outpath+'.data',"w");
 nbpoly= -1;
 
 def poly_to_data(p):
+    print poly_to_c_first(p);
     global nbpoly;
     nbpoly+=1;
     fichier_data.write((str(cardclocks+1)+','));
