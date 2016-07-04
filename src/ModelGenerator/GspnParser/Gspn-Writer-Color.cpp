@@ -614,14 +614,14 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
             plit!= MyGspn.placeStruct.end(); ++plit) {
             if (not MyGspn.colDoms[plit->colorDom].isUncolored()) {
-                header << "\tstd::map<"<< MyGspn.colDoms[plit->colorDom].tokname() << ", unsigned int>::const_iterator _PL_"<< plit->name << ";\n";
+                header << "\tstd::map<"<< MyGspn.colDoms[plit->colorDom].tokname() << ", unsigned int>::const_iterator _IT_"<< plit->name << ";\n";
             }
         }
         for (let var : MyGspn.colVars) {
             header << "\tsize_t _ITVAR_" << var.name << ";\n";
         }
         
-        header << "\n\tvoid reset(abstractMarkingImpl& m) {";
+        header << "\n\tvoid reset(abstractMarkingImpl& m) {\n";
         for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
             plit!= MyGspn.placeStruct.end(); ++plit) {
             if (not MyGspn.colDoms[plit->colorDom].isUncolored()) {
@@ -630,8 +630,8 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         }
         header << "\n\t}\n";
         
-        header << "private:\n";
-        header << "\n\tbool nextInterieur(transition& t, abstractMarkingImpl& m) {\n";
+        header << "public:\n";
+        header << "\n\tbool nextInterieur(size_t& t, abstractMarkingImpl& m) {\n";
         // BIDON
         casesHandler bindingcases("t");
         for (size_t t = 0; t < MyGspn.tr ; t++){
@@ -647,7 +647,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                     let vartemp = MyGspn.access(MyGspn.inArcsStruct, t, place.id);
                     if (not vartemp.containsVar(var)) { continue; }
                     isUsed = true;
-                    newcase << "\t\tif (not _IT_" << place.name << " == m._PL_" << place.name << ".end()) { ";
+                    newcase << "\t\tif (not (_IT_" << place.name << " == m._PL_" << place.name << ".end())) { ";
                     newcase << "_IT_" << place.name << "++; return true;";
                     newcase << " }\n";
                     newcase << "\t\t_IT_" << place.name << " = m._PL_" << place.name << ".tokens.begin();\n";
@@ -666,18 +666,20 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         bindingcases.writeCases(header);
         header << "\n\t}";
 
-        header << "\n\tbool isCoherent(transition& t,abstractMarkingImpl& m) {\n";
+        header << "\nprivate:\n";
+        
+        header << "\n\tbool isCoherent(size_t& t,abstractMarkingImpl& m) {\n";
         // Lister les variables, mettre des valeurs "tentatives" en parcourant les valeurs actuelles
         // des différents itérateurs. Si échec/Collision => forcer le next
         header << "\n\t}";
         
         header << "\npublic:\n";
-
-        header << "\n\tbool nextInterieur(transition& t, abstractMarkingImpl& m) {\n";
+/*
+        header << "\n\tbool nextInterieur(size_t& t, abstractMarkingImpl& m) {\n";
         header << "\n\n\tbool estCoherent = false;";
         // Tant que c'est pas cohérent, je pop le next itérateur
         header << "\n\t}";
-        
+  */      
         // Créer une fonction qui génère concreteBinding ?
         
         header << "};\n";
