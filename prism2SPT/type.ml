@@ -295,6 +295,24 @@ module IntSQ = struct
 end
 
 module IntSQMulti = MultiSet(IntSQ)
+
+let rec split_eq = function
+    [] -> [],[]
+  | [t] -> [t],[]
+  | t1::t2::q -> let r1,r2 = split_eq q in
+		 (t1::r1,t2::r2)
+
+let rec conjunction = function
+    [] -> Bool(true)
+  | [t] -> t
+  | l -> let l1,l2= split_eq l in
+	 And( conjunction l1, conjunction l2)
+
+let rec disjunction = function
+    [] -> Bool(false)
+  | [t] -> t
+  | l -> let l1,l2= split_eq l in
+	 Or( disjunction l1, disjunction l2)
 			    
 let rec simp_bool : bool expr' -> bool expr' = fun x -> match x with
   | Bool(x) -> Bool(x)
@@ -309,12 +327,49 @@ let rec simp_bool : bool expr' -> bool expr' = fun x -> match x with
   | Not(x) -> Not(simp_bool x)
   | x -> x
 
-let rec form_dij : bool expr' -> bool expr' list = fun x -> match x with
-  | Or(x,y) -> (form_dij x) @ (form_dij y)
-  | And(x,y) -> [And(x,y)]
-  | x -> [x]
-		   
-			    
+module BoolSet = Set.Make (struct
+			      type t=bool expr'
+			      let compare t1 t2 = compare t1 t2
+			    end)
+let exists_pair f s =
+  BoolSet.exists (fun x ->
+		  let _,_,r = BoolSet.split x s in
+		  BoolSet.exists (fun y -> f x y) r) s
+			  
+module BoolSetSet = Set.Make (struct
+			      type t=BoolSet.t
+			      let compare t1 t2 = BoolSet.compare t1 t2
+			    end)
+
+let disjunction_set s =
+  let l = BoolSet.fold (fun x l -> x::l) s [] in disjunction l
+let conjunction_set s =
+  let l = BoolSet.fold (fun x l -> x::l) s [] in conjunction l 
+			  
+let rec form_dij_set : bool expr' -> BoolSetSet.t = fun x ->
+  match x with
+  | Or(x,y) -> BoolSetSet.union (form_dij_set x) (form_dij_set y)
+  | And(e1,e2) ->
+     let l1 = form_dij_set e1 in
+     let l2 = form_dij_set e2 in
+     BoolSetSet.fold (fun t1 sdij1 ->
+		      BoolSetSet.fold (fun t2 sdij2 ->
+				       BoolSetSet.add (BoolSet.union t1 t2) sdij2) l1 sdij1)
+		    l2 BoolSetSet.empty
+  | x -> BoolSetSet.singleton (BoolSet.singleton x)
+
+
+let form_dij e =
+  e
+  |> form_dij_set
+  |> BoolSetSet.filter (fun c ->
+			not @@ exists_pair (fun a1 a2 ->
+					    (simp_bool a1) = (simp_bool (Not a2))) c)
+  |> (fun s -> BoolSetSet.filter (fun c ->
+				  not @@ BoolSetSet.exists (fun c2 -> c<>c2 && BoolSet.subset c2 c) s) s) 
+  |> BoolSetSet.elements
+  |> List.map conjunction_set
+			      
 let rec dependency : type a . StringSet.t -> a expr' -> StringSet.t = fun set x -> 
   match x with
   | BoolName(x) -> StringSet.add x set
@@ -441,3 +496,26 @@ let eval_or_die: type a.
   | Bool(b) -> b
   | x -> printH_expr stderr x; output_string stderr "\n";
 	 failwith @@ "Unable to evaluate"
+
+
+(*		       
+let x = BoolName "x"
+let y = BoolName "y"
+let z = BoolName "z"
+
+let conj = [
+	       Or(x,y);
+	       Or(y,z);
+	       Or(x,z)
+  ]
+	   |> conjunction
+	   |> (fun x ->Not x)
+	   |> simp_bool
+	   |< printH_expr stdout
+		
+let dij =
+  conj
+  |> form_dij
+  |> disjunction
+  |< printH_expr stdout
+ *)

@@ -39,7 +39,7 @@ void timeGen::initRandomGenerator(unsigned int seed){
 }
 
 
-string timeGen::string_of_dist(DistributionType d,const vector<double> &param)const{
+string timeGen::string_of_dist(DistributionType d,const vector<double> &param, const CustomDistr &cd)const{
     //use for debuging
     switch (d) {
         case   NORMAL:
@@ -66,12 +66,17 @@ string timeGen::string_of_dist(DistributionType d,const vector<double> &param)co
             return "MassAction("+ to_string(param[0])+")";
         case   IMMEDIATE:
             return "Immediate";
-        case   USERDEFINE:
-            return "Userdefine("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[2])+","+ to_string(param[3])+")";
+        
+        //    return "Userdefine("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[2])+","+ to_string(param[3])+")";
         case   DISCRETEUSERDEFINE:
             return "DiscreteUserDefine("+ to_string(param[0]) +","+ to_string(param[1])+")";
+        case   USERDEFINE:
         case   USERDEFINEPOLYNOMIAL:
-            return "UserdefinePolynomial("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[2])+","+ to_string(param[3])+")";
+            string s = "UserdefinePolynomial("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[2])+","+ to_string(param[3])+")";
+            return s + cd.print_poly( (int)param[0]);
+
+
+            
     }
 }
 

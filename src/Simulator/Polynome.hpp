@@ -71,7 +71,7 @@ double eval(const Poly<N> &p, vector<double> const& param){
             if(p[i].d[j]>0)mv *= pow( param[j+1] , p[i].d[j]);
         rslt += mv;
     }
-    //cerr << "eval poly:" << p << "= "<< rslt << endl;
+    //cerr << "eval poly bound:" << p << "= "<< rslt << endl;
     return rslt;
 }
 
@@ -117,8 +117,12 @@ double eval(const Poly<N> &p, vector<double> const& param, double t){
     double rslt = 0.0;
     for(unsigned int i=0; p[i].coeff != 0.0 ; i++){
         double mv = p[i].coeff;
+        //cerr << p[i].coeff;
         for(unsigned int j=0; j<N-1;j++)
-            if(p[i].d[j]>0)mv *= pow( param[j+1] , p[i].d[j]);
+            if(p[i].d[j]>0){
+                mv *= pow( param[j+1] , p[i].d[j]);
+                //cerr "c_" << j << "^" << p[i].d[j]
+            }
         mv *= pow(t,p[i].d[N-1]);
         //cerr << " mon:" << mv;
         rslt += mv;
@@ -127,5 +131,7 @@ double eval(const Poly<N> &p, vector<double> const& param, double t){
     //cerr << "res: " << rslt << endl;
     return rslt;
 }
+
+
 
 #endif /* Polynome_h */

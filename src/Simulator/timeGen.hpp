@@ -44,7 +44,7 @@ public:
 	 */
 	void initRandomGenerator(unsigned int seed);
 
-    std::string string_of_dist(DistributionType d,const std::vector<double> &param)const;
+    std::string string_of_dist(DistributionType d,const std::vector<double> &param, const CustomDistr&)const;
 
 private:
 	
