@@ -62,7 +62,6 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 	Examples/DataBase/test.ml \
     Examples/maxEntropy/genGraph.sh Examples/maxEntropy/run.ml \
     Examples/maxEntropy/script_tocosmos.sage \
-\#    Examples/maxEntropy/twoears.prism Examples/maxEntropy/twoears.prism.grml \
 	Examples/TandemCosy/tandemPrism.grml \
 	Examples/TandemCosy/tandemPrismlha.grml \
 	Examples/TandemCosy/testPrism.ml \
@@ -78,6 +77,7 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 	Examples/signallingCascade/test.ml \
 	Examples/bench.ml
 
+#    Examples/maxEntropy/twoears.prism Examples/maxEntropy/twoears.prism.grml
 
 AM_LDFLAGS = -lrt $(PTHREAD_LIBS)
 AM_CPPFLAGS = $(BOOST_CPPFLAGS) -DGIT_REVISION=`git describe --abbrev=6 --dirty --always --tags`

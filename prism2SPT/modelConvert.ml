@@ -40,6 +40,7 @@ let _ =
 	     "-v",Arg.Set_int verbose,"Set verbose level default 1";
 	     "--add-reward",Arg.Set SimulinkType.add_reward, "Add reward transition to each non immediate transition";
 	     "--mdp-strat", Arg.Set_string Simulation.mdpstrat, "MDP strategy load/save file";
+	     "--mdp-det-strat", Arg.Set Simulation.detstrat, "Use deterministic strategy" 
 	    ]
     (function s -> incr nbarg; match !nbarg with
       1 -> inname:= s;
@@ -178,7 +179,7 @@ let _ =
 				       |> List.filter (function Some true -> true |_-> false)
 				       |> List.length in
 				     Printf.printf "Result: %f\n" ((float nbsucc) /. (float !simule));
-				     Simulation.MdpOp.print_state_mdp ()
+     (*Simulation.MdpOp.print_state_mdp ()*)
      )
   
   |< (fun net -> if !traceSize <> 0 then let open Simulation.SemanticSPT in
