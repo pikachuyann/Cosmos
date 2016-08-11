@@ -242,6 +242,7 @@ void SPN_orig::updateSet(double ctime,size_t E1_transitionNum, const abstractBin
 
     //check if the current transition is still enabled
     abstractBindingIterator absMkIt(Marking);
+    absMkIt.reset(Marking);
     
     while (absMkIt.next(E1_transitionNum, Marking)) {
         const auto& bindex = absMkIt.getBinding();
