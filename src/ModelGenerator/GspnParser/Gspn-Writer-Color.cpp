@@ -742,6 +742,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         // Lister les variables, mettre des valeurs "tentatives" en parcourant les valeurs actuelles
         // des différents itérateurs. Si échec/Collision => forcer le next
         bindingcasesB.writeCases(header);
+        header << "\n\t\treturn true;";
         header << "\n\t}";
         
         header << "\npublic:\n";
@@ -814,7 +815,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
     SpnCppFile << "\n};";
                 
     SpnCppFile << "\nbool abstractBindingIterator::next(size_t& t,abstractMarking& m) {";
-    SpnCppFile << "\n\tP->next(t,*(m.P));";
+    SpnCppFile << "\n\treturn P->next(t,*(m.P));";
     SpnCppFile << "\n};";
                 
     SpnCppFile << "\nabstractBindingIterator::~abstractBindingIterator() {";
@@ -822,11 +823,11 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
     SpnCppFile << "\n};";
     
     SpnCppFile << "\nsize_t abstractBindingIterator::getIndex() {";
-    SpnCppFile << "\n\tP->getIndex();";
+    SpnCppFile << "\n\treturn P->getIndex();";
     SpnCppFile << "\n};";
     
     SpnCppFile << "\nabstractBinding abstractBindingIterator::getBinding() {";
-    SpnCppFile << "\n\tP->getBinding();";
+    SpnCppFile << "\n\treturn P->getBinding();";
     SpnCppFile << "\n};";
 }
 
