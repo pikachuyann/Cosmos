@@ -774,7 +774,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         header << "\n\tvoid reset(abstractMarkingImpl& m);";
         header << "\n\tbool next(size_t& t, abstractMarkingImpl& m);";
         header << "\n\tsize_t getIndex();";
-        header << "\n\tabstractBinding getBinding;";
+        header << "\n\tabstractBinding getBinding();";
         header << "\n};\n";
         SpnCppFile << "\nvoid abstractBindingIteratorImpl::reset(abstractMarkingImpl& m) { };";
         SpnCppFile << "\nbool abstractBindingIteratorImpl::next(size_t& t, abstractMarkingImpl& m) { return false; };";
