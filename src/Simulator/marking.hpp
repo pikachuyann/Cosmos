@@ -132,6 +132,8 @@ public:
     ~abstractBindingIterator();
     void reset(abstractMarking& m);
     bool next(size_t& t,abstractMarking& m);
+    size_t getIndex();
+    abstractBinding getBinding();
 };
 
 #endif

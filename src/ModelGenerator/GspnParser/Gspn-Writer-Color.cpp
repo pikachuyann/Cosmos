@@ -736,13 +736,37 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         header << "\n\tbool next(size_t& t, abstractMarkingImpl& m) {";
         header << "\n\t\tbool estCoherent = false; bool nint = true;";
         header << "\n\t\twhile ((not estCoherent) and nint) {";
-        header << "\n\t\t\tnint = nextInterieur(t,m); estCoherent = isCoherent(t,m);";
+        header << "\n\t\t\tnint = nextInterieur(t,m);";
+        header << "\n\t\t\testCoherent = isCoherent(t,m);";
         header << "\n\t\t}";
         header << "\n\t\treturn estCoherent;";
         // Tant que c'est pas cohérent, je pop le next itérateur
         header << "\n\t}";
  
         // Créer une fonction qui génère concreteBinding ?
+        header << "\n\tsize_t getIndex();";
+        SpnCppFile << "size_t abstractBindingIteratorImpl::getIndex() {";
+        SpnCppFile << "\n\tsize_t accum;";
+        for (let var : MyGspn.colVars) {
+            size_t varclass = var.type;
+            size_t varsize = MyGspn.colClasses[varclass].size();
+            SpnCppFile << "\n\taccum = _ITVAR_" << var.name << " + " << varsize << " * accum;";
+        }
+        SpnCppFile << "\nreturn accum;";
+        SpnCppFile << "\n\t}";
+        
+        header << "\n\tabstractBinding getBinding();";
+        SpnCppFile << "abstractBinding abstractBindingIteratorImpl::getBinding() {";
+        SpnCppFile << "\nabstractBinding newBind;";
+        for (let var : MyGspn.colVars) {
+            size_t varclass = var.type;
+            const auto& classname = MyGspn.colDoms[varclass].name;
+            SpnCppFile << "\nnewBind.P->" << var.name << ".c0 = (" << classname << "_Color_Classe) _ITVAR_" << var.name << ";";
+        }
+        SpnCppFile << "\n\tnewBind.idcount = getIndex();";
+        SpnCppFile << "\n\treturn newBind;";
+        SpnCppFile << "\n}";
+        
         
         header << "};\n";
        
@@ -753,9 +777,17 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         header << "\npublic:";
         header << "\n\tvoid reset(abstractMarkingImpl& m);";
         header << "\n\tbool next(size_t& t, abstractMarkingImpl& m);";
+        header << "\n\tsize_t getIndex();";
+        header << "\n\tabstractBinding getBinding();";
         header << "\n};\n";
         SpnCppFile << "\nvoid abstractBindingIteratorImpl::reset(abstractMarkingImpl& m) { };";
         SpnCppFile << "\nbool abstractBindingIteratorImpl::next(size_t& t, abstractMarkingImpl& m) { return false; };";
+        SpnCppFile << "\nsize_t abstractBindingIteratorImpl::getIndex() { return 0; };";
+        SpnCppFile << "\nabstractBinding abstractBindingIteratorImpl::getBinding() {";
+        SpnCppFile << "\n\tabstractBinding newBind;";
+        SpnCppFile << "\n\treturn newBind;";
+        SpnCppFile << "\n};";
+                
     }
     
     SpnCppFile << "\nvoid abstractBindingIterator::reset(abstractMarking& m) {";
@@ -773,6 +805,14 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                 
     SpnCppFile << "\nabstractBindingIterator::~abstractBindingIterator() {";
     SpnCppFile << "\n\tdelete(P);";
+    SpnCppFile << "\n};";
+    
+    SpnCppFile << "\nsize_t abstractBindingIterator::getIndex() {";
+    SpnCppFile << "\n\tP->getIndex();";
+    SpnCppFile << "\n};";
+    
+    SpnCppFile << "\nabstractBinding abstractBindingIterator::getBinding() {";
+    SpnCppFile << "\n\tP->getBinding();";
     SpnCppFile << "\n};";
     
 }
