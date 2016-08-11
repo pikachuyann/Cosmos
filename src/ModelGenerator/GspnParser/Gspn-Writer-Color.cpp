@@ -609,7 +609,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
     Gspn_Writer::writeMarkingClasse(SpnCppFile, header);
     
     if (P.is_domain_impl_set) {
-        header << "class abstractMarkingIterator {\n";
+        header << "class abstractBindingIteratorImpl {\n";
         header << "public:\n";
 
         for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
@@ -623,14 +623,16 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
             header << "\tbool _ISDEFITVAR_" << var.name << ";\n";
         }
         
-        header << "\n\tvoid reset(abstractMarkingImpl& m) {\n";
+        header << "\n\tvoid reset(abstractMarkingImpl& m);";
+        
+        SpnCppFile << "\nvoid abstractBindingIteratorImpl::reset(abstractMarkingImpl& m) {\n";
         for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
             plit!= MyGspn.placeStruct.end(); ++plit) {
             if (not MyGspn.colDoms[plit->colorDom].isUncolored()) {
-                header << "\t\t_IT_" << plit->name << " = m._PL_" << plit->name << ".tokens.begin();\n";
+                SpnCppFile << "\n\t_IT_" << plit->name << " = m._PL_" << plit->name << ".tokens.begin();\n";
             }
         }
-        header << "\n\t}\n";
+        SpnCppFile << "\n}\n";
         
         header << "private:\n";
         header << "\n\tbool nextInterieur(size_t& t, abstractMarkingImpl& m) {\n";
@@ -743,6 +745,35 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         // Créer une fonction qui génère concreteBinding ?
         
         header << "};\n";
+       
+                
     }
+    else {
+        header << "\nclass abstractBindingIteratorImpl {";
+        header << "\npublic:";
+        header << "\n\tvoid reset(abstractMarkingImpl& m);";
+        header << "\n\tbool next(size_t& t, abstractMarkingImpl& m);";
+        header << "\n};\n";
+        SpnCppFile << "\nvoid abstractBindingIteratorImpl::reset(abstractMarkingImpl& m) { };";
+        SpnCppFile << "\nbool abstractBindingIteratorImpl::next(size_t& t, abstractMarkingImpl& m) { return false; };";
+    }
+    
+    SpnCppFile << "\nvoid abstractBindingIterator::reset(abstractMarking& m) {";
+    SpnCppFile << "\n\tP->reset(*(m.P));";
+    SpnCppFile << "\n};";
+        
+    SpnCppFile << "\nabstractBindingIterator::abstractBindingIterator(abstractMarking& m) {";
+    SpnCppFile << "\n\tP = new abstractBindingIteratorImpl;";
+    SpnCppFile << "\n\treset(m);";
+    SpnCppFile << "\n};";
+                
+    SpnCppFile << "\nbool abstractBindingIterator::next(size_t& t,abstractMarking& m) {";
+    SpnCppFile << "\n\tP->next(t,*(m.P));";
+    SpnCppFile << "\n};";
+                
+    SpnCppFile << "\nabstractBindingIterator::~abstractBindingIterator() {";
+    SpnCppFile << "\n\tdelete(P);";
+    SpnCppFile << "\n};";
+    
 }
 

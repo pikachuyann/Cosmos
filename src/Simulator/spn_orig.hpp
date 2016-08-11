@@ -39,6 +39,7 @@ public:
 
     virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &);
     virtual void update(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &);
+    virtual void updateSet(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &);
     virtual void InitialEventsQueue(EventsQueueSet &,timeGen &);
 
     int &verbose;
