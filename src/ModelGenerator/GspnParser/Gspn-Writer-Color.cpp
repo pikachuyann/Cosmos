@@ -660,6 +660,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                     isUsed = true;
                     if (isVisited[place.id]) { continue; }
                     isVisited[place.id] = true;
+                    newcase << "\n\t\tif (m._PL_" << place.name << ".tokens.empty()) { return false; }";
                     newcase << "\t\tif (not (_IT_" << place.name << " == m._PL_" << place.name << ".tokens.end())) { ";
                     newcase << "_IT_" << place.name << "++; return true;";
                     newcase << " }\n";
