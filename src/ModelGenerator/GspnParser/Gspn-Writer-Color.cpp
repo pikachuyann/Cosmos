@@ -619,8 +619,8 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
             }
         }
         for (let var : MyGspn.colVars) {
-            header << "\tsize_t _ITVAR_" << var.name << ";\n";
-            header << "\tbool _ISDEFITVAR_" << var.name << ";\n";
+            header << "\tsize_t _ITVAR_" << var.name << " = 0;\n";
+            header << "\tbool _ISDEFITVAR_" << var.name << " = false;\n";
         }
         
         header << "\n\tvoid reset(abstractMarkingImpl& m);";
@@ -629,7 +629,11 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
             plit!= MyGspn.placeStruct.end(); ++plit) {
             if (not MyGspn.colDoms[plit->colorDom].isUncolored()) {
-                SpnCppFile << "\n\t_IT_" << plit->name << " = m._PL_" << plit->name << ".tokens.begin();\n";
+                SpnCppFile << "\n\t_IT_" << plit->name << " = m._PL_" << plit->name << ".tokens.begin();";
+            }
+            for (let var : MyGspn.colVars) {
+                SpnCppFile << "\n\t_ITVAR_" << var.name << " = 0;";
+                SpnCppFile << "\n\t_ISDEFITVAR_" << var.name << " = false;";
             }
         }
         SpnCppFile << "\n}\n";
@@ -664,7 +668,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                 if (not isUsed) {
                     auto& currvar = MyGspn.colVars[var];
                     const auto& vardom = MyGspn.colDoms[currvar.type];
-                    newcase << "\t\tif (not (_ITVAR_" << currvar.name << " == ((int) Color_" << vardom.name << "_Total) )) { ";
+                    newcase << "\t\tif (not (_ITVAR_" << currvar.name << " == ((size_t) Color_" << vardom.name << "_Total) )) { ";
                     newcase << "_ITVAR_" << currvar.name << "++; return true;";
                     newcase << " }\n";
                     newcase << "_ITVAR_" << currvar.name << " = 0;";
@@ -674,6 +678,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
             bindingcases.addCase(t, newcase.str(),MyGspn.transitionStruct[t].name);
         }
         bindingcases.writeCases(header);
+        header << "\nreturn false;";
         header << "\n\t}";
 
         //header << "\nprivate:\n";
@@ -734,15 +739,16 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         
         header << "\npublic:\n";
         
-        header << "\n\tbool next(size_t& t, abstractMarkingImpl& m) {";
-        header << "\n\t\tbool estCoherent = false; bool nint = true;";
-        header << "\n\t\twhile ((not estCoherent) and nint) {";
-        header << "\n\t\t\tnint = nextInterieur(t,m);";
-        header << "\n\t\t\testCoherent = isCoherent(t,m);";
-        header << "\n\t\t}";
-        header << "\n\t\treturn estCoherent;";
+        header << "\n\tbool next(size_t& t, abstractMarkingImpl& m);";
+        SpnCppFile << "\nbool abstractBindingIteratorImpl::next(size_t& t, abstractMarkingImpl& m) {";
+        SpnCppFile << "\n\tbool estCoherent = false; bool nint = true;";
+        SpnCppFile << "\n\twhile ((not estCoherent) && nint) {";
+        SpnCppFile << "\n\t\tnint = nextInterieur(t,m);";
+        SpnCppFile << "\n\t\testCoherent = isCoherent(t,m);";
+        SpnCppFile << "\n\t}";
+        SpnCppFile << "\n\treturn estCoherent;";
         // Tant que c'est pas cohérent, je pop le next itérateur
-        header << "\n\t}";
+        SpnCppFile << "\t}\n";
  
         // Créer une fonction qui génère concreteBinding ?
         header << "\n\tsize_t getIndex();";
@@ -750,9 +756,8 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         SpnCppFile << "\n\tsize_t accum;";
         for (let var : MyGspn.colVars) {
             size_t varclass = var.type;
-            //size_t varsize = MyGspn.colClasses[varclass].size();
-            const auto& vardom = MyGspn.colDoms[var.type];
-            SpnCppFile << "\n\taccum = _ITVAR_" << var.name << " + ((int) Color_" << vardom.name << "_Total) * accum;";
+            const auto& vardom = MyGspn.colDoms[varclass];
+            SpnCppFile << "\n\taccum = _ITVAR_" << var.name << " + ((size_t) Color_" << vardom.name << "_Total) * accum;";
         }
         SpnCppFile << "\nreturn accum;";
         SpnCppFile << "\n\t}";
