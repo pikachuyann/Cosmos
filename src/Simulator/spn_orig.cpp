@@ -233,4 +233,140 @@ void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBindin
      }
      }
      */ 
+
+}
+
+void SPN_orig::updateSet(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueueSet &EQ,timeGen &TG){
+    //This function update the Petri net according to a transition.
+    //In particular it update the set of enabled transition.
+
+    //check if the current transition is still enabled
+    abstractBindingIterator absMkIt(Marking);
+    
+    for(const auto &bindex : Transition[E1_transitionNum].bindingList){
+        bool Nenabled = IsEnabled(E1_transitionNum, bindex);
+        bool NScheduled = EQ.isScheduled(E1_transitionNum, bindex.idcount);
+
+        if (Nenabled && NScheduled && lb.idcount == bindex.idcount ) {
+            GenerateEvent(ctime,F, E1_transitionNum, bindex,TG);
+            EQ.replace(F); //replace the transition with the new generated time
+        } else if (Nenabled && !NScheduled) {
+            GenerateEvent(ctime,F, E1_transitionNum, bindex,TG);
+            EQ.insert(F);
+        } else if (!Nenabled && NScheduled) {
+            EQ.remove(E1_transitionNum,bindex.idcount );
+        }
+    }
+
+    // Possibly adding Events corresponding to newly enabled-transitions
+    //const auto &net = PossiblyEn();
+    for (size_t t=0; PossiblyEnabled[lastTransition][t] != -1;t++) {
+        const auto &it = PossiblyEnabled[lastTransition][t];
+        size_t bindnum = 0;
+        const abstractBinding *bindex = nextPossiblyEnabledBinding(it, lb, &bindnum);
+        while (bindex != NULL){
+            if(verbose > 4){
+                std::cerr << "consider for enabling: " << Transition[it].label << ",";
+                bindex->print();
+                cerr << endl;
+            }
+
+            //for(vector<abstractBinding>::const_iterator bindex = Transition[*it].bindingList.begin() ;
+            //	bindex != Transition[*it].bindingList.end() ; ++bindex){
+            if (IsEnabled(it,*bindex)) {
+                if (!EQ.isScheduled(it,bindex->idcount)) {
+                    if(verbose > 4){
+                        cerr << "->New transition enabled: " << Transition[it].label << ",";
+                        bindex->print();
+                        cerr << endl;
+                    }
+                    if(!EQ.restart(ctime,it,bindex->idcount)){
+                        GenerateEvent(ctime,F, (it), *bindex,TG);
+                        EQ.insert(F);
+                    }
+
+                } else {
+                    if (Transition[it].MarkingDependent) {
+                        GenerateEvent(ctime,F, it,*bindex,TG);
+                        EQ.replace(F);
+                    }
+                }
+            }
+            bindex = nextPossiblyEnabledBinding(it, lb, &bindnum);
+        }
+    }
+
+    // Possibly removing Events corresponding to newly disabled-transitions
+    //const auto &ndt = PossiblyDis();
+    //for (const auto &it : ndt) {
+    for (size_t t=0; PossiblyDisabled[lastTransition][t] != -1;t++) {
+        const auto &it = PossiblyDisabled[lastTransition][t];
+        size_t bindnum = 0;
+        const abstractBinding *bindex = nextPossiblyDisabledBinding(it, lb, &bindnum);
+        while (bindex != NULL){
+            if(verbose > 4){
+                cerr << "consider for disabling: " << Transition[it].label << ",";
+                bindex->print();
+                cerr << endl;
+            }
+            //for(vector<abstractBinding>::const_iterator bindex = Transition[*it].bindingList.begin() ;
+            //	bindex != Transition[*it].bindingList.end() ; ++bindex){
+            if (EQ.isScheduled(it, bindex->idcount)) {
+                if (!IsEnabled(it, *bindex )){
+                    if(verbose > 4){
+                        cerr << "<-New transition disabled: " << Transition[it].label << ",";
+                        bindex->print();
+                        cerr << endl;
+                    }
+                    if(Transition[it].AgeMemory){
+                        EQ.pause(ctime, it, bindex->idcount);
+                    }else EQ.remove(it,bindex->idcount);
+                }else {
+                    if (Transition[it].MarkingDependent) {
+                        GenerateEvent(ctime,F, it,*bindex,TG);
+                        EQ.replace(F);
+                    }
+                }
+            }
+            bindex = nextPossiblyDisabledBinding(it, lb, &bindnum);
+        }
+    }
+
+    // Update transition which have no precondition on the Marking
+    for (size_t t=0; FreeMarkDepT[lastTransition][t]!= -1;t++) {
+        const auto &it = FreeMarkDepT[lastTransition][t];
+        //const auto &fmd = FreeMarkingDependant();
+        //for (const auto &it : fmd) {
+        for(const auto bindex : Transition[it].bindingList){
+            //if (IsEnabled(it,bindex)) {
+            if (EQ.isScheduled(it, bindex.idcount)) {
+                GenerateEvent(ctime,F, it,bindex,TG);
+                EQ.replace(F);
+            }
+            //}
+        }
+        
+    }
+    //assert(cerr<< "assert!"<< endl);
+    
+    /*
+     //In Debug mode check that transition are scheduled iff they are enabled
+     for (const auto &t : Transition){
+     for(const auto &bindex : t.bindingList){
+     if (IsEnabled(t.Id, bindex) !=
+     EQ.isScheduled(t.Id, bindex.idcount)){
+     cerr << "IsEnabled(" << t.label << ",";
+     bindex.print();
+     cerr <<")" << endl;
+     if(EQ.isScheduled(t.Id, bindex.idcount)){
+					cerr << "Scheduled and not enabled!"<< endl;
+     }else{
+					cerr << "Enabled and not scheduled!" << endl;
+     }
+     assert(IsEnabled(t.Id, bindex) ==
+     EQ.isScheduled(t.Id, bindex.idcount));
+     }
+     }
+     }
+     */ 
 }
