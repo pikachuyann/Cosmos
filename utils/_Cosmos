@@ -34,6 +34,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--tmp-status:Persistance of the tmp file:->status' \
 	   '--const:Overwrite constants value:->Constants' \
 	   '--count-transition[Count number of transition in the lha]' \
+       '--use-setdomain-impl[Use set to implment domain]' \
 	   '--trace-place:trace only a subset of places:->Comma separated list of place to trace' \
 	   '--loop:Time of the loop:->time' \
 	   '--sampling:Time of the loop:->time' \
