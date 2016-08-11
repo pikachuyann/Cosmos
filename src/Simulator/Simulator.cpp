@@ -235,7 +235,9 @@ bool Simulator::SimulateOneStep(){
 				returnResultTrue();
 				return false;
 			} else {
-                N.update(A.CurrentTime, E1.transition, E1.binding, *EQ,*this);
+                            N.updateSet(A.CurrentTime, E1.transition, E1.binding, *EQ,*this);
+                            // TODO === voir pour gérer correctement le use-setdomain-impl…
+                            // N.update(A.CurrentTime, E1.transition, E1.binding, *EQ,*this);
 			}
 		}
 	}
