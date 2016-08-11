@@ -711,8 +711,13 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
             
             // TODO : sortir le _ISDEFITVAR_ du code généré vers le code générateur
             for (let place : MyGspn.placeStruct) {
+                bool placeVue = false;
                 let vartempB = MyGspn.access(MyGspn.inArcsStruct, t, place.id).coloredVal;
                 for (const auto& vartemp : vartempB) {
+                    if (not placeVue) {
+                        newcase << "\n\t\tif (m._PL_" << place.name << ".tokens.empty()) { return false; }";
+                        placeVue = true;
+                    }
                 for (size_t varnum = 0;varnum < vartemp.field.size();varnum++) {
                 //for (let var : vartemp) {
                     if (not (vartemp.Flags[varnum] == CT_VARIABLE)) { 
@@ -742,9 +747,9 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         
         header << "\n\tbool next(size_t& t, abstractMarkingImpl& m);";
         SpnCppFile << "\nbool abstractBindingIteratorImpl::next(size_t& t, abstractMarkingImpl& m) {";
-        SpnCppFile << "\n\tbool estCoherent = false; bool nint = true;";
-        SpnCppFile << "\n\twhile ((not estCoherent) && nint) {";
-        SpnCppFile << "\n\t\tnint = nextInterieur(t,m);";
+        SpnCppFile << "\n\tbool estCoherent = false; bool foundnint = true;";
+        SpnCppFile << "\n\twhile ((not estCoherent) && foundnint) {";
+        SpnCppFile << "\n\t\tfoundnint = nextInterieur(t,m);";
         SpnCppFile << "\n\t\testCoherent = isCoherent(t,m);";
         SpnCppFile << "\n\t}";
         SpnCppFile << "\n\treturn estCoherent;";
@@ -754,7 +759,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         // Créer une fonction qui génère concreteBinding ?
         header << "\n\tsize_t getIndex();";
         SpnCppFile << "size_t abstractBindingIteratorImpl::getIndex() {";
-        SpnCppFile << "\n\tsize_t accum;";
+        SpnCppFile << "\n\tsize_t accum = 0;";
         for (let var : MyGspn.colVars) {
             size_t varclass = var.type;
             const auto& vardom = MyGspn.colDoms[varclass];
