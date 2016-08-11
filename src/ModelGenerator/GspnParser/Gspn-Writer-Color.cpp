@@ -661,7 +661,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                 }
                 if (not isUsed) {
                     auto& currvar = MyGspn.colVars[var];
-                    newcase << "\t\tif (not _ITVAR_" << currvar.name << " == " << MyGspn.colClasses[currvar.type].size() << ") { ";
+                    newcase << "\t\tif (not (_ITVAR_" << currvar.name << " == " << MyGspn.colClasses[currvar.type].size() << ")) { ";
                     newcase << "_ITVAR_" << currvar.name << "++; return true;";
                     newcase << " }\n";
                     newcase << "_ITVAR_" << currvar.name << " = 0;";
