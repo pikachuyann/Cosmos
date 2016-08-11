@@ -148,6 +148,7 @@ void parameters::usage() {
     cout << "\t--gppcmd  \tset the C++ compiler (default g++)" << endl;
     cout << "\t--gppflags\tset the C++ compiler flags (default -O3)" << endl;
     cout << "\t--reuse\ttry to load previous simulation and save simulations" << endl;
+    cout << "\t--use-setdomain-impl\tuse the Set implementation on Places and Transitions" << endl;
 
     cout << "Option of simulation:" << endl;
     cout << "\t--level \tset the confidence level for the simulation (default=0.99)" << endl;
@@ -193,6 +194,7 @@ void parameters::usage() {
     cout << "\t--prism \tExport the state space and launch prism." << endl;
     cout << "\t-s,--state-space \tExport the state space." << endl;
     cout << "\t--lump-state-space \tLump the state space before exporting." << endl;
+    cout << "\t--no-magic-print\tIgnore magic_print when using custom C code in models" << endl;
     
 
 }
