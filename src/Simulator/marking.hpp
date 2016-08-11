@@ -122,5 +122,16 @@ public:
 
 inline bool contains(int i, int j){ return i>=j;}
 
+class abstractBindingIteratorImpl;
+
+class abstractBindingIterator {
+public:
+    abstractBindingIteratorImpl* P;
+    
+    abstractBindingIterator(abstractMarking& m);
+    ~abstractBindingIterator();
+    void reset(abstractMarking& m);
+    bool next(size_t& t,abstractMarking& m);
+};
 
 #endif
