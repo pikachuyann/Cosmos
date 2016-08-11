@@ -736,7 +736,8 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         header << "\n\tbool next(size_t& t, abstractMarkingImpl& m) {";
         header << "\n\t\tbool estCoherent = false; bool nint = true;";
         header << "\n\t\twhile ((not estCoherent) and nint) {";
-        header << "\n\t\t\tnint = nextInterieur(t,m); estCoherent = isCoherent(t,m);";
+        header << "\n\t\t\tnint = nextInterieur(t,m);";
+        header << "\n\t\t\testCoherent = isCoherent(t,m);";
         header << "\n\t\t}";
         header << "\n\t\treturn estCoherent;";
         // Tant que c'est pas cohérent, je pop le next itérateur
@@ -758,8 +759,11 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         SpnCppFile << "abstractBinding abstractBindingIteratorImpl::getBinding() {";
         SpnCppFile << "\nabstractBinding newBind;";
         for (let var : MyGspn.colVars) {
-            SpnCppFile << "\nnewBind.P." << var.name << " = _ITVAR_" << var.name << ";";
+            size_t varclass = var.type;
+            const auto& classname = MyGspn.colDoms[varclass].name;
+            SpnCppFile << "\nnewBind.P->" << var.name << ".c0 = (" << classname << "_Color_Classe) _ITVAR_" << var.name << ";";
         }
+        SpnCppFile << "\n\tnewBind.idcount = getIndex();";
         SpnCppFile << "\n\treturn newBind;";
         SpnCppFile << "\n}";
         
