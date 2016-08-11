@@ -638,7 +638,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         }
         SpnCppFile << "\n}\n";
         
-        header << "private:\n";
+        header << "\nprivate:";
         header << "\n\tbool nextInterieur(size_t& t, abstractMarkingImpl& m) {\n";
         
         casesHandler bindingcases("t");
@@ -660,22 +660,22 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                     isUsed = true;
                     if (isVisited[place.id]) { continue; }
                     isVisited[place.id] = true;
-                    newcase << "\n\t\tif (m._PL_" << place.name << ".tokens.empty()) { return false; }";
-                    newcase << "\t\tif (not (_IT_" << place.name << " == m._PL_" << place.name << ".tokens.end())) { ";
-                    newcase << "_IT_" << place.name << "++; return true;";
-                    newcase << " }\n";
-                    newcase << "\t\t_IT_" << place.name << " = m._PL_" << place.name << ".tokens.begin();\n";
+                    newcase << "\n\t\t\tif (m._PL_" << place.name << ".tokens.empty()) { return false; }";
+                    newcase << "\n\t\t\tif (not (_IT_" << place.name << " == m._PL_" << place.name << ".tokens.end())) { ";
+                    newcase << "\n\t\t\t\t_IT_" << place.name << "++; return true;";
+                    newcase << "\n\t\t\t}";
+                    newcase << "\n\t\t\t_IT_" << place.name << " = m._PL_" << place.name << ".tokens.begin();";
                 }
                 if (not isUsed) {
                     auto& currvar = MyGspn.colVars[var];
                     const auto& vardom = MyGspn.colDoms[currvar.type];
-                    newcase << "\t\tif (not (_ITVAR_" << currvar.name << " == (((size_t) Color_" << vardom.name << "_Total) - 1) )) { ";
-                    newcase << "_ITVAR_" << currvar.name << "++; return true;";
-                    newcase << " }\n";
-                    newcase << "_ITVAR_" << currvar.name << " = 0;";
+                    newcase << "\n\t\t\tif (not (_ITVAR_" << currvar.name << " == (((size_t) Color_" << vardom.name << "_Total) - 1) )) { ";
+                    newcase << "\n\t\t\t\t_ITVAR_" << currvar.name << "++; return true;";
+                    newcase << "\n\t\t\t}";
+                    newcase << "\n\t\t\t_ITVAR_" << currvar.name << " = 0;";
                 }
             }
-            newcase << "\t\treturn false;\n";
+            newcase << "\n\t\t\treturn false;";
             bindingcases.addCase(t, newcase.str(),MyGspn.transitionStruct[t].name);
         }
         bindingcases.writeCases(header);
@@ -687,9 +687,9 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         //    header << "\tsize_t _ITVAR_" << var.name << ";\n";
         //    header << "\tbool _ISDEFITVAR_" << var.name << ";\n";
         
-        header << "\n\tbool isCoherent(size_t& t,abstractMarkingImpl& m) {\n";
+        header << "\n\tbool isCoherent(size_t& t,abstractMarkingImpl& m) {";
         for (let var : MyGspn.colVars) {
-            header << "\t _ISDEFITVAR_" << var.name << " = false;\n";
+            header << "\n\t\t _ISDEFITVAR_" << var.name << " = false;";
         }
         casesHandler bindingcasesB("t");
         for (size_t t = 0; t < MyGspn.tr ; t++){
@@ -715,7 +715,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                 let vartempB = MyGspn.access(MyGspn.inArcsStruct, t, place.id).coloredVal;
                 for (const auto& vartemp : vartempB) {
                     if (not placeVue) {
-                        newcase << "\n\t\tif (m._PL_" << place.name << ".tokens.empty()) { return false; }";
+                        newcase << "\n\t\t\tif (m._PL_" << place.name << ".tokens.empty()) { return false; }";
                         placeVue = true;
                     }
                 for (size_t varnum = 0;varnum < vartemp.field.size();varnum++) {
@@ -724,18 +724,19 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                         fprintf(stderr, "Un élément de l'arc n'est pas une variable"); exit(2);
                     }
                     auto& currvar = MyGspn.colVars[vartemp.field[varnum]];
-                    newcase << "\tif (_ISDEFITVAR_" << currvar.name << ") {";
-                    newcase << "if (not (_ITVAR_" << currvar.name << " == (*_IT_" << place.name << ").first.c" << varnum << ")) { return false; } ";
+                    newcase << "\n\t\t\tif (_ISDEFITVAR_" << currvar.name << ") {";
+                    newcase << "\n\t\t\t\tif (not (_ITVAR_" << currvar.name << " == (*_IT_" << place.name << ").first.c" << varnum << ")) { return false; }";
                     // Cas où la variable est déjà définie
-                    newcase << "}\n\telse {\n";
+                    newcase << "\n\t\t\t}";
+                    newcase << "\n\t\t\telse {";
                     // _IT_place : token ds un Domain
-                    newcase << "\t\t_ITVAR_" << currvar.name << " = (*_IT_" << place.name << ").first.c" << varnum << ";\n";
-                    newcase << "\t\t_ISDEFITVAR_" << currvar.name << " = true;\n"; 
-                    newcase << "\t}\n";
+                    newcase << "\n\t\t\t\t_ITVAR_" << currvar.name << " = (*_IT_" << place.name << ").first.c" << varnum << ";";
+                    newcase << "\n\t\t\t\t_ISDEFITVAR_" << currvar.name << " = true;"; 
+                    newcase << "\n\t\t\t\t}";
                 }
                 }
             }
-            newcase << "\treturn true;";
+            newcase << "\n\t\t\treturn true;";
             bindingcasesB.addCase(t, newcase.str(),MyGspn.transitionStruct[t].name);
         }
         // Lister les variables, mettre des valeurs "tentatives" en parcourant les valeurs actuelles
