@@ -243,7 +243,11 @@ void SPN_orig::updateSet(double ctime,size_t E1_transitionNum, const abstractBin
     //check if the current transition is still enabled
     abstractBindingIterator absMkIt(Marking);
     
-    for(const auto &bindex : Transition[E1_transitionNum].bindingList){
+    while (absMkIt.next(E1_transitionNum, Marking)) {
+        const auto& bindex = absMkIt.getBinding();
+        // bindex = Transition[E1_transitionNum].bindingList[tmpbindex];
+        // bindex type abstractBinding
+
         bool Nenabled = IsEnabled(E1_transitionNum, bindex);
         bool NScheduled = EQ.isScheduled(E1_transitionNum, bindex.idcount);
 
