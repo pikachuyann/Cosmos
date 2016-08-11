@@ -629,7 +629,11 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         for (vector<place>::const_iterator plit = MyGspn.placeStruct.begin();
             plit!= MyGspn.placeStruct.end(); ++plit) {
             if (not MyGspn.colDoms[plit->colorDom].isUncolored()) {
-                SpnCppFile << "\n\t_IT_" << plit->name << " = m._PL_" << plit->name << ".tokens.begin();\n";
+                SpnCppFile << "\n\t_IT_" << plit->name << " = m._PL_" << plit->name << ".tokens.begin();";
+            }
+            for (let var : MyGspn.colVars) {
+                SpnCppFile << "\n\t_ITVAR_" << var.name << " = 0;";
+                SpnCppFile << "\n\t_ISDEFITVAR_" << var.name << " = false;";
             }
         }
         SpnCppFile << "\n}\n";
@@ -750,9 +754,8 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         SpnCppFile << "\n\tsize_t accum;";
         for (let var : MyGspn.colVars) {
             size_t varclass = var.type;
-            //size_t varsize = MyGspn.colClasses[varclass].size();
-            const auto& vardom = MyGspn.colDoms[var.type];
-            SpnCppFile << "\n\taccum = _ITVAR_" << var.name << " + ((int) Color_" << vardom.name << "_Total) * accum;";
+            const auto& vardom = MyGspn.colDoms[varclass];
+            SpnCppFile << "\n\taccum = _ITVAR_" << var.name << " + ((size_t) Color_" << vardom.name << "_Total) * accum;";
         }
         SpnCppFile << "\nreturn accum;";
         SpnCppFile << "\n\t}";
