@@ -669,7 +669,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                 if (not isUsed) {
                     auto& currvar = MyGspn.colVars[var];
                     const auto& vardom = MyGspn.colDoms[currvar.type];
-                    newcase << "\t\tif (not (_ITVAR_" << currvar.name << " == ((size_t) Color_" << vardom.name << "_Total) )) { ";
+                    newcase << "\t\tif (not (_ITVAR_" << currvar.name << " == (((size_t) Color_" << vardom.name << "_Total) - 1) )) { ";
                     newcase << "_ITVAR_" << currvar.name << "++; return true;";
                     newcase << " }\n";
                     newcase << "_ITVAR_" << currvar.name << " = 0;";
@@ -699,15 +699,15 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
             const auto& trans = MyGspn.transitionStruct[t];
             auto varlist = trans.varDomain;
             vector<bool> isVisited(MyGspn.placeStruct.size(),false);
-            for (let var : varlist) {
+            /* for (let var : varlist) {
                 auto& currvar = MyGspn.colVars[var];
                 bool isUsed = false;
                 for (let place : MyGspn.placeStruct) {
                     if (isUsed) { continue; }
                     isUsed = true;
                 }
-                if (not isUsed) { newcase << "\t _ISDEFITVAR_" << currvar.name << " = true;\n"; }
-            }
+                //if (not isUsed) { newcase << "\t _ISDEFITVAR_" << currvar.name << " = true;\n"; }
+            } */
             
             // TODO : sortir le _ISDEFITVAR_ du code généré vers le code générateur
             for (let place : MyGspn.placeStruct) {
