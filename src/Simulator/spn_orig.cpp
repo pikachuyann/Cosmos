@@ -270,6 +270,9 @@ void SPN_orig::updateSet(double ctime,size_t E1_transitionNum, const abstractBin
     for (size_t t=0; PossiblyEnabled[lastTransition][t] != -1;t++) {
         size_t it = (size_t) PossiblyEnabled[lastTransition][t];
         size_t bindnum = 0;
+        if (verbose > 4) {
+            std::cerr << "(Possibly Enabled) Considering transition" << it << ".\n";
+        }
         absMkIt.reset(Marking);
         while (absMkIt.next(it, Marking)) {
             const auto& bindex =  absMkIt.getBinding();
@@ -311,9 +314,13 @@ void SPN_orig::updateSet(double ctime,size_t E1_transitionNum, const abstractBin
         //const auto &it = PossiblyDisabled[lastTransition][t];
         size_t it = (size_t) PossiblyDisabled[lastTransition][t];
         size_t bindnum = 0;
+        if (verbose > 4) {
+            std::cerr << "(Possibly Disabled) Considering transition" << it << ".\n";
+        }
         absMkIt.reset(Marking);
         while (absMkIt.next(it, Marking)) {
             const auto& bindex =  absMkIt.getBinding();
+            //std::cerr << "Found binding :" << bindex.print << ".\n";
         //const abstractBinding *bindex = nextPossiblyDisabledBinding(it, lb, &bindnum);
         //while (bindex != NULL){
             if(verbose > 4){
