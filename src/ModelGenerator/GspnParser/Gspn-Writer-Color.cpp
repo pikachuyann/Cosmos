@@ -663,7 +663,8 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                 }
                 if (not isUsed) {
                     auto& currvar = MyGspn.colVars[var];
-                    newcase << "\t\tif (not (_ITVAR_" << currvar.name << " == " << MyGspn.colClasses[currvar.type].size() << ")) { ";
+                    const auto& vardom = MyGspn.colDoms[currvar.type];
+                    newcase << "\t\tif (not (_ITVAR_" << currvar.name << " == ((int) Color_" << vardom.name << "_Total) )) { ";
                     newcase << "_ITVAR_" << currvar.name << "++; return true;";
                     newcase << " }\n";
                     newcase << "_ITVAR_" << currvar.name << " = 0;";
@@ -749,8 +750,9 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         SpnCppFile << "\n\tsize_t accum;";
         for (let var : MyGspn.colVars) {
             size_t varclass = var.type;
-            size_t varsize = MyGspn.colClasses[varclass].size();
-            SpnCppFile << "\n\taccum = _ITVAR_" << var.name << " + " << varsize << " * accum;";
+            //size_t varsize = MyGspn.colClasses[varclass].size();
+            const auto& vardom = MyGspn.colDoms[var.type];
+            SpnCppFile << "\n\taccum = _ITVAR_" << var.name << " + ((int) Color_" << vardom.name << "_Total) * accum;";
         }
         SpnCppFile << "\nreturn accum;";
         SpnCppFile << "\n\t}";
@@ -814,6 +816,5 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
     SpnCppFile << "\nabstractBinding abstractBindingIterator::getBinding() {";
     SpnCppFile << "\n\tP->getBinding();";
     SpnCppFile << "\n};";
-    
 }
 
