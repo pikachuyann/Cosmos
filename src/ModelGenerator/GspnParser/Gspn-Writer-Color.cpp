@@ -631,10 +631,10 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
             if (not MyGspn.colDoms[plit->colorDom].isUncolored()) {
                 SpnCppFile << "\n\t_IT_" << plit->name << " = m._PL_" << plit->name << ".tokens.begin();";
             }
-            for (let var : MyGspn.colVars) {
-                SpnCppFile << "\n\t_ITVAR_" << var.name << " = 0;";
-                SpnCppFile << "\n\t_ISDEFITVAR_" << var.name << " = false;";
-            }
+        }
+        for (let var : MyGspn.colVars) {
+            SpnCppFile << "\n\t_ITVAR_" << var.name << " = 0;";
+            SpnCppFile << "\n\t_ISDEFITVAR_" << var.name << " = false;";
         }
         SpnCppFile << "\n}\n";
         
