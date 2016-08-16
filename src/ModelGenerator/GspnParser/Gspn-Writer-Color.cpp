@@ -622,6 +622,7 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
             header << "\tsize_t _ITVAR_" << var.name << " = 0;\n";
             header << "\tbool _ISDEFITVAR_" << var.name << " = false;\n";
         }
+        header << "\tbool foundnint = true;";
         
         header << "\n\tvoid reset(abstractMarkingImpl& m);";
         
@@ -635,6 +636,11 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         for (let var : MyGspn.colVars) {
             SpnCppFile << "\n\t_ITVAR_" << var.name << " = 0;";
             SpnCppFile << "\n\t_ISDEFITVAR_" << var.name << " = false;";
+        }
+        SpnCppFile << "\n\tfoundnint = true;";
+        if (P.verbose > 4) {
+            SpnCppFile << "\n\t\tstd::cerr << \"abstractBindingIteratorImpl has been reset.\\n\";";
+            SpnCppFile << "\n\t\tstd::cerr << \"[Call Values :] Found New ?\" << foundnint << \"\\n\";";
         }
         SpnCppFile << "\n}\n";
         
@@ -660,9 +666,19 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
                     isUsed = true;
                     if (isVisited[place.id]) { continue; }
                     isVisited[place.id] = true;
-                    newcase << "\n\t\t\tif (m._PL_" << place.name << ".tokens.empty()) { return false; }";
+                    newcase << "\n\t\t\tif (m._PL_" << place.name << ".tokens.empty()) {";
+                    newcase << "\n\t\t\t\treturn false;";
+                    if (P.verbose > 4) {
+                        newcase << "\n\t\t\t\tstd::cerr << \"Couldn't find tokens in place " << place.name << "\\n\";";
+                    }
+                    newcase << "\n\t\t\t}";
                     newcase << "\n\t\t\tif (not (_IT_" << place.name << " == m._PL_" << place.name << ".tokens.end())) { ";
-                    newcase << "\n\t\t\t\t_IT_" << place.name << "++; return true;";
+                    newcase << "\n\t\t\t\t_IT_" << place.name << "++;";
+                    newcase << "\n\t\t\t\tif (not (_IT_" << place.name << " == m._PL_" << place.name << ".tokens.end())) { ";
+                    newcase << "\n\t\t\t\t\treturn true;";
+                    newcase << "\n\t\t\t\t} else {";
+                    newcase << "\n\t\t\t\t_IT_" << place.name << " = m._PL_" << place.name << ".tokens.begin();";
+                    newcase << "\n\t\t\t\t}";
                     newcase << "\n\t\t\t}";
                     newcase << "\n\t\t\t_IT_" << place.name << " = m._PL_" << place.name << ".tokens.begin();";
                 }
@@ -749,10 +765,17 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
         
         header << "\n\tbool next(size_t& t, abstractMarkingImpl& m);";
         SpnCppFile << "\nbool abstractBindingIteratorImpl::next(size_t& t, abstractMarkingImpl& m) {";
-        SpnCppFile << "\n\tbool estCoherent = false; bool foundnint = true;";
-        SpnCppFile << "\n\twhile ((not estCoherent) && foundnint) {";
+        SpnCppFile << "\n\tbool estCoherent = false;";
+        if (P.verbose > 4) {
+            SpnCppFile << "\n\t\tstd::cerr << \"abstractBindingIteratorImpl::next has been called.\\n\";";
+            SpnCppFile << "\n\t\tstd::cerr << \"[Call Values :] Found New ?\" << foundnint << \" Is Coherent?\" << estCoherent << \"\\n\";";
+        }
+        SpnCppFile << "\n\twhile ((not estCoherent) and foundnint) {";
         SpnCppFile << "\n\t\tfoundnint = nextInterieur(t,m);";
         SpnCppFile << "\n\t\testCoherent = isCoherent(t,m);";
+        if (P.verbose > 4) {
+            SpnCppFile << "\n\t\tstd::cerr << \"Found New ?\" << foundnint << \" Is Coherent?\" << estCoherent << \"\\n\";";
+        }
         SpnCppFile << "\n\t}";
         SpnCppFile << "\n\treturn estCoherent;";
         // Tant que c'est pas cohérent, je pop le next itérateur
