@@ -420,7 +420,7 @@ void Gspn_Writer::writeDotFile(const string &file)const{
 
     for (const auto &p : MyGspn.placeStruct ) {
         df << "\t" << p.name;
-        df << " [shape=circle,xlabel=\""<< p.name;
+        df << " [xlabel=\""<< p.name;
         df <<"\",label=\"$"<< p.name << "$\"];" << endl;
     }
 
