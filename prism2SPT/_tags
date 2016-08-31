@@ -1,2 +1,2 @@
-<*.ml>:package(unix)
-<*.native>:package(unix)
+<*.ml>:package(str)
+"modelConvert.native" or "modelConvert.ml" or "simulinkparser.ml" or "pnmlparser.ml" or "GrMLParser.ml" or "parserUnparseAttribute.ml" or "parserUnparseAttribute.native": package(zip),package(xml-light),package(str)
