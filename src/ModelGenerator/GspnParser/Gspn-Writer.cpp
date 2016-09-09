@@ -371,7 +371,7 @@ void Gspn_Writer::writeTransition(ofstream & spnF)const{
             if (P.verbose > 7) {
                 spnF << "\t\t\t\tstd::cerr << \"TRANSITION " << t << "\" << \" : \\n\";\n";
             }
-        if(MyGspn.colVars.size()>0){
+        if(MyGspn.colVars.size()>0 && !P.is_domain_impl_set){
 			spnF << "\t{ ";
                         spnF << "//"<< MyGspn.transitionStruct[t].name << "\n\tabstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
 			for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
