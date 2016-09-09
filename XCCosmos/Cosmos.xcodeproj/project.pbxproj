@@ -983,6 +983,7 @@
 		039A3AE3191A9EEC00B42447 /* workflow-out-5.gspn */ = {isa = PBXFileReference; lastKnownFileType = text; path = "workflow-out-5.gspn"; sourceTree = "<group>"; };
 		039B4F89188E7B2400C63ED7 /* Generator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Generator.cpp; sourceTree = "<group>"; };
 		039B4F8A188E7B2400C63ED7 /* Generator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Generator.hpp; sourceTree = "<group>"; };
+		039C22C01D7583F9004ABAEA /* _tags */ = {isa = PBXFileReference; lastKnownFileType = text; path = _tags; sourceTree = "<group>"; };
 		03A5DCFA1B273A79003F470A /* Gspn-model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-model.cpp"; sourceTree = "<group>"; };
 		03A5DCFB1B273A79003F470A /* Gspn-model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-model.hpp"; sourceTree = "<group>"; };
 		03A7F87B182C12DB006F0BC8 /* gnuplotScript.gnu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gnuplotScript.gnu; path = ../utils/gnuplotScript.gnu; sourceTree = "<group>"; };
@@ -1100,6 +1101,7 @@
 			isa = PBXGroup;
 			children = (
 				03088AAA1A0422C0006BCB27 /* #model.pnml# */,
+				039C22C01D7583F9004ABAEA /* _tags */,
 				03088AAB1A0422C0006BCB27 /* _build */,
 				03088ADD1A0422C0006BCB27 /* build.sh */,
 				03088ADE1A0422C0006BCB27 /* generator.ml */,
