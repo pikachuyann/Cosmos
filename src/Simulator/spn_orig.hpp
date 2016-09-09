@@ -41,6 +41,7 @@ public:
     virtual void update(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &);
     virtual void updateSet(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &);
     virtual void InitialEventsQueue(EventsQueueSet &,timeGen &);
+    virtual void InitialEventsQueueSet(EventsQueueSet &,timeGen &);
 
     int &verbose;
 
