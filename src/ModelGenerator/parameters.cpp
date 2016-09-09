@@ -88,6 +88,7 @@ GMLinput(false),
 computeStateSpace(0),
 lumpStateSpace(false),
 alligatorMode(false),
+guiGreatSpnMode(false),
 unfold(""),
 isTTY(true),
 terminalWidth(80),
@@ -234,6 +235,9 @@ void parameters::parseCommandLine(int argc, char** argv) {
         commandLine += argv[i];
     }
 
+    const char *env = getenv("FROM_GUI");
+    guiGreatSpnMode = (env != nullptr && 0 == strcmp(env, "1"))>0;
+    
     int c;
 
     while (1) {
@@ -270,6 +274,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"gmlinput",    no_argument      , 0, CO_grml_input},
             {"grml-input",  no_argument      , 0, CO_grml_input},
             {"alligator-mode", no_argument   , 0, CO_alligator_mode},
+            {"gui-greatSPN-mode",no_argument , 0, CO_gui_greatSPN_mode},
 
             /* Miscellaneous options */
             {"unfold",      required_argument, 0, CO_unfold},
@@ -380,6 +385,9 @@ void parameters::parseCommandLine(int argc, char** argv) {
 
             case CO_alligator_mode:alligatorMode = true;
                 verbose = 0;
+                break;
+                
+            case CO_gui_greatSPN_mode: guiGreatSpnMode =true;
                 break;
 
             case CO_unfold:unfold = optarg;

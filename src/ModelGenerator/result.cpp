@@ -202,6 +202,7 @@ void result::printProgress() {
         printAlligator();
         return;
     }
+    if(P.guiGreatSpnMode)return;
     while (endline >= 0) {
         endline--;
         if(P.isTTY)cout << "\033[A\033[2K";
