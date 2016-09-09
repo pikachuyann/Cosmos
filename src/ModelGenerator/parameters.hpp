@@ -71,6 +71,7 @@ enum Poption {
     CO_normalize_IS,
     CO_grml_input,
     CO_alligator_mode,
+    CO_gui_greatSPN_mode,
     CO_unfold,
     CO_output_model,
     CO_HASL_formula,
@@ -157,6 +158,7 @@ struct parameters {
     bool lumpStateSpace;
     
     bool alligatorMode;
+    bool guiGreatSpnMode;
     std::string unfold;
     std::string outputModel;
     bool isTTY;
