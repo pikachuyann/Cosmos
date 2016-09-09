@@ -323,7 +323,8 @@ void Simulator::interactiveSimulation(){
 void Simulator::SimulateSinglePath() {
 
     reset();
-    N.InitialEventsQueue(*EQ,*this);
+    //N.InitialEventsQueue(*EQ,*this);      /* A corriger pour prendre en compte correctement le --use-setdomain-impl. */
+    N.InitialEventsQueueSet(*EQ,*this);
     minInteractiveTime=0.0;
 	
 	if(logtrace.is_open())logtrace << "New Path"<< endl;

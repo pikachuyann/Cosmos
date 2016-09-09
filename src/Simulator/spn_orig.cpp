@@ -77,6 +77,7 @@ void SPN_orig::InitialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
     //time is simulated and added to the structure.
 
     Event E;
+    
     for(const auto &t : Transition) {
         if (verbose > 5) {
             std::cerr << "IEQ pour Transition " << t.Id << "(" << t.label << ") : \n";
@@ -92,6 +93,38 @@ void SPN_orig::InitialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
                 EQ.insert(E);
             }
         }
+    }
+}
+
+void SPN_orig::InitialEventsQueueSet(EventsQueueSet &EQ,timeGen &TG) {
+    //Check each transition. If a transition is enabled then his fire
+    //time is simulated and added to the structure.
+
+    Event E;
+    abstractBindingIterator absMkIt(Marking);
+    absMkIt.reset(Marking);
+    
+    for(const auto &t : Transition) {
+        if (verbose > 5) {
+            std::cerr << "IEQ pour Transition " << t.Id << "(" << t.label << ") : \n";
+        }
+        
+        absMkIt.reset(Marking);
+        size_t it = t.Id;
+        /* const auto &it = (const size_t) t.Id; */
+        while (absMkIt.next(it, Marking)) {
+            const auto& bindex =  absMkIt.getBinding();
+            if (verbose > 5) {
+                std::cerr << "Transition " << t.label << " IEQ : ";
+                bindex.print();
+                std::cerr << "\n";
+            }
+            if (IsEnabled(t.Id,bindex)) {
+                GenerateEvent(0.0,E, t.Id ,bindex,TG);
+                EQ.insert(E);
+            }
+        }
+
     }
 }
 
