@@ -118,7 +118,7 @@ public:
             tokDom1->second -= x.mult;
             if (tokDom1->second == 0) { tokens.erase(tokDom1); }
         }
-        else { tokens.insert(std::pair<T,unsigned int>(x,x.mult)); }
+        else { tokens.insert(std::pair<T,unsigned int>(xsing,-x.mult)); }
         return *this;
     }
     
