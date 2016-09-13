@@ -1123,7 +1123,7 @@ void Gspn_Writer::writeFile(){
             if (!P.is_domain_impl_set) {
                 SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
             } else {
-                SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ",0";
+                SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ",1";
             }
             SpnCppFile << ", " << MyGspn.transitionStruct[t].ageMemory;
             if(P.StringInSpnLHA)SpnCppFile << ", \"" << MyGspn.transitionStruct[t].name<< "\"";
