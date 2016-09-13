@@ -202,7 +202,6 @@ void result::printProgress() {
         printAlligator();
         return;
     }
-    if(P.guiGreatSpnMode)return;
     while (endline >= 0) {
         endline--;
         if(P.isTTY)cout << "\033[A\033[2K";
@@ -223,11 +222,11 @@ void result::printProgress() {
 
     endline++;
 
-    if(P.isTTY)cout << "\033[1;33m";
     if (P.verbose > 1) {
+        if(P.isTTY)cout << "\033[1;33m";
         printCompactResult();
+        if(P.isTTY)cout <<"\033[0m";
     }
-    if(P.isTTY)cout <<"\033[0m";
     if(P.isTTY)cout << "\033[1;3m";
     if (P.sequential) {
         cout << setw(maxformulaname+2 ) << left << "% of Err: ";
@@ -244,7 +243,7 @@ void result::printProgress() {
 void result::stopclock() {
     end = chrono::system_clock::now();
     cpu_time_used = chrono::duration_cast<chrono::duration<double> >(end - start).count();
-    if(P.verbose>0){while (endline >= 0) {
+    if(P.verbose>0 && P.isTTY){while (endline >= 0) {
         endline--;
         cout << "\033[A\033[2K";
     }
@@ -254,6 +253,13 @@ void result::stopclock() {
 
 void result::print(ostream &s) {
     s.precision(15);
+    
+    if(P.guiGreatSpnMode){
+        const string guiprefix = "#{GUI}#";
+        
+        
+    }
+    
     //if(!P.computeStateSpace)
     {
         s << "Command line:\t" << P.commandLine << endl;

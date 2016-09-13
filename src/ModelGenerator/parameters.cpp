@@ -125,6 +125,13 @@ nbPlace(0)
             terminalWidth=ws.ws_col;
         }
     }
+    
+    const char *env = getenv("FROM_GUI");
+    guiGreatSpnMode = (env != nullptr && 0 == strcmp(env, "1"))>0;
+    if(guiGreatSpnMode){
+        isTTY = true;
+        verbose = 1;
+    }
 }
 
 /**
@@ -234,9 +241,6 @@ void parameters::parseCommandLine(int argc, char** argv) {
         commandLine += " ";
         commandLine += argv[i];
     }
-
-    const char *env = getenv("FROM_GUI");
-    guiGreatSpnMode = (env != nullptr && 0 == strcmp(env, "1"))>0;
     
     int c;
 
@@ -277,6 +281,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"gui-greatSPN-mode",no_argument , 0, CO_gui_greatSPN_mode},
 
             /* Miscellaneous options */
+            {"force-TTY",   no_argument      , 0, CO_force_TTY},
             {"unfold",      required_argument, 0, CO_unfold},
             {"output-model", required_argument,0, CO_output_model},
             {"HASL-formula", required_argument, 0, CO_HASL_formula},
@@ -387,7 +392,11 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 verbose = 0;
                 break;
                 
-            case CO_gui_greatSPN_mode: guiGreatSpnMode =true;
+            case CO_force_TTY : isTTY = true; break;
+                
+            case CO_gui_greatSPN_mode:
+                guiGreatSpnMode =true;
+                terminalWidth=120;
                 break;
 
             case CO_unfold:unfold = optarg;

@@ -99,6 +99,7 @@ enum Poption {
     CO_magic_values,
     CO_version,
     CO_reuse,
+    CO_force_TTY
 };
 
 enum TmpStat:int {
