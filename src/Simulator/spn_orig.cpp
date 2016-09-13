@@ -359,7 +359,33 @@ void SPN_orig::updateSet(double ctime,size_t E1_transitionNum, const abstractBin
     for (size_t t=0; PossiblyDisabled[lastTransition][t] != -1;t++) {
         //const auto &it = PossiblyDisabled[lastTransition][t];
         size_t it = (size_t) PossiblyDisabled[lastTransition][t];
-        size_t bindnum = 0;
+        
+        auto& transitionEQ = EQ.evtHeapIndex[it];
+        
+        for (const auto EventId : transitionEQ) {
+            if (EventId.second >= 0) {
+                const auto& realbindex = EventId.first;
+                const auto& bindex = EQ.evtTbl[it][realbindex].binding;
+                if (EQ.isScheduled(it, bindex.idcount)) {
+                    if (!IsEnabled(it, bindex )){
+                        if(verbose > 4){
+                            cerr << "<-New transition disabled: " << Transition[it].label << ",";
+                            bindex.print();
+                            cerr << endl;
+                        }
+                        if(Transition[it].AgeMemory){
+                        EQ.pause(ctime, it, bindex.idcount);
+                    }else EQ.remove(it,bindex.idcount);
+                }else {
+                    if (Transition[it].MarkingDependent) {
+                        GenerateEvent(ctime,F, it,bindex,TG);
+                        EQ.replace(F);
+                    }
+                }
+            }
+            }
+        }
+ /*       size_t bindnum = 0;
         if (verbose > 4) {
             std::cerr << "(Possibly Disabled) Considering transition" << it << ".\n";
         }
@@ -395,7 +421,9 @@ void SPN_orig::updateSet(double ctime,size_t E1_transitionNum, const abstractBin
             }
             //bindex = nextPossiblyDisabledBinding(it, lb, &bindnum);
         }
+   */
     }
+    
 
     // Update transition which have no precondition on the Marking
     for (size_t t=0; FreeMarkDepT[lastTransition][t]!= -1;t++) {
