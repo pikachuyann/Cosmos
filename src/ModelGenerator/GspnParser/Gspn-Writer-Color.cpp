@@ -218,17 +218,21 @@ void Gspn_Writer_Color::writeEnabledDisabledBindingSet(ofstream &SpnF)const{
     
     // 1. récupérer les variables d'entrées
     // 2. itérer sur les places d'entrées
-    
+    SpnF << "\t\treturn NULL;" << endl;
+            /*
     SpnF << "\t\tif(*bindingNum==Transition[targettr].bindingList.size())return NULL;"<<endl;
     SpnF << "\t\t*bindingNum = *bindingNum +1;"<< endl;
     SpnF << "\t\treturn &(Transition[targettr].bindingList[*bindingNum-1]);"<< endl;
+             */
     SpnF << "}"<< endl;
 
     SpnF << "const abstractBinding* "<<objName<<"nextPossiblyDisabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {" << endl;
-
+    SpnF << "\t\treturn NULL;" << endl;
+    /*
     SpnF << "\t\tif(*bindingNum==Transition[targettr].bindingList.size())return NULL;"<<endl;
     SpnF << "\t\t*bindingNum = *bindingNum +1;"<< endl;
     SpnF << "\t\treturn &(Transition[targettr].bindingList[*bindingNum-1]);"<< endl;
+    */
     SpnF << "}"<< endl;
 
 }
