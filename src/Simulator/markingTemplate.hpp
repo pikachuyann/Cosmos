@@ -81,6 +81,20 @@ public:
         return strictEq;
     }
     
+    bool operator >= (const DomainGen& x)const{
+        // Pour tous les tokens de [x], ces tokens ont au moins la même multiplicité dans [tok]
+        bool strictEq = false;
+        for(const auto &tok : x.tokens ){
+            auto tokDom2 = tokens.find(tok.first);
+            if(tokDom2 != x.tokens.end()){
+                if(tokDom2->second < tok.second) return false;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     unsigned int card()const{
         unsigned int acc=0;
         for( const auto &tok: tokens)
@@ -100,7 +114,7 @@ public:
         xsing.mult = 1;
         auto tokDom1 = tokens.find(xsing);
         if (tokDom1 != tokens.end()) { tokDom1->second += x.mult; }
-        else { tokens.insert(std::pair<T,unsigned int>(x,x.mult)); }
+        else { tokens.insert(std::pair<T,unsigned int>(xsing,x.mult)); }
         return *this;
     }
     
@@ -119,7 +133,12 @@ public:
             tokDom1->second -= x.mult;
             if (tokDom1->second == 0) { tokens.erase(tokDom1); }
         }
-        else { assert(false); }
+        else {
+            std::cerr << "\nTrying to remove inexistant token : ";
+            x.print(std::cerr);
+            std::cerr << ".\n";
+            assert(false);
+        }
         return *this;
     }
     
