@@ -874,9 +874,9 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
             SpnCppFile << "     }\n";
         }
         SpnCppFile << "}\n";
-        SpnCppFile << "\n";
+        SpnCppFile << "\n";        
         SpnCppFile << "std::vector<int> abstractMarking::getVector()const {\n";
-        if( P.lightSimulator){
+        if( P.lightSimulator || P.is_domain_impl_set){
             SpnCppFile << "\texit(EXIT_FAILURE);\n";
         }else{
             SpnCppFile << "\tstd::vector<int> v("<< markingSize <<");" << endl;
@@ -1120,7 +1120,11 @@ void Gspn_Writer::writeFile(){
                 SpnCppFile << "IMMEDIATE,";
             }
 
-            SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
+            if (!P.is_domain_impl_set) {
+                SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
+            } else {
+                SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ",0";
+            }
             SpnCppFile << ", " << MyGspn.transitionStruct[t].ageMemory;
             if(P.StringInSpnLHA)SpnCppFile << ", \"" << MyGspn.transitionStruct[t].name<< "\"";
             SpnCppFile <<"), ";
