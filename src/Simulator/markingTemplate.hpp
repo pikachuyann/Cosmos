@@ -25,7 +25,7 @@
  */
 #ifndef markingTemplate_h
 #define markingTemplate_h
-
+#include <assert.h>
 
 template <typename T>
 struct DomainGen {
@@ -115,10 +115,11 @@ public:
         xsing.mult = 1;
         auto tokDom1 = tokens.find(xsing);
         if (tokDom1 != tokens.end()) {
+            if (x.mult > tokDom1->second) { assert(false); }
             tokDom1->second -= x.mult;
             if (tokDom1->second == 0) { tokens.erase(tokDom1); }
         }
-        else { tokens.insert(std::pair<T,unsigned int>(xsing,-x.mult)); }
+        else { assert(false); }
         return *this;
     }
     
