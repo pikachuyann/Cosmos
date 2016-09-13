@@ -573,7 +573,7 @@ void Gspn_Writer_Color::writeDomainSet(std::ofstream &SpnCppFile , std::ofstream
     
     SpnCppFile << "inline bool contains(const "<<it.cname() << "& d1, const " << it.cname() << "& d2){";
     //SpnCppFile << "\treturn (d1-d2) > -1;\n";
-    SpnCppFile << "\treturn not (d1 < d2);\n";
+    SpnCppFile << "\treturn d1 >= d2;\n";
     SpnCppFile << "}\n";
     
     SpnCppFile << "inline bool contains(const "<<it.cname() << "& d1, const " << it.tokname() << "& tok){";

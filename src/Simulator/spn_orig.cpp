@@ -277,13 +277,26 @@ void SPN_orig::updateSet(double ctime,size_t E1_transitionNum, const abstractBin
     abstractBindingIterator absMkIt(Marking);
     absMkIt.reset(Marking);
     
+    EQ.remove(E1_transitionNum, lb.idcount);
+    
+    //for(const auto &bindex : Transition[E1_transitionNum].bindingList){
     while (absMkIt.next(E1_transitionNum, Marking)) {
         const auto& bindex = absMkIt.getBinding();
         // bindex = Transition[E1_transitionNum].bindingList[tmpbindex];
         // bindex type abstractBinding
 
+        if (verbose > 4) {
+            std::cerr << "[!] I've been enabled !" << E1_transitionNum << ".\n";
+            std::cerr << "Currently testing with token : ";
+            bindex.print();
+            std::cerr << ".\n";
+        }
+        
         bool Nenabled = IsEnabled(E1_transitionNum, bindex);
         bool NScheduled = EQ.isScheduled(E1_transitionNum, bindex.idcount);
+        if (verbose > 4) {
+            std::cerr << "Current status: IsEnabled ? " << Nenabled << ". Is Scheduled ? " << NScheduled << ".\n";
+        }
 
         if (Nenabled && NScheduled && lb.idcount == bindex.idcount ) {
             GenerateEvent(ctime,F, E1_transitionNum, bindex,TG);
