@@ -114,7 +114,10 @@ public:
         auto xsing = x;
         xsing.mult = 1;
         auto tokDom1 = tokens.find(xsing);
-        if (tokDom1 != tokens.end()) { tokDom1->second -= x.mult; } // Il faudrait peut-être vérifier qu'on arrive pas à un nombre de zéro (et enlever le token dans ce cas)
+        if (tokDom1 != tokens.end()) {
+            tokDom1->second -= x.mult;
+            if (tokDom1->second == 0) { tokens.erase(tokDom1); }
+        }
         else { tokens.insert(std::pair<T,unsigned int>(x,x.mult)); }
         return *this;
     }
