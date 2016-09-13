@@ -79,7 +79,7 @@ public:
     const Event& InPosition(size_t)const ;
     
     
-private:
+//private:
     
     /**
      * The Events Heap Index vector allow to retrive the index
