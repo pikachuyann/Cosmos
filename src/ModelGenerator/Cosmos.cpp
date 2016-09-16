@@ -148,7 +148,7 @@ int main(int argc, char** argv) {
 	P.parseCommandLine(argc,argv);
 
     if (P.verbose>0){
-        if(P.isTTY){
+        if(P.isTTY && !P.guiGreatSpnMode){
             cout << "\033(0";
             cout << setw(P.terminalWidth/2-14) << "\x6c";
             cout.fill('\x71');
