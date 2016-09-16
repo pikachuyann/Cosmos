@@ -223,11 +223,11 @@ void result::printProgress() {
     endline++;
 
     if (P.verbose > 1) {
-        if(P.isTTY)cout << "\033[1;33m";
+        if(P.isTTY)cout << "\033[1m\033[33m";
         printCompactResult();
         if(P.isTTY)cout <<"\033[0m";
     }
-    if(P.isTTY)cout << "\033[1;3m";
+    if(P.isTTY)cout << "\033[1m\033[3m";
     if (P.sequential) {
         cout << setw(maxformulaname+2 ) << left << "% of Err: ";
         printPercent(Progress, 1.0);
@@ -256,7 +256,19 @@ void result::print(ostream &s) {
     
     if(P.guiGreatSpnMode){
         const string guiprefix = "#{GUI}#";
-        
+        for (size_t i = 0; i < P.HaslFormulasname.size(); i++) {
+            let fn=P.HaslFormulasname[i];
+            if( fn.substr(0,11) == "Throughput_"){
+                cout << guiprefix << " RESULT ALL THROUGHPUT ";
+                cout << fn.substr(11,fn.length()-11) << " = ";
+                cout << HaslResult[i].mean << endl;
+            }
+            if( fn.substr(0,10) == "MeanToken_"){
+                cout << guiprefix << " RESULT ALL MEAN ";
+                cout << fn.substr(10,fn.length()-10) << " = ";
+                cout << HaslResult[i].mean << endl;
+            }
+        }
         
     }
     

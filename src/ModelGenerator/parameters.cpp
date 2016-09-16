@@ -131,6 +131,7 @@ nbPlace(0)
     if(guiGreatSpnMode){
         isTTY = true;
         verbose = 1;
+        terminalWidth =120;
     }
 }
 
