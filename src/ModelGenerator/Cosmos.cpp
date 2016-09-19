@@ -261,6 +261,7 @@ int main(int argc, char** argv) {
     auto endtime = chrono::steady_clock::now();
     chrono::duration<double> buildtime= endtime-startbuild;
     if(P.verbose>0)cout<<"Time for building the simulator:\t"<< buildtime.count() << "s"<< endl;
+    if(P.guiGreatSpnMode)cout << "#{GUI}# RESULT STAT build_time " << buildtime.count() << endl;
 
     // Run
     if(P.tmpStatus & TS_RUN){
