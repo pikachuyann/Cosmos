@@ -253,9 +253,8 @@ void result::stopclock() {
 
 void result::print(ostream &s) {
     s.precision(15);
-    
+    const string guiprefix = "#{GUI}#";
     if(P.guiGreatSpnMode){
-        const string guiprefix = "#{GUI}#";
         for (size_t i = 0; i < P.HaslFormulasname.size(); i++) {
             let fn=P.HaslFormulasname[i];
             if( fn.substr(0,11) == "Throughput_"){
@@ -281,8 +280,8 @@ void result::print(ostream &s) {
         } else if (!P.CSLformula.empty()) {
             s << "Formula:\t" << P.CSLformula << endl;
         } else s << "LHA path:\t" << P.PathLha << endl;
-    s << "Seed:\t" << P.seed<<endl;
-
+        s << "Seed:\t" << P.seed<<endl;
+        
         for (size_t i = 0; i < P.HaslFormulasname.size(); i++) {
             if (!P.alligatorMode || (P.HaslFormulas[i]->TypeOp != PDF_PART && P.HaslFormulas[i]->TypeOp != CDF_PART)) {
                 /*if (MeanM2->IsBernoulli[i]) {
@@ -290,9 +289,9 @@ void result::print(ostream &s) {
                  up[i] = (1 < up[i]) ? 1.0 : up[i];
                  width[i] = up[i] - low[i];
                  }*/
-
+                
                 s << P.HaslFormulasname[i] << ":" << endl;
-
+                
                 s << "Estimated value:\t" << HaslResult[i].mean << endl;
                 if (P.sequential) {
                     if (P.computeStateSpace > 0) {
@@ -319,7 +318,7 @@ void result::print(ostream &s) {
             s << "Confidence interval computed sequentially using Chows-Robbin algorithm or SPRT." << endl;
         } else
             s << "Confidence interval computed using approximation to normal low." << endl;
-
+        
         s << "Confidence level:\t" << P.Level << endl;
         //s << "Relative error:\t" << RelErr << endl;
         s << "Total paths:\t" << MeanM2.I << endl;
@@ -344,6 +343,14 @@ void result::print(ostream &s) {
 #endif
         s << "Total Memory used:\t" << setprecision(4) << child_memory << " MB" << endl;
         s << "Number of jobs:\t" << P.Njob << endl;
+    
+        
+        if(P.guiGreatSpnMode){
+            cout << guiprefix << " RESULT STAT simulation_time " << cpu_time_used << endl;;
+            cout << guiprefix << " RESULT STAT total_time " << child_time << endl;;
+            cout << guiprefix << " RESULT STAT memory " << child_memory << "MB"<< endl;;
+        }
+    
     }
 }
 
@@ -353,15 +360,15 @@ tuple<string, double> result::split_name(string s) {
     size_t comma = s.find(",", fb);
     if (comma != string::npos) {
         return make_tuple(s.substr(0, min(colon,fb)),
-                stod(s.substr(comma + 2, s.length() - comma - 3)));
+                          stod(s.substr(comma + 2, s.length() - comma - 3)));
     } else {
         size_t fb = s.find("$GRAPH$");
         size_t comma = s.find("$", fb + 7);
         size_t enddol = s.find("$", comma + 1);
         if (enddol != string::npos) {
             return make_tuple(s.substr(0, fb), (
-                    stod(s.substr(fb + 7, comma - 1)) +
-                    stod(s.substr(comma + 1, enddol - comma - 1))) / 2.0);
+                                                stod(s.substr(fb + 7, comma - 1)) +
+                                                stod(s.substr(comma + 1, enddol - comma - 1))) / 2.0);
         } else return make_tuple("EMPTY", 0.0);
     }
 }
