@@ -43,7 +43,12 @@ using namespace std;
  * but don't fill it.
  */
 Simulator::Simulator(SPN_orig& spn,LHA_orig& automate):verbose(0),N(spn),A(automate){
+    if (is_domain_impl_set) {
 	EQ = new EventsQueueSet(N); //initialization of the event queue
+    }
+    else {
+        EQ = new EventsQueueSet(N); // Pas d'EventQueue non-Set
+    }
     logResult=false;
 	sampleTrace = 0.0;
 	Result.quantR.resize(A.FormulaVal.size());
@@ -235,9 +240,12 @@ bool Simulator::SimulateOneStep(){
 				returnResultTrue();
 				return false;
 			} else {
-                            N.updateSet(A.CurrentTime, E1.transition, E1.binding, *EQ,*this);
-                            // TODO === voir pour gérer correctement le use-setdomain-impl…
-                            // N.update(A.CurrentTime, E1.transition, E1.binding, *EQ,*this);
+                            if (is_domain_impl_set) {
+                                N.updateSet(A.CurrentTime, E1.transition, E1.binding, *EQ,*this);
+                            }
+                            else {
+                                N.update(A.CurrentTime, E1.transition, E1.binding, *EQ,*this);
+                            }
 			}
 		}
 	}
@@ -323,8 +331,12 @@ void Simulator::interactiveSimulation(){
 void Simulator::SimulateSinglePath() {
 
     reset();
-    //N.InitialEventsQueue(*EQ,*this);      /* A corriger pour prendre en compte correctement le --use-setdomain-impl. */
-    N.InitialEventsQueueSet(*EQ,*this);
+    if (is_domain_impl_set) {
+        N.InitialEventsQueueSet(*EQ,*this);
+    }
+    else {
+        N.InitialEventsQueue(*EQ,*this);
+    }
     minInteractiveTime=0.0;
 	
 	if(logtrace.is_open())logtrace << "New Path"<< endl;

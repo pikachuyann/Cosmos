@@ -73,6 +73,7 @@ int main(int argc, char** argv) {
     //signal(SIGHUP, signalHandler);
 
     int verbose=0;
+    bool is_domain_impl_set=false;
 
     SPN_orig* Nptr;
     LHA_orig* Aptr;
@@ -86,7 +87,7 @@ int main(int argc, char** argv) {
 	Simulator* mySim;
 	
 	string str;
-    const int optioni=5;
+    const int optioni=6;
 
 	if(argc > optioni){
 		str = argv[optioni];
@@ -174,14 +175,14 @@ int main(int argc, char** argv) {
             mySim->dotFile = argv[i+1];
         }
 	}
-    
 	
 	if(argc>=optioni-1){
 		mySim->SetBatchSize(atoi(argv[1])); //set the batch size
 		mySim->verbose = atoi(argv[2]);
         Nptr->verbose = atoi(argv[2]);
-		mySim->initRandomGenerator(atoi(argv[4]));
-        mySim->tmpPath=argv[3];
+        mySim->is_domain_impl_set = (bool) atoi(argv[3]);
+		mySim->initRandomGenerator(atoi(argv[5]));
+        mySim->tmpPath=argv[4];
 	}else{
 		cerr << "Not enough argument";
 		return (EXIT_FAILURE);
