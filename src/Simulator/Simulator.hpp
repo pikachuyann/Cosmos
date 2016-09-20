@@ -58,6 +58,9 @@ public:
     //! Path to the temporary directory
     string tmpPath;
     string dotFile;
+    
+        // Is the simulator using the setdomain implementation ?
+    bool is_domain_impl_set;
 
 	/**
 	 * \brief Set the batch size
