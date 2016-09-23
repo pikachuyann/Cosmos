@@ -45,7 +45,7 @@ using namespace std;
 
 result::result() : MeanM2(P.nbAlgebraic,P.nbQualitatif),HaslResult(P.HaslFormulasname.size()) {
 
-    if(!P.sequential){ //Compute Chernoff-Hoeffding bounds
+    if(P.chernoff){ //Compute Chernoff-Hoeffding bounds
         HaslFormulasTop::computeChernoff();
     }
     //Set the confidence level to all Hasl formula
@@ -207,15 +207,15 @@ void result::printProgress() {
         if(P.isTTY)cout << "\033[A\033[2K";
     }
     cout << "Total paths: ";
-    cout << setw(10) << MeanM2.I << "\t Accepted paths: ";
-    cout << setw(10) << MeanM2.Isucc << "\t Wall-clock time: ";
+    cout << setw(10) << MeanM2.I << " Accepted paths: ";
+    cout << setw(10) << MeanM2.Isucc << " Wall-clock time: ";
 
     double ProgressTot = max(Progress, (double) MeanM2.I / (double) P.MaxRuns);
     auto wallclock = chrono::duration_cast<chrono::milliseconds>(current - start);
 
     auto estimated = wallclock * (1.0 / ProgressTot - 1.0);
-    cout << chrono::duration_cast<chrono::seconds>(wallclock).count() << "s\t Remaining(approximative): ";
-    cout << chrono::duration_cast<chrono::seconds>(estimated).count() << "s\t Trajectory per second: ";
+    cout << chrono::duration_cast<chrono::seconds>(wallclock).count() << "s Remaining(approximative): ";
+    cout << chrono::duration_cast<chrono::seconds>(estimated).count() << "s Trajectory per second: ";
     cout.precision(2);
     cout << (1000.0 * (double) MeanM2.I) / chrono::duration_cast<chrono::milliseconds>(wallclock).count() << endl;
     cout.precision(7);

@@ -59,6 +59,7 @@ Batch(1000),
 MaxRuns(2000000),
 sequential(true),
 relative(false),
+chernoff(false),
 
 comp_uuid("tmpuuid"),
 tmpPath("tmp"),
@@ -130,8 +131,8 @@ nbPlace(0)
     guiGreatSpnMode = (env != nullptr && 0 == strcmp(env, "1"))>0;
     if(guiGreatSpnMode){
         isTTY = true;
-        verbose = 1;
         terminalWidth =120;
+        verbose=1;
     }
 }
 
@@ -397,6 +398,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 
             case CO_gui_greatSPN_mode:
                 guiGreatSpnMode =true;
+                isTTY = true;
                 terminalWidth=120;
                 break;
 
@@ -418,7 +420,9 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 break;
             case CO_max_run: MaxRuns = atol(optarg);
                 break;
-            case CO_chernoff: sequential = false;
+            case CO_chernoff:
+                chernoff = true;
+                sequential = false;
                 if (strcmp(optarg, "level") == 0)Level = 0;
                 else if (strcmp(optarg, "width") == 0)Width = 0;
                 else if (strcmp(optarg, "nbrun") == 0)MaxRuns = (unsigned long)-1;
