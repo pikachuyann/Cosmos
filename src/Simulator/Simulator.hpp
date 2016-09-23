@@ -132,28 +132,19 @@ protected:
 
 	void interactiveSimulation(); //!Wait for the user to choose the next transition
     double minInteractiveTime;
+    long waitForTransition;
 
     void printSedCmd();
 	
-//	virtual void InitialEventsQueue(); //!initialize the event queue
-	
 	virtual void reset(); //! reset the simulator
-	
-//	virtual void GenerateEvent(Event &,size_t,const abstractBinding&); //! generate a new event use Generate Time
 	
 	virtual void returnResultTrue();
 	
-	//! update value in the SPN after a transition
-//	virtual void updateSPN(size_t,const abstractBinding& );
-	
-	//! update the likelyhood for the Rare event case
 	virtual void updateLikelihood(size_t);
     
 	//! Stop the simulation if sink transition is taken
 	virtual bool transitionSink(size_t);
 	
-	//! return the parameters of a transition distribution
-//	virtual void getParams(size_t, const abstractBinding&);
 };
 
 

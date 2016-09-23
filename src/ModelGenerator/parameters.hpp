@@ -125,6 +125,7 @@ struct parameters {
     unsigned long int MaxRuns;
     bool sequential;
     bool relative;
+    bool chernoff;
 
     std::string comp_uuid;
     std::string tmpPath;
