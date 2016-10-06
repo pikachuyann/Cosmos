@@ -398,3 +398,9 @@ BatchR Simulator<EQT>::RunBatch(){
     batchResult.simTime = (currenttime - starttime).count();
 	return batchResult;
 }
+
+template class Simulator<EventsQueue>;
+template class Simulator<EventsQueueSet>;
+
+
+
