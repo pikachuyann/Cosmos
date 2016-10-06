@@ -45,8 +45,112 @@ void signalHandler(int);
 void signalHandler( int s)
 {
     if(s == SIGHUP )abort();
-        //exit(EXIT_SUCCESS);
+    //exit(EXIT_SUCCESS);
+    
+}
 
+const int optioni=6;
+
+template<>
+Simulator<EventsQueue>* Simulator<EventsQueue>::simFactory(SimType st, LHA_orig* Aptr, char**argv){
+    int verbose=atoi(argv[2]);
+    LHA_orig& A = *Aptr;
+    switch (st) {
+        case Base:
+        {
+            auto &N = *(new SPN_orig<EventsQueue>(verbose));
+            return (new Simulator(N,A));
+        }
+        case RareEventUnbounded1:
+        {
+            auto &N = *(new SPN_RE(verbose,false));
+            SimulatorRE* reSim = new SimulatorRE(N,A);
+            reSim->initVect();
+            return reSim;
+        }
+        case RareEventUnbounded2:
+        {
+            auto &N = *(new SPN_RE(verbose,true));
+            SimulatorRE* reSim = new SimulatorRE(N,A);
+            reSim->initVect();
+            return reSim;
+        }
+        case RareEventBounded:
+        {
+            auto &N = *(new SPN_BoundedRE(verbose,false));
+            int m = atoi(argv[optioni+1]);
+            int T = atoi(argv[optioni+2]);
+            SimulatorBoundedRE* boundedSim = new SimulatorBoundedRE(N,A,m);
+            boundedSim->initVect(T);
+            return boundedSim;
+        }
+        case RareEventCTMC:
+        {
+            auto &N = *(new SPN_BoundedRE(verbose,false));
+            int m = atoi(argv[optioni+1]);
+            double t = atof(argv[optioni+2]);
+            double e = atof(argv[optioni+3]);
+            int stepc = atoi(argv[optioni+4]);
+            SimulatorContinuousBounded* coSim = new SimulatorContinuousBounded(N,A,m,e,stepc);
+            coSim->initVectCo(t);
+            return coSim;
+        }
+    }
+}
+template<>
+Simulator<EventsQueueSet>* Simulator<EventsQueueSet>::simFactory(SimType st, LHA_orig* Aptr, char**argv){
+    int verbose=atoi(argv[2]);
+    LHA_orig& A = *Aptr;
+    auto &N = *(new SPN_orig<EventsQueueSet>(verbose));
+    switch (st) {
+        case Base:
+            return (new Simulator(N,A));
+        default:
+            cout << "Colored Petri Net with set not implemented for rare event" << endl;
+            exit(EXIT_SUCCESS);
+    }
+}
+
+template<class EQT>
+void build_sim(SimType st,int argc,char **argv) {
+    int verbose=atoi(argv[2]);
+    
+    LHA_orig* Aptr;
+    if(IsLHADeterministic){
+        Aptr = new LHA_orig();
+    }else{
+        Aptr = new NLHA();
+    }
+    
+    Simulator<EQT>* sim = Simulator<EQT>::simFactory(st, Aptr, argv);
+    sim->SetBatchSize(atoi(argv[1])); //set the batch size
+    sim->verbose = atoi(argv[2]);
+    sim->initRandomGenerator(atoi(argv[5]));
+    sim->tmpPath=argv[4];
+    
+    for(int i=1; i<argc ;i++){
+        if(strcmp(argv[i],"-log")==0 && argc>i)
+            sim->logValue(argv[i+1]);
+        if(strcmp(argv[i],"-trace")==0 && argc>i){
+            sim->logTrace(argv[i+1],stod(argv[i+2]));
+        }
+        if(strcmp(argv[i],"-dotFile")==0 && argc>i){
+            sim->dotFile = argv[i+1];
+        }
+    }
+    
+    
+    if(sim->verbose>=4)sim->RunBatch();
+    else while( !cin.eof() ){
+        BatchR batchResult = sim->RunBatch(); //simulate a batch of trajectory
+        
+        batchResult.outputR(cout);// output the result on the standart output
+        //batchResult.print();
+        
+        //cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
+        //<< ":" << batchResult->M2[0] << endl;
+        
+    }
 }
 
 /**
@@ -58,39 +162,18 @@ void signalHandler( int s)
  * his standart input
  */
 int main(int argc, char** argv) {
-	//assert(cerr<< "Cosmos compile in DEBUG mode!"<< endl);
-	//cerr << "start client"<< endl;
-	//pid_t pid =getpid();
-	//write(STDOUT_FILENO,reinterpret_cast<char*>(&pid),sizeof(pid));
-	//fflush(stdout);
-	//cerr << "pid : "<< pid << endl;
-
-  //retrive_segment();
     
-  //  cerr << "polyeval:" << test << endl;
-
-	//signal(SIGINT, SIG_IGN);
-    //signal(SIGHUP, signalHandler);
-
-    int verbose=0;
-    bool is_domain_impl_set=false;
-
-    SPN_orig* Nptr;
-    LHA_orig* Aptr;
-    if(IsLHADeterministic){
-        Aptr = new LHA_orig();
-    }else{
-        Aptr = new NLHA();
+    if(argc<optioni-1){
+        cerr << "Not enough argument";
+        return (EXIT_FAILURE);
     }
-    LHA_orig& A = *Aptr;
-
-	Simulator* mySim;
-	
-	string str;
-    const int optioni=6;
-
-	if(argc > optioni){
-		str = argv[optioni];
+    
+    SimType st = Base;
+    
+    string str;
+    
+    if(argc > optioni){
+        str = argv[optioni];
         if(str== "-STSPBU"){
             stateSpace states;
             states.exploreStateSpace();
@@ -128,79 +211,26 @@ int main(int argc, char** argv) {
              ResultsFile.close();*/
             exit(EXIT_SUCCESS);
         }
-
+        
         if(str== "-RE"){
-            Nptr = new SPN_RE(verbose,false);
+            st = RareEventUnbounded1;
         }else if(str== "-RE2"){
-            Nptr = new SPN_RE(verbose,true);
-        }else if(str== "-BURE" || str== "-COBURE"){
-            Nptr = new SPN_BoundedRE(verbose,false);
-        } else {
-            Nptr = new SPN_orig(verbose);
+            st = RareEventUnbounded2;
+        }else if(str== "-BURE"){
+            st = RareEventBounded;
+        }else if(str== "-COBURE"){
+            st = RareEventBounded;
         }
-        SPN_orig& N = *Nptr;
-
-		if(str== "-RE" || str== "-RE2"){
-			SimulatorRE* myRESim= new SimulatorRE(N,A);
-			myRESim->initVect();
-			mySim=myRESim;
-		}else if(str== "-BURE"){
-            int m = atoi(argv[optioni+1]);
-            int T = atoi(argv[optioni+2]);
-            SimulatorBoundedRE* myBoundedSim = new SimulatorBoundedRE(N,A,m);
-            myBoundedSim->initVect(T);
-			mySim= myBoundedSim;
-		}else if(str== "-COBURE"){
-            int m = atoi(argv[optioni+1]);
-            double t = atof(argv[optioni+2]);
-            double e = atof(argv[optioni+3]);
-			int stepc = atoi(argv[optioni+4]);
-            SimulatorContinuousBounded* myBoundedSim = new SimulatorContinuousBounded(N,A,m,e,stepc);
-            myBoundedSim->initVectCo(t);
-			mySim= myBoundedSim;
-		} else mySim= (new Simulator(N,A));
-		
-    } else {
-        Nptr = new SPN_orig(verbose);
-		mySim= new Simulator(*Nptr,A);
-	}
-	
-	for(int i=1; i<argc ;i++){
-		if(strcmp(argv[i],"-log")==0 && argc>i)
-			mySim->logValue(argv[i+1]);
-		if(strcmp(argv[i],"-trace")==0 && argc>i){
-			mySim->logTrace(argv[i+1],stod(argv[i+2]));
-		}
-        if(strcmp(argv[i],"-dotFile")==0 && argc>i){
-            mySim->dotFile = argv[i+1];
-        }
-	}
-	
-	if(argc>=optioni-1){
-		mySim->SetBatchSize(atoi(argv[1])); //set the batch size
-		mySim->verbose = atoi(argv[2]);
-        Nptr->verbose = atoi(argv[2]);
-        mySim->is_domain_impl_set = (bool) atoi(argv[3]);
-		mySim->initRandomGenerator(atoi(argv[5]));
-        mySim->tmpPath=argv[4];
-	}else{
-		cerr << "Not enough argument";
-		return (EXIT_FAILURE);
-	}
-	
-    if(mySim->verbose>=4)mySim->RunBatch();
-    else while( !cin.eof() ){
-		BatchR batchResult = mySim->RunBatch(); //simulate a batch of trajectory
-		
-		batchResult.outputR(cout);// output the result on the standart output
-                                  //batchResult.print();
-		
-		//cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
-		//<< ":" << batchResult->M2[0] << endl;
-		
+        
     }
-	
+    
+    bool is_domain_impl_set= (bool) atoi(argv[3]);
+    if(is_domain_impl_set){
+        build_sim<EventsQueueSet>(st,argc, argv);
+    }else{
+        build_sim<EventsQueue>(st,argc, argv);
+    }
+    
     return (EXIT_SUCCESS);
-	
-	
+    
 }

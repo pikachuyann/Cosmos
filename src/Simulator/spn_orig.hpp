@@ -29,19 +29,19 @@
 
 
 #include "spn.hpp"
+#include "EventsQueue.hpp"
 #include "EventsQueueSet.hpp"
 #include "timeGen.hpp"
 
+template<class EQT>
 class SPN_orig : public SPN
 {
 public:
     SPN_orig(int&);
 
     virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &);
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &);
-    virtual void updateSet(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &);
-    virtual void InitialEventsQueue(EventsQueueSet &,timeGen &);
-    virtual void InitialEventsQueueSet(EventsQueueSet &,timeGen &);
+    virtual void update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &);
+    virtual void InitialEventsQueue(EQT &,timeGen &);
 
     int &verbose;
 

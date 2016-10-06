@@ -4,7 +4,7 @@
  * (S)tochastiques                                                             *
  *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
- * Authors: Paolo Ballarini & Hilal Djafri                                     *
+ * Authors: Benoît Barbot & Paolo Ballarini & Hilal Djafri                     *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
  *                                                                             *
  * This program is free software; you can redistribute it and/or modify        *
@@ -20,49 +20,35 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
+ * file EventsQueueFactory.hpp created by Benoit Barbot on 06/10/2016          *
  *******************************************************************************
  */
+#ifndef EventQueueFactory_hpp
+#define EventQueueFactory_hpp
 
+#include "EventsQueueSet.hpp"
+#include "EventsQueue.hpp"
+
+
+#endif /* EventQueueFactory_hpp */
 /*
- *  This file implement an object for Event of the system
- */
-
-#ifndef _EVENT_HPP
-#define	_EVENT_HPP
-
-#include "string"
-#include "marking.hpp"
-
-struct sizeSq {
-    sizeSq(size_t t,size_t b):tr(t),bid(b){};
-    size_t tr;
-    size_t bid;
-};
-
-class Event {
+class EventQueueFactory {
 public:
+    EventQueueFactory(bool isSet){
+        this->isSet = isSet;
+    }
     
-	Event();
-    Event(const Event& orig);
-	const Event& operator = (const Event&);
-    virtual ~Event();
-    void setTime(double);
-    void setPriority(size_t);
-    void setWeight(double);
-	
-	
-    size_t transition;
-    double time;
-    double priority;
-    double weight;
-	abstractBinding binding;
-	
-	bool isPriorer(const Event& e)const;
+    EventsQueue* newEventQueue(const SPN& N)const{
+        if(isSet){
+            EventsQueue* eq = new EventsQueueSet(N);
+            return eq;
+        }else {
+            return new EventsQueue(N);
+        }
+    }
+    
 private:
-	Event(unsigned int, double);
-    Event(unsigned int, double, unsigned int, double, const abstractBinding& );
-};
-
-
-#endif	/* _EVENT_HPP */
-
+    bool isSet;
+    
+}
+*/

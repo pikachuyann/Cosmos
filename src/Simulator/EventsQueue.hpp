@@ -37,11 +37,6 @@ typedef vector <int> Tab;
 typedef vector <Event> EQueue;
 typedef vector <Event>::iterator EQit;
 
-struct sizeSq {
-    sizeSq(size_t t,size_t b):tr(t),bid(b){};
-    size_t tr;
-    size_t bid;
-};
 
 class EventsQueue {
 public:
