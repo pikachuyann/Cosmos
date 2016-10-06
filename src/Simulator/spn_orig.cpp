@@ -473,3 +473,8 @@ void SPN_orig<EventsQueueSet>::update(double ctime,size_t E1_transitionNum, cons
      }
      */ 
 }
+
+template class SPN_orig<EventsQueue>;
+template class SPN_orig<EventsQueueSet>;
+
+
