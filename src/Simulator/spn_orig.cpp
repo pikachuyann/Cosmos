@@ -28,7 +28,8 @@
 
 using namespace std;
 
-SPN_orig::SPN_orig(int& v):verbose(v){}
+template<class EQT>
+SPN_orig<EQT>::SPN_orig(int& v):verbose(v){}
 
 /**
  * Generate an event based on the type of his distribution
@@ -36,7 +37,8 @@ SPN_orig::SPN_orig(int& v):verbose(v){}
  * @param Id the number of the transition to of the SPN
  * @param b is the binding of the variable of the SPN for the transition.
  */
-void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG) {
+template<class EQT>
+void SPN_orig<EQT>::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG) {
     double t=ctime;
     if (Transition[Id].DistTypeIndex != IMMEDIATE) {
         GetDistParameters(Id,b);
@@ -69,10 +71,12 @@ void SPN_orig::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBindi
     E.binding = b;
 }
 
+
 /**
  * Fill the event queue with the initially enabled transition
  */
-void SPN_orig::InitialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
+template<>
+void SPN_orig<EventsQueue>::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
 
@@ -96,7 +100,8 @@ void SPN_orig::InitialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
     }
 }
 
-void SPN_orig::InitialEventsQueueSet(EventsQueueSet &EQ,timeGen &TG) {
+template<>
+void SPN_orig<EventsQueueSet>::InitialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
 
@@ -135,7 +140,8 @@ void SPN_orig::InitialEventsQueueSet(EventsQueueSet &EQ,timeGen &TG) {
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueueSet &EQ,timeGen &TG){
+template<>
+void SPN_orig<EventsQueue>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue &EQ,timeGen &TG){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
@@ -269,7 +275,8 @@ void SPN_orig::update(double ctime,size_t E1_transitionNum, const abstractBindin
 
 }
 
-void SPN_orig::updateSet(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueueSet &EQ,timeGen &TG){
+template<>
+void SPN_orig<EventsQueueSet>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueueSet &EQ,timeGen &TG){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 

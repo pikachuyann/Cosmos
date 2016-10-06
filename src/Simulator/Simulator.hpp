@@ -36,6 +36,7 @@
 #include "EventsQueueSet.hpp"
 #include "BatchR.hpp"
 #include "timeGen.hpp"
+#include "EventQueueFactory.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -45,10 +46,19 @@
 #define _SIMULATOR_HPP
 
 
+enum SimType {
+    Base,
+    RareEventUnbounded1,
+    RareEventUnbounded2,
+    RareEventBounded,
+    RareEventCTMC
+};
 
+template <class EQT>
 class Simulator:public timeGen {
 public:
-	Simulator(SPN_orig&,LHA_orig&);
+    static Simulator* simFactory(SimType st, LHA_orig* Aptr, char**argv);
+    
     //Simulator();
 	~Simulator();
 	
@@ -59,9 +69,6 @@ public:
     string tmpPath;
     string dotFile;
     
-        // Is the simulator using the setdomain implementation ?
-    bool is_domain_impl_set;
-
 	/**
 	 * \brief Set the batch size
 	 * @param RI the new batch size to use
@@ -86,6 +93,7 @@ public:
     virtual BatchR RunBatch();
 
 protected:
+    Simulator(SPN_orig<EQT>&,LHA_orig&);
 
 	//! File stream to log value.
 	fstream logvalue;
@@ -106,7 +114,7 @@ protected:
 	size_t BatchSize;
 	
     
-	SPN_orig &N; //!The object representing the SPN
+	SPN_orig<EQT> &N; //!The object representing the SPN
 	LHA_orig &A; //!The object representing the LHA
 	
     
@@ -116,7 +124,7 @@ protected:
 	 * enabled transitions with
      * the time at wich they will be fire if still enabled
 	 */
-	EventsQueueSet* EQ;
+	EQT* EQ;
 	
 	/**
 	 * \brief Simulate a step of the system,

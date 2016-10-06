@@ -33,7 +33,8 @@
 #include "stateSpace.hpp"
 #include "spn_orig.hpp"
 
-class SPN_RE: public SPN_orig, public REHandling{
+
+class SPN_RE: public SPN_orig<EventsQueue>, public REHandling{
 public:
     SPN_RE(int& v,bool doubleIS);
 
@@ -41,8 +42,8 @@ public:
 
     virtual void initialize(stateSpace *muprob);
     virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &)override;
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &)override;
-    virtual void InitialEventsQueue(EventsQueueSet &,timeGen &)override;
+    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &)override;
+    virtual void InitialEventsQueue(EventsQueue &,timeGen &)override;
 
     virtual double mu();
     const bool doubleIS_mode;
@@ -61,9 +62,9 @@ private:
 };
 
 
-class SimulatorRE: public Simulator{
+class SimulatorRE: public Simulator<EventsQueue>{
 public:
-	SimulatorRE(SPN_orig&,LHA_orig&);
+	SimulatorRE(SPN_orig<EventsQueue>&,LHA_orig&);
 	
 	virtual void initVect();
 	

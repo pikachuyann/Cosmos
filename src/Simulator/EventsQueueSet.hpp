@@ -46,12 +46,6 @@ typedef std::vector <int> Tab;
 typedef std::vector <Event> EQueue;
 typedef std::vector <Event>::iterator EQit;
 
-struct sizeSq {
-    sizeSq(size_t t,size_t b):tr(t),bid(b){};
-    size_t tr;
-    size_t bid;
-};
-
 class EventsQueueSet {
 public:
     //EventsQueue(size_t);

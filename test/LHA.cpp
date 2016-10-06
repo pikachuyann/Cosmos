@@ -6,18 +6,18 @@ using namespace std;
 #include <math.h>
 #include <float.h>
 #include "LHA.hpp"
+    const double C=5;
+    const double N=5;
+    const double T=10;
 struct Variables {
-	double t;
-	double x;
+	double x1;
 };
 bool varOrder(const Variables &v1,const Variables &v2){
-	if(v1.t<v2.t)return true;
-	if(v1.x<v2.x)return true;
+	if(v1.x1<v2.x1)return true;
 	return false;
 };
 void LHA::resetVariables(){
-	Vars->t= 0;
-	Vars->x= 0;
+	Vars->x1= 0;
 };
 void LHA::printHeader(ostream &s)const{
 	s << "	Location\t";
@@ -26,73 +26,61 @@ void LHA::printState(ostream &s){
 	s << "\t" << LocLabel[CurrentLocation] << "\t";
 };
 const int LHA::ActionEdgesAr[] = {
-	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
-	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,2 ,1 ,0 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,};
-LHA::LHA():NbLoc(4),NbTrans(12),NbVar(2),FinalLoc( 4,false){
+	2 ,2 ,2 ,2 ,2 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+	1 ,1 ,1 ,1 ,1 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,};
+LHA::LHA():NbLoc(3),NbTrans(5),NbVar(1),FinalLoc( 3,false){
     InitLoc.insert(0);
     FinalLoc[1]=true;
-    FinalLoc[2]=true;
-    FinalLoc[3]=true;
-    Edge= vector<LhaEdge>(4);
+    Edge= vector<LhaEdge>(3);
     Edge[0] = LhaEdge(0, 0, 0,Synch);
     Edge[1] = LhaEdge(1, 0, 1,Synch);
-    Edge[2] = LhaEdge(2, 0, 2,Synch);
-    Edge[3] = LhaEdge(3, 0, 3,Auto);
+    Edge[2] = LhaEdge(2, 0, 2,Auto);
 	Vars = new Variables;
 	tempVars = new Variables;
 	resetVariables();
     Out_A_Edges =vector< set < int > >(NbLoc);
-    Out_A_Edges[0].insert(3);
-    LinForm= vector<double>(1,0.0);
-    OldLinForm=vector<double>(1,0.0);
-    LhaFunc=vector<double>(1,0.0);
-    FormulaVal = vector<double>(1,0.0);
+    Out_A_Edges[0].insert(2);
+    LinForm= vector<double>(0,0.0);
+    OldLinForm=vector<double>(0,0.0);
+    LhaFunc=vector<double>(0,0.0);
+    FormulaVal = vector<double>(0,0.0);
     FormulaValQual = vector<bool>(0,false);
 }
 
 void LHA::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {
-	Vars->t += GetFlow(0, Marking) * DeltaT;
-	Vars->x += GetFlow(1, Marking) * DeltaT;
+	Vars->x1 += GetFlow(0, Marking) * DeltaT;
 }
 double LHA::GetFlow(int v, const abstractMarking& Marking)const{
-	switch (v){
-		case 1:	//x
-		return 0.0;
-
-
-		break;
-		case 0:	//t
-	switch (CurrentLocation){
-		case 0:	//l0
 			return 1;
 
-		break;
-		default:	//l1,l2,l3,
-		return 0.0;
 
-		break;
-	}
-
-		break;
-	}
 }
 
 bool LHA::CheckLocation(int loc,const abstractMarking& Marking)const{
-         return true;
+	switch (loc){
+		case 1:	//l1
+         return (  Marking.P->_PL_Queue1  == 5 &&  Marking.P->_PL_Queue2  == 5 );
 
+		break;
+		default:	//l0,l2,
+         return ! (  Marking.P->_PL_Queue1  == 5 &&  Marking.P->_PL_Queue2  == 5 );
+
+		break;
+	}
 }
 
 bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{
 	switch (ed){
-		case 0:	//
-{
-         if(!( +(1)*Vars->t<=300)) return false;
-		return (true);
-     }
+		case 2:	//
+	return true;
 
 		break;
-		default:	//,,,
-	return true;
+		default:	//,,
+{
+         if(!( +(1)*Vars->x1<=10)) return false;
+		return (true);
+     }
 
 		break;
 	}
@@ -100,7 +88,7 @@ bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const a
 
 t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{
 	switch (ed){
-		case 3:	//
+		case 2:	//
          {
              t_interval EnablingT;
 
@@ -117,14 +105,14 @@ t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{
 
 
              SumAF=+(1)*GetFlow(0, Marking);
-             SumAX=+(1)*Vars->t;
+             SumAX=+(1)*Vars->x1;
 
              if(SumAF==0){
-                  if(!(SumAX==300))
+                  if(!(SumAX==10))
                       return EmptyInterval;
              }
              else{
-                  double t=CurrentTime+(300-SumAX)/(double)SumAF;
+                  double t=CurrentTime+(10-SumAX)/(double)SumAF;
                   if(t>=EnablingT.first && t<=EnablingT.second){
                       EnablingT.first=t; EnablingT.second=t;
                   }
@@ -134,7 +122,7 @@ t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{
          }
 
 		break;
-		default:	//,,,
+		default:	//,,
          {
              t_interval EnablingT;
 
@@ -149,15 +137,7 @@ t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{
 }
 
 void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBinding& b){
-	switch (ed){
-		case 1:	//
-		case 2:	//
-         {
-		Vars->x= Marking.P->_PL_PosFinale ;
-         }
 
-		break;
-	}
 }
 
 void LHA::UpdateLinForm(const abstractMarking& Marking){
@@ -169,8 +149,6 @@ void LHA::UpdateLhaFunc(double& Delta ){
 
 void LHA::UpdateFormulaVal(){
 
-    LhaFunc[0]= Vars->x;
-    FormulaVal[0]=LhaFunc[0];
 }
 
 bool IsLHADeterministic = 1;

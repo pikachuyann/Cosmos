@@ -5,6 +5,7 @@ libClientSim_la_SOURCES = \
 	BatchR.cpp BatchR.hpp \
 	Event.cpp  Event.hpp \
 	EventsQueueSet.cpp EventsQueueSet.hpp \
+	EventsQueue.cpp EventsQueue.hpp \
 	timeGen.cpp timeGen.hpp \
 	marking.hpp spn.hpp \
     spn_orig.cpp spn_orig.hpp \

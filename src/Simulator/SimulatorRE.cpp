@@ -24,7 +24,7 @@
  *******************************************************************************
  */
 
-#include "EventsQueueSet.hpp"
+#include "EventsQueue.hpp"
 #include <iostream>
 #include <set>
 #include <math.h>
@@ -36,6 +36,7 @@
 #include "SimulatorRE.hpp"
 
 using namespace std;
+
 
 SPN_RE::SPN_RE(int& v,bool doubleIS):SPN_orig(v),doubleIS_mode(doubleIS){
     rareEventEnabled=false;
@@ -49,7 +50,7 @@ void SPN_RE::initialize( stateSpace *muprob){
     this->muprob=muprob;
 }
 
-SimulatorRE::SimulatorRE(SPN_orig& N,LHA_orig& A):Simulator(N,A) {
+SimulatorRE::SimulatorRE(SPN_orig<EventsQueue>& N,LHA_orig& A):Simulator(N,A) {
     //static_cast<SPN_RE&>(N).initialize(EQ, this, muprob);
 }
 
@@ -59,7 +60,7 @@ void SimulatorRE::initVect(){
     static_cast<SPN_RE&>(N).initialize(muprob);
 }
 
-void SPN_RE::InitialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
+void SPN_RE::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
 	Rate_Sum = 0;
 	Origine_Rate_Sum = 0;
 	SPN_orig::InitialEventsQueue(EQ,TG);
@@ -72,7 +73,7 @@ void SimulatorRE::returnResultTrue(){
 	if(verbose>3)cerr << "---------------\n TRUE: Likelyhood: "<< A.Likelihood <<" \n------\n";
 }
 
-void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueueSet &EQ,timeGen &TG){
+void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue &EQ,timeGen &TG){
 	//If rareevent not require yet call the parent function
 	
 	if(!rareEventEnabled){
