@@ -134,23 +134,6 @@ int abstractBinding::id()const{
 int abstractBinding::idTotal()const{
 	 return 0;
 }
-#include "Polynome.hpp"
-class CustomDistrPoly: public CustomDistr {
-	const static int poly_table[];
-	vector<Poly<3>> ptable;
-public:
-	CustomDistrPoly(){
-		ptable = parse<3>("twoears.grml.data");
-	}
-	double virtual userDefineCDF(vector<double> const& param, double funvar)const{
-		return (eval(ptable[poly_table[ 5*((int)param[0]) ]],param,funvar)/eval(ptable[poly_table[ 5*((int)param[0])+2 ]],param,funvar))  ;
-	}
-	double  virtual userDefinePDF(vector<double> const& param, double funvar)const{
-		return (eval(ptable[poly_table[ 5*((int)param[0])+1 ]],param,funvar)/eval(ptable[poly_table[ 5*((int)param[0])+2 ]],param,funvar))  ;
-	}
-	double virtual userDefineLowerBound(vector<double> const& param)const{
-		return eval(ptable[poly_table[ 5*((int)param[0])+3 ]],param);
-	}
 
 	double virtual userDefineUpperBound(vector<double> const& param)const{
 		return eval(ptable[poly_table[ 5*((int)param[0])+4] ],param);
@@ -169,6 +152,9 @@ public:
         return s.str();
     }
 
+};
+void abstractBindingIterator::reset(abstractMarking& m) {
+	P->reset(*(m.P));
 };
 abstractBindingIterator::abstractBindingIterator(abstractMarking& m) {
 	P = new abstractBindingIteratorImpl;
