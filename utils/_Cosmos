@@ -11,6 +11,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--max-run:Max maximal number of trajectory:->max-run' \
 	   '--seed:Seed of the random number generator:->seed' \
 	   '--njob:Number of parallel simulation:->njob' \
+           '--use-setdomain-impl:Use the Set implementation on Places and Transitions:->use-setdomain-impl' \
 	   '--update-time:frequencie of the screen update:->update-time' \
 	   '(-h)--help[help message]' \
 	   '--version[Display version number]' \
@@ -34,6 +35,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--tmp-status:Persistance of the tmp file:->status' \
 	   '--const:Overwrite constants value:->Constants' \
 	   '--count-transition[Count number of transition in the lha]' \
+       '--use-setdomain-impl[Use set to implment domain]' \
 	   '--trace-place:trace only a subset of places:->Comma separated list of place to trace' \
 	   '--loop:Time of the loop:->time' \
 	   '--sampling:Time of the loop:->time' \
@@ -41,6 +43,7 @@ _arguments '(-V)-v:Verbose level:->verbose' \
 	   '--formula:Use a LTL formula instead of an automaton:->LTL Formula' \
 	   '--debug-string[Add debug information in generated code]' \
 	   '--chernoff:Use chernoff bound to compute parameters:->parameter' \
+           '--no-magic-print:Ignore magic_print when using custom C code in models:->no-magic-print' \
 	   ':SPN model file:_files -g ".*.(gspn|grml|GSPN|GRML)(-.)"' \
 	   ':LHA property file:_files -g ".*.(lha|grml|LHA|GRML)(-.)"' \
 	   && return 0

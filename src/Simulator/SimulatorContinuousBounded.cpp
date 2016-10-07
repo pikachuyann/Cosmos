@@ -38,7 +38,7 @@
 #include <limits>
 
 
-SimulatorContinuousBounded::SimulatorContinuousBounded(SPN_orig &N,LHA_orig& A,int m,double e,int js):SimulatorBoundedRE(N,A,m){
+SimulatorContinuousBounded::SimulatorContinuousBounded(SPN_orig<EventsQueue> &N,LHA_orig& A,int m,double e,int js):SimulatorBoundedRE(N,A,m){
     epsilon = e;
 	if(js>0){
 		jumpsize = js;
@@ -96,11 +96,11 @@ BatchR SimulatorContinuousBounded::RunBatch(){
 	for(int i =0; i<= Nmax; i++)
 		batchResult.Min[2*i] /= fg->total_weight;
 		
-	list<simulationState> statevect((Nmax+1)*BatchSize);
+	list<simulationState<EventsQueue> > statevect((Nmax+1)*BatchSize);
 	
     int c =0;
 	if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
-	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
+	for (auto it= statevect.begin(); it != statevect.end() ; it++) {
 		NRE.Origine_Rate_Table = vector<double>(N.tr,0.0);
 		NRE.Rate_Table = vector<double>(N.tr,0.0);
 		
@@ -137,7 +137,7 @@ BatchR SimulatorContinuousBounded::RunBatch(){
 		n++;
         if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
         
-		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
+		for (auto it= statevect.begin(); it != statevect.end() ; it++) {
             if(it->maxStep >= fg->right -n){
 				
                 //cerr << "vect:\t" << it->maxStep;

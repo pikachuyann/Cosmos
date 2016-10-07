@@ -186,6 +186,8 @@ struct parameters {
     std::map<std::string,int> tracedPlace;
     std::string dotfile;
     std::string magic_values;
+    bool use_magic_print;
+    bool is_domain_impl_set;
     
     std::vector<HaslFormulasTop*> HaslFormulas;
     std::vector<std::string> HaslFormulasname;

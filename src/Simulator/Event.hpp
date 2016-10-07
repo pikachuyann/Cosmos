@@ -33,6 +33,12 @@
 #include "string"
 #include "marking.hpp"
 
+struct sizeSq {
+    sizeSq(size_t t,size_t b):tr(t),bid(b){};
+    size_t tr;
+    size_t bid;
+};
+
 class Event {
 public:
     

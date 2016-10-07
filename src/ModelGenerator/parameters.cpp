@@ -108,6 +108,8 @@ gnuplotDriver(""),
 tracedPlace(),
 dotfile(""),
 magic_values(""),
+use_magic_print(false),
+is_domain_impl_set(false),
 
 HaslFormulas(vector<HaslFormulasTop*>(0)),
 HaslFormulasname(vector<string>(0)),
@@ -156,6 +158,7 @@ void parameters::usage() {
     cout << "\t--gppcmd  \tset the C++ compiler (default g++)" << endl;
     cout << "\t--gppflags\tset the C++ compiler flags (default -O3)" << endl;
     cout << "\t--reuse\ttry to load previous simulation and save simulations" << endl;
+    cout << "\t--use-setdomain-impl\tuse the Set implementation on Places and Transitions" << endl;
 
     cout << "Option of simulation:" << endl;
     cout << "\t--level \tset the confidence level for the simulation (default=0.99)" << endl;
@@ -201,6 +204,7 @@ void parameters::usage() {
     cout << "\t--prism \tExport the state space and launch prism." << endl;
     cout << "\t-s,--state-space \tExport the state space." << endl;
     cout << "\t--lump-state-space \tLump the state space before exporting." << endl;
+    cout << "\t--no-magic-print\tIgnore magic_print when using custom C code in models" << endl;
     
 
 }
@@ -313,6 +317,8 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"bin-path",    required_argument, 0, CO_bin_path},
             {"prism-path",  required_argument, 0, CO_prism_path},
             {"magic-values", required_argument,0, CO_magic_values},
+            {"no-magic-print", no_argument, 0, CO_use_magic_print},
+            {"use-setdomain-impl", no_argument, 0, CO_domain_impl},
             {"version",     no_argument      , 0, CO_version},
 
             {0, 0, 0, 0}
@@ -448,6 +454,11 @@ void parameters::parseCommandLine(int argc, char** argv) {
             case CO_output_dot: dotfile = optarg;
                 break;
             case CO_magic_values: magic_values = optarg;
+                use_magic_print = true;
+                break;
+            case CO_use_magic_print: use_magic_print = false;
+                break;
+            case CO_domain_impl: is_domain_impl_set = true;
                 break;
             case CO_output_trace:
                 datatrace = optarg;
