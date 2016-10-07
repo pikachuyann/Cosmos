@@ -29,7 +29,7 @@
 using namespace std;
 
 template<class EQT>
-SPN_orig<EQT>::SPN_orig(int& v):verbose(v){}
+SPN_orig<EQT>::SPN_orig(int v):verbose(v){}
 
 /**
  * Generate an event based on the type of his distribution
