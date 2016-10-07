@@ -36,11 +36,11 @@
 #ifndef _SIMULATOR_BOUNDED_RE_HPP
 #define _SIMULATOR_BOUNDED_RE_HPP
 
-
+template <class EQT>
 class simulationState{
 private:
 	abstractMarking marking;
-	EventsQueue *EQ;
+	EQT *EQ;
 	LHA_orig lhaState;
     
 	//rare event variable
@@ -58,7 +58,7 @@ public:
 	};
 	~simulationState(){};
 	
-	void saveState(SPN_RE* N,LHA_orig* A,EventsQueue** EQsim){
+	void saveState(SPN_RE* N,LHA_orig* A,EQT** EQsim){
 		marking.swap(N->Marking);
 		//AE = *AEsim;
 		EQ = *EQsim; //new EventsQueue(*EQsim);
@@ -71,7 +71,7 @@ public:
 		Origine_Rate_Sum = N-> Origine_Rate_Sum;
 		
 	};
-	void loadState(SPN_RE* N,LHA_orig* A,EventsQueue** EQsim){
+	void loadState(SPN_RE* N,LHA_orig* A,EQT** EQsim){
 		
 		N->Marking.swap(marking);
 		//*AEsim = AE;
@@ -100,7 +100,7 @@ public:
 class SimulatorBoundedRE: public SimulatorRE{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedRE(SPN_orig & N,LHA_orig&,int m);
+    SimulatorBoundedRE(SPN_orig<EventsQueue> & N,LHA_orig&,int m);
 	BatchR RunBatch() override;
 	using SimulatorRE::initVect;
     virtual void initVect(int T);

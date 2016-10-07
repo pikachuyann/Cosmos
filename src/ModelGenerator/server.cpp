@@ -175,6 +175,13 @@ inline void pushint(const char *argv[],size_t &argn,size_t v){
 	argn++;
 }
 
+inline void pushbool(const char *argv[],size_t &argn,bool v){
+	char* s = (char *)malloc(255*sizeof(char));
+	sprintf(s, "%i", v);
+	argv[argn] = s;
+	argn++;
+}
+
 inline void pushdouble(const char *argv[],size_t &argn,double v){
 	char* s = (char *)malloc(255*sizeof(char));
 	sprintf(s, "%e", v);
@@ -215,6 +222,7 @@ void launch_clients(parameters& P){
         if (P.interactive) {
             pushint(argv,argn,6);
         } else pushint(argv,argn,P.verbose);
+                pushbool(argv,argn,P.is_domain_impl_set);
         pushstr(argv,argn,P.tmpPath.c_str());
 
 		//<< P.Batch << " " << P.verbose;

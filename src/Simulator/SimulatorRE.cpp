@@ -37,6 +37,7 @@
 
 using namespace std;
 
+
 SPN_RE::SPN_RE(int& v,bool doubleIS):SPN_orig(v),doubleIS_mode(doubleIS){
     rareEventEnabled=false;
     Rate_Sum = 0;
@@ -49,7 +50,7 @@ void SPN_RE::initialize( stateSpace *muprob){
     this->muprob=muprob;
 }
 
-SimulatorRE::SimulatorRE(SPN_orig& N,LHA_orig& A):Simulator(N,A) {
+SimulatorRE::SimulatorRE(SPN_orig<EventsQueue>& N,LHA_orig& A):Simulator(N,A) {
     //static_cast<SPN_RE&>(N).initialize(EQ, this, muprob);
 }
 

@@ -92,7 +92,7 @@ let parse_distr at =
 	      Element ("attribute",["name","param"],cl2) ->
 		let n= Some (find_simp_prop "number" cl2 |>>> int_of_string |>>| 0 )in
 		let ex = float_expr_of_atr "expr" cl2 in
-		n
+		Some n
 	    |>> (fun x -> ex |>>> (fun y -> (x,y)::c))
 	    |>>| c
 	    | _ -> c

@@ -33,7 +33,8 @@
 #include "stateSpace.hpp"
 #include "spn_orig.hpp"
 
-class SPN_RE: public SPN_orig, public REHandling{
+
+class SPN_RE: public SPN_orig<EventsQueue>, public REHandling{
 public:
     SPN_RE(int& v,bool doubleIS);
 
@@ -61,9 +62,9 @@ private:
 };
 
 
-class SimulatorRE: public Simulator{
+class SimulatorRE: public Simulator<EventsQueue>{
 public:
-	SimulatorRE(SPN_orig&,LHA_orig&);
+	SimulatorRE(SPN_orig<EventsQueue>&,LHA_orig&);
 	
 	virtual void initVect();
 	
