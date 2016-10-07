@@ -368,14 +368,24 @@ void Gspn_Writer::writeTransition(ofstream & spnF)const{
 		nbbinding *= MyGspn.colClasses[MyGspn.colDoms[MyGspn.colVars[v].type].colorClassIndex[0]].colors.size();
 
 	for (size_t t=0; t < MyGspn.tr; t++ ) {
-        if(MyGspn.colVars.size()>0){
-			spnF << "\t{ //"<< MyGspn.transitionStruct[t].name << "\n\tabstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
+            if (P.verbose > 7) {
+                spnF << "\t\t\t\tstd::cerr << \"TRANSITION " << t << "\" << \" : \\n\";\n";
+            }
+        if(MyGspn.colVars.size()>0 && !P.is_domain_impl_set){
+			spnF << "\t{ ";
+                        spnF << "//"<< MyGspn.transitionStruct[t].name << "\n\tabstractBinding bl = Transition["<<t<<"].bindingList[0];\n";
 			for (size_t it=0; it < MyGspn.colVars.size(); ++it) {
 				if( MyGspn.transitionStruct[t].varDomain.count(it)==0){
 					spnF<< "\tbl.P->" << MyGspn.colVars[it].name<<".mult = -1;\n";
 				}
 			}
-			spnF << "\twhile(bl.next()){\n";
+                        spnF << "\t\t\tTransition["<<t<<"].bindingList[0] = bl;\n";
+                        if (P.verbose > 7) {
+                            //spnF << "\t\t\t\tstd::cerr << \"" << t << "\" << \" : \"; \n\t\t\t\tbl.print();\n";
+                            spnF << "\t\t\t\tbl.print();\n";
+                            spnF << "\t\t\t\tstd::cerr << \"\\n\";\n";
+                        }
+			spnF << "\twhile(bl.next()){\n";                        
             if(MyGspn.transitionStruct[t].guard.t == Bool && MyGspn.transitionStruct[t].guard.boolVal ){
                 spnF << "\t\t{\n";
             } else {
@@ -383,9 +393,17 @@ void Gspn_Writer::writeTransition(ofstream & spnF)const{
             }
 			spnF << "\t\t\tbl.idcount = Transition["<<t<<"].bindingList.size();\n";
 			spnF << "\t\t\tTransition["<<t<<"].bindingList.push_back( bl );\n";
+                        if (P.verbose > 7) {
+                            //spnF << "\t\t\t\tstd::cerr << \"" << t << "\" << \" : \"; \n\t\t\t\tbl.print();\n";
+                            spnF << "\t\t\t\tbl.print();\n";
+                            spnF << "\t\t\t\tstd::cerr << \"\\n\";\n";
+                        }
 			spnF << "\t\t\tTransition["<<t<<"].bindingLinkTable[bl.idTotal()]= Transition["<<t<<"].bindingList.size()-1; "<< endl;
 			spnF << "\t\t}\n\t}}\n";
 		}
+        if (P.verbose > 7) {
+            spnF << "\tstd::cerr << \"\\n\\n\";\n";
+        }
 	}
 }
 
@@ -402,7 +420,7 @@ void Gspn_Writer::writeDotFile(const string &file)const{
 
     for (const auto &p : MyGspn.placeStruct ) {
         df << "\t" << p.name;
-        df << " [shape=circle,xlabel=\""<< p.name;
+        df << " [xlabel=\""<< p.name;
         df <<"\",label=\"$"<< p.name << "$\"];" << endl;
     }
 
@@ -639,7 +657,8 @@ void Gspn_Writer::writeFire(ofstream &f)const{
             }
         });
 
-    writeEnabledDisabledBinding(f);
+        if (P.is_domain_impl_set) { writeEnabledDisabledBindingSet(f); }
+            else { writeEnabledDisabledBinding(f); }
     }
 }
 
@@ -819,7 +838,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
                 if (plit.isTraced){
                     SpnCppFile << "\ts << ";
                     SpnCppFile << " setw(" << maxNameSize-1 << ") << ";
-                    if (P.magic_values.empty()){ SpnCppFile << "P->_PL_"<< plit.name << "<<\" \";\n";
+                    if (not P.use_magic_print){ SpnCppFile << "P->_PL_"<< plit.name << "<<\" \";\n";
                     }else{ SpnCppFile << "print_magic(P->_PL_"<< plit.name << ")<<\" \";\n";
                     }
                 }
@@ -840,7 +859,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
             //SpnCppFile << "\tstd::cerr << \"Marking:\"<< std::endl;\n";
             for (const auto &plit : MyGspn.placeStruct){
                 SpnCppFile << "\ts << \"-e 's/\\\\$"<< plit.name <<"\\\\$/\";"<< endl;
-                if(P.magic_values.empty()){
+                if(not P.use_magic_print){
                     SpnCppFile << "\ts << P->_PL_"<< plit.name << ";"<<endl;
                 } else {
                     SpnCppFile << "\ts << print_magic(P->_PL_"<< plit.name << ");"<<endl;
@@ -862,9 +881,9 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
             SpnCppFile << "     }\n";
         }
         SpnCppFile << "}\n";
-        SpnCppFile << "\n";
+        SpnCppFile << "\n";        
         SpnCppFile << "std::vector<int> abstractMarking::getVector()const {\n";
-        if( P.lightSimulator){
+        if( P.lightSimulator || P.is_domain_impl_set){
             SpnCppFile << "\texit(EXIT_FAILURE);\n";
         }else{
             SpnCppFile << "\tstd::vector<int> v("<< markingSize <<");" << endl;
@@ -951,7 +970,7 @@ void Gspn_Writer::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header)const
         for (vector<colorVariable>::const_iterator colvar = MyGspn.colVars.begin() ; colvar != MyGspn.colVars.end(); ++colvar) {
             
             SpnCppFile << "\tstd::cerr << \"\\t"<< colvar->name <<": \";";
-            SpnCppFile << "P->"<< colvar->name << ".print();\n"; //\tcerr << endl;\n
+            SpnCppFile << "P->"<< colvar->name << ".print(std::cerr);\n"; //\tcerr << endl;\n
         }
         SpnCppFile << "}\n";
 
@@ -1050,13 +1069,13 @@ void Gspn_Writer::writeFile(){
 	
     if (P.magic_values != "")
         SpnCppFile << "#include \"" << P.magic_values << "\"" << endl;
-	if(P.RareEvent){
-		SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
-	}else if(!P.lightSimulator){
-		SpnCppFile << "void "<<"REHandling::"<<"print_state(const vector<int> &vect){}" << endl;
-		SpnCppFile << "void "<<"REHandling::"<<"lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
-		SpnCppFile << "bool "<<"REHandling::"<<"precondition(const abstractMarking &M){return true;}" << endl;
-	}
+    if(P.RareEvent){
+	SpnCppFile << "#include \"lumpingfun.cpp\"" << endl;
+    }else if(!P.lightSimulator){
+	SpnCppFile << "void "<<"REHandling::"<<"print_state(const vector<int> &vect){}" << endl;
+	SpnCppFile << "void "<<"REHandling::"<<"lumpingFun(const abstractMarking &M,vector<int> &vect){}" << endl;
+	SpnCppFile << "bool "<<"REHandling::"<<"precondition(const abstractMarking &M){return true;}" << endl;
+    }
     
 	//------------- Writing Marking type and header ----------------------------
     if(!P.lightSimulator)SpnCppFile << "#include \"marking.hpp\"\n";
@@ -1108,7 +1127,11 @@ void Gspn_Writer::writeFile(){
                 SpnCppFile << "IMMEDIATE,";
             }
 
-            SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
+            if (!P.is_domain_impl_set) {
+                SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ","<< nbbinding;
+            } else {
+                SpnCppFile << MyGspn.transitionStruct[t].markingDependant << ",1";
+            }
             SpnCppFile << ", " << MyGspn.transitionStruct[t].ageMemory;
             if(P.StringInSpnLHA)SpnCppFile << ", \"" << MyGspn.transitionStruct[t].name<< "\"";
             SpnCppFile <<"), ";

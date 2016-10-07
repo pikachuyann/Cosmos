@@ -58,6 +58,7 @@ protected:
 	virtual void writeMarkingClasse(std::ofstream &, std::ofstream &)const;
 	void writeEnabledDisabled(std::ofstream &)const;
 	virtual void writeEnabledDisabledBinding(std::ofstream &)const=0;
+        virtual void writeEnabledDisabledBindingSet(std::ofstream &)const=0;
 	void writeUpdateVect(std::ofstream &,const std::string &name,const std::vector< std::set<int> > &vect)const;
 	void writeTransition(std::ofstream &)const;
 	void writeVariable(std::ofstream & spnF)const;
@@ -66,7 +67,7 @@ protected:
     void view();
 	
 	
-	virtual void printloot(std::ofstream& sf, size_t domain, size_t nesting )const=0;
+	virtual void printloot(std::ofstream& sf, const colorDomain &domain, size_t nesting )const=0;
 	
 	void EnabledDisabledTr(std::vector< std::set<int> >&,
 						   std::vector< std::set<int> >&,

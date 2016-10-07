@@ -32,7 +32,7 @@
 
 using namespace std;
 
-SimulatorBoundedRE::SimulatorBoundedRE(SPN_orig& N,LHA_orig& A,int m):SimulatorRE(N,A){
+SimulatorBoundedRE::SimulatorBoundedRE(SPN_orig<EventsQueue>& N,LHA_orig& A,int m):SimulatorRE(N,A){
     switch (m) {
         case 1:
             numSolv = new numericalSolver();
@@ -68,7 +68,7 @@ BatchR SimulatorBoundedRE::RunBatch(){
 	
 	BatchR batchResult(1,0);
 	
-	list<simulationState> statevect(BatchSize);
+	list<simulationState<EventsQueue> > statevect(BatchSize);
 	//delete EQ;
 	
 	if(verbose>=1){
@@ -77,7 +77,7 @@ BatchR SimulatorBoundedRE::RunBatch(){
 		cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
 		cerr << numSolv->getVect()[0] << endl;
 	}
-	for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
+	for (auto it= statevect.begin(); it != statevect.end() ; it++) {
 		NRE.Origine_Rate_Table = vector<double>(N.tr,0.0);
 		NRE.Rate_Table = vector<double>(N.tr,0.0);
 		EQ = new EventsQueue(N);
@@ -100,7 +100,7 @@ BatchR SimulatorBoundedRE::RunBatch(){
             cerr << numSolv->getVect()[0] << endl;
         }
 		
-		for (list<simulationState>::iterator it= statevect.begin(); it != statevect.end() ; it++) {
+		for (auto it= statevect.begin(); it != statevect.end() ; it++) {
             
 			it->loadState(&NRE,&A,&EQ);
             

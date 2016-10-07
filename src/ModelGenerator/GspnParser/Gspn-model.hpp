@@ -191,6 +191,17 @@ struct arc {
 /*    size_t intVal;
     std::string stringVal;*/
     std::vector<coloredToken> coloredVal;
+    
+    bool containsVar(size_t v) const {
+        if (isEmpty) { return false; }
+        if (not isColored) { return false; }
+        for (const auto& tok : coloredVal) {
+            for (size_t i = 0; i < tok.field.size();i++) {
+                if (tok.Flags[i] == CT_VARIABLE and tok.field[i] == v) { return true; }
+            }
+        }
+        return false;
+    }
 };
 
 //first is transition, second is place.

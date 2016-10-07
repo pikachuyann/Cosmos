@@ -2,29 +2,26 @@
 #define    _MarkingImpl_HPP
 using namespace std;
 #include <string.h>
+#include "marking.hpp"
+#include "markingTemplate.hpp"
 class abstractBindingImpl {
 public:
 };
 class abstractMarkingImpl {
 public:
-	int _PL_Counter;
-	int _PL_TargetState;
-	int _PL_s_0_;
-	int _PL_s_0_0;
-	int _PL_s_0_1;
-	int _PL_s_0_2;
-	int _PL_s_1_;
-	int _PL_s_1_0;
-	int _PL_s_1_1;
-	int _PL_s_1_2;
-	int _PL_s_2_;
-	int _PL_s_2_0;
-	int _PL_s_2_1;
-	int _PL_s_2_2;
-	int _PL_s_3_;
-	int _PL_s_3_0;
-	int _PL_s_3_1;
-	int _PL_s_a_;
-	int _PL_s_b_;
+	int _PL_N_Queue1;
+	int _PL_Queue1;
+	int _PL_Phase1;
+	int _PL_Phase2;
+	int _PL_Queue2;
+	int _PL_N_Queue2;
+};
+
+class abstractBindingIteratorImpl {
+public:
+	void reset(abstractMarkingImpl& m);
+	bool next(size_t& t, abstractMarkingImpl& m);
+	size_t getIndex();
+	abstractBinding getBinding();
 };
 #endif

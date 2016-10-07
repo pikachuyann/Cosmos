@@ -4,6 +4,7 @@ lib_LTLIBRARIES = libClientSim.la
 libClientSim_la_SOURCES = \
 	BatchR.cpp BatchR.hpp \
 	Event.cpp  Event.hpp \
+	EventsQueueSet.cpp EventsQueueSet.hpp \
 	EventsQueue.cpp EventsQueue.hpp \
 	timeGen.cpp timeGen.hpp \
 	marking.hpp spn.hpp \
@@ -23,7 +24,7 @@ libClientSim_la_SOURCES = \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
 	clientsim.cpp
 
-includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp
+includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp
 includesdir = $(includedir)
 
 AM_LDFLAGS = $(PTHREAD_LIBS)

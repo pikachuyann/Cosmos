@@ -4,7 +4,7 @@
  * (S)tochastiques                                                             *
  *                                                                             *
  * Copyright (C) 2009-2012 LSV & LACL                                          *
- * Authors: Paolo Ballarini Benoît Barbot & Hilal Djafri                       *
+ * Authors: Benoît Barbot & Paolo Ballarini & Hilal Djafri                     *
  * Website: http://www.lsv.ens-cachan.fr/Software/cosmos                       *
  *                                                                             *
  * This program is free software; you can redistribute it and/or modify        *
@@ -20,30 +20,8 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file Gspn-Writer-Color.hpp                                                  *
- * Created by Benoit Barbot on 17/04/15.                                       *
+ * file EventsQueueFactory.cpp created by Benoit Barbot on 06/10/2016          *
  *******************************************************************************
  */
 
-
-#ifndef __Cosmos__Gspn_Writer_Color__
-#define __Cosmos__Gspn_Writer_Color__
-
-#include <stdio.h>
-
-#include "Gspn-Writer.hpp"
-
-class Gspn_Writer_Color: public Gspn_Writer{
-public:
-    Gspn_Writer_Color(GspnType& mgspn,parameters& Q);
-
-    void writeMarkingClasse(std::ofstream &, std::ofstream &)const;
-    void printloot(std::ofstream& sf, const colorDomain &domain, size_t nesting )const;
-    void writeEnabledDisabledBinding(std::ofstream &)const;
-    void writeEnabledDisabledBindingSet(std::ofstream &)const;
-    void writeDomainTable(std::ofstream &cpp, std::ofstream &hpp, const colorDomain &d)const ;
-    void writeDomainToken(std::ofstream &header, const colorDomain & it)const;
-    void writeDomainSet(std::ofstream &SpnCppFile , std::ofstream &header, const colorDomain & it)const;
-};
-
-#endif /* defined(__Cosmos__Gspn_Writer_Color__) */
+#include "EventQueueFactory.hpp"

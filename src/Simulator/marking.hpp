@@ -32,6 +32,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <map>
 
 class abstractMarkingImpl;
 
@@ -106,7 +107,7 @@ public:
 	abstractBinding(const abstractBinding& b);
 	abstractBinding& operator = (const abstractBinding& m);
 	
-	//! Nexte binding in the bindin list of the transition.
+	//! Next binding in the binding list of the transition.
 	bool next();
 	//! Print in human readable format.
 	void print()const;
@@ -121,5 +122,18 @@ public:
 
 inline bool contains(int i, int j){ return i>=j;}
 
+class abstractBindingIteratorImpl;
+
+class abstractBindingIterator {
+public:
+    abstractBindingIteratorImpl* P;
+    
+    abstractBindingIterator(abstractMarking& m);
+    ~abstractBindingIterator();
+    void reset(abstractMarking& m);
+    bool next(size_t& t,abstractMarking& m);
+    size_t getIndex();
+    abstractBinding getBinding();
+};
 
 #endif
