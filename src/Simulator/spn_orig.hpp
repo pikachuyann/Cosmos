@@ -37,13 +37,13 @@ template<class EQT>
 class SPN_orig : public SPN
 {
 public:
-    SPN_orig(int&);
+    SPN_orig(int);
 
     virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &);
     virtual void update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &);
     virtual void InitialEventsQueue(EQT &,timeGen &);
 
-    int &verbose;
+    int verbose;
 
 protected:
     //! a Temporary event
