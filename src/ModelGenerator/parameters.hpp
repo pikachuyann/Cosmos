@@ -99,6 +99,8 @@ enum Poption {
     CO_magic_values,
     CO_version,
     CO_reuse,
+    CO_use_magic_print,
+    CO_domain_impl,
     CO_force_TTY
 };
 
