@@ -83,9 +83,9 @@ objregexp= re.compile('')
 if len(sys.argv)>5:
     objregexp=re.compile(sys.argv[5])
 
-finstate = [ objregexp.match(namelist[i]) for i in range(len(namelist))];
+finstate = [ objregexp.match(statelist[i]['name']) for i in range(len(statelist))];
 
-cardclocks=len(statelist[0]['transition'][0]['miniedge'][0]['reset']);#@Benoit: il faut que une ligne en plus en sortie de PRISM qui donne cardclocks=TRUC;
+#cardclocks=len(statelist[0]['transition'][0]['miniedge'][0]['reset']);#@Benoit: il faut que une ligne en plus en sortie de PRISM qui donne cardclocks=TRUC; Done;
 card_states=len(statelist);
 xsanszero=['x_%d' %i for i in range(1,cardclocks+1)];
 xsanszero.append('t');
@@ -95,10 +95,12 @@ R = PolynomialRing(RealField(accuracy),cardclocks+1,xsanszero);
 R.inject_variables();
 x=list(R.gens());
 
-#assign a unique identifier per transition and compute inverse mapping
-idtrans=[[0 for trans in state['transition']] for state in statelist];
+#assign a unique identifier per transition and edge and compute inverse mapping
 c=0;
+d=0;
+idtrans=[[0 for trans in state['transition']] for state in statelist];
 idtransinv=[];
+idedgeinv=[];
 i=-1;
 for state in statelist:
     i=i+1;
@@ -106,8 +108,15 @@ for state in statelist:
     for trans in state['transition']:
         j=j+1;
         idtrans[i][j]=c;
+        trans['id']=c;
         idtransinv.append((i,j));
         c=c+1;
+        k=-1;
+        for edge in trans['miniedge']:
+            k=k+1;
+            edge['id']=d;
+            idedgeinv.append((i,j,k));
+            d=d+1;
 
 def toDisjointSet(list,m):
     res=DisjointSet(m)
@@ -162,7 +171,6 @@ def WeightsPdfCdf(f): #Compute one iteration of operator Op with all weights/pdf
                 Pdf[i][j]=Pdf[i][j]+ (edge['prob'])*pdf;
                 Cdf[i][j]=Cdf[i][j]+ (edge['prob'])*cdf;
     return([psiDeltaf,Pdf,Cdf]);
-
     
     
 def poly_to_c_first(p):
@@ -279,7 +287,7 @@ def escapename(s):
 
 def printGRML_distribution(alldistr):
     s="";
-    maxid = sum( [len(idtrans[i]) for i in range(len(idtrans))]);
+    maxid = len(idtransinv);
     tabidDistrHorizon = [[ -1 for k in range(len(alldistr)) ] for id in range(maxid)]
     count=0;
     for k in range(len(alldistr)):
@@ -293,9 +301,9 @@ def printGRML_distribution(alldistr):
                 s+='      <attribute name=\"name\"> '+ "trans_%d"%i+"_%d"%j+"_%d"%k + ' </attribute>\n';
                 s+='      <attribute name=\"var\"> t </attribute>\n';
                 s+='      <attribute name=\"nbParam\">'+ "%i"%(cardclocks+1) + '</attribute>\n';
-                poly_to_data(lowerBound);
+                poly_to_data(lowerBound[i][j]);
                 s+="      <attribute name=\"lowerBound\">%i</attribute>\n"%nbpoly ;
-                poly_to_data(upperBound);
+                poly_to_data(upperBound[i][j]);
                 s+="      <attribute name=\"upperBound\">%i</attribute>\n"%nbpoly;
                 poly_to_data(triple[0][i][j]);
                 s+="      <attribute name=\"norm\">%i</attribute>\n"%nbpoly;
@@ -327,6 +335,28 @@ def printGRML_OnePlace(id,name,marking):
     s+='  </node>\n';
     return(s);
 
+def printGRML_OneTransition(id,name,distribution,priority,weight):
+    s="";
+    s+='  <node id=\"'+ id + '\"  nodeType=\"transition\">\n';
+    s+='    <attribute name=\"name\">'+ name +'</attribute>\n';
+    s+='    <attribute name=\"distribution\">\n';
+    s+=distribution
+    s+='    </attribute>\n';
+    s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
+    s+='    <attribute name=\"numValue\">'+ priority + '</attribute>\n';
+    s+='    </attribute></attribute>\n';
+    s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
+    s+='    '+ weight + '\n';
+    s+='    </attribute></attribute>\n';
+    s+='  </node>\n';
+    return(s);
+
+def printGRML_OneInstaTransition(id,name,priority,weight):
+    s='      <attribute name=\"type\">\n';
+    s+='      IMDT\n';
+    s+='      </attribute>\n'
+    return(printGRML_OneTransition(id,name,s,priority,weight));
+    
 idalpha=dict((alphabet[i],i) for i in range(len(alphabet)));
 
 def printGRML_arc(statelist):
@@ -336,15 +366,15 @@ def printGRML_arc(statelist):
     for state in statelist:
         for trans in state['transition']:
             action=idalpha[trans['action']];
-            s+=printGRML_OneArc('14%d'%(idtrans[i][j]) , '11%d' %i, '13%d' %(idtrans[i][j]));
-            s+=printGRML_OneArc('15%d'%(idtrans[i][j]) , '13%d' %(idtrans[i][j]), '12%d' %(idtrans[i][j]));
-            s+=printGRML_OneArc('17%d'%(idtrans[i][j]) , '12%d' %(idtrans[i][j]), '16%d' %(idtrans[i][j]));
+            s+=printGRML_OneArc('14%d'%(trans['id']) , "11" + state['id']   , '13%d' %(trans['id']));
+            s+=printGRML_OneArc('15%d'%(trans['id']) , '13%d' %(trans['id']), '12%d' %(trans['id']));
+            s+=printGRML_OneArc('17%d'%(trans['id']) , '12%d' %(trans['id']), '16%d' %(trans['id']));
             #s+=printGRML_OneArc('23%d' %(idtrans[i][j]), '16%d' %(idtrans[i][j]), '20%d' %action);#C est quoi?
             #s+=printGRML_OneArc('241', '16%d' %(idtrans[i][j]), '240');#C est quoi?
+            s+=printGRML_OneArc('18%d'%(trans['id']) , '16%d' %(trans['id']), '30%d' %(trans['id']));
             for edge in trans['miniedge']:#NEW
-                s+=printGRML_OneArc('18%d'%(idtrans[i][j]) , '16%d' %(idtrans[i][j]), '30%d' %(edge['target']));
-                s+=printGRML_OneArc('24%d'%(idtrans[i][j]) , '30%d' %(idtrans[i][j]), '25%d' %(edge['target']));#NEW
-                s+=printGRML_OneArc('26%d'%(idtrans[i][j]) , '25%d' %(idtrans[i][j]), '11%d' %(edge['target']));#NEW
+                s+=printGRML_OneArc('24%d'%(trans['id']) , '30%d' %(trans['id']), '25%d' %(edge['id']));#NEW
+                s+=printGRML_OneArc('26%d'%(trans['id']) , '25%d' %(edge['id']), '11%d' %(edge['target']));#NEW
             #if ( finstate[statelist[i][j][4][0][0]]) :#Ca sert a quoi? statelist[i][j][4][0][0]=edge['target']
             #    s+=printGRML_OneArc('18%d'%(idtrans[i][j]) , '16%d' %(idtrans[i][j]), '19');
     return(s);
@@ -357,12 +387,12 @@ def printGRML_place(statelist):
     i=-1;
     for state in statelist:
         i=i+1;
-        s+= printGRML_OnePlace('11%d' %i,'s_%d_' %i, (i==0) );
+        s+= printGRML_OnePlace('11%d' %i,'s_%d_1' %i, (i==0) );
         j=-1;
         for trans in state['transition']:
             j=j+1;        
-            s+= printGRML_OnePlace('12%d' %(idtrans[i][j]),'s_%d' %i +'_%d' %j, 0 );#The place before choosing time associated to transition i,j
-            s+= printGRML_OnePlace('30%d' %(idtrans[i][j]),'s_%d' %i +'_%d' %j, 0 );#NEW The place after choosing time, before choosing mini-edge
+            s+= printGRML_OnePlace('12%d' %(idtrans[i][j]),'s_%d' %i +'_%d_2' %j, 0 );#The place before choosing time associated to transition i,j
+            s+= printGRML_OnePlace('30%d' %(idtrans[i][j]),'s_%d' %i +'_%d_3' %j, 0 );#NEW The place after choosing time, before choosing mini-edge
     for i in range(len(alphabet)):
         s+= printGRML_OnePlace('20%d' %i,'s_%s_' %(alphabet[i]), 0);
     return(s);
@@ -370,88 +400,68 @@ def printGRML_place(statelist):
 def printGRML_transition(statelist,allones,isIsotropic,Dline):
     s="";
     for i in range(len(alphabet)):
-        s+='  <node id=\"21%d\" ' %i +' nodeType=\"transition\">\n';
-        s+='    <attribute name=\"name\">t_%s' %(alphabet[i]) +'</attribute>\n';
-        s+='    <attribute name=\"distribution\">\n';
-        s+='      <attribute name=\"type\">\n';
-        s+='      IMDT\n';
-        s+='      </attribute>\n'
-        s+='    </attribute>\n';
-        s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
-        s+='    <attribute name=\"numValue\"> 2.000000 </attribute>\n';
-        s+='    </attribute></attribute>\n';
-        s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
-        s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
-        s+='    </attribute></attribute>\n';
-        s+='  </node>\n';
+        s+=printGRML_OneInstaTransition('21%d' %i,'t_%s' %(alphabet[i]),"2",
+                                        "<attribute name=\"numValue\"> 1.000000 </attribute>" );
     i=-1;    
     for state in statelist:
         i=i+1;
         j=-1;
         for trans in state['transition']:
             j=j+1;
-            s+='  <node id=\"13%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
-            s+='    <attribute name=\"name\">t_%d' %i +'_%d_' %j + (trans['action']) +'</attribute>\n';
-            s+='    <attribute name=\"distribution\">\n';
-            s+='      <attribute name=\"type\">\n';
-            s+='      IMDT\n';
-            s+='      </attribute>\n'
-            s+='    </attribute>\n';
-            s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
-            s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
+            # Choose action
+            t="";
             if(isIsotropic):
-                s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
+                t+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
             else:
-                s+='    <attribute name=\"unParsed\"> customDistr.evalPoly(%d' %nbpoly +' + min( %i '%(Dline) + '-Marking.P->_PL_Counter, %d )' %(len(allones)-1);
+                t+='    <attribute name=\"unParsed\"> customDistr.evalPoly(%d' %nbpoly +' + min( %i '%(Dline) + '-Marking.P->_PL_Counter, %d )' %(len(allones)-1);
                 for k in range(len(allones)):
                     poly_to_c_data(allones[k][0][i][j]);#poids de la transition i j
                     
-                s+= ', {0.0,x_1,x_2,0.0}) </attribute>\n';#C est quoi ca
-            s+='    </attribute></attribute>\n';
-            s+='  </node>\n';
-    i=-1;    
-    for state in statelist:
-        i=i+1;
-        j=-1;
-        for trans in state['transition']:
-            j=j+1;
-            s+='  <node id=\"16%d\" ' %(idtrans[i][j]) +' nodeType=\"transition\">\n';
-            s+='    <attribute name=\"name\">tt_%d' %i +'_%d' %j +'</attribute>\n';
-            s+='    <attribute name=\"distribution\">\n';
-            s+='      <attribute name=\"type\">\n' ;
+                t+= ', {0.0,x_1,x_2,0.0}) </attribute>\n';#C est quoi ca -> c'est pour passer les valeur d'horloge
+            s+=printGRML_OneInstaTransition('13%d' %(trans['id']),
+                                         't_%d' %i +'_%d_' %j + (trans['action']),
+                                         "1",
+                                         t);
+                
+            #choose time
+            t='      <attribute name=\"type\">\n';
             if(isIsotropic):
-                s+='      UNIFORM\n';
+                t+='      UNIFORM\n';
             else:
-                s+='      USERDEFINE\n';
-            s+='      </attribute>\n';
+                t+='      USERDEFINE\n';
+            t+='      </attribute>\n';
 
             if(isIsotropic):
-                s+='      <attribute name="param">\n'
-                s+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_data(lowerBound[i][j]) +'</attribute></attribute>\n';
-                s+='      </attribute>\n'
-                s+='      <attribute name="param">\n'
-                s+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_data(upperBound[i][j]) +'</attribute></attribute>\n';
-                s+='      </attribute>\n'
+                t+='      <attribute name="param">\n'
+                t+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_data(lowerBound[i][j]) +'</attribute></attribute>\n';
+                t+='      </attribute>\n'
+                t+='      <attribute name="param">\n'
+                t+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_data(upperBound[i][j]) +'</attribute></attribute>\n';
+                t+='      </attribute>\n'
             else:
-                s+='      <attribute name="param">\n'
-                s+='        <attribute name="expr"><attribute name=\"unParsed\"> transDistrTab[%d]' %(idtrans[i][j]) +'[min( %i' %(Dline) + '-Marking.P->_PL_Counter, %d )]' %(len(allones)-1); 
-                s+='        </attribute></attribute>\n';
-                s+='      </attribute>\n';
+                t+='      <attribute name="param">\n'
+                t+='        <attribute name="expr"><attribute name=\"unParsed\"> transDistrTab[%d]' %(trans['id']) +'[min( %i' %(Dline) + '-Marking.P->_PL_Counter, %d )]' %(len(allones)-1); 
+                t+='        </attribute></attribute>\n';
+                t+='      </attribute>\n';
                 for c in range(cardclocks):
-                    s+='      <attribute name="param">\n';
-                    s+='        <attribute name="expr"><attribute name="name">\n';
-                    s+='          x_%d'%(c+1)+'\n';
-                    s+='        </attribute></attribute>\n';
-                    s+='      </attribute>\n';
-            s+='    </attribute>\n';
+                    t+='      <attribute name="param">\n';
+                    t+='        <attribute name="expr"><attribute name="name">\n';
+                    t+='          x_%d'%(c+1)+'\n';
+                    t+='        </attribute></attribute>\n';
+                    t+='      </attribute>\n';
+
+            s+=printGRML_OneTransition('16%d' %(trans['id']),
+                                    'tt_%d' %i +'_%d' %j,
+                                    t,
+                                    "1",
+                                    "<attribute name=\"numValue\">1</attribute>");
+                                    
             #REFAIRE A PARTIR D ICI
             k=-1;
             for edge in trans['miniedge']:
                 k=k+1;
-                s+='  <node id=\"31%d\" ' %(idedge[i][j][k]) +' nodeType=\"transition\">\n';##idedge[i][j][k] a definir... Comment faire une distrib fini en Cosmos?
-                s+='    <attribute name=\"name\">ttt_%d' %i +'_%d_' %j +'</attribute>\n';
+                s+='  <node id=\"25%d\" ' %(edge['id']) +' nodeType=\"transition\">\n';##idedge[i][j][k] a definir... Comment faire une distrib fini en Cosmos?
+                s+='    <attribute name=\"name\">ttt_%d' %i +'_%d_' %j + '%d' %k + '</attribute>\n';
                 s+='    <attribute name=\"distribution\">\n';
                 s+='      <attribute name=\"type\">\n';
                 s+='      IMDT\n';
@@ -461,22 +471,15 @@ def printGRML_transition(statelist,allones,isIsotropic,Dline):
                 s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
                 s+='    </attribute></attribute>\n';
                 s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
-            if(isIsotropic):
-                s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
-
-                
-            s+='    <attribute name=\"update\">\n    ';
-            for c in range(cardclocks):
-                if edge['reset'][c]==0:
-                    s+='x_%d'%(c+1)+'=0;';
-            s+='\n    </attribute>\n';
-            s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\"> 1.000000 </attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
-            s+='      <attribute name=\"numValue\">1</attribute>\n';
-            s+='    </attribute></attribute>\n';
-            s+='  </node>\n';
+                s+='    <attribute name=\"numValue\"> %d </attribute>\n' %(edge['prob']);
+                s+='    </attribute></attribute>\n';
+                s+='    <attribute name=\"update\">\n    ';
+                for c in range(cardclocks):
+                    if edge['reset'][c]==0:
+                        s+='x_%d'%(c+1)+'=0;';
+                s+='\n    </attribute>\n';
+                s+='  </node>\n';
+            
     return(s);
 
 def toCOSMOS(allones,isIsotropic,Dline):
