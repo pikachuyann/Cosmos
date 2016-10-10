@@ -855,6 +855,6 @@ void Gspn_Writer_Color::writeMarkingClasse(ofstream &SpnCppFile,ofstream &header
     
     SpnCppFile << "\nabstractBinding abstractBindingIterator::getBinding() {";
     SpnCppFile << "\n\treturn P->getBinding();";
-    SpnCppFile << "\n};";
+    SpnCppFile << "\n};\n";
 }
 
