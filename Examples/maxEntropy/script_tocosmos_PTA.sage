@@ -453,7 +453,7 @@ def printGRML_transition(statelist,allones,isIsotropic,Dline):
             s+=printGRML_OneTransition('16%d' %(trans['id']),
                                     'tt_%d' %i +'_%d' %j,
                                     t,
-                                    "1",
+                                    "1.00",
                                     "<attribute name=\"numValue\">1</attribute>");
                                     
             #REFAIRE A PARTIR D ICI
@@ -471,7 +471,7 @@ def printGRML_transition(statelist,allones,isIsotropic,Dline):
                 s+='    <attribute name=\"numValue\"> 1.000000 </attribute>\n';
                 s+='    </attribute></attribute>\n';
                 s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
-                s+='    <attribute name=\"numValue\"> %d </attribute>\n' %(edge['prob']);
+                s+='    <attribute name=\"numValue\"> %f </attribute>\n' %(edge['prob']);
                 s+='    </attribute></attribute>\n';
                 s+='    <attribute name=\"update\">\n    ';
                 for c in range(cardclocks):
