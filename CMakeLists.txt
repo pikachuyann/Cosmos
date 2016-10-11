@@ -94,6 +94,7 @@ add_library(ClientSim
         src/Simulator/numericalSolver.cpp
         src/Simulator/timeGen.cpp
 	src/Simulator/EventsQueue.cpp
+	src/Simulator/EventsQueueSet.cpp
         src/Simulator/SimulatorBoundedRE.cpp
         src/Simulator/foxglynn.cpp
 	src/Simulator/LHA_orig.cpp
