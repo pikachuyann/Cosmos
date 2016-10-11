@@ -11,7 +11,7 @@
   </attribute>
   </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_0_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -22,7 +22,7 @@
       <attribute name="pdf">4</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_1_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -33,7 +33,7 @@
       <attribute name="pdf">9</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_2_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -44,7 +44,7 @@
       <attribute name="pdf">14</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_0_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -55,7 +55,7 @@
       <attribute name="pdf">19</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_1_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -66,7 +66,7 @@
       <attribute name="pdf">24</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_2_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -77,7 +77,7 @@
       <attribute name="pdf">29</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_2_0_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -88,7 +88,7 @@
       <attribute name="pdf">34</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_2_1_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -99,7 +99,7 @@
       <attribute name="pdf">39</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_0_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -110,7 +110,7 @@
       <attribute name="pdf">44</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_1_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -121,7 +121,7 @@
       <attribute name="pdf">49</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_2_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -132,7 +132,7 @@
       <attribute name="pdf">54</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_4_0_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -143,7 +143,7 @@
       <attribute name="pdf">59</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_4_1_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -154,7 +154,7 @@
       <attribute name="pdf">64</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_5_0_0 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -165,7 +165,7 @@
       <attribute name="pdf">69</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_0_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -176,7 +176,7 @@
       <attribute name="pdf">74</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_1_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -187,7 +187,7 @@
       <attribute name="pdf">79</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_2_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -198,7 +198,7 @@
       <attribute name="pdf">84</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_0_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -209,7 +209,7 @@
       <attribute name="pdf">89</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_1_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -220,7 +220,7 @@
       <attribute name="pdf">94</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_2_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -231,7 +231,7 @@
       <attribute name="pdf">99</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_2_0_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -242,7 +242,7 @@
       <attribute name="pdf">104</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_2_1_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -253,7 +253,7 @@
       <attribute name="pdf">109</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_0_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -264,7 +264,7 @@
       <attribute name="pdf">114</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_1_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -275,7 +275,7 @@
       <attribute name="pdf">119</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_2_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -286,7 +286,7 @@
       <attribute name="pdf">124</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_4_0_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -297,7 +297,7 @@
       <attribute name="pdf">129</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_4_1_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -308,7 +308,7 @@
       <attribute name="pdf">134</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_5_0_1 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -319,7 +319,7 @@
       <attribute name="pdf">139</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_0_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -330,7 +330,7 @@
       <attribute name="pdf">144</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_1_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -341,7 +341,7 @@
       <attribute name="pdf">149</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_2_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -352,7 +352,7 @@
       <attribute name="pdf">154</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_0_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -363,7 +363,7 @@
       <attribute name="pdf">159</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_1_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -374,7 +374,7 @@
       <attribute name="pdf">164</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_2_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -385,7 +385,7 @@
       <attribute name="pdf">169</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_2_0_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -396,7 +396,7 @@
       <attribute name="pdf">174</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_2_1_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -407,7 +407,7 @@
       <attribute name="pdf">179</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_0_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -418,7 +418,7 @@
       <attribute name="pdf">184</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_1_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -429,7 +429,7 @@
       <attribute name="pdf">189</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_2_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -440,7 +440,7 @@
       <attribute name="pdf">194</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_4_0_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -451,7 +451,7 @@
       <attribute name="pdf">199</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_4_1_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -462,7 +462,7 @@
       <attribute name="pdf">204</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_5_0_2 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -473,7 +473,7 @@
       <attribute name="pdf">209</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_0_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -484,7 +484,7 @@
       <attribute name="pdf">214</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_1_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -495,7 +495,7 @@
       <attribute name="pdf">219</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_0_2_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -506,7 +506,7 @@
       <attribute name="pdf">224</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_0_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -517,7 +517,7 @@
       <attribute name="pdf">229</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_1_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -528,7 +528,7 @@
       <attribute name="pdf">234</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_1_2_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -539,7 +539,7 @@
       <attribute name="pdf">239</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_2_0_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -550,7 +550,7 @@
       <attribute name="pdf">244</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_2_1_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -561,7 +561,7 @@
       <attribute name="pdf">249</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_0_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -572,7 +572,7 @@
       <attribute name="pdf">254</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_1_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -583,7 +583,7 @@
       <attribute name="pdf">259</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_3_2_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -594,7 +594,7 @@
       <attribute name="pdf">264</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_4_0_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -605,7 +605,7 @@
       <attribute name="pdf">269</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_4_1_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
@@ -616,7 +616,7 @@
       <attribute name="pdf">274</attribute>
     </attribute>
     <attribute name="UserDefineDistributionPoly">
-      <attribute name="polyDataFile"> twoearsprob.grml.data </attribute>
+      <attribute name="polyDataFile"> twoearsprobtest.grml.data </attribute>
       <attribute name="name"> trans_5_0_3 </attribute>
       <attribute name="var"> t </attribute>
       <attribute name="nbParam">3</attribute>
