@@ -42,8 +42,8 @@ using namespace std;
  * Constructor for the Simulator initialize the event queue
  * but don't fill it.
  */
-template <class EQT,class DEDS>
-Simulator<EQT,DEDS>::Simulator(DEDS& spn,LHA_orig& automate):verbose(0),N(spn),A(automate){
+template <class S, class EQT,class DEDS>
+SimulatorBase<S,EQT,DEDS>::SimulatorBase(DEDS& spn,LHA_orig& automate):verbose(0),N(spn),A(automate){
     EQ = new EQT(N); //initialization of the event queue
     logResult=false;
 	sampleTrace = 0.0;
@@ -64,20 +64,20 @@ Simulator<EQT,DEDS>::Simulator(DEDS& spn,LHA_orig& automate):verbose(0),N(spn),A
     minInteractiveTime = 0.0;
 }*/
 
-template <class EQT,class DEDS>
-Simulator<EQT,DEDS>::~Simulator() {
+template <class S, class EQT,class DEDS>
+SimulatorBase<S,EQT,DEDS>::~SimulatorBase() {
   delete EQ;
 }
 
-template <class EQT,class DEDS>
-void Simulator<EQT,DEDS>::logValue(const char* path){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::logValue(const char* path){
     logvalue.open(path,fstream::out);
     logvalue.precision(15);
     logResult=true;
 }
 
-template <class EQT,class DEDS>
-void Simulator<EQT,DEDS>::logTrace(const char* path,double sample){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::logTrace(const char* path,double sample){
 	sampleTrace = sample;
     logtrace.open(path,fstream::out);
 	//logtrace << "# sampling at:" << sample << endl;
@@ -88,8 +88,8 @@ void Simulator<EQT,DEDS>::logTrace(const char* path,double sample){
 	logtrace << endl;
 }
 
-template <class EQT,class DEDS>
-void Simulator<EQT,DEDS>::printLog(double eTime,size_t t){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::printLog(double eTime,size_t t){
     if(logtrace.is_open())
         if((A.CurrentTime - lastSampled) >= sampleTrace){
             lastSampled = A.CurrentTime;
@@ -102,21 +102,21 @@ void Simulator<EQT,DEDS>::printLog(double eTime,size_t t){
         }
 }
 
-template <class EQT,class DEDS>
-void Simulator<EQT,DEDS>::printLog(double eTime){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::printLog(double eTime){
     printLog(eTime, string::npos);
 }
 
-template <class EQT,class DEDS>
-void Simulator<EQT,DEDS>::SetBatchSize(const size_t RI) {
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::SetBatchSize(const size_t RI) {
 	BatchSize = RI;
 }
 
 /**
  * Reset the SPN, The LHA and the Event Queue to the initial state.
  */
-template <class EQT,class DEDS>
-void Simulator<EQT,DEDS>::reset() {
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::reset() {
 	N.reset();
 	A.reset(N.Marking);
 	EQ->reset();
@@ -127,8 +127,8 @@ void Simulator<EQT,DEDS>::reset() {
  * the automaton. It update the automaton variable before updating the
  * Hasl formula.
  */
-template <class EQT,class DEDS>
-void Simulator<EQT,DEDS>::returnResultTrue(){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::returnResultTrue(){
 	A.getFinalValues(N.Marking,Result.quantR,Result.qualR);
 	Result.accept = true;
 }
@@ -138,8 +138,8 @@ void Simulator<EQT,DEDS>::returnResultTrue(){
  * Do nothing when not in rare event context.
  * @param i Number of the transition of the SPN
  */
-template <class EQT,class DEDS>
-void Simulator<EQT,DEDS>::updateLikelihood(size_t){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::updateLikelihood(size_t){
 	return;
 }
 
@@ -148,8 +148,8 @@ void Simulator<EQT,DEDS>::updateLikelihood(size_t){
  * always return true when not in rare event context.
  * @param i Number of the transition of the SPN
  */
-template <class EQT,class DEDS>
-bool Simulator<EQT,DEDS>::transitionSink(size_t ){
+template <class S, class EQT,class DEDS>
+bool SimulatorBase<S,EQT,DEDS>::transitionSink(size_t ){
     return false;
 }
 
@@ -158,8 +158,8 @@ bool Simulator<EQT,DEDS>::transitionSink(size_t ){
  * Simulate one step of simulation
  * @return true if the simulation did not reach an accepting are refusing state.
  */
-template <class EQT,class DEDS>
-bool Simulator<EQT,DEDS>::SimulateOneStep(){
+template <class S, class EQT,class DEDS>
+bool SimulatorBase<S,EQT,DEDS>::SimulateOneStep(){
 
 	AutEdge AE = A.GetEnabled_A_Edges( N.Marking);
 	
@@ -258,8 +258,8 @@ bool Simulator<EQT,DEDS>::SimulateOneStep(){
 /**
  * Interactive mode stop the simulation until the user choose a transition.
  */
-template <class EQT,class DEDS>
-void Simulator<EQT,DEDS>::interactiveSimulation(){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::interactiveSimulation(){
     string input_line;
     if((waitForTransition >0
         && (size_t)waitForTransition != N.lastTransition))return;
@@ -347,8 +347,8 @@ void Simulator<EQT,DEDS>::interactiveSimulation(){
 /**
  * Simulate a whole trajectory in the system. Result is store in SimOutput
  */
-template <class EQT,class DEDS>
-void Simulator<EQT,DEDS>::SimulateSinglePath() {
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::SimulateSinglePath() {
 
     reset();
     N.InitialEventsQueue(*EQ,*this);
@@ -392,8 +392,8 @@ void Simulator<EQT,DEDS>::SimulateSinglePath() {
     //cerr << "finish path"<< endl;
 }
 
-template <class EQT,class DEDS>
-BatchR Simulator<EQT,DEDS>::RunBatch(){
+template <class S, class EQT,class DEDS>
+BatchR SimulatorBase<S,EQT,DEDS>::RunBatch(){
     auto starttime = chrono::steady_clock::now();
     auto currenttime = chrono::steady_clock::now();
     chrono::duration<double> timesize(0.03);

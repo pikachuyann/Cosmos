@@ -97,19 +97,26 @@ public:
     double ComputeDistr(size_t i,const abstractBinding&, double origin_rate);
 };
 
-template<class DEDS>
-class SimulatorBoundedRE: public SimulatorRE<DEDS>{
+template<class S,class DEDS>
+class SimulatorBoundedREBase: public SimulatorREBase<S,DEDS>{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedRE(DEDS& N,LHA_orig&,int m);
+    SimulatorBoundedREBase(DEDS& N,LHA_orig&,int m);
 	BatchR RunBatch();
-	using SimulatorRE<DEDS>::initVect;
+	using SimulatorREBase<S,DEDS>::initVect;
     virtual void initVect(int T);
 
 protected:
 	numericalSolver* numSolv;
 	double lambda;
 };
+
+template <class DEDS>
+class SimulatorBoundedRE:public SimulatorBoundedREBase<SimulatorBoundedRE<DEDS>, DEDS>{
+public:
+    SimulatorBoundedRE(DEDS& deds,LHA_orig& lha,int m):SimulatorBoundedREBase<SimulatorBoundedRE<DEDS>, DEDS>(deds, lha, m){};
+};
+
 
 
 #endif  /* _SIMULATOR_BOUNDED_RE_HPP */

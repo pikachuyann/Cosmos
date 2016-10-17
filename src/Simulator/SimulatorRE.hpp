@@ -61,10 +61,10 @@ private:
     double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
 };
 
-template <class DEDS>
-class SimulatorRE: public Simulator<EventsQueue,DEDS>{
+template <class S,class DEDS>
+class SimulatorREBase: public SimulatorBase<S,EventsQueue,DEDS>{
 public:
-	SimulatorRE(DEDS&,LHA_orig&);
+	SimulatorREBase(DEDS&,LHA_orig&);
 	
 	virtual void initVect();
 	
@@ -79,9 +79,15 @@ protected:
 	virtual void updateLikelihood(size_t) override;
     virtual bool transitionSink(size_t) override;
 	virtual void reset() override;
-	
-
 };
+
+template <class DEDS>
+class SimulatorRE:public SimulatorREBase<SimulatorRE<DEDS>, DEDS>{
+public:
+    SimulatorRE(DEDS& deds,LHA_orig& lha):SimulatorREBase<SimulatorRE,DEDS>(deds, lha){};
+};
+
+
 
 
 #endif  /* _SIMULATOR_RE_HPP */
