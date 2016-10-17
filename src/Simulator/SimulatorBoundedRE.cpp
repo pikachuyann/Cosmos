@@ -32,7 +32,8 @@
 
 using namespace std;
 
-SimulatorBoundedRE::SimulatorBoundedRE(SPN_orig<EventsQueue>& N,LHA_orig& A,int m):SimulatorRE(N,A){
+template<class DEDS>
+SimulatorBoundedRE<DEDS>::SimulatorBoundedRE(DEDS& N,LHA_orig& A,int m):SimulatorRE<DEDS>(N,A){
     switch (m) {
         case 1:
             numSolv = new numericalSolver();
@@ -46,54 +47,54 @@ SimulatorBoundedRE::SimulatorBoundedRE(SPN_orig<EventsQueue>& N,LHA_orig& A,int 
             numSolv = new numSolverSH();
             break;
     }
-    muprob = numSolv;
-    delete EQ;
-	static_cast<SPN_RE&>(N).initialize( muprob);
+    this->muprob = numSolv;
+    delete this->EQ;
+	this->N.initialize( this->muprob);
 	//numSolv->initVect(T);
 }
 
-void SimulatorBoundedRE::initVect(int T){
+template<class DEDS>
+void SimulatorBoundedRE<DEDS>::initVect(int T){
 	lambda = numSolv->uniformizeMatrix();
     cerr << "lambda:" << lambda<< endl;
     numSolv->initVect(T);
 }
 
-
-BatchR SimulatorBoundedRE::RunBatch(){
-    auto & NRE = static_cast<SPN_RE&>(N);
-    
+template<class DEDS>
+BatchR SimulatorBoundedRE<DEDS>::RunBatch(){
+   
 	//cerr << "test(";
 	numSolv->reset();
 	//cerr << ")" << endl;
 	
 	BatchR batchResult(1,0);
 	
-	list<simulationState<EventsQueue> > statevect(BatchSize);
+	list<simulationState<EventsQueue> > statevect(this->BatchSize);
 	//delete EQ;
 	
-	if(verbose>=1){
+	if(this->verbose>=1){
 		cerr << "Initial round:";
 		numSolv->printState();
 		cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
 		cerr << numSolv->getVect()[0] << endl;
 	}
 	for (auto it= statevect.begin(); it != statevect.end() ; it++) {
-		NRE.Origine_Rate_Table = vector<double>(N.tr,0.0);
-		NRE.Rate_Table = vector<double>(N.tr,0.0);
-		EQ = new EventsQueue(N);
-		reset();
+		this->N.Origine_Rate_Table = vector<double>(this->N.tr,0.0);
+		this->N.Rate_Table = vector<double>(this->N.tr,0.0);
+		this->EQ = new EventsQueue(this->N);
+		this->reset();
 		
-        N.SPN_orig::InitialEventsQueue(*EQ,*this);
+        this->N.SPN_orig::InitialEventsQueue(*(this->EQ),*this);
 
 		//AE = A.GetEnabled_A_Edges( N.Marking);
         
-		it->saveState(&NRE,&A,&EQ);
+		it->saveState(&(this->N),&(this->A),&(this->EQ));
 	}
 	
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		numSolv->stepVect();
-        if(verbose>=1){
+        if(this->verbose>=1){
             cerr << "new round:";
 			numSolv->printState();
 			cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
@@ -102,33 +103,33 @@ BatchR SimulatorBoundedRE::RunBatch(){
 		
 		for (auto it= statevect.begin(); it != statevect.end() ; it++) {
             
-			it->loadState(&NRE,&A,&EQ);
+			it->loadState(&(this->N),&(this->A),&(this->EQ));
             
             
 			//cerr << A.Likelihood << endl;
 			//cerr << "mu:\t" << mu() << " ->\t";
-			bool continueb = SimulateOneStep();
+			bool continueb = this->SimulateOneStep();
 			//cerr << mu() << endl;
 			if(numSolv->getVect().size() <= 1){
 				continueb=false;
-				Result.accept=false;
+				this->Result.accept=false;
 			}
 			
-			if((!EQ->isEmpty()) && continueb) {
-				it->saveState(&NRE,&A,&EQ);
+			if((!this->EQ->isEmpty()) && continueb) {
+                it->saveState(&(this->N),&(this->A),&(this->EQ));
 			} else {
-				batchResult.addSim(Result);
-				delete EQ;
+				batchResult.addSim(this->Result);
+				delete this->EQ;
 				it = statevect.erase(it);
 				it--;
 				
 				//log the result
-				if (Result.accept && logResult){
-					for(size_t i=0; i<Result.quantR.size();i++){
-						if (i>0)logvalue << "\t";
-						logvalue << Result.quantR[i];
+				if (this->Result.accept && this->logResult){
+					for(size_t i=0; i<this->Result.quantR.size();i++){
+						if (i>0)this->logvalue << "\t";
+						this->logvalue << this->Result.quantR[i];
 					}
-					logvalue << endl;
+					this->logvalue << endl;
 				}
 			}
 			
@@ -266,3 +267,6 @@ double SPN_BoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, double or
 	unfire(t,b);
 	return(distr);
 }
+
+template class SimulatorBoundedRE<SPN_BoundedRE>;
+

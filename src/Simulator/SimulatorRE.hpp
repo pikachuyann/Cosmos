@@ -40,12 +40,12 @@ public:
 
     bool rareEventEnabled;
 
-    virtual void initialize(stateSpace *muprob);
-    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &)override;
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &)override;
-    virtual void InitialEventsQueue(EventsQueue &,timeGen &)override;
+    void initialize(stateSpace *muprob);
+    void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &);
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &);
+    void InitialEventsQueue(EventsQueue &,timeGen &);
 
-    virtual double mu();
+    double mu();
     const bool doubleIS_mode;
 
     double Rate_Sum;
@@ -57,14 +57,14 @@ protected:
     stateSpace * muprob;
     
 private:
-    virtual void getParams(size_t,const abstractBinding&);
-    virtual double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
+    void getParams(size_t,const abstractBinding&);
+    double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
 };
 
-
-class SimulatorRE: public Simulator<EventsQueue>{
+template <class DEDS>
+class SimulatorRE: public Simulator<EventsQueue,DEDS>{
 public:
-	SimulatorRE(SPN_orig<EventsQueue>&,LHA_orig&);
+	SimulatorRE(DEDS&,LHA_orig&);
 	
 	virtual void initVect();
 	

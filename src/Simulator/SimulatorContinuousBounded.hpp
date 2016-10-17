@@ -30,15 +30,16 @@
 #include "SimulatorBoundedRE.hpp"
 #include "foxglynn.hpp"
 
-class SimulatorContinuousBounded: public SimulatorBoundedRE{
+template<class DEDS>
+class SimulatorContinuousBounded: public SimulatorBoundedRE<DEDS>{
 public:
-    SimulatorContinuousBounded(SPN_orig<EventsQueue> &,LHA_orig& A,int m,double e, int js);
+    SimulatorContinuousBounded(DEDS &,LHA_orig& A,int m,double e, int js);
     void initVectCo(double t);
     double epsilon;
 	int jumpsize;
 	bool singleIS;
     //double Normal_quantile;
-    BatchR RunBatch() override;
+    BatchR RunBatch();
     
 protected:
     unique_ptr<FoxGlynn> fg;
