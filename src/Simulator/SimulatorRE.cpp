@@ -50,15 +50,18 @@ void SPN_RE::initialize( stateSpace *muprob){
     this->muprob=muprob;
 }
 
-SimulatorRE::SimulatorRE(SPN_orig<EventsQueue>& N,LHA_orig& A):Simulator(N,A) {
+template <class DEDS>
+SimulatorRE<DEDS>::SimulatorRE(DEDS& N,LHA_orig& A):Simulator<EventsQueue,DEDS>(N,A) {
     //static_cast<SPN_RE&>(N).initialize(EQ, this, muprob);
 }
 
-void SimulatorRE::initVect(){
+template <class DEDS>
+void SimulatorRE<DEDS>::initVect(){
     muprob = new stateSpace();
 	muprob->inputVect();
-    static_cast<SPN_RE&>(N).initialize(muprob);
+    this->N.initialize(muprob);
 }
+
 
 void SPN_RE::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
 	Rate_Sum = 0;
@@ -66,11 +69,16 @@ void SPN_RE::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
 	SPN_orig::InitialEventsQueue(EQ,TG);
 }
 
-void SimulatorRE::returnResultTrue(){
-	A.getFinalValues(N.Marking,Result.quantR,Result.qualR);
-	Result.accept = true;
-    for(size_t i = 0; i< A.FormulaVal.size() ; i++)Result.quantR[i] *= A.Likelihood;
-	if(verbose>3)cerr << "---------------\n TRUE: Likelyhood: "<< A.Likelihood <<" \n------\n";
+template <class DEDS>
+void SimulatorRE<DEDS>::returnResultTrue(){
+	this->A.getFinalValues(
+                   this->N.Marking,
+                   this->Result.quantR,
+                   this->Result.qualR);
+	this->Result.accept = true;
+    for(size_t i = 0; i< this->A.FormulaVal.size() ; i++)
+        this->Result.quantR[i] *= this->A.Likelihood;
+	if(this->verbose>3)cerr << "---------------\n TRUE: Likelyhood: "<< this->A.Likelihood <<" \n------\n";
 }
 
 void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue &EQ,timeGen &TG){
@@ -140,8 +148,8 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 	 
 };
 
-void SimulatorRE::updateLikelihood(size_t E1_transitionNum){
-    let NRE = static_cast<SPN_RE&>(N);
+template<class DEDS>
+void SimulatorRE<DEDS>::updateLikelihood(size_t E1_transitionNum){
     
     /*cerr << "initialised?:\t" << E1_transitionNum << "\t" << A.Likelihood << endl;
     cerr << NRE.Rate_Sum << "\t" << NRE.Origine_Rate_Sum << "\t[";
@@ -150,21 +158,22 @@ void SimulatorRE::updateLikelihood(size_t E1_transitionNum){
     for(let cv:NRE.Origine_Rate_Table)cerr << cv << ", ";
     cerr << "]" << endl;*/
     
-	if(NRE.doubleIS_mode){
-		A.Likelihood = A.Likelihood *
-		(NRE.Origine_Rate_Table[E1_transitionNum] / NRE.Origine_Rate_Sum) *
-		((NRE.Rate_Sum-NRE.Rate_Table[N.tr-1]) / NRE.Rate_Table[E1_transitionNum]);
+	if(this->N.doubleIS_mode){
+		this->A.Likelihood = this->A.Likelihood *
+		(this->N.Origine_Rate_Table[E1_transitionNum] / this->N.Origine_Rate_Sum) *
+		((this->N.Rate_Sum-this->N.Rate_Table[this->N.tr-1]) / this->N.Rate_Table[E1_transitionNum]);
 	}else{
-		A.Likelihood = A.Likelihood *
+		this->A.Likelihood = this->A.Likelihood *
 		//
 		//(N.Origine_Rate_Table[E1_transitionNum] / 1.0) *
-		(NRE.Origine_Rate_Table[E1_transitionNum] / NRE.Origine_Rate_Sum) *
-		(NRE.Rate_Sum / NRE.Rate_Table[E1_transitionNum]);
+		(this->N.Origine_Rate_Table[E1_transitionNum] / this->N.Origine_Rate_Sum) *
+		(this->N.Rate_Sum / this->N.Rate_Table[E1_transitionNum]);
 	}
 }
 
-bool SimulatorRE::transitionSink(size_t i){
-    return (i==N.tr-1);
+template<class DEDS>
+bool SimulatorRE<DEDS>::transitionSink(size_t i){
+    return (i==this->N.tr-1);
 }
 
 /*
@@ -205,49 +214,50 @@ void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding
 	
 }
 
-void SimulatorRE::reset(){
-    A.Likelihood=1.0;
-    N.reset();
-    A.reset(N.Marking);
-    EQ->reset();
+template<class DEDS>
+void SimulatorRE<DEDS>::reset(){
+    this->A.Likelihood=1.0;
+    this->N.reset();
+    this->A.reset(Simulator<EventsQueue, DEDS>::N.Marking);
+    this->EQ->reset();
 }
 
 /**
  * Simulate a whole trajectory in the system. Result is store in SimOutput
  */
-void SimulatorRE::SimulateSinglePath() {
-    auto &NRE = static_cast<SPN_RE&>(N);
-	NRE.rareEventEnabled = NRE.precondition(N.Marking);
+template<class DEDS>
+void SimulatorRE<DEDS>::SimulateSinglePath() {
+	this->N.rareEventEnabled = this->N.precondition(this->N.Marking);
     reset();
-    N.InitialEventsQueue(*EQ,*this);
+    this->N.InitialEventsQueue(*(this->EQ),*this);
 	
-	if(logtrace.is_open())logtrace << "New Path"<< endl;
+	if(this->logtrace.is_open())this->logtrace << "New Path"<< endl;
     
 	bool continueb = true;
-	while ((!EQ->isEmpty()) && continueb ) {
+	while ((!this->EQ->isEmpty()) && continueb ) {
         //cerr << "continue path"<< endl;
-		if(logtrace.is_open()){
-			logtrace << A.CurrentTime << "\t";
-			N.Marking.print(logtrace,0.0);
-			A.printState(logtrace);
-			logtrace << endl;
+		if(this->logtrace.is_open()){
+			this->logtrace << this->A.CurrentTime << "\t";
+			this->N.Marking.print(this->logtrace,0.0);
+			this->A.printState(this->logtrace);
+			this->logtrace << endl;
 		}
-		if(verbose>3){
+		if(this->verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation
-			N.Marking.printHeader(cerr);
-			A.printHeader(cerr);
+			this->N.Marking.printHeader(cerr);
+			this->A.printHeader(cerr);
 			cerr << endl;
-			N.Marking.print(cerr,0.0);
-			A.printState(cerr);
-            cerr << "\t" << A.Likelihood;
+			this->N.Marking.print(cerr,0.0);
+			this->A.printState(cerr);
+            cerr << "\t" << this->A.Likelihood;
 			cerr << endl;
-			if(verbose>4)EQ->view(N.Transition);
-			if(verbose==6)interactiveSimulation();
+			if(this->verbose>4)this->EQ->view(this->N.Transition);
+			if(this->verbose==6)this->interactiveSimulation();
 		}
 		
-		continueb = SimulateOneStep();
-		if(!NRE.rareEventEnabled)NRE.rareEventEnabled = NRE.precondition(N.Marking);
+		continueb = this->SimulateOneStep();
+		if(!this->N.rareEventEnabled)this->N.rareEventEnabled = this->N.precondition(this->N.Marking);
 	}
     //cerr << "finish path"<< endl;
 }
@@ -314,4 +324,8 @@ double SPN_RE::ComputeDistr(size_t t , const abstractBinding& b, double origin_r
 	if(verbose>4)cerr <<endl;
 	return(distr);
 }
+
+template class SimulatorRE<SPN_RE>;
+#include "SimulatorBoundedRE.hpp"
+template class SimulatorRE<SPN_BoundedRE>;
 
