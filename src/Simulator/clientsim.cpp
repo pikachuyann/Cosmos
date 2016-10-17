@@ -86,6 +86,14 @@ void run_sim(SIM& sim,int argc,char **argv) {
 }
 
 
+enum SimType {
+    Base,
+    RareEventUnbounded1,
+    RareEventUnbounded2,
+    RareEventBounded,
+    RareEventCTMC
+};
+
 template<class EQT>
 void build_sim(SimType st,int argc,char **argv) {
     int verbose=atoi(argv[2]);
@@ -131,7 +139,7 @@ void build_sim(SimType st,int argc,char **argv) {
             int stepc = atoi(argv[optioni+4]);
             auto coSim = new SimulatorContinuousBounded<SPN_BoundedRE>(N,A,m,e,stepc);
             coSim->initVectCo(t);
-            run_sim<SimulatorBoundedRE<SPN_BoundedRE>>(*coSim,argc,argv);
+            run_sim<SimulatorContinuousBounded<SPN_BoundedRE>>(*coSim,argc,argv);
         }
     }
 }

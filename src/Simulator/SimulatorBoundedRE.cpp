@@ -32,8 +32,8 @@
 
 using namespace std;
 
-template<class DEDS>
-SimulatorBoundedRE<DEDS>::SimulatorBoundedRE(DEDS& N,LHA_orig& A,int m):SimulatorRE<DEDS>(N,A){
+template<class S,class DEDS>
+SimulatorBoundedREBase<S,DEDS>::SimulatorBoundedREBase(DEDS& N,LHA_orig& A,int m):SimulatorREBase<S,DEDS>(N,A){
     switch (m) {
         case 1:
             numSolv = new numericalSolver();
@@ -53,15 +53,15 @@ SimulatorBoundedRE<DEDS>::SimulatorBoundedRE(DEDS& N,LHA_orig& A,int m):Simulato
 	//numSolv->initVect(T);
 }
 
-template<class DEDS>
-void SimulatorBoundedRE<DEDS>::initVect(int T){
+template<class S,class DEDS>
+void SimulatorBoundedREBase<S,DEDS>::initVect(int T){
 	lambda = numSolv->uniformizeMatrix();
     cerr << "lambda:" << lambda<< endl;
     numSolv->initVect(T);
 }
 
-template<class DEDS>
-BatchR SimulatorBoundedRE<DEDS>::RunBatch(){
+template<class S,class DEDS>
+BatchR SimulatorBoundedREBase<S,DEDS>::RunBatch(){
    
 	//cerr << "test(";
 	numSolv->reset();

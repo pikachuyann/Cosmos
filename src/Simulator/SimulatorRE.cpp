@@ -50,13 +50,8 @@ void SPN_RE::initialize( stateSpace *muprob){
     this->muprob=muprob;
 }
 
-template <class DEDS>
-SimulatorRE<DEDS>::SimulatorRE(DEDS& N,LHA_orig& A):Simulator<EventsQueue,DEDS>(N,A) {
-    //static_cast<SPN_RE&>(N).initialize(EQ, this, muprob);
-}
-
-template <class DEDS>
-void SimulatorRE<DEDS>::initVect(){
+template <class S, class DEDS>
+void SimulatorREBase<S, DEDS>::initVect(){
     muprob = new stateSpace();
 	muprob->inputVect();
     this->N.initialize(muprob);
@@ -69,8 +64,8 @@ void SPN_RE::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
 	SPN_orig::InitialEventsQueue(EQ,TG);
 }
 
-template <class DEDS>
-void SimulatorRE<DEDS>::returnResultTrue(){
+template <class S, class DEDS>
+void SimulatorREBase<S, DEDS>::returnResultTrue(){
 	this->A.getFinalValues(
                    this->N.Marking,
                    this->Result.quantR,
@@ -148,8 +143,8 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 	 
 };
 
-template<class DEDS>
-void SimulatorRE<DEDS>::updateLikelihood(size_t E1_transitionNum){
+template<class S, class DEDS>
+void SimulatorREBase<S, DEDS>::updateLikelihood(size_t E1_transitionNum){
     
     /*cerr << "initialised?:\t" << E1_transitionNum << "\t" << A.Likelihood << endl;
     cerr << NRE.Rate_Sum << "\t" << NRE.Origine_Rate_Sum << "\t[";
@@ -171,8 +166,8 @@ void SimulatorRE<DEDS>::updateLikelihood(size_t E1_transitionNum){
 	}
 }
 
-template<class DEDS>
-bool SimulatorRE<DEDS>::transitionSink(size_t i){
+template<class S, class DEDS>
+bool SimulatorREBase<S, DEDS>::transitionSink(size_t i){
     return (i==this->N.tr-1);
 }
 
@@ -214,19 +209,19 @@ void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding
 	
 }
 
-template<class DEDS>
-void SimulatorRE<DEDS>::reset(){
+template<class S, class DEDS>
+void SimulatorREBase<S, DEDS>::reset(){
     this->A.Likelihood=1.0;
     this->N.reset();
-    this->A.reset(Simulator<EventsQueue, DEDS>::N.Marking);
+    this->A.reset(this->N.Marking);
     this->EQ->reset();
 }
 
 /**
  * Simulate a whole trajectory in the system. Result is store in SimOutput
  */
-template<class DEDS>
-void SimulatorRE<DEDS>::SimulateSinglePath() {
+template<class S, class DEDS>
+void SimulatorREBase<S, DEDS>::SimulateSinglePath() {
 	this->N.rareEventEnabled = this->N.precondition(this->N.Marking);
     reset();
     this->N.InitialEventsQueue(*(this->EQ),*this);

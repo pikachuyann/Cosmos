@@ -46,21 +46,14 @@
 #define _SIMULATOR_HPP
 
 
-enum SimType {
-    Base,
-    RareEventUnbounded1,
-    RareEventUnbounded2,
-    RareEventBounded,
-    RareEventCTMC
-};
 
-template <class EQT,class DEDS>
-class Simulator:public timeGen {
+template <class S, class EQT, class DEDS>
+class SimulatorBase:public timeGen {
 public:
-    Simulator(DEDS&,LHA_orig&);
+    SimulatorBase(DEDS&,LHA_orig&);
     
     //Simulator();
-	~Simulator();
+	~SimulatorBase();
 	
 	//! verbose level of the simulator
     int verbose;
@@ -157,6 +150,11 @@ protected:
 	
 };
 
+template <class EQT, class DEDS>
+class Simulator:public SimulatorBase<Simulator<EQT, DEDS>, EQT, DEDS>{
+public:
+    Simulator(DEDS& deds,LHA_orig& lha):SimulatorBase<Simulator,EQT,DEDS>(deds, lha){};
+};
 
 #endif  /* _SIMULATOR_HPP */
 
