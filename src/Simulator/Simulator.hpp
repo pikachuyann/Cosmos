@@ -54,10 +54,10 @@ enum SimType {
     RareEventCTMC
 };
 
-template <class EQT>
+template <class EQT,class DEDS>
 class Simulator:public timeGen {
 public:
-    static Simulator* simFactory(SimType st, LHA_orig* Aptr, char**argv);
+    Simulator(DEDS&,LHA_orig&);
     
     //Simulator();
 	~Simulator();
@@ -93,7 +93,6 @@ public:
     virtual BatchR RunBatch();
 
 protected:
-    Simulator(SPN_orig<EQT>&,LHA_orig&);
 
 	//! File stream to log value.
 	fstream logvalue;
@@ -114,7 +113,7 @@ protected:
 	size_t BatchSize;
 	
     
-	SPN_orig<EQT> &N; //!The object representing the SPN
+	DEDS &N; //!The object representing the SPN
 	LHA_orig &A; //!The object representing the LHA
 	
     

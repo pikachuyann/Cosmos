@@ -91,18 +91,19 @@ class SPN_BoundedRE: public SPN_RE{
 public:
     SPN_BoundedRE(int& v,bool doubleIS);
 
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &, timeGen &) override;
-    virtual void getParams(size_t, const abstractBinding&) override;
-    virtual double mu() override;
-    virtual double ComputeDistr(size_t i,const abstractBinding&, double origin_rate) override;
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue &, timeGen &);
+    void getParams(size_t, const abstractBinding&);
+    double mu();
+    double ComputeDistr(size_t i,const abstractBinding&, double origin_rate);
 };
 
-class SimulatorBoundedRE: public SimulatorRE{
+template<class DEDS>
+class SimulatorBoundedRE: public SimulatorRE<DEDS>{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedRE(SPN_orig<EventsQueue> & N,LHA_orig&,int m);
-	BatchR RunBatch() override;
-	using SimulatorRE::initVect;
+    SimulatorBoundedRE(DEDS& N,LHA_orig&,int m);
+	BatchR RunBatch();
+	using SimulatorRE<DEDS>::initVect;
     virtual void initVect(int T);
 
 protected:
