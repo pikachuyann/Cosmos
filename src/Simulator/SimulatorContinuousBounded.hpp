@@ -31,7 +31,7 @@
 #include "foxglynn.hpp"
 
 template<class DEDS>
-class SimulatorContinuousBounded: public SimulatorBoundedRE<DEDS>{
+class SimulatorContinuousBounded: public SimulatorBoundedREBase<SimulatorContinuousBounded<DEDS>,DEDS>{
 public:
     SimulatorContinuousBounded(DEDS &,LHA_orig& A,int m,double e, int js);
     void initVectCo(double t);
