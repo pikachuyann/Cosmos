@@ -66,19 +66,19 @@ class SimulatorREBase: public SimulatorBase<S,EventsQueue,DEDS>{
 public:
 	SimulatorREBase(DEDS&,LHA_orig&);
 	
-	virtual void initVect();
+	void initVect();
 	
 protected:
 
     //TAB muprob;  // mu(s) table
     stateSpace * muprob;
 
-	virtual void SimulateSinglePath() override;
-	virtual void returnResultTrue() override;
+	void SimulateSinglePath();
+	void returnResultTrue();
 	//virtual void GenerateDummyEvent(Event &, size_t);
-	virtual void updateLikelihood(size_t) override;
-    virtual bool transitionSink(size_t) override;
-	virtual void reset() override;
+	void updateLikelihood(size_t);
+    bool transitionSink(size_t);
+	void reset();
 };
 
 template <class DEDS>

@@ -83,7 +83,7 @@ public:
 	 * @return a new BatchR structure containing the result
 	 * of the batch of simulation.
 	 */
-    virtual BatchR RunBatch();
+    BatchR RunBatch();
 
 protected:
 
@@ -122,13 +122,13 @@ protected:
 	 * \brief Simulate a step of the system,
 	 * this function do most of the simulation job.
 	 */
-	virtual bool SimulateOneStep();
+	bool SimulateOneStep();
 	
 	/**
 	 * \brief Simulate single path
 	 * this function loop over SimulateOneStep until a the path terminate.
 	 */
-	virtual void SimulateSinglePath();
+	void SimulateSinglePath();
 
     void printLog(double,size_t);
     void printLog(double);
@@ -139,14 +139,14 @@ protected:
 
     void printSedCmd();
 	
-	virtual void reset(); //! reset the simulator
+	void reset(); //! reset the simulator
 	
-	virtual void returnResultTrue();
+	void returnResultTrue();
 	
-	virtual void updateLikelihood(size_t);
+	void updateLikelihood(size_t);
     
 	//! Stop the simulation if sink transition is taken
-	virtual bool transitionSink(size_t);
+	bool transitionSink(size_t);
 	
 };
 

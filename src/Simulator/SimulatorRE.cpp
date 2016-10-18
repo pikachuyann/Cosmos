@@ -37,6 +37,8 @@
 
 using namespace std;
 
+template <class S, class DEDS>
+SimulatorREBase<S, DEDS>::SimulatorREBase(DEDS& N,LHA_orig& A):SimulatorBase<S, EventsQueue, DEDS>(N,A){};
 
 SPN_RE::SPN_RE(int& v,bool doubleIS):SPN_orig(v),doubleIS_mode(doubleIS){
     rareEventEnabled=false;
@@ -320,7 +322,10 @@ double SPN_RE::ComputeDistr(size_t t , const abstractBinding& b, double origin_r
 	return(distr);
 }
 
+template class SimulatorREBase<SimulatorRE<SPN_RE>, SPN_RE>;
 template class SimulatorRE<SPN_RE>;
+
 #include "SimulatorBoundedRE.hpp"
-template class SimulatorRE<SPN_BoundedRE>;
+template class SimulatorREBase<SimulatorBoundedRE<SPN_RE>, SPN_RE>;
+
 
