@@ -104,7 +104,7 @@ public:
     SimulatorBoundedREBase(DEDS& N,LHA_orig&,int m);
 	BatchR RunBatch();
 	using SimulatorREBase<S,DEDS>::initVect;
-    virtual void initVect(int T);
+    void initVect(int T);
 
 protected:
 	numericalSolver* numSolv;

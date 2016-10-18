@@ -416,11 +416,22 @@ BatchR SimulatorBase<S,EQT,DEDS>::RunBatch(){
 	return batchResult;
 }
 
+template class SimulatorBase<Simulator<EventsQueue,SPN_orig<EventsQueue>>, EventsQueue,SPN_orig<EventsQueue> >;
+template class SimulatorBase<Simulator<EventsQueueSet,SPN_orig<EventsQueueSet>>, EventsQueueSet,SPN_orig<EventsQueueSet> >;
 template class Simulator<EventsQueue,SPN_orig<EventsQueue> >;
 template class Simulator<EventsQueueSet,SPN_orig<EventsQueueSet> >;
+
+#include "SimulatorRE.hpp"
+template class SimulatorBase<SimulatorRE<SPN_RE>, EventsQueue,SPN_RE>;
+
 #include "SimulatorBoundedRE.hpp"
-template class Simulator<EventsQueue,SPN_RE>;
-template class Simulator<EventsQueue,SPN_BoundedRE>;
+template class SimulatorBase<SimulatorBoundedRE<SPN_BoundedRE>, EventsQueue,SPN_BoundedRE>;
+template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue,SPN_RE>;
+
+
+#include "SimulatorContinuousBounded.hpp"
+template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue,SPN_BoundedRE>;
+
 
 
 
