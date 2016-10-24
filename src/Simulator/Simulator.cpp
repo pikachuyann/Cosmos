@@ -177,7 +177,7 @@ bool SimulatorBase<S,EQT,DEDS>::SimulateOneStep(){
 			A.updateLHA( AE.FiringTime - A.CurrentTime, N.Marking );
 			A.fireAutonomous(AE.Index,N.Marking);
 			if (A.isFinal()) {
-				returnResultTrue();
+				static_cast<S*>(this)->returnResultTrue();
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
@@ -189,14 +189,14 @@ bool SimulatorBase<S,EQT,DEDS>::SimulateOneStep(){
 		
         //If this transition is the sink transition refuse the simulation
         //Only usefull for Rare Event handling.
-		if(transitionSink(E1.transition)){
+		if(static_cast<S*>(this)->transitionSink(E1.transition)){
 			if(verbose>3)cerr << "\033[1;33mFiring:\033[0m" << "Transition Sink\n";
             Result.accept=false;
             return false;
         }
 
         //Hook for rare event simulation
-        updateLikelihood(E1.transition);
+        static_cast<S*>(this)->updateLikelihood(E1.transition);
 		
         //Take all autonomous edge in the automata before the fire time
         //of the transition of the Petri net.
@@ -204,16 +204,16 @@ bool SimulatorBase<S,EQT,DEDS>::SimulateOneStep(){
             //cerr << "looping on autonomous edge";
             double eTime = AE.FiringTime - A.CurrentTime;
 			A.updateLHA(eTime , N.Marking);
-            printLog(eTime);
+            static_cast<S*>(this)->printLog(eTime);
 			A.fireAutonomous(AE.Index,N.Marking);
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				A.printState(cerr);
 				cerr << endl;
 			}
-			printLog(eTime);
+			static_cast<S*>(this)->printLog(eTime);
 			if (A.isFinal()) {
-				returnResultTrue();
+				static_cast<S*>(this)->returnResultTrue();
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
@@ -227,7 +227,7 @@ bool SimulatorBase<S,EQT,DEDS>::SimulateOneStep(){
 		A.updateLHA( eTime, N.Marking );
 		
 		//Print the state of the system after the time elapse and the transition name
-        printLog(eTime,E1.transition);
+        static_cast<S*>(this)->printLog(eTime,E1.transition);
 		
 		//Fire the transition in the SPN
 		N.fire(E1.transition, E1.binding, A.CurrentTime);
@@ -245,7 +245,7 @@ bool SimulatorBase<S,EQT,DEDS>::SimulateOneStep(){
 			//If synchronisation is possible check if the
 			// reached state is final. Then update the SPN.
 			if (A.isFinal()) {
-				returnResultTrue();
+				static_cast<S*>(this)->returnResultTrue();
 				return false;
 			} else {
                 N.update(A.CurrentTime, E1.transition, E1.binding, *EQ,*this);
@@ -350,8 +350,8 @@ void SimulatorBase<S,EQT,DEDS>::interactiveSimulation(){
 template <class S, class EQT,class DEDS>
 void SimulatorBase<S,EQT,DEDS>::SimulateSinglePath() {
 
-    reset();
-    N.InitialEventsQueue(*EQ,*this);
+    static_cast<S*>(this)->reset();
+    N.initialEventsQueue(*EQ,*this);
     minInteractiveTime=0.0;
     waitForTransition= -1;
 	
@@ -362,7 +362,7 @@ void SimulatorBase<S,EQT,DEDS>::SimulateSinglePath() {
 	lastSampled = -sampleTrace;
 	while (continueb) {
         //cerr << "continue path"<< endl;
-        printLog(0.0);
+        static_cast<S*>(this)->printLog(0.0);
 		if(verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation
@@ -373,10 +373,10 @@ void SimulatorBase<S,EQT,DEDS>::SimulateSinglePath() {
 			A.printState(cerr);
 			cerr << endl;
 			if(verbose>4)EQ->view(N.Transition);
-			if(verbose==6)interactiveSimulation();
+			if(verbose==6)static_cast<S*>(this)->interactiveSimulation();
 		}
 		
-		continueb = SimulateOneStep();
+		continueb = static_cast<S*>(this)->SimulateOneStep();
 	}
     if(verbose>3){
         //Print marking and location of the automata
@@ -399,7 +399,7 @@ BatchR SimulatorBase<S,EQT,DEDS>::RunBatch(){
     chrono::duration<double> timesize(0.03);
 	BatchR batchResult(A.FormulaVal.size(),A.FormulaValQual.size());
 	while ((batchResult.I < BatchSize && BatchSize!=0) || (currenttime-starttime < timesize && BatchSize==0) ) {
-		SimulateSinglePath();
+		static_cast<S*>(this)->SimulateSinglePath();
         batchResult.addSim(Result);
 		if(verbose>3)batchResult.print();
 		

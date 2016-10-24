@@ -144,7 +144,7 @@ public:
     virtual double userDefineUpperBound(const std::vector<double> &)const{return 0.0;};
     virtual double userDefineDiscreteDistr(const std::vector<double> &,unsigned int)const{return 0.0;};
     virtual double evalPoly(unsigned long,const std::vector<double> &)const {return 0.0;};
-    virtual const std::string print_poly(unsigned long i)const{ return "";};
+    virtual const std::string print_poly(unsigned long)const{ return "";};
 };
 
 /**
@@ -234,7 +234,7 @@ public:
     size_t lastTransition; //! store the last fired transition
     double lastTransitionTime; //! store the last fired transition time for hybrid part.
     
-protected:
+/*private */
     
 	void setConditionsVector();
 	
