@@ -84,7 +84,7 @@ BatchR SimulatorBoundedREBase<S,DEDS>::RunBatch(){
 		this->EQ = new EventsQueue(this->N);
 		this->reset();
 		
-        this->N.SPN_orig::InitialEventsQueue(*(this->EQ),*this);
+        this->N.SPN_orig::initialEventsQueue(*(this->EQ),*this);
 
 		//AE = A.GetEnabled_A_Edges( N.Marking);
         
@@ -187,10 +187,10 @@ void SPN_BoundedRE::update(double ctime,size_t,const abstractBinding&,EventsQueu
 			bindex != Transition[it].bindingList.end() ; ++bindex){
 			if(IsEnabled(it, *bindex)){
 				if (EQ.isScheduled(it, bindex->id())) {
-					GenerateEvent(ctime,F, it ,*bindex, TG );
+					generateEvent(ctime,F, it ,*bindex, TG,static_cast<SPN_RE&>(*this) );
 					EQ.replace(F);
 				} else {
-					GenerateEvent(ctime,F, it ,*bindex, TG );
+					generateEvent(ctime,F, it ,*bindex, TG,static_cast<SPN_RE&>(*this) );
 					EQ.insert(F);
 				}
 			}else{
@@ -201,12 +201,12 @@ void SPN_BoundedRE::update(double ctime,size_t,const abstractBinding&,EventsQueu
 	}
 	
 	abstractBinding bpuit;
-    GenerateEvent(ctime,F, (SPN::tr-2),bpuit, TG);
+    generateEvent(ctime,F, (SPN::tr-2),bpuit, TG,static_cast<SPN_RE&>(*this));
 	if(!doubleIS_mode){
 		EQ.replace(F);
 	}
 	
-    GenerateEvent(ctime,F, (SPN::tr-1),bpuit, TG);
+    generateEvent(ctime,F, (SPN::tr-1),bpuit, TG,static_cast<SPN_RE&>(*this));
 	if(!doubleIS_mode){
 		EQ.replace(F);
 	}
@@ -268,5 +268,11 @@ double SPN_BoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, double or
 	return(distr);
 }
 
+template class SimulatorBoundedREBase<SimulatorBoundedRE<SPN_BoundedRE>,SPN_BoundedRE>;
 template class SimulatorBoundedRE<SPN_BoundedRE>;
+
+#include "SimulatorContinuousBounded.hpp"
+template class SimulatorBoundedREBase<SimulatorContinuousBounded<SPN_BoundedRE>,SPN_BoundedRE>;
+
+
 

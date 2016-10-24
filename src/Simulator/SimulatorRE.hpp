@@ -41,7 +41,6 @@ public:
     bool rareEventEnabled;
 
     void initialize(stateSpace *muprob);
-    void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &);
     void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &);
     void InitialEventsQueue(EventsQueue &,timeGen &);
 
@@ -53,10 +52,9 @@ public:
     std::vector <double> Rate_Table;
     std::vector <double> Origine_Rate_Table;
     
-protected:
+/* private */
     stateSpace * muprob;
     
-private:
     void getParams(size_t,const abstractBinding&);
     double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
 };
@@ -68,8 +66,8 @@ public:
 	
 	void initVect();
 	
-protected:
-
+    /* private */
+    
     //TAB muprob;  // mu(s) table
     stateSpace * muprob;
 
