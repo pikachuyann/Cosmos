@@ -28,9 +28,11 @@
 #define __Cosmos__File__
 
 #include <iostream>
-#include "spn.hpp"
 #include "boost/random.hpp"
 #include "boost/generator_iterator.hpp"
+
+#include "spn.hpp"
+#include "Event.hpp"
 
 class timeGen {
 public:
@@ -52,6 +54,9 @@ private:
 	boost::mt19937 RandomNumber;
 
 };
+
+template<class DEDS>
+void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,DEDS &);
 
 #endif /* defined(__Cosmos__File__) */
 

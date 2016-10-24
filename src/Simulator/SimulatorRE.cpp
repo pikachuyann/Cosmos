@@ -37,6 +37,36 @@
 
 using namespace std;
 
+template<>
+void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b, timeGen &TG, SPN_RE& N){
+    double t = ctime;
+    if (N.Transition[Id].DistTypeIndex != IMMEDIATE) {
+        N.getParams(Id, b);
+        t += TG.GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr, N.customDistr);
+        
+        N.Rate_Table[Id] = N.ParamDistr[0];
+        N.Origine_Rate_Table[Id] = N.ParamDistr[1];
+        N.Rate_Sum = N.Rate_Sum + N.ParamDistr[0];
+        N.Origine_Rate_Sum = N.Origine_Rate_Sum + N.ParamDistr[1];
+        
+    }
+    double w=0.0;
+    if (N.Transition[Id].DistTypeIndex > 2) {
+        N.ParamDistr[0]= N.GetWeight(Id,b);
+        w = TG.GenerateTime(EXPONENTIAL, N.ParamDistr, N.customDistr);
+        //vector<double> wParam(1, N.GetWeight(Id));
+        //w = GenerateTime(2, wParam);
+    }
+    
+    E.transition = Id;
+    E.time = t;
+    E.priority = N.GetPriority(Id,b);
+    E.weight = w;
+    E.binding = b;
+    
+}
+
+
 template <class S, class DEDS>
 SimulatorREBase<S, DEDS>::SimulatorREBase(DEDS& N,LHA_orig& A):SimulatorBase<S, EventsQueue, DEDS>(N,A){};
 
@@ -63,7 +93,7 @@ void SimulatorREBase<S, DEDS>::initVect(){
 void SPN_RE::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
 	Rate_Sum = 0;
 	Origine_Rate_Sum = 0;
-	SPN_orig::InitialEventsQueue(EQ,TG);
+	SPN_orig::initialEventsQueue(EQ,TG);
 }
 
 template <class S, class DEDS>
@@ -86,7 +116,7 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 			rareEventEnabled = true;
 			//A.Likelihood = 1.0;
 		}else{
-			update(ctime, t, b,EQ, TG);
+            SPN_orig::update(ctime, t, b,EQ, TG);
 		return;
 		}
 	}
@@ -102,10 +132,10 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 			for(const auto &bindex : tr.bindingList ){
 				if(IsEnabled(tr.Id, bindex)){
 					if (EQ.isScheduled(tr.Id, bindex.id())) {
-						GenerateEvent(ctime,F, tr.Id ,bindex, TG );
+						generateEvent(ctime,F, tr.Id ,bindex, TG, *this );
 						EQ.replace(F);
 					} else {
-						GenerateEvent(ctime,F, tr.Id ,bindex, TG );
+						generateEvent(ctime,F, tr.Id ,bindex, TG, *this );
 						EQ.insert(F);
 					}
 				}else{
@@ -117,7 +147,7 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 	}
 	
 	abstractBinding bpuit;
-	GenerateEvent(ctime,F, (tr-1), bpuit,TG);
+	generateEvent(ctime,F, (tr-1), bpuit,TG, *this);
 	if(!doubleIS_mode){
 		EQ.replace(F);
 	}
@@ -148,13 +178,15 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 template<class S, class DEDS>
 void SimulatorREBase<S, DEDS>::updateLikelihood(size_t E1_transitionNum){
     
-    /*cerr << "initialised?:\t" << E1_transitionNum << "\t" << A.Likelihood << endl;
-    cerr << NRE.Rate_Sum << "\t" << NRE.Origine_Rate_Sum << "\t[";
-    for(let cv:NRE.Rate_Table)cerr << cv << ", ";
-    cerr << "]\t[";
-    for(let cv:NRE.Origine_Rate_Table)cerr << cv << ", ";
-    cerr << "]" << endl;*/
-    
+    if(this->verbose>4){
+        cerr << "initialised?:\t" << E1_transitionNum << "\t" << this->A.Likelihood << endl;
+        cerr << this->N.Rate_Sum << "\t" << this->N.Origine_Rate_Sum << "\t[";
+        for(let cv:this->N.Rate_Table)cerr << cv << ", ";
+        cerr << "]\t[";
+        for(let cv:this->N.Origine_Rate_Table)cerr << cv << ", ";
+        cerr << "]" << endl;
+    }
+        
 	if(this->N.doubleIS_mode){
 		this->A.Likelihood = this->A.Likelihood *
 		(this->N.Origine_Rate_Table[E1_transitionNum] / this->N.Origine_Rate_Sum) *
@@ -182,35 +214,6 @@ bool SimulatorREBase<S, DEDS>::transitionSink(size_t i){
  E.weight = 0.0;
  }*/
 
-void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b, timeGen &TG){
-	
-    double t = ctime;
-    if (Transition[Id].DistTypeIndex != IMMEDIATE) {
-        getParams(Id, b);
-        t += TG.GenerateTime(Transition[Id].DistTypeIndex, ParamDistr, customDistr);
-		
-		Rate_Table[Id] = ParamDistr[0];
-		Origine_Rate_Table[Id] = ParamDistr[1];
-		Rate_Sum = Rate_Sum + ParamDistr[0];
-		Origine_Rate_Sum = Origine_Rate_Sum + ParamDistr[1];
-		
-    }
-	double w=0.0;
-	if (Transition[Id].DistTypeIndex > 2) {
-		ParamDistr[0]= GetWeight(Id,b);
-		w = TG.GenerateTime(EXPONENTIAL, ParamDistr, customDistr);
-		//vector<double> wParam(1, N.GetWeight(Id));
-		//w = GenerateTime(2, wParam);
-    }
-	
-    E.transition = Id;
-    E.time = t;
-    E.priority = GetPriority(Id,b);
-    E.weight = w;
-	E.binding = b;
-	
-}
-
 template<class S, class DEDS>
 void SimulatorREBase<S, DEDS>::reset(){
     this->A.Likelihood=1.0;
@@ -225,7 +228,7 @@ void SimulatorREBase<S, DEDS>::reset(){
 template<class S, class DEDS>
 void SimulatorREBase<S, DEDS>::SimulateSinglePath() {
 	this->N.rareEventEnabled = this->N.precondition(this->N.Marking);
-    reset();
+    static_cast<S*>(this)->reset();
     this->N.InitialEventsQueue(*(this->EQ),*this);
 	
 	if(this->logtrace.is_open())this->logtrace << "New Path"<< endl;
@@ -253,7 +256,7 @@ void SimulatorREBase<S, DEDS>::SimulateSinglePath() {
 			if(this->verbose==6)this->interactiveSimulation();
 		}
 		
-		continueb = this->SimulateOneStep();
+		continueb = static_cast<S*>(this)->SimulateOneStep();
 		if(!this->N.rareEventEnabled)this->N.rareEventEnabled = this->N.precondition(this->N.Marking);
 	}
     //cerr << "finish path"<< endl;
@@ -327,5 +330,8 @@ template class SimulatorRE<SPN_RE>;
 
 #include "SimulatorBoundedRE.hpp"
 template class SimulatorREBase<SimulatorBoundedRE<SPN_RE>, SPN_RE>;
+template class SimulatorREBase<SimulatorBoundedRE<SPN_BoundedRE>, SPN_BoundedRE>;
 
+#include "SimulatorContinuousBounded.hpp"
+template class SimulatorREBase<SimulatorContinuousBounded<SPN_BoundedRE>, SPN_BoundedRE>;
 

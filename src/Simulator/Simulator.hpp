@@ -45,8 +45,6 @@
 #ifndef _SIMULATOR_HPP
 #define _SIMULATOR_HPP
 
-
-
 template <class S, class EQT, class DEDS>
 class SimulatorBase:public timeGen {
 public:
@@ -84,8 +82,8 @@ public:
 	 * of the batch of simulation.
 	 */
     BatchR RunBatch();
-
-protected:
+    
+    /* private */
 
 	//! File stream to log value.
 	fstream logvalue;
@@ -118,6 +116,7 @@ protected:
 	 */
 	EQT* EQ;
 	
+    
 	/**
 	 * \brief Simulate a step of the system,
 	 * this function do most of the simulation job.

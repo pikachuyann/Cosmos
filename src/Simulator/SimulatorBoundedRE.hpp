@@ -106,7 +106,7 @@ public:
 	using SimulatorREBase<S,DEDS>::initVect;
     void initVect(int T);
 
-protected:
+    /* private */
 	numericalSolver* numSolv;
 	double lambda;
 };
