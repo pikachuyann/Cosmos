@@ -159,7 +159,6 @@ for state in statelist:
         trans['upperBound']=R(trans['zone'][2]-clockO(x,int(state['id']),trans['zone'][3]));
         trans['upperBoundId']=poly_to_data( trans['upperBound'],fichier_data,cardclocks);
 
-
 idalpha=dict((alphabet[i],i) for i in range(len(alphabet)));
 
 def printGRML_arc(statelist):
