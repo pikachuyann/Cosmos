@@ -32,7 +32,7 @@
 #include "timeGen.hpp"
 #include "Event.hpp"
 
-template<class EQT>
+template<class S, class EQT>
 class SPN_orig : public SPN{
 public:
     SPN_orig(int);
@@ -47,5 +47,13 @@ protected:
     Event F;
 
 };
+
+#include "EventsQueue.hpp"
+template <class S>
+class SPN_orig<S,EventsQueue>;
+#include "EventsQueueSet.hpp"
+template <class S>
+class SPN_orig<S,EventsQueueSet>;
+
 
 #endif /* defined(__Cosmos__spn_orig__) */

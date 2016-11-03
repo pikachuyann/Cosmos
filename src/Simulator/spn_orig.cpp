@@ -30,20 +30,20 @@
 
 using namespace std;
 
-template<class EQT>
-SPN_orig<EQT>::SPN_orig(int v):verbose(v){}
+template<class S, class EQT>
+SPN_orig<S,EQT>::SPN_orig(int v):verbose(v){}
 
 /**
  * Fill the event queue with the initially enabled transition
  */
-template<>
-void SPN_orig<EventsQueue>::initialEventsQueue(EventsQueue &EQ,timeGen &TG) {
+template<class S>
+void SPN_orig<S,EventsQueue>::initialEventsQueue(EventsQueue &EQ,timeGen &TG) {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
 
     Event E;
     
-    for(const auto &t : Transition) {
+    for(const auto &t : this->Transition) {
         if (verbose > 5) {
             std::cerr << "IEQ pour Transition " << t.Id << "(" << t.label << ") : \n";
         }

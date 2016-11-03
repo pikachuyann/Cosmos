@@ -56,6 +56,9 @@ c0 = (patient_Color_Classe)(0);
 	void print(std::ostream& out) const {
 		out << mult << "<" << Color_patient_names[c0] << ">";
 	}
+	patient_Token next(int i)const {
+		patient_Token x((patient_Color_Classe)((c0 +i) % Color_patient_Total),  mult);
+		return x;}
 	bool islast()const {
 		return ( c0== (patient_Color_Classe)(Color_patient_Total -1)  );
 	}
