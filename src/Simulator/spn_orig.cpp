@@ -61,8 +61,8 @@ void SPN_orig<S,EventsQueue>::initialEventsQueue(EventsQueue &EQ,timeGen &TG) {
     }
 }
 
-template<>
-void SPN_orig<EventsQueueSet>::initialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
+template<class S>
+void SPN_orig<S,EventsQueueSet>::initialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
 
