@@ -31,7 +31,7 @@
 
 #include "Simulator.hpp"
 #include "stateSpace.hpp"
-#include "spn_orig.hpp"
+#include "SPNBase.hpp"
 
 
 class SPN_RE: public SPN_orig<EventsQueue>, public REHandling{
