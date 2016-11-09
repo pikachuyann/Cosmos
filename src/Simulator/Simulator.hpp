@@ -32,7 +32,7 @@
 #include "LHA.hpp"
 #include "LHA_orig.hpp"
 #include "NLHA.hpp"
-#include "spn_orig.hpp"
+#include "SPNBase.hpp"
 #include "EventsQueueSet.hpp"
 #include "BatchR.hpp"
 #include "timeGen.hpp"

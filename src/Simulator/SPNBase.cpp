@@ -24,20 +24,26 @@
  *******************************************************************************
  */
 
-#include "spn_orig.hpp"
+#include "SPNBase.hpp"
 #include "EventsQueue.hpp"
 #include "EventsQueueSet.hpp"
 
 using namespace std;
 
 template<class S, class EQT>
-SPN_orig<S,EQT>::SPN_orig(int v):verbose(v){}
+SPNBase<S,EQT>::SPNBase(int v):verbose(v){}
+
+template<class S>
+SPNBase<S,EventsQueue>::SPNBase(int v):verbose(v){}
+
+template<class S>
+SPNBase<S,EventsQueueSet>::SPNBase(int v):verbose(v){}
 
 /**
  * Fill the event queue with the initially enabled transition
  */
 template<class S>
-void SPN_orig<S,EventsQueue>::initialEventsQueue(EventsQueue &EQ,timeGen &TG) {
+void SPNBase<S,EventsQueue>::initialEventsQueue(EventsQueue &EQ,timeGen &TG) {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
 
@@ -54,7 +60,7 @@ void SPN_orig<S,EventsQueue>::initialEventsQueue(EventsQueue &EQ,timeGen &TG) {
                     std::cerr << "\n";
                 }
             if (IsEnabled(t.Id,bindex)) {
-                generateEvent(0.0,E, t.Id ,bindex,TG, *this);
+                generateEvent(0.0,E, t.Id ,bindex,TG, *(static_cast<S*>(this)));
                 EQ.insert(E);
             }
         }
@@ -62,7 +68,7 @@ void SPN_orig<S,EventsQueue>::initialEventsQueue(EventsQueue &EQ,timeGen &TG) {
 }
 
 template<class S>
-void SPN_orig<S,EventsQueueSet>::initialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
+void SPNBase<S,EventsQueueSet>::initialEventsQueue(EventsQueueSet &EQ,timeGen &TG) {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
 
@@ -86,7 +92,7 @@ void SPN_orig<S,EventsQueueSet>::initialEventsQueue(EventsQueueSet &EQ,timeGen &
                 std::cerr << "\n";
             }
             if (IsEnabled(t.Id,bindex)) {
-                generateEvent(0.0,E, t.Id ,bindex,TG, *this);
+                generateEvent(0.0,E, t.Id ,bindex,TG, *(static_cast<S*>(this)));
                 EQ.insert(E);
             }
         }
@@ -102,7 +108,7 @@ void SPN_orig<S,EventsQueueSet>::initialEventsQueue(EventsQueueSet &EQ,timeGen &
  * @param b is the binding of the last transition.
  */
 template<class S>
-void SPN_orig<S,EventsQueue>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue &EQ,timeGen &TG){
+void SPNBase<S,EventsQueue>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue &EQ,timeGen &TG){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
@@ -112,10 +118,10 @@ void SPN_orig<S,EventsQueue>::update(double ctime,size_t E1_transitionNum, const
         bool NScheduled = EQ.isScheduled(E1_transitionNum, bindex.idcount);
 
         if (Nenabled && NScheduled && lb.idcount == bindex.idcount ) {
-            generateEvent(ctime,F, E1_transitionNum, bindex,TG, *this);
+            generateEvent(ctime,F, E1_transitionNum, bindex,TG, *(static_cast<S*>(this)));
             EQ.replace(F); //replace the transition with the new generated time
         } else if (Nenabled && !NScheduled) {
-            generateEvent(ctime,F, E1_transitionNum, bindex,TG, *this);
+            generateEvent(ctime,F, E1_transitionNum, bindex,TG, *(static_cast<S*>(this)));
             EQ.insert(F);
         } else if (!Nenabled && NScheduled) {
             EQ.remove(E1_transitionNum,bindex.idcount );
@@ -145,13 +151,13 @@ void SPN_orig<S,EventsQueue>::update(double ctime,size_t E1_transitionNum, const
                         cerr << endl;
                     }
                     if(!EQ.restart(ctime,it,bindex->idcount)){
-                        generateEvent(ctime,F, (it), *bindex,TG, *this);
+                        generateEvent(ctime,F, (it), *bindex,TG, *(static_cast<S*>(this)));
                         EQ.insert(F);
                     }
 
                 } else {
                     if (Transition[it].MarkingDependent) {
-                        generateEvent(ctime,F, it,*bindex,TG, *this);
+                        generateEvent(ctime,F, it,*bindex,TG, *(static_cast<S*>(this)));
                         EQ.replace(F);
                     }
                 }
@@ -187,7 +193,7 @@ void SPN_orig<S,EventsQueue>::update(double ctime,size_t E1_transitionNum, const
                     }else EQ.remove(it,bindex->idcount);
                 }else {
                     if (Transition[it].MarkingDependent) {
-                        generateEvent(ctime,F, it,*bindex,TG, *this);
+                        generateEvent(ctime,F, it,*bindex,TG, *(static_cast<S*>(this)));
                         EQ.replace(F);
                     }
                 }
@@ -204,7 +210,7 @@ void SPN_orig<S,EventsQueue>::update(double ctime,size_t E1_transitionNum, const
         for(const auto bindex : Transition[it].bindingList){
             //if (IsEnabled(it,bindex)) {
             if (EQ.isScheduled(it, bindex.idcount)) {
-                generateEvent(ctime,F, it,bindex,TG, *this);
+                generateEvent(ctime,F, it,bindex,TG, *(static_cast<S*>(this)));
                 EQ.replace(F);
             }
             //}
@@ -237,7 +243,7 @@ void SPN_orig<S,EventsQueue>::update(double ctime,size_t E1_transitionNum, const
 }
 
 template<class S>
-void SPN_orig<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueueSet &EQ,timeGen &TG){
+void SPNBase<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueueSet &EQ,timeGen &TG){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
@@ -267,10 +273,10 @@ void SPN_orig<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, co
         }
 
         if (Nenabled && NScheduled && lb.idcount == bindex.idcount ) {
-            generateEvent(ctime,F, E1_transitionNum, bindex,TG, *this);
+            generateEvent(ctime,F, E1_transitionNum, bindex,TG, *(static_cast<S*>(this)));
             EQ.replace(F); //replace the transition with the new generated time
         } else if (Nenabled && !NScheduled) {
-            generateEvent(ctime,F, E1_transitionNum, bindex,TG, *this);
+            generateEvent(ctime,F, E1_transitionNum, bindex,TG, *(static_cast<S*>(this)));
             EQ.insert(F);
         } else if (!Nenabled && NScheduled) {
             EQ.remove(E1_transitionNum,bindex.idcount );
@@ -307,13 +313,13 @@ void SPN_orig<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, co
                         cerr << endl;
                     }
                     if(!EQ.restart(ctime,it,bindex.idcount)){
-                        generateEvent(ctime,F, (it), bindex,TG, *this);
+                        generateEvent(ctime,F, (it), bindex,TG, *(static_cast<S*>(this)));
                         EQ.insert(F);
                     }
 
                 } else {
                     if (Transition[it].MarkingDependent) {
-                        generateEvent(ctime,F, it,bindex,TG, *this);
+                        generateEvent(ctime,F, it,bindex,TG, *(static_cast<S*>(this)));
                         EQ.replace(F);
                     }
                 }
@@ -346,7 +352,7 @@ void SPN_orig<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, co
                     }else EQ.remove(it,bindex.idcount);
                 }else {
                     if (Transition[it].MarkingDependent) {
-                        generateEvent(ctime,F, it,bindex,TG, *this);
+                        generateEvent(ctime,F, it,bindex,TG, *(static_cast<S*>(this)));
                         EQ.replace(F);
                     }
                 }
@@ -404,7 +410,7 @@ void SPN_orig<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, co
             const auto& bindex =  absMkIt.getBinding();
             //if (IsEnabled(it,bindex)) {
             if (EQ.isScheduled(it, bindex.idcount)) {
-                generateEvent(ctime,F, it,bindex,TG, *this);
+                generateEvent(ctime,F, it,bindex,TG, *(static_cast<S*>(this)));
                 EQ.replace(F);
             }
             //}
@@ -435,7 +441,7 @@ void SPN_orig<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, co
      */ 
 }
 
-template class SPN_orig<SPN,EventsQueue>;
-template class SPN_orig<SPN,EventsQueueSet>;
-
-
+template class SPNBase<SPN_orig<EventsQueue>,EventsQueue>;
+template class SPNBase<SPN_orig<EventsQueueSet>,EventsQueueSet>;
+template class SPN_orig<EventsQueue>;
+template class SPN_orig<EventsQueueSet>;
