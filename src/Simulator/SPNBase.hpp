@@ -83,5 +83,10 @@ protected:
     
 };
 
+template <class EQT>
+class SPN_orig:public SPNBase<SPN_orig<EQT>, EQT>{
+public:
+    SPN_orig(int v):SPNBase<SPN_orig,EQT>(v){};
+};
 
 #endif /* defined(__Cosmos__spn_orig__) */
