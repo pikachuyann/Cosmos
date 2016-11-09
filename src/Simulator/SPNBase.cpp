@@ -101,8 +101,8 @@ void SPN_orig<S,EventsQueueSet>::initialEventsQueue(EventsQueueSet &EQ,timeGen &
  * occured in the SPN.
  * @param b is the binding of the last transition.
  */
-template<>
-void SPN_orig<EventsQueue>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue &EQ,timeGen &TG){
+template<class S>
+void SPN_orig<S,EventsQueue>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue &EQ,timeGen &TG){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
@@ -236,8 +236,8 @@ void SPN_orig<EventsQueue>::update(double ctime,size_t E1_transitionNum, const a
 
 }
 
-template<>
-void SPN_orig<EventsQueueSet>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueueSet &EQ,timeGen &TG){
+template<class S>
+void SPN_orig<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueueSet &EQ,timeGen &TG){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
@@ -435,7 +435,7 @@ void SPN_orig<EventsQueueSet>::update(double ctime,size_t E1_transitionNum, cons
      */ 
 }
 
-template class SPN_orig<EventsQueue>;
-template class SPN_orig<EventsQueueSet>;
+template class SPN_orig<SPN,EventsQueue>;
+template class SPN_orig<SPN,EventsQueueSet>;
 
 
