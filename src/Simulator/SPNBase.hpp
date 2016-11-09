@@ -33,9 +33,9 @@
 #include "Event.hpp"
 
 template<class S, class EQT>
-class SPN_orig : public SPN{
+class SPNBase : public SPN{
 public:
-    SPN_orig(int);
+    SPNBase(int);
 
     void update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &);
     void initialEventsQueue(EQT &,timeGen &);
@@ -50,10 +50,38 @@ protected:
 
 #include "EventsQueue.hpp"
 template <class S>
-class SPN_orig<S,EventsQueue>;
+class SPNBase<S,EventsQueue> : public SPN{
+public:
+    SPNBase(int);
+    
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &);
+    void initialEventsQueue(EventsQueue &,timeGen &);
+    
+    int verbose;
+    
+protected:
+    //! a Temporary event
+    Event F;
+    
+};
+
+
 #include "EventsQueueSet.hpp"
 template <class S>
-class SPN_orig<S,EventsQueueSet>;
+class SPNBase<S,EventsQueueSet> : public SPN{
+public:
+    SPNBase(int);
+    
+    void update(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &);
+    void initialEventsQueue(EventsQueueSet &,timeGen &);
+    
+    int verbose;
+    
+protected:
+    //! a Temporary event
+    Event F;
+    
+};
 
 
 #endif /* defined(__Cosmos__spn_orig__) */
