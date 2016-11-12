@@ -32,7 +32,8 @@
 
 using namespace std;
 
-SimulatorBoundedRE::SimulatorBoundedRE(SPN_orig<EventsQueue>& N,LHA_orig& A,int m):SimulatorRE(N,A){
+template<class S,class DEDS>
+SimulatorBoundedREBase<S,DEDS>::SimulatorBoundedREBase(DEDS& N,LHA_orig& A,int m):SimulatorREBase<S,DEDS>(N,A){
     switch (m) {
         case 1:
             numSolv = new numericalSolver();
@@ -46,54 +47,54 @@ SimulatorBoundedRE::SimulatorBoundedRE(SPN_orig<EventsQueue>& N,LHA_orig& A,int 
             numSolv = new numSolverSH();
             break;
     }
-    muprob = numSolv;
-    delete EQ;
-	static_cast<SPN_RE&>(N).initialize( muprob);
+    this->muprob = numSolv;
+    delete this->EQ;
+	this->N.initialize( this->muprob);
 	//numSolv->initVect(T);
 }
 
-void SimulatorBoundedRE::initVect(int T){
+template<class S,class DEDS>
+void SimulatorBoundedREBase<S,DEDS>::initVect(int T){
 	lambda = numSolv->uniformizeMatrix();
     cerr << "lambda:" << lambda<< endl;
     numSolv->initVect(T);
 }
 
-
-BatchR SimulatorBoundedRE::RunBatch(){
-    auto & NRE = static_cast<SPN_RE&>(N);
-    
+template<class S,class DEDS>
+BatchR SimulatorBoundedREBase<S,DEDS>::RunBatch(){
+   
 	//cerr << "test(";
 	numSolv->reset();
 	//cerr << ")" << endl;
 	
 	BatchR batchResult(1,0);
 	
-	list<simulationState<EventsQueue> > statevect(BatchSize);
+	list<simulationState<EventsQueue> > statevect(this->BatchSize);
 	//delete EQ;
 	
-	if(verbose>=1){
+	if(this->verbose>=1){
 		cerr << "Initial round:";
 		numSolv->printState();
 		cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
 		cerr << numSolv->getVect()[0] << endl;
 	}
 	for (auto it= statevect.begin(); it != statevect.end() ; it++) {
-		NRE.Origine_Rate_Table = vector<double>(N.tr,0.0);
-		NRE.Rate_Table = vector<double>(N.tr,0.0);
-		EQ = new EventsQueue(N);
-		reset();
+		this->N.Origine_Rate_Table = vector<double>(this->N.tr,0.0);
+		this->N.Rate_Table = vector<double>(this->N.tr,0.0);
+		this->EQ = new EventsQueue(this->N);
+		this->reset();
 		
-        N.SPN_orig::InitialEventsQueue(*EQ,*this);
+		this->N.SPNBase<S,EventsQueue>::initialEventsQueue(*(this->EQ),*this);
 
 		//AE = A.GetEnabled_A_Edges( N.Marking);
         
-		it->saveState(&NRE,&A,&EQ);
+		it->saveState(&(this->N),&(this->A),&(this->EQ));
 	}
 	
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		numSolv->stepVect();
-        if(verbose>=1){
+        if(this->verbose>=1){
             cerr << "new round:";
 			numSolv->printState();
 			cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
@@ -102,33 +103,33 @@ BatchR SimulatorBoundedRE::RunBatch(){
 		
 		for (auto it= statevect.begin(); it != statevect.end() ; it++) {
             
-			it->loadState(&NRE,&A,&EQ);
+			it->loadState(&(this->N),&(this->A),&(this->EQ));
             
             
 			//cerr << A.Likelihood << endl;
 			//cerr << "mu:\t" << mu() << " ->\t";
-			bool continueb = SimulateOneStep();
+			bool continueb = this->SimulateOneStep();
 			//cerr << mu() << endl;
 			if(numSolv->getVect().size() <= 1){
 				continueb=false;
-				Result.accept=false;
+				this->Result.accept=false;
 			}
 			
-			if((!EQ->isEmpty()) && continueb) {
-				it->saveState(&NRE,&A,&EQ);
+			if((!this->EQ->isEmpty()) && continueb) {
+                it->saveState(&(this->N),&(this->A),&(this->EQ));
 			} else {
-				batchResult.addSim(Result);
-				delete EQ;
+				batchResult.addSim(this->Result);
+				delete this->EQ;
 				it = statevect.erase(it);
 				it--;
 				
 				//log the result
-				if (Result.accept && logResult){
-					for(size_t i=0; i<Result.quantR.size();i++){
-						if (i>0)logvalue << "\t";
-						logvalue << Result.quantR[i];
+				if (this->Result.accept && this->logResult){
+					for(size_t i=0; i<this->Result.quantR.size();i++){
+						if (i>0)this->logvalue << "\t";
+						this->logvalue << this->Result.quantR[i];
 					}
-					logvalue << endl;
+					this->logvalue << endl;
 				}
 			}
 			
@@ -148,48 +149,52 @@ BatchR SimulatorBoundedRE::RunBatch(){
 	return (batchResult);
 }
 
-
-SPN_BoundedRE::SPN_BoundedRE(int& v,bool doubleIS):SPN_RE(v,doubleIS){
+template <class S>
+SPNBaseBoundedRE<S>::SPNBaseBoundedRE(int& v,bool doubleIS):SPNBaseRE<S>(v,doubleIS){
     
 }
 
-double SPN_BoundedRE::mu(){
+
+template <class S>
+double SPNBaseBoundedRE<S>::mu(){
 	
-	vector<int> vect (muprob->S.begin()->first->size(),0);
+  vector<int> vect (this->muprob->S.begin()->first->size(),0);
 	
-    lumpingFun(Marking,vect);
-	int stateN = muprob->findHash(&vect);
-	
-	if(stateN<0){
-		//cerr << numSolv->getVect()<< endl
-		cerr << "statevect(";
-        for(size_t i =0 ; i<vect.size() ; i++)cerr << vect[i]<< ",";
-		cerr << ")" << endl<<"state not found" << endl;
-		print_state(vect);
-		return 0.0;
-		//exit(EXIT_FAILURE);
-	}
-	
-	return(muprob->getMu(stateN));
+  lumpingFun(this->Marking,vect);
+  int stateN = this->muprob->findHash(&vect);
+  
+  if(stateN<0){
+    //cerr << numSolv->getVect()<< endl
+    cerr << "statevect(";
+    for(size_t i =0 ; i<vect.size() ; i++)cerr << vect[i]<< ",";
+    cerr << ")" << endl<<"state not found" << endl;
+    this->print_state(vect);
+    return 0.0;
+    //exit(EXIT_FAILURE);
+  }
+  
+  return(this->muprob->getMu(stateN));
 }
 
-void SPN_BoundedRE::update(double ctime,size_t,const abstractBinding&,EventsQueue &EQ, timeGen &TG){
+
+template <class S>
+void SPNBaseBoundedRE<S>::update(double ctime,size_t,const abstractBinding&,EventsQueue &EQ, timeGen &TG){
 	Event F;
     //check if the current transition is still enabled
 	
-	Rate_Sum = 0;
-	Origine_Rate_Sum = 0;
+	this->Rate_Sum = 0;
+	this->Origine_Rate_Sum = 0;
 	
 	//Run over all transition
     for (size_t it = 0; it < SPN::tr-2; it++) {
-		for(vector<abstractBinding>::const_iterator bindex = Transition[it].bindingList.begin() ;
-			bindex != Transition[it].bindingList.end() ; ++bindex){
-			if(IsEnabled(it, *bindex)){
+		for(auto bindex = this->Transition[it].bindingList.begin() ;
+			bindex != this->Transition[it].bindingList.end() ; ++bindex){
+			if(this->IsEnabled(it, *bindex)){
 				if (EQ.isScheduled(it, bindex->id())) {
-					GenerateEvent(ctime,F, it ,*bindex, TG );
+					generateEvent(ctime,F, it ,*bindex, TG, static_cast<SPN_RE&>(*this) );
 					EQ.replace(F);
 				} else {
-					GenerateEvent(ctime,F, it ,*bindex, TG );
+					generateEvent(ctime,F, it ,*bindex, TG, static_cast<SPN_RE&>(*this) );
 					EQ.insert(F);
 				}
 			}else{
@@ -200,19 +205,21 @@ void SPN_BoundedRE::update(double ctime,size_t,const abstractBinding&,EventsQueu
 	}
 	
 	abstractBinding bpuit;
-    GenerateEvent(ctime,F, (SPN::tr-2),bpuit, TG);
-	if(!doubleIS_mode){
+    generateEvent(ctime,F, (SPN::tr-2),bpuit, TG,static_cast<SPN_RE&>(*this));
+	if(! this->doubleIS_mode){
 		EQ.replace(F);
 	}
 	
-    GenerateEvent(ctime,F, (SPN::tr-1),bpuit, TG);
-	if(!doubleIS_mode){
+    generateEvent(ctime,F, (SPN::tr-1),bpuit, TG,static_cast<SPN_RE&>(*this));
+	if(! this->doubleIS_mode){
 		EQ.replace(F);
 	}
 	
 };
 
-void SPN_BoundedRE::getParams(size_t Id,const abstractBinding& b){
+
+template <class S>
+void SPNBaseBoundedRE<S>::getParams(size_t Id,const abstractBinding& b){
 	
 	GetDistParameters(Id,b);
 	double origin_rate = ParamDistr[0];
@@ -225,7 +232,8 @@ void SPN_BoundedRE::getParams(size_t Id,const abstractBinding& b){
 }
 
 
-double SPN_BoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, double origin_rate ){
+template <class S>
+double SPNBaseBoundedRE<S>::ComputeDistr(size_t t ,const abstractBinding& b, double origin_rate ){
 	
 	//cerr << endl<< "mux" << endl;
 	double mux = mu();
@@ -266,3 +274,12 @@ double SPN_BoundedRE::ComputeDistr(size_t t ,const abstractBinding& b, double or
 	unfire(t,b);
 	return(distr);
 }
+
+template class SimulatorBoundedREBase<SimulatorBoundedRE<SPN_BoundedRE>,SPN_BoundedRE>;
+template class SimulatorBoundedRE<SPN_BoundedRE>;
+
+#include "SimulatorContinuousBounded.hpp"
+template class SimulatorBoundedREBase<SimulatorContinuousBounded<SPN_BoundedRE>,SPN_BoundedRE>;
+
+
+

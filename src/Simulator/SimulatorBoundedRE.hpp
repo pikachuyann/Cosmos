@@ -87,28 +87,41 @@ public:
 	
 };
 
-class SPN_BoundedRE: public SPN_RE{
+template<class S>
+class SPNBaseBoundedRE: public SPNBaseRE<S>{
 public:
-    SPN_BoundedRE(int& v,bool doubleIS);
+    SPNBaseBoundedRE(int& v,bool doubleIS);
 
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &, timeGen &) override;
-    virtual void getParams(size_t, const abstractBinding&) override;
-    virtual double mu() override;
-    virtual double ComputeDistr(size_t i,const abstractBinding&, double origin_rate) override;
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue &, timeGen &);
+    void getParams(size_t, const abstractBinding&);
+    double mu();
+    double ComputeDistr(size_t i,const abstractBinding&, double origin_rate);
 };
 
-class SimulatorBoundedRE: public SimulatorRE{
+template<class S,class DEDS>
+class SimulatorBoundedREBase: public SimulatorREBase<S,DEDS>{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedRE(SPN_orig<EventsQueue> & N,LHA_orig&,int m);
-	BatchR RunBatch() override;
-	using SimulatorRE::initVect;
-    virtual void initVect(int T);
+    SimulatorBoundedREBase(DEDS& N,LHA_orig&,int m);
+	BatchR RunBatch();
+	using SimulatorREBase<S,DEDS>::initVect;
+    void initVect(int T);
 
-protected:
+    /* private */
 	numericalSolver* numSolv;
 	double lambda;
 };
+
+class SPN_BoundedRE: public SPNBaseBoundedRE<SPN_BoundedRE>{
+  SPN_BoundedRE(int& v,bool doubleIS):SPNBaseBoundedRE<SPN_BoundedRE>(v,doubleIS){};
+};
+
+template <class DEDS>
+class SimulatorBoundedRE:public SimulatorBoundedREBase<SimulatorBoundedRE<DEDS>, DEDS>{
+public:
+    SimulatorBoundedRE(DEDS& deds,LHA_orig& lha,int m):SimulatorBoundedREBase<SimulatorBoundedRE<DEDS>, DEDS>(deds, lha, m){};
+};
+
 
 
 #endif  /* _SIMULATOR_BOUNDED_RE_HPP */

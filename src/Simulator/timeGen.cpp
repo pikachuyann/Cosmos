@@ -38,7 +38,6 @@ void timeGen::initRandomGenerator(unsigned int seed){
 	RandomNumber.seed(seed);
 }
 
-
 string timeGen::string_of_dist(DistributionType d,const vector<double> &param, const CustomDistr &cd)const{
     //use for debuging
     switch (d) {
@@ -238,5 +237,72 @@ double timeGen::GenerateTime(DistributionType distribution,const vector<double> 
 			
     }
 	return DBL_MIN;
-	
 }
+
+
+/**
+ * Generate an event based on the type of his distribution
+ * @param E the event to update
+ * @param Id the number of the transition to of the SPN
+ * @param b is the binding of the variable of the SPN for the transition.
+ */
+template<class DEDS>
+void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG,DEDS& N) {
+    double t=ctime;
+    if (N.Transition[Id].DistTypeIndex != IMMEDIATE) {
+        N.GetDistParameters(Id,b);
+        t += fmax(TG.GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr, N.customDistr),0.0);
+        if(N.verbose > 4){
+            cerr << "Sample " << N.Transition[Id].label << ": ";
+            cerr << TG.string_of_dist(N.Transition[Id].DistTypeIndex, N.ParamDistr, N.customDistr);
+            cerr << endl;
+        }
+    }
+    
+    //The weight of a transition is always distributed exponentially
+    //It is used to solved conflict of two transitions with same time
+    //and same priority.
+    double w=0.0;
+    switch (N.Transition[Id].DistTypeIndex){
+        case DETERMINISTIC:
+        case DISCRETEUNIF:
+        case IMMEDIATE:
+        case DISCRETEUSERDEFINE:
+            N.ParamDistr[0]= N.GetWeight(Id,b);
+            w = TG.GenerateTime(EXPONENTIAL, N.ParamDistr, N.customDistr);
+            if(N.verbose>4){
+                cerr << "weight : ";
+                cerr << TG.string_of_dist(EXPONENTIAL, N.ParamDistr, N.customDistr);
+                cerr << endl;
+            }
+            break;
+        case NORMAL:
+        case GAMMA:
+        case GEOMETRIC:
+        case UNIFORM:
+        case ERLANG:
+        case EXPONENTIAL:
+        case LOGNORMAL:
+        case TRIANGLE:
+        case USERDEFINE:
+        case USERDEFINEPOLYNOMIAL:
+        case MASSACTION:
+        case PLAYER1:
+            ;
+    }
+    
+    E.transition = Id;
+    E.time = t;
+    E.priority = N.GetPriority(Id,b);
+    E.weight = w;
+    E.binding = b;
+}
+
+#include "SPNBase.hpp"
+#include "EventsQueue.hpp"
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBase<SPN_orig<EventsQueue>,EventsQueue> &);
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueue> &);
+
+#include "EventsQueueSet.hpp"
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBase<SPN_orig<EventsQueueSet>,EventsQueueSet> &);
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueueSet> &);
