@@ -37,8 +37,8 @@
 #include <boost/math/distributions/binomial.hpp>
 #include <limits>
 
-
-SimulatorContinuousBounded::SimulatorContinuousBounded(SPN_orig<EventsQueue> &N,LHA_orig& A,int m,double e,int js):SimulatorBoundedRE(N,A,m){
+template<class DEDS>
+SimulatorContinuousBounded<DEDS>::SimulatorContinuousBounded(DEDS &N,LHA_orig& A,int m,double e,int js):SimulatorBoundedREBase<SimulatorContinuousBounded,DEDS>(N,A,m){
     epsilon = e;
 	if(js>0){
 		jumpsize = js;
@@ -51,11 +51,12 @@ SimulatorContinuousBounded::SimulatorContinuousBounded(SPN_orig<EventsQueue> &N,
     //Normal_quantile = quantile(norm, 0.5 + 0.99 / 2.0);
 }
 
-void SimulatorContinuousBounded::initVectCo(double t){
+template<class DEDS>
+void SimulatorContinuousBounded<DEDS>::initVectCo(double t){
     
-    lambda = numSolv->uniformizeMatrix();
-    cerr << "lambda:" << lambda<< endl;
-    fg = unique_ptr<FoxGlynn>(new FoxGlynn((lambda * t), DBL_EPSILON , 1/DBL_EPSILON ,epsilon));
+    this->lambda = this->numSolv->uniformizeMatrix();
+    cerr << "lambda:" << this->lambda<< endl;
+    fg = unique_ptr<FoxGlynn>(new FoxGlynn((this->lambda * t), DBL_EPSILON , 1/DBL_EPSILON ,epsilon));
 	if (fg->isValid){
         cerr << "fox_glyn:" << fg->left << "," << fg->right << " Total weigts:"<< fg->total_weight<< endl;
         /*for(int i = 0; i<= fg->right - fg->left; i++){
@@ -63,18 +64,18 @@ void SimulatorContinuousBounded::initVectCo(double t){
 		 }*/
     }
     //fg->right = 10;
-    double lambda2= lambda;
-    initVect(fg->right+1);
-    lambda = lambda2;
+    double lambda2= this->lambda;
+    this->initVect(fg->right+1);
+    this->lambda = lambda2;
 }
 
-BatchR SimulatorContinuousBounded::RunBatch(){
+template<class DEDS>
+BatchR SimulatorContinuousBounded<DEDS>::RunBatch(){
 	//cerr << "test(";
-	numSolv->reset();
-    auto & NRE = static_cast<SPN_RE&>(N);
-	
+	this->numSolv->reset();
+    
 	//cerr << ")" << endl;
-    int left = (int)max(numSolv->getMinT(),fg->left);
+    int left = (int)max(this->numSolv->getMinT(),fg->left);
     int Nmax = (int)ceil(((double)fg->right - left)/jumpsize) ;
     //cerr << "minT:\t" << numSolv->getMinT() << endl;
     cerr << "Number of batch:\t" << Nmax+1 << "\tleft: " << left << "\tright: " << fg->right << "\tjumpsize:" << jumpsize <<  endl;
@@ -96,52 +97,52 @@ BatchR SimulatorContinuousBounded::RunBatch(){
 	for(int i =0; i<= Nmax; i++)
 		batchResult.Min[2*i] /= fg->total_weight;
 		
-	list<simulationState<EventsQueue> > statevect((Nmax+1)*BatchSize);
+	list<simulationState<EventsQueue> > statevect((Nmax+1)*this->BatchSize);
 	
     int c =0;
-	if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
+	if(this->verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
 	for (auto it= statevect.begin(); it != statevect.end() ; it++) {
-		NRE.Origine_Rate_Table = vector<double>(N.tr,0.0);
-		NRE.Rate_Table = vector<double>(N.tr,0.0);
+		this->N.Origine_Rate_Table = vector<double>(this->N.tr,0.0);
+		this->N.Rate_Table = vector<double>(this->N.tr,0.0);
 		
 		bool continueb = false;
 		//we try to find a trajectory reaching the precondition.
 		while(!continueb){
 			//we build a new trajectory from the initial state.
 			continueb =true;
-			EQ = new EventsQueue(N);
-			reset();
+			this->EQ = new EventsQueue(this->N);
+			this->reset();
 			//We simulate until either the condition is satisfied or the trajectory reach a deadend.
-			while(!NRE.precondition(N.Marking) && continueb){
-				continueb = SimulateOneStep();
+			while(!this->N.precondition(this->N.Marking) && continueb){
+				continueb = this->SimulateOneStep();
 			}
 		}
 		
 		if (singleIS) {
 			it->maxStep = fg->right;
 		}else{
-			it->maxStep = (int)fmin(fg->right , left + (Nmax - (c/BatchSize))*jumpsize);
+			it->maxStep = (int)fmin(fg->right , left + (Nmax - (c/this->BatchSize))*jumpsize);
 		}
         
 		//cerr << "new path:\t" << it->maxStep << endl;
 		
 		c++;
 		
-		it->saveState(&NRE,&A,&EQ);
+		it->saveState(&(this->N),&(this->A),&(this->EQ));
 	}
 	
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
-		numSolv->stepVect();
-		if(verbose>=3)cerr << numSolv->getVect() << endl;
+		this->numSolv->stepVect();
+		if(this->verbose>=3)cerr << this->numSolv->getVect() << endl;
 		n++;
-        if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
+        if(this->verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
         
 		for (auto it= statevect.begin(); it != statevect.end() ; it++) {
             if(it->maxStep >= fg->right -n){
 				
                 //cerr << "vect:\t" << it->maxStep;
-                it->loadState(&NRE,&A,&EQ);
+                it->loadState(&(this->N),&(this->A),&(this->EQ));
                 
                 
                 //cerr << A.Likelihood << endl;
@@ -150,42 +151,42 @@ BatchR SimulatorContinuousBounded::RunBatch(){
                 
                 if (it->maxStep == fg->right -n) {
                     //We first need to initialise the trajectory
-                    N.InitialEventsQueue(*EQ,*this);
-					if(verbose>=2)
+                    this->N.InitialEventsQueue(*(this->EQ),*this);
+					if(this->verbose>=2)
 						//cerr << "new Path: " << it->maxStep << "\tmuinit: " << mu() << endl;
-                    it->saveState(&NRE,&A,&EQ);
+                    it->saveState(&(this->N),&(this->A),&(this->EQ));
                 } else {
                     
-                    bool continueb = SimulateOneStep();
+                    bool continueb = this->SimulateOneStep();
                     //cerr << "\t" << mu() << endl;
                     
-                    if((!EQ->isEmpty()) && continueb) {
-                        it->saveState(&NRE,&A,&EQ);
+                    if((!this->EQ->isEmpty()) && continueb) {
+                        it->saveState(&(this->N),&(this->A),&(this->EQ));
                     } else {
 						int i = (int)ceil((double)(it->maxStep- left)/jumpsize) ;
 						int i2 =(int)fmax(0.0,ceil((double)(n - left)/jumpsize));
 						//cerr << "Successfull trajectory: "<< it->maxStep << " -> " << i << endl;
-                        if (Result.accept ) {
+                        if (this->Result.accept ) {
                             
-                            if (Result.quantR[0] * (1 - Result.quantR[0]) != 0) batchResult.IsBernoulli[0] = false;
+                            if (this->Result.quantR[0] * (1 - this->Result.quantR[0]) != 0) batchResult.IsBernoulli[0] = false;
 							
 							batchResult.Isucc+=1;
 							if(singleIS)for(int j = i2; j<= Nmax; j++){
 								batchResult.Mean[2*j]+=1;
-								batchResult.Mean[2*j+1] += Result.quantR[0];
-								batchResult.M2[2*j+1] += pow(Result.quantR[0] , 2);
-								batchResult.M3[2*j+1] += pow(Result.quantR[0] , 3);
-								batchResult.M4[2*j+1] += pow(Result.quantR[0] , 4);
-								batchResult.Min[2*j+1] = fmin(batchResult.Min[2*j+1],Result.quantR[0]);
-								batchResult.Max[2*j+1] = fmax(batchResult.Max[2*j+1],Result.quantR[0]);
+								batchResult.Mean[2*j+1] += this->Result.quantR[0];
+								batchResult.M2[2*j+1] += pow(this->Result.quantR[0] , 2);
+								batchResult.M3[2*j+1] += pow(this->Result.quantR[0] , 3);
+								batchResult.M4[2*j+1] += pow(this->Result.quantR[0] , 4);
+								batchResult.Min[2*j+1] = fmin(batchResult.Min[2*j+1],this->Result.quantR[0]);
+								batchResult.Max[2*j+1] = fmax(batchResult.Max[2*j+1],this->Result.quantR[0]);
                             } else {
 								batchResult.Mean[2*i]+=1;
-								batchResult.Mean[2*i+1] += Result.quantR[0];
-								batchResult.M2[2*i+1] += pow(Result.quantR[0] , 2);
-								batchResult.M3[2*i+1] += pow(Result.quantR[0] , 3);
-								batchResult.M4[2*i+1] += pow(Result.quantR[0] , 4);
-								batchResult.Min[2*i+1] = fmin(batchResult.Min[2*i+1],Result.quantR[0]);
-								batchResult.Max[2*i+1] = fmax(batchResult.Max[2*i+1],Result.quantR[0]);
+								batchResult.Mean[2*i+1] += this->Result.quantR[0];
+								batchResult.M2[2*i+1] += pow(this->Result.quantR[0] , 2);
+								batchResult.M3[2*i+1] += pow(this->Result.quantR[0] , 3);
+								batchResult.M4[2*i+1] += pow(this->Result.quantR[0] , 4);
+								batchResult.Min[2*i+1] = fmin(batchResult.Min[2*i+1],this->Result.quantR[0]);
+								batchResult.Max[2*i+1] = fmax(batchResult.Max[2*i+1],this->Result.quantR[0]);
 							}
                             
                         }
@@ -194,7 +195,7 @@ BatchR SimulatorContinuousBounded::RunBatch(){
                         batchResult.I++;
                         
                         
-                        delete EQ;
+                        delete this->EQ;
                         it = statevect.erase(it);
                         
                         it--;
@@ -210,3 +211,4 @@ BatchR SimulatorContinuousBounded::RunBatch(){
 	return (batchResult);
 }
 
+template class SimulatorContinuousBounded<SPN_BoundedRE>;

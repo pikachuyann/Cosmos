@@ -51,65 +51,48 @@ void signalHandler( int s)
 
 const int optioni=6;
 
-template<>
-Simulator<EventsQueue>* Simulator<EventsQueue>::simFactory(SimType st, LHA_orig* Aptr, char**argv){
+template<class SIM>
+void run_sim(SIM& sim,int argc,char **argv) {
     int verbose=atoi(argv[2]);
-    LHA_orig& A = *Aptr;
-    switch (st) {
-        case Base:
-        {
-            auto &N = *(new SPN_orig<EventsQueue>(verbose));
-            return (new Simulator(N,A));
+    
+    sim.SetBatchSize(atoi(argv[1])); //set the batch size
+    sim.verbose = atoi(argv[2]);
+    sim.initRandomGenerator(atoi(argv[5]));
+    sim.tmpPath=argv[4];
+    
+    for(int i=1; i<argc ;i++){
+        if(strcmp(argv[i],"-log")==0 && argc>i)
+            sim.logValue(argv[i+1]);
+        if(strcmp(argv[i],"-trace")==0 && argc>i){
+            sim.logTrace(argv[i+1],stod(argv[i+2]));
         }
-        case RareEventUnbounded1:
-        {
-            auto &N = *(new SPN_RE(verbose,false));
-            SimulatorRE* reSim = new SimulatorRE(N,A);
-            reSim->initVect();
-            return reSim;
-        }
-        case RareEventUnbounded2:
-        {
-            auto &N = *(new SPN_RE(verbose,true));
-            SimulatorRE* reSim = new SimulatorRE(N,A);
-            reSim->initVect();
-            return reSim;
-        }
-        case RareEventBounded:
-        {
-            auto &N = *(new SPN_BoundedRE(verbose,false));
-            int m = atoi(argv[optioni+1]);
-            int T = atoi(argv[optioni+2]);
-            SimulatorBoundedRE* boundedSim = new SimulatorBoundedRE(N,A,m);
-            boundedSim->initVect(T);
-            return boundedSim;
-        }
-        case RareEventCTMC:
-        {
-            auto &N = *(new SPN_BoundedRE(verbose,false));
-            int m = atoi(argv[optioni+1]);
-            double t = atof(argv[optioni+2]);
-            double e = atof(argv[optioni+3]);
-            int stepc = atoi(argv[optioni+4]);
-            SimulatorContinuousBounded* coSim = new SimulatorContinuousBounded(N,A,m,e,stepc);
-            coSim->initVectCo(t);
-            return coSim;
+        if(strcmp(argv[i],"-dotFile")==0 && argc>i){
+            sim.dotFile = argv[i+1];
         }
     }
-}
-template<>
-Simulator<EventsQueueSet>* Simulator<EventsQueueSet>::simFactory(SimType st, LHA_orig* Aptr, char**argv){
-    int verbose=atoi(argv[2]);
-    LHA_orig& A = *Aptr;
-    auto &N = *(new SPN_orig<EventsQueueSet>(verbose));
-    switch (st) {
-        case Base:
-            return (new Simulator(N,A));
-        default:
-            cout << "Colored Petri Net with set not implemented for rare event" << endl;
-            exit(EXIT_SUCCESS);
+    
+    
+    if(sim.verbose>=4)sim.RunBatch();
+    else while( !cin.eof() ){
+        BatchR batchResult = sim.RunBatch(); //simulate a batch of trajectory
+        
+        batchResult.outputR(cout);// output the result on the standart output
+        //batchResult.print();
+        
+        //cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
+        //<< ":" << batchResult->M2[0] << endl;
+        
     }
 }
+
+
+enum SimType {
+    Base,
+    RareEventUnbounded1,
+    RareEventUnbounded2,
+    RareEventBounded,
+    RareEventCTMC
+};
 
 template<class EQT>
 void build_sim(SimType st,int argc,char **argv) {
@@ -121,35 +104,43 @@ void build_sim(SimType st,int argc,char **argv) {
     }else{
         Aptr = new NLHA();
     }
+    LHA_orig& A = *Aptr;
     
-    Simulator<EQT>* sim = Simulator<EQT>::simFactory(st, Aptr, argv);
-    sim->SetBatchSize(atoi(argv[1])); //set the batch size
-    sim->verbose = atoi(argv[2]);
-    sim->initRandomGenerator(atoi(argv[5]));
-    sim->tmpPath=argv[4];
-    
-    for(int i=1; i<argc ;i++){
-        if(strcmp(argv[i],"-log")==0 && argc>i)
-            sim->logValue(argv[i+1]);
-        if(strcmp(argv[i],"-trace")==0 && argc>i){
-            sim->logTrace(argv[i+1],stod(argv[i+2]));
+    switch(st){
+        case Base:
+        {
+            auto &N = *(new SPN_orig<EQT>(verbose));
+            auto sim = new Simulator<EQT,SPN_orig<EQT> >(N,A);
+            run_sim<Simulator<EQT, SPN_orig<EQT>>>(*sim,argc,argv);
         }
-        if(strcmp(argv[i],"-dotFile")==0 && argc>i){
-            sim->dotFile = argv[i+1];
+        case RareEventUnbounded1:
+        case RareEventUnbounded2:
+        {
+            auto &N = *(new SPN_RE(verbose,st==RareEventUnbounded2));
+            auto reSim = new SimulatorRE<SPN_RE>(N,A);
+            reSim->initVect();
+            run_sim<SimulatorRE<SPN_RE>>(*reSim,argc,argv);
         }
-    }
-    
-    
-    if(sim->verbose>=4)sim->RunBatch();
-    else while( !cin.eof() ){
-        BatchR batchResult = sim->RunBatch(); //simulate a batch of trajectory
-        
-        batchResult.outputR(cout);// output the result on the standart output
-        //batchResult.print();
-        
-        //cerr << batchResult->I <<":"<< batchResult->Isucc <<":"<< batchResult->Mean[0]
-        //<< ":" << batchResult->M2[0] << endl;
-        
+        case RareEventBounded:
+        {
+            auto &N = *(new SPN_BoundedRE(verbose,false));
+            int m = atoi(argv[optioni+1]);
+            int T = atoi(argv[optioni+2]);
+            auto boundedSim = new SimulatorBoundedRE<SPN_BoundedRE>(N,A,m);
+            boundedSim->initVect(T);
+            run_sim<SimulatorBoundedRE<SPN_BoundedRE>>(*boundedSim,argc,argv);
+        }
+        case RareEventCTMC:
+        {
+            auto &N = *(new SPN_BoundedRE(verbose,false));
+            int m = atoi(argv[optioni+1]);
+            double t = atof(argv[optioni+2]);
+            double e = atof(argv[optioni+3]);
+            int stepc = atoi(argv[optioni+4]);
+            auto coSim = new SimulatorContinuousBounded<SPN_BoundedRE>(N,A,m,e,stepc);
+            coSim->initVectCo(t);
+            run_sim<SimulatorContinuousBounded<SPN_BoundedRE>>(*coSim,argc,argv);
+        }
     }
 }
 
