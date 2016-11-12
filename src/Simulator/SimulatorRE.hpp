@@ -33,10 +33,10 @@
 #include "stateSpace.hpp"
 #include "SPNBase.hpp"
 
-
-class SPN_RE: public SPN_orig<EventsQueue>, public REHandling{
+template <class S>
+class SPNBaseRE: public SPNBase<S,EventsQueue>, public REHandling{
 public:
-    SPN_RE(int& v,bool doubleIS);
+    SPNBaseRE(int& v,bool doubleIS);
 
     bool rareEventEnabled;
 
@@ -77,6 +77,11 @@ public:
 	void updateLikelihood(size_t);
     bool transitionSink(size_t);
 	void reset();
+};
+
+class SPN_RE: public SPNBaseRE<SPN_RE>{
+public:
+    SPN_RE(int& v,bool doubleIS):SPNBaseRE<SPN_RE>(v, doubleIS){};
 };
 
 template <class DEDS>

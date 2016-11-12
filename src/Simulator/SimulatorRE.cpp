@@ -70,30 +70,32 @@ void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b, tim
 template <class S, class DEDS>
 SimulatorREBase<S, DEDS>::SimulatorREBase(DEDS& N,LHA_orig& A):SimulatorBase<S, EventsQueue, DEDS>(N,A){};
 
-SPN_RE::SPN_RE(int& v,bool doubleIS):SPN_orig(v),doubleIS_mode(doubleIS){
+template <class S>
+SPNBaseRE<S>::SPNBaseRE(int& v,bool doubleIS):SPNBase<S,EventsQueue>(v),doubleIS_mode(doubleIS){
     rareEventEnabled=false;
     Rate_Sum = 0;
     Origine_Rate_Sum = 0;
-    Rate_Table = vector<double>(tr,0.0);
-    Origine_Rate_Table = vector<double>(tr,0.0);
+    Rate_Table = vector<double>(this->tr,0.0);
+    Origine_Rate_Table = vector<double>(this->tr,0.0);
 }
 
-void SPN_RE::initialize( stateSpace *muprob){
+template <class S>
+void SPNBaseRE<S>::initialize( stateSpace *muprob){
     this->muprob=muprob;
 }
 
 template <class S, class DEDS>
 void SimulatorREBase<S, DEDS>::initVect(){
     muprob = new stateSpace();
-	muprob->inputVect();
+    muprob->inputVect();
     this->N.initialize(muprob);
 }
 
-
-void SPN_RE::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
+template<class S>
+void SPNBaseRE<S>::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
 	Rate_Sum = 0;
 	Origine_Rate_Sum = 0;
-	SPN_orig::initialEventsQueue(EQ,TG);
+	SPNBase<S,EventsQueue>::initialEventsQueue(EQ,TG);
 }
 
 template <class S, class DEDS>
@@ -108,15 +110,16 @@ void SimulatorREBase<S, DEDS>::returnResultTrue(){
 	if(this->verbose>3)cerr << "---------------\n TRUE: Likelyhood: "<< this->A.Likelihood <<" \n------\n";
 }
 
-void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue &EQ,timeGen &TG){
+template <class S>
+void SPNBaseRE<S>::update(double ctime,size_t t, const abstractBinding& b,EventsQueue &EQ,timeGen &TG){
 	//If rareevent not require yet call the parent function
 	
 	if(!rareEventEnabled){
-		if(precondition(Marking)){
+		if(precondition(this->Marking)){
 			rareEventEnabled = true;
 			//A.Likelihood = 1.0;
 		}else{
-            SPN_orig::update(ctime, t, b,EQ, TG);
+		  SPNBase<S,EventsQueue>::update(ctime, t, b,EQ, TG);
 		return;
 		}
 	}
@@ -127,12 +130,12 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 	Origine_Rate_Sum = 0;
 	
 	//Run over all transition
-	for (const auto &tr : Transition) {
-        if(tr.Id != SPN::tr - 1){
+	for (const auto &tr : this->Transition) {
+        if(tr.Id != this->tr - 1){
 			for(const auto &bindex : tr.bindingList ){
-				if(IsEnabled(tr.Id, bindex)){
+				if(this->IsEnabled(tr.Id, bindex)){
 					if (EQ.isScheduled(tr.Id, bindex.id())) {
-						generateEvent(ctime,F, tr.Id ,bindex, TG, *this );
+					  generateEvent(ctime,F, tr.Id ,bindex, TG, *this );
 						EQ.replace(F);
 					} else {
 						generateEvent(ctime,F, tr.Id ,bindex, TG, *this );
@@ -147,7 +150,7 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 	}
 	
 	abstractBinding bpuit;
-	generateEvent(ctime,F, (tr-1), bpuit,TG, *this);
+	generateEvent(ctime,F, (this->tr-1), bpuit,TG, *this);
 	if(!doubleIS_mode){
 		EQ.replace(F);
 	}
@@ -262,53 +265,55 @@ void SimulatorREBase<S, DEDS>::SimulateSinglePath() {
     //cerr << "finish path"<< endl;
 }
 
-
-void SPN_RE::getParams(size_t Id,const abstractBinding& b){
+template <class S>
+void SPNBaseRE<S>::getParams(size_t Id,const abstractBinding& b){
 	//If rareevent not require yet call the parent function
 	if(!rareEventEnabled){
-        GetDistParameters(Id,b);
+        this->GetDistParameters(Id,b);
 		return;
 	}
-	GetDistParameters(Id,b);
-	ParamDistr[1]= ParamDistr[0];
-	ParamDistr[0]= ComputeDistr( Id, b, ParamDistr[0]);
+	this->GetDistParameters(Id,b);
+	this->ParamDistr[1]= this->ParamDistr[0];
+	this->ParamDistr[0]= ComputeDistr( Id, b, this->ParamDistr[0]);
     //N.ParamDistr[0]= N.ParamDistr[1]; /////////////////////////////////////////////////to remove
 }
 
-double SPN_RE::mu(){
+template <class S>
+double SPNBaseRE<S>::mu(){
 	
 	vector<int> vect (muprob->S.begin()->first->size(),0);
 	
-    lumpingFun(Marking,vect);
+    lumpingFun(this->Marking,vect);
     //cerr << "test(";
     int i = muprob->findHash(&vect);
-    if(i<0 || verbose>4){
+    if(i<0 || this->verbose>4){
         cerr << "state:(";
         for (size_t j =0; j < vect.size(); j++) {
             cerr << vect[j] << ",";
         }
         cerr << ") ->" << i << endl;
-		Marking.printHeader(cerr);
+		this->Marking.printHeader(cerr);
 		cerr << endl;
-		Marking.print(cerr,0.0);
+		this->Marking.print(cerr,0.0);
 		cerr << endl;
 		print_state(vect);
         if(i<0)exit(EXIT_FAILURE);
     }
-	if(verbose>3)cerr << "muValue: " << muprob->getMu(i) << endl;
+	if(this->verbose>3)cerr << "muValue: " << muprob->getMu(i) << endl;
 	return muprob->getMu(i);
 }
 
-double SPN_RE::ComputeDistr(size_t t , const abstractBinding& b, double origin_rate){
-	if(verbose>4)cerr << "trans: " << Transition[t].label << " mu origine:";
+template <class S>
+double SPNBaseRE<S>::ComputeDistr(size_t t , const abstractBinding& b, double origin_rate){
+	if(this ->verbose>4)cerr << "trans: " << this->Transition[t].label << " mu origine:";
 	double mux = mu();
 	if( mux==0.0 || mux==1.0) return(origin_rate);
     
-	if(t== tr-1){
+	if(t== this->tr-1){
 		if(Origine_Rate_Sum >= Rate_Sum){
 			return( Origine_Rate_Sum - Rate_Sum  );
 		}else{
-			if(verbose>3 && (Origine_Rate_Sum < 0.99*Rate_Sum)){
+			if(this->verbose>3 && (Origine_Rate_Sum < 0.99*Rate_Sum)){
 				cerr << "Reduce model does not guarantee variance" << endl;
 				cerr << "Initial sum of rate: " << Origine_Rate_Sum << " Reduce one: " << Rate_Sum << " difference: " << Origine_Rate_Sum - Rate_Sum << endl ;
 				//exit(EXIT_FAILURE);
@@ -316,12 +321,12 @@ double SPN_RE::ComputeDistr(size_t t , const abstractBinding& b, double origin_r
 			
 			return 0.0 ;};
 	};
-	if(verbose>4)cerr << "mu target : ";
+	if(this->verbose>4)cerr << "mu target : ";
 	double distr;
-	fire(t,b,0.0);
+	this->fire(t,b,0.0);
 	distr = origin_rate *( mu() / mux);
-	unfire(t,b);
-	if(verbose>4)cerr <<endl;
+	this->unfire(t,b);
+	if(this->verbose>4)cerr <<endl;
 	return(distr);
 }
 
