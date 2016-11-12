@@ -87,9 +87,10 @@ public:
 	
 };
 
-class SPN_BoundedRE: public SPN_RE{
+template<class S>
+class SPNBaseBoundedRE: public SPNBaseRE<S>{
 public:
-    SPN_BoundedRE(int& v,bool doubleIS);
+    SPNBaseBoundedRE(int& v,bool doubleIS);
 
     void update(double ctime,size_t, const abstractBinding&,EventsQueue &, timeGen &);
     void getParams(size_t, const abstractBinding&);
@@ -109,6 +110,10 @@ public:
     /* private */
 	numericalSolver* numSolv;
 	double lambda;
+};
+
+class SPN_BoundedRE: public SPNBaseBoundedRE<SPN_BoundedRE>{
+  SPN_BoundedRE(int& v,bool doubleIS):SPNBaseBoundedRE<SPN_BoundedRE>(v,doubleIS){};
 };
 
 template <class DEDS>
