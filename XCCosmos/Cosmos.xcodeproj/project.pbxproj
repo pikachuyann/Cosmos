@@ -44,8 +44,8 @@
 		0365553B18292D10001B5947 /* foxglynn.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0365553918292D10001B5947 /* foxglynn.hpp */; };
 		0367E29C18842FB700F35619 /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703F181BC0D6006D7332 /* BatchR.cpp */; };
 		0367E2B71885288900F35619 /* Gspn-Writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0367E2B51885288900F35619 /* Gspn-Writer.cpp */; };
-		03796A761B984AA80004BF0B /* spn_orig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03796A741B984AA80004BF0B /* spn_orig.cpp */; };
-		03796A771B984AA80004BF0B /* spn_orig.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03796A751B984AA80004BF0B /* spn_orig.hpp */; };
+		03796A761B984AA80004BF0B /* SPNBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03796A741B984AA80004BF0B /* SPNBase.cpp */; };
+		03796A771B984AA80004BF0B /* SPNBase.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03796A751B984AA80004BF0B /* SPNBase.hpp */; };
 		0381D5451B905FFC00D0AC20 /* Eval-parser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0367E29818842F2400F35619 /* Eval-parser.cc */; };
 		0381D5461B905FFC00D0AC20 /* Eval-scanner.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0367E29918842F2400F35619 /* Eval-scanner.cc */; };
 		0381D5471B90600000D0AC20 /* Gspn-parser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0367E29018842E8C00F35619 /* Gspn-parser.cc */; };
@@ -333,8 +333,8 @@
 		0367E2B218843ED000F35619 /* test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = test.m; sourceTree = "<group>"; };
 		0367E2B51885288900F35619 /* Gspn-Writer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Writer.cpp"; sourceTree = "<group>"; };
 		0367E2B61885288900F35619 /* Gspn-Writer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Writer.hpp"; sourceTree = "<group>"; };
-		03796A741B984AA80004BF0B /* spn_orig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spn_orig.cpp; sourceTree = "<group>"; };
-		03796A751B984AA80004BF0B /* spn_orig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = spn_orig.hpp; sourceTree = "<group>"; };
+		03796A741B984AA80004BF0B /* SPNBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SPNBase.cpp; sourceTree = "<group>"; };
+		03796A751B984AA80004BF0B /* SPNBase.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SPNBase.hpp; sourceTree = "<group>"; };
 		038CC6911C0F245000C5A0F5 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = CMakeLists.txt; path = ../CMakeLists.txt; sourceTree = "<group>"; };
 		039A3674191A9EE400B42447 /* Deck.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Deck.grml; sourceTree = "<group>"; };
 		039A3675191A9EE400B42447 /* DeckInfiny.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = DeckInfiny.grml; sourceTree = "<group>"; };
@@ -1301,8 +1301,8 @@
 				032A7062181BC0D6006D7332 /* spn.hpp */,
 				032A7050181BC0D6006D7332 /* marking.hpp */,
 				03B0C5511CEC791900FCBF20 /* markingTemplate.hpp */,
-				03796A741B984AA80004BF0B /* spn_orig.cpp */,
-				03796A751B984AA80004BF0B /* spn_orig.hpp */,
+				03796A741B984AA80004BF0B /* SPNBase.cpp */,
+				03796A751B984AA80004BF0B /* SPNBase.hpp */,
 				032A7063181BC0D6006D7332 /* stateSpace.cpp */,
 				032A7064181BC0D6006D7332 /* stateSpace.hpp */,
 				032A7052181BC0D6006D7332 /* numericalSolver.cpp */,
@@ -3151,7 +3151,7 @@
 				BCD7DA281A8D207E001A2D80 /* Print.h in Headers */,
 				0365553B18292D10001B5947 /* foxglynn.hpp in Headers */,
 				03650F831CFDC4FB00DB3041 /* EventsQueueSet.hpp in Headers */,
-				03796A771B984AA80004BF0B /* spn_orig.hpp in Headers */,
+				03796A771B984AA80004BF0B /* SPNBase.hpp in Headers */,
 				03B0C5521CEC791900FCBF20 /* markingTemplate.hpp in Headers */,
 				BCD7DA261A8D1FD4001A2D80 /* SerialPort.h in Headers */,
 			);
@@ -3358,7 +3358,7 @@
 				0315F53A1B7215E600DA8EDA /* NLHA.cpp in Sources */,
 				0365553A18292D10001B5947 /* foxglynn.cpp in Sources */,
 				03E39B0F183E49D30070911A /* BatchR.cpp in Sources */,
-				03796A761B984AA80004BF0B /* spn_orig.cpp in Sources */,
+				03796A761B984AA80004BF0B /* SPNBase.cpp in Sources */,
 				03E39B11183E49D80070911A /* EventsQueue.cpp in Sources */,
 				BC956BC31AA0875F00AB8BD1 /* SocketPort.cpp in Sources */,
 				03E39B12183E49DB0070911A /* LHA_orig.cpp in Sources */,

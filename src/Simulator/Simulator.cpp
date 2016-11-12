@@ -42,8 +42,8 @@ using namespace std;
  * Constructor for the Simulator initialize the event queue
  * but don't fill it.
  */
-template <class EQT>
-Simulator<EQT>::Simulator(SPN_orig<EQT>& spn,LHA_orig& automate):verbose(0),N(spn),A(automate){
+template <class S, class EQT,class DEDS>
+SimulatorBase<S,EQT,DEDS>::SimulatorBase(DEDS& spn,LHA_orig& automate):verbose(0),N(spn),A(automate){
     EQ = new EQT(N); //initialization of the event queue
     logResult=false;
 	sampleTrace = 0.0;
@@ -64,20 +64,20 @@ Simulator<EQT>::Simulator(SPN_orig<EQT>& spn,LHA_orig& automate):verbose(0),N(sp
     minInteractiveTime = 0.0;
 }*/
 
-template <class EQT>
-Simulator<EQT>::~Simulator() {
+template <class S, class EQT,class DEDS>
+SimulatorBase<S,EQT,DEDS>::~SimulatorBase() {
   delete EQ;
 }
 
-template <class EQT>
-void Simulator<EQT>::logValue(const char* path){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::logValue(const char* path){
     logvalue.open(path,fstream::out);
     logvalue.precision(15);
     logResult=true;
 }
 
-template <class EQT>
-void Simulator<EQT>::logTrace(const char* path,double sample){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::logTrace(const char* path,double sample){
 	sampleTrace = sample;
     logtrace.open(path,fstream::out);
 	//logtrace << "# sampling at:" << sample << endl;
@@ -88,8 +88,8 @@ void Simulator<EQT>::logTrace(const char* path,double sample){
 	logtrace << endl;
 }
 
-template <class EQT>
-void Simulator<EQT>::printLog(double eTime,size_t t){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::printLog(double eTime,size_t t){
     if(logtrace.is_open())
         if((A.CurrentTime - lastSampled) >= sampleTrace){
             lastSampled = A.CurrentTime;
@@ -102,21 +102,21 @@ void Simulator<EQT>::printLog(double eTime,size_t t){
         }
 }
 
-template <class EQT>
-void Simulator<EQT>::printLog(double eTime){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::printLog(double eTime){
     printLog(eTime, string::npos);
 }
 
-template <class EQT>
-void Simulator<EQT>::SetBatchSize(const size_t RI) {
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::SetBatchSize(const size_t RI) {
 	BatchSize = RI;
 }
 
 /**
  * Reset the SPN, The LHA and the Event Queue to the initial state.
  */
-template <class EQT>
-void Simulator<EQT>::reset() {
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::reset() {
 	N.reset();
 	A.reset(N.Marking);
 	EQ->reset();
@@ -127,8 +127,8 @@ void Simulator<EQT>::reset() {
  * the automaton. It update the automaton variable before updating the
  * Hasl formula.
  */
-template <class EQT>
-void Simulator<EQT>::returnResultTrue(){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::returnResultTrue(){
 	A.getFinalValues(N.Marking,Result.quantR,Result.qualR);
 	Result.accept = true;
 }
@@ -138,8 +138,8 @@ void Simulator<EQT>::returnResultTrue(){
  * Do nothing when not in rare event context.
  * @param i Number of the transition of the SPN
  */
-template <class EQT>
-void Simulator<EQT>::updateLikelihood(size_t){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::updateLikelihood(size_t){
 	return;
 }
 
@@ -148,8 +148,8 @@ void Simulator<EQT>::updateLikelihood(size_t){
  * always return true when not in rare event context.
  * @param i Number of the transition of the SPN
  */
-template <class EQT>
-bool Simulator<EQT>::transitionSink(size_t ){
+template <class S, class EQT,class DEDS>
+bool SimulatorBase<S,EQT,DEDS>::transitionSink(size_t ){
     return false;
 }
 
@@ -158,8 +158,8 @@ bool Simulator<EQT>::transitionSink(size_t ){
  * Simulate one step of simulation
  * @return true if the simulation did not reach an accepting are refusing state.
  */
-template <class EQT>
-bool Simulator<EQT>::SimulateOneStep(){
+template <class S, class EQT,class DEDS>
+bool SimulatorBase<S,EQT,DEDS>::SimulateOneStep(){
 
 	AutEdge AE = A.GetEnabled_A_Edges( N.Marking);
 	
@@ -177,7 +177,7 @@ bool Simulator<EQT>::SimulateOneStep(){
 			A.updateLHA( AE.FiringTime - A.CurrentTime, N.Marking );
 			A.fireAutonomous(AE.Index,N.Marking);
 			if (A.isFinal()) {
-				returnResultTrue();
+				static_cast<S*>(this)->returnResultTrue();
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
@@ -189,14 +189,14 @@ bool Simulator<EQT>::SimulateOneStep(){
 		
         //If this transition is the sink transition refuse the simulation
         //Only usefull for Rare Event handling.
-		if(transitionSink(E1.transition)){
+		if(static_cast<S*>(this)->transitionSink(E1.transition)){
 			if(verbose>3)cerr << "\033[1;33mFiring:\033[0m" << "Transition Sink\n";
             Result.accept=false;
             return false;
         }
 
         //Hook for rare event simulation
-        updateLikelihood(E1.transition);
+        static_cast<S*>(this)->updateLikelihood(E1.transition);
 		
         //Take all autonomous edge in the automata before the fire time
         //of the transition of the Petri net.
@@ -204,16 +204,16 @@ bool Simulator<EQT>::SimulateOneStep(){
             //cerr << "looping on autonomous edge";
             double eTime = AE.FiringTime - A.CurrentTime;
 			A.updateLHA(eTime , N.Marking);
-            printLog(eTime);
+            static_cast<S*>(this)->printLog(eTime);
 			A.fireAutonomous(AE.Index,N.Marking);
 			if(verbose>3){
 				cerr << "Autonomous transition:" << AE.Index << endl;
 				A.printState(cerr);
 				cerr << endl;
 			}
-			printLog(eTime);
+			static_cast<S*>(this)->printLog(eTime);
 			if (A.isFinal()) {
-				returnResultTrue();
+				static_cast<S*>(this)->returnResultTrue();
 				return false;
 			} else AE = A.GetEnabled_A_Edges( N.Marking);
 		}
@@ -227,12 +227,12 @@ bool Simulator<EQT>::SimulateOneStep(){
 		A.updateLHA( eTime, N.Marking );
 		
 		//Print the state of the system after the time elapse and the transition name
-        printLog(eTime,E1.transition);
+        static_cast<S*>(this)->printLog(eTime,E1.transition);
 		
 		//Fire the transition in the SPN
 		N.fire(E1.transition, E1.binding, A.CurrentTime);
 		
-        //Check if there exist a valid Sinchronisation in the automata.
+        //Check if there exist a valid Synchronisation in the automata.
 		int SE = A.synchroniseWith(E1.transition, N.Marking, E1.binding);
 		
 		//If no synchronisation is possible the trajectory is rejected
@@ -245,7 +245,7 @@ bool Simulator<EQT>::SimulateOneStep(){
 			//If synchronisation is possible check if the
 			// reached state is final. Then update the SPN.
 			if (A.isFinal()) {
-				returnResultTrue();
+				static_cast<S*>(this)->returnResultTrue();
 				return false;
 			} else {
                 N.update(A.CurrentTime, E1.transition, E1.binding, *EQ,*this);
@@ -258,8 +258,8 @@ bool Simulator<EQT>::SimulateOneStep(){
 /**
  * Interactive mode stop the simulation until the user choose a transition.
  */
-template <class EQT>
-void Simulator<EQT>::interactiveSimulation(){
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::interactiveSimulation(){
     string input_line;
     if((waitForTransition >0
         && (size_t)waitForTransition != N.lastTransition))return;
@@ -347,11 +347,11 @@ void Simulator<EQT>::interactiveSimulation(){
 /**
  * Simulate a whole trajectory in the system. Result is store in SimOutput
  */
-template <class EQT>
-void Simulator<EQT>::SimulateSinglePath() {
+template <class S, class EQT,class DEDS>
+void SimulatorBase<S,EQT,DEDS>::SimulateSinglePath() {
 
-    reset();
-    N.InitialEventsQueue(*EQ,*this);
+    static_cast<S*>(this)->reset();
+    N.initialEventsQueue(*EQ,*this);
     minInteractiveTime=0.0;
     waitForTransition= -1;
 	
@@ -362,7 +362,7 @@ void Simulator<EQT>::SimulateSinglePath() {
 	lastSampled = -sampleTrace;
 	while (continueb) {
         //cerr << "continue path"<< endl;
-        printLog(0.0);
+        static_cast<S*>(this)->printLog(0.0);
 		if(verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation
@@ -373,10 +373,10 @@ void Simulator<EQT>::SimulateSinglePath() {
 			A.printState(cerr);
 			cerr << endl;
 			if(verbose>4)EQ->view(N.Transition);
-			if(verbose==6)interactiveSimulation();
+			if(verbose==6)static_cast<S*>(this)->interactiveSimulation();
 		}
 		
-		continueb = SimulateOneStep();
+		continueb = static_cast<S*>(this)->SimulateOneStep();
 	}
     if(verbose>3){
         //Print marking and location of the automata
@@ -392,14 +392,14 @@ void Simulator<EQT>::SimulateSinglePath() {
     //cerr << "finish path"<< endl;
 }
 
-template <class EQT>
-BatchR Simulator<EQT>::RunBatch(){
+template <class S, class EQT,class DEDS>
+BatchR SimulatorBase<S,EQT,DEDS>::RunBatch(){
     auto starttime = chrono::steady_clock::now();
     auto currenttime = chrono::steady_clock::now();
     chrono::duration<double> timesize(0.03);
 	BatchR batchResult(A.FormulaVal.size(),A.FormulaValQual.size());
 	while ((batchResult.I < BatchSize && BatchSize!=0) || (currenttime-starttime < timesize && BatchSize==0) ) {
-		SimulateSinglePath();
+		static_cast<S*>(this)->SimulateSinglePath();
         batchResult.addSim(Result);
 		if(verbose>3)batchResult.print();
 		
@@ -416,8 +416,22 @@ BatchR Simulator<EQT>::RunBatch(){
 	return batchResult;
 }
 
-template class Simulator<EventsQueue>;
-template class Simulator<EventsQueueSet>;
+template class SimulatorBase<Simulator<EventsQueue,SPN_orig<EventsQueue>>, EventsQueue,SPN_orig<EventsQueue> >;
+template class SimulatorBase<Simulator<EventsQueueSet,SPN_orig<EventsQueueSet>>, EventsQueueSet,SPN_orig<EventsQueueSet> >;
+template class Simulator<EventsQueue,SPN_orig<EventsQueue> >;
+template class Simulator<EventsQueueSet,SPN_orig<EventsQueueSet> >;
+
+#include "SimulatorRE.hpp"
+template class SimulatorBase<SimulatorRE<SPN_RE>, EventsQueue,SPN_RE>;
+
+#include "SimulatorBoundedRE.hpp"
+template class SimulatorBase<SimulatorBoundedRE<SPN_BoundedRE>, EventsQueue,SPN_BoundedRE>;
+template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue,SPN_RE>;
+
+
+#include "SimulatorContinuousBounded.hpp"
+template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue,SPN_BoundedRE>;
+
 
 
 

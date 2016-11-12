@@ -32,7 +32,7 @@
 #include "LHA.hpp"
 #include "LHA_orig.hpp"
 #include "NLHA.hpp"
-#include "spn_orig.hpp"
+#include "SPNBase.hpp"
 #include "EventsQueueSet.hpp"
 #include "BatchR.hpp"
 #include "timeGen.hpp"
@@ -45,22 +45,13 @@
 #ifndef _SIMULATOR_HPP
 #define _SIMULATOR_HPP
 
-
-enum SimType {
-    Base,
-    RareEventUnbounded1,
-    RareEventUnbounded2,
-    RareEventBounded,
-    RareEventCTMC
-};
-
-template <class EQT>
-class Simulator:public timeGen {
+template <class S, class EQT, class DEDS>
+class SimulatorBase:public timeGen {
 public:
-    static Simulator* simFactory(SimType st, LHA_orig* Aptr, char**argv);
+    SimulatorBase(DEDS&,LHA_orig&);
     
     //Simulator();
-	~Simulator();
+	~SimulatorBase();
 	
 	//! verbose level of the simulator
     int verbose;
@@ -90,10 +81,9 @@ public:
 	 * @return a new BatchR structure containing the result
 	 * of the batch of simulation.
 	 */
-    virtual BatchR RunBatch();
-
-protected:
-    Simulator(SPN_orig<EQT>&,LHA_orig&);
+    BatchR RunBatch();
+    
+    /* private */
 
 	//! File stream to log value.
 	fstream logvalue;
@@ -114,7 +104,7 @@ protected:
 	size_t BatchSize;
 	
     
-	SPN_orig<EQT> &N; //!The object representing the SPN
+	DEDS &N; //!The object representing the SPN
 	LHA_orig &A; //!The object representing the LHA
 	
     
@@ -126,17 +116,18 @@ protected:
 	 */
 	EQT* EQ;
 	
+    
 	/**
 	 * \brief Simulate a step of the system,
 	 * this function do most of the simulation job.
 	 */
-	virtual bool SimulateOneStep();
+	bool SimulateOneStep();
 	
 	/**
 	 * \brief Simulate single path
 	 * this function loop over SimulateOneStep until a the path terminate.
 	 */
-	virtual void SimulateSinglePath();
+	void SimulateSinglePath();
 
     void printLog(double,size_t);
     void printLog(double);
@@ -147,17 +138,22 @@ protected:
 
     void printSedCmd();
 	
-	virtual void reset(); //! reset the simulator
+	void reset(); //! reset the simulator
 	
-	virtual void returnResultTrue();
+	void returnResultTrue();
 	
-	virtual void updateLikelihood(size_t);
+	void updateLikelihood(size_t);
     
 	//! Stop the simulation if sink transition is taken
-	virtual bool transitionSink(size_t);
+	bool transitionSink(size_t);
 	
 };
 
+template <class EQT, class DEDS>
+class Simulator:public SimulatorBase<Simulator<EQT, DEDS>, EQT, DEDS>{
+public:
+    Simulator(DEDS& deds,LHA_orig& lha):SimulatorBase<Simulator,EQT,DEDS>(deds, lha){};
+};
 
 #endif  /* _SIMULATOR_HPP */
 
