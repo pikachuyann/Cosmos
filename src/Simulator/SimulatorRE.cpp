@@ -37,8 +37,8 @@
 
 using namespace std;
 
-template<>
-void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b, timeGen &TG, SPN_RE& N){
+template<class DEDS>
+void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b, timeGen &TG, DEDS & N){
     double t = ctime;
     if (N.Transition[Id].DistTypeIndex != IMMEDIATE) {
         N.getParams(Id, b);
@@ -68,10 +68,10 @@ void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b, tim
 
 
 template <class S, class DEDS>
-SimulatorREBase<S, DEDS>::SimulatorREBase(DEDS& N,LHA_orig& A):SimulatorBase<S, EventsQueue, DEDS>(N,A){};
+SimulatorREBase<S, DEDS>::SimulatorREBase(DEDS& N,LHA_orig& A):SimulatorBase<S, EventsQueue<vector<_trans>>, DEDS>(N,A){};
 
 template <class S>
-SPNBaseRE<S>::SPNBaseRE(int& v,bool doubleIS):SPNBase<S,EventsQueue>(v),doubleIS_mode(doubleIS){
+SPNBaseRE<S>::SPNBaseRE(int& v,bool doubleIS):SPNBase<S,EventsQueue<vector<_trans>>>(v),doubleIS_mode(doubleIS){
     rareEventEnabled=false;
     Rate_Sum = 0;
     Origine_Rate_Sum = 0;
@@ -92,10 +92,10 @@ void SimulatorREBase<S, DEDS>::initVect(){
 }
 
 template<class S>
-void SPNBaseRE<S>::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
+void SPNBaseRE<S>::InitialEventsQueue(EventsQueue<vector<_trans>> &EQ,timeGen &TG) {
 	Rate_Sum = 0;
 	Origine_Rate_Sum = 0;
-	SPNBase<S,EventsQueue>::initialEventsQueue(EQ,TG);
+	SPNBase<S,EventsQueue<vector<_trans>>>::initialEventsQueue(EQ,TG);
 }
 
 template <class S, class DEDS>
@@ -111,7 +111,7 @@ void SimulatorREBase<S, DEDS>::returnResultTrue(){
 }
 
 template <class S>
-void SPNBaseRE<S>::update(double ctime,size_t t, const abstractBinding& b,EventsQueue &EQ,timeGen &TG){
+void SPNBaseRE<S>::update(double ctime,size_t t, const abstractBinding& b,EventsQueue<vector<_trans>> &EQ,timeGen &TG){
 	//If rareevent not require yet call the parent function
 	
 	if(!rareEventEnabled){
@@ -119,7 +119,7 @@ void SPNBaseRE<S>::update(double ctime,size_t t, const abstractBinding& b,Events
 			rareEventEnabled = true;
 			//A.Likelihood = 1.0;
 		}else{
-		  SPNBase<S,EventsQueue>::update(ctime, t, b,EQ, TG);
+		  SPNBase<S,EventsQueue<vector<_trans>>>::update(ctime, t, b,EQ, TG);
 		return;
 		}
 	}
@@ -129,7 +129,7 @@ void SPNBaseRE<S>::update(double ctime,size_t t, const abstractBinding& b,Events
 	Rate_Sum = 0;
 	Origine_Rate_Sum = 0;
 	
-	//Run over all transition
+	//Run over all transitions
 	for (const auto &tr : this->Transition) {
         if(tr.Id != this->tr - 1){
 			for(const auto &bindex : tr.bindingList ){
@@ -334,10 +334,16 @@ template class SimulatorREBase<SimulatorRE<SPN_RE>, SPN_RE>;
 template class SimulatorRE<SPN_RE>;
 template class SPNBaseRE<SPN_RE>;
 
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBaseRE<SPN_RE> &);
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_RE &);
+
 #include "SimulatorBoundedRE.hpp"
 template class SimulatorREBase<SimulatorBoundedRE<SPN_RE>, SPN_RE>;
 template class SimulatorREBase<SimulatorBoundedRE<SPN_BoundedRE>, SPN_BoundedRE>;
 template class SPNBaseRE<SPN_BoundedRE>;
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBaseRE<SPN_BoundedRE> &);
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_BoundedRE &);
+
 
 #include "SimulatorContinuousBounded.hpp"
 template class SimulatorREBase<SimulatorContinuousBounded<SPN_BoundedRE>, SPN_BoundedRE>;

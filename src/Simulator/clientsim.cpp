@@ -30,6 +30,7 @@
 #include "SimulatorBoundedRE.hpp"
 #include "SimulatorContinuousBounded.hpp"
 #include "Polynome.hpp"
+#include "MarkovChain.hpp"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -91,7 +92,8 @@ enum SimType {
     RareEventUnbounded1,
     RareEventUnbounded2,
     RareEventBounded,
-    RareEventCTMC
+    RareEventCTMC,
+    CTMC
 };
 
 template<class EQT>
@@ -111,7 +113,7 @@ void build_sim(SimType st,int argc,char **argv) {
         {
             auto &N = *(new SPN_orig<EQT>(verbose));
             auto sim = new Simulator<EQT,SPN_orig<EQT> >(N,A);
-            run_sim<Simulator<EQT, SPN_orig<EQT>>>(*sim,argc,argv);
+            run_sim(*sim,argc,argv);
         }
         case RareEventUnbounded1:
         case RareEventUnbounded2:
@@ -119,7 +121,7 @@ void build_sim(SimType st,int argc,char **argv) {
             auto &N = *(new SPN_RE(verbose,st==RareEventUnbounded2));
             auto reSim = new SimulatorRE<SPN_RE>(N,A);
             reSim->initVect();
-            run_sim<SimulatorRE<SPN_RE>>(*reSim,argc,argv);
+            run_sim(*reSim,argc,argv);
         }
         case RareEventBounded:
         {
@@ -128,7 +130,7 @@ void build_sim(SimType st,int argc,char **argv) {
             int T = atoi(argv[optioni+2]);
             auto boundedSim = new SimulatorBoundedRE<SPN_BoundedRE>(N,A,m);
             boundedSim->initVect(T);
-            run_sim<SimulatorBoundedRE<SPN_BoundedRE>>(*boundedSim,argc,argv);
+            run_sim(*boundedSim,argc,argv);
         }
         case RareEventCTMC:
         {
@@ -139,7 +141,13 @@ void build_sim(SimType st,int argc,char **argv) {
             int stepc = atoi(argv[optioni+4]);
             auto coSim = new SimulatorContinuousBounded<SPN_BoundedRE>(N,A,m,e,stepc);
             coSim->initVectCo(t);
-            run_sim<SimulatorContinuousBounded<SPN_BoundedRE>>(*coSim,argc,argv);
+            run_sim(*coSim,argc,argv);
+        }
+        case CTMC:
+        {
+            auto &M = *(new MarkovChain<EventsQueue<vector<Edge>>>());
+            auto sim = new Simulator<EventsQueue<vector<Edge>>, MarkovChain<EventsQueue<vector<Edge>>> >(M,A);
+            run_sim(*sim,argc,argv);
         }
     }
 }
@@ -219,7 +227,7 @@ int main(int argc, char** argv) {
     if(is_domain_impl_set){
         build_sim<EventsQueueSet>(st,argc, argv);
     }else{
-        build_sim<EventsQueue>(st,argc, argv);
+        build_sim<EventsQueue<vector<_trans>>>(st,argc, argv);
     }
     
     return (EXIT_SUCCESS);

@@ -300,14 +300,6 @@ void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,time
 
 #include "SPNBase.hpp"
 #include "EventsQueue.hpp"
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBase<SPN_orig<EventsQueue>,EventsQueue> &);
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueue> &);
-#include "SimulatorBoundedRE.hpp"
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBaseRE<SPN_RE> &);
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBaseRE<SPN_BoundedRE> &);
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_BoundedRE &);
-
-
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueue<vector<_trans>>> &);
 #include "EventsQueueSet.hpp"
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBase<SPN_orig<EventsQueueSet>,EventsQueueSet> &);
 template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueueSet> &);
