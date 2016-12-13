@@ -36,7 +36,7 @@
 #ifndef _SIMULATOR_BOUNDED_RE_HPP
 #define _SIMULATOR_BOUNDED_RE_HPP
 
-template <class EQT>
+template <class S, class EQT>
 class simulationState{
 private:
 	abstractMarking marking;
@@ -58,7 +58,7 @@ public:
 	};
 	~simulationState(){};
 	
-	void saveState(SPN_RE* N,LHA_orig* A,EQT** EQsim){
+	void saveState(S* N,LHA_orig* A,EQT** EQsim){
 		marking.swap(N->Marking);
 		//AE = *AEsim;
 		EQ = *EQsim; //new EventsQueue(*EQsim);
@@ -71,7 +71,7 @@ public:
 		Origine_Rate_Sum = N-> Origine_Rate_Sum;
 		
 	};
-	void loadState(SPN_RE* N,LHA_orig* A,EQT** EQsim){
+	void loadState(S* N,LHA_orig* A,EQT** EQsim){
 		
 		N->Marking.swap(marking);
 		//*AEsim = AE;
@@ -113,6 +113,7 @@ public:
 };
 
 class SPN_BoundedRE: public SPNBaseBoundedRE<SPN_BoundedRE>{
+    public:
   SPN_BoundedRE(int& v,bool doubleIS):SPNBaseBoundedRE<SPN_BoundedRE>(v,doubleIS){};
 };
 
