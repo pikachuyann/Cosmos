@@ -92,7 +92,7 @@ class SPNBaseBoundedRE: public SPNBaseRE<S>{
 public:
     SPNBaseBoundedRE(int& v,bool doubleIS);
 
-    void update(double ctime,size_t, const abstractBinding&,EventsQueue &, timeGen &);
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue<vector<_trans>> &, timeGen &);
     void getParams(size_t, const abstractBinding&);
     double mu();
     double ComputeDistr(size_t i,const abstractBinding&, double origin_rate);
