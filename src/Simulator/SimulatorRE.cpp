@@ -332,10 +332,12 @@ double SPNBaseRE<S>::ComputeDistr(size_t t , const abstractBinding& b, double or
 
 template class SimulatorREBase<SimulatorRE<SPN_RE>, SPN_RE>;
 template class SimulatorRE<SPN_RE>;
+template class SPNBaseRE<SPN_RE>;
 
 #include "SimulatorBoundedRE.hpp"
 template class SimulatorREBase<SimulatorBoundedRE<SPN_RE>, SPN_RE>;
 template class SimulatorREBase<SimulatorBoundedRE<SPN_BoundedRE>, SPN_BoundedRE>;
+template class SPNBaseRE<SPN_BoundedRE>;
 
 #include "SimulatorContinuousBounded.hpp"
 template class SimulatorREBase<SimulatorContinuousBounded<SPN_BoundedRE>, SPN_BoundedRE>;

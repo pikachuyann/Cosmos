@@ -445,3 +445,9 @@ template class SPNBase<SPN_orig<EventsQueue>,EventsQueue>;
 template class SPNBase<SPN_orig<EventsQueueSet>,EventsQueueSet>;
 template class SPN_orig<EventsQueue>;
 template class SPN_orig<EventsQueueSet>;
+
+#include "SimulatorBoundedRE.hpp"
+template class SPNBase<SPN_RE,EventsQueue>;
+template class SPNBase<SPN_BoundedRE,EventsQueue>;
+
+
