@@ -97,7 +97,7 @@ BatchR SimulatorContinuousBounded<DEDS>::RunBatch(){
 	for(int i =0; i<= Nmax; i++)
 		batchResult.Min[2*i] /= fg->total_weight;
 		
-	list<simulationState<EventsQueue> > statevect((Nmax+1)*this->BatchSize);
+	list<simulationState<DEDS, EventsQueue> > statevect((Nmax+1)*this->BatchSize);
 	
     int c =0;
 	if(this->verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
