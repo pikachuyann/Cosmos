@@ -34,7 +34,7 @@ template<class S, class EQT>
 SPNBase<S,EQT>::SPNBase(int v):verbose(v){}
 
 template<class S>
-SPNBase<S,EventsQueue>::SPNBase(int v):verbose(v){}
+SPNBase<S,EventsQueue<vector<_trans>>>::SPNBase(int v):verbose(v){}
 
 template<class S>
 SPNBase<S,EventsQueueSet>::SPNBase(int v):verbose(v){}
@@ -43,7 +43,7 @@ SPNBase<S,EventsQueueSet>::SPNBase(int v):verbose(v){}
  * Fill the event queue with the initially enabled transition
  */
 template<class S>
-void SPNBase<S,EventsQueue>::initialEventsQueue(EventsQueue &EQ,timeGen &TG) {
+void SPNBase<S,EventsQueue<vector<_trans>>>::initialEventsQueue(EventsQueue<vector<_trans>> &EQ,timeGen &TG) {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
 
@@ -108,7 +108,7 @@ void SPNBase<S,EventsQueueSet>::initialEventsQueue(EventsQueueSet &EQ,timeGen &T
  * @param b is the binding of the last transition.
  */
 template<class S>
-void SPNBase<S,EventsQueue>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue &EQ,timeGen &TG){
+void SPNBase<S,EventsQueue<vector<_trans>>>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue<vector<_trans>> &EQ,timeGen &TG){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
@@ -441,13 +441,13 @@ void SPNBase<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, con
      */ 
 }
 
-template class SPNBase<SPN_orig<EventsQueue>,EventsQueue>;
+template class SPNBase<SPN_orig<EventsQueue<vector<_trans>>>,EventsQueue<vector<_trans>>>;
 template class SPNBase<SPN_orig<EventsQueueSet>,EventsQueueSet>;
-template class SPN_orig<EventsQueue>;
+template class SPN_orig<EventsQueue<vector<_trans>>>;
 template class SPN_orig<EventsQueueSet>;
 
 #include "SimulatorBoundedRE.hpp"
-template class SPNBase<SPN_RE,EventsQueue>;
-template class SPNBase<SPN_BoundedRE,EventsQueue>;
+template class SPNBase<SPN_RE,EventsQueue<vector<_trans>>>;
+template class SPNBase<SPN_BoundedRE,EventsQueue<vector<_trans>>>;
 
 

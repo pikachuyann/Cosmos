@@ -24,11 +24,14 @@
  *******************************************************************************
  */
 
-#include "SimulatorBoundedRE.hpp"
 #include <list>
+#include <sys/resource.h>
+
+
+#include "SimulatorBoundedRE.hpp"
+
 #include "numSolverBB.hpp"
 #include "numSolverSH.hpp"
-#include <sys/resource.h>
 
 using namespace std;
 
@@ -69,7 +72,7 @@ BatchR SimulatorBoundedREBase<S,DEDS>::RunBatch(){
 	
 	BatchR batchResult(1,0);
 	
-	list<simulationState<DEDS, EventsQueue> > statevect(this->BatchSize);
+	list<simulationState<DEDS, EventsQueue<vector<_trans>>> > statevect(this->BatchSize);
 	//delete EQ;
 	
 	if(this->verbose>=1){
@@ -81,7 +84,7 @@ BatchR SimulatorBoundedREBase<S,DEDS>::RunBatch(){
     for (auto &it : statevect) {
 		this->N.Origine_Rate_Table = vector<double>(this->N.tr,0.0);
 		this->N.Rate_Table = vector<double>(this->N.tr,0.0);
-		this->EQ = new EventsQueue(this->N);
+		this->EQ = new EventsQueue<vector<_trans>>(this->N.Transition);
 		this->reset();
 		
 		this->N.initialEventsQueue(*(this->EQ),*this);
@@ -178,7 +181,7 @@ double SPNBaseBoundedRE<S>::mu(){
 
 
 template <class S>
-void SPNBaseBoundedRE<S>::update(double ctime,size_t,const abstractBinding&,EventsQueue &EQ, timeGen &TG){
+void SPNBaseBoundedRE<S>::update(double ctime,size_t,const abstractBinding&,EventsQueue<vector<_trans>> &EQ, timeGen &TG){
 	Event F;
     //check if the current transition is still enabled
 	

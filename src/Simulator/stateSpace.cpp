@@ -553,7 +553,7 @@ void stateSpace::inputVect(){
     ifstream inputFile("muFile",fstream::in);
     
     if(!inputFile.good()){
-        cerr << "Fail to open muFile"<<endl;
+        cerr << "Fail to open muFile at" <<endl;
         exit(EXIT_FAILURE);
     }
     

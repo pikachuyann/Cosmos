@@ -20,73 +20,45 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file spn_orig.hpp created by Benoit Barbot on 03/09/15.                     *
+ * file MarkovChain.hpp created by Benoit Barbot on 13/12/2016.                *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__spn_orig__
-#define __Cosmos__spn_orig__
+#ifndef MarkovChain_hpp
+#define MarkovChain_hpp
 
+#include <iostream>
+#include <vector>
+#include <array>
 
-#include "spn.hpp"
-#include "timeGen.hpp"
-#include "Event.hpp"
+#include "Simulator.hpp"
 
-template<class S, class EQT>
-class SPNBase : public SPN{
+class State{
 public:
-    SPNBase(int);
-
-    void update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &);
-    void initialEventsQueue(EQT &,timeGen &);
-
-    int verbose;
-
-protected:
-    //! a Temporary event
-    Event F;
-
+    void printHeader(ostream &logtrace)const;
+    void print(ostream &logtrace, double time)const;
 };
 
-#include "EventsQueue.hpp"
-template <class S>
-class SPNBase<S,EventsQueue<vector<_trans>>> : public SPN{
+class Edge{
 public:
-    SPNBase(int);
-    
-    void update(double ctime,size_t, const abstractBinding&,EventsQueue<vector<_trans>> &,timeGen &);
-    void initialEventsQueue(EventsQueue<vector<_trans>> &,timeGen &);
-    
-    int verbose;
-    
-protected:
-    //! a Temporary event
-    Event F;
-    
-};
-
-
-#include "EventsQueueSet.hpp"
-template <class S>
-class SPNBase<S,EventsQueueSet> : public SPN{
-public:
-    SPNBase(int);
-    
-    void update(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &);
-    void initialEventsQueue(EventsQueueSet &,timeGen &);
-    
-    int verbose;
-    
-protected:
-    //! a Temporary event
-    Event F;
-    
+    size_t Id;
+    DistributionType DistTypeIndex;
+    std::string label;
+    std::array<abstractBinding, 1> bindingList;
 };
 
 template <class EQT>
-class SPN_orig:public SPNBase<SPN_orig<EQT>, EQT>{
+class MarkovChain{
 public:
-    SPN_orig(int v):SPNBase<SPN_orig,EQT>(v){};
+    abstractMarking Marking;
+    std::vector<Edge> Transition;
+    size_t lastTransition;
+    double lastTransitionTime;
+    
+    void reset();
+    void initialEventsQueue(EQT &,timeGen &);
+    void fire(size_t tr,const abstractBinding& b, double time);
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue<std::vector<Edge>> &,timeGen &);
 };
 
-#endif /* defined(__Cosmos__spn_orig__) */
+#endif /* MarkovChain_hpp */

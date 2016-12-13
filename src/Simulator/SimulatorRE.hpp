@@ -34,15 +34,15 @@
 #include "SPNBase.hpp"
 
 template <class S>
-class SPNBaseRE: public SPNBase<S,EventsQueue>, public REHandling{
+class SPNBaseRE: public SPNBase<S,EventsQueue<vector<_trans>>>, public REHandling{
 public:
     SPNBaseRE(int& v,bool doubleIS);
 
     bool rareEventEnabled;
 
     void initialize(stateSpace *muprob);
-    void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &);
-    void InitialEventsQueue(EventsQueue &,timeGen &);
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue<vector<_trans>> &,timeGen &);
+    void InitialEventsQueue(EventsQueue<vector<_trans>> &,timeGen &);
 
     double mu();
     const bool doubleIS_mode;
@@ -60,7 +60,7 @@ public:
 };
 
 template <class S,class DEDS>
-class SimulatorREBase: public SimulatorBase<S,EventsQueue,DEDS>{
+class SimulatorREBase: public SimulatorBase<S,EventsQueue<vector<_trans>>,DEDS>{
 public:
 	SimulatorREBase(DEDS&,LHA_orig&);
 	
