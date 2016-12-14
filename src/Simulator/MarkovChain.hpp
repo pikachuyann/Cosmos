@@ -31,14 +31,12 @@
 #include <vector>
 #include <array>
 
-#include "Simulator.hpp"
+#include "timeGen.hpp"
+#include "marking.hpp"
 
-/*class State{
-public:
-    void printHeader(ostream &logtrace)const;
-    void print(ostream &logtrace, double time)const;
-    void printSedCmd(ostream &logtrace)const;
-};*/
+class abstractMarkingImpl{
+    
+};
 
 class Edge{
 public:

@@ -112,7 +112,8 @@ bool varOrder(const Variables &v1,const Variables &v2){
 	if(v1.PLVAR_FBloodEx<v2.PLVAR_FBloodEx)return true;
 	return false;
 };
-void LHA::resetVariables(){
+template<class DEDState>
+void LHA<DEDState>::resetVariables(){
 	Vars->time= 0;
 	Vars->countT= 0;
 	Vars->EXRayBlood= 0;
@@ -163,16 +164,20 @@ void LHA::resetVariables(){
 	Vars->PLVAR_FXRay= 0;
 	Vars->PLVAR_FBloodEx= 0;
 };
-void LHA::printHeader(ostream &s)const{
+template<class DEDState>
+void LHA<DEDState>::printHeader(ostream &s)const{
 	s << "	Location\t";
 };
-void LHA::printState(ostream &s){
+template<class DEDState>
+void LHA<DEDState>::printState(ostream &s){
 	s << "\t" << LocLabel[CurrentLocation] << "\t";
 };
-const int LHA::ActionEdgesAr[] = {
+template<class DEDState>
+const int LHA<DEDState>::ActionEdgesAr[] = {
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
 	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,2 ,3 ,4 ,5 ,6 ,7 ,8 ,9 ,10 ,11 ,12 ,13 ,14 ,15 ,16 ,17 ,18 ,19 ,20 ,21 ,22 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,};
-LHA::LHA():NbLoc(3),NbTrans(21),NbVar(49),FinalLoc( 3,false){
+template<class DEDState>
+ LHA<DEDState>::LHA():NbLoc(3),NbTrans(21),NbVar(49),FinalLoc( 3,false){
     InitLoc.insert(0);
     FinalLoc[2]=true;
     Edge= vector<LhaEdge>(24);
@@ -213,7 +218,8 @@ LHA::LHA():NbLoc(3),NbTrans(21),NbVar(49),FinalLoc( 3,false){
     FormulaValQual = vector<bool>(0,false);
 }
 
-void LHA::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {
+template<class DEDState>
+void LHA<DEDState>::DoElapsedTimeUpdate(double DeltaT,const DEDState& Marking) {
 	Vars->time += GetFlow(0, Marking) * DeltaT;
 	Vars->EXRayBlood += GetFlow(2, Marking) * DeltaT;
 	Vars->FallIll += GetFlow(3, Marking) * DeltaT;
@@ -263,7 +269,8 @@ void LHA::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {
 	Vars->PLVAR_FXRay += GetFlow(47, Marking) * DeltaT;
 	Vars->PLVAR_FBloodEx += GetFlow(48, Marking) * DeltaT;
 }
-double LHA::GetFlow(int v, const abstractMarking& Marking)const{
+template<class DEDState>
+double LHA<DEDState>::GetFlow(int v, const DEDState& Marking)const{
 	switch (v){
 		case 1:	//countT
 
@@ -627,12 +634,14 @@ double LHA::GetFlow(int v, const abstractMarking& Marking)const{
 	}
 }
 
-bool LHA::CheckLocation(int loc,const abstractMarking& Marking)const{
+template<class DEDState>
+bool LHA<DEDState>::CheckLocation(int loc,const DEDState& Marking)const{
          return true;
 
 }
 
-bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{
+template<class DEDState>
+bool LHA<DEDState>::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const DEDState& Marking)const{
 	switch (ed){
 		case 1:	//
 		case 23:	//
@@ -656,7 +665,8 @@ bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const a
 	}
 }
 
-t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{
+template<class DEDState>
+t_interval LHA<DEDState>::GetEdgeEnablingTime(int ed,const DEDState& Marking)const{
 	switch (ed){
 		case 1:	//
          {
@@ -740,7 +750,8 @@ t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{
 	}
 }
 
-void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBinding& b){
+template<class DEDState>
+void LHA<DEDState>::DoEdgeUpdates(int ed,const DEDState& Marking, const abstractBinding& b){
 	switch (ed){
 		case 1:	//
          {
@@ -940,14 +951,17 @@ void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBin
 	}
 }
 
-void LHA::UpdateLinForm(const abstractMarking& Marking){
+template<class DEDState>
+void LHA<DEDState>::UpdateLinForm(const DEDState& Marking){
     }
 
-void LHA::UpdateLhaFunc(double& Delta ){
+template<class DEDState>
+void LHA<DEDState>::UpdateLhaFunc(double& Delta ){
 
     }
 
-void LHA::UpdateFormulaVal(){
+template<class DEDState>
+void LHA<DEDState>::UpdateFormulaVal(){
 
     LhaFunc[0]= Vars->EXRayBlood;
     LhaFunc[1]= Vars->FallIll;
@@ -1060,3 +1074,4 @@ fullState::fullState(const fullState &fs):loc(fs.loc){
 
 fullState::~fullState(){delete var;}
 
+template class LHA<abstractMarking>;
