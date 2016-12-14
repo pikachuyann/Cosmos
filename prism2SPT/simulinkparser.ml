@@ -89,12 +89,19 @@ let rec blockparams_of_simulink ((lB, lP, lL) as ml)  = function
     | PCData (s) -> output_string stderr s; ml
 ;;
 
+let extract_src s = s;;
+let extract_dst s = s;; (* Vérifier si c'est le bon type de in/out *)
+
+let line_of_simulink lL clist =
+    let src = extract_src (findPropName "Src" clist) and dst = extract_dst (findPropName "Dst" clist) in
+        (src, dst)::lL;;
+
 (* Build block lists *)
 let rec blocklist_of_simulink (lB, lP, lL) = function
     | Element (name,alist,clist) (* as t *) ->
         begin match name with
         | "System" -> List.fold_left blocklist_of_simulink (lB, lP, lL) clist
-        | "Line" -> (lB, lP, lL) (* todo *)
+        | "Line" -> (lB, lP, line_of_simulink lL clist)
         | "Block" -> let blockType = List.assoc "BlockType" alist and blockName = List.assoc "Name" alist
                      and blockID = List.assoc "SID" alist and blockParams = List.fold_left parseblockParams [] clist in
                 ({ blocktype = blockType; blockid = blockID; name = blockName; values = blockParams }::lB, lP, lL);
