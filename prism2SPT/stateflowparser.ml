@@ -1,6 +1,6 @@
 open Xml
 open Type
-open SimulinkType
+open StateflowType
 open Lexing
 
 (* Handling of SSID*)

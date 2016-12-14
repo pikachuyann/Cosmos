@@ -1,6 +1,6 @@
 %{
   open Type
-  open SimulinkType
+  open StateflowType
 %}
 
 %token <int> INT
@@ -36,7 +36,7 @@
 %left LPAR RPAR
 
 %start main
-%type <SimulinkType.simulink_trans_label> main
+%type <StateflowType.simulink_trans_label> main
 //%type <string*string> matlabfun
 
 %%

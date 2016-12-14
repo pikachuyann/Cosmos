@@ -1,6 +1,6 @@
 open Type
 
-type format = Prism | Pnml | Dot | Marcie | Simulink | Pdf | GrML | CLess
+type format = Prism | Pnml | Dot | Marcie | Stateflow | Pdf | GrML | CLess
 
 let input = ref stdin
 let output = ref "out"
@@ -23,22 +23,22 @@ let nbarg = ref 0
 
 	       
 let _ = 
-  Arg.parse ["--light",Arg.Set SimulinkType.lightSim,"light simulator";
+  Arg.parse ["--light",Arg.Set StateflowType.lightSim,"light simulator";
 	     "--pdf",Arg.Unit (fun () -> outputFormat:= Pdf:: !outputFormat),"Output as PDF";
 	     "--prism",Arg.Unit (fun () -> outputFormat:= Prism:: !outputFormat),"Output in Prism File Format";
 	     "--pnml",Arg.Unit (fun () -> outputFormat:= Pnml:: !outputFormat),"Output in Pnml File Format";
 	     "--grml",Arg.Unit (fun () -> outputFormat:= GrML:: !outputFormat),"Output in Pnml File Format";
 	     "--andl",Arg.Unit (fun () -> outputFormat:= Marcie:: !outputFormat),"Output in Marcie File Format";
-	     "--stoch",Arg.Set SimulinkType.modelStoch,"Use probabilistic delay";
+	     "--stoch",Arg.Set StateflowType.modelStoch,"Use probabilistic delay";
 	     "--trace",Arg.Set_int traceSize, "Generate a trace of the model";
 	     "--simule",Arg.Set_int simule, "Simulate trajectories";
 	     "--state-space", Arg.Set statespace, "Compute state space of the model";
-	     "--no-erlang",Arg.Clear SimulinkType.useerlang,"Replace erlang distribution by exponentials";
-	     "--no-imm",Arg.Set SimulinkType.doremoveImm,"Remove Instantaneous transition in prims model";
+	     "--no-erlang",Arg.Clear StateflowType.useerlang,"Replace erlang distribution by exponentials";
+	     "--no-imm",Arg.Set StateflowType.doremoveImm,"Remove Instantaneous transition in prims model";
 	     "--no-inhib",Arg.Clear inHibitor,"Remove inhibitor arcs";
-	     "--erlang-step",Arg.Set_int SimulinkTrans.erlangstep,"Number of erlang step for stochastic model";
+	     "--erlang-step",Arg.Set_int StateflowTrans.erlangstep,"Number of erlang step for stochastic model";
 	     "-v",Arg.Set_int verbose,"Set verbose level default 1";
-	     "--add-reward",Arg.Set SimulinkType.add_reward, "Add reward transition to each non immediate transition";
+	     "--add-reward",Arg.Set StateflowType.add_reward, "Add reward transition to each non immediate transition";
 	     "--mdp-strat", Arg.Set_string Simulation.mdpstrat, "MDP strategy load/save file";
 	     "--mdp-det-strat", Arg.Set Simulation.detstrat, "Use deterministic strategy" 
 	    ]
@@ -51,7 +51,7 @@ let _ =
 	    | "c" -> typeFormat := CLess
 	| "pnml" -> typeFormat := Pnml
 	| "slx" -> 
-	  typeFormat := Simulink;
+	  typeFormat := Stateflow;
 	  const_file := "const.m"
 	| "gml" | "grml" -> typeFormat := GrML
 	| _-> failwith "Unsupported file format"
@@ -69,9 +69,9 @@ let _ = Simulation.MdpOp.read_strat ();;
 let _ =
   if !verbose>1 then begin
     Printf.printf "Verbose level: %i\n" !verbose;
-    Printf.printf "Light Sim: %b\n" !SimulinkType.lightSim;
-    Printf.printf "Stochastic transition: %b\n" !SimulinkType.modelStoch;
-    Printf.printf "Use Erlang: %b\n" !SimulinkType.useerlang;
+    Printf.printf "Light Sim: %b\n" !StateflowType.lightSim;
+    Printf.printf "Stochastic transition: %b\n" !StateflowType.modelStoch;
+    Printf.printf "Use Erlang: %b\n" !StateflowType.useerlang;
   end;
 
 logout := open_out (!output^".log");;
@@ -114,11 +114,11 @@ let _ =
       GrMLParser.net_of_tree net xmlf;
   net
   (* ENDIF *)
-  | Simulink -> 
+  | Stateflow -> 
    (* IFNDEF HAS_XML THEN
-      failwith "XML library required to read Simulink file" 
+      failwith "XML library required to read Stateflow file" 
       ELSE IFNDEF HAS_ZIP THEN
-      failwith "ZIP library required to read Simulink file" 
+      failwith "ZIP library required to read Stateflow file" 
       ELSE*)
       begin 
 	Zip.open_in !inname
@@ -127,25 +127,25 @@ let _ =
 	    with Not_found -> Zip.find_entry z "simulink/blockdiagram.xml")
 		     |> Zip.read_entry z)
 	|> Xml.parse_string
-	|> Simulinkparser.modulist_of_tree []
-	|> SimulinkTrans.expand_trans
-	|> List.map SimulinkTrans.flatten_module
-	(*|> List.map SimulinkTrans.flatten_state_ssid*)
+	|> Stateflowparser.modulist_of_tree []
+	|> StateflowTrans.expand_trans
+	|> List.map StateflowTrans.flatten_module
+	(*|> List.map StateflowTrans.flatten_state_ssid*)
 
-	|< List.iter (SimulinkType.print_module !logout)
-	|> List.map SimulinkTrans.incr_state
-	|> SimulinkTrans.find_combinaison
+	|< List.iter (StateflowType.print_module !logout)
+	|> List.map StateflowTrans.incr_state
+	|> StateflowTrans.find_combinaison
 	|< (fun x -> if List.mem Prism !outputFormat then
 	    x 
-	       |> (fun x -> if !SimulinkType.doremoveImm then 
-		   List.map SimulinkTrans.removeImm x else x)
-	       |> SimulinkTrans.print_prism_module ((!output)^".sm") !const_file)
-	|> List.map SimulinkTrans.prune_unread2
-      	|> (fun x -> List.fold_left SimulinkTrans.combine_modu2 (List.hd x) (List.tl x))
-	|> SimulinkTrans.expand_trans2
-    (*|> (fun x->Simulinkparser.print_simulink_dot2 ((!output)^".dot") [x])*)
-    (*|< Simulinkparser.prune*) 
-	|> SimulinkTrans.stochNet_of_modu !const_file
+	       |> (fun x -> if !StateflowType.doremoveImm then 
+		   List.map StateflowTrans.removeImm x else x)
+	       |> StateflowTrans.print_prism_module ((!output)^".sm") !const_file)
+	|> List.map StateflowTrans.prune_unread2
+      	|> (fun x -> List.fold_left StateflowTrans.combine_modu2 (List.hd x) (List.tl x))
+	|> StateflowTrans.expand_trans2
+    (*|> (fun x->Stateflowparser.print_simulink_dot2 ((!output)^".dot") [x])*)
+    (*|< Stateflowparser.prune*) 
+	|> StateflowTrans.stochNet_of_modu !const_file
       end
      (* ENDIF
       ENDIF *)
@@ -168,7 +168,7 @@ let _ =
      net
   | _ -> failwith "Input format not yet supported" end
   |< (fun _-> print_endline "Finish parsing, start transformation")
-  |> (fun x-> if !SimulinkType.useerlang then x else StochasticPetriNet.remove_erlang x)
+  |> (fun x-> if !StateflowType.useerlang then x else StochasticPetriNet.remove_erlang x)
   (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
   |< (fun net -> if !statespace then let n = List.length (Simulation.SemanticSPT.state_space net) in
 				   Printf.printf  "State-space size:%i\n" n)
@@ -223,7 +223,7 @@ let _ =
 	 |> StochPTPrinter.print_pnml ((!output)^".pnml")
       | Marcie -> 
 	StochPTPrinter.print_spt_marcie ((!output)^".andl") net
-      | Prism when !typeFormat = Simulink -> ()
+      | Prism when !typeFormat = Stateflow -> ()
       | _ -> print_endline "Output format not supported"
       ) !outputFormat;
       print_endline "Finish writing.";
