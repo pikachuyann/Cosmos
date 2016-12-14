@@ -1,8 +1,8 @@
 open PetriNet
 open StochasticPetriNet
 open Type
-open SimulinkType
-open Simulinkparser
+open StateflowType
+open Stateflowparser
 
 let erlangstep = ref 10
 let escape_XML_var = ref true
