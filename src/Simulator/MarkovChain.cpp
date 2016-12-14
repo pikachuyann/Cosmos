@@ -27,7 +27,6 @@
 #include <vector>
 
 #include "EventsQueue.hpp"
-
 #include "MarkovChain.hpp"
 
 template<class EQT>

@@ -43,7 +43,7 @@ using namespace std;
  * but don't fill it.
  */
 template <class S, class EQT,class DEDS>
-SimulatorBase<S,EQT,DEDS>::SimulatorBase(DEDS& spn,LHA_orig& automate):N(spn),A(automate){
+SimulatorBase<S,EQT,DEDS>::SimulatorBase(DEDS& spn,LHA_orig<typeof spn.Marking>& automate):N(spn),A(automate){
     EQ = new EQT(N.Transition); //initialization of the event queue
     logResult=false;
 	sampleTrace = 0.0;
