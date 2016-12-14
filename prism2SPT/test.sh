@@ -1,3 +1,1 @@
-./buildSimulink.sh
-./testSimulink.native test.slx
-
+./buildSimulink.sh && ./testSimulink.native test.slx
