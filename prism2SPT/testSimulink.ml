@@ -66,4 +66,7 @@ let _ =
 	with Not_found -> Zip.find_entry z "simulink/stateflow.xml")
 	|> Zip.read_entry z)
 	|> Xml.parse_string
-	|> Simulinkparser.modulist_of_tree []
+	|> Simulinkparser.blocklist_of_tree ([],[],[])
+	|> Simulinkparser.printBlockParDeflist stdout
+
+
