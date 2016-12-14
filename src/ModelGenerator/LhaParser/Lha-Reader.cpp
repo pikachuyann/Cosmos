@@ -61,6 +61,10 @@ Lha_Reader::Lha_Reader(GspnType& mspn,parameters &Q) : MyLha(mspn),P(Q){
 Lha_Reader::~Lha_Reader() {
 }
 
+string Lha_Reader::funDecl(const string& funtype) const{
+    return "template<class DEDState>\n"+funtype+ " LHA<DEDState>::";
+}
+
 int Lha_Reader::parse(string& expr) {
     scan_expression(expr);
 
@@ -207,7 +211,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
     LhaCppFile << "\treturn false;\n};\n";
 
 
-	LhaCppFile << "void LHA::resetVariables(){\n";
+	LhaCppFile << funDecl("void") << "resetVariables(){\n";
 	for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++){
 		if(MyLha.Vars.type[v] == COLOR_VARIABLE){
 			LhaCppFile << "\tVars->" << MyLha.Vars.label[v] << "= Color_" << MyLha.MyGspn->colClasses[MyLha.Vars.colorDomain[v]].name << "_Total ;\n";
@@ -217,7 +221,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
 	}
 	LhaCppFile << "};\n";
 
-	LhaCppFile << "void LHA::printHeader(ostream &s)const{\n";
+	LhaCppFile << funDecl("void") << "printHeader(ostream &s)const{\n";
 	LhaCppFile << "\ts << \"\tLocation\\t";
     if(P.StringInSpnLHA){
         for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++)
@@ -226,7 +230,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
 	LhaCppFile << "\";\n";
 	LhaCppFile << "};\n";
 
-	LhaCppFile << "void LHA::printState(ostream &s){\n";
+	LhaCppFile << funDecl("void") << "printState(ostream &s){\n";
 	LhaCppFile << "\ts << \"\\t\" << LocLabel[CurrentLocation] << \"\\t\";\n";
     if(P.StringInSpnLHA){
         for(size_t v= 0 ; v < MyLha.Vars.type.size(); v++)
@@ -281,12 +285,12 @@ void Lha_Reader::WriteFile(parameters& P)const {
     //LhaCppFile << "/*" << accstr.str() << "*/" << endl;
 
 
-    LhaCppFile << "const int LHA::ActionEdgesAr[] = " << accstr.str() << ";"<< endl;
+    LhaCppFile << funDecl("const int") << "ActionEdgesAr[] = " << accstr.str() << ";"<< endl;
     /*LhaCppFile << "const int* LHAActionEdgesAr2["<< MyLha.NbLoc
      <<"]["<< MyLha.TransitionIndex.size() <<"] = " << accset3.str() << ";"<< endl;
      LhaCppFile << "const int* LHAActionEdges = (const int***)LHAActionEdgesAr;"<< endl;
      */
-    LhaCppFile << "LHA::LHA():NbLoc(" << MyLha.NbLoc << "),NbTrans(" << MyLha.TransitionIndex.size()<<"),NbVar(" << MyLha.NbVar << "),FinalLoc( " << MyLha.NbLoc << ",false){" << endl;
+    LhaCppFile << funDecl("") << "LHA():NbLoc(" << MyLha.NbLoc << "),NbTrans(" << MyLha.TransitionIndex.size()<<"),NbVar(" << MyLha.NbVar << "),FinalLoc( " << MyLha.NbLoc << ",false){" << endl;
 
     for (set<unsigned int>::iterator it = MyLha.InitLoc.begin(); it != MyLha.InitLoc.end(); it++)
         LhaCppFile << "    InitLoc.insert(" << (*it) << ");" << endl;
@@ -344,7 +348,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
     LhaCppFile << "}\n" << endl;
 
 
-	LhaCppFile << "void LHA::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {\n";
+	LhaCppFile << funDecl("void") << "DoElapsedTimeUpdate(double DeltaT,const DEDState& Marking) {\n";
     for (size_t v = 0; v < MyLha.Vars.label.size() ; v++) {
 		if(MyLha.Vars.type[v] == CONTINIOUS_VARIABLE )
 			LhaCppFile <<  "\tVars->"<< MyLha.Vars.label[v] << " += GetFlow("<<v<<", Marking) * DeltaT;\n";
@@ -352,7 +356,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
 	LhaCppFile << "}\n";
 
 
-    LhaCppFile << "double LHA::GetFlow(int v, const abstractMarking& Marking)const{" << endl;
+    LhaCppFile << funDecl("double") << "GetFlow(int v, const DEDState& Marking)const{" << endl;
     casesHandler flowcases("v");
     for (size_t x = 0; x < MyLha.NbVar; x++) {
 		stringstream newcase;
@@ -372,7 +376,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
     flowcases.writeCases(LhaCppFile);
     LhaCppFile << "}\n" << endl;
 
-    LhaCppFile << "bool LHA::CheckLocation(int loc,const abstractMarking& Marking)const{" << endl;
+    LhaCppFile << funDecl("bool") << "CheckLocation(int loc,const DEDState& Marking)const{" << endl;
 	casesHandler checklock("loc");
     for (size_t l = 0; l < MyLha.NbLoc; l++) {
 		stringstream newcase;
@@ -383,7 +387,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
 
     LhaCppFile << "}\n" << endl;
 
-    LhaCppFile << "bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{" << endl;
+    LhaCppFile << funDecl("bool") << "CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const DEDState& Marking)const{" << endl;
     casesHandler checkConstrain("ed");
     for (size_t e = 0; e < MyLha.Edge.size(); e++){
 
@@ -418,7 +422,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
     LhaCppFile << "}\n" << endl;
 
 
-    LhaCppFile << "t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{" << endl;
+    LhaCppFile << funDecl("t_interval") << "GetEdgeEnablingTime(int ed,const DEDState& Marking)const{" << endl;
 	casesHandler enablingtime("ed");
 	//    LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++){
@@ -528,7 +532,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
 
 
 
-    LhaCppFile << "void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBinding& b){" << endl;
+    LhaCppFile << funDecl("void") << "DoEdgeUpdates(int ed,const DEDState& Marking, const abstractBinding& b){" << endl;
 	casesHandler edgeUpdateHandler("ed");
     //LhaCppFile << "    switch(ed){" << endl;
     for (size_t e = 0; e < MyLha.Edge.size(); e++) {
@@ -601,7 +605,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
 	 LhaCppFile << "    }\n" << endl;
 	 }*/
 
-	LhaCppFile << "void LHA::UpdateLinForm(const abstractMarking& Marking){" << endl;
+	LhaCppFile << funDecl("void") << "UpdateLinForm(const DEDState& Marking){" << endl;
     for (let it : MyLha.LinearForm)
         if(!MyLha.SimplyUsedLinearForm[it.second]){
             LhaCppFile << "    LinForm[" << it.second << "]=" << it.first << ";" << endl;
@@ -609,7 +613,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
         }
 	LhaCppFile << "    }\n" << endl;
 
-	LhaCppFile << "void LHA::UpdateLhaFunc(double& Delta ){" << endl;
+	LhaCppFile << funDecl("void") << "UpdateLhaFunc(double& Delta ){" << endl;
 	for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
 		/*if (MyLha.LhaFuncType[i] == "Last")
 		 LhaCppFile << "    LhaFunc[" << i << "]=LinForm[" << MyLha.LhaFuncArg[i] << "];" << endl;
@@ -627,7 +631,7 @@ void Lha_Reader::WriteFile(parameters& P)const {
 	}
 	LhaCppFile << "\n    }\n" << endl;
 	
-	LhaCppFile << "void LHA::UpdateFormulaVal(){\n" << endl;
+	LhaCppFile << funDecl("void") << "UpdateFormulaVal(){\n" << endl;
     for (size_t i = 0; i < MyLha.LhaFuncArg.size(); i++) {
         if (MyLha.LhaFuncType[i] == "Last" && MyLha.SimplyUsedLinearForm[MyLha.LhaFuncArg[i]]){
             string str;
@@ -662,7 +666,10 @@ void Lha_Reader::WriteFile(parameters& P)const {
     LhaCppFile << "fullState::fullState(const fullState &fs):loc(fs.loc){\n\tvar= new Variables(*(fs.var));\n}\n" << endl;
     LhaCppFile << "fullState::~fullState(){delete var;}\n" << endl;
 
-
+    LhaCppFile << "template class LHA<abstractMarking>;" << endl;
+    //LhaCppFile << "#include \"MarkovChainState.hpp\"" << endl;
+    //LhaCppFile << "template class LHA<State>;" << endl;
+    
 	LhaCppFile.close();
 }
 

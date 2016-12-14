@@ -38,7 +38,7 @@
 #include <limits>
 
 template<class DEDS>
-SimulatorContinuousBounded<DEDS>::SimulatorContinuousBounded(DEDS &N,LHA_orig& A,int m,double e,int js):SimulatorBoundedREBase<SimulatorContinuousBounded,DEDS>(N,A,m){
+SimulatorContinuousBounded<DEDS>::SimulatorContinuousBounded(DEDS &N,LHA_orig<typeof N.Marking>& A,int m,double e,int js):SimulatorBoundedREBase<SimulatorContinuousBounded,DEDS>(N,A,m){
     epsilon = e;
 	if(js>0){
 		jumpsize = js;

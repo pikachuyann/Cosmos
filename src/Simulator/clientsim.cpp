@@ -95,22 +95,26 @@ enum SimType {
     CTMC
 };
 
+template<class DEDState>
+LHA_orig<DEDState>& getLha(bool isDet){
+    LHA_orig<DEDState>* Aptr;
+    if(IsLHADeterministic){
+        Aptr = new LHA_orig<DEDState>();
+    }else{
+        Aptr = new NLHA<DEDState>();
+    }
+    return *Aptr;
+}
+
 template<class EQT>
 void build_sim(SimType st,int argc,char **argv) {
     verbose=atoi(argv[2]);
-    
-    LHA_orig* Aptr;
-    if(IsLHADeterministic){
-        Aptr = new LHA_orig();
-    }else{
-        Aptr = new NLHA();
-    }
-    LHA_orig& A = *Aptr;
     
     switch(st){
         case Base:
         {
             auto &N = *(new SPN_orig<EQT>());
+            auto A = getLha<typeof N.Marking>(IsLHADeterministic);
             auto sim = new Simulator<EQT,SPN_orig<EQT> >(N,A);
             run_sim(*sim,argc,argv);
         }
@@ -118,6 +122,7 @@ void build_sim(SimType st,int argc,char **argv) {
         case RareEventUnbounded2:
         {
             auto &N = *(new SPN_RE(st==RareEventUnbounded2));
+            auto A = getLha<typeof N.Marking>(IsLHADeterministic);
             auto reSim = new SimulatorRE<SPN_RE>(N,A);
             reSim->initVect();
             run_sim(*reSim,argc,argv);
@@ -125,6 +130,7 @@ void build_sim(SimType st,int argc,char **argv) {
         case RareEventBounded:
         {
             auto &N = *(new SPN_BoundedRE(false));
+            auto A = getLha<typeof N.Marking>(IsLHADeterministic);
             int m = atoi(argv[optioni+1]);
             int T = atoi(argv[optioni+2]);
             auto boundedSim = new SimulatorBoundedRE<SPN_BoundedRE>(N,A,m);
@@ -134,6 +140,7 @@ void build_sim(SimType st,int argc,char **argv) {
         case RareEventCTMC:
         {
             auto &N = *(new SPN_BoundedRE(false));
+            auto A = getLha<typeof N.Marking>(IsLHADeterministic);
             int m = atoi(argv[optioni+1]);
             double t = atof(argv[optioni+2]);
             double e = atof(argv[optioni+3]);
@@ -145,7 +152,8 @@ void build_sim(SimType st,int argc,char **argv) {
         case CTMC:
         {
             auto &M = *(new MarkovChain<EventsQueue<vector<Edge>>>());
-            auto sim = new Simulator<EventsQueue<vector<Edge>>, MarkovChain<EventsQueue<vector<Edge>>> >(M,A);
+            auto A = getLha<typeof M.Marking>(IsLHADeterministic);
+            auto sim = new Simulator<EventsQueue<vector<Edge>>, typeof(M) >(M,A);
             run_sim(*sim,argc,argv);
         }
     }
