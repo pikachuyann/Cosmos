@@ -36,7 +36,7 @@
 template <class S>
 class SPNBaseRE: public SPNBase<S,EventsQueue<vector<_trans>>>, public REHandling{
 public:
-    SPNBaseRE(int& v,bool doubleIS);
+    SPNBaseRE(bool doubleIS);
 
     bool rareEventEnabled;
 
@@ -81,7 +81,7 @@ public:
 
 class SPN_RE: public SPNBaseRE<SPN_RE>{
 public:
-    SPN_RE(int& v,bool doubleIS):SPNBaseRE<SPN_RE>(v, doubleIS){};
+    SPN_RE(bool doubleIS):SPNBaseRE<SPN_RE>(doubleIS){};
 };
 
 template <class DEDS>

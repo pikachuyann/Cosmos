@@ -24,4 +24,35 @@
  *******************************************************************************
  */
 
+#include <vector>
+
+#include "EventsQueue.hpp"
+
 #include "MarkovChain.hpp"
+
+template<class EQT>
+void MarkovChain<EQT>::initialEventsQueue(EQT &EQ, timeGen &tg){
+    Event E;
+    generateEvent(0.0,E, 0 ,abstractBinding() ,tg);
+    EQ.insert(E);
+}
+
+template<class EQT>
+void MarkovChain<EQT>::fire(size_t tr,const abstractBinding& b, double time){
+}
+
+template<class EQT>
+void MarkovChain<EQT>::reset(){}
+
+template<class EQT>
+void MarkovChain<EQT>::update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &){}
+
+
+template<class EQT>
+void MarkovChain<EQT>::generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG){
+
+}
+
+
+
+template class MarkovChain<EventsQueue<std::vector<Edge>>>;

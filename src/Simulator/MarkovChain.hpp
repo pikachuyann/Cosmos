@@ -33,11 +33,12 @@
 
 #include "Simulator.hpp"
 
-class State{
+/*class State{
 public:
     void printHeader(ostream &logtrace)const;
     void print(ostream &logtrace, double time)const;
-};
+    void printSedCmd(ostream &logtrace)const;
+};*/
 
 class Edge{
 public:
@@ -52,13 +53,23 @@ class MarkovChain{
 public:
     abstractMarking Marking;
     std::vector<Edge> Transition;
+    
     size_t lastTransition;
     double lastTransitionTime;
+    std::array<double,PARAM_TBL_SIZE> &ParamDistr;
+    const CustomDistr& customDistr;
+    
+    MarkovChain():ParamDistr(*(new std::array<double, PARAM_TBL_SIZE>())),
+                  customDistr(*(new CustomDistr())){};
     
     void reset();
     void initialEventsQueue(EQT &,timeGen &);
     void fire(size_t tr,const abstractBinding& b, double time);
-    void update(double ctime,size_t, const abstractBinding&,EventsQueue<std::vector<Edge>> &,timeGen &);
+    void update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &);
+private:
+    
+    void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG);
 };
+
 
 #endif /* MarkovChain_hpp */

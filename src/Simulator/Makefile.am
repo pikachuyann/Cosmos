@@ -22,9 +22,10 @@ libClientSim_la_SOURCES = \
 	SimulatorBoundedRE.cpp SimulatorBoundedRE.hpp \
 	foxglynn.cpp foxglynn.hpp \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
+    MarkovChain.cpp MarkovChain.hpp \
 	clientsim.cpp
 
-includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp
+includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp DistributionDef.hpp
 includesdir = $(includedir)
 
 AM_LDFLAGS = $(PTHREAD_LIBS)
