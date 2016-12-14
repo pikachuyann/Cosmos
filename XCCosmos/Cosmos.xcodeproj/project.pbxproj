@@ -38,7 +38,6 @@
 		035464EF1DFFFF240060D055 /* MarkovChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035464ED1DFFFF240060D055 /* MarkovChain.cpp */; };
 		035464F01DFFFF240060D055 /* MarkovChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035464ED1DFFFF240060D055 /* MarkovChain.cpp */; };
 		035464F11DFFFF240060D055 /* MarkovChain.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 035464EE1DFFFF240060D055 /* MarkovChain.hpp */; };
-		035A30B21C623F8F0009AF0A /* libboost_serialization.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 035A30B11C623F8F0009AF0A /* libboost_serialization.dylib */; };
 		035EBAB418FFD70F00B73DBF /* expressionStruct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035EBAB218FFD70F00B73DBF /* expressionStruct.cpp */; };
 		03650F811CFDC4FB00DB3041 /* EventsQueueSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03650F7F1CFDC4FB00DB3041 /* EventsQueueSet.cpp */; };
 		03650F821CFDC4FB00DB3041 /* EventsQueueSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03650F7F1CFDC4FB00DB3041 /* EventsQueueSet.cpp */; };
@@ -320,6 +319,7 @@
 		035A30B11C623F8F0009AF0A /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = ../../../../../usr/local/lib/libboost_serialization.dylib; sourceTree = "<group>"; };
 		035EBAB218FFD70F00B73DBF /* expressionStruct.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = expressionStruct.cpp; sourceTree = "<group>"; };
 		035EBAB318FFD70F00B73DBF /* expressionStruct.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = expressionStruct.hpp; sourceTree = "<group>"; };
+		035ED39E1E013F62009D3342 /* DistributionDef.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DistributionDef.hpp; sourceTree = "<group>"; };
 		03650F7F1CFDC4FB00DB3041 /* EventsQueueSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventsQueueSet.cpp; sourceTree = "<group>"; };
 		03650F801CFDC4FB00DB3041 /* EventsQueueSet.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueueSet.hpp; sourceTree = "<group>"; };
 		0365553818292D10001B5947 /* foxglynn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = foxglynn.cpp; sourceTree = "<group>"; };
@@ -1095,7 +1095,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */,
-				035A30B21C623F8F0009AF0A /* libboost_serialization.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1318,6 +1317,7 @@
 				032A7057181BC0D6006D7332 /* numSolverSH.hpp */,
 				03CB8F4D1893CB1A00A9938A /* timeGen.cpp */,
 				03CB8F4E1893CB1A00A9938A /* timeGen.hpp */,
+				035ED39E1E013F62009D3342 /* DistributionDef.hpp */,
 				032A7058181BC0D6006D7332 /* Simulator.cpp */,
 				032A7059181BC0D6006D7332 /* Simulator.hpp */,
 				032A705E181BC0D6006D7332 /* SimulatorRE.cpp */,
@@ -3306,7 +3306,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0820;
 				TargetAttributes = {
 					03BBD5EE1A80D0D700492779 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -3667,7 +3667,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = /usr/local/include;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					/usr/lib,
@@ -3854,9 +3854,16 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -3867,6 +3874,7 @@
 				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
@@ -3895,8 +3903,15 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -3907,6 +3922,7 @@
 				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
