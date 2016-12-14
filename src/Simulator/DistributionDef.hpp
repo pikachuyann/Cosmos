@@ -20,46 +20,51 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file timeGen.hpp created by Benoit Barbot on 25/01/12.            *
+ * file DistributionDef.hpp created by Benoit Barbot on 14/12/2016.            *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__File__
-#define __Cosmos__File__
-
-#include <iostream>
-#include <boost/random.hpp>
-#include <boost/generator_iterator.hpp>
-
-#include "DistributionDef.hpp"
-#include "Event.hpp"
+#ifndef DistributionDef_h
+#define DistributionDef_h
 
 
-class timeGen {
-public:
-    
-	//! generate a time acording to the distribution d with parameters p
-	double GenerateTime(DistributionType distribution,const std::array<double,PARAM_TBL_SIZE> &param, const CustomDistr&);
-	
-	/**
-	 * \brief Initialize the random number generator with the given seed
-	 * @param seed is an unsigned integer to be used as seed.
-	 */
-	void initRandomGenerator(unsigned int seed);
+#define PARAM_TBL_SIZE 10
 
-    std::string string_of_dist(DistributionType d,const std::array<double,PARAM_TBL_SIZE> &param, const CustomDistr&)const;
-
-private:
-	
-	//!The random Generator Mersenne Twister from the boost library
-	boost::mt19937 RandomNumber;
-
+/**
+ * Type of probability distribution
+ */
+enum DistributionType {
+    NORMAL,
+    GAMMA,
+    UNIFORM,
+    EXPONENTIAL,
+    DETERMINISTIC,
+    LOGNORMAL,
+    TRIANGLE,
+    GEOMETRIC,
+    ERLANG,
+    DISCRETEUNIF,
+    MASSACTION,
+    IMMEDIATE,
+    USERDEFINE,
+    DISCRETEUSERDEFINE,
+    USERDEFINEPOLYNOMIAL,
+    PLAYER1
 };
 
-template<class DEDS>
-void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,DEDS &);
+/**
+ * Class handling custom distribution
+ */
+class CustomDistr {
+public:
+    virtual double userDefineCDF(const std::array<double,PARAM_TBL_SIZE> &, double )const{return 0.0;};
+    virtual double userDefinePDF(const std::array<double,PARAM_TBL_SIZE> &, double )const{return 0.0;};
+    virtual double userDefineLowerBound(const std::array<double,PARAM_TBL_SIZE> &)const{return 0.0;};
+    virtual double userDefineUpperBound(const std::array<double,PARAM_TBL_SIZE> &)const{return 0.0;};
+    virtual double userDefineDiscreteDistr(const std::array<double,PARAM_TBL_SIZE> &,unsigned int)const{return 0.0;};
+    virtual double evalPoly(unsigned long,const std::array<double,PARAM_TBL_SIZE> &)const {return 0.0;};
+    virtual const std::string print_poly(unsigned long)const{ return "";};
+};
 
-extern int verbose;
 
-#endif /* defined(__Cosmos__File__) */
-
+#endif /* DistributionDef_h */

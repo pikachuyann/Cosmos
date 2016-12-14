@@ -75,7 +75,7 @@ BatchR SimulatorBoundedREBase<S,DEDS>::RunBatch(){
 	list<simulationState<DEDS, EventsQueue<vector<_trans>>> > statevect(this->BatchSize);
 	//delete EQ;
 	
-	if(this->verbose>=1){
+	if(verbose>=1){
 		cerr << "Initial round:";
 		numSolv->printState();
 		cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
@@ -97,7 +97,7 @@ BatchR SimulatorBoundedREBase<S,DEDS>::RunBatch(){
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		numSolv->stepVect();
-        if(this->verbose>=1){
+        if(verbose>=1){
             cerr << "new round:";
 			numSolv->printState();
 			cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
@@ -150,11 +150,6 @@ BatchR SimulatorBoundedREBase<S,DEDS>::RunBatch(){
     << "\tTotal Memory: " << ruse.ru_maxrss << "ko" << endl << endl;
     
 	return (batchResult);
-}
-
-template <class S>
-SPNBaseBoundedRE<S>::SPNBaseBoundedRE(int& v,bool doubleIS):SPNBaseRE<S>(v,doubleIS){
-    
 }
 
 
@@ -244,7 +239,7 @@ double SPNBaseBoundedRE<S>::ComputeDistr(size_t t ,const abstractBinding& b, dou
     if(t== SPN::tr-1){
 		if (mux==0.0)return 1E200;
 		
-		if(this->verbose>3){
+		if(verbose>3){
 			this->Marking.printHeader(cerr);cerr << endl;
 			this->Marking.print(cerr,0.0);cerr << endl;
 			vector<int> vect (this->muprob->S.begin()->first->size(),0);
@@ -253,11 +248,11 @@ double SPNBaseBoundedRE<S>::ComputeDistr(size_t t ,const abstractBinding& b, dou
 		}
 		
 		if(this->Origine_Rate_Sum >= this->Rate_Sum){
-			if(this->verbose>3 )cerr << "trans:sink distr: "<< this->Origine_Rate_Sum - this->Rate_Sum << " origine_rate:" << this->Origine_Rate_Sum <<" Rate: " << this->Rate_Sum << endl;
+			if(verbose>3 )cerr << "trans:sink distr: "<< this->Origine_Rate_Sum - this->Rate_Sum << " origine_rate:" << this->Origine_Rate_Sum <<" Rate: " << this->Rate_Sum << endl;
 			//cerr << "strange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
 			return( (this->Origine_Rate_Sum - this->Rate_Sum)  );
 		}else{
-			if(this->verbose>3 && (this->Origine_Rate_Sum < 0.99* this->Rate_Sum)){
+			if(verbose>3 && (this->Origine_Rate_Sum < 0.99* this->Rate_Sum)){
 				cerr << "Reduce model does not guarantee variance" << endl;
 				cerr << "Initial sum of rate: " << this->Origine_Rate_Sum << " Reduce one: " << this->Rate_Sum << " difference: " << this->Origine_Rate_Sum - this->Rate_Sum << endl ;
 				//exit(EXIT_FAILURE);
@@ -271,7 +266,7 @@ double SPNBaseBoundedRE<S>::ComputeDistr(size_t t ,const abstractBinding& b, dou
     SPN::fire(t,b,0.0);
 	static_cast<numericalSolver*>(this->muprob)->stepVect();
 	distr = origin_rate *( mu() / mux);
-	if(this->verbose>3 )cerr << "trans: " << this->Transition[t].label << "\tdistr: "<< distr << "\torigin Rate: "<< origin_rate << "\tmu: " << mu()<< "\tmu prec: " << mux << endl;
+	if(verbose>3 )cerr << "trans: " << this->Transition[t].label << "\tdistr: "<< distr << "\torigin Rate: "<< origin_rate << "\tmu: " << mu()<< "\tmu prec: " << mux << endl;
 	
 	static_cast<numericalSolver*>(this->muprob)->previousVect();
     SPN::unfire(t,b);

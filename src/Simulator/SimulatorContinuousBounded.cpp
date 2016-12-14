@@ -100,7 +100,7 @@ BatchR SimulatorContinuousBounded<DEDS>::RunBatch(){
 	list<simulationState<DEDS, EventsQueue<vector<_trans>> >> statevect((Nmax+1)*this->BatchSize);
 	
     int c =0;
-	if(this->verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
+	if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
 	for (auto it= statevect.begin(); it != statevect.end() ; it++) {
 		this->N.Origine_Rate_Table = vector<double>(this->N.tr,0.0);
 		this->N.Rate_Table = vector<double>(this->N.tr,0.0);
@@ -134,9 +134,9 @@ BatchR SimulatorContinuousBounded<DEDS>::RunBatch(){
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		this->numSolv->stepVect();
-		if(this->verbose>=3)cerr << this->numSolv->getVect() << endl;
+		if(verbose>=3)cerr << this->numSolv->getVect() << endl;
 		n++;
-        if(this->verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
+        if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
         
 		for (auto it= statevect.begin(); it != statevect.end() ; it++) {
             if(it->maxStep >= fg->right -n){
@@ -152,7 +152,7 @@ BatchR SimulatorContinuousBounded<DEDS>::RunBatch(){
                 if (it->maxStep == fg->right -n) {
                     //We first need to initialise the trajectory
                     this->N.InitialEventsQueue(*(this->EQ),*this);
-					if(this->verbose>=2)
+					if(verbose>=2)
 						//cerr << "new Path: " << it->maxStep << "\tmuinit: " << mu() << endl;
                     it->saveState(&(this->N),&(this->A),&(this->EQ));
                 } else {

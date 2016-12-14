@@ -53,9 +53,6 @@ public:
     //Simulator();
 	~SimulatorBase();
 	
-	//! verbose level of the simulator
-    int verbose;
-
     //! Path to the temporary directory
     string tmpPath;
     string dotFile;

@@ -30,14 +30,6 @@
 
 using namespace std;
 
-template<class S, class EQT>
-SPNBase<S,EQT>::SPNBase(int v):verbose(v){}
-
-template<class S>
-SPNBase<S,EventsQueue<vector<_trans>>>::SPNBase(int v):verbose(v){}
-
-template<class S>
-SPNBase<S,EventsQueueSet>::SPNBase(int v):verbose(v){}
 
 /**
  * Fill the event queue with the initially enabled transition

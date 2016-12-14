@@ -57,7 +57,6 @@ void run_sim(SIM& sim,int argc,char **argv) {
     int verbose=atoi(argv[2]);
     
     sim.SetBatchSize(atoi(argv[1])); //set the batch size
-    sim.verbose = atoi(argv[2]);
     sim.initRandomGenerator(atoi(argv[5]));
     sim.tmpPath=argv[4];
     
@@ -73,7 +72,7 @@ void run_sim(SIM& sim,int argc,char **argv) {
     }
     
     
-    if(sim.verbose>=4)sim.RunBatch();
+    if(verbose>=4)sim.RunBatch();
     else while( !cin.eof() ){
         BatchR batchResult = sim.RunBatch(); //simulate a batch of trajectory
         
@@ -98,7 +97,7 @@ enum SimType {
 
 template<class EQT>
 void build_sim(SimType st,int argc,char **argv) {
-    int verbose=atoi(argv[2]);
+    verbose=atoi(argv[2]);
     
     LHA_orig* Aptr;
     if(IsLHADeterministic){
@@ -111,21 +110,21 @@ void build_sim(SimType st,int argc,char **argv) {
     switch(st){
         case Base:
         {
-            auto &N = *(new SPN_orig<EQT>(verbose));
+            auto &N = *(new SPN_orig<EQT>());
             auto sim = new Simulator<EQT,SPN_orig<EQT> >(N,A);
             run_sim(*sim,argc,argv);
         }
         case RareEventUnbounded1:
         case RareEventUnbounded2:
         {
-            auto &N = *(new SPN_RE(verbose,st==RareEventUnbounded2));
+            auto &N = *(new SPN_RE(st==RareEventUnbounded2));
             auto reSim = new SimulatorRE<SPN_RE>(N,A);
             reSim->initVect();
             run_sim(*reSim,argc,argv);
         }
         case RareEventBounded:
         {
-            auto &N = *(new SPN_BoundedRE(verbose,false));
+            auto &N = *(new SPN_BoundedRE(false));
             int m = atoi(argv[optioni+1]);
             int T = atoi(argv[optioni+2]);
             auto boundedSim = new SimulatorBoundedRE<SPN_BoundedRE>(N,A,m);
@@ -134,7 +133,7 @@ void build_sim(SimType st,int argc,char **argv) {
         }
         case RareEventCTMC:
         {
-            auto &N = *(new SPN_BoundedRE(verbose,false));
+            auto &N = *(new SPN_BoundedRE(false));
             int m = atoi(argv[optioni+1]);
             double t = atof(argv[optioni+2]);
             double e = atof(argv[optioni+3]);
@@ -151,6 +150,12 @@ void build_sim(SimType st,int argc,char **argv) {
         }
     }
 }
+
+/**
+ * The verbose level global
+ */
+int verbose;
+
 
 /**
  * main function it read the options given as arguments and initialyse

@@ -90,7 +90,7 @@ public:
 template<class S>
 class SPNBaseBoundedRE: public SPNBaseRE<S>{
 public:
-    SPNBaseBoundedRE(int& v,bool doubleIS);
+    SPNBaseBoundedRE(bool doubleIS):SPNBaseRE<S>(doubleIS){};
 
     void update(double ctime,size_t, const abstractBinding&,EventsQueue<vector<_trans>> &, timeGen &);
     void getParams(size_t, const abstractBinding&);
@@ -114,7 +114,7 @@ public:
 
 class SPN_BoundedRE: public SPNBaseBoundedRE<SPN_BoundedRE>{
     public:
-  SPN_BoundedRE(int& v,bool doubleIS):SPNBaseBoundedRE<SPN_BoundedRE>(v,doubleIS){};
+  SPN_BoundedRE(bool doubleIS):SPNBaseBoundedRE<SPN_BoundedRE>(doubleIS){};
 };
 
 template <class DEDS>
