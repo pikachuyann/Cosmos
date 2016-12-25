@@ -46,6 +46,7 @@ protected:
 
 };
 
+
 #include "EventsQueue.hpp"
 template <class S>
 class SPNBase<S,EventsQueue<decltype(SPN::Transition)>> : public SPN{

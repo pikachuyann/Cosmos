@@ -34,10 +34,6 @@
 #include "timeGen.hpp"
 #include "marking.hpp"
 
-class abstractMarkingImpl{
-    
-};
-
 class Edge{
 public:
     size_t Id;
