@@ -52,6 +52,10 @@ void MarkovChain<EQT>::generateEvent(double ctime,Event& E,size_t Id,const abstr
 
 }
 
+class abstractMarkingImpl{
+    
+};
+
 
 
 template class MarkovChain<EventsQueue<std::vector<Edge>>>;
