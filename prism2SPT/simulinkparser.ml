@@ -7,23 +7,28 @@ type blockDefault = (string * (string * string) list) (* C'est blocktype et valu
 type blockPort = int * int
 type simulinkLink = { fromblock: int; fromport: int; toblock: int; toport: int }
 type simulinkModel = block list * blockDefault list * simulinkLink list
+type simulinkPModel = block list * simulinkLink list
 
 let rec printValues f = function
 	(c,v)::q -> Printf.fprintf f "\t%s -> %s\n" c v; printValues f q
 	| [] -> ();;
 let printBlock f b = Printf.fprintf f "%s: %s (%s)\n%a" b.name b.blocktype b.blockid printValues b.values;;
-let printBlocklist f ((lB, lP, lL):simulinkModel) = List.iter (printBlock f) lB;;
+let printBlocklist f lB = List.iter (printBlock f) lB;;
 let printParDef f (t,v) = Printf.fprintf f "%s:\n%a" t printValues v;;  
-let printBlockParDeflist f ((lB, lP, lL):simulinkModel) = List.iter (printParDef f) lP;;
+let printBlockParDeflist f lP = List.iter (printParDef f) lP;;
 let printLink f link = Printf.fprintf f "[ %i (port %i) -> %i (port %i) ]\n" link.fromblock link.fromport link.toblock link.toport;;
-let printLinks f ((lB, lP, lL:simulinkModel)) = List.iter (printLink f) lL;;
+let printLinks f lL = List.iter (printLink f) lL;;
 
 let verbose = 0;;
 
-let printModel f simModel =
-  printBlocklist f simModel;
-  printBlockParDeflist f simModel;
-  printLinks f simModel
+let printModel f ((lB, lP, lL):simulinkModel) =
+  printBlocklist f lB;
+  printBlockParDeflist f lP;
+  printLinks f lL
+
+let printPModel f ((lB,lL):simulinkPModel) =
+  printBlocklist f lB;
+  printLinks f lL
 
 (* Handling of SSID*)
 let ssid_count = ref (-1)
@@ -148,3 +153,13 @@ let rec blocklist_of_tree ml = function (* ml = (lB, lP, lL) *)
       | _ -> ml
     end
     | PCData (s) -> ml
+
+(* *)
+let pushDefaults ((lB, lP, lL):simulinkModel) =
+  let blockDef bloc =
+    let listDefaults = List.assoc bloc.blocktype lP in
+      let pred (paramName,_) = (List.for_all (function (x,_) when x=paramName -> false | _ -> true) bloc.values) in
+        ({ blocktype = bloc.blocktype; blockid = bloc.blockid; name = bloc.name; values = ((List.filter pred listDefaults)@bloc.values) })
+  in
+  ((List.map blockDef lB), lL);;
+
