@@ -67,6 +67,7 @@ let _ =
 	|> Zip.read_entry z)
 	|> Xml.parse_string
 	|> Simulinkparser.blocklist_of_tree ([],[],[])
-	|> Simulinkparser.printModel stdout
+        |> Simulinkparser.pushDefaults
+	|> Simulinkparser.printPModel stdout
 
 
