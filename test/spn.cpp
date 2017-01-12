@@ -28,40 +28,6 @@ bool REHandling::precondition(const abstractMarking &M){return true;}
 #include "marking.hpp"
 #include "markingImpl.hpp"
 
-void abstractMarking::resetToInitMarking(){
-	P->_PL_N_Queue1 =5  ;
-	P->_PL_Queue1 =0  ;
-	P->_PL_Phase1 =1  ;
-	P->_PL_Phase2 =0  ;
-	P->_PL_Queue2 =0  ;
-	P->_PL_N_Queue2 =5  ;
-}
-
-
-abstractMarking::abstractMarking() {
-	P= new abstractMarkingImpl;
-	resetToInitMarking();
-}
-
-abstractMarking::abstractMarking(const std::vector<int>& m) {
-	P = new abstractMarkingImpl;
-	setVector(m);
-}
-abstractMarking::abstractMarking(const abstractMarking& m) {
-	P= new abstractMarkingImpl;
-	*this = m;
-};
-
-abstractMarking& abstractMarking::operator = (const abstractMarking& m) {
-	*P = *(m.P);
-	return *this;
-}
-
-abstractMarking::~abstractMarking() {
-	delete(P);
-}
-
-
 void abstractMarking::swap(abstractMarking& m) {
 	abstractMarkingImpl* tmp = m.P;
 	m.P = P;
@@ -75,39 +41,6 @@ void abstractMarking::print(ostream &s,double eTime)const{
 void abstractMarking::printSedCmd(ostream &s)const{
 }
 
-int abstractMarking::getNbOfTokens(int p)const {
-	switch (p) {
-		case 0: return P->_PL_N_Queue1;
-		case 1: return P->_PL_Queue1;
-		case 2: return P->_PL_Phase1;
-		case 3: return P->_PL_Phase2;
-		case 4: return P->_PL_Queue2;
-		case 5: return P->_PL_N_Queue2;
-     }
-}
-
-std::vector<int> abstractMarking::getVector()const {
-	std::vector<int> v(6);
-	v.reserve(7);
-	size_t i = 0;
-	v[i++]= P->_PL_N_Queue1;
-	v[i++]= P->_PL_Queue1;
-	v[i++]= P->_PL_Phase1;
-	v[i++]= P->_PL_Phase2;
-	v[i++]= P->_PL_Queue2;
-	v[i++]= P->_PL_N_Queue2;
-     return v;
-}
-
-void abstractMarking::setVector(const std::vector<int>&v) {
-	size_t i = 0;
-	P->_PL_N_Queue1 = v[i++];
-	P->_PL_Queue1 = v[i++];
-	P->_PL_Phase1 = v[i++];
-	P->_PL_Phase2 = v[i++];
-	P->_PL_Queue2 = v[i++];
-	P->_PL_N_Queue2 = v[i++];
-};
 
 void abstractMarking::Symmetrize(){
 }bool abstractBinding::next() {
@@ -176,109 +109,12 @@ customDistr(*(new CustomDistr())),pl(6), tr(5) ,Transition(TransArray,TransArray
 }
 
 bool SPN::IsEnabled(TR_PL_ID t, const abstractBinding &b)const{
-
-	switch (t){
-		case 0:	//Arrive
-
-			if (!(contains(Marking.P->_PL_N_Queue1 , 1))) return false;
-		return true;
-		break;
-		case 2:	//Route1
-
-			if (!(contains(Marking.P->_PL_Queue1 , 1))) return false;
-			if (!(contains(Marking.P->_PL_Phase1 , 1))) return false;
-			if (!(contains(Marking.P->_PL_N_Queue2 , 1))) return false;
-		return true;
-		break;
-		case 1:	//ToPhase2
-
-			if (!(contains(Marking.P->_PL_Queue1 , 1))) return false;
-			if (!(contains(Marking.P->_PL_Phase1 , 1))) return false;
-		return true;
-		break;
-		case 3:	//Route2
-
-			if (!(contains(Marking.P->_PL_Queue1 , 1))) return false;
-			if (!(contains(Marking.P->_PL_Phase2 , 1))) return false;
-			if (!(contains(Marking.P->_PL_N_Queue2 , 1))) return false;
-		return true;
-		break;
-		case 4:	//Leave
-
-			if (!(contains(Marking.P->_PL_Queue2 , 1))) return false;
-		return true;
-		break;
-	}
 }
 
 void SPN::fire(TR_PL_ID t, const abstractBinding &b,REAL_TYPE time){
-	lastTransition = t;
-
-	switch (t){
-		case 0:	//Arrive
-{
-			int tmpMark_N_Queue1 = Marking.P->_PL_N_Queue1;
-			int tmpMark_Queue1 = Marking.P->_PL_Queue1;
-			Marking.P->_PL_N_Queue1 -= 1;
-			Marking.P->_PL_Queue1 += 1;
-	}
-		break;
-		case 3:	//Route2
-{
-			int tmpMark_N_Queue1 = Marking.P->_PL_N_Queue1;
-			int tmpMark_Queue1 = Marking.P->_PL_Queue1;
-			int tmpMark_Phase1 = Marking.P->_PL_Phase1;
-			int tmpMark_Phase2 = Marking.P->_PL_Phase2;
-			int tmpMark_Queue2 = Marking.P->_PL_Queue2;
-			int tmpMark_N_Queue2 = Marking.P->_PL_N_Queue2;
-			Marking.P->_PL_N_Queue1 += 1;
-			Marking.P->_PL_Queue1 -= 1;
-			Marking.P->_PL_Phase1 += 1;
-			Marking.P->_PL_Phase2 -= 1;
-			Marking.P->_PL_Queue2 += 1;
-			Marking.P->_PL_N_Queue2 -= 1;
-	}
-		break;
-		case 2:	//Route1
-{
-			int tmpMark_N_Queue1 = Marking.P->_PL_N_Queue1;
-			int tmpMark_Queue1 = Marking.P->_PL_Queue1;
-			int tmpMark_Phase1 = Marking.P->_PL_Phase1;
-			int tmpMark_Queue2 = Marking.P->_PL_Queue2;
-			int tmpMark_N_Queue2 = Marking.P->_PL_N_Queue2;
-			Marking.P->_PL_N_Queue1 += 1;
-			Marking.P->_PL_Queue1 -= 1;
-			Marking.P->_PL_Phase1 -= 1;
-			Marking.P->_PL_Phase1 += 1;
-			Marking.P->_PL_Queue2 += 1;
-			Marking.P->_PL_N_Queue2 -= 1;
-	}
-		break;
-		case 1:	//ToPhase2
-{
-			int tmpMark_Queue1 = Marking.P->_PL_Queue1;
-			int tmpMark_Phase1 = Marking.P->_PL_Phase1;
-			int tmpMark_Phase2 = Marking.P->_PL_Phase2;
-			Marking.P->_PL_Queue1 -= 1;
-			Marking.P->_PL_Queue1 += 1;
-			Marking.P->_PL_Phase1 -= 1;
-			Marking.P->_PL_Phase2 += 1;
-	}
-		break;
-		case 4:	//Leave
-{
-			int tmpMark_Queue2 = Marking.P->_PL_Queue2;
-			int tmpMark_N_Queue2 = Marking.P->_PL_N_Queue2;
-			Marking.P->_PL_Queue2 -= 1;
-			Marking.P->_PL_N_Queue2 += 1;
-	}
-		break;
-	}
 }
 
 void SPN::unfire(TR_PL_ID t, const abstractBinding &b){
-
-
 }
 
 const abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {

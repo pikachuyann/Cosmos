@@ -29,6 +29,53 @@
 #include "EventsQueue.hpp"
 #include "MarkovChain.hpp"
 
+/* AbstractMarking -------------------------------*/
+struct abstractMarkingImpl{
+    int state;
+};
+
+abstractMarking::abstractMarking() {
+    P= new abstractMarkingImpl;
+    resetToInitMarking();
+}
+
+abstractMarking::abstractMarking(const std::vector<int>& m) {
+    P = new abstractMarkingImpl;
+    setVector(m);
+}
+abstractMarking::abstractMarking(const abstractMarking& m) {
+    P= new abstractMarkingImpl;
+    *this = m;
+}
+abstractMarking& abstractMarking::operator = (const abstractMarking& m) {
+    *P = *(m.P);
+    return *this;
+}
+abstractMarking::~abstractMarking() {
+    delete(P);
+}
+void abstractMarking::resetToInitMarking(){P->state = 0; }
+int abstractMarking::getNbOfTokens(int)const {return P->state;}
+std::vector<int> abstractMarking::getVector()const {
+    std::vector<int> v({P->state});
+    return v;
+}
+void abstractMarking::setVector(const std::vector<int>&v) {
+    P->state = v[0];
+}
+/* AbstractMarking -------------------------------*/
+
+
+
+template<class EQT>
+MarkovChain<EQT>::MarkovChain(): ParamDistr(*(new std::array<double, PARAM_TBL_SIZE>())),
+customDistr(*(new CustomDistr())){
+    for(int i =0 ;i< 10; i++){
+        Transition.push_back(Edge(i));
+    }
+
+};
+
 template<class EQT>
 void MarkovChain<EQT>::initialEventsQueue(EQT &EQ, timeGen &tg){
     Event E;
@@ -37,25 +84,44 @@ void MarkovChain<EQT>::initialEventsQueue(EQT &EQ, timeGen &tg){
 }
 
 template<class EQT>
-void MarkovChain<EQT>::fire(size_t tr,const abstractBinding& b, double time){
+void MarkovChain<EQT>::fire(size_t tr,const abstractBinding&, double){
+    Marking.P->state = (int)tr;
 }
 
 template<class EQT>
-void MarkovChain<EQT>::reset(){}
+void MarkovChain<EQT>::reset(){
+    Marking.P->state = 0;
+}
 
 template<class EQT>
-void MarkovChain<EQT>::update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &){}
+void MarkovChain<EQT>::update(double ctime,size_t, const abstractBinding&,EQT &EQ,timeGen &TG){
+    EQ.reset();
+    for(int i = 0; i<10; i++){
+        generateEvent(ctime,F, i, ab,TG);
+        EQ.insert(F);
+    }
+}
 
 
 template<class EQT>
 void MarkovChain<EQT>::generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG){
-
-}
-
-class abstractMarkingImpl{
+    double t=ctime;
+    ParamDistr[0] = 1/Transition.size(); // equiprobable
     
-};
-
+    t += fmax(TG.GenerateTime(Transition[Id].DistTypeIndex, ParamDistr, customDistr),0.0);
+    if(verbose > 4){
+            cerr << "Sample " << Transition[Id].label << ": ";
+            cerr << TG.string_of_dist(Transition[Id].DistTypeIndex, ParamDistr, customDistr);
+            cerr << endl;
+    }
+    
+    E.transition = Id;
+    E.time = t;
+    E.priority = 1;
+    E.weight = 1;
+    E.binding = b;
+    
+}
 
 
 template class MarkovChain<EventsQueue<std::vector<Edge>>>;
