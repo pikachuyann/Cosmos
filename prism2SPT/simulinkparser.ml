@@ -163,3 +163,20 @@ let pushDefaults ((lB, lP, lL):simulinkModel) =
   in
   ((List.map blockDef lB), lL);;
 
+let getchar i = char_of_int ((int_of_char('A') + i - 1))
+let printLaTeX f ((lB,lL):simulinkPModel) =
+  let printBlock bloc =
+    let btype = bloc.blocktype and bid = bloc.blockid and bval = bloc.values in
+      let position = List.assoc "Position" bval in
+        let regexp = Str.regexp "\\[\\([0-9]+\\)[ ,]*\\([0-9]+\\)[ ,]*\\([0-9]+\\)[ ,]*\\([0-9]+\\)\\]" in
+        assert (Str.string_match regexp position 0);
+        let (x,y,w,h) = (int_of_string@@ Str.matched_group 1 position,
+                         int_of_string@@ Str.matched_group 2 position,
+                         int_of_string@@ Str.matched_group 3 position,
+                         int_of_string@@ Str.matched_group 4 position) in
+          Printf.fprintf f "\\node[sk%s,draw] at (%imm,%imm) (b%s) {};\n" btype x y bid
+  and printLink link =
+     Printf.fprintf f "\\path[->] (b%i.out%c) edge (b%i.in%c);\n" link.fromblock (getchar link.fromport) link.toblock (getchar link.toport)
+  in
+  List.iter printBlock lB;
+  List.iter printLink lL
