@@ -93,7 +93,7 @@ let extract_src s = s;;
 let extract_dst s = s;; (* Vérifier si c'est le bon type de in/out *)
 
 let line_of_simulink lL clist =
-    let src = extract_src (findPropName "Src" clist) and dst = extract_dst (findPropName "Dst" clist) in
+    let src = extract_src (findpropName "Src" clist) and dst = extract_dst (findpropName "Dst" clist) in
         (src, dst)::lL;;
 
 (* Build block lists *)
