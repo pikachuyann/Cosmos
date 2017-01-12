@@ -68,6 +68,7 @@ let _ =
 	|> Xml.parse_string
 	|> Simulinkparser.blocklist_of_tree ([],[],[])
         |> Simulinkparser.pushDefaults
-	|> Simulinkparser.printLaTeX stdout
+        |> SimulinkTrans.topologicSort
+(*	|> Simulinkparser.printLaTeX stdout *)
 
 
