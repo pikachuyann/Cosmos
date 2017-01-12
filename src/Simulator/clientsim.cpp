@@ -232,6 +232,8 @@ int main(int argc, char** argv) {
             st = RareEventBounded;
         }else if(str== "-COBURE"){
             st = RareEventBounded;
+        }else if (str== "-MC"){
+            st = CTMC;
         }
         
     }

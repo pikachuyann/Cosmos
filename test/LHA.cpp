@@ -7,45 +7,51 @@ using namespace std;
 #include <float.h>
 #include "LHA.hpp"
     const double C=5;
-    const double N=5;
-    const double T=10;
+    const double TDiscr=100;
+    const double Ttrans=0;
+    const double invT=1;
 struct Variables {
-	double x1;
+	double time;
+	double countT;
 };
 bool varOrder(const Variables &v1,const Variables &v2){
-	if(v1.x1<v2.x1)return true;
+	if(v1.time<v2.time)return true;
+	if(v1.countT<v2.countT)return true;
 	return false;
 };
 template<class DEDState>
 void LHA<DEDState>::resetVariables(){
-	Vars->x1= 0;
+	Vars->time= 0;
+	Vars->countT= 0;
 };
 template<class DEDState>
 void LHA<DEDState>::printHeader(ostream &s)const{
 	s << "	Location\t";
 };
+
 template<class DEDState>
 void LHA<DEDState>::printState(ostream &s){
 	s << "\t" << LocLabel[CurrentLocation] << "\t";
 };
-template<class DEDState>
-const int LHA<DEDState>::ActionEdgesAr[] = {
-	2 ,2 ,2 ,2 ,2 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
-	0 ,0 ,0 ,0 ,0 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-	1 ,1 ,1 ,1 ,1 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,};
-template<class DEDState>
- LHA<DEDState>::LHA():NbLoc(3),NbTrans(5),NbVar(1),FinalLoc( 3,false){
+template<class D>
+const int LHA<D>::ActionEdgesAr[] = {
+	1 ,1 ,1 ,1 ,1 ,2 ,2 ,2 ,2 ,2 ,0 ,0 ,0 ,0 ,0 ,
+	0 ,0 ,0 ,0 ,0 ,2 ,2 ,2 ,2 ,2 ,-1,-1,-1,-1,-1,
+	-1,-1,-1,-1,-1,3 ,3 ,3 ,3 ,3 ,-1,-1,-1,-1,-1,};
+template<class D>
+LHA<D>::LHA():NbLoc(3),NbTrans(5),NbVar(2),FinalLoc( 3,false){
     InitLoc.insert(0);
-    FinalLoc[1]=true;
-    Edge= vector<LhaEdge>(3);
+    FinalLoc[2]=true;
+    Edge= vector<LhaEdge>(4);
     Edge[0] = LhaEdge(0, 0, 0,Synch);
-    Edge[1] = LhaEdge(1, 0, 1,Synch);
-    Edge[2] = LhaEdge(2, 0, 2,Auto);
+    Edge[1] = LhaEdge(1, 0, 1,Auto);
+    Edge[2] = LhaEdge(2, 1, 1,Synch);
+    Edge[3] = LhaEdge(3, 1, 2,Synch);
 	Vars = new Variables;
 	tempVars = new Variables;
 	resetVariables();
     Out_A_Edges =vector< set < int > >(NbLoc);
-    Out_A_Edges[0].insert(2);
+    Out_A_Edges[0].insert(1);
     LinForm= vector<double>(0,0.0);
     OldLinForm=vector<double>(0,0.0);
     LhaFunc=vector<double>(0,0.0);
@@ -53,41 +59,63 @@ template<class DEDState>
     FormulaValQual = vector<bool>(0,false);
 }
 
-template<class DEDState>
-void LHA<DEDState>::DoElapsedTimeUpdate(double DeltaT,const DEDState& Marking) {
-	Vars->x1 += GetFlow(0, Marking) * DeltaT;
-}
-template<class DEDState>
-double LHA<DEDState>::GetFlow(int v, const DEDState& Marking)const{
-			return 1;
-
-
+template<class D>
+void LHA<D>::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {
+	Vars->time += GetFlow(0, Marking) * DeltaT;
 }
 
-template<class DEDState>
-bool LHA<DEDState>::CheckLocation(int loc,const DEDState& Marking)const{
-	switch (loc){
-		case 1:	//l1
-         return (  Marking.P->_PL_Queue1  == 5 &&  Marking.P->_PL_Queue2  == 5 );
+template<class D>
+double LHA<D>::GetFlow(int v, const abstractMarking& Marking)const{
+	switch (v){
+		case 1:	//countT
 
 		break;
-		default:	//l0,l2,
-         return ! (  Marking.P->_PL_Queue1  == 5 &&  Marking.P->_PL_Queue2  == 5 );
+		case 0:	//time
+	switch (CurrentLocation){
+		case 2:	//l2
+		return 0.0;
+
+		break;
+		default:	//l0,l1,
+			return 1;
+
+		break;
+	}
 
 		break;
 	}
 }
 
-template<class DEDState>
-bool LHA<DEDState>::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const DEDState& Marking)const{
+template<class D>
+bool LHA<D>::CheckLocation(int loc,const abstractMarking& Marking)const{
+         return true;
+
+}
+
+template<class D>
+bool LHA<D>::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{
 	switch (ed){
-		case 2:	//
+		case 1:	//
 	return true;
 
 		break;
-		default:	//,,
+		case 2:	//
 {
-         if(!( +(1)*Vars->x1<=10)) return false;
+         if(!( +(1)*Vars->countT<=100 - 1)) return false;
+		return (true);
+     }
+
+		break;
+		case 3:	//
+{
+         if(!( +(1)*Vars->countT==100)) return false;
+		return (true);
+     }
+
+		break;
+		case 0:	//
+{
+         if(!( +(1)*Vars->time<=0)) return false;
 		return (true);
      }
 
@@ -95,10 +123,10 @@ bool LHA<DEDState>::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding&
 	}
 }
 
-template<class DEDState>
-t_interval LHA<DEDState>::GetEdgeEnablingTime(int ed,const DEDState& Marking)const{
+template<class D>
+t_interval LHA<D>::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{
 	switch (ed){
-		case 2:	//
+		case 1:	//
          {
              t_interval EnablingT;
 
@@ -115,14 +143,14 @@ t_interval LHA<DEDState>::GetEdgeEnablingTime(int ed,const DEDState& Marking)con
 
 
              SumAF=+(1)*GetFlow(0, Marking);
-             SumAX=+(1)*Vars->x1;
+             SumAX=+(1)*Vars->time;
 
              if(SumAF==0){
-                  if(!(SumAX==10))
+                  if(!(SumAX==0))
                       return EmptyInterval;
              }
              else{
-                  double t=CurrentTime+(10-SumAX)/(double)SumAF;
+                  double t=CurrentTime+(0-SumAX)/(double)SumAF;
                   if(t>=EnablingT.first && t<=EnablingT.second){
                       EnablingT.first=t; EnablingT.second=t;
                   }
@@ -132,7 +160,7 @@ t_interval LHA<DEDState>::GetEdgeEnablingTime(int ed,const DEDState& Marking)con
          }
 
 		break;
-		default:	//,,
+		default:	//,,,
          {
              t_interval EnablingT;
 
@@ -146,22 +174,35 @@ t_interval LHA<DEDState>::GetEdgeEnablingTime(int ed,const DEDState& Marking)con
 	}
 }
 
-template<class DEDState>
-void LHA<DEDState>::DoEdgeUpdates(int ed,const DEDState& Marking, const abstractBinding& b){
+template<class D>
+void LHA<D>::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBinding& b){
+	switch (ed){
+		case 2:	//
+         {
+		Vars->countT=Vars->countT + 1;
+         }
 
+		break;
+		case 1:	//
+         {
+		Vars->time=0;
+         }
+
+		break;
+	}
 }
 
-template<class DEDState>
-void LHA<DEDState>::UpdateLinForm(const DEDState& Marking){
+template<class D>
+void LHA<D>::UpdateLinForm(const abstractMarking& Marking){
     }
 
-template<class DEDState>
-void LHA<DEDState>::UpdateLhaFunc(double& Delta ){
+template<class D>
+void LHA<D>::UpdateLhaFunc(double& Delta ){
 
     }
 
-template<class DEDState>
-void LHA<DEDState>::UpdateFormulaVal(){
+template<class D>
+void LHA<D>::UpdateFormulaVal(){
 
 }
 
@@ -180,4 +221,3 @@ fullState::fullState(const fullState &fs):loc(fs.loc){
 
 fullState::~fullState(){delete var;}
 
-template class LHA<abstractMarking>;
