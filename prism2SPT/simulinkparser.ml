@@ -18,6 +18,8 @@ let printBlockParDeflist f ((lB, lP, lL):simulinkModel) = List.iter (printParDef
 let printLink f link = Printf.fprintf f "[ %i (port %i) -> %i (port %i) ]\n" link.fromblock link.fromport link.toblock link.toport;;
 let printLinks f ((lB, lP, lL:simulinkModel)) = List.iter (printLink f) lL;;
 
+let verbose = 0;;
+
 let printModel f simModel =
   printBlocklist f simModel;
   printBlockParDeflist f simModel;
@@ -130,7 +132,8 @@ let rec blocklist_of_simulink ((lB, lP, lL):simulinkModel) = function
         | "Block" -> let blockType = List.assoc "BlockType" alist and blockName = List.assoc "Name" alist
                      and blockID = List.assoc "SID" alist and blockParams = List.fold_left parseblockParams [] clist in
                 ({ blocktype = blockType; blockid = blockID; name = blockName; values = blockParams }::lB, lP, lL);
-        | _ -> Printf.fprintf stderr "Couldn't find meaning of %s in System\n" name; (lB, lP, lL)
+        | _ when verbose>4 -> Printf.fprintf stderr "Couldn't find meaning of %s in System\n" name; (lB, lP, lL)
+        | _ -> (lB, lP, lL)
         end
     | PCData (s) -> output_string stderr s; (lB, lP, lL)
 ;;
@@ -141,6 +144,7 @@ let rec blocklist_of_tree ml = function (* ml = (lB, lP, lL) *)
       | "xml" | "ModelInformation" | "Model" | "P" -> List.fold_left blocklist_of_tree ml clist
       | "BlockParameterDefaults" -> blockparams_of_simulink ml t
       | "System" -> blocklist_of_simulink ml t
-      | _ -> Printf.fprintf stderr "I don't know how to process %s : ignored\n" name; ml
+      | _ when verbose>4 -> Printf.fprintf stderr "I don't know how to process %s : ignored\n" name; ml
+      | _ -> ml
     end
     | PCData (s) -> ml
