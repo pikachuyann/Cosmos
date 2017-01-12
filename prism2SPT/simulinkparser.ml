@@ -3,13 +3,25 @@ open Type
 open Lexing
 
 type block = { blocktype: string; blockid: string; name: string; values: (string * string) list }
+type blockDefault = (string * (string * string) list) (* C'est blocktype et values seulement *)
+type blockPort = int * int
+type simulinkLink = { fromblock: int; fromport: int; toblock: int; toport: int }
+type simulinkModel = block list * blockDefault list * simulinkLink list
+
 let rec printValues f = function
 	(c,v)::q -> Printf.fprintf f "\t%s -> %s\n" c v; printValues f q
 	| [] -> ();;
 let printBlock f b = Printf.fprintf f "%s: %s (%s)\n%a" b.name b.blocktype b.blockid printValues b.values;;
-let printBlocklist f (lB, lL, lP) = List.iter (printBlock f) lB;;
+let printBlocklist f ((lB, lP, lL):simulinkModel) = List.iter (printBlock f) lB;;
 let printParDef f (t,v) = Printf.fprintf f "%s:\n%a" t printValues v;;  
-let printBlockParDeflist f (lB, lL, lP) = List.iter (printParDef f) lL;;
+let printBlockParDeflist f ((lB, lP, lL):simulinkModel) = List.iter (printParDef f) lP;;
+let printLink f link = Printf.fprintf f "[ %i (port %i) -> %i (port %i) ]\n" link.fromblock link.fromport link.toblock link.toport;;
+let printLinks f ((lB, lP, lL:simulinkModel)) = List.iter (printLink f) lL;;
+
+let printModel f simModel =
+  printBlocklist f simModel;
+  printBlockParDeflist f simModel;
+  printLinks f simModel
 
 (* Handling of SSID*)
 let ssid_count = ref (-1)
@@ -92,12 +104,25 @@ let rec blockparams_of_simulink ((lB, lP, lL) as ml)  = function
 let extract_src s = s;;
 let extract_dst s = s;; (* Vérifier si c'est le bon type de in/out *)
 
+let extractLink (s,d) =
+  let regexpIn = Str.regexp "\\([0-9]+\\)#out:\\([0-9]+\\)" and
+      regexpOut = Str.regexp "\\([0-9]+\\)#in:\\([0-9]+\\)" in
+	assert (Str.string_match regexpIn s 0);
+        let inId = int_of_string (Str.matched_group 1 s) and
+            inPort = int_of_string (Str.matched_group 2 s) in
+        assert (Str.string_match regexpOut d 0);
+        let outId = int_of_string (Str.matched_group 1 d) and
+            outPort = int_of_string (Str.matched_group 2 d) in
+            ({ fromblock = inId; fromport = inPort; toblock = outId; toport = outPort });;
+
 let line_of_simulink lL clist =
     let src = extract_src (findpropName "Src" clist) and dst = extract_dst (findpropName "Dst" clist) in
-        (src, dst)::lL;;
+        match (src,dst) with
+        | Some s, Some d -> (extractLink (s,d))::lL
+        | _ -> failwith "A link without source or destination shouldn't exist";;
 
 (* Build block lists *)
-let rec blocklist_of_simulink (lB, lP, lL) = function
+let rec blocklist_of_simulink ((lB, lP, lL):simulinkModel) = function
     | Element (name,alist,clist) (* as t *) ->
         begin match name with
         | "System" -> List.fold_left blocklist_of_simulink (lB, lP, lL) clist
