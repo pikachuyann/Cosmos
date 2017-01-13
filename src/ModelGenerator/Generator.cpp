@@ -165,6 +165,7 @@ bool ParseLHA(GspnType &spn){
     A.TransitionIndex = spn.TransId;
     A.PlaceIndex = spn.PlacesId;
     A.ConfidenceLevel = P.Level;
+    if(! A.isDeterministic )P.lhaType= NOT_DET;
 
     if (P.verbose > 0)cout << "Start Parsing " << P.PathLha << endl;
 
@@ -336,26 +337,26 @@ void generateMain() { // Not use for the moment
     string loc;
 
     loc = P.tmpPath + "/main.cpp";
-    //loc= "/Users/barbot/Documents/Cosmos/SOURCES/Cosmos/spn.cpp";
     ofstream mF(loc.c_str(), ios::out | ios::trunc);
-    // ouverture en écriture avec effacement du SpnCppFile ouvert
 
     mF << "#include \"BatchR.hpp\"" << endl;
     //mF << "#include \"sharedMemory.hpp\"" << endl;
     mF << "#include \"Simulator.hpp\"" << endl;
-    mF << "#include \"SimulatorRE.hpp\"" << endl;
+  /*  mF << "#include \"SimulatorRE.hpp\"" << endl;
     mF << "#include \"SimulatorBoundedRE.hpp\"" << endl;
-    mF << "#include \"SimulatorContinuousBounded.hpp\"" << endl;
+    mF << "#include \"SimulatorContinuousBounded.hpp\"" << endl;*/
     mF << "#include <sys/types.h>" << endl;
     mF << "#include <unistd.h>" << endl;
     mF << "#include <signal.h>" << endl;
 
     mF << "void signalHandler( int ){exit(EXIT_SUCCESS);}" << endl;
+    
+    mF << "int verbose = " << P.verbose << ";" << endl;
+    
     mF << "int main(int argc, char** argv) {" << endl;
     mF << "    signal(SIGINT, signalHandler);" << endl;
 
-
-
+/*
     //Argument to select the simulator to use.
     if (P.BoundedContinuous) {
         mF << "    int m = atoi(argv[5]);" << endl;
@@ -380,24 +381,34 @@ void generateMain() { // Not use for the moment
     } else {
         mF << "    Simulator Sim();" << endl;
     }
+ */
+    const auto eqt = (P.is_domain_impl_set ? "EventsQueueSet" :"EventsQueue<vector<_trans>>");
 
-    mF << "    bool singleBatch = false;" << endl;
-    mF << "    for(int i=1; i<argc ;i++){" << endl;
-    mF << "        if(strcmp(argv[i],\"-log\")==0 && argc>i)Sim.logValue(argv[i+1]);" << endl;
-    mF << "        if(strcmp(argv[i],\"-trace\")==0 && argc>i){" << endl;
-    mF << "            Sim.logTrace(argv[i+1]);singleBatch = true;}" << endl;
-    mF << "    }" << endl;
-
+    mF << "    SPN_orig<" << eqt << "> N;" << endl;
+    
+    if( P.lhaType == DET){
+        mF << "    LHA_orig<typeof N.Marking> A;"<< endl;
+    }else{
+        mF << "    NLHA<typeof N.Marking> A;"<< endl;
+    }
+    mF << "    Simulator<"<< eqt << ",typeof N> sim(N,A);" << endl;
+    
+    if( !P.dataraw.empty()) mF << "    sim.logValue(" << P.dataraw << ");" <<endl;
+    if( !P.datatrace.empty()){
+        mF << "    sim.logTrace(" << P.datatrace << ","<< P.sampleResol << ");" <<endl;
+        mF << "    bool singleBatch = true;"<< endl;
+    } else mF << "    bool singleBatch = false;"<< endl;
+    
+    mF << "    sim.SetBatchSize(" << P.Batch << ");" << endl;
+    
     mF << "    if(argc>=3){" << endl;
-    mF << "        Sim.SetBatchSize(atoi(argv[1])); //set the batch size" << endl;
-    mF << "        Sim.verbose = atoi(argv[2]);" << endl;
-    mF << "        Sim.initRandomGenerator(atoi(argv[3]));" << endl;
-    mF << "    }else Sim.initRandomGenerator(0);" << endl;
+    mF << "        sim.initRandomGenerator(atoi(argv[3]));" << endl;
+    mF << "    }else sim.initRandomGenerator(0);" << endl;
 
-    mF << "    if((Sim.verbose>=4) | singleBatch )Sim.RunBatch();" << endl;
+    mF << "    if((verbose>=4) | singleBatch )sim.RunBatch();" << endl;
     mF << "    else while( !cin.eof() ){" << endl;
-    mF << "        BatchR batchResult = Sim.RunBatch(); //simulate a batch of trajectory" << endl;
-    mF << "        batchResult.outputR();// output the result on the standart output" << endl;
+    mF << "        BatchR batchResult = sim.RunBatch(); //simulate a batch of trajectory" << endl;
+    mF << "        batchResult.outputR(cout);// output the result on the standart output" << endl;
     mF << "    }" << endl;
     mF << "    return (EXIT_SUCCESS);" << endl;
     mF << "}" << endl << endl;
@@ -419,27 +430,27 @@ bool build() {
     cmd += bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/spn.o " + P.tmpPath + "/spn.cpp";
     cmd += " )\\\n";
     //Compile the LHA
-    if(!P.lightSimulator)cmd += "&(" + bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp)";
+    if(!P.lightSimulator)cmd += "&(" + bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp)\\\n";
+    
+    //Compile the Main
+    cmd += "&(" + bcmd + " -c -I"+P.Path+"../include "+ P.boostpath +" -o "+P.tmpPath+"/main.o "+P.tmpPath+"/main.cpp)";
+    
     cmd += " & wait";
 
     if (P.verbose > 2)cout << cmd << endl;
     if (system(cmd.c_str())) return false;
-
-    /*
-    //Compile the Main
-    cmd = bcmd + " -c -I"+P.Path+"../include -o "+P.tmpPath+"/main.o "+P.tmpPath+"/main.cpp";
-    if(P.verbose>2)cout << cmd << endl;
-    if (system(cmd.c_str())) return false;
-     */
+    
 
     //Link SPN and LHA with the library
-    cmd = bcmd + " -o " + P.tmpPath + "/ClientSim " + P.tmpPath + "/spn.o ";
+    cmd = bcmd + " -o " + P.tmpPath + "/ClientSim ";
+    if(P.modelType == GSPN)cmd += P.tmpPath + "/spn.o ";
     if(P.lightSimulator){
         cmd += P.Path + "../lib/libClientSimLight.a ";
     } else {
         cmd += P.tmpPath + "/LHA.o ";
         cmd += P.Path + "../lib/libClientSim.a ";
     };
+    cmd += P.tmpPath + "/main.o ";
 
     if (P.verbose > 2)cout << cmd << endl;
     if (system(cmd.c_str())) return false;

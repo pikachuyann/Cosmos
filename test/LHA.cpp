@@ -207,6 +207,7 @@ void LHA<D>::UpdateFormulaVal(){
 }
 
 bool IsLHADeterministic = 1;
+
 fullState::fullState():loc(0){
 	var= new Variables;
 }
