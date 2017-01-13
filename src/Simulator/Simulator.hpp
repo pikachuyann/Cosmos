@@ -47,7 +47,7 @@
 template <class S, class EQT, class DEDS>
 class SimulatorBase:public timeGen {
 public:
-    SimulatorBase(DEDS& N,LHA_orig<typeof N.Marking>&);
+    SimulatorBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>&);
     
     //Simulator();
 	~SimulatorBase();

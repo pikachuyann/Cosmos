@@ -102,7 +102,7 @@ template<class S,class DEDS>
 class SimulatorBoundedREBase: public SimulatorREBase<S,DEDS>{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedREBase(DEDS& N,LHA_orig<typeof N.Marking>&,int m);
+    SimulatorBoundedREBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>&,int m);
 	BatchR RunBatch();
 	using SimulatorREBase<S,DEDS>::initVect;
     void initVect(int T);
