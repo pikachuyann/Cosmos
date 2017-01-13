@@ -387,9 +387,9 @@ void generateMain() { // Not use for the moment
     mF << "    SPN_orig<" << eqt << "> N;" << endl;
     
     if( P.lhaType == DET){
-        mF << "    LHA_orig<typeof N.Marking> A;"<< endl;
+        mF << "    LHA_orig<decltype(N.Marking)> A;"<< endl;
     }else{
-        mF << "    NLHA<typeof N.Marking> A;"<< endl;
+        mF << "    NLHA<decltype(N.Marking)> A;"<< endl;
     }
     mF << "    Simulator<"<< eqt << ",typeof N> sim(N,A);" << endl;
     
@@ -444,13 +444,14 @@ bool build() {
     //Link SPN and LHA with the library
     cmd = bcmd + " -o " + P.tmpPath + "/ClientSim ";
     if(P.modelType == GSPN)cmd += P.tmpPath + "/spn.o ";
+    cmd += P.tmpPath + "/main.o "; 
     if(P.lightSimulator){
         cmd += P.Path + "../lib/libClientSimLight.a ";
     } else {
         cmd += P.tmpPath + "/LHA.o ";
         cmd += P.Path + "../lib/libClientSim.a ";
     };
-    cmd += P.tmpPath + "/main.o ";
+ 
 
     if (P.verbose > 2)cout << cmd << endl;
     if (system(cmd.c_str())) return false;
