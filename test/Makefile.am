@@ -10,18 +10,20 @@ spn.cpp: ../src/ModelGenerator/Cosmos $(srcdir)/../Examples/Hospital/Hospital.gr
 	../src/ModelGenerator/Cosmos $(srcdir)/../Examples/Hospital/Hospital.grml --loop 100000 --tmp-status only-gen
 	cp tmp/spn.cpp ./
 	cp tmp/LHA.cpp ./
+	cp tmp/main.cpp ./
 	cp tmp/markingImpl.hpp ./
 
 LHA.cpp: spn.cpp
 markingImpl.hpp: spn.cpp
+main.cpp: spn.cpp
 
-BUILT_SOURCES = LHA.cpp markingImpl.hpp spn.cpp
+BUILT_SOURCES = LHA.cpp markingImpl.hpp spn.cpp main.cpp
 
-ClientSim2_SOURCES = LHA.cpp markingImpl.hpp spn.cpp
+ClientSim2_SOURCES = LHA.cpp markingImpl.hpp spn.cpp main.cpp
 
 ClientSim2_LDADD = ../src/Simulator/libClientSim.la
 
-ClientSim2_CPPFLAGS = -Wno-unused-const-variable -Wno-unused-parameter -I$(srcdir)/../src/Simulator
+ClientSim2_CPPFLAGS = -Wno-unused-const-variable -Wno-unused-parameter -I$(srcdir)/../src/Simulator $(BOOST_CPPFLAGS)
 
 AM_CPPFLAGS =  -I$(srcdir)/include/gtest/internal/ -I$(srcdir)/include -isystem -I$(srcdir)/include $(BOOST_CPPFLAGS) $(PTHREAD_CFLAGS)
 

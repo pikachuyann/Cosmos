@@ -431,9 +431,3 @@ template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue<vector<_tra
 
 #include "SimulatorContinuousBounded.hpp"
 template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
-
-#include "MarkovChain.hpp"
-template class SimulatorBase<Simulator<EventsQueue<vector<Edge>>,MarkovChain<EventsQueue<vector<Edge>>>>,EventsQueue<vector<Edge>>,MarkovChain<EventsQueue<vector<Edge>>>>;
-template class Simulator<EventsQueue<vector<Edge>>,MarkovChain<EventsQueue<vector<Edge>>>>;
-
-

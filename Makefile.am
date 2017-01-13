@@ -84,7 +84,7 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 #    Examples/maxEntropy/twoears.prism Examples/maxEntropy/twoears.prism.grml
 
 AM_LDFLAGS = -lrt $(PTHREAD_LIBS)
-AM_CPPFLAGS = $(BOOST_CPPFLAGS) -DGIT_REVISION=`git describe --abbrev=6 --dirty --always --tags`
+AM_CPPFLAGS = $(BOOST_CPPFLAGS)
 
 .PHONY: test updatefile
 

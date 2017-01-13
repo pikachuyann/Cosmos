@@ -115,7 +115,7 @@ void build_sim(SimType st,int argc,char **argv) {
         {
             auto &N = *(new SPN_orig<EQT>());
             auto A = getLha<typeof N.Marking>(IsLHADeterministic);
-            auto sim = new Simulator<EQT,SPN_orig<EQT> >(N,A);
+            auto sim = new Simulator<EQT,typeof N>(N,A);
             run_sim(*sim,argc,argv);
         }
         case RareEventUnbounded1:
