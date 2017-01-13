@@ -393,9 +393,9 @@ void generateMain() { // Not use for the moment
     }
     mF << "    Simulator<"<< eqt << ",typeof N> sim(N,A);" << endl;
     
-    if( !P.dataraw.empty()) mF << "    sim.logValue(" << P.dataraw << ");" <<endl;
+    if( !P.dataraw.empty()) mF << "    sim.logValue(\"" << P.dataraw << "\");" <<endl;
     if( !P.datatrace.empty()){
-        mF << "    sim.logTrace(" << P.datatrace << ","<< P.sampleResol << ");" <<endl;
+        mF << "    sim.logTrace(\"" << P.datatrace << "\","<< P.sampleResol << ");" <<endl;
         mF << "    bool singleBatch = true;"<< endl;
     } else mF << "    bool singleBatch = false;"<< endl;
     
