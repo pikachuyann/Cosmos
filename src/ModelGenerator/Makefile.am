@@ -20,3 +20,6 @@ AM_CPPFLAGS = -I$(srcdir)/../libgrml -I$(srcdir)/Eval -I../libgrml -IEval -IGspn
 AUTOMAKE_OPTIONS = subdir-objects
 
 AM_LDFLAGS = $(PTHREAD_LIBS)
+
+parameters.o: FORCE
+FORCE:
