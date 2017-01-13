@@ -8,10 +8,10 @@ libClientSim_la_SOURCES = \
 	EventsQueue.cpp EventsQueue.hpp \
 	timeGen.cpp timeGen.hpp \
 	marking.hpp spn.hpp \
-    SPNBase.cpp SPNBase.hpp \
-    LHA_orig.cpp LHA_orig.hpp \
-    LHA.hpp \
-    NLHA.cpp NLHA.hpp \
+	SPNBase.cpp SPNBase.hpp \
+	LHA_orig.cpp LHA_orig.hpp \
+	LHA.hpp \
+	NLHA.cpp NLHA.hpp \
 	Simulator.cpp Simulator.hpp \
 	SimulatorRE.cpp SimulatorRE.hpp \
 	sparse_io.hpp \
@@ -24,11 +24,11 @@ libClientSim_la_SOURCES = \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp DistributionDef.hpp \
-    timeGen.hpp Event.hpp EventsQueue.hpp BatchR.hpp EventsQueueSet.hpp \
-    Simulator.hpp SimulatorRE.hpp SimulatorBoundedRE.hpp SimulatorContinuousBounded.hpp stateSpace.hpp numericalSolver.hpp \
-    foxglynn.hpp numSolverBB.hpp numSolverSH.hpp\
-    MarkovChain.hpp SPNBase.hpp \
-    LHA_orig.hpp NLHA.hpp
+	timeGen.hpp Event.hpp EventsQueue.hpp BatchR.hpp EventsQueueSet.hpp \
+	Simulator.hpp SimulatorRE.hpp SimulatorBoundedRE.hpp SimulatorContinuousBounded.hpp stateSpace.hpp numericalSolver.hpp \
+	foxglynn.hpp numSolverBB.hpp numSolverSH.hpp\
+	MarkovChain.hpp SPNBase.hpp \
+	LHA_orig.hpp NLHA.hpp
 includesdir = $(includedir)
 
 AM_LDFLAGS = $(PTHREAD_LIBS)
