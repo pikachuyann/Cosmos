@@ -36,7 +36,6 @@
 #include "EventsQueueSet.hpp"
 #include "BatchR.hpp"
 #include "timeGen.hpp"
-#include "EventQueueFactory.hpp"
 
 #include <iostream>
 #include <fstream>

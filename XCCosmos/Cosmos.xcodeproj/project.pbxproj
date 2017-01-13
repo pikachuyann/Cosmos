@@ -19,7 +19,7 @@
 		032A7073181BC0D6006D7332 /* HaslFormula.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7026181BC0D6006D7332 /* HaslFormula.cpp */; };
 		032A7076181BC0D6006D7332 /* Lha-Reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A702E181BC0D6006D7332 /* Lha-Reader.cpp */; };
 		032A7078181BC0D6006D7332 /* Lha_gmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7031181BC0D6006D7332 /* Lha_gmlparser.cpp */; };
-		032A7079181BC0D6006D7332 /* parameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7038181BC0D6006D7332 /* parameters.cpp */; settings = {COMPILER_FLAGS = "-DGIT_REVISION=\\\"XCODE\\\""; }; };
+		032A7079181BC0D6006D7332 /* parameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7038181BC0D6006D7332 /* parameters.cpp */; settings = {COMPILER_FLAGS = "-DGIT_REVISION=\\\"XCODE\\\" -DCPP_COMPILER=\\\"g++\\\" -DBOOST_PATH=\\\"-I/usr/local/include\\\""; }; };
 		032A707A181BC0D6006D7332 /* result.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703A181BC0D6006D7332 /* result.cpp */; };
 		032A707B181BC0D6006D7332 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703C181BC0D6006D7332 /* server.cpp */; };
 		032A70A7181BC307006D7332 /* expatmodelparser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A709D181BC307006D7332 /* expatmodelparser.cc */; };
@@ -34,6 +34,7 @@
 		0336B7F9198A3BF30043EFC6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D7198A3BF30043EFC6 /* main.cpp */; };
 		0336B7FA198A3BF30043EFC6 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D8198A3BF30043EFC6 /* Makefile */; };
 		0336B7FB198A3BF30043EFC6 /* readPlast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D9198A3BF30043EFC6 /* readPlast.cpp */; };
+		03466C201E28E84F00BE2C78 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03466C1F1E28E84F00BE2C78 /* server.cpp */; };
 		03541DD71BE7B7A9005741C6 /* Gspn-Grml-Output.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */; };
 		035464EF1DFFFF240060D055 /* MarkovChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035464ED1DFFFF240060D055 /* MarkovChain.cpp */; };
 		035464F01DFFFF240060D055 /* MarkovChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035464ED1DFFFF240060D055 /* MarkovChain.cpp */; };
@@ -312,6 +313,7 @@
 		0336B7DA198A3BF30043EFC6 /* readPlast.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = readPlast.hpp; sourceTree = "<group>"; };
 		0341401C15AEF45E0009FEFC /* POMDP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = POMDP; sourceTree = BUILT_PRODUCTS_DIR; };
 		034509A616A80AC8002088B3 /* libClientSim.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClientSim.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		03466C1F1E28E84F00BE2C78 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
 		03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Grml-Output.cpp"; sourceTree = "<group>"; };
 		03541DD61BE7B7A9005741C6 /* Gspn-Grml-Output.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Grml-Output.hpp"; sourceTree = "<group>"; };
 		035464ED1DFFFF240060D055 /* MarkovChain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarkovChain.cpp; sourceTree = "<group>"; };
@@ -1221,6 +1223,7 @@
 				032A703A181BC0D6006D7332 /* result.cpp */,
 				032A703B181BC0D6006D7332 /* result.hpp */,
 				032A703D181BC0D6006D7332 /* server.hpp */,
+				03466C1F1E28E84F00BE2C78 /* server.cpp */,
 				039B4F89188E7B2400C63ED7 /* Generator.cpp */,
 				039B4F8A188E7B2400C63ED7 /* Generator.hpp */,
 				032A700A181BC0D6006D7332 /* Cosmos.cpp */,
@@ -3440,6 +3443,7 @@
 				03EC8D6E1880714C00731BD3 /* unfolder.cpp in Sources */,
 				032A7071181BC0D6006D7332 /* Gspn_gmlparser.cpp in Sources */,
 				039B4F8B188E7B2400C63ED7 /* Generator.cpp in Sources */,
+				03466C201E28E84F00BE2C78 /* server.cpp in Sources */,
 				032A7073181BC0D6006D7332 /* HaslFormula.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

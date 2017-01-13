@@ -29,6 +29,11 @@
 #include "EventsQueue.hpp"
 #include "MarkovChain.hpp"
 
+#include "Simulator.cpp"
+template class SimulatorBase<Simulator<EventsQueue<vector<Edge>>,MarkovChain<EventsQueue<vector<Edge>>>>,EventsQueue<vector<Edge>>,MarkovChain<EventsQueue<vector<Edge>>>>;
+template class Simulator<EventsQueue<vector<Edge>>,MarkovChain<EventsQueue<vector<Edge>>>>;
+
+
 /* AbstractMarking -------------------------------*/
 struct abstractMarkingImpl{
     int state;
