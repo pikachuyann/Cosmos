@@ -36,7 +36,7 @@
 using namespace std;
 
 template<class S,class DEDS>
-SimulatorBoundedREBase<S,DEDS>::SimulatorBoundedREBase(DEDS& N,LHA_orig<typeof N.Marking>& A,int m):SimulatorREBase<S,DEDS>(N,A){
+SimulatorBoundedREBase<S,DEDS>::SimulatorBoundedREBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>& A,int m):SimulatorREBase<S,DEDS>(N,A){
     switch (m) {
         case 1:
             numSolv = new numericalSolver();
