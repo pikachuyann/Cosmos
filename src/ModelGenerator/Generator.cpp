@@ -340,18 +340,14 @@ void generateMain() { // Not use for the moment
     ofstream mF(loc.c_str(), ios::out | ios::trunc);
 
     mF << "#include \"BatchR.hpp\"" << endl;
-    //mF << "#include \"sharedMemory.hpp\"" << endl;
-    mF << "#include \"Simulator.hpp\"" << endl;
+    mF << "#include \"clientsim.hpp\"" << endl;
+    /*mF << "#include \"Simulator.hpp\"" << endl;
     mF << "#include \"SimulatorRE.hpp\"" << endl;
     mF << "#include \"SimulatorBoundedRE.hpp\"" << endl;
     mF << "#include \"SimulatorContinuousBounded.hpp\"" << endl;
     mF << "#include <sys/types.h>" << endl;
     mF << "#include <unistd.h>" << endl;
-    mF << "#include <signal.h>" << endl;
-
-    mF << "void signalHandler( int s){if(s == SIGHUP )abort();}" << endl;
-    
-    mF << "int verbose = " << P.verbose << ";" << endl;
+    mF << "#include <signal.h>" << endl;*/
     
     mF << "int main(int argc, char** argv) {" << endl;
     mF << "    signal(SIGINT, signalHandler);" << endl;
@@ -425,13 +421,12 @@ void generateMain() { // Not use for the moment
         mF << "    sim.logTrace(\"" << P.datatrace << "\","<< P.sampleResol << ");" <<endl;
         mF << "    bool singleBatch = true;"<< endl;
     } else mF << "    bool singleBatch = false;"<< endl;
+    if( !P.dotfile.empty()) mF << "    sim.dotFile = \"" << P.dotfile << "\";" << endl;
     
     mF << "    sim.SetBatchSize(" << P.Batch << ");" << endl;
     
-    mF << "    if(argc>=3){" << endl;
-    mF << "        sim.initRandomGenerator(atoi(argv[3]));" << endl;
-    mF << "    }else sim.initRandomGenerator(0);" << endl;
-
+    mF << "    setSimulator(sim,argc,argv);" << endl;
+    
     mF << "    if((verbose>=4) | singleBatch )sim.RunBatch();" << endl;
     mF << "    else while( !cin.eof() ){" << endl;
     mF << "        BatchR batchResult = sim.RunBatch(); //simulate a batch of trajectory" << endl;

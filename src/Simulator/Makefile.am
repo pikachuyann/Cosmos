@@ -21,14 +21,15 @@ libClientSim_la_SOURCES = \
 	numSolverSH.cpp  numSolverSH.hpp \
 	SimulatorBoundedRE.cpp SimulatorBoundedRE.hpp \
 	foxglynn.cpp foxglynn.hpp \
-	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp
+	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
+	clientsim.cpp
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp DistributionDef.hpp \
 	timeGen.hpp Event.hpp EventsQueue.hpp BatchR.hpp EventsQueueSet.hpp \
 	Simulator.hpp SimulatorRE.hpp SimulatorBoundedRE.hpp SimulatorContinuousBounded.hpp stateSpace.hpp numericalSolver.hpp \
 	foxglynn.hpp numSolverBB.hpp numSolverSH.hpp\
 	MarkovChain.hpp SPNBase.hpp \
-	LHA_orig.hpp NLHA.hpp
+	LHA_orig.hpp NLHA.hpp clientsim.hpp
 includesdir = $(includedir)
 
 AM_LDFLAGS = $(PTHREAD_LIBS)
