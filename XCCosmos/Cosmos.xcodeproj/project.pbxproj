@@ -314,6 +314,7 @@
 		0341401C15AEF45E0009FEFC /* POMDP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = POMDP; sourceTree = BUILT_PRODUCTS_DIR; };
 		034509A616A80AC8002088B3 /* libClientSim.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClientSim.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		03466C1F1E28E84F00BE2C78 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
+		03466C211E2D2BD700BE2C78 /* clientsim.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = clientsim.hpp; sourceTree = "<group>"; };
 		03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Grml-Output.cpp"; sourceTree = "<group>"; };
 		03541DD61BE7B7A9005741C6 /* Gspn-Grml-Output.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Grml-Output.hpp"; sourceTree = "<group>"; };
 		035464ED1DFFFF240060D055 /* MarkovChain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarkovChain.cpp; sourceTree = "<group>"; };
@@ -1334,6 +1335,7 @@
 				035464ED1DFFFF240060D055 /* MarkovChain.cpp */,
 				035464EE1DFFFF240060D055 /* MarkovChain.hpp */,
 				032A7041181BC0D6006D7332 /* clientsim.cpp */,
+				03466C211E2D2BD700BE2C78 /* clientsim.hpp */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
