@@ -20,9 +20,13 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file clientsim.cpp created by Benoit Barbot.                                *
+ * file clientsim.hpp created by Benoît Barbot on 16/01/2017.                  *
  *******************************************************************************
  */
+
+
+#ifndef clientsim_h
+#define clientsim_h
 
 #include "BatchR.hpp"
 #include "Simulator.hpp"
@@ -31,24 +35,32 @@
 #include "SimulatorContinuousBounded.hpp"
 #include "Polynome.hpp"
 #include "MarkovChain.hpp"
-#include "clientsim.hpp"
 
-#include <sys/types.h>
-#include <unistd.h>
-#include <signal.h>
-#include <stdlib.h>
+// Handler for interuption of the server
+void signalHandler(int);
 
-
-//#include "Polynome.hpp"
-
-void signalHandler( int s)
-{
-    if(s == SIGHUP )abort();
-    //exit(EXIT_SUCCESS);
+template<class SIM>
+void setSimulator(SIM& sim,int argc, char* argv[] ){
+    if( argc ==0) return;
+    verbose=atoi(argv[2]);
     
+    sim.SetBatchSize(atoi(argv[1]));
+    sim.initRandomGenerator(atoi(argv[5]));
+    sim.tmpPath=argv[4];
+    
+    for(int i=1; i<argc ;i++){
+        if(strcmp(argv[i],"-log")==0 && argc>i)
+            sim.logValue(argv[i+1]);
+        if(strcmp(argv[i],"-trace")==0 && argc>i){
+            sim.logTrace(argv[i+1],stod(argv[i+2]));
+        }
+        if(strcmp(argv[i],"-dotFile")==0 && argc>i){
+            sim.dotFile = argv[i+1];
+        }
+    }
 }
 
-/**
- * The verbose level global
- */
-int verbose;
+
+
+
+#endif /* clientsim_h */
