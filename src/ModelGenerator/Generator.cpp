@@ -342,56 +342,83 @@ void generateMain() { // Not use for the moment
     mF << "#include \"BatchR.hpp\"" << endl;
     //mF << "#include \"sharedMemory.hpp\"" << endl;
     mF << "#include \"Simulator.hpp\"" << endl;
-  /*  mF << "#include \"SimulatorRE.hpp\"" << endl;
+    mF << "#include \"SimulatorRE.hpp\"" << endl;
     mF << "#include \"SimulatorBoundedRE.hpp\"" << endl;
-    mF << "#include \"SimulatorContinuousBounded.hpp\"" << endl;*/
+    mF << "#include \"SimulatorContinuousBounded.hpp\"" << endl;
     mF << "#include <sys/types.h>" << endl;
     mF << "#include <unistd.h>" << endl;
     mF << "#include <signal.h>" << endl;
 
-    mF << "void signalHandler( int ){exit(EXIT_SUCCESS);}" << endl;
+    mF << "void signalHandler( int s){if(s == SIGHUP )abort();}" << endl;
     
     mF << "int verbose = " << P.verbose << ";" << endl;
     
     mF << "int main(int argc, char** argv) {" << endl;
     mF << "    signal(SIGINT, signalHandler);" << endl;
 
-/*
-    //Argument to select the simulator to use.
-    if (P.BoundedContinuous) {
-        mF << "    int m = atoi(argv[5]);" << endl;
-        mF << "    double t = atof(argv[6]);" << endl;
-        mF << "    double e = atof(argv[7]);" << endl;
-        mF << "    int stepc = atoi(argv[8]);" << endl;
-        mF << "    SimulatorContinuousBounded Sim(m,e,stepc);" << endl;
-        mF << "    Sim.initVectCo(t);" << endl;
-
-    } else if (P.BoundedRE > 0) {
-        mF << "    int m = atoi(argv[5]);" << endl;
-        mF << "    int T = atof(argv[6]);" << endl;
-        mF << "    SimulatorBounded Sim(m);" << endl;
-        mF << "    Sim.initVect(T);" << endl;
-
-    } else if (P.DoubleIS) {
-        mF << "    SimulatorRE Sim(true);" << endl;
-        mF << "    Sim.initVect();" << endl;
-    } else if (P.RareEvent) {
-        mF << "    SimulatorRE Sim(true);" << endl;
-        mF << "    Sim.initVect();" << endl;
-    } else {
-        mF << "    Simulator Sim();" << endl;
+    if( P.computeStateSpace>0){
+        mF << "stateSpace states;" << endl;
+        mF << "states.exploreStateSpace();" << endl;
+        mF << "states.buildTransitionMatrix();" << endl;
+        if(P.computeStateSpace==1){
+            mF << "states.outputPrism();" << endl;
+            mF << "states.launchPrism(\""<< P.prismPath <<"\");" << endl;
+            mF << "states.importPrism();" << endl;
+            mF << "states.outputVect();" << endl;
+            mF << "states.outputTmpLumpingFun();" << endl;
+            mF << "double prResult = states.returnPrismResult();" << endl;
+            mF << "BatchR dummR(1,0);" << endl;
+            mF << "SimOutput sd;" << endl;
+            mF << "sd.accept=true;" << endl;
+            mF << "sd.quantR.push_back(prResult);" << endl;
+            mF << "dummR.addSim(sd);" << endl;
+        } else{
+            //states.uniformizeMatrix();
+            mF << "states.outputMat();" << endl;
+            mF << "states.outputTmpLumpingFun();" << endl;
+            mF << "BatchR dummR(0,0);" << endl;
+        }
+        mF << "dummR.outputR(cout);" << endl;
+        mF << "cerr << \"Finish Exporting\" << endl;" << endl;
+        mF << "exit(EXIT_SUCCESS);" << endl;
+        mF << "}" << endl;
+        return;
     }
- */
+    
+    // Instantiate EventQueue
     const auto eqt = (P.is_domain_impl_set ? "EventsQueueSet" :"EventsQueue<vector<_trans>>");
 
-    mF << "    SPN_orig<" << eqt << "> N;" << endl;
+    // Instantiate DEDS
+    if (P.BoundedRE > 0 || P.BoundedContinuous) {
+        mF << "    SPN_BoundedRE N(false);" << endl;
+    } else if (P.RareEvent) {
+        mF << "    SPN_RE N("<< P.DoubleIS <<");" << endl;
+    } else {
+        mF << "    SPN_orig<" << eqt << "> N;" << endl;
+    }
     
+    // Instantiade LHA
     if( P.lhaType == DET){
         mF << "    LHA_orig<decltype(N.Marking)> A;"<< endl;
     }else{
         mF << "    NLHA<decltype(N.Marking)> A;"<< endl;
     }
-    mF << "    Simulator<"<< eqt << ",typeof N> sim(N,A);" << endl;
+
+    // Instantiate Simulator
+    if (P.BoundedContinuous){
+        mF << "    SimulatorContinuousBounded<SPN_BoundedRE> sim(N,A,"<<
+        P.BoundedRE << ", "<< P.epsilon << ", " << P.continuousStep << ");" << endl;
+        mF << "    sim.initVectCo("<< P.horizon <<");" << endl;
+    }else if (P.BoundedRE > 0) {
+        mF << "    SimulatorBoundedRE<SPN_BoundedRE> sim(N,A,"<< P.BoundedRE <<");" << endl;
+        mF << "    sim.initVect("<< (int)P.horizon <<");" << endl;
+    } else if (P.RareEvent) {
+        mF << "    SimulatorRE<SPN_RE> sim(N,A);" << endl;
+        mF << "    sim.initVect();" << endl;
+    } else {
+        mF << "    Simulator<"<< eqt << ",typeof N> sim(N,A);" << endl;
+    }
+
     
     if( !P.dataraw.empty()) mF << "    sim.logValue(\"" << P.dataraw << "\");" <<endl;
     if( !P.datatrace.empty()){
