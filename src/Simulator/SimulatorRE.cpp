@@ -37,51 +37,89 @@
 
 using namespace std;
 
+template<class DEDS>
+void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b, timeGen &TG, DEDS & N){
+    double t = ctime;
+    if (N.Transition[Id].DistTypeIndex != IMMEDIATE) {
+        N.getParams(Id, b);
+        t += TG.GenerateTime(N.Transition[Id].DistTypeIndex, N.ParamDistr, N.customDistr);
+        
+        N.Rate_Table[Id] = N.ParamDistr[0];
+        N.Origine_Rate_Table[Id] = N.ParamDistr[1];
+        N.Rate_Sum = N.Rate_Sum + N.ParamDistr[0];
+        N.Origine_Rate_Sum = N.Origine_Rate_Sum + N.ParamDistr[1];
+        
+    }
+    double w=0.0;
+    if (N.Transition[Id].DistTypeIndex > 2) {
+        N.ParamDistr[0]= N.GetWeight(Id,b);
+        w = TG.GenerateTime(EXPONENTIAL, N.ParamDistr, N.customDistr);
+        //vector<double> wParam(1, N.GetWeight(Id));
+        //w = GenerateTime(2, wParam);
+    }
+    
+    E.transition = Id;
+    E.time = t;
+    E.priority = N.GetPriority(Id,b);
+    E.weight = w;
+    E.binding = b;
+    
+}
 
-SPN_RE::SPN_RE(int& v,bool doubleIS):SPN_orig(v),doubleIS_mode(doubleIS){
+
+template <class S, class DEDS>
+SimulatorREBase<S, DEDS>::SimulatorREBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>& A):SimulatorBase<S, EventsQueue<vector<_trans>>, DEDS>(N,A){};
+
+template <class S>
+SPNBaseRE<S>::SPNBaseRE(bool doubleIS):doubleIS_mode(doubleIS){
     rareEventEnabled=false;
     Rate_Sum = 0;
     Origine_Rate_Sum = 0;
-    Rate_Table = vector<double>(tr,0.0);
-    Origine_Rate_Table = vector<double>(tr,0.0);
+    Rate_Table = vector<double>(this->tr,0.0);
+    Origine_Rate_Table = vector<double>(this->tr,0.0);
 }
 
-void SPN_RE::initialize( stateSpace *muprob){
+template <class S>
+void SPNBaseRE<S>::initialize( stateSpace *muprob){
     this->muprob=muprob;
 }
 
-SimulatorRE::SimulatorRE(SPN_orig<EventsQueue>& N,LHA_orig& A):Simulator(N,A) {
-    //static_cast<SPN_RE&>(N).initialize(EQ, this, muprob);
-}
-
-void SimulatorRE::initVect(){
+template <class S, class DEDS>
+void SimulatorREBase<S, DEDS>::initVect(){
     muprob = new stateSpace();
-	muprob->inputVect();
-    static_cast<SPN_RE&>(N).initialize(muprob);
+    muprob->inputVect();
+    this->N.initialize(muprob);
 }
 
-void SPN_RE::InitialEventsQueue(EventsQueue &EQ,timeGen &TG) {
+template<class S>
+void SPNBaseRE<S>::InitialEventsQueue(EventsQueue<vector<_trans>> &EQ,timeGen &TG) {
 	Rate_Sum = 0;
 	Origine_Rate_Sum = 0;
-	SPN_orig::InitialEventsQueue(EQ,TG);
+	SPNBase<S,EventsQueue<vector<_trans>>>::initialEventsQueue(EQ,TG);
 }
 
-void SimulatorRE::returnResultTrue(){
-	A.getFinalValues(N.Marking,Result.quantR,Result.qualR);
-	Result.accept = true;
-    for(size_t i = 0; i< A.FormulaVal.size() ; i++)Result.quantR[i] *= A.Likelihood;
-	if(verbose>3)cerr << "---------------\n TRUE: Likelyhood: "<< A.Likelihood <<" \n------\n";
+template <class S, class DEDS>
+void SimulatorREBase<S, DEDS>::returnResultTrue(){
+	this->A.getFinalValues(
+                   this->N.Marking,
+                   this->Result.quantR,
+                   this->Result.qualR);
+	this->Result.accept = true;
+    for(size_t i = 0; i< this->A.FormulaVal.size() ; i++)
+        this->Result.quantR[i] *= this->A.Likelihood;
+	if(verbose>3)cerr << "---------------\n TRUE: Likelyhood: "<< this->A.Likelihood <<" \n------\n";
 }
 
-void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue &EQ,timeGen &TG){
+template <class S>
+void SPNBaseRE<S>::update(double ctime,size_t t, const abstractBinding& b,EventsQueue<vector<_trans>> &EQ,timeGen &TG){
 	//If rareevent not require yet call the parent function
 	
 	if(!rareEventEnabled){
-		if(precondition(Marking)){
+		if(precondition(this->Marking)){
 			rareEventEnabled = true;
 			//A.Likelihood = 1.0;
 		}else{
-			update(ctime, t, b,EQ, TG);
+		  SPNBase<S,EventsQueue<vector<_trans>>>::update(ctime, t, b,EQ, TG);
 		return;
 		}
 	}
@@ -91,16 +129,16 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 	Rate_Sum = 0;
 	Origine_Rate_Sum = 0;
 	
-	//Run over all transition
-	for (const auto &tr : Transition) {
-        if(tr.Id != SPN::tr - 1){
+	//Run over all transitions
+	for (const auto &tr : this->Transition) {
+        if(tr.Id != this->tr - 1){
 			for(const auto &bindex : tr.bindingList ){
-				if(IsEnabled(tr.Id, bindex)){
+				if(this->IsEnabled(tr.Id, bindex)){
 					if (EQ.isScheduled(tr.Id, bindex.id())) {
-						GenerateEvent(ctime,F, tr.Id ,bindex, TG );
+					  generateEvent(ctime,F, tr.Id ,bindex, TG, *this );
 						EQ.replace(F);
 					} else {
-						GenerateEvent(ctime,F, tr.Id ,bindex, TG );
+						generateEvent(ctime,F, tr.Id ,bindex, TG, *this );
 						EQ.insert(F);
 					}
 				}else{
@@ -112,7 +150,7 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 	}
 	
 	abstractBinding bpuit;
-	GenerateEvent(ctime,F, (tr-1), bpuit,TG);
+	generateEvent(ctime,F, (this->tr-1), bpuit,TG, *this);
 	if(!doubleIS_mode){
 		EQ.replace(F);
 	}
@@ -140,31 +178,34 @@ void SPN_RE::update(double ctime,size_t t, const abstractBinding& b,EventsQueue 
 	 
 };
 
-void SimulatorRE::updateLikelihood(size_t E1_transitionNum){
-    let NRE = static_cast<SPN_RE&>(N);
+template<class S, class DEDS>
+void SimulatorREBase<S, DEDS>::updateLikelihood(size_t E1_transitionNum){
     
-    /*cerr << "initialised?:\t" << E1_transitionNum << "\t" << A.Likelihood << endl;
-    cerr << NRE.Rate_Sum << "\t" << NRE.Origine_Rate_Sum << "\t[";
-    for(let cv:NRE.Rate_Table)cerr << cv << ", ";
-    cerr << "]\t[";
-    for(let cv:NRE.Origine_Rate_Table)cerr << cv << ", ";
-    cerr << "]" << endl;*/
-    
-	if(NRE.doubleIS_mode){
-		A.Likelihood = A.Likelihood *
-		(NRE.Origine_Rate_Table[E1_transitionNum] / NRE.Origine_Rate_Sum) *
-		((NRE.Rate_Sum-NRE.Rate_Table[N.tr-1]) / NRE.Rate_Table[E1_transitionNum]);
+    if(verbose>4){
+        cerr << "initialised?:\t" << E1_transitionNum << "\t" << this->A.Likelihood << endl;
+        cerr << this->N.Rate_Sum << "\t" << this->N.Origine_Rate_Sum << "\t[";
+        for(let cv:this->N.Rate_Table)cerr << cv << ", ";
+        cerr << "]\t[";
+        for(let cv:this->N.Origine_Rate_Table)cerr << cv << ", ";
+        cerr << "]" << endl;
+    }
+        
+	if(this->N.doubleIS_mode){
+		this->A.Likelihood = this->A.Likelihood *
+		(this->N.Origine_Rate_Table[E1_transitionNum] / this->N.Origine_Rate_Sum) *
+		((this->N.Rate_Sum-this->N.Rate_Table[this->N.tr-1]) / this->N.Rate_Table[E1_transitionNum]);
 	}else{
-		A.Likelihood = A.Likelihood *
+		this->A.Likelihood = this->A.Likelihood *
 		//
 		//(N.Origine_Rate_Table[E1_transitionNum] / 1.0) *
-		(NRE.Origine_Rate_Table[E1_transitionNum] / NRE.Origine_Rate_Sum) *
-		(NRE.Rate_Sum / NRE.Rate_Table[E1_transitionNum]);
+		(this->N.Origine_Rate_Table[E1_transitionNum] / this->N.Origine_Rate_Sum) *
+		(this->N.Rate_Sum / this->N.Rate_Table[E1_transitionNum]);
 	}
 }
 
-bool SimulatorRE::transitionSink(size_t i){
-    return (i==N.tr-1);
+template<class S, class DEDS>
+bool SimulatorREBase<S, DEDS>::transitionSink(size_t i){
+    return (i==this->N.tr-1);
 }
 
 /*
@@ -176,100 +217,73 @@ bool SimulatorRE::transitionSink(size_t i){
  E.weight = 0.0;
  }*/
 
-void SPN_RE::GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b, timeGen &TG){
-	
-    double t = ctime;
-    if (Transition[Id].DistTypeIndex != IMMEDIATE) {
-        getParams(Id, b);
-        t += TG.GenerateTime(Transition[Id].DistTypeIndex, ParamDistr, customDistr);
-		
-		Rate_Table[Id] = ParamDistr[0];
-		Origine_Rate_Table[Id] = ParamDistr[1];
-		Rate_Sum = Rate_Sum + ParamDistr[0];
-		Origine_Rate_Sum = Origine_Rate_Sum + ParamDistr[1];
-		
-    }
-	double w=0.0;
-	if (Transition[Id].DistTypeIndex > 2) {
-		ParamDistr[0]= GetWeight(Id,b);
-		w = TG.GenerateTime(EXPONENTIAL, ParamDistr, customDistr);
-		//vector<double> wParam(1, N.GetWeight(Id));
-		//w = GenerateTime(2, wParam);
-    }
-	
-    E.transition = Id;
-    E.time = t;
-    E.priority = GetPriority(Id,b);
-    E.weight = w;
-	E.binding = b;
-	
-}
-
-void SimulatorRE::reset(){
-    A.Likelihood=1.0;
-    N.reset();
-    A.reset(N.Marking);
-    EQ->reset();
+template<class S, class DEDS>
+void SimulatorREBase<S, DEDS>::reset(){
+    this->A.Likelihood=1.0;
+    this->N.reset();
+    this->A.reset(this->N.Marking);
+    this->EQ->reset();
 }
 
 /**
  * Simulate a whole trajectory in the system. Result is store in SimOutput
  */
-void SimulatorRE::SimulateSinglePath() {
-    auto &NRE = static_cast<SPN_RE&>(N);
-	NRE.rareEventEnabled = NRE.precondition(N.Marking);
-    reset();
-    N.InitialEventsQueue(*EQ,*this);
+template<class S, class DEDS>
+void SimulatorREBase<S, DEDS>::SimulateSinglePath() {
+	this->N.rareEventEnabled = this->N.precondition(this->N.Marking);
+    static_cast<S*>(this)->reset();
+    this->N.InitialEventsQueue(*(this->EQ),*this);
 	
-	if(logtrace.is_open())logtrace << "New Path"<< endl;
+	if(this->logtrace.is_open())this->logtrace << "New Path"<< endl;
     
 	bool continueb = true;
-	while ((!EQ->isEmpty()) && continueb ) {
+	while ((!this->EQ->isEmpty()) && continueb ) {
         //cerr << "continue path"<< endl;
-		if(logtrace.is_open()){
-			logtrace << A.CurrentTime << "\t";
-			N.Marking.print(logtrace,0.0);
-			A.printState(logtrace);
-			logtrace << endl;
+		if(this->logtrace.is_open()){
+			this->logtrace << this->A.CurrentTime << "\t";
+			this->N.Marking.print(this->logtrace,0.0);
+			this->A.printState(this->logtrace);
+			this->logtrace << endl;
 		}
 		if(verbose>3){
 			//Print marking and location of the automata
 			//Usefull to track a simulation
-			N.Marking.printHeader(cerr);
-			A.printHeader(cerr);
+			this->N.Marking.printHeader(cerr);
+			this->A.printHeader(cerr);
 			cerr << endl;
-			N.Marking.print(cerr,0.0);
-			A.printState(cerr);
-            cerr << "\t" << A.Likelihood;
+			this->N.Marking.print(cerr,0.0);
+			this->A.printState(cerr);
+            cerr << "\t" << this->A.Likelihood;
 			cerr << endl;
-			if(verbose>4)EQ->view(N.Transition);
-			if(verbose==6)interactiveSimulation();
+			if(verbose>4)this->EQ->view(this->N.Transition);
+			if(verbose==6)this->interactiveSimulation();
 		}
 		
-		continueb = SimulateOneStep();
-		if(!NRE.rareEventEnabled)NRE.rareEventEnabled = NRE.precondition(N.Marking);
+		continueb = static_cast<S*>(this)->SimulateOneStep();
+		if(!this->N.rareEventEnabled)this->N.rareEventEnabled = this->N.precondition(this->N.Marking);
 	}
     //cerr << "finish path"<< endl;
 }
 
-
-void SPN_RE::getParams(size_t Id,const abstractBinding& b){
+template <class S>
+void SPNBaseRE<S>::getParams(size_t Id,const abstractBinding& b){
 	//If rareevent not require yet call the parent function
 	if(!rareEventEnabled){
-        GetDistParameters(Id,b);
+        this->GetDistParameters(Id,b);
 		return;
 	}
-	GetDistParameters(Id,b);
-	ParamDistr[1]= ParamDistr[0];
-	ParamDistr[0]= ComputeDistr( Id, b, ParamDistr[0]);
+	this->GetDistParameters(Id,b);
+	this->ParamDistr[1]= this->ParamDistr[0];
+	this->ParamDistr[0]= ComputeDistr( Id, b, this->ParamDistr[0]);
     //N.ParamDistr[0]= N.ParamDistr[1]; /////////////////////////////////////////////////to remove
 }
 
-double SPN_RE::mu(){
+template <class S>
+double SPNBaseRE<S>::mu(){
 	
 	vector<int> vect (muprob->S.begin()->first->size(),0);
 	
-    lumpingFun(Marking,vect);
+    lumpingFun(this->Marking,vect);
     //cerr << "test(";
     int i = muprob->findHash(&vect);
     if(i<0 || verbose>4){
@@ -278,9 +292,9 @@ double SPN_RE::mu(){
             cerr << vect[j] << ",";
         }
         cerr << ") ->" << i << endl;
-		Marking.printHeader(cerr);
+		this->Marking.printHeader(cerr);
 		cerr << endl;
-		Marking.print(cerr,0.0);
+		this->Marking.print(cerr,0.0);
 		cerr << endl;
 		print_state(vect);
         if(i<0)exit(EXIT_FAILURE);
@@ -289,12 +303,13 @@ double SPN_RE::mu(){
 	return muprob->getMu(i);
 }
 
-double SPN_RE::ComputeDistr(size_t t , const abstractBinding& b, double origin_rate){
-	if(verbose>4)cerr << "trans: " << Transition[t].label << " mu origine:";
+template <class S>
+double SPNBaseRE<S>::ComputeDistr(size_t t , const abstractBinding& b, double origin_rate){
+	if(verbose>4)cerr << "trans: " << this->Transition[t].label << " mu origine:";
 	double mux = mu();
 	if( mux==0.0 || mux==1.0) return(origin_rate);
     
-	if(t== tr-1){
+	if(t== this->tr-1){
 		if(Origine_Rate_Sum >= Rate_Sum){
 			return( Origine_Rate_Sum - Rate_Sum  );
 		}else{
@@ -308,10 +323,28 @@ double SPN_RE::ComputeDistr(size_t t , const abstractBinding& b, double origin_r
 	};
 	if(verbose>4)cerr << "mu target : ";
 	double distr;
-	fire(t,b,0.0);
+	this->fire(t,b,0.0);
 	distr = origin_rate *( mu() / mux);
-	unfire(t,b);
+	this->unfire(t,b);
 	if(verbose>4)cerr <<endl;
 	return(distr);
 }
+
+template class SimulatorREBase<SimulatorRE<SPN_RE>, SPN_RE>;
+template class SimulatorRE<SPN_RE>;
+template class SPNBaseRE<SPN_RE>;
+
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBaseRE<SPN_RE> &);
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_RE &);
+
+#include "SimulatorBoundedRE.hpp"
+template class SimulatorREBase<SimulatorBoundedRE<SPN_RE>, SPN_RE>;
+template class SimulatorREBase<SimulatorBoundedRE<SPN_BoundedRE>, SPN_BoundedRE>;
+template class SPNBaseRE<SPN_BoundedRE>;
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBaseRE<SPN_BoundedRE> &);
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_BoundedRE &);
+
+
+#include "SimulatorContinuousBounded.hpp"
+template class SimulatorREBase<SimulatorContinuousBounded<SPN_BoundedRE>, SPN_BoundedRE>;
 

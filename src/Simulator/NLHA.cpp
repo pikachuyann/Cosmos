@@ -30,46 +30,50 @@
 
 using namespace std;
 
-void NLHA::setInitLocation(const abstractMarking& Marking) {
-    for (auto &l : InitLoc) {
-        if (CheckLocation(l, Marking)){
-            powerSetState->emplace(l,*Vars);
+template<class DEDState>
+void NLHA<DEDState>::setInitLocation(const DEDState& Marking) {
+    for (const auto &l : this->InitLoc) {
+        if (this->CheckLocation(l, Marking)){
+            powerSetState->emplace(l, *(this->Vars));
         }
     }
 }
 
-void NLHA::reset(const abstractMarking& Marking) {
+template<class DEDState>
+void NLHA<DEDState>::reset(const DEDState& Marking) {
     fullState fs;
-    Vars = fs.var;
-    resetVariables();
+    this->Vars = fs.var;
+    this->resetVariables();
     powerSet[0].clear();
     powerSet[1].clear();
     powerSetState = &powerSet[0];
     selectPS=0;
     setInitLocation(Marking);
-    CurrentTime = 0;
+    this->CurrentTime = 0;
 }
 
-void NLHA::printState(ostream& s){
+template<class DEDState>
+void NLHA<DEDState>::printState(ostream& s){
     s << "{";
     for(let fs : *powerSetState){
-        Vars=fs.var;
-        CurrentLocation=fs.loc;
+        this->Vars=fs.var;
+        this->CurrentLocation=fs.loc;
         s << "(";
-        LHA::printState(s);
+        LHA<DEDState>::printState(s);
         s << "), ";
     }
     s << "} ";
 }
 
-void NLHA::updateLHA(double DeltaT, const abstractMarking &Marking){
+template<class DEDState>
+void NLHA<DEDState>::updateLHA(double DeltaT, const DEDState &Marking){
     for(let fs : *powerSetState){
-        Vars = fs.var;
-        CurrentLocation=fs.loc;
-        DoElapsedTimeUpdate(DeltaT, Marking);
+        this->Vars = fs.var;
+        this->CurrentLocation=fs.loc;
+        this->DoElapsedTimeUpdate(DeltaT, Marking);
     }
 
-    CurrentTime += DeltaT;
+    this->CurrentTime += DeltaT;
 }
 
 
@@ -77,28 +81,31 @@ void NLHA::updateLHA(double DeltaT, const abstractMarking &Marking){
  In Non deterninistic LHA this function actually compute the new state. Fire will
  do nothing.
  */
-int NLHA::synchroniseWith(size_t PetriNetTransition, const abstractMarking& NextMarking,const abstractBinding& binding) {
+template<class DEDState>
+int NLHA<DEDState>::synchroniseWith(size_t PetriNetTransition, const DEDState& NextMarking,const abstractBinding& binding) {
     auto &newPS = powerSet[1-selectPS];
     for(let fs : *powerSetState){
         const auto fs2 = fs;
-        Vars = fs.var;
-        CurrentLocation=fs.loc;
+        this->Vars = fs.var;
+        this->CurrentLocation=fs.loc;
 
-        const size_t mult = NbLoc*NbTrans;
-        for (int i =1 ; i <= LHA::ActionEdgesAr[NbTrans*CurrentLocation+ PetriNetTransition]; i++){
+        const size_t mult = this->NbLoc* this->NbTrans;
+        for (int i =1 ; i <= this->ActionEdgesAr[this->NbTrans*
+                                                          this->CurrentLocation+ PetriNetTransition]; i++){
             //cerr << i << endl;
-            const int it = ActionEdgesAr[NbTrans*CurrentLocation+ PetriNetTransition+i*mult];
+            const int it = this->ActionEdgesAr[this->NbTrans*
+                                               this->CurrentLocation+ PetriNetTransition+i*mult];
             //cerr << it << endl;
-            if ((CheckLocation(Edge[it].Target, NextMarking))) {
-                if (CheckEdgeContraints(it,PetriNetTransition, binding, NextMarking)){
+            if ((this->CheckLocation(this->Edge[it].Target, NextMarking))) {
+                if (this->CheckEdgeContraints(it,PetriNetTransition, binding, NextMarking)){
                     //Valid transition compute new state
-                    DoEdgeUpdates(it, NextMarking, binding);
-                    CurrentLocation = Edge[it].Target;
+                    this->DoEdgeUpdates(it, NextMarking, binding);
+                    this->CurrentLocation = this->Edge[it].Target;
                     //Add it to the set of next state
-                    newPS.emplace(CurrentLocation,*Vars);
+                    newPS.emplace(this->CurrentLocation, *(this->Vars));
                     //Restore the current state.
-                    Vars=fs2.var;
-                    CurrentLocation=fs2.loc;
+                    this->Vars=fs2.var;
+                    this->CurrentLocation=fs2.loc;
                 }
             }
         }
@@ -114,29 +121,31 @@ int NLHA::synchroniseWith(size_t PetriNetTransition, const abstractMarking& Next
 
 }
 
-void NLHA::getFinalValues(const abstractMarking& m,vector<double>& v,vector<bool>& v2){
-    for(size_t i=0; i< FormulaValQual.size();i++){
+template<class DEDState>
+void NLHA<DEDState>::getFinalValues(const DEDState& m,vector<double>& v,vector<bool>& v2){
+    for(size_t i=0; i< this->FormulaValQual.size();i++){
         v2[i] = false;
     }
     for(let fs : *powerSetState){
-        Vars = fs.var;
-        CurrentLocation=fs.loc;
-        UpdateFormulaVal();
-        for(size_t i=0; i< FormulaValQual.size();i++){
-            v2[i] = v2[i] || FormulaValQual[i];
+        this->Vars = fs.var;
+        this->CurrentLocation=fs.loc;
+        this->UpdateFormulaVal();
+        for(size_t i=0; i< this->FormulaValQual.size();i++){
+            v2[i] = v2[i] || this->FormulaValQual[i];
         }
     }
 }
 
-AutEdge NLHA::GetEnabled_A_Edges(const abstractMarking& Marking) {
+template<class DEDState>
+AutEdge NLHA<DEDState>::GetEnabled_A_Edges(const DEDState& Marking) {
     //TODO Check for bugs Not working due to infinit loop
     AutEdge Ed;
     Ed.Index = -1;
     Ed.FiringTime = DBL_MAX;
     for (let fs : *powerSetState) {
-        Vars = fs.var;
-        CurrentLocation=fs.loc;
-        let I = LHA_orig::GetEnabled_A_Edges(Marking);
+        this->Vars = fs.var;
+        this->CurrentLocation=fs.loc;
+        let I = LHA_orig<DEDState>::GetEnabled_A_Edges(Marking);
         if (I.FiringTime < Ed.FiringTime) {
             cerr << "Autonomous: " << I.Index << "\tTime:" << I.FiringTime <<endl;
             Ed.Index = I.Index;
@@ -147,12 +156,12 @@ AutEdge NLHA::GetEnabled_A_Edges(const abstractMarking& Marking) {
     return Ed;
 }
 
-
-bool NLHA::isFinal()const{
+template<class DEDState>
+bool NLHA<DEDState>::isFinal()const{
     for(let fs : *powerSetState){
-        if(FinalLoc[fs.loc])return true;
+        if(this->FinalLoc[fs.loc])return true;
     }
     return false;
 }
 
-
+template class NLHA<abstractMarking>;

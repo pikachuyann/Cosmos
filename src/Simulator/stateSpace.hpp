@@ -105,7 +105,7 @@ public:
 	void buildTransitionMatrix();
 	
 	SPN N; //The object representing the SPN
-	LHA_orig A; //The object representing the LHA
+	LHA_orig<typeof N.Marking> A; //The object representing the LHA
 	
     //double maxRate();
     double uniformizeMatrix();
