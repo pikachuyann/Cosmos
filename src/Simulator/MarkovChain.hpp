@@ -20,35 +20,54 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file spn_orig.hpp created by Benoit Barbot on 03/09/15.                     *
+ * file MarkovChain.hpp created by Benoit Barbot on 13/12/2016.                *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__spn_orig__
-#define __Cosmos__spn_orig__
+#ifndef MarkovChain_hpp
+#define MarkovChain_hpp
 
+#include <iostream>
+#include <vector>
+#include <array>
 
-#include "spn.hpp"
-#include "EventsQueue.hpp"
-#include "EventsQueueSet.hpp"
 #include "timeGen.hpp"
+#include "marking.hpp"
 
-template<class EQT>
-class SPN_orig : public SPN
-{
+class Edge{
 public:
-    SPN_orig(int);
-
-    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &);
-    virtual void update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &);
-    virtual void InitialEventsQueue(EQT &,timeGen &);
-
-    int verbose;
-
-protected:
-    //! a Temporary event
-    Event F;
-
+    size_t Id;
+    DistributionType DistTypeIndex;
+    std::string label;
+    std::array<abstractBinding, 1> bindingList;
+    
+    Edge(int i,const string &l):Id(i),DistTypeIndex(EXPONENTIAL), label(l){};
+    Edge(int i):Id(i),DistTypeIndex(EXPONENTIAL), label("to "+ to_string(i)){};
 };
 
-#endif /* defined(__Cosmos__spn_orig__) */
+template <class EQT>
+class MarkovChain{
+public:
+    
+    abstractMarking Marking;
+    std::vector<Edge> Transition;
+    
+    size_t lastTransition;
+    double lastTransitionTime;
+    std::array<double,PARAM_TBL_SIZE> &ParamDistr;
+    const CustomDistr& customDistr;
+    
+    MarkovChain();
+    
+    void reset();
+    void initialEventsQueue(EQT &,timeGen &);
+    void fire(size_t tr,const abstractBinding& b, double time);
+    void update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &);
+private:
+    Event F;
+    abstractBinding ab;
+    void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG);
+};
+
+
+#endif /* MarkovChain_hpp */

@@ -49,7 +49,7 @@ typedef std::vector <Event>::iterator EQit;
 class EventsQueueSet {
 public:
     //EventsQueue(size_t);
-    EventsQueueSet(const SPN& N);
+    EventsQueueSet(const std::vector<_trans>& N);
     
     EventsQueueSet(const EventsQueueSet& orig);
     virtual ~EventsQueueSet();

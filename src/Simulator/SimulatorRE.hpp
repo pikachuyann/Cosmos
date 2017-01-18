@@ -31,21 +31,20 @@
 
 #include "Simulator.hpp"
 #include "stateSpace.hpp"
-#include "spn_orig.hpp"
+#include "SPNBase.hpp"
 
-
-class SPN_RE: public SPN_orig<EventsQueue>, public REHandling{
+template <class S>
+class SPNBaseRE: public SPNBase<S,EventsQueue<vector<_trans>>>, public REHandling{
 public:
-    SPN_RE(int& v,bool doubleIS);
+    SPNBaseRE(bool doubleIS);
 
     bool rareEventEnabled;
 
-    virtual void initialize(stateSpace *muprob);
-    virtual void GenerateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &)override;
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &)override;
-    virtual void InitialEventsQueue(EventsQueue &,timeGen &)override;
+    void initialize(stateSpace *muprob);
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue<vector<_trans>> &,timeGen &);
+    void InitialEventsQueue(EventsQueue<vector<_trans>> &,timeGen &);
 
-    virtual double mu();
+    double mu();
     const bool doubleIS_mode;
 
     double Rate_Sum;
@@ -53,35 +52,45 @@ public:
     std::vector <double> Rate_Table;
     std::vector <double> Origine_Rate_Table;
     
-protected:
+/* private */
     stateSpace * muprob;
     
-private:
-    virtual void getParams(size_t,const abstractBinding&);
-    virtual double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
+    void getParams(size_t,const abstractBinding&);
+    double ComputeDistr(size_t i,const abstractBinding& , double origin_rate);
 };
 
-
-class SimulatorRE: public Simulator<EventsQueue>{
+template <class S,class DEDS>
+class SimulatorREBase: public SimulatorBase<S,EventsQueue<vector<_trans>>,DEDS>{
 public:
-	SimulatorRE(SPN_orig<EventsQueue>&,LHA_orig&);
+	SimulatorREBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>&);
 	
-	virtual void initVect();
+	void initVect();
 	
-protected:
-
+    /* private */
+    
     //TAB muprob;  // mu(s) table
     stateSpace * muprob;
 
-	virtual void SimulateSinglePath() override;
-	virtual void returnResultTrue() override;
+	void SimulateSinglePath();
+	void returnResultTrue();
 	//virtual void GenerateDummyEvent(Event &, size_t);
-	virtual void updateLikelihood(size_t) override;
-    virtual bool transitionSink(size_t) override;
-	virtual void reset() override;
-	
-
+	void updateLikelihood(size_t);
+    bool transitionSink(size_t);
+	void reset();
 };
+
+class SPN_RE: public SPNBaseRE<SPN_RE>{
+public:
+    SPN_RE(bool doubleIS):SPNBaseRE<SPN_RE>(doubleIS){};
+};
+
+template <class DEDS>
+class SimulatorRE:public SimulatorREBase<SimulatorRE<DEDS>, DEDS>{
+public:
+    SimulatorRE(DEDS& deds,LHA_orig<typeof deds.Marking>& lha):SimulatorREBase<SimulatorRE,DEDS>(deds, lha){};
+};
+
+
 
 
 #endif  /* _SIMULATOR_RE_HPP */

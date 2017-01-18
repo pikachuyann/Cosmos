@@ -20,46 +20,68 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file timeGen.hpp created by Benoit Barbot on 25/01/12.            *
+ * file spn_orig.hpp created by Benoit Barbot on 03/09/15.                     *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__File__
-#define __Cosmos__File__
+#ifndef __Cosmos__spn_orig__
+#define __Cosmos__spn_orig__
 
-#include <iostream>
-#include <boost/random.hpp>
-#include <boost/generator_iterator.hpp>
 
-#include "DistributionDef.hpp"
+#include "spn.hpp"
+#include "timeGen.hpp"
 #include "Event.hpp"
 
-
-class timeGen {
+template<class S, class EQT>
+class SPNBase : public SPN{
 public:
-    
-	//! generate a time acording to the distribution d with parameters p
-	double GenerateTime(DistributionType distribution,const std::array<double,PARAM_TBL_SIZE> &param, const CustomDistr&);
-	
-	/**
-	 * \brief Initialize the random number generator with the given seed
-	 * @param seed is an unsigned integer to be used as seed.
-	 */
-	void initRandomGenerator(unsigned int seed);
+    SPNBase();
 
-    std::string string_of_dist(DistributionType d,const std::array<double,PARAM_TBL_SIZE> &param, const CustomDistr&)const;
+    void update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &);
+    void initialEventsQueue(EQT &,timeGen &);
 
-private:
-	
-	//!The random Generator Mersenne Twister from the boost library
-	boost::mt19937 RandomNumber;
+protected:
+    //! a Temporary event
+    Event F;
 
 };
 
-template<class DEDS>
-void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,DEDS &);
 
-extern int verbose;
+#include "EventsQueue.hpp"
+template <class S>
+class SPNBase<S,EventsQueue<decltype(SPN::Transition)>> : public SPN{
+public:
+    SPNBase(){};
+    
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue<decltype(SPN::Transition)> &,timeGen &);
+    void initialEventsQueue(EventsQueue<decltype(SPN::Transition)> &,timeGen &);
+    
+protected:
+    //! a Temporary event
+    Event F;
+    
+};
 
-#endif /* defined(__Cosmos__File__) */
 
+#include "EventsQueueSet.hpp"
+template <class S>
+class SPNBase<S,EventsQueueSet> : public SPN{
+public:
+    SPNBase(){};
+    
+    void update(double ctime,size_t, const abstractBinding&,EventsQueueSet &,timeGen &);
+    void initialEventsQueue(EventsQueueSet &,timeGen &);
+    
+protected:
+    //! a Temporary event
+    Event F;
+    
+};
+
+template <class EQT>
+class SPN_orig:public SPNBase<SPN_orig<EQT>, EQT>{
+public:
+    SPN_orig():SPNBase<SPN_orig,EQT>(){};
+};
+
+#endif /* defined(__Cosmos__spn_orig__) */

@@ -36,12 +36,12 @@
 #ifndef _SIMULATOR_BOUNDED_RE_HPP
 #define _SIMULATOR_BOUNDED_RE_HPP
 
-template <class EQT>
+template <class S, class EQT>
 class simulationState{
 private:
 	abstractMarking marking;
 	EQT *EQ;
-	LHA_orig lhaState;
+	LHA_orig<typeof marking> lhaState;
     
 	//rare event variable
 	vector <double> Rate_Table;
@@ -58,7 +58,7 @@ public:
 	};
 	~simulationState(){};
 	
-	void saveState(SPN_RE* N,LHA_orig* A,EQT** EQsim){
+	void saveState(S* N,LHA_orig<typeof marking>* A,EQT** EQsim){
 		marking.swap(N->Marking);
 		//AE = *AEsim;
 		EQ = *EQsim; //new EventsQueue(*EQsim);
@@ -71,7 +71,7 @@ public:
 		Origine_Rate_Sum = N-> Origine_Rate_Sum;
 		
 	};
-	void loadState(SPN_RE* N,LHA_orig* A,EQT** EQsim){
+	void loadState(S* N,LHA_orig<typeof marking>* A,EQT** EQsim){
 		
 		N->Marking.swap(marking);
 		//*AEsim = AE;
@@ -87,28 +87,42 @@ public:
 	
 };
 
-class SPN_BoundedRE: public SPN_RE{
+template<class S>
+class SPNBaseBoundedRE: public SPNBaseRE<S>{
 public:
-    SPN_BoundedRE(int& v,bool doubleIS);
+    SPNBaseBoundedRE(bool doubleIS):SPNBaseRE<S>(doubleIS){};
 
-    virtual void update(double ctime,size_t, const abstractBinding&,EventsQueue &, timeGen &) override;
-    virtual void getParams(size_t, const abstractBinding&) override;
-    virtual double mu() override;
-    virtual double ComputeDistr(size_t i,const abstractBinding&, double origin_rate) override;
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue<vector<_trans>> &, timeGen &);
+    void getParams(size_t, const abstractBinding&);
+    double mu();
+    double ComputeDistr(size_t i,const abstractBinding&, double origin_rate);
 };
 
-class SimulatorBoundedRE: public SimulatorRE{
+template<class S,class DEDS>
+class SimulatorBoundedREBase: public SimulatorREBase<S,DEDS>{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedRE(SPN_orig<EventsQueue> & N,LHA_orig&,int m);
-	BatchR RunBatch() override;
-	using SimulatorRE::initVect;
-    virtual void initVect(int T);
+    SimulatorBoundedREBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>&,int m);
+	BatchR RunBatch();
+	using SimulatorREBase<S,DEDS>::initVect;
+    void initVect(int T);
 
-protected:
+    /* private */
 	numericalSolver* numSolv;
 	double lambda;
 };
+
+class SPN_BoundedRE: public SPNBaseBoundedRE<SPN_BoundedRE>{
+    public:
+  SPN_BoundedRE(bool doubleIS):SPNBaseBoundedRE<SPN_BoundedRE>(doubleIS){};
+};
+
+template <class DEDS>
+class SimulatorBoundedRE:public SimulatorBoundedREBase<SimulatorBoundedRE<DEDS>, DEDS>{
+public:
+    SimulatorBoundedRE(DEDS& deds,LHA_orig<typeof deds.Marking>& lha,int m):SimulatorBoundedREBase<SimulatorBoundedRE<DEDS>, DEDS>(deds, lha, m){};
+};
+
 
 
 #endif  /* _SIMULATOR_BOUNDED_RE_HPP */
