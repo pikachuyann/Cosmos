@@ -344,10 +344,10 @@ void generateMain() { // Not use for the moment
     /*mF << "#include \"Simulator.hpp\"" << endl;
     mF << "#include \"SimulatorRE.hpp\"" << endl;
     mF << "#include \"SimulatorBoundedRE.hpp\"" << endl;
-    mF << "#include \"SimulatorContinuousBounded.hpp\"" << endl;
+    mF << "#include \"SimulatorContinuousBounded.hpp\"" << endl;*/
     mF << "#include <sys/types.h>" << endl;
     mF << "#include <unistd.h>" << endl;
-    mF << "#include <signal.h>" << endl;*/
+    mF << "#include <signal.h>" << endl;
     
     mF << "int main(int argc, char** argv) {" << endl;
     mF << "    signal(SIGINT, signalHandler);" << endl;
