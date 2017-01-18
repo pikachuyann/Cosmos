@@ -172,7 +172,7 @@ private:
 	
     bool trace_scanning;
 	
-	
+    string funDecl(const string &)const;
 	
     string InvRelOp(const string &)const;
 	

@@ -38,9 +38,9 @@ using namespace std;
 /**
  *	Build an Event queue for the Petri net given as parameter.
  */
-EventsQueueSet::EventsQueueSet(const SPN& N):
-    evtHeapIndex(N.Transition.size()),
-    evtTbl(N.Transition.size()){
+EventsQueueSet::EventsQueueSet(const vector<_trans>& t):
+    evtHeapIndex(t.size()),
+    evtTbl(t.size()){
 }
 
 /**
@@ -235,7 +235,7 @@ bool EventsQueueSet::isEmpty()const {
     return (evtHeap.size()==0);
 }
 
-void EventsQueueSet::printSedCmd(const vector<_trans> &trlabl,ostream& df)const {
+void EventsQueueSet::printSedCmd(const std::vector<_trans> &trlabl,ostream& df)const {
     if(evtHeap.size()>0){
         df << "-e 's/\\$CF_" << trlabl[InPosition(0).transition].label << "\\$/Red/g' ";
         for (unsigned int i = 1; i < evtHeap.size(); i++){
@@ -248,7 +248,7 @@ void EventsQueueSet::printSedCmd(const vector<_trans> &trlabl,ostream& df)const 
 /**
  *	Print the content of the queues in a human readable format.
  */
-void EventsQueueSet::view(const vector<_trans> &trlabl)const {
+void EventsQueueSet::view(const std::vector<_trans> &trlabl)const {
     cerr << "********** EVENTS-QUEUE VIEW **********" << endl;
     
     //cerr << "Qsize:" << evtHeap.size() << endl;

@@ -898,8 +898,6 @@ void SPN::fire(TR_PL_ID t, const abstractBinding &b,REAL_TYPE time){
 }
 
 void SPN::unfire(TR_PL_ID t, const abstractBinding &b){
-
-
 }
 
 const abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {

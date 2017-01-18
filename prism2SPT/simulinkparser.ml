@@ -236,7 +236,7 @@ let rec modulist_of_tree ml = function
     begin match name with
     | "xml" | "ModelInformation" | "Model" | "P" ->
       List.fold_left modulist_of_tree ml clist
-       | "Stateflow" -> modulist_of_stateflow ml t
-       | _ -> ml
-       end
-    | PCData (s) -> ml
+    | "Stateflow" -> modulist_of_stateflow ml t
+    | _ -> ml
+    end
+  | PCData (s) -> ml

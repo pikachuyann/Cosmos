@@ -20,46 +20,47 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file timeGen.hpp created by Benoit Barbot on 25/01/12.            *
+ * file clientsim.hpp created by Benoît Barbot on 16/01/2017.                  *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__File__
-#define __Cosmos__File__
 
-#include <iostream>
-#include <boost/random.hpp>
-#include <boost/generator_iterator.hpp>
+#ifndef clientsim_h
+#define clientsim_h
 
-#include "DistributionDef.hpp"
-#include "Event.hpp"
+#include "BatchR.hpp"
+#include "Simulator.hpp"
+#include "SimulatorRE.hpp"
+#include "SimulatorBoundedRE.hpp"
+#include "SimulatorContinuousBounded.hpp"
+#include "Polynome.hpp"
+#include "MarkovChain.hpp"
 
+// Handler for interuption of the server
+void signalHandler(int);
 
-class timeGen {
-public:
+template<class SIM>
+void setSimulator(SIM& sim,int argc, char* argv[] ){
+    if( argc ==0) return;
+    verbose=atoi(argv[2]);
     
-	//! generate a time acording to the distribution d with parameters p
-	double GenerateTime(DistributionType distribution,const std::array<double,PARAM_TBL_SIZE> &param, const CustomDistr&);
-	
-	/**
-	 * \brief Initialize the random number generator with the given seed
-	 * @param seed is an unsigned integer to be used as seed.
-	 */
-	void initRandomGenerator(unsigned int seed);
+    sim.SetBatchSize(atoi(argv[1]));
+    sim.initRandomGenerator(atoi(argv[5]));
+    sim.tmpPath=argv[4];
+    
+    for(int i=1; i<argc ;i++){
+        if(strcmp(argv[i],"-log")==0 && argc>i)
+            sim.logValue(argv[i+1]);
+        if(strcmp(argv[i],"-trace")==0 && argc>i){
+            sim.logTrace(argv[i+1],stod(argv[i+2]));
+        }
+        if(strcmp(argv[i],"-dotFile")==0 && argc>i){
+            sim.dotFile = argv[i+1];
+        }
+    }
+}
 
-    std::string string_of_dist(DistributionType d,const std::array<double,PARAM_TBL_SIZE> &param, const CustomDistr&)const;
 
-private:
-	
-	//!The random Generator Mersenne Twister from the boost library
-	boost::mt19937 RandomNumber;
 
-};
 
-template<class DEDS>
-void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,DEDS &);
-
-extern int verbose;
-
-#endif /* defined(__Cosmos__File__) */
-
+#endif /* clientsim_h */

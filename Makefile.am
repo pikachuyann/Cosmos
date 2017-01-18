@@ -24,6 +24,10 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
     Examples/testDistribution/testagememory.grml \
     Examples/testDistribution/testagememory.lha \
     Examples/testDistribution/testnormal.grml \
+    Examples/DNAWalker/gen.ml \
+    Examples/DNAWalker/test.ml \
+    Examples/DNAWalker/test.sh \
+    Examples/DNAWalker/gnuplotscript.gp \
 	Examples/Workflow-Net/test.ml \
 	Examples/Workflow-Net/workflow-out-1-imm.gspn \
 	Examples/Workflow-Net/workflow-out-1-imm.lha \
@@ -80,7 +84,7 @@ EXTRA_DIST = doc/manual.tex doc/overview.graffle \
 #    Examples/maxEntropy/twoears.prism Examples/maxEntropy/twoears.prism.grml
 
 AM_LDFLAGS = -lrt $(PTHREAD_LIBS)
-AM_CPPFLAGS = $(BOOST_CPPFLAGS) -DGIT_REVISION=`git describe --abbrev=6 --dirty --always --tags`
+AM_CPPFLAGS = $(BOOST_CPPFLAGS)
 
 .PHONY: test updatefile
 

@@ -163,10 +163,13 @@ void LHA::resetVariables(){
 	Vars->PLVAR_FXRay= 0;
 	Vars->PLVAR_FBloodEx= 0;
 };
-void LHA::printHeader(ostream &s)const{
+template<class DEDState>
+void LHA<DEDState>::printHeader(ostream &s)const{
 	s << "	Location\t";
 };
-void LHA::printState(ostream &s){
+
+template<class DEDState>
+void LHA<DEDState>::printState(ostream &s){
 	s << "\t" << LocLabel[CurrentLocation] << "\t";
 };
 const int LHA::ActionEdgesAr[] = {
@@ -632,7 +635,14 @@ bool LHA::CheckLocation(int loc,const abstractMarking& Marking)const{
 
 }
 
-bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{
+template<class D>
+bool LHA<D>::CheckLocation(int loc,const abstractMarking& Marking)const{
+         return true;
+
+}
+
+template<class D>
+bool LHA<D>::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{
 	switch (ed){
 		case 1:	//
 		case 23:	//
@@ -656,7 +666,8 @@ bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const a
 	}
 }
 
-t_interval LHA::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{
+template<class D>
+t_interval LHA<D>::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)const{
 	switch (ed){
 		case 1:	//
          {
@@ -940,14 +951,17 @@ void LHA::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBin
 	}
 }
 
-void LHA::UpdateLinForm(const abstractMarking& Marking){
+template<class D>
+void LHA<D>::UpdateLinForm(const abstractMarking& Marking){
     }
 
-void LHA::UpdateLhaFunc(double& Delta ){
+template<class D>
+void LHA<D>::UpdateLhaFunc(double& Delta ){
 
     }
 
-void LHA::UpdateFormulaVal(){
+template<class D>
+void LHA<D>::UpdateFormulaVal(){
 
     LhaFunc[0]= Vars->EXRayBlood;
     LhaFunc[1]= Vars->FallIll;
@@ -1046,6 +1060,7 @@ void LHA::UpdateFormulaVal(){
 }
 
 bool IsLHADeterministic = 1;
+
 fullState::fullState():loc(0){
 	var= new Variables;
 }
