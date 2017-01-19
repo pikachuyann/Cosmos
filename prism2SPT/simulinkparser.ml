@@ -101,7 +101,8 @@ let rec blockparams_of_simulink ((lB, lP, lL) as ml)  = function
     | Element (name,alist,clist) (* as t *) -> 
         begin match name with
         | "BlockParameterDefaults" -> List.fold_left blockparams_of_simulink ml clist
-        | "Block" -> let blockType = List.assoc "BlockType" alist and blockParams = List.fold_left parseblockParams [] clist in
+        | "Block" -> let blockType = List.assoc "BlockType" alist
+		     and blockParams = List.fold_left parseblockParams [] clist in
                 (lB, (blockType, blockParams)::lP, lL)
         | _ -> Printf.fprintf stderr "In BlockParameterDefaults, %s should not exist\n" name; ml
         end
@@ -120,7 +121,10 @@ let extractLink (s,d) =
         assert (Str.string_match regexpOut d 0);
         let outId = int_of_string (Str.matched_group 1 d) and
             outPort = int_of_string (Str.matched_group 2 d) in
-            ({ fromblock = inId; fromport = inPort; toblock = outId; toport = outPort });;
+        ({ fromblock = inId;
+	   fromport = inPort;
+	   toblock = outId;
+	   toport = outPort });;
 
 let line_of_simulink lL clist =
     let src = extract_src (findpropName "Src" clist) and dst = extract_dst (findpropName "Dst" clist) in
@@ -136,7 +140,11 @@ let rec blocklist_of_simulink ((lB, lP, lL):simulinkModel) = function
         | "Line" -> (lB, lP, line_of_simulink lL clist)
         | "Block" -> let blockType = List.assoc "BlockType" alist and blockName = List.assoc "Name" alist
                      and blockID = List.assoc "SID" alist and blockParams = List.fold_left parseblockParams [] clist in
-                ({ blocktype = blockType; blockid = blockID; name = blockName; values = blockParams }::lB, lP, lL);
+                     ({ blocktype = blockType;
+			blockid = blockID;
+			name = blockName;
+			values = blockParams
+		      }::lB, lP, lL);
         | _ when verbose>4 -> Printf.fprintf stderr "Couldn't find meaning of %s in System\n" name; (lB, lP, lL)
         | _ -> (lB, lP, lL)
         end
@@ -158,25 +166,34 @@ let rec blocklist_of_tree ml = function (* ml = (lB, lP, lL) *)
 let pushDefaults ((lB, lP, lL):simulinkModel) =
   let blockDef bloc =
     let listDefaults = List.assoc bloc.blocktype lP in
-      let pred (paramName,_) = (List.for_all (function (x,_) when x=paramName -> false | _ -> true) bloc.values) in
-        ({ blocktype = bloc.blocktype; blockid = bloc.blockid; name = bloc.name; values = ((List.filter pred listDefaults)@bloc.values) })
+    let pred (paramName,_) =
+      List.for_all (function (x,_) when x=paramName ->
+					false | _ -> true) bloc.values in
+    { blocktype = bloc.blocktype;
+      blockid = bloc.blockid;
+      name = bloc.name;
+      values = ((List.filter pred listDefaults)@bloc.values)
+     }
   in
   ((List.map blockDef lB), lL);;
 
+let position_parse_regexp = Str.regexp "\\[\\([0-9]+\\)[ ,]*\\([0-9]+\\)[ ,]*\\([0-9]+\\)[ ,]*\\([0-9]+\\)\\]"
+  
 let getchar i = char_of_int ((int_of_char('A') + i - 1))
 let printLaTeX f ((lB,lL):simulinkPModel) =
   let printBlock bloc =
     let btype = bloc.blocktype and bid = bloc.blockid and bval = bloc.values in
       let position = List.assoc "Position" bval in
-        let regexp = Str.regexp "\\[\\([0-9]+\\)[ ,]*\\([0-9]+\\)[ ,]*\\([0-9]+\\)[ ,]*\\([0-9]+\\)\\]" in
-        assert (Str.string_match regexp position 0);
+        assert (Str.string_match position_parse_regexp position 0);
         let (x,y,w,h) = (int_of_string@@ Str.matched_group 1 position,
                          int_of_string@@ Str.matched_group 2 position,
                          int_of_string@@ Str.matched_group 3 position,
                          int_of_string@@ Str.matched_group 4 position) in
           Printf.fprintf f "\\node[sk%s,draw] at (%imm,%imm) (b%s) {};\n" btype x y bid
   and printLink link =
-     Printf.fprintf f "\\path[->] (b%i.out%c) edge (b%i.in%c);\n" link.fromblock (getchar link.fromport) link.toblock (getchar link.toport)
+    Printf.fprintf f "\\path[->] (b%i.out%c) edge (b%i.in%c);\n"
+		   link.fromblock (getchar link.fromport)
+		   link.toblock (getchar link.toport)
   in
   List.iter printBlock lB;
   List.iter printLink lL
