@@ -272,13 +272,3 @@ double SPNBaseBoundedRE<S>::ComputeDistr(size_t t ,const abstractBinding& b, dou
     SPN::unfire(t,b);
 	return(distr);
 }
-
-template class SimulatorBoundedREBase<SimulatorBoundedRE<SPN_BoundedRE>,SPN_BoundedRE>;
-template class SimulatorBoundedRE<SPN_BoundedRE>;
-template class SPNBaseBoundedRE<SPN_BoundedRE>;
-
-#include "SimulatorContinuousBounded.hpp"
-template class SimulatorBoundedREBase<SimulatorContinuousBounded<SPN_BoundedRE>,SPN_BoundedRE>;
-
-
-

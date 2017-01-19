@@ -415,19 +415,3 @@ BatchR SimulatorBase<S,EQT,DEDS>::RunBatch(){
     batchResult.simTime = (currenttime - starttime).count();
 	return batchResult;
 }
-
-template class SimulatorBase<Simulator<EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>>>, EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>> >;
-template class SimulatorBase<Simulator<EventsQueueSet,SPN_orig<EventsQueueSet>>, EventsQueueSet,SPN_orig<EventsQueueSet> >;
-template class Simulator<EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>> >;
-template class Simulator<EventsQueueSet,SPN_orig<EventsQueueSet> >;
-
-#include "SimulatorRE.hpp"
-template class SimulatorBase<SimulatorRE<SPN_RE>, EventsQueue<vector<_trans>>,SPN_RE>;
-
-#include "SimulatorBoundedRE.hpp"
-template class SimulatorBase<SimulatorBoundedRE<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
-template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue<vector<_trans>>,SPN_RE>;
-
-
-#include "SimulatorContinuousBounded.hpp"
-template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
