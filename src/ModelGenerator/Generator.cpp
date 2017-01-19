@@ -454,8 +454,10 @@ bool build() {
     //Compile the LHA
     if(!P.lightSimulator)cmd += "&(" + bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp)\\\n";
     
+    if(  P.RareEvent || P.is_domain_impl_set){
     //Compile the Main
     cmd += "&(" + bcmd + " -c -I"+P.Path+"../include "+ P.boostpath +" -o "+P.tmpPath+"/main.o "+P.tmpPath+"/main.cpp)";
+    }
     
     cmd += " & wait";
 
@@ -466,7 +468,11 @@ bool build() {
     //Link SPN and LHA with the library
     cmd = bcmd + " -o " + P.tmpPath + "/ClientSim ";
     if(P.modelType == GSPN)cmd += P.tmpPath + "/spn.o ";
-    cmd += P.tmpPath + "/main.o "; 
+    if(  P.RareEvent || P.is_domain_impl_set){
+        cmd += P.tmpPath + "/main.o ";
+    } else {
+        cmd += P.Path + "../lib/libClientSimMain.a ";
+    }
     if(P.lightSimulator){
         cmd += P.Path + "../lib/libClientSimLight.a ";
     } else {

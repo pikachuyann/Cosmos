@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES = libClientSim.la
+lib_LTLIBRARIES = libClientSim.la libClientSimMain.la
 
 libClientSim_la_SOURCES = \
 	BatchR.cpp BatchR.hpp \
@@ -23,6 +23,8 @@ libClientSim_la_SOURCES = \
 	foxglynn.cpp foxglynn.hpp \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
 	clientsim.cpp
+
+libClientSimMain_la_SOURCES = main.cpp
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp DistributionDef.hpp \
 	timeGen.hpp Event.hpp EventsQueue.hpp BatchR.hpp EventsQueueSet.hpp \

@@ -41,7 +41,10 @@ void signalHandler(int);
 
 template<class SIM>
 void setSimulator(SIM& sim,int argc, char* argv[] ){
-    if( argc ==0) return;
+    if( argc ==0){
+        sim.initRandomGenerator(0);
+        return;
+    }
     verbose=atoi(argv[2]);
     
     sim.SetBatchSize(atoi(argv[1]));
