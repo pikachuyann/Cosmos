@@ -30,20 +30,12 @@
 
 using namespace std;
 
-template<class S, class EQT>
-SPNBase<S,EQT>::SPNBase(int v):verbose(v){}
-
-template<class S>
-SPNBase<S,EventsQueue>::SPNBase(int v):verbose(v){}
-
-template<class S>
-SPNBase<S,EventsQueueSet>::SPNBase(int v):verbose(v){}
 
 /**
  * Fill the event queue with the initially enabled transition
  */
 template<class S>
-void SPNBase<S,EventsQueue>::initialEventsQueue(EventsQueue &EQ,timeGen &TG) {
+void SPNBase<S,EventsQueue<decltype(SPN::Transition)>>::initialEventsQueue(EventsQueue<decltype(SPN::Transition)> &EQ,timeGen &TG) {
     //Check each transition. If a transition is enabled then his fire
     //time is simulated and added to the structure.
 
@@ -108,7 +100,7 @@ void SPNBase<S,EventsQueueSet>::initialEventsQueue(EventsQueueSet &EQ,timeGen &T
  * @param b is the binding of the last transition.
  */
 template<class S>
-void SPNBase<S,EventsQueue>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue &EQ,timeGen &TG){
+void SPNBase<S,EventsQueue<decltype(SPN::Transition)>>::update(double ctime,size_t E1_transitionNum, const abstractBinding& lb,EventsQueue<decltype(SPN::Transition)> &EQ,timeGen &TG){
     //This function update the Petri net according to a transition.
     //In particular it update the set of enabled transition.
 
@@ -441,7 +433,13 @@ void SPNBase<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, con
      */ 
 }
 
-template class SPNBase<SPN_orig<EventsQueue>,EventsQueue>;
+template class SPNBase<SPN_orig<EventsQueue<vector<_trans>>>,EventsQueue<vector<_trans>>>;
 template class SPNBase<SPN_orig<EventsQueueSet>,EventsQueueSet>;
-template class SPN_orig<EventsQueue>;
+template class SPN_orig<EventsQueue<vector<_trans>>>;
 template class SPN_orig<EventsQueueSet>;
+
+#include "SimulatorBoundedRE.hpp"
+template class SPNBase<SPN_RE,EventsQueue<vector<_trans>>>;
+template class SPNBase<SPN_BoundedRE,EventsQueue<vector<_trans>>>;
+
+

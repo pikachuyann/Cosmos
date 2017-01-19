@@ -101,7 +101,8 @@ enum Poption {
     CO_reuse,
     CO_use_magic_print,
     CO_domain_impl,
-    CO_force_TTY
+    CO_force_TTY,
+    CO_not_gspn,
 };
 
 enum TmpStat:int {
@@ -109,6 +110,16 @@ enum TmpStat:int {
     TS_BUILD     = 0x02,
     TS_RUN       = 0x04,
     TS_DESTROY   = 0x08
+};
+
+enum ModelType {
+    GSPN,
+    CTMC
+};
+
+enum LHAType {
+    DET,
+    NOT_DET
 };
 
 struct parameters {
@@ -138,6 +149,9 @@ struct parameters {
                             // 4 do not generate but build and do not destroy
     bool reuse;
 
+    ModelType modelType;
+    LHAType lhaType;
+    
     std::string Path;
     std::string PathGspn;
     std::string PathLha;
@@ -169,6 +183,7 @@ struct parameters {
     int terminalWidth;
 
     std::string gcccmd;
+    std::string boostpath;
     std::string gccflags;
     bool lightSimulator;
 

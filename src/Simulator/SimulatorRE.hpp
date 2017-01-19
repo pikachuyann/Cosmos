@@ -34,15 +34,15 @@
 #include "SPNBase.hpp"
 
 template <class S>
-class SPNBaseRE: public SPNBase<S,EventsQueue>, public REHandling{
+class SPNBaseRE: public SPNBase<S,EventsQueue<vector<_trans>>>, public REHandling{
 public:
-    SPNBaseRE(int& v,bool doubleIS);
+    SPNBaseRE(bool doubleIS);
 
     bool rareEventEnabled;
 
     void initialize(stateSpace *muprob);
-    void update(double ctime,size_t, const abstractBinding&,EventsQueue &,timeGen &);
-    void InitialEventsQueue(EventsQueue &,timeGen &);
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue<vector<_trans>> &,timeGen &);
+    void InitialEventsQueue(EventsQueue<vector<_trans>> &,timeGen &);
 
     double mu();
     const bool doubleIS_mode;
@@ -60,9 +60,9 @@ public:
 };
 
 template <class S,class DEDS>
-class SimulatorREBase: public SimulatorBase<S,EventsQueue,DEDS>{
+class SimulatorREBase: public SimulatorBase<S,EventsQueue<vector<_trans>>,DEDS>{
 public:
-	SimulatorREBase(DEDS&,LHA_orig&);
+	SimulatorREBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>&);
 	
 	void initVect();
 	
@@ -81,13 +81,13 @@ public:
 
 class SPN_RE: public SPNBaseRE<SPN_RE>{
 public:
-    SPN_RE(int& v,bool doubleIS):SPNBaseRE<SPN_RE>(v, doubleIS){};
+    SPN_RE(bool doubleIS):SPNBaseRE<SPN_RE>(doubleIS){};
 };
 
 template <class DEDS>
 class SimulatorRE:public SimulatorREBase<SimulatorRE<DEDS>, DEDS>{
 public:
-    SimulatorRE(DEDS& deds,LHA_orig& lha):SimulatorREBase<SimulatorRE,DEDS>(deds, lha){};
+    SimulatorRE(DEDS& deds,LHA_orig<typeof deds.Marking>& lha):SimulatorREBase<SimulatorRE,DEDS>(deds, lha){};
 };
 
 

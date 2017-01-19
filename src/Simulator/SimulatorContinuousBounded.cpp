@@ -38,7 +38,7 @@
 #include <limits>
 
 template<class DEDS>
-SimulatorContinuousBounded<DEDS>::SimulatorContinuousBounded(DEDS &N,LHA_orig& A,int m,double e,int js):SimulatorBoundedREBase<SimulatorContinuousBounded,DEDS>(N,A,m){
+SimulatorContinuousBounded<DEDS>::SimulatorContinuousBounded(DEDS &N,LHA_orig<decltype(DEDS::Marking)>& A,int m,double e,int js):SimulatorBoundedREBase<SimulatorContinuousBounded,DEDS>(N,A,m){
     epsilon = e;
 	if(js>0){
 		jumpsize = js;
@@ -97,10 +97,10 @@ BatchR SimulatorContinuousBounded<DEDS>::RunBatch(){
 	for(int i =0; i<= Nmax; i++)
 		batchResult.Min[2*i] /= fg->total_weight;
 		
-	list<simulationState<EventsQueue> > statevect((Nmax+1)*this->BatchSize);
+	list<simulationState<DEDS, EventsQueue<vector<_trans>> >> statevect((Nmax+1)*this->BatchSize);
 	
     int c =0;
-	if(this->verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
+	if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
 	for (auto it= statevect.begin(); it != statevect.end() ; it++) {
 		this->N.Origine_Rate_Table = vector<double>(this->N.tr,0.0);
 		this->N.Rate_Table = vector<double>(this->N.tr,0.0);
@@ -110,7 +110,7 @@ BatchR SimulatorContinuousBounded<DEDS>::RunBatch(){
 		while(!continueb){
 			//we build a new trajectory from the initial state.
 			continueb =true;
-			this->EQ = new EventsQueue(this->N);
+			this->EQ = new EventsQueue<vector<_trans>>(this->N.Transition);
 			this->reset();
 			//We simulate until either the condition is satisfied or the trajectory reach a deadend.
 			while(!this->N.precondition(this->N.Marking) && continueb){
@@ -134,9 +134,9 @@ BatchR SimulatorContinuousBounded<DEDS>::RunBatch(){
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		this->numSolv->stepVect();
-		if(this->verbose>=3)cerr << this->numSolv->getVect() << endl;
+		if(verbose>=3)cerr << this->numSolv->getVect() << endl;
 		n++;
-        if(this->verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
+        if(verbose>=1)cerr << "new round:"<< n << "\tremaining trajectories: "<< statevect.size() << endl;
         
 		for (auto it= statevect.begin(); it != statevect.end() ; it++) {
             if(it->maxStep >= fg->right -n){
@@ -152,7 +152,7 @@ BatchR SimulatorContinuousBounded<DEDS>::RunBatch(){
                 if (it->maxStep == fg->right -n) {
                     //We first need to initialise the trajectory
                     this->N.InitialEventsQueue(*(this->EQ),*this);
-					if(this->verbose>=2)
+					if(verbose>=2)
 						//cerr << "new Path: " << it->maxStep << "\tmuinit: " << mu() << endl;
                     it->saveState(&(this->N),&(this->A),&(this->EQ));
                 } else {

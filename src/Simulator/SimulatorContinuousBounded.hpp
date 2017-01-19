@@ -33,7 +33,7 @@
 template<class DEDS>
 class SimulatorContinuousBounded: public SimulatorBoundedREBase<SimulatorContinuousBounded<DEDS>,DEDS>{
 public:
-    SimulatorContinuousBounded(DEDS &,LHA_orig& A,int m,double e, int js);
+    SimulatorContinuousBounded(DEDS &deds,LHA_orig<decltype(DEDS::Marking)>& A,int m,double e, int js);
     void initVectCo(double t);
     double epsilon;
 	int jumpsize;

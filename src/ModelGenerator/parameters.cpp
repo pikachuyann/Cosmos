@@ -65,6 +65,8 @@ comp_uuid("tmpuuid"),
 tmpPath("tmp"),
 tmpStatus((TmpStat)(TS_GEN | TS_BUILD | TS_RUN | TS_DESTROY)),
 reuse(false),
+modelType(GSPN),
+lhaType(DET),
 Path(""),
 PathGspn(""),
 PathLha(""),
@@ -94,8 +96,9 @@ unfold(""),
 isTTY(true),
 terminalWidth(80),
 
-gcccmd("g++"),
-gccflags("-Wno-return-type -std=c++11"),
+gcccmd(CPP_COMPILER),
+boostpath(BOOST_PATH),
+gccflags("-Wno-return-type -std=gnu++11"),
 lightSimulator(false),
 
 prismPath(""),
@@ -286,16 +289,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"alligator-mode", no_argument   , 0, CO_alligator_mode},
             {"gui-greatSPN-mode",no_argument , 0, CO_gui_greatSPN_mode},
 
-            /* Miscellaneous options */
-            {"force-TTY",   no_argument      , 0, CO_force_TTY},
-            {"unfold",      required_argument, 0, CO_unfold},
-            {"output-model", required_argument,0, CO_output_model},
-            {"HASL-formula", required_argument, 0, CO_HASL_formula},
-            {"HASL-expression", required_argument, 0, CO_HASL_formula},
-            {"njob",        required_argument, 0, CO_njob},
-            {"gppcmd",      required_argument, 0, CO_gppcmd},
-            {"gppflags",    required_argument, 0, CO_gppflags},
-            {"light-simulator", no_argument  , 0, CO_light_simulator},
+            /* Output function */
             {"verbose",     required_argument, 0, CO_verbose},
             {"interactive", no_argument      , 0, CO_interactive},
             {"update-time", required_argument, 0, CO_update_time},
@@ -309,6 +303,19 @@ void parameters::parseCommandLine(int argc, char** argv) {
             {"gnuplot-driver", required_argument, 0, CO_gnuplot_driver},
             {"trace-place", required_argument, 0, CO_trace_pt},
             {"trace-pt",    required_argument, 0, CO_trace_pt},
+
+            
+            /* Miscellaneous options */
+            {"not-gspn",    no_argument      , 0, CO_not_gspn},
+            {"force-TTY",   no_argument      , 0, CO_force_TTY},
+            {"unfold",      required_argument, 0, CO_unfold},
+            {"output-model", required_argument,0, CO_output_model},
+            {"HASL-formula", required_argument, 0, CO_HASL_formula},
+            {"HASL-expression", required_argument, 0, CO_HASL_formula},
+            {"njob",        required_argument, 0, CO_njob},
+            {"gppcmd",      required_argument, 0, CO_gppcmd},
+            {"gppflags",    required_argument, 0, CO_gppflags},
+            {"light-simulator", no_argument  , 0, CO_light_simulator},
             {"help",        no_argument      , 0, CO_help},
             {"count-transition", no_argument , 0, CO_count_transition},
             {"debug-string", no_argument     , 0, CO_debug_string},
@@ -598,9 +605,16 @@ void parameters::parseCommandLine(int argc, char** argv) {
 
                 break;
             }
+                
+            case CO_not_gspn:
+            {
+                modelType = CTMC;
+            }
+                
             case CO_version:
                 cout << "Source Version:" << GIT_REVISION << endl;
                 cout << BUILD_VERSION << " Build Date:" << __DATE__ " at " << __TIME__ << endl;
+                cout << "Compiled with: " << CPP_COMPILER << " " << BOOST_PATH << endl;
                 exit(0);
 
             default:
