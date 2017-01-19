@@ -433,13 +433,4 @@ void SPNBase<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, con
      */ 
 }
 
-template class SPNBase<SPN_orig<EventsQueue<vector<_trans>>>,EventsQueue<vector<_trans>>>;
-template class SPNBase<SPN_orig<EventsQueueSet>,EventsQueueSet>;
-template class SPN_orig<EventsQueue<vector<_trans>>>;
-template class SPN_orig<EventsQueueSet>;
-
-#include "SimulatorBoundedRE.hpp"
-template class SPNBase<SPN_RE,EventsQueue<vector<_trans>>>;
-template class SPNBase<SPN_BoundedRE,EventsQueue<vector<_trans>>>;
-
 
