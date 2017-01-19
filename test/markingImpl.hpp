@@ -207,9 +207,9 @@ public:
 
 class abstractBindingIteratorImpl {
 public:
-	void reset(abstractMarkingImpl& m);
-	bool next(size_t& t, abstractMarkingImpl& m);
-	size_t getIndex();
-	abstractBinding getBinding();
+	void reset(abstractMarkingImpl& m){};
+	bool next(size_t& t, abstractMarkingImpl& m){return false;};
+	size_t getIndex(){return 0;};
+	abstractBinding getBinding(){return abstractBinding();};
 };
 #endif

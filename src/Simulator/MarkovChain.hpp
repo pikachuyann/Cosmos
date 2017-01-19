@@ -20,46 +20,54 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file timeGen.hpp created by Benoit Barbot on 25/01/12.            *
+ * file MarkovChain.hpp created by Benoit Barbot on 13/12/2016.                *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__File__
-#define __Cosmos__File__
+#ifndef MarkovChain_hpp
+#define MarkovChain_hpp
 
 #include <iostream>
-#include <boost/random.hpp>
-#include <boost/generator_iterator.hpp>
+#include <vector>
+#include <array>
 
-#include "DistributionDef.hpp"
-#include "Event.hpp"
+#include "timeGen.hpp"
+#include "marking.hpp"
 
-
-class timeGen {
+class Edge{
 public:
+    size_t Id;
+    DistributionType DistTypeIndex;
+    std::string label;
+    std::array<abstractBinding, 1> bindingList;
     
-	//! generate a time acording to the distribution d with parameters p
-	double GenerateTime(DistributionType distribution,const std::array<double,PARAM_TBL_SIZE> &param, const CustomDistr&);
-	
-	/**
-	 * \brief Initialize the random number generator with the given seed
-	 * @param seed is an unsigned integer to be used as seed.
-	 */
-	void initRandomGenerator(unsigned int seed);
-
-    std::string string_of_dist(DistributionType d,const std::array<double,PARAM_TBL_SIZE> &param, const CustomDistr&)const;
-
-private:
-	
-	//!The random Generator Mersenne Twister from the boost library
-	boost::mt19937 RandomNumber;
-
+    Edge(int i,const string &l):Id(i),DistTypeIndex(EXPONENTIAL), label(l){};
+    Edge(int i):Id(i),DistTypeIndex(EXPONENTIAL), label("to "+ to_string(i)){};
 };
 
-template<class DEDS>
-void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,DEDS &);
+template <class EQT>
+class MarkovChain{
+public:
+    
+    abstractMarking Marking;
+    std::vector<Edge> Transition;
+    
+    size_t lastTransition;
+    double lastTransitionTime;
+    std::array<double,PARAM_TBL_SIZE> &ParamDistr;
+    const CustomDistr& customDistr;
+    
+    MarkovChain();
+    
+    void reset();
+    void initialEventsQueue(EQT &,timeGen &);
+    void fire(size_t tr,const abstractBinding& b, double time);
+    void update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &);
+private:
+    Event F;
+    abstractBinding ab;
+    void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG);
+};
 
-extern int verbose;
 
-#endif /* defined(__Cosmos__File__) */
-
+#endif /* MarkovChain_hpp */

@@ -12,7 +12,7 @@
 #include <set>
 
 #include "../expressionStruct.hpp"
-#include "../../Simulator/spn.hpp"
+#include "../../Simulator/DistributionDef.hpp"
 #include "../Eval/Eval.hpp"
   class Gspn_Reader;
 

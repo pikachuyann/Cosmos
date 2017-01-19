@@ -37,11 +37,11 @@ typedef vector <int> Tab;
 typedef vector <Event> EQueue;
 typedef vector <Event>::iterator EQit;
 
-
+template<class TR>
 class EventsQueue {
 public:
     //EventsQueue(size_t);
-	EventsQueue(const SPN& N);
+	EventsQueue(const TR& N);
 	
     EventsQueue(const EventsQueue& orig);
     virtual ~EventsQueue();
@@ -55,11 +55,11 @@ public:
 	
 	
     bool isEmpty()const;
-    void printSedCmd(const vector<_trans> &,ostream&)const;
-    void view(const vector<_trans> &)const;
+    void printSedCmd(const TR &,ostream&)const;
+    void view(const TR &)const;
 	
     void reset();
-    size_t getSize()const ;
+    size_t getSize()const {return evtHeap.size();};
 	
 	
     const Event& InPosition(size_t)const ;

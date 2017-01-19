@@ -35,12 +35,13 @@ using namespace std;
 /**
  *	Build an Event queue for the Petri net given as parameter.
  */
-EventsQueue::EventsQueue(const SPN& N):evtTbl(N.Transition.size(),vector<Event>()){
+template<class TR>
+EventsQueue<TR>::EventsQueue(const TR& t):evtTbl(t.size(),vector<Event>()){
     auto comp =0;
-    for(size_t it = 0; it< N.Transition.size(); ++it ){
+    for(size_t it = 0; it< t.size(); ++it ){
             //evtTbl.push_back(vector<Event>());
-		evtHeapIndex.push_back(vector<long int>(N.Transition[it].bindingList.size(),-1));
-		for (size_t it2 = 0 ; it2< N.Transition[it].bindingList.size(); ++it2) {
+		evtHeapIndex.push_back(vector<long int>(t[it].bindingList.size(),-1));
+		for (size_t it2 = 0 ; it2< t[it].bindingList.size(); ++it2) {
 			evtTbl[it].push_back(Event());
             comp++;
 		}
@@ -51,7 +52,8 @@ EventsQueue::EventsQueue(const SPN& N):evtTbl(N.Transition.size(),vector<Event>(
 /**
  * Clear the events queue. The resulting events queues does not contain any event.
  */
-void EventsQueue::reset() {
+template<class TR>
+void EventsQueue<TR>::reset() {
 	for(size_t it = 0; it< evtHeapIndex.size(); ++it )
 		for(size_t it2 = 0; it2< evtHeapIndex[it].size(); ++it2 ){
 			evtHeapIndex[it][it2]= -1;
@@ -64,7 +66,8 @@ void EventsQueue::reset() {
 /**
  * Copy of events queue
  */
-EventsQueue::EventsQueue(const EventsQueue& orig) {
+template<class TR>
+EventsQueue<TR>::EventsQueue(const EventsQueue& orig) {
     
     //Qsize = orig.Qsize;
 	
@@ -77,14 +80,16 @@ EventsQueue::EventsQueue(const EventsQueue& orig) {
 	 TransTable = orig.TransTable;*/
 }
 
-EventsQueue::~EventsQueue() {
+template<class TR>
+EventsQueue<TR>::~EventsQueue() {
 }
 
 /*
  *	Insert a new event in the events queue and update the tree.
  *  @param e an event of the Petri net.
  */
-void EventsQueue::insert(const Event &e) {
+template<class TR>
+void EventsQueue<TR>::insert(const Event &e) {
 	//assert(!isScheduled(e.transition, e.binding.id()));
 	evtTbl[e.transition][e.binding.id()] = e;
 	evtHeapIndex[e.transition][e.binding.id()] = evtHeap.size();
@@ -97,7 +102,8 @@ void EventsQueue::insert(const Event &e) {
  *	Replace the time, priority,service of an event and update the tree.
  *  @param e an event of the Petri net.
  */
-void EventsQueue::replace(const Event &e) {
+template<class TR>
+void EventsQueue<TR>::replace(const Event &e) {
 	//assert(isScheduled(e.transition, e.binding.id()));
 	long int k = evtHeapIndex[e.transition][e.binding.id()];
 	evtTbl[e.transition][e.binding.id()] = e;
@@ -111,7 +117,8 @@ void EventsQueue::replace(const Event &e) {
  *  @param tr a transition of the Petri net.
  *  @param b a binding of the Petri net.
  */
-void EventsQueue::remove(size_t tr, size_t b) {
+template<class TR>
+void EventsQueue<TR>::remove(size_t tr, size_t b) {
 	long int i = evtHeapIndex[tr][b];
 	evtTbl[tr][b].time = -1.0;
 	//assert(i>=0);
@@ -137,7 +144,8 @@ void EventsQueue::remove(size_t tr, size_t b) {
  *  @param tr a transition of the Petri net.
  *  @param b a binding of the Petri net.
  */
-void EventsQueue::pause(double t, size_t tr,size_t b){
+template<class TR>
+void EventsQueue<TR>::pause(double t, size_t tr,size_t b){
 	evtTbl[tr][b].time -= t;
 	long int i = evtHeapIndex[tr][b];
 	//assert(i>=0);
@@ -164,7 +172,8 @@ void EventsQueue::pause(double t, size_t tr,size_t b){
  *  @param tr a transition of the Petri net.
  *  @param b a binding of the Petri net.
  */
-bool EventsQueue::restart(double t, size_t tr,size_t b){
+template<class TR>
+bool EventsQueue<TR>::restart(double t, size_t tr,size_t b){
 	if(evtTbl[tr][b].time < 0.0)return false;
 	evtTbl[tr][b].time += t;
 	evtHeapIndex[tr][b] = evtHeap.size();
@@ -174,16 +183,19 @@ bool EventsQueue::restart(double t, size_t tr,size_t b){
 	return true;
 }
 
-const Event& EventsQueue::InPosition(size_t i)const {
+template<class TR>
+const Event& EventsQueue<TR>::InPosition(size_t i)const {
 	//assert(i < evtHeap.size());
     return evtTbl[evtHeap[i].tr][evtHeap[i].bid];
 }
 
-bool EventsQueue::isScheduled(size_t tr,size_t b)const {
+template<class TR>
+bool EventsQueue<TR>::isScheduled(size_t tr,size_t b)const {
 	return (evtHeapIndex[tr][b] >= 0);
 }
 
-void EventsQueue::swapEvt(size_t i,size_t j){
+template<class TR>
+void EventsQueue<TR>::swapEvt(size_t i,size_t j){
 	//assert((size_t)evtHeapIndex[evtHeap[j].first][evtHeap[j].second] ==j
 	//	   && (size_t)evtHeapIndex[evtHeap[i].first][evtHeap[i].second] == i);
 	evtHeapIndex[evtHeap[j].tr][evtHeap[j].bid] = i;
@@ -194,7 +206,8 @@ void EventsQueue::swapEvt(size_t i,size_t j){
 	evtHeap[i] = swappair;
 }
 
-void EventsQueue::siftUp(size_t i) {
+template<class TR>
+void EventsQueue<TR>::siftUp(size_t i) {
     size_t parentIndex;
 	
     if (i != 0) {
@@ -207,7 +220,8 @@ void EventsQueue::siftUp(size_t i) {
 	}
 }
 
-void EventsQueue::siftDown(size_t i) {
+template<class TR>
+void EventsQueue<TR>::siftDown(size_t i) {
     size_t leftChildIndex, rightChildIndex, minIndex;
     leftChildIndex = getLeftChildIndex(i);
     rightChildIndex = getRightChildIndex(i);
@@ -232,11 +246,13 @@ void EventsQueue::siftDown(size_t i) {
 	
 }
 
-bool EventsQueue::isEmpty()const {
+template<class TR>
+bool EventsQueue<TR>::isEmpty()const {
     return (evtHeap.size()==0);
 }
 
-void EventsQueue::printSedCmd(const vector<_trans> &trlabl,ostream& df)const {
+template<class TR>
+void EventsQueue<TR>::printSedCmd(const TR &trlabl,ostream& df)const {
     if(evtHeap.size()>0){
         df << "-e 's/\\$CF_" << trlabl[InPosition(0).transition].label << "\\$/Red/g' ";
         for (unsigned int i = 1; i < evtHeap.size(); i++){
@@ -257,7 +273,8 @@ void EventsQueue::printSedCmd(const vector<_trans> &trlabl,ostream& df)const {
 /**
  *	Print the content of the queues in a human readable format.
  */
-void EventsQueue::view(const vector<_trans> &trlabl)const {
+template<class TR>
+void EventsQueue<TR>::view(const TR &trlabl)const {
     cerr << "********** EVENTS-QUEUE VIEW **********" << endl;
 	
     //cerr << "Qsize:" << evtHeap.size() << endl;
@@ -279,7 +296,8 @@ void EventsQueue::view(const vector<_trans> &trlabl)const {
 		}
 }
 
-size_t EventsQueue::getSize()const {
-    return evtHeap.size();
-}
 
+template class EventsQueue<vector<_trans>>;
+
+#include "MarkovChain.hpp"
+template class EventsQueue<vector<Edge>>;

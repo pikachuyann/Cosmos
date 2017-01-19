@@ -1156,7 +1156,7 @@ void Gspn_Writer::writeFile(){
     if(!P.lightSimulator){
         SpnCppFile << ",Transition(TransArray,TransArray +"<< MyGspn.tr <<")";
         SpnCppFile << ",Place("<< MyGspn.pl << ")";
-        SpnCppFile << ",ParamDistr(10)";
+        SpnCppFile << ",ParamDistr()";
         SpnCppFile << ",TransitionConditions(" << MyGspn.tr <<",0)";
     }
 
@@ -1224,7 +1224,7 @@ void Gspn_Writer::writeFile(){
 void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     f << "class CustomDistrOverride: public CustomDistr {" << endl;
     f << "public:"<< endl;
-    f << "double virtual userDefineCDF(vector<double> const& param, double funvar)const override{" <<endl;
+    f << "double virtual userDefineCDF(const std::array<double,PARAM_TBL_SIZE> & param, double funvar)const override{" <<endl;
     {
         //f<< "std::cerr << \"test\" << std::endl;"<<endl;
     auto ch = casesHandler("(int)param[0]");
@@ -1241,7 +1241,7 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     f << "}\n" << endl;
     }
     {
-    f << "double virtual userDefinePDF(vector<double> const& param, double funvar)const override{" <<endl;
+    f << "double virtual userDefinePDF(const std::array<double,PARAM_TBL_SIZE> & param, double funvar)const override{" <<endl;
     auto ch = casesHandler("(int)param[0]");
     for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
         const auto &dist = MyGspn.distribStruct[it];
@@ -1256,7 +1256,7 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     f << "}\n" << endl;
     }
     {
-    f << "double virtual userDefineLowerBound(vector<double> const& param)const override{" <<endl;
+    f << "double virtual userDefineLowerBound(const std::array<double,PARAM_TBL_SIZE> & param)const override{" <<endl;
     auto ch = casesHandler("(int)param[0]");
     for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
         const auto &dist = MyGspn.distribStruct[it];
@@ -1268,7 +1268,7 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     f << "}\n" << endl;
     }
     {
-    f << "double virtual userDefineUpperBound(vector<double> const& param)const override{" <<endl;
+    f << "double virtual userDefineUpperBound(const std::array<double,PARAM_TBL_SIZE> & param)const override{" <<endl;
     auto ch = casesHandler("(int)param[0]");
     for (size_t it=0; it<MyGspn.distribStruct.size(); ++it) {
         const auto &dist = MyGspn.distribStruct[it];
@@ -1281,7 +1281,7 @@ void Gspn_Writer::writeUserDefineDistr(ofstream &f)const{
     }
 
     {
-    f << "double virtual userDefineDiscreteDistr(vector<double> const& param,unsigned int i)const override{" <<endl;
+    f << "double virtual userDefineDiscreteDistr(const std::array<double,PARAM_TBL_SIZE> & param,unsigned int i)const override{" <<endl;
     if( any_of(MyGspn.transitionStruct.begin(),MyGspn.transitionStruct.end(),[](const transition &t){return t.dist.name == "DISCRETEUSERDEFINE";})){
         f << "\treturn (magicUDDD(param,i));" << endl;
     } else {
@@ -1305,29 +1305,29 @@ void Gspn_Writer::writePolynome(ofstream &f)const{
     f << "\t\tptable = parse<"<<n<<">(\""<< userDefineDistribution::polyfile <<"\");"<<endl;
     f << "\t}" << endl;
 
-    f << "\tdouble virtual userDefineCDF(vector<double> const& param, double funvar)const{" <<endl;
+    f << "\tdouble virtual userDefineCDF(const std::array<double,PARAM_TBL_SIZE> & param, double funvar)const override{" <<endl;
     //f << "\tparam[0]=funvar;" << endl;
     f << "\t\treturn (eval(ptable[poly_table[ 5*((int)param[0]) ]],param,funvar)/eval(ptable[poly_table[ 5*((int)param[0])+2 ]],param,funvar))  ;"<< endl;
     f << "\t}"<<endl;
 
-    f << "\tdouble  virtual userDefinePDF(vector<double> const& param, double funvar)const{" <<endl;
+    f << "\tdouble  virtual userDefinePDF(const std::array<double,PARAM_TBL_SIZE> & param, double funvar)const override{" <<endl;
     //f << "\tparam[0]=funvar;" << endl;
     f << "\t\treturn (eval(ptable[poly_table[ 5*((int)param[0])+1 ]],param,funvar)/eval(ptable[poly_table[ 5*((int)param[0])+2 ]],param,funvar))  ;"<< endl;
     f << "\t}"<<endl;
 
     {
-        f << "\tdouble virtual userDefineLowerBound(vector<double> const& param)const{" <<endl;
+        f << "\tdouble virtual userDefineLowerBound(const std::array<double,PARAM_TBL_SIZE> & param)const override{" <<endl;
         f << "\t\treturn eval(ptable[poly_table[ 5*((int)param[0])+3 ]],param);" << endl;
         f << "\t}\n" << endl;
     }
     {
-        f << "\tdouble virtual userDefineUpperBound(vector<double> const& param)const{" <<endl;
+        f << "\tdouble virtual userDefineUpperBound(const std::array<double,PARAM_TBL_SIZE> & param)const override{" <<endl;
         f << "\t\treturn eval(ptable[poly_table[ 5*((int)param[0])+4] ],param);" << endl;
         f << "\t}\n" << endl;
     }
     
     {
-        f << "\tdouble virtual userDefineDiscreteDistr(vector<double> const& param,unsigned int i)const{" <<endl;
+        f << "\tdouble virtual userDefineDiscreteDistr(const std::array<double,PARAM_TBL_SIZE> & param,unsigned int i)const override{" <<endl;
         if( any_of(MyGspn.transitionStruct.begin(),MyGspn.transitionStruct.end(),[](const transition &t){return t.dist.name == "DISCRETEUSERDEFINE";})){
             f << "\t\treturn (magicUDDD(param,i));" << endl;
         } else {
@@ -1336,7 +1336,7 @@ void Gspn_Writer::writePolynome(ofstream &f)const{
         f << "\t}\n" << endl;
     }
     
-    f << "\tdouble virtual evalPoly(unsigned long i,vector<double> const & param)const {"<< endl;;
+    f << "\tdouble virtual evalPoly(unsigned long i,const std::array<double,PARAM_TBL_SIZE> & param)const override{"<< endl;;
     f << "\t\treturn eval(ptable[i],param);"<< endl;
     f << "\t}"<< endl;
     

@@ -36,7 +36,6 @@
 #include "EventsQueueSet.hpp"
 #include "BatchR.hpp"
 #include "timeGen.hpp"
-#include "EventQueueFactory.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -48,14 +47,11 @@
 template <class S, class EQT, class DEDS>
 class SimulatorBase:public timeGen {
 public:
-    SimulatorBase(DEDS&,LHA_orig&);
+    SimulatorBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>&);
     
     //Simulator();
 	~SimulatorBase();
 	
-	//! verbose level of the simulator
-    int verbose;
-
     //! Path to the temporary directory
     string tmpPath;
     string dotFile;
@@ -105,7 +101,7 @@ public:
 	
     
 	DEDS &N; //!The object representing the SPN
-	LHA_orig &A; //!The object representing the LHA
+	LHA_orig<typeof N.Marking> &A; //!The object representing the LHA
 	
     
     /**
@@ -152,7 +148,7 @@ public:
 template <class EQT, class DEDS>
 class Simulator:public SimulatorBase<Simulator<EQT, DEDS>, EQT, DEDS>{
 public:
-    Simulator(DEDS& deds,LHA_orig& lha):SimulatorBase<Simulator,EQT,DEDS>(deds, lha){};
+    Simulator(DEDS& deds,LHA_orig<typeof deds.Marking>& lha):SimulatorBase<Simulator,EQT,DEDS>(deds, lha){};
 };
 
 #endif  /* _SIMULATOR_HPP */
