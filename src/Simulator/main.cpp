@@ -3,6 +3,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
+
+#include "SPNBase.cpp"
+#include "Simulator.cpp"
+
 int main(int argc, char** argv) {
     signal(SIGINT, signalHandler);
     SPN_orig<EventsQueue<vector<_trans>>> N;

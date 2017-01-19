@@ -22,9 +22,19 @@ libClientSim_la_SOURCES = \
 	SimulatorBoundedRE.cpp SimulatorBoundedRE.hpp \
 	foxglynn.cpp foxglynn.hpp \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
-	clientsim.cpp
+	clientsim.cpp InstanceSPNSim.cpp
 
-libClientSimMain_la_SOURCES = main.cpp
+libClientSimMain_la_SOURCES = \
+	BatchR.cpp BatchR.hpp \
+	Event.cpp  Event.hpp \
+	EventsQueue.cpp EventsQueue.hpp \
+	timeGen.cpp timeGen.hpp \
+	marking.hpp spn.hpp \
+	SPNBase.cpp SPNBase.hpp \
+	LHA_orig.cpp LHA_orig.hpp \
+	LHA.hpp \
+	Simulator.cpp Simulator.hpp \
+    clientsim.cpp main.cpp
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp DistributionDef.hpp \
 	timeGen.hpp Event.hpp EventsQueue.hpp BatchR.hpp EventsQueueSet.hpp \
