@@ -57,7 +57,7 @@ template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue<vector<_tra
 #include "SimulatorContinuousBounded.hpp"
 template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
 
-
+/*
 // Classes in SimulatorRE
 #include "SimulatorRE.cpp"
 
@@ -77,6 +77,8 @@ template void generateEvent(double ctime,Event& E,size_t Id,const abstractBindin
 
 #include "SimulatorContinuousBounded.hpp"
 template class SimulatorREBase<SimulatorContinuousBounded<SPN_BoundedRE>, SPN_BoundedRE>;
+*/
+
 
 //  Classes in SimulatorBounded
 #include "SimulatorBoundedRE.cpp"
