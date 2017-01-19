@@ -67,6 +67,7 @@
 		03C480391A826281007B8969 /* spnLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C480381A826281007B8969 /* spnLight.cpp */; };
 		03C4803C1A8283FA007B8969 /* EventsQueueLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */; };
 		03C4803D1A8283FA007B8969 /* EventsQueueLight.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */; };
+		03C737C21E30CDC600B6C857 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03C737C11E30CDC600B6C857 /* main.cpp */; };
 		03CB8F501893CCA900A9938A /* timeGen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03CB8F4D1893CB1A00A9938A /* timeGen.cpp */; };
 		03E39B0F183E49D30070911A /* BatchR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703F181BC0D6006D7332 /* BatchR.cpp */; };
 		03E39B10183E49D60070911A /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7042181BC0D6006D7332 /* Event.cpp */; };
@@ -1027,6 +1028,7 @@
 		03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventsQueueLight.cpp; sourceTree = "<group>"; };
 		03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueueLight.hpp; sourceTree = "<group>"; };
 		03C67B121B15DFBF00EDC743 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		03C737C11E30CDC600B6C857 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		03CB8F4D1893CB1A00A9938A /* timeGen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeGen.cpp; sourceTree = "<group>"; };
 		03CB8F4E1893CB1A00A9938A /* timeGen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGen.hpp; sourceTree = "<group>"; };
 		03E43E1D1AE1027300E9A2BF /* Gspn-Writer-Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Writer-Color.cpp"; sourceTree = "<group>"; };
@@ -1336,6 +1338,7 @@
 				035464EE1DFFFF240060D055 /* MarkovChain.hpp */,
 				032A7041181BC0D6006D7332 /* clientsim.cpp */,
 				03466C211E2D2BD700BE2C78 /* clientsim.hpp */,
+				03C737C11E30CDC600B6C857 /* main.cpp */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
@@ -3399,6 +3402,7 @@
 				0306A2311BACA88E0045B056 /* spn.cpp in Sources */,
 				03650F821CFDC4FB00DB3041 /* EventsQueueSet.cpp in Sources */,
 				0306A22F1BACA88E0045B056 /* LHA.cpp in Sources */,
+				03C737C21E30CDC600B6C857 /* main.cpp in Sources */,
 				035464F01DFFFF240060D055 /* MarkovChain.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
