@@ -25,10 +25,6 @@ val printLinks : out_channel -> simulinkLink list -> unit
 val verbose : int
 val printModel : out_channel -> simulinkModel -> unit
 val printPModel : out_channel -> simulinkPModel -> unit
-val ssid_count : int ref
-val getSSID : (string * string) list -> int
-val fresh_ssid : unit -> int
-val print_position : out_channel -> Lexing.lexbuf -> unit
 val blocklist_of_simulink : simulinkModel -> Xml.xml -> simulinkModel
 val blocklist_of_tree : simulinkModel -> Xml.xml -> simulinkModel
 val pushDefaults : simulinkModel -> block list * simulinkLink list
