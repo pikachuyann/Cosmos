@@ -3,68 +3,16 @@
 import sys
 import os
 import re
+from exportGrML import *
 
-
+## Set Parameters 
 #prismpath="prism";
-
 prismpath="~/Documents/prism/prism-ptasmc/prism/bin/prism ";
 
 sagepath,ext = os.path.splitext(str(sys.argv[1]));
 outpath=sagepath+'.grml';
 
 isIsotropic=False;
-
-if len(sys.argv)>2:
-    outpath=str(sys.argv[2]);
-
-print(str(sys.argv[1]) + ' -> ' + sagepath + '.sage' );
-
-retval=os.system(prismpath + ' ' + str(sys.argv[1]) + ' -exportsplitreach ' + sagepath + '.sage');
-print(sagepath + '.sage -> ' + outpath );
-load(sagepath+'.sage')
-
-#REDO THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#Put [] in sink states using iteration on graphs;
-#modified=true;#true until fixed point is reached
-#while modified==true:
-#    modified=false;
-#    for state in statelist:
-#        new_state=[];
-#        for trans in state['transition']:
-#            trans2=[trans[k] for k in range(4)];
-#            trans2.append([]);
-#            trans2.append(trans[5]);
-#            print(trans);
-#            for edge in trans['miniedge']:
-#                if statelist[edge[0]]==[]:
-#                    modified=true;
-#                else:
-#                    trans2[4].append(edge)
-#            if trans2[4]!=[]:
-#                new_state.append(trans2);
-#        statelist[state]=new_state;
-
-#New indexing of states
-#new_index=[];
-#count=-1;
-#for i in range(len(statelist)):
-#    if statelist[i]==[]:
-#        new_index.append(-1);
-#    else:
-#        count=count+1;
-#        new_index.append(count);
-        
-#Remove sink states
-#namelist=[namelist[i] for i in range(len(statelist)) if statelist[i]!=[]];
-#redcoord=[redcoord[i] for i in range(len(statelist)) if statelist[i]!=[]];
-#statelist=[statelist[i] for i in range(len(statelist)) if statelist[i]!=[]];
-
-#Update the indexing for outgoing transitions
-#for i in range(len(statelist)):
-#    for j in range(len(statelist[i])):
-#        for k in range(len(statelist[i][j][4])):
-#            statelist[i][j][4][k][0]=new_index[statelist[i][j][4][k][0]];            
-
 
 numpoly=3;
 if len(sys.argv)>3:
@@ -83,6 +31,19 @@ objregexp= re.compile('')
 if len(sys.argv)>5:
     objregexp=re.compile(sys.argv[5])
 
+if len(sys.argv)>2:
+    outpath=str(sys.argv[2]);
+################################################################################   
+
+## Launch Prism    
+print(str(sys.argv[1]) + ' -> ' + sagepath + '.sage' );
+retval=os.system(prismpath + ' ' + str(sys.argv[1]) + ' -exportsplitreach ' + sagepath + '.sage');
+print(sagepath + '.sage -> ' + outpath );
+
+## Load Region Graph
+load(sagepath+'.sage')
+
+
 finstate = [ objregexp.match(statelist[i]['name']) for i in range(len(statelist))];
 
 #cardclocks=len(statelist[0]['transition'][0]['miniedge'][0]['reset']);#@Benoit: il faut que une ligne en plus en sortie de PRISM qui donne cardclocks=TRUC; Done;
@@ -95,7 +56,7 @@ R = PolynomialRing(RealField(accuracy),cardclocks+1,xsanszero);
 R.inject_variables();
 x=list(R.gens());
 
-#assign a unique identifier per transition and edge and compute inverse mapping
+## Assign a unique identifier per transition and edge and compute inverse mapping
 c=0;
 d=0;
 idtransinv=[];
@@ -166,93 +127,6 @@ def WeightsPdfCdf(f): #Compute one iteration of operator Op with all weights/pdf
     return({'psiDeltaf':psiDeltaf,
             'Pdf':Pdf,
             'Cdf':Cdf});
-    
-    
-def poly_to_c_first(p):
-    supp=p.exponents();
-    s='0.0';
-    for triplet in supp:
-        s+='+('+ str(p[triplet])+')';
-        for j in range(cardclocks):
-            if triplet[j]==1:
-                s+="*param[%d]" %(j+1);
-            if triplet[j]>1:
-                s+="*pow(param[%d]," %(j+1)+ str(triplet[j]) +')';
-        if triplet[cardclocks]==1:
-            s+="*t";
-        if triplet[cardclocks]>1:
-            s+="*pow(t,"+ str(triplet[cardclocks])+')';
-    return(s);
-    
-def poly_to_c_bis(p):
-    supp=p.exponents();
-    s='0.0';
-    for triplet in supp:
-        s+='+('+ str(p[triplet])+')';
-        for j in range(cardclocks):
-            if triplet[j]==1:
-                s+="*x_%d" %(j+1);
-            if triplet[j]>1:
-                s+="*pow(x_%d," %(j+1)+ str(triplet[j]) +')';
-        if triplet[cardclocks]==1:
-            s+="*t";
-        if triplet[cardclocks]>1:
-            s+="*pow(t,"+ str(triplet[cardclocks])+')';
-    return(s);
-
-def matrix_to_c(tab,name):
-    n = len(tab);
-    m = len(tab[0]);
-    s= 'const int '+name+'[%d]' %n +'[%d] ={ '%m;
-    for v in tab:
-        s+= '{ ';
-        v.reverse();
-        for v2 in v:
-            s+= '%d, ' %v2;
-        s+= '}, ';
-    
-    return s+'};\n';
-    
-def poly_to_c_ter(poly):
-    s0=re.sub('\{\(','{{',str(poly.dict()))
-    s1=re.sub('\, *?\(','}, {',s0)
-    s2=re.sub('\):' , ',' ,s1)
-    s3='0'
-    for i in range(cardclocks):
-        s3 = s3+',0';
-    if poly != 0:
-        return (s2+ ',{ ' +s3+',0}' +'}');
-    else :
-        return ('{{ ' +s3+',0}}');
-    
-def poly_to_c(p):
-    return (poly_to_c_ter(p));
-
-fichier_data=open(outpath+'.data',"w");
-nbpoly= -1;
-
-def poly_to_data(p):
-    #print poly_to_c_first(p);
-    global nbpoly;
-    nbpoly+=1;
-    fichier_data.write((str(cardclocks+1)+','));
-    s0=re.sub('\(','',str(p.dict()))
-    s1=re.sub('\, *?\(',' , ',s0)
-    s2=re.sub('\):' , ',' ,s1)
-    s3=re.sub('}' , '' , s2)
-    s4=re.sub('{' , '' , s3)
-    fichier_data.write(s4);
-    fichier_data.write('\n');
-    return nbpoly;
-
-
-def poly_to_c_data(p):
-    n =poly_to_data(p);
-    s= "{0";
-    for i in range(cardclocks):
-        s+=",x_%d " %(i+1);
-        
-    return ("customDistr.evalPoly(%i" %n) + (",%s,0.0})" %s);
 
 def sumlist(l):
     accu=0;
@@ -261,6 +135,8 @@ def sumlist(l):
     return(accu);
 
 #numpoly=5;
+
+## Polynomes Computation #######################################################
 allones=[WeightsPdfCdf([R(1) for i in range(card_states)])];
 if not isIsotropic :
     print("Polynome Computation: ["),
@@ -271,96 +147,18 @@ if not isIsotropic :
     #lastone=WeightsPdfCdf(listres[numpoly]);
     print("]\n");
 lastone=allones[len(allones)-1];
+################################################################################
 
+fichier_data=open(outpath+'.data',"w");
+
+## GrML export
 for state in statelist:
     for trans in state['transition']:
         trans['lowerBound']=R(trans['zone'][0]-clockO(x,int(state['id']),trans['zone'][1]));
-        trans['lowerBoundId']=poly_to_data( trans['lowerBound'] );
+        trans['lowerBoundId']=poly_to_data( trans['lowerBound'],fichier_data,cardclocks );
         trans['upperBound']=R(trans['zone'][2]-clockO(x,int(state['id']),trans['zone'][3]));
-        trans['upperBoundId']=poly_to_data( trans['upperBound']);
+        trans['upperBoundId']=poly_to_data( trans['upperBound'],fichier_data,cardclocks);
 
-def escapename(s):
-    s2=s.replace('(','').replace(')','').replace('>','G').replace('<','L').replace('&','^');
-    s3=s2.replace(',','_').replace('{','').replace('}','').replace('=','E').replace('-','M');
-    return s3
-
-def printGRML_distribution(alldistr):
-    s="";
-    maxid = len(idtransinv);
-    tabidDistrHorizon = [[ -1 for k in range(len(alldistr)) ] for id in range(maxid)]
-    count=0;
-    for k in range(len(alldistr)):
-        triple = alldistr[k];
-        for state in statelist:
-            i=state['id'];
-            j=-1
-            for trans in state['transition']:
-                j= j+1;
-                tabidDistrHorizon[trans['id']][k]=count;
-                count+=1;
-                s+='    <attribute name=\"UserDefineDistributionPoly\">\n';
-                s+='      <attribute name=\"polyDataFile\"> '+outpath + '.data </attribute>\n';
-                s+='      <attribute name=\"name\"> '+ "trans_%d"%i+"_%d"%j+"_%d"%k + ' </attribute>\n';
-                s+='      <attribute name=\"var\"> t </attribute>\n';
-                s+='      <attribute name=\"nbParam\">'+ "%i"%(cardclocks+1) + '</attribute>\n';
-                s+="      <attribute name=\"lowerBound\">%i</attribute>\n" %trans['lowerBoundId'];
-                s+="      <attribute name=\"upperBound\">%i</attribute>\n" %trans['upperBoundId'];
-                poly_to_data(triple['psiDeltaf'][i][j]);
-                s+="      <attribute name=\"norm\">%i</attribute>\n"%nbpoly;
-                poly_to_data(triple['Cdf'][i][j]);
-                s+="      <attribute name=\"cdf\">%i</attribute>\n"%nbpoly;
-                poly_to_data(triple['Pdf'][i][j]);
-                s+="      <attribute name=\"pdf\">%i</attribute>\n"%nbpoly;
-                s+='    </attribute>\n'
-    #fichier_data.write("//fin distr\n")
-    return((s,tabidDistrHorizon));
-
-arcCounter= -1;
-
-def printGRML_OneArc(id,source,target):
-    global arcCounter
-    arcCounter+=1;
-    s="";
-    s+='  <arc id=\"%s' %id +'%d\"' %arcCounter +' arcType=\"arc\" source=\"%s\" ' %source + 'target=\"%s\" ' %target+'>\n';
-    s+='    <attribute name=\"valuation\"><attribute name=\"expr\">\n';
-    s+='      <attribute name=\"numValue\">1</attribute>\n';
-    s+='    </attribute></attribute>\n';
-    s+='  </arc>\n';
-    return s;
-
-def printGRML_OnePlace(id,name,marking):
-    s="";
-    s+='  <node id=\"%s\" ' %id +' nodeType=\"place\">\n';
-    s+='    <attribute name=\"name\">%s' %name + ' </attribute>\n';
-    s+='    <attribute name=\"marking\"><attribute name=\"expr\">\n';
-    s+='      <attribute name=\"numValue\">%d '%marking+' </attribute>\n';
-    s+='    </attribute></attribute>\n';
-    s+='  </node>\n';
-    return(s);
-
-def printGRML_OneTransition(id,name,distribution,priority,weight,extra):
-    s="";
-    s+='  <node id=\"'+ id + '\"  nodeType=\"transition\">\n';
-    s+='    <attribute name=\"name\">'+ name +'</attribute>\n';
-    s+='    <attribute name=\"distribution\">\n';
-    s+=distribution
-    s+='    </attribute>\n';
-    s+='    <attribute name=\"priority\"><attribute name=\"expr\">\n';
-    s+='    <attribute name=\"numValue\">'+ priority + '</attribute>\n';
-    s+='    </attribute></attribute>\n';
-    s+='    <attribute name=\"weight\"><attribute name=\"expr\">\n';
-    s+='    '+ weight + '\n';
-    s+='    </attribute></attribute>\n';
-    s+='    '+extra+'\n';
-    s+='  </node>\n';
-    return(s);
-
-def printGRML_OneInstaTransition(id,name,priority,weight,extra):
-    s='      <attribute name=\"type\">\n';
-    s+='      IMDT\n';
-    s+='      </attribute>\n'
-    return(printGRML_OneTransition(id,name,s,priority,weight,extra));
-    
 idalpha=dict((alphabet[i],i) for i in range(len(alphabet)));
 
 def printGRML_arc(statelist):
@@ -400,6 +198,13 @@ def printGRML_place(statelist):
         s+= printGRML_OnePlace('20%d' %i,'s_%s_' %(alphabet[i]), 0);
     return(s);
 
+passingClockParameters = "0.0";
+for i in range(cardclocks):
+    passingClockParameters += ",x_%d" %(i+1);
+
+
+
+
 def printGRML_transition(statelist,allones,isIsotropic,Dline):
     s="";
     for i in range(len(alphabet)):
@@ -418,9 +223,9 @@ def printGRML_transition(statelist,allones,isIsotropic,Dline):
             else:
                 t+='    <attribute name=\"unParsed\"> customDistr.evalPoly(%d' %nbpoly +' + min( %i '%(Dline) + '-Marking.P->_PL_Counter, %d )' %(len(allones)-1);
                 for k in range(len(allones)):
-                    poly_to_c_data(allones[k]['psiDeltaf'][i][j]);#poids de la transition i j
+                    poly_to_c_data(allones[k]['psiDeltaf'][i][j],fichier_data,cardclocks);#poids de la transition i j
                     
-                t+= ', {0.0,x_1,x_2,0.0}) </attribute>\n';#C est quoi ca -> c'est pour passer les valeur d'horloge
+                t+= ', {'+ passingClockParameters +',0.0}) </attribute>\n';#C est quoi ca -> c'est pour passer les valeur d'horloge
                 #Pour cosmos les horloge sont juste des variable il faut mapper les variable du polynomes aux horloges 
             s+=printGRML_OneInstaTransition('13%d' %(trans['id']),
                                             't_%d' %i +'_%d_' %j + (trans['action']),
@@ -438,10 +243,10 @@ def printGRML_transition(statelist,allones,isIsotropic,Dline):
 
             if(isIsotropic):
                 t+='      <attribute name="param">\n'
-                t+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_data(trans['lowerBound']) +'</attribute></attribute>\n';
+                t+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_data(trans['lowerBound'],fichier_data,cardclocks) +'</attribute></attribute>\n';
                 t+='      </attribute>\n'
                 t+='      <attribute name="param">\n'
-                t+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_data(trans['upperBound']) +'</attribute></attribute>\n';
+                t+='        <attribute name="expr"><attribute name=\"unParsed\">'+ poly_to_c_data(trans['upperBound'],fichier_data,cardclocks) +'</attribute></attribute>\n';
                 t+='      </attribute>\n'
             else:
                 t+='      <attribute name="param">\n'
@@ -491,7 +296,7 @@ def toCOSMOS(allones,isIsotropic,Dline):
     s+='  </attribute>\n';    
     tab = "";
     if( not isIsotropic):
-        (s2,tab2)=printGRML_distribution(allones);#alldistr
+        (s2,tab2)=printGRML_distribution(allones,idtransinv,statelist,outpath,cardclocks,fichier_data);#alldistr
         s+=s2;
         tab=matrix_to_c(tab2,"transDistrTab");
     s+='    <attribute name="variables">\n';

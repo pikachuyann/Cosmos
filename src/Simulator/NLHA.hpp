@@ -32,7 +32,8 @@
 
 #include "LHA_orig.hpp"
 
-class NLHA: public LHA_orig {
+template<class DEDState>
+class NLHA: public LHA_orig<DEDState> {
 
     std::set<fullState, std::less<fullState> > powerSet[2];
     std::set<fullState, std::less<fullState> > *powerSetState;
@@ -40,17 +41,17 @@ class NLHA: public LHA_orig {
 
 public:
     NLHA():powerSetState(&powerSet[0]),selectPS(0){};
-    virtual void updateLHA(double DeltaT, const abstractMarking &) override;
-    virtual int  synchroniseWith(size_t, const abstractMarking&,const abstractBinding&) override;
-    virtual AutEdge GetEnabled_A_Edges(const abstractMarking& Marking) override;
+    virtual void updateLHA(double DeltaT, const DEDState &) override;
+    virtual int  synchroniseWith(size_t, const DEDState&,const abstractBinding&) override;
+    virtual AutEdge GetEnabled_A_Edges(const DEDState& Marking) override;
 
     virtual void printState(ostream&) override;
     virtual bool isFinal()const override;
-    virtual void reset(const abstractMarking&) override;
-    virtual void getFinalValues(const abstractMarking& m,vector<double>&,vector<bool>&) override;
+    virtual void reset(const DEDState&) override;
+    virtual void getFinalValues(const DEDState& m,vector<double>&,vector<bool>&) override;
 
 private:
-    virtual void setInitLocation(const abstractMarking& Marking) override;
+    virtual void setInitLocation(const DEDState& Marking) override;
 
 
 };

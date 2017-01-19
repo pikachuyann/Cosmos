@@ -81,14 +81,13 @@ struct Variables;
  */
 bool varOrder(const Variables &,const Variables &);
 
-t_interval GetEdgeEnablingTime(int,const abstractMarking&);
-
 extern bool IsLHADeterministic;
 
 /**
  * Class implementing the Linear Hybrid Automaton.
  * Part of the implementation is generated at runtime for efficiency.
  */
+template<class DEDState>
 class LHA {
 public:
 	LHA();
@@ -139,13 +138,13 @@ protected:
 
 
     void resetVariables();
-    void DoElapsedTimeUpdate(double, const abstractMarking&);
-    double GetFlow(int, const abstractMarking&)const;
-    bool CheckLocation(int,const abstractMarking&)const;
-    bool CheckEdgeContraints(int,size_t, const abstractBinding&, const abstractMarking&)const;
-    t_interval GetEdgeEnablingTime(int,const abstractMarking&)const;
-    void DoEdgeUpdates(int, const abstractMarking&, const abstractBinding&);
-	void UpdateLinForm(const abstractMarking&);
+    void DoElapsedTimeUpdate(double, const DEDState&);
+    double GetFlow(int, const DEDState&)const;
+    bool CheckLocation(int,const DEDState&)const;
+    bool CheckEdgeContraints(int,size_t, const abstractBinding&, const DEDState&)const;
+    t_interval GetEdgeEnablingTime(int,const DEDState&)const;
+    void DoEdgeUpdates(int, const DEDState&, const abstractBinding&);
+	void UpdateLinForm(const DEDState&);
 	void UpdateLhaFunc( double&);
 	void UpdateFormulaVal();
     

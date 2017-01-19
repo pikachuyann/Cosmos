@@ -24,16 +24,19 @@
  *******************************************************************************
  */
 
-#include "SimulatorBoundedRE.hpp"
 #include <list>
+#include <sys/resource.h>
+
+
+#include "SimulatorBoundedRE.hpp"
+
 #include "numSolverBB.hpp"
 #include "numSolverSH.hpp"
-#include <sys/resource.h>
 
 using namespace std;
 
 template<class S,class DEDS>
-SimulatorBoundedREBase<S,DEDS>::SimulatorBoundedREBase(DEDS& N,LHA_orig& A,int m):SimulatorREBase<S,DEDS>(N,A){
+SimulatorBoundedREBase<S,DEDS>::SimulatorBoundedREBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>& A,int m):SimulatorREBase<S,DEDS>(N,A){
     switch (m) {
         case 1:
             numSolv = new numericalSolver();
@@ -69,32 +72,32 @@ BatchR SimulatorBoundedREBase<S,DEDS>::RunBatch(){
 	
 	BatchR batchResult(1,0);
 	
-	list<simulationState<EventsQueue> > statevect(this->BatchSize);
+	list<simulationState<DEDS, EventsQueue<vector<_trans>>> > statevect(this->BatchSize);
 	//delete EQ;
 	
-	if(this->verbose>=1){
+	if(verbose>=1){
 		cerr << "Initial round:";
 		numSolv->printState();
 		cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
 		cerr << numSolv->getVect()[0] << endl;
 	}
-	for (auto it= statevect.begin(); it != statevect.end() ; it++) {
+    for (auto &it : statevect) {
 		this->N.Origine_Rate_Table = vector<double>(this->N.tr,0.0);
 		this->N.Rate_Table = vector<double>(this->N.tr,0.0);
-		this->EQ = new EventsQueue(this->N);
+		this->EQ = new EventsQueue<vector<_trans>>(this->N.Transition);
 		this->reset();
 		
-		this->N.SPNBase<S,EventsQueue>::initialEventsQueue(*(this->EQ),*this);
+		this->N.initialEventsQueue(*(this->EQ),*this);
 
 		//AE = A.GetEnabled_A_Edges( N.Marking);
         
-		it->saveState(&(this->N),&(this->A),&(this->EQ));
+		it.saveState(&(this->N),&(this->A),&(this->EQ));
 	}
 	
 	//cout << "new batch" << endl;
 	while (!statevect.empty()) {
 		numSolv->stepVect();
-        if(this->verbose>=1){
+        if(verbose>=1){
             cerr << "new round:";
 			numSolv->printState();
 			cerr << "\tremaining trajectories: "<< statevect.size() << "\tInit Prob:";
@@ -149,18 +152,13 @@ BatchR SimulatorBoundedREBase<S,DEDS>::RunBatch(){
 	return (batchResult);
 }
 
-template <class S>
-SPNBaseBoundedRE<S>::SPNBaseBoundedRE(int& v,bool doubleIS):SPNBaseRE<S>(v,doubleIS){
-    
-}
-
 
 template <class S>
 double SPNBaseBoundedRE<S>::mu(){
 	
   vector<int> vect (this->muprob->S.begin()->first->size(),0);
 	
-  lumpingFun(this->Marking,vect);
+  static_cast< S* >(this)->lumpingFun(this->Marking,vect);
   int stateN = this->muprob->findHash(&vect);
   
   if(stateN<0){
@@ -178,7 +176,7 @@ double SPNBaseBoundedRE<S>::mu(){
 
 
 template <class S>
-void SPNBaseBoundedRE<S>::update(double ctime,size_t,const abstractBinding&,EventsQueue &EQ, timeGen &TG){
+void SPNBaseBoundedRE<S>::update(double ctime,size_t,const abstractBinding&,EventsQueue<vector<_trans>> &EQ, timeGen &TG){
 	Event F;
     //check if the current transition is still enabled
 	
@@ -191,10 +189,10 @@ void SPNBaseBoundedRE<S>::update(double ctime,size_t,const abstractBinding&,Even
 			bindex != this->Transition[it].bindingList.end() ; ++bindex){
 			if(this->IsEnabled(it, *bindex)){
 				if (EQ.isScheduled(it, bindex->id())) {
-					generateEvent(ctime,F, it ,*bindex, TG, static_cast<SPN_RE&>(*this) );
+					generateEvent(ctime,F, it ,*bindex, TG, *(static_cast<S *>(this)) );
 					EQ.replace(F);
 				} else {
-					generateEvent(ctime,F, it ,*bindex, TG, static_cast<SPN_RE&>(*this) );
+					generateEvent(ctime,F, it ,*bindex, TG, *(static_cast<S *>(this)) );
 					EQ.insert(F);
 				}
 			}else{
@@ -205,12 +203,12 @@ void SPNBaseBoundedRE<S>::update(double ctime,size_t,const abstractBinding&,Even
 	}
 	
 	abstractBinding bpuit;
-    generateEvent(ctime,F, (SPN::tr-2),bpuit, TG,static_cast<SPN_RE&>(*this));
+    generateEvent(ctime,F, (SPN::tr-2),bpuit, TG, *(static_cast<S *>(this)));
 	if(! this->doubleIS_mode){
 		EQ.replace(F);
 	}
 	
-    generateEvent(ctime,F, (SPN::tr-1),bpuit, TG,static_cast<SPN_RE&>(*this));
+    generateEvent(ctime,F, (SPN::tr-1),bpuit, TG, *(static_cast<S *>(this)));
 	if(! this->doubleIS_mode){
 		EQ.replace(F);
 	}
@@ -221,14 +219,14 @@ void SPNBaseBoundedRE<S>::update(double ctime,size_t,const abstractBinding&,Even
 template <class S>
 void SPNBaseBoundedRE<S>::getParams(size_t Id,const abstractBinding& b){
 	
-	GetDistParameters(Id,b);
-	double origin_rate = ParamDistr[0];
+	static_cast<S*>(this)->GetDistParameters(Id,b);
+	double origin_rate = this->ParamDistr[0];
     if(Id== SPN::tr-2){
-        origin_rate = muprob->maxRate - Origine_Rate_Sum;
+        origin_rate = this->muprob->maxRate - this->Origine_Rate_Sum;
         //cerr << "lambda:\t" << lambda << "\tselfloop:\t" << origin_rate << endl;
     }
-    ParamDistr[0]= ComputeDistr( Id, b,origin_rate);
-	ParamDistr[1]= origin_rate;
+    this->ParamDistr[0]= static_cast<S*>(this)->ComputeDistr( Id, b,origin_rate);
+	this->ParamDistr[1]= origin_rate;
 }
 
 
@@ -242,21 +240,21 @@ double SPNBaseBoundedRE<S>::ComputeDistr(size_t t ,const abstractBinding& b, dou
 		if (mux==0.0)return 1E200;
 		
 		if(verbose>3){
-			Marking.printHeader(cerr);cerr << endl;
-			Marking.print(cerr,0.0);cerr << endl;
-			vector<int> vect (muprob->S.begin()->first->size(),0);
-			lumpingFun(Marking,vect);
-			print_state(vect);
+			this->Marking.printHeader(cerr);cerr << endl;
+			this->Marking.print(cerr,0.0);cerr << endl;
+			vector<int> vect (this->muprob->S.begin()->first->size(),0);
+			static_cast<S*>(this)->lumpingFun(this->Marking,vect);
+			static_cast<S*>(this)->print_state(vect);
 		}
 		
-		if(Origine_Rate_Sum >= Rate_Sum){
-			if(verbose>3 )cerr << "trans:sink distr: "<< Origine_Rate_Sum - Rate_Sum << " origine_rate:" << Origine_Rate_Sum <<" Rate: " << Rate_Sum << endl;
+		if(this->Origine_Rate_Sum >= this->Rate_Sum){
+			if(verbose>3 )cerr << "trans:sink distr: "<< this->Origine_Rate_Sum - this->Rate_Sum << " origine_rate:" << this->Origine_Rate_Sum <<" Rate: " << this->Rate_Sum << endl;
 			//cerr << "strange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-			return( (Origine_Rate_Sum - Rate_Sum)  );
+			return( (this->Origine_Rate_Sum - this->Rate_Sum)  );
 		}else{
-			if(verbose>3 && (Origine_Rate_Sum < 0.99*Rate_Sum)){
+			if(verbose>3 && (this->Origine_Rate_Sum < 0.99* this->Rate_Sum)){
 				cerr << "Reduce model does not guarantee variance" << endl;
-				cerr << "Initial sum of rate: " << Origine_Rate_Sum << " Reduce one: " << Rate_Sum << " difference: " << Origine_Rate_Sum - Rate_Sum << endl ;
+				cerr << "Initial sum of rate: " << this->Origine_Rate_Sum << " Reduce one: " << this->Rate_Sum << " difference: " << this->Origine_Rate_Sum - this->Rate_Sum << endl ;
 				//exit(EXIT_FAILURE);
 			}
 			//cerr << "trans:sink distr: 0 " << endl;
@@ -265,18 +263,19 @@ double SPNBaseBoundedRE<S>::ComputeDistr(size_t t ,const abstractBinding& b, dou
 	if( mux==0.0 || mux==1.0) return(origin_rate);
 	
 	double distr;
-	fire(t,b,0.0);
-	static_cast<numericalSolver*>(muprob)->stepVect();
+    SPN::fire(t,b,0.0);
+	static_cast<numericalSolver*>(this->muprob)->stepVect();
 	distr = origin_rate *( mu() / mux);
-	if(verbose>3 )cerr << "trans: " << Transition[t].label << "\tdistr: "<< distr << "\torigin Rate: "<< origin_rate << "\tmu: " << mu()<< "\tmu prec: " << mux << endl;
+	if(verbose>3 )cerr << "trans: " << this->Transition[t].label << "\tdistr: "<< distr << "\torigin Rate: "<< origin_rate << "\tmu: " << mu()<< "\tmu prec: " << mux << endl;
 	
-	static_cast<numericalSolver*>(muprob)->previousVect();
-	unfire(t,b);
+	static_cast<numericalSolver*>(this->muprob)->previousVect();
+    SPN::unfire(t,b);
 	return(distr);
 }
 
 template class SimulatorBoundedREBase<SimulatorBoundedRE<SPN_BoundedRE>,SPN_BoundedRE>;
 template class SimulatorBoundedRE<SPN_BoundedRE>;
+template class SPNBaseBoundedRE<SPN_BoundedRE>;
 
 #include "SimulatorContinuousBounded.hpp"
 template class SimulatorBoundedREBase<SimulatorContinuousBounded<SPN_BoundedRE>,SPN_BoundedRE>;

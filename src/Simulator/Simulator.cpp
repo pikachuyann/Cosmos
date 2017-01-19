@@ -43,8 +43,8 @@ using namespace std;
  * but don't fill it.
  */
 template <class S, class EQT,class DEDS>
-SimulatorBase<S,EQT,DEDS>::SimulatorBase(DEDS& spn,LHA_orig& automate):verbose(0),N(spn),A(automate){
-    EQ = new EQT(N); //initialization of the event queue
+SimulatorBase<S,EQT,DEDS>::SimulatorBase(DEDS& spn,LHA_orig<decltype(DEDS::Marking)>& automate):N(spn),A(automate){
+    EQ = new EQT(N.Transition); //initialization of the event queue
     logResult=false;
 	sampleTrace = 0.0;
 	Result.quantR.resize(A.FormulaVal.size());
@@ -306,7 +306,7 @@ void SimulatorBase<S,EQT,DEDS>::interactiveSimulation(){
             } else if(input_line.substr(0,5)=="wait "){
                 const auto arg = input_line.substr(5,input_line.length()-5);
                 const auto trid = find_if(N.Transition.begin(), N.Transition.end(),
-                        [&] (_trans tr){return (tr.label == arg);});
+                        [&] (typeof N.Transition[0] tr){return (tr.label == arg);});
                 if(trid != N.Transition.end()){
                     waitForTransition = trid->Id;
                     continueLoop = false;
@@ -416,22 +416,18 @@ BatchR SimulatorBase<S,EQT,DEDS>::RunBatch(){
 	return batchResult;
 }
 
-template class SimulatorBase<Simulator<EventsQueue,SPN_orig<EventsQueue>>, EventsQueue,SPN_orig<EventsQueue> >;
+template class SimulatorBase<Simulator<EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>>>, EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>> >;
 template class SimulatorBase<Simulator<EventsQueueSet,SPN_orig<EventsQueueSet>>, EventsQueueSet,SPN_orig<EventsQueueSet> >;
-template class Simulator<EventsQueue,SPN_orig<EventsQueue> >;
+template class Simulator<EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>> >;
 template class Simulator<EventsQueueSet,SPN_orig<EventsQueueSet> >;
 
 #include "SimulatorRE.hpp"
-template class SimulatorBase<SimulatorRE<SPN_RE>, EventsQueue,SPN_RE>;
+template class SimulatorBase<SimulatorRE<SPN_RE>, EventsQueue<vector<_trans>>,SPN_RE>;
 
 #include "SimulatorBoundedRE.hpp"
-template class SimulatorBase<SimulatorBoundedRE<SPN_BoundedRE>, EventsQueue,SPN_BoundedRE>;
-template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue,SPN_RE>;
+template class SimulatorBase<SimulatorBoundedRE<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
+template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue<vector<_trans>>,SPN_RE>;
 
 
 #include "SimulatorContinuousBounded.hpp"
-template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue,SPN_BoundedRE>;
-
-
-
-
+template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;

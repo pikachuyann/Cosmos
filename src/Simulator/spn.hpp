@@ -35,40 +35,19 @@
 #include <string>
 #include <sstream>
 #include <set>
+#include <array>
 #include <vector>
 #include <map>
 #include <math.h>
 #include <assert.h>
-
-#include "marking.hpp"
 #include <limits.h>
 #include <stdlib.h>
 
+#include "DistributionDef.hpp"
+#include "marking.hpp"
+
 #define TR_PL_ID unsigned long
 #define REAL_TYPE double
-
-
-/**
- * Type of probability distribution
- */
-enum DistributionType {
-    NORMAL,
-	GAMMA,
-	UNIFORM,
-	EXPONENTIAL,
-	DETERMINISTIC,
-	LOGNORMAL,
-	TRIANGLE,
-	GEOMETRIC,
-	ERLANG,
-	DISCRETEUNIF,
-	MASSACTION,
-    IMMEDIATE,
-    USERDEFINE,
-    DISCRETEUSERDEFINE,
-    USERDEFINEPOLYNOMIAL,
-    PLAYER1
-};
 
 /**
  * Datatype for transition of the SPN
@@ -133,19 +112,6 @@ struct _place {
 };
 typedef struct _place spn_place;
 
-/**
- * Class handling custom distribution
- */
-class CustomDistr {
-public:
-    virtual double userDefineCDF(const std::vector<double> &, double )const{return 0.0;};
-    virtual double userDefinePDF(const std::vector<double> &, double )const{return 0.0;};
-    virtual double userDefineLowerBound(const std::vector<double> &)const{return 0.0;};
-    virtual double userDefineUpperBound(const std::vector<double> &)const{return 0.0;};
-    virtual double userDefineDiscreteDistr(const std::vector<double> &,unsigned int)const{return 0.0;};
-    virtual double evalPoly(unsigned long,const std::vector<double> &)const {return 0.0;};
-    virtual const std::string print_poly(unsigned long)const{ return "";};
-};
 
 /**
  * \brief Class of the SPN.
@@ -203,7 +169,7 @@ public:
 	 * store them inside this vector.
 	 * This is done to avoid allocating a new vector too frequently.
 	 */
-	mutable std::vector<double> ParamDistr;
+	mutable std::array<double,PARAM_TBL_SIZE> ParamDistr;
 	
 	/**
 	 * \brief Check if a given transition is enabled.
