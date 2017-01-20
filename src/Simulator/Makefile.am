@@ -42,6 +42,7 @@ includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp 
 	foxglynn.hpp numSolverBB.hpp numSolverSH.hpp\
 	MarkovChain.hpp SPNBase.hpp \
 	LHA_orig.hpp NLHA.hpp clientsim.hpp
+
 includesdir = $(includedir)
 
 AM_LDFLAGS = $(PTHREAD_LIBS)

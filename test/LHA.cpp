@@ -6,9 +6,10 @@ using namespace std;
 #include <math.h>
 #include <float.h>
 #include "LHA.hpp"
-    const double T=100000;
+    const double C=5;
+    const double TDiscr=100;
     const double Ttrans=0;
-    const double invT=1e-05;
+    const double invT=1;
 struct Variables {
 	double time;
 	double countT;
@@ -112,7 +113,8 @@ bool varOrder(const Variables &v1,const Variables &v2){
 	if(v1.PLVAR_FBloodEx<v2.PLVAR_FBloodEx)return true;
 	return false;
 };
-void LHA::resetVariables(){
+template<class DEDState>
+void LHA<DEDState>::resetVariables(){
 	Vars->time= 0;
 	Vars->countT= 0;
 	Vars->EXRayBlood= 0;
@@ -172,40 +174,23 @@ template<class DEDState>
 void LHA<DEDState>::printState(ostream &s){
 	s << "\t" << LocLabel[CurrentLocation] << "\t";
 };
-const int LHA::ActionEdgesAr[] = {
-	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
-	0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,2 ,3 ,4 ,5 ,6 ,7 ,8 ,9 ,10 ,11 ,12 ,13 ,14 ,15 ,16 ,17 ,18 ,19 ,20 ,21 ,22 ,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,};
-LHA::LHA():NbLoc(3),NbTrans(21),NbVar(49),FinalLoc( 3,false){
+template<class D>
+const int LHA<D>::ActionEdgesAr[] = {
+    LinForm= vector<double>(0,0.0);
+    OldLinForm=vector<double>(0,0.0);
+    LhaFunc=vector<double>(0,0.0);
+    FormulaVal = vector<double>(0,0.0);
     InitLoc.insert(0);
     FinalLoc[2]=true;
-    Edge= vector<LhaEdge>(24);
+template<class D>
+void LHA<D>::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {
     Edge[0] = LhaEdge(0, 0, 0,Synch);
     Edge[1] = LhaEdge(1, 0, 1,Auto);
-    Edge[2] = LhaEdge(2, 1, 1,Synch);
+    Edge= vector<LhaEdge>(4);
     Edge[3] = LhaEdge(3, 1, 1,Synch);
     Edge[4] = LhaEdge(4, 1, 1,Synch);
     Edge[5] = LhaEdge(5, 1, 1,Synch);
-    Edge[6] = LhaEdge(6, 1, 1,Synch);
-    Edge[7] = LhaEdge(7, 1, 1,Synch);
-    Edge[8] = LhaEdge(8, 1, 1,Synch);
-    Edge[9] = LhaEdge(9, 1, 1,Synch);
-    Edge[10] = LhaEdge(10, 1, 1,Synch);
-    Edge[11] = LhaEdge(11, 1, 1,Synch);
-    Edge[12] = LhaEdge(12, 1, 1,Synch);
-    Edge[13] = LhaEdge(13, 1, 1,Synch);
-    Edge[14] = LhaEdge(14, 1, 1,Synch);
-    Edge[15] = LhaEdge(15, 1, 1,Synch);
-    Edge[16] = LhaEdge(16, 1, 1,Synch);
-    Edge[17] = LhaEdge(17, 1, 1,Synch);
-    Edge[18] = LhaEdge(18, 1, 1,Synch);
-    Edge[19] = LhaEdge(19, 1, 1,Synch);
-    Edge[20] = LhaEdge(20, 1, 1,Synch);
-    Edge[21] = LhaEdge(21, 1, 1,Synch);
-    Edge[22] = LhaEdge(22, 1, 1,Synch);
-    Edge[23] = LhaEdge(23, 1, 2,Auto);
-	Vars = new Variables;
-	tempVars = new Variables;
-	resetVariables();
+    Edge[3] = LhaEdge(3, 1, 2,Synch);
     Out_A_Edges =vector< set < int > >(NbLoc);
     Out_A_Edges[0].insert(1);
     Out_A_Edges[1].insert(23);
@@ -253,25 +238,20 @@ void LHA::DoElapsedTimeUpdate(double DeltaT,const abstractMarking& Marking) {
 	Vars->PLVAR_Ustab += GetFlow(34, Marking) * DeltaT;
 	Vars->PLVAR_WSurgery += GetFlow(35, Marking) * DeltaT;
 	Vars->PLVAR_WBloodEx += GetFlow(36, Marking) * DeltaT;
-	Vars->PLVAR_WXRayEx += GetFlow(37, Marking) * DeltaT;
-	Vars->PLVAR_CountDoctor += GetFlow(38, Marking) * DeltaT;
-	Vars->PLVAR_MonitoredRoom += GetFlow(39, Marking) * DeltaT;
-	Vars->PLVAR_Doctor += GetFlow(40, Marking) * DeltaT;
-	Vars->PLVAR_PatientRecovered += GetFlow(41, Marking) * DeltaT;
+template<class D>
+double LHA<D>::GetFlow(int v, const abstractMarking& Marking)const{
+	switch (v){
+		case 1:	//countT
 	Vars->PLVAR_UBloodEx += GetFlow(42, Marking) * DeltaT;
-	Vars->PLVAR_ResB += GetFlow(43, Marking) * DeltaT;
+		case 0:	//time
+	switch (CurrentLocation){
+		case 2:	//l2
 	Vars->PLVAR_Waiting += GetFlow(44, Marking) * DeltaT;
 	Vars->PLVAR_ResX += GetFlow(45, Marking) * DeltaT;
 	Vars->PLVAR_UXRayEx += GetFlow(46, Marking) * DeltaT;
 	Vars->PLVAR_FXRay += GetFlow(47, Marking) * DeltaT;
-	Vars->PLVAR_FBloodEx += GetFlow(48, Marking) * DeltaT;
-}
-double LHA::GetFlow(int v, const abstractMarking& Marking)const{
-	switch (v){
-		case 1:	//countT
-
-		break;
-		case 26:	//PLVAR_Arrival
+	}
+			return 1;
 	switch (CurrentLocation){
 		case 1:	//l1
 			return  Marking.P->_PL_Arrival.card()  * 1e-05;
@@ -608,13 +588,15 @@ double LHA::GetFlow(int v, const abstractMarking& Marking)const{
 		break;
 	}
 
-		break;
+template<class D>
+bool LHA<D>::CheckLocation(int loc,const abstractMarking& Marking)const{
 		case 0:	//time
 	switch (CurrentLocation){
 		case 2:	//l2
 		return 0.0;
 
-		break;
+template<class D>
+bool LHA<D>::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{
 		default:	//l0,l1,
 			return 1;
 
@@ -622,27 +604,20 @@ double LHA::GetFlow(int v, const abstractMarking& Marking)const{
 	}
 
 		break;
-		default:	//EXRayBlood,FallIll,HospitalArrival,EToThreat,EToSurgery,HighPrio,MediumPrio,DischargeL,LowPrio,BSurgery,ToSurgery,ToDoctor,ToDoctorL,BToStabilize,EToStabilize,DischargeRec,BBlood,BXRay,DischargeM,EBloodEx,EXRay,
+		case 2:	//
 		return 0.0;
-
+         if(!( +(1)*Vars->countT<=100 - 1)) return false;
 
 		break;
 	}
 }
-
+		case 3:	//
 bool LHA::CheckLocation(int loc,const abstractMarking& Marking)const{
-         return true;
+         if(!( +(1)*Vars->countT==100)) return false;
 
 }
 
-template<class D>
-bool LHA<D>::CheckLocation(int loc,const abstractMarking& Marking)const{
-         return true;
-
-}
-
-template<class D>
-bool LHA<D>::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{
+bool LHA::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,const abstractMarking& Marking)const{
 	switch (ed){
 		case 1:	//
 		case 23:	//
@@ -659,6 +634,13 @@ bool LHA<D>::CheckEdgeContraints(int ed,size_t ptt,const abstractBinding& b,cons
 		default:	//,,,,,,,,,,,,,,,,,,,,,
 {
          if(!( +(1)*Vars->time<=100000)) return false;
+		return (true);
+     }
+
+		break;
+		case 0:	//
+{
+         if(!( +(1)*Vars->time<=0)) return false;
 		return (true);
      }
 
@@ -683,7 +665,7 @@ t_interval LHA<D>::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)con
 
              double SumAF;
              double SumAX;
-
+		default:	//,,,
 
              SumAF=+(1)*GetFlow(0, Marking);
              SumAX=+(1)*Vars->time;
@@ -731,21 +713,19 @@ t_interval LHA<D>::GetEdgeEnablingTime(int ed,const abstractMarking& Marking)con
                   if(t>=EnablingT.first && t<=EnablingT.second){
                       EnablingT.first=t; EnablingT.second=t;
                   }
-                  else return EmptyInterval;
+template<class D>
+void LHA<D>::DoEdgeUpdates(int ed,const abstractMarking& Marking, const abstractBinding& b){
              }
              return EnablingT;
-         }
+		case 2:	//
 
-		break;
+		Vars->countT=Vars->countT + 1;
 		default:	//,,,,,,,,,,,,,,,,,,,,,,
          {
              t_interval EnablingT;
-
+		case 1:	//
              EnablingT.first=CurrentTime;
-             EnablingT.second=DBL_MAX;
-
-             return EnablingT;
-         }
+		Vars->time=0;
 
 		break;
 	}
