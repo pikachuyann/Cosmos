@@ -22,7 +22,7 @@ libClientSim_la_SOURCES = \
 	SimulatorBoundedRE.cpp SimulatorBoundedRE.hpp \
 	foxglynn.cpp foxglynn.hpp \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
-	clientsim.cpp InstanceSPNSim.cpp
+	clientsim.cpp InstanceSPNSim.cpp InstanceSPNSimRE.cpp
 
 libClientSimMain_la_SOURCES = \
 	BatchR.cpp BatchR.hpp \

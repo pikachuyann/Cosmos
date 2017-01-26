@@ -330,20 +330,3 @@ double SPNBaseRE<S>::ComputeDistr(size_t t , const abstractBinding& b, double or
 	return(distr);
 }
 
-template class SimulatorREBase<SimulatorRE<SPN_RE>, SPN_RE>;
-template class SimulatorRE<SPN_RE>;
-template class SPNBaseRE<SPN_RE>;
-
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBaseRE<SPN_RE> &);
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_RE &);
-
-#include "SimulatorBoundedRE.hpp"
-template class SimulatorREBase<SimulatorBoundedRE<SPN_RE>, SPN_RE>;
-template class SimulatorREBase<SimulatorBoundedRE<SPN_BoundedRE>, SPN_BoundedRE>;
-template class SPNBaseRE<SPN_BoundedRE>;
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBaseRE<SPN_BoundedRE> &);
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_BoundedRE &);
-
-#include "SimulatorContinuousBounded.hpp"
-template class SimulatorREBase<SimulatorContinuousBounded<SPN_BoundedRE>, SPN_BoundedRE>;
-
