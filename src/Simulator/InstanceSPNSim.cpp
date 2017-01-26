@@ -27,69 +27,8 @@
 
 //   Classes in SPNBase
 #include "SPNBase.cpp"
-
-template class SPNBase<SPN_orig<EventsQueue<vector<_trans>>>,EventsQueue<vector<_trans>>>;
-template class SPNBase<SPN_orig<EventsQueueSet>,EventsQueueSet>;
-template class SPN_orig<EventsQueue<vector<_trans>>>;
-template class SPN_orig<EventsQueueSet>;
-
-#include "SimulatorBoundedRE.hpp"
-template class SPNBase<SPN_RE,EventsQueue<vector<_trans>>>;
-template class SPNBase<SPN_BoundedRE,EventsQueue<vector<_trans>>>;
-
-
-//    Classes in Simulator
 #include "Simulator.cpp"
 
 template class SimulatorBase<Simulator<EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>>>, EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>> >;
 template class SimulatorBase<Simulator<EventsQueueSet,SPN_orig<EventsQueueSet>>, EventsQueueSet,SPN_orig<EventsQueueSet> >;
-template class Simulator<EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>> >;
-template class Simulator<EventsQueueSet,SPN_orig<EventsQueueSet> >;
-
-#include "SimulatorRE.hpp"
-template class SimulatorBase<SimulatorRE<SPN_RE>, EventsQueue<vector<_trans>>,SPN_RE>;
-
-#include "SimulatorBoundedRE.hpp"
-template class SimulatorBase<SimulatorBoundedRE<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
-template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue<vector<_trans>>,SPN_RE>;
-
-
-#include "SimulatorContinuousBounded.hpp"
-template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
-
-/*
-// Classes in SimulatorRE
-#include "SimulatorRE.cpp"
-
-template class SimulatorREBase<SimulatorRE<SPN_RE>, SPN_RE>;
-template class SimulatorRE<SPN_RE>;
-template class SPNBaseRE<SPN_RE>;
-
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBaseRE<SPN_RE> &);
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_RE &);
-
-#include "SimulatorBoundedRE.hpp"
-template class SimulatorREBase<SimulatorBoundedRE<SPN_RE>, SPN_RE>;
-template class SimulatorREBase<SimulatorBoundedRE<SPN_BoundedRE>, SPN_BoundedRE>;
-template class SPNBaseRE<SPN_BoundedRE>;
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPNBaseRE<SPN_BoundedRE> &);
-template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_BoundedRE &);
-
-#include "SimulatorContinuousBounded.hpp"
-template class SimulatorREBase<SimulatorContinuousBounded<SPN_BoundedRE>, SPN_BoundedRE>;
-*/
-
-
-//  Classes in SimulatorBounded
-#include "SimulatorBoundedRE.cpp"
-template class SimulatorBoundedREBase<SimulatorBoundedRE<SPN_BoundedRE>,SPN_BoundedRE>;
-template class SimulatorBoundedRE<SPN_BoundedRE>;
-template class SPNBaseBoundedRE<SPN_BoundedRE>;
-
-#include "SimulatorContinuousBounded.hpp"
-template class SimulatorBoundedREBase<SimulatorContinuousBounded<SPN_BoundedRE>,SPN_BoundedRE>;
-
-//  Classes in SimulatorContinuousBounded
-#include "SimulatorContinuousBounded.cpp"
-template class SimulatorContinuousBounded<SPN_BoundedRE>;
 
