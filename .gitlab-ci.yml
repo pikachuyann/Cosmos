@@ -1,5 +1,3 @@
-image: opam-lacl
-
 before_script:
   - eval `opam config env`
   - export PATH=/usr/local/Cellar/flex/2.5.39/bin:/usr/local/Cellar/bison/3.0.4/bin:$PATH
