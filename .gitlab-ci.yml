@@ -15,7 +15,7 @@ cmake-build:
     - cd build-cmake
     - cmake ../
     - make -j 4
-
+  allow_failure: true
 
 Cosmos:
   stage: build
