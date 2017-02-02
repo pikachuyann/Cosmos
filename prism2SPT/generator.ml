@@ -2,7 +2,6 @@ open Type
 open PrismType
 open PetriNet
 open StochasticPetriNet
-open Lexer
 open Lexing
 
 let print_position outx lexbuf =
@@ -189,7 +188,7 @@ let read_prism s name =
     Lexing.flush_input lexbuf;
     lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_lnum = 1 };
     seek_in s 0;
-    let cdef,prismml = Parser.main Lexer.token lexbuf in
+    let cdef,prismml = ParserPrism.main LexerPrism.token lexbuf in
     let (fullmod,renammod) = List.fold_left (fun (l1,l2) m -> match m with 
 	Full fm -> (fm::l1),l2 | Renaming (rm1,rm2,rm3) -> l1,((rm1,rm2,rm3)::l2) ) ([],[]) prismml in
     let prismm2 = rename_module fullmod renammod in
@@ -197,7 +196,7 @@ let read_prism s name =
       (List.hd prismm2) (List.tl prismm2) in
     (net_of_prism prismmodule cdef)
   with 
-  | SyntaxError msg ->
+  | LexerPrism.SyntaxError msg ->
     Printf.fprintf stderr "%a: %s\n" print_position lexbuf msg;
     failwith "Fail to parse Prism file format"
   | Parsing.Parse_error ->
