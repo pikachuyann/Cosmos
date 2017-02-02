@@ -265,9 +265,9 @@ let parse_bool s =
   let open Lexing in
   let lexbuf = from_string s in
   try
-    Some (Parser.stateCondition Lexer.token lexbuf)
+    Some (ParserPrism.stateCondition LexerPrism.token lexbuf)
   with
-    | Lexer.SyntaxError msg ->
+    | LexerPrism.SyntaxError msg ->
        print_endline msg;
        None
     | Parsing.Parse_error ->
