@@ -111,7 +111,7 @@ WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 file(GLOB_RECURSE ml_SOURCES "prism2SPT/*.ml*")
 
 add_custom_target(modelConvert ALL
-${CMAKE_SOURCE_DIR}/prism2SPT/build.sh
+${CMAKE_SOURCE_DIR}/modelConvert/build.sh
 #OUTPUT modelConvert
 BYPRODUCTS ${CMAKE_SOURCE_DIR}/prism2SPT/modelConvert.native
 #DEPENDS Cosmos
