@@ -301,7 +301,8 @@ void SimulatorBase<S,EQT,DEDS>::interactiveSimulation(){
                     EQ->printSedCmd(N.Transition, ss);
                     ss << tmpPath << "/templatePetriNet.dot > " << tmpPath << "/PetriNet.dot; ";
                     ss << "dot "<< tmpPath <<"/PetriNet.dot -Tpdf -o " << dotFile << endl;
-                    system(ss.str().c_str());
+                    const auto retval = system(ss.str().c_str());
+                    if(retval >0)cerr << "Fail to lauch graphviz with error code" << retval;
                 } else cerr << "No dot output specified!" << endl;
             } else if(input_line.substr(0,5)=="wait "){
                 const auto arg = input_line.substr(5,input_line.length()-5);
