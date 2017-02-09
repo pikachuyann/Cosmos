@@ -146,6 +146,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		030466E21E4CBA290022BB97 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		030466E31E4CBBEC0022BB97 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		0306A22B1BACA88E0045B056 /* LHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA.cpp; sourceTree = "<group>"; };
 		0306A22C1BACA88E0045B056 /* lumpingfun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfun.cpp; sourceTree = "<group>"; };
 		0306A22D1BACA88E0045B056 /* markingImpl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
@@ -1230,6 +1232,7 @@
 		032A700B181BC0D6006D7332 /* Eval */ = {
 			isa = PBXGroup;
 			children = (
+				030466E21E4CBA290022BB97 /* Makefile.am */,
 				0367E29818842F2400F35619 /* Eval-parser.cc */,
 				0367E29918842F2400F35619 /* Eval-scanner.cc */,
 				032A7010181BC0D6006D7332 /* Eval-parser.yy */,
@@ -1270,6 +1273,7 @@
 		032A7028181BC0D6006D7332 /* LhaParser */ = {
 			isa = PBXGroup;
 			children = (
+				030466E31E4CBBEC0022BB97 /* Makefile.am */,
 				0367E29418842F0F00F35619 /* Lha-parser.cc */,
 				0367E29518842F0F00F35619 /* Lha-scanner.cc */,
 				032A702D181BC0D6006D7332 /* Lha-parser.yy */,
