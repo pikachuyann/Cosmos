@@ -122,7 +122,7 @@ int NLHA<DEDState>::synchroniseWith(size_t PetriNetTransition, const DEDState& N
 }
 
 template<class DEDState>
-void NLHA<DEDState>::getFinalValues(const DEDState& m,vector<double>& v,vector<bool>& v2){
+void NLHA<DEDState>::getFinalValues(const DEDState& ,vector<double>& ,vector<bool>& v2){
     for(size_t i=0; i< this->FormulaValQual.size();i++){
         v2[i] = false;
     }

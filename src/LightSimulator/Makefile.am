@@ -12,4 +12,4 @@ libClientSimLight_la_SOURCES = \
 
 includes_HEADERS = spnLight.hpp macro.hpp Print.h
 includesdir = $(includedir)
-AM_CPPFLAGS = $(BOOST_CPPFLAGS)
+AM_CPPFLAGS = -Wall -Wextra  -Wno-unused-local-typedef  -Wno-unused-parameter $(BOOST_CPPFLAGS)

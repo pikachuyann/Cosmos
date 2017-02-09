@@ -70,13 +70,14 @@ string timeGen::string_of_dist(DistributionType d,const array<double,PARAM_TBL_S
         case   DISCRETEUSERDEFINE:
             return "DiscreteUserDefine("+ to_string(param[0]) +","+ to_string(param[1])+")";
         case   USERDEFINE:
-        case   USERDEFINEPOLYNOMIAL:
+        case   USERDEFINEPOLYNOMIAL: {
             string s = "UserdefinePolynomial("+ to_string(param[0]) +","+ to_string(param[1])+","+ to_string(param[2])+","+ to_string(param[3])+")";
             return s + cd.print_poly( (int)param[0]);
-
-
-            
+        }
+        default:
+            return "Unknown distribution";
     }
+
 }
 
 /**

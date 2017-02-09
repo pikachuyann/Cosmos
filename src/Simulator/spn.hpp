@@ -244,8 +244,5 @@ public:
     bool precondition(const abstractMarking&);
 };
 
-#pragma clang diagnostic ignored "-Wunused-variable"
-#pragma clang diagnostic ignored "-Wunused-parameter"
-#pragma clang diagnostic ignored "-Wreturn-type"
 
 #endif  /* _SPN_HPP */
