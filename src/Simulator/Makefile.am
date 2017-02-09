@@ -46,4 +46,4 @@ includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp 
 includesdir = $(includedir)
 
 AM_LDFLAGS = $(PTHREAD_LIBS)
-AM_CPPFLAGS = $(BOOST_CPPFLAGS)
+AM_CPPFLAGS = -Wall -Wextra -Wno-unused-local-typedef  -Wno-unused-parameter $(BOOST_CPPFLAGS) 
