@@ -42,7 +42,7 @@ modelConvert:
   stage: build
   script:
     - mkdir -p bin
-    - cd prism2SPT
+    - cd modelConvert
     - ./build.sh
   artifacts:
     paths:
