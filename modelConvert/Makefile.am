@@ -9,7 +9,7 @@ modelConvert: DataFile.ml PetriNet.ml StochasticPetriNet.ml generator.ml  pnmlpa
 	cp $(srcdir)/modelConvert.native modelConvert
 
 EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml generator.ml  pnmlparser.ml prism2SPT.ml prismType.ml simulinkType.ml simulinkparser.ml simulinkTrans.ml type.ml parserPrism.mly parserSimulEdge.mly lexerPrism.mll lexerSimulEdge.mll prelexer.mll preparser.mly StochPTPrinter.ml GrMLParser.ml \
-	ClessParser/cless_ast.ml  ClessParser/cless.ml ClessParser/cless.mli ClessParser/cless_lexer.mli ClessParser/cless_parser.mly  modelConvert.ml _tags build.sh
+	ClessParser/cless_ast.ml  ClessParser/cless.ml ClessParser/cless.mli ClessParser/cless_parser.mly  modelConvert.ml _tags build.sh
 
 CLEANFILES = _build/* $(bin_SCRIPTS) *~
 
