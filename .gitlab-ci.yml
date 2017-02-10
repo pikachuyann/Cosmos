@@ -24,7 +24,7 @@ from_dist:
      - cd build-dist
      - cp ../build/cosmos-1.5.tar.gz ./
      - tar xzvf cosmos-1.5.tar.gz
-     - cd cosmos-1.5.tar.gz
+     - cd cosmos-1.5
      - ./configure --enable-silent-rules
      - make -j 4
 
