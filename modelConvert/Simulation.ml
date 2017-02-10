@@ -94,13 +94,15 @@ module SptOp = struct
 				 EQueue.add (sample net m t) h) EQueue.empty en in
       let (_,_,_,t) = EQueue.min_elt heap in t
 
-    let finalResult net m =
+    let finalResult net m = None 
+                                               
+    (*let finalResult net m =
       finalResultExpr net m (IntAtom(IntName("NB"),EQ,Int(100)))
 		      (disjunction [ 
 			   (IntAtom(IntName("Q1"),EQ,Int(10)));
 			   (IntAtom(IntName("Q2"),EQ,Int(10)));
 			   (IntAtom(IntName("Q3"),EQ,Int(10)));
-			 ])
+		      ])*)
 					 
       
       (*let tank = Data.index net.Net.place "Tank" in
