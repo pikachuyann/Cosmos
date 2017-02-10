@@ -26,12 +26,14 @@ Cosmos:
     - cd build
     - ../configure --prefix=`pwd`/../ --enable-silent-rules
     - make -j 4
-    - make install    
+    - make install
+    - make dist
   artifacts:
     paths:
       - bin/
       - lib/
       - include/
+      - build/cosmos-1-5.tar.gz
   cache:
     paths:
       - bin/
