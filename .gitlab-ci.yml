@@ -33,7 +33,7 @@ Cosmos:
       - bin/
       - lib/
       - include/
-      - build/cosmos-1-5.tar.gz
+      - build/cosmos-1.5.tar.gz
   cache:
     paths:
       - bin/
