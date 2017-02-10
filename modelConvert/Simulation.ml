@@ -6,7 +6,7 @@ let _ = Random.self_init ()
 
 let mdpstrat = ref ""
 let detstrat = ref false
-       
+
 module Prio = struct
     type t = float*float*float*Net.transitionkey Data.key
     let compare (t1,p1,w1,_) (t2,p2,w2,_) =
