@@ -46,7 +46,7 @@ let rec parse_Grml_expr : type a . a expr' -> Xml.xml -> a expr' option = fun pa
     let t = find_at "name" atl in
     begin match t with
       | Some "expr" -> opHd cl |>> parse_Grml_expr parseType
-      | Some "numValue" ->
+      | Some "numValue" | Some "intValue" ->
 	let sv = cl |> (function [PCData x] -> Some (String.trim x) | _ -> None) in
 	begin match sv,parseType with
 	    None,_ -> None
