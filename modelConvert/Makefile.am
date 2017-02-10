@@ -12,7 +12,7 @@ EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml generator.ml pnmlpars
 	prism2SPT.ml prismType.ml simulinkType.ml simulinkparser.ml simulinkTrans.ml\
 	type.ml parserPrism.mly parserSimulEdge.mly lexerPrism.mll lexerSimulEdge.mll\
 	prelexer.mll preparser.mly StochPTPrinter.ml GrMLParser.ml \
-	ClessParser/cless_ast.ml  ClessParser/cless.ml ClessParser/cless.mli ClessParser/cless_parser.mly\
+	ClessParser/cless_ast.ml  ClessParser/cless.ml ClessParser/cless.mli ClessParser/cless_lexer.mll ClessParser/cless_parser.mly\
 	Simulation.ml SemanticPT.ml cless2PT.ml \
 	modelConvert.ml _tags build.sh
 

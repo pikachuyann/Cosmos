@@ -35,34 +35,6 @@ let find_prop s l =
 let find_simp_prop s l =
   find_prop s l
   |>> (function [PCData x] -> Some (String.trim x) | _-> None)
-    
-let find_name s t = find_name_rec s None t
-
-let idmap = ref StringMap.empty
-  
-let rec parse_Grml_expr : type a . a expr' -> Xml.xml -> a expr' option = fun parseType e ->
-  begin match e with 
-  | Element ("attribute",atl,cl) ->
-    let t = find_at "name" atl in
-    begin match t with
-      | Some "expr" -> opHd cl |>> parse_Grml_expr parseType
-      | Some "numValue" | Some "intValue" ->
-	let sv = cl |> (function [PCData x] -> Some (String.trim x) | _ -> None) in
-	begin match sv,parseType with
-	    None,_ -> None
-	  | Some bv,Bool _ -> Some (Bool (bool_of_string bv))
-	  | Some iv,Int _ -> Some (Int (int_of_string iv))
-	  | Some fv,Float _ -> Some (Float (float_of_string fv))
-	  | _ -> None
-	end
-      | Some "name" ->
-	let sv = cl |> (function [PCData x] -> Some (String.trim x) | _ -> None) in
-	begin match sv,parseType with
-	    None,_ -> None
-	  | Some bv,Bool _ -> Some (BoolName bv)
-	  | Some iv,Int _ -> Some (IntName iv)
-	  | Some fv,Float _ -> Some (FloatName fv)
-	  | _ -> None
 	end
 	  
       | Some te -> Printf.printf "at type : %s\n" te;
