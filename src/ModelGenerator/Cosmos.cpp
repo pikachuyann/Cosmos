@@ -243,6 +243,8 @@ int main(int argc, char** argv) {
                 cout << "Fail to build the LHA." << endl;;
                 return(EXIT_FAILURE);
             }
+        
+        generateMain();
     } else {
         if ( ! ParseLHA()) {
             cout << "Fail to build the LHA. Try to go on anyway" << endl;;

@@ -43,7 +43,7 @@ using namespace std;
  * but don't fill it.
  */
 template <class S, class EQT,class DEDS>
-SimulatorBase<S,EQT,DEDS>::SimulatorBase(DEDS& spn,LHA_orig& automate):N(spn),A(automate){
+SimulatorBase<S,EQT,DEDS>::SimulatorBase(DEDS& spn,LHA_orig<decltype(DEDS::Marking)>& automate):N(spn),A(automate){
     EQ = new EQT(N.Transition); //initialization of the event queue
     logResult=false;
 	sampleTrace = 0.0;
@@ -431,9 +431,3 @@ template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue<vector<_tra
 
 #include "SimulatorContinuousBounded.hpp"
 template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
-
-#include "MarkovChain.hpp"
-template class SimulatorBase<Simulator<EventsQueue<vector<Edge>>,MarkovChain<EventsQueue<vector<Edge>>>>,EventsQueue<vector<Edge>>,MarkovChain<EventsQueue<vector<Edge>>>>;
-template class Simulator<EventsQueue<vector<Edge>>,MarkovChain<EventsQueue<vector<Edge>>>>;
-
-

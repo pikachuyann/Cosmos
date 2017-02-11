@@ -33,7 +33,8 @@
  * Class implementing the Linear Hybrid Automaton.
  * Part of the implementation is generated at runtime for efficiency.
  */
-class LHA_orig : public LHA  {
+template<class DEDState>
+class LHA_orig : public LHA<DEDState>  {
 public:
 
     /*
@@ -49,47 +50,47 @@ public:
     void copyState(LHA_orig*);
 
     //! fire an autonomous transition of an LHA
-    void fireAutonomous(int,const abstractMarking&);
+    void fireAutonomous(int,const DEDState&);
 
     /**
      * \brief Synchronized the execution of the LHA with a transition of the SPN.
      */
-    virtual int synchroniseWith(size_t, const abstractMarking&,const abstractBinding&);
+    virtual int synchroniseWith(size_t, const DEDState&,const abstractBinding&);
 
     /**
      * \brief Return an autonomous edge for a given marking.
      */
-    virtual AutEdge GetEnabled_A_Edges(const abstractMarking&);
+    virtual AutEdge GetEnabled_A_Edges(const DEDState&);
 
     //! update value in the LHA by elapsing time
-    virtual void updateLHA(double DeltaT, const abstractMarking &);
+    virtual void updateLHA(double DeltaT, const DEDState &);
 
     //! test if the automaton is in a final state
-    virtual bool isFinal()const;
+    virtual bool isFinal()const{return (this->FinalLoc[this->CurrentLocation]);};
 
     /**
      * reset the automata to its initial state according to the
      * marking of the SPN.
      */
-    virtual void reset(const abstractMarking&);
+    virtual void reset(const DEDState&);
 
-    virtual void getFinalValues(const abstractMarking&,vector<double>&,vector<bool>&);
+    virtual void getFinalValues(const DEDState&,vector<double>&,vector<bool>&);
 
 protected:
 
     //! fire the transition of an LHA
-    void fireLHA(int,const abstractMarking&, const abstractBinding&);
+    void fireLHA(int,const DEDState&, const abstractBinding&);
 
     /**
      * \brief Set the initial location of the LHA for a marking
      * Loop over the set of initial location to find one enabled.
      */
-    virtual void setInitLocation(const abstractMarking&);
+    virtual void setInitLocation(const DEDState&);
 
     /**
      * \brief Return a synchronized edge for a given transition of the SPN.
      */
-    int GetEnabled_S_Edges(size_t, const abstractMarking&,const abstractBinding&);
+    int GetEnabled_S_Edges(size_t, const DEDState&,const abstractBinding&);
 
     void resetLinForms();
 };

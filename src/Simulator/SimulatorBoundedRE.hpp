@@ -41,7 +41,7 @@ class simulationState{
 private:
 	abstractMarking marking;
 	EQT *EQ;
-	LHA_orig lhaState;
+	LHA_orig<typeof marking> lhaState;
     
 	//rare event variable
 	vector <double> Rate_Table;
@@ -58,7 +58,7 @@ public:
 	};
 	~simulationState(){};
 	
-	void saveState(S* N,LHA_orig* A,EQT** EQsim){
+	void saveState(S* N,LHA_orig<typeof marking>* A,EQT** EQsim){
 		marking.swap(N->Marking);
 		//AE = *AEsim;
 		EQ = *EQsim; //new EventsQueue(*EQsim);
@@ -71,7 +71,7 @@ public:
 		Origine_Rate_Sum = N-> Origine_Rate_Sum;
 		
 	};
-	void loadState(S* N,LHA_orig* A,EQT** EQsim){
+	void loadState(S* N,LHA_orig<typeof marking>* A,EQT** EQsim){
 		
 		N->Marking.swap(marking);
 		//*AEsim = AE;
@@ -102,7 +102,7 @@ template<class S,class DEDS>
 class SimulatorBoundedREBase: public SimulatorREBase<S,DEDS>{
 public:
 	//SimulatorBoundedRE();
-    SimulatorBoundedREBase(DEDS& N,LHA_orig&,int m);
+    SimulatorBoundedREBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>&,int m);
 	BatchR RunBatch();
 	using SimulatorREBase<S,DEDS>::initVect;
     void initVect(int T);
@@ -120,7 +120,7 @@ class SPN_BoundedRE: public SPNBaseBoundedRE<SPN_BoundedRE>{
 template <class DEDS>
 class SimulatorBoundedRE:public SimulatorBoundedREBase<SimulatorBoundedRE<DEDS>, DEDS>{
 public:
-    SimulatorBoundedRE(DEDS& deds,LHA_orig& lha,int m):SimulatorBoundedREBase<SimulatorBoundedRE<DEDS>, DEDS>(deds, lha, m){};
+    SimulatorBoundedRE(DEDS& deds,LHA_orig<typeof deds.Marking>& lha,int m):SimulatorBoundedREBase<SimulatorBoundedRE<DEDS>, DEDS>(deds, lha, m){};
 };
 
 

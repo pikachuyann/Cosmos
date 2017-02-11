@@ -62,7 +62,7 @@ public:
 template <class S,class DEDS>
 class SimulatorREBase: public SimulatorBase<S,EventsQueue<vector<_trans>>,DEDS>{
 public:
-	SimulatorREBase(DEDS&,LHA_orig&);
+	SimulatorREBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>&);
 	
 	void initVect();
 	
@@ -87,7 +87,7 @@ public:
 template <class DEDS>
 class SimulatorRE:public SimulatorREBase<SimulatorRE<DEDS>, DEDS>{
 public:
-    SimulatorRE(DEDS& deds,LHA_orig& lha):SimulatorREBase<SimulatorRE,DEDS>(deds, lha){};
+    SimulatorRE(DEDS& deds,LHA_orig<typeof deds.Marking>& lha):SimulatorREBase<SimulatorRE,DEDS>(deds, lha){};
 };
 
 

@@ -46,14 +46,15 @@ protected:
 
 };
 
+
 #include "EventsQueue.hpp"
 template <class S>
-class SPNBase<S,EventsQueue<vector<_trans>>> : public SPN{
+class SPNBase<S,EventsQueue<decltype(SPN::Transition)>> : public SPN{
 public:
     SPNBase(){};
     
-    void update(double ctime,size_t, const abstractBinding&,EventsQueue<vector<_trans>> &,timeGen &);
-    void initialEventsQueue(EventsQueue<vector<_trans>> &,timeGen &);
+    void update(double ctime,size_t, const abstractBinding&,EventsQueue<decltype(SPN::Transition)> &,timeGen &);
+    void initialEventsQueue(EventsQueue<decltype(SPN::Transition)> &,timeGen &);
     
 protected:
     //! a Temporary event
