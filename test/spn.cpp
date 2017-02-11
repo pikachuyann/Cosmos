@@ -335,7 +335,7 @@ const int* SPN::FreeMarkDepT[] = {EMPTY_array, EMPTY_array, EMPTY_array, EMPTY_a
 
 static spn_trans TransArray[21] = { _trans(0,DETERMINISTIC,0,20, 0), _trans(1,EXPONENTIAL,0,20, 0), _trans(2,EXPONENTIAL,0,20, 0), _trans(3,EXPONENTIAL,0,20, 0), _trans(4,EXPONENTIAL,0,20, 0), _trans(5,DETERMINISTIC,0,20, 0), _trans(6,DETERMINISTIC,0,20, 0), _trans(7,EXPONENTIAL,0,20, 0), _trans(8,DETERMINISTIC,0,20, 0), _trans(9,DETERMINISTIC,0,20, 0), _trans(10,DETERMINISTIC,0,20, 0), _trans(11,DETERMINISTIC,0,20, 0), _trans(12,EXPONENTIAL,0,20, 0), _trans(13,EXPONENTIAL,0,20, 0), _trans(14,EXPONENTIAL,0,20, 0), _trans(15,EXPONENTIAL,0,20, 0), _trans(16,DETERMINISTIC,0,20, 0), _trans(17,DETERMINISTIC,0,20, 0), _trans(18,EXPONENTIAL,0,20, 0), _trans(19,EXPONENTIAL,0,20, 0), _trans(20,EXPONENTIAL,0,20, 0),  }; 
 SPN::SPN():
-customDistr(*(new CustomDistr())),pl(26), tr(21) ,Transition(TransArray,TransArray +21),Place(26),ParamDistr(),TransitionConditions(21,0){
+customDistr(*(new CustomDistr())),pl(26), tr(21) ,Transition(TransArray,TransArray +21),Place(26),ParamDistr(10),TransitionConditions(21,0){
     Path ="../../test/../Examples/Hospital/Hospital.grml";
 	{ //EXRayBlood
 	abstractBinding bl = Transition[0].bindingList[0];
@@ -898,8 +898,6 @@ void SPN::fire(TR_PL_ID t, const abstractBinding &b,REAL_TYPE time){
 }
 
 void SPN::unfire(TR_PL_ID t, const abstractBinding &b){
-
-
 }
 
 const abstractBinding* SPN::nextPossiblyEnabledBinding(size_t targettr,const abstractBinding& b,size_t *bindingNum)const {

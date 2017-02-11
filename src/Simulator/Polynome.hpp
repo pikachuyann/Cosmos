@@ -62,8 +62,8 @@ ostream& operator<<(ostream& f, const Poly<N>& p){
     return f;
 }
 
-template <unsigned int N>
-double eval(const Poly<N> &p, vector<double> const& param){
+template <unsigned int N,unsigned long K>
+double eval(const Poly<N> &p, const std::array<double,K> & param){
     double rslt = 0.0;
     for(unsigned int i=0; p[i].coeff != 0.0 ; i++){
         double mv = p[i].coeff;
@@ -111,8 +111,8 @@ std::vector<Poly<N>> parse(const std::string file){
 }
 
 
-template <unsigned int N>
-double eval(const Poly<N> &p, vector<double> const& param, double t){
+template <unsigned int N,unsigned long K>
+double eval(const Poly<N> &p, const std::array<double,K> & param, double t){
     //cerr << "poly " << param[0] << ": ("<< t << ")" ;
     double rslt = 0.0;
     for(unsigned int i=0; p[i].coeff != 0.0 ; i++){

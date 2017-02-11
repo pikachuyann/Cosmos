@@ -20,44 +20,47 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file NLHA.hpp created by Benoit Barbot on 05/08/15.                         *
+ * file clientsim.hpp created by Benoît Barbot on 16/01/2017.                  *
  *******************************************************************************
  */
 
-#ifndef __Cosmos__NLHA__
-#define __Cosmos__NLHA__
 
-#include <stdio.h>
-#include <set>
+#ifndef clientsim_h
+#define clientsim_h
 
-#include "LHA_orig.hpp"
+#include "BatchR.hpp"
+#include "Simulator.hpp"
+#include "SimulatorRE.hpp"
+#include "SimulatorBoundedRE.hpp"
+#include "SimulatorContinuousBounded.hpp"
+#include "Polynome.hpp"
+#include "MarkovChain.hpp"
 
-template<class DEDState>
-class NLHA: public LHA_orig<DEDState> {
+// Handler for interuption of the server
+void signalHandler(int);
 
-    std::set<fullState, std::less<fullState> > powerSet[2];
-    std::set<fullState, std::less<fullState> > *powerSetState;
-    int selectPS;
-
-public:
-    NLHA():powerSetState(&powerSet[0]),selectPS(0){};
-    virtual void updateLHA(double DeltaT, const DEDState &) override;
-    virtual int  synchroniseWith(size_t, const DEDState&,const abstractBinding&) override;
-    virtual AutEdge GetEnabled_A_Edges(const DEDState& Marking) override;
-
-    virtual void printState(ostream&) override;
-    virtual bool isFinal()const override;
-    virtual void reset(const DEDState&) override;
-    virtual void getFinalValues(const DEDState& m,vector<double>&,vector<bool>&) override;
-
-private:
-    virtual void setInitLocation(const DEDState& Marking) override;
-
-
-};
-
-
+template<class SIM>
+void setSimulator(SIM& sim,int argc, char* argv[] ){
+    if( argc ==0) return;
+    verbose=atoi(argv[2]);
+    
+    sim.SetBatchSize(atoi(argv[1]));
+    sim.initRandomGenerator(atoi(argv[5]));
+    sim.tmpPath=argv[4];
+    
+    for(int i=1; i<argc ;i++){
+        if(strcmp(argv[i],"-log")==0 && argc>i)
+            sim.logValue(argv[i+1]);
+        if(strcmp(argv[i],"-trace")==0 && argc>i){
+            sim.logTrace(argv[i+1],stod(argv[i+2]));
+        }
+        if(strcmp(argv[i],"-dotFile")==0 && argc>i){
+            sim.dotFile = argv[i+1];
+        }
+    }
+}
 
 
 
-#endif /* defined(__Cosmos__NLHA__) */
+
+#endif /* clientsim_h */

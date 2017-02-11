@@ -77,7 +77,7 @@ int max_client=0 ;
 //! Boolean indicating if the simulation should continue.
 bool continueSelect=false;
 
-void signalHandlerIgn(int signum){
+void signalHandlerIgn(int){
     //cerr << "Receive signal: "<< signum << endl;
 };
 

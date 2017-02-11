@@ -68,7 +68,7 @@ void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b, tim
 
 
 template <class S, class DEDS>
-SimulatorREBase<S, DEDS>::SimulatorREBase(DEDS& N,LHA_orig& A):SimulatorBase<S, EventsQueue<vector<_trans>>, DEDS>(N,A){};
+SimulatorREBase<S, DEDS>::SimulatorREBase(DEDS& N,LHA_orig<decltype(DEDS::Marking)>& A):SimulatorBase<S, EventsQueue<vector<_trans>>, DEDS>(N,A){};
 
 template <class S>
 SPNBaseRE<S>::SPNBaseRE(bool doubleIS):doubleIS_mode(doubleIS){
