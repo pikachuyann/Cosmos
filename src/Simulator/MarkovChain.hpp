@@ -31,14 +31,8 @@
 #include <vector>
 #include <array>
 
-#include "Simulator.hpp"
-
-/*class State{
-public:
-    void printHeader(ostream &logtrace)const;
-    void print(ostream &logtrace, double time)const;
-    void printSedCmd(ostream &logtrace)const;
-};*/
+#include "timeGen.hpp"
+#include "marking.hpp"
 
 class Edge{
 public:
@@ -46,11 +40,15 @@ public:
     DistributionType DistTypeIndex;
     std::string label;
     std::array<abstractBinding, 1> bindingList;
+    
+    Edge(int i,const string &l):Id(i),DistTypeIndex(EXPONENTIAL), label(l){};
+    Edge(int i):Id(i),DistTypeIndex(EXPONENTIAL), label("to "+ to_string(i)){};
 };
 
 template <class EQT>
 class MarkovChain{
 public:
+    
     abstractMarking Marking;
     std::vector<Edge> Transition;
     
@@ -59,15 +57,15 @@ public:
     std::array<double,PARAM_TBL_SIZE> &ParamDistr;
     const CustomDistr& customDistr;
     
-    MarkovChain():ParamDistr(*(new std::array<double, PARAM_TBL_SIZE>())),
-                  customDistr(*(new CustomDistr())){};
+    MarkovChain();
     
     void reset();
     void initialEventsQueue(EQT &,timeGen &);
     void fire(size_t tr,const abstractBinding& b, double time);
     void update(double ctime,size_t, const abstractBinding&,EQT &,timeGen &);
 private:
-    
+    Event F;
+    abstractBinding ab;
     void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG);
 };
 

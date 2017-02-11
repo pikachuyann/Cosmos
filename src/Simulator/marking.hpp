@@ -118,6 +118,8 @@ public:
 	//! Identifier for this binding
 	int id()const;
 	int idcount;
+    
+    friend class abstractBindingIterator;
 };
 
 inline bool contains(int i, int j){ return i>=j;}
@@ -134,6 +136,8 @@ public:
     bool next(size_t& t,abstractMarking& m);
     size_t getIndex();
     abstractBinding getBinding();
+    
+    abstractBinding operator*() { return getBinding(); }
 };
 
 #endif
