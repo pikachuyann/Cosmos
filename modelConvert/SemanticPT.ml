@@ -107,7 +107,9 @@ struct
 	 let en = enabled net m in
 	 List.fold_left (fun (s12,s22) t ->
 	     let m2 = fire net m t in
-	     explore net (MarkingSet.add m2 s12) s22) ((MarkingSet.remove m s1),(MarkingSet.add m s2)) en   
+             if MarkingSet.exists (fun x -> x=m2) s22 then (s12,s22)
+	     else explore net (MarkingSet.add m2 s12) s22)
+                        ((MarkingSet.remove m s1),(MarkingSet.add m s2)) en   
     
   let state_space net =
     let mset1 = MarkingSet.singleton (init net) in
@@ -118,7 +120,7 @@ struct
     let fr = Op.finalResult net m in
     if n<>0 && fr=None then 
       let en = enabled net m in
-      if List.length en > 0 then 
+      if List.length en > 0 then
 	let t = Op.choose net m en in
 	let m1 = fire net m t in
 	let tr,finish = trace net m1 (n-1) in
@@ -127,11 +129,9 @@ struct
     else ([],fr)
 
   let rec simulate net n =
-    if n=0 then []
-    else
-      let m0 = init net in
-      (snd @@ trace net m0 (-1))
-      ::(simulate net (n-1))  
+    Type.list_create n (fun _ ->
+                  let m0 = init net in
+                  snd @@ trace net m0 (-1))
 end
 
   
