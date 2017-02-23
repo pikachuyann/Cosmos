@@ -121,7 +121,7 @@ int main(int nargs, char** argv)
     signal(SIGINT, SIG_IGN);
     signal(SIGHUP, signalHandler);
 
-
+    assert(nargs>2);
     // Hardcode the serial communication for PC client
     mySim.verbose = atoi(argv[2]);
 
@@ -166,13 +166,12 @@ int main(int nargs, char** argv)
         TR_PL_ID *bufIDs = NULL;
         
         while(sInfo.gCommands!=SIM_END) {
-            unsigned char Buf = 0, sParBuf[6], tmpBuf[2048];
+            unsigned char Buf = 0, sParBuf[6];
             int idx = 0;
             ssize_t dwBytes;
             unsigned int nBufIDSize = 0, parValue = 0;
             int pollRc;
             size_t bytesRead = 0;
-            unsigned int test = 0;
             
             //simulate a batch of trajectory
             if(sInfo.gCommands != SIM_NONE)
@@ -422,7 +421,7 @@ void wait(REAL_TYPE t){
     //mySim.curr_time += t;
 }
 
-void dW(uint8 port, uint8 value)
+void dW(uint8 , uint8 )
 {
  
 }

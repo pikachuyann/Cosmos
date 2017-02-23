@@ -211,4 +211,3 @@ BatchR SimulatorContinuousBounded<DEDS>::RunBatch(){
 	return (batchResult);
 }
 
-template class SimulatorContinuousBounded<SPN_BoundedRE>;

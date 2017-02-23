@@ -2,7 +2,6 @@ open Xml
 open Type
 open PrismType
 open PetriNet
-open Lexer
 open Lexing
 
 
@@ -37,7 +36,7 @@ let parse_expr s name =
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = name };
   try while true do
       begin try
-	      let e = Parser.parseCmd Lexer.token lexbuf in
+	      let e = ParserPrism.parseCmd LexerPrism.token lexbuf in
 	      begin match e with
 		  ParseInt(ei) -> Printf.fprintf stdout "#%a#%a#" printH_expr ei 
 		    StochPTPrinter.print_expr ei
@@ -59,7 +58,7 @@ let parse_expr s name =
 		| _ -> raise End_of_file
 	      end
 	with 
-	  | SyntaxError msg ->
+	  | LexerPrism.SyntaxError msg ->
 	    Printf.printf "%a: %s\n" print_position lexbuf msg;
 	  | Parsing.Parse_error ->
 	    Printf.printf "%a: Parsing error: unexpected token:'%s'\n"

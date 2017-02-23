@@ -38,7 +38,7 @@
 
 using namespace std;
 
-#define BUILD_VERSION "Cosmos 1.4"
+#define BUILD_VERSION "Cosmos 1.5"
 
 /**
  * Constructor for parameters, set all default values
