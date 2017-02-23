@@ -1,3 +1,7 @@
+#include "timeGen.hpp"
+#include <float.h>
+using namespace std;
+
 /**
  * Generate an event based on the type of his distribution
  * @param E the event to update
