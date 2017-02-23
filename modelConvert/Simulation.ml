@@ -180,7 +180,7 @@ module MdpOp = struct
 	MarkingMap.find m2 ms
       (*|< (fun _ ->print_string "->")
       |< print_float*)		
-      else 10.0
+      else (0,0)
 
     type mdp_strategy = {
 	mutable state: (int*int) MarkingMap.t;
@@ -230,7 +230,9 @@ module MdpOp = struct
       print_traj stdout static.currenttraj;*)
       let score_list = en
 		       |> List.map (fun tr ->  tr,(SemanticSPT.fire net m tr))
-		       |> List.map (fun (tr,m) -> (tr,findMark static.state m)) in
+		       |> List.map (fun (tr,m) -> (tr,findMark static.state m))
+                       |> List.map (fun (tr,(i,j)) -> (tr,(float (i-j)/.(float (i+j))) ))
+      in
       let min = List.fold_left (fun x (_,y) -> min x y) 0.0 score_list in
       (*print_trlist net score_list;*)
       score_list
@@ -281,7 +283,7 @@ module MdpOp = struct
 	       ) |>>| ();
       res
 
-    let consolidate_strat () =
+(*    let consolidate_strat () =
       let n = MarkingMap.cardinal static.state in
       let (mm,sum,var,mM) = MarkingMap.fold (fun _ v (mm,s,va,mM) -> (min v mm,s+.v,s*.s+.va,max v mM))
                                             static.state (max_float,0.0,0.0,min_float) in
@@ -293,7 +295,7 @@ module MdpOp = struct
           else state) static.state MarkingMap.empty;
       let n2 = MarkingMap.cardinal static.state in
       Printf.printf "Compression: %f\n" ((float n2) /. (float n))
-    
+ *)  
         
     let print_state_mdp () =
       if !mdpstrat <> "" then begin
