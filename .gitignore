@@ -86,3 +86,6 @@ prism2SPT/\[Content_Types\].xml
 prism2SPT/_rels/
 prism2SPT/metadata/
 prism2SPT/simulink/
+doc/manual.aux
+doc/manual.synctex.gz
+doc/manual.pdf
