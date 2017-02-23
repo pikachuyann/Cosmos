@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES = libClientSim.la libClientSimMain.la
+lib_LTLIBRARIES = libClientSim.la libClientSimMain.la libClientSimMainNOSPN.la
 
 libClientSim_la_SOURCES = \
 	BatchR.cpp BatchR.hpp \
@@ -31,6 +31,17 @@ libClientSimMain_la_SOURCES = \
 	timeGen.cpp timeGen.hpp \
 	marking.hpp spn.hpp \
 	SPNBase.cpp SPNBase.hpp \
+	LHA_orig.cpp LHA_orig.hpp \
+	LHA.hpp \
+	Simulator.cpp Simulator.hpp \
+    clientsim.cpp main.cpp
+	
+libClientSimMainNOSPN_la_SOURCES = \
+	BatchR.cpp BatchR.hpp \
+	Event.cpp  Event.hpp \
+	EventsQueue.cpp EventsQueue.hpp \
+	timeGen.cpp timeGen.hpp \
+	marking.hpp \
 	LHA_orig.cpp LHA_orig.hpp \
 	LHA.hpp \
 	Simulator.cpp Simulator.hpp \
