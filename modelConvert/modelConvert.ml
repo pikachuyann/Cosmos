@@ -112,7 +112,7 @@ let _ =
 				 printer = (fun _ _ -> ())
 			       });
       GrMLParser.net_of_tree net xmlf;
-  net
+     net
   (* ENDIF *)
   | Stateflow -> 
    (* IFNDEF HAS_XML THEN
@@ -179,7 +179,7 @@ let _ =
 				       |> List.filter (function Some true -> true |_-> false)
 				       |> List.length in
 				     Printf.printf "Result: %f\n" ((float nbsucc) /. (float !simule));
-                                     Simulation.MdpOp.consolidate_strat ();
+                                     (*Simulation.MdpOp.consolidate_strat ();*)
                                      Simulation.MdpOp.print_state_mdp ()
                                      
      )
