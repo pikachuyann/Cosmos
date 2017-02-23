@@ -7,6 +7,9 @@
 #include "SPNBase.cpp"
 #include "Simulator.cpp"
 
+template void generateEvent<SPN_orig<EventsQueue<std::vector<_trans, std::allocator<_trans> > > > >(double, Event&, unsigned long, abstractBinding const&, timeGen&, SPN_orig<EventsQueue<std::vector<_trans, std::allocator<_trans> > > >&);
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueueSet> &);
+
 int main(int argc, char** argv) {
     signal(SIGINT, signalHandler);
     SPN_orig<EventsQueue<vector<_trans>>> N;
