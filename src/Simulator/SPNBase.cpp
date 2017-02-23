@@ -281,7 +281,6 @@ void SPNBase<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, con
     //const auto &net = PossiblyEn();
     for (size_t t=0; PossiblyEnabled[lastTransition][t] != -1;t++) {
         size_t it = (size_t) PossiblyEnabled[lastTransition][t];
-        size_t bindnum = 0;
         if (verbose > 4) {
             std::cerr << "(Possibly Enabled) Considering transition" << it << ".\n";
         }
@@ -432,14 +431,5 @@ void SPNBase<S,EventsQueueSet>::update(double ctime,size_t E1_transitionNum, con
      }
      */ 
 }
-
-template class SPNBase<SPN_orig<EventsQueue<vector<_trans>>>,EventsQueue<vector<_trans>>>;
-template class SPNBase<SPN_orig<EventsQueueSet>,EventsQueueSet>;
-template class SPN_orig<EventsQueue<vector<_trans>>>;
-template class SPN_orig<EventsQueueSet>;
-
-#include "SimulatorBoundedRE.hpp"
-template class SPNBase<SPN_RE,EventsQueue<vector<_trans>>>;
-template class SPNBase<SPN_BoundedRE,EventsQueue<vector<_trans>>>;
 
 

@@ -5,8 +5,6 @@
 # include <string>
 # include "Lha-Reader.hpp"
 
-#pragma clang diagnostic ignored "-Wdeprecated-register"
-
 # undef yywrap
 # define yywrap() 1
 

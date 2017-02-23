@@ -20,50 +20,49 @@
  * You should have received a copy of the GNU General Public License along     *
  * with this program; if not, write to the Free Software Foundation, Inc.,     *
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                 *
- * file clientsim.hpp created by Benoît Barbot on 16/01/2017.                  *
+ * file InstanceSPNSim.cpp created by Benoît Barbot on 19/01/2017.             *
  *******************************************************************************
  */
 
 
-#ifndef clientsim_h
-#define clientsim_h
-
-#include "BatchR.hpp"
-#include "Simulator.hpp"
+//   Classes in SPNBase
+#include "SPNBase.cpp"
+#include "Simulator.cpp"
 #include "SimulatorRE.hpp"
+template class SimulatorBase<SimulatorRE<SPN_RE>, EventsQueue<vector<_trans>>,SPN_RE>;
+
 #include "SimulatorBoundedRE.hpp"
+template class SimulatorBase<SimulatorBoundedRE<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
+template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue<vector<_trans>>,SPN_RE>;
+
 #include "SimulatorContinuousBounded.hpp"
-#include "Polynome.hpp"
-#include "MarkovChain.hpp"
-
-// Handler for interuption of the server
-void signalHandler(int);
-
-template<class SIM>
-void setSimulator(SIM& sim,int argc, char* argv[] ){
-    if( argc ==0){
-        sim.initRandomGenerator(0);
-        return;
-    }
-    verbose=atoi(argv[2]);
-    
-    sim.SetBatchSize(atoi(argv[1]));
-    sim.initRandomGenerator(atoi(argv[5]));
-    sim.tmpPath=argv[4];
-    
-    for(int i=1; i<argc ;i++){
-        if(strcmp(argv[i],"-log")==0 && argc>i)
-            sim.logValue(argv[i+1]);
-        if(strcmp(argv[i],"-trace")==0 && argc>i){
-            sim.logTrace(argv[i+1],stod(argv[i+2]));
-        }
-        if(strcmp(argv[i],"-dotFile")==0 && argc>i){
-            sim.dotFile = argv[i+1];
-        }
-    }
-}
+template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
 
 
+// Classes in SimulatorRE
+#include "SimulatorRE.cpp"
 
+template class SimulatorREBase<SimulatorRE<SPN_RE>, SPN_RE>;
+template class SPNBaseRE<SPN_RE>;
 
-#endif /* clientsim_h */
+#include "SimulatorBoundedRE.hpp"
+template class SimulatorREBase<SimulatorBoundedRE<SPN_RE>, SPN_RE>;
+template class SimulatorREBase<SimulatorBoundedRE<SPN_BoundedRE>, SPN_BoundedRE>;
+template class SPNBaseRE<SPN_BoundedRE>;
+
+#include "SimulatorContinuousBounded.hpp"
+template class SimulatorREBase<SimulatorContinuousBounded<SPN_BoundedRE>, SPN_BoundedRE>;
+
+//  Classes in SimulatorBounded
+#include "SimulatorBoundedRE.cpp"
+template class SimulatorBoundedREBase<SimulatorBoundedRE<SPN_BoundedRE>,SPN_BoundedRE>;
+template class SimulatorBoundedRE<SPN_BoundedRE>;
+template class SPNBaseBoundedRE<SPN_BoundedRE>;
+
+#include "SimulatorContinuousBounded.hpp"
+template class SimulatorBoundedREBase<SimulatorContinuousBounded<SPN_BoundedRE>,SPN_BoundedRE>;
+
+//  Classes in SimulatorContinuousBounded
+#include "SimulatorContinuousBounded.cpp"
+template class SimulatorContinuousBounded<SPN_BoundedRE>;
+

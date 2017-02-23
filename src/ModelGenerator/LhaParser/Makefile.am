@@ -11,5 +11,5 @@ BUILT_SOURCES = Lha-parser.cc
 EXTRA_DIST = Lha-parser.hh location.hh position.hh stack.hh
 
 AM_YFLAGS = -y -p lha
-AM_CPPFLAGS = -I$(srcdir)/../../libgrml -I../Eval -I$(srcdir)/../Eval -I../GspnParser -I$(srcdir)/../GspnParser
+AM_CPPFLAGS = -I$(srcdir)/../../libgrml -I../Eval -I$(srcdir)/../Eval -I../GspnParser -I$(srcdir)/../GspnParser  -Wall -Wextra -Wno-unused -Wno-deprecated -Wno-write-strings -Wno-unneeded-internal-declaration
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --prefix=lha

@@ -7,6 +7,9 @@ find_package(FLEX)
 find_package(EXPAT)
 find_package(GIT)
 find_package(BOOST)
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+endif()
 
 set (CMAKE_CXX_STANDARD 11)
 
@@ -19,6 +22,8 @@ OUTPUT_STRIP_TRAILING_WHITESPACE
 ADD_DEFINITIONS(
     -O3
     -DGIT_REVISION=\"${GIT_REVISION}\"
+    -DBOOST_PATH=\"-I${Boost_INCLUDE_DIRS}\"
+    -DCPP_COMPILER=\"${CMAKE_CXX_COMPILER}\"
 )
 
 
@@ -84,23 +89,12 @@ target_link_libraries (Cosmos grml ${EXPAT_LIBRARY})
 
 add_library(ClientSim
 	src/Simulator/BatchR.cpp
-        src/Simulator/NLHA.cpp
-        src/Simulator/SimulatorRE.cpp
-        src/Simulator/numSolverSH.cpp
-        src/Simulator/stateSpace.cpp	
 	src/Simulator/Event.cpp
-        src/Simulator/Simulator.cpp
-        src/Simulator/clientsim.cpp
-        src/Simulator/numericalSolver.cpp
-        src/Simulator/timeGen.cpp
 	src/Simulator/EventsQueue.cpp
-	src/Simulator/EventsQueueSet.cpp
-        src/Simulator/SimulatorBoundedRE.cpp
-        src/Simulator/foxglynn.cpp
+	src/Simulator/timeGen.cpp
 	src/Simulator/LHA_orig.cpp
-        src/Simulator/SimulatorContinuousBounded.cpp
-	src/Simulator/numSolverBB.cpp
-        src/Simulator/spn_orig.cpp
+	src/Simulator/clientsim.cpp
+	src/Simulator/main.cpp
 )
 
 install(TARGETS Cosmos DESTINATION bin)
@@ -117,7 +111,7 @@ WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 file(GLOB_RECURSE ml_SOURCES "prism2SPT/*.ml*")
 
 add_custom_target(modelConvert ALL
-${CMAKE_SOURCE_DIR}/prism2SPT/build.sh
+${CMAKE_SOURCE_DIR}/modelConvert/build.sh
 #OUTPUT modelConvert
 BYPRODUCTS ${CMAKE_SOURCE_DIR}/prism2SPT/modelConvert.native
 #DEPENDS Cosmos

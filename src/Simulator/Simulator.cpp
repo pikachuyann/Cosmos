@@ -301,7 +301,8 @@ void SimulatorBase<S,EQT,DEDS>::interactiveSimulation(){
                     EQ->printSedCmd(N.Transition, ss);
                     ss << tmpPath << "/templatePetriNet.dot > " << tmpPath << "/PetriNet.dot; ";
                     ss << "dot "<< tmpPath <<"/PetriNet.dot -Tpdf -o " << dotFile << endl;
-                    system(ss.str().c_str());
+                    const auto retval = system(ss.str().c_str());
+                    if(retval >0)cerr << "Fail to lauch graphviz with error code" << retval;
                 } else cerr << "No dot output specified!" << endl;
             } else if(input_line.substr(0,5)=="wait "){
                 const auto arg = input_line.substr(5,input_line.length()-5);
@@ -415,19 +416,3 @@ BatchR SimulatorBase<S,EQT,DEDS>::RunBatch(){
     batchResult.simTime = (currenttime - starttime).count();
 	return batchResult;
 }
-
-template class SimulatorBase<Simulator<EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>>>, EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>> >;
-template class SimulatorBase<Simulator<EventsQueueSet,SPN_orig<EventsQueueSet>>, EventsQueueSet,SPN_orig<EventsQueueSet> >;
-template class Simulator<EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>> >;
-template class Simulator<EventsQueueSet,SPN_orig<EventsQueueSet> >;
-
-#include "SimulatorRE.hpp"
-template class SimulatorBase<SimulatorRE<SPN_RE>, EventsQueue<vector<_trans>>,SPN_RE>;
-
-#include "SimulatorBoundedRE.hpp"
-template class SimulatorBase<SimulatorBoundedRE<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
-template class SimulatorBase<SimulatorBoundedRE<SPN_RE>, EventsQueue<vector<_trans>>,SPN_RE>;
-
-
-#include "SimulatorContinuousBounded.hpp"
-template class SimulatorBase<SimulatorContinuousBounded<SPN_BoundedRE>, EventsQueue<vector<_trans>>,SPN_BoundedRE>;
