@@ -6,7 +6,7 @@ let _ = Random.self_init ()
 
 let mdpstrat = ref ""
 let detstrat = ref false
-       
+
 module Prio = struct
     type t = float*float*float*Net.transitionkey Data.key
     let compare (t1,p1,w1,_) (t2,p2,w2,_) =
@@ -94,23 +94,31 @@ module SptOp = struct
 				 EQueue.add (sample net m t) h) EQueue.empty en in
       let (_,_,_,t) = EQueue.min_elt heap in t
 
+                                               (*let finalResult net m = None *)
+                                               
     let finalResult net m =
-      finalResultExpr net m (IntAtom(IntName("NB"),EQ,Int(100)))
+      finalResultExpr net m (IntAtom(IntName("NB"),EQ,Int(1000)))
 		      (disjunction [ 
 			   (IntAtom(IntName("Q1"),EQ,Int(10)));
 			   (IntAtom(IntName("Q2"),EQ,Int(10)));
 			   (IntAtom(IntName("Q3"),EQ,Int(10)));
-			 ])
-					 
+		      ])
+
+(*    let finalResult net m =
+      finalResultExpr net m (IntAtom(IntName("NbStep"),EQ,Int(1000)))
+                      (disjunction [
+                           (IntAtom(IntName("Tank"),EQ,Int(0)));
+			   (IntAtom(IntName("Tank"),EQ,Int(20)));
+                      ])*)
       
-      (*let tank = Data.index net.Net.place "Tank" in
+(*      let tank = Data.index net.Net.place "Tank" in
       let nbstep = Data.index net.Net.place "NbStep" in
       let tankm,_ = m.(Data.unsafe_rev tank) in
       let nbstepm,_ = m.(Data.unsafe_rev nbstep) in
       match (Type.eval_or_die tankm),(Type.eval_or_die nbstepm) with
 	0,_ -> Some false
       | 20,_ -> Some false
-      | _,100 -> Some true
+      | _,1000 -> Some true
       | _ -> None*)
 end
 
@@ -128,7 +136,9 @@ module MdpOp = struct
 				  end)
     let intarray_of_marking m =
       let t = Array.map (fun (x,_) -> eval_or_die x) m in
-      t.(7) <-0;
+      (try t.(7) <-0; with
+        Invalid_argument s -> raise (Invalid_argument (s ^":"^ __FILE__ ^":"^ string_of_int @@__LINE__))
+      );                                               
       t
 
     let print_intarray f x =
@@ -173,20 +183,20 @@ module MdpOp = struct
       else 10.0
 
     type mdp_strategy = {
-	mutable state: float MarkingMap.t;
+	mutable state: (int*int) MarkingMap.t;
 	mutable currenttraj: int array list;
       }
 	     
     let incrMark mdps b m =
       let m2 = m in
       if MarkingMap.mem m2 mdps.state then
-	let v = MarkingMap.find m2 mdps.state in
-	let v2 = if b then v+.1.0 else v-.1.0 in
+	let (vt,vf) = MarkingMap.find m2 mdps.state in
+	let v2 = if b then (vt+1,vf) else (vt,vf+1) in
 	mdps.state <-
 	  MarkingMap.remove m2 mdps.state
 	  |> MarkingMap.add m2 v2
       else
-	let v = if b then 1.0 else -.1.0 in
+	let v = if b then (1,0) else (0,1) in
 	mdps.state <- MarkingMap.add m2 v mdps.state
 	
 		   
@@ -217,8 +227,7 @@ module MdpOp = struct
 	   
     let mdp_choose net m en =
       (*print_mdp_state static.state;
-      print_traj stdout static.currenttraj;
-      print_newline ();*)
+      print_traj stdout static.currenttraj;*)
       let score_list = en
 		       |> List.map (fun tr ->  tr,(SemanticSPT.fire net m tr))
 		       |> List.map (fun (tr,m) -> (tr,findMark static.state m)) in
@@ -255,13 +264,14 @@ module MdpOp = struct
 				    |> Data.acca net.Net.transition
 				    |> (fun (_,(y,_,_)) ->y)
 				    |> (function Player1 -> x::l | _ -> l)) [] en in
-      if List.length choice = 0 then
+      if List.length choice = 0 then 
 	let heap = List.fold_left (fun h t ->
 				   EQueue.add (sample net m t) h) EQueue.empty en in
 	let (_,_,_,t) = EQueue.min_elt heap in t
-      else
+      else 
 	mdp_choose net m choice
-
+      
+                   
     let finalResult net m =
       let res = SptOp.finalResult net m in
       res |>>> (fun b -> (*Printf.printf "\nEND ---> %b\n" b;*)
@@ -271,23 +281,37 @@ module MdpOp = struct
 	       ) |>>| ();
       res
 
+    let consolidate_strat () =
+      let n = MarkingMap.cardinal static.state in
+      let (mm,sum,var,mM) = MarkingMap.fold (fun _ v (mm,s,va,mM) -> (min v mm,s+.v,s*.s+.va,max v mM))
+                                            static.state (max_float,0.0,0.0,min_float) in
+      let stdev = sqrt @@ (var -. sum) /. (float n) in
+      Printf.printf "min sum max: %f,%f,%f,%f " mm (sum/. (float n)) stdev mM;
+      static.state <- MarkingMap.fold (fun m v state ->
+          if v < mm +. stdev || v > mM -. stdev then
+            MarkingMap.add m v state
+          else state) static.state MarkingMap.empty;
+      let n2 = MarkingMap.cardinal static.state in
+      Printf.printf "Compression: %f\n" ((float n2) /. (float n))
+    
+        
     let print_state_mdp () =
       if !mdpstrat <> "" then begin
 	try
 	  let fo = open_out !mdpstrat in
 	  output_value fo static.state;
-	  close_out fo
+	  close_out fo;
+          (*print_mdp_state static.state*)
 	with _ -> print_endline "fail to save strategy";
 	end;
-      print_mdp_state static.state
 		      
 		   
 end					 
 
 module SemanticSPT = SemanticPT.NetWithMarking(MdpOp)
 
-(*
-open PrismType	      
+
+(*open PrismType	      
 let conj =
   add_bool "x";
   add_int "y";
@@ -297,4 +321,4 @@ let conj =
   |>>> disjunction
   |>>| (Bool false)
   |< printH_expr stdout
- *)
+ *) 

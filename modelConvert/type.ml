@@ -1,4 +1,3 @@
-
 let (|>>) x f = match x with 
     Some y -> f y
   | None -> None
@@ -18,6 +17,13 @@ let opHd = function
   | t::_ -> Some t
   | [] -> None
 
+let list_create n f =
+  let l = ref [] in
+  for i=0 to n-1 do
+    l := (f i)::!l;
+  done;
+  !l
+            
 let fix_point f x =
   let y = ref x 
   and z = ref (f x) in

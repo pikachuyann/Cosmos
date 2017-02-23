@@ -16,7 +16,7 @@
 #define yyterminate() return token::END
 %}
 
-%option noyywrap nounput batch debug
+%option noyywrap nounput batch
 
 STR [a-zA-Z][a-zA-Z_0-9]*
 INT [0-9]+|[0-9]*

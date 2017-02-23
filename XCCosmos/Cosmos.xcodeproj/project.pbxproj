@@ -34,10 +34,11 @@
 		0336B7F9198A3BF30043EFC6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D7198A3BF30043EFC6 /* main.cpp */; };
 		0336B7FA198A3BF30043EFC6 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D8198A3BF30043EFC6 /* Makefile */; };
 		0336B7FB198A3BF30043EFC6 /* readPlast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D9198A3BF30043EFC6 /* readPlast.cpp */; };
+		03463E881E31413900A2C116 /* InstanceSPNSim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03463E871E31413900A2C116 /* InstanceSPNSim.cpp */; };
 		03466C201E28E84F00BE2C78 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03466C1F1E28E84F00BE2C78 /* server.cpp */; };
+		035086981E44C4700050FF40 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035086971E44C4700050FF40 /* main.cpp */; };
 		03541DD71BE7B7A9005741C6 /* Gspn-Grml-Output.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */; };
 		035464EF1DFFFF240060D055 /* MarkovChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035464ED1DFFFF240060D055 /* MarkovChain.cpp */; };
-		035464F01DFFFF240060D055 /* MarkovChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035464ED1DFFFF240060D055 /* MarkovChain.cpp */; };
 		035464F11DFFFF240060D055 /* MarkovChain.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 035464EE1DFFFF240060D055 /* MarkovChain.hpp */; };
 		035EBAB418FFD70F00B73DBF /* expressionStruct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035EBAB218FFD70F00B73DBF /* expressionStruct.cpp */; };
 		03650F811CFDC4FB00DB3041 /* EventsQueueSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03650F7F1CFDC4FB00DB3041 /* EventsQueueSet.cpp */; };
@@ -113,16 +114,6 @@
 		};
 /* End PBXBuildRule section */
 
-/* Begin PBXContainerItemProxy section */
-		03E39B1C183E4ABD0070911A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 034509A516A80AC8002088B3;
-			remoteInfo = ClientSim;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		0341401A15AEF45E0009FEFC /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -155,6 +146,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		030466E21E4CBA290022BB97 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		030466E31E4CBBEC0022BB97 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
 		0306A22B1BACA88E0045B056 /* LHA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LHA.cpp; sourceTree = "<group>"; };
 		0306A22C1BACA88E0045B056 /* lumpingfun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lumpingfun.cpp; sourceTree = "<group>"; };
 		0306A22D1BACA88E0045B056 /* markingImpl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = markingImpl.hpp; sourceTree = "<group>"; };
@@ -313,8 +306,11 @@
 		0336B7DA198A3BF30043EFC6 /* readPlast.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = readPlast.hpp; sourceTree = "<group>"; };
 		0341401C15AEF45E0009FEFC /* POMDP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = POMDP; sourceTree = BUILT_PRODUCTS_DIR; };
 		034509A616A80AC8002088B3 /* libClientSim.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libClientSim.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		03463E871E31413900A2C116 /* InstanceSPNSim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InstanceSPNSim.cpp; sourceTree = "<group>"; };
 		03466C1F1E28E84F00BE2C78 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = server.cpp; sourceTree = "<group>"; };
 		03466C211E2D2BD700BE2C78 /* clientsim.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = clientsim.hpp; sourceTree = "<group>"; };
+		035086961E449A970050FF40 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = CMakeLists.txt; path = ../CMakeLists.txt; sourceTree = "<group>"; };
+		035086971E44C4700050FF40 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = "../../these-duplouy/Cosmos/SIA/tmp/main.cpp"; sourceTree = "<group>"; };
 		03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Grml-Output.cpp"; sourceTree = "<group>"; };
 		03541DD61BE7B7A9005741C6 /* Gspn-Grml-Output.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Gspn-Grml-Output.hpp"; sourceTree = "<group>"; };
 		035464ED1DFFFF240060D055 /* MarkovChain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarkovChain.cpp; sourceTree = "<group>"; };
@@ -1027,6 +1023,7 @@
 		03C4803A1A8283FA007B8969 /* EventsQueueLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventsQueueLight.cpp; sourceTree = "<group>"; };
 		03C4803B1A8283FA007B8969 /* EventsQueueLight.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventsQueueLight.hpp; sourceTree = "<group>"; };
 		03C67B121B15DFBF00EDC743 /* Makefile.am */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.am; sourceTree = "<group>"; };
+		03C737C11E30CDC600B6C857 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		03CB8F4D1893CB1A00A9938A /* timeGen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeGen.cpp; sourceTree = "<group>"; };
 		03CB8F4E1893CB1A00A9938A /* timeGen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGen.hpp; sourceTree = "<group>"; };
 		03E43E1D1AE1027300E9A2BF /* Gspn-Writer-Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Gspn-Writer-Color.cpp"; sourceTree = "<group>"; };
@@ -1235,6 +1232,7 @@
 		032A700B181BC0D6006D7332 /* Eval */ = {
 			isa = PBXGroup;
 			children = (
+				030466E21E4CBA290022BB97 /* Makefile.am */,
 				0367E29818842F2400F35619 /* Eval-parser.cc */,
 				0367E29918842F2400F35619 /* Eval-scanner.cc */,
 				032A7010181BC0D6006D7332 /* Eval-parser.yy */,
@@ -1275,6 +1273,7 @@
 		032A7028181BC0D6006D7332 /* LhaParser */ = {
 			isa = PBXGroup;
 			children = (
+				030466E31E4CBBEC0022BB97 /* Makefile.am */,
 				0367E29418842F0F00F35619 /* Lha-parser.cc */,
 				0367E29518842F0F00F35619 /* Lha-scanner.cc */,
 				032A702D181BC0D6006D7332 /* Lha-parser.yy */,
@@ -1336,6 +1335,8 @@
 				035464EE1DFFFF240060D055 /* MarkovChain.hpp */,
 				032A7041181BC0D6006D7332 /* clientsim.cpp */,
 				03466C211E2D2BD700BE2C78 /* clientsim.hpp */,
+				03463E871E31413900A2C116 /* InstanceSPNSim.cpp */,
+				03C737C11E30CDC600B6C857 /* main.cpp */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
@@ -1351,6 +1352,7 @@
 				032573991A96530800974A89 /* markingImplLight.hpp */,
 				032573981A9652F600974A89 /* magicLight.hpp */,
 				03C480381A826281007B8969 /* spnLight.cpp */,
+				035086971E44C4700050FF40 /* main.cpp */,
 			);
 			name = test;
 			path = ../test;
@@ -3112,6 +3114,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				035086961E449A970050FF40 /* CMakeLists.txt */,
 				03B7D355181901AC007AA90D /* Makefile.am */,
 				03B7D356181901BB007AA90D /* configure.ac */,
 				032A708E181BC14A006D7332 /* test */,
@@ -3245,7 +3248,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				03E39B1D183E4ABD0070911A /* PBXTargetDependency */,
 			);
 			name = CosmosSim;
 			productName = CosmosSim;
@@ -3368,6 +3370,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03463E881E31413900A2C116 /* InstanceSPNSim.cpp in Sources */,
 				0315F53A1B7215E600DA8EDA /* NLHA.cpp in Sources */,
 				0365553A18292D10001B5947 /* foxglynn.cpp in Sources */,
 				03E39B0F183E49D30070911A /* BatchR.cpp in Sources */,
@@ -3399,7 +3402,7 @@
 				0306A2311BACA88E0045B056 /* spn.cpp in Sources */,
 				03650F821CFDC4FB00DB3041 /* EventsQueueSet.cpp in Sources */,
 				0306A22F1BACA88E0045B056 /* LHA.cpp in Sources */,
-				035464F01DFFFF240060D055 /* MarkovChain.cpp in Sources */,
+				035086981E44C4700050FF40 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3466,14 +3469,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		03E39B1D183E4ABD0070911A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 034509A516A80AC8002088B3 /* ClientSim */;
-			targetProxy = 03E39B1C183E4ABD0070911A /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		0367E2A718843EAB00F35619 /* InfoPlist.strings */ = {

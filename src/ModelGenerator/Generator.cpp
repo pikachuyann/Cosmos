@@ -439,7 +439,8 @@ void generateMain() { // Not use for the moment
 }
 
 bool build() {
-
+    const bool generateMain = P.RareEvent || P.is_domain_impl_set;
+    
     string bcmd = P.gcccmd + " " + P.gccflags;
 
     if (P.verbose > 0) {
@@ -454,8 +455,10 @@ bool build() {
     //Compile the LHA
     if(!P.lightSimulator)cmd += "&(" + bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp)\\\n";
     
+    if( generateMain){
     //Compile the Main
     cmd += "&(" + bcmd + " -c -I"+P.Path+"../include "+ P.boostpath +" -o "+P.tmpPath+"/main.o "+P.tmpPath+"/main.cpp)";
+    }
     
     cmd += " & wait";
 
@@ -466,12 +469,16 @@ bool build() {
     //Link SPN and LHA with the library
     cmd = bcmd + " -o " + P.tmpPath + "/ClientSim ";
     if(P.modelType == GSPN)cmd += P.tmpPath + "/spn.o ";
-    cmd += P.tmpPath + "/main.o "; 
+    if(  generateMain)cmd += P.tmpPath + "/main.o ";
     if(P.lightSimulator){
         cmd += P.Path + "../lib/libClientSimLight.a ";
     } else {
         cmd += P.tmpPath + "/LHA.o ";
-        cmd += P.Path + "../lib/libClientSim.a ";
+        if(generateMain){
+            cmd += P.Path + "../lib/libClientSim.a ";
+        } else {
+            cmd += P.Path + "../lib/libClientSimMain.a ";
+        }
     };
  
 

@@ -80,7 +80,7 @@ let _ =
   print_endline ("Opening "^ !inname);
   begin match !typeFormat with
   | Prism -> 
-    let s = Printf.sprintf "./prism %s -exportprism %s.expanded  -nobuild > /dev/null" !inname !inname in
+    let s = Printf.sprintf "prism %s -exportprism %s.expanded  -nobuild > /dev/null" !inname !inname in
     Printf.printf "Using prism to expand file :%s\n" s;
     if( Sys.command s = 0) then
       inname := !inname ^ ".expanded"
@@ -149,7 +149,7 @@ let _ =
       end
      (* ENDIF
       ENDIF *)
-  | CLess -> 
+  | CLess ->
      let ast = try
 	 Cless.expr_list_of_file !inname
 	 |< (fun x ->ignore (List.fold_left Cless2PT.sanity StringMap.empty x))
@@ -179,7 +179,9 @@ let _ =
 				       |> List.filter (function Some true -> true |_-> false)
 				       |> List.length in
 				     Printf.printf "Result: %f\n" ((float nbsucc) /. (float !simule));
-     (*Simulation.MdpOp.print_state_mdp ()*)
+                                     Simulation.MdpOp.consolidate_strat ();
+                                     Simulation.MdpOp.print_state_mdp ()
+                                     
      )
   
   |< (fun net -> if !traceSize <> 0 then let open Simulation.SemanticSPT in

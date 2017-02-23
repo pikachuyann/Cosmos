@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([Cosmos],[1.4],[barbot@lsv.ens-cachan.fr])
+AC_INIT([Cosmos],[1.5],[barbot@lacl.fr])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AM_SILENT_RULES
 AC_CONFIG_SRCDIR([src/Simulator/BatchR.cpp])
@@ -10,7 +10,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 # CXXFLAGS=-Wall -Wextra -O3
-: ${CXXFLAGS=-O3 -Wall -Wextra -g -isystem src/gtest/include}
+: ${CXXFLAGS= -O3 -g -isystem src/gtest/include}
 
 # Checks for programs.
 AC_PROG_CXX
@@ -76,5 +76,5 @@ AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([dup2 floor gettimeofday memset mkdir pow select sqrt])
 AX_PTHREAD
 
-AC_CONFIG_FILES([Makefile src/libgrml/Makefile src/ModelGenerator/Eval/Makefile src/ModelGenerator/GspnParser/Makefile src/ModelGenerator/LhaParser/Makefile src/ModelGenerator/Makefile src/Simulator/Makefile src/LightSimulator/Makefile test/Makefile automataGen/Makefile utils/Makefile])
+AC_CONFIG_FILES([Makefile src/libgrml/Makefile src/ModelGenerator/Eval/Makefile src/ModelGenerator/GspnParser/Makefile src/ModelGenerator/LhaParser/Makefile src/ModelGenerator/Makefile src/Simulator/Makefile src/LightSimulator/Makefile test/Makefile automataGen/Makefile utils/Makefile modelConvert/Makefile])
 AC_OUTPUT

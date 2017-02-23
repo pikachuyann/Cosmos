@@ -1,6 +1,6 @@
 {
   open Lexing
-  open Parser
+  open ParserPrism
 
   exception SyntaxError  of string
 

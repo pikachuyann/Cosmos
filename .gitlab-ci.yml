@@ -1,3 +1,5 @@
+image: registry.git.lacl.fr/barbot/cosmos:latest
+
 before_script:
   - eval `opam config env`
   - export PATH=/usr/local/Cellar/flex/2.5.39/bin:/usr/local/Cellar/bison/3.0.4/bin:$PATH
@@ -13,7 +15,18 @@ cmake-build:
     - cd build-cmake
     - cmake ../
     - make -j 4
+  allow_failure: true
 
+from_dist:
+    stage: test
+    script:
+     - mkdir -p build-dist
+     - cd build-dist
+     - cp ../build/cosmos-1.5.tar.gz ./
+     - tar xzvf cosmos-1.5.tar.gz
+     - cd cosmos-1.5
+     - ./configure --enable-silent-rules
+     - make -j 4
 
 Cosmos:
   stage: build
@@ -24,12 +37,14 @@ Cosmos:
     - cd build
     - ../configure --prefix=`pwd`/../ --enable-silent-rules
     - make -j 4
-    - make install    
+    - make install
+    - make dist
   artifacts:
     paths:
       - bin/
       - lib/
       - include/
+      - build/cosmos-1.5.tar.gz
   cache:
     paths:
       - bin/
@@ -40,7 +55,7 @@ modelConvert:
   stage: build
   script:
     - mkdir -p bin
-    - cd prism2SPT
+    - cd modelConvert
     - ./build.sh
   artifacts:
     paths:
