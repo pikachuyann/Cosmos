@@ -1,4 +1,6 @@
 #include "timeGenBis.hpp"
+#include "EventsQueue.hpp"
+#include "EventsQueueSet.hpp"
 #include <float.h>
 
 using namespace std;
@@ -65,10 +67,7 @@ void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,time
 template void generateEvent<SPN_orig<EventsQueue<std::vector<_trans, std::allocator<_trans> > > > >(double, Event&, unsigned long, abstractBinding const&, timeGen&, SPN_orig<EventsQueue<std::vector<_trans, std::allocator<_trans> > > >&);
 template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueueSet> &);
 
-
 // #include "SPNBase.hpp"
-#include "EventsQueue.hpp"
-#include "EventsQueueSet.hpp"
 /*#include "MarkovChain.hpp"
 template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,MarkovChain<EventsQueue<vector<Edge>>> &);
 */
