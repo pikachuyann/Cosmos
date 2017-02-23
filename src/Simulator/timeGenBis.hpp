@@ -24,8 +24,10 @@
  *******************************************************************************
  */
 
-#ifndef __Cosmos__File__
-#define __Cosmos__File__
+#ifndef __Cosmos__timeGenBis__
+#define __Cosmos__timeGenBis__
+
+#include "timeGen.hpp"
 
 #include <iostream>
 #include <boost/random.hpp>
