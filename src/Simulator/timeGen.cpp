@@ -248,7 +248,6 @@ double timeGen::GenerateTime(DistributionType distribution,const array<double,PA
  * @param b is the binding of the variable of the SPN for the transition.
  */
 
-/*
 template<class DEDS>
 void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &TG,DEDS& N) {
     double t=ctime;
@@ -300,9 +299,8 @@ void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,time
     E.weight = w;
     E.binding = b;
 }
-*/
 
-#include "SPNBase.hpp"
+// #include "SPNBase.hpp"
 #include "EventsQueue.hpp"
 // template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueue<vector<_trans>>> &);
 #include "EventsQueueSet.hpp"
