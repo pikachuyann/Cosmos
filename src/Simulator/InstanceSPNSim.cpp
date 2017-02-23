@@ -32,3 +32,6 @@
 template class SimulatorBase<Simulator<EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>>>, EventsQueue<vector<_trans>>,SPN_orig<EventsQueue<vector<_trans>>> >;
 template class SimulatorBase<Simulator<EventsQueueSet,SPN_orig<EventsQueueSet>>, EventsQueueSet,SPN_orig<EventsQueueSet> >;
 
+template void generateEvent<SPN_orig<EventsQueue<std::vector<_trans, std::allocator<_trans> > > > >(double, Event&, unsigned long, abstractBinding const&, timeGen&, SPN_orig<EventsQueue<std::vector<_trans, std::allocator<_trans> > > >&);
+template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueueSet> &);
+

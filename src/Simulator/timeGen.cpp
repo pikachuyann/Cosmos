@@ -302,9 +302,7 @@ void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,time
 
 // #include "SPNBase.hpp"
 #include "EventsQueue.hpp"
-// template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueue<vector<_trans>>> &);
 #include "EventsQueueSet.hpp"
-// template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,SPN_orig<EventsQueueSet> &);
 /*#include "MarkovChain.hpp"
 template void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,MarkovChain<EventsQueue<vector<Edge>>> &);
 */
