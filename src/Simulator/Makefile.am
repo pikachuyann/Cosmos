@@ -6,7 +6,7 @@ libClientSim_la_SOURCES = \
 	Event.cpp  Event.hpp \
 	EventsQueueSet.cpp EventsQueueSet.hpp \
 	EventsQueue.cpp EventsQueue.hpp \
-	timeGen.cpp timeGen.hpp \
+	timeGen.cpp timeGen.hpp timeGenBis.cpp \
 	marking.hpp spn.hpp \
 	SPNBase.cpp SPNBase.hpp \
 	LHA_orig.cpp LHA_orig.hpp \
@@ -28,7 +28,7 @@ libClientSimMain_la_SOURCES = \
 	BatchR.cpp BatchR.hpp \
 	Event.cpp  Event.hpp \
 	EventsQueue.cpp EventsQueue.hpp \
-	timeGen.cpp timeGen.hpp \
+	timeGen.cpp timeGen.hpp timeGenBis.cpp \
 	marking.hpp spn.hpp \
 	SPNBase.cpp SPNBase.hpp \
 	LHA_orig.cpp LHA_orig.hpp \
