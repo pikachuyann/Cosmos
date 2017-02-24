@@ -608,7 +608,8 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 
             case CO_not_gspn:
             {
-                modelType = CTMC;
+                modelType = External;
+                break;
             }
                 
             case CO_version:
