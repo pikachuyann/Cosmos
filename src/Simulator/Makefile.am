@@ -1,19 +1,11 @@
 
-lib_LTLIBRARIES = libClientSim.la libClientSimMain.la libClientSimMainNOSPN.la
+lib_LTLIBRARIES = libClientSim.la libClientSimMain.la libClientSimBase.la
 
 libClientSim_la_SOURCES = \
-	BatchR.cpp BatchR.hpp \
-	Event.cpp  Event.hpp \
-	EventsQueueSet.cpp EventsQueueSet.hpp \
-	EventsQueue.cpp EventsQueue.hpp \
-	timeGen.cpp timeGen.hpp \
 	timeGenBis.cpp timeGenBis.hpp \
-	marking.hpp spn.hpp \
+	spn.hpp \
 	SPNBase.cpp SPNBase.hpp \
-	LHA_orig.cpp LHA_orig.hpp \
-	LHA.hpp \
 	NLHA.cpp NLHA.hpp \
-	Simulator.cpp Simulator.hpp \
 	SimulatorRE.cpp SimulatorRE.hpp \
 	sparse_io.hpp \
 	stateSpace.cpp stateSpace.hpp \
@@ -23,22 +15,15 @@ libClientSim_la_SOURCES = \
 	SimulatorBoundedRE.cpp SimulatorBoundedRE.hpp \
 	foxglynn.cpp foxglynn.hpp \
 	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
-	clientsim.cpp InstanceSPNSim.cpp InstanceSPNSimRE.cpp
+	InstanceSPNSim.cpp InstanceSPNSimRE.cpp
 
 libClientSimMain_la_SOURCES = \
-	BatchR.cpp BatchR.hpp \
-	Event.cpp  Event.hpp \
-	EventsQueue.cpp EventsQueue.hpp \
-	timeGen.cpp timeGen.hpp \
-	timeGenBis.cpp timeGenBis.hpp \
-	marking.hpp spn.hpp \
-	SPNBase.cpp SPNBase.hpp \
-	LHA_orig.cpp LHA_orig.hpp \
-	LHA.hpp \
-	Simulator.cpp Simulator.hpp \
-    clientsim.cpp main.cpp
+    timeGenBis.cpp timeGenBis.hpp \
+	spn.hpp \
+	SPNBase.hpp \
+	main.cpp
 	
-libClientSimMainNOSPN_la_SOURCES = \
+libClientSimBase_la_SOURCES = \
 	BatchR.cpp BatchR.hpp \
 	Event.cpp  Event.hpp \
 	EventsQueue.cpp EventsQueue.hpp \
@@ -47,7 +32,7 @@ libClientSimMainNOSPN_la_SOURCES = \
 	LHA_orig.cpp LHA_orig.hpp \
 	LHA.hpp \
 	Simulator.cpp Simulator.hpp \
-    clientsim.cpp main.cpp
+    clientsim.cpp
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp DistributionDef.hpp \
 	timeGen.hpp Event.hpp EventsQueue.hpp BatchR.hpp EventsQueueSet.hpp \

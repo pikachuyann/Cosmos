@@ -474,6 +474,7 @@ bool build() {
         cmd += P.Path + "../lib/libClientSimLight.a ";
     } else {
         cmd += P.tmpPath + "/LHA.o ";
+        cmd += P.Path + "../lib/libClientSimBase.a ";
         if(generateMain){
             cmd += P.Path + "../lib/libClientSim.a ";
         } else {

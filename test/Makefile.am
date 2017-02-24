@@ -21,7 +21,7 @@ BUILT_SOURCES = LHA.cpp markingImpl.hpp spn.cpp main.cpp
 
 ClientSim2_SOURCES = LHA.cpp markingImpl.hpp spn.cpp main.cpp
 
-ClientSim2_LDADD = ../src/Simulator/libClientSim.la
+ClientSim2_LDADD = ../src/Simulator/libClientSim.la ../src/Simulator/libClientSimBase.la
 
 ClientSim2_CPPFLAGS = -Wall -Wextra -Wno-unused-const-variable -Wno-unused-parameter -Wno-unused-variable -Wno-unused-but-set-variable -I$(srcdir)/../src/Simulator $(BOOST_CPPFLAGS)
 
