@@ -114,6 +114,7 @@ enum TmpStat:int {
 
 enum ModelType {
     GSPN,
+    External,
     CTMC
 };
 

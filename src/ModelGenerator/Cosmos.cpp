@@ -206,9 +206,10 @@ int main(int argc, char** argv) {
     if(P.verbose>2)cout << "Binary directory path set to:" << P.Path << endl;
 
     //Parse models and generate code
-    if(P.tmpStatus & TS_GEN){
+    if((P.tmpStatus & TS_GEN) && P.modelType == GSPN ){
         //Parse and generate the gspn and lha.
         shared_ptr<GspnType> pGSPN = ParseGSPN();
+        
         if ( !pGSPN ) {
             cout << "Fail to build the GSPN." << endl;
             return(EXIT_FAILURE);
@@ -227,6 +228,7 @@ int main(int argc, char** argv) {
             outspn.print(outfile);
             return EXIT_SUCCESS;
         }
+        
         
         if(P.MaxRuns == 0 && P.lightSimulator){
             auto cmd = "cp "+P.Path+"../src/LightSimulator/*.* "+P.tmpPath;
@@ -249,6 +251,12 @@ int main(int argc, char** argv) {
         if ( ! ParseLHA()) {
             cout << "Fail to build the LHA. Try to go on anyway" << endl;;
         }
+    }
+    
+    if(P.modelType == External){
+        auto cmd = "cp "+P.PathGspn +" "+P.tmpPath+"/main.cpp";
+        if(P.verbose>=3)cout << cmd << endl;
+        system(cmd.c_str());
     }
 
     //Compile the simulator

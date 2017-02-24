@@ -439,7 +439,7 @@ void generateMain() { // Not use for the moment
 }
 
 bool build() {
-    const bool generateMain = P.RareEvent || P.is_domain_impl_set;
+    const bool generateMain = P.RareEvent || P.is_domain_impl_set || P.modelType == External;
     
     string bcmd = P.gcccmd + " " + P.gccflags;
 
@@ -448,16 +448,19 @@ bool build() {
         cout << "Start building ... " << endl;
     }
 
-    string cmd = "( ";
+    string cmd = "true\\\n";
     //Compile the SPN
-    cmd += bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/spn.o " + P.tmpPath + "/spn.cpp";
-    cmd += " )\\\n";
+    if(P.modelType==GSPN){
+        cmd += "&(" + bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/spn.o " + P.tmpPath + "/spn.cpp";
+        cmd += " )\\\n";
+    }
     //Compile the LHA
-    if(!P.lightSimulator)cmd += "&(" + bcmd + " -c -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp)\\\n";
+    if(!P.lightSimulator)cmd += "&(" + bcmd + " -c"+(P.modelType== External ? " -I./" : "")+" -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp)\\\n";
     
     if( generateMain){
     //Compile the Main
-    cmd += "&(" + bcmd + " -c -I"+P.Path+"../include "+ P.boostpath +" -o "+P.tmpPath+"/main.o "+P.tmpPath+"/main.cpp)";
+        cmd += "&(" + bcmd + " -c -I"+P.Path+"../include "+ P.boostpath + (P.modelType== External ? " -I./" : "");
+        cmd += " -o "+P.tmpPath+"/main.o "+P.tmpPath+"/main.cpp)";
     }
     
     cmd += " & wait";
@@ -476,7 +479,7 @@ bool build() {
         cmd += P.tmpPath + "/LHA.o ";
         cmd += P.Path + "../lib/libClientSimBase.a ";
         if(generateMain){
-            cmd += P.Path + "../lib/libClientSim.a ";
+            if(P.modelType==GSPN)cmd += P.Path + "../lib/libClientSim.a ";
         } else {
             cmd += P.Path + "../lib/libClientSimMain.a ";
         }
