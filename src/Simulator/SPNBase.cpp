@@ -27,6 +27,7 @@
 #include "SPNBase.hpp"
 #include "EventsQueue.hpp"
 #include "EventsQueueSet.hpp"
+#include "TimeGenBis.hpp"
 
 using namespace std;
 

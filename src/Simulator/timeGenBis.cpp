@@ -1,6 +1,5 @@
 #include "timeGenBis.hpp"
 #include "EventsQueue.hpp"
-#include "EventsQueueSet.hpp"
 #include "SPNBase.cpp"
 #include <float.h>
 
