@@ -93,6 +93,11 @@ let reg_type1 = Str.regexp "[(]"
 let reg_type2 = Str.regexp "[,]"
 
 (* Build block parameters defaults *)
+
+let completeDefaults params = function
+  | "UnitDelay" -> ("Ports","[1, 1]")::params
+  | _ -> params;;
+
 let parseblockParams liste = function
     | Element  ("P",["Name",x],[PCData(l)]) -> (x,l)::liste;
     | _ -> failwith "wtf is this parameter ???";;
@@ -103,7 +108,7 @@ let rec blockparams_of_simulink ((lB, lP, lL) as ml)  = function
         | "BlockParameterDefaults" -> List.fold_left blockparams_of_simulink ml clist
         | "Block" -> let blockType = List.assoc "BlockType" alist
 		     and blockParams = List.fold_left parseblockParams [] clist in
-                (lB, (blockType, blockParams)::lP, lL)
+                (lB, (blockType, completeDefaults blockParams blockType)::lP, lL)
         | _ -> Printf.fprintf stderr "In BlockParameterDefaults, %s should not exist\n" name; ml
         end
     | PCData (s) -> output_string stderr s; ml
