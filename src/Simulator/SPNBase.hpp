@@ -30,6 +30,7 @@
 
 #include "spn.hpp"
 #include "timeGen.hpp"
+#include "timeGenBis.hpp"
 #include "Event.hpp"
 
 template<class S, class EQT>
