@@ -56,6 +56,8 @@
 		0381D5481B90600000D0AC20 /* Gspn-scanner.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0367E29218842EE600F35619 /* Gspn-scanner.cc */; };
 		0381D5491B90600500D0AC20 /* Lha-parser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0367E29418842F0F00F35619 /* Lha-parser.cc */; };
 		0381D54A1B90600500D0AC20 /* Lha-scanner.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0367E29518842F0F00F35619 /* Lha-scanner.cc */; };
+		039255161E681FA000680513 /* timeGenBis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 039255141E681FA000680513 /* timeGenBis.cpp */; };
+		039255171E681FA000680513 /* timeGenBis.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 039255151E681FA000680513 /* timeGenBis.hpp */; };
 		039B4F8B188E7B2400C63ED7 /* Generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 039B4F89188E7B2400C63ED7 /* Generator.cpp */; };
 		03A5DCFC1B273A79003F470A /* Gspn-model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03A5DCFA1B273A79003F470A /* Gspn-model.cpp */; };
 		03AF3BAD15B0143C00BFCD67 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03AF3BAC15B0143C00BFCD67 /* libexpat.dylib */; };
@@ -275,6 +277,8 @@
 		03796A741B984AA80004BF0B /* SPNBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SPNBase.cpp; sourceTree = "<group>"; };
 		03796A751B984AA80004BF0B /* SPNBase.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SPNBase.hpp; sourceTree = "<group>"; };
 		038CC6911C0F245000C5A0F5 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = CMakeLists.txt; path = ../CMakeLists.txt; sourceTree = "<group>"; };
+		039255141E681FA000680513 /* timeGenBis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timeGenBis.cpp; sourceTree = "<group>"; };
+		039255151E681FA000680513 /* timeGenBis.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timeGenBis.hpp; sourceTree = "<group>"; };
 		039A3674191A9EE400B42447 /* Deck.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Deck.grml; sourceTree = "<group>"; };
 		039A3675191A9EE400B42447 /* DeckInfiny.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = DeckInfiny.grml; sourceTree = "<group>"; };
 		039A3676191A9EE400B42447 /* HardTotalStrat.grml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = HardTotalStrat.grml; sourceTree = "<group>"; };
@@ -1173,6 +1177,8 @@
 				032A7057181BC0D6006D7332 /* numSolverSH.hpp */,
 				03CB8F4D1893CB1A00A9938A /* timeGen.cpp */,
 				03CB8F4E1893CB1A00A9938A /* timeGen.hpp */,
+				039255141E681FA000680513 /* timeGenBis.cpp */,
+				039255151E681FA000680513 /* timeGenBis.hpp */,
 				035ED39E1E013F62009D3342 /* DistributionDef.hpp */,
 				032A7058181BC0D6006D7332 /* Simulator.cpp */,
 				032A7059181BC0D6006D7332 /* Simulator.hpp */,
@@ -3019,6 +3025,7 @@
 				BC956BC61AA0875F00AB8BD1 /* SocketPort.h in Headers */,
 				BCD7DA281A8D207E001A2D80 /* Print.h in Headers */,
 				0365553B18292D10001B5947 /* foxglynn.hpp in Headers */,
+				039255171E681FA000680513 /* timeGenBis.hpp in Headers */,
 				03650F831CFDC4FB00DB3041 /* EventsQueueSet.hpp in Headers */,
 				03796A771B984AA80004BF0B /* SPNBase.hpp in Headers */,
 				03B0C5521CEC791900FCBF20 /* markingTemplate.hpp in Headers */,
@@ -3240,6 +3247,7 @@
 				03E39B1A183E4A0E0070911A /* stateSpace.cpp in Sources */,
 				03E39B1B183E4A110070911A /* clientsim.cpp in Sources */,
 				03E39B19183E4A0C0070911A /* SimulatorContinuousBounded.cpp in Sources */,
+				039255161E681FA000680513 /* timeGenBis.cpp in Sources */,
 				03E39B18183E4A0A0070911A /* SimulatorBoundedRE.cpp in Sources */,
 				03650F811CFDC4FB00DB3041 /* EventsQueueSet.cpp in Sources */,
 				035464EF1DFFFF240060D055 /* MarkovChain.cpp in Sources */,
