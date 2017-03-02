@@ -7,16 +7,16 @@ libClientSim_la_SOURCES = \
 	EventsQueueSet.cpp EventsQueueSet.hpp \
 	SPNBase.cpp SPNBase.hpp \
 	NLHA.cpp NLHA.hpp \
-	SimulatorRE.cpp SimulatorRE.hpp \
+	RareEvents/SimulatorRE.cpp RareEvents/SimulatorRE.hpp \
 	sparse_io.hpp \
 	stateSpace.cpp stateSpace.hpp \
-	numericalSolver.cpp numericalSolver.hpp \
-	numSolverBB.cpp numSolverBB.hpp \
-	numSolverSH.cpp  numSolverSH.hpp \
-	SimulatorBoundedRE.cpp SimulatorBoundedRE.hpp \
-	foxglynn.cpp foxglynn.hpp \
-	SimulatorContinuousBounded.cpp SimulatorContinuousBounded.hpp \
-	InstanceSPNSim.cpp InstanceSPNSimRE.cpp
+	RareEvents/numericalSolver.cpp RareEvents/numericalSolver.hpp \
+	RareEvents/numSolverBB.cpp RareEvents/numSolverBB.hpp \
+	RareEvents/numSolverSH.cpp  RareEvents/numSolverSH.hpp \
+	RareEvents/SimulatorBoundedRE.cpp RareEvents/SimulatorBoundedRE.hpp \
+	RareEvents/foxglynn.cpp RareEvents/foxglynn.hpp \
+	RareEvents/SimulatorContinuousBounded.cpp RareEvents/SimulatorContinuousBounded.hpp \
+	InstanceSPNSim.cpp RareEvents/InstanceSPNSimRE.cpp
 
 libClientSimMain_la_SOURCES = \
 	timeGenBis.cpp timeGenBis.hpp \
@@ -35,14 +35,17 @@ libClientSimBase_la_SOURCES = \
 	Simulator.cpp Simulator.hpp \
     clientsim.cpp
 
+includesdir = $(includedir)
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp DistributionDef.hpp \
 	timeGen.hpp timeGenBis.hpp Event.hpp EventsQueue.hpp BatchR.hpp EventsQueueSet.hpp \
-	Simulator.hpp SimulatorRE.hpp SimulatorBoundedRE.hpp SimulatorContinuousBounded.hpp stateSpace.hpp numericalSolver.hpp \
-	foxglynn.hpp numSolverBB.hpp numSolverSH.hpp\
-	MarkovChain.hpp SPNBase.hpp \
+	Simulator.hpp stateSpace.hpp MarkovChain.hpp SPNBase.hpp \
 	LHA_orig.hpp NLHA.hpp clientsim.hpp
 
-includesdir = $(includedir)
+otherincludedir = $(includedir)/RareEvents
+otherinclude_HEADERS = RareEvents/numericalSolver.hpp \
+	RareEvents/foxglynn.hpp RareEvents/numSolverBB.hpp RareEvents/numSolverSH.hpp\
+	RareEvents/SimulatorRE.hpp RareEvents/SimulatorBoundedRE.hpp RareEvents/SimulatorContinuousBounded.hpp
+
 
 AM_LDFLAGS = $(PTHREAD_LIBS)
 AM_CPPFLAGS = -Wall -Wextra -Wno-unused-local-typedef  -Wno-unused-parameter $(BOOST_CPPFLAGS) 
