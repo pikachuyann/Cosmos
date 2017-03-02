@@ -1,4 +1,5 @@
 open Simulinkparser
+open Printf
 
 module OrderedBlocks =
   struct
@@ -81,6 +82,45 @@ let topologicSort (lB,lL) =
          if (LinksSet.is_empty !e) then (List.rev !l, lL) else failwith "Cannot simulate this Simulink model"
 ;;
 
-let generateCode (lB,lL) = (lB,lL);;
+let generateCode (lB,lL) =
+  let skCpp = open_out "SKModel.cpp" and
+      mkImp = open_out "markingImpl.hpp" and
+      skHpp = open_out "SKModel.hpp" in
+  (* Impression des headers *)
+  Printf.fprintf mkImp "#ifndef _MarkingImpl_HPP\n#define _MarkingImpl_HPP\n";
+  Printf.fprintf mkImp "using namespace std;\n#include <string.h>\n";
+  Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\n";
+  (* abstractBindingImpl *)
+  Printf.fprintf mkImp "\nclass abstractBindingImpl {\npublic:\n};\n";
+  (* abstractBindingIteratorImpl *)
+  Printf.fprintf mkImp "\nclass abstractBindingIteratorImpl {\npublic:\n";
+  Printf.fprintf mkImp "\tvoid reset(abstractMarkingImpl& m){};\n";
+  Printf.fprintf mkImp "\tbool next(size_t& t, abstractMarkingimpl& m){ return false; };\n";
+  Printf.fprintf mkImp "\tsize_t getIndex(){ return 0; };\n";
+  Printf.fprintf mkImp "\tabstractBinding getBinding(){ return abstractBinding(); };\n};\n";
+  (* abstractMarkingImpl *)
+  Printf.fprintf mkImp "\nclass abstractMarkingImpl {\npublic:";
+  let outputs_parse_regexp = Str.regexp "\\[\\([0-9]+\\), \\([0-9]+\\)\\]" in
+  let rec genSignalNames = function
+    [] -> ()
+    | t::q -> begin
+      Printf.fprintf mkImp "\n\t// Block %i - type %s (named %s) :" t.blockid t.blocktype t.name;
+      try
+        let numOfPorts = List.assoc "Ports" t.values in
+          let didmatch = Str.string_match outputs_parse_regexp numOfPorts 0 in
+            if didmatch then begin
+              let nb = int_of_string@@ Str.matched_group 2 numOfPorts in
+                for i = 1 to nb do
+                  Printf.fprintf mkImp "\n\tfloat[] _BLOCK%i_OUT%i;" t.blockid i
+                done
+              end
+           else Printf.fprintf mkImp "No Output."
+       with Not_found -> begin print_string t.blocktype; failwith "No Ports ?" end
+      end; genSignalNames q;
+  in genSignalNames lB;
+  Printf.fprintf mkImp "\n};\n";
+  (* Footers *)
+  Printf.fprintf mkImp "\n#endif";
+(lB,lL);;
 
 let testOutput (lB,lL) = Simulinkparser.printLaTeX stdout (lB,lL);;
