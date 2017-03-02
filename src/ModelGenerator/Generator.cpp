@@ -477,12 +477,12 @@ bool build() {
         cmd += P.Path + "../lib/libClientSimLight.a ";
     } else {
         cmd += P.tmpPath + "/LHA.o ";
-        cmd += P.Path + "../lib/libClientSimBase.a ";
         if(generateMain){
             if(P.modelType==GSPN)cmd += P.Path + "../lib/libClientSim.a ";
         } else {
             cmd += P.Path + "../lib/libClientSimMain.a ";
         }
+        cmd += P.Path + "../lib/libClientSimBase.a ";
     };
  
 
