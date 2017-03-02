@@ -81,4 +81,6 @@ let topologicSort (lB,lL) =
          if (LinksSet.is_empty !e) then (List.rev !l, lL) else failwith "Cannot simulate this Simulink model"
 ;;
 
+let generateCode (lB,lL) = (lB,lL);;
 
+let testOutput (lB,lL) = Simulinkparser.printLaTeX stdout (lB,lL);;
