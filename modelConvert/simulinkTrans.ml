@@ -14,6 +14,8 @@ module OrderedLinks =
 end
 module LinksSet = Set.Make(OrderedLinks)
 
+let skInfinitesimalLatency = ["Integrator"];;
+
 let topologicSort (lB,lL) =
   let e = ref (LinksSet.of_list lL) in
   let l = ref [] and s = ref BlockSet.empty in
@@ -27,28 +29,33 @@ let topologicSort (lB,lL) =
      and initiaS = function
        [] -> ()
        | t::q -> let incoming = Hashtbl.find c t.blockid in
-                   if (incoming == 0) then s := BlockSet.add t !s;
+                   if (incoming = 0) then s := BlockSet.add t !s;
                    initiaS q;
      and findblock id = function
        [] -> failwith "Un lien fait n'importe quoi"
-       | t::q when t.blockid == id -> t
+       | t::q when t.blockid = id -> t
        | t::q -> findblock id q
      and processblock block =
        l := block::!l;
        s := BlockSet.remove block !s;
-       let incomingedges = ref (LinksSet.filter (fun x -> x.fromblock == block.blockid) !e) and
+       let incomingedges = ref (LinksSet.filter (fun x -> x.fromblock = block.blockid) !e) and
            dealwithedge edge = begin
              e := LinksSet.remove edge !e;
              Hashtbl.replace c edge.toblock ( (Hashtbl.find c edge.toblock - 1) );
-             if (Hashtbl.find c edge.toblock == 0) then s := BlockSet.add (findblock edge.toblock lB) !s;
+             if (Hashtbl.find c edge.toblock = 0) then s := BlockSet.add (findblock edge.toblock lB) !s;
              edge
            end in
              incomingedges := LinksSet.map dealwithedge !incomingedges;
              print_int (LinksSet.cardinal !e);
+     and infinitesimalLatencies = function
+       [] -> ()
+       | t::q when List.exists (fun x -> x=t.blocktype) skInfinitesimalLatency -> processblock t; infinitesimalLatencies q;
+       | t::q -> infinitesimalLatencies q;
      in
        initiaC lB;
        countEdges lL;
        initiaS lB;
+       infinitesimalLatencies lB;
        while (not (BlockSet.is_empty !s)) do
          let vertex = BlockSet.choose !s in
            processblock vertex
