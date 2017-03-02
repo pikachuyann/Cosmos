@@ -56,16 +56,29 @@ let topologicSort (lB,lL) =
        [] -> ()
        | t::q when List.exists (fun x -> x=t.blocktype) skInfinitesimalLatency -> processblock t; infinitesimalLatencies q;
        | t::q -> infinitesimalLatencies q;
+     and findLatencies = function
+       [] -> []
+       | t::q when List.exists (fun (x,y) -> x="delayLength") t.values -> (float_of_string (List.assoc "delayLength" t.values),t)::(findLatencies q)
+       | t::q when List.exists (fun (x,y) -> x="delayTime") t.values -> (float_of_string (List.assoc "delayTime" t.values),t)::(findLatencies q)
+       | t::q when t.blocktype="UnitDelay" -> (1.0,t)::(findLatencies q)
+       | t::q -> findLatencies q
+     and processLatencied = function
+       [] -> ()
+       | (l,t)::q when l = 0.0 -> processLatencied q
+       | (l,t)::q -> processblock t; processLatencied q
      in
        initiaC lB;
        countEdges lL;
        initiaS lB;
-       infinitesimalLatencies lB;
-       while (not (BlockSet.is_empty !s)) do
-         let vertex = BlockSet.choose !s in
-           processblock vertex
-       done;
-       if (LinksSet.is_empty !e) then (List.rev !l, lL) else failwith "Cannot simulate this Simulink model"
+       let latenciedBlocks = ref (findLatencies lB) in
+         latenciedBlocks := List.sort (compare) !latenciedBlocks;
+         processLatencied !latenciedBlocks;
+         infinitesimalLatencies lB;
+         while (not (BlockSet.is_empty !s)) do
+           let vertex = BlockSet.choose !s in
+             processblock vertex
+         done;
+         if (LinksSet.is_empty !e) then (List.rev !l, lL) else failwith "Cannot simulate this Simulink model"
 ;;
 
 
