@@ -10,6 +10,7 @@ modelConvert: DataFile.ml PetriNet.ml StochasticPetriNet.ml generator.ml  pnmlpa
 
 EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml generator.ml pnmlparser.ml\
 	prism2SPT.ml prismType.ml stateflowType.ml simulinkparser.ml stateflowparser.ml simulinkTrans.ml\
+	stateflowTrans.ml\
 	type.ml parserPrism.mly parserSimulEdge.mly lexerPrism.mll lexerSimulEdge.mll\
 	prelexer.mll preparser.mly StochPTPrinter.ml GrMLParser.ml \
 	ClessParser/cless_ast.ml  ClessParser/cless.ml ClessParser/cless.mli ClessParser/cless_lexer.mll ClessParser/cless_parser.mly\
