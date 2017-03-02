@@ -92,3 +92,6 @@ doc/manual.pdf
 testSK/tmpCosmos-*/
 testSK/ClientSim
 *.byte
+modelConvert/markingImpl.hpp
+modelConvert/SKModel.cpp
+modelConvert/SKModel.hpp
