@@ -1,6 +1,6 @@
 type block = {
   blocktype : string;
-  blockid : string;
+  blockid : int;
   name : string;
   values : (string * string) list;
 }

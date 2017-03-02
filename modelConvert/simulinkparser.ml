@@ -2,7 +2,7 @@ open Xml
 open Type
 open Lexing
 
-type block = { blocktype: string; blockid: string; name: string; values: (string * string) list }
+type block = { blocktype: string; blockid: int; name: string; values: (string * string) list }
 type blockDefault = (string * (string * string) list) (* C'est blocktype et values seulement *)
 type blockPort = int * int
 type simulinkLink = { fromblock: int; fromport: int; toblock: int; toport: int }
@@ -12,7 +12,7 @@ type simulinkPModel = block list * simulinkLink list
 let rec printValues f = function
 	(c,v)::q -> Printf.fprintf f "\t%s -> %s\n" c v; printValues f q
 	| [] -> ();;
-let printBlock f b = Printf.fprintf f "%s: %s (%s)\n%a" b.name b.blocktype b.blockid printValues b.values;;
+let printBlock f b = Printf.fprintf f "%s: %s (%i)\n%a" b.name b.blocktype b.blockid printValues b.values;;
 let printBlocklist f lB = List.iter (printBlock f) lB;;
 let printParDef f (t,v) = Printf.fprintf f "%s:\n%a" t printValues v;;  
 let printBlockParDeflist f lP = List.iter (printParDef f) lP;;
@@ -141,7 +141,7 @@ let rec blocklist_of_simulink ((lB, lP, lL):simulinkModel) = function
         | "Block" -> let blockType = List.assoc "BlockType" alist and blockName = List.assoc "Name" alist
                      and blockID = List.assoc "SID" alist and blockParams = List.fold_left parseblockParams [] clist in
                      ({ blocktype = blockType;
-			blockid = blockID;
+			blockid = int_of_string blockID;
 			name = blockName;
 			values = blockParams
 		      }::lB, lP, lL);
@@ -189,7 +189,7 @@ let printLaTeX f ((lB,lL):simulinkPModel) =
                          int_of_string@@ Str.matched_group 2 position,
                          int_of_string@@ Str.matched_group 3 position,
                          int_of_string@@ Str.matched_group 4 position) in
-          Printf.fprintf f "\\node[sk%s,draw] at (%imm,%imm) (b%s) {};\n" btype x y bid
+          Printf.fprintf f "\\node[sk%s,draw] at (%imm,%imm) (b%i) {};\n" btype x y bid
   and printLink link =
     Printf.fprintf f "\\path[->] (b%i.out%c) edge (b%i.in%c);\n"
 		   link.fromblock (getchar link.fromport)
