@@ -36,7 +36,7 @@ libClientSimBase_la_SOURCES = \
     clientsim.cpp
 
 includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp DistributionDef.hpp \
-	timeGen.hpp Event.hpp EventsQueue.hpp BatchR.hpp EventsQueueSet.hpp \
+	timeGen.hpp timeGenBis.hpp Event.hpp EventsQueue.hpp BatchR.hpp EventsQueueSet.hpp \
 	Simulator.hpp SimulatorRE.hpp SimulatorBoundedRE.hpp SimulatorContinuousBounded.hpp stateSpace.hpp numericalSolver.hpp \
 	foxglynn.hpp numSolverBB.hpp numSolverSH.hpp\
 	MarkovChain.hpp SPNBase.hpp \
