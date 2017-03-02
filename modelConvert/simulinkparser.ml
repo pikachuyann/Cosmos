@@ -126,10 +126,23 @@ let extractLink (s,d) =
 	   toblock = outId;
 	   toport = outPort });;
 
+let rec flattenLinkBranches s lL = function
+  | [] -> lL
+  | (Element ("Branch",alist,clist))::q -> flattenLinkBranches s lL (clist@q);
+  | (Element ("P",["Name","Dst"],[PCData(d)]))::q -> extractLink (s,d)::(flattenLinkBranches s lL q);
+  | (Element ("P",["Name","ZOrder"],_))::q -> flattenLinkBranches s lL q;
+  | (Element ("P",["Name","Points"],_))::q -> flattenLinkBranches s lL q;
+  | (Element ("P",["Name","Src"],_))::q -> flattenLinkBranches s lL q; (* déjà parsé *)
+  | (Element ("P",["Name",name],_))::q -> print_string name; failwith "Unexpected element.";
+  | (PCData (s))::q -> print_string s; failwith "PCData ?";
+  | (Element (e,_,_))::q -> print_string e; failwith "Element ?";
+  | _ -> failwith "Unknown element in a Branch of a Link.";;
+
 let line_of_simulink lL clist =
     let src = extract_src (findpropName "Src" clist) and dst = extract_dst (findpropName "Dst" clist) in
         match (src,dst) with
         | Some s, Some d -> (extractLink (s,d))::lL
+        | Some s, None -> flattenLinkBranches s lL clist  
         | _ -> failwith "A link without source or destination shouldn't exist";;
 
 (* Build block lists *)
