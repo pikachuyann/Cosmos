@@ -38,15 +38,20 @@ let topologicSort (lB,lL) =
      and processblock block =
        l := block::!l;
        s := BlockSet.remove block !s;
-       let incomingedges = ref (LinksSet.filter (fun x -> x.fromblock = block.blockid) !e) and
-           dealwithedge edge = begin
+       let outgoingedges = ref (LinksSet.filter (fun x -> x.fromblock = block.blockid) !e) and
+           incomingedges = ref (LinksSet.filter (fun x -> x.toblock = block.blockid) !e) and
+           dealwithedgeout edge = begin
              e := LinksSet.remove edge !e;
              Hashtbl.replace c edge.toblock ( (Hashtbl.find c edge.toblock - 1) );
              if (Hashtbl.find c edge.toblock = 0) then s := BlockSet.add (findblock edge.toblock lB) !s;
              edge
+           end and 
+           dealwithedgeinc edge = begin (* Nettoyage pour les blocs infinitésimaux/… *)
+             e := LinksSet.remove edge !e;
+             edge
            end in
-             incomingedges := LinksSet.map dealwithedge !incomingedges;
-             print_int (LinksSet.cardinal !e);
+             outgoingedges := LinksSet.map dealwithedgeout !outgoingedges;
+             incomingedges := LinksSet.map dealwithedgeinc !incomingedges;
      and infinitesimalLatencies = function
        [] -> ()
        | t::q when List.exists (fun x -> x=t.blocktype) skInfinitesimalLatency -> processblock t; infinitesimalLatencies q;
@@ -60,7 +65,7 @@ let topologicSort (lB,lL) =
          let vertex = BlockSet.choose !s in
            processblock vertex
        done;
-       if (LinksSet.is_empty !e) then !l else failwith "Cannot simulate this Simulink model"
+       if (LinksSet.is_empty !e) then (List.rev !l, lL) else failwith "Cannot simulate this Simulink model"
 ;;
 
 
