@@ -69,6 +69,6 @@ let _ =
 	|> Simulinkparser.blocklist_of_tree ([],[],[])
         |> Simulinkparser.pushDefaults
         |> SimulinkTrans.topologicSort
-(*	|> Simulinkparser.printLaTeX stdout *)
+	|> Simulinkparser.printLaTeX stdout
 
 
