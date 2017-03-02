@@ -56,8 +56,8 @@ private:
 
 };
 
-template<class DEDS>
-void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,DEDS &);
+//template<class DEDS>
+//void generateEvent(double ctime,Event& E,size_t Id,const abstractBinding& b,timeGen &,DEDS &);
 
 extern int verbose;
 

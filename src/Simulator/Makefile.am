@@ -4,6 +4,7 @@ lib_LTLIBRARIES = libClientSim.la libClientSimMain.la libClientSimBase.la
 libClientSim_la_SOURCES = \
 	timeGenBis.cpp timeGenBis.hpp \
 	spn.hpp \
+	EventsQueueSet.cpp EventsQueueSet.hpp \
 	SPNBase.cpp SPNBase.hpp \
 	NLHA.cpp NLHA.hpp \
 	SimulatorRE.cpp SimulatorRE.hpp \
@@ -18,7 +19,7 @@ libClientSim_la_SOURCES = \
 	InstanceSPNSim.cpp InstanceSPNSimRE.cpp
 
 libClientSimMain_la_SOURCES = \
-    timeGenBis.cpp timeGenBis.hpp \
+	timeGenBis.cpp timeGenBis.hpp \
 	spn.hpp \
 	SPNBase.hpp \
 	main.cpp
