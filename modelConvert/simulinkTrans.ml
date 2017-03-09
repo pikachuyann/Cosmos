@@ -97,19 +97,19 @@ let generateCode (lB,lL) =
   Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\"\n";
   Printf.fprintf skCpp "#include \"marking.hpp\"\n#include \"markingImpl.hpp\"\n";
   (*  Définition deSKTransition *)
-  Printf.fprintf skHpp "class skTransition\n";
+  Printf.fprintf skHpp "class SKTransition {\n";
   Printf.fprintf skHpp "public:\n";
-  Printf.fprintf skHpp "\tsize_t Id\n";
-  Printf.fprintf skHpp "\tstd::string label\n";
-  Printf.fprintf skHpp "\tDistributionType DistTypeIndex\n";
-  Printf.fprintf skHpp "\n\tstd:array<abstractBinding, 1> bindingList;\n";
+  Printf.fprintf skHpp "\tsize_t Id;\n";
+  Printf.fprintf skHpp "\tstd::string label;\n";
+  Printf.fprintf skHpp "\tDistributionType DistTypeIndex;\n";
+  Printf.fprintf skHpp "\n\tstd::array<abstractBinding, 1> bindingList;\n";
   Printf.fprintf skHpp "};\n";
   (* abstractBindingImpl *)
   Printf.fprintf mkImp "\nclass abstractBindingImpl {\npublic:\n};\n";
   (* abstractBindingIteratorImpl *)
   Printf.fprintf mkImp "\nclass abstractBindingIteratorImpl {\npublic:\n";
   Printf.fprintf mkImp "\tvoid reset(abstractMarkingImpl& m){};\n";
-  Printf.fprintf mkImp "\tbool next(size_t& t, abstractMarkingimpl& m){ return false; };\n";
+  Printf.fprintf mkImp "\tbool next(size_t& t, abstractMarkingImpl& m){ return false; };\n";
   Printf.fprintf mkImp "\tsize_t getIndex(){ return 0; };\n";
   Printf.fprintf mkImp "\tabstractBinding getBinding(){ return abstractBinding(); };\n};\n";
   (* abstractMarking def dans le Cpp *)
@@ -145,7 +145,7 @@ let generateCode (lB,lL) =
   let printSedCmdTmp = Buffer.create 16 in
   let generateNewEntries = Buffer.create 16 in
 
-  (* abstractMarkingImpl + SKMarking *)
+  (* abstractMarkingImpl + SKMarking.P->*)
   Printf.fprintf skHpp "class SKMarking {\n";
   Printf.fprintf skHpp "public:\n";
   Printf.fprintf skHpp "\tvoid printHeader(ostream&);\n";
@@ -154,10 +154,11 @@ let generateCode (lB,lL) =
   Printf.fprintf skHpp "\n";
   
   Printf.fprintf mkImp "\nclass abstractMarkingImpl {\npublic:";
-  Printf.fprintf mkImp "\n\tsize_t lastEntry";
-  Printf.fprintf mkImp "\n\tsize_t totalEntries";
-  Printf.fprintf mkImp "\n\tvector<double> _TIME";
-  Printf.fprintf skHpp "\n\tvector<double> _TIME";
+  Printf.fprintf mkImp "\n\tsize_t lastEntry;";
+  Printf.fprintf mkImp "\n\tsize_t totalEntries;";
+  Printf.fprintf mkImp "\n\tsize_t countDown;";
+  Printf.fprintf mkImp "\n\tvector<double> _TIME;";
+  Printf.fprintf skHpp "\n\tvector<double> _TIME;";
   let outputs_parse_regexp = Str.regexp "\\[\\([0-9]+\\), \\([0-9]+\\)\\]" in
   let rec genSignalNames = function
     [] -> ()
@@ -174,7 +175,7 @@ let generateCode (lB,lL) =
                   Printf.bprintf printHeaderTmp "\n\ts << setw(5) << \"B%iO%i\";" t.blockid i;
                   Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastEntry - 1)] << \" \";" t.blockid i;
                   Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->_BLOCK%i_OUT%i[(P->lastEntry - 1)] << \"/g' \";" t.blockid i t.blockid i;
-                  Printf.bprintf generateNewEntries "\n\tP->>_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
+                  Printf.bprintf generateNewEntries "\n\tMarking.P->>_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
                 done
               end
            else Printf.fprintf mkImp "No Output."
@@ -195,7 +196,7 @@ let generateCode (lB,lL) =
   Printf.fprintf skHpp "\n\tSKModel();\n";
   Printf.fprintf skHpp "\n\tvoid reset();\n";
   Printf.fprintf skHpp "\n\tvoid initialEventsQueue(EQT&, timeGen&);";
-  Printf.fprintf skHpp "\n\tvoid generateEvent(double ctime,Event& E,size_t Id,timeGen& TG)";
+  Printf.fprintf skHpp "\n\tvoid generateEvent(double ctime,Event& E,size_t Id,timeGen& TG);";
   Printf.fprintf skHpp "\n\tvoid fire(size_t, const abstractBinding&, double);";
   Printf.fprintf skHpp "\n\tvoid update(double, size_t, const abstractBinding&, EQT&, timeGen&);";
   Printf.fprintf skHpp "\n};\n";
@@ -257,37 +258,38 @@ let generateCode (lB,lL) =
 
   (* Génération de la fonction fire *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::fire(size_t tr,const abstractBinding&, double ctime) {\n";
-  Printf.fprintf skCpp "\tP->countDown = P->lastEntry\n";
-  Printf.fprintf skCpp "\tP->_TIME[P->lastEntry] = ctime";
+  Printf.fprintf skCpp "\tMarking.P->countDown = Marking.P->lastEntry;\n";
+  Printf.fprintf skCpp "\tMarking.P->_TIME[Marking.P->lastEntry] = ctime;";
   let rec genSignalChanges = function
     [] -> ()
     | b::q when b.blocktype="Sum" -> begin
        let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
-         Printf.fprintf skCpp "\n\tP->_BLOCK%i_OUT%i[P->lastEntry] = P->_BLOCK%i_OUT%i[P->lastEntry] + P->_BLOCK%i_OUT%i[P->lastEntry];" b.blockid 1 ba ia bb ib;
+         Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" b.blockid 1 ba ia bb ib;
       end; genSignalChanges q
     | b::q when b.blocktype="Display" -> genSignalChanges q
     | b::q when b.blocktype="Constant" -> begin
        let cstValue = float_of_string (List.assoc "Value" b.values ) in
-         Printf.fprintf skCpp "\n\tP->_BLOCK%i_OUT%i[P->lastEntry] = %f;" b.blockid 1 cstValue;
+         Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue;
        end; genSignalChanges q
     | b::q when b.blocktype="Integrator" -> begin (* ToDo : Improve Integrator to deal with RK45 *)
-         Printf.fprintf skCpp "\n\tif (P->lastEntry = 0) {";
+         Printf.fprintf skCpp "\n\tif (Marking.P->lastEntry = 0) {";
          let (ba,ia) = findSrc (b.blockid,1) lL and cstValue = float_of_string (List.assoc "InitialCondition" b.values) in
-           Printf.fprintf skCpp "\n\t\tP->_BLOCK%i_OUT%i[P->lastEntry] = %f;" b.blockid 1 cstValue;
+           Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue;
            Printf.fprintf skCpp "\n\t} else {";
-           Printf.fprintf skCpp "\n\t\tP->_BLOCK%i_OUT%i[P->lastEntry] = P->_BLOCK%i_OUT%i[P->lastEntry-1] + P->_BLOCK%i_OUT%i[P->lastEntry-1] * (P->_TIME[P->lastEntry] - P->_TIME[P->lastEntry-1]);" b.blockid 1 b.blockid 1 ba ia;
+           Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] * (Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1]);" b.blockid 1 b.blockid 1 ba ia;
+           Printf.fprintf skCpp "\n\t}";
        end; genSignalChanges q
     | b::q -> begin
         Printf.fprintf skCpp "\n\t// ALERT ToDo - block %s" b.blocktype;
         Printf.eprintf "[WARNING] Found unimplemented block type %s\n" b.blocktype;
       end; genSignalChanges q
   in genSignalChanges lB;
-  Printf.fprintf skCpp "\n};";
+  Printf.fprintf skCpp "\n};\n";
 
   (* Mise à jour de la queue d'évènements *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::update(double ctime, size_t tr, const abstractBinding& b, EQT &EQ, timeGen &TG) {\n";
   Printf.fprintf skCpp "\tEQ.remove(tr, b.id());\n";
-  Printf.fprintf skCpp "\tP->lastEntry = P->lastEntry + 1";
+  Printf.fprintf skCpp "\tMarking.P->lastEntry = Marking.P->lastEntry + 1";
   Buffer.output_buffer skCpp generateNewEntries;
   Printf.fprintf skCpp "\n\tdouble t = ctime;\n";
   Printf.fprintf skCpp "\tEvent E;\n";
