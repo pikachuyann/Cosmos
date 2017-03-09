@@ -218,6 +218,7 @@ let generateCode (lB,lL) =
   Printf.fprintf skCpp "\nvoid abstractMarking::resetToInitMarking() {\n";
   Printf.fprintf skCpp "\tP->lastEntry = 0;\n";
   Printf.fprintf skCpp "\tP->lastPrintEntry = 0;\n";
+  Printf.fprintf skCpp "\tP->_TIME = {0.0};";
   Buffer.output_buffer skCpp generateVectors;
   Printf.fprintf skCpp "\n}\n";
 
@@ -297,7 +298,8 @@ let generateCode (lB,lL) =
   (* Mise à jour de la queue d'évènements *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::update(double ctime, size_t tr, const abstractBinding& b, EQT &EQ, timeGen &TG) {\n";
   Printf.fprintf skCpp "\tEQ.remove(tr, b.id());\n";
-  Printf.fprintf skCpp "\tMarking.P->lastEntry = Marking.P->lastEntry + 1;";
+  Printf.fprintf skCpp "\tMarking.P->lastEntry = Marking.P->lastEntry + 1;\n";
+  Printf.fprintf skCpp "\tMarking.P->_TIME.push_back(0.0);";
   Buffer.output_buffer skCpp generateNewEntries;
   Printf.fprintf skCpp "\n\tdouble t = ctime;\n";
   Printf.fprintf skCpp "\tEvent E;\n";
