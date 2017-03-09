@@ -248,6 +248,17 @@ let generateCode (lB,lL) =
   Printf.fprintf skCpp "\tMarking.resetToInitMarking();\n";
   Printf.fprintf skCpp "};\n";
 
+  (* Génération de la fonction fire *)
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::fire(size_t tr,const abstractBinding&, double ctime) {";
+  let rec genSignalChanges = function
+    [] -> ()
+    | b::q -> begin
+        Printf.fprintf skCpp "\n\t// ALERT ToDo - block %s" b.blocktype;
+        Printf.eprintf "[WARNING] Found unimplemented block type %s\n" b.blocktype;
+      end; genSignalChanges q
+  in genSignalChanges lB;
+  Printf.fprintf skCpp "\n};";
+
   (* Mise à jour de la queue d'évènements *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::update(double ctime, size_t tr, const abstractBinding& b, EQT &EQ, timeGen &TG) {\n";
   Printf.fprintf skCpp "\tEQ.remove(tr, b.id());\n";
