@@ -95,3 +95,4 @@ testSK/ClientSim
 modelConvert/markingImpl.hpp
 modelConvert/SKModel.cpp
 modelConvert/SKModel.hpp
+.*.swp

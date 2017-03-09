@@ -90,6 +90,7 @@ let generateCode (lB,lL) =
   Printf.fprintf mkImp "#ifndef _MarkingImpl_HPP\n#define _MarkingImpl_HPP\n";
   Printf.fprintf mkImp "using namespace std;\n#include <string.h>\n";
   Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\n";
+  Printf.fprintf skCpp "#include \"marking.hpp\"\n#include \"markingImpl.hpp\n";
   (*  Définition deSKTransition *)
   Printf.fprintf skHpp "class skTransition\n";
   Printf.fprintf skHpp "public:\n";
@@ -106,6 +107,38 @@ let generateCode (lB,lL) =
   Printf.fprintf mkImp "\tbool next(size_t& t, abstractMarkingimpl& m){ return false; };\n";
   Printf.fprintf mkImp "\tsize_t getIndex(){ return 0; };\n";
   Printf.fprintf mkImp "\tabstractBinding getBinding(){ return abstractBinding(); };\n};\n";
+  (* abstractMarking def dans le Cpp *)
+  Printf.fprintf skCpp "\nvoid abstractMarking::resetToInitMarking() {\n";
+  Printf.fprintf skCpp "\tP->lastEntry = 0;\n";
+  Printf.fprintf skCpp "}\n";
+  Printf.fprintf skCpp "\nabstractMarking::abstractMarking() {\n";
+  Printf.fprintf skCpp "\tP = new abstractMarkingImpl;\n";
+  Printf.fprintf skCpp "\tresetToInitMarking();\n";
+  Printf.fprintf skCpp "}\n";
+
+  Printf.fprintf skCpp "\nabstractMarking::abstractMarking(const abstractMarking& m) {\n";
+  Printf.fprintf skCpp "\tP = new abstractMarkingImpl;\n";
+  Printf.fprintf skCpp "\t*this = m;\n";
+  Printf.fprintf skCpp "}\n";
+  Printf.fprintf skCpp "\nabstractMarking& abstractMarking::operator = (const abstractMarking& m) {\n";
+  Printf.fprintf skCpp "\t*P = *(m.P);\n";
+  Printf.fprintf skCpp "\treturn *this;\n";
+  Printf.fprintf skCpp "}\n";
+  Printf.fprintf skCpp "\nabstractMarking::~abstractMarking() {\n";
+  Printf.fprintf skCpp "\tdelete(P);\n";
+  Printf.fprintf skCpp "}\n";
+
+  Printf.fprintf skCpp "\nvoid abstractMarking::swap(abstractMarking& m) {\n";
+  Printf.fprintf skCpp "\tabstractMarkingImpl* tmp = m.P;\n";
+  Printf.fprintf skCpp "\tm.P = P;\n";
+  Printf.fprintf skCpp "\tP = tmp;\n";
+  Printf.fprintf skCpp "}\n";
+
+  (* Création des chaînes de caractères pour les fonctions d'impression *)
+  let printHeaderTmp = Buffer.create 16 in
+  let printTmp = Buffer.create 16 in
+  let printSedCmdTmp = Buffer.create 16 in
+
   (* abstractMarkingImpl + SKMarking *)
   Printf.fprintf skHpp "class SKMarking {\n";
   Printf.fprintf skHpp "public:\n";
@@ -115,6 +148,8 @@ let generateCode (lB,lL) =
   Printf.fprintf skHpp "\n";
   
   Printf.fprintf mkImp "\nclass abstractMarkingImpl {\npublic:";
+  Printf.fprintf mkImp "\n\tsize_t lastEntry";
+  Printf.fprintf mkImp "\n\tsize_t totalEntries";
   Printf.fprintf mkImp "\n\tvector<double> _TIME";
   Printf.fprintf skHpp "\n\tvector<double> _TIME";
   let outputs_parse_regexp = Str.regexp "\\[\\([0-9]+\\), \\([0-9]+\\)\\]" in
@@ -129,7 +164,10 @@ let generateCode (lB,lL) =
               let nb = int_of_string@@ Str.matched_group 2 numOfPorts in
                 for i = 1 to nb do
                   Printf.fprintf mkImp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
-                  Printf.fprintf skHpp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i
+                  Printf.fprintf skHpp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
+                  Printf.bprintf printHeaderTmp "\n\ts << setw(5) << \"B%iO%i\";" t.blockid i;
+                  Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[lastEntry] << \" \";" t.blockid i;
+                  Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->>_BLOCK%i_OUT%i[lastEntry] << \"/g' \";" t.blockid i t.blockid i;
                 done
               end
            else Printf.fprintf mkImp "No Output."
@@ -154,6 +192,76 @@ let generateCode (lB,lL) =
   Printf.fprintf skHpp "\n\tvoid fire(size_t, const abstractBinding&, double);";
   Printf.fprintf skHpp "\n\tvoid update(double, size_t, const abstractBinding&, EQT&, timeGen&);";
   Printf.fprintf skHpp "\n};\n";
+
+  (* Printing functions *)
+  Printf.fprintf skCpp "\nvoid abstractMarking::printHeader(ostream& s) const{\n";
+  Buffer.output_buffer skCpp printHeaderTmp;
+  Printf.fprintf skCpp "\n}\n";
+
+  Printf.fprintf skCpp "\nvoid abstractMarking::print(ostream& s,double eTime) const{\n";
+  Buffer.output_buffer skCpp printTmp;
+  Printf.fprintf skCpp "\n}\n";
+
+  Printf.fprintf skCpp "\nvoid abstractMarking::printSedCmd(ostream& s) const{\n";
+  Buffer.output_buffer skCpp printSedCmdTmp;
+  Printf.fprintf skCpp "\n}\n";
+
+  (* Commandes liées à l'abstractBinding *)
+  Printf.fprintf skCpp "\nbool abstractBinding::next() {\n";
+  Printf.fprintf skCpp "\tidcount++;\n";
+  Printf.fprintf skCpp "\treturn false;\n";
+  Printf.fprintf skCpp "}\n";
+  Printf.fprintf skCpp "\nabstractBinding::abstractBinding() {\n";
+  Printf.fprintf skCpp "\tidcount=0;\n";
+  Printf.fprintf skCpp "}\n";
+  Printf.fprintf skCpp "\nabstractBinding::abstractBinding(const abstractBinding& m) {\n";
+  Printf.fprintf skCpp "\tidcount=m.idcount;\n";
+  Printf.fprintf skCpp "}\n";
+  Printf.fprintf skCpp "abstractBinding::~abstractBinding() { }\n";
+  Printf.fprintf skCpp "abstractBinding& abstractBinding::operator = (const abstractBinding& m) {\n";
+  Printf.fprintf skCpp "\tidcount = m.idcount;\n";
+  Printf.fprintf skCpp "\treturn *this;\n";
+  Printf.fprintf skCpp "}\n";
+  Printf.fprintf skCpp "void abstractBinding::print() const{ }\n";
+  Printf.fprintf skCpp "int abstractBinding::id() const { return idcount; }\n";
+  Printf.fprintf skCpp "int abstractBinding::idTotal() const { return 0; }\n";
+
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nSKModel<EQT>::SKModel() {\n";
+  Printf.fprintf skCpp "\tTransition.push_back(SKTransition());\n";
+  Printf.fprintf skCpp "}\n";
+
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::initialEventsQueue(EQT& EQ, timeGen& tg) {\n";
+  Printf.fprintf skCpp "\tEvent E;\n";
+  Printf.fprintf skCpp "\tgenerateEvent(0.0, E, 0, tg);\n";
+  Printf.fprintf skCpp "\tEQ.insert(E);\n";
+  Printf.fprintf skCpp "}\n";
+
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::generateEvent(double ctime, Event& E,size_t Id, timeGen& tg) {\n";
+  Printf.fprintf skCpp "\tdouble t = ctime;\n";
+  Printf.fprintf skCpp "\n\tE.transition = Id;\n";
+  Printf.fprintf skCpp "\tE.time = t;\n";
+  Printf.fprintf skCpp "\tE.priority = 1;\n";
+  Printf.fprintf skCpp "\tE.weight = 1;\n";
+  Printf.fprintf skCpp "};\n";
+
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::reset() {\n";
+  Printf.fprintf skCpp "\tMarking.resetToInitMarking();\n";
+  Printf.fprintf skCpp "};\n";
+
+  (* Mise à jour de la queue d'évènements *)
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::update(double ctime, size_t tr, const abstractBinding& b, EQT &EQ, timeGen &TG) {\n";
+  Printf.fprintf skCpp "\tEQ.remove(tr, b.id());\n";
+  Printf.fprintf skCpp "\tdouble t = ctime;\n";
+  Printf.fprintf skCpp "\tEvent E;\n";
+  Printf.fprintf skCpp "\tif (t < 10.0) {\n";
+  Printf.fprintf skCpp "\t\t = t + 0.5;\n";
+  Printf.fprintf skCpp "\t\tgenerateEvent(t, E, 0, TG);\n";
+  Printf.fprintf skCpp "\t\tEQ.insert(E);\n";
+  Printf.fprintf skCpp "\t} else { EQ.reset(); }\n";
+  Printf.fprintf skCpp "};\n";
+
+  (* Dernière ligne : *)
+  Printf.fprintf skCpp "template class SKModel<EventsQueue<std::vector<SKTransition>>>;\n";
 (lB,lL);;
 
 let testOutput (lB,lL) = Simulinkparser.printLaTeX stdout (lB,lL);;
