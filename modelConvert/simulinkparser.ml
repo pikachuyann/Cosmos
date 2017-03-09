@@ -96,6 +96,7 @@ let reg_type2 = Str.regexp "[,]"
 
 let completeDefaults params = function
   | "UnitDelay" -> ("Ports","[1, 1]")::params
+  | "Constant" -> ("Ports","[0, 1]")::params
   | _ -> params;;
 
 let parseblockParams liste = function
@@ -140,8 +141,8 @@ let rec flattenLinkBranches s lL = function
   | (Element ("P",["Name","Src"],_))::q -> flattenLinkBranches s lL q; (* déjà parsé *)
   | (Element ("P",["Name",name],_))::q -> print_string name; failwith "Unexpected element.";
   | (PCData (s))::q -> print_string s; failwith "PCData ?";
-  | (Element (e,_,_))::q -> print_string e; failwith "Element ?";
-  | _ -> failwith "Unknown element in a Branch of a Link.";;
+  | (Element (e,_,_))::q -> print_string e; failwith "Element ?";;
+(*  | _ -> failwith "Unknown element in a Branch of a Link.";; *)
 
 let line_of_simulink lL clist =
     let src = extract_src (findpropName "Src" clist) and dst = extract_dst (findpropName "Dst" clist) in
