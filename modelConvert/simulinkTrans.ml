@@ -154,6 +154,7 @@ let generateCode (lB,lL) =
   Printf.fprintf skHpp "\n";
   
   Printf.fprintf mkImp "\nclass abstractMarkingImpl {\npublic:";
+  Printf.fprintf mkImp "\n\tsize_t lastPrintEntry;";
   Printf.fprintf mkImp "\n\tsize_t lastEntry;";
   Printf.fprintf mkImp "\n\tsize_t totalEntries;";
   Printf.fprintf mkImp "\n\tsize_t countDown;";
@@ -173,8 +174,8 @@ let generateCode (lB,lL) =
                   Printf.fprintf mkImp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
                   Printf.fprintf skHpp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
                   Printf.bprintf printHeaderTmp "\n\ts << setw(5) << \"B%iO%i\";" t.blockid i;
-                  Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastEntry - 1)] << \" \";" t.blockid i;
-                  Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->_BLOCK%i_OUT%i[(P->lastEntry - 1)] << \"/g' \";" t.blockid i t.blockid i;
+                  Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \" \";" t.blockid i;
+                  Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \"/g' \";" t.blockid i t.blockid i;
                   Printf.bprintf generateNewEntries "\n\tMarking.P->_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
                 done
               end
@@ -202,15 +203,15 @@ let generateCode (lB,lL) =
   Printf.fprintf skHpp "\n};\n";
 
   (* Printing functions *)
-  Printf.fprintf skCpp "\nvoid abstractMarking::printHeader(ostream& s) const{\n";
+  Printf.fprintf skCpp "\nvoid abstractMarking::printHeader(ostream& s) const{";
   Buffer.output_buffer skCpp printHeaderTmp;
   Printf.fprintf skCpp "\n}\n";
 
-  Printf.fprintf skCpp "\nvoid abstractMarking::print(ostream& s,double eTime) const{\n";
+  Printf.fprintf skCpp "\nvoid abstractMarking::print(ostream& s,double eTime) const{";
   Buffer.output_buffer skCpp printTmp;
   Printf.fprintf skCpp "\n}\n";
 
-  Printf.fprintf skCpp "\nvoid abstractMarking::printSedCmd(ostream& s) const{\n";
+  Printf.fprintf skCpp "\nvoid abstractMarking::printSedCmd(ostream& s) const{";
   Buffer.output_buffer skCpp printSedCmdTmp;
   Printf.fprintf skCpp "\n}\n";
 
@@ -259,6 +260,7 @@ let generateCode (lB,lL) =
   (* Génération de la fonction fire *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::fire(size_t tr,const abstractBinding&, double ctime) {\n";
   Printf.fprintf skCpp "\tMarking.P->countDown = Marking.P->lastEntry;\n";
+  Printf.fprintf skCpp "\tMarking.P->lastPrintEntry = Marking.P->lastEntry;\n";
   Printf.fprintf skCpp "\tMarking.P->_TIME[Marking.P->lastEntry] = ctime;";
   let rec genSignalChanges = function
     [] -> ()
@@ -272,7 +274,7 @@ let generateCode (lB,lL) =
          Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue;
        end; genSignalChanges q
     | b::q when b.blocktype="Integrator" -> begin (* ToDo : Improve Integrator to deal with RK45 *)
-         Printf.fprintf skCpp "\n\tif (Marking.P->lastEntry = 0) {";
+         Printf.fprintf skCpp "\n\tif (Marking.P->lastEntry == 0) {";
          let (ba,ia) = findSrc (b.blockid,1) lL and cstValue = float_of_string (List.assoc "InitialCondition" b.values) in
            Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue;
            Printf.fprintf skCpp "\n\t} else {";
