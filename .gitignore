@@ -79,9 +79,9 @@ prism/classes
 prism/cudd/include
 prism/obj
 build_*/
-modelConvert/buildSimulink.sh
-modelConvert/test.sh
-modelConvert/test.slx
+#modelConvert/buildSimulink.sh
+#modelConvert/test.sh
+modelConvert/*.slx
 prism2SPT/\[Content_Types\].xml
 prism2SPT/_rels/
 prism2SPT/metadata/
