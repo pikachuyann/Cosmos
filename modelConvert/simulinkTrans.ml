@@ -82,6 +82,11 @@ let topologicSort (lB,lL) =
          if (LinksSet.is_empty !e) then (List.rev !l, lL) else failwith "Cannot simulate this Simulink model"
 ;;
 
+let rec findSrc (b,p) = function
+  [] -> Printf.eprintf "Couldn't find a source port linked to port %i of block %i" p b; (0,0)
+  | l::q when l.toblock=b && l.toport=p -> (l.fromblock,l.fromport)
+  | l::q -> findSrc (b,p) q;;
+
 let generateCode (lB,lL) =
   let skCpp = open_out "SKModel.cpp" and
       mkImp = open_out "markingImpl.hpp" and
@@ -166,8 +171,8 @@ let generateCode (lB,lL) =
                   Printf.fprintf mkImp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
                   Printf.fprintf skHpp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
                   Printf.bprintf printHeaderTmp "\n\ts << setw(5) << \"B%iO%i\";" t.blockid i;
-                  Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[lastEntry] << \" \";" t.blockid i;
-                  Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->>_BLOCK%i_OUT%i[lastEntry] << \"/g' \";" t.blockid i t.blockid i;
+                  Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[P->lastEntry] << \" \";" t.blockid i;
+                  Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->>_BLOCK%i_OUT%i[P->lastEntry] << \"/g' \";" t.blockid i t.blockid i;
                 done
               end
            else Printf.fprintf mkImp "No Output."
@@ -250,8 +255,14 @@ let generateCode (lB,lL) =
 
   (* Génération de la fonction fire *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::fire(size_t tr,const abstractBinding&, double ctime) {";
+  Printf.fprintf skCpp "\tP->countDown = P->lastEntry";
   let rec genSignalChanges = function
     [] -> ()
+    | b::q when b.blocktype="Sum" -> begin
+       let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
+        Printf.fprintf skCpp "\n\tP->_BLOCK%i_OUT%i[P->lastEntry] = P->_BLOCK%i_OUT%i[P->lastEntry] + P->_BLOCK%i_OUT%i[P->lastEntry];" b.blockid 1 ba ia bb ib;
+      end; genSignalChanges q
+    | b::q when b.blocktype="Display" -> genSignalChanges q
     | b::q -> begin
         Printf.fprintf skCpp "\n\t// ALERT ToDo - block %s" b.blocktype;
         Printf.eprintf "[WARNING] Found unimplemented block type %s\n" b.blocktype;
