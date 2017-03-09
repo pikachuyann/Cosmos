@@ -260,9 +260,13 @@ let generateCode (lB,lL) =
     [] -> ()
     | b::q when b.blocktype="Sum" -> begin
        let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
-        Printf.fprintf skCpp "\n\tP->_BLOCK%i_OUT%i[P->lastEntry] = P->_BLOCK%i_OUT%i[P->lastEntry] + P->_BLOCK%i_OUT%i[P->lastEntry];" b.blockid 1 ba ia bb ib;
+         Printf.fprintf skCpp "\n\tP->_BLOCK%i_OUT%i[P->lastEntry] = P->_BLOCK%i_OUT%i[P->lastEntry] + P->_BLOCK%i_OUT%i[P->lastEntry];" b.blockid 1 ba ia bb ib;
       end; genSignalChanges q
     | b::q when b.blocktype="Display" -> genSignalChanges q
+    | b::q when b.blocktype="Constant" -> begin
+       let cstValue = float_of_string (List.assoc "Value" b.values ) in
+         Printf.fprintf skCpp "\n\tP->_BLOCK%i_OUT%i[P->lastEntry] = %f;" b.blockid 1 cstValue;
+       end; genSignalChanges q
     | b::q -> begin
         Printf.fprintf skCpp "\n\t// ALERT ToDo - block %s" b.blocktype;
         Printf.eprintf "[WARNING] Found unimplemented block type %s\n" b.blocktype;
