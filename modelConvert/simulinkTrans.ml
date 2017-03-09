@@ -113,9 +113,6 @@ let generateCode (lB,lL) =
   Printf.fprintf mkImp "\tsize_t getIndex(){ return 0; };\n";
   Printf.fprintf mkImp "\tabstractBinding getBinding(){ return abstractBinding(); };\n};\n";
   (* abstractMarking def dans le Cpp *)
-  Printf.fprintf skCpp "\nvoid abstractMarking::resetToInitMarking() {\n";
-  Printf.fprintf skCpp "\tP->lastEntry = 0;\n";
-  Printf.fprintf skCpp "}\n";
   Printf.fprintf skCpp "\nabstractMarking::abstractMarking() {\n";
   Printf.fprintf skCpp "\tP = new abstractMarkingImpl;\n";
   Printf.fprintf skCpp "\tresetToInitMarking();\n";
@@ -144,6 +141,7 @@ let generateCode (lB,lL) =
   let printTmp = Buffer.create 16 in
   let printSedCmdTmp = Buffer.create 16 in
   let generateNewEntries = Buffer.create 16 in
+  let generateVectors = Buffer.create 16 in
 
   (* abstractMarkingImpl + SKMarking.P->*)
   Printf.fprintf skHpp "class SKMarking {\n";
@@ -177,6 +175,7 @@ let generateCode (lB,lL) =
                   Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \" \";" t.blockid i;
                   Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \"/g' \";" t.blockid i t.blockid i;
                   Printf.bprintf generateNewEntries "\n\tMarking.P->_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
+                  Printf.bprintf generateVectors "\n\tP->_BLOCK%i_OUT%i = {0.0};" t.blockid i;
                 done
               end
            else Printf.fprintf mkImp "No Output."
@@ -213,6 +212,13 @@ let generateCode (lB,lL) =
 
   Printf.fprintf skCpp "\nvoid abstractMarking::printSedCmd(ostream& s) const{";
   Buffer.output_buffer skCpp printSedCmdTmp;
+  Printf.fprintf skCpp "\n}\n";
+
+  (* Reset abstractMarking *)
+  Printf.fprintf skCpp "\nvoid abstractMarking::resetToInitMarking() {\n";
+  Printf.fprintf skCpp "\tP->lastEntry = 0;\n";
+  Printf.fprintf skCpp "\tP->lastPrintEntry = 0;\n";
+  Buffer.output_buffer skCpp generateVectors;
   Printf.fprintf skCpp "\n}\n";
 
   (* Commandes liées à l'abstractBinding *)
