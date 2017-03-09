@@ -94,8 +94,8 @@ let generateCode (lB,lL) =
   (* Impression des headers *)
   Printf.fprintf mkImp "#ifndef _MarkingImpl_HPP\n#define _MarkingImpl_HPP\n";
   Printf.fprintf mkImp "using namespace std;\n#include <string.h>\n";
-  Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\n";
-  Printf.fprintf skCpp "#include \"marking.hpp\"\n#include \"markingImpl.hpp\n";
+  Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\"\n";
+  Printf.fprintf skCpp "#include \"marking.hpp\"\n#include \"markingImpl.hpp\"\n";
   (*  Définition deSKTransition *)
   Printf.fprintf skHpp "class skTransition\n";
   Printf.fprintf skHpp "public:\n";
