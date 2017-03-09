@@ -175,7 +175,7 @@ let generateCode (lB,lL) =
                   Printf.bprintf printHeaderTmp "\n\ts << setw(5) << \"B%iO%i\";" t.blockid i;
                   Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastEntry - 1)] << \" \";" t.blockid i;
                   Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->_BLOCK%i_OUT%i[(P->lastEntry - 1)] << \"/g' \";" t.blockid i t.blockid i;
-                  Printf.bprintf generateNewEntries "\n\tMarking.P->>_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
+                  Printf.bprintf generateNewEntries "\n\tMarking.P->_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
                 done
               end
            else Printf.fprintf mkImp "No Output."
@@ -289,12 +289,12 @@ let generateCode (lB,lL) =
   (* Mise à jour de la queue d'évènements *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::update(double ctime, size_t tr, const abstractBinding& b, EQT &EQ, timeGen &TG) {\n";
   Printf.fprintf skCpp "\tEQ.remove(tr, b.id());\n";
-  Printf.fprintf skCpp "\tMarking.P->lastEntry = Marking.P->lastEntry + 1";
+  Printf.fprintf skCpp "\tMarking.P->lastEntry = Marking.P->lastEntry + 1;";
   Buffer.output_buffer skCpp generateNewEntries;
   Printf.fprintf skCpp "\n\tdouble t = ctime;\n";
   Printf.fprintf skCpp "\tEvent E;\n";
   Printf.fprintf skCpp "\tif (t < 10.0) {\n";
-  Printf.fprintf skCpp "\t\t = t + 0.5;\n";
+  Printf.fprintf skCpp "\t\tt = t + 0.5;\n";
   Printf.fprintf skCpp "\t\tgenerateEvent(t, E, 0, TG);\n";
   Printf.fprintf skCpp "\t\tEQ.insert(E);\n";
   Printf.fprintf skCpp "\t} else { EQ.reset(); }\n";
