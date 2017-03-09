@@ -90,6 +90,14 @@ let generateCode (lB,lL) =
   Printf.fprintf mkImp "#ifndef _MarkingImpl_HPP\n#define _MarkingImpl_HPP\n";
   Printf.fprintf mkImp "using namespace std;\n#include <string.h>\n";
   Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\n";
+  (*  Définition deSKTransition *)
+  Printf.fprintf skHpp "class skTransition\n";
+  Printf.fprintf skHpp "public:\n";
+  Printf.fprintf skHpp "\tsize_t Id\n";
+  Printf.fprintf skHpp "\tstd::string label\n";
+  Printf.fprintf skHpp "\tDistributionType DistTypeIndex\n";
+  Printf.fprintf skHpp "\n\tstd:array<abstractBinding, 1> bindingList;\n";
+  Printf.fprintf skHpp "};\n";
   (* abstractBindingImpl *)
   Printf.fprintf mkImp "\nclass abstractBindingImpl {\npublic:\n};\n";
   (* abstractBindingIteratorImpl *)
@@ -98,8 +106,17 @@ let generateCode (lB,lL) =
   Printf.fprintf mkImp "\tbool next(size_t& t, abstractMarkingimpl& m){ return false; };\n";
   Printf.fprintf mkImp "\tsize_t getIndex(){ return 0; };\n";
   Printf.fprintf mkImp "\tabstractBinding getBinding(){ return abstractBinding(); };\n};\n";
-  (* abstractMarkingImpl *)
+  (* abstractMarkingImpl + SKMarking *)
+  Printf.fprintf skHpp "class SKMarking {\n";
+  Printf.fprintf skHpp "public:\n";
+  Printf.fprintf skHpp "\tvoid printHeader(ostream&);\n";
+  Printf.fprintf skHpp "\tvoid print(ostream&, float);\n";
+  Printf.fprintf skHpp "\tvoid printSedCmd(ostream&);\n";
+  Printf.fprintf skHpp "\n";
+  
   Printf.fprintf mkImp "\nclass abstractMarkingImpl {\npublic:";
+  Printf.fprintf mkImp "\n\tvector<double> _TIME";
+  Printf.fprintf skHpp "\n\tvector<double> _TIME";
   let outputs_parse_regexp = Str.regexp "\\[\\([0-9]+\\), \\([0-9]+\\)\\]" in
   let rec genSignalNames = function
     [] -> ()
@@ -111,7 +128,8 @@ let generateCode (lB,lL) =
             if didmatch then begin
               let nb = int_of_string@@ Str.matched_group 2 numOfPorts in
                 for i = 1 to nb do
-                  Printf.fprintf mkImp "\n\tfloat[] _BLOCK%i_OUT%i;" t.blockid i
+                  Printf.fprintf mkImp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
+                  Printf.fprintf skHpp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i
                 done
               end
            else Printf.fprintf mkImp "No Output."
@@ -119,8 +137,23 @@ let generateCode (lB,lL) =
       end; genSignalNames q;
   in genSignalNames lB;
   Printf.fprintf mkImp "\n};\n";
+  Printf.fprintf skHpp "\n};\n";
   (* Footers *)
   Printf.fprintf mkImp "\n#endif";
+  (* SKModel *)
+  Printf.fprintf skHpp "template <class EQT>\nclass SKModel {\n";
+  Printf.fprintf skHpp "public:\n";
+  Printf.fprintf skHpp "\tabstractMarking Marking;\n";
+  Printf.fprintf skHpp "\tstd::vector<SKTransition> Transition;\n";
+  Printf.fprintf skHpp "\n\tsize_t lastTransition;\n";
+  Printf.fprintf skHpp "\tsize_t lastTransitionTime;\n";
+  Printf.fprintf skHpp "\n\tSKModel();\n";
+  Printf.fprintf skHpp "\n\tvoid reset();\n";
+  Printf.fprintf skHpp "\n\tvoid initialEventsQueue(EQT&, timeGen&);";
+  Printf.fprintf skHpp "\n\tvoid generateEvent(double ctime,Event& E,size_t Id,timeGen& TG)";
+  Printf.fprintf skHpp "\n\tvoid fire(size_t, const abstractBinding&, double);";
+  Printf.fprintf skHpp "\n\tvoid update(double, size_t, const abstractBinding&, EQT&, timeGen&);";
+  Printf.fprintf skHpp "\n};\n";
 (lB,lL);;
 
 let testOutput (lB,lL) = Simulinkparser.printLaTeX stdout (lB,lL);;
