@@ -248,6 +248,7 @@ int main(int argc, char** argv) {
         
         generateMain();
     } else {
+        
         if ( ! ParseLHA()) {
             cout << "Fail to build the LHA. Try to go on anyway" << endl;;
         }

@@ -150,7 +150,20 @@ shared_ptr<GspnType> ParseGSPN() {
 
 bool ParseLHA(){
     GspnType emptyGSPN;
-
+    emptyGSPN.tr =1;
+    transition trans;
+    trans.id = 0;
+    trans.name = "DummyTrans";
+    trans.type = Timed;
+    trans.priority = expr(1);
+    trans.weight = expr(1.0);
+    trans.singleService = true;
+    trans.markingDependant = false;
+    trans.ageMemory = false;
+    trans.nbServers = 1;
+    
+    emptyGSPN.transitionStruct.push_back(trans);
+    emptyGSPN.TransId["DummyTrans"]=0;
     return ParseLHA(emptyGSPN);
 }
 

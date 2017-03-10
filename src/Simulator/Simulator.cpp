@@ -207,7 +207,7 @@ bool SimulatorBase<S,EQT,DEDS>::SimulateOneStep(){
             static_cast<S*>(this)->printLog(eTime);
 			A.fireAutonomous(AE.Index,N.Marking);
 			if(verbose>3){
-				cerr << "Autonomous transition:" << AE.Index << endl;
+				cerr << "Autonomous transition:" << AE.Index << " "<<E1.time << ">=" << AE.FiringTime<< endl;
 				A.printState(cerr);
 				cerr << endl;
 			}
