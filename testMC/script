@@ -8,6 +8,6 @@ cp ../modelConvert/SKModel.cpp ./
 cp ../modelConvert/SKModel.hpp ./
 cp ../modelConvert/markingImpl.hpp ./
 
-g++ -Wno-return-type -std=gnu++11 -c -I../include -o main.o main.cpp
-g++ -Wno-return-type -std=gnu++11 -c -I../include -o LHA.o LHA.cpp
-g++ -Wno-return-type -std=gnu++11 -o ClientSim LHA.o main.o ../lib/libClientSimMainNOSPN.a
+g++ -Wno-return-type -std=gnu++11 -c -I/usr/local/include -I../include -o main.o main.cpp
+g++ -Wno-return-type -std=gnu++11 -c -I/usr/local/include -I../include -o LHA.o LHA.cpp
+g++ -Wno-return-type -std=gnu++11 -I/usr/local/include -o ClientSim LHA.o main.o ../lib/libClientSimBase.a
