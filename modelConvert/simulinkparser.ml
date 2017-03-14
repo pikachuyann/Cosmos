@@ -231,3 +231,48 @@ let rec getSettings lS = function
 let rec dispSettings lS = function
   [] -> lS
   | (x,l)::q -> print_string x; print_string " = "; print_string l; print_newline(); dispSettings ((x,l)::lS) q;;
+
+type extFloat = Infty | Auto | Finite of float
+
+let extfloat_of_string = function
+  | "auto" -> Auto
+  | "inf" -> Infty
+  | value -> Finite (float_of_string value);;
+let extfloat_of_sampletime = function
+  | "-1" -> Auto
+  | value -> Finite (float_of_string value);;
+
+let computeLatencies lS ((lB, lL):simulinkPModel) =
+  let startTime = extfloat_of_string (List.assoc "StartTime" lS) and stopTime = extfloat_of_string (List.assoc "StopTime" lS) and fixedStep = extfloat_of_string (List.assoc "FixedStep" lS) in
+    let baseStep = match fixedStep with
+    | Auto -> begin match stopTime with
+      | Auto -> failwith "stopTime = auto : pas de sens"
+      | Infty -> failwith "stopTime = infty et fixedStep = auto ? Ah, le cas est arrivé. Il faut une valeur par défaut."
+      | Finite stop -> begin match startTime with
+        | Finite start -> (stop -. start) /. 50.
+        | _ -> failwith "startTime a une tête étrange." end; end;
+    | Infty -> failwith "fixedStep = infty : cela n'a pas de sens"
+    | Finite step -> step
+    in
+      let rec aux = function
+        [] -> []
+        | b::q when b.blocktype="UnitDelay" -> let sampleTime = extfloat_of_sampletime (List.assoc "SampleTime" b.values) in
+            let realLatency = match sampleTime with
+            | Auto -> baseStep
+            | Finite latency -> latency
+            | _ -> failwith "Error in realLatency"
+            in { blocktype = b.blocktype;
+                 blockid = b.blockid;
+                 name = b.name;
+                 values = ["LATENCY", string_of_float realLatency] }::(aux q)
+        | b::q when b.blocktype="Delay" -> let sampleTime = extfloat_of_sampletime (List.assoc "SampleTime" b.values) in
+            let realLatency = (float_of_string (List.assoc "DelayLength" b.values)) *. match sampleTime with
+            | Auto -> baseStep
+            | Finite latency -> latency
+            | _ -> failwith "Error in realLatency"
+            in { blocktype = b.blocktype;
+                 blockid = b.blockid;
+                 name = b.name;
+                 values = ["LATENCY", string_of_float realLatency] }::(aux q)
+        | b::q -> (b)::(aux q)
+      in (aux lB, lL);;
