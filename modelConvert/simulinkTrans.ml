@@ -62,8 +62,9 @@ let topologicSort (lB,lL) =
        | t::q -> infinitesimalLatencies q;
      and findLatencies = function
        [] -> []
-       | t::q when List.exists (fun (x,y) -> x="DelayLength") t.values -> (float_of_string (List.assoc "DelayLength" t.values),t)::(findLatencies q)
-       | t::q when List.exists (fun (x,y) -> x="DelayTime") t.values -> (float_of_string (List.assoc "DelayTime" t.values),t)::(findLatencies q)
+       | t::q when List.exists (fun (x,y) -> x="LATENCY") t.values -> (float_of_string (List.assoc "LATENCY" t.values),t)::(findLatencies q)
+(*       | t::q when List.exists (fun (x,y) -> x="DelayLength") t.values -> (float_of_string (List.assoc "DelayLength" t.values),t)::(findLatencies q)
+       | t::q when List.exists (fun (x,y) -> x="DelayTime") t.values -> (float_of_string (List.assoc "DelayTime" t.values),t)::(findLatencies q) *)
        | t::q when t.blocktype="UnitDelay" -> (1.0,t)::(findLatencies q)
        | t::q -> findLatencies q
      and processLatencied = function

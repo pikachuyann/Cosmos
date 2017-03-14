@@ -78,6 +78,7 @@ let _ =
 	|> Xml.parse_string
 	|> Simulinkparser.blocklist_of_tree ([],[],[])
         |> Simulinkparser.pushDefaults
+        |> Simulinkparser.computeLatencies skSettings
         |> SimulinkTrans.topologicSort
         |> SimulinkTrans.generateCode skSettings
         |> SimulinkTrans.generateGSPN
