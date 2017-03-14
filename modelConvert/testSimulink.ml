@@ -79,7 +79,7 @@ let _ =
 	|> Simulinkparser.blocklist_of_tree ([],[],[])
         |> Simulinkparser.pushDefaults
         |> SimulinkTrans.topologicSort
-        |> SimulinkTrans.generateCode
+        |> SimulinkTrans.generateCode skSettings
         |> SimulinkTrans.generateGSPN
         |> SimulinkTrans.testOutput
 (*	|> Simulinkparser.printLaTeX stdout *)
