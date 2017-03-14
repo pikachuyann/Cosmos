@@ -70,6 +70,7 @@ let _ =
         |> Simulinkparser.pushDefaults
         |> SimulinkTrans.topologicSort
         |> SimulinkTrans.generateCode
+        |> SimulinkTrans.generateGSPN
         |> SimulinkTrans.testOutput
 (*	|> Simulinkparser.printLaTeX stdout *)
 
