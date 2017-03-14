@@ -31,3 +31,7 @@ val pushDefaults : simulinkModel -> block list * simulinkLink list
 val printLaTeX : out_channel -> simulinkPModel -> unit
 val getSettings : (string * string) list -> Xml.xml -> (string * string) list
 val dispSettings : (string * string) list -> (string * string) list -> (string * string) list
+type extFloat = Infty | Auto | Finite of float
+val extfloat_of_string : string -> extFloat
+val extfloat_of_sampletime : string -> extFloat
+val computeLatencies : (string * string) list -> simulinkPModel -> simulinkPModel
