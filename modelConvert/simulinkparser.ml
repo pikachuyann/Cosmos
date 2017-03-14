@@ -219,11 +219,15 @@ let printLaTeX f ((lB,lL):simulinkPModel) =
 
 (* Récupération de la configuration de la simulation *)
 let rec getSettings lS = function
-  | Element  ("P",["Name",x],[PCData(l)]) -> [(x,l)]
+  | Element ("P",["Name",x],[PCData(l)]) -> (x,l)::lS
   | Element (name,alist,clist) ->
   begin match name with
-    | "P" -> []
+    | "P" -> lS
     | _ -> List.fold_left getSettings lS clist
   end
   | PCData (s) -> lS
 ;;
+
+let rec dispSettings lS = function
+  [] -> lS
+  | (x,l)::q -> print_string x; print_string " = "; print_string l; print_newline(); dispSettings ((x,l)::lS) q;;

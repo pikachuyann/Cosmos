@@ -95,9 +95,11 @@ testSK/ClientSim
 modelConvert/markingImpl.hpp
 modelConvert/SKModel.cpp
 modelConvert/SKModel.hpp
+modelConvert/SKModel.grml
 .*.swp
 testMC/tmpCosmos-*/
 testMC/ClientSim
 testMC/markingImpl.hpp
 testMC/SKModel.cpp
 testMC/SKModel.hpp
+testMC/SKModel.grml

@@ -29,3 +29,5 @@ val blocklist_of_simulink : simulinkModel -> Xml.xml -> simulinkModel
 val blocklist_of_tree : simulinkModel -> Xml.xml -> simulinkModel
 val pushDefaults : simulinkModel -> block list * simulinkLink list
 val printLaTeX : out_channel -> simulinkPModel -> unit
+val getSettings : (string * string) list -> Xml.xml -> (string * string) list
+val dispSettings : (string * string) list -> (string * string) list -> (string * string) list
