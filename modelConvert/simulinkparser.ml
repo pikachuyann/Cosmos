@@ -215,4 +215,15 @@ let printLaTeX f ((lB,lL):simulinkPModel) =
 		   link.toblock (getchar link.toport)
   in
   List.iter printBlock lB;
-  List.iter printLink lL
+  List.iter printLink lL;;
+
+(* Récupération de la configuration de la simulation *)
+let rec getSettings lS = function
+  | Element  ("P",["Name",x],[PCData(l)]) -> [(x,l)]
+  | Element (name,alist,clist) ->
+  begin match name with
+    | "P" -> []
+    | _ -> List.fold_left getSettings lS clist
+  end
+  | PCData (s) -> lS
+;;
