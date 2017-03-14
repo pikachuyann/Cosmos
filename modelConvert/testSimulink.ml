@@ -60,6 +60,16 @@ let _ =
     "usage";;
 
 let _ =
+	let skSettings =
+	Zip.open_in !inname
+	|> (fun z -> (
+	try Zip.find_entry z "simulink/configSet0.xml"
+	with Not_found -> Zip.find_entry z "simulink/configSetInfo.xml")
+	|> Zip.read_entry z)
+	|> Xml.parse_string
+	|> Simulinkparser.getSettings []
+	in
+
 	Zip.open_in !inname
 	|> (fun z -> (
 	try Zip.find_entry z "simulink/blockdiagram.xml"
