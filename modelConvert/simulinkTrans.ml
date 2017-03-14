@@ -1,5 +1,8 @@
 open Simulinkparser
 open Printf
+open PetriNet
+open StochasticPetriNet
+open Type
 
 module OrderedBlocks =
   struct
@@ -312,6 +315,28 @@ let generateCode (lB,lL) =
 
   (* Dernière ligne : *)
   Printf.fprintf skCpp "template class SKModel<EventsQueue<std::vector<SKTransition>>>;\n";
+(lB,lL);;
+
+let generateGSPN (lB, lL) =
+  let net = Net.create () in
+    let outputs_parse_regexp = Str.regexp "\\[\\([0-9]+\\), \\([0-9]+\\)\\]" in
+    let rec generatePlaces = function
+      [] -> ()
+      | t::q -> begin
+        try
+          let numOfPorts = List.assoc "Ports" t.values in
+            let didmatch = Str.string_match outputs_parse_regexp numOfPorts 0 in
+              if didmatch then begin
+                let nb = int_of_string@@ Str.matched_group 2 numOfPorts in
+                  for i = 1 to nb do
+                    Data.add (("B"^(string_of_int t.blockid)^"O"^(string_of_int i)),(Int 0, Some (Int 0))) net.Net.place;
+                  done
+                end
+         with Not_found -> begin print_string t.blocktype; failwith "No Ports ?" end
+      end; generatePlaces q;
+    in generatePlaces lB;
+    Data.add ("SimulinkTransition", (Imm, Float 1.0, Float 1.0)) net.Net.transition;
+    StochPTPrinter.print_spt ("SKModel.grml") net;
 (lB,lL);;
 
 let testOutput (lB,lL) = Simulinkparser.printLaTeX stdout (lB,lL);;
