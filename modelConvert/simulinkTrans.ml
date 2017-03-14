@@ -90,7 +90,7 @@ let rec findSrc (b,p) = function
   | l::q when l.toblock=b && l.toport=p -> (l.fromblock,l.fromport)
   | l::q -> findSrc (b,p) q;;
 
-let generateCode (lB,lL) =
+let generateCode lS (lB,lL) =
   let skCpp = open_out "SKModel.cpp" and
       mkImp = open_out "markingImpl.hpp" and
       skHpp = open_out "SKModel.hpp" in
@@ -298,6 +298,10 @@ let generateCode (lB,lL) =
   in genSignalChanges lB;
   Printf.fprintf skCpp "\n};\n";
 
+  let simStart = (float_of_string (List.assoc "StartTime" lS)) and
+      simEnd = (float_of_string (List.assoc "StopTime" lS)) in
+  let simBase = (simEnd -. simStart) /. 50. in
+
   (* Mise à jour de la queue d'évènements *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::update(double ctime, size_t tr, const abstractBinding& b, EQT &EQ, timeGen &TG) {\n";
   Printf.fprintf skCpp "\tEQ.remove(tr, b.id());\n";
@@ -307,7 +311,7 @@ let generateCode (lB,lL) =
   Printf.fprintf skCpp "\n\tdouble t = ctime;\n";
   Printf.fprintf skCpp "\tEvent E;\n";
   Printf.fprintf skCpp "\tif (t < 10.0) {\n";
-  Printf.fprintf skCpp "\t\tt = t + 0.5;\n";
+  Printf.fprintf skCpp "\t\tt = t + %f;\n" simBase;
   Printf.fprintf skCpp "\t\tgenerateEvent(t, E, 0, TG);\n";
   Printf.fprintf skCpp "\t\tEQ.insert(E);\n";
   Printf.fprintf skCpp "\t} else { EQ.reset(); }\n";
