@@ -95,6 +95,19 @@ let generateCode lS (lB,lL) =
   let skCpp = open_out "SKModel.cpp" and
       mkImp = open_out "markingImpl.hpp" and
       skHpp = open_out "SKModel.hpp" in
+
+  let startTime = Simulinkparser.extfloat_of_string (List.assoc "StartTime" lS) and stopTime = Simulinkparser.extfloat_of_string (List.assoc "StopTime" lS) and fixedStep = Simulinkparser.extfloat_of_string (List.assoc "FixedStep" lS) in
+    let baseStep = match fixedStep with
+    | Auto -> begin match stopTime with
+      | Auto -> failwith "stopTime = auto : pas de sens"
+      | Infty -> failwith "stopTime = infty et fixedStep = auto ? Ah, le cas est arrivé. Il faut une valeur par défaut."
+      | Finite stop -> begin match startTime with
+        | Finite start -> (stop -. start) /. 50.
+        | _ -> failwith "startTime a une tête étrange." end; end;
+    | Infty -> failwith "fixedStep = infty : cela n'a pas de sens"
+    | Finite step -> step
+    in
+
   (* Impression des headers *)
   Printf.fprintf mkImp "#ifndef _MarkingImpl_HPP\n#define _MarkingImpl_HPP\n";
   Printf.fprintf mkImp "using namespace std;\n#include <string.h>\n";
@@ -299,10 +312,6 @@ let generateCode lS (lB,lL) =
   in genSignalChanges lB;
   Printf.fprintf skCpp "\n};\n";
 
-  let simStart = (float_of_string (List.assoc "StartTime" lS)) and
-      simEnd = (float_of_string (List.assoc "StopTime" lS)) in
-  let simBase = (simEnd -. simStart) /. 50. in
-
   (* Mise à jour de la queue d'évènements *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::update(double ctime, size_t tr, const abstractBinding& b, EQT &EQ, timeGen &TG) {\n";
   Printf.fprintf skCpp "\tEQ.remove(tr, b.id());\n";
@@ -310,9 +319,10 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\tMarking.P->_TIME.push_back(0.0);";
   Buffer.output_buffer skCpp generateNewEntries;
   Printf.fprintf skCpp "\n\tdouble t = ctime;\n";
+  Printf.fprintf skCpp "\tdouble step = %f;\n" baseStep;
   Printf.fprintf skCpp "\tEvent E;\n";
   Printf.fprintf skCpp "\tif (t < 10.0) {\n";
-  Printf.fprintf skCpp "\t\tt = t + %f;\n" simBase;
+  Printf.fprintf skCpp "\t\tt = t + step;\n";
   Printf.fprintf skCpp "\t\tgenerateEvent(t, E, 0, TG);\n";
   Printf.fprintf skCpp "\t\tEQ.insert(E);\n";
   Printf.fprintf skCpp "\t} else { EQ.reset(); }\n";
