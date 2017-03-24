@@ -312,7 +312,7 @@ let generateCode lS (lB,lL) =
          let (ba,ia) = findSrc (b.blockid,1) lL and cstValue = float_of_string (List.assoc "InitialCondition" b.values) in
            Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" tabs b.blockid 1 cstValue;
            Printf.fprintf skCpp "\n%s} else {" tabs;
-           Printf.fprintf skCpp "\n%s\tdouble xCurr = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" tabs ba ia;
+(*         Printf.fprintf skCpp "\n%s\tdouble xCurr = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" tabs ba ia;
            Printf.fprintf skCpp "\n%s\tdouble xPrev = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1];" tabs ba ia;
            Printf.fprintf skCpp "\n%s\tdouble yPrev = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1];" tabs b.blockid 1;
            begin match currMode with
@@ -324,9 +324,9 @@ let generateCode lS (lB,lL) =
              Printf.fprintf skCpp "\n%s\tstd::pair <double,double> rk45res = rk45(step,xCurr,xPrev,yPrev);" tabs;
              Printf.fprintf skCpp "\n%s\tif (rk45res.first != step) { step = rk45res.first; continue; }" tabs;
              Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = rk45res.second;" tabs b.blockid 1;
-             end
-           | _ -> () end; (* failwith "No such mode available in genSignalChanges"; *)
-(*           Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] * (Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1]);" tabs b.blockid 1 b.blockid 1 ba ia; *)
+             end 
+           | _ -> () end; *)
+            Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] * (Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1]);" tabs b.blockid 1 b.blockid 1 ba ia;
            (* Printf.fprintf skCpp "\n%s\tfree(xCurr); free(xPrev); free(yPrev);" tabs; *)
            Printf.fprintf skCpp "\n%s}" tabs;
        end; genSignalChanges tabs currMode q
