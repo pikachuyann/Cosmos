@@ -79,11 +79,13 @@ let topologicSort (lB,lL) =
          latenciedBlocks := List.sort (compare) !latenciedBlocks;
          processLatencied !latenciedBlocks;
          infinitesimalLatencies lB;
-         while (not (BlockSet.is_empty !s)) do
-           let vertex = BlockSet.choose !s in
-             processblock vertex
-         done;
-         if (LinksSet.is_empty !e) then (List.rev !l, lL) else failwith "Cannot simulate this Simulink model"
+         let lt = !l in
+           l := [];
+           while (not (BlockSet.is_empty !s)) do
+             let vertex = BlockSet.choose !s in
+               processblock vertex
+           done;
+         if (LinksSet.is_empty !e) then (List.append lt (List.rev !l), lL) else failwith "Cannot simulate this Simulink model"
 ;;
 
 let rec findSrc (b,p) = function
@@ -113,6 +115,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf mkImp "using namespace std;\n#include <string.h>\n";
   Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\"\n";
   Printf.fprintf skCpp "#include \"marking.hpp\"\n#include \"markingImpl.hpp\"\n";
+  Printf.fprintf skCpp "#include \"SKModelCommons.cpp\"\n";
   (*  Définition deSKTransition *)
   Printf.fprintf skHpp "class SKTransition {\n";
   Printf.fprintf skHpp "public:\n";
@@ -216,6 +219,9 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skHpp "\n\tvoid generateEvent(double ctime,Event& E,size_t Id,timeGen& TG);";
   Printf.fprintf skHpp "\n\tvoid fire(size_t, const abstractBinding&, double);";
   Printf.fprintf skHpp "\n\tvoid update(double, size_t, const abstractBinding&, EQT&, timeGen&);";
+  Printf.fprintf skHpp "\n\nprivate:\n";
+  Printf.fprintf skHpp "\tstd::pair<double,double> rk45(double, double, double, double);\n";
+  Printf.fprintf skHpp "\tdouble rk4(double, double, double, double);";
   Printf.fprintf skHpp "\n};\n";
 
   (* Printing functions *)
@@ -302,7 +308,22 @@ let generateCode lS (lB,lL) =
          let (ba,ia) = findSrc (b.blockid,1) lL and cstValue = float_of_string (List.assoc "InitialCondition" b.values) in
            Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" tabs b.blockid 1 cstValue;
            Printf.fprintf skCpp "\n%s} else {" tabs;
-           Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] * (Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1]);" tabs b.blockid 1 b.blockid 1 ba ia;
+           Printf.fprintf skCpp "\n%s\tdouble xCurr = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" tabs ba ia;
+           Printf.fprintf skCpp "\n%s\tdouble xPrev = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1];" tabs ba ia;
+           Printf.fprintf skCpp "\n%s\tdouble yPrev = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1];" tabs b.blockid 1;
+           begin match currMode with
+           0 -> begin
+             Printf.fprintf skCpp "\n%s\tdouble step = Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1];" tabs;
+             Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = rk4(step,xCurr,xPrev,yPrev);" tabs b.blockid 1;
+             end
+           | 1 -> begin
+             Printf.fprintf skCpp "\n%s\tstd::pair <double,double> rk45res = rk45(step,xCurr,xPrev,yPrev);" tabs;
+             Printf.fprintf skCpp "\n%s\tif (rk45res.first != step) { step = rk45res.first; break; }" tabs;
+             Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = rk45res.second;" tabs b.blockid 1;
+             end
+           | _ -> () end; (* failwith "No such mode available in genSignalChanges"; *)
+(*           Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] * (Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1]);" tabs b.blockid 1 b.blockid 1 ba ia; *)
+           (* Printf.fprintf skCpp "\n%s\tfree(xCurr); free(xPrev); free(yPrev);" tabs; *)
            Printf.fprintf skCpp "\n%s}" tabs;
        end; genSignalChanges tabs currMode q
     | b::q -> begin
@@ -334,9 +355,9 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\t\twhile (oldStep != step) {\n";
   Printf.fprintf skCpp "\t\t\toldStep = step;\n";
   Printf.fprintf skCpp "\t\t\tt = t + step;\n";
-  Printf.fprintf skCpp "\t\t\tif (%s) {\n" endTcond;
+  Printf.fprintf skCpp "\t\t\tif (%s) {" endTcond;
   genSignalChanges "\t\t\t\t" 1 lB;
-  Printf.fprintf skCpp "\t\t\t} else {";
+  Printf.fprintf skCpp "\n\t\t\t} else {\n";
   Printf.fprintf skCpp "\t\t\t\tstep = ctime - %s;\n" endTvalue;
   Printf.fprintf skCpp "\n\t\t\t}\n";
   Printf.fprintf skCpp "\t\t}\n";
