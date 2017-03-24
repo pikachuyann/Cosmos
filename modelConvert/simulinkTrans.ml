@@ -286,30 +286,30 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\tMarking.P->countDown = Marking.P->lastEntry;\n";
   Printf.fprintf skCpp "\tMarking.P->lastPrintEntry = Marking.P->lastEntry;\n";
   Printf.fprintf skCpp "\tMarking.P->_TIME[Marking.P->lastEntry] = ctime;";
-  let rec genSignalChanges currMode = function (* Génère les lignes de code mettant à jour les valeurs des blocs; currMode=1 s'il faut s'occuper de calculer le nouveau step *)
+  let rec genSignalChanges tabs currMode = function (* Génère les lignes de code mettant à jour les valeurs des blocs; currMode=1 s'il faut s'occuper de calculer le nouveau step *)
     [] -> ()
     | b::q when b.blocktype="Sum" -> begin
        let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
-         Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" b.blockid 1 ba ia bb ib;
-      end; genSignalChanges currMode q
-    | b::q when b.blocktype="Display" -> genSignalChanges currMode q
+         Printf.fprintf skCpp "\n%sMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" tabs b.blockid 1 ba ia bb ib;
+      end; genSignalChanges tabs currMode q
+    | b::q when b.blocktype="Display" -> genSignalChanges tabs currMode q
     | b::q when b.blocktype="Constant" -> begin
        let cstValue = float_of_string (List.assoc "Value" b.values ) in
-         Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue;
-       end; genSignalChanges currMode q
+         Printf.fprintf skCpp "\n%sMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" tabs b.blockid 1 cstValue;
+       end; genSignalChanges tabs currMode q
     | b::q when b.blocktype="Integrator" -> begin (* ToDo : Improve Integrator to deal with RK45 *)
-         Printf.fprintf skCpp "\n\tif (Marking.P->lastEntry == 0) {";
+         Printf.fprintf skCpp "\n%sif (Marking.P->lastEntry == 0) {" tabs;
          let (ba,ia) = findSrc (b.blockid,1) lL and cstValue = float_of_string (List.assoc "InitialCondition" b.values) in
-           Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue;
-           Printf.fprintf skCpp "\n\t} else {";
-           Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] * (Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1]);" b.blockid 1 b.blockid 1 ba ia;
-           Printf.fprintf skCpp "\n\t}";
-       end; genSignalChanges currMode q
+           Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" tabs b.blockid 1 cstValue;
+           Printf.fprintf skCpp "\n%s} else {" tabs;
+           Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] * (Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1]);" tabs b.blockid 1 b.blockid 1 ba ia;
+           Printf.fprintf skCpp "\n%s}" tabs;
+       end; genSignalChanges tabs currMode q
     | b::q -> begin
-        Printf.fprintf skCpp "\n\t// ALERT ToDo - block %s" b.blocktype;
+        Printf.fprintf skCpp "\n%s// ALERT ToDo - block %s" tabs b.blocktype;
         Printf.eprintf "[WARNING] Found unimplemented block type %s\n" b.blocktype;
-      end; genSignalChanges currMode q
-  in genSignalChanges 0 lB;
+      end; genSignalChanges tabs currMode q
+  in genSignalChanges "\t" 0 lB;
   Printf.fprintf skCpp "\n};\n";
 
   (* Mise à jour de la queue d'évènements *)
@@ -336,7 +336,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\t\t\tif (%s) {\n" endTcond;
   Printf.fprintf skCpp "\t\t\t\tstep = ctime - %s;\n" endTvalue;
   Printf.fprintf skCpp "\t\t\t} else {";
-  genSignalChanges 1 lB;
+  genSignalChanges "\t\t\t\t" 1 lB;
   Printf.fprintf skCpp "\n\t\t\t}\n";
   Printf.fprintf skCpp "\t\t}\n";
   Printf.fprintf skCpp "\tgenerateEvent(t, E, 0, TG);\n";
