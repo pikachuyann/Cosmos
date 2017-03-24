@@ -286,17 +286,17 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\tMarking.P->countDown = Marking.P->lastEntry;\n";
   Printf.fprintf skCpp "\tMarking.P->lastPrintEntry = Marking.P->lastEntry;\n";
   Printf.fprintf skCpp "\tMarking.P->_TIME[Marking.P->lastEntry] = ctime;";
-  let rec genSignalChanges = function
+  let rec genSignalChanges currMode = function (* Génère les lignes de code mettant à jour les valeurs des blocs; currMode=1 s'il faut s'occuper de calculer le nouveau step *)
     [] -> ()
     | b::q when b.blocktype="Sum" -> begin
        let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
          Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" b.blockid 1 ba ia bb ib;
-      end; genSignalChanges q
-    | b::q when b.blocktype="Display" -> genSignalChanges q
+      end; genSignalChanges currMode q
+    | b::q when b.blocktype="Display" -> genSignalChanges currMode q
     | b::q when b.blocktype="Constant" -> begin
        let cstValue = float_of_string (List.assoc "Value" b.values ) in
          Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue;
-       end; genSignalChanges q
+       end; genSignalChanges currMode q
     | b::q when b.blocktype="Integrator" -> begin (* ToDo : Improve Integrator to deal with RK45 *)
          Printf.fprintf skCpp "\n\tif (Marking.P->lastEntry == 0) {";
          let (ba,ia) = findSrc (b.blockid,1) lL and cstValue = float_of_string (List.assoc "InitialCondition" b.values) in
@@ -304,15 +304,23 @@ let generateCode lS (lB,lL) =
            Printf.fprintf skCpp "\n\t} else {";
            Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] * (Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1]);" b.blockid 1 b.blockid 1 ba ia;
            Printf.fprintf skCpp "\n\t}";
-       end; genSignalChanges q
+       end; genSignalChanges currMode q
     | b::q -> begin
         Printf.fprintf skCpp "\n\t// ALERT ToDo - block %s" b.blocktype;
         Printf.eprintf "[WARNING] Found unimplemented block type %s\n" b.blocktype;
-      end; genSignalChanges q
-  in genSignalChanges lB;
+      end; genSignalChanges currMode q
+  in genSignalChanges 0 lB;
   Printf.fprintf skCpp "\n};\n";
 
   (* Mise à jour de la queue d'évènements *)
+  let endTcond = match stopTime with
+  | Infty -> "false"
+  | Auto -> "false"
+  | Finite value -> "t < "^(string_of_float value) and 
+  endTvalue = match stopTime with 
+  | Finite value -> string_of_float value
+  | _ -> "NaN" in
+
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::update(double ctime, size_t tr, const abstractBinding& b, EQT &EQ, timeGen &TG) {\n";
   Printf.fprintf skCpp "\tEQ.remove(tr, b.id());\n";
   Printf.fprintf skCpp "\tMarking.P->lastEntry = Marking.P->lastEntry + 1;\n";
@@ -320,11 +328,19 @@ let generateCode lS (lB,lL) =
   Buffer.output_buffer skCpp generateNewEntries;
   Printf.fprintf skCpp "\n\tdouble t = ctime;\n";
   Printf.fprintf skCpp "\tdouble step = %f;\n" baseStep;
+  Printf.fprintf skCpp "\tdouble oldStep = 0.0;\n";
   Printf.fprintf skCpp "\tEvent E;\n";
-  Printf.fprintf skCpp "\tif (t < 10.0) {\n";
-  Printf.fprintf skCpp "\t\tt = t + step;\n";
-  Printf.fprintf skCpp "\t\tgenerateEvent(t, E, 0, TG);\n";
-  Printf.fprintf skCpp "\t\tEQ.insert(E);\n";
+  Printf.fprintf skCpp "\tif (%s) {\n" endTcond;
+  Printf.fprintf skCpp "\t\twhile (oldStep != step) {\n";
+  Printf.fprintf skCpp "\t\t\tt = t + step;\n";
+  Printf.fprintf skCpp "\t\t\tif (%s) {\n" endTcond;
+  Printf.fprintf skCpp "\t\t\t\tstep = ctime - %s;\n" endTvalue;
+  Printf.fprintf skCpp "\t\t\t} else {";
+  genSignalChanges 1 lB;
+  Printf.fprintf skCpp "\n\t\t\t}\n";
+  Printf.fprintf skCpp "\t\t}\n";
+  Printf.fprintf skCpp "\tgenerateEvent(t, E, 0, TG);\n";
+  Printf.fprintf skCpp "\tEQ.insert(E);\n";
   Printf.fprintf skCpp "\t} else { EQ.reset(); }\n";
   Printf.fprintf skCpp "};\n";
 
