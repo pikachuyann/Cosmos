@@ -19,6 +19,7 @@ end
 module LinksSet = Set.Make(OrderedLinks)
 
 let skInfinitesimalLatency = ["Integrator"];;
+let skNoInputs = ["Constant"];;
 
 let topologicSort (lB,lL) =
   let e = ref (LinksSet.of_list lL) in
@@ -60,6 +61,10 @@ let topologicSort (lB,lL) =
        [] -> ()
        | t::q when List.exists (fun x -> x=t.blocktype) skInfinitesimalLatency -> processblock t; infinitesimalLatencies q;
        | t::q -> infinitesimalLatencies q;
+     and noInputs = function
+       [] -> ()
+       | t::q when List.exists (fun x -> x=t.blocktype) skNoInputs -> processblock t; noInputs q;
+       | t::q -> noInputs q;
      and findLatencies = function
        [] -> []
        | t::q when List.exists (fun (x,y) -> x="LATENCY") t.values -> (float_of_string (List.assoc "LATENCY" t.values),t)::(findLatencies q)
@@ -75,17 +80,16 @@ let topologicSort (lB,lL) =
        initiaC lB;
        countEdges lL;
        initiaS lB;
+       noInputs lB;
        let latenciedBlocks = ref (findLatencies lB) in
          latenciedBlocks := List.sort (compare) !latenciedBlocks;
          processLatencied !latenciedBlocks;
          infinitesimalLatencies lB;
-         let lt = !l in
-           l := [];
-           while (not (BlockSet.is_empty !s)) do
-             let vertex = BlockSet.choose !s in
-               processblock vertex
-           done;
-         if (LinksSet.is_empty !e) then (List.append lt (List.rev !l), lL) else failwith "Cannot simulate this Simulink model"
+         while (not (BlockSet.is_empty !s)) do
+           let vertex = BlockSet.choose !s in
+             processblock vertex
+         done;
+         if (LinksSet.is_empty !e) then (List.rev !l, lL) else failwith "Cannot simulate this Simulink model"
 ;;
 
 let rec findSrc (b,p) = function
