@@ -322,7 +322,7 @@ let generateCode lS (lB,lL) =
              end
            | 1 -> begin
              Printf.fprintf skCpp "\n%s\tstd::pair <double,double> rk45res = rk45(step,xCurr,xPrev,yPrev);" tabs;
-             Printf.fprintf skCpp "\n%s\tif (rk45res.first != step) { step = rk45res.first; break; }" tabs;
+             Printf.fprintf skCpp "\n%s\tif (rk45res.first != step) { step = rk45res.first; continue; }" tabs;
              Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = rk45res.second;" tabs b.blockid 1;
              end
            | _ -> () end; (* failwith "No such mode available in genSignalChanges"; *)
@@ -358,7 +358,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\t\tEvent E;\n";
   Printf.fprintf skCpp "\t\twhile (oldStep != step) {\n";
   Printf.fprintf skCpp "\t\t\toldStep = step;\n";
-  Printf.fprintf skCpp "\t\t\tt = t + step;\n";
+  Printf.fprintf skCpp "\t\t\tt = ctime + step;\n";
   Printf.fprintf skCpp "\t\t\tif (%s) {" endTcond;
   genSignalChanges "\t\t\t\t" 1 lB;
   Printf.fprintf skCpp "\n\t\t\t} else {\n";
