@@ -329,14 +329,15 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\n\tdouble t = ctime;\n";
   Printf.fprintf skCpp "\tdouble step = %f;\n" baseStep;
   Printf.fprintf skCpp "\tdouble oldStep = 0.0;\n";
-  Printf.fprintf skCpp "\tEvent E;\n";
   Printf.fprintf skCpp "\tif (%s) {\n" endTcond;
+  Printf.fprintf skCpp "\t\tEvent E;\n";
   Printf.fprintf skCpp "\t\twhile (oldStep != step) {\n";
+  Printf.fprintf skCpp "\t\t\toldStep = step;\n";
   Printf.fprintf skCpp "\t\t\tt = t + step;\n";
   Printf.fprintf skCpp "\t\t\tif (%s) {\n" endTcond;
-  Printf.fprintf skCpp "\t\t\t\tstep = ctime - %s;\n" endTvalue;
-  Printf.fprintf skCpp "\t\t\t} else {";
   genSignalChanges "\t\t\t\t" 1 lB;
+  Printf.fprintf skCpp "\t\t\t} else {";
+  Printf.fprintf skCpp "\t\t\t\tstep = ctime - %s;\n" endTvalue;
   Printf.fprintf skCpp "\n\t\t\t}\n";
   Printf.fprintf skCpp "\t\t}\n";
   Printf.fprintf skCpp "\tgenerateEvent(t, E, 0, TG);\n";
