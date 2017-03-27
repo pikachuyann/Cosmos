@@ -229,7 +229,7 @@ let generateCode lS (lB,lL) =
   let rec genBlockFunNames = function
     [] -> ()
     | t::q when t.blocktype = "Integrator" -> genBlockFunNames q
-    | t::q -> Printf.fprintf skHpp "\n\tvoid executeBlock%i();" t.blockid; genBlockFunNames q
+    | t::q -> Printf.fprintf skHpp "\n\tvoid executeBlock%i(int);" t.blockid; genBlockFunNames q
   in genBlockFunNames lB;
   Printf.fprintf skHpp "\n};\n";
 
@@ -303,13 +303,16 @@ let generateCode lS (lB,lL) =
     | b::q when b.blocktype="Integrator" -> genBlockFunctions q
     | b::q when b.blocktype="Display" -> genBlockFunctions q
     | b::q -> begin
-        Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::executeBlock%i() {" b.blockid;
+        Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::executeBlock%i(int idx) {" b.blockid;
         begin match b.blocktype with
         | "Sum" -> let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
-            Printf.fprintf skCpp "\nMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" b.blockid 1 ba ia bb ib;
+            Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx] + Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 ba ia bb ib;
         | "Constant" -> let cstValue = float_of_string (List.assoc "Value" b.values) in
-            Printf.fprintf skCpp  "\nMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue;
-        | _ -> Printf.fprintf skCpp "\nfprintf(stderr,\"Could not execute block %i of type %s !\");" b.blockid b.blocktype
+            Printf.fprintf skCpp  "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = %f;" b.blockid 1 cstValue;
+        | _ -> begin
+          Printf.fprintf skCpp "\nfprintf(stderr,\"Could not execute block %i of type %s !\");" b.blockid b.blocktype;
+          Printf.eprintf "[WARNING:] Found unimplemented block %s.\n" b.blocktype;
+          end
         end;
         Printf.fprintf skCpp "\n};\n"; genBlockFunctions q
       end
@@ -322,15 +325,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\tMarking.P->_TIME[Marking.P->lastEntry] = ctime;";
   let rec genSignalChanges tabs currMode = function (* Génère les lignes de code mettant à jour les valeurs des blocs; currMode=1 s'il faut s'occuper de calculer le nouveau step *)
     [] -> ()
-    | b::q when b.blocktype="Sum" -> begin
-       let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
-         Printf.fprintf skCpp "\n%sMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" tabs b.blockid 1 ba ia bb ib;
-      end; genSignalChanges tabs currMode q
     | b::q when b.blocktype="Display" -> genSignalChanges tabs currMode q
-    | b::q when b.blocktype="Constant" -> begin
-       let cstValue = float_of_string (List.assoc "Value" b.values ) in
-         Printf.fprintf skCpp "\n%sMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" tabs b.blockid 1 cstValue;
-       end; genSignalChanges tabs currMode q
     | b::q when b.blocktype="Integrator" -> begin (* ToDo : Improve Integrator to deal with RK45 *)
          Printf.fprintf skCpp "\n%sif (Marking.P->lastEntry == 0) {" tabs;
          let (ba,ia) = findSrc (b.blockid,1) lL and cstValue = float_of_string (List.assoc "InitialCondition" b.values) in
@@ -354,10 +349,7 @@ let generateCode lS (lB,lL) =
            (* Printf.fprintf skCpp "\n%s\tfree(xCurr); free(xPrev); free(yPrev);" tabs; *)
            Printf.fprintf skCpp "\n%s}" tabs;
        end; genSignalChanges tabs currMode q
-    | b::q -> begin
-        Printf.fprintf skCpp "\n%s// ALERT ToDo - block %s" tabs b.blocktype;
-        Printf.eprintf "[WARNING] Found unimplemented block type %s\n" b.blocktype;
-      end; genSignalChanges tabs currMode q
+    | b::q -> Printf.fprintf skCpp "\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid; genSignalChanges tabs currMode q
   in genSignalChanges "\t" 0 lB;
   Printf.fprintf skCpp "\n};\n";
 
