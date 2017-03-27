@@ -193,7 +193,6 @@ let generateCode lS (lB,lL) =
       Printf.fprintf mkImp "\n\t// Block %i - type %s (named %s) :" t.blockid t.blocktype t.name;
       try
         let numOfPorts = List.assoc "Ports" t.values in
-          Printf.eprintf "[DEBUG:] For block %i (type %s), port value is %s\n" t.blockid t.blocktype numOfPorts;
           try let didmatch = Str.string_match outputs_parse_regexp numOfPorts 0 in
             if didmatch then begin
               try let nb = int_of_string@@ Str.matched_group 2 numOfPorts in
