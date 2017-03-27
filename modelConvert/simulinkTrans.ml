@@ -226,6 +226,9 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skHpp "\n\nprivate:\n";
   Printf.fprintf skHpp "\tstd::pair<double,double> rk45(double, double, double, double);\n";
   Printf.fprintf skHpp "\tdouble rk4(double, double, double, double);\n";
+  Printf.fprintf skHpp "\tvoid initialiseIntegrators(int);\n";
+  Printf.fprintf skHpp "\tdouble estimateIntegrators(int,double);\n";
+  Printf.fprintf skHpp "\tvoid executeIntegrators(int);\n";
   let rec genBlockFunNames = function
     [] -> ()
     | t::q when t.blocktype = "Integrator" -> genBlockFunNames q
@@ -297,6 +300,30 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\tMarking.resetToInitMarking();\n";
   Printf.fprintf skCpp "};\n";
 
+  (* Initialisation des blocs Intégrateurs *)
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::initialiseIntegrators(int idx) {\n";
+  let rec genInitIntegrators = function
+    [] -> ()
+    | b::q when b.blocktype="Integrator" -> let cstValue = float_of_string (List.assoc "InitialCondition" b.values) in
+        Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue; genInitIntegrators q;
+    | b::q -> genInitIntegrators q
+  in genInitIntegrators lB;
+  Printf.fprintf skCpp "};\n";
+
+  (* Implémentation des intégrales : Euler *)
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::executeIntegrators(int idx) {\n";
+  Printf.fprintf skCpp "\testimateIntegrators(idx,(Marking.P->_TIME[idx] - Marking.P->_TIME[idx-1]));\n";
+  Printf.fprintf skCpp "};\n";
+  Printf.fprintf skCpp "\ntemplate<class EQT>\ndouble SKModel<EQT>::estimateIntegrators(int idx,double step) {\n";
+  let rec genEulerIntegrators = function
+    [] -> Printf.fprintf skCpp "\treturn step;\n";
+    | b::q when b.blocktype="Integrator" -> let (ba,ia) = findSrc (b.blockid,1) lL in
+      Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx-1] + step * Marking.P->_BLOCK%i_OUT%i[idx];\n" b.blockid 1 b.blockid 1 ba ia;
+      genEulerIntegrators q;
+    | b::q -> genEulerIntegrators q
+  in genEulerIntegrators lB;
+  Printf.fprintf skCpp "};\n";
+
   (* Génération des fonctions d'éxécution des blocs simples *)
   let rec genBlockFunctions = function
     [] -> ()
@@ -326,29 +353,15 @@ let generateCode lS (lB,lL) =
   let rec genSignalChanges tabs currMode = function (* Génère les lignes de code mettant à jour les valeurs des blocs; currMode=1 s'il faut s'occuper de calculer le nouveau step *)
     [] -> ()
     | b::q when b.blocktype="Display" -> genSignalChanges tabs currMode q
-    | b::q when b.blocktype="Integrator" -> begin (* ToDo : Improve Integrator to deal with RK45 *)
-         Printf.fprintf skCpp "\n%sif (Marking.P->lastEntry == 0) {" tabs;
-         let (ba,ia) = findSrc (b.blockid,1) lL and cstValue = float_of_string (List.assoc "InitialCondition" b.values) in
-           Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" tabs b.blockid 1 cstValue;
-           Printf.fprintf skCpp "\n%s} else {" tabs;
-(*         Printf.fprintf skCpp "\n%s\tdouble xCurr = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" tabs ba ia;
-           Printf.fprintf skCpp "\n%s\tdouble xPrev = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1];" tabs ba ia;
-           Printf.fprintf skCpp "\n%s\tdouble yPrev = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1];" tabs b.blockid 1;
-           begin match currMode with
-           0 -> begin
-             Printf.fprintf skCpp "\n%s\tdouble step = Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1];" tabs;
-             Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = rk4(step,xCurr,xPrev,yPrev);" tabs b.blockid 1;
-             end
-           | 1 -> begin
-             Printf.fprintf skCpp "\n%s\tstd::pair <double,double> rk45res = rk45(step,xCurr,xPrev,yPrev);" tabs;
-             Printf.fprintf skCpp "\n%s\tif (rk45res.first != step) { step = rk45res.first; continue; }" tabs;
-             Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = rk45res.second;" tabs b.blockid 1;
-             end 
-           | _ -> () end; *)
-            Printf.fprintf skCpp "\n%s\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry-1] * (Marking.P->_TIME[Marking.P->lastEntry] - Marking.P->_TIME[Marking.P->lastEntry-1]);" tabs b.blockid 1 b.blockid 1 ba ia;
-           (* Printf.fprintf skCpp "\n%s\tfree(xCurr); free(xPrev); free(yPrev);" tabs; *)
-           Printf.fprintf skCpp "\n%s}" tabs;
-       end; genSignalChanges tabs currMode q
+    | b::q when b.blocktype="Integrator" -> 
+       begin match currMode with
+       0 -> begin
+           Printf.fprintf skCpp "\n%sif (Marking.P->lastEntry==0) { initialiseIntegrators(0); }" tabs; 
+           Printf.fprintf skCpp "\n%selse { executeIntegrators(Marking.P->lastEntry); }" tabs;
+         end; genSignalChanges tabs 2 q;
+       | 1 -> Printf.fprintf skCpp "\n%sstep = estimateIntegrators(Marking.P->lastEntry,step);" tabs; genSignalChanges tabs 3 q;
+       | _ -> genSignalChanges tabs currMode q;
+       end;
     | b::q -> Printf.fprintf skCpp "\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid; genSignalChanges tabs currMode q
   in genSignalChanges "\t" 0 lB;
   Printf.fprintf skCpp "\n};\n";
