@@ -34,7 +34,7 @@ double SKModel<EQT>::rk4(double step, double xCurr, double xPrev, double yPrev) 
 
 template<class EQT>
 int SKModel<EQT>::findLatencyIndex(double latency) {
-	float currTime = Marking.P->_TIME[Marking.P->lastEntry];
+	double currTime = Marking.P->_TIME[Marking.P->lastEntry];
 	while (Marking.P->countDown > 0 && Marking.P->_TIME[Marking.P->countDown] > (currTime - latency)) {
 		Marking.P->countDown--;
 	}
