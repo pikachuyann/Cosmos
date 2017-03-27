@@ -93,7 +93,7 @@ let topologicSort (lB,lL) =
 ;;
 
 let rec findSrc (b,p) = function
-  [] -> Printf.eprintf "Couldn't find a source port linked to port %i of block %i" p b; (0,0)
+  [] -> Printf.eprintf "[WARNING:] Couldn't find a source port linked to port %i of block %i" p b; (0,0)
   | l::q when l.toblock=b && l.toport=p -> (l.fromblock,l.fromport)
   | l::q -> findSrc (b,p) q;;
 
@@ -189,9 +189,9 @@ let generateCode lS (lB,lL) =
       Printf.fprintf mkImp "\n\t// Block %i - type %s (named %s) :" t.blockid t.blocktype t.name;
       try
         let numOfPorts = List.assoc "Ports" t.values in
-          let didmatch = Str.string_match outputs_parse_regexp numOfPorts 0 in
+          try let didmatch = Str.string_match outputs_parse_regexp numOfPorts 0 in
             if didmatch then begin
-              let nb = int_of_string@@ Str.matched_group 2 numOfPorts in
+              try let nb = int_of_string@@ Str.matched_group 2 numOfPorts in
                 for i = 1 to nb do
                   Printf.fprintf mkImp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
                   Printf.fprintf skHpp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
@@ -201,9 +201,11 @@ let generateCode lS (lB,lL) =
                   Printf.bprintf generateNewEntries "\n\tMarking.P->_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
                   Printf.bprintf generateVectors "\n\tP->_BLOCK%i_OUT%i = {0.0};" t.blockid i;
                 done
-              end
-           else Printf.fprintf mkImp "No Output."
-       with Not_found -> begin print_string t.blocktype; failwith "No Ports ?" end
+              with Not_found ->  begin Printf.eprintf "[WARNING:] Wrong port format for block %i (type %s) : %s\n" t.blockid t.blocktype numOfPorts; end;
+             end
+             else Printf.fprintf mkImp "No Output."
+         with Not_found -> begin Printf.eprintf "[WARNING:] Wrong port format for block %i (type %s) : %s\n" t.blockid t.blocktype numOfPorts; end;
+       with Not_found -> begin Printf.eprintf "[WARNING:] Couldn't find port numbers for block %i (type %s)\n" t.blockid t.blocktype; end;
       end; genSignalNames q;
   in genSignalNames lB;
   Printf.fprintf mkImp "\n};\n";
@@ -411,14 +413,16 @@ let generateGSPN (lB, lL) =
       | t::q -> begin
         try
           let numOfPorts = List.assoc "Ports" t.values in
-            let didmatch = Str.string_match outputs_parse_regexp numOfPorts 0 in
+            try let didmatch = Str.string_match outputs_parse_regexp numOfPorts 0 in
               if didmatch then begin
-                let nb = int_of_string@@ Str.matched_group 2 numOfPorts in
+                try let nb = int_of_string@@ Str.matched_group 2 numOfPorts in
                   for i = 1 to nb do
                     Data.add (("B"^(string_of_int t.blockid)^"O"^(string_of_int i)),(Int 0, Some (Int 0))) net.Net.place;
                   done
+                 with Not_found -> begin Printf.eprintf "[WARNING:] Wrong port format for block %i (type %s) : %s\n" t.blockid t.blocktype numOfPorts; end
                 end
-         with Not_found -> begin print_string t.blocktype; failwith "No Ports ?" end
+            with Not_found -> begin Printf.eprintf "[WARNING:] Wrong port format for block %i (type %s) : %s\n" t.blockid t.blocktype numOfPorts; end
+         with Not_found -> begin Printf.eprintf "[WARNING:] Couldn't find port numbers for block %i (type %s)\n" t.blockid t.blocktype; end
       end; generatePlaces q;
     in generatePlaces lB;
     Data.add ("SimulinkTransition", (Imm, Float 1.0, Float 1.0)) net.Net.transition;
