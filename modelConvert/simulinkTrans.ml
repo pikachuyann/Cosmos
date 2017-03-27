@@ -406,6 +406,8 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\t\t\toldStep = step;\n";
   Printf.fprintf skCpp "\t\t\tt = ctime + step;\n";
   Printf.fprintf skCpp "\t\t\tif (%s) {" endTcond;
+  Printf.fprintf skCpp "\t\t\t\tMarking.P->countDown = Marking.P->lastEntry;\n";
+  Printf.fprintf skCpp "\t\t\t\tMarking.P->_TIME[Marking.P->lastEntry] = t;\n";
   genSignalChanges "\t\t\t\t" 1 lB;
   Printf.fprintf skCpp "\n\t\t\t} else {\n";
   Printf.fprintf skCpp "\t\t\t\tstep = ctime - %s;\n" endTvalue;
