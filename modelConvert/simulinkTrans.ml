@@ -236,6 +236,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skHpp "\tvoid initialiseIntegrators(int);\n";
   Printf.fprintf skHpp "\tdouble estimateIntegrators(int,double);\n";
   Printf.fprintf skHpp "\tvoid executeIntegrators(int);\n";
+  Printf.fprintf skHpp "\tint findLatencyIndex(double);\n";
   let rec genBlockFunNames = function
     [] -> ()
     | t::q when t.blocktype = "Integrator" -> genBlockFunNames q
@@ -342,7 +343,13 @@ let generateCode lS (lB,lL) =
         | "Sum" -> let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
             Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx] + Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 ba ia bb ib;
         | "Constant" -> let cstValue = float_of_string (List.assoc "Value" b.values) in
-            Printf.fprintf skCpp  "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = %f;" b.blockid 1 cstValue;
+            Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = %f;" b.blockid 1 cstValue;
+        | "Delay" -> let latency = float_of_string (List.assoc "LATENCY" b.values) and (ba,ia) = findSrc (b.blockid,1) lL in
+            Printf.fprintf skCpp "\n\tint latidx = findLatencyIndex(%f);" latency;
+            Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[latidx];" b.blockid 1 ba ia;
+        | "UnitDelay" -> let latency = float_of_string (List.assoc "LATENCY" b.values) and (ba,ia) = findSrc (b.blockid,1) lL in
+            Printf.fprintf skCpp "\n\tint latidx = findLatencyIndex(%f);" latency;
+            Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[latidx];" b.blockid 1 ba ia;
         | _ -> begin
           Printf.fprintf skCpp "\nfprintf(stderr,\"Could not execute block %i of type %s !\");" b.blockid b.blocktype;
           Printf.eprintf "[WARNING:] Found unimplemented block %s.\n" b.blocktype;
