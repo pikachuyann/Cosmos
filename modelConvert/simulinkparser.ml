@@ -97,7 +97,7 @@ let reg_type2 = Str.regexp "[,]"
 let completeDefaults params = function
   | "UnitDelay" -> ("Ports","[1, 1]")::params
   | "Constant" -> ("Ports","[0, 1]")::params
-  | _ -> params;;
+  | blockType -> params;;
 
 let parseblockParams liste = function
     | Element  ("P",["Name",x],[PCData(l)]) -> (x,l)::liste;
@@ -264,7 +264,7 @@ let computeLatencies lS ((lB, lL):simulinkPModel) =
             in { blocktype = b.blocktype;
                  blockid = b.blockid;
                  name = b.name;
-                 values = ["LATENCY", string_of_float realLatency] }::(aux q)
+                 values = ("LATENCY", string_of_float realLatency)::(b.values) }::(aux q)
         | b::q when b.blocktype="Delay" -> let sampleTime = extfloat_of_sampletime (List.assoc "SampleTime" b.values) in
             let realLatency = (float_of_string (List.assoc "DelayLength" b.values)) *. match sampleTime with
             | Auto -> baseStep
@@ -273,6 +273,6 @@ let computeLatencies lS ((lB, lL):simulinkPModel) =
             in { blocktype = b.blocktype;
                  blockid = b.blockid;
                  name = b.name;
-                 values = ["LATENCY", string_of_float realLatency] }::(aux q)
+                 values = ("LATENCY", string_of_float realLatency)::(b.values) }::(aux q)
         | b::q -> (b)::(aux q)
       in (aux lB, lL);;
