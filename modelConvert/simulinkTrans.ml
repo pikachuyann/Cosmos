@@ -183,12 +183,17 @@ let generateCode lS (lB,lL) =
   Printf.fprintf mkImp "\n\tvector<double> _TIME;";
   Printf.fprintf skHpp "\n\tvector<double> _TIME;";
   let outputs_parse_regexp = Str.regexp "\\[\\([0-9]+\\), \\([0-9]+\\)\\]" in
+  let rec listAllParams = function
+    [] -> ()
+    | (a,b)::q -> Printf.eprintf "%s => %s\n" a b; listAllParams q
+  in
   let rec genSignalNames = function
     [] -> ()
     | t::q -> begin
       Printf.fprintf mkImp "\n\t// Block %i - type %s (named %s) :" t.blockid t.blocktype t.name;
       try
         let numOfPorts = List.assoc "Ports" t.values in
+          Printf.eprintf "[DEBUG:] For block %i (type %s), port value is %s\n" t.blockid t.blocktype numOfPorts;
           try let didmatch = Str.string_match outputs_parse_regexp numOfPorts 0 in
             if didmatch then begin
               try let nb = int_of_string@@ Str.matched_group 2 numOfPorts in
@@ -205,7 +210,7 @@ let generateCode lS (lB,lL) =
              end
              else Printf.fprintf mkImp "No Output."
          with Not_found -> begin Printf.eprintf "[WARNING:] Wrong port format for block %i (type %s) : %s\n" t.blockid t.blocktype numOfPorts; end;
-       with Not_found -> begin Printf.eprintf "[WARNING:] Couldn't find port numbers for block %i (type %s)\n" t.blockid t.blocktype; end;
+       with Not_found -> begin Printf.eprintf "[WARNING:] Couldn't find port numbers for block %i (type %s)\n" t.blockid t.blocktype; listAllParams t.values end;
       end; genSignalNames q;
   in genSignalNames lB;
   Printf.fprintf mkImp "\n};\n";
