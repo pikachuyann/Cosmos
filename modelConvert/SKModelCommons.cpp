@@ -31,3 +31,12 @@ double SKModel<EQT>::rk4(double step, double xCurr, double xPrev, double yPrev) 
 	std::pair<double,double> rk45res = rk45(step, xCurr, xPrev, yPrev);
 	return rk45res.second;
 }
+
+template<class EQT>
+int SKModel<EQT>::findLatencyIndex(double latency) {
+	float currTime = Marking.P->_TIME[Marking.P->lastEntry];
+	while (Marking.P->_TIME[Marking.P->countDown] > (currTime - latency)) {
+		Marking.P->countDown--;
+	}
+	return Marking.P->countDown;
+}
