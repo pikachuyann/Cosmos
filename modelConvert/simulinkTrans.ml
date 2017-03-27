@@ -225,7 +225,12 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skHpp "\n\tvoid update(double, size_t, const abstractBinding&, EQT&, timeGen&);";
   Printf.fprintf skHpp "\n\nprivate:\n";
   Printf.fprintf skHpp "\tstd::pair<double,double> rk45(double, double, double, double);\n";
-  Printf.fprintf skHpp "\tdouble rk4(double, double, double, double);";
+  Printf.fprintf skHpp "\tdouble rk4(double, double, double, double);\n";
+  let rec genBlockFunNames = function
+    [] -> ()
+    | t::q when t.blocktype = "Integrator" -> genBlockFunNames q
+    | t::q -> Printf.fprintf skHpp "\n\tvoid executeBlock%i();" t.blockid; genBlockFunNames q
+  in genBlockFunNames lB;
   Printf.fprintf skHpp "\n};\n";
 
   (* Printing functions *)
@@ -245,6 +250,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\nvoid abstractMarking::resetToInitMarking() {\n";
   Printf.fprintf skCpp "\tP->lastEntry = 0;\n";
   Printf.fprintf skCpp "\tP->lastPrintEntry = 0;\n";
+  Printf.fprintf skCpp "\tP->countDown = 0;\n";
   Printf.fprintf skCpp "\tP->_TIME = {0.0};";
   Buffer.output_buffer skCpp generateVectors;
   Printf.fprintf skCpp "\n}\n";
@@ -290,6 +296,24 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::reset() {\n";
   Printf.fprintf skCpp "\tMarking.resetToInitMarking();\n";
   Printf.fprintf skCpp "};\n";
+
+  (* Génération des fonctions d'éxécution des blocs simples *)
+  let rec genBlockFunctions = function
+    [] -> ()
+    | b::q when b.blocktype="Integrator" -> genBlockFunctions q
+    | b::q when b.blocktype="Display" -> genBlockFunctions q
+    | b::q -> begin
+        Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::executeBlock%i() {" b.blockid;
+        begin match b.blocktype with
+        | "Sum" -> let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
+            Printf.fprintf skCpp "\nMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] + Marking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry];" b.blockid 1 ba ia bb ib;
+        | "Constant" -> let cstValue = float_of_string (List.assoc "Value" b.values) in
+            Printf.fprintf skCpp  "\nMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue;
+        | _ -> Printf.fprintf skCpp "\nfprintf(stderr,\"Could not execute block %i of type %s !\");" b.blockid b.blocktype
+        end;
+        Printf.fprintf skCpp "\n};\n"; genBlockFunctions q
+      end
+  in genBlockFunctions lB;
 
   (* Génération de la fonction fire *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::fire(size_t tr,const abstractBinding&, double ctime) {\n";
