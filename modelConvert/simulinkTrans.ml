@@ -120,6 +120,8 @@ let generateCode lS (lB,lL) =
   Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\"\n";
   Printf.fprintf skCpp "#include \"marking.hpp\"\n#include \"markingImpl.hpp\"\n";
   Printf.fprintf skCpp "#include \"SKModelCommons.cpp\"\n";
+  Printf.fprintf skHpp "#include \"SKModelCommons.hpp\"\n";
+  Printf.fprintf mkImp "#include \"SKModelCommons.hpp\"\n";
   (*  Définition deSKTransition *)
   Printf.fprintf skHpp "class SKTransition {\n";
   Printf.fprintf skHpp "public:\n";
@@ -180,8 +182,8 @@ let generateCode lS (lB,lL) =
   Printf.fprintf mkImp "\n\tsize_t lastEntry;";
   Printf.fprintf mkImp "\n\tsize_t totalEntries;";
   Printf.fprintf mkImp "\n\tsize_t countDown;";
-  Printf.fprintf mkImp "\n\tvector<double> _TIME;";
-  Printf.fprintf skHpp "\n\tvector<double> _TIME;";
+  Printf.fprintf mkImp "\n\tvector<SKTime> _TIME;";
+  Printf.fprintf skHpp "\n\tvector<SKTime> _TIME;";
   let outputs_parse_regexp = Str.regexp "\\[\\([0-9]+\\), \\([0-9]+\\)\\]" in
   let rec listAllParams = function
     [] -> ()
@@ -319,7 +321,7 @@ let generateCode lS (lB,lL) =
 
   (* Implémentation des intégrales : Euler *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::executeIntegrators(int idx) {\n";
-  Printf.fprintf skCpp "\testimateIntegrators(idx,(Marking.P->_TIME[idx] - Marking.P->_TIME[idx-1]));\n";
+  Printf.fprintf skCpp "\testimateIntegrators(idx,(Marking.P->_TIME[idx] - Marking.P->_TIME[idx-1]).getDouble());\n";
   Printf.fprintf skCpp "};\n";
   Printf.fprintf skCpp "\ntemplate<class EQT>\ndouble SKModel<EQT>::estimateIntegrators(int idx,double step) {\n";
   let rec genEulerIntegrators = function

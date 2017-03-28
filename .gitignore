@@ -105,3 +105,4 @@ testMC/SKModel.hpp
 testMC/SKModel.grml
 testMC/tmp
 testMC/SKModelCommons.cpp
+testMC/SKModelCommons.hpp
