@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "SKModelCommons.hpp"
 
 template<class EQT>
 std::pair<double, double> SKModel<EQT>::rk45(double step, double xCurr, double xPrev, double yPrev) {
@@ -34,10 +35,74 @@ double SKModel<EQT>::rk4(double step, double xCurr, double xPrev, double yPrev) 
 
 template<class EQT>
 int SKModel<EQT>::findLatencyIndex(double latency) {
-	double currTime = Marking.P->_TIME[Marking.P->lastEntry];
+	SKTime currTime = Marking.P->_TIME[Marking.P->lastEntry];
 	while (Marking.P->countDown > 0 && Marking.P->_TIME[Marking.P->countDown] > (currTime - latency)) {
 		Marking.P->countDown--;
 	}
 	if (Marking.P->_TIME[Marking.P->countDown] > (currTime - latency)) { return -1;
 	} else { return Marking.P->countDown; }
 }
+
+SKTime::SKTime() {
+	updatePrecision(5);
+	set_to(0.0);
+}
+SKTime::SKTime(double initTime) {
+	updatePrecision(5); set_to(initTime);
+}
+SKTime::SKTime(size_t prec, int64_t bareTime) {
+	updatePrecision(prec);
+	time = bareTime;
+}
+void SKTime::updatePrecision(size_t prec) {
+	if (prec > precision) {
+		precision = prec;
+		power = pow(10., prec);
+		time = pow(10,(prec-precision)) * time;
+	}
+}
+void SKTime::set_to(double newTime) {
+	time = round(newTime * power);
+}
+int64_t SKTime::getBareTime() { return time; }
+size_t SKTime::getPrecision() { return precision; }
+double SKTime::getDouble() {
+	double approxTime = time / power;
+	return approxTime;
+}
+SKTime& SKTime::operator= (double newTime) { updatePrecision(5); set_to(newTime); }
+SKTime SKTime::operator+ (SKTime otherTime) {
+	int precB = otherTime.getPrecision();
+	if (precB > precision) { updatePrecision(precB); }
+	else if (precB < precision) { otherTime.updatePrecision(precision); }
+	return SKTime(precision,time+otherTime.getBareTime());
+}
+SKTime SKTime::operator- (SKTime otherTime) {
+	int precB = otherTime.getPrecision();
+	if (precB > precision) { updatePrecision(precB); }
+	else if (precB < precision) { otherTime.updatePrecision(precision); }
+	return SKTime(precision,time-otherTime.getBareTime());
+}
+SKTime SKTime::operator- (double otherTime) {
+	size_t oTime = round(otherTime * power);
+	return SKTime(precision,time-oTime);
+}
+SKTime SKTime::operator+ (double otherTime) {
+	size_t oTime = round(otherTime * power);
+	return SKTime(precision,time+oTime);
+}
+bool SKTime::operator< (SKTime otherTime) {
+	int prec = getPrecision();
+	int precB = otherTime.getPrecision();
+	if (precB > prec) { updatePrecision(precB); }
+	else if (precB < prec) { otherTime.updatePrecision(prec); }
+	return getBareTime() < otherTime.getBareTime();
+}
+bool SKTime::operator> (SKTime otherTime) {
+	int prec = getPrecision();
+	int precB = otherTime.getPrecision();
+	if (precB > prec) { updatePrecision(precB); }
+	else if (precB < prec) { otherTime.updatePrecision(prec); }
+	return getBareTime() > otherTime.getBareTime();
+}
+// SKTime::operator double() { return time / power; }
