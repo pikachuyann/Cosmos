@@ -8,6 +8,7 @@ cp ../modelConvert/SKModel.cpp ./
 cp ../modelConvert/SKModel.hpp ./
 cp ../modelConvert/markingImpl.hpp ./
 cp ../modelConvert/SKModel.grml ./
+cp ../modelConvert/SKModelCommons.hpp ./
 cp ../modelConvert/SKModelCommons.cpp ./
 
 g++ -Wno-return-type -std=gnu++11 -c -I/usr/local/include -I../include -o main.o main.cpp
