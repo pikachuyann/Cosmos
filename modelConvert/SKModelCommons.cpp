@@ -44,13 +44,16 @@ int SKModel<EQT>::findLatencyIndex(double latency) {
 }
 
 SKTime::SKTime() {
+	power=0; precision=0; time=0;
 	updatePrecision(5);
 	set_to(0.0);
 }
 SKTime::SKTime(double initTime) {
+	power=0; precision=0; time=0;
 	updatePrecision(5); set_to(initTime);
 }
 SKTime::SKTime(size_t prec, int64_t bareTime) {
+	power=0; precision=0; time=0;
 	updatePrecision(prec);
 	time = bareTime;
 }
@@ -84,11 +87,11 @@ SKTime SKTime::operator- (SKTime otherTime) {
 	return SKTime(precision,time-otherTime.getBareTime());
 }
 SKTime SKTime::operator- (double otherTime) {
-	size_t oTime = round(otherTime * power);
+	int64_t oTime = round(otherTime * power);
 	return SKTime(precision,time-oTime);
 }
 SKTime SKTime::operator+ (double otherTime) {
-	size_t oTime = round(otherTime * power);
+	int64_t oTime = round(otherTime * power);
 	return SKTime(precision,time+oTime);
 }
 bool SKTime::operator< (SKTime otherTime) {
