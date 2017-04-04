@@ -783,14 +783,9 @@ void MyModelHandler::on_read_node(const XmlString& id,
         MyGspn->placeStruct.push_back(p);
 
     } else {
-        cerr << "toto" << MyGspn->nbpass << endl;
-
-        
+                
         if (nodeType == "transition") {
             if (MyGspn->nbpass == 0)return;
-            
-            cerr << "toto" << endl;
-
             
             //Read a transition:
             MyGspn->tr++;
