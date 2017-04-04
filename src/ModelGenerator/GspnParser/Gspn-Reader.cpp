@@ -106,13 +106,13 @@ int Gspn_Reader::parse_gml_file(parameters &P) {
 		ModelHandlerPtr handlerPtr(handler);
 		ExpatModelParser parser = ExpatModelParser(handlerPtr);
 		parser.parse_file(P.PathGspn);
-		
-		spn->nbpass=1;
+
+        spn->nbpass=1;
 		//second pass transitions and arcs.
 		ModelHandlerPtr handlerPtr2(new MyModelHandler(*spn,handler->IsPlace,handler->Gml2Place,handler->Gml2Trans));
 		ExpatModelParser parser2 = ExpatModelParser(handlerPtr2);
-		parser2.parse_file(P.PathGspn);
-		
+
+        parser2.parse_file(P.PathGspn);		
 		
 		//cout << "end parse GML:"<< spn->pl << endl;
 		if (P.RareEvent)addSinkTrans();
