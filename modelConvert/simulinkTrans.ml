@@ -426,7 +426,9 @@ let generateCode lS (lB,lL) =
 
 let generateGSPN (lB, lL) =
   let net = Net.create () in
-    let outputs_parse_regexp = Str.regexp "\\[\\([0-9]+\\), \\([0-9]+\\)\\]" in
+  net.Net.def <- Some ({ intconst=[]; floatconst=[]; clock=[]; printer= (fun out () ->
+      output_string out "\t<attribute name=\"externalMainFile\">main.cpp</attribute>")});
+  let outputs_parse_regexp = Str.regexp "\\[\\([0-9]+\\), \\([0-9]+\\)\\]" in
     let rec generatePlaces = function
       [] -> ()
       | t::q -> begin

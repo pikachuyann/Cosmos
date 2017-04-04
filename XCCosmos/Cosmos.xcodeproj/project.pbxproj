@@ -21,7 +21,6 @@
 		032A7078181BC0D6006D7332 /* Lha_gmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7031181BC0D6006D7332 /* Lha_gmlparser.cpp */; };
 		032A7079181BC0D6006D7332 /* parameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A7038181BC0D6006D7332 /* parameters.cpp */; settings = {COMPILER_FLAGS = "-DGIT_REVISION=\\\"XCODE\\\" -DCPP_COMPILER=\\\"g++\\\" -DBOOST_PATH=\\\"-I/usr/local/include\\\""; }; };
 		032A707A181BC0D6006D7332 /* result.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703A181BC0D6006D7332 /* result.cpp */; };
-		032A707B181BC0D6006D7332 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 032A703C181BC0D6006D7332 /* server.cpp */; };
 		032A70A7181BC307006D7332 /* expatmodelparser.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A709D181BC307006D7332 /* expatmodelparser.cc */; };
 		032A70A8181BC307006D7332 /* modelwriter.cc in Sources */ = {isa = PBXBuildFile; fileRef = 032A70A2181BC307006D7332 /* modelwriter.cc */; };
 		032C6B461B8DC4E2007EFB67 /* LHA_orig.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 032C6B451B8DC4E2007EFB67 /* LHA_orig.hpp */; };
@@ -36,7 +35,7 @@
 		0336B7FB198A3BF30043EFC6 /* readPlast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0336B7D9198A3BF30043EFC6 /* readPlast.cpp */; };
 		03463E881E31413900A2C116 /* InstanceSPNSim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03463E871E31413900A2C116 /* InstanceSPNSim.cpp */; };
 		03466C201E28E84F00BE2C78 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03466C1F1E28E84F00BE2C78 /* server.cpp */; };
-		035086981E44C4700050FF40 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035086971E44C4700050FF40 /* main.cpp */; };
+		035086981E44C4700050FF40 /* main.cpp in Frameworks */ = {isa = PBXBuildFile; fileRef = 035086971E44C4700050FF40 /* main.cpp */; };
 		03541DD71BE7B7A9005741C6 /* Gspn-Grml-Output.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */; };
 		035464EF1DFFFF240060D055 /* MarkovChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 035464ED1DFFFF240060D055 /* MarkovChain.cpp */; };
 		035464F11DFFFF240060D055 /* MarkovChain.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 035464EE1DFFFF240060D055 /* MarkovChain.hpp */; };
@@ -185,7 +184,6 @@
 		032A7039181BC0D6006D7332 /* parameters.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parameters.hpp; sourceTree = "<group>"; };
 		032A703A181BC0D6006D7332 /* result.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = result.cpp; sourceTree = "<group>"; };
 		032A703B181BC0D6006D7332 /* result.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = result.hpp; sourceTree = "<group>"; };
-		032A703C181BC0D6006D7332 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = server.cpp; path = ../server.cpp; sourceTree = "<group>"; };
 		032A703D181BC0D6006D7332 /* server.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = server.hpp; sourceTree = "<group>"; };
 		032A703F181BC0D6006D7332 /* BatchR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BatchR.cpp; sourceTree = "<group>"; };
 		032A7040181BC0D6006D7332 /* BatchR.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BatchR.hpp; sourceTree = "<group>"; };
@@ -1018,6 +1016,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				035086981E44C4700050FF40 /* main.cpp in Frameworks */,
 				03E39B1E183E4AC90070911A /* libClientSim.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1122,7 +1121,6 @@
 				03A5DCFB1B273A79003F470A /* Gspn-model.hpp */,
 				03541DD51BE7B7A9005741C6 /* Gspn-Grml-Output.cpp */,
 				03541DD61BE7B7A9005741C6 /* Gspn-Grml-Output.hpp */,
-				032A703C181BC0D6006D7332 /* server.cpp */,
 			);
 			path = GspnParser;
 			sourceTree = "<group>";
@@ -3263,7 +3261,6 @@
 				0306A2311BACA88E0045B056 /* spn.cpp in Sources */,
 				03650F821CFDC4FB00DB3041 /* EventsQueueSet.cpp in Sources */,
 				0306A22F1BACA88E0045B056 /* LHA.cpp in Sources */,
-				035086981E44C4700050FF40 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3299,7 +3296,6 @@
 				032A707A181BC0D6006D7332 /* result.cpp in Sources */,
 				0367E29C18842FB700F35619 /* BatchR.cpp in Sources */,
 				03E43E1F1AE1027300E9A2BF /* Gspn-Writer-Color.cpp in Sources */,
-				032A707B181BC0D6006D7332 /* server.cpp in Sources */,
 				0367E2B71885288900F35619 /* Gspn-Writer.cpp in Sources */,
 				032A7079181BC0D6006D7332 /* parameters.cpp in Sources */,
 				032A7076181BC0D6006D7332 /* Lha-Reader.cpp in Sources */,

@@ -40,19 +40,19 @@
 using namespace std;
 
 shared_ptr<GspnType> ParseGSPN() {
-
+    
     // initialize an empty structure for the model.
     Gspn_Reader gReader(P);
-
+    
     if (P.verbose > 0)cout << "Start Parsing " << P.PathGspn << endl;
     int parseresult;
-
+    
     try {
         // Check the extension of the model file to call the correct parser
         if (!P.GMLinput
-        && P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "grml"
-        && P.PathGspn.substr(P.PathGspn.length() - 3, 3) != "gml"
-        && P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "gspn"){
+            && P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "grml"
+            && P.PathGspn.substr(P.PathGspn.length() - 3, 3) != "gml"
+            && P.PathGspn.substr(P.PathGspn.length() - 4, 4) != "gspn"){
             if(P.verbose>0)cerr << "Input file not in GrML try to use convertor."<< endl;
             auto outspt = P.tmpPath + "/generatedspt";
             stringstream cmd;
@@ -75,12 +75,12 @@ shared_ptr<GspnType> ParseGSPN() {
             parseresult = gReader.parse_file(P.PathGspn);
         }
         P.nbPlace = gReader.spn->pl;
-
+        
         if(parseresult==1 || !gReader.spn)return nullptr;
-
+        
         //The following code modify the internal representation of the
         //SPN according to options.
-
+        
         //Set the isTraced flag for places, transitions and hybrid var
         if (P.tracedPlace.count("ALL") == 0 && P.tracedPlace.count("ALLCOLOR")==0 ) {
             P.nbPlace = 0;
@@ -107,7 +107,7 @@ shared_ptr<GspnType> ParseGSPN() {
                 }
             }
         }
-
+        
         //Apply Law of mass action for MASSACTION distribution:
         for (size_t t = 0; t < gReader.spn->tr; t++) {
             ProbabiliteDistribution *trDistr = &gReader.spn->transitionStruct[t].dist;
@@ -117,36 +117,27 @@ shared_ptr<GspnType> ParseGSPN() {
                     if (!gReader.spn->access(gReader.spn->inArcsStruct, t, p).isEmpty) {
                         expr exponent = gReader.spn->access(gReader.spn->inArcsStruct, t, p).exprVal;
                         /*if (gReader.spn->access(gReader.spn->inArcsStruct, t, p).isMarkDep) {
-                            exponent = expr(gReader.spn->access(gReader.spn->inArcsStruct, t, p).stringVal);
-                        } else {
-                            exponent = expr((int) gReader.spn->access(gReader.spn->inArcsStruct, t, p).intVal);
-                        }*/
+                         exponent = expr(gReader.spn->access(gReader.spn->inArcsStruct, t, p).stringVal);
+                         } else {
+                         exponent = expr((int) gReader.spn->access(gReader.spn->inArcsStruct, t, p).intVal);
+                         }*/
                         expr pl = expr(PlaceName, gReader.spn->placeStruct[p].name);
                         expr mult = expr(Pow, pl, exponent);
                         expr dist = expr(Times, trDistr->Param[0], mult);
-
+                        
                         trDistr->Param[0] = dist;
                     }
                 }
             }
         }
-
-        //Check that the model is not empty and generate the code
-        if (!parseresult && gReader.spn->pl > 0 && gReader.spn->tr > 0) {
-            Gspn_Writer_Color writer(*gReader.spn, P);
-            writer.writeFile();
-            writer.writeDotFile(P.tmpPath + "/templatePetriNet.dot");
-        } else {
-            cout << "Empty model for the GSPN: abort" << endl;
-            return nullptr;
-        }
+        
     } catch (exception& e) {
         cerr << "The following exception append during import: " << e.what() << endl;
         return nullptr;
     }
-
+    
     return gReader.spn;
-    }
+}
 
 bool ParseLHA(){
     GspnType emptyGSPN;
@@ -171,17 +162,17 @@ bool ParseLHA(GspnType &spn){
     // Intialize an empty structure for the automaton
     Lha_Reader lReader(spn, P);
     auto &A = lReader.MyLha;
-
+    
     int parseresult;
-
+    
     //Copy name of transition and place required for synchronization.
     A.TransitionIndex = spn.TransId;
     A.PlaceIndex = spn.PlacesId;
     A.ConfidenceLevel = P.Level;
     if(! A.isDeterministic )P.lhaType= NOT_DET;
-
+    
     if (P.verbose > 0)cout << "Start Parsing " << P.PathLha << endl;
-
+    
     try {
         // If the automaton need to be generated from a formula
         // call the generating tool.
@@ -189,21 +180,21 @@ bool ParseLHA(GspnType &spn){
             P.PathLha = P.tmpPath + "/generatedlha.lha";
             stringstream cmd;
             cmd << "echo \"" << P.CSLformula << "\" | " << P.Path <<
-                    "automataGen >" << P.PathLha;
+            "automataGen >" << P.PathLha;
             if (P.verbose > 0)cout << cmd.str() << endl;
             if (system(cmd.str().c_str()) != 0) {
                 cerr << "Fail to Generate the Automaton!" << endl;
                 return false;
             }
         }
-
+        
         if (P.generateLHA == TimeLoop || P.generateLHA == ActionLoop)generateLoopLHA(spn);
         if (P.generateLHA == SamplingLoop)generateSamplingLHA(spn);
-
+        
         //check the type of the LHA file
         //First check if it is not C++ code
         if (P.PathLha.compare(P.PathLha.length() - 3, 3, "cpp") != 0) {
-
+            
             if (P.PathLha.compare(P.PathLha.length() - 4, 4, "grml") == 0) {
                 //The LHA is in the GRML file format
                 parseresult = lReader.parse_gml_file(P);
@@ -211,11 +202,11 @@ bool ParseLHA(GspnType &spn){
                 //The LHA is in the LHA file format
                 parseresult = lReader.parse_file(P);
             }
-
+            
             //Add external HASL formula to the lha.
             if (P.externalHASL.compare("") != 0)
                 lReader.parse(P.externalHASL);
-
+            
             //Set the isTraced flag for variables
             if (P.tracedPlace.count("ALL")==0 && P.tracedPlace.count("ALLCOLOR")==0) {
                 for (size_t i = 0; i < A.NbVar; i++) {
@@ -226,14 +217,14 @@ bool ParseLHA(GspnType &spn){
                     }
                 }
             }
-
+            
             //If everythink work correctly, copy the HASL formula and generate the code
             if (!parseresult && A.NbLoc > 0) {
                 P.HaslFormulasname = A.HASLname;
                 P.HaslFormulas = vector<HaslFormulasTop*>(A.HASLtop);
                 P.nbAlgebraic = A.Algebraic.size();
                 P.nbQualitatif = A.FinalStateCond.size();
-
+                
                 //If the countTrans option is set then add HASL formula counting the occurance of each transition of the LHA.
                 if (P.CountTrans) {
                     for (size_t tr = 0; tr < A.Edge.size(); tr++) {
@@ -247,22 +238,22 @@ bool ParseLHA(GspnType &spn){
                         P.HaslFormulas.push_back(new HaslFormulasTop(A.Algebraic.size() + tr));
                     }
                 }
-
+                
                 //some cleaning:
                 A.SimplyUsedLinearForm = vector<bool>(A.LinearForm.size(),true);
                 for( size_t i = 0; i< A.LhaFuncArg.size();++i)
                     if(A.LhaFuncType[i]!="Last")
                         A.SimplyUsedLinearForm[A.LhaFuncArg[i]] = false;
-
-
+                
+                
                 //Generate the code for the LHA
                 lReader.WriteFile(P);
                 lReader.writeDotFile(P.tmpPath + "/templateLHA.dot");
-
+                
             } else {
                 return false;
             }
-
+            
             //If the LHA is already C++ code just copy it to temporary
             //and add external HASL formula
         } else if (P.PathLha.compare(P.PathLha.length() - 3, 3, "cpp") == 0) {
@@ -283,7 +274,7 @@ bool ParseLHA(GspnType &spn){
                 } else
                     cerr << "Fail to parse extra Hasl Formula" << endl;
             }
-
+            
             //Copy the code into the temporary directory
             if( P.PathLha != P.tmpPath + "/LHA.cpp"){
                 string cmd = "cp " + P.PathLha + " " + P.tmpPath + "/LHA.cpp";
@@ -298,9 +289,9 @@ bool ParseLHA(GspnType &spn){
         cerr << "The following exception append during import: " << e.what() << endl;
         return false;
     }
-
+    
     string cmd;
-
+    
     if (P.RareEvent) {
         //If rareevent handling is require copy the lumping function and table of value to the temporary directory
         if (P.BoundedRE == 0)cmd = "cp muFile " + P.tmpPath + "/muFile";
@@ -308,23 +299,23 @@ bool ParseLHA(GspnType &spn){
         if (system(cmd.c_str())) return false;
         cmd = "cp lumpingfun.cpp " + P.tmpPath + "/lumpingfun.cpp";
         if (system(cmd.c_str())) return false;
-
+        
         //Rewrite part of probabilistic operator to apply Rare event handling
         //First case for Continuous bounded rare event.
         if (P.BoundedContinuous) {
             for (vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
-                    it != P.HaslFormulas.end(); ++it)
+                 it != P.HaslFormulas.end(); ++it)
                 if ((*it)->TypeOp == EXPECTANCY) {
                     (*it)->TypeOp = RE_Continuous;
                     (*it)->Value = P.continuousStep;
                     (*it)->Value2 = P.epsilon;
-
+                    
                 }
         } else { // Second case Unbounded rare event.
             vector<HaslFormulasTop*> tmpRE;
             vector<string> tmpREName;
             for (vector<HaslFormulasTop*>::iterator it = P.HaslFormulas.begin();
-                    it != P.HaslFormulas.end(); ++it)
+                 it != P.HaslFormulas.end(); ++it)
                 if ((*it)->TypeOp == EXPECTANCY) {
                     (*it)->TypeOp = RE_AVG;
                     HaslFormulasTop *HaslCopy = new HaslFormulasTop(**it);
@@ -333,38 +324,38 @@ bool ParseLHA(GspnType &spn){
                     tmpREName.push_back("Likelyhood_" + P.HaslFormulasname[it - P.HaslFormulas.begin() ]);
                 }
             for (vector<HaslFormulasTop*>::iterator it = tmpRE.begin();
-                    it != tmpRE.end(); ++it) {
+                 it != tmpRE.end(); ++it) {
                 P.HaslFormulas.push_back(*it);
                 P.HaslFormulasname.push_back(tmpREName[it - tmpRE.begin()]);
             }
         }
     }
-
+    
     //generateMain();
-
+    
     return true;
-
+    
 }
 
 void generateMain() { // Not use for the moment
     string loc;
-
+    
     loc = P.tmpPath + "/main.cpp";
     ofstream mF(loc.c_str(), ios::out | ios::trunc);
-
+    
     mF << "#include \"BatchR.hpp\"" << endl;
     mF << "#include \"clientsim.hpp\"" << endl;
     /*mF << "#include \"Simulator.hpp\"" << endl;
-    mF << "#include \"SimulatorRE.hpp\"" << endl;
-    mF << "#include \"SimulatorBoundedRE.hpp\"" << endl;
-    mF << "#include \"SimulatorContinuousBounded.hpp\"" << endl;*/
+     mF << "#include \"SimulatorRE.hpp\"" << endl;
+     mF << "#include \"SimulatorBoundedRE.hpp\"" << endl;
+     mF << "#include \"SimulatorContinuousBounded.hpp\"" << endl;*/
     mF << "#include <sys/types.h>" << endl;
     mF << "#include <unistd.h>" << endl;
     mF << "#include <signal.h>" << endl;
     
     mF << "int main(int argc, char** argv) {" << endl;
     mF << "    signal(SIGINT, signalHandler);" << endl;
-
+    
     if( P.computeStateSpace>0){
         mF << "stateSpace states;" << endl;
         mF << "states.exploreStateSpace();" << endl;
@@ -396,7 +387,7 @@ void generateMain() { // Not use for the moment
     
     // Instantiate EventQueue
     const auto eqt = (P.is_domain_impl_set ? "EventsQueueSet" :"EventsQueue<vector<_trans>>");
-
+    
     // Instantiate DEDS
     if (P.BoundedRE > 0 || P.BoundedContinuous) {
         mF << "    SPN_BoundedRE N(false);" << endl;
@@ -412,7 +403,7 @@ void generateMain() { // Not use for the moment
     }else{
         mF << "    NLHA<decltype(N.Marking)> A;"<< endl;
     }
-
+    
     // Instantiate Simulator
     if (P.BoundedContinuous){
         mF << "    SimulatorContinuousBounded<SPN_BoundedRE> sim(N,A,"<<
@@ -427,7 +418,7 @@ void generateMain() { // Not use for the moment
     } else {
         mF << "    Simulator<"<< eqt << ",typeof N> sim(N,A);" << endl;
     }
-
+    
     
     if( !P.dataraw.empty()) mF << "    sim.logValue(\"" << P.dataraw << "\");" <<endl;
     if( !P.datatrace.empty()){
@@ -447,7 +438,7 @@ void generateMain() { // Not use for the moment
     mF << "    }" << endl;
     mF << "    return (EXIT_SUCCESS);" << endl;
     mF << "}" << endl << endl;
-
+    
     mF.close();
 }
 
@@ -455,12 +446,12 @@ bool build() {
     const bool generateMain = P.RareEvent || P.is_domain_impl_set || P.modelType == External;
     
     string bcmd = P.gcccmd + " " + P.gccflags;
-
+    
     if (P.verbose > 0) {
         cout << "Parsing OK.\n" << endl;
         cout << "Start building ... " << endl;
     }
-
+    
     string cmd = "true\\\n";
     //Compile the SPN
     if(P.modelType==GSPN){
@@ -468,20 +459,20 @@ bool build() {
         cmd += " )\\\n";
     }
     //Compile the LHA
-    if(!P.lightSimulator)cmd += "&(" + bcmd + " -c"+(P.modelType== External ? " -I./" : "")+" -I" + P.Path + "../include -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp)\\\n";
+    if(!P.lightSimulator)cmd += "&(" + bcmd + " -c -I" + P.Path + "../include "+ +(P.modelType== External ? " -I./" : "")+ +" -o " + P.tmpPath + "/LHA.o " + P.tmpPath + "/LHA.cpp)\\\n";
     
     if( generateMain){
-    //Compile the Main
+        //Compile the Main
         cmd += "&(" + bcmd + " -c -I"+P.Path+"../include "+ P.boostpath + (P.modelType== External ? " -I./" : "");
         cmd += " -o "+P.tmpPath+"/main.o "+P.tmpPath+"/main.cpp)";
     }
     
     cmd += " & wait";
-
+    
     if (P.verbose > 2)cout << cmd << endl;
     if (system(cmd.c_str())) return false;
     
-
+    
     //Link SPN and LHA with the library
     cmd = bcmd + " -o " + P.tmpPath + "/ClientSim ";
     if(P.modelType == GSPN)cmd += P.tmpPath + "/spn.o ";
@@ -497,13 +488,13 @@ bool build() {
         }
         cmd += P.Path + "../lib/libClientSimBase.a ";
     };
- 
-
+    
+    
     if (P.verbose > 2)cout << cmd << endl;
     if (system(cmd.c_str())) return false;
-
+    
     if (P.verbose > 0)cout << "Building OK.\n" << endl;
-
+    
     return true;
 }
 
@@ -512,39 +503,39 @@ void generateSamplingLHA(GspnType &spn) {
     //if (P.tracedPlace == "ALLCOLOR")allcolor= true;
     P.sampleResol = P.loopTransientLHA;
     size_t nbsample = static_cast<size_t> (ceil((P.loopLHA / P.sampleResol)));
-
+    
     P.PathLha = P.tmpPath + "/samplelha.lha";
     ofstream lhastr(P.PathLha.c_str(), ios::out | ios::trunc);
-
+    
     //lhastr << "NbVariables = "<<1+gReader.spn->tr + P.nbPlace <<";\nNbLocations = 3;\n";
     lhastr << "const double T=" << P.loopLHA << ";\n";
     lhastr << "const double invT=" << P.sampleResol << ";\n";
     lhastr << "const double invT2=" << 1 / P.sampleResol << ";\n";
-
+    
     lhastr << "VariablesList = {time,time2, DISC counter";
     for (const auto &itt : spn.placeStruct)if (itt.isTraced) {
-            lhastr << ", PLVARACC_" << itt.name;
-            lhastr << ", DISC PLVAR_" << itt.name << "[" << nbsample << "]";
-            //if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
-            //	gReader.iterateDom("", "_", "","","","" ,gReader.spn->colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
-            //		lhastr << ", PLVAR_" + itt.name + str;
-            //	});
-
-            //}
-        }
+        lhastr << ", PLVARACC_" << itt.name;
+        lhastr << ", DISC PLVAR_" << itt.name << "[" << nbsample << "]";
+        //if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
+        //	gReader.iterateDom("", "_", "","","","" ,gReader.spn->colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
+        //		lhastr << ", PLVAR_" + itt.name + str;
+        //	});
+        
+        //}
+    }
     lhastr << "} ;\nLocationsList = {l0,";
     //for (size_t i = 0; i < nbsample ; ++i ) lhastr << "l" << i << ", ";
     lhastr << "l2 };\n";
-
+    
     for (const auto &itt : spn.placeStruct) {
         if (itt.isTraced)for (size_t i = 0; i < nbsample; ++i) {
-                lhastr << "MeanToken_" << itt.name << "$GRAPH$" << (double) i * P.sampleResol << "$" << (double) (i + 1) * P.sampleResol << "$= AVG(Last( PLVAR_" << itt.name << "[" << i << "]));\n";
-                /*if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
-                    gReader.iterateDom("", "_", "","","","" ,gReader.spn->colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
-                        lhastr << "MeanToken_" << itt.name << str << "= AVG(Last( PLVAR_" << itt.name<< str <<"));\n";
-                    });
-                }*/
-            }
+            lhastr << "MeanToken_" << itt.name << "$GRAPH$" << (double) i * P.sampleResol << "$" << (double) (i + 1) * P.sampleResol << "$= AVG(Last( PLVAR_" << itt.name << "[" << i << "]));\n";
+            /*if(allcolor && itt.colorDom != UNCOLORED_DOMAIN){
+             gReader.iterateDom("", "_", "","","","" ,gReader.spn->colDoms[itt.colorDom], 0, [&] (const string &str,const string&){
+             lhastr << "MeanToken_" << itt.name << str << "= AVG(Last( PLVAR_" << itt.name<< str <<"));\n";
+             });
+             }*/
+        }
     }
     lhastr << P.externalHASL << endl;
     lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
@@ -568,17 +559,17 @@ void generateSamplingLHA(GspnType &spn) {
     lhastr << "((l0,l0),ALL,time<= invT ,#);";
     lhastr << "((l0,l0),#,time=invT ,{time=0,counter=counter+1";
     for (const auto &itt : spn.placeStruct)if (itt.isTraced) {
-            lhastr << ", PLVARACC_" << itt.name << " = 0.0 ";
-            lhastr << ", PLVAR_" << itt.name << "[" << "counter" << "]=PLVARACC_" << itt.name;
-        }
+        lhastr << ", PLVARACC_" << itt.name << " = 0.0 ";
+        lhastr << ", PLVAR_" << itt.name << "[" << "counter" << "]=PLVARACC_" << itt.name;
+    }
     lhastr << "});" << endl;
     lhastr << "((l0,l2),# , time2 >= " << P.loopLHA + P.sampleResol * 0.001 << ",#);";
-
+    
     //}
-
+    
     lhastr << "};";
     lhastr.close();
-
+    
 }
 
 void generateLoopLHA(GspnType &spn) {
@@ -588,11 +579,11 @@ void generateLoopLHA(GspnType &spn) {
     //of each transition
     bool allcolor = false;
     if (P.tracedPlace.count("ALLCOLOR")>0.0)allcolor = true;
-
-
+    
+    
     P.PathLha = P.tmpPath + "/looplha.lha";
     ofstream lhastr(P.PathLha.c_str(), ios::out | ios::trunc);
-
+    
     if(P.generateLHA ==TimeLoop){
         lhastr << "const double T=" << P.loopLHA << ";\n";
         lhastr << "const double invT=" << 1 / P.loopLHA << ";\n";
@@ -604,7 +595,7 @@ void generateLoopLHA(GspnType &spn) {
     lhastr << "VariablesList = {time,DISC countT";
     for (let itt : spn.transitionStruct)
         if (itt.isTraced)lhastr << ", " << itt.name;
-
+    
     for (let itt : spn.placeStruct) {
         if (itt.isTraced) {
             lhastr << ", PLVAR_" << itt.name;
@@ -616,7 +607,7 @@ void generateLoopLHA(GspnType &spn) {
         }
     }
     lhastr << "} ;\nLocationsList = {l0, l1,l2};\n";
-
+    
     auto nbHASL = 0;
     for (let itt : spn.transitionStruct)
         if (itt.isTraced){
@@ -636,9 +627,9 @@ void generateLoopLHA(GspnType &spn) {
     lhastr << P.externalHASL << endl;
     if(P.externalHASL.empty() && nbHASL==0)
         lhastr << "PROB;" << endl;
-
+    
     const auto stopcond = (P.generateLHA == TimeLoop ? "time<=T," : "countT<=TDiscr -1,");
-
+    
     lhastr << "InitialLocations={l0};\nFinalLocations={l2};\n";
     lhastr << "Locations={\n(l0, TRUE, (time:1));\n(l1, TRUE, (time:1 ";
     for (let itt : spn.placeStruct)
@@ -650,7 +641,7 @@ void generateLoopLHA(GspnType &spn) {
                 });
             }
         }
-
+    
     lhastr << "));\n(l2, TRUE);\n};\n";
     lhastr << "Edges={\n((l0,l0),ALL,time<= Ttrans ,#);\n((l0,l1),#,time=Ttrans ,{time=0});\n";
     size_t nbplntr = 0;

@@ -48,6 +48,8 @@
 #include "Generator.hpp"
 #include "GspnParser/unfolder.hpp"
 #include "GspnParser/Gspn-Grml-Output.hpp"
+#include "GspnParser/Gspn-Writer-Color.hpp"
+
 
 /**
  * A function to manipulate call to system
@@ -140,7 +142,7 @@ int main(int argc, char** argv) {
 		string newtmp = systemStringResult("mktemp -d tmpCosmos-XXXXXX");
 		if(!newtmp.empty())P.tmpPath=newtmp.substr(0,newtmp.length()-1);
 	}
-	//If the tmp directory do not exist generate it.
+	//If the tmp directory do not exist faill.
 	if(mkdir(P.tmpPath.c_str(), 0777) != 0){
 		if(errno != EEXIST){
 			err(EXIT_FAILURE,"Fail to build temporary directory:%s",P.tmpPath.c_str());
@@ -160,7 +162,7 @@ int main(int argc, char** argv) {
         shared_ptr<GspnType> pGSPN = ParseGSPN();
         
         if ( !pGSPN ) {
-            cout << "Fail to build the GSPN." << endl;
+            cout << "Fail to parse the GSPN." << endl;
             return(EXIT_FAILURE);
         }
 
@@ -178,6 +180,16 @@ int main(int argc, char** argv) {
             return EXIT_SUCCESS;
         }
         
+        //Check that the model is not empty and generate the code
+        if (pGSPN->pl > 0 && pGSPN->tr > 0) {
+            Gspn_Writer_Color writer(*pGSPN, P);
+            writer.writeFile();
+            writer.writeDotFile(P.tmpPath + "/templatePetriNet.dot");
+        } else {
+            cout << "Empty model for the GSPN: abort" << endl;
+            return EXIT_FAILURE;
+        }
+
         
         if(P.MaxRuns == 0 && P.lightSimulator){
             auto cmd = "cp "+P.Path+"../src/LightSimulator/*.* "+P.tmpPath;
