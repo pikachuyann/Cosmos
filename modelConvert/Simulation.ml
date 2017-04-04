@@ -228,7 +228,7 @@ module MdpOp = struct
     let mdp_choose net m en =
       (*print_mdp_state static.state;
       print_traj stdout static.currenttraj;*)
-      let score_list = en
+      let score_list = en 
 		       |> List.map (fun tr ->  tr,(SemanticSPT.fire net m tr))
 		       |> List.map (fun (tr,m) -> (tr,findMark static.state m))
                        |> List.map (fun (tr,(i,j)) -> (tr,(float (i-j)/.(float (i+j))) ))
