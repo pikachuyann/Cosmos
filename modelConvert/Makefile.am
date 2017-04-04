@@ -4,7 +4,7 @@ bin_SCRIPTS = modelConvert
 #	cd $(srcdir); $(OCAMLBUILD) -libs unix,str prism2SPT.native
 #	cp $(srcdir)/prism2SPT.native modelConvert
 
-modelConvert: DataFile.ml PetriNet.ml StochasticPetriNet.ml generator.ml  pnmlparser.ml prism2SPT.ml prismType.ml stateflowType.ml simulinkparser.ml stateflowparser.ml type.ml parserPrism.mly parserSimulEdge.mly lexerPrism.mll lexerSimulEdge.mll prelexer.mll preparser.mly modelConvert.ml simulinkTrans.ml prism2SPT.ml ClessParser/cless_ast.ml _tags
+modelConvert: DataFile.ml PetriNet.ml StochasticPetriNet.ml generator.ml  pnmlparser.ml prism2SPT.ml prismType.ml stateflowType.ml stateflowTrans.ml simulinkparser.ml stateflowparser.ml type.ml parserPrism.mly parserSimulEdge.mly lexerPrism.mll lexerSimulEdge.mll prelexer.mll preparser.mly modelConvert.ml simulinkTrans.ml prism2SPT.ml ClessParser/cless_ast.ml _tags
 	cd $(srcdir); $(OCAMLBUILD) -use-ocamlfind -I ClessParser prism2SPT.native modelConvert.native
 	cp $(srcdir)/modelConvert.native modelConvert
 
