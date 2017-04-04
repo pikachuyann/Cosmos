@@ -123,6 +123,7 @@ enum LHAType {
     NOT_DET
 };
 
+
 struct parameters {
     std::string commandLine;
     int verbose;
@@ -213,6 +214,17 @@ struct parameters {
     size_t nbQualitatif;
     size_t nbPlace;
 };
+
+/**
+ * Retrive the real absolute path of the executable of Cosmos
+ * This is usefull for finding the library containing all the
+ * code for the simulator.
+ * Thoses functions fill the variable P.Path
+ * This code is system dependant.
+ * @param P is a structure of parameters
+ */
+void findBinaryPath(parameters& P);
+
 
 extern parameters P;
 

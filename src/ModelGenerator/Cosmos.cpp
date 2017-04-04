@@ -50,16 +50,6 @@
 #include "GspnParser/Gspn-Grml-Output.hpp"
 
 /**
- * Retrive the real absolute path of the executable of Cosmos
- * This is usefull for finding the library containing all the
- * code for the simulator.
- * Thoses functions fill the variable P.Path
- * This code is system dependant.
- * @param P is a structure of parameters
- */
-void FindPath(parameters& P);
-
-/**
  * A function to manipulate call to system
  * The result of the call to cmd is read from its standart
  * ouput and put in a string.
@@ -70,40 +60,6 @@ string systemStringResult(const char* cmd);
  * Clean the temporary directory
  */
 void cleanTmp(void);
-
-#ifdef __APPLE__
-#include <mach-o/dyld.h>
-void FindPath(parameters& P) {
-	char path[1024];
-	uint32_t size = sizeof(path);
-	if (_NSGetExecutablePath(path, &size) != 0){
-		printf("buffer too small; need size %u\n", size);
-		exit(EXIT_FAILURE);
-	}
-	
-	P.Path=path;
-	std::string::size_type t = P.Path.find_last_of("/");
-	P.Path = P.Path.substr(0, t);
-	P.Path.append("/");
-}
-#elif __linux__
-void FindPath(parameters& P) {
-	char path[1024];
-	char link[512];
-	sprintf(link, "/proc/%d/exe", getpid());
-	int sz = readlink(link, path, 1024);
-	if (sz >= 0) {
-		path[sz] = 0;
-		P.Path = path;
-		std::string::size_type t = P.Path.find_last_of("/");
-		P.Path = P.Path.substr(0, t);
-		P.Path.append("/");
-	}
-}
-
-#else
-#error "Operating system not supported"
-#endif
 
 using namespace std;
 
@@ -196,13 +152,6 @@ int main(int argc, char** argv) {
     if(P.generateLHA==SamplingLoop && P.dataPDFCDF.empty())
         P.dataPDFCDF = P.tmpPath+"/defaultOutput.dat";
 
-    //Find the path to the directory containing the binary of cosmos.
-    if(P.Path.compare("")==0){
-        string st = argv[0];
-        if (st == "./Cosmos")P.Path = ""; //local directory
-        else if(st.length()>6)P.Path=st.substr(0,st.length()-6); //direct Path to Cosmos
-        else FindPath(P); //Ask the system where Cosmos is (System dependant)
-    }
     if(P.verbose>2)cout << "Binary directory path set to:" << P.Path << endl;
 
     //Parse models and generate code

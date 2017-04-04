@@ -40,6 +40,40 @@ using namespace std;
 
 #define BUILD_VERSION "Cosmos 1.5"
 
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+void findBinaryPath(parameters& P) {
+    char path[1024];
+    uint32_t size = sizeof(path);
+    if (_NSGetExecutablePath(path, &size) != 0){
+        printf("buffer too small; need size %u\n", size);
+        exit(EXIT_FAILURE);
+    }
+    
+    P.Path=path;
+    std::string::size_type t = P.Path.find_last_of("/");
+    P.Path = P.Path.substr(0, t);
+    P.Path.append("/");
+}
+#elif __linux__
+void findBinaryPath(parameters& P) {
+    char path[1024];
+    char link[512];
+    sprintf(link, "/proc/%d/exe", getpid());
+    int sz = readlink(link, path, 1024);
+    if (sz >= 0) {
+        path[sz] = 0;
+        P.Path = path;
+        std::string::size_type t = P.Path.find_last_of("/");
+        P.Path = P.Path.substr(0, t);
+        P.Path.append("/");
+    }
+}
+#else
+#error "Operating system not supported"
+#endif
+
+
 /**
  * Constructor for parameters, set all default values
  */
@@ -139,6 +173,7 @@ nbPlace(0)
         terminalWidth =120;
         verbose=1;
     }
+    
 }
 
 /**
@@ -245,6 +280,14 @@ Poption parameters::parsersingleOpt(int i)const{
  * with the option set by the user
  */
 void parameters::parseCommandLine(int argc, char** argv) {
+    
+    //Find the path to the directory containing Cosmos binary.
+    string st = argv[0];
+    if (st == "./Cosmos"){P.Path = "";} //local directory
+    else if(st.length()>6){P.Path=st.substr(0,st.length()-6);} //direct Path to Cosmos
+    else findBinaryPath(*this); //Ask the system where Cosmos is (System dependant)
+    
+    
     commandLine = argv[0];
     for (int i = 1; i<argc; i++){
         commandLine += " ";
@@ -616,6 +659,7 @@ void parameters::parseCommandLine(int argc, char** argv) {
                 cout << "Source Version:" << GIT_REVISION << endl;
                 cout << BUILD_VERSION << " Build Date:" << __DATE__ " at " << __TIME__ << endl;
                 cout << "Compiled with: " << CPP_COMPILER << " " << BOOST_PATH << endl;
+                cout << "Binary Path: " << Path << endl;
                 exit(0);
 
             default:
