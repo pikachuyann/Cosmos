@@ -431,7 +431,17 @@ void MyModelHandler::on_read_model(const XmlString& formalismUrl) {
 }
 
 void MyModelHandler::on_read_model_attribute(const Attribute& attribute) {
-    if (MyGspn->nbpass == 1)return;
+    if (MyGspn->nbpass == 1){
+        for (treeSI it = attribute.begin(); it != attribute.end(); ++it) {
+            if (*it == "externalMainFile") {
+                const auto extdef = simplifyString(*(it.begin()));
+                if ((P.verbose - 3) > 1)cout <<  extdef << endl;
+                P.PathGspn = extdef;
+                P.modelType = External;
+            }
+        }
+        return;
+    }
 
     // read model attribute
     // If the file is well formed the only attributes are constant declaration.
@@ -773,8 +783,15 @@ void MyModelHandler::on_read_node(const XmlString& id,
         MyGspn->placeStruct.push_back(p);
 
     } else {
+        cerr << "toto" << MyGspn->nbpass << endl;
+
+        
         if (nodeType == "transition") {
             if (MyGspn->nbpass == 0)return;
+            
+            cerr << "toto" << endl;
+
+            
             //Read a transition:
             MyGspn->tr++;
             int id2 = atoi(id.c_str());
@@ -791,7 +808,7 @@ void MyModelHandler::on_read_node(const XmlString& id,
             trans.markingDependant = false;
             trans.ageMemory = false;
             trans.nbServers = 1;
-
+         
             for (AttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it) {
                 if ((*(it->second.begin())) == "name") {
                     string Trname = simplifyString(*(++(it->second.begin())));
