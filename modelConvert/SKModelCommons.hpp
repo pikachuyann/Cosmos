@@ -19,6 +19,8 @@ public:
 	SKTime operator - (SKTime);
 	SKTime operator + (double);
 	SKTime operator - (double);
+	bool operator == (SKTime);
+	bool operator != (SKTime);
 	bool operator < (SKTime);
 	bool operator > (SKTime);
 //	operator double();
