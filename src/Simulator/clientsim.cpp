@@ -26,9 +26,9 @@
 
 #include "BatchR.hpp"
 #include "Simulator.hpp"
-#include "SimulatorRE.hpp"
-#include "SimulatorBoundedRE.hpp"
-#include "SimulatorContinuousBounded.hpp"
+#include "RareEvents/SimulatorRE.hpp"
+#include "RareEvents/SimulatorBoundedRE.hpp"
+#include "RareEvents/SimulatorContinuousBounded.hpp"
 #include "Polynome.hpp"
 #include "MarkovChain.hpp"
 #include "clientsim.hpp"
