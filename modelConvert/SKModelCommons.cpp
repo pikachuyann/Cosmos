@@ -74,6 +74,18 @@ double SKTime::getDouble() {
 	return approxTime;
 }
 SKTime& SKTime::operator= (double newTime) { updatePrecision(5); set_to(newTime); }
+bool SKTime::operator== (SKTime otherTime) {
+	int precB = otherTime.getPrecision();
+	if (precB > precision) { updatePrecision(precB); }
+	else if (precB < precision) { otherTime.updatePrecision(precision); }
+	return (time == otherTime.time);
+}
+bool SKTime::operator!= (SKTime otherTime) {
+	int precB = otherTime.getPrecision();
+	if (precB > precision) { updatePrecision(precB); }
+	else if (precB < precision) { otherTime.updatePrecision(precision); }
+	return (time != otherTime.time);
+}
 SKTime SKTime::operator+ (SKTime otherTime) {
 	int precB = otherTime.getPrecision();
 	if (precB > precision) { updatePrecision(precB); }
