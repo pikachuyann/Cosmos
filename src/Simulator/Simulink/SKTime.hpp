@@ -1,5 +1,6 @@
 #ifndef SKModel_Commons
 #define SKModel_Commons
+#include <sys/types.h>
 
 class SKTime {
 public:

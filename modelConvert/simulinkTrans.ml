@@ -333,6 +333,16 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\tMarking.resetToInitMarking();\n";
   Printf.fprintf skCpp "};\n";
 
+  (* Gestion des latences *)
+  Printf.fprintf skCpp "\ntemplate <class EQT>\nint SKModel<EQT>::findLatencyIndex(double latency) {\n";
+  Printf.fprintf skCpp "\tSKTime currTime = Marking.P->_TIME[Marking.P->lastEntry];\n";
+  Printf.fprintf skCpp "\twhile (Marking.P->countDown > 0 && Marking.P->_TIME[Marking.P->countDown] > (currTime - latency)) {\n";
+  Printf.fprintf skCpp "\t\tMarking.P->countDown--;\n";
+  Printf.fprintf skCpp "\t}\n";
+  Printf.fprintf skCpp "\tif (Marking.P->_TIME[Marking.P->countDown] > (currTime - latency)) { return -1;\n";
+  Printf.fprintf skCpp "\t} else { return Marking.P->countDown; }\n";
+  Printf.fprintf skCpp "}\n";
+
   (* Initialisation des blocs Intégrateurs *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::initialiseIntegrators(int idx) {";
   let rec genInitIntegrators = function
