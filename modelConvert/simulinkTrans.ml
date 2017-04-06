@@ -97,6 +97,32 @@ let rec findSrc (b,p) = function
   | l::q when l.toblock=b && l.toport=p -> (l.fromblock,l.fromport)
   | l::q -> findSrc (b,p) q;;
 
+let rec getBlockById bid = function
+  [] -> Printf.eprintf "[FATAL:] Couldn't find block number %i" bid; exit 0;
+  | b::q when b.blockid=bid -> b
+  | b::q -> getBlockById bid q;;
+
+let bkwdGraph (lB,lL) b =
+  let kB = ref [] and kL = ref [] in
+    let addB = function
+    | b when List.exists (fun x -> x=b) !kB -> ()
+    | b -> kB := b::!kB
+    and addL = function
+    | l when List.exists (fun x -> x=l) !kL -> ()
+    | l -> kL := l::!kL
+    in
+      let rec auxBkwd = function
+      | t when List.exists (fun x -> x=t.blocktype) skNoInputs -> addB t;
+      | t when List.exists (fun (x,y) -> x="LATENCY") t.values -> addB t;
+      | t -> addB t; defileLinks t.blockid lL
+      and defileLinks bid = function
+      | [] -> ()
+      | l::q when l.toblock=bid -> addL l; auxBkwd (getBlockById l.fromblock lB); defileLinks bid q;
+      | l::q -> defileLinks bid q
+      in
+        defileLinks b.blockid lL;
+        topologicSort (!kB,!kL);;
+
 let generateCode lS (lB,lL) =
   let skCpp = open_out "SKModel.cpp" and
       mkImp = open_out "markingImpl.hpp" and
@@ -119,9 +145,9 @@ let generateCode lS (lB,lL) =
   Printf.fprintf mkImp "using namespace std;\n#include <string.h>\n";
   Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\"\n";
   Printf.fprintf skCpp "#include \"marking.hpp\"\n#include \"markingImpl.hpp\"\n";
-  Printf.fprintf skCpp "#include \"SKModelCommons.cpp\"\n";
-  Printf.fprintf skHpp "#include \"SKModelCommons.hpp\"\n";
-  Printf.fprintf mkImp "#include \"SKModelCommons.hpp\"\n";
+  Printf.fprintf skCpp "#include \"SKTime.hpp\"\n";
+  Printf.fprintf skHpp "#include \"SKTime.hpp\"\n";
+  Printf.fprintf mkImp "#include \"SKTime.hpp\"\n";
   (*  Définition deSKTransition *)
   Printf.fprintf skHpp "class SKTransition {\n";
   Printf.fprintf skHpp "public:\n";
@@ -205,7 +231,7 @@ let generateCode lS (lB,lL) =
                   Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \" \";" t.blockid i;
                   Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \"/g' \";" t.blockid i t.blockid i;
                   Printf.bprintf generateNewEntries "\n\tMarking.P->_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
-                  Printf.bprintf generateVectors "\n\tP->_BLOCK%i_OUT%i = {0.0};" t.blockid i;
+                  Printf.bprintf generateVectors "\n\tP->_BLOCK%i_OUT%i = {0.0,0.0,0.0,0.0,0.0};" t.blockid i;
                 done
               with Not_found ->  begin Printf.eprintf "[WARNING:] Wrong port format for block %i (type %s) : %s\n" t.blockid t.blocktype numOfPorts; end;
              end
@@ -232,10 +258,8 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skHpp "\n\tvoid fire(size_t, const abstractBinding&, double);";
   Printf.fprintf skHpp "\n\tvoid update(double, size_t, const abstractBinding&, EQT&, timeGen&);";
   Printf.fprintf skHpp "\n\nprivate:\n";
-  Printf.fprintf skHpp "\tstd::pair<double,double> rk45(double, double, double, double);\n";
-  Printf.fprintf skHpp "\tdouble rk4(double, double, double, double);\n";
   Printf.fprintf skHpp "\tvoid initialiseIntegrators(int);\n";
-  Printf.fprintf skHpp "\tdouble estimateIntegrators(int,double);\n";
+  Printf.fprintf skHpp "\tSKTime estimateIntegrators(int,SKTime);\n";
   Printf.fprintf skHpp "\tvoid executeIntegrators(int);\n";
   Printf.fprintf skHpp "\tint findLatencyIndex(double);\n";
   let rec genBlockFunNames = function
@@ -263,7 +287,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\tP->lastEntry = 0;\n";
   Printf.fprintf skCpp "\tP->lastPrintEntry = 0;\n";
   Printf.fprintf skCpp "\tP->countDown = 0;\n";
-  Printf.fprintf skCpp "\tP->_TIME = {0.0};";
+  Printf.fprintf skCpp "\tP->_TIME = {0.0,0.0,0.0,0.0,0.0};";
   Buffer.output_buffer skCpp generateVectors;
   Printf.fprintf skCpp "\n}\n";
 
@@ -310,22 +334,23 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "};\n";
 
   (* Initialisation des blocs Intégrateurs *)
-  Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::initialiseIntegrators(int idx) {\n";
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::initialiseIntegrators(int idx) {";
   let rec genInitIntegrators = function
     [] -> ()
     | b::q when b.blocktype="Integrator" -> let cstValue = float_of_string (List.assoc "InitialCondition" b.values) in
         Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[Marking.P->lastEntry] = %f;" b.blockid 1 cstValue; genInitIntegrators q;
     | b::q -> genInitIntegrators q
   in genInitIntegrators lB;
-  Printf.fprintf skCpp "};\n";
+  Printf.fprintf skCpp "\n};\n";
 
   (* Implémentation des intégrales : Euler *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::executeIntegrators(int idx) {\n";
   Printf.fprintf skCpp "\testimateIntegrators(idx,(Marking.P->_TIME[idx] - Marking.P->_TIME[idx-1]).getDouble());\n";
   Printf.fprintf skCpp "};\n";
-  Printf.fprintf skCpp "\ntemplate<class EQT>\ndouble SKModel<EQT>::estimateIntegrators(int idx,double step) {\n";
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nSKTime SKModel<EQT>::estimateIntegrators(int idx,SKTime stepSK) {\n";
+  Printf.fprintf skCpp "\n\tdouble step = stepSK.getDouble();";
   let rec genEulerIntegrators = function
-    [] -> Printf.fprintf skCpp "\treturn step;\n";
+    [] -> Printf.fprintf skCpp "\treturn stepSK;\n";
     | b::q when b.blocktype="Integrator" -> let (ba,ia) = findSrc (b.blockid,1) lL in
       Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx-1] + step * Marking.P->_BLOCK%i_OUT%i[idx];\n" b.blockid 1 b.blockid 1 ba ia;
       genEulerIntegrators q;
