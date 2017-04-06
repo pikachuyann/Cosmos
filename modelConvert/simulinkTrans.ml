@@ -119,9 +119,9 @@ let generateCode lS (lB,lL) =
   Printf.fprintf mkImp "using namespace std;\n#include <string.h>\n";
   Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\"\n";
   Printf.fprintf skCpp "#include \"marking.hpp\"\n#include \"markingImpl.hpp\"\n";
-  Printf.fprintf skCpp "#include \"SKModelCommons.cpp\"\n";
-  Printf.fprintf skHpp "#include \"SKModelCommons.hpp\"\n";
-  Printf.fprintf mkImp "#include \"SKModelCommons.hpp\"\n";
+  Printf.fprintf skCpp "#include \"SKTime.cpp\"\n";
+  Printf.fprintf skHpp "#include \"SKTime.hpp\"\n";
+  Printf.fprintf mkImp "#include \"SKTime.hpp\"\n";
   (*  Définition deSKTransition *)
   Printf.fprintf skHpp "class SKTransition {\n";
   Printf.fprintf skHpp "public:\n";
