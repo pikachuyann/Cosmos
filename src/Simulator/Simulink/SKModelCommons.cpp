@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "SKModelCommons.hpp"
+#include <math.h>
+#include <utility>
 
 template<class EQT>
 std::pair<double, double> SKModel<EQT>::rk45(double step, double xCurr, double xPrev, double yPrev) {
