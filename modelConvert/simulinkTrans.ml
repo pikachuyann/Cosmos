@@ -412,7 +412,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\n\t\t\t\tMarking.P->_TIME[Marking.P->lastEntry] = t;";
   genSignalChanges "\t\t\t\t" 1 lB;
   Printf.fprintf skCpp "\n\t\t\t} else {\n";
-  Printf.fprintf skCpp "\t\t\t\tstep = ctime - %s;\n" endTvalue;
+  Printf.fprintf skCpp "\t\t\t\tstep = %s - ctime;\n" endTvalue;
   Printf.fprintf skCpp "\n\t\t\t}\n";
   Printf.fprintf skCpp "\t\t}\n";
   Printf.fprintf skCpp "\tgenerateEvent(t.getDouble(), E, 0, TG);\n";
