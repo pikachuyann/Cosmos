@@ -105,19 +105,20 @@ let rec getBlockById bid = function
 let bkwdGraph (lB,lL) b =
   let kB = ref [] and kL = ref [] in
     let addB = function
-    | b when List.exists (fun x -> x=b) !kB -> ()
-    | b -> kB := b::!kB
+    | b when List.exists (fun x -> x=b) !kB -> false
+    | b -> kB := b::!kB; true
     and addL = function
-    | l when List.exists (fun x -> x=l) !kL -> ()
-    | l -> kL := l::!kL
+    | l when List.exists (fun x -> x=l) !kL -> false
+    | l -> kL := l::!kL; true
+    and noOutput = function _ -> ()
     in
       let rec auxBkwd = function
-      | t when List.exists (fun x -> x=t.blocktype) skNoInputs -> addB t;
-      | t when List.exists (fun (x,y) -> x="LATENCY") t.values -> addB t;
-      | t -> addB t; defileLinks t.blockid lL
+      | t when List.exists (fun x -> x=t.blocktype) skNoInputs -> noOutput(addB t)
+      | t when List.exists (fun (x,y) -> x="LATENCY") t.values -> noOutput(addB t)
+      | t -> let isNew = addB t in if isNew then defileLinks t.blockid lL
       and defileLinks bid = function
       | [] -> ()
-      | l::q when l.toblock=bid -> addL l; auxBkwd (getBlockById l.fromblock lB); defileLinks bid q;
+      | l::q when l.toblock=bid -> let isNew = addL l in if isNew then begin auxBkwd (getBlockById l.fromblock lB); defileLinks bid q end;
       | l::q -> defileLinks bid q
       in
         defileLinks b.blockid lL;
@@ -358,14 +359,38 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\testimateIntegrators(idx,(Marking.P->_TIME[idx] - Marking.P->_TIME[idx-1]).getDouble());\n";
   Printf.fprintf skCpp "};\n";
   Printf.fprintf skCpp "\ntemplate<class EQT>\nSKTime SKModel<EQT>::estimateIntegrators(int idx,SKTime stepSK) {\n";
-  Printf.fprintf skCpp "\n\tdouble step = stepSK.getDouble();";
+  Printf.fprintf skCpp "\tdouble step = stepSK.getDouble();\n";
+  Printf.fprintf skCpp "\tint idxtampon = Marking.P->lastEntry+1;\n";
   let rec genEulerIntegrators = function
     [] -> Printf.fprintf skCpp "\treturn stepSK;\n";
     | b::q when b.blocktype="Integrator" -> let (ba,ia) = findSrc (b.blockid,1) lL in
       Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx-1] + step * Marking.P->_BLOCK%i_OUT%i[idx];\n" b.blockid 1 b.blockid 1 ba ia;
       genEulerIntegrators q;
     | b::q -> genEulerIntegrators q
-  in genEulerIntegrators lB;
+  in
+  let rec genRK4Integrators step lI = function
+    | _ when step>4 -> ()
+    | [] -> genRK4Entries step lI (* To Do *)
+    | b::q when b.blocktype="Integrator" -> begin
+      Printf.fprintf skCpp "\tdouble k%i_b%i = " step b.blockid;
+      begin match step with
+      0 -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idx-1];" b.blockid 1;
+      | _ -> () (* ToDo *)
+      end; Printf.fprintf skCpp "\n\tdouble y%i_b%i = " step b.blockid;
+      begin match step with
+      0 -> Printf.fprintf skCpp "k%i_b%i;" step b.blockid
+      | _ -> () (* ToDo *)
+      end; Printf.fprintf skCpp "\n"; genRK4Integrators step (b::lI) q
+      end
+    | b::q -> genRK4Integrators step lI q
+  and genRK4Entries step = function
+    | [] -> ()
+    | b::q -> let (bB,bL) = bkwdGraph (lB,lL) b in genRK4Bkwd step bB
+  and genRK4Bkwd step = function
+    | [] -> ()
+    | b::q when b.blocktype="Integrator" -> Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idxtampon+%i] = y%i_b%i;\n" b.blockid 1 step step b.blockid; genRK4Bkwd step q;
+    | b::q -> Printf.fprintf skCpp "\texecuteBlock%i(idxtampon+%i);\n" b.blockid step; genRK4Bkwd step q;
+  in genRK4Integrators 0 [] lB;
   Printf.fprintf skCpp "};\n";
 
   (* Génération des fonctions d'éxécution des blocs simples *)
