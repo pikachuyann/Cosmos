@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.61)
 AC_INIT([Cosmos],[1.5],[barbot@lacl.fr])
-AM_INIT_AUTOMAKE([foreign -Wall -Werror])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects])
 AM_SILENT_RULES
 AC_CONFIG_SRCDIR([src/Simulator/BatchR.cpp])
 AC_CONFIG_HEADER([config.h])
