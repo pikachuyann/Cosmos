@@ -482,7 +482,7 @@ bool build() {
     } else {
         cmd += P.tmpPath + "/LHA.o ";
         if(generateMain){
-            if(P.modelType==GSPN)cmd += P.Path + "../lib/libClientSim.a ";
+            cmd += P.Path + "../lib/libClientSim.a ";
         } else {
             cmd += P.Path + "../lib/libClientSimMain.a ";
         }
