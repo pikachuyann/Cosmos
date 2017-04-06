@@ -1,5 +1,0 @@
-#!/bin/bash
-
-g++ -Wno-return-type -std=gnu++11 -c -I../include -o main.o main.cpp
-g++ -Wno-return-type -std=gnu++11 -c -I../include -o LHA.o LHA.cpp
-g++ -Wno-return-type -std=gnu++11 -o ClientSim LHA.o main.o ../lib/libClientSimMainNOSPN.a
