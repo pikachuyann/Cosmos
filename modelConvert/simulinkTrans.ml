@@ -232,8 +232,6 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skHpp "\n\tvoid fire(size_t, const abstractBinding&, double);";
   Printf.fprintf skHpp "\n\tvoid update(double, size_t, const abstractBinding&, EQT&, timeGen&);";
   Printf.fprintf skHpp "\n\nprivate:\n";
-  Printf.fprintf skHpp "\tstd::pair<double,double> rk45(double, double, double, double);\n";
-  Printf.fprintf skHpp "\tdouble rk4(double, double, double, double);\n";
   Printf.fprintf skHpp "\tvoid initialiseIntegrators(int);\n";
   Printf.fprintf skHpp "\tdouble estimateIntegrators(int,double);\n";
   Printf.fprintf skHpp "\tvoid executeIntegrators(int);\n";
@@ -308,6 +306,16 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::reset() {\n";
   Printf.fprintf skCpp "\tMarking.resetToInitMarking();\n";
   Printf.fprintf skCpp "};\n";
+
+  (* Gestion des latences *)
+  Printf.fprintf skCpp "\ntemplate <class EQT>\nint SKModel<EQT>::findLatencyIndex(double latency) {\n";
+  Printf.fprintf skCpp "\tSKTime currTime = Marking.P->_TIME[Marking.P->lastEntry];\n";
+  Printf.fprintf skCpp "\twhile (Marking.P->countDown > 0 && Marking.P->_TIME[Marking.P->countDown] > (currTime - latency)) {\n";
+  Printf.fprintf skCpp "\t\tMarking.P->countDown--;\n";
+  Printf.fprintf skCpp "\t}\n";
+  Printf.fprintf skCpp "\tif (Marking.P->_TIME[Marking.P->countDown] > (currTime - latency)) { return -1;\n";
+  Printf.fprintf skCpp "\t} else { return Marking.P->countDown; }\n";
+  Printf.fprintf skCpp "}\n";
 
   (* Initialisation des blocs Intégrateurs *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::initialiseIntegrators(int idx) {\n";
