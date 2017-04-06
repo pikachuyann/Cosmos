@@ -1,1 +1,3 @@
-Cosmos SKModel.grml -loop 1
+cp ../../modelConvert/SKModelCommons.cpp ./
+cp ../../modelConvert/SKModelCommons.hpp ./
+Cosmos SKModel.grml --loop 1
