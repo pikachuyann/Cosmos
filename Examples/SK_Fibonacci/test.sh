@@ -1,3 +1,1 @@
-cp ../../modelConvert/SKModelCommons.cpp ./
-cp ../../modelConvert/SKModelCommons.hpp ./
-Cosmos SKModel.grml --loop 1
+Cosmos SKModel.grml --loop 5 --output-trace trace.data 0 --gnuplot-driver png --max-run 1
