@@ -16,7 +16,7 @@ libClientSim_la_SOURCES = \
 	RareEvents/SimulatorBoundedRE.cpp RareEvents/SimulatorBoundedRE.hpp \
 	RareEvents/foxglynn.cpp RareEvents/foxglynn.hpp \
 	RareEvents/SimulatorContinuousBounded.cpp RareEvents/SimulatorContinuousBounded.hpp \
-        Simulink/SKModelCommons.cpp Simulink/SKModelCommons.hpp \
+        Simulink/SKTime.cpp Simulink/SKTime.hpp \
 	InstanceSPNSim.cpp RareEvents/InstanceSPNSimRE.cpp
 
 libClientSimMain_la_SOURCES = \
@@ -41,7 +41,7 @@ includes_HEADERS = LHA.hpp marking.hpp spn.hpp Polynome.hpp markingTemplate.hpp 
 	timeGen.hpp timeGenBis.hpp Event.hpp EventsQueue.hpp BatchR.hpp EventsQueueSet.hpp \
 	Simulator.hpp stateSpace.hpp MarkovChain.hpp SPNBase.hpp \
 	LHA_orig.hpp NLHA.hpp clientsim.hpp \
-        Simulink/SKModelCommons.hpp
+        Simulink/SKTime.hpp
 
 otherincludedir = $(includedir)/RareEvents
 otherinclude_HEADERS = RareEvents/numericalSolver.hpp \
