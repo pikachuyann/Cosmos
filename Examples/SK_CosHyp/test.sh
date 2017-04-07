@@ -1,0 +1,1 @@
+Cosmos SKModel.grml --loop 5 --output-trace trace.data 0 --gnuplot-driver png --max-run 1
