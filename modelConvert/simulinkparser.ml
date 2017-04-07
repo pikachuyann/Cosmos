@@ -196,7 +196,7 @@ let pushDefaults ((lB, lP, lL):simulinkModel) =
   in
   ((List.map blockDef lB), lL);;
 
-let position_parse_regexp = Str.regexp "\\[\\([0-9]+\\)[ ,]*\\([0-9]+\\)[ ,]*\\([0-9]+\\)[ ,]*\\([0-9]+\\)\\]"
+let position_parse_regexp = Str.regexp "\\[\\(-?[0-9]+\\)[ ,]*\\(-?[0-9]+\\)[ ,]*\\(-?[0-9]+\\)[ ,]*\\(-?[0-9]+\\)\\]"
   
 let getchar i = char_of_int ((int_of_char('A') + i - 1))
 let printLaTeX f ((lB,lL):simulinkPModel) =
