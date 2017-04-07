@@ -354,13 +354,15 @@ let generateCode lS (lB,lL) =
   in genInitIntegrators lB;
   Printf.fprintf skCpp "\n};\n";
 
-  (* Implémentation des intégrales : Euler *)
+  (* Implémentation des intégrales : Euler *) (* INTEGRATORS *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::executeIntegrators(int idx) {\n";
   Printf.fprintf skCpp "\testimateIntegrators(idx,(Marking.P->_TIME[idx] - Marking.P->_TIME[idx-1]).getDouble());\n";
   Printf.fprintf skCpp "};\n";
   Printf.fprintf skCpp "\ntemplate<class EQT>\nSKTime SKModel<EQT>::estimateIntegrators(int idx,SKTime stepSK) {\n";
   Printf.fprintf skCpp "\tdouble step = stepSK.getDouble();\n";
   Printf.fprintf skCpp "\tint idxtampon = Marking.P->lastEntry+1;\n";
+  Printf.fprintf skCpp "\tSKTime t0 = Marking.P->_TIME[idx-1];\n";
+  Printf.fprintf skCpp "\tMarking.P->_TIME[idxtampon+0] = Marking.P->_TIME[idx-1];\n";
   let rec genEulerIntegrators = function
     [] -> Printf.fprintf skCpp "\treturn stepSK;\n";
     | b::q when b.blocktype="Integrator" -> let (ba,ia) = findSrc (b.blockid,1) lL in
@@ -369,28 +371,53 @@ let generateCode lS (lB,lL) =
     | b::q -> genEulerIntegrators q
   in
   let rec genRK4Integrators step lI = function
-    | _ when step>4 -> ()
-    | [] -> genRK4Entries step lI (* To Do *)
+    | [] when step<3 -> genRK4Entries step lI; Printf.fprintf skCpp "\tSKTime t%i = " (step+1);
+      begin match step with
+      | 0 -> Printf.fprintf skCpp "t0.getDouble() * step/2.;";
+      | 1 -> Printf.fprintf skCpp "t0.getDouble() * step/2.;";
+      | 2 -> Printf.fprintf skCpp "t0.getDouble() * step;"
+      | _ -> () end;
+      Printf.fprintf skCpp "\n\tMarking.P->_TIME[idxtampon+%i] = t%i;\n" (step+1) (step+1);
+      genRK4Integrators (step+1) [] lB
+    | [] when step=3 -> genRK4Entries step lI; genRK4Values lI;
+    | [] -> () (* Terminé *)
     | b::q when b.blocktype="Integrator" -> begin
+      let (ba,ia) = findSrc (b.blockid,1) lL in
       Printf.fprintf skCpp "\tdouble k%i_b%i = " step b.blockid;
       begin match step with
-      0 -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idx-1];" b.blockid 1;
-      | _ -> () (* ToDo *)
+      0 -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idx-1];" ba ia;
+      | step -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idxtampon+%i];" ba ia (step-1);
       end; Printf.fprintf skCpp "\n\tdouble y%i_b%i = " step b.blockid;
       begin match step with
       0 -> Printf.fprintf skCpp "k%i_b%i;" step b.blockid
+      | 1 -> Printf.fprintf skCpp "y0_b%i + step/2. * k1_b%i;" b.blockid b.blockid
+      | 2 -> Printf.fprintf skCpp "y0_b%i + step/2. * k2_b%i;" b.blockid b.blockid
+      | 3 -> Printf.fprintf skCpp "y0_b%i + step * k3_b%i;" b.blockid b.blockid
       | _ -> () (* ToDo *)
       end; Printf.fprintf skCpp "\n"; genRK4Integrators step (b::lI) q
       end
     | b::q -> genRK4Integrators step lI q
   and genRK4Entries step = function
     | [] -> ()
-    | b::q -> let (bB,bL) = bkwdGraph (lB,lL) b in genRK4Bkwd step bB
+    | b::q -> let (bB,bL) = bkwdGraph (lB,lL) b in genRK4Bkwd step bB; genRK4Entries step q;
   and genRK4Bkwd step = function
     | [] -> ()
     | b::q when b.blocktype="Integrator" -> Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idxtampon+%i] = y%i_b%i;\n" b.blockid 1 step step b.blockid; genRK4Bkwd step q;
     | b::q -> Printf.fprintf skCpp "\texecuteBlock%i(idxtampon+%i);\n" b.blockid step; genRK4Bkwd step q;
+  and genRK4Values = function
+    | [] -> Printf.fprintf skCpp "\treturn stepSK;\n";
+    | b::q -> begin
+      let (ba,ia) = findSrc (b.blockid,1) lL in
+      Printf.fprintf skCpp "\tdouble k4_b%i = Marking.P->_BLOCK%i_OUT%i[idxtampon+3];\n" b.blockid ba ia;
+      Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idx] = y0_b%i + step/6. * (k1_b%i + 2.*k2_b%i + 2.*k3_b%i + k4_b%i);\n" b.blockid 1 b.blockid b.blockid b.blockid b.blockid b.blockid;
+      end; genRK4Values q;
   in genRK4Integrators 0 [] lB;
+
+  (* to avoid ocaml errors : *)
+  Printf.fprintf skCpp "/* \n";
+  genEulerIntegrators []; (* genRK4Integrators 0 [] []; *)
+  Printf.fprintf skCpp "*/ \n";
+  (* end *)
   Printf.fprintf skCpp "};\n";
 
   (* Génération des fonctions d'éxécution des blocs simples *)
