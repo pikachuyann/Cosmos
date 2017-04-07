@@ -385,7 +385,7 @@ let generateCode lS (lB,lL) =
       let (ba,ia) = findSrc (b.blockid,1) lL in
       Printf.fprintf skCpp "\tdouble k%i_b%i = " step b.blockid;
       begin match step with
-      0 -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idx-1];" ba ia;
+      0 -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idx-1];" b.blockid 1; (* ba ia; *)
       | step -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idxtampon+%i];" ba ia (step-1);
       end; Printf.fprintf skCpp "\n\tdouble y%i_b%i = " step b.blockid;
       begin match step with
