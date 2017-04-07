@@ -115,13 +115,16 @@ let bkwdGraph (lB,lL) b =
       let rec auxBkwd = function
       | t when List.exists (fun x -> x=t.blocktype) skNoInputs -> noOutput(addB t)
       | t when List.exists (fun (x,y) -> x="LATENCY") t.values -> noOutput(addB t)
+      | t when List.exists (fun x -> x=t.blocktype) skInfinitesimalLatency -> noOutput(addB t) 
       | t -> let isNew = addB t in if isNew then defileLinks t.blockid lL
       and defileLinks bid = function
       | [] -> ()
       | l::q when l.toblock=bid -> let isNew = addL l in if isNew then begin auxBkwd (getBlockById l.fromblock lB); defileLinks bid q end;
       | l::q -> defileLinks bid q
       in
-        defileLinks b.blockid lL;
+        (* defileLinks b.blockid lL; *)
+        auxBkwd b;
+        printLaTeX stdout (!kB,!kL);
         topologicSort (!kB,!kL);;
 
 let generateCode lS (lB,lL) =
@@ -399,7 +402,9 @@ let generateCode lS (lB,lL) =
     | b::q -> genRK4Integrators step lI q
   and genRK4Entries step = function
     | [] -> ()
-    | b::q -> let (bB,bL) = bkwdGraph (lB,lL) b in genRK4Bkwd step bB; genRK4Entries step q;
+    | b::q -> let (ba,ia) = findSrc (b.blockid,1) lL in
+                let inb = getBlockById ba lB in
+                  let (bB,bL) = bkwdGraph (lB,lL) inb in genRK4Bkwd step bB; genRK4Entries step q;
   and genRK4Bkwd step = function
     | [] -> ()
     | b::q when b.blocktype="Integrator" -> Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idxtampon+%i] = y%i_b%i;\n" b.blockid 1 step step b.blockid; genRK4Bkwd step q;
