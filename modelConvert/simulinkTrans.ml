@@ -124,7 +124,6 @@ let bkwdGraph (lB,lL) b =
       in
         (* defileLinks b.blockid lL; *)
         auxBkwd b;
-        printLaTeX stdout (!kB,!kL);
         topologicSort (!kB,!kL);;
 
 let generateCode lS (lB,lL) =
