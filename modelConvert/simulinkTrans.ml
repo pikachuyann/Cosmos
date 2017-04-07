@@ -211,6 +211,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf mkImp "\n\tsize_t lastEntry;";
   Printf.fprintf mkImp "\n\tsize_t totalEntries;";
   Printf.fprintf mkImp "\n\tsize_t countDown;";
+  Printf.fprintf mkImp "\n\tSKTime currentLookup;";
   Printf.fprintf mkImp "\n\tvector<SKTime> _TIME;";
   Printf.fprintf skHpp "\n\tvector<SKTime> _TIME;";
   let outputs_parse_regexp = Str.regexp "\\[\\([0-9]+\\), \\([0-9]+\\)\\]" in
@@ -290,6 +291,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\tP->lastEntry = 0;\n";
   Printf.fprintf skCpp "\tP->lastPrintEntry = 0;\n";
   Printf.fprintf skCpp "\tP->countDown = 0;\n";
+  Printf.fprintf skCpp "\tP->currentLookup = 0.0;\n";
   Printf.fprintf skCpp "\tP->_TIME = {0.0,0.0,0.0,0.0,0.0};";
   Buffer.output_buffer skCpp generateVectors;
   Printf.fprintf skCpp "\n}\n";
@@ -338,7 +340,7 @@ let generateCode lS (lB,lL) =
 
   (* Gestion des latences *)
   Printf.fprintf skCpp "\ntemplate <class EQT>\nint SKModel<EQT>::findLatencyIndex(double latency) {\n";
-  Printf.fprintf skCpp "\tSKTime currTime = Marking.P->_TIME[Marking.P->lastEntry];\n";
+  Printf.fprintf skCpp "\tSKTime currTime = Marking.P->currentLookup;\n";
   Printf.fprintf skCpp "\twhile (Marking.P->countDown > 0 && Marking.P->_TIME[Marking.P->countDown] > (currTime - latency)) {\n";
   Printf.fprintf skCpp "\t\tMarking.P->countDown--;\n";
   Printf.fprintf skCpp "\t}\n";
@@ -379,6 +381,8 @@ let generateCode lS (lB,lL) =
       | 1 -> Printf.fprintf skCpp "t0.getDouble() * step/2.;";
       | 2 -> Printf.fprintf skCpp "t0.getDouble() * step;"
       | _ -> () end;
+      Printf.fprintf skCpp "\n\tMarking.P->currentLookup = t%i;" (step+1);
+      Printf.fprintf skCpp "\n\tMarking.P->countDown = Marking.P->lastEntry;";
       Printf.fprintf skCpp "\n\tMarking.P->_TIME[idxtampon+%i] = t%i;\n" (step+1) (step+1);
       genRK4Integrators (step+1) [] lB
     | [] when step=3 -> genRK4Entries step lI; genRK4Values lI;
@@ -459,7 +463,8 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::fire(size_t tr,const abstractBinding&, double ctime) {\n";
   Printf.fprintf skCpp "\tMarking.P->countDown = Marking.P->lastEntry;\n";
   Printf.fprintf skCpp "\tMarking.P->lastPrintEntry = Marking.P->lastEntry;\n";
-  Printf.fprintf skCpp "\tMarking.P->_TIME[Marking.P->lastEntry] = ctime;";
+  Printf.fprintf skCpp "\tMarking.P->_TIME[Marking.P->lastEntry] = ctime;\n";
+  Printf.fprintf skCpp "\tMarking.P->currentLookup = Marking.P->_TIME[Marking.P->lastEntry];";
   let rec genSignalChanges tabs currMode = function (* Génère les lignes de code mettant à jour les valeurs des blocs; currMode=1 s'il faut s'occuper de calculer le nouveau step *)
     [] -> ()
     | b::q when b.blocktype="Display" -> genSignalChanges tabs currMode q
