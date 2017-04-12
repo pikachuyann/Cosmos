@@ -443,8 +443,23 @@ let generateCode lS (lB,lL) =
     | b::q -> begin
         Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::executeBlock%i(int idx) {" b.blockid;
         begin match b.blocktype with
-        | "Sum" -> let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
-            Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx] + Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 ba ia bb ib;
+        | "Sum" -> let currInpt = ref 0 and signs = List.assoc "Inputs" b.values in
+                   let signSize = String.length signs in
+                   Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] =" b.blockid 1;
+                   let rec buildSum = function
+                     | i when i > signSize -> ()
+                     | i when (i = signSize) -> ()
+                     | i -> begin match signs.[i] with
+                            | '+' -> currInpt:=!currInpt+1; let (ba,ia)=findSrc(b.blockid,!currInpt) lL in
+                                     Printf.fprintf skCpp " + Marking.P->_BLOCK%i_OUT%i[idx]" ba ia
+                            | '-' -> currInpt:=!currInpt+1; let (ba,ia)=findSrc(b.blockid,!currInpt) lL in
+                                     Printf.fprintf skCpp " - Marking.P->_BLOCK%i_OUT%i[idx]" ba ia
+                            | _ -> ()
+                            end; buildSum (i+1)
+                   in buildSum 0;
+                   Printf.fprintf skCpp ";"
+(* let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
+            Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx] + Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 ba ia bb ib; *)
         | "Constant" -> let cstValue = float_of_string (List.assoc "Value" b.values) in
             Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = %f;" b.blockid 1 cstValue;
         | "Delay" -> genLatencyFunction b
