@@ -21,6 +21,7 @@ module LinksSet = Set.Make(OrderedLinks)
 let skInfinitesimalLatency = ["Integrator"];;
 let skNoInputs = ["Constant"];;
 let skConditional = ["Switch"];;
+let skContinuous = ["Switch";"Integrator";"Sum";"Sin";"Gain"];;
 
 let topologicSort (lB,lL) =
   let e = ref (LinksSet.of_list lL) in
@@ -236,7 +237,9 @@ let generateCode lS (lB,lL) =
                   Printf.fprintf mkImp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
                   Printf.fprintf skHpp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
                   Printf.bprintf printHeaderTmp "\n\ts << setw(5) << \"%s(%i).%i \";" t.name t.blockid i;
-                  Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \" \";" t.blockid i;
+                  if List.exists (fun x -> x=t.blocktype) skContinuous then
+                    Printf.bprintf printTmp "\n\ts << setw(1) << (eTime > 0 ? P->_BLOCK%i_OUT%i[(P->lastEntry)] : P->_BLOCK%i_OUT%i[(P->lastPrintEntry)]) << \" \";" t.blockid i t.blockid i
+                  else Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \" \";" t.blockid i;
                   Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \"/g' \";" t.blockid i t.blockid i;
                   Printf.bprintf generateNewEntries "\n\tMarking.P->_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
                   Printf.bprintf generateVectors "\n\tP->_BLOCK%i_OUT%i = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};" t.blockid i;
@@ -670,8 +673,8 @@ let generateCode lS (lB,lL) =
       begin match currMode with
       | 0 -> Printf.fprintf skCpp "\n%scheckState%i(Marking.P->lastEntry);\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid tabs b.blockid;
       | 2 -> Printf.fprintf skCpp "\n%scheckState%i(Marking.P->lastEntry);\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid tabs b.blockid;
-      | 1 -> Printf.fprintf skCpp "\n%sstep = findStateChange%i(Marking.P->lastEntry,step);" tabs b.blockid;
-      | 3 -> Printf.fprintf skCpp "\n%sstep = findStateChange%i(Marking.P->lastEntry,step);" tabs b.blockid;
+      | 1 -> Printf.fprintf skCpp "\n%sstep = findStateChange%i(Marking.P->lastEntry,step);\n%scheckState%i(Marking.P->lastEntry);\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid tabs b.blockid tabs b.blockid;
+      | 3 -> Printf.fprintf skCpp "\n%sstep = findStateChange%i(Marking.P->lastEntry,step);\n%scheckState%i(Marking.P->lastEntry);\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid tabs b.blockid tabs b.blockid;
       | _ -> ()
       end; genSignalChanges tabs currMode q
     | b::q -> Printf.fprintf skCpp "\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid; genSignalChanges tabs currMode q
