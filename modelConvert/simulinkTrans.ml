@@ -266,6 +266,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skHpp "\tSKTime estimateIntegrators(int,SKTime);\n";
   Printf.fprintf skHpp "\tvoid executeIntegrators(int);\n";
   Printf.fprintf skHpp "\tint findLatencyIndex(double);\n";
+  Printf.fprintf skHpp "\tdouble linearInterpolation(SKTime, SKTime, double, double, SKTime);";
   let rec genBlockFunNames = function
     [] -> ()
     | t::q when t.blocktype = "Integrator" -> genBlockFunNames q
@@ -428,6 +429,12 @@ let generateCode lS (lB,lL) =
   (* end *)
   Printf.fprintf skCpp "};\n";
 
+  (* Fonctions nécessaires pour l'exécution des blocs *)
+  Printf.fprintf skCpp "\ntemplate<class EQT>\ndouble SKModel<EQT>::linearInterpolation(SKTime sktA, SKTime sktB, double vA, double vB, SKTime time) {";
+  Printf.fprintf skCpp "\n\tdouble tA = sktA.getDouble(); double tB = sktB.getDouble(); double t = time.getDouble();";
+  Printf.fprintf skCpp "\n\treturn (vB - vA)/(tB - tA) * (t - tA) + vA;";
+  Printf.fprintf skCpp "\n};\n";
+
   (* Génération des fonctions d'éxécution des blocs simples *)
   let rec genBlockFunctions = function
     [] -> ()
@@ -442,6 +449,18 @@ let generateCode lS (lB,lL) =
             Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = %f;" b.blockid 1 cstValue;
         | "Delay" -> genLatencyFunction b
         | "UnitDelay" -> genLatencyFunction b
+        | "Scope" -> () (* do nothing *)
+        | "TransportDelay" -> begin
+          let latency = float_of_string (List.assoc "LATENCY" b.values)
+          and (ba,ia) = findSrc(b.blockid,1) lL
+          and initValue = float_of_string (List.assoc "InitialOutput" b.values) in
+          Printf.fprintf skCpp "\n\tint latidx = findLatencyIndex(%f);" latency;
+          Printf.fprintf skCpp "\n\tif (latidx > -1) {";
+          Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[idx] = linearInterpolation( Marking.P->_TIME[latidx], Marking.P->_TIME[latidx+1], Marking.P->_BLOCK%i_OUT%i[latidx], Marking.P->_BLOCK%i_OUT%i[latidx+1], Marking.P->_TIME[idx] - %f);" b.blockid 1 ba ia ba ia latency;
+          Printf.fprintf skCpp "\n\t} else {";
+          Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[idx] = %f;" b.blockid 1 initValue;
+          Printf.fprintf skCpp "\n\t}";
+          end
         | _ -> begin
           Printf.fprintf skCpp "\nfprintf(stderr,\"Could not execute block %i of type %s !\");" b.blockid b.blocktype;
           Printf.eprintf "[WARNING:] Found unimplemented block %s.\n" b.blocktype;

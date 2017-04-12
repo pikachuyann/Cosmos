@@ -256,6 +256,8 @@ let computeLatencies lS ((lB, lL):simulinkPModel) =
     in
       let rec aux = function
         [] -> []
+        | b::q when b.blocktype="TransportDelay" ->
+           { blocktype = b.blocktype; blockid = b.blockid; name = b.name; values = ("LATENCY", List.assoc "DelayTime" b.values)::(b.values) }::(aux q);
         | b::q when b.blocktype="UnitDelay" -> let sampleTime = extfloat_of_sampletime (List.assoc "SampleTime" b.values) in
             let realLatency = match sampleTime with
             | Auto -> baseStep
