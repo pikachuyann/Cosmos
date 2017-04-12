@@ -96,6 +96,7 @@ let reg_type2 = Str.regexp "[,]"
 
 let completeDefaults params = function
   | "UnitDelay" -> ("Ports","[1, 1]")::params
+  | "Gain" -> ("Ports","[1, 1]")::params
   | "Constant" -> ("Ports","[0, 1]")::params
   | blockType -> params;;
 
