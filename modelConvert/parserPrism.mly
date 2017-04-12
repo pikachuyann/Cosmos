@@ -87,7 +87,7 @@ definition:
 ;
 
 modulelist:
-  MODULE anyname varlist invariant  actionlist ENDMODULE {
+  MODULE anyname varlist invariant actionlist ENDMODULE {
     Full { name=$2;
       varlist=$3;
       actionlist=$5;
@@ -101,6 +101,7 @@ modulelist:
 
 invariant:
   INVARIANT stateCondition ENDINVARIANT {};
+  | {}
 
 
 renamelist:

@@ -7,11 +7,12 @@ module type OP = sig
     type declarationtype
     type result
 
+    val eval_marking: ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> placetype -> placetype
     val print_marking: out_channel -> placetype -> unit 
     val compare_marking: placetype -> placetype -> int
-    val compare : (string, placetype, Net.placekey) Data.t -> placetype array -> placetype -> valuationtype -> int
-    val add :  (string, placetype, Net.placekey) Data.t -> placetype array -> placetype -> valuationtype -> placetype
-    val minus :  (string, placetype, Net.placekey) Data.t -> placetype array -> placetype -> valuationtype -> placetype
+    val compare : ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> placetype -> valuationtype -> int
+    val add :  ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> placetype -> valuationtype -> placetype
+    val minus :  ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> placetype -> valuationtype -> placetype
     val choose : ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> Net.transitionkey Data.key list -> Net.transitionkey Data.key
     val finalResult : ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> result option
   end
@@ -62,7 +63,12 @@ struct
 		 Printf.fprintf f "%s:%a, " pn Op.print_marking p) ma 
 			   
   let init net =
-    Array.init (Data.size net.Net.place) (fun i -> snd (Data.acca net.Net.place (Data.unsafe i)))
+    Array.init (Data.size net.Net.place) (fun i ->
+	    Data.unsafe i
+	    |> Data.acca net.Net.place
+	    |> snd
+	    |> (fun x -> Op.eval_marking net [||] x )
+					 )
 
   let get m p =
     m.(Data.unsafe_rev p)
@@ -70,9 +76,10 @@ struct
   let enabled net m =
     let tr = Array.make (Data.size net.Net.transition) true in
     Data.iter (fun ((),(v,p,t)) ->
-	       if Op.compare net.Net.place m (get m p) v <0 then tr.(Data.unsafe_rev t) <- false) net.Net.inArc;
+	       (*Printf.printf "testin %i:%i:%i" (Data.unsafe_rev t) (Data.unsafe_rev p) (Op.compare net.Net.place m (get m p) v);*)
+	       if Op.compare net m (get m p) v <0 then tr.(Data.unsafe_rev t) <- false) net.Net.inArc;
     Data.iter (fun ((),(v,p,t)) ->
-	       if Op.compare net.Net.place m (get m p) v >=0 then tr.(Data.unsafe_rev t) <- false) net.Net.inhibArc;
+	       if Op.compare net m (get m p) v >=0 then tr.(Data.unsafe_rev t) <- false) net.Net.inhibArc;
     let l = ref [] in
     Array.iteri (fun i b -> if b then l:= (Data.unsafe i):: !l) tr;
     (!l : Net.transitionkey Data.key list)
@@ -83,13 +90,13 @@ struct
 	       if t=tr then 
 		 (*Printf.printf "%a-(%a)->%a " (Net.print_place net) p Type.printH_expr (Obj.magic v) (Net.print_transition net) t;*)
 		 let index = Data.unsafe_rev p in
-		 if Op.compare net.Net.place m m.(index) v >= 0 then m2.(index) <- Op.minus net.Net.place m m2.(index) v
+		 if Op.compare net m m.(index) v >= 0 then m2.(index) <- Op.minus net m m2.(index) v
 		 else raise (Illegal_fire(t,m.(index),v))) net.Net.inArc;
     Data.iter (fun ((),(v,t,p)) ->
 	       if t=tr then 
 		 (*Printf.printf "%a-(%a)->%a " (Net.print_transition net) t Type.printH_expr (Obj.magic v) (Net.print_place net) p;*)
 		 let index = Data.unsafe_rev p in
-		 m2.(index) <- Op.add net.Net.place m m2.(index) v) net.Net.outArc;
+		 m2.(index) <- Op.add net m m2.(index) v) net.Net.outArc;
     m2
 
   module OrderedMarking = struct
@@ -114,7 +121,9 @@ struct
   let state_space net =
     let mset1 = MarkingSet.singleton (init net) in
     let mset2 = MarkingSet.empty in
-    MarkingSet.fold (fun x l -> x::l) (snd @@ explore net mset1 mset2) []
+    explore net mset1 mset2
+    |> snd
+    |> (fun x -> MarkingSet.fold (fun e l -> e::l) x [])
 
   let rec trace net m n =
     let fr = Op.finalResult net m in
