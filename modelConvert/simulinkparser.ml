@@ -98,6 +98,7 @@ let completeDefaults params = function
   | "UnitDelay" -> ("Ports","[1, 1]")::params
   | "Gain" -> ("Ports","[1, 1]")::params
   | "Constant" -> ("Ports","[0, 1]")::params
+  | "Switch" -> ("Ports","[3, 1]")::params
   | blockType -> params;;
 
 let parseblockParams liste = function
