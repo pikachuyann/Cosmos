@@ -468,6 +468,8 @@ let generateCode lS (lB,lL) =
           Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[idx] = %f;" b.blockid 1 initValue;
           Printf.fprintf skCpp "\n\t}";
           end
+        | "Gain" -> let gain = float_of_string (List.assoc "Gain" b.values) and (ba,ia) = findSrc(b.blockid,1) lL in
+          Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = %f * Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 gain ba ia;
         | _ -> begin
           Printf.fprintf skCpp "\nfprintf(stderr,\"Could not execute block %i of type %s !\");" b.blockid b.blocktype;
           Printf.eprintf "[WARNING:] Found unimplemented block %s.\n" b.blocktype;
