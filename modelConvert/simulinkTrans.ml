@@ -235,7 +235,7 @@ let generateCode lS (lB,lL) =
                 for i = 1 to nb do
                   Printf.fprintf mkImp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
                   Printf.fprintf skHpp "\n\tvector<double> _BLOCK%i_OUT%i;" t.blockid i;
-                  Printf.bprintf printHeaderTmp "\n\ts << setw(5) << \"B%iO%i\";" t.blockid i;
+                  Printf.bprintf printHeaderTmp "\n\ts << setw(5) << \"%s(%i).%i \";" t.name t.blockid i;
                   Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \" \";" t.blockid i;
                   Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \"/g' \";" t.blockid i t.blockid i;
                   Printf.bprintf generateNewEntries "\n\tMarking.P->_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
@@ -284,6 +284,11 @@ let generateCode lS (lB,lL) =
   let rec genBlockFunNames = function
     [] -> ()
     | t::q when t.blocktype = "Integrator" -> genBlockFunNames q
+    | t::q when List.exists (fun x -> x=t.blocktype) skConditional -> begin
+    Printf.fprintf skHpp "\n\tvoid executeBlock%i(int);" t.blockid;
+    Printf.fprintf skHpp "\n\tvoid checkState%i(int);" t.blockid;
+    Printf.fprintf skHpp "\n\tvoid findStateChange%i();" t.blockid;
+    end; genBlockFunNames q
     | t::q -> Printf.fprintf skHpp "\n\tvoid executeBlock%i(int);" t.blockid; genBlockFunNames q
   in genBlockFunNames lB;
   Printf.fprintf skHpp "\n};\n";
@@ -504,6 +509,30 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\n\treturn (vB - vA)/(tB - tA) * (t - tA) + vA;";
   Printf.fprintf skCpp "\n};\n";
 
+  (* Génération des fonctions de traitement des blocs à comparaison *)
+  let rec genCondFunctions = function
+    [] -> ()
+    | b::q when b.blocktype="Switch" -> begin
+      Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::checkState%i(int idx) {" b.blockid;
+      let (ba,ia) = findSrc(b.blockid,2) lL and criteria = List.assoc "Criteria" b.values in
+        begin match criteria with
+        | "u2 > Threshold" -> let threshold = float_of_string (List.assoc "Threshold" b.values) in
+          Printf.fprintf skCpp "\n\tMarking.P->_STATE%i[idx] = (Marking.P->_BLOCK%i_OUT%i[idx] > %f) ? 1 : 0;" b.blockid ba ia threshold;
+        | _ -> Printf.eprintf "[WARNING:] Unknown Criteria for block Switch : %s\n" criteria
+        end;
+      Printf.fprintf skCpp "\n};\n";
+    end; genCondFunctions q
+    | b::q -> genCondFunctions q
+  in genCondFunctions lB;
+  let rec genZCFunctions = function
+    [] -> ()
+    | b::q when List.exists (fun x -> x=b.blocktype) skConditional -> begin
+      Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::findStateChange%i() {" b.blockid;
+      Printf.fprintf skCpp "\n};\n";
+    end; genZCFunctions q
+    | b::q -> genZCFunctions q
+  in genZCFunctions lB;
+
   (* Génération des fonctions d'éxécution des blocs simples *)
   let rec genBlockFunctions = function
     [] -> ()
@@ -554,7 +583,7 @@ let generateCode lS (lB,lL) =
           end
         | "Gain" -> let gain = float_of_string (List.assoc "Gain" b.values) and (ba,ia) = findSrc(b.blockid,1) lL in
           Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = %f * Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 gain ba ia;
-        | "Switch" -> let (ba,ia) = findSrc(b.blockid,1) lL and (bb,ib) = findSrc(b.blockid,2) lL in
+        | "Switch" -> let (ba,ia) = findSrc(b.blockid,1) lL and (bb,ib) = findSrc(b.blockid,3) lL in
           Printf.fprintf skCpp "\n\tMarking.P->_STATE%i[idx] = Marking.P->_STATE%i[Marking.P->lastEntry];" b.blockid b.blockid;
           Printf.fprintf skCpp "\n\tif (Marking.P->_STATE%i[idx] == 0) {" b.blockid;
           Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 bb ib;
