@@ -152,6 +152,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf mkImp "#include \"marking.hpp\"\n#include \"markingTemplate.hpp\"\n";
   Printf.fprintf skCpp "#include \"marking.hpp\"\n#include \"markingImpl.hpp\"\n";
   Printf.fprintf skCpp "#include \"SKTime.hpp\"\n";
+  Printf.fprintf skCpp "#include <cmath>\n";
   Printf.fprintf skHpp "#include \"SKTime.hpp\"\n";
   Printf.fprintf mkImp "#include \"SKTime.hpp\"\n";
   (*  Définition deSKTransition *)
@@ -238,7 +239,7 @@ let generateCode lS (lB,lL) =
                   Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \" \";" t.blockid i;
                   Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \"/g' \";" t.blockid i t.blockid i;
                   Printf.bprintf generateNewEntries "\n\tMarking.P->_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
-                  Printf.bprintf generateVectors "\n\tP->_BLOCK%i_OUT%i = {0.0,0.0,0.0,0.0,0.0};" t.blockid i;
+                  Printf.bprintf generateVectors "\n\tP->_BLOCK%i_OUT%i = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};" t.blockid i;
                 done
               with Not_found ->  begin Printf.eprintf "[WARNING:] Wrong port format for block %i (type %s) : %s\n" t.blockid t.blocktype numOfPorts; end;
              end
@@ -253,7 +254,7 @@ let generateCode lS (lB,lL) =
       Printf.fprintf mkImp "\n\tvector<size_t> _STATE%i" b.blockid;
       Printf.fprintf skHpp "\n\tvector<size_t> _STATE%i" b.blockid;
       Printf.bprintf generateNewEntries "\n\tMarking.P->_STATE%i.push_back(0);" b.blockid;
-      Printf.bprintf generateVectors "\n\tMarking.P->_STATE%i = {0,0,0,0,0};" b.blockid;
+      Printf.bprintf generateVectors "\n\tMarking.P->_STATE%i = {0,0,0,0,0,0,0};" b.blockid;
       end; genCBStateNames q;
     | b::q -> genCBStateNames q
   in genCBStateNames lB; (* Conditional Block StateNames *)
@@ -306,7 +307,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\tP->lastPrintEntry = 0;\n";
   Printf.fprintf skCpp "\tP->countDown = 0;\n";
   Printf.fprintf skCpp "\tP->currentLookup = 0.0;\n";
-  Printf.fprintf skCpp "\tP->_TIME = {0.0,0.0,0.0,0.0,0.0};";
+  Printf.fprintf skCpp "\tP->_TIME = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};";
   Buffer.output_buffer skCpp generateVectors;
   Printf.fprintf skCpp "\n}\n";
 
@@ -433,11 +434,66 @@ let generateCode lS (lB,lL) =
       Printf.fprintf skCpp "\tdouble k4_b%i = Marking.P->_BLOCK%i_OUT%i[idxtampon+3];\n" b.blockid ba ia;
       Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idx] = y0_b%i + step/6. * (k1_b%i + 2.*k2_b%i + 2.*k3_b%i + k4_b%i);\n" b.blockid 1 b.blockid b.blockid b.blockid b.blockid b.blockid;
       end; genRK4Values q;
-  in genRK4Integrators 0 [] lB;
+  in
+  let rec genODE45Integrators step lI = function
+    | [] when step<5 -> genODE45Entries step lI; Printf.fprintf skCpp "\tSKTime t%i = " (step+1);
+      begin match step with
+      | 0 -> Printf.fprintf skCpp "t0.getDouble() + step/4.;";
+      | 1 -> Printf.fprintf skCpp "t0.getDouble() + step*3/8.;";
+      | 2 -> Printf.fprintf skCpp "t0.getDouble() + step*12/3.;";
+      | 3 -> Printf.fprintf skCpp "t0.getDouble() + step;";
+      | 4 -> Printf.fprintf skCpp "t0.getDouble() + step*1/2.;";
+      | _ -> ()
+      end;
+      Printf.fprintf skCpp "\n\tMarking.P->currentLookup = t%i;" (step+1);
+      Printf.fprintf skCpp "\n\tMarking.P->countDown = Marking.P->lastEntry;";
+      Printf.fprintf skCpp "\n\tMarking.P->_TIME[idxtampon+%i] = t%i;\n" (step+1) (step+1);
+      genODE45Integrators (step+1) [] lB
+    | [] when step=5 -> genODE45Entries step lI; genODE45Values lI;
+    | [] -> ()
+    | b::q when b.blocktype="Integrator" -> begin
+      let (ba,ia) = findSrc (b.blockid,1) lL in
+      Printf.fprintf skCpp "\tdouble k%i_b%i = " step b.blockid;
+      begin match step with
+      0 -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idx-1];" b.blockid 1;
+      | step -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idxtampon+%i];" ba ia (step-1);
+      end; Printf.fprintf skCpp "\n\tdouble y%i_b%i = " step b.blockid;
+      begin match step with
+      0 -> Printf.fprintf skCpp "k%i_b%i" step b.blockid
+      | 1 -> Printf.fprintf skCpp "y0_b%i + step/4. * k1_b%i" b.blockid b.blockid
+      | 2 -> Printf.fprintf skCpp "y0_b%i + step*3/32. * k1_b%i + step*9/32. * k2_b%i" b.blockid b.blockid b.blockid
+      | 3 -> Printf.fprintf skCpp "y0_b%i + step*1932/2197. * k1_b%i - step*7200/2197. * k2_b%i + step*7296/2197 * k3_b%i" b.blockid b.blockid b.blockid b.blockid
+      | 4 -> Printf.fprintf skCpp "y0_b%i + step*439/216. * k1_b%i - step*8. * k2_b%i + step*3680/513. * k3_b%i - step*845/4104. * k4_b%i" b.blockid b.blockid b.blockid b.blockid b.blockid
+      | 5 -> Printf.fprintf skCpp "y0_b%i - step*8/27. * k1_b%i + step*2. * k2_b%i - step*3544/2565. * k3_b%i + step*1859/4104. * k4_b%i - step*11/40. * k5_b%i" b.blockid b.blockid b.blockid b.blockid b.blockid b.blockid
+      | _ -> ()
+      end; Printf.fprintf skCpp ";\n"; genODE45Integrators step (b::lI) q;
+      end
+    | b::q -> genODE45Integrators step lI q
+  and genODE45Entries step = function
+    | [] -> ()
+    | b::q -> let (ba,ia) = findSrc (b.blockid,1) lL in
+                let inb = getBlockById ba lB in
+                  let (bB,bL) = bkwdGraph (lB,lL) inb in genODE45Bkwd step bB; genODE45Entries step q;
+  and genODE45Bkwd step = function
+    | [] -> ()
+    | b::q when b.blocktype="Integrator" -> Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idxtampon+%i] = y%i_b%i;\n" b.blockid 1 step step b.blockid; genODE45Bkwd step q;
+    | b::q -> Printf.fprintf skCpp "\texecuteBlock%i(idxtampon+%i);\n" b.blockid step; genODE45Bkwd step q;
+  and genODE45Values = function
+    | [] -> Printf.fprintf skCpp "\treturn stepSK;\n";
+    | b::q -> begin
+      let (ba,ia) = findSrc (b.blockid,1) lL in
+      Printf.fprintf skCpp "\tdouble k6_b%i = Marking.P->_BLOCK%i_OUT%i[idxtampon+5];\n" b.blockid ba ia;
+      Printf.fprintf skCpp "\tdouble rk4_%i = y0_b%i + 25/216.*step*k1_b%i + 1408/2565.*step*k3_b%i + 2197/4101.*step*k4_b%i - 1/5.*step*k5_b%i;\n" b.blockid b.blockid b.blockid b.blockid b.blockid b.blockid;
+      Printf.fprintf skCpp "\tdouble rk5_%i = y0_b%i + 16/135.*step*k1_b%i + 6656/12825.*step*k3_b%i + 28561/56430.*step*k4_b%i - 9/50.*step*k5_b%i + 2/55.*step*k6_b%i;\n" b.blockid b.blockid b.blockid b.blockid b.blockid b.blockid b.blockid;
+      Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idx] = rk4_%i;\n" b.blockid 1 b.blockid;
+      Printf.fprintf skCpp "\tif (abs(rk4_%i - rk5_%i) > 0.001) { return (stepSK.getDouble() / 2); }\n" b.blockid b.blockid;
+      end; genODE45Values q;
+  in genODE45Integrators 0 [] lB;
 
   (* to avoid ocaml errors : *)
   Printf.fprintf skCpp "/* \n";
   genEulerIntegrators []; (* genRK4Integrators 0 [] []; *)
+  genRK4Integrators 10 [] [];
   Printf.fprintf skCpp "*/ \n";
   (* end *)
   Printf.fprintf skCpp "};\n";
