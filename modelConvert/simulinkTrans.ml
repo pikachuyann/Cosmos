@@ -20,6 +20,7 @@ module LinksSet = Set.Make(OrderedLinks)
 
 let skInfinitesimalLatency = ["Integrator"];;
 let skNoInputs = ["Constant"];;
+let skConditional = ["Switch"];;
 
 let topologicSort (lB,lL) =
   let e = ref (LinksSet.of_list lL) in
@@ -244,6 +245,16 @@ let generateCode lS (lB,lL) =
        with Not_found -> begin Printf.eprintf "[WARNING:] Couldn't find port numbers for block %i (type %s)\n" t.blockid t.blocktype; listAllParams t.values end;
       end; genSignalNames q;
   in genSignalNames lB;
+  let rec genCBStateNames = function
+    [] -> ()
+    | b::q when List.exists (fun x -> x=b.blocktype) skConditional -> begin
+      Printf.fprintf mkImp "\n\tvector<size_t> _STATE%i" b.blockid;
+      Printf.fprintf skHpp "\n\tvector<size_t> _STATE%i" b.blockid;
+      Printf.bprintf generateNewEntries "\n\tMarking.P->_STATE%i.push_back(0);" b.blockid;
+      Printf.bprintf generateVectors "\n\tMarking.P->_STATE%i = {0,0,0,0,0};" b.blockid;
+      end; genCBStateNames q;
+    | b::q -> genCBStateNames q
+  in genCBStateNames lB; (* Conditional Block StateNames *)
   Printf.fprintf mkImp "\n};\n";
   Printf.fprintf skHpp "\n};\n";
   (* Footers *)
@@ -485,6 +496,13 @@ let generateCode lS (lB,lL) =
           end
         | "Gain" -> let gain = float_of_string (List.assoc "Gain" b.values) and (ba,ia) = findSrc(b.blockid,1) lL in
           Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = %f * Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 gain ba ia;
+        | "Switch" -> let (ba,ia) = findSrc(b.blockid,1) lL and (bb,ib) = findSrc(b.blockid,2) lL in
+          Printf.fprintf skCpp "\n\tMarking.P->_STATE%i[idx] = Marking.P->_STATE%i[Marking.P->lastEntry];" b.blockid b.blockid;
+          Printf.fprintf skCpp "\n\tif (Marking.P->_STATE%i[idx] == 0) {" b.blockid;
+          Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 bb ib;
+          Printf.fprintf skCpp "\n\t} else {";
+          Printf.fprintf skCpp "\n\t\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 ba ia;
+          Printf.fprintf skCpp "\n\t}"
         | _ -> begin
           Printf.fprintf skCpp "\nfprintf(stderr,\"Could not execute block %i of type %s !\");" b.blockid b.blocktype;
           Printf.eprintf "[WARNING:] Found unimplemented block %s.\n" b.blocktype;
@@ -520,6 +538,14 @@ let generateCode lS (lB,lL) =
        | 1 -> Printf.fprintf skCpp "\n%sstep = estimateIntegrators(Marking.P->lastEntry,step);" tabs; genSignalChanges tabs 3 q;
        | _ -> genSignalChanges tabs currMode q;
        end;
+    | b::q when List.exists (fun x -> x=b.blocktype) skConditional ->
+      begin match currMode with
+      | 0 -> Printf.fprintf skCpp "\n%scheckState%i(Marking.P->lastEntry);\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid tabs b.blockid;
+      | 2 -> Printf.fprintf skCpp "\n%scheckState%i(Marking.P->lastEntry);\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid tabs b.blockid;
+      | 1 -> Printf.fprintf skCpp "\n%sfindStateChange%i();" tabs b.blockid;
+      | 3 -> Printf.fprintf skCpp "\n%sfindStateChange%i();" tabs b.blockid;
+      | _ -> ()
+      end; genSignalChanges tabs currMode q
     | b::q -> Printf.fprintf skCpp "\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid; genSignalChanges tabs currMode q
   in genSignalChanges "\t" 0 lB;
   Printf.fprintf skCpp "\n};\n";
