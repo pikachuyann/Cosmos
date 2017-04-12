@@ -450,6 +450,13 @@ let generateCode lS (lB,lL) =
         | "Delay" -> genLatencyFunction b
         | "UnitDelay" -> genLatencyFunction b
         | "Scope" -> () (* do nothing *)
+        | "Sin" -> begin
+          let amplitude = float_of_string (List.assoc "Amplitude" b.values)
+          and frequency = float_of_string (List.assoc "Frequency" b.values)
+          and phase = float_of_string (List.assoc "Phase" b.values)
+          and bias = float_of_string (List.assoc "Bias" b.values) in
+          Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = %f * sin(%f * Marking.P->_TIME[idx].getDouble() + %f) + %f;" b.blockid 1 amplitude frequency phase bias;
+          end
         | "TransportDelay" -> begin
           let latency = float_of_string (List.assoc "LATENCY" b.values)
           and (ba,ia) = findSrc(b.blockid,1) lL
