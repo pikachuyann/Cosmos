@@ -239,7 +239,7 @@ let generateCode lS (lB,lL) =
                   Printf.bprintf printTmp "\n\ts << setw(1) << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \" \";" t.blockid i;
                   Printf.bprintf printSedCmdTmp "\n\ts << \"-e 's/\\\\$B%iO%i\\\\$/\" << P->_BLOCK%i_OUT%i[(P->lastPrintEntry)] << \"/g' \";" t.blockid i t.blockid i;
                   Printf.bprintf generateNewEntries "\n\tMarking.P->_BLOCK%i_OUT%i.push_back(0.0);" t.blockid i;
-                  Printf.bprintf generateVectors "\n\tP->_BLOCK%i_OUT%i = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};" t.blockid i;
+                  Printf.bprintf generateVectors "\n\tP->_BLOCK%i_OUT%i = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};" t.blockid i;
                 done
               with Not_found ->  begin Printf.eprintf "[WARNING:] Wrong port format for block %i (type %s) : %s\n" t.blockid t.blocktype numOfPorts; end;
              end
@@ -254,7 +254,7 @@ let generateCode lS (lB,lL) =
       Printf.fprintf mkImp "\n\tvector<size_t> _STATE%i;" b.blockid;
       Printf.fprintf skHpp "\n\tvector<size_t> _STATE%i;" b.blockid;
       Printf.bprintf generateNewEntries "\n\tMarking.P->_STATE%i.push_back(0);" b.blockid;
-      Printf.bprintf generateVectors "\n\tP->_STATE%i = {0,0,0,0,0,0,0};" b.blockid;
+      Printf.bprintf generateVectors "\n\tP->_STATE%i = {0,0,0,0,0,0,0,0,0};" b.blockid;
       end; genCBStateNames q;
     | b::q -> genCBStateNames q
   in genCBStateNames lB; (* Conditional Block StateNames *)
@@ -277,7 +277,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skHpp "\n\tvoid update(double, size_t, const abstractBinding&, EQT&, timeGen&);";
   Printf.fprintf skHpp "\n\nprivate:\n";
   Printf.fprintf skHpp "\tvoid initialiseIntegrators(int);\n";
-  Printf.fprintf skHpp "\tSKTime estimateIntegrators(int,SKTime);\n";
+  Printf.fprintf skHpp "\tSKTime estimateIntegrators(int,int,SKTime);\n";
   Printf.fprintf skHpp "\tvoid executeIntegrators(int);\n";
   Printf.fprintf skHpp "\tint findLatencyIndex(double);\n";
   Printf.fprintf skHpp "\tdouble linearInterpolation(SKTime, SKTime, double, double, SKTime);";
@@ -287,7 +287,8 @@ let generateCode lS (lB,lL) =
     | t::q when List.exists (fun x -> x=t.blocktype) skConditional -> begin
     Printf.fprintf skHpp "\n\tvoid executeBlock%i(int);" t.blockid;
     Printf.fprintf skHpp "\n\tvoid checkState%i(int);" t.blockid;
-    Printf.fprintf skHpp "\n\tvoid findStateChange%i();" t.blockid;
+    Printf.fprintf skHpp "\n\tSKTime findStateChange%i(int,SKTime);" t.blockid;
+    Printf.fprintf skHpp "\n\tvoid computeBkwd%i(int);" t.blockid;
     end; genBlockFunNames q
     | t::q -> Printf.fprintf skHpp "\n\tvoid executeBlock%i(int);" t.blockid; genBlockFunNames q
   in genBlockFunNames lB;
@@ -312,7 +313,7 @@ let generateCode lS (lB,lL) =
   Printf.fprintf skCpp "\tP->lastPrintEntry = 0;\n";
   Printf.fprintf skCpp "\tP->countDown = 0;\n";
   Printf.fprintf skCpp "\tP->currentLookup = 0.0;\n";
-  Printf.fprintf skCpp "\tP->_TIME = {0.0,0.0,0.0,0.0,0.0,0.0,0.0};";
+  Printf.fprintf skCpp "\tP->_TIME = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};";
   Buffer.output_buffer skCpp generateVectors;
   Printf.fprintf skCpp "\n}\n";
 
@@ -380,17 +381,17 @@ let generateCode lS (lB,lL) =
 
   (* Implémentation des intégrales : Euler *) (* INTEGRATORS *)
   Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::executeIntegrators(int idx) {\n";
-  Printf.fprintf skCpp "\testimateIntegrators(idx,(Marking.P->_TIME[idx] - Marking.P->_TIME[idx-1]).getDouble());\n";
+  Printf.fprintf skCpp "\testimateIntegrators(idx,Marking.P->lastEntry-1,(Marking.P->_TIME[idx] - Marking.P->_TIME[Marking.P->lastEntry-1]).getDouble());\n";
   Printf.fprintf skCpp "};\n";
-  Printf.fprintf skCpp "\ntemplate<class EQT>\nSKTime SKModel<EQT>::estimateIntegrators(int idx,SKTime stepSK) {\n";
+  Printf.fprintf skCpp "\ntemplate<class EQT>\nSKTime SKModel<EQT>::estimateIntegrators(int idx,int previdx,SKTime stepSK) {\n";
   Printf.fprintf skCpp "\tdouble step = stepSK.getDouble();\n";
   Printf.fprintf skCpp "\tint idxtampon = Marking.P->lastEntry+1;\n";
-  Printf.fprintf skCpp "\tSKTime t0 = Marking.P->_TIME[idx-1];\n";
-  Printf.fprintf skCpp "\tMarking.P->_TIME[idxtampon+0] = Marking.P->_TIME[idx-1];\n";
+  Printf.fprintf skCpp "\tSKTime t0 = Marking.P->_TIME[previdx];\n";
+  Printf.fprintf skCpp "\tMarking.P->_TIME[idxtampon+0] = Marking.P->_TIME[previdx];\n";
   let rec genEulerIntegrators = function
     [] -> Printf.fprintf skCpp "\treturn stepSK;\n";
     | b::q when b.blocktype="Integrator" -> let (ba,ia) = findSrc (b.blockid,1) lL in
-      Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx-1] + step * Marking.P->_BLOCK%i_OUT%i[idx];\n" b.blockid 1 b.blockid 1 ba ia;
+      Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[previdx] + step * Marking.P->_BLOCK%i_OUT%i[idx];\n" b.blockid 1 b.blockid 1 ba ia;
       genEulerIntegrators q;
     | b::q -> genEulerIntegrators q
   in
@@ -411,7 +412,7 @@ let generateCode lS (lB,lL) =
       let (ba,ia) = findSrc (b.blockid,1) lL in
       Printf.fprintf skCpp "\tdouble k%i_b%i = " step b.blockid;
       begin match step with
-      0 -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idx-1];" b.blockid 1; (* ba ia; *)
+      0 -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[previdx];" b.blockid 1; (* ba ia; *)
       | step -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idxtampon+%i];" ba ia (step-1);
       end; Printf.fprintf skCpp "\n\tdouble y%i_b%i = " step b.blockid;
       begin match step with
@@ -460,7 +461,7 @@ let generateCode lS (lB,lL) =
       let (ba,ia) = findSrc (b.blockid,1) lL in
       Printf.fprintf skCpp "\tdouble k%i_b%i = " step b.blockid;
       begin match step with
-      0 -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idx-1];" b.blockid 1;
+      0 -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[previdx];" b.blockid 1;
       | step -> Printf.fprintf skCpp "Marking.P->_BLOCK%i_OUT%i[idxtampon+%i];" ba ia (step-1);
       end; Printf.fprintf skCpp "\n\tdouble y%i_b%i = " step b.blockid;
       begin match step with
@@ -527,7 +528,45 @@ let generateCode lS (lB,lL) =
   let rec genZCFunctions = function
     [] -> ()
     | b::q when List.exists (fun x -> x=b.blocktype) skConditional -> begin
-      Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::findStateChange%i() {" b.blockid;
+      let portCond = match b.blocktype with
+      | "Switch" -> 2
+      | _ -> Printf.eprintf "[WARNING:] Couldn't find conditional port for block %s, defaulting to 1.\n" b.blocktype; 1
+      in
+      Printf.fprintf skCpp "\ntemplate<class EQT>\nvoid SKModel<EQT>::computeBkwd%i(int idx) {" b.blockid;
+      Printf.fprintf skCpp "\n\tSKTime step = Marking.P->_TIME[idx] - Marking.P->_TIME[Marking.P->lastEntry-1];";
+      let rec aux i = function
+        [] -> ()
+        | t::q when t.blocktype="Integrator" ->
+          begin
+            if (i==0) then Printf.fprintf skCpp "\n\testimateIntegrators(idx,Marking.P->lastEntry-1,step);";
+            aux 1 q
+          end
+        | t::q -> Printf.fprintf skCpp "\n\texecuteBlock%i(idx);" t.blockid; aux i q
+      in let (ba,ia) = findSrc(b.blockid,portCond) lL in
+         let inb = getBlockById ba lB in
+         let (bB,bL) = bkwdGraph (lB,lL) inb in aux 0 bB;
+      Printf.fprintf skCpp "\n};";
+      Printf.fprintf skCpp "\ntemplate<class EQT>\nSKTime SKModel<EQT>::findStateChange%i(int idx,SKTime stepSK) {" b.blockid;
+      Printf.fprintf skCpp "\n\tint idxtampon = Marking.P->lastEntry+7;";
+      Printf.fprintf skCpp "\n\tSKTime step = stepSK;";
+      Printf.fprintf skCpp "\n\tbool signChange = true;";
+      Printf.fprintf skCpp "\n\tMarking.P->_TIME[idxtampon+0] = Marking.P->_TIME[idx-1];";
+      Printf.fprintf skCpp "\n\tMarking.P->_TIME[idxtampon+1] = Marking.P->_TIME[idx-1] + stepSK;";
+      Printf.fprintf skCpp "\n\tSKTime candidate = Marking.P->_TIME[idxtampon+1];";
+      Printf.fprintf skCpp "\n\twhile (signChange) {";
+      Printf.fprintf skCpp "\n\t\tstep = Marking.P->_TIME[idxtampon+1] - Marking.P->_TIME[idxtampon+0];";
+      Printf.fprintf skCpp "\n\t\tcomputeBkwd%i(idxtampon+0); computeBkwd%i(idxtampon+1);" b.blockid b.blockid;
+      Printf.fprintf skCpp "\n\t\tcheckState%i(idxtampon+0); checkState%i(idxtampon+1);" b.blockid b.blockid;
+      Printf.fprintf skCpp "\n\t\tsignChange = not (Marking.P->_STATE%i[idxtampon+0] == Marking.P->_STATE%i[idxtampon+1]);" b.blockid b.blockid;
+      Printf.fprintf skCpp "\n\t\tif (signChange && Marking.P->_STATE%i[idx-1]==Marking.P->_STATE%i[idxtampon+0]) {" b.blockid b.blockid;
+      Printf.fprintf skCpp "\n\t\t\tMarking.P->_TIME[idxtampon+0] = Marking.P->_TIME[idxtampon+0].getDouble() + step.getDouble() / 2.;";
+      Printf.fprintf skCpp "\n\t\t\tcandidate = Marking.P->_TIME[idxtampon+0];";
+      Printf.fprintf skCpp "\n\t\t} else if (signChange) {";
+      Printf.fprintf skCpp "\n\t\t\tMarking.P->_TIME[idxtampon+1] = Marking.P->_TIME[idxtampon+1].getDouble() - step.getDouble() / 2;";
+      Printf.fprintf skCpp "\n\t\t\tcandidate = Marking.P->_TIME[idxtampon+1];";
+      Printf.fprintf skCpp "\n\t\t}";
+      Printf.fprintf skCpp "\n\t}";
+      Printf.fprintf skCpp "\n\treturn candidate - Marking.P->_TIME[idx-1];";
       Printf.fprintf skCpp "\n};\n";
     end; genZCFunctions q
     | b::q -> genZCFunctions q
@@ -622,15 +661,17 @@ let generateCode lS (lB,lL) =
            Printf.fprintf skCpp "\n%sif (Marking.P->lastEntry==0) { initialiseIntegrators(0); }" tabs; 
            Printf.fprintf skCpp "\n%selse { executeIntegrators(Marking.P->lastEntry); }" tabs;
          end; genSignalChanges tabs 2 q;
-       | 1 -> Printf.fprintf skCpp "\n%sstep = estimateIntegrators(Marking.P->lastEntry,step);" tabs; genSignalChanges tabs 3 q;
+       | 1 -> Printf.fprintf skCpp "\n%sstep = estimateIntegrators(Marking.P->lastEntry,Marking.P->lastEntry-1,step);" tabs;
+         Printf.fprintf skCpp "\n%sif (oldStep != step) { continue; }" tabs;
+         genSignalChanges tabs 3 q;
        | _ -> genSignalChanges tabs currMode q;
        end;
     | b::q when List.exists (fun x -> x=b.blocktype) skConditional ->
       begin match currMode with
       | 0 -> Printf.fprintf skCpp "\n%scheckState%i(Marking.P->lastEntry);\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid tabs b.blockid;
       | 2 -> Printf.fprintf skCpp "\n%scheckState%i(Marking.P->lastEntry);\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid tabs b.blockid;
-      | 1 -> Printf.fprintf skCpp "\n%sfindStateChange%i();" tabs b.blockid;
-      | 3 -> Printf.fprintf skCpp "\n%sfindStateChange%i();" tabs b.blockid;
+      | 1 -> Printf.fprintf skCpp "\n%sstep = findStateChange%i(Marking.P->lastEntry,step);" tabs b.blockid;
+      | 3 -> Printf.fprintf skCpp "\n%sstep = findStateChange%i(Marking.P->lastEntry,step);" tabs b.blockid;
       | _ -> ()
       end; genSignalChanges tabs currMode q
     | b::q -> Printf.fprintf skCpp "\n%sexecuteBlock%i(Marking.P->lastEntry);" tabs b.blockid; genSignalChanges tabs currMode q
