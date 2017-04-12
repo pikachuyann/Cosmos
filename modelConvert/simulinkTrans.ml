@@ -49,7 +49,9 @@ let topologicSort (lB,lL) =
            dealwithedgeout edge = begin
              e := LinksSet.remove edge !e;
              Hashtbl.replace c edge.toblock ( (Hashtbl.find c edge.toblock - 1) );
-             if (Hashtbl.find c edge.toblock = 0) then s := BlockSet.add (findblock edge.toblock lB) !s;
+             if (Hashtbl.find c edge.toblock = 0) then
+               if (not (List.exists (fun x -> x.blockid=edge.toblock) !l)) then
+                 s := BlockSet.add (findblock edge.toblock lB) !s;
              edge
            end and 
            dealwithedgeinc edge = begin (* Nettoyage pour les blocs infinitésimaux/… *)
