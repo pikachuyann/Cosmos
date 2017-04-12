@@ -486,7 +486,7 @@ let generateCode lS (lB,lL) =
       Printf.fprintf skCpp "\tdouble rk4_%i = y0_b%i + 25/216.*step*k1_b%i + 1408/2565.*step*k3_b%i + 2197/4101.*step*k4_b%i - 1/5.*step*k5_b%i;\n" b.blockid b.blockid b.blockid b.blockid b.blockid b.blockid;
       Printf.fprintf skCpp "\tdouble rk5_%i = y0_b%i + 16/135.*step*k1_b%i + 6656/12825.*step*k3_b%i + 28561/56430.*step*k4_b%i - 9/50.*step*k5_b%i + 2/55.*step*k6_b%i;\n" b.blockid b.blockid b.blockid b.blockid b.blockid b.blockid b.blockid;
       Printf.fprintf skCpp "\tMarking.P->_BLOCK%i_OUT%i[idx] = rk4_%i;\n" b.blockid 1 b.blockid;
-      Printf.fprintf skCpp "\tif (abs(rk4_%i - rk5_%i) > 0.001) { return (stepSK.getDouble() / 2); }\n" b.blockid b.blockid;
+      Printf.fprintf skCpp "\tif (abs(rk4_%i - rk5_%i) > 0.0001) { return (stepSK.getDouble() / 2); }\n" b.blockid b.blockid;
       end; genODE45Values q;
   in genODE45Integrators 0 [] lB;
 
