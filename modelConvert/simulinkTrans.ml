@@ -251,10 +251,10 @@ let generateCode lS (lB,lL) =
   let rec genCBStateNames = function
     [] -> ()
     | b::q when List.exists (fun x -> x=b.blocktype) skConditional -> begin
-      Printf.fprintf mkImp "\n\tvector<size_t> _STATE%i" b.blockid;
-      Printf.fprintf skHpp "\n\tvector<size_t> _STATE%i" b.blockid;
+      Printf.fprintf mkImp "\n\tvector<size_t> _STATE%i;" b.blockid;
+      Printf.fprintf skHpp "\n\tvector<size_t> _STATE%i;" b.blockid;
       Printf.bprintf generateNewEntries "\n\tMarking.P->_STATE%i.push_back(0);" b.blockid;
-      Printf.bprintf generateVectors "\n\tMarking.P->_STATE%i = {0,0,0,0,0,0,0};" b.blockid;
+      Printf.bprintf generateVectors "\n\tP->_STATE%i = {0,0,0,0,0,0,0};" b.blockid;
       end; genCBStateNames q;
     | b::q -> genCBStateNames q
   in genCBStateNames lB; (* Conditional Block StateNames *)
