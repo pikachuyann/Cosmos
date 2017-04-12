@@ -170,8 +170,15 @@ let _ =
   |< (fun _-> print_endline "Finish parsing, start transformation")
   |> (fun x-> if !StateflowType.useerlang then x else StochasticPetriNet.remove_erlang x)
   (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
-  |< (fun net -> if !statespace then let n = List.length (Simulation.SemanticSPT.state_space net) in
-				   Printf.printf  "State-space size:%i\n" n)
+  |< (fun net -> if !statespace then
+		   let list = (Simulation.SemanticSPT.state_space net) in
+		   Printf.printf  "State-space size:%i\n" (List.length list);
+		   List.iter (fun x ->
+			      Array.iter (fun y ->
+					  Simulation.SptOp.print_marking stdout y;
+					 output_string stdout ", ") x; print_newline ()) list
+
+     )
   |< (fun net -> if !simule<> 0 then let open Simulation.SemanticSPT in
 				     Printf.printf "Simulate %n trajectories:\n" !simule;
 				     let nbsucc =
