@@ -49,28 +49,39 @@ module SptOp = struct
     type declarationtype = declarationSPT
     type result = bool
 			     
-    let eval pl (m:placetype array) e =
+    let eval net (m:placetype array) e =
       let rep = Type.replace_expr (fun s ->
-			 let p = Data.index pl s in
-			 Some (fst m.(Data.unsafe_rev p))) e in
-      Type.eval rep
+	try
+	  let p = Data.index net.Net.place s in
+	  Some (fst m.(Data.unsafe_rev p))
+	with Not_found ->
+	  match net.Net.def |>> (fun x -> List.assoc s x.intconst) with
+	  | Some v -> Some v
+	  | None -> failwith (s^ "neither an intconst or a place name")
+				  ) e in
+      Type.eval ~iname:(fun s -> net.Net.def |>> (fun x -> List.assoc s x.intconst)) rep 
 
+    let eval_marking net m (p,q) =
+      (eval net m p),q
+		
     let print_marking f (p,_) =
       Type.printH_expr f p
 		
-    let compare pl m (pt,_) v =
-      match eval pl m (Type.Minus(pt,v)) with
+    let compare net m (pt,_) v =
+      match eval net m (Type.Minus(pt,v)) with
 	Type.Int(x) -> x
       | e -> Type.printH_expr stdout e; 
 	     failwith "Cannot evaluate"
-    let compare_marking (p1,_) (p2,_) = match p1,p2 with
+    let compare_marking (p1,_) (p2,_) = match (p1),(p2) with
+      | x,y when x=y -> 0
       | (Type.Int(x),(Type.Int(y))) -> x-y
-      | _ -> failwith "Cannot evaluate"
+      | e1,e2 -> Printf.fprintf stdout "Cannot compare %a and %a\n" Type.printH_expr e1 Type.printH_expr e2;
+	 failwith "Cannot evaluate"
        
-    let add pl m (pt,o) v =
-      (eval pl m (Type.Plus(pt,v)) ,o)
-    let minus pl m (pt,o) v =
-      (eval pl m (Type.Minus(pt,v)) ,o)
+    let add net m (pt,o) v =
+      (eval net m (Type.Plus(pt,v)) ,o)
+    let minus net m (pt,o) v =
+      (eval net m (Type.Minus(pt,v)) ,o)
 
     let sample net m t =
       let intdef = net.Net.def |>>> (fun x -> x.intconst) |>>| [] in
