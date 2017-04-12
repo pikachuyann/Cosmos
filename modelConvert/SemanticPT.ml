@@ -15,6 +15,7 @@ module type OP = sig
     val minus :  ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> placetype -> valuationtype -> placetype
     val choose : ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> Net.transitionkey Data.key list -> Net.transitionkey Data.key
     val finalResult : ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> result option
+    val get_prob: ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> transitiontype -> float                                                                                                  
   end
 
 module type NETWITHMARKING = sig
@@ -38,8 +39,6 @@ module type NETWITHMARKING = sig
     val simulate: t -> int -> result option list 
 end
 
-
-		   
 module NetWithMarking(Op:OP) : (NETWITHMARKING with type placetype = Op.placetype
 						and type valuationtype = Op.valuationtype
 						and type transitiontype = Op.transitiontype
@@ -107,6 +106,7 @@ struct
 	 !v
     end
   module MarkingSet = Set.Make(OrderedMarking)
+  module MarkingMap = Map.Make(OrderedMarking)
 
   let rec explore net s1 s2 =
     if MarkingSet.is_empty s1 then (s1,s2)
@@ -118,13 +118,40 @@ struct
 	     else explore net (MarkingSet.add m2 s12) s22)
                         ((MarkingSet.remove m s1),(MarkingSet.add m s2)) en   
     
-  let state_space net =
+  let state_space_comp net =
     let mset1 = MarkingSet.singleton (init net) in
     let mset2 = MarkingSet.empty in
-    explore net mset1 mset2
-    |> snd
+    explore net mset1 mset2 |> snd
+                  
+  let get_lts net =
+    let open LTS in
+    let sl = state_space_comp net in
+    let n = MarkingSet.cardinal sl in
+    let states = Array.make n "" in
+    let statecard = snd @@ MarkingSet.fold (fun s (i,map) ->
+                        states.(i) <- Printf.sprintf "%i" i;
+                        (i+1,MarkingMap.add s i map)) sl (0,MarkingMap.empty) in
+    let transitions = Array.make n [] in
+    ignore @@ MarkingSet.fold (fun m1 i ->
+                  let en = enabled net m1 in
+                  transitions.(i) <-
+                    List.map (fun t ->
+                        let label,distr = Data.acca net.Net.transition t in
+                        let prob = Op.get_prob net m1 distr in
+                        
+                        { label;
+                          target=MarkingMap.find (fire net m1 t) statecard;
+                          prob} ) en;
+                  i+1) sl 0;
+    let g = { states; transitions; init =0} in
+    LTS.print_dot "test.dot" g; g
+
+  let state_space net =
+    let _ = get_lts net in
+    state_space_comp net 
     |> (fun x -> MarkingSet.fold (fun e l -> e::l) x [])
 
+                                  
   let rec trace net m n =
     let fr = Op.finalResult net m in
     if n<>0 && fr=None then 

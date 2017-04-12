@@ -19,6 +19,7 @@ module Prio = struct
       else 0
   end
 
+               
 module EQueue = Set.Make(Prio)
 	     	
 let sample_distr ev = function
@@ -106,6 +107,20 @@ module SptOp = struct
       let (_,_,_,t) = EQueue.min_elt heap in t
 
                                                (*let finalResult net m = None *)
+
+    let get_prob net m (t:transitiontypeSPT) =
+      let intdef = net.Net.def |>>> (fun x -> x.intconst) |>>| [] in
+      let floatdef = net.Net.def |>>> (fun x -> x.floatconst) |>>| [] in
+      let intrpl = fun s -> try List.assoc s intdef with _ -> (
+		 try let index = Data.index net.Net.place s in
+		     Some (fst @@ m.(Data.unsafe_rev index)) with _ -> None) 					     
+      in
+      let floatrpl = fun s -> try List.assoc s floatdef with _ -> None in
+      let eval x = Type.eval_or_die ~iname:intrpl ~fname:floatrpl x in
+      match t with
+        (Exp f,_,_) -> eval f 
+      | _ -> -1.0
+      
                                                
     let finalResult net m =
       finalResultExpr net m (IntAtom(IntName("NB"),EQ,Int(1000)))
