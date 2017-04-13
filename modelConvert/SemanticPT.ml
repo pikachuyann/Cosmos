@@ -15,7 +15,8 @@ module type OP = sig
     val minus :  ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> placetype -> valuationtype -> placetype
     val choose : ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> Net.transitionkey Data.key list -> Net.transitionkey Data.key
     val finalResult : ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> result option
-    val get_prob: ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> transitiontype -> float                                                                                                  
+    val get_prob: ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> transitiontype -> float
+    val get_int: ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> placetype -> int    
   end
 
 module type NETWITHMARKING = sig
@@ -129,7 +130,9 @@ struct
     let n = MarkingSet.cardinal sl in
     let states = Array.make n "" in
     let statecard = snd @@ MarkingSet.fold (fun s (i,map) ->
-                        states.(i) <- Printf.sprintf "%i" i;
+                        let label = Array.fold_right (fun m st -> 
+                                        st^","^(string_of_int @@ Op.get_int net s m)) s "" in
+                        states.(i) <- Printf.sprintf "(%s)_%i" label i;
                         (i+1,MarkingMap.add s i map)) sl (0,MarkingMap.empty) in
     let transitions = Array.make n [] in
     ignore @@ MarkingSet.fold (fun m1 i ->

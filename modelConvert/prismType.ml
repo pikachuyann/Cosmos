@@ -29,6 +29,10 @@ type constdef = (string*(int expr' option)) list * (string*(float expr' option))
 
 type update = IntUp of int expr' | BoolUp of  bool expr'
 
+let print_update f = function
+  | IntUp i -> printH_expr f i
+  | BoolUp b -> printH_expr f b                       
+                                                   
 type varKind = IntK of string * (int expr'*int expr') * int expr'
 	       | BoolK of string * (int expr'*int expr') * int expr'
 	       | ClockK of string 
@@ -43,3 +47,26 @@ type prism_module = {
 type moduledef = Full of prism_module | Renaming of string*string*(string*string) list
 
 type prism_file = moduledef list
+
+let print_prism f m =
+  Printf.fprintf f "module %s\n" m.name;
+
+  List.iter (function
+   | IntK(s,(l,m),init) ->
+      Printf.fprintf f "\t%s: [%a..%a] init %a;\n" s printH_expr l printH_expr m printH_expr init;
+   | _ -> failwith "unsupported"
+            ) m.varlist;
+
+  List.iter (fun (sto,guard,prob,update) -> 
+    Printf.fprintf f "\t[%s] %a -> %a : " (sto |>>| "") printH_expr guard printH_expr prob; 
+    
+    ignore @@ List.fold_left (fun b (s,u) ->
+      if b then Printf.fprintf f " & ";
+      Printf.fprintf f "(%s'=%a)" s print_update u;
+      true
+    ) false update;
+    Printf.fprintf f ";\n";
+    ) m.actionlist;
+  
+  Printf.fprintf f "endmodule\n"
+                            

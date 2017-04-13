@@ -61,7 +61,7 @@ let convert_update net trname eqmap varmap = function
     Net.add_outArc net trname v (CastBool j);
     StringMap.remove v varmap
   | v,BoolUp(j) -> Net.add_outArc net trname v (CastBool j); varmap
-
+                                                             
   | v,IntUp(Plus((IntName v2),j)) when v=v2 && (StringMap.mem v varmap) -> 
     let j2 = eval (Plus(StringMap.find v varmap,j)) in
     Net.add_outArc net trname v j2;
@@ -192,8 +192,10 @@ let read_prism s name =
     let (fullmod,renammod) = List.fold_left (fun (l1,l2) m -> match m with 
 	Full fm -> (fm::l1),l2 | Renaming (rm1,rm2,rm3) -> l1,((rm1,rm2,rm3)::l2) ) ([],[]) prismml in
     let prismm2 = rename_module fullmod renammod in
+    List.iter (print_prism !logout) prismm2;
     let prismmodule = List.fold_left compose_module
-      (List.hd prismm2) (List.tl prismm2) in
+                                     (List.hd prismm2) (List.tl prismm2) in
+    print_prism !logout prismmodule;
     (net_of_prism prismmodule cdef)
   with 
   | LexerPrism.SyntaxError msg ->

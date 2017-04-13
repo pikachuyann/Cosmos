@@ -49,30 +49,29 @@ module SptOp = struct
     type transitiontype = transitiontypeSPT
     type declarationtype = declarationSPT
     type result = bool
-			     
+
     let eval net (m:placetype array) e =
-      let rep = Type.replace_expr (fun s ->
-	try
-	  let p = Data.index net.Net.place s in
-	  Some (fst m.(Data.unsafe_rev p))
-	with Not_found ->
-	  match net.Net.def |>> (fun x -> List.assoc s x.intconst) with
-	  | Some v -> Some v
-	  | None -> failwith (s^ "neither an intconst or a place name")
-				  ) e in
-      Type.eval ~iname:(fun s -> net.Net.def |>> (fun x -> List.assoc s x.intconst)) rep 
+      let intdef = net.Net.def |>>> (fun x -> x.intconst) |>>| [] in
+      let floatdef = net.Net.def |>>> (fun x -> x.floatconst) |>>| [] in
+      let intrpl = fun s -> try List.assoc s intdef with _ -> (
+		 try let index = Data.index net.Net.place s in
+		     Some (fst @@ m.(Data.unsafe_rev index)) with _ -> None) 					     
+      in
+      let floatrpl = fun s -> try List.assoc s floatdef with _ -> None in
+      Type.eval ~iname:intrpl ~fname:floatrpl e
+      
+    let eval_or_die net m e =
+      Type.eval_or_die (eval net m e)
 
     let eval_marking net m (p,q) =
-      (eval net m p),q
+      (Int (eval_or_die net m p)),q
 		
     let print_marking f (p,_) =
       Type.printH_expr f p
 		
     let compare net m (pt,_) v =
-      match eval net m (Type.Minus(pt,v)) with
-	Type.Int(x) -> x
-      | e -> Type.printH_expr stdout e; 
-	     failwith "Cannot evaluate"
+      eval_or_die net m (Type.Minus(pt,v))
+                      
     let compare_marking (p1,_) (p2,_) = match (p1),(p2) with
       | x,y when x=y -> 0
       | (Type.Int(x),(Type.Int(y))) -> x-y
@@ -85,14 +84,7 @@ module SptOp = struct
       (eval net m (Type.Minus(pt,v)) ,o)
 
     let sample net m t =
-      let intdef = net.Net.def |>>> (fun x -> x.intconst) |>>| [] in
-      let floatdef = net.Net.def |>>> (fun x -> x.floatconst) |>>| [] in
-      let intrpl = fun s -> try List.assoc s intdef with _ -> (
-		 try let index = Data.index net.Net.place s in
-		     Some (fst @@ m.(Data.unsafe_rev index)) with _ -> None) 					     
-      in
-      let floatrpl = fun s -> try List.assoc s floatdef with _ -> None in
-      let eval x = Type.eval_or_die ~iname:intrpl ~fname:floatrpl x in
+      let eval x = eval_or_die net m x in
       
       let (d,p,w) = snd @@ Data.acca net.Net.transition t in
       let time = sample_distr eval d in
@@ -109,26 +101,21 @@ module SptOp = struct
                                                (*let finalResult net m = None *)
 
     let get_prob net m (t:transitiontypeSPT) =
-      let intdef = net.Net.def |>>> (fun x -> x.intconst) |>>| [] in
-      let floatdef = net.Net.def |>>> (fun x -> x.floatconst) |>>| [] in
-      let intrpl = fun s -> try List.assoc s intdef with _ -> (
-		 try let index = Data.index net.Net.place s in
-		     Some (fst @@ m.(Data.unsafe_rev index)) with _ -> None) 					     
-      in
-      let floatrpl = fun s -> try List.assoc s floatdef with _ -> None in
-      let eval x = Type.eval_or_die ~iname:intrpl ~fname:floatrpl x in
       match t with
-        (Exp f,_,_) -> eval f 
+        (Exp f,_,_) -> eval_or_die net m f 
       | _ -> -1.0
-      
-                                               
-    let finalResult net m =
+    let get_int net m (p:placetypeSPT) =
+      eval_or_die net m (fst p)
+                
+
+    let finalResult net m = None
+    (*let finalResult net m =
       finalResultExpr net m (IntAtom(IntName("NB"),EQ,Int(1000)))
 		      (disjunction [ 
 			   (IntAtom(IntName("Q1"),EQ,Int(10)));
 			   (IntAtom(IntName("Q2"),EQ,Int(10)));
 			   (IntAtom(IntName("Q3"),EQ,Int(10)));
-		      ])
+		      ])*)
 
 (*    let finalResult net m =
       finalResultExpr net m (IntAtom(IntName("NbStep"),EQ,Int(1000)))
@@ -161,7 +148,7 @@ module MdpOp = struct
 				      Pervasives.compare x y 
 				  end)
     let intarray_of_marking m =
-      let t = Array.map (fun (x,_) -> eval_or_die x) m in
+      let t = Array.map (fun (x,_) -> Type.eval_or_die x) m in
       (try t.(7) <-0; with
         Invalid_argument s -> raise (Invalid_argument (s ^":"^ __FILE__ ^":"^ string_of_int @@__LINE__))
       );                                               
