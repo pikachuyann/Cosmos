@@ -19,7 +19,7 @@ let rec flatten_guard x =
   | Bool true -> [[]]
   | Bool false -> []
   | And (e1,e2) ->
-    let l=flatten_guard e1 
+    let l= flatten_guard e1 
     and l2 = flatten_guard e2 in
     List.fold_left (fun acc l1 ->
       acc@(List.map (fun x->x@l1) l2)) [] l
@@ -73,8 +73,8 @@ let convert_update net trname eqmap varmap = function
     if sgz j2 then Net.add_outArc net trname v j2;
     StringMap.remove v varmap
   
-  | v,IntUp(Int j) when StringMap.mem v eqmap -> 
-    let j2 = eval (Minus(Int j,StringMap.find v eqmap)) in
+  | v,IntUp(Int j) when StringMap.mem v eqmap ->
+     let j2 = eval (Minus(Int j,StringMap.find v eqmap)) in
     if sgz j2 then Net.add_outArc net trname v j2;
     (try StringMap.remove v varmap with Not_found -> varmap);
 
@@ -158,6 +158,20 @@ let rec rename_module l1 = function
     } in
     rename_module (nm::l1) q
 
+let clean_module m =
+  m.actionlist
+  |> List.map (fun (s,g,r,u) ->
+         u
+         |> List.filter (function (v,IntUp (IntName w)) when v=w -> false
+                             | (v,BoolUp (BoolName w)) when v=w -> false
+                                  | _ -> true)
+         |> (fun v -> s,g,r,v)
+       )
+  |> (fun al ->
+    { m with actionlist=al})
+           
+         
+                  
 let compose_module m1 m2 = 
   let open StringSet in
       let common = inter m1.actionset m2.actionset in 
@@ -172,13 +186,15 @@ let compose_module m1 m2 =
 	  else (s1,eval (And(g1,g2)),eval (Mult(r1,r2)),u1@u2) :: ls2) ls1 m2.actionlist)
 	(List.filter (fun (s,_,_,_) -> filt s) m2.actionlist)
 	m1.actionlist in       
-      {
+      let nm = {
 	name = Printf.sprintf "(%s||%s)" m1.name m2.name;
 	varlist=varlist;
 	actionlist= synchtrans;
 	actionset= union m1.actionset m2.actionset
-      }
-
+        } in
+      print_prism !logout nm;
+      nm  
+        
 let read_prism s name =
   let lexbuf = Lexing.from_channel s in
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = name };
@@ -190,7 +206,7 @@ let read_prism s name =
     seek_in s 0;
     let cdef,prismml = ParserPrism.main LexerPrism.token lexbuf in
     let (fullmod,renammod) = List.fold_left (fun (l1,l2) m -> match m with 
-	Full fm -> (fm::l1),l2 | Renaming (rm1,rm2,rm3) -> l1,((rm1,rm2,rm3)::l2) ) ([],[]) prismml in
+	Full fm -> (clean_module fm::l1),l2 | Renaming (rm1,rm2,rm3) -> l1,((rm1,rm2,rm3)::l2) ) ([],[]) prismml in
     let prismm2 = rename_module fullmod renammod in
     List.iter (print_prism !logout) prismm2;
     let prismmodule = List.fold_left compose_module

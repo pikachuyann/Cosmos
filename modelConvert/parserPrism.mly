@@ -19,7 +19,7 @@
 %token CONST
 %token EQ SG SL GE LE
 %token RANGE 
-%token CTMC PTA MODULE ENDMODULE INIT ENDINIT REWARDS ENDREWARDS FORMULA INVARIANT ENDINVARIANT
+%token CTMC PTA MDP MODULE ENDMODULE INIT ENDINIT REWARDS ENDREWARDS FORMULA INVARIANT ENDINVARIANT
 %token PARSEINT PARSEFLOAT PARSEBOOL PARSEDISTR
 %token ARROW
 %token EOF
@@ -58,6 +58,7 @@ parseCmd:
 main:
 | CTMC defmod initrew EOF {($2)}
 | PTA defmod initrew EOF {($2)};
+| MDP defmod initrew EOF {($2)};
 
 defmod:
   definition defmod { let (defi1,defd1) = $1 and ((defi2,defd2),modl) = $2 in 

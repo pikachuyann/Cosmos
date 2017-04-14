@@ -18,6 +18,7 @@ rule token = parse
   | digit*['.']?digit+(['e' 'E']['-' '+']?digit+)? as lxm  {FLOAT(float_of_string lxm)}
   | "ctmc" | "dtmc" {CTMC}
   | "pta" {PTA}
+  | "mdp" {MDP}
   | "int" {INTKW}
   | "double" {DOUBLEKW}
   | "const" {CONST}

@@ -17,7 +17,7 @@ module type OP = sig
     val finalResult : ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> result option
     val get_prob: ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> transitiontype -> float
     val get_int: ( placetype , transitiontype, valuationtype , declarationtype) Net.t -> placetype array -> placetype -> int    
-  end
+end                   
 
 module type NETWITHMARKING = sig
     type placetype
@@ -85,18 +85,23 @@ struct
     (!l : Net.transitionkey Data.key list)
       
   let fire net m tr =
+    print_endline "------------------";
+    print_marking net stdout m;
+    print_newline ();
     let m2 = Array.copy m in
     Data.iter (fun ((),(v,p,t)) ->
 	       if t=tr then 
-		 (*Printf.printf "%a-(%a)->%a " (Net.print_place net) p Type.printH_expr (Obj.magic v) (Net.print_transition net) t;*)
 		 let index = Data.unsafe_rev p in
+                 Printf.printf "%a-(%a)->%a \n" (Net.print_place net) p Type.printH_expr (Obj.magic v) (Net.print_transition net) t;
 		 if Op.compare net m m.(index) v >= 0 then m2.(index) <- Op.minus net m m2.(index) v
 		 else raise (Illegal_fire(t,m.(index),v))) net.Net.inArc;
     Data.iter (fun ((),(v,t,p)) ->
 	       if t=tr then 
-		 (*Printf.printf "%a-(%a)->%a " (Net.print_transition net) t Type.printH_expr (Obj.magic v) (Net.print_place net) p;*)
 		 let index = Data.unsafe_rev p in
+                 Printf.printf "%a-(%a)->%a \n" (Net.print_transition net) t Type.printH_expr (Obj.magic v) (Net.print_place net) p;
 		 m2.(index) <- Op.add net m m2.(index) v) net.Net.outArc;
+    print_marking net stdout m2;
+    print_newline ();
     m2
 
   module OrderedMarking = struct
