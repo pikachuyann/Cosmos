@@ -37,10 +37,20 @@ type varKind = IntK of string * (int expr'*int expr') * int expr'
 	       | BoolK of string * (int expr'*int expr') * int expr'
 	       | ClockK of string 
   
+type guard = (string * Type.cmp * int Type.expr') list list
+
+let print_guard f g =
+  print_list2 (fun _ conj ->
+      Printf.fprintf f "( %a )"
+                     (print_list2 (fun _ (v,cmp,expr) ->
+                          Printf.fprintf f "%s %a %a" v printH_cmp cmp printH_expr expr 
+                                  ) "&&") conj
+             ) "||" f g
+                                                  
 type prism_module = {
   name:string;
   varlist: varKind list;
-  actionlist: (string option * bool expr' * float expr' * ((string*update) list)) list;
+  actionlist: (string option * guard * float expr' * ((string*update) list)) list;
   actionset: StringSet.t
 }
 
@@ -58,7 +68,7 @@ let print_prism f m =
             ) m.varlist;
 
   List.iter (fun (sto,guard,prob,update) -> 
-    Printf.fprintf f "\t[%s] %a -> %a : " (sto |>>| "") printH_expr guard printH_expr prob; 
+    Printf.fprintf f "\t[%s] %a -> %a : " (sto |>>| "") print_guard guard printH_expr prob; 
     
     ignore @@ List.fold_left (fun b (s,u) ->
       if b then Printf.fprintf f " & ";

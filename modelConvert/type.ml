@@ -49,6 +49,13 @@ let rec string_of_list sep f = function
 let print_list f sep file l =
   output_string file (string_of_list sep f l)
 
+let rec print_list2 fu sep file = function
+  | [] -> ()
+  | [t] -> fu file t
+  | t::q -> Printf.fprintf file "%a%s%a" fu t sep (print_list2 fu sep) q
+            
+
+                
 let rec selectL fb = function
   | [] -> raise Not_found
   | t::q when fb t -> (t,q)

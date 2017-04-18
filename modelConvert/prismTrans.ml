@@ -95,7 +95,7 @@ let convert_update net trname eqmap varmap = function
 
 let gen_acc iinit modu net (st,g,f,u) =
   let i = ref iinit in
-  let flatguardlist = flatten_guard g in
+  let flatguardlist = (*flatten_guard*) g in
   List.iter (fun flatguard ->
   let trname = Printf.sprintf "a%i%s" !i (match st with None -> "" | Some s-> s) in 
   Data.add (trname,(Exp f,Float 1.0,Float 1.0)) net.Net.transition;  
@@ -134,6 +134,11 @@ let net_of_prism modu (li,lf) =
   print_endline "Finish net";
   net
 
+let rename_guard rn g =
+  List.map (fun dij ->
+      List.map (fun (v,cmp,expr) ->
+         (rn v), cmp, (rename_expr rn expr)) dij) g
+    
 let rec rename_module l1 = function
   | [] -> l1
   | (nn,on,rl)::q -> 
@@ -146,7 +151,7 @@ let rec rename_module l1 = function
       | ClockK(a) -> ClockK((rn a)) ) template.varlist in
     let nactionl = List.map (fun (a,b,c,d) -> 
       (rename_op rn a),
-      (rename_expr rn b),
+      (rename_guard rn b),
       (rename_expr rn c),
       (List.map (function (s,IntUp(ie)) -> (rn s),IntUp(rename_expr rn ie) 
       | (s,BoolUp(ie)) -> (rn s),BoolUp(rename_expr rn ie) ) d)) template.actionlist in
