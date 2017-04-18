@@ -37,7 +37,7 @@ let _ =
   begin match !typeFormat with
   | Prism -> 
     input := open_in !inname;
-    Generator.read_prism !input !inname
+    PrismTrans.read_prism !input !inname
   | _ -> failwith "Format not yet supported" end
 	      |> (fun net -> 
 		print_endline "Finish parsing, start writing";

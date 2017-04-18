@@ -86,7 +86,7 @@ let _ =
       inname := !inname ^ ".expanded"
     else Printf.printf "Fail to start prism to expand the file\n";*)
     input := open_in !inname;
-    Generator.read_prism !input !inname
+    PrismTrans.read_prism !input !inname
   | Pnml ->
      (*IFNDEF HAS_XML THEN
       failwith "XML library required to read PNML" 
