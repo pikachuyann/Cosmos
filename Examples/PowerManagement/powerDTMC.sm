@@ -111,7 +111,7 @@ module PM
 	// 4 - go to sleep 
 	
 	// Only go to active when queue is full
-	//[choose] q=QMAX -> (pm'=0);
+	[choose] q=QMAX -> (pm'=0);
 	//[choose] q<QMAX -> (pm'=1);
 	//[choose] q<QMAX -> (pm'=2);
 	//[choose] q<QMAX -> (pm'=3);

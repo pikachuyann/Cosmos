@@ -85,23 +85,23 @@ struct
     (!l : Net.transitionkey Data.key list)
       
   let fire net m tr =
-    print_endline "------------------";
+    (*print_endline "------------------";
     print_marking net stdout m;
-    print_newline ();
+    print_newline ();*)
     let m2 = Array.copy m in
     Data.iter (fun ((),(v,p,t)) ->
 	       if t=tr then 
 		 let index = Data.unsafe_rev p in
-                 Printf.printf "%a-(%a)->%a \n" (Net.print_place net) p Type.printH_expr (Obj.magic v) (Net.print_transition net) t;
+                 (*Printf.printf "%a-(%a)->%a \n" (Net.print_place net) p Type.printH_expr (Obj.magic v) (Net.print_transition net) t;*)
 		 if Op.compare net m m.(index) v >= 0 then m2.(index) <- Op.minus net m m2.(index) v
 		 else raise (Illegal_fire(t,m.(index),v))) net.Net.inArc;
     Data.iter (fun ((),(v,t,p)) ->
 	       if t=tr then 
 		 let index = Data.unsafe_rev p in
-                 Printf.printf "%a-(%a)->%a \n" (Net.print_transition net) t Type.printH_expr (Obj.magic v) (Net.print_place net) p;
+                 (*Printf.printf "%a-(%a)->%a \n" (Net.print_transition net) t Type.printH_expr (Obj.magic v) (Net.print_place net) p;*)
 		 m2.(index) <- Op.add net m m2.(index) v) net.Net.outArc;
-    print_marking net stdout m2;
-    print_newline ();
+    (*print_marking net stdout m2;
+    print_newline ();*)
     m2
 
   module OrderedMarking = struct

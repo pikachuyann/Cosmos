@@ -77,12 +77,20 @@ module Guard = struct
       StringMap.map (fun l ->
           List.sort_uniq (fun (cmp1,v1) (cmp2,v2) -> if cmp1 = cmp2 then compare v1 v2 else
                                                        compare cmp1 cmp2) l
-          |> (function 
-                (EQ, Int i1) :: (EQ, Int i2)::_ when i1 !=i2 -> raise Not_found
+          |> (function
+              | [] -> []
+              | x :: [] -> x :: []
+              | (EQ, Int i1) :: (EQ, Int i2)::_ when i1 !=i2 -> raise Not_found
               | (EQ, Int i1) :: (SG, Int i2)::_ when i1 <= i2 -> raise Not_found
               | (EQ, Int i1) :: (SG, Int i2)::q -> (EQ, Int i1)::q
+              | (EQ, Int i1) :: (SL, Int i2)::_ when i1 >= i2 -> raise Not_found
+              | (EQ, Int i1) :: (SL, Int i2)::q -> (EQ, Int i1)::q
+              | (EQ, Int i1) :: (GE, Int i2)::_ when i1 < i2 -> raise Not_found
+              | (EQ, Int i1) :: (GE, Int i2)::q -> (EQ, Int i1)::q
+              | (EQ, Int i1) :: (LE, Int i2)::_ when i1 > i2 -> raise Not_found
+              | (EQ, Int i1) :: (LE, Int i2)::q -> (EQ, Int i1)::q
 
-              | x -> x
+              | x -> print_endline "strange guard"; x
              )
         ) c
     |> fun x -> Some x 
