@@ -14,28 +14,6 @@ let rec acc_var k = function
   | IntK(t,a,_)::_ when t=k -> a  
   | _::q -> acc_var k q
 
-let rec flatten_guard x = 
-  match x with
-  | Bool true -> [[]]
-  | Bool false -> []
-  | And (e1,e2) ->
-    let l= flatten_guard e1 
-    and l2 = flatten_guard e2 in
-    List.fold_left (fun acc l1 ->
-      acc@(List.map (fun x->x@l1) l2)) [] l
-  | Or (e1,e2) -> (flatten_guard e1)@(flatten_guard e2)
-  | IntAtom ((IntName v),NEQ,j) -> [[(v,SL,j)];[(v,SG,j)]]
-  | IntAtom ((IntName v),cmp,j) -> [[(v,cmp,j)]]  
-  | FloatAtom ((CastInt (IntName v)),SL,j) -> [[(v,SL,Ceil j)]]
-  | FloatAtom ((CastInt (IntName v)),LE,j) -> [[(v,LE,Ceil j)]]
-  | FloatAtom ((CastInt (IntName v)),SG,j) -> [[(v,SG,Floor j)]]
-  | FloatAtom ((CastInt (IntName v)),GE,j) -> [[(v,GE,Floor j)]]
-
-  | BoolName v -> [[(v,SG,Int 0)]]
-  | Not (BoolName v) -> [[(v,EQ,Int 0)]]
-  | Not e -> flatten_guard (neg_bool e)
-  | e-> printH_expr stderr e;
-    failwith "Not yet supported guard shape"
 
 let rec convert_guard modu net trname ((r1,r2) as rset) = function
   | [] -> rset
@@ -95,16 +73,15 @@ let convert_update net trname eqmap varmap = function
 
 let gen_acc iinit modu net (st,g,f,u) =
   let i = ref iinit in
-  let flatguardlist = (*flatten_guard*) g in
   List.iter (fun flatguard ->
-  let trname = Printf.sprintf "a%i%s" !i (match st with None -> "" | Some s-> s) in 
-  Data.add (trname,(Exp f,Float 1.0,Float 1.0)) net.Net.transition;  
-  let (invar1,invar2) = 
-    convert_guard modu net trname (StringMap.empty,StringMap.empty) flatguard in 
-  let remaining = List.fold_left (convert_update net trname invar2) invar1 u in
-  StringMap.iter (fun v value -> Net.add_outArc net trname v value) remaining;
-  incr i;
-  ) flatguardlist;
+      let trname = Printf.sprintf "a%i%s" !i (match st with None -> "" | Some s-> s) in 
+      Data.add (trname,(Exp f,Float 1.0,Float 1.0)) net.Net.transition;  
+      let (invar1,invar2) = 
+        convert_guard modu net trname (StringMap.empty,StringMap.empty) (Guard.to_list flatguard) in 
+      let remaining = List.fold_left (convert_update net trname invar2) invar1 u in
+      StringMap.iter (fun v value -> Net.add_outArc net trname v value) remaining;
+      incr i;
+    ) g;
   !i
 
   (*let diff = StringMap.diff (get_out u) invar in
@@ -135,9 +112,10 @@ let net_of_prism modu (li,lf) =
   net
 
 let rename_guard rn g =
-  List.map (fun dij ->
-      List.map (fun (v,cmp,expr) ->
-         (rn v), cmp, (rename_expr rn expr)) dij) g
+  let g2 = List.map (fun dij ->
+      Guard.map (fun (v,cmp,expr) ->
+          (rn v), cmp, (rename_expr rn expr)) dij) g in
+  g2
     
 let rec rename_module l1 = function
   | [] -> l1
@@ -174,8 +152,7 @@ let clean_module m =
        )
   |> (fun al ->
     { m with actionlist=al})
-           
-         
+                   
                   
 let compose_module m1 m2 = 
   let open StringSet in
@@ -184,13 +161,16 @@ let compose_module m1 m2 =
       let filt = function 
 	| None -> true 
 	| Some s-> not (mem s common) in
-      let synchtrans = List.fold_left (fun ls1 (s1,g1,r1,u1) ->
-	if filt s1 then (s1,g1,r1,u1)::ls1
-	else List.fold_left (fun ls2 (s2,g2,r2,u2) -> 
-	  if s1<>s2 then ls2
-	  else (s1,eval (And(g1,g2)),eval (Mult(r1,r2)),u1@u2) :: ls2) ls1 m2.actionlist)
-	(List.filter (fun (s,_,_,_) -> filt s) m2.actionlist)
-	m1.actionlist in       
+      let synchtrans =
+        List.fold_left (fun ls1 (s1,g1,r1,u1) ->
+	    if filt s1 then (s1,g1,r1,u1)::ls1
+	    else List.fold_left (fun ls2 (s2,g2,r2,u2) -> 
+	             if s1<>s2 then ls2
+	             else (s1,(Guard.conj g1 g2),eval (Mult(r1,r2)),u1@u2) :: ls2) ls1 m2.actionlist)
+	               (List.filter (fun (s,_,_,_) -> filt s) m2.actionlist)
+	               m1.actionlist
+        |> List.filter (fun (_,g,_,_) -> g<>[])
+      in       
       let nm = {
 	name = Printf.sprintf "(%s||%s)" m1.name m2.name;
 	varlist=varlist;
