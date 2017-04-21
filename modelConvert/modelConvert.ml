@@ -173,7 +173,7 @@ let _ =
   |< (fun net -> if !statespace then
 		   let list = (Simulation.SemanticSPT.state_space net) in
 		   Printf.printf  "State-space size:%i\n" (List.length list);
-                   for i = 0 to PetriNet.Data.size net.PetriNet.Net.place -1 do 
+                   (*for i = 0 to PetriNet.Data.size net.PetriNet.Net.place -1 do 
 	             PetriNet.Data.unsafe i
 	             |> PetriNet.Data.acca net.PetriNet.Net.place
 	             |> fst
@@ -184,7 +184,7 @@ let _ =
                    List.iter (fun x ->
 			      Array.iter (fun y ->
 					  Simulation.SptOp.print_marking stdout y;
-					 output_string stdout ", ") x; print_newline ()) list
+					 output_string stdout ", ") x; print_newline ()) list*)
 
      ) 
   |< (fun net -> if !simule<> 0 then let open Simulation.SemanticSPT in
