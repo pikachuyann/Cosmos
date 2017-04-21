@@ -178,8 +178,8 @@ let compose_module m1 m2 =
 	actionset= union m1.actionset m2.actionset
         } in
       print_prism !logout nm;
-      nm  
-        
+      nm 
+
 let read_prism s name =
   let lexbuf = Lexing.from_channel s in
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = name };
@@ -189,7 +189,7 @@ let read_prism s name =
     Lexing.flush_input lexbuf;
     lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_lnum = 1 };
     seek_in s 0;
-    let cdef,prismml = ParserPrism.main LexerPrism.token lexbuf in
+    let cdef,prismml,kind = ParserPrism.main LexerPrism.token lexbuf in
     let (fullmod,renammod) = List.fold_left (fun (l1,l2) m -> match m with 
 	Full fm -> (clean_module fm::l1),l2 | Renaming (rm1,rm2,rm3) -> l1,((rm1,rm2,rm3)::l2) ) ([],[]) prismml in
     let prismm2 = rename_module fullmod renammod in

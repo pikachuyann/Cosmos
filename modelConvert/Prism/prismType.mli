@@ -42,5 +42,7 @@ type prism_module = {
 type moduledef =
     Full of prism_module
   | Renaming of string * string * (string * string) list
-type prism_file = moduledef list
+
+type modelKind = DTMC | MDP | CTMC |PTA
+type prism_file = moduledef list 
 val print_prism : out_channel -> prism_module -> unit

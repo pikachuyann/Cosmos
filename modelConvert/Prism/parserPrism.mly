@@ -19,7 +19,8 @@
 %token CONST
 %token EQ SG SL GE LE
 %token RANGE 
-%token CTMC PTA MDP MODULE ENDMODULE INIT ENDINIT REWARDS ENDREWARDS FORMULA INVARIANT ENDINVARIANT
+%token CTMC PTA MDP DTMC
+%token MODULE ENDMODULE INIT ENDINIT REWARDS ENDREWARDS FORMULA INVARIANT ENDINVARIANT
 %token PARSEINT PARSEFLOAT PARSEBOOL PARSEDISTR
 %token ARROW
 %token EOF
@@ -37,7 +38,7 @@
 %left LPAR RPAR
 
 %start main floatexpr intexpr stateCondition parseCmd
-%type <PrismType.constdef*PrismType.prism_file> main
+%type <PrismType.constdef*PrismType.prism_file * PrismType.modelKind> main
 %type <int Type.expr'> intexpr
 %type <float Type.expr'> floatexpr
 %type <bool Type.expr'> stateCondition
@@ -56,9 +57,10 @@ parseCmd:
 | PARSEDISTR COLON XMLTOK SEMICOLON {XMLDistr $3};
   
 main:
-| CTMC defmod initrew EOF {($2)}
-| PTA defmod initrew EOF {($2)};
-| MDP defmod initrew EOF {($2)};
+| CTMC defmod initrew EOF { let def,ml = $2 in def,ml, PrismType.CTMC }
+| PTA defmod initrew EOF { let def,ml = $2 in def,ml, PrismType.PTA};
+| MDP defmod initrew EOF {  let def,ml = $2 in def,ml, PrismType.MDP};
+| DTMC defmod initrew EOF {  let def,ml = $2 in def,ml, PrismType.DTMC}
 
 defmod:
   definition defmod { let (defi1,defd1) = $1 and ((defi2,defd2),modl) = $2 in 

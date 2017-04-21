@@ -16,7 +16,8 @@ rule token = parse
   | ['/']['/'][^'\n']*    {token lexbuf}
   | digit+ as lxm  { INT(int_of_string lxm)}
   | digit*['.']?digit+(['e' 'E']['-' '+']?digit+)? as lxm  {FLOAT(float_of_string lxm)}
-  | "ctmc" | "dtmc" {CTMC}
+  | "ctmc" {CTMC}
+  | "dtmc" {DTMC}
   | "pta" {PTA}
   | "mdp" {MDP}
   | "int" {INTKW}

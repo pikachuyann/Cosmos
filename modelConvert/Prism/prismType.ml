@@ -143,6 +143,7 @@ type prism_module = {
 
 type moduledef = Full of prism_module | Renaming of string*string*(string*string) list
 
+type modelKind = DTMC | MDP | CTMC | PTA                                                                                  
 type prism_file = moduledef list
 
 let print_prism f m =
