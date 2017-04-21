@@ -144,12 +144,14 @@ struct
                   let en = enabled net m1 in
                   transitions.(i) <-
                     List.map (fun t ->
-                        let label,distr = Data.acca net.Net.transition t in
-                        let prob = Op.get_prob net m1 distr in
+                        let label,fdistr = Data.acca net.Net.transition t in
+                        let prob = Op.get_prob net m1 fdistr in
+
+                        let distr = [{
+                            target = MarkingMap.find (fire net m1 t) statecard;
+                            prob }] in
                         
-                        { label;
-                          target=MarkingMap.find (fire net m1 t) statecard;
-                          prob} ) en;
+                        { label; distr} ) en;
                   i+1) sl 0;
     let g = { states; transitions; init =0} in
     LTS.print_dot "test.dot" g; g
