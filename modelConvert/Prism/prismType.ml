@@ -21,7 +21,7 @@ let add_copy s1 s2 = try let t = StringMap.find s1 !mapType in
   with Not_found -> ()
 
 let find_action sl =
-  List.fold_left (fun set (so,_,_,_) ->
+  List.fold_left (fun set (so,_,_) ->
     match so with None -> set
       | Some a -> StringSet.add a set) StringSet.empty sl
 
@@ -131,19 +131,22 @@ module Guard = struct
     | Not e -> flatten (neg_bool e)
     | e-> printH_expr stderr e;
           failwith "Not yet supported guard shape"
-                   
+                 
 end
-                            
+
+type rule = string option * Guard.t * (( float expr' * ((string*update) list)) list)  
+                 
 type prism_module = {
   name:string;
   varlist: varKind list;
-  actionlist: (string option * Guard.t * float expr' * ((string*update) list)) list;
+  actionlist: rule list ;
   actionset: StringSet.t
 }
 
 type moduledef = Full of prism_module | Renaming of string*string*(string*string) list
 
-type modelKind = DTMC | MDP | CTMC | PTA                                                                                  
+type modelKind = DTMC | MDP | CTMC | PTA
+
 type prism_file = moduledef list
 
 let print_prism f m =
@@ -155,14 +158,19 @@ let print_prism f m =
    | _ -> failwith "unsupported"
             ) m.varlist;
 
-  List.iter (fun (sto,guard,prob,update) -> 
-    Printf.fprintf f "\t[%s] %a -> %a : " (sto |>>| "") Guard.print guard printH_expr prob; 
-    
-    ignore @@ List.fold_left (fun b (s,u) ->
-      if b then Printf.fprintf f " & ";
-      Printf.fprintf f "(%s'=%a)" s print_update u;
-      true
-    ) false update;
+  List.iter (fun (sto,guard, taillist ) -> 
+      Printf.fprintf f "\t[%s] %a -> " (sto |>>| "") Guard.print guard;
+      
+      ignore @@ List.fold_left (fun b (prob,update) ->
+                    if b then Printf.fprintf f " + ";
+                    Printf.fprintf f "%a :" printH_expr prob;
+                    ignore @@ List.fold_left (fun b (s,u) ->
+                                  if b then Printf.fprintf f " & ";
+                                  Printf.fprintf f "(%s'=%a)" s print_update u;
+                                  true
+                                ) false update;
+                    true
+                  ) false taillist;
     Printf.fprintf f ";\n";
     ) m.actionlist;
   

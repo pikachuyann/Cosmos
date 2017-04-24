@@ -35,7 +35,7 @@ type prism_module = {
   name : string;
   varlist : varKind list;
   actionlist :
-    (string option * Guard.t * float Type.expr' * (string * update) list)
+    (string option * Guard.t * ((float Type.expr' * (string * update) list)) list)
     list;
   actionset : Type.StringSet.t;
 }

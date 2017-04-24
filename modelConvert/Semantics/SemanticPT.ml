@@ -34,7 +34,7 @@ module type NETWITHMARKING = sig
     val get: marking -> Net.placekey Data.key -> placetype
     val enabled: t -> marking -> Net.transitionkey Data.key list
     val fire: t -> marking -> Net.transitionkey Data.key -> marking
-    val state_space: t -> marking list
+    val state_space: t -> LTS.t
     val print_marking: t -> out_channel -> marking -> unit
     val trace: t -> marking -> int -> (Net.transitionkey Data.key list * Net.transitionkey Data.key * marking) list * result option
     val simulate: t -> int -> result option list 
@@ -125,9 +125,12 @@ struct
                         ((MarkingSet.remove m s1),(MarkingSet.add m s2)) en   
     
   let state_space_comp net =
+    print_endline "Start exploring";
     let mset1 = MarkingSet.singleton (init net) in
     let mset2 = MarkingSet.empty in
-    explore net mset1 mset2 |> snd
+    let _,st = explore net mset1 mset2 in
+    print_endline "Finish exploring";
+    st
                   
   let get_lts net =
     let open LTS in
@@ -157,10 +160,8 @@ struct
     LTS.print_dot "test.dot" g; g
 
   let state_space net =
-    let _ = get_lts net in
-    state_space_comp net 
-    |> (fun x -> MarkingSet.fold (fun e l -> e::l) x [])
-
+    let lts = get_lts net in
+    lts
                                   
   let rec trace net m n =
     let fr = Op.finalResult net m in

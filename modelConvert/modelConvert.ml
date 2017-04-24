@@ -171,8 +171,8 @@ let _ =
   |> (fun x-> if !StateflowType.useerlang then x else StochasticPetriNet.remove_erlang x)
   (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
   |< (fun net -> if !statespace then
-		   let list = (Simulation.SemanticSPT.state_space net) in
-		   Printf.printf  "State-space size:%i\n" (List.length list);
+		   let lts = (Simulation.SemanticSPT.state_space net) in
+		   Printf.printf  "State-space size:%i\n" (Array.length lts.LTS.states);
                    (*for i = 0 to PetriNet.Data.size net.PetriNet.Net.place -1 do 
 	             PetriNet.Data.unsafe i
 	             |> PetriNet.Data.acca net.PetriNet.Net.place

@@ -132,7 +132,7 @@ rangevar:
 
 actionlist:
   headaction stateCondition ARROW tailaction SEMICOLON actionlist
-  { List.fold_left (fun l (r,u) -> ($1,Guard.flatten $2,r,u)::l) $6 $4}
+  { ($1,Guard.flatten $2,$4) :: $6 }
 | {[]}
 ;
 

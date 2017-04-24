@@ -71,17 +71,20 @@ let convert_update net trname eqmap varmap = function
     Net.add_outArc net trname v j; 
     varmap
 
-let gen_acc iinit modu net (st,g,f,u) =
+let gen_acc iinit modu net (st,g, taillist) =
   let i = ref iinit in
-  List.iter (fun flatguard ->
-      let trname = Printf.sprintf "a%i%s" !i (match st with None -> "" | Some s-> s) in 
-      Data.add (trname,(Exp f,Float 1.0,Float 1.0)) net.Net.transition;  
-      let (invar1,invar2) = 
-        convert_guard modu net trname (StringMap.empty,StringMap.empty) (Guard.to_list flatguard) in 
-      let remaining = List.fold_left (convert_update net trname invar2) invar1 u in
-      StringMap.iter (fun v value -> Net.add_outArc net trname v value) remaining;
-      incr i;
-    ) g;
+  List.iter (fun (f,u) ->
+      List.iter (fun flatguard ->
+          let trname = Printf.sprintf "a%i%s" !i (match st with None -> "" | Some s-> s) in 
+          Data.add (trname,(Exp f,Float 1.0,Float 1.0)) net.Net.transition;
+      
+          let (invar1,invar2) = 
+            convert_guard modu net trname (StringMap.empty,StringMap.empty) (Guard.to_list flatguard) in 
+          let remaining = List.fold_left (convert_update net trname invar2) invar1 u in
+          StringMap.iter (fun v value -> Net.add_outArc net trname v value) remaining;
+          incr i;
+        ) g
+    ) taillist;
   !i
 
   (*let diff = StringMap.diff (get_out u) invar in
@@ -127,12 +130,14 @@ let rec rename_module l1 = function
       | IntK(a,b,c) -> IntK((rn a),b,c) 
       | BoolK(a,b,c) -> BoolK((rn a),b,c)
       | ClockK(a) -> ClockK((rn a)) ) template.varlist in
-    let nactionl = List.map (fun (a,b,c,d) -> 
+    let nactionl = List.map (fun (a,b, taillist) ->
       (rename_op rn a),
       (rename_guard rn b),
-      (rename_expr rn c),
-      (List.map (function (s,IntUp(ie)) -> (rn s),IntUp(rename_expr rn ie) 
-      | (s,BoolUp(ie)) -> (rn s),BoolUp(rename_expr rn ie) ) d)) template.actionlist in
+      List.map (fun (c,d) ->
+          (rename_expr rn c),
+          (List.map (function (s,IntUp(ie)) -> (rn s),IntUp(rename_expr rn ie) 
+                            | (s,BoolUp(ie)) -> (rn s),BoolUp(rename_expr rn ie) ) d)
+                     ) taillist ) template.actionlist in
     let nm = {
       name=nn;
       varlist=nvarl;
