@@ -21,9 +21,9 @@ module d2 =  d1 [state1=state2, v1 =v2, keep1=keep2] endmodule
 //module d3 =  d1 [state1=state3, v1 =v3, keep1=keep3] endmodule
 
 module j421
-	state : [0 .. run];
-	[launch] (state<run) -> (state'=state+1);
-	[loop] (state=run) -> 1.0 : (state'=state);
+	state : [0 .. 2];
+	[launch] (state<2) -> (state'=state+1);
+	[loop] (state=2) -> 1.0 : (state'=state);
 
 	[keep1] (state>0) & (state1=0) -> (state'=state);
 	[keep2] (state>0) & (state2=0) -> (state'=state);

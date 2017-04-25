@@ -18,15 +18,17 @@ let rec acc_var k = function
 
 let rec convert_guard modu net trname ((r1,r2) as rset) = function
   | [] -> rset
-  | (v,GE,j)::q when sgz j -> Net.add_inArc net v trname (eval j);
-    convert_guard modu net trname ((StringMap.add v j r1),r2) q
+  | (v,GE,j)::q when sgz j -> Printf.printf "[%s] %s GE %a\n" trname v printH_expr j;
+                              Net.add_inArc net v trname (eval j);
+                              convert_guard modu net trname ((StringMap.add v j r1),r2) q
   | (_,GE,_)::q -> convert_guard modu net trname rset q
   | (v,SL,j)::q -> 
     let _,bo = acc_var v modu.varlist in (match bo with
 	Int b ->if gez (Minus(bo,j)) then Net.add_inhibArc net v trname (eval j)
       | _ -> Net.add_inhibArc net v trname (eval j););
     convert_guard modu net trname rset q
-  | (v,EQ,j)::q -> convert_guard modu net trname 
+  | (v,EQ,j)::q -> Printf.printf "%s EQ %a\n" v printH_expr j;
+     convert_guard modu net trname 
     (r1, (StringMap.add v (Int 0) r2))
     ((v,GE,j)::(v,SL,incr_int j)::q)
   | (v,LE,j)::q -> convert_guard modu net trname rset 

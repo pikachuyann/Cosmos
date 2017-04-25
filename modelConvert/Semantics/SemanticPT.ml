@@ -142,7 +142,7 @@ struct
     let statecard = snd @@ MarkingSet.fold (fun s (i,map) ->
                                let label = Array.fold_right (fun m st -> 
                                                st^","^(string_of_int @@ Op.get_int net s m)) s "" in
-                               states.(i) <- Printf.sprintf "(%s)_%i" label i;
+                               states.(i) <- Printf.sprintf "%s" label;
                                (i+1,MarkingMap.add s i map)) slfilt (0,MarkingMap.empty) in
     let transitions = Array.make n2 [] in
     ignore @@ MarkingSet.fold (fun m1 i ->
