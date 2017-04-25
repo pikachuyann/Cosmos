@@ -132,7 +132,7 @@ rangevar:
 
 actionlist:
   headaction stateCondition ARROW tailaction SEMICOLON actionlist
-  { ($1,Guard.flatten $2,$4) :: $6 }
+  { ($1,Guard.flatten $2,$4):: $6 }
 | {[]}
 ;
 

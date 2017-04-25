@@ -4,16 +4,17 @@ open PetriNet
 open StochasticPetriNet
 open Lexing
 
+let mdpPlace = "MDP_PLACE"
+       
 let print_position outx lexbuf =
   let pos = lexbuf.lex_curr_p in
   Printf.fprintf outx "%s:%d:%d" pos.pos_fname
     pos.pos_lnum (pos.pos_cnum - pos.pos_bol + 1)
 
 let rec acc_var k = function 
-  | [] -> raise Not_found
+  | [] -> failwith ("var "^k^" Not found")
   | IntK(t,a,_)::_ when t=k -> a  
   | _::q -> acc_var k q
-
 
 let rec convert_guard modu net trname ((r1,r2) as rset) = function
   | [] -> rset
@@ -70,21 +71,33 @@ let convert_update net trname eqmap varmap = function
     Net.add_inArc net v trname (IntName (v));
     Net.add_outArc net trname v j; 
     varmap
-
-let gen_acc iinit modu net (st,g, taillist) =
+     
+let gen_acc isMDP iinit modu net (st,g, taillist) =
   let i = ref iinit in
-  List.iter (fun (f,u) ->
-      List.iter (fun flatguard ->
-          let trname = Printf.sprintf "a%i%s" !i (match st with None -> "" | Some s-> s) in 
+  List.iter (fun flatguard ->
+      let trnum = !i in
+      (*if isMDP && List.length taillist >1 then begin*)
+      let trname = Printf.sprintf "a%i%sDet" trnum (match st with None -> "" | Some s-> s) in 
+      Data.add (trname,(Player1,Float 1.0,Float 1.0)) net.Net.transition;
+      Net.add_inhibArc net mdpPlace trname (Int 1);
+      let (invar1,invar2) = 
+        convert_guard modu net trname (StringMap.empty,StringMap.empty) (Guard.to_list flatguard) in 
+      Net.add_outArc net trname mdpPlace (Int trnum);
+      (* end; *)
+        
+      List.iter (fun (f,u) ->
+          let trname = Printf.sprintf "a%i%sStoch" !i (match st with None -> "" | Some s-> s) in
           Data.add (trname,(Exp f,Float 1.0,Float 1.0)) net.Net.transition;
-      
-          let (invar1,invar2) = 
-            convert_guard modu net trname (StringMap.empty,StringMap.empty) (Guard.to_list flatguard) in 
-          let remaining = List.fold_left (convert_update net trname invar2) invar1 u in
+
+          Net.add_inArc net mdpPlace trname (Int trnum);
+          Net.add_inhibArc net mdpPlace trname (Int (trnum+1));
+          let eqvar = StringMap.add mdpPlace (Int trnum ) invar2 in  
+          
+          let remaining = List.fold_left (convert_update net trname eqvar) invar1 u in
           StringMap.iter (fun v value -> Net.add_outArc net trname v value) remaining;
           incr i;
-        ) g
-    ) taillist;
+        ) taillist
+    ) g;
   !i
 
   (*let diff = StringMap.diff (get_out u) invar in
@@ -94,7 +107,7 @@ let gen_acc iinit modu net (st,g, taillist) =
   List.iter (fun (v,jexp) -> Net.add_outArc net trname v jexp) u*)
 
 
-let net_of_prism modu (li,lf) =
+let net_of_prism kind modu (li,lf) =
   print_endline "Building net";
   let net = Net.create () in
   net.Net.def <- Some {
@@ -107,9 +120,10 @@ let net_of_prism modu (li,lf) =
   | BoolK(n,(a,b),i) -> Data.add (n,(i,Some b)) net.Net.place
   | ClockK _ -> ()) modu.varlist;
   print_endline "Building transitions";
+  if kind = MDP then Data.add (mdpPlace,(Int 0,None)) net.Net.place;
   ignore (List.fold_left 
 	    (fun i ac ->
-	      gen_acc i modu net ac)
+	      gen_acc (kind=MDP) i modu net ac)
 	    1 modu.actionlist);
   print_endline "Finish net";
   net
@@ -148,17 +162,34 @@ let rec rename_module l1 = function
 
 let clean_module m =
   m.actionlist
-  |> List.map (fun (s,g,r,u) ->
-         u
-         |> List.filter (function (v,IntUp (IntName w)) when v=w -> false
-                             | (v,BoolUp (BoolName w)) when v=w -> false
-                                  | _ -> true)
-         |> (fun v -> s,g,r,v)
+  |> List.map (fun (s,g,taillist) ->
+         taillist
+         |> List.map (fun (r,u) ->
+                 u
+                 |> List.filter (function (v,IntUp (IntName w)) when v=w -> false
+                                        | (v,BoolUp (BoolName w)) when v=w -> false
+                                        | _ -> true)
+                 |> (fun v -> r,v)
+               )
+         |> (fun v -> s,g,v)
        )
   |> (fun al ->
     { m with actionlist=al})
-                   
-                  
+
+let compose_tailaction tail1 tail2 =
+  List.fold_left (fun nl1 (r1,u1) ->
+      List.fold_left (fun nl2 (r2,u2) ->
+          ( eval (Mult(r1,r2)), u1@u2) :: nl2)
+                     nl1 tail2) [] tail1
+
+let compose_action (s1, g1, taillist1) (s2, g2, taillist2) nl = 
+  if s1<>s2 then nl
+  else
+    let ng = Guard.conj g1 g2 in
+    if ng=[] then nl
+    else let ntailaction = compose_tailaction taillist1 taillist2 in
+         (s1,ng, ntailaction) :: nl
+  
 let compose_module m1 m2 = 
   let open StringSet in
       let common = inter m1.actionset m2.actionset in 
@@ -167,14 +198,13 @@ let compose_module m1 m2 =
 	| None -> true 
 	| Some s-> not (mem s common) in
       let synchtrans =
-        List.fold_left (fun ls1 (s1,g1,r1,u1) ->
-	    if filt s1 then (s1,g1,r1,u1)::ls1
-	    else List.fold_left (fun ls2 (s2,g2,r2,u2) -> 
-	             if s1<>s2 then ls2
-	             else (s1,(Guard.conj g1 g2),eval (Mult(r1,r2)),u1@u2) :: ls2) ls1 m2.actionlist)
-	               (List.filter (fun (s,_,_,_) -> filt s) m2.actionlist)
+        List.fold_left (fun ls1 ((s1,_,_) as action1) ->
+	    if filt s1 then action1::ls1
+	    else List.fold_left (fun ls2 action2 -> 
+                     compose_action action1 action2 ls2)
+                                ls1 m2.actionlist)
+                       (List.filter (fun (s,_,_) -> filt s) m2.actionlist)
 	               m1.actionlist
-        |> List.filter (fun (_,g,_,_) -> g<>[])
       in       
       let nm = {
 	name = Printf.sprintf "(%s||%s)" m1.name m2.name;
@@ -202,7 +232,7 @@ let read_prism s name =
     let prismmodule = List.fold_left compose_module
                                      (List.hd prismm2) (List.tl prismm2) in
     print_prism !logout prismmodule;
-    (net_of_prism prismmodule cdef)
+    (net_of_prism kind prismmodule cdef)
   with 
   | LexerPrism.SyntaxError msg ->
     Printf.fprintf stderr "%a: %s\n" print_position lexbuf msg;

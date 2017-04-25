@@ -321,7 +321,9 @@ let print_spt_marcie fpath net =
   output_string f "\timmediate:\n";
   Data.iter (fun (s,(distr,r,_)) -> match distr with
       Imm -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
-     (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_expr r
+                            (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_expr r
+    | Player1 -> Printf.fprintf f "\t%s : %a : %a : %a ;\n" s 
+                            (print_condition_arc_marcie net) (Data.index net.Net.transition s) (print_arc_marcie net) (Data.index net.Net.transition s) printH_expr r
     | _ -> ()   
   ) net.Net.transition;
 

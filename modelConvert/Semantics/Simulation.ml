@@ -149,9 +149,9 @@ module MdpOp = struct
 				  end)
     let intarray_of_marking m =
       let t = Array.map (fun (x,_) -> Type.eval_or_die x) m in
-      (try t.(7) <-0; with
+      (*(try t.(7) <-0; with
         Invalid_argument s -> raise (Invalid_argument (s ^":"^ __FILE__ ^":"^ string_of_int @@__LINE__))
-      );                                               
+      );*)                                               
       t
 
     let print_intarray f x =

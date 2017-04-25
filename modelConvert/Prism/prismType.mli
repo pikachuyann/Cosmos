@@ -8,7 +8,7 @@ val add_double : Type.StringMap.key -> unit
 val add_var : Type.StringMap.key -> expType -> unit
 val add_copy : Type.StringMap.key -> Type.StringMap.key -> unit
 val find_action :
-  (Type.StringSet.elt option * 'a * 'b * 'c) list -> Type.StringSet.t
+  (Type.StringSet.elt option * 'a * 'b) list -> Type.StringSet.t
 type constdef =
     (string * int Type.expr' option) list *
     (string * float Type.expr' option) list
