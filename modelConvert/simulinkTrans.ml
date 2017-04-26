@@ -18,6 +18,9 @@ module OrderedLinks =
 end
 module LinksSet = Set.Make(OrderedLinks)
 
+let linksSetMap f s =
+  LinksSet.fold (fun a s2 -> LinksSet.add (f a) s2) s LinksSet.empty
+                          
 let skInfinitesimalLatency = ["Integrator"];;
 let skNoInputs = ["Constant"];;
 let skConditional = ["Switch"];;
@@ -59,8 +62,8 @@ let topologicSort (lB,lL) =
              e := LinksSet.remove edge !e;
              edge
            end in
-             outgoingedges := LinksSet.map dealwithedgeout !outgoingedges;
-             incomingedges := LinksSet.map dealwithedgeinc !incomingedges;
+             outgoingedges := linksSetMap dealwithedgeout !outgoingedges;
+             incomingedges := linksSetMap dealwithedgeinc !incomingedges;
      and infinitesimalLatencies = function
        [] -> ()
        | t::q when List.exists (fun x -> x=t.blocktype) skInfinitesimalLatency -> processblock t; infinitesimalLatencies q;
