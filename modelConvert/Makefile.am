@@ -4,14 +4,19 @@ bin_SCRIPTS = modelConvert
 #	cd $(srcdir); $(OCAMLBUILD) -libs unix,str prism2SPT.native
 #	cp $(srcdir)/prism2SPT.native modelConvert
 
-modelConvert: DataFile.ml PetriNet.ml StochasticPetriNet.ml prismTrans.ml  pnmlparser.ml prism2SPT.ml prismType.ml stateflowType.ml stateflowTrans.ml simulinkparser.ml stateflowparser.ml type.ml parserPrism.mly parserSimulEdge.mly lexerPrism.mll lexerSimulEdge.mll prelexer.mll preparser.mly modelConvert.ml simulinkTrans.ml prism2SPT.ml ClessParser/cless_ast.ml _tags
-	cd $(srcdir); $(OCAMLBUILD) -use-ocamlfind -I ClessParser prism2SPT.native modelConvert.native
+modelConvert: DataFile.ml PetriNet.ml StochasticPetriNet.ml pnmlparser.ml \
+	prism2SPT.ml stateflowType.ml stateflowTrans.ml simulinkparser.ml modelConvert.ml \
+	stateflowparser.ml type.ml parserSimulEdge.mly lexerSimulEdge.mll simulinkTrans.ml \
+	Prism/prismTrans.ml Prism/prismType.ml Prism/parserPrism.mly Prism/lexerPrism.mll \
+	Prism/prelexer.mll Prism/preparser.mly Prism/prismTrans.ml prism2SPT.ml \
+	ClessParser/cless_ast.ml _tags
+	cd $(srcdir); $(OCAMLBUILD) -use-ocamlfind -I ClessParser -I Prism -I Semantics prism2SPT.native modelConvert.native
 	cp $(srcdir)/modelConvert.native modelConvert
 
-EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml prismTrans.ml pnmlparser.ml\
-	prism2SPT.ml prismType.ml stateflowType.ml simulinkparser.ml stateflowparser.ml simulinkTrans.ml stateflowTrans.ml\
-	type.ml parserPrism.mly parserSimulEdge.mly lexerPrism.mll lexerSimulEdge.mll\
-	prelexer.mll preparser.mly StochPTPrinter.ml GrMLParser.ml \
+EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml Prism/prismTrans.ml pnmlparser.ml\
+	prism2SPT.ml Prism/prismType.ml stateflowType.ml simulinkparser.ml stateflowparser.ml simulinkTrans.ml stateflowTrans.ml\
+	type.ml parserPrism.mly parserSimulEdge.mly Prism/lexerPrism.mll lexerSimulEdge.mll\
+	Prism/prelexer.mll Prism/preparser.mly StochPTPrinter.ml GrMLParser.ml \
 	ClessParser/cless_ast.ml  ClessParser/cless.ml ClessParser/cless.mli ClessParser/cless_lexer.mll ClessParser/cless_parser.mly\
 	Simulation.ml SemanticPT.ml cless2PT.ml \
 	modelConvert.ml _tags build.sh
