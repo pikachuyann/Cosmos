@@ -18,8 +18,8 @@ EXTRA_DIST = DataFile.ml PetriNet.ml StochasticPetriNet.ml Prism/prismTrans.ml p
 	type.ml Prism/parserPrism.mly parserSimulEdge.mly Prism/lexerPrism.mll lexerSimulEdge.mll\
 	Prism/prelexer.mll Prism/preparser.mly StochPTPrinter.ml GrMLParser.ml \
 	ClessParser/cless_ast.ml  ClessParser/cless.ml ClessParser/cless.mli ClessParser/cless_lexer.mll ClessParser/cless_parser.mly\
-	Simulation.ml SemanticPT.ml cless2PT.ml \
-	modelConvert.ml _tags build.sh
+	Semantics/Simulation.ml Semantics/SemanticPT.ml Semantics/MDPStrategy.ml Semantics/LTS.ml\
+	cless2PT.ml modelConvert.ml _tags build.sh
 
 CLEANFILES = _build/* $(bin_SCRIPTS) *~
 
