@@ -12,7 +12,7 @@ let verbose = ref 1
 let inHibitor = ref true
 let traceSize = ref 0
 let simule = ref 0
-let statespace = ref false
+let statespace = ref ""
 		     
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
@@ -32,7 +32,7 @@ let _ =
 	     "--stoch",Arg.Set StateflowType.modelStoch,"Use probabilistic delay";
 	     "--trace",Arg.Set_int traceSize, "Generate a trace of the model";
 	     "--simule",Arg.Set_int simule, "Simulate trajectories";
-	     "--state-space", Arg.Set statespace, "Compute state space of the model";
+	     "--state-space", Arg.Set_string statespace, "Compute state space of the model";
 	     "--no-erlang",Arg.Clear StateflowType.useerlang,"Replace erlang distribution by exponentials";
 	     "--no-imm",Arg.Set StateflowType.doremoveImm,"Remove Instantaneous transition in prims model";
 	     "--no-inhib",Arg.Clear inHibitor,"Remove inhibitor arcs";
@@ -170,8 +170,9 @@ let _ =
   |< (fun _-> print_endline "Finish parsing, start transformation")
   |> (fun x-> if !StateflowType.useerlang then x else StochasticPetriNet.remove_erlang x)
   (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
-  |< (fun net -> if !statespace then
+  |< (fun net -> if !statespace <> "" then
 		   let lts = (Simulation.SemanticSPT.state_space net) in
+                   LTS.print_dot (!statespace^".dot") lts;
 		   Printf.printf  "State-space size:%i\n" (Array.length lts.LTS.states);
                    (*for i = 0 to PetriNet.Data.size net.PetriNet.Net.place -1 do 
 	             PetriNet.Data.unsafe i
@@ -185,7 +186,6 @@ let _ =
 			      Array.iter (fun y ->
 					  Simulation.SptOp.print_marking stdout y;
 					 output_string stdout ", ") x; print_newline ()) list*)
-
      ) 
   |< (fun net -> if !simule<> 0 then let open Simulation.SemanticSPT in
 				     Printf.printf "Simulate %n trajectories:\n" !simule;
@@ -232,7 +232,9 @@ let _ =
 	StochPTPrinter.print_spt_dot ((!output)^".dot") net [] []
       | Pdf -> 
 	StochPTPrinter.print_spt_dot ((!output)^".dot") net [] [];
-	ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output)
+	ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output);
+        if !statespace <> "" then  
+          ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !statespace !statespace);
       | GrML ->
 	StochPTPrinter.print_spt ((!output)^".grml") net
       | Pnml ->

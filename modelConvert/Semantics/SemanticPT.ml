@@ -134,9 +134,13 @@ struct
                   
   let get_lts net =
     let open LTS in
-    let mdpPlace = Data.index net.Net.place "MDP_PLACE" in
+    let mdpPlace = try
+        Some (Data.index net.Net.place "MDP_PLACE")
+    with _ -> None in
     let sl = state_space_comp net in
-    let slfilt = MarkingSet.filter (fun m -> Op.get_int net m (get m mdpPlace) = 0) sl in
+    let slfilt = MarkingSet.filter (fun m -> match mdpPlace with
+                                               None -> true
+                                             | Some p -> Op.get_int net m (get m p) = 0) sl in
     let n2 = MarkingSet.cardinal slfilt in
     let states = Array.make n2 "" in
     let statecard = snd @@ MarkingSet.fold (fun s (i,map) ->
@@ -148,25 +152,35 @@ struct
     ignore @@ MarkingSet.fold (fun m1 i ->
                   let en = enabled net m1 in
                   transitions.(i) <-
-                    List.map (fun t ->
-                        let label,fdistr = Data.acca net.Net.transition t in
-                        let miniedge = fire net m1 t in
-                        let en2 = enabled net miniedge in 
+                    (match mdpPlace with
+                    | Some _ -> List.map (fun t ->
+                       let label,fdistr = Data.acca net.Net.transition t in
                         
-                        let distr = List.map (fun e ->
-                                        let _,fdistr = Data.acca net.Net.transition e in
-                                        let prob = Op.get_prob net miniedge fdistr in {
-                                            target = MarkingMap.find (fire net miniedge e) statecard;
-                                            prob }) en2 in
+                       let miniedge = fire net m1 t in
+                       let en2 = enabled net miniedge in 
                         
-                        { label; distr} ) en;
+                       let distr = List.map (fun e ->
+                                       let _,fdistr = Data.acca net.Net.transition e in
+                                       let prob = Op.get_prob net miniedge fdistr in
+                              { target = MarkingMap.find (fire net miniedge e) statecard;
+                                prob }) en2 in
+                       { label; distr} ) en
+                                
+                    | None ->
+                       let distr = List.map (fun t ->
+                         let _,fdistr = Data.acca net.Net.transition t in
+                         let prob = Op.get_prob net m1 fdistr in
+                         {
+                             target = MarkingMap.find (fire net m1 t) statecard;
+                             prob }) en in
+                       [{ label=""; distr}]
+                    );
                   i+1) slfilt 0;
-    let g = { states; transitions; init =0} in
-    LTS.print_dot "test.dot" g; g
+    { states; transitions; init =0}
+    
 
   let state_space net =
-    let lts = get_lts net in
-    lts
+    let lts = get_lts net in lts
                                   
   let rec trace net m n =
     let fr = Op.finalResult net m in

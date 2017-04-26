@@ -18,16 +18,17 @@ let rec acc_var k = function
 
 let rec convert_guard modu net trname ((r1,r2) as rset) = function
   | [] -> rset
-  | (v,GE,j)::q when sgz j -> Printf.printf "[%s] %s GE %a\n" trname v printH_expr j;
+  | (v,GE,j)::q when sgz j -> Printf.fprintf !logout "[%s] %s GE %a\n" trname v printH_expr j;
                               Net.add_inArc net v trname (eval j);
                               convert_guard modu net trname ((StringMap.add v j r1),r2) q
   | (_,GE,_)::q -> convert_guard modu net trname rset q
-  | (v,SL,j)::q -> 
-    let _,bo = acc_var v modu.varlist in (match bo with
-	Int b ->if gez (Minus(bo,j)) then Net.add_inhibArc net v trname (eval j)
+  | (v,SL,j)::q ->
+     Printf.fprintf !logout "[%s] %s SL %a\n" trname v printH_expr j;
+     let _,bo = acc_var v modu.varlist in (match bo with
+      | Int b ->if gez (Minus(bo,j)) then Net.add_inhibArc net v trname (eval j)
       | _ -> Net.add_inhibArc net v trname (eval j););
     convert_guard modu net trname rset q
-  | (v,EQ,j)::q -> Printf.printf "%s EQ %a\n" v printH_expr j;
+  | (v,EQ,j)::q -> Printf.fprintf !logout "[%s] %s EQ %a\n" trname v printH_expr j;
      convert_guard modu net trname 
     (r1, (StringMap.add v (Int 0) r2))
     ((v,GE,j)::(v,SL,incr_int j)::q)
@@ -78,22 +79,27 @@ let gen_acc isMDP iinit modu net (st,g, taillist) =
   let i = ref iinit in
   List.iter (fun flatguard ->
       let trnum = !i in
-      (*if isMDP && List.length taillist >1 then begin*)
-      let trname = Printf.sprintf "a%i%sDet" trnum (match st with None -> "" | Some s-> s) in 
-      Data.add (trname,(Player1,Float 1.0,Float 1.0)) net.Net.transition;
-      Net.add_inhibArc net mdpPlace trname (Int 1);
-      let (invar1,invar2) = 
-        convert_guard modu net trname (StringMap.empty,StringMap.empty) (Guard.to_list flatguard) in 
-      Net.add_outArc net trname mdpPlace (Int trnum);
-      (* end; *)
-        
+      let invars = if isMDP then (
+         let trname = Printf.sprintf "a%i%sDet" trnum (match st with None -> "" | Some s-> s) in 
+         Data.add (trname,(Player1,Float 1.0,Float 1.0)) net.Net.transition;
+         Net.add_inhibArc net mdpPlace trname (Int 1);
+         let invar = 
+           convert_guard modu net trname (StringMap.empty,StringMap.empty) (Guard.to_list flatguard) in 
+         Net.add_outArc net trname mdpPlace (Int trnum);
+         Some invar
+      ) else None in
+         
       List.iter (fun (f,u) ->
           let trname = Printf.sprintf "a%i%sStoch" !i (match st with None -> "" | Some s-> s) in
           Data.add (trname,(Exp f,Float 1.0,Float 1.0)) net.Net.transition;
 
-          Net.add_inArc net mdpPlace trname (Int trnum);
-          Net.add_inhibArc net mdpPlace trname (Int (trnum+1));
-          let eqvar = StringMap.add mdpPlace (Int trnum ) invar2 in  
+          let (invar1,eqvar) = (match invars with 
+              | Some(supvar,eqvar) -> 
+              Net.add_inArc net mdpPlace trname (Int trnum);
+              Net.add_inhibArc net mdpPlace trname (Int (trnum+1));
+              let eqvar2 = StringMap.add mdpPlace (Int trnum ) eqvar in
+              (supvar,eqvar2)
+            | None -> convert_guard modu net trname (StringMap.empty,StringMap.empty) (Guard.to_list flatguard)) in
           
           let remaining = List.fold_left (convert_update net trname eqvar) invar1 u in
           StringMap.iter (fun v value -> Net.add_outArc net trname v value) remaining;
