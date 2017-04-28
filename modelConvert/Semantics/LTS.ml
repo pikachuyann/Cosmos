@@ -28,7 +28,7 @@ let print_dot ?mdp:(print_miniedge=true) f g =
   for i =0 to n-1 do
     List.iter (fun e ->
         let st,lab = if print_miniedge && List.length e.distr > 1 then (
-                   let miniedgelabel = (g.states.(i)^e.label) in
+                   let miniedgelabel = (g.states.(i)^"L"^e.label) in
                    fprintf o "node [shape=point];\n";
                    fprintf o "\t\"%s\" -> \"%s\" [ label = \"%s\" ];\n"
                            g.states.(i) miniedgelabel e.label;
