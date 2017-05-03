@@ -13,6 +13,7 @@ let inHibitor = ref true
 let traceSize = ref 0
 let simule = ref 0
 let statespace = ref ""
+let stochasticBound = ref false
 		     
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
@@ -33,6 +34,7 @@ let _ =
 	     "--trace",Arg.Set_int traceSize, "Generate a trace of the model";
 	     "--simule",Arg.Set_int simule, "Simulate trajectories";
 	     "--state-space", Arg.Set_string statespace, "Compute state space of the model";
+             "--stochastic-bound", Arg.Set stochasticBound, "Compute bounding matrix";
 	     "--no-erlang",Arg.Clear StateflowType.useerlang,"Replace erlang distribution by exponentials";
 	     "--no-imm",Arg.Set StateflowType.doremoveImm,"Remove Instantaneous transition in prims model";
 	     "--no-inhib",Arg.Clear inHibitor,"Remove inhibitor arcs";
@@ -170,10 +172,13 @@ let _ =
   |< (fun _-> print_endline "Finish parsing, start transformation")
   |> (fun x-> if !StateflowType.useerlang then x else StochasticPetriNet.remove_erlang x)
   (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
-  |< (fun net -> if !statespace <> "" then
+  |< (fun net -> if !statespace <> "" || !stochasticBound then
 		   let lts = (Simulation.SemanticSPT.state_space net) in
-                   LTS.print_dot (!statespace^".dot") lts;
-		   Printf.printf  "State-space size:%i\n" (Array.length lts.LTS.states);
+                   if !statespace <> "" then begin
+                       LTS.print_dot (!statespace^".dot") lts;
+		       Printf.printf  "State-space size:%i\n" (Array.length lts.LTS.states);
+                     end;
+                   if !stochasticBound then LTS.computeBound lts;
                    (*for i = 0 to PetriNet.Data.size net.PetriNet.Net.place -1 do 
 	             PetriNet.Data.unsafe i
 	             |> PetriNet.Data.acca net.PetriNet.Net.place

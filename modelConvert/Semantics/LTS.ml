@@ -15,9 +15,10 @@ type t = {
     init : int;
   }
 
-open Printf
+let computeBound _ = ()
            
 let print_dot ?mdp:(print_miniedge=true) f g =
+  let open Printf in
   let o = open_out f in
   output_string o "digraph G {\n";
   let n = Array.length g.states in
