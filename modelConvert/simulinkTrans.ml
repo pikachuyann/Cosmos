@@ -603,10 +603,6 @@ let generateCode lS (lB,lL) =
                    Printf.fprintf skCpp ";"
 (* let (ba,ia) = findSrc (b.blockid,1) lL and (bb,ib) = findSrc (b.blockid,2) lL in
             Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = Marking.P->_BLOCK%i_OUT%i[idx] + Marking.P->_BLOCK%i_OUT%i[idx];" b.blockid 1 ba ia bb ib; *)
-        | "Constant" -> let cstValue = float_of_string (List.assoc "Value" b.values) in
-            Printf.fprintf skCpp "\n\tMarking.P->_BLOCK%i_OUT%i[idx] = %f;" b.blockid 1 cstValue;
-        | "Delay" -> genLatencyFunction b
-        | "UnitDelay" -> genLatencyFunction b
         | "Scope" -> () (* do nothing *)
         | "Sin" -> begin
           let amplitude = float_of_string (List.assoc "Amplitude" b.values)

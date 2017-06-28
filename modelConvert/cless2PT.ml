@@ -106,8 +106,6 @@ and translate_bool2 = function
   | Leq(i1,i2) -> IntAtom(translate i1.node,LE,translate i2.node)
   | Geq(i1,i2) -> IntAtom(translate i1.node,GE,translate i2.node)
 			 
-		     
-			
 let rec build_spt (net:StochasticPetriNet.spt) map pin pout ast =
   (* Cless.print_expr_list false Format.std_formatter [ast];*)
   let line = line_of_ast ast in
