@@ -99,3 +99,5 @@ Examples/SK_*/SKModel.cpp
 Examples/SK_*/SKModel.hpp
 Examples/SK_*/SKModel.grml
 Examples/SK_*/markingImpl.hpp
+Examples/SK_*/trace.data
+Examples/SK_*/trace.data.*

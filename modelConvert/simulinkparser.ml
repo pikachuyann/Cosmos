@@ -96,7 +96,9 @@ let reg_type2 = Str.regexp "[,]"
 
 let completeDefaults params = function
   | "UnitDelay" -> ("Ports","[1, 1]")::params
+  | "Gain" -> ("Ports","[1, 1]")::params
   | "Constant" -> ("Ports","[0, 1]")::params
+  | "Switch" -> ("Ports","[3, 1]")::params
   | blockType -> params;;
 
 let parseblockParams liste = function
@@ -196,7 +198,7 @@ let pushDefaults ((lB, lP, lL):simulinkModel) =
   in
   ((List.map blockDef lB), lL);;
 
-let position_parse_regexp = Str.regexp "\\[\\([0-9]+\\)[ ,]*\\([0-9]+\\)[ ,]*\\([0-9]+\\)[ ,]*\\([0-9]+\\)\\]"
+let position_parse_regexp = Str.regexp "\\[\\(-?[0-9]+\\)[ ,]*\\(-?[0-9]+\\)[ ,]*\\(-?[0-9]+\\)[ ,]*\\(-?[0-9]+\\)\\]"
   
 let getchar i = char_of_int ((int_of_char('A') + i - 1))
 let printLaTeX f ((lB,lL):simulinkPModel) =
@@ -256,6 +258,8 @@ let computeLatencies lS ((lB, lL):simulinkPModel) =
     in
       let rec aux = function
         [] -> []
+        | b::q when b.blocktype="TransportDelay" ->
+           { blocktype = b.blocktype; blockid = b.blockid; name = b.name; values = ("LATENCY", List.assoc "DelayTime" b.values)::(b.values) }::(aux q);
         | b::q when b.blocktype="UnitDelay" -> let sampleTime = extfloat_of_sampletime (List.assoc "SampleTime" b.values) in
             let realLatency = match sampleTime with
             | Auto -> baseStep

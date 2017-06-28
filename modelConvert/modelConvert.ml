@@ -12,7 +12,8 @@ let verbose = ref 1
 let inHibitor = ref true
 let traceSize = ref 0
 let simule = ref 0
-let statespace = ref false
+let statespace = ref ""
+let stochasticBound = ref false
 		     
 let suffix_of_filename s =
   let fa = String.rindex s '.'+1 in
@@ -32,7 +33,8 @@ let _ =
 	     "--stoch",Arg.Set StateflowType.modelStoch,"Use probabilistic delay";
 	     "--trace",Arg.Set_int traceSize, "Generate a trace of the model";
 	     "--simule",Arg.Set_int simule, "Simulate trajectories";
-	     "--state-space", Arg.Set statespace, "Compute state space of the model";
+	     "--state-space", Arg.Set_string statespace, "Compute state space of the model";
+             "--stochastic-bound", Arg.Set stochasticBound, "Compute bounding matrix";
 	     "--no-erlang",Arg.Clear StateflowType.useerlang,"Replace erlang distribution by exponentials";
 	     "--no-imm",Arg.Set StateflowType.doremoveImm,"Remove Instantaneous transition in prims model";
 	     "--no-inhib",Arg.Clear inHibitor,"Remove inhibitor arcs";
@@ -82,11 +84,11 @@ let _ =
   | Prism -> 
     let s = Printf.sprintf "prism %s -exportprism %s.expanded  -nobuild > /dev/null" !inname !inname in
     Printf.printf "Using prism to expand file :%s\n" s;
-    if( Sys.command s = 0) then
+    (*if( Sys.command s = 0) then
       inname := !inname ^ ".expanded"
-    else Printf.printf "Fail to start prism to expand the file\n";
+    else Printf.printf "Fail to start prism to expand the file\n";*)
     input := open_in !inname;
-    Generator.read_prism !input !inname
+    PrismTrans.read_prism !input !inname
   | Pnml ->
      (*IFNDEF HAS_XML THEN
       failwith "XML library required to read PNML" 
@@ -170,8 +172,26 @@ let _ =
   |< (fun _-> print_endline "Finish parsing, start transformation")
   |> (fun x-> if !StateflowType.useerlang then x else StochasticPetriNet.remove_erlang x)
   (*|> (fun x-> if !add_reward then StochasticPetriNet.add_reward_struct x; x)*)
-  |< (fun net -> if !statespace then let n = List.length (Simulation.SemanticSPT.state_space net) in
-				   Printf.printf  "State-space size:%i\n" n)
+  |< (fun net -> if !statespace <> "" || !stochasticBound then
+		   let lts = (Simulation.SemanticSPT.state_space net) in
+                   if !statespace <> "" then begin
+                       LTS.print_dot (!statespace^".dot") lts;
+		       Printf.printf  "State-space size:%i\n" (Array.length lts.LTS.states);
+                     end;
+                   if !stochasticBound then LTS.computeBound lts;
+                   (*for i = 0 to PetriNet.Data.size net.PetriNet.Net.place -1 do 
+	             PetriNet.Data.unsafe i
+	             |> PetriNet.Data.acca net.PetriNet.Net.place
+	             |> fst
+	             |> print_string;
+                     print_string ", ";
+                   done;
+                   print_newline ();
+                   List.iter (fun x ->
+			      Array.iter (fun y ->
+					  Simulation.SptOp.print_marking stdout y;
+					 output_string stdout ", ") x; print_newline ()) list*)
+     ) 
   |< (fun net -> if !simule<> 0 then let open Simulation.SemanticSPT in
 				     Printf.printf "Simulate %n trajectories:\n" !simule;
 				     let nbsucc =
@@ -217,7 +237,9 @@ let _ =
 	StochPTPrinter.print_spt_dot ((!output)^".dot") net [] []
       | Pdf -> 
 	StochPTPrinter.print_spt_dot ((!output)^".dot") net [] [];
-	ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output)
+	ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !output !output);
+        if !statespace <> "" then  
+          ignore @@ Sys.command (Printf.sprintf "dot -Tpdf %s.dot -o %s.pdf" !statespace !statespace);
       | GrML ->
 	StochPTPrinter.print_spt ((!output)^".grml") net
       | Pnml ->
